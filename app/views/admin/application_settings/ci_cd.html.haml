@@ -1,0 +1,38 @@
+- breadcrumb_title "Settings"
+- page_title "Settings"
+- @content_class = "limit-container-width" unless fluid_layout
+- expanded = Rails.env.test?
+
+%section.settings.as-ci-cd.no-animate#js-ci-cd-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Continuous Integration and Deployment')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Auto DevOps, runners and job artifacts')
+  .settings-content
+    = render 'ci_cd'
+
+%section.settings.as-repository-check.no-animate#js-repository-check-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Repository maintenance')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Configure automatic git checks and housekeeping on repositories.')
+  .settings-content
+    = render 'repository_check'
+
+- if Gitlab.config.registry.enabled
+  %section.settings.as-registry.no-animate#js-registry-settings{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4
+        = _('Container Registry')
+      %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+        = expanded ? _('Collapse') : _('Expand')
+      %p
+        = _('Various container registry settings.')
+    .settings-content
+      = render 'registry'

@@ -199,10 +199,55 @@
             = sprite_icon('settings')
           %span.nav-item-name
             = _('Settings')
-        %ul.sidebar-sub-level-items.is-fly-out-only
+        %ul.sidebar-sub-level-items
           = nav_link(controller: :application_settings, html_options: { class: "fly-out-top-item" } ) do
             = link_to admin_application_settings_path do
               %strong.fly-out-top-item-name
                 = _('Settings')
+            %li.divider.fly-out-top-item
+            = nav_link(path: 'application_settings#show') do
+              = link_to admin_application_settings_path, title: _('General') do
+                %span
+                  = _('General')
+            %li.divider.fly-out-top-item
+            = nav_link(path: 'application_settings#integrations') do
+              = link_to integrations_admin_application_settings_path, title: _('Integrations') do
+                %span
+                  = _('Integrations')
+            %li.divider.fly-out-top-item
+            = nav_link(path: 'application_settings#repository') do
+              = link_to repository_admin_application_settings_path, title: _('Repository') do
+                %span
+                  = _('Repository')
+            %li.divider.fly-out-top-item
+            = nav_link(path: 'application_settings#templates') do
+              = link_to templates_admin_application_settings_path, title: _('Templates') do
+                %span
+                  = _('Templates')
+            %li.divider.fly-out-top-item
+            = nav_link(path: 'application_settings#ci_cd') do
+              = link_to ci_cd_admin_application_settings_path, title: _('CI/CD') do
+                %span
+                  = _('CI/CD')
+            %li.divider.fly-out-top-item
+            = nav_link(path: 'application_settings#reporting') do
+              = link_to reporting_admin_application_settings_path, title: _('Reporting') do
+                %span
+                  = _('Reporting')
+            %li.divider.fly-out-top-item
+            = nav_link(path: 'application_settings#metrics_and_profiling') do
+              = link_to metrics_and_profiling_admin_application_settings_path, title: _('Metrics and profiling') do
+                %span
+                  = _('Metrics and profiling')
+            %li.divider.fly-out-top-item
+            = nav_link(path: 'application_settings#network') do
+              = link_to network_admin_application_settings_path, title: _('Network') do
+                %span
+                  = _('Network')
+            %li.divider.fly-out-top-item
+            = nav_link(path: 'application_settings#preferences') do
+              = link_to preferences_admin_application_settings_path, title: _('Preferences') do
+                %span
+                  = _('Preferences')
 
     = render 'shared/sidebar_toggle_button'

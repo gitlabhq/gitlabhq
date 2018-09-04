@@ -1,0 +1,51 @@
+- breadcrumb_title "Settings"
+- page_title "Settings"
+- @content_class = "limit-container-width" unless fluid_layout
+- expanded = Rails.env.test?
+
+%section.settings.as-influx.no-animate#js-influx-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Metrics - Influx')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Enable and configure InfluxDB metrics.')
+  .settings-content
+    = render 'influx'
+
+%section.settings.as-prometheus.no-animate#js-prometheus-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Metrics - Prometheus')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Enable and configure Prometheus metrics.')
+  .settings-content
+    = render 'prometheus'
+
+%section.settings.as-performance-bar.no-animate#js-performance-bar-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Profiling - Performance bar')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Enable the Performance Bar for a given group.')
+      = link_to icon('question-circle'), help_page_path('administration/monitoring/performance/performance_bar')
+  .settings-content
+    = render 'performance_bar'
+
+%section.settings.as-usage.no-animate#js-usage-settings{ class: ('expanded' if expanded) }
+  .settings-header#usage-statistics
+    %h4
+      = _('Usage statistics')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Enable or disable version check and usage ping.')
+  .settings-content
+    = render 'usage'
+
+= render_if_exists 'admin/application_settings/pseudonymizer_settings', expanded: expanded

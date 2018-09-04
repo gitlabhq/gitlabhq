@@ -110,6 +110,7 @@ namespace :admin do
     put :reset_runners_token
     put :reset_health_check_token
     put :clear_repository_check_states
+    get :integrations, :repository, :templates, :ci_cd, :reporting, :metrics_and_profiling, :network, :preferences
   end
 
   resources :labels

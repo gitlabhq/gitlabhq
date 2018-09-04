@@ -1,0 +1,31 @@
+- breadcrumb_title "Settings"
+- page_title "Settings"
+- @content_class = "limit-container-width" unless fluid_layout
+- expanded = Rails.env.test?
+
+= render_if_exists 'admin/application_settings/elasticsearch_form', expanded: expanded
+
+%section.settings.as-plantuml.no-animate#js-plantuml-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('PlantUML')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Allow rendering of PlantUML diagrams in Asciidoc documents.')
+  .settings-content
+    = render 'plantuml'
+
+= render_if_exists 'admin/application_settings/slack', expanded: expanded
+
+%section.settings.as-third-party-offers.no-animate#js-third-party-offers-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Third party offers')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Control the display of third party offers.')
+  .settings-content
+    = render 'third_party_offers', application_setting: @application_setting
+  
