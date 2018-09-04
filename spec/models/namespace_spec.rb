@@ -431,7 +431,7 @@ describe Namespace do
     end
   end
 
-  describe '#self_and_hierarchy', :nested_groups dos
+  describe '#self_and_hierarchy', :nested_groups
     let!(:group) { create(:group, path: 'git_lab') }
     let!(:nested_group) { create(:group, parent: group) }
     let!(:deep_nested_group) { create(:group, parent: nested_group) }
