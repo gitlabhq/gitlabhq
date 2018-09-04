@@ -8,12 +8,14 @@ module Gitlab
       @users = Hash.new(0)
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def calculate(number_of_approvers)
       involved_users
 
       # Picks most active users from hash like: {user1: 2, user2: 6}
       @users.sort_by { |user, count| -count }.map(&:first).take(number_of_approvers)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     private
 

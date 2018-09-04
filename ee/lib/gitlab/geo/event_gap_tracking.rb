@@ -46,6 +46,7 @@ module Gitlab
       end
 
       # accepts a block that should return whether the event was handled
+      # rubocop: disable CodeReuse/ActiveRecord
       def fill_gaps
         with_redis do |redis|
           redis.zremrangebyscore(GEO_EVENT_LOG_GAPS, '-inf', outdated_timestamp)
@@ -59,6 +60,7 @@ module Gitlab
           end
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       private
 

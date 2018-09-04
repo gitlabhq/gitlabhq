@@ -9,7 +9,7 @@ module Gitlab
       if blob.project.feature_available?(:code_owners)
         Loader.new(blob.project, blob.commit_id, blob.path).users
       else
-        User.none
+        User.none # rubocop: disable CodeReuse/ActiveRecord
       end
     end
   end

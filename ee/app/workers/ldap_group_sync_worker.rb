@@ -1,6 +1,7 @@
 class LdapGroupSyncWorker
   include ApplicationWorker
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform(group_ids, provider = nil)
     return unless Gitlab::Auth::LDAP::Config.group_sync_enabled?
 
@@ -14,6 +15,7 @@ class LdapGroupSyncWorker
       sync_groups(groups)
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def sync_groups(groups, proxy: nil)
     groups.each { |group| sync_group(group, proxy: proxy) }

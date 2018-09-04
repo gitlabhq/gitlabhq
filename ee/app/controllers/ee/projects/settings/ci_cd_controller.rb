@@ -24,10 +24,12 @@ module EE
 
         private
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def define_protected_env_variables
           @protected_environments = @project.protected_environments.order(:name)
           @protected_environment = @project.protected_environments.new
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def assign_variables_to_gon
           gon.push(current_project_id: project.id)

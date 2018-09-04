@@ -63,12 +63,14 @@ module Gitlab
         end
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def hmac_secret(access_key)
         @hmac_secret ||= begin
                            geo_node = GeoNode.find_by(access_key: access_key, enabled: true)
                            geo_node&.secret_access_key
                          end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def decode_auth_header
         return unless auth_header.present?

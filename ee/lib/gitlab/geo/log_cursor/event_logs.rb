@@ -6,6 +6,7 @@ module Gitlab
         BATCH_SIZE = 50
 
         # fetches up to BATCH_SIZE next events and keep track of batches
+        # rubocop: disable CodeReuse/ActiveRecord
         def fetch_in_batches(batch_size: BATCH_SIZE)
           last_id = last_processed_id
 
@@ -18,6 +19,7 @@ module Gitlab
             break unless Lease.renew!
           end
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         private
 

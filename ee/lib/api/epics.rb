@@ -26,10 +26,13 @@ module API
         authorize!(:destroy_epic, epic)
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def epic
         @epic ||= user_group.epics.find_by(iid: params[:epic_iid])
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def find_epics(args = {})
         args = declared_params.merge(args)
         args[:label_name] = args.delete(:labels)
@@ -38,6 +41,7 @@ module API
 
         epics.reorder(args[:order_by] => args[:sort])
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     params do

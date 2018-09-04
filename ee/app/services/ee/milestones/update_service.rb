@@ -6,6 +6,7 @@ module EE
       extend ::Gitlab::Utils::Override
 
       override :execute
+      # rubocop: disable CodeReuse/ActiveRecord
       def execute(milestone)
         super
 
@@ -17,6 +18,7 @@ module EE
 
         milestone
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       private
 

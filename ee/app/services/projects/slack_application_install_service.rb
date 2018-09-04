@@ -34,6 +34,7 @@ module Projects
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def make_sure_chat_name_created(slack_data)
       service = project.gitlab_slack_application_service
 
@@ -54,6 +55,7 @@ module Projects
         )
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def exchange_slack_token
       Gitlab::HTTP.get(SLACK_EXCHANGE_TOKEN_URL, query: {

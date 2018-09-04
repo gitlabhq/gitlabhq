@@ -9,11 +9,13 @@ module Projects
       before_action :authorize_admin_project!, except: [:notify]
       before_action :alert, only: [:update, :show, :destroy]
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def index
         alerts = project.prometheus_alerts.reorder(id: :asc)
 
         render json: serialize_as_json(alerts)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def show
         render json: serialize_as_json(alert)
@@ -81,9 +83,11 @@ module Projects
         PrometheusAlertSerializer.new(project: project, current_user: current_user)
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def alert
         @alert ||= project.prometheus_alerts.find_by(prometheus_metric_id: params[:id]) || render_404
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def application
         @application ||= alert.environment.cluster_prometheus_adapter

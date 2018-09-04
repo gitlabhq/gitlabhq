@@ -22,8 +22,8 @@
 
   %h3 Push
   - code_push_count = @events.code_push.count
-  - commits_count = @events.code_push.map(&:commits_count).sum
-  - person_count = @events.code_push.pluck(:author_id).uniq.count
+  - commits_count = @events.code_push.map(&:commits_count).sum # rubocop: disable CodeReuse/ActiveRecord
+  - person_count = @events.code_push.pluck(:author_id).uniq.count # rubocop: disable CodeReuse/ActiveRecord
   - person_count_string = pluralize person_count, 'person'
   - pushes_string = _('<strong>%{pushes}</strong> pushes, more than <strong>%{commits}</strong> commits by <strong>%{people}</strong> contributors.').html_safe % { pushes: code_push_count, commits: commits_count , people: person_count_string }
   - if code_push_count > 0 || commits_count > 0 || person_count > 0
@@ -49,7 +49,7 @@
 
   %h3 Issues
   - issues_created_count = @events.issues.created.count
-  - issues_closed_count = @events.issues.closed.pluck(:target_id).uniq.count
+  - issues_closed_count = @events.issues.closed.pluck(:target_id).uniq.count # rubocop: disable CodeReuse/ActiveRecord
   - if issues_created_count > 0 && issues_closed_count > 0
     = _('<strong>%{created_count}</strong> created, <strong>%{closed_count}</strong> closed.').html_safe % { created_count: issues_created_count, closed_count: issues_closed_count }
   - else

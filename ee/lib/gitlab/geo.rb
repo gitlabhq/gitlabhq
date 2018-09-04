@@ -18,13 +18,17 @@ module Gitlab
       self.cache_value(:geo_node_current) { GeoNode.current_node }
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def self.primary_node
       self.cache_value(:geo_primary_node) { GeoNode.find_by(primary: true) }
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def self.secondary_nodes
       self.cache_value(:geo_secondary_nodes) { GeoNode.where(primary: false) }
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def self.connected?
       Gitlab::Database.postgresql? && GeoNode.connected? && GeoNode.table_exists?

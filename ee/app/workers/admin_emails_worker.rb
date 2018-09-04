@@ -1,11 +1,13 @@
 class AdminEmailsWorker
   include ApplicationWorker
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform(recipient_id, subject, body)
     recipient_list(recipient_id).pluck(:id).uniq.each do |user_id|
       Notify.send_admin_notification(user_id, subject, body).deliver_later
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 

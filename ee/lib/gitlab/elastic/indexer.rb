@@ -66,6 +66,7 @@ module Gitlab
         raise Error, output unless status&.zero?
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def update_index_status(to_sha)
         head_commit = repository.try(:commit)
 
@@ -88,6 +89,7 @@ module Gitlab
         index_status.update(last_commit: sha, indexed_at: Time.now)
         project.index_status(true)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

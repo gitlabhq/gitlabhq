@@ -20,6 +20,7 @@ module EE
           @metric = project.prometheus_metrics.new # rubocop:disable Gitlab/ModuleWithInstanceVariables
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def index
           respond_to do |format|
             format.json do
@@ -34,6 +35,7 @@ module EE
             end
           end
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def create
           @metric = project.prometheus_metrics.create(metrics_params) # rubocop:disable Gitlab/ModuleWithInstanceVariables

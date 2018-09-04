@@ -266,6 +266,7 @@ module Gitlab
       check_change_access!
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def check_change_access!
       # If there are worktrees with a HEAD pointing to a non-existent object,
       # calls to `git rev-list --all` will fail in git 2.15+. This should also
@@ -291,6 +292,7 @@ module Gitlab
         raise UnauthorizedError, Gitlab::RepositorySizeError.new(project).new_changes_error
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def check_single_change_access(change, skip_lfs_integrity_check: false)
       Checks::ChangeAccess.new(

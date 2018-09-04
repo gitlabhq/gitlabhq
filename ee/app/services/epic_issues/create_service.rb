@@ -8,6 +8,7 @@ module EpicIssues
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def relate_issues(referenced_issue)
       link = EpicIssue.find_or_initialize_by(issue: referenced_issue)
 
@@ -23,6 +24,7 @@ module EpicIssues
 
       yield params
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def create_notes(referenced_issue, params)
       if params[:issue_moved]

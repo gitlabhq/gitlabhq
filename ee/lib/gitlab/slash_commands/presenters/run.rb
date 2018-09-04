@@ -4,6 +4,7 @@ module Gitlab
   module SlashCommands
     module Presenters
       class Run < Presenters::Base
+        # rubocop: disable CodeReuse/ActiveRecord
         def present(pipeline)
           build = pipeline.builds.take
 
@@ -13,6 +14,7 @@ module Gitlab
             unsupported_chat_service
           end
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def unsupported_chat_service
           ephemeral_response(text: 'Sorry, this chat service is currently not supported by GitLab ChatOps.')

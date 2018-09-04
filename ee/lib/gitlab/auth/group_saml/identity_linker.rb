@@ -18,12 +18,14 @@ module Gitlab
 
         protected
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def identity
           @identity ||= current_user.identities.where(provider: :group_saml,
                                                       saml_provider: saml_provider,
                                                       extern_uid: uid.to_s)
                                     .first_or_initialize
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def update_group_membership
           MembershipUpdater.new(current_user, saml_provider).execute

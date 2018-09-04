@@ -4,6 +4,7 @@ module Boards
     # If board parent is a project it only enumerates project members
     # If board parent is a group it enumerates all members of current group,
     # ancestors, and descendants
+    # rubocop: disable CodeReuse/ActiveRecord
     def index
       user_ids = user_finder.execute.select(:user_id)
 
@@ -11,6 +12,7 @@ module Boards
 
       render json: UserSerializer.new.represent(users)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     private
 

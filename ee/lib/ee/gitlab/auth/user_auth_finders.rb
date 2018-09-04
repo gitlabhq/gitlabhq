@@ -7,6 +7,7 @@ module EE
         JOB_TOKEN_HEADER = "HTTP_JOB_TOKEN".freeze
         JOB_TOKEN_PARAM = :job_token
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def find_user_from_job_token
           return unless route_authentication_setting[:job_token_allowed]
 
@@ -20,6 +21,7 @@ module EE
 
           job.user
         end
+        # rubocop: enable CodeReuse/ActiveRecord
       end
     end
   end

@@ -26,7 +26,7 @@
         This merge request must be approved by these users.
         You can override the project settings by setting your own list of approvers.
 
-      - skip_groups = issuable.overall_approver_groups.pluck(:group_id)
+      - skip_groups = issuable.overall_approver_groups.pluck(:group_id) # rubocop: disable CodeReuse/ActiveRecord
       = groups_select_tag('merge_request[approver_group_ids]', multiple: true, data: { skip_groups: skip_groups, all_available: true, project: issuable.target_project }, class: 'input-large')
       .form-text.text-muted
         This merge request must be approved by members of these groups.

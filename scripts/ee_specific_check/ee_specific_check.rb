@@ -314,13 +314,16 @@ if $0 == __FILE__
     end
 
     describe '.run_git_command' do
+      # rubocop: disable CodeReuse/ActiveRecord
       it 'returns the single output when there is a single command' do
         output = run_git_command('status')
 
         expect(output).to be_kind_of(String)
         expect(self).to have_received(:warn).with(/git status/)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       it 'returns an array of output for more commands' do
         output = run_git_command('status', 'help')
 
@@ -328,6 +331,7 @@ if $0 == __FILE__
         expect(self).to have_received(:warn).with(/git status/)
         expect(self).to have_received(:warn).with(/git help/)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     describe '.matching_ce_refs' do

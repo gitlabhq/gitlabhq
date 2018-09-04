@@ -248,6 +248,7 @@ module Gitlab
         }
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def guest_project_ids
         if current_user
           current_user.authorized_projects
@@ -257,6 +258,7 @@ module Gitlab
           []
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def non_guest_project_ids
         if limit_project_ids == :any

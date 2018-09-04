@@ -27,6 +27,7 @@ class ElasticBatchProjectIndexerWorker
     logger.warn("#{err.message} indexing #{project.full_name} (ID=#{project.id}), trace - #{err.backtrace}")
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def build_relation(start, finish, update_index)
     relation = Project.includes(:index_status)
 
@@ -40,4 +41,5 @@ class ElasticBatchProjectIndexerWorker
 
     relation
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

@@ -22,6 +22,7 @@ module EE
         end
 
         override :issues_label_links
+        # rubocop: disable CodeReuse/ActiveRecord
         def issues_label_links
           if has_valid_milestone?
             super.where("issues.milestone_id = ?", board.milestone_id)
@@ -29,9 +30,11 @@ module EE
             super
           end
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         private
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def all_assignee_lists
           if parent.feature_available?(:board_assignee_lists)
             board.lists.assignee.where.not(user_id: nil)
@@ -39,7 +42,9 @@ module EE
             ::List.none
           end
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def all_milestone_lists
           if parent.feature_available?(:board_milestone_lists)
             board.lists.milestone.where.not(milestone_id: nil)
@@ -47,33 +52,40 @@ module EE
             ::List.none
           end
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def without_assignees_from_lists(issues)
           return issues if all_assignee_lists.empty?
 
           issues
             .where.not(id: issues.joins(:assignees).where(users: { id: all_assignee_lists.select(:user_id) }))
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         override :metadata_fields
         def metadata_fields
           super.merge(total_weight: 'COALESCE(SUM(weight), 0)')
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def without_milestones_from_lists(issues)
           return issues if all_milestone_lists.empty?
 
           issues.where("milestone_id NOT IN (?) OR milestone_id IS NULL",
                        all_milestone_lists.select(:milestone_id))
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def with_assignee(issues)
           issues.assigned_to(list.user)
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def with_milestone(issues)
           issues.where(milestone_id: list.milestone_id)
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         # Prevent filtering by milestone stubs
         # like Milestone::Upcoming, Milestone::Started etc

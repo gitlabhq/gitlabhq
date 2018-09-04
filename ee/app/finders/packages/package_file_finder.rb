@@ -17,7 +17,9 @@ class Packages::PackageFileFinder
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def package_files
     package.package_files.where(file_name: file_name)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

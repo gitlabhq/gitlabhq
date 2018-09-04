@@ -28,9 +28,11 @@ module Gitlab
             ).async_execute
           end
 
+          # rubocop: disable CodeReuse/ActiveRecord
           def delete_project_registry_entries
             ::Geo::ProjectRegistry.where(project_id: event.project_id).delete_all
           end
+          # rubocop: enable CodeReuse/ActiveRecord
 
           def log_event(job_id)
             logger.event_info(

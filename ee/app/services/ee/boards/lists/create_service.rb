@@ -36,10 +36,12 @@ module EE
           milestones.find(params['milestone_id'])
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def find_user(board)
           user_ids = user_finder(board).execute.select(:user_id)
           ::User.where(id: user_ids).find(params['assignee_id'])
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def milestone_finder(board)
           @milestone_finder ||= ::Boards::MilestonesFinder.new(board, current_user)

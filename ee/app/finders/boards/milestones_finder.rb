@@ -11,6 +11,7 @@ module Boards
 
     private
 
+    # rubocop: disable CodeReuse/Finder
     def finder_service
       parent = @board.parent
 
@@ -28,5 +29,6 @@ module Boards
 
       ::MilestonesFinder.new(finder_params)
     end
+    # rubocop: enable CodeReuse/Finder
   end
 end

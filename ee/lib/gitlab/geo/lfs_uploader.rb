@@ -6,6 +6,7 @@ module Gitlab
     #
     # TODO: Rearrange things so this class does not inherit from FileUploader
     class LfsUploader < FileUploader
+      # rubocop: disable CodeReuse/ActiveRecord
       def execute
         lfs_object = LfsObject.find_by(id: object_db_id)
 
@@ -20,6 +21,7 @@ module Gitlab
 
         success(lfs_object.file)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

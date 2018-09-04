@@ -23,6 +23,7 @@ module Search
       @projects ||= ProjectsFinder.new(current_user: current_user).execute
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def elastic_projects
       @elastic_projects ||=
         if current_user&.full_private_access?
@@ -33,6 +34,7 @@ module Search
           []
         end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def elastic_global
       true

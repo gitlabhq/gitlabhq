@@ -107,9 +107,11 @@ module Geo
         (Time.now.utc - start_time) >= run_time
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def take_batch(*arrays, batch_size: db_retrieve_batch_size)
         interleave(*arrays).uniq.compact.take(batch_size)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       # Combines the elements of multiple, arbitrary-length arrays into a single array.
       #

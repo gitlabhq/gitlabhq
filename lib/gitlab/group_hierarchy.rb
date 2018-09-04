@@ -37,9 +37,11 @@ module Gitlab
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def roots
       base_and_ancestors.where(namespaces: { parent_id: nil })
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # Returns a relation that includes the ancestors_base set of groups
     # and all their ancestors (recursively).

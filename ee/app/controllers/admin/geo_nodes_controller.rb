@@ -4,6 +4,7 @@ class Admin::GeoNodesController < Admin::ApplicationController
 
   helper EE::GeoHelper
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def index
     @nodes = GeoNode.all.order(:id)
     @node = GeoNode.new
@@ -12,6 +13,7 @@ class Admin::GeoNodesController < Admin::ApplicationController
       flash_now(:alert, 'You need a different license to enable Geo replication')
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def create
     @node = Geo::NodeCreateService.new(geo_node_params).execute

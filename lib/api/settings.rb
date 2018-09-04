@@ -171,6 +171,7 @@ module API
       optional(*optional_attributes)
       at_least_one_of(*optional_attributes)
     end
+    # rubocop: disable CodeReuse/ActiveRecord
     put "application/settings" do
       attrs = declared_params(include_missing: false)
 
@@ -216,5 +217,6 @@ module API
         render_validation_error!(current_settings)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

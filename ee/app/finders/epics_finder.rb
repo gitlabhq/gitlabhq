@@ -43,14 +43,17 @@ class EpicsFinder < IssuableFinder
     @group = group
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def init_collection
     groups = groups_user_can_read_epics(group.self_and_descendants)
 
     Epic.where(group: groups)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def groups_user_can_read_epics(groups)
     groups = Gitlab::GroupPlansPreloader.new.preload(groups)
 
@@ -58,7 +61,9 @@ class EpicsFinder < IssuableFinder
       groups.select { |g| Ability.allowed?(current_user, :read_epic, g) }
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_timeframe(items)
     return items unless params[:start_date] && params[:end_date]
 
@@ -72,4 +77,5 @@ class EpicsFinder < IssuableFinder
   rescue ArgumentError
     items
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

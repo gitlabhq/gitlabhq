@@ -21,6 +21,7 @@ module Geo
     #
 
     # @return [ActiveRecord::Relation<Geo::Fdw::Upload>]
+    # rubocop: disable CodeReuse/ActiveRecord
     def fdw_find_project_uploads(project)
       fdw_table = Geo::Fdw::Upload.table_name
       upload_type = 'file'
@@ -31,8 +32,10 @@ module Geo
                                AND #{fdw_table}.model_type='#{project.class.name}'
                                AND file_registry.file_type='#{upload_type}'")
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # @return [ActiveRecord::Relation<Geo::FileRegistry>]
+    # rubocop: disable CodeReuse/ActiveRecord
     def fdw_find_file_registries_uploads(project)
       fdw_table = Geo::Fdw::Upload.table_name
       upload_type = 'file'
@@ -43,12 +46,14 @@ module Geo
                                 AND #{fdw_table}.model_type='#{project.class.name}'
                                 AND file_registry.file_type='#{upload_type}'")
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     #
     # Legacy accessors (non FDW)
     #
 
     # @return [ActiveRecord::Relation<Geo::FileRegistry>] list of file registry items
+    # rubocop: disable CodeReuse/ActiveRecord
     def legacy_find_file_registries_uploads(project)
       upload_ids = Upload.where(model_type: project.class.name, model_id: project.id).pluck(:id)
 
@@ -64,8 +69,10 @@ module Geo
          AND file_registry.file_type='#{upload_type}'
       SQL
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # @return [ActiveRecord::Relation<Upload>] list of upload files
+    # rubocop: disable CodeReuse/ActiveRecord
     def legacy_find_project_uploads(project)
       file_registry_ids = legacy_find_file_registries_uploads(project).pluck(:file_id)
 
@@ -79,5 +86,6 @@ module Geo
           ON (file_registry.file_id = uploads.id)
       SQL
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

@@ -6,6 +6,7 @@ class Groups::TodosController < Groups::ApplicationController
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def issuable
     strong_memoize(:epic) do
       next if params[:issuable_type] != 'epic'
@@ -13,4 +14,5 @@ class Groups::TodosController < Groups::ApplicationController
       @group.epics.find_by(id: params[:issuable_id])
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

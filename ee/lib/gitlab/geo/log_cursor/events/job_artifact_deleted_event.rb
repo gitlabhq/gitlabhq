@@ -19,9 +19,11 @@ module Gitlab
 
           private
 
+          # rubocop: disable CodeReuse/ActiveRecord
           def file_registry_job_artifacts
             @file_registry_job_artifacts ||= ::Geo::JobArtifactRegistry.where(artifact_id: event.job_artifact_id)
           end
+          # rubocop: enable CodeReuse/ActiveRecord
 
           def file_path
             @file_path ||= File.join(::JobArtifactUploader.root, event.file_path)

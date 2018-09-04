@@ -36,9 +36,11 @@ module EE
           )
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def parent_records(parent, ids)
           parent.epics.where(iid: ids.to_a)
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         private
 

@@ -36,28 +36,34 @@ module API
           project
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def find_merge_requests
           merge_requests = authorized_merge_requests.reorder(updated_at: :desc).preload(:target_project)
           merge_requests = paginate(merge_requests)
           merge_requests.select { |mr| licensed_project?(mr.target_project) }
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def find_merge_request_with_access(id, access_level = :read_merge_request)
           merge_request = authorized_merge_requests.find_by(id: id)
           not_found! unless can?(current_user, access_level, merge_request)
           merge_request
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def authorized_merge_requests
           MergeRequestsFinder.new(current_user, authorized_only: true).execute
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def find_notes(noteable)
           # They're not presented on Jira Dev Panel ATM. A comments count with a
           # redirect link is presented.
           notes = paginate(noteable.notes.user.reorder(nil))
           notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def licensed_project?(project)
           project.feature_available?(JIRA_DEV_PANEL_FEATURE)
@@ -80,6 +86,7 @@ module API
         params do
           use :pagination
         end
+        # rubocop: disable CodeReuse/ActiveRecord
         get ':namespace/repos', requirements: NAMESPACE_ENDPOINT_REQUIREMENTS do
           namespace = Namespace.find_by_full_path(params[:namespace])
           not_found!('Namespace') unless namespace
@@ -89,6 +96,7 @@ module API
           projects = ::Kaminari.paginate_array(projects)
           present paginate(projects), with: ::API::Github::Entities::Repository
         end
+        # rubocop: enable CodeReuse/ActiveRecord
       end
 
       # Jira dev panel integration weirdly requests for "/-/jira/pulls" instead

@@ -1,11 +1,14 @@
 module EE
   module Boards
     module BaseService
+      # rubocop: disable CodeReuse/ActiveRecord
       def set_assignee
         assignee = ::User.find_by(id: params.delete(:assignee_id))
         params.merge!(assignee: assignee)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def set_milestone
         milestone_id = params[:milestone_id]
 
@@ -27,6 +30,7 @@ module EE
 
         params[:milestone_id] = milestone&.id
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def set_labels
         labels = params.delete(:labels)

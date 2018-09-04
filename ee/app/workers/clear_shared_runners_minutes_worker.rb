@@ -4,6 +4,7 @@ class ClearSharedRunnersMinutesWorker
   include ApplicationWorker
   include CronjobQueue
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform
     return unless try_obtain_lease
 
@@ -17,6 +18,7 @@ class ClearSharedRunnersMinutesWorker
         shared_runners_seconds: 0,
         shared_runners_seconds_last_reset: Time.now)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 

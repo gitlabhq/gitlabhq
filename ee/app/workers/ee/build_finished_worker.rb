@@ -1,5 +1,6 @@
 module EE
   module BuildFinishedWorker
+    # rubocop: disable CodeReuse/ActiveRecord
     def perform(build_id)
       super
 
@@ -7,5 +8,6 @@ module EE
         ChatNotificationWorker.perform_async(build_id) if build.pipeline.chat?
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

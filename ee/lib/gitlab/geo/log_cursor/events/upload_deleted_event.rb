@@ -5,10 +5,12 @@ module Gitlab
         class UploadDeletedEvent
           include BaseEvent
 
+          # rubocop: disable CodeReuse/ActiveRecord
           def process
             log_event
             ::Geo::FileRegistry.where(file_id: event.upload_id, file_type: event.upload_type).delete_all
           end
+          # rubocop: enable CodeReuse/ActiveRecord
 
           private
 

@@ -51,13 +51,17 @@ module Geo
           resources + find_failed_project_ids(batch_size: remaining_capacity)
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def find_unverified_project_ids(batch_size:)
           finder.find_unverified_projects(batch_size: batch_size).pluck(:id)
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def find_outdated_project_ids(batch_size:)
           finder.find_outdated_projects(batch_size: batch_size).pluck(:id)
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def find_failed_project_ids(batch_size:)
           repositories_ids = find_failed_repositories_ids(batch_size: batch_size)
@@ -66,13 +70,17 @@ module Geo
           take_batch(repositories_ids, wiki_ids, batch_size: batch_size)
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def find_failed_repositories_ids(batch_size:)
           finder.find_failed_repositories(batch_size: batch_size).pluck(:id)
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def find_failed_wiki_ids(batch_size:)
           finder.find_failed_wikis(batch_size: batch_size).pluck(:id)
         end
+        # rubocop: enable CodeReuse/ActiveRecord
       end
     end
   end

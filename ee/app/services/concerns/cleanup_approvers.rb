@@ -6,6 +6,7 @@ module CleanupApprovers
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def cleanup_approvers(target, reload: false)
     target.approvers.where.not(user_id: params[:approver_ids]).destroy_all # rubocop: disable DestroyAll
     target.approver_groups.where.not(group_id: params[:approver_group_ids]).destroy_all # rubocop: disable DestroyAll
@@ -19,4 +20,5 @@ module CleanupApprovers
 
     target
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

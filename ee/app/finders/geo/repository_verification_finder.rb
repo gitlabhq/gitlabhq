@@ -4,6 +4,7 @@ module Geo
       @shard_name = shard_name
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_failed_repositories(batch_size:)
       query = build_query_to_find_failed_projects(type: :repository, batch_size: batch_size)
       cte   = Gitlab::SQL::CTE.new(:failed_repositories, query)
@@ -12,7 +13,9 @@ module Geo
              .from(cte.alias_to(projects_table))
              .order("projects.repository_retry_at ASC")
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_failed_wikis(batch_size:)
       query = build_query_to_find_failed_projects(type: :wiki, batch_size: batch_size)
       cte   = Gitlab::SQL::CTE.new(:failed_wikis, query)
@@ -21,7 +24,9 @@ module Geo
              .from(cte.alias_to(projects_table))
              .order("projects.wiki_retry_at ASC")
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_outdated_projects(batch_size:)
       query = build_query_to_find_outdated_projects(batch_size: batch_size)
       cte   = Gitlab::SQL::CTE.new(:outdated_projects, query)
@@ -30,7 +35,9 @@ module Geo
              .from(cte.alias_to(projects_table))
              .order(last_repository_updated_at_asc)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_unverified_projects(batch_size:)
       relation =
         Project.select(:id)
@@ -42,6 +49,7 @@ module Geo
       relation = apply_shard_restriction(relation) if shard_name.present?
       relation
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def count_verified_repositories
       Project.verified_repos.count
@@ -63,6 +71,7 @@ module Geo
 
     attr_reader :shard_name
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def build_query_to_find_failed_projects(type:, batch_size:)
       query =
         projects_table
@@ -74,7 +83,9 @@ module Geo
       query = apply_shard_restriction(query) if shard_name.present?
       query
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def build_query_to_find_outdated_projects(batch_size:)
       query =
         projects_table
@@ -86,6 +97,7 @@ module Geo
       query = apply_shard_restriction(query) if shard_name.present?
       query
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def projects_table
       Project.arel_table
@@ -124,8 +136,10 @@ module Geo
       Gitlab::Database.nulls_last_order('projects.last_repository_updated_at', 'ASC')
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def apply_shard_restriction(relation)
       relation.where(projects_table[:repository_storage].eq(shard_name))
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

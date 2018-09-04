@@ -30,6 +30,7 @@ module Gitlab
             mail_key
           end
 
+          # rubocop: disable CodeReuse/ActiveRecord
           def project
             return @project if instance_variable_defined?(:@project)
 
@@ -39,6 +40,7 @@ module Gitlab
 
             @project = found_project&.service_desk_enabled? ? found_project : nil
           end
+          # rubocop: enable CodeReuse/ActiveRecord
 
           def create_issue!
             # NB: the support bot is specifically forbidden

@@ -9,6 +9,7 @@ module EE
         extend ::Gitlab::Utils::Override
 
         override :execute
+        # rubocop: disable CodeReuse/ActiveRecord
         def execute(board)
           not_available_lists =
             list_type_features_availability(board).select { |_, available| !available }
@@ -19,6 +20,7 @@ module EE
             super
           end
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         private
 

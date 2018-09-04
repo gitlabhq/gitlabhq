@@ -108,6 +108,7 @@ module EE
               dn
             end
 
+            # rubocop: disable CodeReuse/ActiveRecord
             def member_uid_to_dn(uid)
               identity = ::Identity.with_secondary_extern_uid(provider, uid).take
 
@@ -126,7 +127,9 @@ module EE
                 ldap_user.dn
               end
             end
+            # rubocop: enable CodeReuse/ActiveRecord
 
+            # rubocop: disable CodeReuse/ActiveRecord
             def update_identity(dn, uid)
               identity = ::Identity.with_extern_uid(provider, dn).take
 
@@ -136,6 +139,7 @@ module EE
               identity.secondary_extern_uid = uid
               identity.save
             end
+            # rubocop: enable CodeReuse/ActiveRecord
 
             def logger
               Rails.logger

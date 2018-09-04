@@ -32,6 +32,7 @@ module Geo
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def file_registry
       strong_memoize(:file_registry) do
         if object_type.to_sym == :job_artifact
@@ -41,6 +42,7 @@ module Geo
         end
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def file_path
       strong_memoize(:file_path) do
@@ -57,6 +59,7 @@ module Geo
       end
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def file_uploader
       strong_memoize(:file_uploader) do
         case object_type.to_s
@@ -74,6 +77,7 @@ module Geo
       log_error('Could not build uploader', err.message)
       raise
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def upload?
       Geo::FileService::DEFAULT_OBJECT_TYPES.include?(object_type.to_s)

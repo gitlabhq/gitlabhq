@@ -16,6 +16,8 @@ module Autocomplete
       @params = params
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
+    # rubocop: disable CodeReuse/Finder
     def execute
       project = ::Autocomplete::ProjectFinder
         .new(current_user, params)
@@ -23,5 +25,7 @@ module Autocomplete
 
       project ? project.invited_groups : Group.none
     end
+    # rubocop: enable CodeReuse/Finder
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

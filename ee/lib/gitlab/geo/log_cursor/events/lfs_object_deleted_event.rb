@@ -5,12 +5,14 @@ module Gitlab
         class LfsObjectDeletedEvent
           include BaseEvent
 
+          # rubocop: disable CodeReuse/ActiveRecord
           def process
             # Must always schedule, regardless of shard health
             job_id = ::Geo::FileRemovalWorker.perform_async(file_path)
             log_event(job_id)
             ::Geo::FileRegistry.lfs_objects.where(file_id: event.lfs_object_id).delete_all
           end
+          # rubocop: enable CodeReuse/ActiveRecord
 
           private
 

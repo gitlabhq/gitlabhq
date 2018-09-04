@@ -15,6 +15,7 @@ module EE
     end
 
     # Tries to find a matching partial first, if there is none, we try to find a matching view
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_ce_template(name)
       prefixes = [] # So don't create extra [] garbage
 
@@ -24,6 +25,7 @@ module EE
         ce_lookup_context.find(name, prefixes, false)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def ce_lookup_context
       @ce_lookup_context ||= begin
