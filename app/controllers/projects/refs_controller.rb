@@ -36,14 +36,9 @@ class Projects::RefsController < Projects::ApplicationController
   end
 
   def logs_tree
-    @offset = if params[:offset].present?
-                params[:offset].to_i
-              else
-                0
-              end
-
+    @resolved_commits ||= {}
     @limit = 25
-
+    @offset = params[:offset].to_i
     @path = params[:path]
 
     contents = []
@@ -57,19 +52,17 @@ class Projects::RefsController < Projects::ApplicationController
         file = @path ? File.join(@path, content.name) : content.name
         last_commit = @repo.last_commit_for_path(@commit.id, file)
         commit_path = project_commit_path(@project, last_commit) if last_commit
+
         {
           file_name: content.name,
-          # TODO: deduplicate commits so we don't render the same one multiple times
-          commit: (Commit.new(last_commit, project) if last_commit),
+          commit: resolve_commit(last_commit),
           type: content.type,
           commit_path: commit_path
         }
       end
     end
 
-    # The commit titles must be passed through Banzai before being shown.
-    # Doing this here in bulk allows significant database work to be skipped.
-    prerender_commits!(@logs.map { |log| log[:commit] })
+    prerender_commits!
 
     offset = (@offset + @limit)
     if contents.size > offset
@@ -89,9 +82,21 @@ class Projects::RefsController < Projects::ApplicationController
 
   private
 
-  def prerender_commits!(commits)
+  # Ensure that if multiple tree entries share the same last commit, they share
+  # a ::Commit instance. This prevents us from rendering the same commit title
+  # multiple times
+  def resolve_commit(raw_commit)
+    return nil unless raw_commit.present?
+
+    @resolved_commits[raw_commit.id] ||= Commit.new(raw_commit, project)
+  end
+
+  # The commit titles must be passed through Banzai before being shown.
+  # Doing this here in bulk allows significant database work to be skipped.
+  def prerender_commits!
+    commits = @resolved_commits.values
     renderer = Banzai::ObjectRenderer.new(user: current_user, default_project: @project)
-    renderer.render(commits, :full_title) # modifies the commit objects inplace
+    renderer.render(commits, :full_title)
   end
 
   def validate_ref_id
