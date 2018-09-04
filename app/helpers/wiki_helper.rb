@@ -1,4 +1,6 @@
 module WikiHelper
+  include API::Helpers::RelatedResourcesHelpers
+
   # Produces a pure text breadcrumb for a given page.
   #
   # page_slug - The slug of a WikiPage object.
@@ -38,5 +40,9 @@ module WikiHelper
         error.message
       end
     end
+  end
+
+  def wiki_attachment_upload_url
+    expose_url(api_v4_projects_wikis_attachments_path(id: @project.id))
   end
 end
