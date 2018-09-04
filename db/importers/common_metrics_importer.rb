@@ -9,11 +9,11 @@ module Importers
       aws_elb: -3,
       nginx: -4,
       kubernetes: -5,
-  
+
       # custom groups
       business: 0,
       response: 1,
-      system: 2,
+      system: 2
     }
 
     scope :common, -> { where(common: true) }
@@ -38,7 +38,7 @@ module Importers
     def initialize(file = 'config/prometheus/common_metrics.yml')
       @content = YAML.load_file(file)
     end
-    
+
     def execute
       process_content do |id, attributes|
         find_or_build_metric!(id)
@@ -80,12 +80,12 @@ module Importers
         query: query['query_range'],
         unit: query['unit'])
 
-      blk.call(query['id'], attributes)
+      yield(query['id'], attributes)
     end
 
     def find_or_build_metric!(id)
       raise MissingQueryId unless id
-    
+
       PrometheusMetric.common.find_by(identifier: id) ||
         PrometheusMetric.new(common: true, identifier: id)
     end
