@@ -137,8 +137,8 @@ export default {
           <button
             v-tooltip
             v-if="!stagedList"
-            :title="__('Unstage all changes')"
-            :aria-label="__('Unstage all changes')"
+            :title="__('Discard all changes')"
+            :aria-label="__('Discard all changes')"
             :disabled="!filesLength"
             :class="{
               'disabled-content': !filesLength

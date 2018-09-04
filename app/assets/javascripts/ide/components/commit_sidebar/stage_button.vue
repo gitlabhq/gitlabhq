@@ -39,7 +39,7 @@ export default {
 <template>
   <div
     v-once
-    class="multi-file-discard-btn"
+    class="multi-file-discard-btn d-flex"
   >
     <button
       v-tooltip

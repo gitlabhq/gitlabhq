@@ -4,6 +4,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import flash from '~/flash';
 import * as types from './mutation_types';
 import FilesDecoratorWorker from './workers/files_decorator_worker';
+import { stageKeys } from '../constants';
 
 export const redirectToUrl = (_, url) => visitUrl(url);
 
@@ -122,14 +123,28 @@ export const scrollToTab = () => {
   });
 };
 
-export const stageAllChanges = ({ state, commit }) => {
+export const stageAllChanges = ({ state, commit, dispatch }) => {
+  const activeFile = state.openFiles[0];
+
   commit(types.SET_LAST_COMMIT_MSG, '');
 
   state.changedFiles.forEach(file => commit(types.STAGE_CHANGE, file.path));
+
+  dispatch('openPendingTab', {
+    file: state.stagedFiles.find(f => f.path === activeFile.path),
+    keyPrefix: stageKeys.staged,
+  });
 };
 
-export const unstageAllChanges = ({ state, commit }) => {
+export const unstageAllChanges = ({ state, commit, dispatch }) => {
+  const activeFile = state.openFiles[0];
+
   state.stagedFiles.forEach(file => commit(types.UNSTAGE_CHANGE, file.path));
+
+  dispatch('openPendingTab', {
+    file: state.changedFiles.find(f => f.path === activeFile.path),
+    keyPrefix: stageKeys.unstaged,
+  });
 };
 
 export const updateViewer = ({ commit }, viewer) => {
