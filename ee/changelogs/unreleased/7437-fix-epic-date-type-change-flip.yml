@@ -1,0 +1,5 @@
+---
+title: Handle fixed dates seperately from selected dates in Epics
+merge_request: 7227
+author:
+type: fixed
