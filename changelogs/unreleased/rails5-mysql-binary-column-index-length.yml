@@ -1,0 +1,5 @@
+---
+title: 'Rails 5: support schema t.index for mysql'
+merge_request: 21485
+author: Jasper Maes
+type: other

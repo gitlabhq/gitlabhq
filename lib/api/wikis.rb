@@ -1,6 +1,14 @@
 module API
   class Wikis < Grape::API
     helpers do
+      def commit_params(attrs)
+        {
+          file_name: attrs[:file][:filename],
+          file_content: File.read(attrs[:file][:tempfile]),
+          branch_name: attrs[:branch]
+        }
+      end
+
       params :wiki_page_params do
         requires :content, type: String, desc: 'Content of a wiki page'
         requires :title, type: String, desc: 'Title of a wiki page'
@@ -83,6 +91,29 @@ module API
 
         status 204
         WikiPages::DestroyService.new(user_project, current_user).execute(wiki_page)
+      end
+
+      desc 'Upload an attachment to the wiki repository' do
+        detail 'This feature was introduced in GitLab 11.3.'
+        success Entities::WikiAttachment
+      end
+      params do
+        requires :file, type: File, desc: 'The attachment file to be uploaded'
+        optional :branch, type: String, desc: 'The name of the branch'
+      end
+      post ":id/wikis/attachments", requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+        authorize! :create_wiki, user_project
+
+        result = ::Wikis::CreateAttachmentService.new(user_project,
+                                                      current_user,
+                                                      commit_params(declared_params(include_missing: false))).execute
+
+        if result[:status] == :success
+          status(201)
+          present OpenStruct.new(result[:result]), with: Entities::WikiAttachment
+        else
+          render_api_error!(result[:message], 400)
+        end
       end
     end
   end
