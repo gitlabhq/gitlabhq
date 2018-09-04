@@ -1,9 +1,6 @@
 class Projects::ApplicationController < ApplicationController
-<<<<<<< HEAD
   prepend EE::Projects::ApplicationController
-=======
   include CookiesHelper
->>>>>>> upstream/master
   include RoutableActions
   include ChecksCollaboration
 
