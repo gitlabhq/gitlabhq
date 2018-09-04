@@ -1348,7 +1348,15 @@ describe Ci::Build do
     end
 
     it 'contains options' do
-      expect(build.options).to eq(options)
+      expect(build.options).to eq(options.stringify_keys)
+    end
+
+    it 'allows to access with keys' do
+      expect(build.options[:image]).to eq('ruby:2.1')
+    end
+
+    it 'allows to access with strings' do
+      expect(build.options['image']).to eq('ruby:2.1')
     end
   end
 
@@ -2253,14 +2261,18 @@ describe Ci::Build do
       build.update_attribute(:yaml_variables, variables)
     end
 
-    context 'when serialized valu is a symbolized hash' do
+    context 'when serialized value is a symbolized hash' do
       let(:variables) do
         [{ key: :VARIABLE, value: 'my value 1' }]
       end
 
-      it 'keeps symbolizes keys and stringifies variables names' do
+      it 'keeps stringified keys and stringifies variables names' do
         expect(build.yaml_variables)
-          .to eq [{ key: 'VARIABLE', value: 'my value 1' }]
+          .to eq [{ 'key' => 'VARIABLE', 'value' => 'my value 1' }]
+      end
+
+      it 'allows to access using symbols' do
+        expect(build.yaml_variables.first[:key]).to eq('VARIABLE')
       end
     end
 
@@ -2269,9 +2281,13 @@ describe Ci::Build do
         [{ 'key' => :VARIABLE, 'value' => 'my value 2' }]
       end
 
-      it 'symblizes variables hash' do
+      it 'stringifies variables hash' do
         expect(build.yaml_variables)
-          .to eq [{ key: 'VARIABLE', value: 'my value 2' }]
+          .to eq [{ 'key' => 'VARIABLE', 'value' => 'my value 2' }]
+      end
+
+      it 'allows to access using symbols' do
+        expect(build.yaml_variables.first[:key]).to eq('VARIABLE')
       end
     end
   end
