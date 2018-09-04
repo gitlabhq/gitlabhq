@@ -205,6 +205,14 @@ module ProjectsHelper
       current_user.require_extra_setup_for_git_auth?
   end
 
+  def show_auto_devops_implicitly_enabled_banner?(project)
+    cookie_key = "hide_auto_devops_implicitly_enabled_banner_#{project.id}"
+
+    project.has_auto_devops_implicitly_enabled? &&
+      cookies[cookie_key.to_sym].blank? &&
+      (project.owner == current_user || project.team.maintainer?(current_user))
+  end
+
   def link_to_set_password
     if current_user.require_password_creation_for_git?
       link_to s_('SetPasswordToCloneLink|set a password'), edit_profile_password_path
