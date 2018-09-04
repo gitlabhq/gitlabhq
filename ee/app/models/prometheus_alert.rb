@@ -50,14 +50,14 @@ class PrometheusAlert < ActiveRecord::Base
   end
 
   def require_valid_environment_project!
-    return if project == environment.project
+    return if project == environment&.project
 
     errors.add(:environment, "invalid project")
   end
 
   def require_valid_metric_project!
-    return if prometheus_metric.default?
-    return if project == prometheus_metric.project
+    return if prometheus_metric&.common?
+    return if project == prometheus_metric&.project
 
     errors.add(:prometheus_metric, "invalid project")
   end
