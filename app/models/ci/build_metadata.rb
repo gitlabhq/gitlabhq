@@ -16,7 +16,6 @@ module Ci
     before_create :set_build_project
 
     validates :build, presence: true
-    validates :project, presence: true
 
     serialize :yaml_options # rubocop:disable Cop/ActiveRecordSerialize
     serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
