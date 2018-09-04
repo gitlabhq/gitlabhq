@@ -180,6 +180,7 @@ class ProjectPolicy < BasePolicy
     enable :fork_project
     enable :create_project_snippet
     enable :update_issue
+    enable :reopen_issue
     enable :admin_issue
     enable :admin_label
     enable :admin_list
