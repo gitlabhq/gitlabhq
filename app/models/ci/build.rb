@@ -562,7 +562,7 @@ module Ci
     def yaml_variables=(value)
       if Feature.enabled?(:ci_use_build_metadata_for_config)
         # save and remove from this model
-        ensure_metadata.yaml_variables = value
+        ensure_metadata.json_variables = value
         write_attribute(:yaml_variables, nil)
       else
         super
