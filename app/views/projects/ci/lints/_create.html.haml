@@ -13,20 +13,21 @@
       %tbody
         - @stages.each do |stage|
           - @builds.select { |build| build[:stage] == stage }.each do |build|
+            - job = @jobs[build[:name].to_sym]
             %tr
               %td #{stage.capitalize} Job - #{build[:name]}
               %td
-                %pre= build[:commands]
+                %pre= (job[:before_script].to_a + job[:script].to_a).join('\n')
 
                 %br
                 %b Tag list:
                 = build[:tag_list].to_a.join(", ")
                 %br
                 %b Only policy:
-                = @jobs[build[:name].to_sym][:only].to_a.join(", ")
+                = job[:only].to_a.join(", ")
                 %br
                 %b Except policy:
-                = @jobs[build[:name].to_sym][:except].to_a.join(", ")
+                = job[:except].to_a.join(", ")
                 %br
                 %b Environment:
                 = build[:environment]
