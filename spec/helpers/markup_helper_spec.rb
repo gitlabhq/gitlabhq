@@ -212,6 +212,17 @@ describe MarkupHelper do
       helper.render_wiki_content(@wiki)
     end
 
+    it 'uses Wiki pipeline for markdown files with RedCarpet if feature disabled' do
+      stub_feature_flags(commonmark_for_repositories: false)
+      allow(@wiki).to receive(:format).and_return(:markdown)
+
+      expect(helper).to receive(:markdown_unsafe).with('wiki content',
+        pipeline: :wiki, project: project, project_wiki: @wiki, page_slug: "nested/page",
+        issuable_state_filter_enabled: true, markdown_engine: :redcarpet)
+
+      helper.render_wiki_content(@wiki)
+    end
+
     it "uses Asciidoctor for asciidoc files" do
       allow(@wiki).to receive(:format).and_return(:asciidoc)
 
@@ -264,6 +275,12 @@ describe MarkupHelper do
     end
 
     it 'honors markdown_engine for RedCarpet' do
+      expect(helper.markup('foo.md', 'x^2', { markdown_engine: :redcarpet })).to include('x<sup>2</sup>')
+    end
+
+    it 'uses RedCarpet if feature disabled' do
+      stub_feature_flags(commonmark_for_repositories: false)
+
       expect(helper.markup('foo.md', 'x^2', { markdown_engine: :redcarpet })).to include('x<sup>2</sup>')
     end
   end

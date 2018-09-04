@@ -580,7 +580,12 @@ class Repository
   end
 
   def rendered_readme
-    MarkupHelper.markup_unsafe(readme.name, readme.data, project: project) if readme
+    return unless readme
+
+    context = { project: project }
+    context[:markdown_engine] = :redcarpet unless MarkupHelper.commonmark_for_repositories_enabled?
+
+    MarkupHelper.markup_unsafe(readme.name, readme.data, context)
   end
   cache_method :rendered_readme
 
