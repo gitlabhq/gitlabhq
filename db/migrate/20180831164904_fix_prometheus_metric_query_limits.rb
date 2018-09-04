@@ -7,6 +7,8 @@ require Rails.root.join('db/migrate/prometheus_metrics_limits_to_mysql')
 class FixPrometheusMetricQueryLimits < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
+  DOWNTIME = false
+
   def up
     PrometheusMetricsLimitsToMysql.new.up
   end
