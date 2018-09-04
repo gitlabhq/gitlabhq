@@ -2304,6 +2304,9 @@ msgstr ""
 msgid "Discard"
 msgstr ""
 
+msgid "Discard all changes"
+msgstr ""
+
 msgid "Discard changes"
 msgstr ""
 
@@ -6653,6 +6656,9 @@ msgid "You need permission."
 msgstr ""
 
 msgid "You will loose all changes you've made to this file. This action cannot be undone."
+msgstr ""
+
+msgid "You will loose all the unstaged changes you've made in this project. This action cannot be undone."
 msgstr ""
 
 msgid "You will not get any notifications via email"
