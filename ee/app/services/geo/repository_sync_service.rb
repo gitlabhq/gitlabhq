@@ -45,10 +45,8 @@ module Geo
       project.ensure_repository
     end
 
-    # Update the default branch querying the remote to determine its HEAD
     def update_root_ref
-      root_ref = repository.find_remote_root_ref(GEO_REMOTE_NAME)
-      project.change_head(root_ref) if root_ref.present? && root_ref != project.default_branch
+      project.update_root_ref(GEO_REMOTE_NAME)
     end
 
     def schedule_repack
