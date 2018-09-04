@@ -12,7 +12,7 @@ module Gitlab
         Gitlab::ImportExport::UploadsManager.new(
           project: @project,
           shared: @shared,
-          relative_export_path: 'avatar',
+          relative_export_path: 'avatar'
         ).save
       rescue => e
         @shared.error(e)
