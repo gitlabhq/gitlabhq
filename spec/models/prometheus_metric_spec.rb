@@ -88,8 +88,7 @@ describe PrometheusMetric do
         {
           query_range: subject.query,
           unit: subject.unit,
-          label: subject.legend,
-          series: nil
+          label: subject.legend
         }
       ]
 
