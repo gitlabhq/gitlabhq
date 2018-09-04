@@ -360,6 +360,8 @@ ActiveRecord::Schema.define(version: 20180831115821) do
     t.integer "timeout_source", default: 1, null: false
     t.text "yaml_options"
     t.text "yaml_variables"
+    t.jsonb "json_options"
+    t.jsonb "json_variables"
   end
 
   add_index "ci_builds_metadata", ["build_id"], name: "index_ci_builds_metadata_on_build_id", unique: true, using: :btree
