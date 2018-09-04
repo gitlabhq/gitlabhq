@@ -12,7 +12,7 @@ Since installations from source don't have Runit, Sidekiq can't be terminated an
 
 ## Select Version to Install
 
-Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install (e.g., `11-2-stable`).
+Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install (e.g., `11-3-stable`).
 You can select the branch in the version dropdown in the top left corner of GitLab (below the menu bar).
 
 If the highest number stable branch is unclear please check the [GitLab Blog](https://about.gitlab.com/blog/) for installation guide links by version.
@@ -300,9 +300,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 11-2-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 11-3-stable gitlab
 
-**Note:** You can change `11-2-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `11-3-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -483,7 +483,7 @@ For more information about configuring Gitaly see
 
     sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
     # Type 'yes' to create the database tables.
-    
+
     # or you can skip the question by adding force=yes
     sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production force=yes
 
