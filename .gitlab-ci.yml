@@ -67,8 +67,7 @@ stages:
 
 .use-pg: &use-pg
   services:
-    # We use 9.4 as min as this is the first version that supports jsonb
-    - postgres:9.4
+    - postgres:9.6
     - redis:alpine
 
 .use-mysql: &use-mysql

@@ -17,8 +17,8 @@ module Ci
 
     validates :build, presence: true
 
-    serialize :json_options, Serializers::HashSerializer # rubocop:disable Cop/ActiveRecordSerialize
-    serialize :json_variables, Serializers::HashSerializer # rubocop:disable Cop/ActiveRecordSerialize
+    serialize :json_options, Serializers::JSON # rubocop:disable Cop/ActiveRecordSerialize
+    serialize :json_variables, Serializers::JSON # rubocop:disable Cop/ActiveRecordSerialize
 
     chronic_duration_attr_reader :timeout_human_readable, :timeout
 

@@ -2,13 +2,15 @@
 
 module Serializers
   # This serializer exports data as JSON,
-  # but when loaded allows to access them with symbols
-  class HashSerializer
+  # but when loaded allows to access hashes with symbols
+  class JSON
     def self.dump(obj)
       ActiveSupport::JSON.encode(obj)
     end
 
     def self.load(json)
+      # this is required when `jsonb` is used by MySQL
+      # which currently defaults to `text` field
       json = ActiveSupport::JSON.decode(json) if json.is_a?(String)
 
       self.deep_indifferent_access(json)
