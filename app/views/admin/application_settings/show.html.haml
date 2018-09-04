@@ -337,53 +337,13 @@
     = render partial: 'repository_mirrors_form'
 
 -# EE-only
-- if Gitlab::Geo.license_allows?
-  %section.settings.as-geo.no-animate#js-geo-settings{ class: ('expanded' if expanded) }
-    .settings-header
-      %h4
-        = _('GitLab Geo')
-      %button.btn.js-settings-toggle{ type: 'button' }
-        = expanded ? 'Collapse' : 'Expand'
-      %p
-        = _('Geo allows you to replicate your GitLab instance to other geographical locations.')
-    .settings-content
-      = render 'geo'
+= render_if_exists 'admin/application_settings/geo', expanded: expanded
 
-- if License.feature_available?(:external_authorization_service)
-  %section.settings.as-external-auth.no-animate#js-external-auth-settings{ class: ('expanded' if expanded) }
-    .settings-header
-      %h4
-        = _('External authentication')
-      %button.btn.js-settings-toggle{ type: 'button' }
-        = expanded ? 'Collapse' : 'Expand'
-      %p
-      = _('External Classification Policy Authorization')
-    .settings-content
-      = render 'external_authorization_service_form'
+= render_if_exists 'admin/application_settings/external_authorization_service_form', expanded: expanded
 
-- if License.feature_available?(:elastic_search)
-  %section.settings.as-elasticsearch.no-animate#js-elasticsearch-settings{ class: ('expanded' if expanded) }
-    .settings-header
-      %h4
-        = _('Elasticsearch')
-      %button.btn.js-settings-toggle{ type: 'button' }
-        = expanded ? 'Collapse' : 'Expand'
-      %p
-        = _('Elasticsearch intergration. Elasticsearch AWS IAM.')
-    .settings-content
-      = render partial: 'elasticsearch_form'
+= render_if_exists 'admin/application_settings/elasticsearch_form', expanded: expanded
 
-- if Gitlab.com? || Rails.env.development?
-  %section.settings.as-slack.no-animate#js-slack-settings{ class: ('expanded' if expanded) }
-    .settings-header
-      %h4
-        = _('Slack application')
-      %button.btn.js-settings-toggle{ type: 'button' }
-        = expanded ? 'Collapse' : 'Expand'
-      %p
-        = _('Slack integration allows you to interact with GitLab via shash commands in a chat window.')
-    .settings-content
-      = render partial: 'slack'
+= render_if_exists 'admin/application_settings/slack', expanded: expanded
 
 = render_if_exists 'admin/application_settings/templates', expanded: expanded
 
