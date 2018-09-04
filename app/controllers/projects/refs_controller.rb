@@ -1,7 +1,6 @@
 class Projects::RefsController < Projects::ApplicationController
   include ExtractsPath
   include TreeHelper
-  include PathLocksHelper
 
   before_action :require_non_empty_project
   before_action :validate_ref_id
@@ -37,67 +36,40 @@ class Projects::RefsController < Projects::ApplicationController
   end
 
   def logs_tree
-    @resolved_commits ||= {}
-    @limit = 25
-    @offset = params[:offset].to_i
-    @path = params[:path]
+    summary = ::Gitlab::TreeSummary.new(
+      @commit,
+      @project,
+      path: @path,
+      offset: params[:offset],
+      limit: 25
+    )
 
-    contents = []
-    contents.push(*tree.trees)
-    contents.push(*tree.blobs)
-    contents.push(*tree.submodules)
-
-    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37433
-    @logs = Gitlab::GitalyClient.allow_n_plus_1_calls do
-      contents[@offset, @limit].to_a.map do |content|
-        file = @path ? File.join(@path, content.name) : content.name
-        last_commit = @repo.last_commit_for_path(@commit.id, file)
-        commit_path = project_commit_path(@project, last_commit) if last_commit
-        path_lock = @project.find_path_lock(file)
-
-        {
-          file_name: content.name,
-          commit: resolve_commit(last_commit),
-          type: content.type,
-          commit_path: commit_path,
-          lock_label: path_lock && text_label_for_lock(path_lock, file)
-        }
-      end
-    end
-
-    prerender_commits!
-
-    offset = (@offset + @limit)
-    if contents.size > offset
-      @more_log_url = logs_file_project_ref_path(@project, @ref, @path || '', offset: offset)
-    end
+    @logs, commits = summary.summarize
+    @more_log_url = more_url(summary.next_offset) if summary.more?
 
     respond_to do |format|
       format.html { render_404 }
       format.json do
-        response.headers["More-Logs-Url"] = @more_log_url
-
+        response.headers["More-Logs-Url"] = @more_log_url if summary.more?
         render json: @logs
       end
-      format.js
+
+      # The commit titles must be rendered and redacted before being shown.
+      # Doing it here allows us to apply performance optimizations that avoid
+      # N+1 problems
+      format.js do
+        prerender_commit_full_titles!(commits)
+      end
     end
   end
 
   private
 
-  # Ensure that if multiple tree entries share the same last commit, they share
-  # a ::Commit instance. This prevents us from rendering the same commit title
-  # multiple times
-  def resolve_commit(raw_commit)
-    return nil unless raw_commit.present?
-
-    @resolved_commits[raw_commit.id] ||= Commit.new(raw_commit, project)
+  def more_url(offset)
+    logs_file_project_ref_path(@project, @ref, @path, offset: offset)
   end
 
-  # The commit titles must be passed through Banzai before being shown.
-  # Doing this here in bulk allows significant database work to be skipped.
-  def prerender_commits!
-    commits = @resolved_commits.values
+  def prerender_commit_full_titles!(commits)
     renderer = Banzai::ObjectRenderer.new(user: current_user, default_project: @project)
     renderer.render(commits, :full_title)
   end
