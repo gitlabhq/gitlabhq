@@ -25,7 +25,8 @@ class PrometheusMetric < ActiveRecord::Base
   validates :y_label, presence: true
   validates :unit, presence: true
 
-  validate :require_project
+  validates :project, presence: true, unless: :common?
+  validates :project, absence: true, if: :common?
 
   scope :common, -> { where(common: true) }
 
@@ -85,16 +86,6 @@ class PrometheusMetric < ActiveRecord::Base
           { value: '5xx', color: 'red' }
         ]
       }
-    end
-  end
-
-  private
-
-  def require_project
-    if project
-      errors.add(:project, "cannot be set if this is common metric") if common?
-    else
-      errors.add(:project, "has to be set when this is project-specific metric") unless common?
     end
   end
 end
