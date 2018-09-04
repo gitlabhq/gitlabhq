@@ -1,0 +1,5 @@
+---
+title: "Fix breadcrumb link to merge requests on new merge request page"
+merge_request: 21502
+author: J.D. Bean
+type: fixed
