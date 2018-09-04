@@ -1,11 +1,7 @@
 - page_title 'Labels'
 - can_admin_label = can?(current_user, :admin_label, @group)
-<<<<<<< HEAD
-- issuables = ['issues', 'merge requests'] + (@group&.feature_available?(:epics) ? ['epics'] : [])
-=======
 - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
-- issuables = ['issues', 'merge requests']
->>>>>>> upstream/master
+- issuables = ['issues', 'merge requests'] + (@group&.feature_available?(:epics) ? ['epics'] : [])
 - search = params[:search]
 
 - if can_admin_label
@@ -30,12 +26,8 @@
     .labels-container.prepend-top-5
       - if @labels.any?
         .other-labels
-<<<<<<< HEAD
-          %h5 Labels
-=======
           - if can_admin_label
             %h5{ class: ('hide' if hide) } Labels
->>>>>>> upstream/master
           %ul.content-list.manage-labels-list.js-other-labels
             = render partial: 'shared/label', subject: @group, collection: @labels, as: :label, locals: { use_label_priority: false }
             = paginate @labels, theme: 'gitlab'
