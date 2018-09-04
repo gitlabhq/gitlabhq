@@ -13,7 +13,7 @@ module Ci
     belongs_to :build, class_name: 'Ci::Build'
     belongs_to :project
 
-    before_validation :set_build_project
+    before_create :set_build_project
 
     validates :build, presence: true
     validates :project, presence: true
@@ -42,7 +42,7 @@ module Ci
     private
 
     def set_build_project
-      self.project_id ||= self.build&.project_id
+      self.project_id ||= self.build.project_id
     end
   end
 end

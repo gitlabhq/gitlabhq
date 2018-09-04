@@ -207,7 +207,7 @@ module Ci
     end
 
     def ensure_metadata
-      metadata || build_metadata
+      metadata || build_metadata(project: project)
     end
 
     def archived?
@@ -560,7 +560,7 @@ module Ci
     end
 
     def yaml_variables=(value)
-      if Feature.enabled?(:ci_use_build_metadata_for_config) && false
+      if Feature.enabled?(:ci_use_build_metadata_for_config)
         # save and remove from this model
         ensure_metadata.yaml_variables = value
         write_attribute(:yaml_variables, nil)
