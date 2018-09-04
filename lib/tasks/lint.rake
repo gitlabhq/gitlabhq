@@ -34,7 +34,6 @@ unless Rails.env.production?
         config_lint
         lint:haml
         scss_lint
-        flay
         gettext:lint
         gettext:updated_check
         lint:static_verification
