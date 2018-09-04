@@ -143,9 +143,11 @@ export default {
     const store = new Store({
       startDateIsFixed: this.initialStartDateIsFixed,
       startDateFromMilestones: this.startDateFromMilestones,
+      startDateFixed: this.initialStartDateFixed,
       startDate: this.initialStartDate,
       dueDateIsFixed: this.initialDueDateIsFixed,
       dueDateFromMilestones: this.dueDateFromMilestones,
+      dueDateFixed: this.initialDueDateFixed,
       endDate: this.initialEndDate,
       subscribed: this.initialSubscribed,
       todoExists: this.initialTodoExists,
@@ -275,6 +277,12 @@ export default {
         .then(() => {
           this[savingBoolean] = false;
           this.store[`${type}Date`] = newDate;
+
+          if (isFixed) {
+            // Update fixed date in store
+            const fixedDate = dateType === DateTypes.start ? 'startDateFixed' : 'dueDateFixed';
+            this.store[fixedDate] = newDate;
+          }
         })
         .catch(() => {
           this[savingBoolean] = false;
@@ -288,7 +296,7 @@ export default {
       if (!typeChangeOnEdit) {
         this.saveDate(
           DateTypes.start,
-          dateTypeIsFixed ? this.store.startDate : this.store.startDateFromMilestones,
+          dateTypeIsFixed ? this.store.startDateFixed : this.store.startDateFromMilestones,
           dateTypeIsFixed,
         );
       }
@@ -301,7 +309,7 @@ export default {
       if (!typeChangeOnEdit) {
         this.saveDate(
           DateTypes.end,
-          dateTypeIsFixed ? this.store.endDate : this.store.dueDateFromMilestones,
+          dateTypeIsFixed ? this.store.dueDateFixed : this.store.dueDateFromMilestones,
           dateTypeIsFixed,
         );
       }
@@ -437,6 +445,7 @@ export default {
         :editable="editable"
         :selected-date-is-fixed="store.startDateIsFixed"
         :selected-date="store.startDateTime"
+        :date-fixed="store.startDateTimeFixed"
         :date-from-milestones="store.startDateTimeFromMilestones"
         :date-from-milestones-tooltip="getDateFromMilestonesTooltip('start')"
         :show-toggle-sidebar="!isUserSignedIn"
@@ -456,6 +465,7 @@ export default {
         :editable="editable"
         :selected-date-is-fixed="store.dueDateIsFixed"
         :selected-date="store.endDateTime"
+        :date-fixed="store.dueDateTimeFixed"
         :date-from-milestones="store.dueDateTimeFromMilestones"
         :date-from-milestones-tooltip="getDateFromMilestonesTooltip('due')"
         :date-picker-label="__('Fixed finish date')"

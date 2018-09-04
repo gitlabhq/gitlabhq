@@ -52,6 +52,18 @@ describe('SidebarParticipants', () => {
       });
     });
 
+    describe('dateFixedWords', () => {
+      it('returns full date string in words based on `dateFixed` prop value', done => {
+        vm.dateFixed = new Date(2018, 0, 1);
+        Vue.nextTick()
+          .then(() => {
+            expect(vm.dateFixedWords).toBe('Jan 1, 2018');
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+    });
+
     describe('dateFromMilestonesWords', () => {
       it('returns full date string in words when `dateFromMilestones` is defined', done => {
         vm.dateFromMilestones = new Date(2018, 0, 1);

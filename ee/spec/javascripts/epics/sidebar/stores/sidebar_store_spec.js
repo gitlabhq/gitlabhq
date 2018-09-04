@@ -37,6 +37,24 @@ describe('Sidebar Store', () => {
     });
   });
 
+  describe('startDateTimeFixed', () => {
+    it('should return null when there is no startDateFixed', () => {
+      const store = new SidebarStore({});
+      expect(store.startDateTimeFixed).toEqual(null);
+    });
+
+    it('should return date', () => {
+      const store = new SidebarStore({
+        startDateFixed: dateString,
+      });
+      const date = store.startDateTimeFixed;
+
+      expect(date.getDate()).toEqual(20);
+      expect(date.getMonth()).toEqual(0);
+      expect(date.getFullYear()).toEqual(2017);
+    });
+  });
+
   describe('endDateTime', () => {
     it('should return null when there is no endDate', () => {
       const store = new SidebarStore({});
@@ -48,6 +66,24 @@ describe('Sidebar Store', () => {
         endDate: dateString,
       });
       const date = store.endDateTime;
+
+      expect(date.getDate()).toEqual(20);
+      expect(date.getMonth()).toEqual(0);
+      expect(date.getFullYear()).toEqual(2017);
+    });
+  });
+
+  describe('dueDateTimeFixed', () => {
+    it('should return null when there is no dueDateFixed', () => {
+      const store = new SidebarStore({});
+      expect(store.dueDateTimeFixed).toEqual(null);
+    });
+
+    it('should return date', () => {
+      const store = new SidebarStore({
+        dueDateFixed: dateString,
+      });
+      const date = store.dueDateTimeFixed;
 
       expect(date.getDate()).toEqual(20);
       expect(date.getMonth()).toEqual(0);

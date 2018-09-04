@@ -81,9 +81,13 @@ describe('epicSidebar', () => {
   });
 
   it('should render both sidebar-date-picker', () => {
+    const startDate = '2017-01-01';
+    const endDate = '2018-01-01';
     vm = mountComponent(EpicSidebar, Object.assign({}, defaultPropsData, {
-      initialStartDate: '2017-01-01',
-      initialEndDate: '2018-01-01',
+      initialStartDate: startDate,
+      initialStartDateFixed: startDate,
+      initialEndDate: endDate,
+      initialDueDateFixed: endDate,
     }));
 
     const startDatePicker = vm.$el.querySelector('.block.start-date');
@@ -219,7 +223,7 @@ describe('epicSidebar', () => {
         .catch(done.fail);
     });
 
-    it('should change start date type', (done) => {
+    it('should change start date type as from milestones', (done) => {
       spyOn(component.service, 'updateStartDate').and.callThrough();
       const dateValue = '2017-01-01';
       component.saveDate('start', dateValue, false);
@@ -234,7 +238,23 @@ describe('epicSidebar', () => {
         .catch(done.fail);
     });
 
-    it('should change end date type', (done) => {
+    it('should change start date type as fixed', (done) => {
+      spyOn(component.service, 'updateStartDate').and.callThrough();
+      const dateValue = '2017-04-01';
+      component.saveDate('start', dateValue, true);
+      // Using setTimeout instead of Vue.nextTick
+      // as otherwise store updates are not reflected correctly
+      setTimeout(() => {
+        expect(component.service.updateStartDate).toHaveBeenCalledWith({
+          dateValue,
+          isFixed: true,
+        });
+        expect(component.store.startDateFixed).toBe(dateValue);
+        done();
+      }, 0);
+    });
+
+    it('should change end date type as from milestones', (done) => {
       spyOn(component.service, 'updateEndDate').and.callThrough();
       const dateValue = '2017-01-01';
       component.saveDate('end', dateValue, false);
@@ -247,6 +267,22 @@ describe('epicSidebar', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+
+    it('should change end date type as fixed', (done) => {
+      spyOn(component.service, 'updateEndDate').and.callThrough();
+      const dateValue = '2017-04-01';
+      component.saveDate('end', dateValue, true);
+      // Using setTimeout instead of Vue.nextTick
+      // as otherwise store updates are not reflected correctly
+      setTimeout(() => {
+        expect(component.service.updateEndDate).toHaveBeenCalledWith({
+          dateValue,
+          isFixed: true,
+        });
+        expect(component.store.dueDateFixed).toBe(dateValue);
+        done();
+      }, 0);
     });
   });
 

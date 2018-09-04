@@ -69,6 +69,11 @@ export default {
       required: false,
       default: null,
     },
+    dateFixed: {
+      type: Date,
+      required: false,
+      default: null,
+    },
     dateFromMilestonesTooltip: {
       type: String,
       required: false,
@@ -97,6 +102,9 @@ export default {
     },
     selectedDateWords() {
       return dateInWords(this.selectedDate, true);
+    },
+    dateFixedWords() {
+      return dateInWords(this.dateFixed, true);
     },
     dateFromMilestonesWords() {
       return this.dateFromMilestones ? dateInWords(this.dateFromMilestones, true) : __('None');
@@ -207,7 +215,7 @@ export default {
         >{{ __('Fixed:') }}</span>
         <date-picker
           v-if="editing"
-          :selected-date="selectedDate"
+          :selected-date="dateFixed"
           :label="datePickerLabel"
           @newDateSelected="newDateSelected"
           @hidePicker="stopEditing"
@@ -216,8 +224,8 @@ export default {
           v-else
           class="d-flex value-content"
         >
-          <template v-if="selectedDate">
-            <span>{{ selectedDateWords }}</span>
+          <template v-if="dateFixed">
+            <span>{{ dateFixedWords }}</span>
             <icon
               v-popover="dateInvalidPopoverOptions"
               v-if="isDateInvalid && selectedDateIsFixed"
