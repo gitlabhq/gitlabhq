@@ -7,7 +7,9 @@ module Serializers
     end
 
     def self.load(json)
-      self.deep_indifferent_access(ActiveSupport::JSON.decode(json))
+      json = ActiveSupport::JSON.decode(json) if json.is_a?(String)
+
+      self.deep_indifferent_access(json)
     end
 
     def self.deep_indifferent_access(data)
