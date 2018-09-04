@@ -11,7 +11,7 @@ class Groups::LabelsController < Groups::ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @labels = @group.labels.page(params[:page])
+        @labels = @available_labels.page(params[:page])
       end
       format.json do
         render json: LabelSerializer.new.represent_appearance(@available_labels)
@@ -113,7 +113,7 @@ class Groups::LabelsController < Groups::ApplicationController
         group_id: @group.id,
         only_group_labels: params[:only_group_labels],
         include_ancestor_groups: params[:include_ancestor_groups],
-        include_descendant_groups: params[:include_descendant_groups]
-      ).execute
+        include_descendant_groups: params[:include_descendant_groups],
+        search: params[:search]).execute
   end
 end
