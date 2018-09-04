@@ -9,6 +9,8 @@ class NewMergeRequestWorker
 
     EventCreateService.new.open_mr(issuable, user)
     NotificationService.new.new_merge_request(issuable, user)
+
+    issuable.diffs.write_cache
     issuable.create_cross_references!(user)
   end
 
