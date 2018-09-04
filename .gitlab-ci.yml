@@ -67,10 +67,8 @@ stages:
 
 .use-pg: &use-pg
   services:
-    # As of Jan 2018, we don't have a strong reason to upgrade to 9.6 for CI yet,
-    # so using the least common denominator ensures backwards compatibility
-    # (as many users are still using 9.2).
-    - postgres:9.2
+    # We use 9.4 as min as this is the first version that supports jsonb
+    - postgres:9.4
     - redis:alpine
 
 .use-mysql: &use-mysql
