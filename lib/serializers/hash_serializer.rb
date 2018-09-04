@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Serializers
   # This serializer exports data as JSON,
   # but when loaded allows to access them with symbols
