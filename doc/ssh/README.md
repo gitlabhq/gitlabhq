@@ -166,6 +166,17 @@ Public SSH keys need to be unique, as they will bind to your account.
 Your SSH key is the only identifier you'll have when pushing code via SSH.
 That's why it needs to uniquely map to a single user.
 
+## Per-repository SSH keys
+
+If you want to use different keys depending on the repository you are working
+on, you can issue the following command while inside your repository:
+
+```sh
+git config core.sshCommand "ssh -o IdentitiesOnly=yes -i ~/.ssh/private-key-filename-for-this-repository -F /dev/null"
+```
+
+This will not use the SSH Agent and requires at least Git 2.10.
+
 ## Deploy keys
 
 ### Per-repository deploy keys
