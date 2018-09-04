@@ -1,0 +1,5 @@
+---
+title: Set issuable_sort, diff_view, and perf_bar_enabled cookies to secure when possible
+merge_request: 21442
+author:
+type: security
