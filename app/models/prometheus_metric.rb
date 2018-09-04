@@ -55,7 +55,7 @@ class PrometheusMetric < ActiveRecord::Base
   end
 
   def required_metrics
-    (REQUIRED_METRICS[group.to_sym] || []).map(&:to_s)
+    REQUIRED_METRICS[group.to_sym].to_a.map(&:to_s)
   end
 
   def to_query_metric
