@@ -129,6 +129,7 @@ excluded_attributes:
     - :when
     - :artifacts_file
     - :artifacts_metadata
+    - :commands
   push_event_payload:
     - :event_id
   project_badges:

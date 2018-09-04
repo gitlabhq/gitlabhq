@@ -144,6 +144,7 @@ module Gitlab
         if BUILD_MODELS.include?(@relation_name)
           @relation_hash.delete('trace') # old export files have trace
           @relation_hash.delete('token')
+          @relation_hash.delete('commands')
 
           imported_object
         elsif @relation_name == :merge_requests
