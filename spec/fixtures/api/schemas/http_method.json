@@ -1,0 +1,5 @@
+{
+  "type": "string",
+  "description": "HTTP methods that the API can specify to send.",
+  "enum": [ "post", "get", "put", "patch" ]
+}
