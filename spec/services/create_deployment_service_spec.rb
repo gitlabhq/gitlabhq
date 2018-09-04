@@ -9,7 +9,7 @@ describe CreateDeploymentService do
       ref: 'master',
       tag: false,
       environment: 'production',
-      options: { environment: options })
+      options: { script: ["bash"], environment: options })
   end
 
   let(:project) { job.project }
@@ -163,6 +163,10 @@ describe CreateDeploymentService do
         create(:ci_build,
                yaml_variables: [{ key: :APP_HOST, value: 'host' }],
                options: { environment: { url: 'http://review/$APP_HOST' } })
+      end
+
+      before do
+        job.reload
       end
 
       it { is_expected.to eq('http://review/host') }
