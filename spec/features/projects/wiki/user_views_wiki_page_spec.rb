@@ -93,7 +93,7 @@ describe 'User views a wiki page' do
         allow(wiki_file).to receive(:mime_type).and_return('image/jpeg')
         allow_any_instance_of(ProjectWiki).to receive(:find_file).with('image.jpg', nil).and_return(wiki_file)
 
-        expect(page).to have_xpath('//img[@data-src="image.jpg"]')
+        expect(page).to have_xpath("//img[@data-src='#{project.wiki.wiki_base_path}/image.jpg']")
         expect(page).to have_link('image', href: "#{project.wiki.wiki_base_path}/image.jpg")
 
         click_on('image')

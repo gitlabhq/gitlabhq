@@ -7,8 +7,8 @@ module Files
     def initialize(*args)
       super
 
-      @author_email = params[:author_email]
-      @author_name = params[:author_name]
+      @author_email = params[:author_email] || current_user&.email
+      @author_name = params[:author_name] || current_user&.name
       @commit_message = params[:commit_message]
       @last_commit_sha = params[:last_commit_sha]
 
