@@ -12,7 +12,7 @@ The [epic issues API](epic_issues.md) allows you to interact with issues associa
 
 # Milestone dates integration
 
-> [Introduced][ee-6448] in GitLab 11.2.
+> [Introduced][ee-6448] in GitLab 11.3.
 
 Since start date and due date can be dynamically sourced from related issue milestones, when user has edit permission, additional fields will be shown. These include two boolean fields `start_date_is_fixed` and `due_date_is_fixed`, and four date fields `start_date_fixed`, `start_date_from_milestones`, `due_date_fixed` and `due_date_from_milestones`.
 
@@ -181,7 +181,7 @@ Example response:
 
 Updates an epic
 
-Note that after 11.2, `start_date` and `end_date` should no longer be updated directly, as they are now composite fields. User can configure the `_is_fixed` and `_fixed` fields instead.
+Note that after [11.3][ee-6448], `start_date` and `end_date` should no longer be updated directly, as they now represent composite values. Users can configure via `_is_fixed` and `_fixed` fields instead.
 
 ```
 PUT /groups/:id/epics/:epic_iid
@@ -194,10 +194,10 @@ PUT /groups/:id/epics/:epic_iid
 | `title`             | string           | no         | The title of an epic |
 | `description`       | string           | no         | The description of an epic  |
 | `labels`            | string           | no         | The comma separated list of labels |
-| `start_date_is_fixed` | boolean        | no         | Whether start date should be sourced from `start_date_fixed` |
-| `start_date_fixed`  | string           | no         | The fixed start date of an epic  |
-| `due_date_is_fixed` | boolean          | no         | Whether due date should be sourced from `due_date_fixed` |
-| `due_date_fixed`    | string           | no         | The fixed due date of an epic |
+| `start_date_is_fixed` | boolean        | no         | Whether start date should be sourced from `start_date_fixed` (since 11.3) |
+| `start_date_fixed`  | string           | no         | The fixed start date of an epic (since 11.3) |
+| `due_date_is_fixed` | boolean          | no         | Whether due date should be sourced from `due_date_fixed` (since 11.3) |
+| `due_date_fixed`    | string           | no         | The fixed due date of an epic (since 11.3) |
 
 ```bash
 curl --header PUT "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/epics/5?title=New%20Title

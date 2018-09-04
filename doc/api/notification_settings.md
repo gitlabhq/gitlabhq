@@ -86,7 +86,7 @@ curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab
 | `merge_merge_request` | boolean | no | Enable/disable this notification |
 | `failed_pipeline` | boolean | no | Enable/disable this notification |
 | `success_pipeline` | boolean | no | Enable/disable this notification |
-| `new_epic` | boolean | no | Enable/disable this notification ([Introduced][ee-6626] in 11.2) |
+| `new_epic` | boolean | no | Enable/disable this notification ([Introduced][ee-6626] in 11.3) |
 
 Example response:
 
@@ -155,7 +155,7 @@ curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab
 | `merge_merge_request` | boolean | no | Enable/disable this notification |
 | `failed_pipeline` | boolean | no | Enable/disable this notification |
 | `success_pipeline` | boolean | no | Enable/disable this notification |
-| `new_epic` | boolean | no | Enable/disable this notification ([Introduced][ee-6626] in 11.2) |
+| `new_epic` | boolean | no | Enable/disable this notification ([Introduced][ee-6626] in 11.3) |
 
 Example responses:
 
