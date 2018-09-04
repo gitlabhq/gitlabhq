@@ -1017,6 +1017,9 @@ msgstr ""
 msgid "Browse files"
 msgstr ""
 
+msgid "Business metrics (Custom)"
+msgstr ""
+
 msgid "ByAuthor|by"
 msgstr ""
 
@@ -4856,6 +4859,21 @@ msgstr ""
 msgid "Resolve discussion"
 msgstr ""
 
+msgid "Response metrics (AWS ELB)"
+msgstr ""
+
+msgid "Response metrics (Custom)"
+msgstr ""
+
+msgid "Response metrics (HA Proxy)"
+msgstr ""
+
+msgid "Response metrics (NGINX Ingress)"
+msgstr ""
+
+msgid "Response metrics (NGINX)"
+msgstr ""
+
 msgid "Resume"
 msgstr ""
 
@@ -5425,6 +5443,12 @@ msgid "System Hooks"
 msgstr ""
 
 msgid "System Info"
+msgstr ""
+
+msgid "System metrics (Custom)"
+msgstr ""
+
+msgid "System metrics (Kubernetes)"
 msgstr ""
 
 msgid "Tag (%{tag_count})"
