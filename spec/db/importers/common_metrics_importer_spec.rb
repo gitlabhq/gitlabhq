@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 require Rails.root.join("db", "importers", "common_metrics_importer.rb")
 

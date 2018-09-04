@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :prometheus_metric, class: PrometheusMetric do
     title 'title'

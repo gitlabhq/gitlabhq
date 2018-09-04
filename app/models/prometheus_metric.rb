@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PrometheusMetric < ActiveRecord::Base
   belongs_to :project, validate: true, inverse_of: :prometheus_metrics
 
