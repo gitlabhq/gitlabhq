@@ -1,41 +1,53 @@
-= form_for @application_setting, url: admin_application_settings_path(anchor: 'js-external-auth-settings'), html: { class: 'fieldset-form' } do |f|
-  = form_errors(@application_setting)
+- return unless License.feature_available?(:external_authorization_service)
 
-  %fieldset
-    .form-group
-      .form-check
-        = f.check_box :external_authorization_service_enabled, class: 'form-check-input'
-        = f.label :external_authorization_service_enabled, class: 'form-check-label' do
-          = _('Enable classification control using an external service')
-      %span.form-text.text-muted
-        = external_authorization_description
-        = link_to icon('question-circle'), help_page_path('user/admin_area/settings/external_authorization')
-    .form-group
-      = f.label :external_authorization_service_url, _('Service URL'), class: 'label-bold'
-      = f.text_field :external_authorization_service_url, class: 'form-control'
-      %span.form-text.text-muted
-        = external_authorization_url_help_text
-    .form-group
-      = f.label :external_authorization_service_timeout, _('External authorization request timeout'), class: 'label-bold'
-      = f.number_field :external_authorization_service_timeout, class: 'form-control', min: 0.001, max: 10, step: 0.001
-      %span.form-text.text-muted
-        = external_authorization_timeout_help_text
-      = f.label :external_auth_client_cert, _('Client authentication certificate'), class: 'label-bold'
-      = f.text_area :external_auth_client_cert, class: 'form-control'
-      %span.form-text.text-muted
-        = external_authorization_client_certificate_help_text
-    .form-group
-      = f.label :external_auth_client_key, _('Client authentication key'), class: 'label-bold'
-      = f.text_area :external_auth_client_key, class: 'form-control'
-      %span.form-text.text-muted
-        = external_authorization_client_key_help_text
-    .form-group
-      = f.label :external_auth_client_key_pass, _('Client authentication key password'), class: 'label-bold'
-      = f.password_field :external_auth_client_key_pass, class: 'form-control'
-      %span.form-text.text-muted
-        = external_authorization_client_pass_help_text
-    .form-group
-      = f.label :external_authorization_service_default_label, _('Default classification label'), class: 'label-bold'
-      = f.text_field :external_authorization_service_default_label, class: 'form-control'
+%section.settings.as-external-auth.no-animate#js-external-auth-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('External authentication')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+    = _('External Classification Policy Authorization')
+  .settings-content
 
-  = f.submit 'Save changes', class: "btn btn-success"
+    = form_for @application_setting, url: admin_application_settings_path(anchor: 'js-external-auth-settings'), html: { class: 'fieldset-form' } do |f|
+      = form_errors(@application_setting)
+
+      %fieldset
+        .form-group
+          .form-check
+            = f.check_box :external_authorization_service_enabled, class: 'form-check-input'
+            = f.label :external_authorization_service_enabled, class: 'form-check-label' do
+              = _('Enable classification control using an external service')
+          %span.form-text.text-muted
+            = external_authorization_description
+            = link_to icon('question-circle'), help_page_path('user/admin_area/settings/external_authorization')
+        .form-group
+          = f.label :external_authorization_service_url, _('Service URL'), class: 'label-bold'
+          = f.text_field :external_authorization_service_url, class: 'form-control'
+          %span.form-text.text-muted
+            = external_authorization_url_help_text
+        .form-group
+          = f.label :external_authorization_service_timeout, _('External authorization request timeout'), class: 'label-bold'
+          = f.number_field :external_authorization_service_timeout, class: 'form-control', min: 0.001, max: 10, step: 0.001
+          %span.form-text.text-muted
+            = external_authorization_timeout_help_text
+          = f.label :external_auth_client_cert, _('Client authentication certificate'), class: 'label-bold'
+          = f.text_area :external_auth_client_cert, class: 'form-control'
+          %span.form-text.text-muted
+            = external_authorization_client_certificate_help_text
+        .form-group
+          = f.label :external_auth_client_key, _('Client authentication key'), class: 'label-bold'
+          = f.text_area :external_auth_client_key, class: 'form-control'
+          %span.form-text.text-muted
+            = external_authorization_client_key_help_text
+        .form-group
+          = f.label :external_auth_client_key_pass, _('Client authentication key password'), class: 'label-bold'
+          = f.password_field :external_auth_client_key_pass, class: 'form-control'
+          %span.form-text.text-muted
+            = external_authorization_client_pass_help_text
+        .form-group
+          = f.label :external_authorization_service_default_label, _('Default classification label'), class: 'label-bold'
+          = f.text_field :external_authorization_service_default_label, class: 'form-control'
+
+      = f.submit 'Save changes', class: "btn btn-success"

@@ -1,58 +1,70 @@
-= form_for @application_setting, url: admin_application_settings_path(anchor: 'js-elasticsearch-settings'), html: { class: 'fieldset-form' } do |f|
-  = form_errors(@application_setting)
+- return unless License.feature_available?(:elastic_search)
 
-  %fieldset
-    .sub-section
-      .form-group
-        .form-check
-          = f.check_box :elasticsearch_indexing, class: 'form-check-input'
-          = f.label :elasticsearch_indexing, class: 'form-check-label' do
-            Elasticsearch indexing
+%section.settings.as-elasticsearch.no-animate#js-elasticsearch-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Elasticsearch')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Elasticsearch intergration. Elasticsearch AWS IAM.')
+  .settings-content
 
-      - missing = !Gitlab::Elastic::Indexer.experimental_indexer_present?
-      .form-group
-        .form-check
-          = f.check_box :elasticsearch_experimental_indexer, disabled: missing, class: 'form-check-input'
-          = f.label :elasticsearch_experimental_indexer, class: 'form-check-label' do
-            Use the <a href="https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer">new repository indexer (beta)</a>
-            - if missing
-              (not installed)
+    = form_for @application_setting, url: admin_application_settings_path(anchor: 'js-elasticsearch-settings'), html: { class: 'fieldset-form' } do |f|
+      = form_errors(@application_setting)
 
-      .form-group
-        .form-check
-          = f.check_box :elasticsearch_search, class: 'form-check-input'
-          = f.label :elasticsearch_search, class: 'form-check-label' do
-            Search with Elasticsearch enabled
+      %fieldset
+        .sub-section
+          .form-group
+            .form-check
+              = f.check_box :elasticsearch_indexing, class: 'form-check-input'
+              = f.label :elasticsearch_indexing, class: 'form-check-label' do
+                Elasticsearch indexing
 
-      .form-group
-        = f.label :elasticsearch_url, 'URL', class: 'label-bold'
-        = f.text_field :elasticsearch_url, value: @application_setting.elasticsearch_url.join(', '), class: 'form-control', placeholder: 'http://localhost:9200'
-        .form-text.text-muted
-          The url to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "http://localhost:9200, http://localhost:9201").
+          - missing = !Gitlab::Elastic::Indexer.experimental_indexer_present?
+          .form-group
+            .form-check
+              = f.check_box :elasticsearch_experimental_indexer, disabled: missing, class: 'form-check-input'
+              = f.label :elasticsearch_experimental_indexer, class: 'form-check-label' do
+                Use the <a href="https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer">new repository indexer (beta)</a>
+                - if missing
+                  (not installed)
 
-    .sub-section
-      %h4 Elasticsearch AWS IAM credentials
-      .form-group
-        .form-check
-          = f.check_box :elasticsearch_aws, class: 'form-check-input'
-          = f.label :elasticsearch_aws, class: 'form-check-label' do
-            Using AWS hosted Elasticsearch with IAM credentials
-      .form-group
-        = f.label :elasticsearch_aws_region, 'AWS region', class: 'label-bold'
-        = f.text_field :elasticsearch_aws_region, value: @application_setting.elasticsearch_aws_region, class: 'form-control'
-        .form-text.text-muted
-          Region that elasticsearch is configured
+          .form-group
+            .form-check
+              = f.check_box :elasticsearch_search, class: 'form-check-input'
+              = f.label :elasticsearch_search, class: 'form-check-label' do
+                Search with Elasticsearch enabled
 
-      .form-group
-        = f.label :elasticsearch_aws_access_key, 'AWS Access Key', class: 'label-bold'
-        = f.text_field :elasticsearch_aws_access_key, value: @application_setting.elasticsearch_aws_access_key, class: 'form-control'
-        .form-text.text-muted
-          AWS Access Key.  Only required if not using role instance credentials
+          .form-group
+            = f.label :elasticsearch_url, 'URL', class: 'label-bold'
+            = f.text_field :elasticsearch_url, value: @application_setting.elasticsearch_url.join(', '), class: 'form-control', placeholder: 'http://localhost:9200'
+            .form-text.text-muted
+              The url to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "http://localhost:9200, http://localhost:9201").
 
-      .form-group
-        = f.label :elasticsearch_aws_secret_access_key, 'AWS Secret Access Key', class: 'label-bold'
-        = f.password_field :elasticsearch_aws_secret_access_key, value: @application_setting.elasticsearch_aws_secret_access_key, class: 'form-control'
-        .form-text.text-muted
-          AWS Secret Access Key.  Only required if not using role instance credentials
+        .sub-section
+          %h4 Elasticsearch AWS IAM credentials
+          .form-group
+            .form-check
+              = f.check_box :elasticsearch_aws, class: 'form-check-input'
+              = f.label :elasticsearch_aws, class: 'form-check-label' do
+                Using AWS hosted Elasticsearch with IAM credentials
+          .form-group
+            = f.label :elasticsearch_aws_region, 'AWS region', class: 'label-bold'
+            = f.text_field :elasticsearch_aws_region, value: @application_setting.elasticsearch_aws_region, class: 'form-control'
+            .form-text.text-muted
+              Region that elasticsearch is configured
 
-  = f.submit 'Save changes', class: "btn btn-success"
+          .form-group
+            = f.label :elasticsearch_aws_access_key, 'AWS Access Key', class: 'label-bold'
+            = f.text_field :elasticsearch_aws_access_key, value: @application_setting.elasticsearch_aws_access_key, class: 'form-control'
+            .form-text.text-muted
+              AWS Access Key.  Only required if not using role instance credentials
+
+          .form-group
+            = f.label :elasticsearch_aws_secret_access_key, 'AWS Secret Access Key', class: 'label-bold'
+            = f.password_field :elasticsearch_aws_secret_access_key, value: @application_setting.elasticsearch_aws_secret_access_key, class: 'form-control'
+            .form-text.text-muted
+              AWS Secret Access Key.  Only required if not using role instance credentials
+
+      = f.submit 'Save changes', class: "btn btn-success"

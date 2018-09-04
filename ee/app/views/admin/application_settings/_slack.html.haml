@@ -1,22 +1,35 @@
-= form_for @application_setting, url: admin_application_settings_path(anchor: 'js-slack-settings'), html: { class: 'fieldset-form' } do |f|
-  = form_errors(@application_setting)
+- return unless Gitlab.com? || Rails.env.development?
 
-  %fieldset
-    .form-group
-      .form-check
-        = f.check_box :slack_app_enabled, class: 'form-check-input'
-        = f.label :slack_app_enabled, class: 'form-check-label' do
-          Enable Slack application
-        .form-text.text-muted
-          This option is only available on GitLab.com
-    .form-group
-      = f.label :slack_app_id, 'APP_ID', class: 'label-bold'
-      = f.text_field :slack_app_id, class: 'form-control'
-    .form-group
-      = f.label :slack_app_secret, 'APP_SECRET', class: 'label-bold'
-      = f.text_field :slack_app_secret, class: 'form-control'
-    .form-group
-      = f.label :slack_app_verification_token, 'Verification token', class: 'label-bold'
-      = f.text_field :slack_app_verification_token, class: 'form-control'
+%section.settings.as-slack.no-animate#js-slack-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Slack application')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Slack integration allows you to interact with GitLab via shash commands in a chat window.')
+  .settings-content
 
-  = f.submit 'Save changes', class: "btn btn-success"
+    = form_for @application_setting, url: admin_application_settings_path(anchor: 'js-slack-settings'), html: { class: 'fieldset-form' } do |f|
+      = form_errors(@application_setting)
+
+      %fieldset
+        .form-group
+          .form-check
+            = f.check_box :slack_app_enabled, class: 'form-check-input'
+            = f.label :slack_app_enabled, class: 'form-check-label' do
+              Enable Slack application
+            .form-text.text-muted
+              This option is only available on GitLab.com
+        .form-group
+          = f.label :slack_app_id, 'APP_ID', class: 'label-bold'
+          = f.text_field :slack_app_id, class: 'form-control'
+        .form-group
+          = f.label :slack_app_secret, 'APP_SECRET', class: 'label-bold'
+          = f.text_field :slack_app_secret, class: 'form-control'
+        .form-group
+          = f.label :slack_app_verification_token, 'Verification token', class: 'label-bold'
+          = f.text_field :slack_app_verification_token, class: 'form-control'
+
+      = f.submit 'Save changes', class: "btn btn-success"
+
