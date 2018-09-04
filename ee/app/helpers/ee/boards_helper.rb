@@ -27,6 +27,7 @@ module EE
         labels: board.labels.to_json(only: [:id, :title, :color, :text_color] ),
         board_weight: board.weight,
         focus_mode_available: parent.feature_available?(:issue_board_focus_mode),
+        weight_feature_available: parent.feature_available?(:issue_weights).to_s,
         show_promotion: show_feature_promotion
       }
 

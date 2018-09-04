@@ -232,5 +232,20 @@ describe 'Issue Boards', :js do
         end
       end
     end
+
+    context 'unlicensed' do
+      before do
+        stub_licensed_features(issue_weights: false)
+        visit project_board_path(project, board)
+        wait_for_requests
+      end
+
+      it 'hides weight' do
+        click_card(card1)
+        wait_for_requests
+
+        expect(page).not_to have_selector('.js-weight-weight-label')
+      end
+    end
   end
 end
