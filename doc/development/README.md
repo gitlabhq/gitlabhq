@@ -49,6 +49,7 @@ description: 'Learn how to contribute to GitLab.'
 - [Working with the GitHub importer](github_importer.md)
 - [Elasticsearch integration docs](elasticsearch.md)
 - [Working with Merge Request diffs](diffs.md)
+- [Prometheus metrics](prometheus_metrics.md)
 
 ## Performance guides
 
