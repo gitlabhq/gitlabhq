@@ -102,6 +102,18 @@
 
   = render_if_exists 'projects/service_desk_settings'
 
+  %section.settings.no-animate{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4
+        = s_('ProjectSettings|Badges')
+      %button.btn.js-settings-toggle{ type: 'button' }
+        = expanded ? 'Collapse' : 'Expand'
+      %p
+        = s_('ProjectSettings|Customize your project badges.')
+        = link_to s_('ProjectSettings|Learn more about badges.'), help_page_path('user/project/badges')
+    .settings-content
+      = render 'shared/badges/badge_settings'
+
   = render 'export', project: @project
 
   %section.qa-advanced-settings.settings.advanced-settings.no-animate#js-project-advanced-settings{ class: ('expanded' if expanded) }

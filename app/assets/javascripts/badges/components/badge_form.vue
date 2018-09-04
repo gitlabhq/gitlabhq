@@ -23,6 +23,11 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      wasValidated: false,
+    };
+  },
   computed: {
     ...mapState([
       'badgeInAddForm',
@@ -38,16 +43,6 @@ export default {
       }
 
       return this.badgeInAddForm;
-    },
-    canSubmit() {
-      return (
-        this.badge !== null &&
-        this.badge.imageUrl &&
-        this.badge.imageUrl.trim() !== '' &&
-        this.badge.linkUrl &&
-        this.badge.linkUrl.trim() !== '' &&
-        !this.isSaving
-      );
     },
     helpText() {
       const placeholders = ['project_path', 'project_id', 'default_branch', 'commit_sha']
@@ -93,11 +88,18 @@ export default {
         });
       },
     },
-    submitButtonLabel() {
-      if (this.isEditing) {
-        return s__('Badges|Save changes');
-      }
-      return s__('Badges|Add badge');
+    badgeImageUrlExample() {
+      const exampleUrl =
+        'https://example.gitlab.com/%{project_path}/badges/%{default_branch}/badge.svg';
+      return sprintf(s__('Badges|e.g. %{exampleUrl}'), {
+        exampleUrl,
+      });
+    },
+    badgeLinkUrlExample() {
+      const exampleUrl = 'https://example.gitlab.com/%{project_path}';
+      return sprintf(s__('Badges|e.g. %{exampleUrl}'), {
+        exampleUrl,
+      });
     },
   },
   methods: {
@@ -109,7 +111,9 @@ export default {
       this.stopEditing();
     },
     onSubmit() {
-      if (!this.canSubmit) {
+      const form = this.$el;
+      if (!form.checkValidity()) {
+        this.wasValidated = true;
         return Promise.resolve();
       }
 
@@ -117,6 +121,7 @@ export default {
         return this.saveBadge()
           .then(() => {
             createFlash(s__('Badges|The badge was saved.'), 'notice');
+            this.wasValidated = false;
           })
           .catch(error => {
             createFlash(
@@ -129,6 +134,7 @@ export default {
       return this.addBadge()
         .then(() => {
           createFlash(s__('Badges|A new badge was added.'), 'notice');
+          this.wasValidated = false;
         })
         .catch(error => {
           createFlash(
@@ -138,47 +144,58 @@ export default {
         });
     },
   },
-  badgeImageUrlPlaceholder:
-    'https://example.gitlab.com/%{project_path}/badges/%{default_branch}/<badge>.svg',
-  badgeLinkUrlPlaceholder: 'https://example.gitlab.com/%{project_path}',
 };
 </script>
 
 <template>
   <form
-    class="prepend-top-default append-bottom-default"
+    :class="{ 'was-validated': wasValidated }"
+    class="prepend-top-default append-bottom-default needs-validation"
+    novalidate
     @submit.prevent.stop="onSubmit"
   >
     <div class="form-group">
-      <label for="badge-link-url">{{ s__('Badges|Link') }}</label>
+      <label
+        for="badge-link-url"
+        class="label-bold"
+      >{{ s__('Badges|Link') }}</label>
+      <p v-html="helpText"></p>
       <input
         id="badge-link-url"
         v-model="linkUrl"
-        :placeholder="$options.badgeLinkUrlPlaceholder"
-        type="text"
+        type="URL"
         class="form-control"
+        required
         @input="debouncedPreview"
       />
-      <span
-        class="form-text text-muted"
-        v-html="helpText"
-      ></span>
+      <div class="invalid-feedback">
+        {{ s__('Badges|Please fill in a valid URL') }}
+      </div>
+      <span class="form-text text-muted">
+        {{ badgeLinkUrlExample }}
+      </span>
     </div>
 
     <div class="form-group">
-      <label for="badge-image-url">{{ s__('Badges|Badge image URL') }}</label>
+      <label
+        for="badge-image-url"
+        class="label-bold"
+      >{{ s__('Badges|Badge image URL') }}</label>
+      <p v-html="helpText"></p>
       <input
         id="badge-image-url"
         v-model="imageUrl"
-        :placeholder="$options.badgeImageUrlPlaceholder"
-        type="text"
+        type="URL"
         class="form-control"
+        required
         @input="debouncedPreview"
       />
-      <span
-        class="form-text text-muted"
-        v-html="helpText"
-      ></span>
+      <div class="invalid-feedback">
+        {{ s__('Badges|Please fill in a valid URL') }}
+      </div>
+      <span class="form-text text-muted">
+        {{ badgeImageUrlExample }}
+      </span>
     </div>
 
     <div class="form-group">
@@ -200,20 +217,32 @@ export default {
       >{{ s__('Badges|No image to preview') }}</p>
     </div>
 
-    <div class="row-content-block">
+    <div
+      v-if="isEditing"
+      class="row-content-block"
+    >
       <loading-button
-        :disabled="!canSubmit"
         :loading="isSaving"
-        :label="submitButtonLabel"
+        :label="s__('Badges|Save changes')"
         type="submit"
         container-class="btn btn-success"
       />
       <button
-        v-if="isEditing"
         class="btn btn-cancel"
         type="button"
         @click="onCancel"
       >{{ __('Cancel') }}</button>
+    </div>
+    <div
+      v-else
+      class="form-group"
+    >
+      <loading-button
+        :loading="isSaving"
+        :label="s__('Badges|Add badge')"
+        type="submit"
+        container-class="btn btn-success"
+      />
     </div>
   </form>
 </template>

@@ -313,11 +313,6 @@
                 %span
                   = _('Members')
             - if can_edit
-              = nav_link(controller: :badges) do
-                = link_to project_settings_badges_path(@project), title: _('Badges') do
-                  %span
-                    = _('Badges')
-            - if can_edit
               = nav_link(controller: [:integrations, :services, :hooks, :hook_logs]) do
                 = link_to project_settings_integrations_path(@project), title: _('Integrations') do
                   %span

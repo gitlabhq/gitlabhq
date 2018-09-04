@@ -122,7 +122,7 @@ describe 'Merge request > User sees diff', :js do
           }
         CONTENT
 
-        file_name = 'xss_file.txt'
+        file_name = 'xss_file.rs'
 
         create_file('master', file_name, file_content)
         merge_request = create(:merge_request, source_project: project)
@@ -133,6 +133,7 @@ describe 'Merge request > User sees diff', :js do
         visit diffs_project_merge_request_path(project, merge_request)
 
         expect(page).to have_text("function foo<input> {")
+        expect(page).to have_css(".line[lang='rust'] .k")
       end
     end
   end

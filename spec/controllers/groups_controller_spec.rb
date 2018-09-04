@@ -57,6 +57,16 @@ describe GroupsController do
     end
   end
 
+  describe 'GET edit' do
+    it 'sets the badge API endpoint' do
+      sign_in(owner)
+
+      get :edit, id: group.to_param
+
+      expect(assigns(:badge_api_endpoint)).not_to be_nil
+    end
+  end
+
   describe 'GET #new' do
     context 'when creating subgroups', :nested_groups do
       [true, false].each do |can_create_group_status|

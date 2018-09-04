@@ -94,6 +94,7 @@ module QA
         autoload :LDAP, 'qa/scenario/test/integration/ldap'
         autoload :Kubernetes, 'qa/scenario/test/integration/kubernetes'
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
+        autoload :ObjectStorage, 'qa/scenario/test/integration/object_storage'
       end
 
       module Sanity
