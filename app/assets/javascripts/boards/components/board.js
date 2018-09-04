@@ -12,10 +12,7 @@ import './board_delete';
 
 const Store = gl.issueBoards.BoardsStore;
 
-window.gl = window.gl || {};
-window.gl.issueBoards = window.gl.issueBoards || {};
-
-gl.issueBoards.Board = Vue.extend({
+const boardComponent = {
   components: {
     boardList,
     'board-delete': gl.issueBoards.BoardDelete,
@@ -115,4 +112,7 @@ gl.issueBoards.Board = Vue.extend({
     },
   },
   template: '#js-board-template',
-});
+};
+
+gl.issueBoards.Board = Vue.extend(boardComponent);
+export default boardComponent;

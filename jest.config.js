@@ -23,6 +23,11 @@ const config = {
   setupTestFrameworkScriptFile: '<rootDir>/spec/frontend/test_setup.js',
   modulePathIgnorePatterns: ['<rootDir>/.yarn-cache/'],
   reporters,
+  moduleFileExtensions: ['js', 'json', 'vue'],
+  transform: {
+    '^.+\\.js$': 'babel-jest',
+    '^.+\\.vue$': 'vue-jest',
+  },
 };
 
 const selfCheckPath = '<rootDir>/spec/frontend/self_check';
