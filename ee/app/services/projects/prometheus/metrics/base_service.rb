@@ -2,7 +2,7 @@ module Projects
   module Prometheus
     module Metrics
       class BaseService
-        include StrongMemoize
+        include Gitlab::Utils::StrongMemoize
 
         def initialize(metric, params = {})
           @metric = metric
