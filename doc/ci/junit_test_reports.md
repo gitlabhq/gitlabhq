@@ -139,3 +139,11 @@ java:
         - target/surefire-reports/TEST-*.xml
         - target/failsafe-reports/TEST-*.xml
 ```
+
+## Limitations
+
+Currently, the following tools might not work because their XML formats are unsupported in GitLab.
+
+|Case|Tool|Issue|
+|---|---|---|
+|`<testcase>` does not have `classname` attribute|ESlint, sass-lint|https://gitlab.com/gitlab-org/gitlab-ce/issues/50964|
