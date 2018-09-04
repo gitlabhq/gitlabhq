@@ -124,6 +124,21 @@ describe 'issue boards', :js do
       expect(badge(from)).to have_content('3')
       expect(badge(to)).to have_content('2')
     end
+
+    context 'unlicensed' do
+      before do
+        stub_licensed_features(issue_weights: false)
+        visit_board_page
+      end
+
+      it 'hides weight' do
+        backlog = board.lists.first
+        badge(backlog).hover
+
+        tooltip = find("##{badge(backlog)['aria-describedby']}")
+        expect(tooltip.text).to eq('2 issues')
+      end
+    end
   end
 
   def badge(list)
