@@ -1,17 +1,25 @@
 # Code owners
 
-> [Introduced][introduced-mr] in [Gitlab Starter][ee] 11.3
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6916)
+in [Gitlab Starter](https://about.gitlab.com/pricing/) 11.3.
 
 You can use a `CODEOWNERS` file to specify users that are responsible
-for a certain part of the code in a repository.
+for certain files in a repository.
 
-The codeowners file can be added to the root of the repository, inside
-the `.gitlab/` or the `docs/` folder.
+You can choose and add the `CODEOWNERS` file in three places:
 
-The `CODEOWNERS` is scoped to a branch. This means that with the
-introduction of new files, the developer adding the new code can
-specify themselves as code owner. Before the new code gets merged to
-master.
+- to the root directory of the repository
+- inside the `.gitlab/` directory
+- inside the `docs/` directory
+
+The `CODEOWNERS` file is scoped to a branch, which means that with the
+introduction of new files, the person adding the new content can
+specify themselves as a code owner, all before the new changes
+get merged to the default branch.
+
+When a file matches multiple entries in the `CODEOWNERS` file,
+the users from all entries are displayed on the blob page of
+the given file.
 
 ## The syntax of a code owners file
 
@@ -53,7 +61,7 @@ CODEOWNERS @multiple @owners	@tab-separated
 # users. Everything else will be ignored. For example this will
 # specify `@legal` and a user with email `janedoe@gitlab.com` as the
 # owner for the LICENSE file
-LICENSE @legal this does not match janedoe@gitlab.com
+LICENSE @legal this_does_not_match janedoe@gitlab.com
 
 # Ending a path in a `/` will specify the code owners for every file
 # nested in that directory, on any level
@@ -72,10 +80,6 @@ lib/ @lib-owner
 # repository
 /config/ @config-owner
 
-
 # If the path contains spaces, these need to be escaped like this:
 path\ with\ spaces/ @space-owner
 ```
-
-[introduced-mr]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6916
-[ee]: https://about.gitlab.com/pricing/

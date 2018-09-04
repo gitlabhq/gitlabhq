@@ -87,8 +87,7 @@ website with GitLab Pages
 your code blocks, overriding GitLab's default choice of language
 - [Badges](badges.md): Badges for the project overview
 - [Maven packages](maven_packages.md): Your private Maven repository in GitLab
-- [Code owners](code_owners.md): Specify code owners for certain files
-  **[STARTER]**
+- [Code owners](code_owners.md): Specify code owners for certain files **[STARTER]**
 
 ### Project's integrations
 
