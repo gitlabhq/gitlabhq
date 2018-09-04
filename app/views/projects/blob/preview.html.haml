@@ -2,8 +2,7 @@
   .diff-content
     - if markup?(@blob.name)
       .file-content.wiki
-        - context = params[:legacy_render] ? { markdown_engine: :redcarpet} : {}
-        = markup(@blob.name, @content, context)
+        = markup(@blob.name, @content, legacy_render_context(params))
     - else
       .file-content.code.js-syntax-highlight
         - unless @diff_lines.empty?

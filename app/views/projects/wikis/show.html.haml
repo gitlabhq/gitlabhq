@@ -26,7 +26,6 @@
 
 .prepend-top-default.append-bottom-default
   .wiki
-    - context = params[:legacy_render] ? { markdown_engine: :redcarpet} : {}
-    = render_wiki_content(@page, context)
+    = render_wiki_content(@page, legacy_render_context(params))
 
 = render 'sidebar'
