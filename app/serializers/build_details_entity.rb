@@ -9,6 +9,28 @@ class BuildDetailsEntity < JobEntity
 
   expose :metadata, using: BuildMetadataEntity
 
+  expose :artifact, if: -> (*) { can?(current_user, :read_build, build) } do
+    expose :download_path, if: -> (*) { build.artifacts? } do |build|
+      download_project_job_artifacts_path(project, build)
+    end
+
+    expose :browse_path, if: -> (*) { build.browsable_artifacts? } do |build|
+      browse_project_job_artifacts_path(project, build)
+    end
+
+    expose :keep_path, if: -> (*) { build.has_expiring_artifacts? && can?(current_user, :update_build, build) } do |build|
+      keep_project_job_artifacts_path(project, build)
+    end
+
+    expose :expire_at, if: -> (*) { build.artifacts_expire_at.present? } do |build|
+      build.artifacts_expire_at
+    end
+
+    expose :expired, if: -> (*) { build.artifacts_expire_at.present? } do |build|
+      build.artifacts_expired?
+    end
+  end
+
   expose :erased_by, if: -> (*) { build.erased? }, using: UserEntity
   expose :erase_path, if: -> (*) { build.erasable? && can?(current_user, :erase_build, build) } do |build|
     erase_project_job_path(project, build)
