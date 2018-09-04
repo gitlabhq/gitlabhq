@@ -358,8 +358,6 @@ ActiveRecord::Schema.define(version: 20180831115821) do
     t.integer "project_id", null: false
     t.integer "timeout"
     t.integer "timeout_source", default: 1, null: false
-    t.text "yaml_options"
-    t.text "yaml_variables"
     t.jsonb "json_options"
     t.jsonb "json_variables"
   end
