@@ -59,6 +59,12 @@ class BuildDetailsEntity < JobEntity
     raw_project_job_path(project, build)
   end
 
+  expose :trigger, if: -> (*) { build.trigger_request } do
+    expose :trigger_short_token, as: :short_token
+
+    expose :trigger_variables, as: :variables, using: TriggerVariableEntity
+  end
+
   private
 
   def build_failed_issue_options
