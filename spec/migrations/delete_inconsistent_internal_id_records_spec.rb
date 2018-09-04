@@ -8,8 +8,7 @@ describe DeleteInconsistentInternalIdRecords, :migration do
   let!(:project2) { create(:project) }
   let!(:project3) { create(:project) }
 
-  let(:usage) { InternalId.usages[scope.to_s.tableize] }
-  let(:internal_id_query) { ->(project) { InternalId.where(usage: usage, project: project) } }
+  let(:internal_id_query) { ->(project) { InternalId.where(usage: InternalId.usages[scope.to_s.tableize], project: project) } }
 
   let(:create_models) do
     3.times { create(scope, project: project1) }
@@ -66,6 +65,13 @@ describe DeleteInconsistentInternalIdRecords, :migration do
 
   context 'for deployments' do
     let(:scope) { :deployment }
+
+    let(:create_models) do
+      create_list(:deployment, 3, project: project1, deployable: nil)
+      create_list(:deployment, 3, project: project2, deployable: nil)
+      create_list(:deployment, 3, project: project3, deployable: nil)
+    end
+  
     it_behaves_like 'deleting inconsistent internal_id records'
   end
 
@@ -75,8 +81,14 @@ describe DeleteInconsistentInternalIdRecords, :migration do
   end
 
   context 'for ci_pipelines' do
-    let(:scope) { :ci_empty_pipeline }
-    let(:usage) { InternalId.usages[:ci_pipelines] }
+    let(:scope) { :ci_pipeline }
+
+    let(:create_models) do
+      create_list(:ci_empty_pipeline, 3, project: project1)
+      create_list(:ci_empty_pipeline, 3, project: project2)
+      create_list(:ci_empty_pipeline, 3, project: project3)
+    end
+
     it_behaves_like 'deleting inconsistent internal_id records'
   end
 
