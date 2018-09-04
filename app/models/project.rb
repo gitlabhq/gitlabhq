@@ -29,6 +29,7 @@ class Project < ActiveRecord::Base
   include BatchDestroyDependentAssociations
   include FeatureGate
   include OptionallySearch
+  include IgnorableColumn
   extend Gitlab::Cache::RequestCache
 
   extend Gitlab::ConfigHelper
@@ -50,6 +51,10 @@ class Project < ActiveRecord::Base
 
   # Valids ports to import from
   VALID_IMPORT_PORTS = [22, 80, 443].freeze
+
+  ignore_column :import_status
+  ignore_column :import_jid
+  ignore_column :import_error
 
   cache_markdown_field :description, pipeline: :description
 
@@ -446,7 +451,7 @@ class Project < ActiveRecord::Base
   scope :excluding_project, ->(project) { where.not(id: project) }
 
   scope :joins_import_state, -> { joins("LEFT JOIN project_mirror_data import_state ON import_state.project_id = projects.id") }
-  scope :import_started, -> { joins_import_state.where("import_state.status = 'started' OR projects.import_status = 'started'") }
+  scope :import_started, -> { joins_import_state.where(import_state: { status: :started }) }
 
   class << self
     # Searches for a list of projects based on the query given in `query`.
@@ -717,98 +722,51 @@ class Project < ActiveRecord::Base
     import_started? || import_scheduled?
   end
 
-  def import_state_args
-    {
-      status: self[:import_status],
-      jid: self[:import_jid],
-      last_error: self[:import_error]
-    }
-  end
-
-  def ensure_import_state(force: false)
-    return if !force && (self[:import_status] == 'none' || self[:import_status].nil?)
-    return unless import_state.nil?
-
-    if persisted?
-      create_import_state(import_state_args)
-
-      update_column(:import_status, 'none')
-    else
-      build_import_state(import_state_args)
-
-      self[:import_status] = 'none'
-    end
-  end
-
   def human_import_status_name
-    ensure_import_state
-
     import_state.human_status_name
   end
 
   def import_schedule
-    ensure_import_state(force: true)
-
     import_state.schedule
   end
 
   def force_import_start
-    ensure_import_state(force: true)
-
     import_state.force_start
   end
 
   def import_start
-    ensure_import_state(force: true)
-
     import_state.start
   end
 
   def import_fail
-    ensure_import_state(force: true)
-
     import_state.fail_op
   end
 
   def import_finish
-    ensure_import_state(force: true)
-
     import_state.finish
   end
 
   def import_jid=(new_jid)
-    ensure_import_state(force: true)
-
     import_state.jid = new_jid
   end
 
   def import_jid
-    ensure_import_state
-
     import_state&.jid
   end
 
   def import_error=(new_error)
-    ensure_import_state(force: true)
-
     import_state.last_error = new_error
   end
 
   def import_error
-    ensure_import_state
-
     import_state&.last_error
   end
 
   def import_status=(new_status)
-    ensure_import_state(force: true)
-
     import_state.status = new_status
   end
 
   def import_status
-    ensure_import_state
-
     import_state&.status || 'none'
   end
 

@@ -31,7 +31,7 @@ module Gitlab
       # next_stage - The name of the next stage to start when all jobs have been
       #              completed.
       def perform(project_id, waiters, next_stage)
-        return unless (project = find_project(project_id))
+        return unless (import_state = find_import_state(project_id))
 
         new_waiters = wait_for_jobs(waiters)
 
@@ -41,7 +41,7 @@ module Gitlab
           # the pressure on Redis. We _only_ do this once all jobs are done so
           # we don't get stuck forever if one or more jobs failed to notify the
           # JobWaiter.
-          project.refresh_import_jid_expiration
+          import_state.refresh_jid_expiration
 
           STAGES.fetch(next_stage.to_sym).perform_async(project_id)
         else
@@ -63,11 +63,8 @@ module Gitlab
         end
       end
 
-      def find_project(id)
-        # TODO: Only select the JID
-        # This is due to the fact that the JID could be present in either the project record or
-        # its associated import_state record
-        Project.import_started.find_by(id: id)
+      def find_import_state(project_id)
+        ProjectImportState.select(:jid).with_status(:started).find_by(project_id: project_id)
       end
     end
   end

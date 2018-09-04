@@ -45,15 +45,15 @@ class StuckImportJobsWorker
   end
 
   def enqueued_projects
-    Project.joins_import_state.where("(import_state.status = 'scheduled' OR import_state.status = 'started') OR (projects.import_status = 'scheduled' OR projects.import_status = 'started')")
+    Project.joins_import_state.where(import_state: { status: [:scheduled, :started] })
   end
 
   def enqueued_projects_with_jid
-    enqueued_projects.where.not("import_state.jid IS NULL AND projects.import_jid IS NULL")
+    enqueued_projects.where.not(import_state: { jid: nil })
   end
 
   def enqueued_projects_without_jid
-    enqueued_projects.where("import_state.jid IS NULL AND projects.import_jid IS NULL")
+    enqueued_projects.where(import_state: { jid: nil })
   end
 
   def error_message

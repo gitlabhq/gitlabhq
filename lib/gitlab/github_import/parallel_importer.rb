@@ -41,7 +41,6 @@ module Gitlab
         Gitlab::SidekiqStatus
           .set(jid, StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION)
 
-        project.ensure_import_state
         project.import_state&.update_column(:jid, jid)
 
         Stage::ImportRepositoryWorker

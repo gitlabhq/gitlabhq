@@ -69,19 +69,27 @@ FactoryBot.define do
     end
 
     trait :import_scheduled do
-      import_status :scheduled
+      after(:create) do |project|
+        project.create_import_state(status: :scheduled)
+      end
     end
 
     trait :import_started do
-      import_status :started
+      after(:create) do |project|
+        project.create_import_state(status: :started)
+      end
     end
 
     trait :import_finished do
-      import_status :finished
+      after(:create) do |project|
+        project.create_import_state(status: :finished)
+      end
     end
 
     trait :import_failed do
-      import_status :failed
+      after(:create) do |project|
+        project.create_import_state(status: :failed)
+      end
     end
 
     trait :archived do
