@@ -2777,7 +2777,7 @@ msgstr "Editar identidade para %{user_name}"
 msgid "Elasticsearch"
 msgstr "Elasticsearch"
 
-msgid "Elasticsearch intergration. Elasticsearch AWS IAM."
+msgid "Elasticsearch integration. Elasticsearch AWS IAM."
 msgstr "Integração com Elasticsearch. Elasticsearch AWS IAM."
 
 msgid "Email"
