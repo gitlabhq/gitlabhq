@@ -542,13 +542,13 @@ module Ci
     end
 
     def options=(value)
-      if Feature.enabled?(:ci_use_build_metadata_for_config) && false
+      if Feature.enabled?(:ci_use_build_metadata_for_config)
         # save and remove from this model
         ensure_metadata.json_options = value
         write_attribute(:options, nil)
       else
         # save and remove from metadata model
-        write_attribute(:options, nil)
+        write_attribute(:options, value)
         metadata.json_options = nil if metadata
       end
     end
@@ -564,7 +564,7 @@ module Ci
         write_attribute(:yaml_variables, nil)
       else
         # save and remove from metadata model
-        write_attribute(:yaml_variables, nil)
+        write_attribute(:yaml_variables, value)
         metadata.json_variables = nil if metadata
       end
     end

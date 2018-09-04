@@ -8,7 +8,7 @@ if Gitlab::Database.mysql?
     module ConnectionAdapters
       class AbstractMysqlAdapter
         NATIVE_DATABASE_TYPES.merge!(
-          jsonb: { name: "text", limit: 256*1024 },
+          jsonb: { name: "text", limit: 262144 }
         )
       end
     end
