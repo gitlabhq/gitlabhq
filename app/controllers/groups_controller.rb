@@ -1,4 +1,5 @@
 class GroupsController < Groups::ApplicationController
+  include API::Helpers::RelatedResourcesHelpers
   include IssuesAction
   include MergeRequestsAction
   include ParamsBackwardCompatibility
@@ -78,6 +79,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def edit
+    @badge_api_endpoint = expose_url(api_v4_groups_badges_path(id: @group.id))
   end
 
   def projects

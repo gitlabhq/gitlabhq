@@ -957,6 +957,9 @@ msgstr ""
 msgid "Badges|No image to preview"
 msgstr ""
 
+msgid "Badges|Please fill in a valid URL"
+msgstr ""
+
 msgid "Badges|Project Badge"
 msgstr ""
 
@@ -988,6 +991,9 @@ msgid "Badges|You are going to delete this badge. Deleted badges <strong>cannot<
 msgstr ""
 
 msgid "Badges|Your badges"
+msgstr ""
+
+msgid "Badges|e.g. %{exampleUrl}"
 msgstr ""
 
 msgid "Begin with the selected commit"
@@ -3721,6 +3727,15 @@ msgstr ""
 msgid "GroupRoadmap|Until %{dateWord}"
 msgstr ""
 
+msgid "GroupSettings|Badges"
+msgstr ""
+
+msgid "GroupSettings|Customize your group badges."
+msgstr ""
+
+msgid "GroupSettings|Learn more about badges."
+msgstr ""
+
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
 msgstr ""
 
@@ -5689,13 +5704,22 @@ msgstr ""
 msgid "ProjectPage|Project ID: %{project_id}"
 msgstr ""
 
+msgid "ProjectSettings|Badges"
+msgstr ""
+
 msgid "ProjectSettings|Contact an admin to change this setting."
+msgstr ""
+
+msgid "ProjectSettings|Customize your project badges."
 msgstr ""
 
 msgid "ProjectSettings|Failed to protect the tag"
 msgstr ""
 
 msgid "ProjectSettings|Failed to update tag!"
+msgstr ""
+
+msgid "ProjectSettings|Learn more about badges."
 msgstr ""
 
 msgid "ProjectSettings|Only signed commits can be pushed to this repository."
