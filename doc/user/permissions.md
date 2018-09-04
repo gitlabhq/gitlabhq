@@ -45,7 +45,8 @@ The following table depicts the various user permission levels in a project.
 | Download project                      | [^1]    | ✓          | ✓           | ✓        | ✓      |
 | Assign issues                         |         | ✓          | ✓           | ✓        | ✓      |
 | Assign merge requests                 |         |            | ✓           | ✓        | ✓      |
-| Label issues and merge requests       |         | ✓          | ✓           | ✓        | ✓      |
+| Label issues                          |         | ✓          | ✓           | ✓        | ✓      |
+| Label merge requests                  |         |            | ✓           | ✓        | ✓      |
 | Create code snippets                  |         | ✓          | ✓           | ✓        | ✓      |
 | Manage issue tracker                  |         | ✓          | ✓           | ✓        | ✓      |
 | Manage labels                         |         | ✓          | ✓           | ✓        | ✓      |

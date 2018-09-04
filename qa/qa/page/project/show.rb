@@ -2,8 +2,11 @@ module QA
   module Page
     module Project
       class Show < Page::Base
+<<<<<<< HEAD
         prepend QA::EE::Page::Project::Show
 
+=======
+>>>>>>> upstream/master
         include Page::Component::ClonePanel
 
         view 'app/views/projects/_last_push.html.haml' do
