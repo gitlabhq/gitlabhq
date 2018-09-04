@@ -201,11 +201,7 @@ stages:
     - '[[ -f $FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${FLAKY_RSPEC_REPORT_PATH}'
     - '[[ -f $NEW_FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${NEW_FLAKY_RSPEC_REPORT_PATH}'
     - scripts/gitaly-test-spawn
-<<<<<<< HEAD
     - knapsack rspec "--color --format documentation --format RspecJunitFormatter --out junit_rspec.xml --tag ~geo"
-=======
-    - knapsack rspec "--color --format documentation --format RspecJunitFormatter --out junit_rspec.xml"
->>>>>>> upstream/master
   artifacts:
     expire_in: 31d
     when: always
