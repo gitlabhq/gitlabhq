@@ -1,5 +1,6 @@
 class Projects::ApplicationController < ApplicationController
   prepend EE::Projects::ApplicationController
+  include CookiesHelper
   include RoutableActions
   include ChecksCollaboration
 
@@ -75,7 +76,7 @@ class Projects::ApplicationController < ApplicationController
   end
 
   def apply_diff_view_cookie!
-    cookies.permanent[:diff_view] = params.delete(:view) if params[:view].present?
+    set_secure_cookie(:diff_view, params.delete(:view), permanent: true) if params[:view].present?
   end
 
   def require_pages_enabled!
