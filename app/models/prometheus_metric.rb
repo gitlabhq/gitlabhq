@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PrometheusMetric < ActiveRecord::Base
   prepend EE::PrometheusMetric
 

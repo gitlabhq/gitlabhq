@@ -1,4 +1,6 @@
-class AddIndexOnDefaultPrometheusMetrics < ActiveRecord::Migration
+# frozen_string_literal: true
+
+class AddIndexOnCommonForPrometheusMetrics < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
