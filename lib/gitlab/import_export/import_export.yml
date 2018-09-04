@@ -64,6 +64,7 @@ project_tree:
     - :create_access_levels
   - :project_feature
   - :custom_attributes
+  - :prometheus_metrics
   - :project_badges
   - :ci_cd_settings
 
@@ -108,6 +109,9 @@ excluded_attributes:
     - :remote_mirror_available_overridden
     - :description_html
     - :repository_languages
+  prometheus_metrics:
+    - :common
+    - :identifier
   snippets:
     - :expired_at
   merge_request_diff:
