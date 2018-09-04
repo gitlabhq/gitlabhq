@@ -2,18 +2,14 @@ module Gitlab
   module Ci
     module Parsers
       class Junit
-        attr_reader :data
-
         JunitParserError = Class.new(StandardError)
 
         def parse!(xml_data, test_suite)
-          @data = Hash.from_xml(xml_data)
+          root = Hash.from_xml(xml_data)
 
-          each_suite do |testcases|
-            testcases.each do |testcase|
-              test_case = create_test_case(testcase)
-              test_suite.add_test_case(test_case)
-            end
+          all_cases(root) do |test_case|
+            test_case = create_test_case(test_case)
+            test_suite.add_test_case(test_case)
           end
         rescue REXML::ParseException => e
           raise JunitParserError, "XML parsing failed: #{e.message}"
@@ -23,26 +19,27 @@ module Gitlab
 
         private
 
-        def each_suite
-          testsuites.each do |testsuite|
-            yield testcases(testsuite)
+        def all_cases(root, parent = nil, &blk)
+          return unless root.present?
+
+          [root].flatten.compact.map do |node|
+            next unless node.is_a?(Hash)
+
+            # we allow only one top-level 'testsuites'
+            all_cases(node['testsuites'], root, &blk) unless parent
+
+            # we require at least one level of testsuites or testsuite
+            each_case(node['testcase'], &blk) if parent
+
+            # we allow multiple nested 'testsuite' (eg. PHPUnit)
+            all_cases(node['testsuite'], root, &blk)
           end
         end
 
-        def testsuites
-          if data['testsuites']
-            data['testsuites']['testsuite']
-          else
-            [data['testsuite']]
-          end
-        end
+        def each_case(testcase, &blk)
+          return unless testcase.present?
 
-        def testcases(testsuite)
-          if testsuite['testcase'].is_a?(Array)
-            testsuite['testcase']
-          else
-            [testsuite['testcase']]
-          end
+          [testcase].flatten.compact.map(&blk)
         end
 
         def create_test_case(data)

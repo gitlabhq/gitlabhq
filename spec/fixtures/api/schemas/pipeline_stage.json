@@ -13,7 +13,7 @@
     "groups": { "optional": true },
     "latest_statuses": {
       "type": "array",
-      "items": { "$ref": "job.json" },
+      "items": { "$ref": "job/job.json" },
       "optional": true
     },
     "status": { "$ref": "ci_detailed_status.json" },

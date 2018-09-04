@@ -41,3 +41,8 @@
 = render 'sidebar'
 
 #delete-wiki-modal.modal.fade
+
+- content_for :scripts_body do
+  -# haml-lint:disable InlineJavaScript
+  :javascript
+    window.uploads_path = "#{wiki_attachment_upload_url}";

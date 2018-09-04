@@ -122,12 +122,6 @@ class FileUploader < GitlabUploader
     }
   end
 
-  def markdown_link
-    markdown = +"[#{markdown_name}](#{secure_url})"
-    markdown.prepend("!") if image_or_video? || dangerous?
-    markdown
-  end
-
   def to_h
     {
       alt:      markdown_name,
@@ -190,10 +184,6 @@ class FileUploader < GitlabUploader
 
   def prune_store_dir
     storage.delete_dir!(store_dir) # only remove when empty
-  end
-
-  def markdown_name
-    (image_or_video? ? File.basename(filename, File.extname(filename)) : filename).gsub("]", "\\]")
   end
 
   def identifier

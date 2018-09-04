@@ -77,3 +77,4 @@ eslint-report.html
 /plugins/*
 /.gitlab_pages_secret
 package-lock.json
+/junit_rspec.xml
