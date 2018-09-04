@@ -69,7 +69,7 @@ class PrometheusMetric < ActiveRecord::Base
         unit: unit,
         label: legend,
         series: query_series
-      }
+      }.compact
     ]
   end
 
