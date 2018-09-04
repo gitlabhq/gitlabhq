@@ -594,6 +594,8 @@ PrometheusMetric:
 - title
 - query
 - group
+- common
+- identifier
 Badge:
 - id
 - link_url
