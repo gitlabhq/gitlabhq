@@ -97,7 +97,7 @@ export default {
     class="ide-commit-list-container"
   >
     <header
-      class="multi-file-commit-panel-header"
+      class="multi-file-commit-panel-header d-flex mb-0"
     >
       <div
         class="d-flex align-items-center flex-fill"
@@ -131,7 +131,7 @@ export default {
             <icon
               :name="actionBtnIcon"
               :size="16"
-              class="mr-0"
+              class="ml-auto mr-auto"
             />
           </button>
           <button
@@ -144,7 +144,7 @@ export default {
               'disabled-content': !filesLength
             }"
             type="button"
-            class="d-flex ide-staged-action-btn p-0 border-0 align-items-center prepend-left-8"
+            class="d-flex ide-staged-action-btn p-0 border-0 align-items-center"
             data-placement="bottom"
             data-container="body"
             data-boundary="viewport"
@@ -153,7 +153,7 @@ export default {
             <icon
               :size="16"
               name="remove-all"
-              class="mr-0"
+              class="ml-auto mr-auto"
             />
           </button>
         </div>

@@ -46,15 +46,16 @@ export default {
       :aria-label="__('Stage changes')"
       :title="__('Stage changes')"
       type="button"
-      class="btn btn-blank append-right-8 d-flex align-items-center"
+      class="btn btn-blank d-flex align-items-center"
       data-container="body"
       data-boundary="viewport"
       data-placement="bottom"
-      @click="stageChange(path)"
+      @click.stop.prevent="stageChange(path)"
     >
       <icon
         :size="16"
         name="mobile-issue-close"
+        class="ml-auto mr-auto"
       />
     </button>
     <button
@@ -66,11 +67,12 @@ export default {
       data-container="body"
       data-boundary="viewport"
       data-placement="bottom"
-      @click="showDiscardModal"
+      @click.stop.prevent="showDiscardModal"
     >
       <icon
         :size="16"
         name="remove"
+        class="ml-auto mr-auto"
       />
     </button>
     <gl-modal

@@ -567,9 +567,7 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 }
 
 .multi-file-commit-panel-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0;
+  height: 48px;
   border-bottom: 1px solid $white-dark;
   padding: 12px 0;
 }
@@ -583,8 +581,6 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
   flex: 1;
   overflow: auto;
   padding: $grid-size 0;
-  margin-left: -$grid-size;
-  margin-right: -$grid-size;
   min-height: 60px;
 
   &.form-text.text-muted {
@@ -649,6 +645,8 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 
 .multi-file-commit-list-path {
   cursor: pointer;
+  height: 32px;
+  padding-right: 0;
 
   &.is-active {
     background-color: $white-normal;
@@ -657,6 +655,10 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
   &:hover,
   &:focus {
     outline: 0;
+
+    .multi-file-discard-btn {
+      display: flex;
+    }
   }
 
   svg {
@@ -676,12 +678,15 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 }
 
 .multi-file-discard-btn {
-  top: 4px;
-  right: 8px;
-  bottom: 4px;
+  display: none;
 
   svg {
     top: 0;
+  }
+
+  .btn {
+    width: 32px;
+    height: 32px;
   }
 }
 
@@ -797,6 +802,10 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 }
 
 .ide-staged-action-btn {
+  width: 32px;
+  height: 32px;
+  color: inherit;
+
   > svg {
     top: 0;
   }
@@ -1443,7 +1452,13 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 }
 
 .ide-commit-editor-header {
+  height: 65px;
   padding: 8px 16px;
-  background-color: $white-normal;
+  background-color: $theme-gray-50;
   box-shadow: inset 0 -1px $white-dark;
+}
+
+.ide-commit-list-changed-icon {
+  width: 32px;
+  height: 32px;
 }
