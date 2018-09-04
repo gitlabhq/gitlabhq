@@ -12,6 +12,6 @@ class AddIndexOnCommonForPrometheusMetrics < ActiveRecord::Migration
   end
 
   def down
-    remove_concurrent_index :prometheus_metrics, :project_id
+    remove_concurrent_index :prometheus_metrics, :common
   end
 end
