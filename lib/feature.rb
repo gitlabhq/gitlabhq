@@ -42,13 +42,17 @@ class Feature
       persisted_names.include?(feature.name.to_s)
     end
 
-    def enabled?(key, thing = nil)
-      get(key).enabled?(thing)
+    def enabled?(key, thing = nil, default_enabled: false)
+      feature = Feature.get(key)
+      return feature.enabled?(thing) unless default_enabled
+
+      # If the feature has been set, always evaluate
+      Feature.persisted?(feature) ? feature.enabled?(thing) : true
     end
 
-    def disabled?(key, thing = nil)
+    def disabled?(key, thing = nil, default_enabled: false)
       # we need to make different method calls to make it easy to mock / define expectations in test mode
-      thing.nil? ? !enabled?(key) : !enabled?(key, thing)
+      thing.nil? ? !enabled?(key, default_enabled: default_enabled) : !enabled?(key, thing, default_enabled: default_enabled)
     end
 
     def enable(key, thing = true)
