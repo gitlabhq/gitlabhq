@@ -31,7 +31,9 @@ After you add or change existing _common_ metric you have to create a new databa
 
 ```ruby
 class ImportCommonMetrics < ActiveRecord::Migration
-  require_relative '../importers/common_metrics_importer.rb'
+  include Gitlab::Database::MigrationHelpers
+
+  require Rails.root.join('db/importers/common_metrics_importer.rb')
 
   DOWNTIME = false
 
