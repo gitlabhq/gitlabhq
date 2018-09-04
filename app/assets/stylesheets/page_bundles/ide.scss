@@ -657,7 +657,9 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
     outline: 0;
 
     .multi-file-discard-btn {
-      display: flex;
+      > .btn {
+        display: flex;
+      }
     }
   }
 
@@ -678,15 +680,14 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 }
 
 .multi-file-discard-btn {
-  display: none;
+  > .btn {
+    display: none;
+    width: 32px;
+    height: 32px;
+  }
 
   svg {
     top: 0;
-  }
-
-  .btn {
-    width: 32px;
-    height: 32px;
   }
 }
 
