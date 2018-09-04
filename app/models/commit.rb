@@ -22,6 +22,7 @@ class Commit
   attr_accessor :project, :author
   attr_accessor :redacted_description_html
   attr_accessor :redacted_title_html
+  attr_accessor :redacted_full_title_html
   attr_reader :gpg_commit
 
   DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines]
@@ -38,7 +39,12 @@ class Commit
   def banzai_render_context(field)
     pipeline = field == :description ? :commit_description : :single_line
     context = { pipeline: pipeline, project: self.project }
-    context[:author] = self.author if self.author
+
+    # The author is only needed when rendering the description
+    if field == :description
+      author = self.author
+      context[:author] = author if author
+    end
 
     context
   end

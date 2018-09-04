@@ -59,12 +59,17 @@ class Projects::RefsController < Projects::ApplicationController
         commit_path = project_commit_path(@project, last_commit) if last_commit
         {
           file_name: content.name,
-          commit: last_commit,
+          # TODO: deduplicate commits so we don't render the same one multiple times
+          commit: (Commit.new(last_commit, project) if last_commit),
           type: content.type,
           commit_path: commit_path
         }
       end
     end
+
+    # The commit titles must be passed through Banzai before being shown.
+    # Doing this here in bulk allows significant database work to be skipped.
+    prerender_commits!(@logs.map { |log| log[:commit] })
 
     offset = (@offset + @limit)
     if contents.size > offset
@@ -83,6 +88,11 @@ class Projects::RefsController < Projects::ApplicationController
   end
 
   private
+
+  def prerender_commits!(commits)
+    renderer = Banzai::ObjectRenderer.new(user: current_user, default_project: @project)
+    renderer.render(commits, :full_title) # modifies the commit objects inplace
+  end
 
   def validate_ref_id
     return not_found! if params[:id].present? && params[:id] !~ Gitlab::PathRegex.git_reference_regex
