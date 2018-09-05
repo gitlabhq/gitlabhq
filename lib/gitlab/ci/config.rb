@@ -7,13 +7,13 @@ module Gitlab
       ConfigError = Class.new(StandardError)
 
       def initialize(config, opts = {})
-        @config = Extendable::Collection
+        @config = Config::Extendable
           .new(build_config(config, opts))
           .to_hash
 
         @global = Entry::Global.new(@config)
         @global.compose!
-      rescue Loader::FormatError, Extendable::Collection::ExtensionError => e
+      rescue Loader::FormatError, Extendable::ExtensionError => e
         raise Config::ConfigError, e.message
       end
 

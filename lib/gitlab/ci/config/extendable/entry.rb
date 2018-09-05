@@ -1,9 +1,13 @@
 module Gitlab
   module Ci
     class Config
-      module Extendable
+      class Extendable
         class Entry
           MAX_NESTING_LEVELS = 10
+
+          InvalidExtensionError = Class.new(Extendable::ExtensionError)
+          CircularDependencyError = Class.new(Extendable::ExtensionError)
+          NestingTooDeepError = Class.new(Extendable::ExtensionError)
 
           attr_reader :key
 
@@ -43,22 +47,22 @@ module Gitlab
             return value unless extensible?
 
             if unknown_extension?
-              raise Extendable::Collection::InvalidExtensionError,
+              raise Entry::InvalidExtensionError,
                     "Unknown extends key in extended `#{key}`!"
             end
 
             if invalid_base?
-              raise Extendable::Collection::InvalidExtensionError,
+              raise Entry::InvalidExtensionError,
                     "Invalid base hash in extended `#{key}`!"
             end
 
             if nesting_too_deep?
-              raise Extendable::Collection::NestingTooDeepError,
+              raise Entry::NestingTooDeepError,
                     "`extends` nesting too deep in `#{key}`!"
             end
 
             if circular_dependency?
-              raise Extendable::Collection::CircularDependencyError,
+              raise Entry::CircularDependencyError,
                     "Circular dependency detected in extended `#{key}`!"
             end
 
