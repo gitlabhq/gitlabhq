@@ -139,7 +139,7 @@ describe Gitlab::Ci::Config::Extendable::Entry do
       it 'raises an error' do
         expect { subject.extend! }
           .to raise_error(described_class::InvalidExtensionError,
-                          /unknown `extends` key/)
+                          /unknown key/)
       end
     end
 

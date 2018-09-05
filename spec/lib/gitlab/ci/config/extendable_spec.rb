@@ -80,9 +80,19 @@ describe Gitlab::Ci::Config::Extendable do
             only: { refs: %w[master] }
           },
 
+          build: {
+            extends: 'something',
+            stage: 'build'
+          },
+
+          deploy: {
+            stage: 'deploy',
+            extends: '.first'
+          },
+
           something: {
             extends: '.first',
-            script: 'deploy',
+            script: 'exec',
             only: { variables: %w[$SOMETHING] }
           },
 
@@ -102,7 +112,24 @@ describe Gitlab::Ci::Config::Extendable do
 
           something: {
             extends: '.first',
-            script: 'deploy',
+            script: 'exec',
+            only: {
+              kubernetes: 'active',
+              variables: %w[$SOMETHING]
+            }
+          },
+
+          deploy: {
+            script: 'run',
+            stage: 'deploy',
+            only: { kubernetes: 'active' },
+            extends: '.first'
+          },
+
+          build: {
+            extends: 'something',
+            script: 'exec',
+            stage: 'build',
             only: {
               kubernetes: 'active',
               variables: %w[$SOMETHING]
