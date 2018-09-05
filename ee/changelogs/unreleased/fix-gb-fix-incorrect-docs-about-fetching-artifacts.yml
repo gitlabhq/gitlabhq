@@ -1,0 +1,5 @@
+---
+title: Fix an error in docs about fetching artifacts using API
+merge_request: 7244
+author:
+type: fixed
