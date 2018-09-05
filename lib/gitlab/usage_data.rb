@@ -24,7 +24,7 @@ module Gitlab
           hostname: Gitlab.config.gitlab.host,
           version: Gitlab::VERSION,
           installation_type: Gitlab::INSTALLATION_TYPE,
-          active_user_count: User.active.count,
+          active_user_count: count(User.active),
           recorded_at: Time.now,
           edition: 'EE'
         }
@@ -36,51 +36,51 @@ module Gitlab
       def system_usage_data
         {
           counts: {
-            assignee_lists: List.assignee.count,
-            boards: Board.count,
-            ci_builds: ::Ci::Build.count,
-            ci_internal_pipelines: ::Ci::Pipeline.internal.count,
-            ci_external_pipelines: ::Ci::Pipeline.external.count,
-            ci_pipeline_config_auto_devops: ::Ci::Pipeline.auto_devops_source.count,
-            ci_pipeline_config_repository: ::Ci::Pipeline.repository_source.count,
-            ci_runners: ::Ci::Runner.count,
-            ci_triggers: ::Ci::Trigger.count,
-            ci_pipeline_schedules: ::Ci::PipelineSchedule.count,
-            auto_devops_enabled: ::ProjectAutoDevops.enabled.count,
-            auto_devops_disabled: ::ProjectAutoDevops.disabled.count,
-            deploy_keys: DeployKey.count,
-            deployments: Deployment.count,
-            environments: ::Environment.count,
-            clusters: ::Clusters::Cluster.count,
-            clusters_enabled: ::Clusters::Cluster.enabled.count,
-            clusters_disabled: ::Clusters::Cluster.disabled.count,
-            clusters_platforms_gke: ::Clusters::Cluster.gcp_installed.enabled.count,
-            clusters_platforms_user: ::Clusters::Cluster.user_provided.enabled.count,
-            clusters_applications_helm: ::Clusters::Applications::Helm.installed.count,
-            clusters_applications_ingress: ::Clusters::Applications::Ingress.installed.count,
-            clusters_applications_prometheus: ::Clusters::Applications::Prometheus.installed.count,
-            clusters_applications_runner: ::Clusters::Applications::Runner.installed.count,
-            in_review_folder: ::Environment.in_review_folder.count,
-            groups: Group.count,
-            issues: Issue.count,
-            keys: Key.count,
-            label_lists: List.label.count,
-            labels: Label.count,
-            lfs_objects: LfsObject.count,
-            merge_requests: MergeRequest.count,
-            milestone_lists: List.milestone.count,
-            milestones: Milestone.count,
-            notes: Note.count,
-            pages_domains: PagesDomain.count,
-            projects: Project.count,
-            projects_imported_from_github: Project.where(import_type: 'github').count,
-            protected_branches: ProtectedBranch.count,
-            releases: Release.count,
-            remote_mirrors: RemoteMirror.count,
-            snippets: Snippet.count,
-            todos: Todo.count,
-            uploads: Upload.count,
-            web_hooks: WebHook.count
+            assignee_lists: count(List.assignee),
+            boards: count(Board),
+            ci_builds: count(::Ci::Build),
+            ci_internal_pipelines: count(::Ci::Pipeline.internal),
+            ci_external_pipelines: count(::Ci::Pipeline.external),
+            ci_pipeline_config_auto_devops: count(::Ci::Pipeline.auto_devops_source),
+            ci_pipeline_config_repository: count(::Ci::Pipeline.repository_source),
+            ci_runners: count(::Ci::Runner),
+            ci_triggers: count(::Ci::Trigger),
+            ci_pipeline_schedules: count(::Ci::PipelineSchedule),
+            auto_devops_enabled: count(::ProjectAutoDevops.enabled),
+            auto_devops_disabled: count(::ProjectAutoDevops.disabled),
+            deploy_keys: count(DeployKey),
+            deployments: count(Deployment),
+            environments: count(::Environment),
+            clusters: count(::Clusters::Cluster),
+            clusters_enabled: count(::Clusters::Cluster.enabled),
+            clusters_disabled: count(::Clusters::Cluster.disabled),
+            clusters_platforms_gke: count(::Clusters::Cluster.gcp_installed.enabled),
+            clusters_platforms_user: count(::Clusters::Cluster.user_provided.enabled),
+            clusters_applications_helm: count(::Clusters::Applications::Helm.installed),
+            clusters_applications_ingress: count(::Clusters::Applications::Ingress.installed),
+            clusters_applications_prometheus: count(::Clusters::Applications::Prometheus.installed),
+            clusters_applications_runner: count(::Clusters::Applications::Runner.installed),
+            in_review_folder: count(::Environment.in_review_folder),
+            groups: count(Group),
+            issues: count(Issue),
+            keys: count(Key),
+            label_lists: count(List.label),
+            labels: count(Label),
+            lfs_objects: count(LfsObject),
+            merge_requests: count(MergeRequest),
+            milestone_lists: count(List.milestone),
+            milestones: count(Milestone),
+            notes: count(Note),
+            pages_domains: count(PagesDomain),
+            projects: count(Project),
+            projects_imported_from_github: count(Project.where(import_type: 'github')),
+            protected_branches: count(ProtectedBranch),
+            releases: count(Release),
+            remote_mirrors: count(RemoteMirror),
+            snippets: count(Snippet),
+            todos: count(Todo),
+            uploads: count(Upload),
+            web_hooks: count(WebHook)
           }.merge(services_usage)
         }
       end
@@ -122,8 +122,14 @@ module Gitlab
           PrometheusService: :projects_prometheus_active
         }
 
-        results = Service.unscoped.where(type: types.keys, active: true).group(:type).count
-        results.each_with_object({}) { |(key, value), response| response[types[key.to_sym]] = value  }
+        results = count(Service.unscoped.where(type: types.keys, active: true).group(:type), fallback: Hash.new(-1))
+        types.each_with_object({}) { |(klass, key), response| response[key] = results[klass.to_s] || 0 }
+      end
+
+      def count(relation, fallback: -1)
+        relation.count
+      rescue ActiveRecord::StatementInvalid
+        fallback
       end
     end
   end
