@@ -301,7 +301,7 @@ describe 'Admin updates settings' do
 
   it 'Configure web terminal' do
     visit admin_application_settings_path
-    
+
     page.within('.as-terminal') do
       fill_in 'Max session time', with: 15
       click_button 'Save changes'

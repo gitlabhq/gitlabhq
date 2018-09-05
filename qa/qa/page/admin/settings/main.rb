@@ -10,7 +10,6 @@ module QA
           end
 
           def expand_repository_storage(&block)
-            
             expand_section(:terms_settings) do
               RepositoryStorage.perform(&block)
             end
