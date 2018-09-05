@@ -71,7 +71,7 @@ describe DeleteInconsistentInternalIdRecords, :migration do
       create_list(:deployment, 3, project: project2, deployable: nil)
       create_list(:deployment, 3, project: project3, deployable: nil)
     end
-  
+
     it_behaves_like 'deleting inconsistent internal_id records'
   end
 
