@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AddIdentifierToPrometheusMetric < ActiveRecord::Migration
+class AddIndexForIdentifierToPrometheusMetric < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
