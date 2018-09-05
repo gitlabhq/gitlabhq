@@ -17,6 +17,7 @@
         %strong Push events
       %p.light.ml-1
         This URL will be triggered by a push to the repository
+        = form.text_field :push_events_branch_filter, class: 'form-control', placeholder: 'Branch name or wildcard pattern to trigger on (leave blank for all)'
     %li
       = form.check_box :tag_push_events, class: 'form-check-input'
       = form.label :tag_push_events, class: 'list-label form-check-label ml-1' do
