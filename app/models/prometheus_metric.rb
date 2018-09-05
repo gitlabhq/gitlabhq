@@ -78,14 +78,14 @@ class PrometheusMetric < ActiveRecord::Base
   def query_series
     case legend
     when 'Status Code'
-      {
+      [{
         label: 'status_code',
         when: [
           { value: '2xx', color: 'green' },
           { value: '4xx', color: 'orange' },
           { value: '5xx', color: 'red' }
         ]
-      }
+      }]
     end
   end
 end
