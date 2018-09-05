@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require 'securerandom'
 
 module QA
   describe 'API basics' do
-
     before(:context) do
       @api_client = Runtime::API::Client.new(:gitlab)
       @personal_access_token = Runtime::API::Client.new.get_personal_access_token
@@ -38,8 +39,6 @@ module QA
       get groups_request.url
       expect_status(200)
       puts json_body.to_json
-
     end
-
   end
 end
