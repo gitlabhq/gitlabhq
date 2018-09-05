@@ -27,9 +27,9 @@
     <div class="media-body">
       <mr-widget-author-time
         :action-text="s__('mrWidget|Closed by')"
-        :author="mr.metrics.closedBy"
-        :date-title="mr.metrics.closedAt"
-        :date-readable="mr.metrics.readableClosedAt"
+        :author="mr.closedBy"
+        :date-title="mr.closedAt"
+        :date-readable="mr.readableClosedAt"
       />
 
       <section class="mr-info-list">

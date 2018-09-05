@@ -1444,8 +1444,7 @@ describe MergeRequest do
       end
 
       it 'returns merged event creation date' do
-        expect(merge_request.merge_event).to be_persisted
-        expect(merge_request.merged_at).to eq(merge_request.merge_event.created_at)
+        expect(merge_request.merged_at).to be_present
       end
     end
 
@@ -1464,7 +1463,6 @@ describe MergeRequest do
 
       it 'returns merging note creation date' do
         expect(merge_request.reload.metrics).to be_nil
-        expect(merge_request.merge_event).to be_nil
         expect(merge_request.notes.count).to eq(1)
         expect(merge_request.merged_at).to eq(merge_request.notes.first.created_at)
       end

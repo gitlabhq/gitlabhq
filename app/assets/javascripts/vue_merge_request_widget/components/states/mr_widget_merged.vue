@@ -111,9 +111,9 @@
       <div class="space-children">
         <mr-widget-author-time
           :action-text="s__('mrWidget|Merged by')"
-          :author="mr.metrics.mergedBy"
-          :date-title="mr.metrics.mergedAt"
-          :date-readable="mr.metrics.readableMergedAt"
+          :author="mr.mergedBy"
+          :date-title="mr.mergedAt"
+          :date-readable="mr.readableMergedAt"
         />
         <a
           v-tooltip

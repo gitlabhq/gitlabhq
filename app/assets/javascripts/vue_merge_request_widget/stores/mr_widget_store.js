@@ -14,6 +14,7 @@ export default class MergeRequestStore {
   setData(data) {
     const currentUser = data.current_user;
     const pipelineStatus = data.pipeline ? data.pipeline.details.status : null;
+    const mergeUser = MergeRequestStore.formatUserObject(data.merge_user || {});
 
     this.squash = data.squash;
     this.squashBeforeMergeHelpPath =
@@ -47,8 +48,13 @@ export default class MergeRequestStore {
     }
 
     this.updatedAt = data.updated_at;
-    this.metrics = MergeRequestStore.buildMetrics(data.metrics);
-    this.setToMWPSBy = MergeRequestStore.formatUserObject(data.merge_user || {});
+    this.mergedBy = mergeUser;
+    this.mergedAt = MergeRequestStore.formatUserObject(data.merged_at);
+    this.readableMergedAt = MergeRequestStore.getReadableDate(data.merged_at);
+    this.closedBy = MergeRequestStore.formatUserObject(data.closed_by);
+    this.closedAt = MergeRequestStore.formatUserObject(data.closed_at);
+    this.readableClosedAt = MergeRequestStore.getReadableDate(data.closed_at);
+    this.setToMWPSBy = mergeUser;
     this.mergeUserId = data.merge_user_id;
     this.currentUserId = gon.current_user_id;
     this.sourceBranchPath = data.source_branch_path;
@@ -148,21 +154,6 @@ export default class MergeRequestStore {
     this.rebaseInProgress = data.rebase_in_progress;
     this.approvalsLeft = !data.approved;
     this.rebasePath = data.rebase_path;
-  }
-
-  static buildMetrics(metrics) {
-    if (!metrics) {
-      return {};
-    }
-
-    return {
-      mergedBy: MergeRequestStore.formatUserObject(metrics.merged_by),
-      closedBy: MergeRequestStore.formatUserObject(metrics.closed_by),
-      mergedAt: formatDate(metrics.merged_at),
-      closedAt: formatDate(metrics.closed_at),
-      readableMergedAt: MergeRequestStore.getReadableDate(metrics.merged_at),
-      readableClosedAt: MergeRequestStore.getReadableDate(metrics.closed_at),
-    };
   }
 
   static formatUserObject(user) {

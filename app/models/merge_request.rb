@@ -642,14 +642,6 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  def merge_event
-    @merge_event ||= target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::MERGED).last
-  end
-
-  def closed_event
-    @closed_event ||= target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::CLOSED).last
-  end
-
   def work_in_progress?
     self.class.work_in_progress?(title)
   end
@@ -1116,6 +1108,32 @@ class MergeRequest < ActiveRecord::Base
         notes.system.reorder(nil).find_by(note: 'merged')&.created_at
     end
   end
+
+  def closed_at
+    strong_memoize(:closed_at) do
+      next unless closed?
+
+      metrics&.latest_closed_at || closed_event&.created_at
+    end
+  end
+
+  def closed_by
+    strong_memoize(:closed_by) do
+      next unless closed?
+
+      metrics&.latest_closed_by || closed_event&.author
+    end
+  end
+
+  def merge_event
+    @merge_event ||= target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::MERGED).last
+  end
+  private :merge_event
+
+  def closed_event
+    @closed_event ||= target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::CLOSED).last
+  end
+  private :closed_event
 
   def can_be_cherry_picked?
     merge_commit.present?
