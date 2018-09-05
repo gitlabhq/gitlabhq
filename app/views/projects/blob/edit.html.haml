@@ -1,10 +1,11 @@
 - breadcrumb_title "Repository"
+- @content_class = "limit-container-width" unless fluid_layout
 - @no_container = true
 - page_title "Edit", @blob.path, @ref
 - content_for :page_specific_javascripts do
   = page_specific_javascript_tag('lib/ace.js')
 
-%div{ class: container_class }
+%div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
   - if @conflict
     .alert.alert-danger
       Someone edited the file the same time you did. Please check out
