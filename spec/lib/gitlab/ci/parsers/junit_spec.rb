@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'fast_spec_helper'
 
 describe Gitlab::Ci::Parsers::Junit do
   describe '#parse!' do
@@ -8,21 +8,35 @@ describe Gitlab::Ci::Parsers::Junit do
     let(:test_cases) { flattened_test_cases(test_suite) }
 
     context 'when data is JUnit style XML' do
-      context 'when there are no test cases' do
+      context 'when there are no <testcases> in <testsuite>' do
         let(:junit) do
           <<-EOF.strip_heredoc
             <testsuite></testsuite>
           EOF
         end
 
-        it 'raises an error and does not add any test cases' do
-          expect { subject }.to raise_error(described_class::JunitParserError)
+        it 'ignores the case' do
+          expect { subject }.not_to raise_error
 
           expect(test_cases.count).to eq(0)
         end
       end
 
-      context 'when there is a test case' do
+      context 'when there are no <testcases> in <testsuites>' do
+        let(:junit) do
+          <<-EOF.strip_heredoc
+            <testsuites><testsuite /></testsuites>
+          EOF
+        end
+
+        it 'ignores the case' do
+          expect { subject }.not_to raise_error
+
+          expect(test_cases.count).to eq(0)
+        end
+      end
+
+      context 'when there is only one <testcase> in <testsuite>' do
         let(:junit) do
           <<-EOF.strip_heredoc
             <testsuite>
@@ -37,6 +51,46 @@ describe Gitlab::Ci::Parsers::Junit do
           expect(test_cases[0].classname).to eq('Calculator')
           expect(test_cases[0].name).to eq('sumTest1')
           expect(test_cases[0].execution_time).to eq(0.01)
+        end
+      end
+
+      context 'when there is only one <testsuite> in <testsuites>' do
+        let(:junit) do
+          <<-EOF.strip_heredoc
+            <testsuites>
+              <testsuite>
+                <testcase classname='Calculator' name='sumTest1' time='0.01'></testcase>
+              </testsuite>
+            </testsuites>
+          EOF
+        end
+
+        it 'parses XML and adds a test case to a suite' do
+          expect { subject }.not_to raise_error
+
+          expect(test_cases[0].classname).to eq('Calculator')
+          expect(test_cases[0].name).to eq('sumTest1')
+          expect(test_cases[0].execution_time).to eq(0.01)
+        end
+      end
+
+      context 'PHPUnit' do
+        let(:junit) do
+          <<-EOF.strip_heredoc
+          <testsuites>
+            <testsuite name="Project Test Suite" tests="1" assertions="1" failures="0" errors="0" time="1.376748">
+              <testsuite name="XXX\\FrontEnd\\WebBundle\\Tests\\Controller\\LogControllerTest" file="/Users/mcfedr/projects/xxx/server/tests/XXX/FrontEnd/WebBundle/Tests/Controller/LogControllerTest.php" tests="1" assertions="1" failures="0" errors="0" time="1.376748">
+                <testcase name="testIndexAction" class="XXX\\FrontEnd\\WebBundle\\Tests\\Controller\\LogControllerTest" file="/Users/mcfedr/projects/xxx/server/tests/XXX/FrontEnd/WebBundle/Tests/Controller/LogControllerTest.php" line="9" assertions="1" time="1.376748"/>
+              </testsuite>
+            </testsuite>
+          </testsuites>
+          EOF
+        end
+
+        it 'parses XML and adds a test case to a suite' do
+          expect { subject }.not_to raise_error
+
+          expect(test_cases.count).to eq(1)
         end
       end
 

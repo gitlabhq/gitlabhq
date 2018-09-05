@@ -30,7 +30,7 @@ module QA
           push.project = project
           push.directory = Pathname
             .new(__dir__)
-            .join('../../../fixtures/auto_devops_rack')
+            .join('../../../../../fixtures/auto_devops_rack')
           push.commit_message = 'Create Auto DevOps compatible rack application'
         end
 

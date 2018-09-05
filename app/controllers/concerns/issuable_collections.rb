@@ -1,5 +1,6 @@
 module IssuableCollections
   extend ActiveSupport::Concern
+  include CookiesHelper
   include SortingHelper
   include Gitlab::IssuableMetadata
   include Gitlab::Utils::StrongMemoize
@@ -107,11 +108,14 @@ module IssuableCollections
   end
 
   def set_sort_order_from_cookie
-    cookies[remember_sorting_key] = params[:sort] if params[:sort].present?
+    sort_param = params[:sort] if params[:sort].present?
     # fallback to legacy cookie value for backward compatibility
-    cookies[remember_sorting_key] ||= cookies['issuable_sort']
-    cookies[remember_sorting_key] = update_cookie_value(cookies[remember_sorting_key])
-    params[:sort] = cookies[remember_sorting_key]
+    sort_param ||= cookies['issuable_sort']
+    sort_param ||= cookies[remember_sorting_key]
+
+    sort_value = update_cookie_value(sort_param)
+    set_secure_cookie(remember_sorting_key, sort_value)
+    params[:sort] = sort_value
   end
 
   def remember_sorting_key

@@ -48,6 +48,20 @@ module Ci
       gzip: 3
     }
 
+    # `file_location` indicates where actual files are stored.
+    # Ideally, actual files should be stored in the same directory, and use the same
+    # convention to generate its path. However, sometimes we can't do so due to backward-compatibility.
+    #
+    # legacy_path ... The actual file is stored at a path consists of a timestamp
+    #                 and raw project/model IDs. Those rows were migrated from
+    #                 `ci_builds.artifacts_file` and `ci_builds.artifacts_metadata`
+    # hashed_path ... The actual file is stored at a path consists of a SHA2 based on the project ID.
+    #                 This is the default value.
+    enum file_location: {
+      legacy_path: 1,
+      hashed_path: 2
+    }
+
     FILE_FORMAT_ADAPTERS = {
       gzip: Gitlab::Ci::Build::Artifacts::GzipFileAdapter
     }.freeze
@@ -70,6 +84,10 @@ module Ci
 
     def local_store?
       [nil, ::JobArtifactUploader::Store::LOCAL].include?(self.file_store)
+    end
+
+    def hashed_path?
+      super || self.try(:file_location).nil?
     end
 
     def expire_in
@@ -108,7 +126,7 @@ module Ci
     end
 
     def update_project_statistics_after_destroy
-      update_project_statistics(-self.size)
+      update_project_statistics(-self.size.to_i)
     end
 
     def update_project_statistics(difference)
