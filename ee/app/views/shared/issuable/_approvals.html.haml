@@ -4,7 +4,8 @@
 - return unless issuable.is_a?(MergeRequest)
 - return unless issuable.requires_approve?
 
-- ineligible_approver = issuable.author || current_user
+- author = issuable.author || current_user
+- authors_can_approve = issuable.merge_requests_author_approval?
 - can_update_approvers = can?(current_user, :update_approvers, issuable)
 
 .form-group.row
@@ -12,7 +13,15 @@
     Approvers
   .col-sm-10
     - if can_update_approvers
-      = users_select_tag("merge_request[approver_ids]", multiple: true, class: 'input-large', email_user: true, skip_users: issuable.all_approvers_including_groups + [ineligible_approver], project: issuable.target_project)
+      - skip_users = [*issuable.all_approvers_including_groups, (author unless authors_can_approve)].compact
+
+      = users_select_tag("merge_request[approver_ids]",
+        multiple: true,
+        class: 'input-large',
+        email_user: true,
+        skip_users: skip_users,
+        project: issuable.target_project)
+
       .form-text.text-muted
         This merge request must be approved by these users.
         You can override the project settings by setting your own list of approvers.

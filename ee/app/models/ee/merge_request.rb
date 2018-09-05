@@ -46,6 +46,7 @@ module EE
       delegate :expose_sast_container_data?, to: :head_pipeline, allow_nil: true
       delegate :expose_container_scanning_data?, to: :head_pipeline, allow_nil: true
       delegate :expose_dast_data?, to: :head_pipeline, allow_nil: true
+      delegate :merge_requests_author_approval?, to: :target_project, allow_nil: true
 
       participant :participant_approvers
     end

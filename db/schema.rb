@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180826111825) do
+ActiveRecord::Schema.define(version: 20180831152625) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -2233,6 +2233,7 @@ ActiveRecord::Schema.define(version: 20180826111825) do
     t.boolean "pages_https_only", default: true
     t.string "external_webhook_token"
     t.boolean "packages_enabled"
+    t.boolean "merge_requests_author_approval"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree

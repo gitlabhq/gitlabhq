@@ -23,6 +23,7 @@ module EE
         ci_cd_only
         use_custom_template
         packages_enabled
+        merge_requests_author_approval
       ]
 
       if allow_mirror_params?

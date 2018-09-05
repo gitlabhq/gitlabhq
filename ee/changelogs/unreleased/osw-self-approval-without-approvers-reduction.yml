@@ -1,0 +1,5 @@
+---
+title: Allow MR authors to approve their MRs
+merge_request:
+author:
+type: other

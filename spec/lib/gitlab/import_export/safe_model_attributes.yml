@@ -479,6 +479,7 @@ Project:
 - merge_requests_template
 - merge_requests_rebase_enabled
 - approvals_before_merge
+- merge_requests_author_approval
 - reset_approvals_on_push
 - disable_overriding_approvers_per_merge_request
 - merge_requests_ff_only_enabled
