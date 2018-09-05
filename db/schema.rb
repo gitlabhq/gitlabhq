@@ -1712,6 +1712,7 @@ ActiveRecord::Schema.define(version: 20180831164909) do
 
   add_index "prometheus_metrics", ["common"], name: "index_prometheus_metrics_on_common", using: :btree
   add_index "prometheus_metrics", ["group"], name: "index_prometheus_metrics_on_group", using: :btree
+  add_index "prometheus_metrics", ["identifier"], name: "index_prometheus_metrics_on_identifier", unique: true, using: :btree
   add_index "prometheus_metrics", ["project_id"], name: "index_prometheus_metrics_on_project_id", using: :btree
 
   create_table "protected_branch_merge_access_levels", force: :cascade do |t|
