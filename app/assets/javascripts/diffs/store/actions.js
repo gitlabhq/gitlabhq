@@ -29,7 +29,7 @@ export const fetchDiffFiles = ({ state, commit }) => {
     .then(handleLocationHash);
 };
 
-export const assignDiscussionsToDiff = ({ state }, allLineDiscussions) => {
+export const assignDiscussionsToDiff = ({ state, commit }, allLineDiscussions) => {
   Object.values(allLineDiscussions).forEach(discussions => {
     if (discussions.length > 0) {
       const { fileHash } = discussions[0];
@@ -40,12 +40,11 @@ export const assignDiscussionsToDiff = ({ state }, allLineDiscussions) => {
             (line.left && line.left.lineCode === discussions[0].line_code) ||
             (line.right && line.right.lineCode === discussions[0].line_code),
         );
-
         if (targetLine) {
           if (targetLine.left && targetLine.left.lineCode === discussions[0].line_code) {
-            Object.assign(targetLine.left, { discussions });
+            commit(types.SET_LINE_DISCUSSIONS, { line: targetLine.left, discussions });
           } else {
-            Object.assign(targetLine.right, { discussions });
+            commit(types.SET_LINE_DISCUSSIONS, { line: targetLine.right, discussions });
           }
         }
 
@@ -55,7 +54,7 @@ export const assignDiscussionsToDiff = ({ state }, allLineDiscussions) => {
           );
 
           if (targetInlineLine) {
-            Object.assign(targetInlineLine, { discussions });
+            commit(types.SET_LINE_DISCUSSIONS, { line: targetInlineLine, discussions });
           }
         }
       }
@@ -63,7 +62,7 @@ export const assignDiscussionsToDiff = ({ state }, allLineDiscussions) => {
   });
 };
 
-export const removeDiscussionsFromDiff = ({ state }, removeDiscussion) => {
+export const removeDiscussionsFromDiff = ({ state, commit }, removeDiscussion) => {
   const { fileHash } = removeDiscussion;
   const selectedFile = state.diffFiles.find(file => file.fileHash === fileHash);
   if (selectedFile) {
@@ -74,7 +73,13 @@ export const removeDiscussionsFromDiff = ({ state }, removeDiscussion) => {
     );
 
     if (targetLine) {
-      Object.assign(targetLine.right, { discussions: [] });
+      if (targetLine) {
+        if (targetLine.left && targetLine.left.lineCode === removeDiscussion.line_code) {
+          commit(types.REMOVE_LINE_DISCUSSIONS, targetLine.left);
+        } else {
+          commit(types.REMOVE_LINE_DISCUSSIONS, targetLine.right);
+        }
+      }
     }
 
     const targetInlineLine = selectedFile.highlightedDiffLines.find(
@@ -82,7 +87,7 @@ export const removeDiscussionsFromDiff = ({ state }, removeDiscussion) => {
     );
 
     if (targetInlineLine) {
-      Object.assign(targetInlineLine, { discussions: [] });
+      commit(types.REMOVE_LINE_DISCUSSIONS, targetInlineLine);
     }
   }
 };

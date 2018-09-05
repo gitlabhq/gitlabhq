@@ -8,6 +8,8 @@ import {
   NEW_LINE_TYPE,
   OLD_LINE_TYPE,
   MATCH_LINE_TYPE,
+  LINES_TO_BE_RENDERED_DIRECTLY,
+  MAX_LINES_TO_BE_RENDERED,
 } from '../constants';
 
 export function findDiffFile(files, hash) {
@@ -177,6 +179,43 @@ export function trimFirstCharOfLineContent(line = {}) {
   }
 
   return parsedLine;
+}
+
+export function prepareDiffData(diffData) {
+  let showingLines = 0;
+  const filesLength = diffData.diffFiles.length;
+  let i;
+  for (i = 0; i < filesLength; i += 1) {
+    const file = diffData.diffFiles[i];
+
+    if (file.parallelDiffLines) {
+      const linesLength = file.parallelDiffLines.length;
+      let u = 0;
+      for (u = 0; u < linesLength; u += 1) {
+        const line = file.parallelDiffLines[u];
+        if (line.left) {
+          line.left = trimFirstCharOfLineContent(line.left);
+        }
+        if (line.right) {
+          line.right = trimFirstCharOfLineContent(line.right);
+        }
+      }
+    }
+
+    if (file.highlightedDiffLines) {
+      const linesLength = file.highlightedDiffLines.length;
+      let u;
+      for (u = 0; u < linesLength; u += 1) {
+        trimFirstCharOfLineContent(file.highlightedDiffLines[u]);
+      }
+      showingLines += file.parallelDiffLines.length;
+    }
+
+    Object.assign(file, {
+      renderIt: showingLines < LINES_TO_BE_RENDERED_DIRECTLY,
+      collapsed: file.text && showingLines > MAX_LINES_TO_BE_RENDERED,
+    });
+  }
 }
 
 export function getDiffRefsByLineCode(diffFiles) {

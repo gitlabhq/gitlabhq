@@ -185,16 +185,9 @@ export default {
 
   [types.UPDATE_DISCUSSION](state, noteData) {
     const note = noteData;
-    let index = 0;
-
-    state.discussions.forEach((n, i) => {
-      if (n.id === note.id) {
-        index = i;
-      }
-    });
-
+    const selectedDiscussion = state.discussions.find(disc => disc.id === note.id);
     note.expanded = true; // override expand flag to prevent collapse
-    state.discussions.splice(index, 1, note);
+    Object.assign(selectedDiscussion, { ...note });
   },
 
   [types.CLOSE_ISSUE](state) {

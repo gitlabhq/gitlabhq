@@ -6,9 +6,8 @@ import {
   addLineReferences,
   removeMatchLine,
   addContextLines,
-  trimFirstCharOfLineContent,
+  prepareDiffData,
 } from './utils';
-import { LINES_TO_BE_RENDERED_DIRECTLY, MAX_LINES_TO_BE_RENDERED } from '../constants';
 import * as types from './mutation_types';
 
 export default {
@@ -23,40 +22,7 @@ export default {
 
   [types.SET_DIFF_DATA](state, data) {
     const diffData = convertObjectPropsToCamelCase(data, { deep: true });
-    let showingLines = 0;
-    const filesLength = diffData.diffFiles.length;
-    let i;
-    for (i = 0; i < filesLength; i += 1) {
-      const file = diffData.diffFiles[i];
-
-      if (file.parallelDiffLines) {
-        const linesLength = file.parallelDiffLines.length;
-        let u = 0;
-        for (u = 0; u < linesLength; u += 1) {
-          const line = file.parallelDiffLines[u];
-          if (line.left) {
-            line.left = trimFirstCharOfLineContent(line.left);
-          }
-          if (line.right) {
-            line.right = trimFirstCharOfLineContent(line.right);
-          }
-        }
-      }
-
-      if (file.highlightedDiffLines) {
-        const linesLength = file.highlightedDiffLines.length;
-        let u;
-        for (u = 0; u < linesLength; u += 1) {
-          trimFirstCharOfLineContent(file.highlightedDiffLines[u]);
-        }
-        showingLines += file.parallelDiffLines.length;
-      }
-
-      Object.assign(file, {
-        renderIt: showingLines < LINES_TO_BE_RENDERED_DIRECTLY,
-        collapsed: file.text && showingLines > MAX_LINES_TO_BE_RENDERED,
-      });
-    }
+    prepareDiffData(diffData);
 
     Object.assign(state, {
       ...diffData,
@@ -106,12 +72,9 @@ export default {
 
   [types.ADD_COLLAPSED_DIFFS](state, { file, data }) {
     const normalizedData = convertObjectPropsToCamelCase(data, { deep: true });
+    prepareDiffData(normalizedData);
     const [newFileData] = normalizedData.diffFiles.filter(f => f.fileHash === file.fileHash);
-
-    if (newFileData) {
-      const index = _.findIndex(state.diffFiles, f => f.fileHash === file.fileHash);
-      state.diffFiles.splice(index, 1, newFileData);
-    }
+    Object.assign(file, { ...newFileData });
   },
 
   [types.EXPAND_ALL_FILES](state) {
@@ -120,5 +83,17 @@ export default {
       ...file,
       collapsed: false,
     }));
+  },
+
+  [types.SET_LINE_DISCUSSIONS](state, { line, discussions }) {
+    Object.assign(line, {
+      discussions,
+    });
+  },
+
+  [types.REMOVE_LINE_DISCUSSIONS](state, line) {
+    Object.assign(line, {
+      discussions: [],
+    });
   },
 };

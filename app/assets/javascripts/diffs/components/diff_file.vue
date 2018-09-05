@@ -1,5 +1,5 @@
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import _ from 'underscore';
 import { __, sprintf } from '~/locale';
 import createFlash from '~/flash';
@@ -30,6 +30,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(['isNotesFetched', 'discussionsStructuredByLineCode']),
     isCollapsed() {
       return this.file.collapsed || false;
     },
@@ -44,23 +45,22 @@ export default {
       );
     },
     showExpandMessage() {
-      return this.isCollapsed && !this.isLoadingCollapsedDiff && !this.file.tooLarge;
+      return (
+        !this.isCollapsed &&
+        !this.file.highlightedDiffLines &&
+        !this.isLoadingCollapsedDiff &&
+        !this.file.tooLarge
+      );
     },
     showLoadingIcon() {
       return this.isLoadingCollapsedDiff || (!this.file.renderIt && !this.isCollapsed);
     },
   },
   methods: {
-    ...mapActions('diffs', ['loadCollapsedDiff']),
+    ...mapActions('diffs', ['loadCollapsedDiff', 'assignDiscussionsToDiff']),
     handleToggle() {
-      const { collapsed, highlightedDiffLines, parallelDiffLines } = this.file;
-
-      if (
-        collapsed &&
-        !highlightedDiffLines &&
-        parallelDiffLines !== undefined &&
-        !parallelDiffLines.length
-      ) {
+      const { highlightedDiffLines, parallelDiffLines } = this.file;
+      if (!highlightedDiffLines && parallelDiffLines !== undefined && !parallelDiffLines.length) {
         this.handleLoadCollapsedDiff();
       } else {
         this.file.collapsed = !this.file.collapsed;
@@ -75,6 +75,15 @@ export default {
           this.isLoadingCollapsedDiff = false;
           this.file.collapsed = false;
           this.file.renderIt = true;
+        })
+        .then(() => this.$nextTick())
+        .then(() => {
+          requestIdleCallback(
+            () => {
+              this.assignDiscussionsToDiff(this.discussionsStructuredByLineCode);
+            },
+            { timeout: 1000 },
+          );
         })
         .catch(() => {
           this.isLoadingCollapsedDiff = false;
@@ -136,7 +145,7 @@ export default {
       :diff-file="file"
     />
     <loading-icon
-      v-else-if="showLoadingIcon"
+      v-if="showLoadingIcon"
       class="diff-content loading"
     />
     <div

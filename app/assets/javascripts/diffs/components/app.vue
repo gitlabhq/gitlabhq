@@ -112,6 +112,7 @@ export default {
   },
   created() {
     this.adjustView();
+    eventHub.$once('fetchedNotesData', this.setDiscussions);
   },
   methods: {
     ...mapActions('diffs', [
@@ -128,12 +129,7 @@ export default {
             () => {
               this.startRenderDiffsQueue()
                 .then(() => {
-                  requestIdleCallback(
-                    () => {
-                      this.assignDiscussionsToDiff(this.discussionsStructuredByLineCode);
-                    },
-                    { timeout: 1000 },
-                  );
+                  this.setDiscussions();
                 })
                 .catch(() => {
                   createFlash(__('Something went wrong on our end. Please try again!'));
@@ -148,6 +144,16 @@ export default {
 
       if (!this.isNotesFetched) {
         eventHub.$emit('fetchNotesData');
+      }
+    },
+    setDiscussions() {
+      if (this.isNotesFetched) {
+        requestIdleCallback(
+          () => {
+            this.assignDiscussionsToDiff(this.discussionsStructuredByLineCode);
+          },
+          { timeout: 1000 },
+        );
       }
     },
     adjustView() {
