@@ -8,6 +8,7 @@ module Gitlab
           ExtensionError = Class.new(StandardError)
           InvalidExtensionError = Class.new(ExtensionError)
           CircularDependencyError = Class.new(ExtensionError)
+          NestingTooDeepError = Class.new(ExtensionError)
 
           def initialize(hash)
             @hash = hash.to_h.deep_dup

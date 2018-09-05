@@ -3,6 +3,8 @@ module Gitlab
     class Config
       module Extendable
         class Entry
+          MAX_NESTING_LEVELS = 10
+
           attr_reader :key
 
           def initialize(key, context, parent = nil)
@@ -10,7 +12,9 @@ module Gitlab
             @context = context
             @parent = parent
 
-            raise StandardError, 'Invalid entry key!' unless @context.key?(@key)
+            unless @context.key?(@key)
+              raise StandardError, 'Invalid entry key!'
+            end
           end
 
           def extensible?
@@ -31,8 +35,8 @@ module Gitlab
             value.fetch(:extends).to_s.to_sym if extensible?
           end
 
-          def path
-            Array(@parent&.path).compact.push(key)
+          def ancestors
+            @ancestors ||= Array(@parent&.ancestors) + Array(@parent&.key)
           end
 
           def extend!
@@ -48,6 +52,11 @@ module Gitlab
                     "Invalid base hash in extended `#{key}`!"
             end
 
+            if nesting_too_deep?
+              raise Extendable::Collection::NestingTooDeepError,
+                    "`extends` nesting too deep in `#{key}`!"
+            end
+
             if circular_dependency?
               raise Extendable::Collection::CircularDependencyError,
                     "Circular dependency detected in extended `#{key}`!"
@@ -58,8 +67,12 @@ module Gitlab
 
           private
 
+          def nesting_too_deep?
+            ancestors.count > MAX_NESTING_LEVELS
+          end
+
           def circular_dependency?
-            path.count(key) > 1
+            ancestors.include?(key)
           end
 
           def unknown_extension?
