@@ -94,7 +94,7 @@ production: &base
     # This happens when the commit is pushed or merged into the default branch of a project.
     # When not specified the default issue_closing_pattern as specified below will be used.
     # Tip: you can test your closing pattern at http://rubular.com.
-    # issue_closing_pattern: '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)|[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)'
+    # issue_closing_pattern: '\b((?:[Cc]los(?:e[sd]?|ing)|\b[Ff]ix(?:e[sd]|ing)?|\b[Rr]esolv(?:e[sd]?|ing)|\b[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)'
 
     ## Default project features settings
     default_projects_features:
