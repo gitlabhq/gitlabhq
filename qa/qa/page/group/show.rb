@@ -2,6 +2,8 @@ module QA
   module Page
     module Group
       class Show < Page::Base
+        include Page::Component::GroupsFilter
+
         view 'app/views/groups/show.html.haml' do
           element :new_project_or_subgroup_dropdown, '.new-project-subgroup'
           element :new_project_or_subgroup_dropdown_toggle, '.dropdown-toggle'
@@ -21,8 +23,8 @@ module QA
           click_link name
         end
 
-        def filter_by_name(name)
-          fill_in 'Filter by name...', with: name
+        def has_new_project_or_subgroup_dropdown?
+          page.has_css?(element_selector_css(:new_project_or_subgroup_dropdown))
         end
 
         def has_subgroup?(name)
