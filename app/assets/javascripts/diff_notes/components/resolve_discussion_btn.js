@@ -1,4 +1,4 @@
-/* eslint-disable object-shorthand, func-names, comma-dangle, no-else-return, quotes */
+/* eslint-disable object-shorthand, func-names, no-else-return */
 /* global CommentsStore */
 /* global ResolveService */
 

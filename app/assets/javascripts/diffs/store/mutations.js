@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import _ from 'underscore';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import {
   findDiffFile,

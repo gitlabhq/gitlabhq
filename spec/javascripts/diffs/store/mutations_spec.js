@@ -141,7 +141,7 @@ describe('DiffsStoreMutations', () => {
       const file = { fileHash };
       const data = { diff_files: [{ file_hash: fileHash, extra_field: 1, existingField: 1 }] };
 
-      mutations[types.ADD_COLLAPSED_DIFFS](state, { file, data });
+      mutations[types.ADD_COLLAPSED_DIFFS](state, { file: state.diffFiles[1], data });
       expect(spy).toHaveBeenCalledWith(data, { deep: true });
 
       expect(state.diffFiles[1].fileHash).toEqual(fileHash);

@@ -11,7 +11,7 @@ describe('DiffLineGutterContent', () => {
     const cmp = Vue.extend(DiffLineGutterContent);
     const props = Object.assign({}, options);
     props.line = {
-      code: 'LC_42',
+      lineCode: 'LC_42',
       type: 'new',
       oldLine: null,
       newLine: 1,
@@ -36,7 +36,7 @@ describe('DiffLineGutterContent', () => {
 
       it('should return # if there is no lineCode', () => {
         const component = createComponent();
-        component.line.code = '';
+        component.line.lineCode = '';
         expect(component.lineHref).toEqual('#');
       });
     });
