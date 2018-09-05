@@ -1,15 +1,18 @@
+# frozen_string_literal: true
+
 require_relative 'test_env'
 
 # This file is specific to specs in spec/lib/gitlab/git/
 
 SEED_STORAGE_PATH      = TestEnv.repos_path
-TEST_REPO_PATH         = 'gitlab-git-test.git'.freeze
-TEST_NORMAL_REPO_PATH  = 'not-bare-repo.git'.freeze
-TEST_MUTABLE_REPO_PATH = 'mutable-repo.git'.freeze
-TEST_BROKEN_REPO_PATH  = 'broken-repo.git'.freeze
+TEST_REPO_PATH         = 'gitlab-git-test.git'
+TEST_NORMAL_REPO_PATH  = 'not-bare-repo.git'
+TEST_MUTABLE_REPO_PATH = 'mutable-repo.git'
+TEST_BROKEN_REPO_PATH  = 'broken-repo.git'
+TEST_GITATTRIBUTES_REPO_PATH = 'with-git-attributes.git'
 
 module SeedHelper
-  GITLAB_GIT_TEST_REPO_URL = File.expand_path('../gitlab-git-test.git', __dir__).freeze
+  GITLAB_GIT_TEST_REPO_URL = File.expand_path('../gitlab-git-test.git', __dir__)
 
   def ensure_seeds
     if File.exist?(SEED_STORAGE_PATH)
@@ -66,6 +69,11 @@ module SeedHelper
   end
 
   def create_git_attributes
+    system(git_env, *%W(#{Gitlab.config.git.bin_path} clone --bare #{TEST_REPO_PATH} #{TEST_GITATTRIBUTES_REPO_PATH}),
+           chdir: SEED_STORAGE_PATH,
+           out: '/dev/null',
+           err: '/dev/null')
+
     dir = File.join(SEED_STORAGE_PATH, 'with-git-attributes.git', 'info')
 
     FileUtils.mkdir_p(dir)

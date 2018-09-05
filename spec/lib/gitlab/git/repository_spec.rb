@@ -1337,6 +1337,30 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  describe '#gitattribute' do
+    let(:repository) { Gitlab::Git::Repository.new('default', TEST_GITATTRIBUTES_REPO_PATH, '') }
+
+    after do
+      ensure_seeds
+    end
+
+    it 'returns matching language attribute' do
+      expect(repository.gitattribute("explode.sh", 'gitlab-language')).to eq('shell')
+    end
+
+    it 'returns nil if nothing matches' do
+      expect(repository.gitattribute("report.xslt", 'gitlab-language')).to eq(nil)
+    end
+
+    context 'without gitattributes file' do
+      let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
+
+      it 'returns nil' do
+        expect(repository.gitattribute("explode.sh", 'gitlab-language')).to eq(nil)
+      end
+    end
+  end
+
   describe '#ref_exists?' do
     shared_examples 'checks the existence of refs' do
       it 'returns true for an existing tag' do
