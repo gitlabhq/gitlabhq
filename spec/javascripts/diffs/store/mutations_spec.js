@@ -138,7 +138,6 @@ describe('DiffsStoreMutations', () => {
 
       const fileHash = 123;
       const state = { diffFiles: [{}, { fileHash, existingField: 0 }] };
-      const file = { fileHash };
       const data = { diff_files: [{ file_hash: fileHash, extra_field: 1, existingField: 1 }] };
 
       mutations[types.ADD_COLLAPSED_DIFFS](state, { file: state.diffFiles[1], data });
