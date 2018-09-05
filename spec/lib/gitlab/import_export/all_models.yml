@@ -355,7 +355,9 @@ priorities:
 - label
 prometheus_metrics:
 - project
-- prometheus_alert
+- prometheus_alerts
+prometheus_alerts:
+- project
 timelogs:
 - issue
 - merge_request
