@@ -687,6 +687,8 @@ module API
 
       expose :diff_refs, using: Entities::DiffRefs
 
+      expose :diverged_commits_count, as: :diverged_commits_count, if: -> (_, options) { options[:include_diverged_commits_count] }
+
       def build_available?(options)
         options[:project]&.feature_available?(:builds, options[:current_user])
       end
