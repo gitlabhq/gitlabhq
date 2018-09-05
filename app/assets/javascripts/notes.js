@@ -47,7 +47,6 @@ const REGEX_QUICK_ACTIONS = /^\/\w+.*$/gm;
 
 export default class Notes {
   static initialize(notes_url, note_ids, last_fetched_at, view, enableGFM) {
-    alert('LALA');
     if (!this.instance) {
       this.instance = new Notes(notes_url, note_ids, last_fetched_at, view, enableGFM);
     }
