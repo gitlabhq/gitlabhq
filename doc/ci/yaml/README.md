@@ -56,6 +56,7 @@ A job is defined by a list of parameters that define the job behavior.
 | Keyword       | Required | Description |
 |---------------|----------|-------------|
 | script        | yes      | Defines a shell script which is executed by Runner |
+| extends       | no       | Defines a configuration entry that this job is going to inherit from |
 | image         | no       | Use docker image, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
 | services      | no       | Use docker services, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
 | stage         | no       | Defines a job stage (default: `test`) |
@@ -74,6 +75,81 @@ A job is defined by a list of parameters that define the job behavior.
 | environment   | no       | Defines a name of environment to which deployment is done by this job |
 | coverage      | no       | Define code coverage settings for a given job |
 | retry         | no       | Define how many times a job can be auto-retried in case of a failure |
+
+### `extends`
+
+> Introduced in GitLab 11.3
+
+`extends` defines an entry name that a job, that uses `extends` is going to
+inherit from.
+
+`extends` in an alternative to using [YAML anchors](#anchors) that is a little
+more flexible and readable.
+
+```yaml
+.tests:
+  only:
+    refs:
+      - branches
+
+rspec:
+  extends: .tests
+  script: rake rspec
+  stage: test
+  only:
+    variables:
+      - $RSPEC
+```
+
+In the example above the `rspec` job is going to inherit from `.tests`
+template. GitLab will perform a reverse deep merge, what means that it will
+merge `rspec` contents into `.tests` recursively, and it is going to result in
+following configuration of the `rspec` job:
+
+```yaml
+rspec:
+  script: rake rspec
+  stage: test
+  only:
+    refs:
+      - branches
+    variables:
+      - $RSPEC
+```
+
+`.tests` in this example is a [hidden key](#hidden-keys-jobs), but it is
+possible to inherit from regular jobs as well.
+
+`extends` supports multi-level inheritance, however it is not recommended to
+use more than three levels of inheritance. Maximum nesting level supported is
+10 levels.
+
+
+```yaml
+.tests:
+  only:
+    - pushes
+
+.rspec:
+  extends: .tests
+  script: rake rspec
+
+rspec 1:
+  variables:
+    RSPEC_SUITE: '1'
+  extends: .rspec
+
+rspec 2:
+  variables:
+    RSPEC_SUITE: '2'
+  extends: .rspec
+
+spinach:
+  extends: .tests
+  script: rake spinach
+```
+
+`extends` works across configuration files combined with [`include`](#include).
 
 ### `pages`
 
@@ -1454,7 +1530,8 @@ job in the combined CI configuration.
 
 NOTE: **Note:**
 We currently do not support using YAML aliases across different YAML files
-sourced by `include`. You must only refer to aliases in the same file.
+sourced by `include`. You must only refer to aliases in the same file. Instead
+of using YAML anchors you can use [`extends` keyword](#extends).
 
 ## `variables`
 
