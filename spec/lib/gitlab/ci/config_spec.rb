@@ -119,7 +119,7 @@ describe Gitlab::Ci::Config do
 
       it 'raises an error' do
         expect { config }.to raise_error(
-          described_class::ConfigError, /Circular dependency detected/
+          described_class::ConfigError, /circular dependency detected/
         )
       end
     end

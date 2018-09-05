@@ -126,7 +126,8 @@ describe Gitlab::Ci::Config::Extendable::Entry do
 
       it 'raises an error' do
         expect { subject.extend! }
-          .to raise_error(StandardError, /Invalid base hash/)
+          .to raise_error(described_class::InvalidExtensionError,
+                          /invalid base hash/)
       end
     end
 
@@ -137,7 +138,8 @@ describe Gitlab::Ci::Config::Extendable::Entry do
 
       it 'raises an error' do
         expect { subject.extend! }
-          .to raise_error(StandardError, /Unknown extends key/)
+          .to raise_error(described_class::InvalidExtensionError,
+                          /unknown `extends` key/)
       end
     end
 
@@ -199,7 +201,7 @@ describe Gitlab::Ci::Config::Extendable::Entry do
       it 'raises an error' do
         expect { subject.extend! }
           .to raise_error(described_class::CircularDependencyError,
-                          /Circular dependency detected/)
+                          /circular dependency detected/)
       end
     end
 

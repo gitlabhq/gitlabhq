@@ -1367,7 +1367,7 @@ module Gitlab
 
           expect { Gitlab::Ci::YamlProcessor.new(config) }
             .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
-                            'Unknown extends key in extended `rspec`!')
+                            'rspec: unknown `extends` key')
         end
       end
 
