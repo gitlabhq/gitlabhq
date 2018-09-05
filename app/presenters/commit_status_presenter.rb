@@ -11,6 +11,7 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
   }.freeze
 
   private_constant :CALLOUT_FAILURE_MESSAGES
+
   presents :build
 
   prepend ::EE::CommitStatusPresenter
