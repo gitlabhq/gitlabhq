@@ -1754,10 +1754,10 @@ class Project < ActiveRecord::Base
   end
 
   def remove_exports
-    if export_project_object_exists?
-      import_export_upload.remove_export_file!
-      import_export_upload.save
-    end
+    return unless export_project_object_exists?
+
+    import_export_upload.remove_export_file!
+    import_export_upload.save
   end
 
   def export_project_object_exists?
