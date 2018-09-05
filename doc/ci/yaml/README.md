@@ -153,6 +153,8 @@ spinach:
   script: rake spinach
 ```
 
+`extends` works across configuration files combined with [`include`](#include).
+
 ### `pages`
 
 `pages` is a special job that is used to upload static content to GitLab that
@@ -1532,7 +1534,8 @@ job in the combined CI configuration.
 
 NOTE: **Note:**
 We currently do not support using YAML aliases across different YAML files
-sourced by `include`. You must only refer to aliases in the same file.
+sourced by `include`. You must only refer to aliases in the same file. Instead
+of using YAML anchors you can use [`extends` keyword](#extends).
 
 ## `variables`
 
