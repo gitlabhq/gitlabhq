@@ -234,7 +234,7 @@ export default {
         return dateSourcingMilestoneTitle;
       }
 
-      return sprintf(s__('Epics|To schedule your epic\'s %{epicDateType} date based on milestones, assign a milestone with a due date to any issue in the epic.'), {
+      return sprintf(s__('Epics|To schedule your epic\'s %{epicDateType} date based on milestones, assign a milestone with a %{epicDateType} date to any issue in the epic.'), {
         epicDateType: this.getDateTypeString(dateType),
       });
     },

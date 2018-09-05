@@ -161,7 +161,7 @@ describe('epicSidebar', () => {
 
   describe('getDateFromMilestonesTooltip', () => {
     it('returns tooltip string for milestone', () => {
-      expect(vm.getDateFromMilestonesTooltip('start')).toBe('To schedule your epic\'s start date based on milestones, assign a milestone with a due date to any issue in the epic.');
+      expect(vm.getDateFromMilestonesTooltip('start')).toBe('To schedule your epic\'s start date based on milestones, assign a milestone with a start date to any issue in the epic.');
     });
   });
 
