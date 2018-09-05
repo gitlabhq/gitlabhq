@@ -752,13 +752,13 @@ code_quality:
   # since we're using Docker in Docker
   tags: []
   before_script: []
+  cache: {}
+  dependencies: []
   services:
     - docker:stable-dind
   variables:
     SETUP_DB: "false"
     DOCKER_DRIVER: overlay2
-  cache: {}
-  dependencies: []
   script:
     # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable" for Security Products
     - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
@@ -774,9 +774,6 @@ code_quality:
 sast:
   <<: *dedicated-no-docs-no-db-pull-cache-job
   image: docker:stable
-  variables:
-    SAST_CONFIDENCE_LEVEL: 2
-    DOCKER_DRIVER: overlay2
   allow_failure: true
   tags: []
   before_script: []
@@ -784,6 +781,9 @@ sast:
   dependencies: []
   services:
     - docker:stable-dind
+  variables:
+    SAST_CONFIDENCE_LEVEL: 2
+    DOCKER_DRIVER: overlay2
   script:
     - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
     - docker run
@@ -794,11 +794,33 @@ sast:
   artifacts:
     paths: [gl-sast-report.json]
 
+license_management:
+  <<: *dedicated-no-docs-no-db-pull-cache-job
+  image: docker:stable
+  stage: test
+  allow_failure: true
+  # gitlab-org runners set `privileged: false` but we need to have it set to true
+  # since we're using Docker in Docker
+  tags: []
+  before_script: []
+  cache: {}
+  dependencies: []
+  services:
+    - docker:stable-dind
+  variables:
+    SETUP_DB: "false"
+    DOCKER_DRIVER: overlay2
+  script:
+    - export LICENSE_MANAGEMENT_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+    - docker run
+        --volume "$PWD:/code"
+        "registry.gitlab.com/gitlab-org/security-products/license-management:$LICENSE_MANAGEMENT_VERSION" analyze /code
+  artifacts:
+    paths: [gl-license-management-report.json]
+
 dependency_scanning:
   <<: *dedicated-no-docs-no-db-pull-cache-job
   image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
   allow_failure: true
   tags: []
   before_script: []
@@ -806,6 +828,8 @@ dependency_scanning:
   dependencies: []
   services:
     - docker:stable-dind
+  variables:
+    DOCKER_DRIVER: overlay2
   script:
     - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
     - docker run
