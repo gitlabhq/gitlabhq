@@ -43,7 +43,7 @@ export const fetchDiscussions = ({ commit }, path) =>
       commit(types.SET_INITIAL_DISCUSSIONS, discussions);
     });
 
-export const refetchDiscussionById = ({ commit }, { path, discussionId }) =>
+export const refetchDiscussionById = ({ commit, state }, { path, discussionId }) =>
   new Promise(resolve => {
     service
       .fetchDiscussions(path)
@@ -52,7 +52,9 @@ export const refetchDiscussionById = ({ commit }, { path, discussionId }) =>
         const selectedDiscussion = discussions.find(discussion => discussion.id === discussionId);
         if (selectedDiscussion) {
           commit(types.UPDATE_DISCUSSION, selectedDiscussion);
-          resolve(selectedDiscussion);
+          // We need to refetch as it is now the transformed one in state
+          const discussion = utils.findNoteObjectById(state.discussions, discussionId);
+          resolve(discussion);
         }
       })
       .catch(() => {});

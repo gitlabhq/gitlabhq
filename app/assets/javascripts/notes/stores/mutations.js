@@ -54,13 +54,12 @@ export default {
 
   [types.EXPAND_DISCUSSION](state, { discussionId }) {
     const discussion = utils.findNoteObjectById(state.discussions, discussionId);
-
-    discussion.expanded = true;
+    Object.assign(discussion, { expanded: true });
   },
 
   [types.COLLAPSE_DISCUSSION](state, { discussionId }) {
     const discussion = utils.findNoteObjectById(state.discussions, discussionId);
-    discussion.expanded = false;
+    Object.assign(discussion, { expanded: false });
   },
 
   [types.REMOVE_PLACEHOLDER_NOTES](state) {
@@ -95,6 +94,7 @@ export default {
   [types.SET_USER_DATA](state, data) {
     Object.assign(state, { userData: data });
   },
+
   [types.SET_INITIAL_DISCUSSIONS](state, discussionsData) {
     const discussions = [];
 
@@ -168,8 +168,7 @@ export default {
 
   [types.TOGGLE_DISCUSSION](state, { discussionId }) {
     const discussion = utils.findNoteObjectById(state.discussions, discussionId);
-
-    discussion.expanded = !discussion.expanded;
+    Object.assign(discussion, { expanded: !discussion.expanded });
   },
 
   [types.UPDATE_NOTE](state, note) {
