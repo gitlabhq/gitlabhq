@@ -1,20 +1,35 @@
 require 'spec_helper'
 
 describe 'Projects > Settings > User changes default branch' do
+  include Select2Helper
+
   let(:user) { create(:user) }
-  let(:project) { create(:project, :repository, namespace: user.namespace) }
 
   before do
     sign_in(user)
-    visit edit_project_path(project)
+
+    visit project_settings_repository_path(project)
   end
 
-  it 'allows to change the default branch' do
-    select 'fix', from: 'project_default_branch'
-    page.within '.general-settings' do
-      click_button 'Save changes'
-    end
+  context 'with normal project' do
+    let(:project) { create(:project, :repository, namespace: user.namespace) }
 
-    expect(find(:css, 'select#project_default_branch').value).to eq 'fix'
+    it 'allows to change the default branch', :js do
+      select2('fix', from: '#project_default_branch')
+
+      page.within '#default-branch-settings' do
+        click_button 'Save changes'
+      end
+
+      expect(find('#project_default_branch', visible: false).value).to eq 'fix'
+    end
+  end
+
+  context 'with empty project' do
+    let(:project) { create(:project_empty_repo, namespace: user.namespace) }
+
+    it 'does not show default branch selector' do
+      expect(page).not_to have_selector('#project_default_branch')
+    end
   end
 end

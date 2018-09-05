@@ -36,11 +36,6 @@
 
           = render_if_exists 'projects/classification_policy_settings', f: f
 
-          - unless @project.empty_repo?
-            .form-group
-              = f.label :default_branch, "Default Branch", class: 'label-bold'
-              = f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
-
         = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :project
 
         .form-group
