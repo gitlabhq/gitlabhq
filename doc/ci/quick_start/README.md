@@ -7,7 +7,7 @@ projects.
 GitLab offers a [continuous integration][ci] service. If you
 [add a `.gitlab-ci.yml` file][yaml] to the root directory of your repository,
 and configure your GitLab project to use a [Runner], then each commit or
-push, triggers your CI [pipeline].
+push triggers your CI [pipeline].
 
 The `.gitlab-ci.yml` file tells the GitLab runner what to do. By default it runs
 a pipeline with three [stages]: `build`, `test`, and `deploy`. You don't need to
