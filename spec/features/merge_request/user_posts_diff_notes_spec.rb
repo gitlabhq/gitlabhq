@@ -7,7 +7,7 @@ describe 'Merge request > User posts diff notes', :js do
   let(:project) { merge_request.source_project }
   let(:user) { project.creator }
   let(:comment_button_class) { '.add-diff-note' }
-  let(:notes_holder_input_class) { 'note-edit-form' }
+  let(:notes_holder_input_class) { 'js-temp-notes-holder' }
   let(:notes_holder_input_xpath) { './following-sibling::*[contains(concat(" ", @class, " "), " notes_holder ")]' }
   let(:test_note_comment) { 'this is a test note!' }
 
