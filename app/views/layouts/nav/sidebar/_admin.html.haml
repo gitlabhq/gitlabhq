@@ -245,6 +245,11 @@
                 %span
                   = _('Network')
             %li.divider.fly-out-top-item
+            = nav_link(path: 'application_settings#geo') do
+              = link_to geo_admin_application_settings_path, title: _('Geo') do
+                %span
+                  = _('Geo')
+            %li.divider.fly-out-top-item
             = nav_link(path: 'application_settings#preferences') do
               = link_to preferences_admin_application_settings_path, title: _('Preferences') do
                 %span
