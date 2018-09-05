@@ -470,7 +470,6 @@ export default class Notes {
    * Render note in discussion area. To render inline notes use renderDiscussionNote.
    */
   renderDiscussionNote(noteEntity, $form) {
-    console.log('RENDER DISC NOTE');
     var discussionContainer, form, row, lineType, diffAvatarContainer;
 
     if (!Notes.isNewNote(noteEntity, this.note_ids)) {
@@ -1132,7 +1131,6 @@ export default class Notes {
    * Removes the form and if necessary it's temporary row.
    */
   removeDiscussionNoteForm(form) {
-    console.log('REM DISC');
     var glForm, row;
     row = form.closest('tr');
     glForm = form.data('glForm');
