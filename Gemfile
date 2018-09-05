@@ -68,7 +68,7 @@ gem 'u2f', '~> 0.2.1'
 gem 'validates_hostname', '~> 1.0.6'
 
 # Browser detection
-gem 'browser', '~> 2.2'
+gem 'browser', '~> 2.5'
 
 # GPG
 gem 'gpgme'
