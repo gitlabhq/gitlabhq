@@ -219,7 +219,8 @@ Impersonation tokens are used exactly like regular personal access tokens, and c
 
 ### Sudo
 
-> Needs admin permissions.
+NOTE: **Note:**
+Needs admin permissions.
 
 All API requests support performing an API call as if you were another user,
 provided you are authenticated as an administrator with an OAuth or Personal Access Token that has the `sudo` scope.
@@ -447,10 +448,11 @@ curl --request POST --header "PRIVATE-TOKEN: ********************" \
 
  Some resources have two similarly-named fields. For example, [issues](issues.md), [merge requests](merge_requests.md), and [project milestones](milestones.md). The fields are:
 
-- `id`. ID that is unique across all projects.
-- `iid`. Additional, internal ID that is unique in the scope of a single project.
+- `id`: ID that is unique across all projects.
+- `iid`: additional, internal ID that is unique in the scope of a single project.
 
-> The `iid` is displayed in the web UI.
+NOTE: **Note:**
+The `iid` is displayed in the web UI.
 
 If a resource has the `iid` field, it is often used instead of `id` to fetch the resource.
 
@@ -459,7 +461,8 @@ For example, suppose a project with `id: 42` has an issue with `id: 46` and `iid
 - A valid API call to retrieve the issue is  `GET /projects/42/issues/5`
 - An invalid API call to retrieve the issue is `GET /projects/42/issues/46`.
 
-> Not all resources with the `iid` field are fetched by `iid`.
+NOTE: **Note:**
+Not all resources with the `iid` field are fetched by `iid`.
 
 ## Data validation and error reporting
 
