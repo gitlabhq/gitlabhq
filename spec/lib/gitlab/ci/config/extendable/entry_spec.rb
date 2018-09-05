@@ -198,7 +198,8 @@ describe Gitlab::Ci::Config::Extendable::Entry do
 
       it 'raises an error' do
         expect { subject.extend! }
-          .to raise_error(StandardError, /Circular dependency detected/)
+          .to raise_error(described_class::CircularDependencyError,
+                          /Circular dependency detected/)
       end
     end
 
@@ -217,7 +218,7 @@ describe Gitlab::Ci::Config::Extendable::Entry do
 
       it 'raises an error' do
         expect { subject.extend! }
-          .to raise_error(Gitlab::Ci::Config::Extendable::Collection::NestingTooDeepError)
+          .to raise_error(described_class::NestingTooDeepError)
       end
     end
   end

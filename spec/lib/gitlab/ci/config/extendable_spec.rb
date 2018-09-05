@@ -1,6 +1,6 @@
 require 'fast_spec_helper'
 
-describe Gitlab::Ci::Config::Extendable::Collection do
+describe Gitlab::Ci::Config::Extendable do
   subject { described_class.new(hash) }
 
   describe '#each' do
@@ -147,7 +147,7 @@ describe Gitlab::Ci::Config::Extendable::Collection do
 
       it 'raises an error about circular dependency' do
         expect { subject.to_hash }
-          .to raise_error(described_class::CircularDependencyError)
+          .to raise_error(described_class::Entry::CircularDependencyError)
       end
     end
 
@@ -164,7 +164,7 @@ describe Gitlab::Ci::Config::Extendable::Collection do
 
       it 'raises an error about circular dependency' do
         expect { subject.to_hash }
-          .to raise_error(described_class::CircularDependencyError)
+          .to raise_error(described_class::Entry::CircularDependencyError)
       end
     end
 
@@ -175,7 +175,7 @@ describe Gitlab::Ci::Config::Extendable::Collection do
 
       it 'raises an error about invalid extension' do
         expect { subject.to_hash }
-          .to raise_error(described_class::InvalidExtensionError)
+          .to raise_error(described_class::Entry::InvalidExtensionError)
       end
     end
 
@@ -194,7 +194,7 @@ describe Gitlab::Ci::Config::Extendable::Collection do
 
       it 'raises an error about invalid base' do
         expect { subject.to_hash }
-          .to raise_error(described_class::InvalidExtensionError)
+          .to raise_error(described_class::Entry::InvalidExtensionError)
       end
     end
   end
