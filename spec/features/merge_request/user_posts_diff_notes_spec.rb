@@ -186,11 +186,8 @@ describe 'Merge request > User posts diff notes', :js do
 
     describe 'posting a note' do
       it 'adds as discussion' do
-        expect(page).to have_css('.js-temp-notes-holder', count: 2)
-
         should_allow_commenting(find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]'), asset_form_reset: false)
         expect(page).to have_css('.notes_holder .note.note-discussion', count: 1)
-        expect(page).to have_css('.js-temp-notes-holder', count: 1)
         expect(page).to have_button('Reply...')
       end
     end
@@ -281,6 +278,6 @@ describe 'Merge request > User posts diff notes', :js do
   end
 
   def assert_form_is_reset
-    expect(page).to have_no_css('.js-temp-notes-holder')
+    expect(page).to have_no_css('.note-edit-form')
   end
 end

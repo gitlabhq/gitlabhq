@@ -47,6 +47,7 @@ const REGEX_QUICK_ACTIONS = /^\/\w+.*$/gm;
 
 export default class Notes {
   static initialize(notes_url, note_ids, last_fetched_at, view, enableGFM) {
+    alert('LALA');
     if (!this.instance) {
       this.instance = new Notes(notes_url, note_ids, last_fetched_at, view, enableGFM);
     }
@@ -154,7 +155,11 @@ export default class Notes {
     this.$wrapperEl.on('click', '.system-note-commit-list-toggler', this.toggleCommitList);
 
     this.$wrapperEl.on('click', '.js-toggle-lazy-diff', this.loadLazyDiff);
-    this.$wrapperEl.on('click', '.js-toggle-lazy-diff-retry-button', this.onClickRetryLazyLoad.bind(this));
+    this.$wrapperEl.on(
+      'click',
+      '.js-toggle-lazy-diff-retry-button',
+      this.onClickRetryLazyLoad.bind(this),
+    );
 
     // fetch notes when tab becomes visible
     this.$wrapperEl.on('visibilitychange', this.visibilityChange);
@@ -252,9 +257,7 @@ export default class Notes {
         discussionNoteForm = $textarea.closest('.js-discussion-note-form');
         if (discussionNoteForm.length) {
           if ($textarea.val() !== '') {
-            if (
-              !window.confirm('Are you sure you want to cancel creating this comment?')
-            ) {
+            if (!window.confirm('Are you sure you want to cancel creating this comment?')) {
               return;
             }
           }
@@ -266,9 +269,7 @@ export default class Notes {
           originalText = $textarea.closest('form').data('originalNote');
           newText = $textarea.val();
           if (originalText !== newText) {
-            if (
-              !window.confirm('Are you sure you want to cancel editing this comment?')
-            ) {
+            if (!window.confirm('Are you sure you want to cancel editing this comment?')) {
               return;
             }
           }
@@ -469,6 +470,7 @@ export default class Notes {
    * Render note in discussion area. To render inline notes use renderDiscussionNote.
    */
   renderDiscussionNote(noteEntity, $form) {
+    console.log('RENDER DISC NOTE');
     var discussionContainer, form, row, lineType, diffAvatarContainer;
 
     if (!Notes.isNewNote(noteEntity, this.note_ids)) {
@@ -1130,6 +1132,7 @@ export default class Notes {
    * Removes the form and if necessary it's temporary row.
    */
   removeDiscussionNoteForm(form) {
+    console.log('REM DISC');
     var glForm, row;
     row = form.closest('tr');
     glForm = form.data('glForm');
@@ -1316,8 +1319,7 @@ export default class Notes {
 
     $retryButton.prop('disabled', true);
 
-    return this.loadLazyDiff(e)
-    .then(() => {
+    return this.loadLazyDiff(e).then(() => {
       $retryButton.prop('disabled', false);
     });
   }
@@ -1343,18 +1345,18 @@ export default class Notes {
      */
     if (url) {
       return axios
-      .get(url)
-      .then(({ data }) => {
-        // Reset state in case last request returned error
-        $successContainer.removeClass('hidden');
-        $errorContainer.addClass('hidden');
+        .get(url)
+        .then(({ data }) => {
+          // Reset state in case last request returned error
+          $successContainer.removeClass('hidden');
+          $errorContainer.addClass('hidden');
 
-        Notes.renderDiffContent($container, data);
-      })
-      .catch(() => {
-        $successContainer.addClass('hidden');
-        $errorContainer.removeClass('hidden');
-      });
+          Notes.renderDiffContent($container, data);
+        })
+        .catch(() => {
+          $successContainer.addClass('hidden');
+          $errorContainer.removeClass('hidden');
+        });
     }
     return Promise.resolve();
   }
@@ -1545,12 +1547,8 @@ export default class Notes {
                <div class="note-header">
                   <div class="note-header-info">
                      <a href="/${_.escape(currentUsername)}">
-                       <span class="d-none d-sm-inline-block">${_.escape(
-                         currentUsername,
-                       )}</span>
-                       <span class="note-headline-light">${_.escape(
-                         currentUsername,
-                       )}</span>
+                       <span class="d-none d-sm-inline-block">${_.escape(currentUsername)}</span>
+                       <span class="note-headline-light">${_.escape(currentUsername)}</span>
                      </a>
                   </div>
                </div>
@@ -1565,9 +1563,7 @@ export default class Notes {
     );
 
     $tempNote.find('.d-none.d-sm-inline-block').text(_.escape(currentUserFullname));
-    $tempNote
-      .find('.note-headline-light')
-      .text(`@${_.escape(currentUsername)}`);
+    $tempNote.find('.note-headline-light').text(`@${_.escape(currentUsername)}`);
 
     return $tempNote;
   }
