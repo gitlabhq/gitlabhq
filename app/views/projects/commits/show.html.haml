@@ -1,12 +1,13 @@
-- @no_container = true
 - breadcrumb_title _("Commits")
+- @content_class = "limit-container-width" unless fluid_layout
+- @no_container = true
 
 - page_title _("Commits"), @ref
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_commits_path(@project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
 
 .js-project-commits-show{ 'data-commits-limit' => @limit }
-  %div{ class: container_class }
+  %div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
     .tree-holder
       .nav-block
         .tree-ref-container
