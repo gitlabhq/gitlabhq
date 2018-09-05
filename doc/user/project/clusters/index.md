@@ -127,32 +127,50 @@ applications running on the cluster.
 When GitLab creates the cluster, it enables and uses the legacy
 [Attribute-based access control (ABAC)](https://kubernetes.io/docs/admin/authorization/abac/).
 The newer [RBAC](https://kubernetes.io/docs/admin/authorization/rbac/)
-authorization will be supported in a
-[future release](https://gitlab.com/gitlab-org/gitlab-ce/issues/29398).
+authorization is [experimental](#role-based-access-control-rbac).
 
-### Role-based access control (RBAC) experimental support
+### Role-based access control (RBAC)
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21401) in GitLab 11.3.
 
-Experimental support for RBAC-enabled clusters is currently hidden behind a feature flag. Once
-you have enabled the feature flag, GitLab will now be configured to
-create the necessary service accounts and privilleges in order to
-install and run [GitLab Managed Applications](#installing-applications).
+CAUTION: **Warning:**
+The RBAC authorization is experimental. To enable it you need access to the
+server where GitLab is installed.
 
-You can enable the feature flag from a Rails console:
+The support for RBAC-enabled clusters is hidden behind a feature flag. Once
+the feature flag is enabled, GitLab will create the necessary service accounts
+and privileges in order to install and run [GitLab managed applications](#installing-applications).
 
-```ruby
-Feature.enable('rbac_clusters')
-```
+To enable the feature flag:
+
+1. Enter the Rails console:
+
+    **For Omnibus GitLab**
+
+    ```sh
+    sudo gitlab-rails console
+    ```
+
+    **For installations from source**
+
+    ```sh
+    sudo -u git -H bundle exec rails console
+    ```
+
+1. Enable the RBAC authorization:
+
+    ```ruby
+    Feature.enable('rbac_clusters')
+    ```
 
 If you are [adding an existing Kubernetes
 cluster](#adding-an-existing-kubernetes-cluster), you will be asked if
-the cluster you are adding is a RBAC-enabled cluster. Enabling this
+the cluster you are adding is an RBAC-enabled cluster. Enabling this
 setting will create a `tiller` service account in the
 `gitlab-managed-apps` namespace when you install Helm Tiller into your cluster.
 This service account will be added to the installed Helm Tiller
-and will be used by Helm to install and run [GitLab Managed
-Applications](#installing-applications).
+and will be used by Helm to install and run [GitLab managed
+applications](#installing-applications).
 
 The `tiller` service account will have cluster-wide access (`cluster-admin` clusterrole).
 
@@ -162,9 +180,9 @@ automatically create an RBAC-enabled cluster. A `tiller` service account
 will be created as well and added to Helm Tiller.
 
 NOTE: **Note:**
-Auto DevOps will not successfully complete in cluster that only has RBAC
-authorization enabled. RBAC support for Auto DevOps is planned in a [future release](https://gitlab.com/gitlab-org/gitlab-ce/issues/44597).
-
+Auto DevOps will not successfully complete in a cluster that only has RBAC
+authorization enabled. RBAC support for Auto DevOps is planned in a
+[future release](https://gitlab.com/gitlab-org/gitlab-ce/issues/44597).
 
 ### Security of GitLab Runners
 
