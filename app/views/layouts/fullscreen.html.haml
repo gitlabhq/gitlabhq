@@ -4,7 +4,7 @@
   %body{ class: "#{user_application_theme} #{@body_class} fullscreen-layout", data: { page: body_data_page } }
     = render 'peek/bar'
     = header_message
-    = render "layouts/header/default"
+    = render partial: "layouts/header/default", locals: { project: @project, group: @group }
     = render 'shared/outdated_browser'
     .mobile-overlay
     .alert-wrapper
