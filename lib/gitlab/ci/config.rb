@@ -4,8 +4,11 @@ module Gitlab
     # Base GitLab CI Configuration facade
     #
     class Config
+<<<<<<< HEAD
       prepend EE::Gitlab::Ci::Config
 
+=======
+>>>>>>> upstream/master
       ConfigError = Class.new(StandardError)
 
       def initialize(config, opts = {})
@@ -66,8 +69,11 @@ module Gitlab
         @global.jobs_value
       end
 
+<<<<<<< HEAD
       private
 
+=======
+>>>>>>> upstream/master
       # 'opts' argument is used in EE see /ee/lib/ee/gitlab/ci/config.rb
       def build_config(config, opts = {})
         Loader.new(config).load!

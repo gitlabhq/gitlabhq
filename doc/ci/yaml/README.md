@@ -149,8 +149,11 @@ spinach:
   script: rake spinach
 ```
 
+<<<<<<< HEAD
 `extends` works across configuration files combined with [`include`](#include).
 
+=======
+>>>>>>> upstream/master
 ### `pages`
 
 `pages` is a special job that is used to upload static content to GitLab that
