@@ -6744,6 +6744,12 @@ msgstr ""
 msgid "SortOptions|Oldest updated"
 msgstr ""
 
+msgid "SortOptions|Planned finish date"
+msgstr ""
+
+msgid "SortOptions|Planned start date"
+msgstr ""
+
 msgid "SortOptions|Popularity"
 msgstr ""
 

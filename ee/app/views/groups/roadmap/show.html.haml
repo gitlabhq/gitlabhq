@@ -7,7 +7,7 @@
 - has_filters_applied = params[:label_name].present? || params[:author_username].present? || params[:search].present?
 
 - if @epics_count != 0
-  = render 'shared/epic/search_bar', type: :epics, hide_sort_dropdown: true, show_roadmap_presets: true
+  = render 'shared/epic/search_bar', type: :epics, show_roadmap_presets: true
 
   #js-roadmap{ data: { epics_path: group_epics_path(@group, format: :json), group_id: @group.id, empty_state_illustration: image_path('illustrations/epics/roadmap.svg'), has_filters_applied: "#{has_filters_applied}", new_epic_endpoint: group_epics_path(@group), preset_type: roadmap_layout } }
 - else

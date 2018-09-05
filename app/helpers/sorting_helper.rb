@@ -1,4 +1,6 @@
 module SortingHelper
+  prepend ::EE::SortingHelper
+
   def sort_options_hash
     {
       sort_value_created_date     => sort_title_created_date,

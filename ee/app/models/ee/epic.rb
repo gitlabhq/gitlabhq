@@ -29,6 +29,14 @@ module EE
         nulls_first = ::Gitlab::Database.postgresql? ? 'NULLS FIRST' : ''
         reorder("COALESCE(start_date, end_date) ASC #{nulls_first}")
       end
+
+      scope :order_start_date_asc, -> do
+        reorder(::Gitlab::Database.nulls_last_order('start_date'), 'id DESC')
+      end
+
+      scope :order_end_date_asc, -> do
+        reorder(::Gitlab::Database.nulls_last_order('end_date'), 'id DESC')
+      end
     end
 
     class_methods do
@@ -71,8 +79,10 @@ module EE
       end
 
       def order_by(method)
-        if method.to_s == 'start_or_end_date'
-          order_start_or_end_date_asc
+        case method.to_s
+        when 'start_or_end_date' then order_start_or_end_date_asc
+        when 'start_date_asc' then order_start_date_asc
+        when 'end_date_asc' then order_end_date_asc
         else
           super
         end

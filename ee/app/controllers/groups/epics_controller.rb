@@ -4,6 +4,7 @@ class Groups::EpicsController < Groups::ApplicationController
   include ToggleAwardEmoji
   include ToggleSubscriptionAction
   include RendersNotes
+  include EpicsActions
 
   before_action :check_epics_available!
   before_action :epic, except: [:index, :create]
@@ -90,14 +91,6 @@ class Groups::EpicsController < Groups::ApplicationController
     EpicsFinder
   end
 
-  def collection_type
-    @collection_type ||= 'Epic'
-  end
-
-  # we don't support custom sorting for epics and therefore don't want to use the issuable_sort cookie
-  def set_sort_order_from_cookie
-  end
-
   def preload_for_collection
     @preload_for_collection ||= [:group, :author]
   end
@@ -113,6 +106,7 @@ class Groups::EpicsController < Groups::ApplicationController
   end
 
   def filter_params
+    set_sort_order_from_cookie
     super.merge(start_date: params[:start_date], end_date: params[:end_date])
   end
 end
