@@ -90,7 +90,6 @@ more flexible and readable.
 .tests:
   only:
     refs:
-      - master
       - branches
 
 rspec:
@@ -113,7 +112,6 @@ rspec:
   stage: test
   only:
     refs:
-      - master
       - branches
     variables:
       - $RSPEC
@@ -130,22 +128,20 @@ use more than three levels of inheritance. Maximum nesting level supported is
 ```yaml
 .tests:
   only:
-    refs:
-      - master
-      - branches
+    - pushes
 
 .rspec:
   extends: .tests
   script: rake rspec
 
 rspec 1:
-  variables
-    RSPEC_SUITE: 1
+  variables:
+    RSPEC_SUITE: '1'
   extends: .rspec
 
 rspec 2:
-  variables
-    RSPEC_SUITE: 2
+  variables:
+    RSPEC_SUITE: '2'
   extends: .rspec
 
 spinach:
