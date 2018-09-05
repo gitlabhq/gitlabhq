@@ -4,6 +4,7 @@ describe Gitlab::ImportExport::UploadsManager do
   let(:shared) { project.import_export_shared }
   let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
   let(:project) { create(:project) }
+  let(:upload) { create(:upload, :issuable_upload, :object_storage, model: project) }
   let(:exported_file_path) { "#{shared.export_path}/uploads/#{upload.secret}/#{File.basename(upload.path)}" }
 
   subject(:manager) { described_class.new(project: project, shared: shared) }
@@ -69,37 +70,20 @@ describe Gitlab::ImportExport::UploadsManager do
         end
       end
     end
+  end
 
-    let!(:upload) { create(:upload, :issuable_upload, :object_storage, model: project) }
-
+  describe '#restore' do
     before do
       stub_uploads_object_storage(FileUploader)
+
+      FileUtils.mkdir_p(File.join(shared.export_path, 'uploads/72a497a02fe3ee09edae2ed06d390038'))
+      FileUtils.touch(File.join(shared.export_path, 'uploads/72a497a02fe3ee09edae2ed06d390038', "dummy.txt"))
     end
 
-    it 'saves the file' do
-      fake_uri = double
+    it 'restores the file' do
+      manager.restore
 
-      expect(fake_uri).to receive(:open).and_return(StringIO.new('File content'))
-      expect(URI).to receive(:parse).and_return(fake_uri)
-
-      manager.save
-
-      expect(File.read(exported_file_path)).to eq('File content')
-    end
-
-    describe '#restore' do
-      before do
-        stub_uploads_object_storage(FileUploader)
-
-        FileUtils.mkdir_p(File.join(shared.export_path, 'uploads/72a497a02fe3ee09edae2ed06d390038'))
-        FileUtils.touch(File.join(shared.export_path, 'uploads/72a497a02fe3ee09edae2ed06d390038', "dummy.txt"))
-      end
-
-      it 'restores the file' do
-        manager.restore
-
-        expect(project.uploads.map { |u| u.build_uploader.filename }).to include('dummy.txt')
-      end
+      expect(project.uploads.map { |u| u.build_uploader.filename }).to include('dummy.txt')
     end
   end
 end

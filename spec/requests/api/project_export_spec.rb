@@ -4,8 +4,8 @@ describe API::ProjectExport do
   set(:project) { create(:project) }
   set(:project_none) { create(:project) }
   set(:project_started) { create(:project) }
-  set(:project_finished) { create(:project) }
-  set(:project_after_export) { create(:project) }
+  let!(:project_finished) { create(:project, :with_export) }
+  let!(:project_after_export) { create(:project, :with_export) }
   set(:user) { create(:user) }
   set(:admin) { create(:admin) }
 
@@ -28,10 +28,6 @@ describe API::ProjectExport do
 
     # simulate exporting work directory
     FileUtils.mkdir_p File.join(project_started.export_path, 'securerandom-hex')
-
-    # simulate exported
-    FileUtils.mkdir_p project_finished.export_path
-    FileUtils.touch File.join(project_finished.export_path, '_export.tar.gz')
 
     # simulate in after export action
     FileUtils.mkdir_p project_after_export.export_path
