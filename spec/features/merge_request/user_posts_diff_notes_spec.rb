@@ -7,7 +7,7 @@ describe 'Merge request > User posts diff notes', :js do
   let(:project) { merge_request.source_project }
   let(:user) { project.creator }
   let(:comment_button_class) { '.add-diff-note' }
-  let(:notes_holder_input_class) { 'js-temp-notes-holder' }
+  let(:notes_holder_input_class) { 'note-edit-form' }
   let(:notes_holder_input_xpath) { './following-sibling::*[contains(concat(" ", @class, " "), " notes_holder ")]' }
   let(:test_note_comment) { 'this is a test note!' }
 
@@ -264,7 +264,7 @@ describe 'Merge request > User posts diff notes', :js do
   def assert_comment_persistence(line_holder, asset_form_reset:)
     notes_holder_saved = line_holder.find(:xpath, notes_holder_input_xpath)
 
-    expect(notes_holder_saved[:class]).not_to include(notes_holder_input_class)
+    expect(notes_holder_saved[:class]).not_to include('note-edit-form')
     expect(notes_holder_saved).to have_content test_note_comment
 
     assert_form_is_reset if asset_form_reset
