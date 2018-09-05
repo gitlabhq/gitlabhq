@@ -36,7 +36,7 @@ describe PrometheusMetric do
 
     where(:legend, :type) do
       'Some other legend' | NilClass
-      'Status Code'       | Hash
+      'Status Code'       | Array
     end
 
     with_them do
