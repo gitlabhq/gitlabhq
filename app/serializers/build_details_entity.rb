@@ -5,6 +5,8 @@ class BuildDetailsEntity < JobEntity
   include RequestAwareEntity
   include CiStatusHelper
 
+  prepend ::EE::BuildDetailEntity
+
   expose :coverage, :erased_at, :duration
   expose :tag_list, as: :tags
   expose :user, using: UserEntity

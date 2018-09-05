@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "properties": {
+    "quota": {
+      "description": "Quota information that is only shown for shared runners.",
+      "type": "object",
+      "required": [
+        "used",
+        "limit"
+      ],
+      "properties": {
+        "used": { "type": "integer" },
+        "limit": { "type": "integer" }
+      },
+      "additionalProperties": false
+    }
+  }
+}
