@@ -13,7 +13,7 @@ describe Projects::Prometheus::Metrics::UpdateService do
     let(:schedule_update_service) { spy }
 
     before do
-      create(:prometheus_alert, prometheus_metric: metric)
+      create(:prometheus_alert, project: metric.project, prometheus_metric: metric)
       allow(::Clusters::Applications::ScheduleUpdateService).to receive(:new).and_return(schedule_update_service)
     end
 
