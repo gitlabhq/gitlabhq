@@ -158,14 +158,14 @@ module BlobHelper
   end
 
   def licenses_for_select
-    @licenses_for_select ||= dropdown_names(LicenseTemplateFinder.new.execute)
+    @licenses_for_select ||= template_dropdown_names(TemplateFinder.build(:licenses).execute)
   end
 
   def ref_project
     @ref_project ||= @target_project || @project
   end
 
-  def dropdown_names(items)
+  def template_dropdown_names(items)
     grouped = items.group_by(&:category)
     categories = grouped.keys
 
@@ -175,18 +175,18 @@ module BlobHelper
       end
     end
   end
-  private :dropdown_names
+  private :template_dropdown_names
 
   def gitignore_names
-    @gitignore_names ||= dropdown_names(TemplateFinder.new(:gitignores).execute)
+    @gitignore_names ||= template_dropdown_names(TemplateFinder.build(:gitignores).execute)
   end
 
   def gitlab_ci_ymls
-    @gitlab_ci_ymls ||= dropdown_names(TemplateFinder.new(:gitlab_ci_ymls).execute)
+    @gitlab_ci_ymls ||= template_dropdown_names(TemplateFinder.build(:gitlab_ci_ymls).execute)
   end
 
   def dockerfile_names
-    @dockerfile_names ||= dropdown_names(TemplateFinder.new(:dockerfiles).execute)
+    @dockerfile_names ||= template_dropdown_names(TemplateFinder.build(:dockerfiles).execute)
   end
 
   def blob_editor_paths
