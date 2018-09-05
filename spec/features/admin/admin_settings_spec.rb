@@ -9,10 +9,11 @@ describe 'Admin updates settings' do
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
     sign_in(admin)
-    visit admin_application_settings_path
   end
 
   it 'Change visibility settings' do
+    visit admin_application_settings_path
+
     page.within('.as-visibility-access') do
       choose "application_setting_default_project_visibility_20"
       click_button 'Save changes'
@@ -22,6 +23,8 @@ describe 'Admin updates settings' do
   end
 
   it 'Uncheck all restricted visibility levels' do
+    visit admin_application_settings_path
+
     page.within('.as-visibility-access') do
       find('#application_setting_visibility_level_0').set(false)
       find('#application_setting_visibility_level_10').set(false)
@@ -36,6 +39,8 @@ describe 'Admin updates settings' do
   end
 
   it 'Modify import sources' do
+    visit admin_application_settings_path
+
     expect(Gitlab::CurrentSettings.import_sources).not_to be_empty
 
     page.within('.as-visibility-access') do
@@ -59,6 +64,8 @@ describe 'Admin updates settings' do
   end
 
   it 'Change Visibility and Access Controls' do
+    visit admin_application_settings_path
+
     page.within('.as-visibility-access') do
       uncheck 'Project export enabled'
       click_button 'Save changes'
@@ -69,6 +76,8 @@ describe 'Admin updates settings' do
   end
 
   it 'Change Account and Limit Settings' do
+    visit admin_application_settings_path
+
     page.within('.as-account-limit') do
       uncheck 'Gravatar enabled'
       click_button 'Save changes'
@@ -79,6 +88,8 @@ describe 'Admin updates settings' do
   end
 
   it 'Change New users set to external', :js do
+    visit admin_application_settings_path
+
     user_internal_regex = find('#application_setting_user_default_internal_regex', visible: :all)
 
     expect(user_internal_regex).to be_readonly
@@ -91,6 +102,8 @@ describe 'Admin updates settings' do
   end
 
   it 'Change Sign-in restrictions' do
+    visit admin_application_settings_path
+
     page.within('.as-signin') do
       fill_in 'Home page URL', with: 'https://about.gitlab.com/'
       click_button 'Save changes'
@@ -101,6 +114,8 @@ describe 'Admin updates settings' do
   end
 
   it 'Terms of Service' do
+    visit admin_application_settings_path
+
     # Already have the admin accept terms, so they don't need to accept in this spec.
     _existing_terms = create(:term)
     accept_terms(admin)
@@ -117,6 +132,8 @@ describe 'Admin updates settings' do
   end
 
   it 'Modify oauth providers' do
+    visit admin_application_settings_path
+
     expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).to be_empty
 
     page.within('.as-signin') do
@@ -137,6 +154,8 @@ describe 'Admin updates settings' do
   end
 
   it 'Oauth providers do not raise validation errors when saving unrelated changes' do
+    visit admin_application_settings_path
+
     expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).to be_empty
 
     page.within('.as-signin') do
@@ -151,7 +170,7 @@ describe 'Admin updates settings' do
     allow(Devise).to receive(:omniauth_providers).and_return([])
 
     # Save an unrelated setting
-    page.within('.as-ci-cd') do
+    page.within('.as-terms') do
       click_button 'Save changes'
     end
 
@@ -160,6 +179,8 @@ describe 'Admin updates settings' do
   end
 
   it 'Change Help page' do
+    visit preferences_admin_application_settings_path
+
     page.within('.as-help-page') do
       fill_in 'Help page text', with: 'Example text'
       check 'Hide marketing-related entries from help'
@@ -174,6 +195,8 @@ describe 'Admin updates settings' do
   end
 
   it 'Change Pages settings' do
+    visit preferences_admin_application_settings_path
+
     page.within('.as-pages') do
       fill_in 'Maximum size of pages (MB)', with: 15
       check 'Require users to prove ownership of custom domains'
@@ -186,6 +209,8 @@ describe 'Admin updates settings' do
   end
 
   it 'Change CI/CD settings' do
+    visit ci_cd_admin_application_settings_path
+
     page.within('.as-ci-cd') do
       check 'Default to Auto DevOps pipeline for all projects'
       fill_in 'Auto devops domain', with: 'domain.com'
@@ -198,6 +223,8 @@ describe 'Admin updates settings' do
   end
 
   it 'Change Influx settings' do
+    visit metrics_and_profiling_admin_application_settings_path
+
     page.within('.as-influx') do
       check 'Enable InfluxDB Metrics'
       click_button 'Save changes'
@@ -208,6 +235,8 @@ describe 'Admin updates settings' do
   end
 
   it 'Change Prometheus settings' do
+    visit metrics_and_profiling_admin_application_settings_path
+
     page.within('.as-prometheus') do
       check 'Enable Prometheus Metrics'
       click_button 'Save changes'
@@ -218,6 +247,8 @@ describe 'Admin updates settings' do
   end
 
   it 'Change Performance bar settings' do
+    visit metrics_and_profiling_admin_application_settings_path
+
     group = create(:group)
 
     page.within('.as-performance-bar') do
@@ -241,6 +272,8 @@ describe 'Admin updates settings' do
   end
 
   it 'Change Background jobs settings' do
+    visit preferences_admin_application_settings_path
+
     page.within('.as-background') do
       fill_in 'Throttling Factor', with: 1
       click_button 'Save changes'
@@ -251,6 +284,8 @@ describe 'Admin updates settings' do
   end
 
   it 'Change Spam settings' do
+    visit reporting_admin_application_settings_path
+
     page.within('.as-spam') do
       check 'Enable reCAPTCHA'
       fill_in 'reCAPTCHA Site Key', with: 'key'
@@ -265,6 +300,8 @@ describe 'Admin updates settings' do
   end
 
   it 'Configure web terminal' do
+    visit admin_application_settings_path
+    
     page.within('.as-terminal') do
       fill_in 'Max session time', with: 15
       click_button 'Save changes'
@@ -275,6 +312,8 @@ describe 'Admin updates settings' do
   end
 
   it 'Enable outbound requests' do
+    visit network_admin_application_settings_path
+
     page.within('.as-outbound') do
       check 'Allow requests to the local network from hooks and services'
       click_button 'Save changes'
@@ -285,6 +324,8 @@ describe 'Admin updates settings' do
   end
 
   it 'Enable hiding third party offers' do
+    visit integrations_admin_application_settings_path
+
     page.within('.as-third-party-offers') do
       check 'Do not display offers from third parties within GitLab'
       click_button 'Save changes'
@@ -295,6 +336,8 @@ describe 'Admin updates settings' do
   end
 
   it 'Change Slack Notifications Service template settings' do
+    visit integrations_admin_application_settings_path
+
     first(:link, 'Service Templates').click
     click_link 'Slack notifications'
     fill_in 'Webhook', with: 'http://localhost'
@@ -319,6 +362,8 @@ describe 'Admin updates settings' do
   end
 
   it 'Change Keys settings' do
+    visit admin_application_settings_path
+
     page.within('.as-visibility-access') do
       select 'Are forbidden', from: 'RSA SSH keys'
       select 'Are allowed', from: 'DSA SSH keys'
