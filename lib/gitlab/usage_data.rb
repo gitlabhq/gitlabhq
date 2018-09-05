@@ -123,7 +123,7 @@ module Gitlab
         }
 
         results = count(Service.unscoped.where(type: types.keys, active: true).group(:type), fallback: Hash.new(-1))
-        results.each_with_object({}) { |(key, value), response| response[types[key.to_sym]] = value  }
+        types.each_with_object({}) { |(klass, key), response| response[key] = results[klass.to_s] || 0 }
       end
 
       def count(relation, fallback: -1)
