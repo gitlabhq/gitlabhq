@@ -6,6 +6,7 @@ class AddIdentifierToPrometheusMetric < ActiveRecord::Migration
   DOWNTIME = false
 
   def change
-    add_column :prometheus_metrics, :identifier, :string, unique: true
+    add_column :prometheus_metrics, :identifier, :string
+    add_index :prometheus_metrics, :identifier, unique: true
   end
 end
