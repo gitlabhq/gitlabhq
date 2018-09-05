@@ -27,12 +27,7 @@ module QA
 
           Specs::Runner.perform do |specs|
             specs.tty = true
-            specs.options =
-              if rspec_options.any?
-                rspec_options
-              else
-                ['--', ::File.expand_path('../../specs/features', __dir__)]
-              end
+            specs.options = rspec_options if rspec_options.any?
           end
         end
       end

@@ -16,9 +16,9 @@ module QA
         args.push('--tty') if tty
 
         if tags.any?
-          tags.each { |tag| args.push(['-t', tag.to_s]) }
+          tags.each { |tag| args.push(['--tag', tag.to_s]) }
         else
-          args.push(%w[-t ~orchestrated])
+          args.push(%w[--tag ~orchestrated])
         end
 
         args.push(options)

@@ -1,0 +1,5 @@
+---
+title: Fix edge cases of JUnitParser
+merge_request: 21469
+author:
+type: fixed

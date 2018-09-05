@@ -61,6 +61,8 @@ describe ObjectStorage::DirectUpload do
         expect(subject[:GetURL]).to start_with(storage_url)
         expect(subject[:StoreURL]).to start_with(storage_url)
         expect(subject[:DeleteURL]).to start_with(storage_url)
+        expect(subject[:CustomPutHeaders]).to be_truthy
+        expect(subject[:PutHeaders]).to eq({ 'Content-Type' => 'application/octet-stream' })
       end
     end
 
