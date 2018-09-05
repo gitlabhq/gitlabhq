@@ -15,6 +15,7 @@ const config = {
   testMatch: ['<rootDir>/spec/frontend/**/*_spec.js'],
   moduleNameMapper: {
     '^~(.*)$': '<rootDir>/app/assets/javascripts$1',
+    '^helpers(.*)$': '<rootDir>/spec/frontend/helpers$1',
   },
   collectCoverageFrom: ['<rootDir>/app/assets/javascripts/**/*.{js,vue}'],
   coverageDirectory: '<rootDir>/coverage-frontend/',

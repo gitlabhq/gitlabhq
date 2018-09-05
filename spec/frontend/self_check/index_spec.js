@@ -1,3 +1,6 @@
+import axios from '~/lib/utils/axios_utils';
+import axiosMock from 'helpers/axios_mock';
+
 describe('frontend test suite self check', () => {
   describe('expected status: passed', () => {
     it('synchronous test', () => {
@@ -43,6 +46,18 @@ describe('frontend test suite self check', () => {
       setTimeout(() => {
         throw new Error('error in timeout');
       }, 1000);
+    });
+
+    it('pending request', () => {
+      const dummyUrl = '/some/pending/request';
+      axiosMock.onGet(dummyUrl).replyOnce(
+        () =>
+          new Promise(resolve => {
+            setTimeout(() => resolve([204]), 10000);
+          }),
+      );
+
+      axios.get(dummyUrl);
     });
   });
 });

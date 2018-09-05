@@ -1,4 +1,5 @@
 import 'jest-extended';
+import { initializeAxios } from './helpers/axios_mock';
 
 const testTimeoutInMs = 1000;
 jest.setTimeout(testTimeoutInMs);
@@ -20,3 +21,5 @@ afterEach(() => {
 afterEach(() => {
   jest.runAllTimers();
 });
+
+initializeAxios(beforeEach, afterEach);
