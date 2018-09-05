@@ -7,6 +7,5 @@ class AddIdentifierToPrometheusMetric < ActiveRecord::Migration
 
   def change
     add_column :prometheus_metrics, :identifier, :string
-    add_index :prometheus_metrics, :identifier, unique: true
   end
 end
