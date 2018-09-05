@@ -3,6 +3,21 @@ require 'spec_helper'
 describe TemplateFinder do
   using RSpec::Parameterized::TableSyntax
 
+  describe '#build' do
+    where(:type, :expected_class) do
+      :dockerfiles    | described_class
+      :gitignores     | described_class
+      :gitlab_ci_ymls | described_class
+      :licenses       | ::LicenseTemplateFinder
+    end
+
+    with_them do
+      subject { described_class.build(type) }
+
+      it { is_expected.to be_a(expected_class) }
+    end
+  end
+
   describe '#execute' do
     where(:type, :vendored_name) do
       :dockerfiles    | 'Binary'

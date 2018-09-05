@@ -7,6 +7,16 @@ class TemplateFinder
     gitlab_ci_ymls: ::Gitlab::Template::GitlabCiYmlTemplate
   }.freeze
 
+  class << self
+    def build(type, params = {})
+      if type == :licenses
+        LicenseTemplateFinder.new(params)
+      else
+        new(type, params)
+      end
+    end
+  end
+
   attr_reader :type, :params
 
   attr_reader :vendored_templates

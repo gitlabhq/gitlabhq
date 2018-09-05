@@ -33,7 +33,7 @@ module API
       popular = declared(params)[:popular]
       popular = to_boolean(popular) if popular.present?
 
-      templates = LicenseTemplateFinder.new(popular: popular).execute
+      templates = TemplateFinder.build(:licenses, popular: popular).execute
 
       present paginate(::Kaminari.paginate_array(templates)), with: ::API::Entities::License
     end
@@ -46,7 +46,7 @@ module API
       requires :name, type: String, desc: 'The name of the template'
     end
     get "templates/licenses/:name", requirements: { name: /[\w\.-]+/ } do
-      templates = LicenseTemplateFinder.new.execute
+      templates = TemplateFinder.build(:licenses).execute
       template = templates.find { |template| template.key == params[:name] }
 
       not_found!('License') unless template.present?
@@ -82,7 +82,7 @@ module API
         requires :name, type: String, desc: 'The name of the template'
       end
       get "templates/#{template_type}/:name" do
-        finder = TemplateFinder.new(template_type, name: declared(params)[:name])
+        finder = TemplateFinder.build(template_type, name: declared(params)[:name])
         new_template = finder.execute
 
         render_response(template_type, new_template)
