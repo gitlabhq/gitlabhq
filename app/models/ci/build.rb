@@ -734,6 +734,8 @@ module Ci
 
         variables.concat(persisted_environment.predefined_variables)
 
+        variables.concat(project.auto_devops_domain_variable(environment: persisted_environment.name))
+
         # Here we're passing unexpanded environment_url for runner to expand,
         # and we need to make sure that CI_ENVIRONMENT_NAME and
         # CI_ENVIRONMENT_SLUG so on are available for the URL be expanded.

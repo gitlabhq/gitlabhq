@@ -38,16 +38,16 @@ describe ProjectAutoDevops do
     end
   end
 
-  describe '#auto_devops_domain_variable' do
+  describe '#auto_devops_domain' do
     let(:auto_devops) { build_stubbed(:project_auto_devops, project: project, domain: domain) }
 
-    subject { auto_devops.auto_devops_domain_variable }
+    subject { auto_devops.auto_devops_domain }
 
     context 'when domain is defined' do
       let(:domain) { 'example.com' }
 
       it 'returns AUTO_DEVOPS_DOMAIN' do
-        expect(subject).to include(domain_variable)
+        expect(subject).to eq(domain)
       end
     end
 
@@ -59,7 +59,7 @@ describe ProjectAutoDevops do
           allow(Gitlab::CurrentSettings).to receive(:auto_devops_domain).and_return('example.com')
         end
 
-        it { expect(subject).to include(domain_variable) }
+        it { is_expected.to eq('example.com') }
       end
 
       context 'when there is no instance domain specified' do
@@ -67,12 +67,8 @@ describe ProjectAutoDevops do
           allow(Gitlab::CurrentSettings).to receive(:auto_devops_domain).and_return(nil)
         end
 
-        it { expect(subject).not_to include(domain_variable) }
+        it { is_expected.to be_nil }
       end
-    end
-
-    def domain_variable
-      { key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true }
     end
   end
 

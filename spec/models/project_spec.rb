@@ -2339,7 +2339,7 @@ describe Project do
       let(:project) { create(:project) }
 
       it 'returns an empty array' do
-        expect(project.deployment_variables.to_hash).to eq({})
+        expect(project.deployment_variables).to eq []
       end
     end
 
@@ -2365,12 +2365,15 @@ describe Project do
         it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
       end
     end
+  end
+
+  describe '#auto_devops_domain_variable' do
+    let(:project) { create(:project) }
+
+    subject { project.auto_devops_domain_variable }
 
     context 'when a configured cluster has an ingress IP' do
-      let(:project) { create(:project) }
       let(:clusters_applications_ingress) { create(:clusters_applications_ingress, :installed, external_ip: '127.0.0.1') }
-
-      subject { project.deployment_variables }
 
       before do
         clusters_applications_ingress.cluster.projects << project
@@ -2392,20 +2395,11 @@ describe Project do
           create(:project_auto_devops, project: project, domain: 'example.com')
         end
 
-        it { is_expected.to include({ key: 'AUTO_DEVOPS_DOMAIN', value: '127.0.0.1.nip.io', public: true }) }
         it { is_expected.to include({ key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true }) }
-
-        it 'gives precendence to auto_devops' do
-          expect(subject.to_hash).to include('AUTO_DEVOPS_DOMAIN' => 'example.com')
-        end
       end
     end
 
     context 'when Auto DevOps enabled in instance settings' do
-      let(:project) { create(:project) }
-
-      subject { project.deployment_variables }
-
       before do
         stub_application_setting(auto_devops_enabled: true)
       end
@@ -2432,10 +2426,6 @@ describe Project do
     end
 
     context 'when Auto DevOps explicitly enabled for the project' do
-      let(:project) { create(:project) }
-
-      subject { project.deployment_variables }
-
       context 'when domain is empty' do
         before do
           create(:project_auto_devops, project: project, domain: nil)

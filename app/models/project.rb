@@ -1838,9 +1838,19 @@ class Project < ActiveRecord::Base
   end
 
   def deployment_variables(environment: nil)
-    Gitlab::Ci::Variables::Collection.new
-      .concat(deployment_platform(environment: environment)&.predefined_variables || [])
-      .concat(auto_devops_domain_variable(deployment_cluster(environment: environment)))
+    deployment_platform(environment: environment)&.predefined_variables || []
+  end
+
+  def auto_devops_domain_variable(environment: nil)
+    return [] unless auto_devops_enabled?
+
+    cluster = deployment_cluster(environment: environment)
+    default_domain = cluster&.application_ingress&.default_domain
+    auto_devops_domain = (auto_devops || build_auto_devops)&.auto_devops_domain
+
+    Gitlab::Ci::Variables::Collection.new.tap do |variables|
+      variables.append(key: 'AUTO_DEVOPS_DOMAIN', value: auto_devops_domain || default_domain)
+    end
   end
 
   def auto_devops_variables
@@ -2251,17 +2261,5 @@ class Project < ActiveRecord::Base
     else
       check_access.call
     end
-  end
-
-  def auto_devops_domain_variable(deployment_cluster)
-    return [] unless auto_devops_enabled?
-
-    variables = Gitlab::Ci::Variables::Collection.new
-
-    if default_domain = deployment_cluster&.application_ingress&.default_domain
-      variables.append(key: 'AUTO_DEVOPS_DOMAIN', value: default_domain)
-    end
-
-    variables.concat((auto_devops || build_auto_devops)&.auto_devops_domain_variable)
   end
 end

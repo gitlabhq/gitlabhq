@@ -2123,7 +2123,8 @@ describe Ci::Build do
 
     context 'when using auto devops' do
       before do
-        build.update_attribute(:environment, 'production')
+        create(:environment, project: build.project, name: 'production')
+        build.update!(environment: 'production')
       end
 
       context 'and is enabled' do
@@ -2353,55 +2354,6 @@ describe Ci::Build do
       it 'returns a hash including variable with higher precedence' do
         expect(build.scoped_variables_hash).to include('MY_VAR': 'pipeline value')
         expect(build.scoped_variables_hash).not_to include('MY_VAR': 'myvar')
-      end
-    end
-
-    describe 'AUTO_DEVOPS_DOMAIN precedence' do
-      subject { build.scoped_variables_hash }
-
-      before do
-        build.update!(environment: 'production')
-      end
-
-      context 'no cluster' do
-        context 'ProjectAutoDevops with no domain' do
-          before do
-            create(:project_auto_devops, project: project, domain: nil)
-          end
-
-          it { is_expected.not_to include('AUTO_DEVOPS_DOMAIN') }
-        end
-
-        context 'ProjectAutoDevops with a domain' do
-          before do
-            create(:project_auto_devops, project: project)
-          end
-
-          it { is_expected.to include('AUTO_DEVOPS_DOMAIN' => project.auto_devops.domain) }
-        end
-      end
-
-      context 'single cluster with ingress configured' do
-        before do
-          ingress = create(:clusters_applications_ingress, :installed, external_ip: '127.0.0.1')
-          ingress.cluster.projects << project
-        end
-
-        context 'ProjectAutoDevops with no domain' do
-          before do
-            create(:project_auto_devops, project: project, domain: nil)
-          end
-
-          it { is_expected.to include('AUTO_DEVOPS_DOMAIN' => '127.0.0.1.nip.io') }
-        end
-
-        context 'ProjectAutoDevops with a domain' do
-          before do
-            create(:project_auto_devops, project: project)
-          end
-
-          it { is_expected.to include('AUTO_DEVOPS_DOMAIN' => project.auto_devops.domain) }
-        end
       end
     end
   end
