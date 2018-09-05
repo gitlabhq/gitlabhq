@@ -336,7 +336,6 @@
   .settings-content
     = render partial: 'repository_mirrors_form'
 
--# EE-only
 = render_if_exists 'admin/application_settings/geo', expanded: expanded
 
 = render_if_exists 'admin/application_settings/external_authorization_service_form', expanded: expanded
