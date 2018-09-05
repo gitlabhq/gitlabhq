@@ -55,7 +55,7 @@ export default function dropzoneInput(form) {
 
   if (!uploadsPath) {
     $formDropzone.addClass('js-invalid-dropzone');
-    return;
+    return null;
   }
 
   const dropzone = $formDropzone.dropzone({
@@ -285,4 +285,6 @@ export default function dropzoneInput(form) {
     $(this).closest('.gfm-form').find('.div-dropzone').click();
     formTextarea.focus();
   });
+
+  return Dropzone.forElement($formDropzone.get(0));
 }
