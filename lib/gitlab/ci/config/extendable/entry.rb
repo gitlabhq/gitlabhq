@@ -50,7 +50,7 @@ module Gitlab
 
             if unknown_extension?
               raise Entry::InvalidExtensionError,
-                    "#{key}: unknown `extends` key"
+                    "#{key}: unknown key in `extends`"
             end
 
             if invalid_base?
@@ -60,7 +60,7 @@ module Gitlab
 
             if nesting_too_deep?
               raise Entry::NestingTooDeepError,
-                    "#{key}: `extends` nesting too deep"
+                    "#{key}: nesting too deep in `extends`"
             end
 
             if circular_dependency?
