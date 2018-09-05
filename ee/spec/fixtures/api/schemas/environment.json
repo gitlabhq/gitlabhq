@@ -9,7 +9,7 @@
         "environment_path",
         "created_at",
         "updated_at",
-        "secure_artifacts"
+        "security_reports"
     ],
     "properties": {
         "id": {
@@ -70,20 +70,29 @@
         "can_stop": {
             "type": "boolean"
         },
-        "secure_artifacts": {
+        "security_reports": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
-                "sast": {
-                    "type": "integer"
+                "has_security_reports": {
+                    "type": "boolean"
                 },
-                "dast": {
+                "sast_path": {
                     "type": "string"
                 },
-                "container_scanning": {
+                "dast_path": {
                     "type": "string"
                 },
-                "dependency_scanning": {
+                "container_scanning_path": {
+                    "type": "string"
+                },
+                "dependency_scanning_path": {
+                    "type": "string"
+                },
+                "vulnerability_feedback_path": {
+                    "type": "string"
+                },
+                "pipeline_security_path": {
                     "type": "string"
                 }
             }

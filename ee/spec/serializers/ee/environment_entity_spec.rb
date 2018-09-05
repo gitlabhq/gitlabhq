@@ -33,13 +33,15 @@ describe EnvironmentEntity do
     it_behaves_like 'protected environments access', false
   end
 
-  describe 'secure_artifacts hash' do
+  describe 'security_reports hash' do
     it 'is present' do
-      expect(entity.as_json.include?(:secure_artifacts)).to eq(true)
+      expect(entity.as_json.include?(:security_reports)).to eq(true)
     end
 
-    it 'is empty' do
-      expect(entity.as_json[:secure_artifacts].size).to eq(0)
+    it 'value :has_security_reports is false' do
+      expect(entity.as_json[:security_reports].size).to eq(1)
+      expect(entity.as_json[:security_reports]).to include(:has_security_reports)
+      expect(entity.as_json[:security_reports][:has_security_reports]).to eq(false)
     end
   end
 
@@ -48,10 +50,10 @@ describe EnvironmentEntity do
     let(:deployable) { create(:ci_build, :success, pipeline: pipeline) }
 
     jobs_parameters = [
-        { name: 'sast', filename: 'gl-sast-report.json' },
-        { name: 'dast', filename: 'gl-dast-report.json' },
-        { name: 'container_scanning', filename: 'gl-container-scanning-report.json' },
-        { name: 'dependency_scanning', filename: 'gl-dependency-scanning-report.json' }
+      { name: 'sast', filename: Ci::Build::SAST_FILE },
+      { name: 'dast', filename: Ci::Build::DAST_FILE },
+      { name: 'container_scanning', filename: Ci::Build::CONTAINER_SCANNING_FILE },
+      { name: 'dependency_scanning', filename: Ci::Build::DEPENDENCY_SCANNING_FILE }
     ]
 
     before do
@@ -73,23 +75,34 @@ describe EnvironmentEntity do
               }
             }))
       end
+
+      allow_any_instance_of(LegacyArtifactUploader).to receive(:exists?).and_return(true)
     end
 
-    describe 'secure_artifacts hash' do
+    describe 'security_reports hash' do
       it 'contains the reports' do
-        allow_any_instance_of(LegacyArtifactUploader).to receive(:exists?).and_return(true)
+        expect(entity.as_json[:security_reports]).to include(:sast_path)
+        expect(entity.as_json[:security_reports]).to include(:dast_path)
+        expect(entity.as_json[:security_reports]).to include(:container_scanning_path)
+        expect(entity.as_json[:security_reports]).to include(:dependency_scanning_path)
 
-        expect(entity.as_json[:secure_artifacts].size).to eq(4)
+        expect(entity.as_json[:security_reports][:sast_path]).to end_with(Ci::Build::SAST_FILE)
+        expect(entity.as_json[:security_reports][:dast_path]).to end_with(Ci::Build::DAST_FILE)
+        expect(entity.as_json[:security_reports][:container_scanning_path]).to end_with(Ci::Build::CONTAINER_SCANNING_FILE)
+        expect(entity.as_json[:security_reports][:dependency_scanning_path]).to end_with(Ci::Build::DEPENDENCY_SCANNING_FILE)
+      end
 
-        expect(entity.as_json[:secure_artifacts]).to include(:sast_path)
-        expect(entity.as_json[:secure_artifacts]).to include(:dast_path)
-        expect(entity.as_json[:secure_artifacts]).to include(:container_scanning_path)
-        expect(entity.as_json[:secure_artifacts]).to include(:dependency_scanning_path)
+      it 'value :has_security_reports is true' do
+        expect(entity.as_json[:security_reports]).to include(:has_security_reports)
+        expect(entity.as_json[:security_reports][:has_security_reports]).to eq(true)
+      end
 
-        expect(entity.as_json[:secure_artifacts][:sast_path]).to end_with(Ci::Build::SAST_FILE)
-        expect(entity.as_json[:secure_artifacts][:dast_path]).to end_with(Ci::Build::DAST_FILE)
-        expect(entity.as_json[:secure_artifacts][:container_scanning_path]).to end_with(Ci::Build::CONTAINER_SCANNING_FILE)
-        expect(entity.as_json[:secure_artifacts][:dependency_scanning_path]).to end_with(Ci::Build::DEPENDENCY_SCANNING_FILE)
+      it 'contains link to latest pipeline' do
+        expect(entity.as_json[:security_reports]).to include(:pipeline_security_path)
+      end
+
+      it 'contains link to vulnerability feedback' do
+        expect(entity.as_json[:security_reports]).to include(:vulnerability_feedback_path)
       end
     end
   end
