@@ -6,8 +6,7 @@ We strive to support the 2-4 most important metrics for each common system servi
 
 ### Query identifier
 
-The requirement for adding a new metrics is to make each query to have an unique identifier.
-Identifier is used to update the metric later when changed.
+The requirement for adding a new metric is to make each query to have an unique identifier which is used to update the metric later when changed:
 
 ```yaml
 - group: Response metrics (NGINX Ingress)
@@ -25,9 +24,10 @@ Identifier is used to update the metric later when changed.
 
 After you add or change existing _common_ metric you have to create a new database migration that will query and update all existing metrics.
 
-**Note: If a query metric (which is identified by `id:`) is removed it will not be removed from database by default.**
-**You might want to add additional database migration that makes a decision what to do with removed one.**
-**For example: you might be interested in migrating all dependent data to a different metric.**
+NOTE: **Note:**
+If a query metric (which is identified by `id:`) is removed it will not be removed from database by default.
+You might want to add additional database migration that makes a decision what to do with removed one.
+For example: you might be interested in migrating all dependent data to a different metric.
 
 ```ruby
 class ImportCommonMetrics < ActiveRecord::Migration
