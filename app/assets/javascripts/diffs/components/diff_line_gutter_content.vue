@@ -73,7 +73,7 @@ export default {
     }),
     ...mapGetters(['isLoggedIn']),
     lineHref() {
-      return this.line && this.line.code ? `#${this.line.code}` : '#';
+      return this.line && this.line.lineCode ? `#${this.line.lineCode}` : '#';
     },
     shouldShowCommentButton() {
       return (
@@ -93,7 +93,6 @@ export default {
       if (this.line && !this.line.type && this.linePosition === LINE_POSITION_RIGHT) {
         return false;
       }
-
       return this.showCommentButton && this.hasDiscussions;
     },
   },
