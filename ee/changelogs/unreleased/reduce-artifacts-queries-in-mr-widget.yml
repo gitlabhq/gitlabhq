@@ -1,0 +1,5 @@
+---
+title: Reduce queries needed for CI artifacts on merge request widget
+merge_request: 6978
+author:
+type: performance
