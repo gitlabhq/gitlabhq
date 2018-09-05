@@ -10,7 +10,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       .execute
 
     if successful
-      redirect_to admin_application_settings_path,
+      redirect_to request.referer,
         notice: 'Application settings saved successfully'
     else
       render :show
