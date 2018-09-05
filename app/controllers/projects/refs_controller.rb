@@ -70,6 +70,9 @@ class Projects::RefsController < Projects::ApplicationController
   end
 
   def prerender_commit_full_titles!(commits)
+    # Preload commit authors as they are used in rendering
+    commits.each(&:lazy_author)
+
     renderer = Banzai::ObjectRenderer.new(user: current_user, default_project: @project)
     renderer.render(commits, :full_title)
   end

@@ -39,12 +39,7 @@ class Commit
   def banzai_render_context(field)
     pipeline = field == :description ? :commit_description : :single_line
     context = { pipeline: pipeline, project: self.project }
-
-    # The author is only needed when rendering the description
-    if field == :description
-      author = self.author
-      context[:author] = author if author
-    end
+    context[:author] = self.author if self.author
 
     context
   end
