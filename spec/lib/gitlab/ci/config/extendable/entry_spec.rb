@@ -62,12 +62,17 @@ describe Gitlab::Ci::Config::Extendable::Entry do
     end
   end
 
-  describe '#path' do
-    it 'returns inheritance chain path' do
-      parent = described_class.new(:test, test: { extends: 'something' })
-      child = described_class.new(:job, { job: { script: 'something' } }, parent)
+  describe '#ancestors' do
+    let(:parent) do
+      described_class.new(:test, test: { extends: 'something' })
+    end
 
-      expect(child.path).to eq [:test, :job]
+    let(:child) do
+      described_class.new(:job, { job: { script: 'something' } }, parent)
+    end
+
+    it 'returns ancestors keys' do
+      expect(child.ancestors).to eq [:test]
     end
   end
 
@@ -194,6 +199,25 @@ describe Gitlab::Ci::Config::Extendable::Entry do
       it 'raises an error' do
         expect { subject.extend! }
           .to raise_error(StandardError, /Circular dependency detected/)
+      end
+    end
+
+    context 'when nesting level is too deep' do
+      before do
+        stub_const("#{described_class}::MAX_NESTING_LEVELS", 0)
+      end
+
+      let(:hash) do
+        {
+          first: { script: 'my value' },
+          second: { extends: 'first' },
+          test: { extends: 'second' }
+        }
+      end
+
+      it 'raises an error' do
+        expect { subject.extend! }
+          .to raise_error(Gitlab::Ci::Config::Extendable::Collection::NestingTooDeepError)
       end
     end
   end
