@@ -90,8 +90,8 @@ Below are described the supported events.
 
 Triggered when you push to the repository except when pushing tags.
 
-> **Note:** When more than 20 commits are pushed at once, the `commits` web hook
-  attribute will only contain the first 20 for performance reasons. Loading
+> **Note:** When more than 20 commits are pushed at once, the `commits` web hook 
+  attribute will only contain the first 20 for performance reasons. Loading 
   detailed commit data is expensive. Note that despite only 20 commits being
   present in the `commits` attribute, the `total_commits_count` attribute will
   contain the actual total.

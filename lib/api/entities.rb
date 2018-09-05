@@ -105,6 +105,7 @@ module API
       expose :project_id, :issues_events, :confidential_issues_events
       expose :note_events, :confidential_note_events, :pipeline_events, :wiki_page_events
       expose :job_events
+      expose :push_events_branch_filter
     end
 
     class SharedGroup < Grape::Entity
@@ -688,6 +689,8 @@ module API
       end
 
       expose :diff_refs, using: Entities::DiffRefs
+
+      expose :diverged_commits_count, as: :diverged_commits_count, if: -> (_, options) { options[:include_diverged_commits_count] }
 
       def build_available?(options)
         options[:project]&.feature_available?(:builds, options[:current_user])

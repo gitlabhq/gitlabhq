@@ -90,7 +90,7 @@ module Ci
     end
 
     def hashed_path?
-      super || self.file_location.nil?
+      super || self.try(:file_location).nil?
     end
 
     def expire_in

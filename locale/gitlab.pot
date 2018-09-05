@@ -2451,9 +2451,12 @@ msgstr ""
 msgid "Default Branch"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Default classification label"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Default: Directly import the Google Code email address or username"
 msgstr ""
 
@@ -6451,9 +6454,12 @@ msgstr ""
 msgid "Select the branch you want to set as the default for this project. All merge requests and commits will automatically be made against this branch unless you specify a different one."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Select the custom project template source group."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Selecting a GitLab user will add a link to the GitLab user in the descriptions of issues and comments (e.g. \"By <a href=\"#\">@johnsmith</a>\"). It will also associate and/or assign these issues and comments with the selected user."
 msgstr ""
 
