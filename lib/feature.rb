@@ -42,12 +42,16 @@ class Feature
       persisted_names.include?(feature.name.to_s)
     end
 
+    # use `default_enabled: true` to default the flag to being `enabled`
+    # unless set explicitly.  The default is `disabled`
     def enabled?(key, thing = nil, default_enabled: false)
       feature = Feature.get(key)
-      return feature.enabled?(thing) unless default_enabled
 
-      # If the feature has been set, always evaluate
-      Feature.persisted?(feature) ? feature.enabled?(thing) : true
+      # If we're not default enabling the flag or the feature has been set, always evaluate.
+      # `persisted?` can potentially generate DB queries and also checks for inclusion
+      # in an array of feature names (177 at last count), possibly reducing performance by half.
+      # So we only perform the `persisted` check if `default_enabled: true`
+      !default_enabled || Feature.persisted?(feature) ? feature.enabled?(thing) : true
     end
 
     def disabled?(key, thing = nil, default_enabled: false)
