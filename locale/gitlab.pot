@@ -191,6 +191,9 @@ msgstr[1] ""
 msgid "%{unstaged} unstaged and %{staged} staged changes"
 msgstr ""
 
+msgid "+ %{count} more"
+msgstr ""
+
 msgid "+ %{moreCount} more"
 msgstr ""
 
@@ -399,13 +402,13 @@ msgstr ""
 msgid "Add Kubernetes cluster"
 msgstr ""
 
-msgid "Add License"
-msgstr ""
-
 msgid "Add Readme"
 msgstr ""
 
 msgid "Add additional text to appear in all email communications. %{character_limit} character limit"
+msgstr ""
+
+msgid "Add license"
 msgstr ""
 
 msgid "Add new application"
@@ -2223,6 +2226,15 @@ msgstr ""
 msgid "ConvDev Index"
 msgstr ""
 
+msgid "Copy %{protocol} clone URL"
+msgstr ""
+
+msgid "Copy HTTPS clone URL"
+msgstr ""
+
+msgid "Copy SSH clone URL"
+msgstr ""
+
 msgid "Copy SSH public key to clipboard"
 msgstr ""
 
@@ -2326,9 +2338,6 @@ msgid "Create new..."
 msgstr ""
 
 msgid "Create project label"
-msgstr ""
-
-msgid "CreateNewFork|Fork"
 msgstr ""
 
 msgid "CreateTag|Tag"
@@ -3233,11 +3242,6 @@ msgstr ""
 msgid "For public projects, anyone can view pipelines and access job details (output logs and artifacts)"
 msgstr ""
 
-msgid "Fork"
-msgid_plural "Forks"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "ForkedFromProjectPath|Forked from"
 msgstr ""
 
@@ -3644,12 +3648,6 @@ msgid "Go to"
 msgstr ""
 
 msgid "Go to %{link_to_google_takeout}."
-msgstr ""
-
-msgid "Go to your fork"
-msgstr ""
-
-msgid "GoToYourFork|Fork"
 msgstr ""
 
 msgid "Google Code import"
@@ -4967,6 +4965,9 @@ msgstr ""
 msgid "No labels with such name or description"
 msgstr ""
 
+msgid "No license. All rights reserved"
+msgstr ""
+
 msgid "No merge requests for the selected time period."
 msgstr ""
 
@@ -5705,6 +5706,27 @@ msgid "ProjectLastActivity|Never"
 msgstr ""
 
 msgid "ProjectLifecycle|Stage"
+msgstr ""
+
+msgid "ProjectOverview|Fork"
+msgstr ""
+
+msgid "ProjectOverview|Forks"
+msgstr ""
+
+msgid "ProjectOverview|Go to your fork"
+msgstr ""
+
+msgid "ProjectOverview|Star"
+msgstr ""
+
+msgid "ProjectOverview|Unstar"
+msgstr ""
+
+msgid "ProjectOverview|You have reached your project limit"
+msgstr ""
+
+msgid "ProjectOverview|You must sign in to star a project"
 msgstr ""
 
 msgid "ProjectPage|Project ID: %{project_id}"
@@ -8152,9 +8174,6 @@ msgid "You must accept our Terms of Service and privacy policy in order to regis
 msgstr ""
 
 msgid "You must have maintainer access to force delete a lock"
-msgstr ""
-
-msgid "You must sign in to star a project"
 msgstr ""
 
 msgid "You need a different license to enable FileLocks feature"
