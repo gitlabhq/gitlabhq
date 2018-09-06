@@ -77,7 +77,8 @@ module RuboCop
           start_clause_line?(previous_line(node)) ||
           block_start?(previous_line(node)) ||
           begin_line?(previous_line(node)) ||
-          assignment_line?(previous_line(node))
+          assignment_line?(previous_line(node)) ||
+          rescue_line?(previous_line(node))
       end
 
       def last_line_valid?(node)
@@ -109,6 +110,10 @@ module RuboCop
 
       def assignment_line?(line)
         line =~ /^\s*.*=/
+      end
+
+      def rescue_line?(line)
+        line =~ /^\s*rescue/
       end
 
       def block_start?(line)
