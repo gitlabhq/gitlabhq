@@ -351,6 +351,10 @@ module ProjectsHelper
     end
   end
 
+  def default_clone_label
+    _("Copy %{protocol} clone URL") % { protocol: default_clone_protocol.upcase }
+  end
+
   def default_clone_protocol
     if allowed_protocols_present?
       enabled_protocol

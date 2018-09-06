@@ -1,0 +1,13 @@
+- project = project || @project
+- ssh_copy_label = _("Copy SSH clone URL")
+- http_copy_label = _("Copy HTTPS clone URL")
+
+.btn-group.mobile-git-clone.js-mobile-git-clone
+  = clipboard_button(button_text: default_clone_label, target: '#project_clone', hide_button_icon: true, class: "input-group-text clone-dropdown-btn js-clone-dropdown-label btn btn-default")
+  %button.btn.btn-default.dropdown-toggle.js-dropdown-toggle{ type: "button", data: { toggle: "dropdown" } }
+    = icon("caret-down", class: "dropdown-btn-icon")
+  %ul.dropdown-menu.dropdown-menu-selectable.dropdown-menu-right.clone-options-dropdown{ data: { dropdown: true } }
+    %li
+      = dropdown_item_with_description(ssh_copy_label, project.ssh_url_to_repo, href: project.ssh_url_to_repo, data: { clone_type: 'ssh' })
+    %li
+      = dropdown_item_with_description(http_copy_label, project.http_url_to_repo, href: project.http_url_to_repo, data: { clone_type: 'http' })
