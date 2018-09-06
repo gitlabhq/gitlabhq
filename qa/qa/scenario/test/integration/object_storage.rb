@@ -4,7 +4,7 @@ module QA
   module Scenario
     module Test
       module Integration
-        class ObjectStorage < Test::Instance
+        class ObjectStorage < Test::Instance::All
           tags :object_storage
         end
       end

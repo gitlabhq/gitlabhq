@@ -44,10 +44,9 @@ export default {
     class="notes_holder"
   >
     <td
-      class="notes_line"
-      colspan="2"
-    ></td>
-    <td class="notes_content">
+      class="notes_content"
+      colspan="3"
+    >
       <div class="content">
         <diff-discussions
           v-if="discussions.length"

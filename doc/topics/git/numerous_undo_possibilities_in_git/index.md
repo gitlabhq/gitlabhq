@@ -41,10 +41,9 @@ Here's what we'll cover in this tutorial:
     - [Without history modification](#undo-remote-changes-without-changing-history) (preferred way)
     - [With history modification](#undo-remote-changes-with-modifying-history) (requires
       coordination with team and force pushes).
-
-      - [Usecases when modifying history is generally acceptable](#where-modifying-history-is-generally-acceptable)
-      - [How to modify history](#how-modifying-history-is-done)
-      - [How to remove sensitive information from repository](#deleting-sensitive-information-from-commits)
+       - [Usecases when modifying history is generally acceptable](#where-modifying-history-is-generally-acceptable)
+       - [How to modify history](#how-modifying-history-is-done)
+       - [How to remove sensitive information from repository](#deleting-sensitive-information-from-commits)
 
 
 ### Branching strategy
@@ -101,24 +100,23 @@ no changes added to commit (use "git add" and/or "git commit -a")
 
 At this point there are 3 options to undo the local changes you have:
 
- - Discard all local changes, but save them for possible re-use [later](#quickly-save-local-changes)
+- Discard all local changes, but save them for possible re-use [later](#quickly-save-local-changes)
 
-     ```shell
-     git stash
-     ```
+    ```shell
+    git stash
+    ```
 
- - Discarding local changes (permanently) to a file
+- Discarding local changes (permanently) to a file
 
-     ```shell
-     git checkout -- <file>
-     ```
+    ```shell
+    git checkout -- <file>
+    ```
 
- - Discard all local changes to all files permanently
+- Discard all local changes to all files permanently
 
-     ```shell
-     git reset --hard
-     ```
-
+    ```shell
+    git reset --hard
+    ```
 
 Before executing `git reset --hard`, keep in mind that there is also a way to
 just temporary store the changes without committing them using `git stash`.
@@ -140,10 +138,10 @@ them. This is achieved by Git stashing command `git stash`, which in fact saves 
 current work and runs `git reset --hard`, but it also has various
 additional options like:
 
- - `git stash save`, which enables including temporary commit message, which will help you identify changes, among with other options
- - `git stash list`, which lists all previously stashed commits (yes, there can be more) that were not `pop`ed
- - `git stash pop`, which redoes previously stashed changes and removes them from stashed list
- - `git stash apply`, which redoes previously stashed changes, but keeps them on stashed list
+- `git stash save`, which enables including temporary commit message, which will help you identify changes, among with other options
+- `git stash list`, which lists all previously stashed commits (yes, there can be more) that were not `pop`ed
+- `git stash pop`, which redoes previously stashed changes and removes them from stashed list
+- `git stash apply`, which redoes previously stashed changes, but keeps them on stashed list
 
 ### Staged local changes (before you commit)
 
@@ -174,29 +172,29 @@ Changes to be committed:
 
 Now you have 4 options to undo your changes:
 
- - Unstage the file to current commit (HEAD)
+- Unstage the file to current commit (HEAD)
 
-     ```shell
-     git reset HEAD <file>
-     ```
+    ```shell
+    git reset HEAD <file>
+    ```
 
- - Unstage everything - retain changes
+- Unstage everything - retain changes
 
-     ```shell
-     git reset
-     ```
+    ```shell
+    git reset
+    ```
 
- - Discard all local changes, but save them for [later](#quickly-save-local-changes)
+- Discard all local changes, but save them for [later](#quickly-save-local-changes)
 
-     ```shell
-     git stash
-     ```
+    ```shell
+    git stash
+    ```
 
- - Discard everything permanently
+- Discard everything permanently
 
-     ```shell
-     git reset --hard
-     ```
+    ```shell
+    git reset --hard
+    ```
 
 ## Committed local changes
 
@@ -232,42 +230,42 @@ In our example we will end up with commit `B`, that introduced bug/error. We hav
 
 - Undo (swap additions and deletions) changes introduced by commit `B`.
 
-   ```shell
-   git revert commit-B-id
-   ```
+    ```shell
+    git revert commit-B-id
+    ```
 
 - Undo changes on a single file or directory from commit `B`, but retain them in the staged state
 
-   ```shell
-   git checkout commit-B-id <file>
-   ```
+    ```shell
+    git checkout commit-B-id <file>
+    ```
 
 - Undo changes on a single file or directory from commit `B`, but retain them in the unstaged state
 
-   ```shell
-   git reset  commit-B-id <file>
-   ```
+    ```shell
+    git reset  commit-B-id <file>
+    ```
 
- - There is one command we also must not forget: **creating a new branch**
-   from the point where changes are not applicable or where the development has hit a
-   dead end. For example you have done commits `A-B-C-D` on your feature-branch
-   and then you figure `C` and `D` are wrong. At this point you either reset to `B`
-   and do commit `F` (which will cause problems with pushing and if forced pushed also with other developers)
-   since branch now looks `A-B-F`, which clashes with what other developers have locally (you will
-   [change history](#with-history-modification)), or you simply checkout commit `B` create
-   a new branch and do commit `F`. In the last case, everyone else can still do their work while you
-   have your new way to get it right and merge it back in later. Alternatively, with GitLab,
-   you can [cherry-pick](../../../user/project/merge_requests/cherry_pick_changes.md#cherry-picking-a-commit)
-   that commit into a new merge request.
+- There is one command we also must not forget: **creating a new branch**
+  from the point where changes are not applicable or where the development has hit a
+  dead end. For example you have done commits `A-B-C-D` on your feature-branch
+  and then you figure `C` and `D` are wrong. At this point you either reset to `B`
+  and do commit `F` (which will cause problems with pushing and if forced pushed also with other developers)
+  since branch now looks `A-B-F`, which clashes with what other developers have locally (you will
+  [change history](#with-history-modification)), or you simply checkout commit `B` create
+  a new branch and do commit `F`. In the last case, everyone else can still do their work while you
+  have your new way to get it right and merge it back in later. Alternatively, with GitLab,
+  you can [cherry-pick](../../../user/project/merge_requests/cherry_pick_changes.md#cherry-picking-a-commit)
+  that commit into a new merge request.
 
-      ![Create a new branch to avoid clashing](img/branching.png)
+    ![Create a new branch to avoid clashing](img/branching.png)
 
-      ```shell
-      git checkout commit-B-id
-      git checkout -b new-path-of-feature
-      # Create <commit F>
-      git commit -a
-      ```
+    ```shell
+    git checkout commit-B-id
+    git checkout -b new-path-of-feature
+    # Create <commit F>
+    git commit -a
+    ```
 
 ### With history modification
 
@@ -287,9 +285,9 @@ delete commit `B`.
 
 - Rebase the range from current commit D to A:
 
-   ```shell
-   git rebase -i A
-   ```
+    ```shell
+    git rebase -i A
+    ```
 
 - Command opens your favorite editor where you write `drop` in front of commit
  `B`, but you leave default `pick` with all other commits. Save and exit the

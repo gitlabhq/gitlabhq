@@ -107,7 +107,6 @@ export default {
   },
 
   [types.EXPAND_ALL_FILES](state) {
-    // eslint-disable-next-line no-param-reassign
     state.diffFiles = state.diffFiles.map(file => ({
       ...file,
       collapsed: false,

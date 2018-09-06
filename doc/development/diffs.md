@@ -26,11 +26,11 @@ In order to present diffs information on the Merge Request diffs page, we:
 
 1. Fetch all diff files from database `merge_request_diff_files`
 2. Fetch the _old_ and _new_ file blobs in batch to:
-  1. Highlight old and new file content
-  2. Know which viewer it should use for each file (text, image, deleted, etc)
-  3. Know if the file content changed
-  4. Know if it was stored externally
-  5. Know if it had storage errors
+   1. Highlight old and new file content
+   2. Know which viewer it should use for each file (text, image, deleted, etc)
+   3. Know if the file content changed
+   4. Know if it was stored externally
+   5. Know if it had storage errors
 3. If the diff file is cacheable (text-based), it's cached on Redis
 using `Gitlab::Diff::FileCollection::MergeRequestDiff`
 
@@ -95,6 +95,8 @@ Gitlab::Git::DiffCollection.collection_limits[:max_bytes] = Gitlab::Git::DiffCol
 
 No more files will be rendered at all if 5 megabytes have already been rendered.
 
+*Note:* All collection limit parameters are currently sent and applied on Gitaly. That is, once the limit is surpassed,
+Gitaly will only return the safe amount of data to be persisted on `merge_request_diff_files`.
 
 ### Individual diff file limits
 
@@ -106,18 +108,25 @@ Gitlab::Git::Diff::COLLAPSE_LIMIT = 10.kilobytes
 
 File diff will be collapsed (but be expandable) if it is larger than 10 kilobytes.
 
+*Note:* Although this nomenclature (Collapsing) is also used on Gitaly, this limit is only used on GitLab (hardcoded - not sent to Gitaly).
+Gitaly will only return `Diff.Collapsed` (RPC) when surpassing collection limits.
+
 ```ruby
 Gitlab::Git::Diff::SIZE_LIMIT = 100.kilobytes
 ```
 
 File diff will not be rendered if it's larger than 100 kilobytes.
 
+*Note:* This limit is currently hardcoded and applied on Gitaly and the RPC returns `Diff.TooLarge` when this limit is surpassed.
+Although we're still also applying it on GitLab, we should remove the redundancy from GitLab once we're confident with the Gitaly integration.
 
 ```ruby
 Commit::DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines] = 5000
 ```
 
 File diff will be suppressed (technically different from collapsed, but behaves the same, and is expandable) if it has more than 5000 lines.
+
+*Note:* This limit is currently hardcoded and only applied on GitLab.
 
 ## Viewers
 

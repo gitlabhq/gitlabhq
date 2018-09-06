@@ -130,6 +130,33 @@ FactoryBot.define do
       end
     end
 
+    # Build a custom repository by specifying a hash of `filename => content` in
+    # the transient `files` attribute. Each file will be created in its own
+    # commit, operating against the master branch. So, the following call:
+    #
+    #     create(:project, :custom_repo, files: { 'foo/a.txt' => 'foo', 'b.txt' => bar' })
+    #
+    # will create a repository containing two files, and two commits, in master
+    trait :custom_repo do
+      transient do
+        files {}
+      end
+
+      after :create do |project, evaluator|
+        raise "Failed to create repository!" unless project.create_repository
+
+        evaluator.files.each do |filename, content|
+          project.repository.create_file(
+            project.creator,
+            filename,
+            content,
+            message: "Automatically created file #{filename}",
+            branch_name: 'master'
+          )
+        end
+      end
+    end
+
     # Test repository - https://gitlab.com/gitlab-org/gitlab-test
     trait :repository do
       test_repo
@@ -233,6 +260,10 @@ FactoryBot.define do
     trait(:repository_enabled)      { repository_access_level ProjectFeature::ENABLED }
     trait(:repository_disabled)     { repository_access_level ProjectFeature::DISABLED }
     trait(:repository_private)      { repository_access_level ProjectFeature::PRIVATE }
+
+    trait :auto_devops do
+      association :auto_devops, factory: :project_auto_devops
+    end
   end
 
   # Project with empty repository

@@ -56,6 +56,7 @@ A job is defined by a list of parameters that define the job behavior.
 | Keyword       | Required | Description |
 |---------------|----------|-------------|
 | script        | yes      | Defines a shell script which is executed by Runner |
+| extends       | no       | Defines a configuration entry that this job is going to inherit from |
 | image         | no       | Use docker image, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
 | services      | no       | Use docker services, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
 | stage         | no       | Defines a job stage (default: `test`) |
@@ -74,6 +75,79 @@ A job is defined by a list of parameters that define the job behavior.
 | environment   | no       | Defines a name of environment to which deployment is done by this job |
 | coverage      | no       | Define code coverage settings for a given job |
 | retry         | no       | Define how many times a job can be auto-retried in case of a failure |
+
+### `extends`
+
+> Introduced in GitLab 11.3
+
+`extends` defines an entry name that a job, that uses `extends` is going to
+inherit from.
+
+`extends` in an alternative to using [YAML anchors](#anchors) that is a little
+more flexible and readable.
+
+```yaml
+.tests:
+  only:
+    refs:
+      - branches
+
+rspec:
+  extends: .tests
+  script: rake rspec
+  stage: test
+  only:
+    variables:
+      - $RSPEC
+```
+
+In the example above the `rspec` job is going to inherit from `.tests`
+template. GitLab will perform a reverse deep merge, what means that it will
+merge `rspec` contents into `.tests` recursively, and it is going to result in
+following configuration of the `rspec` job:
+
+```yaml
+rspec:
+  script: rake rspec
+  stage: test
+  only:
+    refs:
+      - branches
+    variables:
+      - $RSPEC
+```
+
+`.tests` in this example is a [hidden key](#hidden-keys-jobs), but it is
+possible to inherit from regular jobs as well.
+
+`extends` supports multi-level inheritance, however it is not recommended to
+use more than three levels of inheritance. Maximum nesting level supported is
+10 levels.
+
+
+```yaml
+.tests:
+  only:
+    - pushes
+
+.rspec:
+  extends: .tests
+  script: rake rspec
+
+rspec 1:
+  variables:
+    RSPEC_SUITE: '1'
+  extends: .rspec
+
+rspec 2:
+  variables:
+    RSPEC_SUITE: '2'
+  extends: .rspec
+
+spinach:
+  extends: .tests
+  script: rake spinach
+```
 
 ### `pages`
 
@@ -309,7 +383,7 @@ except master.
 ## `only` and `except` (complex)
 
 > `refs` and `kubernetes` policies introduced in GitLab 10.0
-
+>
 > `variables` policy introduced in 10.7
 
 CAUTION: **Warning:**
@@ -509,9 +583,10 @@ The above script will:
 ### `when:manual`
 
 > **Notes:**
-- Introduced in GitLab 8.10.
-- Blocking manual actions were introduced in GitLab 9.0.
-- Protected actions were introduced in GitLab 9.2.
+>
+> - Introduced in GitLab 8.10.
+> - Blocking manual actions were introduced in GitLab 9.0.
+> - Protected actions were introduced in GitLab 9.2.
 
 Manual actions are a special type of job that are not executed automatically,
 they need to be explicitly started by a user. An example usage of manual actions
@@ -542,11 +617,11 @@ have ability to merge to this branch.
 
 ## `environment`
 
+> **Notes:**
 >
-**Notes:**
-- Introduced in GitLab 8.9.
-- You can read more about environments and find more examples in the
-  [documentation about environments][environment].
+> - Introduced in GitLab 8.9.
+> - You can read more about environments and find more examples in the
+>   [documentation about environments][environment].
 
 `environment` is used to define that a job deploys to a specific environment.
 If `environment` is specified and no environment under that name exists, a new
@@ -567,15 +642,15 @@ deployment to the `production` environment.
 
 ### `environment:name`
 
+> **Notes:**
 >
-**Notes:**
-- Introduced in GitLab 8.11.
-- Before GitLab 8.11, the name of an environment could be defined as a string like
-  `environment: production`. The recommended way now is to define it under the
-  `name` keyword.
-- The `name` parameter can use any of the defined CI variables,
-  including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
-  You however cannot use variables defined under `script`.
+> - Introduced in GitLab 8.11.
+> - Before GitLab 8.11, the name of an environment could be defined as a string like
+>   `environment: production`. The recommended way now is to define it under the
+>   `name` keyword.
+> - The `name` parameter can use any of the defined CI variables,
+>   including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
+>   You however cannot use variables defined under `script`.
 
 The `environment` name can contain:
 
@@ -606,14 +681,14 @@ deploy to production:
 
 ### `environment:url`
 
+> **Notes:**
 >
-**Notes:**
-- Introduced in GitLab 8.11.
-- Before GitLab 8.11, the URL could be added only in GitLab's UI. The
-  recommended way now is to define it in `.gitlab-ci.yml`.
-- The `url` parameter can use any of the defined CI variables,
-  including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
-  You however cannot use variables defined under `script`.
+> - Introduced in GitLab 8.11.
+> - Before GitLab 8.11, the URL could be added only in GitLab's UI. The
+>   recommended way now is to define it in `.gitlab-ci.yml`.
+> - The `url` parameter can use any of the defined CI variables,
+>   including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
+>   You however cannot use variables defined under `script`.
 
 This is an optional value that when set, it exposes buttons in various places
 in GitLab which when clicked take you to the defined URL.
@@ -633,12 +708,12 @@ deploy to production:
 
 ### `environment:on_stop`
 
+> **Notes:**
 >
-**Notes:**
-- [Introduced][ce-6669] in GitLab 8.13.
-- Starting with GitLab 8.14, when you have an environment that has a stop action
-  defined, GitLab will automatically trigger a stop action when the associated
-  branch is deleted.
+> - [Introduced][ce-6669] in GitLab 8.13.
+> - Starting with GitLab 8.14, when you have an environment that has a stop action
+>   defined, GitLab will automatically trigger a stop action when the associated
+>   branch is deleted.
 
 Closing (stoping) environments can be achieved with the `on_stop` keyword defined under
 `environment`. It declares a different job that runs in order to close
@@ -689,13 +764,13 @@ The `stop_review_app` job is **required** to have the following keywords defined
 
 ### Dynamic environments
 
+> **Notes:**
 >
-**Notes:**
-- [Introduced][ce-6323] in GitLab 8.12 and GitLab Runner 1.6.
-- The `$CI_ENVIRONMENT_SLUG` was [introduced][ce-7983] in GitLab 8.15.
-- The `name` and `url` parameters can use any of the defined CI variables,
-  including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
-  You however cannot use variables defined under `script`.
+> - [Introduced][ce-6323] in GitLab 8.12 and GitLab Runner 1.6.
+> - The `$CI_ENVIRONMENT_SLUG` was [introduced][ce-7983] in GitLab 8.15.
+> - The `name` and `url` parameters can use any of the defined CI variables,
+>   including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
+>   You however cannot use variables defined under `script`.
 
 For example:
 
@@ -725,13 +800,13 @@ as Review Apps. You can see a simple example using Review Apps at
 
 ## `cache`
 
+> **Notes:**
 >
-**Notes:**
-- Introduced in GitLab Runner v0.7.0.
-- `cache` can be set globally and per-job.
-- From GitLab 9.0, caching is enabled and shared between pipelines and jobs
-  by default.
-- From GitLab 9.2, caches are restored before [artifacts](#artifacts).
+> - Introduced in GitLab Runner v0.7.0.
+> - `cache` can be set globally and per-job.
+> - From GitLab 9.0, caching is enabled and shared between pipelines and jobs
+>   by default.
+> - From GitLab 9.2, caches are restored before [artifacts](#artifacts).
 
 TIP: **Learn more:**
 Read how caching works and find out some good practices in the
@@ -893,13 +968,13 @@ skip the download step.
 
 ## `artifacts`
 
+> **Notes:**
 >
-**Notes:**
-- Introduced in GitLab Runner v0.7.0 for non-Windows platforms.
-- Windows support was added in GitLab Runner v.1.0.0.
-- From GitLab 9.2, caches are restored before artifacts.
-- Not all executors are [supported](https://docs.gitlab.com/runner/executors/#compatibility-chart).
-- Job artifacts are only collected for successful jobs by default.
+> - Introduced in GitLab Runner v0.7.0 for non-Windows platforms.
+> - Windows support was added in GitLab Runner v.1.0.0.
+> - From GitLab 9.2, caches are restored before artifacts.
+> - Not all executors are [supported](https://docs.gitlab.com/runner/executors/#compatibility-chart).
+> - Job artifacts are only collected for successful jobs by default.
 
 `artifacts` is used to specify a list of files and directories which should be
 attached to the job after success.

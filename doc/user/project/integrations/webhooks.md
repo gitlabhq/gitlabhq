@@ -1,21 +1,21 @@
 # Webhooks
 
->**Note:**
-Starting from GitLab 8.5:
-- the `repository` key is deprecated in favor of the `project` key
-- the `project.ssh_url` key is deprecated in favor of the `project.git_ssh_url` key
-- the `project.http_url` key is deprecated in favor of the `project.git_http_url` key
-
->**Note:**
-Starting from GitLab 11.1, the logs of web hooks are automatically removed after
-one month.
-
->**Note**
-Starting from GitLab 11.2:
-- The `description` field for issues, merge requests, comments, and wiki pages
-  is rewritten so that simple Markdown image references (like
-  `![](/uploads/...)`) have their target URL changed to an absolute URL. See
-  [image URL rewriting](#image-url-rewriting) for more details.
+> **Note:**
+> Starting from GitLab 8.5:
+> - the `repository` key is deprecated in favor of the `project` key
+> - the `project.ssh_url` key is deprecated in favor of the `project.git_ssh_url` key
+> - the `project.http_url` key is deprecated in favor of the `project.git_http_url` key
+>
+> **Note:**
+> Starting from GitLab 11.1, the logs of web hooks are automatically removed after
+> one month.
+>
+> **Note:**
+> Starting from GitLab 11.2:
+> - The `description` field for issues, merge requests, comments, and wiki pages
+>   is rewritten so that simple Markdown image references (like
+>   `![](/uploads/...)`) have their target URL changed to an absolute URL. See
+>   [image URL rewriting](#image-url-rewriting) for more details.
 
 Project webhooks allow you to trigger a URL if for example new code is pushed or
 a new issue is created. You can configure webhooks to listen for specific events
@@ -65,8 +65,8 @@ Below are described the supported events.
 
 Triggered when you push to the repository except when pushing tags.
 
-> **Note:** When more than 20 commits are pushed at once, the `commits` web hook
-  attribute will only contain the first 20 for performance reasons. Loading
+> **Note:** When more than 20 commits are pushed at once, the `commits` web hook 
+  attribute will only contain the first 20 for performance reasons. Loading 
   detailed commit data is expensive. Note that despite only 20 commits being
   present in the `commits` attribute, the `total_commits_count` attribute will
   contain the actual total.
@@ -320,7 +320,7 @@ X-Gitlab-Event: Issue Hook
 }
 ```
 
-**Note**: `assignee` and `assignee_id` keys are deprecated and now show the first assignee only.
+> **Note**: `assignee` and `assignee_id` keys are deprecated and now show the first assignee only.
 
 ### Comment events
 
@@ -619,7 +619,7 @@ X-Gitlab-Event: Note Hook
 }
 ```
 
-**Note**: `assignee_id` field is deprecated and now shows the first assignee only.
+> **Note**: `assignee_id` field is deprecated and now shows the first assignee only.
 
 #### Comment on code snippet
 
@@ -1174,7 +1174,7 @@ On this page, you can see data that GitLab sends (request headers and body) and 
 
 From this page, you can repeat delivery with the same data by clicking `Resend Request` button.
 
->**Note:** If URL or secret token of the webhook were updated, data will be delivered to the new address.
+> **Note:** If URL or secret token of the webhook were updated, data will be delivered to the new address.
 
 ### Receiving duplicate or multiple web hook requests triggered by one event
 

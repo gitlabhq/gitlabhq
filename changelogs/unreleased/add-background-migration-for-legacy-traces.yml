@@ -1,0 +1,5 @@
+---
+title: Add background migrations for legacy artifacts
+merge_request: 18615
+author:
+type: performance

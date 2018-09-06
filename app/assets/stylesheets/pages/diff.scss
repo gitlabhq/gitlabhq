@@ -749,6 +749,10 @@
     left: $gl-padding;
   }
 
+  .dropdown-input .dropdown-input-search {
+    pointer-events: all;
+  }
+
   .diff-changed-file {
     display: flex;
     padding-top: 8px;

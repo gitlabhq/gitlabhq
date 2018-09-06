@@ -470,4 +470,16 @@ describe ProjectsHelper do
       end
     end
   end
+
+  describe '#legacy_render_context' do
+    it 'returns the redcarpet engine' do
+      params = { legacy_render: '1' }
+
+      expect(helper.legacy_render_context(params)).to include(markdown_engine: :redcarpet)
+    end
+
+    it 'returns nothing' do
+      expect(helper.legacy_render_context({})).to be_empty
+    end
+  end
 end

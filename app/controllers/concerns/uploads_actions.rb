@@ -53,6 +53,8 @@ module UploadsActions
       maximum_size: Gitlab::CurrentSettings.max_attachment_size.megabytes.to_i)
 
     render json: authorized
+  rescue SocketError
+    render json: "Error uploading file", status: :internal_server_error
   end
 
   private

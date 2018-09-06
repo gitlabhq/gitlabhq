@@ -150,6 +150,12 @@ msgstr ""
 msgid "%{unstaged} unstaged and %{staged} staged changes"
 msgstr ""
 
+msgid "%{usage_ping_link_start}Learn more%{usage_ping_link_end} about what information is shared with GitLab Inc."
+msgstr ""
+
+msgid "+ %{count} more"
+msgstr ""
+
 msgid "+ %{moreCount} more"
 msgstr ""
 
@@ -250,6 +256,9 @@ msgstr ""
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr ""
 
+msgid "A default branch cannot be chosen for an empty project."
+msgstr ""
+
 msgid "A new branch will be created in your fork and a new merge request will be started."
 msgstr ""
 
@@ -316,10 +325,10 @@ msgstr ""
 msgid "Add Kubernetes cluster"
 msgstr ""
 
-msgid "Add License"
+msgid "Add Readme"
 msgstr ""
 
-msgid "Add Readme"
+msgid "Add license"
 msgstr ""
 
 msgid "Add new application"
@@ -1326,10 +1335,7 @@ msgstr ""
 msgid "ClusterIntegration|Certificate Authority bundle (PEM format)"
 msgstr ""
 
-msgid "ClusterIntegration|Choose which of your project's environments will use this Kubernetes cluster."
-msgstr ""
-
-msgid "ClusterIntegration|Control how your Kubernetes cluster integrates with GitLab"
+msgid "ClusterIntegration|Choose which of your environments will use this cluster."
 msgstr ""
 
 msgid "ClusterIntegration|Copy API URL"
@@ -1354,6 +1360,12 @@ msgid "ClusterIntegration|Create Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Did you know?"
+msgstr ""
+
+msgid "ClusterIntegration|Enable or disable GitLab's connection to your Kubernetes cluster."
+msgstr ""
+
+msgid "ClusterIntegration|Enable this setting if using role-based access control (RBAC)."
 msgstr ""
 
 msgid "ClusterIntegration|Enter the details for your Kubernetes cluster"
@@ -1446,15 +1458,6 @@ msgstr ""
 msgid "ClusterIntegration|Kubernetes cluster integration"
 msgstr ""
 
-msgid "ClusterIntegration|Kubernetes cluster integration is disabled for this project."
-msgstr ""
-
-msgid "ClusterIntegration|Kubernetes cluster integration is enabled for this project."
-msgstr ""
-
-msgid "ClusterIntegration|Kubernetes cluster integration is enabled for this project. Disabling this integration will not affect your Kubernetes cluster, it will only temporarily turn off GitLab's connection to it."
-msgstr ""
-
 msgid "ClusterIntegration|Kubernetes cluster is being created on Google Kubernetes Engine..."
 msgstr ""
 
@@ -1477,12 +1480,6 @@ msgid "ClusterIntegration|Learn more about %{help_link_start}Kubernetes%{help_li
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about %{help_link_start}zones%{help_link_end}."
-msgstr ""
-
-msgid "ClusterIntegration|Learn more about environments"
-msgstr ""
-
-msgid "ClusterIntegration|Learn more about security configuration"
 msgstr ""
 
 msgid "ClusterIntegration|Machine type"
@@ -1539,6 +1536,9 @@ msgstr ""
 msgid "ClusterIntegration|Prometheus is an open-source monitoring system with %{gitlabIntegrationLink} to monitor deployed applications."
 msgstr ""
 
+msgid "ClusterIntegration|RBAC-enabled cluster (experimental)"
+msgstr ""
+
 msgid "ClusterIntegration|Read our %{link_to_help_page} on Kubernetes cluster integration."
 msgstr ""
 
@@ -1567,9 +1567,6 @@ msgid "ClusterIntegration|Search projects"
 msgstr ""
 
 msgid "ClusterIntegration|Search zones"
-msgstr ""
-
-msgid "ClusterIntegration|Security"
 msgstr ""
 
 msgid "ClusterIntegration|See and edit the details for your Kubernetes cluster"
@@ -1611,10 +1608,13 @@ msgstr ""
 msgid "ClusterIntegration|The IP address is in the process of being assigned. Please check your Kubernetes cluster or Quotas on Google Kubernetes Engine if it takes a long time."
 msgstr ""
 
-msgid "ClusterIntegration|The default cluster configuration grants access to a wide set of functionalities needed to successfully build and deploy a containerised application."
+msgid "ClusterIntegration|The default cluster configuration grants access to many functionalities needed to successfully build and deploy a containerised application."
 msgstr ""
 
 msgid "ClusterIntegration|This account must have permissions to create a Kubernetes cluster in the %{link_to_container_project} specified below"
+msgstr ""
+
+msgid "ClusterIntegration|This option will allow you to install applications on RBAC clusters."
 msgstr ""
 
 msgid "ClusterIntegration|Toggle Kubernetes Cluster"
@@ -1897,6 +1897,15 @@ msgstr ""
 msgid "ConvDev Index"
 msgstr ""
 
+msgid "Copy %{protocol} clone URL"
+msgstr ""
+
+msgid "Copy HTTPS clone URL"
+msgstr ""
+
+msgid "Copy SSH clone URL"
+msgstr ""
+
 msgid "Copy URL to clipboard"
 msgstr ""
 
@@ -1988,9 +1997,6 @@ msgid "Create new..."
 msgstr ""
 
 msgid "Create project label"
-msgstr ""
-
-msgid "CreateNewFork|Fork"
 msgstr ""
 
 msgid "CreateTag|Tag"
@@ -2087,6 +2093,9 @@ msgid "December"
 msgstr ""
 
 msgid "Decline and sign out"
+msgstr ""
+
+msgid "Default Branch"
 msgstr ""
 
 msgid "Default: Directly import the Google Code email address or username"
@@ -2409,6 +2418,12 @@ msgstr ""
 msgid "Enable the Performance Bar for a given group."
 msgstr ""
 
+msgid "Enable usage ping"
+msgstr ""
+
+msgid "Enable usage ping to get an overview of how you are using GitLab from a feature perspective."
+msgstr ""
+
 msgid "Ends at (UTC)"
 msgstr ""
 
@@ -2721,16 +2736,14 @@ msgstr ""
 msgid "For internal projects, any logged in user can view pipelines and access job details (output logs and artifacts)"
 msgstr ""
 
+msgid "For more information, see the documentation on %{deactivating_usage_ping_link_start}deactivating the usage ping%{deactivating_usage_ping_link_end}."
+msgstr ""
+
 msgid "For private projects, any member (guest or higher) can view pipelines and access job details (output logs and artifacts)"
 msgstr ""
 
 msgid "For public projects, anyone can view pipelines and access job details (output logs and artifacts)"
 msgstr ""
-
-msgid "Fork"
-msgid_plural "Forks"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "ForkedFromProjectPath|Forked from"
 msgstr ""
@@ -2853,12 +2866,6 @@ msgid "Go to"
 msgstr ""
 
 msgid "Go to %{link_to_google_takeout}."
-msgstr ""
-
-msgid "Go to your fork"
-msgstr ""
-
-msgid "GoToYourFork|Fork"
 msgstr ""
 
 msgid "Google Code import"
@@ -3032,6 +3039,9 @@ msgstr ""
 msgid "Help page text and support page url."
 msgstr ""
 
+msgid "Hide payload"
+msgstr ""
+
 msgid "Hide value"
 msgid_plural "Hide values"
 msgstr[0] ""
@@ -3170,6 +3180,9 @@ msgid "Import repositories from GitHub"
 msgstr ""
 
 msgid "Import repository"
+msgstr ""
+
+msgid "In order to enable instance-level analytics, please ask an admin to enable %{usage_ping_link_start}usage ping%{usage_ping_link_end}."
 msgstr ""
 
 msgid "In the next step, you'll be able to select the projects you want to import."
@@ -3892,6 +3905,9 @@ msgstr ""
 msgid "No labels with such name or description"
 msgstr ""
 
+msgid "No license. All rights reserved"
+msgstr ""
+
 msgid "No merge requests found"
 msgstr ""
 
@@ -4371,6 +4387,9 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
+msgid "Preview payload"
+msgstr ""
+
 msgid "Prioritize"
 msgstr ""
 
@@ -4549,6 +4568,27 @@ msgid "ProjectLastActivity|Never"
 msgstr ""
 
 msgid "ProjectLifecycle|Stage"
+msgstr ""
+
+msgid "ProjectOverview|Fork"
+msgstr ""
+
+msgid "ProjectOverview|Forks"
+msgstr ""
+
+msgid "ProjectOverview|Go to your fork"
+msgstr ""
+
+msgid "ProjectOverview|Star"
+msgstr ""
+
+msgid "ProjectOverview|Unstar"
+msgstr ""
+
+msgid "ProjectOverview|You have reached your project limit"
+msgstr ""
+
+msgid "ProjectOverview|You must sign in to star a project"
 msgstr ""
 
 msgid "ProjectPage|Project ID: %{project_id}"
@@ -5078,6 +5118,9 @@ msgid "Select source branch"
 msgstr ""
 
 msgid "Select target branch"
+msgstr ""
+
+msgid "Select the branch you want to set as the default for this project. All merge requests and commits will automatically be made against this branch unless you specify a different one."
 msgstr ""
 
 msgid "Selecting a GitLab user will add a link to the GitLab user in the descriptions of issues and comments (e.g. \"By <a href=\"#\">@johnsmith</a>\"). It will also associate and/or assign these issues and comments with the selected user."
@@ -5657,6 +5700,9 @@ msgstr ""
 msgid "The update action will time out after %{number_of_minutes} minutes. For big repositories, use a clone/push combination."
 msgstr ""
 
+msgid "The usage ping is disabled, and cannot be configured through this form."
+msgstr ""
+
 msgid "The user map is a JSON document mapping the Google Code users that participated on your projects to the way their email addresses and usernames will be imported into GitLab. You can change this by changing the value on the right hand side of <code>:</code>. Be sure to preserve the surrounding double quotes, other punctuation and the email address or username on the left hand side."
 msgstr ""
 
@@ -6021,10 +6067,16 @@ msgstr ""
 msgid "To define internal users, first enable new users set to external"
 msgstr ""
 
+msgid "To enable it and see User Cohorts, visit %{application_settings_link_start}application settings%{application_settings_link_end}."
+msgstr ""
+
 msgid "To get started you enter your FogBugz URL and login information below. In the next steps, you'll be able to map users and select the projects you want to import."
 msgstr ""
 
 msgid "To get started, please enter your Gitea Host URL and a %{link_to_personal_token}."
+msgstr ""
+
+msgid "To help improve GitLab and its user experience, GitLab will periodically collect usage information."
 msgstr ""
 
 msgid "To import GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
@@ -6186,6 +6238,9 @@ msgstr ""
 msgid "Upvotes"
 msgstr ""
 
+msgid "Usage ping is not enabled"
+msgstr ""
+
 msgid "Usage statistics"
 msgstr ""
 
@@ -6205,6 +6260,9 @@ msgid "Use the following registration token during setup:"
 msgstr ""
 
 msgid "Use your global notification setting"
+msgstr ""
+
+msgid "User Cohorts are only shown when the %{usage_ping_link_start}usage ping%{usage_ping_link_end} is enabled."
 msgstr ""
 
 msgid "User Settings"
@@ -6531,9 +6589,6 @@ msgstr ""
 msgid "You must have maintainer access to force delete a lock"
 msgstr ""
 
-msgid "You must sign in to star a project"
-msgstr ""
-
 msgid "You need permission."
 msgstr ""
 
@@ -6857,6 +6912,9 @@ msgid "mrWidget|This merge request is in the process of being merged"
 msgstr ""
 
 msgid "mrWidget|This project is archived, write access has been disabled"
+msgstr ""
+
+msgid "mrWidget|You are not allowed to edit this project directly. Please fork to make changes."
 msgstr ""
 
 msgid "mrWidget|You can merge this merge request manually using the"

@@ -297,10 +297,10 @@ avoid duplication, link to the special document that can be found in
 [`doc/administration/restart_gitlab.md`][doc-restart]. Usually the text will
 read like:
 
-  ```
-  Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)
-  for the changes to take effect.
-  ```
+```
+Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)
+for the changes to take effect.
+```
 
 If the document you are editing resides in a place other than the GitLab CE/EE
 `doc/` directory, instead of the relative link, use the full path:

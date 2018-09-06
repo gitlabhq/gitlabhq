@@ -45,6 +45,17 @@ describe Gitlab::GitalyClient::RemoteService do
     end
   end
 
+  describe '#find_remote_root_ref' do
+    it 'sends an find_remote_root_ref message and returns the root ref' do
+      expect_any_instance_of(Gitaly::RemoteService::Stub)
+        .to receive(:find_remote_root_ref)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(double(ref: 'master'))
+
+      expect(client.find_remote_root_ref('origin')).to eq 'master'
+    end
+  end
+
   describe '#update_remote_mirror' do
     let(:ref_name) { 'remote_mirror_1' }
     let(:only_branches_matching) { ['my-branch', 'master'] }

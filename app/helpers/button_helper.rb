@@ -61,7 +61,7 @@ module ButtonHelper
     dropdown_description = http_dropdown_description(protocol)
     append_url = project.http_url_to_repo if append_link
 
-    dropdown_item_with_description(protocol, dropdown_description, href: append_url)
+    dropdown_item_with_description(protocol, dropdown_description, href: append_url, data: { clone_type: 'http' })
   end
 
   def http_dropdown_description(protocol)
@@ -80,16 +80,17 @@ module ButtonHelper
 
     append_url = project.ssh_url_to_repo if append_link
 
-    dropdown_item_with_description('SSH', dropdown_description, href: append_url)
+    dropdown_item_with_description('SSH', dropdown_description, href: append_url, data: { clone_type: 'ssh' })
   end
 
-  def dropdown_item_with_description(title, description, href: nil)
+  def dropdown_item_with_description(title, description, href: nil, data: nil)
     button_content = content_tag(:strong, title, class: 'dropdown-menu-inner-title')
     button_content << content_tag(:span, description, class: 'dropdown-menu-inner-content') if description
 
     content_tag (href ? :a : :span),
       (href ? button_content : title),
       class: "#{title.downcase}-selector",
-      href: (href if href)
+      href: (href if href),
+      data: (data if data)
   end
 end

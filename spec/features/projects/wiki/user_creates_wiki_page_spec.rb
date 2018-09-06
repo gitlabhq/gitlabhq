@@ -146,6 +146,8 @@ describe "User creates wiki page" do
           expect(page).to have_selector(".katex", count: 3).and have_content("2+2 is 4")
         end
       end
+
+      it_behaves_like 'wiki file attachments'
     end
 
     context "in a group namespace", :js do

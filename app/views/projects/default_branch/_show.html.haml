@@ -1,0 +1,21 @@
+- expanded = Rails.env.test?
+
+%section.settings.no-animate#default-branch-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4= _('Default Branch')
+    %button.btn.js-settings-toggle
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Select the branch you want to set as the default for this project. All merge requests and commits will automatically be made against this branch unless you specify a different one.')
+
+  .settings-content
+    - if @project.empty_repo?
+      .text-secondary
+        = _('A default branch cannot be chosen for an empty project.')
+    - else
+      = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, anchor: 'default-branch-settings' }, authenticity_token: true do |f|
+        %fieldset
+          .form-group
+            = f.label :default_branch, "Default Branch", class: 'label-bold'
+            = f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
+        = f.submit 'Save changes', class: "btn btn-success"
