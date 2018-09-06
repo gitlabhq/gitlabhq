@@ -328,6 +328,22 @@ describe RuboCop::Cop::LineBreakAroundConditionalBlock do
       expect(cop.offenses).to be_empty
     end
 
+    it "doesn't flag violation for #{conditional} preceded by a rescue" do
+      source = <<~RUBY
+        def a_method
+          do_something
+        rescue
+          #{conditional} condition
+            do_something
+          end
+        end
+      RUBY
+
+      inspect_source(source)
+
+      expect(cop.offenses).to be_empty
+    end
+
     it "doesn't flag violation for #{conditional} followed by a rescue" do
       source = <<~RUBY
             def a_method

@@ -1,4 +1,6 @@
-require 'spec_helper'
+require 'fast_spec_helper'
+
+require_dependency 'active_model'
 
 describe Gitlab::Ci::Config do
   let(:config) do
@@ -42,6 +44,36 @@ describe Gitlab::Ci::Config do
     end
   end
 
+  context 'when using extendable hash' do
+    let(:yml) do
+      <<-EOS
+        image: ruby:2.2
+
+        rspec:
+          script: rspec
+
+        test:
+          extends: rspec
+          image: ruby:alpine
+      EOS
+    end
+
+    it 'correctly extends the hash' do
+      hash = {
+        image: 'ruby:2.2',
+        rspec: { script: 'rspec' },
+        test: {
+          extends: 'rspec',
+          image: 'ruby:alpine',
+          script: 'rspec'
+        }
+      }
+
+      expect(config).to be_valid
+      expect(config.to_hash).to eq hash
+    end
+  end
+
   context 'when config is invalid' do
     context 'when yml is incorrect' do
       let(:yml) { '// invalid' }
@@ -49,7 +81,7 @@ describe Gitlab::Ci::Config do
       describe '.new' do
         it 'raises error' do
           expect { config }.to raise_error(
-            ::Gitlab::Ci::Config::Loader::FormatError,
+            described_class::ConfigError,
             /Invalid configuration format/
           )
         end
@@ -73,6 +105,22 @@ describe Gitlab::Ci::Config do
         it 'returns an array of strings' do
           expect(config.errors).to all(be_an_instance_of(String))
         end
+      end
+    end
+
+    context 'when invalid extended hash has been provided' do
+      let(:yml) do
+        <<-EOS
+          test:
+            extends: test
+            script: rspec
+        EOS
+      end
+
+      it 'raises an error' do
+        expect { config }.to raise_error(
+          described_class::ConfigError, /circular dependency detected/
+        )
       end
     end
   end

@@ -588,6 +588,7 @@ ActiveRecord::Schema.define(version: 20180826111825) do
     t.string "encrypted_password_iv"
     t.text "encrypted_token"
     t.string "encrypted_token_iv"
+    t.integer "authorization_type", limit: 2
   end
 
   add_index "cluster_platforms_kubernetes", ["cluster_id"], name: "index_cluster_platforms_kubernetes_on_cluster_id", unique: true, using: :btree
@@ -2245,6 +2246,7 @@ ActiveRecord::Schema.define(version: 20180826111825) do
     t.boolean "repository_update_events", default: false, null: false
     t.boolean "job_events", default: false, null: false
     t.boolean "confidential_note_events"
+    t.text "push_events_branch_filter"
   end
 
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree

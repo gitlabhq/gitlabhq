@@ -133,6 +133,7 @@ Once your GitLab Chart is installed, configuration changes and chart updates
 should be done using `helm upgrade`:
 
 ```sh
+helm repo update
 helm upgrade --reuse-values gitlab gitlab/gitlab
 ```
 

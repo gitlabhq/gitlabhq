@@ -138,7 +138,7 @@ module VisibilityLevelHelper
   end
 
   def project_visibility_icon_description(level)
-    "#{visibility_level_label(level)} - #{project_visibility_level_description(level)}"
+    "#{project_visibility_level_description(level)}"
   end
 
   def visibility_level_label(level)

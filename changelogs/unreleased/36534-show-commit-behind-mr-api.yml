@@ -1,0 +1,5 @@
+---
+title: Adds diverged_commits_count field to GET api/v4/projects/:project_id/merge_requests/:merge_request_iid
+merge_request: 21405
+author: Jacopo Beschi @jacopo-beschi
+type: added

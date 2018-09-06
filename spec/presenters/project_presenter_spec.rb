@@ -159,39 +159,76 @@ describe ProjectPresenter do
     end
   end
 
+  context 'statistics anchors (empty repo)' do
+    let(:project) { create(:project, :empty_repo) }
+    let(:presenter) { described_class.new(project, current_user: user) }
+
+    describe '#files_anchor_data' do
+      it 'returns files data' do
+        expect(presenter.files_anchor_data).to have_attributes(enabled: true,
+                                                               label: 'Files (0 Bytes)',
+                                                               link: nil)
+      end
+    end
+
+    describe '#commits_anchor_data' do
+      it 'returns commits data' do
+        expect(presenter.commits_anchor_data).to have_attributes(enabled: true,
+                                                                 label: 'Commits (0)',
+                                                                 link: nil)
+      end
+    end
+
+    describe '#branches_anchor_data' do
+      it 'returns branches data' do
+        expect(presenter.branches_anchor_data).to have_attributes(enabled: true,
+                                                                  label: "Branches (0)",
+                                                                  link: nil)
+      end
+    end
+
+    describe '#tags_anchor_data' do
+      it 'returns tags data' do
+        expect(presenter.tags_anchor_data).to have_attributes(enabled: true,
+                                                              label: "Tags (0)",
+                                                              link: nil)
+      end
+    end
+  end
+
   context 'statistics anchors' do
     let(:project) { create(:project, :repository) }
     let(:presenter) { described_class.new(project, current_user: user) }
 
     describe '#files_anchor_data' do
       it 'returns files data' do
-        expect(presenter.files_anchor_data).to eq(OpenStruct.new(enabled: true,
-                                                                 label: 'Files (0 Bytes)',
-                                                                 link: presenter.project_tree_path(project)))
+        expect(presenter.files_anchor_data).to have_attributes(enabled: true,
+                                                               label: 'Files (0 Bytes)',
+                                                               link: presenter.project_tree_path(project))
       end
     end
 
     describe '#commits_anchor_data' do
       it 'returns commits data' do
-        expect(presenter.commits_anchor_data).to eq(OpenStruct.new(enabled: true,
-                                                                   label: 'Commits (0)',
-                                                                   link: presenter.project_commits_path(project, project.repository.root_ref)))
+        expect(presenter.commits_anchor_data).to have_attributes(enabled: true,
+                                                                 label: 'Commits (0)',
+                                                                 link: presenter.project_commits_path(project, project.repository.root_ref))
       end
     end
 
     describe '#branches_anchor_data' do
       it 'returns branches data' do
-        expect(presenter.branches_anchor_data).to eq(OpenStruct.new(enabled: true,
-                                                                    label: "Branches (#{project.repository.branches.size})",
-                                                                    link: presenter.project_branches_path(project)))
+        expect(presenter.branches_anchor_data).to have_attributes(enabled: true,
+                                                                  label: "Branches (#{project.repository.branches.size})",
+                                                                  link: presenter.project_branches_path(project))
       end
     end
 
     describe '#tags_anchor_data' do
       it 'returns tags data' do
-        expect(presenter.tags_anchor_data).to eq(OpenStruct.new(enabled: true,
-                                                                label: "Tags (#{project.repository.tags.size})",
-                                                                link: presenter.project_tags_path(project)))
+        expect(presenter.tags_anchor_data).to have_attributes(enabled: true,
+                                                              label: "Tags (#{project.repository.tags.size})",
+                                                              link: presenter.project_tags_path(project))
       end
     end
 
@@ -199,10 +236,10 @@ describe ProjectPresenter do
       it 'returns new file data if user can push' do
         project.add_developer(user)
 
-        expect(presenter.new_file_anchor_data).to eq(OpenStruct.new(enabled: false,
-                                                                    label: "New file",
-                                                                    link: presenter.project_new_blob_path(project, 'master'),
-                                                                    class_modifier: 'new'))
+        expect(presenter.new_file_anchor_data).to have_attributes(enabled: false,
+                                                                  label: "New file",
+                                                                  link: presenter.project_new_blob_path(project, 'master'),
+                                                                  class_modifier: 'new')
       end
 
       it 'returns nil if user cannot push' do
@@ -227,9 +264,9 @@ describe ProjectPresenter do
           project.add_developer(user)
           allow(project.repository).to receive(:readme).and_return(nil)
 
-          expect(presenter.readme_anchor_data).to eq(OpenStruct.new(enabled: false,
-                                                                    label: 'Add Readme',
-                                                                    link: presenter.add_readme_path))
+          expect(presenter.readme_anchor_data).to have_attributes(enabled: false,
+                                                                  label: 'Add Readme',
+                                                                  link: presenter.add_readme_path)
         end
       end
 
@@ -237,9 +274,9 @@ describe ProjectPresenter do
         it 'returns anchor data' do
           allow(project.repository).to receive(:readme).and_return(double(name: 'readme'))
 
-          expect(presenter.readme_anchor_data).to eq(OpenStruct.new(enabled: true,
-                                                                    label: 'Readme',
-                                                                    link: presenter.readme_path))
+          expect(presenter.readme_anchor_data).to have_attributes(enabled: true,
+                                                                  label: 'Readme',
+                                                                  link: presenter.readme_path)
         end
       end
     end
@@ -250,9 +287,9 @@ describe ProjectPresenter do
           project.add_developer(user)
           allow(project.repository).to receive(:changelog).and_return(nil)
 
-          expect(presenter.changelog_anchor_data).to eq(OpenStruct.new(enabled: false,
-                                                                       label: 'Add Changelog',
-                                                                       link: presenter.add_changelog_path))
+          expect(presenter.changelog_anchor_data).to have_attributes(enabled: false,
+                                                                     label: 'Add Changelog',
+                                                                     link: presenter.add_changelog_path)
         end
       end
 
@@ -260,9 +297,9 @@ describe ProjectPresenter do
         it 'returns anchor data' do
           allow(project.repository).to receive(:changelog).and_return(double(name: 'foo'))
 
-          expect(presenter.changelog_anchor_data).to eq(OpenStruct.new(enabled: true,
-                                                                       label: 'Changelog',
-                                                                       link: presenter.changelog_path))
+          expect(presenter.changelog_anchor_data).to have_attributes(enabled: true,
+                                                                     label: 'Changelog',
+                                                                     link: presenter.changelog_path)
         end
       end
     end
@@ -273,9 +310,9 @@ describe ProjectPresenter do
           project.add_developer(user)
           allow(project.repository).to receive(:license_blob).and_return(nil)
 
-          expect(presenter.license_anchor_data).to eq(OpenStruct.new(enabled: false,
-                                                                     label: 'Add License',
-                                                                     link: presenter.add_license_path))
+          expect(presenter.license_anchor_data).to have_attributes(enabled: false,
+                                                                   label: 'Add license',
+                                                                   link: presenter.add_license_path)
         end
       end
 
@@ -283,9 +320,9 @@ describe ProjectPresenter do
         it 'returns anchor data' do
           allow(project.repository).to receive(:license_blob).and_return(double(name: 'foo'))
 
-          expect(presenter.license_anchor_data).to eq(OpenStruct.new(enabled: true,
-                                                                     label: presenter.license_short_name,
-                                                                     link: presenter.license_path))
+          expect(presenter.license_anchor_data).to have_attributes(enabled: true,
+                                                                   label: presenter.license_short_name,
+                                                                   link: presenter.license_path)
         end
       end
     end
@@ -296,9 +333,9 @@ describe ProjectPresenter do
           project.add_developer(user)
           allow(project.repository).to receive(:contribution_guide).and_return(nil)
 
-          expect(presenter.contribution_guide_anchor_data).to eq(OpenStruct.new(enabled: false,
-                                                                                label: 'Add Contribution guide',
-                                                                                link: presenter.add_contribution_guide_path))
+          expect(presenter.contribution_guide_anchor_data).to have_attributes(enabled: false,
+                                                                              label: 'Add Contribution guide',
+                                                                              link: presenter.add_contribution_guide_path)
         end
       end
 
@@ -306,9 +343,9 @@ describe ProjectPresenter do
         it 'returns anchor data' do
           allow(project.repository).to receive(:contribution_guide).and_return(double(name: 'foo'))
 
-          expect(presenter.contribution_guide_anchor_data).to eq(OpenStruct.new(enabled: true,
-                                                                                label: 'Contribution guide',
-                                                                                link: presenter.contribution_guide_path))
+          expect(presenter.contribution_guide_anchor_data).to have_attributes(enabled: true,
+                                                                              label: 'Contribution guide',
+                                                                              link: presenter.contribution_guide_path)
         end
       end
     end
@@ -318,9 +355,9 @@ describe ProjectPresenter do
         it 'returns anchor data' do
           allow(project).to receive(:auto_devops_enabled?).and_return(true)
 
-          expect(presenter.autodevops_anchor_data).to eq(OpenStruct.new(enabled: true,
-                                                                        label: 'Auto DevOps enabled',
-                                                                        link: nil))
+          expect(presenter.autodevops_anchor_data).to have_attributes(enabled: true,
+                                                                      label: 'Auto DevOps enabled',
+                                                                      link: nil)
         end
       end
 
@@ -330,9 +367,9 @@ describe ProjectPresenter do
           allow(project).to receive(:auto_devops_enabled?).and_return(false)
           allow(project.repository).to receive(:gitlab_ci_yml).and_return(nil)
 
-          expect(presenter.autodevops_anchor_data).to eq(OpenStruct.new(enabled: false,
-                                                                        label: 'Enable Auto DevOps',
-                                                                        link: presenter.project_settings_ci_cd_path(project, anchor: 'autodevops-settings')))
+          expect(presenter.autodevops_anchor_data).to have_attributes(enabled: false,
+                                                                      label: 'Enable Auto DevOps',
+                                                                      link: presenter.project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
         end
       end
     end
@@ -343,9 +380,9 @@ describe ProjectPresenter do
           project.add_maintainer(user)
           cluster = create(:cluster, projects: [project])
 
-          expect(presenter.kubernetes_cluster_anchor_data).to eq(OpenStruct.new(enabled: true,
-                                                                                label: 'Kubernetes configured',
-                                                                                link: presenter.project_cluster_path(project, cluster)))
+          expect(presenter.kubernetes_cluster_anchor_data).to have_attributes(enabled: true,
+                                                                              label: 'Kubernetes configured',
+                                                                              link: presenter.project_cluster_path(project, cluster))
         end
 
         it 'returns link to clusters page if more than one exists' do
@@ -353,17 +390,17 @@ describe ProjectPresenter do
           create(:cluster, :production_environment, projects: [project])
           create(:cluster, projects: [project])
 
-          expect(presenter.kubernetes_cluster_anchor_data).to eq(OpenStruct.new(enabled: true,
-                                                                                label: 'Kubernetes configured',
-                                                                                link: presenter.project_clusters_path(project)))
+          expect(presenter.kubernetes_cluster_anchor_data).to have_attributes(enabled: true,
+                                                                              label: 'Kubernetes configured',
+                                                                              link: presenter.project_clusters_path(project))
         end
 
         it 'returns link to create a cluster if no cluster exists' do
           project.add_maintainer(user)
 
-          expect(presenter.kubernetes_cluster_anchor_data).to eq(OpenStruct.new(enabled: false,
-                                                                                label: 'Add Kubernetes cluster',
-                                                                                link: presenter.new_project_cluster_path(project)))
+          expect(presenter.kubernetes_cluster_anchor_data).to have_attributes(enabled: false,
+                                                                              label: 'Add Kubernetes cluster',
+                                                                              link: presenter.new_project_cluster_path(project))
         end
       end
 
@@ -380,9 +417,9 @@ describe ProjectPresenter do
         allow(project.repository).to receive(:koding_yml).and_return(nil)
         allow(Gitlab::CurrentSettings).to receive(:koding_enabled?).and_return(true)
 
-        expect(presenter.koding_anchor_data).to eq(OpenStruct.new(enabled: false,
-                                                                  label: 'Set up Koding',
-                                                                  link: presenter.add_koding_stack_path))
+        expect(presenter.koding_anchor_data).to have_attributes(enabled: false,
+                                                                label: 'Set up Koding',
+                                                                link: presenter.add_koding_stack_path)
       end
 
       it 'returns nil if user cannot push' do

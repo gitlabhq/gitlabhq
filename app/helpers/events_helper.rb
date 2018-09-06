@@ -110,10 +110,12 @@ module EventsHelper
                                    event.note_target)
     elsif event.note?
       if event.note_target
-        event_note_target_path(event)
+        event_note_target_url(event)
       end
     elsif event.push?
       push_event_feed_url(event)
+    elsif event.created_project?
+      project_url(event.project)
     end
   end
 
@@ -145,14 +147,14 @@ module EventsHelper
     end
   end
 
-  def event_note_target_path(event)
+  def event_note_target_url(event)
     if event.commit_note?
-      project_commit_path(event.project, event.note_target, anchor: dom_id(event.target))
+      project_commit_url(event.project, event.note_target, anchor: dom_id(event.target))
     elsif event.project_snippet_note?
-      project_snippet_path(event.project, event.note_target, anchor: dom_id(event.target))
+      project_snippet_url(event.project, event.note_target, anchor: dom_id(event.target))
     else
-      polymorphic_path([event.project.namespace.becomes(Namespace),
-                        event.project, event.note_target],
+      polymorphic_url([event.project.namespace.becomes(Namespace),
+                       event.project, event.note_target],
                         anchor: dom_id(event.target))
     end
   end
@@ -166,7 +168,7 @@ module EventsHelper
           event.note_target_reference
         end
 
-      link_to(text, event_note_target_path(event), title: event.target_title, class: 'has-tooltip')
+      link_to(text, event_note_target_url(event), title: event.target_title, class: 'has-tooltip')
     else
       content_tag(:strong, '(deleted)')
     end

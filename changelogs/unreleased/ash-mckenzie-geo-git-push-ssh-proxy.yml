@@ -1,0 +1,5 @@
+---
+title: 'Support a custom action, such as proxying to another server, after /api/v4/internal/allowed check succeeds'
+merge_request: 21034
+author:
+type: changed

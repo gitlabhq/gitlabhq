@@ -1,0 +1,6 @@
+---
+title: 'Rails 5: fix hashed_path? method that looks up file_location that doesn''t
+  exist when running certain migration specs'
+merge_request: 21510
+author: Jasper Maes
+type: other

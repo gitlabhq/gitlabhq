@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe Clusters::Applications::Prometheus do
+  include KubernetesHelpers
+
   include_examples 'cluster application core specs', :clusters_applications_prometheus
   include_examples 'cluster application status specs', :cluster_application_prometheus
 
@@ -107,26 +109,14 @@ describe Clusters::Applications::Prometheus do
     end
 
     context 'cluster has kubeclient' do
-      let(:kubernetes_url) { 'http://example.com' }
-      let(:k8s_discover_response) do
-        {
-          resources: [
-            {
-              name: 'service',
-              kind: 'Service'
-            }
-          ]
-        }
-      end
+      let(:kubernetes_url) { subject.cluster.platform_kubernetes.api_url }
+      let(:kube_client) { subject.cluster.kubeclient.core_client }
 
-      let(:kube_client) { Kubeclient::Client.new(kubernetes_url) }
-
-      let(:cluster) { create(:cluster) }
-      subject { create(:clusters_applications_prometheus, cluster: cluster) }
+      subject { create(:clusters_applications_prometheus) }
 
       before do
-        allow(kube_client.rest_client).to receive(:get).and_return(k8s_discover_response.to_json)
-        allow(subject.cluster).to receive(:kubeclient).and_return(kube_client)
+        subject.cluster.platform_kubernetes.namespace = 'a-namespace'
+        stub_kubeclient_discover(subject.cluster.platform_kubernetes.api_url)
       end
 
       it 'creates proxy prometheus rest client' do
@@ -134,7 +124,7 @@ describe Clusters::Applications::Prometheus do
       end
 
       it 'creates proper url' do
-        expect(subject.prometheus_client.url).to eq('http://example.com/api/v1/namespaces/gitlab-managed-apps/service/prometheus-prometheus-server:80/proxy')
+        expect(subject.prometheus_client.url).to eq("#{kubernetes_url}/api/v1/namespaces/gitlab-managed-apps/services/prometheus-prometheus-server:80/proxy")
       end
 
       it 'copies options and headers from kube client to proxy client' do
@@ -164,7 +154,16 @@ describe Clusters::Applications::Prometheus do
       expect(subject.name).to eq('prometheus')
       expect(subject.chart).to eq('stable/prometheus')
       expect(subject.version).to eq('6.7.3')
+      expect(subject).not_to be_rbac
       expect(subject.files).to eq(prometheus.files)
+    end
+
+    context 'on a rbac enabled cluster' do
+      before do
+        prometheus.cluster.platform_kubernetes.rbac!
+      end
+
+      it { is_expected.to be_rbac }
     end
 
     context 'application failed to install previously' do

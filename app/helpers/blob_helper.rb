@@ -158,32 +158,35 @@ module BlobHelper
   end
 
   def licenses_for_select
-    return @licenses_for_select if defined?(@licenses_for_select)
-
-    grouped_licenses = LicenseTemplateFinder.new.execute.group_by(&:category)
-    categories = grouped_licenses.keys
-
-    @licenses_for_select = categories.each_with_object({}) do |category, hash|
-      hash[category] = grouped_licenses[category].map do |license|
-        { name: license.name, id: license.id }
-      end
-    end
+    @licenses_for_select ||= template_dropdown_names(TemplateFinder.build(:licenses).execute)
   end
 
   def ref_project
     @ref_project ||= @target_project || @project
   end
 
+  def template_dropdown_names(items)
+    grouped = items.group_by(&:category)
+    categories = grouped.keys
+
+    categories.each_with_object({}) do |category, hash|
+      hash[category] = grouped[category].map do |item|
+        { name: item.name, id: item.id }
+      end
+    end
+  end
+  private :template_dropdown_names
+
   def gitignore_names
-    @gitignore_names ||= Gitlab::Template::GitignoreTemplate.dropdown_names
+    @gitignore_names ||= template_dropdown_names(TemplateFinder.build(:gitignores).execute)
   end
 
   def gitlab_ci_ymls
-    @gitlab_ci_ymls ||= Gitlab::Template::GitlabCiYmlTemplate.dropdown_names(params[:context])
+    @gitlab_ci_ymls ||= template_dropdown_names(TemplateFinder.build(:gitlab_ci_ymls).execute)
   end
 
   def dockerfile_names
-    @dockerfile_names ||= Gitlab::Template::DockerfileTemplate.dropdown_names
+    @dockerfile_names ||= template_dropdown_names(TemplateFinder.build(:dockerfiles).execute)
   end
 
   def blob_editor_paths
