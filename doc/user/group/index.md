@@ -24,14 +24,14 @@ group and grant access to all their projects at once
 - Create a group, include members of your team, and make it easier to
 `@mention` all the team at once in issues and merge requests
   - Create a group for your company members, and create [subgroups](subgroups/index.md)
-  for each individual team. Let's say you create a group called `company-team`, and among others,
-      you created subgroups in this group for each individual team `backend-team`,
-      `frontend-team`, and `production-team`:
-        1. When you start a new implementation from an issue, you add a comment:
+    for each individual team. Let's say you create a group called `company-team`, and among others,
+    you created subgroups in this group for each individual team `backend-team`,
+    `frontend-team`, and `production-team`:
+     1. When you start a new implementation from an issue, you add a comment:
         _"`@company-team`, let's do it! `@company-team/backend-team` you're good to go!"_
-        1. When your backend team needs help from frontend, they add a comment:
+     1. When your backend team needs help from frontend, they add a comment:
         _"`@company-team/frontend-team` could you help us here please?"_
-        1. When the frontend team completes their implementation, they comment:
+     1. When the frontend team completes their implementation, they comment:
         _"`@company-team/backend-team`, it's done! Let's ship it `@company-team/production-team`!"_
 
 ## Namespaces
@@ -66,8 +66,8 @@ together in a single list view.
 ## Create a new group
 
 > **Notes:**
-- For a list of words that are not allowed to be used as group names see the
-  [reserved names](../reserved_names.md).
+> - For a list of words that are not allowed to be used as group names see the
+>   [reserved names](../reserved_names.md).
 
 You can create a group in GitLab from:
 

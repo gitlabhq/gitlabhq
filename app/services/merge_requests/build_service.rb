@@ -21,6 +21,8 @@ module MergeRequests
       if merge_request.can_be_created
         compare_branches
         assign_title_and_description
+        assign_labels
+        assign_milestone
       end
 
       merge_request
@@ -136,6 +138,20 @@ module MergeRequests
       append_closes_description
     end
 
+    def assign_labels
+      return unless target_project.issues_enabled? && issue
+      return if merge_request.label_ids&.any?
+
+      merge_request.label_ids = issue.try(:label_ids)
+    end
+
+    def assign_milestone
+      return unless target_project.issues_enabled? && issue
+      return if merge_request.milestone_id.present?
+
+      merge_request.milestone_id = issue.try(:milestone_id)
+    end
+
     def append_closes_description
       return unless issue&.to_reference.present?
 
@@ -186,7 +202,9 @@ module MergeRequests
     end
 
     def issue
-      @issue ||= target_project.get_issue(issue_iid, current_user)
+      strong_memoize(:issue) do
+        target_project.get_issue(issue_iid, current_user)
+      end
     end
   end
 end

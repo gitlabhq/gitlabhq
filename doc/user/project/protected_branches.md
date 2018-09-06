@@ -89,7 +89,7 @@ You can specify a wildcard protected branch, which will protect all branches
 matching the wildcard. For example:
 
 | Wildcard Protected Branch | Matching Branches                                      |
-|---------------------------+--------------------------------------------------------|
+|---------------------------|--------------------------------------------------------|
 | `*-stable`                | `production-stable`, `staging-stable`                  |
 | `production/*`            | `production/app-server`, `production/load-balancer`    |
 | `*gitlab*`                | `gitlab`, `gitlab/staging`, `master/gitlab/production` |

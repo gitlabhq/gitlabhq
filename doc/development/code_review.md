@@ -5,30 +5,30 @@
 There are a few rules to get your merge request accepted:
 
 1. Your merge request should only be **merged by a [maintainer][team]**.
-  1. If your merge request includes only backend changes [^1], it must be
-    **approved by a [backend maintainer][projects]**.
-  1. If your merge request includes only frontend changes [^1], it must be
-    **approved by a [frontend maintainer][projects]**.
-  1. If your merge request includes UX changes [^1], it must
-    be **approved by a [UX team member][team]**.
-  1. If your merge request includes adding a new JavaScript library [^1], it must be
-    **approved by a [frontend lead][team]**.
-  1. If your merge request includes adding a new UI/UX paradigm [^1], it must be
-    **approved by a [UX lead][team]**.
-  1. If your merge request includes frontend and backend changes [^1], it must
-    be **approved by a [frontend and a backend maintainer][projects]**.
-  1. If your merge request includes UX and frontend changes [^1], it must
-    be **approved by a [UX team member and a frontend maintainer][team]**.
-  1. If your merge request includes UX, frontend and backend changes [^1], it must
-    be **approved by a [UX team member, a frontend and a backend maintainer][team]**.
-  1. If your merge request includes a new dependency or a filesystem change, it must
-    be *approved by a [Distribution team member][team]*. See how to work with the [Distribution team for more details.](https://about.gitlab.com/handbook/engineering/dev-backend/distribution/)
+   1. If your merge request includes only backend changes [^1], it must be
+      **approved by a [backend maintainer][projects]**.
+   1. If your merge request includes only frontend changes [^1], it must be
+      **approved by a [frontend maintainer][projects]**.
+   1. If your merge request includes UX changes [^1], it must
+      be **approved by a [UX team member][team]**.
+   1. If your merge request includes adding a new JavaScript library [^1], it must be
+      **approved by a [frontend lead][team]**.
+   1. If your merge request includes adding a new UI/UX paradigm [^1], it must be
+      **approved by a [UX lead][team]**.
+   1. If your merge request includes frontend and backend changes [^1], it must
+      be **approved by a [frontend and a backend maintainer][projects]**.
+   1. If your merge request includes UX and frontend changes [^1], it must
+      be **approved by a [UX team member and a frontend maintainer][team]**.
+   1. If your merge request includes UX, frontend and backend changes [^1], it must
+      be **approved by a [UX team member, a frontend and a backend maintainer][team]**.
+   1. If your merge request includes a new dependency or a filesystem change, it must
+      be *approved by a [Distribution team member][team]*. See how to work with the [Distribution team for more details.](https://about.gitlab.com/handbook/engineering/dev-backend/distribution/)
 1. To lower the amount of merge requests maintainers need to review, you can
-  ask or assign any [reviewers][projects] for a first review.
-  1. If you need some guidance (e.g. it's your first merge request), feel free
-    to ask one of the [Merge request coaches][team].
-  1. The reviewer will assign the merge request to a maintainer once the
-    reviewer is satisfied with the state of the merge request.
+   ask or assign any [reviewers][projects] for a first review.
+   1. If you need some guidance (e.g. it's your first merge request), feel free
+      to ask one of the [Merge request coaches][team].
+   1. The reviewer will assign the merge request to a maintainer once the
+      reviewer is satisfied with the state of the merge request.
 1. Keep in mind that maintainers are also going to perform a final code review.
    The ideal scenario is that the reviewer has already addressed any concerns
    the maintainer would have found, and the maintainer only has to perform the
@@ -160,41 +160,41 @@ Enterprise Edition instance. This has some implications:
 
 1. **Query changes** should be tested to ensure that they don't result in worse
    performance at the scale of GitLab.com:
-  1. Generating large quantities of data locally can help.
-  2. Asking for query plans from GitLab.com is the most reliable way to validate
-     these.
+   1. Generating large quantities of data locally can help.
+   2. Asking for query plans from GitLab.com is the most reliable way to validate
+      these.
 2. **Database migrations** must be:
-  1. Reversible.
-  2. Performant at the scale of GitLab.com - ask a maintainer to test the
-     migration on the staging environment if you aren't sure.
-  3. Categorised correctly:
-     - Regular migrations run before the new code is running on the instance.
-     - [Post-deployment migrations](post_deployment_migrations.md) run _after_
-       the new code is deployed, when the instance is configured to do that.
-     - [Background migrations](background_migrations.md) run in Sidekiq, and
-       should only be done for migrations that would take an extreme amount of
-       time at GitLab.com scale.
+   1. Reversible.
+   2. Performant at the scale of GitLab.com - ask a maintainer to test the
+      migration on the staging environment if you aren't sure.
+   3. Categorised correctly:
+      - Regular migrations run before the new code is running on the instance.
+      - [Post-deployment migrations](post_deployment_migrations.md) run _after_
+        the new code is deployed, when the instance is configured to do that.
+      - [Background migrations](background_migrations.md) run in Sidekiq, and
+        should only be done for migrations that would take an extreme amount of
+        time at GitLab.com scale.
 3. **Sidekiq workers**
    [cannot change in a backwards-incompatible way](sidekiq_style_guide.md#removing-or-renaming-queues):
-  1. Sidekiq queues are not drained before a deploy happens, so there will be
-     workers in the queue from the previous version of GitLab.
-  2. If you need to change a method signature, try to do so across two releases,
-     and accept both the old and new arguments in the first of those.
-  3. Similarly, if you need to remove a worker, stop it from being scheduled in
-     one release, then remove it in the next. This will allow existing jobs to
-     execute.
-  4. Don't forget, not every instance will upgrade to every intermediate version
-     (some people may go from X.1.0 to X.10.0, or even try bigger upgrades!), so
-     try to be liberal in accepting the old format if it is cheap to do so.
+   1. Sidekiq queues are not drained before a deploy happens, so there will be
+      workers in the queue from the previous version of GitLab.
+   2. If you need to change a method signature, try to do so across two releases,
+      and accept both the old and new arguments in the first of those.
+   3. Similarly, if you need to remove a worker, stop it from being scheduled in
+      one release, then remove it in the next. This will allow existing jobs to
+      execute.
+   4. Don't forget, not every instance will upgrade to every intermediate version
+      (some people may go from X.1.0 to X.10.0, or even try bigger upgrades!), so
+      try to be liberal in accepting the old format if it is cheap to do so.
 4. **Cached values** may persist across releases. If you are changing the type a
    cached value returns (say, from a string or nil to an array), change the
    cache key at the same time.
 5. **Settings** should be added as a
    [last resort](https://about.gitlab.com/handbook/product/#convention-over-configuration).
    If you're adding a new setting in `gitlab.yml`:
-  1. Try to avoid that, and add to `ApplicationSetting` instead.
-  2. Ensure that it is also
-     [added to Omnibus](https://docs.gitlab.com/omnibus/settings/gitlab.yml.html#adding-a-new-setting-to-gitlab-yml).
+   1. Try to avoid that, and add to `ApplicationSetting` instead.
+   2. Ensure that it is also
+      [added to Omnibus](https://docs.gitlab.com/omnibus/settings/gitlab.yml.html#adding-a-new-setting-to-gitlab-yml).
 6. **Filesystem access** can be slow, so try to avoid
    [shared files](shared_files.md) when an alternative solution is available.
 

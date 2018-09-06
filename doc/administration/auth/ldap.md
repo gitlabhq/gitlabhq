@@ -383,29 +383,30 @@ the configuration option `lowercase_usernames`. By default, this configuration o
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-  ```ruby
-  gitlab_rails['ldap_servers'] = YAML.load <<-EOS
-  main:
-    # snip...
-    lowercase_usernames: true
-  EOS
-  ```
+    ```ruby
+    gitlab_rails['ldap_servers'] = YAML.load <<-EOS
+    main:
+      # snip...
+      lowercase_usernames: true
+    EOS
+    ```
 
-2. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 **Source configuration**
 
 1. Edit `config/gitlab.yaml`:
 
-  ```yaml
-  production:
-    ldap:
-      servers:
-        main:
-          # snip...
-          lowercase_usernames: true
-  ```
-2. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+    ```yaml
+    production:
+      ldap:
+        servers:
+          main:
+            # snip...
+            lowercase_usernames: true
+    ```
+
+1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
 ## Encryption
 

@@ -144,9 +144,8 @@ An admin can enable/disable a specific Runner for projects:
 
 ## Protected Runners
 
->
-[Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13194)
-in GitLab 10.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13194)
+> in GitLab 10.0.
 
 You can protect Runners from revealing sensitive information.
 Whenever a Runner is protected, the Runner picks only jobs created on

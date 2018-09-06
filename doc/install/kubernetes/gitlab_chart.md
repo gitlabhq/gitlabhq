@@ -40,9 +40,9 @@ In order to deploy GitLab on Kubernetes, the following are required:
 
 1. `helm` and `kubectl` [installed on your computer](preparation/tools_installation.md).
 1. A Kubernetes cluster, version 1.8 or higher. 6vCPU and 16GB of RAM is recommended.
-  - [Google GKE](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-container-cluster)
-  - [Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
-  - [Microsoft AKS](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough-portal)
+   - [Google GKE](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-container-cluster)
+   - [Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
+   - [Microsoft AKS](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough-portal)
 1. A [wildcard DNS entry and external IP address](preparation/networking.md)
 1. [Authenticate and connect](preparation/connect.md) to the cluster
 1. Configure and initialize [Helm Tiller](preparation/tiller.md).

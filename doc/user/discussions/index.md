@@ -23,9 +23,9 @@ in the form of a resolvable or threaded discussion.
 
 ## Resolvable discussions
 
->**Notes:**
-- The main feature was [introduced][ce-5022] in GitLab 8.11.
-- Resolvable discussions can be added only to merge request diffs.
+> **Notes:**
+> - The main feature was [introduced][ce-5022] in GitLab 8.11.
+> - Resolvable discussions can be added only to merge request diffs.
 
 Discussion resolution helps keep track of progress during planning or code review.
 Resolving comments prevents you from forgetting to address feedback and lets you

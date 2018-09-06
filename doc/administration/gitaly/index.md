@@ -101,8 +101,7 @@ documentation on configuring Gitaly
 authentication](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/configuration/README.md#authentication)
 .
 
-> 
-**NOTE:** In most or all cases the storage paths below end in `/repositories` which is 
+> **NOTE:** In most or all cases the storage paths below end in `/repositories` which is 
 different than `path` in `git_data_dirs` of Omnibus installations. Check the
 directory layout on your Gitaly server to be sure.
 

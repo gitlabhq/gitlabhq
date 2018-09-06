@@ -67,24 +67,24 @@ To archive those legacy job traces, please follow the instruction below.
 
 1. Execute the following command
 
-      ```bash
-      gitlab-rake gitlab:traces:archive
-      ```
+    ```bash
+    gitlab-rake gitlab:traces:archive
+    ```
 
-      After you executed this task, GitLab instance queues up Sidekiq jobs (asynchronous processes)
-      for migrating job trace files from local storage to object storage. 
-      It could take time to complete the all migration jobs. You can check the progress by the following command
+    After you executed this task, GitLab instance queues up Sidekiq jobs (asynchronous processes)
+    for migrating job trace files from local storage to object storage. 
+    It could take time to complete the all migration jobs. You can check the progress by the following command
 
-      ```bash
-      sudo gitlab-rails console
-      ```
+    ```bash
+    sudo gitlab-rails console
+    ```
 
-      ```bash
-      [1] pry(main)> Sidekiq::Stats.new.queues['pipeline_background:archive_trace']
-      => 100
-      ```
+    ```bash
+    [1] pry(main)> Sidekiq::Stats.new.queues['pipeline_background:archive_trace']
+    => 100
+    ```
 
-      If the count becomes zero, the archiving processes are done
+    If the count becomes zero, the archiving processes are done
 
 ## How to migrate archived job traces to object storage
 
@@ -95,9 +95,9 @@ If job traces have already been archived into local storage, and you want to mig
 1. Ensure [Object storage integration for Job Artifacts](job_artifacts.md#object-storage-settings) is enabled
 1. Execute the following command
 
-      ```bash
-      gitlab-rake gitlab:traces:migrate
-      ```
+    ```bash
+    gitlab-rake gitlab:traces:migrate
+    ```
 
 ## How to remove job traces
 
@@ -185,15 +185,15 @@ with the legacy architecture.
 In some cases, having data stored on Redis could incur data loss:
 
 1. **Case 1: When all data in Redis are accidentally flushed**
-  - On going live traces could be recovered by re-sending traces (this is
-    supported by all versions of the GitLab Runner).
-  - Finished jobs which have not archived live traces will lose the last part
-    (~128KB) of trace data.
+   - On going live traces could be recovered by re-sending traces (this is
+     supported by all versions of the GitLab Runner).
+   - Finished jobs which have not archived live traces will lose the last part
+     (~128KB) of trace data.
 
 1. **Case 2: When Sidekiq workers fail to archive (e.g., there was a bug that
    prevents archiving process, Sidekiq inconsistency, etc.)**
-  - Currently all trace data in Redis will be deleted after one week. If the
-    Sidekiq workers can't finish by the expiry date, the part of trace data will be lost.
+   - Currently all trace data in Redis will be deleted after one week. If the
+     Sidekiq workers can't finish by the expiry date, the part of trace data will be lost.
 
 Another issue that might arise is that it could consume all memory on the Redis
 instance. If the number of jobs is 1000, 128MB (128KB * 1000) is consumed.

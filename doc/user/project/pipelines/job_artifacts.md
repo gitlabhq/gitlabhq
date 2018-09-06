@@ -1,18 +1,18 @@
 # Introduction to job artifacts
 
->**Notes:**
->- Since GitLab 8.2 and GitLab Runner 0.7.0, job artifacts that are created by
-   GitLab Runner are uploaded to GitLab and are downloadable as a single archive
-   (`tar.gz`) using the GitLab UI.
->- Starting with GitLab 8.4 and GitLab Runner 1.0, the artifacts archive format
-   changed to `ZIP`, and it is now possible to browse its contents, with the added
-   ability of downloading the files separately.
->- Starting with GitLab 8.17, builds are renamed to jobs.
->- The artifacts browser will be available only for new artifacts that are sent
-   to GitLab using GitLab Runner version 1.0 and up. It will not be possible to
-   browse old artifacts already uploaded to GitLab.
+> **Notes:**
+> - Since GitLab 8.2 and GitLab Runner 0.7.0, job artifacts that are created by
+>   GitLab Runner are uploaded to GitLab and are downloadable as a single archive
+>   (`tar.gz`) using the GitLab UI.
+> - Starting with GitLab 8.4 and GitLab Runner 1.0, the artifacts archive format
+>   changed to `ZIP`, and it is now possible to browse its contents, with the added
+>   ability of downloading the files separately.
+> - Starting with GitLab 8.17, builds are renamed to jobs.
+> - The artifacts browser will be available only for new artifacts that are sent
+>   to GitLab using GitLab Runner version 1.0 and up. It will not be possible to
+>   browse old artifacts already uploaded to GitLab.
 >- This is the user documentation. For the administration guide see
-   [administration/job_artifacts](../../../administration/job_artifacts.md).
+>   [administration/job_artifacts](../../../administration/job_artifacts.md).
 
 Artifacts is a list of files and directories which are attached to a job
 after it completes successfully. This feature is enabled by default in all
@@ -46,14 +46,14 @@ For more examples on artifacts, follow the [artifacts reference in
 
 ## Browsing artifacts
 
->**Note:**
-With GitLab 9.2, PDFs, images, videos and other formats can be previewed
-directly in the job artifacts browser without the need to download them.
-
->**Note:**
-With [GitLab 10.1][ce-14399], HTML files in a public project can be previewed
-directly in a new tab without the need to download them when
-[GitLab Pages](../../../administration/pages/index.md) is enabled
+> **Note:**
+> With GitLab 9.2, PDFs, images, videos and other formats can be previewed
+> directly in the job artifacts browser without the need to download them.
+>
+> **Note:**
+> With [GitLab 10.1][ce-14399], HTML files in a public project can be previewed
+> directly in a new tab without the need to download them when
+> [GitLab Pages](../../../administration/pages/index.md) is enabled
 
 After a job finishes, if you visit the job's specific page, there are three
 buttons. You can download the artifacts archive or browse its contents, whereas
