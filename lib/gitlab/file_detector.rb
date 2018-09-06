@@ -8,7 +8,7 @@ module Gitlab
       # Project files
       readme: %r{\Areadme[^/]*\z}i,
       changelog: %r{\A(changelog|history|changes|news)[^/]*\z}i,
-      license: %r{\A(licen[sc]e|copying)(\.[^/]+)?\z}i,
+      license: %r{\A((un)?licen[sc]e|copying)(\.[^/]+)?\z}i,
       contributing: %r{\Acontributing[^/]*\z}i,
       version: 'version',
       avatar: /\Alogo\.(png|jpg|gif)\z/,
