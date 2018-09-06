@@ -1,13 +1,9 @@
 module Gitlab
   module Template
-    class LicenseTemplate < BaseTemplate
+    class CustomTemplate < BaseTemplate
       class << self
-        def extension
-          '.txt'
-        end
-
-        def base_dir
-          'LICENSE/'
+        def categories
+          { 'Custom' => '' }
         end
 
         def finder(project)
