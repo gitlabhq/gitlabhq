@@ -37,7 +37,7 @@
 </script>
 
 <template>
-  <div class="groups-list-tree-container">
+  <div class="groups-list-tree-container qa-groups-list-tree-container">
     <div
       v-if="searchEmpty"
       class="has-no-search-results"

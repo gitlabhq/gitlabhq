@@ -36,6 +36,10 @@ class BuildDetailsEntity < JobEntity
     erase_project_job_path(project, build)
   end
 
+  expose :terminal_path, if: -> (*) { can_create_build_terminal? } do |build|
+    terminal_project_job_path(project, build)
+  end
+
   expose :merge_request, if: -> (*) { can?(current_user, :read_merge_request, build.merge_request) } do
     expose :iid do |build|
       build.merge_request.iid
@@ -68,5 +72,9 @@ class BuildDetailsEntity < JobEntity
 
   def project
     build.project
+  end
+
+  def can_create_build_terminal?
+    can?(current_user, :create_build_terminal, build) && build.has_terminal?
   end
 end

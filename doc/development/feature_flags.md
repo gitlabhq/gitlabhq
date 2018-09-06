@@ -58,13 +58,20 @@ Features that are developed and are intended to be merged behind a feature flag
 should not include a changelog entry. The entry should be added in the merge
 request removing the feature flags.
 
+In the rare case that you need the feature flag to be on automatically, use
+`default_enabled: true` when checking:
+
+```ruby
+Feature.enabled?(:feature_flag, project, default_enabled: true)
+```
+
 ### Specs
 
 In the test environment `Feature.enabled?` is stubbed to always respond to `true`,
 so we make sure behavior under feature flag doesn't go untested in some non-specific
 contexts.
- 
-If you need to test the feature flag in a different state, you need to stub it with: 
+
+If you need to test the feature flag in a different state, you need to stub it with:
 
 ```ruby
 stub_feature_flags(my_feature_flag: false)

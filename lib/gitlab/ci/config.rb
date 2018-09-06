@@ -4,12 +4,17 @@ module Gitlab
     # Base GitLab CI Configuration facade
     #
     class Config
-      # EE would override this and utilize opts argument
+      ConfigError = Class.new(StandardError)
+
       def initialize(config, opts = {})
-        @config = Loader.new(config).load!
+        @config = Config::Extendable
+          .new(build_config(config, opts))
+          .to_hash
 
         @global = Entry::Global.new(@config)
         @global.compose!
+      rescue Loader::FormatError, Extendable::ExtensionError => e
+        raise Config::ConfigError, e.message
       end
 
       def valid?
@@ -57,6 +62,11 @@ module Gitlab
 
       def jobs
         @global.jobs_value
+      end
+
+      # 'opts' argument is used in EE see /ee/lib/ee/gitlab/ci/config.rb
+      def build_config(config, opts = {})
+        Loader.new(config).load!
       end
     end
   end

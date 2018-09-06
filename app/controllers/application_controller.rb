@@ -110,6 +110,7 @@ class ApplicationController < ActionController::Base
   def append_info_to_payload(payload)
     super
 
+    payload[:ua] = request.env["HTTP_USER_AGENT"]
     payload[:remote_ip] = request.remote_ip
 
     logged_user = auth_user

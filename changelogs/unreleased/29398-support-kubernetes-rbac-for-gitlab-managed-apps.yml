@@ -1,0 +1,5 @@
+---
+title: Support Kubernetes RBAC for GitLab Managed Apps when adding a existing cluster
+merge_request: 21127
+author:
+type: changed

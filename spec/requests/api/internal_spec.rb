@@ -381,7 +381,7 @@ describe API::Internal do
         it do
           pull(key, project)
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(401)
           expect(json_response["status"]).to be_falsey
           expect(user.reload.last_activity_on).to be_nil
         end
@@ -391,8 +391,56 @@ describe API::Internal do
         it do
           push(key, project)
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(401)
           expect(json_response["status"]).to be_falsey
+          expect(user.reload.last_activity_on).to be_nil
+        end
+      end
+    end
+
+    context "custom action" do
+      let(:access_checker) { double(Gitlab::GitAccess) }
+      let(:message) { 'CustomActionError message' }
+      let(:payload) do
+        {
+          'action' => 'geo_proxy_to_primary',
+          'data' => {
+            'api_endpoints' => %w{geo/proxy_git_push_ssh/info_refs geo/proxy_git_push_ssh/push},
+            'gl_username' => 'testuser',
+            'primary_repo' => 'http://localhost:3000/testuser/repo.git'
+          }
+        }
+      end
+
+      let(:custom_action_result) { Gitlab::GitAccessResult::CustomAction.new(payload, message) }
+
+      before do
+        project.add_guest(user)
+        expect(Gitlab::GitAccess).to receive(:new).with(
+          key,
+          project,
+          'ssh',
+          {
+            authentication_abilities: [:read_project, :download_code, :push_code],
+            namespace_path: project.namespace.name,
+            project_path: project.path,
+            redirected_path: nil
+          }
+        ).and_return(access_checker)
+        expect(access_checker).to receive(:check).with(
+          'git-receive-pack',
+          'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master'
+        ).and_return(custom_action_result)
+      end
+
+      context "git push" do
+        it do
+          push(key, project)
+
+          expect(response).to have_gitlab_http_status(300)
+          expect(json_response['status']).to be_truthy
+          expect(json_response['message']).to eql(message)
+          expect(json_response['payload']).to eql(payload)
           expect(user.reload.last_activity_on).to be_nil
         end
       end
@@ -409,7 +457,7 @@ describe API::Internal do
         it do
           pull(key, personal_project)
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(401)
           expect(json_response["status"]).to be_falsey
           expect(user.reload.last_activity_on).to be_nil
         end
@@ -419,7 +467,7 @@ describe API::Internal do
         it do
           push(key, personal_project)
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(401)
           expect(json_response["status"]).to be_falsey
           expect(user.reload.last_activity_on).to be_nil
         end
@@ -445,7 +493,7 @@ describe API::Internal do
         it do
           push(key, project)
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(401)
           expect(json_response["status"]).to be_falsey
         end
       end
@@ -477,7 +525,7 @@ describe API::Internal do
         it do
           archive(key, project)
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(404)
           expect(json_response["status"]).to be_falsey
         end
       end
@@ -489,7 +537,7 @@ describe API::Internal do
 
         pull(key, project)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response["status"]).to be_falsey
       end
     end
@@ -498,7 +546,7 @@ describe API::Internal do
       it do
         pull(OpenStruct.new(id: 0), project)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response["status"]).to be_falsey
       end
     end
@@ -511,7 +559,7 @@ describe API::Internal do
       it 'rejects the SSH push' do
         push(key, project)
 
-        expect(response.status).to eq(200)
+        expect(response.status).to eq(401)
         expect(json_response['status']).to be_falsey
         expect(json_response['message']).to eq 'Git access over SSH is not allowed'
       end
@@ -519,7 +567,7 @@ describe API::Internal do
       it 'rejects the SSH pull' do
         pull(key, project)
 
-        expect(response.status).to eq(200)
+        expect(response.status).to eq(401)
         expect(json_response['status']).to be_falsey
         expect(json_response['message']).to eq 'Git access over SSH is not allowed'
       end
@@ -533,7 +581,7 @@ describe API::Internal do
       it 'rejects the HTTP push' do
         push(key, project, 'http')
 
-        expect(response.status).to eq(200)
+        expect(response.status).to eq(401)
         expect(json_response['status']).to be_falsey
         expect(json_response['message']).to eq 'Git access over HTTP is not allowed'
       end
@@ -541,7 +589,7 @@ describe API::Internal do
       it 'rejects the HTTP pull' do
         pull(key, project, 'http')
 
-        expect(response.status).to eq(200)
+        expect(response.status).to eq(401)
         expect(json_response['status']).to be_falsey
         expect(json_response['message']).to eq 'Git access over HTTP is not allowed'
       end
@@ -571,14 +619,14 @@ describe API::Internal do
       it 'rejects the push' do
         push(key, project)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response['status']).to be_falsy
       end
 
       it 'rejects the SSH pull' do
         pull(key, project)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response['status']).to be_falsy
       end
     end

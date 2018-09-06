@@ -32,7 +32,8 @@ module Clusters
       def install_command
         Gitlab::Kubernetes::Helm::InitCommand.new(
           name: name,
-          files: files
+          files: files,
+          rbac: cluster.platform_kubernetes_rbac?
         )
       end
 

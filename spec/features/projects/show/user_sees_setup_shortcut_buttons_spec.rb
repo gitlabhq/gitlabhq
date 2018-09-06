@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'Projects > Show > User sees setup shortcut buttons' do
-  # For "New file", "Add License" functionality,
+  # For "New file", "Add license" functionality,
   # see spec/features/projects/files/project_owner_creates_license_file_spec.rb
   # see spec/features/projects/files/project_owner_sees_link_to_create_license_file_in_empty_project_spec.rb
 
@@ -58,9 +58,9 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
         end
       end
 
-      it '"Add License" button linked to new file populated for a license' do
-        page.within('.project-stats') do
-          expect(page).to have_link('Add License', href: presenter.add_license_path)
+      it '"Add license" button linked to new file populated for a license' do
+        page.within('.project-metadata') do
+          expect(page).to have_link('Add license', href: presenter.add_license_path)
         end
       end
 
@@ -201,13 +201,13 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
         end
       end
 
-      it 'no "Add License" button if the project already has a license' do
+      it 'no "Add license" button if the project already has a license' do
         visit project_path(project)
 
         expect(project.repository.license_blob).not_to be_nil
 
         page.within('.project-stats') do
-          expect(page).not_to have_link('Add License')
+          expect(page).not_to have_link('Add license')
         end
       end
 

@@ -1,14 +1,14 @@
 - project = project || @project
 
-.git-clone-holder.input-group
+.git-clone-holder.js-git-clone-holder.input-group
   .input-group-prepend
     - if allowed_protocols_present?
       .input-group-text.clone-dropdown-btn.btn
-        %span
+        %span.js-clone-dropdown-label
           = enabled_project_button(project, enabled_protocol)
     - else
       %a#clone-dropdown.input-group-text.btn.clone-dropdown-btn.qa-clone-dropdown{ href: '#', data: { toggle: 'dropdown' } }
-        %span
+        %span.js-clone-dropdown-label
           = default_clone_protocol.upcase
         = icon('caret-down')
       %ul.dropdown-menu.dropdown-menu-selectable.clone-options-dropdown
