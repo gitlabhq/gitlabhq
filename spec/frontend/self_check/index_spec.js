@@ -25,5 +25,18 @@ describe('frontend test suite self check', () => {
     });
 
     it('rejected Promise', () => Promise.reject(new Error('rejected')));
+
+    describe('time out after one second', () => {
+      it('(synchronous test)', () => {
+        const startTime = new Date().getTime();
+        while (new Date().getTime() - startTime < 2000) {
+          // wait
+        }
+      });
+
+      it('(asynchronous test)', done => {
+        setTimeout(done, 2000);
+      });
+    });
   });
 });
