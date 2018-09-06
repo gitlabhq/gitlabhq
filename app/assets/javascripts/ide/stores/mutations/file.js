@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import * as types from '../mutation_types';
 import { sortTree } from '../utils';
 import { diffModes } from '../../constants';

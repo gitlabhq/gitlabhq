@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import * as types from './mutation_types';
 import projectMutations from './mutations/project';
 import mergeRequestMutation from './mutations/merge_request';
