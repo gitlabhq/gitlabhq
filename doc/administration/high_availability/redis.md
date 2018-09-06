@@ -54,19 +54,11 @@ components below.
 
 ### High Availability with Sentinel
 
-<<<<<<< HEAD
->**Notes:**
-- Starting with GitLab 8.11, you can configure a list of Redis Sentinel
-  servers that will monitor a group of Redis servers to provide failover support.
-- Starting with GitLab 8.14, the Omnibus GitLab Enterprise Edition package
-  comes with Redis Sentinel daemon built-in.
-=======
 > **Notes:**
 > - Starting with GitLab `8.11`, you can configure a list of Redis Sentinel
 >   servers that will monitor a group of Redis servers to provide failover support.
 > - Starting with GitLab `8.14`, the Omnibus GitLab Enterprise Edition package
 >  comes with Redis Sentinel daemon built-in.
->>>>>>> upstream/master
 
 High Availability with Redis requires a few things:
 
