@@ -380,22 +380,13 @@ As on another list types, click on the trash icon to remove it.
 
 When dragging issues between lists, different behavior occurs depending on the source list and the target list.
 
-<<<<<<< HEAD
-| | To Open | To Closed | To label `B` list | To assignee `Bob` list | To milestone `2.0` list |
-| --- | --- | --- | --- | ---  | --- |
-| From Open | - | Issue closed | `B` added | `Bob` assigned | `2.0`  added |
-| From Closed | Issue reopened | - | Issue reopened<br/>`B` added | Issue reopened<br/>`Bob` assigned | Issue reopened<br/>`2.0` added |
-| From label `A` list | `A` removed | Issue closed | `A` removed<br/>`B` added | `Bob` assigned | `2.0` added |
-| From assignee `Alice` list | `Alice` unassigned | Issue closed | `B` added | `Alice` unassigned<br/>`Bob` assigned | `2.0` added |
-| From milestone `1.0` list | `1.0` removed | Issue closed | `B` added | `Bob` assigned<br/> | `1.0` removed<br/>`2.0` added |
-=======
-|                            | To Open            | To Closed    | To label `B` list            | To assignee `Bob` list                |
-|----------------------------|--------------------|--------------|------------------------------|---------------------------------------|
-| From Open                  | -                  | Issue closed | `B` added                    | `Bob` assigned                        |
-| From Closed                | Issue reopened     | -            | Issue reopened<br/>`B` added | Issue reopened<br/>`Bob` assigned     |
-| From label `A` list        | `A` removed        | Issue closed | `A` removed<br/>`B` added    | `Bob` assigned                        |
-| From assignee `Alice` list | `Alice` unassigned | Issue closed | `B` added                    | `Alice` unassigned<br/>`Bob` assigned |
->>>>>>> upstream/master
+|                            | To Open            | To Closed    | To label `B` list            | To assignee `Bob` list                | To milestone `2.0` list        |
+|----------------------------|--------------------|--------------|------------------------------|---------------------------------------|--------------------------------|
+| From Open                  | -                  | Issue closed | `B` added                    | `Bob` assigned                        | `2.0`  added                   |
+| From Closed                | Issue reopened     | -            | Issue reopened<br/>`B` added | Issue reopened<br/>`Bob` assigned     | Issue reopened<br/>`2.0` added |
+| From label `A` list        | `A` removed        | Issue closed | `A` removed<br/>`B` added    | `Bob` assigned                        | `2.0` added                    |
+| From assignee `Alice` list | `Alice` unassigned | Issue closed | `B` added                    | `Alice` unassigned<br/>`Bob` assigned | `2.0` added                    |
+| From milestone `1.0` list  | `1.0` removed      | Issue closed | `B` added                    | `Bob` assigned<br/>                   | `1.0` removed<br/>`2.0` added  |
 
 ## Features per tier
 
