@@ -40,11 +40,11 @@ module Gitlab
         def send_file
           Gitlab::HTTP.public_send(http_method.downcase, url, send_file_options) # rubocop:disable GitlabSecurity/PublicSend
         ensure
-          export_file.close if export_file && !object_storage?
+          export_file.close if export_file
         end
 
         def export_file
-          project.import_export_upload.export_file.file.open
+          project.import_export_upload.export_file.open
         end
 
         def send_file_options
