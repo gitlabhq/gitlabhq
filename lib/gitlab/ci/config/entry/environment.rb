@@ -43,7 +43,12 @@ module Gitlab
 
               validates :on_stop, type: String, allow_nil: true
 
+              validates :track,
+                        inclusion: { in: %w[stable rollout canary], message: 'should be start or stop' },
+                        allow_nil: true
+
               validates :rollout,
+                        presence: true,
                         numericality: { only_integer: true,
                                         greater_than: 0,
                                         less_than_or_equal_to: 100 },
@@ -68,11 +73,11 @@ module Gitlab
           end
 
           def track
-            value[:track] || 'stable'
+            rollout < 100 ? 'rollout' : 'stable'
           end
 
           def rollout
-            value[:rollout].to_i.nonzero?
+            value[:rollout].to_i.nonzero? || 100
           end
 
           def action

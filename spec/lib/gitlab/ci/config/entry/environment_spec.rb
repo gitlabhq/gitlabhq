@@ -98,8 +98,16 @@ describe Gitlab::Ci::Config::Entry::Environment do
         it { expect(entry.track).to eq('rollout') }
       end
 
+      context 'when rollout is 100%' do
+        before do
+          config.merge!(rollout: 100)
+        end
+
+        it { expect(entry.track).to eq('stable') }
+      end
+
       context 'when rollout is not defined' do
-        it { expect(entry.rollout).to be_nil }
+        it { expect(entry.rollout).to eq(100) }
         it { expect(entry.track).to eq('stable') }
       end
     end
