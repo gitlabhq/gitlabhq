@@ -280,6 +280,6 @@ removed with one of the future versions of GitLab. You are advised to
 [variables]: ../variables/README.md
 [predef]: ../variables/README.md#predefined-variables-environment-variables
 [registry]: ../../user/project/container_registry.md
-[permissions]: ../../user/permissions.md#jobs-permissions
+[permissions]: ../../user/permissions.md#job-permissions
 [trigapi]: ../../api/pipeline_triggers.md
 [jobs api]: ../../api/jobs.md
