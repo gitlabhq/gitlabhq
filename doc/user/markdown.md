@@ -24,10 +24,7 @@ You can use GFM in the following areas:
 - snippets (the snippet must be named with a `.md` extension)
 - wiki pages
 - markdown documents inside the repository
-<<<<<<< HEAD
 - epics
-=======
->>>>>>> upstream/master
 
 You can also use other rich text files in GitLab. You might have to install a
 dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
@@ -72,14 +69,14 @@ Line-breaks, or soft returns, are rendered if you end a line with two or more sp
 
 [//]: # (Do *NOT* remove the two ending whitespaces in the following line.)
 [//]: # (They are needed for the Markdown text to render correctly.)
-    Roses are red [followed by two or more spaces]  
+    Roses are red [followed by two or more spaces]
     Violets are blue
 
     Sugar is sweet
 
 [//]: # (Do *NOT* remove the two ending whitespaces in the following line.)
 [//]: # (They are needed for the Markdown text to render correctly.)
-Roses are red  
+Roses are red
 Violets are blue
 
 Sugar is sweet
@@ -446,26 +443,26 @@ Color written inside backticks will be followed by a color "chip".
 
 Examples:
 
-    `#F00`  
-    `#F00A`  
-    `#FF0000`  
-    `#FF0000AA`  
-    `RGB(0,255,0)`  
-    `RGB(0%,100%,0%)`  
-    `RGBA(0,255,0,0.7)`  
-    `HSL(540,70%,50%)`  
+    `#F00`
+    `#F00A`
+    `#FF0000`
+    `#FF0000AA`
+    `RGB(0,255,0)`
+    `RGB(0%,100%,0%)`
+    `RGBA(0,255,0,0.7)`
+    `HSL(540,70%,50%)`
     `HSLA(540,70%,50%,0.7)`
 
 Become:
 
-`#F00`  
-`#F00A`  
-`#FF0000`  
-`#FF0000AA`  
-`RGB(0,255,0)`  
-`RGB(0%,100%,0%)`  
-`RGBA(0,255,0,0.7)`  
-`HSL(540,70%,50%)`  
+`#F00`
+`#F00A`
+`#FF0000`
+`#FF0000AA`
+`RGB(0,255,0)`
+`RGB(0%,100%,0%)`
+`RGBA(0,255,0,0.7)`
+`HSL(540,70%,50%)`
 `HSLA(540,70%,50%,0.7)`
 
 #### Supported formats:
@@ -850,7 +847,7 @@ This line is separated from the one above by two newlines, so it will be a *sepa
 This line is also a separate paragraph, but...
 This line is only separated by a single newline, so it *does not break* and just follows the previous line in the *same paragraph*.
 
-This line is also a separate paragraph, and...  
+This line is also a separate paragraph, and...
 This line is *on its own line*, because the previous line ends with two spaces. (but still in the *same paragraph*)
 
 spaces.
@@ -865,7 +862,7 @@ This line is separated from the one above by two newlines, so it will be a *sepa
 This line is also a separate paragraph, but...
 This line is only separated by a single newline, so it *does not break* and just follows the previous line in the *same paragraph*.
 
-This line is also a separate paragraph, and...  
+This line is also a separate paragraph, and...
 This line is *on its own line*, because the previous line ends with two spaces. (but still in the *same paragraph*)
 
 spaces.
