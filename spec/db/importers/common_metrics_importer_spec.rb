@@ -43,7 +43,7 @@ describe Importers::CommonMetricsImporter do
     end
 
     it "imports all IDs" do
-      expect(PrometheusMetric.common.pluck(:identifier)).to eq(query_ids)
+      expect(PrometheusMetric.common.pluck(:identifier)).to contain_exactly(*query_ids)
     end
   end
 
