@@ -9,8 +9,10 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       .new(@application_setting, current_user, application_setting_params)
       .execute
 
+    redirect_path = params[:redirect_path] ? params[:redirect_path].to_h : admin_application_settings_path
+
     if successful
-      redirect_to request.referer,
+      redirect_to redirect_path,
         notice: 'Application settings saved successfully'
     else
       render :show
