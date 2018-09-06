@@ -254,6 +254,10 @@ module ProjectsHelper
     "xcode://clone?repo=#{CGI.escape(default_url_to_repo(project))}"
   end
 
+  def legacy_render_context(params)
+    params[:legacy_render] ? { markdown_engine: :redcarpet } : {}
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)
@@ -351,6 +355,10 @@ module ProjectsHelper
     else
       project.http_url_to_repo
     end
+  end
+
+  def default_clone_label
+    _("Copy %{protocol} clone URL") % { protocol: default_clone_protocol.upcase }
   end
 
   def default_clone_protocol

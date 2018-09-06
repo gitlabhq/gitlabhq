@@ -1,0 +1,5 @@
+---
+title: Introduce custom instance-level templates for Dockerfile, .gitignore, and .gitlab-ci.yml files
+merge_request: 7000
+author:
+type: added

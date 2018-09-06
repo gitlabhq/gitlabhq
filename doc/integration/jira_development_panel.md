@@ -21,6 +21,19 @@ We recommend that a GitLab group admin
 or instance admin (in the case of self-hosted GitLab) set up the integration with respect to their
 account, in order to maximize the integrated GitLab projects used by your team.
 
+## Requirements
+
+### Self-hosted GitLab
+
+If you are using self-hosted GitLab, make sure your GitLab instance is accessible by JIRA.
+
+- If you are connecting to JIRA Cloud, make sure your instance is accessible via the internet.
+- If you are using JIRA Server, make sure your instance is accessible however your network is set up.
+
+### GitLab.com
+
+There are no special requirements if you are using GitLab.com 
+
 ## GitLab Configuration
 
 1. In GitLab, create a new application in order to allow JIRA to connect with your GitLab account
@@ -34,6 +47,9 @@ account, in order to maximize the integrated GitLab projects used by your team.
     For the `Redirect URI` field, enter `https://<your-gitlab-instance-domain>/login/oauth/callback`,
     replacing `<your-gitlab-instance-domain>` appropriately. So for example, if you are using GitLab.com,
     this would be `https://gitlab.com/login/oauth/callback`.
+    
+    NOTE: **Note**: 
+    If using a GitLab version earlier than 11.3 the `Redirect URI` value should be `https://<your-gitlab-instance-domain>/-/jira/login/oauth/callback`.
 
     ![GitLab Application setup](img/jira_dev_panel_gl_setup_1.png)
     - Check `api` in the Scopes section.
@@ -61,6 +77,9 @@ from the left navigation menu. Click `Link GitHub account` to start creating a n
     For the `Host URL` field, enter `https://<your-gitlab-instance-domain>/`,
     replacing `<your-gitlab-instance-domain>` appropriately. So for example, if you are using GitLab.com,
     this would be `https://gitlab.com/`.
+    
+    NOTE: **Note**:
+    If using a GitLab version earlier than 11.3 the `Host URL` value should be `https://<your-gitlab-instance-domain>/-/jira`
 
     For the `Client ID` field, use the `Application ID` value from the previous section.
 

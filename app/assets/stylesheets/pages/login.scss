@@ -100,6 +100,22 @@
     p {
       margin: 0;
     }
+
+    .omniauth-btn {
+      margin-bottom: $gl-padding;
+      width: 48%;
+      padding: $gl-padding-8;
+
+      @include media-breakpoint-down(md) {
+        width: 100%;
+      }
+
+      img {
+        width: $default-icon-size;
+        height: $default-icon-size;
+        margin-right: $gl-padding;
+      }
+    }
   }
 
   .new-session-tabs {
@@ -169,10 +185,6 @@
     }
   }
 
-  label {
-    font-weight: $gl-font-weight-normal;
-  }
-
   .submit-container {
     margin-top: 16px;
   }
@@ -197,15 +209,6 @@
       float: none !important;
       margin-bottom: 45px;
     }
-  }
-}
-
-.oauth-image-link {
-  margin-right: 10px;
-
-  img {
-    width: 32px;
-    height: 32px;
   }
 }
 

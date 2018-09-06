@@ -1,0 +1,5 @@
+---
+title: Allow specifying code owners in a CODEOWNERS file
+merge_request: 6916
+author:
+type: added

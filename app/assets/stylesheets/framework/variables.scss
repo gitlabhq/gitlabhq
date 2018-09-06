@@ -252,7 +252,7 @@ $container-text-max-width: 540px;
 $gl-avatar-size: 40px;
 $border-radius-default: 4px;
 $border-radius-small: 2px;
-$settings-icon-size: 18px;
+$default-icon-size: 18px;
 $layout-link-gray: #7e7c7c;
 $btn-side-margin: 10px;
 $btn-sm-side-margin: 7px;
@@ -274,6 +274,7 @@ $performance-bar-height: 35px;
 $flash-height: 52px;
 $context-header-height: 60px;
 $breadcrumb-min-height: 48px;
+$project-title-row-height: 24px;
 
 // EE-only CSS variables START
 $system-header-height: 35px;

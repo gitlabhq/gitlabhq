@@ -1,14 +1,15 @@
-%h4= s_('ClusterIntegration|Kubernetes cluster integration')
+.hidden.js-cluster-error.bs-callout.bs-callout-danger{ role: 'alert' }
+  = s_('ClusterIntegration|Something went wrong while creating your Kubernetes cluster on Google Kubernetes Engine')
+  %p.js-error-reason
 
-.settings-content
-  .hidden.js-cluster-error.alert.alert-danger.alert-block.append-bottom-10{ role: 'alert' }
-    = s_('ClusterIntegration|Something went wrong while creating your Kubernetes cluster on Google Kubernetes Engine')
-    %p.js-error-reason
+.hidden.js-cluster-creating.bs-callout.bs-callout-info{ role: 'alert' }
+  = s_('ClusterIntegration|Kubernetes cluster is being created on Google Kubernetes Engine...')
 
-  .hidden.js-cluster-creating.alert.alert-info.alert-block.append-bottom-10{ role: 'alert' }
-    = s_('ClusterIntegration|Kubernetes cluster is being created on Google Kubernetes Engine...')
+.hidden.js-cluster-success.bs-callout.bs-callout-success{ role: 'alert' }
+  = s_("ClusterIntegration|Kubernetes cluster was successfully created on Google Kubernetes Engine. Refresh the page to see Kubernetes cluster's details")
 
-  .hidden.js-cluster-success.alert.alert-success.alert-block.append-bottom-10{ role: 'alert' }
-    = s_("ClusterIntegration|Kubernetes cluster was successfully created on Google Kubernetes Engine. Refresh the page to see Kubernetes cluster's details")
-
-  %p= s_('ClusterIntegration|Control how your Kubernetes cluster integrates with GitLab')
+- if show_cluster_security_warning?
+  .js-cluster-security-warning.alert.alert-block.alert-dismissable.bs-callout.bs-callout-warning
+    %button.close{ type: "button", data: { feature_id: UserCalloutsHelper::CLUSTER_SECURITY_WARNING, dismiss_endpoint: user_callouts_path } }  &times;
+    = s_("ClusterIntegration|The default cluster configuration grants access to many functionalities needed to successfully build and deploy a containerised application.")
+    = link_to s_("More information"),  help_page_path('user/project/clusters/index.md', anchor: 'security-implications')

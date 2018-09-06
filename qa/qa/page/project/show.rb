@@ -25,7 +25,7 @@ module QA
         end
 
         view 'app/views/projects/buttons/_fork.html.haml' do
-          element :fork_label, "%span= s_('GoToYourFork|Fork')"
+          element :fork_label, "%span= s_('ProjectOverview|Fork')"
           element :fork_link, "link_to new_project_fork_path(@project)"
         end
 
@@ -34,7 +34,7 @@ module QA
         end
 
         view 'app/presenters/project_presenter.rb' do
-          element :new_file_button, "label: _('New file'),"
+          element :new_file_button, "_('New file'),"
         end
 
         def project_name

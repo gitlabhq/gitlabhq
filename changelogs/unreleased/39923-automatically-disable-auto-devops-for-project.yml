@@ -1,0 +1,5 @@
+---
+title: Disable Auto DevOps for project upon first pipeline failure
+merge_request: 21172
+author:
+type: added

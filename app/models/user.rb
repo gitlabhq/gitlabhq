@@ -266,6 +266,7 @@ class User < ActiveRecord::Base
   scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
   scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'ASC')) }
   scope :confirmed, -> { where.not(confirmed_at: nil) }
+  scope :by_username, -> (usernames) { iwhere(username: usernames) }
 
   # Limits the users to those that have TODOs, optionally in the given state.
   #
@@ -457,11 +458,11 @@ class User < ActiveRecord::Base
     end
 
     def find_by_username(username)
-      iwhere(username: username).take
+      by_username(username).take
     end
 
     def find_by_username!(username)
-      iwhere(username: username).take!
+      by_username(username).take!
     end
 
     def find_by_personal_access_token(token_string)

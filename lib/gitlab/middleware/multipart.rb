@@ -83,7 +83,7 @@ module Gitlab
 
         def open_file(params, key)
           allowed_paths = [
-            FileUploader.root,
+            ::FileUploader.root,
             Gitlab.config.uploads.storage_path,
             File.join(Rails.root, 'public/uploads/tmp')
           ]

@@ -433,6 +433,23 @@ describe User do
         end
       end
     end
+
+    describe '.by_username' do
+      it 'finds users regardless of the case passed' do
+        user = create(:user, username: 'CaMeLcAsEd')
+        user2 = create(:user, username: 'UPPERCASE')
+
+        expect(described_class.by_username(%w(CAMELCASED uppercase)))
+          .to contain_exactly(user, user2)
+      end
+
+      it 'finds a single user regardless of the case passed' do
+        user = create(:user, username: 'CaMeLcAsEd')
+
+        expect(described_class.by_username('CAMELCASED'))
+          .to contain_exactly(user)
+      end
+    end
   end
 
   describe "Respond to" do

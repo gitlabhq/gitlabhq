@@ -162,6 +162,34 @@ describe 'Projects > Wiki > User previews markdown changes', :js do
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/title%20with%20spaces\">spaced link</a>")
       end
     end
+
+    context 'when rendering the preview' do
+      it 'renders content with CommonMark' do
+        create_wiki_page 'a-page/b-page/c-page/common-mark'
+        click_link 'Edit'
+
+        fill_in :wiki_content, with: "1. one\n  - sublist\n"
+        click_on "Preview"
+
+        # the above generates two seperate lists (not embedded) in CommonMark
+        expect(page).to have_content("sublist")
+        expect(page).not_to have_xpath("//ol//li//ul")
+      end
+
+      it 'renders content with RedCarpet when legacy_render is set' do
+        wiki_page = create(:wiki_page,
+                           wiki: project.wiki,
+                           attrs: { title: 'home', content: "Empty content" })
+        visit(project_wiki_edit_path(project, wiki_page, legacy_render: 1))
+
+        fill_in :wiki_content, with: "1. one\n  - sublist\n"
+        click_on "Preview"
+
+        # the above generates a sublist list in RedCarpet
+        expect(page).to have_content("sublist")
+        expect(page).to have_xpath("//ol//li//ul")
+      end
+    end
   end
 
   it "does not linkify double brackets inside code blocks as expected" do

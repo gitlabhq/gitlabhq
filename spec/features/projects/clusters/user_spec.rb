@@ -38,6 +38,28 @@ describe 'User Cluster', :js do
       end
     end
 
+    context 'rbac_clusters feature flag is enabled' do
+      before do
+        stub_feature_flags(rbac_clusters: true)
+
+        fill_in 'cluster_name', with: 'dev-cluster'
+        fill_in 'cluster_platform_kubernetes_attributes_api_url', with: 'http://example.com'
+        fill_in 'cluster_platform_kubernetes_attributes_token', with: 'my-token'
+        check 'cluster_platform_kubernetes_attributes_authorization_type'
+        click_button 'Add Kubernetes cluster'
+      end
+
+      it 'user sees a cluster details page' do
+        expect(page).to have_content('Kubernetes cluster integration')
+        expect(page.find_field('cluster[name]').value).to eq('dev-cluster')
+        expect(page.find_field('cluster[platform_kubernetes_attributes][api_url]').value)
+          .to have_content('http://example.com')
+        expect(page.find_field('cluster[platform_kubernetes_attributes][token]').value)
+          .to have_content('my-token')
+        expect(page.find_field('cluster[platform_kubernetes_attributes][authorization_type]', disabled: true)).to be_checked
+      end
+    end
+
     context 'when user filled form with invalid parameters' do
       before do
         click_button 'Add Kubernetes cluster'
