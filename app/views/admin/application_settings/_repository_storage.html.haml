@@ -1,6 +1,8 @@
 = form_for @application_setting, url: admin_application_settings_path(anchor: 'js-repository-storage-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
+  = hidden_field(:redirect_path, repository_admin_application_settings_path)
+
   %fieldset
     .sub-section
       .form-group

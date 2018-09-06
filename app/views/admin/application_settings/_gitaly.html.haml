@@ -1,6 +1,8 @@
 = form_for @application_setting, url: admin_application_settings_path(anchor: 'js-gitaly-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
+  = hidden_field(:redirect_path, preferences_admin_application_settings_path)
+
   %fieldset
     .form-group
       = f.label :gitaly_timeout_default, 'Default Timeout Period', class: 'label-bold'
