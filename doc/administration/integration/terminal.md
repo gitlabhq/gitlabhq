@@ -1,7 +1,6 @@
 # Web terminals
 
->
-[Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7690)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7690)
 in GitLab 8.15. Only project maintainers and owners can access web terminals.
 
 With the introduction of the [Kubernetes integration](../../user/project/clusters/index.md),

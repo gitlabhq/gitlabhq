@@ -10,7 +10,7 @@ comments: false
 
 - Find a commit that introduced a bug
 - Works through a process of elimination
-- Specify a known good and bad revision to begin	  	
+- Specify a known good and bad revision to begin
 
 ----------
 

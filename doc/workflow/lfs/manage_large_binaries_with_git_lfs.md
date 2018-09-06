@@ -61,11 +61,12 @@ git commit -am "Added Debian iso"     # commit the file meta data
 git push origin master                # sync the git repo and large file to the GitLab server
 ```
 
->**Note**: Make sure that `.gitattributes` is tracked by git. Otherwise Git
- LFS will not be working properly for people cloning the project.
- ```bash
- git add .gitattributes
- ```
+> **Note**: Make sure that `.gitattributes` is tracked by git. Otherwise Git
+> LFS will not be working properly for people cloning the project.
+>
+> ```bash
+> git add .gitattributes
+> ```
 
 Cloning the repository works the same as before. Git automatically detects the
 LFS-tracked files and clones them via HTTP. If you performed the git clone
