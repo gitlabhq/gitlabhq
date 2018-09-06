@@ -220,4 +220,23 @@ describe('DiffsStoreUtils', () => {
       expect(utils.trimFirstCharOfLineContent()).toEqual({ discussions: [] });
     });
   });
+
+  describe('prepareDiffData', () => {
+    it('sets the renderIt and collapsed attribute on files', () => {
+      const preparedDiff = { diffFiles: [getDiffFileMock()] };
+      utils.prepareDiffData(preparedDiff);
+
+      const firstParallelDiffLine = preparedDiff.diffFiles[0].parallelDiffLines[2];
+      expect(firstParallelDiffLine.left.discussions.length).toBe(0);
+      expect(firstParallelDiffLine.left).not.toHaveAttr('text');
+      expect(firstParallelDiffLine.right.discussions.length).toBe(0);
+      expect(firstParallelDiffLine.right).not.toHaveAttr('text');
+
+      expect(preparedDiff.diffFiles[0].highlightedDiffLines[0].discussions.length).toBe(0);
+      expect(preparedDiff.diffFiles[0].highlightedDiffLines[0]).not.toHaveAttr('text');
+
+      expect(preparedDiff.diffFiles[0].renderIt).toBeTruthy();
+      expect(preparedDiff.diffFiles[0].collapsed).toBeFalsy();
+    });
+  });
 });

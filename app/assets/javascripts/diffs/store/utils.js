@@ -182,8 +182,8 @@ export function trimFirstCharOfLineContent(line = {}) {
 }
 
 export function prepareDiffData(diffData) {
-  let showingLines = 0;
   const filesLength = diffData.diffFiles.length;
+  let showingLines = 0;
   let i;
   for (i = 0; i < filesLength; i += 1) {
     const file = diffData.diffFiles[i];
