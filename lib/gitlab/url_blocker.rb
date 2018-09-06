@@ -30,6 +30,7 @@ module Gitlab
         end
 
         validate_localhost!(addrs_info) unless allow_localhost
+        validate_loopback!(addrs_info) unless allow_localhost
         validate_local_network!(addrs_info) unless allow_local_network
         validate_link_local!(addrs_info) unless allow_local_network
 
@@ -82,6 +83,12 @@ module Gitlab
         return if (local_ips & addrs_info.map(&:ip_address)).empty?
 
         raise BlockedUrlError, "Requests to localhost are not allowed"
+      end
+
+      def validate_loopback!(addrs_info)
+        return unless addrs_info.any? { |addr| addr.ipv4_loopback? || addr.ipv6_loopback? }
+
+        raise BlockedUrlError, "Requests to loopback addresses are not allowed"
       end
 
       def validate_local_network!(addrs_info)

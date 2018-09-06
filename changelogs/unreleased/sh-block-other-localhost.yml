@@ -1,0 +1,5 @@
+---
+title: Block loopback addresses in UrlBlocker
+merge_request:
+author:
+type: security
