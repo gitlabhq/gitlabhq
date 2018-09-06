@@ -26,7 +26,7 @@ class Deployment < ActiveRecord::Base
     rollout: 2
   }
 
-  def is_incremental_rollout?
+  def incremental_rollout?
     rollout? && rollout.to_i < 100
   end
 
