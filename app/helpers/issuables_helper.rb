@@ -174,13 +174,12 @@ module IssuablesHelper
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "d-block d-sm-none")
 
       if status = user_status(issuable.author)
-        author_output << "&ensp; #{status}".html_safe
+        author_output << "#{status}".html_safe
       end
 
       author_output
     end
 
-    output << "&ensp;".html_safe
     output << content_tag(:span, (issuable_first_contribution_icon if issuable.first_contribution?), class: 'has-tooltip', title: _('1st contribution!'))
 
     output << content_tag(:span, (issuable.task_status if issuable.tasks?), id: "task_status", class: "d-none d-sm-none d-md-inline-block")
