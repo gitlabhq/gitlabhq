@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe 'Project' do
   include ProjectForksHelper
+  include MobileHelpers
 
   describe 'creating from template' do
     let(:user)    { create(:user) }
@@ -54,25 +55,72 @@ describe 'Project' do
     it 'parses Markdown' do
       project.update_attribute(:description, 'This is **my** project')
       visit path
-      expect(page).to have_css('.project-home-desc > p > strong')
+      expect(page).to have_css('.project-description > .project-description-markdown > p > strong')
     end
 
     it 'passes through html-pipeline' do
       project.update_attribute(:description, 'This project is the :poop:')
       visit path
-      expect(page).to have_css('.project-home-desc > p > gl-emoji')
+      expect(page).to have_css('.project-description > .project-description-markdown > p > gl-emoji')
     end
 
     it 'sanitizes unwanted tags' do
       project.update_attribute(:description, "```\ncode\n```")
       visit path
-      expect(page).not_to have_css('.project-home-desc code')
+      expect(page).not_to have_css('.project-description code')
     end
 
     it 'permits `rel` attribute on links' do
       project.update_attribute(:description, 'https://google.com/')
       visit path
-      expect(page).to have_css('.project-home-desc a[rel]')
+      expect(page).to have_css('.project-description a[rel]')
+    end
+
+    context 'read more', :js do
+      let(:read_more_selector)         { '.read-more-container' }
+      let(:read_more_trigger_selector) { '.project-home-desc .js-read-more-trigger' }
+
+      it 'does not display "read more" link on desktop breakpoint' do
+        project.update_attribute(:description, 'This is **my** project')
+        visit path
+
+        expect(find(read_more_trigger_selector, visible: false)).not_to be_visible
+      end
+
+      it 'displays "read more" link on mobile breakpoint' do
+        project.update_attribute(:description, 'This is **my** project')
+        visit path
+        resize_screen_xs
+
+        find(read_more_trigger_selector).click
+
+        expect(page).to have_css('.project-description .is-expanded')
+      end
+    end
+  end
+
+  describe 'copy clone URL to clipboard', :js do
+    let(:project) { create(:project, :repository) }
+    let(:path)    { project_path(project) }
+
+    before do
+      sign_in(create(:admin))
+      visit path
+    end
+
+    context 'desktop component' do
+      it 'shows on md and larger breakpoints' do
+        expect(find('.git-clone-holder')).to be_visible
+        expect(find('.mobile-git-clone', visible: false)).not_to be_visible
+      end
+    end
+
+    context 'mobile component' do
+      it 'shows mobile component on sm and smaller breakpoints' do
+        resize_screen_xs
+        expect(find('.mobile-git-clone')).to be_visible
+        expect(find('.git-clone-holder', visible: false)).not_to be_visible
+      end
     end
   end
 
