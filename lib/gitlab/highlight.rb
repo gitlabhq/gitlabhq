@@ -1,15 +1,15 @@
 module Gitlab
   class Highlight
-    def self.highlight(blob_name, blob_content, repository: nil, plain: false)
-      new(blob_name, blob_content, repository: repository)
+    def self.highlight(blob_name, blob_content, language: nil, plain: false)
+      new(blob_name, blob_content, language: language)
         .highlight(blob_content, continue: false, plain: plain)
     end
 
     attr_reader :blob_name
 
-    def initialize(blob_name, blob_content, repository: nil)
+    def initialize(blob_name, blob_content, language: nil)
       @formatter = Rouge::Formatters::HTMLGitlab
-      @repository = repository
+      @language = language
       @blob_name = blob_name
       @blob_content = blob_content
     end
@@ -31,11 +31,9 @@ module Gitlab
     private
 
     def custom_language
-      language_name = @repository && @repository.gitattribute(@blob_name, 'gitlab-language')
+      return nil unless @language
 
-      return nil unless language_name
-
-      Rouge::Lexer.find_fancy(language_name)
+      Rouge::Lexer.find_fancy(@language)
     end
 
     def highlight_text(text, continue: true, plain: false)

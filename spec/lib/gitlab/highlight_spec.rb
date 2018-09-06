@@ -5,34 +5,15 @@ describe Gitlab::Highlight do
 
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
-  let(:commit) { project.commit(sample_commit.id) }
 
-  describe 'custom highlighting from .gitattributes' do
-    let(:branch) { 'gitattributes' }
-    let(:blob) { repository.blob_at_branch(branch, path) }
-
+  describe 'language provided' do
     let(:highlighter) do
-      described_class.new(blob.path, blob.data, repository: repository)
+      described_class.new('foo.erb', 'bar', language: 'erb?parent=json')
     end
 
-    before do
-      project.change_head('gitattributes')
-    end
-
-    describe 'basic language selection' do
-      let(:path) { 'custom-highlighting/test.gitlab-custom' }
-      it 'highlights as ruby' do
-        expect(highlighter.lexer.tag).to eq 'ruby'
-      end
-    end
-
-    describe 'cgi options' do
-      let(:path) { 'custom-highlighting/test.gitlab-cgi' }
-
-      it 'highlights as json with erb' do
-        expect(highlighter.lexer.tag).to eq 'erb'
-        expect(highlighter.lexer.parent.tag).to eq 'json'
-      end
+    it 'sets correct lexer' do
+      expect(highlighter.lexer.tag).to eq 'erb'
+      expect(highlighter.lexer.parent.tag).to eq 'json'
     end
   end
 
@@ -42,7 +23,7 @@ describe Gitlab::Highlight do
       let(:path) { 'files/whitespace' }
       let(:blob) { repository.blob_at_branch(branch, path) }
       let(:lines) do
-        described_class.highlight(blob.path, blob.data, repository: repository).lines
+        described_class.highlight(blob.path, blob.data).lines
       end
 
       it 'strips extra LFs' do
