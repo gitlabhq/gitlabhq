@@ -24,12 +24,6 @@ export default {
       default: null,
     },
   },
-  mounted() {
-    this.$refs.fileUpload.addEventListener('change', this.openFile);
-  },
-  beforeDestroy() {
-    this.$refs.fileUpload.removeEventListener('change', this.openFile);
-  },
   methods: {
     createFile(target, file, isText) {
       const { name } = file;
@@ -85,6 +79,8 @@ export default {
       ref="fileUpload"
       type="file"
       class="hidden"
+      multiple
+      @change="openFile"
     />
   </div>
 </template>

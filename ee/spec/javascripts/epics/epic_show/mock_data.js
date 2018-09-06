@@ -85,6 +85,7 @@ export const mockDatePickerProps = {
   selectedDate: null,
   selectedDateIsFixed: true,
   dateFromMilestones: null,
+  dateFixed: null,
   dateFromMilestonesTooltip: 'Select an issue with milestone to set date',
   isDateInvalid: false,
   dateInvalidTooltip: 'Selected date is invalid',

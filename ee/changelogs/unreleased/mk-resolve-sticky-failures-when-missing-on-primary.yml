@@ -1,0 +1,5 @@
+---
+title: 'Geo: Resolve sticky failures when attachments are missing on primary'
+merge_request: 6991
+author:
+type: fixed

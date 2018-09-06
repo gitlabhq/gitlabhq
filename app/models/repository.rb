@@ -252,15 +252,22 @@ class Repository
   # Git GC will delete commits from the repository that are no longer in any
   # branches or tags, but we want to keep some of these commits around, for
   # example if they have comments or CI builds.
-  def keep_around(sha)
-    return unless sha.present? && commit_by(oid: sha)
+  #
+  # For Geo's sake, pass in multiple shas rather than calling it multiple times,
+  # to avoid unnecessary syncing.
+  def keep_around(*shas)
+    shas.each do |sha|
+      begin
+        next unless sha.present? && commit_by(oid: sha)
 
-    return if kept_around?(sha)
+        next if kept_around?(sha)
 
-    # This will still fail if the file is corrupted (e.g. 0 bytes)
-    raw_repository.write_ref(keep_around_ref_name(sha), sha, shell: false)
-  rescue Gitlab::Git::CommandError => ex
-    Rails.logger.error "Unable to create keep-around reference for repository #{disk_path}: #{ex}"
+        # This will still fail if the file is corrupted (e.g. 0 bytes)
+        raw_repository.write_ref(keep_around_ref_name(sha), sha, shell: false)
+      rescue Gitlab::Git::CommandError => ex
+        Rails.logger.error "Unable to create keep-around reference for repository #{disk_path}: #{ex}"
+      end
+    end
   end
 
   def kept_around?(sha)
@@ -578,7 +585,12 @@ class Repository
   end
 
   def rendered_readme
-    MarkupHelper.markup_unsafe(readme.name, readme.data, project: project, markdown_engine: :redcarpet) if readme
+    return unless readme
+
+    context = { project: project }
+    context[:markdown_engine] = :redcarpet unless MarkupHelper.commonmark_for_repositories_enabled?
+
+    MarkupHelper.markup_unsafe(readme.name, readme.data, context)
   end
   cache_method :rendered_readme
 

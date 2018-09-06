@@ -1,9 +1,13 @@
+# frozen_string_literal: true
+
 module Gitlab
   module BitbucketServerImport
     class Importer
       include Gitlab::ShellAdapter
+
       attr_reader :recover_missing_commits
       attr_reader :project, :project_key, :repository_slug, :client, :errors, :users
+      attr_accessor :logger
 
       REMOTE_NAME = 'bitbucket_server'.freeze
       BATCH_SIZE = 100
@@ -33,6 +37,7 @@ module Gitlab
         @errors = []
         @users = {}
         @temp_branches = []
+        @logger = Gitlab::Import::Logger.build
       end
 
       def execute
@@ -40,6 +45,8 @@ module Gitlab
         import_pull_requests
         delete_temp_branches
         handle_errors
+
+        log_info(stage: "complete")
 
         true
       end
@@ -115,15 +122,21 @@ module Gitlab
             client.create_branch(project_key, repository_slug, branch_name, sha)
             branches_created << temp_branch
           rescue BitbucketServer::Connection::ConnectionError => e
-            Rails.logger.warn("BitbucketServerImporter: Unable to recreate branch for SHA #{sha}: #{e}")
+            log_warn(message: "Unable to recreate branch", sha: sha, error: e.message)
           end
         end
       end
 
       def import_repository
+        log_info(stage: 'import_repository', message: 'starting import')
+
         project.ensure_repository
         project.repository.fetch_as_mirror(project.import_url, refmap: self.class.refmap, remote_name: REMOTE_NAME)
+
+        log_info(stage: 'import_repository', message: 'finished import')
       rescue Gitlab::Shell::Error, Gitlab::Git::RepositoryMirroring::RemoteError => e
+        log_error(stage: 'import_repository', message: 'failed import', error: e.message)
+
         # Expire cache to prevent scenarios such as:
         # 1. First import failed, but the repo was imported successfully, so +exists?+ returns true
         # 2. Retried import, repo is broken or not imported but +exists?+ still returns true
@@ -154,7 +167,10 @@ module Gitlab
             begin
               import_bitbucket_pull_request(pull_request)
             rescue StandardError => e
-              errors << { type: :pull_request, iid: pull_request.iid, errors: e.message, trace: e.backtrace.join("\n"), raw_response: pull_request.raw }
+              backtrace = Gitlab::Profiler.clean_backtrace(e.backtrace)
+              log_error(stage: 'import_pull_requests', iid: pull_request.iid, error: e.message, backtrace: backtrace)
+
+              errors << { type: :pull_request, iid: pull_request.iid, errors: e.message, backtrace: backtrace.join("\n"), raw_response: pull_request.raw }
             end
           end
         end
@@ -166,30 +182,30 @@ module Gitlab
             client.delete_branch(project_key, repository_slug, branch.name, branch.sha)
             project.repository.delete_branch(branch.name)
           rescue BitbucketServer::Connection::ConnectionError => e
+            log_error(stage: 'delete_temp_branches', branch: branch.name, error: e.message)
             @errors << { type: :delete_temp_branches, branch_name: branch.name, errors: e.message }
           end
         end
       end
 
       def import_bitbucket_pull_request(pull_request)
+        log_info(stage: 'import_bitbucket_pull_requests', message: 'starting', iid: pull_request.iid)
+
         description = ''
         description += @formatter.author_line(pull_request.author) unless find_user_id(pull_request.author_email)
         description += pull_request.description if pull_request.description
-
-        source_branch_sha = pull_request.source_branch_sha
-        target_branch_sha = pull_request.target_branch_sha
         author_id = gitlab_user_id(pull_request.author_email)
 
         attributes = {
           iid: pull_request.iid,
           title: pull_request.title,
           description: description,
-          source_project: project,
+          source_project_id: project.id,
           source_branch: Gitlab::Git.ref_name(pull_request.source_branch_name),
-          source_branch_sha: source_branch_sha,
-          target_project: project,
+          source_branch_sha: pull_request.source_branch_sha,
+          target_project_id: project.id,
           target_branch: Gitlab::Git.ref_name(pull_request.target_branch_name),
-          target_branch_sha: target_branch_sha,
+          target_branch_sha: pull_request.target_branch_sha,
           state: pull_request.state,
           author_id: author_id,
           assignee_id: nil,
@@ -197,11 +213,17 @@ module Gitlab
           updated_at: pull_request.updated_at
         }
 
-        merge_request = project.merge_requests.create!(attributes)
+        creator = Gitlab::Import::MergeRequestCreator.new(project)
+        merge_request = creator.execute(attributes)
+
         import_pull_request_comments(pull_request, merge_request) if merge_request.persisted?
+
+        log_info(stage: 'import_bitbucket_pull_requests', message: 'finished', iid: pull_request.iid)
       end
 
       def import_pull_request_comments(pull_request, merge_request)
+        log_info(stage: 'import_pull_request_comments', message: 'starting', iid: merge_request.iid)
+
         comments, other_activities = client.activities(project_key, repository_slug, pull_request.iid).partition(&:comment?)
 
         merge_event = other_activities.find(&:merge_event?)
@@ -211,9 +233,16 @@ module Gitlab
 
         import_inline_comments(inline_comments.map(&:comment), merge_request)
         import_standalone_pr_comments(pr_comments.map(&:comment), merge_request)
+
+        log_info(stage: 'import_pull_request_comments', message: 'finished', iid: merge_request.iid,
+                 merge_event_found: merge_event.present?,
+                 inline_comments_count: inline_comments.count,
+                 standalone_pr_comments: pr_comments.count)
       end
 
       def import_merge_event(merge_request, merge_event)
+        log_info(stage: 'import_merge_event', message: 'starting', iid: merge_request.iid)
+
         committer = merge_event.committer_email
 
         user_id = gitlab_user_id(committer)
@@ -221,9 +250,13 @@ module Gitlab
         merge_request.update({ merge_commit_sha: merge_event.merge_commit })
         metric = MergeRequest::Metrics.find_or_initialize_by(merge_request: merge_request)
         metric.update(merged_by_id: user_id, merged_at: timestamp)
+
+        log_info(stage: 'import_merge_event', message: 'finished', iid: merge_request.iid)
       end
 
       def import_inline_comments(inline_comments, merge_request)
+        log_info(stage: 'import_inline_comments', message: 'starting', iid: merge_request.iid)
+
         inline_comments.each do |comment|
           position = build_position(merge_request, comment)
           parent = create_diff_note(merge_request, comment, position)
@@ -236,6 +269,8 @@ module Gitlab
             create_diff_note(merge_request, reply, position, discussion_id)
           end
         end
+
+        log_info(stage: 'import_inline_comments', message: 'finished', iid: merge_request.iid)
       end
 
       def create_diff_note(merge_request, comment, position, discussion_id = nil)
@@ -250,11 +285,14 @@ module Gitlab
           return note
         end
 
+        log_info(stage: 'create_diff_note', message: 'creating fallback DiffNote', iid: merge_request.iid)
+
         # Bitbucket Server supports the ability to comment on any line, not just the
         # line in the diff. If we can't add the note as a DiffNote, fallback to creating
         # a regular note.
         create_fallback_diff_note(merge_request, comment, position)
       rescue StandardError => e
+        log_error(stage: 'create_diff_note', comment_id: comment.id, error: e.message)
         errors << { type: :pull_request, id: comment.id, errors: e.message }
         nil
       end
@@ -292,7 +330,8 @@ module Gitlab
               merge_request.notes.create!(pull_request_comment_attributes(replies))
             end
           rescue StandardError => e
-            errors << { type: :pull_request, iid: comment.id, errors: e.message }
+            log_error(stage: 'import_standalone_pr_comments', merge_request_id: merge_request.id, comment_id: comment.id, error: e.message)
+            errors << { type: :pull_request, comment_id: comment.id, errors: e.message }
           end
         end
       end
@@ -320,6 +359,26 @@ module Gitlab
           author_id: author,
           created_at: comment.created_at,
           updated_at: comment.updated_at
+        }
+      end
+
+      def log_info(details)
+        logger.info(log_base_data.merge(details))
+      end
+
+      def log_error(details)
+        logger.error(log_base_data.merge(details))
+      end
+
+      def log_warn(details)
+        logger.warn(log_base_data.merge(details))
+      end
+
+      def log_base_data
+        {
+          class: self.class.name,
+          project_id: project.id,
+          project_path: project.full_path
         }
       end
     end

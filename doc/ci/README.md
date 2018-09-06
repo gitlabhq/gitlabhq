@@ -68,6 +68,8 @@ learn how to leverage its potential even more.
 - [Environments and deployments](environments.md): Separate your jobs into
   environments and use them for different purposes like testing, building and
   deploying
+  - [Protected Environments](environments/protected_environments.md): Ensure that only people
+    with the right privileges can deploy to an environment.
 - [Job artifacts](../user/project/pipelines/job_artifacts.md)
 - [Caching dependencies](caching/index.md)
 - [Git submodules](git_submodules.md) - How to run your CI jobs when Git
@@ -81,6 +83,8 @@ learn how to leverage its potential even more.
 - [Deploy Boards](../user/project/deploy_boards.md) - Check the current health
   and status of each CI/CD environment running on Kubernetes
 - [ChatOps](chatops/README.md) - Trigger CI jobs from chat, with results sent back to the channel.
+- [Interactive web terminal](interactive_web_terminal/index.md) - Open an interactive
+  web terminal to debug the running jobs
 
 ## GitLab CI/CD for Docker
 

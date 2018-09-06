@@ -14,6 +14,64 @@ starting from GitLab 9.0.
 Make sure you read the [`cache` reference](../yaml/README.md#cache) to learn
 how it is defined in `.gitlab-ci.yml`.
 
+## Cache vs artifacts
+
+NOTE: **Note:**
+Be careful if you use cache and artifacts to store the same path in your jobs
+as **caches are restored before artifacts** and the content would be overwritten.
+
+Don't mix the caching with passing artifacts between stages. Caching is not
+designed to pass artifacts between stages. Cache is for runtime dependencies
+needed to compile the project:
+
+- `cache` - **Use for temporary storage for project dependencies.** Not useful
+  for keeping intermediate build results, like `jar` or `apk` files.
+  Cache was designed to be used to speed up invocations of subsequent runs of a
+  given job, by keeping things like dependencies (e.g., npm packages, Go vendor
+  packages, etc.) so they don't have to be re-fetched from the public internet.
+  While the cache can be abused to pass intermediate build results between stages,
+  there may be cases where artifacts are a better fit.
+- `artifacts` - **Use for stage results that will be passed between stages.**
+  Artifacts were designed to upload some compiled/generated bits of the build,
+  and they can be fetched by any number of concurrent Runners. They are
+  guaranteed to be available and are there to pass data between jobs. They are
+  also exposed to be downloaded from the UI. **Artifacts can only exist in
+  directories relative to the build directory** and specifying paths which don't
+  comply to this rule trigger an unintuitive and illogical error message (an
+  enhancement is discussed at
+  https://gitlab.com/gitlab-org/gitlab-ce/issues/15530). Artifacts need to be
+  uploaded to the GitLab instance (not only the GitLab runner) before the next
+  stage job(s) can start, so you need to evaluate carefully whether your
+  bandwidth allows you to profit from parallelization with stages and shared
+  artifacts before investing time in changes to the setup.
+
+It's sometimes confusing because the name artifact sounds like something that
+is only useful outside of the job, like for downloading a final image. But
+artifacts are also available in between stages within a pipeline. So if you
+build your application by downloading all the required modules, you might want
+to declare them as artifacts so that each subsequent stage can depend on them
+being there. There are some optimizations like declaring an
+[expiry time](../yaml/README.md#artifacts-expire_in) so you don't keep artifacts
+around too long, and using [dependencies](../yaml/README.md#dependencies) to
+control exactly where artifacts are passed around.
+
+In summary:
+
+- Caches are disabled if not defined globally or per job (using `cache:`)
+- Caches are available for all jobs in your `.gitlab-ci.yml` if enabled globally
+- Caches can be used by subsequent pipelines of that very same job (a script in
+  a stage) in which the cache was created (if not defined globally).
+- Caches are stored where the Runner is installed **and** uploaded to S3 if
+  [distributed cache is enabled](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching)
+- Caches defined per job are only used either a) for the next pipeline of that job,
+  or b) if that same cache is also defined in a subsequent job of the same pipeline
+- Artifacts are disabled if not defined per job (using `artifacts:`)
+- Artifacts can only be enabled per job, not globally
+- Artifacts are created during a pipeline and can be used by the subsequent
+  jobs of that currently active pipeline
+- Artifacts are always uploaded to GitLab (known as coordinator)
+- Artifacts can have an expiration value for controlling disk usage (30 days by default).
+
 ## Good caching practices
 
 We have the cache from the perspective of the developers (who consume a cache
@@ -87,7 +145,7 @@ you can use the same key for all of them:
 
 ```yaml
 cache:
-  key: one-key-to-rull-them-all
+  key: one-key-to-rule-them-all
 ```
 
 To share the same cache between branches, but separate them by job:
@@ -467,52 +525,3 @@ Behind the scenes, this works by increasing a counter in the database, and the
 value of that counter is used to create the key for the cache by appending an
 integer to it: `-1`, `-2`, etc. After a push, a new key is generated and the
 old cache is not valid anymore.
-
-## Cache vs artifacts
-
-NOTE: **Note:**
-Be careful if you use cache and artifacts to store the same path in your jobs
-as **caches are restored before artifacts** and the content would be overwritten.
-
-Don't mix the caching with passing artifacts between stages. Caching is not
-designed to pass artifacts between stages. Cache is for runtime dependencies
-needed to compile the project:
-
-- `cache` - **Use for temporary storage for project dependencies.** Not useful
-  for keeping intermediate build results, like `jar` or `apk` files.
-  Cache was designed to be used to speed up invocations of subsequent runs of a
-  given job, by keeping things like dependencies (e.g., npm packages, Go vendor
-  packages, etc.) so they don't have to be re-fetched from the public internet.
-  While the cache can be abused to pass intermediate build results between stages,
-  there may be cases where artifacts are a better fit.
-- `artifacts` - **Use for stage results that will be passed between stages.**
-  Artifacts were designed to upload some compiled/generated bits of the build,
-  and they can be fetched by any number of concurrent Runners. They are
-  guaranteed to be available and are there to pass data between jobs. They are
-  also exposed to be downloaded from the UI.
-
-It's sometimes confusing because the name artifact sounds like something that
-is only useful outside of the job, like for downloading a final image. But
-artifacts are also available in between stages within a pipeline. So if you
-build your application by downloading all the required modules, you might want
-to declare them as artifacts so that each subsequent stage can depend on them
-being there. There are some optimizations like declaring an
-[expiry time](../yaml/README.md#artifacts-expire_in) so you don't keep artifacts
-around too long, and using [dependencies](../yaml/README.md#dependencies) to
-control exactly where artifacts are passed around.
-
-So, to sum up:
-- Caches are disabled if not defined globally or per job (using `cache:`)
-- Caches are available for all jobs in your `.gitlab-ci.yml` if enabled globally
-- Caches can be used by subsequent pipelines of that very same job (a script in
-  a stage) in which the cache was created (if not defined globally).
-- Caches are stored where the Runner is installed **and** uploaded to S3 if
-  [distributed cache is enabled](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching)
-- Caches defined per job are only used either a) for the next pipeline of that job,
-  or b) if that same cache is also defined in a subsequent job of the same pipeline
-- Artifacts are disabled if not defined per job (using `artifacts:`)
-- Artifacts can only be enabled per job, not globally
-- Artifacts are created during a pipeline and can be used by the subsequent
-  jobs of that currently active pipeline
-- Artifacts are always uploaded to GitLab (known as coordinator)
-- Artifacts can have an expiration value for controlling disk usage (30 days by default)

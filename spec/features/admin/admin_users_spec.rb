@@ -125,6 +125,52 @@ describe "Admin::Users" do
         expect(page).to have_content('Username can contain only letters, digits')
       end
     end
+
+    context 'with new users set to external enabled' do
+      context 'with regex to match internal user email address set', :js do
+        before do
+          stub_application_setting(user_default_external: true)
+          stub_application_setting(user_default_internal_regex: '.internal@')
+
+          visit new_admin_user_path
+        end
+
+        def expects_external_to_be_checked
+          expect(find('#user_external')).to be_checked
+        end
+
+        def expects_external_to_be_unchecked
+          expect(find('#user_external')).not_to be_checked
+        end
+
+        def expects_warning_to_be_hidden
+          expect(find('#warning_external_automatically_set', visible: :all)[:class]).to include 'hidden'
+        end
+
+        def expects_warning_to_be_shown
+          expect(find('#warning_external_automatically_set')[:class]).not_to include 'hidden'
+        end
+
+        it 'automatically unchecks external for matching email' do
+          expects_external_to_be_checked
+          expects_warning_to_be_hidden
+
+          fill_in 'user_email', with: 'test.internal@domain.ch'
+
+          expects_external_to_be_unchecked
+          expects_warning_to_be_shown
+
+          fill_in 'user_email', with: 'test@domain.ch'
+
+          expects_external_to_be_checked
+          expects_warning_to_be_hidden
+
+          uncheck 'user_external'
+
+          expects_warning_to_be_hidden
+        end
+      end
+    end
   end
 
   describe "GET /admin/users/:id" do
@@ -134,6 +180,7 @@ describe "Admin::Users" do
 
       expect(page).to have_content(user.email)
       expect(page).to have_content(user.name)
+      expect(page).to have_content(user.id)
       expect(page).to have_link('Block user', href: block_admin_user_path(user))
       expect(page).to have_button('Delete user')
       expect(page).to have_button('Delete user and contributions')

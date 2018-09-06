@@ -22,10 +22,6 @@ module SystemNoteHelper
     'moved' => 'arrow-right',
     'outdated' => 'pencil-square',
     'duplicate' => 'issue-duplicate',
-    'approved' => 'approval',
-    'unapproved' => 'unapproval',
-    'relate' => 'link',
-    'unrelate' => 'unlink',
     'locked' => 'lock',
     'unlocked' => 'lock-open'
   }.freeze

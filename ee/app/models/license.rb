@@ -9,6 +9,7 @@ class License < ActiveRecord::Base
   EES_FEATURES = %i[
     audit_events
     burndown_charts
+    code_owners
     contribution_analytics
     elastic_search
     export_issues

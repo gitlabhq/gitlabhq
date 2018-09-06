@@ -1,17 +1,35 @@
 - empty_repo = @project.empty_repo?
-- fork_network = @project.fork_network
-.project-home-panel.text-center{ class: ("empty-project" if empty_repo) }
+- license = @project.license_anchor_data
+.project-home-panel{ class: ("empty-project" if empty_repo) }
   .limit-container-width{ class: container_class }
-    .avatar-container.s70.project-avatar
-      = project_icon(@project, alt: @project.name, class: 'avatar s70 avatar-tile', width: 70, height: 70)
-    %h1.project-title.qa-project-name
-      = @project.name
-      %span.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@project) }
-        = visibility_level_icon(@project.visibility_level, fw: false)
+    .project-header.d-flex.flex-row.flex-wrap.align-items-center.append-bottom-8
+      .project-title-row.d-flex.align-items-center
+        .avatar-container.project-avatar.float-none
+          = project_icon(@project, alt: @project.name, class: 'avatar avatar-tile')
+        %h1.project-title.d-flex.align-items-baseline.qa-project-name
+          = @project.name
+      .project-metadata.d-flex.flex-row.flex-wrap.align-items-baseline
+        .project-visibility.d-inline-flex.align-items-baseline.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@project) }
+          = visibility_level_icon(@project.visibility_level, fw: false, options: {class: 'icon'})
+          = visibility_level_label(@project.visibility_level)
+        - if license.present?
+          .project-license.d-inline-flex.align-items-baseline
+            = link_to_if license.link, sprite_icon('scale', size: 16, css_class: 'icon') + license.label, license.link, class: license.enabled ? 'btn btn-link btn-secondary-hover-link' : 'btn btn-link'
+        - if @project.tag_list.present?
+          .project-tag-list.d-inline-flex.align-items-baseline.has-tooltip{ data: { container: 'body' }, title: @project.has_extra_tags? ? @project.tag_list.join(', ') : nil }
+            = sprite_icon('tag', size: 16, css_class: 'icon')
+            = @project.tags_to_show
+            - if @project.has_extra_tags?
+              = _("+ %{count} more") % { count: @project.count_of_extra_tags_not_shown  }
 
     .project-home-desc
       - if @project.description.present?
-        = markdown_field(@project, :description)
+        .project-description
+          .project-description-markdown.read-more-container
+            = markdown_field(@project, :description)
+          %button.btn.btn-blank.btn-link.text-secondary.js-read-more-trigger.text-secondary.d-lg-none{ type: "button" }
+            = _("Read more")
+
       - if can?(current_user, :read_project, @project)
         .text-secondary.prepend-top-8
           = s_('ProjectPage|Project ID: %{project_id}') % { project_id: @project.id }
@@ -33,34 +51,42 @@
           %br
           = render "shared/mirror_status"
 
-    .project-badges.prepend-top-default.append-bottom-default
-      - @project.badges.each do |badge|
-        %a.append-right-8{ href: badge.rendered_link_url(@project),
-          target: '_blank',
-          rel: 'noopener noreferrer' }>
-          %img.project-badge{ src: badge.rendered_image_url(@project),
-            'aria-hidden': true,
-            alt: '' }>
+    - if @project.badges.present?
+      .project-badges.prepend-top-default.append-bottom-default
+        - @project.badges.each do |badge|
+          %a.append-right-8{ href: badge.rendered_link_url(@project),
+            target: '_blank',
+            rel: 'noopener noreferrer' }>
+            %img.project-badge{ src: badge.rendered_image_url(@project),
+              'aria-hidden': true,
+              alt: 'Project badge' }>
 
-    .project-repo-buttons
-      .count-buttons
+    .project-repo-buttons.d-inline-flex.flex-wrap
+      .count-buttons.d-inline-flex
         = render 'projects/buttons/star'
         = render 'projects/buttons/fork'
 
-      %span.d-none.d-sm-inline
+      - if can?(current_user, :download_code, @project)
+        .project-clone-holder.d-inline-flex.d-sm-none
+          = render "shared/mobile_clone_panel"
+
+        .project-clone-holder.d-none.d-sm-inline-flex
+          = render "shared/clone_panel"
+
+        - if show_xcode_link?(@project)
+          .project-action-button.project-xcode.inline
+            = render "projects/buttons/xcode_link"
+
+      - if current_user
         - if can?(current_user, :download_code, @project)
-          .project-clone-holder
-            = render "shared/clone_panel"
-
-          - if show_xcode_link?(@project)
-            .project-action-button.project-xcode.inline
-              = render "projects/buttons/xcode_link"
-
-        - if current_user
-          - if can?(current_user, :download_code, @project)
+          .d-none.d-sm-inline-flex
             = render 'projects/buttons/download', project: @project, ref: @ref
+          .d-none.d-sm-inline-flex
             = render 'projects/buttons/dropdown'
+          .d-none.d-sm-inline-flex
             = render 'projects/buttons/koding'
 
+        .d-none.d-sm-inline-flex
           = render 'shared/notifications/button', notification_setting: @notification_setting
+        .d-none.d-sm-inline-flex
           = render 'shared/members/access_request_buttons', source: @project

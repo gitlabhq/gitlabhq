@@ -144,6 +144,10 @@ class ProjectPolicy < BasePolicy
     enable :destroy_merge_request
     enable :destroy_issue
     enable :remove_pages
+
+    enable :set_issue_iid
+    enable :set_issue_created_at
+    enable :set_note_created_at
   end
 
   rule { can?(:guest_access) }.policy do
@@ -177,6 +181,7 @@ class ProjectPolicy < BasePolicy
     enable :fork_project
     enable :create_project_snippet
     enable :update_issue
+    enable :reopen_issue
     enable :admin_issue
     enable :admin_label
     enable :admin_list

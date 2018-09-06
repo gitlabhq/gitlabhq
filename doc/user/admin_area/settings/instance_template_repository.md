@@ -26,12 +26,28 @@ Templates must be added to a specific subdirectory in the repository,
 corresponding to the kind of template. They must also have the correct extension
 for the template type.
 
-Currently, only custom license templates are supported. This must go in the
-`LICENSE/` subdirectory, and must have `.txt` file extensions. So, the hierarchy
+Currently, the following types of custom template are supported:
+
+* `Dockerfile`: `Dockerfile` directory, `.dockerfile` extension
+* `.gitignore`: `gitignore` directory, `.gitignore` extension
+* `.gitlab-ci.yml`: `gitlab-ci` directory, `.yml` extension
+* `LICENSE`: `LICENSE` directory, `.txt` extension
+
+Each template must go in its respective subdirectory and have the correct
+extension. So, the hierarchy
 should look like this:
 
 ```text
 |-- README.md
+|-- Dockerfile
+    |-- custom_dockerfile.dockerfile
+    |-- another_dockerfile.dockerfile
+|-- gitignore
+    |-- custom_gitignore.gitignore
+    |-- another_gitignore.gitignore
+|-- gitlab-ci
+    |-- custom_gitlab-ci.yml
+    |-- another_gitlab-ci.yml
 |-- LICENSE
     |-- custom_license.txt
     |-- another_license.txt

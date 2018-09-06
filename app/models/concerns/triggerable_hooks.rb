@@ -6,6 +6,7 @@ module TriggerableHooks
     push_hooks:               :push_events,
     tag_push_hooks:           :tag_push_events,
     issue_hooks:              :issues_events,
+    confidential_note_hooks:  :confidential_note_events,
     confidential_issue_hooks: :confidential_issues_events,
     note_hooks:               :note_events,
     merge_request_hooks:      :merge_requests_events,
@@ -26,6 +27,12 @@ module TriggerableHooks
       return none unless callable_scopes.include?(trigger)
 
       public_send(trigger) # rubocop:disable GitlabSecurity/PublicSend
+    end
+
+    def select_active(hooks_scope, data)
+      select do |hook|
+        ActiveHookFilter.new(hook).matches?(hooks_scope, data)
+      end
     end
 
     private

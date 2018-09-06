@@ -19,7 +19,7 @@ describe Gitlab::SidekiqCluster::CLI do
 
       it 'starts the Sidekiq workers' do
         expect(Gitlab::SidekiqCluster).to receive(:start)
-                                            .with([['foo']], 'test', Dir.pwd, dryrun: false)
+                                            .with([['foo']], 'test', Dir.pwd, 50, dryrun: false)
                                             .and_return([])
 
         cli.run(%w(foo))
@@ -29,10 +29,21 @@ describe Gitlab::SidekiqCluster::CLI do
         it 'starts Sidekiq workers for all queues in all_queues.yml except the ones in argv' do
           expect(Gitlab::SidekiqConfig).to receive(:worker_queues).and_return(['baz'])
           expect(Gitlab::SidekiqCluster).to receive(:start)
-                                              .with([['baz']], 'test', Dir.pwd, dryrun: false)
+                                              .with([['baz']], 'test', Dir.pwd, 50, dryrun: false)
                                               .and_return([])
 
           cli.run(%w(foo -n))
+        end
+      end
+
+      context 'with --max-concurrency flag' do
+        it 'starts Sidekiq workers for specified queues with a max concurrency' do
+          expect(Gitlab::SidekiqConfig).to receive(:worker_queues).and_return(%w(foo bar baz))
+          expect(Gitlab::SidekiqCluster).to receive(:start)
+                                              .with([%w(foo bar baz), %w(solo)], 'test', Dir.pwd, 2, dryrun: false)
+                                              .and_return([])
+
+          cli.run(%w(foo,bar,baz solo -m 2))
         end
       end
 
@@ -40,7 +51,7 @@ describe Gitlab::SidekiqCluster::CLI do
         it 'starts Sidekiq workers for all queues in all_queues.yml with a namespace in argv' do
           expect(Gitlab::SidekiqConfig).to receive(:worker_queues).and_return(['cronjob:foo', 'cronjob:bar'])
           expect(Gitlab::SidekiqCluster).to receive(:start)
-                                              .with([['cronjob', 'cronjob:foo', 'cronjob:bar']], 'test', Dir.pwd, dryrun: false)
+                                              .with([['cronjob', 'cronjob:foo', 'cronjob:bar']], 'test', Dir.pwd, 50, dryrun: false)
                                               .and_return([])
 
           cli.run(%w(cronjob))

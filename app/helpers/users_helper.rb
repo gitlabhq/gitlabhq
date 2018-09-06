@@ -23,6 +23,17 @@ module UsersHelper
     profile_tabs.include?(tab)
   end
 
+  def user_internal_regex_data
+    settings = Gitlab::CurrentSettings.current_application_settings
+
+    pattern, options = if settings.user_default_internal_regex_enabled?
+                         regex = settings.user_default_internal_regex_instance
+                         JsRegex.new(regex).to_h.slice(:source, :options).values
+                       end
+
+    { user_internal_regex_pattern: pattern, user_internal_regex_options: options }
+  end
+
   def current_user_menu_items
     @current_user_menu_items ||= get_current_user_menu_items
   end

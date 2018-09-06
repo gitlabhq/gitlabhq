@@ -1,0 +1,5 @@
+---
+title: Fix project transfer name validation issues causing a redirect loop
+merge_request: 21408
+author:
+type: fixed

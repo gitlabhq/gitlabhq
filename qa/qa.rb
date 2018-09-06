@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 $: << File.expand_path(File.dirname(__FILE__))
 
 Encoding.default_external = 'UTF-8'
@@ -77,7 +79,6 @@ module QA
     #
     autoload :Bootable, 'qa/scenario/bootable'
     autoload :Actable, 'qa/scenario/actable'
-    autoload :Taggable, 'qa/scenario/taggable'
     autoload :Template, 'qa/scenario/template'
 
     ##
@@ -85,15 +86,21 @@ module QA
     #
     module Test
       autoload :Instance, 'qa/scenario/test/instance'
+      module Instance
+        autoload :All, 'qa/scenario/test/instance/all'
+        autoload :Smoke, 'qa/scenario/test/instance/smoke'
+      end
 
       module Integration
         autoload :Github, 'qa/scenario/test/integration/github'
         autoload :LDAP, 'qa/scenario/test/integration/ldap'
         autoload :Kubernetes, 'qa/scenario/test/integration/kubernetes'
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
+        autoload :ObjectStorage, 'qa/scenario/test/integration/object_storage'
       end
 
       module Sanity
+        autoload :Failing, 'qa/scenario/test/sanity/failing'
         autoload :Selectors, 'qa/scenario/test/sanity/selectors'
       end
     end
@@ -208,10 +215,6 @@ module QA
       end
     end
 
-    module Shared
-      autoload :ClonePanel, 'qa/page/shared/clone_panel'
-    end
-
     module Profile
       autoload :PersonalAccessTokens, 'qa/page/profile/personal_access_tokens'
     end
@@ -245,7 +248,9 @@ module QA
     # Classes describing components that are used by several pages.
     #
     module Component
+      autoload :ClonePanel, 'qa/page/component/clone_panel'
       autoload :Dropzone, 'qa/page/component/dropzone'
+      autoload :GroupsFilter, 'qa/page/component/groups_filter'
       autoload :Select2, 'qa/page/component/select2'
     end
   end

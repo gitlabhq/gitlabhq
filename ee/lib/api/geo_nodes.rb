@@ -77,11 +77,8 @@ module API
 
           def geo_node_status
             strong_memoize(:geo_node_status) do
-              if geo_node.current?
-                GeoNodeStatus.fast_current_node_status
-              else
-                geo_node.status
-              end
+              status = GeoNodeStatus.fast_current_node_status if geo_node.current?
+              status || geo_node.status
             end
           end
         end

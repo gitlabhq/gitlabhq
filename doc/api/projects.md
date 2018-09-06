@@ -731,7 +731,7 @@ PUT /projects/:id
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
-| `name` | string | yes | The name of the project |
+| `name` | string | no | The name of the project |
 | `path` | string | no | Custom repository name for the project. By default generated based on name |
 | `default_branch` | string | no | `master` by default |
 | `description` | string | no | Short project description |
@@ -1367,6 +1367,7 @@ GET /projects/:id/hooks/:hook_id
   "url": "http://example.com/hook",
   "project_id": 3,
   "push_events": true,
+  "push_events_branch_filter": "",
   "issues_events": true,
   "confidential_issues_events": true,
   "merge_requests_events": true,
@@ -1393,6 +1394,7 @@ POST /projects/:id/hooks
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `url` | string | yes | The hook URL |
 | `push_events` | boolean | no | Trigger hook on push events |
+| `push_events_branch_filter` | string | no | Trigger hook on push events for matching branches only |
 | `issues_events` | boolean | no | Trigger hook on issues events |
 | `confidential_issues_events` | boolean | no | Trigger hook on confidential issues events |
 | `merge_requests_events` | boolean | no | Trigger hook on merge requests events |
@@ -1418,6 +1420,7 @@ PUT /projects/:id/hooks/:hook_id
 | `hook_id` | integer | yes | The ID of the project hook |
 | `url` | string | yes | The hook URL |
 | `push_events` | boolean | no | Trigger hook on push events |
+| `push_events_branch_filter` | string | no | Trigger hook on push events for matching branches only |
 | `issues_events` | boolean | no | Trigger hook on issues events |
 | `confidential_issues_events` | boolean | no | Trigger hook on confidential issues events |
 | `merge_requests_events` | boolean | no | Trigger hook on merge requests events |
@@ -1446,11 +1449,16 @@ DELETE /projects/:id/hooks/:hook_id
 Note the JSON response differs if the hook is available or not. If the project hook
 is available before it is returned in the JSON response or an empty response is returned.
 
-## Admin fork relation
+## Fork relationship
 
-Allows modification of the forked relationship between existing projects. Available only for admins.
+Allows modification of the forked relationship between existing projects. Available only for project owners and admins.
 
 ### Create a forked from/to relation between existing projects
+
+CAUTION: **Warning:**
+This will destroy the LFS objects stored in the fork.
+So to retain the LFS objects, make sure you've pulled them **before** creating the fork relation,
+and push them again **after** creating the fork relation.
 
 ```
 POST /projects/:id/fork/:forked_from_id

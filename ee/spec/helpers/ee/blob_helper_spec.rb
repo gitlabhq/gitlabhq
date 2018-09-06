@@ -17,7 +17,7 @@ describe BlobHelper do
       stub_licensed_features(custom_file_templates: true)
       stub_ee_application_setting(file_template_project: project)
 
-      expect(Gitlab::Template::LicenseTemplate)
+      expect(Gitlab::Template::CustomLicenseTemplate)
         .to receive(:all)
         .with(project)
         .and_return([OpenStruct.new(name: "name")])

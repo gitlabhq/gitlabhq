@@ -1,5 +1,0 @@
----
-title: Process commits as normal in forks when the upstream project is deleted
-merge_request: 20534
-author:
-type: fixed

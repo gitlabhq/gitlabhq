@@ -106,25 +106,25 @@
 
 .settings-list-icon {
   color: $gl-text-color-secondary;
-  font-size: $settings-icon-size;
+  font-size: $default-icon-size;
   line-height: 42px;
 }
 
 .settings-message {
   padding: 5px;
   line-height: 1.3;
-  color: $warning-message-color;
-  background-color: $warning-message-bg;
-  border: 1px solid $warning-message-border;
+  color: $orange-700;
+  background-color: $orange-100;
+  border: 1px solid $orange-200;
   border-radius: $border-radius-base;
 }
 
 .warning-title {
-  color: $gl-warning;
+  color: $orange-500;
 }
 
 .danger-title {
-  color: $gl-danger;
+  color: $red-500;
 }
 
 .integration-settings-form {
@@ -344,7 +344,7 @@
 }
 
 .mirror-error-badge {
-  background-color: $error-bg;
+  background-color: $red-400;
   border-radius: $border-radius-default;
   color: $white-light;
 }

@@ -343,6 +343,14 @@ describe User do
         expect(users_with_two_factor).to eq([user_with_2fa.id])
         expect(users_with_two_factor).not_to include(user_without_2fa.id)
       end
+
+      it 'works with ORDER BY' do
+        user_with_2fa = create(:user, :two_factor_via_otp, :two_factor_via_u2f)
+
+        expect(described_class
+          .with_two_factor
+          .reorder_by_name).to eq([user_with_2fa])
+      end
     end
 
     describe ".without_two_factor" do
@@ -374,17 +382,72 @@ describe User do
       end
     end
 
-    describe '.todo_authors' do
-      it 'filters users' do
-        create :user
-        user_2 = create :user
-        user_3 = create :user
-        current_user = create :user
-        create(:todo, user: current_user, author: user_2, state: :done)
-        create(:todo, user: current_user, author: user_3, state: :pending)
+    describe '.limit_to_todo_authors' do
+      context 'when filtering by todo authors' do
+        let(:user1) { create(:user) }
+        let(:user2) { create(:user) }
 
-        expect(described_class.todo_authors(current_user.id, 'pending')).to eq [user_3]
-        expect(described_class.todo_authors(current_user.id, 'done')).to eq [user_2]
+        before do
+          create(:todo, user: user1, author: user1, state: :done)
+          create(:todo, user: user2, author: user2, state: :pending)
+        end
+
+        it 'only returns users that have authored todos' do
+          users = described_class.limit_to_todo_authors(
+            user: user2,
+            with_todos: true,
+            todo_state: :pending
+          )
+
+          expect(users).to eq([user2])
+        end
+
+        it 'ignores users that do not have a todo in the matching state' do
+          users = described_class.limit_to_todo_authors(
+            user: user1,
+            with_todos: true,
+            todo_state: :pending
+          )
+
+          expect(users).to be_empty
+        end
+      end
+
+      context 'when not filtering by todo authors' do
+        it 'returns the input relation' do
+          user1 = create(:user)
+          user2 = create(:user)
+          rel = described_class.limit_to_todo_authors(user: user1)
+
+          expect(rel).to include(user1, user2)
+        end
+      end
+
+      context 'when no user is provided' do
+        it 'returns the input relation' do
+          user1 = create(:user)
+          user2 = create(:user)
+          rel = described_class.limit_to_todo_authors
+
+          expect(rel).to include(user1, user2)
+        end
+      end
+    end
+
+    describe '.by_username' do
+      it 'finds users regardless of the case passed' do
+        user = create(:user, username: 'CaMeLcAsEd')
+        user2 = create(:user, username: 'UPPERCASE')
+
+        expect(described_class.by_username(%w(CAMELCASED uppercase)))
+          .to contain_exactly(user, user2)
+      end
+
+      it 'finds a single user regardless of the case passed' do
+        user = create(:user, username: 'CaMeLcAsEd')
+
+        expect(described_class.by_username('CAMELCASED'))
+          .to contain_exactly(user)
       end
     end
   end
@@ -3002,6 +3065,88 @@ describe User do
       let(:model_object) { create(:user, :with_avatar) }
       let(:upload_attribute) { :avatar }
       let(:uploader_class) { AttachmentUploader }
+    end
+  end
+
+  describe '.union_with_user' do
+    context 'when no user ID is provided' do
+      it 'returns the input relation' do
+        user = create(:user)
+
+        expect(described_class.union_with_user).to eq([user])
+      end
+    end
+
+    context 'when a user ID is provided' do
+      it 'includes the user object in the returned relation' do
+        user1 = create(:user)
+        user2 = create(:user)
+        users = described_class.where(id: user1.id).union_with_user(user2.id)
+
+        expect(users).to include(user1)
+        expect(users).to include(user2)
+      end
+
+      it 'does not re-apply any WHERE conditions on the outer query' do
+        relation = described_class.where(id: 1).union_with_user(2)
+
+        expect(relation.arel.where_sql).to be_nil
+      end
+    end
+  end
+
+  describe '.optionally_search' do
+    context 'using nil as the argument' do
+      it 'returns the current relation' do
+        user = create(:user)
+
+        expect(described_class.optionally_search).to eq([user])
+      end
+    end
+
+    context 'using an empty String as the argument' do
+      it 'returns the current relation' do
+        user = create(:user)
+
+        expect(described_class.optionally_search('')).to eq([user])
+      end
+    end
+
+    context 'using a non-empty String' do
+      it 'returns users matching the search query' do
+        user1 = create(:user)
+        create(:user)
+
+        expect(described_class.optionally_search(user1.name)).to eq([user1])
+      end
+    end
+  end
+
+  describe '.where_not_in' do
+    context 'without an argument' do
+      it 'returns the current relation' do
+        user = create(:user)
+
+        expect(described_class.where_not_in).to eq([user])
+      end
+    end
+
+    context 'using a list of user IDs' do
+      it 'excludes the users from the returned relation' do
+        user1 = create(:user)
+        user2 = create(:user)
+
+        expect(described_class.where_not_in([user2.id])).to eq([user1])
+      end
+    end
+  end
+
+  describe '.reorder_by_name' do
+    it 'reorders the input relation' do
+      user1 = create(:user, name: 'A')
+      user2 = create(:user, name: 'B')
+
+      expect(described_class.reorder_by_name).to eq([user1, user2])
     end
   end
 end

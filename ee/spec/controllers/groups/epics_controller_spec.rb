@@ -57,6 +57,13 @@ describe Groups::EpicsController do
         expect(response).to have_gitlab_http_status(200)
       end
 
+      it 'stores sorting param in a cookie' do
+        get :index, group_id: group, sort: 'start_date_asc'
+
+        expect(cookies['epic_sort']).to eq('start_date_asc')
+        expect(response).to have_gitlab_http_status(200)
+      end
+
       context 'with page param' do
         let(:last_page) { group.epics.page.total_pages }
 

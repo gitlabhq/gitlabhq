@@ -88,7 +88,7 @@ $ df -h
 
 #### Step 3 - Setup Automatic Mounts on Boot
 
-Edit /etc/fstab on client as below to mount the remote shares automatically at boot. 
+Edit `/etc/fstab` on client as below to mount the remote shares automatically at boot. 
 Note that GitLab requires advisory file locking, which is only supported natively in
 NFS version 4. NFSv3 also supports locking as long as Linux Kernel 2.6.5+ is used.
 We recommend using version 4 and do not specifically test NFSv3.

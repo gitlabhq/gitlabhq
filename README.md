@@ -33,7 +33,7 @@ Documentation:
 http://doc.gitlab.com/ee/
 
 To upgrade from CE, just perform a normal upgrade, but use an EE package:
-https://about.gitlab.com/update/#ee
+https://about.gitlab.com/upgrade/
 
 If you need help with your GitLab installation and for any technical questions please see the [support page](https://about.gitlab.com/support/)
 
@@ -88,7 +88,7 @@ You can access a new installation with the login **`root`** and password **`5ive
 
 ## Contributing
 
-GitLab is an open source project and we are very happy to accept community contributions. Please refer to [CONTRIBUTING.md](/CONTRIBUTING.md) for details.
+GitLab is an open source project and we are very happy to accept community contributions. Please refer to [Contributing to GitLab page](https://about.gitlab.com/contributing/) for more details.
 
 ## Licensing
 
@@ -96,7 +96,7 @@ GitLab Community Edition (CE) is available freely under the MIT Expat license.
 
 All third party components incorporated into the GitLab Software are licensed under the original license provided by the owner of the applicable component.
 
-All Documentation content that resides under the doc/ directory of this repository is licensed under Creative Commons: CC BY-SA 4.0.
+All Documentation content that resides under the `doc/` directory of this repository is licensed under Creative Commons: CC BY-SA 4.0.
 
 ## Install a development environment
 

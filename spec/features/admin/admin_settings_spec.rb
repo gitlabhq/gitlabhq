@@ -103,6 +103,18 @@ describe 'Admin updates settings' do
     expect(page).to have_content "Application settings saved successfully"
   end
 
+  it 'Change New users set to external', :js do
+    user_internal_regex = find('#application_setting_user_default_internal_regex', visible: :all)
+
+    expect(user_internal_regex).to be_readonly
+    expect(user_internal_regex['placeholder']).to eq 'To define internal users, first enable new users set to external'
+
+    check 'application_setting_user_default_external'
+
+    expect(user_internal_regex).not_to be_readonly
+    expect(user_internal_regex['placeholder']).to eq 'Regex pattern'
+  end
+
   it 'Change Sign-in restrictions' do
     page.within('.as-signin') do
       fill_in 'Home page URL', with: 'https://about.gitlab.com/'
@@ -347,6 +359,15 @@ describe 'Admin updates settings' do
     expect(find_field('DSA SSH keys').value).to eq('0')
     expect(find_field('ECDSA SSH keys').value).to eq('384')
     expect(find_field('ED25519 SSH keys').value).to eq(forbidden)
+  end
+
+  it 'loads usage ping payload on click', :js do
+    expect(page).to have_button 'Preview payload'
+
+    find('.js-usage-ping-payload-trigger').click
+
+    expect(page).to have_selector '.js-usage-ping-payload'
+    expect(page).to have_button 'Hide payload'
   end
 
   def check_all_events

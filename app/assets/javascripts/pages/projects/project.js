@@ -13,45 +13,57 @@ export default class Project {
   constructor() {
     const $cloneOptions = $('ul.clone-options-dropdown');
     const $projectCloneField = $('#project_clone');
-    const $cloneBtnText = $('a.clone-dropdown-btn span');
+    const $cloneBtnLabel = $('.js-git-clone-holder .js-clone-dropdown-label');
 
-    const selectedCloneOption = $cloneBtnText.text().trim();
+    const selectedCloneOption = $cloneBtnLabel.text().trim();
     if (selectedCloneOption.length > 0) {
       $(`a:contains('${selectedCloneOption}')`, $cloneOptions).addClass('is-active');
     }
 
-    $('a', $cloneOptions).on('click', (e) => {
+    $('a', $cloneOptions).on('click', e => {
+      e.preventDefault();
       const $this = $(e.currentTarget);
       const url = $this.attr('href');
-      const activeText = $this.find('.dropdown-menu-inner-title').text();
+      const cloneType = $this.data('cloneType');
 
-      e.preventDefault();
+      $('.is-active', $cloneOptions).removeClass('is-active');
+      $(`a[data-clone-type="${cloneType}"]`).each(function() {
+        const $el = $(this);
+        const activeText = $el.find('.dropdown-menu-inner-title').text();
+        const $container = $el.closest('.project-clone-holder');
+        const $label = $container.find('.js-clone-dropdown-label');
 
-      $('.is-active', $cloneOptions).not($this).removeClass('is-active');
-      $this.toggleClass('is-active');
-      $projectCloneField.val(url);
-      $cloneBtnText.text(activeText);
+        $el.toggleClass('is-active');
+        $label.text(activeText);
+      });
 
       $('#modal-geo-info').data({
         cloneUrlSecondary: $this.attr('href'),
         cloneUrlPrimary: $this.data('primaryUrl') || '',
       });
 
-      return $('.clone').text(url);
+      $projectCloneField.val(url);
+      $('.js-git-empty .js-clone').text(url);
     });
     // Ref switcher
     Project.initRefSwitcher();
     $('.project-refs-select').on('change', function() {
-      return $(this).parents('form').submit();
+      return $(this)
+        .parents('form')
+        .submit();
     });
     $('.hide-no-ssh-message').on('click', function(e) {
       Cookies.set('hide_no_ssh_message', 'false');
-      $(this).parents('.no-ssh-key-message').remove();
+      $(this)
+        .parents('.no-ssh-key-message')
+        .remove();
       return e.preventDefault();
     });
     $('.hide-no-password-message').on('click', function(e) {
       Cookies.set('hide_no_password_message', 'false');
-      $(this).parents('.no-password-message').remove();
+      $(this)
+        .parents('.no-password-message')
+        .remove();
       return e.preventDefault();
     });
     $('.hide-shared-runner-limit-message').on('click', function(e) {
@@ -70,7 +82,7 @@ export default class Project {
   }
 
   static changeProject(url) {
-    return window.location = url;
+    return (window.location = url);
   }
 
   static initRefSwitcher() {
@@ -85,14 +97,15 @@ export default class Project {
       selected = $dropdown.data('selected');
       return $dropdown.glDropdown({
         data(term, callback) {
-          axios.get($dropdown.data('refsUrl'), {
-            params: {
-              ref: $dropdown.data('ref'),
-              search: term,
-            },
-          })
-          .then(({ data }) => callback(data))
-          .catch(() => flash(__('An error occurred while getting projects')));
+          axios
+            .get($dropdown.data('refsUrl'), {
+              params: {
+                ref: $dropdown.data('ref'),
+                search: term,
+              },
+            })
+            .then(({ data }) => callback(data))
+            .catch(() => flash(__('An error occurred while getting projects')));
         },
         selectable: true,
         filterable: true,

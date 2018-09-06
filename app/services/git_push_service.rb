@@ -146,7 +146,6 @@ class GitPushService < BaseService
     EventCreateService.new.push(project, current_user, build_push_data)
     Ci::CreatePipelineService.new(project, current_user, build_push_data).execute(:push, mirror_update: mirror_update)
 
-    SystemHookPushWorker.perform_async(build_push_data.dup, :push_hooks)
     project.execute_hooks(build_push_data.dup, :push_hooks)
     project.execute_services(build_push_data.dup, :push_hooks)
 
@@ -165,7 +164,7 @@ class GitPushService < BaseService
   end
 
   def process_default_branch
-    offset = [push_commits_count - PROCESS_COMMIT_LIMIT, 0].max
+    offset = [push_commits_count_for_ref - PROCESS_COMMIT_LIMIT, 0].max
     @push_commits = project.repository.commits(params[:newrev], offset: offset, limit: PROCESS_COMMIT_LIMIT)
 
     project.after_create_default_branch
@@ -179,7 +178,7 @@ class GitPushService < BaseService
       params[:newrev],
       params[:ref],
       @push_commits,
-      commits_count: push_commits_count)
+      commits_count: commits_count)
   end
 
   def push_to_existing_branch?
@@ -220,8 +219,14 @@ class GitPushService < BaseService
     end
   end
 
-  def push_commits_count
-    strong_memoize(:push_commits_count) do
+  def commits_count
+    return push_commits_count_for_ref if default_branch? && push_to_new_branch?
+
+    Array(@push_commits).size
+  end
+
+  def push_commits_count_for_ref
+    strong_memoize(:push_commits_count_for_ref) do
       project.repository.commit_count_for_ref(params[:ref])
     end
   end

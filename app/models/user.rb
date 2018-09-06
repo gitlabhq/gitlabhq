@@ -19,6 +19,7 @@ class User < ActiveRecord::Base
   include BulkMemberAccessLoad
   include BlocksJsonSerialization
   include WithUploads
+  include OptionallySearch
 
   prepend EE::User
 
@@ -262,18 +263,52 @@ class User < ActiveRecord::Base
   scope :with_provider, ->(provider) do
     joins(:identities).where(identities: { provider: provider })
   end
-  scope :todo_authors, ->(user_id, state) { where(id: Todo.where(user_id: user_id, state: state).select(:author_id)) }
   scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
   scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'ASC')) }
   scope :confirmed, -> { where.not(confirmed_at: nil) }
+  scope :by_username, -> (usernames) { iwhere(username: usernames) }
 
-  def self.with_two_factor_indistinct
-    joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id")
-      .where("u2f.id IS NOT NULL OR users.otp_required_for_login = ?", true)
+  # Limits the users to those that have TODOs, optionally in the given state.
+  #
+  # user - The user to get the todos for.
+  #
+  # with_todos - If we should limit the result set to users that are the
+  #              authors of todos.
+  #
+  # todo_state - An optional state to require the todos to be in.
+  def self.limit_to_todo_authors(user: nil, with_todos: false, todo_state: nil)
+    if user && with_todos
+      where(id: Todo.where(user: user, state: todo_state).select(:author_id))
+    else
+      all
+    end
+  end
+
+  # Returns a relation that optionally includes the given user.
+  #
+  # user_id - The ID of the user to include.
+  def self.union_with_user(user_id = nil)
+    if user_id.present?
+      union = Gitlab::SQL::Union.new([all, User.unscoped.where(id: user_id)])
+
+      # We use "unscoped" here so that any inner conditions are not repeated for
+      # the outer query, which would be redundant.
+      User.unscoped.from("(#{union.to_sql}) #{User.table_name}")
+    else
+      all
+    end
   end
 
   def self.with_two_factor
-    with_two_factor_indistinct.distinct(arel_table[:id])
+    with_u2f_registrations = <<-SQL
+      EXISTS (
+        SELECT *
+        FROM u2f_registrations AS u2f
+        WHERE u2f.user_id = users.id
+      ) OR users.otp_required_for_login = ?
+    SQL
+
+    where(with_u2f_registrations, true)
   end
 
   def self.without_two_factor
@@ -378,6 +413,18 @@ class User < ActiveRecord::Base
       ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, :name)
     end
 
+    # Limits the result set to users _not_ in the given query/list of IDs.
+    #
+    # users - The list of users to ignore. This can be an
+    #         `ActiveRecord::Relation`, or an Array.
+    def where_not_in(users = nil)
+      users ? where.not(id: users) : all
+    end
+
+    def reorder_by_name
+      reorder(:name)
+    end
+
     # searches user by given pattern
     # it compares name, email, username fields and user's secondary emails with given pattern
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
@@ -411,11 +458,11 @@ class User < ActiveRecord::Base
     end
 
     def find_by_username(username)
-      iwhere(username: username).take
+      by_username(username).take
     end
 
     def find_by_username!(username)
-      iwhere(username: username).take!
+      by_username(username).take!
     end
 
     def find_by_personal_access_token(token_string)

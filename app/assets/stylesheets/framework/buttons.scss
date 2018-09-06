@@ -149,7 +149,8 @@
   &.btn-success,
   &.btn-new,
   &.btn-create,
-  &.btn-save {
+  &.btn-save,
+  &.btn-register {
     @include btn-green;
   }
 
@@ -172,8 +173,7 @@
   }
 
   &.btn-info,
-  &.btn-primary,
-  &.btn-register {
+  &.btn-primary {
     @include btn-blue;
   }
 
@@ -248,7 +248,7 @@
 .btn-terminal {
   svg {
     height: 14px;
-    width: 18px;
+    width: $default-icon-size;
   }
 }
 
@@ -452,14 +452,14 @@
 }
 
 .btn-missing {
-  color: $notes-light-color;
+  color: $gl-text-color-secondary;
   border: 1px dashed $border-gray-normal-dashed;
   border-radius: $border-radius-default;
 
   &:hover,
   &:active,
   &:focus {
-    color: $notes-light-color;
+    color: $gl-text-color-secondary;
     background-color: $white-normal;
   }
 }

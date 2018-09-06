@@ -1,0 +1,5 @@
+---
+title: 'Rails5: fix mysql milliseconds problem in project_spec'
+merge_request: 6880
+author: Jasper Maes
+type: fixed

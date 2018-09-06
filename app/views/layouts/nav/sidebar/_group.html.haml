@@ -130,12 +130,6 @@
                 %span
                   = _('General')
 
-            = nav_link(controller: :badges) do
-              = link_to group_settings_badges_path(@group), title: _('Project Badges') do
-                %span
-                  = _('Project Badges')
-
-
             = nav_link(path: 'groups#projects') do
               = link_to projects_group_path(@group), title: _('Projects') do
                 %span

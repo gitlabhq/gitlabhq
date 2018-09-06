@@ -82,7 +82,7 @@ You can filter by [custom attributes](custom_attributes.md) with:
 GET /groups?custom_attributes[key]=value&custom_attributes[other_key]=other_value
 ```
 
-## List a groups's subgroups
+## List a group's subgroups
 
 > [Introduced][ce-15142] in GitLab 10.3.
 
@@ -352,12 +352,14 @@ Example response:
         {
           "group_id": 4,
           "group_name": "Twitter",
-          "group_access_level": 30
+          "group_access_level": 30,
+          "expires_at": null
         },
         {
           "group_id": 3,
           "group_name": "Gitlab Org",
-          "group_access_level": 10
+          "group_access_level": 10,
+          "expires_at": "2018-08-14"
         }
       ]
     }

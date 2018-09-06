@@ -28,11 +28,10 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 
 .ide-view {
   position: relative;
-  display: flex;
-  height: calc(100vh - #{$header-height});
   margin-top: 0;
   padding-bottom: $ide-statusbar-height;
   color: $gl-text-color;
+  min-height: 0; // firefox fix
 
   &.is-collapsed {
     .ide-file-list {
@@ -50,7 +49,7 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
   display: flex;
   flex-direction: column;
   flex: 1;
-  min-height: 0;
+  min-height: 0; // firefox fix
 
   .file {
     height: 32px;
@@ -357,7 +356,7 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 
 .multi-file-editor-holder {
   height: 100%;
-  min-height: 0;
+  min-height: 0; // firefox fix
 
   &.is-readonly,
   .editor.original {
@@ -546,7 +545,7 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
     border-left: 1px solid $white-dark;
     border-top: 1px solid $white-dark;
     border-top-left-radius: $border-radius-small;
-    min-height: 0;
+    min-height: 0; // firefox fix
   }
 }
 
@@ -758,7 +757,7 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 
 .ide-loading {
   display: flex;
-  height: 100vh;
+  height: 100%;
   align-items: center;
   justify-content: center;
 }
@@ -772,60 +771,7 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 
 .ide {
   overflow: hidden;
-
-  &.nav-only {
-    padding-top: $header-height;
-
-    .with-performance-bar & {
-      padding-top: $header-height + $performance-bar-height;
-    }
-
-    .flash-container {
-      margin-top: 0;
-      margin-bottom: 0;
-    }
-
-    .alert-wrapper .flash-container .flash-alert:last-child,
-    .alert-wrapper .flash-container .flash-notice:last-child {
-      margin-bottom: 0;
-    }
-
-    .content-wrapper {
-      margin-top: 0;
-      padding-bottom: 0;
-    }
-
-    &.flash-shown {
-      .content-wrapper {
-        margin-top: 0;
-      }
-
-      .ide-view {
-        height: calc(100vh - #{$header-height + $flash-height});
-      }
-    }
-  }
-}
-
-.with-performance-bar .ide.nav-only {
-  .flash-container {
-    margin-top: 0;
-  }
-
-  .content-wrapper {
-    margin-top: 0;
-    padding-bottom: 0;
-  }
-
-  .ide-view {
-    height: calc(100vh - #{$header-height + $performance-bar-height});
-  }
-
-  &.flash-shown {
-    .ide-view {
-      height: calc(100vh - #{$header-height + $performance-bar-height + $flash-height});
-    }
-  }
+  flex: 1;
 }
 
 .drag-handle {
@@ -1199,7 +1145,7 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
   }
 
   .avatar-container {
-    flex: initial;
+    flex: 0 0 auto;
     margin-right: 0;
   }
 
@@ -1209,7 +1155,7 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 }
 
 .ide-context-body {
-  min-height: 0;
+  min-height: 0; // firefox fix
 }
 
 .ide-sidebar-project-title {
@@ -1293,6 +1239,7 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 
   &.build-page .top-bar {
     top: 0;
+    height: auto;
     font-size: 12px;
     border-top-right-radius: $border-radius-default;
   }

@@ -14,9 +14,9 @@ describe Gitlab::GitAccessWiki do
     ]
   end
 
-  subject { access.check('git-receive-pack', changes) }
-
   context "when in a read-only GitLab instance" do
+    subject { access.check('git-receive-pack', changes) }
+
     before do
       create(:protected_branch, name: 'feature', project: project)
       allow(Gitlab::Database).to receive(:read_only?) { true }
@@ -41,6 +41,18 @@ For more information: #{EE::Gitlab::GeoGitAccess::GEO_SERVER_DOCS_URL}"
       project.add_maintainer(user)
 
       expect { subject }.to raise_unauthorized(error_message)
+    end
+  end
+
+  context 'when wiki is disabled' do
+    let(:user) { :geo }
+    let(:project) { create(:project, :private, :wiki_repo, wiki_access_level: ProjectFeature::DISABLED) }
+    let(:authentication_abilities) {  [:download_code] }
+
+    subject { access.check('git-upload-pack', changes) }
+
+    it 'allows code download for geo' do
+      expect(subject).to be_truthy
     end
   end
 

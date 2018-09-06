@@ -21,8 +21,10 @@ module Gitlab
             # Whether user is allowed, or not, we should update
             # permissions to keep things clean
             if access.allowed?
-              access.update_user
-              Users::UpdateService.new(user, user: user, last_credential_check_at: Time.now).execute
+              unless Gitlab::Database.read_only?
+                access.update_user
+                Users::UpdateService.new(user, user: user, last_credential_check_at: Time.now).execute
+              end
 
               true
             else
@@ -62,6 +64,12 @@ module Gitlab
           false
         end
 
+        def update_user
+          # no-op in CE
+        end
+
+        private
+
         def adapter
           @adapter ||= Gitlab::Auth::LDAP::Adapter.new(provider)
         end
@@ -70,14 +78,14 @@ module Gitlab
           Gitlab::Auth::LDAP::Config.new(provider)
         end
 
-        def find_ldap_user
-          Gitlab::Auth::LDAP::Person.find_by_dn(ldap_identity.extern_uid, adapter)
-        end
-
         def ldap_user
           return unless provider
 
           @ldap_user ||= find_ldap_user
+        end
+
+        def find_ldap_user
+          Gitlab::Auth::LDAP::Person.find_by_dn(ldap_identity.extern_uid, adapter)
         end
 
         def block_user(user, reason)
@@ -103,10 +111,6 @@ module Gitlab
             "LDAP account \"#{ldap_identity.extern_uid}\" #{reason}, " \
             "unblocking Gitlab user \"#{user.name}\" (#{user.email})"
           )
-        end
-
-        def update_user
-          # no-op in CE
         end
       end
     end

@@ -1,5 +1,0 @@
----
-title: Adds foreign key to notification_settings.user_id
-merge_request: 20567
-author: Jacopo Beschi @jacopo-beschi
-type: added

@@ -13,6 +13,7 @@ You can then add a new job to `.gitlab-ci.yml`, called `license_management`:
 ```yaml
 license_management:
   image: docker:stable
+  stage: test
   variables:
     DOCKER_DRIVER: overlay2
   allow_failure: true

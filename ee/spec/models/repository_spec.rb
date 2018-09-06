@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Repository do
   include RepoHelpers
+  include ::EE::GeoHelpers
   TestBlob = Struct.new(:path)
 
   let(:project) { create(:project, :repository) }
@@ -103,16 +104,6 @@ describe Repository do
     end
   end
 
-  describe '#after_sync' do
-    it 'expires repository cache' do
-      expect(repository).to receive(:expire_all_method_caches)
-      expect(repository).to receive(:expire_branch_cache)
-      expect(repository).to receive(:expire_content_cache)
-
-      repository.after_sync
-    end
-  end
-
   describe '#upstream_branches' do
     it 'returns branches from the upstream remote' do
       masterrev = repository.find_branch('master').dereferenced_target
@@ -121,6 +112,66 @@ describe Repository do
       expect(repository.upstream_branches.size).to eq(1)
       expect(repository.upstream_branches.first).to be_an_instance_of(Gitlab::Git::Branch)
       expect(repository.upstream_branches.first.name).to eq('upstream_branch')
+    end
+  end
+
+  describe '#keep_around' do
+    set(:primary_node)   { create(:geo_node, :primary) }
+    set(:secondary_node) { create(:geo_node) }
+    let(:sha) { sample_commit.id }
+
+    context 'on a Geo primary' do
+      before do
+        stub_current_geo_node(primary_node)
+      end
+
+      context 'when a single SHA is passed' do
+        it 'creates a RepositoryUpdatedEvent' do
+          expect do
+            repository.keep_around(sha)
+          end.to change { ::Geo::RepositoryUpdatedEvent.count }.by(1)
+        end
+      end
+
+      context 'when multiple SHAs are passed' do
+        it 'creates exactly one RepositoryUpdatedEvent' do
+          expect do
+            repository.keep_around(sha, sample_big_commit.id)
+          end.to change { ::Geo::RepositoryUpdatedEvent.count }.by(1)
+        end
+      end
+    end
+
+    context 'on a Geo secondary' do
+      before do
+        stub_current_geo_node(secondary_node)
+      end
+
+      it 'does not create a RepositoryUpdatedEvent' do
+        expect do
+          repository.keep_around(sha)
+        end.not_to change { ::Geo::RepositoryUpdatedEvent.count }
+      end
+    end
+  end
+
+  describe '#code_owners_blob' do
+    it 'returns nil if there is no codeowners file' do
+      expect(repository.code_owners_blob(ref: 'master')).to be_nil
+    end
+
+    it 'returns the content of the codeowners file when it is found' do
+      expect(repository.code_owners_blob(ref: 'with-codeowners').data).to include('example CODEOWNERS file')
+    end
+
+    it 'requests the CODOWNER blobs in batch in the correct order' do
+      expect(repository).to receive(:blobs_at)
+                              .with([%w(HEAD CODEOWNERS),
+                                     %w(HEAD docs/CODEOWNERS),
+                                     %w(HEAD .gitlab/CODEOWNERS)])
+                              .and_call_original
+
+      repository.code_owners_blob
     end
   end
 end

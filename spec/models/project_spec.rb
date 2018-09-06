@@ -42,7 +42,6 @@ describe Project do
     it { is_expected.to have_one(:assembla_service) }
     it { is_expected.to have_one(:slack_slash_commands_service) }
     it { is_expected.to have_one(:mattermost_slash_commands_service) }
-    it { is_expected.to have_one(:gemnasium_service) }
     it { is_expected.to have_one(:buildkite_service) }
     it { is_expected.to have_one(:bamboo_service) }
     it { is_expected.to have_one(:teamcity_service) }
@@ -1607,6 +1606,53 @@ describe Project do
     end
   end
 
+  describe '.optionally_search' do
+    let(:project) { create(:project) }
+
+    it 'searches for projects matching the query if one is given' do
+      relation = described_class.optionally_search(project.name)
+
+      expect(relation).to eq([project])
+    end
+
+    it 'returns the current relation if no search query is given' do
+      relation = described_class.where(id: project.id)
+
+      expect(relation.optionally_search).to eq(relation)
+    end
+  end
+
+  describe '.paginate_in_descending_order_using_id' do
+    let!(:project1) { create(:project) }
+    let!(:project2) { create(:project) }
+
+    it 'orders the relation in descending order' do
+      expect(described_class.paginate_in_descending_order_using_id)
+        .to eq([project2, project1])
+    end
+
+    it 'applies a limit to the relation' do
+      expect(described_class.paginate_in_descending_order_using_id(limit: 1))
+        .to eq([project2])
+    end
+
+    it 'limits projects by and ID when given' do
+      expect(described_class.paginate_in_descending_order_using_id(before: project2.id))
+        .to eq([project1])
+    end
+  end
+
+  describe '.including_namespace_and_owner' do
+    it 'eager loads the namespace and namespace owner' do
+      create(:project)
+
+      row = described_class.eager_load_namespace_and_owner.to_a.first
+      recorder = ActiveRecord::QueryRecorder.new { row.namespace.owner }
+
+      expect(recorder.count).to be_zero
+    end
+  end
+
   describe '#expire_caches_before_rename' do
     let(:project) { create(:project, :repository) }
     let(:repo)    { double(:repo, exists?: true) }
@@ -2600,51 +2646,6 @@ describe Project do
 
         it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
       end
-
-      context 'when multiple clusters (EEP) is enabled' do
-        before do
-          stub_licensed_features(multiple_clusters: true)
-        end
-
-        let(:project) { create(:project) }
-
-        let!(:default_cluster) do
-          create(:cluster,
-                 platform_type: :kubernetes,
-                 projects: [project],
-                 environment_scope: '*',
-                 platform_kubernetes: default_cluster_kubernetes)
-        end
-
-        let!(:review_env_cluster) do
-          create(:cluster,
-                 platform_type: :kubernetes,
-                 projects: [project],
-                 environment_scope: 'review/*',
-                 platform_kubernetes: review_env_cluster_kubernetes)
-        end
-
-        let(:default_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'default-AAA') }
-        let(:review_env_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'review-AAA') }
-
-        context 'when environment name is review/name' do
-          let!(:environment) { create(:environment, project: project, name: 'review/name') }
-
-          it 'returns variables from this service' do
-            expect(project.deployment_variables(environment: 'review/name'))
-              .to include(key: 'KUBE_TOKEN', value: 'review-AAA', public: false)
-          end
-        end
-
-        context 'when environment name is other' do
-          let!(:environment) { create(:environment, project: project, name: 'staging/name') }
-
-          it 'returns variables from this service' do
-            expect(project.deployment_variables(environment: 'staging/name'))
-              .to include(key: 'KUBE_TOKEN', value: 'default-AAA', public: false)
-          end
-        end
-      end
     end
   end
 
@@ -3280,6 +3281,7 @@ describe Project do
         # call. This makes testing a bit easier.
         allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
         allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
+        stub_feature_flags(skip_hashed_storage_upgrade: false)
       end
 
       it 'renames a repository' do
@@ -3451,6 +3453,7 @@ describe Project do
         # call. This makes testing a bit easier.
         allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
         allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
+        stub_feature_flags(skip_hashed_storage_upgrade: false)
       end
 
       context 'migration to hashed storage' do
@@ -3596,6 +3599,11 @@ describe Project do
   end
 
   describe '#auto_devops_enabled?' do
+    before do
+      allow(Feature).to receive(:enabled?).and_call_original
+      Feature.get(:force_autodevops_on_by_default).enable_percentage_of_actors(0)
+    end
+
     set(:project) { create(:project) }
 
     subject { project.auto_devops_enabled? }
@@ -3605,19 +3613,14 @@ describe Project do
         stub_application_setting(auto_devops_enabled: true)
       end
 
-      it 'auto devops is implicitly enabled' do
-        expect(project.auto_devops).to be_nil
-        expect(project).to be_auto_devops_enabled
-      end
+      it { is_expected.to be_truthy }
 
       context 'when explicitly enabled' do
         before do
           create(:project_auto_devops, project: project)
         end
 
-        it "auto devops is enabled" do
-          expect(project).to be_auto_devops_enabled
-        end
+        it { is_expected.to be_truthy }
       end
 
       context 'when explicitly disabled' do
@@ -3625,9 +3628,7 @@ describe Project do
           create(:project_auto_devops, project: project, enabled: false)
         end
 
-        it "auto devops is disabled" do
-          expect(project).not_to be_auto_devops_enabled
-        end
+        it { is_expected.to be_falsey }
       end
     end
 
@@ -3636,19 +3637,22 @@ describe Project do
         stub_application_setting(auto_devops_enabled: false)
       end
 
-      it 'auto devops is implicitly disabled' do
-        expect(project.auto_devops).to be_nil
-        expect(project).not_to be_auto_devops_enabled
-      end
+      it { is_expected.to be_falsey }
 
       context 'when explicitly enabled' do
         before do
           create(:project_auto_devops, project: project)
         end
 
-        it "auto devops is enabled" do
-          expect(project).to be_auto_devops_enabled
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when force_autodevops_on_by_default is enabled for the project' do
+        before do
+          Feature.get(:force_autodevops_on_by_default).enable_percentage_of_actors(100)
         end
+
+        it { is_expected.to be_truthy }
       end
     end
   end
@@ -3698,6 +3702,11 @@ describe Project do
   end
 
   describe '#has_auto_devops_implicitly_disabled?' do
+    before do
+      allow(Feature).to receive(:enabled?).and_call_original
+      Feature.get(:force_autodevops_on_by_default).enable_percentage_of_actors(0)
+    end
+
     set(:project) { create(:project) }
 
     context 'when enabled in settings' do
@@ -3717,6 +3726,16 @@ describe Project do
 
       it 'auto devops is implicitly disabled' do
         expect(project).to have_auto_devops_implicitly_disabled
+      end
+
+      context 'when force_autodevops_on_by_default is enabled for the project' do
+        before do
+          Feature.get(:force_autodevops_on_by_default).enable_percentage_of_actors(100)
+        end
+
+        it 'does not have auto devops implicitly disabled' do
+          expect(project).not_to have_auto_devops_implicitly_disabled
+        end
       end
 
       context 'when explicitly disabled' do
@@ -4030,21 +4049,45 @@ describe Project do
   end
 
   describe '#execute_hooks' do
-    it 'executes the projects hooks with the specified scope' do
-      hook1 = create(:project_hook, merge_requests_events: true, tag_push_events: false)
-      hook2 = create(:project_hook, merge_requests_events: false, tag_push_events: true)
-      project = create(:project, hooks: [hook1, hook2])
+    let(:data) { { ref: 'refs/heads/master', data: 'data' } }
+    it 'executes active projects hooks with the specified scope' do
+      hook = create(:project_hook, merge_requests_events: false, push_events: true)
+      expect(ProjectHook).to receive(:select_active)
+        .with(:push_hooks, data)
+        .and_return([hook])
+      project = create(:project, hooks: [hook])
 
       expect_any_instance_of(ProjectHook).to receive(:async_execute).once
 
-      project.execute_hooks({}, :tag_push_hooks)
+      project.execute_hooks(data, :push_hooks)
+    end
+
+    it 'does not execute project hooks that dont match the specified scope' do
+      hook = create(:project_hook, merge_requests_events: true, push_events: false)
+      project = create(:project, hooks: [hook])
+
+      expect_any_instance_of(ProjectHook).not_to receive(:async_execute).once
+
+      project.execute_hooks(data, :push_hooks)
+    end
+
+    it 'does not execute project hooks which are not active' do
+      hook = create(:project_hook, push_events: true)
+      expect(ProjectHook).to receive(:select_active)
+        .with(:push_hooks, data)
+        .and_return([])
+      project = create(:project, hooks: [hook])
+
+      expect_any_instance_of(ProjectHook).not_to receive(:async_execute).once
+
+      project.execute_hooks(data, :push_hooks)
     end
 
     it 'executes the system hooks with the specified scope' do
-      expect_any_instance_of(SystemHooksService).to receive(:execute_hooks).with({ data: 'data' }, :merge_request_hooks)
+      expect_any_instance_of(SystemHooksService).to receive(:execute_hooks).with(data, :merge_request_hooks)
 
       project = build(:project)
-      project.execute_hooks({ data: 'data' }, :merge_request_hooks)
+      project.execute_hooks(data, :merge_request_hooks)
     end
 
     it 'executes the system hooks when inside a transaction' do
@@ -4059,7 +4102,7 @@ describe Project do
       # actually get to the `after_commit` hook that queues these jobs.
       expect do
         project.transaction do
-          project.execute_hooks({ data: 'data' }, :merge_request_hooks)
+          project.execute_hooks(data, :merge_request_hooks)
         end
       end.not_to raise_error # Sidekiq::Worker::EnqueueFromTransactionError
     end

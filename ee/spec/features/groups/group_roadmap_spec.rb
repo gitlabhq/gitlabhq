@@ -43,8 +43,22 @@ describe 'group epic roadmap', :js do
       end
 
       it 'renders the filtered search bar correctly' do
-        page.within('.content-wrapper .content') do
-          expect(page).to have_css('.epics-filters')
+        page.within('.content-wrapper .content .epics-filters') do
+          expect(page).to have_css('.filtered-search-box')
+        end
+      end
+
+      it 'renders the sort dropdown correctly' do
+        page.within('.content-wrapper .content .epics-filters') do
+          expect(page).to have_css('.filter-dropdown-container')
+          find('.dropdown-toggle').click
+          page.within('.dropdown-menu') do
+            expect(page).to have_selector('li a', count: 4)
+            expect(page).to have_content('Created date')
+            expect(page).to have_content('Last updated')
+            expect(page).to have_content('Planned start date')
+            expect(page).to have_content('Planned finish date')
+          end
         end
       end
 

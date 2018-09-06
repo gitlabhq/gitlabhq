@@ -160,7 +160,8 @@ stages:
 
 .single-script-job: &single-script-job
   image: ruby:2.4-alpine
-  stage: build
+  before_script: []
+  stage: test
   cache: {}
   dependencies: []
   variables: &single-script-job-variables
@@ -200,7 +201,7 @@ stages:
     - '[[ -f $FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${FLAKY_RSPEC_REPORT_PATH}'
     - '[[ -f $NEW_FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${NEW_FLAKY_RSPEC_REPORT_PATH}'
     - scripts/gitaly-test-spawn
-    - knapsack rspec "--color --format documentation --tag ~geo"
+    - knapsack rspec "--color --format documentation --format RspecJunitFormatter --out junit_rspec.xml --tag ~geo"
   artifacts:
     expire_in: 31d
     when: always
@@ -209,6 +210,8 @@ stages:
       - knapsack/
       - rspec_flaky/
       - tmp/capybara/
+    reports:
+      junit: junit_rspec.xml
 
 .rspec-metadata-pg: &rspec-metadata-pg
   <<: *rspec-metadata
@@ -236,7 +239,7 @@ stages:
     - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - cp ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
     - scripts/gitaly-test-spawn
-    - knapsack rspec "-Ispec --color --format documentation --tag ~geo"
+    - knapsack rspec "-Ispec --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml --tag ~geo"
 
 .rspec-ee-pg: &rspec-ee-pg
   <<: *rspec-metadata-ee
@@ -255,7 +258,7 @@ stages:
     - export CACHE_CLASSES=true
     - source scripts/prepare_postgres_fdw.sh
     - scripts/gitaly-test-spawn
-    - bundle exec rspec --color --format documentation --tag geo ee/spec/
+    - bundle exec rspec --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml --tag geo ee/spec/
 
 .rspec-geo-pg-10-2: &rspec-metadata-pg-geo-10-2
   <<: *rspec-metadata
@@ -266,7 +269,7 @@ stages:
     - export CACHE_CLASSES=true
     - source scripts/prepare_postgres_fdw.sh
     - scripts/gitaly-test-spawn
-    - bundle exec rspec --color --format documentation --tag geo ee/spec/
+    - bundle exec rspec --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml --tag geo ee/spec/
 
 .rspec-ee-pg-rails5: &rspec-ee-pg-rails5
   <<: *rspec-ee-pg
@@ -416,10 +419,13 @@ review-docs-cleanup:
   environment:
     name: review-docs/$CI_COMMIT_REF_SLUG
     action: stop
-  when: manual
   script:
     - gem install gitlab --no-ri --no-rdoc
     - ./$SCRIPT_NAME cleanup
+  when: manual
+  only:
+    - branches@gitlab-org/gitlab-ce
+    - branches@gitlab-org/gitlab-ee
 
 ##
 # Trigger a docker image build in CNG (Cloud Native GitLab) repository
@@ -593,17 +599,29 @@ danger-review:
     - danger --fail-on-errors=true
 
 # EE jobs
-rspec-pg-ee 0 2: *rspec-ee-pg
-rspec-pg-ee 1 2: *rspec-ee-pg
-rspec-mysql-ee 0 2: *rspec-ee-mysql
-rspec-mysql-ee 1 2: *rspec-ee-mysql
+rspec-pg-ee 0 4: *rspec-ee-pg
+rspec-pg-ee 1 4: *rspec-ee-pg
+rspec-pg-ee 2 4: *rspec-ee-pg
+rspec-pg-ee 3 4: *rspec-ee-pg
+
+rspec-mysql-ee 0 4: *rspec-ee-mysql
+rspec-mysql-ee 1 4: *rspec-ee-mysql
+rspec-mysql-ee 2 4: *rspec-ee-mysql
+rspec-mysql-ee 3 4: *rspec-ee-mysql
+
 rspec-pg geo 0 1: *rspec-metadata-pg-geo-9-6
 rspec-pg-10 geo 0 1: *rspec-metadata-pg-geo-10-2
 
-rspec-pg-ee-rails5 0 2: *rspec-ee-pg-rails5
-rspec-pg-ee-rails5 1 2: *rspec-ee-pg-rails5
-rspec-mysql-ee-rails5 0 2: *rspec-ee-mysql-rails5
-rspec-mysql-ee-rails5 1 2: *rspec-ee-mysql-rails5
+rspec-pg-ee-rails5 0 4: *rspec-ee-pg-rails5
+rspec-pg-ee-rails5 1 4: *rspec-ee-pg-rails5
+rspec-pg-ee-rails5 2 4: *rspec-ee-pg-rails5
+rspec-pg-ee-rails5 3 4: *rspec-ee-pg-rails5
+
+rspec-mysql-ee-rails5 0 4: *rspec-ee-mysql-rails5
+rspec-mysql-ee-rails5 1 4: *rspec-ee-mysql-rails5
+rspec-mysql-ee-rails5 2 4: *rspec-ee-mysql-rails5
+rspec-mysql-ee-rails5 3 4: *rspec-ee-mysql-rails5
+
 rspec-pg-geo-rails5 0 1: *rspec-metadata-pg-geo-9-6-rails5
 rspec-pg-10-geo-rails5 0 1: *rspec-metadata-pg-geo-10-2-rails5
 ## EE jobs
@@ -906,7 +924,7 @@ karma:
       - chrome_debug.log
       - coverage-javascript/
 
-codequality:
+code_quality:
   <<: *dedicated-no-docs-no-db-pull-cache-job
   image: docker:stable
   allow_failure: true
@@ -924,9 +942,13 @@ codequality:
   script:
     # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable" for Security Products
     - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
-    - docker run --env SOURCE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
+    - docker run
+        --env SOURCE_CODE="$PWD"
+        --volume "$PWD":/code
+        --volume /var/run/docker.sock:/var/run/docker.sock
+        "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
   artifacts:
-    paths: [codeclimate.json]
+    paths: [gl-code-quality-report.json]
     expire_in: 1 week
 
 sast:

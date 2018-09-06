@@ -45,13 +45,13 @@ module EE
       end
 
       def projects_mirrored_with_pipelines_enabled
-        ::Project.joins(:project_feature).where(
-          mirror: true,
-          mirror_trigger_builds: true,
-          project_features: {
-            builds_access_level: ::ProjectFeature::ENABLED
-          }
-        ).count
+        count(::Project.joins(:project_feature).where(
+                mirror: true,
+                mirror_trigger_builds: true,
+                project_features: {
+                  builds_access_level: ::ProjectFeature::ENABLED
+                }
+        ))
       end
 
       def service_desk_counts
@@ -60,12 +60,12 @@ module EE
         projects_with_service_desk = ::Project.where(service_desk_enabled: true)
 
         {
-          service_desk_enabled_projects: projects_with_service_desk.count,
-          service_desk_issues: ::Issue.where(
-            project: projects_with_service_desk,
-            author: ::User.support_bot,
-            confidential: true
-          ).count
+          service_desk_enabled_projects: count(projects_with_service_desk),
+          service_desk_issues: count(::Issue.where(
+                                       project: projects_with_service_desk,
+                                       author: ::User.support_bot,
+                                       confidential: true
+          ))
         }
       end
 
@@ -78,7 +78,7 @@ module EE
           sast: :sast_jobs
         }
 
-        results = ::Ci::Build.where(name: types.keys).group(:name).count
+        results = count(::Ci::Build.where(name: types.keys).group(:name))
         results.each_with_object({}) { |(key, value), response| response[types[key.to_sym]] = value  }
       end
 
@@ -87,12 +87,12 @@ module EE
         usage_data = super
 
         usage_data[:counts] = usage_data[:counts].merge({
-          epics: ::Epic.count,
-          geo_nodes: ::GeoNode.count,
-          ldap_group_links: ::LdapGroupLink.count,
-          ldap_keys: ::LDAPKey.count,
-          ldap_users: ::User.ldap.count,
-          projects_reporting_ci_cd_back_to_github: ::GithubService.without_defaults.active.count,
+          epics: count(::Epic),
+          geo_nodes: count(::GeoNode),
+          ldap_group_links: count(::LdapGroupLink),
+          ldap_keys: count(::LDAPKey),
+          ldap_users: count(::User.ldap),
+          projects_reporting_ci_cd_back_to_github: count(::GithubService.without_defaults.active),
           projects_mirrored_with_pipelines_enabled: projects_mirrored_with_pipelines_enabled
         }).merge(service_desk_counts).merge(security_products_usage)
 

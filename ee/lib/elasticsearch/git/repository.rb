@@ -400,7 +400,7 @@ module Elasticsearch
         end
       end
 
-      module ClassMethods
+      class_methods do
         def search(query, type: :all, page: 1, per: 20, options: {})
           results = { blobs: [], commits: [] }
 

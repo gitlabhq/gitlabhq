@@ -1,5 +1,0 @@
----
-title: 'Elasticsearch: Fix a bug causing some types of note to miss being indexed'
-merge_request: 6736
-author:
-type: fixed

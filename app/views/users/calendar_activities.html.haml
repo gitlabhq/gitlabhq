@@ -18,7 +18,7 @@
           = event_action_name(event)
           %strong
             - if event.note?
-              = link_to event.note_target.to_reference, event_note_target_path(event), class: 'has-tooltip', title: event.target_title
+              = link_to event.note_target.to_reference, event_note_target_url(event), class: 'has-tooltip', title: event.target_title
             - elsif event.target
               = link_to event.target.to_reference, [event.project.namespace.becomes(Namespace), event.project, event.target], class: 'has-tooltip', title: event.target_title
 

@@ -146,13 +146,7 @@ export default {
       staged: false,
       prevPath: '',
       moved: false,
-      lastCommit: Object.assign(state.entries[file.path].lastCommit, {
-        id: lastCommit.commit.id,
-        url: lastCommit.commit_path,
-        message: lastCommit.commit.message,
-        author: lastCommit.commit.author_name,
-        updatedAt: lastCommit.commit.authored_date,
-      }),
+      lastCommitSha: lastCommit.commit.id,
     });
 
     if (prevPath) {
@@ -200,6 +194,7 @@ export default {
   },
   [types.DELETE_ENTRY](state, path) {
     const entry = state.entries[path];
+    const { tempFile = false } = entry;
     const parent = entry.parentPath
       ? state.entries[entry.parentPath]
       : state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
@@ -209,7 +204,11 @@ export default {
     parent.tree = parent.tree.filter(f => f.path !== entry.path);
 
     if (entry.type === 'blob') {
-      state.changedFiles = state.changedFiles.concat(entry);
+      if (tempFile) {
+        state.changedFiles = state.changedFiles.filter(f => f.path !== path);
+      } else {
+        state.changedFiles = state.changedFiles.concat(entry);
+      }
     }
   },
   [types.RENAME_ENTRY](state, { path, name, entryPath = null }) {

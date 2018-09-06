@@ -111,3 +111,20 @@ For multiple processes of all queues (except "process_commit" and "post_receive"
 ```bash
 sidekiq-cluster process_commit,post_receive process_commit,post_receive --negate
 ```
+
+## Limiting Concurrency
+
+By default, `sidekiq-cluster` will spin up extra Sidekiq processes that use
+one thread per queue up to a maximum of 50. If you wish to change the cap, use
+the `-m N` option. For example, this would cap the maximum number of threads to 1:
+
+```bash
+sidekiq-cluster process_commit,post_receive -m 1
+```
+
+For each queue group, the concurrency factor will be set to min(number of
+queues, N). Setting the value to 0 will disable the limit.
+
+Note that each thread requires a Redis connection, so adding threads may
+increase Redis latency and potentially cause client timeouts. See the [Sidekiq
+documentation about Redis](https://github.com/mperham/sidekiq/wiki/Using-Redis) for more details.

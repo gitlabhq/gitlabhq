@@ -262,6 +262,19 @@
                 %strong.fly-out-top-item-name
                   = _('Registry')
 
+      - if project_nav_tab? :packages
+        = nav_link(controller: %w[projects/packages/packages]) do
+          = link_to project_packages_path(@project) do
+            .nav-icon-container
+              = sprite_icon('package')
+            %span.nav-item-name
+              = _('Packages')
+          %ul.sidebar-sub-level-items.is-fly-out-only
+            = nav_link(controller: %w[projects/packages/packages], html_options: { class: "fly-out-top-item" } ) do
+              = link_to project_packages_path(@project) do
+                %strong.fly-out-top-item-name
+                  = _('Packages')
+
       - if project_nav_tab? :wiki
         = nav_link(controller: :wikis) do
           = link_to get_project_wiki_path(@project), class: 'shortcuts-wiki' do
@@ -312,11 +325,6 @@
               = link_to project_project_members_path(@project), title: _('Members') do
                 %span
                   = _('Members')
-            - if can_edit
-              = nav_link(controller: :badges) do
-                = link_to project_settings_badges_path(@project), title: _('Badges') do
-                  %span
-                    = _('Badges')
             - if can_edit
               = nav_link(controller: [:integrations, :services, :hooks, :hook_logs]) do
                 = link_to project_settings_integrations_path(@project), title: _('Integrations') do

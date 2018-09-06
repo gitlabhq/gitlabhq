@@ -190,7 +190,7 @@ _The artifacts are stored by default in
         remote_directory: "artifacts" # The bucket name
         connection:
           provider: AWS # Only AWS supported at the moment
-          aws_access_key_id: AWS_ACESS_KEY_ID
+          aws_access_key_id: AWS_ACCESS_KEY_ID
           aws_secret_access_key: AWS_SECRET_ACCESS_KEY
           region: eu-central-1
     ```

@@ -1,5 +1,0 @@
----
-title: Support multiple scopes when authing container registry scopes
-merge_request: 20617
-author:
-type: fixed

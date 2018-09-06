@@ -141,8 +141,8 @@
   &:hover,
   &:active,
   &.is-active {
-    background-color: $row-hover;
-    border-color: $row-hover-border;
+    background-color: $blue-50;
+    border-color: $blue-200;
     box-shadow: none;
     outline: 0;
 
@@ -229,8 +229,8 @@
 
     svg {
       margin-bottom: 1px;
-      height: 18px;
-      width: 18px;
+      height: $default-icon-size;
+      width: $default-icon-size;
       border-radius: 50%;
 
       path {

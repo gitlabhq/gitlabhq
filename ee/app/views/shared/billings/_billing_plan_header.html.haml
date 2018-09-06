@@ -23,5 +23,4 @@
     = render 'shared/billings/trial_status', namespace: namespace
 
   - if namespace.eligible_for_trial?
-    - namespace_billing_url = namespace.is_a?(Group) ? group_billings_url(namespace) : profile_billings_url
     %p= link_to 'Start your free trial', new_gitlab_com_trial_url, class: 'btn btn-primary'

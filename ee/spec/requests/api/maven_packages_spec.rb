@@ -8,6 +8,7 @@ describe API::MavenPackages do
   let(:jwt_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
   let(:headers) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => jwt_token } }
   let(:headers_with_token) { headers.merge('Private-Token' => personal_access_token.token) }
+  let(:job) { create(:ci_build, user: user) }
 
   before do
     project.add_developer(user)
@@ -61,6 +62,13 @@ describe API::MavenPackages do
 
         expect(response).to have_gitlab_http_status(404)
       end
+
+      it 'allows download with job token' do
+        download_file(package_file_xml.file_name, job_token: job.token)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response.content_type.to_s).to eq('application/octet-stream')
+      end
     end
 
     it 'rejects request if feature is not in the license' do
@@ -112,6 +120,12 @@ describe API::MavenPackages do
       authorize_upload_with_token
 
       expect(response).to have_gitlab_http_status(500)
+    end
+
+    it 'authorizes upload with job token' do
+      authorize_upload(job_token: job.token)
+
+      expect(response).to have_gitlab_http_status(200)
     end
 
     def authorize_upload(params = {}, request_headers = headers)
@@ -168,6 +182,12 @@ describe API::MavenPackages do
 
         expect(response).to have_gitlab_http_status(200)
         expect(package_file.file_name).to eq(file_upload.original_filename)
+      end
+
+      it 'allows upload with job token' do
+        upload_file(params.merge(job_token: job.token))
+
+        expect(response).to have_gitlab_http_status(200)
       end
     end
 

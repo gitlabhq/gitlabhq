@@ -1,0 +1,5 @@
+---
+title: Fix tooltip string to support dynamic date type in Epic sidebar
+merge_request: 7243
+author:
+type: fixed

@@ -1,7 +1,8 @@
-%weight{ ":fetching" => "issue.isFetching && issue.isFetching.weight",
-  ":loading" => "issue.isLoading && issue.isLoading.weight",
-  ":weight" => "issue.weight",
-  ":weight-options" => Issue.weight_options,
-  "weight-none-value" => Issue::WEIGHT_NONE,
-  ":editable" => can_admin_issue?,
-  ":id" => "issue.id" }
+- if (@project || @group)&.feature_available?(:issue_weights)
+  %weight{ ":fetching" => "issue.isFetching && issue.isFetching.weight",
+    ":loading" => "issue.isLoading && issue.isLoading.weight",
+    ":weight" => "issue.weight",
+    ":weight-options" => Issue.weight_options,
+    "weight-none-value" => Issue::WEIGHT_NONE,
+    ":editable" => can_admin_issue?,
+    ":id" => "issue.id" }

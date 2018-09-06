@@ -338,6 +338,13 @@ describe Gitlab::ClosingIssueExtractor do
       end
     end
 
+    context "with an invalid keyword such as suffix insted of fix" do
+      it do
+        message = "suffix #{reference}"
+        expect(subject.closed_by_message(message)).to eq([])
+      end
+    end
+
     context 'with multiple references' do
       let(:other_issue) { create(:issue, project: project) }
       let(:third_issue) { create(:issue, project: project) }

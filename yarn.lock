@@ -78,9 +78,13 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@gitlab-org/gitlab-svgs@^1.23.0", "@gitlab-org/gitlab-svgs@^1.27.0":
+"@gitlab-org/gitlab-svgs@^1.23.0":
   version "1.27.0"
   resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.27.0.tgz#638e70399ebd59e503732177316bb9a18bf7a13f"
+
+"@gitlab-org/gitlab-svgs@^1.28.0":
+  version "1.28.0"
+  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.28.0.tgz#f689dfd46504df0a75027d6dd4ea01a71cd46f88"
 
 "@gitlab-org/gitlab-ui@1.0.5":
   version "1.0.5"
@@ -5270,13 +5274,13 @@ moment@2.x, moment@^2.18.1:
   version "2.19.2"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.19.2.tgz#8a7f774c95a64550b4c7ebd496683908f9419dbe"
 
-monaco-editor-webpack-plugin@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/monaco-editor-webpack-plugin/-/monaco-editor-webpack-plugin-1.4.0.tgz#7324258ab3695464cfe3bc12edb2e8c55b80d92f"
+monaco-editor-webpack-plugin@^1.5.2:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/monaco-editor-webpack-plugin/-/monaco-editor-webpack-plugin-1.5.2.tgz#e113fa1d5759ede6fd776eb620cdd5930203b55a"
 
-monaco-editor@0.13.1:
-  version "0.13.1"
-  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.13.1.tgz#6b9ce20e4d1c945042d256825eb133cb23315a52"
+monaco-editor@^0.14.3:
+  version "0.14.3"
+  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.14.3.tgz#7cc4a4096a3821f52fea9b10489b527ef3034e22"
 
 mousetrap@^1.4.6:
   version "1.4.6"

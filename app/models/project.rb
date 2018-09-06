@@ -27,6 +27,8 @@ class Project < ActiveRecord::Base
   include FastDestroyAll::Helpers
   include WithUploads
   include BatchDestroyDependentAssociations
+  include FeatureGate
+  include OptionallySearch
   extend Gitlab::Cache::RequestCache
 
   # EE specific modules
@@ -87,8 +89,7 @@ class Project < ActiveRecord::Base
   after_create :create_project_feature, unless: :project_feature
 
   after_create -> { SiteStatistic.track(STATISTICS_ATTRIBUTE) }
-  before_destroy ->(project) { project.project_feature.untrack_statistics_for_deletion! }
-  after_destroy -> { SiteStatistic.untrack(STATISTICS_ATTRIBUTE) }
+  before_destroy :untrack_site_statistics
 
   after_create :create_ci_cd_settings,
     unless: :ci_cd_settings,
@@ -144,7 +145,6 @@ class Project < ActiveRecord::Base
   has_one :flowdock_service
   has_one :assembla_service
   has_one :asana_service
-  has_one :gemnasium_service
   has_one :mattermost_slash_commands_service
   has_one :mattermost_service
   has_one :slack_slash_commands_service
@@ -390,6 +390,26 @@ class Project < ActiveRecord::Base
                                             only_integer: true,
                                             message: 'needs to be beetween 10 minutes and 1 month' }
 
+  # Paginates a collection using a `WHERE id < ?` condition.
+  #
+  # before - A project ID to use for filtering out projects with an equal or
+  #      greater ID. If no ID is given, all projects are included.
+  #
+  # limit - The maximum number of rows to include.
+  def self.paginate_in_descending_order_using_id(
+    before: nil,
+    limit: Kaminari.config.default_per_page
+  )
+    relation = order_id_desc.limit(limit)
+    relation = relation.where('projects.id < ?', before) if before
+
+    relation
+  end
+
+  def self.eager_load_namespace_and_owner
+    includes(namespace: :owner)
+  end
+
   # Returns a collection of projects that is either public or visible to the
   # logged in user.
   def self.public_or_visible_to_user(user = nil)
@@ -534,18 +554,19 @@ class Project < ActiveRecord::Base
 
   def auto_devops_enabled?
     if auto_devops&.enabled.nil?
-      Gitlab::CurrentSettings.auto_devops_enabled?
+      has_auto_devops_implicitly_enabled?
     else
       auto_devops.enabled?
     end
   end
 
   def has_auto_devops_implicitly_enabled?
-    auto_devops&.enabled.nil? && Gitlab::CurrentSettings.auto_devops_enabled?
+    auto_devops&.enabled.nil? &&
+      (Gitlab::CurrentSettings.auto_devops_enabled? || Feature.enabled?(:force_autodevops_on_by_default, self))
   end
 
   def has_auto_devops_implicitly_disabled?
-    auto_devops&.enabled.nil? && !Gitlab::CurrentSettings.auto_devops_enabled?
+    auto_devops&.enabled.nil? && !(Gitlab::CurrentSettings.auto_devops_enabled? || Feature.enabled?(:force_autodevops_on_by_default, self))
   end
 
   def empty_repo?
@@ -1180,10 +1201,9 @@ class Project < ActiveRecord::Base
 
   def execute_hooks(data, hooks_scope = :push_hooks)
     run_after_commit_or_now do
-      hooks.hooks_for(hooks_scope).each do |hook|
+      hooks.hooks_for(hooks_scope).select_active(hooks_scope, data).each do |hook|
         hook.async_execute(data, hooks_scope.to_s)
       end
-
       SystemHooksService.new.execute_hooks(data, hooks_scope)
     end
   end
@@ -2064,11 +2084,17 @@ class Project < ActiveRecord::Base
   private
 
   def rename_or_migrate_repository!
-    if Gitlab::CurrentSettings.hashed_storage_enabled? && storage_version != LATEST_STORAGE_VERSION
+    if Gitlab::CurrentSettings.hashed_storage_enabled? &&
+        storage_upgradable? &&
+        Feature.disabled?(:skip_hashed_storage_upgrade) # kill switch in case we need to disable upgrade behavior
       ::Projects::HashedStorageMigrationService.new(self, full_path_was).execute
     else
       storage.rename_repo
     end
+  end
+
+  def storage_upgradable?
+    storage_version != LATEST_STORAGE_VERSION
   end
 
   def after_rename_repository(full_path_before, path_before)
@@ -2083,6 +2109,11 @@ class Project < ActiveRecord::Base
     end
 
     Gitlab::PagesTransfer.new.rename_project(path_before, self.path, namespace.full_path)
+  end
+
+  def untrack_site_statistics
+    SiteStatistic.untrack(STATISTICS_ATTRIBUTE)
+    self.project_feature.untrack_statistics_for_deletion!
   end
 
   def execute_rename_repository_hooks!(full_path_before)

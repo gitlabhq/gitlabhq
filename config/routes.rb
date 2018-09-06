@@ -27,10 +27,14 @@ Rails.application.routes.draw do
                 authorizations: 'oauth/authorizations'
   end
 
-  scope path: '/-/jira/login/oauth', controller: 'oauth/jira/authorizations', as: :oauth_jira do
+  # This prefixless path is required because Jira gets confused if we set it up with a path
+  # More information: https://gitlab.com/gitlab-org/gitlab-ee/issues/6752
+  scope path: '/login/oauth', controller: 'oauth/jira/authorizations', as: :oauth_jira do
     get :authorize, action: :new
     get :callback
     post :access_token
+    # This helps minimize merge conflicts with CE for this scope block
+    match ':action', via: [:get, :post], to: proc { [404, {}, ['']] }
   end
 
   namespace :oauth do

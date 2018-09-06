@@ -233,6 +233,11 @@ in **Admin Area > Settings > Continuous Integration and Deployment**. Doing that
 all the projects that haven't explicitly set an option will have Auto DevOps
 enabled by default.
 
+NOTE: **Note:**
+There is also a feature flag to enable Auto DevOps to a percentage of projects
+which can be enabled from the console with
+`Feature.get(:force_autodevops_on_by_default).enable_percentage_of_actors(10)`.
+
 ### Deployment strategy
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/38542) in GitLab 11.0.
@@ -445,7 +450,7 @@ executed somewhere else, it cannot be accessed again.
 
 > [Introduced][ce-19507] in GitLab 11.0.
 
-For internal and private projects a [GitLab Deploy Token](../../user/project/deploy_tokens/index.md###gitlab-deploy-token) 
+For internal and private projects a [GitLab Deploy Token](../../user/project/deploy_tokens/index.md###gitlab-deploy-token)
 will be automatically created, when Auto DevOps is enabled and the Auto DevOps settings are saved. This Deploy Token
 can be used for permanent access to the registry.
 
@@ -569,13 +574,13 @@ postgres://user:password@postgres-host:postgres-port/postgres-database
 ### Environment variables
 
 The following variables can be used for setting up the Auto DevOps domain,
-providing a custom Helm chart, or scaling your application. PostgreSQL can be
+providing a custom Helm chart, or scaling your application. PostgreSQL can
 also be customized, and you can easily use a [custom buildpack](#custom-buildpacks).
 
 | **Variable**                 | **Description**                                                                                                                                                                                                               |
 | ------------                 | ---------------                                                                                                                                                                                                               |
 | `AUTO_DEVOPS_DOMAIN`         | The [Auto DevOps domain](#auto-devops-domain); by default set automatically by the [Auto DevOps setting](#enabling-auto-devops).                                                                                              |
-| `AUTO_DEVOPS_CHART`          | The Helm Chart used to deploy your apps; defaults to the one [provided by GitLab](https://gitlab.com/charts/charts.gitlab.io/tree/master/charts/auto-deploy-app).                                                             |
+| `AUTO_DEVOPS_CHART`          | The Helm Chart used to deploy your apps; defaults to the one [provided by GitLab](https://gitlab.com/charts/auto-deploy-app).                                                             |
 | `REPLICAS`                   | The number of replicas to deploy; defaults to 1.                                                                                                                                                                              |
 | `PRODUCTION_REPLICAS`        | The number of replicas to deploy in the production environment. This takes precedence over `REPLICAS`; defaults to 1.                                                                                                         |
 | `CANARY_REPLICAS`            | The number of canary replicas to deploy for [Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html); defaults to 1                                                                              |

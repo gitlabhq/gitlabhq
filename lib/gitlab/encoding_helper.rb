@@ -75,7 +75,7 @@ module Gitlab
     end
 
     def binary_stringio(str)
-      StringIO.new(str || '').tap { |io| io.set_encoding(Encoding::ASCII_8BIT) }
+      StringIO.new(str.freeze || '').tap { |io| io.set_encoding(Encoding::ASCII_8BIT) }
     end
 
     private

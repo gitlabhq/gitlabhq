@@ -7,7 +7,7 @@
   }
 
   a {
-    color: $md-link-color;
+    color: $blue-600;
   }
 
   img:not(.emoji) {
@@ -327,7 +327,7 @@ h6 {
 pre {
   font-family: $monospace-font;
   display: block;
-  padding: $gl-padding-8;
+  padding: $gl-padding-8 $input-horizontal-padding;
   margin: 0 0 $gl-padding-8;
   font-size: 13px;
   word-break: break-all;

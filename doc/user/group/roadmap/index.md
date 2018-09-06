@@ -6,6 +6,8 @@ An Epic within a group containing **Planned start date** and/or **Planned finish
 can be visualized in a form of a timeline (e.g. a Gantt chart). The Epics Roadmap page
 shows such a visualization for all the epics which are under a group and/or its subgroups.
 
+Epics in the view can be sorted by **Created date**, **Last updated**, **Planned start date**, or **Planned finish date**.
+
 ![roadmap view](img/roadmap_view.png)
 
 ## Timeline duration

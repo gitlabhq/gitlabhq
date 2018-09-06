@@ -542,7 +542,7 @@ describe Gitlab::Git::Repository, :seed_helper do
       Gitlab::Shell.new.remove_repository('default', 'my_project')
     end
 
-    shared_examples 'repository mirror fecthing' do
+    shared_examples 'repository mirror fetching' do
       it 'fetches a repository as a mirror remote' do
         subject
 
@@ -569,11 +569,11 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
 
     context 'with gitaly enabled' do
-      it_behaves_like 'repository mirror fecthing'
+      it_behaves_like 'repository mirror fetching'
     end
 
     context 'with gitaly enabled', :skip_gitaly_mock do
-      it_behaves_like 'repository mirror fecthing'
+      it_behaves_like 'repository mirror fetching'
     end
 
     def new_repository_path

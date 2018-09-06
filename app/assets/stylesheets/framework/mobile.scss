@@ -4,11 +4,6 @@
     margin-top: 20px;
   }
 
-  .container-fluid {
-    padding-left: 5px;
-    padding-right: 5px;
-  }
-
   .nav-links > li > a {
     padding: 10px;
     font-size: 12px;
@@ -49,12 +44,8 @@
     .project-repo-buttons {
       display: block;
 
-      .count-buttons .btn {
-        margin: 0 10px;
-      }
-
-      .count-buttons .count-with-arrow {
-        display: none;
+      .count-buttons .count-badge {
+        margin-top: $gl-padding-8;
       }
     }
   }

@@ -80,6 +80,8 @@ describe 'Projects > Audit Events', :js do
         find('.ic-remove').click()
       end
 
+      wait_for_all_requests
+
       visit project_audit_events_path(project)
 
       expect(page).to have_content('Remove deploy key')

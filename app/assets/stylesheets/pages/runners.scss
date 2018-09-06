@@ -4,24 +4,24 @@
   color: $white-light;
 
   &.runner-state-shared {
-    background: $runner-state-shared-bg;
+    background: $green-400;
   }
 
   &.runner-state-specific {
-    background: $runner-state-specific-bg;
+    background: $blue-400;
   }
 }
 
 .runner-status-online {
-  color: $runner-status-online-color;
+  color: $green-600;
 }
 
 .runner-status-offline {
-  color: $runner-status-offline-color;
+  color: $gray-darkest;
 }
 
 .runner-status-paused {
-  color: $runner-status-paused-color;
+  color: $red-500;
 }
 
 .runner {

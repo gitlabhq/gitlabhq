@@ -187,11 +187,11 @@
 
 .card {
   .shared_runners_limit_under_quota {
-    color: $gl-success;
+    color: $green-500;
   }
 
   .shared_runners_limit_over_quota {
-    color: $gl-danger;
+    color: $red-500;
   }
 }
 
@@ -434,8 +434,8 @@ table.pipeline-project-metrics tr td {
     padding: $gl-padding-top;
 
     &:hover {
-      border-color: $row-hover-border;
-      background-color: $row-hover;
+      border-color: $blue-200;
+      background-color: $blue-50;
       cursor: pointer;
     }
 

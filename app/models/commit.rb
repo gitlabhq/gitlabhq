@@ -22,6 +22,7 @@ class Commit
   attr_accessor :project, :author
   attr_accessor :redacted_description_html
   attr_accessor :redacted_title_html
+  attr_accessor :redacted_full_title_html
   attr_reader :gpg_commit
 
   DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines]
@@ -193,6 +194,7 @@ class Commit
   # otherwise returns commit message without first line
   def description
     return safe_message if full_title.length >= 100
+    return no_commit_message if safe_message.blank?
 
     safe_message.split("\n", 2)[1].try(:chomp)
   end

@@ -1,0 +1,5 @@
+---
+title: Fixes SVGs for empty states in job page overflowing on mobile
+merge_request:
+author:
+type: fixed

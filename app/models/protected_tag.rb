@@ -5,6 +5,8 @@ class ProtectedTag < ActiveRecord::Base
   include ProtectedRef
   include EE::ProtectedRef
 
+  validates :name, uniqueness: { scope: :project_id }
+
   protected_ref_access_levels :create
 
   def self.protected?(project, ref_name)

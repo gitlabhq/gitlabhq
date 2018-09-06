@@ -55,6 +55,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [External Classification Policy Authorization](../user/admin_area/settings/external_authorization.md) **[PREMIUM ONLY]**
 - [Enforcing Terms of Service](../user/admin_area/settings/terms.md)
 - [Third party offers](../user/admin_area/settings/third_party_offers.md)
+- [Compliance](compliance.md): A collection of features from across the application that you may configure to help ensure that your GitLab instance and DevOps workflow meet compliance standards.
 
 #### Customizing GitLab's appearance
 
@@ -124,6 +125,7 @@ created in snippets, wikis, and repos.
 - [Default labels](../user/admin_area/labels.html): Create labels that will be automatically added to every new project.
 - [Restrict the use of public or internal projects](../public_access/public_access.md#restricting-the-use-of-public-or-internal-projects): Restrict the use of visibility levels for users when they create a project or a snippet.
 - [Custom project templates](../user/admin_area/custom_project_templates.md): Configure a set of projects to be used as custom templates when creating a new project. **[PREMIUM ONLY]**
+- [Maven packages repository](maven_packages.md): Enable Maven packages repository within GitLab.
 
 ### Repository settings
 

@@ -87,7 +87,7 @@ module EE
                      encode: true
     end
 
-    module ClassMethods
+    class_methods do
       extend ::Gitlab::Utils::Override
 
       override :defaults

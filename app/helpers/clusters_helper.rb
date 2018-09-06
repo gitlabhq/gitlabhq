@@ -11,4 +11,8 @@ module ClustersHelper
       render 'projects/clusters/gcp_signup_offer_banner'
     end
   end
+
+  def rbac_clusters_feature_enabled?
+    Feature.enabled?(:rbac_clusters)
+  end
 end

@@ -56,7 +56,7 @@ class GroupPolicy < BasePolicy
 
   rule { has_access }.enable :read_namespace
 
-  rule { developer }.enable :admin_milestones
+  rule { developer }.enable :admin_milestone
 
   rule { reporter }.policy do
     enable :admin_label
@@ -75,6 +75,8 @@ class GroupPolicy < BasePolicy
     enable :admin_namespace
     enable :admin_group_member
     enable :change_visibility_level
+
+    enable :set_note_created_at
   end
 
   rule { can?(:read_nested_project_resources) }.policy do

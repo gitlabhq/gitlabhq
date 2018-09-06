@@ -48,8 +48,10 @@ Note that Public SSH key may also be named as follows:
     **Git Bash on Windows / GNU/Linux / macOS:**
 
     ```bash
-    ssh-keygen -t rsa -C "your.email@example.com" -b 4096
+    ssh-keygen -o -t rsa -C "your.email@example.com" -b 4096
     ```
+
+    (Note: the `-o` option was introduced in 2014; if this command does not work for you, simply remove the `-o` option and try again)
 
     **Windows:**
 
@@ -75,7 +77,9 @@ Note that Public SSH key may also be named as follows:
 
      NOTE: **Note:**
      If you want to change the password of your SSH key pair, you can use
-     `ssh-keygen -p <keyname>`.
+     `ssh-keygen -p -o -f <keyname>`.
+     The `-o` option was added in 2014, so if this command does not work for you,
+     simply remove the `-o` option and try again.
 
 ## Adding a SSH key to your GitLab account
 
@@ -162,6 +166,17 @@ Public SSH keys need to be unique, as they will bind to your account.
 Your SSH key is the only identifier you'll have when pushing code via SSH.
 That's why it needs to uniquely map to a single user.
 
+## Per-repository SSH keys
+
+If you want to use different keys depending on the repository you are working
+on, you can issue the following command while inside your repository:
+
+```sh
+git config core.sshCommand "ssh -o IdentitiesOnly=yes -i ~/.ssh/private-key-filename-for-this-repository -F /dev/null"
+```
+
+This will not use the SSH Agent and requires at least Git 2.10.
+
 ## Deploy keys
 
 ### Per-repository deploy keys
@@ -191,15 +206,15 @@ project.
 
 ### Global shared deploy keys
 
-Global Shared Deploy keys allow read-only or read-write (if enabled) access to 
+Global Shared Deploy keys allow read-only or read-write (if enabled) access to
 be configured on any repository in the entire GitLab installation.
 
 This is really useful for integrating repositories to secured, shared Continuous
-Integration (CI) services or other shared services. 
-GitLab administrators can set up the Global Shared Deploy key in GitLab and 
+Integration (CI) services or other shared services.
+GitLab administrators can set up the Global Shared Deploy key in GitLab and
 add the private key to any shared systems.  Individual repositories opt into
 exposing their repository using these keys when a project maintainers (or higher)
-authorizes a Global Shared Deploy key to be used with their project. 
+authorizes a Global Shared Deploy key to be used with their project.
 
 Global Shared Keys can provide greater security compared to Per-Project Deploy
 Keys since an administrator of the target integrated system is the only one
@@ -211,13 +226,13 @@ the primary way for project maintainers and owners to identify the correct Globa
 Deploy key to add.  For instance, if the key gives access to a SaaS CI instance,
 use the name of that service in the key name if that is all it is used for.
 When creating Global Shared Deploy keys, give some thought to the granularity
-of keys - they could be of very narrow usage such as just a specific service or 
-of broader usage for something like "Anywhere you need to give read access to 
+of keys - they could be of very narrow usage such as just a specific service or
+of broader usage for something like "Anywhere you need to give read access to
 your repository".
 
-Once a GitLab administrator adds the Global Deployment key, project maintainers 
-and owners can add it in project's **Settings > Repository** section by expanding the 
-**Deploy Key** section and clicking **Enable** next to the appropriate key listed 
+Once a GitLab administrator adds the Global Deployment key, project maintainers
+and owners can add it in project's **Settings > Repository** section by expanding the
+**Deploy Key** section and clicking **Enable** next to the appropriate key listed
 under **Public deploy keys available to any project**.
 
 NOTE: **Note:**

@@ -47,6 +47,36 @@ module EE
       command :clear_weight do
         @updates[:weight] = nil
       end
+
+      desc 'Add to epic'
+      explanation 'Adds an issue to an epic.'
+      condition do
+        issuable.is_a?(::Issue) &&
+          issuable.project.group&.feature_available?(:epics) &&
+          current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
+      end
+      params '<group&epic | Epic URL>'
+      command :epic do |epic_param|
+        @updates[:epic] = extract_epic(epic_param)
+      end
+
+      desc 'Remove from epic'
+      explanation 'Removes an issue from an epic.'
+      condition do
+        issuable.is_a?(::Issue) &&
+          issuable.persisted? &&
+          issuable.project.group&.feature_available?(:epics) &&
+          current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
+      end
+      command :remove_epic do
+        @updates[:epic] = nil
+      end
+
+      def extract_epic(params)
+        return nil if params.nil?
+
+        extract_references(params, :epic).first
+      end
     end
   end
 end

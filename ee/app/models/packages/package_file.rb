@@ -6,6 +6,8 @@ class Packages::PackageFile < ActiveRecord::Base
   validates :file, presence: true
   validates :file_name, presence: true
 
+  scope :recent, -> { order(id: :desc) }
+
   mount_uploader :file, Packages::PackageFileUploader
 
   after_save :update_file_store, if: :file_changed?

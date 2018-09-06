@@ -27,7 +27,7 @@ module Participable
   extend ActiveSupport::Concern
   prepend EE::Participable
 
-  module ClassMethods
+  class_methods do
     # Adds a list of participant attributes. Attributes can either be symbols or
     # Procs.
     #

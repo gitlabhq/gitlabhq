@@ -310,6 +310,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       scope '-' do
         get 'archive/*id', constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
 
+        ## EE-specific
+        resources :packages, only: [:index, :show, :destroy], module: :packages
+        ## EE-specific
+
         resources :jobs, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             post :cancel_all
@@ -358,7 +362,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         resources :hook_logs, only: [:show] do
           member do
-            get :retry
+            post :retry
           end
         end
       end
@@ -522,7 +526,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resource :repository, only: [:show], controller: :repository do
           post :create_deploy_token, path: 'deploy_token/create'
         end
-        resources :badges, only: [:index]
       end
 
       # Since both wiki and repository routing contains wildcard characters

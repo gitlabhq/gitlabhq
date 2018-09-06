@@ -254,6 +254,10 @@ module ProjectsHelper
     "xcode://clone?repo=#{CGI.escape(default_url_to_repo(project))}"
   end
 
+  def legacy_render_context(params)
+    params[:legacy_render] ? { markdown_engine: :redcarpet } : {}
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)
@@ -353,6 +357,10 @@ module ProjectsHelper
     end
   end
 
+  def default_clone_label
+    _("Copy %{protocol} clone URL") % { protocol: default_clone_protocol.upcase }
+  end
+
   def default_clone_protocol
     if allowed_protocols_present?
       enabled_protocol
@@ -449,7 +457,7 @@ module ProjectsHelper
   end
 
   def project_permissions_panel_data(project)
-    data = {
+    {
       currentSettings: project_permissions_settings(project),
       canChangeVisibilityLevel: can_change_visibility_level?(project, current_user),
       allowedVisibilityOptions: project_allowed_visibility_levels(project),
@@ -459,8 +467,10 @@ module ProjectsHelper
       lfsAvailable: Gitlab.config.lfs.enabled,
       lfsHelpPath: help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
     }
+  end
 
-    data.to_json.html_safe
+  def project_permissions_panel_data_json(project)
+    project_permissions_panel_data(project).to_json.html_safe
   end
 
   def project_allowed_visibility_levels(project)

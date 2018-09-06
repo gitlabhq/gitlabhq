@@ -1,0 +1,5 @@
+---
+title: Allow author to vote on their own issue and MRs
+merge_request: 21203
+author:
+type: changed

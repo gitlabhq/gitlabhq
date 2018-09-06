@@ -90,8 +90,8 @@ Below are described the supported events.
 
 Triggered when you push to the repository except when pushing tags.
 
-> **Note:** When more than 20 commits are pushed at once, the `commits` web hook
-  attribute will only contain the first 20 for performance reasons. Loading
+> **Note:** When more than 20 commits are pushed at once, the `commits` web hook 
+  attribute will only contain the first 20 for performance reasons. Loading 
   detailed commit data is expensive. Note that despite only 20 commits being
   present in the `commits` attribute, the `total_commits_count` attribute will
   contain the actual total.
@@ -1127,6 +1127,7 @@ X-Gitlab-Event: Build Hook
   "build_finished_at": null,
   "build_duration": null,
   "build_allow_failure": false,
+  "build_failure_reason": "script_failure",
   "project_id": 380,
   "project_name": "gitlab-org/gitlab-test",
   "user": {

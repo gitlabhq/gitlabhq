@@ -71,7 +71,7 @@ gem 'u2f', '~> 0.2.1'
 gem 'validates_hostname', '~> 1.0.6'
 
 # Browser detection
-gem 'browser', '~> 2.2'
+gem 'browser', '~> 2.5'
 
 # GPG
 gem 'gpgme'
@@ -110,7 +110,9 @@ gem 'kaminari', '~> 1.0'
 gem 'hamlit', '~> 2.8.8'
 
 # Files attachments
-gem 'carrierwave', '~> 1.2'
+# Locked until https://github.com/carrierwaveuploader/carrierwave/pull/2332/files is merged.
+# config/initializers/carrierwave_patch.rb can be removed once that change is released.
+gem 'carrierwave', '= 1.2.3'
 gem 'mini_magick'
 
 # Drag and Drop UI
@@ -119,14 +121,14 @@ gem 'dropzonejs-rails', '~> 0.7.1'
 # for backups
 gem 'fog-aws', '~> 2.0.1'
 gem 'fog-core', '~> 1.44'
-gem 'fog-google', '~> 1.3.3'
+gem 'fog-google', '~> 1.7.1'
 gem 'fog-local', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
 gem 'fog-aliyun', '~> 0.2.0'
 
 # for Google storage
-gem 'google-api-client', '~> 0.19.8'
+gem 'google-api-client', '~> 0.23'
 
 # for aws storage
 gem 'unf', '~> 0.1.4'
@@ -205,6 +207,9 @@ gem 're2', '~> 1.1.1'
 
 gem 'version_sorter', '~> 2.1.0'
 
+# Export Ruby Regex to Javascript
+gem 'js_regex', '~> 2.2.1'
+
 # User agent parsing
 gem 'device_detector'
 
@@ -223,9 +228,6 @@ gem 'jira-ruby', '~> 1.4'
 
 # Flowdock integration
 gem 'gitlab-flowdock-git-hook', '~> 1.0.1'
-
-# Gemnasium integration
-gem 'gemnasium-gitlab-service', '~> 0.2'
 
 # Slack integration
 gem 'slack-notifier', '~> 1.5.1'
@@ -375,12 +377,11 @@ group :development, :test do
   gem 'scss_lint', '~> 0.56.0', require: false
   gem 'haml_lint', '~> 0.26.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
-  gem 'flay', '~> 2.10.0', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
 
   gem 'benchmark-ips', '~> 2.3.0', require: false
 
-  gem 'license_finder', '~> 3.1', require: false
+  gem 'license_finder', '~> 5.4', require: false
   gem 'knapsack', '~> 1.16'
 
   gem 'activerecord_sane_schema_dumper', gem_versions['activerecord_sane_schema_dumper']
@@ -402,6 +403,7 @@ group :test do
   gem 'sham_rack', '~> 1.3.6'
   gem 'concurrent-ruby', '~> 1.0.5'
   gem 'test-prof', '~> 0.2.5'
+  gem 'rspec_junit_formatter'
 end
 
 gem 'octokit', '~> 4.9'
@@ -438,7 +440,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.112.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.113.0', require: 'gitaly'
 gem 'grpc', '~> 1.11.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed

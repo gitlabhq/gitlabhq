@@ -5,7 +5,7 @@
     = render "layouts/init_auto_complete" if @gfm_form
     = render 'peek/bar'
     = header_message
-    = render "layouts/header/default"
+    = render  partial: "layouts/header/default", locals: { project: @project, group: @group }
     = render 'layouts/page', sidebar: sidebar, nav: nav
     = footer_message
 

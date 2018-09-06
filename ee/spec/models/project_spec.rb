@@ -60,7 +60,7 @@ describe Project do
             project.save
           end.to change { ProjectImportState.count }.by(1)
 
-          expect(project.import_state.next_execution_timestamp).to eq(Time.now)
+          expect(project.import_state.next_execution_timestamp).to be_like_time(Time.now)
         end
       end
     end
@@ -75,7 +75,7 @@ describe Project do
               project.update(mirror: true, mirror_user_id: project.creator.id, import_url: generate(:url))
             end.to change { ProjectImportState.count }.by(1)
 
-            expect(project.import_state.next_execution_timestamp).to eq(Time.now)
+            expect(project.import_state.next_execution_timestamp).to be_like_time(Time.now)
           end
         end
       end
@@ -89,7 +89,7 @@ describe Project do
               project.update(mirror: true, mirror_user_id: project.creator.id)
             end.not_to change { ProjectImportState.count }
 
-            expect(project.import_state.next_execution_timestamp).to eq(Time.now)
+            expect(project.import_state.next_execution_timestamp).to be_like_time(Time.now)
           end
         end
       end
@@ -148,6 +148,55 @@ describe Project do
 
         it 'returns empty' do
           expect(described_class.mirrors_to_sync(timestamp)).to be_empty
+        end
+      end
+    end
+  end
+
+  describe '#deployment_variables' do
+    context 'when project has a deployment platforms' do
+      context 'when multiple clusters (EEP) is enabled' do
+        before do
+          stub_licensed_features(multiple_clusters: true)
+        end
+
+        let(:project) { create(:project) }
+
+        let!(:default_cluster) do
+          create(:cluster,
+                 platform_type: :kubernetes,
+                 projects: [project],
+                 environment_scope: '*',
+                 platform_kubernetes: default_cluster_kubernetes)
+        end
+
+        let!(:review_env_cluster) do
+          create(:cluster,
+                 platform_type: :kubernetes,
+                 projects: [project],
+                 environment_scope: 'review/*',
+                 platform_kubernetes: review_env_cluster_kubernetes)
+        end
+
+        let(:default_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'default-AAA') }
+        let(:review_env_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'review-AAA') }
+
+        context 'when environment name is review/name' do
+          let!(:environment) { create(:environment, project: project, name: 'review/name') }
+
+          it 'returns variables from this service' do
+            expect(project.deployment_variables(environment: 'review/name'))
+              .to include(key: 'KUBE_TOKEN', value: 'review-AAA', public: false)
+          end
+        end
+
+        context 'when environment name is other' do
+          let!(:environment) { create(:environment, project: project, name: 'staging/name') }
+
+          it 'returns variables from this service' do
+            expect(project.deployment_variables(environment: 'staging/name'))
+              .to include(key: 'KUBE_TOKEN', value: 'default-AAA', public: false)
+          end
         end
       end
     end
@@ -377,7 +426,7 @@ describe Project do
 
   describe '#force_import_job!' do
     it 'sets next execution timestamp to now and schedules UpdateAllMirrorsWorker' do
-      timestamp = Time.now
+      timestamp = 1.second.from_now.change(usec: 0)
       project = create(:project, :mirror)
 
       expect(UpdateAllMirrorsWorker).to receive(:perform_async)
@@ -396,7 +445,7 @@ describe Project do
 
         Timecop.freeze(timestamp) do
           expect { project.force_import_job! }.to change(project.import_state, :retry_count).to(0)
-          expect(project.import_state.next_execution_timestamp).to eq(timestamp)
+          expect(project.import_state.next_execution_timestamp).to be_like_time(timestamp)
         end
       end
     end
@@ -1649,12 +1698,12 @@ describe Project do
     before do
       allow(::Geo::RepositoryUpdatedService)
         .to receive(:new)
-        .with(project, source: Geo::RepositoryUpdatedEvent::REPOSITORY)
+        .with(project.repository)
         .and_return(repository_updated_service)
 
       allow(::Geo::RepositoryUpdatedService)
         .to receive(:new)
-        .with(project, source: Geo::RepositoryUpdatedEvent::WIKI)
+        .with(project.wiki.repository)
         .and_return(wiki_updated_service)
     end
 
@@ -1707,5 +1756,11 @@ describe Project do
         expect(project.gitlab_custom_project_template_import?).to be false
       end
     end
+  end
+
+  describe '#packages_enabled' do
+    subject { create(:project).packages_enabled }
+
+    it { is_expected.to be true }
   end
 end

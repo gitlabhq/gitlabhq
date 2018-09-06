@@ -44,6 +44,7 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 RSpec.configure do |config|
   config.use_transactional_fixtures = false
   config.use_instantiated_fixtures  = false
+  config.fixture_path = Rails.root
 
   config.verbose_retry = true
   config.display_try_failure_messages = true
@@ -114,6 +115,13 @@ RSpec.configure do |config|
   config.before(:example) do
     # Enable all features by default for testing
     allow(Feature).to receive(:enabled?) { true }
+
+    # The following can be removed when we remove the staged rollout strategy
+    # and we can just enable it using instance wide settings
+    # (ie. ApplicationSetting#auto_devops_enabled)
+    allow(Feature).to receive(:enabled?)
+      .with(:force_autodevops_on_by_default, anything)
+      .and_return(false)
   end
 
   config.before(:example, :request_store) do

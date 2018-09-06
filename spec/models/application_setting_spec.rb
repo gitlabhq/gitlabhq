@@ -538,4 +538,28 @@ describe ApplicationSetting do
       expect(setting.allow_signup?).to be_falsey
     end
   end
+
+  describe '#user_default_internal_regex_enabled?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:user_default_external, :user_default_internal_regex, :result) do
+      false | nil                        | false
+      false | ''                         | false
+      false | '^(?:(?!\.ext@).)*$\r?\n?' | false
+      true  | ''                         | false
+      true  | nil                        | false
+      true  | '^(?:(?!\.ext@).)*$\r?\n?' | true
+    end
+
+    with_them do
+      before do
+        setting.update(user_default_external: user_default_external)
+        setting.update(user_default_internal_regex: user_default_internal_regex)
+      end
+
+      subject { setting.user_default_internal_regex_enabled? }
+
+      it { is_expected.to eq(result) }
+    end
+  end
 end

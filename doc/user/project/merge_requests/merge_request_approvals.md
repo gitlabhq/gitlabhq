@@ -52,7 +52,7 @@ group approvers will be restricted.
 
 If a user is added as an individual approver and is also part of a group approver,
 then that user is just counted once. The merge request author does not count as
-an eligible approver.
+an eligible approver, unless [self-approval] is explicitly enabled on the project settings.
 
 Let's say that `m` is the number of required approvals, and `Ω` is the set of
 explicit approvers. Depending on their number, there are different cases:
@@ -91,7 +91,8 @@ the following is possible:
     ![Remove approval](img/remove_approval.png)
 
 NOTE: **Note:**
-The merge request author is not allowed to approve their own merge request.
+The merge request author is only allowed to approve their own merge request 
+if [self-approval] is enabled on the project settings.
 
 For the given merge request, if the required number of approvals has been met
 (i.e., the number of approvals given to the merge request is greater or equal
@@ -172,6 +173,18 @@ However, approvals will be reset if the target branch is changed.
 If you want approvals to persist, independent of changes to the merge request,
 turn this setting to off by unchecking the box and saving the changes.
 
+## Allowing merge request authors to approve their own merge requests
+
+You can allow merge request authors to self-approve merge requests by
+enabling it [at the project level](#editing-approvals). Authors
+also need to be included in the approvers list in order to be able to
+approve their merge request.
+
+1. Navigate to your project's **Settings > General** and expand the
+   **Merge requests settings**
+1. Tick the "Enable self approval of merge requests" checkbox
+1. Click **Save changes**
+
 ## Merge requests with different source branch and target branch projects
 
 If the merge request source branch and target branch belong to different
@@ -182,3 +195,5 @@ branch's project, the relevant settings are the target project's. The source
 branch's project settings are not applicable. Even if you start the merge
 request from the source branch's project UI, pay attention to the created merge
 request itself. It belongs to the target branch's project.
+
+[self-approval]: #allowing-merge-request-authors-to-approve-their-own-merge-requests

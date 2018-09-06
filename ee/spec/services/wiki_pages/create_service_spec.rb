@@ -23,7 +23,7 @@ describe WikiPages::CreateService do
       allow(Gitlab::Geo).to receive(:primary?) { true }
 
       repository_updated_service = instance_double('::Geo::RepositoryUpdatedService')
-      expect(::Geo::RepositoryUpdatedService).to receive(:new).with(project, source: Geo::RepositoryUpdatedEvent::WIKI) { repository_updated_service }
+      expect(::Geo::RepositoryUpdatedService).to receive(:new).with(project.wiki.repository) { repository_updated_service }
       expect(repository_updated_service).to receive(:execute)
 
       service.execute
@@ -32,7 +32,7 @@ describe WikiPages::CreateService do
     it 'does not call Geo::RepositoryUpdatedService when not running on a Geo primary node' do
       allow(Gitlab::Geo).to receive(:primary?) { false }
 
-      expect(::Geo::RepositoryUpdatedService).not_to receive(:new).with(project, source: Geo::RepositoryUpdatedEvent::WIKI)
+      expect(::Geo::RepositoryUpdatedService).not_to receive(:new).with(project.wiki.repository)
 
       service.execute
     end

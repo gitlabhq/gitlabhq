@@ -1,5 +1,0 @@
----
-title: 'Geo: Improve Geo Status API performance with cached counters in SiteStatistic'
-merge_request: 6328
-author:
-type: performance

@@ -1027,6 +1027,20 @@ describe API::Issues do
         end
       end
 
+      context 'by a group owner' do
+        let(:group) { create(:group) }
+        let(:group_project) { create(:project, :public, namespace: group) }
+
+        it 'sets the internal ID on the new issue' do
+          group.add_owner(user2)
+          post api("/projects/#{group_project.id}/issues", user2),
+            title: 'new issue', iid: 9001
+
+          expect(response).to have_gitlab_http_status(201)
+          expect(json_response['iid']).to eq 9001
+        end
+      end
+
       context 'by another user' do
         it 'ignores the given internal ID' do
           post api("/projects/#{project.id}/issues", user2),
@@ -1158,14 +1172,47 @@ describe API::Issues do
       end
     end
 
-    context 'when an admin or owner makes the request' do
-      it 'accepts the creation date to be set' do
-        creation_time = 2.weeks.ago
-        post api("/projects/#{project.id}/issues", user),
-          title: 'new issue', labels: 'label, label2', created_at: creation_time
+    context 'setting created_at' do
+      let(:creation_time) { 2.weeks.ago }
+      let(:params) { { title: 'new issue', labels: 'label, label2', created_at: creation_time } }
 
-        expect(response).to have_gitlab_http_status(201)
-        expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
+      context 'by an admin' do
+        it 'sets the creation time on the new issue' do
+          post api("/projects/#{project.id}/issues", admin), params
+
+          expect(response).to have_gitlab_http_status(201)
+          expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
+        end
+      end
+
+      context 'by a project owner' do
+        it 'sets the creation time on the new issue' do
+          post api("/projects/#{project.id}/issues", user), params
+
+          expect(response).to have_gitlab_http_status(201)
+          expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
+        end
+      end
+
+      context 'by a group owner' do
+        it 'sets the creation time on the new issue' do
+          group = create(:group)
+          group_project = create(:project, :public, namespace: group)
+          group.add_owner(user2)
+          post api("/projects/#{group_project.id}/issues", user2), params
+
+          expect(response).to have_gitlab_http_status(201)
+          expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
+        end
+      end
+
+      context 'by another user' do
+        it 'ignores the given creation time' do
+          post api("/projects/#{project.id}/issues", user2), params
+
+          expect(response).to have_gitlab_http_status(201)
+          expect(Time.parse(json_response['created_at'])).not_to be_like_time(creation_time)
+        end
       end
     end
 

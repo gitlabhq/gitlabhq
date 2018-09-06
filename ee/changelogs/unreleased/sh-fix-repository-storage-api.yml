@@ -1,0 +1,5 @@
+---
+title: Prevent regular users from moving projects to different storage shards
+merge_request:
+author:
+type: security

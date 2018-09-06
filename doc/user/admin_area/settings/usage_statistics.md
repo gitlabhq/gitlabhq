@@ -23,7 +23,7 @@ GitLab Inc. collects your instance's version and hostname (through the HTTP
 referer) as part of the version check. No other information is collected.
 
 This information is used, among other things, to identify to which versions
-patches will need to be back ported, making sure active GitLab instances remain
+patches will need to be backported, making sure active GitLab instances remain
 secure.
 
 If you disable version check, this information will not be collected.  Enable or
@@ -33,8 +33,8 @@ disable the version check at **Admin area > Settings > Usage statistics**.
 
 > [Introduced][ee-557] in GitLab Enterprise Edition 8.10. More statistics
 [were added][ee-735] in GitLab Enterprise Edition
-8.12. [Moved to GitLab Community Edition][ce-23361] in 9.1. More statistics
-[were added][[ee-6602] in 11.2
+8.12. [Moved to GitLab Core][ce-23361] in 9.1. More statistics
+[were added][ee-6602] in GitLab Ultimate 11.2.
 
 GitLab sends a weekly payload containing usage data to GitLab Inc. The usage
 ping uses high-level data to help our product, support, and sales teams. It does

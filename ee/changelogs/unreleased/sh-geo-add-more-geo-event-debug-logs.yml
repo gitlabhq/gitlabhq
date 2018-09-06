@@ -1,5 +1,0 @@
----
-title: 'Geo: Gracefully handle deleted events from Geo event log'
-merge_request: 6506
-author:
-type: fixed

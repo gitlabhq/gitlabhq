@@ -661,7 +661,7 @@
 }
 
 .prometheus-table-row-highlight {
-  background-color: $prometheus-table-row-highlight-color;
+  background-color: $theme-gray-100;
 }
 
 // EE-only
@@ -710,7 +710,7 @@
 }
 
 .alert-error-message {
-  color: $gl-danger;
+  color: $red-500;
   vertical-align: middle;
 }
 

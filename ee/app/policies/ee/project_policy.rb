@@ -24,6 +24,9 @@ module EE
       condition(:deploy_board_disabled) { !@subject.feature_available?(:deploy_board) }
 
       with_scope :subject
+      condition(:packages_disabled) { !@subject.packages_enabled }
+
+      with_scope :subject
       condition(:classification_label_authorized, score: 32) do
         EE::Gitlab::ExternalAuthorization.access_allowed?(
           @user,
@@ -110,10 +113,15 @@ module EE
 
       rule { deploy_board_disabled & ~is_development }.prevent :read_deploy_board
 
+      rule { packages_disabled }.policy do
+        prevent(*create_read_update_admin_destroy(:package))
+      end
+
       rule { can?(:maintainer_access) }.policy do
         enable :push_code_to_protected_branches
         enable :admin_path_locks
         enable :update_approvers
+        enable :destroy_package
       end
 
       rule { license_management_enabled & can?(:maintainer_access) }.enable :admin_software_license_policy

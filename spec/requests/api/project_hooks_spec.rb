@@ -9,7 +9,8 @@ describe API::ProjectHooks, 'ProjectHooks' do
            :all_events_enabled,
            project: project,
            url: 'http://example.com',
-           enable_ssl_verification: true)
+           enable_ssl_verification: true,
+           push_events_branch_filter: 'master')
   end
 
   before do
@@ -38,6 +39,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
         expect(json_response.first['pipeline_events']).to eq(true)
         expect(json_response.first['wiki_page_events']).to eq(true)
         expect(json_response.first['enable_ssl_verification']).to eq(true)
+        expect(json_response.first['push_events_branch_filter']).to eq('master')
       end
     end
 
@@ -83,11 +85,6 @@ describe API::ProjectHooks, 'ProjectHooks' do
         expect(response).to have_gitlab_http_status(403)
       end
     end
-
-    it "returns a 404 error if hook id is not available" do
-      get api("/projects/#{project.id}/hooks/1234", user)
-      expect(response).to have_gitlab_http_status(404)
-    end
   end
 
   describe "POST /projects/:id/hooks" do
@@ -95,7 +92,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
       expect do
         post api("/projects/#{project.id}/hooks", user),
           url: "http://example.com", issues_events: true, confidential_issues_events: true, wiki_page_events: true,
-          job_events: true
+          job_events: true, push_events_branch_filter: 'some-feature-branch'
       end.to change {project.hooks.count}.by(1)
 
       expect(response).to have_gitlab_http_status(201)
@@ -111,6 +108,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
       expect(json_response['pipeline_events']).to eq(false)
       expect(json_response['wiki_page_events']).to eq(true)
       expect(json_response['enable_ssl_verification']).to eq(true)
+      expect(json_response['push_events_branch_filter']).to eq('some-feature-branch')
       expect(json_response).not_to include('token')
     end
 
@@ -137,7 +135,12 @@ describe API::ProjectHooks, 'ProjectHooks' do
     end
 
     it "returns a 422 error if url not valid" do
-      post api("/projects/#{project.id}/hooks", user), "url" => "ftp://example.com"
+      post api("/projects/#{project.id}/hooks", user), url: "ftp://example.com"
+      expect(response).to have_gitlab_http_status(422)
+    end
+
+    it "returns a 422 error if branch filter is not valid" do
+      post api("/projects/#{project.id}/hooks", user), url: "http://example.com", push_events_branch_filter: '~badbranchname/'
       expect(response).to have_gitlab_http_status(422)
     end
   end

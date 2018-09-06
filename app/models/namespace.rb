@@ -11,6 +11,7 @@ class Namespace < ActiveRecord::Base
   include Storage::LegacyNamespace
   include Gitlab::SQL::Pattern
   include IgnorableColumn
+  include FeatureGate
 
   ignore_column :deleted_at
 
@@ -125,7 +126,6 @@ class Namespace < ActiveRecord::Base
   def to_param
     full_path
   end
-  alias_method :flipper_id, :to_param
 
   def human_name
     owner_name

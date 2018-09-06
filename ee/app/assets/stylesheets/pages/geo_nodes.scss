@@ -29,11 +29,11 @@
 }
 
 .geo-node-healthy {
-  color: $gl-success;
+  color: $green-500;
 }
 
 .geo-node-unhealthy {
-  color: $gl-danger;
+  color: $red-500;
 }
 
 .geo-node-offline {
@@ -54,11 +54,11 @@
   }
 
   .status-icon-warning {
-    fill: $gl-warning;
+    fill: $orange-500;
   }
 
   .status-icon-failure {
-    fill: $gl-danger;
+    fill: $red-500;
   }
 
   .card-body {
@@ -112,7 +112,7 @@
     }
 
     .detail-value-stale-icon {
-      color: $gl-warning;
+      color: $orange-500;
     }
 
     .node-detail-value-bold {
@@ -120,7 +120,7 @@
     }
 
     .node-detail-value-error {
-      color: $gl-danger;
+      color: $red-500;
     }
   }
 

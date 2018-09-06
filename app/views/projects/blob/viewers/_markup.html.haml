@@ -1,4 +1,6 @@
 - blob = viewer.blob
-- rendered_markup = blob.rendered_markup if blob.respond_to?(:rendered_markup)
+- context = legacy_render_context(params)
+- unless context[:markdown_engine] == :redcarpet
+  - context[:rendered] = blob.rendered_markup if blob.respond_to?(:rendered_markup)
 .file-content.wiki
-  = markup(blob.name, blob.data, rendered: rendered_markup)
+  = markup(blob.name, blob.data, context)

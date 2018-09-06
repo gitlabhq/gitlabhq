@@ -1,6 +1,0 @@
----
-title: Rails 5 fix the matcher expected the ApplicationSetting to be invalid, but
-  it was valid instead
-merge_request: 6488
-author: Jasper Maes
-type: fixed

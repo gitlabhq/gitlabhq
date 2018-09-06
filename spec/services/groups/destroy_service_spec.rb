@@ -35,6 +35,14 @@ describe Groups::DestroyService do
       it { expect(NotificationSetting.unscoped.all).not_to include(notification_setting) }
     end
 
+    context 'site statistics' do
+      it 'doesnt trigger project deletion hooks twice' do
+        expect_any_instance_of(Project).to receive(:untrack_site_statistics).once
+
+        destroy_group(group, user, async)
+      end
+    end
+
     context 'mattermost team' do
       let!(:chat_team) { create(:chat_team, namespace: group) }
 

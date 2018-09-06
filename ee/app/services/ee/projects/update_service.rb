@@ -63,7 +63,7 @@ module EE
       end
 
       def sync_wiki_on_enable
-        ::Geo::RepositoryUpdatedService.new(project, source: ::Geo::RepositoryUpdatedEvent::WIKI).execute
+        ::Geo::RepositoryUpdatedService.new(project.wiki.repository).execute
       end
     end
   end

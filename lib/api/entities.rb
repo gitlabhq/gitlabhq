@@ -10,6 +10,28 @@ module API
       expose :content
     end
 
+    class WikiAttachment < Grape::Entity
+      include Gitlab::FileMarkdownLinkBuilder
+
+      expose :file_name
+      expose :file_path
+      expose :branch
+      expose :link do
+        expose :file_path, as: :url
+        expose :markdown do |_entity|
+          self.markdown_link
+        end
+      end
+
+      def filename
+        object.file_name
+      end
+
+      def secure_url
+        object.file_path
+      end
+    end
+
     class UserSafe < Grape::Entity
       expose :id, :name, :username
     end
@@ -83,6 +105,7 @@ module API
       expose :project_id, :issues_events, :confidential_issues_events
       expose :note_events, :confidential_note_events, :pipeline_events, :wiki_page_events
       expose :job_events
+      expose :push_events_branch_filter
     end
 
     class SharedGroup < Grape::Entity
@@ -91,6 +114,7 @@ module API
         group_link.group.name
       end
       expose :group_access, as: :group_access_level
+      expose :expires_at
     end
 
     class ProjectIdentity < Grape::Entity
@@ -369,6 +393,10 @@ module API
       expose :can_push do |repo_branch, options|
         Gitlab::UserAccess.new(options[:current_user], project: options[:project]).can_push_to_branch?(repo_branch.name)
       end
+
+      expose :default do |repo_branch, options|
+        options[:project].default_branch == repo_branch.name
+      end
     end
 
     class TreeObject < Grape::Entity
@@ -428,6 +456,11 @@ module API
       expose :push_access_levels, using: Entities::ProtectedRefAccess
       expose :merge_access_levels, using: Entities::ProtectedRefAccess
       expose :unprotect_access_levels, using: Entities::ProtectedRefAccess
+    end
+
+    class ProtectedTag < Grape::Entity
+      expose :name
+      expose :create_access_levels, using: Entities::ProtectedRefAccess
     end
 
     class Milestone < Grape::Entity
@@ -656,6 +689,8 @@ module API
       end
 
       expose :diff_refs, using: Entities::DiffRefs
+
+      expose :diverged_commits_count, as: :diverged_commits_count, if: -> (_, options) { options[:include_diverged_commits_count] }
 
       def build_available?(options)
         options[:project]&.feature_available?(:builds, options[:current_user])

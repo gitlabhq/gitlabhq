@@ -7,7 +7,7 @@ module CustomModelNaming
     self.class_attribute :singular_route_key, :route_key, :param_key
   end
 
-  module ClassMethods
+  class_methods do
     def model_name
       @_model_name ||= begin
         namespace = self.parents.detect do |n|

@@ -1,5 +1,124 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 11.2.3 (2018-08-28)
+
+- No changes.
+
+## 11.2.2 (2018-08-27)
+
+### Security (1 change)
+
+- Prevent regular users from moving projects to different storage shards.
+
+
+## 11.2.1 (2018-08-22)
+
+- No changes.
+
+## 11.2.0 (2018-08-22)
+
+### Security (1 change)
+
+- Don't expose project names in EE counters.
+
+### Fixed (32 changes, 11 of them are from the community)
+
+- Allow Geo node to be edited once the database is failed over. !6248
+- Fix a bug where user was unable to delete a branch when repo size was above the limit. !6373
+- Rails5 fix AttachmentRegistryFinder arel queries. !6396 (Jasper Maes)
+- Add Premium license checks for system messages. !6460
+- Fixes arrow-icon color and alignment in linked pipeline in merge request widget. !6479
+- Rails 5 fix the matcher expected the ApplicationSetting to be invalid, but it was valid instead. !6488 (Jasper Maes)
+- Geo: Gracefully handle deleted events from Geo event log. !6506
+- Rails5 fix NoMethodError: undefined method 'message' for nil:NilClass. !6507 (Jasper Maes)
+- Fix billing card title colors. !6563
+- Rails5 fix undefined method 'namespace_project_settings_repository_path'. !6581 (Jasper Maes)
+- Rails5 fix no implicit conversion of Symbol into Integer. !6582 (Jasper Maes)
+- Rails 5 fix NoMethodError: undefined method 'message' for nil:NilClass in host_spec.rb. !6589 (Jasper Maes)
+- Fix mobile view of pod logs. !6597
+- Add left-padding to diverged-from-upstream label. !6647
+- List groups with developer maintainer access on project creation. !6678
+- no longer fail when setting up Geo database with GDK. !6680
+- Allow Pseudonymizer to write to a bucket without having permissions to see all buckets. !6682
+- Hide Expand button on empty MR widget Performance section. !6685
+- Ensure that Create issue button is shown in vulnerability dialog. !6708
+- Use same gem versions for Rails 5 as for Rails 4. !6712 (Jasper Maes)
+- Rails5 correct wrong geo job name. !6713 (Jasper Maes)
+- Elasticsearch: Fix a bug causing some types of note to miss being indexed. !6736
+- Rails 5 fix product array method delagation by manually calling .to_a in NotificationService. !6753 (Jasper Maes)
+- Adjust self-hosted Jira development panel integration. !6756
+- Ensure that push size checks only count the size of newly-pushed files. !6767
+- Fix the UI for listing system-level labels. !6805
+- Rails5: fix slice in burndown fixture. !6813 (Jasper Maes)
+- Rails5: fix Arel::UpdateManager in MigrateOldElasticsearchSettings migration. !6815 (Jasper Maes)
+- Corrected URL for snowplow client side JS. !6899
+- [Geo] Fix the Storage config parameter in Geo nodes admin page.
+- Fix exporting issues to CSV when sorting by label priority is used.
+- Fix handling of annotated tags when Gitaly is not in use.
+
+### Changed (9 changes, 2 of them are from the community)
+
+- Add related issues loading icon top margin. !6527 (George Tsiolis)
+- Add security products to usage ping. !6602
+- Changed copy for "Approved" state in merge request widget. !6635 (Constance Okoghenun)
+- Track the Geo event log gaps in redis and handle them later. !6640
+- Replace clipboard icon in Service Desk settings. !6643
+- Removes "show all" on security reports and adds a button to take you to the pipeline page. !6675
+- Shows license reports when there are no reports in the source branch. !6720
+- Removes status text from licence reports. !6802
+- Opens "view full report" links in a new window. !6806
+
+### Performance (2 changes)
+
+- Geo: Improve Geo Status API performance with cached counters in SiteStatistic. !6328
+- Geo: Improve performance in Log Cursor gap tracking. !6754
+
+### Added (19 changes)
+
+- Geo: Add repository verification failures to API. !6137
+- Add support for todos on epics. !6142
+- Summed issue weights in board columns. !6218
+- Add an API endpoint for managed licenses of a project. !6246
+- Implement custom project templates. !6436
+- Projects page under Admin > Geo Nodes to display detailed synchronization information. !6452
+- Enables configuration of pull mirroring through API. !6485
+- Adds SLI alerts to custom prometheus metrics. !6590
+- Add support for milestones lists on the issue boards. !6615
+- Persist Epic Roadmap timescale choice. !6637
+- Add license management frontend. !6638
+- Add Snowplow integration. !6642
+- Add Security Dashboard to project quick links. !6652
+- Show License Management at pipeline level. !6688
+- Add Frontend for Instance-level project templates. !6740
+- Geo - Actively try to correct verification failures on the secondary. !6759
+- Add Prometheus metrics to track Geo autocorrect numbers. !6778
+- Link the License Management report in the MR widget with the pipeline level one. !6800
+- Allow creating assignee lists via API.
+
+### Other (8 changes, 1 of them is from the community)
+
+- Move merge requests EE helper methods. !6461 (George Tsiolis)
+- Add additional logging for Geo Log Cursor. !6513
+- Ensure no weight change system notes end with a superfluous comma. !6571
+- Track registries marked as synced when repository does not found. !6694
+- Removes EE specific CSS that was moved to CE. !6723
+- Geo: Add rake task to resync projects where verification has failed. !6727
+- updates column sizes in licence and security modals. !6808
+- Geo: Log to geo.log when the Log Cursor skips an event.
+
+
+## 11.1.6 (2018-08-28)
+
+- No changes.
+
+## 11.1.5 (2018-08-27)
+
+- No changes.
+### Security (1 change)
+
+- Prevent regular users from moving projects to different storage shards.
+
+
 ## 11.1.4 (2018-07-30)
 
 - No changes.
@@ -91,6 +210,13 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 - Enable Geo snapshot synchronization for everyone. !6286
 - Geo - Make Geo repository verification flag opt-out by default. !6369
+
+
+## 11.0.6 (2018-08-27)
+
+### Security (1 change)
+
+- Prevent regular users from moving projects to different storage shards.
 
 
 ## 11.0.5 (2018-07-26)

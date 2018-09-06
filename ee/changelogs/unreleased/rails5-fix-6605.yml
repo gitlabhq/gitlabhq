@@ -1,5 +1,0 @@
----
-title: 'Rails5 fix NoMethodError: undefined method ''message'' for nil:NilClass'
-merge_request: 6507
-author: Jasper Maes
-type: fixed

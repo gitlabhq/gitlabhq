@@ -31,11 +31,13 @@ describe Gitlab::Kubernetes::Helm::Api do
   end
 
   describe '#update' do
+    let(:rbac) { false }
     let(:command) do
       Gitlab::Kubernetes::Helm::UpgradeCommand.new(
         application.name,
         chart: application.chart,
-        files: application.files
+        files: application.files,
+        rbac: rbac
       )
     end
 

@@ -33,8 +33,8 @@ describe Geo::RepositoryVerificationSecondaryService, :geo do
     end
 
     it 'does not verify the checksum if the current checksum matches' do
-      repository_state.assign_attributes("#{type}_verification_checksum" => 'my_checksum')
-      registry.assign_attributes("#{type}_verification_checksum_sha" => 'my_checksum')
+      repository_state.assign_attributes("#{type}_verification_checksum" => '62fc1ec4ce60')
+      registry.assign_attributes("#{type}_verification_checksum_sha" => '62fc1ec4ce60')
 
       expect(repository).not_to receive(:checksum)
 
@@ -42,12 +42,12 @@ describe Geo::RepositoryVerificationSecondaryService, :geo do
     end
 
     it 'sets checksum when the checksum matches' do
-      allow(repository).to receive(:checksum).and_return('my_checksum')
+      allow(repository).to receive(:checksum).and_return('62fc1ec4ce60')
 
       service.execute
 
       expect(registry).to have_attributes(
-        "#{type}_verification_checksum_sha" => 'my_checksum',
+        "#{type}_verification_checksum_sha" => '62fc1ec4ce60',
         "#{type}_checksum_mismatch" => false,
         "last_#{type}_verification_failure" => nil,
         "#{type}_verification_retry_count" => nil,
@@ -155,7 +155,7 @@ describe Geo::RepositoryVerificationSecondaryService, :geo do
 
   describe '#execute' do
     let(:project) { create(:project, :repository, :wiki_repo) }
-    let!(:repository_state) { create(:repository_state, project: project, repository_verification_checksum: 'my_checksum', wiki_verification_checksum: 'my_checksum') }
+    let!(:repository_state) { create(:repository_state, project: project, repository_verification_checksum: '62fc1ec4ce60', wiki_verification_checksum: '62fc1ec4ce60') }
     let(:registry) { create(:geo_project_registry, :synced, project: project) }
 
     context 'for a repository' do

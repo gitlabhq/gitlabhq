@@ -177,7 +177,7 @@ describe 'Edit Project Settings' do
         click_button "Save changes"
       end
 
-      expect(find(".sharing-permissions")).to have_selector(".project-feature-toggle.is-disabled", count: 2)
+      expect(find(".sharing-permissions")).to have_selector(".project-feature-toggle.is-disabled", count: 3)
     end
 
     it "shows empty features project homepage" do

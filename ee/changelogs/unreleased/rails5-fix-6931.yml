@@ -1,5 +1,0 @@
----
-title: Rails5 fix undefined method 'namespace_project_settings_repository_path'
-merge_request: 6581
-author: Jasper Maes
-type: fixed

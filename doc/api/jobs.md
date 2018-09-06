@@ -352,7 +352,7 @@ Example requests:
 - Using the `job_token` parameter (only inside `.gitlab-ci.yml`):
 
     ```
-    curl --location --header --form "job-token=$CI_JOB_TOKEN" "https://gitlab.example.com/api/v4/projects/1/jobs/8/artifacts"
+    curl --location --form "job-token=$CI_JOB_TOKEN" "https://gitlab.example.com/api/v4/projects/1/jobs/8/artifacts"
     ```
 
 Response:

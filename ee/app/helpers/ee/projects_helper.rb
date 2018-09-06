@@ -17,6 +17,32 @@ module EE
       super + %w(path_locks)
     end
 
+    override :get_project_nav_tabs
+    def get_project_nav_tabs(project, current_user)
+      nav_tabs = super
+
+      if ::Gitlab.config.packages.enabled && can?(current_user, :read_package, project)
+        nav_tabs << :packages
+      end
+
+      nav_tabs
+    end
+
+    override :project_permissions_settings
+    def project_permissions_settings(project)
+      super.merge(
+        packagesEnabled: !!project.packages_enabled
+      )
+    end
+
+    override :project_permissions_panel_data
+    def project_permissions_panel_data(project)
+      super.merge(
+        packagesAvailable: ::Gitlab.config.packages.enabled,
+        packagesHelpPath: help_page_path('user/project/maven_packages')
+      )
+    end
+
     override :default_url_to_repo
     def default_url_to_repo(project = @project)
       case default_clone_protocol

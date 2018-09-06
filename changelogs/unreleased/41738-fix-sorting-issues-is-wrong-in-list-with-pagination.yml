@@ -1,0 +1,5 @@
+---
+title: "Fix If-Check the result that a function was executed several times"
+merge_request: 20640
+author: Max Dicker
+type: fixed

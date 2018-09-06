@@ -5,6 +5,7 @@ module EE
   # and be prepended in the `Repository` model
   module Repository
     extend ActiveSupport::Concern
+    extend ::Gitlab::Utils::Override
 
     MIRROR_REMOTE = "upstream".freeze
 
@@ -68,6 +69,28 @@ module EE
       else
         false
       end
+    end
+
+    override :keep_around
+    def keep_around(*shas)
+      super
+    ensure
+      log_geo_updated_event
+    end
+
+    def log_geo_updated_event
+      return unless ::Gitlab::Geo.primary?
+
+      ::Geo::RepositoryUpdatedService.new(self).execute
+    end
+
+    def geo_updated_event_source
+      is_wiki ? Geo::RepositoryUpdatedEvent::WIKI : Geo::RepositoryUpdatedEvent::REPOSITORY
+    end
+
+    def code_owners_blob(ref: 'HEAD')
+      possible_code_owner_blobs = ::Gitlab::CodeOwners::FILE_PATHS.map { |path| [ref, path] }
+      blobs_at(possible_code_owner_blobs).compact.first
     end
   end
 end
