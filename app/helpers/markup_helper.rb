@@ -107,23 +107,23 @@ module MarkupHelper
 
   def markup(file_name, text, context = {})
     context[:project] ||= @project
-    context[:markdown_engine] ||= :redcarpet
+    context[:markdown_engine] ||= :redcarpet unless commonmark_for_repositories_enabled?
     html = context.delete(:rendered) || markup_unsafe(file_name, text, context)
     prepare_for_rendering(html, context)
   end
 
-  def render_wiki_content(wiki_page)
+  def render_wiki_content(wiki_page, context = {})
     text = wiki_page.content
     return '' unless text.present?
 
-    context = {
+    context.merge!(
       pipeline: :wiki,
       project: @project,
       project_wiki: @project_wiki,
       page_slug: wiki_page.slug,
-      issuable_state_filter_enabled: true,
-      markdown_engine: :redcarpet
-    }
+      issuable_state_filter_enabled: true
+    )
+    context[:markdown_engine] ||= :redcarpet unless commonmark_for_repositories_enabled?
 
     html =
       case wiki_page.format
@@ -176,6 +176,10 @@ module MarkupHelper
     else
       ''
     end
+  end
+
+  def commonmark_for_repositories_enabled?
+    Feature.enabled?(:commonmark_for_repositories, default_enabled: true)
   end
 
   private

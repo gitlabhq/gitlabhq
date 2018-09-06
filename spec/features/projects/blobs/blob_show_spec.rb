@@ -5,8 +5,8 @@ describe 'File blob', :js do
 
   let(:project) { create(:project, :public, :repository) }
 
-  def visit_blob(path, anchor: nil, ref: 'master')
-    visit project_blob_path(project, File.join(ref, path), anchor: anchor)
+  def visit_blob(path, anchor: nil, ref: 'master', legacy_render: nil)
+    visit project_blob_path(project, File.join(ref, path), anchor: anchor, legacy_render: legacy_render)
 
     wait_for_requests
   end
@@ -137,6 +137,52 @@ describe 'File blob', :js do
 
           # shows an enabled copy button
           expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')
+        end
+      end
+    end
+  end
+
+  context 'Markdown rendering' do
+    before do
+      project.add_maintainer(project.creator)
+
+      Files::CreateService.new(
+        project,
+        project.creator,
+        start_branch: 'master',
+        branch_name: 'master',
+        commit_message: "Add RedCarpet and CommonMark Markdown ",
+        file_path: 'files/commonmark/file.md',
+        file_content: "1. one\n  - sublist\n"
+      ).execute
+    end
+
+    context 'when rendering default markdown' do
+      before do
+        visit_blob('files/commonmark/file.md')
+
+        wait_for_requests
+      end
+
+      it 'renders using CommonMark' do
+        aggregate_failures do
+          expect(page).to have_content("sublist")
+          expect(page).not_to have_xpath("//ol//li//ul")
+        end
+      end
+    end
+
+    context 'when rendering legacy markdown' do
+      before do
+        visit_blob('files/commonmark/file.md', legacy_render: 1)
+
+        wait_for_requests
+      end
+
+      it 'renders using RedCarpet' do
+        aggregate_failures do
+          expect(page).to have_content("sublist")
+          expect(page).to have_xpath("//ol//li//ul")
         end
       end
     end
