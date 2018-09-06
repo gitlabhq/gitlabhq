@@ -40,6 +40,7 @@ module Clusters
         Gitlab::Kubernetes::Helm::InstallCommand.new(
           name: name,
           version: VERSION,
+          rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,
           files: files,
           repository: repository
