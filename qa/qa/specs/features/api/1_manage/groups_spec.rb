@@ -14,7 +14,6 @@ module QA
     let(:group_path) { "api-group-path-#{random_string}" }
 
     it 'user creates, updates and deletes a group' do
-
       @api_client = Runtime::API::Client.new(:gitlab, personal_access_token: @personal_access_token)
 
       groups_request = Runtime::API::Request.new(@api_client, "/groups")
@@ -34,7 +33,7 @@ module QA
           request_access_enabled: false,
           full_name: group_name,
           full_path: group_path)
-        )
+      )
 
       get groups_request.url
       expect_status(200)
