@@ -16,10 +16,8 @@
   - if has_multiple_clusters?(@project)
     .form-group
       %h5= s_('ClusterIntegration|Environment scope')
-      %p
-        = s_("ClusterIntegration|Choose which of your project's environments will use this Kubernetes cluster.")
-        = link_to s_("ClusterIntegration|Learn more about environments"), help_page_path('ci/environments')
-      = field.text_field :environment_scope, class: 'form-control js-select-on-focus', placeholder: s_('ClusterIntegration|Environment scope')
+      = field.text_field :environment_scope, class: 'col-md-6 form-control js-select-on-focus', placeholder: s_('ClusterIntegration|Environment scope')
+      .form-text.text-muted= s_("ClusterIntegration|Choose which of your environments will use this cluster.")
 
   - if can?(current_user, :update_cluster, @cluster)
     .form-group

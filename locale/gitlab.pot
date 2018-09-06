@@ -1616,7 +1616,7 @@ msgstr ""
 msgid "ClusterIntegration|Certificate Authority bundle (PEM format)"
 msgstr ""
 
-msgid "ClusterIntegration|Choose which of your project's environments will use this Kubernetes cluster."
+msgid "ClusterIntegration|Choose which of your environments will use this cluster."
 msgstr ""
 
 msgid "ClusterIntegration|Copy API URL"
@@ -1779,9 +1779,6 @@ msgid "ClusterIntegration|Learn more about %{help_link_start}Kubernetes%{help_li
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about %{help_link_start}zones%{help_link_end}."
-msgstr ""
-
-msgid "ClusterIntegration|Learn more about environments"
 msgstr ""
 
 msgid "ClusterIntegration|Machine type"
