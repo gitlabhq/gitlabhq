@@ -757,6 +757,8 @@ jest:
     - date
     - bundle exec rake karma:fixtures
     - date
+    - yarn jest-self-check
+    - date
     - yarn jest --ci --coverage
   artifacts:
     name: coverage-frontend

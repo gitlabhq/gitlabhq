@@ -15,7 +15,8 @@
     "prettier-all": "node ./scripts/frontend/prettier.js check-all",
     "prettier-all-save": "node ./scripts/frontend/prettier.js save-all",
     "webpack": "webpack --config config/webpack.config.js",
-    "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js"
+    "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js",
+    "jest-self-check": "JEST_SELF_CHECK=1 jest"
   },
   "dependencies": {
     "@gitlab-org/gitlab-svgs": "^1.29.0",
