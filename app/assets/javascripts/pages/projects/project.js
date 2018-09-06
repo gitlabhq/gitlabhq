@@ -37,14 +37,11 @@ export default class Project {
         $label.text(activeText);
       });
 
-<<<<<<< HEAD
       $('#modal-geo-info').data({
         cloneUrlSecondary: $this.attr('href'),
         cloneUrlPrimary: $this.data('primaryUrl') || '',
       });
 
-=======
->>>>>>> upstream/master
       $projectCloneField.val(url);
       $('.js-git-empty .js-clone').text(url);
     });
