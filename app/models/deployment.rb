@@ -3,6 +3,7 @@
 class Deployment < ActiveRecord::Base
   include AtomicInternalId
   include IidRoutes
+  include EnumWithNil
 
   belongs_to :project, required: true
   belongs_to :environment, required: true
@@ -18,6 +19,16 @@ class Deployment < ActiveRecord::Base
 
   after_create :create_ref
   after_create :invalidate_cache
+
+  enum_with_nil :track {
+    unknown_track: nil,
+    stable: 1,
+    rollout: 2
+  }
+
+  def is_incremental_rollout?
+    rollout? && rollout.to_i < 100
+  end
 
   def commit
     project.commit(sha)

@@ -42,6 +42,8 @@ class CreateDeploymentService
       sha: job.sha,
       user: job.user,
       deployable: job,
+      rollout: rollout,
+      track: track,
       on_stop: on_stop)
   end
 
@@ -70,5 +72,17 @@ class CreateDeploymentService
 
   def action
     environment_options[:action] || 'start'
+  end
+
+  def track
+    if rollout.to_i < 100
+      :stable
+    else
+      :rollout
+    end
+  end
+
+  def rollout
+    environment_options[:rollout]
   end
 end

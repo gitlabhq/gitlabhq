@@ -8,7 +8,7 @@ module Gitlab
         class Environment < Node
           include Validatable
 
-          ALLOWED_KEYS = %i[name url action on_stop].freeze
+          ALLOWED_KEYS = %i[name rollout url action on_stop].freeze
 
           validations do
             validate do
@@ -42,6 +42,12 @@ module Gitlab
                         allow_nil: true
 
               validates :on_stop, type: String, allow_nil: true
+
+              validates :rollout,
+                        numericality: { only_integer: true,
+                                        greater_than: 0,
+                                        less_than_or_equal_to: 100 },
+                        allow_nil: true
             end
           end
 
