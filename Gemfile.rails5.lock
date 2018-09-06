@@ -1035,7 +1035,7 @@ DEPENDENCIES
   bundler-audit (~> 0.5.0)
   capybara (~> 2.15)
   capybara-screenshot (~> 1.0.0)
-  carrierwave (~> 1.2)
+  carrierwave (= 1.2.3)
   charlock_holmes (~> 0.7.5)
   chronic (~> 0.10.2)
   chronic_duration (~> 0.10.6)

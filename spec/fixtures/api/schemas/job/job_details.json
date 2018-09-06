@@ -2,6 +2,7 @@
   "allOf": [{ "$ref": "job.json" }],
   "description": "An extension of job.json with more detailed information",
   "properties": {
-    "artifact": { "$ref": "artifact.json" }
+    "artifact": { "$ref": "artifact.json" },
+    "terminal_path": { "type": "string" }
   }
 }

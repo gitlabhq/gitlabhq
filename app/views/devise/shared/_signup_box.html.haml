@@ -4,24 +4,24 @@
       .devise-errors
         = devise_error_messages!
       .form-group
-        = f.label :name, 'Full name'
+        = f.label :name, 'Full name', class: 'label-bold'
         = f.text_field :name, class: "form-control top", required: true, title: "This field is required."
       .username.form-group
-        = f.label :username
+        = f.label :username, class: 'label-bold'
         = f.text_field :username, class: "form-control middle", pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS, required: true, title: 'Please create a username with only alphanumeric characters.'
         %p.validation-error.hide Username is already taken.
         %p.validation-success.hide Username is available.
         %p.validation-pending.hide Checking username availability...
       .form-group
-        = f.label :email
+        = f.label :email, class: 'label-bold'
         = f.email_field :email, class: "form-control middle", required: true, title: "Please provide a valid email address."
       .form-group
-        = f.label :email_confirmation
+        = f.label :email_confirmation, class: 'label-bold'
         = f.email_field :email_confirmation, class: "form-control middle", required: true, title: "Please retype the email address."
       .form-group.append-bottom-20#password-strength
-        = f.label :password
+        = f.label :password, class: 'label-bold'
         = f.password_field :password, class: "form-control bottom", required: true, pattern: ".{#{@minimum_password_length},}", title: "Minimum length is #{@minimum_password_length} characters."
-        %p.gl-field-hint Minimum length is #{@minimum_password_length} characters
+        %p.gl-field-hint.text-secondary Minimum length is #{@minimum_password_length} characters
       - if Gitlab::CurrentSettings.current_application_settings.enforce_terms?
         .form-group
           = check_box_tag :terms_opt_in, '1', false, required: true
@@ -35,8 +35,3 @@
         = recaptcha_tags
       .submit-container
         = f.submit "Register", class: "btn-register btn"
-.clearfix.submit-container
-  %p
-    %span.light Didn't receive a confirmation email?
-    = succeed '.' do
-      = link_to "Request a new one", new_confirmation_path(:user)

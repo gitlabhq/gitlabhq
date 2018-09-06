@@ -158,7 +158,7 @@ module ObjectStorage
     end
 
     def upload_options
-      { 'Content-Type' => 'application/octet-stream' }
+      {}
     end
 
     def connection
