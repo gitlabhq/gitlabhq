@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-# Blob is a Rails-specific wrapper around Gitlab::Git::Blob objects
+# Blob is a Rails-specific wrapper around Gitlab::Git::Blob, SnippetBlob and Ci::ArtifactBlob
 class Blob < SimpleDelegator
+  include Presentable
+
   CACHE_TIME = 60 # Cache raw blobs referred to by a (mutable) ref for 1 minute
   CACHE_TIME_IMMUTABLE = 3600 # Cache blobs referred to by an immutable reference for 1 hour
 

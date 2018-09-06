@@ -4,6 +4,7 @@ module Gitlab
   class SearchResults
     class FoundBlob
       include EncodingHelper
+      include Presentable
 
       attr_reader :id, :filename, :basename, :ref, :startline, :data, :project_id
 
@@ -30,6 +31,10 @@ module Gitlab
       # not triggering lookup can avoid n+1 queries.
       def language_from_gitattributes
         nil
+      end
+
+      def present
+        super(presenter_class: BlobPresenter)
       end
     end
 
