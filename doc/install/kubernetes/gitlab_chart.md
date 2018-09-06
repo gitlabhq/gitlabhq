@@ -52,7 +52,7 @@ In order to deploy GitLab on Kubernetes, the following are required:
 To deploy GitLab, the following three parameters are required:
 
 - `global.hosts.domain`: the [base domain](preparation/networking.md) of the
-  wildcard host entry. For example, `exampe.com` if the wild card entry is
+  wildcard host entry. For example, `example.com` if the wild card entry is
   `*.example.com`.
 - `global.hosts.externalIP`: the [external IP](preparation/networking.md) which
   the wildcard DNS resolves to.
@@ -123,6 +123,8 @@ To deploy the Community Edition, include these options in your `helm install` co
 --set gitlab.migrations.image.repository=registry.gitlab.com/gitlab-org/build/cng/gitlab-rails-ce
 --set gitlab.sidekiq.image.repository=registry.gitlab.com/gitlab-org/build/cng/gitlab-sidekiq-ce
 --set gitlab.unicorn.image.repository=registry.gitlab.com/gitlab-org/build/cng/gitlab-unicorn-ce
+--set gitlab.unicorn.workhorse.image=registry.gitlab.com/gitlab-org/build/cng/gitlab-workhorse-ce
+--set gitlab.task-runner.image.repository=registry.gitlab.com/gitlab-org/build/cng/gitlab-task-runner-ce
 ```
 
 ## Updating GitLab using the Helm Chart
@@ -131,6 +133,7 @@ Once your GitLab Chart is installed, configuration changes and chart updates
 should be done using `helm upgrade`:
 
 ```sh
+helm repo update
 helm upgrade --reuse-values gitlab gitlab/gitlab
 ```
 

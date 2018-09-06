@@ -171,7 +171,7 @@ stages:
     - '[[ -f $FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${FLAKY_RSPEC_REPORT_PATH}'
     - '[[ -f $NEW_FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${NEW_FLAKY_RSPEC_REPORT_PATH}'
     - scripts/gitaly-test-spawn
-    - knapsack rspec "--color --format documentation"
+    - knapsack rspec "--color --format documentation --format RspecJunitFormatter --out junit_rspec.xml"
   artifacts:
     expire_in: 31d
     when: always
@@ -180,6 +180,8 @@ stages:
       - knapsack/
       - rspec_flaky/
       - tmp/capybara/
+    reports:
+      junit: junit_rspec.xml
 
 .rspec-metadata-pg: &rspec-metadata-pg
   <<: *rspec-metadata
@@ -311,10 +313,13 @@ review-docs-cleanup:
   environment:
     name: review-docs/$CI_COMMIT_REF_SLUG
     action: stop
-  when: manual
   script:
     - gem install gitlab --no-ri --no-rdoc
     - ./$SCRIPT_NAME cleanup
+  when: manual
+  only:
+    - branches@gitlab-org/gitlab-ce
+    - branches@gitlab-org/gitlab-ee
 
 ##
 # Trigger a docker image build in CNG (Cloud Native GitLab) repository

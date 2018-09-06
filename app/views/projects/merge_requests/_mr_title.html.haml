@@ -39,4 +39,4 @@
       - if can_update_merge_request
         = link_to 'Edit', edit_project_merge_request_path(@project, @merge_request), class: "d-none d-sm-none d-md-block btn btn-grouped js-issuable-edit"
 
-      = render 'shared/issuable/close_reopen_button', issuable: @merge_request, can_update: can_update_merge_request
+      = render 'shared/issuable/close_reopen_button', issuable: @merge_request, can_update: can_update_merge_request, can_reopen: can_update_merge_request

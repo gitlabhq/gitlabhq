@@ -1,0 +1,5 @@
+---
+title: Disable Web IDE button if user is not allowed to push the source branch.
+merge_request: 21288
+author:
+type: added

@@ -403,6 +403,7 @@ describe('common_utils', () => {
     afterEach(() => {
       document.body.removeChild(document.getElementById('favicon'));
     });
+
     it('should set page favicon to provided favicon', () => {
       const faviconPath = '//custom_favicon';
       commonUtils.setFavicon(faviconPath);
@@ -479,17 +480,14 @@ describe('common_utils', () => {
     });
 
     it('should reset favicon in case of error', (done) => {
-      mock.onGet(BUILD_URL).networkError();
+      mock.onGet(BUILD_URL).replyOnce(500);
 
       commonUtils.setCiStatusFavicon(BUILD_URL)
-        .then(() => {
+        .catch(() => {
           const favicon = document.getElementById('favicon');
           expect(favicon.getAttribute('href')).toEqual(faviconDataUrl);
           done();
-        })
-        // Error is already caught in catch() block of setCiStatusFavicon,
-        // It won't throw another error for us to catch
-        .catch(done.fail);
+        });
     });
 
     it('should set page favicon to CI status favicon based on provided status', (done) => {

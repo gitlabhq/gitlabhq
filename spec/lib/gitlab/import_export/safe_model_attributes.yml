@@ -416,6 +416,7 @@ ProjectHook:
 - type
 - service_id
 - push_events
+- push_events_branch_filter
 - issues_events
 - merge_requests_events
 - tag_push_events

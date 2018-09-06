@@ -19,8 +19,13 @@
 
 - if can?(current_user, :download_code, @project)
   %nav.project-stats{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
-    = render 'stat_anchor_list', anchors: @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
-    = render 'stat_anchor_list', anchors: @project.statistics_buttons(show_auto_devops_callout: show_auto_devops_callout)
+    .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
+      .fade-left= icon('angle-left')
+      .fade-right= icon('angle-right')
+      .nav-links.scrolling-tabs
+        = render 'stat_anchor_list', anchors: @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
+        = render 'stat_anchor_list', anchors: @project.statistics_buttons(show_auto_devops_callout: show_auto_devops_callout)
+
     = repository_languages_bar(@project.repository_languages)
 
 %div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }

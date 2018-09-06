@@ -1,0 +1,5 @@
+---
+title: Fix attachments not displaying inline with Google Cloud Storage
+merge_request: 21265
+author:
+type: fixed

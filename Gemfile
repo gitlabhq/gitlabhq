@@ -68,7 +68,7 @@ gem 'u2f', '~> 0.2.1'
 gem 'validates_hostname', '~> 1.0.6'
 
 # Browser detection
-gem 'browser', '~> 2.2'
+gem 'browser', '~> 2.5'
 
 # GPG
 gem 'gpgme'
@@ -107,7 +107,9 @@ gem 'kaminari', '~> 1.0'
 gem 'hamlit', '~> 2.8.8'
 
 # Files attachments
-gem 'carrierwave', '~> 1.2'
+# Locked until https://github.com/carrierwaveuploader/carrierwave/pull/2332/files is merged.
+# config/initializers/carrierwave_patch.rb can be removed once that change is released.
+gem 'carrierwave', '= 1.2.3'
 gem 'mini_magick'
 
 # Drag and Drop UI
@@ -363,7 +365,6 @@ group :development, :test do
   gem 'scss_lint', '~> 0.56.0', require: false
   gem 'haml_lint', '~> 0.26.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
-  gem 'flay', '~> 2.10.0', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
 
   gem 'benchmark-ips', '~> 2.3.0', require: false
@@ -390,6 +391,7 @@ group :test do
   gem 'sham_rack', '~> 1.3.6'
   gem 'concurrent-ruby', '~> 1.0.5'
   gem 'test-prof', '~> 0.2.5'
+  gem 'rspec_junit_formatter'
 end
 
 gem 'octokit', '~> 4.9'

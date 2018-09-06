@@ -18,7 +18,29 @@
     "tooltip": { "type": "string" },
     "has_details": { "type": "boolean" },
     "details_path": { "type": "string" },
-    "favicon": { "type": "string" }
+    "favicon": { "type": "string" },
+    "action": {
+      "type": "object",
+      "required": [
+        "icon",
+        "title",
+        "path",
+        "method"
+      ],
+      "properties": {
+        "icon": {
+          "type": "string",
+          "enum": [
+            "retry",
+            "play",
+            "cancel"
+          ]
+        },
+        "title": { "type": "string" },
+        "path": { "type": "string" },
+        "method": { "$ref": "http_method.json" }
+      }
+    }
   },
   "additionalProperties": false
 }

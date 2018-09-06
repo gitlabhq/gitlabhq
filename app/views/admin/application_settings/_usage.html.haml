@@ -4,7 +4,7 @@
   = hidden_field(:redirect_path, metrics_and_profiling_admin_application_settings_path)
 
   %fieldset
-    .form-group
+    .form-group.mb-2
       .form-check
         = f.check_box :version_check_enabled, class: 'form-check-input'
         = f.label :version_check_enabled, class: 'form-check-label' do
@@ -18,23 +18,26 @@
       .form-check
         = f.check_box :usage_ping_enabled, disabled: !can_be_configured, class: 'form-check-input'
         = f.label :usage_ping_enabled, class: 'form-check-label' do
-          Enable usage ping
+          = _('Enable usage ping')
         .form-text.text-muted
           - if can_be_configured
-            To help improve GitLab and its user experience, GitLab will
-            periodically collect usage information.
-            = link_to 'Learn more', help_page_path("user/admin_area/settings/usage_statistics", anchor: "usage-ping")
-            about what information is shared with GitLab Inc. Visit
-            = link_to _('Cohorts'), instance_statistics_cohorts_path(anchor: 'usage-ping')
-            to see the JSON payload sent.
+            %p.mb-2= _('To help improve GitLab and its user experience, GitLab will periodically collect usage information.')
+
+            - usage_ping_path = help_page_path('user/admin_area/settings/usage_statistics', anchor: 'usage-ping')
+            - usage_ping_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: usage_ping_path }
+            %p.mb-2= s_('%{usage_ping_link_start}Learn more%{usage_ping_link_end} about what information is shared with GitLab Inc.').html_safe % { usage_ping_link_start: usage_ping_link_start, usage_ping_link_end: '</a>'.html_safe }
+
+            %button.btn.js-usage-ping-payload-trigger{ type: 'button' }
+              .js-spinner.d-none= icon('spinner spin')
+              .js-text.d-inline= _('Preview payload')
+            %pre.usage-data.js-usage-ping-payload.js-syntax-highlight.code.highlight.mt-2.d-none{ data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }
           - else
-            The usage ping is disabled, and cannot be configured through this
-            form. For more information, see the documentation on
-            = succeed '.' do
-              = link_to 'deactivating the usage ping', help_page_path('user/admin_area/settings/usage_statistics', anchor: 'deactivate-the-usage-ping')
-    .form-group
+            = _('The usage ping is disabled, and cannot be configured through this form.')
+            - deactivating_usage_ping_path = help_page_path('user/admin_area/settings/usage_statistics', anchor: 'deactivate-the-usage-ping')
+            - deactivating_usage_ping_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: deactivating_usage_ping_path }
+            = s_('For more information, see the documentation on %{deactivating_usage_ping_link_start}deactivating the usage ping%{deactivating_usage_ping_link_end}.').html_safe % { deactivating_usage_ping_link_start: deactivating_usage_ping_link_start, deactivating_usage_ping_link_end: '</a>'.html_safe }
+    .form-group.mt-3
       = f.label :instance_statistics_visibility_private, _('Instance Statistics visibility')
       = f.select :instance_statistics_visibility_private, options_for_select({_('All users') => false, _('Only admins') => true}, Gitlab::CurrentSettings.instance_statistics_visibility_private?), {}, class: 'form-control'
 
   = f.submit 'Save changes', class: "btn btn-success"
-

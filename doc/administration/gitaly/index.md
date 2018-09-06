@@ -149,7 +149,7 @@ listen_addr = '0.0.0.0:8075'
 [auth]
 token = 'abc123secret'
 
-[[storage]
+[[storage]]
 name = 'default'
 path = '/mnt/gitlab/default/repositories'
 

@@ -342,6 +342,7 @@ ActiveRecord::Schema.define(version: 20180826111825) do
   add_index "ci_builds", ["commit_id", "status", "type"], name: "index_ci_builds_on_commit_id_and_status_and_type", using: :btree
   add_index "ci_builds", ["commit_id", "type", "name", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_name_and_ref", using: :btree
   add_index "ci_builds", ["commit_id", "type", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_ref", using: :btree
+  add_index "ci_builds", ["id"], name: "partial_index_ci_builds_on_id_with_legacy_artifacts", where: "(artifacts_file <> ''::text)", using: :btree
   add_index "ci_builds", ["project_id", "id"], name: "index_ci_builds_on_project_id_and_id", using: :btree
   add_index "ci_builds", ["protected"], name: "index_ci_builds_on_protected", using: :btree
   add_index "ci_builds", ["runner_id"], name: "index_ci_builds_on_runner_id", using: :btree
@@ -397,6 +398,7 @@ ActiveRecord::Schema.define(version: 20180826111825) do
     t.string "file"
     t.binary "file_sha256"
     t.integer "file_format", limit: 2
+    t.integer "file_location", limit: 2
   end
 
   add_index "ci_job_artifacts", ["expire_at", "job_id"], name: "index_ci_job_artifacts_on_expire_at_and_job_id", using: :btree
@@ -586,6 +588,7 @@ ActiveRecord::Schema.define(version: 20180826111825) do
     t.string "encrypted_password_iv"
     t.text "encrypted_token"
     t.string "encrypted_token_iv"
+    t.integer "authorization_type", limit: 2
   end
 
   add_index "cluster_platforms_kubernetes", ["cluster_id"], name: "index_cluster_platforms_kubernetes_on_cluster_id", unique: true, using: :btree
@@ -2243,6 +2246,7 @@ ActiveRecord::Schema.define(version: 20180826111825) do
     t.boolean "repository_update_events", default: false, null: false
     t.boolean "job_events", default: false, null: false
     t.boolean "confidential_note_events"
+    t.text "push_events_branch_filter"
   end
 
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
