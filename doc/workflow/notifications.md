@@ -77,10 +77,8 @@ In most of the below cases, the notification will be sent to:
   - the author and assignee of the issue/merge request
   - authors of comments on the issue/merge request
   - anyone mentioned by `@username` in the issue/merge request title or description
-  - anyone mentioned by `@username` in any of the comments on the issue/merge request
-
-    ...with notification level "Participating" or higher
-
+  - anyone mentioned by `@username` in any of the comments on the issue/merge request  
+     ...with notification level "Participating" or higher
 - Watchers: users with notification level "Watch"
 - Subscribers: anyone who manually subscribed to the issue/merge request
 - Custom: Users with notification level "custom" who turned on notifications for any of the events present in the table below

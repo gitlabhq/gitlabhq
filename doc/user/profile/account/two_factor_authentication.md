@@ -59,8 +59,8 @@ of recovery codes.
 ### Enable 2FA via U2F device
 
 > **Notes:**
-- GitLab officially only supports [Yubikey] U2F devices.
-- Support for U2F devices was added in GitLab 8.8.
+> - GitLab officially only supports [Yubikey] U2F devices.
+> - Support for U2F devices was added in GitLab 8.8.
 
 **In GitLab:**
 
@@ -145,7 +145,7 @@ codes. If you saved these codes, you can use one of them to sign in.
 To use a recovery code, enter your username/email and password on the GitLab
 sign-in page. When prompted for a two-factor code, enter the recovery code.
 
->**Note:**
+> **Note:**
 Once you use a recovery code, you cannot re-use it. You can still use the other
 recovery codes you saved.
 
@@ -187,7 +187,7 @@ a new set of recovery codes with SSH.
    When prompted for a two-factor code, enter one of the recovery codes obtained
    from the command-line output.
 
->**Note:**
+> **Note:**
 After signing in, visit your **Profile settings > Account**  immediately to set
 up two-factor authentication with a new device.
 

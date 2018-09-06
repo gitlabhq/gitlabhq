@@ -50,16 +50,16 @@ that are in common for all providers that we need to consider.
   be blocked by default and will have to be unblocked by an administrator before
   they are able to sign in.
 
->**Note:**
-If you set `block_auto_created_users` to `false`, make sure to only
-define providers under `allow_single_sign_on` that you are able to control, like
-SAML, Shibboleth, Crowd or Google, or set it to `false` otherwise any user on
-the Internet will be able to successfully sign in to your GitLab without
-administrative approval.
-
->**Note:**
-`auto_link_ldap_user` requires the `uid` of the user to be the same in both LDAP
-and the OmniAuth provider.
+> **Note:**
+> If you set `block_auto_created_users` to `false`, make sure to only
+> define providers under `allow_single_sign_on` that you are able to control, like
+> SAML, Shibboleth, Crowd or Google, or set it to `false` otherwise any user on
+> the Internet will be able to successfully sign in to your GitLab without
+> administrative approval.
+>
+> **Note:**
+> `auto_link_ldap_user` requires the `uid` of the user to be the same in both LDAP
+> and the OmniAuth provider.
 
 To change these settings:
 
@@ -233,15 +233,15 @@ You can enable profile syncing from selected OmniAuth providers and for all or f
 
 When authenticating using LDAP, the user's email is always synced.
 
- ```ruby
-   gitlab_rails['sync_profile_from_provider'] = ['twitter', 'google_oauth2']
-   gitlab_rails['sync_profile_attributes'] = ['name', 'email', 'location']
+```ruby
+  gitlab_rails['sync_profile_from_provider'] = ['twitter', 'google_oauth2']
+  gitlab_rails['sync_profile_attributes'] = ['name', 'email', 'location']
  ```
 
- **For installations from source**
+**For installations from source**
 
- ```yaml
-   omniauth:
-     sync_profile_from_provider: ['twitter', 'google_oauth2']
-     sync_profile_attributes: ['email', 'location']
- ```
+```yaml
+  omniauth:
+    sync_profile_from_provider: ['twitter', 'google_oauth2']
+    sync_profile_attributes: ['email', 'location']
+```

@@ -5,36 +5,36 @@
 GitLab allows you to define multiple repository storage paths to distribute the
 storage load between several mount points.
 
->**Notes:**
+> **Notes:**
 >
-- You must have at least one storage path called `default`.
-- The paths are defined in key-value pairs. The key is an arbitrary name you
-  can pick to name the file path.
-- The target directories and any of its subpaths must not be a symlink.
+> - You must have at least one storage path called `default`.
+> - The paths are defined in key-value pairs. The key is an arbitrary name you
+>   can pick to name the file path.
+> - The target directories and any of its subpaths must not be a symlink.
 
 ## Configure GitLab
 
->**Warning:**
-In order for [backups] to work correctly, the storage path must **not** be a
-mount point and the GitLab user should have correct permissions for the parent
-directory of the path. In Omnibus GitLab this is taken care of automatically,
-but for source installations you should be extra careful.
+> **Warning:**
+> In order for [backups] to work correctly, the storage path must **not** be a
+> mount point and the GitLab user should have correct permissions for the parent
+> directory of the path. In Omnibus GitLab this is taken care of automatically,
+> but for source installations you should be extra careful.
 >
-The thing is that for compatibility reasons `gitlab.yml` has a different
-structure than Omnibus. In `gitlab.yml` you indicate the path for the
-repositories, for example `/home/git/repositories`, while in Omnibus you
-indicate `git_data_dirs`, which for the example above would be `/home/git`.
-Then, Omnibus will create a `repositories` directory under that path to use with
-`gitlab.yml`.
+> The thing is that for compatibility reasons `gitlab.yml` has a different
+> structure than Omnibus. In `gitlab.yml` you indicate the path for the
+> repositories, for example `/home/git/repositories`, while in Omnibus you
+> indicate `git_data_dirs`, which for the example above would be `/home/git`.
+> Then, Omnibus will create a `repositories` directory under that path to use with
+> `gitlab.yml`.
 >
-This little detail matters because while restoring a backup, the current
-contents of  `/home/git/repositories` [are moved to][raketask] `/home/git/repositories.old`,
-so if `/home/git/repositories` is the mount point, then `mv` would be moving
-things between mount points, and bad things could happen. Ideally,
-`/home/git` would be the mount point, so then things would be moving within the
-same mount point. This is guaranteed with Omnibus installations (because they
-don't specify the full repository path but the parent path), but not for source
-installations.
+> This little detail matters because while restoring a backup, the current
+> contents of  `/home/git/repositories` [are moved to][raketask] `/home/git/repositories.old`,
+> so if `/home/git/repositories` is the mount point, then `mv` would be moving
+> things between mount points, and bad things could happen. Ideally,
+> `/home/git` would be the mount point, so then things would be moving within the
+> same mount point. This is guaranteed with Omnibus installations (because they
+> don't specify the full repository path but the parent path), but not for source
+> installations.
 
 ---
 
