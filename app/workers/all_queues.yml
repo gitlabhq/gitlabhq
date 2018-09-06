@@ -1,4 +1,6 @@
 ---
+- auto_devops:auto_devops_disable
+
 - cronjob:admin_email
 - cronjob:expire_build_artifacts
 - cronjob:gitlab_usage_ping

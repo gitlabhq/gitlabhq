@@ -1,0 +1,20 @@
+Auto DevOps pipeline was disabled for <%= @project.name %>
+
+The Auto DevOps pipeline failed for pipeline <%= @pipeline.iid %> (<%= pipeline_url(@pipeline) %>) and has been disabled for <%= @project.name %>. In order to use the Auto DevOps pipeline with your project, please review the currently supported languagues (https://docs.gitlab.com/ee/topics/autodevops/#currently-supported-languages), adjust your project accordingly, and turn on the Auto DevOps pipeline within your CI/CD project settings (<%= project_settings_ci_cd_url(@project) %>).
+
+<% if @pipeline.user -%>
+  Pipeline #<%= @pipeline.id %> ( <%= pipeline_url(@pipeline) %> ) triggered by <%= @pipeline.user.name %> ( <%= user_url(@pipeline.user) %> )
+<% else -%>
+  Pipeline #<%= @pipeline.id %> ( <%= pipeline_url(@pipeline) %> ) triggered by API
+<% end -%>
+<% failed = @pipeline.statuses.latest.failed -%>
+had <%= failed.size %> failed <%= 'build'.pluralize(failed.size) %>.
+
+<% failed.each do |build| -%>
+  <%= render "notify/links/#{build.to_partial_path}", pipeline: @pipeline, build: build %>
+  Stage: <%= build.stage %>
+  Name: <%= build.name %>
+  <% if build.has_trace? -%>
+    Trace: <%= build.trace.raw(last_lines: 10) %>
+  <% end -%>
+<% end -%>
