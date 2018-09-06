@@ -73,6 +73,13 @@ export default class Project {
       $alert.remove();
       e.preventDefault();
     });
+    $('.hide-auto-devops-implicitly-enabled-banner').on('click', function(e) {
+      const projectId = $(this).data('project-id');
+      const cookieKey = `hide_auto_devops_implicitly_enabled_banner_${projectId}`;
+      Cookies.set(cookieKey, 'false');
+      $(this).parents('.auto-devops-implicitly-enabled-banner').remove();
+      return e.preventDefault();
+    });
     Project.projectSelectDropdown();
   }
 
