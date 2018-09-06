@@ -4,4 +4,6 @@
       - blob.data.each_line.each_with_index do |_, index|
         %span.diff-line-num= index + 1
   .blob-content{ data: { blob_id: blob.id } }
-    = highlight(blob.path, blob.data, repository: nil, plain: blob.no_highlighting?)
+    %pre.code.highlight
+      %code
+        = blob.present.highlight
