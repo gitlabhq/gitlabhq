@@ -41,7 +41,7 @@ describe EventCollection do
     end
 
     it 'allows filtering of events using an EventFilter' do
-      filter = EventFilter.new(EventFilter.issue)
+      filter = EventFilter.new(EventFilter::ISSUE)
       events = described_class.new(projects, filter: filter).to_a
 
       expect(events.length).to eq(1)
