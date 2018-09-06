@@ -5495,7 +5495,7 @@ msgstr ""
 msgid "TagsPage|Tags"
 msgstr ""
 
-msgid "TagsPage|Tags give the ability to mark specific points in history as being important"
+msgid "TagsPage|Tags provide the ability to mark specific revisions of a repository"
 msgstr ""
 
 msgid "TagsPage|This tag has no release notes."

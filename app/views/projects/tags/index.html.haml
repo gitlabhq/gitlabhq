@@ -1,13 +1,14 @@
+- @content_class = "limit-container-width" unless fluid_layout
 - @no_container = true
 - @sort ||= sort_value_recently_updated
 - page_title s_('TagsPage|Tags')
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_tags_url(@project, rss_url_options), title: "#{@project.name} tags")
 
-.flex-list{ class: container_class }
+.flex-list{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
   .top-area.adjust
     .nav-text.row-main-content
-      = s_('TagsPage|Tags give the ability to mark specific points in history as being important')
+      = s_('TagsPage|Tags provide the ability to mark specific revisions of a repository')
 
     .nav-controls.row-fixed-content
       = form_tag(filter_tags_path, method: :get) do
