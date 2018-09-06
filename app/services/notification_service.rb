@@ -411,6 +411,12 @@ class NotificationService
     end
   end
 
+  def autodevops_disabled(pipeline, recipients)
+    recipients.each do |recipient|
+      mailer.autodevops_disabled_email(pipeline, recipient).deliver_later
+    end
+  end
+
   def pages_domain_verification_succeeded(domain)
     recipients_for_pages_domain(domain).each do |user|
       mailer.pages_domain_verification_succeeded_email(domain, user).deliver_later
