@@ -7,43 +7,65 @@ describe QA::Specs::Runner do
     end
 
     it 'excludes the orchestrated tag by default' do
-      expect(RSpec::Core::Runner).to receive(:run)
-        .with(['--tag', '~orchestrated', File.expand_path('../../qa/specs/features', __dir__)], $stderr, $stdout)
-        .and_return(0)
+      expect_rspec_runner_arguments(['--tag', '~orchestrated', *described_class::DEFAULT_TEST_PATH_ARGS])
 
       subject.perform
     end
 
     context 'when tty is set' do
-      subject do
-        described_class.new.tap do |runner|
-          runner.tty = true
-        end
-      end
+      subject { described_class.new.tap { |runner| runner.tty = true } }
 
       it 'sets the `--tty` flag' do
-        expect(RSpec::Core::Runner).to receive(:run)
-          .with(['--tty', '--tag', '~orchestrated', File.expand_path('../../qa/specs/features', __dir__)], $stderr, $stdout)
-          .and_return(0)
+        expect_rspec_runner_arguments(['--tty', '--tag', '~orchestrated', *described_class::DEFAULT_TEST_PATH_ARGS])
 
         subject.perform
       end
     end
 
     context 'when tags are set' do
-      subject do
-        described_class.new.tap do |runner|
-          runner.tags = %i[orchestrated github]
-        end
-      end
+      subject { described_class.new.tap { |runner| runner.tags = %i[orchestrated github] } }
 
       it 'focuses on the given tags' do
-        expect(RSpec::Core::Runner).to receive(:run)
-          .with(['--tag', 'orchestrated', '--tag', 'github', File.expand_path('../../qa/specs/features', __dir__)], $stderr, $stdout)
-          .and_return(0)
+        expect_rspec_runner_arguments(['--tag', 'orchestrated', '--tag', 'github', *described_class::DEFAULT_TEST_PATH_ARGS])
 
         subject.perform
       end
+    end
+
+    context 'when "--tag smoke" is set as options' do
+      subject { described_class.new.tap { |runner| runner.options = %w[--tag smoke] } }
+
+      it 'focuses on the given tag without excluded the orchestrated tag' do
+        expect_rspec_runner_arguments(['--tag', 'smoke', *described_class::DEFAULT_TEST_PATH_ARGS])
+
+        subject.perform
+      end
+    end
+
+    context 'when "qa/specs/features/foo" is set as options' do
+      subject { described_class.new.tap { |runner| runner.options = %w[qa/specs/features/foo] } }
+
+      it 'passes the given tests path and excludes the orchestrated tag' do
+        expect_rspec_runner_arguments(['--tag', '~orchestrated', 'qa/specs/features/foo'])
+
+        subject.perform
+      end
+    end
+
+    context 'when "-- qa/specs/features/foo" is set as options' do
+      subject { described_class.new.tap { |runner| runner.options = %w[-- qa/specs/features/foo] } }
+
+      it 'passes the given tests path and excludes the orchestrated tag' do
+        expect_rspec_runner_arguments(['--tag', '~orchestrated', '--', 'qa/specs/features/foo'])
+
+        subject.perform
+      end
+    end
+
+    def expect_rspec_runner_arguments(arguments)
+      expect(RSpec::Core::Runner).to receive(:run)
+        .with(arguments, $stderr, $stdout)
+        .and_return(0)
     end
   end
 end
