@@ -1,0 +1,5 @@
+---
+title: Add CI Job token support to Maven packages API
+merge_request: 7249
+author:
+type: changed
