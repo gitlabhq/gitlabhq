@@ -1,7 +1,9 @@
 - breadcrumb_title "Graph"
 - page_title "Graph", @ref
+- @content_class = "limit-container-width" unless fluid_layout
+
 = render "head"
-%div{ class: container_class }
+%div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
   .project-network
     .controls
       = form_tag project_network_path(@project, @id), method: :get, class: 'form-inline network-form' do |f|

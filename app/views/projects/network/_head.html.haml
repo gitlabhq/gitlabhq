@@ -1,6 +1,7 @@
+- @content_class = "limit-container-width" unless fluid_layout
 - @no_container = true
 
-%div{ class: container_class }
+%div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
   .row-content-block.second-block.content-component-block
     .tree-ref-holder
       = render partial: 'shared/ref_switcher', locals: {destination: 'graph'}
