@@ -18,16 +18,17 @@
               %strong.fly-out-top-item-name
                 = _('ConvDev Index')
 
-      = nav_link(controller: :cohorts) do
-        = link_to instance_statistics_cohorts_path do
-          .nav-icon-container
-            = sprite_icon('users')
-          %span.nav-item-name
-            = _('Cohorts')
-        %ul.sidebar-sub-level-items.is-fly-out-only
-          = nav_link(controller: :cohorts, html_options: { class: "fly-out-top-item" } ) do
-            = link_to instance_statistics_cohorts_path do
-              %strong.fly-out-top-item-name
-                = _('Cohorts')
+      - if Gitlab::CurrentSettings.usage_ping_enabled
+        = nav_link(controller: :cohorts) do
+          = link_to instance_statistics_cohorts_path do
+            .nav-icon-container
+              = sprite_icon('users')
+            %span.nav-item-name
+              = _('Cohorts')
+          %ul.sidebar-sub-level-items.is-fly-out-only
+            = nav_link(controller: :cohorts, html_options: { class: "fly-out-top-item" } ) do
+              = link_to instance_statistics_cohorts_path do
+                %strong.fly-out-top-item-name
+                  = _('Cohorts')
 
     = render 'shared/sidebar_toggle_button'
