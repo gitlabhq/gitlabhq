@@ -78,3 +78,4 @@
   - [create_note_diff_file, 1]
   - [delete_diff_files, 1]
   - [detect_repository_languages, 1]
+  - [auto_devops, 2]
