@@ -59,6 +59,8 @@ you can configure GitLab CI to build new packages automatically. The example bel
 shows you how to create a new package each time the master branch is updated.
 
 1\. Create a `ci_settings.xml` file specially for GitLab CI and put it into your repository. 
+Add server section there with same id as you used for GitLab repository in your `pom.xml` file. 
+For example, in our case its `gitlab-maven`.
 
 ```xml
 <settings xmlns="http://maven.apache.org/SETTINGS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
