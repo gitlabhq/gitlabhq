@@ -157,7 +157,8 @@ class Projects::ClustersController < Projects::ApplicationController
         :namespace,
         :api_url,
         :token,
-        :ca_cert
+        :ca_cert,
+        :authorization_type
       ]).merge(
         provider_type: :user,
         platform_type: :kubernetes
