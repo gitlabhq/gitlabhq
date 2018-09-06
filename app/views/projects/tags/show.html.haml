@@ -1,9 +1,10 @@
+- @content_class = "limit-container-width" unless fluid_layout
 - @no_container = true
 - add_to_breadcrumbs s_('TagsPage|Tags'), project_tags_path(@project)
 - breadcrumb_title @tag.name
 - page_title @tag.name, s_('TagsPage|Tags')
 
-%div{ class: container_class }
+%div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
   .top-area.multi-line
     .nav-text
       .title
