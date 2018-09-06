@@ -739,6 +739,9 @@ msgstr ""
 msgid "AutoDevOps|Learn more in the %{link_to_documentation}"
 msgstr ""
 
+msgid "AutoDevOps|The Auto DevOps pipeline has been enabled and will be used if no alternative CI configuration file is found. %{more_information_link}"
+msgstr ""
+
 msgid "AutoDevOps|You can automatically build and test your application if you %{link_to_auto_devops_settings} for this project. You can automatically deploy it as well, if you %{link_to_add_kubernetes_cluster}."
 msgstr ""
 
