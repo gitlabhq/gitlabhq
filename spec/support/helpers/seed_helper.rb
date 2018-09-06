@@ -90,6 +90,8 @@ foo/bar.* foo
 *.cgi     key=value?p1=v1&p2=v2
 /*.png    gitlab-language=png
 *.binary  binary
+/custom-highlighting/*.gitlab-custom gitlab-language=ruby
+/custom-highlighting/*.gitlab-cgi gitlab-language=erb?parent=json
 
 # This uses a tab instead of spaces to ensure the parser also supports this.
 *.md\tgitlab-language=markdown

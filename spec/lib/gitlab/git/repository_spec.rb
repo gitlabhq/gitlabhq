@@ -1345,7 +1345,11 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
 
     it 'returns matching language attribute' do
-      expect(repository.gitattribute("explode.sh", 'gitlab-language')).to eq('shell')
+      expect(repository.gitattribute("custom-highlighting/test.gitlab-custom", 'gitlab-language')).to eq('ruby')
+    end
+
+    it 'returns matching language attribute with additional options' do
+      expect(repository.gitattribute("custom-highlighting/test.gitlab-cgi", 'gitlab-language')).to eq('erb?parent=json')
     end
 
     it 'returns nil if nothing matches' do
