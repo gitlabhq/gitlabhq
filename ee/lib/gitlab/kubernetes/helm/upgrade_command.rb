@@ -8,9 +8,10 @@ module Gitlab
 
         attr_reader :name, :chart, :version, :repository, :files
 
-        def initialize(name, chart:, files:, version: nil, repository: nil)
+        def initialize(name, chart:, files:, rbac:, version: nil, repository: nil)
           @name = name
           @chart = chart
+          @rbac = rbac
           @version = version
           @files = files
           @repository = repository
@@ -22,6 +23,10 @@ module Gitlab
             repository_command,
             script_command
           ].compact.join("\n")
+        end
+
+        def rbac?
+          @rbac
         end
 
         def pod_name

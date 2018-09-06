@@ -35,6 +35,7 @@ module EE
             name,
             version: self.class.const_get(:VERSION),
             chart: chart,
+            rbac: cluster.platform_kubernetes_rbac?,
             files: files_with_replaced_values(values)
           )
         end
