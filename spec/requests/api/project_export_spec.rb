@@ -187,14 +187,11 @@ describe API::ProjectExport do
 
       context 'when upload complete' do
         before do
-          FileUtils.rm_rf(project_after_export.export_path)
+          project_after_export.remove_exports
+        end
 
-          if project_after_export.export_project_object_exists?
-            upload = project_after_export.import_export_upload
-
-            upload.remove_export_file!
-            upload.save
-          end
+        it 'has removed the export' do
+          expect(project_after_export.export_project_object_exists?).to be false
         end
 
         it_behaves_like '404 response' do
