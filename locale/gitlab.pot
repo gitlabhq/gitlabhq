@@ -1332,10 +1332,7 @@ msgstr ""
 msgid "ClusterIntegration|Certificate Authority bundle (PEM format)"
 msgstr ""
 
-msgid "ClusterIntegration|Choose which of your project's environments will use this Kubernetes cluster."
-msgstr ""
-
-msgid "ClusterIntegration|Control how your Kubernetes cluster integrates with GitLab"
+msgid "ClusterIntegration|Choose which of your environments will use this cluster."
 msgstr ""
 
 msgid "ClusterIntegration|Copy API URL"
@@ -1360,6 +1357,9 @@ msgid "ClusterIntegration|Create Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Did you know?"
+msgstr ""
+
+msgid "ClusterIntegration|Enable or disable GitLab's connection to your Kubernetes cluster."
 msgstr ""
 
 msgid "ClusterIntegration|Enable this setting if using role-based access control (RBAC)."
@@ -1455,15 +1455,6 @@ msgstr ""
 msgid "ClusterIntegration|Kubernetes cluster integration"
 msgstr ""
 
-msgid "ClusterIntegration|Kubernetes cluster integration is disabled for this project."
-msgstr ""
-
-msgid "ClusterIntegration|Kubernetes cluster integration is enabled for this project."
-msgstr ""
-
-msgid "ClusterIntegration|Kubernetes cluster integration is enabled for this project. Disabling this integration will not affect your Kubernetes cluster, it will only temporarily turn off GitLab's connection to it."
-msgstr ""
-
 msgid "ClusterIntegration|Kubernetes cluster is being created on Google Kubernetes Engine..."
 msgstr ""
 
@@ -1486,12 +1477,6 @@ msgid "ClusterIntegration|Learn more about %{help_link_start}Kubernetes%{help_li
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about %{help_link_start}zones%{help_link_end}."
-msgstr ""
-
-msgid "ClusterIntegration|Learn more about environments"
-msgstr ""
-
-msgid "ClusterIntegration|Learn more about security configuration"
 msgstr ""
 
 msgid "ClusterIntegration|Machine type"
@@ -1581,9 +1566,6 @@ msgstr ""
 msgid "ClusterIntegration|Search zones"
 msgstr ""
 
-msgid "ClusterIntegration|Security"
-msgstr ""
-
 msgid "ClusterIntegration|See and edit the details for your Kubernetes cluster"
 msgstr ""
 
@@ -1623,7 +1605,7 @@ msgstr ""
 msgid "ClusterIntegration|The IP address is in the process of being assigned. Please check your Kubernetes cluster or Quotas on Google Kubernetes Engine if it takes a long time."
 msgstr ""
 
-msgid "ClusterIntegration|The default cluster configuration grants access to a wide set of functionalities needed to successfully build and deploy a containerised application."
+msgid "ClusterIntegration|The default cluster configuration grants access to many functionalities needed to successfully build and deploy a containerised application."
 msgstr ""
 
 msgid "ClusterIntegration|This account must have permissions to create a Kubernetes cluster in the %{link_to_container_project} specified below"
