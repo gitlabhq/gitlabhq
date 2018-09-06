@@ -96,7 +96,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
     render json: StageSerializer
       .new(project: @project, current_user: @current_user)
-      .represent(@stage, details: true)
+      .represent(@stage, details: true, retried: params[:retried])
   end
 
   # TODO: This endpoint is used by mini-pipeline-graph
