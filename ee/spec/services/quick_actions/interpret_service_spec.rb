@@ -5,7 +5,8 @@ describe QuickActions::InterpretService do
   let(:developer) { create(:user) }
   let(:developer2) { create(:user) }
   let(:developer3) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:group) { create(:group) }
+  let(:project) { create(:project, :public, group: group) }
   let(:issue) { create(:issue, project: project) }
   let(:service) { described_class.new(project, developer) }
 
@@ -112,6 +113,75 @@ describe QuickActions::InterpretService do
           _, updates = service.execute("/reassign @#{user.username}", issue)
 
           expect(updates).to eq(assignee_ids: [user.id])
+        end
+      end
+    end
+
+    context 'epic command' do
+      let(:epic) { create(:epic, group: group)}
+      let(:content) { "/epic #{epic.to_reference(project)}" }
+
+      context 'when epics are enabled' do
+        before do
+          stub_licensed_features(epics: true)
+        end
+
+        it 'assigns an issue to an epic' do
+          _, updates = service.execute(content, issue)
+
+          expect(updates).to eq(epic: epic)
+        end
+
+        context 'when an issue belongs to a project without group' do
+          let(:user_project) { create(:project) }
+          let(:issue)        { create(:issue, project: user_project) }
+
+          before do
+            user_project.add_developer(user)
+          end
+
+          it 'does not assign an issue to an epic' do
+            _, updates = service.execute(content, issue)
+
+            expect(updates).to be_empty
+          end
+        end
+      end
+
+      context 'when epics are disabled' do
+        it 'does not recognize /epic' do
+          _, updates = service.execute(content, issue)
+
+          expect(updates).to be_empty
+        end
+      end
+    end
+
+    context 'remove_epic command' do
+      let(:epic) { create(:epic, group: group)}
+      let(:content) { "/remove_epic #{epic.to_reference(project)}" }
+
+      before do
+        issue.update!(epic: epic)
+      end
+
+      context 'when epics are disabled' do
+        it 'does not recognize /remove_epic' do
+          _, updates = service.execute(content, issue)
+
+          expect(updates).to be_empty
+        end
+      end
+
+      context 'when epics are enabled' do
+        before do
+          stub_licensed_features(epics: true)
+        end
+
+        it 'unassigns an issue from an epic' do
+          _, updates = service.execute(content, issue)
+
+          expect(updates).to eq(epic: nil)
         end
       end
     end
