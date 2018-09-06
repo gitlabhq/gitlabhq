@@ -80,3 +80,4 @@ Statistics visibility section under **Admin area > Settings > Usage statistics**
 [ee-557]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/557
 [ee-735]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/735
 [ce-23361]: https://gitlab.com/gitlab-org/gitlab-ce/issues/23361
+[ee-6602]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6602
