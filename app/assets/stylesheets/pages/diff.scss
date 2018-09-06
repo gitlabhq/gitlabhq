@@ -72,6 +72,7 @@
       .line_holder td {
         line-height: $code-line-height;
         font-size: $code-font-size;
+        vertical-align: top;
 
         &.noteable_line {
           position: relative;
