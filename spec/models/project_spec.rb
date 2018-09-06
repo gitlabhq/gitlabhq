@@ -2474,6 +2474,47 @@ describe Project do
     end
   end
 
+  describe '#auto_devops_variables' do
+    set(:project) { create(:project) }
+
+    subject { project.auto_devops_variables }
+
+    it 'returns an empty array' do
+      is_expected.to eq []
+    end
+
+    context 'when enabled in instance settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: true)
+      end
+
+      it 'returns an empty variables collection' do
+        expect(subject.to_hash).to eq({})
+      end
+    end
+
+    context 'when explicitly enabled' do
+      let(:deploy_strategy) { 'continuous' }
+
+      before do
+        create(:project_auto_devops, project: project, deploy_strategy: deploy_strategy)
+      end
+
+      it 'returns an empty variables collection' do
+        expect(subject.to_hash).to eq({})
+      end
+
+      context 'when deploy_strategy is manual' do
+        let(:deploy_strategy) { 'manual' }
+
+        it 'has CI variables for manual strategy' do
+          expect(subject.map { |var| var[:key] })
+            .to include("STAGING_ENABLED", "INCREMENTAL_ROLLOUT_ENABLED")
+        end
+      end
+    end
+  end
+
   describe '#secret_variables_for' do
     let(:project) { create(:project) }
 
