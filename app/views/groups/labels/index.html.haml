@@ -1,10 +1,6 @@
 - page_title 'Labels'
 - can_admin_label = can?(current_user, :admin_label, @group)
-<<<<<<< HEAD
 - issuables = ['issues', 'merge requests'] + (@group&.feature_available?(:epics) ? ['epics'] : [])
-=======
-- issuables = ['issues', 'merge requests']
->>>>>>> upstream/master
 - search = params[:search]
 
 - if can_admin_label
