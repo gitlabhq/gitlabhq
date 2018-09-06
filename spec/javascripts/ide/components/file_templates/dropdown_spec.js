@@ -28,7 +28,7 @@ describe('IDE file templates dropdown component', () => {
 
   describe('async', () => {
     beforeEach(() => {
-      vm.async = true;
+      vm.isAsyncData = true;
     });
 
     it('calls async store method on Bootstrap dropdown event', () => {

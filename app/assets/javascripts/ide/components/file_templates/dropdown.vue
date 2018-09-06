@@ -24,7 +24,7 @@ export default {
       required: false,
       default: null,
     },
-    async: {
+    isAsyncData: {
       type: Boolean,
       required: false,
       default: false,
@@ -43,14 +43,14 @@ export default {
   computed: {
     ...mapState('fileTemplates', ['templates', 'isLoading']),
     outputData() {
-      return (this.async ? this.templates : this.data).filter(t => {
+      return (this.isAsyncData ? this.templates : this.data).filter(t => {
         if (!this.searchable) return true;
 
         return t.name.toLowerCase().indexOf(this.search.toLowerCase()) >= 0;
       });
     },
     showLoading() {
-      return this.async ? this.isLoading : false;
+      return this.isAsyncData ? this.isLoading : false;
     },
   },
   mounted() {
@@ -62,7 +62,7 @@ export default {
   methods: {
     ...mapActions('fileTemplates', ['fetchTemplateTypes']),
     fetchTemplatesIfAsync() {
-      if (this.async) {
+      if (this.isAsyncData) {
         this.fetchTemplateTypes();
       }
     },
@@ -79,7 +79,7 @@ export default {
       :toggle-text="label"
       data-display="static"
     />
-    <div class="dropdown-menu">
+    <div class="dropdown-menu pb-0">
       <div
         v-if="title"
         class="dropdown-title ml-0 mr-0"

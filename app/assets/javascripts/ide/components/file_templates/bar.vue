@@ -27,14 +27,14 @@ export default {
       'undoFileTemplate',
     ]),
     setInitialType() {
-      const type = this.templateTypes.find(t => t.name === this.activeFile.name);
+      const initialTemplateType = this.templateTypes.find(t => t.name === this.activeFile.name);
 
-      if (type) {
-        this.setSelectedTemplateType(type);
+      if (initialTemplateType) {
+        this.setSelectedTemplateType(initialTemplateType);
       }
     },
-    selectTemplateType(type) {
-      this.setSelectedTemplateType(type);
+    selectTemplateType(templateType) {
+      this.setSelectedTemplateType(templateType);
     },
     selectTemplate(template) {
       this.fetchTemplate(template);
@@ -60,7 +60,7 @@ export default {
     <dropdown
       v-if="showTemplatesDropdown"
       :label="__('Choose a template...')"
-      :async="true"
+      :is-async-data="true"
       :searchable="true"
       :title="__('File templates')"
       class="mr-2"

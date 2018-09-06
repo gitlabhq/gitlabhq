@@ -98,14 +98,16 @@ describe('IDE file templates bar component', () => {
   });
 
   it('calls setSelectedTemplateType if activeFile name matches a template', done => {
+    const fileName = '.gitlab-ci.yml';
+
     spyOn(vm, 'setSelectedTemplateType');
-    vm.$store.state.openFiles[0].name = '.gitlab-ci.yml';
+    vm.$store.state.openFiles[0].name = fileName;
 
     vm.setInitialType();
 
     vm.$nextTick(() => {
       expect(vm.setSelectedTemplateType).toHaveBeenCalledWith({
-        name: '.gitlab-ci.yml',
+        name: fileName,
         key: 'gitlab_ci_ymls',
       });
 
