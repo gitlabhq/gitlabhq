@@ -38,5 +38,11 @@ describe('frontend test suite self check', () => {
         setTimeout(done, 2000);
       });
     });
+
+    it('error in pending timeout', () => {
+      setTimeout(() => {
+        throw new Error('error in timeout');
+      }, 1000);
+    });
   });
 });

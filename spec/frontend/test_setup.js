@@ -2,6 +2,7 @@ import 'jest-extended';
 
 const testTimeoutInMs = 1000;
 jest.setTimeout(testTimeoutInMs);
+jest.useFakeTimers();
 
 let testStartTime;
 
@@ -14,4 +15,8 @@ afterEach(() => {
   if (new Date().getTime() - testStartTime > testTimeoutInMs) {
     throw new Error(`Test took longer than ${testTimeoutInMs}ms!`);
   }
+});
+
+afterEach(() => {
+  jest.runAllTimers();
 });
