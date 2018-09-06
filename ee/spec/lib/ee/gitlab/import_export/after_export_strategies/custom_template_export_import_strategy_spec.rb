@@ -42,7 +42,7 @@ describe EE::Gitlab::ImportExport::AfterExportStrategies::CustomTemplateExportIm
     end
 
     it 'removes the exported project file after the import' do
-      expect(project_template).to receive(:remove_exported_project_file)
+      expect(project_template).to receive(:remove_exports)
 
       subject.execute(user, project_template)
     end
