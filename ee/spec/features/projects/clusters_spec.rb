@@ -122,7 +122,7 @@ describe 'EE Clusters', :js do
           end
 
           it 'user sees a cluster details page' do
-            expect(page).to have_content('Kubernetes cluster integration is enabled for this project')
+            expect(page).to have_content('Enable or disable GitLab\'s connection to your Kubernetes cluster.')
             expect(page.find_field('cluster[environment_scope]').value).to eq('staging/*')
           end
         end

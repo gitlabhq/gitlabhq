@@ -23,13 +23,14 @@
   .js-cluster-application-notice
     .flash-container
 
+  %section#cluster-integration
+    %h4= @cluster.name
+    = render 'banner'
+    = render 'integration_form'
+
   -# EE-specific
   - if @cluster.project.feature_available?(:cluster_health)
     = render 'health'
-
-  %section.settings.no-animate.expanded#cluster-integration
-    = render 'banner'
-    = render 'integration_form'
 
   .cluster-applications-table#js-cluster-applications
 

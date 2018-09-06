@@ -3,8 +3,8 @@ import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import Flash from '~/flash';
 
-export default function gcpSignupOffer() {
-  const alertEl = document.querySelector('.gcp-signup-offer');
+export default function initDismissableCallout(alertSelector) {
+  const alertEl = document.querySelector(alertSelector);
   if (!alertEl) {
     return;
   }
