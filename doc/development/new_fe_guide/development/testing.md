@@ -6,7 +6,7 @@
   * **[Ruby unit tests](#ruby-unit-tests-spec-rb)** for models, controllers, helpers, etc. (`/spec/**/*.rb`)
   * **[Full feature tests](#full-feature-tests-spec-features-rb)** (`/spec/features/**/*.rb`)
 * **[Karma](#karma-tests-spec-javascripts-js)** (`/spec/javascripts/**/*.js`)
-* ~~Spinach~~ — These have been removed from our codebase in May 2018. (`/features/`)
+* <s>Spinach</s> — These have been removed from our codebase in May 2018. (`/features/`)
 
 ## RSpec: Ruby unit tests `/spec/**/*.rb`
 

@@ -87,13 +87,13 @@ _The artifacts are stored by default in
 
 ### Using object storage
 
->**Notes:**
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1762) in
-  [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
-- Since version 9.5, artifacts are [browsable](../user/project/pipelines/job_artifacts.md#browsing-artifacts),
-  when object storage is enabled. 9.4 lacks this feature.
-- Since version 10.6, available in [GitLab Core](https://about.gitlab.com/pricing/)
-- Since version 11.0, we support `direct_upload` to S3.
+> **Notes:**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1762) in
+>   [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
+> - Since version 9.5, artifacts are [browsable](../user/project/pipelines/job_artifacts.md#browsing-artifacts),
+>   when object storage is enabled. 9.4 lacks this feature.
+> - Since version 10.6, available in [GitLab Core](https://about.gitlab.com/pricing/)
+> - Since version 11.0, we support `direct_upload` to S3.
 
 If you don't want to use the local disk where GitLab is installed to store the
 artifacts, you can use an object storage like AWS S3 instead.
@@ -162,15 +162,15 @@ _The artifacts are stored by default in
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 1. Migrate any existing local artifacts to the object storage:
 
-      ```bash
-      gitlab-rake gitlab:artifacts:migrate
-      ```
+    ```bash
+    gitlab-rake gitlab:artifacts:migrate
+    ```
 
-      Currently this has to be executed manually and it will allow you to
-      migrate the existing artifacts to the object storage, but all new
-      artifacts will still be stored on the local disk. In the future
-      you will be given an option to define a default storage artifacts for all
-      new files.
+    Currently this has to be executed manually and it will allow you to
+    migrate the existing artifacts to the object storage, but all new
+    artifacts will still be stored on the local disk. In the future
+    you will be given an option to define a default storage artifacts for all
+    new files.
 
 ---
 
@@ -198,15 +198,15 @@ _The artifacts are stored by default in
 1. Save the file and [restart GitLab][] for the changes to take effect.
 1. Migrate any existing local artifacts to the object storage:
 
-      ```bash
-      sudo -u git -H bundle exec rake gitlab:artifacts:migrate RAILS_ENV=production
-      ```
+    ```bash
+    sudo -u git -H bundle exec rake gitlab:artifacts:migrate RAILS_ENV=production
+    ```
 
-      Currently this has to be executed manually and it will allow you to
-      migrate the existing artifacts to the object storage, but all new
-      artifacts will still be stored on the local disk. In the future
-      you will be given an option to define a default storage artifacts for all
-      new files.
+    Currently this has to be executed manually and it will allow you to
+    migrate the existing artifacts to the object storage, but all new
+    artifacts will still be stored on the local disk. In the future
+    you will be given an option to define a default storage artifacts for all
+    new files.
 
 ## Expiring artifacts
 
@@ -266,6 +266,7 @@ you can flip the feature flag from a Rails console.
     ```ruby
     Feature.enable('ci_disable_validates_dependencies')
     ```
+
 ---
 
 **In installations from source:**

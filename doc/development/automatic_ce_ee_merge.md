@@ -9,16 +9,16 @@ This merge is done automatically in a
 ## What to do if you are pinged in a `CE Upstream` merge request to resolve a conflict?
 
 1. Please resolve the conflict as soon as possible or ask someone else to do it
-  - It's ok to resolve more conflicts than the one that you are asked to resolve.
-    In that case, it's a good habit to ask for a double-check on your resolution
-    by someone who is familiar with the code you touched.
+   - It's ok to resolve more conflicts than the one that you are asked to resolve.
+     In that case, it's a good habit to ask for a double-check on your resolution
+     by someone who is familiar with the code you touched.
 1. Once you have resolved your conflicts, push to the branch (no force-push)
 1. Assign the merge request to the next person that has to resolve a conflict
 1. If all conflicts are resolved after your resolution is pushed, keep the merge
-  request assigned to you: **you are now responsible for the merge request to be
-  green**
+   request assigned to you: **you are now responsible for the merge request to be
+   green**
 1. If you need any help, you can ping the current [release managers], or ask in
-  the `#ce-to-ee` Slack channel
+   the `#ce-to-ee` Slack channel
 
 A few notes about the automatic CE->EE merge job:
 
@@ -127,19 +127,19 @@ Now, every time you create an MR for CE and EE:
 
 1. Open two terminal windows, one in CE, and another one in EE
 1. In the CE terminal:
-  1. Create the CE branch, e.g., `branch-example`
-  1. Make your changes and push a commit (commit A)
-  1. Create the CE merge request in GitLab
+   1. Create the CE branch, e.g., `branch-example`
+   1. Make your changes and push a commit (commit A)
+   1. Create the CE merge request in GitLab
 1. In the EE terminal:
-  1. Create the EE-equivalent branch ending with `-ee`, e.g.,
-  `git checkout -b branch-example-ee`
-  1. Fetch the CE branch: `git fetch ce branch-example`
-  1. Cherry-pick the commit A: `git cherry-pick commit-A-SHA`
-  1. If Git prompts you to fix the conflicts, do a `git status`
-  to check which files contain conflicts, fix them, save the files
-  1. Add the changes with `git add .` but **DO NOT commit** them
-  1. Continue cherry-picking: `git cherry-pick --continue`
-  1. Push to EE: `git push origin branch-example-ee`
+   1. Create the EE-equivalent branch ending with `-ee`, e.g.,
+      `git checkout -b branch-example-ee`
+   1. Fetch the CE branch: `git fetch ce branch-example`
+   1. Cherry-pick the commit A: `git cherry-pick commit-A-SHA`
+   1. If Git prompts you to fix the conflicts, do a `git status`
+      to check which files contain conflicts, fix them, save the files
+   1. Add the changes with `git add .` but **DO NOT commit** them
+   1. Continue cherry-picking: `git cherry-pick --continue`
+   1. Push to EE: `git push origin branch-example-ee`
 1. Create the EE-equivalent MR and link to the CE MR from the
 description "Ports [CE-MR-LINK] to EE"
 1. Once all the jobs are passing in both CE and EE, you've addressed the

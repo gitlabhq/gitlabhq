@@ -5,13 +5,13 @@ description: 'Learn how to administer GitLab Pages.'
 # GitLab Pages administration
 
 > **Notes:**
-- [Introduced][ee-80] in GitLab EE 8.3.
-- Custom CNAMEs with TLS support were [introduced][ee-173] in GitLab EE 8.5.
-- GitLab Pages [were ported][ce-14605] to Community Edition in GitLab 8.17.
-- This guide is for Omnibus GitLab installations. If you have installed
-  GitLab from source, follow the [Pages source installation document](source.md).
-- To learn how to use GitLab Pages, read the [user documentation][pages-userguide].
-- Does NOT support subgroups. See [this issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/30548) for more information and status.
+> - [Introduced][ee-80] in GitLab EE 8.3.
+> - Custom CNAMEs with TLS support were [introduced][ee-173] in GitLab EE 8.5.
+> - GitLab Pages [were ported][ce-14605] to Community Edition in GitLab 8.17.
+> - This guide is for Omnibus GitLab installations. If you have installed
+>   GitLab from source, follow the [Pages source installation document](source.md).
+> - To learn how to use GitLab Pages, read the [user documentation][pages-userguide].
+> - Does NOT support subgroups. See [this issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/30548) for more information and status.
 
 This document describes how to set up the _latest_ GitLab Pages feature. Make
 sure to read the [changelog](#changelog) if you are upgrading to a new GitLab
@@ -107,12 +107,12 @@ since that is needed in all configurations.
 
 ### Wildcard domains
 
->**Requirements:**
-- [Wildcard DNS setup](#dns-configuration)
+> **Requirements:**
+> - [Wildcard DNS setup](#dns-configuration)
 >
->---
+> ---
 >
-URL scheme: `http://page.example.io`
+> URL scheme: `http://page.example.io`
 
 This is the minimum setup that you can use Pages with. It is the base for all
 other setups as described below. Nginx will proxy all requests to the daemon.
@@ -131,13 +131,13 @@ Watch the [video tutorial][video-admin] for this configuration.
 
 ### Wildcard domains with TLS support
 
->**Requirements:**
-- [Wildcard DNS setup](#dns-configuration)
-- Wildcard TLS certificate
+> **Requirements:**
+> - [Wildcard DNS setup](#dns-configuration)
+> - Wildcard TLS certificate
 >
->---
+> ---
 >
-URL scheme: `https://page.example.io`
+> URL scheme: `https://page.example.io`
 
 Nginx will proxy all requests to the daemon. Pages daemon doesn't listen to the
 outside world.
@@ -168,13 +168,13 @@ you have IPv6 as well as IPv4 addresses, you can use them both.
 
 ### Custom domains
 
->**Requirements:**
-- [Wildcard DNS setup](#dns-configuration)
-- Secondary IP
+> **Requirements:**
+> - [Wildcard DNS setup](#dns-configuration)
+> - Secondary IP
 >
----
+> ---
 >
-URL scheme: `http://page.example.io` and `http://domain.com`
+> URL scheme: `http://page.example.io` and `http://domain.com`
 
 In that case, the Pages daemon is running, Nginx still proxies requests to
 the daemon but the daemon is also able to receive requests from the outside
@@ -197,14 +197,14 @@ world. Custom domains are supported, but no TLS.
 
 ### Custom domains with TLS support
 
->**Requirements:**
-- [Wildcard DNS setup](#dns-configuration)
-- Wildcard TLS certificate
-- Secondary IP
+> **Requirements:**
+> - [Wildcard DNS setup](#dns-configuration)
+> - Wildcard TLS certificate
+> - Secondary IP
 >
----
+> ---
 >
-URL scheme: `https://page.example.io` and `https://domain.com`
+> URL scheme: `https://page.example.io` and `https://domain.com`
 
 In that case, the Pages daemon is running, Nginx still proxies requests to
 the daemon but the daemon is also able to receive requests from the outside
@@ -251,9 +251,9 @@ Follow the steps below to configure verbose logging of GitLab Pages daemon.
    If you wish to make it log events with level `DEBUG` you must configure this in
    `/etc/gitlab/gitlab.rb`:
 
-     ```shell
-     gitlab_pages['log_verbose'] = true
-     ```
+    ```shell
+    gitlab_pages['log_verbose'] = true
+    ```
 
 1. [Reconfigure GitLab][reconfigure]
 
@@ -266,9 +266,9 @@ are stored.
    If you wish to store them in another location you must set it up in
    `/etc/gitlab/gitlab.rb`:
 
-     ```shell
-     gitlab_rails['pages_path'] = "/mnt/storage/pages"
-     ```
+    ```shell
+    gitlab_rails['pages_path'] = "/mnt/storage/pages"
+    ```
 
 1. [Reconfigure GitLab][reconfigure]
 
@@ -279,19 +279,19 @@ Omnibus GitLab 11.1.
 
 1. By default the listener is configured to listen for requests on `localhost:8090`.
 
-   If you wish to disable it you must configure this in
-   `/etc/gitlab/gitlab.rb`:
+    If you wish to disable it you must configure this in
+    `/etc/gitlab/gitlab.rb`:
 
-     ```shell
-     gitlab_pages['listen_proxy'] = nil
-     ```
+    ```shell
+    gitlab_pages['listen_proxy'] = nil
+    ```
 
-   If you wish to make it listen on a different port you must configure this also in
-   `/etc/gitlab/gitlab.rb`:
+    If you wish to make it listen on a different port you must configure this also in
+    `/etc/gitlab/gitlab.rb`:
 
-     ```shell
-     gitlab_pages['listen_proxy'] = "localhost:10080"
-     ```
+    ```shell
+    gitlab_pages['listen_proxy'] = "localhost:10080"
+    ```
 
 1. [Reconfigure GitLab][reconfigure]
 

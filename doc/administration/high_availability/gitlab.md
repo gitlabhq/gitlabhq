@@ -85,7 +85,11 @@ for each GitLab application server in your environment.
     servers should point to the external url that users will use to access GitLab.
     In a typical HA setup, this will be the url of the load balancer which will
     route traffic to all GitLab application servers in the HA cluster.
+<<<<<<< HEAD
 
+=======
+    > 
+>>>>>>> upstream/master
     > **Note:** When you specify `https` in the `external_url`, as in the example
     above, GitLab assumes you have SSL certificates in `/etc/gitlab/ssl/`. If
     certificates are not present, Nginx will fail to start. See

@@ -1,9 +1,10 @@
 # Triggering pipelines through the API
 
 > **Notes**:
-- [Introduced][ci-229] in GitLab CE 7.14.
-- GitLab 8.12 has a completely redesigned job permissions system. Read all
-  about the [new model and its implications](../../user/project/new_ci_build_permissions_model.md#job-triggers).
+>
+> - [Introduced][ci-229] in GitLab CE 7.14.
+> - GitLab 8.12 has a completely redesigned job permissions system. Read all
+>   about the [new model and its implications](../../user/project/new_ci_build_permissions_model.md#job-triggers).
 
 Triggers can be used to force a pipeline rerun of a specific `ref` (branch or
 tag) with an API call.
@@ -105,11 +106,12 @@ The action is irreversible.
 ## Triggering a pipeline
 
 > **Notes**:
-- Valid refs are only the branches and tags. If you pass a commit SHA as a ref,
-  it will not trigger a job.
-- If your project is public, passing the token in plain text is probably not the
-  wisest idea, so you might want to use a
-  [variable](../variables/README.md#variables) for that purpose.
+>
+> - Valid refs are only the branches and tags. If you pass a commit SHA as a ref,
+>   it will not trigger a job.
+> - If your project is public, passing the token in plain text is probably not the
+>   wisest idea, so you might want to use a
+>   [variable](../variables/README.md#variables) for that purpose.
 
 To trigger a job you need to send a `POST` request to GitLab's API endpoint:
 
@@ -178,11 +180,12 @@ Now, whenever a new tag is pushed on project A, the job will run and the
 ## Triggering a pipeline from a webhook
 
 > **Notes**:
-- Introduced in GitLab 8.14.
-- `ref` should be passed as part of the URL in order to take precedence over
-  `ref` from the webhook body that designates the branch ref that fired the
-  trigger in the source repository.
-- `ref` should be URL-encoded if it contains slashes.
+>
+> - Introduced in GitLab 8.14.
+> - `ref` should be passed as part of the URL in order to take precedence over
+>   `ref` from the webhook body that designates the branch ref that fired the
+>   trigger in the source repository.
+> - `ref` should be URL-encoded if it contains slashes.
 
 To trigger a job from a webhook of another project you need to add the following
 webhook URL for Push and Tag events (change the project ID, ref and token):

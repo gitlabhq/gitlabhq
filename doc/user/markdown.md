@@ -67,16 +67,28 @@ GFM honors the markdown specification in how [paragraphs and line breaks are han
 A paragraph is simply one or more consecutive lines of text, separated by one or more blank lines.
 Line-breaks, or soft returns, are rendered if you end a line with two or more spaces:
 
+<<<<<<< HEAD
 [//]: # (Do *NOT* remove the two ending whitespaces in the following line.)
 [//]: # (They are needed for the Markdown text to render correctly.)
     Roses are red [followed by two or more spaces]
+=======
+<!-- (Do *NOT* remove the two ending whitespaces in the following line.) -->
+<!-- (They are needed for the Markdown text to render correctly.) -->
+    Roses are red [followed by two or more spaces]  
+>>>>>>> upstream/master
     Violets are blue
 
     Sugar is sweet
 
+<<<<<<< HEAD
 [//]: # (Do *NOT* remove the two ending whitespaces in the following line.)
 [//]: # (They are needed for the Markdown text to render correctly.)
 Roses are red
+=======
+<!-- (Do *NOT* remove the two ending whitespaces in the following line.) -->
+<!-- (They are needed for the Markdown text to render correctly.) -->
+Roses are red  
+>>>>>>> upstream/master
 Violets are blue
 
 Sugar is sweet
@@ -475,7 +487,7 @@ Become:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15107) in
 GitLab 10.3.
-
+>
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#mermaid
 

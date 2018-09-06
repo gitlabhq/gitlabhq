@@ -1,13 +1,13 @@
 # GitLab Prometheus
 
->**Notes:**
-- Prometheus and the various exporters listed in this page are bundled in the
-  Omnibus GitLab package. Check each exporter's documentation for the timeline
-  they got added. For installations from source you will have to install them
-  yourself. Over subsequent releases additional GitLab metrics will be captured.
-- Prometheus services are on by default with GitLab 9.0.
-- Prometheus and its exporters do not authenticate users, and will be available
-  to anyone who can access them.
+> **Notes:**
+> - Prometheus and the various exporters listed in this page are bundled in the
+>   Omnibus GitLab package. Check each exporter's documentation for the timeline
+>   they got added. For installations from source you will have to install them
+>   yourself. Over subsequent releases additional GitLab metrics will be captured.
+> - Prometheus services are on by default with GitLab 9.0.
+> - Prometheus and its exporters do not authenticate users, and will be available
+>  to anyone who can access them.
 
 [Prometheus] is a powerful time-series monitoring service, providing a flexible
 platform for monitoring GitLab and other software products.
@@ -107,7 +107,7 @@ Sample Prometheus queries:
 > Introduced in GitLab 9.0.
 > Pod monitoring introduced in GitLab 9.4.
 
-If your GitLab server is running within Kubernetes, Prometheus will collect metrics from the Nodes and [annotated Pods](https://prometheus.io/docs/operating/configuration/#<kubernetes_sd_config>) in the cluster, including performance data on each container. This is particularly helpful if your CI/CD environments run in the same cluster, as you can use the [Prometheus project integration][] to monitor them.
+If your GitLab server is running within Kubernetes, Prometheus will collect metrics from the Nodes and [annotated Pods](https://prometheus.io/docs/operating/configuration/#kubernetes_sd_config) in the cluster, including performance data on each container. This is particularly helpful if your CI/CD environments run in the same cluster, as you can use the [Prometheus project integration][] to monitor them.
 
 To disable the monitoring of Kubernetes:
 

@@ -55,30 +55,30 @@ request is as follows:
   organized commits by [squashing them][git-squash]
 1. Push the commit(s) to your fork
 1. Submit a merge request (MR) to the `master` branch
-  1. Your merge request needs at least 1 approval but feel free to require more.
-    For instance if you're touching backend and frontend code, it's a good idea
-    to require 2 approvals: 1 from a backend maintainer and 1 from a frontend
-    maintainer
-  1. You don't have to select any approvers, but you can if you really want
-    specific people to approve your merge request
+   1. Your merge request needs at least 1 approval but feel free to require more.
+      For instance if you're touching backend and frontend code, it's a good idea
+      to require 2 approvals: 1 from a backend maintainer and 1 from a frontend
+      maintainer
+   1. You don't have to select any approvers, but you can if you really want
+      specific people to approve your merge request
 1. The MR title should describe the change you want to make
 1. The MR description should give a motive for your change and the method you
    used to achieve it.
-  1. If you are contributing code, fill in the template already provided in the
-     "Description" field.
-  1. If you are contributing documentation, choose `Documentation` from the
-     "Choose a template" menu and fill in the template.
-  1. Mention the issue(s) your merge request solves, using the `Solves #XXX` or
-    `Closes #XXX` syntax to auto-close the issue(s) once the merge request will
-    be merged.
+   1. If you are contributing code, fill in the template already provided in the
+      "Description" field.
+   1. If you are contributing documentation, choose `Documentation` from the
+      "Choose a template" menu and fill in the template.
+   1. Mention the issue(s) your merge request solves, using the `Solves #XXX` or
+      `Closes #XXX` syntax to auto-close the issue(s) once the merge request will
+      be merged.
 1. If you're allowed to, set a relevant milestone and labels
 1. If the MR changes the UI it should include *Before* and *After* screenshots
 1. If the MR changes CSS classes please include the list of affected pages,
    `grep css-class ./app -R`
 1. Be prepared to answer questions and incorporate feedback even if requests
    for this arrive weeks or months after your MR submission
-  1. If a discussion has been addressed, select the "Resolve discussion" button
-    beneath it to mark it resolved.
+   1. If a discussion has been addressed, select the "Resolve discussion" button
+      beneath it to mark it resolved.
 1. If your MR touches code that executes shell commands, reads or opens files or
    handles paths to files on disk, make sure it adheres to the
    [shell command guidelines](../shell_commands.md)
@@ -138,7 +138,7 @@ When having your code reviewed and when reviewing merge requests please take the
    making and testing future changes
 1. Changes do not adversely degrade performance.
    - Avoid repeated polling of endpoints that require a significant amount of overhead
-   - Check for N+1 queries via the SQL log or [`QueryRecorder`](https://docs.gitlab.com/ce/development/mer ge_request_performance_guidelines.html)
+   - Check for N+1 queries via the SQL log or [`QueryRecorder`](https://docs.gitlab.com/ce/development/merge_request_performance_guidelines.html)
    - Avoid repeated access of filesystem
 1. If you need polling to support real-time features, please use
    [polling with ETag caching][polling-etag].
