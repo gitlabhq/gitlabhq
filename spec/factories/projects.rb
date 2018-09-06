@@ -260,6 +260,10 @@ FactoryBot.define do
     trait(:repository_enabled)      { repository_access_level ProjectFeature::ENABLED }
     trait(:repository_disabled)     { repository_access_level ProjectFeature::DISABLED }
     trait(:repository_private)      { repository_access_level ProjectFeature::PRIVATE }
+
+    trait :auto_devops do
+      association :auto_devops, factory: :project_auto_devops
+    end
   end
 
   # Project with empty repository
