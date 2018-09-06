@@ -4,6 +4,9 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, dashboard_projects_url(rss_url_options), title: "All activity")
 
+= content_for :above_breadcrumbs_content do
+  = render_if_exists "shared/gold_trial_callout"
+
 - page_title    "Activity"
 - header_title  "Activity", activity_dashboard_path
 

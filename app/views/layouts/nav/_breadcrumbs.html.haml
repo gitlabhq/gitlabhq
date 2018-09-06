@@ -1,6 +1,7 @@
 - container = @no_breadcrumb_container ? 'container-fluid' : container_class
 - hide_top_links = @hide_top_links || false
 
+= yield :above_breadcrumbs_content
 %nav.breadcrumbs{ role: "navigation", class: [container, @content_class] }
   .breadcrumbs-container
     - if defined?(@left_sidebar)

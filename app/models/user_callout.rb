@@ -5,7 +5,8 @@ class UserCallout < ActiveRecord::Base
 
   enum feature_name: {
     gke_cluster_integration: 1,
-    gcp_signup_offer: 2
+    gcp_signup_offer: 2,
+    gold_trial: 3
   }
 
   validates :user, presence: true

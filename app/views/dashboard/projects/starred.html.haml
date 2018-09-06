@@ -4,6 +4,9 @@
 - page_title "Starred Projects"
 - header_title "Projects", dashboard_projects_path
 
+= content_for :above_breadcrumbs_content do
+  = render_if_exists "shared/gold_trial_callout"
+
 %div{ class: container_class }
   = render "projects/last_push"
   = render 'dashboard/projects_head'
