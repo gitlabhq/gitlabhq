@@ -11,7 +11,7 @@ module Gitlab
 
       delegate :max_files, :max_lines, :max_bytes, :safe_max_files, :safe_max_lines, :safe_max_bytes, to: :limits
 
-      def self.collection_limits(options = {})
+      def self.limits(options = {})
         limits = {}
         limits[:max_files] = options.fetch(:max_files, DEFAULT_LIMITS[:max_files])
         limits[:max_lines] = options.fetch(:max_lines, DEFAULT_LIMITS[:max_lines])
@@ -19,13 +19,14 @@ module Gitlab
         limits[:safe_max_files] = [limits[:max_files], DEFAULT_LIMITS[:max_files]].min
         limits[:safe_max_lines] = [limits[:max_lines], DEFAULT_LIMITS[:max_lines]].min
         limits[:safe_max_bytes] = limits[:safe_max_files] * 5.kilobytes # Average 5 KB per file
+        limits[:max_patch_bytes] = Gitlab::Git::Diff::SIZE_LIMIT
 
         OpenStruct.new(limits)
       end
 
       def initialize(iterator, options = {})
         @iterator = iterator
-        @limits = self.class.collection_limits(options)
+        @limits = self.class.limits(options)
         @enforce_limits = !!options.fetch(:limits, true)
         @expanded = !!options.fetch(:expanded, true)
 
