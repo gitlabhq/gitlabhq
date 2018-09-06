@@ -67,28 +67,16 @@ GFM honors the markdown specification in how [paragraphs and line breaks are han
 A paragraph is simply one or more consecutive lines of text, separated by one or more blank lines.
 Line-breaks, or soft returns, are rendered if you end a line with two or more spaces:
 
-<<<<<<< HEAD
-[//]: # (Do *NOT* remove the two ending whitespaces in the following line.)
-[//]: # (They are needed for the Markdown text to render correctly.)
-    Roses are red [followed by two or more spaces]
-=======
 <!-- (Do *NOT* remove the two ending whitespaces in the following line.) -->
 <!-- (They are needed for the Markdown text to render correctly.) -->
     Roses are red [followed by two or more spaces]  
->>>>>>> upstream/master
     Violets are blue
 
     Sugar is sweet
 
-<<<<<<< HEAD
-[//]: # (Do *NOT* remove the two ending whitespaces in the following line.)
-[//]: # (They are needed for the Markdown text to render correctly.)
-Roses are red
-=======
 <!-- (Do *NOT* remove the two ending whitespaces in the following line.) -->
 <!-- (They are needed for the Markdown text to render correctly.) -->
 Roses are red  
->>>>>>> upstream/master
 Violets are blue
 
 Sugar is sweet
@@ -455,26 +443,26 @@ Color written inside backticks will be followed by a color "chip".
 
 Examples:
 
-    `#F00`
-    `#F00A`
-    `#FF0000`
-    `#FF0000AA`
-    `RGB(0,255,0)`
-    `RGB(0%,100%,0%)`
-    `RGBA(0,255,0,0.7)`
-    `HSL(540,70%,50%)`
+    `#F00`  
+    `#F00A`  
+    `#FF0000`  
+    `#FF0000AA`  
+    `RGB(0,255,0)`  
+    `RGB(0%,100%,0%)`  
+    `RGBA(0,255,0,0.7)`  
+    `HSL(540,70%,50%)`  
     `HSLA(540,70%,50%,0.7)`
 
 Become:
 
-`#F00`
-`#F00A`
-`#FF0000`
-`#FF0000AA`
-`RGB(0,255,0)`
-`RGB(0%,100%,0%)`
-`RGBA(0,255,0,0.7)`
-`HSL(540,70%,50%)`
+`#F00`  
+`#F00A`  
+`#FF0000`  
+`#FF0000AA`  
+`RGB(0,255,0)`  
+`RGB(0%,100%,0%)`  
+`RGBA(0,255,0,0.7)`  
+`HSL(540,70%,50%)`  
 `HSLA(540,70%,50%,0.7)`
 
 #### Supported formats:
@@ -859,7 +847,7 @@ This line is separated from the one above by two newlines, so it will be a *sepa
 This line is also a separate paragraph, but...
 This line is only separated by a single newline, so it *does not break* and just follows the previous line in the *same paragraph*.
 
-This line is also a separate paragraph, and...
+This line is also a separate paragraph, and...  
 This line is *on its own line*, because the previous line ends with two spaces. (but still in the *same paragraph*)
 
 spaces.
@@ -874,7 +862,7 @@ This line is separated from the one above by two newlines, so it will be a *sepa
 This line is also a separate paragraph, but...
 This line is only separated by a single newline, so it *does not break* and just follows the previous line in the *same paragraph*.
 
-This line is also a separate paragraph, and...
+This line is also a separate paragraph, and...  
 This line is *on its own line*, because the previous line ends with two spaces. (but still in the *same paragraph*)
 
 spaces.
