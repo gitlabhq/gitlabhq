@@ -336,6 +336,15 @@ describe 'Admin updates settings' do
     expect(find_field('ED25519 SSH keys').value).to eq(forbidden)
   end
 
+  it 'loads usage ping payload on click', :js do
+    expect(page).to have_button 'Preview payload'
+
+    find('.js-usage-ping-payload-trigger').click
+
+    expect(page).to have_selector '.js-usage-ping-payload'
+    expect(page).to have_button 'Hide payload'
+  end
+
   def check_all_events
     page.check('Active')
     page.check('Push')
