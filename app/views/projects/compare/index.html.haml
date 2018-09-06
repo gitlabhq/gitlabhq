@@ -1,8 +1,9 @@
+- @content_class = "limit-container-width" unless fluid_layout
 - @no_container = true
 - breadcrumb_title "Compare Revisions"
 - page_title "Compare"
 
-%div{ class: container_class }
+%div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
   %h3.page-title
     = _("Compare Git revisions")
   .sub-header-block
