@@ -24,4 +24,5 @@ module.exports = {
   cacheDirectory: '<rootDir>/tmp/cache/jest',
   modulePathIgnorePatterns: ['<rootDir>/.yarn-cache/'],
   reporters,
+  setupTestFrameworkScriptFile: '<rootDir>/spec/frontend/test_setup.js',
 };
