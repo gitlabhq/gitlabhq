@@ -77,7 +77,7 @@
           = f.text_field :name, required: true, readonly: true, wrapper: { class: 'col-md-9' },
           help: "Your name was automatically set based on your #{ attribute_provider_label(:name) } account, so people you know can recognize you."
         - else
-          = f.text_field :name, required: true, wrapper: { class: 'col-md-9' }, help: "Enter your name, so people you know can recognize you."
+          = f.text_field :name, label: 'Full name', required: true, wrapper: { class: 'col-md-9' }, help: "Enter your name, so people you know can recognize you."
         = f.text_field :id, readonly: true, label: 'User ID', wrapper: { class: 'col-md-3' }
 
       - if @user.read_only_attribute?(:email)
