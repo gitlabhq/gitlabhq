@@ -20,7 +20,7 @@ class Deployment < ActiveRecord::Base
   after_create :create_ref
   after_create :invalidate_cache
 
-  enum_with_nil :track {
+  enum_with_nil track: {
     unknown_track: nil,
     stable: 1,
     rollout: 2
