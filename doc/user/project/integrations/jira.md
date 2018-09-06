@@ -184,19 +184,11 @@ the same goal:
 
 where `PROJECT-1` is the issue ID of the JIRA project.
 
-<<<<<<< HEAD
->**Notes:**
-- Only commits and merges into the project's default branch (usually **master**) will
-  close an issue in Jira. You can change your projects default branch under
-  [project settings](img/jira_project_settings.png).
-- The JIRA issue will not be transitioned if it has a resolution.
-=======
 > **Notes:**
 > - Only commits and merges into the project's default branch (usually **master**) will
 >   close an issue in Jira. You can change your projects default branch under
 >   [project settings](img/jira_project_settings.png).
 > - The JIRA issue will not be transitioned if it has a resolution.
->>>>>>> upstream/master
 
 ### JIRA issue closing example
 
