@@ -5,6 +5,7 @@ const Store = gl.issueBoards.BoardsStore;
 export default base.extend({
   methods: {
     seedPatchRequest(issue, req) {
+      /* eslint-disable no-param-reassign */
       const board = Store.state.currentBoard;
       const boardLabelIds = board.labels.map(label => label.id);
 
