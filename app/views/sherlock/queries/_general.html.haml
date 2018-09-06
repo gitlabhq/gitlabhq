@@ -36,7 +36,7 @@
       %li
         .code.js-syntax-highlight.sherlock-code
           :preserve
-            #{highlight("#{@query.id}.sql", @query.formatted_query)}
+            #{highlight("#{@query.id}.sql", @query.formatted_query, language: 'sql')}
 
   .card
     .card-header

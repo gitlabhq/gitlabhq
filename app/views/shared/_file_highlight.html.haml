@@ -1,5 +1,3 @@
-- repository = nil unless local_assigns.key?(:repository)
-
 .file-content.code.js-syntax-highlight
   .line-numbers
     - if blob.data.present?
@@ -13,4 +11,6 @@
           = link_icon
           = i
   .blob-content{ data: { blob_id: blob.id } }
-    = highlight(blob.path, blob.data, repository: repository, plain: blob.no_highlighting?)
+    %pre.code.highlight
+      %code
+        = blob.present.highlight

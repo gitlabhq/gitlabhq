@@ -90,7 +90,7 @@ class Projects::BlobController < Projects::ApplicationController
     apply_diff_view_cookie!
 
     @blob.load_all_data!
-    @lines = Gitlab::Highlight.highlight(@blob.path, @blob.data, repository: @repository).lines
+    @lines = @blob.present.highlight.lines
 
     @form = UnfoldForm.new(params)
 

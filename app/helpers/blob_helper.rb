@@ -1,7 +1,7 @@
 module BlobHelper
-  def highlight(blob_name, blob_content, repository: nil, plain: false)
-    plain ||= blob_content.length > Blob::MAXIMUM_TEXT_HIGHLIGHT_SIZE
-    highlighted = Gitlab::Highlight.highlight(blob_name, blob_content, plain: plain, repository: repository)
+  def highlight(file_name, file_content, language: nil, plain: false)
+    plain ||= file_content.length > Blob::MAXIMUM_TEXT_HIGHLIGHT_SIZE
+    highlighted = Gitlab::Highlight.highlight(file_name, file_content, plain: plain, language: language)
 
     raw %(<pre class="code highlight"><code>#{highlighted}</code></pre>)
   end

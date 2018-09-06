@@ -33,8 +33,10 @@ module Gitlab
         their_file = lines.reject { |line| line.type == 'new' }.map(&:text).join("\n")
         our_file = lines.reject { |line| line.type == 'old' }.map(&:text).join("\n")
 
-        their_highlight = Gitlab::Highlight.highlight(their_path, their_file, repository: repository).lines
-        our_highlight = Gitlab::Highlight.highlight(our_path, our_file, repository: repository).lines
+        language = our_blob.language_from_gitattributes
+
+        their_highlight = Gitlab::Highlight.highlight(their_path, their_file, language: language).lines
+        our_highlight = Gitlab::Highlight.highlight(our_path, our_file, language: language).lines
 
         lines.each do |line|
           line.rich_text =

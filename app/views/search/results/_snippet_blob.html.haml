@@ -39,7 +39,7 @@
         .blob-content
           - snippet_chunks.each do |chunk|
             - unless chunk[:data].empty?
-              = highlight(snippet.file_name, chunk[:data], repository: nil, plain: snippet.blob.no_highlighting?)
+              = highlight(snippet.file_name, chunk[:data], plain: snippet.blob.no_highlighting?)
             - else
               .file-content.code
                 .nothing-here-block Empty file

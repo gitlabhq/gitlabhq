@@ -22,7 +22,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       format.html do
         usage_data_json = JSON.pretty_generate(Gitlab::UsageData.data)
 
-        render html: Gitlab::Highlight.highlight('payload.json', usage_data_json)
+        render html: Gitlab::Highlight.highlight('payload.json', usage_data_json, language: 'json')
       end
       format.json { render json: Gitlab::UsageData.to_json }
     end
