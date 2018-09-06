@@ -67,6 +67,14 @@ module Gitlab
             value[:url]
           end
 
+          def track
+            value[:track] || 'stable'
+          end
+
+          def rollout
+            value[:rollout].to_i.nonzero?
+          end
+
           def action
             value[:action] || 'start'
           end
