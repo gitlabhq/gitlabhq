@@ -154,4 +154,24 @@ describe Repository do
       end
     end
   end
+
+  describe '#code_owners_blob' do
+    it 'returns nil if there is no codeowners file' do
+      expect(repository.code_owners_blob(ref: 'master')).to be_nil
+    end
+
+    it 'returns the content of the codeowners file when it is found' do
+      expect(repository.code_owners_blob(ref: 'with-codeowners').data).to include('example CODEOWNERS file')
+    end
+
+    it 'requests the CODOWNER blobs in batch in the correct order' do
+      expect(repository).to receive(:blobs_at)
+                              .with([%w(HEAD CODEOWNERS),
+                                     %w(HEAD docs/CODEOWNERS),
+                                     %w(HEAD .gitlab/CODEOWNERS)])
+                              .and_call_original
+
+      repository.code_owners_blob
+    end
+  end
 end
