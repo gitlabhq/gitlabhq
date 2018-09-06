@@ -1,6 +1,6 @@
 - link = link_to(s_('ClusterIntegration|sign up'), 'https://console.cloud.google.com/freetrial?utm_campaign=2018_cpanel&utm_source=gitlab&utm_medium=referral', target: '_blank', rel: 'noopener noreferrer')
 .bs-callout.gcp-signup-offer.alert.alert-block.alert-dismissable.prepend-top-default.append-bottom-default{ role: 'alert', data: { feature_id: UserCalloutsHelper::GCP_SIGNUP_OFFER, dismiss_endpoint: user_callouts_path } }
-  %button.close{ type: "button" }  &times;
+  %button.close.js-close{ type: "button" }  &times;
   .gcp-signup-offer--content
     .gcp-signup-offer--icon.append-right-8
       = sprite_icon("information", size: 16)
