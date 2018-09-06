@@ -1,9 +1,10 @@
+- @content_class = "limit-container-width" unless fluid_layout
 - @no_container = true
 - add_to_breadcrumbs "Tags", project_tags_path(@project)
 - breadcrumb_title @tag.name
 - page_title "Edit", @tag.name, "Tags"
 
-%div{ class: container_class }
+%div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
   .sub-header-block.no-bottom-space
     .oneline
       .title
