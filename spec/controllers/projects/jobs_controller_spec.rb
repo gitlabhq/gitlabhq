@@ -135,7 +135,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       end
     end
 
-    context 'when requesting JSON with failed job' do
+    context 'when requesting JSON' do
       let(:merge_request) { create(:merge_request, source_project: project) }
 
       before do
@@ -147,61 +147,51 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         get_show(id: job.id, format: :json)
       end
 
-      it 'exposes needed information' do
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to match_response_schema('job/job_details')
-        expect(json_response['raw_path']).to match(%r{jobs/\d+/raw\z})
-        expect(json_response['merge_request']['path']).to match(%r{merge_requests/\d+\z})
-        expect(json_response['new_issue_path']).to include('/issues/new')
-      end
-    end
-
-    context 'when request JSON for successful job' do
-      let(:merge_request) { create(:merge_request, source_project: project) }
-      let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
-
-      before do
-        project.add_developer(user)
-        sign_in(user)
-
-        allow_any_instance_of(Ci::Build).to receive(:merge_request).and_return(merge_request)
-
-        get_show(id: job.id, format: :json)
-      end
-
-      it 'exposes needed information' do
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to match_response_schema('job/job_details')
-        expect(json_response['artifact']['download_path']).to match(%r{artifacts/download})
-        expect(json_response['artifact']['browse_path']).to match(%r{artifacts/browse})
-        expect(json_response['artifact']).not_to have_key(:expired)
-        expect(json_response['artifact']).not_to have_key(:expired_at)
-        expect(json_response['raw_path']).to match(%r{jobs/\d+/raw\z})
-        expect(json_response.dig('merge_request', 'path')).to match(%r{merge_requests/\d+\z})
-      end
-
-      context 'when request JSON for successful job with expired artifacts' do
-        let(:merge_request) { create(:merge_request, source_project: project) }
-        let(:job) { create(:ci_build, :success, :artifacts, :expired, pipeline: pipeline) }
-
-        before do
-          project.add_developer(user)
-          sign_in(user)
-
-          allow_any_instance_of(Ci::Build).to receive(:merge_request).and_return(merge_request)
-
-          get_show(id: job.id, format: :json)
-        end
-
+      context 'when job failed' do
         it 'exposes needed information' do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('job/job_details')
-          expect(json_response['artifact']).not_to have_key(:download_path)
-          expect(json_response['artifact']).not_to have_key(:browse_path)
-          expect(json_response['artifact']['expired']).to eq(true)
-          expect(json_response['artifact']['expire_at']).not_to be_empty
           expect(json_response['raw_path']).to match(%r{jobs/\d+/raw\z})
           expect(json_response.dig('merge_request', 'path')).to match(%r{merge_requests/\d+\z})
+          expect(json_response['new_issue_path']).to include('/issues/new')
+        end
+      end
+
+      context 'when job has artifacts' do
+        context 'with not expiry date' do
+          let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
+
+          it 'exposes needed information' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('job/job_details')
+            expect(json_response['artifact']['download_path']).to match(%r{artifacts/download})
+            expect(json_response['artifact']['browse_path']).to match(%r{artifacts/browse})
+            expect(json_response['artifact']).not_to have_key(:expired)
+            expect(json_response['artifact']).not_to have_key(:expired_at)
+          end
+        end
+
+        context 'with expiry date' do
+          let(:job) { create(:ci_build, :success, :artifacts, :expired, pipeline: pipeline) }
+
+          it 'exposes needed information' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('job/job_details')
+            expect(json_response['artifact']).not_to have_key(:download_path)
+            expect(json_response['artifact']).not_to have_key(:browse_path)
+            expect(json_response['artifact']['expired']).to eq(true)
+            expect(json_response['artifact']['expire_at']).not_to be_empty
+          end
+        end
+      end
+
+      context 'when job has terminal' do
+        let(:job) { create(:ci_build, :running, :with_runner_session, pipeline: pipeline) }
+
+        it 'exposes the terminal path' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('job/job_details')
+          expect(json_response['terminal_path']).to match(%r{/terminal})
         end
       end
     end

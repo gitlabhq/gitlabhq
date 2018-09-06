@@ -149,7 +149,8 @@
   &.btn-success,
   &.btn-new,
   &.btn-create,
-  &.btn-save {
+  &.btn-save,
+  &.btn-register {
     @include btn-green;
   }
 
@@ -172,8 +173,7 @@
   }
 
   &.btn-info,
-  &.btn-primary,
-  &.btn-register {
+  &.btn-primary {
     @include btn-blue;
   }
 
@@ -248,7 +248,7 @@
 .btn-terminal {
   svg {
     height: 14px;
-    width: 18px;
+    width: $default-icon-size;
   }
 }
 

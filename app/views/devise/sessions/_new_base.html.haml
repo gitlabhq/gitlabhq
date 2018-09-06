@@ -1,9 +1,9 @@
 = form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'new_user gl-show-field-errors', 'aria-live' => 'assertive'}) do |f|
   .form-group
-    = f.label "Username or email", for: "user_login"
+    = f.label "Username or email", for: "user_login", class: 'label-bold'
     = f.text_field :login, class: "form-control top", autofocus: "autofocus", autocapitalize: "off", autocorrect: "off", required: true, title: "This field is required."
   .form-group
-    = f.label :password
+    = f.label :password, class: 'label-bold'
     = f.password_field :password, class: "form-control bottom", required: true, title: "This field is required."
   - if devise_mapping.rememberable?
     .remember-me

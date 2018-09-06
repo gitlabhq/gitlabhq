@@ -53,6 +53,10 @@ module Gitlab
       check_authentication_abilities!(cmd)
       check_command_disabled!(cmd)
       check_command_existence!(cmd)
+
+      custom_action = check_custom_action(cmd)
+      return custom_action if custom_action
+
       check_db_accessibility!(cmd)
 
       ensure_project_on_push!(cmd, changes)
@@ -68,7 +72,7 @@ module Gitlab
         check_push_access!
       end
 
-      true
+      ::Gitlab::GitAccessResult::Success.new
     end
 
     def guest_can_download_code?
@@ -94,6 +98,10 @@ module Gitlab
     end
 
     private
+
+    def check_custom_action(cmd)
+      nil
+    end
 
     def check_valid_actor!
       return unless actor.is_a?(Key)

@@ -4,6 +4,7 @@
   .well-segment
     %ul.blob-commit-info
       = render 'projects/commits/commit', commit: @last_commit, project: @project, ref: @ref
+
   = render_if_exists 'projects/blob/owners', blob: blob
   = render "projects/blob/auxiliary_viewer", blob: blob
 

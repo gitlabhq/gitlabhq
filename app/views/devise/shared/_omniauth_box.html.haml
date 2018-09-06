@@ -1,14 +1,17 @@
-.omniauth-container
-  %p
-    %span.light
-      Sign in with &nbsp;
-    - providers = enabled_button_based_providers
+.omniauth-container.prepend-top-15
+  %label.label-bold.d-block
+    Sign in with
+  - providers = enabled_button_based_providers
+  .d-flex.justify-content-between.flex-wrap
     - providers.each do |provider|
-      %span.light
-        - has_icon = provider_has_icon?(provider)
-        = link_to provider_image_tag(provider), omniauth_authorize_path(:user, provider), method: :post, class: 'oauth-login' + (has_icon ? ' oauth-image-link' : ' btn'), id: "oauth-login-#{provider}"
-    %fieldset.prepend-top-10.remember-me
-      %label
-        = check_box_tag :remember_me, nil, false, class: 'remember-me-checkbox'
+      - has_icon = provider_has_icon?(provider)
+      = link_to omniauth_authorize_path(:user, provider), method: :post, class: 'btn d-flex align-items-center omniauth-btn text-left oauth-login', id: "oauth-login-#{provider}" do
+        - if has_icon
+          = provider_image_tag(provider)
         %span
-          Remember me
+          = label_for_provider(provider)
+  %fieldset.remember-me
+    %label
+      = check_box_tag :remember_me, nil, false, class: 'remember-me-checkbox'
+      %span
+        Remember me
