@@ -121,11 +121,10 @@ describe "Git HTTP requests (Geo)" do
     context 'API' do
       describe 'POST batch' do
         def make_request
-          post url, {}, env.merge(extra_env)
+          post url, args, env
         end
 
-        let(:extra_env) { {} }
-        let(:incorrect_version_regex) { /You need git-lfs version 2.4.2/ }
+        let(:args) { {} }
         let(:url) { "/#{project.full_path}.git/info/lfs/objects/batch" }
 
         subject do
@@ -133,28 +132,82 @@ describe "Git HTTP requests (Geo)" do
           response
         end
 
-        context 'with the correct git-lfs version' do
-          let(:extra_env) { { 'User-Agent' => 'git-lfs/2.4.2 (GitHub; darwin amd64; go 1.10.2)' } }
+        before do
+          allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
+          project.update_attribute(:lfs_enabled, true)
+          env['Content-Type'] = LfsRequest::CONTENT_TYPE
+        end
 
-          it 'redirects to the primary' do
-            is_expected.to have_gitlab_http_status(:redirect)
-            redirect_location = "#{primary.url.chomp('/')}#{url}"
-            expect(subject.header['Location']).to eq(redirect_location)
+        context 'operation upload' do
+          let(:args) { { 'operation' => 'upload' }.to_json }
+
+          context 'with the correct git-lfs version' do
+            before do
+              env['User-Agent'] = 'git-lfs/2.4.2 (GitHub; darwin amd64; go 1.10.2)'
+            end
+
+            it 'redirects to the primary' do
+              is_expected.to have_gitlab_http_status(:redirect)
+              redirect_location = "#{primary.url.chomp('/')}#{url}"
+              expect(subject.header['Location']).to eq(redirect_location)
+            end
+          end
+
+          context 'with an incorrect git-lfs version' do
+            where(:description, :version) do
+              'outdated' | 'git-lfs/2.4.1'
+              'unknown'  | 'git-lfs'
+            end
+
+            with_them do
+              context "that is #{description}" do
+                before do
+                  env['User-Agent'] = "#{version} (GitHub; darwin amd64; go 1.10.2)"
+                end
+
+                it 'is forbidden' do
+                  is_expected.to have_gitlab_http_status(:forbidden)
+                  expect(json_response['message']).to match(/You need git-lfs version 2.4.2/)
+                end
+              end
+            end
           end
         end
 
-        where(:description, :version) do
-          'outdated' | 'git-lfs/2.4.1'
-          'unknown'  | 'git-lfs'
-        end
+        context 'operation download' do
+          let(:user) { create(:user) }
+          let(:authorization) { ActionController::HttpAuthentication::Basic.encode_credentials(user.username, user.password) }
+          let(:lfs_object) { create(:lfs_object, :with_file) }
+          let(:args) do
+            {
+              'operation' => 'download',
+              'objects' => [{ 'oid' => lfs_object.oid, 'size' => lfs_object.size }]
+            }.to_json
+          end
 
-        with_them do
-          context "with an #{description} git-lfs version" do
-            let(:extra_env) { { 'User-Agent' => "#{version} (GitHub; darwin amd64; go 1.10.2)" } }
+          before do
+            project.add_maintainer(user)
+            env['Authorization'] = authorization
+          end
 
-            it 'errors out' do
-              is_expected.to have_gitlab_http_status(:forbidden)
-              expect(json_response['message']).to match(incorrect_version_regex)
+          it 'is handled by the secondary' do
+            is_expected.to have_gitlab_http_status(:ok)
+          end
+
+          where(:description, :version) do
+            'outdated' | 'git-lfs/2.4.1'
+            'unknown'  | 'git-lfs'
+          end
+
+          with_them do
+            context "with an #{description} git-lfs version" do
+              before do
+                env['User-Agent'] = "#{version} (GitHub; darwin amd64; go 1.10.2)"
+              end
+
+              it 'is handled by the secondary' do
+                is_expected.to have_gitlab_http_status(:ok)
+              end
             end
           end
         end
