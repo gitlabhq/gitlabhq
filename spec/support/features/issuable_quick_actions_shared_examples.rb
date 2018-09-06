@@ -309,7 +309,7 @@ shared_examples 'issuable record that supports quick actions in its description 
           project.add_guest(guest)
 
           gitlab_sign_out
-          gitlab_sign_in(guest)
+          sign_in(guest)
           visit public_send("project_#{issuable_type}_path", project, issuable)
         end
 
@@ -346,7 +346,7 @@ shared_examples 'issuable record that supports quick actions in its description 
           project.add_guest(guest)
 
           gitlab_sign_out
-          gitlab_sign_in(guest)
+          sign_in(guest)
           visit public_send("project_#{issuable_type}_path", project, issuable)
         end
 
