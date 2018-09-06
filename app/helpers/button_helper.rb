@@ -92,6 +92,7 @@ module ButtonHelper
       class: "#{title.downcase}-selector",
       href: (href if href),
       data: (data if data)
+<<<<<<< HEAD
   end
 
   def kerberos_clone_button(project)
@@ -117,5 +118,7 @@ module ButtonHelper
                 data: data,
                 type: :button,
                 title: 'See Geo-specific instructions'
+=======
+>>>>>>> upstream/master
   end
 end

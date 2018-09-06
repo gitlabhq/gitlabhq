@@ -24,7 +24,10 @@ You can use GFM in the following areas:
 - snippets (the snippet must be named with a `.md` extension)
 - wiki pages
 - markdown documents inside the repository
+<<<<<<< HEAD
 - epics
+=======
+>>>>>>> upstream/master
 
 You can also use other rich text files in GitLab. You might have to install a
 dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.

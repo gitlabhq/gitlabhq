@@ -119,6 +119,10 @@ describe Feature do
       expect(described_class.enabled?(:some_random_feature_flag)).to be_falsey
     end
 
+    it 'returns true for undefined feature with default_enabled' do
+      expect(described_class.enabled?(:some_random_feature_flag, default_enabled: true)).to be_truthy
+    end
+
     it 'returns false for existing disabled feature in the database' do
       described_class.disable(:disabled_feature_flag)
 
@@ -158,6 +162,10 @@ describe Feature do
   describe '.disable?' do
     it 'returns true for undefined feature' do
       expect(described_class.disabled?(:some_random_feature_flag)).to be_truthy
+    end
+
+    it 'returns false for undefined feature with default_enabled' do
+      expect(described_class.disabled?(:some_random_feature_flag, default_enabled: true)).to be_falsey
     end
 
     it 'returns true for existing disabled feature in the database' do

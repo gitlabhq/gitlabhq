@@ -26,6 +26,6 @@
 
 .prepend-top-default.append-bottom-default
   .wiki
-    = render_wiki_content(@page)
+    = render_wiki_content(@page, legacy_render_context(params))
 
 = render 'sidebar'

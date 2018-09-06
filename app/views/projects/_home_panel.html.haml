@@ -44,6 +44,7 @@
             - deleted_message = s_('ForkedFromProjectPath|Forked from %{project_name} (deleted)')
             = deleted_message % { project_name: fork_source_name(@project) }
 
+<<<<<<< HEAD
       - if @project.mirror?
         - import_url = @project.safe_import_url
         %p
@@ -51,6 +52,8 @@
           %br
           = render "shared/mirror_status"
 
+=======
+>>>>>>> upstream/master
     - if @project.badges.present?
       .project-badges.prepend-top-default.append-bottom-default
         - @project.badges.each do |badge|
@@ -69,6 +72,7 @@
       - if can?(current_user, :download_code, @project)
         .project-clone-holder.d-inline-flex.d-sm-none
           = render "shared/mobile_clone_panel"
+<<<<<<< HEAD
 
         .project-clone-holder.d-none.d-sm-inline-flex
           = render "shared/clone_panel"
@@ -77,6 +81,16 @@
           .project-action-button.project-xcode.inline
             = render "projects/buttons/xcode_link"
 
+=======
+
+        .project-clone-holder.d-none.d-sm-inline-flex
+          = render "shared/clone_panel"
+
+        - if show_xcode_link?(@project)
+          .project-action-button.project-xcode.inline
+            = render "projects/buttons/xcode_link"
+
+>>>>>>> upstream/master
       - if current_user
         - if can?(current_user, :download_code, @project)
           .d-none.d-sm-inline-flex
