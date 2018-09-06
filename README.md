@@ -33,7 +33,7 @@ Documentation:
 http://doc.gitlab.com/ee/
 
 To upgrade from CE, just perform a normal upgrade, but use an EE package:
-https://about.gitlab.com/update/#ee
+https://about.gitlab.com/upgrade/
 
 If you need help with your GitLab installation and for any technical questions please see the [support page](https://about.gitlab.com/support/)
 
