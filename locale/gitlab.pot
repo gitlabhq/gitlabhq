@@ -5832,6 +5832,9 @@ msgstr ""
 msgid "This branch has changed since you started editing. Would you like to create a new branch?"
 msgstr ""
 
+msgid "This container registry has been scheduled for deletion."
+msgstr ""
+
 msgid "This diff is collapsed."
 msgstr ""
 
