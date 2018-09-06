@@ -23,14 +23,13 @@ describe EE::Gitlab::ImportExport::AfterExportStrategies::CustomTemplateExportIm
 
   describe '#execute' do
     it 'updates the project import_source with the path to import' do
-      path = Tempfile.new.path
+      file = fixture_file_upload('spec/fixtures/project_export.tar.gz')
 
-      allow(subject).to receive(:import_upload_path).and_return(path)
-      expect(Project).to receive(:update).with(project.id, import_source: path).and_call_original
+      allow(subject).to receive(:export_file).and_return(file)
 
       subject.execute(user, project_template)
 
-      expect(project.reload.import_source).to eq path
+      expect(project.reload.import_export_upload.import_file.file).not_to be_nil
     end
 
     it 'imports repository' do
@@ -48,26 +47,16 @@ describe EE::Gitlab::ImportExport::AfterExportStrategies::CustomTemplateExportIm
     end
 
     describe 'export_file' do
+      let(:project_template) { create(:project, :with_export) }
+
       before do
         allow(subject).to receive(:project).and_return(project_template)
       end
 
-      context 'without object storage' do
-        it 'returns the local path' do
-          subject.execute(user, project_template)
+      it 'returns the path from object storage' do
+        subject.execute(user, project_template)
 
-          expect(subject.send(:export_file)).not_to be_nil
-        end
-      end
-
-      context 'with object storage' do
-        let(:project_template) { create(:project, :with_object_export) }
-
-        it 'returns the path from object storage' do
-          subject.execute(user, project_template)
-
-          expect(subject.send(:export_file)).not_to be_nil
-        end
+        expect(subject.send(:export_file)).not_to be_nil
       end
     end
   end
