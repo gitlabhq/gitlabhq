@@ -21,7 +21,7 @@
           Write
 
       %li
-        = link_to '#preview', 'data-preview-url' => project_preview_blob_path(@project, @id) do
+        = link_to '#preview', 'data-preview-url' => project_preview_blob_path(@project, @id, legacy_render: params[:legacy_render]) do
           = editing_preview_title(@blob.name)
 
     = form_tag(project_update_blob_path(@project, @id), method: :put, class: 'js-quick-submit js-requires-input js-edit-blob-form', data: blob_editor_paths) do
