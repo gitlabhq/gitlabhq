@@ -215,21 +215,46 @@ describe Geo::RepositorySyncService do
         context 'with non empty repositories' do
           let(:project) { create(:project, :repository) }
 
-          it 'syncs gitattributes to info/attributes' do
-            expect(repository).to receive(:copy_gitattributes)
+          context 'when when HEAD change' do
+            before do
+              allow(project.repository)
+                .to receive(:find_remote_root_ref)
+                .with('geo')
+                .and_return('feature')
+            end
 
-            subject.execute
+            it 'syncs gitattributes to info/attributes' do
+              expect(repository).to receive(:copy_gitattributes)
+
+              subject.execute
+            end
+
+            it 'updates the default branch' do
+              expect(project).to receive(:change_head).with('feature').once
+
+              subject.execute
+            end
           end
 
-          it 'updates the default branch' do
-            allow(project.repository)
-              .to receive(:find_remote_root_ref)
-              .with('geo')
-              .and_return('development')
+          context 'when HEAD does not change' do
+            before do
+              allow(project.repository)
+                .to receive(:find_remote_root_ref)
+                .with('geo')
+                .and_return(project.default_branch)
+            end
 
-            expect(project).to receive(:change_head).with('development').once
+            it 'does not sync gitattributes to info/attributes' do
+              expect(repository).not_to receive(:copy_gitattributes)
 
-            subject.execute
+              subject.execute
+            end
+
+            it 'does not update the default branch' do
+              expect(project).not_to receive(:change_head)
+
+              subject.execute
+            end
           end
         end
       end
