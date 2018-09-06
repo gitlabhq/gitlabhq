@@ -55,7 +55,7 @@ shared_examples 'issuable record that supports quick actions in its description 
 
   describe "note on #{issuable_type}", :js do
     before do
-      visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
+      visit public_send("project_#{issuable_type}_path", project, issuable)
     end
 
     context 'with a note containing commands' do
@@ -121,7 +121,7 @@ shared_examples 'issuable record that supports quick actions in its description 
 
           gitlab_sign_out
           gitlab_sign_in(guest)
-          visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
+          visit public_send("project_#{issuable_type}_path", project, issuable)
         end
 
         it "does not close the #{issuable_type}" do
@@ -158,7 +158,7 @@ shared_examples 'issuable record that supports quick actions in its description 
 
           gitlab_sign_out
           gitlab_sign_in(guest)
-          visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
+          visit public_send("project_#{issuable_type}_path", project, issuable)
         end
 
         it "does not reopen the #{issuable_type}" do
@@ -190,7 +190,7 @@ shared_examples 'issuable record that supports quick actions in its description 
 
           gitlab_sign_out
           gitlab_sign_in(guest)
-          visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
+          visit public_send("project_#{issuable_type}_path", project, issuable)
         end
 
         it "does not change the #{issuable_type} title" do
@@ -310,7 +310,7 @@ shared_examples 'issuable record that supports quick actions in its description 
 
           gitlab_sign_out
           gitlab_sign_in(guest)
-          visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
+          visit public_send("project_#{issuable_type}_path", project, issuable)
         end
 
         it "does not lock the #{issuable_type} discussion" do
@@ -347,7 +347,7 @@ shared_examples 'issuable record that supports quick actions in its description 
 
           gitlab_sign_out
           gitlab_sign_in(guest)
-          visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
+          visit public_send("project_#{issuable_type}_path", project, issuable)
         end
 
         it "does not unlock the #{issuable_type} discussion" do
@@ -365,7 +365,7 @@ shared_examples 'issuable record that supports quick actions in its description 
     it 'removes quick actions from note and explains them' do
       create(:user, username: 'bob')
 
-      visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
+      visit public_send("project_#{issuable_type}_path", project, issuable)
 
       page.within('.js-main-target-form') do
         fill_in 'note[note]', with: "Awesome!\n/assign @bob "
