@@ -1,13 +1,13 @@
 require 'spec_helper'
 
 describe API::ProjectExport do
-  set(:project) { create(:project) }
-  set(:project_none) { create(:project) }
-  set(:project_started) { create(:project) }
+  let(:project) { create(:project) }
+  let(:project_none) { create(:project) }
+  let(:project_started) { create(:project) }
   let(:project_finished) { create(:project, :with_export) }
   let(:project_after_export) { create(:project, :with_export) }
-  set(:user) { create(:user) }
-  set(:admin) { create(:admin) }
+  let(:user) { create(:user) }
+  let(:admin) { create(:admin) }
 
   let(:path) { "/projects/#{project.id}/export" }
   let(:path_none) { "/projects/#{project_none.id}/export" }
