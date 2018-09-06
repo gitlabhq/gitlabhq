@@ -220,7 +220,7 @@ Impersonation tokens are used exactly like regular personal access tokens, and c
 ### Sudo
 
 NOTE: **Note:**
-Only available to [administrators][permissions].
+Only available to [administrators](../user/permissions.md).
 
 All API requests support performing an API call as if you were another user,
 provided you are authenticated as an administrator with an OAuth or Personal Access Token that has the `sudo` scope.
@@ -446,7 +446,7 @@ curl --request POST --header "PRIVATE-TOKEN: ********************" \
 
 ## `id` vs `iid`
 
- Some resources have two similarly-named fields. For example, [issues], [merge requests], and [project milestones]. The fields are:
+ Some resources have two similarly-named fields. For example, [issues](issues.md), [merge requests](merge_requests.md), and [project milestones](merge_requests.md). The fields are:
 
 - `id`: ID that is unique across all projects.
 - `iid`: additional, internal ID that is unique in the scope of a single project.
@@ -562,7 +562,3 @@ programming languages. Visit the [GitLab website] for a complete list.
 [ce-5951]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5951
 [ce-9099]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9099
 [pat]: ../user/profile/personal_access_tokens.md
-[issues]: issues.md
-[merge requests]: merge_requests.md
-[project milestones]: milestones.md
-[permissions]: ../user/permissions.md
