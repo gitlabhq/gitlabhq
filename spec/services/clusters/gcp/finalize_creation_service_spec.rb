@@ -28,6 +28,10 @@ describe Clusters::Gcp::FinalizeCreationService do
       end
     end
 
+    before do
+      stub_feature_flags(rbac_clusters: false)
+    end
+
     context 'when suceeded to fetch gke cluster info' do
       let(:endpoint) { '111.111.111.111' }
       let(:api_url) { 'https://' + endpoint }
@@ -45,8 +49,6 @@ describe Clusters::Gcp::FinalizeCreationService do
         )
 
         stub_kubeclient_discover(api_url)
-        stub_kubeclient_create_service_account(api_url)
-        stub_kubeclient_create_cluster_role_binding(api_url)
       end
 
       context 'when suceeded to fetch kuberenetes token' do
@@ -59,8 +61,6 @@ describe Clusters::Gcp::FinalizeCreationService do
               metadata_name: 'gitlab-token-Y1a',
               token: Base64.encode64(token)
             } )
-
-          stub_feature_flags(rbac_clusters: false)
         end
 
         it_behaves_like 'success'
@@ -83,6 +83,8 @@ describe Clusters::Gcp::FinalizeCreationService do
         context 'rbac_clusters feature enabled' do
           before do
             stub_feature_flags(rbac_clusters: true)
+            stub_kubeclient_create_service_account(api_url)
+            stub_kubeclient_create_cluster_role_binding(api_url)
           end
 
           it_behaves_like 'success'
