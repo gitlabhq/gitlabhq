@@ -184,6 +184,13 @@ class Blob < SimpleDelegator
     Gitlab::FileDetector.type_of(path) || Gitlab::FileDetector.type_of(name)
   end
 
+  def language_from_gitattributes
+    return nil unless project
+
+    repository = project.repository
+    repository.gitattribute(path, 'gitlab-language')
+  end
+
   def video?
     UploaderHelper::VIDEO_EXT.include?(extension)
   end
