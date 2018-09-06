@@ -2840,14 +2840,13 @@ msgstr ""
 msgid "Enable the Performance Bar for a given group."
 msgstr ""
 
-<<<<<<< HEAD
-msgid "Enabled"
-=======
 msgid "Enable usage ping"
 msgstr ""
 
 msgid "Enable usage ping to get an overview of how you are using GitLab from a feature perspective."
->>>>>>> upstream/master
+msgstr ""
+
+msgid "Enabled"
 msgstr ""
 
 msgid "Ends at (UTC)"
@@ -3255,11 +3254,10 @@ msgstr ""
 msgid "For internal projects, any logged in user can view pipelines and access job details (output logs and artifacts)"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "For more information, go to the "
-=======
+msgstr ""
+
 msgid "For more information, see the documentation on %{deactivating_usage_ping_link_start}deactivating the usage ping%{deactivating_usage_ping_link_end}."
->>>>>>> upstream/master
 msgstr ""
 
 msgid "For private projects, any member (guest or higher) can view pipelines and access job details (output logs and artifacts)"
@@ -3889,14 +3887,13 @@ msgstr ""
 msgid "Help page text and support page url."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Here is the public SSH key that needs to be added to the remote server. For more information, please refer to the documentation."
 msgstr ""
 
 msgid "Hide host keys manual input"
-=======
+msgstr ""
+
 msgid "Hide payload"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Hide value"
@@ -4051,7 +4048,6 @@ msgstr ""
 msgid "Import repository"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "ImportButtons|Connect repositories from"
 msgstr ""
 
@@ -4062,9 +4058,9 @@ msgid "Improve issues management with Issue weight and GitLab Enterprise Edition
 msgstr ""
 
 msgid "Improve search with Advanced Global Search and GitLab Enterprise Edition."
-=======
+msgstr ""
+
 msgid "In order to enable instance-level analytics, please ask an admin to enable %{usage_ping_link_start}usage ping%{usage_ping_link_end}."
->>>>>>> upstream/master
 msgstr ""
 
 msgid "In the next step, you'll be able to select the projects you want to import."
@@ -5544,11 +5540,10 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "Primary"
-=======
 msgid "Preview payload"
->>>>>>> upstream/master
+msgstr ""
+
+msgid "Primary"
 msgstr ""
 
 msgid "Prioritize"
@@ -7860,11 +7855,10 @@ msgstr ""
 msgid "Use your global notification setting"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Used by members to sign in to your group in GitLab"
-=======
+msgstr ""
+
 msgid "User Cohorts are only shown when the %{usage_ping_link_start}usage ping%{usage_ping_link_end} is enabled."
->>>>>>> upstream/master
 msgstr ""
 
 msgid "User Settings"
