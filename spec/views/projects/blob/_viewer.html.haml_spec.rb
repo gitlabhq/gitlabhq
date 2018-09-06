@@ -29,6 +29,8 @@ describe 'projects/blob/_viewer.html.haml' do
     controller.params[:namespace_id] = project.namespace.to_param
     controller.params[:project_id] = project.to_param
     controller.params[:id] = File.join('master', blob.path)
+
+    allow(project.repository).to receive(:gitattribute).and_return(nil)
   end
 
   def render_view

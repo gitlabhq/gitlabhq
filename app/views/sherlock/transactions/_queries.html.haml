@@ -17,7 +17,7 @@
               = t('sherlock.milliseconds')
             %td
               .code.js-syntax-highlight.sherlock-code
-                = highlight("#{query.id}.sql", query.formatted_query)
+                = highlight("#{query.id}.sql", query.formatted_query, language: 'sql')
             %td
               = link_to(t('sherlock.view'),
                 sherlock_transaction_query_path(@transaction, query),

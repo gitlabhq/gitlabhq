@@ -41,8 +41,7 @@ module Gitlab
 
     def highlighted_lines
       @blob.load_all_data!
-      @highlighted_lines ||=
-        Gitlab::Highlight.highlight(@blob.path, @blob.data, repository: repository).lines
+      @highlighted_lines ||= @blob.present.highlight.lines
     end
 
     def project
