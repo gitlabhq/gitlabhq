@@ -59,6 +59,12 @@ parallelization, monitoring.
 
 ---
 
+## [Review apps](review_apps.md)
+
+How review apps are set up for GitLab CE/EE and how to use them.
+
+---
+
 ## [Testing Rake tasks](testing_rake_tasks.md)
 
 Everything you should know about how to test Rake tasks.
