@@ -1359,6 +1359,9 @@ msgstr ""
 msgid "ClusterIntegration|Did you know?"
 msgstr ""
 
+msgid "ClusterIntegration|Enable this setting if using role-based access control (RBAC)."
+msgstr ""
+
 msgid "ClusterIntegration|Enter the details for your Kubernetes cluster"
 msgstr ""
 
@@ -1542,6 +1545,9 @@ msgstr ""
 msgid "ClusterIntegration|Prometheus is an open-source monitoring system with %{gitlabIntegrationLink} to monitor deployed applications."
 msgstr ""
 
+msgid "ClusterIntegration|RBAC-enabled cluster (experimental)"
+msgstr ""
+
 msgid "ClusterIntegration|Read our %{link_to_help_page} on Kubernetes cluster integration."
 msgstr ""
 
@@ -1618,6 +1624,9 @@ msgid "ClusterIntegration|The default cluster configuration grants access to a w
 msgstr ""
 
 msgid "ClusterIntegration|This account must have permissions to create a Kubernetes cluster in the %{link_to_container_project} specified below"
+msgstr ""
+
+msgid "ClusterIntegration|This option will allow you to install applications on RBAC clusters."
 msgstr ""
 
 msgid "ClusterIntegration|Toggle Kubernetes Cluster"
