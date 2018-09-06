@@ -399,14 +399,10 @@ msgstr ""
 msgid "Add Group Webhooks and GitLab Enterprise Edition."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Add Kubernetes cluster"
-=======
-msgid "Add Readme"
->>>>>>> upstream/master
 msgstr ""
 
-msgid "Add license"
+msgid "Add Readme"
 msgstr ""
 
 msgid "Add additional text to appear in all email communications. %{character_limit} character limit"
@@ -2239,12 +2235,9 @@ msgstr ""
 msgid "Copy SSH clone URL"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Copy SSH public key to clipboard"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Copy URL to clipboard"
 msgstr ""
 
@@ -4975,12 +4968,9 @@ msgstr ""
 msgid "No license. All rights reserved"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "No merge requests for the selected time period."
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "No merge requests found"
 msgstr ""
 
@@ -8186,15 +8176,12 @@ msgstr ""
 msgid "You must have maintainer access to force delete a lock"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "You need a different license to enable FileLocks feature"
 msgstr ""
 
 msgid "You need git-lfs version %{min_git_lfs_version} (or greater) to continue. Please visit https://git-lfs.github.com"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "You need permission."
 msgstr ""
 
