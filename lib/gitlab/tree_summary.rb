@@ -1,10 +1,7 @@
 module Gitlab
   class TreeSummary
-<<<<<<< HEAD
     prepend ::EE::Gitlab::TreeSummary
 
-=======
->>>>>>> upstream/master
     include ::Gitlab::Utils::StrongMemoize
 
     attr_reader :commit, :project, :path, :offset, :limit
