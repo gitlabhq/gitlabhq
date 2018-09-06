@@ -127,13 +127,8 @@ export default {
         .then(() => {
           requestIdleCallback(
             () => {
-              this.startRenderDiffsQueue()
-                .then(() => {
-                  this.setDiscussions();
-                })
-                .catch(() => {
-                  createFlash(__('Something went wrong on our end. Please try again!'));
-                });
+              this.setDiscussions();
+              this.startRenderDiffsQueue();
             },
             { timeout: 1000 },
           );

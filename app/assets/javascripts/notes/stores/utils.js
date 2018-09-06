@@ -32,7 +32,6 @@ export const reduceDiscussionsToLineCodes = selectedDiscussions =>
       const items = acc[note.line_code] || [];
       if (note.diff_file) {
         Object.assign(note, { fileHash: note.diff_file.file_hash });
-        // delete note.diff_file;
       }
 
       items.push(note);

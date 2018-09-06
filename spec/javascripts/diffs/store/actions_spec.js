@@ -7,8 +7,11 @@ import {
 } from '~/diffs/constants';
 import * as actions from '~/diffs/store/actions';
 import * as types from '~/diffs/store/mutation_types';
+import { reduceDiscussionsToLineCodes } from '~/notes/stores/utils';
 import axios from '~/lib/utils/axios_utils';
 import testAction from '../../helpers/vuex_action_helper';
+import mockFile from '../mock_data/diff_file';
+import mockDiscussion from '../mock_data/diff_discussions';
 
 describe('DiffsStoreActions', () => {
   describe('setBaseConfig', () => {
@@ -50,6 +53,150 @@ describe('DiffsStoreActions', () => {
           done();
         },
       );
+    });
+  });
+
+  describe('assignDiscussionsToDiff', () => {
+    it('should merge discussions into diffs', done => {
+      const state = { diffFiles: [Object.assign({}, mockFile)] };
+      const singleDiscussion = Object.assign({}, mockDiscussion);
+      const discussions = reduceDiscussionsToLineCodes([singleDiscussion]);
+
+      testAction(
+        actions.assignDiscussionsToDiff,
+        discussions,
+        state,
+        [
+          {
+            type: types.SET_LINE_DISCUSSIONS,
+            payload: {
+              line: {
+                lineCode: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_2',
+                type: 'new',
+                oldLine: null,
+                newLine: 2,
+                discussions: [],
+                text: '+<span id="LC2" class="line" lang="plaintext"></span>\n',
+                richText: '<span id="LC2" class="line" lang="plaintext"></span>\n',
+                metaData: null,
+              },
+              discussions: discussions['1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_2'],
+            },
+          },
+          {
+            type: types.SET_LINE_DISCUSSIONS,
+            payload: {
+              line: {
+                lineCode: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_2',
+                type: 'new',
+                oldLine: null,
+                newLine: 2,
+                discussions: [],
+                text: '+<span id="LC2" class="line" lang="plaintext"></span>\n',
+                richText: '+<span id="LC2" class="line" lang="plaintext"></span>\n',
+                metaData: null,
+              },
+              discussions: discussions['1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_2'],
+            },
+          },
+        ],
+        [],
+        () => {
+          done();
+        },
+      );
+    });
+  });
+
+  describe('removeDiscussionsFromDiff', () => {
+    it('should remove discussions from diffs', done => {
+      const state = { diffFiles: [Object.assign({}, mockFile)] };
+      const singleDiscussion = Object.assign({}, mockDiscussion);
+
+      reduceDiscussionsToLineCodes([singleDiscussion]);
+
+      testAction(
+        actions.removeDiscussionsFromDiff,
+        singleDiscussion,
+        state,
+        [
+          {
+            type: types.REMOVE_LINE_DISCUSSIONS,
+            payload: {
+              lineCode: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_2',
+              type: 'new',
+              oldLine: null,
+              newLine: 2,
+              discussions: [],
+              text: '+<span id="LC2" class="line" lang="plaintext"></span>\n',
+              richText: '<span id="LC2" class="line" lang="plaintext"></span>\n',
+              metaData: null,
+            },
+          },
+          {
+            type: types.REMOVE_LINE_DISCUSSIONS,
+            payload: {
+              lineCode: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_2',
+              type: 'new',
+              oldLine: null,
+              newLine: 2,
+              discussions: [],
+              text: '+<span id="LC2" class="line" lang="plaintext"></span>\n',
+              richText: '+<span id="LC2" class="line" lang="plaintext"></span>\n',
+              metaData: null,
+            },
+          },
+        ],
+        [],
+        () => {
+          done();
+        },
+      );
+    });
+  });
+
+  describe('startRenderDiffsQueue', () => {
+    it('should set all files to RENDER_FILE', done => {
+      const actualRAF = global.requestAnimationFrame;
+      global.requestAnimationFrame = cb => {
+        cb();
+      };
+
+      const state = {
+        diffFiles: [
+          {
+            id: 1,
+            renderIt: false,
+            collapsed: false,
+          },
+          {
+            id: 2,
+            renderIt: false,
+            collapsed: false,
+          },
+        ],
+      };
+
+      const pseudoCommit = (commitType, file) => {
+        expect(commitType).toBe(types.RENDER_FILE);
+        Object.assign(file, {
+          renderIt: true,
+        });
+      };
+
+      actions
+        .startRenderDiffsQueue({ state, commit: pseudoCommit })
+        .then(() => {
+          global.requestAnimationFrame = actualRAF;
+
+          expect(state.diffFiles[0].renderIt).toBeTruthy();
+          expect(state.diffFiles[1].renderIt).toBeTruthy();
+
+          done();
+        })
+        .catch(() => {
+          done.fail();
+        });
     });
   });
 
@@ -204,7 +351,11 @@ describe('DiffsStoreActions', () => {
 
       actions.toggleFileDiscussions({ getters, dispatch });
 
-      expect(dispatch).toHaveBeenCalledWith('collapseDiscussion', { discussionId: 1 }, { root: true });
+      expect(dispatch).toHaveBeenCalledWith(
+        'collapseDiscussion',
+        { discussionId: 1 },
+        { root: true },
+      );
     });
 
     it('should dispatch expandDiscussion when all discussions are collapsed', () => {
@@ -218,7 +369,11 @@ describe('DiffsStoreActions', () => {
 
       actions.toggleFileDiscussions({ getters, dispatch });
 
-      expect(dispatch).toHaveBeenCalledWith('expandDiscussion', { discussionId: 1 }, { root: true });
+      expect(dispatch).toHaveBeenCalledWith(
+        'expandDiscussion',
+        { discussionId: 1 },
+        { root: true },
+      );
     });
 
     it('should dispatch expandDiscussion when some discussions are collapsed and others are expanded for the collapsed discussion', () => {
@@ -232,7 +387,11 @@ describe('DiffsStoreActions', () => {
 
       actions.toggleFileDiscussions({ getters, dispatch });
 
-      expect(dispatch).toHaveBeenCalledWith('expandDiscussion', { discussionId: 1 }, { root: true });
+      expect(dispatch).toHaveBeenCalledWith(
+        'expandDiscussion',
+        { discussionId: 1 },
+        { root: true },
+      );
     });
   });
 });

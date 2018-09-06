@@ -148,4 +148,41 @@ describe('DiffsStoreMutations', () => {
       expect(state.diffFiles[1].extraField).toEqual(1);
     });
   });
+
+  describe('SET_LINE_DISCUSSIONS', () => {
+    it('should add discussions to the given line', () => {
+      const line = { fileHash: 'ABC', discussions: [] };
+      const discussions = [
+        {
+          id: 1,
+        },
+        {
+          id: 2,
+        },
+      ];
+
+      mutations[types.SET_LINE_DISCUSSIONS]({}, { line, discussions });
+      expect(line.discussions.length).toEqual(2);
+      expect(line.discussions[1].id).toEqual(2);
+    });
+  });
+
+  describe('REMOVE_LINE_DISCUSSIONS', () => {
+    it('should remove the existing discussions on the given line', () => {
+      const line = {
+        fileHash: 'ABC',
+        discussions: [
+          {
+            id: 1,
+          },
+          {
+            id: 2,
+          },
+        ],
+      };
+
+      mutations[types.REMOVE_LINE_DISCUSSIONS]({}, line);
+      expect(line.discussions.length).toEqual(0);
+    });
+  });
 });
