@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, no-new */
+/* eslint-disable no-new */
 
 import $ from 'jquery';
 import Vue from 'vue';
@@ -42,7 +42,7 @@ gl.issueBoards.BoardSidebar = Vue.extend({
     };
   },
   computed: {
-    showSidebar () {
+    showSidebar() {
       return Object.keys(this.issue).length;
     },
     milestoneTitle() {
@@ -55,18 +55,22 @@ gl.issueBoards.BoardSidebar = Vue.extend({
       return this.issue.labels && this.issue.labels.length;
     },
     labelDropdownTitle() {
-      return this.hasLabels ? sprintf(__('%{firstLabel} +%{labelCount} more'), {
-        firstLabel: this.issue.labels[0].title,
-        labelCount: this.issue.labels.length - 1
-      }) : __('Label');
+      if (this.hasLabels) {
+        return sprintf(__('%{firstLabel} +%{labelCount} more'), {
+          firstLabel: this.issue.labels[0].title,
+          labelCount: this.issue.labels.length - 1,
+        });
+      }
+
+      return __('Label');
     },
     selectedLabels() {
       return this.hasLabels ? this.issue.labels.map(l => l.title).join(',') : '';
-    }
+    },
   },
   watch: {
     detail: {
-      handler () {
+      handler() {
         if (this.issue.id !== this.detail.issue.id) {
           $('.block.assignee')
             .find('input:not(.js-vue)[name="issue[assignee_ids][]"]')
@@ -75,17 +79,19 @@ gl.issueBoards.BoardSidebar = Vue.extend({
             });
 
           $('.js-issue-board-sidebar', this.$el).each((i, el) => {
-            $(el).data('glDropdown').clearMenu();
+            $(el)
+              .data('glDropdown')
+              .clearMenu();
           });
         }
 
         this.issue = this.detail.issue;
         this.list = this.detail.list;
       },
-      deep: true
+      deep: true,
     },
   },
-  created () {
+  created() {
     // Get events from glDropdown
     eventHub.$on('sidebar.removeAssignee', this.removeAssignee);
     eventHub.$on('sidebar.addAssignee', this.addAssignee);
@@ -98,7 +104,7 @@ gl.issueBoards.BoardSidebar = Vue.extend({
     eventHub.$off('sidebar.removeAllAssignees', this.removeAllAssignees);
     eventHub.$off('sidebar.saveAssignees', this.saveAssignees);
   },
-  mounted () {
+  mounted() {
     new IssuableContext(this.currentUser);
     new MilestoneSelect();
     new DueDateSelectors();
@@ -106,29 +112,30 @@ gl.issueBoards.BoardSidebar = Vue.extend({
     new Sidebar();
   },
   methods: {
-    closeSidebar () {
+    closeSidebar() {
       this.detail.issue = {};
     },
-    assignSelf () {
+    assignSelf() {
       // Notify gl dropdown that we are now assigning to current user
       this.$refs.assigneeBlock.dispatchEvent(new Event('assignYourself'));
 
       this.addAssignee(this.currentUser);
       this.saveAssignees();
     },
-    removeAssignee (a) {
+    removeAssignee(a) {
       gl.issueBoards.BoardsStore.detail.issue.removeAssignee(a);
     },
-    addAssignee (a) {
+    addAssignee(a) {
       gl.issueBoards.BoardsStore.detail.issue.addAssignee(a);
     },
-    removeAllAssignees () {
+    removeAllAssignees() {
       gl.issueBoards.BoardsStore.detail.issue.removeAllAssignees();
     },
-    saveAssignees () {
+    saveAssignees() {
       this.loadingAssignees = true;
 
-      gl.issueBoards.BoardsStore.detail.issue.update()
+      gl.issueBoards.BoardsStore.detail.issue
+        .update()
         .then(() => {
           this.loadingAssignees = false;
         })

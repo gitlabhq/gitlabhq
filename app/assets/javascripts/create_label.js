@@ -1,5 +1,3 @@
-/* eslint-disable func-names, prefer-arrow-callback */
-
 import $ from 'jquery';
 import Api from './api';
 import { humanize } from './lib/utils/text_utility';
@@ -37,9 +35,8 @@ export default class CreateLabelDropdown {
   addBinding() {
     const self = this;
 
-    this.$colorSuggestions.on('click', function (e) {
-      const $this = $(this);
-      self.addColorValue(e, $this);
+    this.$colorSuggestions.on('click', function colorSuggestionClickCallback(e) {
+      self.addColorValue(e, $(this));
     });
 
     this.$newLabelField.on('keyup change', this.enableLabelCreateButton.bind(this));
@@ -47,7 +44,7 @@ export default class CreateLabelDropdown {
 
     this.$dropdownBack.on('click', this.resetForm.bind(this));
 
-    this.$cancelButton.on('click', function (e) {
+    this.$cancelButton.on('click', e => {
       e.preventDefault();
       e.stopPropagation();
 
@@ -79,13 +76,9 @@ export default class CreateLabelDropdown {
   }
 
   resetForm() {
-    this.$newLabelField
-      .val('')
-      .trigger('change');
+    this.$newLabelField.val('').trigger('change');
 
-    this.$newColorField
-      .val('')
-      .trigger('change');
+    this.$newColorField.val('').trigger('change');
 
     this.$colorPreview
       .css('background-color', '')
@@ -97,31 +90,34 @@ export default class CreateLabelDropdown {
     e.preventDefault();
     e.stopPropagation();
 
-    Api.newLabel(this.namespacePath, this.projectPath, {
-      title: this.$newLabelField.val(),
-      color: this.$newColorField.val(),
-    }, (label) => {
-      this.$newLabelCreateButton.enable();
+    Api.newLabel(
+      this.namespacePath,
+      this.projectPath,
+      {
+        title: this.$newLabelField.val(),
+        color: this.$newColorField.val(),
+      },
+      label => {
+        this.$newLabelCreateButton.enable();
 
-      if (label.message) {
-        let errors;
+        if (label.message) {
+          let errors;
 
-        if (typeof label.message === 'string') {
-          errors = label.message;
+          if (typeof label.message === 'string') {
+            errors = label.message;
+          } else {
+            errors = Object.keys(label.message)
+              .map(key => `${humanize(key)} ${label.message[key].join(', ')}`)
+              .join('<br/>');
+          }
+
+          this.$newLabelError.html(errors).show();
         } else {
-          errors = Object.keys(label.message).map(key =>
-            `${humanize(key)} ${label.message[key].join(', ')}`,
-          ).join('<br/>');
+          this.$dropdownBack.trigger('click');
+
+          $(document).trigger('created.label', label);
         }
-
-        this.$newLabelError
-          .html(errors)
-          .show();
-      } else {
-        this.$dropdownBack.trigger('click');
-
-        $(document).trigger('created.label', label);
-      }
-    });
+      },
+    );
   }
 }

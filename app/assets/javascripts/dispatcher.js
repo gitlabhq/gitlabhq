@@ -1,5 +1,3 @@
-/* eslint-disable consistent-return, no-new */
-
 import $ from 'jquery';
 import GfmAutoComplete from './gfm_auto_complete';
 import { convertPermissionToBoolean } from './lib/utils/common_utils';
@@ -11,12 +9,14 @@ import performanceBar from './performance_bar';
 function initSearch() {
   // Only when search form is present
   if ($('.search').length) {
-    return new SearchAutocomplete();
+    // eslint-disable-next-line no-new
+    new SearchAutocomplete();
   }
 }
 
 function initFieldErrors() {
   $('.gl-show-field-errors').each((i, form) => {
+    // eslint-disable-next-line no-new
     new GlFieldErrors(form);
   });
 }
@@ -47,18 +47,15 @@ function initPageShortcuts(page) {
   ];
 
   if (pagesWithCustomShortcuts.indexOf(page) === -1) {
+    // eslint-disable-next-line no-new
     new Shortcuts();
   }
 }
 
 function initGFMInput() {
   $('.js-gfm-input:not(.js-vue-textarea)').each((i, el) => {
-    const gfm = new GfmAutoComplete(
-      gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources,
-    );
-    const enableGFM = convertPermissionToBoolean(
-      el.dataset.supportsAutocomplete,
-    );
+    const gfm = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
+    const enableGFM = convertPermissionToBoolean(el.dataset.supportsAutocomplete);
     gfm.setup($(el), {
       emojis: true,
       members: enableGFM,

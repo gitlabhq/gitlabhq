@@ -1,5 +1,3 @@
-/* eslint-disable comma-dangle */
-
 import Sortable from 'sortablejs';
 import Vue from 'vue';
 import { n__ } from '~/locale';
@@ -47,7 +45,7 @@ gl.issueBoards.Board = Vue.extend({
       required: true,
     },
   },
-  data () {
+  data() {
     return {
       detailIssue: Store.detail,
       filter: Store.filter,
@@ -63,21 +61,20 @@ gl.issueBoards.Board = Vue.extend({
     filter: {
       handler() {
         this.list.page = 1;
-        this.list.getIssues(true)
-          .catch(() => {
-            // TODO: handle request error
-          });
+        this.list.getIssues(true).catch(() => {
+          // TODO: handle request error
+        });
       },
       deep: true,
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.sortableOptions = gl.issueBoards.getBoardSortableDefaultOptions({
       disabled: this.disabled,
       group: 'boards',
       draggable: '.is-draggable',
       handle: '.js-board-handle',
-      onEnd: (e) => {
+      onEnd: e => {
         gl.issueBoards.onEnd();
 
         if (e.newIndex !== undefined && e.oldIndex !== e.newIndex) {
@@ -88,14 +85,15 @@ gl.issueBoards.Board = Vue.extend({
             Store.moveList(list, order);
           });
         }
-      }
+      },
     });
 
     this.sortable = Sortable.create(this.$el.parentNode, this.sortableOptions);
   },
   created() {
     if (this.list.isExpandable && AccessorUtilities.isLocalStorageAccessSafe()) {
-      const isCollapsed = localStorage.getItem(`boards.${this.boardId}.${this.list.type}.expanded`) === 'false';
+      const isCollapsed =
+        localStorage.getItem(`boards.${this.boardId}.${this.list.type}.expanded`) === 'false';
 
       this.list.isExpanded = !isCollapsed;
     }
@@ -109,7 +107,10 @@ gl.issueBoards.Board = Vue.extend({
         this.list.isExpanded = !this.list.isExpanded;
 
         if (AccessorUtilities.isLocalStorageAccessSafe()) {
-          localStorage.setItem(`boards.${this.boardId}.${this.list.type}.expanded`, this.list.isExpanded);
+          localStorage.setItem(
+            `boards.${this.boardId}.${this.list.type}.expanded`,
+            this.list.isExpanded,
+          );
         }
       }
     },

@@ -1,5 +1,3 @@
-/* eslint-disable class-methods-use-this, no-unused-vars */
-
 import $ from 'jquery';
 
 export default class TemplateSelector {
@@ -61,7 +59,8 @@ export default class TemplateSelector {
     return this.requestFile(item);
   }
 
-  requestFile(item) {
+  // eslint-disable-next-line class-methods-use-this
+  requestFile() {
     // This `requestFile` method is an abstract method that should
     // be added by all subclasses.
   }
@@ -84,14 +83,10 @@ export default class TemplateSelector {
   }
 
   startLoadingSpinner() {
-    this.$dropdownIcon
-      .addClass('fa-spinner fa-spin')
-      .removeClass('fa-chevron-down');
+    this.$dropdownIcon.addClass('fa-spinner fa-spin').removeClass('fa-chevron-down');
   }
 
   stopLoadingSpinner() {
-    this.$dropdownIcon
-      .addClass('fa-chevron-down')
-      .removeClass('fa-spinner fa-spin');
+    this.$dropdownIcon.addClass('fa-chevron-down').removeClass('fa-spinner fa-spin');
   }
 }

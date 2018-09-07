@@ -1,5 +1,3 @@
-/* eslint-disable func-names, new-cap */
-
 import $ from 'jquery';
 import Vue from 'vue';
 import './models/discussion';
@@ -28,11 +26,11 @@ export default () => {
   window.ResolveService = new gl.DiffNotesResolveServiceClass(projectPath);
 
   gl.diffNotesCompileComponents = () => {
-    $('diff-note-avatars').each(function() {
-      const tmp = Vue.extend({
+    $('diff-note-avatars').each(function diffNoteAvatarsIteratorCallback() {
+      const Tmp = Vue.extend({
         template: $(this).get(0).outerHTML,
       });
-      const tmpApp = new tmp().$mount();
+      const tmpApp = new Tmp().$mount();
 
       $(this).replaceWith(tmpApp.$el);
       $(tmpApp.$el).one('remove.vue', () => {
@@ -41,22 +39,22 @@ export default () => {
       });
     });
 
-    const $components = $(COMPONENT_SELECTOR).filter(function() {
+    const $components = $(COMPONENT_SELECTOR).filter(function componentSelectorItetatorCallback() {
       return $(this).closest('resolve-count').length !== 1;
     });
 
     if ($components) {
-      $components.each(function() {
+      $components.each(function componentsItetatorCallback() {
         const $this = $(this);
         const noteId = $this.attr(':note-id');
         const discussionId = $this.attr(':discussion-id');
 
         if ($this.is('comment-and-resolve-btn') && !discussionId) return;
 
-        const tmp = Vue.extend({
+        const Tmp = Vue.extend({
           template: $this.get(0).outerHTML,
         });
-        const tmpApp = new tmp().$mount();
+        const tmpApp = new Tmp().$mount();
 
         if (noteId) {
           gl.diffNoteApps[`note_${noteId}`] = tmpApp;

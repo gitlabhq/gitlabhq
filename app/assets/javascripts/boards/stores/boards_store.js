@@ -1,4 +1,3 @@
-/* eslint-disable comma-dangle, no-shadow */
 /* global List */
 
 import $ from 'jquery';
@@ -22,20 +21,20 @@ gl.issueBoards.BoardsStore = {
     issue: {},
     list: {},
   },
-  create () {
+  create() {
     this.state.lists = [];
     this.filter.path = getUrlParamsArray().join('&');
     this.detail = {
       issue: {},
     };
   },
-  addList (listObj, defaultAvatar) {
+  addList(listObj, defaultAvatar) {
     const list = new List(listObj, defaultAvatar);
     this.state.lists.push(list);
 
     return list;
   },
-  new (listObj) {
+  new(listObj) {
     const list = this.addList(listObj);
     const backlogList = this.findList('type', 'backlog', 'backlog');
 
@@ -52,44 +51,44 @@ gl.issueBoards.BoardsStore = {
       });
     this.removeBlankState();
   },
-  updateNewListDropdown (listId) {
+  updateNewListDropdown(listId) {
     $(`.js-board-list-${listId}`).removeClass('is-active');
   },
-  shouldAddBlankState () {
+  shouldAddBlankState() {
     // Decide whether to add the blank state
-    return !(this.state.lists.filter(list => list.type !== 'backlog' && list.type !== 'closed')[0]);
+    return !this.state.lists.filter(list => list.type !== 'backlog' && list.type !== 'closed')[0];
   },
-  addBlankState () {
+  addBlankState() {
     if (!this.shouldAddBlankState() || this.welcomeIsHidden() || this.disabled) return;
 
     this.addList({
       id: 'blank',
       list_type: 'blank',
       title: 'Welcome to your Issue Board!',
-      position: 0
+      position: 0,
     });
 
     this.state.lists = _.sortBy(this.state.lists, 'position');
   },
-  removeBlankState () {
+  removeBlankState() {
     this.removeList('blank');
 
     Cookies.set('issue_board_welcome_hidden', 'true', {
       expires: 365 * 10,
-      path: ''
+      path: '',
     });
   },
-  welcomeIsHidden () {
+  welcomeIsHidden() {
     return Cookies.get('issue_board_welcome_hidden') === 'true';
   },
-  removeList (id, type = 'blank') {
+  removeList(id, type = 'blank') {
     const list = this.findList('id', id, type);
 
     if (!list) return;
 
-    this.state.lists = this.state.lists.filter(list => list.id !== id);
+    this.state.lists = this.state.lists.filter(l => l.id !== id);
   },
-  moveList (listFrom, orderLists) {
+  moveList(listFrom, orderLists) {
     orderLists.forEach((id, i) => {
       const list = this.findList('id', parseInt(id, 10));
 
@@ -97,22 +96,25 @@ gl.issueBoards.BoardsStore = {
     });
     listFrom.update();
   },
-  moveIssueToList (listFrom, listTo, issue, newIndex) {
+  moveIssueToList(listFrom, listTo, issue, newIndex) {
     const issueTo = listTo.findIssue(issue.id);
     const issueLists = issue.getLists();
     const listLabels = issueLists.map(listIssue => listIssue.label);
 
     if (!issueTo) {
       // Check if target list assignee is already present in this issue
-      if ((listTo.type === 'assignee' && listFrom.type === 'assignee') &&
-          issue.findAssignee(listTo.assignee)) {
+      if (
+        listTo.type === 'assignee' &&
+        listFrom.type === 'assignee' &&
+        issue.findAssignee(listTo.assignee)
+      ) {
         const targetIssue = listTo.findIssue(issue.id);
         targetIssue.removeAssignee(listFrom.assignee);
       } else if (listTo.type === 'milestone') {
         const currentMilestone = issue.milestone;
         const currentLists = this.state.lists
-            .filter(list => (list.type === 'milestone' && list.id !== listTo.id))
-            .filter(list => list.issues.some(listIssue => issue.id === listIssue.id));
+          .filter(list => list.type === 'milestone' && list.id !== listTo.id)
+          .filter(list => list.issues.some(listIssue => issue.id === listIssue.id));
 
         issue.removeMilestone(currentMilestone);
         issue.addMilestone(listTo.milestone);
@@ -128,7 +130,7 @@ gl.issueBoards.BoardsStore = {
     }
 
     if (listTo.type === 'closed' && listFrom.type !== 'backlog') {
-      issueLists.forEach((list) => {
+      issueLists.forEach(list => {
         list.removeIssue(issue);
       });
       issue.removeLabels(listLabels);
@@ -146,24 +148,26 @@ gl.issueBoards.BoardsStore = {
     return (
       (listTo.type !== 'label' && listFrom.type === 'assignee') ||
       (listTo.type !== 'assignee' && listFrom.type === 'label') ||
-      (listFrom.type === 'backlog')
+      listFrom.type === 'backlog'
     );
   },
-  moveIssueInList (list, issue, oldIndex, newIndex, idArray) {
+  moveIssueInList(list, issue, oldIndex, newIndex, idArray) {
     const beforeId = parseInt(idArray[newIndex - 1], 10) || null;
     const afterId = parseInt(idArray[newIndex + 1], 10) || null;
 
     list.moveIssue(issue, oldIndex, newIndex, beforeId, afterId);
   },
-  findList (key, val, type = 'label') {
-    const filteredList = this.state.lists.filter((list) => {
-      const byType = type ? (list.type === type) || (list.type === 'assignee') || (list.type === 'milestone') : true;
+  findList(key, val, type = 'label') {
+    const filteredList = this.state.lists.filter(list => {
+      const byType = type
+        ? list.type === type || list.type === 'assignee' || list.type === 'milestone'
+        : true;
 
       return list[key] === val && byType;
     });
     return filteredList[0];
   },
-  updateFiltersUrl () {
+  updateFiltersUrl() {
     window.history.pushState(null, null, `?${this.filter.path}`);
-  }
+  },
 };

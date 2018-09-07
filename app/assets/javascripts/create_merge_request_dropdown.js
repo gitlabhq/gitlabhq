@@ -1,7 +1,6 @@
-/* eslint-disable no-new */
 import _ from 'underscore';
 import axios from './lib/utils/axios_utils';
-import Flash from './flash';
+import flash from './flash';
 import DropLab from './droplab/drop_lab';
 import ISetter from './droplab/plugins/input_setter';
 import { __, sprintf } from './locale';
@@ -227,7 +226,7 @@ export default class CreateMergeRequestDropdown {
       .catch(() => {
         this.unavailable();
         this.disable();
-        new Flash('Failed to get ref.');
+        flash('Failed to get ref.');
 
         this.isGettingRef = false;
 

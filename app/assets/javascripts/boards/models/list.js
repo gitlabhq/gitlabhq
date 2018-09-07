@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle, class-methods-use-this, consistent-return, no-shadow, no-param-reassign, max-len */
 /* global ListIssue */
 
 import { __ } from '~/locale';
@@ -29,12 +28,11 @@ const TYPES = {
 class List {
   constructor(obj, defaultAvatar) {
     this.id = obj.id;
-    this._uid = this.guid();
     this.position = obj.position;
     this.title = obj.list_type === 'backlog' ? __('Open') : obj.title;
     this.type = obj.list_type;
 
-    const typeInfo = this.getTypeInfo(this.type);
+    const typeInfo = List.getTypeInfo(this.type);
     this.preset = !!typeInfo.isPreset;
     this.isExpandable = !!typeInfo.isExpandable;
     this.isExpanded = true;
@@ -57,14 +55,6 @@ class List {
         // TODO: handle request error
       });
     }
-  }
-
-  guid() {
-    const s4 = () =>
-      Math.floor((1 + Math.random()) * 0x10000)
-        .toString(16)
-        .substring(1);
-    return `${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`;
   }
 
   save() {
@@ -112,6 +102,8 @@ class List {
 
       return this.getIssues(false);
     }
+
+    return null;
   }
 
   getIssues(emptyIssues = true) {
@@ -131,15 +123,15 @@ class List {
     return gl.boardService
       .getIssuesForList(this.id, data)
       .then(res => res.data)
-      .then(data => {
+      .then(({ size, issues }) => {
         this.loading = false;
-        this.issuesSize = data.size;
+        this.issuesSize = size;
 
         if (emptyIssues) {
           this.issues = [];
         }
 
-        this.createIssues(data.issues);
+        this.createIssues(issues);
 
         return data;
       });
@@ -233,11 +225,11 @@ class List {
     });
   }
 
-  getTypeInfo (type) {
+  static getTypeInfo(type) {
     return TYPES[type] || {};
   }
 
-  onNewIssueResponse (issue, data) {
+  onNewIssueResponse(issue, data) {
     issue.id = data.id;
     issue.iid = data.iid;
     issue.project = data.project;

@@ -1,5 +1,3 @@
-/* eslint-disable class-methods-use-this */
-
 import $ from 'jquery';
 import Flash from '../flash';
 import FileTemplateTypeSelector from './template_selectors/type_selector';
@@ -33,15 +31,14 @@ export default class FileTemplateMediator {
   initTemplateTypeSelector() {
     this.typeSelector = new FileTemplateTypeSelector({
       mediator: this,
-      dropdownData: this.templateSelectors
-        .map((templateSelector) => {
-          const cfg = templateSelector.config;
+      dropdownData: this.templateSelectors.map(templateSelector => {
+        const cfg = templateSelector.config;
 
-          return {
-            name: cfg.name,
-            key: cfg.key,
-          };
-        }),
+        return {
+          name: cfg.name,
+          key: cfg.key,
+        };
+      }),
     });
   }
 
@@ -89,7 +86,7 @@ export default class FileTemplateMediator {
   }
 
   listenForPreviewMode() {
-    this.$navLinks.on('click', 'a', (e) => {
+    this.$navLinks.on('click', 'a', e => {
       const urlPieces = e.target.href.split('#');
       const hash = urlPieces[1];
       if (hash === 'preview') {
@@ -105,7 +102,7 @@ export default class FileTemplateMediator {
       e.preventDefault();
     }
 
-    this.templateSelectors.forEach((selector) => {
+    this.templateSelectors.forEach(selector => {
       if (selector.config.key === item.key) {
         selector.show();
       } else {
@@ -126,8 +123,8 @@ export default class FileTemplateMediator {
     selector.renderLoading();
     // in case undo menu is already already there
     this.destroyUndoMenu();
-    this.fetchFileTemplate(selector.config.endpoint, query, data)
-      .then((file) => {
+    FileTemplateMediator.fetchFileTemplate(selector.config.endpoint, query, data)
+      .then(file => {
         this.showUndoMenu();
         this.setEditorContent(file);
         this.setFilename(selector.config.name);
@@ -138,7 +135,7 @@ export default class FileTemplateMediator {
 
   displayMatchedTemplateSelector() {
     const currentInput = this.getFilename();
-    this.templateSelectors.forEach((selector) => {
+    this.templateSelectors.forEach(selector => {
       const match = selector.config.pattern.test(currentInput);
 
       if (match) {
@@ -149,8 +146,8 @@ export default class FileTemplateMediator {
     });
   }
 
-  fetchFileTemplate(apiCall, query, data) {
-    return new Promise((resolve) => {
+  static fetchFileTemplate(apiCall, query, data) {
+    return new Promise(resolve => {
       const resolveFile = file => resolve(file);
 
       if (!data) {

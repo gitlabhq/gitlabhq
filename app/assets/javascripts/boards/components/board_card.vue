@@ -1,5 +1,4 @@
 <script>
-  /* eslint-disable vue/require-default-prop */
   import IssueCardInner from './issue_card_inner.vue';
   import eventHub from '../eventhub';
 
@@ -37,6 +36,8 @@
       },
       groupId: {
         type: Number,
+        required: false,
+        default: null,
       },
     },
     data() {

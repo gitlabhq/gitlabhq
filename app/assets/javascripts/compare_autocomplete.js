@@ -1,5 +1,3 @@
-/* eslint-disable func-names, one-var, no-var, one-var-declaration-per-line, object-shorthand, no-else-return, max-len */
-
 import $ from 'jquery';
 import { __ } from './locale';
 import axios from './lib/utils/axios_utils';
@@ -7,15 +5,14 @@ import flash from './flash';
 import { capitalizeFirstCharacter } from './lib/utils/text_utility';
 
 export default function initCompareAutocomplete(limitTo = null, clickHandler = () => {}) {
-  $('.js-compare-dropdown').each(function() {
-    var $dropdown, selected;
-    $dropdown = $(this);
-    selected = $dropdown.data('selected');
+  $('.js-compare-dropdown').each(function compareDropdownIteratorCallback() {
+    const $dropdown = $(this);
+    const selected = $dropdown.data('selected');
     const $dropdownContainer = $dropdown.closest('.dropdown');
     const $fieldInput = $(`input[name="${$dropdown.data('fieldName')}"]`, $dropdownContainer);
     const $filterInput = $('input[type="search"]', $dropdownContainer);
     $dropdown.glDropdown({
-      data: function(term, callback) {
+      data(term, callback) {
         const params = {
           ref: $dropdown.data('ref'),
           search: term,
@@ -43,27 +40,22 @@ export default function initCompareAutocomplete(limitTo = null, clickHandler = (
       filterRemote: true,
       fieldName: $dropdown.data('fieldName'),
       filterInput: 'input[type="search"]',
-      renderRow: function(ref) {
-        var link;
+      renderRow(ref) {
         if (ref.header != null) {
           return $('<li />')
             .addClass('dropdown-header')
             .text(ref.header);
-        } else {
-          link = $('<a />')
-            .attr('href', '#')
-            .addClass(ref === selected ? 'is-active' : '')
-            .text(ref)
-            .attr('data-ref', ref);
-          return $('<li />').append(link);
         }
+
+        const link = $('<a />')
+          .attr('href', '#')
+          .addClass(ref === selected ? 'is-active' : '')
+          .text(ref)
+          .attr('data-ref', ref);
+        return $('<li />').append(link);
       },
-      id: function(obj, $el) {
-        return $el.attr('data-ref');
-      },
-      toggleLabel: function(obj, $el) {
-        return $el.text().trim();
-      },
+      id: (obj, $el) => $el.attr('data-ref'),
+      toggleLabel: (obj, $el) => $el.text().trim(),
       clicked: () => clickHandler($dropdown),
     });
     $filterInput.on('keyup', e => {
