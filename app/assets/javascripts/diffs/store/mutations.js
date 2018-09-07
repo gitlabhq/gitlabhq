@@ -86,61 +86,65 @@ export default {
 
   [types.SET_LINE_DISCUSSIONS_FOR_FILE](state, { fileHash, discussions }) {
     const selectedFile = state.diffFiles.find(f => f.fileHash === fileHash);
-    const firstDiscussion = discussions[0];
-    const targetLine = selectedFile.parallelDiffLines.find(
-      line =>
-        (line.left && line.left.lineCode === firstDiscussion.line_code) ||
-        (line.right && line.right.lineCode === firstDiscussion.line_code),
-    );
-    if (targetLine) {
-      if (targetLine.left && targetLine.left.lineCode === firstDiscussion.line_code) {
-        Object.assign(targetLine.left, {
-          discussions,
-        });
-      } else {
-        Object.assign(targetLine.right, {
-          discussions,
-        });
-      }
-    }
-
-    if (selectedFile.highlightedDiffLines) {
-      const targetInlineLine = selectedFile.highlightedDiffLines.find(
-        line => line.lineCode === firstDiscussion.line_code,
+    if (selectedFile) {
+      const firstDiscussion = discussions[0];
+      const targetLine = selectedFile.parallelDiffLines.find(
+        line =>
+          (line.left && line.left.lineCode === firstDiscussion.line_code) ||
+          (line.right && line.right.lineCode === firstDiscussion.line_code),
       );
+      if (targetLine) {
+        if (targetLine.left && targetLine.left.lineCode === firstDiscussion.line_code) {
+          Object.assign(targetLine.left, {
+            discussions,
+          });
+        } else {
+          Object.assign(targetLine.right, {
+            discussions,
+          });
+        }
+      }
 
-      if (targetInlineLine) {
-        Object.assign(targetInlineLine, {
-          discussions,
-        });
+      if (selectedFile.highlightedDiffLines) {
+        const targetInlineLine = selectedFile.highlightedDiffLines.find(
+          line => line.lineCode === firstDiscussion.line_code,
+        );
+
+        if (targetInlineLine) {
+          Object.assign(targetInlineLine, {
+            discussions,
+          });
+        }
       }
     }
   },
 
   [types.REMOVE_LINE_DISCUSSIONS_FOR_FILE](state, { fileHash, lineCode }) {
     const selectedFile = state.diffFiles.find(f => f.fileHash === fileHash);
-    const targetLine = selectedFile.parallelDiffLines.find(
-      line =>
-        (line.left && line.left.lineCode === lineCode) ||
-        (line.right && line.right.lineCode === lineCode),
-    );
-    if (targetLine) {
-      const side = targetLine.left && targetLine.left.lineCode === lineCode ? 'left' : 'right';
-
-      Object.assign(targetLine[side], {
-        discussions: [],
-      });
-    }
-
-    if (selectedFile.highlightedDiffLines) {
-      const targetInlineLine = selectedFile.highlightedDiffLines.find(
-        line => line.lineCode === lineCode,
+    if (selectedFile) {
+      const targetLine = selectedFile.parallelDiffLines.find(
+        line =>
+          (line.left && line.left.lineCode === lineCode) ||
+          (line.right && line.right.lineCode === lineCode),
       );
+      if (targetLine) {
+        const side = targetLine.left && targetLine.left.lineCode === lineCode ? 'left' : 'right';
 
-      if (targetInlineLine) {
-        Object.assign(targetInlineLine, {
+        Object.assign(targetLine[side], {
           discussions: [],
         });
+      }
+
+      if (selectedFile.highlightedDiffLines) {
+        const targetInlineLine = selectedFile.highlightedDiffLines.find(
+          line => line.lineCode === lineCode,
+        );
+
+        if (targetInlineLine) {
+          Object.assign(targetInlineLine, {
+            discussions: [],
+          });
+        }
       }
     }
   },
