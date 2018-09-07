@@ -65,6 +65,7 @@ export const assignDiscussionsToDiff = ({ state, commit }, allLineDiscussions) =
 export const removeDiscussionsFromDiff = ({ state, commit }, removeDiscussion) => {
   const { fileHash } = removeDiscussion;
   const selectedFile = state.diffFiles.find(file => file.fileHash === fileHash);
+
   if (selectedFile) {
     const targetLine = selectedFile.parallelDiffLines.find(
       line =>

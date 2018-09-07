@@ -10,10 +10,27 @@ import * as types from '~/diffs/store/mutation_types';
 import { reduceDiscussionsToLineCodes } from '~/notes/stores/utils';
 import axios from '~/lib/utils/axios_utils';
 import testAction from '../../helpers/vuex_action_helper';
-import mockFile from '../mock_data/diff_file';
-import mockDiscussion from '../mock_data/diff_discussions';
 
 describe('DiffsStoreActions', () => {
+  const originalMethods = {
+    requestAnimationFrame: global.requestAnimationFrame,
+    requestIdleCallback: global.requestIdleCallback,
+  };
+
+  beforeEach(() => {
+    ['requestAnimationFrame', 'requestIdleCallback'].forEach(method => {
+      global[method] = cb => {
+        cb();
+      };
+    });
+  });
+
+  afterEach(() => {
+    ['requestAnimationFrame', 'requestIdleCallback'].forEach(method => {
+      global[method] = originalMethods[method];
+    });
+  });
+
   describe('setBaseConfig', () => {
     it('should set given endpoint and project path', done => {
       const endpoint = '/diffs/set/endpoint';
@@ -58,8 +75,40 @@ describe('DiffsStoreActions', () => {
 
   describe('assignDiscussionsToDiff', () => {
     it('should merge discussions into diffs', done => {
-      const state = { diffFiles: [Object.assign({}, mockFile)] };
-      const singleDiscussion = Object.assign({}, mockDiscussion);
+      const state = {
+        diffFiles: [
+          {
+            fileHash: 'ABC',
+            parallelDiffLines: [
+              {
+                left: {
+                  lineCode: 'ABC_1_1',
+                  discussions: [],
+                },
+                right: {
+                  lineCode: 'ABC_1_1',
+                  discussions: [],
+                },
+              },
+            ],
+            highlightedDiffLines: [
+              {
+                lineCode: 'ABC_1_1',
+                discussions: [],
+              },
+            ],
+          },
+        ],
+      };
+      const singleDiscussion = {
+        line_code: 'ABC_1_1',
+        diff_discussion: {},
+        diff_file: {
+          file_hash: 'ABC',
+        },
+        resolvable: true,
+      };
+
       const discussions = reduceDiscussionsToLineCodes([singleDiscussion]);
 
       testAction(
@@ -71,32 +120,20 @@ describe('DiffsStoreActions', () => {
             type: types.SET_LINE_DISCUSSIONS,
             payload: {
               line: {
-                lineCode: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_2',
-                type: 'new',
-                oldLine: null,
-                newLine: 2,
+                lineCode: 'ABC_1_1',
                 discussions: [],
-                text: '+<span id="LC2" class="line" lang="plaintext"></span>\n',
-                richText: '<span id="LC2" class="line" lang="plaintext"></span>\n',
-                metaData: null,
               },
-              discussions: discussions['1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_2'],
+              discussions: [singleDiscussion],
             },
           },
           {
             type: types.SET_LINE_DISCUSSIONS,
             payload: {
               line: {
-                lineCode: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_2',
-                type: 'new',
-                oldLine: null,
-                newLine: 2,
+                lineCode: 'ABC_1_1',
                 discussions: [],
-                text: '+<span id="LC2" class="line" lang="plaintext"></span>\n',
-                richText: '+<span id="LC2" class="line" lang="plaintext"></span>\n',
-                metaData: null,
               },
-              discussions: discussions['1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_2'],
+              discussions: [singleDiscussion],
             },
           },
         ],
@@ -110,10 +147,39 @@ describe('DiffsStoreActions', () => {
 
   describe('removeDiscussionsFromDiff', () => {
     it('should remove discussions from diffs', done => {
-      const state = { diffFiles: [Object.assign({}, mockFile)] };
-      const singleDiscussion = Object.assign({}, mockDiscussion);
-
-      reduceDiscussionsToLineCodes([singleDiscussion]);
+      const state = {
+        diffFiles: [
+          {
+            fileHash: 'ABC',
+            parallelDiffLines: [
+              {
+                left: {
+                  lineCode: 'ABC_1_1',
+                  discussions: [
+                    {
+                      id: 1,
+                    },
+                  ],
+                },
+                right: {
+                  lineCode: 'ABC_1_1',
+                  discussions: [],
+                },
+              },
+            ],
+            highlightedDiffLines: [
+              {
+                lineCode: 'ABC_1_1',
+                discussions: [],
+              },
+            ],
+          },
+        ],
+      };
+      const singleDiscussion = {
+        fileHash: 'ABC',
+        line_code: 'ABC_1_1',
+      };
 
       testAction(
         actions.removeDiscussionsFromDiff,
@@ -123,27 +189,19 @@ describe('DiffsStoreActions', () => {
           {
             type: types.REMOVE_LINE_DISCUSSIONS,
             payload: {
-              lineCode: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_2',
-              type: 'new',
-              oldLine: null,
-              newLine: 2,
-              discussions: [],
-              text: '+<span id="LC2" class="line" lang="plaintext"></span>\n',
-              richText: '<span id="LC2" class="line" lang="plaintext"></span>\n',
-              metaData: null,
+              lineCode: 'ABC_1_1',
+              discussions: [
+                {
+                  id: 1,
+                },
+              ],
             },
           },
           {
             type: types.REMOVE_LINE_DISCUSSIONS,
             payload: {
-              lineCode: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_2',
-              type: 'new',
-              oldLine: null,
-              newLine: 2,
+              lineCode: 'ABC_1_1',
               discussions: [],
-              text: '+<span id="LC2" class="line" lang="plaintext"></span>\n',
-              richText: '+<span id="LC2" class="line" lang="plaintext"></span>\n',
-              metaData: null,
             },
           },
         ],
@@ -157,11 +215,6 @@ describe('DiffsStoreActions', () => {
 
   describe('startRenderDiffsQueue', () => {
     it('should set all files to RENDER_FILE', done => {
-      const actualRAF = global.requestAnimationFrame;
-      global.requestAnimationFrame = cb => {
-        cb();
-      };
-
       const state = {
         diffFiles: [
           {
@@ -187,8 +240,6 @@ describe('DiffsStoreActions', () => {
       actions
         .startRenderDiffsQueue({ state, commit: pseudoCommit })
         .then(() => {
-          global.requestAnimationFrame = actualRAF;
-
           expect(state.diffFiles[0].renderIt).toBeTruthy();
           expect(state.diffFiles[1].renderIt).toBeTruthy();
 
