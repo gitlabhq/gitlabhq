@@ -1,7 +1,7 @@
 = form_for @application_setting, url: admin_application_settings_path(anchor: 'js-outbound-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
-  = hidden_field(:redirect_path, outbound_admin_application_settings_path)
+  = hidden_field(:redirect_path, network_admin_application_settings_path)
 
   %fieldset
     .form-group
