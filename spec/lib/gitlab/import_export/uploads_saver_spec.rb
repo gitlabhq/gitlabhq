@@ -7,7 +7,6 @@ describe Gitlab::ImportExport::UploadsSaver do
     let(:shared) { project.import_export_shared }
 
     before do
-      stub_feature_flags(import_export_object_storage: false)
       allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
     end
 
