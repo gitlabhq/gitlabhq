@@ -254,18 +254,6 @@ class Namespace < ActiveRecord::Base
     end
   end
 
-  # Exports belonging to projects with legacy storage are placed in a common
-  # subdirectory of the namespace, so a simple `rm -rf` is sufficient to remove
-  # them.
-  #
-  # Exports of projects using hashed storage are placed in a location defined
-  # only by the project ID, so each must be removed individually.
-  def remove_exports!
-    remove_legacy_exports!
-
-    all_projects.with_storage_feature(:repository).find_each(&:remove_exports)
-  end
-
   def refresh_project_authorizations
     owner.refresh_authorized_projects
   end

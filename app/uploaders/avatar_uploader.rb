@@ -18,6 +18,10 @@ class AvatarUploader < GitlabUploader
     false
   end
 
+  def absolute_path
+    self.class.absolute_path(model.avatar)
+  end
+
   private
 
   def dynamic_segment

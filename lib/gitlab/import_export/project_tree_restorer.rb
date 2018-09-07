@@ -199,7 +199,7 @@ module Gitlab
       end
 
       def excluded_keys_for_relation(relation)
-        @reader.attributes_finder.find_excluded_keys(relation)
+        reader.attributes_finder.find_excluded_keys(relation)
       end
     end
   end

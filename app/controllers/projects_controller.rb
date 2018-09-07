@@ -193,10 +193,8 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def download_export
-    if export_project_object_storage?
-      send_upload(@project.import_export_upload.export_file)
-    elsif export_project_path
-      send_file export_project_path, disposition: 'attachment'
+    if @project.export_file_exists?
+      send_upload(@project.export_file)
     else
       redirect_to(
         edit_project_path(@project, anchor: 'js-export-project'),
@@ -433,13 +431,5 @@ class ProjectsController < Projects::ApplicationController
 
   def whitelist_query_limiting
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42440')
-  end
-
-  def export_project_path
-    @export_project_path ||= @project.export_project_path
-  end
-
-  def export_project_object_storage?
-    @project.export_project_object_exists?
   end
 end
