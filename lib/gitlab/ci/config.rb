@@ -6,12 +6,17 @@ module Gitlab
     class Config
       ConfigError = Class.new(StandardError)
 
-      def initialize(config, opts = {})
+      def initialize(config, project = nil, opts = {})
         initial_config = Config::Extendable
           .new(build_config(config, opts))
           .to_hash
-        processor = ::Gitlab::Ci::ExternalFiles::Processor.new(initial_config)
-        @config = processor.perform
+
+        if project.present?
+          processor = ::Gitlab::Ci::ExternalFiles::Processor.new(initial_config)
+          @config = processor.perform
+        else
+          @config = initial_config
+        end
 
         @global = Entry::Global.new(@config)
         @global.compose!

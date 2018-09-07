@@ -3,8 +3,9 @@ require 'fast_spec_helper'
 require_dependency 'active_model'
 
 describe Gitlab::Ci::Config do
+  let(:project) { create(:project, :repository) }
   let(:config) do
-    described_class.new(yml)
+    described_class.new(yml, project)
   end
 
   context 'when config is valid' do
@@ -124,7 +125,6 @@ describe Gitlab::Ci::Config do
       end
     end
   end
-
 
   context "when yml has valid 'includes' defined" do
     let(:yml) do
