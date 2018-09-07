@@ -358,21 +358,30 @@ tables:
     - name
     - path
     - owner_id
-    - type
-    - avatar
-    - membership_lock
-    - share_with_group_lock
-    - visibility_level
-    - request_access_enabled
-    - ldap_sync_status
-    - ldap_sync_error
     - parent_id
-    - shared_runners_minutes_limit
-    - repository_size_limit
-    - require_two_factor_authentication
-    - two_factor_grace_period
     - plan_id
-    - project_creation_level
+  members:
+    whitelist:
+    - id
+    - access_level
+    - source_id
+    - source_type
+    - user_id
+    - notification_level
+    - type
+    - created_by_id
+    - invite_email
+    - invite_accepted_at
+    - requested_at
+    - expires_at
+    - ldap
+    - override
+    pseudo:
+    - id
+    - source_id
+    - user_id
+    - created_by_id
+    - invite_email
   notes:
     whitelist:
     - id
