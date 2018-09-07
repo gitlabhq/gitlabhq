@@ -42,6 +42,10 @@ module Ci
         transition [:success, :failed, :canceled, :skipped] => :running
       end
 
+      event :schedule do
+        transition [:created, :skipped] => :scheduled
+      end
+
       event :run do
         transition any - [:running] => :running
       end
@@ -71,6 +75,7 @@ module Ci
       retry_optimistic_lock(self) do
         case statuses.latest.status
         when 'created' then nil
+        when 'scheduled' then schedule
         when 'pending' then enqueue
         when 'running' then run
         when 'success' then succeed

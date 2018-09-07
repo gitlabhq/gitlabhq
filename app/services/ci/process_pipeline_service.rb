@@ -37,7 +37,13 @@ module Ci
 
     def process_build(build, current_status)
       if valid_statuses_for_when(build.when).include?(current_status)
-        build.action? ? build.actionize : enqueue_build(build)
+        if build.delayed?
+          build.schedule
+        elsif build.action?
+          build.actionize
+        else
+          enqueue_build(build)
+        end
         true
       else
         build.skip
@@ -54,6 +60,8 @@ module Ci
       when 'always'
         %w[success failed skipped]
       when 'manual'
+        %w[success skipped]
+      when /^in/
         %w[success skipped]
       else
         []

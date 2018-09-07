@@ -150,6 +150,12 @@ module Ci
         transition created: :manual
       end
 
+      after_transition any => [:scheduled] do |build|
+        build.run_after_commit do
+          EnqueueBuildWorker.perform_in(build.perform_in, id)
+        end
+      end
+
       after_transition any => [:pending] do |build|
         build.run_after_commit do
           BuildQueueWorker.perform_async(id)
@@ -221,7 +227,22 @@ module Ci
     end
 
     def action?
-      self.when == 'manual'
+      self.when == 'manual' || delayed?
+    end
+
+    def delayed?
+      self.when&.start_with?('in') && (created? || scheduled?)
+    end
+
+    def perform_in
+      return unless delayed?
+
+      begin
+        time = self.when['in'.size..-1]
+        ChronicDuration.parse(time).seconds
+      rescue ChronicDuration::DurationParseError
+        return
+      end
     end
 
     def play(current_user)

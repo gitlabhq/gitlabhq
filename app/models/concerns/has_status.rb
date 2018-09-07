@@ -5,13 +5,14 @@ module HasStatus
 
   DEFAULT_STATUS = 'created'.freeze
   BLOCKED_STATUS = 'manual'.freeze
-  AVAILABLE_STATUSES = %w[created pending running success failed canceled skipped manual].freeze
+  AVAILABLE_STATUSES = %w[created pending running success failed canceled skipped manual scheduled].freeze
   STARTED_STATUSES = %w[running success failed skipped manual].freeze
-  ACTIVE_STATUSES = %w[pending running].freeze
+  ACTIVE_STATUSES = %w[pending running scheduled].freeze
   COMPLETED_STATUSES = %w[success failed canceled skipped].freeze
-  ORDERED_STATUSES = %w[failed pending running manual canceled success skipped created].freeze
+  ORDERED_STATUSES = %w[failed pending running scheduled manual canceled success skipped created].freeze
   STATUSES_ENUM = { created: 0, pending: 1, running: 2, success: 3,
-                    failed: 4, canceled: 5, skipped: 6, manual: 7 }.freeze
+                    failed: 4, canceled: 5, skipped: 6, manual: 7,
+                    scheduled: 8 }.freeze
 
   UnknownStatusError = Class.new(StandardError)
 
@@ -26,6 +27,7 @@ module HasStatus
       manual = scope_relevant.manual.select('count(*)').to_sql
       pending = scope_relevant.pending.select('count(*)').to_sql
       running = scope_relevant.running.select('count(*)').to_sql
+      scheduled = scope_relevant.scheduled.select('count(*)').to_sql
       skipped = scope_relevant.skipped.select('count(*)').to_sql
       canceled = scope_relevant.canceled.select('count(*)').to_sql
       warnings = scope_warnings.select('count(*) > 0').to_sql.presence || 'false'
@@ -35,10 +37,11 @@ module HasStatus
         WHEN (#{builds})=(#{skipped}) THEN 'skipped'
         WHEN (#{builds})=(#{success}) THEN 'success'
         WHEN (#{builds})=(#{created}) THEN 'created'
+        WHEN (#{builds})=(#{scheduled}) THEN 'scheduled'
         WHEN (#{builds})=(#{success})+(#{skipped}) THEN 'success'
         WHEN (#{builds})=(#{success})+(#{skipped})+(#{canceled}) THEN 'canceled'
         WHEN (#{builds})=(#{created})+(#{skipped})+(#{pending}) THEN 'pending'
-        WHEN (#{running})+(#{pending})>0 THEN 'running'
+        WHEN (#{running})+(#{pending})+(#{scheduled})>0 THEN 'running'
         WHEN (#{manual})>0 THEN 'manual'
         WHEN (#{created})>0 THEN 'running'
         ELSE 'failed'
@@ -74,6 +77,7 @@ module HasStatus
       state :canceled, value: 'canceled'
       state :skipped, value: 'skipped'
       state :manual, value: 'manual'
+      state :scheduled, value: 'scheduled'
     end
 
     scope :created, -> { where(status: 'created') }
@@ -85,6 +89,7 @@ module HasStatus
     scope :canceled, -> { where(status: 'canceled')  }
     scope :skipped, -> { where(status: 'skipped')  }
     scope :manual, -> { where(status: 'manual')  }
+    scope :scheduled, -> { where(status: 'scheduled')  }
     scope :alive, -> { where(status: [:created, :pending, :running]) }
     scope :created_or_pending, -> { where(status: [:created, :pending]) }
     scope :running_or_pending, -> { where(status: [:running, :pending]) }

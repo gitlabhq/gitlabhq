@@ -1,0 +1,5 @@
+---
+title: Add scheduled job support in gitlab-ci.yml
+merge_request: 21587
+author:
+type: added

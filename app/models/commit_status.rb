@@ -68,8 +68,12 @@ class CommitStatus < ActiveRecord::Base
       transition [:skipped, :manual] => :created
     end
 
+    event :schedule do
+      transition [:created, :skipped] => :scheduled
+    end
+
     event :enqueue do
-      transition [:created, :skipped, :manual] => :pending
+      transition [:created, :skipped, :manual, :scheduled] => :pending
     end
 
     event :run do
@@ -89,7 +93,7 @@ class CommitStatus < ActiveRecord::Base
     end
 
     event :cancel do
-      transition [:created, :pending, :running, :manual] => :canceled
+      transition [:created, :pending, :running, :manual, :scheduled] => :canceled
     end
 
     before_transition [:created, :skipped, :manual] => :pending do |commit_status|
