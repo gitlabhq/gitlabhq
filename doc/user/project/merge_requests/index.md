@@ -289,7 +289,7 @@ Each security vulnerability in the report is actionable. Clicking on an entry,
 a detailed information will pop up with two different possible options:
 
 - **Dismiss vulnerability** - Dismissing a vulnerability will place a
-  ~~strikethrough~~ styling on it.
+  <s>strikethrough</s> styling on it.
 - **Create issue** - The new issue will have the title and description
   pre-populated with the information of the vulnerability report.
 

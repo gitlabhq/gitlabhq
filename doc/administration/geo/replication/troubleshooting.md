@@ -105,9 +105,9 @@ log data to build up in `pg_xlog`. Removing the unused slots can reduce the amou
 
 2. View your replication slots with
 
-     ```sql
-     SELECT * FROM pg_replication_slots;
-     ```
+    ```sql
+    SELECT * FROM pg_replication_slots;
+    ```
 
 Slots where `active` is `f` are not active.
 
