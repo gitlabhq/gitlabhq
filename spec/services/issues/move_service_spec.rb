@@ -122,6 +122,17 @@ describe Issues::MoveService do
         end
       end
 
+      context 'issue with resource label events' do
+        it 'assigns resource label events to new issue' do
+          old_issue.resource_label_events = create_list(:resource_label_event, 2, issue: old_issue)
+
+          new_issue = move_service.execute(old_issue, new_project)
+
+          expected = old_issue.resource_label_events.map(&:label_id)
+          expect(new_issue.resource_label_events.map(&:label_id)).to match_array(expected)
+        end
+      end
+
       context 'generic issue' do
         include_context 'issue move executed'
 

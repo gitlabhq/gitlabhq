@@ -19,7 +19,7 @@ describe('issue_note_form component', () => {
     props = {
       isEditing: false,
       noteBody: 'Magni suscipit eius consectetur enim et ex et commodi.',
-      noteId: 545,
+      noteId: '545',
     };
 
     vm = new Component({
@@ -30,6 +30,22 @@ describe('issue_note_form component', () => {
 
   afterEach(() => {
     vm.$destroy();
+  });
+
+  describe('noteHash', () => {
+    it('returns note hash string based on `noteId`', () => {
+      expect(vm.noteHash).toBe(`#note_${props.noteId}`);
+    });
+
+    it('return note hash as `#` when `noteId` is empty', done => {
+      vm.noteId = '';
+      Vue.nextTick()
+        .then(() => {
+          expect(vm.noteHash).toBe('#');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
   });
 
   describe('conflicts editing', () => {

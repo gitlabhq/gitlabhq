@@ -324,6 +324,9 @@ msgstr ""
 msgid "A default branch cannot be chosen for an empty project."
 msgstr ""
 
+msgid "A deleted user"
+msgstr ""
+
 msgid "A new branch will be created in your fork and a new merge request will be started."
 msgstr ""
 

@@ -3,7 +3,7 @@ class EpicNoteEntity < NoteEntity
     toggle_award_emoji_group_epic_note_path(note.noteable.group, note.noteable, note)
   end
 
-  expose :path do |note|
+  expose :path, if: -> (note, _) { note.id } do |note|
     group_epic_note_path(note.noteable.group, note.noteable, note)
   end
 end

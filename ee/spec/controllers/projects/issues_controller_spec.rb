@@ -270,7 +270,7 @@ describe Projects::IssuesController do
             notes = discussions.flat_map {|d| d['notes']}
 
             expect(discussions.count).to equal(2)
-            expect(notes).to include(a_hash_including('id' => system_note.id))
+            expect(notes).to include(a_hash_including('id' => system_note.id.to_s))
           end
         end
       end
@@ -288,7 +288,7 @@ describe Projects::IssuesController do
             notes = discussions.flat_map {|d| d['notes']}
 
             expect(discussions.count).to equal(1)
-            expect(notes).not_to include(a_hash_including('id' => system_note.id))
+            expect(notes).not_to include(a_hash_including('id' => system_note.id.to_s))
           end
         end
       end

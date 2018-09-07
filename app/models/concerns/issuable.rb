@@ -111,10 +111,6 @@ module Issuable
     def allows_multiple_assignees?
       false
     end
-
-    def etag_caching_enabled?
-      false
-    end
   end
 
   class_methods do

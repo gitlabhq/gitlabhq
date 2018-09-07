@@ -99,47 +99,6 @@ module SystemNoteService
     create_note(NoteSummary.new(issue, project, author, body, action: 'assignee'))
   end
 
-  # Called when one or more labels on a Noteable are added and/or removed
-  #
-  # noteable       - Noteable object
-  # project        - Project owning noteable
-  # author         - User performing the change
-  # added_labels   - Array of Labels added
-  # removed_labels - Array of Labels removed
-  #
-  # Example Note text:
-  #
-  #   "added ~1 and removed ~2 ~3 labels"
-  #
-  #   "added ~4 label"
-  #
-  #   "removed ~5 label"
-  #
-  # Returns the created Note object
-  def change_label(noteable, project, author, added_labels, removed_labels)
-    labels_count = added_labels.count + removed_labels.count
-
-    references     = ->(label) { label.to_reference(format: :id) }
-    added_labels   = added_labels.map(&references).join(' ')
-    removed_labels = removed_labels.map(&references).join(' ')
-
-    text_parts = []
-
-    if added_labels.present?
-      text_parts << "added #{added_labels}"
-      text_parts << 'and' if removed_labels.present?
-    end
-
-    if removed_labels.present?
-      text_parts << "removed #{removed_labels}"
-    end
-
-    text_parts << 'label'.pluralize(labels_count)
-    body = text_parts.join(' ')
-
-    create_note(NoteSummary.new(noteable, project, author, body, action: 'label'))
-  end
-
   # Called when the milestone of a Noteable is changed
   #
   # noteable  - Noteable object

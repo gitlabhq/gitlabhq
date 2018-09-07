@@ -10,8 +10,8 @@ module EE
     end
 
     class_methods do
-      def issuable_columns
-        %i(epic_id).freeze + super
+      def issuable_attrs
+        %i(epic).freeze + super
       end
     end
 

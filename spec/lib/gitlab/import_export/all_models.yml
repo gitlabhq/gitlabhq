@@ -379,3 +379,9 @@ metrics:
 - latest_closed_by
 - merged_by
 - pipeline
+resource_label_events:
+- user
+- issue
+- merge_request
+- epic
+- label
