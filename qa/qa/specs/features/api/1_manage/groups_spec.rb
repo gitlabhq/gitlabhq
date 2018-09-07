@@ -20,6 +20,7 @@ module QA
 
       description = 'This is a test group'
 
+      # Create
       post groups_request.url, name: group_name, path: group_path, description: description
       expect_status(201)
 
@@ -35,9 +36,45 @@ module QA
           full_path: group_path)
       )
 
+      created_group_id = json_body[:id]
+
       get groups_request.url
       expect_status(200)
-      puts json_body.to_json
+      expect(json_body).to include(
+        a_hash_including(
+          id: created_group_id,
+          name: group_name,
+          path: group_path,
+          description: description,
+          visibility: 'private',
+          lfs_enabled: true,
+          request_access_enabled: false,
+          full_name: group_name,
+          full_path: group_path)
+      )
+
+      # Update
+      update_groups_request = Runtime::API::Request.new(@api_client, "/groups/#{created_group_id}")
+
+      put update_groups_request.url,
+          name: updated_group_name,
+          path: updated_group_path,
+          description: updated_group_description
+
+      expect_status(200)
+
+      expect(json_body).to match(
+        a_hash_including(
+          id: created_group_id,
+          name: updated_group_name,
+          path: updated_group_path,
+          description: updated_group_description,
+          visibility: 'private',
+          lfs_enabled: true,
+          request_access_enabled: false,
+          full_name: updated_group_name,
+          full_path: updated_group_path)
+      )
     end
   end
 end
