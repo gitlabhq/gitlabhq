@@ -158,7 +158,8 @@
     "nodemon": "^1.18.4",
     "prettier": "1.15.2",
     "vue-jest": "^3.0.1",
-    "webpack-dev-server": "^3.1.10"
+    "webpack-dev-server": "^3.1.10",
+    "yarn-deduplicate": "^1.0.5"
   },
   "engines": {
     "yarn": "^1.10.0"
