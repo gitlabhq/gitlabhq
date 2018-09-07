@@ -1,22 +1,22 @@
 # Geo (Geo Replication) **[PREMIUM ONLY]**
 
 > **Notes:**
-- Geo is part of [GitLab Premium][ee]
-- Introduced in GitLab Enterprise Edition 8.9
-  We recommend you use it with at least GitLab Enterprise Edition 10.0 for
-  basic Geo features, or latest version for a better experience
-- You should make sure that all nodes run the same GitLab version
-- Geo requires PostgreSQL 9.6 and Git 2.9 in addition to GitLab's usual
-  [minimum requirements][install-requirements]
-- Using Geo in combination with High Availability (HA) is considered **Generally Available** (GA) in GitLab Enterprise Edition 10.4
-
->**Note:**
-Geo changes significantly from release to release. Upgrades **are**
-supported and [documented](#updating-the-geo-nodes), but you should ensure that
-you're following the right version of the documentation for your installation!
-The best way to do this is to follow the documentation from the `/help` endpoint
-on your **primary** node, but you can also navigate to [this page on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/gitlab-geo/README.md)
-and choose the appropriate release from the `tags` dropdown, e.g., `v10.0.0-ee`.
+> - Geo is part of [GitLab Premium][ee]
+> - Introduced in GitLab Enterprise Edition 8.9
+>   We recommend you use it with at least GitLab Enterprise Edition 10.0 for
+>   basic Geo features, or latest version for a better experience
+> - You should make sure that all nodes run the same GitLab version
+> - Geo requires PostgreSQL 9.6 and Git 2.9 in addition to GitLab's usual
+>   [minimum requirements][install-requirements]
+> - Using Geo in combination with High Availability (HA) is considered **Generally Available** (GA) in GitLab Enterprise Edition 10.4
+>
+> **Note:**
+> Geo changes significantly from release to release. Upgrades **are**
+> supported and [documented](#updating-the-geo-nodes), but you should ensure that
+> you're following the right version of the documentation for your installation!
+> The best way to do this is to follow the documentation from the `/help` endpoint
+> on your **primary** node, but you can also navigate to [this page on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/gitlab-geo/README.md)
+> and choose the appropriate release from the `tags` dropdown, e.g., `v10.0.0-ee`.
 
 Geo allows you to replicate your GitLab instance to other geographical
 locations as a read-only fully operational version.

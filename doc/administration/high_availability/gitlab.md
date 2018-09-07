@@ -91,7 +91,7 @@ for each GitLab application server in your environment.
     certificates are not present, Nginx will fail to start. See
     [Nginx documentation](http://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
     for more information.
-    
+    >
     > **Note:** It is best to set the `uid` and `gid`s prior to the initial reconfigure of GitLab. Omnibus will not recursively `chown` directories if set after the initial reconfigure.
 
 ## First GitLab application server

@@ -57,13 +57,12 @@ changes you made after picking the template and return it to its initial status.
 
 ## Setting a default template for issues and merge requests  **[STARTER]**
 
->
-**Notes:**
-- This feature was introduced before [description templates](#overview) and is
-  available in [GitLab Starter][products]. It can be enabled
-  in the project's settings.
-- Templates for issues were [introduced][ee-28] in GitLab EE 8.1.
-- Templates for merge requests were [introduced][ee-7478ece] in GitLab EE 6.9.
+> **Notes:**
+> - This feature was introduced before [description templates](#overview) and is
+>   available in [GitLab Starter][products]. It can be enabled
+>   in the project's settings.
+> - Templates for issues were [introduced][ee-28] in GitLab EE 8.1.
+> - Templates for merge requests were [introduced][ee-7478ece] in GitLab EE 6.9.
 
 The visibility of issues and/or merge requests should be set to either "Everyone
 with access" or "Only team members" in your project's **Settings** otherwise the

@@ -1,9 +1,8 @@
 # Elasticsearch integration **[STARTER ONLY]**
 
->
-[Introduced][ee-109] in GitLab [Starter][ee] 8.4. Support
-for [Amazon Elasticsearch][aws-elastic] was [introduced][ee-1305] in GitLab
-[Starter][ee] 9.0.
+> [Introduced][ee-109] in GitLab [Starter][ee] 8.4. Support
+> for [Amazon Elasticsearch][aws-elastic] was [introduced][ee-1305] in GitLab
+> [Starter][ee] 9.0.
 
 This document describes how to set up Elasticsearch with GitLab. Once enabled,
 you'll have the benefit of fast search response times and the advantage of two

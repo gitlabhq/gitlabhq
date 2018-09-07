@@ -1,8 +1,7 @@
 # External authorization control **[PREMIUM]**
 
->
-[Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/4216) in
-[GitLab Premium](https://about.gitlab.com/pricing) 10.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/4216) in
+> [GitLab Premium](https://about.gitlab.com/pricing) 10.6.
 
 In highly controlled environments, it may be necessary for access policy to be
 controlled by an external service that permits access based on project

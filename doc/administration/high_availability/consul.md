@@ -52,12 +52,12 @@ To fix this:
 1. Pick an address on each node that all of the other nodes can reach this node through.
 1. Update your `/etc/gitlab/gitlab.rb`
 
-   ```ruby
-   consul['configuration'] = {
-     ...
-     bind_addr: 'IP ADDRESS'
-   }
-   ```
+    ```ruby
+    consul['configuration'] = {
+      ...
+      bind_addr: 'IP ADDRESS'
+    }
+    ```
 1. Run `gitlab-ctl reconfigure`
 
 If you still see the errors, you may have to [erase the consul database and reinitialize](#recreate-from-scratch) on the affected node.
@@ -78,12 +78,12 @@ To fix this:
 1. Pick an address on the node that all of the other nodes can reach this node through.
 1. Update your `/etc/gitlab/gitlab.rb`
 
-   ```ruby
-   consul['configuration'] = {
-     ...
-     bind_addr: 'IP ADDRESS'
-   }
-   ```
+    ```ruby
+    consul['configuration'] = {
+      ...
+      bind_addr: 'IP ADDRESS'
+    }
+    ```
 1. Run `gitlab-ctl reconfigure`
 
 ### Outage recovery

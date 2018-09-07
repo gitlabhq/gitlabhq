@@ -93,11 +93,11 @@ from the left navigation menu. Click `Link GitHub account` to start creating a n
     for all the projects in the GitLab group you specified in the previous step. These are refreshed
     every 60 minutes.
 
-    >**Note:**
-    In the future, we plan on implementating real-time integration. If you need
-    to refresh the data manually, you can do this from the `Applications -> DVCS
-    accounts` screen where you initially set up the integration:
-
+    > **Note:**
+    > In the future, we plan on implementating real-time integration. If you need
+    > to refresh the data manually, you can do this from the `Applications -> DVCS
+    > accounts` screen where you initially set up the integration:
+    >
     > ![Refresh GitLab information in JIRA](img/jira_dev_panel_manual_refresh.png)
 
 To connect additional GitLab projects from other GitLab top-level groups (or personal namespaces), repeat the above

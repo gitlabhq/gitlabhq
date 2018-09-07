@@ -22,39 +22,40 @@ See our [HA documentation for PostgreSQL](database.md) for information on runnin
 1. Generate SQL_USER_PASSWORD_HASH with the command `gitlab-ctl pg-password-md5 gitlab`. We'll also need to enter the plaintext SQL_USER_PASSWORD later
 
 1. On your database node, ensure the following is set in your `/etc/gitlab/gitlab.rb`
-   ```ruby
-   postgresql['pgbouncer_user_password'] = 'PGBOUNCER_USER_PASSWORD_HASH'
-   postgresql['sql_user_password'] = 'SQL_USER_PASSWORD_HASH'
-   postgresql['listen_address'] = 'XX.XX.XX.Y' # Where XX.XX.XX.Y is the ip address on the node postgresql should listen on
-   postgresql['md5_auth_cidr_addresses'] = %w(AA.AA.AA.B/32) # Where AA.AA.AA.B is the IP address of the pgbouncer node
-   ```
+
+    ```ruby
+    postgresql['pgbouncer_user_password'] = 'PGBOUNCER_USER_PASSWORD_HASH'
+    postgresql['sql_user_password'] = 'SQL_USER_PASSWORD_HASH'
+    postgresql['listen_address'] = 'XX.XX.XX.Y' # Where XX.XX.XX.Y is the ip address on the node postgresql should listen on
+    postgresql['md5_auth_cidr_addresses'] = %w(AA.AA.AA.B/32) # Where AA.AA.AA.B is the IP address of the pgbouncer node
+    ```
 
 1. Run `gitlab-ctl reconfigure`
 
-   **Note:** If the database was already running, it will need to be restarted after reconfigure by running `gitlab-ctl restart postgresql`.
+    **Note:** If the database was already running, it will need to be restarted after reconfigure by running `gitlab-ctl restart postgresql`.
 
 1. On the node you are running pgbouncer on, make sure the following is set in `/etc/gitlab/gitlab.rb`
 
-   ```ruby
-   pgbouncer['enable'] = true
-   pgbouncer['databases'] = {
-     gitlabhq_production: {
-       host: 'DATABASE_HOST',
-       user: 'pgbouncer',
-       password: 'PGBOUNCER_USER_PASSWORD_HASH'
-     }
-   }
-   ```
+    ```ruby
+    pgbouncer['enable'] = true
+    pgbouncer['databases'] = {
+      gitlabhq_production: {
+        host: 'DATABASE_HOST',
+        user: 'pgbouncer',
+        password: 'PGBOUNCER_USER_PASSWORD_HASH'
+      }
+    }
+    ```
 
 1. Run `gitlab-ctl reconfigure`
 
 1. On the node running unicorn, make sure the following is set in `/etc/gitlab/gitlab.rb`
 
-   ```ruby
-   gitlab_rails['db_host'] = 'PGBOUNCER_HOST'
-   gitlab_rails['db_port'] = '6432'
-   gitlab_rails['db_password'] = 'SQL_USER_PASSWORD'
-   ```
+    ```ruby
+    gitlab_rails['db_host'] = 'PGBOUNCER_HOST'
+    gitlab_rails['db_port'] = '6432'
+    gitlab_rails['db_password'] = 'SQL_USER_PASSWORD'
+    ```
 
 1. Run `gitlab-ctl reconfigure`
 
