@@ -3,7 +3,7 @@
 require 'securerandom'
 
 module QA
-  describe 'API basics' do
+  describe 'Groups API' do
     before(:context) do
       @api_client = Runtime::API::Client.new(:gitlab)
       @personal_access_token = Runtime::API::Client.new.get_personal_access_token
