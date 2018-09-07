@@ -33,7 +33,7 @@ module EE
 
           def export_file
             strong_memoize(:export_file) do
-              project.import_export_upload.export_file&.file
+              project.export_file&.file
             end
           end
 
