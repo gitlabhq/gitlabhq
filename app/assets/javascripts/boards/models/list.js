@@ -5,10 +5,7 @@ import { __ } from '~/locale';
 import ListLabel from '~/vue_shared/models/label';
 import ListAssignee from '~/vue_shared/models/assignee';
 import { urlParamsToObject } from '~/lib/utils/common_utils';
-<<<<<<< HEAD
 import ListMilestone from './milestone';
-=======
->>>>>>> upstream/master
 
 const PER_PAGE = 20;
 
