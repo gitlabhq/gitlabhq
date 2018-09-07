@@ -25,6 +25,7 @@ module Gitlab
         :get_config_map,
         :get_namespace,
         :get_pod,
+        :get_secret,
         :get_service,
         :get_service_account,
         :delete_pod,

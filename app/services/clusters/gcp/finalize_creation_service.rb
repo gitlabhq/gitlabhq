@@ -8,9 +8,8 @@ module Clusters
       def execute(provider)
         @provider = provider
 
-        create_gitlab_service_account!
-
         configure_provider
+        create_gitlab_service_account!
         configure_kubernetes
 
         cluster.save!
@@ -25,9 +24,7 @@ module Clusters
       private
 
       def create_gitlab_service_account!
-        if create_rbac_cluster?
-          Clusters::Gcp::Kubernetes::CreateServiceAccountService.new(kube_client).execute
-        end
+        Clusters::Gcp::Kubernetes::CreateServiceAccountService.new(kube_client, rbac: create_rbac_cluster?).execute
       end
 
       def configure_provider
@@ -47,9 +44,7 @@ module Clusters
       end
 
       def request_kubernetes_token
-        service_account_name = create_rbac_cluster? ? Clusters::Gcp::Kubernetes::SERVICE_ACCOUNT_NAME : 'default'
-
-        Clusters::Gcp::Kubernetes::FetchKubernetesTokenService.new(kube_client, service_account_name).execute
+        Clusters::Gcp::Kubernetes::FetchKubernetesTokenService.new(kube_client).execute
       end
 
       def authorization_type

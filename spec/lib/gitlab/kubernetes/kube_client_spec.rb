@@ -116,6 +116,7 @@ describe Gitlab::Kubernetes::KubeClient do
       :get_config_map,
       :get_pod,
       :get_namespace,
+      :get_secret,
       :get_service,
       :get_service_account,
       :delete_pod,

@@ -12,9 +12,11 @@ describe Clusters::Gcp::FinalizeCreationService do
     let(:zone) { provider.zone }
     let(:cluster_name) { cluster.name }
 
+    subject { described_class.new.execute(provider) }
+
     shared_examples 'success' do
       it 'configures provider and kubernetes' do
-        described_class.new.execute(provider)
+        subject
 
         expect(provider).to be_created
       end
@@ -22,7 +24,7 @@ describe Clusters::Gcp::FinalizeCreationService do
 
     shared_examples 'error' do
       it 'sets an error to provider object' do
-        described_class.new.execute(provider)
+        subject
 
         expect(provider.reload).to be_errored
       end
@@ -33,6 +35,7 @@ describe Clusters::Gcp::FinalizeCreationService do
       let(:api_url) { 'https://' + endpoint }
       let(:username) { 'sample-username' }
       let(:password) { 'sample-password' }
+      let(:secret_name) { 'gitlab-token' }
 
       before do
         stub_cloud_platform_get_zone_cluster(
@@ -43,124 +46,98 @@ describe Clusters::Gcp::FinalizeCreationService do
             password: password
           }
         )
-
-        stub_kubeclient_discover(api_url)
       end
 
-      context 'when suceeded to fetch kuberenetes token' do
-        let(:secret_name) { 'default-token-Y1a' }
-        let(:token) { 'sample-token' }
-
+      context 'service account and token created' do
         before do
-          stub_kubeclient_get_secrets(
-            api_url,
-            {
-              metadata_name: secret_name,
-              token: Base64.encode64(token)
-            } )
+          stub_kubeclient_discover(api_url)
+          stub_kubeclient_create_service_account(api_url)
+          stub_kubeclient_create_secret(api_url)
         end
 
-        it_behaves_like 'success'
-
-        it 'has corresponded data' do
-          described_class.new.execute(provider)
-          cluster.reload
-          provider.reload
-          platform.reload
-
-          expect(provider.endpoint).to eq(endpoint)
-          expect(platform.api_url).to eq(api_url)
-          expect(platform.ca_cert).to eq(Base64.decode64(load_sample_cert))
-          expect(platform.username).to eq(username)
-          expect(platform.password).to eq(password)
-          expect(platform.authorization_type).to eq('abac')
-          expect(platform.token).to eq(token)
-        end
-
-        context 'rbac_clusters feature enabled' do
-          let(:secret_name) { 'gitlab-token-Y1a' }
+        shared_context 'kubernetes token successfully fetched' do
+          let(:token) { 'sample-token' }
 
           before do
-            provider.legacy_abac = false
-
-            stub_kubeclient_create_service_account(api_url)
-            stub_kubeclient_create_cluster_role_binding(api_url)
+            stub_kubeclient_get_secret(
+              api_url,
+              {
+                metadata_name: secret_name,
+                token: Base64.encode64(token)
+              } )
           end
+        end
+
+        context 'provider legacy_abac is enabled' do
+          include_context 'kubernetes token successfully fetched'
 
           it_behaves_like 'success'
 
-          it 'has corresponded data' do
-            described_class.new.execute(provider)
+          it 'properly configures database models' do
+            subject
+
             cluster.reload
-            provider.reload
-            platform.reload
 
             expect(provider.endpoint).to eq(endpoint)
             expect(platform.api_url).to eq(api_url)
             expect(platform.ca_cert).to eq(Base64.decode64(load_sample_cert))
             expect(platform.username).to eq(username)
             expect(platform.password).to eq(password)
-            expect(platform.authorization_type).to eq('rbac')
+            expect(platform).to be_abac
+            expect(platform.authorization_type).to eq('abac')
             expect(platform.token).to eq(token)
           end
         end
-      end
 
-      context 'when no matching token is found' do
-        before do
-          stub_kubeclient_get_secrets(api_url, metadata_name: 'not-default-not-gitlab')
-        end
-
-        it_behaves_like 'error'
-
-        context 'rbac_clusters feature enabled' do
+        context 'provider legacy_abac is disabled' do
           before do
             provider.legacy_abac = false
+          end
 
-            stub_kubeclient_create_service_account(api_url)
-            stub_kubeclient_create_cluster_role_binding(api_url)
+          include_context 'kubernetes token successfully fetched'
+
+          context 'cluster role binding created' do
+            before do
+              stub_kubeclient_create_cluster_role_binding(api_url)
+            end
+
+            it_behaves_like 'success'
+
+            it 'properly configures database models' do
+              subject
+
+              cluster.reload
+
+              expect(provider.endpoint).to eq(endpoint)
+              expect(platform.api_url).to eq(api_url)
+              expect(platform.ca_cert).to eq(Base64.decode64(load_sample_cert))
+              expect(platform.username).to eq(username)
+              expect(platform.password).to eq(password)
+              expect(platform).to be_rbac
+              expect(platform.token).to eq(token)
+            end
+          end
+        end
+
+        context 'when token is empty' do
+          before do
+            stub_kubeclient_get_secret(api_url, token: '', metadata_name: secret_name)
           end
 
           it_behaves_like 'error'
         end
-      end
 
-      context 'when token is empty' do
-        let(:secret_name) { 'default-token-123' }
-
-        before do
-          stub_kubeclient_get_secrets(api_url, token: '', metadata_name: secret_name)
-        end
-
-        it_behaves_like 'error'
-
-        context 'rbac_clusters feature enabled' do
-          let(:secret_name) { 'gitlab-token-321' }
-
+        context 'when failed to fetch kubernetes token' do
           before do
-            provider.legacy_abac = false
-
-            stub_kubeclient_create_service_account(api_url)
-            stub_kubeclient_create_cluster_role_binding(api_url)
+            stub_kubeclient_get_secret_error(api_url, secret_name)
           end
 
           it_behaves_like 'error'
         end
-      end
 
-      context 'when failed to fetch kuberenetes token' do
-        before do
-          stub_kubeclient_get_secrets_error(api_url)
-        end
-
-        it_behaves_like 'error'
-
-        context 'rbac_clusters feature enabled' do
+        context 'when service account fails to create' do
           before do
-            provider.legacy_abac = false
-
-            stub_kubeclient_create_service_account(api_url)
-            stub_kubeclient_create_cluster_role_binding(api_url)
+            stub_kubeclient_create_service_account_error(api_url)
           end
 
           it_behaves_like 'error'

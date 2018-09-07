@@ -4,37 +4,25 @@ module Clusters
   module Gcp
     module Kubernetes
       class FetchKubernetesTokenService
-        attr_reader :kubeclient, :service_account_name
+        attr_reader :kubeclient
 
-        def initialize(kubeclient, service_account_name)
+        def initialize(kubeclient)
           @kubeclient = kubeclient
-          @service_account_name = service_account_name
         end
 
         def execute
-          read_secrets.each do |secret|
-            name = secret.dig('metadata', 'name')
-            if token_regex =~ name
-              token_base64 = secret.dig('data', 'token')
-              return Base64.decode64(token_base64) if token_base64
-            end
-          end
-
-          nil
+          token_base64 = get_secret&.dig('data', 'token')
+          Base64.decode64(token_base64) if token_base64
         end
 
         private
 
-        def token_regex
-          /#{service_account_name}-token/
-        end
-
-        def read_secrets
-          kubeclient.get_secrets.as_json
+        def get_secret
+          kubeclient.get_secret(SERVICE_ACCOUNT_TOKEN_NAME).as_json
         rescue Kubeclient::HttpError => err
           raise err unless err.error_code == 404
 
-          []
+          nil
         end
       end
     end
