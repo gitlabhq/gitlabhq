@@ -24,17 +24,24 @@
               .card-footer.js-extra-settings{ class: @project.auto_devops_enabled? || 'hidden' }
                 = form.label :domain do
                   %strong= _('Domain')
+                %p.form-text
+                  = s_('CICD|Add a domain where deployed apps will be served.')
+                %ul
+                  %li
+                    = s_('CICD|A wildcard DNS record matching the base domain is required.')
+                    - if cluster_ingress_domain = cluster_ingress_domain(@project)
+                      %li
+                        - cluster_ingress_domain_link = link_to cluster_ingress_domain, 'http://' + cluster_ingress_domain, target: '_blank', rel: 'noopener noreferrer'
+                        = s_('CICD|If no domain is specified, %{nip_domain} will be used as a default alternative.').html_safe % { nip_domain: cluster_ingress_domain_link }
+                    - else
+                      %li
+                        - project_clusters_link = link_to('Kubernetes cluster', project_clusters_path(@project))
+                        = s_('CICD|Alternatively, create a %{kubernetes} with Ingress installed to automatically use a wildcard domain.').html_safe % { kubernetes: project_clusters_link }
+                %p.form-text
+                  - auto_devops_help_link = link_to s_('Auto DevOps domain configuration'), help_page_path('topics/autodevops/index.md', anchor: 'auto-devops-base-domain'), target: '_blank'
+                  = s_('CICD|Read more about %{auto_devops_help_link}.').html_safe % { auto_devops_help_link: auto_devops_help_link }
+
                 = form.text_field :domain, class: 'form-control', placeholder: 'domain.com'
-                .form-text.text-muted
-                  = s_('CICD|Add a domain where deployed apps will be served. A wildcard DNS record matching the base domain is required.')
-                .form-text.text-muted
-                  - if cluster_ingress_domain = cluster_ingress_domain(@project)
-                    - cluster_ingress_domain_link = link_to cluster_ingress_domain, 'http://' + cluster_ingress_domain, target: '_blank', rel: 'noopener noreferrer'
-                    = s_('CICD|If no domain is specified, %{nip_domain} will be used as a default alternative.').html_safe % { nip_domain: cluster_ingress_domain_link }
-                  - else
-                    - project_clusters_link = link_to('Kubernetes cluster', project_clusters_path(@project))
-                    = s_('CICD|Alternatively, create a %{kubernetes} with Ingress installed to automatically use a wildcard domain.').html_safe % { kubernetes: project_clusters_link }
-                  = link_to s_('More information'), help_page_path('topics/autodevops/index.md', anchor: 'auto-devops-base-domain'), target: '_blank'
 
                 %label.prepend-top-10
                   %strong= s_('CICD|Deployment strategy')

@@ -682,6 +682,9 @@ msgstr ""
 msgid "Auto DevOps"
 msgstr ""
 
+msgid "Auto DevOps domain configuration"
+msgstr ""
+
 msgid "Auto DevOps enabled"
 msgstr ""
 
@@ -1008,7 +1011,10 @@ msgstr ""
 msgid "CI/CD settings"
 msgstr ""
 
-msgid "CICD|Add a domain where deployed apps will be served. A wildcard DNS record matching the base domain is required."
+msgid "CICD|A wildcard DNS record matching the base domain is required."
+msgstr ""
+
+msgid "CICD|Add a domain where deployed apps will be served."
 msgstr ""
 
 msgid "CICD|Alternatively, create a %{kubernetes} with Ingress installed to automatically use a wildcard domain."
@@ -1042,6 +1048,9 @@ msgid "CICD|Jobs"
 msgstr ""
 
 msgid "CICD|Learn more about Auto DevOps"
+msgstr ""
+
+msgid "CICD|Read more about %{auto_devops_help_link}."
 msgstr ""
 
 msgid "CICD|The Auto DevOps pipeline will run if no alternative CI configuration file is found."
