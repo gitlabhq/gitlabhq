@@ -372,12 +372,9 @@ msgstr ""
 msgid "Access expiration date"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Access to '%{classification_label}' not allowed"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
 msgstr ""
 
@@ -1268,12 +1265,9 @@ msgstr ""
 msgid "Browse files"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Built-In"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Business metrics (Custom)"
 msgstr ""
 
@@ -2214,11 +2208,10 @@ msgstr ""
 msgid "Contribution guide"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "Contributions per group member"
-=======
 msgid "Contributions for <strong>%{calendar_date}</strong>"
->>>>>>> upstream/master
+msgstr ""
+
+msgid "Contributions per group member"
 msgstr ""
 
 msgid "Contributors"
@@ -4589,15 +4582,12 @@ msgstr ""
 msgid "Markdown enabled"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Maven Metadata"
 msgstr ""
 
 msgid "Maven package"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Max access level"
 msgstr ""
 
@@ -4862,15 +4852,9 @@ msgstr ""
 msgid "More"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "More actions"
-msgstr ""
-
 msgid "More info"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "More information"
 msgstr ""
 
@@ -6759,7 +6743,6 @@ msgstr ""
 msgid "Shared projects"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "SharedRunnersMinutesSettings|By resetting the pipeline minutes for this namespace, the currently used minutes will be set to zero."
 msgstr ""
 
@@ -6769,8 +6752,6 @@ msgstr ""
 msgid "SharedRunnersMinutesSettings|Reset used pipeline minutes"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Sherlock Transactions"
 msgstr ""
 
@@ -7133,12 +7114,9 @@ msgstr ""
 msgid "System Info"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "System header and footer:"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "System metrics (Custom)"
 msgstr ""
 
@@ -7405,15 +7383,12 @@ msgstr ""
 msgid "There are no projects shared with this group yet"
 msgstr ""
 
-<<<<<<< HEAD
-=======
 msgid "There are no staged changes"
 msgstr ""
 
 msgid "There are no unstaged changes"
 msgstr ""
 
->>>>>>> upstream/master
 msgid "There are problems accessing Git storage: "
 msgstr ""
 
@@ -7931,14 +7906,13 @@ msgstr ""
 msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Unable to sign you in to the group with SAML due to \"%{reason}\""
 msgstr ""
 
-msgid "Unknown"
-=======
 msgid "Undo"
->>>>>>> upstream/master
+msgstr ""
+
+msgid "Unknown"
 msgstr ""
 
 msgid "Unlock"
