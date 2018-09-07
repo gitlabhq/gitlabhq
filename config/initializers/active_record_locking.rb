@@ -62,23 +62,13 @@ module ActiveRecord
       end
     end
 
-    # This is patched because we want `lock_version` default to `NULL`
-    # rather than `0`
-    if Gitlab.rails5?
-      class LockingType
-        def deserialize(value)
-          super
-        end
-
-        def serialize(value)
-          super
-        end
+    class LockingType
+      def deserialize(value)
+        super
       end
-    else
-      class LockingType < SimpleDelegator
-        def type_cast_from_database(value)
-          super
-        end
+
+      def serialize(value)
+        super
       end
     end
   end
