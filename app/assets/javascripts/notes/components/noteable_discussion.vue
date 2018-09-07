@@ -266,7 +266,7 @@ Please check your network connection and try again.`;
       this.jumpToDiscussion(nextId);
     },
     deleteNoteHandler(note) {
-      this.$emit('handleNoteDelete', this.discussion, note);
+      this.$emit('noteDeleted', this.discussion, note);
     },
   },
 };

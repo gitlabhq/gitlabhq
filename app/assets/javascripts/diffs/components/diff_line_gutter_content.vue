@@ -73,7 +73,7 @@ export default {
     }),
     ...mapGetters(['isLoggedIn']),
     lineHref() {
-      return this.line && this.line.lineCode ? `#${this.line.lineCode}` : '#';
+      return `#${this.line.lineCode || ''}`;
     },
     shouldShowCommentButton() {
       return (
@@ -87,10 +87,10 @@ export default {
       );
     },
     hasDiscussions() {
-      return this.line && this.line.discussions && this.line.discussions.length > 0;
+      return this.line.discussions && this.line.discussions.length > 0;
     },
     shouldShowAvatarsOnGutter() {
-      if (this.line && !this.line.type && this.linePosition === LINE_POSITION_RIGHT) {
+      if (!this.line.type && this.linePosition === LINE_POSITION_RIGHT) {
         return false;
       }
       return this.showCommentButton && this.hasDiscussions;

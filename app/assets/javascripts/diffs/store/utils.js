@@ -181,6 +181,8 @@ export function trimFirstCharOfLineContent(line = {}) {
   return parsedLine;
 }
 
+// This prepares and optimizes the incoming diff data from the server
+// by setting up incremental rendering and removing unneeded data
 export function prepareDiffData(diffData) {
   const filesLength = diffData.diffFiles.length;
   let showingLines = 0;

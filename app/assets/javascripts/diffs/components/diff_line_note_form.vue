@@ -6,7 +6,7 @@ import noteForm from '../../notes/components/note_form.vue';
 import { getNoteFormData } from '../store/utils';
 import autosave from '../../notes/mixins/autosave';
 import { DIFF_NOTE_TYPE } from '../constants';
-import * as utils from '../../notes/stores/utils';
+import { reduceDiscussionsToLineCodes } from '../../notes/stores/utils';
 
 export default {
   components: {
@@ -90,7 +90,7 @@ export default {
 
           this.refetchDiscussionById({ path: endpoint, discussionId: result.discussion_id })
             .then(selectedDiscussion => {
-              const lineCodeDiscussions = utils.reduceDiscussionsToLineCodes([selectedDiscussion]);
+              const lineCodeDiscussions = reduceDiscussionsToLineCodes([selectedDiscussion]);
               this.assignDiscussionsToDiff(lineCodeDiscussions);
 
               this.handleCancelCommentForm();

@@ -73,7 +73,8 @@ export default {
     const normalizedData = convertObjectPropsToCamelCase(data, { deep: true });
     prepareDiffData(normalizedData);
     const [newFileData] = normalizedData.diffFiles.filter(f => f.fileHash === file.fileHash);
-    Object.assign(file, { ...newFileData });
+    const selectedFile = state.diffFiles.find(f => f.fileHash === file.fileHash);
+    Object.assign(selectedFile, { ...newFileData });
   },
 
   [types.EXPAND_ALL_FILES](state) {

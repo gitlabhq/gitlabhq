@@ -49,7 +49,8 @@ export default {
         !this.isCollapsed &&
         !this.file.highlightedDiffLines &&
         !this.isLoadingCollapsedDiff &&
-        !this.file.tooLarge
+        !this.file.tooLarge &&
+        this.file.text
       );
     },
     showLoadingIcon() {
@@ -76,7 +77,6 @@ export default {
           this.file.collapsed = false;
           this.file.renderIt = true;
         })
-        .then(() => this.$nextTick())
         .then(() => {
           requestIdleCallback(
             () => {
@@ -149,7 +149,7 @@ export default {
       class="diff-content loading"
     />
     <div
-      v-if="showExpandMessage"
+      v-else-if="showExpandMessage"
       class="nothing-here-block diff-collapsed"
     >
       {{ __('This diff is collapsed.') }}

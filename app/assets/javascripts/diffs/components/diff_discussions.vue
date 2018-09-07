@@ -40,7 +40,7 @@ export default {
           :render-diff-file="false"
           :always-expanded="true"
           :discussions-by-diff-order="true"
-          @handleNoteDelete="deleteNoteHandler"
+          @noteDeleted="deleteNoteHandler"
         />
       </ul>
     </div>

@@ -31,7 +31,7 @@ export const reduceDiscussionsToLineCodes = selectedDiscussions =>
       // For context about line notes: there might be multiple notes with the same line code
       const items = acc[note.line_code] || [];
       if (note.diff_file) {
-        Object.assign(note, { fileHash: note.diff_file.file_hash });
+        // Object.assign(note, { fileHash: note.diff_file.file_hash });
       }
 
       items.push(note);

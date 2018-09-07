@@ -29,6 +29,8 @@ export const fetchDiffFiles = ({ state, commit }) => {
     .then(handleLocationHash);
 };
 
+// This is adding line discussions to the actual lines in the diff tree
+// once for parallel and once for inline mode
 export const assignDiscussionsToDiff = ({ state, commit }, allLineDiscussions) => {
   Object.values(allLineDiscussions).forEach(discussions => {
     if (discussions.length > 0) {
@@ -74,12 +76,10 @@ export const removeDiscussionsFromDiff = ({ state, commit }, removeDiscussion) =
     );
 
     if (targetLine) {
-      if (targetLine) {
-        if (targetLine.left && targetLine.left.lineCode === removeDiscussion.line_code) {
-          commit(types.REMOVE_LINE_DISCUSSIONS, targetLine.left);
-        } else {
-          commit(types.REMOVE_LINE_DISCUSSIONS, targetLine.right);
-        }
+      if (targetLine.left && targetLine.left.lineCode === removeDiscussion.line_code) {
+        commit(types.REMOVE_LINE_DISCUSSIONS, targetLine.left);
+      } else {
+        commit(types.REMOVE_LINE_DISCUSSIONS, targetLine.right);
       }
     }
 
@@ -117,11 +117,7 @@ export const startRenderDiffsQueue = ({ state, commit }) => {
       }
     });
 
-  return new Promise(resolve => {
-    checkItem()
-      .then(resolve)
-      .catch(() => {});
-  });
+  return checkItem();
 };
 
 export const setInlineDiffViewType = ({ commit }) => {

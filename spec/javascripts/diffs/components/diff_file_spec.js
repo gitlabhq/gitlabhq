@@ -51,6 +51,7 @@ describe('DiffFile', () => {
       });
 
       it('should have collapsed text and link', done => {
+        vm.file.renderIt = true;
         vm.file.collapsed = false;
         vm.file.highlightedDiffLines = null;
 
