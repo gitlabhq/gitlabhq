@@ -7,6 +7,8 @@ $ide-context-header-padding: 10px;
 $ide-project-avatar-end: $ide-context-header-padding + 48px;
 $ide-tree-padding: $gl-padding;
 $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
+$ide-commit-row-height: 32px;
+$ide-commit-header-height: 48px;
 
 .project-refs-form,
 .project-refs-target-form {
@@ -567,7 +569,7 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 }
 
 .multi-file-commit-panel-header {
-  height: 48px;
+  height: $ide-commit-header-height;
   border-bottom: 1px solid $white-dark;
   padding: 12px 0;
 }
@@ -645,7 +647,7 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 
 .multi-file-commit-list-path {
   cursor: pointer;
-  height: 32px;
+  height: $ide-commit-row-height;
   padding-right: 0;
 
   &.is-active {
@@ -682,8 +684,8 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 .multi-file-discard-btn {
   > .btn {
     display: none;
-    width: 32px;
-    height: 32px;
+    width: $ide-commit-row-height;
+    height: $ide-commit-row-height;
   }
 
   svg {
@@ -803,8 +805,8 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 }
 
 .ide-staged-action-btn {
-  width: 32px;
-  height: 32px;
+  width: $ide-commit-row-height;
+  height: $ide-commit-row-height;
   color: inherit;
 
   > svg {
@@ -1460,6 +1462,6 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 }
 
 .ide-commit-list-changed-icon {
-  width: 32px;
-  height: 32px;
+  width: $ide-commit-row-height;
+  height: $ide-commit-row-height;
 }

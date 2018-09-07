@@ -186,7 +186,7 @@ export default {
       v-if="!stagedList"
       id="discard-all-changes"
       :footer-primary-button-text="__('Discard all changes')"
-      header-title-text="Discard all unstaged changes?"
+      :header-title-text="__('Discard all unstaged changes?')"
       footer-primary-button-variant="danger"
       @submit="discardAllChanges"
     >

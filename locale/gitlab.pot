@@ -2307,7 +2307,13 @@ msgstr ""
 msgid "Discard all changes"
 msgstr ""
 
+msgid "Discard all unstaged changes?"
+msgstr ""
+
 msgid "Discard changes"
+msgstr ""
+
+msgid "Discard changes to %{path}?"
 msgstr ""
 
 msgid "Discard draft"

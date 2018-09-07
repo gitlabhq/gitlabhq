@@ -1,6 +1,7 @@
 <script>
 import $ from 'jquery';
 import { mapActions } from 'vuex';
+import { sprintf, __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import GlModal from '~/vue_shared/components/gl_modal.vue';
@@ -24,7 +25,10 @@ export default {
       return `discard-file-${this.path}`;
     },
     modalTitle() {
-      return `Discard changes to ${this.path}?`;
+      return sprintf(
+        __('Discard changes to %{path}?'),
+        { path: this.path },
+      );
     },
   },
   methods: {
