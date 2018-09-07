@@ -708,7 +708,6 @@ gitlab:assets:compile:
     SETUP_DB: "false"
     SKIP_STORAGE_VALIDATION: "true"
     WEBPACK_REPORT: "true"
-    NO_COMPRESSION: "true"
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584
   script:
@@ -722,6 +721,7 @@ gitlab:assets:compile:
     expire_in: 31d
     paths:
       - webpack-report/
+      - public/assets/
 
 karma:
   <<: *dedicated-no-docs-and-no-qa-pull-cache-job
