@@ -87,6 +87,7 @@
 - authorized_projects
 - background_migration
 - create_gpg_signature
+- delete_container_repository
 - delete_merged_branches
 - delete_user
 - email_receiver
