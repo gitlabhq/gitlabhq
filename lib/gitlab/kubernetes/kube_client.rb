@@ -31,6 +31,7 @@ module Gitlab
         :create_config_map,
         :create_namespace,
         :create_pod,
+        :create_secret,
         :create_service_account,
         :update_config_map,
         :update_service_account,
