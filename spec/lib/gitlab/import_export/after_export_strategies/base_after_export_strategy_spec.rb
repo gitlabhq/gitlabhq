@@ -12,7 +12,7 @@ describe Gitlab::ImportExport::AfterExportStrategies::BaseAfterExportStrategy do
     end
 
     it 'returns if project exported file is not found' do
-      allow(project).to receive(:export_project_object_exists?).and_return(false)
+      allow(project).to receive(:export_project_exists?).and_return(false)
 
       expect(service).not_to receive(:strategy_execute)
 

@@ -3151,7 +3151,7 @@ describe Project do
     it 'removes the export' do
       project.remove_exports
 
-      expect(project.export_project_object_exists?).to be_falsey
+      expect(project.export_project_exists?).to be_falsey
     end
   end
 
