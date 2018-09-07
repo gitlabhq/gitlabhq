@@ -187,19 +187,6 @@
       - container_memory_usage_bytes
     weight: 2
     queries:
-<<<<<<< HEAD:config/prometheus/common_metrics.yml
-=======
-    - id: system_metrics_kubernetes_container_memory_average
-      query_range: 'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job) / count(avg(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) without (job)) /1024/1024'
-      label: Pod average
-      unit: MB
-  - title: "Canary: Memory Usage (Pod Average)"
-    y_label: "Memory Used per Pod"
-    required_metrics:
-      - container_memory_usage_bytes
-    weight: 2
-    queries:
->>>>>>> upstream/master:config/prometheus/common_metrics.yml
     - id: system_metrics_kubernetes_container_memory_average_canary
       query_range: 'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-canary-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job) / count(avg(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-canary-(.*)",namespace="%{kube_namespace}"}) without (job)) /1024/1024'
       label: Pod average
@@ -212,11 +199,7 @@
     weight: 1
     queries:
     - id: system_metrics_kubernetes_container_core_usage
-<<<<<<< HEAD:config/prometheus/common_metrics.yml
       query_range: 'avg(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^%{ci_environment_slug}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="%{kube_namespace}"}[15m])) by (job)) without (job) / count(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^%{ci_environment_slug}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="%{kube_namespace}"}[15m])) by (pod_name))'
-=======
-      query_range: 'avg(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}[15m])) by (job)) without (job) / count(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}[15m])) by (pod_name))'
->>>>>>> upstream/master:config/prometheus/common_metrics.yml
       label: Pod average
       unit: "cores"
   - title: "Canary: Core Usage (Pod Average)"
@@ -230,7 +213,3 @@
       label: Pod average
       unit: "cores"
       track: canary
-<<<<<<< HEAD:config/prometheus/common_metrics.yml
-
-=======
->>>>>>> upstream/master:config/prometheus/common_metrics.yml

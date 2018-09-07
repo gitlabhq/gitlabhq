@@ -6,12 +6,7 @@ We strive to support the 2-4 most important metrics for each common system servi
 
 ### Query identifier
 
-<<<<<<< HEAD
-The requirement for adding a new metrics is to make each query to have an unique identifier.
-Identifier is used to update the metric later when changed.
-=======
 The requirement for adding a new metric is to make each query to have an unique identifier which is used to update the metric later when changed:
->>>>>>> upstream/master
 
 ```yaml
 - group: Response metrics (NGINX Ingress)

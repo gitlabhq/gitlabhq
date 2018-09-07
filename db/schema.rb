@@ -2266,7 +2266,6 @@ ActiveRecord::Schema.define(version: 20180906101639) do
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
 
-<<<<<<< HEAD
   create_table "prometheus_alerts", force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -2281,8 +2280,6 @@ ActiveRecord::Schema.define(version: 20180906101639) do
   add_index "prometheus_alerts", ["project_id", "prometheus_metric_id"], name: "index_prometheus_alerts_on_project_id_and_prometheus_metric_id", unique: true, using: :btree
   add_index "prometheus_alerts", ["prometheus_metric_id"], name: "index_prometheus_alerts_on_prometheus_metric_id", using: :btree
 
-=======
->>>>>>> upstream/master
   create_table "prometheus_metrics", force: :cascade do |t|
     t.integer "project_id"
     t.string "title", null: false
@@ -3180,15 +3177,11 @@ ActiveRecord::Schema.define(version: 20180906101639) do
   add_foreign_key "project_mirror_data", "projects", name: "fk_d1aad367d7", on_delete: :cascade
   add_foreign_key "project_repository_states", "projects", on_delete: :cascade
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
-<<<<<<< HEAD
   add_foreign_key "prometheus_alerts", "environments", on_delete: :cascade
   add_foreign_key "prometheus_alerts", "projects", on_delete: :cascade
   add_foreign_key "prometheus_alerts", "prometheus_metrics", on_delete: :cascade
   add_foreign_key "prometheus_metrics", "projects", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "namespaces", column: "group_id", name: "fk_98f3d044fe", on_delete: :cascade
-=======
-  add_foreign_key "prometheus_metrics", "projects", on_delete: :cascade
->>>>>>> upstream/master
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches", name: "fk_8a3072ccb3", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "users"
   add_foreign_key "protected_branch_push_access_levels", "namespaces", column: "group_id", name: "fk_7111b68cdb", on_delete: :cascade

@@ -14,11 +14,8 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
 
   presents :build
 
-<<<<<<< HEAD
   prepend ::EE::CommitStatusPresenter
 
-=======
->>>>>>> upstream/master
   def self.callout_failure_messages
     CALLOUT_FAILURE_MESSAGES
   end

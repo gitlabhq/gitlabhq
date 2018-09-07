@@ -596,15 +596,12 @@ PrometheusMetric:
 - group
 - common
 - identifier
-<<<<<<< HEAD
 PrometheusAlert:
 - threshold
 - operator
 - environment_id
 - project_id
 - prometheus_metric_id
-=======
->>>>>>> upstream/master
 Badge:
 - id
 - link_url

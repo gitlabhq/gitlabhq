@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
 class PrometheusMetric < ActiveRecord::Base
-<<<<<<< HEAD
   prepend EE::PrometheusMetric
 
-=======
->>>>>>> upstream/master
   belongs_to :project, validate: true, inverse_of: :prometheus_metrics
 
   enum group: {
