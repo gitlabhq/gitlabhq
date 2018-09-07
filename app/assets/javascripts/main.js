@@ -30,12 +30,9 @@ import './frequent_items';
 import initBreadcrumbs from './breadcrumb';
 import initDispatcher from './dispatcher';
 import initUsagePingConsent from './usage_ping_consent';
-<<<<<<< HEAD
 
 // EE-only scripts
 import 'ee/main'; // eslint-disable-line import/first
-=======
->>>>>>> upstream/master
 
 // expose jQuery as global (TODO: remove these)
 window.jQuery = jQuery;
