@@ -63,6 +63,14 @@ module QA
           '/users/sign_in'
         end
 
+        def sign_in_tab?
+          page.has_button?('Sign in')
+        end
+
+        def ldap_tab?
+          page.has_button?('LDAP')
+        end
+
         def switch_to_sign_in_tab
           click_on 'Sign in'
         end
@@ -90,8 +98,8 @@ module QA
         end
 
         def sign_in_using_gitlab_credentials(user)
-          switch_to_sign_in_tab unless page.has_button?('Sign in')
-          switch_to_standard_tab if page.has_content?('LDAP')
+          switch_to_sign_in_tab unless sign_in_tab?
+          switch_to_standard_tab if ldap_tab?
 
           fill_in :user_login, with: user.username
           fill_in :user_password, with: user.password
