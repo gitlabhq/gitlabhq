@@ -19,6 +19,9 @@ project_tree:
     - milestone:
       - events:
         - :push_event_payload
+    - resource_label_events:
+      - label:
+          :priorities
     - :issue_assignees
   - snippets:
     - :award_emoji
@@ -45,6 +48,9 @@ project_tree:
     - milestone:
       - events:
         - :push_event_payload
+    - resource_label_events:
+      - label:
+          :priorities
   - pipelines:
     - notes:
       - :author
@@ -137,6 +143,10 @@ excluded_attributes:
     - :event_id
   project_badges:
     - :group_id
+  resource_label_events:
+    - :reference
+    - :reference_html
+    - :epic_id
 
 methods:
   labels:

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180901171833) do
+ActiveRecord::Schema.define(version: 20180901200537) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1841,6 +1841,9 @@ ActiveRecord::Schema.define(version: 20180901171833) do
     t.integer "label_id"
     t.integer "user_id"
     t.datetime_with_timezone "created_at", null: false
+    t.integer "cached_markdown_version"
+    t.text "reference"
+    t.text "reference_html"
   end
 
   add_index "resource_label_events", ["issue_id"], name: "index_resource_label_events_on_issue_id", using: :btree

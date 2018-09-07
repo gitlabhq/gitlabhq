@@ -108,7 +108,7 @@ module NotesHelper
   end
 
   def noteable_note_url(note)
-    Gitlab::UrlBuilder.build(note)
+    Gitlab::UrlBuilder.build(note) if note.id
   end
 
   def form_resources

@@ -118,6 +118,7 @@ module API
     mount ::API::Namespaces
     mount ::API::Notes
     mount ::API::Discussions
+    mount ::API::ResourceLabelEvents
     mount ::API::NotificationSettings
     mount ::API::PagesDomains
     mount ::API::Pipelines

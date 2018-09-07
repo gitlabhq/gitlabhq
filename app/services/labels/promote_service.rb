@@ -13,6 +13,7 @@ module Labels
 
         label_ids_for_merge(new_label).find_in_batches(batch_size: BATCH_SIZE) do |batched_ids|
           update_issuables(new_label, batched_ids)
+          update_resource_label_events(new_label, batched_ids)
           update_issue_board_lists(new_label, batched_ids)
           update_priorities(new_label, batched_ids)
           subscribe_users(new_label, batched_ids)
@@ -48,6 +49,12 @@ module Labels
 
     def update_issuables(new_label, label_ids)
       LabelLink
+        .where(label: label_ids)
+        .update_all(label_id: new_label)
+    end
+
+    def update_resource_label_events(new_label, label_ids)
+      ResourceLabelEvent
         .where(label: label_ids)
         .update_all(label_id: new_label)
     end

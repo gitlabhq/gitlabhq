@@ -12,12 +12,21 @@ describe Issuable::CommonSystemNotesService do
     it_behaves_like 'system note creation', { time_estimate: 5 }, 'changed time estimate'
 
     context 'when new label is added' do
+      let(:label) { create(:label, project: project) }
+
       before do
-        label = create(:label, project: project)
         issuable.labels << label
+        issuable.save
       end
 
-      it_behaves_like 'system note creation', {}, /added ~\w+ label/
+      it 'creates a resource label event' do
+        described_class.new(project, user).execute(issuable, [])
+        event = issuable.reload.resource_label_events.last
+
+        expect(event).not_to be_nil
+        expect(event.label_id).to eq label.id
+        expect(event.user_id).to eq user.id
+      end
     end
 
     context 'when new milestone is assigned' do

@@ -30,7 +30,7 @@ describe('note_awards_list component', () => {
       propsData: {
         awards: awardsMock,
         noteAuthorId: 2,
-        noteId: 545,
+        noteId: '545',
         canAwardEmoji: true,
         toggleAwardPath: '/gitlab-org/gitlab-ce/notes/545/toggle_award_emoji',
       },
@@ -70,7 +70,7 @@ describe('note_awards_list component', () => {
         propsData: {
           awards: awardsMock,
           noteAuthorId: 2,
-          noteId: 545,
+          noteId: '545',
           canAwardEmoji: false,
           toggleAwardPath: '/gitlab-org/gitlab-ce/notes/545/toggle_award_emoji',
         },

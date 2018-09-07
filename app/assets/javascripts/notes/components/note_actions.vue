@@ -24,12 +24,13 @@ export default {
       required: true,
     },
     noteId: {
-      type: Number,
+      type: String,
       required: true,
     },
     noteUrl: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     accessLevel: {
       type: String,
@@ -225,11 +226,11 @@ export default {
             Report as abuse
           </a>
         </li>
-        <li>
+        <li v-if="noteUrl">
           <button
             :data-clipboard-text="noteUrl"
             type="button"
-            css-class="btn-default btn-transparent"
+            class="btn-default btn-transparent js-btn-copy-note-link"
           >
             Copy link
           </button>
