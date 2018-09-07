@@ -88,8 +88,30 @@ describe Wikis::CreateAttachmentService do
     end
   end
 
-  describe 'validations' do
+  describe '#parse_file_name' do
     context 'when file_name' do
+      context 'has white spaces' do
+        let(:file_name) { 'file with spaces' }
+
+        it "replaces all of them with '_'" do
+          result = service.execute
+
+          expect(result[:status]).to eq :success
+          expect(result[:result][:file_name]).to eq 'file_with_spaces'
+        end
+      end
+
+      context 'has other invalid characters' do
+        let(:file_name) { "file\twith\tinvalid chars" }
+
+        it "replaces all of them with '_'" do
+          result = service.execute
+
+          expect(result[:status]).to eq :success
+          expect(result[:result][:file_name]).to eq 'file_with_invalid_chars'
+        end
+      end
+
       context 'is not present' do
         let(:file_name) { nil }
 
