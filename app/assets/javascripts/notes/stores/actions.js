@@ -54,6 +54,7 @@ export const refetchDiscussionById = ({ commit, state }, { path, discussionId })
           commit(types.UPDATE_DISCUSSION, selectedDiscussion);
           // We need to refetch as it is now the transformed one in state
           const discussion = utils.findNoteObjectById(state.discussions, discussionId);
+
           resolve(discussion);
         }
       })
