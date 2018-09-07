@@ -100,7 +100,7 @@ export default {
       </div>
       <div
         :class="{ 'content-loading': group.isChildrenLoading }"
-        class="avatar-container s24 d-none d-sm-block"
+        class="avatar-container s24 d-none d-sm-flex"
       >
         <a
           :href="group.relativePath"
