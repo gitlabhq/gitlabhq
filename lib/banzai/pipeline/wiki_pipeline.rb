@@ -5,7 +5,7 @@ module Banzai
         @filters ||= begin
           super.insert_after(Filter::TableOfContentsFilter, Filter::GollumTagsFilter)
                .insert_before(Filter::TaskListFilter, Filter::WikiLinkFilter)
-               .insert_before(Filter::WikiLinkFilter, Filter::SpacedLinkFilter)
+               .insert_before(Filter::VideoLinkFilter, Filter::SpacedLinkFilter)
         end
       end
     end
