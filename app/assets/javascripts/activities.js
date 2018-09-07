@@ -1,5 +1,3 @@
-/* eslint-disable class-methods-use-this */
-
 import $ from 'jquery';
 import Cookies from 'js-cookie';
 import Pager from './pager';
@@ -7,25 +5,25 @@ import { localTimeAgo } from './lib/utils/datetime_utility';
 
 export default class Activities {
   constructor() {
-    Pager.init(20, true, false, data => data, this.updateTooltips);
+    Pager.init(20, true, false, data => data, Activities.updateTooltips);
 
-    $('.event-filter-link').on('click', (e) => {
+    $('.event-filter-link').on('click', e => {
       e.preventDefault();
-      this.toggleFilter(e.currentTarget);
-      this.reloadActivities();
+      Activities.toggleFilter(e.currentTarget);
+      Activities.reloadActivities();
     });
   }
 
-  updateTooltips() {
+  static updateTooltips() {
     localTimeAgo($('.js-timeago', '.content_list'));
   }
 
-  reloadActivities() {
+  static reloadActivities() {
     $('.content_list').html('');
-    Pager.init(20, true, false, data => data, this.updateTooltips);
+    Pager.init(20, true, false, data => data, Activities.updateTooltips);
   }
 
-  toggleFilter(sender) {
+  static toggleFilter(sender) {
     const $sender = $(sender);
     const filter = $sender.attr('id').split('_')[0];
 

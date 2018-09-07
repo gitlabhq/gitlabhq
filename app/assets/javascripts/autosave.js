@@ -1,5 +1,3 @@
-/* eslint-disable no-param-reassign, prefer-template, no-void, consistent-return */
-
 import AccessorUtilities from './lib/utils/accessor';
 
 export default class Autosave {
@@ -7,10 +5,7 @@ export default class Autosave {
     this.field = field;
 
     this.isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
-    if (key.join != null) {
-      key = key.join('/');
-    }
-    this.key = 'autosave/' + key;
+    this.key = `autosave/${key.join !== null ? key.join('/') : key}`;
     this.field.data('autosave', this);
     this.restore();
     this.field.on('input', () => this.save());
@@ -22,7 +17,7 @@ export default class Autosave {
 
     const text = window.localStorage.getItem(this.key);
 
-    if ((text != null ? text.length : void 0) > 0) {
+    if (text !== null && text.length > 0) {
       this.field.val(text);
     }
 
@@ -41,17 +36,19 @@ export default class Autosave {
 
     const text = this.field.val();
 
-    if (this.isLocalStorageAvailable && (text != null ? text.length : void 0) > 0) {
-      return window.localStorage.setItem(this.key, text);
+    if (this.isLocalStorageAvailable && text !== null && text.length > 0) {
+      window.localStorage.setItem(this.key, text);
+
+      return;
     }
 
-    return this.reset();
+    this.reset();
   }
 
   reset() {
     if (!this.isLocalStorageAvailable) return;
 
-    return window.localStorage.removeItem(this.key);
+    window.localStorage.removeItem(this.key);
   }
 
   dispose() {

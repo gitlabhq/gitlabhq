@@ -7,7 +7,7 @@ import * as types from './mutation_types';
 import * as utils from './utils';
 import * as constants from '../constants';
 import service from '../services/notes_service';
-import loadAwardsHandler from '../../awards_handler';
+import loadAwardsHandler, { AwardsHandler } from '../../awards_handler';
 import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
 import { isInViewport, scrollToElement } from '../../lib/utils/common_utils';
 
@@ -203,7 +203,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
         loadAwardsHandler()
           .then(awardsHandler => {
             awardsHandler.addAwardToEmojiBar(votesBlock, commandsChanges.emoji_award);
-            awardsHandler.scrollToAwards();
+            AwardsHandler.scrollToAwards();
           })
           .catch(() => {
             Flash(

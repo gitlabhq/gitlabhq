@@ -23,7 +23,7 @@ import Flash from './flash';
 import { defaultAutocompleteConfig } from './gfm_auto_complete';
 import CommentTypeToggle from './comment_type_toggle';
 import GLForm from './gl_form';
-import loadAwardsHandler from './awards_handler';
+import loadAwardsHandler, { AwardsHandler } from './awards_handler';
 import Autosave from './autosave';
 import TaskList from './task_list';
 import {
@@ -358,7 +358,7 @@ export default class Notes {
         loadAwardsHandler()
           .then(awardsHandler => {
             awardsHandler.addAwardToEmojiBar(votesBlock, noteEntity.commands_changes.emoji_award);
-            awardsHandler.scrollToAwards();
+            AwardsHandler.scrollToAwards();
           })
           .catch(() => {
             // ignore

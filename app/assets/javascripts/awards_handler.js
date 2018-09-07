@@ -1,5 +1,3 @@
-/* eslint-disable class-methods-use-this */
-
 import $ from 'jquery';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
@@ -70,7 +68,7 @@ export class AwardsHandler {
         $('.js-awards-block.current').removeClass('current');
         if ($(`.${this.menuClass}`).is(':visible')) {
           $(`${this.toggleButtonSelector}.is-active`).removeClass('is-active');
-          this.hideMenuElement($(`.${this.menuClass}`));
+          AwardsHandler.hideMenuElement($(`.${this.menuClass}`));
         }
       }
     });
@@ -112,12 +110,12 @@ export class AwardsHandler {
     if ($menu.length) {
       if ($menu.is('.is-visible')) {
         $addBtn.removeClass('is-active');
-        this.hideMenuElement($menu);
+        AwardsHandler.hideMenuElement($menu);
         $('.js-emoji-menu-search').blur();
       } else {
         $addBtn.addClass('is-active');
-        this.positionMenu($menu, $addBtn);
-        this.showMenuElement($menu);
+        AwardsHandler.positionMenu($menu, $addBtn);
+        AwardsHandler.showMenuElement($menu);
         $('.js-emoji-menu-search').focus();
       }
     } else {
@@ -125,9 +123,9 @@ export class AwardsHandler {
       this.createEmojiMenu(() => {
         const $createdMenu = $(`.${this.menuClass}`);
         $addBtn.removeClass('is-loading');
-        this.positionMenu($createdMenu, $addBtn);
+        AwardsHandler.positionMenu($createdMenu, $addBtn);
         return setTimeout(() => {
-          this.showMenuElement($createdMenu);
+          AwardsHandler.showMenuElement($createdMenu);
           $('.js-emoji-menu-search').focus();
         }, 200);
       });
@@ -249,7 +247,7 @@ export class AwardsHandler {
     `;
   }
 
-  positionMenu($menu, $addBtn) {
+  static positionMenu($menu, $addBtn) {
     const position = $addBtn.data('position');
     // The menu could potentially be off-screen or in a hidden overflow element
     // So we position the element absolute in the body
@@ -272,7 +270,7 @@ export class AwardsHandler {
     if (isInVueNoteablePage() && !isMainAwardsBlock) {
       const id = votesBlock.attr('id').replace('note_', '');
 
-      this.hideMenuElement($(`.${this.menuClass}`));
+      AwardsHandler.hideMenuElement($(`.${this.menuClass}`));
 
       $(`${this.toggleButtonSelector}.is-active`).removeClass('is-active');
       const toggleAwardEvent = new CustomEvent('toggleAward', {
@@ -286,14 +284,14 @@ export class AwardsHandler {
     }
 
     const normalizedEmoji = this.emoji.normalizeEmojiName(emoji);
-    const $emojiButton = this.findEmojiIcon(votesBlock, normalizedEmoji).parent();
+    const $emojiButton = AwardsHandler.findEmojiIcon(votesBlock, normalizedEmoji).parent();
 
-    this.postEmoji($emojiButton, awardUrl, normalizedEmoji, () => {
+    AwardsHandler.postEmoji($emojiButton, awardUrl, normalizedEmoji, () => {
       this.addAwardToEmojiBar(votesBlock, normalizedEmoji, checkMutuality);
       return typeof callback === 'function' ? callback() : undefined;
     });
 
-    this.hideMenuElement($(`.${this.menuClass}`));
+    AwardsHandler.hideMenuElement($(`.${this.menuClass}`));
 
     return $(`${this.toggleButtonSelector}.is-active`).removeClass('is-active');
   }
@@ -304,15 +302,15 @@ export class AwardsHandler {
     }
     this.addEmojiToFrequentlyUsedList(emoji);
     const normalizedEmoji = this.emoji.normalizeEmojiName(emoji);
-    const $emojiButton = this.findEmojiIcon(votesBlock, normalizedEmoji).parent();
+    const $emojiButton = AwardsHandler.findEmojiIcon(votesBlock, normalizedEmoji).parent();
     if ($emojiButton.length > 0) {
-      if (this.isActive($emojiButton)) {
+      if (AwardsHandler.isActive($emojiButton)) {
         this.decrementCounter($emojiButton, normalizedEmoji);
       } else {
         const counter = $emojiButton.find('.js-counter');
         counter.text(parseInt(counter.text(), 10) + 1);
         $emojiButton.addClass('active');
-        this.addYouToUserList(votesBlock, normalizedEmoji);
+        AwardsHandler.addYouToUserList(votesBlock, normalizedEmoji);
         this.animateEmoji($emojiButton);
       }
     } else {
@@ -355,7 +353,7 @@ export class AwardsHandler {
     }
   }
 
-  isActive($emojiButton) {
+  static isActive($emojiButton) {
     return $emojiButton.hasClass('active');
   }
 
@@ -364,11 +362,11 @@ export class AwardsHandler {
     const counterNumber = parseInt(counter.text(), 10);
     if (counterNumber > 1) {
       counter.text(counterNumber - 1);
-      this.removeYouFromUserList($emojiButton);
+      AwardsHandler.removeYouFromUserList($emojiButton);
     } else if (emoji === 'thumbsup' || emoji === 'thumbsdown') {
       $emojiButton.tooltip('dispose');
       counter.text('0');
-      this.removeYouFromUserList($emojiButton);
+      AwardsHandler.removeYouFromUserList($emojiButton);
       if ($emojiButton.parents('.note').length) {
         this.removeEmoji($emojiButton);
       }
@@ -387,11 +385,11 @@ export class AwardsHandler {
     }
   }
 
-  getAwardTooltip($awardBlock) {
+  static getAwardTooltip($awardBlock) {
     return $awardBlock.attr('data-original-title') || $awardBlock.attr('data-title') || '';
   }
 
-  toSentence(list) {
+  static toSentence(list) {
     let sentence;
     if (list.length <= 2) {
       sentence = list.join(' and ');
@@ -402,9 +400,9 @@ export class AwardsHandler {
     return sentence;
   }
 
-  removeYouFromUserList($emojiButton) {
+  static removeYouFromUserList($emojiButton) {
     const awardBlock = $emojiButton;
-    const originalTitle = this.getAwardTooltip(awardBlock);
+    const originalTitle = AwardsHandler.getAwardTooltip(awardBlock);
     const authors = originalTitle.split(FROM_SENTENCE_REGEX);
     authors.splice(authors.indexOf('You'), 1);
     return awardBlock
@@ -412,21 +410,19 @@ export class AwardsHandler {
       .removeData('title')
       .removeAttr('data-title')
       .removeAttr('data-original-title')
-      .attr('title', this.toSentence(authors))
+      .attr('title', AwardsHandler.toSentence(authors))
       .tooltip('_fixTitle');
   }
 
-  addYouToUserList(votesBlock, emoji) {
-    const awardBlock = this.findEmojiIcon(votesBlock, emoji).parent();
-    const origTitle = this.getAwardTooltip(awardBlock);
+  static addYouToUserList(votesBlock, emoji) {
+    const awardBlock = AwardsHandler.findEmojiIcon(votesBlock, emoji).parent();
+    const origTitle = AwardsHandler.getAwardTooltip(awardBlock);
     let users = [];
     if (origTitle) {
       users = origTitle.trim().split(FROM_SENTENCE_REGEX);
     }
     users.unshift('You');
-    return awardBlock
-      .attr('title', this.toSentence(users))
-      .tooltip('_fixTitle');
+    return awardBlock.attr('title', AwardsHandler.toSentence(users)).tooltip('_fixTitle');
   }
 
   createAwardButtonForVotesBlock(votesBlock, emojiName) {
@@ -464,7 +460,7 @@ export class AwardsHandler {
     });
   }
 
-  postEmoji($emojiButton, awardUrl, emoji, callback) {
+  static postEmoji($emojiButton, awardUrl, emoji, callback) {
     axios
       .post(awardUrl, {
         name: emoji,
@@ -477,12 +473,12 @@ export class AwardsHandler {
       .catch(() => flash(__('Something went wrong on our end.')));
   }
 
-  findEmojiIcon(votesBlock, emoji) {
+  static findEmojiIcon(votesBlock, emoji) {
     return votesBlock.find(`.js-emoji-btn [data-name="${emoji}"]`);
   }
 
-  userAuthored($emojiButton) {
-    const oldTitle = this.getAwardTooltip($emojiButton);
+  static userAuthored($emojiButton) {
+    const oldTitle = AwardsHandler.getAwardTooltip($emojiButton);
     const newTitle = 'You cannot vote on your own issue, MR and note';
     updateTooltipTitle($emojiButton, newTitle).tooltip('show');
     // Restore tooltip back to award list
@@ -492,7 +488,7 @@ export class AwardsHandler {
     }, 2800);
   }
 
-  scrollToAwards() {
+  static scrollToAwards() {
     const options = {
       scrollTop: $('.awards').offset().top - 110,
     };
@@ -581,14 +577,14 @@ export class AwardsHandler {
    * apply IS_RENDERED to add/remove the menu from the render tree and IS_VISIBLE to animate
    * the menu being opened and closed. */
 
-  showMenuElement($emojiMenu) {
+  static showMenuElement($emojiMenu) {
     $emojiMenu.addClass(IS_RENDERED);
 
     // enqueues animation as a microtask, so it begins ASAP once IS_RENDERED added
     return Promise.resolve().then(() => $emojiMenu.addClass(IS_VISIBLE));
   }
 
-  hideMenuElement($emojiMenu) {
+  static hideMenuElement($emojiMenu) {
     $emojiMenu.on(transitionEndEventString, e => {
       if (e.currentTarget === e.target) {
         $emojiMenu.removeClass(IS_RENDERED).off(transitionEndEventString);
@@ -609,13 +605,11 @@ export class AwardsHandler {
 let awardsHandlerPromise = null;
 export default function loadAwardsHandler(reload = false) {
   if (!awardsHandlerPromise || reload) {
-    awardsHandlerPromise = import(/* webpackChunkName: 'emoji' */ './emoji').then(
-      Emoji => {
-        const awardsHandler = new AwardsHandler(Emoji);
-        awardsHandler.bindEvents();
-        return awardsHandler;
-      },
-    );
+    awardsHandlerPromise = import(/* webpackChunkName: 'emoji' */ './emoji').then(Emoji => {
+      const awardsHandler = new AwardsHandler(Emoji);
+      awardsHandler.bindEvents();
+      return awardsHandler;
+    });
   }
   return awardsHandlerPromise;
 }
