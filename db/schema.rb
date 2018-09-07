@@ -173,6 +173,7 @@ ActiveRecord::Schema.define(version: 20180906101639) do
     t.boolean "web_ide_clientside_preview_enabled", default: false, null: false
     t.boolean "user_show_add_ssh_key_message", default: true, null: false
     t.integer "usage_stats_set_by_user_id"
+    t.integer "receive_max_input_size"
   end
 
   create_table "audit_events", force: :cascade do |t|
