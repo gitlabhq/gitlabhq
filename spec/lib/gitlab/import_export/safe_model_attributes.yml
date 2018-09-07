@@ -613,7 +613,6 @@ Badge:
 - type
 ProjectCiCdSetting:
 - group_runners_enabled
-<<<<<<< HEAD
 ProtectedEnvironment:
 - id
 - project_id
@@ -628,8 +627,6 @@ ProtectedEnvironment::DeployAccessLevel:
 - updated_at
 - user_id
 - group_id
-=======
->>>>>>> upstream/master
 ResourceLabelEvent:
 - id
 - action
