@@ -725,7 +725,7 @@ describe SystemNoteService do
     let(:jira_tracker)    { project.jira_service }
     let(:commit)          { project.commit }
     let(:comment_url)     { jira_api_comment_url(jira_issue.id) }
-    let(:success_message) { "JiraService SUCCESS: Successfully posted to http://jira.example.net." }
+    let(:success_message) { "SUCCESS: Successfully posted to http://jira.example.net." }
 
     before do
       stub_jira_urls(jira_issue.id)
