@@ -10,9 +10,9 @@ shared_examples 'label note created from events' do
   end
 
   def label_refs(events)
-    sorted_labels = events.map(&:label).compact.sort_by(&:title)
+    labels = events.map(&:label).compact
 
-    sorted_labels.map { |l| l.to_reference}.join(' ')
+    labels.map { |l| l.to_reference}.sort.join(' ')
   end
 
   let(:time) { Time.now }
