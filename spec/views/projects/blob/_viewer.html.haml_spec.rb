@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'projects/blob/_viewer.html.haml' do
   include FakeBlobHelpers
 
-  let(:project) { build(:project) }
+  let(:project) { build(:project, :skip_gitattribute) }
 
   let(:viewer_class) do
     Class.new(BlobViewer::Base) do

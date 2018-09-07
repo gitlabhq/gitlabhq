@@ -234,6 +234,14 @@ FactoryBot.define do
       end
     end
 
+    # When code triggers highlighting, git repository is accessed, and can cause issue if :repository trait
+    # is not used. Use this trait to bypass this.
+    trait :skip_gitattribute do
+      after(:build) do |project|
+        allow(project.repository).to receive(:gitattribute).and_return(nil)
+      end
+    end
+
     trait :test_repo do
       after :create do |project|
         TestEnv.copy_repo(project,
