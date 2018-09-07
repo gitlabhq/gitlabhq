@@ -17,7 +17,6 @@ describe 'Project > Members > Invite group', :js do
     shared_examples 'the project cannot be shared with groups' do
       it 'the "Invite group" tab does not exist' do
         visit project_settings_members_path(project)
-        expect(page).to have_selector('#invite-member-tab')
         expect(page).not_to have_selector('#invite-group-tab')
       end
     end
