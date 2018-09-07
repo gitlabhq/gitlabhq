@@ -2893,6 +2893,7 @@ ActiveRecord::Schema.define(version: 20180906101639) do
     t.boolean "private_profile"
     t.integer "roadmap_layout", limit: 2
     t.boolean "include_private_contributions"
+    t.string "commit_email"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

@@ -22,7 +22,9 @@
     .account-well.append-bottom-default
       %ul
         %li
-          Your Primary Email will be used for avatar detection and web based operations, such as edits and merges.
+          Your Primary Email will be used for avatar detection.
+        %li
+          Your Commit Email will be used for web based operations, such as edits and merges.
         %li
           Your Notification Email will be used for account notifications.
         %li
@@ -34,6 +36,8 @@
         = render partial: 'shared/email_with_badge', locals: { email: @primary_email, verified: current_user.confirmed? }
         %span.float-right
           %span.badge.badge-success Primary email
+          - if @primary_email === current_user.commit_email
+            %span.badge.badge-info Commit email
           - if @primary_email === current_user.public_email
             %span.badge.badge-info Public email
           - if @primary_email === current_user.notification_email
@@ -42,6 +46,8 @@
         %li
           = render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
           %span.float-right
+            - if email.email === current_user.commit_email
+              %span.badge.badge-info Commit email
             - if email.email === current_user.public_email
               %span.badge.badge-info Public email
             - if email.email === current_user.notification_email

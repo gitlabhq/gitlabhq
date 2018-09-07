@@ -163,6 +163,7 @@ class User < ActiveRecord::Base
   validates :notification_email, presence: true
   validates :notification_email, email: true, if: ->(user) { user.notification_email != user.email }
   validates :public_email, presence: true, uniqueness: true, email: true, allow_blank: true
+  validates :commit_email, email: true, allow_nil: true, if: ->(user) { user.commit_email != user.email }
   validates :bio, length: { maximum: 255 }, allow_blank: true
   validates :projects_limit,
     presence: true,
@@ -175,12 +176,15 @@ class User < ActiveRecord::Base
   validate :unique_email, if: :email_changed?
   validate :owns_notification_email, if: :notification_email_changed?
   validate :owns_public_email, if: :public_email_changed?
+  validate :owns_commit_email, if: :commit_email_changed?
   validate :signup_domain_valid?, on: :create, if: ->(user) { !user.created_by_id }
 
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: :new_record?
   before_validation :set_public_email, if: :public_email_changed?
+  before_validation :set_commit_email, if: :commit_email_changed?
   before_save :set_public_email, if: :public_email_changed? # in case validation is skipped
+  before_save :set_commit_email, if: :commit_email_changed? # in case validation is skipped
   before_save :ensure_incoming_email_token
   before_save :ensure_user_rights_and_limits, if: ->(user) { user.new_record? || user.external_changed? }
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
@@ -637,6 +641,32 @@ class User < ActiveRecord::Base
     errors.add(:public_email, "is not an email you own") unless all_emails.include?(public_email)
   end
 
+  def owns_commit_email
+    return if read_attribute(:commit_email).blank?
+
+    errors.add(:commit_email, "is not an email you own") unless verified_emails.include?(commit_email)
+  end
+
+  # Define commit_email-related attribute methods explicitly instead of relying
+  # on ActiveRecord to provide them. Some of the specs use the current state of
+  # the model code but an older database schema, so we need to guard against the
+  # possibility of the commit_email column not existing.
+
+  def commit_email
+    return unless has_attribute?(:commit_email)
+
+    # The commit email is the same as the primary email if undefined
+    super.presence || self.email
+  end
+
+  def commit_email=(email)
+    super if has_attribute?(:commit_email)
+  end
+
+  def commit_email_changed?
+    has_attribute?(:commit_email) && super
+  end
+
   # see if the new email is already a verified secondary email
   def check_for_verified_email
     skip_reconfirmation! if emails.confirmed.where(email: self.email).any?
@@ -891,10 +921,17 @@ class User < ActiveRecord::Base
     end
   end
 
+  def set_commit_email
+    if commit_email.blank? || verified_emails.exclude?(commit_email)
+      self.commit_email = nil
+    end
+  end
+
   def update_secondary_emails!
     set_notification_email
     set_public_email
-    save if notification_email_changed? || public_email_changed?
+    set_commit_email
+    save if notification_email_changed? || public_email_changed? || commit_email_changed?
   end
 
   def set_projects_limit

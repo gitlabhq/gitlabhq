@@ -176,6 +176,55 @@ describe User do
       subject { build(:user).tap { |user| user.emails << build(:email, email: email_value) } }
     end
 
+    describe '#commit_email' do
+      subject(:user) { create(:user) }
+
+      it 'defaults to the primary email' do
+        expect(user.email).to be_present
+        expect(user.commit_email).to eq(user.email)
+      end
+
+      it 'defaults to the primary email when the column in the database is null' do
+        user.update_column(:commit_email, nil)
+
+        found_user = described_class.find_by(id: user.id)
+
+        expect(found_user.commit_email).to eq(user.email)
+      end
+
+      it 'can be set to a confirmed email' do
+        confirmed = create(:email, :confirmed, user: user)
+        user.commit_email = confirmed.email
+
+        expect(user).to be_valid
+        expect(user.commit_email).to eq(confirmed.email)
+      end
+
+      it 'can not be set to an unconfirmed email' do
+        unconfirmed = create(:email, user: user)
+        user.commit_email = unconfirmed.email
+
+        # This should set the commit_email attribute to the primary email
+        expect(user).to be_valid
+        expect(user.commit_email).to eq(user.email)
+      end
+
+      it 'can not be set to a non-existent email' do
+        user.commit_email = 'non-existent-email@nonexistent.nonexistent'
+
+        # This should set the commit_email attribute to the primary email
+        expect(user).to be_valid
+        expect(user.commit_email).to eq(user.email)
+      end
+
+      it 'can not be set to an invalid email, even if confirmed' do
+        confirmed = create(:email, :confirmed, :skip_validate, user: user, email: 'invalid')
+        user.commit_email = confirmed.email
+
+        expect(user).not_to be_valid
+      end
+    end
+
     describe 'email' do
       context 'when no signup domains whitelisted' do
         before do
@@ -1418,7 +1467,6 @@ describe User do
     it 'returns only confirmed emails' do
       email_confirmed = create :email, user: user, confirmed_at: Time.now
       create :email, user: user
-      user.reload
 
       expect(user.verified_emails).to match_array([user.email, email_confirmed.email])
     end
