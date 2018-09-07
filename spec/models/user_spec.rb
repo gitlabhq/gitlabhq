@@ -2957,6 +2957,48 @@ describe User do
     end
   end
 
+  describe '#requires_usage_stats_consent?' do
+    let(:user) { create(:user, created_at: 8.days.ago) }
+
+    before do
+      allow(user).to receive(:has_current_license?).and_return false
+    end
+
+    context 'in single-user environment' do
+      it 'requires user consent after one week' do
+        create(:user, ghost: true)
+
+        expect(user.requires_usage_stats_consent?).to be true
+      end
+
+      it 'requires user consent after one week if there is another ghost user' do
+        expect(user.requires_usage_stats_consent?).to be true
+      end
+
+      it 'does not require consent in the first week' do
+        user.created_at = 6.days.ago
+
+        expect(user.requires_usage_stats_consent?).to be false
+      end
+
+      it 'does not require consent if usage stats were set by this user' do
+        allow(Gitlab::CurrentSettings).to receive(:usage_stats_set_by_user_id).and_return(user.id)
+
+        expect(user.requires_usage_stats_consent?).to be false
+      end
+    end
+
+    context 'in multi-user environment' do
+      before do
+        create(:user)
+      end
+
+      it 'does not require consent' do
+        expect(user.requires_usage_stats_consent?).to be false
+      end
+    end
+  end
+
   context 'with uploads' do
     it_behaves_like 'model with mounted uploader', false do
       let(:model_object) { create(:user, :with_avatar) }

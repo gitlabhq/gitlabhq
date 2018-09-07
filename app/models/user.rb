@@ -490,6 +490,16 @@ class User < ActiveRecord::Base
         u.name = 'Ghost User'
       end
     end
+
+    # Return true if there is only single non-internal user in the deployment,
+    # ghost user is ignored.
+    def single_user?
+      User.non_internal.limit(2).count == 1
+    end
+
+    def single_user
+      User.non_internal.first if single_user?
+    end
   end
 
   def full_path
@@ -1287,6 +1297,10 @@ class User < ActiveRecord::Base
       !terms_accepted?
   end
 
+  def requires_usage_stats_consent?
+    !consented_usage_stats? && 7.days.ago > self.created_at && !has_current_license? && User.single_user?
+  end
+
   # @deprecated
   alias_method :owned_or_masters_groups, :owned_or_maintainers_groups
 
@@ -1300,6 +1314,14 @@ class User < ActiveRecord::Base
   end
 
   private
+
+  def has_current_license?
+    false
+  end
+
+  def consented_usage_stats?
+    Gitlab::CurrentSettings.usage_stats_set_by_user_id == self.id
+  end
 
   def owned_projects_union
     Gitlab::SQL::Union.new([
