@@ -11,8 +11,8 @@ class Groups::LabelsController < Groups::ApplicationController
     respond_to do |format|
       format.html do
         @labels = @group.labels
-        @labels = @labels.search(params[:search]) if params[:search].present?
-        @labels = @labels.page(params[:page])
+          .optionally_search(params[:search])
+          .page(params[:page])
       end
       format.json do
         render json: LabelSerializer.new.represent_appearance(available_labels)
