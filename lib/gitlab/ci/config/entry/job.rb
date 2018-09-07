@@ -13,6 +13,8 @@ module Gitlab
                             type stage when artifacts cache dependencies before_script
                             after_script variables environment coverage retry].freeze
 
+          SCHEDULED_DURATION_PREFIX = 'in'.freeze
+
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
             validates :config, presence: true
@@ -28,8 +30,10 @@ module Gitlab
                                                 less_than_or_equal_to: 2 }
               validates :when,
                 inclusion: { in: %w[on_success on_failure always manual],
+                             unless: :scheduled?,
                              message: 'should be on_success, on_failure, ' \
-                                      'always or manual' }
+                                      'always or manual' },
+                duration: { prefix: SCHEDULED_DURATION_PREFIX, if: :scheduled? }
 
               validates :dependencies, array_of_strings: true
             end
@@ -109,6 +113,10 @@ module Gitlab
 
           def manual_action?
             self.when == 'manual'
+          end
+
+          def scheduled?
+            self.when.to_s.start_with?(SCHEDULED_DURATION_PREFIX)
           end
 
           def ignored?

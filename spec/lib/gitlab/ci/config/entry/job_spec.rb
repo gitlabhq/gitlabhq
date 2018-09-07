@@ -81,6 +81,16 @@ describe Gitlab::Ci::Config::Entry::Job do
         end
       end
 
+      context 'when a job is scheduled for the future' do
+        let(:config) { { script: 'rspec', when: 'in 1hr' } }
+
+        describe '#valid' do
+          it 'is valid' do
+            expect(entry).to be_valid
+          end
+        end
+      end
+
       context 'when retry value is not correct' do
         context 'when it is not a numeric value' do
           let(:config) { { retry: true } }

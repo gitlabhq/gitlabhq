@@ -46,7 +46,18 @@ module Gitlab
             include LegacyValidationHelpers
 
             def validate_each(record, attribute, value)
-              unless validate_duration(value)
+              to_check = value
+              prefix = options[:prefix]
+
+              if prefix.present? && to_check.is_a?(String)
+                if to_check.start_with?(prefix)
+                  to_check = value[prefix.size..-1]
+                else
+                  record.errors.add(attribute, "should start with '#{prefix}")
+                end
+              end
+
+              unless validate_duration(to_check)
                 record.errors.add(attribute, 'should be a duration')
               end
             end
