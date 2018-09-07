@@ -55,7 +55,7 @@ export default {
       f => f.path === file.path && f.pending && !(f.tempFile && !f.prevPath),
     );
 
-    if (file.tempFile) {
+    if (file.tempFile && file.content === '') {
       Object.assign(state.entries[file.path], {
         content: raw,
       });
