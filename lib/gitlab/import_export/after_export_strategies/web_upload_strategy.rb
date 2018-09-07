@@ -44,7 +44,7 @@ module Gitlab
         end
 
         def export_file
-           project.export_file.open
+          project.export_file.open
         end
 
         def send_file_options
@@ -59,7 +59,7 @@ module Gitlab
         end
 
         def export_size
-           project.export_file.file.size
+          project.export_file.file.size
         end
       end
     end

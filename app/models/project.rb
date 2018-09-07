@@ -1756,7 +1756,7 @@ class Project < ActiveRecord::Base
       :started
     elsif after_export_in_progress?
       :after_export_action
-    elsif export_project_exists?
+    elsif export_file_exists?
       :finished
     else
       :none
@@ -1772,13 +1772,13 @@ class Project < ActiveRecord::Base
   end
 
   def remove_exports
-    return unless export_project_exists?
+    return unless export_file_exists?
 
     import_export_upload.remove_export_file!
     import_export_upload.save
   end
 
-  def export_project_exists?
+  def export_file_exists?
     export_file&.file
   end
 
