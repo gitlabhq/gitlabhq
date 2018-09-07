@@ -382,6 +382,8 @@ describe 'Admin updates settings' do
   end
 
   it 'loads usage ping payload on click', :js do
+    visit metrics_and_profiling_admin_application_settings_path
+
     expect(page).to have_button 'Preview payload'
 
     find('.js-usage-ping-payload-trigger').click
