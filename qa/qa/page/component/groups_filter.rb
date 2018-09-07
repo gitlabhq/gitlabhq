@@ -7,7 +7,7 @@ module QA
         def self.included(base)
           base.view 'app/views/shared/groups/_search_form.html.haml' do
             element :groups_filter, 'search_field_tag :filter'
-            element :groups_filter_placeholder, 'Filter by name...'
+            element :groups_filter_placeholder, 'Search by name'
           end
 
           base.view 'app/views/shared/groups/_empty_state.html.haml' do
@@ -27,7 +27,7 @@ module QA
               page.has_css?(element_selector_css(:groups_list_tree_container))
           end
 
-          fill_in 'Filter by name...', with: name
+          fill_in 'Search by name', with: name
         end
       end
     end

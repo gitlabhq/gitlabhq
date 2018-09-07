@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Project > Members > Share with Group', :js do
+describe 'Project > Members > Invite group', :js do
   include Select2Helper
   include ActionView::Helpers::DateHelper
 
@@ -8,17 +8,17 @@ describe 'Project > Members > Share with Group', :js do
 
   describe 'Share with group lock' do
     shared_examples 'the project can be shared with groups' do
-      it 'the "Share with group" tab exists' do
+      it 'the "Invite group" tab exists' do
         visit project_settings_members_path(project)
-        expect(page).to have_selector('#share-with-group-tab')
+        expect(page).to have_selector('#invite-group-tab')
       end
     end
 
     shared_examples 'the project cannot be shared with groups' do
-      it 'the "Share with group" tab does not exist' do
+      it 'the "Invite group" tab does not exist' do
         visit project_settings_members_path(project)
-        expect(page).to have_selector('#add-member-tab')
-        expect(page).not_to have_selector('#share-with-group-tab')
+        expect(page).to have_selector('#invite-member-tab')
+        expect(page).not_to have_selector('#invite-group-tab')
       end
     end
 
@@ -31,13 +31,13 @@ describe 'Project > Members > Share with Group', :js do
         sign_in(maintainer)
       end
 
-      context 'when the group has "Share with group lock" disabled' do
+      context 'when the group has "Invite group lock" disabled' do
         it_behaves_like 'the project can be shared with groups'
 
         it 'the project can be shared with another group' do
           visit project_settings_members_path(project)
 
-          click_on 'share-with-group-tab'
+          click_on 'invite-group-tab'
 
           select2 group_to_share_with.id, from: '#link_group_id'
           page.find('body').click
@@ -49,7 +49,7 @@ describe 'Project > Members > Share with Group', :js do
         end
       end
 
-      context 'when the group has "Share with group lock" enabled' do
+      context 'when the group has "Invite group lock" enabled' do
         before do
           project.namespace.update_column(:share_with_group_lock, true)
         end
@@ -69,12 +69,12 @@ describe 'Project > Members > Share with Group', :js do
         sign_in(maintainer)
       end
 
-      context 'when the root_group has "Share with group lock" disabled' do
-        context 'when the subgroup has "Share with group lock" disabled' do
+      context 'when the root_group has "Invite group lock" disabled' do
+        context 'when the subgroup has "Invite group lock" disabled' do
           it_behaves_like 'the project can be shared with groups'
         end
 
-        context 'when the subgroup has "Share with group lock" enabled' do
+        context 'when the subgroup has "Invite group lock" enabled' do
           before do
             subgroup.update_column(:share_with_group_lock, true)
           end
@@ -83,16 +83,16 @@ describe 'Project > Members > Share with Group', :js do
         end
       end
 
-      context 'when the root_group has "Share with group lock" enabled' do
+      context 'when the root_group has "Invite group lock" enabled' do
         before do
           root_group.update_column(:share_with_group_lock, true)
         end
 
-        context 'when the subgroup has "Share with group lock" disabled (parent overridden)' do
+        context 'when the subgroup has "Invite group lock" disabled (parent overridden)' do
           it_behaves_like 'the project can be shared with groups'
         end
 
-        context 'when the subgroup has "Share with group lock" enabled' do
+        context 'when the subgroup has "Invite group lock" enabled' do
           before do
             subgroup.update_column(:share_with_group_lock, true)
           end
@@ -117,12 +117,12 @@ describe 'Project > Members > Share with Group', :js do
 
       visit project_settings_members_path(project)
 
-      click_on 'share-with-group-tab'
+      click_on 'invite-group-tab'
 
       select2 group.id, from: '#link_group_id'
 
       fill_in 'expires_at_groups', with: (Time.now + 4.5.days).strftime('%Y-%m-%d')
-      click_on 'share-with-group-tab'
+      click_on 'invite-group-tab'
       find('.btn-create').click
     end
 
@@ -150,7 +150,7 @@ describe 'Project > Members > Share with Group', :js do
 
         visit project_settings_members_path(project)
 
-        click_link 'Share with group'
+        click_link 'Invite group'
 
         find('.ajax-groups-select.select2-container')
 
@@ -183,7 +183,7 @@ describe 'Project > Members > Share with Group', :js do
       it 'the groups dropdown does not show ancestors', :nested_groups do
         visit project_settings_members_path(project)
 
-        click_on 'share-with-group-tab'
+        click_on 'invite-group-tab'
         click_link 'Search for a group'
 
         page.within '.select2-drop' do

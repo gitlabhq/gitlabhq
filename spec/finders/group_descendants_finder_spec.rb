@@ -108,6 +108,15 @@ describe GroupDescendantsFinder do
         end
       end
     end
+
+    it 'does not include projects shared with the group' do
+      project = create(:project, namespace: group)
+      other_project = create(:project)
+      other_project.project_group_links.create(group: group,
+                                               group_access: ProjectGroupLink::MASTER)
+
+      expect(finder.execute).to contain_exactly(project)
+    end
   end
 
   context 'with nested groups', :nested_groups do
