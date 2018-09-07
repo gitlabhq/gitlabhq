@@ -981,7 +981,7 @@ before_script:
 ```
 
 ```yaml
-# Content of gitlab-ci.yml
+# Content of .gitlab-ci.yml
 include: 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
 
 rspec:
@@ -993,7 +993,7 @@ rubocop:
     - bundle exec rubocop
 ```
 
-In the above example `.before-script-template.yml` content will be automatically fetched and evaluated along with the content of `gitlab-ci.yml`.
+In the above example `.before-script-template.yml` content will be automatically fetched and evaluated along with the content of `.gitlab-ci.yml`.
 
 `include` supports two types of files:
 
@@ -1028,8 +1028,8 @@ are both valid use cases.
 
 #### Restrictions
 
-- We can only use files that are currently tracked by Git on the same branch your configuration file is. In other words, when using a **local file** make sure that both, `gitlab-ci.yml` and the local file are on the same branch.
-- Since external files defined on `include` are evaluated first, the content on `gitlab-ci.yml` **will always take precedence over the content of the external files, no matters of the position of the `include` keyword, allowing to override values and functions with local definitions**, for example:
+- We can only use files that are currently tracked by Git on the same branch your configuration file is. In other words, when using a **local file** make sure that both, `.gitlab-ci.yml` and the local file are on the same branch.
+- Since external files defined on `include` are evaluated first, the content on `.gitlab-ci.yml` **will always take precedence over the content of the external files, no matters of the position of the `include` keyword, allowing to override values and functions with local definitions**, for example:
 
 ```yaml
 # Content of http://company.com/autodevops-template.yml
@@ -1065,7 +1065,7 @@ production:
 ```
 
 ```yaml
-# Content of gitlab-ci.yml
+# Content of .gitlab-ci.yml
 
 include: 'https://company.com/autodevops-template.yml'
 
@@ -1105,7 +1105,7 @@ production:
       - master
 ```
 
-In this case, the variables `POSTGRES_USER`, `POSTGRES_PASSWORD` and `POSTGRES_DB` along with the `production` job defined on `autodevops-template.yml` will be overridden by the ones defined on `gitlab-ci.yml`.
+In this case, the variables `POSTGRES_USER`, `POSTGRES_PASSWORD` and `POSTGRES_DB` along with the `production` job defined on `autodevops-template.yml` will be overridden by the ones defined on `.gitlab-ci.yml`.
 
 ## `artifacts`
 
