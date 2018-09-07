@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180901200537) do
+ActiveRecord::Schema.define(version: 20180906101639) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -218,6 +218,7 @@ ActiveRecord::Schema.define(version: 20180901200537) do
     t.boolean "web_ide_clientside_preview_enabled", default: false, null: false
     t.boolean "user_show_add_ssh_key_message", default: true, null: false
     t.integer "custom_project_templates_group_id"
+    t.integer "usage_stats_set_by_user_id"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -2983,6 +2984,7 @@ ActiveRecord::Schema.define(version: 20180901200537) do
 
   add_foreign_key "application_settings", "namespaces", column: "custom_project_templates_group_id", on_delete: :nullify
   add_foreign_key "application_settings", "projects", column: "file_template_project_id", name: "fk_ec757bd087", on_delete: :nullify
+  add_foreign_key "application_settings", "users", column: "usage_stats_set_by_user_id", name: "fk_964370041d", on_delete: :nullify
   add_foreign_key "approvals", "merge_requests", name: "fk_310d714958", on_delete: :cascade
   add_foreign_key "approver_groups", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "badges", "namespaces", column: "group_id", on_delete: :cascade

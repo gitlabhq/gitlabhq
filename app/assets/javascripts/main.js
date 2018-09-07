@@ -29,6 +29,7 @@ import './milestone_select';
 import './frequent_items';
 import initBreadcrumbs from './breadcrumb';
 import initDispatcher from './dispatcher';
+import initUsagePingConsent from './usage_ping_consent';
 
 // EE-only scripts
 import 'ee/main'; // eslint-disable-line import/first
@@ -81,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initImporterStatus();
   initTodoToggle();
   initLogoAnimation();
+  initUsagePingConsent();
 
   // Set the default path for all cookies to GitLab's root directory
   Cookies.defaults.path = gon.relative_url_root || '/';
