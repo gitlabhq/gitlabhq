@@ -9,18 +9,19 @@ describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cach
   let!(:primary) { create(:geo_node, :primary) }
   let!(:secondary) { create(:geo_node) }
 
-  let!(:restricted_group) { create(:group) }
-
-  let!(:unsynced_project_in_restricted_group) { create(:project, group: restricted_group) }
-  let!(:unsynced_project) { create(:project) }
-
   let(:shard_name) { Gitlab.config.repositories.storages.keys.first }
+  let(:cache_key) { "#{described_class.name.underscore}:shard:#{shard_name}:skip" }
 
   before do
     stub_current_geo_node(secondary)
   end
 
   shared_examples '#perform' do |skip_tests|
+    let!(:restricted_group) { create(:group) }
+
+    let!(:unsynced_project_in_restricted_group) { create(:project, group: restricted_group) }
+    let!(:unsynced_project) { create(:project) }
+
     before do
       skip('FDW is not configured') if skip_tests
     end
@@ -236,6 +237,23 @@ describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cach
 
         Sidekiq::Testing.inline! { subject.perform(shard_name) }
       end
+    end
+
+    it 'sets the back off time when there no pending items' do
+      create(:geo_project_registry, :synced, project: unsynced_project_in_restricted_group)
+      create(:geo_project_registry, :synced, project: unsynced_project)
+
+      expect(Rails.cache).to receive(:write).with(cache_key, true, expires_in: 18000).once
+
+      subject.perform(shard_name)
+    end
+
+    it 'does not perform Geo::ProjectSyncWorker when the backoff time is set' do
+      expect(Rails.cache).to receive(:read).with(cache_key).and_return(true)
+
+      expect(Geo::ProjectSyncWorker).not_to receive(:perform_async)
+
+      subject.perform(shard_name)
     end
   end
 

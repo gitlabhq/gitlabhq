@@ -38,6 +38,7 @@ module Geo
           begin
             reason = loop do
               break :node_disabled unless node_enabled?
+              break :skipped       if should_be_skipped?
 
               update_jobs_in_progress
               update_pending_resources
@@ -68,6 +69,10 @@ module Geo
       end
 
       private
+
+      def should_be_skipped?
+        false
+      end
 
       # Subclasses should override this method to provide additional metadata
       # in log messages
