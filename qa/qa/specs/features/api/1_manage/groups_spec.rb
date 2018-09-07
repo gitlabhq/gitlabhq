@@ -67,7 +67,6 @@ module QA
       expect_status(200)
       expect(json_body).to match a_hash_including(expected_response)
 
-
       # Delete
       delete group_request_by_id.url
       expect_status(202)
@@ -79,7 +78,6 @@ module QA
       get group_request_by_id.url
       expect_status(404)
       expect(json_body).to match({ message: "404 Group Not Found" })
-
     end
   end
 end
