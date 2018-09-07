@@ -579,3 +579,11 @@ Badge:
 - type
 ProjectCiCdSetting:
 - group_runners_enabled
+ResourceLabelEvent:
+- id
+- action
+- issue_id
+- merge_request_id
+- label_id
+- user_id
+- created_at

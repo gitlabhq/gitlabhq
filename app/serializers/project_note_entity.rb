@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ProjectNoteEntity < NoteEntity
-  expose :human_access do |note|
+  expose :human_access, if: -> (note, _) { note.project.present? } do |note|
     note.project.team.human_max_access(note.author_id)
   end
 
@@ -9,7 +9,7 @@ class ProjectNoteEntity < NoteEntity
     toggle_award_emoji_project_note_path(note.project, note.id)
   end
 
-  expose :path do |note|
+  expose :path, if: -> (note, _) { note.id } do |note|
     project_note_path(note.project, note)
   end
 
