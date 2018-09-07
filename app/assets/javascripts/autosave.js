@@ -5,7 +5,7 @@ export default class Autosave {
     this.field = field;
 
     this.isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
-    this.key = `autosave/${key.join !== null ? key.join('/') : key}`;
+    this.key = `autosave/${key.join !== undefined ? key.join('/') : key}`;
     this.field.data('autosave', this);
     this.restore();
     this.field.on('input', () => this.save());
@@ -17,7 +17,7 @@ export default class Autosave {
 
     const text = window.localStorage.getItem(this.key);
 
-    if (text !== null && text.length > 0) {
+    if (text !== null && (text && text.length > 0)) {
       this.field.val(text);
     }
 
@@ -36,7 +36,7 @@ export default class Autosave {
 
     const text = this.field.val();
 
-    if (this.isLocalStorageAvailable && text !== null && text.length > 0) {
+    if (this.isLocalStorageAvailable && text !== null && (text && text.length > 0)) {
       window.localStorage.setItem(this.key, text);
 
       return;

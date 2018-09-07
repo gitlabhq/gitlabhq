@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import Cookies from 'js-cookie';
-import loadAwardsHandler from '~/awards_handler';
+import loadAwardsHandler, { AwardsHandler } from '~/awards_handler';
 
 import '~/lib/utils/common_utils';
 
@@ -32,7 +32,7 @@ import '~/lib/utils/common_utils';
       loadAwardsHandler(true)
         .then(obj => {
           awardsHandler = obj;
-          spyOn(awardsHandler, 'postEmoji').and.callFake((button, url, emoji, cb) => cb());
+          spyOn(AwardsHandler, 'postEmoji').and.callFake((button, url, emoji, cb) => cb());
           done();
         })
         .catch(fail);
@@ -148,7 +148,7 @@ import '~/lib/utils/common_utils';
         $votesBlock = $('.js-awards-block').eq(0);
         $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
         $thumbsUpEmoji.attr('data-title', 'sam');
-        awardsHandler.userAuthored($thumbsUpEmoji);
+        AwardsHandler.userAuthored($thumbsUpEmoji);
         return expect($thumbsUpEmoji.data('originalTitle')).toBe(
           'You cannot vote on your own issue, MR and note',
         );
@@ -159,7 +159,7 @@ import '~/lib/utils/common_utils';
         $votesBlock = $('.js-awards-block').eq(0);
         $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
         $thumbsUpEmoji.attr('data-title', 'sam');
-        awardsHandler.userAuthored($thumbsUpEmoji);
+        AwardsHandler.userAuthored($thumbsUpEmoji);
         jasmine.clock().tick(2801);
         jasmine.clock().uninstall();
         return expect($thumbsUpEmoji.data('originalTitle')).toBe('sam');

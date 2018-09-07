@@ -230,11 +230,13 @@ class List {
   }
 
   onNewIssueResponse(issue, data) {
-    issue.id = data.id;
-    issue.iid = data.iid;
-    issue.project = data.project;
-    issue.path = data.real_path;
-    issue.referencePath = data.reference_path;
+    Object.assign(issue, {
+      id: data.id,
+      iid: data.iid,
+      project: data.project,
+      path: data.real_path,
+      referencePath: data.reference_path,
+    });
 
     if (this.issuesSize > 1) {
       const moveBeforeId = this.issues[1].id;
