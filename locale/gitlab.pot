@@ -1751,12 +1751,9 @@ msgstr ""
 msgid "ClusterIntegration|Kubernetes cluster details"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "ClusterIntegration|Kubernetes cluster health"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "ClusterIntegration|Kubernetes cluster integration"
 msgstr ""
 
