@@ -591,6 +591,10 @@ describe Gitlab::Git::Repository, :seed_helper do
       expect(repository.find_remote_root_ref('origin')).to eq 'master'
     end
 
+    it 'returns UTF-8' do
+      expect(repository.find_remote_root_ref('origin')).to be_utf8
+    end
+
     it 'returns nil when remote name is nil' do
       expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
         .not_to receive(:find_remote_root_ref)

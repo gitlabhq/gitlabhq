@@ -1,6 +1,8 @@
 module Gitlab
   module GitalyClient
     class RemoteService
+      include Gitlab::EncodingHelper
+
       MAX_MSG_SIZE = 128.kilobytes.freeze
 
       def self.exists?(remote_url)
@@ -61,7 +63,7 @@ module Gitlab
         response = GitalyClient.call(@storage, :remote_service,
                                      :find_remote_root_ref, request)
 
-        response.ref.presence
+        encode_utf8(response.ref)
       end
 
       def update_remote_mirror(ref_name, only_branches_matching)
