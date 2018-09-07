@@ -113,13 +113,13 @@ module EE
       share_with_group   = @project.allowed_to_share_with_group?
       share_with_members = !membership_locked?
       project_name       = content_tag(:strong, @project.name)
-      member_message     = "You can add a new member to #{project_name}"
+      member_message     = "You can invite a new member to #{project_name}"
 
       description =
         if share_with_group && share_with_members
-          "#{member_message} or share it with another group."
+          "#{member_message} or invite another group."
         elsif share_with_group
-          "You can share #{project_name} with another group."
+          "You can invite another group to #{project_name}."
         elsif share_with_members
           "#{member_message}."
         end

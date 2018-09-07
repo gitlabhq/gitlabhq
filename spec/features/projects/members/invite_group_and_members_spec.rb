@@ -1,20 +1,20 @@
 require 'spec_helper'
 
-describe 'Project > Members > Share with Group', :js do
+describe 'Project > Members > Invite Group', :js do
   include Select2Helper
   include ActionView::Helpers::DateHelper
 
   let(:maintainer) { create(:user) }
 
-  describe 'Share with group lock' do
+  describe 'Invite group lock' do
     shared_examples 'the project cannot be shared with groups' do
       it 'user is only able to share with members' do
         visit project_settings_members_path(project)
 
-        expect(page).not_to have_selector('#add-member-tab')
-        expect(page).not_to have_selector('#share-with-group-tab')
-        expect(page).not_to have_selector('.share-with-group')
-        expect(page).to have_selector('.add-member')
+        expect(page).not_to have_selector('#invite-member-tab')
+        expect(page).not_to have_selector('#invite-group-tab')
+        expect(page).not_to have_selector('.invite-group')
+        expect(page).to have_selector('.invite-member')
       end
     end
 
@@ -22,10 +22,10 @@ describe 'Project > Members > Share with Group', :js do
       it 'user is only able to share with groups' do
         visit project_settings_members_path(project)
 
-        expect(page).not_to have_selector('#add-member-tab')
-        expect(page).not_to have_selector('#share-with-group-tab')
-        expect(page).not_to have_selector('.add-member')
-        expect(page).to have_selector('.share-with-group')
+        expect(page).not_to have_selector('#invite-member-tab')
+        expect(page).not_to have_selector('#invite-group-tab')
+        expect(page).not_to have_selector('.invite-member')
+        expect(page).to have_selector('.invite-group')
       end
     end
 
@@ -33,10 +33,10 @@ describe 'Project > Members > Share with Group', :js do
       it 'no tabs or share content exists' do
         visit project_settings_members_path(project)
 
-        expect(page).not_to have_selector('#add-member-tab')
-        expect(page).not_to have_selector('#share-with-group-tab')
-        expect(page).not_to have_selector('.add-member')
-        expect(page).not_to have_selector('.share-with-group')
+        expect(page).not_to have_selector('#invite-member-tab')
+        expect(page).not_to have_selector('#invite-group-tab')
+        expect(page).not_to have_selector('.invite-member')
+        expect(page).not_to have_selector('.invite-group')
       end
     end
 
@@ -44,10 +44,10 @@ describe 'Project > Members > Share with Group', :js do
       it 'both member and group tabs exist' do
         visit project_settings_members_path(project)
 
-        expect(page).not_to have_selector('.add-member')
-        expect(page).not_to have_selector('.share-with-group')
-        expect(page).to have_selector('#add-member-tab')
-        expect(page).to have_selector('#share-with-group-tab')
+        expect(page).not_to have_selector('.invite-member')
+        expect(page).not_to have_selector('.invite-group')
+        expect(page).to have_selector('#invite-member-tab')
+        expect(page).to have_selector('#invite-group-tab')
       end
     end
 
@@ -66,7 +66,7 @@ describe 'Project > Members > Share with Group', :js do
         it 'the project can be shared with another group' do
           visit project_settings_members_path(project)
 
-          click_on 'share-with-group-tab'
+          click_on 'invite-group-tab'
 
           select2 group_to_share_with.id, from: '#link_group_id'
           page.find('body').click
@@ -204,12 +204,12 @@ describe 'Project > Members > Share with Group', :js do
 
       visit project_settings_members_path(project)
 
-      click_on 'share-with-group-tab'
+      click_on 'invite-group-tab'
 
       select2 group.id, from: '#link_group_id'
 
       fill_in 'expires_at_groups', with: (Time.now + 4.5.days).strftime('%Y-%m-%d')
-      click_on 'share-with-group-tab'
+      click_on 'invite-group-tab'
       find('.btn-create').click
     end
 
@@ -237,7 +237,7 @@ describe 'Project > Members > Share with Group', :js do
 
         visit project_settings_members_path(project)
 
-        click_link 'Share with group'
+        click_link 'Invite group'
 
         find('.ajax-groups-select.select2-container')
 
@@ -270,7 +270,7 @@ describe 'Project > Members > Share with Group', :js do
       it 'the groups dropdown does not show ancestors', :nested_groups do
         visit project_settings_members_path(project)
 
-        click_on 'share-with-group-tab'
+        click_on 'invite-group-tab'
         click_link 'Search for a group'
 
         page.within '.select2-drop' do

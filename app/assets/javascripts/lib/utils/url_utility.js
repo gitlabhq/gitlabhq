@@ -47,9 +47,9 @@ export function removeParamQueryString(url, param) {
   return urlVariables.filter(variable => variable.indexOf(param) === -1).join('&');
 }
 
-export function removeParams(params) {
+export function removeParams(params, source = window.location.href) {
   const url = document.createElement('a');
-  url.href = window.location.href;
+  url.href = source;
 
   params.forEach(param => {
     url.search = removeParamQueryString(url.search, param);
