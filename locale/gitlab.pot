@@ -2301,7 +2301,19 @@ msgstr ""
 msgid "Disable group Runners"
 msgstr ""
 
+msgid "Discard"
+msgstr ""
+
+msgid "Discard all changes"
+msgstr ""
+
+msgid "Discard all unstaged changes?"
+msgstr ""
+
 msgid "Discard changes"
+msgstr ""
+
+msgid "Discard changes to %{path}?"
 msgstr ""
 
 msgid "Discard draft"
@@ -3775,9 +3787,6 @@ msgid "Monitoring"
 msgstr ""
 
 msgid "More"
-msgstr ""
-
-msgid "More actions"
 msgstr ""
 
 msgid "More information"
@@ -5769,6 +5778,12 @@ msgstr ""
 msgid "There are no projects shared with this group yet"
 msgstr ""
 
+msgid "There are no staged changes"
+msgstr ""
+
+msgid "There are no unstaged changes"
+msgstr ""
+
 msgid "There are problems accessing Git storage: "
 msgstr ""
 
@@ -6226,6 +6241,9 @@ msgstr ""
 msgid "Unresolve discussion"
 msgstr ""
 
+msgid "Unstage"
+msgstr ""
+
 msgid "Unstage all changes"
 msgstr ""
 
@@ -6641,6 +6659,12 @@ msgid "You must have maintainer access to force delete a lock"
 msgstr ""
 
 msgid "You need permission."
+msgstr ""
+
+msgid "You will loose all changes you've made to this file. This action cannot be undone."
+msgstr ""
+
+msgid "You will loose all the unstaged changes you've made in this project. This action cannot be undone."
 msgstr ""
 
 msgid "You will not get any notifications via email"

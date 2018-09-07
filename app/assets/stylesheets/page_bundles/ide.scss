@@ -7,6 +7,8 @@ $ide-context-header-padding: 10px;
 $ide-project-avatar-end: $ide-context-header-padding + 48px;
 $ide-tree-padding: $gl-padding;
 $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
+$ide-commit-row-height: 32px;
+$ide-commit-header-height: 48px;
 
 .project-refs-form,
 .project-refs-target-form {
@@ -567,22 +569,9 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 }
 
 .multi-file-commit-panel-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0;
+  height: $ide-commit-header-height;
   border-bottom: 1px solid $white-dark;
   padding: 12px 0;
-}
-
-.multi-file-commit-panel-header-title {
-  display: flex;
-  flex: 1;
-  align-items: center;
-
-  svg {
-    margin-right: $gl-btn-padding;
-    color: $theme-gray-700;
-  }
 }
 
 .multi-file-commit-panel-collapse-btn {
@@ -594,8 +583,6 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
   flex: 1;
   overflow: auto;
   padding: $grid-size 0;
-  margin-left: -$grid-size;
-  margin-right: -$grid-size;
   min-height: 60px;
 
   &.form-text.text-muted {
@@ -660,6 +647,8 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 
 .multi-file-commit-list-path {
   cursor: pointer;
+  height: $ide-commit-row-height;
+  padding-right: 0;
 
   &.is-active {
     background-color: $white-normal;
@@ -668,6 +657,12 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
   &:hover,
   &:focus {
     outline: 0;
+
+    .multi-file-discard-btn {
+      > .btn {
+        display: flex;
+      }
+    }
   }
 
   svg {
@@ -679,6 +674,7 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 
 .multi-file-commit-list-file-path {
   @include str-truncated(calc(100% - 30px));
+  user-select: none;
 
   &:active {
     text-decoration: none;
@@ -686,9 +682,11 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 }
 
 .multi-file-discard-btn {
-  top: 4px;
-  right: 8px;
-  bottom: 4px;
+  > .btn {
+    display: none;
+    width: $ide-commit-row-height;
+    height: $ide-commit-row-height;
+  }
 
   svg {
     top: 0;
@@ -807,10 +805,9 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 }
 
 .ide-staged-action-btn {
-  width: 22px;
-  margin-left: -1px;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
+  width: $ide-commit-row-height;
+  height: $ide-commit-row-height;
+  color: inherit;
 
   > svg {
     top: 0;
@@ -1455,4 +1452,16 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
   .dropdown-content {
     max-height: 222px;
   }
+}
+
+.ide-commit-editor-header {
+  height: 65px;
+  padding: 8px 16px;
+  background-color: $theme-gray-50;
+  box-shadow: inset 0 -1px $white-dark;
+}
+
+.ide-commit-list-changed-icon {
+  width: $ide-commit-row-height;
+  height: $ide-commit-row-height;
 }

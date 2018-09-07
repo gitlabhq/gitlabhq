@@ -30,7 +30,7 @@ describe('Multi-file editor commit sidebar list item', () => {
   });
 
   it('renders file path', () => {
-    expect(vm.$el.querySelector('.multi-file-commit-list-path').textContent.trim()).toBe(f.path);
+    expect(vm.$el.querySelector('.multi-file-commit-list-path').textContent).toContain(f.path);
   });
 
   it('renders actionn button', () => {

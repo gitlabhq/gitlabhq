@@ -78,13 +78,9 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@gitlab-org/gitlab-svgs@^1.23.0":
-  version "1.27.0"
-  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.27.0.tgz#638e70399ebd59e503732177316bb9a18bf7a13f"
-
-"@gitlab-org/gitlab-svgs@^1.28.0":
-  version "1.28.0"
-  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.28.0.tgz#f689dfd46504df0a75027d6dd4ea01a71cd46f88"
+"@gitlab-org/gitlab-svgs@^1.23.0", "@gitlab-org/gitlab-svgs@^1.29.0":
+  version "1.29.0"
+  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.29.0.tgz#03b65b513f9099bbda6ecf94d673a2952f8c6c70"
 
 "@gitlab-org/gitlab-ui@1.0.5":
   version "1.0.5"
