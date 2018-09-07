@@ -14,6 +14,25 @@ import mockFile from '../mock_data/diff_file';
 import mockDiscussion from '../mock_data/diff_discussions';
 
 describe('DiffsStoreActions', () => {
+  const originalMethods = {
+    requestAnimationFrame: global.requestAnimationFrame,
+    requestIdleCallback: global.requestIdleCallback,
+  };
+
+  beforeEach(() => {
+    ['requestAnimationFrame', 'requestIdleCallback'].forEach(method => {
+      global[method] = cb => {
+        cb();
+      };
+    });
+  });
+
+  afterEach(() => {
+    ['requestAnimationFrame', 'requestIdleCallback'].forEach(method => {
+      global[method] = originalMethods[method];
+    });
+  });
+
   describe('setBaseConfig', () => {
     it('should set given endpoint and project path', done => {
       const endpoint = '/diffs/set/endpoint';
@@ -157,11 +176,6 @@ describe('DiffsStoreActions', () => {
 
   describe('startRenderDiffsQueue', () => {
     it('should set all files to RENDER_FILE', done => {
-      const actualRAF = global.requestAnimationFrame;
-      global.requestAnimationFrame = cb => {
-        cb();
-      };
-
       const state = {
         diffFiles: [
           {
@@ -187,8 +201,6 @@ describe('DiffsStoreActions', () => {
       actions
         .startRenderDiffsQueue({ state, commit: pseudoCommit })
         .then(() => {
-          global.requestAnimationFrame = actualRAF;
-
           expect(state.diffFiles[0].renderIt).toBeTruthy();
           expect(state.diffFiles[1].renderIt).toBeTruthy();
 
