@@ -14,6 +14,7 @@ module Gitlab
           }.freeze
 
           private_constant :REASONS
+
           prepend ::EE::Gitlab::Ci::Status::Build::Failed
 
           def status_tooltip
