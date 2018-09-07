@@ -25,7 +25,7 @@ module Clusters
       private
 
       def create_gitlab_service_account!
-        if rbac_clusters_feature_enabled?
+        if create_rbac_cluster?
           Clusters::Gcp::Kubernetes::CreateServiceAccountService.new(kube_client).execute
         end
       end
@@ -47,17 +47,17 @@ module Clusters
       end
 
       def request_kubernetes_token
-        service_account_name = rbac_clusters_feature_enabled? ? Clusters::Gcp::Kubernetes::SERVICE_ACCOUNT_NAME : 'default'
+        service_account_name = create_rbac_cluster? ? Clusters::Gcp::Kubernetes::SERVICE_ACCOUNT_NAME : 'default'
 
         Clusters::Gcp::Kubernetes::FetchKubernetesTokenService.new(kube_client, service_account_name).execute
       end
 
       def authorization_type
-        rbac_clusters_feature_enabled? ? 'rbac' : 'abac'
+        create_rbac_cluster? ? 'rbac' : 'abac'
       end
 
-      def rbac_clusters_feature_enabled?
-        Feature.enabled?(:rbac_clusters)
+      def create_rbac_cluster?
+        !provider.legacy_abac?
       end
 
       def kube_client
