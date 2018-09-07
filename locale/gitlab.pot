@@ -1894,6 +1894,9 @@ msgstr ""
 msgid "Contribution guide"
 msgstr ""
 
+msgid "Contributions for <strong>%{calendar_date}</strong>"
+msgstr ""
+
 msgid "Contributors"
 msgstr ""
 
@@ -3932,6 +3935,9 @@ msgstr ""
 msgid "No container images stored for this project. Add one by following the instructions above."
 msgstr ""
 
+msgid "No contributions were found"
+msgstr ""
+
 msgid "No due date"
 msgstr ""
 
@@ -4471,6 +4477,9 @@ msgstr ""
 msgid "Profiles| You are going to change the username %{currentUsernameBold} to %{newUsernameBold}. Profile and projects will be redirected to the %{newUsername} namespace but this redirect will expire once the %{currentUsername} namespace is registered by another user or group. Please update your Git repository remotes as soon as possible."
 msgstr ""
 
+msgid "Profiles|%{author_name} made a private contribution"
+msgstr ""
+
 msgid "Profiles|Account scheduled for removal."
 msgstr ""
 
@@ -4480,13 +4489,28 @@ msgstr ""
 msgid "Profiles|Add status emoji"
 msgstr ""
 
+msgid "Profiles|Avatar cropper"
+msgstr ""
+
+msgid "Profiles|Avatar will be removed. Are you sure?"
+msgstr ""
+
 msgid "Profiles|Change username"
+msgstr ""
+
+msgid "Profiles|Choose file..."
+msgstr ""
+
+msgid "Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information."
 msgstr ""
 
 msgid "Profiles|Clear status"
 msgstr ""
 
 msgid "Profiles|Current path: %{path}"
+msgstr ""
+
+msgid "Profiles|Current status"
 msgstr ""
 
 msgid "Profiles|Delete Account"
@@ -4501,19 +4525,67 @@ msgstr ""
 msgid "Profiles|Deleting an account has the following effects:"
 msgstr ""
 
+msgid "Profiles|Do not show on profile"
+msgstr ""
+
+msgid "Profiles|Don't display activity-related personal information on your profiles"
+msgstr ""
+
+msgid "Profiles|Edit Profile"
+msgstr ""
+
 msgid "Profiles|Invalid password"
 msgstr ""
 
 msgid "Profiles|Invalid username"
 msgstr ""
 
+msgid "Profiles|Main settings"
+msgstr ""
+
+msgid "Profiles|No file chosen"
+msgstr ""
+
 msgid "Profiles|Path"
+msgstr ""
+
+msgid "Profiles|Position and size your new avatar"
+msgstr ""
+
+msgid "Profiles|Private contributions"
+msgstr ""
+
+msgid "Profiles|Public Avatar"
+msgstr ""
+
+msgid "Profiles|Remove avatar"
+msgstr ""
+
+msgid "Profiles|Set new profile picture"
+msgstr ""
+
+msgid "Profiles|Some options are unavailable for LDAP accounts"
+msgstr ""
+
+msgid "Profiles|Tell us about yourself in fewer than 250 characters."
+msgstr ""
+
+msgid "Profiles|The maximum file size allowed is 200KB."
 msgstr ""
 
 msgid "Profiles|This doesn't look like a public SSH key, are you sure you want to add it?"
 msgstr ""
 
+msgid "Profiles|This email will be displayed on your public profile."
+msgstr ""
+
 msgid "Profiles|This emoji and message will appear on your profile and throughout the interface."
+msgstr ""
+
+msgid "Profiles|This feature is experimental and translations are not complete yet."
+msgstr ""
+
+msgid "Profiles|This information will appear on your profile."
 msgstr ""
 
 msgid "Profiles|Type your %{confirmationValue} to confirm:"
@@ -4522,7 +4594,13 @@ msgstr ""
 msgid "Profiles|Typically starts with \"ssh-rsa …\""
 msgstr ""
 
+msgid "Profiles|Update profile settings"
+msgstr ""
+
 msgid "Profiles|Update username"
+msgstr ""
+
+msgid "Profiles|Upload new avatar"
 msgstr ""
 
 msgid "Profiles|Username change failed - %{message}"
@@ -4531,7 +4609,22 @@ msgstr ""
 msgid "Profiles|Username successfully changed"
 msgstr ""
 
+msgid "Profiles|Website"
+msgstr ""
+
 msgid "Profiles|What's your status?"
+msgstr ""
+
+msgid "Profiles|You can change your avatar here"
+msgstr ""
+
+msgid "Profiles|You can change your avatar here or remove the current avatar to revert to %{gravatar_link}"
+msgstr ""
+
+msgid "Profiles|You can upload your avatar here"
+msgstr ""
+
+msgid "Profiles|You can upload your avatar here or change it at %{gravatar_link}"
 msgstr ""
 
 msgid "Profiles|You don't have access to delete this user."
@@ -4541,6 +4634,15 @@ msgid "Profiles|You must transfer ownership or delete these groups before you ca
 msgstr ""
 
 msgid "Profiles|Your account is currently an owner in these groups:"
+msgstr ""
+
+msgid "Profiles|Your email address was automatically set based on your %{provider_label} account."
+msgstr ""
+
+msgid "Profiles|Your location was automatically set based on your %{provider_label} account."
+msgstr ""
+
+msgid "Profiles|Your name was automatically set based on your %{provider_label} account, so people you know can recognize you."
 msgstr ""
 
 msgid "Profiles|Your status"
@@ -6310,9 +6412,6 @@ msgstr ""
 msgid "Upload file"
 msgstr ""
 
-msgid "Upload new avatar"
-msgstr ""
-
 msgid "UploadLink|click to upload"
 msgstr ""
 
@@ -6356,9 +6455,6 @@ msgid "User map"
 msgstr ""
 
 msgid "Users"
-msgstr ""
-
-msgid "User|Current status"
 msgstr ""
 
 msgid "Variables"
