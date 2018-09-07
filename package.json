@@ -109,6 +109,7 @@
     "xterm": "^3.5.0"
   },
   "devDependencies": {
+    "@yarnpkg/lockfile": "^1.0.2",
     "axios-mock-adapter": "^1.15.0",
     "babel-eslint": "^8.2.3",
     "babel-plugin-istanbul": "^4.1.6",
