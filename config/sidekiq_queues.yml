@@ -79,7 +79,6 @@
   - [delete_diff_files, 1]
   - [detect_repository_languages, 1]
   - [auto_devops, 2]
-<<<<<<< HEAD
 
   # EE-specific queues
   - [ldap_group_sync, 2]
@@ -101,5 +100,3 @@
   - geo_file_download
   - geo_project_sync
   - geo_repository_shard_sync
-=======
->>>>>>> upstream/master
