@@ -52,6 +52,18 @@ module Gitlab
         response.result
       end
 
+      def find_remote_root_ref(remote_name)
+        request = Gitaly::FindRemoteRootRefRequest.new(
+          repository: @gitaly_repo,
+          remote: remote_name
+        )
+
+        response = GitalyClient.call(@storage, :remote_service,
+                                     :find_remote_root_ref, request)
+
+        response.ref.presence
+      end
+
       def update_remote_mirror(ref_name, only_branches_matching)
         req_enum = Enumerator.new do |y|
           y.yield Gitaly::UpdateRemoteMirrorRequest.new(

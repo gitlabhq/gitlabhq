@@ -10,7 +10,7 @@ module EE
     MIRROR_REMOTE = "upstream".freeze
 
     included do
-      delegate :checksum, to: :raw_repository
+      delegate :checksum, :find_remote_root_ref, to: :raw_repository
     end
 
     # Transiently sets a configuration variable
@@ -73,6 +73,13 @@ module EE
 
     override :keep_around
     def keep_around(*shas)
+      super
+    ensure
+      log_geo_updated_event
+    end
+
+    override :after_change_head
+    def after_change_head
       super
     ensure
       log_geo_updated_event

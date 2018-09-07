@@ -3,7 +3,11 @@ require 'spec_helper'
 describe Repository do
   include RepoHelpers
   include ::EE::GeoHelpers
+
   TestBlob = Struct.new(:path)
+
+  set(:primary_node)   { create(:geo_node, :primary) }
+  set(:secondary_node) { create(:geo_node) }
 
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
@@ -116,8 +120,6 @@ describe Repository do
   end
 
   describe '#keep_around' do
-    set(:primary_node)   { create(:geo_node, :primary) }
-    set(:secondary_node) { create(:geo_node) }
     let(:sha) { sample_commit.id }
 
     context 'on a Geo primary' do
@@ -172,6 +174,22 @@ describe Repository do
                               .and_call_original
 
       repository.code_owners_blob
+    end
+  end
+
+  describe '#after_change_head' do
+    it 'creates a RepositoryUpdatedEvent on a Geo primary' do
+      stub_current_geo_node(primary_node)
+
+      expect { repository.after_change_head }
+        .to change { ::Geo::RepositoryUpdatedEvent.count }.by(1)
+    end
+
+    it 'does not create a RepositoryUpdatedEvent on a Geo secondary' do
+      stub_current_geo_node(secondary_node)
+
+      expect { repository.after_change_head }
+        .not_to change { ::Geo::RepositoryUpdatedEvent.count }
     end
   end
 end
