@@ -47,7 +47,9 @@ module Clusters
       end
 
       def request_kubernetes_token
-        Clusters::Gcp::Kubernetes::FetchKubernetesTokenService.new(kube_client).execute
+        service_account_name = rbac_clusters_feature_enabled? ? Clusters::Gcp::Kubernetes::SERVICE_ACCOUNT_NAME : 'default'
+
+        Clusters::Gcp::Kubernetes::FetchKubernetesTokenService.new(kube_client, service_account_name).execute
       end
 
       def authorization_type

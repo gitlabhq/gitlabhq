@@ -52,13 +52,14 @@ describe Clusters::Gcp::FinalizeCreationService do
       end
 
       context 'when suceeded to fetch kuberenetes token' do
+        let(:secret_name) { 'default-token-Y1a' }
         let(:token) { 'sample-token' }
 
         before do
           stub_kubeclient_get_secrets(
             api_url,
             {
-              metadata_name: 'gitlab-token-Y1a',
+              metadata_name: secret_name,
               token: Base64.encode64(token)
             } )
         end
@@ -81,6 +82,8 @@ describe Clusters::Gcp::FinalizeCreationService do
         end
 
         context 'rbac_clusters feature enabled' do
+          let(:secret_name) { 'gitlab-token-Y1a' }
+
           before do
             stub_feature_flags(rbac_clusters: true)
             stub_kubeclient_create_service_account(api_url)
@@ -106,20 +109,44 @@ describe Clusters::Gcp::FinalizeCreationService do
         end
       end
 
-      context 'when default-token is not found' do
+      context 'when no matching token is found' do
         before do
-          stub_kubeclient_get_secrets(api_url, metadata_name: 'aaaa')
+          stub_kubeclient_get_secrets(api_url, metadata_name: 'not-default-not-gitlab')
         end
 
         it_behaves_like 'error'
+
+        context 'rbac_clusters feature enabled' do
+          before do
+            stub_feature_flags(rbac_clusters: true)
+            stub_kubeclient_create_service_account(api_url)
+            stub_kubeclient_create_cluster_role_binding(api_url)
+          end
+
+          it_behaves_like 'error'
+        end
       end
 
       context 'when token is empty' do
+        let(:secret_name) { 'default-token-123' }
+
         before do
-          stub_kubeclient_get_secrets(api_url, token: '')
+          stub_kubeclient_get_secrets(api_url, token: '', metadata_name: secret_name)
         end
 
         it_behaves_like 'error'
+
+        context 'rbac_clusters feature enabled' do
+          let(:secret_name) { 'gitlab-token-321' }
+
+          before do
+            stub_feature_flags(rbac_clusters: true)
+            stub_kubeclient_create_service_account(api_url)
+            stub_kubeclient_create_cluster_role_binding(api_url)
+          end
+
+          it_behaves_like 'error'
+        end
       end
 
       context 'when failed to fetch kuberenetes token' do
@@ -128,6 +155,16 @@ describe Clusters::Gcp::FinalizeCreationService do
         end
 
         it_behaves_like 'error'
+
+        context 'rbac_clusters feature enabled' do
+          before do
+            stub_feature_flags(rbac_clusters: true)
+            stub_kubeclient_create_service_account(api_url)
+            stub_kubeclient_create_cluster_role_binding(api_url)
+          end
+
+          it_behaves_like 'error'
+        end
       end
     end
 

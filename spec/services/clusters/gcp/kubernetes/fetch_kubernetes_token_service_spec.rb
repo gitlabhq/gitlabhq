@@ -2,11 +2,13 @@ require 'spec_helper'
 
 describe Clusters::Gcp::Kubernetes::FetchKubernetesTokenService do
   describe '#execute' do
-    subject { described_class.new(kubeclient).execute }
+    subject { described_class.new(kubeclient, service_account_name).execute }
 
+    let(:service_account_name) { 'gitlab-sa' }
     let(:api_url) { 'http://111.111.111.111' }
     let(:username) { 'admin' }
     let(:password) { 'xxx' }
+
     let(:kubeclient) do
       Gitlab::Kubernetes::KubeClient.new(
         api_url,
@@ -44,8 +46,8 @@ describe Clusters::Gcp::Kubernetes::FetchKubernetesTokenService do
           .to receive(:get_secrets).and_return(secrets_json)
       end
 
-      context 'when gitlab-token exists' do
-        let(:metadata_name) { 'gitlab-token-123' }
+      context 'when token for service account exists' do
+        let(:metadata_name) { 'gitlab-sa-token-123' }
 
         it { is_expected.to eq(token) }
       end

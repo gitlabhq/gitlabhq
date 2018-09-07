@@ -4,10 +4,11 @@ module Clusters
   module Gcp
     module Kubernetes
       class FetchKubernetesTokenService
-        attr_reader :kubeclient
+        attr_reader :kubeclient, :service_account_name
 
-        def initialize(kubeclient)
+        def initialize(kubeclient, service_account_name)
           @kubeclient = kubeclient
+          @service_account_name = service_account_name
         end
 
         def execute
@@ -25,7 +26,7 @@ module Clusters
         private
 
         def token_regex
-          /#{SERVICE_ACCOUNT_NAME}-token/
+          /#{service_account_name}-token/
         end
 
         def read_secrets
