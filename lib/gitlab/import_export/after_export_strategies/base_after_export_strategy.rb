@@ -84,7 +84,7 @@ module Gitlab
         end
 
         def object_storage?
-          project.export_project_object_exists?
+          project.export_project_exists?
         end
       end
     end

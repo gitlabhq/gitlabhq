@@ -21,8 +21,8 @@ module API
         detail 'This feature was introduced in GitLab 10.6.'
       end
       get ':id/export/download' do
-        if user_project.export_project_object_exists?
-          present_carrierwave_file!(user_project.import_export_upload.export_file)
+        if user_project.export_project_exists?
+          present_carrierwave_file!(user_ project.export_file)
         else
           render_api_error!('404 Not found or has expired', 404)
         end

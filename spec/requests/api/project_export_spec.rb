@@ -189,7 +189,7 @@ describe API::ProjectExport do
         end
 
         it 'has removed the export' do
-          expect(project_after_export.export_project_object_exists?).to be_falsey
+          expect(project_after_export.export_project_exists?).to be_falsey
         end
 
         it_behaves_like '404 response' do

@@ -191,8 +191,8 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def download_export
-    if @project.export_project_object_exists?
-      send_upload(@project.import_export_upload.export_file)
+    if @project.export_project_exists?
+      send_upload(@project.export_file)
     else
       redirect_to(
         edit_project_path(@project, anchor: 'js-export-project'),
