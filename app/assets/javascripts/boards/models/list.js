@@ -4,7 +4,7 @@
 import { __ } from '~/locale';
 import ListLabel from '~/vue_shared/models/label';
 import ListAssignee from '~/vue_shared/models/assignee';
-import queryData from '../utils/query_data';
+import { urlParamsToObject } from '~/lib/utils/common_utils';
 import ListMilestone from './milestone';
 
 const PER_PAGE = 20;
@@ -121,7 +121,10 @@ class List {
   }
 
   getIssues(emptyIssues = true) {
-    const data = queryData(gl.issueBoards.BoardsStore.filter.path, { page: this.page });
+    const data = {
+      ...urlParamsToObject(gl.issueBoards.BoardsStore.filter.path),
+      page: this.page,
+    };
 
     if (this.label && data.label_name) {
       data.label_name = data.label_name.filter(label => label !== this.label.title);
