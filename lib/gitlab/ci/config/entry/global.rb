@@ -33,17 +33,25 @@ module Gitlab
           entry :cache, Entry::Cache,
             description: 'Configure caching between build jobs.'
 
+          entry :includes, Entry::Includes,
+            description: 'External GitlLab Ci files'
+
           helpers :before_script, :image, :services, :after_script,
-                  :variables, :stages, :types, :cache, :jobs
+                  :variables, :stages, :types, :cache, :jobs, :includes
 
           def compose!(_deps = nil)
             super(self) do
+              append_external_files!
               compose_jobs!
               compose_deprecated_entries!
             end
           end
 
           private
+
+          def append_external_files!
+            return if includes_value.nil?
+          end
 
           def compose_jobs!
             factory = Entry::Factory.new(Entry::Jobs)
