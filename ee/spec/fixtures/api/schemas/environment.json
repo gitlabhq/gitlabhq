@@ -8,8 +8,7 @@
         "last_deployment",
         "environment_path",
         "created_at",
-        "updated_at",
-        "security_reports"
+        "updated_at"
     ],
     "properties": {
         "id": {
@@ -69,33 +68,6 @@
         },
         "can_stop": {
             "type": "boolean"
-        },
-        "security_reports": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "has_security_reports": {
-                    "type": "boolean"
-                },
-                "sast_path": {
-                    "type": "string"
-                },
-                "dast_path": {
-                    "type": "string"
-                },
-                "container_scanning_path": {
-                    "type": "string"
-                },
-                "dependency_scanning_path": {
-                    "type": "string"
-                },
-                "vulnerability_feedback_path": {
-                    "type": "string"
-                },
-                "pipeline_security_path": {
-                    "type": "string"
-                }
-            }
         }
     }
 }
