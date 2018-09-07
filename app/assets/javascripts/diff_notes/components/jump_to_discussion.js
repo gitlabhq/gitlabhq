@@ -119,20 +119,19 @@ const JumpToDiscussion = Vue.extend({
       }
 
       let currentDiscussionFound = false;
-      for (let i = 0; i < discussionIdsInScope.length; i += 1) {
-        const discussionId = discussionIdsInScope[i];
+      discussionIdsInScope.forEach(discussionId => {
         const discussion = discussions[discussionId];
 
         if (!discussion) {
           // Discussions for comments on commits in this MR don't have a resolved status.
-          continue;
+          return;
         }
 
         if (!firstUnresolvedDiscussionId && !discussion.isResolved()) {
           firstUnresolvedDiscussionId = discussionId;
 
           if (jumpToFirstDiscussion) {
-            break;
+            return;
           }
         }
 
@@ -140,17 +139,17 @@ const JumpToDiscussion = Vue.extend({
           if (currentDiscussionFound) {
             if (!discussion.isResolved()) {
               nextUnresolvedDiscussionId = discussionId;
-              break;
-            } else {
-              continue;
+              return;
             }
+
+            return;
           }
 
           if (discussionId === this.discussionId) {
             currentDiscussionFound = true;
           }
         }
-      }
+      });
 
       nextUnresolvedDiscussionId = nextUnresolvedDiscussionId || firstUnresolvedDiscussionId;
 
@@ -169,7 +168,8 @@ const JumpToDiscussion = Vue.extend({
         }
       } else if (activeTab === 'diffs') {
         // Resolved discussions are hidden in the diffs tab by default.
-        // If they are marked unresolved on the notes tab, they will still be hidden on the diffs tab.
+        // If they are marked unresolved on the notes tab,
+        // they will still be hidden on the diffs tab
         // When jumping between unresolved discussions on the diffs tab, we show them.
         $target.closest('.content').show();
 

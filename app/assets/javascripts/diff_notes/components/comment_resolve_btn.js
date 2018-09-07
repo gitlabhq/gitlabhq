@@ -20,9 +20,9 @@ const CommentAndResolveBtn = Vue.extend({
     showButton() {
       if (this.discussion) {
         return this.discussion.isResolvable();
-      } else {
-        return false;
       }
+
+      return false;
     },
     isDiscussionResolved() {
       return this.discussion.isResolved();

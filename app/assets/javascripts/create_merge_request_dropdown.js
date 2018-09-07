@@ -104,7 +104,7 @@ export default class CreateMergeRequestDropdown {
       .catch(() => {
         this.unavailable();
         this.disable();
-        Flash(__('Failed to check related branches.'));
+        flash(__('Failed to check related branches.'));
       });
   }
 
@@ -117,7 +117,7 @@ export default class CreateMergeRequestDropdown {
         this.branchCreated = true;
         window.location.href = data.url;
       })
-      .catch(() => Flash('Failed to create a branch for this issue. Please try again.'));
+      .catch(() => flash('Failed to create a branch for this issue. Please try again.'));
   }
 
   createMergeRequest() {
@@ -129,7 +129,7 @@ export default class CreateMergeRequestDropdown {
         this.mergeRequestCreated = true;
         window.location.href = data.url;
       })
-      .catch(() => Flash('Failed to create Merge Request. Please try again.'));
+      .catch(() => flash('Failed to create Merge Request. Please try again.'));
   }
 
   disable() {
