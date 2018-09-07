@@ -1456,7 +1456,9 @@ There are three possible values: `none`, `normal`, and `recursive`:
     ```
 
 - `recursive` means that all submodules (including submodules of submodules)
-  will be included. It is equivalent to:
+  will be included. This feature needs Git v1.8.1 and later. When using a
+  GitLab Runner with an executor not based on Docker, make sure the Git version
+  meets that requirement. It is equivalent to:
 
     ```
     git submodule sync --recursive
