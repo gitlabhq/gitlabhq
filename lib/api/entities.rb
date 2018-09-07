@@ -1466,7 +1466,6 @@ module API
       end
     end
 
-<<<<<<< HEAD
     def self.prepend_entity(klass, with: nil)
       if with.nil?
         raise ArgumentError, 'You need to pass either the :with or :namespace option!'
@@ -1488,8 +1487,6 @@ module API
       expose :id, :name, :approval_status
     end
 
-=======
->>>>>>> upstream/master
     class ResourceLabelEvent < Grape::Entity
       expose :id
       expose :user, using: Entities::UserBasic
