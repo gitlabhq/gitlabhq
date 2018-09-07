@@ -1,0 +1,5 @@
+---
+title: Ask user explicitly about usage stats agreement on single user deployments.
+merge_request: 21423
+author:
+type: added
