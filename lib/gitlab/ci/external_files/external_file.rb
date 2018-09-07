@@ -1,5 +1,3 @@
-require 'open-uri'
-
 module Gitlab
   module Ci
     module ExternalFiles
@@ -32,7 +30,7 @@ module Gitlab
         end
 
         def local_file_content
-          project.repository.fetch_file_for(sha, value)
+          project.repository.blob_data_at(sha, value)
         end
 
         def sha

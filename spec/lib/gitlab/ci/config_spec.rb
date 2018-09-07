@@ -192,4 +192,26 @@ describe Gitlab::Ci::Config do
       )
     end
   end
+
+  context "when both external files and gitlab_ci defined the same key" do
+    let(:yml) do
+      <<~HEREDOC
+        include:
+          - https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml
+
+        image: ruby:2.2
+      HEREDOC
+    end
+
+    let(:http_file_content) do
+      <<~HEREDOC
+        image: php:5-fpm-alpine
+      HEREDOC
+    end
+
+    it 'should take precedence' do
+      allow(HTTParty).to receive(:get).and_return(http_file_content)
+      expect(config.to_hash).to eq({ image: 'php:5-fpm-alpine' })
+    end
+  end
 end

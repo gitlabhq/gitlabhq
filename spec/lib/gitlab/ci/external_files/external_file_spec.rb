@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'fast_spec_helper'
 
 describe Gitlab::Ci::ExternalFiles::ExternalFile do
   let(:project) { create(:project, :repository) }

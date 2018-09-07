@@ -966,6 +966,104 @@ Additionally, if you have a job that unconditionally recreates the cache without
 reference to its previous contents, you can use `policy: push` in that job to
 skip the download step.
 
+### include
+
+From 10.5 we can use `include` keyword to allow the inclusion of external yml files.
+
+```yaml
+# Content of https://gitlab.com/awesome-project/raw/master/.gitlab-ci-before-script-template.yml
+before_script:
+  - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
+  - ruby -v
+  - which ruby
+  - gem install bundler --no-ri --no-rdoc
+  - bundle install --jobs $(nproc)  "${FLAGS[@]}"
+```
+
+```yaml
+include: 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-before-script-template.yml'
+
+rspec:
+  script:
+    - bundle exec rspec
+
+rubocop:
+  script:
+    - bundle exec rubocop
+```
+
+In the above example `.gitlab-ci-before-script-template.yml` content will be automatically fetched and evaluated as it were a single local file.
+
+`include` supports two types of files:
+  - **local** to the same repository, referenced using the relative path, or 
+  - **remote** in a different location, accessed using HTTP(S) protocol, referenced using the full URL
+
+Also, `include` supports a single string or an array of different values, so
+
+```yaml
+include: '/templates/.gitlab-ci-templates.yml'
+```
+
+and
+
+```yaml
+include:
+  - 'https://gitlab.com/same-group/another-project/raw/master/.gitlab-ci-templates.yml'
+  - '/templates/.gitlab-ci-templates.yml'
+```
+
+are both valid use cases.
+
+#### Restrictions
+
+- We can only use files that are currently tracked by Git on the default repository branch, so when using a **local file** make sure it's on the latest commit of your default branch, otherwise feel free to use a remote location.
+- Since external files defined on `include` are evaluated first, the configuration on this files will take precedence over the content of `.gitlab-ci.yml`, for example:
+
+```yaml
+# Content of http://company.com/default-gitlab-ci.yml
+image: php:5-fpm-alpine
+
+job2:
+  script: php -v
+```
+
+
+```yaml
+include:
+  - http://company.com/default-gitlab-ci.yml
+
+image: ruby:2.1
+
+job1:
+  script: ruby -v
+```
+
+In this case both, `job1` and `job2` will be executed with `php:5-fpm-alpine`
+
+
+
+#### Examples
+
+**Example of local files included**
+
+```yaml
+include: '/templates/.gitlab-ci-templates.yml'
+```
+
+**Example of remote files included**
+
+```yaml
+include: 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-templates.yml'
+```
+
+**Example of multiple files included**
+
+```yaml
+include:
+  - 'https://gitlab.com/same-group/another-project/raw/master/.gitlab-ci-templates.yml'
+  - '/templates/.gitlab-ci-templates.yml'
+```
+
 ## `artifacts`
 
 > **Notes:**
