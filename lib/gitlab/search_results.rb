@@ -23,6 +23,11 @@ module Gitlab
       def no_highlighting?
         false
       end
+
+      # Triggering lookup with n items is too costly.
+      def language_from_gitattributes
+        nil
+      end
     end
 
     attr_reader :current_user, :query, :per_page
