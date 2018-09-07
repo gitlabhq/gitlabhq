@@ -33,8 +33,8 @@ module EESpecificCheck
     ce_fetch_head = fetch_remote_ce_branch
     ee_fetch_head = head_commit_sha
     ce_fetch_base = run_git_command("merge-base canonical-ce/master #{ce_fetch_head}")
-    ce_merge_base = run_git_command("merge-base canonical-ce/master canonical-ee/master")
     ee_fetch_base = run_git_command("merge-base canonical-ee/master HEAD")
+    ce_merge_base = run_git_command("merge-base #{ce_fetch_head} #{ee_fetch_head}")
 
     ce_updated_head =
       find_ce_compare_head(ce_fetch_head, ce_fetch_base, ce_merge_base)
