@@ -366,6 +366,9 @@ msgstr ""
 msgid "Access denied! Please verify you can add deploy keys to this repository."
 msgstr ""
 
+msgid "Access expiration date"
+msgstr ""
+
 msgid "Access to '%{classification_label}' not allowed"
 msgstr ""
 
@@ -727,6 +730,9 @@ msgid "April"
 msgstr ""
 
 msgid "Archived project! Repository and other project resources are read-only"
+msgstr ""
+
+msgid "Archived projects"
 msgstr ""
 
 msgid "Are you sure you want to delete this pipeline schedule?"
@@ -3080,6 +3086,9 @@ msgstr ""
 msgid "Expand sidebar"
 msgstr ""
 
+msgid "Expiration date"
+msgstr ""
+
 msgid "Explore"
 msgstr ""
 
@@ -3812,6 +3821,9 @@ msgstr ""
 msgid "GroupsEmptyState|You can manage your group member’s permissions and access to each project in the group."
 msgstr ""
 
+msgid "GroupsTree|Are you sure you want to leave the \"%{fullName}\" group?"
+msgstr ""
+
 msgid "GroupsTree|Create a project in this group."
 msgstr ""
 
@@ -3824,19 +3836,19 @@ msgstr ""
 msgid "GroupsTree|Failed to leave the group. Please make sure you are not the only owner."
 msgstr ""
 
-msgid "GroupsTree|Filter by name..."
-msgstr ""
-
 msgid "GroupsTree|Leave this group"
 msgstr ""
 
 msgid "GroupsTree|Loading groups"
 msgstr ""
 
-msgid "GroupsTree|Sorry, no groups matched your search"
+msgid "GroupsTree|No groups matched your search"
 msgstr ""
 
-msgid "GroupsTree|Sorry, no groups or projects matched your search"
+msgid "GroupsTree|No groups or projects matched your search"
+msgstr ""
+
+msgid "GroupsTree|Search by name"
 msgstr ""
 
 msgid "Have your users email"
@@ -4114,6 +4126,9 @@ msgid "Interval Pattern"
 msgstr ""
 
 msgid "Introducing Cycle Analytics"
+msgstr ""
+
+msgid "Invite"
 msgstr ""
 
 msgid "Issue Boards"
@@ -4541,6 +4556,9 @@ msgid "Maven Metadata"
 msgstr ""
 
 msgid "Maven package"
+msgstr ""
+
+msgid "Max access level"
 msgstr ""
 
 msgid "Maximum git storage failures"
@@ -6455,6 +6473,9 @@ msgstr ""
 msgid "Select Archive Format"
 msgstr ""
 
+msgid "Select a group to invite"
+msgstr ""
+
 msgid "Select a namespace to fork the project"
 msgstr ""
 
@@ -6573,6 +6594,9 @@ msgid "Share the <strong>%{sso_label}</strong> with members so they can sign in 
 msgstr ""
 
 msgid "Shared Runners"
+msgstr ""
+
+msgid "Shared projects"
 msgstr ""
 
 msgid "SharedRunnersMinutesSettings|By resetting the pipeline minutes for this namespace, the currently used minutes will be set to zero."
@@ -6916,6 +6940,9 @@ msgstr ""
 msgid "Subgroups"
 msgstr ""
 
+msgid "Subgroups and projects"
+msgstr ""
+
 msgid "Submit as spam"
 msgstr ""
 
@@ -7194,6 +7221,9 @@ msgstr ""
 msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
 msgstr ""
 
+msgid "There are no archived projects yet"
+msgstr ""
+
 msgid "There are no issues to show"
 msgstr ""
 
@@ -7201,6 +7231,9 @@ msgid "There are no labels yet"
 msgstr ""
 
 msgid "There are no merge requests to show"
+msgstr ""
+
+msgid "There are no projects shared with this group yet"
 msgstr ""
 
 msgid "There are problems accessing Git storage: "

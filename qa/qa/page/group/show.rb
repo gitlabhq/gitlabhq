@@ -16,7 +16,7 @@ module QA
         end
 
         view 'app/assets/javascripts/groups/constants.js' do
-          element :no_result_text, 'Sorry, no groups or projects matched your search'
+          element :no_result_text, 'No groups or projects matched your search'
         end
 
         def go_to_subgroup(name)
@@ -30,7 +30,7 @@ module QA
         def has_subgroup?(name)
           filter_by_name(name)
 
-          page.has_text?(/#{name}|Sorry, no groups or projects matched your search/, wait: 60)
+          page.has_text?(/#{name}|No groups or projects matched your search/, wait: 60)
 
           page.has_text?(name, wait: 0)
         end

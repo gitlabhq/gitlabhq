@@ -18,7 +18,7 @@ class GroupsController < Groups::ApplicationController
   before_action :group_projects, only: [:projects, :activity, :issues, :merge_requests]
   before_action :event_filter, only: [:activity]
 
-  before_action :user_actions, only: [:show, :subgroups]
+  before_action :user_actions, only: [:show]
 
   skip_cross_project_access_check :index, :new, :create, :edit, :update,
                                   :destroy, :projects
@@ -54,11 +54,7 @@ class GroupsController < Groups::ApplicationController
 
   def show
     respond_to do |format|
-      format.html do
-        @has_children = GroupDescendantsFinder.new(current_user: current_user,
-                                                   parent_group: @group,
-                                                   params: params).has_children?
-      end
+      format.html
 
       format.atom do
         load_events
