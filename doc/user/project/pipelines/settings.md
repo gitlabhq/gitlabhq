@@ -157,6 +157,10 @@ into your `README.md`:
 ![coverage](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=coverage)
 ```
 
+### Environment Variables
+
+[Environment variables](../../../ci/variables/README.html#variables) can be set in an environment to be available to a runner.
+
 [var]: ../../../ci/yaml/README.md#git-strategy
 [coverage report]: #test-coverage-parsing
 [timeout overriding]: ../../../ci/runners/README.html#setting-maximum-job-timeout-for-a-runner

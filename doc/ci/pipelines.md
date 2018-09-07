@@ -9,7 +9,7 @@ you may need to enable pipeline triggering in your project's
 
 ## Pipelines
 
-A pipeline is a group of [jobs][] that get executed in [stages][](batches).
+A pipeline is a group of [jobs] that get executed in [stages].
 All of the jobs in a stage are executed in parallel (if there are enough
 concurrent [Runners]), and if they all succeed, the pipeline moves on to the
 next stage. If one of the jobs fails, the next stage is not (usually)
@@ -29,17 +29,17 @@ There are three types of pipelines that often use the single shorthand of "pipel
 
 ![Types of Pipelines](img/types-of-pipelines.svg)
 
-1. **CI Pipeline**: Build and test stages defined in `.gitlab-ci.yml`
-2. **Deploy Pipeline**: Deploy stage(s) defined in `.gitlab-ci.yml` The flow of deploying code to servers through various stages: e.g. development to staging to production
-3. **Project Pipeline**: Cross-project CI dependencies [triggered via API][triggers], particularly for micro-services, but also for complicated build dependencies: e.g. api -> front-end, ce/ee -> omnibus.
+1. **CI Pipeline**: Build and test stages defined in `.gitlab-ci.yml`.
+1. **Deploy Pipeline**: Deploy stage(s) defined in `.gitlab-ci.yml` The flow of deploying code to servers through various stages: e.g. development to staging to production.
+1. **Project Pipeline**: Cross-project CI dependencies [triggered via API][triggers], particularly for micro-services, but also for complicated build dependencies: e.g. api -> front-end, ce/ee -> omnibus.
 
 ## Development workflows
 
 Pipelines accommodate several development workflows:
 
-1. **Branch Flow** (e.g. different branch for dev, qa, staging, production)
-2. **Trunk-based Flow** (e.g. feature branches and single master branch, possibly with tags for releases)
-3. **Fork-based Flow** (e.g. merge requests come from forks)
+1. **Branch Flow** (e.g. different branch for dev, qa, staging, production).
+1. **Trunk-based Flow** (e.g. feature branches and single master branch, possibly with tags for releases).
+1. **Fork-based Flow** (e.g. merge requests come from forks).
 
 Example continuous delivery flow:
 
@@ -56,6 +56,16 @@ Pipelines are defined in `.gitlab-ci.yml` by specifying [jobs] that run in
 [stages].
 
 See the reference [documentation for jobs](yaml/README.md#jobs).
+
+## Manually executing pipelines
+
+Pipelines can be manually executed, with predefined or manually-specified [variables](variables/README.md).
+
+To execute a pipeline manually:
+
+1. Navigate to your project's **CI/CD > Pipelines**.
+1. Click on the **Run Pipeline** button.
+1. Select the branch to run the pipeline for and enter any environment variables required for the pipeline run.
 
 ## Seeing pipeline status
 
@@ -112,9 +122,9 @@ Then, there is the pipeline mini graph which takes less space and can give you a
 quick glance if all jobs pass or something failed. The pipeline mini graph can
 be found when you visit:
 
-- the pipelines index page
-- a single commit page
-- a merge request page
+- The pipelines index page.
+- A single commit page.
+- A merge request page.
 
 That way, you can see all related jobs for a single commit and the net result
 of each stage of your pipeline. This allows you to quickly see what failed and
@@ -142,9 +152,9 @@ jobs. Click to expand them.
 The basic requirements is that there are two numbers separated with one of
 the following (you can even use them interchangeably):
 
-- a space
-- a slash (`/`)
-- a colon (`:`)
+- A space (` `)
+- A slash (`/`)
+- A colon (`:`)
 
 >**Note:**
 More specifically, [it uses][regexp] this regular expression: `\d+[\s:\/\\]+\d+\s*`.
@@ -257,11 +267,12 @@ A strict security model is enforced when pipelines are executed on
 The following actions are allowed on protected branches only if the user is
 [allowed to merge or push](../user/project/protected_branches.md#using-the-allowed-to-merge-and-allowed-to-push-settings)
 on that specific branch:
-- run **manual pipelines** (using Web UI or Pipelines API)
-- run **scheduled pipelines**
-- run pipelines using **triggers**
-- trigger **manual actions** on existing pipelines
-- **retry/cancel** existing jobs (using Web UI or Pipelines API)
+
+- Run **manual pipelines** (using [Web UI](#manually-executing-pipelines) or Pipelines API).
+- Run **scheduled pipelines**.
+- Run pipelines using **triggers**.
+- Trigger **manual actions** on existing pipelines.
+- **Retry/cancel** existing jobs (using Web UI or Pipelines API).
 
 **Variables** marked as **protected** are accessible only to jobs that
 run on protected branches, avoiding untrusted users to get unintended access to
