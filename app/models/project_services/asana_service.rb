@@ -101,7 +101,7 @@ http://app.asana.com/-/account_api'
           task.update(completed: true)
         end
       rescue => e
-        Rails.logger.error(e.message)
+        log_error(e.message)
         next
       end
     end

@@ -345,4 +345,31 @@ describe Service do
       expect(service.api_field_names).to eq(['safe_field'])
     end
   end
+
+  context 'logging' do
+    let(:project) { create(:project) }
+    let(:service) { create(:service, project: project) }
+    let(:test_message) { "test message" }
+    let(:arguments) do
+      {
+        service_class: service.class.name,
+        project_path: project.full_path,
+        project_id: project.id,
+        message: test_message,
+        additional_argument: 'some argument'
+      }
+    end
+
+    it 'logs info messages using json logger' do
+      expect(Gitlab::JsonLogger).to receive(:info).with(arguments)
+
+      service.log_info(test_message, additional_argument: 'some argument')
+    end
+
+    it 'logs error messages using json logger' do
+      expect(Gitlab::JsonLogger).to receive(:error).with(arguments)
+
+      service.log_error(test_message, additional_argument: 'some argument')
+    end
+  end
 end

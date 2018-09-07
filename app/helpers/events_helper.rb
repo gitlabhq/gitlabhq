@@ -19,7 +19,7 @@ module EventsHelper
       name = self_added ? 'You' : author.name
       link_to name, user_path(author.username), title: name
     else
-      event.author_name
+      escape_once(event.author_name)
     end
   end
 

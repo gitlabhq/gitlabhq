@@ -189,9 +189,9 @@ describe API::Helpers::Pagination do
           it 'it returns the right link to the next page' do
             allow(subject).to receive(:params)
               .and_return({ pagination: 'keyset', ks_prev_id: projects[3].id, ks_prev_name: projects[3].name, per_page: 2 })
+
             expect_header('X-Per-Page', '2')
             expect_header('X-Next-Page', "#{value}?ks_prev_id=#{projects[6].id}&ks_prev_name=#{projects[6].name}&pagination=keyset&per_page=2")
-
             expect_header('Link', anything) do |_key, val|
               expect(val).to include('rel="next"')
             end

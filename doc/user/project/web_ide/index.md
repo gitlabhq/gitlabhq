@@ -78,12 +78,13 @@ switching to a different branch.
 
 The Web IDE can be used to preview JavaScript projects right in the browser.
 This feature uses CodeSandbox to compile and bundle the JavaScript used to
-preview the web application. On public projects, an `Open in CodeSandbox`
-button is visible which will transfer the contents of the project into a
-CodeSandbox project to share with others.
-**Note** this button is not visible on private or internal projects.
+preview the web application.
 
 ![Web IDE Client Side Evaluation](img/clientside_evaluation.png)
+
+Additionally, for public projects an `Open in CodeSandbox` button is available
+to transfer the contents of the project into a public CodeSandbox project to
+quickly share your project with others.
 
 ### Enabling Client Side Evaluation
 

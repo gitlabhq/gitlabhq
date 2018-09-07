@@ -7,7 +7,11 @@ module Gitlab
     def initialize(contributor, current_user = nil)
       @contributor = contributor
       @current_user = current_user
-      @projects = ContributedProjectsFinder.new(contributor).execute(current_user)
+      @projects = if @contributor.include_private_contributions?
+                    ContributedProjectsFinder.new(@contributor).execute(@contributor)
+                  else
+                    ContributedProjectsFinder.new(contributor).execute(current_user)
+                  end
     end
 
     def activity_dates
@@ -36,13 +40,9 @@ module Gitlab
     def events_by_date(date)
       return Event.none unless can_read_cross_project?
 
-      events = Event.contributions.where(author_id: contributor.id)
+      Event.contributions.where(author_id: contributor.id)
         .where(created_at: date.beginning_of_day..date.end_of_day)
         .where(project_id: projects)
-
-      # Use visible_to_user? instead of the complicated logic in activity_dates
-      # because we're only viewing the events for a single day.
-      events.select { |event| event.visible_to_user?(current_user) }
     end
 
     def starting_year

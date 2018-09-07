@@ -596,12 +596,15 @@ PrometheusMetric:
 - group
 - common
 - identifier
+<<<<<<< HEAD
 PrometheusAlert:
 - threshold
 - operator
 - environment_id
 - project_id
 - prometheus_metric_id
+=======
+>>>>>>> upstream/master
 Badge:
 - id
 - link_url
@@ -613,6 +616,7 @@ Badge:
 - type
 ProjectCiCdSetting:
 - group_runners_enabled
+<<<<<<< HEAD
 ProtectedEnvironment:
 - id
 - project_id
@@ -627,6 +631,8 @@ ProtectedEnvironment::DeployAccessLevel:
 - updated_at
 - user_id
 - group_id
+=======
+>>>>>>> upstream/master
 ResourceLabelEvent:
 - id
 - action

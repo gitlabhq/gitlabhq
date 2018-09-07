@@ -88,6 +88,7 @@ Parameters:
 curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/11/resource_label_events/1
 ```
 
+<<<<<<< HEAD
 ## Epics
 
 ### List group epic label events
@@ -174,6 +175,8 @@ Parameters:
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/epics/11/resource_label_events/107
 ```
 
+=======
+>>>>>>> upstream/master
 ## Merge requests
 
 ### List project merge request label events

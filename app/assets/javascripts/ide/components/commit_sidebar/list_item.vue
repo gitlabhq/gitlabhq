@@ -2,6 +2,7 @@
 import { mapActions } from 'vuex';
 import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
+import FileIcon from '~/vue_shared/components/file_icon.vue';
 import StageButton from './stage_button.vue';
 import UnstageButton from './unstage_button.vue';
 import { viewerTypes } from '../../constants';
@@ -12,6 +13,7 @@ export default {
     Icon,
     StageButton,
     UnstageButton,
+    FileIcon,
   },
   directives: {
     tooltip,
@@ -48,7 +50,7 @@ export default {
       return `${getCommitIconMap(this.file).icon}${suffix}`;
     },
     iconClass() {
-      return `${getCommitIconMap(this.file).class} append-right-8`;
+      return `${getCommitIconMap(this.file).class} ml-auto mr-auto`;
     },
     fullKey() {
       return `${this.keyPrefix}-${this.file.key}`;
@@ -105,17 +107,24 @@ export default {
       @click="openFileInEditor"
     >
       <span class="multi-file-commit-list-file-path d-flex align-items-center">
-        <icon
-          :name="iconName"
-          :size="16"
-          :css-classes="iconClass"
+        <file-icon
+          :file-name="file.name"
+          class="append-right-8"
         />{{ file.name }}
       </span>
+      <div class="ml-auto d-flex align-items-center">
+        <div class="d-flex align-items-center ide-commit-list-changed-icon">
+          <icon
+            :name="iconName"
+            :size="16"
+            :css-classes="iconClass"
+          />
+        </div>
+        <component
+          :is="actionComponent"
+          :path="file.path"
+        />
+      </div>
     </div>
-    <component
-      :is="actionComponent"
-      :path="file.path"
-      class="d-flex position-absolute"
-    />
   </div>
 </template>

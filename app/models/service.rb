@@ -6,6 +6,7 @@ class Service < ActiveRecord::Base
   prepend EE::Service
   include Sortable
   include Importable
+  include ProjectServicesLoggable
 
   serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
 

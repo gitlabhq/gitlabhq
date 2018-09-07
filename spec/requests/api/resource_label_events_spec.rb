@@ -63,6 +63,7 @@ describe API::ResourceLabelEvents do
     end
   end
 
+<<<<<<< HEAD
   context 'when eventable is an Epic' do
     let(:group) { create(:group, :public) }
     let(:epic) { create(:epic, group: group, author: user) }
@@ -79,6 +80,8 @@ describe API::ResourceLabelEvents do
     end
   end
 
+=======
+>>>>>>> upstream/master
   context 'when eventable is a Merge Request' do
     let(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: user) }
 

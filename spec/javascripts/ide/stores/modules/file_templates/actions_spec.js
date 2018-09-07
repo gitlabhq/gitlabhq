@@ -148,14 +148,66 @@ describe('IDE file templates actions', () => {
   });
 
   describe('setSelectedTemplateType', () => {
-    it('commits SET_SELECTED_TEMPLATE_TYPE', done => {
-      testAction(
-        actions.setSelectedTemplateType,
-        'test',
-        state,
-        [{ type: types.SET_SELECTED_TEMPLATE_TYPE, payload: 'test' }],
-        [],
-        done,
+    it('commits SET_SELECTED_TEMPLATE_TYPE', () => {
+      const commit = jasmine.createSpy('commit');
+      const options = {
+        commit,
+        dispatch() {},
+        rootGetters: {
+          activeFile: {
+            name: 'test',
+            prevPath: '',
+          },
+        },
+      };
+
+      actions.setSelectedTemplateType(options, { name: 'test' });
+
+      expect(commit).toHaveBeenCalledWith(types.SET_SELECTED_TEMPLATE_TYPE, { name: 'test' });
+    });
+
+    it('dispatches discardFileChanges if prevPath matches templates name', () => {
+      const dispatch = jasmine.createSpy('dispatch');
+      const options = {
+        commit() {},
+        dispatch,
+        rootGetters: {
+          activeFile: {
+            name: 'test',
+            path: 'test',
+            prevPath: 'test',
+          },
+        },
+      };
+
+      actions.setSelectedTemplateType(options, { name: 'test' });
+
+      expect(dispatch).toHaveBeenCalledWith('discardFileChanges', 'test', { root: true });
+    });
+
+    it('dispatches renameEntry if file name doesnt match', () => {
+      const dispatch = jasmine.createSpy('dispatch');
+      const options = {
+        commit() {},
+        dispatch,
+        rootGetters: {
+          activeFile: {
+            name: 'oldtest',
+            path: 'oldtest',
+            prevPath: '',
+          },
+        },
+      };
+
+      actions.setSelectedTemplateType(options, { name: 'test' });
+
+      expect(dispatch).toHaveBeenCalledWith(
+        'renameEntry',
+        {
+          path: 'oldtest',
+          name: 'test',
+        },
+        { root: true },
       );
     });
   });
@@ -331,6 +383,21 @@ describe('IDE file templates actions', () => {
       actions.undoFileTemplate({ dispatch, commit, rootGetters });
 
       expect(commit).toHaveBeenCalledWith('SET_UPDATE_SUCCESS', false);
+    });
+
+    it('dispatches discardFileChanges if file has prevPath', () => {
+      const dispatch = jasmine.createSpy('dispatch');
+      const rootGetters = {
+        activeFile: { path: 'test', prevPath: 'newtest', raw: 'raw content' },
+      };
+
+      actions.undoFileTemplate({ dispatch, commit() {}, rootGetters });
+
+      expect(dispatch.calls.mostRecent().args).toEqual([
+        'discardFileChanges',
+        'test',
+        { root: true },
+      ]);
     });
   });
 });

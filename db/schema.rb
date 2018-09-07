@@ -217,6 +217,7 @@ ActiveRecord::Schema.define(version: 20180906101639) do
     t.boolean "instance_statistics_visibility_private", default: false, null: false
     t.boolean "web_ide_clientside_preview_enabled", default: false, null: false
     t.boolean "user_show_add_ssh_key_message", default: true, null: false
+<<<<<<< HEAD
     t.integer "custom_project_templates_group_id"
     t.integer "usage_stats_set_by_user_id"
   end
@@ -247,6 +248,9 @@ ActiveRecord::Schema.define(version: 20180906101639) do
     t.integer "user_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+=======
+    t.integer "usage_stats_set_by_user_id"
+>>>>>>> upstream/master
   end
 
   add_index "approvers", ["target_id", "target_type"], name: "index_approvers_on_target_id_and_target_type", using: :btree
@@ -2262,6 +2266,7 @@ ActiveRecord::Schema.define(version: 20180906101639) do
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
 
+<<<<<<< HEAD
   create_table "prometheus_alerts", force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -2276,6 +2281,8 @@ ActiveRecord::Schema.define(version: 20180906101639) do
   add_index "prometheus_alerts", ["project_id", "prometheus_metric_id"], name: "index_prometheus_alerts_on_project_id_and_prometheus_metric_id", unique: true, using: :btree
   add_index "prometheus_alerts", ["prometheus_metric_id"], name: "index_prometheus_alerts_on_prometheus_metric_id", using: :btree
 
+=======
+>>>>>>> upstream/master
   create_table "prometheus_metrics", force: :cascade do |t|
     t.integer "project_id"
     t.string "title", null: false
@@ -2890,7 +2897,11 @@ ActiveRecord::Schema.define(version: 20180906101639) do
     t.integer "accepted_term_id"
     t.string "feed_token"
     t.boolean "private_profile"
+<<<<<<< HEAD
     t.integer "roadmap_layout", limit: 2
+=======
+    t.boolean "include_private_contributions"
+>>>>>>> upstream/master
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -2982,11 +2993,15 @@ ActiveRecord::Schema.define(version: 20180906101639) do
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
   add_index "web_hooks", ["type"], name: "index_web_hooks_on_type", using: :btree
 
+<<<<<<< HEAD
   add_foreign_key "application_settings", "namespaces", column: "custom_project_templates_group_id", on_delete: :nullify
   add_foreign_key "application_settings", "projects", column: "file_template_project_id", name: "fk_ec757bd087", on_delete: :nullify
   add_foreign_key "application_settings", "users", column: "usage_stats_set_by_user_id", name: "fk_964370041d", on_delete: :nullify
   add_foreign_key "approvals", "merge_requests", name: "fk_310d714958", on_delete: :cascade
   add_foreign_key "approver_groups", "namespaces", column: "group_id", on_delete: :cascade
+=======
+  add_foreign_key "application_settings", "users", column: "usage_stats_set_by_user_id", name: "fk_964370041d", on_delete: :nullify
+>>>>>>> upstream/master
   add_foreign_key "badges", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "badges", "projects", on_delete: :cascade
   add_foreign_key "board_assignees", "boards", on_delete: :cascade
@@ -3107,6 +3122,7 @@ ActiveRecord::Schema.define(version: 20180906101639) do
   add_foreign_key "issues", "users", column: "author_id", name: "fk_05f1e72feb", on_delete: :nullify
   add_foreign_key "issues", "users", column: "closed_by_id", name: "fk_c63cbf6c25", on_delete: :nullify
   add_foreign_key "issues", "users", column: "updated_by_id", name: "fk_ffed080f01", on_delete: :nullify
+  add_foreign_key "label_links", "labels", name: "fk_d97dd08678", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade
   add_foreign_key "labels", "namespaces", column: "group_id", on_delete: :cascade
@@ -3164,11 +3180,15 @@ ActiveRecord::Schema.define(version: 20180906101639) do
   add_foreign_key "project_mirror_data", "projects", name: "fk_d1aad367d7", on_delete: :cascade
   add_foreign_key "project_repository_states", "projects", on_delete: :cascade
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
+<<<<<<< HEAD
   add_foreign_key "prometheus_alerts", "environments", on_delete: :cascade
   add_foreign_key "prometheus_alerts", "projects", on_delete: :cascade
   add_foreign_key "prometheus_alerts", "prometheus_metrics", on_delete: :cascade
   add_foreign_key "prometheus_metrics", "projects", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "namespaces", column: "group_id", name: "fk_98f3d044fe", on_delete: :cascade
+=======
+  add_foreign_key "prometheus_metrics", "projects", on_delete: :cascade
+>>>>>>> upstream/master
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches", name: "fk_8a3072ccb3", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "users"
   add_foreign_key "protected_branch_push_access_levels", "namespaces", column: "group_id", name: "fk_7111b68cdb", on_delete: :cascade

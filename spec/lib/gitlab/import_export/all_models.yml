@@ -355,9 +355,12 @@ priorities:
 - label
 prometheus_metrics:
 - project
+<<<<<<< HEAD
 - prometheus_alerts
 prometheus_alerts:
 - project
+=======
+>>>>>>> upstream/master
 timelogs:
 - issue
 - merge_request

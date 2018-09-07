@@ -91,6 +91,18 @@ To enable private profile:
 NOTE: **Note:**
 You and GitLab admins can see your the abovementioned information on your profile even if it is private.
 
+## Private contributions
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/14078) in GitLab 11.3.
+
+Enabling private contributions will include contributions to private projects, in the user contribution calendar graph and user recent activity. 
+
+To enable private contributions:
+
+1. Navigate to your personal [profile settings](#profile-settings).
+2. Check the "Private contributions" option.
+3. Hit **Update profile settings**.
+
 ## Current status
 
 > Introduced in GitLab 11.2.

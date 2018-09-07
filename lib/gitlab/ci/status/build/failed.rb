@@ -15,8 +15,11 @@ module Gitlab
 
           private_constant :REASONS
 
+<<<<<<< HEAD
           prepend ::EE::Gitlab::Ci::Status::Build::Failed
 
+=======
+>>>>>>> upstream/master
           def status_tooltip
             base_message
           end

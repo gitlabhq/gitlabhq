@@ -5,12 +5,13 @@ module QA
     module Test
       module Sanity
         ##
-        # This scenario exits with a 1 exit code.
+        # This scenario runs 1 passing example, and 1 failing example, and exits
+        # with a 1 exit code.
         #
-        class Failing < Template
+        class Framework < Template
           include Bootable
 
-          tags :failing
+          tags :framework
         end
       end
     end

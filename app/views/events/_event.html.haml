@@ -11,3 +11,5 @@
       = render "events/event/note", event: event
     - else
       = render "events/event/common", event: event
+- elsif @user.include_private_contributions?
+  = render "events/event/private", event: event
