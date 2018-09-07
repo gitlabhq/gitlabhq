@@ -99,6 +99,10 @@ export default {
     const discussions = [];
 
     discussionsData.forEach(discussion => {
+      if (discussion.diff_file) {
+        Object.assign(discussion, { fileHash: discussion.diff_file.file_hash });
+      }
+
       // To support legacy notes, should be very rare case.
       if (discussion.individual_note && discussion.notes.length > 1) {
         discussion.notes.forEach(n => {
@@ -186,6 +190,9 @@ export default {
     const note = noteData;
     const selectedDiscussion = state.discussions.find(disc => disc.id === note.id);
     note.expanded = true; // override expand flag to prevent collapse
+    if (note.diff_file) {
+      Object.assign(note, { fileHash: note.diff_file.file_hash });
+    }
     Object.assign(selectedDiscussion, { ...note });
   },
 

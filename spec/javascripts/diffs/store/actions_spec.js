@@ -100,6 +100,7 @@ describe('DiffsStoreActions', () => {
           },
         ],
       };
+
       const singleDiscussion = {
         line_code: 'ABC_1_1',
         diff_discussion: {},
@@ -107,6 +108,7 @@ describe('DiffsStoreActions', () => {
           file_hash: 'ABC',
         },
         resolvable: true,
+        fileHash: 'ABC',
       };
 
       const discussions = reduceDiscussionsToLineCodes([singleDiscussion]);
@@ -117,22 +119,9 @@ describe('DiffsStoreActions', () => {
         state,
         [
           {
-            type: types.SET_LINE_DISCUSSIONS,
+            type: types.SET_LINE_DISCUSSIONS_FOR_FILE,
             payload: {
-              line: {
-                lineCode: 'ABC_1_1',
-                discussions: [],
-              },
-              discussions: [singleDiscussion],
-            },
-          },
-          {
-            type: types.SET_LINE_DISCUSSIONS,
-            payload: {
-              line: {
-                lineCode: 'ABC_1_1',
-                discussions: [],
-              },
+              fileHash: 'ABC',
               discussions: [singleDiscussion],
             },
           },
@@ -187,21 +176,10 @@ describe('DiffsStoreActions', () => {
         state,
         [
           {
-            type: types.REMOVE_LINE_DISCUSSIONS,
+            type: types.REMOVE_LINE_DISCUSSIONS_FOR_FILE,
             payload: {
+              fileHash: 'ABC',
               lineCode: 'ABC_1_1',
-              discussions: [
-                {
-                  id: 1,
-                },
-              ],
-            },
-          },
-          {
-            type: types.REMOVE_LINE_DISCUSSIONS,
-            payload: {
-              lineCode: 'ABC_1_1',
-              discussions: [],
             },
           },
         ],

@@ -31,66 +31,18 @@ export const fetchDiffFiles = ({ state, commit }) => {
 
 // This is adding line discussions to the actual lines in the diff tree
 // once for parallel and once for inline mode
-export const assignDiscussionsToDiff = ({ state, commit }, allLineDiscussions) => {
+export const assignDiscussionsToDiff = ({ commit }, allLineDiscussions) => {
   Object.values(allLineDiscussions).forEach(discussions => {
     if (discussions.length > 0) {
       const { fileHash } = discussions[0];
-      const selectedFile = state.diffFiles.find(file => file.fileHash === fileHash);
-      if (selectedFile) {
-        const targetLine = selectedFile.parallelDiffLines.find(
-          line =>
-            (line.left && line.left.lineCode === discussions[0].line_code) ||
-            (line.right && line.right.lineCode === discussions[0].line_code),
-        );
-        if (targetLine) {
-          if (targetLine.left && targetLine.left.lineCode === discussions[0].line_code) {
-            commit(types.SET_LINE_DISCUSSIONS, { line: targetLine.left, discussions });
-          } else {
-            commit(types.SET_LINE_DISCUSSIONS, { line: targetLine.right, discussions });
-          }
-        }
-
-        if (selectedFile.highlightedDiffLines) {
-          const targetInlineLine = selectedFile.highlightedDiffLines.find(
-            line => line.lineCode === discussions[0].line_code,
-          );
-
-          if (targetInlineLine) {
-            commit(types.SET_LINE_DISCUSSIONS, { line: targetInlineLine, discussions });
-          }
-        }
-      }
+      commit(types.SET_LINE_DISCUSSIONS_FOR_FILE, { fileHash, discussions });
     }
   });
 };
 
-export const removeDiscussionsFromDiff = ({ state, commit }, removeDiscussion) => {
-  const { fileHash } = removeDiscussion;
-  const selectedFile = state.diffFiles.find(file => file.fileHash === fileHash);
-
-  if (selectedFile) {
-    const targetLine = selectedFile.parallelDiffLines.find(
-      line =>
-        (line.left && line.left.lineCode === removeDiscussion.line_code) ||
-        (line.right && line.right.lineCode === removeDiscussion.line_code),
-    );
-
-    if (targetLine) {
-      if (targetLine.left && targetLine.left.lineCode === removeDiscussion.line_code) {
-        commit(types.REMOVE_LINE_DISCUSSIONS, targetLine.left);
-      } else {
-        commit(types.REMOVE_LINE_DISCUSSIONS, targetLine.right);
-      }
-    }
-
-    const targetInlineLine = selectedFile.highlightedDiffLines.find(
-      line => line.lineCode === removeDiscussion.line_code,
-    );
-
-    if (targetInlineLine) {
-      commit(types.REMOVE_LINE_DISCUSSIONS, targetInlineLine);
-    }
-  }
+export const removeDiscussionsFromDiff = ({ commit }, removeDiscussion) => {
+  const { fileHash, line_code } = removeDiscussion;
+  commit(types.REMOVE_LINE_DISCUSSIONS_FOR_FILE, { fileHash, lineCode: line_code });
 };
 
 export const startRenderDiffsQueue = ({ state, commit }) => {

@@ -84,15 +84,71 @@ export default {
     }));
   },
 
-  [types.SET_LINE_DISCUSSIONS](state, { line, discussions }) {
-    Object.assign(line, {
-      discussions,
-    });
+  [types.SET_LINE_DISCUSSIONS_FOR_FILE](state, { fileHash, discussions }) {
+    const selectedFile = state.diffFiles.find(f => f.fileHash === fileHash);
+    if (selectedFile) {
+      const targetLine = selectedFile.parallelDiffLines.find(
+        line =>
+          (line.left && line.left.lineCode === discussions[0].line_code) ||
+          (line.right && line.right.lineCode === discussions[0].line_code),
+      );
+      if (targetLine) {
+        if (targetLine.left && targetLine.left.lineCode === discussions[0].line_code) {
+          Object.assign(targetLine.left, {
+            discussions,
+          });
+        } else {
+          Object.assign(targetLine.right, {
+            discussions,
+          });
+        }
+      }
+
+      if (selectedFile.highlightedDiffLines) {
+        const targetInlineLine = selectedFile.highlightedDiffLines.find(
+          line => line.lineCode === discussions[0].line_code,
+        );
+
+        if (targetInlineLine) {
+          Object.assign(targetInlineLine, {
+            discussions,
+          });
+        }
+      }
+    }
   },
 
-  [types.REMOVE_LINE_DISCUSSIONS](state, line) {
-    Object.assign(line, {
-      discussions: [],
-    });
+  [types.REMOVE_LINE_DISCUSSIONS_FOR_FILE](state, { fileHash, lineCode }) {
+    const selectedFile = state.diffFiles.find(f => f.fileHash === fileHash);
+    if (selectedFile) {
+      const targetLine = selectedFile.parallelDiffLines.find(
+        line =>
+          (line.left && line.left.lineCode === lineCode) ||
+          (line.right && line.right.lineCode === lineCode),
+      );
+      if (targetLine) {
+        if (targetLine.left && targetLine.left.lineCode === lineCode) {
+          Object.assign(targetLine.left, {
+            discussions: [],
+          });
+        } else {
+          Object.assign(targetLine.right, {
+            discussions: [],
+          });
+        }
+      }
+
+      if (selectedFile.highlightedDiffLines) {
+        const targetInlineLine = selectedFile.highlightedDiffLines.find(
+          line => line.lineCode === lineCode,
+        );
+
+        if (targetInlineLine) {
+          Object.assign(targetInlineLine, {
+            discussions: [],
+          });
+        }
+      }
+    }
   },
 };
