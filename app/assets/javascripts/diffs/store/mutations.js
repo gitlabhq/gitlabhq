@@ -127,7 +127,7 @@ export default {
     if (targetLine) {
       const side = targetLine.left && targetLine.left.lineCode === lineCode ? 'left' : 'right';
 
-      Object.assign(targetline[side], {
+      Object.assign(targetLine[side], {
         discussions: [],
       });
     }
