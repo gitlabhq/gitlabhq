@@ -219,6 +219,7 @@ ActiveRecord::Schema.define(version: 20180906101639) do
     t.boolean "user_show_add_ssh_key_message", default: true, null: false
     t.integer "custom_project_templates_group_id"
     t.integer "usage_stats_set_by_user_id"
+    t.integer "receive_max_input_size"
   end
 
   create_table "approvals", force: :cascade do |t|
