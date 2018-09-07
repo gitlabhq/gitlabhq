@@ -24,16 +24,10 @@ The requirement for adding a new metric is to make each query to have an unique 
 
 After you add or change existing _common_ metric you have to create a new database migration that will query and update all existing metrics.
 
-<<<<<<< HEAD
-**Note: If a query metric (which is identified by `id:`) is removed it will not be removed from database by default.**
-**You might want to add additional database migration that makes a decision what to do with removed one.**
-**For example: you might be interested in migrating all dependent data to a different metric.**
-=======
 NOTE: **Note:**
 If a query metric (which is identified by `id:`) is removed it will not be removed from database by default.
 You might want to add additional database migration that makes a decision what to do with removed one.
 For example: you might be interested in migrating all dependent data to a different metric.
->>>>>>> upstream/master
 
 ```ruby
 class ImportCommonMetrics < ActiveRecord::Migration
