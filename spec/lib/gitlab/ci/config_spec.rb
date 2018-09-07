@@ -127,6 +127,17 @@ describe Gitlab::Ci::Config do
   end
 
   context "when yml has valid 'includes' defined" do
+    let(:http_file_content) do
+      <<~HEREDOC
+      variables:
+        AUTO_DEVOPS_DOMAIN: domain.example.com
+        POSTGRES_USER: user
+        POSTGRES_PASSWORD: testing-password
+        POSTGRES_ENABLED: "true"
+        POSTGRES_DB: $CI_ENVIRONMENT_SLUG
+      HEREDOC
+    end
+    let(:local_file_content) {  File.read("#{Rails.root}/spec/ee/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml") }
     let(:yml) do
       <<-EOS
         includes:
@@ -139,7 +150,8 @@ describe Gitlab::Ci::Config do
     end
 
     before do
-      allow_any_instance_of(Kernel).to receive_message_chain(:open, :read).and_return(yml)
+      allow_any_instance_of(::Gitlab::Ci::ExternalFiles::ExternalFile).to receive(:local_file_content).and_return(local_file_content)
+      allow_any_instance_of(Kernel).to receive_message_chain(:open, :read).and_return(http_file_content)
     end
 
     it 'should return a composed hash' do
@@ -167,7 +179,7 @@ describe Gitlab::Ci::Config do
     end
   end
 
-  context "when config has invalid 'includes' defined"  do
+  context "when yml has invalid 'includes' defined"  do
     let(:yml) do
       <<-EOS
       includes: invalid

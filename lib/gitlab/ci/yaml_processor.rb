@@ -73,13 +73,13 @@ module Gitlab
         end
       end
 
-      def self.validation_message(content, opts = {})
+      def self.validation_message(content, project = nil, opts = {})
         return 'Please provide content of .gitlab-ci.yml' if content.blank?
 
         begin
-          Gitlab::Ci::YamlProcessor.new(content, opts)
+          Gitlab::Ci::YamlProcessor.new(content, project, opts)
           nil
-        rescue ValidationError => e
+        rescue ValidationError, ::Gitlab::Ci::ExternalFiles::Processor::ExternalFileError => e
           e.message
         end
       end

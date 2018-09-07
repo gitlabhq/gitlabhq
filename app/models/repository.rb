@@ -980,6 +980,10 @@ class Repository
     blob_data_at(sha, '.gitlab/route-map.yml')
   end
 
+  def fetch_file_for(sha, path_to_file)
+    blob_data_at(sha, path_to_file)
+  end
+
   def gitlab_ci_yml_for(sha, path = '.gitlab-ci.yml')
     blob_data_at(sha, path)
   end

@@ -12,7 +12,7 @@ module Gitlab
           .to_hash
 
         if project.present?
-          processor = ::Gitlab::Ci::ExternalFiles::Processor.new(initial_config)
+          processor = ::Gitlab::Ci::ExternalFiles::Processor.new(initial_config, project)
           @config = processor.perform
         else
           @config = initial_config

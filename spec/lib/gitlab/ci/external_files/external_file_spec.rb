@@ -1,11 +1,16 @@
 require 'rails_helper'
 
 describe Gitlab::Ci::ExternalFiles::ExternalFile do
-  let(:external_file) { described_class.new(value) }
+  let(:project) { create(:project, :repository) }
+  let(:external_file) { described_class.new(value, project) }
 
   describe "#valid?" do
     context 'when is a valid remote url' do
       let(:value) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
+
+      before do
+        allow_any_instance_of(described_class).to receive(:local_file_content).and_return("image: 'ruby2:2'")
+      end
 
       it 'should return true' do
         expect(external_file.valid?).to be_truthy
@@ -54,8 +59,7 @@ describe Gitlab::Ci::ExternalFiles::ExternalFile do
       let(:value) { '/vendor/gitlab-ci-yml/non-existent-file.yml' }
 
       before do
-        allow(File).to receive(:exists?).and_return(true)
-        allow(File).to receive(:read).and_return(external_file_content)
+        allow_any_instance_of(described_class).to receive(:local_file_content).and_return(external_file_content)
       end
 
       it 'should return the content of the file' do

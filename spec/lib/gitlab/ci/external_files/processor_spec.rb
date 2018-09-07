@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 describe Gitlab::Ci::ExternalFiles::Processor do
-  let(:processor) { described_class.new(values) }
+  let(:project) { create(:project, :repository) }
+  let(:processor) { described_class.new(values, project) }
 
   describe "#perform" do
     context 'when no external files defined' do
@@ -77,8 +78,7 @@ describe Gitlab::Ci::ExternalFiles::Processor do
       end
 
       before do
-        allow(File).to receive(:exists?).and_return(true)
-        allow(File).to receive(:read).and_return(external_file_content)
+        allow_any_instance_of(::Gitlab::Ci::ExternalFiles::ExternalFile).to receive(:local_file_content).and_return(external_file_content)
       end
 
       it 'should append the file to the values' do
@@ -95,7 +95,6 @@ describe Gitlab::Ci::ExternalFiles::Processor do
       let(:external_files) do
         [
           "/spec/ee/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml",
-          "/spec/ee/fixtures/gitlab/ci/external_files/.gitlab-ci-template-2.yml",
           'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml'
         ]
       end
@@ -111,11 +110,13 @@ describe Gitlab::Ci::ExternalFiles::Processor do
       end
 
       before do
+        file_content = File.read("#{Rails.root}/spec/ee/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml")
+        allow_any_instance_of(::Gitlab::Ci::ExternalFiles::ExternalFile).to receive(:local_file_content).and_return(file_content)
         allow_any_instance_of(Kernel).to receive_message_chain(:open, :read).and_return(remote_file_content)
       end
 
       it 'should append the files to the values' do
-        expect(processor.perform.keys).to match_array([:image, :variables, :stages, :before_script, :rspec])
+        expect(processor.perform.keys).to match_array([:image, :stages, :before_script, :rspec])
       end
 
       it "should remove the 'includes' keyword" do
@@ -129,8 +130,7 @@ describe Gitlab::Ci::ExternalFiles::Processor do
       let(:external_file_content) { 'invalid content file ////' }
 
       before do
-        allow(File).to receive(:exists?).and_return(true)
-        allow(File).to receive(:read).and_return(external_file_content)
+        allow_any_instance_of(::Gitlab::Ci::ExternalFiles::ExternalFile).to receive(:local_file_content).and_return(external_file_content)
       end
 
       it 'should raise an error' do

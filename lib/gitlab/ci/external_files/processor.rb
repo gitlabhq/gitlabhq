@@ -4,9 +4,9 @@ module Gitlab
       class Processor
         ExternalFileError = Class.new(StandardError)
 
-        def initialize(values)
+        def initialize(values, project)
           @values = values
-          @external_files = ::Gitlab::Ci::ExternalFiles::Mapper.fetch_paths(values)
+          @external_files = ::Gitlab::Ci::ExternalFiles::Mapper.fetch_paths(values, project).process
         end
 
         def perform

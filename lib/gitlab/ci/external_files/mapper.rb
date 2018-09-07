@@ -2,12 +2,12 @@ module Gitlab
   module Ci
     module ExternalFiles
       class Mapper
-        def self.fetch_paths(values)
-          paths = values.fetch(:includes, [])
-          normalize_paths(paths)
+        def initialize(values, project)
+          @paths = values.fetch(:includes, [])
+          @project = project
         end
 
-        def self.normalize_paths(paths)
+        def process
           if paths.is_a?(String)
             [build_external_file(paths)]
           else
@@ -15,8 +15,12 @@ module Gitlab
           end
         end
 
-        def self.build_external_file(path)
-          ::Gitlab::Ci::ExternalFiles::ExternalFile.new(path)
+        private
+
+        attr_reaer :paths, :project
+
+        def build_external_file(path)
+          ::Gitlab::Ci::ExternalFiles::ExternalFile.new(path, project)
         end
       end
     end

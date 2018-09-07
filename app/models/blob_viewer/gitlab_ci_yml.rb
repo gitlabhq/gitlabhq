@@ -15,7 +15,7 @@ module BlobViewer
 
       prepare!
 
-      @validation_message = Gitlab::Ci::YamlProcessor.validation_message(blob.data)
+      @validation_message = Gitlab::Ci::YamlProcessor.validation_message(blob.data, project)
     end
 
     def valid?
