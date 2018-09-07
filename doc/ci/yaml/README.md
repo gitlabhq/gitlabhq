@@ -1032,56 +1032,80 @@ are both valid use cases.
 - Since external files defined on `include` are evaluated first, the content on `gitlab-ci.yml` **will always take precedence over the content of the external files, no matters of the position of the `include` keyword, allowing to override values and functions with local definitions**, for example:
 
 ```yaml
-# Content of http://company.com/ruby-autodeploy-template.yml
+# Content of http://company.com/autodevops-template.yml
 
 variables:
-  KUBE_DOMAIN: example.com
+  POSTGRES_USER: user
+  POSTGRES_PASSWORD: testing_password
+  POSTGRES_ENABLED: "true"
+  POSTGRES_DB: $CI_ENVIRONMENT_SLUG
+  KUBERNETES_VERSION: 1.8.6
+  HELM_VERSION: 2.6.1
+  CODECLIMATE_VERSION: 0.69.0
 
-build:
-  stage: build
+production:
+  stage: production
   script:
-    - command build
-  only:
-    - master
-
-deploy:
-  stage: deploy
-  script:
-    - command deploy
+    - check_kube_domain
+    - install_dependencies
+    - download_chart
+    - ensure_namespace
+    - install_tiller
+    - create_secret
+    - deploy
+    - delete canary
+    - persist_environment_url
   environment:
     name: production
-    url: http://production.example.com
+    url: http://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
   only:
-    - master
+    refs:
+      - master
+    kubernetes: active
 ```
-
 
 ```yaml
 # Content of gitlab-ci.yml
 
-include: 'http://company.com/ruby-autodeploy-template.yml'
+include: 'https://company.com/autodevops-template.yml'
 
-image: registry.gitlab.com/gitlab-examples/kubernetes-deploy
+image: alpine:latest
 
 variables:
-  KUBE_DOMAIN: gitlab.domain.com
+  POSTGRES_USER: root
+  POSTGRES_PASSWORD: secure_password
+  POSTGRES_DB: company_database
 
 stages:
   - build
-  - deploy
+  - test
+  - review
+  - dast
+  - staging
+  - canary
+  - production
+  - performance
+  - cleanup
 
-deploy:
-  stage: deploy
+production:
+  stage: production
   script:
-    - command deploy
+    - check_kube_domain
+    - install_dependencies
+    - download_chart
+    - ensure_namespace
+    - install_tiller
+    - create_secret
+    - deploy
   environment:
     name: production
-    url: http://gitlab.com
+    url: http://auto_devops_domain.com
   only:
-    - master
+    refs:
+      - master
 ```
 
-In this case, the variable `KUBE_DOMAIN` and the `deploy` job defined on `ruby-autodeploy-template.yml` will override by the ones defined on `gitlab-ci.yml`.
+In this case, the variables `POSTGRES_USER`, `POSTGRES_PASSWORD` and `POSTGRES_DB` along with the `production` job defined on `autodevops-template.yml` will be overridden by the ones defined on `gitlab-ci.yml`.
 
 ## `artifacts`
 
