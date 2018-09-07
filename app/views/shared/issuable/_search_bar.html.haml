@@ -33,13 +33,13 @@
             #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { action: 'submit' } }
-                  %button.btn.btn-link
+                  %button.btn.btn-link{ type: 'button' }
                     = icon('search')
                     %span
                       Press Enter or click to search
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                 %li.filter-dropdown-item
-                  %button.btn.btn-link
+                  %button.btn.btn-link{ type: 'button' }
                     -# Encapsulate static class name `{{icon}}` inside #{} to bypass
                     -# haml lint's ClassAttributeWithStaticValue
                     %i.fa{ class: "#{'{{icon}}'}" }
@@ -59,7 +59,7 @@
             #js-dropdown-assignee.filtered-search-input-dropdown-menu.dropdown-menu
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { value: 'none' } }
-                  %button.btn.btn-link
+                  %button.btn.btn-link{ type: 'button' }
                     No Assignee
                 %li.divider.droplab-item-ignore
                 - if current_user
@@ -72,45 +72,45 @@
             #js-dropdown-milestone.filtered-search-input-dropdown-menu.dropdown-menu
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { value: 'none' } }
-                  %button.btn.btn-link
+                  %button.btn.btn-link{ type: 'button' }
                     No Milestone
                 %li.filter-dropdown-item{ data: { value: 'upcoming' } }
-                  %button.btn.btn-link
+                  %button.btn.btn-link{ type: 'button' }
                     Upcoming
                 %li.filter-dropdown-item{ 'data-value' => 'started' }
-                  %button.btn.btn-link
+                  %button.btn.btn-link{ type: 'button' }
                     Started
                 %li.divider.droplab-item-ignore
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                 %li.filter-dropdown-item
-                  %button.btn.btn-link.js-data-value
+                  %button.btn.btn-link.js-data-value{ type: 'button' }
                     {{title}}
             #js-dropdown-label.filtered-search-input-dropdown-menu.dropdown-menu
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { value: 'none' } }
-                  %button.btn.btn-link
+                  %button.btn.btn-link{ type: 'button' }
                     No Label
                 %li.divider.droplab-item-ignore
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                 %li.filter-dropdown-item
-                  %button.btn.btn-link
+                  %button.btn.btn-link{ type: 'button' }
                     %span.dropdown-label-box{ style: 'background: {{color}}' }
                     %span.label-title.js-data-value
                       {{title}}
             #js-dropdown-my-reaction.filtered-search-input-dropdown-menu.dropdown-menu
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                 %li.filter-dropdown-item
-                  %button.btn.btn-link
+                  %button.btn.btn-link{ type: 'button' }
                     %gl-emoji
                     %span.js-data-value.prepend-left-10
                       {{name}}
             #js-dropdown-wip.filtered-search-input-dropdown-menu.dropdown-menu
               %ul.filter-dropdown{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { value: 'yes', capitalize: true } }
-                  %button.btn.btn-link
+                  %button.btn.btn-link{ type: 'button' }
                     Yes
                 %li.filter-dropdown-item{ data: { value: 'no', capitalize: true } }
-                  %button.btn.btn-link
+                  %button.btn.btn-link{ type: 'button' }
                     No
 
             = render_if_exists 'shared/issuable/filter_weight', type: type
