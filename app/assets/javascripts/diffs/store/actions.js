@@ -29,25 +29,47 @@ export const fetchDiffFiles = ({ state, commit }) => {
     .then(handleLocationHash);
 };
 
-export const startRenderDiffsQueue = ({ state, commit }) => {
-  const checkItem = () => {
-    const nextFile = state.diffFiles.find(
-      file => !file.renderIt && (!file.collapsed || !file.text),
-    );
-    if (nextFile) {
-      requestAnimationFrame(() => {
-        commit(types.RENDER_FILE, nextFile);
-      });
-      requestIdleCallback(
-        () => {
-          checkItem();
-        },
-        { timeout: 1000 },
-      );
+// This is adding line discussions to the actual lines in the diff tree
+// once for parallel and once for inline mode
+export const assignDiscussionsToDiff = ({ commit }, allLineDiscussions) => {
+  Object.values(allLineDiscussions).forEach(discussions => {
+    if (discussions.length > 0) {
+      const { fileHash } = discussions[0];
+      commit(types.SET_LINE_DISCUSSIONS_FOR_FILE, { fileHash, discussions });
     }
-  };
+  });
+};
 
-  checkItem();
+export const removeDiscussionsFromDiff = ({ commit }, removeDiscussion) => {
+  const { fileHash, line_code } = removeDiscussion;
+  commit(types.REMOVE_LINE_DISCUSSIONS_FOR_FILE, { fileHash, lineCode: line_code });
+};
+
+export const startRenderDiffsQueue = ({ state, commit }) => {
+  const checkItem = () =>
+    new Promise(resolve => {
+      const nextFile = state.diffFiles.find(
+        file => !file.renderIt && (!file.collapsed || !file.text),
+      );
+
+      if (nextFile) {
+        requestAnimationFrame(() => {
+          commit(types.RENDER_FILE, nextFile);
+        });
+        requestIdleCallback(
+          () => {
+            checkItem()
+              .then(resolve)
+              .catch(() => {});
+          },
+          { timeout: 1000 },
+        );
+      } else {
+        resolve();
+      }
+    });
+
+  return checkItem();
 };
 
 export const setInlineDiffViewType = ({ commit }) => {

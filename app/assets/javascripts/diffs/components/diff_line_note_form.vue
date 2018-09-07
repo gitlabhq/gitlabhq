@@ -6,6 +6,7 @@ import noteForm from '../../notes/components/note_form.vue';
 import { getNoteFormData } from '../store/utils';
 import autosave from '../../notes/mixins/autosave';
 import { DIFF_NOTE_TYPE } from '../constants';
+import { reduceDiscussionsToLineCodes } from '../../notes/stores/utils';
 
 export default {
   components: {
@@ -52,7 +53,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('diffs', ['cancelCommentForm']),
+    ...mapActions('diffs', ['cancelCommentForm', 'assignDiscussionsToDiff']),
     ...mapActions(['saveNote', 'refetchDiscussionById']),
     handleCancelCommentForm(shouldConfirm, isDirty) {
       if (shouldConfirm && isDirty) {
@@ -88,7 +89,10 @@ export default {
           const endpoint = this.getNotesDataByProp('discussionsPath');
 
           this.refetchDiscussionById({ path: endpoint, discussionId: result.discussion_id })
-            .then(() => {
+            .then(selectedDiscussion => {
+              const lineCodeDiscussions = reduceDiscussionsToLineCodes([selectedDiscussion]);
+              this.assignDiscussionsToDiff(lineCodeDiscussions);
+
               this.handleCancelCommentForm();
             })
             .catch(() => {

@@ -7,10 +7,30 @@ import {
 } from '~/diffs/constants';
 import * as actions from '~/diffs/store/actions';
 import * as types from '~/diffs/store/mutation_types';
+import { reduceDiscussionsToLineCodes } from '~/notes/stores/utils';
 import axios from '~/lib/utils/axios_utils';
 import testAction from '../../helpers/vuex_action_helper';
 
 describe('DiffsStoreActions', () => {
+  const originalMethods = {
+    requestAnimationFrame: global.requestAnimationFrame,
+    requestIdleCallback: global.requestIdleCallback,
+  };
+
+  beforeEach(() => {
+    ['requestAnimationFrame', 'requestIdleCallback'].forEach(method => {
+      global[method] = cb => {
+        cb();
+      };
+    });
+  });
+
+  afterEach(() => {
+    ['requestAnimationFrame', 'requestIdleCallback'].forEach(method => {
+      global[method] = originalMethods[method];
+    });
+  });
+
   describe('setBaseConfig', () => {
     it('should set given endpoint and project path', done => {
       const endpoint = '/diffs/set/endpoint';
@@ -50,6 +70,162 @@ describe('DiffsStoreActions', () => {
           done();
         },
       );
+    });
+  });
+
+  describe('assignDiscussionsToDiff', () => {
+    it('should merge discussions into diffs', done => {
+      const state = {
+        diffFiles: [
+          {
+            fileHash: 'ABC',
+            parallelDiffLines: [
+              {
+                left: {
+                  lineCode: 'ABC_1_1',
+                  discussions: [],
+                },
+                right: {
+                  lineCode: 'ABC_1_1',
+                  discussions: [],
+                },
+              },
+            ],
+            highlightedDiffLines: [
+              {
+                lineCode: 'ABC_1_1',
+                discussions: [],
+              },
+            ],
+          },
+        ],
+      };
+
+      const singleDiscussion = {
+        line_code: 'ABC_1_1',
+        diff_discussion: {},
+        diff_file: {
+          file_hash: 'ABC',
+        },
+        resolvable: true,
+        fileHash: 'ABC',
+      };
+
+      const discussions = reduceDiscussionsToLineCodes([singleDiscussion]);
+
+      testAction(
+        actions.assignDiscussionsToDiff,
+        discussions,
+        state,
+        [
+          {
+            type: types.SET_LINE_DISCUSSIONS_FOR_FILE,
+            payload: {
+              fileHash: 'ABC',
+              discussions: [singleDiscussion],
+            },
+          },
+        ],
+        [],
+        () => {
+          done();
+        },
+      );
+    });
+  });
+
+  describe('removeDiscussionsFromDiff', () => {
+    it('should remove discussions from diffs', done => {
+      const state = {
+        diffFiles: [
+          {
+            fileHash: 'ABC',
+            parallelDiffLines: [
+              {
+                left: {
+                  lineCode: 'ABC_1_1',
+                  discussions: [
+                    {
+                      id: 1,
+                    },
+                  ],
+                },
+                right: {
+                  lineCode: 'ABC_1_1',
+                  discussions: [],
+                },
+              },
+            ],
+            highlightedDiffLines: [
+              {
+                lineCode: 'ABC_1_1',
+                discussions: [],
+              },
+            ],
+          },
+        ],
+      };
+      const singleDiscussion = {
+        fileHash: 'ABC',
+        line_code: 'ABC_1_1',
+      };
+
+      testAction(
+        actions.removeDiscussionsFromDiff,
+        singleDiscussion,
+        state,
+        [
+          {
+            type: types.REMOVE_LINE_DISCUSSIONS_FOR_FILE,
+            payload: {
+              fileHash: 'ABC',
+              lineCode: 'ABC_1_1',
+            },
+          },
+        ],
+        [],
+        () => {
+          done();
+        },
+      );
+    });
+  });
+
+  describe('startRenderDiffsQueue', () => {
+    it('should set all files to RENDER_FILE', done => {
+      const state = {
+        diffFiles: [
+          {
+            id: 1,
+            renderIt: false,
+            collapsed: false,
+          },
+          {
+            id: 2,
+            renderIt: false,
+            collapsed: false,
+          },
+        ],
+      };
+
+      const pseudoCommit = (commitType, file) => {
+        expect(commitType).toBe(types.RENDER_FILE);
+        Object.assign(file, {
+          renderIt: true,
+        });
+      };
+
+      actions
+        .startRenderDiffsQueue({ state, commit: pseudoCommit })
+        .then(() => {
+          expect(state.diffFiles[0].renderIt).toBeTruthy();
+          expect(state.diffFiles[1].renderIt).toBeTruthy();
+
+          done();
+        })
+        .catch(() => {
+          done.fail();
+        });
     });
   });
 
@@ -204,7 +380,11 @@ describe('DiffsStoreActions', () => {
 
       actions.toggleFileDiscussions({ getters, dispatch });
 
-      expect(dispatch).toHaveBeenCalledWith('collapseDiscussion', { discussionId: 1 }, { root: true });
+      expect(dispatch).toHaveBeenCalledWith(
+        'collapseDiscussion',
+        { discussionId: 1 },
+        { root: true },
+      );
     });
 
     it('should dispatch expandDiscussion when all discussions are collapsed', () => {
@@ -218,7 +398,11 @@ describe('DiffsStoreActions', () => {
 
       actions.toggleFileDiscussions({ getters, dispatch });
 
-      expect(dispatch).toHaveBeenCalledWith('expandDiscussion', { discussionId: 1 }, { root: true });
+      expect(dispatch).toHaveBeenCalledWith(
+        'expandDiscussion',
+        { discussionId: 1 },
+        { root: true },
+      );
     });
 
     it('should dispatch expandDiscussion when some discussions are collapsed and others are expanded for the collapsed discussion', () => {
@@ -232,7 +416,11 @@ describe('DiffsStoreActions', () => {
 
       actions.toggleFileDiscussions({ getters, dispatch });
 
-      expect(dispatch).toHaveBeenCalledWith('expandDiscussion', { discussionId: 1 }, { root: true });
+      expect(dispatch).toHaveBeenCalledWith(
+        'expandDiscussion',
+        { discussionId: 1 },
+        { root: true },
+      );
     });
   });
 });
