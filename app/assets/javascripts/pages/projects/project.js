@@ -66,6 +66,7 @@ export default class Project {
         .remove();
       return e.preventDefault();
     });
+<<<<<<< HEAD
     $('.hide-shared-runner-limit-message').on('click', function(e) {
       var $alert = $(this).parents('.shared-runner-quota-message');
       var scope = $alert.data('scope');
@@ -73,6 +74,8 @@ export default class Project {
       $alert.remove();
       e.preventDefault();
     });
+=======
+>>>>>>> upstream/master
     $('.hide-auto-devops-implicitly-enabled-banner').on('click', function(e) {
       const projectId = $(this).data('project-id');
       const cookieKey = `hide_auto_devops_implicitly_enabled_banner_${projectId}`;

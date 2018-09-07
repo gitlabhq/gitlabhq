@@ -583,6 +583,33 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  describe '#find_remote_root_ref' do
+    it 'gets the remote root ref from GitalyClient' do
+      expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
+        .to receive(:find_remote_root_ref).and_call_original
+
+      expect(repository.find_remote_root_ref('origin')).to eq 'master'
+    end
+
+    it 'returns nil when remote name is nil' do
+      expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
+        .not_to receive(:find_remote_root_ref)
+
+      expect(repository.find_remote_root_ref(nil)).to be_nil
+    end
+
+    it 'returns nil when remote name is empty' do
+      expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
+        .not_to receive(:find_remote_root_ref)
+
+      expect(repository.find_remote_root_ref('')).to be_nil
+    end
+
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RemoteService, :find_remote_root_ref do
+      subject { repository.find_remote_root_ref('origin') }
+    end
+  end
+
   describe "#log" do
     shared_examples 'repository log' do
       let(:commit_with_old_name) do

@@ -5,7 +5,11 @@
   - if current_user && can?(current_user, :download_code, project)
     = render 'shared/no_ssh'
     = render 'shared/no_password'
+<<<<<<< HEAD
     = render 'shared/shared_runners_minutes_limit', project: project
     = render 'shared/auto_devops_implicitly_enabled_banner', project: project
     - if project.above_size_limit?
       = render 'above_size_limit_warning'
+=======
+    = render 'shared/auto_devops_implicitly_enabled_banner', project: project
+>>>>>>> upstream/master
