@@ -968,10 +968,10 @@ skip the download step.
 
 ### include
 
-From 10.5 we can use `include` keyword to allow the inclusion of external yml files.
+From 10.5 we can use `include` keyword to allow the inclusion of external YAML files.
 
 ```yaml
-# Content of https://gitlab.com/awesome-project/raw/master/.gitlab-ci-before-script-template.yml
+# Content of https://gitlab.com/awesome-project/raw/master/.before-script-template.yml
 before_script:
   - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
   - ruby -v
@@ -982,7 +982,7 @@ before_script:
 
 ```yaml
 # Content of gitlab-ci.yml
-include: 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-before-script-template.yml'
+include: 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
 
 rspec:
   script:
@@ -993,23 +993,34 @@ rubocop:
     - bundle exec rubocop
 ```
 
-In the above example `.gitlab-ci-before-script-template.yml` content will be automatically fetched and evaluated along with the content of `gitlab-ci.yml`.
+In the above example `.before-script-template.yml` content will be automatically fetched and evaluated along with the content of `gitlab-ci.yml`.
 
 `include` supports two types of files:
-  - **local** to the same repository, referenced using the relative path, or 
-  - **remote** in a different location, accessed using HTTP protocol, referenced using the full URL
+
+- **local** to the same repository, referenced using the paths in the same the repository, i.e:
+
+```yaml
+# Within the repository
+include: '/templates/.gitlab-ci-template.yml'
+```
+
+- **remote** in a different location, accessed using HTTP/HTTPS protocol, referenced using the full URL, i.e:
+
+```yaml
+include: 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-template.yml'
+```
 
 Also, `include` supports a single string or an array composed by different values, so
 
 ```yaml
-include: '/templates/.gitlab-ci-templates.yml'
+include: '/templates/.gitlab-ci-template.yml'
 ```
 
 and
 
 ```yaml
 include:
-  - 'https://gitlab.com/same-group/another-project/raw/master/.gitlab-ci-templates.yml'
+  - 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-templates.yml'
   - '/templates/.gitlab-ci-templates.yml'
 ```
 
@@ -1017,56 +1028,60 @@ are both valid use cases.
 
 #### Restrictions
 
-- We can only use files that are currently tracked by Git on the same branch and commit your configuration file is. In other words, when using a **local file** make sure it's on the latest commit of your branch.
-- Since external files defined on `include` are evaluated first, the content on `gitlab-ci.yml` **will take precedence over the content of the external files**, for example:
+- We can only use files that are currently tracked by Git on the same branch your configuration file is. In other words, when using a **local file** make sure that both, `gitlab-ci.yml` and the local file are on the same branch.
+- Since external files defined on `include` are evaluated first, the content on `gitlab-ci.yml` **will always take precedence over the content of the external files, no matters of the position of the `include` keyword, allowing to override values and functions with local definitions**, for example:
 
 ```yaml
-# Content of http://company.com/default-gitlab-ci.yml
+# Content of http://company.com/ruby-autodeploy-template.yml
 
-image: php:5-fpm-alpine
+variables:
+  KUBE_DOMAIN: example.com
 
-job2:
-  script: php -v
+build:
+  stage: build
+  script:
+    - command build
+  only:
+    - master
+
+deploy:
+  stage: deploy
+  script:
+    - command deploy
+  environment:
+    name: production
+    url: http://production.example.com
+  only:
+    - master
 ```
 
 
 ```yaml
 # Content of gitlab-ci.yml
 
-include:
-  - http://company.com/default-gitlab-ci.yml
+include: 'http://company.com/ruby-autodeploy-template.yml'
 
-image: ruby:2.1
+image: registry.gitlab.com/gitlab-examples/kubernetes-deploy
 
-job1:
-  script: ruby -v
+variables:
+  KUBE_DOMAIN: gitlab.domain.com
+
+stages:
+  - build
+  - deploy
+
+deploy:
+  stage: deploy
+  script:
+    - command deploy
+  environment:
+    name: production
+    url: http://gitlab.com
+  only:
+    - master
 ```
 
-In this case both, `job1` and `job2` will be executed with `ruby:2.1`
-
-
-
-#### Examples
-
-**Example of local files included**
-
-```yaml
-include: '/templates/.gitlab-ci-templates.yml'
-```
-
-**Example of remote files included**
-
-```yaml
-include: 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-templates.yml'
-```
-
-**Example of multiple files included**
-
-```yaml
-include:
-  - 'https://gitlab.com/same-group/another-project/raw/master/.gitlab-ci-templates.yml'
-  - '/templates/.gitlab-ci-templates.yml'
-```
+In this case, the variable `KUBE_DOMAIN` and the `deploy` job defined on `ruby-autodeploy-template.yml` will override by the ones defined on `gitlab-ci.yml`.
 
 ## `artifacts`
 
