@@ -3,7 +3,7 @@
 = icon_for_profile_event(event)
 
 .event-title
-  %span.author_name= link_to_author event
+  %span.author_name= link_to_author(event)
   %span.pushed #{event.action_name} #{event.ref_type}
   %strong
     - commits_link = project_commits_path(project, event.ref_name)
