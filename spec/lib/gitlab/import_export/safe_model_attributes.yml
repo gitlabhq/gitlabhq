@@ -555,6 +555,19 @@ ProjectCustomAttribute:
 - project_id
 - key
 - value
+PrometheusMetric:
+- id
+- created_at
+- updated_at
+- project_id
+- y_label
+- unit
+- legend
+- title
+- query
+- group
+- common
+- identifier
 Badge:
 - id
 - link_url

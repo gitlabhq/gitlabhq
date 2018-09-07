@@ -4,10 +4,13 @@ module Gitlab
       include ActiveModel::Model
 
       attr_accessor :name, :priority, :metrics
+
       validates :name, :priority, :metrics, presence: true
 
       def self.common_metrics
-        AdditionalMetricsParser.load_groups_from_yaml
+        ::PrometheusMetric.common.group_by(&:group_title).map do |name, metrics|
+          MetricGroup.new(name: name, priority: 0, metrics: metrics.map(&:to_query_metric))
+        end
       end
 
       # EE only

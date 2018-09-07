@@ -1700,6 +1700,25 @@ ActiveRecord::Schema.define(version: 20180901171833) do
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
 
+  create_table "prometheus_metrics", force: :cascade do |t|
+    t.integer "project_id"
+    t.string "title", null: false
+    t.string "query", null: false
+    t.string "y_label"
+    t.string "unit"
+    t.string "legend"
+    t.integer "group", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.boolean "common", default: false, null: false
+    t.string "identifier"
+  end
+
+  add_index "prometheus_metrics", ["common"], name: "index_prometheus_metrics_on_common", using: :btree
+  add_index "prometheus_metrics", ["group"], name: "index_prometheus_metrics_on_group", using: :btree
+  add_index "prometheus_metrics", ["identifier"], name: "index_prometheus_metrics_on_identifier", unique: true, using: :btree
+  add_index "prometheus_metrics", ["project_id"], name: "index_prometheus_metrics_on_project_id", using: :btree
+
   create_table "protected_branch_merge_access_levels", force: :cascade do |t|
     t.integer "protected_branch_id", null: false
     t.integer "access_level", default: 40, null: false
@@ -2380,6 +2399,7 @@ ActiveRecord::Schema.define(version: 20180901171833) do
   add_foreign_key "project_import_data", "projects", name: "fk_ffb9ee3a10", on_delete: :cascade
   add_foreign_key "project_mirror_data", "projects", on_delete: :cascade
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
+  add_foreign_key "prometheus_metrics", "projects", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches", name: "fk_8a3072ccb3", on_delete: :cascade
   add_foreign_key "protected_branch_push_access_levels", "protected_branches", name: "fk_9ffc86a3d9", on_delete: :cascade
   add_foreign_key "protected_branches", "projects", name: "fk_7a9c6d93e7", on_delete: :cascade

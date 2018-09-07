@@ -288,6 +288,7 @@ project:
 - fork_network_member
 - fork_network
 - custom_attributes
+- prometheus_metrics
 - lfs_file_locks
 - project_badges
 - source_of_merge_requests
@@ -303,6 +304,8 @@ award_emoji:
 - user
 priorities:
 - label
+prometheus_metrics:
+- project
 timelogs:
 - issue
 - merge_request
