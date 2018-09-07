@@ -18,7 +18,6 @@ module QA
     let(:updated_group_path) { "updated-#{group_path}" }
     let(:updated_description) { "updated-#{description}" }
 
-
     it 'Creates, updates and deletes a group' do
       @api_client = Runtime::API::Client.new(:gitlab, personal_access_token: @personal_access_token)
 
@@ -70,7 +69,7 @@ module QA
 
       get create_fetch_groups_request.url
       expect_status(200)
-      expect(json_body).to_not include a_hash_including(id: created_group_id)
+      expect(json_body).not_to include a_hash_including(id: created_group_id)
     end
   end
 end
