@@ -108,10 +108,10 @@
               %ul.filter-dropdown{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { value: 'yes', capitalize: true } }
                   %button.btn.btn-link{ type: 'button' }
-                    Yes
+                    = _('Yes')
                 %li.filter-dropdown-item{ data: { value: 'no', capitalize: true } }
                   %button.btn.btn-link{ type: 'button' }
-                    No
+                    = _('No')
 
             = render_if_exists 'shared/issuable/filter_weight', type: type
 
