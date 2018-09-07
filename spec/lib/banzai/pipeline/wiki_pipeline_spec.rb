@@ -178,4 +178,25 @@ describe Banzai::Pipeline::WikiPipeline do
       end
     end
   end
+
+  describe 'videos' do
+    let(:namespace) { create(:namespace, name: "wiki_link_ns") }
+    let(:project)   { create(:project, :public, name: "wiki_link_project", namespace: namespace) }
+    let(:project_wiki) { ProjectWiki.new(project, double(:user)) }
+    let(:page) { build(:wiki_page, wiki: project_wiki, page: OpenStruct.new(url_path: 'nested/twice/start-page')) }
+
+    it 'generates video html structure' do
+      markdown = "![video_file](video_file_name.mp4)"
+      output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
+
+      expect(output).to include('<video src="/wiki_link_ns/wiki_link_project/wikis/nested/twice/video_file_name.mp4"')
+    end
+
+    it 'rewrites and replaces video links names with white spaces to %20' do
+      markdown = "![video file](video file name.mp4)"
+      output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
+
+      expect(output).to include('<video src="/wiki_link_ns/wiki_link_project/wikis/nested/twice/video%20file%20name.mp4"')
+    end
+  end
 end
