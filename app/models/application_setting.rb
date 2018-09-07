@@ -303,7 +303,8 @@ class ApplicationSetting < ActiveRecord::Base
       instance_statistics_visibility_private: false,
       user_default_external: false,
       user_default_internal_regex: nil,
-      user_show_add_ssh_key_message: true
+      user_show_add_ssh_key_message: true,
+      usage_stats_set_by_user_id: nil
     }
   end
 

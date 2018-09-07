@@ -5067,6 +5067,9 @@ msgstr ""
 msgid "Not enough data"
 msgstr ""
 
+msgid "Not now"
+msgstr ""
+
 msgid "Note that the master branch is automatically protected. %{link_to_protected_branches}"
 msgstr ""
 
@@ -6539,6 +6542,9 @@ msgstr ""
 msgid "Send email"
 msgstr ""
 
+msgid "Send usage data"
+msgstr ""
+
 msgid "Sep"
 msgstr ""
 
@@ -7649,6 +7655,9 @@ msgid "To get started, please enter your Gitea Host URL and a %{link_to_personal
 msgstr ""
 
 msgid "To help improve GitLab and its user experience, GitLab will periodically collect usage information."
+msgstr ""
+
+msgid "To help improve GitLab, we would like to periodically collect usage information. This can be changed at any time in %{settings_link_start}Settings%{link_end}. %{info_link_start}More Information%{link_end}"
 msgstr ""
 
 msgid "To import GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."

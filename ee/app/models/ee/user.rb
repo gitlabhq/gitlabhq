@@ -151,5 +151,10 @@ module EE
       ::Group.where(id: developer_groups_hierarchy.select(:id),
                     project_creation_level: project_creation_levels)
     end
+
+    override :has_current_license?
+    def has_current_license?
+      License.current.present?
+    end
   end
 end
