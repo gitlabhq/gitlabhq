@@ -3,6 +3,7 @@ module Gitlab
     module External
       module File
         class Remote
+          include Gitlab::Utils::StrongMemoize
           attr_reader :location
 
           def initialize(location, opts = {})
@@ -16,11 +17,13 @@ module Gitlab
           def content
             return @content if defined?(@content)
 
-            @content ||= begin
-                           HTTParty.get(location)
-                         rescue HTTParty::Error, Timeout::Error
-                           false
-                         end
+            @content = strong_memoize(:content) do
+              begin
+                HTTParty.get(location)
+              rescue HTTParty::Error, Timeout::Error
+                false
+              end
+            end
           end
         end
       end

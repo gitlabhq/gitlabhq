@@ -36,8 +36,8 @@ describe Gitlab::Ci::External::Processor do
     end
 
     context 'with a valid remote external file is defined' do
-      let(:remote_url) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
-      let(:values) { { include: remote_url, image: 'ruby:2.2' } }
+      let(:remote_file) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
+      let(:values) { { include: remote_file, image: 'ruby:2.2' } }
       let(:external_file_content) do
         <<-HEREDOC
         before_script:
@@ -58,7 +58,7 @@ describe Gitlab::Ci::External::Processor do
       end
 
       before do
-        WebMock.stub_request(:get, remote_url).to_return(body: external_file_content)
+        WebMock.stub_request(:get, remote_file).to_return(body: external_file_content)
       end
 
       it 'should append the file to the values' do
@@ -99,11 +99,11 @@ describe Gitlab::Ci::External::Processor do
     end
 
     context 'with multiple external files are defined' do
-      let(:remote_url) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
+      let(:remote_file) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
       let(:external_files) do
         [
           "/spec/ee/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml",
-          remote_url
+          remote_file
         ]
       end
       let(:values) do
@@ -125,7 +125,7 @@ describe Gitlab::Ci::External::Processor do
       before do
         local_file_content = File.read("#{Rails.root}/spec/ee/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml")
         allow_any_instance_of(Gitlab::Ci::External::File::Local).to receive(:local_file_content).and_return(local_file_content)
-        WebMock.stub_request(:get, remote_url).to_return(body: remote_file_content)
+        WebMock.stub_request(:get, remote_file).to_return(body: remote_file_content)
       end
 
       it 'should append the files to the values' do
@@ -152,9 +152,10 @@ describe Gitlab::Ci::External::Processor do
     end
 
     context "when both external files and values defined the same key" do
+      let(:remote_file) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
       let(:values) do
         {
-          include: 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml',
+          include: remote_file,
           image: 'ruby:2.2'
         }
       end
@@ -166,7 +167,7 @@ describe Gitlab::Ci::External::Processor do
       end
 
       it 'should take precedence' do
-        allow(HTTParty).to receive(:get).and_return(remote_file_content)
+        WebMock.stub_request(:get, remote_file).to_return(body: remote_file_content)
         expect(processor.perform[:image]).to eq('ruby:2.2')
       end
     end

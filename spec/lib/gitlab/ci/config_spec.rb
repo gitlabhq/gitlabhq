@@ -127,7 +127,7 @@ describe Gitlab::Ci::Config do
   end
 
   context "when gitlab_ci_yml has valid 'include' defined" do
-    let(:http_file_content) do
+    let(:remote_file_content) do
       <<~HEREDOC
       variables:
         AUTO_DEVOPS_DOMAIN: domain.example.com
@@ -138,11 +138,12 @@ describe Gitlab::Ci::Config do
       HEREDOC
     end
     let(:local_file_content) {  File.read("#{Rails.root}/spec/ee/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml") }
-    let(:yml) do
+    let(:remote_location) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
+    let(:gitlab_ci_yml) do
       <<-EOS
         include:
           - /spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml
-          - https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml
+          - #{remote_location}
 
         image: ruby:2.2
       EOS
@@ -150,7 +151,7 @@ describe Gitlab::Ci::Config do
 
     before do
       allow_any_instance_of(::Gitlab::Ci::External::File::Local).to receive(:local_file_content).and_return(local_file_content)
-      allow(HTTParty).to receive(:get).and_return(http_file_content)
+      WebMock.stub_request(:get, remote_location).to_return(body: remote_file_content)
     end
 
     it 'should return a composed hash' do
@@ -194,23 +195,24 @@ describe Gitlab::Ci::Config do
   end
 
   context "when both external files and gitlab_ci.yml defined the same key" do
+    let(:remote_location) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
     let(:gitlab_ci_yml) do
       <<~HEREDOC
         include:
-          - https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.gitlab_ci_yml
+          - #{remote_location}
 
         image: ruby:2.2
       HEREDOC
     end
 
-    let(:http_file_content) do
+    let(:remote_file_content) do
       <<~HEREDOC
         image: php:5-fpm-alpine
       HEREDOC
     end
 
     it 'should take precedence' do
-      allow(HTTParty).to receive(:get).and_return(http_file_content)
+      WebMock.stub_request(:get, remote_location).to_return(body: remote_file_content)
       expect(config.to_hash).to eq({ image: 'ruby:2.2' })
     end
   end
