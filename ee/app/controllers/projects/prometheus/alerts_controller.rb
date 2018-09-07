@@ -82,7 +82,7 @@ module Projects
       end
 
       def alert
-        @alert ||= project.prometheus_alerts.find_by(prometheus_metric: params[:id]) || render_404
+        @alert ||= project.prometheus_alerts.find_by(prometheus_metric_id: params[:id]) || render_404
       end
 
       def application

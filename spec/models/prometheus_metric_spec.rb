@@ -1,12 +1,52 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe PrometheusMetric do
   subject { build(:prometheus_metric) }
+  let(:other_project) { build(:project) }
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_presence_of(:query) }
   it { is_expected.to validate_presence_of(:group) }
+
+  describe 'common metrics' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:common, :project, :result) do
+      false | other_project | true
+      false | nil           | false
+      true  | other_project | false
+      true  | nil           | true
+    end
+
+    with_them do
+      before do
+        subject.common = common
+        subject.project = project
+      end
+
+      it { expect(subject.valid?).to eq(result) }
+    end
+  end
+
+  describe '#query_series' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:legend, :type) do
+      'Some other legend' | NilClass
+      'Status Code'       | Array
+    end
+
+    with_them do
+      before do
+        subject.legend = legend
+      end
+
+      it { expect(subject.query_series).to be_a(type) }
+    end
+  end
 
   describe '#group_title' do
     shared_examples 'group_title' do |group, title|

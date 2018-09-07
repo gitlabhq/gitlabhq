@@ -13,7 +13,7 @@ describe Projects::Prometheus::Metrics::DestroyService do
 
   context 'when metric has a prometheus alert associated' do
     it 'schedules a prometheus alert update' do
-      create(:prometheus_alert, prometheus_metric: metric)
+      create(:prometheus_alert, project: metric.project, prometheus_metric: metric)
 
       schedule_update_service = spy
       allow(::Clusters::Applications::ScheduleUpdateService).to receive(:new).and_return(schedule_update_service)

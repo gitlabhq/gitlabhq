@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :prometheus_metric, class: PrometheusMetric do
     title 'title'
@@ -7,5 +9,10 @@ FactoryBot.define do
     group :business
     project
     legend 'legend'
+
+    trait :common do
+      common true
+      project nil
+    end
   end
 end

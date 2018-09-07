@@ -120,6 +120,9 @@ excluded_attributes:
     - :description_html
     - :repository_languages
     - :packages_enabled
+  prometheus_metrics:
+    - :common
+    - :identifier
   snippets:
     - :expired_at
   merge_request_diff:
