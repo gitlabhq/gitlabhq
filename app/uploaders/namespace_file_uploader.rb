@@ -6,8 +6,15 @@ class NamespaceFileUploader < FileUploader
     options.storage_path
   end
 
-  def self.base_dir(model, _store = nil)
-    File.join(options.base_dir, 'namespace', model_path_segment(model))
+  def self.base_dir(model, store = nil)
+    base_dirs(model)[store || Store::LOCAL]
+  end
+
+  def self.base_dirs(model)
+    {
+      Store::LOCAL => File.join(options.base_dir, 'namespace', model_path_segment(model)),
+      Store::REMOTE => File.join('namespace', model_path_segment(model))
+    }
   end
 
   def self.model_path_segment(model)
@@ -17,12 +24,5 @@ class NamespaceFileUploader < FileUploader
   # Re-Override
   def store_dir
     store_dirs[object_store]
-  end
-
-  def store_dirs
-    {
-      Store::LOCAL => File.join(base_dir, dynamic_segment),
-      Store::REMOTE => File.join('namespace', self.class.model_path_segment(model), dynamic_segment)
-    }
   end
 end
