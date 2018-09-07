@@ -2,14 +2,13 @@ require 'fast_spec_helper'
 
 describe Gitlab::Ci::External::File::Local do
   let(:project) { create(:project, :repository) }
-  let(:local_file) { described_class.new(value, project, 'testing') }
+  let(:local_file) { described_class.new(location, { project: project, sha: '12345' }) }
 
   describe "#valid?" do
     context 'when is a valid local path' do
-      let(:value) { '/vendor/gitlab-ci-yml/existent-file.yml' }
+      let(:location) { '/vendor/gitlab-ci-yml/existent-file.yml' }
 
       before do
-        allow_any_instance_of(described_class).to receive(:commit).and_return('12345')
         allow_any_instance_of(described_class).to receive(:local_file_content).and_return("image: 'ruby2:2'")
       end
 
@@ -19,7 +18,7 @@ describe Gitlab::Ci::External::File::Local do
     end
 
     context 'when is not a valid local path' do
-      let(:value) { '/vendor/gitlab-ci-yml/non-existent-file.yml' }
+      let(:location) { '/vendor/gitlab-ci-yml/non-existent-file.yml' }
 
       it 'should return false' do
         expect(local_file.valid?).to be_falsy
@@ -39,7 +38,7 @@ describe Gitlab::Ci::External::File::Local do
       end
 
       context 'with a local file' do
-        let(:value) { '/vendor/gitlab-ci-yml/non-existent-file.yml' }
+        let(:location) { '/vendor/gitlab-ci-yml/non-existent-file.yml' }
 
         before do
           allow_any_instance_of(described_class).to receive(:local_file_content).and_return(local_file_content)

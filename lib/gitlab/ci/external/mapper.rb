@@ -2,27 +2,28 @@ module Gitlab
   module Ci
     module External
       class Mapper
-        def initialize(values, project, branch_name)
-          @paths = Array(values.fetch(:include, []))
+        def initialize(values, project, sha)
+          @locations = Array(values.fetch(:include, []))
           @project = project
-          @branch_name = branch_name
+          @sha = sha
         end
 
         def process
-          paths.map { |path| build_external_file(path) }
+          locations.map { |location| build_external_file(location) }
         end
 
         private
 
-        attr_reader :paths, :project, :branch_name
+        attr_reader :locations, :project, :sha
 
-        def build_external_file(path)
-          remote_file = Gitlab::Ci::External::File::Remote.new(path)
+        def build_external_file(location)
+          remote_file = Gitlab::Ci::External::File::Remote.new(location)
 
           if remote_file.valid?
             remote_file
           else
-            ::Gitlab::Ci::External::File::Local.new(path, project, branch_name)
+            options = { project: project, sha: sha }
+            Gitlab::Ci::External::File::Local.new(location, options)
           end
         end
       end

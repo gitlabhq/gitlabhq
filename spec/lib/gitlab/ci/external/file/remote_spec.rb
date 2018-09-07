@@ -1,8 +1,8 @@
 require 'fast_spec_helper'
 
 describe Gitlab::Ci::External::File::Remote do
-  let(:remote_file) { described_class.new(value) }
-  let(:value) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
+  let(:remote_file) { described_class.new(location) }
+  let(:location) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
   let(:remote_file_content) do
     <<~HEREDOC
       before_script:
@@ -17,7 +17,7 @@ describe Gitlab::Ci::External::File::Remote do
   describe "#valid?" do
     context 'when is a valid remote url' do
       before do
-        allow(HTTParty).to receive(:get).and_return(remote_file_content)
+        WebMock.stub_request(:get, location).to_return(body: remote_file_content)
       end
 
       it 'should return true' do
@@ -26,7 +26,7 @@ describe Gitlab::Ci::External::File::Remote do
     end
 
     context 'when is not a valid remote url' do
-      let(:value) { 'not-valid://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
+      let(:location) { 'not-valid://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
 
       it 'should return false' do
         expect(remote_file.valid?).to be_falsy
@@ -47,11 +47,11 @@ describe Gitlab::Ci::External::File::Remote do
   describe "#content" do
     context 'with a valid remote file' do
       before do
-        allow(HTTParty).to receive(:get).and_return(remote_file_content)
+        WebMock.stub_request(:get, location).to_return(body: remote_file_content)
       end
 
       it 'should return the content of the file' do
-        expect(remote_file.content).to eq(remote_file_content)
+        expect(remote_file.content).to eql(remote_file_content)
       end
     end
 

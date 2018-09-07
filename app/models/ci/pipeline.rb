@@ -475,7 +475,7 @@ module Ci
     end
 
     def initialize_yaml_processor
-      Gitlab::Ci::YamlProcessor.new(ci_yaml_file, { project: project, branch_name: ref })
+      ::Gitlab::Ci::YamlProcessor.new(ci_yaml_file, { project: project, sha: sha })
     end
 
     def ci_yaml_file_path

@@ -4,9 +4,9 @@ module Gitlab
       class Processor
         FileError = Class.new(StandardError)
 
-        def initialize(values, project, branch_name)
+        def initialize(values, project, sha)
           @values = values
-          @external_files = ::Gitlab::Ci::External::Mapper.new(values, project, branch_name).process
+          @external_files = Gitlab::Ci::External::Mapper.new(values, project, sha).process
           @content = {}
         end
 
@@ -18,7 +18,7 @@ module Gitlab
             @content.merge!(content_of(external_file))
           end
 
-          append_external_content
+          append_inline_content
           remove_include_keyword
         end
 
@@ -28,7 +28,7 @@ module Gitlab
 
         def validate_external_file(external_file)
           unless external_file.valid?
-            raise FileError, "External file: '#{external_file.value}' should be a valid local or remote file"
+            raise FileError, "External file: '#{external_file.location}' should be a valid local or remote file"
           end
         end
 
@@ -36,7 +36,7 @@ module Gitlab
           ::Gitlab::Ci::Config::Loader.new(external_file.content).load!
         end
 
-        def append_external_content
+        def append_inline_content
           @content.merge!(@values)
         end
 

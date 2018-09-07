@@ -5,7 +5,7 @@ require_dependency 'active_model'
 describe Gitlab::Ci::Config do
   let(:project) { create(:project, :repository) }
   let(:config) do
-    described_class.new(gitlab_ci_yml, { project: project, branch_name: 'testing' })
+    described_class.new(gitlab_ci_yml, { project: project, sha: '12345' })
   end
 
   context 'when config is valid' do
@@ -149,7 +149,6 @@ describe Gitlab::Ci::Config do
     end
 
     before do
-      allow_any_instance_of(::Gitlab::Ci::External::File::Local).to receive(:commit).and_return('12345')
       allow_any_instance_of(::Gitlab::Ci::External::File::Local).to receive(:local_file_content).and_return(local_file_content)
       allow(HTTParty).to receive(:get).and_return(http_file_content)
     end

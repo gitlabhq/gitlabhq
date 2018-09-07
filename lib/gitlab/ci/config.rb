@@ -76,8 +76,8 @@ module Gitlab
       end
 
       def process_external_files(config, project, opts)
-        branch_name = opts.fetch(:branch_name, project.default_branch)
-        ::Gitlab::Ci::External::Processor.new(config, project, branch_name).perform
+        sha = opts.fetch(:sha, project.repository.commit.sha)
+          ::Gitlab::Ci::External::Processor.new(config, project, sha).perform
       end
     end
   end

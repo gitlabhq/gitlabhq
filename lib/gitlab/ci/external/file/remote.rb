@@ -3,20 +3,24 @@ module Gitlab
     module External
       module File
         class Remote
-          attr_reader :value
+          attr_reader :location
 
-          def initialize(value)
-            @value = value
+          def initialize(location, opts = {})
+            @location = location
           end
 
           def valid?
-            ::Gitlab::UrlSanitizer.valid?(value) && content
+            ::Gitlab::UrlSanitizer.valid?(location) && content
           end
 
           def content
-            HTTParty.get(value)
-          rescue HTTParty::Error, Timeout::Error
-            false
+            return @content if defined?(@content)
+
+            @content ||= begin
+                           HTTParty.get(location)
+                         rescue HTTParty::Error, Timeout::Error
+                           false
+                         end
           end
         end
       end

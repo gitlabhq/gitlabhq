@@ -9,7 +9,7 @@ describe Gitlab::Ci::External::Mapper do
   end
 
   describe '#process' do
-    subject { described_class.new(values, project, 'testing').process }
+    subject { described_class.new(values, project, '123456').process }
 
     context "when 'include' keyword is defined as string" do
       context 'when the string is a local file' do
@@ -30,15 +30,16 @@ describe Gitlab::Ci::External::Mapper do
       end
 
       context 'when the string is a remote file' do
+        let(:remote_url) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
         let(:values) do
           {
-            include: 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml',
+            include: remote_url,
             image: 'ruby:2.2'
           }
         end
 
         before do
-          allow(HTTParty).to receive(:get).and_return(file_content)
+          WebMock.stub_request(:get, remote_url).to_return(body: file_content)
         end
 
         it 'returns an array' do
@@ -52,11 +53,12 @@ describe Gitlab::Ci::External::Mapper do
     end
 
     context "when 'include' is defined as an array" do
+      let(:remote_url) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
       let(:values) do
         {
           include:
           [
-            'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml',
+            remote_url,
             '/vendor/gitlab-ci-yml/template.yml'
           ],
           image: 'ruby:2.2'
@@ -64,7 +66,7 @@ describe Gitlab::Ci::External::Mapper do
       end
 
       before do
-        allow(HTTParty).to receive(:get).and_return(file_content)
+        WebMock.stub_request(:get, remote_url).to_return(body: file_content)
       end
 
       it 'returns an array' do

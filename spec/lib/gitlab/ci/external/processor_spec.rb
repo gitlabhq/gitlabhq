@@ -2,7 +2,7 @@ require 'fast_spec_helper'
 
 describe Gitlab::Ci::External::Processor do
   let(:project) { create(:project, :repository) }
-  let(:processor) { described_class.new(values, project, 'testing') }
+  let(:processor) { described_class.new(values, project, '12345') }
 
   describe "#perform" do
     context 'when no external files defined' do
@@ -36,7 +36,8 @@ describe Gitlab::Ci::External::Processor do
     end
 
     context 'with a valid remote external file is defined' do
-      let(:values) { { include: 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml', image: 'ruby:2.2' } }
+      let(:remote_url) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
+      let(:values) { { include: remote_url, image: 'ruby:2.2' } }
       let(:external_file_content) do
         <<-HEREDOC
         before_script:
@@ -57,7 +58,7 @@ describe Gitlab::Ci::External::Processor do
       end
 
       before do
-        allow(HTTParty).to receive(:get).and_return(external_file_content)
+        WebMock.stub_request(:get, remote_url).to_return(body: external_file_content)
       end
 
       it 'should append the file to the values' do
@@ -84,7 +85,6 @@ describe Gitlab::Ci::External::Processor do
       end
 
       before do
-        allow_any_instance_of(Gitlab::Ci::External::File::Local).to receive(:commit).and_return('12345')
         allow_any_instance_of(Gitlab::Ci::External::File::Local).to receive(:local_file_content).and_return(local_file_content)
       end
 
@@ -99,10 +99,11 @@ describe Gitlab::Ci::External::Processor do
     end
 
     context 'with multiple external files are defined' do
+      let(:remote_url) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
       let(:external_files) do
         [
           "/spec/ee/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml",
-          'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml'
+          remote_url
         ]
       end
       let(:values) do
@@ -123,9 +124,8 @@ describe Gitlab::Ci::External::Processor do
 
       before do
         local_file_content = File.read("#{Rails.root}/spec/ee/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml")
-        allow_any_instance_of(Gitlab::Ci::External::File::Local).to receive(:commit).and_return('12345')
         allow_any_instance_of(Gitlab::Ci::External::File::Local).to receive(:local_file_content).and_return(local_file_content)
-        allow(HTTParty).to receive(:get).and_return(remote_file_content)
+        WebMock.stub_request(:get, remote_url).to_return(body: remote_file_content)
       end
 
       it 'should append the files to the values' do
@@ -143,7 +143,6 @@ describe Gitlab::Ci::External::Processor do
       let(:local_file_content) { 'invalid content file ////' }
 
       before do
-        allow_any_instance_of(Gitlab::Ci::External::File::Local).to receive(:commit).and_return('12345')
         allow_any_instance_of(Gitlab::Ci::External::File::Local).to receive(:local_file_content).and_return(local_file_content)
       end
 
