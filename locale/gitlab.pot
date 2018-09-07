@@ -3886,15 +3886,12 @@ msgid "GroupsTree|No groups or projects matched your search"
 msgstr ""
 
 msgid "GroupsTree|Search by name"
-<<<<<<< HEAD
 msgstr ""
 
 msgid "Have your users email"
 msgstr ""
 
 msgid "Header message"
-=======
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Health Check"
