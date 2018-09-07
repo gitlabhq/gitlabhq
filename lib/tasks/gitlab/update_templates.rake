@@ -54,7 +54,7 @@ namespace :gitlab do
       end
 
       Projects::ImportExport::ExportService.new(project, admin).execute
-      download_or_copy_upload( project.export_file, template.archive_path)
+      download_or_copy_upload(project.export_file, template.archive_path)
       Projects::DestroyService.new(admin, project).execute
       puts "Exported #{template.name}".green
     end

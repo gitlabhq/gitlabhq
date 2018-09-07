@@ -191,7 +191,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def download_export
-    if @project.export_project_exists?
+    if @project.export_file_exists?
       send_upload(@project.export_file)
     else
       redirect_to(
