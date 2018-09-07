@@ -2,6 +2,7 @@ module Gitlab
   class SearchResults
     class FoundBlob
       include EncodingHelper
+      include Presentable
 
       attr_reader :id, :filename, :basename, :ref, :startline, :data, :project_id
 
@@ -27,6 +28,10 @@ module Gitlab
       # Triggering lookup with n items is too costly.
       def language_from_gitattributes
         nil
+      end
+
+      def present
+        super(presenter_class: BlobPresenter)
       end
     end
 
