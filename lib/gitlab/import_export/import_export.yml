@@ -125,10 +125,7 @@ excluded_attributes:
     - :mirror_overwrites_diverged_branches
     - :description_html
     - :repository_languages
-<<<<<<< HEAD
     - :packages_enabled
-=======
->>>>>>> upstream/master
   prometheus_metrics:
     - :common
     - :identifier
