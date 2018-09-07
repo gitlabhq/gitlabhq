@@ -1,9 +1,9 @@
-- if viewer.valid?
+- if viewer.valid?(@project, @ref)
   = icon('check fw')
   This GitLab CI configuration is valid.
 - else
   = icon('warning fw')
   This GitLab CI configuration is invalid:
-  = viewer.validation_message
+  = viewer.validation_message(@project, @ref)
 
 = link_to 'Learn more', help_page_path('ci/yaml/README')

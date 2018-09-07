@@ -12,12 +12,12 @@ describe BlobViewer::GitlabCiYml do
     it 'calls prepare! on the viewer' do
       expect(subject).to receive(:prepare!)
 
-      subject.validation_message
+      subject.validation_message(project, project.default_branch)
     end
 
     context 'when the configuration is valid' do
       it 'returns nil' do
-        expect(subject.validation_message).to be_nil
+        expect(subject.validation_message(project, project.default_branch)).to be_nil
       end
     end
 
@@ -25,7 +25,7 @@ describe BlobViewer::GitlabCiYml do
       let(:data) { 'oof' }
 
       it 'returns the error message' do
-        expect(subject.validation_message).to eq('Invalid configuration format')
+        expect(subject.validation_message(project, project.default_branch)).to eq('Invalid configuration format')
       end
     end
   end

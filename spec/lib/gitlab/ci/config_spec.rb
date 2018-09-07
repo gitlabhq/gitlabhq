@@ -5,11 +5,11 @@ require_dependency 'active_model'
 describe Gitlab::Ci::Config do
   let(:project) { create(:project, :repository) }
   let(:config) do
-    described_class.new(yml, project)
+    described_class.new(gitlab_ci_yml, { project: project, branch_name: 'testing' })
   end
 
   context 'when config is valid' do
-    let(:yml) do
+    let(:gitlab_ci_yml) do
       <<-EOS
         image: ruby:2.2
 
@@ -126,7 +126,7 @@ describe Gitlab::Ci::Config do
     end
   end
 
-  context "when yml has valid 'include' defined" do
+  context "when gitlab_ci_yml has valid 'include' defined" do
     let(:http_file_content) do
       <<~HEREDOC
       variables:
@@ -149,7 +149,8 @@ describe Gitlab::Ci::Config do
     end
 
     before do
-      allow_any_instance_of(::Gitlab::Ci::ExternalFiles::ExternalFile).to receive(:local_file_content).and_return(local_file_content)
+      allow_any_instance_of(::Gitlab::Ci::External::File::Local).to receive(:commit).and_return('12345')
+      allow_any_instance_of(::Gitlab::Ci::External::File::Local).to receive(:local_file_content).and_return(local_file_content)
       allow(HTTParty).to receive(:get).and_return(http_file_content)
     end
 
@@ -178,8 +179,8 @@ describe Gitlab::Ci::Config do
     end
   end
 
-  context "when yml has invalid 'include' defined"  do
-    let(:yml) do
+  context "when gitlab_ci.yml has invalid 'include' defined"  do
+    let(:gitlab_ci_yml) do
       <<-EOS
       include: invalid
       EOS
@@ -193,11 +194,11 @@ describe Gitlab::Ci::Config do
     end
   end
 
-  context "when both external files and gitlab_ci defined the same key" do
-    let(:yml) do
+  context "when both external files and gitlab_ci.yml defined the same key" do
+    let(:gitlab_ci_yml) do
       <<~HEREDOC
         include:
-          - https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml
+          - https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.gitlab_ci_yml
 
         image: ruby:2.2
       HEREDOC
@@ -211,7 +212,7 @@ describe Gitlab::Ci::Config do
 
     it 'should take precedence' do
       allow(HTTParty).to receive(:get).and_return(http_file_content)
-      expect(config.to_hash).to eq({ image: 'php:5-fpm-alpine' })
+      expect(config.to_hash).to eq({ image: 'ruby:2.2' })
     end
   end
 end

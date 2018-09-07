@@ -10,16 +10,16 @@ module BlobViewer
     self.file_types = %i(gitlab_ci)
     self.binary = false
 
-    def validation_message
+    def validation_message(project, ref)
       return @validation_message if defined?(@validation_message)
 
       prepare!
 
-      @validation_message = Gitlab::Ci::YamlProcessor.validation_message(blob.data, project)
+      @validation_message = Gitlab::Ci::YamlProcessor.validation_message(blob.data, { project: project, branch_name: ref })
     end
 
-    def valid?
-      validation_message.blank?
+    def valid?(project, ref)
+      validation_message(project, ref).blank?
     end
   end
 end

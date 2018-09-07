@@ -981,6 +981,7 @@ before_script:
 ```
 
 ```yaml
+# Content of gitlab-ci.yml
 include: 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-before-script-template.yml'
 
 rspec:
@@ -992,13 +993,13 @@ rubocop:
     - bundle exec rubocop
 ```
 
-In the above example `.gitlab-ci-before-script-template.yml` content will be automatically fetched and evaluated as it were a single local file.
+In the above example `.gitlab-ci-before-script-template.yml` content will be automatically fetched and evaluated along with the content of `gitlab-ci.yml`.
 
 `include` supports two types of files:
   - **local** to the same repository, referenced using the relative path, or 
-  - **remote** in a different location, accessed using HTTP(S) protocol, referenced using the full URL
+  - **remote** in a different location, accessed using HTTP protocol, referenced using the full URL
 
-Also, `include` supports a single string or an array of different values, so
+Also, `include` supports a single string or an array composed by different values, so
 
 ```yaml
 include: '/templates/.gitlab-ci-templates.yml'
@@ -1016,11 +1017,12 @@ are both valid use cases.
 
 #### Restrictions
 
-- We can only use files that are currently tracked by Git on the default repository branch, so when using a **local file** make sure it's on the latest commit of your default branch, otherwise feel free to use a remote location.
-- Since external files defined on `include` are evaluated first, the configuration on this files will take precedence over the content of `.gitlab-ci.yml`, for example:
+- We can only use files that are currently tracked by Git on the same branch and commit your configuration file is. In other words, when using a **local file** make sure it's on the latest commit of your branch.
+- Since external files defined on `include` are evaluated first, the content on `gitlab-ci.yml` **will take precedence over the content of the external files**, for example:
 
 ```yaml
 # Content of http://company.com/default-gitlab-ci.yml
+
 image: php:5-fpm-alpine
 
 job2:
@@ -1029,6 +1031,8 @@ job2:
 
 
 ```yaml
+# Content of gitlab-ci.yml
+
 include:
   - http://company.com/default-gitlab-ci.yml
 
@@ -1038,7 +1042,7 @@ job1:
   script: ruby -v
 ```
 
-In this case both, `job1` and `job2` will be executed with `php:5-fpm-alpine`
+In this case both, `job1` and `job2` will be executed with `ruby:2.1`
 
 
 

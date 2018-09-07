@@ -6,7 +6,7 @@ module Gitlab
     class Config
       ConfigError = Class.new(StandardError)
 
-      def initialize(config, project = nil, opts = {})
+      def initialize(config, opts = {})
         @config = Config::Extendable
           .new(build_config(config, opts))
           .to_hash
@@ -64,16 +64,20 @@ module Gitlab
         @global.jobs_value
       end
 
-      # 'opts' argument is used in EE see /ee/lib/ee/gitlab/ci/config.rb
-      def build_config(config, project,  opts = {})
+      def build_config(config, opts = {})
         initial_config = Loader.new(config).load!
+        project = opts.fetch(:project, nil)
 
-        if project.present?
-          processor = ::Gitlab::Ci::ExternalFiles::Processor.new(initial_config, project)
-          processor.perform
+        if project
+          process_external_files(initial_config, project, opts)
         else
           initial_config
         end
+      end
+
+      def process_external_files(config, project, opts)
+        branch_name = opts.fetch(:branch_name, project.default_branch)
+        ::Gitlab::Ci::External::Processor.new(config, project, branch_name).perform
       end
     end
   end
