@@ -6,7 +6,7 @@ module EE
       include AtomicInternalId
       include IidRoutes
       include ::Issuable
-      include Noteable
+      include ::Noteable
       include Referable
       include Awardable
       include LabelEventable
@@ -36,6 +36,10 @@ module EE
 
       scope :order_end_date_asc, -> do
         reorder(::Gitlab::Database.nulls_last_order('end_date'), 'id DESC')
+      end
+
+      def etag_caching_enabled?
+        true
       end
     end
 

@@ -66,7 +66,7 @@ export const individualNote = {
   individual_note: true,
   notes: [
     {
-      id: 1390,
+      id: '1390',
       attachment: {
         url: null,
         filename: null,
@@ -111,7 +111,7 @@ export const individualNote = {
 };
 
 export const note = {
-  id: 546,
+  id: '546',
   attachment: {
     url: null,
     filename: null,
@@ -174,7 +174,7 @@ export const discussionMock = {
   expanded: true,
   notes: [
     {
-      id: 1395,
+      id: '1395',
       attachment: {
         url: null,
         filename: null,
@@ -211,7 +211,7 @@ export const discussionMock = {
       path: '/gitlab-org/gitlab-ce/notes/1395',
     },
     {
-      id: 1396,
+      id: '1396',
       attachment: {
         url: null,
         filename: null,
@@ -257,7 +257,7 @@ export const discussionMock = {
       path: '/gitlab-org/gitlab-ce/notes/1396',
     },
     {
-      id: 1437,
+      id: '1437',
       attachment: {
         url: null,
         filename: null,
@@ -308,7 +308,7 @@ export const discussionMock = {
 };
 
 export const loggedOutnoteableData = {
-  id: 98,
+  id: '98',
   iid: 26,
   author_id: 1,
   description: '',
@@ -358,7 +358,7 @@ export const collapseNotesMock = [
     individual_note: true,
     notes: [
       {
-        id: 1390,
+        id: '1390',
         attachment: null,
         author: {
           id: 1,
@@ -393,7 +393,7 @@ export const collapseNotesMock = [
     individual_note: true,
     notes: [
       {
-        id: 1391,
+        id: '1391',
         attachment: null,
         author: {
           id: 1,
@@ -433,7 +433,7 @@ export const INDIVIDUAL_NOTE_RESPONSE_MAP = {
         expanded: true,
         notes: [
           {
-            id: 1390,
+            id: '1390',
             attachment: {
               url: null,
               filename: null,
@@ -495,7 +495,7 @@ export const INDIVIDUAL_NOTE_RESPONSE_MAP = {
         expanded: true,
         notes: [
           {
-            id: 1391,
+            id: '1391',
             attachment: {
               url: null,
               filename: null,
@@ -544,7 +544,7 @@ export const INDIVIDUAL_NOTE_RESPONSE_MAP = {
     '/gitlab-org/gitlab-ce/notes/1471': {
       commands_changes: null,
       valid: true,
-      id: 1471,
+      id: '1471',
       attachment: null,
       author: {
         id: 1,
@@ -600,7 +600,7 @@ export const DISCUSSION_NOTE_RESPONSE_MAP = {
         expanded: true,
         notes: [
           {
-            id: 1471,
+            id: '1471',
             attachment: {
               url: null,
               filename: null,
@@ -671,7 +671,7 @@ export const notesWithDescriptionChanges = [
     expanded: true,
     notes: [
       {
-        id: 901,
+        id: '901',
         type: null,
         attachment: null,
         author: {
@@ -718,7 +718,7 @@ export const notesWithDescriptionChanges = [
     expanded: true,
     notes: [
       {
-        id: 902,
+        id: '902',
         type: null,
         attachment: null,
         author: {
@@ -765,7 +765,7 @@ export const notesWithDescriptionChanges = [
     expanded: true,
     notes: [
       {
-        id: 903,
+        id: '903',
         type: null,
         attachment: null,
         author: {
@@ -809,7 +809,7 @@ export const notesWithDescriptionChanges = [
     expanded: true,
     notes: [
       {
-        id: 904,
+        id: '904',
         type: null,
         attachment: null,
         author: {
@@ -854,7 +854,7 @@ export const notesWithDescriptionChanges = [
     expanded: true,
     notes: [
       {
-        id: 905,
+        id: '905',
         type: null,
         attachment: null,
         author: {
@@ -898,7 +898,7 @@ export const notesWithDescriptionChanges = [
     expanded: true,
     notes: [
       {
-        id: 906,
+        id: '906',
         type: null,
         attachment: null,
         author: {
@@ -945,7 +945,7 @@ export const collapsedSystemNotes = [
     expanded: true,
     notes: [
       {
-        id: 901,
+        id: '901',
         type: null,
         attachment: null,
         author: {
@@ -992,7 +992,7 @@ export const collapsedSystemNotes = [
     expanded: true,
     notes: [
       {
-        id: 902,
+        id: '902',
         type: null,
         attachment: null,
         author: {
@@ -1039,7 +1039,7 @@ export const collapsedSystemNotes = [
     expanded: true,
     notes: [
       {
-        id: 904,
+        id: '904',
         type: null,
         attachment: null,
         author: {
@@ -1084,7 +1084,7 @@ export const collapsedSystemNotes = [
     expanded: true,
     notes: [
       {
-        id: 905,
+        id: '905',
         type: null,
         attachment: null,
         author: {
@@ -1129,7 +1129,7 @@ export const collapsedSystemNotes = [
     expanded: true,
     notes: [
       {
-        id: 906,
+        id: '906',
         type: null,
         attachment: null,
         author: {

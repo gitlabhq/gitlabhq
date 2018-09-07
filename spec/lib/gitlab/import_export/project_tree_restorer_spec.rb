@@ -89,6 +89,14 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(ProtectedTag.first.create_access_levels).not_to be_empty
       end
 
+      it 'restores issue resource label events' do
+        expect(Issue.find_by(title: 'Voluptatem').resource_label_events).not_to be_empty
+      end
+
+      it 'restores merge requests resource label events' do
+        expect(MergeRequest.find_by(title: 'MR1').resource_label_events).not_to be_empty
+      end
+
       context 'event at forth level of the tree' do
         let(:event) { Event.where(action: 6).first }
 

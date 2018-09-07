@@ -56,7 +56,9 @@ module Issuable
       added_labels = issuable.labels - old_labels
       removed_labels = old_labels - issuable.labels
 
-      SystemNoteService.change_label(issuable, issuable.project, current_user, added_labels, removed_labels)
+      ResourceEvents::ChangeLabelsService
+        .new(issuable, current_user)
+        .execute(added_labels: added_labels, removed_labels: removed_labels)
     end
 
     def create_title_change_note(old_title)

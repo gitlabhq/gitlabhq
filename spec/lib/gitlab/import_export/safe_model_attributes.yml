@@ -627,3 +627,11 @@ ProtectedEnvironment::DeployAccessLevel:
 - updated_at
 - user_id
 - group_id
+ResourceLabelEvent:
+- id
+- action
+- issue_id
+- merge_request_id
+- label_id
+- user_id
+- created_at

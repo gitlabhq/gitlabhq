@@ -16,15 +16,6 @@ module EE
       !for_epic? && super
     end
 
-    override :etag_key
-    def etag_key
-      if for_epic?
-        return ::Gitlab::Routing.url_helpers.group_epic_notes_path(noteable.group, noteable)
-      end
-
-      super
-    end
-
     override :banzai_render_context
     def banzai_render_context(field)
       return super unless for_epic?

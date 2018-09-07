@@ -47,6 +47,7 @@ following locations:
 - [Namespaces](namespaces.md)
 - [Notes](notes.md) (comments)
 - [Discussions](discussions.md) (threaded comments)
+- [Resource Label Events](resource_label_events.md)
 - [Notification settings](notification_settings.md)
 - [Open source license templates](templates/licenses.md)
 - [Pages Domains](pages_domains.md)

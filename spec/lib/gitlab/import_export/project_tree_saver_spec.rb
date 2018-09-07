@@ -173,6 +173,14 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         expect(priorities.flatten).not_to be_empty
       end
 
+      it 'has issue resource label events' do
+        expect(saved_project_json['issues'].first['resource_label_events']).not_to be_empty
+      end
+
+      it 'has merge request resource label events' do
+        expect(saved_project_json['merge_requests'].first['resource_label_events']).not_to be_empty
+      end
+
       it 'saves the correct service type' do
         expect(saved_project_json['services'].first['type']).to eq('CustomIssueTrackerService')
       end
@@ -295,6 +303,9 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
            author: user,
            project: project,
            commit_id: ci_build.pipeline.sha)
+
+    create(:resource_label_event, label: project_label, issue: issue)
+    create(:resource_label_event, label: group_label, merge_request: merge_request)
 
     create(:event, :created, target: milestone, project: project, author: user)
     create(:service, project: project, type: 'CustomIssueTrackerService', category: 'issue_tracker', properties: { one: 'value' })

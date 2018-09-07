@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Noteable
+  prepend EE::Noteable
+
   # Names of all implementers of `Noteable` that support resolvable notes.
   RESOLVABLE_TYPES = %w(MergeRequest).freeze
 
@@ -81,5 +83,24 @@ module Noteable
 
   def lockable?
     [MergeRequest, Issue].include?(self.class)
+  end
+
+  def etag_caching_enabled?
+    false
+  end
+
+  def expire_note_etag_cache
+    return unless discussions_rendered_on_frontend?
+    return unless etag_caching_enabled?
+
+    Gitlab::EtagCaching::Store.new.touch(note_etag_key)
+  end
+
+  def note_etag_key
+    Gitlab::Routing.url_helpers.project_noteable_notes_path(
+      project,
+      target_type: self.class.name.underscore,
+      target_id: id
+    )
   end
 end

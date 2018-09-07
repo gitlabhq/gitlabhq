@@ -38,6 +38,7 @@ module Issues
 
     def update_new_issue
       rewrite_notes
+      copy_resource_label_events
       rewrite_issue_award_emoji
       add_note_moved_from
     end
@@ -95,6 +96,18 @@ module Issues
         new_note.update(new_params)
 
         rewrite_award_emoji(note, new_note)
+      end
+    end
+
+    def copy_resource_label_events
+      @old_issue.resource_label_events.find_in_batches do |batch|
+        events = batch.map do |event|
+          event.attributes
+            .except('id', 'reference', 'reference_html')
+            .merge('issue_id' => @new_issue.id, 'created_at' => event.created_at)
+        end
+
+        Gitlab::Database.bulk_insert(ResourceLabelEvent.table_name, events)
       end
     end
 
