@@ -29,9 +29,12 @@ shared_context 'invalid cluster create params' do
 end
 
 shared_examples 'create cluster service success' do
-  it 'creates a cluster object and performs a worker' do
+  before do
+    stub_feature_flags(rbac_clusters: false)
     expect(ClusterProvisionWorker).to receive(:perform_async)
+  end
 
+  it 'creates a cluster object and performs a worker' do
     expect { subject }
       .to change { Clusters::Cluster.count }.by(1)
       .and change { Clusters::Providers::Gcp.count }.by(1)
@@ -44,7 +47,18 @@ shared_examples 'create cluster service success' do
     expect(subject.provider.num_nodes).to eq(1)
     expect(subject.provider.machine_type).to eq('machine_type-a')
     expect(subject.provider.access_token).to eq(access_token)
+    expect(subject.provider).to be_legacy_abac
     expect(subject.platform).to be_nil
+  end
+
+  context 'rbac_clusters feature is enabled' do
+    before do
+      stub_feature_flags(rbac_clusters: true)
+    end
+
+    it 'has legacy_abac false' do
+      expect(subject.provider).not_to be_legacy_abac
+    end
   end
 end
 

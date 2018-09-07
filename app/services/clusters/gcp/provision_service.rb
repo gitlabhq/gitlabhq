@@ -28,7 +28,7 @@ module Clusters
           provider.cluster.name,
           provider.num_nodes,
           machine_type: provider.machine_type,
-          legacy_abac: true
+          legacy_abac: provider.legacy_abac
         )
 
         unless operation.status == 'PENDING' || operation.status == 'RUNNING'
