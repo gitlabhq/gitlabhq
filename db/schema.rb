@@ -217,7 +217,6 @@ ActiveRecord::Schema.define(version: 20180906101639) do
     t.boolean "instance_statistics_visibility_private", default: false, null: false
     t.boolean "web_ide_clientside_preview_enabled", default: false, null: false
     t.boolean "user_show_add_ssh_key_message", default: true, null: false
-<<<<<<< HEAD
     t.integer "custom_project_templates_group_id"
     t.integer "usage_stats_set_by_user_id"
   end
@@ -248,9 +247,6 @@ ActiveRecord::Schema.define(version: 20180906101639) do
     t.integer "user_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-=======
-    t.integer "usage_stats_set_by_user_id"
->>>>>>> upstream/master
   end
 
   add_index "approvers", ["target_id", "target_type"], name: "index_approvers_on_target_id_and_target_type", using: :btree
@@ -2894,11 +2890,8 @@ ActiveRecord::Schema.define(version: 20180906101639) do
     t.integer "accepted_term_id"
     t.string "feed_token"
     t.boolean "private_profile"
-<<<<<<< HEAD
     t.integer "roadmap_layout", limit: 2
-=======
     t.boolean "include_private_contributions"
->>>>>>> upstream/master
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -2990,15 +2983,11 @@ ActiveRecord::Schema.define(version: 20180906101639) do
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
   add_index "web_hooks", ["type"], name: "index_web_hooks_on_type", using: :btree
 
-<<<<<<< HEAD
   add_foreign_key "application_settings", "namespaces", column: "custom_project_templates_group_id", on_delete: :nullify
   add_foreign_key "application_settings", "projects", column: "file_template_project_id", name: "fk_ec757bd087", on_delete: :nullify
   add_foreign_key "application_settings", "users", column: "usage_stats_set_by_user_id", name: "fk_964370041d", on_delete: :nullify
   add_foreign_key "approvals", "merge_requests", name: "fk_310d714958", on_delete: :cascade
   add_foreign_key "approver_groups", "namespaces", column: "group_id", on_delete: :cascade
-=======
-  add_foreign_key "application_settings", "users", column: "usage_stats_set_by_user_id", name: "fk_964370041d", on_delete: :nullify
->>>>>>> upstream/master
   add_foreign_key "badges", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "badges", "projects", on_delete: :cascade
   add_foreign_key "board_assignees", "boards", on_delete: :cascade
