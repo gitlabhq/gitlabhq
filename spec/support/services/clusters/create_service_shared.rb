@@ -7,7 +7,8 @@ shared_context 'valid cluster create params' do
         gcp_project_id: 'gcp-project',
         zone: 'us-central1-a',
         num_nodes: 1,
-        machine_type: 'machine_type-a'
+        machine_type: 'machine_type-a',
+        legacy_abac: 'true'
       }
     }
   end
@@ -49,16 +50,6 @@ shared_examples 'create cluster service success' do
     expect(subject.provider.access_token).to eq(access_token)
     expect(subject.provider).to be_legacy_abac
     expect(subject.platform).to be_nil
-  end
-
-  context 'rbac_clusters feature is enabled' do
-    before do
-      stub_feature_flags(rbac_clusters: true)
-    end
-
-    it 'has legacy_abac false' do
-      expect(subject.provider).not_to be_legacy_abac
-    end
   end
 end
 

@@ -25,14 +25,9 @@ module Clusters
 
       params[:provider_gcp_attributes].try do |provider|
         provider[:access_token] = access_token
-        provider[:legacy_abac] = legacy_abac_value
       end
 
       @cluster_params = params.merge(user: current_user, projects: [project])
-    end
-
-    def legacy_abac_value
-      !Feature.enabled?(:rbac_clusters)
     end
 
     def can_create_cluster?
