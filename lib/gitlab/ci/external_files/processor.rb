@@ -25,7 +25,7 @@ module Gitlab
         attr_reader :values, :external_files
 
         def validate_external_file(external_file)
-          unless external_file.valid? 
+          unless external_file.valid?
             raise ExternalFileError, 'External files should be a valid local or remote file'
           end
         end
@@ -39,7 +39,6 @@ module Gitlab
           values.delete(:includes)
           values
         end
-
       end
     end
   end

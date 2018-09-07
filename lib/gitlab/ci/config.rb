@@ -1,15 +1,17 @@
 module Gitlab
   module Ci
-    ##
+    #
     # Base GitLab CI Configuration facade
     #
     class Config
       ConfigError = Class.new(StandardError)
 
       def initialize(config, opts = {})
-        @config = Config::Extendable
+        initial_config = Config::Extendable
           .new(build_config(config, opts))
           .to_hash
+        processor = ::Gitlab::Ci::ExternalFiles::Processor.new(initial_config)
+        @config = processor.perform
 
         @global = Entry::Global.new(@config)
         @global.compose!

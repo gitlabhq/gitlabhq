@@ -13,7 +13,7 @@ describe Gitlab::Ci::ExternalFiles::Processor do
     end
 
     context 'when an invalid local file is defined' do
-      let(:values) { { includes: '/vendor/gitlab-ci-yml/non-existent-file.yml', image: 'ruby:2.2'} }
+      let(:values) { { includes: '/vendor/gitlab-ci-yml/non-existent-file.yml', image: 'ruby:2.2' } }
 
       it 'should raise an error' do
         expect { processor.perform }.to raise_error(described_class::ExternalFileError)
@@ -21,7 +21,7 @@ describe Gitlab::Ci::ExternalFiles::Processor do
     end
 
     context 'when an invalid remote file is defined' do
-      let(:values) { { includes: 'not-valid://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml', image: 'ruby:2.2'} }
+      let(:values) { { includes: 'not-valid://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml', image: 'ruby:2.2' } }
 
       it 'should raise an error' do
         expect { processor.perform }.to raise_error(described_class::ExternalFileError)
@@ -30,7 +30,7 @@ describe Gitlab::Ci::ExternalFiles::Processor do
 
     context 'with a valid remote external file is defined' do
       let(:values) { { includes: 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml', image: 'ruby:2.2' } }
-      let(:external_file_content) {
+      let(:external_file_content) do
         <<-HEREDOC
         before_script:
           - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
@@ -47,7 +47,7 @@ describe Gitlab::Ci::ExternalFiles::Processor do
           script:
             - bundle exec rubocop
         HEREDOC
-      }
+      end
 
       before do
         allow_any_instance_of(Kernel).to receive_message_chain(:open, :read).and_return(external_file_content)
@@ -55,7 +55,7 @@ describe Gitlab::Ci::ExternalFiles::Processor do
 
       it 'should append the file to the values' do
         output = processor.perform
-        expect(output.keys).to match_array([:image, :before_script, :rspec, :rubocop]) 
+        expect(output.keys).to match_array([:image, :before_script, :rspec, :rubocop])
       end
 
       it "should remove the 'includes' keyword" do
@@ -64,8 +64,8 @@ describe Gitlab::Ci::ExternalFiles::Processor do
     end
 
     context 'with a valid local external file is defined' do
-      let(:values) { { includes: '/vendor/gitlab-ci-yml/template.yml' , image: 'ruby:2.2'} }
-      let(:external_file_content) {
+      let(:values) { { includes: '/vendor/gitlab-ci-yml/template.yml', image: 'ruby:2.2' } }
+      let(:external_file_content) do
         <<-HEREDOC
         before_script:
           - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
@@ -74,7 +74,7 @@ describe Gitlab::Ci::ExternalFiles::Processor do
           - gem install bundler --no-ri --no-rdoc
           - bundle install --jobs $(nproc)  "${FLAGS[@]}"
         HEREDOC
-      }
+      end
 
       before do
         allow(File).to receive(:exists?).and_return(true)
@@ -83,7 +83,7 @@ describe Gitlab::Ci::ExternalFiles::Processor do
 
       it 'should append the file to the values' do
         output = processor.perform
-        expect(output.keys).to match_array([:image, :before_script]) 
+        expect(output.keys).to match_array([:image, :before_script])
       end
 
       it "should remove the 'includes' keyword" do
@@ -92,23 +92,23 @@ describe Gitlab::Ci::ExternalFiles::Processor do
     end
 
     context 'with multiple external files are defined' do
-      let(:external_files) { 
+      let(:external_files) do
         [
           "/spec/ee/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml",
           "/spec/ee/fixtures/gitlab/ci/external_files/.gitlab-ci-template-2.yml",
           'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml'
         ]
-      }
-      let(:values) { { includes: external_files, image: 'ruby:2.2'} }
+      end
+      let(:values) { { includes: external_files, image: 'ruby:2.2' } }
 
-      let(:remote_file_content) {
+      let(:remote_file_content) do
         <<-HEREDOC
         stages:
           - build
           - review
           - cleanup
         HEREDOC
-      }
+      end
 
       before do
         allow_any_instance_of(Kernel).to receive_message_chain(:open, :read).and_return(remote_file_content)
@@ -124,7 +124,7 @@ describe Gitlab::Ci::ExternalFiles::Processor do
     end
 
     context 'when external files are defined but not valid' do
-      let(:values) { { includes: '/vendor/gitlab-ci-yml/template.yml', image: 'ruby:2.2'} }
+      let(:values) { { includes: '/vendor/gitlab-ci-yml/template.yml', image: 'ruby:2.2' } }
 
       let(:external_file_content) { 'invalid content file ////' }
 

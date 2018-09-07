@@ -60,38 +60,6 @@ module Gitlab
             end
           end
 
-          class ArrayOrStringValidator < ActiveModel::EachValidator
-            def validate_each(record, attribute, value)
-              unless value.is_a?(Array) || value.is_a?(String)
-                record.errors.add(attribute, 'should be an array or a string')
-              end
-            end
-          end
-
-          class ExternalFileValidator < ActiveModel::EachValidator
-            def validate_each(record, attribute, value)
-              if value.is_a?(Array)
-                value.each do |path|
-                  validate_external_file(path, record, attribute)
-                end
-              else
-                validate_external_file(value, record, attribute)
-              end
-            end
-
-            private
-
-            def validate_external_file(value, record, attribute)
-              unless valid_url?(value)
-                record.errors.add(attribute, 'should be a valid local or remote file')
-              end
-            end
-
-            def valid_url?(value)
-              Gitlab::UrlSanitizer.valid?(value) || File.exists?("#{Rails.root}/#{value}")
-            end
-          end
-
           class KeyValidator < ActiveModel::EachValidator
             include LegacyValidationHelpers
 

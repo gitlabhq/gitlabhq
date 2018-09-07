@@ -124,4 +124,61 @@ describe Gitlab::Ci::Config do
       end
     end
   end
+
+
+  context "when yml has valid 'includes' defined" do
+    let(:yml) do
+      <<-EOS
+        includes:
+          - /spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml
+          - /spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-2.yml
+          - https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml
+
+        image: ruby:2.2
+      EOS
+    end
+
+    before do
+      allow_any_instance_of(Kernel).to receive_message_chain(:open, :read).and_return(yml)
+    end
+
+    it 'should return a composed hash' do
+      before_script_values = [
+        "apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs", "ruby -v",
+        "which ruby",
+        "gem install bundler --no-ri --no-rdoc",
+        "bundle install --jobs $(nproc)  \"${FLAGS[@]}\""
+      ]
+      variables = {
+        AUTO_DEVOPS_DOMAIN: "domain.example.com",
+        POSTGRES_USER: "user",
+        POSTGRES_PASSWORD: "testing-password",
+        POSTGRES_ENABLED: "true",
+        POSTGRES_DB: "$CI_ENVIRONMENT_SLUG"
+      }
+      composed_hash = {
+        before_script: before_script_values,
+        image: "ruby:2.2",
+        rspec: { script: ["bundle exec rspec"] },
+        variables: variables
+      }
+
+      expect(config.to_hash).to eq(composed_hash)
+    end
+  end
+
+  context "when config has invalid 'includes' defined"  do
+    let(:yml) do
+      <<-EOS
+      includes: invalid
+      EOS
+    end
+
+    it 'raises error' do
+      expect { config }.to raise_error(
+        ::Gitlab::Ci::ExternalFiles::Processor::ExternalFileError,
+        /External files should be a valid local or remote file/
+      )
+    end
+  end
 end

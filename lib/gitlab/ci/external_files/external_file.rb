@@ -4,7 +4,6 @@ module Gitlab
   module Ci
     module ExternalFiles
       class ExternalFile
-
         def initialize(value)
           @value = value
         end
@@ -18,7 +17,7 @@ module Gitlab
         end
 
         def valid?
-          remote_url? || File.exists?(base_path) 
+          remote_url? || File.exist?(base_path)
         end
 
         private

@@ -2,13 +2,10 @@ module Gitlab
   module Ci
     module ExternalFiles
       class Mapper
-
         def self.fetch_paths(values)
           paths = values.fetch(:includes, [])
           normalize_paths(paths)
         end
-
-        private
 
         def self.normalize_paths(paths)
           if paths.is_a?(String)

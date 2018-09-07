@@ -13,7 +13,7 @@ describe Gitlab::Ci::ExternalFiles::ExternalFile do
     end
 
     context 'when is not a valid remote url' do
-       let(:value) { 'not-valid://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
+      let(:value) { 'not-valid://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
 
       it 'should return false' do
         expect(external_file.valid?).to be_falsy
@@ -39,7 +39,7 @@ describe Gitlab::Ci::ExternalFiles::ExternalFile do
   end
 
   describe "#content" do
-    let(:external_file_content) {
+    let(:external_file_content) do
       <<-HEREDOC
         before_script:
           - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
@@ -48,7 +48,7 @@ describe Gitlab::Ci::ExternalFiles::ExternalFile do
           - gem install bundler --no-ri --no-rdoc
           - bundle install --jobs $(nproc)  "${FLAGS[@]}"
       HEREDOC
-    }
+    end
 
     context 'with a local file' do
       let(:value) { '/vendor/gitlab-ci-yml/non-existent-file.yml' }
