@@ -71,11 +71,23 @@ describe Gitlab::Ci::ExternalFiles::ExternalFile do
       let(:value) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
 
       before do
-        allow_any_instance_of(Kernel).to receive_message_chain(:open, :read).and_return(external_file_content)
+        allow(HTTParty).to receive(:get).and_return(external_file_content)
       end
 
       it 'should return the content of the file' do
         expect(external_file.content).to eq(external_file_content)
+      end
+    end
+
+    context 'with a timeout' do
+      let(:value) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
+
+      before do
+        allow(HTTParty).to receive(:get).and_raise(Timeout::Error)
+      end
+
+      it 'should return nil' do
+        expect(external_file.content).to be_nil
       end
     end
   end

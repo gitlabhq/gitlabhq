@@ -3,7 +3,7 @@ module Gitlab
     module ExternalFiles
       class Mapper
         def initialize(values, project)
-          @paths = values.fetch(:includes, [])
+          @paths = values.fetch(:include, [])
           @project = project
         end
 
@@ -17,7 +17,7 @@ module Gitlab
 
         private
 
-        attr_reaer :paths, :project
+        attr_reader :paths, :project
 
         def build_external_file(path)
           ::Gitlab::Ci::ExternalFiles::ExternalFile.new(path, project)

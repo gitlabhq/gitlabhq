@@ -14,23 +14,29 @@ describe Gitlab::Ci::ExternalFiles::Processor do
     end
 
     context 'when an invalid local file is defined' do
-      let(:values) { { includes: '/vendor/gitlab-ci-yml/non-existent-file.yml', image: 'ruby:2.2' } }
+      let(:values) { { include: '/vendor/gitlab-ci-yml/non-existent-file.yml', image: 'ruby:2.2' } }
 
       it 'should raise an error' do
-        expect { processor.perform }.to raise_error(described_class::ExternalFileError)
+        expect { processor.perform }.to raise_error(
+          described_class::ExternalFileError,
+          "External file: '/vendor/gitlab-ci-yml/non-existent-file.yml' should be a valid local or remote file"
+        )
       end
     end
 
     context 'when an invalid remote file is defined' do
-      let(:values) { { includes: 'not-valid://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml', image: 'ruby:2.2' } }
+      let(:values) { { include: 'not-valid://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml', image: 'ruby:2.2' } }
 
       it 'should raise an error' do
-        expect { processor.perform }.to raise_error(described_class::ExternalFileError)
+        expect { processor.perform }.to raise_error(
+          described_class::ExternalFileError,
+          "External file: 'not-valid://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' should be a valid local or remote file"
+        )
       end
     end
 
     context 'with a valid remote external file is defined' do
-      let(:values) { { includes: 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml', image: 'ruby:2.2' } }
+      let(:values) { { include: 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml', image: 'ruby:2.2' } }
       let(:external_file_content) do
         <<-HEREDOC
         before_script:
@@ -51,7 +57,7 @@ describe Gitlab::Ci::ExternalFiles::Processor do
       end
 
       before do
-        allow_any_instance_of(Kernel).to receive_message_chain(:open, :read).and_return(external_file_content)
+        allow(HTTParty).to receive(:get).and_return(external_file_content)
       end
 
       it 'should append the file to the values' do
@@ -59,13 +65,13 @@ describe Gitlab::Ci::ExternalFiles::Processor do
         expect(output.keys).to match_array([:image, :before_script, :rspec, :rubocop])
       end
 
-      it "should remove the 'includes' keyword" do
-        expect(processor.perform[:includes]).to be_nil
+      it "should remove the 'include' keyword" do
+        expect(processor.perform[:include]).to be_nil
       end
     end
 
     context 'with a valid local external file is defined' do
-      let(:values) { { includes: '/vendor/gitlab-ci-yml/template.yml', image: 'ruby:2.2' } }
+      let(:values) { { include: '/vendor/gitlab-ci-yml/template.yml', image: 'ruby:2.2' } }
       let(:external_file_content) do
         <<-HEREDOC
         before_script:
@@ -86,7 +92,7 @@ describe Gitlab::Ci::ExternalFiles::Processor do
         expect(output.keys).to match_array([:image, :before_script])
       end
 
-      it "should remove the 'includes' keyword" do
+      it "should remove the 'include' keyword" do
         expect(processor.perform[:includes]).to be_nil
       end
     end
@@ -98,7 +104,7 @@ describe Gitlab::Ci::ExternalFiles::Processor do
           'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml'
         ]
       end
-      let(:values) { { includes: external_files, image: 'ruby:2.2' } }
+      let(:values) { { include: external_files, image: 'ruby:2.2' } }
 
       let(:remote_file_content) do
         <<-HEREDOC
@@ -112,20 +118,20 @@ describe Gitlab::Ci::ExternalFiles::Processor do
       before do
         file_content = File.read("#{Rails.root}/spec/ee/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml")
         allow_any_instance_of(::Gitlab::Ci::ExternalFiles::ExternalFile).to receive(:local_file_content).and_return(file_content)
-        allow_any_instance_of(Kernel).to receive_message_chain(:open, :read).and_return(remote_file_content)
+        allow(HTTParty).to receive(:get).and_return(remote_file_content)
       end
 
       it 'should append the files to the values' do
         expect(processor.perform.keys).to match_array([:image, :stages, :before_script, :rspec])
       end
 
-      it "should remove the 'includes' keyword" do
-        expect(processor.perform[:includes]).to be_nil
+      it "should remove the 'include' keyword" do
+        expect(processor.perform[:include]).to be_nil
       end
     end
 
     context 'when external files are defined but not valid' do
-      let(:values) { { includes: '/vendor/gitlab-ci-yml/template.yml', image: 'ruby:2.2' } }
+      let(:values) { { include: '/vendor/gitlab-ci-yml/template.yml', image: 'ruby:2.2' } }
 
       let(:external_file_content) { 'invalid content file ////' }
 

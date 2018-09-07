@@ -7,16 +7,9 @@ module Gitlab
       ConfigError = Class.new(StandardError)
 
       def initialize(config, project = nil, opts = {})
-        initial_config = Config::Extendable
+        @config = Config::Extendable
           .new(build_config(config, opts))
           .to_hash
-
-        if project.present?
-          processor = ::Gitlab::Ci::ExternalFiles::Processor.new(initial_config, project)
-          @config = processor.perform
-        else
-          @config = initial_config
-        end
 
         @global = Entry::Global.new(@config)
         @global.compose!
@@ -72,8 +65,15 @@ module Gitlab
       end
 
       # 'opts' argument is used in EE see /ee/lib/ee/gitlab/ci/config.rb
-      def build_config(config, opts = {})
-        Loader.new(config).load!
+      def build_config(config, project,  opts = {})
+        initial_config = Loader.new(config).load!
+
+        if project.present?
+          processor = ::Gitlab::Ci::ExternalFiles::Processor.new(initial_config, project)
+          processor.perform
+        else
+          initial_config
+        end
       end
     end
   end

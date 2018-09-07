@@ -126,7 +126,7 @@ describe Gitlab::Ci::Config do
     end
   end
 
-  context "when yml has valid 'includes' defined" do
+  context "when yml has valid 'include' defined" do
     let(:http_file_content) do
       <<~HEREDOC
       variables:
@@ -140,9 +140,8 @@ describe Gitlab::Ci::Config do
     let(:local_file_content) {  File.read("#{Rails.root}/spec/ee/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml") }
     let(:yml) do
       <<-EOS
-        includes:
+        include:
           - /spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml
-          - /spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-2.yml
           - https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml
 
         image: ruby:2.2
@@ -151,7 +150,7 @@ describe Gitlab::Ci::Config do
 
     before do
       allow_any_instance_of(::Gitlab::Ci::ExternalFiles::ExternalFile).to receive(:local_file_content).and_return(local_file_content)
-      allow_any_instance_of(Kernel).to receive_message_chain(:open, :read).and_return(http_file_content)
+      allow(HTTParty).to receive(:get).and_return(http_file_content)
     end
 
     it 'should return a composed hash' do
@@ -179,17 +178,17 @@ describe Gitlab::Ci::Config do
     end
   end
 
-  context "when yml has invalid 'includes' defined"  do
+  context "when yml has invalid 'include' defined"  do
     let(:yml) do
       <<-EOS
-      includes: invalid
+      include: invalid
       EOS
     end
 
-    it 'raises error' do
+    it 'raises error YamlProcessor ValidationError' do
       expect { config }.to raise_error(
-        ::Gitlab::Ci::ExternalFiles::Processor::ExternalFileError,
-        /External files should be a valid local or remote file/
+        ::Gitlab::Ci::YamlProcessor::ValidationError,
+        "External file: 'invalid' should be a valid local or remote file"
       )
     end
   end

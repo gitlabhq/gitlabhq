@@ -6,10 +6,10 @@ describe Gitlab::Ci::ExternalFiles::Mapper do
   describe '#process' do
     subject { described_class.new(values, project).process }
 
-    context 'when includes keyword is defined as string' do
+    context "when 'include' keyword is defined as string" do
       let(:values) do
         {
-          includes: '/vendor/gitlab-ci-yml/non-existent-file.yml',
+          include: '/vendor/gitlab-ci-yml/non-existent-file.yml',
           image: 'ruby:2.2'
         }
       end
@@ -23,10 +23,10 @@ describe Gitlab::Ci::ExternalFiles::Mapper do
       end
     end
 
-    context 'when includes is defined as an array' do
+    context "when 'include' is defined as an array" do
       let(:values) do
         {
-          includes:
+          include:
           [
             'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml',
             '/vendor/gitlab-ci-yml/template.yml'
@@ -44,7 +44,7 @@ describe Gitlab::Ci::ExternalFiles::Mapper do
       end
     end
 
-    context 'when includes is not defined' do
+    context "when 'include' is not defined" do
       let(:values) do
         { image: 'ruby:2.2' }
       end

@@ -4,6 +4,8 @@ module Gitlab
   module Ci
     module ExternalFiles
       class ExternalFile
+        attr_reader :value, :project
+
         def initialize(value, project)
           @value = value
           @project = project
@@ -11,10 +13,12 @@ module Gitlab
 
         def content
           if remote_url?
-            open(value).read
+            HTTParty.get(value)
           else
             local_file_content
           end
+        rescue HTTParty::Error, Timeout::Error
+          nil
         end
 
         def valid?
@@ -22,8 +26,6 @@ module Gitlab
         end
 
         private
-
-        attr_reader :value, :project
 
         def remote_url?
           ::Gitlab::UrlSanitizer.valid?(value)

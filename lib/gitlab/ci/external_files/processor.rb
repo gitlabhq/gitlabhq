@@ -6,7 +6,7 @@ module Gitlab
 
         def initialize(values, project)
           @values = values
-          @external_files = ::Gitlab::Ci::ExternalFiles::Mapper.fetch_paths(values, project).process
+          @external_files = ::Gitlab::Ci::ExternalFiles::Mapper.new(values, project).process
         end
 
         def perform
@@ -26,7 +26,7 @@ module Gitlab
 
         def validate_external_file(external_file)
           unless external_file.valid?
-            raise ExternalFileError, 'External files should be a valid local or remote file'
+            raise ExternalFileError, "External file: '#{external_file.value}' should be a valid local or remote file"
           end
         end
 
@@ -36,7 +36,7 @@ module Gitlab
         end
 
         def remove_include_keyword
-          values.delete(:includes)
+          values.delete(:include)
           values
         end
       end
