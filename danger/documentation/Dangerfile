@@ -1,0 +1,37 @@
+# frozen_string_literal: true
+
+# All the files/directories that should be reviewed by the Docs team.
+DOCS_FILES = [
+  'doc/'
+].freeze
+
+def docs_paths_requiring_review(files)
+  files.select do |file|
+    DOCS_FILES.any? { |pattern| file.start_with?(pattern) }
+  end
+end
+
+all_files = git.added_files + git.modified_files
+
+docs_paths_to_review = docs_paths_requiring_review(all_files)
+
+unless docs_paths_to_review.empty?
+  message 'This merge request adds or changes files that require a ' \
+    'review from the docs team.'
+
+  markdown(<<~MARKDOWN)
+## Docs Review
+
+The following files require a review from the Documentation team:
+
+* #{docs_paths_to_review.map { |path| "`#{path}`" }.join("\n* ")}
+
+To make sure these changes are reviewed, mention `@gl-docsteam` in a separate
+comment, and explain what needs to be reviewed by the team. Please don't mention
+the team until your changes are ready for review.
+  MARKDOWN
+
+  unless gitlab.mr_labels.include?('Documentation')
+    warn 'This merge request is missing the ~Documentation label.'
+  end
+end
