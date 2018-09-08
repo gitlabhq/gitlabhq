@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import projectNew from '~/projects/project_new';
 
 const bindEvents = () => {
   const $newProjectForm = $('#new_project');
@@ -41,6 +42,12 @@ const bindEvents = () => {
 
     $templateProjectNameInput.focus();
     enableCustomTemplate();
+
+    const $activeTabProjectName = $('.tab-pane.active #project_name');
+    const $activeTabProjectPath = $('.tab-pane.active #project_path');
+    $activeTabProjectName.focus();
+    $activeTabProjectName
+      .keyup(() => projectNew.onProjectNameChange($activeTabProjectName, $activeTabProjectPath));
   }
 
   $useCustomTemplateBtn.on('change', chooseTemplate);

@@ -48,6 +48,7 @@ describe 'Project' do
 
         page.within '.project-fields-form' do
           fill_in("project_path", with: new_name)
+          fill_in("project_name", with: new_name)
 
           Sidekiq::Testing.inline! do
             click_button "Create project"

@@ -61,6 +61,12 @@ describe('text_utility', () => {
     });
   });
 
+  describe('slugifyWithHyphens', () => {
+    it('should replaces whitespaces with hyphens and convert to lower case', () => {
+      expect(textUtils.slugifyWithHyphens('My Input String')).toEqual('my-input-string');
+    });
+  });
+
   describe('stripHtml', () => {
     it('replaces html tag with the default replacement', () => {
       expect(textUtils.stripHtml('This is a text with <p>html</p>.')).toEqual(
