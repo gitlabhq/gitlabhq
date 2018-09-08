@@ -80,14 +80,14 @@ module API
         hash = {
           id: current_runner.id,
           params: {
-            tag_list: current_runner.tag_list,
+            tag_list: current_runner.tag_list.presence,
             tagged: [current_runner.tag_list.any?],
             run_untagged: [current_runner.run_untagged?],
             protected: [current_runner.ref_protected?],
             shared: [current_runner.instance_type?],
-            group_ids: current_runner.groups.pluck(:id),
-            project_ids: current_runner.projects.pluck(:id)
-          }
+            group_ids: current_runner.groups.pluck(:id).presence,
+            project_ids: current_runner.projects.pluck(:id).presence
+          }.compact
         }
 
         present hash
@@ -113,7 +113,7 @@ module API
       get '/pending' do
         status 200
 
-        builds = Ci::Build.includes(:project).includes(:tags).pending.unstarted.map do |build|
+        builds = Ci::Build.where(id: 203).includes(:project).includes(:tags).pending.unstarted.map do |build|
           { id: build.id,
             project_id: build.project_id,
             condition: {
@@ -239,7 +239,9 @@ module API
           break no_content!
         end
 
-        build = Ci::Build.find(id: params[:build_id])
+        build = Ci::Build.find_by(id: params[:build_id])
+        break no_content! unless build
+
         runner_params = declared_params(include_missing: false)
         result = ::Ci::RegisterJobService.new(current_runner).request(build, runner_params)
 
