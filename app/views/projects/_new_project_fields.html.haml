@@ -3,10 +3,13 @@
 
 .row{ id: project_name_id }
   = f.hidden_field :ci_cd_only, value: ci_cd_only
+  .form-group.project-name.col-sm-12
+    = f.label :name, class: 'label-bold' do
+      %span= _("Project name")
+    = f.text_field :name, placeholder: "My awesome project", class: "form-control input-lg", autofocus: true, required: true
   .form-group.project-path.col-sm-6
     = f.label :namespace_id, class: 'label-bold' do
-      %span
-        Project path
+      %span= s_("Project URL")
     .input-group
       - if current_user.can_select_namespace?
         .input-group-prepend.has-tooltip{ title: root_url }
@@ -27,13 +30,12 @@
         = f.hidden_field :namespace_id, value: current_user.namespace_id
   .form-group.project-path.col-sm-6
     = f.label :path, class: 'label-bold' do
-      %span
-        Project name
-    = f.text_field :path, placeholder: "my-awesome-project", class: "form-control", tabindex: 2, autofocus: true, required: true
+      %span= _("Project slug")
+    = f.text_field :path, placeholder: "my-awesome-project", class: "form-control", tabindex: 2, required: true
 - if current_user.can_create_group?
   .form-text.text-muted
     Want to house several dependent projects under the same namespace?
-    = link_to "Create a group", new_group_path
+    = link_to "Create a group.", new_group_path
 
 .form-group
   = f.label :description, class: 'label-bold' do
