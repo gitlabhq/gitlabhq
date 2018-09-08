@@ -102,7 +102,7 @@ module Issues
         events = batch.map do |event|
           event.attributes
             .except('id', 'reference', 'reference_html')
-            .merge('issue_id' => @new_issue.id, 'created_at' => event.created_at)
+            .merge('issue_id' => @new_issue.id, 'action' => ResourceLabelEvent.actions[event.action])
         end
 
         Gitlab::Database.bulk_insert(ResourceLabelEvent.table_name, events)
