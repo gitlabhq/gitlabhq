@@ -107,7 +107,7 @@ describe Gitlab::Ci::External::Processor do
       let(:remote_file) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
       let(:external_files) do
         [
-          '/ee/spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml',
+          '/spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml',
           remote_file
         ]
       end
@@ -128,7 +128,7 @@ describe Gitlab::Ci::External::Processor do
       end
 
       before do
-        local_file_content = File.read(Rails.root.join('ee/spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml'))
+        local_file_content = File.read(Rails.root.join('spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml'))
         allow_any_instance_of(Gitlab::Ci::External::File::Local).to receive(:fetch_local_content).and_return(local_file_content)
         WebMock.stub_request(:get, remote_file).to_return(body: remote_file_content)
       end

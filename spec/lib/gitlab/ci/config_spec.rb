@@ -128,7 +128,7 @@ describe Gitlab::Ci::Config do
   context "when using 'include' directive" do
     let(:project) { create(:project, :repository) }
     let(:remote_location) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
-    let(:local_location) { 'ee/spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml' }
+    let(:local_location) { 'spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml' }
 
     let(:remote_file_content) do
       <<~HEREDOC
