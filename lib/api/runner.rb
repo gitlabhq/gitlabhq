@@ -73,11 +73,11 @@ module API
       params do
         requires :token, type: String, desc: %q(Runner's authentication token)
       end
-      get '/info' do
+      post '/info' do
         authenticate_runner!
         status 200
 
-        present {
+        hash = {
           id: current_runner.id,
           params: {
             tag_list: current_runner.tag_list,
@@ -86,9 +86,11 @@ module API
             protected: [current_runner.ref_protected?],
             shared: [current_runner.instance_type?],
             group_ids: current_runner.groups.pluck(:id),
-            project_ids: current_runner.projects.pluck(:id),
+            project_ids: current_runner.projects.pluck(:id)
           }
         }
+
+        present hash
       end
 
       desc 'Get information about running jobs per-project'
@@ -108,10 +110,10 @@ module API
 
     resource :jobs do
       desc 'Lists all pending jobs'
-      patch '/pending' do
+      get '/pending' do
         status 200
 
-        present Ci::Build.includes(:project).includes(:taggings).pending.unstarted.map do |build|
+        builds = Ci::Build.includes(:project).includes(:tags).pending.unstarted.map do |build|
           { id: build.id,
             project_id: build.project_id,
             condition: {
@@ -128,20 +130,22 @@ module API
                   param: :protected,
                   contains: build.protected?
                 } if build.protected? ),
-                ( build.tag_list.map do |tag|
+                ( build.tags.map do |tag|
                   {
                     param: :tag_list,
-                    contains: tag
+                    contains: tag.name
                   }
                 end ),
                 ( {
                   param: :run_untagged,
                   contains: true
-                } if build.tag_list.empty? )
+                } if build.tags.empty? )
               ].flatten.compact
             }
           }
         end
+
+        present builds
       end
 
       desc 'Request a first job' do
