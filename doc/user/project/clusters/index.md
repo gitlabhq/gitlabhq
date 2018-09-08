@@ -163,21 +163,39 @@ To enable the feature flag:
     Feature.enable('rbac_clusters')
     ```
 
+If you are creating a [new GKE cluster via
+GitLab](#adding-and-creating-a-new-gke-cluster-via-gitlab), you will be
+asked if you would like to create a RBAC-enabled cluster. Enabling this
+setting will create a `gitlab` service account which will be used by
+GitLab to manage the newly created cluster. To enable this, this service
+account will have the `cluster-admin` privilege.
+
 If you are [adding an existing Kubernetes
 cluster](#adding-an-existing-kubernetes-cluster), you will be asked if
-the cluster you are adding is an RBAC-enabled cluster. Enabling this
-setting will create a `tiller` service account in the
-`gitlab-managed-apps` namespace when you install Helm Tiller into your cluster.
+the cluster you are adding is a RBAC-enabled cluster. Please ensure the
+token of the account has administrator privileges for the cluster.
+
+A RBAC-enabled cluster in both cases
+will create a `tiller` service account, with `cluster-admin`
+privilege, in the `gitlab-managed-apps` namespace when you install Helm Tiller into your cluster.
 This service account will be added to the installed Helm Tiller
 and will be used by Helm to install and run [GitLab managed
 applications](#installing-applications).
 
-The `tiller` service account will have cluster-wide access (`cluster-admin` clusterrole).
+The table below summarizes which resources will be created in a
+RBAC-enabled cluster :
 
-If you are creating a [new GKE cluster via
-GitLab](#adding-and-creating-a-new-gke-cluster-via-gitlab), GitLab will
-automatically create an RBAC-enabled cluster. A `tiller` service account
-will be created as well and added to Helm Tiller.
+| Name           | Kind                 | Details                         | Created when               |
+| ---            | ---                  | ---                             | ---                        |
+| `gitlab`       | `ServiceAccount`     | `default` namespace             | Creating a new GKE Cluster |
+| `gitlab-admin` | `ClusterRoleBinding` | `cluster-admin` roleRef         | Creating a new GKE Cluster |
+| `tiller`       | `ServiceAccount`     | `gitlab-managed-apps` namespace | Installing Helm Tiller     |
+| `tiller-admin` | `ClusterRoleBinding` | `cluster-admin` roleRef         | Installing Helm Tiller     |
+
+
+Helm Tiller will also create additional service accounts and other RBAC
+resources for each installed application. Please consult the
+documentation for the Helm charts for each application for details.
 
 NOTE: **Note:**
 Auto DevOps will not successfully complete in a cluster that only has RBAC
