@@ -519,11 +519,11 @@ module Ci
     end
 
     def when
-      read_attribute(:when) || build_attributes_from_config[:when] || 'on_success'
+      read_attribute(:when) || 'on_success'
     end
 
     def yaml_variables
-      read_attribute(:yaml_variables) || build_attributes_from_config[:yaml_variables] || []
+      read_attribute(:yaml_variables) || []
     end
 
     def user_variables
