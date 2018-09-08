@@ -4,19 +4,21 @@ module Gitlab
     # Base GitLab CI Configuration facade
     #
     class Config
-      prepend EE::Gitlab::Ci::Config
-
       ConfigError = Class.new(StandardError)
 
       def initialize(config, opts = {})
-        @config = Config::Extendable
-          .new(build_config(config, opts))
-          .to_hash
+        begin
+          @config = Config::Extendable
+            .new(build_config(config, opts))
+            .to_hash
 
-        @global = Entry::Global.new(@config)
-        @global.compose!
-      rescue Loader::FormatError, Extendable::ExtensionError => e
-        raise Config::ConfigError, e.message
+          @global = Entry::Global.new(@config)
+          @global.compose!
+        rescue Loader::FormatError, Extendable::ExtensionError => e
+          raise Config::ConfigError, e.message
+        end
+      rescue ::Gitlab::Ci::External::Processor::FileError => e
+        raise ::Gitlab::Ci::YamlProcessor::ValidationError, e.message
       end
 
       def valid?
@@ -68,9 +70,20 @@ module Gitlab
 
       private
 
-      # 'opts' argument is used in EE see /ee/lib/ee/gitlab/ci/config.rb
       def build_config(config, opts = {})
-        Loader.new(config).load!
+        initial_config = Loader.new(config).load!
+        project = opts.fetch(:project, nil)
+
+        if project
+          process_external_files(initial_config, project, opts)
+        else
+          initial_config
+        end
+      end
+
+      def process_external_files(config, project, opts)
+        sha = opts.fetch(:sha) { project.repository.root_ref_sha }
+        ::Gitlab::Ci::External::Processor.new(config, project, sha).perform
       end
     end
   end
