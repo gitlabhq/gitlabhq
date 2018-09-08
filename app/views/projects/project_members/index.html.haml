@@ -20,17 +20,17 @@
         - if !membership_locked? && @project.allowed_to_share_with_group?
           %ul.nav-links.nav.nav-tabs.gitlab-tabs{ role: 'tablist' }
             %li.nav-tab{ role: 'presentation' }
-              %a.nav-link.active{ href: '#invite-member-pane', id: 'invite-member-tab', data: { toggle: 'tab' }, role: 'tab' } Add member
+              %a.nav-link.active{ href: '#invite-member-pane', id: 'invite-member-tab', data: { toggle: 'tab' }, role: 'tab' } Invite member
             %li.nav-tab{ role: 'presentation', class: ('active' if membership_locked?) }
               %a.nav-link{ href: '#invite-group-pane', id: 'invite-group-tab', data: { toggle: 'tab' }, role: 'tab' } Invite group
 
           .tab-content.gitlab-tab-content
             .tab-pane.active{ id: 'invite-member-pane', role: 'tabpanel' }
-              = render 'projects/project_members/new_project_member', tab_title: 'Add member'
+              = render 'projects/project_members/new_project_member', tab_title: 'Invite member'
             .tab-pane{ id: 'invite-group-pane', role: 'tabpanel', class: ('active' if membership_locked?) }
               = render 'projects/project_members/new_project_group', tab_title: 'Invite group'
         - elsif !membership_locked?
-          .invite-member= render 'projects/project_members/new_project_member', tab_title: 'Add member'
+          .invite-member= render 'projects/project_members/new_project_member', tab_title: 'Invite member'
         - elsif @project.allowed_to_share_with_group?
           .invite-group= render 'projects/project_members/new_project_group', tab_title: 'Invite group'
 

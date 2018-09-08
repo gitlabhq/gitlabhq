@@ -92,7 +92,7 @@ class IssueTrackerService < Service
     rescue Gitlab::HTTP::Error, Timeout::Error, SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED, OpenSSL::SSL::SSLError => error
       message = "#{self.type} had an error when trying to connect to #{self.project_url}: #{error.message}"
     end
-    Rails.logger.info(message)
+    log_info(message)
     result
   end
 

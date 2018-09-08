@@ -111,6 +111,10 @@ module Issuable
     def allows_multiple_assignees?
       false
     end
+
+    def has_multiple_assignees?
+      assignees.count > 1
+    end
   end
 
   class_methods do

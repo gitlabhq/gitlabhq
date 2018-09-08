@@ -48,20 +48,6 @@ class UserRecentEventsFinder
   end
 
   def projects
-    # Compile a list of projects `current_user` interacted with
-    # and `target_user` is allowed to see.
-
-    authorized = target_user
-      .project_interactions
-      .joins(:project_authorizations)
-      .where(project_authorizations: { user: current_user })
-      .select(:id)
-
-    visible = target_user
-      .project_interactions
-      .where(visibility_level: Gitlab::VisibilityLevel.levels_for_user(current_user))
-      .select(:id)
-
-    Gitlab::SQL::Union.new([authorized, visible]).to_sql
+    target_user.project_interactions.to_sql
   end
 end

@@ -50,19 +50,24 @@ const mixins = {
     },
 
     positionFlag() {
-      const timeSeries = this.timeSeries[0];
-      const hoveredDataIndex = bisectDate(timeSeries.values, this.hoverData.hoveredDate, 1);
+      const timeSeries = this.seriesUnderMouse[0];
+      if (!timeSeries) {
+        return;
+      }
+      const hoveredDataIndex = bisectDate(timeSeries.values, this.hoverData.hoveredDate);
 
       this.currentData = timeSeries.values[hoveredDataIndex];
       this.currentXCoordinate = Math.floor(timeSeries.timeSeriesScaleX(this.currentData.time));
 
-      this.currentCoordinates = this.timeSeries.map((series) => {
-        const currentDataIndex = bisectDate(series.values, this.hoverData.hoveredDate, 1);
+      this.currentCoordinates = {};
+
+      this.seriesUnderMouse.forEach((series) => {
+        const currentDataIndex = bisectDate(series.values, this.hoverData.hoveredDate);
         const currentData = series.values[currentDataIndex];
         const currentX = Math.floor(series.timeSeriesScaleX(currentData.time));
         const currentY = Math.floor(series.timeSeriesScaleY(currentData.value));
 
-        return {
+        this.currentCoordinates[series.metricTag] = {
           currentX,
           currentY,
           currentDataIndex,

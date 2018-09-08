@@ -2892,6 +2892,7 @@ ActiveRecord::Schema.define(version: 20180906101639) do
     t.string "feed_token"
     t.boolean "private_profile"
     t.integer "roadmap_layout", limit: 2
+    t.boolean "include_private_contributions"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -3108,6 +3109,7 @@ ActiveRecord::Schema.define(version: 20180906101639) do
   add_foreign_key "issues", "users", column: "author_id", name: "fk_05f1e72feb", on_delete: :nullify
   add_foreign_key "issues", "users", column: "closed_by_id", name: "fk_c63cbf6c25", on_delete: :nullify
   add_foreign_key "issues", "users", column: "updated_by_id", name: "fk_ffed080f01", on_delete: :nullify
+  add_foreign_key "label_links", "labels", name: "fk_d97dd08678", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade
   add_foreign_key "labels", "namespaces", column: "group_id", on_delete: :cascade
