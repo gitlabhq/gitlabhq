@@ -3,3 +3,5 @@
 /public/
 /vendor/
 /tmp/
+
+ee/app/assets/javascripts/shared/snowplow/sp.js
