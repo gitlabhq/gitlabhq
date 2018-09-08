@@ -18,11 +18,12 @@ describe API::GroupLabels do
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.size).to eq(2)
+      expect(json_response.map {|r| r['name'] }).to contain_exactly('feature', 'bug')
     end
   end
 
   describe 'POST /groups/:id/labels' do
-    it 'returns created label when all params' do
+    it 'returns created label when all params are given' do
       post api("/groups/#{group.id}/labels", user),
            name: 'Foo',
            color: '#FFAABB',
@@ -34,7 +35,7 @@ describe API::GroupLabels do
       expect(json_response['description']).to eq('test')
     end
 
-    it 'returns created label when only required params' do
+    it 'returns created label when only required params are given' do
       post api("/groups/#{group.id}/labels", user),
            name: 'Foo & Bar',
            color: '#FFAABB'
@@ -51,7 +52,7 @@ describe API::GroupLabels do
       expect(response).to have_gitlab_http_status(400)
     end
 
-    it 'returns a 400 bad request if color not given' do
+    it 'returns a 400 bad request if color is not given' do
       post api("/groups/#{group.id}/labels", user), name: 'Foobar'
 
       expect(response).to have_gitlab_http_status(400)
@@ -114,6 +115,17 @@ describe API::GroupLabels do
       expect(response).to have_gitlab_http_status(400)
     end
 
+    it "does not delete parent's group labels" do
+      subgroup = create(:group, parent: group)
+      subgroup_label = create(:group_label, title: 'feature', group: subgroup)
+
+      delete api("/groups/#{subgroup.id}/labels", user), name: subgroup_label.name
+
+      expect(response).to have_gitlab_http_status(204)
+      expect(subgroup.labels.size).to eq(0)
+      expect(group.labels).to include(label1)
+    end
+
     it_behaves_like '412 response' do
       let(:request) { api("/groups/#{group.id}/labels", user) }
       let(:params) { { name: label1.name } }
@@ -127,6 +139,7 @@ describe API::GroupLabels do
           new_name: 'New Label',
           color: '#FFFFFF',
           description: 'test'
+
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['name']).to eq('New Label')
       expect(json_response['color']).to eq('#FFFFFF')
@@ -137,6 +150,7 @@ describe API::GroupLabels do
       put api("/groups/#{group.id}/labels", user),
           name: label1.name,
           new_name: 'New Label'
+
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['name']).to eq('New Label')
       expect(json_response['color']).to eq(label1.color)
@@ -146,6 +160,7 @@ describe API::GroupLabels do
       put api("/groups/#{group.id}/labels", user),
           name: label1.name,
           color: '#FFFFFF'
+
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['name']).to eq(label1.name)
       expect(json_response['color']).to eq('#FFFFFF')
@@ -159,6 +174,19 @@ describe API::GroupLabels do
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['name']).to eq(label2.name)
       expect(json_response['description']).to eq('test')
+    end
+
+    it "does not update parent's group label" do
+      subgroup = create(:group, parent: group)
+      subgroup_label = create(:group_label, title: 'feature', group: subgroup)
+
+      put api("/groups/#{subgroup.id}/labels", user),
+          name: subgroup_label.name,
+          new_name: 'New Label'
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(subgroup.labels[0].name).to eq('New Label')
+      expect(label1.name).to eq('feature')
     end
 
     it 'returns 404 if label does not exist' do

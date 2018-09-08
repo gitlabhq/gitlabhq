@@ -5,10 +5,10 @@ module API
     before { authenticate! }
 
     subscribables = [
-      ['merge_requests', Project, proc { |id| find_merge_request_with_access(id, :update_merge_request) }, proc { user_project }],
-      ['issues', Project, proc { |id| find_project_issue(id) }, proc { user_project }],
-      ['labels', Project, proc { |id| find_label(user_project, id) }, proc { user_project }],
-      ['labels', Group, proc { |id| find_label(user_group, id) }, proc { nil }]
+      { type: 'merge_requests', source: Project, finder: ->(id) { find_merge_request_with_access(id, :update_merge_request) }, parent_resource: -> { user_project } },
+      { type: 'issues', source: Project, finder: ->(id) { find_project_issue(id) }, parent_resource: -> { user_project } },
+      { type: 'labels', source: Project, finder: ->(id) { find_label(user_project, id) }, parent_resource: -> { user_project } },
+      { type: 'labels', source: Group, finder: ->(id) { find_label(user_group, id) }, parent_resource: -> { nil } }
     ]
 
     params do
@@ -32,9 +32,9 @@ module API
         desc 'Subscribe to a resource' do
           success entity_class
         end
-        post ":id/#{type}/:subscribable_id/subscribe" do
-          parent = instance_exec(&parent_ressource)
-          resource = instance_exec(params[:subscribable_id], &finder)
+        post ":id/#{subscribable[:type]}/:subscribable_id/subscribe" do
+          parent = instance_exec(&subscribable[:parent_resource])
+          resource = instance_exec(params[:subscribable_id], &subscribable[:finder])
 
           if resource.subscribed?(current_user, parent)
             not_modified!
@@ -47,10 +47,9 @@ module API
         desc 'Unsubscribe from a resource' do
           success entity_class
         end
-        post ":id/#{type}/:subscribable_id/unsubscribe" do
-          parent = instance_exec(&parent_ressource)
-          resource = instance_exec(params[:subscribable_id], &finder)
-
+        post ":id/#{subscribable[:type]}/:subscribable_id/unsubscribe" do
+          parent = instance_exec(&subscribable[:parent_resource])
+          resource = instance_exec(params[:subscribable_id], &subscribable[:finder])
 
           if !resource.subscribed?(current_user, parent)
             not_modified!

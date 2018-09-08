@@ -40,7 +40,7 @@ module API
 
         label = ::Labels::CreateService.new(declared_params(include_missing: false)).execute(group: user_group)
 
-        if label.valid?
+        if label.persisted?
           present label, with: Entities::Label, current_user: current_user, parent: user_group
         else
           render_validation_error!(label)
@@ -80,12 +80,8 @@ module API
         label = user_group.labels.find_by(title: params[:name])
         not_found!('Label not found') unless label
 
-        label_params = declared_params(include_missing: false)
-        # Rename new name to the actual label attribute name
-        label_params[:name] = label_params.delete(:new_name) if label_params.key?(:new_name)
-
-        label = ::Labels::UpdateService.new(label_params).execute(label)
-        render_validation_error!(label) unless label.valid?
+        label = ::Labels::UpdateService.new(declared_params(include_missing: false)).execute(label)
+        render_validation_error!(label) if label.changed?
 
         present label, with: Entities::Label, current_user: current_user, parent: user_group
       end
