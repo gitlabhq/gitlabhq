@@ -2,27 +2,28 @@ module Gitlab
   module Ci
     module External
       module File
-        class Local
-          attr_reader :location, :project, :branch_name
+        class Local < Base
+          attr_reader :location, :project, :sha
 
           def initialize(location, opts = {})
-            @location = location
+            super
+
             @project = opts.fetch(:project)
             @sha = opts.fetch(:sha)
           end
 
-          def valid?
-            local_file_content
+          def content
+            @content ||= fetch_local_content
           end
 
-          def content
-            local_file_content
+          def error_message
+            "Local file '#{location}' is not valid."
           end
 
           private
 
-          def local_file_content
-            @local_file_content ||= project.repository.blob_data_at(sha, location)
+          def fetch_local_content
+            project.repository.blob_data_at(sha, location)
           end
         end
       end
