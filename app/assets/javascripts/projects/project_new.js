@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import { addSelectOnFocusBehaviour } from '../lib/utils/common_utils';
+import { slugifyWithHyphens } from '../lib/utils/text_utility';
 
 let hasUserDefinedProjectPath = false;
 
@@ -29,18 +30,23 @@ const deriveProjectPathFromUrl = ($projectImportUrl) => {
   }
 };
 
+const onProjectNameChange = ($projectNameInput, $projectPathInput) => {
+  const slug = slugifyWithHyphens($projectNameInput.val());
+  $projectPathInput.val(slug);
+};
+
 const bindEvents = () => {
   const $newProjectForm = $('#new_project');
   const $projectImportUrl = $('#project_import_url');
-  const $projectPath = $('#project_path');
+  const $projectPath = $('.tab-pane.active #project_path');
   const $useTemplateBtn = $('.template-button > input');
   const $projectFieldsForm = $('.project-fields-form');
   const $selectedTemplateText = $('.selected-template');
   const $changeTemplateBtn = $('.change-template');
   const $selectedIcon = $('.selected-icon');
-  const $templateProjectNameInput = $('#template-project-name #project_path');
   const $pushNewProjectTipTrigger = $('.push-new-project-tip');
   const $projectTemplateButtons = $('.project-templates-buttons');
+  const $projectName = $('.tab-pane.active #project_name');
 
   if ($newProjectForm.length !== 1) {
     return;
@@ -57,7 +63,8 @@ const bindEvents = () => {
 
   $('.btn_import_gitlab_project').on('click', () => {
     const importHref = $('a.btn_import_gitlab_project').attr('href');
-    $('.btn_import_gitlab_project').attr('href', `${importHref}?namespace_id=${$('#project_namespace_id').val()}&path=${$projectPath.val()}`);
+    $('.btn_import_gitlab_project')
+      .attr('href', `${importHref}?namespace_id=${$('#project_namespace_id').val()}&name=${$projectName.val()}&path=${$projectPath.val()}`);
   });
 
   if ($pushNewProjectTipTrigger) {
@@ -111,7 +118,15 @@ const bindEvents = () => {
     const selectedTemplate = templates[value];
     $selectedTemplateText.text(selectedTemplate.text);
     $(selectedTemplate.icon).clone().addClass('d-block').appendTo($selectedIcon);
-    $templateProjectNameInput.focus();
+
+    const $activeTabProjectName = $('.tab-pane.active #project_name');
+    const $activeTabProjectPath = $('.tab-pane.active #project_path');
+    $activeTabProjectName.focus();
+    $activeTabProjectName
+      .keyup(() => {
+        onProjectNameChange($activeTabProjectName, $activeTabProjectPath);
+        hasUserDefinedProjectPath = $activeTabProjectPath.val().trim().length > 0;
+      });
   }
 
   $useTemplateBtn.on('change', chooseTemplate);
@@ -137,9 +152,15 @@ const bindEvents = () => {
 
     $projectMirror.attr('disabled', !$projectMirror.attr('disabled'));
   });
+
+  $projectName.keyup(() => {
+    onProjectNameChange($projectName, $projectPath);
+    hasUserDefinedProjectPath = $projectPath.val().trim().length > 0;
+  });
 };
 
 export default {
   bindEvents,
   deriveProjectPathFromUrl,
+  onProjectNameChange,
 };

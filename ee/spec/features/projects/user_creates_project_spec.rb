@@ -18,6 +18,7 @@ describe 'User creates a project', :js do
     it 'creates a new project' do
       visit(new_project_path)
 
+      fill_in :project_name, with: 'a-new-project'
       fill_in :project_path, with: 'a-new-project'
 
       page.find('.js-select-namespace').click
