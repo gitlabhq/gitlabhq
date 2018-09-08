@@ -217,7 +217,7 @@ export function prepareDiffData(diffData) {
   }
 }
 
-export function getDiffRefsByLineCode(diffFiles) {
+export function getDiffPositionByLineCode(diffFiles) {
   return diffFiles.reduce((acc, diffFile) => {
     const { baseSha, headSha, startSha } = diffFile.diffRefs;
     const { newPath, oldPath } = diffFile;
@@ -236,4 +236,13 @@ export function getDiffRefsByLineCode(diffFiles) {
 
     return acc;
   }, {});
+}
+
+// This method will check whether the discussion is still applicable
+// to the diff line in question regarding different versions of the MR
+export function isDiscussionApplicableToLine(discussion, diffPosition) {
+  const originalRefs = convertObjectPropsToCamelCase(discussion.original_position.formatter);
+  const refs = convertObjectPropsToCamelCase(discussion.position.formatter);
+
+  return _.isEqual(refs, diffPosition) || _.isEqual(originalRefs, diffPosition);
 }

@@ -3,6 +3,7 @@ import axios from '~/lib/utils/axios_utils';
 import Cookies from 'js-cookie';
 import { handleLocationHash, historyPushState } from '~/lib/utils/common_utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
+import { getDiffPositionByLineCode } from './utils';
 import * as types from './mutation_types';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
@@ -31,11 +32,17 @@ export const fetchDiffFiles = ({ state, commit }) => {
 
 // This is adding line discussions to the actual lines in the diff tree
 // once for parallel and once for inline mode
-export const assignDiscussionsToDiff = ({ commit }, allLineDiscussions) => {
+export const assignDiscussionsToDiff = ({ state, commit }, allLineDiscussions) => {
+  const diffPositionByLineCode = getDiffPositionByLineCode(state.diffFiles);
+
   Object.values(allLineDiscussions).forEach(discussions => {
     if (discussions.length > 0) {
       const { fileHash } = discussions[0];
-      commit(types.SET_LINE_DISCUSSIONS_FOR_FILE, { fileHash, discussions });
+      commit(types.SET_LINE_DISCUSSIONS_FOR_FILE, {
+        fileHash,
+        discussions,
+        diffPositionByLineCode,
+      });
     }
   });
 };

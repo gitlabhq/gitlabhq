@@ -95,10 +95,29 @@ describe('DiffsStoreActions', () => {
               {
                 lineCode: 'ABC_1_1',
                 discussions: [],
+                oldLine: 5,
+                newLine: null,
               },
             ],
+            diffRefs: {
+              baseSha: 'abc',
+              headSha: 'def',
+              startSha: 'ghi',
+            },
+            newPath: 'file1',
+            oldPath: 'file2',
           },
         ],
+      };
+
+      const diffPosition = {
+        baseSha: 'abc',
+        headSha: 'def',
+        startSha: 'ghi',
+        newLine: null,
+        newPath: 'file1',
+        oldLine: 5,
+        oldPath: 'file2',
       };
 
       const singleDiscussion = {
@@ -107,8 +126,14 @@ describe('DiffsStoreActions', () => {
         diff_file: {
           file_hash: 'ABC',
         },
-        resolvable: true,
         fileHash: 'ABC',
+        resolvable: true,
+        position: {
+          formatter: diffPosition,
+        },
+        original_position: {
+          formatter: diffPosition,
+        },
       };
 
       const discussions = reduceDiscussionsToLineCodes([singleDiscussion]);
@@ -123,6 +148,17 @@ describe('DiffsStoreActions', () => {
             payload: {
               fileHash: 'ABC',
               discussions: [singleDiscussion],
+              diffPositionByLineCode: {
+                ABC_1_1: {
+                  baseSha: 'abc',
+                  headSha: 'def',
+                  startSha: 'ghi',
+                  newLine: null,
+                  newPath: 'file1',
+                  oldLine: 5,
+                  oldPath: 'file2',
+                },
+              },
             },
           },
         ],

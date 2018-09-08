@@ -6,6 +6,7 @@ import {
   removeMatchLine,
   addContextLines,
   prepareDiffData,
+  isDiscussionApplicableToLine,
 } from './utils';
 import * as types from './mutation_types';
 
@@ -84,10 +85,22 @@ export default {
     }));
   },
 
-  [types.SET_LINE_DISCUSSIONS_FOR_FILE](state, { fileHash, discussions }) {
+  [types.SET_LINE_DISCUSSIONS_FOR_FILE](state, { fileHash, discussions, diffPositionByLineCode }) {
     const selectedFile = state.diffFiles.find(f => f.fileHash === fileHash);
-    if (selectedFile) {
-      const firstDiscussion = discussions[0];
+    const firstDiscussion = discussions[0];
+    const isDiffDiscussion = firstDiscussion.diff_discussion;
+    const hasLineCode = firstDiscussion.line_code;
+    const isResolvable = firstDiscussion.resolvable;
+    const diffPosition = diffPositionByLineCode[firstDiscussion.line_code];
+
+    if (
+      selectedFile &&
+      isDiffDiscussion &&
+      hasLineCode &&
+      isResolvable &&
+      diffPosition &&
+      isDiscussionApplicableToLine(firstDiscussion, diffPosition)
+    ) {
       const targetLine = selectedFile.parallelDiffLines.find(
         line =>
           (line.left && line.left.lineCode === firstDiscussion.line_code) ||
