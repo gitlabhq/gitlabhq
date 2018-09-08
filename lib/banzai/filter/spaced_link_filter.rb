@@ -10,11 +10,12 @@ module Banzai
     #
     # CommonMark does not allow spaces in the url portion of a link/url.
     # For example, `[example](page slug)` is not valid.
-    # Neither is `![example](test image.jpg)`. However,
+    # Neither is `![example](test image.jpg)`. However, particularly
     # in our wikis, we support (via RedCarpet) this type of link, allowing
     # wiki pages to be easily linked by their title.  This filter adds that functionality.
-    # The intent is for this to only be used in Wikis - in general, we want
-    # to adhere to CommonMark's spec.
+    #
+    # This is a small extension to the CommonMark spec.  If they start allowing
+    # spaces in urls, we could then remove this filter.
     #
     class SpacedLinkFilter < HTML::Pipeline::Filter
       include ActionView::Helpers::TagHelper
