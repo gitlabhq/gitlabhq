@@ -83,14 +83,14 @@ To add an existing Kubernetes cluster to your project:
     - **Kubernetes cluster name** (required) - The name you wish to give the cluster.
     - **Environment scope** (required)- The
       [associated environment](#setting-the-environment-scope) to this cluster.
-    * **API URL** (required) -
+    - **API URL** (required) -
       It's the URL that GitLab uses to access the Kubernetes API. Kubernetes
       exposes several APIs, we want the "base" URL that is common to all of them,
       e.g., `https://kubernetes.example.com` rather than `https://kubernetes.example.com/api/v1`.
-    * **CA certificate** (optional) -
+    - **CA certificate** (optional) -
       If the API is using a self-signed TLS certificate, you'll also need to include
       the `ca.crt` contents here.
-    * **Token** -
+    - **Token** -
       GitLab authenticates against Kubernetes using service tokens, which are
       scoped to a particular `namespace`. If you don't have a service token yet,
       you can follow the
@@ -101,13 +101,14 @@ To add an existing Kubernetes cluster to your project:
       must have admin privileges on the cluster.**
     - **Project namespace** (optional) - You don't have to fill it in; by leaving
       it blank, GitLab will create one for you. Also:
-      - Each project should have a unique namespace.
-      - The project namespace is not necessarily the namespace of the secret, if
-        you're using a secret with broader permissions, like the secret from `default`.
-      * You should **not** use `default` as the project namespace.
-      * If you or someone created a secret specifically for the project, usually
-        with limited permissions, the secret's namespace and project namespace may
-        be the same.
+       - Each project should have a unique namespace.
+       - The project namespace is not necessarily the namespace of the secret, if
+         you're using a secret with broader permissions, like the secret from `default`.
+       - You should **not** use `default` as the project namespace.
+       - If you or someone created a secret specifically for the project, usually
+         with limited permissions, the secret's namespace and project namespace may
+         be the same.
+
 1.  Finally, click the **Create Kubernetes cluster** button.
 
 After a couple of minutes, your cluster will be ready to go. You can now proceed

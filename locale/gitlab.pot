@@ -5819,6 +5819,9 @@ msgstr ""
 msgid "Project Badges"
 msgstr ""
 
+msgid "Project URL"
+msgstr ""
+
 msgid "Project access must be granted explicitly to each user."
 msgstr ""
 
@@ -5844,6 +5847,9 @@ msgid "Project export started. A download link will be sent by email."
 msgstr ""
 
 msgid "Project name"
+msgstr ""
+
+msgid "Project slug"
 msgstr ""
 
 msgid "ProjectActivityRSS|Subscribe"

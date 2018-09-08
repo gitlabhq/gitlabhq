@@ -236,11 +236,13 @@ module Gitlab
     # TODO: please clean this up
     def check_push_access!
       if project.repository_read_only?
+        # The repository is temporarily read-only. Please try again later.
         raise UnauthorizedError, ERROR_MESSAGES[:read_only]
       end
 
       if deploy_key?
         unless deploy_key.can_push_to?(project)
+          # This deploy key does not have write access to this project.
           raise UnauthorizedError, ERROR_MESSAGES[:deploy_key_upload]
         end
       elsif user
@@ -248,6 +250,7 @@ module Gitlab
       elsif authed_via_jwt?
         # Authenticated via JWT
       else
+        # You are not allowed to upload code for this project.
         raise UnauthorizedError, ERROR_MESSAGES[:upload]
       end
 

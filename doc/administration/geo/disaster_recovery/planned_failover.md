@@ -143,28 +143,28 @@ access to the primary for the duration of the maintenance window.
    all HTTP, HTTPS and SSH traffic to/from the primary, **except** for your IP and
    the secondary's IP.
 
-     For instance, if your secondary originates all its traffic from `5.6.7.8` and
-     your IP is `100.0.0.1`, you might run the following commands on the server(s)
-     making up your primary node:
+    For instance, if your secondary originates all its traffic from `5.6.7.8` and
+    your IP is `100.0.0.1`, you might run the following commands on the server(s)
+    making up your primary node:
 
-     ```
-     sudo iptables -A INPUT -p tcp -s 5.6.7.8 --destination-port 22 -j ACCEPT
-     sudo iptables -A INPUT -p tcp -s 100.0.0.1 --destination-port 22 -j ACCEPT
-     sudo iptables -A INPUT --destination-port 22 -j REJECT
+    ```
+    sudo iptables -A INPUT -p tcp -s 5.6.7.8 --destination-port 22 -j ACCEPT
+    sudo iptables -A INPUT -p tcp -s 100.0.0.1 --destination-port 22 -j ACCEPT
+    sudo iptables -A INPUT --destination-port 22 -j REJECT
 
-     sudo iptables -A INPUT -p tcp -s 5.6.7.8 --destination-port 80 -j ACCEPT
-     sudo iptables -A INPUT -p tcp -s 100.0.0.1 --destination-port 80 -j ACCEPT
-     sudo iptables -A INPUT --tcp-dport 80 -j REJECT
+    sudo iptables -A INPUT -p tcp -s 5.6.7.8 --destination-port 80 -j ACCEPT
+    sudo iptables -A INPUT -p tcp -s 100.0.0.1 --destination-port 80 -j ACCEPT
+    sudo iptables -A INPUT --tcp-dport 80 -j REJECT
 
-     sudo iptables -A INPUT -p tcp -s 5.6.7.8 --destination-port 443 -j ACCEPT
-     sudo iptables -A INPUT -p tcp -s 100.0.0.1 --destination-port 443 -j ACCEPT
-     sudo iptables -A INPUT --tcp-dport 443 -j REJECT
-     ```
+    sudo iptables -A INPUT -p tcp -s 5.6.7.8 --destination-port 443 -j ACCEPT
+    sudo iptables -A INPUT -p tcp -s 100.0.0.1 --destination-port 443 -j ACCEPT
+    sudo iptables -A INPUT --tcp-dport 443 -j REJECT
+    ```
 
-     From this point, users will be unable to view their data or make changes on the
-     **primary** node. They will also be unable to log in to the **secondary** node,
-     but existing sessions will work for the remainder of the maintenance period, and
-     public data will be accessible throughout.
+    From this point, users will be unable to view their data or make changes on the
+    **primary** node. They will also be unable to log in to the **secondary** node,
+    but existing sessions will work for the remainder of the maintenance period, and
+    public data will be accessible throughout.
 
 1. Verify the primary is blocked to HTTP traffic by visiting it in browser via
    another IP. The server should refuse connection.

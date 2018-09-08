@@ -50,6 +50,7 @@ module Gitlab
 
       def push_checks
         unless can_push?
+          # You are not allowed to push code to this project.
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:push_code]
         end
       end

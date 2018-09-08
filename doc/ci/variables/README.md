@@ -34,7 +34,7 @@ Some of the predefined environment variables are available only if a minimum
 version of [GitLab Runner][runner] is used. Consult the table below to find the
 version of Runner required.
 
->**Note:**
+NOTE: **Note:**
 Starting with GitLab 9.0, we have deprecated some variables. Read the
 [9.0 Renaming](#9-0-renaming) section to find out their replacements. **You are
 strongly advised to use the new variables as we will remove the old ones in
@@ -112,7 +112,7 @@ To follow conventions of naming across GitLab, and to further move away from the
 `build` term and toward `job` CI variables have been renamed for the 9.0
 release.
 
->**Note:**
+NOTE: **Note:**
 Starting with GitLab 9.0, we have deprecated the `$CI_BUILD_*` variables. **You are
 strongly advised to use the new variables as we will remove the old ones in
 future GitLab releases.**
@@ -134,7 +134,7 @@ future GitLab releases.**
 
 ## `.gitlab-ci.yml` defined variables
 
->**Note:**
+NOTE **Note:**
 This feature requires GitLab Runner 0.5.0 or higher and GitLab CI 7.14 or higher.
 
 GitLab CI allows you to add to `.gitlab-ci.yml` variables that are set in the
@@ -236,9 +236,15 @@ Wildcards (`*`) can be used along with the environment name, therefore if the
 environment scope is `review/*` then any jobs with environment names starting
 with `review/` would have that particular variable.
 
+### Manually-specified variables
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/44059) in GitLab 10.8.
+
+Variables can be specified for a single pipeline run when a [manual pipeline](../pipelines.md#manually-executing-pipelines) is created.
+
 ## Deployment variables
 
->**Note:**
+NOTE: **Note:**
 This feature requires GitLab CI 8.15 or higher.
 
 [Project services](../../user/project/integrations/project_services.md) that are

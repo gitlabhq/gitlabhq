@@ -336,6 +336,22 @@ describe Gitlab::Workhorse do
         it { expect { subject }.to raise_exception('Unsupported action: download') }
       end
     end
+
+    context 'when receive_max_input_size has been updated' do
+      it 'returns custom git config' do
+        allow(Gitlab::CurrentSettings).to receive(:receive_max_input_size) { 1 }
+
+        expect(subject[:GitConfigOptions]).to be_present
+      end
+    end
+
+    context 'when receive_max_input_size is empty' do
+      it 'returns an empty git config' do
+        allow(Gitlab::CurrentSettings).to receive(:receive_max_input_size) { nil }
+
+        expect(subject[:GitConfigOptions]).to be_empty
+      end
+    end
   end
 
   describe '.set_key_and_notify' do

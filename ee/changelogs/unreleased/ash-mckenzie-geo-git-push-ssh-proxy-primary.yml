@@ -1,0 +1,5 @@
+---
+title: Allow push_code when auth'd via Geo JWT
+merge_request: 6455
+author:
+type: changed

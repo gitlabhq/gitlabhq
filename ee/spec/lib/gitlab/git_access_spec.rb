@@ -18,25 +18,9 @@ describe Gitlab::GitAccess do
       allow(Gitlab::Database).to receive(:read_only?) { true }
     end
 
-    it 'denies push access' do
-      project.add_maintainer(user)
+    let(:primary_repo_url) { "https://localhost:3000/gitlab/#{project.full_path}.git" }
 
-      expect { push_changes }.to raise_unauthorized("You can't push code to a read-only GitLab instance.")
-    end
-
-    it 'denies push access with primary present' do
-      error_message = "You can't push code to a read-only GitLab instance."\
-"\nPlease use the primary node URL instead: https://localhost:3000/gitlab/#{project.full_path}.git.
-For more information: #{EE::Gitlab::GeoGitAccess::GEO_SERVER_DOCS_URL}"
-
-      primary_node = create(:geo_node, :primary, url: 'https://localhost:3000/gitlab')
-      allow(Gitlab::Geo).to receive(:primary).and_return(primary_node)
-      allow(Gitlab::Geo).to receive(:secondary_with_primary?).and_return(true)
-
-      project.add_maintainer(user)
-
-      expect { push_changes }.to raise_unauthorized(error_message)
-    end
+    it_behaves_like 'a read-only GitLab instance'
   end
 
   describe "push_rule_check" do
@@ -264,10 +248,21 @@ For more information: #{EE::Gitlab::GeoGitAccess::GEO_SERVER_DOCS_URL}"
     end
   end
 
+  describe 'Geo system permissions' do
+    let(:actor) { :geo }
+
+    it { expect { pull_changes }.not_to raise_error }
+    it { expect { push_changes }.to raise_unauthorized(Gitlab::GitAccess::ERROR_MESSAGES[:push_code]) }
+  end
+
   private
 
   def push_changes(changes = '_any')
     access.check('git-receive-pack', changes)
+  end
+
+  def pull_changes(changes = '_any')
+    access.check('git-upload-pack', changes)
   end
 
   def raise_unauthorized(message)

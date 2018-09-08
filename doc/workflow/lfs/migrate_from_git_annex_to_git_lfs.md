@@ -152,6 +152,7 @@ if the server also has Git Annex 6 installed. Read more in the
     indirect  ok
     ok
     ```
+
 ---
 
 At this point, you have two options. Either add, commit and push the files

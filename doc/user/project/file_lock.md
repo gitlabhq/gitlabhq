@@ -1,10 +1,10 @@
 # File Locking **[PREMIUM]**
 
->**Notes:**
-- [Introduced][ee-440] in [GitLab Premium][ee] 8.9.
-- This feature needs to have a license with the "File Lock" option enabled. If
-  you are using Premium but you don't see the "Lock" button,
-  ask your GitLab administrator.
+> **Notes:**
+> - [Introduced][ee-440] in [GitLab Premium][ee] 8.9.
+> - This feature needs to have a license with the "File Lock" option enabled. If
+>   you are using Premium but you don't see the "Lock" button,
+>   ask your GitLab administrator.
 
 File Locking helps you avoid merge conflicts and better manage your binary files.
 Lock any file or directory, make your changes, and then unlock it so another

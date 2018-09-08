@@ -17,7 +17,7 @@ module EE
 
           override :whitelisted_routes
           def whitelisted_routes
-            super || geo_node_update_route
+            super || geo_node_update_route || geo_proxy_git_push_ssh_route
           end
 
           def geo_node_update_route
@@ -32,6 +32,14 @@ module EE
             else
               WHITELISTED_GEO_ROUTES_TRACKING_DB[controller]&.include?(action)
             end
+          end
+
+          def geo_proxy_git_push_ssh_route
+            routes = ::Gitlab::Middleware::ReadOnly::API_VERSIONS.map do |version|
+              ["/api/v#{version}/geo/proxy_git_push_ssh/info_refs",
+               "/api/v#{version}/geo/proxy_git_push_ssh/push"]
+            end
+            routes.flatten.include?(request.path)
           end
         end
       end

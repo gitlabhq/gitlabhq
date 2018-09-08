@@ -289,13 +289,13 @@ It is important to note that selective synchronization does not:
 
 1. Restrict permissions from secondary nodes.
 1. Hide project metadata from secondary nodes.
-  * Since Geo currently relies on PostgreSQL replication, all project metadata
-    gets replicated to secondary nodes, but repositories that have not been
-    selected will be empty.
+   * Since Geo currently relies on PostgreSQL replication, all project metadata
+     gets replicated to secondary nodes, but repositories that have not been
+     selected will be empty.
 1. Reduce the number of events generated for the Geo event log
-  * The primary generates events as long as any secondaries are present.
-    Selective synchronization restrictions are implemented on the secondaries,
-    not the primary.
+   * The primary generates events as long as any secondaries are present.
+     Selective synchronization restrictions are implemented on the secondaries,
+     not the primary.
 
 A subset of projects can be chosen, either by group or by storage shard. The
 former is ideal for replicating data belonging to a subset of users, while the

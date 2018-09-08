@@ -151,7 +151,6 @@ be specified.
     gitlab_rails['redis_host'] = '10.1.2.1'
     gitlab_rails['redis_password'] = 'Redis password'
 
-
     ##
     ## Enable the geo secondary role and configure the
     ## geo tracking database

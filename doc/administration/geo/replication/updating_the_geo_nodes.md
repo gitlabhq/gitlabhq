@@ -49,7 +49,8 @@ authentication method.
     # Every node that runs Unicorn or Sidekiq needs to have the database
     # password specified as below. If you have a high-availability setup, this
     # must be present in all application nodes.
-    gitlab_rails['db_password'] = 'mypassword' ```
+    gitlab_rails['db_password'] = 'mypassword'
+    ```
 
     Still in the configuration file, locate and remove the `trust_auth_cidr_address`:
 
