@@ -119,5 +119,33 @@ describe Admin::ApplicationSettingsController do
       expect(response).to redirect_to(admin_application_settings_path)
       expect(ApplicationSetting.current.default_project_creation).to eq(::EE::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
     end
+
+    it 'updates repository_size_limit' do
+      put :update, application_setting: { repository_size_limit: '100' }
+
+      expect(response).to redirect_to(admin_application_settings_path)
+      expect(response).to set_flash[:notice].to('Application settings saved successfully')
+    end
+
+    it 'does not accept negative repository_size_limit' do
+      put :update, application_setting: { repository_size_limit: '-100' }
+
+      expect(response).to render_template(:show)
+      expect(assigns(:application_setting).errors[:repository_size_limit]).to be_present
+    end
+
+    it 'does not accept invalid repository_size_limit' do
+      put :update, application_setting: { repository_size_limit: 'one thousand' }
+
+      expect(response).to render_template(:show)
+      expect(assigns(:application_setting).errors[:repository_size_limit]).to be_present
+    end
+
+    it 'does not accept empty repository_size_limit' do
+      put :update, application_setting: { repository_size_limit: '' }
+
+      expect(response).to render_template(:show)
+      expect(assigns(:application_setting).errors[:repository_size_limit]).to be_present
+    end
   end
 end
