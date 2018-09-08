@@ -25,7 +25,7 @@ describe API::Geo do
     end
   end
 
-  describe '/geo/transfers' do
+  describe 'GET /geo/transfers' do
     before do
       stub_current_geo_node(secondary_node)
     end
@@ -285,6 +285,122 @@ describe API::Geo do
       end
 
       it_behaves_like 'with terms enforced'
+    end
+  end
+
+  describe '/geo/proxy_git_push_ssh' do
+    let(:secret_token) { Gitlab::Shell.secret_token }
+    let(:data) { { primary_repo: 'http://localhost:3001/testuser/repo.git', gl_id: 'key-1', gl_username: 'testuser' } }
+
+    before do
+      stub_current_geo_node(secondary_node)
+    end
+
+    describe 'POST /geo/proxy_git_push_ssh/info_refs' do
+      context 'with all required params missing' do
+        it 'responds with 400' do
+          post api('/geo/proxy_git_push_ssh/info_refs'), nil
+
+          expect(response).to have_gitlab_http_status(400)
+          expect(json_response['error']).to eql('secret_token is missing, data is missing, data[gl_id] is missing, data[primary_repo] is missing')
+        end
+      end
+
+      context 'with all required params' do
+        let(:git_push_ssh_proxy) { double(Gitlab::Geo::GitPushSSHProxy) }
+
+        before do
+          allow(Gitlab::Geo::GitPushSSHProxy).to receive(:new).with(data).and_return(git_push_ssh_proxy)
+        end
+
+        context 'with an invalid secret_token' do
+          it 'responds with 401' do
+            post(api('/geo/proxy_git_push_ssh/info_refs'), { secret_token: 'invalid', data: data })
+
+            expect(response).to have_gitlab_http_status(401)
+            expect(json_response['error']).to be_nil
+          end
+        end
+
+        context 'where an exception occurs' do
+          it 'responds with 500' do
+            expect(git_push_ssh_proxy).to receive(:info_refs).and_raise('deliberate exception raised')
+
+            post api('/geo/proxy_git_push_ssh/info_refs'), { secret_token: secret_token, data: data }
+
+            expect(response).to have_gitlab_http_status(500)
+            expect(json_response['message']).to include('RuntimeError (deliberate exception raised)')
+            expect(json_response['result']).to be_nil
+          end
+        end
+
+        context 'with a valid secret token' do
+          let(:http_response) { double(Net::HTTPResponse, code: 200, body: 'something here') }
+
+          it 'responds with 200' do
+            expect(git_push_ssh_proxy).to receive(:info_refs).and_return(http_response)
+
+            post api('/geo/proxy_git_push_ssh/info_refs'), { secret_token: secret_token, data: data }
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(Base64.decode64(json_response['result'])).to eql('something here')
+          end
+        end
+      end
+    end
+
+    describe 'POST /geo/proxy_git_push_ssh/push' do
+      context 'with all required params missing' do
+        it 'responds with 400' do
+          post api('/geo/proxy_git_push_ssh/push'), nil
+
+          expect(response).to have_gitlab_http_status(400)
+          expect(json_response['error']).to eql('secret_token is missing, data is missing, data[gl_id] is missing, data[primary_repo] is missing, output is missing')
+        end
+      end
+
+      context 'with all required params' do
+        let(:text) { 'output text' }
+        let(:output) { Base64.encode64(text) }
+        let(:git_push_ssh_proxy) { double(Gitlab::Geo::GitPushSSHProxy) }
+
+        before do
+          allow(Gitlab::Geo::GitPushSSHProxy).to receive(:new).with(data).and_return(git_push_ssh_proxy)
+        end
+
+        context 'with an invalid secret_token' do
+          it 'responds with 401' do
+            post(api('/geo/proxy_git_push_ssh/push'), { secret_token: 'invalid', data: data, output: output })
+
+            expect(response).to have_gitlab_http_status(401)
+            expect(json_response['error']).to be_nil
+          end
+        end
+
+        context 'where an exception occurs' do
+          it 'responds with 500' do
+            expect(git_push_ssh_proxy).to receive(:push).and_raise('deliberate exception raised')
+            post api('/geo/proxy_git_push_ssh/push'), { secret_token: secret_token, data: data, output: output }
+
+            expect(response).to have_gitlab_http_status(500)
+            expect(json_response['message']).to include('RuntimeError (deliberate exception raised)')
+            expect(json_response['result']).to be_nil
+          end
+        end
+
+        context 'with a valid secret token' do
+          let(:http_response) { double(Net::HTTPResponse, code: 201, body: 'something here') }
+
+          it 'responds with 201' do
+            expect(git_push_ssh_proxy).to receive(:push).with(text).and_return(http_response)
+
+            post api('/geo/proxy_git_push_ssh/push'), { secret_token: secret_token, data: data, output: output }
+
+            expect(response).to have_gitlab_http_status(201)
+            expect(Base64.decode64(json_response['result'])).to eql('something here')
+          end
+        end
+      end
     end
   end
 end
