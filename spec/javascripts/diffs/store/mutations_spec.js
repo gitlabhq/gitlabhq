@@ -151,6 +151,16 @@ describe('DiffsStoreMutations', () => {
 
   describe('SET_LINE_DISCUSSIONS_FOR_FILE', () => {
     it('should add discussions to the given line', () => {
+      const diffPosition = {
+        baseSha: 'ed13df29948c41ba367caa757ab3ec4892509910',
+        headSha: 'b921914f9a834ac47e6fd9420f78db0f83559130',
+        newLine: null,
+        newPath: '500-lines-4.txt',
+        oldLine: 5,
+        oldPath: '500-lines-4.txt',
+        startSha: 'ed13df29948c41ba367caa757ab3ec4892509910',
+      };
+
       const state = {
         diffFiles: [
           {
@@ -180,14 +190,38 @@ describe('DiffsStoreMutations', () => {
         {
           id: 1,
           line_code: 'ABC_1',
+          diff_discussion: true,
+          resolvable: true,
+          original_position: {
+            formatter: diffPosition,
+          },
+          position: {
+            formatter: diffPosition,
+          },
         },
         {
           id: 2,
           line_code: 'ABC_1',
+          diff_discussion: true,
+          resolvable: true,
+          original_position: {
+            formatter: diffPosition,
+          },
+          position: {
+            formatter: diffPosition,
+          },
         },
       ];
 
-      mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, { fileHash: 'ABC', discussions });
+      const diffPositionByLineCode = {
+        ABC_1: diffPosition,
+      };
+
+      mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
+        fileHash: 'ABC',
+        discussions,
+        diffPositionByLineCode,
+      });
 
       expect(state.diffFiles[0].parallelDiffLines[0].left.discussions.length).toEqual(2);
       expect(state.diffFiles[0].parallelDiffLines[0].left.discussions[1].id).toEqual(2);

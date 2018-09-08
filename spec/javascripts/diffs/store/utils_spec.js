@@ -239,4 +239,57 @@ describe('DiffsStoreUtils', () => {
       expect(preparedDiff.diffFiles[0].collapsed).toBeFalsy();
     });
   });
+
+  describe('isDiscussionApplicableToLine', () => {
+    const diffPosition = {
+      baseSha: 'ed13df29948c41ba367caa757ab3ec4892509910',
+      headSha: 'b921914f9a834ac47e6fd9420f78db0f83559130',
+      newLine: null,
+      newPath: '500-lines-4.txt',
+      oldLine: 5,
+      oldPath: '500-lines-4.txt',
+      startSha: 'ed13df29948c41ba367caa757ab3ec4892509910',
+    };
+
+    const wrongDiffPosition = {
+      baseSha: 'wrong',
+      headSha: 'wrong',
+      newLine: null,
+      newPath: '500-lines-4.txt',
+      oldLine: 5,
+      oldPath: '500-lines-4.txt',
+      startSha: 'wrong',
+    };
+
+    const discussions = {
+      upToDateDiscussion1: {
+        original_position: {
+          formatter: diffPosition,
+        },
+        position: {
+          formatter: wrongDiffPosition,
+        },
+      },
+      outDatedDiscussion1: {
+        original_position: {
+          formatter: wrongDiffPosition,
+        },
+        position: {
+          formatter: wrongDiffPosition,
+        },
+      },
+    };
+
+    it('returns true when the discussion is up to date', () => {
+      expect(
+        utils.isDiscussionApplicableToLine(discussions.upToDateDiscussion1, diffPosition),
+      ).toBe(true);
+    });
+
+    it('returns false when the discussion is not up to date', () => {
+      expect(
+        utils.isDiscussionApplicableToLine(discussions.outDatedDiscussion1, diffPosition),
+      ).toBe(false);
+    });
+  });
 });
