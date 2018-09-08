@@ -69,6 +69,28 @@ module API
         status 200
       end
 
+      desc 'Get information about runner'
+      params do
+        requires :token, type: String, desc: %q(Runner's authentication token)
+      end
+      get '/information' do
+        authenticate_runner!
+        status 200
+
+        present {
+          id: current_runner.id,
+          params: {
+            tag_list: { strings: current_runner.tag_list },
+            tagged: { bool: current_runner.tag_list.any? },
+            run_untagged: { bool: current_runner.run_untagged? },
+            protected: { bool: current_runner.ref_protected? },
+            shared: { bool: current_runner.instance_type? },
+            group_ids: { ids: current_runner.groups.pluck(:id) },
+            project_ids: { ids: current_runner.projects.pluck(:id) },
+          }
+        }
+      end
+
       desc 'Get information about running jobs per-project'
       params do
         requires :token, type: String, desc: %q(Runner's authentication token)
@@ -85,6 +107,40 @@ module API
     end
 
     resource :jobs do
+      desc 'Lists all pending jobs'
+      patch '/pending' do
+        status 200
+
+        present Ci::Build.pending.unstarted.map do |build|
+          { id: build.id,
+            project_id: build.project_id,
+            conditions: [
+              {
+                or: [
+                  { param: :group_ids, contains: { id: build.project.namespace_id } },
+                  { param: :project_ids, contains: { id: build.project_id } },
+                  { param: :shared, contains: { bool: true } } if build.project.shared_runners_enabled?,
+                ].compact
+              },
+              {
+                # protected builds has to be run by protected runners
+                # not protected can be run by any type of runner
+                param: :protected,
+                equals: { bool: build.protected? }
+              } if build.protected?,
+              {
+                param: :tag_list,
+                all_of: { strings: build.tag_list }
+              }  if build.tag_list.any?,
+              {
+                param: :run_untagged,
+                equals: { bool: true }
+              } if build.tag_list.empty?
+            ].compact
+          }
+        end
+      end
+
       desc 'Request a first job' do
         success Entities::JobRequest::Response
         http_codes [[201, 'Job was scheduled'],
