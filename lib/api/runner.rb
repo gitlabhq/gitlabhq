@@ -68,10 +68,24 @@ module API
         authenticate_runner!
         status 200
       end
+
+      desc 'Get information about running jobs per-project'
+      params do
+        requires :token, type: String, desc: %q(Runner's authentication token)
+      end
+      post '/running' do
+        authenticate_runner!
+        status 200
+
+        present Ci::Build.running
+          .where(runner: current_runner)
+          .group(:project_id)
+          .pluck(:project_id, 'count(*)')
+      end
     end
 
     resource :jobs do
-      desc 'Request a job' do
+      desc 'Request a first job' do
         success Entities::JobRequest::Response
         http_codes [[201, 'Job was scheduled'],
                     [204, 'No job for Runner'],
@@ -121,6 +135,57 @@ module API
           else
             Gitlab::Metrics.add_event(:build_not_found)
             header 'X-GitLab-Last-Update', new_update
+            no_content!
+          end
+        else
+          # We received build that is invalid due to concurrency conflict
+          Gitlab::Metrics.add_event(:build_invalid)
+          conflict!
+        end
+      end
+
+      desc 'Request a specific job' do
+        success Entities::JobRequest::Response
+        http_codes [[201, 'Job was scheduled'],
+                    [204, 'No job for Runner'],
+                    [403, 'Forbidden']]
+      end
+      params do
+        requires :token, type: String, desc: %q(Runner's authentication token)
+        requires :build_id, type: Integer, desc: %q(Identifier of Build to request)
+        optional :last_update, type: String, desc: %q(Runner's queue last_update token)
+        optional :info, type: Hash, desc: %q(Runner's metadata) do
+          optional :name, type: String, desc: %q(Runner's name)
+          optional :version, type: String, desc: %q(Runner's version)
+          optional :revision, type: String, desc: %q(Runner's revision)
+          optional :platform, type: String, desc: %q(Runner's platform)
+          optional :architecture, type: String, desc: %q(Runner's architecture)
+          optional :executor, type: String, desc: %q(Runner's executor)
+          optional :features, type: Hash, desc: %q(Runner's features)
+        end
+        optional :session, type: Hash, desc: %q(Runner's session data) do
+          optional :url, type: String, desc: %q(Session's url)
+          optional :certificate, type: String, desc: %q(Session's certificate)
+          optional :authorization, type: String, desc: %q(Session's authorization)
+        end
+      end
+      post '/request/:build_id' do
+        authenticate_runner!
+
+        unless current_runner.active?
+          break no_content!
+        end
+
+        build = Ci::Build.find(id: params[:build_id])
+        runner_params = declared_params(include_missing: false)
+        result = ::Ci::RegisterJobService.new(current_runner).request(build, runner_params)
+
+        if result.valid?
+          if result.build
+            Gitlab::Metrics.add_event(:build_found)
+            present Ci::BuildRunnerPresenter.new(result.build), with: Entities::JobRequest::Response
+          else
+            Gitlab::Metrics.add_event(:build_not_found)
             no_content!
           end
         else
