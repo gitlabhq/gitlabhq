@@ -343,7 +343,7 @@ describe API::Geo do
             post api('/geo/proxy_git_push_ssh/info_refs'), { secret_token: secret_token, data: data }
 
             expect(response).to have_gitlab_http_status(200)
-            expect(json_response['result']).to eql('something+here')
+            expect(Base64.decode64(json_response['result'])).to eql('something here')
           end
         end
       end
@@ -360,7 +360,8 @@ describe API::Geo do
       end
 
       context 'with all required params' do
-        let(:output) { 'output text'}
+        let(:text) { 'output text' }
+        let(:output) { Base64.encode64(text) }
         let(:git_push_ssh_proxy) { double(Gitlab::Geo::GitPushSSHProxy) }
 
         before do
@@ -391,12 +392,12 @@ describe API::Geo do
           let(:http_response) { double(Net::HTTPResponse, code: 201, body: 'something here') }
 
           it 'responds with 201' do
-            expect(git_push_ssh_proxy).to receive(:push).with(output).and_return(http_response)
+            expect(git_push_ssh_proxy).to receive(:push).with(text).and_return(http_response)
 
             post api('/geo/proxy_git_push_ssh/push'), { secret_token: secret_token, data: data, output: output }
 
             expect(response).to have_gitlab_http_status(201)
-            expect(json_response['result']).to eql('something+here')
+            expect(Base64.decode64(json_response['result'])).to eql('something here')
           end
         end
       end
