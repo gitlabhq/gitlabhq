@@ -1231,11 +1231,14 @@ rspec:
 The collected JUnit reports will be uploaded to GitLab as an artifact and will
 be automatically [shown in merge requests](../junit_test_reports.md).
 
+For more examples, see [JUnit test reports](../junit_test_reports.md).
+
 NOTE: **Note:**
 In case the JUnit tool you use exports to multiple XML files, you can specify
-multiple test report paths within a single job
-(`junit: [rspec-1.xml, rspec-2.xml, rspec-3.xml]`) and they will be automatically
-concatenated into a single file.
+multiple test report paths within a single job and they will be automatically
+concatenated into a single file. Use a filename pattern (`junit: rspec-*.xml`),
+an array of filenames (`junit: [rspec-1.xml, rspec-2.xml, rspec-3.xml]`), or a
+combination thereof (`junit: [rspec.xml, test-results/TEST-*.xml]`).
 
 ## `dependencies`
 
