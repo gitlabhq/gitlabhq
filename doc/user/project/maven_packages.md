@@ -1,8 +1,60 @@
-# GitLab Maven Packages repository
+# GitLab Maven Packages repository **[PREMIUM]**
 
-## Configure project to use GitLab Maven Repository URL
+> Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
 
-To download packages from GitLab, you need `repository` section in your `pom.xml`.
+With the GitLab [Maven](https://maven.apache.org) Packages repository, every
+project can have its own space to store its Maven artifacts.
+
+## Enabling the Packages repository
+
+NOTE: **Note:**
+This option is available only if your GitLab administrator has
+[enabled the Packages repository](../../administration/maven_packages.md).
+
+In order to use the GitLab Maven Packages repository, you must enable the
+general Packages repository. To enable (or disable) it:
+
+1. Navigate to your project's **Settings > General > Permissions**.
+1. Find the "Packages" feature and enable it.
+1. Click on **Save changes** for the changes to take effect.
+
+You should then be able to see the **Packages** section on the left sidebar.
+Next, you must configure your project to authorize with the Maven repository.
+
+## Authorizing with the Maven repository
+
+If a project is private or you want to upload Maven artifacts to GitLab,
+credentials will need to be provided for authorization:
+
+1. Create a new [personal access token](../profile/personal_access_tokens.md)
+   with the `api` scope.
+1. Add a corresponding section to your
+   [`settings.xml`](https://maven.apache.org/settings.html) file:
+
+    ```xml
+    <settings>
+      <servers>
+        <server>
+          <id>gitlab-maven</id>
+          <configuration>
+            <httpHeaders>
+              <property>
+                <name>Private-Token</name>
+                <value>REPLACE_WITH_YOUR_PERSONAL_ACCESS_TOKEN</value>
+              </property>
+            </httpHeaders>
+          </configuration>
+        </server>
+      </servers>
+    </settings>
+    ```
+
+You should now be able to upload Maven artifacts to your project.
+
+## Configuring your project to use the GitLab Maven repository URL
+
+To download packages from GitLab, you need a `repository` section in your
+`pom.xml` file:
 
 ```xml
 <repositories>
@@ -13,10 +65,15 @@ To download packages from GitLab, you need `repository` section in your `pom.xml
 </repositories>
 ```
 
-To upload packages to GitLab, you need a `distributionManagement` section in your `pom.xml`.
+Similarly, to upload packages to GitLab, you need a `distributionManagement`
+section in your `pom.xml` file:
 
 ```xml
 <distributionManagement>
+  <repository>
+    <id>gitlab-maven</id>
+    <url>https://gitlab.com/api/v4/projects/PROJECT_ID/packages/maven</url>
+  </repository>
   <snapshotRepository>
     <id>gitlab-maven</id>
     <url>https://gitlab.com/api/v4/projects/PROJECT_ID/packages/maven</url>
@@ -24,74 +81,61 @@ To upload packages to GitLab, you need a `distributionManagement` section in you
 </distributionManagement>
 ```
 
-In both examples, replace `PROJECT_ID` with your project ID. 
-If you have a private GitLab installation, replace `gitlab.com` with your domain name.
+The `id` must be the same with what you
+[defined in `settings.xml`](#authorizing-with-the-maven-repository).
 
-## Configure repository access
+In both examples, replace `PROJECT_ID` with your project ID which can be found
+on the home page of your project.
 
-If a project is private, credentials will need to be provided for authorization.
-The preferred way to do this, is by using a [personal access tokens][pat].
-You can add a corresponding section to your `settings.xml` file:
+If you have a private GitLab installation, replace `gitlab.com` with your
+domain name.
 
+## Creating maven packages with GitLab CI/CD
 
-```xml
-<settings>
-  <servers>
-    <server>
-      <id>gitlab-maven</id>
-      <configuration>
-        <httpHeaders>
-          <property>
-            <name>Private-Token</name>
-            <value>REPLACE_WITH_YOUR_PRIVATE_TOKEN</value>
-          </property>
-        </httpHeaders>
-      </configuration>
-    </server>
-  </servers>
-</settings>
-```  
+Once you have your repository configured to use the GitLab Maven Packages repository,
+you can configure GitLab CI/CD to build new packages automatically. The example below
+shows how to create a new package each time the `master` branch is updated:
 
-## Create maven packages with GitLab CI
+1. Create a `ci_settings.xml` file that will serve as Maven's `settings.xml` file.
+   Add the server section with the same id you defined in your `pom.xml` file.
+   For example, in our case it's `gitlab-maven`:
 
-Once you have your repository configured to use GitLab Maven Packages repository, 
-you can configure GitLab CI to build new packages automatically. The example below 
-shows you how to create a new package each time the master branch is updated.
+    ```xml
+    <settings xmlns="http://maven.apache.org/SETTINGS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd">
+      <servers>
+        <server>
+          <id>gitlab-maven</id>
+          <configuration>
+            <httpHeaders>
+              <property>
+                <name>Job-Token</name>
+                <value>CI_JOB_TOKEN</value>
+              </property>
+            </httpHeaders>
+          </configuration>
+        </server>
+      </servers>
+    </settings>
+    ```
 
-1\. Create a `ci_settings.xml` file specially for GitLab CI and put it into your repository. 
-Add server section there with same id as you used for GitLab repository in your `pom.xml` file. 
-For example, in our case its `gitlab-maven`.
+1. Add a `deploy` job to your `.gitlab-ci.yml` file:
 
-```xml
-<settings xmlns="http://maven.apache.org/SETTINGS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd">
-  <servers>
-    <server>
-      <id>gitlab-maven</id>
-      <configuration>
-        <httpHeaders>
-          <property>
-            <name>Job-Token</name>
-            <value>CI_JOB_TOKEN</value>
-          </property>
-        </httpHeaders>
-      </configuration>
-    </server>
-  </servers>
-</settings>
-```
+    ```yaml
+    deploy:
+      image: maven:3.3.9-jdk-8
+      script:
+        - 'cp ci_settings.xml /root/.m2/settings.xml'
+        - 'sed -i "s/CI_JOB_TOKEN/${CI_JOB_TOKEN}/g" /root/.m2/settings.xml'
+        - 'mvn deploy'
+      only:
+        - master
+    ```
 
-2\. Add `deploy` section to your `.gitlab-ci.yml` file.
+1. Push those files to your repository.
 
-```
-deploy:
-  script:
-    - 'cp ci_settings.xml /root/.m2/settings.xml'
-    - 'sed -i "s/CI_JOB_TOKEN/${CI_JOB_TOKEN}/g" /root/.m2/settings.xml'
-    - 'mvn deploy'
-  only:
-    - master
-  image: maven:3.3.9-jdk-8
-```
-
-[pat]: ../profile/personal_access_tokens.md
+The next time the `deploy` job runs, it will copy `ci_settings.xml` to the
+user's home location (in this case the user is `root` since it runs in a
+Docker container), and `sed` will replace the placeholder `CI_JOB_TOKEN`
+value with the contents of the actual [`CI_JOB_TOKEN`
+environment variable](../../ci/variables/README.md#predefined-variables-environment-variables).

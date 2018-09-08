@@ -1,13 +1,19 @@
 # GitLab private Maven repository administration
 
 > **Notes:**
-> - [Introduced][ee-5811] in GitLab 11.3.
-> - This document is about the admin guide. Learn how to use GitLab Maven 
->   repository from [user documentation](../user/project/maven_packages.md).
+- [Introduced][ee-5811] in GitLab 11.3.
+- This document is about the admin guide. Learn how to use GitLab Maven
+  repository from [user documentation](../user/project/maven_packages.md).
 
-When enabled, every project in GitLab will have its own space to store Maven packages.
+When enabled, every project in GitLab will have its own space to store
+[Maven](https://maven.apache.org/) packages.
 
-## Enable the Maven repository
+## Enabling the Maven repository
+
+NOTE: **Note:**
+Once enabled, newly created projects will have the Packages feature enabled by
+default. Existing projects will need to
+[explicitly enabled it](../user/project/maven_packages.md#enabling-the-packages-repository).
 
 **Omnibus GitLab installations**
 
@@ -23,21 +29,15 @@ When enabled, every project in GitLab will have its own space to store Maven pac
 
 If you have installed GitLab from source:
 
-1. After the installation is complete, you will have to configure the `packages` 
-   section in `gitlab.yml` in order to enable it.
+1. After the installation is complete, you will have to configure the `packages`
+   section in `config/gitlab.yml`. Set to `true` to enable it:
 
-The contents of `gitlab.yml` are:
-
-```
-packages:
-  enabled: true
-```
-
-where:
-
-| Parameter | Description |
-| --------- | ----------- |
-| `enabled` | `true` or `false`. Enables the packages repository in GitLab. By default this is `false`. |
+      ```yaml
+      packages:
+        enabled: true
+      ```
+1. [Restart GitLab] for the changes to take effect.
 
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
+[restart gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [ee-5811]: https://gitlab.com/gitlab-org/gitlab-ee/issues/5811
