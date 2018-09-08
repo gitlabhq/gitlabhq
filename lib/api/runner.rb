@@ -113,7 +113,7 @@ module API
       get '/pending' do
         status 200
 
-        builds = Ci::Build.where(id: 203).includes(:project).includes(:tags).pending.unstarted.map do |build|
+        builds = Ci::Build.includes(:project).includes(:tags).pending.unstarted.map do |build|
           { id: build.id,
             project_id: build.project_id,
             condition: {
