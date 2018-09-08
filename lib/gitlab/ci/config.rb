@@ -7,14 +7,18 @@ module Gitlab
       ConfigError = Class.new(StandardError)
 
       def initialize(config, opts = {})
-        @config = Config::Extendable
-          .new(build_config(config, opts))
-          .to_hash
+        begin
+          @config = Config::Extendable
+            .new(build_config(config, opts))
+            .to_hash
 
-        @global = Entry::Global.new(@config)
-        @global.compose!
-      rescue Loader::FormatError, Extendable::ExtensionError => e
-        raise Config::ConfigError, e.message
+          @global = Entry::Global.new(@config)
+          @global.compose!
+        rescue Loader::FormatError, Extendable::ExtensionError => e
+          raise Config::ConfigError, e.message
+        end
+      rescue ::Gitlab::Ci::External::Processor::FileError => e
+        raise ::Gitlab::Ci::YamlProcessor::ValidationError, e.message
       end
 
       def valid?
@@ -64,6 +68,8 @@ module Gitlab
         @global.jobs_value
       end
 
+      private
+
       def build_config(config, opts = {})
         initial_config = Loader.new(config).load!
         project = opts.fetch(:project, nil)
@@ -76,8 +82,8 @@ module Gitlab
       end
 
       def process_external_files(config, project, opts)
-        sha = opts.fetch(:sha, project.repository.commit.sha)
-          ::Gitlab::Ci::External::Processor.new(config, project, sha).perform
+        sha = opts.fetch(:sha) { project.repository.root_ref_sha }
+        ::Gitlab::Ci::External::Processor.new(config, project, sha).perform
       end
     end
   end

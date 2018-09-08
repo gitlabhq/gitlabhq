@@ -79,7 +79,7 @@ module Gitlab
         begin
           Gitlab::Ci::YamlProcessor.new(content, opts)
           nil
-        rescue ValidationError, ::Gitlab::Ci::ExternalFiles::Processor::ExternalFileError => e
+        rescue ValidationError => e
           e.message
         end
       end
