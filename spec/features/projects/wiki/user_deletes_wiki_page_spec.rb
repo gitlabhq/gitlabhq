@@ -13,7 +13,7 @@ describe 'User deletes wiki page', :js do
   it 'deletes a page' do
     click_on('Edit')
     click_on('Delete')
-    find('.js-modal-primary-action').click
+    find('.modal-footer .btn-danger').click
 
     expect(page).to have_content('Page was successfully deleted')
   end

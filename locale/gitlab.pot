@@ -7443,6 +7443,9 @@ msgstr ""
 msgid "This branch has changed since you started editing. Would you like to create a new branch?"
 msgstr ""
 
+msgid "This container registry has been scheduled for deletion."
+msgstr ""
+
 msgid "This date is after the planned finish date, so this epic won't appear in the roadmap."
 msgstr ""
 

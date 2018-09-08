@@ -1,0 +1,5 @@
+---
+title: Fix outdated discussions being shown on Merge Request Changes tab
+merge_request: 21543
+author:
+type: fixed

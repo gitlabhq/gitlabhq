@@ -235,7 +235,7 @@ GEM
     fast_blank (1.0.0)
     fast_gettext (1.6.0)
     ffaker (2.4.0)
-    ffi (1.9.18)
+    ffi (1.9.25)
     flipper (0.13.0)
     flipper-active_record (0.13.0)
       activerecord (>= 3.2, < 6)

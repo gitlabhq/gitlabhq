@@ -6,6 +6,7 @@
   import tooltip from '../../vue_shared/directives/tooltip';
   import tableRegistry from './table_registry.vue';
   import { errorMessages, errorMessagesTypes } from '../constants';
+  import { __ } from '../../locale';
 
   export default {
     name: 'CollapsibeContainerRegisty',
@@ -46,7 +47,10 @@
 
       handleDeleteRepository() {
         this.deleteRepo(this.repo)
-          .then(() => this.fetchRepos())
+          .then(() => {
+            Flash(__('This container registry has been scheduled for deletion.'), 'notice');
+            this.fetchRepos();
+          })
           .catch(() => this.showError(errorMessagesTypes.DELETE_REPO));
       },
 
