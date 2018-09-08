@@ -1,4 +1,4 @@
-require 'fast_spec_helper'
+require 'spec_helper'
 
 describe Gitlab::Ci::External::Mapper do
   let(:project) { create(:project, :repository) }
@@ -25,7 +25,7 @@ describe Gitlab::Ci::External::Mapper do
         end
 
         it 'returns File instances' do
-          expect(subject.first).to be_an_instance_of(::Gitlab::Ci::External::File::Local)
+          expect(subject.first).to be_an_instance_of(Gitlab::Ci::External::File::Local)
         end
       end
 
@@ -47,7 +47,7 @@ describe Gitlab::Ci::External::Mapper do
         end
 
         it 'returns File instances' do
-          expect(subject.first).to be_an_instance_of(::Gitlab::Ci::External::File::Remote)
+          expect(subject.first).to be_an_instance_of(Gitlab::Ci::External::File::Remote)
         end
       end
     end

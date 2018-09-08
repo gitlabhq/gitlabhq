@@ -15,7 +15,7 @@ module Gitlab
 
           external_files.each do |external_file|
             validate_external_file(external_file)
-            @content.merge!(content_of(external_file))
+            @content.deep_merge!(content_of(external_file))
           end
 
           append_inline_content
@@ -28,16 +28,16 @@ module Gitlab
 
         def validate_external_file(external_file)
           unless external_file.valid?
-            raise FileError, "External file: '#{external_file.location}' should be a valid local or remote file"
+            raise FileError, external_file.error_message
           end
         end
 
         def content_of(external_file)
-          ::Gitlab::Ci::Config::Loader.new(external_file.content).load!
+          Gitlab::Ci::Config::Loader.new(external_file.content).load!
         end
 
         def append_inline_content
-          @content.merge!(@values)
+          @content.deep_merge!(@values)
         end
 
         def remove_include_keyword
