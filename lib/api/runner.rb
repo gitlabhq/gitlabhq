@@ -73,20 +73,20 @@ module API
       params do
         requires :token, type: String, desc: %q(Runner's authentication token)
       end
-      get '/information' do
+      get '/info' do
         authenticate_runner!
         status 200
 
         present {
           id: current_runner.id,
           params: {
-            tag_list: { strings: current_runner.tag_list },
-            tagged: { bools: [current_runner.tag_list.any?] },
-            run_untagged: { bools: [current_runner.run_untagged?] },
-            protected: { bools: [current_runner.ref_protected?] },
-            shared: { bools: [current_runner.instance_type?] },
-            group_ids: { ids: current_runner.groups.pluck(:id) },
-            project_ids: { ids: current_runner.projects.pluck(:id) },
+            tag_list: current_runner.tag_list,
+            tagged: [current_runner.tag_list.any?],
+            run_untagged: [current_runner.run_untagged?],
+            protected: [current_runner.ref_protected?],
+            shared: [current_runner.instance_type?],
+            group_ids: current_runner.groups.pluck(:id),
+            project_ids: current_runner.projects.pluck(:id),
           }
         }
       end
@@ -114,31 +114,32 @@ module API
         present Ci::Build.includes(:project).includes(:taggings).pending.unstarted.map do |build|
           { id: build.id,
             project_id: build.project_id,
-            conditions: [
-              {
-                or: [
-                  { param: :group_ids, contains: { id: build.project.namespace_id } },
-                  { param: :project_ids, contains: { id: build.project_id } },
-                  ( { param: :shared, contains: { bool: true } } if build.project.shared_runners_enabled? ),
-                ].compact
-              },
-              ( {
-                # protected builds has to be run by protected runners
-                # not protected can be run by any type of runner
-                param: :protected,
-                contains: { bool: build.protected? }
-              } if build.protected? ),
-              ( build.tag_list.map do |tag|
-                {
-                  param: :tag_list,
-                  contains: { string: tag }
-                }
-              end ),
-              ( {
-                param: :run_untagged,
-                contains: { bool: true }
-              } if build.tag_list.empty? )
-            ].flatten.compact
+            condition: {
+              and: [{
+                  or: [
+                    { param: :group_ids, contains: build.project.namespace_id },
+                    { param: :project_ids, contains: build.project_id },
+                    ( { param: :shared, contains: true } if build.project.shared_runners_enabled? ),
+                  ].compact
+                },
+                ( {
+                  # protected builds has to be run by protected runners
+                  # not protected can be run by any type of runner
+                  param: :protected,
+                  contains: build.protected?
+                } if build.protected? ),
+                ( build.tag_list.map do |tag|
+                  {
+                    param: :tag_list,
+                    contains: tag
+                  }
+                end ),
+                ( {
+                  param: :run_untagged,
+                  contains: true
+                } if build.tag_list.empty? )
+              ].flatten.compact
+            }
           }
         end
       end
