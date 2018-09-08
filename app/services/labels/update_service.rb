@@ -8,6 +8,7 @@ module Labels
 
     # returns the updated label
     def execute(label)
+      params[:name] = params.delete(:new_name) if params.key?(:new_name)
       params[:color] = convert_color_name_to_hex if params[:color].present?
 
       label.update(params)

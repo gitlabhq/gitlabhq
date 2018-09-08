@@ -10,4 +10,8 @@ class GroupLabel < Label
   def subject_foreign_key
     'group_id'
   end
+
+  def priority(parent)
+    nil
+  end
 end
