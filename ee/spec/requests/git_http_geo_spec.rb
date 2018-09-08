@@ -278,37 +278,18 @@ describe "Git HTTP requests (Geo)" do
         response
       end
 
-      context 'when gl_id is not correctly provided via HTTP headers' do
-        context "as it's empty" do
-          where(:geo_gl_id) do
-            [
-              nil,
-              ''
-            ]
-          end
-
-          with_them do
-            it 'returns a 403' do
-              is_expected.to have_gitlab_http_status(:forbidden)
-              expect(response.body).to eql('You are not allowed to push code to this project.')
-            end
-          end
+      context 'when gl_id is incorrectly provided via HTTP headers' do
+        where(:geo_gl_id) do
+          [
+            nil,
+            ''
+          ]
         end
 
-        context "as it's junk" do
-          where(:geo_gl_id) do
-            [
-              'junk',
-              'junk-1',
-              'kkey-1'
-            ]
-          end
-
-          with_them do
-            it 'returns a 403' do
-              is_expected.to have_gitlab_http_status(:forbidden)
-              expect(response.body).to eql('Geo push user is invalid.')
-            end
+        with_them do
+          it 'returns a 403' do
+            is_expected.to have_gitlab_http_status(:forbidden)
+            expect(response.body).to eql('You are not allowed to upload code for this project.')
           end
         end
       end
@@ -319,7 +300,10 @@ describe "Git HTTP requests (Geo)" do
             [
               'key-999',
               'key-1',
-              'key-999'
+              'key-999',
+              'junk',
+              'junk-1',
+              'kkey-1'
             ]
           end
 
