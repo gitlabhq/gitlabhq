@@ -1,8 +1,13 @@
 import Vue from 'vue';
-import _ from 'underscore';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { findDiffFile, addLineReferences, removeMatchLine, addContextLines } from './utils';
-import { LINES_TO_BE_RENDERED_DIRECTLY, MAX_LINES_TO_BE_RENDERED } from '../constants';
+import {
+  findDiffFile,
+  addLineReferences,
+  removeMatchLine,
+  addContextLines,
+  prepareDiffData,
+  isDiscussionApplicableToLine,
+} from './utils';
 import * as types from './mutation_types';
 
 export default {
@@ -17,38 +22,7 @@ export default {
 
   [types.SET_DIFF_DATA](state, data) {
     const diffData = convertObjectPropsToCamelCase(data, { deep: true });
-    let showingLines = 0;
-    const filesLength = diffData.diffFiles.length;
-    let i;
-    for (i = 0; i < filesLength; i += 1) {
-      const file = diffData.diffFiles[i];
-      if (file.parallelDiffLines) {
-        const linesLength = file.parallelDiffLines.length;
-        let u = 0;
-        for (u = 0; u < linesLength; u += 1) {
-          const line = file.parallelDiffLines[u];
-          if (line.left) delete line.left.text;
-          if (line.right) delete line.right.text;
-        }
-      }
-
-      if (file.highlightedDiffLines) {
-        const linesLength = file.highlightedDiffLines.length;
-        let u;
-        for (u = 0; u < linesLength; u += 1) {
-          const line = file.highlightedDiffLines[u];
-          delete line.text;
-        }
-      }
-
-      if (file.highlightedDiffLines) {
-        showingLines += file.parallelDiffLines.length;
-      }
-      Object.assign(file, {
-        renderIt: showingLines < LINES_TO_BE_RENDERED_DIRECTLY,
-        collapsed: file.text && showingLines > MAX_LINES_TO_BE_RENDERED,
-      });
-    }
+    prepareDiffData(diffData);
 
     Object.assign(state, {
       ...diffData,
@@ -98,12 +72,10 @@ export default {
 
   [types.ADD_COLLAPSED_DIFFS](state, { file, data }) {
     const normalizedData = convertObjectPropsToCamelCase(data, { deep: true });
+    prepareDiffData(normalizedData);
     const [newFileData] = normalizedData.diffFiles.filter(f => f.fileHash === file.fileHash);
-
-    if (newFileData) {
-      const index = _.findIndex(state.diffFiles, f => f.fileHash === file.fileHash);
-      state.diffFiles.splice(index, 1, newFileData);
-    }
+    const selectedFile = state.diffFiles.find(f => f.fileHash === file.fileHash);
+    Object.assign(selectedFile, { ...newFileData });
   },
 
   [types.EXPAND_ALL_FILES](state) {
@@ -111,5 +83,82 @@ export default {
       ...file,
       collapsed: false,
     }));
+  },
+
+  [types.SET_LINE_DISCUSSIONS_FOR_FILE](state, { fileHash, discussions, diffPositionByLineCode }) {
+    const selectedFile = state.diffFiles.find(f => f.fileHash === fileHash);
+    const firstDiscussion = discussions[0];
+    const isDiffDiscussion = firstDiscussion.diff_discussion;
+    const hasLineCode = firstDiscussion.line_code;
+    const isResolvable = firstDiscussion.resolvable;
+    const diffPosition = diffPositionByLineCode[firstDiscussion.line_code];
+
+    if (
+      selectedFile &&
+      isDiffDiscussion &&
+      hasLineCode &&
+      isResolvable &&
+      diffPosition &&
+      isDiscussionApplicableToLine(firstDiscussion, diffPosition)
+    ) {
+      const targetLine = selectedFile.parallelDiffLines.find(
+        line =>
+          (line.left && line.left.lineCode === firstDiscussion.line_code) ||
+          (line.right && line.right.lineCode === firstDiscussion.line_code),
+      );
+      if (targetLine) {
+        if (targetLine.left && targetLine.left.lineCode === firstDiscussion.line_code) {
+          Object.assign(targetLine.left, {
+            discussions,
+          });
+        } else {
+          Object.assign(targetLine.right, {
+            discussions,
+          });
+        }
+      }
+
+      if (selectedFile.highlightedDiffLines) {
+        const targetInlineLine = selectedFile.highlightedDiffLines.find(
+          line => line.lineCode === firstDiscussion.line_code,
+        );
+
+        if (targetInlineLine) {
+          Object.assign(targetInlineLine, {
+            discussions,
+          });
+        }
+      }
+    }
+  },
+
+  [types.REMOVE_LINE_DISCUSSIONS_FOR_FILE](state, { fileHash, lineCode }) {
+    const selectedFile = state.diffFiles.find(f => f.fileHash === fileHash);
+    if (selectedFile) {
+      const targetLine = selectedFile.parallelDiffLines.find(
+        line =>
+          (line.left && line.left.lineCode === lineCode) ||
+          (line.right && line.right.lineCode === lineCode),
+      );
+      if (targetLine) {
+        const side = targetLine.left && targetLine.left.lineCode === lineCode ? 'left' : 'right';
+
+        Object.assign(targetLine[side], {
+          discussions: [],
+        });
+      }
+
+      if (selectedFile.highlightedDiffLines) {
+        const targetInlineLine = selectedFile.highlightedDiffLines.find(
+          line => line.lineCode === lineCode,
+        );
+
+        if (targetInlineLine) {
+          Object.assign(targetInlineLine, {
+            discussions: [],
+          });
+        }
+      }
+    }
   },
 };

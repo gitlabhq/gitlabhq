@@ -1,4 +1,4 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.4.4-golang-1.9-git-2.18-chrome-67.0-node-8.x-yarn-1.2-postgresql-9.6-graphicsmagick-1.3.29"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.4.4-golang-1.9-git-2.18-chrome-69.0-node-8.x-yarn-1.2-postgresql-9.6-graphicsmagick-1.3.29"
 
 .dedicated-runner: &dedicated-runner
   retry: 1
@@ -888,7 +888,6 @@ gitlab:assets:compile:
     SETUP_DB: "false"
     SKIP_STORAGE_VALIDATION: "true"
     WEBPACK_REPORT: "true"
-    NO_COMPRESSION: "true"
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584
   script:
@@ -902,6 +901,7 @@ gitlab:assets:compile:
     expire_in: 31d
     paths:
       - webpack-report/
+      - public/assets/
 
 karma:
   <<: *dedicated-no-docs-and-no-qa-pull-cache-job

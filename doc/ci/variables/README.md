@@ -218,6 +218,7 @@ Protected variables can be added by going to your project's
 
 Once you set them, they will be available for all subsequent pipelines.
 
+<<<<<<< HEAD
 ### Limiting environment scopes of variables **[PREMIUM]**
 
 >**Notes:**
@@ -236,6 +237,8 @@ Wildcards (`*`) can be used along with the environment name, therefore if the
 environment scope is `review/*` then any jobs with environment names starting
 with `review/` would have that particular variable.
 
+=======
+>>>>>>> upstream/master
 ### Manually-specified variables
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/44059) in GitLab 10.8.
@@ -597,4 +600,7 @@ Below you can find supported syntax reference:
 [gitlab-deploy-token]: ../../user/project/deploy_tokens/index.md#gitlab-deploy-token
 [registry]: ../../user/project/container_registry.md
 [dependent-repositories]: ../../user/project/new_ci_build_permissions_model.md#dependent-repositories
+<<<<<<< HEAD
 [get-job-artifacts]:  ../../api/jobs.html#get-job-artifacts
+=======
+>>>>>>> upstream/master

@@ -79,6 +79,7 @@ describe Admin::ApplicationSettingsController do
       expect(ApplicationSetting.current.restricted_visibility_levels).to be_empty
     end
 
+<<<<<<< HEAD
     it 'updates repository_size_limit' do
       put :update, application_setting: { repository_size_limit: '100' }
 
@@ -141,6 +142,8 @@ describe Admin::ApplicationSettingsController do
       expect(response.status).to eq(200)
     end
 
+=======
+>>>>>>> upstream/master
     it 'updates the receive_max_input_size setting' do
       put :update, application_setting: { receive_max_input_size: "1024" }
 

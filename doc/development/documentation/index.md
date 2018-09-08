@@ -257,6 +257,15 @@ choices:
 If your branch name matches any of the above, it will run only the docs
 tests. If it doesn't, the whole test suite will run (including docs).
 
+## Danger bot
+
+GitLab uses [danger bot](https://github.com/danger/danger) for some elements in
+code review. For docs changes in merge requests, the following actions are taken:
+
+1. Whenever a change under `/doc` is made, the bot leaves a comment for the
+   author to mention `@gl-docsteam`, so that the docs can be properly
+   reviewed.
+
 ## Merge requests for GitLab documentation
 
 Before getting started, make sure you read the introductory section

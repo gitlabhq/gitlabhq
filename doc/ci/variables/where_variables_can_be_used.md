@@ -110,6 +110,7 @@ They are:
 - **Not supported:**
   - By the definitions [described in the table](#gitlab-ci-yml-file) where the "Expansion place" is "GitLab".
   - In the `only` and `except` [variables expressions](README.md#variables-expressions).
+<<<<<<< HEAD
 
 ## Variables with an environment scope
 
@@ -129,3 +130,5 @@ my-job:
     variables:
       - $STAGING_SECRET == 'something'
 ```
+=======
+>>>>>>> upstream/master

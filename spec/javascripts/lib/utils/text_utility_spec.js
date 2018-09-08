@@ -55,12 +55,15 @@ describe('text_utility', () => {
     });
   });
 
+<<<<<<< HEAD
   describe('capitalizeFirstCharacter', () => {
     it('returns string with first letter capitalized', () => {
       expect(textUtils.capitalizeFirstCharacter('gitlab')).toEqual('Gitlab');
     });
   });
 
+=======
+>>>>>>> upstream/master
   describe('slugifyWithHyphens', () => {
     it('should replaces whitespaces with hyphens and convert to lower case', () => {
       expect(textUtils.slugifyWithHyphens('My Input String')).toEqual('my-input-string');

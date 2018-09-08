@@ -6,61 +6,61 @@ import discussionsMockData from '../mock_data/diff_discussions';
 import diffFileMockData from '../mock_data/diff_file';
 
 describe('DiffLineGutterContent', () => {
-  const getDiscussionsMockData = () => [Object.assign({}, discussionsMockData)];
   const getDiffFileMock = () => Object.assign({}, diffFileMockData);
   const createComponent = (options = {}) => {
     const cmp = Vue.extend(DiffLineGutterContent);
     const props = Object.assign({}, options);
+    props.line = {
+      lineCode: 'LC_42',
+      type: 'new',
+      oldLine: null,
+      newLine: 1,
+      discussions: [],
+      text: '+<span id="LC1" class="line" lang="plaintext">  - Bad dates</span>\n',
+      richText: '+<span id="LC1" class="line" lang="plaintext">  - Bad dates</span>\n',
+      metaData: null,
+    };
     props.fileHash = getDiffFileMock().fileHash;
     props.contextLinesPath = '/context/lines/path';
 
     return createComponentWithStore(cmp, store, props).$mount();
-  };
-  const setDiscussions = component => {
-    component.$store.dispatch('setInitialNotes', getDiscussionsMockData());
-  };
-
-  const resetDiscussions = component => {
-    component.$store.dispatch('setInitialNotes', []);
   };
 
   describe('computed', () => {
     describe('lineHref', () => {
       it('should prepend # to lineCode', () => {
         const lineCode = 'LC_42';
-        const component = createComponent({ lineCode });
+        const component = createComponent();
         expect(component.lineHref).toEqual(`#${lineCode}`);
       });
 
       it('should return # if there is no lineCode', () => {
-        const component = createComponent({ lineCode: null });
+        const component = createComponent();
+        component.line.lineCode = '';
         expect(component.lineHref).toEqual('#');
       });
     });
 
     describe('discussions, hasDiscussions, shouldShowAvatarsOnGutter', () => {
       it('should return empty array when there is no discussion', () => {
-        const component = createComponent({ lineCode: 'LC_42' });
-        expect(component.discussions).toEqual([]);
+        const component = createComponent();
         expect(component.hasDiscussions).toEqual(false);
         expect(component.shouldShowAvatarsOnGutter).toEqual(false);
       });
 
       it('should return discussions for the given lineCode', () => {
-        const { lineCode } = getDiffFileMock().highlightedDiffLines[1];
-        const component = createComponent({
-          lineCode,
+        const cmp = Vue.extend(DiffLineGutterContent);
+        const props = {
+          line: getDiffFileMock().highlightedDiffLines[1],
+          fileHash: getDiffFileMock().fileHash,
           showCommentButton: true,
-          discussions: getDiscussionsMockData(),
-        });
+          contextLinesPath: '/context/lines/path',
+        };
+        props.line.discussions = [Object.assign({}, discussionsMockData)];
+        const component = createComponentWithStore(cmp, store, props).$mount();
 
-        setDiscussions(component);
-
-        expect(component.discussions).toEqual(getDiscussionsMockData());
         expect(component.hasDiscussions).toEqual(true);
         expect(component.shouldShowAvatarsOnGutter).toEqual(true);
-
-        resetDiscussions(component);
       });
     });
   });
@@ -104,9 +104,7 @@ describe('DiffLineGutterContent', () => {
         lineCode: getDiffFileMock().highlightedDiffLines[1].lineCode,
       });
 
-      setDiscussions(component);
       expect(component.$el.querySelector('.diff-comment-avatar-holders')).toBeDefined();
-      resetDiscussions(component);
     });
   });
 });
