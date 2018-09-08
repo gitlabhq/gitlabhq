@@ -54,10 +54,6 @@ module EE
         @dast_artifact ||= artifacts_with_files.find(&:has_dast_json?)
       end
 
-      def initialize_yaml_processor
-        ::Gitlab::Ci::YamlProcessor.new(ci_yaml_file, { project: project, sha: sha })
-      end
-
       def has_sast_data?
         sast_artifact&.success?
       end
