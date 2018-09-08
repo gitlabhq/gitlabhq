@@ -7443,14 +7443,13 @@ msgstr ""
 msgid "This branch has changed since you started editing. Would you like to create a new branch?"
 msgstr ""
 
-<<<<<<< HEAD
+msgid "This container registry has been scheduled for deletion."
+msgstr ""
+
 msgid "This date is after the planned finish date, so this epic won't appear in the roadmap."
 msgstr ""
 
 msgid "This date is before the planned start date, so this epic won't appear in the roadmap."
-=======
-msgid "This container registry has been scheduled for deletion."
->>>>>>> upstream/master
 msgstr ""
 
 msgid "This diff is collapsed."
