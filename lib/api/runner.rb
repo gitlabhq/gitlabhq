@@ -81,10 +81,10 @@ module API
           id: current_runner.id,
           params: {
             tag_list: { strings: current_runner.tag_list },
-            tagged: { bool: current_runner.tag_list.any? },
-            run_untagged: { bool: current_runner.run_untagged? },
-            protected: { bool: current_runner.ref_protected? },
-            shared: { bool: current_runner.instance_type? },
+            tagged: { bools: [current_runner.tag_list.any?] },
+            run_untagged: { bools: [current_runner.run_untagged?] },
+            protected: { bools: [current_runner.ref_protected?] },
+            shared: { bools: [current_runner.instance_type?] },
             group_ids: { ids: current_runner.groups.pluck(:id) },
             project_ids: { ids: current_runner.projects.pluck(:id) },
           }
@@ -111,7 +111,7 @@ module API
       patch '/pending' do
         status 200
 
-        present Ci::Build.pending.unstarted.map do |build|
+        present Ci::Build.includes(:project).includes(:taggings).pending.unstarted.map do |build|
           { id: build.id,
             project_id: build.project_id,
             conditions: [
@@ -119,24 +119,26 @@ module API
                 or: [
                   { param: :group_ids, contains: { id: build.project.namespace_id } },
                   { param: :project_ids, contains: { id: build.project_id } },
-                  { param: :shared, contains: { bool: true } } if build.project.shared_runners_enabled?,
+                  ( { param: :shared, contains: { bool: true } } if build.project.shared_runners_enabled? ),
                 ].compact
               },
-              {
+              ( {
                 # protected builds has to be run by protected runners
                 # not protected can be run by any type of runner
                 param: :protected,
-                equals: { bool: build.protected? }
-              } if build.protected?,
-              {
-                param: :tag_list,
-                all_of: { strings: build.tag_list }
-              }  if build.tag_list.any?,
-              {
+                contains: { bool: build.protected? }
+              } if build.protected? ),
+              ( build.tag_list.map do |tag|
+                {
+                  param: :tag_list,
+                  contains: { string: tag }
+                }
+              end ),
+              ( {
                 param: :run_untagged,
-                equals: { bool: true }
-              } if build.tag_list.empty?
-            ].compact
+                contains: { bool: true }
+              } if build.tag_list.empty? )
+            ].flatten.compact
           }
         end
       end
