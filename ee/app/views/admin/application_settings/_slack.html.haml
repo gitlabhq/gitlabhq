@@ -7,7 +7,7 @@
     %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
-      = _('Slack integration allows you to interact with GitLab via shash commands in a chat window.')
+      = _('Slack integration allows you to interact with GitLab via slash commands in a chat window.')
   .settings-content
 
     = form_for @application_setting, url: admin_application_settings_path(anchor: 'js-slack-settings'), html: { class: 'fieldset-form' } do |f|
