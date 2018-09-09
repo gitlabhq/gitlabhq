@@ -220,10 +220,6 @@ module Ci
     end
 
     def details
-      Gitlab::Redis::Queues.with do |redis|
-        redis.set(key, details, ex: RUNNER_QUEUE_EXPIRY_TIME, nx: false)
-      end
-
       {
         id: self.id,
         params: {
