@@ -64,12 +64,12 @@ module Ci
         .project_type
     end
 
-    add_tickable_resource :runner_queue, expire: RUNNER_QUEUE_EXPIRY_TIME do
-      "runner:build_queue:#{self.token}"
+    add_tickable_resource :runner_queue, expire: RUNNER_QUEUE_EXPIRY_TIME do |runner|
+      "runner:build_queue:#{runner.token}"
     end
 
-    add_tickable_resource :runner_details, expire: RUNNER_QUEUE_EXPIRY_TIME, notification: 'runner:notifications' do
-      "runner:details:#{self.token}"
+    add_tickable_resource :runner_details, expire: RUNNER_QUEUE_EXPIRY_TIME, notification_channel: 'runner:notifications' do |runner|
+      "runner:details:#{runner.token}"
     end
 
     validate :tag_constraints

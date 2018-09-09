@@ -14,11 +14,11 @@ module TickableResource
       @tickable_resource_fields = [] unless @tickable_resource_fields
       @tickable_resource_fields << field
 
-      define_singleton_method("#{field}_key") do
-        blk.call
+      define_method("#{field}_key") do
+        blk.call(self)
       end
 
-      define_singleton_method("tick_#{field}") do
+      define_method("tick_#{field}") do
         SecureRandom.hex.tap do |new_update|
           ::Gitlab::Workhorse.set_key_and_notify(
             public_send("#{field}_key"), new_update,
@@ -26,20 +26,20 @@ module TickableResource
         end
       end
 
-      define_singleton_method("ensure_#{field}_value") do
+      define_method("ensure_#{field}_value") do
         new_value = SecureRandom.hex
         ::Gitlab::Workhorse.set_key_and_notify(
           public_send("#{field}_key"), new_value,
           expire: expire, overwrite: false)
       end
 
-      define_singleton_method("clear_#{field}") do
+      define_method("clear_#{field}") do
         Gitlab::Redis::Queues.with do |redis|
           redis.del(public_send("#{field}_key"))
         end
       end
 
-      define_singleton_method("#{field}_value_latest?") do |value|
+      define_method("#{field}_value_latest?") do |value|
         public_send("ensure_#{field}_value") == value if value.present?
       end
     end
