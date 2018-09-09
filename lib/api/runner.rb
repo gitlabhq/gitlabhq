@@ -109,9 +109,10 @@ module API
         status 200
 
         builds = Ci::Build.order(:id)
-          .includes(:project).includes(:tags)
+          .includes(project: :ci_cd_settings)
+          .includes(:tags)
           .limit(params[:limit])
-          .where('id > ?', params[:after_id])
+          .where('ci_builds.id > ?', params[:after_id])
           .pending.unstarted.map(&:details)
 
         present builds

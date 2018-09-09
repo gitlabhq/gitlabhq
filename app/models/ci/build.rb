@@ -654,7 +654,7 @@ module Ci
         condition: {
           and: [{
               or: [
-                { param: :group_ids, contains: self.project.namespace_id },
+                ( { param: :group_ids, contains: self.project.namespace_id } if self.project.group_runners_enabled? ),
                 { param: :project_ids, contains: self.project_id },
                 ( { param: :shared, contains: true } if self.project.shared_runners_enabled? ),
               ].compact
