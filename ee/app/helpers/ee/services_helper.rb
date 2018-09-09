@@ -1,7 +1,7 @@
 module EE
   module ServicesHelper
     def add_to_slack_link(project, slack_app_id)
-      "https://slack.com/oauth/authorize?scope=commands&client_id=#{slack_app_id}&redirect_uri=#{slack_auth_project_settings_slack_url(project)}"
+      "https://slack.com/oauth/authorize?scope=commands&client_id=#{slack_app_id}&redirect_uri=#{slack_auth_project_settings_slack_url(project)}&state=#{escaped_form_authenticity_token}"
     end
 
     def add_to_slack_data(projects)
@@ -15,6 +15,10 @@ module EE
         slack_logo_path: image_path('illustrations/slack_logo.svg'),
         docs_path: help_page_path('user/project/integrations/gitlab_slack_application.md')
       }.to_json.html_safe
+    end
+
+    def escaped_form_authenticity_token
+      CGI.escape(form_authenticity_token)
     end
   end
 end

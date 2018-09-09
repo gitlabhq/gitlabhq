@@ -2,6 +2,7 @@ module Projects
   module Settings
     class SlacksController < Projects::ApplicationController
       before_action :handle_oauth_error, only: :slack_auth
+      before_action :check_oauth_state, only: :slack_auth
       before_action :authorize_admin_project!
       before_action :slack_integration, only: [:edit, :update]
       before_action :service, only: [:destroy, :edit, :update]
@@ -44,6 +45,12 @@ module Projects
           project,
           project.gitlab_slack_application_service || project.build_gitlab_slack_application_service
         )
+      end
+
+      def check_oauth_state
+        render_403 unless valid_authenticity_token?(session, params[:state])
+
+        true
       end
 
       def handle_oauth_error
