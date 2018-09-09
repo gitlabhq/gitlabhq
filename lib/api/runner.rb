@@ -101,10 +101,18 @@ module API
 
     resource :jobs do
       desc 'Lists all pending jobs'
+      params do
+        optional :after_id, type: Integer, default: 0, desc: %q(Minimal number of build)
+        optional :limit, type: Integer, default: 1000, desc: %q(Amount of builds to request)
+      end
       get '/pending' do
         status 200
 
-        builds = Ci::Build.order(:id).includes(:project).includes(:tags).pending.unstarted.map(&:details)
+        builds = Ci::Build.order(:id)
+          .includes(:project).includes(:tags)
+          .limit(params[:limit])
+          .where('id > ?', params[:after_id])
+          .pending.unstarted.map(&:details)
 
         present builds
       end
