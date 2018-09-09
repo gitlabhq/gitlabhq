@@ -3620,6 +3620,9 @@ msgstr ""
 msgid "Geo|You need a different license to use Geo replication"
 msgstr ""
 
+msgid "Get a free instance review"
+msgstr ""
+
 msgid "Git"
 msgstr ""
 

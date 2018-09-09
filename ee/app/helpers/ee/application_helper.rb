@@ -72,6 +72,10 @@ module EE
       }
     end
 
+    def instance_review_permitted?
+      ::Gitlab::CurrentSettings.instance_review_permitted? && current_user&.admin?
+    end
+
     private
 
     def appearance

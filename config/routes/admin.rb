@@ -24,6 +24,7 @@ namespace :admin do
 
   ## EE-specific
   resource :push_rule, only: [:show, :update]
+  get :instance_review, to: 'instance_review#index'
   ## EE-specific
 
   resource :impersonation, only: :destroy
