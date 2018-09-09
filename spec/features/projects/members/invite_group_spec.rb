@@ -17,7 +17,6 @@ describe 'Project > Members > Invite group', :js do
     shared_examples 'the project cannot be shared with groups' do
       it 'the "Invite group" tab does not exist' do
         visit project_settings_members_path(project)
-        expect(page).to have_selector('#invite-member-tab')
         expect(page).not_to have_selector('#invite-group-tab')
       end
     end
@@ -31,7 +30,7 @@ describe 'Project > Members > Invite group', :js do
         sign_in(maintainer)
       end
 
-      context 'when the group has "Invite group lock" disabled' do
+      context 'when the group has "Share with group lock" disabled' do
         it_behaves_like 'the project can be shared with groups'
 
         it 'the project can be shared with another group' do
@@ -49,7 +48,7 @@ describe 'Project > Members > Invite group', :js do
         end
       end
 
-      context 'when the group has "Invite group lock" enabled' do
+      context 'when the group has "Share with group lock" enabled' do
         before do
           project.namespace.update_column(:share_with_group_lock, true)
         end
@@ -69,12 +68,12 @@ describe 'Project > Members > Invite group', :js do
         sign_in(maintainer)
       end
 
-      context 'when the root_group has "Invite group lock" disabled' do
-        context 'when the subgroup has "Invite group lock" disabled' do
+      context 'when the root_group has "Share with group lock" disabled' do
+        context 'when the subgroup has "Share with group lock" disabled' do
           it_behaves_like 'the project can be shared with groups'
         end
 
-        context 'when the subgroup has "Invite group lock" enabled' do
+        context 'when the subgroup has "Share with group lock" enabled' do
           before do
             subgroup.update_column(:share_with_group_lock, true)
           end
@@ -83,16 +82,16 @@ describe 'Project > Members > Invite group', :js do
         end
       end
 
-      context 'when the root_group has "Invite group lock" enabled' do
+      context 'when the root_group has "Share with group lock" enabled' do
         before do
           root_group.update_column(:share_with_group_lock, true)
         end
 
-        context 'when the subgroup has "Invite group lock" disabled (parent overridden)' do
+        context 'when the subgroup has "Share with group lock" disabled (parent overridden)' do
           it_behaves_like 'the project can be shared with groups'
         end
 
-        context 'when the subgroup has "Invite group lock" enabled' do
+        context 'when the subgroup has "Share with group lock" enabled' do
           before do
             subgroup.update_column(:share_with_group_lock, true)
           end
