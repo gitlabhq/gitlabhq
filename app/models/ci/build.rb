@@ -648,7 +648,7 @@ module Ci
     end
 
     def details
-      { 
+      {
         id: self.id,
         project_id: self.project_id,
         condition: {

@@ -108,12 +108,57 @@ module API
       get '/pending' do
         status 200
 
-        builds = Ci::Build.order(:id)
-          .includes(project: :ci_cd_settings)
-          .includes(:tags)
-          .limit(params[:limit])
-          .where('ci_builds.id > ?', params[:after_id])
-          .pending.unstarted.map(&:details)
+        # builds = Ci::Build.order(:id)
+        #   .includes(project: :ci_cd_settings)
+        #   .includes(:tags)
+        #   .limit(params[:limit])
+        #   .where('ci_builds.id > ?', params[:after_id])
+        #   .pending.unstarted.map(&:details)
+
+        builds = Ci::Build.order(:id).
+          joins(project: :ci_cd_settings).
+          limit(params[:limit]).
+          where('ci_builds.id > ?', params[:after_id]).
+          pluck(:id,
+            :project_id,
+            'projects.namespace_id',
+            :protected,
+            'projects.shared_runners_enabled',
+            'project_ci_cd_settings.group_runners_enabled',
+            "(select string_agg(tags.name,',') from taggings join tags on tags.id=taggings.tag_id where taggings.taggable_type='CommitStatus' and taggings.context='tags' and taggings.taggable_id=ci_builds.id)")
+
+        builds = builds.map do |build|
+          {
+            id: build[0],
+            project_id: build[1],
+            condition: {
+              and: [{
+                  or: [
+                    ( { param: :group_ids, contains: build[2] } if build[5] ),
+                    { param: :project_ids, contains: build[1] },
+                    ( { param: :shared, contains: true } if build[4] ),
+                  ].compact
+                },
+                ( {
+                  # protected builds has to be run by protected runners
+                  # not protected can be run by any type of runner
+                  param: :protected,
+                  contains: true
+                } if build[3] ),
+                ( build[6].split(',').map do |tag|
+                  {
+                    param: :tag_list,
+                    contains: tag
+                  }
+                end if build[6].present? ),
+                ( {
+                  param: :run_untagged,
+                  contains: true
+                } if build[6].nil? )
+              ].flatten.compact
+            }
+          }
+        end
 
         present builds
       end
