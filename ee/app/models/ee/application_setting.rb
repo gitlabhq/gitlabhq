@@ -10,6 +10,7 @@ module EE
       include IgnorableColumn
 
       EMAIL_ADDITIONAL_TEXT_CHARACTER_LIMIT = 10_000
+      INSTANCE_REVIEW_MIN_USERS = 100
 
       belongs_to :file_template_project, class_name: "Project"
 
@@ -191,6 +192,16 @@ module EE
       return [] unless group_id = custom_project_templates_group_id
 
       ::Project.where(namespace_id: group_id)
+    end
+
+    def instance_review_permitted?
+      return if License.current
+
+      users_count = Rails.cache.fetch('limited_users_count', expires_in: 1.day) do
+        ::User.limit(INSTANCE_REVIEW_MIN_USERS + 1).count(:all)
+      end
+
+      users_count >= INSTANCE_REVIEW_MIN_USERS
     end
 
     private

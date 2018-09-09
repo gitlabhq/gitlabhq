@@ -18,6 +18,8 @@
   - if current_user_menu?(:help) || current_user_menu?(:settings) || current_user_menu?(:profile)
     %li.divider
   = render 'shared/user_dropdown_contributing_link'
+  - if instance_review_permitted?
+    = render 'shared/user_dropdown_instance_review'
   - if current_user_menu?(:sign_out)
     %li
       = link_to _("Sign out"), destroy_user_session_path, class: "sign-out-link"

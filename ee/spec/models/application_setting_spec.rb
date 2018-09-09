@@ -275,4 +275,45 @@ describe ApplicationSetting do
       end
     end
   end
+
+  describe '#instance_review_permitted?' do
+    subject { setting.instance_review_permitted? }
+
+    context 'for instances with a valid license' do
+      before do
+        license = create(:license, plan: ::License::PREMIUM_PLAN)
+        allow(License).to receive(:current).and_return(license)
+      end
+
+      it 'is not permitted' do
+        expect(subject).to be_falsey
+      end
+    end
+
+    context 'for instances without a valid license' do
+      before do
+        allow(License).to receive(:current).and_return(nil)
+      end
+
+      context 'when there are more users than minimum count' do
+        before do
+          expect(Rails.cache).to receive(:fetch).and_return(101)
+        end
+
+        it 'is permitted' do
+          expect(subject).to be_truthy
+        end
+      end
+
+      context 'when there are less users than minimum count' do
+        before do
+          create(:user)
+        end
+
+        it 'is not permitted' do
+          expect(subject).to be_falsey
+        end
+      end
+    end
+  end
 end
