@@ -195,7 +195,7 @@ module Gitlab
         Gitlab::Redis::Queues.with do |redis|
           result = redis.set(key, value, ex: expire, nx: !overwrite)
           if result
-            redis.publish(NOTIFICATION_CHANNEL, "#{key}=#{value}")
+            redis.publish(notification_channel, "#{key}=#{value}")
             value
           else
             redis.get(key)

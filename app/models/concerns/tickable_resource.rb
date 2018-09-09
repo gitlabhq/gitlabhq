@@ -22,6 +22,7 @@ module TickableResource
         SecureRandom.hex.tap do |new_update|
           ::Gitlab::Workhorse.set_key_and_notify(
             public_send("#{field}_key"), new_update,
+            notification_channel: notification_channel,
             expire: expire, overwrite: true)
         end
       end
@@ -30,6 +31,7 @@ module TickableResource
         new_value = SecureRandom.hex
         ::Gitlab::Workhorse.set_key_and_notify(
           public_send("#{field}_key"), new_value,
+          notification_channel: notification_channel,
           expire: expire, overwrite: false)
       end
 
