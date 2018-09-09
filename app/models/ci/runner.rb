@@ -7,6 +7,7 @@ module Ci
     include IgnorableColumn
     include RedisCacheable
     include ChronicDurationAttribute
+    include TickableResource
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     ONLINE_CONTACT_TIMEOUT = 1.hour
@@ -61,6 +62,14 @@ module Ci
       where(locked: false)
         .where.not("ci_runners.id IN (#{project.runners.select(:id).to_sql})")
         .project_type
+    end
+
+    add_tickable_resource :runner_queue, expire: RUNNER_QUEUE_EXPIRY_TIME do
+      "runner:build_queue:#{self.token}"
+    end
+
+    add_tickable_resource :runner_details, expire: RUNNER_QUEUE_EXPIRY_TIME, notification: 'runner:notifications' do
+      "runner:details:#{self.token}"
     end
 
     validate :tag_constraints
@@ -194,23 +203,6 @@ module Ci
         .append(key: 'CI_RUNNER_TAGS', value: tag_list.to_s)
     end
 
-    def tick_runner_queue
-      SecureRandom.hex.tap do |new_update|
-        ::Gitlab::Workhorse.set_key_and_notify(runner_queue_key, new_update,
-          expire: RUNNER_QUEUE_EXPIRY_TIME, overwrite: true)
-      end
-    end
-
-    def ensure_runner_queue_value
-      new_value = SecureRandom.hex
-      ::Gitlab::Workhorse.set_key_and_notify(runner_queue_key, new_value,
-        expire: RUNNER_QUEUE_EXPIRY_TIME, overwrite: false)
-    end
-
-    def runner_queue_value_latest?(value)
-      ensure_runner_queue_value == value if value.present?
-    end
-
     def update_cached_info(values)
       values = values&.slice(:version, :revision, :platform, :architecture, :ip_address) || {}
       values[:contacted_at] = Time.now
@@ -227,17 +219,34 @@ module Ci
       end
     end
 
-    private
-
-    def cleanup_runner_queue
+    def details
       Gitlab::Redis::Queues.with do |redis|
-        redis.del(runner_queue_key)
+        redis.set(key, details, ex: RUNNER_QUEUE_EXPIRY_TIME, nx: false)
+      end
+
+      {
+        id: self.id,
+        params: {
+          tag_list: self.tag_list.presence,
+          tagged: [self.tag_list.any?],
+          run_untagged: [self.run_untagged?],
+          protected: [self.ref_protected?],
+          shared: [self.instance_type?],
+          group_ids: ( self.groups.pluck(:id).presence if self.group_type? ),
+          project_ids: ( self.projects.pluck(:id).presence if self.project_type? )
+        }.compact
+      }
+    end
+
+    def persist_details!
+      key = "runner:details:#{self.token}"
+
+      Gitlab::Redis::Queues.with do |redis|
+        redis.set(key, details, ex: RUNNER_QUEUE_EXPIRY_TIME, nx: false)
       end
     end
 
-    def runner_queue_key
-      "runner:build_queue:#{self.token}"
-    end
+    private
 
     def persist_cached_data?
       # Use a random threshold to prevent beating DB updates.

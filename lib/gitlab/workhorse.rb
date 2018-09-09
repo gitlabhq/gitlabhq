@@ -191,7 +191,7 @@ module Gitlab
         Gitlab.config.workhorse.secret_file
       end
 
-      def set_key_and_notify(key, value, expire: nil, overwrite: true)
+      def set_key_and_notify(key, value, expire: nil, overwrite: true, notification_channel: NOTIFICATION_CHANNEL)
         Gitlab::Redis::Queues.with do |redis|
           result = redis.set(key, value, ex: expire, nx: !overwrite)
           if result
