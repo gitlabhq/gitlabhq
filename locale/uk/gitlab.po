@@ -6706,7 +6706,7 @@ msgstr "Налаштування розміру та домену для ста�
 msgid "Slack application"
 msgstr "застосунок Slack"
 
-msgid "Slack integration allows you to interact with GitLab via shash commands in a chat window."
+msgid "Slack integration allows you to interact with GitLab via slash commands in a chat window."
 msgstr ""
 
 msgid "Slower but makes sure the project workspace is pristine as it clones the repository from scratch for every job"
