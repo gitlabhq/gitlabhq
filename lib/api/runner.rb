@@ -104,7 +104,7 @@ module API
       get '/pending' do
         status 200
 
-        builds = Ci::Build.includes(:project).includes(:tags).pending.unstarted.map(&:details)
+        builds = Ci::Build.order(:id).includes(:project).includes(:tags).pending.unstarted.map(&:details)
 
         present builds
       end
