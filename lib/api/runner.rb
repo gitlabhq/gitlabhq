@@ -77,20 +77,7 @@ module API
         authenticate_runner!
         status 200
 
-        hash = {
-          id: current_runner.id,
-          params: {
-            tag_list: current_runner.tag_list.presence,
-            tagged: [current_runner.tag_list.any?],
-            run_untagged: [current_runner.run_untagged?],
-            protected: [current_runner.ref_protected?],
-            shared: [current_runner.instance_type?],
-            group_ids: current_runner.groups.pluck(:id).presence,
-            project_ids: current_runner.projects.pluck(:id).presence
-          }.compact
-        }
-
-        present hash
+        present current_runner.details
       end
 
       desc 'Get information about running jobs per-project'

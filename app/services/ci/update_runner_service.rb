@@ -11,6 +11,7 @@ module Ci
     def update(params)
       runner.update(params).tap do |updated|
         runner.tick_runner_queue if updated
+        runner.persist_details! if updated
       end
     end
   end
