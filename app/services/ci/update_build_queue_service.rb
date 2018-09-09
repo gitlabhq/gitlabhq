@@ -12,7 +12,7 @@ module Ci
 
     def send_details(build)
       key = "builds:details:#{build.id}"
-      value = build.details
+      value = build.details.to_json
 
       Gitlab::Workhorse::set_key_and_notify(key, value,
         expire: 5.minutes, overwrite: true,
