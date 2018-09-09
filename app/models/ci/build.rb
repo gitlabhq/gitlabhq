@@ -647,6 +647,39 @@ module Ci
       end
     end
 
+    def details
+      { 
+        id: self.id,
+        project_id: self.project_id,
+        condition: {
+          and: [{
+              or: [
+                { param: :group_ids, contains: self.project.namespace_id },
+                { param: :project_ids, contains: self.project_id },
+                ( { param: :shared, contains: true } if self.project.shared_runners_enabled? ),
+              ].compact
+            },
+            ( {
+              # protected builds has to be run by protected runners
+              # not protected can be run by any type of runner
+              param: :protected,
+              contains: self.protected?
+            } if self.protected? ),
+            ( self.tags.map do |tag|
+              {
+                param: :tag_list,
+                contains: tag.name
+              }
+            end ),
+            ( {
+              param: :run_untagged,
+              contains: true
+            } if self.tags.empty? )
+          ].flatten.compact
+        }
+      }
+    end
+
     private
 
     def each_test_report

@@ -104,37 +104,7 @@ module API
       get '/pending' do
         status 200
 
-        builds = Ci::Build.includes(:project).includes(:tags).pending.unstarted.map do |build|
-          { id: build.id,
-            project_id: build.project_id,
-            condition: {
-              and: [{
-                  or: [
-                    { param: :group_ids, contains: build.project.namespace_id },
-                    { param: :project_ids, contains: build.project_id },
-                    ( { param: :shared, contains: true } if build.project.shared_runners_enabled? ),
-                  ].compact
-                },
-                ( {
-                  # protected builds has to be run by protected runners
-                  # not protected can be run by any type of runner
-                  param: :protected,
-                  contains: build.protected?
-                } if build.protected? ),
-                ( build.tags.map do |tag|
-                  {
-                    param: :tag_list,
-                    contains: tag.name
-                  }
-                end ),
-                ( {
-                  param: :run_untagged,
-                  contains: true
-                } if build.tags.empty? )
-              ].flatten.compact
-            }
-          }
-        end
+        builds = Ci::Build.includes(:project).includes(:tags).pending.unstarted.map(&:details)
 
         present builds
       end
