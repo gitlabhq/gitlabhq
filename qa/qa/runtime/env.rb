@@ -3,8 +3,6 @@ module QA
     module Env
       extend self
 
-      attr_writer :user_type
-
       # set to 'false' to have Chrome run visibly instead of headless
       def chrome_headless?
         (ENV['CHROME_HEADLESS'] =~ /^(false|no|0)$/i) != 0
@@ -19,24 +17,20 @@ module QA
         ENV['PERSONAL_ACCESS_TOKEN']
       end
 
-      # By default, "standard" denotes a standard GitLab user login.
-      # Set this to "ldap" if the user should be logged in via LDAP.
-      def user_type
-        return @user_type if defined?(@user_type) # rubocop:disable Gitlab/ModuleWithInstanceVariables
-
-        ENV.fetch('GITLAB_USER_TYPE', 'standard').tap do |type|
-          unless %w(ldap standard).include?(type)
-            raise ArgumentError.new("Invalid user type '#{type}': must be 'ldap' or 'standard'")
-          end
-        end
-      end
-
       def user_username
         ENV['GITLAB_USERNAME']
       end
 
       def user_password
         ENV['GITLAB_PASSWORD']
+      end
+
+      def admin_username
+        ENV['GITLAB_ADMIN_USERNAME']
+      end
+
+      def admin_password
+        ENV['GITLAB_ADMIN_PASSWORD']
       end
 
       def forker?

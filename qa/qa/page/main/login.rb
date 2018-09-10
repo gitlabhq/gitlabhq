@@ -59,6 +59,19 @@ module QA
           Page::Menu::Main.act { has_personal_area? }
         end
 
+        def sign_in_using_admin_credentials
+          admin = QA::Factory::Resource::User.new.tap do |user|
+            user.username = QA::Runtime::User.admin_username
+            user.password = QA::Runtime::User.admin_password
+          end
+
+          using_wait_time 0 do
+            sign_in_using_gitlab_credentials(admin)
+          end
+
+          Page::Menu::Main.act { has_personal_area? }
+        end
+
         def self.path
           '/users/sign_in'
         end
