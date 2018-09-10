@@ -275,6 +275,28 @@ describe QuickActions::InterpretService do
       end
     end
 
+    shared_examples 'lock command' do
+      let(:issue) { create(:issue, project: project, discussion_locked: false) }
+      let(:merge_request) { create(:merge_request, source_project: project, discussion_locked: false) }
+
+      it 'returns discussion_locked: true if content contains /lock' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(discussion_locked: true)
+      end
+    end
+
+    shared_examples 'unlock command' do
+      let(:issue) { create(:issue, project: project, discussion_locked: true) }
+      let(:merge_request) { create(:merge_request, source_project: project, discussion_locked: true) }
+
+      it 'returns discussion_locked: true if content contains /unlock' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(discussion_locked: false)
+      end
+    end
+
     shared_examples 'empty command' do
       it 'populates {} if content contains an unsupported command' do
         _, updates = service.execute(content, issuable)
@@ -829,6 +851,26 @@ describe QuickActions::InterpretService do
       let(:issuable) { issue }
     end
 
+    it_behaves_like 'lock command' do
+      let(:content) { '/lock' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'lock command' do
+      let(:content) { '/lock' }
+      let(:issuable) { merge_request }
+    end
+
+    it_behaves_like 'unlock command' do
+      let(:content) { '/unlock' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'unlock command' do
+      let(:content) { '/unlock' }
+      let(:issuable) { merge_request }
+    end
+
     context 'issuable weights licensed' do
       before do
         stub_licensed_features(issue_weights: true)
@@ -1036,6 +1078,16 @@ describe QuickActions::InterpretService do
 
       it_behaves_like 'empty command' do
         let(:content) { '/duplicate #{issue.to_reference}' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'empty command' do
+        let(:content) { '/lock' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'empty command' do
+        let(:content) { '/unlock' }
         let(:issuable) { issue }
       end
     end
