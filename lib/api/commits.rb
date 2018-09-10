@@ -164,8 +164,7 @@ module API
         commit = user_project.commit(params[:sha])
         not_found!('Commit') unless commit
 
-        branch = user_project.repository.find_branch(params[:branch])
-        not_found!('Branch') unless branch
+        find_branch!(params[:branch])
 
         commit_params = {
           commit: commit,
@@ -176,7 +175,7 @@ module API
         result = ::Commits::CherryPickService.new(user_project, current_user, commit_params).execute
 
         if result[:status] == :success
-          branch = user_project.repository.find_branch(params[:branch])
+          branch = find_branch!(params[:branch])
           present user_project.repository.commit(branch.dereferenced_target), with: Entities::Commit
         else
           render_api_error!(result[:message], 400)

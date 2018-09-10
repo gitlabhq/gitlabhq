@@ -168,6 +168,12 @@ module API
       end
     end
 
+    def find_branch!(branch_name)
+      user_project.repository.find_branch(branch_name) || not_found!('Branch')
+    rescue Gitlab::Git::CommandError
+      render_api_error!('The branch refname is invalid', 400)
+    end
+
     def find_project_label(id)
       labels = available_labels_for(user_project)
       label = labels.find_by_id(id) || labels.find_by_title(id)
