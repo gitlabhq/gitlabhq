@@ -120,6 +120,26 @@ module SystemNoteService
     create_note(NoteSummary.new(noteable, project, author, body, action: 'milestone'))
   end
 
+  # Called when the due_date of a Noteable is changed
+  #
+  # noteable  - Noteable object
+  # project   - Project owning noteable
+  # author    - User performing the change
+  # due_date  - Due date being assigned, or nil
+  #
+  # Example Note text:
+  #
+  #   "removed due date"
+  #
+  #   "changed due date to September 20, 2018"
+  #
+  # Returns the created Note object
+  def change_due_date(noteable, project, author, due_date)
+    body = due_date ? "changed due date to #{due_date.to_s(:long)}" : 'removed due date'
+
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'due_date'))
+  end
+
   # Called when the estimated time of a Noteable is changed
   #
   # noteable      - Noteable object
