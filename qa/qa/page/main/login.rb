@@ -68,7 +68,7 @@ module QA
         end
 
         def ldap_tab?
-          page.has_button?('LDAP')
+          page.has_link?('LDAP')
         end
 
         def switch_to_sign_in_tab
