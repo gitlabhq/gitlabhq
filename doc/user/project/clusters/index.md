@@ -131,7 +131,7 @@ authorization is [experimental](#role-based-access-control-rbac).
 
 ### Role-based access control (RBAC)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21401) in GitLab 11.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21401) in GitLab 11.4.
 
 CAUTION: **Warning:**
 The RBAC authorization is experimental. To enable it you need access to the
