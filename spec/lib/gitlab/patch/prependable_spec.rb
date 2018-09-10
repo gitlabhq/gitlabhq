@@ -213,4 +213,23 @@ describe Gitlab::Patch::Prependable do
       end
     end
   end
+
+  context 'having two prepended blocks' do
+    subject do
+      Module.new do
+        extend ActiveSupport::Concern
+
+        prepended do
+        end
+
+        prepended do
+        end
+      end
+    end
+
+    it "raises an error" do
+      expect { subject }
+        .to raise_error(described_class::MultiplePrependedBlocks)
+    end
+  end
 end
