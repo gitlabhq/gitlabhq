@@ -151,16 +151,16 @@ In order to do that, follow the steps:
       DOCKER_DRIVER: overlay2
 
     services:
-    - docker:dind
+      - docker:dind
 
     before_script:
-    - docker info
+      - docker info
 
     build:
       stage: build
       script:
-      - docker build -t my-docker-image .
-      - docker run my-docker-image /script/to/run/tests
+        - docker build -t my-docker-image .
+        - docker run my-docker-image /script/to/run/tests
     ```
 
 Docker-in-Docker works well, and is the recommended configuration, but it is
@@ -246,13 +246,13 @@ In order to do that, follow the steps:
     image: docker:stable
 
     before_script:
-    - docker info
+      - docker info
 
     build:
       stage: build
       script:
-      - docker build -t my-docker-image .
-      - docker run my-docker-image /script/to/run/tests
+        - docker build -t my-docker-image .
+        - docker run my-docker-image /script/to/run/tests
     ```
 
 While the above method avoids using Docker in privileged mode, you should be
@@ -403,7 +403,7 @@ could look like:
  build:
    image: docker:stable
    services:
-   - docker:dind
+     - docker:dind
    variables:
      DOCKER_HOST: tcp://docker:2375
      DOCKER_DRIVER: overlay2
@@ -456,13 +456,13 @@ an application-specific deploy script:
 ```yaml
 image: docker:stable
 services:
-- docker:dind
+  - docker:dind
 
 stages:
-- build
-- test
-- release
-- deploy
+  - build
+  - test
+  - release
+  - deploy
 
 variables:
   DOCKER_HOST: tcp://docker:2375
