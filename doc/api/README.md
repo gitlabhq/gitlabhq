@@ -3,6 +3,8 @@
 Automate GitLab via a simple and powerful API. All definitions can be found
 under [`/lib/api`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/api).
 
+The main GitLab API is a [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API. Therefore, documentation in this section assumes knowledge of REST concepts.
+
 ## Resources
 
 Documentation for various API resources can be found separately in the
@@ -77,8 +79,8 @@ Going forward, we will start on moving to
 controller-specific endpoints. GraphQL has a number of benefits:
 
 1. We avoid having to maintain two different APIs.
-2. Callers of the API can request only what they need.
-3. It is versioned by default.
+1. Callers of the API can request only what they need.
+1. It is versioned by default.
 
 It will co-exist with the current v4 REST API. If we have a v5 API, this should
 be a compatibility layer on top of GraphQL.
@@ -139,8 +141,9 @@ There are three ways to authenticate with the GitLab API:
 1. [Session cookie](#session-cookie)
 
 For admins who want to authenticate with the API as a specific user, or who want to build applications or scripts that do so, two options are available:
+
 1. [Impersonation tokens](#impersonation-tokens)
-2. [Sudo](#sudo)
+1. [Sudo](#sudo)
 
 If authentication information is invalid or omitted, an error message will be
 returned with status code `401`:
