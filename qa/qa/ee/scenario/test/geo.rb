@@ -8,6 +8,8 @@ module QA
         class Geo < QA::Scenario::Template
           include QA::Scenario::Bootable
 
+          tags :geo
+
           attribute :geo_primary_address, '--primary-address PRIMARY'
           attribute :geo_primary_name, '--primary-name PRIMARY_NAME'
           attribute :geo_secondary_address, '--secondary-address SECONDARY'
@@ -32,8 +34,8 @@ module QA
 
             Specs::Runner.perform do |specs|
               specs.tty = true
-              specs.tags = %w[geo]
-              specs.options = rspec_options.any? ? rspec_options : 'qa/specs/features'
+              specs.tags = self.class.focus
+              specs.options = rspec_options if rspec_options.any?
             end
           end
 
