@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SystemNoteHelper
   ICON_NAMES_BY_ACTION = {
     'commit' => 'commit',

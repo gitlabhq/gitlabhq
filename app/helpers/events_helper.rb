@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EventsHelper
   ICON_NAMES_BY_EVENT_TYPE = {
     'pushed to' => 'commit',

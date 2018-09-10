@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PageLayoutHelper
   def page_title(*titles)
     @page_title ||= []
@@ -65,14 +67,14 @@ module PageLayoutHelper
   end
 
   def page_card_meta_tags
-    tags = ''
+    tags = []
 
     page_card_attributes.each_with_index do |pair, i|
       tags << tag(:meta, property: "twitter:label#{i + 1}", content: pair[0])
       tags << tag(:meta, property: "twitter:data#{i + 1}",  content: pair[1])
     end
 
-    tags.html_safe
+    tags.join.html_safe
   end
 
   def header_title(title = nil, title_url = nil)
@@ -115,16 +117,16 @@ module PageLayoutHelper
   end
 
   def container_class
-    css_class = "container-fluid"
+    css_class = ["container-fluid"]
 
     unless fluid_layout
-      css_class += " container-limited"
+      css_class << "container-limited"
     end
 
     if blank_container
-      css_class += " container-blank"
+      css_class << "container-blank"
     end
 
-    css_class
+    css_class.join(' ')
   end
 end

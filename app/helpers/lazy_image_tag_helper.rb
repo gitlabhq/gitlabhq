@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LazyImageTagHelper
   def placeholder_image
     "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
@@ -11,9 +13,11 @@ module LazyImageTagHelper
       options[:data] ||= {}
       options[:data][:src] = path_to_image(source)
 
-      options[:class] ||= ""
-      options[:class] << " lazy"
+      # options[:class] can be either String or Array.
+      klass_opts = Array.wrap(options[:class])
+      klass_opts << "lazy"
 
+      options[:class] = klass_opts.join(' ')
       source = placeholder_image
     end
 

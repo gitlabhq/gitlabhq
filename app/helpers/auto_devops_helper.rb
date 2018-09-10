@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AutoDevopsHelper
   def show_auto_devops_callout?(project)
     Feature.get(:auto_devops_banner_disabled).off? &&
