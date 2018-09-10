@@ -286,7 +286,7 @@ export class AwardsHandler {
     const normalizedEmoji = this.emoji.normalizeEmojiName(emoji);
     const $emojiButton = AwardsHandler.findEmojiIcon(votesBlock, normalizedEmoji).parent();
 
-    AwardsHandler.postEmoji($emojiButton, awardUrl, normalizedEmoji, () => {
+    this.postEmoji($emojiButton, awardUrl, normalizedEmoji, () => {
       this.addAwardToEmojiBar(votesBlock, normalizedEmoji, checkMutuality);
       return typeof callback === 'function' ? callback() : undefined;
     });
@@ -460,7 +460,8 @@ export class AwardsHandler {
     });
   }
 
-  static postEmoji($emojiButton, awardUrl, emoji, callback) {
+  // eslint-disable-next-line class-methods-use-this
+  postEmoji($emojiButton, awardUrl, emoji, callback) {
     axios
       .post(awardUrl, {
         name: emoji,

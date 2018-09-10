@@ -150,9 +150,9 @@ export class CopyAsGFM {
       return text;
     }
 
-    const gfmRuleValues = Object.values(gfmRules);
+    const gfmRuleValues = Object.keys(gfmRules);
     for (let a = 0, gfmRuleValuesLength = gfmRuleValues.length; a < gfmRuleValuesLength; a += 1) {
-      const rules = gfmRuleValues[a];
+      const rules = gfmRules[gfmRuleValues[a]];
       const ruleKeys = Object.keys(rules);
 
       for (let b = 0, ruleKeysLength = ruleKeys.length; b < ruleKeysLength; b += 1) {
