@@ -219,18 +219,43 @@ module Ci
       end
     end
 
+    def group_filters
+      return [] unless self.group_type?
+
+      self.groups.pluck(:id).map do |group_id|
+        "group_#{group_id}"
+      end
+    end
+
+    def project_filters
+      return [] unless self.project_type?
+
+      self.projects.pluck(:id).map do |project_id|
+        "project_#{project_id}"
+      end
+    end
+
+    def tag_filters
+      self.tag_list.map do |tag_name|
+        "tag_#{tag_name}"
+      end
+    end
+
+    def filters
+      filters = []
+      filters << :shared if self.instance_type?
+      filters += group_filters
+      filters += project_filters
+      filters += tag_filters
+      filters << :protected if self.ref_protected?
+      filters << :run_untagged if self.run_untagged?
+      filters
+    end
+
     def details
       {
         id: self.id,
-        params: {
-          tag_list: self.tag_list.presence,
-          tagged: [self.tag_list.any?].map(&:to_s),
-          run_untagged: [self.run_untagged?].map(&:to_s),
-          protected: [self.ref_protected?].map(&:to_s),
-          shared: [self.instance_type?].map(&:to_s),
-          group_ids: ( self.groups.pluck(:id).map(&:to_s).presence if self.group_type? ),
-          project_ids: ( self.projects.pluck(:id).map(&:to_s).presence if self.project_type? )
-        }.compact
+        filters_set: [filters]
       }
     end
 

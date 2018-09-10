@@ -647,36 +647,36 @@ module Ci
       end
     end
 
+    def tag_filters
+      return [:run_untagged] if self.tags.empty?
+
+      self.tags.map do |tag|
+        "tag_#{tag.name}"
+      end
+    end
+
+    def base_filters
+      strong_memoize(:base_filters) do
+        filters = []
+        filters << :protected if self.protected?
+        filters += tag_filters
+        filters
+      end
+    end
+
+    def filters_set
+      [].tap do |filters_set|
+        filters_set << base_filters + ["project_#{self.project_id}"]
+        filters_set << base_filters + ["group_#{self.project.namespace_id}"] if self.project.group_runners_enabled?
+        filters_set << base_filters + [:shared] if self.project.shared_runners_enabled?
+      end
+    end
+
     def details
       {
         id: self.id,
         project_id: self.project_id,
-        condition: {
-          and: [{
-              or: [
-                ( { param: :group_ids, contains: self.project.namespace_id.to_s } if self.project.group_runners_enabled? ),
-                { param: :project_ids, contains: self.project_id.to_s },
-                ( { param: :shared, contains: true.to_s } if self.project.shared_runners_enabled? ),
-              ].compact
-            },
-            ( {
-              # protected builds has to be run by protected runners
-              # not protected can be run by any type of runner
-              param: :protected,
-              contains: self.protected?.to_s
-            } if self.protected? ),
-            ( self.tags.map do |tag|
-              {
-                param: :tag_list,
-                contains: tag.name
-              }
-            end ),
-            ( {
-              param: :run_untagged,
-              contains: true.to_s
-            } if self.tags.empty? )
-          ].flatten.compact
-        }
+        filters_set: filters_set
       }
     end
 
