@@ -251,6 +251,30 @@ describe SystemNoteService do
     end
   end
 
+  describe '.change_due_date' do
+    subject { described_class.change_due_date(noteable, project, author, due_date) }
+
+    let(:due_date) { Date.today }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'due_date' }
+    end
+
+    context 'when due date added' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "changed due date to #{Date.today.to_s(:long)}"
+      end
+    end
+
+    context 'when due date removed' do
+      let(:due_date) { nil }
+
+      it 'sets the note text' do
+        expect(subject.note).to eq 'removed due date'
+      end
+    end
+  end
+
   describe '.change_status' do
     subject { described_class.change_status(noteable, project, author, status, source) }
 
