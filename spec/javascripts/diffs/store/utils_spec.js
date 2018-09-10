@@ -231,9 +231,18 @@ describe('DiffsStoreUtils', () => {
       expect(firstParallelDiffLine.left).not.toHaveAttr('text');
       expect(firstParallelDiffLine.right.discussions.length).toBe(0);
       expect(firstParallelDiffLine.right).not.toHaveAttr('text');
+      const firstParallelChar = firstParallelDiffLine.right.richText.charAt(0);
+      expect(firstParallelChar).not.toBe(' ');
+      expect(firstParallelChar).not.toBe('+');
+      expect(firstParallelChar).not.toBe('-');
 
-      expect(preparedDiff.diffFiles[0].highlightedDiffLines[0].discussions.length).toBe(0);
-      expect(preparedDiff.diffFiles[0].highlightedDiffLines[0]).not.toHaveAttr('text');
+      const checkLine = preparedDiff.diffFiles[0].highlightedDiffLines[0];
+      expect(checkLine.discussions.length).toBe(0);
+      expect(checkLine).not.toHaveAttr('text');
+      const firstChar = checkLine.richText.charAt(0);
+      expect(firstChar).not.toBe(' ');
+      expect(firstChar).not.toBe('+');
+      expect(firstChar).not.toBe('-');
 
       expect(preparedDiff.diffFiles[0].renderIt).toBeTruthy();
       expect(preparedDiff.diffFiles[0].collapsed).toBeFalsy();

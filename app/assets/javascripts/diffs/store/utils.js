@@ -205,7 +205,8 @@ export function prepareDiffData(diffData) {
     if (file.highlightedDiffLines) {
       const linesLength = file.highlightedDiffLines.length;
       for (let u = 0; u < linesLength; u += 1) {
-        trimFirstCharOfLineContent(file.highlightedDiffLines[u]);
+        const line = file.highlightedDiffLines[u];
+        Object.assign(line, { ...trimFirstCharOfLineContent(line) });
       }
       showingLines += file.parallelDiffLines.length;
     }
