@@ -343,7 +343,7 @@ GEM
       signet (~> 0.7)
     gpgme (2.0.13)
       mini_portile2 (~> 2.1)
-    grape (1.0.3)
+    grape (1.1.0)
       activesupport
       builder
       mustermann-grape (~> 1.0.0)
@@ -501,7 +501,7 @@ GEM
     multi_json (1.13.1)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
-    mustermann (1.0.2)
+    mustermann (1.0.3)
     mustermann-grape (1.0.0)
       mustermann (~> 1.0.0)
     mysql2 (0.4.10)
@@ -1050,7 +1050,7 @@ DEPENDENCIES
   google-api-client (~> 0.23)
   google-protobuf (= 3.5.1)
   gpgme
-  grape (~> 1.0)
+  grape (~> 1.1)
   grape-entity (~> 0.7.1)
   grape-path-helpers (~> 1.0)
   grape_logging (~> 1.7)

@@ -89,7 +89,7 @@ gem 'gitlab-gollum-rugged_adapter', '~> 0.4.4', require: false
 gem 'github-linguist', '~> 5.3.3', require: 'linguist'
 
 # API
-gem 'grape', '~> 1.0'
+gem 'grape', '~> 1.1'
 gem 'grape-entity', '~> 0.7.1'
 gem 'rack-cors', '~> 1.0.0', require: 'rack/cors'
 
