@@ -1,0 +1,5 @@
+---
+title: remove unnecessary help text from container scanning results
+merge_request: 7304
+author:
+type: removed

@@ -8636,9 +8636,6 @@ msgstr ""
 msgid "ciReport|Learn more about interacting with security reports (Alpha)."
 msgstr ""
 
-msgid "ciReport|Learn more about whitelisting"
-msgstr ""
-
 msgid "ciReport|License management detected %d license for the source branch only"
 msgid_plural "ciReport|License management detected %d licenses for the source branch only"
 msgstr[0] ""
@@ -8725,9 +8722,6 @@ msgid "ciReport|There was an error loading dependency scanning report"
 msgstr ""
 
 msgid "ciReport|There was an error reverting the dismissal. Please try again."
-msgstr ""
-
-msgid "ciReport|Unapproved vulnerabilities (red) can be marked as approved."
 msgstr ""
 
 msgid "ciReport|Upgrade %{name} from %{version} to %{fixed}."
