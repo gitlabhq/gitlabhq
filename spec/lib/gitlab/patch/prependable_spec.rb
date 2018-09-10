@@ -35,6 +35,7 @@ describe Gitlab::Patch::Prependable do
   end
 
   let(:ce) do
+    # So that block in Module.new could see them
     prepended_modules = @prepended_modules
     ee_ = ee
 
