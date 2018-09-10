@@ -51,6 +51,8 @@ variables:
   KUBERNETES_VERSION: 1.8.6
   HELM_VERSION: 2.6.1
 
+  DOCKER_DRIVER: overlay2
+
 stages:
   - build
   - test
@@ -67,8 +69,6 @@ build:
   image: docker:stable-git
   services:
   - docker:stable-dind
-  variables:
-    DOCKER_DRIVER: overlay2
   script:
     - setup_docker
     - build
@@ -95,8 +95,6 @@ test:
 code_quality:
   stage: test
   image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
   allow_failure: true
   services:
     - docker:stable-dind
@@ -114,8 +112,6 @@ code_quality:
 license_management:
   stage: test
   image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
   allow_failure: true
   services:
     - docker:stable-dind
@@ -133,8 +129,6 @@ license_management:
 performance:
   stage: performance
   image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
   allow_failure: true
   services:
     - docker:stable-dind
@@ -156,8 +150,6 @@ performance:
 sast:
   stage: test
   image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
   allow_failure: true
   services:
     - docker:stable-dind
@@ -175,8 +167,6 @@ sast:
 dependency_scanning:
   stage: test
   image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
   allow_failure: true
   services:
     - docker:stable-dind
@@ -194,8 +184,6 @@ dependency_scanning:
 container_scanning:
   stage: test
   image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
   allow_failure: true
   services:
     - docker:stable-dind
