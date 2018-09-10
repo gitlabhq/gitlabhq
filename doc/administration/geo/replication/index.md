@@ -89,6 +89,11 @@ Note that CentOS 6 and 7.0 ship with an old version of OpenSSH that do not
 support a feature that Geo requires. See the [documentation on Geo SSH
 access][fast-ssh-lookup] for more details.
 
+### Firewall rules
+
+Apart from the standard GitLab ports 80 (HTTP), 443 (HTTPS), and 22 (SSH) you need 5432 (PostgreSQL, primary only) to be open for GitLab Geo.
+See the full list of ports used by GitLab in [Package defaults](https://docs.gitlab.com/omnibus/package-information/defaults.html)
+
 ### LDAP
 
 We recommend that if you use LDAP on your primary that you also set up a
