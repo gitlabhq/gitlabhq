@@ -36,10 +36,7 @@ module SelectsHelper
   def groups_select_tag(id, opts = {})
     classes = Array.wrap(opts[:class])
     classes << 'ajax-groups-select'
-<<<<<<< HEAD
     classes << 'multiselect' if opts[:multiple]
-=======
->>>>>>> upstream/master
 
     opts[:class] = classes.join(' ')
 
@@ -74,12 +71,6 @@ module SelectsHelper
   def select2_tag(id, opts = {})
     klass_opts = [opts[:class]]
     klass_opts << 'multiselect' if opts[:multiple]
-<<<<<<< HEAD
-=======
-
-    opts[:class] = klass_opts.join(' ')
-    value = opts[:selected] || ''
->>>>>>> upstream/master
 
     opts[:class] = klass_opts.join(' ')
     value = opts[:selected] || ''
