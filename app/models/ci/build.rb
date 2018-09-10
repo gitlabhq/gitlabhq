@@ -676,7 +676,7 @@ module Ci
       {
         id: self.id,
         project_id: self.project_id,
-        filters_set: filters_set
+        tag_filters: filters_set
       }
     end
 

@@ -255,7 +255,7 @@ module Ci
     def details
       {
         id: self.id,
-        filters_set: [filters]
+        tag_filters: [filters]
       }
     end
 
