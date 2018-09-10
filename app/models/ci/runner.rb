@@ -224,12 +224,12 @@ module Ci
         id: self.id,
         params: {
           tag_list: self.tag_list.presence,
-          tagged: [self.tag_list.any?],
-          run_untagged: [self.run_untagged?],
-          protected: [self.ref_protected?],
-          shared: [self.instance_type?],
-          group_ids: ( self.groups.pluck(:id).presence if self.group_type? ),
-          project_ids: ( self.projects.pluck(:id).presence if self.project_type? )
+          tagged: [self.tag_list.any?].map(&:to_s),
+          run_untagged: [self.run_untagged?].map(&:to_s),
+          protected: [self.ref_protected?].map(&:to_s),
+          shared: [self.instance_type?].map(&:to_s),
+          group_ids: ( self.groups.pluck(:id).map(&:to_s).presence if self.group_type? ),
+          project_ids: ( self.projects.pluck(:id).map(&:to_s).presence if self.project_type? )
         }.compact
       }
     end

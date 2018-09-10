@@ -654,16 +654,16 @@ module Ci
         condition: {
           and: [{
               or: [
-                ( { param: :group_ids, contains: self.project.namespace_id } if self.project.group_runners_enabled? ),
-                { param: :project_ids, contains: self.project_id },
-                ( { param: :shared, contains: true } if self.project.shared_runners_enabled? ),
+                ( { param: :group_ids, contains: self.project.namespace_id.to_s } if self.project.group_runners_enabled? ),
+                { param: :project_ids, contains: self.project_id.to_s },
+                ( { param: :shared, contains: true.to_s } if self.project.shared_runners_enabled? ),
               ].compact
             },
             ( {
               # protected builds has to be run by protected runners
               # not protected can be run by any type of runner
               param: :protected,
-              contains: self.protected?
+              contains: self.protected?.to_s
             } if self.protected? ),
             ( self.tags.map do |tag|
               {
@@ -673,7 +673,7 @@ module Ci
             end ),
             ( {
               param: :run_untagged,
-              contains: true
+              contains: true.to_s
             } if self.tags.empty? )
           ].flatten.compact
         }
