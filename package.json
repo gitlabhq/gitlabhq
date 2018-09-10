@@ -18,8 +18,8 @@
     "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js"
   },
   "dependencies": {
-    "@gitlab-org/gitlab-svgs": "^1.28.0",
-    "@gitlab-org/gitlab-ui": "1.0.5",
+    "@gitlab-org/gitlab-svgs": "^1.29.0",
+    "@gitlab-org/gitlab-ui": "^1.1.0",
     "autosize": "^4.0.0",
     "axios": "^0.17.1",
     "babel-core": "^6.26.3",

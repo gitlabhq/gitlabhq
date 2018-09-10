@@ -1,10 +1,10 @@
 # Koding & GitLab
 
->**Notes:**
-- **As of GitLab 10.0, the Koding integration is deprecated and will be removed
-  in a future version. The option to configure it is removed from GitLab's admin
-  area.**
-- [Introduced][ce-5909] in GitLab 8.11.
+> **Notes:**
+> - **As of GitLab 10.0, the Koding integration is deprecated and will be removed
+>   in a future version. The option to configure it is removed from GitLab's admin
+>   area.**
+> - [Introduced][ce-5909] in GitLab 8.11.
 
 This document will guide you through installing and configuring Koding with
 GitLab.
@@ -117,12 +117,11 @@ requests.
 You need to enable Koding integration from Settings under Admin Area. To do
 that login with an Admin account and do followings;
 
- - open [http://127.0.0.1:3000/admin/application_settings](http://127.0.0.1:3000/admin/application_settings)
- - scroll to bottom of the page until Koding section
- - check `Enable Koding` checkbox
- - provide GitLab team page for running Koding instance as `Koding URL`*
-
-* For `Koding URL` you need to provide the gitlab integration enabled team on
+- open [http://127.0.0.1:3000/admin/application_settings](http://127.0.0.1:3000/admin/application_settings)
+- scroll to bottom of the page until Koding section
+- check `Enable Koding` checkbox
+- provide GitLab team page for running Koding instance as `Koding URL`*
+  * For `Koding URL` you need to provide the gitlab integration enabled team on
 your Koding installation. Team called `gitlab` has integration on Koding out
 of the box, so if you didn't change anything your team on Koding should be
 `gitlab`.

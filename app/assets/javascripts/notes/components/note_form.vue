@@ -20,9 +20,9 @@ export default {
       default: '',
     },
     noteId: {
-      type: Number,
+      type: String,
       required: false,
-      default: 0,
+      default: '',
     },
     markdownVersion: {
       type: Number,
@@ -67,7 +67,10 @@ export default {
       'getUserDataByProp',
     ]),
     noteHash() {
-      return `#note_${this.noteId}`;
+      if (this.noteId) {
+        return `#note_${this.noteId}`;
+      }
+      return '#';
     },
     markdownPreviewPath() {
       return this.getNoteableDataByProp('preview_note_path');

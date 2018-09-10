@@ -6,6 +6,8 @@ describe 'gitlab:cleanup rake tasks' do
   end
 
   describe 'cleanup namespaces and repos' do
+    let(:gitlab_shell) { Gitlab::Shell.new }
+    let(:storage) { storages.keys.first }
     let(:storages) do
       {
         'default' => Gitlab::GitalyClient::StorageSettings.new(@default_storage_hash.merge('path' => 'tmp/tests/default_storage'))
@@ -17,53 +19,56 @@ describe 'gitlab:cleanup rake tasks' do
     end
 
     before do
-      FileUtils.mkdir(Settings.absolute('tmp/tests/default_storage'))
       allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
     end
 
     after do
-      FileUtils.rm_rf(Settings.absolute('tmp/tests/default_storage'))
+      Gitlab::GitalyClient::StorageService.new(storage).delete_all_repositories
     end
 
     describe 'cleanup:repos' do
       before do
-        FileUtils.mkdir_p(Settings.absolute('tmp/tests/default_storage/broken/project.git'))
-        FileUtils.mkdir_p(Settings.absolute('tmp/tests/default_storage/@hashed/12/34/5678.git'))
+        gitlab_shell.add_namespace(storage, 'broken/project.git')
+        gitlab_shell.add_namespace(storage, '@hashed/12/34/5678.git')
       end
 
       it 'moves it to an orphaned path' do
-        run_rake_task('gitlab:cleanup:repos')
-        repo_list = Dir['tmp/tests/default_storage/broken/*']
+        now = Time.now
 
-        expect(repo_list.first).to include('+orphaned+')
+        Timecop.freeze(now) do
+          run_rake_task('gitlab:cleanup:repos')
+          repo_list = Gitlab::GitalyClient::StorageService.new(storage).list_directories(depth: 0)
+
+          expect(repo_list.last).to include("broken+orphaned+#{now.to_i}")
+        end
       end
 
       it 'ignores @hashed repos' do
         run_rake_task('gitlab:cleanup:repos')
 
-        expect(Dir.exist?(Settings.absolute('tmp/tests/default_storage/@hashed/12/34/5678.git'))).to be_truthy
+        expect(gitlab_shell.exists?(storage, '@hashed/12/34/5678.git')).to be(true)
       end
     end
 
     describe 'cleanup:dirs' do
       it 'removes missing namespaces' do
-        FileUtils.mkdir_p(Settings.absolute("tmp/tests/default_storage/namespace_1/project.git"))
-        FileUtils.mkdir_p(Settings.absolute("tmp/tests/default_storage/namespace_2/project.git"))
-        allow(Namespace).to receive(:pluck).and_return('namespace_1')
+        gitlab_shell.add_namespace(storage, "namespace_1/project.git")
+        gitlab_shell.add_namespace(storage, "namespace_2/project.git")
+        allow(Namespace).to receive(:pluck).and_return(['namespace_1'])
 
         stub_env('REMOVE', 'true')
         run_rake_task('gitlab:cleanup:dirs')
 
-        expect(Dir.exist?(Settings.absolute('tmp/tests/default_storage/namespace_1'))).to be_truthy
-        expect(Dir.exist?(Settings.absolute('tmp/tests/default_storage/namespace_2'))).to be_falsey
+        expect(gitlab_shell.exists?(storage, 'namespace_1')).to be(true)
+        expect(gitlab_shell.exists?(storage, 'namespace_2')).to be(false)
       end
 
       it 'ignores @hashed directory' do
-        FileUtils.mkdir_p(Settings.absolute('tmp/tests/default_storage/@hashed/12/34/5678.git'))
+        gitlab_shell.add_namespace(storage, '@hashed/12/34/5678.git')
 
         run_rake_task('gitlab:cleanup:dirs')
 
-        expect(Dir.exist?(Settings.absolute('tmp/tests/default_storage/@hashed/12/34/5678.git'))).to be_truthy
+        expect(gitlab_shell.exists?(storage, '@hashed/12/34/5678.git')).to be(true)
       end
     end
   end

@@ -1,11 +1,10 @@
 # Bulk editing issues and merge requests
 
->
-**Notes:**
-- A permission level of `Reporter` or higher is required in order to manage
-issues.
-- A permission level of `Developer` or higher is required in order to manage
-merge requests.
+> **Notes:**
+> - A permission level of `Reporter` or higher is required in order to manage
+>   issues.
+> - A permission level of `Developer` or higher is required in order to manage
+>   merge requests.
 
 Attributes can be updated simultaneously across multiple issues or merge requests
 by using the bulk editing feature.

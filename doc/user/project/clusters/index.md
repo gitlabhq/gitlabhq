@@ -54,16 +54,16 @@ new Kubernetes cluster to your project:
 1. Connect your Google account if you haven't done already by clicking the
    **Sign in with Google** button.
 1. From there on, choose your cluster's settings:
-  - **Kubernetes cluster name** - The name you wish to give the cluster.
-  - **Environment scope** - The [associated environment](#setting-the-environment-scope) to this cluster.
-  - **Google Cloud Platform project** - Choose the project you created in your GCP
-    console that will host the Kubernetes cluster. Learn more about
-    [Google Cloud Platform projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects).
-  - **Zone** - Choose the [region zone](https://cloud.google.com/compute/docs/regions-zones/)
-    under which the cluster will be created.
-  - **Number of nodes** - Enter the number of nodes you wish the cluster to have.
-  - **Machine type** - The [machine type](https://cloud.google.com/compute/docs/machine-types)
-    of the Virtual Machine instance that the cluster will be based on.
+   - **Kubernetes cluster name** - The name you wish to give the cluster.
+   - **Environment scope** - The [associated environment](#setting-the-environment-scope) to this cluster.
+   - **Google Cloud Platform project** - Choose the project you created in your GCP
+     console that will host the Kubernetes cluster. Learn more about
+     [Google Cloud Platform projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects).
+   - **Zone** - Choose the [region zone](https://cloud.google.com/compute/docs/regions-zones/)
+     under which the cluster will be created.
+   - **Number of nodes** - Enter the number of nodes you wish the cluster to have.
+   - **Machine type** - The [machine type](https://cloud.google.com/compute/docs/machine-types)
+     of the Virtual Machine instance that the cluster will be based on.
 1. Finally, click the **Create Kubernetes cluster** button.
 
 After a couple of minutes, your cluster will be ready to go. You can now proceed

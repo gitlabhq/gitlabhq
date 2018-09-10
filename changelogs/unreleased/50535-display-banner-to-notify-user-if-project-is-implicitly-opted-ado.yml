@@ -1,0 +1,5 @@
+---
+title: Display banner on project page if AutoDevOps is implicitly enabled
+merge_request: 21503
+author:
+type: added

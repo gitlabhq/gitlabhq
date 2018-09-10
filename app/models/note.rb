@@ -389,18 +389,7 @@ class Note < ActiveRecord::Base
   end
 
   def expire_etag_cache
-    return unless noteable&.discussions_rendered_on_frontend?
-    return unless noteable&.etag_caching_enabled?
-
-    Gitlab::EtagCaching::Store.new.touch(etag_key)
-  end
-
-  def etag_key
-    Gitlab::Routing.url_helpers.project_noteable_notes_path(
-      project,
-      target_type: noteable_type.underscore,
-      target_id: noteable_id
-    )
+    noteable&.expire_note_etag_cache
   end
 
   def touch(*args)

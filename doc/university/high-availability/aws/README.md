@@ -395,5 +395,5 @@ some redundancy options but it might also imply Geographic replication.
 There is a lot of ground yet to cover so have a read through these other
 resources and feel free to open an issue to request additional material.
 
- * [GitLab High Availability](http://docs.gitlab.com/ce/administration/high_availability/README.html#sts=High Availability)
- * [GitLab Geo](http://docs.gitlab.com/ee/gitlab-geo/README.html)  
+* [GitLab High Availability](http://docs.gitlab.com/ce/administration/high_availability/README.html#sts=High%20Availability)
+* [GitLab Geo](http://docs.gitlab.com/ee/gitlab-geo/README.html)  

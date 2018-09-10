@@ -19,6 +19,9 @@ project_tree:
     - milestone:
       - events:
         - :push_event_payload
+    - resource_label_events:
+      - label:
+          :priorities
     - :issue_assignees
   - snippets:
     - :award_emoji
@@ -45,6 +48,9 @@ project_tree:
     - milestone:
       - events:
         - :push_event_payload
+    - resource_label_events:
+      - label:
+          :priorities
   - pipelines:
     - notes:
       - :author
@@ -64,6 +70,7 @@ project_tree:
     - :create_access_levels
   - :project_feature
   - :custom_attributes
+  - :prometheus_metrics
   - :project_badges
   - :ci_cd_settings
 
@@ -108,6 +115,9 @@ excluded_attributes:
     - :remote_mirror_available_overridden
     - :description_html
     - :repository_languages
+  prometheus_metrics:
+    - :common
+    - :identifier
   snippets:
     - :expired_at
   merge_request_diff:
@@ -133,6 +143,10 @@ excluded_attributes:
     - :event_id
   project_badges:
     - :group_id
+  resource_label_events:
+    - :reference
+    - :reference_html
+    - :epic_id
 
 methods:
   labels:

@@ -55,13 +55,13 @@ Sometimes we need to upgrade customers from old versions of GitLab to latest, so
   - Keep this up-to-date as patch and version releases become available, just like our customers would
 - Try out the following installation path
   - [Install GitLab 4.2 from source](https://gitlab.com/gitlab-org/gitlab-ce/blob/d67117b5a185cfb15a1d7e749588ff981ffbf779/doc/install/installation.md)
-    - External MySQL database
-    - External NGINX
+     - External MySQL database
+     - External NGINX
   - Create some test data
-    - Populated Repos
-    - Users
-    - Groups
-    - Projects
+     - Populated Repos
+     - Users
+     - Groups
+     - Projects
   - [Backup using our Backup rake task](https://docs.gitlab.com/ce/raketasks/backup_restore.html#create-a-backup-of-the-gitlab-system)
   - [Upgrade to 5.0 source using our Upgrade documentation](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/update/4.2-to-5.0.md)
   - [Upgrade to 5.1 source](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/update/5.0-to-5.1.md)
@@ -72,7 +72,7 @@ Sometimes we need to upgrade customers from old versions of GitLab to latest, so
   - [Upgrade to Omnibus 7.14](https://docs.gitlab.com/omnibus/update/README.html#upgrading-from-a-non-omnibus-installation-to-an-omnibus-installation)
   - [Restore backup using our Restore rake task](https://docs.gitlab.com/ce/raketasks/backup_restore.html#restore-a-previously-created-backup)
   - [Upgrade to latest EE](https://about.gitlab.com/downloads-ee)
-    - (GitLab inc. only) Acquire and apply a license for the Enterprise Edition product, ask in #support
+     - (GitLab inc. only) Acquire and apply a license for the Enterprise Edition product, ask in #support
 - Perform a downgrade from [EE to CE](https://docs.gitlab.com/ee/downgrade_ee_to_ce/README.html)
 
 #### Start to learn about some of the integrations that we support
@@ -98,9 +98,9 @@ Our integrations add great value to GitLab. User questions often relate to integ
   - [Environment Information and maintenance checks](https://docs.gitlab.com/ce/raketasks/maintenance.html)
   - [GitLab check](https://docs.gitlab.com/ce/raketasks/check.html)
   - Omnibus commands
-    - [Status](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/maintenance/README.md#get-service-status)
-    - [Starting and stopping services](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/maintenance/README.md#starting-and-stopping)
-    - [Starting a rails console](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/maintenance/README.md#invoking-rake-tasks)
+     - [Status](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/maintenance/README.md#get-service-status)
+     - [Starting and stopping services](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/maintenance/README.md#starting-and-stopping)
+     - [Starting a rails console](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/maintenance/README.md#invoking-rake-tasks)
 
 #### Learn about the Support process
 
@@ -118,16 +118,16 @@ Zendesk is our Support Centre and our main communication line with our Customers
   - Here you will find a large variety of queries mainly from our Users who are self hosting GitLab CE
   - Understand the questions that are asked and dig in to try to find a solution
   - [Proceed on to the GitLab.com Support Forum](https://about.gitlab.com/handbook/support/#gitlabcom-support-trackera-namesupp-foruma)
-    - Here you will find queries regarding our own GitLab.com
-    - Helping Users here will give you an understanding of our Admin interface and other tools
+     - Here you will find queries regarding our own GitLab.com
+     - Helping Users here will give you an understanding of our Admin interface and other tools
   - [Proceed on to the Twitter tickets in Zendesk](https://about.gitlab.com/handbook/support/#twitter)
-    - Here you will gain a great insight into our userbase
-    - Learn from any complaints and problems and feed them back to the team
-    - Tweets can range from help needed with GitLab installations, the API and just general queries
+     - Here you will gain a great insight into our userbase
+     - Learn from any complaints and problems and feed them back to the team
+     - Tweets can range from help needed with GitLab installations, the API and just general queries
   - [Proceed on to Regular email Support tickets](https://about.gitlab.com/handbook/support/#regular-zendesk-tickets-a-nameregulara)
-    - Here you will find tickets from our GitLab EE Customers and GitLab CE Users
-    - Tickets here are extremely varied and often very technical
-    - You should be prepared for these tickets, given the knowledge gained from previous tiers and your training
+     - Here you will find tickets from our GitLab EE Customers and GitLab CE Users
+     - Tickets here are extremely varied and often very technical
+     - You should be prepared for these tickets, given the knowledge gained from previous tiers and your training
 - Check out your colleagues' responses
   - Hop on to the #support-live-feed channel in Slack and see the tickets as they come in and are updated
   - Read through old tickets that your colleagues have worked on
@@ -135,10 +135,10 @@ Zendesk is our Support Centre and our main communication line with our Customers
   - [Learn about Cisco WebEx](https://about.gitlab.com/handbook/support/onboarding/#webexa-namewebexa)
   - Training calls
   - Information gathering calls
-    - It's good to find out how new and prospective customers are going to be using the product and how they will set up their infrastructure
+     - It's good to find out how new and prospective customers are going to be using the product and how they will set up their infrastructure
   - Diagnosis calls
-    - When email isn't enough we may need to hop on a call and do some debugging along side the customer
-    - These paired calls are a great learning experience
+     - When email isn't enough we may need to hop on a call and do some debugging along side the customer
+     - These paired calls are a great learning experience
   - Upgrade calls
   - Emergency calls
 

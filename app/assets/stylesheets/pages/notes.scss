@@ -334,20 +334,6 @@ ul.notes {
       border: 1px solid $white-normal;
       border-left: 0;
 
-      &.notes_line {
-        vertical-align: middle;
-        text-align: center;
-        padding: 10px 0;
-        background: $gray-light;
-        color: $text-color;
-      }
-
-      &.notes_line2 {
-        text-align: center;
-        padding: 10px 0;
-        border-left: 1px solid $note-line2-border !important;
-      }
-
       &.notes_content {
         background-color: $gray-light;
         border-width: 1px 0;

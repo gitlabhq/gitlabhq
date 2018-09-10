@@ -65,8 +65,8 @@ export const hideMenu = (el) => {
 
   const parentEl = el.parentNode;
 
-  el.style.display = ''; // eslint-disable-line no-param-reassign
-  el.style.transform = ''; // eslint-disable-line no-param-reassign
+  el.style.display = '';
+  el.style.transform = '';
   el.classList.remove(IS_ABOVE_CLASS);
   parentEl.classList.remove(IS_OVER_CLASS);
   parentEl.classList.remove(IS_SHOWING_FLY_OUT_CLASS);

@@ -21,12 +21,8 @@ module API
         detail 'This feature was introduced in GitLab 10.6.'
       end
       get ':id/export/download' do
-        path = user_project.export_project_path
-
-        if path
-          present_disk_file!(path, File.basename(path), 'application/gzip')
-        elsif user_project.export_project_object_exists?
-          present_carrierwave_file!(user_project.import_export_upload.export_file)
+        if user_project.export_file_exists?
+          present_carrierwave_file!(user_project.export_file)
         else
           render_api_error!('404 Not found or has expired', 404)
         end

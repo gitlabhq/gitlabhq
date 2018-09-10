@@ -1,0 +1,5 @@
+---
+title: Fix NamespaceUploader.base_dir for remote uploads
+merge_request:
+author:
+type: fixed

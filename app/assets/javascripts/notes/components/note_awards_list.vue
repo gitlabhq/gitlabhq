@@ -25,7 +25,7 @@ export default {
       required: true,
     },
     noteId: {
-      type: Number,
+      type: String,
       required: true,
     },
     canAwardEmoji: {

@@ -13,6 +13,8 @@ describe MergeRequests::BuildService do
   let(:description) { nil }
   let(:source_branch) { 'feature-branch' }
   let(:target_branch) { 'master' }
+  let(:milestone_id) { nil }
+  let(:label_ids) { [] }
   let(:merge_request) { service.execute }
   let(:compare) { double(:compare, commits: commits) }
   let(:commit_1) { double(:commit_1, sha: 'f00ba7', safe_message: "Initial commit\n\nCreate the app") }
@@ -25,7 +27,9 @@ describe MergeRequests::BuildService do
                                     source_branch: source_branch,
                                     target_branch: target_branch,
                                     source_project: source_project,
-                                    target_project: target_project)
+                                    target_project: target_project,
+                                    milestone_id: milestone_id,
+                                    label_ids: label_ids)
   end
 
   before do
@@ -177,6 +181,33 @@ describe MergeRequests::BuildService do
             expected_description = [commit_description, closing_message].compact.join("\n\n")
 
             expect(merge_request.description).to eq(expected_description)
+          end
+        end
+
+        context 'when the source branch matches an internal issue' do
+          let(:label) { create(:label, project: project) }
+          let(:milestone) { create(:milestone, project: project) }
+          let(:source_branch) { '123-fix-issue' }
+
+          before do
+            issue.update!(iid: 123, labels: [label], milestone: milestone)
+          end
+
+          it 'assigns the issue label and milestone' do
+            expect(merge_request.milestone).to eq(milestone)
+            expect(merge_request.labels).to match_array([label])
+          end
+
+          context 'when milestone_id and label_ids are shared in the params' do
+            let(:label2) { create(:label, project: project) }
+            let(:milestone2) { create(:milestone, project: project) }
+            let(:label_ids) { [label2.id] }
+            let(:milestone_id) { milestone2.id }
+
+            it 'assigns milestone_id and label_ids instead of issue labels and milestone' do
+              expect(merge_request.milestone).to eq(milestone2)
+              expect(merge_request.labels).to match_array([label2])
+            end
           end
         end
       end

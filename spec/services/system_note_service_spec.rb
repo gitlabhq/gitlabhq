@@ -197,45 +197,6 @@ describe SystemNoteService do
     end
   end
 
-  describe '.change_label' do
-    subject { described_class.change_label(noteable, project, author, added, removed) }
-
-    let(:labels)  { create_list(:label, 2, project: project) }
-    let(:added)   { [] }
-    let(:removed) { [] }
-
-    it_behaves_like 'a system note' do
-      let(:action) { 'label' }
-    end
-
-    context 'with added labels' do
-      let(:added)   { labels }
-      let(:removed) { [] }
-
-      it 'sets the note text' do
-        expect(subject.note).to eq "added ~#{labels[0].id} ~#{labels[1].id} labels"
-      end
-    end
-
-    context 'with removed labels' do
-      let(:added)   { [] }
-      let(:removed) { labels }
-
-      it 'sets the note text' do
-        expect(subject.note).to eq "removed ~#{labels[0].id} ~#{labels[1].id} labels"
-      end
-    end
-
-    context 'with added and removed labels' do
-      let(:added)   { [labels[0]] }
-      let(:removed) { [labels[1]] }
-
-      it 'sets the note text' do
-        expect(subject.note).to eq "added ~#{labels[0].id} and removed ~#{labels[1].id} labels"
-      end
-    end
-  end
-
   describe '.change_milestone' do
     context 'for a project milestone' do
       subject { described_class.change_milestone(noteable, project, author, milestone) }
@@ -284,6 +245,30 @@ describe SystemNoteService do
         it 'sets the note text' do
           expect(subject.note).to eq 'removed milestone'
         end
+      end
+    end
+  end
+
+  describe '.change_due_date' do
+    subject { described_class.change_due_date(noteable, project, author, due_date) }
+
+    let(:due_date) { Date.today }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'due_date' }
+    end
+
+    context 'when due date added' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "changed due date to #{Date.today.to_s(:long)}"
+      end
+    end
+
+    context 'when due date removed' do
+      let(:due_date) { nil }
+
+      it 'sets the note text' do
+        expect(subject.note).to eq 'removed due date'
       end
     end
   end
@@ -725,7 +710,7 @@ describe SystemNoteService do
     let(:jira_tracker)    { project.jira_service }
     let(:commit)          { project.commit }
     let(:comment_url)     { jira_api_comment_url(jira_issue.id) }
-    let(:success_message) { "JiraService SUCCESS: Successfully posted to http://jira.example.net." }
+    let(:success_message) { "SUCCESS: Successfully posted to http://jira.example.net." }
 
     before do
       stub_jira_urls(jira_issue.id)

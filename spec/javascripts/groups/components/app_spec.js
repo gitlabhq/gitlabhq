@@ -9,9 +9,14 @@ import GroupsStore from '~/groups/store/groups_store';
 import GroupsService from '~/groups/service/groups_service';
 
 import {
-  mockEndpoint, mockGroups, mockSearchedGroups,
-  mockRawPageInfo, mockParentGroupItem, mockRawChildren,
-  mockChildren, mockPageInfo,
+  mockEndpoint,
+  mockGroups,
+  mockSearchedGroups,
+  mockRawPageInfo,
+  mockParentGroupItem,
+  mockRawChildren,
+  mockChildren,
+  mockPageInfo,
 } from '../mock_data';
 
 const createComponent = (hideProjects = false) => {
@@ -28,22 +33,23 @@ const createComponent = (hideProjects = false) => {
   });
 };
 
-const returnServicePromise = (data, failed) => new Promise((resolve, reject) => {
-  if (failed) {
-    reject(data);
-  } else {
-    resolve({
-      json() {
-        return data;
-      },
-    });
-  }
-});
+const returnServicePromise = (data, failed) =>
+  new Promise((resolve, reject) => {
+    if (failed) {
+      reject(data);
+    } else {
+      resolve({
+        json() {
+          return data;
+        },
+      });
+    }
+  });
 
 describe('AppComponent', () => {
   let vm;
 
-  beforeEach((done) => {
+  beforeEach(done => {
     Vue.component('group-folder', groupFolderComponent);
     Vue.component('group-item', groupItemComponent);
 
@@ -94,7 +100,7 @@ describe('AppComponent', () => {
     });
 
     describe('fetchGroups', () => {
-      it('should call `getGroups` with all the params provided', (done) => {
+      it('should call `getGroups` with all the params provided', done => {
         spyOn(vm.service, 'getGroups').and.returnValue(returnServicePromise(mockGroups));
 
         vm.fetchGroups({
@@ -110,8 +116,10 @@ describe('AppComponent', () => {
         }, 0);
       });
 
-      it('should set headers to store for building pagination info when called with `updatePagination`', (done) => {
-        spyOn(vm.service, 'getGroups').and.returnValue(returnServicePromise({ headers: mockRawPageInfo }));
+      it('should set headers to store for building pagination info when called with `updatePagination`', done => {
+        spyOn(vm.service, 'getGroups').and.returnValue(
+          returnServicePromise({ headers: mockRawPageInfo }),
+        );
         spyOn(vm, 'updatePagination');
 
         vm.fetchGroups({ updatePagination: true });
@@ -122,7 +130,7 @@ describe('AppComponent', () => {
         }, 0);
       });
 
-      it('should show flash error when request fails', (done) => {
+      it('should show flash error when request fails', done => {
         spyOn(vm.service, 'getGroups').and.returnValue(returnServicePromise(null, true));
         spyOn($, 'scrollTo');
         spyOn(window, 'Flash');
@@ -138,7 +146,7 @@ describe('AppComponent', () => {
     });
 
     describe('fetchAllGroups', () => {
-      it('should fetch default set of groups', (done) => {
+      it('should fetch default set of groups', done => {
         spyOn(vm, 'fetchGroups').and.returnValue(returnServicePromise(mockGroups));
         spyOn(vm, 'updatePagination').and.callThrough();
         spyOn(vm, 'updateGroups').and.callThrough();
@@ -153,7 +161,7 @@ describe('AppComponent', () => {
         }, 0);
       });
 
-      it('should fetch matching set of groups when app is loaded with search query', (done) => {
+      it('should fetch matching set of groups when app is loaded with search query', done => {
         spyOn(vm, 'fetchGroups').and.returnValue(returnServicePromise(mockSearchedGroups));
         spyOn(vm, 'updateGroups').and.callThrough();
 
@@ -173,7 +181,7 @@ describe('AppComponent', () => {
     });
 
     describe('fetchPage', () => {
-      it('should fetch groups for provided page details and update window state', (done) => {
+      it('should fetch groups for provided page details and update window state', done => {
         spyOn(vm, 'fetchGroups').and.returnValue(returnServicePromise(mockGroups));
         spyOn(vm, 'updateGroups').and.callThrough();
         const mergeUrlParams = spyOnDependency(appComponent, 'mergeUrlParams').and.callThrough();
@@ -193,9 +201,13 @@ describe('AppComponent', () => {
           expect(vm.isLoading).toBe(false);
           expect($.scrollTo).toHaveBeenCalledWith(0);
           expect(mergeUrlParams).toHaveBeenCalledWith({ page: 2 }, jasmine.any(String));
-          expect(window.history.replaceState).toHaveBeenCalledWith({
-            page: jasmine.any(String),
-          }, jasmine.any(String), jasmine.any(String));
+          expect(window.history.replaceState).toHaveBeenCalledWith(
+            {
+              page: jasmine.any(String),
+            },
+            jasmine.any(String),
+            jasmine.any(String),
+          );
           expect(vm.updateGroups).toHaveBeenCalled();
           done();
         }, 0);
@@ -211,7 +223,7 @@ describe('AppComponent', () => {
         groupItem.isChildrenLoading = false;
       });
 
-      it('should fetch children of given group and expand it if group is collapsed and children are not loaded', (done) => {
+      it('should fetch children of given group and expand it if group is collapsed and children are not loaded', done => {
         spyOn(vm, 'fetchGroups').and.returnValue(returnServicePromise(mockRawChildren));
         spyOn(vm.store, 'setGroupChildren');
 
@@ -244,7 +256,7 @@ describe('AppComponent', () => {
         expect(groupItem.isOpen).toBe(false);
       });
 
-      it('should set `isChildrenLoading` back to `false` if load request fails', (done) => {
+      it('should set `isChildrenLoading` back to `false` if load request fails', done => {
         spyOn(vm, 'fetchGroups').and.returnValue(returnServicePromise({}, true));
 
         vm.toggleChildren(groupItem);
@@ -272,7 +284,9 @@ describe('AppComponent', () => {
         expect(vm.groupLeaveConfirmationMessage).toBe('');
         vm.showLeaveGroupModal(group, mockParentGroupItem);
         expect(vm.showModal).toBe(true);
-        expect(vm.groupLeaveConfirmationMessage).toBe(`Are you sure you want to leave the "${group.fullName}" group?`);
+        expect(vm.groupLeaveConfirmationMessage).toBe(
+          `Are you sure you want to leave the "${group.fullName}" group?`,
+        );
       });
     });
 
@@ -299,7 +313,7 @@ describe('AppComponent', () => {
         vm.targetParentGroup = groupItem;
       });
 
-      it('hides modal confirmation leave group and remove group item from tree', (done) => {
+      it('hides modal confirmation leave group and remove group item from tree', done => {
         const notice = `You left the "${childGroupItem.fullName}" group.`;
         spyOn(vm.service, 'leaveGroup').and.returnValue(returnServicePromise({ notice }));
         spyOn(vm.store, 'removeGroup').and.callThrough();
@@ -318,9 +332,11 @@ describe('AppComponent', () => {
         }, 0);
       });
 
-      it('should show error flash message if request failed to leave group', (done) => {
+      it('should show error flash message if request failed to leave group', done => {
         const message = 'An error occurred. Please try again.';
-        spyOn(vm.service, 'leaveGroup').and.returnValue(returnServicePromise({ status: 500 }, true));
+        spyOn(vm.service, 'leaveGroup').and.returnValue(
+          returnServicePromise({ status: 500 }, true),
+        );
         spyOn(vm.store, 'removeGroup').and.callThrough();
         spyOn(window, 'Flash');
 
@@ -335,9 +351,11 @@ describe('AppComponent', () => {
         }, 0);
       });
 
-      it('should show appropriate error flash message if request forbids to leave group', (done) => {
+      it('should show appropriate error flash message if request forbids to leave group', done => {
         const message = 'Failed to leave the group. Please make sure you are not the only owner.';
-        spyOn(vm.service, 'leaveGroup').and.returnValue(returnServicePromise({ status: 403 }, true));
+        spyOn(vm.service, 'leaveGroup').and.returnValue(
+          returnServicePromise({ status: 403 }, true),
+        );
         spyOn(vm.store, 'removeGroup').and.callThrough();
         spyOn(window, 'Flash');
 
@@ -388,7 +406,7 @@ describe('AppComponent', () => {
   });
 
   describe('created', () => {
-    it('should bind event listeners on eventHub', (done) => {
+    it('should bind event listeners on eventHub', done => {
       spyOn(eventHub, '$on');
 
       const newVm = createComponent();
@@ -405,21 +423,21 @@ describe('AppComponent', () => {
       });
     });
 
-    it('should initialize `searchEmptyMessage` prop with correct string when `hideProjects` is `false`', (done) => {
+    it('should initialize `searchEmptyMessage` prop with correct string when `hideProjects` is `false`', done => {
       const newVm = createComponent();
       newVm.$mount();
       Vue.nextTick(() => {
-        expect(newVm.searchEmptyMessage).toBe('Sorry, no groups or projects matched your search');
+        expect(newVm.searchEmptyMessage).toBe('No groups or projects matched your search');
         newVm.$destroy();
         done();
       });
     });
 
-    it('should initialize `searchEmptyMessage` prop with correct string when `hideProjects` is `true`', (done) => {
+    it('should initialize `searchEmptyMessage` prop with correct string when `hideProjects` is `true`', done => {
       const newVm = createComponent(true);
       newVm.$mount();
       Vue.nextTick(() => {
-        expect(newVm.searchEmptyMessage).toBe('Sorry, no groups matched your search');
+        expect(newVm.searchEmptyMessage).toBe('No groups matched your search');
         newVm.$destroy();
         done();
       });
@@ -427,7 +445,7 @@ describe('AppComponent', () => {
   });
 
   describe('beforeDestroy', () => {
-    it('should unbind event listeners on eventHub', (done) => {
+    it('should unbind event listeners on eventHub', done => {
       spyOn(eventHub, '$off');
 
       const newVm = createComponent();
@@ -454,7 +472,7 @@ describe('AppComponent', () => {
       vm.$destroy();
     });
 
-    it('should render loading icon', (done) => {
+    it('should render loading icon', done => {
       vm.isLoading = true;
       Vue.nextTick(() => {
         expect(vm.$el.querySelector('.loading-animation')).toBeDefined();
@@ -463,7 +481,7 @@ describe('AppComponent', () => {
       });
     });
 
-    it('should render groups tree', (done) => {
+    it('should render groups tree', done => {
       vm.store.state.groups = [mockParentGroupItem];
       vm.isLoading = false;
       vm.store.state.pageInfo = mockPageInfo;
@@ -473,7 +491,7 @@ describe('AppComponent', () => {
       });
     });
 
-    it('renders modal confirmation dialog', (done) => {
+    it('renders modal confirmation dialog', done => {
       vm.groupLeaveConfirmationMessage = 'Are you sure you want to leave the "foo" group?';
       vm.showModal = true;
       Vue.nextTick(() => {

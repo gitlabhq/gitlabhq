@@ -11,8 +11,12 @@ export default {
     },
     groups: {
       type: Array,
+      required: true,
+    },
+    action: {
+      type: String,
       required: false,
-      default: () => ([]),
+      default: '',
     },
   },
   computed: {
@@ -37,6 +41,7 @@ export default {
       :key="index"
       :group="group"
       :parent-group="parentGroup"
+      :action="action"
     />
     <li
       v-if="hasMoreChildren"

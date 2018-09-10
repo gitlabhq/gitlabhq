@@ -8,10 +8,10 @@ This document describes where and how the different types of variables can be us
 
 ## Variables usage
 
-There are basically two places where you can use any defined variables:
+There are two places defined variables can be used. On the:
 
-1. On GitLab's side there's `.gitlab-ci.yml`
-1. On the Runner's side there's `config.toml`
+1. GitLab side, in `.gitlab-ci.yml`.
+1. The runner side, in `config.toml`.
 
 ### `.gitlab-ci.yml` file
 
@@ -56,8 +56,8 @@ since the expansion is done in GitLab before any Runner will get the job.
 ### GitLab Runner internal variable expansion mechanism
 
 - **Supported:** project/group variables, `.gitlab-ci.yml` variables, `config.toml` variables, and
-  variables from triggers and pipeline schedules
-- **Not supported:** variables defined inside of scripts (e.g., `export MY_VARIABLE="test"`)
+  variables from triggers, pipeline schedules, and manual pipelines.
+- **Not supported:** variables defined inside of scripts (e.g., `export MY_VARIABLE="test"`).
 
 The Runner uses Go's `os.Expand()` method for variable expansion. It means that it will handle
 only variables defined as `$variable` and `${variable}`. What's also important, is that
@@ -80,11 +80,10 @@ are using a different variables syntax.
   `.gitlab-ci.yml` variables, `config.toml` variables, and variables from triggers and pipeline schedules).
 - The `script` may also use all variables defined in the lines before. So, for example, if you define
   a variable `export MY_VARIABLE="test"`:
-
-  - in `before_script`, it will work in the following lines of `before_script` and
-    all lines of the related `script`
-  - in `script`, it will work in the following lines of `script`
-  - in `after_script`, it will work in following lines of `after_script`
+  - In `before_script`, it will work in the following lines of `before_script` and
+    all lines of the related `script`.
+  - In `script`, it will work in the following lines of `script`.
+  - In `after_script`, it will work in following lines of `after_script`.
 
 ## Persisted variables
 
@@ -107,7 +106,7 @@ The following variables are known as "persisted":
 
 They are:
 
-- **supported** for all definitions as [described in the table](#gitlab-ci-yml-file) where the "Expansion place" is "Runner"
-- **not supported:**
-  - by the definitions [described in the table](#gitlab-ci-yml-file) where the "Expansion place" is "GitLab"
-  - in the `only` and `except` [variables expressions](README.md#variables-expressions)
+- **Supported** for all definitions as [described in the table](#gitlab-ci-yml-file) where the "Expansion place" is "Runner".
+- **Not supported:**
+  - By the definitions [described in the table](#gitlab-ci-yml-file) where the "Expansion place" is "GitLab".
+  - In the `only` and `except` [variables expressions](README.md#variables-expressions).

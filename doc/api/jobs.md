@@ -319,7 +319,8 @@ Example of response
 ## Get job artifacts
 
 > **Notes**:
-- [Introduced][ce-2893] in GitLab 8.5.
+> 
+> - [Introduced][ce-2893] in GitLab 8.5.
 
 Get job artifacts of a project.
 
@@ -350,7 +351,8 @@ Response:
 ## Download the artifacts archive
 
 > **Notes**:
-- [Introduced][ce-5347] in GitLab 8.10.
+> 
+> - [Introduced][ce-5347] in GitLab 8.10.
 
 Download the artifacts archive from the given reference name and job provided the
 job finished successfully.

@@ -43,14 +43,23 @@ export const fetchDiscussions = ({ commit }, path) =>
       commit(types.SET_INITIAL_DISCUSSIONS, discussions);
     });
 
-export const refetchDiscussionById = ({ commit }, { path, discussionId }) =>
-  service
-    .fetchDiscussions(path)
-    .then(res => res.json())
-    .then(discussions => {
-      const selectedDiscussion = discussions.find(discussion => discussion.id === discussionId);
-      if (selectedDiscussion) commit(types.UPDATE_DISCUSSION, selectedDiscussion);
-    });
+export const refetchDiscussionById = ({ commit, state }, { path, discussionId }) =>
+  new Promise(resolve => {
+    service
+      .fetchDiscussions(path)
+      .then(res => res.json())
+      .then(discussions => {
+        const selectedDiscussion = discussions.find(discussion => discussion.id === discussionId);
+        if (selectedDiscussion) {
+          commit(types.UPDATE_DISCUSSION, selectedDiscussion);
+          // We need to refetch as it is now the transformed one in state
+          const discussion = utils.findNoteObjectById(state.discussions, discussionId);
+
+          resolve(discussion);
+        }
+      })
+      .catch(() => {});
+  });
 
 export const deleteNote = ({ commit }, note) =>
   service.deleteNote(note.path).then(() => {
@@ -152,26 +161,28 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
   const replyId = noteData.data.in_reply_to_discussion_id;
   const methodToDispatch = replyId ? 'replyToDiscussion' : 'createNewNote';
 
-  commit(types.REMOVE_PLACEHOLDER_NOTES); // remove previous placeholders
   $('.notes-form .flash-container').hide(); // hide previous flash notification
+  commit(types.REMOVE_PLACEHOLDER_NOTES); // remove previous placeholders
 
-  if (hasQuickActions) {
-    placeholderText = utils.stripQuickActions(placeholderText);
-  }
+  if (replyId) {
+    if (hasQuickActions) {
+      placeholderText = utils.stripQuickActions(placeholderText);
+    }
 
-  if (placeholderText.length) {
-    commit(types.SHOW_PLACEHOLDER_NOTE, {
-      noteBody: placeholderText,
-      replyId,
-    });
-  }
+    if (placeholderText.length) {
+      commit(types.SHOW_PLACEHOLDER_NOTE, {
+        noteBody: placeholderText,
+        replyId,
+      });
+    }
 
-  if (hasQuickActions) {
-    commit(types.SHOW_PLACEHOLDER_NOTE, {
-      isSystemNote: true,
-      noteBody: utils.getQuickActionText(note),
-      replyId,
-    });
+    if (hasQuickActions) {
+      commit(types.SHOW_PLACEHOLDER_NOTE, {
+        isSystemNote: true,
+        noteBody: utils.getQuickActionText(note),
+        replyId,
+      });
+    }
   }
 
   return dispatch(methodToDispatch, noteData).then(res => {
@@ -211,7 +222,9 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
     if (errors && errors.commands_only) {
       Flash(errors.commands_only, 'notice', noteData.flashContainer);
     }
-    commit(types.REMOVE_PLACEHOLDER_NOTES);
+    if (replyId) {
+      commit(types.REMOVE_PLACEHOLDER_NOTES);
+    }
 
     return res;
   });

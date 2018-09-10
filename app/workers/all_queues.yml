@@ -1,4 +1,6 @@
 ---
+- auto_devops:auto_devops_disable
+
 - cronjob:admin_email
 - cronjob:expire_build_artifacts
 - cronjob:gitlab_usage_ping
@@ -85,6 +87,7 @@
 - authorized_projects
 - background_migration
 - create_gpg_signature
+- delete_container_repository
 - delete_merged_branches
 - delete_user
 - email_receiver

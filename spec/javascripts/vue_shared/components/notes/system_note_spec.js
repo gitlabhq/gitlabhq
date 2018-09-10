@@ -9,7 +9,7 @@ describe('system note component', () => {
   beforeEach(() => {
     props = {
       note: {
-        id: 1424,
+        id: '1424',
         author: {
           id: 1,
           name: 'Root',

@@ -1,5 +1,6 @@
 import _ from 'underscore';
 import * as constants from '../constants';
+import { reduceDiscussionsToLineCodes } from './utils';
 import { collapseSystemNotes } from './collapse_utils';
 
 export const discussions = state => collapseSystemNotes(state.discussions);
@@ -28,17 +29,8 @@ export const notesById = state =>
     return acc;
   }, {});
 
-export const discussionsByLineCode = state =>
-  state.discussions.reduce((acc, note) => {
-    if (note.diff_discussion && note.line_code && note.resolvable) {
-      // For context about line notes: there might be multiple notes with the same line code
-      const items = acc[note.line_code] || [];
-      items.push(note);
-
-      Object.assign(acc, { [note.line_code]: items });
-    }
-    return acc;
-  }, {});
+export const discussionsStructuredByLineCode = state =>
+  reduceDiscussionsToLineCodes(state.discussions);
 
 export const noteableType = state => {
   const { ISSUE_NOTEABLE_TYPE, MERGE_REQUEST_NOTEABLE_TYPE, EPIC_NOTEABLE_TYPE } = constants;

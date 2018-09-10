@@ -74,6 +74,7 @@ module API
             gl_repository: gl_repository,
             gl_id: Gitlab::GlId.gl_id(user),
             gl_username: user&.username,
+            git_config_options: [],
 
             # This repository_path is a bogus value but gitlab-shell still requires
             # its presence. https://gitlab.com/gitlab-org/gitlab-shell/issues/135
@@ -81,6 +82,13 @@ module API
 
             gitaly: gitaly_payload(params[:action])
           }
+
+          # Custom option for git-receive-pack command
+          receive_max_input_size = Gitlab::CurrentSettings.receive_max_input_size.to_i
+          if receive_max_input_size > 0
+            payload[:git_config_options] << "receive.maxInputSize=#{receive_max_input_size.megabytes}"
+          end
+
           response_with_status(**payload)
         when ::Gitlab::GitAccessResult::CustomAction
           response_with_status(code: 300, message: check_result.message, payload: check_result.payload)

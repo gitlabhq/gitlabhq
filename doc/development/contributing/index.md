@@ -16,7 +16,7 @@
   - [Milestone labels](#milestone-labels)
   - [Bug Priority labels](#bug-priority-labels)
   - [Bug Severity labels](#bug-severity-labels)
-    - [Severity impact guidance](#severity-impact-guidance)
+     - [Severity impact guidance](#severity-impact-guidance)
   - [Label for community contributors](#label-for-community-contributors)
 - [Implement design & UI elements](#implement-design--ui-elements)
 - [Issue tracker](#issue-tracker)

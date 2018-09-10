@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# This service is not used yet, it will be used for:
-# https://gitlab.com/gitlab-org/gitlab-ce/issues/48483
 module ResourceEvents
   class ChangeLabelsService
     attr_reader :resource, :user
@@ -25,6 +23,7 @@ module ResourceEvents
       end
 
       Gitlab::Database.bulk_insert(ResourceLabelEvent.table_name, labels)
+      resource.expire_note_etag_cache
     end
 
     private

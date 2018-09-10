@@ -13,7 +13,7 @@ For a list of words that are not allowed to be used as group or project names, s
 
 It is currently not possible to create a project with the following names:
 
-- -
+- \-
 - badges
 - blame
 - blob
@@ -40,7 +40,7 @@ It is currently not possible to create a project with the following names:
 Currently the following names are reserved as top level groups:
 
 - 503.html
-- -
+- \-
 - .well-known
 - 404.html
 - 422.html
@@ -88,7 +88,7 @@ Currently the following names are reserved as top level groups:
 
 These group names are unavailable as subgroup names:
 
-- -
+- \-
 - activity
 - analytics
 - audit_events

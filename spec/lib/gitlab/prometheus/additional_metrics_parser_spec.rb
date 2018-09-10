@@ -6,7 +6,7 @@ describe Gitlab::Prometheus::AdditionalMetricsParser do
   let(:parser_error_class) { Gitlab::Prometheus::ParsingError }
 
   describe '#load_groups_from_yaml' do
-    subject { described_class.load_groups_from_yaml }
+    subject { described_class.load_groups_from_yaml('dummy.yaml') }
 
     describe 'parsing sample yaml' do
       let(:sample_yaml) do

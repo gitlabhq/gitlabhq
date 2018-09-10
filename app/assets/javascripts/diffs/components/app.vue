@@ -59,7 +59,7 @@ export default {
       emailPatchPath: state => state.diffs.emailPatchPath,
     }),
     ...mapGetters('diffs', ['isParallelView']),
-    ...mapGetters(['isNotesFetched']),
+    ...mapGetters(['isNotesFetched', 'discussionsStructuredByLineCode']),
     targetBranch() {
       return {
         branchName: this.targetBranchName,
@@ -112,13 +112,26 @@ export default {
   },
   created() {
     this.adjustView();
+    eventHub.$once('fetchedNotesData', this.setDiscussions);
   },
   methods: {
-    ...mapActions('diffs', ['setBaseConfig', 'fetchDiffFiles', 'startRenderDiffsQueue']),
+    ...mapActions('diffs', [
+      'setBaseConfig',
+      'fetchDiffFiles',
+      'startRenderDiffsQueue',
+      'assignDiscussionsToDiff',
+    ]),
+
     fetchData() {
       this.fetchDiffFiles()
         .then(() => {
-          requestIdleCallback(this.startRenderDiffsQueue, { timeout: 1000 });
+          requestIdleCallback(
+            () => {
+              this.setDiscussions();
+              this.startRenderDiffsQueue();
+            },
+            { timeout: 1000 },
+          );
         })
         .catch(() => {
           createFlash(__('Something went wrong on our end. Please try again!'));
@@ -126,6 +139,16 @@ export default {
 
       if (!this.isNotesFetched) {
         eventHub.$emit('fetchNotesData');
+      }
+    },
+    setDiscussions() {
+      if (this.isNotesFetched) {
+        requestIdleCallback(
+          () => {
+            this.assignDiscussionsToDiff(this.discussionsStructuredByLineCode);
+          },
+          { timeout: 1000 },
+        );
       }
     },
     adjustView() {
