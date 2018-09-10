@@ -11,6 +11,10 @@ module Gitlab
       FakeApplicationSettings.define_predicate_methods(options)
     end
 
+    def pick_repository_storage
+      repository_storages.sample
+    end
+
     # Mimic ActiveRecord predicate methods for boolean values
     def self.define_predicate_methods(options)
       options.each do |key, value|
