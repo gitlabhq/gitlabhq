@@ -871,7 +871,6 @@ describe QuickActions::InterpretService do
       let(:issuable) { merge_request }
     end
 
-<<<<<<< HEAD
     context 'issuable weights licensed' do
       before do
         stub_licensed_features(issue_weights: true)
@@ -906,8 +905,6 @@ describe QuickActions::InterpretService do
       end
     end
 
-=======
->>>>>>> upstream/master
     context '/todo' do
       let(:content) { '/todo' }
 

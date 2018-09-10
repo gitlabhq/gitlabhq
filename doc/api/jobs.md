@@ -324,10 +324,7 @@ Example of response
 ## Get job artifacts
 
 > **Notes**:
-<<<<<<< HEAD
-=======
 >
->>>>>>> upstream/master
 > - [Introduced][ce-2893] in GitLab 8.5.
 > - The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced][ee-2346]
 >   in [GitLab Premium][ee] 9.5.
@@ -376,10 +373,7 @@ Response:
 ## Download the artifacts archive
 
 > **Notes**:
-<<<<<<< HEAD
-=======
 >
->>>>>>> upstream/master
 > - [Introduced][ce-5347] in GitLab 8.10.
 > - The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced][ee-2346]
 >   in [GitLab Premium][ee] 9.5.
