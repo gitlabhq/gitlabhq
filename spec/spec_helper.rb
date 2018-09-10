@@ -137,6 +137,10 @@ RSpec.configure do |config|
     Fog.unmock! if Fog.mock?
   end
 
+  config.after(:example) do
+    Gitlab::CurrentSettings.clear_in_memory_application_settings!
+  end
+
   config.before(:example, :mailer) do
     reset_delivered_emails!
   end
