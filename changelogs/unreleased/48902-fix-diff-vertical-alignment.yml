@@ -1,0 +1,5 @@
+---
+title: Fix vertical alignment of text in diffs
+merge_request: 21573
+author:
+type: fixed
