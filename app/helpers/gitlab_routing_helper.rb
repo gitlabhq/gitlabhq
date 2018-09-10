@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Shorter routing method for some project items
 module GitlabRoutingHelper
   include EE::GitlabRoutingHelper

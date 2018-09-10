@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module VersionCheckHelper
   def version_status_badge
     return unless Rails.env.production?

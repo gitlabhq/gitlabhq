@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MergeRequestsHelper
   prepend EE::MergeRequestsHelper
 
@@ -21,10 +23,10 @@ module MergeRequestsHelper
   end
 
   def mr_css_classes(mr)
-    classes = "merge-request"
-    classes << " closed" if mr.closed?
-    classes << " merged" if mr.merged?
-    classes
+    classes = ["merge-request"]
+    classes << "closed" if mr.closed?
+    classes << "merged" if mr.merged?
+    classes.join(' ')
   end
 
   def ci_build_details_path(merge_request)

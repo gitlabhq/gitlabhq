@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EmailsHelper
   prepend EE::EmailsHelper
 
@@ -51,8 +53,8 @@ module EmailsHelper
 
   def reset_token_expire_message
     link_tag = link_to('request a new one', new_user_password_url(user_email: @user.email))
-    msg = "This link is valid for #{password_reset_token_valid_time}.  "
-    msg << "After it expires, you can #{link_tag}."
+    "This link is valid for #{password_reset_token_valid_time}.  " \
+    "After it expires, you can #{link_tag}."
   end
 
   def header_logo

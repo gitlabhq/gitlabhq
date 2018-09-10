@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'digest/md5'
 require 'uri'
 
@@ -111,11 +113,11 @@ module ApplicationHelper
   #
   # Returns an HTML-safe String
   def time_ago_with_tooltip(time, placement: 'top', html_class: '', short_format: false)
-    css_classes = short_format ? 'js-short-timeago' : 'js-timeago'
-    css_classes << " #{html_class}" unless html_class.blank?
+    css_classes = [short_format ? 'js-short-timeago' : 'js-timeago']
+    css_classes << html_class unless html_class.blank?
 
     element = content_tag :time, l(time, format: "%b %d, %Y"),
-      class: css_classes,
+      class: css_classes.join(' '),
       title: l(time.to_time.in_time_zone, format: :timeago_tooltip),
       datetime: time.to_time.getutc.iso8601,
       data: {

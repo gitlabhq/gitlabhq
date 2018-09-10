@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module VisibilityLevelHelper
   def visibility_level_color(level)
     case level
@@ -82,7 +84,7 @@ module VisibilityLevelHelper
   def disallowed_project_visibility_level_description(level, project)
     level_name = Gitlab::VisibilityLevel.level_name(level).downcase
     reasons = []
-    instructions = ''
+    instructions = []
 
     unless project.visibility_level_allowed_as_fork?(level)
       reasons << "the fork source project has lower visibility"
@@ -96,7 +98,7 @@ module VisibilityLevelHelper
     end
 
     reasons = reasons.any? ? ' because ' + reasons.to_sentence : ''
-    "This project cannot be #{level_name}#{reasons}.#{instructions}".html_safe
+    "This project cannot be #{level_name}#{reasons}.#{instructions.join}".html_safe
   end
 
   # Note: these messages closely mirror the form validation strings found in the group
@@ -104,7 +106,7 @@ module VisibilityLevelHelper
   def disallowed_group_visibility_level_description(level, group)
     level_name = Gitlab::VisibilityLevel.level_name(level).downcase
     reasons = []
-    instructions = ''
+    instructions = []
 
     unless group.visibility_level_allowed_by_projects?(level)
       reasons << "it contains projects with higher visibility"
@@ -122,7 +124,7 @@ module VisibilityLevelHelper
     end
 
     reasons = reasons.any? ? ' because ' + reasons.to_sentence : ''
-    "This group cannot be #{level_name}#{reasons}.#{instructions}".html_safe
+    "This group cannot be #{level_name}#{reasons}.#{instructions.join}".html_safe
   end
 
   def visibility_icon_description(form_model)

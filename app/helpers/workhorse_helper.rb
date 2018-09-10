@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Helpers to send Git blobs, diffs, patches or archives through Workhorse.
 # Workhorse will also serve files when using `send_file`.
 module WorkhorseHelper
