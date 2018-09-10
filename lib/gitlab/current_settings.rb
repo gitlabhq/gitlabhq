@@ -14,7 +14,7 @@ module Gitlab
       end
 
       def clear_in_memory_application_settings!
-        instance_variable_set(:@in_memory_application_settings, nil)
+        @in_memory_application_settings = nil
       end
 
       def method_missing(name, *args, &block)
