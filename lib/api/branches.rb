@@ -9,14 +9,6 @@ module API
     before { authorize! :download_code, user_project }
 
     helpers do
-      def find_branch!(branch_name)
-        begin
-          user_project.repository.find_branch(branch_name) || not_found!('Branch')
-        rescue Gitlab::Git::CommandError
-          render_api_error!('The branch refname is invalid', 400)
-        end
-      end
-
       params :filter_params do
         optional :search, type: String, desc: 'Return list of branches matching the search criteria'
         optional :sort, type: String, desc: 'Return list of branches sorted by the given field'
