@@ -40,6 +40,8 @@ module Importers
     end
 
     def execute
+      PrometheusMetric.reset_column_information
+
       process_content do |id, attributes|
         find_or_build_metric!(id)
           .update!(**attributes)

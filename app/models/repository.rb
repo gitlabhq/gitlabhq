@@ -29,6 +29,7 @@ class Repository
 
   delegate :ref_name_for_sha, to: :raw_repository
   delegate :bundle_to_disk, to: :raw_repository
+  delegate :find_remote_root_ref, to: :raw_repository
 
   CreateTreeError = Class.new(StandardError)
 

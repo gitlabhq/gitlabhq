@@ -4298,6 +4298,40 @@ describe Project do
     end
   end
 
+  describe '#update_root_ref' do
+    let(:project) { create(:project, :repository) }
+
+    it 'updates the default branch when HEAD has changed' do
+      stub_find_remote_root_ref(project, ref: 'feature')
+
+      expect { project.update_root_ref('origin') }
+        .to change { project.default_branch }
+        .from('master')
+        .to('feature')
+    end
+
+    it 'does not update the default branch when HEAD does not change' do
+      stub_find_remote_root_ref(project, ref: 'master')
+
+      expect { project.update_root_ref('origin') }
+        .not_to change { project.default_branch }
+    end
+
+    it 'does not update the default branch when HEAD does not exist' do
+      stub_find_remote_root_ref(project, ref: 'foo')
+
+      expect { project.update_root_ref('origin') }
+        .not_to change { project.default_branch }
+    end
+
+    def stub_find_remote_root_ref(project, ref:)
+      allow(project.repository)
+        .to receive(:find_remote_root_ref)
+        .with('origin')
+        .and_return(ref)
+    end
+  end
+
   def rugged_config
     Gitlab::GitalyClient::StorageSettings.allow_disk_access do
       project.repository.rugged.config
