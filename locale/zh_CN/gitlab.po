@@ -330,7 +330,7 @@ msgstr "不允许访问%{classification_label}"
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
 msgstr "为方便修复挂载问题，访问故障存储已被暂时禁用。在问题解决后请重置存储运行状况信息，以允许再次访问。"
 
-msgid "Access your runner token, customize your pipeline configuration, and view your pipeline status and coverage report."
+msgid "Customize your pipeline configuration, view your pipeline status and coverage report."
 msgstr "访问您的 runner 令牌，自定义流水线配置，以及查看流水线状态和覆盖率报告。"
 
 msgid "Account"
