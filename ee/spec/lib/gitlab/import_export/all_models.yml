@@ -1,0 +1,67 @@
+---
+issues:
+- epic_issue
+- epic
+milestone:
+- boards
+merge_requests:
+- approvals
+- approvers
+- approver_groups
+- approved_by_users
+pipelines:
+- source_pipeline
+- sourced_pipelines
+- triggered_by_pipeline
+- triggered_pipelines
+- chat_data
+protected_branches:
+- unprotect_access_levels
+protected_environments:
+- project
+- deploy_access_levels
+deploy_access_levels:
+- protected_environment
+- user
+- group
+merge_access_levels:
+- user
+- group
+push_access_levels:
+- user
+- group
+unprotect_access_levels:
+- user
+- protected_branch
+- group
+project:
+- gitlab_slack_application_service
+- github_service
+- protected_environments
+- mirror_user
+- push_rule
+- jenkins_service
+- jenkins_deprecated_service
+- index_status
+- approvers
+- pages_domains
+- audit_events
+- path_locks
+- approver_groups
+- repository_state
+- source_pipelines
+- sourced_pipelines
+- prometheus_metrics
+- vulnerability_feedback
+- prometheus_alerts
+- software_license_policies
+- project_registry
+- packages
+prometheus_metrics:
+- project
+- prometheus_alerts
+prometheus_alerts:
+- project
+epic_issues:
+- issue
+- epic

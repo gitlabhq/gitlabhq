@@ -19,8 +19,6 @@ issues:
 - metrics
 - timelogs
 - issue_assignees
-- epic_issue
-- epic
 - closed_by
 events:
 - author
@@ -58,7 +56,6 @@ milestone:
 - merge_requests
 - participants
 - events
-- boards
 snippets:
 - author
 - project
@@ -94,13 +91,9 @@ merge_requests:
 - merge_requests_closing_issues
 - cached_closes_issues
 - metrics
-- approvals
-- approvers
-- approver_groups
 - timelogs
 - head_pipeline
 - latest_merge_request_diff
-- approved_by_users
 merge_request_diff:
 - merge_request
 - merge_request_diff_commits
@@ -127,11 +120,6 @@ pipelines:
 - artifacts
 - pipeline_schedule
 - merge_requests
-- source_pipeline
-- sourced_pipelines
-- triggered_by_pipeline
-- triggered_pipelines
-- chat_data # EE only
 pipeline_variables:
 - pipeline
 stages:
@@ -178,29 +166,13 @@ protected_branches:
 - project
 - merge_access_levels
 - push_access_levels
-- unprotect_access_levels
-protected_environments:
-- project
-- deploy_access_levels
-deploy_access_levels:
-- protected_environment
-- user
-- group
 protected_tags:
 - project
 - create_access_levels
 merge_access_levels:
-- user
 - protected_branch
-- group
 push_access_levels:
-- user
 - protected_branch
-- group
-unprotect_access_levels:
-- user
-- protected_branch
-- group
 create_access_levels:
 - user
 - protected_tag
@@ -230,8 +202,6 @@ project:
 - pipelines_email_service
 - mattermost_slash_commands_service
 - slack_slash_commands_service
-- gitlab_slack_application_service
-- github_service
 - irker_service
 - packagist_service
 - pivotaltracker_service
@@ -272,7 +242,6 @@ project:
 - snippets
 - hooks
 - protected_branches
-- protected_environments
 - protected_tags
 - project_members
 - users
@@ -305,26 +274,13 @@ project:
 - pages_domains
 - authorized_users
 - project_authorizations
-- mirror_user
-- push_rule
-- jenkins_service
-- jenkins_deprecated_service
-- index_status
-- approvers
-- pages_domains
-- audit_events
 - remote_mirrors
-- path_locks
-- approver_groups
 - route
 - redirect_routes
 - statistics
 - container_repositories
 - uploads
 - import_state
-- repository_state
-- source_pipelines
-- sourced_pipelines
 - members_and_requesters
 - build_trace_section_names
 - build_trace_chunks
@@ -332,7 +288,6 @@ project:
 - fork_network_member
 - fork_network
 - custom_attributes
-- prometheus_metrics
 - lfs_file_locks
 - project_badges
 - source_of_merge_requests
@@ -342,22 +297,12 @@ project:
 - settings
 - ci_cd_settings
 - import_export_upload
-- vulnerability_feedback
-- prometheus_alerts
-- software_license_policies
 - repository_languages
-- project_registry
-- packages
 award_emoji:
 - awardable
 - user
 priorities:
 - label
-prometheus_metrics:
-- project
-- prometheus_alerts
-prometheus_alerts:
-- project
 timelogs:
 - issue
 - merge_request
@@ -367,9 +312,6 @@ push_event_payload:
 issue_assignees:
 - issue
 - assignee
-epic_issues:
-- issue
-- epic
 lfs_file_locks:
 - user
 project_badges:
