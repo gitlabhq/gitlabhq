@@ -33,7 +33,9 @@ Example of response
     },
     "coverage": null,
     "created_at": "2015-12-24T15:51:21.727Z",
+    "started_at": "2015-12-24T17:54:24.729Z",
     "finished_at": "2015-12-24T17:54:24.921Z",
+    "duration": 0.192,
     "artifacts_expire_at": "2016-01-23T17:54:24.921Z",
     "id": 6,
     "name": "rspec:other",
@@ -47,7 +49,6 @@ Example of response
     "artifacts": [],
     "runner": null,
     "stage": "test",
-    "started_at": "2015-12-24T17:54:24.729Z",
     "status": "failed",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/6",
@@ -78,6 +79,9 @@ Example of response
     },
     "coverage": null,
     "created_at": "2015-12-24T15:51:21.802Z",
+    "started_at": "2015-12-24T17:54:27.722Z",
+    "finished_at": "2015-12-24T17:54:27.895Z",
+    "duration": 0.173,
     "artifacts_file": {
       "filename": "artifacts.zip",
       "size": 1000
@@ -88,7 +92,6 @@ Example of response
       {"file_type": "trace", "size": 1500, "filename": "job.log", "file_format": "raw"},
       {"file_type": "junit", "size": 750, "filename": "junit.xml.gz", "file_format": "gzip"}
     ],
-    "finished_at": "2015-12-24T17:54:27.895Z",
     "artifacts_expire_at": "2016-01-23T17:54:27.895Z",
     "id": 7,
     "name": "teaspoon",
@@ -102,7 +105,6 @@ Example of response
     "artifacts": [],
     "runner": null,
     "stage": "test",
-    "started_at": "2015-12-24T17:54:27.722Z",
     "status": "failed",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/7",
@@ -158,7 +160,9 @@ Example of response
     },
     "coverage": null,
     "created_at": "2015-12-24T15:51:21.727Z",
+    "started_at": "2015-12-24T17:54:24.729Z",
     "finished_at": "2015-12-24T17:54:24.921Z",
+    "duration": 0.192,
     "artifacts_expire_at": "2016-01-23T17:54:24.921Z",
     "id": 6,
     "name": "rspec:other",
@@ -172,7 +176,6 @@ Example of response
     "artifacts": [],
     "runner": null,
     "stage": "test",
-    "started_at": "2015-12-24T17:54:24.729Z",
     "status": "failed",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/6",
@@ -203,6 +206,9 @@ Example of response
     },
     "coverage": null,
     "created_at": "2015-12-24T15:51:21.802Z",
+    "started_at": "2015-12-24T17:54:27.722Z",
+    "finished_at": "2015-12-24T17:54:27.895Z",
+    "duration": 0.173,
     "artifacts_file": {
       "filename": "artifacts.zip",
       "size": 1000
@@ -213,7 +219,6 @@ Example of response
       {"file_type": "trace", "size": 1500, "filename": "job.log", "file_format": "raw"},
       {"file_type": "junit", "size": 750, "filename": "junit.xml.gz", "file_format": "gzip"}
     ],
-    "finished_at": "2015-12-24T17:54:27.895Z",
     "artifacts_expire_at": "2016-01-23T17:54:27.895Z",
     "id": 7,
     "name": "teaspoon",
@@ -227,7 +232,6 @@ Example of response
     "artifacts": [],
     "runner": null,
     "stage": "test",
-    "started_at": "2015-12-24T17:54:27.722Z",
     "status": "failed",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/7",
@@ -281,7 +285,9 @@ Example of response
   },
   "coverage": null,
   "created_at": "2015-12-24T15:51:21.880Z",
+  "started_at": "2015-12-24T17:54:30.733Z",
   "finished_at": "2015-12-24T17:54:31.198Z",
+  "duration": 0.465,
   "artifacts_expire_at": "2016-01-23T17:54:31.198Z",
   "id": 8,
   "name": "rubocop",
@@ -295,7 +301,6 @@ Example of response
   "artifacts": [],
   "runner": null,
   "stage": "test",
-  "started_at": "2015-12-24T17:54:30.733Z",
   "status": "failed",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/8",
@@ -319,6 +324,7 @@ Example of response
 ## Get job artifacts
 
 > **Notes**:
+>
 > - [Introduced][ce-2893] in GitLab 8.5.
 > - The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced][ee-2346]
 >   in [GitLab Premium][ee] 9.5.
@@ -367,6 +373,7 @@ Response:
 ## Download the artifacts archive
 
 > **Notes**:
+>
 > - [Introduced][ce-5347] in GitLab 8.10.
 > - The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced][ee-2346]
 >   in [GitLab Premium][ee] 9.5.
@@ -506,14 +513,15 @@ Example of response
   },
   "coverage": null,
   "created_at": "2016-01-11T10:13:33.506Z",
-  "finished_at": "2016-01-11T10:14:09.526Z",
+  "started_at": "2016-01-11T10:14:09.526Z",
+  "finished_at": null,
+  "duration": 8,
   "id": 42,
   "name": "rubocop",
   "ref": "master",
   "artifacts": [],
   "runner": null,
   "stage": "test",
-  "started_at": null,
   "status": "canceled",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/42",
@@ -553,14 +561,15 @@ Example of response
   },
   "coverage": null,
   "created_at": "2016-01-11T10:13:33.506Z",
+  "started_at": null,
   "finished_at": null,
+  "duration": null,
   "id": 42,
   "name": "rubocop",
   "ref": "master",
   "artifacts": [],
   "runner": null,
   "stage": "test",
-  "started_at": null,
   "status": "pending",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/42",
@@ -613,6 +622,7 @@ Example of response
   "created_at": "2016-01-11T10:13:33.506Z",
   "started_at": "2016-01-11T10:13:33.506Z",
   "finished_at": "2016-01-11T10:15:10.506Z",
+  "duration": 97.0,
   "status": "failed",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/42",
@@ -665,6 +675,7 @@ Example response:
   "created_at": "2016-01-11T10:13:33.506Z",
   "started_at": "2016-01-11T10:13:33.506Z",
   "finished_at": "2016-01-11T10:15:10.506Z",
+  "duration": 97.0,
   "status": "failed",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/42",
@@ -704,14 +715,15 @@ Example of response
   },
   "coverage": null,
   "created_at": "2016-01-11T10:13:33.506Z",
+  "started_at": null,
   "finished_at": null,
+  "duration": null,
   "id": 42,
   "name": "rubocop",
   "ref": "master",
   "artifacts": [],
   "runner": null,
   "stage": "test",
-  "started_at": null,
   "status": "started",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/42",
