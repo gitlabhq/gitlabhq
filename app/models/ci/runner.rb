@@ -219,7 +219,7 @@ module Ci
       end
     end
 
-    def group_filters
+    def group_tags
       return [] unless self.group_type?
 
       self.groups.pluck(:id).map do |group_id|
@@ -227,7 +227,7 @@ module Ci
       end
     end
 
-    def project_filters
+    def project_tags
       return [] unless self.project_type?
 
       self.projects.pluck(:id).map do |project_id|
@@ -235,27 +235,27 @@ module Ci
       end
     end
 
-    def tag_filters
+    def user_tags
       self.tag_list.map do |tag_name|
         "tag_#{tag_name}"
       end
     end
 
-    def filters
-      filters = []
-      filters << :shared if self.instance_type?
-      filters += group_filters
-      filters += project_filters
-      filters += tag_filters
-      filters << :protected if self.ref_protected?
-      filters << :run_untagged if self.run_untagged?
-      filters
+    def all_tags
+      tags = []
+      tags << 'shared' if self.instance_type?
+      tags += group_tags
+      tags += project_tags
+      tags += user_tags
+      tags << 'protected' if self.ref_protected?
+      tags << 'run_untagged' if self.run_untagged?
+      tags.map(&:to_s)
     end
 
     def details
       {
         id: self.id,
-        tag_filters: [filters]
+        tags_set: [all_tags].map(&:sort)
       }
     end
 

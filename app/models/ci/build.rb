@@ -647,36 +647,36 @@ module Ci
       end
     end
 
-    def tag_filters
-      return [:run_untagged] if self.tags.empty?
+    def user_tags
+      return ['run_untagged'] if self.tags.empty?
 
       self.tags.map do |tag|
         "tag_#{tag.name}"
       end
     end
 
-    def base_filters
-      strong_memoize(:base_filters) do
-        filters = []
-        filters << :protected if self.protected?
-        filters += tag_filters
-        filters
+    def all_tags
+      strong_memoize(:all_tags) do
+        all_tags = []
+        all_tags << 'protected' if self.protected?
+        all_tags += user_tags
+        all_tags
       end
     end
 
-    def filters_set
-      [].tap do |filters_set|
-        filters_set << base_filters + ["project_#{self.project_id}"]
-        filters_set << base_filters + ["group_#{self.project.namespace_id}"] if self.project.group_runners_enabled?
-        filters_set << base_filters + [:shared] if self.project.shared_runners_enabled?
-      end
+    def all_tags_set
+      all_tags_set = []
+      all_tags_set << all_tags + ["project_#{self.project_id}"]
+      all_tags_set << all_tags + ["group_#{self.project.namespace_id}"] if self.project.group_runners_enabled?
+      all_tags_set << all_tags + ['shared'] if self.project.shared_runners_enabled?
+      all_tags_set
     end
 
     def details
       {
         id: self.id,
         project_id: self.project_id,
-        tag_filters: filters_set
+        tags_set: all_tags_set.map(&:sort)
       }
     end
 
