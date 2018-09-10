@@ -18,10 +18,15 @@ module Boards
       list_service = Boards::Issues::ListService.new(board_parent, current_user, filter_params)
       issues = list_service.execute
       issues = issues.page(params[:page]).per(params[:per] || 20).without_count
-      make_sure_position_is_set(issues) if Gitlab::Database.read_write?
-      issues = issues.preload(:project,
-                              :milestone,
+      Issue.move_to_end(issues) if Gitlab::Database.read_write?
+      issues = issues.preload(:milestone,
                               :assignees,
+                              project: [
+                                  :route,
+                                  {
+                                      namespace: [:route]
+                                  }
+                              ],
                               labels: [:priorities],
                               notes: [:award_emoji, :author]
                              )
@@ -58,12 +63,6 @@ module Boards
       data.merge!(metadata)
 
       render json: data
-    end
-
-    def make_sure_position_is_set(issues)
-      issues.each do |issue|
-        issue.move_to_end && issue.save unless issue.relative_position
-      end
     end
 
     def issue
