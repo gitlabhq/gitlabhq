@@ -361,9 +361,6 @@ msgstr ""
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
 msgstr ""
 
-msgid "Access your runner token, customize your pipeline configuration, and view your pipeline status and coverage report."
-msgstr ""
-
 msgid "Account"
 msgstr ""
 
@@ -2405,6 +2402,9 @@ msgid "Customize how FogBugz email addresses and usernames are imported into Git
 msgstr ""
 
 msgid "Customize how Google Code email addresses and usernames are imported into GitLab. In the next step, you'll be able to select the projects you want to import."
+msgstr ""
+
+msgid "Customize your pipeline configuration, view your pipeline status and coverage report."
 msgstr ""
 
 msgid "Cycle Analytics"
@@ -7433,9 +7433,6 @@ msgstr ""
 msgid "The roadmap shows the progress of your epics along a timeline"
 msgstr ""
 
-msgid "The secure token used by the Runner to checkout the project"
-msgstr ""
-
 msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
 msgstr ""
 
@@ -8476,9 +8473,6 @@ msgid "You can only add files when you are on a branch"
 msgstr ""
 
 msgid "You can only edit files when you are on a branch"
-msgstr ""
-
-msgid "You can reset runners registration token by pressing a button below."
 msgstr ""
 
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"

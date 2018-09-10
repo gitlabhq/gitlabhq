@@ -38,6 +38,13 @@ module Projects
         end
       end
 
+      def reset_registration_token
+        @project.reset_runners_token!
+
+        flash[:notice] = 'New runners registration token has been generated!'
+        redirect_to namespace_project_settings_ci_cd_path
+      end
+
       private
 
       def update_params
