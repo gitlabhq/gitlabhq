@@ -1,0 +1,5 @@
+---
+title: "[Geo] Add CI job artifact numbers to rake geo:status"
+merge_request:
+author:
+type: changed
