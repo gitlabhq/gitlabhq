@@ -12,7 +12,7 @@ class TriggeredPipelineEntity < Grape::Entity
   end
 
   expose :details do
-    expose :detailed_status, as: :status, with: StatusEntity
+    expose :detailed_status, as: :status, with: DetailedStatusEntity
   end
 
   expose :project, using: ProjectEntity
