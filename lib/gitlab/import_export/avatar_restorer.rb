@@ -19,7 +19,7 @@ module Gitlab
       private
 
       def avatar_export_file
-        @avatar_export_file ||= Dir["#{avatar_export_path}/**/*"].reject { |f| File.directory?(f) }.first
+        @avatar_export_file ||= Dir["#{avatar_export_path}/**/*"].find { |f| File.file?(f) }
       end
 
       def avatar_export_path
