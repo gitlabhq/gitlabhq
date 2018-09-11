@@ -13,7 +13,6 @@ class License < ActiveRecord::Base
     contribution_analytics
     elastic_search
     export_issues
-    external_files_in_gitlab_ci
     group_burndown_charts
     group_webhooks
     issuable_default_templates
