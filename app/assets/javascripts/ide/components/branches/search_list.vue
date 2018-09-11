@@ -1,13 +1,11 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import _ from 'underscore';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import Item from './item.vue';
 
 export default {
   components: {
-    LoadingIcon,
     Item,
     Icon,
   },
@@ -76,10 +74,10 @@ export default {
       </div>
     </div>
     <div class="dropdown-content ide-merge-requests-dropdown-content d-flex">
-      <loading-icon
+      <gl-loading-icon
         v-if="isLoading"
+        :size="2"
         class="mt-3 mb-3 align-self-center ml-auto mr-auto"
-        size="2"
       />
       <ul
         v-else

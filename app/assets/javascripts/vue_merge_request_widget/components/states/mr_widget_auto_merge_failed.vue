@@ -1,5 +1,4 @@
 <script>
-  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
   import eventHub from '../../event_hub';
   import statusIcon from '../mr_widget_status_icon.vue';
 
@@ -7,7 +6,6 @@
     name: 'MRWidgetAutoMergeFailed',
     components: {
       statusIcon,
-      loadingIcon,
     },
     props: {
       mr: {
@@ -44,7 +42,7 @@
         class="btn btn-sm btn-default"
         @click="refreshWidget"
       >
-        <loading-icon
+        <gl-loading-icon
           v-if="isRefreshing"
           :inline="true"
         />

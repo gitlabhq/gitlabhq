@@ -2,13 +2,11 @@
 /**
  * Render environments table.
  */
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import environmentItem from './environment_item.vue';
 
 export default {
   components: {
     environmentItem,
-    loadingIcon,
   },
 
   props: {
@@ -97,7 +95,7 @@ export default {
         <div
           v-if="model.isLoadingFolderContent"
           :key="`loading-item-${i}`">
-          <loading-icon size="2" />
+          <gl-loading-icon :size="2" />
         </div>
 
         <template v-else>

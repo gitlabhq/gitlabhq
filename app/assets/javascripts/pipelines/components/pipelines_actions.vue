@@ -1,6 +1,5 @@
 <script>
 import eventHub from '../event_hub';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import icon from '../../vue_shared/components/icon.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
 
@@ -9,7 +8,6 @@ export default {
     tooltip,
   },
   components: {
-    loadingIcon,
     icon,
   },
   props: {
@@ -60,7 +58,7 @@ export default {
         class="fa fa-caret-down"
         aria-hidden="true">
       </i>
-      <loading-icon v-if="isLoading" />
+      <gl-loading-icon v-if="isLoading" />
     </button>
 
     <ul class="dropdown-menu dropdown-menu-right">

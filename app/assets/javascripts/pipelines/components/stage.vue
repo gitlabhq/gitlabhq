@@ -18,14 +18,12 @@ import Flash from '../../flash';
 import axios from '../../lib/utils/axios_utils';
 import eventHub from '../event_hub';
 import Icon from '../../vue_shared/components/icon.vue';
-import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
 import JobComponent from './graph/job_component.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
 import { PIPELINES_TABLE } from '../constants';
 
 export default {
   components: {
-    LoadingIcon,
     Icon,
     JobComponent,
   },
@@ -191,7 +189,7 @@ export default {
       class="dropdown-menu mini-pipeline-graph-dropdown-menu js-builds-dropdown-container"
       aria-labelledby="stageDropdown"
     >
-      <loading-icon v-if="isLoading"/>
+      <gl-loading-icon v-if="isLoading"/>
       <ul
         v-else
         class="js-builds-dropdown-list scrollable-menu"

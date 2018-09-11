@@ -7,16 +7,12 @@ import editSvg from 'icons/_icon_pencil.svg';
 import resolveDiscussionSvg from 'icons/_icon_resolve_discussion.svg';
 import resolvedDiscussionSvg from 'icons/_icon_status_success_solid.svg';
 import ellipsisSvg from 'icons/_ellipsis_v.svg';
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
   name: 'NoteActions',
   directives: {
     tooltip,
-  },
-  components: {
-    loadingIcon,
   },
   props: {
     authorId: {
@@ -153,9 +149,9 @@ export default {
             v-else
             v-html="resolveDiscussionSvg"></div>
         </template>
-        <loading-icon
+        <gl-loading-icon
           v-else
-          :inline="true"
+          inline
         />
       </button>
     </div>
@@ -172,7 +168,7 @@ export default {
         href="#"
         title="Add reaction"
       >
-        <loading-icon :inline="true" />
+        <gl-loading-icon inline/>
         <span
           class="link-highlight award-control-icon-neutral"
           v-html="emojiSmiling">
