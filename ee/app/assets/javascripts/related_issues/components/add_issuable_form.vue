@@ -1,7 +1,6 @@
 <script>
 import $ from 'jquery';
 import GfmAutoComplete from '~/gfm_auto_complete';
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import eventHub from '../event_hub';
 import issueToken from './issue_token.vue';
 
@@ -9,7 +8,6 @@ export default {
   name: 'AddIssuableForm',
   components: {
     issueToken,
-    loadingIcon,
   },
   props: {
     inputValue: {
@@ -156,7 +154,7 @@ export default {
         type="submit"
         class="js-add-issuable-form-add-button btn btn-new float-left">
         Add
-        <loading-icon
+        <gl-loading-icon
           v-if="isSubmitting"
           ref="loadingIcon"
           :inline="true" />

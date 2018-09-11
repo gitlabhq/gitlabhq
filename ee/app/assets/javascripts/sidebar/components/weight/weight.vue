@@ -4,12 +4,10 @@ import { s__ } from '~/locale';
 import eventHub from '~/sidebar/event_hub';
 import tooltip from '~/vue_shared/directives/tooltip';
 import icon from '~/vue_shared/components/icon.vue';
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 
 export default {
   components: {
     icon,
-    loadingIcon,
   },
   directives: {
     tooltip,
@@ -156,7 +154,7 @@ export default {
         :size="16"
         name="scale"
       />
-      <loading-icon
+      <gl-loading-icon
         v-if="fetching"
         class="js-weight-collapsed-loading-icon"
       />
@@ -168,7 +166,7 @@ export default {
     </div>
     <div class="title hide-collapsed">
       {{ s__('Sidebar|Weight') }}
-      <loading-icon
+      <gl-loading-icon
         v-if="fetching || loading"
         :inline="true"
         class="js-weight-loading-icon"

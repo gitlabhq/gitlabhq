@@ -1,12 +1,9 @@
 <script>
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
-
 import ListFilter from './list_filter.vue';
 import ListContent from './list_content.vue';
 
 export default {
   components: {
-    LoadingIcon,
     ListFilter,
     ListContent,
   },
@@ -63,7 +60,7 @@ export default {
       v-if="loading"
       class="dropdown-loading"
     >
-      <loading-icon />
+      <gl-loading-icon />
     </div>
     <list-filter
       @onSearchInput="handleSearch"

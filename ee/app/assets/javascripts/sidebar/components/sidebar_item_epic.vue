@@ -1,5 +1,4 @@
 <script>
-  import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
   import { __ } from '~/locale';
   import tooltip from '~/vue_shared/directives/tooltip';
   import { spriteIcon } from '~/lib/utils/common_utils';
@@ -7,9 +6,6 @@
 
   export default {
     name: 'SidebarItemEpic',
-    components: {
-      LoadingIcon,
-    },
     directives: {
       tooltip,
     },
@@ -76,7 +72,7 @@
     </div>
     <div class="title hide-collapsed">
       Epic
-      <loading-icon
+      <gl-loading-icon
         v-if="isLoading"
         :inline="true"
       />

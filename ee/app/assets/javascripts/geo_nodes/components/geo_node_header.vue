@@ -1,13 +1,11 @@
 <script>
   import { s__ } from '~/locale';
   import icon from '~/vue_shared/components/icon.vue';
-  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
   import tooltip from '~/vue_shared/directives/tooltip';
 
   export default {
     components: {
       icon,
-      loadingIcon,
     },
     directives: {
       tooltip,
@@ -72,7 +70,7 @@
           <strong class="node-url">
             {{ node.url }}
           </strong>
-          <loading-icon
+          <gl-loading-icon
             v-if="nodeDetailsLoading || node.nodeActionActive"
             class="node-details-loading prepend-left-10 inline"
           />

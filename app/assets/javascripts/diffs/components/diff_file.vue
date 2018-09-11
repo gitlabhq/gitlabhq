@@ -3,7 +3,6 @@ import { mapActions, mapGetters } from 'vuex';
 import _ from 'underscore';
 import { __, sprintf } from '~/locale';
 import createFlash from '~/flash';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import DiffFileHeader from './diff_file_header.vue';
 import DiffContent from './diff_content.vue';
 
@@ -11,7 +10,6 @@ export default {
   components: {
     DiffFileHeader,
     DiffContent,
-    LoadingIcon,
   },
   props: {
     file: {
@@ -144,7 +142,7 @@ export default {
       :class="{ hidden: isCollapsed || file.tooLarge }"
       :diff-file="file"
     />
-    <loading-icon
+    <gl-loading-icon
       v-if="showLoadingIcon"
       class="diff-content loading"
     />

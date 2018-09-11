@@ -1,7 +1,6 @@
 <script>
   import Flash from '~/flash';
   import tooltip from '~/vue_shared/directives/tooltip';
-  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
   import { s__, __ } from '~/locale';
   import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
   import MrWidgetAuthorTime from '../../components/mr_widget_author_time.vue';
@@ -15,7 +14,6 @@
     },
     components: {
       MrWidgetAuthorTime,
-      loadingIcon,
       statusIcon,
       ClipboardButton,
     },
@@ -195,7 +193,7 @@
           </button>
         </p>
         <p v-if="shouldShowSourceBranchRemoving">
-          <loading-icon :inline="true" />
+          <gl-loading-icon :inline="true" />
           <span>
             {{ s__("mrWidget|The source branch is being removed") }}
           </span>

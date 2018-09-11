@@ -2,7 +2,6 @@
 /**
  * Render environments table.
  */
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import environmentItem from './environment_item.vue';
 
 import deployBoard from 'ee/environments/components/deploy_board_component.vue'; // eslint-disable-line import/first
@@ -10,7 +9,6 @@ import deployBoard from 'ee/environments/components/deploy_board_component.vue';
 export default {
   components: {
     environmentItem,
-    loadingIcon,
     deployBoard,
   },
 
@@ -115,7 +113,7 @@ export default {
         <div
           v-if="model.isLoadingFolderContent"
           :key="`loading-item-${i}`">
-          <loading-icon size="2" />
+          <gl-loading-icon :size="2" />
         </div>
 
         <template v-else>

@@ -2,14 +2,12 @@
   import _ from 'underscore';
   import Flash from '~/flash';
   import { s__ } from '~/locale';
-  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 
   import epicsListEmpty from './epics_list_empty.vue';
   import roadmapShell from './roadmap_shell.vue';
 
   export default {
     components: {
-      loadingIcon,
       epicsListEmpty,
       roadmapShell,
     },
@@ -125,11 +123,11 @@
     :class="{ 'overflow-reset': isEpicsListEmpty }"
     class="roadmap-container"
   >
-    <loading-icon
+    <gl-loading-icon
       v-if="isLoading"
       :label="s__('GroupRoadmap|Loading roadmap')"
+      :size="2"
       class="loading-animation prepend-top-20 append-bottom-20"
-      size="2"
     />
     <roadmap-shell
       v-if="showRoadmap"

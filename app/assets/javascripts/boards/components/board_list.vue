@@ -3,7 +3,6 @@ import Sortable from 'sortablejs';
 import boardNewIssue from './board_new_issue.vue';
 import boardCard from './board_card.vue';
 import eventHub from '../eventhub';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
 const Store = gl.issueBoards.BoardsStore;
 
@@ -12,7 +11,6 @@ export default {
   components: {
     boardCard,
     boardNewIssue,
-    loadingIcon,
   },
   props: {
     groupId: {
@@ -217,7 +215,7 @@ export default {
       v-if="loading"
       class="board-list-loading text-center"
       aria-label="Loading issues">
-      <loading-icon />
+      <gl-loading-icon />
     </div>
     <board-new-issue
       v-if="list.type !== 'closed' && showIssueForm"
@@ -245,7 +243,7 @@ export default {
         v-if="showCount"
         class="board-list-count text-center"
         data-issue-id="-1">
-        <loading-icon
+        <gl-loading-icon
           v-show="list.loadingMore"
           label="Loading more issues"
         />

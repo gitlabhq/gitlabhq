@@ -1,11 +1,9 @@
 <script>
 import { mapActions } from 'vuex';
-import LoadingIcon from '../../../vue_shared/components/loading_icon.vue';
 import Stage from './stage.vue';
 
 export default {
   components: {
-    LoadingIcon,
     Stage,
   },
   props: {
@@ -26,10 +24,10 @@ export default {
 
 <template>
   <div>
-    <loading-icon
+    <gl-loading-icon
       v-if="loading && !stages.length"
+      :size="2"
       class="prepend-top-default"
-      size="2"
     />
     <template v-else>
       <stage

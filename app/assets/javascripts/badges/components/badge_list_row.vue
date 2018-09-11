@@ -2,7 +2,6 @@
 import { mapActions, mapState } from 'vuex';
 import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import { PROJECT_BADGE } from '../constants';
 import Badge from './badge.vue';
 
@@ -11,7 +10,6 @@ export default {
   components: {
     Badge,
     Icon,
-    LoadingIcon,
   },
   props: {
     badge: {
@@ -79,7 +77,7 @@ export default {
             name="remove"
           />
         </button>
-        <loading-icon
+        <gl-loading-icon
           v-show="badge.isDeleting"
           :inline="true"
         />
