@@ -40,6 +40,12 @@ describe Banzai::Filter::MarkdownFilter do
 
         expect(result).to start_with("<pre><code>")
       end
+
+      it 'works with utf8 chars in language' do
+        result = filter("```日\nsome code\n```")
+
+        expect(result).to start_with("<pre><code lang=\"日\">")
+      end
     end
 
     context 'using Redcarpet' do
