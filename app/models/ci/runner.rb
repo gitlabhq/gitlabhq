@@ -268,7 +268,7 @@ module Ci
       {
         id: self.id,
         running: Ci::Build.running
-          .where(runner: current_runner)
+          .where(runner: self)
           .group(:project_id)
           .pluck(:project_id, 'count(*)')
           .to_h
