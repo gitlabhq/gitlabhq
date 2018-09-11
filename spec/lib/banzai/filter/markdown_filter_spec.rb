@@ -60,4 +60,21 @@ describe Banzai::Filter::MarkdownFilter do
       end
     end
   end
+
+  describe 'footnotes in tables' do
+    it 'processes footnotes in table cells' do
+      text = <<-MD.strip_heredoc
+      | Column1   |
+      | --------- |
+      | foot [^1] |
+
+      [^1]: a footnote
+      MD
+
+      result = filter(text)
+
+      expect(result).to include('<td>foot <sup')
+      expect(result).to include('<section class="footnotes">')
+    end
+  end
 end
