@@ -96,6 +96,7 @@ In most of the below cases, the notification will be sent to:
 | Close merge request    | |
 | Reopen merge request   | |
 | Merge merge request    | |
+| New epic               | |
 | New comment            | The above, plus anyone mentioned by `@username` in the comment, with notification level "Mention" or higher |
 | Failed pipeline        | The author of the pipeline |
 | Successful pipeline    | The author of the pipeline, if they have the custom notification setting for successful pipelines set |
