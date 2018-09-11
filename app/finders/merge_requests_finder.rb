@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Finders::MergeRequest class
 #
 # Used to filter MergeRequests collections by set of params

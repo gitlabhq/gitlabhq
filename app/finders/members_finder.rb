@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MembersFinder
   attr_reader :project, :current_user, :group
 

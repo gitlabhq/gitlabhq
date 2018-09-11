@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # UsersFinder
 #
 # Used to filter users by set of params

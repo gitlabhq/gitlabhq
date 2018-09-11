@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # GroupDescendantsFinder
 #
 # Used to find and filter all subgroups and projects of a passed parent group

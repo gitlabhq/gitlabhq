@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # TodosFinder
 #
 # Used to filter Todos by set of params

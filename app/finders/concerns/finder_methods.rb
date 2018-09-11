@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FinderMethods
   def find_by!(*args)
     raise_not_found_unless_authorized execute.find_by!(*args)

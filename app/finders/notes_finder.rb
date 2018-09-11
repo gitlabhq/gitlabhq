@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NotesFinder
   FETCH_OVERLAP = 5.seconds
 

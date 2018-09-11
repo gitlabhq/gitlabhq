@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ForkProjectsFinder < ProjectsFinder
   def initialize(project, params: {}, current_user: nil)
     project_ids = project.forks.includes(:creator).select(:id)

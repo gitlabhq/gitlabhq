@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ContributedProjectsFinder < UnionFinder
   def initialize(user)
     @user = user

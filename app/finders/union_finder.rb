@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UnionFinder
   def find_union(segments, klass)
     if segments.length > 1

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PipelinesFinder
   attr_reader :project, :pipelines, :params, :current_user
 

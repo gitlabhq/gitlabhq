@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::ProjectsFinder
   attr_reader :params, :current_user
 

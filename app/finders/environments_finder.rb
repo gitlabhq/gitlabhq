@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EnvironmentsFinder
   attr_reader :project, :current_user, :params
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RunnerJobsFinder
   attr_reader :runner, :params
 

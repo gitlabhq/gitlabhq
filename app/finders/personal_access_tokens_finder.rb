@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PersonalAccessTokensFinder
   attr_accessor :params
 

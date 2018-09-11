@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Finders::Issues class
 #
 # Used to filter Issues collections by set of params
