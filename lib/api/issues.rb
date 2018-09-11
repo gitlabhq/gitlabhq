@@ -55,7 +55,7 @@ module API
       end
 
       params :issue_params_ee do
-        optional :weight, type: Integer, values: 0..9, desc: 'The weight of the issue'
+        optional :weight, type: Integer, desc: 'The weight of the issue'
       end
 
       params :issue_params do

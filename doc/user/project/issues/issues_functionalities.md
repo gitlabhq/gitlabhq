@@ -87,9 +87,7 @@ but they are immediately available to all projects in the group.
 if the label doesn't exist yet, when you click **Edit**, it opens a dropdown menu from which you can select **Create new label**.
 
 #### 8. Weight **[STARTER]**
-
-- Attribute a weight (in a 0 to 9 range) to that issue. Easy to complete
-should weight 1 and very hard to complete should weight 9.
+- Assign a weight. Larger values are used to indicate more effort is required to complete the issue. Only positive values or zero are allowed.
 
 Learn more on the [Issue Weight documentation](../../../workflow/issue_weight.md).
 

@@ -1,0 +1,5 @@
+---
+title: 'API: Allow issue weight parameter to be greater than or equal to zero'
+merge_request:
+author:
+type: other
