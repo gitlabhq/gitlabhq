@@ -49,7 +49,7 @@ describe Gitlab::Geo::GitPushSSHProxy, :geo do
       it 'raises an exception' do
         expect do
           subject.info_refs
-        end.to raise_error(described_class::MustBeASecondaryNode)
+        end.to raise_error(described_class::MustBeASecondaryNode, 'Node is not a secondary or there is no primary Geo node')
       end
     end
 
