@@ -229,6 +229,73 @@ describe('DiffsStoreMutations', () => {
       expect(state.diffFiles[0].highlightedDiffLines[0].discussions.length).toEqual(2);
       expect(state.diffFiles[0].highlightedDiffLines[0].discussions[1].id).toEqual(2);
     });
+
+    it('should add legacy discussions to the given line', () => {
+      const diffPosition = {
+        baseSha: 'ed13df29948c41ba367caa757ab3ec4892509910',
+        headSha: 'b921914f9a834ac47e6fd9420f78db0f83559130',
+        newLine: null,
+        newPath: '500-lines-4.txt',
+        oldLine: 5,
+        oldPath: '500-lines-4.txt',
+        startSha: 'ed13df29948c41ba367caa757ab3ec4892509910',
+        lineCode: 'ABC_1',
+      };
+
+      const state = {
+        diffFiles: [
+          {
+            fileHash: 'ABC',
+            parallelDiffLines: [
+              {
+                left: {
+                  lineCode: 'ABC_1',
+                  discussions: [],
+                },
+                right: {
+                  lineCode: 'ABC_1',
+                  discussions: [],
+                },
+              },
+            ],
+            highlightedDiffLines: [
+              {
+                lineCode: 'ABC_1',
+                discussions: [],
+              },
+            ],
+          },
+        ],
+      };
+      const discussions = [
+        {
+          id: 1,
+          line_code: 'ABC_1',
+          diff_discussion: true,
+        },
+        {
+          id: 2,
+          line_code: 'ABC_1',
+          diff_discussion: true,
+        },
+      ];
+
+      const diffPositionByLineCode = {
+        ABC_1: diffPosition,
+      };
+
+      mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
+        fileHash: 'ABC',
+        discussions,
+        diffPositionByLineCode,
+      });
+
+      // expect(state.diffFiles[0].parallelDiffLines[0].left.discussions.length).toEqual(2);
+      // expect(state.diffFiles[0].parallelDiffLines[0].left.discussions[1].id).toEqual(2);
+
+      // expect(state.diffFiles[0].highlightedDiffLines[0].discussions.length).toEqual(2);
+      // expect(state.diffFiles[0].highlightedDiffLines[0].discussions[1].id).toEqual(2);
+    });
   });
 
   describe('REMOVE_LINE_DISCUSSIONS', () => {

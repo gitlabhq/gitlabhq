@@ -3,6 +3,7 @@ import {
   LINE_POSITION_LEFT,
   LINE_POSITION_RIGHT,
   TEXT_DIFF_POSITION_TYPE,
+  LEGACY_DIFF_NOTE_TYPE,
   DIFF_NOTE_TYPE,
   NEW_LINE_TYPE,
   OLD_LINE_TYPE,
@@ -140,6 +141,63 @@ describe('DiffsStoreUtils', () => {
           noteable_id: options.noteableData.id,
           commit_id: '',
           type: DIFF_NOTE_TYPE,
+          line_code: options.noteTargetLine.lineCode,
+          note: options.note,
+          position,
+        },
+      };
+
+      expect(utils.getNoteFormData(options)).toEqual({
+        endpoint: options.noteableData.create_note_path,
+        data: postData,
+      });
+    });
+
+    it('should create legacy note form data', () => {
+      const diffFile = getDiffFileMock();
+      delete diffFile.diffRefs.startSha;
+
+      noteableDataMock.targetType = MERGE_REQUEST_NOTEABLE_TYPE;
+
+      const options = {
+        note: 'Hello world!',
+        noteableData: noteableDataMock,
+        noteableType: MERGE_REQUEST_NOTEABLE_TYPE,
+        diffFile,
+        noteTargetLine: {
+          lineCode: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_3',
+          metaData: null,
+          newLine: 3,
+          oldLine: 1,
+        },
+        diffViewType: PARALLEL_DIFF_VIEW_TYPE,
+        linePosition: LINE_POSITION_LEFT,
+      };
+
+      const position = JSON.stringify({
+        base_sha: diffFile.diffRefs.baseSha,
+        start_sha: undefined,
+        head_sha: diffFile.diffRefs.headSha,
+        old_path: diffFile.oldPath,
+        new_path: diffFile.newPath,
+        position_type: TEXT_DIFF_POSITION_TYPE,
+        old_line: options.noteTargetLine.oldLine,
+        new_line: options.noteTargetLine.newLine,
+      });
+
+      const postData = {
+        view: options.diffViewType,
+        line_type: options.linePosition === LINE_POSITION_RIGHT ? NEW_LINE_TYPE : OLD_LINE_TYPE,
+        merge_request_diff_head_sha: diffFile.diffRefs.headSha,
+        in_reply_to_discussion_id: '',
+        note_project_id: '',
+        target_type: options.noteableType,
+        target_id: options.noteableData.id,
+        note: {
+          noteable_type: options.noteableType,
+          noteable_id: options.noteableData.id,
+          commit_id: '',
+          type: LEGACY_DIFF_NOTE_TYPE,
           line_code: options.noteTargetLine.lineCode,
           note: options.note,
           position,
@@ -299,6 +357,19 @@ describe('DiffsStoreUtils', () => {
       expect(
         utils.isDiscussionApplicableToLine(discussions.outDatedDiscussion1, diffPosition),
       ).toBe(false);
+    });
+
+    it('returns true when line codes match and discussion does not contain position', () => {
+      const discussion = { ...discussions.outDatedDiscussion1, line_code: 'ABC_1' };
+      delete discussion.original_position;
+      delete discussion.position;
+
+      expect(
+        utils.isDiscussionApplicableToLine(discussion, {
+          ...diffPosition,
+          lineCode: 'ABC_1',
+        }),
+      ).toBe(true);
     });
   });
 });

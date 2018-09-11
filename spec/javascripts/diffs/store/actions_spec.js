@@ -157,6 +157,7 @@ describe('DiffsStoreActions', () => {
                   newPath: 'file1',
                   oldLine: 5,
                   oldPath: 'file2',
+                  lineCode: 'ABC_1_1',
                 },
               },
             },
