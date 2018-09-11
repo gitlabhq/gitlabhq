@@ -93,7 +93,7 @@ module Gitlab
       end
 
       def ensure_secondary!
-        raise MustBeASecondaryNode, 'Node is not a secondary' unless Gitlab::Geo.secondary_with_primary?
+        raise MustBeASecondaryNode, 'Node is not a secondary or there is no primary Geo node' unless Gitlab::Geo.secondary_with_primary?
       end
     end
   end
