@@ -145,7 +145,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      controller 'merge_requests/creations', path: 'merge_requests' do
+      scope path: 'merge_requests', controller: 'merge_requests/creations' do
         post '', action: :create, as: nil
 
         scope path: 'new', as: :new_merge_request do
