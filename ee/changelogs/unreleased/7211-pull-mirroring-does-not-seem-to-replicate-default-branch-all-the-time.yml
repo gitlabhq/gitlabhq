@@ -1,0 +1,5 @@
+---
+title: Synchronize the default branch when updating a pull mirror
+merge_request: 7242
+author:
+type: fixed
