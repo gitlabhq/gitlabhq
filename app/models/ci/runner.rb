@@ -219,43 +219,28 @@ module Ci
       end
     end
 
-    def group_tags
-      return [] unless self.group_type?
-
-      self.groups.pluck(:id).map do |group_id|
-        "group_#{group_id}"
-      end
-    end
-
-    def project_tags
-      return [] unless self.project_type?
-
-      self.projects.pluck(:id).map do |project_id|
-        "project_#{project_id}"
-      end
-    end
-
-    def user_tags
-      self.tag_list.map do |tag_name|
+    def all_tags
+      all_tags = []
+      all_tags += self.tag_list.map do |tag_name|
         "tag_#{tag_name}"
       end
+      all_tags << 'protected' if self.ref_protected?
+      all_tags << 'run_untagged' if self.run_untagged?
+      all_tags
     end
 
-    def all_tags
-      tags = []
-      tags << 'shared' if self.instance_type?
-      tags += group_tags
-      tags += project_tags
-      tags += user_tags
-      tags << 'protected' if self.ref_protected?
-      tags << 'run_untagged' if self.run_untagged?
-      tags.map(&:to_s)
+    def tags_set
+      tags_set = []
+      tags_set << ['*shared'] + all_tags if self.instance_type?
+      tags_set += self.projects.pluck(:id).map { |id| ["*project_#{id}"] + all_tags } if self.project_type?
+      tags_set += self.groups.pluck(:id).map { |id| ["*group_#{id}"] + all_tags } if self.group_type?
+      tags_set.map(&:sort)
     end
 
     def details
       {
         id: self.id,
-        tags_set: [all_tags].map(&:sort)
+        tags_set: tags_set
       }
     end
 

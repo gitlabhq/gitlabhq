@@ -666,9 +666,9 @@ module Ci
 
     def all_tags_set
       all_tags_set = []
-      all_tags_set << all_tags + ["project_#{self.project_id}"]
-      all_tags_set << all_tags + ["group_#{self.project.namespace_id}"] if self.project.group_runners_enabled?
-      all_tags_set << all_tags + ['shared'] if self.project.shared_runners_enabled?
+      all_tags_set << all_tags + ["*project_#{self.project_id}"]
+      all_tags_set << all_tags + ["*group_#{self.project.namespace_id}"] if self.project.group_runners_enabled?
+      all_tags_set << all_tags + ['*shared'] if self.project.shared_runners_enabled?
       all_tags_set
     end
 
