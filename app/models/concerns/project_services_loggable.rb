@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ProjectServicesLoggable
   def log_info(message, params = {})
     message = build_message(message, params)
