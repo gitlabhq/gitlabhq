@@ -137,6 +137,7 @@
     "karma-chrome-launcher": "^2.2.0",
     "karma-coverage-istanbul-reporter": "^1.4.2",
     "karma-jasmine": "^1.1.2",
+    "karma-junit-reporter": "^1.2.0",
     "karma-mocha-reporter": "^2.2.5",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^4.0.0-beta.0",
