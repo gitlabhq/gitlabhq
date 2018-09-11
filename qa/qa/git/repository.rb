@@ -28,8 +28,13 @@ module QA
       end
 
       def use_default_credentials
-        self.username = Runtime::User.username
-        self.password = Runtime::User.password
+        if ::QA::Runtime::User.ldap_user?
+          self.username = Runtime::User.ldap_username
+          self.password = Runtime::User.ldap_password
+        else
+          self.username = Runtime::User.username
+          self.password = Runtime::User.password
+        end
       end
 
       def clone(opts = '')
