@@ -604,6 +604,8 @@ rollout 100%:
       --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
       "$name" \
       chart/
+
+      kubectl rollout status -n "$KUBE_NAMESPACE" -w "deployment/$name"
   }
 
   function scale() {
