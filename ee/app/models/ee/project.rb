@@ -537,7 +537,7 @@ module EE
     end
 
     def protected_environments_feature_available?
-      Feature.enabled?('protected_environments') && feature_available?(:protected_environments)
+      feature_available?(:protected_environments)
     end
 
     # Because we use default_value_for we need to be sure

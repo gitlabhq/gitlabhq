@@ -1585,51 +1585,31 @@ describe Project do
     subject { project.protected_environment_by_name('production') }
 
     before do
-      stub_feature_flags(protected_environments: enabled)
+      allow(project).to receive(:feature_available?)
+        .with(:protected_environments).and_return(feature_available)
     end
 
-    context 'when Protected Environments feature is not on' do
-      let(:enabled) { false }
+    context 'when Protected Environments feature is not available on the project' do
+      let(:feature_available) { false }
 
       it { is_expected.to be_nil }
-
-      context 'when Protected Environments feature is available on the project' do
-        before do
-          allow(project).to receive(:feature_available?)
-            .with(:protected_environments).and_return(true)
-        end
-
-        it { is_expected.to be_nil }
-      end
     end
 
-    context 'when Protected Environments feature is on' do
-      let(:enabled) { true }
+    context 'when Protected Environments feature is available on the project' do
+      let(:feature_available) { true }
+      let(:environment) { create(:environment, name: 'production') }
+      let(:protected_environment) { create(:protected_environment, name: environment.name, project: project) }
 
-      context 'when Protected Environments feature is not available on the project' do
-        it { is_expected.to be_nil }
+      context 'when the project environment exists' do
+        before do
+          protected_environment
+        end
+
+        it { is_expected.to eq(protected_environment) }
       end
 
-      context 'when Protected Environments feature is available on the project' do
-        let(:environment) { create(:environment, name: 'production') }
-        let(:protected_environment) { create(:protected_environment, name: environment.name, project: project) }
-
-        before do
-          allow(project).to receive(:feature_available?)
-            .with(:protected_environments).and_return(true)
-        end
-
-        context 'when the project environment exists' do
-          before do
-            protected_environment
-          end
-
-          it { is_expected.to eq(protected_environment) }
-        end
-
-        context 'when the project environment does not exists' do
-          it { is_expected.to be_nil }
-        end
+      context 'when the project environment does not exists' do
+        it { is_expected.to be_nil }
       end
     end
   end
@@ -1643,48 +1623,38 @@ describe Project do
     subject { project.protected_environment_accessible_to?(environment.name, user) }
 
     before do
-      stub_feature_flags(protected_environments: enabled)
+      allow(project).to receive(:feature_available?)
+        .with(:protected_environments).and_return(feature_available)
     end
 
-    context 'when Protected Environments feature is not on' do
-      let(:enabled) { false }
+    context 'when Protected Environments feature is not available on the project' do
+      let(:feature_available) { false }
 
       it { is_expected.to be_truthy }
     end
 
-    context 'when Protected Environments feature is on' do
-      let(:enabled) { true }
+    context 'when Protected Environments feature is available on the project' do
+      let(:feature_available) { true }
 
-      context 'when Protected Environments feature is not available on the project' do
+      context 'when project does not have protected environments' do
         it { is_expected.to be_truthy }
       end
 
-      context 'when Protected Environments feature is available on the project' do
-        before do
-          allow(project).to receive(:feature_available?)
-            .with(:protected_environments).and_return(true)
-        end
+      context 'when project has protected environments' do
+        context 'when user has the right access' do
+          before do
+            protected_environment.deploy_access_levels.create(user_id: user.id)
+          end
 
-        context 'when project does not have protected environments' do
           it { is_expected.to be_truthy }
         end
 
-        context 'when project has protected environments' do
-          context 'when user has the right access' do
-            before do
-              protected_environment.deploy_access_levels.create(user_id: user.id)
-            end
-
-            it { is_expected.to be_truthy }
+        context 'when user does not have the right access' do
+          before do
+            protected_environment.deploy_access_levels.create
           end
 
-          context 'when user does not have the right access' do
-            before do
-              protected_environment.deploy_access_levels.create
-            end
-
-            it { is_expected.to be_falsy }
-          end
+          it { is_expected.to be_falsy }
         end
       end
     end

@@ -1,7 +1,7 @@
 - expanded = Rails.env.test?
 - can_admin_project = can?(current_user, :admin_project, @project)
 
-- if protected_environments_enabled?
+- if protected_environments_enabled?(@project)
   %section.protected-environments-settings.settings.no-animate#js-protected-environments-settings{ class: ('expanded' if expanded) }
     .settings-header
       %h4
