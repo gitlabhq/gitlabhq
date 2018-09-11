@@ -19,7 +19,7 @@ import {
   dastBase,
   sastBaseAllIssues,
   sastHeadAllIssues,
-} from '../vue_shared/security_reports/mock_data';
+} from 'ee_spec/vue_shared/security_reports/mock_data'; // eslint-disable-line import/first
 
 describe('ee merge request widget options', () => {
   let vm;

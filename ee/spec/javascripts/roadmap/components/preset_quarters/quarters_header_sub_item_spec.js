@@ -3,7 +3,7 @@ import Vue from 'vue';
 import QuartersHeaderSubItemComponent from 'ee/roadmap/components/preset_quarters/quarters_header_sub_item.vue';
 
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { mockTimeframeQuarters } from '../../mock_data';
+import { mockTimeframeQuarters } from 'ee_spec/roadmap/mock_data';
 
 const createComponent = ({
   currentDate = mockTimeframeQuarters[0].range[1],

@@ -9,7 +9,7 @@ import {
   sastParsedIssues,
   dockerReportParsed,
   parsedDast,
-} from 'spec/vue_shared/security_reports/mock_data';
+} from 'ee_spec/vue_shared/security_reports/mock_data';
 
 describe('Report issues', () => {
   let vm;

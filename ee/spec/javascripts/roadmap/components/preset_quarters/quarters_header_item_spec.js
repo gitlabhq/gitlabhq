@@ -1,20 +1,20 @@
 import Vue from 'vue';
 
-import MonthsHeaderItemComponent from 'ee/roadmap/components/preset_months/months_header_item.vue';
+import QuartersHeaderItemComponent from 'ee/roadmap/components/preset_quarters/quarters_header_item.vue';
 
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { mockTimeframeMonths, mockShellWidth, mockItemWidth } from '../../mock_data';
+import { mockTimeframeQuarters, mockShellWidth, mockItemWidth } from 'ee_spec/roadmap/mock_data';
 
 const mockTimeframeIndex = 0;
 
 const createComponent = ({
   timeframeIndex = mockTimeframeIndex,
-  timeframeItem = mockTimeframeMonths[mockTimeframeIndex],
-  timeframe = mockTimeframeMonths,
+  timeframeItem = mockTimeframeQuarters[mockTimeframeIndex],
+  timeframe = mockTimeframeQuarters,
   shellWidth = mockShellWidth,
   itemWidth = mockItemWidth,
 }) => {
-  const Component = Vue.extend(MonthsHeaderItemComponent);
+  const Component = Vue.extend(QuartersHeaderItemComponent);
 
   return mountComponent(Component, {
     timeframeIndex,
@@ -25,7 +25,7 @@ const createComponent = ({
   });
 };
 
-describe('MonthsHeaderItemComponent', () => {
+describe('QuartersHeaderItemComponent', () => {
   let vm;
 
   afterEach(() => {
@@ -37,8 +37,8 @@ describe('MonthsHeaderItemComponent', () => {
       vm = createComponent({});
       const currentDate = new Date();
       expect(vm.currentDate.getDate()).toBe(currentDate.getDate());
-      expect(vm.currentYear).toBe(currentDate.getFullYear());
-      expect(vm.currentMonth).toBe(currentDate.getMonth());
+      expect(vm.quarterBeginDate).toBe(mockTimeframeQuarters[mockTimeframeIndex].range[0]);
+      expect(vm.quarterEndDate).toBe(mockTimeframeQuarters[mockTimeframeIndex].range[2]);
     });
   });
 
@@ -51,47 +51,49 @@ describe('MonthsHeaderItemComponent', () => {
     });
 
     describe('timelineHeaderLabel', () => {
-      it('returns string containing Year and Month for current timeline header item', () => {
+      it('returns string containing Year and Quarter for current timeline header item', () => {
         vm = createComponent({});
-        expect(vm.timelineHeaderLabel).toBe('2017 Dec');
+        expect(vm.timelineHeaderLabel).toBe('2017 Q4');
       });
 
-      it('returns string containing only Month for current timeline header item when previous header contained Year', () => {
+      it('returns string containing only Quarter for current timeline header item when previous header contained Year', () => {
         vm = createComponent({
-          timeframeIndex: mockTimeframeIndex + 1,
-          timeframeItem: mockTimeframeMonths[mockTimeframeIndex + 1],
+          timeframeIndex: mockTimeframeIndex + 2,
+          timeframeItem: mockTimeframeQuarters[mockTimeframeIndex + 2],
         });
-        expect(vm.timelineHeaderLabel).toBe('2018 Jan');
+        expect(vm.timelineHeaderLabel).toBe('Q2');
       });
     });
 
     describe('timelineHeaderClass', () => {
-      it('returns empty string when timeframeItem year or month is less than current year or month', () => {
+      it('returns empty string when timeframeItem quarter is less than current quarter', () => {
         vm = createComponent({});
         expect(vm.timelineHeaderClass).toBe('');
       });
 
-      it('returns string containing `label-dark label-bold` when current year and month is same as timeframeItem year and month', () => {
+      it('returns string containing `label-dark label-bold` when current quarter is same as timeframeItem quarter', done => {
         vm = createComponent({
-          timeframeItem: new Date(),
+          timeframeItem: mockTimeframeQuarters[1],
         });
-        expect(vm.timelineHeaderClass).toBe('label-dark label-bold');
+
+        [, vm.currentDate] = mockTimeframeQuarters[1].range;
+        Vue.nextTick()
+          .then(() => {
+            expect(vm.timelineHeaderClass).toBe('label-dark label-bold');
+          })
+          .then(done)
+          .catch(done.fail);
       });
 
-      it('returns string containing `label-dark` when current year and month is less than timeframeItem year and month', () => {
+      it('returns string containing `label-dark` when current quarter is less than timeframeItem quarter', () => {
         const timeframeIndex = 2;
-        const timeframeItem = new Date(
-          mockTimeframeMonths[timeframeIndex].getFullYear(),
-          mockTimeframeMonths[timeframeIndex].getMonth() + 2,
-          1,
-        );
+        const timeframeItem = mockTimeframeQuarters[1];
         vm = createComponent({
           timeframeIndex,
           timeframeItem,
         });
 
-        vm.currentYear = mockTimeframeMonths[timeframeIndex].getFullYear();
-        vm.currentMonth = mockTimeframeMonths[timeframeIndex].getMonth() + 1;
+        [vm.currentDate] = mockTimeframeQuarters[0].range;
         expect(vm.timelineHeaderClass).toBe('label-dark');
       });
     });
@@ -109,7 +111,7 @@ describe('MonthsHeaderItemComponent', () => {
     it('renders item label element class `item-label` and value as `timelineHeaderLabel`', () => {
       const itemLabelEl = vm.$el.querySelector('.item-label');
       expect(itemLabelEl).not.toBeNull();
-      expect(itemLabelEl.innerText.trim()).toBe('2017 Dec');
+      expect(itemLabelEl.innerText.trim()).toBe('2017 Q4');
     });
   });
 });

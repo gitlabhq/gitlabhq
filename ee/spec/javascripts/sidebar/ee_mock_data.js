@@ -1,4 +1,4 @@
-import CEMockData from './mock_data';
+import CEMockData from 'spec/sidebar/mock_data';
 
 const RESPONSE_MAP = { ...CEMockData.responseMap };
 

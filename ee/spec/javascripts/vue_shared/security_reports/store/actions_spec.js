@@ -50,7 +50,7 @@ import actions, {
 } from 'ee/vue_shared/security_reports/store/actions';
 import * as types from 'ee/vue_shared/security_reports/store/mutation_types';
 import state from 'ee/vue_shared/security_reports/store/state';
-import testAction from '../../../helpers/vuex_action_helper';
+import testAction from 'spec/helpers/vuex_action_helper';
 import {
   sastIssues,
   sastIssuesBase,

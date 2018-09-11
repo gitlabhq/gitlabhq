@@ -4,7 +4,7 @@ import axios from '~/lib/utils/axios_utils';
 import component from 'ee/vue_shared/security_reports/split_security_reports_app.vue';
 import createStore from 'ee/vue_shared/security_reports/store';
 import state from 'ee/vue_shared/security_reports/store/state';
-import { mountComponentWithStore } from '../../helpers/vue_mount_component_helper';
+import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { sastIssues, dast, dockerReport } from './mock_data';
 
 describe('Split security reports app', () => {
