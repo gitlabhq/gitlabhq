@@ -28,7 +28,7 @@
     "babel-preset-latest": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
     "blackst0ne-mermaid": "^7.1.0-fixed",
-    "bootstrap": "~4.1.1",
+    "bootstrap": "4.1.1",
     "brace-expansion": "^1.1.8",
     "cache-loader": "^1.2.2",
     "chart.js": "1.0.2",
