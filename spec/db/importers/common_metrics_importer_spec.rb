@@ -47,6 +47,16 @@ describe Importers::CommonMetricsImporter do
     end
   end
 
+  context "does import common_metrics.yml" do
+    it "when executed from outside of the Rails.root" do
+      Dir.chdir(Dir.tmpdir) do
+        expect { subject.execute }.not_to raise_error
+      end
+
+      expect(PrometheusMetric.common).not_to be_empty
+    end
+  end
+
   context 'does import properly all fields' do
     let(:query_identifier) { 'response-metric' }
     let(:group) do
