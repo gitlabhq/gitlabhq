@@ -103,23 +103,7 @@ FactoryBot.define do
     end
 
     trait :with_export do
-      before(:create) do |_project, _evaluator|
-        allow(Feature).to receive(:enabled?).with(:import_export_object_storage) { false }
-        allow(Feature).to receive(:enabled?).with('import_export_object_storage') { false }
-      end
-
       after(:create) do |project, _evaluator|
-        ProjectExportWorker.new.perform(project.creator.id, project.id)
-      end
-    end
-
-    trait :with_object_export do
-      before(:create) do |_project, _evaluator|
-        allow(Feature).to receive(:enabled?).with(:import_export_object_storage) { true }
-        allow(Feature).to receive(:enabled?).with('import_export_object_storage') { true }
-      end
-
-      after(:create) do |project, evaluator|
         ProjectExportWorker.new.perform(project.creator.id, project.id)
       end
     end
@@ -260,6 +244,10 @@ FactoryBot.define do
     trait(:repository_enabled)      { repository_access_level ProjectFeature::ENABLED }
     trait(:repository_disabled)     { repository_access_level ProjectFeature::DISABLED }
     trait(:repository_private)      { repository_access_level ProjectFeature::PRIVATE }
+
+    trait :auto_devops do
+      association :auto_devops, factory: :project_auto_devops
+    end
   end
 
   # Project with empty repository

@@ -16,7 +16,7 @@ describe 'Project' do
     it "allows creation from templates", :js do
       find('#create-from-template-tab').click
       find("label[for=#{template.name}]").click
-      fill_in("project_path", with: template.name)
+      fill_in("project_name", with: template.name)
 
       page.within '#content-body' do
         click_button "Create project"

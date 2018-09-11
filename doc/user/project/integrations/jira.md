@@ -92,15 +92,15 @@ password as they will be needed when configuring GitLab in the next section.
 
 ### Configuring GitLab
 
->**Notes:**
-- The currently supported JIRA versions are `v6.x` and `v7.x.`. GitLab 7.8 or
-  higher is required.
-- GitLab 8.14 introduced a new way to integrate with JIRA which greatly simplified
-  the configuration options you have to enter. If you are using an older version,
-  [follow this documentation][jira-repo-old-docs].
-- In order to support Oracle's Access Manager, GitLab will send additional cookies
-  to enable Basic Auth. The cookie being added to each request is `OBBasicAuth` with
-  a value of `fromDialog`.
+> **Notes:**
+> - The currently supported JIRA versions are `v6.x` and `v7.x.`. GitLab 7.8 or
+>   higher is required.
+> - GitLab 8.14 introduced a new way to integrate with JIRA which greatly simplified
+>   the configuration options you have to enter. If you are using an older version,
+>   [follow this documentation][jira-repo-old-docs].
+> - In order to support Oracle's Access Manager, GitLab will send additional cookies
+>   to enable Basic Auth. The cookie being added to each request is `OBBasicAuth` with
+>   a value of `fromDialog`.
 
 To enable JIRA integration in a project, navigate to the
 [Integrations page](project_services.md#accessing-the-project-services), click
@@ -182,11 +182,11 @@ the same goal:
 
 where `PROJECT-1` is the issue ID of the JIRA project.
 
->**Note:**
-- Only commits and merges into the project's default branch (usually **master**) will
-  close an issue in Jira. You can change your projects default branch under
-  [project settings](img/jira_project_settings.png).
-- The JIRA issue will not be transitioned if it has a resolution.
+> **Notes:**
+> - Only commits and merges into the project's default branch (usually **master**) will
+>   close an issue in Jira. You can change your projects default branch under
+>   [project settings](img/jira_project_settings.png).
+> - The JIRA issue will not be transitioned if it has a resolution.
 
 ### JIRA issue closing example
 

@@ -154,7 +154,7 @@ describe Projects::NotesController do
         get :index, request_params
 
         expect(parsed_response[:notes].count).to eq(1)
-        expect(note_json[:id]).to eq(note.id)
+        expect(note_json[:id]).to eq(note.id.to_s)
       end
 
       it 'does not result in N+1 queries' do

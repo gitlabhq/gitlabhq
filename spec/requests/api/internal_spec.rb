@@ -369,6 +369,26 @@ describe API::Internal do
             expect(user.reload.last_activity_on).to be_nil
           end
         end
+
+        context 'when receive_max_input_size has been updated' do
+          it 'returns custom git config' do
+            allow(Gitlab::CurrentSettings).to receive(:receive_max_input_size) { 1 }
+
+            push(key, project)
+
+            expect(json_response["git_config_options"]).to be_present
+          end
+        end
+
+        context 'when receive_max_input_size is empty' do
+          it 'returns an empty git config' do
+            allow(Gitlab::CurrentSettings).to receive(:receive_max_input_size) { nil }
+
+            push(key, project)
+
+            expect(json_response["git_config_options"]).to be_empty
+          end
+        end
       end
     end
 

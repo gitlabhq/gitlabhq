@@ -123,9 +123,10 @@ in your SAML IdP:
 To ease configuration, most IdP accept a metadata URL for the application to provide
 configuration information to the IdP. To build the metadata URL for GitLab, append
 `users/auth/saml/metadata` to the HTTPS URL of your GitLab installation, for instance:
-   ```
-   https://gitlab.example.com/users/auth/saml/metadata
-   ```
+
+```
+https://gitlab.example.com/users/auth/saml/metadata
+```
 
 At a minimum the IdP *must* provide a claim containing the user's email address, using
 claim name `email` or `mail`. The email will be used to automatically generate the GitLab

@@ -17,6 +17,7 @@ module Issuable
       create_labels_note(old_labels) if issuable.labels != old_labels
       create_discussion_lock_note if issuable.previous_changes.include?('discussion_locked')
       create_milestone_note if issuable.previous_changes.include?('milestone_id')
+      create_due_date_note if issuable.previous_changes.include?('due_date')
     end
 
     private
@@ -55,7 +56,9 @@ module Issuable
       added_labels = issuable.labels - old_labels
       removed_labels = old_labels - issuable.labels
 
-      SystemNoteService.change_label(issuable, issuable.project, current_user, added_labels, removed_labels)
+      ResourceEvents::ChangeLabelsService
+        .new(issuable, current_user)
+        .execute(added_labels: added_labels, removed_labels: removed_labels)
     end
 
     def create_title_change_note(old_title)
@@ -86,6 +89,10 @@ module Issuable
 
     def create_milestone_note
       SystemNoteService.change_milestone(issuable, issuable.project, current_user, issuable.milestone)
+    end
+
+    def create_due_date_note
+      SystemNoteService.change_due_date(issuable, issuable.project, current_user, issuable.due_date)
     end
 
     def create_discussion_lock_note

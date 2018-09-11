@@ -4,16 +4,30 @@ describe 'Projects tree', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 
+  # This commit has a known state on the master branch of gitlab-test
+  let(:test_sha) { '7975be0116940bf2ad4321f79d02a55c5f7779aa' }
+
   before do
     project.add_maintainer(user)
     sign_in(user)
   end
 
   it 'renders tree table without errors' do
-    visit project_tree_path(project, 'master')
+    visit project_tree_path(project, test_sha)
     wait_for_requests
 
     expect(page).to have_selector('.tree-item')
+    expect(page).to have_content('add tests for .gitattributes custom highlighting')
+    expect(page).not_to have_selector('.flash-alert')
+    expect(page).not_to have_selector('.label-lfs', text: 'LFS')
+  end
+
+  it 'renders tree table for a subtree without errors' do
+    visit project_tree_path(project, File.join(test_sha, 'files'))
+    wait_for_requests
+
+    expect(page).to have_selector('.tree-item')
+    expect(page).to have_content('add spaces in whitespace file')
     expect(page).not_to have_selector('.label-lfs', text: 'LFS')
     expect(page).not_to have_selector('.flash-alert')
   end

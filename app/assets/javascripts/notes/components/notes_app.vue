@@ -138,6 +138,7 @@ export default {
         .then(() => {
           this.isLoading = false;
           this.setNotesFetchedState(true);
+          eventHub.$emit('fetchedNotesData');
         })
         .then(() => this.$nextTick())
         .then(() => this.checkLocationHash())

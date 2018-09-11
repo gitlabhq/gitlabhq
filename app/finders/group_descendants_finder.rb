@@ -134,7 +134,7 @@ class GroupDescendantsFinder
   end
 
   def direct_child_projects
-    GroupProjectsFinder.new(group: parent_group, current_user: current_user, params: params)
+    GroupProjectsFinder.new(group: parent_group, current_user: current_user, params: params, options: { only_owned: true })
       .execute
   end
 

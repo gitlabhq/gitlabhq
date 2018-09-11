@@ -43,7 +43,7 @@ GitLab provides built-in tools to aid the process of improving performance:
 * [QueryRecoder](query_recorder.md) for preventing `N+1` regressions
 
 GitLab employees can use GitLab.com's performance monitoring systems located at
-<http://performance.gitlab.net>, this requires you to log in using your
+<https://dashboards.gitlab.net>, this requires you to log in using your
 `@gitlab.com` Email address. Non-GitLab employees are advised to set up their
 own InfluxDB + Grafana stack.
 

@@ -21,6 +21,11 @@ export default {
       type: Object,
       required: true,
     },
+    action: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     leaveBtnTitle() {
@@ -32,7 +37,7 @@ export default {
   },
   methods: {
     onLeaveGroup() {
-      eventHub.$emit('showLeaveGroupModal', this.group, this.parentGroup);
+      eventHub.$emit(`${this.action}showLeaveGroupModal`, this.group, this.parentGroup);
     },
   },
 };

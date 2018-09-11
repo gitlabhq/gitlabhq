@@ -30,6 +30,11 @@ export default {
       type: Object,
       required: true,
     },
+    action: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     groupDomId() {
@@ -56,10 +61,12 @@ export default {
   methods: {
     onClickRowGroup(e) {
       const NO_EXPAND_CLS = 'no-expand';
-      if (!(e.target.classList.contains(NO_EXPAND_CLS) ||
-            e.target.parentElement.classList.contains(NO_EXPAND_CLS))) {
+      const targetClasses = e.target.classList;
+      const parentElClasses = e.target.parentElement.classList;
+
+      if (!(targetClasses.contains(NO_EXPAND_CLS) || parentElClasses.contains(NO_EXPAND_CLS))) {
         if (this.hasChildren) {
-          eventHub.$emit('toggleChildren', this.group);
+          eventHub.$emit(`${this.action}toggleChildren`, this.group);
         } else {
           visitUrl(this.group.relativePath);
         }
@@ -93,7 +100,7 @@ export default {
       </div>
       <div
         :class="{ 'content-loading': group.isChildrenLoading }"
-        class="avatar-container s24 d-none d-sm-block"
+        class="avatar-container s24 d-none d-sm-flex"
       >
         <a
           :href="group.relativePath"
@@ -158,6 +165,7 @@ export default {
       v-if="group.isOpen && hasChildren"
       :parent-group="group"
       :groups="group.children"
+      :action="action"
     />
   </li>
 </template>

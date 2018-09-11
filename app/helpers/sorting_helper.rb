@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SortingHelper
   def sort_options_hash
     {

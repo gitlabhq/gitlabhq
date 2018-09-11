@@ -8,7 +8,7 @@ describe 'Import/Export - project import integration test', :js do
   let(:export_path) { "#{Dir.tmpdir}/import_file_spec" }
 
   before do
-    stub_feature_flags(import_export_object_storage: false)
+    stub_uploads_object_storage(FileUploader)
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
     gitlab_sign_in(user)
   end
@@ -20,6 +20,7 @@ describe 'Import/Export - project import integration test', :js do
   context 'when selecting the namespace' do
     let(:user) { create(:admin) }
     let!(:namespace) { user.namespace }
+    let(:project_name) { 'Test Project Name' + SecureRandom.hex }
     let(:project_path) { 'test-project-path' + SecureRandom.hex }
 
     context 'prefilled the path' do
@@ -27,13 +28,13 @@ describe 'Import/Export - project import integration test', :js do
         visit new_project_path
 
         select2(namespace.id, from: '#project_namespace_id')
+        fill_in :project_name, with: project_name, visible: true
         fill_in :project_path, with: project_path, visible: true
         click_import_project_tab
         click_link 'GitLab export'
 
         expect(page).to have_content('Import an exported GitLab project')
-        expect(URI.parse(current_url).query).to eq("namespace_id=#{namespace.id}&path=#{project_path}")
-        expect(Gitlab::ImportExport).to receive(:import_upload_path).with(filename: /\A\h{32}\z/).and_call_original
+        expect(URI.parse(current_url).query).to eq("namespace_id=#{namespace.id}&name=#{ERB::Util.url_encode(project_name)}&path=#{project_path}")
 
         attach_file('file', file)
         click_on 'Import project'
@@ -57,6 +58,7 @@ describe 'Import/Export - project import integration test', :js do
         click_import_project_tab
         click_link 'GitLab export'
 
+        fill_in :name, with: 'Test Project Name', visible: true
         fill_in :path, with: 'test-project-path', visible: true
         attach_file('file', file)
 
@@ -75,7 +77,8 @@ describe 'Import/Export - project import integration test', :js do
     visit new_project_path
 
     select2(user.namespace.id, from: '#project_namespace_id')
-    fill_in :project_path, with: project.name, visible: true
+    fill_in :project_name, with: project.name, visible: true
+    fill_in :project_path, with: project.path, visible: true
     click_import_project_tab
     click_link 'GitLab export'
     attach_file('file', file)

@@ -151,15 +151,17 @@ class Event < ActiveRecord::Base
     if push? || commit_note?
       Ability.allowed?(user, :download_code, project)
     elsif membership_changed?
-      true
+      Ability.allowed?(user, :read_project, project)
     elsif created_project?
-      true
+      Ability.allowed?(user, :read_project, project)
     elsif issue? || issue_note?
       Ability.allowed?(user, :read_issue, note? ? note_target : target)
     elsif merge_request? || merge_request_note?
       Ability.allowed?(user, :read_merge_request, note? ? note_target : target)
+    elsif milestone?
+      Ability.allowed?(user, :read_project, project)
     else
-      milestone?
+      false # No other event types are visible
     end
   end
 

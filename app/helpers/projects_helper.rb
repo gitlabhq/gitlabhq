@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ProjectsHelper
   def link_to_project(project)
     link_to [project.namespace.becomes(Namespace), project], title: h(project.name) do
@@ -50,7 +52,7 @@ module ProjectsHelper
 
     return "(deleted)" unless author
 
-    author_html = ""
+    author_html = []
 
     # Build avatar image tag
     author_html << link_to_member_avatar(author, opts) if opts[:avatar]
@@ -60,7 +62,7 @@ module ProjectsHelper
 
     author_html << capture(&block) if block
 
-    author_html = author_html.html_safe
+    author_html = author_html.join.html_safe
 
     if opts[:name]
       link_to(author_html, user_path(author), class: "author-link #{"#{opts[:extra_class]}" if opts[:extra_class]} #{"#{opts[:mobile_classes]}" if opts[:mobile_classes]}").html_safe
@@ -80,15 +82,8 @@ module ProjectsHelper
       end
 
     project_link = link_to project_path(project) do
-      output =
-        if project.avatar_url && !Rails.env.test?
-          project_icon(project, alt: project.name, class: 'avatar-tile', width: 15, height: 15)
-        else
-          ""
-        end
-
-      output << content_tag("span", simple_sanitize(project.name), class: "breadcrumb-item-text js-breadcrumb-item-text")
-      output.html_safe
+      icon = project_icon(project, alt: project.name, class: 'avatar-tile', width: 15, height: 15) if project.avatar_url && !Rails.env.test?
+      [icon, content_tag("span", simple_sanitize(project.name), class: "breadcrumb-item-text js-breadcrumb-item-text")].join.html_safe
     end
 
     namespace_link = breadcrumb_list_item(namespace_link) unless project.group
@@ -201,6 +196,14 @@ module ProjectsHelper
   def show_no_password_message?
     cookies[:hide_no_password_message].blank? && !current_user.hide_no_password &&
       current_user.require_extra_setup_for_git_auth?
+  end
+
+  def show_auto_devops_implicitly_enabled_banner?(project)
+    cookie_key = "hide_auto_devops_implicitly_enabled_banner_#{project.id}"
+
+    project.has_auto_devops_implicitly_enabled? &&
+      cookies[cookie_key.to_sym].blank? &&
+      (project.owner == current_user || project.team.maintainer?(current_user))
   end
 
   def link_to_set_password

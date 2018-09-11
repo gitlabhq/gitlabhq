@@ -21,51 +21,49 @@ export default {
       type: Number,
       required: true,
     },
-    leftDiscussions: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    rightDiscussions: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
   },
   computed: {
     ...mapState({
       diffLineCommentForms: state => state.diffs.diffLineCommentForms,
     }),
     leftLineCode() {
-      return this.line.left.lineCode;
+      return this.line.left && this.line.left.lineCode;
     },
     rightLineCode() {
-      return this.line.right.lineCode;
+      return this.line.right && this.line.right.lineCode;
     },
     hasExpandedDiscussionOnLeft() {
-      const discussions = this.leftDiscussions;
-
-      return discussions ? discussions.every(discussion => discussion.expanded) : false;
+      return this.line.left && this.line.left.discussions
+        ? this.line.left.discussions.every(discussion => discussion.expanded)
+        : false;
     },
     hasExpandedDiscussionOnRight() {
-      const discussions = this.rightDiscussions;
-
-      return discussions ? discussions.every(discussion => discussion.expanded) : false;
+      return this.line.right && this.line.right.discussions
+        ? this.line.right.discussions.every(discussion => discussion.expanded)
+        : false;
     },
     hasAnyExpandedDiscussion() {
       return this.hasExpandedDiscussionOnLeft || this.hasExpandedDiscussionOnRight;
     },
     shouldRenderDiscussionsOnLeft() {
-      return this.leftDiscussions && this.hasExpandedDiscussionOnLeft;
+      return this.line.left && this.line.left.discussions && this.hasExpandedDiscussionOnLeft;
     },
     shouldRenderDiscussionsOnRight() {
-      return this.rightDiscussions && this.hasExpandedDiscussionOnRight && this.line.right.type;
+      return (
+        this.line.right &&
+        this.line.right.discussions &&
+        this.hasExpandedDiscussionOnRight &&
+        this.line.right.type
+      );
     },
     showRightSideCommentForm() {
-      return this.line.right.type && this.diffLineCommentForms[this.rightLineCode];
+      return (
+        this.line.right && this.line.right.type && this.diffLineCommentForms[this.rightLineCode]
+      );
     },
     className() {
-      return this.leftDiscussions.length > 0 || this.rightDiscussions.length > 0
+      return (this.left && this.line.left.discussions.length > 0) ||
+        (this.right && this.line.right.discussions.length > 0)
         ? ''
         : 'js-temp-notes-holder';
     },
@@ -85,8 +83,8 @@ export default {
         class="content"
       >
         <diff-discussions
-          v-if="leftDiscussions.length"
-          :discussions="leftDiscussions"
+          v-if="line.left.discussions.length"
+          :discussions="line.left.discussions"
         />
       </div>
       <diff-line-note-form
@@ -104,8 +102,8 @@ export default {
         class="content"
       >
         <diff-discussions
-          v-if="rightDiscussions.length"
-          :discussions="rightDiscussions"
+          v-if="line.right.discussions.length"
+          :discussions="line.right.discussions"
         />
       </div>
       <diff-line-note-form

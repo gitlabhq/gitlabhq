@@ -19,7 +19,14 @@ describe Gitlab::GitalyClient::CommitService do
           right_commit_id: commit.id,
           collapse_diffs: false,
           enforce_limits: true,
-          **Gitlab::Git::DiffCollection.collection_limits.to_h
+          # Tests limitation parameters explicitly
+          max_files: 100,
+          max_lines: 5000,
+          max_bytes: 512000,
+          safe_max_files: 100,
+          safe_max_lines: 5000,
+          safe_max_bytes: 512000,
+          max_patch_bytes: 102400
         )
 
         expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_diff).with(request, kind_of(Hash))
@@ -37,7 +44,14 @@ describe Gitlab::GitalyClient::CommitService do
           right_commit_id: initial_commit.id,
           collapse_diffs: false,
           enforce_limits: true,
-          **Gitlab::Git::DiffCollection.collection_limits.to_h
+          # Tests limitation parameters explicitly
+          max_files: 100,
+          max_lines: 5000,
+          max_bytes: 512000,
+          safe_max_files: 100,
+          safe_max_lines: 5000,
+          safe_max_bytes: 512000,
+          max_patch_bytes: 102400
         )
 
         expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_diff).with(request, kind_of(Hash))

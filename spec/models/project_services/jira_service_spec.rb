@@ -231,12 +231,12 @@ describe JiraService do
       end
 
       it 'logs exception when transition id is not valid' do
-        allow(Rails.logger).to receive(:info)
-        WebMock.stub_request(:post, @transitions_url).with(basic_auth: %w(gitlab_jira_username gitlab_jira_password)).and_raise('Bad Request')
+        allow(@jira_service).to receive(:log_error)
+        WebMock.stub_request(:post, @transitions_url).with(basic_auth: %w(gitlab_jira_username gitlab_jira_password)).and_raise("Bad Request")
 
         @jira_service.close_issue(resource, ExternalIssue.new('JIRA-123', project))
 
-        expect(Rails.logger).to have_received(:info).with('JiraService Issue Transition failed message ERROR: http://jira.example.com - Bad Request')
+        expect(@jira_service).to have_received(:log_error).with("Issue transition failed", error: "Bad Request", client_url: "http://jira.example.com")
       end
 
       it 'calls the api with jira_issue_transition_id' do

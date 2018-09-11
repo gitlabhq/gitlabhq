@@ -13,6 +13,10 @@ export default {
     Icon,
   },
   props: {
+    line: {
+      type: Object,
+      required: true,
+    },
     fileHash: {
       type: String,
       required: true,
@@ -21,30 +25,15 @@ export default {
       type: String,
       required: true,
     },
-    lineType: {
-      type: String,
-      required: false,
-      default: '',
-    },
     lineNumber: {
       type: Number,
       required: false,
       default: 0,
     },
-    lineCode: {
-      type: String,
-      required: false,
-      default: '',
-    },
     linePosition: {
       type: String,
       required: false,
       default: '',
-    },
-    metaData: {
-      type: Object,
-      required: false,
-      default: () => ({}),
     },
     showCommentButton: {
       type: Boolean,
@@ -76,11 +65,6 @@ export default {
       required: false,
       default: false,
     },
-    discussions: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
   },
   computed: {
     ...mapState({
@@ -89,7 +73,7 @@ export default {
     }),
     ...mapGetters(['isLoggedIn']),
     lineHref() {
-      return this.lineCode ? `#${this.lineCode}` : '#';
+      return `#${this.line.lineCode || ''}`;
     },
     shouldShowCommentButton() {
       return (
@@ -103,20 +87,19 @@ export default {
       );
     },
     hasDiscussions() {
-      return this.discussions.length > 0;
+      return this.line.discussions && this.line.discussions.length > 0;
     },
     shouldShowAvatarsOnGutter() {
-      if (!this.lineType && this.linePosition === LINE_POSITION_RIGHT) {
+      if (!this.line.type && this.linePosition === LINE_POSITION_RIGHT) {
         return false;
       }
-
       return this.showCommentButton && this.hasDiscussions;
     },
   },
   methods: {
     ...mapActions('diffs', ['loadMoreLines', 'showCommentForm']),
     handleCommentButton() {
-      this.showCommentForm({ lineCode: this.lineCode });
+      this.showCommentForm({ lineCode: this.line.lineCode });
     },
     handleLoadMoreLines() {
       if (this.isRequesting) {
@@ -125,8 +108,8 @@ export default {
 
       this.isRequesting = true;
       const endpoint = this.contextLinesPath;
-      const oldLineNumber = this.metaData.oldPos || 0;
-      const newLineNumber = this.metaData.newPos || 0;
+      const oldLineNumber = this.line.metaData.oldPos || 0;
+      const newLineNumber = this.line.metaData.newPos || 0;
       const offset = newLineNumber - oldLineNumber;
       const bottom = this.isBottom;
       const { fileHash } = this;
@@ -201,7 +184,7 @@ export default {
       </a>
       <diff-gutter-avatars
         v-if="shouldShowAvatarsOnGutter"
-        :discussions="discussions"
+        :discussions="line.discussions"
       />
     </template>
   </div>

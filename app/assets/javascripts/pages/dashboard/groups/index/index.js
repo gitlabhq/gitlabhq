@@ -1,3 +1,5 @@
 import initGroupsList from '~/groups';
 
-document.addEventListener('DOMContentLoaded', initGroupsList);
+document.addEventListener('DOMContentLoaded', () => {
+  initGroupsList();
+});

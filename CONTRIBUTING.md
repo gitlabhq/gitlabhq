@@ -36,7 +36,7 @@ _This notice should stay as the first item in the CONTRIBUTING.md file._
   - [Release Scoping labels](#release-scoping-labels)
   - [Priority labels](#priority-labels)
   - [Severity labels](#severity-labels)
-    - [Severity impact guidance](#severity-impact-guidance)
+     - [Severity impact guidance](#severity-impact-guidance)
   - [Label for community contributors](#label-for-community-contributors)
 - [Implement design & UI elements](#implement-design--ui-elements)
 - [Issue tracker](#issue-tracker)

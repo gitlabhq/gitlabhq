@@ -259,6 +259,9 @@ msgstr ""
 msgid "A default branch cannot be chosen for an empty project."
 msgstr ""
 
+msgid "A deleted user"
+msgstr ""
+
 msgid "A new branch will be created in your fork and a new merge request will be started."
 msgstr ""
 
@@ -293,6 +296,9 @@ msgid "Access Tokens"
 msgstr ""
 
 msgid "Access denied! Please verify you can add deploy keys to this repository."
+msgstr ""
+
+msgid "Access expiration date"
 msgstr ""
 
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
@@ -604,6 +610,9 @@ msgstr ""
 msgid "Archived project! Repository and other project resources are read-only"
 msgstr ""
 
+msgid "Archived projects"
+msgstr ""
+
 msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr ""
 
@@ -737,6 +746,9 @@ msgid "AutoDevOps|It will automatically build, test, and deploy your application
 msgstr ""
 
 msgid "AutoDevOps|Learn more in the %{link_to_documentation}"
+msgstr ""
+
+msgid "AutoDevOps|The Auto DevOps pipeline has been enabled and will be used if no alternative CI configuration file is found. %{more_information_link}"
 msgstr ""
 
 msgid "AutoDevOps|You can automatically build and test your application if you %{link_to_auto_devops_settings} for this project. You can automatically deploy it as well, if you %{link_to_add_kubernetes_cluster}."
@@ -1026,6 +1038,9 @@ msgstr ""
 msgid "Browse files"
 msgstr ""
 
+msgid "Business metrics (Custom)"
+msgstr ""
+
 msgid "ByAuthor|by"
 msgstr ""
 
@@ -1159,6 +1174,12 @@ msgid "Choose File ..."
 msgstr ""
 
 msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to see what's changed or to create a merge request."
+msgstr ""
+
+msgid "Choose a template..."
+msgstr ""
+
+msgid "Choose a type..."
 msgstr ""
 
 msgid "Choose any color."
@@ -1335,10 +1356,7 @@ msgstr ""
 msgid "ClusterIntegration|Certificate Authority bundle (PEM format)"
 msgstr ""
 
-msgid "ClusterIntegration|Choose which of your project's environments will use this Kubernetes cluster."
-msgstr ""
-
-msgid "ClusterIntegration|Control how your Kubernetes cluster integrates with GitLab"
+msgid "ClusterIntegration|Choose which of your environments will use this cluster."
 msgstr ""
 
 msgid "ClusterIntegration|Copy API URL"
@@ -1363,6 +1381,9 @@ msgid "ClusterIntegration|Create Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Did you know?"
+msgstr ""
+
+msgid "ClusterIntegration|Enable or disable GitLab's connection to your Kubernetes cluster."
 msgstr ""
 
 msgid "ClusterIntegration|Enable this setting if using role-based access control (RBAC)."
@@ -1458,15 +1479,6 @@ msgstr ""
 msgid "ClusterIntegration|Kubernetes cluster integration"
 msgstr ""
 
-msgid "ClusterIntegration|Kubernetes cluster integration is disabled for this project."
-msgstr ""
-
-msgid "ClusterIntegration|Kubernetes cluster integration is enabled for this project."
-msgstr ""
-
-msgid "ClusterIntegration|Kubernetes cluster integration is enabled for this project. Disabling this integration will not affect your Kubernetes cluster, it will only temporarily turn off GitLab's connection to it."
-msgstr ""
-
 msgid "ClusterIntegration|Kubernetes cluster is being created on Google Kubernetes Engine..."
 msgstr ""
 
@@ -1489,12 +1501,6 @@ msgid "ClusterIntegration|Learn more about %{help_link_start}Kubernetes%{help_li
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about %{help_link_start}zones%{help_link_end}."
-msgstr ""
-
-msgid "ClusterIntegration|Learn more about environments"
-msgstr ""
-
-msgid "ClusterIntegration|Learn more about security configuration"
 msgstr ""
 
 msgid "ClusterIntegration|Machine type"
@@ -1584,9 +1590,6 @@ msgstr ""
 msgid "ClusterIntegration|Search zones"
 msgstr ""
 
-msgid "ClusterIntegration|Security"
-msgstr ""
-
 msgid "ClusterIntegration|See and edit the details for your Kubernetes cluster"
 msgstr ""
 
@@ -1626,7 +1629,7 @@ msgstr ""
 msgid "ClusterIntegration|The IP address is in the process of being assigned. Please check your Kubernetes cluster or Quotas on Google Kubernetes Engine if it takes a long time."
 msgstr ""
 
-msgid "ClusterIntegration|The default cluster configuration grants access to a wide set of functionalities needed to successfully build and deploy a containerised application."
+msgid "ClusterIntegration|The default cluster configuration grants access to many functionalities needed to successfully build and deploy a containerised application."
 msgstr ""
 
 msgid "ClusterIntegration|This account must have permissions to create a Kubernetes cluster in the %{link_to_container_project} specified below"
@@ -1892,6 +1895,9 @@ msgid "Contribution"
 msgstr ""
 
 msgid "Contribution guide"
+msgstr ""
+
+msgid "Contributions for <strong>%{calendar_date}</strong>"
 msgstr ""
 
 msgid "Contributors"
@@ -2304,7 +2310,19 @@ msgstr ""
 msgid "Disable group Runners"
 msgstr ""
 
+msgid "Discard"
+msgstr ""
+
+msgid "Discard all changes"
+msgstr ""
+
+msgid "Discard all unstaged changes?"
+msgstr ""
+
 msgid "Discard changes"
+msgstr ""
+
+msgid "Discard changes to %{path}?"
 msgstr ""
 
 msgid "Discard draft"
@@ -2640,6 +2658,9 @@ msgstr ""
 msgid "Expand sidebar"
 msgstr ""
 
+msgid "Expiration date"
+msgstr ""
+
 msgid "Explore"
 msgstr ""
 
@@ -2700,6 +2721,9 @@ msgstr ""
 msgid "Fields on this page are now uneditable, you can configure"
 msgstr ""
 
+msgid "File templates"
+msgstr ""
+
 msgid "Files"
 msgstr ""
 
@@ -2710,6 +2734,9 @@ msgid "Filter"
 msgstr ""
 
 msgid "Filter by commit message"
+msgstr ""
+
+msgid "Filter..."
 msgstr ""
 
 msgid "Find by path"
@@ -3006,6 +3033,9 @@ msgstr ""
 msgid "GroupsEmptyState|You can manage your group member’s permissions and access to each project in the group."
 msgstr ""
 
+msgid "GroupsTree|Are you sure you want to leave the \"%{fullName}\" group?"
+msgstr ""
+
 msgid "GroupsTree|Create a project in this group."
 msgstr ""
 
@@ -3018,19 +3048,19 @@ msgstr ""
 msgid "GroupsTree|Failed to leave the group. Please make sure you are not the only owner."
 msgstr ""
 
-msgid "GroupsTree|Filter by name..."
-msgstr ""
-
 msgid "GroupsTree|Leave this group"
 msgstr ""
 
 msgid "GroupsTree|Loading groups"
 msgstr ""
 
-msgid "GroupsTree|Sorry, no groups matched your search"
+msgid "GroupsTree|No groups matched your search"
 msgstr ""
 
-msgid "GroupsTree|Sorry, no groups or projects matched your search"
+msgid "GroupsTree|No groups or projects matched your search"
+msgstr ""
+
+msgid "GroupsTree|Search by name"
 msgstr ""
 
 msgid "Health Check"
@@ -3264,6 +3294,9 @@ msgid "Interval Pattern"
 msgstr ""
 
 msgid "Introducing Cycle Analytics"
+msgstr ""
+
+msgid "Invite"
 msgstr ""
 
 msgid "Issue Boards"
@@ -3603,6 +3636,9 @@ msgstr ""
 msgid "Markdown enabled"
 msgstr ""
 
+msgid "Max access level"
+msgstr ""
+
 msgid "Maximum git storage failures"
 msgstr ""
 
@@ -3768,9 +3804,6 @@ msgstr ""
 msgid "More"
 msgstr ""
 
-msgid "More actions"
-msgstr ""
-
 msgid "More information"
 msgstr ""
 
@@ -3911,6 +3944,9 @@ msgstr ""
 msgid "No container images stored for this project. Add one by following the instructions above."
 msgstr ""
 
+msgid "No contributions were found"
+msgstr ""
+
 msgid "No due date"
 msgstr ""
 
@@ -3981,6 +4017,9 @@ msgid "Not confidential"
 msgstr ""
 
 msgid "Not enough data"
+msgstr ""
+
+msgid "Not now"
 msgstr ""
 
 msgid "Note that the master branch is automatically protected. %{link_to_protected_branches}"
@@ -4447,6 +4486,9 @@ msgstr ""
 msgid "Profiles| You are going to change the username %{currentUsernameBold} to %{newUsernameBold}. Profile and projects will be redirected to the %{newUsername} namespace but this redirect will expire once the %{currentUsername} namespace is registered by another user or group. Please update your Git repository remotes as soon as possible."
 msgstr ""
 
+msgid "Profiles|%{author_name} made a private contribution"
+msgstr ""
+
 msgid "Profiles|Account scheduled for removal."
 msgstr ""
 
@@ -4456,13 +4498,28 @@ msgstr ""
 msgid "Profiles|Add status emoji"
 msgstr ""
 
+msgid "Profiles|Avatar cropper"
+msgstr ""
+
+msgid "Profiles|Avatar will be removed. Are you sure?"
+msgstr ""
+
 msgid "Profiles|Change username"
+msgstr ""
+
+msgid "Profiles|Choose file..."
+msgstr ""
+
+msgid "Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information."
 msgstr ""
 
 msgid "Profiles|Clear status"
 msgstr ""
 
 msgid "Profiles|Current path: %{path}"
+msgstr ""
+
+msgid "Profiles|Current status"
 msgstr ""
 
 msgid "Profiles|Delete Account"
@@ -4477,19 +4534,67 @@ msgstr ""
 msgid "Profiles|Deleting an account has the following effects:"
 msgstr ""
 
+msgid "Profiles|Do not show on profile"
+msgstr ""
+
+msgid "Profiles|Don't display activity-related personal information on your profiles"
+msgstr ""
+
+msgid "Profiles|Edit Profile"
+msgstr ""
+
 msgid "Profiles|Invalid password"
 msgstr ""
 
 msgid "Profiles|Invalid username"
 msgstr ""
 
+msgid "Profiles|Main settings"
+msgstr ""
+
+msgid "Profiles|No file chosen"
+msgstr ""
+
 msgid "Profiles|Path"
+msgstr ""
+
+msgid "Profiles|Position and size your new avatar"
+msgstr ""
+
+msgid "Profiles|Private contributions"
+msgstr ""
+
+msgid "Profiles|Public Avatar"
+msgstr ""
+
+msgid "Profiles|Remove avatar"
+msgstr ""
+
+msgid "Profiles|Set new profile picture"
+msgstr ""
+
+msgid "Profiles|Some options are unavailable for LDAP accounts"
+msgstr ""
+
+msgid "Profiles|Tell us about yourself in fewer than 250 characters."
+msgstr ""
+
+msgid "Profiles|The maximum file size allowed is 200KB."
 msgstr ""
 
 msgid "Profiles|This doesn't look like a public SSH key, are you sure you want to add it?"
 msgstr ""
 
+msgid "Profiles|This email will be displayed on your public profile."
+msgstr ""
+
 msgid "Profiles|This emoji and message will appear on your profile and throughout the interface."
+msgstr ""
+
+msgid "Profiles|This feature is experimental and translations are not complete yet."
+msgstr ""
+
+msgid "Profiles|This information will appear on your profile."
 msgstr ""
 
 msgid "Profiles|Type your %{confirmationValue} to confirm:"
@@ -4498,7 +4603,13 @@ msgstr ""
 msgid "Profiles|Typically starts with \"ssh-rsa …\""
 msgstr ""
 
+msgid "Profiles|Update profile settings"
+msgstr ""
+
 msgid "Profiles|Update username"
+msgstr ""
+
+msgid "Profiles|Upload new avatar"
 msgstr ""
 
 msgid "Profiles|Username change failed - %{message}"
@@ -4507,7 +4618,22 @@ msgstr ""
 msgid "Profiles|Username successfully changed"
 msgstr ""
 
+msgid "Profiles|Website"
+msgstr ""
+
 msgid "Profiles|What's your status?"
+msgstr ""
+
+msgid "Profiles|You can change your avatar here"
+msgstr ""
+
+msgid "Profiles|You can change your avatar here or remove the current avatar to revert to %{gravatar_link}"
+msgstr ""
+
+msgid "Profiles|You can upload your avatar here"
+msgstr ""
+
+msgid "Profiles|You can upload your avatar here or change it at %{gravatar_link}"
 msgstr ""
 
 msgid "Profiles|You don't have access to delete this user."
@@ -4517,6 +4643,15 @@ msgid "Profiles|You must transfer ownership or delete these groups before you ca
 msgstr ""
 
 msgid "Profiles|Your account is currently an owner in these groups:"
+msgstr ""
+
+msgid "Profiles|Your email address was automatically set based on your %{provider_label} account."
+msgstr ""
+
+msgid "Profiles|Your location was automatically set based on your %{provider_label} account."
+msgstr ""
+
+msgid "Profiles|Your name was automatically set based on your %{provider_label} account, so people you know can recognize you."
 msgstr ""
 
 msgid "Profiles|Your status"
@@ -4555,6 +4690,9 @@ msgstr ""
 msgid "Project Badges"
 msgstr ""
 
+msgid "Project URL"
+msgstr ""
+
 msgid "Project access must be granted explicitly to each user."
 msgstr ""
 
@@ -4580,6 +4718,9 @@ msgid "Project export started. A download link will be sent by email."
 msgstr ""
 
 msgid "Project name"
+msgstr ""
+
+msgid "Project slug"
 msgstr ""
 
 msgid "ProjectActivityRSS|Subscribe"
@@ -4926,6 +5067,21 @@ msgstr ""
 msgid "Resolve discussion"
 msgstr ""
 
+msgid "Response metrics (AWS ELB)"
+msgstr ""
+
+msgid "Response metrics (Custom)"
+msgstr ""
+
+msgid "Response metrics (HA Proxy)"
+msgstr ""
+
+msgid "Response metrics (NGINX Ingress)"
+msgstr ""
+
+msgid "Response metrics (NGINX)"
+msgstr ""
+
 msgid "Resume"
 msgstr ""
 
@@ -5099,6 +5255,9 @@ msgstr ""
 msgid "Select Archive Format"
 msgstr ""
 
+msgid "Select a group to invite"
+msgstr ""
+
 msgid "Select a namespace to fork the project"
 msgstr ""
 
@@ -5139,6 +5298,9 @@ msgid "Selecting a GitLab user will add a link to the GitLab user in the descrip
 msgstr ""
 
 msgid "Send email"
+msgstr ""
+
+msgid "Send usage data"
 msgstr ""
 
 msgid "Sep"
@@ -5196,6 +5358,9 @@ msgid "Share"
 msgstr ""
 
 msgid "Shared Runners"
+msgstr ""
+
+msgid "Shared projects"
 msgstr ""
 
 msgid "Sherlock Transactions"
@@ -5476,6 +5641,9 @@ msgstr ""
 msgid "Subgroups"
 msgstr ""
 
+msgid "Subgroups and projects"
+msgstr ""
+
 msgid "Submit as spam"
 msgstr ""
 
@@ -5498,6 +5666,12 @@ msgid "System Hooks"
 msgstr ""
 
 msgid "System Info"
+msgstr ""
+
+msgid "System metrics (Custom)"
+msgstr ""
+
+msgid "System metrics (Kubernetes)"
 msgstr ""
 
 msgid "Tag (%{tag_count})"
@@ -5721,6 +5895,9 @@ msgstr ""
 msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
 msgstr ""
 
+msgid "There are no archived projects yet"
+msgstr ""
+
 msgid "There are no issues to show"
 msgstr ""
 
@@ -5728,6 +5905,15 @@ msgid "There are no labels yet"
 msgstr ""
 
 msgid "There are no merge requests to show"
+msgstr ""
+
+msgid "There are no projects shared with this group yet"
+msgstr ""
+
+msgid "There are no staged changes"
+msgstr ""
+
+msgid "There are no unstaged changes"
 msgstr ""
 
 msgid "There are problems accessing Git storage: "
@@ -5767,6 +5953,9 @@ msgid "This application will be able to:"
 msgstr ""
 
 msgid "This branch has changed since you started editing. Would you like to create a new branch?"
+msgstr ""
+
+msgid "This container registry has been scheduled for deletion."
 msgstr ""
 
 msgid "This diff is collapsed."
@@ -6088,6 +6277,9 @@ msgstr ""
 msgid "To help improve GitLab and its user experience, GitLab will periodically collect usage information."
 msgstr ""
 
+msgid "To help improve GitLab, we would like to periodically collect usage information. This can be changed at any time in %{settings_link_start}Settings%{link_end}. %{info_link_start}More Information%{link_end}"
+msgstr ""
+
 msgid "To import GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
 msgstr ""
 
@@ -6172,6 +6364,9 @@ msgstr ""
 msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
+msgid "Undo"
+msgstr ""
+
 msgid "Unlock"
 msgstr ""
 
@@ -6182,6 +6377,9 @@ msgid "Unlocked"
 msgstr ""
 
 msgid "Unresolve discussion"
+msgstr ""
+
+msgid "Unstage"
 msgstr ""
 
 msgid "Unstage all changes"
@@ -6238,9 +6436,6 @@ msgstr ""
 msgid "Upload file"
 msgstr ""
 
-msgid "Upload new avatar"
-msgstr ""
-
 msgid "UploadLink|click to upload"
 msgstr ""
 
@@ -6284,9 +6479,6 @@ msgid "User map"
 msgstr ""
 
 msgid "Users"
-msgstr ""
-
-msgid "User|Current status"
 msgstr ""
 
 msgid "Variables"
@@ -6599,6 +6791,12 @@ msgid "You must have maintainer access to force delete a lock"
 msgstr ""
 
 msgid "You need permission."
+msgstr ""
+
+msgid "You will loose all changes you've made to this file. This action cannot be undone."
+msgstr ""
+
+msgid "You will loose all the unstaged changes you've made in this project. This action cannot be undone."
 msgstr ""
 
 msgid "You will not get any notifications via email"

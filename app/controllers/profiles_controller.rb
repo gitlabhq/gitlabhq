@@ -101,6 +101,7 @@ class ProfilesController < Profiles::ApplicationController
       :organization,
       :preferred_language,
       :private_profile,
+      :include_private_contributions,
       status: [:emoji, :message]
     )
   end

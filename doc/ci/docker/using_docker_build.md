@@ -151,16 +151,16 @@ In order to do that, follow the steps:
       DOCKER_DRIVER: overlay2
 
     services:
-    - docker:dind
+      - docker:dind
 
     before_script:
-    - docker info
+      - docker info
 
     build:
       stage: build
       script:
-      - docker build -t my-docker-image .
-      - docker run my-docker-image /script/to/run/tests
+        - docker build -t my-docker-image .
+        - docker run my-docker-image /script/to/run/tests
     ```
 
 Docker-in-Docker works well, and is the recommended configuration, but it is
@@ -246,13 +246,13 @@ In order to do that, follow the steps:
     image: docker:stable
 
     before_script:
-    - docker info
+      - docker info
 
     build:
       stage: build
       script:
-      - docker build -t my-docker-image .
-      - docker run my-docker-image /script/to/run/tests
+        - docker build -t my-docker-image .
+        - docker run my-docker-image /script/to/run/tests
     ```
 
 While the above method avoids using Docker in privileged mode, you should be
@@ -381,17 +381,18 @@ environment = ["DOCKER_DRIVER=overlay2"]
 If you're running multiple Runners you will have to modify all configuration files.
 
 > **Notes:**
-- More information about the Runner configuration is available in the [Runner documentation](https://docs.gitlab.com/runner/configuration/).
-- For more information about using OverlayFS with Docker, you can read
-  [Use the OverlayFS storage driver](https://docs.docker.com/engine/userguide/storagedriver/overlayfs-driver/).
+>
+> - More information about the Runner configuration is available in the [Runner documentation](https://docs.gitlab.com/runner/configuration/).
+> - For more information about using OverlayFS with Docker, you can read
+>   [Use the OverlayFS storage driver](https://docs.docker.com/engine/userguide/storagedriver/overlayfs-driver/).
 
 ## Using the GitLab Container Registry
 
 > **Notes:**
-- This feature requires GitLab 8.8 and GitLab Runner 1.2.
-- Starting from GitLab 8.12, if you have [2FA] enabled in your account, you need
-  to pass a [personal access token][pat] instead of your password in order to
-  login to GitLab's Container Registry.
+> - This feature requires GitLab 8.8 and GitLab Runner 1.2.
+> - Starting from GitLab 8.12, if you have [2FA] enabled in your account, you need
+>   to pass a [personal access token][pat] instead of your password in order to
+>   login to GitLab's Container Registry.
 
 Once you've built a Docker image, you can push it up to the built-in
 [GitLab Container Registry](../../user/project/container_registry.md). For example,
@@ -402,7 +403,7 @@ could look like:
  build:
    image: docker:stable
    services:
-   - docker:dind
+     - docker:dind
    variables:
      DOCKER_HOST: tcp://docker:2375
      DOCKER_DRIVER: overlay2
@@ -455,13 +456,13 @@ an application-specific deploy script:
 ```yaml
 image: docker:stable
 services:
-- docker:dind
+  - docker:dind
 
 stages:
-- build
-- test
-- release
-- deploy
+  - build
+  - test
+  - release
+  - deploy
 
 variables:
   DOCKER_HOST: tcp://docker:2375

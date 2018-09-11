@@ -11,7 +11,7 @@ describe 'User creates a project', :js do
   it 'creates a new project' do
     visit(new_project_path)
 
-    fill_in(:project_path, with: 'Empty')
+    fill_in(:project_name, with: 'Empty')
 
     page.within('#content-body') do
       click_button('Create project')
@@ -37,6 +37,7 @@ describe 'User creates a project', :js do
     it 'creates a new project' do
       visit(new_project_path)
 
+      fill_in :project_name, with: 'A Subgroup Project'
       fill_in :project_path, with: 'a-subgroup-project'
 
       page.find('.js-select-namespace').click
@@ -46,7 +47,7 @@ describe 'User creates a project', :js do
         click_button('Create project')
       end
 
-      expect(page).to have_content("Project 'a-subgroup-project' was successfully created")
+      expect(page).to have_content("Project 'A Subgroup Project' was successfully created")
 
       project = Project.last
 

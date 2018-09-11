@@ -16,8 +16,6 @@ module MergeRequests
     def execute
       return error('Invalid issue iid') unless @issue_iid.present? && issue.present?
 
-      params[:label_ids] = issue.label_ids if issue.label_ids.any?
-
       result = CreateBranchService.new(project, current_user).execute(branch_name, ref)
       return result if result[:status] == :error
 
@@ -58,8 +56,7 @@ module MergeRequests
         source_project_id: project.id,
         source_branch: branch_name,
         target_project_id: project.id,
-        target_branch: ref,
-        milestone_id: issue.milestone_id
+        target_branch: ref
       }
     end
 

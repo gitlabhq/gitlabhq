@@ -12,6 +12,7 @@ class Notify < BaseMailer
   include Emails::Profile
   include Emails::Pipelines
   include Emails::Members
+  include Emails::AutoDevops
 
   helper MergeRequestsHelper
   helper DiffHelper

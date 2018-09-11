@@ -5,6 +5,7 @@ class Label < ActiveRecord::Base
   include Referable
   include Subscribable
   include Gitlab::SQL::Pattern
+  include OptionallySearch
 
   # Represents a "No Label" state used for filtering Issues and Merge
   # Requests that have no label assigned.

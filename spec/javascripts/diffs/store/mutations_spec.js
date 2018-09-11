@@ -138,15 +138,151 @@ describe('DiffsStoreMutations', () => {
 
       const fileHash = 123;
       const state = { diffFiles: [{}, { fileHash, existingField: 0 }] };
-      const file = { fileHash };
       const data = { diff_files: [{ file_hash: fileHash, extra_field: 1, existingField: 1 }] };
 
-      mutations[types.ADD_COLLAPSED_DIFFS](state, { file, data });
+      mutations[types.ADD_COLLAPSED_DIFFS](state, { file: state.diffFiles[1], data });
       expect(spy).toHaveBeenCalledWith(data, { deep: true });
 
       expect(state.diffFiles[1].fileHash).toEqual(fileHash);
       expect(state.diffFiles[1].existingField).toEqual(1);
       expect(state.diffFiles[1].extraField).toEqual(1);
+    });
+  });
+
+  describe('SET_LINE_DISCUSSIONS_FOR_FILE', () => {
+    it('should add discussions to the given line', () => {
+      const diffPosition = {
+        baseSha: 'ed13df29948c41ba367caa757ab3ec4892509910',
+        headSha: 'b921914f9a834ac47e6fd9420f78db0f83559130',
+        newLine: null,
+        newPath: '500-lines-4.txt',
+        oldLine: 5,
+        oldPath: '500-lines-4.txt',
+        startSha: 'ed13df29948c41ba367caa757ab3ec4892509910',
+      };
+
+      const state = {
+        diffFiles: [
+          {
+            fileHash: 'ABC',
+            parallelDiffLines: [
+              {
+                left: {
+                  lineCode: 'ABC_1',
+                  discussions: [],
+                },
+                right: {
+                  lineCode: 'ABC_1',
+                  discussions: [],
+                },
+              },
+            ],
+            highlightedDiffLines: [
+              {
+                lineCode: 'ABC_1',
+                discussions: [],
+              },
+            ],
+          },
+        ],
+      };
+      const discussions = [
+        {
+          id: 1,
+          line_code: 'ABC_1',
+          diff_discussion: true,
+          resolvable: true,
+          original_position: {
+            formatter: diffPosition,
+          },
+          position: {
+            formatter: diffPosition,
+          },
+        },
+        {
+          id: 2,
+          line_code: 'ABC_1',
+          diff_discussion: true,
+          resolvable: true,
+          original_position: {
+            formatter: diffPosition,
+          },
+          position: {
+            formatter: diffPosition,
+          },
+        },
+      ];
+
+      const diffPositionByLineCode = {
+        ABC_1: diffPosition,
+      };
+
+      mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
+        fileHash: 'ABC',
+        discussions,
+        diffPositionByLineCode,
+      });
+
+      expect(state.diffFiles[0].parallelDiffLines[0].left.discussions.length).toEqual(2);
+      expect(state.diffFiles[0].parallelDiffLines[0].left.discussions[1].id).toEqual(2);
+
+      expect(state.diffFiles[0].highlightedDiffLines[0].discussions.length).toEqual(2);
+      expect(state.diffFiles[0].highlightedDiffLines[0].discussions[1].id).toEqual(2);
+    });
+  });
+
+  describe('REMOVE_LINE_DISCUSSIONS', () => {
+    it('should remove the existing discussions on the given line', () => {
+      const state = {
+        diffFiles: [
+          {
+            fileHash: 'ABC',
+            parallelDiffLines: [
+              {
+                left: {
+                  lineCode: 'ABC_1',
+                  discussions: [
+                    {
+                      id: 1,
+                      line_code: 'ABC_1',
+                    },
+                    {
+                      id: 2,
+                      line_code: 'ABC_1',
+                    },
+                  ],
+                },
+                right: {
+                  lineCode: 'ABC_1',
+                  discussions: [],
+                },
+              },
+            ],
+            highlightedDiffLines: [
+              {
+                lineCode: 'ABC_1',
+                discussions: [
+                  {
+                    id: 1,
+                    line_code: 'ABC_1',
+                  },
+                  {
+                    id: 2,
+                    line_code: 'ABC_1',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      };
+
+      mutations[types.REMOVE_LINE_DISCUSSIONS_FOR_FILE](state, {
+        fileHash: 'ABC',
+        lineCode: 'ABC_1',
+      });
+      expect(state.diffFiles[0].parallelDiffLines[0].left.discussions.length).toEqual(0);
+      expect(state.diffFiles[0].highlightedDiffLines[0].discussions.length).toEqual(0);
     });
   });
 });

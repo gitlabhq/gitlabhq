@@ -137,8 +137,10 @@ export default {
       return this.unresolvedDiscussions.length > 1;
     },
     showJumpToNextDiscussion() {
-      return this.hasMultipleUnresolvedDiscussions &&
-        !this.isLastUnresolvedDiscussion(this.discussion.id, this.discussionsByDiffOrder);
+      return (
+        this.hasMultipleUnresolvedDiscussions &&
+        !this.isLastUnresolvedDiscussion(this.discussion.id, this.discussionsByDiffOrder)
+      );
     },
     shouldRenderDiffs() {
       const { diffDiscussion, diffFile } = this.transformedDiscussion;
@@ -256,10 +258,15 @@ Please check your network connection and try again.`;
         });
     },
     jumpToNextDiscussion() {
-      const nextId =
-        this.nextUnresolvedDiscussionId(this.discussion.id, this.discussionsByDiffOrder);
+      const nextId = this.nextUnresolvedDiscussionId(
+        this.discussion.id,
+        this.discussionsByDiffOrder,
+      );
 
       this.jumpToDiscussion(nextId);
+    },
+    deleteNoteHandler(note) {
+      this.$emit('noteDeleted', this.discussion, note);
     },
   },
 };
@@ -270,6 +277,7 @@ Please check your network connection and try again.`;
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
         <user-avatar-link
+          v-if="author"
           :link-href="author.path"
           :img-src="author.avatar_url"
           :img-alt="author.name"
@@ -344,6 +352,7 @@ Please check your network connection and try again.`;
                     :is="componentName(note)"
                     :note="componentData(note)"
                     :key="note.id"
+                    @handleDeleteNote="deleteNoteHandler"
                   />
                 </ul>
                 <div

@@ -54,13 +54,12 @@ export default {
 
   [types.EXPAND_DISCUSSION](state, { discussionId }) {
     const discussion = utils.findNoteObjectById(state.discussions, discussionId);
-
-    discussion.expanded = true;
+    Object.assign(discussion, { expanded: true });
   },
 
   [types.COLLAPSE_DISCUSSION](state, { discussionId }) {
     const discussion = utils.findNoteObjectById(state.discussions, discussionId);
-    discussion.expanded = false;
+    Object.assign(discussion, { expanded: false });
   },
 
   [types.REMOVE_PLACEHOLDER_NOTES](state) {
@@ -95,10 +94,15 @@ export default {
   [types.SET_USER_DATA](state, data) {
     Object.assign(state, { userData: data });
   },
+
   [types.SET_INITIAL_DISCUSSIONS](state, discussionsData) {
     const discussions = [];
 
     discussionsData.forEach(discussion => {
+      if (discussion.diff_file) {
+        Object.assign(discussion, { fileHash: discussion.diff_file.file_hash });
+      }
+
       // To support legacy notes, should be very rare case.
       if (discussion.individual_note && discussion.notes.length > 1) {
         discussion.notes.forEach(n => {
@@ -168,8 +172,7 @@ export default {
 
   [types.TOGGLE_DISCUSSION](state, { discussionId }) {
     const discussion = utils.findNoteObjectById(state.discussions, discussionId);
-
-    discussion.expanded = !discussion.expanded;
+    Object.assign(discussion, { expanded: !discussion.expanded });
   },
 
   [types.UPDATE_NOTE](state, note) {
@@ -185,16 +188,12 @@ export default {
 
   [types.UPDATE_DISCUSSION](state, noteData) {
     const note = noteData;
-    let index = 0;
-
-    state.discussions.forEach((n, i) => {
-      if (n.id === note.id) {
-        index = i;
-      }
-    });
-
+    const selectedDiscussion = state.discussions.find(disc => disc.id === note.id);
     note.expanded = true; // override expand flag to prevent collapse
-    state.discussions.splice(index, 1, note);
+    if (note.diff_file) {
+      Object.assign(note, { fileHash: note.diff_file.file_hash });
+    }
+    Object.assign(selectedDiscussion, { ...note });
   },
 
   [types.CLOSE_ISSUE](state) {

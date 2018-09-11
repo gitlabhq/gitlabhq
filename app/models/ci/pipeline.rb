@@ -161,6 +161,12 @@ module Ci
           PipelineNotificationWorker.perform_async(pipeline.id)
         end
       end
+
+      after_transition any => [:failed] do |pipeline|
+        next unless pipeline.auto_devops_source?
+
+        pipeline.run_after_commit { AutoDevops::DisableWorker.perform_async(pipeline.id) }
+      end
     end
 
     scope :internal, -> { where(source: internal_sources) }

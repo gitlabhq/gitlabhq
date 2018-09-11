@@ -159,7 +159,7 @@ module Projects
     def remove_legacy_registry_tags
       return true unless Gitlab.config.registry.enabled
 
-      ContainerRepository.build_root_repository(project).tap do |repository|
+      ::ContainerRepository.build_root_repository(project).tap do |repository|
         break repository.has_tags? ? repository.delete_tags! : true
       end
     end
