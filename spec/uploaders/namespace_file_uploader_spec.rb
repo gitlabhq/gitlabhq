@@ -40,6 +40,12 @@ describe NamespaceFileUploader do
     end
   end
 
+  describe '#workhorse_local_upload_path' do
+    it 'returns the correct path in uploads directory' do
+      expect(described_class.workhorse_local_upload_path).to end_with('/uploads/tmp/uploads')
+    end
+  end
+
   describe "#migrate!" do
     before do
       uploader.store!(fixture_file_upload(File.join('spec/fixtures/doc_sample.txt')))

@@ -21,6 +21,10 @@ class NamespaceFileUploader < FileUploader
     File.join(model.id.to_s)
   end
 
+  def self.workhorse_local_upload_path
+    File.join(options.storage_path, 'uploads', TMP_UPLOAD_PATH)
+  end
+
   # Re-Override
   def store_dir
     store_dirs[object_store]
