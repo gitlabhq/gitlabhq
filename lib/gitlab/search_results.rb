@@ -23,10 +23,6 @@ module Gitlab
         filename
       end
 
-      def no_highlighting?
-        false
-      end
-
       # Since search results often contain many items,
       # not triggering lookup can avoid n+1 queries.
       def language_from_gitattributes

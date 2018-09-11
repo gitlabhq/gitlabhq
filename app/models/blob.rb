@@ -7,8 +7,6 @@ class Blob < SimpleDelegator
   CACHE_TIME = 60 # Cache raw blobs referred to by a (mutable) ref for 1 minute
   CACHE_TIME_IMMUTABLE = 3600 # Cache blobs referred to by an immutable reference for 1 hour
 
-  MAXIMUM_TEXT_HIGHLIGHT_SIZE = 1.megabyte
-
   # Finding a viewer for a blob happens based only on extension and whether the
   # blob is binary or text, which means 1 blob should only be matched by 1 viewer,
   # and the order of these viewers doesn't really matter.
@@ -121,10 +119,6 @@ class Blob < SimpleDelegator
     Gitlab::GitalyClient.allow_n_plus_1_calls do
       super(project.repository) if project
     end
-  end
-
-  def no_highlighting?
-    raw_size && raw_size > MAXIMUM_TEXT_HIGHLIGHT_SIZE
   end
 
   def empty?
