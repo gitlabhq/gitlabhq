@@ -23,7 +23,7 @@
     .bar {
       position: absolute;
       height: 4px;
-      background-color: $divergence-graph-bar-bg;
+      background-color: $gl-gray-200;
     }
 
     .bar-behind {
@@ -61,7 +61,7 @@
     height: 18px;
     margin: 5px 0 0;
     float: left;
-    background-color: $divergence-graph-separator-bg;
+    background-color: $gl-gray-200;
   }
 }
 
