@@ -219,11 +219,12 @@
               = link_to repository_admin_application_settings_path, title: _('Repository') do
                 %span
                   = _('Repository')
-            %li.divider.fly-out-top-item
-            = nav_link(path: 'application_settings#templates') do
-              = link_to templates_admin_application_settings_path, title: _('Templates') do
-                %span
-                  = _('Templates')
+            - if view_exists?('admin/application_settings/templates')
+              %li.divider.fly-out-top-item
+              = nav_link(path: 'application_settings#templates') do
+                = link_to templates_admin_application_settings_path, title: _('Templates') do
+                  %span
+                    = _('Templates')
             %li.divider.fly-out-top-item
             = nav_link(path: 'application_settings#ci_cd') do
               = link_to ci_cd_admin_application_settings_path, title: _('CI/CD') do
@@ -244,11 +245,12 @@
               = link_to network_admin_application_settings_path, title: _('Network') do
                 %span
                   = _('Network')
-            %li.divider.fly-out-top-item
-            = nav_link(path: 'application_settings#geo') do
-              = link_to geo_admin_application_settings_path, title: _('Geo') do
-                %span
-                  = _('Geo')
+            - if view_exists?('admin/application_settings/geo')
+              %li.divider.fly-out-top-item
+              = nav_link(path: 'application_settings#geo') do
+                = link_to geo_admin_application_settings_path, title: _('Geo') do
+                  %span
+                    = _('Geo')
             %li.divider.fly-out-top-item
             = nav_link(path: 'application_settings#preferences') do
               = link_to preferences_admin_application_settings_path, title: _('Preferences') do

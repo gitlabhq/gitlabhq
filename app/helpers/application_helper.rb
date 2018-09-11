@@ -6,7 +6,15 @@ require 'uri'
 module ApplicationHelper
   # See https://docs.gitlab.com/ee/development/ee_features.html#code-in-app-views
   def render_if_exists(partial, locals = {})
-    render(partial, locals) if lookup_context.exists?(partial, [], true)
+    render(partial, locals) if partial_exists?(partial)
+  end
+
+  def partial_exists?(partial)
+    lookup_context.exists?(partial, [], true)
+  end
+
+  def view_exists?(partial)
+    lookup_context.exists?(partial, [], false)
   end
 
   # Check if a particular controller is the current one
