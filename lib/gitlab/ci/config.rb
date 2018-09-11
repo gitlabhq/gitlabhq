@@ -7,16 +7,14 @@ module Gitlab
       ConfigError = Class.new(StandardError)
 
       def initialize(config, opts = {})
-        begin
-          @config = Config::Extendable
-            .new(build_config(config, opts))
-            .to_hash
+        @config = Config::Extendable
+          .new(build_config(config, opts))
+          .to_hash
 
-          @global = Entry::Global.new(@config)
-          @global.compose!
-        rescue Loader::FormatError, Extendable::ExtensionError => e
-          raise Config::ConfigError, e.message
-        end
+        @global = Entry::Global.new(@config)
+        @global.compose!
+      rescue Loader::FormatError, Extendable::ExtensionError => e
+        raise Config::ConfigError, e.message
       rescue ::Gitlab::Ci::External::Processor::FileError => e
         raise ::Gitlab::Ci::YamlProcessor::ValidationError, e.message
       end
