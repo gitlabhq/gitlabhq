@@ -76,9 +76,8 @@ describe Gitlab::Patch::Prependable do
                 ce.const_get(:ClassMethods)])
     end
 
-    it 'prepends only once' do
-      ce.prepend(ee)
-      ce.prepend(ee)
+    it 'prepends only once even if called twice' do
+      2.times { ce.prepend(ee) }
 
       subject
 
