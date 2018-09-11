@@ -264,6 +264,17 @@ module Ci
       }
     end
 
+    def running_details
+      {
+        id: self.id,
+        running: Ci::Build.running
+          .where(runner: current_runner)
+          .group(:project_id)
+          .pluck(:project_id, 'count(*)')
+          .to_h
+      }
+    end
+
     def persist_details!
       key = "runner:details:#{self.token}"
 

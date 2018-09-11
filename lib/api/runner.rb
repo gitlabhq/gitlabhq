@@ -88,14 +88,7 @@ module API
         authenticate_runner!
         status 200
 
-        running = Ci::Build.running
-          .where(runner: current_runner)
-          .group(:project_id)
-          .pluck(:project_id, 'count(*)').map do |info|
-            { project_id: info.first, count: info.second }
-          end
-
-        present running
+        present current_runner.running_details
       end
     end
 
