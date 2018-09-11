@@ -367,6 +367,7 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
         requires :email, type: String, desc: 'The email of the user'
+        optional :skip_confirmation, type: Boolean, desc: 'Skip confirmation of email and assume it is verified'
       end
       post ":id/emails" do
         authenticated_as_admin!
