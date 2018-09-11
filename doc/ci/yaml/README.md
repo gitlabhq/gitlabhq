@@ -88,6 +88,8 @@ more flexible and readable.
 
 ```yaml
 .tests:
+  script: rake test
+  stage: test
   only:
     refs:
       - branches
@@ -95,7 +97,6 @@ more flexible and readable.
 rspec:
   extends: .tests
   script: rake rspec
-  stage: test
   only:
     variables:
       - $RSPEC
