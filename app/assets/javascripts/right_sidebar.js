@@ -1,6 +1,7 @@
 /* eslint-disable func-names, no-var, no-unused-vars, consistent-return, one-var, one-var-declaration-per-line, quotes, prefer-template, no-else-return, no-param-reassign, max-len */
 
 import $ from 'jquery';
+import '~/commons/bootstrap';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
 import flash from './flash';
