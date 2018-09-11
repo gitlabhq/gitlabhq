@@ -153,7 +153,7 @@
 
 .x-axis path,
 .y-axis path {
-  stroke: $stat-graph-axis-fill;
+  stroke: $gl-gray-350;
 }
 
 .label-x-axis-line,
@@ -163,7 +163,7 @@
 
 .y-axis {
   line {
-    stroke: $stat-graph-axis-fill;
+    stroke: $gl-gray-350;
     stroke-width: 1;
   }
 }

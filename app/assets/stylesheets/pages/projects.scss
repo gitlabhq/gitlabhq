@@ -371,7 +371,7 @@
 .save-project-loader {
   margin-top: 50px;
   margin-bottom: 50px;
-  color: $save-project-loader-color;
+  color: $gl-gray-700;
 }
 
 .transfer-project .select2-container {
@@ -447,7 +447,7 @@
 
   > li + li::before {
     padding: 0 3px;
-    color: $project-breadcrumb-color;
+    color: $gl-gray-400;
   }
 
   a {
