@@ -1,14 +1,12 @@
 <script>
 import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import AlertWidgetForm from './alert_widget_form.vue';
 import AlertsService from '../services/alerts_service';
 
 export default {
   components: {
     Icon,
-    LoadingIcon,
     AlertWidgetForm,
   },
   props: {
@@ -185,7 +183,7 @@ export default {
       v-else
       class="alert-current-setting"
     >
-      <loading-icon
+      <gl-loading-icon
         v-show="isLoading"
         :inline="true"
       />

@@ -2,15 +2,11 @@
   /* eslint-disable vue/require-default-prop */
 
   import WeightSelect from 'ee/weight_select';
-  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 
   const ANY_WEIGHT = 'Any Weight';
   const NO_WEIGHT = 'No Weight';
 
   export default {
-    components: {
-      loadingIcon,
-    },
     props: {
       board: {
         type: Object,
@@ -134,7 +130,7 @@
             </ul>
           </div>
           <div class="dropdown-loading">
-            <loading-icon />
+            <gl-loading-icon />
           </div>
         </div>
       </div>

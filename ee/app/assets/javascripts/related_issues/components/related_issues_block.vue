@@ -1,6 +1,5 @@
 <script>
 import Sortable from 'sortablejs';
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
 import sortableConfig from 'ee/sortable/sortable_config';
@@ -15,7 +14,6 @@ export default {
   },
   components: {
     Icon,
-    loadingIcon,
     addIssuableForm,
     issueItem,
   },
@@ -218,7 +216,7 @@ issue-count-badge-add-button btn btn-sm btn-default"
         <div
           v-if="isFetching"
           class="related-issues-loading-icon">
-          <loadingIcon
+          <gl-loading-icon
             ref="loadingIcon"
             label="Fetching related issues"
             class="prepend-top-5"

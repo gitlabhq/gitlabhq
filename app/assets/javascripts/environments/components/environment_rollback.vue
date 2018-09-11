@@ -9,12 +9,10 @@ import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import eventHub from '../event_hub';
-import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
 
 export default {
   components: {
     Icon,
-    LoadingIcon,
   },
 
   directives: {
@@ -70,6 +68,6 @@ export default {
       v-else
       name="redo"/>
 
-    <loading-icon v-if="isLoading" />
+    <gl-loading-icon v-if="isLoading" />
   </button>
 </template>

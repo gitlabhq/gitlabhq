@@ -1,11 +1,9 @@
 <script>
 import UsersSelect from '~/users_select';
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 
 export default {
   components: {
-    loadingIcon,
     UserAvatarImage,
   },
   props: {
@@ -191,7 +189,7 @@ dropdown-menu-user dropdown-menu-selectable dropdown-menu-author"
           </div>
           <div class="dropdown-content"></div>
           <div class="dropdown-loading">
-            <loading-icon />
+            <gl-loading-icon />
           </div>
         </div>
       </div>

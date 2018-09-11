@@ -1,15 +1,9 @@
 <script>
   import { __, s__ } from '~/locale';
-  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-
   import eventHub from '../event_hub';
-
   import { NODE_ACTIONS } from '../constants';
 
   export default {
-    components: {
-      loadingIcon,
-    },
     props: {
       node: {
         type: Object,

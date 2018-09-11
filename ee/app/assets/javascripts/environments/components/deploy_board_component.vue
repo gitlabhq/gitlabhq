@@ -10,7 +10,6 @@
    */
   import _ from 'underscore';
   import { n__ } from '~/locale';
-  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
   import tooltip from '~/vue_shared/directives/tooltip';
   import deployBoardSvg from 'ee_empty_states/icons/_deploy_board.svg';
   import instanceComponent from './deploy_board_instance_component.vue';
@@ -18,7 +17,6 @@
   export default {
     components: {
       instanceComponent,
-      loadingIcon,
     },
     directives: {
       tooltip,
@@ -80,7 +78,7 @@
 <template>
   <div class="js-deploy-board deploy-board">
 
-    <loading-icon v-if="isLoading" />
+    <gl-loading-icon v-if="isLoading" />
 
     <div v-if="canRenderDeployBoard">
 

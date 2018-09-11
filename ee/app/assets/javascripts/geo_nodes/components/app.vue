@@ -1,7 +1,6 @@
 <script>
 import { s__ } from '~/locale';
 import Flash from '~/flash';
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import SmartInterval from '~/smart_interval';
 
@@ -13,7 +12,6 @@ import GeoNodeItem from './geo_node_item.vue';
 
 export default {
   components: {
-    loadingIcon,
     DeprecatedModal,
     GeoNodeItem,
   },
@@ -204,11 +202,11 @@ export default {
 
 <template>
   <div class="geo-nodes-container">
-    <loading-icon
+    <gl-loading-icon
       v-if="isLoading"
       :label="s__('GeoNodes|Loading nodes')"
+      :size="2"
       class="loading-animation prepend-top-20 append-bottom-20"
-      size="2"
     />
     <geo-node-item
       v-for="(node, index) in nodes"

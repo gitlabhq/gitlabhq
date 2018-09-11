@@ -3,7 +3,6 @@ import { __ } from '~/locale';
 import tooltip from '~/vue_shared/directives/tooltip';
 
 import Icon from '~/vue_shared/components/icon.vue';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 
 const MARK_TEXT = __('Mark todo as done');
 const TODO_TEXT = __('Add todo');
@@ -14,7 +13,6 @@ export default {
   },
   components: {
     Icon,
-    LoadingIcon,
   },
   props: {
     issuableId: {
@@ -90,7 +88,7 @@ export default {
     >
       {{ buttonLabel }}
     </span>
-    <loading-icon
+    <gl-loading-icon
       v-show="isActionActive"
       :inline="true"
     />

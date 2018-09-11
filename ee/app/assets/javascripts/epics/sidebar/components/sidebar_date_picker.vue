@@ -6,7 +6,6 @@ import tooltip from '~/vue_shared/directives/tooltip';
 import popover from '~/vue_shared/directives/popover';
 import Icon from '~/vue_shared/components/icon.vue';
 import DatePicker from '~/vue_shared/components/pikaday.vue';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import CollapsedCalendarIcon from '~/vue_shared/components/sidebar/collapsed_calendar_icon.vue';
 
 const label = __('Date picker');
@@ -20,7 +19,6 @@ export default {
   components: {
     Icon,
     DatePicker,
-    LoadingIcon,
     CollapsedCalendarIcon,
   },
   props: {
@@ -176,7 +174,7 @@ export default {
     />
     <div class="title">
       {{ label }}
-      <loading-icon
+      <gl-loading-icon
         v-if="isLoading"
         :inline="true"
       />

@@ -1,7 +1,6 @@
 <script>
 import { __ } from '~/locale';
 import Flash from '~/flash';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 
 import COLUMNS from '../constants';
 
@@ -11,7 +10,6 @@ import TableBody from './table_body.vue';
 export default {
   columns: COLUMNS,
   components: {
-    LoadingIcon,
     TableHeader,
     TableBody,
   },
@@ -66,11 +64,11 @@ export default {
 <template>
   <div class="group-member-contributions-container">
     <h3>{{ __('Contributions per group member') }}</h3>
-    <loading-icon
+    <gl-loading-icon
       v-if="isLoading"
       :label="__('Loading contribution stats for group members')"
+      :size="2"
       class="loading-animation prepend-top-20 append-bottom-20"
-      size="2"
     />
     <table
       v-else

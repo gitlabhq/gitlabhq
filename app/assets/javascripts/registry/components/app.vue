@@ -1,7 +1,6 @@
 <script>
   import { mapGetters, mapActions } from 'vuex';
   import Flash from '../../flash';
-  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
   import store from '../stores';
   import collapsibleContainer from './collapsible_container.vue';
   import { errorMessages, errorMessagesTypes } from '../constants';
@@ -10,7 +9,6 @@
     name: 'RegistryListApp',
     components: {
       collapsibleContainer,
-      loadingIcon,
     },
     props: {
       endpoint: {
@@ -42,9 +40,9 @@
 </script>
 <template>
   <div>
-    <loading-icon
+    <gl-loading-icon
       v-if="isLoading"
-      size="3"
+      :size="3"
     />
 
     <collapsible-container

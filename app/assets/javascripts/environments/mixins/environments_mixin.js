@@ -13,7 +13,6 @@ import eventHub from '../event_hub';
 
 import EnvironmentsStore from '../stores/environments_store';
 import EnvironmentsService from '../services/environments_service';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import tablePagination from '../../vue_shared/components/table_pagination.vue';
 import environmentTable from '../components/environments_table.vue';
 import tabs from '../../vue_shared/components/navigation_tabs.vue';
@@ -24,7 +23,6 @@ export default {
   components: {
     environmentTable,
     container,
-    loadingIcon,
     tabs,
     tablePagination,
   },

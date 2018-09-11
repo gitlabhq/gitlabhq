@@ -1,7 +1,6 @@
 <script>
 import Visibility from 'visibilityjs';
 import ciIcon from '~/vue_shared/components/ci_icon.vue';
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import Poll from '~/lib/utils/poll';
 import Flash from '~/flash';
 import { s__, sprintf } from '~/locale';
@@ -14,7 +13,6 @@ export default {
   },
   components: {
     ciIcon,
-    loadingIcon,
   },
   props: {
     endpoint: {
@@ -100,10 +98,10 @@ export default {
 </script>
 <template>
   <div class="ci-status-link">
-    <loading-icon
+    <gl-loading-icon
       v-if="isLoading"
+      :size="3"
       label="Loading pipeline status"
-      size="3"
     />
     <a
       v-else

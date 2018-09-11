@@ -1,7 +1,6 @@
 <script>
 import { s__ } from '~/locale';
 import Flash from '~/flash';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import eventHub from '../eventhub';
 import DeployKeysService from '../service';
@@ -11,7 +10,6 @@ import KeysPanel from './keys_panel.vue';
 export default {
   components: {
     KeysPanel,
-    LoadingIcon,
     NavigationTabs,
   },
   props: {
@@ -114,10 +112,10 @@ export default {
 
 <template>
   <div class="append-bottom-default deploy-keys">
-    <loading-icon
+    <gl-loading-icon
       v-if="isLoading && !hasKeys"
       :label="s__('DeployKeys|Loading deploy keys')"
-      size="2"
+      :size="2"
     />
     <template v-else-if="hasKeys">
       <div class="top-area scrolling-tabs-container inner-page-scroll-tabs">

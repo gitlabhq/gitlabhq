@@ -1,6 +1,5 @@
 <script>
 import CiIconBadge from './ci_badge_link.vue';
-import LoadingIcon from './loading_icon.vue';
 import TimeagoTooltip from './time_ago_tooltip.vue';
 import tooltip from '../directives/tooltip';
 import UserAvatarImage from './user_avatar/user_avatar_image.vue';
@@ -15,7 +14,6 @@ import UserAvatarImage from './user_avatar/user_avatar_image.vue';
 export default {
   components: {
     CiIconBadge,
-    LoadingIcon,
     TimeagoTooltip,
     UserAvatarImage,
   },

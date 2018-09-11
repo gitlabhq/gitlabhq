@@ -3,13 +3,11 @@ import { mapState } from 'vuex';
 import $ from 'jquery';
 import { n__, s__ } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 
 export default {
   name: 'SummaryReport',
   components: {
     CiIcon,
-    LoadingIcon,
   },
   computed: {
     ...mapState(['sast', 'dependencyScanning', 'dast', 'sastContainer']),
@@ -111,7 +109,7 @@ export default {
       v-if="hasSast"
       class="well-segment flex js-sast-summary"
     >
-      <loading-icon
+      <gl-loading-icon
         v-if="isLoadingSast"
       />
 
@@ -146,7 +144,7 @@ export default {
       v-if="hasDependencyScanning"
       class="well-segment flex js-dss-summary"
     >
-      <loading-icon
+      <gl-loading-icon
         v-if="isLoadingDependencyScanning"
       />
       <ci-icon
@@ -180,7 +178,7 @@ export default {
       v-if="hasSastContainer"
       class="well-segment flex js-sast-container-summary"
     >
-      <loading-icon
+      <gl-loading-icon
         v-if="isLoadingSastContainer"
       />
       <ci-icon
@@ -214,7 +212,7 @@ export default {
       v-if="hasDast"
       class="well-segment flex js-dast-summary"
     >
-      <loading-icon
+      <gl-loading-icon
         v-if="isLoadingDast"
       />
       <ci-icon

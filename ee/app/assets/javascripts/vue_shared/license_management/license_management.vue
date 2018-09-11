@@ -1,7 +1,6 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import { s__ } from '~/locale';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import LicenseManagementRow from './components/license_management_row.vue';
 import DeleteConfirmationModal from './components/delete_confirmation_modal.vue';
 import createStore from './store/index';
@@ -12,7 +11,6 @@ export default {
   name: 'LicenseManagement',
   components: {
     DeleteConfirmationModal,
-    LoadingIcon,
     LicenseManagementRow,
   },
   props: {
@@ -42,7 +40,7 @@ export default {
 <template>
   <div class="license-management">
     <delete-confirmation-modal/>
-    <loading-icon v-if="isLoadingManagedLicenses"/>
+    <gl-loading-icon v-if="isLoadingManagedLicenses"/>
     <ul
       v-if="managedLicenses.length"
       class="list-group list-group-flush"

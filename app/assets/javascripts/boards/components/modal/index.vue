@@ -1,7 +1,6 @@
 <script>
   /* global ListIssue */
   import { urlParamsToObject } from '~/lib/utils/common_utils';
-  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
   import ModalHeader from './header.vue';
   import ModalList from './list.vue';
   import ModalFooter from './footer.vue';
@@ -14,7 +13,6 @@
       ModalHeader,
       ModalList,
       ModalFooter,
-      loadingIcon,
     },
     props: {
       newIssuePath: {
@@ -167,7 +165,7 @@
         class="add-issues-list text-center"
       >
         <div class="add-issues-list-loading">
-          <loading-icon />
+          <gl-loading-icon />
         </div>
       </section>
       <modal-footer/>

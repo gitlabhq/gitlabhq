@@ -1,5 +1,4 @@
 <script>
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -9,7 +8,6 @@ export default {
   name: 'SidebarDetailsBlock',
   components: {
     DetailRow,
-    LoadingIcon,
     Icon,
   },
   mixins: [timeagoMixin],
@@ -232,10 +230,10 @@ export default {
         </div>
       </div>
     </template>
-    <loading-icon
+    <gl-loading-icon
       v-if="isLoading"
+      :size="2"
       class="prepend-top-10"
-      size="2"
     />
   </div>
 </template>

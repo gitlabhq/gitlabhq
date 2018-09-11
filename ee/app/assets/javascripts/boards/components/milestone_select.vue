@@ -1,14 +1,10 @@
 <script>
   import MilestoneSelect from '~/milestone_select';
-  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 
   const ANY_MILESTONE = 'Any Milestone';
   const NO_MILESTONE = 'No Milestone';
 
   export default {
-    components: {
-      loadingIcon,
-    },
     props: {
       board: {
         type: Object,
@@ -144,7 +140,7 @@
           <div class="dropdown-content">
           </div>
           <div class="dropdown-loading">
-            <loading-icon />
+            <gl-loading-icon />
           </div>
         </div>
       </div>
