@@ -19,7 +19,7 @@ class StageEntity < Grape::Entity
     latest_statuses
   end
 
-  expose :detailed_status, as: :status, with: StatusEntity
+  expose :detailed_status, as: :status, with: DetailedStatusEntity
 
   expose :path do |stage|
     project_pipeline_path(

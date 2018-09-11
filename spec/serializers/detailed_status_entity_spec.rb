@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe StatusEntity do
+describe DetailedStatusEntity do
   let(:entity) { described_class.new(status) }
 
   let(:status) do
