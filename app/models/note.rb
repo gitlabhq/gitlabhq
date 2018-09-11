@@ -17,6 +17,7 @@ class Note < ActiveRecord::Base
   include Editable
   include Gitlab::SQL::Pattern
   include ThrottledTouch
+  include FromUnion
 
   module SpecialRole
     FIRST_TIME_CONTRIBUTOR = :first_time_contributor

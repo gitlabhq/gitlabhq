@@ -30,8 +30,9 @@ module Gitlab
       note_events = event_counts(date_from, :merge_requests)
         .having(action: [Event::COMMENTED])
 
-      union = Gitlab::SQL::Union.new([repo_events, issue_events, mr_events, note_events])
-      events = Event.find_by_sql(union.to_sql).map(&:attributes)
+      events = Event
+        .from_union([repo_events, issue_events, mr_events, note_events])
+        .map(&:attributes)
 
       @activity_dates = events.each_with_object(Hash.new {|h, k| h[k] = 0 }) do |event, activities|
         activities[event["date"]] += event["total_amount"]

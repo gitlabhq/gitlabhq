@@ -11,6 +11,7 @@ class Namespace < ActiveRecord::Base
   include Gitlab::SQL::Pattern
   include IgnorableColumn
   include FeatureGate
+  include FromUnion
 
   ignore_column :deleted_at
 
