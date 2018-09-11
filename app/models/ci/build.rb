@@ -660,23 +660,23 @@ module Ci
         all_tags = []
         all_tags << 'protected' if self.protected?
         all_tags += user_tags
-        all_tags
+        all_tags.sort
       end
     end
 
     def all_tags_set
-      all_tags_set = []
-      all_tags_set << all_tags + ["*project_#{self.project_id}"]
-      all_tags_set << all_tags + ["*group_#{self.project.namespace_id}"] if self.project.group_runners_enabled?
-      all_tags_set << all_tags + ['*shared'] if self.project.shared_runners_enabled?
-      all_tags_set
+      {
+        "project_#{self.project_id}": all_tags,
+        "group_#{self.project.namespace_id}": self.project.group_runners_enabled? && all_tags,
+        "shared": self.project.shared_runners_enabled? && all_tags
+      }.compact
     end
 
     def details
       {
         id: self.id,
         project_id: self.project_id,
-        tags_set: all_tags_set.map(&:sort)
+        tags_set: all_tags_set
       }
     end
 
