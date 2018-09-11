@@ -12,6 +12,7 @@ class Groups::LabelsController < Groups::ApplicationController
       format.html do
         @labels = @group.labels
           .optionally_search(params[:search])
+          .order_by(sort)
           .page(params[:page])
       end
       format.json do
@@ -116,5 +117,9 @@ class Groups::LabelsController < Groups::ApplicationController
         include_ancestor_groups: params[:include_ancestor_groups],
         include_descendant_groups: params[:include_descendant_groups],
         search: params[:search]).execute
+  end
+
+  def sort
+    @sort ||= params[:sort] || 'name_asc'
   end
 end

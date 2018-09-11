@@ -21,6 +21,7 @@
             %span.input-group-append
               %button.btn.btn-default{ type: "submit", "aria-label" => _('Submit search') }
                 = icon("search")
+        = render 'shared/labels/sort_dropdown'
 
     .labels-container.prepend-top-5
       - if @labels.any?
