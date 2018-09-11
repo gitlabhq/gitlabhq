@@ -578,7 +578,7 @@ describe MergeRequests::UpdateService, :mailer do
 
     context 'updating target_branch' do
       it 'resets approvals when target_branch is changed' do
-        merge_request.target_project.update(reset_approvals_on_push: true, approvals_before_merge: 2)
+        merge_request.target_project.update(reset_approvals_on_push: true)
         merge_request.approvals.create(user_id: user2.id)
 
         update_merge_request(target_branch: 'video')

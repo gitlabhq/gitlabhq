@@ -38,9 +38,7 @@ module EE
       def reset_approvals(merge_request)
         target_project = merge_request.target_project
 
-        if target_project.approvals_before_merge.nonzero? && target_project.reset_approvals_on_push
-          merge_request.approvals.delete_all
-        end
+        merge_request.approvals.delete_all if target_project.reset_approvals_on_push
       end
     end
   end
