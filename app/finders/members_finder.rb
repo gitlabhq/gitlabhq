@@ -18,7 +18,7 @@ class MembersFinder
       group_members = GroupMembersFinder.new(group).execute(include_descendants: include_descendants) # rubocop: disable CodeReuse/Finder
       group_members = group_members.non_invite
 
-      union = Gitlab::SQL::Union.new([project_members, group_members], remove_duplicates: false)
+      union = Gitlab::SQL::Union.new([project_members, group_members], remove_duplicates: false) # rubocop: disable Gitlab/Union
 
       sql = distinct_on(union)
 

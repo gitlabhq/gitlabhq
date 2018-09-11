@@ -29,6 +29,7 @@ class Project < ActiveRecord::Base
   include BatchDestroyDependentAssociations
   include FeatureGate
   include OptionallySearch
+  include FromUnion
   extend Gitlab::Cache::RequestCache
 
   # EE specific modules
@@ -1509,8 +1510,7 @@ class Project < ActiveRecord::Base
   end
 
   def all_runners
-    union = Gitlab::SQL::Union.new([runners, group_runners, shared_runners])
-    Ci::Runner.from("(#{union.to_sql}) ci_runners")
+    Ci::Runner.from_union([runners, group_runners, shared_runners])
   end
 
   def active_runners
@@ -2034,12 +2034,10 @@ class Project < ActiveRecord::Base
   def badges
     return project_badges unless group
 
-    group_badges_rel = GroupBadge.where(group: group.self_and_ancestors)
-
-    union = Gitlab::SQL::Union.new([project_badges.select(:id),
-                                    group_badges_rel.select(:id)])
-
-    Badge.where("id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+    Badge.from_union([
+      project_badges,
+      GroupBadge.where(group: group.self_and_ancestors)
+    ])
   end
 
   def merge_requests_allowing_push_to_user(user)

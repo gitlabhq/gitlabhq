@@ -3,6 +3,7 @@
 class Todo < ActiveRecord::Base
   prepend EE::Todo
   include Sortable
+  include FromUnion
 
   ASSIGNED           = 1
   MENTIONED          = 2
