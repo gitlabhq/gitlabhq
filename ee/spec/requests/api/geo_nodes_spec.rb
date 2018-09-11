@@ -54,11 +54,22 @@ describe API::GeoNodes, :geo, :prometheus, api: true do
   end
 
   describe 'GET /geo_nodes/status' do
-    it 'retrieves the Geo nodes status if admin is logged in' do
+    it 'retrieves all Geo nodes statuses if admin is logged in' do
+      create(:geo_node_status, :healthy, geo_node: primary)
+
       get api("/geo_nodes/status", admin)
 
       expect(response).to have_gitlab_http_status(200)
       expect(response).to match_response_schema('public_api/v4/geo_node_statuses', dir: 'ee')
+      expect(json_response.size).to eq(2)
+    end
+
+    it 'returns only one record if only one record exists' do
+      get api("/geo_nodes/status", admin)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to match_response_schema('public_api/v4/geo_node_statuses', dir: 'ee')
+      expect(json_response.size).to eq(1)
     end
 
     it 'denies access if not admin' do
@@ -113,11 +124,22 @@ describe API::GeoNodes, :geo, :prometheus, api: true do
       expect(response).to match_response_schema('public_api/v4/geo_node_status', dir: 'ee')
     end
 
-    it 'shows 404 response if current node status does not exist in database or redis yet' do
+    it 'the secondary shows 404 response if current node status does not exist in database or redis yet' do
       stub_current_geo_node(secondary)
       secondary_status.destroy!
 
       expect(GeoNodeStatus).to receive(:fast_current_node_status).and_return(nil)
+      expect(GeoNode).to receive(:find).and_return(secondary)
+
+      get api("/geo_nodes/#{secondary.id}/status", admin)
+
+      expect(response).to have_gitlab_http_status(404)
+    end
+
+    it 'the primary shows 404 response if secondary node status does not exist in database yet' do
+      stub_current_geo_node(primary)
+      secondary_status.destroy!
+
       expect(GeoNode).to receive(:find).and_return(secondary)
 
       get api("/geo_nodes/#{secondary.id}/status", admin)
