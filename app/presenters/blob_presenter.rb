@@ -8,7 +8,7 @@ class BlobPresenter < Gitlab::View::Presenter::Simple
       blob.path,
       blob.data,
       language: blob.language_from_gitattributes,
-      plain: (plain || blob.no_highlighting?)
+      plain: plain
     )
   end
 end

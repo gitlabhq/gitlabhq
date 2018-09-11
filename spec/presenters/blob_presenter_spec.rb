@@ -18,31 +18,15 @@ describe BlobPresenter, :seed_helper do
     subject { described_class.new(blob) }
 
     it 'returns highlighted content' do
-      expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: false, language: nil)
+      expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: nil)
 
       subject.highlight
     end
 
-    context 'with :plain' do
-      it 'returns plain content when no_highlighting? is true' do
-        allow(blob).to receive(:no_highlighting?).and_return(true)
+    it 'returns plain content when :plain is true' do
+      expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: true, language: nil)
 
-        subject.highlight
-      end
-
-      it 'returns plain content when :plain is true' do
-        expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: true, language: nil)
-
-        subject.highlight(plain: true)
-      end
-
-      it 'returns plain content when :plain is false, but no_highlighting? is true' do
-        allow(blob).to receive(:no_highlighting?).and_return(true)
-
-        expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: true, language: nil)
-
-        subject.highlight(plain: false)
-      end
+      subject.highlight(plain: true)
     end
 
     context 'gitlab-language contains a match' do
@@ -51,7 +35,7 @@ describe BlobPresenter, :seed_helper do
       end
 
       it 'passes language to inner call' do
-        expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: false, language: 'ruby')
+        expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: 'ruby')
 
         subject.highlight
       end
