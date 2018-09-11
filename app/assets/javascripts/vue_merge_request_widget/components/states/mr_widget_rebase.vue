@@ -2,14 +2,12 @@
   import simplePoll from '../../../lib/utils/simple_poll';
   import eventHub from '../../event_hub';
   import statusIcon from '../mr_widget_status_icon.vue';
-  import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
   import Flash from '../../../flash';
 
   export default {
     name: 'MRWidgetRebase',
     components: {
       statusIcon,
-      loadingIcon,
     },
     props: {
       mr: {
@@ -115,7 +113,7 @@ js-toggle-container accept-action media space-children"
             class="btn btn-sm btn-reopen btn-success qa-mr-rebase-button"
             @click="rebase"
           >
-            <loading-icon v-if="isMakingRequest" />
+            <gl-loading-icon v-if="isMakingRequest" />
             Rebase
           </button>
           <span

@@ -1,7 +1,6 @@
 <script>
   import { s__ } from '../../locale';
   import icon from './icon.vue';
-  import loadingIcon from './loading_icon.vue';
 
   const ICON_ON = 'status_success_borderless';
   const ICON_OFF = 'status_failed_borderless';
@@ -11,7 +10,6 @@
   export default {
     components: {
       icon,
-      loadingIcon,
     },
 
     model: {
@@ -78,7 +76,7 @@
       class="project-feature-toggle"
       @click="toggleFeature"
     >
-      <loadingIcon class="loading-icon" />
+      <gl-loading-icon class="loading-icon" />
       <span class="toggle-icon">
         <icon
           :name="toggleIcon"

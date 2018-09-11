@@ -3,7 +3,6 @@
 
 import $ from 'jquery';
 import { s__, sprintf } from '~/locale';
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import { HIDDEN_CLASS } from '~/lib/utils/constants';
 import { getParameterByName } from '~/lib/utils/common_utils';
@@ -15,7 +14,6 @@ import groupsComponent from './groups.vue';
 
 export default {
   components: {
-    loadingIcon,
     DeprecatedModal,
     groupsComponent,
   },
@@ -241,11 +239,11 @@ export default {
 
 <template>
   <div>
-    <loading-icon
+    <gl-loading-icon
       v-if="isLoading"
       :label="s__('GroupsTree|Loading groups')"
+      :size="2"
       class="loading-animation prepend-top-20"
-      size="2"
     />
     <groups-component
       v-if="!isLoading"

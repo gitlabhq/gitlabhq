@@ -4,7 +4,6 @@ import { mapActions, mapState } from 'vuex';
 import createFlash from '~/flash';
 import { s__, sprintf } from '~/locale';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import createEmptyBadge from '../empty_badge';
 import Badge from './badge.vue';
 
@@ -15,7 +14,6 @@ export default {
   components: {
     Badge,
     LoadingButton,
-    LoadingIcon,
   },
   props: {
     isEditing: {
@@ -207,7 +205,7 @@ export default {
         :link-url="renderedLinkUrl"
       />
       <p v-show="isRendering">
-        <loading-icon
+        <gl-loading-icon
           :inline="true"
         />
       </p>

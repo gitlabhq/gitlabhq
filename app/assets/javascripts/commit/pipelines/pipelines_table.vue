@@ -76,10 +76,10 @@
 <template>
   <div class="content-list pipelines">
 
-    <loading-icon
+    <gl-loading-icon
       v-if="isLoading"
       :label="s__('Pipelines|Loading Pipelines')"
-      size="3"
+      :size="3"
       class="prepend-top-20"
     />
 
