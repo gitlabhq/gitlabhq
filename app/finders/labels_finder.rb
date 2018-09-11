@@ -54,7 +54,11 @@ class LabelsFinder < UnionFinder
   end
 
   def sort(items)
-    items.reorder(title: :asc)
+    if params[:sort]
+      items.order_by(params[:sort])
+    else
+      items.reorder(title: :asc)
+    end
   end
 
   def with_title(items)
