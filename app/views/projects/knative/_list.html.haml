@@ -1,0 +1,15 @@
+.card
+  .card-header
+    - @feature_flags = []
+    Knative Functions (#{@feature_flags.count})
+  %ul.content-list.pages-domain-list
+    - @feature_flags.each do |feature_flag|
+      %li.pages-domain-list-item.unstyled
+        = feature_flag.name
+
+        %div.controls.d-none.d-md-block
+        %p
+          - if feature_flag.active?
+            %span.badge.badge-success Enabled
+          - else
+            %span.badge.badge-danger Disabled

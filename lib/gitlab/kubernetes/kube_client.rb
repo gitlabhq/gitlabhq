@@ -16,7 +16,8 @@ module Gitlab
       SUPPORTED_API_GROUPS = [
         'api',
         'apis/rbac.authorization.k8s.io',
-        'apis/extensions'
+        'apis/extensions',
+        'apis/serving.knative.dev'
       ].freeze
 
       # Core API methods delegates to the core api group client

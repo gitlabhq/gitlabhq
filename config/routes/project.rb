@@ -296,6 +296,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         namespace :ci do
           resource :lint, only: [:show, :create]
         end
+
+        resources :knative
       end
 
       draw :legacy_builds

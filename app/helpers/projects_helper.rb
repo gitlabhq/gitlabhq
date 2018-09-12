@@ -300,6 +300,7 @@ module ProjectsHelper
   def tab_ability_map
     {
       environments:     :read_environment,
+      knative:          :read_cluster,
       milestones:       :read_milestone,
       snippets:         :read_project_snippet,
       settings:         :admin_project,

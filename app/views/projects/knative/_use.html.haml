@@ -1,0 +1,23 @@
+.card.bg-info
+  .card-header
+    Configure Knative...
+  .card-body
+    %p
+      Learn how to enable knative functions.
+
+    %ol
+      %li
+        = _("Install a compatible with client library")
+        = (_("(checkout the %{link} for information on how to install it).") % { link: "here" }).html_safe
+      %li
+        = _("Specify the following URL during for the library configuration setup:")
+        %code#coordinator_address= "#{root_url(only_path: false)}api/v4/unleash"
+      %li
+        = _("Use the following application name:")
+        %code#registration_token= @project.id
+      %li
+        = _("Use the following application name:")
+        %code#registration_token= @unleash_instanceid
+      %li
+        = _("You can also see all features online:")
+        %code#registration_token= "#{root_url(only_path: false)}api/v4/unleash/features?appname=#{@project.id}&instanceid=#{@unleash_instanceid}"
