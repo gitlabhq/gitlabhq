@@ -182,13 +182,12 @@ class KubernetesService < DeploymentService
     slug.gsub(/[^-a-z0-9]/, '-').gsub(/^-+/, '')
   end
 
-  def build_kube_client!(api_groups: ['api'], api_version: 'v1')
+  def build_kube_client!(api_groups: ['api'])
     raise "Incomplete settings" unless api_url && actual_namespace && token
 
     Gitlab::Kubernetes::KubeClient.new(
       api_url,
       api_groups,
-      api_version,
       auth_options: kubeclient_auth_options,
       ssl_options: kubeclient_ssl_options,
       http_proxy_uri: ENV['http_proxy']

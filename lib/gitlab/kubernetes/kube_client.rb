@@ -13,12 +13,12 @@ module Gitlab
     class KubeClient
       include Gitlab::Utils::StrongMemoize
 
-      SUPPORTED_API_GROUPS = [
-        'api',
-        'apis/rbac.authorization.k8s.io',
-        'apis/extensions',
-        'apis/serving.knative.dev'
-      ].freeze
+      SUPPORTED_API_GROUPS = {
+        'api' => 'v1',
+        'apis/rbac.authorization.k8s.io' => 'v1',
+        'apis/extensions' => 'v1',
+        'apis/serving.knative.dev' => 'v1alpha1'
+      }
 
       # Core API methods delegates to the core api group client
       delegate :get_pods,
@@ -54,12 +54,11 @@ module Gitlab
         :watch_pod_log,
         to: :core_client
 
-      def initialize(api_prefix, api_groups = ['api'], api_version = 'v1', **kubeclient_options)
-        raise ArgumentError unless check_api_groups_supported?(api_groups)
+      def initialize(api_prefix, api_groups = ['api'], **kubeclient_options)
+        raise ArgumentError, "missing api group" unless check_api_groups_supported?(api_groups)
 
         @api_prefix = api_prefix
         @api_groups = api_groups
-        @api_version = api_version
         @kubeclient_options = kubeclient_options
       end
 
@@ -83,11 +82,15 @@ module Gitlab
         hashed_clients['apis/extensions']
       end
 
+      def serving_client
+        hashed_clients['apis/serving.knative.dev']
+      end
+
       def hashed_clients
         strong_memoize(:hashed_clients) do
           @api_groups.map do |api_group|
             api_url = join_api_url(@api_prefix, api_group)
-            [api_group, ::Kubeclient::Client.new(api_url, @api_version, **@kubeclient_options)]
+            [api_group, ::Kubeclient::Client.new(api_url, SUPPORTED_API_GROUPS[api_group], **@kubeclient_options)]
           end.to_h
         end
       end
@@ -95,7 +98,9 @@ module Gitlab
       private
 
       def check_api_groups_supported?(api_groups)
-        api_groups.all? {|api_group| SUPPORTED_API_GROUPS.include?(api_group) }
+        api_groups.all? do |api_group|
+          SUPPORTED_API_GROUPS[api_group]
+        end
       end
 
       def join_api_url(api_prefix, api_path)
