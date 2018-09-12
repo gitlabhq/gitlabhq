@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe 'Import/Export - project import integration test', :js do
   include Select2Helper
+  include GitHelpers
 
   let(:user) { create(:user) }
   let(:file) { File.join(Rails.root, 'spec', 'features', 'projects', 'import_export', 'test_project_export.tar.gz') }
@@ -92,12 +93,6 @@ describe 'Import/Export - project import integration test', :js do
   def wiki_exists?(project)
     wiki = ProjectWiki.new(project)
     wiki.repository.exists? && !wiki.repository.empty?
-  end
-
-  def project_hook_exists?(project)
-    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      Gitlab::Git::Hook.new('post-receive', project.repository.raw_repository).exists?
-    end
   end
 
   def click_import_project_tab
