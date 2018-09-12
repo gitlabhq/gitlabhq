@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # BranchFilterValidator
 #
 # Custom validator for branch names. Squishes whitespace and ignores empty

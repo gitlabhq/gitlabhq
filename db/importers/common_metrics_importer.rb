@@ -35,8 +35,8 @@ module Importers
 
     attr_reader :content
 
-    def initialize(file = 'config/prometheus/common_metrics.yml')
-      @content = YAML.load_file(file)
+    def initialize(filename = 'common_metrics.yml')
+      @content = YAML.load_file(Rails.root.join('config', 'prometheus', filename))
     end
 
     def execute

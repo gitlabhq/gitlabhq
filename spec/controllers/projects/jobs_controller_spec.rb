@@ -194,6 +194,18 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           expect(json_response['terminal_path']).to match(%r{/terminal})
         end
       end
+
+      context 'when job passed with no trace' do
+        let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
+
+        it 'exposes empty state illustrations' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('job/job_details')
+          expect(json_response['status']['illustration']).to have_key('image')
+          expect(json_response['status']['illustration']).to have_key('size')
+          expect(json_response['status']['illustration']).to have_key('title')
+        end
+      end
     end
 
     def get_show(**extra_params)

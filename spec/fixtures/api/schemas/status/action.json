@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "required": [
+    "icon",
+    "title",
+    "path",
+    "method"
+  ],
+  "properties": {
+    "icon": {
+      "type": "string",
+      "enum": [
+        "retry",
+        "play",
+        "cancel"
+      ]
+    },
+    "title": { "type": "string" },
+    "path": { "type": "string" },
+    "method": { "$ref": "../http_method.json" }
+  }
+}
