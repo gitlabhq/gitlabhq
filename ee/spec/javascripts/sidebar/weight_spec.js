@@ -154,27 +154,6 @@ describe('Weight', function() {
     });
   });
 
-  it('triggers error on invalid string value', done => {
-    vm = mountComponent(Weight, {
-      ...DEFAULT_PROPS,
-      editable: true,
-    });
-
-    vm.$el.querySelector('.js-weight-edit-link').click();
-
-    vm.$nextTick(() => {
-      const event = new CustomEvent('keydown');
-      event.keyCode = ENTER_KEY_CODE;
-
-      vm.$refs.editableField.click();
-      vm.$refs.editableField.value = 'potato';
-      vm.$refs.editableField.dispatchEvent(event);
-
-      expect(vm.hasValidInput).toBe(false);
-      done();
-    });
-  });
-
   it('triggers error on invalid negative integer value', done => {
     vm = mountComponent(Weight, {
       ...DEFAULT_PROPS,
