@@ -1,3 +1,4 @@
+- @content_class = "limit-container-width" unless fluid_layout
 - @no_container = true
 - @can_bulk_update = can?(current_user, :admin_issue, @project)
 
@@ -8,7 +9,7 @@
   = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{@project.name} issues")
 
 - if project_issues(@project).exists?
-  %div{ class: (container_class) }
+  %div{ class: ([container_class, ("limit-container-width" unless fluid_layout)]) }
     .top-area
       = render 'shared/issuable/nav', type: :issues
       .nav-controls
