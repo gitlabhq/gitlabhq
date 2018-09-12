@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "required": [
+    "short_token",
+    "variables"
+  ],
+  "properties": {
+    "short_token": { "type": "string" },
+    "variables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "value",
+          "public"
+        ],
+        "properties": {
+          "key": { "type": "string" },
+          "value": { "type": "string" },
+          "public": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
