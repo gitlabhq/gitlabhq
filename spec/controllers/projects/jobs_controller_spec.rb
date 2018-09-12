@@ -208,6 +208,51 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       end
     end
 
+    context 'when requesting JSON job is triggered' do
+      let!(:merge_request) { create(:merge_request, source_project: project) }
+      let(:trigger) { create(:ci_trigger, project: project) }
+      let(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, trigger: trigger) }
+      let(:job) { create(:ci_build, pipeline: pipeline, trigger_request: trigger_request) }
+
+      before do
+        project.add_developer(user)
+        sign_in(user)
+
+        allow_any_instance_of(Ci::Build).to receive(:merge_request).and_return(merge_request)
+      end
+
+      context 'with no variables' do
+        before do
+          get_show(id: job.id, format: :json)
+        end
+
+        it 'exposes trigger information' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('job/job_details')
+          expect(json_response['trigger']['short_token']).to eq 'toke'
+          expect(json_response['trigger']['variables'].length).to eq 0
+        end
+      end
+
+      context 'with variables' do
+        before do
+          create(:ci_pipeline_variable, pipeline: pipeline, key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1')
+
+          get_show(id: job.id, format: :json)
+        end
+
+        it 'exposes trigger information and variables' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('job/job_details')
+          expect(json_response['trigger']['short_token']).to eq 'toke'
+          expect(json_response['trigger']['variables'].length).to eq 1
+          expect(json_response['trigger']['variables'].first['key']).to eq "TRIGGER_KEY_1"
+          expect(json_response['trigger']['variables'].first['value']).to eq "TRIGGER_VALUE_1"
+          expect(json_response['trigger']['variables'].first['public']).to eq false
+        end
+      end
+    end
+
     def get_show(**extra_params)
       params = {
         namespace_id: project.namespace.to_param,

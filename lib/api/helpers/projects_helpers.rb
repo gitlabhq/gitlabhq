@@ -27,6 +27,7 @@ module API
             optional :printing_merge_request_link_enabled, type: Boolean, desc: 'Show link to create/view merge request when pushing from the command line'
             optional :merge_method, type: String, values: %w(ff rebase_merge merge), desc: 'The merge method used when merging merge requests'
             optional :initialize_with_readme, type: Boolean, desc: "Initialize a project with a README.md"
+<<<<<<< HEAD
           end
 
           params :optional_project_params_ee do
@@ -35,6 +36,8 @@ module API
             optional :external_authorization_classification_label, type: String, desc: 'The classification label for the project'
             optional :mirror, type: Boolean, desc: 'Enables pull mirroring in a project'
             optional :mirror_trigger_builds, type: Boolean, desc: 'Pull mirroring triggers builds'
+=======
+>>>>>>> upstream/master
           end
 
           params :optional_project_params do

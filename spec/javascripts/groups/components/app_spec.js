@@ -24,6 +24,8 @@ const createComponent = (hideProjects = false) => {
   const store = new GroupsStore(false);
   const service = new GroupsService(mockEndpoint);
 
+  store.state.pageInfo = mockPageInfo;
+
   return new Component({
     propsData: {
       store,
@@ -484,7 +486,6 @@ describe('AppComponent', () => {
     it('should render groups tree', done => {
       vm.store.state.groups = [mockParentGroupItem];
       vm.isLoading = false;
-      vm.store.state.pageInfo = mockPageInfo;
       Vue.nextTick(() => {
         expect(vm.$el.querySelector('.groups-list-tree-container')).toBeDefined();
         done();
