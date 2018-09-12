@@ -99,6 +99,7 @@ module Gitlab
     # - Any parameter ending with `token`
     # - Any parameter containing `password`
     # - Any parameter containing `secret`
+    # - Any parameter ending with `key`
     # - Two-factor tokens (:otp_attempt)
     # - Repo/Project Import URLs (:import_url)
     # - Build traces (:trace)
@@ -106,15 +107,13 @@ module Gitlab
     # - GitLab Pages SSL cert/key info (:certificate, :encrypted_key)
     # - Webhook URLs (:hook)
     # - Sentry DSN (:sentry_dsn)
-    # - Deploy keys (:key)
     # - File content from Web Editor (:content)
-    config.filter_parameters += [/token$/, /password/, /secret/]
+    config.filter_parameters += [/token$/, /password/, /secret/, /key$/]
     config.filter_parameters += %i(
       certificate
       encrypted_key
       hook
       import_url
-      key
       otp_attempt
       sentry_dsn
       trace

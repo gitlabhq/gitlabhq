@@ -39,7 +39,7 @@ module API
       end
       params do
         requires :description, type: String, desc: 'The description of pipeline schedule'
-        requires :ref, type: String, desc: 'The branch/tag name will be triggered'
+        requires :ref, type: String, desc: 'The branch/tag name will be triggered', allow_blank: false
         requires :cron, type: String, desc: 'The cron'
         optional :cron_timezone, type: String, default: 'UTC', desc: 'The timezone'
         optional :active, type: Boolean, default: true, desc: 'The activation of pipeline schedule'

@@ -69,7 +69,7 @@ module API
         success Entities::Branch
       end
       params do
-        requires :branch, type: String, desc: 'The name of the branch'
+        requires :branch, type: String, desc: 'The name of the branch', allow_blank: false
         optional :developers_can_push, type: Boolean, desc: 'Flag if developers can push to that branch'
         optional :developers_can_merge, type: Boolean, desc: 'Flag if developers can merge to that branch'
       end
@@ -106,7 +106,7 @@ module API
         success Entities::Branch
       end
       params do
-        requires :branch, type: String, desc: 'The name of the branch'
+        requires :branch, type: String, desc: 'The name of the branch', allow_blank: false
       end
       put ':id/repository/branches/:branch/unprotect', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         authorize_admin_project
@@ -122,8 +122,8 @@ module API
         success Entities::Branch
       end
       params do
-        requires :branch, type: String, desc: 'The name of the branch'
-        requires :ref, type: String, desc: 'Create branch from commit sha or existing branch'
+        requires :branch, type: String, desc: 'The name of the branch', allow_blank: false
+        requires :ref, type: String, desc: 'Create branch from commit sha or existing branch', allow_blank: false
       end
       post ':id/repository/branches' do
         authorize_push_project
@@ -143,7 +143,7 @@ module API
 
       desc 'Delete a branch'
       params do
-        requires :branch, type: String, desc: 'The name of the branch'
+        requires :branch, type: String, desc: 'The name of the branch', allow_blank: false
       end
       delete ':id/repository/branches/:branch', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         authorize_push_project

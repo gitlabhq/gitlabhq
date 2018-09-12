@@ -1048,6 +1048,14 @@ describe API::Commits do
         end
       end
 
+      context 'when branch is empty' do
+        ['', ' '].each do |branch|
+          it_behaves_like '400 response' do
+            let(:request) { post api(route, current_user), branch: branch }
+          end
+        end
+      end
+
       context 'when branch does not exist' do
         it_behaves_like '404 response' do
           let(:request) { post api(route, current_user), branch: 'foo' }

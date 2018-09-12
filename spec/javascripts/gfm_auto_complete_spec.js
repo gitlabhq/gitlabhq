@@ -146,7 +146,7 @@ describe('GfmAutoComplete', function () {
         shouldNotBeFollowedBy.forEach((followedSymbol) => {
           const seq = atSign + followedSymbol;
 
-          it(`should not match "${seq}"`, () => {
+          it(`should not match ${JSON.stringify(seq)}`, () => {
             expect(defaultMatcher(atwhoInstance, atSign, seq)).toBe(null);
           });
         });
