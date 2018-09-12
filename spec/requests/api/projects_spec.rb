@@ -557,6 +557,14 @@ describe API::Projects do
       expect(json_response['visibility']).to eq('private')
     end
 
+    it 'creates a new project initialized with a README.md' do
+      project = attributes_for(:project, initialize_with_readme: 1, name: 'somewhere')
+
+      post api('/projects', user), project
+
+      expect(json_response['readme_url']).to eql("#{Gitlab.config.gitlab.url}/#{json_response['namespace']['full_path']}/somewhere/blob/master/README.md")
+    end
+
     it 'sets tag list to a project' do
       project = attributes_for(:project, tag_list: %w[tagFirst tagSecond])
 
