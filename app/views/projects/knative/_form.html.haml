@@ -1,0 +1,26 @@
+- if @serverless_function.errors.any?
+  #error_explanation
+    .alert.alert-danger
+      - @serverless_function.errors.full_messages.each do |msg|
+        %p= msg
+
+.form-group.row
+  = f.label :name, class: 'col-form-label col-sm-2' do
+    Name
+  .col-sm-10
+    = f.text_field :name, required: true, autocomplete: 'off', class: 'form-control'
+
+.form-group.row
+  = f.label :runtime_image, class: 'col-form-label col-sm-2' do
+    Runtime
+  .col-sm-10
+    - options = ["registry.gitlab.com/ayufan/serverless-functions/functions/go:1.11.0", "gcr.io/knative-samples/helloworld-go"]
+    = f.select :runtime_image, options, multiple: false, class: 'form-control'
+    // = f.text_field :runtime_image, required: true, autocomplete: 'off', class: 'form-control'
+
+.form-group.row
+  = f.label :runtime, class: 'col-form-label col-sm-2' do
+    Code
+  .col-sm-10
+    = f.text_area :function_code, rows: 5, class: 'form-control'
+    %span.help-inline Write a function code

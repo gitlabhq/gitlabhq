@@ -3,12 +3,14 @@
 %h3.page-title.with-button
   Knative
 
-%p.light
-  With GitLab Knative
+  - if can?(current_user, :create_cluster, @project)
+    = link_to new_project_knative_path(@project), class: 'btn btn-new float-right', title: 'New Function' do
+      New Function
 
 %hr.clearfix
 
+= render 'functions'
+
 - if cluster_client = @project.clusters.first.application_knative.client
-  = render 'list', locals: { cluster_client: cluster_client }
-- else
-  = render 'use'
+  = render 'triggers', locals: { cluster_client: cluster_client }
+

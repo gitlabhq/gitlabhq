@@ -268,6 +268,8 @@ class Project < ActiveRecord::Base
 
   has_many :remote_mirrors, inverse_of: :project
 
+  has_many :serverless_functions, class_name: 'Serverless::Functions'
+
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true
   accepts_nested_attributes_for :import_data

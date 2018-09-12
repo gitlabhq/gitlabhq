@@ -217,9 +217,9 @@
 
             - if project_nav_tab? :knative
               = nav_link(controller: :knative) do
-                = link_to project_knative_index_path(@project), title: _('Knative'), class: 'shortcuts-metrics' do
+                = link_to project_knative_index_path(@project), title: _('Functions'), class: 'shortcuts-metrics' do
                   %span
-                    = _('Knative')
+                    = _('Functions')
 
               = nav_link(controller: :environments, action: [:index, :folder, :show, :new, :edit, :create, :update, :stop, :terminal]) do
                 = link_to project_environments_path(@project), title: _('Environments'), class: 'shortcuts-environments' do

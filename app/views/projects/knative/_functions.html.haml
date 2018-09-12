@@ -1,0 +1,13 @@
+.card
+  .card-header
+    Functions (#{@serverless_functions.count})
+
+  %ul.content-list.pages-domain-list
+    - @serverless_functions.each do |serverless_function|
+      %li.pages-domain-list-item.unstyled
+        = serverless_function.name
+
+        %div.controls.d-none.d-md-block
+          = link_to 'Edit', edit_project_knative_path(@project, serverless_function), class: "btn btn-sm btn-grouped"
+          = link_to 'Remove', project_knative_path(@project, serverless_function), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove btn-sm btn-grouped"
+

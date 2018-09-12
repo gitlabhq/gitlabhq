@@ -1,0 +1,21 @@
+- cluster_client = locals.fetch(:cluster_client)
+- services = cluster_client.get_services
+.card
+  .card-header
+    Services (#{services.count})
+
+  %ul.content-list.pages-domain-list
+    - services.each do |service|
+      %li.pages-domain-list-item.unstyled
+        = service.metadata.name
+
+        %div.controls.d-none.d-md-block
+          - if service.status.conditions.all? { |condition| condition.status == "True" }
+            %span.badge.badge-success Ready
+          - else
+            %span.badge.badge-danger Not ready
+
+        %p
+          %span.badge.badge-primary
+            = service.status.domain
+  
