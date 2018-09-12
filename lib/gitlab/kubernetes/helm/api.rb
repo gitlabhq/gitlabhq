@@ -42,7 +42,13 @@ module Gitlab
 
         def create_config_map(command)
           command.config_map_resource.tap do |config_map_resource|
-            kubeclient.create_config_map(config_map_resource)
+            break unless config_map_resource
+
+            if service_account_exists?(config_map_resource)
+              kubeclient.update_config_map(config_map_resource)
+            else
+              kubeclient.create_config_map(config_map_resource)
+            end
           end
         end
 
@@ -73,6 +79,12 @@ module Gitlab
         def service_account_exists?(resource)
           resource_exists? do
             kubeclient.get_service_account(resource.metadata.name, resource.metadata.namespace)
+          end
+        end
+
+        def config_map_exists?(resource)
+          resource_exists? do
+            kubeclient.get_config_map(resource.metadata.name, resource.metadata.namespace)
           end
         end
 
