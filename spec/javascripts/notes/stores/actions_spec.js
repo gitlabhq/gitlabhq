@@ -317,4 +317,197 @@ describe('Actions Notes Store', () => {
       );
     });
   });
+
+  describe('deleteNote', () => {
+    const interceptor = (request, next) => {
+      next(
+        request.respondWith(JSON.stringify({}), {
+          status: 200,
+        }),
+      );
+    };
+
+    beforeEach(() => {
+      Vue.http.interceptors.push(interceptor);
+    });
+
+    afterEach(() => {
+      Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+    });
+
+    it('commits DELETE_NOTE and dispatches updateMergeRequestWidget', done => {
+      const note = { path: `${gl.TEST_HOST}`, id: 1 };
+
+      testAction(
+        actions.deleteNote,
+        note,
+        store.state,
+        [
+          {
+            type: 'DELETE_NOTE',
+            payload: note,
+          },
+        ],
+        [
+          {
+            type: 'updateMergeRequestWidget',
+          },
+        ],
+        done,
+      );
+    });
+  });
+
+  describe('createNewNote', () => {
+    describe('success', () => {
+      const res = {
+        id: 1,
+        valid: true,
+      };
+      const interceptor = (request, next) => {
+        next(
+          request.respondWith(JSON.stringify(res), {
+            status: 200,
+          }),
+        );
+      };
+
+      beforeEach(() => {
+        Vue.http.interceptors.push(interceptor);
+      });
+
+      afterEach(() => {
+        Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+      });
+
+      it('commits ADD_NEW_NOTE and dispatches updateMergeRequestWidget', done => {
+        testAction(
+          actions.createNewNote,
+          { endpoint: `${gl.TEST_HOST}`, data: {} },
+          store.state,
+          [
+            {
+              type: 'ADD_NEW_NOTE',
+              payload: res,
+            },
+          ],
+          [
+            {
+              type: 'updateMergeRequestWidget',
+            },
+          ],
+          done,
+        );
+      });
+    });
+
+    describe('error', () => {
+      const res = {
+        errors: ['error'],
+      };
+      const interceptor = (request, next) => {
+        next(
+          request.respondWith(JSON.stringify(res), {
+            status: 200,
+          }),
+        );
+      };
+
+      beforeEach(() => {
+        Vue.http.interceptors.push(interceptor);
+      });
+
+      afterEach(() => {
+        Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+      });
+
+      it('does not commit ADD_NEW_NOTE or dispatch updateMergeRequestWidget', done => {
+        testAction(
+          actions.createNewNote,
+          { endpoint: `${gl.TEST_HOST}`, data: {} },
+          store.state,
+          [],
+          [],
+          done,
+        );
+      });
+    });
+  });
+
+  describe('toggleResolveNote', () => {
+    const res = {
+      resolved: true,
+    };
+    const interceptor = (request, next) => {
+      next(
+        request.respondWith(JSON.stringify(res), {
+          status: 200,
+        }),
+      );
+    };
+
+    beforeEach(() => {
+      Vue.http.interceptors.push(interceptor);
+    });
+
+    afterEach(() => {
+      Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+    });
+
+    describe('as note', () => {
+      it('commits UPDATE_NOTE and dispatches updateMergeRequestWidget', done => {
+        testAction(
+          actions.toggleResolveNote,
+          { endpoint: `${gl.TEST_HOST}`, isResolved: true, discussion: false },
+          store.state,
+          [
+            {
+              type: 'UPDATE_NOTE',
+              payload: res,
+            },
+          ],
+          [
+            {
+              type: 'updateMergeRequestWidget',
+            },
+          ],
+          done,
+        );
+      });
+    });
+
+    describe('as discussion', () => {
+      it('commits UPDATE_DISCUSSION and dispatches updateMergeRequestWidget', done => {
+        testAction(
+          actions.toggleResolveNote,
+          { endpoint: `${gl.TEST_HOST}`, isResolved: true, discussion: true },
+          store.state,
+          [
+            {
+              type: 'UPDATE_DISCUSSION',
+              payload: res,
+            },
+          ],
+          [
+            {
+              type: 'updateMergeRequestWidget',
+            },
+          ],
+          done,
+        );
+      });
+    });
+  });
+
+  describe('updateMergeRequestWidget', () => {
+    it('calls mrWidget checkStatus', () => {
+      gl.mrWidget = {
+        checkStatus: jasmine.createSpy('checkStatus'),
+      };
+
+      actions.updateMergeRequestWidget();
+
+      expect(gl.mrWidget.checkStatus).toHaveBeenCalled();
+    });
+  });
 });
