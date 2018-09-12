@@ -1,0 +1,5 @@
+---
+title: Strip whitespace from Sentry URL
+merge_request: 21703
+author:
+type: fixed
