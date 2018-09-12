@@ -9,10 +9,7 @@ import deployBoard from 'ee/environments/components/deploy_board_component.vue';
 export default {
   components: {
     environmentItem,
-<<<<<<< HEAD
     deployBoard,
-=======
->>>>>>> upstream/master
   },
 
   props: {

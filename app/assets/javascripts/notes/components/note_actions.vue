@@ -168,11 +168,7 @@ export default {
         href="#"
         title="Add reaction"
       >
-<<<<<<< HEAD
-        <gl-loading-icon :inline="true" />
-=======
         <gl-loading-icon inline/>
->>>>>>> upstream/master
         <span
           class="link-highlight award-control-icon-neutral"
           v-html="emojiSmiling">
