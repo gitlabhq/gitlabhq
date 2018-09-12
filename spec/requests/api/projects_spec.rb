@@ -148,6 +148,16 @@ describe API::Projects do
         expect(json_response.first.keys).to include('open_issues_count')
       end
 
+      it 'does not include projects marked for deletion' do
+        project.update(pending_delete: true)
+
+        get api('/projects', user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.map { |p| p['id'] }).not_to include(project.id)
+      end
+
       it 'does not include open_issues_count if issues are disabled' do
         project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
 
@@ -1010,6 +1020,15 @@ describe API::Projects do
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response).not_to include("import_error")
+      end
+
+      it 'returns 404 when project is marked for deletion' do
+        project.update(pending_delete: true)
+
+        get api("/projects/#{project.id}", user)
+
+        expect(response).to have_gitlab_http_status(404)
+        expect(json_response['message']).to eq('404 Project Not Found')
       end
 
       context 'links exposure' do
