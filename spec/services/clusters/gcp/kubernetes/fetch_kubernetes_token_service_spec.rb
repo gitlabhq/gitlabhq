@@ -1,9 +1,9 @@
+# frozen_string_literal: true
+
 require 'fast_spec_helper'
 
 describe Clusters::Gcp::Kubernetes::FetchKubernetesTokenService do
   describe '#execute' do
-    subject { described_class.new(kubeclient).execute }
-
     let(:api_url) { 'http://111.111.111.111' }
     let(:username) { 'admin' }
     let(:password) { 'xxx' }
@@ -15,6 +15,8 @@ describe Clusters::Gcp::Kubernetes::FetchKubernetesTokenService do
         auth_options: { username: username, password: password }
       )
     end
+
+    subject { described_class.new(kubeclient).execute }
 
     context 'when params correct' do
       let(:decoded_token) { 'xxx.token.xxx' }

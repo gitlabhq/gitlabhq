@@ -32,10 +32,11 @@ end
 shared_examples 'create cluster service success' do
   before do
     stub_feature_flags(rbac_clusters: false)
-    expect(ClusterProvisionWorker).to receive(:perform_async)
   end
 
   it 'creates a cluster object and performs a worker' do
+    expect(ClusterProvisionWorker).to receive(:perform_async)
+
     expect { subject }
       .to change { Clusters::Cluster.count }.by(1)
       .and change { Clusters::Providers::Gcp.count }.by(1)

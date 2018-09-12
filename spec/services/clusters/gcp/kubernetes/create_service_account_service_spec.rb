@@ -8,12 +8,11 @@ describe Clusters::Gcp::Kubernetes::CreateServiceAccountService do
   let(:service) { described_class.new(kubeclient, rbac: rbac) }
 
   describe '#execute' do
-    subject { service.execute }
-
     let(:rbac) { false }
     let(:api_url) { 'http://111.111.111.111' }
     let(:username) { 'admin' }
     let(:password) { 'xxx' }
+
     let(:kubeclient) do
       Gitlab::Kubernetes::KubeClient.new(
         api_url,
@@ -21,6 +20,8 @@ describe Clusters::Gcp::Kubernetes::CreateServiceAccountService do
         auth_options: { username: username, password: password }
       )
     end
+
+    subject { service.execute }
 
     context 'when params are correct' do
       before do
