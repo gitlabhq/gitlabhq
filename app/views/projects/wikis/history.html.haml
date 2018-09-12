@@ -1,4 +1,5 @@
 - page_title _("History"), @page.title.capitalize, _("Wiki")
+- @content_class = "limit-container-width" unless fluid_layout
 
 .wiki-page-header.has-sidebar-toggle
   %button.btn.btn-default.sidebar-toggle.js-sidebar-wiki-toggle{ role: "button", type: "button" }
@@ -17,7 +18,7 @@
       %tr
         %th= s_("Wiki|Page version")
         %th= _("Author")
-        %th= _("Commit Message")
+        %th= _("Commit message")
         %th= _("Last updated")
         %th= _("Format")
     %tbody

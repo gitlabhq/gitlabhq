@@ -16,9 +16,9 @@
       %span.light
         &middot;
         - if @page.persisted?
-          = s_("Wiki|Edit Page")
+          = s_("Wiki|Edit page")
         - else
-          = s_("Wiki|Create Page")
+          = s_("Wiki|Create page")
 
   .nav-controls
     - if can?(current_user, :create_wiki, @project)
