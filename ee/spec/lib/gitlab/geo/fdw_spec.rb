@@ -132,7 +132,7 @@ describe Gitlab::Geo::Fdw, :geo do
   describe 'has_foreign_schema?' do
     context 'with functional FDW environment' do
       it 'returns true' do
-        # When testing it locally, make sure you have FDW setup correctly.
+        # When testing it locally, make sure you have FDW set up correctly.
         # If you are using GDK, you can run, from GDK root folder:
         #
         # make postgresql/geo-fdw/test
@@ -155,7 +155,7 @@ describe Gitlab::Geo::Fdw, :geo do
   describe 'connection_exist?' do
     context 'with functional FDW environment' do
       it 'returns true' do
-        # When testing it locally, make sure you have FDW setup correctly.
+        # When testing it locally, make sure you have FDW set up correctly.
         # If you are using GDK, you can run, from GDK root folder:
         #
         # make postgresql/geo-fdw/test

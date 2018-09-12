@@ -183,7 +183,7 @@ describe GithubService do
     it 'raises error if no pipeline found' do
       project.pipelines.delete_all
 
-      expect { test_data }.to raise_error 'Please setup a pipeline on your repository.'
+      expect { test_data }.to raise_error 'Please set up a pipeline on your repository.'
     end
 
     it 'generates data for latest pipeline' do

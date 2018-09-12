@@ -45,7 +45,7 @@ class GithubService < Service
   end
 
   def disabled_title
-    'Please setup a pipeline on your repository.'
+    'Please set up a pipeline on your repository.'
   end
 
   def execute(data)

@@ -14,7 +14,7 @@ shared_examples 'a read-only GitLab instance' do
       allow(Gitlab::Geo).to receive(:secondary_with_primary?).and_return(secondary_with_primary)
     end
 
-    context 'that is incorrectly setup' do
+    context 'that is incorrectly set up' do
       let(:secondary_with_primary) { false }
       let(:error_message) { "You can't push code to a read-only GitLab instance." }
 
@@ -25,7 +25,7 @@ shared_examples 'a read-only GitLab instance' do
       end
     end
 
-    context 'that is correctly setup' do
+    context 'that is correctly set up' do
       let(:secondary_with_primary) { true }
       let(:payload) do
         {

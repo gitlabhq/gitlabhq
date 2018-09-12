@@ -14,7 +14,7 @@ describe('Sidebar Weight', function () {
 
   beforeEach(() => {
     SidebarWeight = Vue.extend(sidebarWeight);
-    // Setup the stores, services, etc
+    // Set up the stores, services, etc
     sidebarMediator = new SidebarMediator(Mock.mediator);
   });
 

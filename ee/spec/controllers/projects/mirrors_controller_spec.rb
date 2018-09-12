@@ -29,7 +29,7 @@ describe Projects::MirrorsController do
       end
 
       context 'when trying to create a mirror with the same URL' do
-        it 'does not setup the mirror' do
+        it 'does not set up the mirror' do
           do_put(project, mirror: true, import_url: remote_mirror.url)
 
           expect(project.reload.mirror).to be_falsey
@@ -46,7 +46,7 @@ describe Projects::MirrorsController do
         end
 
         context 'mirror user is not the current user' do
-          it 'does not setup the mirror' do
+          it 'does not set up the mirror' do
             new_user = create(:user)
             project.add_maintainer(new_user)
 
