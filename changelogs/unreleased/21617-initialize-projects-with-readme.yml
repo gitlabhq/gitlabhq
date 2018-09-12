@@ -1,0 +1,5 @@
+---
+title: Adds a initialize_with_readme parameter to POST /projects
+merge_request: 21617
+author: Steve
+type: added
