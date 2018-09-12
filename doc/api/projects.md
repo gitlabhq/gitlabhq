@@ -666,18 +666,15 @@ POST /projects
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
 | `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
 | `ci_config_path` | string | no | The path to CI config file |
-| `initialize_with_readme` | boolean | no | `false` by default |
-<<<<<<< HEAD
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
 | `mirror` | boolean | no | Enables pull mirroring in a project |
 | `mirror_trigger_builds` | boolean | no | Pull mirroring triggers builds |
+| `initialize_with_readme` | boolean | no | `false` by default |
 
 >**Note**: If your HTTP repository is not publicly accessible,
 add authentication information to the URL: `https://username:password@gitlab.company.com/group/project.git`
 where `password` is a public access key with the `api` scope enabled.
-=======
->>>>>>> upstream/master
 
 ## Create project for user
 
