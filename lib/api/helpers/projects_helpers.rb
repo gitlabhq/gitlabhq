@@ -26,6 +26,7 @@ module API
             optional :avatar, type: File, desc: 'Avatar image for project'
             optional :printing_merge_request_link_enabled, type: Boolean, desc: 'Show link to create/view merge request when pushing from the command line'
             optional :merge_method, type: String, values: %w(ff rebase_merge merge), desc: 'The merge method used when merging merge requests'
+            optional :initialize_with_readme, type: Boolean, desc: "Initialize a project with a README.md"
           end
 
           params :optional_project_params_ee do
