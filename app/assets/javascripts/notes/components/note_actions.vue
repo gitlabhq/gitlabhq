@@ -151,7 +151,7 @@ export default {
         </template>
         <gl-loading-icon
           v-else
-          :inline="true"
+          inline
         />
       </button>
     </div>
@@ -168,7 +168,7 @@ export default {
         href="#"
         title="Add reaction"
       >
-        <gl-loading-icon :inline="true" />
+        <gl-loading-icon inline/>
         <span
           class="link-highlight award-control-icon-neutral"
           v-html="emojiSmiling">

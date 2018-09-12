@@ -1,6 +1,7 @@
 /* eslint-disable
   jasmine/no-global-setup, jasmine/no-unsafe-spy, no-underscore-dangle, no-console
 */
+/* global __karma__ */
 
 import $ from 'jquery';
 import 'vendor/jasmine-jquery';
@@ -41,8 +42,8 @@ jasmine.getJSONFixtures().fixturesPath = FIXTURES_PATH;
 beforeAll(() => {
   jasmine.addMatchers(
     jasmineDiff(jasmine, {
-      colors: true,
-      inline: true,
+      colors: !__karma__.config.isCi,
+      inline: !__karma__.config.isCi,
     }),
   );
   jasmine.addMatchers(customMatchers);

@@ -83,11 +83,12 @@ if (specFilters.length) {
 module.exports = function(config) {
   process.env.TZ = 'Etc/UTC';
 
-  const progressReporter = process.env.CI ? 'mocha' : 'progress';
-
   const karmaConfig = {
     basePath: ROOT_PATH,
     browsers: ['ChromeHeadlessCustom'],
+    client: {
+      isCI: !!process.env.CI
+    },
     customLaunchers: {
       ChromeHeadlessCustom: {
         base: 'ChromeHeadless',
@@ -108,10 +109,18 @@ module.exports = function(config) {
       'spec/javascripts/**/*.js': ['webpack', 'sourcemap'],
       'ee/spec/javascripts/**/*.js': ['webpack', 'sourcemap'],
     },
-    reporters: [progressReporter],
+    reporters: ['progress'],
     webpack: webpackConfig,
     webpackMiddleware: { stats: 'errors-only' },
   };
+
+  if (process.env.CI) {
+    karmaConfig.reporters = ['mocha', 'junit'];
+    karmaConfig.junitReporter = {
+      outputFile: 'junit_karma.xml',
+      useBrowserName: false,
+    };
+  }
 
   if (process.env.BABEL_ENV === 'coverage' || process.env.NODE_ENV === 'coverage') {
     karmaConfig.reporters.push('coverage-istanbul');
