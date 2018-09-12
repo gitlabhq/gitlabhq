@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180906101639) do
+ActiveRecord::Schema.define(version: 20180912181931) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -340,6 +340,7 @@ ActiveRecord::Schema.define(version: 20180906101639) do
 
   add_index "ci_builds", ["artifacts_expire_at"], name: "index_ci_builds_on_artifacts_expire_at", where: "(artifacts_file <> ''::text)", using: :btree
   add_index "ci_builds", ["auto_canceled_by_id"], name: "index_ci_builds_on_auto_canceled_by_id", using: :btree
+  add_index "ci_builds", ["commit_id", "name", "artifacts_expire_at", "id"], name: "partial_index_ci_builds_on_commit_id_and_artifacts_id_and_id", where: "(((type)::text = 'Ci::Build'::text) AND ((retried = false) OR (retried IS NULL)) AND ((name)::text = ANY ((ARRAY['sast'::character varying, 'dependency_scanning'::character varying, 'sast:container'::character varying, 'container_scanning'::character varying, 'dast'::character varying])::text[])))", using: :btree
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree
   add_index "ci_builds", ["commit_id", "status", "type"], name: "index_ci_builds_on_commit_id_and_status_and_type", using: :btree
   add_index "ci_builds", ["commit_id", "type", "name", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_name_and_ref", using: :btree
@@ -476,6 +477,7 @@ ActiveRecord::Schema.define(version: 20180906101639) do
   add_index "ci_pipelines", ["auto_canceled_by_id"], name: "index_ci_pipelines_on_auto_canceled_by_id", using: :btree
   add_index "ci_pipelines", ["pipeline_schedule_id"], name: "index_ci_pipelines_on_pipeline_schedule_id", using: :btree
   add_index "ci_pipelines", ["project_id", "iid"], name: "index_ci_pipelines_on_project_id_and_iid", unique: true, where: "(iid IS NOT NULL)", using: :btree
+  add_index "ci_pipelines", ["project_id", "ref", "id"], name: "index_ci_pipelines_on_project_id_and_ref_and_id_desc", using: :btree
   add_index "ci_pipelines", ["project_id", "ref", "status", "id"], name: "index_ci_pipelines_on_project_id_and_ref_and_status_and_id", using: :btree
   add_index "ci_pipelines", ["project_id", "sha"], name: "index_ci_pipelines_on_project_id_and_sha", using: :btree
   add_index "ci_pipelines", ["project_id", "status", "config_source"], name: "index_ci_pipelines_on_project_id_and_status_and_config_source", using: :btree

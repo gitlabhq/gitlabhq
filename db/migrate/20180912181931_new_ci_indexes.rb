@@ -5,7 +5,7 @@ class NewCiIndexes < ActiveRecord::Migration
 
   DOWNTIME = false
   INDEX_NAME_1 = 'index_ci_pipelines_on_project_id_and_ref_and_id_desc'.freeze
-  INDEX_NAME_2 = 'partial_index_ci_builds_on_commit_id_and_artifacts_id_and_id_with_filter'.freeze
+  INDEX_NAME_2 = 'partial_index_ci_builds_on_commit_id_and_artifacts_id_and_id'.freeze
 
   disable_ddl_transaction!
 
@@ -14,7 +14,7 @@ class NewCiIndexes < ActiveRecord::Migration
       name: INDEX_NAME_1,
       order: {project_id: :asc, ref: :asc, id: :desc}
 
-    add_concurrent_index :ci_builds, [:commit_id, :artifacts_id, :id],
+    add_concurrent_index :ci_builds, [:commit_id, :name, :artifacts_expire_at, :id],
       name: INDEX_NAME_2,
       where: <<-SQL_WHERE
         type = 'Ci::Build'
