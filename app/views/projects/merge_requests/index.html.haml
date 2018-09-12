@@ -1,16 +1,17 @@
+- @content_class = "limit-container-width" unless fluid_layout
 - @no_container = true
 - @can_bulk_update = can?(current_user, :admin_merge_request, @project)
 - merge_project = merge_request_source_project_for_project(@project)
 - new_merge_request_path = project_new_merge_request_path(merge_project) if merge_project
 
-- page_title "Merge Requests"
+- page_title "Merge requests"
 - new_merge_request_email = @project.new_issuable_address(current_user, 'merge_request')
 
-%div{ class: container_class }
+%div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
   = render 'projects/last_push'
 
 - if @project.merge_requests.exists?
-  %div{ class: container_class }
+  %div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
     .top-area
       = render 'shared/issuable/nav', type: :merge_requests
       .nav-controls

@@ -1,6 +1,7 @@
-- add_to_breadcrumbs "Merge Requests", project_merge_requests_path(@project)
+- add_to_breadcrumbs "Merge requests", project_merge_requests_path(@project)
 - breadcrumb_title "New"
-- page_title "New Merge Request"
+- page_title "New merge request"
+- @content_class = "limit-container-width" unless fluid_layout
 
 - if @merge_request.can_be_created && !params[:change_branches]
   = render 'new_submit'

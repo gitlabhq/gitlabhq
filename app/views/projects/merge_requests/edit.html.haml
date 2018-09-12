@@ -1,4 +1,5 @@
-- page_title "Edit", "#{@merge_request.title} (#{@merge_request.to_reference}", "Merge Requests"
+- @content_class = "limit-container-width" unless fluid_layout
+- page_title "Edit", "#{@merge_request.title} (#{@merge_request.to_reference}", "Merge requests"
 
 %h3.page-title
   Edit Merge Request #{@merge_request.to_reference}
