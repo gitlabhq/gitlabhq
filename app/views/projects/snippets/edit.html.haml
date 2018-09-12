@@ -1,8 +1,9 @@
+- @content_class = "limit-container-width" unless fluid_layout
 - add_to_breadcrumbs _("Snippets"), project_snippets_path(@project)
 - breadcrumb_title @snippet.to_reference
 - page_title _("Edit"), "#{@snippet.title} (#{@snippet.to_reference})", _("Snippets")
 
 %h3.page-title
-  = _("Edit Snippet")
+  = _("Edit snippet")
 %hr
 = render "shared/snippets/form", url: project_snippet_path(@project, @snippet)
