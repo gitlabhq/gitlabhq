@@ -1,15 +1,28 @@
+- cluster_client = locals.fetch(:cluster_client)
+- services = cluster_client.get_services
 .card
   .card-header
-    - @feature_flags = []
-    Knative Functions (#{@feature_flags.count})
+    Knative Services (#{services.count})
   %ul.content-list.pages-domain-list
-    - @feature_flags.each do |feature_flag|
+    - services.each do |service|
       %li.pages-domain-list-item.unstyled
-        = feature_flag.name
+        = service.metadata.name
+
+        %p
+          = service.status.domain
+
+        - if traffic = service.status&.trafic&.first
+          %p
+            Traffic configuration:
+            = traffic.configurationName
+            Percent:
+            = traffic.percent
+            Revision:
+            = traffic.revisionName
 
         %div.controls.d-none.d-md-block
         %p
-          - if feature_flag.active?
-            %span.badge.badge-success Enabled
+          - if service.status.conditions.all? { |condition| condition.status }
+            %span.badge.badge-success Ready
           - else
-            %span.badge.badge-danger Disabled
+            %span.badge.badge-danger NotReady

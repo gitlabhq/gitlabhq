@@ -8,5 +8,7 @@
 
 %hr.clearfix
 
-= render 'use'
-= render 'list'
+- if cluster_client = @project.clusters.first.application_knative.client
+  = render 'list', locals: { cluster_client: cluster_client }
+- else
+  = render 'use'
