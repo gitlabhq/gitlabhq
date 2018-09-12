@@ -185,12 +185,13 @@ applications](#installing-applications).
 The table below summarizes which resources will be created in a
 RBAC-enabled cluster :
 
-| Name           | Kind                 | Details                         | Created when               |
-| ---            | ---                  | ---                             | ---                        |
-| `gitlab`       | `ServiceAccount`     | `default` namespace             | Creating a new GKE Cluster |
-| `gitlab-admin` | `ClusterRoleBinding` | `cluster-admin` roleRef         | Creating a new GKE Cluster |
-| `tiller`       | `ServiceAccount`     | `gitlab-managed-apps` namespace | Installing Helm Tiller     |
-| `tiller-admin` | `ClusterRoleBinding` | `cluster-admin` roleRef         | Installing Helm Tiller     |
+| Name           | Kind                 | Details                           | Created when               |
+| ---            | ---                  | ---                               | ---                        |
+| `gitlab`       | `ServiceAccount`     | `default` namespace               | Creating a new GKE Cluster |
+| `gitlab-admin` | `ClusterRoleBinding` | `cluster-admin` roleRef           | Creating a new GKE Cluster |
+| `gitlab-token` | `Secret`             | Token for `gitlab` ServiceAccount | Creating a new GKE Cluster |
+| `tiller`       | `ServiceAccount`     | `gitlab-managed-apps` namespace   | Installing Helm Tiller     |
+| `tiller-admin` | `ClusterRoleBinding` | `cluster-admin` roleRef           | Installing Helm Tiller     |
 
 
 Helm Tiller will also create additional service accounts and other RBAC
