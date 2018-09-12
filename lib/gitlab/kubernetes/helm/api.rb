@@ -44,7 +44,7 @@ module Gitlab
           command.config_map_resource.tap do |config_map_resource|
             break unless config_map_resource
 
-            if service_account_exists?(config_map_resource)
+            if config_map_exists?(config_map_resource)
               kubeclient.update_config_map(config_map_resource)
             else
               kubeclient.create_config_map(config_map_resource)
