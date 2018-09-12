@@ -46,6 +46,14 @@ export default class ClusterStore {
           requestReason: null,
           hostname: null,
         },
+        knative: {
+          title: s__('ClusterIntegration|Knative'),
+          status: null,
+          statusReason: null,
+          requestStatus: null,
+          requestReason: null,
+          hostname: null,
+        },
       },
     };
   }

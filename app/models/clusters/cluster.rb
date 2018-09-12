@@ -11,7 +11,8 @@ module Clusters
       Applications::Ingress.application_name => Applications::Ingress,
       Applications::Prometheus.application_name => Applications::Prometheus,
       Applications::Runner.application_name => Applications::Runner,
-      Applications::Jupyter.application_name => Applications::Jupyter
+      Applications::Jupyter.application_name => Applications::Jupyter,
+      Applications::Knative.application_name => Applications::Knative
     }.freeze
     DEFAULT_ENVIRONMENT = '*'.freeze
 
@@ -30,6 +31,7 @@ module Clusters
     has_one :application_prometheus, class_name: 'Clusters::Applications::Prometheus'
     has_one :application_runner, class_name: 'Clusters::Applications::Runner'
     has_one :application_jupyter, class_name: 'Clusters::Applications::Jupyter'
+    has_one :application_knative, class_name: 'Clusters::Applications::Knative'
 
     accepts_nested_attributes_for :provider_gcp, update_only: true
     accepts_nested_attributes_for :platform_kubernetes, update_only: true
@@ -81,7 +83,8 @@ module Clusters
         application_ingress || build_application_ingress,
         application_prometheus || build_application_prometheus,
         application_runner || build_application_runner,
-        application_jupyter || build_application_jupyter
+        application_jupyter || build_application_jupyter,
+        application_knative || build_application_knative
       ]
     end
 

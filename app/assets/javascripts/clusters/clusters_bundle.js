@@ -29,6 +29,7 @@ export default class Clusters {
       installRunnerPath,
       installJupyterPath,
       installPrometheusPath,
+      installKnativePath,
       managePrometheusPath,
       clusterStatus,
       clusterStatusReason,
@@ -49,6 +50,7 @@ export default class Clusters {
       installRunnerEndpoint: installRunnerPath,
       installPrometheusEndpoint: installPrometheusPath,
       installJupyterEndpoint: installJupyterPath,
+      installKnativeEndpoint: installKnativePath,
     });
 
     this.installApplication = this.installApplication.bind(this);

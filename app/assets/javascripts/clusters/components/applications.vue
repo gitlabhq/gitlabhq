@@ -341,6 +341,24 @@ export default {
             </template>
           </div>
         </application-row>
+        <application-row
+          id="knative"
+          :title="applications.knative.title"
+          :status="applications.knative.status"
+          :status-reason="applications.knative.statusReason"
+          :request-status="applications.knative.requestStatus"
+          :request-reason="applications.knative.requestReason"
+          title-link="https://github.com/knative/docs/"
+        >
+          <div slot="description">
+            {{ s__(`ClusterIntegration|A Knative build extends Kubernetes
+            and utilizes existing Kubernetes primitives to provide you with
+            the ability to run on-cluster container builds from source.
+            For example, you can write a build that uses Kubernetes-native
+            resources to obtain your source code from a repository,
+            build it into container a image, and then run that image.`) }}
+          </div>
+        </application-row>
         <!--
           NOTE: Don't forget to update `clusters.scss`
           min-height for this block and uncomment `application_spec` tests
