@@ -6,7 +6,7 @@ module Gitlab
 
         attr_reader :name, :scripts, :files
 
-        def initialize(name:, scripts:, files:)
+        def initialize(name:, scripts:, files: {})
           @name = name
           @files = files
           @rbac = false
@@ -21,12 +21,13 @@ module Gitlab
             echo http://mirror1.hs-esslingen.de/pub/Mirrors/alpine/v$ALPINE_VERSION/main >> /etc/apk/repositories
             apk add -U wget ca-certificates openssl >/dev/null
             wget -q https://storage.googleapis.com/kubernetes-release/release/v1.11.0/bin/darwin/amd64/kubectl
-            mv /usr/bin/
+            chmod +x kubectl
+            mv kubectl /usr/bin/
           HEREDOC
         end
 
         def generate_script
-          (base_script + scripts).join("\n")
+          ([base_script] + scripts).join("\n")
         end
 
         def rbac?

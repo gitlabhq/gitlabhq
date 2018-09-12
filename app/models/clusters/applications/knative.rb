@@ -15,19 +15,22 @@ module Clusters
 
       default_value_for :version, VERSION
 
+      def set_initial_status
+        return unless not_installable?
+
+        self.status = 'installable' if cluster&.platform_kubernetes_active?
+      end
+
       def install_command
         Gitlab::Kubernetes::Helm::KubectlCommand.new(
           name: name,
-          version: VERSION,
-          rbac: false,
-          chart: chart,
-          files: files
+          scripts: scripts
         )
       end
 
       private
 
-      def script
+      def scripts
         [
           "kubectl apply -f https://raw.githubusercontent.com/knative/serving/v0.1.1/third_party/config/build/release.yaml",
           "kubectl apply -f https://github.com/knative/serving/releases/download/v0.1.1/release.yaml"
