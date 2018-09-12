@@ -18,7 +18,7 @@ module Clusters
         private
 
         def get_secret
-          kubeclient.get_secret(SERVICE_ACCOUNT_TOKEN_NAME).as_json
+          kubeclient.get_secret(SERVICE_ACCOUNT_TOKEN_NAME, SERVICE_ACCOUNT_NAMESPACE).as_json
         rescue Kubeclient::HttpError => err
           raise err unless err.error_code == 404
 

@@ -20,16 +20,16 @@ module Clusters
         private
 
         def service_account_resource
-          Gitlab::Kubernetes::ServiceAccount.new(service_account_name, namespace).generate
+          Gitlab::Kubernetes::ServiceAccount.new(service_account_name, service_account_namespace).generate
         end
 
         def service_account_token_resource
           Gitlab::Kubernetes::ServiceAccountToken.new(
-            SERVICE_ACCOUNT_TOKEN_NAME, service_account_name, namespace).generate
+            SERVICE_ACCOUNT_TOKEN_NAME, service_account_name, service_account_namespace).generate
         end
 
         def cluster_role_binding_resource
-          subjects = [{ kind: 'ServiceAccount', name: service_account_name, namespace: namespace }]
+          subjects = [{ kind: 'ServiceAccount', name: service_account_name, namespace: service_account_namespace }]
 
           Gitlab::Kubernetes::ClusterRoleBinding.new(
             CLUSTER_ROLE_BINDING_NAME,
@@ -42,8 +42,8 @@ module Clusters
           SERVICE_ACCOUNT_NAME
         end
 
-        def namespace
-          'default'
+        def service_account_namespace
+          SERVICE_ACCOUNT_NAMESPACE
         end
       end
     end

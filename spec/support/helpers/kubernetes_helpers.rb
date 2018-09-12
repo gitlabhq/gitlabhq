@@ -33,15 +33,15 @@ module KubernetesHelpers
     WebMock.stub_request(:get, deployments_url).to_return(response || kube_deployments_response)
   end
 
-  def stub_kubeclient_get_secret(api_url, **options)
+  def stub_kubeclient_get_secret(api_url, namespace: 'default', **options)
     options[:metadata_name] ||= "default-token-1"
 
-    WebMock.stub_request(:get, api_url + "/api/v1/secrets/#{options[:metadata_name]}")
+    WebMock.stub_request(:get, api_url + "/api/v1/namespaces/#{namespace}/secrets/#{options[:metadata_name]}")
       .to_return(kube_response(kube_v1_secret_body(options)))
   end
 
-  def stub_kubeclient_get_secret_error(api_url, name)
-    WebMock.stub_request(:get, api_url + "/api/v1/secrets/#{name}")
+  def stub_kubeclient_get_secret_error(api_url, name, namespace: 'default')
+    WebMock.stub_request(:get, api_url + "/api/v1/namespaces/#{namespace}/secrets/#{name}")
       .to_return(status: [404, "Internal Server Error"])
   end
 
