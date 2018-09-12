@@ -29,11 +29,13 @@ module Clusters
       end
 
       private
-
       def scripts
         [
-          "kubectl apply -f https://raw.githubusercontent.com/knative/serving/v0.1.1/third_party/config/build/release.yaml",
-          "kubectl apply -f https://github.com/knative/serving/releases/download/v0.1.1/release.yaml"
+          "kubectl apply -f https://raw.githubusercontent.com/knative/serving/v0.1.1/third_party/istio-0.8.0/istio.yaml",
+          "kubectl label namespace default istio-injection=enabled",
+          "sleep 10",
+          "kubectl apply -f https://github.com/knative/serving/releases/download/v0.1.1/release.yaml",
+          "sleep 10"
         ]
       end
     end
