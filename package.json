@@ -113,6 +113,7 @@
     "@vue/test-utils": "^1.0.0-beta.25",
     "axios-mock-adapter": "^1.15.0",
     "babel-eslint": "^8.2.3",
+    "babel-plugin-dynamic-import-node": "^2.1.0",
     "babel-plugin-istanbul": "^4.1.6",
     "babel-plugin-rewire": "^1.1.0",
     "babel-template": "^6.26.0",
