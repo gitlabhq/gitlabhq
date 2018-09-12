@@ -99,6 +99,7 @@ In most of the below cases, the notification will be sent to:
 | New comment            | The above, plus anyone mentioned by `@username` in the comment, with notification level "Mention" or higher |
 | Failed pipeline        | The author of the pipeline |
 | Successful pipeline    | The author of the pipeline, if they have the custom notification setting for successful pipelines set |
+| New epic               | |
 
 In addition, if the title or description of an Issue or Merge Request is
 changed, notifications will be sent to any **new** mentions by `@username` as
