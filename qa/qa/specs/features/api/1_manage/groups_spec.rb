@@ -63,7 +63,9 @@ module QA
 
       expect(json_body).to match a_hash_including(expected_response)
 
-      get group_request_by_id.url
+      get_group_request_by_id = Runtime::API::Request.new(@api_client, "/groups/#{created_group_id}?per_page=100")
+
+      get get_group_request_by_id.url
       expect_status(200)
       expect(json_body).to match a_hash_including(expected_response)
 
@@ -73,9 +75,9 @@ module QA
 
       get groups_request.url
       expect_status(200)
-      expect(json_body).not_to include a_hash_including(id: created_group_id)
+      expect(json_body).not_to include a_hash_including(expected_response)
 
-      get group_request_by_id.url
+      get get_group_request_by_id.url
       expect_status(404)
       expect(json_body).to match({ message: "404 Group Not Found" })
     end
