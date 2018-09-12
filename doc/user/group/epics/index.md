@@ -19,9 +19,7 @@ selected group. From your group page:
 1. Enter a descriptive title and hit **Create epic**
 
 Once created, you will be taken to the view for that newly-created epic where
-you can change its title, description, planned start date, and planned end date.
-The planned end date cannot be before the planned start date
-(but they can be the same day).
+you can change its title, description, planned start date, and planned finish date.
 
 ![epic view](img/epic_view.png)
 
@@ -36,6 +34,20 @@ issue list.
 When you add an issue to an epic that's already associated with another epic,
 the issue is automatically removed from the previous epic. In other words, an
 issue can be associated with at most one epic.
+
+## Planned start date and planned finish date
+
+For each of the the planned dates in the sidebar of an epic, you can choose either entering
+a fixed value or inheriting a dynamic value, called "From milestones". If you select
+"From milestones" for the planned start date, GitLab will automatically set the 
+date to be earliest start date across all milestones that are currently assigned 
+to the issues that are attached to the epic. Similarly, if you select "From milestones"
+for the planned end date, GitLab will set it to be the latest due date across all 
+milestones that are currently assigned to those issues.
+
+These are dynamic dates in that if milestones are re-assigned to the issues, if the
+milestone dates change, or if issues are added or removed from the epic, then the
+the re-calculation will happen immediately to set a new dynamic date.
 
 ## Reordering issues in an epic
 
