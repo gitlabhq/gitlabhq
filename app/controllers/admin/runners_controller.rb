@@ -4,7 +4,7 @@ class Admin::RunnersController < Admin::ApplicationController
   def index
     finder = Admin::RunnersFinder.new(params: params)
     @runners = finder.execute
-    @active_runners_cnt = Ci::Runner.online.count
+    @active_runners_count = Ci::Runner.online.count
     @sort = finder.sort_key
   end
 

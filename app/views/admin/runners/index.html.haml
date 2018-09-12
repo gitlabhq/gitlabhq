@@ -47,7 +47,7 @@
 
   .bs-callout
     %p
-      = _('Runners currently online: %{active_runners_cnt}') % { active_runners_cnt: @active_runners_cnt }
+      = _('Runners currently online: %{active_runners_count}') % { active_runners_count: @active_runners_count }
 
   .row-content-block.second-block
     = form_tag admin_runners_path, id: 'runners-search', method: :get, class: 'filter-form js-filter-form' do

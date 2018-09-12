@@ -4870,7 +4870,7 @@ msgstr ""
 msgid "Runners can be placed on separate users, servers, even on your local machine."
 msgstr ""
 
-msgid "Runners currently online: %{active_runners_cnt}"
+msgid "Runners currently online: %{active_runners_count}"
 msgstr ""
 
 msgid "Runners page"
