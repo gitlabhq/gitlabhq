@@ -114,7 +114,7 @@ export default {
     },
     onSubmit(e) {
       const { value } = e.target;
-      const validatedValue = Number(value);
+      const validatedValue = parseInt(value, 10);
       const isNewValue = validatedValue !== this.weight;
 
       this.hasValidInput = validatedValue >= 0 || value === '';
@@ -188,7 +188,9 @@ export default {
         ref="editableField"
         :value="weight"
         class="form-control"
-        type="text"
+        type="number"
+        min="0"
+        placeholder="Enter a number"
         @blur="onSubmit"
         @keydown.enter="onSubmit"
       />
