@@ -10,13 +10,8 @@ module API
         success Entities::Pipeline
       end
       params do
-<<<<<<< HEAD
-        requires :ref, type: String, desc: 'The commit sha or name of a branch or tag'
-        requires :token, type: String, desc: 'The unique token of trigger or job token'
-=======
         requires :ref, type: String, desc: 'The commit sha or name of a branch or tag', allow_blank: false
-        requires :token, type: String, desc: 'The unique token of trigger'
->>>>>>> upstream/master
+        requires :token, type: String, desc: 'The unique token of trigger or job token'
         optional :variables, type: Hash, desc: 'The list of variables to be injected into build'
       end
       post ":id/(ref/:ref/)trigger/pipeline", requirements: { ref: /.+/ } do
