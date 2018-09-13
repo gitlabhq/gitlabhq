@@ -51,6 +51,18 @@ describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller 
     store_frontend_fixture(response, example.description)
   end
 
+  it 'issues/realtime_changes.json' do |example|
+    issue = create(:issue, project: project, description: "description with\n- [ ] task")
+    issue.update!(last_edited_by: admin, last_edited_at: issue.created_at + 1.minute)
+    get :realtime_changes,
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: issue.iid
+
+    expect(response).to be_success
+    store_frontend_fixture(response, example.description)
+  end
+
   private
 
   def render_issue(fixture_file_name, issue)
