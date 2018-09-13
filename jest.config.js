@@ -31,7 +31,10 @@ const config = {
 };
 
 const selfCheckPath = '<rootDir>/spec/frontend/self_check';
-if (process.env.JEST_SELF_CHECK) {
+const isSelfCheck =
+  process.env.JEST_SELF_CHECK ||
+  process.argv.some(arg => arg.includes(selfCheckPath.replace('<rootDir>', '')));
+if (isSelfCheck) {
   config.testMatch = [`${selfCheckPath}/*_spec.js`];
   config.reporters = [`${selfCheckPath}/reporter`];
 } else {
