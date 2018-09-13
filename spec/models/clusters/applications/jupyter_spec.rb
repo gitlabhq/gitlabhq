@@ -114,11 +114,7 @@ describe Clusters::Applications::Jupyter do
     end
 
     context 'when cluster belongs to a project' do
-      let(:project) { create(:project) }
-
-      before do
-        application.cluster.projects << project
-      end
+      let(:project) { application.cluster.first_project }
 
       it 'sets GitLab project id' do
         expect(values).to match(/GITLAB_PROJECT_ID: '?#{project.id}/)
