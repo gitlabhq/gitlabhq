@@ -3,6 +3,7 @@ import _ from 'underscore';
 import { headersInterceptor } from 'spec/helpers/vue_resource_helper';
 import * as actions from '~/notes/stores/actions';
 import createStore from '~/notes/stores';
+import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
 import testAction from '../../helpers/vuex_action_helper';
 import { resetStore } from '../helpers';
 import {
@@ -501,13 +502,11 @@ describe('Actions Notes Store', () => {
 
   describe('updateMergeRequestWidget', () => {
     it('calls mrWidget checkStatus', () => {
-      gl.mrWidget = {
-        checkStatus: jasmine.createSpy('checkStatus'),
-      };
+      spyOn(mrWidgetEventHub, '$emit');
 
       actions.updateMergeRequestWidget();
 
-      expect(gl.mrWidget.checkStatus).toHaveBeenCalled();
+      expect(mrWidgetEventHub.$emit).toHaveBeenCalledWith('mr.discussion.updated');
     });
   });
 });

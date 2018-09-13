@@ -10,6 +10,7 @@ import service from '../services/notes_service';
 import loadAwardsHandler from '../../awards_handler';
 import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
 import { isInViewport, scrollToElement } from '../../lib/utils/common_utils';
+import mrWidgetEventHub from '../../vue_merge_request_widget/event_hub';
 
 let eTagPoll;
 
@@ -340,7 +341,7 @@ export const fetchDiscussionDiffLines = ({ commit }, discussion) =>
   });
 
 export const updateMergeRequestWidget = () => {
-  if (gl.mrWidget) gl.mrWidget.checkStatus();
+  mrWidgetEventHub.$emit('mr.discussion.updated');
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
