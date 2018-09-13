@@ -1,5 +1,9 @@
 import 'jest-extended';
+import Translate from '~/vue_shared/translate';
+import Vue from 'vue';
 import { initializeAxios } from './helpers/axios_mock';
+
+Vue.use(Translate);
 
 const testTimeoutInMs = 1000;
 jest.setTimeout(testTimeoutInMs);
