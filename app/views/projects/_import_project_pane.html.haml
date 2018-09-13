@@ -63,4 +63,4 @@
     = form_for @project, html: { class: 'new_project' } do |f|
       %hr
       = render "shared/import_form", f: f
-      = render 'new_project_fields', f: f, project_name_id: "import-url-name"
+      = render 'new_project_fields', f: f, project_name_id: "import-url-name", hide_init_with_readme: true

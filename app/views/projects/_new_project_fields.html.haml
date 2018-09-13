@@ -1,5 +1,6 @@
 - visibility_level = params.dig(:project, :visibility_level) || default_project_visibility
 - ci_cd_only = local_assigns.fetch(:ci_cd_only, false)
+- hide_init_with_readme = local_assigns.fetch(:hide_init_with_readme, false)
 
 .row{ id: project_name_id }
   = f.hidden_field :ci_cd_only, value: ci_cd_only
@@ -48,15 +49,16 @@
   = link_to icon('question-circle'), help_page_path("public_access/public_access"), aria: { label: 'Documentation for Visibility Level' }, target: '_blank', rel: 'noopener noreferrer'
 = render 'shared/visibility_level', f: f, visibility_level: visibility_level.to_i, can_change_visibility_level: true, form_model: @project, with_label: false
 
-.form-group.row.initialize-with-readme-setting
-  %div{ :class => "col-sm-12" }
-    .form-check
-      = check_box_tag 'project[initialize_with_readme]', '1', false, class: 'form-check-input'
-      = label_tag 'project[initialize_with_readme]', class: 'form-check-label' do
-        .option-title
-          %strong Initialize repository with a README
-        .option-description
-          Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository.
+- if !hide_init_with_readme
+  .form-group.row.initialize-with-readme-setting
+    %div{ :class => "col-sm-12" }
+      .form-check
+        = check_box_tag 'project[initialize_with_readme]', '1', false, class: 'form-check-input'
+        = label_tag 'project[initialize_with_readme]', class: 'form-check-label' do
+          .option-title
+            %strong Initialize repository with a README
+          .option-description
+            Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository.
 
 = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4
 = link_to 'Cancel', dashboard_projects_path, class: 'btn btn-cancel'
