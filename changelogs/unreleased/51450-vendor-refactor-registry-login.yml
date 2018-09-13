@@ -1,0 +1,5 @@
+---
+title: Vendor Auto-DevOps.gitlab-ci.yml to refactor registry_login
+merge_request: 21714
+author: Laurent Goderre @LaurentGoderre
+type: changed
