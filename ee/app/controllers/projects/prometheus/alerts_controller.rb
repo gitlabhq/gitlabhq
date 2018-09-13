@@ -30,7 +30,7 @@ module Projects
       def create
         @alert = project.prometheus_alerts.create(alerts_params)
 
-        if @alert
+        if @alert.persisted?
           schedule_prometheus_update!
 
           render json: serialize_as_json(@alert)

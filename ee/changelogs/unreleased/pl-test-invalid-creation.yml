@@ -1,0 +1,5 @@
+---
+title: Return proper status code when creation of an alert fails
+merge_request: 7360
+author: Peter Leitzen
+type: fixed
