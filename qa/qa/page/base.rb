@@ -76,6 +76,10 @@ module QA
         find_element(name).set(content)
       end
 
+      def has_element?(name)
+        has_css?(element_selector_css(name))
+      end
+
       def within_element(name)
         page.within(element_selector_css(name)) do
           yield
