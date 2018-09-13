@@ -3,37 +3,6 @@
 import $ from 'jquery';
 import GfmAutoComplete from './gfm_auto_complete';
 import { convertPermissionToBoolean } from './lib/utils/common_utils';
-import Shortcuts from './shortcuts';
-
-function initPageShortcuts(page) {
-  const pagesWithCustomShortcuts = [
-    'projects:activity',
-    'projects:artifacts:browse',
-    'projects:artifacts:file',
-    'projects:blame:show',
-    'projects:blob:show',
-    'projects:commit:show',
-    'projects:commits:show',
-    'projects:find_file:show',
-    'projects:issues:edit',
-    'projects:issues:index',
-    'projects:issues:new',
-    'projects:issues:show',
-    'projects:merge_requests:creations:diffs',
-    'projects:merge_requests:creations:new',
-    'projects:merge_requests:edit',
-    'projects:merge_requests:index',
-    'projects:merge_requests:show',
-    'projects:network:show',
-    'projects:show',
-    'projects:tree:show',
-    'groups:show',
-  ];
-
-  if (pagesWithCustomShortcuts.indexOf(page) === -1) {
-    new Shortcuts();
-  }
-}
 
 function initGFMInput() {
   $('.js-gfm-input:not(.js-vue-textarea)').each((i, el) => {
@@ -57,7 +26,6 @@ function initGFMInput() {
 export default () => {
   const page = $('body').attr('data-page');
   if (page) {
-    initPageShortcuts(page);
     initGFMInput();
   }
 };
