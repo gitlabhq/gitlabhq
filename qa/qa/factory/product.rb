@@ -5,20 +5,20 @@ module QA
     class Product
       include Capybara::DSL
 
-      attr_reader :location
+      attr_reader :web_url
 
       Attribute = Struct.new(:name, :block)
 
-      def initialize(location)
-        @location = location
+      def initialize(web_url)
+        @web_url = web_url
       end
 
       def visit!
-        visit @location
+        visit @web_url
       end
 
-      def self.populate!(factory, location)
-        new(location).tap do |product|
+      def self.populate!(factory, web_url)
+        new(web_url).tap do |product|
           factory.class.attributes.each_value do |attribute|
             product.instance_exec(factory, attribute.block) do |factory, block|
               value = block.call(factory)

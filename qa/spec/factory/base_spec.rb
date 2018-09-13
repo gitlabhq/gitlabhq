@@ -1,4 +1,6 @@
 describe QA::Factory::Base do
+  include Support::StubENV
+
   let(:factory) { spy('factory') }
   let(:product) { spy('product') }
   let(:product_location) { 'http://product_location' }
@@ -39,19 +41,32 @@ describe QA::Factory::Base do
       expect(factory).to have_received(:something!).ordered
       expect(factory).to have_received(fabrication_method_used).ordered
     end
+
+    it 'logs the factory and build method when VERBOSE=true' do
+      stub_env('VERBOSE', 'true')
+
+      via = fabrication_method_used == :fabricate_via_api! ? 'api' : 'browser_ui'
+      expect { subject.public_send(fabrication_method_called, 'something') }
+        .to output(/Resource #{factory.class.name} built via do_fabricate_via_#{via}/)
+        .to_stdout
+    end
+
+    it 'does not log the factory and build method when VERBOSE=false' do
+      stub_env('VERBOSE', 'false')
+
+      expect { subject.public_send(fabrication_method_called, 'something') }
+        .not_to output(/Resource #{factory.class.name} built via/)
+        .to_stdout
+    end
   end
 
   describe '.fabricate!' do
-    it_behaves_like 'fabrication method', :fabricate!
-  end
-
-  describe '.fabricate_via_api!' do
     context 'when factory does not support fabrication via the API' do
       before do
         allow(factory).to receive(:api_support?).and_return(false)
       end
 
-      it_behaves_like 'fabrication method', :fabricate_via_api!, :fabricate!
+      it_behaves_like 'fabrication method', :fabricate!
     end
 
     context 'when factory supports fabrication via the API' do
@@ -59,8 +74,16 @@ describe QA::Factory::Base do
         allow(factory).to receive(:api_support?).and_return(true)
       end
 
-      it_behaves_like 'fabrication method', :fabricate_via_api!
+      it_behaves_like 'fabrication method', :fabricate!, :fabricate_via_api!
     end
+  end
+
+  describe '.fabricate_via_api!' do
+    it_behaves_like 'fabrication method', :fabricate_via_api!
+  end
+
+  describe '.fabricate_via_browser_ui!' do
+    it_behaves_like 'fabrication method', :fabricate_via_browser_ui!, :fabricate!
   end
 
   describe '.dependency' do

@@ -19,35 +19,57 @@ module QA
         raise NotImplementedError
       end
 
-      def self.fabricate_via_api!(*args, &block)
-        do_fabricate!(*args, block: block, via: :api)
-      end
-
       def self.fabricate!(*args, &block)
-        do_fabricate!(*args, block: block, via: :gui)
+        do_fabricate!(*args, block) do |factory|
+          if factory.api_support?
+            log_fabrication(:do_fabricate_via_api, factory, *args)
+          else
+            log_fabrication(:do_fabricate_via_browser_ui, factory, *args)
+          end
+        end
       end
 
-      def self.do_fabricate!(*args, block: nil, via:)
+      def self.fabricate_via_browser_ui!(*args, &block)
+        do_fabricate!(*args, block) do |factory|
+          log_fabrication(:do_fabricate_via_browser_ui, factory, *args)
+        end
+      end
+
+      def self.fabricate_via_api!(*args, &block)
+        do_fabricate!(*args, block) do |factory|
+          log_fabrication(:do_fabricate_via_api, factory, *args)
+        end
+      end
+
+      def self.do_fabricate!(*args, prepare_block)
         new.tap do |factory|
-          block.call(factory) if block
+          prepare_block.call(factory) if prepare_block
 
           dependencies.each do |signature|
             Factory::Dependency.new(factory, signature).build!
           end
 
-          start = Time.now
-          resource_url =
-            if via == :api && factory.api_support?
-              factory.fabricate_via_api!(*args)
-            else
-              via = :gui
-              factory.fabricate!(*args)
-              current_url
-            end
+          resource_web_url = yield(factory)
 
-          puts "Resource #{factory.class.name} built via '#{via}' in #{Time.now - start} seconds" if Runtime::Env.verbose?
+          break Factory::Product.populate!(factory, resource_web_url)
+        end
+      end
 
-          break Factory::Product.populate!(factory, resource_url)
+      def self.do_fabricate_via_browser_ui(factory, *args)
+        factory.fabricate!(*args)
+
+        current_url
+      end
+
+      def self.do_fabricate_via_api(factory, *args)
+        factory.fabricate_via_api!(*args)
+      end
+
+      def self.log_fabrication(method, factory, *args)
+        start = Time.now
+
+        public_send(method, factory, *args).tap do
+          puts "Resource #{factory.class.name} built via #{method} in #{Time.now - start} seconds" if Runtime::Env.verbose?
         end
       end
 

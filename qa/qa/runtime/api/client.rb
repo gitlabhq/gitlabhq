@@ -6,10 +6,10 @@ module QA
       class Client
         attr_reader :address
 
-        def initialize(address = :gitlab, personal_access_token: nil, new_session: true)
+        def initialize(address = :gitlab, personal_access_token: nil, is_new_session: true)
           @address = address
           @personal_access_token = personal_access_token
-          @new_session = new_session
+          @is_new_session = is_new_session
         end
 
         def personal_access_token
@@ -19,17 +19,13 @@ module QA
         def get_personal_access_token
           # you can set the environment variable PERSONAL_ACCESS_TOKEN
           # to use a specific access token rather than create one from the UI
-          if Runtime::Env.personal_access_token
-            Runtime::Env.personal_access_token
-          else
-            Runtime::Env.personal_access_token = create_personal_access_token
-          end
+          Runtime::Env.personal_access_token ||= create_personal_access_token
         end
 
         private
 
         def create_personal_access_token
-          if @new_session
+          if @is_new_session
             Runtime::Browser.visit(@address, Page::Main::Login) { do_create_personal_access_token }
           else
             do_create_personal_access_token

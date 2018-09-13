@@ -61,8 +61,8 @@ describe QA::Factory::ApiFabricator do
       let(:api_client) { spy('Runtime::API::Client') }
       let(:api_client_instance) { double('API Client') }
       let(:api_request) { spy('Runtime::API::Request') }
-      let(:resource_url) { 'http://example.org/api/v4/foo' }
-      let(:resource) { { id: 1, name: 'John Doe', web_url: resource_url } }
+      let(:resource_web_url) { 'http://example.org/api/v4/foo' }
+      let(:resource) { { id: 1, name: 'John Doe', web_url: resource_web_url } }
       let(:raw_get) { double('Raw GET response', code: 200, body: resource.to_json) }
 
       before do
@@ -70,16 +70,16 @@ describe QA::Factory::ApiFabricator do
         stub_const('QA::Runtime::API::Request', api_request)
 
         allow(api_client).to receive(:new).and_return(api_client_instance)
-        allow(api_request).to receive(:new).and_return(double(url: resource_url))
-        allow(subject).to receive(:get).with(resource_url).and_return(raw_get)
+        allow(api_request).to receive(:new).and_return(double(url: resource_web_url))
+        allow(subject).to receive(:get).with(resource_web_url).and_return(raw_get)
       end
 
       context 'when resource already exists' do
         it 'returns the resource URL' do
-          expect(api_request).to receive(:new).with(api_client_instance, subject.api_get_path).and_return(double(url: resource_url))
-          expect(subject).to receive(:get).with(resource_url).and_return(raw_get)
+          expect(api_request).to receive(:new).with(api_client_instance, subject.api_get_path).and_return(double(url: resource_web_url))
+          expect(subject).to receive(:get).with(resource_web_url).and_return(raw_get)
 
-          expect(subject.fabricate_via_api!).to eq(resource_url)
+          expect(subject.fabricate_via_api!).to eq(resource_web_url)
         end
 
         it 'populates api_resource with the resource' do
@@ -103,15 +103,15 @@ describe QA::Factory::ApiFabricator do
         let(:raw_post) { double('Raw POST response', code: 201, body: resource.to_json) }
 
         before do
-          allow(subject).to receive(:post).with(resource_url, subject.api_post_body).and_return(raw_post)
+          allow(subject).to receive(:post).with(resource_web_url, subject.api_post_body).and_return(raw_post)
         end
 
         it 'returns the resource URL' do
-          expect(api_request).to receive(:new).with(api_client_instance, subject.api_get_path).and_return(double(url: resource_url))
-          expect(subject).to receive(:get).with(resource_url).and_return(raw_get)
-          expect(subject).to receive(:post).with(resource_url, subject.api_post_body).and_return(raw_post)
+          expect(api_request).to receive(:new).with(api_client_instance, subject.api_get_path).and_return(double(url: resource_web_url))
+          expect(subject).to receive(:get).with(resource_web_url).and_return(raw_get)
+          expect(subject).to receive(:post).with(resource_web_url, subject.api_post_body).and_return(raw_post)
 
-          expect(subject.fabricate_via_api!).to eq(resource_url)
+          expect(subject.fabricate_via_api!).to eq(resource_web_url)
         end
 
         it 'populates api_resource with the resource' do
@@ -125,9 +125,9 @@ describe QA::Factory::ApiFabricator do
           let(:raw_post) { double('Raw POST response', code: 400, body: post_response.to_json) }
 
           it 'raises a ResourceFabricationFailedError exception' do
-            expect(api_request).to receive(:new).with(api_client_instance, subject.api_get_path).and_return(double(url: resource_url))
-            expect(subject).to receive(:get).with(resource_url).and_return(raw_get)
-            expect(subject).to receive(:post).with(resource_url, subject.api_post_body).and_return(raw_post)
+            expect(api_request).to receive(:new).with(api_client_instance, subject.api_get_path).and_return(double(url: resource_web_url))
+            expect(subject).to receive(:get).with(resource_web_url).and_return(raw_get)
+            expect(subject).to receive(:post).with(resource_web_url, subject.api_post_body).and_return(raw_post)
 
             expect { subject.fabricate_via_api! }.to raise_error(described_class::ResourceFabricationFailedError, "Fabrication of FooBarFactory using the API failed (400) with `#{post_response}`.")
             expect(subject.api_resource).to be_nil

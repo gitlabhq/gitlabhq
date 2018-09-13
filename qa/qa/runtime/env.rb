@@ -6,7 +6,7 @@ module QA
       attr_writer :user_type
 
       def verbose?
-        (ENV['VERBOSE'] =~ /^(false|no|0)$/i) != 0
+        enabled?(ENV['VERBOSE'])
       end
 
       # set to 'false' to have Chrome run visibly instead of headless
