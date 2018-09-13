@@ -504,7 +504,7 @@ PUT /user/status
 When both parameters `emoji` and `message` are empty, the status will be cleared.
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "emoji=coffee" --data "emoji=I crave coffee" https://gitlab.example.com/api/v4/user/status
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "emoji=coffee" --data "message=I crave coffee" https://gitlab.example.com/api/v4/user/status
 ```
 
 Example responses
