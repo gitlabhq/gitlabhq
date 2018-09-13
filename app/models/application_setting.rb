@@ -220,6 +220,7 @@ class ApplicationSetting < ActiveRecord::Base
   validate :terms_exist, if: :enforce_terms?
 
   before_validation :ensure_uuid!
+  before_validation :strip_sentry_values
 
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
@@ -381,6 +382,11 @@ class ApplicationSetting < ActiveRecord::Base
 
   def restricted_visibility_levels=(levels)
     super(levels.map { |level| Gitlab::VisibilityLevel.level_value(level) })
+  end
+
+  def strip_sentry_values
+    sentry_dsn.strip! if sentry_dsn.present?
+    clientside_sentry_dsn.strip! if clientside_sentry_dsn.present?
   end
 
   def performance_bar_allowed_group

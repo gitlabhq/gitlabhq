@@ -451,12 +451,16 @@ rollout 100%:
   # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable" for Security Products
   export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
 
-  function container_scanning() {
+  function registry_login() {
     if [[ -n "$CI_REGISTRY_USER" ]]; then
       echo "Logging to GitLab Container Registry with CI credentials..."
       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
       echo ""
     fi
+  }
+
+  function container_scanning() {
+    registry_login
 
     docker run -d --name db arminc/clair-db:latest
     docker run -p 6060:6060 --link db:postgres -d --name clair --restart on-failure arminc/clair-local-scan:v2.0.1
@@ -604,6 +608,8 @@ rollout 100%:
       --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
       "$name" \
       chart/
+
+    kubectl rollout status -n "$KUBE_NAMESPACE" -w "deployment/$name"
   }
 
   function scale() {
@@ -700,11 +706,7 @@ rollout 100%:
   }
 
   function build() {
-    if [[ -n "$CI_REGISTRY_USER" ]]; then
-      echo "Logging to GitLab Container Registry with CI credentials..."
-      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-      echo ""
-    fi
+    registry_login
 
     if [[ -f Dockerfile ]]; then
       echo "Building Dockerfile-based application..."
