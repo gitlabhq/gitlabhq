@@ -937,7 +937,7 @@ database (#{dbname}) using a super user and running:
 
 For MySQL you instead need to run:
 
-    GRANT ALL PRIVILEGES ON *.* TO #{user}@'%'
+    GRANT ALL PRIVILEGES ON #{dbname}.* TO #{user}@'%'
 
 Both queries will grant the user super user permissions, ensuring you don't run
 into similar problems in the future (e.g. when new tables are created).
