@@ -49,6 +49,7 @@ class ProjectsFinder < UnionFinder
     collection = by_search(collection)
     collection = by_archived(collection)
     collection = by_custom_attributes(collection)
+    collection = by_deleted_status(collection)
 
     sort(collection)
   end
@@ -129,6 +130,10 @@ class ProjectsFinder < UnionFinder
   def by_search(items)
     params[:search] ||= params[:name]
     params[:search].present? ? items.search(params[:search]) : items
+  end
+
+  def by_deleted_status(items)
+    params[:without_deleted].present? ? items.without_deleted : items
   end
 
   def sort(items)
