@@ -91,8 +91,24 @@ access][fast-ssh-lookup] for more details.
 
 ### Firewall rules
 
-Apart from the standard GitLab ports 80 (HTTP), 443 (HTTPS), and 22 (SSH) you need 5432 (PostgreSQL, primary only) to be open for GitLab Geo.
+The following table lists basic ports that must be open between the primary and secondary nodes for Geo.
+
+| Primary server | Server secondary | Protocol        |
+| -------------- | ---------------- | --------------- |
+| 80             | 80               | HTTP            |
+| 443            | 443              | TCP or HTTPS    |
+| 22             | 22               | TCP             |
+| 5432           |                  | PostgreSQL      |
+
 See the full list of ports used by GitLab in [Package defaults](https://docs.gitlab.com/omnibus/package-information/defaults.html)
+
+NOTE: **Note:**
+[Web terminal](../../../ci/environments.md#web-terminals) support requires your load balancer to correctly handle WebSocket connections.
+When using HTTP or HTTPS proxying, your load balancer must be configured to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the [web terminal](../../integration/terminal.md) integration guide for more details.
+
+NOTE: **Note:**
+When using HTTPS protocol for port 443, you will need to add an SSL certificate to the load balancers.
+If you wish to terminate SSL at the GitLab application server instead, use TCP protocol.
 
 ### LDAP
 
