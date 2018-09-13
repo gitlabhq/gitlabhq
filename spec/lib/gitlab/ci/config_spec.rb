@@ -357,7 +357,6 @@ describe Gitlab::Ci::Config do
       end
     end
   end
-<<<<<<< HEAD
 
   context "when using 'include' directive" do
     let(:project) { create(:project, :repository) }
@@ -824,6 +823,4 @@ describe Gitlab::Ci::Config do
       end
     end
   end
-=======
->>>>>>> upstream/master
 end
