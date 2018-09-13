@@ -26,7 +26,6 @@ import LazyLoader from './lazy_loader';
 import initLogoAnimation from './logo';
 import './frequent_items';
 import initBreadcrumbs from './breadcrumb';
-import initDispatcher from './dispatcher';
 import initUsagePingConsent from './usage_ping_consent';
 import initPerformanceBar from './performance_bar';
 import initSearchAutocomplete from './search_autocomplete';
@@ -274,6 +273,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // initialize field errors
   $('.gl-show-field-errors').each((i, form) => new GlFieldErrors(form));
-
-  initDispatcher();
 });
