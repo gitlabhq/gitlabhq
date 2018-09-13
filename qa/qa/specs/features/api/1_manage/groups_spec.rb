@@ -82,8 +82,7 @@ module QA
 
       get group_request_by_id.url
       expect_status(404)
-      expect(json_body).to match({message: "404 Group Not Found"})
-
+      expect(json_body).to match({ message: "404 Group Not Found" })
     end
   end
 end
