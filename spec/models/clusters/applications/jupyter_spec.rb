@@ -108,17 +108,8 @@ describe Clusters::Applications::Jupyter do
       expect(values).to include('rbac')
       expect(values).to include('proxy')
       expect(values).to include('auth')
-      expect(values).to include('singleuser')
       expect(values).to match(/clientId: '?#{application.oauth_application.uid}/)
       expect(values).to match(/callbackUrl: '?#{application.callback_url}/)
-    end
-
-    context 'when cluster belongs to a project' do
-      let(:project) { application.cluster.first_project }
-
-      it 'sets GitLab project id' do
-        expect(values).to match(/GITLAB_PROJECT_ID: '?#{project.id}/)
-      end
     end
   end
 end
