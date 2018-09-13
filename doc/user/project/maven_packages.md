@@ -12,16 +12,17 @@ This option is available only if your GitLab administrator has
 [enabled the Packages repository](../../administration/maven_packages.md).
 
 In order to use the GitLab Maven Packages repository, you must enable the
-general Packages repository. To enable (or disable) it:
+Packages repository. To enable (or disable) it:
 
 1. Navigate to your project's **Settings > General > Permissions**.
 1. Find the "Packages" feature and enable it.
 1. Click on **Save changes** for the changes to take effect.
 
 You should then be able to see the **Packages** section on the left sidebar.
-Next, you must configure your project to authorize with the Maven repository.
+Next, you must configure your project to authorize with the GitLab Maven
+repository.
 
-## Authorizing with the Maven repository
+## Authorizing with the GitLab Maven repository
 
 If a project is private or you want to upload Maven artifacts to GitLab,
 credentials will need to be provided for authorization:
@@ -90,7 +91,7 @@ on the home page of your project.
 If you have a private GitLab installation, replace `gitlab.com` with your
 domain name.
 
-## Creating maven packages with GitLab CI/CD
+## Creating Maven packages with GitLab CI/CD
 
 Once you have your repository configured to use the GitLab Maven Packages repository,
 you can configure GitLab CI/CD to build new packages automatically. The example below
