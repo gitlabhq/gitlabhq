@@ -22,17 +22,17 @@ module DashboardHelper
   def controller_action_to_child_dashboards(controller = controller_name, action = action_name)
     case "#{controller}##{action}"
     when 'projects#index', 'root#index', 'projects#starred', 'projects#trending'
-      ['projects', 'stars']
+      %w(projects, 'stars)
     when 'dashboard#activity'
-      ['starred_project_activity', 'project_activity']
+      %w(starred_project_activity, 'project_activity)
     when 'groups#index'
-      ['groups']
+      %w(groups)
     when 'todos#index'
-      ['todos']
+      %w(todos)
     when 'dashboard#issues'
-      ['issues']
+      %w(issues)
     when 'dashboard#merge_requests'
-      ['merge_requests']
+      %w(merge_requests)
     else
       []
     end
