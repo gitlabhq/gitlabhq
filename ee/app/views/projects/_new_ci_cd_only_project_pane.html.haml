@@ -28,4 +28,4 @@
         .js-toggle-content.toggle-import-form{ class: ('hide' if active_tab != 'ci_cd_only') }
           %hr
             = render "shared/import_form", f: f, ci_cd_only: true
-            = render 'new_project_fields', f: f, project_name_id: "import-url-name", ci_cd_only: true
+            = render 'new_project_fields', f: f, project_name_id: "import-url-name", ci_cd_only: true, hide_init_with_readme: true
