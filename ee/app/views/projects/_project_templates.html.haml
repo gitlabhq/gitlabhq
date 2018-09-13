@@ -21,7 +21,7 @@
   .project-fields-form
     = render 'projects/project_templates/project_fields_form'
     = f.hidden_field(:use_custom_template, value: false)
-    = render 'projects/new_project_fields', f: f, project_name_id: "template-project-name"
+    = render 'projects/new_project_fields', f: f, project_name_id: "template-project-name", hide_init_with_readme: true
 
 - else
   = render_ce 'projects/project_templates', f: f
