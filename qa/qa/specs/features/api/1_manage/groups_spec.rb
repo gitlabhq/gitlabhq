@@ -72,6 +72,7 @@ module QA
       delete group_request_by_id.url
       expect_status(202)
       expect(json_body).to match({ message: "202 Accepted" })
+      sleep 5
 
       get get_group_request_by_id.url
       expect_status(404)
