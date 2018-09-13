@@ -109,17 +109,19 @@ export default {
       <div class="text-content">
         <h4>{{ message }}</h4>
         <p v-html="subMessage"></p>
-        <new-epic
-          v-if="!hasFiltersApplied"
-          :endpoint="newEpicEndpoint"
-        />
-        <a
-          :title="__('List')"
-          :href="newEpicEndpoint"
-          class="btn btn-default"
-        >
-          <span>{{ s__('View epics list') }}</span>
-        </a>
+        <div class="text-center">
+          <new-epic
+            v-if="!hasFiltersApplied"
+            :endpoint="newEpicEndpoint"
+          />
+          <a
+            :title="__('List')"
+            :href="newEpicEndpoint"
+            class="btn btn-default"
+          >
+            <span>{{ s__('View epics list') }}</span>
+          </a>
+        </div>
       </div>
     </div>
   </div>

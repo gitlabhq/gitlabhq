@@ -8,7 +8,8 @@
         = _('The roadmap shows the progress of your epics along a timeline')
       %p
         = _('To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. Only epics in the past 3 months and the next 3 months are shown.')
-      - if can?(current_user, :create_epic, @group)
-        #new-epic-app{ data: { endpoint: request.url } }
-      = link_to group_epics_path(@group), title: 'List', class: 'btn' do
-        %span= _('View epics list')
+      .text-center
+        - if can?(current_user, :create_epic, @group)
+          #new-epic-app{ data: { endpoint: request.url } }
+        = link_to group_epics_path(@group), title: 'List', class: 'btn' do
+          %span= _('View epics list')
