@@ -34,7 +34,7 @@ Rails.application.routes.draw do
     get :callback
     post :access_token
     # This helps minimize merge conflicts with CE for this scope block
-    match ':action', via: [:get, :post], to: proc { [404, {}, ['']] }
+    match '*all', via: [:get, :post], to: proc { [404, {}, ['']] }
   end
 
   namespace :oauth do
