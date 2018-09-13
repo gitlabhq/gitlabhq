@@ -57,6 +57,7 @@ module MembershipActions
     redirect_to members_page_url
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def leave
     member = membershipable.members_and_requesters.find_by!(user_id: current_user.id)
     Members::DestroyService.new(current_user).execute(member)
@@ -77,6 +78,7 @@ module MembershipActions
       format.json { render json: { notice: notice } }
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def resend_invite
     member = membershipable.members.find(params[:id])

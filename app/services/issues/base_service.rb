@@ -31,6 +31,7 @@ module Issues
       issue.project.execute_services(issue_data, hooks_scope)
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def filter_assignee(issuable)
       return if params[:assignee_ids].blank?
 
@@ -48,6 +49,7 @@ module Issues
         params.delete(:assignee_ids)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def update_project_counter_caches?(issue)
       super || issue.confidential_changed?

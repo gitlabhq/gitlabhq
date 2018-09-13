@@ -11,13 +11,17 @@ class WebHook < ActiveRecord::Base
   validates :token, format: { without: /\n/ }
   validates :push_events_branch_filter, branch_filter: true
 
+  # rubocop: disable CodeReuse/ServiceClass
   def execute(data, hook_name)
     WebHookService.new(self, data, hook_name).execute
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
+  # rubocop: disable CodeReuse/ServiceClass
   def async_execute(data, hook_name)
     WebHookService.new(self, data, hook_name).async_execute
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   # Allow urls pointing localhost and the local network
   def allow_local_requests?

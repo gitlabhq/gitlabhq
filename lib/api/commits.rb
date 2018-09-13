@@ -136,6 +136,7 @@ module API
         use :pagination
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/repository/commits/:sha/comments', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
 
@@ -144,6 +145,7 @@ module API
 
         present paginate(notes), with: Entities::CommitNote
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Cherry pick commit into a branch' do
         detail 'This feature was introduced in GitLab 8.15'

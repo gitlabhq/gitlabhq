@@ -43,6 +43,7 @@ module Gitlab
         find_user_id(username) || project.creator_id
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def find_user_id(username)
         return nil unless username
 
@@ -53,6 +54,7 @@ module Gitlab
                               .find_by("identities.extern_uid = ? AND identities.provider = 'bitbucket'", username)
                               .try(:id)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def repo
         @repo ||= client.repo(project.import_source)
@@ -68,6 +70,7 @@ module Gitlab
         errors << { type: :wiki, errors: e.message }
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def import_issues
         return unless repo.issues_enabled?
 
@@ -101,6 +104,7 @@ module Gitlab
           end
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def import_issue_comments(issue, gitlab_issue)
         client.issue_comments(repo, issue.iid).each do |comment|

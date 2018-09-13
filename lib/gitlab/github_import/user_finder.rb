@@ -136,13 +136,17 @@ module Gitlab
         Caching.write(ID_FOR_EMAIL_CACHE_KEY % email, gitlab_id)
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def query_id_for_github_id(id)
         User.for_github_id(id).pluck(:id).first
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def query_id_for_github_email(email)
         User.by_any_email(email).pluck(:id).first
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       # Reads an ID from the cache.
       #

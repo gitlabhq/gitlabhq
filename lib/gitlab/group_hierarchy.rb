@@ -19,9 +19,11 @@ module Gitlab
 
     # Returns the set of descendants of a given relation, but excluding the given
     # relation
+    # rubocop: disable CodeReuse/ActiveRecord
     def descendants
       base_and_descendants.where.not(id: descendants_base.select(:id))
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # Returns the set of ancestors of a given relation, but excluding the given
     # relation
@@ -29,9 +31,11 @@ module Gitlab
     # Passing an `upto` will stop the recursion once the specified parent_id is
     # reached. So all ancestors *lower* than the specified ancestor will be
     # included.
+    # rubocop: disable CodeReuse/ActiveRecord
     def ancestors(upto: nil)
       base_and_ancestors(upto: upto).where.not(id: ancestors_base.select(:id))
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # Returns a relation that includes the ancestors_base set of groups
     # and all their ancestors (recursively).
@@ -75,6 +79,7 @@ module Gitlab
     # Rails thinking it's selecting data the usual way.
     #
     # If nested groups are not supported, ancestors_base is returned.
+    # rubocop: disable CodeReuse/ActiveRecord
     def all_groups
       return ancestors_base unless Group.supports_nested_groups?
 
@@ -95,9 +100,11 @@ module Gitlab
 
       read_only(relation)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def base_and_ancestors_cte(stop_id = nil)
       cte = SQL::RecursiveCTE.new(:base_and_ancestors)
 
@@ -113,7 +120,9 @@ module Gitlab
       cte << parent_query
       cte
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def base_and_descendants_cte
       cte = SQL::RecursiveCTE.new(:base_and_descendants)
 
@@ -127,6 +136,7 @@ module Gitlab
 
       cte
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def groups_table
       model.arel_table

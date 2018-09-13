@@ -6,6 +6,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   # Authorize
   before_action :authorize_admin_project_member!, except: [:index, :leave, :request_access]
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def index
     @sort = params[:sort].presence || sort_value_name
     @group_links = @project.project_group_links
@@ -25,6 +26,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     @requesters = present_members(AccessRequestsFinder.new(@project).execute(current_user))
     @project_member = @project.project_members.new
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def import
     @projects = current_user.authorized_projects.order_id_desc

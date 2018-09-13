@@ -21,9 +21,11 @@ module Gitlab
           @total_time += test_case.execution_time
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def total_count
           test_cases.values.sum(&:count)
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def total_status
           if failed_count > 0 || error_count > 0

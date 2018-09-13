@@ -4,6 +4,7 @@ module Projects
   class DetectRepositoryLanguagesService < BaseService
     attr_reader :detected_repository_languages, :programming_languages
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def execute
       repository_languages = project.repository_languages
       detection = Gitlab::LanguageDetection.new(repository, repository_languages)
@@ -28,9 +29,11 @@ module Projects
 
       project.repository_languages.reload
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def ensure_programming_languages(detection)
       existing_languages = ProgrammingLanguage.where(name: detection.languages)
       return existing_languages if detection.languages.size == existing_languages.size
@@ -42,7 +45,9 @@ module Projects
 
       existing_languages + created_languages
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def create_language(name, color)
       ProgrammingLanguage.transaction do
         ProgrammingLanguage.where(name: name).first_or_create(color: color)
@@ -50,5 +55,6 @@ module Projects
     rescue ActiveRecord::RecordNotUnique
       retry
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

@@ -97,6 +97,7 @@ class GroupsController < Groups::ApplicationController
     redirect_to root_path, status: 302, alert: "Group '#{@group.name}' was scheduled for deletion."
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def transfer
     parent_group = Group.find_by(id: params[:new_parent_group_id])
     service = ::Groups::TransferService.new(@group, current_user)
@@ -109,9 +110,11 @@ class GroupsController < Groups::ApplicationController
       render :edit
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   protected
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def authorize_create_group!
     allowed = if params[:parent_id].present?
                 parent = Group.find_by(id: params[:parent_id])
@@ -122,6 +125,7 @@ class GroupsController < Groups::ApplicationController
 
     render_404 unless allowed
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def determine_layout
     if [:new, :create].include?(action_name.to_sym)
@@ -156,6 +160,7 @@ class GroupsController < Groups::ApplicationController
     ]
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def load_events
     params[:sort] ||= 'latest_activity_desc'
 
@@ -175,6 +180,7 @@ class GroupsController < Groups::ApplicationController
       .new(current_user)
       .execute(@events, atom_request: request.format.atom?)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def user_actions
     if current_user

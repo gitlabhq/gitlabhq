@@ -58,6 +58,7 @@ module NotificationRecipientService
         @recipients ||= []
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def add_recipients(users, type, reason)
         if users.is_a?(ActiveRecord::Relation)
           users = users.includes(:notification_settings)
@@ -66,10 +67,13 @@ module NotificationRecipientService
         users = Array(users).compact
         recipients.concat(users.map { |u| make_recipient(u, type, reason) })
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def user_scope
         User.includes(:notification_settings)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def make_recipient(user, type, reason)
         NotificationRecipient.new(
@@ -112,6 +116,7 @@ module NotificationRecipientService
       end
 
       # Get project/group users with CUSTOM notification level
+      # rubocop: disable CodeReuse/ActiveRecord
       def add_custom_notifications
         user_ids = []
 
@@ -128,6 +133,7 @@ module NotificationRecipientService
 
         add_recipients(user_scope.where(id: user_ids), :watch, nil)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def add_project_watchers
         add_recipients(project_watchers, :watch, nil) if project
@@ -138,6 +144,7 @@ module NotificationRecipientService
       end
 
       # Get project users with WATCH notification level
+      # rubocop: disable CodeReuse/ActiveRecord
       def project_watchers
         project_members_ids = user_ids_notifiable_on(project)
 
@@ -151,7 +158,9 @@ module NotificationRecipientService
 
         user_scope.where(id: user_ids_with_project_setting.concat(user_ids_with_group_setting).uniq)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def group_watchers
         user_ids_with_group_global = user_ids_notifiable_on(group, :global)
         user_ids = user_ids_with_global_level_watch(user_ids_with_group_global)
@@ -159,6 +168,7 @@ module NotificationRecipientService
 
         user_scope.where(id: user_ids_with_group_setting)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def add_subscribed_users
         return unless target.respond_to? :subscribers
@@ -166,6 +176,7 @@ module NotificationRecipientService
         add_recipients(target.subscribers(project), :subscription, nil)
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def user_ids_notifiable_on(resource, notification_level = nil)
         return [] unless resource
 
@@ -177,6 +188,7 @@ module NotificationRecipientService
 
         scope.pluck(:user_id)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       # Build a list of user_ids based on project notification settings
       def select_project_members_ids(global_setting, user_ids_global_level_watch)
@@ -194,14 +206,19 @@ module NotificationRecipientService
         uids + (global_setting & user_ids_global_level_watch) - project_members
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def user_ids_with_global_level_watch(ids)
         settings_with_global_level_of(:watch, ids).pluck(:user_id)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def user_ids_with_global_level_custom(ids, action)
         settings_with_global_level_of(:custom, ids).pluck(:user_id)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def settings_with_global_level_of(level, ids)
         NotificationSetting.where(
           user_id: ids,
@@ -209,6 +226,7 @@ module NotificationRecipientService
           level: NotificationSetting.levels[level]
         )
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def add_labels_subscribers(labels: nil)
         return unless target.respond_to? :labels

@@ -10,6 +10,7 @@ class Admin::GroupsController < Admin::ApplicationController
     @groups = @groups.page(params[:page])
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def show
     @group = Group.with_statistics.joins(:route).group('routes.path').find_by_full_path(params[:id])
     @members = present_members(
@@ -18,6 +19,7 @@ class Admin::GroupsController < Admin::ApplicationController
       AccessRequestsFinder.new(@group).execute(current_user))
     @projects = @group.projects.with_statistics.page(params[:projects_page])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def new
     @group = Group.new

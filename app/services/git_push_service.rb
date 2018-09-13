@@ -94,6 +94,7 @@ class GitPushService < BaseService
     ProjectCacheWorker.perform_async(project.id, types, [:commit_count, :repository_size])
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def update_signatures
     commit_shas = last_pushed_commits.map(&:sha)
 
@@ -108,6 +109,7 @@ class GitPushService < BaseService
 
     CreateGpgSignatureWorker.perform_async(commit_shas, project.id)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   # Schedules processing of commit messages.
   def process_commit_messages

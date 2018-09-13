@@ -30,16 +30,20 @@ class Admin::ServicesController < Admin::ApplicationController
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def services_templates
     Service.available_services_names.map do |service_name|
       service_template = "#{service_name}_service".camelize.constantize
       service_template.where(template: true).first_or_create
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def service
     @service ||= Service.where(id: params[:id], template: true).first
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def whitelist_query_limiting
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42430')

@@ -34,9 +34,11 @@ module Projects
     end
 
     # Look for groups in source_project that are not in the target project
+    # rubocop: disable CodeReuse/ActiveRecord
     def non_existent_group_links
       source_project.project_group_links
                     .where.not(group_id: group_links_in_target_project)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

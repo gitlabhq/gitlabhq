@@ -66,9 +66,11 @@ module AuthHelper
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def auth_active?(provider)
     current_user.identities.exists?(provider: provider.to_s)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def unlink_allowed?(provider)
     %w(saml cas3).exclude?(provider.to_s)

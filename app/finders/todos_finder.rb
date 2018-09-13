@@ -120,6 +120,7 @@ class TodosFinder
     params[:sort] ? items.sort_by_attribute(params[:sort]) : items.order_id_desc
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_action(items)
     if action?
       items = items.where(action: to_action_id)
@@ -127,7 +128,9 @@ class TodosFinder
 
     items
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_action_id(items)
     if action_id?
       items = items.where(action: action_id)
@@ -135,7 +138,9 @@ class TodosFinder
 
     items
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_author(items)
     if author?
       items = items.where(author_id: author.try(:id))
@@ -143,7 +148,9 @@ class TodosFinder
 
     items
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_project(items)
     if project?
       items = items.where(project: project)
@@ -151,7 +158,9 @@ class TodosFinder
 
     items
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_group(items)
     if group?
       groups = group.self_and_descendants
@@ -164,6 +173,7 @@ class TodosFinder
 
     items
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def by_state(items)
     case params[:state].to_s
@@ -174,6 +184,7 @@ class TodosFinder
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_type(items)
     if type?
       items = items.where(target_type: type)
@@ -181,4 +192,5 @@ class TodosFinder
 
     items
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

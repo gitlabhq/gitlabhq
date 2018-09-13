@@ -3,6 +3,7 @@
 class CreateGpgSignatureWorker
   include ApplicationWorker
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform(commit_shas, project_id)
     # Older versions of GitPushService may push a single commit ID on the stack.
     # We need this to be backwards compatible.
@@ -26,4 +27,5 @@ class CreateGpgSignatureWorker
       end
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

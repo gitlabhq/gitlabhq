@@ -5,9 +5,11 @@ require 'uri'
 
 module ApplicationHelper
   # See https://docs.gitlab.com/ee/development/ee_features.html#code-in-app-views
+  # rubocop: disable CodeReuse/ActiveRecord
   def render_if_exists(partial, locals = {})
     render(partial, locals) if lookup_context.exists?(partial, [], true)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   # Check if a particular controller is the current one
   #
@@ -51,6 +53,7 @@ module ApplicationHelper
 
   # Define whenever show last push event
   # with suggestion to create MR
+  # rubocop: disable CodeReuse/ActiveRecord
   def show_last_push_widget?(event)
     # Skip if event is not about added or modified non-master branch
     return false unless event && event.last_push_to_non_root? && !event.rm_ref?
@@ -68,6 +71,7 @@ module ApplicationHelper
 
     true
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def hexdigest(string)
     Digest::SHA1.hexdigest string

@@ -26,10 +26,12 @@ class ImportExportCleanUpService
     Gitlab::Popen.popen(%W(find #{path} -not -path #{path} -mmin +#{mmin} -delete))
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def clean_up_export_object_files
     ImportExportUpload.where('updated_at < ?', mmin.minutes.ago).each do |upload|
       upload.remove_export_file!
       upload.save!
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

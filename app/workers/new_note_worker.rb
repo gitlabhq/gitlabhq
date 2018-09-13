@@ -5,6 +5,7 @@ class NewNoteWorker
 
   # Keep extra parameter to preserve backwards compatibility with
   # old `NewNoteWorker` jobs (can remove later)
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform(note_id, _params = {})
     if note = Note.find_by(id: note_id)
       NotificationService.new.new_note(note)
@@ -13,4 +14,5 @@ class NewNoteWorker
       Rails.logger.error("NewNoteWorker: couldn't find note with ID=#{note_id}, skipping job")
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

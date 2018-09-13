@@ -64,9 +64,11 @@ module Groups
       end
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def namespace_with_same_path?
       Namespace.exists?(path: @group.path, parent: @new_parent_group)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def update_group_attributes
       if @new_parent_group && @new_parent_group.visibility_level < @group.visibility_level
@@ -78,6 +80,7 @@ module Groups
       @group.save!
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def update_children_and_projects_visibility
       descendants = @group.descendants.where("visibility_level > ?", @new_parent_group.visibility_level)
 
@@ -90,6 +93,7 @@ module Groups
         .where("visibility_level > ?", @new_parent_group.visibility_level)
         .update_all(visibility_level: @new_parent_group.visibility_level)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def raise_transfer_error(message)
       raise TransferError, ERROR_MESSAGES[message]

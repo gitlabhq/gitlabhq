@@ -5,6 +5,7 @@ module Ci
     include ApplicationWorker
     include CronjobQueue
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def perform
       # Archive stale live traces which still resides in redis or database
       # This could happen when ArchiveTraceWorker sidekiq jobs were lost by receiving SIGKILL
@@ -19,6 +20,7 @@ module Ci
         end
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     private
 

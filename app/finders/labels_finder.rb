@@ -10,6 +10,7 @@ class LabelsFinder < UnionFinder
     @params = params
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def execute(skip_authorization: false)
     @skip_authorization = skip_authorization
     items = find_union(label_ids, Label) || Label.none
@@ -17,11 +18,13 @@ class LabelsFinder < UnionFinder
     items = by_search(items)
     sort(items)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 
   attr_reader :current_user, :params, :skip_authorization
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def label_ids
     label_ids = []
 
@@ -52,7 +55,9 @@ class LabelsFinder < UnionFinder
 
     label_ids
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def sort(items)
     if params[:sort]
       items.order_by(params[:sort])
@@ -60,13 +65,16 @@ class LabelsFinder < UnionFinder
       items.reorder(title: :asc)
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def with_title(items)
     return items if title.nil?
     return items.none if title.blank?
 
     items.where(title: title)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def by_search(labels)
     return labels unless search?
@@ -138,13 +146,14 @@ class LabelsFinder < UnionFinder
     @project
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def projects
     return @projects if defined?(@projects)
 
     @projects = if skip_authorization
                   Project.all
                 else
-                  ProjectsFinder.new(params: { non_archived: true }, current_user: current_user).execute
+                  ProjectsFinder.new(params: { non_archived: true }, current_user: current_user).execute # rubocop: disable CodeReuse/Finder
                 end
 
     @projects = @projects.in_namespace(params[:group_id]) if group?
@@ -153,6 +162,7 @@ class LabelsFinder < UnionFinder
 
     @projects
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def authorized_to_read_labels?(label_parent)
     return true if skip_authorization

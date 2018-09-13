@@ -213,9 +213,11 @@ module DiffHelper
     params[:w] == '1'
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def params_with_whitespace
     hide_whitespace? ? request.query_parameters.except(:w) : request.query_parameters.merge(w: 1)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def toggle_whitespace_link(url, options)
     options[:class] = [*options[:class], 'btn btn-default'].join(' ')

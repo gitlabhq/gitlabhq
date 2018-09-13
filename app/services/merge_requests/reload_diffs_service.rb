@@ -27,6 +27,7 @@ module MergeRequests
                                                      current_user: current_user)
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def clear_cache(new_diff)
       # Executing the iteration we cache highlighted diffs for each diff file of
       # MergeRequestDiff.
@@ -41,5 +42,6 @@ module MergeRequests
         merge_request_diff.diffs_collection.clear_cache
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

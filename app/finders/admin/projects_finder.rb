@@ -6,6 +6,7 @@ class Admin::ProjectsFinder
     @current_user = current_user
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def execute
     items = Project.without_deleted.with_statistics.with_route
     items = by_namespace_id(items)
@@ -19,6 +20,7 @@ class Admin::ProjectsFinder
     items = items.includes(namespace: [:owner, :route])
     sort(items).page(params[:page])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 
@@ -26,9 +28,11 @@ class Admin::ProjectsFinder
     params[:namespace_id].present? ? items.in_namespace(params[:namespace_id]) : items
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_visibilty_level(items)
     params[:visibility_level].present? ? items.where(visibility_level: params[:visibility_level]) : items
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def by_with_push(items)
     params[:with_push].present? ? items.with_push : items
@@ -38,9 +42,11 @@ class Admin::ProjectsFinder
     params[:abandoned].present? ? items.abandoned : items
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_last_repository_check_failed(items)
     params[:last_repository_check_failed].present? ? items.where(last_repository_check_failed: true) : items
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def by_archived(items)
     if params[:archived] == 'only'

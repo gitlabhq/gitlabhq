@@ -31,10 +31,12 @@ module Projects
     end
 
     # Look for notification_settings in source_project that are not in the target project
+    # rubocop: disable CodeReuse/ActiveRecord
     def non_existent_notifications
       source_project.notification_settings
         .select(:id)
         .where.not(user_id: users_in_target_project)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

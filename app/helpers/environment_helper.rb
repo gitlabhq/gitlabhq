@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 module EnvironmentHelper
+  # rubocop: disable CodeReuse/ActiveRecord
   def environment_for_build(project, build)
     return unless build.environment
 
     project.environments.find_by(name: build.expanded_environment_name)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def environment_link_for_build(project, build)
     environment = environment_for_build(project, build)

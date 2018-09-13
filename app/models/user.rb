@@ -61,6 +61,7 @@ class User < ActiveRecord::Base
 
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
+  # rubocop: disable CodeReuse/ServiceClass
   def update_tracked_fields!(request)
     return if Gitlab::Database.read_only?
 
@@ -71,6 +72,7 @@ class User < ActiveRecord::Base
 
     Users::UpdateService.new(self, user: self).execute(validate: false)
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   attr_accessor :force_random_password
 
@@ -455,7 +457,7 @@ class User < ActiveRecord::Base
     def find_by_personal_access_token(token_string)
       return unless token_string
 
-      PersonalAccessTokensFinder.new(state: 'active').find_by(token: token_string)&.user
+      PersonalAccessTokensFinder.new(state: 'active').find_by(token: token_string)&.user # rubocop: disable CodeReuse/Finder
     end
 
     # Returns a user for the given SSH key.
@@ -627,6 +629,7 @@ class User < ActiveRecord::Base
   # hash and `_was` variables getting munged.
   # By using an `after_commit` instead of `after_update`, we avoid the recursive callback
   # scenario, though it then requires us to use the `previous_changes` hash
+  # rubocop: disable CodeReuse/ServiceClass
   def update_emails_with_primary_email(previous_email)
     primary_email_record = emails.find_by(email: email)
     Emails::DestroyService.new(self, user: self).execute(primary_email_record) if primary_email_record
@@ -635,6 +638,7 @@ class User < ActiveRecord::Base
     # have access to the original confirmation values at this point, so just set confirmed_at
     Emails::CreateService.new(self, user: self, email: previous_email).execute(confirmed_at: confirmed_at)
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def update_invalid_gpg_signatures
     gpg_keys.each(&:update_invalid_gpg_signatures)
@@ -663,9 +667,11 @@ class User < ActiveRecord::Base
     all_expanded_groups.where(require_two_factor_authentication: true)
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def refresh_authorized_projects
     Users::RefreshAuthorizedProjectsService.new(self).execute
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def remove_project_authorizations(project_ids)
     project_authorizations.where(project_id: project_ids).delete_all
@@ -718,11 +724,13 @@ class User < ActiveRecord::Base
     authorized_projects(Gitlab::Access::REPORTER).non_archived.with_issues_enabled
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def require_ssh_key?
     count = Users::KeysCountService.new(self).count
 
     count.zero? && Gitlab::ProtocolAccess.allowed?('ssh')
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def require_password_creation_for_web?
     allow_password_authentication_for_web? && password_automatically_set?
@@ -786,6 +794,7 @@ class User < ActiveRecord::Base
     projects_limit - personal_projects_count
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def recent_push(project = nil)
     service = Users::LastPushEventService.new(self)
 
@@ -795,6 +804,7 @@ class User < ActiveRecord::Base
       service.last_event_for_user
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def several_namespaces?
     owned_groups.any? || maintainers_groups.any?
@@ -932,9 +942,11 @@ class User < ActiveRecord::Base
     email.start_with?('temp-email-for-oauth')
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def avatar_url(size: nil, scale: 2, **args)
     GravatarService.new.execute(email, size, scale, username: username)
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def primary_email_verified?
     confirmed? && !temp_oauth_email?
@@ -1000,26 +1012,32 @@ class User < ActiveRecord::Base
     system_hook_service.execute_hooks_for(self, :destroy)
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def remove_key_cache
     Users::KeysCountService.new(self).delete_cache
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def delete_async(deleted_by:, params: {})
     block if params[:hard_delete]
     DeleteUserWorker.perform_async(deleted_by.id, id, params.to_h)
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def notification_service
     NotificationService.new
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def log_info(message)
     Gitlab::AppLogger.info message
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def system_hook_service
     SystemHooksService.new
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def starred?(project)
     starred_projects.exists?(project.id)
@@ -1188,6 +1206,7 @@ class User < ActiveRecord::Base
   # See:
   #   <https://github.com/plataformatec/devise/blob/v4.0.0/lib/devise/models/lockable.rb#L92>
   #
+  # rubocop: disable CodeReuse/ServiceClass
   def increment_failed_attempts!
     return if ::Gitlab::Database.read_only?
 
@@ -1200,6 +1219,7 @@ class User < ActiveRecord::Base
       Users::UpdateService.new(self, user: self).execute(validate: false)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def access_level
     if admin?
@@ -1440,7 +1460,7 @@ class User < ActiveRecord::Base
       &creation_block
     )
 
-    Users::UpdateService.new(user, user: user).execute(validate: false)
+    Users::UpdateService.new(user, user: user).execute(validate: false) # rubocop: disable CodeReuse/ServiceClass
     user
   ensure
     Gitlab::ExclusiveLease.cancel(lease_key, uuid)

@@ -35,7 +35,7 @@ class ProjectsFinder < UnionFinder
     user = params.delete(:user)
     collection =
       if user
-        PersonalProjectsFinder.new(user, finder_params).execute(current_user)
+        PersonalProjectsFinder.new(user, finder_params).execute(current_user) # rubocop: disable CodeReuse/Finder
       else
         init_collection
       end
@@ -64,6 +64,7 @@ class ProjectsFinder < UnionFinder
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def collection_with_user
     if owned_projects?
       current_user.owned_projects
@@ -77,8 +78,10 @@ class ProjectsFinder < UnionFinder
       end
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   # Builds a collection for an anonymous user.
+  # rubocop: disable CodeReuse/ActiveRecord
   def collection_without_user
     if private_only? || owned_projects? || min_access_level?
       Project.none
@@ -86,6 +89,7 @@ class ProjectsFinder < UnionFinder
       Project.public_to_user
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def owned_projects?
     params[:owned].present?
@@ -99,9 +103,11 @@ class ProjectsFinder < UnionFinder
     params[:min_access_level].present?
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_ids(items)
     project_ids_relation ? items.where(id: project_ids_relation) : items
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def union(items)
     find_union(items, Project).with_route
@@ -119,9 +125,11 @@ class ProjectsFinder < UnionFinder
     params[:trending].present? ? items.trending : items
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_visibilty_level(items)
     params[:visibility_level].present? ? items.where(visibility_level: params[:visibility_level]) : items
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def by_tags(items)
     params[:tag].present? ? items.tagged_with(params[:tag]) : items

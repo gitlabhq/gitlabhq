@@ -6,6 +6,7 @@ module Gitlab
           encode(node[order_field].to_s)
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def sliced_nodes
           @sliced_nodes ||=
             begin
@@ -17,7 +18,9 @@ module Gitlab
               sliced
             end
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def paged_nodes
           if first && last
             raise Gitlab::Graphql::Errors::ArgumentError.new("Can only provide either `first` or `last`, not both")
@@ -29,6 +32,7 @@ module Gitlab
             sliced_nodes.limit(limit_value)
           end
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         private
 

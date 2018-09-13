@@ -236,14 +236,18 @@ class Group < Namespace
     system_hook_service.execute_hooks_for(self, :destroy)
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def system_hook_service
     SystemHooksService.new
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
+  # rubocop: disable CodeReuse/ServiceClass
   def refresh_members_authorized_projects(blocking: true)
     UserProjectAccessChangedService.new(user_ids_for_project_authorizations)
       .execute(blocking: blocking)
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def user_ids_for_project_authorizations
     members_with_parents.pluck(:user_id)

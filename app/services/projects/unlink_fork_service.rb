@@ -2,6 +2,7 @@
 
 module Projects
   class UnlinkForkService < BaseService
+    # rubocop: disable CodeReuse/ActiveRecord
     def execute
       return unless @project.forked?
 
@@ -26,6 +27,7 @@ module Projects
       @project.fork_network_member.destroy
       @project.forked_project_link.destroy
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def refresh_forks_count(project)
       Projects::ForksCountService.new(project).refresh_cache

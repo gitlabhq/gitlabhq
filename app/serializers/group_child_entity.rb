@@ -66,11 +66,13 @@ class GroupChildEntity < Grape::Entity
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def membership
     return unless request.current_user
 
     @membership ||= request.current_user.members.find_by(source: object)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def project?
     object.is_a?(Project)

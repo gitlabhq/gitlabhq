@@ -62,7 +62,7 @@
                 %th
             %tbody
               - @authorized_apps.each do |app|
-                - token = app.authorized_tokens.order('created_at desc').first
+                - token = app.authorized_tokens.order('created_at desc').first # rubocop: disable CodeReuse/ActiveRecord
                 %tr{ id: "application_#{app.id}" }
                   %td= app.name
                   %td= token.created_at
