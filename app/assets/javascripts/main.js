@@ -28,6 +28,7 @@ import './frequent_items';
 import initBreadcrumbs from './breadcrumb';
 import initDispatcher from './dispatcher';
 import initUsagePingConsent from './usage_ping_consent';
+import initPerformanceBar from './performance_bar';
 import initSearchAutocomplete from './search_autocomplete';
 import GlFieldErrors from './gl_field_errors';
 
@@ -80,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initUsagePingConsent();
 
   if (document.querySelector('.search')) initSearchAutocomplete();
+  if (document.querySelector('#js-peek')) initPerformanceBar({ container: '#js-peek' });
 
   // Set the default path for all cookies to GitLab's root directory
   Cookies.defaults.path = gon.relative_url_root || '/';

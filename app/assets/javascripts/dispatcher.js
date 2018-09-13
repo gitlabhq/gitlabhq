@@ -4,7 +4,6 @@ import $ from 'jquery';
 import GfmAutoComplete from './gfm_auto_complete';
 import { convertPermissionToBoolean } from './lib/utils/common_utils';
 import Shortcuts from './shortcuts';
-import performanceBar from './performance_bar';
 
 function initPageShortcuts(page) {
   const pagesWithCustomShortcuts = [
@@ -55,17 +54,10 @@ function initGFMInput() {
   });
 }
 
-function initPerformanceBar() {
-  if (document.querySelector('#js-peek')) {
-    performanceBar({ container: '#js-peek' });
-  }
-}
-
 export default () => {
   const page = $('body').attr('data-page');
   if (page) {
     initPageShortcuts(page);
     initGFMInput();
-    initPerformanceBar();
   }
 };
