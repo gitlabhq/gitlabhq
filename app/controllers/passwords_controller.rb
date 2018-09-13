@@ -5,11 +5,8 @@ class PasswordsController < Devise::PasswordsController
   before_action :check_password_authentication_available, only: [:create]
   before_action :throttle_reset,      only: [:create]
 
-<<<<<<< HEAD
   prepend EE::PasswordsController
 
-=======
->>>>>>> upstream/master
   # rubocop: disable CodeReuse/ActiveRecord
   def edit
     super
