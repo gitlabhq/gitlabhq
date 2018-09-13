@@ -23,3 +23,8 @@ afterEach(() => {
 });
 
 initializeAxios(beforeEach, afterEach);
+
+process.on('unhandledRejection', (error) => {
+  console.error('Unhandled Promise rejection:', error);
+  process.exit(1);
+});
