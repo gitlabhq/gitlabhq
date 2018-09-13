@@ -68,7 +68,7 @@ function setSearchOptions() {
   }
 }
 
-export default class SearchAutocomplete {
+export class SearchAutocomplete {
   constructor({ wrap, optsEl, autocompletePath, projectId, projectRef } = {}) {
     setSearchOptions();
     this.bindEventContext();
@@ -498,4 +498,8 @@ export default class SearchAutocomplete {
 
     this.dropdownMenu.toggleClass('fade-out', !this.isScrolledUp());
   }
+}
+
+export default function initSearchAutocomplete(opts) {
+  return new SearchAutocomplete(opts);
 }

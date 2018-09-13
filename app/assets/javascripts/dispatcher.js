@@ -4,15 +4,7 @@ import $ from 'jquery';
 import GfmAutoComplete from './gfm_auto_complete';
 import { convertPermissionToBoolean } from './lib/utils/common_utils';
 import Shortcuts from './shortcuts';
-import SearchAutocomplete from './search_autocomplete';
 import performanceBar from './performance_bar';
-
-function initSearch() {
-  // Only when search form is present
-  if ($('.search').length) {
-    return new SearchAutocomplete();
-  }
-}
 
 function initPageShortcuts(page) {
   const pagesWithCustomShortcuts = [
@@ -70,8 +62,6 @@ function initPerformanceBar() {
 }
 
 export default () => {
-  initSearch();
-
   const page = $('body').attr('data-page');
   if (page) {
     initPageShortcuts(page);

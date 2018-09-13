@@ -28,6 +28,7 @@ import './frequent_items';
 import initBreadcrumbs from './breadcrumb';
 import initDispatcher from './dispatcher';
 import initUsagePingConsent from './usage_ping_consent';
+import initSearchAutocomplete from './search_autocomplete';
 import GlFieldErrors from './gl_field_errors';
 
 // expose jQuery as global (TODO: remove these)
@@ -77,6 +78,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initTodoToggle();
   initLogoAnimation();
   initUsagePingConsent();
+
+  if (document.querySelector('.search')) initSearchAutocomplete();
 
   // Set the default path for all cookies to GitLab's root directory
   Cookies.defaults.path = gon.relative_url_root || '/';
