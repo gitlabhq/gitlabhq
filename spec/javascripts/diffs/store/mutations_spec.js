@@ -290,11 +290,11 @@ describe('DiffsStoreMutations', () => {
         diffPositionByLineCode,
       });
 
-      // expect(state.diffFiles[0].parallelDiffLines[0].left.discussions.length).toEqual(2);
-      // expect(state.diffFiles[0].parallelDiffLines[0].left.discussions[1].id).toEqual(2);
+      expect(state.diffFiles[0].parallelDiffLines[0].left.discussions.length).toEqual(2);
+      expect(state.diffFiles[0].parallelDiffLines[0].left.discussions[1].id).toEqual(2);
 
-      // expect(state.diffFiles[0].highlightedDiffLines[0].discussions.length).toEqual(2);
-      // expect(state.diffFiles[0].highlightedDiffLines[0].discussions[1].id).toEqual(2);
+      expect(state.diffFiles[0].highlightedDiffLines[0].discussions.length).toEqual(2);
+      expect(state.diffFiles[0].highlightedDiffLines[0].discussions[1].id).toEqual(2);
     });
   });
 
