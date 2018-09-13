@@ -309,7 +309,7 @@
                   %span
                     = _('General')
             = nav_link(controller: :project_members) do
-              = link_to project_project_members_path(@project), title: _('Members') do
+              = link_to project_project_members_path(@project), title: _('Members'), class: 'qa-link-members-settings' do
                 %span
                   = _('Members')
             - if can_edit

@@ -180,6 +180,7 @@ module QA
         autoload :SecretVariables, 'qa/page/project/settings/secret_variables'
         autoload :Runners, 'qa/page/project/settings/runners'
         autoload :MergeRequest, 'qa/page/project/settings/merge_request'
+        autoload :Members, 'qa/page/project/settings/members'
       end
 
       module Issue
@@ -267,6 +268,7 @@ module QA
       autoload :GroupsFilter, 'qa/page/component/groups_filter'
       autoload :Select2, 'qa/page/component/select2'
       autoload :DropdownFilter, 'qa/page/component/dropdown_filter'
+      autoload :UsersSelect, 'qa/page/component/users_select'
 
       module Issuable
         autoload :Common, 'qa/page/component/issuable/common'
