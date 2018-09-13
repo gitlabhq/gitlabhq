@@ -86,7 +86,7 @@ website with GitLab Pages
 - [Syntax highlighting](highlighting.md): An alternative to customize
 your code blocks, overriding GitLab's default choice of language
 - [Badges](badges.md): Badges for the project overview
-- [Maven packages](maven_packages.md): Your private Maven repository in GitLab
+- [Maven packages](packages/maven.md): Your private Maven repository in GitLab **[PREMIUM]**
 - [Code owners](code_owners.md): Specify code owners for certain files **[STARTER]**
 
 ### Project's integrations

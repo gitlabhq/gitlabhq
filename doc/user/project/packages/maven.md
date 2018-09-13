@@ -5,11 +5,13 @@
 With the GitLab [Maven](https://maven.apache.org) Packages repository, every
 project can have its own space to store its Maven artifacts.
 
+![GitLab Maven repository](img/maven_package_view.png)
+
 ## Enabling the Packages repository
 
 NOTE: **Note:**
 This option is available only if your GitLab administrator has
-[enabled the Packages repository](../../administration/maven_packages.md).
+[enabled the Packages repository](../../../administration/maven_packages.md).
 
 In order to use the GitLab Maven Packages repository, you must enable the
 Packages repository. To enable (or disable) it:
@@ -27,7 +29,7 @@ repository.
 If a project is private or you want to upload Maven artifacts to GitLab,
 credentials will need to be provided for authorization:
 
-1. Create a new [personal access token](../profile/personal_access_tokens.md)
+1. Create a new [personal access token](../../profile/personal_access_tokens.md)
    with the `api` scope.
 1. Add a corresponding section to your
    [`settings.xml`](https://maven.apache.org/settings.html) file:
@@ -54,8 +56,8 @@ You should now be able to upload Maven artifacts to your project.
 
 ## Configuring your project to use the GitLab Maven repository URL
 
-To download packages from GitLab, you need a `repository` section in your
-`pom.xml` file:
+To download and upload packages from GitLab, you need a `repository` and
+`distributionManagement` section respectively in your `pom.xml` file:
 
 ```xml
 <repositories>
@@ -64,12 +66,6 @@ To download packages from GitLab, you need a `repository` section in your
     <url>https://gitlab.com/api/v4/projects/PROJECT_ID/packages/maven</url>
   </repository>
 </repositories>
-```
-
-Similarly, to upload packages to GitLab, you need a `distributionManagement`
-section in your `pom.xml` file:
-
-```xml
 <distributionManagement>
   <repository>
     <id>gitlab-maven</id>
@@ -88,8 +84,21 @@ The `id` must be the same with what you
 In both examples, replace `PROJECT_ID` with your project ID which can be found
 on the home page of your project.
 
-If you have a private GitLab installation, replace `gitlab.com` with your
+If you have a self-hosted GitLab installation, replace `gitlab.com` with your
 domain name.
+
+## Uploading packages
+
+Once you have set up the [authorization](#authorizing-with-the-gitlab-maven-repository)
+and [configuration](#configuring-your-project-to-use-the-gitlab-maven-repository-url),
+test to upload a Maven artifact from a project of yours:
+
+```sh
+mvn deploy
+```
+
+You can then navigate to your project's **Packages** page and see the uploaded
+artifacts or even delete them.
 
 ## Creating Maven packages with GitLab CI/CD
 
@@ -120,6 +129,31 @@ shows how to create a new package each time the `master` branch is updated:
     </settings>
     ```
 
+1. Make sure your `pom.xml` file includes the following:
+
+    ```xml
+    <repositories>
+      <repository>
+        <id>gitlab-maven</id>
+        <url>https://gitlab.com/api/v4/projects/PROJECT_ID/packages/maven</url>
+      </repository>
+    </repositories>
+    <distributionManagement>
+      <repository>
+        <id>gitlab-maven</id>
+        <url>https://gitlab.com/api/v4/projects/PROJECT_ID/packages/maven</url>
+      </repository>
+      <snapshotRepository>
+        <id>gitlab-maven</id>
+        <url>https://gitlab.com/api/v4/projects/PROJECT_ID/packages/maven</url>
+      </snapshotRepository>
+    </distributionManagement>
+    ```
+
+    TIP: **Tip:**
+    You can either leave GitLab CI/CD to replace your project ID value while
+    the deploy job is running or hardcode your project's ID.
+
 1. Add a `deploy` job to your `.gitlab-ci.yml` file:
 
     ```yaml
@@ -128,6 +162,7 @@ shows how to create a new package each time the `master` branch is updated:
       script:
         - 'cp ci_settings.xml /root/.m2/settings.xml'
         - 'sed -i "s/CI_JOB_TOKEN/${CI_JOB_TOKEN}/g" /root/.m2/settings.xml'
+        - 'sed -i "s/PROJECT_ID/${CI_PROJECT_ID}/g" pom.xml'
         - 'mvn deploy'
       only:
         - master
@@ -137,6 +172,6 @@ shows how to create a new package each time the `master` branch is updated:
 
 The next time the `deploy` job runs, it will copy `ci_settings.xml` to the
 user's home location (in this case the user is `root` since it runs in a
-Docker container), and `sed` will replace the placeholder `CI_JOB_TOKEN`
-value with the contents of the actual [`CI_JOB_TOKEN`
-environment variable](../../ci/variables/README.md#predefined-variables-environment-variables).
+Docker container), and `sed` will replace the placeholder values with the
+contents of the actual
+[environment variables](../../../ci/variables/README.md#predefined-variables-environment-variables).

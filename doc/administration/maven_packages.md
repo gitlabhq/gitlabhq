@@ -7,14 +7,14 @@ in GitLab 11.3. To learn how to use
 When the GitLab Maven repository is enabled, every project in GitLab will have
 its own space to store [Maven](https://maven.apache.org/) packages.
 
-To learn how to use it, see the [user documentation](../user/project/maven_packages.md).
+To learn how to use it, see the [user documentation](../user/project/packages/maven.md).
 
 ## Enabling the Packages repository
 
 NOTE: **Note:**
 Once enabled, newly created projects will have the Packages feature enabled by
 default. Existing projects will need to
-[explicitly enabled it](../user/project/maven_packages.md#enabling-the-packages-repository).
+[explicitly enabled it](../user/project/packages/maven.md#enabling-the-packages-repository).
 
 To enable the Packages repository:
 
@@ -82,18 +82,14 @@ upload the maven packages:
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines (uncomment where
    necessary):
 
-
-
-
-
     ```ruby
     gitlab_rails['packages_enabled'] = true
     gitlab_rails['packages_storage_path'] = "/var/opt/gitlab/gitlab-rails/shared/packages"
     gitlab_rails['packages_object_store_enabled'] = true
-    gitlab_rails['packages_object_store_remote_directory'] = "packages" # The bucket name
-    gitlab_rails['packages_object_store_direct_upload'] = false         # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false)
-    gitlab_rails['packages_object_store_background_upload'] = true      # Temporary option to limit automatic upload (Default: true)
-    gitlab_rails['packages_object_store_proxy_download'] = false        # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
+    gitlab_rails['packages_object_store_remote_directory'] = "packages" # The bucket name.
+    gitlab_rails['packages_object_store_direct_upload'] = false         # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false).
+    gitlab_rails['packages_object_store_background_upload'] = true      # Temporary option to limit automatic upload (Default: true).
+    gitlab_rails['packages_object_store_proxy_download'] = false        # Passthrough all downloads via GitLab instead of using Redirects to Object Storage.
     gitlab_rails['packages_object_store_connection'] = {
       ##
       ## If the provider is AWS S3, uncomment the following
@@ -107,8 +103,8 @@ upload the maven packages:
       ##
       #'host' => 's3.amazonaws.com',
       #'aws_signature_version' => 4             # For creation of signed URLs. Set to 2 if provider does not support v4.
-      #'endpoint' => 'https://s3.amazonaws.com' # Useful for S3-compliant services such as DigitalOcean Spaces
-      #'path_style' => false                    # If true, use 'host/bucket_name/object' instead of 'bucket_name.host/object'
+      #'endpoint' => 'https://s3.amazonaws.com' # Useful for S3-compliant services such as DigitalOcean Spaces.
+      #'path_style' => false                    # If true, use 'host/bucket_name/object' instead of 'bucket_name.host/object'.
     }
     ```
 
@@ -116,7 +112,7 @@ upload the maven packages:
 
 **Installations from source**
 
-1. Edit the `packages` section in `config/gitlab.yml`:
+1. Edit the `packages` section in `config/gitlab.yml` (uncomment where necessary):
 
     ```yaml
       packages:
@@ -127,10 +123,10 @@ upload the maven packages:
         #storage_path: shared/packages
         object_store:
           enabled: false
-          remote_directory: packages # The bucket name
-          #direct_upload: false      # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false)
-          #background_upload: true   # Temporary option to limit automatic upload (Default: true)
-          #proxy_download: false     # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
+          remote_directory: packages # The bucket name.
+          #direct_upload: false      # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false).
+          #background_upload: true   # Temporary option to limit automatic upload (Default: true).
+          #proxy_download: false     # Passthrough all downloads via GitLab instead of using Redirects to Object Storage.
           connection:
             ##
             ## If the provider is AWS S3, uncomment the following
@@ -142,9 +138,10 @@ upload the maven packages:
             ##
             ## If the provider is other than AWS (an S3-compatible one), uncomment the following
             ##
-            #host: 's3.amazonaws.com'             # default: s3.amazonaws.com
-            #endpoint: 'https://s3.amazonaws.com' # Useful for S3-compliant services such as DigitalOcean Spaces
-            #path_style: false                    # If true, use 'host/bucket_name/object' instead of 'bucket_name.host/object'
+            #host: 's3.amazonaws.com'             # default: s3.amazonaws.com.
+            #aws_signature_version: 4             # For creation of signed URLs. Set to 2 if provider does not support v4.
+            #endpoint: 'https://s3.amazonaws.com' # Useful for S3-compliant services such as DigitalOcean Spaces.
+            #path_style: false                    # If true, use 'host/bucket_name/object' instead of 'bucket_name.host/object'.
     ```
 
 1. [Restart GitLab] for the changes to take effect.
