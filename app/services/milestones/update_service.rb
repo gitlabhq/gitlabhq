@@ -2,8 +2,11 @@
 
 module Milestones
   class UpdateService < Milestones::BaseService
+<<<<<<< HEAD
     prepend EE::Milestones::UpdateService
 
+=======
+>>>>>>> upstream/master
     # rubocop: disable CodeReuse/ActiveRecord
     def execute(milestone)
       state = params[:state_event]

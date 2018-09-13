@@ -25,6 +25,10 @@ module API
           requires :eventable_id, types: [Integer, String], desc: 'The ID of the eventable'
           use :pagination
         end
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
         # rubocop: disable CodeReuse/ActiveRecord
         get ":id/#{eventables_str}/:eventable_id/resource_label_events" do
           eventable = find_noteable(parent_type, eventables_str, params[:eventable_id])

@@ -36,12 +36,15 @@ module Gitlab
       base_and_ancestors(upto: upto).where.not(id: ancestors_base.select(:id))
     end
     # rubocop: enable CodeReuse/ActiveRecord
+<<<<<<< HEAD
 
     # rubocop: disable CodeReuse/ActiveRecord
     def roots
       base_and_ancestors.where(namespaces: { parent_id: nil })
     end
     # rubocop: enable CodeReuse/ActiveRecord
+=======
+>>>>>>> upstream/master
 
     # Returns a relation that includes the ancestors_base set of groups
     # and all their ancestors (recursively).

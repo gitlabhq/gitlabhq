@@ -85,12 +85,15 @@ class UsersFinder
     users.external
   end
   # rubocop: enable CodeReuse/ActiveRecord
+<<<<<<< HEAD
 
   def by_non_ldap(users)
     return users unless params[:skip_ldap]
 
     users.non_ldap
   end
+=======
+>>>>>>> upstream/master
 
   def by_2fa(users)
     case params[:two_factor]

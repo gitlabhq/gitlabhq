@@ -2,8 +2,11 @@
 
 module Applications
   class CreateService
+<<<<<<< HEAD
     prepend ::EE::Applications::CreateService
 
+=======
+>>>>>>> upstream/master
     # rubocop: disable CodeReuse/ActiveRecord
     def initialize(current_user, params)
       @current_user = current_user

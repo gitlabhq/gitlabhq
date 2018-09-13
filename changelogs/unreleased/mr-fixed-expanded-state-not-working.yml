@@ -1,0 +1,5 @@
+---
+title: Fixed resolved discussions not toggling expanded state on changes tab
+merge_request: 21676
+author:
+type: fixed

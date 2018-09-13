@@ -19,6 +19,7 @@ module Search
       @projects = super.inside_path(group.full_path)
     end
     # rubocop: enable CodeReuse/ActiveRecord
+<<<<<<< HEAD
 
     # rubocop: disable CodeReuse/ActiveRecord
     def elastic_projects
@@ -29,5 +30,7 @@ module Search
     def elastic_global
       false
     end
+=======
+>>>>>>> upstream/master
   end
 end

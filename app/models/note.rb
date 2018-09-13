@@ -185,10 +185,13 @@ class Note < ActiveRecord::Base
     end
   end
 
+<<<<<<< HEAD
   def searchable?
     !system
   end
 
+=======
+>>>>>>> upstream/master
   # rubocop: disable CodeReuse/ServiceClass
   def cross_reference?
     return unless system?
