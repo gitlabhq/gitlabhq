@@ -1752,7 +1752,7 @@ describe Gitlab::Git::Repository, :seed_helper do
 
   describe '#checksum' do
     it 'calculates the checksum for non-empty repo' do
-      expect(repository.checksum).to eq '4be7d24ce7e8d845502d599b72d567d23e6a40c0'
+      expect(repository.checksum).to eq '51d0a9662681f93e1fee547a6b7ba2bcaf716059'
     end
 
     it 'returns 0000000000000000000000000000000000000000 for an empty repo' do
