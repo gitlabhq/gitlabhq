@@ -2,6 +2,12 @@ import { uniqueId } from 'underscore';
 import axios from '~/lib/utils/axios_utils';
 import MockAdapter from 'axios-mock-adapter';
 
+axios.defaults.adapter = config => {
+  const error = new Error(`Unexpected unmocked request: ${JSON.stringify(config, null, 2)}`);
+  error.config = config;
+  return Promise.reject(error);
+};
+
 const axiosMock = new MockAdapter(axios);
 
 const pendingRequests = {};

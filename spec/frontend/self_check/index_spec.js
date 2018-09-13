@@ -59,5 +59,12 @@ describe('frontend test suite self check', () => {
 
       axios.get(dummyUrl);
     });
+
+    it('unmocked request', () => {
+      const dummyUrl = '/some/unmocked/request';
+      axiosMock.restore();
+
+      return axios.get(dummyUrl);
+    });
   });
 });
