@@ -1,5 +1,5 @@
 ---
 title: Ensure the schema is loaded with post_migrations included
-merge_request:
+merge_request: 21689
 author:
 type: changed
