@@ -3,7 +3,6 @@
 import $ from 'jquery';
 import GfmAutoComplete from './gfm_auto_complete';
 import { convertPermissionToBoolean } from './lib/utils/common_utils';
-import GlFieldErrors from './gl_field_errors';
 import Shortcuts from './shortcuts';
 import SearchAutocomplete from './search_autocomplete';
 import performanceBar from './performance_bar';
@@ -13,12 +12,6 @@ function initSearch() {
   if ($('.search').length) {
     return new SearchAutocomplete();
   }
-}
-
-function initFieldErrors() {
-  $('.gl-show-field-errors').each((i, form) => {
-    new GlFieldErrors(form);
-  });
 }
 
 function initPageShortcuts(page) {
@@ -78,7 +71,6 @@ function initPerformanceBar() {
 
 export default () => {
   initSearch();
-  initFieldErrors();
 
   const page = $('body').attr('data-page');
   if (page) {

@@ -28,6 +28,7 @@ import './frequent_items';
 import initBreadcrumbs from './breadcrumb';
 import initDispatcher from './dispatcher';
 import initUsagePingConsent from './usage_ping_consent';
+import GlFieldErrors from './gl_field_errors';
 
 // expose jQuery as global (TODO: remove these)
 window.jQuery = jQuery;
@@ -265,6 +266,9 @@ document.addEventListener('DOMContentLoaded', () => {
         removeFlashClickListener(flashEl);
       });
   }
+
+  // initialize field errors
+  $('.gl-show-field-errors').each((i, form) => new GlFieldErrors(form));
 
   initDispatcher();
 });
