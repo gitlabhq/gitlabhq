@@ -146,6 +146,21 @@ describe Projects::Prometheus::AlertsController do
       expect(response).to have_gitlab_http_status(200)
       expect(JSON.parse(response.body)).to include(alert_params)
     end
+
+    context 'with a project non-specific environment' do
+      let(:environment) { create(:environment) }
+
+      it 'returns 204 status' do
+        post :create, project_params(
+          operator: ">",
+          threshold: "1",
+          environment_id: environment.id,
+          prometheus_metric_id: metric.id
+        )
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+    end
   end
 
   describe 'POST #update' do
