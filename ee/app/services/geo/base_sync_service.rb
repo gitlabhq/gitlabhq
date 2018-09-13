@@ -122,9 +122,11 @@ module Geo
       false
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def registry
       @registry ||= Geo::ProjectRegistry.find_or_initialize_by(project_id: project.id)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def mark_sync_as_successful(missing_on_primary: false)
       log_info("Marking #{type} sync as successful")
@@ -189,6 +191,7 @@ module Geo
       @temp_repo ||= ::Repository.new(repository.full_path, repository.project, disk_path: disk_path_temp, is_wiki: repository.is_wiki)
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def clean_up_temporary_repository
       exists = gitlab_shell.exists?(project.repository_storage, disk_path_temp + '.git')
 
@@ -196,6 +199,7 @@ module Geo
         raise Gitlab::Shell::Error, "Temporary #{type} can not be removed"
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def set_temp_repository_as_main
       log_info(

@@ -73,6 +73,7 @@ module API
         optional :developers_can_push, type: Boolean, desc: 'Flag if developers can push to that branch'
         optional :developers_can_merge, type: Boolean, desc: 'Flag if developers can merge to that branch'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       put ':id/repository/branches/:branch/protect', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         authorize_admin_project
 
@@ -100,6 +101,7 @@ module API
           render_api_error!(protected_branch.errors.full_messages, 422)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       # Note: This API will be deprecated in favor of the protected branches API.
       desc 'Unprotect a single branch' do
@@ -108,6 +110,7 @@ module API
       params do
         requires :branch, type: String, desc: 'The name of the branch', allow_blank: false
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       put ':id/repository/branches/:branch/unprotect', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         authorize_admin_project
 
@@ -117,6 +120,7 @@ module API
 
         present branch, with: Entities::Branch, current_user: current_user, project: user_project
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Create branch' do
         success Entities::Branch

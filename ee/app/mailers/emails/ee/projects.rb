@@ -18,6 +18,7 @@ module Emails
              subject: subject('Mirror user changed'))
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def prometheus_alert_fired_email(project_id, user_id, alert_params)
         alert_metric_id = alert_params["labels"]["gitlab_alert_id"]
 
@@ -36,6 +37,7 @@ module Emails
 
         mail(to: user.notification_email, subject: subject(subject_text))
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

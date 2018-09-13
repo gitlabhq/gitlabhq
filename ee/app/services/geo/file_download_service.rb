@@ -47,6 +47,7 @@ module Geo
       log_info("File download", metadata)
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def update_registry(bytes_downloaded, mark_as_synced:, missing_on_primary: false)
       registry =
         if object_type.to_sym == :job_artifact
@@ -75,6 +76,7 @@ module Geo
 
       registry.save
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def lease_key
       "file_download_service:#{object_type}:#{object_db_id}"

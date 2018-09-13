@@ -7,6 +7,7 @@ module EE
       private
 
       override :update_repository_check_status
+      # rubocop: disable CodeReuse/ActiveRecord
       def update_repository_check_status(project, healthy)
         return super unless ::Gitlab::Geo.secondary?
 
@@ -18,6 +19,7 @@ module EE
         )
         project_registry.save!
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

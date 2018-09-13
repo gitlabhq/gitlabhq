@@ -10,9 +10,11 @@ class LogFinder
     @params = params
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def execute
     AuditEvent.order(id: :desc).where(conditions).page(@params[:page]).per(PER_PAGE)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 

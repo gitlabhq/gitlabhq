@@ -225,6 +225,7 @@ module Gitlab
     # Ex.
     #   remove_keys_not_found_in_db
     #
+    # rubocop: disable CodeReuse/ActiveRecord
     def remove_keys_not_found_in_db
       return unless self.authorized_keys_enabled?
 
@@ -243,6 +244,7 @@ module Gitlab
         end
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # Iterate over all ssh key IDs from gitlab shell, in batches
     #
@@ -326,9 +328,11 @@ module Gitlab
     #   exists?(storage, 'gitlab')
     #   exists?(storage, 'gitlab/cookies.git')
     #
+    # rubocop: disable CodeReuse/ActiveRecord
     def exists?(storage, dir_name)
       Gitlab::GitalyClient::NamespaceService.new(storage).exists?(dir_name)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     protected
 

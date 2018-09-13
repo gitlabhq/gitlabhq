@@ -36,6 +36,7 @@ module EE
           end
 
           # Add ssh keys that are in LDAP but not in GitLab
+          # rubocop: disable CodeReuse/ActiveRecord
           def add_new_ssh_keys
             keys = ldap_user.ssh_keys - user.keys.ldap.pluck(:key)
 
@@ -50,8 +51,10 @@ module EE
               end
             end
           end
+          # rubocop: enable CodeReuse/ActiveRecord
 
           # Remove ssh keys that do not exist in LDAP any more
+          # rubocop: disable CodeReuse/ActiveRecord
           def remove_old_ssh_keys
             keys = user.keys.ldap.where.not(key: ldap_user.ssh_keys)
 
@@ -63,8 +66,10 @@ module EE
               end
             end
           end
+          # rubocop: enable CodeReuse/ActiveRecord
 
           # Update user Kerberos identity with Kerberos principal name from Active Directory
+          # rubocop: disable CodeReuse/ActiveRecord
           def update_kerberos_identity
             # there can be only one Kerberos identity in GitLab; if the user has a Kerberos identity in AD,
             # replace any existing Kerberos identity for the user
@@ -80,6 +85,7 @@ module EE
                 "error messages: #{kerberos_identity.errors.messages}"
             end
           end
+          # rubocop: enable CodeReuse/ActiveRecord
 
           # Update user email if it changed in LDAP
           def update_email
@@ -110,6 +116,7 @@ module EE
             ldap_config.active_directory && (::Gitlab.config.kerberos.enabled || ::AuthHelper.kerberos_enabled? )
           end
 
+          # rubocop: disable CodeReuse/ActiveRecord
           def update_memberships
             return if ldap_user.nil? || ldap_user.group_cns.empty?
 
@@ -119,6 +126,7 @@ module EE
 
             ::LdapGroupSyncWorker.perform_async(group_ids, provider) if group_ids.any?
           end
+          # rubocop: enable CodeReuse/ActiveRecord
         end
       end
     end

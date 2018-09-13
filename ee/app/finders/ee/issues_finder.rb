@@ -20,6 +20,7 @@ module EE
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def by_weight(items)
       return items unless weights?
 
@@ -31,6 +32,7 @@ module EE
         items.where(weight: params[:weight])
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def weights?
       params[:weight].present? && params[:weight] != ::Issue::WEIGHT_ALL
@@ -57,6 +59,7 @@ module EE
       super
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def assignees
       strong_memoize(:assignees) do
         if params[:assignee_ids]
@@ -68,5 +71,6 @@ module EE
         end
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

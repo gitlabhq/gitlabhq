@@ -41,9 +41,11 @@ module EE
             ::Project.update(export_into_project_id, params)
           end
 
+          # rubocop: disable CodeReuse/ActiveRecord
           def export_into_project_exists?
             ::Project.exists?(export_into_project_id)
           end
+          # rubocop: enable CodeReuse/ActiveRecord
         end
       end
     end

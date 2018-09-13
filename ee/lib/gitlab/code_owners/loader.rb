@@ -8,7 +8,7 @@ module Gitlab
       end
 
       def users
-        return User.none if code_owners_file.empty?
+        return User.none if code_owners_file.empty? # rubocop: disable CodeReuse/ActiveRecord
 
         owners = code_owners_file.owners_for_path(@path)
         extracted_users = Gitlab::UserExtractor.new(owners).users

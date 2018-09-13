@@ -113,6 +113,7 @@ module Geo
       end
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_unsynced_projects(batch_size:)
       relation =
         if use_legacy_queries?
@@ -123,7 +124,9 @@ module Geo
 
       relation.limit(batch_size)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_projects_updated_recently(batch_size:)
       relation =
         if use_legacy_queries?
@@ -134,6 +137,7 @@ module Geo
 
       relation.limit(batch_size)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     protected
 
@@ -183,10 +187,12 @@ module Geo
     #
 
     # @return [ActiveRecord::Relation<Geo::Fdw::Project>]
+    # rubocop: disable CodeReuse/ActiveRecord
     def fdw_find_unsynced_projects
       Geo::Fdw::Project.joins("LEFT OUTER JOIN project_registry ON project_registry.project_id = #{fdw_project_table}.id")
         .where(project_registry: { project_id: nil })
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>]
     def fdw_find_synced_wikis
@@ -194,14 +200,17 @@ module Geo
     end
 
     # @return [ActiveRecord::Relation<Geo::Fdw::Project>]
+    # rubocop: disable CodeReuse/ActiveRecord
     def fdw_find_projects_updated_recently
       Geo::Fdw::Project.joins("INNER JOIN project_registry ON project_registry.project_id = #{fdw_project_table}.id")
           .merge(Geo::ProjectRegistry.dirty)
           .merge(Geo::ProjectRegistry.retry_due)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # Find all registries that repository or wiki need verification
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of registries that need verification
+    # rubocop: disable CodeReuse/ActiveRecord
     def fdw_find_registries_to_verify(batch_size:)
       repo_condition =
         local_repo_condition
@@ -215,6 +224,7 @@ module Geo
         .where(repo_condition.or(wiki_condition))
         .limit(batch_size)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>]
     def fdw_find_verified_wikis
@@ -233,6 +243,7 @@ module Geo
     #
 
     # @return [ActiveRecord::Relation<Project>] list of unsynced projects
+    # rubocop: disable CodeReuse/ActiveRecord
     def legacy_find_unsynced_projects
       legacy_left_outer_join_registry_ids(
         current_node.projects,
@@ -240,8 +251,10 @@ module Geo
         Project
       )
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # @return [ActiveRecord::Relation<Project>] list of projects updated recently
+    # rubocop: disable CodeReuse/ActiveRecord
     def legacy_find_projects_updated_recently
       registries = Geo::ProjectRegistry.dirty.retry_due.pluck(:project_id, :last_repository_synced_at)
       return Project.none if registries.empty?
@@ -259,6 +272,7 @@ module Geo
 
       joined_relation
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def quote_value(value)
       ::Gitlab::SQL::Glob.q(value)
@@ -270,6 +284,7 @@ module Geo
     end
 
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of synced projects
+    # rubocop: disable CodeReuse/ActiveRecord
     def legacy_find_synced_wikis
       legacy_inner_join_registry_ids(
         current_node.projects,
@@ -277,6 +292,7 @@ module Geo
           Project
       )
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of verified projects
     def legacy_find_verified_repositories
@@ -284,6 +300,7 @@ module Geo
     end
 
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of verified wikis
+    # rubocop: disable CodeReuse/ActiveRecord
     def legacy_find_verified_wikis
       legacy_inner_join_registry_ids(
         current_node.projects,
@@ -291,8 +308,10 @@ module Geo
           Project
       )
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # @return [ActiveRecord::Relation<Project>] list of synced projects
+    # rubocop: disable CodeReuse/ActiveRecord
     def legacy_find_project_registries(project_registries)
       legacy_inner_join_registry_ids(
         current_node.projects,
@@ -300,8 +319,10 @@ module Geo
         Project
       )
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of projects that sync has failed
+    # rubocop: disable CodeReuse/ActiveRecord
     def legacy_find_filtered_failed_projects(type = nil)
       legacy_inner_join_registry_ids(
         find_filtered_failed_project_registries(type),
@@ -310,8 +331,10 @@ module Geo
         foreign_key: :project_id
       )
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of projects that verification has failed
+    # rubocop: disable CodeReuse/ActiveRecord
     def legacy_find_filtered_verification_failed_projects(type = nil)
       legacy_inner_join_registry_ids(
         find_filtered_verification_failed_project_registries(type),
@@ -320,8 +343,10 @@ module Geo
         foreign_key: :project_id
       )
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of projects where there is a checksum_mismatch
+    # rubocop: disable CodeReuse/ActiveRecord
     def legacy_find_filtered_checksum_mismatch_projects(type = nil)
       legacy_inner_join_registry_ids(
         find_filtered_checksum_mismatch_project_registries(type),
@@ -330,8 +355,10 @@ module Geo
         foreign_key: :project_id
       )
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of registries that need verification
+    # rubocop: disable CodeReuse/ActiveRecord
     def legacy_find_registries_to_verify(batch_size:)
       registries = Geo::ProjectRegistry
         .where(local_repo_condition.or(local_wiki_condition))
@@ -364,6 +391,7 @@ module Geo
 
       Geo::ProjectRegistry.where(project_id: project_ids)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def legacy_repository_state_table
       ::ProjectRepositoryState.arel_table

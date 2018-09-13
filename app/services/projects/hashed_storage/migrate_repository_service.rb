@@ -49,10 +49,13 @@ module Projects
 
       private
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def has_wiki?
         gitlab_shell.exists?(project.repository_storage, "#{old_wiki_disk_path}.git")
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def move_repository(from_name, to_name)
         from_exists = gitlab_shell.exists?(project.repository_storage, "#{from_name}.git")
         to_exists = gitlab_shell.exists?(project.repository_storage, "#{to_name}.git")
@@ -69,6 +72,7 @@ module Projects
 
         gitlab_shell.mv_repository(project.repository_storage, from_name, to_name)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def rollback_folder_move
         move_repository(new_disk_path, old_disk_path)

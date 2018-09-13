@@ -11,6 +11,7 @@ module Groups
       Rails.logger.info("User #{current_user.id} scheduled a deletion of group ID #{group.id} with job ID #{job_id}")
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def execute
       group.prepare_for_destroy
 
@@ -32,5 +33,6 @@ module Groups
 
       group.destroy
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

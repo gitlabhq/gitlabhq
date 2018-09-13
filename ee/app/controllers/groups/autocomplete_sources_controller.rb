@@ -19,10 +19,12 @@ class Groups::AutocompleteSourcesController < Groups::ApplicationController
     @autocomplete_service = ::Groups::AutocompleteService.new(@group, current_user)
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def target
     case params[:type]&.downcase
     when 'epic'
       EpicsFinder.new(current_user, group_id: @group.id).find_by(iid: params[:type_id])
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

@@ -15,9 +15,11 @@ module Gitlab
 
           attr_reader :event, :created_at, :logger
 
+          # rubocop: disable CodeReuse/ActiveRecord
           def registry
             @registry ||= ::Geo::ProjectRegistry.find_or_initialize_by(project_id: event.project_id)
           end
+          # rubocop: enable CodeReuse/ActiveRecord
 
           def skippable?
             registry.new_record?

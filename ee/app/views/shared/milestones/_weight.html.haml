@@ -2,7 +2,7 @@
 
 - return unless milestone.supports_weight?
 
-- total_weight = milestone.issues_visible_to_user(current_user).sum(:weight)
+- total_weight = milestone.issues_visible_to_user(current_user).sum(:weight) # rubocop: disable CodeReuse/ActiveRecord
 .block.weight
   .sidebar-collapsed-icon.has-tooltip{ title: milestone_weight_tooltip_text(total_weight), data: { container: 'body', placement: 'left' } }
     = icon('balance-scale')

@@ -34,9 +34,11 @@ module Gitlab
             record_name: 'merge_request')
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def author
           @author ||= User.find_by(incoming_email_token: incoming_email_token)
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def project
           @project ||= Project.find_by_full_path(project_path)

@@ -11,6 +11,7 @@ module Boards
 
     private
 
+    # rubocop: disable CodeReuse/Finder
     def finder_service
       @finder_service ||=
         if @board.parent.is_a?(Group)
@@ -19,5 +20,6 @@ module Boards
           MembersFinder.new(@board.parent, @current_user)
         end
     end
+    # rubocop: enable CodeReuse/Finder
   end
 end

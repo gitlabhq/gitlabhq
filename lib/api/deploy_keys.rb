@@ -9,9 +9,11 @@ module API
         project.deploy_keys_projects.create(attrs)
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def find_by_deploy_key(project, key_id)
         project.deploy_keys_projects.find_by!(deploy_key: key_id)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     desc 'Return all deploy keys'
@@ -36,11 +38,13 @@ module API
       params do
         use :pagination
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ":id/deploy_keys" do
         keys = user_project.deploy_keys_projects.preload(:deploy_key)
 
         present paginate(keys), with: Entities::DeployKeysProject
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Get single deploy key' do
         success Entities::DeployKeysProject
@@ -62,6 +66,7 @@ module API
         requires :title, type: String, desc: 'The name of the deploy key'
         optional :can_push, type: Boolean, desc: "Can deploy key push to the project's repository"
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       post ":id/deploy_keys" do
         params[:key].strip!
 
@@ -94,6 +99,7 @@ module API
           render_validation_error!(deploy_key_project)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Update an existing deploy key for a project' do
         success Entities::SSHKey
@@ -147,12 +153,14 @@ module API
       params do
         requires :key_id, type: Integer, desc: 'The ID of the deploy key'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       delete ":id/deploy_keys/:key_id" do
         deploy_key_project = user_project.deploy_keys_projects.find_by(deploy_key_id: params[:key_id])
         not_found!('Deploy Key') unless deploy_key_project
 
         destroy_conditionally!(deploy_key_project)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

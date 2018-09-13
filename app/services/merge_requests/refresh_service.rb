@@ -53,6 +53,7 @@ module MergeRequests
     # and close if push to master include last commit from merge request
     # We need this to close(as merged) merge requests that were merged into
     # target branch manually
+    # rubocop: disable CodeReuse/ActiveRecord
     def post_merge_manually_merged
       commit_ids = @commits.map(&:id)
       merge_requests = @project.merge_requests.preload(:latest_merge_request_diff).opened.where(target_branch: @branch_name).to_a
@@ -69,6 +70,7 @@ module MergeRequests
           .execute(merge_request)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def force_push?
       Gitlab::Checks::ForcePush.force_push?(@project, @oldrev, @newrev)
@@ -76,6 +78,7 @@ module MergeRequests
 
     # Refresh merge request diff if we push to source or target branch of merge request
     # Note: we should update merge requests from forks too
+    # rubocop: disable CodeReuse/ActiveRecord
     def reload_merge_requests
       merge_requests = @project.merge_requests.opened
         .by_source_or_target_branch(@branch_name).to_a
@@ -103,6 +106,7 @@ module MergeRequests
       # @source_merge_requests diffs (for MergeRequest#commit_shas for instance).
       merge_requests_for_source_branch(reload: true)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def reset_merge_when_pipeline_succeeds
       merge_requests_for_source_branch.each(&:reset_merge_when_pipeline_succeeds)
@@ -199,11 +203,13 @@ module MergeRequests
 
     # If the merge requests closes any issues, save this information in the
     # `MergeRequestsClosingIssues` model (as a performance optimization).
+    # rubocop: disable CodeReuse/ActiveRecord
     def cache_merge_requests_closing_issues
       @project.merge_requests.where(source_branch: @branch_name).each do |merge_request|
         merge_request.cache_merge_request_closes_issues!(@current_user)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def filter_merge_requests(merge_requests)
       merge_requests.uniq.select(&:source_project)

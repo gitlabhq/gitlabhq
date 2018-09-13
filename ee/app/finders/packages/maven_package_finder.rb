@@ -17,8 +17,10 @@ class Packages::MavenPackageFinder
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def packages
     project.packages.joins(:maven_metadatum)
       .where(packages_maven_metadata: { path: path })
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

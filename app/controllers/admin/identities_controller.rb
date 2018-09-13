@@ -44,9 +44,11 @@ class Admin::IdentitiesController < Admin::ApplicationController
 
   protected
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def user
     @user ||= User.find_by!(username: params[:user_id])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def identity
     @identity ||= user.identities.find(params[:id])

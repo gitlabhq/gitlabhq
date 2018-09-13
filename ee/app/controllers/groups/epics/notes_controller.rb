@@ -17,6 +17,7 @@ class Groups::Epics::NotesController < Groups::ApplicationController
   end
   alias_method :awardable, :note
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def epic
     @epic ||= @group.epics.find_by(iid: params[:epic_id])
 
@@ -24,6 +25,7 @@ class Groups::Epics::NotesController < Groups::ApplicationController
 
     @epic
   end
+  # rubocop: enable CodeReuse/ActiveRecord
   alias_method :noteable, :epic
 
   def finder_params

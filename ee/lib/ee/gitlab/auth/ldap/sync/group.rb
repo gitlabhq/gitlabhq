@@ -229,10 +229,12 @@ module EE
               end
             end
 
+            # rubocop: disable CodeReuse/ActiveRecord
             def select_and_preload_group_members(group)
               group.members.select(:id, :access_level, :user_id, :ldap, :override)
                 .with_identity_provider(provider).preload(:user)
             end
+            # rubocop: enable CodeReuse/ActiveRecord
 
             def logger
               Rails.logger

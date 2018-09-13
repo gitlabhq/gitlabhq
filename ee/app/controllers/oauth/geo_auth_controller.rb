@@ -12,6 +12,7 @@ class Oauth::GeoAuthController < ActionController::Base
     redirect_to oauth.authorize_url(redirect_uri: oauth_geo_callback_url, state: params[:state])
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def callback
     oauth = Gitlab::Geo::OauthSession.new(state: params[:state])
     unless oauth.oauth_state_valid?
@@ -30,6 +31,7 @@ class Oauth::GeoAuthController < ActionController::Base
       invalid_credentials
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def logout
     logout = Oauth2::LogoutTokenValidationService.new(current_user, params)

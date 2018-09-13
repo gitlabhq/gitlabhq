@@ -8,6 +8,7 @@ module Geo
     LEASE_TIMEOUT = 60.minutes
     TRUNCATE_DELAY = 10.minutes
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def perform
       return if Gitlab::Database.read_only?
 
@@ -34,6 +35,7 @@ module Geo
                      .each_batch { |batch| batch.delete_all }
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def lease_timeout
       LEASE_TIMEOUT

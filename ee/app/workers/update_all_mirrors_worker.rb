@@ -15,6 +15,7 @@ class UpdateAllMirrorsWorker
     cancel_lease(lease_uuid)
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def schedule_mirrors!
     capacity = Gitlab::Mirror.available_capacity
 
@@ -42,6 +43,7 @@ class UpdateAllMirrorsWorker
 
     ProjectImportScheduleWorker.bulk_perform_and_wait(all_project_ids.map { |id| [id] }, timeout: SCHEDULE_WAIT_TIMEOUT.to_i)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 
@@ -53,6 +55,7 @@ class UpdateAllMirrorsWorker
     ::Gitlab::ExclusiveLease.cancel(LEASE_KEY, uuid)
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def pull_mirrors_batch(freeze_at:, batch_size:, offset_at: nil)
     relation = Project
       .mirrors_to_sync(freeze_at)
@@ -64,4 +67,5 @@ class UpdateAllMirrorsWorker
 
     relation
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

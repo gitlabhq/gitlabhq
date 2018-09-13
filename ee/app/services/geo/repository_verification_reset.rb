@@ -6,6 +6,7 @@ module Geo
       @type = type
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def execute
       return unless Gitlab::Geo.geo_database_configured?
       return unless Gitlab::Geo.secondary?
@@ -21,6 +22,7 @@ module Geo
 
       num_updated
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     private
 

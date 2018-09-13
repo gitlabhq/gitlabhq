@@ -2,12 +2,14 @@ module Gitlab
   module Ci
     module Charts
       module DailyInterval
+        # rubocop: disable CodeReuse/ActiveRecord
         def grouped_count(query)
           query
             .group("DATE(#{::Ci::Pipeline.table_name}.created_at)")
             .count(:created_at)
             .transform_keys { |date| date.strftime(@format) } # rubocop:disable Gitlab/ModuleWithInstanceVariables
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def interval_step
           @interval_step ||= 1.day
@@ -15,6 +17,7 @@ module Gitlab
       end
 
       module MonthlyInterval
+        # rubocop: disable CodeReuse/ActiveRecord
         def grouped_count(query)
           if Gitlab::Database.postgresql?
             query
@@ -27,6 +30,7 @@ module Gitlab
               .count(:created_at)
           end
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def interval_step
           @interval_step ||= 1.month
@@ -46,6 +50,7 @@ module Gitlab
           collect
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def collect
           query = project.pipelines
             .where("? > #{::Ci::Pipeline.table_name}.created_at AND #{::Ci::Pipeline.table_name}.created_at > ?", @to, @from) # rubocop:disable GitlabSecurity/SqlInjection
@@ -64,6 +69,7 @@ module Gitlab
             current += interval_step
           end
         end
+        # rubocop: enable CodeReuse/ActiveRecord
       end
 
       class YearChart < Chart

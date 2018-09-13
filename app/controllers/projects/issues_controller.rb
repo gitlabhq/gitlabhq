@@ -165,6 +165,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   protected
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def issue
     return @issue if defined?(@issue)
 
@@ -176,6 +177,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
     @issue
   end
+  # rubocop: enable CodeReuse/ActiveRecord
   alias_method :subscribable_resource, :issue
   alias_method :issuable, :issue
   alias_method :awardable, :issue

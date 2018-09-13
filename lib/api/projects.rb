@@ -200,6 +200,7 @@ module API
         use :optional_project_params
         use :create_params
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       post "user/:user_id" do
         authenticated_as_admin!
         user = User.find_by(id: params.delete(:user_id))
@@ -216,6 +217,7 @@ module API
           render_validation_error!(project)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     params do
@@ -447,6 +449,7 @@ module API
       params do
         requires :group_id, type: Integer, desc: 'The ID of the group'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       delete ":id/share/:group_id" do
         authorize! :admin_project, user_project
 
@@ -455,6 +458,7 @@ module API
 
         destroy_conditionally!(link)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Upload a file'
       params do

@@ -39,6 +39,7 @@ module EE
           end
 
           # Overrides API::BoardsResponses authorize_list_type_resource!
+          # rubocop: disable CodeReuse/ActiveRecord
           def authorize_list_type_resource!
             if params[:label_id] && !available_labels_for(board_parent).exists?(params[:label_id])
               render_api_error!({ error: 'Label not found!' }, 400)
@@ -60,6 +61,7 @@ module EE
               end
             end
           end
+          # rubocop: enable CodeReuse/ActiveRecord
 
           # Overrides API::BoardsResponses list_creation_params
           params :list_creation_params do

@@ -33,6 +33,7 @@ module Gitlab
       end
 
       # rubocop:disable Metrics/AbcSize
+      # rubocop: disable CodeReuse/ActiveRecord
       def system_usage_data
         {
           counts: {
@@ -84,6 +85,7 @@ module Gitlab
           }.merge(services_usage)
         }
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def cycle_analytics_usage_data
         Gitlab::CycleAnalytics::UsageData.new.to_json
@@ -114,6 +116,7 @@ module Gitlab
         }
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def services_usage
         types = {
           JiraService: :projects_jira_active,
@@ -131,6 +134,7 @@ module Gitlab
       rescue ActiveRecord::StatementInvalid
         fallback
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

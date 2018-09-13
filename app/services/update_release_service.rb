@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class UpdateReleaseService < BaseService
+  # rubocop: disable CodeReuse/ActiveRecord
   def execute(tag_name, release_description)
     repository = project.repository
     existing_tag = repository.find_tag(tag_name)
@@ -19,6 +20,7 @@ class UpdateReleaseService < BaseService
       error('Tag does not exist', 404)
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def success(release)
     super().merge(release: release)

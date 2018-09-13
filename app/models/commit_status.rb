@@ -60,9 +60,11 @@ class CommitStatus < ActiveRecord::Base
   # These are pages deployments and external statuses.
   #
   before_create unless: :importing? do
+    # rubocop: disable CodeReuse/ServiceClass
     Ci::EnsureStageService.new(project, user).execute(self) do |stage|
       self.run_after_commit { StageUpdateWorker.perform_async(stage.id) }
     end
+    # rubocop: enable CodeReuse/ServiceClass
   end
 
   state_machine :status do
@@ -132,10 +134,12 @@ class CommitStatus < ActiveRecord::Base
     after_transition any => :failed do |commit_status|
       next unless commit_status.project
 
+      # rubocop: disable CodeReuse/ServiceClass
       commit_status.run_after_commit do
         MergeRequests::AddTodoWhenBuildFailsService
           .new(project, nil).execute(self)
       end
+      # rubocop: enable CodeReuse/ServiceClass
     end
   end
 

@@ -138,6 +138,7 @@ module Gitlab
         Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities)
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def oauth_access_token_check(login, password)
         if login == "oauth2" && password.present?
           token = Doorkeeper::AccessToken.by_token(password)
@@ -148,7 +149,9 @@ module Gitlab
           end
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def personal_access_token_check(password)
         return unless password.present?
 
@@ -158,6 +161,7 @@ module Gitlab
           Gitlab::Auth::Result.new(token.user, nil, :personal_access_token, abilities_for_scopes(token.scopes))
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def valid_oauth_token?(token)
         token && token.accessible? && valid_scoped_token?(token, [:api])
@@ -179,6 +183,7 @@ module Gitlab
         end.uniq
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def deploy_token_check(login, password)
         return unless password.present?
 
@@ -194,6 +199,7 @@ module Gitlab
           Gitlab::Auth::Result.new(token, token.project, :deploy_token, scopes)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def lfs_token_check(login, password, project)
         deploy_key_matches = login.match(/\Alfs\+deploy-key-(\d+)\z/)

@@ -6,10 +6,12 @@ module EE
           attr_accessor :adapter
           attr_reader :entry
 
+          # rubocop: disable CodeReuse/ActiveRecord
           def self.find_by_cn(cn, adapter)
             cn = Net::LDAP::Filter.escape(cn)
             adapter.group(cn)
           end
+          # rubocop: enable CodeReuse/ActiveRecord
 
           def initialize(entry, adapter = nil)
             Rails.logger.debug { "Instantiating #{self.class.name} with LDIF:\n#{entry.to_ldif}" }

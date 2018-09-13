@@ -11,6 +11,7 @@ class SoftwareLicensePoliciesFinder
     @project = project
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def find_by_name_or_id(id)
     return nil unless can?(current_user, :read_software_license_policy, project)
 
@@ -20,4 +21,5 @@ class SoftwareLicensePoliciesFinder
       software_licenses[:name].eq(id).or(software_license_policies[:id].eq(id))
     ).take
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

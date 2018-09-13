@@ -5,6 +5,7 @@ module Gitlab
     module MergeRequestHelpers
       include DatabaseHelpers
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def create_merge_request_without_hooks(project, attributes, iid)
         # This work must be wrapped in a transaction as otherwise we can leave
         # behind incomplete data in the event of an error. This can then lead
@@ -39,7 +40,9 @@ module Gitlab
         # existing row.
         [project.merge_requests.find_by(iid: iid), true]
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def insert_or_replace_git_data(merge_request, source_branch_sha, target_branch_sha, already_exists = false)
         # These fields are set so we can create the correct merge request
         # diffs.
@@ -65,6 +68,7 @@ module Gitlab
         diff.save
         diff.save_git_content
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

@@ -30,6 +30,7 @@ module API
       params do
         use :custom_attributes_key
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/custom_attributes/:key' do
         resource = public_send(attributable_finder, params[:id]) # rubocop:disable GitlabSecurity/PublicSend
         authorize! :read_custom_attribute
@@ -38,12 +39,14 @@ module API
 
         present custom_attribute, with: Entities::CustomAttribute
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc "Set a custom attribute on a #{attributable_name}"
       params do
         use :custom_attributes_key
         requires :value, type: String, desc: 'The value of the custom attribute'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       put ':id/custom_attributes/:key' do
         resource = public_send(attributable_finder, params[:id]) # rubocop:disable GitlabSecurity/PublicSend
         authorize! :update_custom_attribute
@@ -59,11 +62,13 @@ module API
           render_validation_error!(custom_attribute)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc "Delete a custom attribute on a #{attributable_name}"
       params do
         use :custom_attributes_key
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       delete ':id/custom_attributes/:key' do
         resource = public_send(attributable_finder, params[:id]) # rubocop:disable GitlabSecurity/PublicSend
         authorize! :update_custom_attribute
@@ -72,6 +77,7 @@ module API
 
         status 204
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

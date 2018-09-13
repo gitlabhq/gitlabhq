@@ -8,6 +8,7 @@ module SoftwareLicensePolicies
     end
 
     # Returns the created managed license.
+    # rubocop: disable CodeReuse/ActiveRecord
     def execute
       return error("", 403) unless can?(@current_user, :admin_software_license_policy, @project)
 
@@ -39,5 +40,6 @@ module SoftwareLicensePolicies
 
       success(software_license_policy: software_license_policy)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

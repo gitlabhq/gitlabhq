@@ -13,6 +13,7 @@ module Epics
       @epic_id = epic_id
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def execute
       strong_memoize(:execute) do
         Milestone.joins(issues: :epic_issue).where(epic_issues: { epic_id: epic_id }).joins(
@@ -28,6 +29,7 @@ module Epics
         ).pluck(*FIELDS)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def start_date
       start_date_sourcing_milestone&.slice(START_DATE_INDEX)

@@ -13,6 +13,7 @@ class Projects::ApproversController < Projects::ApplicationController
     access_denied! unless can?(current_user, :update_approvers, subject)
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def subject
     @subject ||=
       if params[:merge_request_id]
@@ -21,4 +22,5 @@ class Projects::ApproversController < Projects::ApplicationController
         project
       end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

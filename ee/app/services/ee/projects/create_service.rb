@@ -50,6 +50,7 @@ module EE
         project.group&.refresh_members_authorized_projects
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def create_predefined_push_rule
         return unless project.feature_available?(:push_rules)
 
@@ -60,6 +61,7 @@ module EE
           project.push_rule = push_rule
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def setup_ci_cd_project
         return unless ::License.feature_available?(:ci_cd_projects)

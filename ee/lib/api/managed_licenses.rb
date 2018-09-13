@@ -87,6 +87,7 @@ module API
           values: %w(approved blacklisted),
           desc: 'The approval status of the license. "blacklisted" or "approved".'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       patch ':id/managed_licenses/:managed_license_id', requirements: { managed_license_id: /.*/ } do
         authorize_can_admin!
         break not_found!('SoftwareLicensePolicy') unless software_license_policy
@@ -103,6 +104,7 @@ module API
           render_api_error!(result[:message], result[:http_status])
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Delete an existing software license policy from a project' do
         success Entities::ManagedLicense

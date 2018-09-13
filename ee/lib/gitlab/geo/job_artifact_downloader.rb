@@ -7,6 +7,7 @@ module Gitlab
     #
     # TODO: Rearrange things so this class does not inherit FileDownloader
     class JobArtifactDownloader < FileDownloader
+      # rubocop: disable CodeReuse/ActiveRecord
       def execute
         job_artifact = ::Ci::JobArtifact.find_by(id: object_db_id)
         return fail_before_transfer unless job_artifact.present?
@@ -14,6 +15,7 @@ module Gitlab
         transfer = ::Gitlab::Geo::JobArtifactTransfer.new(job_artifact)
         Result.from_transfer_result(transfer.download_from_primary)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

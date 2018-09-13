@@ -78,6 +78,7 @@ module Gitlab
         end
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def import_issues
         return unless repo.issues
 
@@ -123,6 +124,7 @@ module Gitlab
           import_issue_comments(issue, comments)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def import_issue_labels(raw_issue)
         labels = []

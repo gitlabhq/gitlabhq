@@ -104,6 +104,7 @@ module Gitlab
           @exit
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def can_replay?(event_log)
           return true if event_log.project_id.nil?
 
@@ -112,6 +113,7 @@ module Gitlab
 
           Gitlab::Geo.current_node&.projects_include?(event_log.project_id)
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         # Sleeps for the expired TTL that remains on the lease plus some random seconds.
         #

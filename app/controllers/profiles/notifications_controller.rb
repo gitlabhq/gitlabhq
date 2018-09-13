@@ -1,10 +1,12 @@
 class Profiles::NotificationsController < Profiles::ApplicationController
+  # rubocop: disable CodeReuse/ActiveRecord
   def show
     @user                        = current_user
     @group_notifications         = current_user.notification_settings.for_groups.order(:id)
     @project_notifications       = current_user.notification_settings.for_projects.order(:id)
     @global_notification_setting = current_user.global_notification_setting
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def update
     result = Users::UpdateService.new(current_user, user_params.merge(user: current_user)).execute

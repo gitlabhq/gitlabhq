@@ -18,9 +18,11 @@ module API
         authorize!(:admin_epic, epic)
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def epic
         @epic ||= user_group.epics.find_by(iid: params[:epic_iid])
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def link
         @link ||= epic.epic_issues.find(params[:epic_issue_id])
@@ -81,6 +83,7 @@ module API
       params do
         requires :epic_iid, type: Integer, desc: 'The iid of the epic'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       post ':id/(-/)epics/:epic_iid/issues/:issue_id' do
         authorize_can_admin!
 
@@ -98,6 +101,7 @@ module API
           render_api_error!(result[:message], result[:http_status])
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Remove an issue from the epic' do
         success EE::API::Entities::EpicIssueLink

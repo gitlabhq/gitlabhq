@@ -17,6 +17,7 @@ module Ci
       @runner = runner
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def execute(params = {})
       builds =
         if runner.instance_type?
@@ -65,6 +66,7 @@ module Ci
       register_failure
       Result.new(nil, valid)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     private
 
@@ -86,6 +88,7 @@ module Ci
       true
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def builds_for_shared_runner
       new_builds.
         # don't run projects which have not enabled shared runners and builds
@@ -99,11 +102,15 @@ module Ci
       joins("LEFT JOIN (#{running_builds_for_shared_runners.to_sql}) AS project_builds ON ci_builds.project_id=project_builds.project_id")
         .order('COALESCE(project_builds.running_builds, 0) ASC', 'ci_builds.id ASC')
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def builds_for_project_runner
       new_builds.where(project: runner.projects.without_deleted.with_builds_enabled).order('id ASC')
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def builds_for_group_runner
       # Workaround for weird Rails bug, that makes `runner.groups.to_sql` to return `runner_id = NULL`
       groups = ::Group.joins(:runner_namespaces).merge(runner.runner_namespaces)
@@ -115,11 +122,14 @@ module Ci
         .without_deleted
       new_builds.where(project: projects).order('id ASC')
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def running_builds_for_shared_runners
       Ci::Build.running.where(runner: Ci::Runner.instance_type)
         .group(:project_id).select(:project_id, 'count(*) AS running_builds')
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def new_builds
       builds = Ci::Build.pending.unstarted
@@ -140,6 +150,7 @@ module Ci
       attempt_counter.increment
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def jobs_running_for_project(job)
       return '+Inf' unless runner.instance_type?
 
@@ -148,6 +159,7 @@ module Ci
                               .limit(JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET + 1).count - 1
       running_jobs_count < JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET ? running_jobs_count : "#{JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET}+"
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def failed_attempt_counter
       @failed_attempt_counter ||= Gitlab::Metrics.counter(:job_register_attempts_failed_total, "Counts the times a runner tries to register a job")

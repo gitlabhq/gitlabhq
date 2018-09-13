@@ -1,5 +1,6 @@
 module GroupTree
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  # rubocop: disable CodeReuse/ActiveRecord
   def render_group_tree(groups)
     groups = groups.sort_by_attribute(@sort = params[:sort])
 
@@ -23,7 +24,9 @@ module GroupTree
     end
     # rubocop:enable Gitlab/ModuleWithInstanceVariables
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def filtered_groups_with_ancestors(groups)
     filtered_groups = groups.search(params[:filter]).page(params[:page])
 
@@ -40,4 +43,5 @@ module GroupTree
       filtered_groups
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

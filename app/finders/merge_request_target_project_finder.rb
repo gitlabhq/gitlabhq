@@ -8,6 +8,7 @@ class MergeRequestTargetProjectFinder
     @source_project = source_project
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def execute
     if @source_project.fork_network
       @source_project.fork_network.projects
@@ -18,4 +19,5 @@ class MergeRequestTargetProjectFinder
       Project.where(id: source_project)
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

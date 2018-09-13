@@ -2,6 +2,7 @@ class LdapSyncWorker
   include ApplicationWorker
   include CronjobQueue
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform
     return unless Gitlab::Auth::LDAP::Config.group_sync_enabled?
 
@@ -13,4 +14,5 @@ class LdapSyncWorker
       Gitlab::Auth::LDAP::Access.allowed?(ldap_user, update_ldap_group_links_synchronously: true)
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

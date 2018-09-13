@@ -41,6 +41,7 @@ class SnippetsFinder < UnionFinder
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def authorized_snippets_from_project
     if can?(current_user, :read_project_snippet, project)
       if project.team.member?(current_user)
@@ -52,7 +53,9 @@ class SnippetsFinder < UnionFinder
       Snippet.none
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def authorized_snippets
     # This query was intentionally converted to a raw one to get it work in Rails 5.0.
     # In Rails 5.0 and 5.1 there's a bug: https://github.com/rails/arel/issues/531
@@ -60,6 +63,7 @@ class SnippetsFinder < UnionFinder
     Snippet.where("#{feature_available_projects} OR #{not_project_related}")
       .public_or_visible_to_user(current_user)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   # Returns a collection of projects that is either public or visible to the
   # logged in user.
@@ -68,6 +72,7 @@ class SnippetsFinder < UnionFinder
   # the query, e.g. to apply .with_feature_available_for_user on top of it.
   # This is useful for performance as we can stick those additional filters
   # at the bottom of e.g. the UNION.
+  # rubocop: disable CodeReuse/ActiveRecord
   def projects_for_user
     return yield(Project.public_to_user) unless current_user
 
@@ -86,6 +91,7 @@ class SnippetsFinder < UnionFinder
 
     Project.from("(#{union.to_sql}) AS #{Project.table_name}")
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def feature_available_projects
     # Don't return any project related snippets if the user cannot read cross project
@@ -109,6 +115,7 @@ class SnippetsFinder < UnionFinder
     Snippet.arel_table
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_visibility(items)
     visibility = params[:visibility] || visibility_from_scope
 
@@ -116,12 +123,15 @@ class SnippetsFinder < UnionFinder
 
     items.where(visibility_level: visibility)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_author(items)
     return items unless params[:author]
 
     items.where(author_id: params[:author].id)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def visibility_from_scope
     case params[:scope].to_s

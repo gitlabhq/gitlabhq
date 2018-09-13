@@ -44,6 +44,7 @@ module EE
       end
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def namespaces_options_with_developer_maintainer_access(options = {})
       selected = options.delete(:selected) || :current_user
       options[:groups] = current_user.manageable_groups(include_groups_with_developer_maintainer_access: true)
@@ -52,5 +53,6 @@ module EE
 
       namespaces_options(selected, options)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

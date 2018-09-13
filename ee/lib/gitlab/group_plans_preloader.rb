@@ -13,6 +13,7 @@ module Gitlab
     #
     # Returns an Array containing all the Groups, including their preloaded
     # plans.
+    # rubocop: disable CodeReuse/ActiveRecord
     def preload(groups)
       groups_and_ancestors = groups_and_ancestors_for(groups)
 
@@ -52,6 +53,7 @@ module Gitlab
         group.memoized_plans = plans_map[group.id].map { |id| plans[id] }
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # Returns an ActiveRecord::Relation that includes the given groups, and all
     # their (recursive) ancestors.

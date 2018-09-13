@@ -5,6 +5,7 @@ module Gitlab
         class Create < Chain::Base
           include Chain::Helpers
 
+          # rubocop: disable CodeReuse/ActiveRecord
           def perform!
             ::Ci::Pipeline.transaction do
               pipeline.save!
@@ -23,6 +24,7 @@ module Gitlab
           rescue ActiveRecord::RecordInvalid => e
             error("Failed to persist the pipeline: #{e}")
           end
+          # rubocop: enable CodeReuse/ActiveRecord
 
           def break?
             !pipeline.persisted?

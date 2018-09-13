@@ -31,6 +31,7 @@ module API
       params do
         requires 'cn', type: String, desc: 'The CN of a LDAP group'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       delete ":id/ldap_group_links/:cn" do
         group = find_group(params[:id])
         authorize! :admin_group, group
@@ -43,12 +44,14 @@ module API
           render_api_error!('Linked LDAP group not found', 404)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Remove a linked LDAP group from group'
       params do
         requires 'cn', type: String, desc: 'The CN of a LDAP group'
         requires 'provider', type: String, desc: 'The LDAP provider for this LDAP group'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       delete ":id/ldap_group_links/:provider/:cn" do
         group = find_group(params[:id])
         authorize! :admin_group, group
@@ -61,6 +64,7 @@ module API
           render_api_error!('Linked LDAP group not found', 404)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

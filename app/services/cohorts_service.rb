@@ -78,6 +78,7 @@ class CohortsService
   # created_at_month can never be nil, but last_activity_on_month can (when a
   # user has never logged in, just been created). This covers the last
   # MONTHS_INCLUDED months.
+  # rubocop: disable CodeReuse/ActiveRecord
   def counts_by_month
     @counts_by_month ||=
       begin
@@ -91,6 +92,7 @@ class CohortsService
           .count
       end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def column_to_date(column)
     if Gitlab::Database.postgresql?

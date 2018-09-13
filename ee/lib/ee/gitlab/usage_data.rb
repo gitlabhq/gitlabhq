@@ -44,6 +44,7 @@ module EE
         usage_data
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def projects_mirrored_with_pipelines_enabled
         count(::Project.joins(:project_feature).where(
                 mirror: true,
@@ -53,7 +54,9 @@ module EE
                 }
         ))
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def service_desk_counts
         return {} unless ::License.feature_available?(:service_desk)
 
@@ -68,7 +71,9 @@ module EE
           ))
         }
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def security_products_usage
         types = {
           container_scanning: :container_scanning_jobs,
@@ -81,6 +86,7 @@ module EE
         results = count(::Ci::Build.where(name: types.keys).group(:name))
         results.each_with_object({}) { |(key, value), response| response[types[key.to_sym]] = value  }
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       override :system_usage_data
       def system_usage_data

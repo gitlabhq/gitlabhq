@@ -18,11 +18,13 @@ module API
         optional :order_by, type: String, values: %w[id iid created_at ref], default: 'id', desc: 'Return deployments ordered by `id` or `iid` or `created_at` or `ref`'
         optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/deployments' do
         authorize! :read_deployment, user_project
 
         present paginate(user_project.deployments.order(params[:order_by] => params[:sort])), with: Entities::Deployment
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Gets a specific deployment' do
         detail 'This feature was introduced in GitLab 8.11.'

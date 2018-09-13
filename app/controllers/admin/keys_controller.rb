@@ -24,9 +24,11 @@ class Admin::KeysController < Admin::ApplicationController
 
   protected
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def user
     @user ||= User.find_by!(username: params[:user_id])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def key_params
     params.require(:user_id, :id)

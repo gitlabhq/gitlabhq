@@ -26,6 +26,7 @@ module API
       #   project - project full_path (not path on disk)
       #   action - git action (git-upload-pack or git-receive-pack)
       #   changes - changes as "oldrev newrev ref", see Gitlab::ChangesList
+      # rubocop: disable CodeReuse/ActiveRecord
       post "/allowed" do
         # Stores some Git-specific env thread-safely
         env = parse_env
@@ -96,7 +97,9 @@ module API
           response_with_status(code: 500, success: false, message: UNKNOWN_CHECK_RESULT_ERROR)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       post "/lfs_authenticate" do
         status 200
 
@@ -118,6 +121,7 @@ module API
           repository_http_path: project.http_url_to_repo
         }
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       get "/merge_request_urls" do
         merge_request_urls
@@ -126,6 +130,7 @@ module API
       #
       # Get a ssh key using the fingerprint
       #
+      # rubocop: disable CodeReuse/ActiveRecord
       get "/authorized_keys" do
         fingerprint = params.fetch(:fingerprint) do
           Gitlab::InsecureKeyFingerprint.new(params.fetch(:key)).fingerprint
@@ -134,10 +139,12 @@ module API
         not_found!("Key") if key.nil?
         present key, with: Entities::SSHKey
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       #
       # Discover user by ssh key, user id or username
       #
+      # rubocop: disable CodeReuse/ActiveRecord
       get "/discover" do
         if params[:key_id]
           key = Key.find(params[:key_id])
@@ -150,6 +157,7 @@ module API
 
         present user, with: Entities::UserSafe
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       get "/check" do
         {
@@ -176,6 +184,7 @@ module API
         end
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       post '/two_factor_recovery_codes' do
         status 200
 
@@ -217,6 +226,7 @@ module API
 
         { success: true, recovery_codes: codes }
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       post '/pre_receive' do
         status 200

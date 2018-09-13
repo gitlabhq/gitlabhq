@@ -42,6 +42,7 @@ module Geo
     #
     # @param [Integer] batch_size used to limit the results returned
     # @param [Array<Integer>] except_artifact_ids ids that will be ignored from the query
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_unsynced(batch_size:, except_artifact_ids: [])
       relation =
         if use_legacy_queries?
@@ -52,7 +53,9 @@ module Geo
 
       relation.limit(batch_size)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_migrated_local(batch_size:, except_artifact_ids: [])
       relation =
         if use_legacy_queries?
@@ -63,27 +66,33 @@ module Geo
 
       relation.limit(batch_size)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def syncable
       all.geo_syncable
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_retryable_failed_registries(batch_size:, except_artifact_ids: [])
       find_failed_registries
         .retry_due
         .where.not(artifact_id: except_artifact_ids)
         .limit(batch_size)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_retryable_synced_missing_on_primary_registries(batch_size:, except_artifact_ids: [])
       find_synced_missing_on_primary_registries
         .retry_due
         .where.not(artifact_id: except_artifact_ids)
         .limit(batch_size)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def all
       if selective_sync?
         Ci::JobArtifact.joins(:project).where(projects: { id: current_node.projects })
@@ -91,6 +100,7 @@ module Geo
         Ci::JobArtifact.all
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def find_synced
       if use_legacy_queries?
@@ -132,11 +142,14 @@ module Geo
     # FDW accessors
     #
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def fdw_find
       fdw_all.joins("INNER JOIN job_artifact_registry ON job_artifact_registry.artifact_id = #{fdw_table}.id")
         .geo_syncable
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def fdw_find_unsynced(except_artifact_ids:)
       fdw_all.joins("LEFT OUTER JOIN job_artifact_registry
                                ON job_artifact_registry.artifact_id = #{fdw_table}.id")
@@ -144,14 +157,18 @@ module Geo
         .where(job_artifact_registry: { artifact_id: nil })
         .where.not(id: except_artifact_ids)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def fdw_find_migrated_local(except_artifact_ids:)
       fdw_all.joins("INNER JOIN job_artifact_registry ON job_artifact_registry.artifact_id = #{fdw_table}.id")
         .with_files_stored_remotely
         .where.not(id: except_artifact_ids)
         .merge(Geo::JobArtifactRegistry.all)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def fdw_all
       if selective_sync?
         Geo::Fdw::Ci::JobArtifact.joins(:project).where(projects: { id: current_node.projects })
@@ -159,6 +176,7 @@ module Geo
         Geo::Fdw::Ci::JobArtifact.all
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def fdw_table
       Geo::Fdw::Ci::JobArtifact.table_name
@@ -168,6 +186,7 @@ module Geo
     # Legacy accessors (non FDW)
     #
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def legacy_find_synced
       legacy_inner_join_registry_ids(
         syncable,
@@ -175,7 +194,9 @@ module Geo
         Ci::JobArtifact
       )
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def legacy_find_failed
       legacy_inner_join_registry_ids(
         syncable,
@@ -183,7 +204,9 @@ module Geo
         Ci::JobArtifact
       )
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def legacy_find_unsynced(except_artifact_ids:)
       registry_artifact_ids = Geo::JobArtifactRegistry.pluck(:artifact_id) | except_artifact_ids
 
@@ -193,7 +216,9 @@ module Geo
         Ci::JobArtifact
       )
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def legacy_find_migrated_local(except_artifact_ids:)
       registry_artifact_ids = Geo::JobArtifactRegistry.pluck(:artifact_id) - except_artifact_ids
 
@@ -203,7 +228,9 @@ module Geo
         Ci::JobArtifact
       )
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def legacy_find_synced_missing_on_primary
       legacy_inner_join_registry_ids(
         syncable,
@@ -211,5 +238,6 @@ module Geo
         Ci::JobArtifact
       )
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

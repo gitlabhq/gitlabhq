@@ -30,6 +30,7 @@ class AbuseReportsController < ApplicationController
     ))
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def set_user
     @user = User.find_by(id: params[:user_id])
 
@@ -39,4 +40,5 @@ class AbuseReportsController < ApplicationController
       redirect_to @user, alert: "Cannot create the abuse report. This user has been blocked."
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

@@ -22,6 +22,7 @@ module EE
       )
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def objects_exceed_repo_limit?
       return false unless project.size_limit_enabled?
 
@@ -33,5 +34,6 @@ module EE
         @exceeded_limit > 0 # rubocop:disable Gitlab/ModuleWithInstanceVariables
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

@@ -47,6 +47,7 @@ module API
         use :pagination
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def find_groups(params, parent_id = nil)
         find_params = params.slice(:all_available, :custom_attributes, :owned, :min_access_level)
         find_params[:parent] = find_group!(parent_id) if parent_id
@@ -64,6 +65,7 @@ module API
 
         groups
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def find_group_projects(params)
         group = find_group!(params[:id])

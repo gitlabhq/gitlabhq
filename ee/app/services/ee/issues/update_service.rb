@@ -27,7 +27,7 @@ module EE
         if epic_param
           EpicIssues::CreateService.new(epic_param, current_user, { target_issue: issue }).execute
         else
-          link = EpicIssue.find_by(issue_id: issue.id)
+          link = EpicIssue.find_by(issue_id: issue.id) # rubocop: disable CodeReuse/ActiveRecord
 
           return unless link
 

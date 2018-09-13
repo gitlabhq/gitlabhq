@@ -17,9 +17,11 @@ module Geo
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def private_token
       # TODO: should we ask admin user to be defined as part of configuration?
       @private_token ||= User.find_by(admin: true).authentication_token
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

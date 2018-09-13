@@ -19,11 +19,13 @@ module Projects
       render_404 if link.target != issue && link.source != issue
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def issue
       @issue ||=
         IssuesFinder.new(current_user, project_id: @project.id)
                     .find_by!(iid: params[:issue_id])
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def create_service
       IssueLinks::CreateService.new(issue, current_user, create_params)

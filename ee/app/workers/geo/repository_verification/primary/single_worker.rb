@@ -10,6 +10,7 @@ module Geo
 
         attr_reader :project
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def perform(project_id)
           return unless Gitlab::Geo.primary?
 
@@ -20,6 +21,7 @@ module Geo
             Geo::RepositoryVerificationPrimaryService.new(project).execute
           end
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         private
 

@@ -146,6 +146,7 @@ class Member < ActiveRecord::Base
     end
 
     def add_user(source, user, access_level, existing_members: nil, current_user: nil, expires_at: nil, ldap: false)
+      # rubocop: disable CodeReuse/ServiceClass
       # `user` can be either a User object, User ID or an email to be invited
       member = retrieve_member(source, user, existing_members)
       access_level = retrieve_access_level(access_level)
@@ -179,6 +180,7 @@ class Member < ActiveRecord::Base
       end
 
       member
+      # rubocop: enable CodeReuse/ServiceClass
     end
 
     def add_users(source, users, access_level, current_user: nil, expires_at: nil)
@@ -347,12 +349,14 @@ class Member < ActiveRecord::Base
     @notification_setting ||= user&.notification_settings_for(source)
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def notifiable?(type, opts = {})
     # always notify when there isn't a user yet
     return true if user.blank?
 
     NotificationRecipientService.notifiable?(user, type, notifiable_options.merge(opts))
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   private
 
@@ -382,6 +386,7 @@ class Member < ActiveRecord::Base
   # in a transaction. Doing so can lead to the job running before the
   # transaction has been committed, resulting in the job either throwing an
   # error or not doing any meaningful work.
+  # rubocop: disable CodeReuse/ServiceClass
   def refresh_member_authorized_projects
     # If user/source is being destroyed, project access are going to be
     # destroyed eventually because of DB foreign keys, so we shouldn't bother
@@ -390,6 +395,7 @@ class Member < ActiveRecord::Base
 
     UserProjectAccessChangedService.new(user_id).execute
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def after_accept_invite
     post_create_hook
@@ -403,13 +409,17 @@ class Member < ActiveRecord::Base
     post_create_hook
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def system_hook_service
     SystemHooksService.new
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
+  # rubocop: disable CodeReuse/ServiceClass
   def notification_service
     NotificationService.new
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def notifiable_options
     {}

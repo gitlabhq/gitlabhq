@@ -1,6 +1,7 @@
 module Gitlab
   module Elastic
     class Helper
+      # rubocop: disable CodeReuse/ActiveRecord
       def self.create_empty_index
         index_name = Project.index_name
         settings = {}
@@ -32,6 +33,7 @@ module Gitlab
                                 mappings: mappings.to_hash
                               }
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def self.delete_index
         Project.__elasticsearch__.delete_index!

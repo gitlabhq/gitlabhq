@@ -3,6 +3,7 @@ module ProtectedEnvironments
   class SearchService < BaseService
     # Returns unprotected environments filtered by name
     # Limited to 20 per performance reasons
+    # rubocop: disable CodeReuse/ActiveRecord
     def execute(name)
       project
         .environments
@@ -12,5 +13,6 @@ module ProtectedEnvironments
         .limit(20)
         .pluck(:name)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

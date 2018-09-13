@@ -23,9 +23,11 @@ module Geo
       syncs_since_gc > 0 && period_match? && housekeeping_enabled?
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def registry
       @registry ||= Geo::ProjectRegistry.find_or_initialize_by(project_id: project.id)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def increment!
       Gitlab::Metrics.measure(:geo_increment_syncs_since_gc) do

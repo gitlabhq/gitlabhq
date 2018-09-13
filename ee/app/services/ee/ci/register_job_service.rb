@@ -23,6 +23,7 @@ module EE
         end
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def builds_for_shared_runner
         return super unless shared_runner_build_limits_feature_enabled?
 
@@ -31,7 +32,9 @@ module EE
           .where("projects.visibility_level=? OR (#{builds_check_limit.to_sql})=1",  # rubocop:disable GitlabSecurity/SqlInjection
                 ::Gitlab::VisibilityLevel::PUBLIC)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def builds_check_limit
         all_namespaces
           .joins('LEFT JOIN namespace_statistics ON namespace_statistics.namespace_id = namespaces.id')
@@ -40,7 +43,9 @@ module EE
                 application_shared_runners_minutes, application_shared_runners_minutes)
           .select('1')
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def all_namespaces
         namespaces = ::Namespace.reorder(nil).where('namespaces.id = projects.namespace_id')
 
@@ -50,6 +55,7 @@ module EE
 
         namespaces
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def application_shared_runners_minutes
         ::Gitlab::CurrentSettings.shared_runners_minutes

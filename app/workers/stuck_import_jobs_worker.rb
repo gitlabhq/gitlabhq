@@ -30,6 +30,7 @@ class StuckImportJobsWorker
     end.count
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def mark_projects_with_jid_as_failed!
     # TODO: Rollback this change to use SQL through #pluck
     jids_and_ids = enqueued_projects_with_jid.map { |project| [project.import_jid, project.id] }.to_h
@@ -50,18 +51,25 @@ class StuckImportJobsWorker
       project.mark_import_as_failed(error_message)
     end.count
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def enqueued_projects
     Project.joins_import_state.where("(import_state.status = 'scheduled' OR import_state.status = 'started') OR (projects.import_status = 'scheduled' OR projects.import_status = 'started')")
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def enqueued_projects_with_jid
     enqueued_projects.where.not("import_state.jid IS NULL AND projects.import_jid IS NULL")
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def enqueued_projects_without_jid
     enqueued_projects.where("import_state.jid IS NULL AND projects.import_jid IS NULL")
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def error_message
     "Import timed out. Import took longer than #{IMPORT_JOBS_EXPIRATION} seconds"

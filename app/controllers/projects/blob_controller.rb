@@ -177,6 +177,7 @@ class Projects::BlobController < Projects::ApplicationController
     render_404
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def after_edit_path
     from_merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).find_by(iid: params[:from_merge_request_iid])
     if from_merge_request && @branch_name == @ref
@@ -186,6 +187,7 @@ class Projects::BlobController < Projects::ApplicationController
       project_blob_path(@project, File.join(@branch_name, @path))
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def editor_variables
     @branch_name = params[:branch_name]

@@ -44,6 +44,7 @@ class Groups::EpicsController < Groups::ApplicationController
     request.format.json?
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def epic
     @issuable = @epic ||= @group.epics.find_by(iid: params[:epic_id] || params[:id])
 
@@ -51,6 +52,7 @@ class Groups::EpicsController < Groups::ApplicationController
 
     @noteable = @epic
   end
+  # rubocop: enable CodeReuse/ActiveRecord
   alias_method :issuable, :epic
   alias_method :awardable, :epic
   alias_method :subscribable_resource, :epic

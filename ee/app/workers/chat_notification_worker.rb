@@ -5,6 +5,7 @@ class ChatNotificationWorker
 
   RESCHEDULE_INTERVAL = 2.seconds
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform(build_id)
     Ci::Build.find_by(id: build_id).try do |build|
       send_response(build)
@@ -16,6 +17,7 @@ class ChatNotificationWorker
     # the job instead of producing an error.
     self.class.perform_in(RESCHEDULE_INTERVAL, build_id)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def send_response(build)
     Gitlab::Chat::Responder.responder_for(build).try do |responder|

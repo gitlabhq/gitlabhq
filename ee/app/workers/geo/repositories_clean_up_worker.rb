@@ -8,6 +8,7 @@ module Geo
     BATCH_SIZE = 250
     LEASE_TIMEOUT = 60.minutes
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def perform(geo_node_id)
       # Prevent multiple Sidekiq workers from performing repositories clean up
       try_obtain_lease do
@@ -23,9 +24,11 @@ module Geo
     rescue ActiveRecord::RecordNotFound => e
       log_error('Could not find Geo node, skipping repositories clean up', geo_node_id: geo_node_id, error: e)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def clean_up_repositories(project)
       # There is a possibility project does not have repository or wiki
       return true unless gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")
@@ -38,6 +41,7 @@ module Geo
         log_error('Could not clean up repository', project_id: project.id, shard: project.repository.storage, disk_path: project.disk_path)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def lease_timeout
       LEASE_TIMEOUT

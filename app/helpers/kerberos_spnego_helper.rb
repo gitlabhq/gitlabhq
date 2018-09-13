@@ -43,6 +43,7 @@ module KerberosSpnegoHelper
     headers['Www-Authenticate'] = spnego_challenge if spnego_response_token
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def find_kerberos_user
     krb_principal = spnego_credentials!(spnego_token)
     return unless krb_principal
@@ -50,6 +51,7 @@ module KerberosSpnegoHelper
     identity = ::Identity.with_extern_uid(:kerberos, krb_principal).take
     identity&.user
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   # The Kerberos backend will translate spnego_token into a Kerberos
   # principal and/or provide a value for @spnego_response_token.

@@ -39,6 +39,7 @@ module Geo
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def schedule_file_removal(uploads)
       paths_to_remove = uploads.find_each(batch_size: BATCH_SIZE).each_with_object([]) do |upload, to_remove|
         file_path = File.join(base_dir, upload.path)
@@ -52,6 +53,7 @@ module Geo
 
       Geo::FileRemovalWorker.bulk_perform_async(paths_to_remove)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def mark_for_resync!
       finder.find_file_registries_uploads(project).delete_all

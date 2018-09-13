@@ -10,9 +10,11 @@ module EE
     end
 
     override :find_project_for_result_blob
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_project_for_result_blob(result)
       super || ::Project.find_by(id: result['_parent'])
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     override :parse_search_result
     def parse_search_result(result)

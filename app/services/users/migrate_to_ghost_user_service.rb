@@ -55,15 +55,19 @@ module Users
       migrate_award_emoji
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def migrate_issues
       user.issues.update_all(author_id: ghost_user.id)
       Issue.where(last_edited_by_id: user.id).update_all(last_edited_by_id: ghost_user.id)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def migrate_merge_requests
       user.merge_requests.update_all(author_id: ghost_user.id)
       MergeRequest.where(merge_user_id: user.id).update_all(merge_user_id: ghost_user.id)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def migrate_notes
       user.notes.update_all(author_id: ghost_user.id)

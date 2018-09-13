@@ -4,6 +4,7 @@ class Projects::Clusters::ApplicationsController < Projects::ApplicationControll
   before_action :authorize_read_cluster!
   before_action :authorize_create_cluster!, only: [:create]
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def create
     application = @application_class.find_or_initialize_by(cluster: @cluster)
 
@@ -23,6 +24,7 @@ class Projects::Clusters::ApplicationsController < Projects::ApplicationControll
   rescue StandardError
     head :bad_request
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 

@@ -8,6 +8,7 @@ module Gitlab
       # project_id - The ID of the GitLab project to import the note into.
       # hash - A Hash containing the details of the GitHub object to imoprt.
       # notify_key - The Redis key to notify upon completion, if any.
+      # rubocop: disable CodeReuse/ActiveRecord
       def perform(project_id, hash, notify_key = nil)
         project = Project.find_by(id: project_id)
 
@@ -24,6 +25,7 @@ module Gitlab
             .perform_in(client.rate_limit_resets_in, project.id, hash, notify_key)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def try_import(*args)
         import(*args)

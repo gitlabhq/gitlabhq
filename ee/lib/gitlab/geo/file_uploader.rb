@@ -18,6 +18,7 @@ module Gitlab
         @message = message
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def execute
         recorded_file = Upload.find_by(id: object_db_id)
 
@@ -27,6 +28,7 @@ module Gitlab
 
         success(CarrierWave::SanitizedFile.new(recorded_file.absolute_path))
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       private
 

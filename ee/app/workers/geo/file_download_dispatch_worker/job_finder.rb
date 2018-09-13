@@ -46,13 +46,17 @@ module Geo
         }
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def convert_resource_relation_to_job_args(relation)
         relation.pluck(:id).map { |id| [self.class::FILE_SERVICE_OBJECT_TYPE.to_s, id] }
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def convert_registry_relation_to_job_args(relation)
         relation.pluck(self.class::RESOURCE_ID_KEY).map { |id| [self.class::FILE_SERVICE_OBJECT_TYPE.to_s, id] }
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

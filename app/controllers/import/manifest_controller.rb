@@ -6,6 +6,7 @@ class Import::ManifestController < Import::BaseController
   def new
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def status
     @already_added_projects = find_already_added_projects
     already_added_import_urls = @already_added_projects.pluck(:import_url)
@@ -14,6 +15,7 @@ class Import::ManifestController < Import::BaseController
       already_added_import_urls.include?(repository[:url])
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def upload
     group = Group.find(params[:group_id])
@@ -64,9 +66,11 @@ class Import::ManifestController < Import::BaseController
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def group
     @group ||= Group.find_by(id: session[:manifest_import_group_id])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def repositories
     @repositories ||= session[:manifest_import_repositories]
@@ -76,12 +80,14 @@ class Import::ManifestController < Import::BaseController
     find_already_added_projects.to_json(only: [:id], methods: [:import_status])
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def find_already_added_projects
     group.all_projects
       .where(import_type: 'manifest')
       .where(creator_id: current_user)
       .includes(:import_state)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def verify_import_enabled
     render_404 unless manifest_import_enabled?

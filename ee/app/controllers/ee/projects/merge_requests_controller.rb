@@ -37,6 +37,7 @@ module EE
       # Assigning both @merge_request and @issuable like in
       # `Projects::MergeRequests::ApplicationController`, and calling super if
       # we don't need the extra includes requires us to disable this cop.
+      # rubocop: disable CodeReuse/ActiveRecord
       def merge_request
         return super unless APPROVAL_RENDERING_ACTIONS.include?(action_name.to_sym)
 
@@ -48,6 +49,7 @@ module EE
                                          .find_by!(iid: params[:id])
         super
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def define_edit_vars
         super

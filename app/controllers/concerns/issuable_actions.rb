@@ -90,6 +90,7 @@ module IssuableActions
     render json: { notice: "#{quantity} #{resource_name.pluralize(quantity)} updated" }
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def discussions
     notes = issuable.discussion_notes
       .inc_relations_for_view
@@ -104,6 +105,7 @@ module IssuableActions
 
     render json: discussion_serializer.represent(discussions, context: self)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 

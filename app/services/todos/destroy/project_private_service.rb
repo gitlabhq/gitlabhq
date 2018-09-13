@@ -7,16 +7,20 @@ module Todos
 
       attr_reader :project
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def initialize(project_id)
         @project = Project.find_by(id: project_id)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       private
 
       override :todos
+      # rubocop: disable CodeReuse/ActiveRecord
       def todos
         Todo.where(project_id: project.id)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       override :project_ids
       def project_ids

@@ -144,9 +144,11 @@ module Ci
       end
 
       def retry(build, current_user)
+        # rubocop: disable CodeReuse/ServiceClass
         Ci::RetryBuildService
           .new(build.project, current_user)
           .execute(build)
+        # rubocop: enable CodeReuse/ServiceClass
       end
     end
 
@@ -229,11 +231,13 @@ module Ci
       self.when == 'manual'
     end
 
+    # rubocop: disable CodeReuse/ServiceClass
     def play(current_user)
       Ci::PlayBuildService
         .new(project, current_user)
         .execute(self)
     end
+    # rubocop: enable CodeReuse/ServiceClass
 
     def cancelable?
       active? || created?
@@ -390,9 +394,11 @@ module Ci
       update(coverage: coverage) if coverage.present?
     end
 
+    # rubocop: disable CodeReuse/ServiceClass
     def parse_trace_sections!
       ExtractSectionsFromBuildTraceService.new(project, user).execute(self)
     end
+    # rubocop: enable CodeReuse/ServiceClass
 
     def trace
       Gitlab::Ci::Trace.new(self)

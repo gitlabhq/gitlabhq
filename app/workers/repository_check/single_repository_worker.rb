@@ -50,9 +50,11 @@ module RepositoryCheck
       false
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def has_changes?(project)
       Project.with_push.exists?(project.id)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def has_wiki_changes?(project)
       return false unless project.wiki_enabled?

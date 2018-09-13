@@ -4,6 +4,7 @@ class ExpireBuildArtifactsWorker
   include ApplicationWorker
   include CronjobQueue
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform
     Rails.logger.info 'Scheduling removal of build artifacts'
 
@@ -12,4 +13,5 @@ class ExpireBuildArtifactsWorker
 
     ExpireBuildInstanceArtifactsWorker.bulk_perform_async(build_ids)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end
