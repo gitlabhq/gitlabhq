@@ -8,6 +8,8 @@ export default class PersistentUserCallout {
     this.container = container;
     this.dismissEndpoint = dismissEndpoint;
     this.featureId = featureId;
+
+    this.init();
   }
 
   init() {

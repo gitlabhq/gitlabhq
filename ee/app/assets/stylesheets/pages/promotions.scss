@@ -1,0 +1,193 @@
+.user-callout.promotion-callout {
+  margin: 20px 0 0;
+
+  &.prepend-top-10 {
+    margin-top: 10px;
+  }
+
+  &.append-bottom-20 {
+    margin-bottom: 20px;
+  }
+
+  .user-callout-copy {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .bordered-box {
+    padding: 20px;
+    border-color: $border-color;
+    background-color: $white-light;
+    align-items: flex-start;
+
+    .close {
+      .dismiss-icon {
+        color: $gray-darkest;
+      }
+
+      &:hover {
+        .dismiss-icon {
+          color: $text-color;
+        }
+      }
+    }
+
+    .svg-container {
+      margin-right: 15px;
+    }
+  }
+
+  &.promotion-empty-page {
+    margin-top: 56px;
+  }
+
+  &.promotion-advanced-search {
+    margin: 0;
+    border-bottom: solid 1px $border-color;
+
+    h5 {
+      margin-top: 0;
+    }
+
+    .bordered-box.content-block {
+      border: 0;
+      padding: 20px 0;
+      justify-content: left;
+
+      svg {
+        height: auto;
+      }
+    }
+
+    .user-callout-copy {
+      margin-left: 0;
+    }
+  }
+
+  .promotion-burndown-charts-content {
+    justify-content: end;
+
+    .svg-container {
+      margin-left: 4px;
+      margin-right: 24px;
+    }
+
+    .user-callout-copy {
+      margin: 0;
+    }
+  }
+
+  &.thin-callout {
+    .bordered-box {
+      padding: $gl-padding;
+      padding-left: 40px;
+
+      .close {
+        position: relative;
+        top: 0;
+        right: 0;
+      }
+    }
+
+    .svg-container .svg {
+      max-width: 39px;
+      max-height: 39px;
+    }
+  }
+}
+
+.promotion-modal {
+  .modal-dialog {
+    width: 540px;
+  }
+
+  .modal-header {
+    border-bottom: 0;
+  }
+
+  .modal-body {
+    margin-top: -20px;
+    padding: 16px 16px 32px;
+  }
+
+  .modal-footer {
+    border-top: 0;
+  }
+}
+
+.promotion-backdrop {
+  background-color: $white-transparent;
+  position: absolute;
+  padding-top: 72px;
+
+  .user-callout-copy {
+    max-width: 700px;
+  }
+}
+
+.promotion-issue-sidebar {
+  .promotion-issue-sidebar-message {
+    padding: $gl-padding-top;
+
+    .dropdown-title {
+      margin: 0 0 10px;
+    }
+
+    .btn + .btn {
+      margin-top: $gl-padding-4;
+    }
+  }
+
+  .btn {
+    padding: $gl-vert-padding $gl-btn-padding;
+    border-radius: $border-radius-default;
+    display: block;
+    line-height: $line-height-base;
+  }
+
+  .right-sidebar & .btn-link {
+    display: inline;
+    color: $blue-600;
+    background-color: transparent;
+    padding: 0;
+
+    &:hover {
+      background-color: transparent;
+      color: $blue-800;
+    }
+  }
+}
+
+.promotion-issue-template-message {
+  padding: $gl-padding 30px 20px $gl-padding;
+
+  p {
+    margin-right: 20px;
+  }
+
+  .dropdown-title {
+    margin: 0 -25px;
+    padding: 0;
+    overflow: initial;
+    border-bottom: 0;
+  }
+
+  .btn {
+    padding: $gl-vert-padding $gl-btn-padding;
+    border-radius: $border-radius-default;
+    display: inline-block;
+    line-height: $line-height-base;
+  }
+
+  .btn-link {
+    display: inline;
+    color: $blue-600;
+    padding: 0;
+
+    &:hover {
+      background-color: transparent;
+      color: $blue-800;
+    }
+  }
+}

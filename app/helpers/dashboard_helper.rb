@@ -19,6 +19,29 @@ module DashboardHelper
     links.any? { |link| dashboard_nav_link?(link) }
   end
 
+  def controller_action_to_child_dashboards(controller = controller_name, action = action_name)
+    case "#{controller}##{action}"
+    when 'projects#index', 'root#index', 'projects#starred', 'projects#trending'
+      ['projects', 'stars']
+    when 'dashboard#activity'
+      ['starred_project_activity', 'project_activity']
+    when 'groups#index'
+      ['groups']
+    when 'todos#index'
+      ['todos']
+    when 'dashboard#issues'
+      ['issues']
+    when 'dashboard#merge_requests'
+      ['merge_requests']
+    else
+      []
+    end
+  end
+
+  def is_default_dashboard?(user = current_user)
+    controller_action_to_child_dashboards.any? {|dashboard| dashboard == user.dashboard }
+  end
+
   private
 
   def get_dashboard_nav_links
