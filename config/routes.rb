@@ -30,7 +30,6 @@ Rails.application.routes.draw do
   # This prefixless path is required because Jira gets confused if we set it up with a path
   # More information: https://gitlab.com/gitlab-org/gitlab-ee/issues/6752
   scope path: '/login/oauth', controller: 'oauth/jira/authorizations', as: :oauth_jira do
-<<<<<<< HEAD
     get :authorize, action: :new
     get :callback
     post :access_token
@@ -44,9 +43,6 @@ Rails.application.routes.draw do
       get 'callback'
       get 'logout'
     end
-=======
-    match '*all', via: [:get, :post], to: proc { [404, {}, ['']] }
->>>>>>> upstream/master
   end
 
   use_doorkeeper_openid_connect
