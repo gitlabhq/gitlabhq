@@ -32,10 +32,6 @@ export default {
       type: Object,
       required: true,
     },
-    updateAspectRatio: {
-      type: Boolean,
-      required: true,
-    },
     deploymentData: {
       type: Array,
       required: true,
@@ -110,15 +106,6 @@ export default {
     },
   },
   watch: {
-    updateAspectRatio() {
-      if (this.updateAspectRatio) {
-        this.graphHeight = 450;
-        this.graphWidth = 600;
-        this.measurements = measurements.large;
-        this.draw();
-        eventHub.$emit('toggleAspectRatio');
-      }
-    },
     hoverData() {
       this.positionFlag();
     },
