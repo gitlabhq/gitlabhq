@@ -131,13 +131,7 @@ namespace :admin do
     get :download, on: :member
   end
 
-  resources :geo_nodes, only: [:index, :create, :new, :edit, :update, :destroy] do
-    member do
-      post :repair
-      post :toggle
-      get  :status
-    end
-  end
+  resources :geo_nodes, only: [:index, :create, :new, :edit, :update]
 
   resources :geo_projects, only: [:index] do
     member do
