@@ -1354,11 +1354,12 @@ test:
   retry: 2
 ```
 
-## `include` **[STARTER]**
+## `include`
 
 > Introduced in [GitLab Edition Premium][ee] 10.5.
 > Available for Starter, Premium and Ultimate [versions][gitlab-versions] since 10.6.
-> Behaviour expanded in GitLab 10.8 to allow more flexible overriding
+> Behaviour expanded in GitLab 10.8 to allow more flexible overriding.
+> Available for Libre since [11.4](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21603)
 
 Using the `include` keyword, you can allow the inclusion of external YAML files.
 
