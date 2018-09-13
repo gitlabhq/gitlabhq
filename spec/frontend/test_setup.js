@@ -28,7 +28,23 @@ afterEach(() => {
 
 initializeAxios(beforeEach, afterEach);
 
-process.on('unhandledRejection', (error) => {
-  console.error('Unhandled Promise rejection:', error);
+process.on('unhandledRejection', error => {
+  console.error('Unhandled Promise rejection:', error); // eslint-disable-line no-console
   process.exit(1);
+});
+
+beforeEach(done => {
+  // https://github.com/vuejs/vue-test-utils/issues/631#issuecomment-421108344
+  Vue.config.warnHandler = (msg, vm, trace) => {
+    const currentStack = new Error('').stack;
+    const isInVueTestUtils = currentStack.split('\n').some(line => line.startsWith('    at VueWrapper.setProps ('));
+    if (isInVueTestUtils) {
+      return;
+    }
+    done.fail(`${msg}${trace}`);
+  };
+
+  Vue.config.errorHandler = error => done.fail(error);
+
+  done();
 });
