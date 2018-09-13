@@ -45,7 +45,7 @@ if Settings.ldap['enabled'] || Rails.env.test?
 end
 
 Settings['omniauth'] ||= Settingslogic.new({})
-Settings.omniauth['enabled'] = false if Settings.omniauth['enabled'].nil?
+Settings.omniauth['enabled'] = true if Settings.omniauth['enabled'].nil?
 Settings.omniauth['auto_sign_in_with_provider'] = false if Settings.omniauth['auto_sign_in_with_provider'].nil?
 Settings.omniauth['allow_single_sign_on'] = false if Settings.omniauth['allow_single_sign_on'].nil?
 Settings.omniauth['external_providers'] = [] if Settings.omniauth['external_providers'].nil?
