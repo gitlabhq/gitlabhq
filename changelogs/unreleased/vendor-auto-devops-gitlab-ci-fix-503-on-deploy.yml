@@ -1,0 +1,6 @@
+---
+title: Vendor Auto-DevOps.gitlab-ci.yml to fix bug where the deploy job does not wait
+  for Deployment to complete
+merge_request: 21713
+author:
+type: fixed
