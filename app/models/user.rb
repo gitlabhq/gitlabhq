@@ -1056,13 +1056,10 @@ class User < ActiveRecord::Base
     SystemHooksService.new
   end
   # rubocop: enable CodeReuse/ServiceClass
-<<<<<<< HEAD
 
   def admin_unsubscribe!
     update_column :admin_email_unsubscribed_at, Time.now
   end
-=======
->>>>>>> upstream/master
 
   def starred?(project)
     starred_projects.exists?(project.id)
