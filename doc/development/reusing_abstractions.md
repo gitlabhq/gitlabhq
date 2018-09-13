@@ -76,7 +76,7 @@ projects =
       .that_might_be_necessary
   else
     current_user
-      .projects_visibile_to_user
+      .projects_visible_to_user
       .any_additional_method_calls
       .that_might_be_necessary
   end
@@ -101,7 +101,7 @@ Now let's take a look at the various abstraction levels available, and what they
 can (or cannot) reuse. For this we can use the following table, which defines
 the various abstractions and what they can (not) reuse:
 
-| Abstraction            | Service classes  | Finders  | Presenters  | Serializers   | Model instance method   | Model class methods   | Active Record   | WOrker
+| Abstraction            | Service classes  | Finders  | Presenters  | Serializers   | Model instance method   | Model class methods   | Active Record   | Worker
 |:-----------------------|:-----------------|:---------|:------------|:--------------|:------------------------|:----------------------|:----------------|:--------
 | Controller             | Yes              | Yes      | Yes         | Yes           | Yes                     | No                    | No              | No
 | Service class          | Yes              | Yes      | No          | No            | Yes                     | No                    | No              | Yes
