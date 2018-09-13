@@ -103,10 +103,12 @@ module API
     end
 
     def find_project(id)
+      projects = Project.without_deleted
+
       if id.is_a?(Integer) || id =~ /^\d+$/
-        Project.find_by(id: id)
+        projects.find_by(id: id)
       elsif id.include?("/")
-        Project.find_by_full_path(id)
+        projects.find_by_full_path(id)
       end
     end
 
@@ -154,6 +156,12 @@ module API
       else
         not_found!('Namespace')
       end
+    end
+
+    def find_branch!(branch_name)
+      user_project.repository.find_branch(branch_name) || not_found!('Branch')
+    rescue Gitlab::Git::CommandError
+      render_api_error!('The branch refname is invalid', 400)
     end
 
     def find_project_label(id)
@@ -380,7 +388,7 @@ module API
     end
 
     def project_finder_params
-      finder_params = {}
+      finder_params = { without_deleted: true }
       finder_params[:owned] = true if params[:owned].present?
       finder_params[:non_public] = true if params[:membership].present?
       finder_params[:starred] = true if params[:starred].present?

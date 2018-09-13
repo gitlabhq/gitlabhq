@@ -97,10 +97,10 @@ For a more fully featured dashboard, Grafana can be used and has
 
 Sample Prometheus queries:
 
-- **% Memory used:** `(1 - ((node_memory_MemFree + node_memory_Cached) / node_memory_MemTotal)) * 100`
-- **% CPU load:** `1 - rate(node_cpu{mode="idle"}[5m])`
-- **Data transmitted:** `irate(node_network_transmit_bytes[5m])`
-- **Data received:** `irate(node_network_receive_bytes[5m])`
+- **% Memory available:** `((node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) or ((node_memory_MemFree_bytes + node_memory_Buffers_bytes + node_memory_Cached_bytes) / node_memory_MemTotal_bytes)) * 100`
+- **% CPU utilization:** `1 - avg without (mode,cpu) (rate(node_cpu_seconds_total{mode="idle"}[5m]))`
+- **Data transmitted:** `rate(node_network_transmit_bytes_total{device!="lo"}[5m])`
+- **Data received:** `rate(node_network_receive_bytes_total{device!="lo"}[5m])`
 
 ## Configuring Prometheus to monitor Kubernetes
 

@@ -33,7 +33,7 @@ describe('note_header component', () => {
           },
           createdAt: '2017-08-02T10:51:58.559Z',
           includeToggle: false,
-          noteId: 1394,
+          noteId: '1394',
           expanded: true,
         },
       }).$mount();
@@ -46,6 +46,16 @@ describe('note_header component', () => {
 
     it('should render timestamp link', () => {
       expect(vm.$el.querySelector('a[href="#note_1394"]')).toBeDefined();
+    });
+
+    it('should not render user information when prop `author` is empty object', done => {
+      vm.author = {};
+      Vue.nextTick()
+        .then(() => {
+          expect(vm.$el.querySelector('.note-header-author-name')).toBeNull();
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 
@@ -66,7 +76,7 @@ describe('note_header component', () => {
           },
           createdAt: '2017-08-02T10:51:58.559Z',
           includeToggle: true,
-          noteId: 1395,
+          noteId: '1395',
           expanded: true,
         },
       }).$mount();

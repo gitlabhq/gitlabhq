@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FormHelper
   def form_errors(model, type: 'form')
     return unless model.errors.any?

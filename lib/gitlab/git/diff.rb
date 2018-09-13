@@ -1,6 +1,3 @@
-# Gitaly note: JV: needs RPC for Gitlab::Git::Diff.between.
-
-# Gitlab::Git::Diff is a wrapper around native Rugged::Diff object
 module Gitlab
   module Git
     class Diff
@@ -52,20 +49,31 @@ module Gitlab
           repo.diff(common_commit, head, actual_options, *paths)
         end
 
-        # Return a copy of the +options+ hash containing only keys that can be
-        # passed to Rugged.  Allowed options are:
+        # Return a copy of the +options+ hash containing only recognized keys.
+        # Allowed options are:
         #
         #  :ignore_whitespace_change ::
         #    If true, changes in amount of whitespace will be ignored.
         #
-        #  :disable_pathspec_match ::
-        #    If true, the given +*paths+ will be applied as exact matches,
-        #    instead of as fnmatch patterns.
+        #  :max_files ::
+        #    Limit how many files will patches be allowed for before collapsing
         #
+        #  :max_lines ::
+        #    Limit how many patch lines (across all files) will be allowed for
+        #    before collapsing
+        #
+        #  :limits ::
+        #    A hash with additional limits to check before collapsing patches.
+        #    Allowed keys are: `max_bytes`, `safe_max_files`, `safe_max_lines`
+        #    and `safe_max_bytes`
+        #
+        #  :expanded ::
+        #    If true, patch raw data will not be included in the diff after
+        #    `max_files`, `max_lines` or any of the limits in `limits` are
+        #    exceeded
         def filter_diff_options(options, default_options = {})
-          allowed_options = [:ignore_whitespace_change,
-                             :disable_pathspec_match, :paths,
-                             :max_files, :max_lines, :limits, :expanded]
+          allowed_options = [:ignore_whitespace_change, :max_files, :max_lines,
+                             :limits, :expanded]
 
           if default_options
             actual_defaults = default_options.dup
@@ -93,7 +101,7 @@ module Gitlab
         #
         # "Binary files a/file/path and b/file/path differ\n"
         # This is used when we detect that a diff is binary
-        # using CharlockHolmes when Rugged treats it as text.
+        # using CharlockHolmes.
         def binary_message(old_path, new_path)
           "Binary files #{old_path} and #{new_path} differ\n"
         end
@@ -106,8 +114,6 @@ module Gitlab
         when Hash
           init_from_hash(raw_diff)
           prune_diff_if_eligible
-        when Rugged::Patch, Rugged::Diff::Delta
-          init_from_rugged(raw_diff)
         when Gitlab::GitalyClient::Diff
           init_from_gitaly(raw_diff)
           prune_diff_if_eligible
@@ -184,31 +190,6 @@ module Gitlab
 
       private
 
-      def init_from_rugged(rugged)
-        if rugged.is_a?(Rugged::Patch)
-          init_from_rugged_patch(rugged)
-          d = rugged.delta
-        else
-          d = rugged
-        end
-
-        @new_path = encode!(d.new_file[:path])
-        @old_path = encode!(d.old_file[:path])
-        @a_mode = d.old_file[:mode].to_s(8)
-        @b_mode = d.new_file[:mode].to_s(8)
-        @new_file = d.added?
-        @renamed_file = d.renamed?
-        @deleted_file = d.deleted?
-      end
-
-      def init_from_rugged_patch(patch)
-        # Don't bother initializing diffs that are too large. If a diff is
-        # binary we're not going to display anything so we skip the size check.
-        return if !patch.delta.binary? && prune_large_patch(patch)
-
-        @diff = encode!(strip_diff_headers(patch.to_s))
-      end
-
       def init_from_hash(hash)
         raw_diff = hash.symbolize_keys
 
@@ -261,23 +242,6 @@ module Gitlab
         end
 
         false
-      end
-
-      # Strip out the information at the beginning of the patch's text to match
-      # Grit's output
-      def strip_diff_headers(diff_text)
-        # Delete everything up to the first line that starts with '---' or
-        # 'Binary'
-        diff_text.sub!(/\A.*?^(---|Binary)/m, '\1')
-
-        if diff_text.start_with?('---', 'Binary')
-          diff_text
-        else
-          # If the diff_text did not contain a line starting with '---' or
-          # 'Binary', return the empty string. No idea why; we are just
-          # preserving behavior from before the refactor.
-          ''
-        end
       end
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LicenseTemplate
   PROJECT_TEMPLATE_REGEX =
     %r{[\<\{\[]

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AuthHelper
   PROVIDERS_WITH_ICONS = %w(twitter github gitlab bitbucket google_oauth2 facebook azure_oauth2 authentiq).freeze
   LDAP_PROVIDER = /\Aldap/

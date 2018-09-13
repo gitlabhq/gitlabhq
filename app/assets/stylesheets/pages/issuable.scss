@@ -701,6 +701,10 @@
   align-self: center;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  .user-status-emoji {
+    margin: 0 $gl-padding-8 0 $gl-padding-4;
+  }
 }
 
 .js-issuable-selector-wrap {

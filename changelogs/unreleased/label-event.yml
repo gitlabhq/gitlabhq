@@ -1,0 +1,6 @@
+---
+title: Use separate model for tracking resource label changes and render label system
+  notes based on data from this model.
+merge_request:
+author:
+type: added

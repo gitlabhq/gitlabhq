@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BreadcrumbsHelper
   def add_to_breadcrumbs(text, link)
     @breadcrumbs_extra_links ||= []

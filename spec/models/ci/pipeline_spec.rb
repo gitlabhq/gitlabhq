@@ -1743,7 +1743,7 @@ describe Ci::Pipeline, :mailer do
         create(:ci_pipeline, config: { rspec: { script: 'rake test' } })
       end
 
-      it 'does not containyaml errors' do
+      it 'does not contain yaml errors' do
         expect(pipeline).not_to have_yaml_errors
       end
     end
@@ -1939,6 +1939,30 @@ describe Ci::Pipeline, :mailer do
 
     it 'returns all jobs (including failed and retried)' do
       expect(pipeline.total_size).to eq(5)
+    end
+  end
+
+  describe '#status' do
+    context 'when transitioning to failed' do
+      context 'when pipeline has autodevops as source' do
+        let(:pipeline) { create(:ci_pipeline, :running, :auto_devops_source) }
+
+        it 'calls autodevops disable service' do
+          expect(AutoDevops::DisableWorker).to receive(:perform_async).with(pipeline.id)
+
+          pipeline.drop
+        end
+      end
+
+      context 'when pipeline has other source' do
+        let(:pipeline) { create(:ci_pipeline, :running, :repository_source) }
+
+        it 'does not call auto devops disable service' do
+          expect(AutoDevops::DisableWorker).not_to receive(:perform_async)
+
+          pipeline.drop
+        end
+      end
     end
   end
 end

@@ -31,7 +31,7 @@
 
     .file-mode-changed {
       padding: 10px;
-      color: $file-mode-changed;
+      color: $gl-gray-500;
     }
 
     .suppressed-container {
@@ -72,6 +72,7 @@
       .line_holder td {
         line-height: $code-line-height;
         font-size: $code-font-size;
+        vertical-align: top;
 
         &.noteable_line {
           position: relative;
@@ -244,7 +245,7 @@
 
       .swipe-wrap {
         overflow: hidden;
-        border-left: 1px solid $diff-swipe-border;
+        border-left: 1px solid $gl-gray-400;
         position: absolute;
         display: block;
         top: 13px;

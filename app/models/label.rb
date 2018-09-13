@@ -5,6 +5,8 @@ class Label < ActiveRecord::Base
   include Referable
   include Subscribable
   include Gitlab::SQL::Pattern
+  include OptionallySearch
+  include Sortable
 
   # Represents a "No Label" state used for filtering Issues and Merge
   # Requests that have no label assigned.
@@ -40,6 +42,8 @@ class Label < ActiveRecord::Base
   scope :with_lists_and_board, -> { joins(lists: :board).merge(List.movable) }
   scope :on_group_boards, ->(group_id) { with_lists_and_board.where(boards: { group_id: group_id }) }
   scope :on_project_boards, ->(project_id) { with_lists_and_board.where(boards: { project_id: project_id }) }
+  scope :order_name_asc, -> { reorder(title: :asc) }
+  scope :order_name_desc, -> { reorder(title: :desc) }
 
   def self.prioritized(project)
     joins(:priorities)

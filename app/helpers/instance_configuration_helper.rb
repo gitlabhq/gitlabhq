@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module InstanceConfigurationHelper
   def instance_configuration_cell_html(value, &block)
     return '-' unless value.to_s.presence

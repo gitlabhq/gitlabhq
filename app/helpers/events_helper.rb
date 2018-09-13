@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EventsHelper
   ICON_NAMES_BY_EVENT_TYPE = {
     'pushed to' => 'commit',
@@ -19,7 +21,7 @@ module EventsHelper
       name = self_added ? 'You' : author.name
       link_to name, user_path(author.username), title: name
     else
-      event.author_name
+      escape_once(event.author_name)
     end
   end
 

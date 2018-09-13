@@ -1,0 +1,5 @@
+---
+title: Import all common metrics into database
+merge_request: 21459
+author:
+type: changed

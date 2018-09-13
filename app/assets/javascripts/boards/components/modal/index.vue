@@ -1,7 +1,6 @@
 <script>
   /* global ListIssue */
-  import queryData from '~/boards/utils/query_data';
-  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
+  import { urlParamsToObject } from '~/lib/utils/common_utils';
   import ModalHeader from './header.vue';
   import ModalList from './list.vue';
   import ModalFooter from './footer.vue';
@@ -14,7 +13,6 @@
       ModalHeader,
       ModalList,
       ModalFooter,
-      loadingIcon,
     },
     props: {
       newIssuePath: {
@@ -109,13 +107,11 @@
       loadIssues(clearIssues = false) {
         if (!this.showAddIssuesModal) return false;
 
-        return gl.boardService
-          .getBacklog(
-            queryData(this.filter.path, {
-              page: this.page,
-              per: this.perPage,
-            }),
-          )
+        return gl.boardService.getBacklog({
+          ...urlParamsToObject(this.filter.path),
+          page: this.page,
+          per: this.perPage,
+        })
           .then(res => res.data)
           .then(data => {
             if (clearIssues) {
@@ -169,7 +165,7 @@
         class="add-issues-list text-center"
       >
         <div class="add-issues-list-loading">
-          <loading-icon />
+          <gl-loading-icon />
         </div>
       </section>
       <modal-footer/>

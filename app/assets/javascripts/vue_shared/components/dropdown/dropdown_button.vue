@@ -1,11 +1,7 @@
 <script>
 import { __ } from '~/locale';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 
 export default {
-  components: {
-    LoadingIcon,
-  },
   props: {
     isDisabled: {
       type: Boolean,
@@ -34,7 +30,7 @@ export default {
     data-toggle="dropdown"
     aria-expanded="false"
   >
-    <loading-icon
+    <gl-loading-icon
       v-show="isLoading"
       :inline="true"
     />

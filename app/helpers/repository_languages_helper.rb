@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RepositoryLanguagesHelper
   def repository_languages_bar(languages)
     return if languages.none?

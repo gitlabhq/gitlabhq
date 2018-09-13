@@ -24,6 +24,7 @@ class Repository
 
   delegate :ref_name_for_sha, to: :raw_repository
   delegate :bundle_to_disk, to: :raw_repository
+  delegate :find_remote_root_ref, to: :raw_repository
 
   CreateTreeError = Class.new(StandardError)
 
@@ -80,10 +81,6 @@ class Repository
   end
 
   alias_method :raw, :raw_repository
-
-  def cleanup
-    @raw_repository&.cleanup
-  end
 
   # Don't use this! It's going away. Use Gitaly to read or write from repos.
   def path_to_repo
@@ -999,20 +996,20 @@ class Repository
                                        remote_branch: merge_request.target_branch)
   end
 
-  def blob_data_at(sha, path)
-    blob = blob_at(sha, path)
-    return unless blob
-
-    blob.load_all_data!
-    blob.data
-  end
-
   def squash(user, merge_request)
     raw.squash(user, merge_request.id, branch: merge_request.target_branch,
                                        start_sha: merge_request.diff_start_sha,
                                        end_sha: merge_request.diff_head_sha,
                                        author: merge_request.author,
                                        message: merge_request.title)
+  end
+
+  def blob_data_at(sha, path)
+    blob = blob_at(sha, path)
+    return unless blob
+
+    blob.load_all_data!
+    blob.data
   end
 
   private

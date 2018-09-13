@@ -7,6 +7,19 @@ import axios from './lib/utils/axios_utils';
 
 Dropzone.autoDiscover = false;
 
+/**
+ * Return the error message string from the given response.
+ *
+ * @param {String|Object} res
+ */
+function getErrorMessage(res) {
+  if (!res || _.isString(res)) {
+    return res;
+  }
+
+  return res.message;
+}
+
 export default function dropzoneInput(form) {
   const divHover = '<div class="div-dropzone-hover"></div>';
   const iconPaperclip = '<i class="fa fa-paperclip div-dropzone-icon"></i>';
@@ -18,7 +31,7 @@ export default function dropzoneInput(form) {
   const $uploadingErrorContainer = form.find('.uploading-error-container');
   const $uploadingErrorMessage = form.find('.uploading-error-message');
   const $uploadingProgressContainer = form.find('.uploading-progress-container');
-  const uploadsPath = window.uploads_path || null;
+  const uploadsPath = form.data('uploads-path') || window.uploads_path || null;
   const maxFileSize = gon.max_file_size || 10;
   const formTextarea = form.find('.js-gfm-input');
   let handlePaste;
@@ -42,7 +55,7 @@ export default function dropzoneInput(form) {
 
   if (!uploadsPath) {
     $formDropzone.addClass('js-invalid-dropzone');
-    return;
+    return null;
   }
 
   const dropzone = $formDropzone.dropzone({
@@ -84,9 +97,7 @@ export default function dropzoneInput(form) {
       // xhr object (xhr.responseText is error message).
       // On error we hide the 'Attach' and 'Cancel' buttons
       // and show an error.
-
-      // If there's xhr error message, let's show it instead of dropzone's one.
-      const message = xhr ? xhr.responseText : errorMessage;
+      const message = getErrorMessage(errorMessage || xhr.responseText);
 
       $uploadingErrorContainer.removeClass('hide');
       $uploadingErrorMessage.html(message);
@@ -274,4 +285,6 @@ export default function dropzoneInput(form) {
     $(this).closest('.gfm-form').find('.div-dropzone').click();
     formTextarea.focus();
   });
+
+  return Dropzone.forElement($formDropzone.get(0));
 }

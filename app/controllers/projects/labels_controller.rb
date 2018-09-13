@@ -163,7 +163,12 @@ class Projects::LabelsController < Projects::ApplicationController
       LabelsFinder.new(current_user,
                        project_id: @project.id,
                        include_ancestor_groups: params[:include_ancestor_groups],
-                       search: params[:search]).execute
+                       search: params[:search],
+                       sort: sort).execute
+  end
+
+  def sort
+    @sort ||= params[:sort] || 'name_asc'
   end
 
   def authorize_admin_labels!

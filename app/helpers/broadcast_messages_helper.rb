@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BroadcastMessagesHelper
   def broadcast_message(message)
     return unless message.present?
@@ -8,18 +10,17 @@ module BroadcastMessagesHelper
   end
 
   def broadcast_message_style(broadcast_message)
-    style = ''
+    style = []
 
     if broadcast_message.color.present?
       style << "background-color: #{broadcast_message.color}"
-      style << '; ' if broadcast_message.font.present?
     end
 
     if broadcast_message.font.present?
       style << "color: #{broadcast_message.font}"
     end
 
-    style
+    style.join('; ')
   end
 
   def broadcast_message_status(broadcast_message)

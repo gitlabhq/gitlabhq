@@ -1,11 +1,9 @@
 <script>
   import ciIcon from '../../vue_shared/components/ci_icon.vue';
-  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
   export default {
     components: {
       ciIcon,
-      loadingIcon,
     },
     props: {
       status: {
@@ -37,7 +35,7 @@
       v-if="isLoading"
       class="mr-widget-icon"
     >
-      <loading-icon />
+      <gl-loading-icon />
     </div>
 
     <ci-icon

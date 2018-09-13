@@ -205,7 +205,7 @@ class JiraService < IssueTrackerService
       begin
         issue.transitions.build.save!(transition: { id: transition_id })
       rescue => error
-        Rails.logger.info "#{self.class.name} Issue Transition failed message ERROR: #{client_url} - #{error.message}"
+        log_error("Issue transition failed", error: error.message, client_url: client_url)
         return false
       end
     end
@@ -257,9 +257,8 @@ class JiraService < IssueTrackerService
         new_remote_link.save!(remote_link_props)
       end
 
-      result_message = "#{self.class.name} SUCCESS: Successfully posted to #{client_url}."
-      Rails.logger.info(result_message)
-      result_message
+      log_info("Successfully posted", client_url: client_url)
+      "SUCCESS: Successfully posted to http://jira.example.net."
     end
   end
 
@@ -317,7 +316,7 @@ class JiraService < IssueTrackerService
 
   rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, Errno::ECONNREFUSED, URI::InvalidURIError, JIRA::HTTPError, OpenSSL::SSL::SSLError => e
     @error = e.message
-    Rails.logger.info "#{self.class.name} Send message ERROR: #{client_url} - #{@error}"
+    log_error("Error sending message", client_url: client_url, error: @error)
     nil
   end
 

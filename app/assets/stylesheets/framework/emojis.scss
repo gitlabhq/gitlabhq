@@ -6,3 +6,13 @@ gl-emoji {
   font-size: 1.4em;
   line-height: 1em;
 }
+
+.user-status-emoji {
+  margin-right: $gl-padding-4;
+
+  gl-emoji {
+    font-size: 1em;
+    line-height: 16px;
+    vertical-align: baseline;
+  }
+}

@@ -1,0 +1,8 @@
+#js-groups-archived-tree
+  .empty-state.text-center.hidden
+    %p= _("There are no archived projects yet")
+
+  %ul.content-list{ data: { hide_projects: 'false', group_id: group.id, path: group_path(group) } }
+    .js-groups-list-holder
+      .loading-container.text-center
+        = icon('spinner spin 2x', class: 'loading-animation prepend-top-20')

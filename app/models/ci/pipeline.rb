@@ -161,6 +161,12 @@ module Ci
           PipelineNotificationWorker.perform_async(pipeline.id)
         end
       end
+
+      after_transition any => [:failed] do |pipeline|
+        next unless pipeline.auto_devops_source?
+
+        pipeline.run_after_commit { AutoDevops::DisableWorker.perform_async(pipeline.id) }
+      end
     end
 
     scope :internal, -> { where(source: internal_sources) }
@@ -458,7 +464,7 @@ module Ci
       return @config_processor if defined?(@config_processor)
 
       @config_processor ||= begin
-        Gitlab::Ci::YamlProcessor.new(ci_yaml_file)
+        ::Gitlab::Ci::YamlProcessor.new(ci_yaml_file, { project: project, sha: sha })
       rescue Gitlab::Ci::YamlProcessor::ValidationError => e
         self.yaml_errors = e.message
         nil

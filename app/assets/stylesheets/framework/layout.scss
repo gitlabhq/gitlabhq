@@ -69,14 +69,25 @@ body {
     float: right;
   }
 
-  /* Center alert text and alert action links on smaller screens */
-  @include media-breakpoint-down(sm) {
-    .alert {
-      text-align: center;
+  .flex-alert {
+    @include media-breakpoint-up(lg) {
+      display: flex;
+
+      .alert-message {
+        flex: 1;
+        padding-right: 40px;
+      }
     }
 
     .alert-link-group {
       float: none;
+    }
+  }
+
+  @include media-breakpoint-down(sm) {
+    .alert-link-group {
+      float: none;
+      margin-top: $gl-padding-8;
     }
   }
 

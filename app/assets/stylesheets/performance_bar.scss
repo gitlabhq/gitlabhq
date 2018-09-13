@@ -11,10 +11,10 @@
   height: $performance-bar-height;
   background: $black;
   line-height: $performance-bar-height;
-  color: $perf-bar-text;
+  color: $gl-gray-400;
 
   select {
-    color: $perf-bar-text;
+    color: $gl-gray-400;
     width: 200px;
   }
 
@@ -53,7 +53,7 @@
     padding: 4px 6px;
     font-family: Consolas, 'Liberation Mono', Courier, monospace;
     line-height: 1;
-    color: $perf-bar-bucket-color;
+    color: $gl-gray-200;
     border-radius: 3px;
     box-shadow: 0 1px 0 $perf-bar-bucket-box-shadow-from,
       inset 0 1px 2px $perf-bar-bucket-box-shadow-to;

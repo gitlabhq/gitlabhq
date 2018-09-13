@@ -16,7 +16,7 @@
       "items": { "$ref": "job/job.json" },
       "optional": true
     },
-    "status": { "$ref": "ci_detailed_status.json" },
+    "status": { "$ref": "status/ci_detailed_status.json" },
     "path": { "type": "string" },
     "dropdown_path": { "type": "string" }
   },

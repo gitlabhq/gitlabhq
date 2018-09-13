@@ -5,6 +5,8 @@ shared_examples 'instance statistics availability' do
 
   before do
     sign_in(user)
+
+    stub_application_setting(usage_ping_enabled: true)
   end
 
   describe 'GET #index' do

@@ -166,8 +166,8 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
             expect(response).to match_response_schema('job/job_details')
             expect(json_response['artifact']['download_path']).to match(%r{artifacts/download})
             expect(json_response['artifact']['browse_path']).to match(%r{artifacts/browse})
-            expect(json_response['artifact']).not_to have_key(:expired)
-            expect(json_response['artifact']).not_to have_key(:expired_at)
+            expect(json_response['artifact']).not_to have_key('expired')
+            expect(json_response['artifact']).not_to have_key('expired_at')
           end
         end
 
@@ -177,8 +177,8 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           it 'exposes needed information' do
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('job/job_details')
-            expect(json_response['artifact']).not_to have_key(:download_path)
-            expect(json_response['artifact']).not_to have_key(:browse_path)
+            expect(json_response['artifact']).not_to have_key('download_path')
+            expect(json_response['artifact']).not_to have_key('browse_path')
             expect(json_response['artifact']['expired']).to eq(true)
             expect(json_response['artifact']['expire_at']).not_to be_empty
           end
@@ -192,6 +192,63 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('job/job_details')
           expect(json_response['terminal_path']).to match(%r{/terminal})
+        end
+      end
+
+      context 'when job passed with no trace' do
+        let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
+
+        it 'exposes empty state illustrations' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('job/job_details')
+          expect(json_response['status']['illustration']).to have_key('image')
+          expect(json_response['status']['illustration']).to have_key('size')
+          expect(json_response['status']['illustration']).to have_key('title')
+        end
+      end
+    end
+
+    context 'when requesting JSON job is triggered' do
+      let!(:merge_request) { create(:merge_request, source_project: project) }
+      let(:trigger) { create(:ci_trigger, project: project) }
+      let(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, trigger: trigger) }
+      let(:job) { create(:ci_build, pipeline: pipeline, trigger_request: trigger_request) }
+
+      before do
+        project.add_developer(user)
+        sign_in(user)
+
+        allow_any_instance_of(Ci::Build).to receive(:merge_request).and_return(merge_request)
+      end
+
+      context 'with no variables' do
+        before do
+          get_show(id: job.id, format: :json)
+        end
+
+        it 'exposes trigger information' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('job/job_details')
+          expect(json_response['trigger']['short_token']).to eq 'toke'
+          expect(json_response['trigger']['variables'].length).to eq 0
+        end
+      end
+
+      context 'with variables' do
+        before do
+          create(:ci_pipeline_variable, pipeline: pipeline, key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1')
+
+          get_show(id: job.id, format: :json)
+        end
+
+        it 'exposes trigger information and variables' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('job/job_details')
+          expect(json_response['trigger']['short_token']).to eq 'toke'
+          expect(json_response['trigger']['variables'].length).to eq 1
+          expect(json_response['trigger']['variables'].first['key']).to eq "TRIGGER_KEY_1"
+          expect(json_response['trigger']['variables'].first['value']).to eq "TRIGGER_VALUE_1"
+          expect(json_response['trigger']['variables'].first['public']).to eq false
         end
       end
     end

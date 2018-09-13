@@ -5,12 +5,6 @@
 # column type without parsing db/schema.rb.
 module Gitlab
   class FakeApplicationSettings < OpenStruct
-    def initialize(options = {})
-      super
-
-      FakeApplicationSettings.define_predicate_methods(options)
-    end
-
     # Mimic ActiveRecord predicate methods for boolean values
     def self.define_predicate_methods(options)
       options.each do |key, value|
@@ -22,6 +16,24 @@ module Gitlab
           self[actual_key]
         end
       end
+    end
+
+    def initialize(options = {})
+      super
+
+      FakeApplicationSettings.define_predicate_methods(options)
+    end
+
+    def key_restriction_for(type)
+      0
+    end
+
+    def allowed_key_types
+      ApplicationSetting::SUPPORTED_KEY_TYPES
+    end
+
+    def pick_repository_storage
+      repository_storages.sample
     end
   end
 end

@@ -1,3 +1,5 @@
+import { activityBarViews } from '../../../constants';
+
 export const templateTypes = () => [
   {
     name: '.gitlab-ci.yml',
@@ -17,7 +19,8 @@ export const templateTypes = () => [
   },
 ];
 
-export const showFileTemplatesBar = (_, getters) => name =>
-  getters.templateTypes.find(t => t.name === name);
+export const showFileTemplatesBar = (_, getters, rootState) => name =>
+  getters.templateTypes.find(t => t.name === name) &&
+  rootState.currentActivityView === activityBarViews.edit;
 
 export default () => {};

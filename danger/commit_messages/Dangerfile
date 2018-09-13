@@ -1,0 +1,192 @@
+# frozen_string_literal: true
+
+# rubocop: disable Style/SignalException
+# rubocop: disable Metrics/CyclomaticComplexity
+# rubocop: disable Metrics/PerceivedComplexity
+
+# Perform various checks against commits. We're not using
+# https://github.com/jonallured/danger-commit_lint because its output is not
+# very helpful, and it doesn't offer the means of ignoring merge commits.
+
+def fail_commit(commit, message)
+  fail("#{commit.sha}: #{message}")
+end
+
+def lines_changed_in_commit(commit)
+  commit.diff_parent.stats[:total][:lines]
+end
+
+def subject_starts_with_capital?(subject)
+  first_char = subject.chars.first
+
+  first_char.upcase == first_char
+end
+
+def ce_upstream?
+  gitlab.mr_labels.any? { |label| label == 'CE upstream' }
+end
+
+def lint_commits(commits)
+  failures = false
+
+  unicode_emoji_regex = %r((
+    [\u{1F300}-\u{1F5FF}] |
+    [\u{1F1E6}-\u{1F1FF}] |
+    [\u{2700}-\u{27BF}] |
+    [\u{1F900}-\u{1F9FF}] |
+    [\u{1F600}-\u{1F64F}] |
+    [\u{1F680}-\u{1F6FF}] |
+    [\u{2600}-\u{26FF}]
+  ))x
+
+  commits.each do |commit|
+    # For now we'll ignore merge commits, as getting rid of those is a problem
+    # separate from enforcing good commit messages.
+    next if commit.message.start_with?('Merge branch')
+
+    subject, separator, details = commit.message.split("\n", 3)
+
+    if subject.split.length < 3
+      fail_commit(
+        commit,
+        'The commit subject must contain at least three words'
+      )
+
+      failures = true
+    end
+
+    if subject.length > 50
+      fail_commit(
+        commit,
+        'The commit subject may not be longer than 50 characters'
+      )
+
+      failures = true
+    end
+
+    unless subject_starts_with_capital?(subject)
+      fail_commit(commit, 'The commit subject must start with a capital letter')
+      failures = true
+    end
+
+    if subject.end_with?('.')
+      fail_commit(commit, 'The commit subject must not end with a period')
+      failures = true
+    end
+
+    if separator && !separator.empty?
+      fail_commit(
+        commit,
+        'The commit subject and body must be separated by a blank line'
+      )
+
+      failures = true
+    end
+
+    details&.each_line do |line|
+      line = line.strip
+
+      next if line.length <= 72
+
+      url_size = line.scan(%r((https?://\S+))).sum { |(url)| url.length }
+
+      # If the line includes a URL, we'll allow it to exceed 72 characters, but
+      # only if the line _without_ the URL does not exceed this limit.
+      next if line.length - url_size <= 72
+
+      fail_commit(
+        commit,
+        'The commit body should not contain more than 72 characters per line'
+      )
+
+      failures = true
+    end
+
+    if !details && lines_changed_in_commit(commit) >= 20
+      fail_commit(
+        commit,
+        'Commits that change more than 20 lines ' \
+          'must describe these changes in the commit body'
+      )
+
+      failures = true
+    end
+
+    if commit.message.match?(/:[\+a-z0-9_\-]+:/)
+      fail_commit(
+        commit,
+        'Avoid the use of Markdown Emoji such as `:+1:`. ' \
+          'These add no value to the commit message, ' \
+          'and are displayed as plain text outside of GitLab'
+      )
+
+      failures = true
+    end
+
+    if commit.message.match?(unicode_emoji_regex)
+      fail_commit(
+        commit,
+        'Avoid the use of Unicode Emoji. ' \
+          'These add no value to the commit message, ' \
+          'and may not be displayed properly everywhere'
+      )
+
+      failures = true
+    end
+
+    if commit.message.match?(%r(([\w\-\/]+)?(#|!|&|%)\d+))
+      fail_commit(
+        commit,
+        'Use full URLs instead of short references ' \
+          '(`gitlab-org/gitlab-ce#123` or `!123`), as short references are ' \
+          'displayed as plain text outside of GitLab'
+      )
+
+      failures = true
+    end
+  end
+
+  if failures
+    markdown(<<~MARKDOWN)
+      ## Commit message standards
+
+      One or more commit messages do not meet our Git commit message standards.
+      For more information on how to write a good commit message, take a look at
+      [How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/).
+
+      Here is an example of a good commit message:
+
+          Reject ruby interpolation in externalized strings
+
+          When using ruby interpolation in externalized strings, they can't be
+          detected. Which means they will never be presented to be translated.
+
+          To mix variables into translations we need to use `sprintf`
+          instead.
+
+          Instead of:
+
+              _("Hello \#{subject}")
+
+          Use:
+
+              _("Hello %{subject}) % { subject: 'world' }
+
+      This is an example of a bad commit message:
+
+          updated README.md
+
+      This commit message is bad because although it tells us that README.md is
+      updated, it doesn't tell us why or how it was updated.
+    MARKDOWN
+  end
+end
+
+if git.commits.length > 10 && !ce_upstream?
+  warn(
+    'This merge request includes more than 10 commits. ' \
+      'Please rebase these commits into a smaller number of commits.'
+  )
+else
+  lint_commits(git.commits)
+end

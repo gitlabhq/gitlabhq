@@ -179,32 +179,126 @@ describe('DiffsStoreUtils', () => {
 
   describe('trimFirstCharOfLineContent', () => {
     it('trims the line when it starts with a space', () => {
-      expect(utils.trimFirstCharOfLineContent({ richText: ' diff' })).toEqual({ richText: 'diff' });
+      expect(utils.trimFirstCharOfLineContent({ richText: ' diff' })).toEqual({
+        discussions: [],
+        richText: 'diff',
+      });
     });
 
     it('trims the line when it starts with a +', () => {
-      expect(utils.trimFirstCharOfLineContent({ richText: '+diff' })).toEqual({ richText: 'diff' });
+      expect(utils.trimFirstCharOfLineContent({ richText: '+diff' })).toEqual({
+        discussions: [],
+        richText: 'diff',
+      });
     });
 
     it('trims the line when it starts with a -', () => {
-      expect(utils.trimFirstCharOfLineContent({ richText: '-diff' })).toEqual({ richText: 'diff' });
+      expect(utils.trimFirstCharOfLineContent({ richText: '-diff' })).toEqual({
+        discussions: [],
+        richText: 'diff',
+      });
     });
 
     it('does not trims the line when it starts with a letter', () => {
-      expect(utils.trimFirstCharOfLineContent({ richText: 'diff' })).toEqual({ richText: 'diff' });
+      expect(utils.trimFirstCharOfLineContent({ richText: 'diff' })).toEqual({
+        discussions: [],
+        richText: 'diff',
+      });
     });
 
     it('does not modify the provided object', () => {
       const lineObj = {
+        discussions: [],
         richText: ' diff',
       };
 
       utils.trimFirstCharOfLineContent(lineObj);
-      expect(lineObj).toEqual({ richText: ' diff' });
+      expect(lineObj).toEqual({ discussions: [], richText: ' diff' });
     });
 
     it('handles a undefined or null parameter', () => {
-      expect(utils.trimFirstCharOfLineContent()).toEqual({});
+      expect(utils.trimFirstCharOfLineContent()).toEqual({ discussions: [] });
+    });
+  });
+
+  describe('prepareDiffData', () => {
+    it('sets the renderIt and collapsed attribute on files', () => {
+      const preparedDiff = { diffFiles: [getDiffFileMock()] };
+      utils.prepareDiffData(preparedDiff);
+
+      const firstParallelDiffLine = preparedDiff.diffFiles[0].parallelDiffLines[2];
+      expect(firstParallelDiffLine.left.discussions.length).toBe(0);
+      expect(firstParallelDiffLine.left).not.toHaveAttr('text');
+      expect(firstParallelDiffLine.right.discussions.length).toBe(0);
+      expect(firstParallelDiffLine.right).not.toHaveAttr('text');
+      const firstParallelChar = firstParallelDiffLine.right.richText.charAt(0);
+      expect(firstParallelChar).not.toBe(' ');
+      expect(firstParallelChar).not.toBe('+');
+      expect(firstParallelChar).not.toBe('-');
+
+      const checkLine = preparedDiff.diffFiles[0].highlightedDiffLines[0];
+      expect(checkLine.discussions.length).toBe(0);
+      expect(checkLine).not.toHaveAttr('text');
+      const firstChar = checkLine.richText.charAt(0);
+      expect(firstChar).not.toBe(' ');
+      expect(firstChar).not.toBe('+');
+      expect(firstChar).not.toBe('-');
+
+      expect(preparedDiff.diffFiles[0].renderIt).toBeTruthy();
+      expect(preparedDiff.diffFiles[0].collapsed).toBeFalsy();
+    });
+  });
+
+  describe('isDiscussionApplicableToLine', () => {
+    const diffPosition = {
+      baseSha: 'ed13df29948c41ba367caa757ab3ec4892509910',
+      headSha: 'b921914f9a834ac47e6fd9420f78db0f83559130',
+      newLine: null,
+      newPath: '500-lines-4.txt',
+      oldLine: 5,
+      oldPath: '500-lines-4.txt',
+      startSha: 'ed13df29948c41ba367caa757ab3ec4892509910',
+    };
+
+    const wrongDiffPosition = {
+      baseSha: 'wrong',
+      headSha: 'wrong',
+      newLine: null,
+      newPath: '500-lines-4.txt',
+      oldLine: 5,
+      oldPath: '500-lines-4.txt',
+      startSha: 'wrong',
+    };
+
+    const discussions = {
+      upToDateDiscussion1: {
+        original_position: {
+          formatter: diffPosition,
+        },
+        position: {
+          formatter: wrongDiffPosition,
+        },
+      },
+      outDatedDiscussion1: {
+        original_position: {
+          formatter: wrongDiffPosition,
+        },
+        position: {
+          formatter: wrongDiffPosition,
+        },
+      },
+    };
+
+    it('returns true when the discussion is up to date', () => {
+      expect(
+        utils.isDiscussionApplicableToLine(discussions.upToDateDiscussion1, diffPosition),
+      ).toBe(true);
+    });
+
+    it('returns false when the discussion is not up to date', () => {
+      expect(
+        utils.isDiscussionApplicableToLine(discussions.outDatedDiscussion1, diffPosition),
+      ).toBe(false);
     });
   });
 });

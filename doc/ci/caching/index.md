@@ -24,14 +24,14 @@ Don't mix the caching with passing artifacts between stages. Caching is not
 designed to pass artifacts between stages. Cache is for runtime dependencies
 needed to compile the project:
 
-- `cache` - **Use for temporary storage for project dependencies.** Not useful
+- `cache`: **Use for temporary storage for project dependencies.** Not useful
   for keeping intermediate build results, like `jar` or `apk` files.
   Cache was designed to be used to speed up invocations of subsequent runs of a
   given job, by keeping things like dependencies (e.g., npm packages, Go vendor
   packages, etc.) so they don't have to be re-fetched from the public internet.
   While the cache can be abused to pass intermediate build results between stages,
   there may be cases where artifacts are a better fit.
-- `artifacts` - **Use for stage results that will be passed between stages.**
+- `artifacts`: **Use for stage results that will be passed between stages.**
   Artifacts were designed to upload some compiled/generated bits of the build,
   and they can be fetched by any number of concurrent Runners. They are
   guaranteed to be available and are there to pass data between jobs. They are
@@ -57,19 +57,20 @@ control exactly where artifacts are passed around.
 
 In summary:
 
-- Caches are disabled if not defined globally or per job (using `cache:`)
-- Caches are available for all jobs in your `.gitlab-ci.yml` if enabled globally
+- Caches are disabled if not defined globally or per job (using `cache:`).
+- Caches are available for all jobs in your `.gitlab-ci.yml` if enabled globally.
 - Caches can be used by subsequent pipelines of that very same job (a script in
   a stage) in which the cache was created (if not defined globally).
 - Caches are stored where the Runner is installed **and** uploaded to S3 if
-  [distributed cache is enabled](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching)
-- Caches defined per job are only used either a) for the next pipeline of that job,
-  or b) if that same cache is also defined in a subsequent job of the same pipeline
-- Artifacts are disabled if not defined per job (using `artifacts:`)
-- Artifacts can only be enabled per job, not globally
+  [distributed cache is enabled](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching).
+- Caches defined per job are only used, either:
+  - For the next pipeline of that job.
+  - If that same cache is also defined in a subsequent job of the same pipeline.
+- Artifacts are disabled if not defined per job (using `artifacts:`).
+- Artifacts can only be enabled per job, not globally.
 - Artifacts are created during a pipeline and can be used by the subsequent
-  jobs of that currently active pipeline
-- Artifacts are always uploaded to GitLab (known as coordinator)
+  jobs of that currently active pipeline.
+- Artifacts are always uploaded to GitLab (known as coordinator).
 - Artifacts can have an expiration value for controlling disk usage (30 days by default).
 
 ## Good caching practices
@@ -97,13 +98,13 @@ or pipelines in a guaranteed manner.
 From the perspective of the Runner, in order for cache to work effectively, one
 of the following must be true:
 
-- Use a single Runner for all your jobs
-- Use multiple Runners (in autoscale mode or not) that use
+- Use a single Runner for all your jobs.
+- Use multiple Runners (in autoscale mode or not) that use.
   [distributed caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching),
-  where the cache is stored in S3 buckets (like shared Runners on GitLab.com)
+  where the cache is stored in S3 buckets (like shared Runners on GitLab.com).
 - Use multiple Runners (not in autoscale mode) of the same architecture that
   share a common network-mounted directory (using NFS or something similar)
-  where the cache will be stored
+  where the cache will be stored.
 
 TIP: **Tip:**
 Read about the [availability of the cache](#availability-of-the-cache)
@@ -367,19 +368,19 @@ job B:
 
 Here's what happens behind the scenes:
 
-1. Pipeline starts
-1. `job A` runs
-1. `before_script` is executed
-1. `script` is executed
-1. `after_script` is executed
+1. Pipeline starts.
+1. `job A` runs.
+1. `before_script` is executed.
+1. `script` is executed.
+1. `after_script` is executed.
 1. `cache` runs and the `vendor/` directory is zipped into `cache.zip`.
     This file is then saved in the directory based on the
     [Runner's setting](#where-the-caches-are-stored) and the `cache: key`.
-1. `job B` runs
-1. The cache is extracted (if found)
-1. `before_script` is executed
-1. `script` is executed
-1. Pipeline finishes
+1. `job B` runs.
+1. The cache is extracted (if found).
+1. `before_script` is executed.
+1. `script` is executed.
+1. Pipeline finishes.
 
 By using a single Runner on a single machine, you'll not have the issue where
 `job B` might execute on a Runner different from `job A`, thus guaranteeing the
@@ -451,13 +452,13 @@ job B:
     - vendor/
 ```
 
-1. `job A` runs
-1. `public/` is cached as cache.zip
-1. `job B` runs
-1. The previous cache, if any, is unzipped
-1. `vendor/` is cached as cache.zip and overwrites the previous one
+1. `job A` runs.
+1. `public/` is cached as cache.zip.
+1. `job B` runs.
+1. The previous cache, if any, is unzipped.
+1. `vendor/` is cached as cache.zip and overwrites the previous one.
 1. The next time `job A` runs it will use the cache of `job B` which is different
-   and thus will be ineffective
+   and thus will be ineffective.
 
 To fix that, use different `keys` for each job.
 
@@ -514,12 +515,12 @@ next run of the pipeline, the cache will be stored in a different location.
 If you want to avoid editing `.gitlab-ci.yml`, you can easily clear the cache
 via GitLab's UI:
 
-1. Navigate to your project's **CI/CD > Pipelines** page
-1. Click on the **Clear Runner caches** button to clean up the cache
+1. Navigate to your project's **CI/CD > Pipelines** page.
+1. Click on the **Clear Runner caches** button to clean up the cache.
 
     ![Clear Runners cache](img/clear_runners_cache.png)
 
-1. On the next push, your CI/CD job will use a new cache
+1. On the next push, your CI/CD job will use a new cache.
 
 Behind the scenes, this works by increasing a counter in the database, and the
 value of that counter is used to create the key for the cache by appending an

@@ -8,6 +8,8 @@ import {
   NEW_LINE_TYPE,
   OLD_LINE_TYPE,
   MATCH_LINE_TYPE,
+  LINES_TO_BE_RENDERED_DIRECTLY,
+  MAX_LINES_TO_BE_RENDERED,
 } from '../constants';
 
 export function findDiffFile(files, hash) {
@@ -161,6 +163,11 @@ export function addContextLines(options) {
  * @returns {Object}
  */
 export function trimFirstCharOfLineContent(line = {}) {
+  // eslint-disable-next-line no-param-reassign
+  delete line.text;
+  // eslint-disable-next-line no-param-reassign
+  line.discussions = [];
+
   const parsedLine = Object.assign({}, line);
 
   if (line.richText) {
@@ -174,7 +181,44 @@ export function trimFirstCharOfLineContent(line = {}) {
   return parsedLine;
 }
 
-export function getDiffRefsByLineCode(diffFiles) {
+// This prepares and optimizes the incoming diff data from the server
+// by setting up incremental rendering and removing unneeded data
+export function prepareDiffData(diffData) {
+  const filesLength = diffData.diffFiles.length;
+  let showingLines = 0;
+  for (let i = 0; i < filesLength; i += 1) {
+    const file = diffData.diffFiles[i];
+
+    if (file.parallelDiffLines) {
+      const linesLength = file.parallelDiffLines.length;
+      for (let u = 0; u < linesLength; u += 1) {
+        const line = file.parallelDiffLines[u];
+        if (line.left) {
+          line.left = trimFirstCharOfLineContent(line.left);
+        }
+        if (line.right) {
+          line.right = trimFirstCharOfLineContent(line.right);
+        }
+      }
+    }
+
+    if (file.highlightedDiffLines) {
+      const linesLength = file.highlightedDiffLines.length;
+      for (let u = 0; u < linesLength; u += 1) {
+        const line = file.highlightedDiffLines[u];
+        Object.assign(line, { ...trimFirstCharOfLineContent(line) });
+      }
+      showingLines += file.parallelDiffLines.length;
+    }
+
+    Object.assign(file, {
+      renderIt: showingLines < LINES_TO_BE_RENDERED_DIRECTLY,
+      collapsed: file.text && showingLines > MAX_LINES_TO_BE_RENDERED,
+    });
+  }
+}
+
+export function getDiffPositionByLineCode(diffFiles) {
   return diffFiles.reduce((acc, diffFile) => {
     const { baseSha, headSha, startSha } = diffFile.diffRefs;
     const { newPath, oldPath } = diffFile;
@@ -193,4 +237,13 @@ export function getDiffRefsByLineCode(diffFiles) {
 
     return acc;
   }, {});
+}
+
+// This method will check whether the discussion is still applicable
+// to the diff line in question regarding different versions of the MR
+export function isDiscussionApplicableToLine(discussion, diffPosition) {
+  const originalRefs = convertObjectPropsToCamelCase(discussion.original_position.formatter);
+  const refs = convertObjectPropsToCamelCase(discussion.position.formatter);
+
+  return _.isEqual(refs, diffPosition) || _.isEqual(originalRefs, diffPosition);
 }

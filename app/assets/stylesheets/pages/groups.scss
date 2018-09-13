@@ -3,7 +3,6 @@
 }
 
 .dashboard .side .card .card-header .input-group {
-
   .form-control {
     height: 42px;
   }
@@ -30,14 +29,15 @@
   }
 }
 
+.group-nav-container .group-search,
 .group-nav-container .nav-controls {
   display: flex;
   align-items: flex-start;
-  padding: $gl-padding-top 0;
-  border-bottom: 1px solid $border-color;
+  padding: $gl-padding-top 0 0;
 
   .group-filter-form {
-    flex: 1;
+    flex: 1 1 auto;
+    margin-right: $gl-padding-8;
   }
 
   .dropdown-menu-right {
@@ -136,6 +136,10 @@
         flex: 1;
       }
 
+      .dropdown-toggle {
+        width: auto;
+      }
+
       .dropdown-menu {
         width: 100%;
         max-width: inherit;
@@ -145,38 +149,14 @@
   }
 }
 
-.groups-empty-state {
-  padding: 50px 100px;
-  overflow: hidden;
+.group-nav-container .group-search {
+  padding: $gl-padding 0;
+  border-bottom: 1px solid $border-color;
+}
 
-  @include media-breakpoint-down(sm) {
-    padding: 50px 0;
-  }
-
-  svg {
-    float: right;
-
-    @include media-breakpoint-down(sm) {
-      float: none;
-      display: block;
-      width: 250px;
-      position: relative;
-      left: 50%;
-      margin-left: -125px;
-    }
-  }
-
-  .text-content {
-    float: left;
-    width: 460px;
-    margin-top: 120px;
-
-    @include media-breakpoint-down(sm) {
-      float: none;
-      margin-top: 60px;
-      width: auto;
-      text-align: center;
-    }
+.groups-listing {
+  .group-list-tree .group-row:first-child {
+    border-top: 0;
   }
 }
 
@@ -278,12 +258,12 @@
     }
 
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       height: 100%;
       width: 100%;
       background-color: transparent;
-      border: 2px outset $kdb-border;
+      border: 2px outset $gl-gray-200;
       border-radius: 50%;
       animation: spin-avatar 3s infinite linear;
     }
@@ -346,7 +326,7 @@
       position: relative;
 
       &::before {
-        content: "";
+        content: '';
         display: block;
         width: 10px;
         height: 0;

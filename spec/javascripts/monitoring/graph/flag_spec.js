@@ -35,7 +35,7 @@ const defaultValuesComponent = {
   unitOfDisplay: 'ms',
   currentDataIndex: 0,
   legendTitle: 'Average',
-  currentCoordinates: [],
+  currentCoordinates: {},
 };
 
 const deploymentFlagData = {

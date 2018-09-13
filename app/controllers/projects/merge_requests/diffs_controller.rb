@@ -21,6 +21,8 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   def render_diffs
     @environment = @merge_request.environments_for(current_user).last
 
+    @diffs.write_cache
+
     render json: DiffsSerializer.new(current_user: current_user).represent(@diffs, additional_attributes)
   end
 

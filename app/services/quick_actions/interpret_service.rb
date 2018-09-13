@@ -489,6 +489,30 @@ module QuickActions
       "#{comment} #{TABLEFLIP}"
     end
 
+    desc "Lock the discussion"
+    explanation "Locks the discussion"
+    condition do
+      issuable.is_a?(Issuable) &&
+        issuable.persisted? &&
+        !issuable.discussion_locked? &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
+    end
+    command :lock do
+      @updates[:discussion_locked] = true
+    end
+
+    desc "Unlock the discussion"
+    explanation "Unlocks the discussion"
+    condition do
+      issuable.is_a?(Issuable) &&
+        issuable.persisted? &&
+        issuable.discussion_locked? &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
+    end
+    command :unlock do
+      @updates[:discussion_locked] = false
+    end
+
     # This is a dummy command, so that it appears in the autocomplete commands
     desc 'CC'
     params '@user'

@@ -232,6 +232,8 @@ class Project < ActiveRecord::Base
   has_many :clusters, through: :cluster_project, class_name: 'Clusters::Cluster'
   has_many :cluster_ingresses, through: :clusters, source: :application_ingress, class_name: 'Clusters::Applications::Ingress'
 
+  has_many :prometheus_metrics
+
   # Container repositories need to remove data from the container registry,
   # which is not managed by the DB. Hence we're still using dependent: :destroy
   # here.
@@ -567,7 +569,6 @@ class Project < ActiveRecord::Base
   end
 
   def cleanup
-    @repository&.cleanup
     @repository = nil
   end
 
@@ -1733,16 +1734,12 @@ class Project < ActiveRecord::Base
     import_export_shared.archive_path
   end
 
-  def export_project_path
-    Dir.glob("#{export_path}/*export.tar.gz").max_by { |f| File.ctime(f) }
-  end
-
   def export_status
     if export_in_progress?
       :started
     elsif after_export_in_progress?
       :after_export_action
-    elsif export_project_path || export_project_object_exists?
+    elsif export_file_exists?
       :finished
     else
       :none
@@ -1757,21 +1754,19 @@ class Project < ActiveRecord::Base
     import_export_shared.after_export_in_progress?
   end
 
-  def remove_exports(path = export_path)
-    if path.present?
-      FileUtils.rm_rf(path)
-    elsif export_project_object_exists?
-      import_export_upload.remove_export_file!
-      import_export_upload.save
-    end
+  def remove_exports
+    return unless export_file_exists?
+
+    import_export_upload.remove_export_file!
+    import_export_upload.save
   end
 
-  def remove_exported_project_file
-    remove_exports(export_project_path)
+  def export_file_exists?
+    export_file&.file
   end
 
-  def export_project_object_exists?
-    Gitlab::ImportExport.object_storage? && import_export_upload&.export_file&.file
+  def export_file
+    import_export_upload&.export_file
   end
 
   def full_path_slug
@@ -2065,6 +2060,12 @@ class Project < ActiveRecord::Base
 
   def auto_cancel_pending_pipelines?
     auto_cancel_pending_pipelines == 'enabled'
+  end
+
+  # Update the default branch querying the remote to determine its HEAD
+  def update_root_ref(remote_name)
+    root_ref = repository.find_remote_root_ref(remote_name)
+    change_head(root_ref) if root_ref.present? && root_ref != default_branch
   end
 
   private

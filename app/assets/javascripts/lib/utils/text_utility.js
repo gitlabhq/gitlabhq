@@ -49,6 +49,16 @@ export const dasherize = str => str.replace(/[_\s]+/g, '-');
 export const slugify = str => str.trim().toLowerCase();
 
 /**
+ * Replaces whitespaces with hyphens and converts to lower case
+ * @param {String} str
+ * @returns {String}
+ */
+export const slugifyWithHyphens = str => {
+  const regex = new RegExp(/\s+/, 'g');
+  return str.toLowerCase().replace(regex, '-');
+};
+
+/**
  * Truncates given text
  *
  * @param {String} string

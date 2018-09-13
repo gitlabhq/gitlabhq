@@ -12,8 +12,9 @@ describe 'New project' do
   it 'shows "New project" page', :js do
     visit new_project_path
 
-    expect(page).to have_content('Project path')
     expect(page).to have_content('Project name')
+    expect(page).to have_content('Project URL')
+    expect(page).to have_content('Project slug')
 
     find('#import-project-tab').click
 
@@ -187,7 +188,7 @@ describe 'New project' do
         collision_project = create(:project, name: 'test-name-collision', namespace: user.namespace)
 
         fill_in 'project_import_url', with: collision_project.http_url_to_repo
-        fill_in 'project_path', with: collision_project.path
+        fill_in 'project_name', with: collision_project.name
 
         click_on 'Create project'
 

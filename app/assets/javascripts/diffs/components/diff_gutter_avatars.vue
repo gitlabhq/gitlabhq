@@ -1,15 +1,11 @@
 <script>
 import { mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
-import tooltip from '~/vue_shared/directives/tooltip';
 import { pluralize, truncate } from '~/lib/utils/text_utility';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import { COUNT_OF_AVATARS_IN_GUTTER, LENGTH_OF_AVATAR_TOOLTIP } from '../constants';
 
 export default {
-  directives: {
-    tooltip,
-  },
   components: {
     Icon,
     UserAvatarImage,
@@ -91,10 +87,10 @@ export default {
         @click.native="toggleDiscussions"
       />
       <span
-        v-tooltip
+        v-gl-tooltip
         v-if="moreText"
         :title="moreText"
-        class="diff-comments-more-count has-tooltip js-diff-comment-avatar js-diff-comment-plus"
+        class="diff-comments-more-count js-diff-comment-avatar js-diff-comment-plus"
         data-container="body"
         data-placement="top"
         role="button"

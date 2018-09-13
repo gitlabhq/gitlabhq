@@ -6,7 +6,6 @@ module Gitlab
   module Git
     class Repository
       include Gitlab::Git::RepositoryMirroring
-      include Gitlab::Git::Popen
       include Gitlab::EncodingHelper
       include Gitlab::Utils::StrongMemoize
 
@@ -73,7 +72,7 @@ module Gitlab
       # Relative path of repo
       attr_reader :relative_path
 
-      attr_reader :gitlab_projects, :storage, :gl_repository, :relative_path
+      attr_reader :storage, :gl_repository, :relative_path
 
       # This initializer method is only used on the client side (gitlab-ce).
       # Gitaly-ruby uses a different initializer.
@@ -81,13 +80,6 @@ module Gitlab
         @storage = storage
         @relative_path = relative_path
         @gl_repository = gl_repository
-
-        @gitlab_projects = Gitlab::Git::GitlabProjects.new(
-          storage,
-          relative_path,
-          global_hooks_path: Gitlab.config.gitlab_shell.hooks_path,
-          logger: Rails.logger
-        )
 
         @name = @relative_path.split("/").last
       end
@@ -121,10 +113,6 @@ module Gitlab
         raise NoRepository.new('no repository for such path')
       end
 
-      def cleanup
-        @rugged&.close
-      end
-
       def circuit_breaker
         @circuit_breaker ||= Gitlab::Git::Storage::CircuitBreaker.for_storage(storage)
       end
@@ -146,10 +134,6 @@ module Gitlab
         wrapped_gitaly_errors do
           gitaly_ref_client.branches
         end
-      end
-
-      def reload_rugged
-        @rugged = nil
       end
 
       # Directly find a branch with a simple name (e.g. master)
@@ -250,15 +234,6 @@ module Gitlab
         end
       end
 
-      # Returns an Array of all ref names, except when it's matching pattern
-      #
-      # regexp - The pattern for ref names we don't want
-      def all_ref_names_except(prefixes)
-        rugged.references.reject do |ref|
-          prefixes.any? { |p| ref.name.start_with?(p) }
-        end.map(&:name)
-      end
-
       def archive_metadata(ref, storage_path, project_path, format = "tar.gz", append_sha:)
         ref ||= root_ref
         commit = Gitlab::Git::Commit.find(self, ref)
@@ -331,7 +306,7 @@ module Gitlab
         (size.to_f / 1024).round(2)
       end
 
-      # Use the Rugged Walker API to build an array of commits.
+      # Build an array of commits.
       #
       # Usage.
       #   repo.log(
@@ -591,19 +566,6 @@ module Gitlab
         end
       end
 
-      def check_revert_content(target_commit, source_sha)
-        args = [target_commit.sha, source_sha]
-        args << { mainline: 1 } if target_commit.merge_commit?
-
-        revert_index = rugged.revert_commit(*args)
-        return false if revert_index.conflicts?
-
-        tree_id = revert_index.write_tree(rugged)
-        return false unless diff_exists?(source_sha, tree_id)
-
-        tree_id
-      end
-
       def cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
         args = {
           user: user,
@@ -617,10 +579,6 @@ module Gitlab
         wrapped_gitaly_errors do
           gitaly_operation_client.user_cherry_pick(args)
         end
-      end
-
-      def diff_exists?(sha1, sha2)
-        rugged.diff(sha1, sha2).size > 0
       end
 
       def user_to_committer(user)
@@ -663,6 +621,14 @@ module Gitlab
       def remove_remote(remote_name)
         wrapped_gitaly_errors do
           gitaly_remote_client.remove_remote(remote_name)
+        end
+      end
+
+      def find_remote_root_ref(remote_name)
+        return unless remote_name.present?
+
+        wrapped_gitaly_errors do
+          gitaly_remote_client.find_remote_root_ref(remote_name)
         end
       end
 
@@ -738,48 +704,6 @@ module Gitlab
         end
       end
 
-      def with_repo_branch_commit(start_repository, start_branch_name)
-        Gitlab::Git.check_namespace!(start_repository)
-        start_repository = RemoteRepository.new(start_repository) unless start_repository.is_a?(RemoteRepository)
-
-        return yield nil if start_repository.empty?
-
-        if start_repository.same_repository?(self)
-          yield commit(start_branch_name)
-        else
-          start_commit_id = start_repository.commit_id(start_branch_name)
-
-          return yield nil unless start_commit_id
-
-          if branch_commit = commit(start_commit_id)
-            yield branch_commit
-          else
-            with_repo_tmp_commit(
-              start_repository, start_branch_name, start_commit_id) do |tmp_commit|
-              yield tmp_commit
-            end
-          end
-        end
-      end
-
-      def with_repo_tmp_commit(start_repository, start_branch_name, sha)
-        source_ref = start_branch_name
-
-        unless Gitlab::Git.branch_ref?(source_ref)
-          source_ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}#{source_ref}"
-        end
-
-        tmp_ref = fetch_ref(
-          start_repository,
-          source_ref: source_ref,
-          target_ref: "refs/tmp/#{SecureRandom.hex}"
-        )
-
-        yield commit(sha)
-      ensure
-        delete_refs(tmp_ref) if tmp_ref
-      end
-
       def fetch_source_branch!(source_repository, source_branch, local_ref)
         wrapped_gitaly_errors do
           gitaly_repository_client.fetch_source_branch(source_repository, source_branch, local_ref)
@@ -807,21 +731,6 @@ module Gitlab
         wrapped_gitaly_errors do
           gitaly_repository_client.write_ref(ref_path, ref, old_ref, shell)
         end
-      end
-
-      # This method, fetch_ref, is used from within
-      # Gitlab::Git::OperationService. OperationService will eventually only
-      # exist in gitaly-ruby. When we delete OperationService from gitlab-ce
-      # we can also remove fetch_ref.
-      def fetch_ref(source_repository, source_ref:, target_ref:)
-        Gitlab::Git.check_namespace!(source_repository)
-        source_repository = RemoteRepository.new(source_repository) unless source_repository.is_a?(RemoteRepository)
-
-        args = %W(fetch --no-tags -f #{GITALY_INTERNAL_URL} #{source_ref}:#{target_ref})
-        message, status = run_git(args, env: source_repository.fetch_env)
-        raise Gitlab::Git::CommandError, message if status != 0
-
-        target_ref
       end
 
       # Refactoring aid; allows us to copy code from app/models/repository.rb
@@ -889,24 +798,6 @@ module Gitlab
         wrapped_gitaly_errors do
           gitaly_repository_client.squash_in_progress?(squash_id)
         end
-      end
-
-      def push_remote_branches(remote_name, branch_names, forced: true)
-        success = @gitlab_projects.push_branches(remote_name, GITLAB_PROJECTS_TIMEOUT, forced, branch_names)
-
-        success || gitlab_projects_error
-      end
-
-      def delete_remote_branches(remote_name, branch_names)
-        success = @gitlab_projects.delete_remote_branches(remote_name, branch_names)
-
-        success || gitlab_projects_error
-      end
-
-      def delete_remote_branches(remote_name, branch_names)
-        success = @gitlab_projects.delete_remote_branches(remote_name, branch_names)
-
-        success || gitlab_projects_error
       end
 
       def bundle_to_disk(save_path)
@@ -1056,35 +947,10 @@ module Gitlab
         end
       end
 
-      def shell_blame(sha, path)
-        output, _status = run_git(%W(blame -p #{sha} -- #{path}))
-        output
-      end
-
       def last_commit_for_path(sha, path)
         wrapped_gitaly_errors do
           gitaly_commit_client.last_commit_for_path(sha, path)
         end
-      end
-
-      def rev_list(including: [], excluding: [], options: [], objects: false, &block)
-        args = ['rev-list']
-
-        args.push(*rev_list_param(including))
-
-        exclude_param = *rev_list_param(excluding)
-        if exclude_param.any?
-          args.push('--not')
-          args.push(*exclude_param)
-        end
-
-        args.push('--objects') if objects
-
-        if options.any?
-          args.push(*options)
-        end
-
-        run_git!(args, lazy_block: block)
       end
 
       def checksum
@@ -1102,44 +968,6 @@ module Gitlab
         wrapped_gitaly_errors do
           gitaly_repository_client.has_local_branches?
         end
-      end
-
-      def run_git(args, chdir: path, env: {}, nice: false, lazy_block: nil, &block)
-        cmd = [Gitlab.config.git.bin_path, *args]
-        cmd.unshift("nice") if nice
-
-        object_directories = alternate_object_directories
-        if object_directories.any?
-          env['GIT_ALTERNATE_OBJECT_DIRECTORIES'] = object_directories.join(File::PATH_SEPARATOR)
-        end
-
-        circuit_breaker.perform do
-          popen(cmd, chdir, env, lazy_block: lazy_block, &block)
-        end
-      end
-
-      def run_git!(args, chdir: path, env: {}, nice: false, lazy_block: nil, &block)
-        output, status = run_git(args, chdir: chdir, env: env, nice: nice, lazy_block: lazy_block, &block)
-
-        raise GitError, output unless status.zero?
-
-        output
-      end
-
-      def run_git_with_timeout(args, timeout, env: {})
-        circuit_breaker.perform do
-          popen_with_timeout([Gitlab.config.git.bin_path, *args], timeout, path, env)
-        end
-      end
-
-      def git_env_for_user(user)
-        {
-          'GIT_COMMITTER_NAME' => user.name,
-          'GIT_COMMITTER_EMAIL' => user.email,
-          'GL_ID' => Gitlab::GlId.gl_id(user),
-          'GL_PROTOCOL' => Gitlab::Git::Hook::GL_PROTOCOL,
-          'GL_REPOSITORY' => gl_repository
-        }
       end
 
       def gitaly_merged_branch_names(branch_names, root_sha)
@@ -1192,23 +1020,6 @@ module Gitlab
         Gitlab::Git::HookEnv.all(gl_repository).values_at(*ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES).flatten.compact
       end
 
-      def sort_branches(branches, sort_by)
-        case sort_by
-        when 'name'
-          branches.sort_by(&:name)
-        when 'updated_desc'
-          branches.sort do |a, b|
-            b.dereferenced_target.committed_date <=> a.dereferenced_target.committed_date
-          end
-        when 'updated_asc'
-          branches.sort do |a, b|
-            a.dereferenced_target.committed_date <=> b.dereferenced_target.committed_date
-          end
-        else
-          branches
-        end
-      end
-
       # Returns true if the given ref name exists
       #
       # Ref names must start with `refs/`.
@@ -1222,14 +1033,6 @@ module Gitlab
 
       def gitaly_delete_refs(*ref_names)
         gitaly_ref_client.delete_refs(refs: ref_names) if ref_names.any?
-      end
-
-      def gitlab_projects_error
-        raise CommandError, @gitlab_projects.output
-      end
-
-      def rev_list_param(spec)
-        spec == :all ? ['--all'] : spec
       end
     end
   end

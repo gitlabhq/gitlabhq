@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TreeHelper
   FILE_LIMIT = 1_000
 
@@ -8,7 +10,7 @@ module TreeHelper
   def render_tree(tree)
     # Sort submodules and folders together by name ahead of files
     folders, files, submodules = tree.trees, tree.blobs, tree.submodules
-    tree = ''
+    tree = []
     items = (folders + submodules).sort_by(&:name) + files
 
     if items.size > FILE_LIMIT
@@ -18,7 +20,7 @@ module TreeHelper
     end
 
     tree << render(partial: 'projects/tree/tree_row', collection: items) if items.present?
-    tree.html_safe
+    tree.join.html_safe
   end
 
   # Return an image icon depending on the file type and mode

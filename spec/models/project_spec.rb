@@ -2854,73 +2854,12 @@ describe Project do
   end
 
   describe '#remove_export' do
-    let(:legacy_project) { create(:project, :legacy_storage, :with_export) }
     let(:project) { create(:project, :with_export) }
 
-    before do
-      stub_feature_flags(import_export_object_storage: false)
-    end
-
-    it 'removes the exports directory for the project' do
-      expect(File.exist?(project.export_path)).to be_truthy
-
-      allow(FileUtils).to receive(:rm_rf).and_call_original
-      expect(FileUtils).to receive(:rm_rf).with(project.export_path).and_call_original
+    it 'removes the export' do
       project.remove_exports
 
-      expect(File.exist?(project.export_path)).to be_falsy
-    end
-
-    it 'is a no-op on legacy projects when there is no namespace' do
-      export_path = legacy_project.export_path
-
-      legacy_project.namespace.delete
-      legacy_project.reload
-
-      expect(FileUtils).not_to receive(:rm_rf).with(export_path)
-
-      legacy_project.remove_exports
-
-      expect(File.exist?(export_path)).to be_truthy
-    end
-
-    it 'runs on hashed storage projects when there is no namespace' do
-      export_path = project.export_path
-
-      project.namespace.delete
-      legacy_project.reload
-
-      allow(FileUtils).to receive(:rm_rf).and_call_original
-      expect(FileUtils).to receive(:rm_rf).with(export_path).and_call_original
-
-      project.remove_exports
-
-      expect(File.exist?(export_path)).to be_falsy
-    end
-
-    it 'is run when the project is destroyed' do
-      expect(project).to receive(:remove_exports).and_call_original
-
-      project.destroy
-    end
-  end
-
-  describe '#remove_exported_project_file' do
-    let(:project) { create(:project, :with_export) }
-
-    it 'removes the exported project file' do
-      stub_feature_flags(import_export_object_storage: false)
-
-      exported_file = project.export_project_path
-
-      expect(File.exist?(exported_file)).to be_truthy
-
-      allow(FileUtils).to receive(:rm_rf).and_call_original
-      expect(FileUtils).to receive(:rm_rf).with(exported_file).and_call_original
-
-      project.remove_exported_project_file
-
-      expect(File.exist?(exported_file)).to be_falsy
+      expect(project.export_file_exists?).to be_falsey
     end
   end
 
@@ -4041,6 +3980,40 @@ describe Project do
 
     it 'retrieves several commits from the repository by oid' do
       expect(project.commits_by(oids: commit_shas)).to eq commits
+    end
+  end
+
+  describe '#update_root_ref' do
+    let(:project) { create(:project, :repository) }
+
+    it 'updates the default branch when HEAD has changed' do
+      stub_find_remote_root_ref(project, ref: 'feature')
+
+      expect { project.update_root_ref('origin') }
+        .to change { project.default_branch }
+        .from('master')
+        .to('feature')
+    end
+
+    it 'does not update the default branch when HEAD does not change' do
+      stub_find_remote_root_ref(project, ref: 'master')
+
+      expect { project.update_root_ref('origin') }
+        .not_to change { project.default_branch }
+    end
+
+    it 'does not update the default branch when HEAD does not exist' do
+      stub_find_remote_root_ref(project, ref: 'foo')
+
+      expect { project.update_root_ref('origin') }
+        .not_to change { project.default_branch }
+    end
+
+    def stub_find_remote_root_ref(project, ref:)
+      allow(project.repository)
+        .to receive(:find_remote_root_ref)
+        .with('origin')
+        .and_return(ref)
     end
   end
 

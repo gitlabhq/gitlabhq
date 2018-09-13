@@ -71,7 +71,7 @@ module API
         detail 'This feature was introduced in GitLab 8.13'
       end
       params do
-        requires :branch, type: String, desc: 'Name of the branch to commit into. To create a new branch, also provide `start_branch`.'
+        requires :branch, type: String, desc: 'Name of the branch to commit into. To create a new branch, also provide `start_branch`.', allow_blank: false
         requires :commit_message, type: String, desc: 'Commit message'
         requires :actions, type: Array[Hash], desc: 'Actions to perform in commit'
         optional :start_branch, type: String, desc: 'Name of the branch to start the new commit from'
@@ -151,7 +151,7 @@ module API
       end
       params do
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag to be cherry picked'
-        requires :branch, type: String, desc: 'The name of the branch'
+        requires :branch, type: String, desc: 'The name of the branch', allow_blank: false
       end
       post ':id/repository/commits/:sha/cherry_pick', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         authorize_push_to_branch!(params[:branch])
@@ -159,8 +159,7 @@ module API
         commit = user_project.commit(params[:sha])
         not_found!('Commit') unless commit
 
-        branch = user_project.repository.find_branch(params[:branch])
-        not_found!('Branch') unless branch
+        find_branch!(params[:branch])
 
         commit_params = {
           commit: commit,
@@ -171,7 +170,7 @@ module API
         result = ::Commits::CherryPickService.new(user_project, current_user, commit_params).execute
 
         if result[:status] == :success
-          branch = user_project.repository.find_branch(params[:branch])
+          branch = find_branch!(params[:branch])
           present user_project.repository.commit(branch.dereferenced_target), with: Entities::Commit
         else
           render_api_error!(result[:message], 400)
