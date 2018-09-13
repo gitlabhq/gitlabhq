@@ -1,6 +1,6 @@
 class Admin::GeoNodesController < Admin::ApplicationController
-  before_action :check_license, except: [:index, :destroy]
-  before_action :load_node, only: [:edit, :update, :destroy, :repair, :toggle, :status]
+  before_action :check_license, except: :index
+  before_action :load_node, only: [:edit, :update]
 
   helper EE::GeoHelper
 
