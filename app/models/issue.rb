@@ -194,7 +194,6 @@ class Issue < ActiveRecord::Base
     branches_with_iid - branches_with_merge_request
   end
   # rubocop: enable CodeReuse/ServiceClass
-<<<<<<< HEAD
 
   def related_issues(current_user, preload: nil)
     related_issues = Issue
@@ -212,8 +211,6 @@ class Issue < ActiveRecord::Base
       filters: { read_cross_project: cross_project_filter }
     )
   end
-=======
->>>>>>> upstream/master
 
   def suggested_branch_name
     return to_branch_name unless project.repository.branch_exists?(to_branch_name)
