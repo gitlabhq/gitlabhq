@@ -1743,7 +1743,7 @@ describe Ci::Pipeline, :mailer do
         create(:ci_pipeline, config: { rspec: { script: 'rake test' } })
       end
 
-      it 'does not containyaml errors' do
+      it 'does not contain yaml errors' do
         expect(pipeline).not_to have_yaml_errors
       end
     end
