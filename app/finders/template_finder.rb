@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TemplateFinder
   VENDORED_TEMPLATES = {
     dockerfiles: ::Gitlab::Template::DockerfileTemplate,

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Functions
   class Echo < BaseFunction
     argument :text, GraphQL::STRING_TYPE

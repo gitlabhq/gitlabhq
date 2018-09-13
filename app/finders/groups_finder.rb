@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # GroupsFinder
 #
 # Used to filter Groups by a set of params

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FinderMethods
   # rubocop: disable CodeReuse/ActiveRecord
   def find_by!(*args)

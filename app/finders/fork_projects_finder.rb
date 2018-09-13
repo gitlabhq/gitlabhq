@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ForkProjectsFinder < ProjectsFinder
   # rubocop: disable CodeReuse/ActiveRecord
   def initialize(project, params: {}, current_user: nil)

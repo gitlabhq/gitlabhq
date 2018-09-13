@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Snippets Finder
 #
 # Used to filter Snippets collections by a set of params

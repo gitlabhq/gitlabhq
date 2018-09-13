@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LabelsFinder < UnionFinder
   prepend FinderWithCrossProjectAccess
   include FinderMethods
