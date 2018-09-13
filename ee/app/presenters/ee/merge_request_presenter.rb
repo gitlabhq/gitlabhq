@@ -1,6 +1,6 @@
 module EE
   module MergeRequestPresenter
-    include ::Gitlab::Utils::StrongMemoize
+    include ::VisibleApprovable
 
     def approvals_path
       if requires_approve?
@@ -8,34 +8,8 @@ module EE
       end
     end
 
-    def all_approvers_including_groups
-      strong_memoize(:all_approvers_including_groups) do
-        approvers = []
-
-        # approvers from direct assignment
-        approvers << merge_request.approvers_from_users
-        approvers << approvers_from_groups
-
-        approvers.flatten
-      end
-    end
-
-    def overall_approver_groups
-      if approvers_overwritten?
-        approver_groups
-      else
-        merge_request.target_project.present(current_user: current_user).approver_groups
-      end
-    end
-
-    def approvers_overwritten?
-      merge_request.approvers.to_a.any? || approver_groups.to_a.any?
-    end
-
-    private
-
-    def approvers_from_groups
-      overall_approver_groups.flat_map(&:users) - [merge_request.author]
+    def target_project
+      merge_request.target_project.present(current_user: current_user)
     end
 
     def approver_groups

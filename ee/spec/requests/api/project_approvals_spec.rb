@@ -27,6 +27,16 @@ describe API::ProjectApprovals do
         expect(response).to match_response_schema('public_api/v4/project_approvers', dir: 'ee')
       end
     end
+
+    it 'only shows approver groups that are visible to the user' do
+      private_group = create(:group, :private)
+      project.approver_groups.create(group: private_group)
+
+      get api(url, user)
+
+      expect(response).to match_response_schema('public_api/v4/project_approvers', dir: 'ee')
+      expect(json_response["approver_groups"]).to be_empty
+    end
   end
 
   describe 'POST /projects/:id/approvers' do
@@ -68,18 +78,30 @@ describe API::ProjectApprovals do
 
           expect(JSON.parse(response.body).symbolize_keys).to include(settings)
         end
+
+        it 'only shows approver groups that are visible to the current user' do
+          private_group = create(:group, :private)
+          project.approver_groups.create(group: private_group)
+
+          post api(url, current_user), approvals_before_merge: 3
+
+          expect(response).to match_response_schema('public_api/v4/project_approvers', dir: 'ee')
+          expect(json_response["approver_groups"].size).to eq(visible_approver_groups_count)
+        end
       end
     end
 
     context 'as a project admin' do
       it_behaves_like 'a user with access' do
         let(:current_user) { user }
+        let(:visible_approver_groups_count) { 0 }
       end
     end
 
     context 'as a global admin' do
       it_behaves_like 'a user with access' do
         let(:current_user) { admin }
+        let(:visible_approver_groups_count) { 1 }
       end
     end
 
@@ -94,6 +116,7 @@ describe API::ProjectApprovals do
 
   describe 'PUT /projects/:id/approvers' do
     let(:url) { "/projects/#{project.id}/approvers" }
+
     shared_examples_for 'a user with access' do
       it 'removes all approvers if no params are given' do
         project.approvers.create(user: approver)
@@ -136,17 +159,31 @@ describe API::ProjectApprovals do
         expect(json_response['approvers'][0]['user']['username']).to eq(approver.username)
         expect(json_response['approver_groups'][0]['group']['name']).to eq(group.name)
       end
+
+      it 'only shows approver groups that are visible to the current user' do
+        private_group = create(:group, :private)
+        project.approvers.create(user: approver)
+
+        expect do
+          put api(url, current_user), approver_ids: [approver.id], approver_group_ids: [private_group.id]
+        end.to change { project.approver_groups.count }.from(0).to(1)
+
+        expect(response).to match_response_schema('public_api/v4/project_approvers', dir: 'ee')
+        expect(json_response["approver_groups"].size).to eq(visible_approver_groups_count)
+      end
     end
 
     context 'as a project admin' do
       it_behaves_like 'a user with access' do
         let(:current_user) { user }
+        let(:visible_approver_groups_count) { 0 }
       end
     end
 
     context 'as a global admin' do
       it_behaves_like 'a user with access' do
         let(:current_user) { admin }
+        let(:visible_approver_groups_count) { 1 }
       end
     end
 
