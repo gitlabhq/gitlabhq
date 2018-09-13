@@ -74,16 +74,12 @@ describe('Grouped security reports app', () => {
         );
         expect(vm.$el.querySelector('.js-collapse-btn').textContent.trim()).toEqual('Expand');
 
+        expect(trimText(vm.$el.textContent)).toContain('SAST: Loading resulted in an error');
         expect(trimText(vm.$el.textContent)).toContain(
-          'SAST resulted in error while loading results',
+          'Dependency scanning: Loading resulted in an error',
         );
-        expect(trimText(vm.$el.textContent)).toContain(
-          'Dependency scanning resulted in error while loading results',
-        );
-        expect(vm.$el.textContent).toContain(
-          'Container scanning resulted in error while loading results',
-        );
-        expect(vm.$el.textContent).toContain('DAST resulted in error while loading results');
+        expect(vm.$el.textContent).toContain('Container scanning: Loading resulted in an error');
+        expect(vm.$el.textContent).toContain('DAST: Loading resulted in an error');
         done();
       }, 0);
     });
@@ -184,7 +180,7 @@ describe('Grouped security reports app', () => {
 
         // Renders the summary text
         expect(vm.$el.querySelector('.js-code-text').textContent.trim()).toEqual(
-          'Security scanning detected 6 new vulnerabilities and 2 fixed vulnerabilities',
+          'Security scanning detected 6 new, and 2 fixed vulnerabilities',
         );
 
         // Renders the expand button
@@ -192,12 +188,12 @@ describe('Grouped security reports app', () => {
 
         // Renders Sast result
         expect(trimText(vm.$el.textContent)).toContain(
-          'SAST detected 2 new vulnerabilities and 1 fixed vulnerability',
+          'SAST detected 2 new, and 1 fixed vulnerabilities',
         );
 
         // Renders DSS result
         expect(trimText(vm.$el.textContent)).toContain(
-          'Dependency scanning detected 2 new vulnerabilities and 1 fixed vulnerability',
+          'Dependency scanning detected 2 new, and 1 fixed vulnerabilities',
         );
         // Renders container scanning result
         expect(vm.$el.textContent).toContain('Container scanning detected 1 new vulnerability');

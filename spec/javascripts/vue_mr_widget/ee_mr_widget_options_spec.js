@@ -96,7 +96,7 @@ describe('ee merge request widget options', () => {
               vm.$el.querySelector('.js-sast-widget .report-block-list-issue-description')
                 .textContent,
             ),
-          ).toEqual('SAST detected 2 new vulnerabilities and 1 fixed vulnerability');
+          ).toEqual('SAST detected 2 new, and 1 fixed vulnerabilities');
           done();
         }, 0);
       });
@@ -118,7 +118,7 @@ describe('ee merge request widget options', () => {
               vm.$el.querySelector('.js-sast-widget .report-block-list-issue-description')
                 .textContent,
             ),
-          ).toEqual('SAST detected no new security vulnerabilities');
+          ).toEqual('SAST detected no new vulnerabilities');
           done();
         }, 0);
       });
@@ -140,7 +140,7 @@ describe('ee merge request widget options', () => {
               vm.$el.querySelector('.js-sast-widget .report-block-list-issue-description')
                 .textContent,
             ).trim(),
-          ).toEqual('SAST detected no security vulnerabilities');
+          ).toEqual('SAST detected no vulnerabilities');
           done();
         }, 0);
       });
@@ -158,7 +158,7 @@ describe('ee merge request widget options', () => {
       it('should render error indicator', done => {
         setTimeout(() => {
           expect(removeBreakLine(vm.$el.querySelector('.js-sast-widget').textContent)).toContain(
-            'SAST resulted in error while loading results',
+            'SAST: Loading resulted in an error',
           );
           done();
         }, 0);
@@ -212,7 +212,7 @@ describe('ee merge request widget options', () => {
                 '.js-dependency-scanning-widget .report-block-list-issue-description',
               ).textContent,
             ),
-          ).toEqual('Dependency scanning detected 2 new vulnerabilities and 1 fixed vulnerability');
+          ).toEqual('Dependency scanning detected 2 new, and 1 fixed vulnerabilities');
           done();
         }, 0);
       });
@@ -235,7 +235,7 @@ describe('ee merge request widget options', () => {
                 '.js-dependency-scanning-widget .report-block-list-issue-description',
               ).textContent,
             ),
-          ).toEqual('Dependency scanning detected no new security vulnerabilities');
+          ).toEqual('Dependency scanning detected no new vulnerabilities');
           done();
         }, 0);
       });
@@ -258,7 +258,7 @@ describe('ee merge request widget options', () => {
                 '.js-dependency-scanning-widget .report-block-list-issue-description',
               ).textContent,
             ),
-          ).toEqual('Dependency scanning detected no security vulnerabilities');
+          ).toEqual('Dependency scanning detected no vulnerabilities');
           done();
         }, 0);
       });
@@ -277,7 +277,7 @@ describe('ee merge request widget options', () => {
         setTimeout(() => {
           expect(
             removeBreakLine(vm.$el.querySelector('.js-dependency-scanning-widget').textContent),
-          ).toContain('Dependency scanning resulted in error while loading results');
+          ).toContain('Dependency scanning: Loading resulted in an error');
           done();
         }, 0);
       });
@@ -588,7 +588,7 @@ describe('ee merge request widget options', () => {
       it('should render error indicator', done => {
         setTimeout(() => {
           expect(vm.$el.querySelector('.js-sast-container').textContent.trim()).toContain(
-            'Container scanning resulted in error while loading results',
+            'Container scanning: Loading resulted in an error',
           );
           done();
         }, 0);
@@ -658,7 +658,7 @@ describe('ee merge request widget options', () => {
       it('should render error indicator', done => {
         setTimeout(() => {
           expect(vm.$el.querySelector('.js-dast-widget').textContent.trim()).toContain(
-            'DAST resulted in error while loading results',
+            'DAST: Loading resulted in an error',
           );
           done();
         }, 0);
