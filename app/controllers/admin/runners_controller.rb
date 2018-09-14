@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::RunnersController < Admin::ApplicationController
   before_action :runner, except: :index
 

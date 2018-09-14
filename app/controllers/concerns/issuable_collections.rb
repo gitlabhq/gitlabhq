@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module IssuableCollections
   prepend EE::IssuableCollections
   extend ActiveSupport::Concern

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::AppearancesController < Admin::ApplicationController
   prepend EE::Admin::AppearancesController
 

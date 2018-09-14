@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SessionsController < Devise::SessionsController
   include InternalRedirect
   include AuthenticatesWithTwoFactor

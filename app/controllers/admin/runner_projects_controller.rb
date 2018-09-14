@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::RunnerProjectsController < Admin::ApplicationController
   before_action :project, only: [:create]
 

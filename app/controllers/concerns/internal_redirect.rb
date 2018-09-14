@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module InternalRedirect
   prepend EE::InternalRedirect
   extend ActiveSupport::Concern

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MergeRequestsAction
   extend ActiveSupport::Concern
   include IssuableCollections

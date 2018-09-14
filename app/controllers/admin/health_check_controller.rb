@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::HealthCheckController < Admin::ApplicationController
   def show
     checks = ['standard']
