@@ -162,6 +162,7 @@ describe('DiffsStoreMutations', () => {
       };
 
       const state = {
+        latestDiff: true,
         diffFiles: [
           {
             fileHash: 'ABC',
@@ -243,6 +244,7 @@ describe('DiffsStoreMutations', () => {
       };
 
       const state = {
+        latestDiff: true,
         diffFiles: [
           {
             fileHash: 'ABC',
@@ -272,11 +274,13 @@ describe('DiffsStoreMutations', () => {
           id: 1,
           line_code: 'ABC_1',
           diff_discussion: true,
+          active: true,
         },
         {
           id: 2,
           line_code: 'ABC_1',
           diff_discussion: true,
+          active: true,
         },
       ];
 

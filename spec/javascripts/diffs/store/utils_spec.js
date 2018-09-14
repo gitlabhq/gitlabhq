@@ -156,6 +156,7 @@ describe('DiffsStoreUtils', () => {
     it('should create legacy note form data', () => {
       const diffFile = getDiffFileMock();
       delete diffFile.diffRefs.startSha;
+      delete diffFile.diffRefs.headSha;
 
       noteableDataMock.targetType = MERGE_REQUEST_NOTEABLE_TYPE;
 
@@ -177,7 +178,7 @@ describe('DiffsStoreUtils', () => {
       const position = JSON.stringify({
         base_sha: diffFile.diffRefs.baseSha,
         start_sha: undefined,
-        head_sha: diffFile.diffRefs.headSha,
+        head_sha: undefined,
         old_path: diffFile.oldPath,
         new_path: diffFile.newPath,
         position_type: TEXT_DIFF_POSITION_TYPE,
@@ -188,7 +189,7 @@ describe('DiffsStoreUtils', () => {
       const postData = {
         view: options.diffViewType,
         line_type: options.linePosition === LINE_POSITION_RIGHT ? NEW_LINE_TYPE : OLD_LINE_TYPE,
-        merge_request_diff_head_sha: diffFile.diffRefs.headSha,
+        merge_request_diff_head_sha: undefined,
         in_reply_to_discussion_id: '',
         note_project_id: '',
         target_type: options.noteableType,
@@ -359,8 +360,21 @@ describe('DiffsStoreUtils', () => {
       ).toBe(false);
     });
 
-    it('returns true when line codes match and discussion does not contain position', () => {
-      const discussion = { ...discussions.outDatedDiscussion1, line_code: 'ABC_1' };
+    it('returns true when line codes match and discussion does not contain position and is not active', () => {
+      const discussion = { ...discussions.outDatedDiscussion1, line_code: 'ABC_1', active: false };
+      delete discussion.original_position;
+      delete discussion.position;
+
+      expect(
+        utils.isDiscussionApplicableToLine(discussion, {
+          ...diffPosition,
+          lineCode: 'ABC_1',
+        }),
+      ).toBe(false);
+    });
+
+    it('returns true when line codes match and discussion does not contain position and is active', () => {
+      const discussion = { ...discussions.outDatedDiscussion1, line_code: 'ABC_1', active: true };
       delete discussion.original_position;
       delete discussion.position;
 

@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { isLegacyDiffNote } from '~/notes/stores/utils';
 import {
   findDiffFile,
   addLineReferences,
@@ -87,18 +86,18 @@ export default {
   },
 
   [types.SET_LINE_DISCUSSIONS_FOR_FILE](state, { fileHash, discussions, diffPositionByLineCode }) {
+    if (!state.latestDiff) return;
+
     const selectedFile = state.diffFiles.find(f => f.fileHash === fileHash);
     const firstDiscussion = discussions[0];
     const isDiffDiscussion = firstDiscussion.diff_discussion;
     const hasLineCode = firstDiscussion.line_code;
-    const isResolvable = firstDiscussion.resolvable || isLegacyDiffNote(firstDiscussion);
     const diffPosition = diffPositionByLineCode[firstDiscussion.line_code];
 
     if (
       selectedFile &&
       isDiffDiscussion &&
       hasLineCode &&
-      isResolvable &&
       diffPosition &&
       isDiscussionApplicableToLine(firstDiscussion, diffPosition)
     ) {

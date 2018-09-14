@@ -61,7 +61,10 @@ export function getNoteFormData(params) {
       noteable_type: noteableType,
       noteable_id: noteableData.id,
       commit_id: '',
-      type: diffFile.diffRefs.startSha ? DIFF_NOTE_TYPE : LEGACY_DIFF_NOTE_TYPE,
+      type:
+        diffFile.diffRefs.startSha && diffFile.diffRefs.headSha
+          ? DIFF_NOTE_TYPE
+          : LEGACY_DIFF_NOTE_TYPE,
       line_code: noteTargetLine.lineCode,
     },
   };
@@ -261,5 +264,5 @@ export function isDiscussionApplicableToLine(discussion, diffPosition) {
     return _.isEqual(refs, diffPositionCopy) || _.isEqual(originalRefs, diffPositionCopy);
   }
 
-  return lineCode === discussion.line_code;
+  return discussion.active && lineCode === discussion.line_code;
 }
