@@ -39,7 +39,7 @@ module EE
     def project_permissions_panel_data(project)
       super.merge(
         packagesAvailable: ::Gitlab.config.packages.enabled,
-        packagesHelpPath: help_page_path('user/project/maven_packages')
+        packagesHelpPath: help_page_path('user/project/packages/maven')
       )
     end
 
