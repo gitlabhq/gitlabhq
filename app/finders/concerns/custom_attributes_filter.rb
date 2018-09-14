@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CustomAttributesFilter
   # rubocop: disable CodeReuse/ActiveRecord
   def by_custom_attributes(items)

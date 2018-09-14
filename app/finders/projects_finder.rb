@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # ProjectsFinder
 #
 # Used to filter Projects  by set of params

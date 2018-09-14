@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GitlabSchema < GraphQL::Schema
   use BatchLoader::GraphQL
   use Gitlab::Graphql::Authorize

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # IssuableFinder
 #
 # Used to filter Issues and MergeRequests collections by set of params

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Get user activity feed for projects common for a user and a logged in user
 #
 # - current_user: The user viewing the events

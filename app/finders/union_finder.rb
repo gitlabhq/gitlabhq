@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UnionFinder
   # rubocop: disable CodeReuse/ActiveRecord
   def find_union(segments, klass)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GroupMembersFinder
   def initialize(group)
     @group = group
