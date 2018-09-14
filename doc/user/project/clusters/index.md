@@ -129,7 +129,7 @@ When GitLab creates the cluster, it enables and uses the legacy
 The newer [RBAC](https://kubernetes.io/docs/admin/authorization/rbac/)
 authorization is [experimental](#role-based-access-control-rbac).
 
-### Role-based access control (RBAC)
+### Role-based access control (RBAC) **[CORE ONLY]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21401) in GitLab 11.4.
 
@@ -143,6 +143,7 @@ and privileges in order to install and run [GitLab managed applications](#instal
 
 To enable the feature flag:
 
+1. SSH into the server where GitLab is installed.
 1. Enter the Rails console:
 
     **For Omnibus GitLab**
@@ -165,22 +166,21 @@ To enable the feature flag:
 
 If you are creating a [new GKE cluster via
 GitLab](#adding-and-creating-a-new-gke-cluster-via-gitlab), you will be
-asked if you would like to create a RBAC-enabled cluster. Enabling this
+asked if you would like to create an RBAC-enabled cluster. Enabling this
 setting will create a `gitlab` service account which will be used by
 GitLab to manage the newly created cluster. To enable this, this service
 account will have the `cluster-admin` privilege.
 
 If you are [adding an existing Kubernetes
 cluster](#adding-an-existing-kubernetes-cluster), you will be asked if
-the cluster you are adding is a RBAC-enabled cluster. Please ensure the
+the cluster you are adding is a RBAC-enabled cluster. Ensure the
 token of the account has administrator privileges for the cluster.
 
-A RBAC-enabled cluster in both cases
-will create a `tiller` service account, with `cluster-admin`
-privilege, in the `gitlab-managed-apps` namespace when you install Helm Tiller into your cluster.
-This service account will be added to the installed Helm Tiller
-and will be used by Helm to install and run [GitLab managed
-applications](#installing-applications).
+In both cases above, when you install Helm Tiller into your cluster, an
+RBAC-enabled cluster will create a `tiller` service account, with `cluster-admin`
+privileges in the `gitlab-managed-apps` namespace. This service account will be
+added to the installed Helm Tiller and will be used by Helm to install and run
+[GitLab managed applications](#installing-applications).
 
 The table below summarizes which resources will be created in a
 RBAC-enabled cluster :
@@ -195,8 +195,8 @@ RBAC-enabled cluster :
 
 
 Helm Tiller will also create additional service accounts and other RBAC
-resources for each installed application. Please consult the
-documentation for the Helm charts for each application for details.
+resources for each installed application. Consult the documentation for the
+Helm charts for each application for details.
 
 NOTE: **Note:**
 Auto DevOps will not successfully complete in a cluster that only has RBAC
