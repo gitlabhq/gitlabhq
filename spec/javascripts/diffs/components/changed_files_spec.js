@@ -8,7 +8,7 @@ describe('ChangedFiles', () => {
   const Component = Vue.extend(changedFiles);
   const store = new Vuex.Store({
     modules: {
-      diffs: diffsModule,
+      diffs: diffsModule(),
     },
   });
 
