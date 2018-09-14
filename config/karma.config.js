@@ -84,7 +84,7 @@ module.exports = function(config) {
     basePath: ROOT_PATH,
     browsers: ['ChromeHeadlessCustom'],
     client: {
-      isCI: !!process.env.CI
+      color: !process.env.CI
     },
     customLaunchers: {
       ChromeHeadlessCustom: {
