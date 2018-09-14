@@ -1,14 +1,12 @@
 class Admin::RunnersController < Admin::ApplicationController
   before_action :runner, except: :index
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def index
     finder = Admin::RunnersFinder.new(params: params)
     @runners = finder.execute
     @active_runners_count = Ci::Runner.online.count
     @sort = finder.sort_key
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def show
     assign_builds_and_projects
