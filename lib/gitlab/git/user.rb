@@ -4,7 +4,7 @@ module Gitlab
       attr_reader :username, :name, :email, :gl_id
 
       def self.from_gitlab(gitlab_user)
-        new(gitlab_user.username, gitlab_user.name, gitlab_user.email, Gitlab::GlId.gl_id(gitlab_user))
+        new(gitlab_user.username, gitlab_user.name, gitlab_user.commit_email, Gitlab::GlId.gl_id(gitlab_user))
       end
 
       def self.from_gitaly(gitaly_user)
