@@ -8,6 +8,7 @@ import DropdownHint from './dropdown_hint';
 import DropdownEmoji from './dropdown_emoji';
 import DropdownNonUser from './dropdown_non_user';
 import DropdownUser from './dropdown_user';
+import NullDropdown from './null_dropdown';
 import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
 
 export default class FilteredSearchDropdownManager {
@@ -91,6 +92,12 @@ export default class FilteredSearchDropdownManager {
         gl: DropdownEmoji,
         element: this.container.querySelector('#js-dropdown-my-reaction'),
       },
+      status: {
+        reference: null,
+        gl: NullDropdown,
+        element: this.container.querySelector('#js-dropdown-admin-runner-status'),
+      },
+
       weight: {
         reference: null,
         gl: DropdownWeight,

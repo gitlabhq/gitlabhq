@@ -223,7 +223,7 @@ describe Ci::Runner do
     subject { described_class.online }
 
     before do
-      @runner1 = create(:ci_runner, :instance, contacted_at: 1.year.ago)
+      @runner1 = create(:ci_runner, :instance, contacted_at: 1.hour.ago)
       @runner2 = create(:ci_runner, :instance, contacted_at: 1.second.ago)
     end
 
@@ -298,6 +298,17 @@ describe Ci::Runner do
           .and_return({ contacted_at: value }.to_json).at_least(:once)
       end
     end
+  end
+
+  describe '.offline' do
+    subject { described_class.offline }
+
+    before do
+      @runner1 = create(:ci_runner, :instance, contacted_at: 1.hour.ago)
+      @runner2 = create(:ci_runner, :instance, contacted_at: 1.second.ago)
+    end
+
+    it { is_expected.to eq([@runner1])}
   end
 
   describe '#can_pick?' do
