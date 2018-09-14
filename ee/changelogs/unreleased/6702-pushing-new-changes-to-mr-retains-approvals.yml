@@ -1,0 +1,6 @@
+---
+title: Pushing to a merge request clears the approvals list even if the respective project
+  setting is enabled and there is no fixed required number of approvals configured
+merge_request: 7328
+author:
+type: fixed
