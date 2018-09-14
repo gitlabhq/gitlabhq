@@ -96,6 +96,7 @@ class ProfilesController < Profiles::ApplicationController
       :location,
       :name,
       :public_email,
+      :commit_email,
       :skype,
       :twitter,
       :username,

@@ -1,0 +1,5 @@
+---
+title: Allow user to choose the email used for commits made through GitLab's UI.
+merge_request: 21213
+author: Joshua Campbell
+type: added

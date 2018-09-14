@@ -2207,6 +2207,7 @@ ActiveRecord::Schema.define(version: 20180906101639) do
     t.string "feed_token"
     t.boolean "private_profile"
     t.boolean "include_private_contributions"
+    t.string "commit_email"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
