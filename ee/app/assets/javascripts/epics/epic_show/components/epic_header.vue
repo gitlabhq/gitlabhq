@@ -4,6 +4,7 @@
   import tooltip from '~/vue_shared/directives/tooltip';
   import loadingButton from '~/vue_shared/components/loading_button.vue';
   import { s__ } from '~/locale';
+  import eventHub from '../../event_hub';
 
   export default {
     name: 'EpicHeader',
@@ -43,6 +44,9 @@
           this.$emit('deleteEpic');
         }
       },
+      toggleSidebar() {
+        eventHub.$emit('toggleSidebar');
+      },
     },
   };
 </script>
@@ -71,5 +75,14 @@
       container-class="btn btn-remove btn-inverted flex-right"
       @click="deleteEpic"
     />
+    <button
+      :aria-label="__('toggle collapse')"
+      class="btn btn-default float-right d-block d-sm-none
+gutter-toggle issuable-gutter-toggle js-sidebar-toggle"
+      type="button"
+      @click="toggleSidebar"
+    >
+      <i class="fa fa-angle-double-left"></i>
+    </button>
   </div>
 </template>

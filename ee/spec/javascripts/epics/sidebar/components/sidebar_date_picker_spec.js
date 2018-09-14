@@ -177,6 +177,14 @@ describe('SidebarParticipants', () => {
         expect(vm.$emit).toHaveBeenCalledWith('toggleDateType', true);
       });
     });
+
+    describe('toggleSidebar', () => {
+      it('emits `toggleCollapse` event on component', () => {
+        spyOn(vm, '$emit');
+        vm.toggleSidebar();
+        expect(vm.$emit).toHaveBeenCalledWith('toggleCollapse');
+      });
+    });
   });
 
   describe('template', () => {
@@ -186,6 +194,16 @@ describe('SidebarParticipants', () => {
 
     it('renders collapsed calendar icon component', () => {
       expect(vm.$el.querySelector('.sidebar-collapsed-icon')).not.toBe(null);
+    });
+
+    it('renders collapse button when `showToggleSidebar` prop is `true`', done => {
+      vm.showToggleSidebar = true;
+      Vue.nextTick()
+        .then(() => {
+          expect(vm.$el.querySelector('button.btn-sidebar-action')).not.toBe(null);
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('renders title element', () => {
