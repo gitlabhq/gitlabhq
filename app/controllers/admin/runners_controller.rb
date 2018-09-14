@@ -3,11 +3,10 @@ class Admin::RunnersController < Admin::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def index
-    sort = params[:sort] == 'contacted_asc' ? { contacted_at: :asc } : { id: :desc }
-    @runners = Ci::Runner.order(sort)
-    @runners = @runners.search(params[:search]) if params[:search].present?
-    @runners = @runners.page(params[:page]).per(30)
-    @active_runners_cnt = Ci::Runner.online.count
+    finder = Admin::RunnersFinder.new(params: params)
+    @runners = finder.execute
+    @active_runners_count = Ci::Runner.online.count
+    @sort = finder.sort_key
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

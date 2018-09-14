@@ -24,7 +24,8 @@ module SortingHelper
       sort_value_recently_updated => sort_title_recently_updated,
       sort_value_popularity       => sort_title_popularity,
       sort_value_priority         => sort_title_priority,
-      sort_value_upvotes          => sort_title_upvotes
+      sort_value_upvotes          => sort_title_upvotes,
+      sort_value_contacted_date   => sort_title_contacted_date
     }
   end
 
@@ -241,6 +242,10 @@ module SortingHelper
     s_('SortOptions|Most popular')
   end
 
+  def sort_title_contacted_date
+    s_('SortOptions|Last Contact')
+  end
+
   # Values.
   def sort_value_access_level_asc
     'access_level_asc'
@@ -360,5 +365,9 @@ module SortingHelper
 
   def sort_value_upvotes
     'upvotes_desc'
+  end
+
+  def sort_value_contacted_date
+    'contacted_asc'
   end
 end

@@ -11,7 +11,9 @@ module Ci
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     ONLINE_CONTACT_TIMEOUT = 1.hour
     UPDATE_DB_RUNNER_INFO_EVERY = 40.minutes
-    AVAILABLE_SCOPES = %w[specific shared active paused online].freeze
+    AVAILABLE_TYPES = %w[specific shared].freeze
+    AVAILABLE_STATUSES = %w[active paused online offline].freeze
+    AVAILABLE_SCOPES = (AVAILABLE_TYPES + AVAILABLE_STATUSES).freeze
     FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level maximum_timeout_human_readable].freeze
 
     ignore_column :is_shared
@@ -29,6 +31,13 @@ module Ci
     scope :active, -> { where(active: true) }
     scope :paused, -> { where(active: false) }
     scope :online, -> { where('contacted_at > ?', contact_time_deadline) }
+    # The following query using negation is cheaper than using `contacted_at <= ?`
+    # because there are less runners online than have been created. The
+    # resulting query is quickly finding online ones and then uses the regular
+    # indexed search and rejects the ones that are in the previous set. If we
+    # did `contacted_at <= ?` the query would effectively have to do a seq
+    # scan.
+    scope :offline, -> { where.not(id: online) }
     scope :ordered, -> { order(id: :desc) }
 
     # BACKWARD COMPATIBILITY: There are needed to maintain compatibility with `AVAILABLE_SCOPES` used by `lib/api/runners.rb`

@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe "Admin Runners" do
   include StubENV
+  include FilteredSearchHelpers
+  include SortingHelper
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
@@ -12,38 +14,107 @@ describe "Admin Runners" do
     let(:pipeline) { create(:ci_pipeline) }
 
     context "when there are runners" do
-      before do
-        runner = FactoryBot.create(:ci_runner, contacted_at: Time.now)
-        FactoryBot.create(:ci_build, pipeline: pipeline, runner_id: runner.id)
-        visit admin_runners_path
-      end
-
       it 'has all necessary texts' do
+        runner = create(:ci_runner, contacted_at: Time.now)
+        create(:ci_build, pipeline: pipeline, runner_id: runner.id)
+        visit admin_runners_path
+
         expect(page).to have_text "Setup a shared Runner manually"
         expect(page).to have_text "Runners currently online: 1"
       end
 
-      describe 'search' do
+      describe 'search', :js do
         before do
-          FactoryBot.create :ci_runner, description: 'runner-foo'
-          FactoryBot.create :ci_runner, description: 'runner-bar'
+          create(:ci_runner, description: 'runner-foo')
+          create(:ci_runner, description: 'runner-bar')
+
+          visit admin_runners_path
         end
 
         it 'shows correct runner when description matches' do
-          search_form = find('#runners-search')
-          search_form.fill_in 'search', with: 'runner-foo'
-          search_form.click_button 'Search'
+          input_filtered_search_keys('runner-foo')
 
           expect(page).to have_content("runner-foo")
           expect(page).not_to have_content("runner-bar")
         end
 
         it 'shows no runner when description does not match' do
-          search_form = find('#runners-search')
-          search_form.fill_in 'search', with: 'runner-baz'
-          search_form.click_button 'Search'
+          input_filtered_search_keys('runner-baz')
 
           expect(page).to have_text 'No runners found'
+        end
+      end
+
+      describe 'filter by status', :js do
+        it 'shows correct runner when status matches' do
+          create(:ci_runner, description: 'runner-active', active: true)
+          create(:ci_runner, description: 'runner-paused', active: false)
+
+          visit admin_runners_path
+
+          expect(page).to have_content 'runner-active'
+          expect(page).to have_content 'runner-paused'
+
+          input_filtered_search_keys('status:active')
+          expect(page).to have_content 'runner-active'
+          expect(page).not_to have_content 'runner-paused'
+        end
+
+        it 'shows no runner when status does not match' do
+          create(:ci_runner, :online, description: 'runner-active', active: true)
+          create(:ci_runner, :online, description: 'runner-paused', active: false)
+
+          visit admin_runners_path
+
+          input_filtered_search_keys('status:offline')
+
+          expect(page).not_to have_content 'runner-active'
+          expect(page).not_to have_content 'runner-paused'
+
+          expect(page).to have_text 'No runners found'
+        end
+      end
+
+      it 'shows correct runner when status is selected and search term is entered', :js do
+        create(:ci_runner, description: 'runner-a-1', active: true)
+        create(:ci_runner, description: 'runner-a-2', active: false)
+        create(:ci_runner, description: 'runner-b-1', active: true)
+
+        visit admin_runners_path
+
+        input_filtered_search_keys('status:active')
+        expect(page).to have_content 'runner-a-1'
+        expect(page).to have_content 'runner-b-1'
+        expect(page).not_to have_content 'runner-a-2'
+
+        input_filtered_search_keys('status:active runner-a')
+        expect(page).to have_content 'runner-a-1'
+        expect(page).not_to have_content 'runner-b-1'
+        expect(page).not_to have_content 'runner-a-2'
+      end
+
+      it 'sorts by last contact date', :js do
+        create(:ci_runner, description: 'runner-1', created_at: '2018-07-12 15:37', contacted_at: '2018-07-12 15:37')
+        create(:ci_runner, description: 'runner-2', created_at: '2018-07-12 16:37', contacted_at: '2018-07-12 16:37')
+
+        visit admin_runners_path
+
+        within '.runners-content .gl-responsive-table-row:nth-child(2)' do
+          expect(page).to have_content 'runner-2'
+        end
+
+        within '.runners-content .gl-responsive-table-row:nth-child(3)' do
+          expect(page).to have_content 'runner-1'
+        end
+
+        sorting_by 'Last Contact'
+
+        within '.runners-content .gl-responsive-table-row:nth-child(2)' do
+          expect(page).to have_content 'runner-1'
+        end
+
+        within '.runners-content .gl-responsive-table-row:nth-child(3)' do
+          expect(page).to have_content 'runner-2'
         end
       end
     end
@@ -76,7 +147,7 @@ describe "Admin Runners" do
 
     context 'shared runner' do
       it 'shows the label and does not show the project count' do
-        runner = create :ci_runner, :instance
+        runner = create(:ci_runner, :instance)
 
         visit admin_runners_path
 
@@ -89,8 +160,8 @@ describe "Admin Runners" do
 
     context 'specific runner' do
       it 'shows the label and the project count' do
-        project = create :project
-        runner = create :ci_runner, :project, projects: [project]
+        project = create(:project)
+        runner = create(:ci_runner, :project, projects: [project])
 
         visit admin_runners_path
 
@@ -103,11 +174,11 @@ describe "Admin Runners" do
   end
 
   describe "Runner show page" do
-    let(:runner) { FactoryBot.create :ci_runner }
+    let(:runner) { create(:ci_runner) }
 
     before do
-      @project1 = FactoryBot.create(:project)
-      @project2 = FactoryBot.create(:project)
+      @project1 = create(:project)
+      @project2 = create(:project)
       visit admin_runner_path(runner)
     end
 
