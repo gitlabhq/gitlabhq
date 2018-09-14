@@ -44,7 +44,7 @@ export default {
     },
     showExpandMessage() {
       return (
-        !this.isCollapsed &&
+        this.isCollapsed ||
         !this.file.highlightedDiffLines &&
         !this.isLoadingCollapsedDiff &&
         !this.file.tooLarge &&

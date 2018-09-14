@@ -573,7 +573,7 @@ production: &base
   ## OmniAuth settings
   omniauth:
     # Allow login via Twitter, Google, etc. using OmniAuth providers
-    enabled: false
+    # enabled: true
 
     # Uncomment this to automatically sign in with a specific omniauth provider's without
     # showing GitLab's sign-in page (default: show the GitLab sign-in page)
@@ -948,7 +948,7 @@ test:
       project_key: PROJECT
 
   omniauth:
-    enabled: true
+    # enabled: true
     allow_single_sign_on: true
     external_providers: []
 

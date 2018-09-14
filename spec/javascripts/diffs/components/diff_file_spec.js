@@ -63,6 +63,18 @@ describe('DiffFile', () => {
         });
       });
 
+      it('should have collapsed text and link even before rendered', done => {
+        vm.file.renderIt = false;
+        vm.file.collapsed = true;
+
+        vm.$nextTick(() => {
+          expect(vm.$el.innerText).toContain('This diff is collapsed');
+          expect(vm.$el.querySelectorAll('.js-click-to-expand').length).toEqual(1);
+
+          done();
+        });
+      });
+
       it('should have loading icon while loading a collapsed diffs', done => {
         vm.file.collapsed = true;
         vm.isLoadingCollapsedDiff = true;
