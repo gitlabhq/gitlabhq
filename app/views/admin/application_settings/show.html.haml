@@ -70,17 +70,6 @@
     .settings-content
       = render 'koding'
 
-%section.settings.as-plantuml.no-animate#js-plantuml-settings{ class: ('expanded' if expanded) }
-  .settings-header
-    %h4
-      = _('PlantUML')
-    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
-      = expanded ? _('Collapse') : _('Expand')
-    %p
-      = _('Allow rendering of PlantUML diagrams in Asciidoc documents.')
-  .settings-content
-    = render 'plantuml'
-
 %section.settings.as-terminal.no-animate#js-terminal-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
