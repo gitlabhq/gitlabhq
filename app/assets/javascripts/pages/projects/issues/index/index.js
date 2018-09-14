@@ -4,19 +4,14 @@ import IssuableIndex from '~/issuable_index';
 import ShortcutsNavigation from '~/shortcuts_navigation';
 import UsersSelect from '~/users_select';
 import initFilteredSearch from '~/pages/search/init_filtered_search';
-import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
 import { FILTERED_SEARCH } from '~/pages/constants';
 import { ISSUABLE_INDEX } from '~/pages/projects/constants';
-import IssuesFilteredSearchTokenKeysEE from 'ee/filtered_search/issues_filtered_search_token_keys';
+import IssuesFilteredSearchTokenKeysEE from 'ee/filtered_search/issuable_filtered_search_token_keys';
 
 document.addEventListener('DOMContentLoaded', () => {
   initFilteredSearch({
     page: FILTERED_SEARCH.ISSUES,
-<<<<<<< HEAD
     filteredSearchTokenKeys: IssuesFilteredSearchTokenKeysEE,
-=======
-    filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
->>>>>>> upstream/master
   });
   new IssuableIndex(ISSUABLE_INDEX.ISSUE);
 
