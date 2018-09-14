@@ -4,6 +4,12 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   def show
   end
 
+  def geo
+  end
+
+  def templates
+  end
+
   def update
     successful = ApplicationSettings::UpdateService
       .new(@application_setting, current_user, application_setting_params)
