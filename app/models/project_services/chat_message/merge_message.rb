@@ -48,7 +48,7 @@ module ChatMessage
     end
 
     def merge_request_message
-      "#{user_combined_name} #{state} #{merge_request_link} in #{project_link}"
+      "#{user_combined_name} #{state_or_action_text} #{merge_request_link} in #{project_link}"
     end
 
     def merge_request_link
@@ -61,6 +61,11 @@ module ChatMessage
 
     def merge_request_url
       "#{project_url}/merge_requests/#{merge_request_iid}"
+    end
+
+    # overridden in EE
+    def state_or_action_text
+      state
     end
   end
 end
