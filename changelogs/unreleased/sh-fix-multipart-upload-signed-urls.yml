@@ -1,0 +1,5 @@
+---
+title: Fix object storage uploads not working with AWS v2
+merge_request: 21731
+author:
+type: fixed
