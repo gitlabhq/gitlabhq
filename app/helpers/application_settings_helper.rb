@@ -109,10 +109,6 @@ module ApplicationSettingsHelper
     options_for_select(options, selected)
   end
 
-  def sidekiq_queue_options_for_select
-    options_for_select(Sidekiq::Queue.all.map(&:name), @application_setting.sidekiq_throttling_queues)
-  end
-
   def circuitbreaker_failure_count_help_text
     health_link = link_to(s_('AdminHealthPageLink|health page'), admin_health_check_path)
     api_link = link_to(s_('CircuitBreakerApiLink|circuitbreaker api'), help_page_path("api/repository_storage_health"))
@@ -235,9 +231,6 @@ module ApplicationSettingsHelper
       :session_expire_delay,
       :shared_runners_enabled,
       :shared_runners_text,
-      :sidekiq_throttling_enabled,
-      :sidekiq_throttling_factor,
-      :sidekiq_throttling_queues,
       :sign_in_text,
       :signup_enabled,
       :terminal_max_session_time,

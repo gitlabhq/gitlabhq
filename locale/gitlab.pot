@@ -939,9 +939,6 @@ msgstr ""
 msgid "Background color"
 msgstr ""
 
-msgid "Background jobs"
-msgstr ""
-
 msgid "Badges"
 msgstr ""
 
@@ -2107,9 +2104,6 @@ msgid "Confidentiality"
 msgstr ""
 
 msgid "Configure Gitaly timeouts."
-msgstr ""
-
-msgid "Configure Sidekiq job throttling."
 msgstr ""
 
 msgid "Configure automatic git checks and housekeeping on repositories."
