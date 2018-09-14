@@ -34,6 +34,10 @@ describe('epicHeader', () => {
     );
   });
 
+  it('should render sidebar toggle button', () => {
+    expect(vm.$el.querySelector('button.js-sidebar-toggle')).not.toBe(null);
+  });
+
   describe('canDelete', () => {
     it('should not show loading button by default', () => {
       expect(vm.$el.querySelector('.btn-remove')).toBeNull();

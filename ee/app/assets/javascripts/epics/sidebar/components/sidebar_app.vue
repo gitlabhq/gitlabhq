@@ -11,6 +11,7 @@ import SidebarTodo from '~/sidebar/components/todo_toggle/todo.vue';
 import SidebarCollapsedGroupedDatePicker from '~/vue_shared/components/sidebar/collapsed_grouped_date_picker.vue';
 import ToggleSidebar from '~/vue_shared/components/sidebar/toggle_sidebar.vue';
 import SidebarLabelsSelect from '~/vue_shared/components/sidebar/labels_select/base.vue';
+import eventHub from '../../event_hub';
 import SidebarDatePicker from './sidebar_date_picker.vue';
 import SidebarParticipants from './sidebar_participants.vue';
 import SidebarSubscriptions from './sidebar_subscriptions.vue';
@@ -213,6 +214,12 @@ export default {
         ? this.store.endDateTime
         : this.store.dueDateTimeFromMilestones;
     },
+  },
+  mounted() {
+    eventHub.$on('toggleSidebar', this.toggleSidebar);
+  },
+  beforeDestroy() {
+    eventHub.$off('toggleSidebar', this.toggleSidebar);
   },
   methods: {
     getDateValidity(startDate, endDate) {
@@ -425,7 +432,7 @@ export default {
         />
       </div>
       <div
-        v-if="collapsed"
+        v-if="collapsed && isUserSignedIn"
         class="block todo"
       >
         <sidebar-todo
@@ -456,6 +463,7 @@ export default {
         block-class="start-date"
         @saveDate="saveStartDate"
         @toggleDateType="changeStartDateType"
+        @toggleCollapse="toggleSidebar"
       />
       <sidebar-date-picker
         v-if="!collapsed"

@@ -195,7 +195,7 @@
 </script>
 
 <template>
-  <div>
+  <div class="epic-page-container">
     <epic-header
       :author="author"
       :created="created"

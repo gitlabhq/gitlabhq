@@ -34,6 +34,12 @@
   }
 }
 
+@include media-breakpoint-down(xs) {
+  .epic-page-container .detail-page-header {
+    display: flex;
+  }
+}
+
 .tooltip .tooltip-inner .milestone-date-range {
   color: $gl-text-color-tertiary;
 }

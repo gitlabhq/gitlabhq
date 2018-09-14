@@ -1,5 +1,7 @@
 import $ from 'jquery';
 import Mousetrap from 'mousetrap';
+import Cookies from 'js-cookie';
+import bp from '~/breakpoints';
 
 export default class SidebarContext {
   constructor() {
@@ -33,6 +35,14 @@ export default class SidebarContext {
           setTimeout(() => $block.find('.js-label-select').trigger('click'), 0);
         }
       });
+
+    window.addEventListener('beforeunload', () => {
+      // collapsed_gutter cookie hides the sidebar
+      const bpBreakpoint = bp.getBreakpointSize();
+      if (bpBreakpoint === 'xs' || bpBreakpoint === 'sm') {
+        Cookies.set('collapsed_gutter', true);
+      }
+    });
   }
 
   static openSidebarDropdown($block) {
