@@ -258,9 +258,6 @@ Settings.uploads['object_store']['remote_directory'] ||= 'uploads'
 Settings['packages'] ||= Settingslogic.new({})
 Settings.packages['enabled']      = true if Settings.packages['enabled'].nil?
 Settings.packages['storage_path'] = Settings.absolute(Settings.packages['storage_path'] || File.join(Settings.shared['path'], "packages"))
-# Settings.artifact['path'] is deprecated, use `storage_path` instead
-Settings.packages['path']         = Settings.packages['storage_path']
-Settings.packages['max_size'] ||= 100 # in megabytes
 Settings.packages['object_store'] = ObjectStoreSettings.parse(Settings.packages['object_store'])
 
 #
