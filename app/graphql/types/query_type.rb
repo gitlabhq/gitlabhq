@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Types
   class QueryType < BaseObject
     graphql_name 'Query'

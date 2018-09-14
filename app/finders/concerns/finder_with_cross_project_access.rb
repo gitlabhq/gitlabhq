@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Module to prepend into finders to specify wether or not the finder requires
 # cross project access
 #

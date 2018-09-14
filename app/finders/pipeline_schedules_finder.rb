@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PipelineSchedulesFinder
   attr_reader :project, :pipeline_schedules
 
