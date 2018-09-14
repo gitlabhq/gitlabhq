@@ -463,6 +463,16 @@ module Gitlab
         Gitlab::Git::DiffCollection.new(iterator, options)
       end
 
+      def diff_stats(left_id, right_id)
+        stats = wrapped_gitaly_errors do
+          gitaly_commit_client.diff_stats(left_id, right_id)
+        end
+
+        Gitlab::Git::DiffStatsCollection.new(stats)
+      rescue CommandError
+        Gitlab::Git::DiffStatsCollection.new([])
+      end
+
       # Returns a RefName for a given SHA
       def ref_name_for_sha(ref_path, sha)
         raise ArgumentError, "sha can't be empty" unless sha.present?

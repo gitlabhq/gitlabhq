@@ -1229,6 +1229,32 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  describe '#diff_stats' do
+    let(:left_commit_id) { 'feature' }
+    let(:right_commit_id) { 'master' }
+
+    it 'returns a DiffStatsCollection' do
+      collection = repository.diff_stats(left_commit_id, right_commit_id)
+
+      expect(collection).to be_a(Gitlab::Git::DiffStatsCollection)
+      expect(collection).to be_a(Enumerable)
+    end
+
+    it 'yields Gitaly::DiffStats objects' do
+      collection = repository.diff_stats(left_commit_id, right_commit_id)
+
+      expect(collection.to_a).to all(be_a(Gitaly::DiffStats))
+    end
+
+    it 'returns no Gitaly::DiffStats when SHAs are invalid' do
+      collection = repository.diff_stats('foo', 'bar')
+
+      expect(collection).to be_a(Gitlab::Git::DiffStatsCollection)
+      expect(collection).to be_a(Enumerable)
+      expect(collection.to_a).to be_empty
+    end
+  end
+
   describe "#ls_files" do
     let(:master_file_paths) { repository.ls_files("master") }
     let(:utf8_file_paths) { repository.ls_files("ls-files-utf8") }
