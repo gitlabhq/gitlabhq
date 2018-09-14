@@ -219,9 +219,6 @@ are listed in the descriptions of the relevant settings.
 | `session_expire_delay`                   | integer          | no                                   | Session duration in minutes. GitLab restart is required to apply changes |
 | `shared_runners_enabled`                 | boolean          | no                                   | (**If enabled, requires:** `shared_runners_text`) Enable shared runners for new projects. |
 | `shared_runners_text`                    | string           | required by: `shared_runners_enabled` | Shared runners text. |
-| `sidekiq_throttling_enabled`             | boolean          | no                                   | (**If enabled, requires:** `sidekiq_throttling_factor` and `sidekiq_throttling_queues`) Enable Sidekiq Job Throttling. |
-| `sidekiq_throttling_factor`              | decimal          | required by: `sidekiq_throttling_enabled` | The factor by which the queues should be throttled. A value between `0.0` and `1.0`, exclusive. |
-| `sidekiq_throttling_queues`              | array of strings | required by: `sidekiq_throttling_enabled` | Choose which queues you wish to throttle. |
 | `sign_in_text`                           | string           | no                                   | Text on the login page. |
 | `signin_enabled`                         | string           | no                                   | (Deprecated: Use `password_authentication_enabled_for_web` instead) Flag indicating if password authentication is enabled for the web interface. |
 | `signup_enabled`                         | boolean          | no                                   | Enable registration. Default is `true`. |

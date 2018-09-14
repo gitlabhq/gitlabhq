@@ -55,8 +55,6 @@ Sidekiq.configure_server do |config|
   end
   Sidekiq::Cron::Job.load_from_hash! cron_jobs
 
-  Gitlab::SidekiqThrottler.execute!
-
   Gitlab::SidekiqVersioning.install!
 
   config = Gitlab::Database.config ||
