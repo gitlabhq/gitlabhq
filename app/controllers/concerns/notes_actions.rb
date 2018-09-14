@@ -43,12 +43,26 @@ module NotesActions
 
     @note = Notes::CreateService.new(note_project, current_user, create_params).execute
 
-    if @note.is_a?(Note)
-      prepare_notes_for_rendering([@note], noteable)
-    end
-
     respond_to do |format|
-      format.json { render json: note_json(@note) }
+      format.json do
+        json = {
+          commands_changes: @note.commands_changes
+        }
+
+        if @note.persisted? && return_discussion?
+          json[:valid] = true
+
+          discussion = @note.discussion
+          prepare_notes_for_rendering(discussion.notes)
+          json[:discussion] = discussion_serializer.represent(discussion, context: self)
+        else
+          prepare_notes_for_rendering([@note])
+
+          json.merge!(note_json(@note))
+        end
+
+        render json: json
+      end
       format.html { redirect_back_or_default }
     end
   end
@@ -57,10 +71,7 @@ module NotesActions
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def update
     @note = Notes::UpdateService.new(project, current_user, note_params).execute(note)
-
-    if @note.is_a?(Note)
-      prepare_notes_for_rendering([@note])
-    end
+    prepare_notes_for_rendering([@note])
 
     respond_to do |format|
       format.json { render json: note_json(@note) }
@@ -91,14 +102,17 @@ module NotesActions
   end
 
   def note_json(note)
-    attrs = {
-      commands_changes: note.commands_changes
-    }
+    attrs = {}
 
     if note.persisted?
       attrs[:valid] = true
 
-      if use_note_serializer?
+      if return_discussion?
+        discussion = note.discussion
+        prepare_notes_for_rendering(discussion.notes)
+
+        attrs[:discussion] = discussion_serializer.represent(discussion, context: self)
+      elsif use_note_serializer?
         attrs.merge!(note_serializer.represent(note))
       else
         attrs.merge!(
@@ -218,6 +232,10 @@ module NotesActions
     ProjectNoteSerializer.new(project: project, noteable: noteable, current_user: current_user)
   end
 
+  def discussion_serializer
+    DiscussionSerializer.new(project: project, noteable: noteable, current_user: current_user, note_entity: ProjectNoteEntity)
+  end
+
   def note_project
     strong_memoize(:note_project) do
       next nil unless project
@@ -235,6 +253,10 @@ module NotesActions
 
       the_project
     end
+  end
+
+  def return_discussion?
+    Gitlab::Utils.to_boolean(params[:return_discussion])
   end
 
   def use_note_serializer?
