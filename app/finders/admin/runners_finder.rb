@@ -43,8 +43,7 @@ class Admin::RunnersFinder < UnionFinder
   end
 
   def sort!
-    sort = sort_key == 'contacted_asc' ? { contacted_at: :asc } : { created_at: :desc }
-    @runners = @runners.order(sort)
+    @runners = @runners.order_by(sort_key)
   end
 
   def paginate!

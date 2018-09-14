@@ -797,4 +797,22 @@ describe Ci::Runner do
       expect { subject.destroy }.to change { described_class.count }.by(-1)
     end
   end
+
+  describe '.order_by' do
+    it 'supports ordering by the contact date' do
+      runner1 = create(:ci_runner, contacted_at: 1.year.ago)
+      runner2 = create(:ci_runner, contacted_at: 1.month.ago)
+      runners = described_class.order_by('contacted_asc')
+
+      expect(runners).to eq([runner1, runner2])
+    end
+
+    it 'supports ordering by the creation date' do
+      runner1 = create(:ci_runner, created_at: 1.year.ago)
+      runner2 = create(:ci_runner, created_at: 1.month.ago)
+      runners = described_class.order_by('created_asc')
+
+      expect(runners).to eq([runner2, runner1])
+    end
+  end
 end
