@@ -6480,11 +6480,7 @@ msgstr ""
 msgid "Runners can be placed on separate users, servers, even on your local machine."
 msgstr ""
 
-<<<<<<< HEAD
-msgid "Runners currently online: %{active_runners_cnt}"
-=======
 msgid "Runners currently online: %{active_runners_count}"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Runners page"
@@ -8129,12 +8125,9 @@ msgstr ""
 msgid "Version"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "View epics list"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "View file @ "
 msgstr ""
 
