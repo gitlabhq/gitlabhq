@@ -19,6 +19,7 @@ large deployments. It offers a number of benefits:
 - No requirement for shared storage to scale
 - Containers do not need `root` permissions
 - Automatic SSL with Let's Encrypt
+- An unprivileged GitLab Runner
 - and plenty more.
 
 Learn more about the [GitLab chart](gitlab_chart.md).
