@@ -22,7 +22,7 @@ class Dashboard::MilestonesController < Dashboard::ApplicationController
   private
 
   def group_milestones
-    groups = GroupsFinder.new(current_user, all_available: true).execute
+    groups = GroupsFinder.new(current_user, all_available: false).execute
 
     DashboardGroupMilestone.build_collection(groups)
   end

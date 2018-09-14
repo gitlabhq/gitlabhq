@@ -1,7 +1,11 @@
 import Vue from 'vue';
 import eventHub from '~/filtered_search/event_hub';
 import RecentSearchesDropdownContent from '~/filtered_search/components/recent_searches_dropdown_content.vue';
+<<<<<<< HEAD
 import IssuesFilteredSearchTokenKeys from '~/filtered_search/issues_filtered_search_token_keys';
+=======
+import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
+>>>>>>> upstream/master
 
 const createComponent = (propsData) => {
   const Component = Vue.extend(RecentSearchesDropdownContent);
@@ -18,14 +22,22 @@ const trimMarkupWhitespace = text => text.replace(/(\n|\s)+/gm, ' ').trim();
 describe('RecentSearchesDropdownContent', () => {
   const propsDataWithoutItems = {
     items: [],
+<<<<<<< HEAD
     allowedKeys: IssuesFilteredSearchTokenKeys.getKeys(),
+=======
+    allowedKeys: IssuableFilteredSearchTokenKeys.getKeys(),
+>>>>>>> upstream/master
   };
   const propsDataWithItems = {
     items: [
       'foo',
       'author:@root label:~foo bar',
     ],
+<<<<<<< HEAD
     allowedKeys: IssuesFilteredSearchTokenKeys.getKeys(),
+=======
+    allowedKeys: IssuableFilteredSearchTokenKeys.getKeys(),
+>>>>>>> upstream/master
   };
 
   let vm;
