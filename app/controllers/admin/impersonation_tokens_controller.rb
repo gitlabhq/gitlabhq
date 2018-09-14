@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::ImpersonationTokensController < Admin::ApplicationController
   before_action :user
 

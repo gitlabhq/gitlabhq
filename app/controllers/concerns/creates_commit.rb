@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CreatesCommit
   extend ActiveSupport::Concern
   include Gitlab::Utils::StrongMemoize
@@ -65,7 +67,7 @@ module CreatesCommit
         flash[:notice] = nil
       else
         target = different_project? ? "project" : "branch"
-        flash[:notice] << " You can now submit a merge request to get this change into the original #{target}."
+        flash[:notice] = flash[:notice] + " You can now submit a merge request to get this change into the original #{target}."
       end
     end
   end

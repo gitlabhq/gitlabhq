@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Boards
   class ApplicationController < ::ApplicationController
     respond_to :json

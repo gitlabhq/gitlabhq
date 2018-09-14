@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # RootController
 #
 # This controller exists solely to handle requests to `root_url`. When a user is

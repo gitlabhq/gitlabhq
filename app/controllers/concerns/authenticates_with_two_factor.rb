@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == AuthenticatesWithTwoFactor
 #
 # Controller concern to handle two-factor authentication

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::IdentitiesController < Admin::ApplicationController
   before_action :user
   before_action :identity, except: [:index, :new, :create]

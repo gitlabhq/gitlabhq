@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SnippetsController < ApplicationController
   include RendersNotes
   include ToggleAwardEmoji

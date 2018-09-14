@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::ApplicationSettingsController < Admin::ApplicationController
   before_action :set_application_setting
 
