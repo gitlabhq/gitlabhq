@@ -47,11 +47,7 @@
 
   .bs-callout
     %p
-<<<<<<< HEAD
-      = _('Runners currently online: %{active_runners_cnt}') % { active_runners_cnt: @active_runners_cnt }
-=======
       = _('Runners currently online: %{active_runners_count}') % { active_runners_count: @active_runners_count }
->>>>>>> upstream/master
 
   .row-content-block.second-block
     = form_tag admin_runners_path, id: 'runners-search', method: :get, class: 'filter-form js-filter-form' do
@@ -72,21 +68,13 @@
             #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { action: 'submit' } }
-<<<<<<< HEAD
-                  %button.btn.btn-link
-=======
                   = button_tag class: %w[btn btn-link] do
->>>>>>> upstream/master
                     = icon('search')
                     %span
                       = _('Press Enter or click to search')
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                 %li.filter-dropdown-item
-<<<<<<< HEAD
-                  %button.btn.btn-link
-=======
                   = button_tag class: %w[btn btn-link] do
->>>>>>> upstream/master
                     -# Encapsulate static class name `{{icon}}` inside #{} to bypass
                     -# haml lint's ClassAttributeWithStaticValue
                     %i.fa{ class: "#{'{{icon}}'}" }
@@ -98,15 +86,9 @@
               %ul{ data: { dropdown: true } }
                 - Ci::Runner::AVAILABLE_STATUSES.each do |status|
                   %li.filter-dropdown-item{ data: { value: status } }
-<<<<<<< HEAD
-                    %button.btn.btn-link
-                      = status.titleize
-          %button.clear-search.hidden{ type: 'button' }
-=======
                     = button_tag class: %w[btn btn-link] do
                       = status.titleize
           = button_tag class: %w[clear-search hidden] do
->>>>>>> upstream/master
             = icon('times')
         .filter-dropdown-container
           = render 'sort_dropdown'
