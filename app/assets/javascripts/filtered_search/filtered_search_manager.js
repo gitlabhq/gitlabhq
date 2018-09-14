@@ -3,11 +3,7 @@ import {
   getParameterByName,
   getUrlParamsArray,
 } from '~/lib/utils/common_utils';
-<<<<<<< HEAD
-import IssuesFilteredSearchTokenKeys from '~/filtered_search/issues_filtered_search_token_keys';
-=======
 import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
->>>>>>> upstream/master
 import { visitUrl } from '../lib/utils/url_utility';
 import Flash from '../flash';
 import FilteredSearchContainer from './container';
@@ -27,11 +23,7 @@ export default class FilteredSearchManager {
     isGroup = false,
     isGroupAncestor = true,
     isGroupDecendent = false,
-<<<<<<< HEAD
-    filteredSearchTokenKeys = IssuesFilteredSearchTokenKeys,
-=======
     filteredSearchTokenKeys = IssuableFilteredSearchTokenKeys,
->>>>>>> upstream/master
     stateFiltersSelector = '.issues-state-filters',
   }) {
     this.isGroup = isGroup;
