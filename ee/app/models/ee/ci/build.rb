@@ -19,7 +19,7 @@ module EE
       CONTAINER_SCANNING_FILE = 'gl-container-scanning-report.json'.freeze
       DAST_FILE = 'gl-dast-report.json'.freeze
 
-      included do
+      prepended do
         after_save :stick_build_if_status_changed
       end
 

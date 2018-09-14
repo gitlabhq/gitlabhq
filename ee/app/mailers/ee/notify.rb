@@ -3,14 +3,12 @@ module EE
     extend ActiveSupport::Concern
     extend ::Gitlab::Utils::Override
 
-    included do
-      include ::Emails::AdminNotification
-      include ::Emails::CsvExport
-      include ::Emails::ServiceDesk
-      include ::Emails::Epics
+    include ::Emails::AdminNotification
+    include ::Emails::CsvExport
+    include ::Emails::ServiceDesk
+    include ::Emails::Epics
 
-      attr_reader :group
-    end
+    attr_reader :group
 
     private
 

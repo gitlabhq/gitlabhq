@@ -11,7 +11,7 @@ module EE
 
     DEFAULT_ROADMAP_LAYOUT = 'months'.freeze
 
-    included do
+    prepended do
       EMAIL_OPT_IN_SOURCE_ID_GITLAB_COM = 1
 
       # We aren't using the `auditor?` method for the `if` condition here

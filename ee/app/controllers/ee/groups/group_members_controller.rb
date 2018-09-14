@@ -12,7 +12,7 @@ module EE
         end
       end
 
-      included do
+      prepended do
         before_action :authorize_update_group_member!, only: [:update, :override]
       end
 

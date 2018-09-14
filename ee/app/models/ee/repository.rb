@@ -9,7 +9,7 @@ module EE
 
     MIRROR_REMOTE = "upstream".freeze
 
-    included do
+    prepended do
       delegate :checksum, to: :raw_repository
     end
 
