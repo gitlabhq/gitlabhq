@@ -86,10 +86,8 @@ module Gitlab
             raise AlreadyArchivedError, 'Could not write to the archived trace'
           elsif current_path
             File.open(current_path, mode)
-          elsif Feature.enabled?('ci_enable_live_trace')
-            Gitlab::Ci::Trace::ChunkedIO.new(job)
           else
-            File.open(ensure_path, mode)
+            Gitlab::Ci::Trace::ChunkedIO.new(job)
           end
         end
 

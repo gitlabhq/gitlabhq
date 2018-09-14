@@ -121,7 +121,7 @@ The data flow is the same as described in the [data flow section](#data-flow)
 with one change: _the stored path of the first two phases is different_. This new live
 trace architecture stores chunks of traces in Redis and a persistent store (object storage or database) instead of
 file storage. Redis is used as first-class storage, and it stores up-to 128KB
-of data. Once the full chunk is sent, it is flushed a persistent store, either object storage(temporary directory) or database.
+of data. Once the full chunk is sent, it is flushed to a persistent store, either object storage(temporary directory) or database.
 After a while, the data in Redis and a persitent store will be archived to [object storage](#uploading-traces-to-object-storage).
 
 The data are stored in the following Redis namespace: `Gitlab::Redis::SharedState`.
@@ -137,48 +137,10 @@ Here is the detailed data flow:
 1. The Sidekiq worker archives the trace to object storage and cleans up the trace
    in Redis and a persistent store (object storage or the database).
 
-### Enabling live trace
+### Test reports with gitlab.com scale instance
 
-The following commands are to be issues in a Rails console:
-
-```sh
-# Omnibus GitLab
-gitlab-rails console
-
-# Installation from source
-cd /home/git/gitlab
-sudo -u git -H bin/rails console RAILS_ENV=production
-```
-
-**To check if live trace is enabled:**
-
-```ruby
-Feature.enabled?('ci_enable_live_trace')
-```
-
-**To enable live trace:**
-
-```ruby
-Feature.enable('ci_enable_live_trace')
-```
-
-NOTE: **Note:**
-The transition period will be handled gracefully. Upcoming traces will be
-generated with the new architecture, and on-going live traces will stay with the
-legacy architecture, which means that on-going live traces won't be forcibly
-re-generated with the new architecture.
-
-**To disable live trace:**
-
-```ruby
-Feature.disable('ci_enable_live_trace')
-```
-
-NOTE: **Note:**
-The transition period will be handled gracefully. Upcoming traces will be generated
-with the legacy architecture, and on-going live traces will stay with the new
-architecture, which means that on-going live traces won't be forcibly re-generated
-with the legacy architecture.
+We've already tested this feature on gitlab.com, and concluded that this feature works stably even if it's the gitlab.com scale.
+You can see the detailed report on [this issue][infra-4667]
 
 ### Potential implications
 
@@ -190,18 +152,7 @@ In some cases, having data stored on Redis could incur data loss:
    - Finished jobs which have not archived live traces will lose the last part
      (~128KB) of trace data.
 
-1. **Case 2: When Sidekiq workers fail to archive (e.g., there was a bug that
-   prevents archiving process, Sidekiq inconsistency, etc.)**
-   - Currently all trace data in Redis will be deleted after one week. If the
-     Sidekiq workers can't finish by the expiry date, the part of trace data will be lost.
-
-Another issue that might arise is that it could consume all memory on the Redis
-instance. If the number of jobs is 1000, 128MB (128KB * 1000) is consumed.
-
-Also, it could pressure the database replication lag. `INSERT`s are generated to
-indicate that we have trace chunk. `UPDATE`s with 128KB of data is issued once we
-receive multiple chunks.
-
 [ce-18169]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18169
 [ce-21193]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21193
 [ce-46097]: https://gitlab.com/gitlab-org/gitlab-ce/issues/46097
+[infra-4667]: https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/4667
