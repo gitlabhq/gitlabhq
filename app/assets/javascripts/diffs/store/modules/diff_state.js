@@ -11,8 +11,10 @@ export default () => ({
   endpoint: '',
   basePath: '',
   commit: null,
+  startVersion: null,
   diffFiles: [],
   mergeRequestDiffs: [],
+  mergeRequestDiff: null,
   diffLineCommentForms: {},
   diffViewType: viewTypeFromQueryString || viewTypeFromCookie || defaultViewType,
 });
