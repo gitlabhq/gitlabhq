@@ -1,11 +1,7 @@
 import DropdownUtils from '~/filtered_search/dropdown_utils';
 import DropdownUser from '~/filtered_search/dropdown_user';
 import FilteredSearchTokenizer from '~/filtered_search/filtered_search_tokenizer';
-<<<<<<< HEAD
-import IssuesFilteredSearchTokenKeys from '~/filtered_search/issues_filtered_search_token_keys';
-=======
 import IssuableFilteredTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
->>>>>>> upstream/master
 
 describe('Dropdown User', () => {
   describe('getSearchInput', () => {
@@ -18,11 +14,7 @@ describe('Dropdown User', () => {
       spyOn(DropdownUtils, 'getSearchInput').and.callFake(() => {});
 
       dropdownUser = new DropdownUser({
-<<<<<<< HEAD
-        tokenKeys: IssuesFilteredSearchTokenKeys,
-=======
         tokenKeys: IssuableFilteredTokenKeys,
->>>>>>> upstream/master
       });
     });
 
