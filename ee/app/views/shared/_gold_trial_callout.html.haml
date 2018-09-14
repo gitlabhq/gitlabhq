@@ -1,4 +1,4 @@
-- if show_gold_trial? && is_default_dashboard?
+- if show_gold_trial? && user_default_dashboard?
   .pt-1.d-none.d-md-block{ class: container_class }
     .user-callout.promotion-callout.thin-callout.js-gold-trial-callout{ data: { uid: 'trial_callout_dismissed', feature_id: UserCalloutsHelper::GOLD_TRIAL, dismiss_endpoint: user_callouts_path } }
       .bordered-box.justify-content-left.align-items-center
