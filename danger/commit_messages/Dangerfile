@@ -170,7 +170,7 @@ def lint_commits(commits)
 
           Use:
 
-              _("Hello %{subject}) % { subject: 'world' }
+              _("Hello %{subject}") % { subject: 'world' }
 
       This is an example of a bad commit message:
 
