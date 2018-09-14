@@ -72,6 +72,9 @@ module Ci
         .project_type
     end
 
+    scope :order_contacted_at_asc, -> { order(contacted_at: :asc) }
+    scope :order_created_at_desc, -> { order(created_at: :desc) }
+
     validate :tag_constraints
     validates :access_level, presence: true
     validates :runner_type, presence: true
@@ -122,6 +125,14 @@ module Ci
 
     def self.contact_time_deadline
       ONLINE_CONTACT_TIMEOUT.ago
+    end
+
+    def self.order_by(order)
+      if order == 'contacted_asc'
+        order_contacted_at_asc
+      else
+        order_created_at_desc
+      end
     end
 
     def set_default_values
