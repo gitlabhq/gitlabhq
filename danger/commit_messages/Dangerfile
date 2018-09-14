@@ -26,6 +26,11 @@ def ce_upstream?
   gitlab.mr_labels.any? { |label| label == 'CE upstream' }
 end
 
+def too_many_changed_lines?(commit)
+  commit.diff_parent.stats[:total][:files] > 3 &&
+    lines_changed_in_commit(commit) >= 30
+end
+
 def lint_commits(commits)
   failures = false
 
@@ -102,10 +107,10 @@ def lint_commits(commits)
       failures = true
     end
 
-    if !details && lines_changed_in_commit(commit) >= 20
+    if !details && too_many_changed_lines?(commit)
       fail_commit(
         commit,
-        'Commits that change more than 20 lines ' \
+        'Commits that change 30 or more lines in more than three files ' \
           'must describe these changes in the commit body'
       )
 
