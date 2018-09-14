@@ -8,8 +8,8 @@ describe 'Protected Environments' do
   let(:environments) { %w(production development staging test) }
 
   before do
-    stub_feature_flags(protected_environments: true)
-
+    allow(License).to receive(:feature_available?).and_call_original
+    allow(License).to receive(:feature_available?).with(:protected_environments).and_return(true)
     environments.each do |environment_name|
       create(:environment, name: environment_name, project: project)
     end

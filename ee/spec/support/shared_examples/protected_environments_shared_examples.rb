@@ -3,33 +3,12 @@ RSpec.shared_examples 'protected environments access' do |developer_access = tru
   using RSpec::Parameterized::TableSyntax
 
   before do
-    stub_feature_flags(protected_environments: enabled)
-  end
-
-  context 'when Protected Environments feature is not on' do
-    let(:enabled) { false }
-
-    where(:access_level, :result) do
-      :guest      | false
-      :reporter   | false
-      :developer  | developer_access
-      :maintainer | true
-      :admin      | true
-    end
-
-    with_them do
-      before do
-        environment
-
-        update_user_access(access_level, user, project)
-      end
-
-      it { is_expected.to eq(result) }
-    end
+    allow(License).to receive(:feature_available?).and_call_original
+    allow(License).to receive(:feature_available?).with(:protected_environments).and_return(feature_available)
   end
 
   context 'when Protected Environments feature is not available in the project' do
-    let(:enabled) { true }
+    let(:feature_available) { false }
 
     where(:access_level, :result) do
       :guest      | false
@@ -51,12 +30,7 @@ RSpec.shared_examples 'protected environments access' do |developer_access = tru
   end
 
   context 'when Protected Environments feature is available in the project' do
-    let(:enabled) { true }
-
-    before do
-      allow(License).to receive(:feature_available?).and_call_original
-      allow(License).to receive(:feature_available?).with(:protected_environments).and_return(true)
-    end
+    let(:feature_available) { true }
 
     context 'when environment is protected' do
       let(:protected_environment) { create(:protected_environment, name: environment.name, project: project) }

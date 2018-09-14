@@ -1,0 +1,5 @@
+---
+title: Removes feature flag code surrounding Protected Environments feature
+merge_request: 7338
+author:
+type: other

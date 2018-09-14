@@ -29,39 +29,29 @@ describe Environment do
     subject { environment.protected? }
 
     before do
-      stub_feature_flags(protected_environments: enabled)
+      allow(project).to receive(:feature_available?)
+        .with(:protected_environments).and_return(feature_available)
     end
 
-    context 'when Protected Environments feature is not on' do
-      let(:enabled) { false }
+    context 'when Protected Environments feature is not available on the project' do
+      let(:feature_available) { false }
 
       it { is_expected.to be_falsy }
     end
 
-    context 'when Protected Environments feature is on' do
-      let(:enabled) { true }
+    context 'when Protected Environments feature is available on the project' do
+      let(:feature_available) { true }
 
-      context 'when Protected Environments feature is not available in the project' do
-        it { is_expected.to be_falsy }
+      context 'when the environment is protected' do
+        before do
+          create(:protected_environment,  name: environment.name, project: project)
+        end
+
+        it { is_expected.to be_truthy }
       end
 
-      context 'when Protected Environments feature is available in the project' do
-        before do
-          allow(project).to receive(:feature_available?)
-            .with(:protected_environments).and_return(true)
-        end
-
-        context 'when the environment is protected' do
-          before do
-            create(:protected_environment,  name: environment.name, project: project)
-          end
-
-          it { is_expected.to be_truthy }
-        end
-
-        context 'when the environment is not protected' do
-          it { is_expected.to be_falsy }
-        end
+      context 'when the environment is not protected' do
+        it { is_expected.to be_falsy }
       end
     end
   end
@@ -73,43 +63,37 @@ describe Environment do
     subject { environment.protected_deployable_by_user?(user) }
 
     before do
-      stub_feature_flags(protected_environments: enabled)
+      allow(project).to receive(:feature_available?)
+        .with(:protected_environments).and_return(feature_available)
     end
 
-    context 'when Protected Environments feature is not on' do
-      let(:enabled) { false }
+    context 'when Protected Environments feature is not available on the project' do
+      let(:feature_available) { false }
 
       it { is_expected.to be_truthy }
     end
 
-    context 'when Protected Environments feature is on' do
-      let(:enabled) { true }
+    context 'when Protected Environments feature is available on the project' do
+      let(:feature_available) { true }
 
-      context 'when Protected Environments feature is available in the project' do
+      context 'when the environment is not protected' do
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when environment is protected and user dont have access to it' do
         before do
-          allow(project).to receive(:feature_available?)
-            .with(:protected_environments).and_return(true)
+          protected_environment
         end
 
-        context 'when the environment is not protected' do
-          it { is_expected.to be_truthy }
+        it { is_expected.to be_falsy }
+      end
+
+      context 'when environment is protected and user have access to it' do
+        before do
+          protected_environment.deploy_access_levels.create(user: user)
         end
 
-        context 'when environment is protected and user dont have access to it' do
-          before do
-            protected_environment
-          end
-
-          it { is_expected.to be_falsy }
-        end
-
-        context 'when environment is protected and user have access to it' do
-          before do
-            protected_environment.deploy_access_levels.create(user: user)
-          end
-
-          it { is_expected.to be_truthy }
-        end
+        it { is_expected.to be_truthy }
       end
     end
   end
