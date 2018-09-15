@@ -1512,6 +1512,32 @@ describe Ci::Build do
         end
       end
     end
+
+    describe '#retry_when' do
+      context 'when value is defined' do
+        subject { create(:ci_build, options: { retry: { when: :something } }) }
+
+        it 'returns the configured value' do
+          expect(subject.retry_when).to eq :something
+        end
+      end
+
+      context 'when value is not defined' do
+        subject { create(:ci_build) }
+
+        it 'returns `always`' do
+          expect(subject.retry_when).to eq :always
+        end
+      end
+
+      context 'when retry is only defined as an integer' do
+        subject { create(:ci_build, options: { retry: 1 }) }
+
+        it 'returns `always`' do
+          expect(subject.retry_when).to eq :always
+        end
+      end
+    end
   end
 
   describe '#keep_artifacts!' do

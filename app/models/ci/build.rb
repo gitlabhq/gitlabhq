@@ -324,6 +324,11 @@ module Ci
       retries.is_a?(Hash) && retries.fetch(:max, 0) || retries || 0
     end
 
+    def retry_when
+      retries = self.options[:retry]
+      retries.is_a?(Hash) && retries.fetch(:when, 'always').to_s || 'always'
+    end
+
     def latest?
       !retried?
     end
