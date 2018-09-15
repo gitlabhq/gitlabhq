@@ -21,7 +21,6 @@ _This notice should stay as the first item in the CONTRIBUTING.md file._
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [Developer Certificate of Origin + License](#developer-certificate-of-origin--license)
 - [Contributing Documentation has been moved](#contributing-documentation-has-been-moved)
 - [Contribute to GitLab](#contribute-to-gitlab)
 - [Security vulnerability disclosure](#security-vulnerability-disclosure)
