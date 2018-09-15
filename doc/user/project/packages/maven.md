@@ -24,14 +24,14 @@ You should then be able to see the **Packages** section on the left sidebar.
 Next, you must configure your project to authorize with the GitLab Maven
 repository.
 
-## Authorizing with the GitLab Maven repository
+## Authenticating to the GitLab Maven repository
 
 If a project is private or you want to upload Maven artifacts to GitLab,
-credentials will need to be provided for authorization:
+credentials will need to be provided for authorization. Support is available for
+[personal access tokens](../../profile/personal_access_tokens.md) and
+[CI job tokens](https://docs.gitlab.com/ee/ci/variables/#predefined-variables-environment-variables).
 
-1. Create a new [personal access token](../../profile/personal_access_tokens.md)
-   with the `api` scope.
-1. Add a corresponding section to your
+To authenticate with one of these tokens, add a corresponding section to your
    [`settings.xml`](https://maven.apache.org/settings.html) file:
 
     ```xml
@@ -43,7 +43,7 @@ credentials will need to be provided for authorization:
             <httpHeaders>
               <property>
                 <name>Private-Token</name>
-                <value>REPLACE_WITH_YOUR_PERSONAL_ACCESS_TOKEN</value>
+                <value>REPLACE_WITH_YOUR_DESIRED_TOKEN</value>
               </property>
             </httpHeaders>
           </configuration>
