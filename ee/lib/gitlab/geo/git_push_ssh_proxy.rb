@@ -4,7 +4,10 @@ module Gitlab
   module Geo
     class GitPushSSHProxy
       HTTP_READ_TIMEOUT = 10
-      HTTP_SUCCESS_CODE = '200'.freeze
+
+      INFO_REFS_CONTENT_TYPE = 'application/x-git-upload-pack-request'.freeze
+      PUSH_CONTENT_TYPE = 'application/x-git-receive-pack-request'.freeze
+      PUSH_ACCEPT = 'application/x-git-receive-pack-result'.freeze
 
       MustBeASecondaryNode = Class.new(StandardError)
 
@@ -16,12 +19,10 @@ module Gitlab
         ensure_secondary!
 
         url = "#{primary_repo}/info/refs?service=git-receive-pack"
-        headers = {
-          'Content-Type' => 'application/x-git-upload-pack-request'
-        }
+        headers = { 'Content-Type' => INFO_REFS_CONTENT_TYPE }
 
         resp = get(url, headers)
-        return resp unless resp.code == HTTP_SUCCESS_CODE
+        return resp unless resp.is_a?(Net::HTTPSuccess)
 
         resp.body = remove_http_service_fragment_from(resp.body)
 
@@ -33,8 +34,8 @@ module Gitlab
 
         url = "#{primary_repo}/git-receive-pack"
         headers = {
-          'Content-Type' => 'application/x-git-receive-pack-request',
-          'Accept' => 'application/x-git-receive-pack-result'
+          'Content-Type' => PUSH_CONTENT_TYPE,
+          'Accept' => PUSH_ACCEPT
         }
 
         post(url, info_refs_response, headers)
