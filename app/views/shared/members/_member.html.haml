@@ -22,7 +22,7 @@
             %strong Blocked
 
         - if user.two_factor_enabled?
-          %label.label.label-info
+          %label.badge.badge-info
             2FA
 
         - if source.instance_of?(Group) && source != @group
