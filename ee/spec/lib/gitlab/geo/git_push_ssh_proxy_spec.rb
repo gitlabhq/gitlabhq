@@ -26,10 +26,12 @@ describe Gitlab::Geo::GitPushSSHProxy, :geo do
     }
   end
 
+  let(:primary_repo_http) { geo_primary_http_url_to_repo(project) }
+
   let(:data) do
     {
       'gl_id' => "key-#{key.id}",
-      'primary_repo' => "#{primary_node.url}#{project.repository.full_path}.git"
+      'primary_repo' => primary_repo_http
     }
   end
 
@@ -56,7 +58,7 @@ describe Gitlab::Geo::GitPushSSHProxy, :geo do
     context 'against secondary node' do
       let(:current_node) { secondary_node }
 
-      let(:full_info_refs_url) { "#{primary_node.url}#{project.full_path}.git/info/refs?service=git-receive-pack" }
+      let(:full_info_refs_url) { "#{primary_repo_http}/info/refs?service=git-receive-pack" }
       let(:info_refs_headers) { base_headers.merge('Content-Type' => 'application/x-git-upload-pack-request') }
       let(:info_refs_http_body_full) do
         "001f# service=git-receive-pack
@@ -91,7 +93,7 @@ describe Gitlab::Geo::GitPushSSHProxy, :geo do
     context 'against secondary node' do
       let(:current_node) { secondary_node }
 
-      let(:full_git_receive_pack_url) { "#{primary_node.url}#{project.full_path}.git/git-receive-pack" }
+      let(:full_git_receive_pack_url) { "#{primary_repo_http}/git-receive-pack" }
       let(:push_headers) do
         base_headers.merge(
           'Content-Type' => 'application/x-git-receive-pack-request',
