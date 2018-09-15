@@ -27,6 +27,7 @@ describe Gitlab::Geo::GitPushSSHProxy, :geo do
   end
 
   let(:primary_repo_http) { geo_primary_http_url_to_repo(project) }
+  let(:primary_repo_ssh) { geo_primary_ssh_url_to_repo(project) }
 
   let(:data) do
     {
@@ -35,78 +36,83 @@ describe Gitlab::Geo::GitPushSSHProxy, :geo do
     }
   end
 
-  subject { described_class.new(data) }
-
-  before do
-    stub_current_geo_node(current_node)
-
-    allow(Gitlab::Geo::BaseRequest).to receive(:new).and_return(base_request)
-    allow(base_request).to receive(:authorization).and_return('secret')
-  end
-
-  describe '#info_refs' do
-    context 'against primary node' do
-      let(:current_node) { primary_node }
-
-      it 'raises an exception' do
-        expect do
-          subject.info_refs
-        end.to raise_error(described_class::MustBeASecondaryNode, 'Node is not a secondary or there is no primary Geo node')
-      end
-    end
-
-    context 'against secondary node' do
-      let(:current_node) { secondary_node }
-
-      let(:full_info_refs_url) { "#{primary_repo_http}/info/refs?service=git-receive-pack" }
-      let(:info_refs_headers) { base_headers.merge('Content-Type' => 'application/x-git-upload-pack-request') }
-      let(:info_refs_http_body_full) do
-        "001f# service=git-receive-pack
-0000#{info_refs_body_short}"
-      end
-
-      before do
-        stub_request(:get, full_info_refs_url).to_return(status: 200, body: info_refs_http_body_full, headers: info_refs_headers)
-      end
-
-      it 'returns a Net::HTTPOK' do
-        expect(subject.info_refs).to be_a(Net::HTTPOK)
-      end
-
-      it 'returns a modified body' do
-        expect(subject.info_refs.body).to eql(info_refs_body_short)
-      end
+  describe '.inform_client_message' do
+    it 'returns a message, with the ssh address' do
+      expect(described_class.inform_client_message(primary_repo_ssh)).to eql("You're pushing to a Geo secondary.\nWe'll help you by proxying this request to the primary: #{primary_repo_ssh}")
     end
   end
 
-  describe '#push' do
-    context 'against primary node' do
-      let(:current_node) { primary_node }
+  context 'instance methods' do
+    subject { described_class.new(data) }
 
-      it 'raises an exception' do
-        expect do
-          subject.push(info_refs_body_short)
-        end.to raise_error(described_class::MustBeASecondaryNode)
+    before do
+      stub_current_geo_node(current_node)
+
+      allow(Gitlab::Geo::BaseRequest).to receive(:new).and_return(base_request)
+      allow(base_request).to receive(:authorization).and_return('secret')
+    end
+
+    describe '#info_refs' do
+      context 'against primary node' do
+        let(:current_node) { primary_node }
+
+        it 'raises an exception' do
+          expect do
+            subject.info_refs
+          end.to raise_error(described_class::MustBeASecondaryNode, 'Node is not a secondary or there is no primary Geo node')
+        end
+      end
+
+      context 'against secondary node' do
+        let(:current_node) { secondary_node }
+
+        let(:full_info_refs_url) { "#{primary_repo_http}/info/refs?service=git-receive-pack" }
+        let(:info_refs_headers) { base_headers.merge('Content-Type' => 'application/x-git-upload-pack-request') }
+        let(:info_refs_http_body_full) { "001f# service=git-receive-pack\n0000#{info_refs_body_short}" }
+
+        before do
+          stub_request(:get, full_info_refs_url).to_return(status: 200, body: info_refs_http_body_full, headers: info_refs_headers)
+        end
+
+        it 'returns a Net::HTTPOK' do
+          expect(subject.info_refs).to be_a(Net::HTTPOK)
+        end
+
+        it 'returns a modified body' do
+          expect(subject.info_refs.body).to eql(info_refs_body_short)
+        end
       end
     end
 
-    context 'against secondary node' do
-      let(:current_node) { secondary_node }
+    describe '#push' do
+      context 'against primary node' do
+        let(:current_node) { primary_node }
 
-      let(:full_git_receive_pack_url) { "#{primary_repo_http}/git-receive-pack" }
-      let(:push_headers) do
-        base_headers.merge(
-          'Content-Type' => 'application/x-git-receive-pack-request',
-          'Accept' => 'application/x-git-receive-pack-result'
-        )
+        it 'raises an exception' do
+          expect do
+            subject.push(info_refs_body_short)
+          end.to raise_error(described_class::MustBeASecondaryNode)
+        end
       end
 
-      before do
-        stub_request(:post, full_git_receive_pack_url).to_return(status: 201, body: info_refs_body_short, headers: push_headers)
-      end
+      context 'against secondary node' do
+        let(:current_node) { secondary_node }
 
-      it 'returns a Net::HTTPCreated' do
-        expect(subject.push(info_refs_body_short)).to be_a(Net::HTTPCreated)
+        let(:full_git_receive_pack_url) { "#{primary_repo_http}/git-receive-pack" }
+        let(:push_headers) do
+          base_headers.merge(
+            'Content-Type' => 'application/x-git-receive-pack-request',
+            'Accept' => 'application/x-git-receive-pack-result'
+          )
+        end
+
+        before do
+          stub_request(:post, full_git_receive_pack_url).to_return(status: 201, body: info_refs_body_short, headers: push_headers)
+        end
+
+        it 'returns a Net::HTTPCreated' do
+          expect(subject.push(info_refs_body_short)).to be_a(Net::HTTPCreated)
+        end
       end
     end
   end

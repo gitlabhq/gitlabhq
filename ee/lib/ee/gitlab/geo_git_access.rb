@@ -37,8 +37,9 @@ module EE
         payload = {
           'action' => 'geo_proxy_to_primary',
           'data' => {
-            'api_endpoints' => [api_v4_geo_proxy_git_push_ssh_info_refs_path, api_v4_geo_proxy_git_push_ssh_push_path],
-            'primary_repo' => geo_primary_http_url_to_repo(project_or_wiki)
+            'info_message' => proxying_to_primary_message,
+            'api_endpoints' => custom_action_api_endpoints,
+            'primary_repo' => primary_http_repo_url
           }
         }
 
@@ -62,6 +63,25 @@ module EE
         else
           geo_primary_http_url_to_repo(project_or_wiki)
         end
+      end
+
+      def primary_http_repo_url
+        geo_primary_http_url_to_repo(project_or_wiki)
+      end
+
+      def primary_ssh_url_to_repo
+        geo_primary_ssh_url_to_repo(project_or_wiki)
+      end
+
+      def proxying_to_primary_message
+        ::Gitlab::Geo::GitPushSSHProxy.inform_client_message(primary_ssh_url_to_repo)
+      end
+
+      def custom_action_api_endpoints
+        [
+          api_v4_geo_proxy_git_push_ssh_info_refs_path,
+          api_v4_geo_proxy_git_push_ssh_push_path
+        ]
       end
     end
   end

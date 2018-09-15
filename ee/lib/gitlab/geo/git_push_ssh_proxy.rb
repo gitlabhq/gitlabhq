@@ -11,8 +11,47 @@ module Gitlab
 
       MustBeASecondaryNode = Class.new(StandardError)
 
+      class APIResponse
+        attr_reader :code, :body
+
+        def initialize(code, body)
+          @code = code
+          @body = body
+        end
+
+        def self.from_http_response(response, primary_repo)
+          success = response.is_a?(Net::HTTPSuccess)
+          body = response.body.to_s
+
+          if success
+            result = Base64.encode64(body)
+          else
+            message = failed_message(body, primary_repo)
+          end
+
+          new(response.code.to_i, status: success, message: message, result: result)
+        end
+
+        def self.failed_message(str, primary_repo)
+          "Failed to contact primary #{primary_repo}\nError: #{str}"
+        end
+      end
+
+      class FailedAPIResponse < APIResponse
+        def self.from_exception(ex_message, primary_repo, code: 500)
+          new(code.to_i,
+              status: false,
+              message: failed_message(ex_message, primary_repo),
+              result: nil)
+        end
+      end
+
       def initialize(data)
         @data = data
+      end
+
+      def self.inform_client_message(primary_repo_ssh)
+        "You're pushing to a Geo secondary.\nWe'll help you by proxying this request to the primary: #{primary_repo_ssh}"
       end
 
       def info_refs
