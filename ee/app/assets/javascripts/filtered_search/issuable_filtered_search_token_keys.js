@@ -3,7 +3,7 @@ import {
   tokenKeys,
   alternativeTokenKeys,
   conditions,
-} from '~/filtered_search/issues_filtered_search_token_keys';
+} from '~/filtered_search/issuable_filtered_search_token_keys';
 
 const weightTokenKey = {
   key: 'weight',
@@ -27,14 +27,14 @@ const weightConditions = [
   },
 ];
 
-const IssuesFilteredSearchTokenKeysEE = new FilteredSearchTokenKeys(
+const IssuableFilteredSearchTokenKeysEE = new FilteredSearchTokenKeys(
   [...tokenKeys, weightTokenKey],
   alternativeTokenKeys,
   [...conditions, ...weightConditions],
 );
 
 // cannot be an arrow function because it needs FilteredSearchTokenKeys instance
-IssuesFilteredSearchTokenKeysEE.init = function init(availableFeatures) {
+IssuableFilteredSearchTokenKeysEE.init = function init(availableFeatures) {
   // Enable multiple assignees when available
   if (availableFeatures && availableFeatures.multipleAssignees) {
     const assigneeTokenKey = this.tokenKeys.find(tk => tk.key === 'assignee');
@@ -43,4 +43,4 @@ IssuesFilteredSearchTokenKeysEE.init = function init(availableFeatures) {
   }
 };
 
-export default IssuesFilteredSearchTokenKeysEE;
+export default IssuableFilteredSearchTokenKeysEE;

@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import FilteredSearchManager from '~/filtered_search/filtered_search_manager';
-import IssuesFilteredSearchTokenKeysEE from 'ee/filtered_search/issues_filtered_search_token_keys';
+import IssuableFilteredSearchTokenKeysEE from 'ee/filtered_search/issuable_filtered_search_token_keys';
 
 const AUTHOR_PARAM_KEY = 'author_username';
 
@@ -8,7 +8,7 @@ export default class FilteredSearchServiceDesk extends FilteredSearchManager {
   constructor(supportBotData) {
     super({
       page: 'service_desk',
-      filteredSearchTokenKeys: IssuesFilteredSearchTokenKeysEE,
+      filteredSearchTokenKeys: IssuableFilteredSearchTokenKeysEE,
     });
 
     this.supportBotData = supportBotData;
