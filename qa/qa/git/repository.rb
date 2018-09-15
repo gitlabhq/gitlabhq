@@ -97,7 +97,10 @@ module QA
         File.chmod(0700, @private_key_file)
 
         @known_hosts_file = Tempfile.new("known_hosts_#{SecureRandom.hex(8)}")
-        run_and_redact_credentials("ssh-keyscan -p #{@uri.port} #{@uri.host} >> #{@known_hosts_file.path}")
+        keyscan_params = ['-H']
+        keyscan_params << "-p #{@uri.port}" if @uri.port
+        keyscan_params << @uri.host
+        run_and_redact_credentials("ssh-keyscan #{keyscan_params.join(' ')} >> #{@known_hosts_file.path}")
 
         configure_ssh_command("ssh -i #{@private_key_file.path} -o UserKnownHostsFile=#{@known_hosts_file.path}")
       end
@@ -118,6 +121,7 @@ module QA
       # Since the remote URL contains the credentials, and git occasionally
       # outputs the URL. Note that stderr is redirected to stdout.
       def run_and_redact_credentials(command)
+        puts command
         Open3.capture2("#{command} 2>&1 | sed -E 's#://[^@]+@#://****@#g'")
       end
     end
