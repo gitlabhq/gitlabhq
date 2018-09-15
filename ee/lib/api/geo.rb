@@ -62,9 +62,9 @@ module API
           authenticate_by_gitlab_shell_token!
           params.delete(:secret_token)
 
-          resp = Gitlab::Geo::GitPushSSHProxy.new(params['data']).info_refs
-          status(resp.code.to_i)
-          { status: true, message: nil, result: Base64.encode64(resp.body.to_s) }
+          response = Gitlab::Geo::GitPushSSHProxy.new(params['data']).info_refs
+          status(response.code)
+          response.body
         end
 
         # Responsible for making HTTP POST /repo.git/git-receive-pack
@@ -82,9 +82,9 @@ module API
           authenticate_by_gitlab_shell_token!
           params.delete(:secret_token)
 
-          resp = Gitlab::Geo::GitPushSSHProxy.new(params['data']).push(Base64.decode64(params['output']))
-          status(resp.code.to_i)
-          { status: true, message: nil, result: Base64.encode64(resp.body.to_s) }
+          response = Gitlab::Geo::GitPushSSHProxy.new(params['data']).push(params['output'])
+          status(response.code)
+          response.body
         end
       end
     end

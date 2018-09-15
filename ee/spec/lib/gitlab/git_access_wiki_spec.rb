@@ -18,6 +18,7 @@ describe Gitlab::GitAccessWiki do
     end
 
     let(:primary_repo_url) { geo_primary_http_url_to_repo(project.wiki) }
+    let(:primary_repo_ssh_url) { geo_primary_ssh_url_to_repo(project.wiki) }
 
     it_behaves_like 'a read-only GitLab instance'
   end
