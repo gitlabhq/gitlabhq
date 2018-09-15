@@ -320,7 +320,8 @@ module Ci
     end
 
     def retries_max
-      self.options.to_h.fetch(:retry, 0).to_i
+      retries = self.options[:retry]
+      retries.is_a?(Hash) && retries.fetch(:max, 0) || retries || 0
     end
 
     def latest?

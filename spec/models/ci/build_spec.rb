@@ -1472,11 +1472,27 @@ describe Ci::Build do
     end
 
     describe '#retries_max' do
-      context 'when max retries value is defined' do
+      context 'when max retries value is defined as an integer' do
         subject { create(:ci_build, options: { retry: 1 }) }
 
         it 'returns a number of configured max retries' do
           expect(subject.retries_max).to eq 1
+        end
+      end
+
+      context 'when retries value is defined as a hash' do
+        subject { create(:ci_build, options: { retry: { max: 1 } }) }
+
+        it 'returns a number of configured max retries' do
+          expect(subject.retries_max).to eq 1
+        end
+      end
+
+      context 'when retries value is defined as a hash without max key' do
+        subject { create(:ci_build, options: { retry: { something: :else } }) }
+
+        it 'returns a number of configured max retries' do
+          expect(subject.retries_max).to eq 0
         end
       end
 
