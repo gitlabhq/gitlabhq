@@ -220,9 +220,7 @@ module Ci
 
         build.deployment&.drop
 
-        next if build.retries_max.zero?
-
-        if build.retries_count < build.retries_max
+        if build.retry_failure?
           begin
             Ci::Build.retry(build, build.user)
           rescue Gitlab::Access::AccessDeniedError => ex
@@ -327,6 +325,19 @@ module Ci
     def retry_when
       retries = self.options[:retry]
       retries.is_a?(Hash) && retries.fetch(:when, 'always').to_s || 'always'
+    end
+
+    def retry_failure?
+      return false if retries_max.zero? || retries_count >= retries_max
+
+      case failure_reason.to_s
+      when 'runner_system_failure'
+        %['always', 'system failure'].include?(retry_when)
+      when 'script_failure'
+        %['always', 'script failure'].include?(retry_when)
+      else
+        retry_when == 'always'
+      end
     end
 
     def latest?

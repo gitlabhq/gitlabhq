@@ -1538,6 +1538,156 @@ describe Ci::Build do
         end
       end
     end
+
+    describe '#retry_failure?' do
+      subject { create(:ci_build) }
+
+      context 'when retries max is zero' do
+        before do
+          expect(subject).to receive(:retries_max).at_least(:once).and_return(0)
+        end
+
+        it 'returns false' do
+          expect(subject.retry_failure?).to eq false
+        end
+      end
+
+      context 'when retries max equals retries count' do
+        before do
+          expect(subject).to receive(:retries_max).at_least(:once).and_return(1)
+          expect(subject).to receive(:retries_count).at_least(:once).and_return(1)
+        end
+
+        it 'returns false' do
+          expect(subject.retry_failure?).to eq false
+        end
+      end
+
+      context 'when retries max is higher than retries count' do
+        before do
+          expect(subject).to receive(:retries_max).at_least(:once).and_return(2)
+          expect(subject).to receive(:retries_count).at_least(:once).and_return(1)
+        end
+
+        context 'and retry when is always' do
+          before do
+            expect(subject).to receive(:retry_when).at_least(:once).and_return('always')
+          end
+
+          it 'returns true' do
+            expect(subject.retry_failure?).to eq true
+          end
+        end
+
+        context 'and failure was a system runner failure' do
+          before do
+            expect(subject).to receive(:failure_reason).at_least(:once).and_return('runner_system_failure')
+          end
+
+          context 'and retry when is always' do
+            before do
+              expect(subject).to receive(:retry_when).at_least(:once).and_return('always')
+            end
+
+            it 'returns true' do
+              expect(subject.retry_failure?).to eq true
+            end
+          end
+
+          context 'and retry when is system failure' do
+            before do
+              expect(subject).to receive(:retry_when).at_least(:once).and_return('system failure')
+            end
+
+            it 'returns true' do
+              expect(subject.retry_failure?).to eq true
+            end
+          end
+
+          context 'and retry when is script failure' do
+            before do
+              expect(subject).to receive(:retry_when).at_least(:once).and_return('script failure')
+            end
+
+            it 'returns false' do
+              expect(subject.retry_failure?).to eq false
+            end
+          end
+        end
+
+        context 'and failure was a script failure' do
+          before do
+            expect(subject).to receive(:failure_reason).at_least(:once).and_return('script_failure')
+          end
+
+          context 'and retry when is always' do
+            before do
+              expect(subject).to receive(:retry_when).at_least(:once).and_return('always')
+            end
+
+            it 'returns true' do
+              expect(subject.retry_failure?).to eq true
+            end
+          end
+
+          context 'and retry when is system failure' do
+            before do
+              expect(subject).to receive(:retry_when).at_least(:once).and_return('system failure')
+            end
+
+            it 'returns false' do
+              expect(subject.retry_failure?).to eq false
+            end
+          end
+
+          context 'and retry when is script failure' do
+            before do
+              expect(subject).to receive(:retry_when).at_least(:once).and_return('script failure')
+            end
+
+            it 'returns true' do
+              expect(subject.retry_failure?).to eq true
+            end
+          end
+        end
+
+        context 'and failure was some other failure' do
+          before do
+            expect(subject).to receive(:failure_reason).at_least(:once).and_return('some other reason')
+          end
+
+          context 'and retry when is always' do
+            before do
+              expect(subject).to receive(:retry_when).at_least(:once).and_return('always')
+            end
+
+            it 'returns true' do
+              expect(subject.retry_failure?).to eq true
+            end
+          end
+
+          context 'and retry when is system failure' do
+            before do
+              expect(subject).to receive(:retry_when).at_least(:once).and_return('system failure')
+            end
+
+            it 'returns false' do
+              expect(subject.retry_failure?).to eq false
+            end
+          end
+
+          context 'and retry when is script failure' do
+            before do
+              expect(subject).to receive(:retry_when).at_least(:once).and_return('script failure')
+            end
+
+            it 'returns false' do
+              expect(subject.retry_failure?).to eq false
+            end
+          end
+        end
+      end
+    end
   end
 
   describe '#keep_artifacts!' do
