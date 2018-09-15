@@ -324,20 +324,15 @@ module Ci
 
     def retry_when
       retries = self.options[:retry]
-      retries.is_a?(Hash) && retries.fetch(:when, 'always').to_s || 'always'
+      Array.wrap(
+        retries.is_a?(Hash) && retries.fetch(:when, 'always') || 'always'
+      )
     end
 
     def retry_failure?
       return false if retries_max.zero? || retries_count >= retries_max
 
-      case failure_reason.to_s
-      when 'runner_system_failure'
-        %['always', 'system failure'].include?(retry_when)
-      when 'script_failure'
-        %['always', 'script failure'].include?(retry_when)
-      else
-        retry_when == 'always'
-      end
+      retry_when.include?('always') || retry_when.include?(failure_reason.to_s)
     end
 
     def latest?
