@@ -1229,7 +1229,7 @@ rspec:
 ```
 
 The collected JUnit reports will be uploaded to GitLab as an artifact and will
-be automatically [shown in merge requests](../junit_test_reports.md).
+be automatically shown in merge requests.
 
 For more examples, see [JUnit test reports](../junit_test_reports.md).
 
