@@ -31,7 +31,9 @@ credentials will need to be provided for authorization. Support is available for
 [personal access tokens](../../profile/personal_access_tokens.md) and
 [CI job tokens](https://docs.gitlab.com/ee/ci/variables/#predefined-variables-environment-variables).
 
-To authenticate with one of these tokens, add a corresponding section to your
+### Authenticating with a Personal Access Token
+
+To authenticate with a Personal Access Token, add a corresponding section to your
    [`settings.xml`](https://maven.apache.org/settings.html) file:
 
     ```xml
@@ -43,7 +45,7 @@ To authenticate with one of these tokens, add a corresponding section to your
             <httpHeaders>
               <property>
                 <name>Private-Token</name>
-                <value>REPLACE_WITH_YOUR_DESIRED_TOKEN</value>
+                <value>REPLACE_WITH_YOUR_PERSONAL_ACCESS_TOKEN</value>
               </property>
             </httpHeaders>
           </configuration>
@@ -51,7 +53,33 @@ To authenticate with one of these tokens, add a corresponding section to your
       </servers>
     </settings>
     ```
+    
+You should now be able to upload Maven artifacts to your project.
 
+
+### Authenticating with a CI Job Token
+
+To authenticate with a CI Job Token, add a corresponding section to your
+   [`settings.xml`](https://maven.apache.org/settings.html) file:
+
+    ```xml
+    <settings>
+      <servers>
+        <server>
+          <id>gitlab-maven</id>
+          <configuration>
+            <httpHeaders>
+              <property>
+                <name>Job-Token</name>
+                <value>REPLACE_WITH_YOUR_CI_JOB_TOKEN</value>
+              </property>
+            </httpHeaders>
+          </configuration>
+        </server>
+      </servers>
+    </settings>
+    ```
+    
 You should now be able to upload Maven artifacts to your project.
 
 ## Configuring your project to use the GitLab Maven repository URL
