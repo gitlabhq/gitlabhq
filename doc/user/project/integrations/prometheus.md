@@ -117,11 +117,9 @@ To specify a variable in a query, enclose it in curly braces with a leading perc
 
 ### Setting up alerts for Prometheus metrics **[ULTIMATE]**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6590) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2 for [custom metrics](#adding-additional-metrics).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6590) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2 for [custom metrics](#adding-additional-metrics), and 11.3 for [library metrics](https://docs.gitlab.com/ee/user/project/integrations/prometheus_library/metrics.html).
 
-Alerts can be configured for [custom metrics](#adding-additional-metrics) directly in the performance dashboard. 
-Metrics from the [Metric Library](prometheus_library/metrics.md) 
-will be supported in an [upcoming release](https://gitlab.com/gitlab-org/gitlab-ee/issues/6948).
+Alerts can be configured for [metricss](#adding-additional-metrics) directly in the performance dashboard. 
 
 To set an alert, click on the alarm icon in the top right corner of the metric you want to create the alert for. A dropdown 
 will appear, with options to set the threshold and operator. Click **Add** to save and activate the alert.
