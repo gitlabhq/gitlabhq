@@ -635,7 +635,7 @@ class User < ActiveRecord::Base
   # possibility of the commit_email column not existing.
 
   def commit_email
-    return unless has_attribute?(:commit_email)
+    return self.email unless has_attribute?(:commit_email)
 
     # The commit email is the same as the primary email if undefined
     super.presence || self.email
