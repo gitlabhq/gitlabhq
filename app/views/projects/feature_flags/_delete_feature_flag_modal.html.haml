@@ -1,0 +1,21 @@
+.modal{ id: "delete-feature-flag-modal-#{feature_flag.id}",
+  tabindex: -1,
+  role: 'dialog' }
+  .modal-dialog{ role: 'document' }
+    .modal-content
+      .modal-header
+        %h5.modal-title
+          = s_('FeatureFlags|Delete feature flag?')
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: _('Close') } }
+          %span{ "aria-hidden": true } &times;
+      .modal-body
+        %p
+          = s_('FeatureFlags|Feature flag %{feature_flag_name} will be removed. Are you sure?') % { feature_flag_name: feature_flag.name }
+      .modal-footer
+        %button{ type: 'button', data: { dismiss: 'modal' }, class: 'btn btn-default' } Cancel
+
+        = button_to 'Delete',
+          project_feature_flag_path(@project, feature_flag),
+          title: 'Delete',
+          method: :delete,
+          class: 'btn btn-remove'
