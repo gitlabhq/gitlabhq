@@ -27,14 +27,19 @@ const weightConditions = [
   },
 ];
 
-const IssuableFilteredSearchTokenKeysEE = new FilteredSearchTokenKeys(
+/**
+ * Filter tokens for issues in EE.
+ *
+ * @type {FilteredSearchTokenKeys}
+ */
+const IssuesFilteredSearchTokenKeysEE = new FilteredSearchTokenKeys(
   [...tokenKeys, weightTokenKey],
   alternativeTokenKeys,
   [...conditions, ...weightConditions],
 );
 
 // cannot be an arrow function because it needs FilteredSearchTokenKeys instance
-IssuableFilteredSearchTokenKeysEE.init = function init(availableFeatures) {
+IssuesFilteredSearchTokenKeysEE.init = function init(availableFeatures) {
   // Enable multiple assignees when available
   if (availableFeatures && availableFeatures.multipleAssignees) {
     const assigneeTokenKey = this.tokenKeys.find(tk => tk.key === 'assignee');
@@ -43,4 +48,4 @@ IssuableFilteredSearchTokenKeysEE.init = function init(availableFeatures) {
   }
 };
 
-export default IssuableFilteredSearchTokenKeysEE;
+export default IssuesFilteredSearchTokenKeysEE;

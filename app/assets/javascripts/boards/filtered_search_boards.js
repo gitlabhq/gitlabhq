@@ -1,4 +1,4 @@
-import IssuableFilteredSearchTokenKeysEE from 'ee/filtered_search/issuable_filtered_search_token_keys';
+import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
 import FilteredSearchContainer from '../filtered_search/container';
 import FilteredSearchManager from '../filtered_search/filtered_search_manager';
 
@@ -9,7 +9,7 @@ export default class FilteredSearchBoards extends FilteredSearchManager {
       isGroupDecendent: true,
       stateFiltersSelector: '.issues-state-filters',
       isGroup: true,
-      filteredSearchTokenKeys: IssuableFilteredSearchTokenKeysEE,
+      filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
     });
 
     this.store = store;
