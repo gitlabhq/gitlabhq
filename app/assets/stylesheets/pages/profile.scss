@@ -279,6 +279,10 @@ table.u2f-registrations {
   }
 }
 
+.codes {
+  padding-top: 14px;
+}
+
 .oauth-application-show {
   .scope-name {
     font-weight: $gl-font-weight-bold;
