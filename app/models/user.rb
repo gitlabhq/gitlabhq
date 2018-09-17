@@ -21,8 +21,11 @@ class User < ActiveRecord::Base
   include WithUploads
   include OptionallySearch
   include FromUnion
+<<<<<<< HEAD
 
   prepend EE::User
+=======
+>>>>>>> upstream/master
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -364,10 +367,13 @@ class User < ActiveRecord::Base
       emails = emails.confirmed if confirmed
 
       from_union([users, emails])
+<<<<<<< HEAD
     end
 
     def existing_member?(email)
       User.where(email: email).any? || Email.where(email: email).any?
+=======
+>>>>>>> upstream/master
     end
 
     def filter(filter_name)

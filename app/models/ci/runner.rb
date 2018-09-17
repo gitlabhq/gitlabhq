@@ -8,7 +8,10 @@ module Ci
     include RedisCacheable
     include ChronicDurationAttribute
     include FromUnion
+<<<<<<< HEAD
     prepend EE::Ci::Runner
+=======
+>>>>>>> upstream/master
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     ONLINE_CONTACT_TIMEOUT = 1.hour

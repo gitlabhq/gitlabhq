@@ -2,7 +2,10 @@
 
 class ProjectAuthorization < ActiveRecord::Base
   include FromUnion
+<<<<<<< HEAD
   prepend ::EE::ProjectAuthorization
+=======
+>>>>>>> upstream/master
 
   belongs_to :user
   belongs_to :project
