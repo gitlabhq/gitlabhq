@@ -24,35 +24,67 @@ You should then be able to see the **Packages** section on the left sidebar.
 Next, you must configure your project to authorize with the GitLab Maven
 repository.
 
-## Authorizing with the GitLab Maven repository
+## Authenticating to the GitLab Maven repository
 
 If a project is private or you want to upload Maven artifacts to GitLab,
-credentials will need to be provided for authorization:
+credentials will need to be provided for authorization. Support is available for
+[personal access tokens](#authenticating-with-a-personal-access-token) and
+[CI job tokens](##authenticating-with-a-ci-job-token).
 
-1. Create a new [personal access token](../../profile/personal_access_tokens.md)
-   with the `api` scope.
-1. Add a corresponding section to your
-   [`settings.xml`](https://maven.apache.org/settings.html) file:
+### Authenticating with a personal access token
 
-    ```xml
-    <settings>
-      <servers>
-        <server>
-          <id>gitlab-maven</id>
-          <configuration>
-            <httpHeaders>
-              <property>
-                <name>Private-Token</name>
-                <value>REPLACE_WITH_YOUR_PERSONAL_ACCESS_TOKEN</value>
-              </property>
-            </httpHeaders>
-          </configuration>
-        </server>
-      </servers>
-    </settings>
-    ```
+To authenticate with a [personal access token](../../profile/personal_access_tokens.md),
+add a corresponding section to your
+[`settings.xml`](https://maven.apache.org/settings.html) file:
+
+```xml
+<settings>
+  <servers>
+    <server>
+      <id>gitlab-maven</id>
+      <configuration>
+        <httpHeaders>
+          <property>
+            <name>Private-Token</name>
+            <value>REPLACE_WITH_YOUR_PERSONAL_ACCESS_TOKEN</value>
+          </property>
+        </httpHeaders>
+      </configuration>
+    </server>
+  </servers>
+</settings>
+```
 
 You should now be able to upload Maven artifacts to your project.
+
+### Authenticating with a CI job token
+
+If you're using Maven with GitLab CI/CD, a CI job token can be used instead
+of a personal access token.
+
+To authenticate with a CI job token, add a corresponding section to your
+[`settings.xml`](https://maven.apache.org/settings.html) file:
+
+```xml
+<settings>
+  <servers>
+    <server>
+      <id>gitlab-maven</id>
+      <configuration>
+        <httpHeaders>
+          <property>
+            <name>Job-Token</name>
+            <value>CI_JOB_TOKEN</value>
+          </property>
+        </httpHeaders>
+      </configuration>
+    </server>
+  </servers>
+</settings>
+```
+
+You can read more on
+[how to create Maven packages using GitLab CI/CD](#creating-maven-packages-with-gitlab-ci-cd).
 
 ## Configuring your project to use the GitLab Maven repository URL
 
