@@ -350,13 +350,13 @@ describe('DiffsStoreUtils', () => {
 
     it('returns true when the discussion is up to date', () => {
       expect(
-        utils.isDiscussionApplicableToLine(discussions.upToDateDiscussion1, diffPosition),
+        utils.isDiscussionApplicableToLine(discussions.upToDateDiscussion1, diffPosition, true),
       ).toBe(true);
     });
 
     it('returns false when the discussion is not up to date', () => {
       expect(
-        utils.isDiscussionApplicableToLine(discussions.outDatedDiscussion1, diffPosition),
+        utils.isDiscussionApplicableToLine(discussions.outDatedDiscussion1, diffPosition, true),
       ).toBe(false);
     });
 
@@ -366,10 +366,14 @@ describe('DiffsStoreUtils', () => {
       delete discussion.position;
 
       expect(
-        utils.isDiscussionApplicableToLine(discussion, {
-          ...diffPosition,
-          lineCode: 'ABC_1',
-        }),
+        utils.isDiscussionApplicableToLine(
+          discussion,
+          {
+            ...diffPosition,
+            lineCode: 'ABC_1',
+          },
+          true,
+        ),
       ).toBe(false);
     });
 
@@ -379,11 +383,32 @@ describe('DiffsStoreUtils', () => {
       delete discussion.position;
 
       expect(
-        utils.isDiscussionApplicableToLine(discussion, {
-          ...diffPosition,
-          lineCode: 'ABC_1',
-        }),
+        utils.isDiscussionApplicableToLine(
+          discussion,
+          {
+            ...diffPosition,
+            lineCode: 'ABC_1',
+          },
+          true,
+        ),
       ).toBe(true);
+    });
+
+    it('returns false when not latest diff', () => {
+      const discussion = { ...discussions.outDatedDiscussion1, line_code: 'ABC_1', active: true };
+      delete discussion.original_position;
+      delete discussion.position;
+
+      expect(
+        utils.isDiscussionApplicableToLine(
+          discussion,
+          {
+            ...diffPosition,
+            lineCode: 'ABC_1',
+          },
+          false,
+        ),
+      ).toBe(false);
     });
   });
 });
