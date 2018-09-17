@@ -753,6 +753,34 @@ describe Geo::ProjectRegistry do
     end
   end
 
+  describe '#reset_checksum!' do
+    it 'resets repository/wiki verification state' do
+      subject.update!(
+        repository_verification_checksum_sha: 'abc123',
+        wiki_verification_checksum_sha: 'abc123',
+        repository_checksum_mismatch: true,
+        wiki_checksum_mismatch: true,
+        last_repository_verification_failure: 'foo',
+        last_wiki_verification_failure: 'foo',
+        repository_verification_retry_count: 1,
+        wiki_verification_retry_count: 1
+      )
+
+      subject.reset_checksum!
+
+      expect(subject).to have_attributes(
+        repository_verification_checksum_sha: nil,
+        wiki_verification_checksum_sha: nil,
+        repository_checksum_mismatch: false,
+        wiki_checksum_mismatch: false,
+        last_repository_verification_failure: nil,
+        last_wiki_verification_failure: nil,
+        repository_verification_retry_count: nil,
+        wiki_verification_retry_count: nil
+      )
+    end
+  end
+
   describe '#repository_verification_pending?' do
     it 'returns true when outdated' do
       registry = create(:geo_project_registry, :repository_verification_outdated)

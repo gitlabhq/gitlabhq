@@ -160,6 +160,21 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     )
   end
 
+  # Resets repository/wiki verification state. Is called when a Geo
+  # secondary node process a Geo::ResetChecksymEvent.
+  def reset_checksum!
+    update!(
+      repository_verification_checksum_sha: nil,
+      wiki_verification_checksum_sha: nil,
+      repository_checksum_mismatch: false,
+      wiki_checksum_mismatch: false,
+      last_repository_verification_failure: nil,
+      last_wiki_verification_failure: nil,
+      repository_verification_retry_count: nil,
+      wiki_verification_retry_count: nil
+    )
+  end
+
   def repository_sync_due?(scheduled_time)
     never_synced_repository? || repository_sync_needed?(scheduled_time)
   end
