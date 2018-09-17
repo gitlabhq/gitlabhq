@@ -44,10 +44,10 @@ export const fetchDiscussions = ({ commit }, path) =>
       commit(types.SET_INITIAL_DISCUSSIONS, discussions);
     });
 
-export const updateDiscussion = ({ commit }, discussion) => {
+export const updateDiscussion = ({ commit, state }, discussion) => {
   commit(types.UPDATE_DISCUSSION, discussion);
 
-  return discussion;
+  return utils.findNoteObjectById(state.discussions, discussion.id);
 };
 
 export const deleteNote = ({ commit, dispatch }, note) =>

@@ -3687,9 +3687,6 @@ msgstr ""
 msgid "MergeRequests|Toggle comments for this file"
 msgstr ""
 
-msgid "MergeRequests|Updating discussions failed"
-msgstr ""
-
 msgid "MergeRequests|View file @ %{commitId}"
 msgstr ""
 
