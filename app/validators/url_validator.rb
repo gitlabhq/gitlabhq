@@ -41,11 +41,12 @@ class UrlValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
     @record = record
 
-    if value.present?
-      value.strip!
-    else
+    unless value.present?
       record.errors.add(attribute, 'must be a valid URL')
+      return
     end
+
+    value = strip_value!(record, attribute, value)
 
     Gitlab::UrlBlocker.validate!(value, blocker_args)
   rescue Gitlab::UrlBlocker::BlockedUrlError => e
@@ -53,6 +54,13 @@ class UrlValidator < ActiveModel::EachValidator
   end
 
   private
+
+  def strip_value!(record, attribute, value)
+    new_value = value.strip
+    return value if new_value == value
+
+    record.public_send("#{attribute}=", new_value) # rubocop:disable GitlabSecurity/PublicSend
+  end
 
   def default_options
     # By default the validator doesn't block any url based on the ip address
