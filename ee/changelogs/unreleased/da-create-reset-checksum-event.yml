@@ -1,0 +1,5 @@
+---
+title: Geo - Add an event to reset checksums on Geo secondary nodes
+merge_request: 7394
+author:
+type: added
