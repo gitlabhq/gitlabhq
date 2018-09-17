@@ -24,7 +24,7 @@ describe Projects::CreateService, '#execute' do
         stub_licensed_features(ci_cd_projects: true)
       end
 
-      it 'calls the service to setup CI/CD on the project' do
+      it 'calls the service to set up CI/CD on the project' do
         expect(CiCd::SetupProject).to receive_message_chain(:new, :execute)
 
         create_project(user, opts)
@@ -36,7 +36,7 @@ describe Projects::CreateService, '#execute' do
         stub_licensed_features(ci_cd_projects: false)
       end
 
-      it "doesn't call the service to setup CI/CD on the project" do
+      it "doesn't call the service to set up CI/CD on the project" do
         expect(CiCd::SetupProject).not_to receive(:new)
 
         create_project(user, opts)

@@ -33,7 +33,7 @@ describe Gitlab::LegacyGithubImport::ProjectCreator do
         expect { service.execute(params) }.to change(Project, :count).by(1)
       end
 
-      it 'calls the service to setup the project' do
+      it 'calls the service to set up the project' do
         expect(CiCd::SetupProject).to receive_message_chain(:new, :execute)
 
         service.execute(params)

@@ -18,7 +18,7 @@ describe API::Projects do
         }
       end
 
-      it 'creates new project with pull mirroring setup' do
+      it 'creates new project with pull mirroring set up' do
         post api('/projects', user), mirror_params
 
         expect(response).to have_gitlab_http_status(201)
@@ -195,7 +195,7 @@ describe API::Projects do
         )
       end
 
-      it 'updates project without mirror attributes when the project is unable to setup repository mirroring' do
+      it 'updates project without mirror attributes when the project is unable to set up repository mirroring' do
         stub_licensed_features(repository_mirrors: false)
 
         put(api("/projects/#{project.id}", user), mirror_params)
