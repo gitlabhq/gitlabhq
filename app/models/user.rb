@@ -149,9 +149,9 @@ class User < ActiveRecord::Base
   has_many :callouts, class_name: 'UserCallout'
   has_many :term_agreements
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
-  belongs_to :user_preference
 
   has_one :status, class_name: 'UserStatus'
+  has_one :user_preference
 
   #
   # Validations
@@ -225,8 +225,9 @@ class User < ActiveRecord::Base
   enum project_view: [:readme, :activity, :files]
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
-  delegate :set_discussion_filter, to: :user_preference
+  delegate :get_discussion_filter, to: :user_preference
   delegate :discussion_filter, to: :user_preference
+  delegate :set_discussion_filter, to: :user_preference
 
   state_machine :state, initial: :active do
     event :block do
@@ -1385,7 +1386,7 @@ class User < ActiveRecord::Base
   end
 
   def set_user_preference
-    return unless has_attribute?(:user_preference_id) && user_preference_id.nil?
+    return if user_preference.present?
 
     if persisted?
       create_user_preference

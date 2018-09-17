@@ -9,15 +9,19 @@ class CreateUserPreferences < ActiveRecord::Migration
 
   def change
     create_table :user_preferences do |t|
-      t.timestamps_with_timezone null: false
+      t.references :user,
+                   null: false,
+                   index: { unique: true }, foreign_key: { on_delete: :cascade }
 
       t.integer :issue_discussion_filter, index: true,
         default: UserPreference::DISCUSSION_FILTERS[:all_activity],
-        null: false
+        null: false, limit: 2
 
       t.integer :merge_request_discussion_filter, index: true,
         default: UserPreference::DISCUSSION_FILTERS[:all_activity],
-        null: false
+        null: false, limit: 2
+
+      t.timestamps_with_timezone null: false
     end
   end
 end

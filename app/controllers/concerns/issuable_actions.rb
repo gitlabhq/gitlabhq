@@ -111,9 +111,8 @@ module IssuableActions
 
   def discussion_filter
     discussion_filter_param = params.fetch(:discussion_filter, current_user&.discussion_filter(issuable))
-    discussion_filter = current_user&.set_discussion_filter(discussion_filter_param, issuable)
 
-    notes = issuable.notes
+    current_user&.set_discussion_filter(discussion_filter_param, issuable)
   end
 
   def discussion_serializer
