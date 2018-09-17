@@ -17,7 +17,8 @@ module API
         blobs: Entities::Blob,
         wiki_blobs: Entities::Blob,
         snippet_titles: Entities::Snippet,
-        snippet_blobs: Entities::Snippet
+        snippet_blobs: Entities::Snippet,
+        users: Entities::UserBasic
       }.freeze
 
       def search(additional_params = {})

@@ -77,6 +77,16 @@ describe API::Search do
         it_behaves_like 'response is correct', schema: 'public_api/v4/milestones'
       end
 
+      context 'for users scope' do
+        before do
+          create(:user, name: 'billy')
+
+          get api('/search', user), scope: 'users', search: 'billy'
+        end
+
+        it_behaves_like 'response is correct', schema: 'public_api/v4/user/basics'
+      end
+
       context 'for snippet_titles scope' do
         before do
           create(:snippet, :public, title: 'awesome snippet', content: 'snippet content')
@@ -192,6 +202,28 @@ describe API::Search do
 
         it_behaves_like 'response is correct', schema: 'public_api/v4/milestones'
       end
+
+      context 'for user scope' do
+        before do
+          user = create(:user, name: 'billy')
+          create(:group_member, :developer, user: user, group: group)
+
+          get api("/groups/#{group.id}/search", user), scope: 'users', search: 'billy'
+        end
+
+        it_behaves_like 'response is correct', schema: 'public_api/v4/user/basics'
+      end
+
+      context 'for users scope with group path as id' do
+        before do
+          user1 = create(:user, name: 'billy')
+          create(:group_member, :developer, user: user1, group: group)
+
+          get api("/groups/#{CGI.escape(group.full_path)}/search", user), scope: 'users', search: 'billy'
+        end
+
+        it_behaves_like 'response is correct', schema: 'public_api/v4/user/basics'
+      end
     end
   end
 
@@ -267,6 +299,17 @@ describe API::Search do
         end
 
         it_behaves_like 'response is correct', schema: 'public_api/v4/milestones'
+      end
+
+      context 'for users scope' do
+        before do
+          user1 = create(:user, name: 'billy')
+          create(:project_member, :developer, user: user1, project: project)
+
+          get api("/projects/#{project.id}/search", user), scope: 'users', search: 'billy'
+        end
+
+        it_behaves_like 'response is correct', schema: 'public_api/v4/user/basics'
       end
 
       context 'for notes scope' do
