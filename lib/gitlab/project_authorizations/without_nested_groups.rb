@@ -24,11 +24,9 @@ module Gitlab
           user.groups.joins(:shared_projects).select_for_project_authorization
         ]
 
-        union = Gitlab::SQL::Union.new(relations)
-
         ProjectAuthorization
           .unscoped
-          .select_from_union(union)
+          .select_from_union(relations)
       end
     end
   end

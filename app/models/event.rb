@@ -3,6 +3,7 @@
 class Event < ActiveRecord::Base
   include Sortable
   include IgnorableColumn
+  include FromUnion
   default_scope { reorder(nil) }
 
   CREATED   = 1
