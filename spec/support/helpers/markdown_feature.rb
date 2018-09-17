@@ -10,6 +10,12 @@
 class MarkdownFeature
   include FactoryBot::Syntax::Methods
 
+  attr_reader :fixture_path
+
+  def initialize(fixture_path = Rails.root.join('spec/fixtures/markdown.md.erb'))
+    @fixture_path = fixture_path
+  end
+
   def user
     @user ||= create(:user)
   end
@@ -79,14 +85,6 @@ class MarkdownFeature
     @group_milestone ||= create(:milestone, name: 'group-milestone', group: group)
   end
 
-  def epic
-    @epic ||= create(:epic, title: 'epic', group: group)
-  end
-
-  def epic_other_group
-    @epic ||= create(:epic, title: 'epic')
-  end
-
   # Cross-references -----------------------------------------------------------
 
   def xproject
@@ -130,7 +128,7 @@ class MarkdownFeature
   end
 
   def raw_markdown
-    markdown = File.read(Rails.root.join('spec/fixtures/markdown.md.erb'))
+    markdown = File.read(fixture_path)
     ERB.new(markdown).result(binding)
   end
 end

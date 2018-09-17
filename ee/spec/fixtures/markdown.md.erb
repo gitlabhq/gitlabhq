@@ -1,0 +1,9 @@
+# EE-specific GitLab Markdown
+
+## EpicReferenceFilter
+
+- Epic by ID: <%= epic.to_reference %>
+- Epic in another group: <%= epic_other_group.to_reference(group) %>
+- Epic by url: <%= urls.group_epic_url(epic.group, epic) %>
+- Link to epic by reference: [Epic](<%= epic.to_reference(group) %>)
+- Link to epic by URL: [Epic](<%= urls.group_epic_url(epic.group, epic) %>)
