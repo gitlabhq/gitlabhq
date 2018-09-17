@@ -42,7 +42,7 @@ describe API::Issues, :mailer do
   describe "POST /projects/:id/issues" do
     it 'creates a new project issue' do
       post api("/projects/#{project.id}/issues", user),
-        title: 'new issue', labels: 'label, label2', weight: 3,
+        title: 'new issue', labels: 'label, label2', weight: 101,
         assignee_ids: [user2.id]
 
       expect(response).to have_gitlab_http_status(201)
@@ -50,7 +50,7 @@ describe API::Issues, :mailer do
       expect(json_response['description']).to be_nil
       expect(json_response['labels']).to eq(%w(label label2))
       expect(json_response['confidential']).to be_falsy
-      expect(json_response['weight']).to eq(3)
+      expect(json_response['weight']).to eq(101)
       expect(json_response['assignee']['name']).to eq(user2.name)
       expect(json_response['assignees'].first['name']).to eq(user2.name)
     end
@@ -58,10 +58,10 @@ describe API::Issues, :mailer do
 
   describe 'PUT /projects/:id/issues/:issue_id to update weight' do
     it 'updates an issue with no weight' do
-      put api("/projects/#{project.id}/issues/#{issue.iid}", user), weight: 5
+      put api("/projects/#{project.id}/issues/#{issue.iid}", user), weight: 101
 
       expect(response).to have_gitlab_http_status(200)
-      expect(json_response['weight']).to eq(5)
+      expect(json_response['weight']).to eq(101)
     end
 
     it 'removes a weight from an issue' do
@@ -77,14 +77,7 @@ describe API::Issues, :mailer do
       put api("/projects/#{project.id}/issues/#{issue.iid}", user), weight: -1
 
       expect(response).to have_gitlab_http_status(400)
-      expect(json_response['error']).to eq('weight does not have a valid value')
-    end
-
-    it 'returns 400 if weight is more than maximum weight' do
-      put api("/projects/#{project.id}/issues/#{issue.iid}", user), weight: 10
-
-      expect(response).to have_gitlab_http_status(400)
-      expect(json_response['error']).to eq('weight does not have a valid value')
+      expect(json_response['message']['weight']).to be_present
     end
 
     it 'adds a note when the weight is changed' do

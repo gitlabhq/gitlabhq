@@ -82,10 +82,6 @@ module EE
         end
       end
 
-      def weight_filter_options
-        WEIGHT_RANGE.to_a
-      end
-
       def weight_options
         [WEIGHT_NONE] + WEIGHT_RANGE.to_a
       end
