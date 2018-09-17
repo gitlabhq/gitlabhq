@@ -1,8 +1,8 @@
-import IssuesFilteredSearchTokenKeys from '~/filtered_search/issues_filtered_search_token_keys';
+import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
 import FilteredSearchTokenizer from '~/filtered_search/filtered_search_tokenizer';
 
 describe('Filtered Search Tokenizer', () => {
-  const allowedKeys = IssuesFilteredSearchTokenKeys.getKeys();
+  const allowedKeys = IssuableFilteredSearchTokenKeys.getKeys();
 
   describe('processTokens', () => {
     it('returns for input containing only search value', () => {

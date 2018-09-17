@@ -1,7 +1,7 @@
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 import RecentSearchesServiceError from '~/filtered_search/services/recent_searches_service_error';
 import RecentSearchesRoot from '~/filtered_search/recent_searches_root';
-import IssuesFilteredSearchTokenKeys from '~/filtered_search/issues_filtered_search_token_keys';
+import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
 import '~/lib/utils/common_utils';
 import DropdownUtils from '~/filtered_search/dropdown_utils';
 import FilteredSearchVisualTokens from '~/filtered_search/filtered_search_visual_tokens';
@@ -86,7 +86,7 @@ describe('Filtered Search Manager', function () {
       expect(RecentSearchesService.isAvailable).toHaveBeenCalled();
       expect(RecentSearchesStoreSpy).toHaveBeenCalledWith({
         isLocalStorageAvailable,
-        allowedKeys: IssuesFilteredSearchTokenKeys.getKeys(),
+        allowedKeys: IssuableFilteredSearchTokenKeys.getKeys(),
       });
     });
   });

@@ -3,7 +3,7 @@ import {
   tokenKeys,
   alternativeTokenKeys,
   conditions,
-} from '~/filtered_search/issues_filtered_search_token_keys';
+} from '~/filtered_search/issuable_filtered_search_token_keys';
 
 const weightTokenKey = {
   key: 'weight',
@@ -27,6 +27,11 @@ const weightConditions = [
   },
 ];
 
+/**
+ * Filter tokens for issues in EE.
+ *
+ * @type {FilteredSearchTokenKeys}
+ */
 const IssuesFilteredSearchTokenKeysEE = new FilteredSearchTokenKeys(
   [...tokenKeys, weightTokenKey],
   alternativeTokenKeys,

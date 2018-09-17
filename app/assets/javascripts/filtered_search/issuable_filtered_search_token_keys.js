@@ -71,7 +71,7 @@ export const conditions = [{
   value: 'none',
 }];
 
-const IssuesFilteredSearchTokenKeys =
+const IssuableFilteredSearchTokenKeys =
   new FilteredSearchTokenKeys(tokenKeys, alternativeTokenKeys, conditions);
 
-export default IssuesFilteredSearchTokenKeys;
+export default IssuableFilteredSearchTokenKeys;

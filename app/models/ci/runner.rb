@@ -32,6 +32,12 @@ module Ci
     scope :active, -> { where(active: true) }
     scope :paused, -> { where(active: false) }
     scope :online, -> { where('contacted_at > ?', contact_time_deadline) }
+    # The following query using negation is cheaper than using `contacted_at <= ?`
+    # because there are less runners online than have been created. The
+    # resulting query is quickly finding online ones and then uses the regular
+    # indexed search and rejects the ones that are in the previous set. If we
+    # did `contacted_at <= ?` the query would effectively have to do a seq
+    # scan.
     scope :offline, -> { where.not(id: online) }
     scope :ordered, -> { order(id: :desc) }
 
@@ -66,6 +72,9 @@ module Ci
         .where.not("ci_runners.id IN (#{project.runners.select(:id).to_sql})")
         .project_type
     end
+
+    scope :order_contacted_at_asc, -> { order(contacted_at: :asc) }
+    scope :order_created_at_desc, -> { order(created_at: :desc) }
 
     validate :tag_constraints
     validates :access_level, presence: true
@@ -117,6 +126,14 @@ module Ci
 
     def self.contact_time_deadline
       ONLINE_CONTACT_TIMEOUT.ago
+    end
+
+    def self.order_by(order)
+      if order == 'contacted_asc'
+        order_contacted_at_asc
+      else
+        order_created_at_desc
+      end
     end
 
     def set_default_values

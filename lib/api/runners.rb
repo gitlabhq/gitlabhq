@@ -14,7 +14,7 @@ module API
         use :pagination
       end
       get do
-        runners = filter_runners(current_user.ci_owned_runners, params[:scope], only: Ci::Runner::AVAILABLE_STATUSES)
+        runners = filter_runners(current_user.ci_owned_runners, params[:scope], allowed_scopes: Ci::Runner::AVAILABLE_STATUSES)
         present paginate(runners), with: Entities::Runner
       end
 
@@ -160,12 +160,10 @@ module API
     end
 
     helpers do
-      def filter_runners(runners, scope, only: nil)
+      def filter_runners(runners, scope, allowed_scopes: ::Ci::Runner::AVAILABLE_SCOPES)
         return runners unless scope.present?
 
-        available_scopes = only || ::Ci::Runner::AVAILABLE_SCOPES
-
-        unless available_scopes.include?(scope)
+        unless allowed_scopes.include?(scope)
           render_api_error!('Scope contains invalid value', 400)
         end
 
