@@ -7,7 +7,7 @@
   .form-group.project-name.col-sm-12
     = f.label :name, class: 'label-bold' do
       %span= _("Project name")
-    = f.text_field :name, placeholder: "My awesome project", class: "form-control input-lg", autofocus: true, required: true
+    = f.text_field :name, placeholder: "My awesome project", class: "form-control input-lg", autofocus: true
   .form-group.project-path.col-sm-6
     = f.label :namespace_id, class: 'label-bold' do
       %span= s_("Project URL")
