@@ -1,6 +1,8 @@
 .card
   .card-header
-    Feature flags (#{@feature_flags.count})
+    Feature flags
+    .badge.badge-pill
+      = @feature_flags.count
   %ul.content-list.pages-domain-list
     - @feature_flags.each do |feature_flag|
       %li.pages-domain-list-item.unstyled
