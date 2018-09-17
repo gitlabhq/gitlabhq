@@ -3,10 +3,8 @@ require 'active_support/hash_with_indifferent_access'
 require 'active_support/dependencies'
 
 require_dependency 'gitlab'
-<<<<<<< HEAD
+
 require_dependency Gitlab.root.join('ee/spec/support/helpers/ee/stub_configuration')
-=======
->>>>>>> upstream/master
 
 module StubConfiguration
   prepend EE::StubConfiguration
