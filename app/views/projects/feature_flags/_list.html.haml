@@ -14,8 +14,10 @@
           = feature_flag.name
 
           %div.controls.d-none.d-md-block
+            = render 'delete_feature_flag_modal', { feature_flag: feature_flag }
             = link_to 'Edit', edit_project_feature_flag_path(@project, feature_flag), class: "btn btn-sm btn-grouped"
-            = link_to 'Remove', project_feature_flag_path(@project, feature_flag), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove btn-sm btn-grouped"
+            %button.btn.btn-remove.btn-sm.btn-grouped{ type: 'button', data: { toggle: 'modal', target: "#delete-feature-flag-modal-#{feature_flag.id}" } }
+              Remove
 
           %p
             - if feature_flag.active?
