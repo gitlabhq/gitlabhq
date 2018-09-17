@@ -128,7 +128,7 @@ GEM
     coderay (1.1.2)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
-    commonmarker (0.17.8)
+    commonmarker (0.17.13)
       ruby-enum (~> 0.5)
     concord (0.1.5)
       adamantium (~> 0.2.0)
