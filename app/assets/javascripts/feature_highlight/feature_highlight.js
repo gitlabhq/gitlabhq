@@ -16,7 +16,7 @@ export function setupFeatureHighlightPopover(id, debounceTimeout = 300) {
   const hideOnScroll = togglePopover.bind($selector, false);
 
   $selector
-    // Setup popover
+    // Set up popover
     .data('content', $popoverContent.prop('outerHTML'))
     .popover({
       html: true,

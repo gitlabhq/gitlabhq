@@ -18,7 +18,7 @@ export default class GLForm {
     });
     // Before we start, we should clean up any previous data for this form
     this.destroy();
-    // Setup the form
+    // Set up the form
     this.setupForm();
     this.form.data('glForm', this);
   }
