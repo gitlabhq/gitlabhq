@@ -188,7 +188,7 @@ class ProjectWiki
     Gitlab::Git::Wiki::CommitDetails.new(@user.id,
                                          @user.username,
                                          @user.name,
-                                         @user.email,
+                                         @user.commit_email,
                                          commit_message)
   end
 

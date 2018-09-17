@@ -2,12 +2,13 @@
 require "spec_helper"
 
 describe ProjectWiki do
-  let(:project) { create(:project, :wiki_repo) }
+  let(:user) { create(:user, :commit_email) }
+  let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
   let(:repository) { project.repository }
-  let(:user) { project.owner }
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:project_wiki) { described_class.new(project, user) }
   let(:raw_repository) { Gitlab::Git::Repository.new(project.repository_storage, subject.disk_path + '.git', 'foo') }
+  let(:commit) { project_wiki.repository.head_commit }
 
   subject { project_wiki }
 
@@ -276,6 +277,13 @@ describe ProjectWiki do
         expect(subject.pages.first.page.version.message).to eq("commit message")
       end
 
+      it 'sets the correct commit email' do
+        subject.create_page('test page', 'content')
+
+        expect(commit.author_email).to eq(user.commit_email)
+        expect(commit.committer_email).to eq(user.commit_email)
+      end
+
       it 'updates project activity' do
         subject.create_page('Test Page', 'This is content')
 
@@ -320,6 +328,11 @@ describe ProjectWiki do
       expect(@page.version.message).to eq("updated page")
     end
 
+    it 'sets the correct commit email' do
+      expect(commit.author_email).to eq(user.commit_email)
+      expect(commit.committer_email).to eq(user.commit_email)
+    end
+
     it 'updates project activity' do
       subject.update_page(
         @gitlab_git_wiki_page,
@@ -345,6 +358,13 @@ describe ProjectWiki do
       it "deletes the page" do
         subject.delete_page(@page)
         expect(subject.pages.count).to eq(0)
+      end
+
+      it 'sets the correct commit email' do
+        subject.delete_page(@page)
+
+        expect(commit.author_email).to eq(user.commit_email)
+        expect(commit.committer_email).to eq(user.commit_email)
       end
 
       it 'updates project activity' do
@@ -420,7 +440,7 @@ describe ProjectWiki do
   end
 
   def commit_details
-    Gitlab::Git::Wiki::CommitDetails.new(user.id, user.username, user.name, user.email, "test commit")
+    Gitlab::Git::Wiki::CommitDetails.new(user.id, user.username, user.name, user.commit_email, "test commit")
   end
 
   def create_page(name, content)
