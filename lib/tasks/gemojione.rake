@@ -86,7 +86,7 @@ namespace :gemojione do
     SPRITESHEET_WIDTH = 860
     SPRITESHEET_HEIGHT = 840
 
-    # Setup a map to rename image files
+    # Set up a map to rename image files
     emoji_unicode_string_to_name_map = {}
     Gitlab::Emoji.emojis.each do |name, emoji_hash|
       # Ignore aliases
