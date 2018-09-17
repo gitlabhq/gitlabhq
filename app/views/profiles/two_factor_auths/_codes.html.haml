@@ -12,4 +12,4 @@
 
 .d-flex
   = link_to 'Proceed', profile_account_path, class: 'btn btn-success append-right-10'
-  = link_to 'Download codes', "data:text/plain;charset=utf-8,#{URI.encode(@codes.join("\n"))}", download: "gitlab-recovery-codes.txt", class: 'btn btn-default'
+  = link_to 'Download codes', "data:text/plain;charset=utf-8,#{CGI.escape(@codes.join("\n"))}", download: "gitlab-recovery-codes.txt", class: 'btn btn-default'
