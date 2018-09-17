@@ -58,6 +58,14 @@ FactoryBot.define do
       project_view :readme
     end
 
+    trait :commit_email do
+      after(:create) do |user, evaluator|
+        additional = create(:email, :confirmed, user: user, email: "commit-#{user.email}")
+
+        user.update!(commit_email: additional.email)
+      end
+    end
+
     factory :omniauth_user do
       transient do
         extern_uid '123456'

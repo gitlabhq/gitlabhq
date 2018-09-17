@@ -3,7 +3,7 @@ require "spec_helper"
 describe Files::CreateService do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :commit_email) }
   let(:file_content) { 'Test file content' }
   let(:branch_name) { project.default_branch }
   let(:start_branch) { branch_name }
@@ -19,6 +19,8 @@ describe Files::CreateService do
       branch_name: branch_name
     }
   end
+
+  let(:commit) { repository.head_commit }
 
   subject { described_class.new(project, user, commit_params) }
 
@@ -73,6 +75,17 @@ describe Files::CreateService do
           end.to change { project.lfs_objects.count }.by(1)
         end
       end
+    end
+  end
+
+  context 'commit attribute' do
+    let(:file_path) { 'test-commit-attributes.txt' }
+
+    it 'uses the commit email' do
+      subject.execute
+
+      expect(commit.author_email).to eq(user.commit_email)
+      expect(commit.committer_email).to eq(user.commit_email)
     end
   end
 end

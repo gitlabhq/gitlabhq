@@ -9,6 +9,7 @@ describe Files::UpdateService do
   let(:new_contents) { 'New Content' }
   let(:branch_name) { project.default_branch }
   let(:last_commit_sha) { nil }
+  let(:commit) { project.repository.commit }
 
   let(:commit_params) do
     {
@@ -53,6 +54,13 @@ describe Files::UpdateService do
         results = project.repository.blob_at_branch(project.default_branch, file_path)
 
         expect(results.data).to eq(new_contents)
+      end
+
+      it 'uses the commit email' do
+        subject.execute
+
+        expect(commit.author_email).to eq(user.commit_email)
+        expect(commit.committer_email).to eq(user.commit_email)
       end
     end
 
