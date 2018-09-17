@@ -10,7 +10,14 @@ module Gitlab
 
     # rubocop:disable CodeReuse/ActiveRecord
     def users
-      super.where(id: @group.users_with_descendants)
+      # 1: get all groups the current user has access to
+      groups = GroupsFinder.new(current_user).execute.joins(:users)
+
+      # 2: get all users the current user has access to (-> `SearchResults#users`)
+      users = super
+
+      # 3: filter for users that belong to the previously selected groups
+      users.where(id: groups.select('members.user_id'))
     end
     # rubocop:enable CodeReuse/ActiveRecord
   end
