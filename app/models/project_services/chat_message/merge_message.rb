@@ -2,6 +2,8 @@
 
 module ChatMessage
   class MergeMessage < BaseMessage
+    prepend ::EE::ChatMessage::MergeMessage
+
     attr_reader :merge_request_iid
     attr_reader :source_branch
     attr_reader :target_branch
@@ -10,8 +12,6 @@ module ChatMessage
 
     def initialize(params)
       super
-
-      @action = params[:object_attributes][:action]
 
       obj_attr = params[:object_attributes]
       obj_attr = HashWithIndifferentAccess.new(obj_attr)
@@ -50,7 +50,7 @@ module ChatMessage
     end
 
     def merge_request_message
-      "#{user_combined_name} #{state_or_action_text} #{merge_request_link} in #{project_link}: #{title}"
+      "#{user_combined_name} #{state_or_action_text} #{merge_request_link} in #{project_link}"
     end
 
     def merge_request_link
@@ -65,8 +65,9 @@ module ChatMessage
       "#{project_url}/merge_requests/#{merge_request_iid}"
     end
 
+    # overridden in EE
     def state_or_action_text
-      @action == 'approved' ? @action : state
+      state
     end
   end
 end
