@@ -85,11 +85,13 @@ function deploy() {
   gitlab_unicorn_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-unicorn-ce"
   gitlab_gitaly_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitaly"
   gitlab_shell_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-shell"
+  gitlab_workhorse_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-workhorse-ce"
 
   if [[ "$CI_PROJECT_NAME" == "gitlab-ee" ]]; then
     gitlab_migrations_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-rails-ee"
     gitlab_sidekiq_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-sidekiq-ee"
     gitlab_unicorn_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-unicorn-ee"
+    gitlab_workhorse_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-workhorse-ee"
   fi
 
   # canary uses stable db
@@ -119,40 +121,7 @@ function deploy() {
   helm repo add gitlab https://charts.gitlab.io/
   helm dep update .
 
-  cat << EOF
-    Deploying:
-
-    helm upgrade --install \
-      --wait \
-      --timeout 600 \
-      --set releaseOverride="$CI_ENVIRONMENT_SLUG" \
-      --set global.hosts.hostSuffix="$HOST_SUFFIX" \
-      --set global.hosts.domain="$REVIEW_APPS_DOMAIN" \
-      --set global.hosts.externalIP="$REVIEW_APPS_DOMAIN_IP" \
-      --set certmanager.install=false \
-      --set global.ingress.configureCertmanager=false \
-      --set global.ingress.tls.secretName=tls-cert \
-      --set gitlab.unicorn.resources.requests.cpu=200m \
-      --set gitlab.sidekiq.resources.requests.cpu=100m \
-      --set gitlab.gitlab-shell.resources.requests.cpu=100m \
-      --set redis.resources.requests.cpu=100m \
-      --set minio.resources.requests.cpu=100m \
-      --set gitlab.migrations.image.repository="$gitlab_migrations_image_repository" \
-      --set gitlab.migrations.image.tag="$CI_COMMIT_REF_NAME" \
-      --set gitlab.sidekiq.image.repository="$gitlab_sidekiq_image_repository" \
-      --set gitlab.sidekiq.image.tag="$CI_COMMIT_REF_NAME" \
-      --set gitlab.unicorn.image.repository="$gitlab_unicorn_image_repository" \
-      --set gitlab.unicorn.image.tag="$CI_COMMIT_REF_NAME" \
-      --set gitlab.gitaly.image.repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitaly" \
-      --set gitlab.gitaly.image.tag="v$GITALY_VERSION" \
-      --set gitlab.gitlab-shell.image.repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-shell" \
-      --set gitlab.gitlab-shell.image.tag="v$GITLAB_SHELL_VERSION" \
-      --namespace="$KUBE_NAMESPACE" \
-      --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
-      "$name" \
-      .
-EOF
-
+HELM_CMD=$(cat << EOF
   helm upgrade --install \
     --wait \
     --timeout 600 \
@@ -178,10 +147,19 @@ EOF
     --set gitlab.gitaly.image.tag="v$GITALY_VERSION" \
     --set gitlab.gitlab-shell.image.repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-shell" \
     --set gitlab.gitlab-shell.image.tag="v$GITLAB_SHELL_VERSION" \
+    --set gitlab.unicorn.workhorse.image="$gitlab_workhorse_image_repository" \
+    --set gitlab.unicorn.workhorse.tag="$CI_COMMIT_REF_NAME" \
     --namespace="$KUBE_NAMESPACE" \
     --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
     "$name" \
     .
+EOF
+)
+
+  echo "Deploying with:"
+  echo $HELM_CMD
+
+  eval $HELM_CMD
 }
 
 function delete() {

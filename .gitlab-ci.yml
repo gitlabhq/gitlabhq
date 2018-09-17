@@ -1114,8 +1114,7 @@ review:
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
   stage: test
   allow_failure: true
-  before_script:
-    - gem install gitlab --no-document
+  before_script: []
   variables:
     GIT_DEPTH: "1"
     HOST_SUFFIX: "$CI_ENVIRONMENT_SLUG"
@@ -1124,8 +1123,8 @@ review:
   script:
     - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
     - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
+    - export GITLAB_WORKHORSE_VERSION=$(<GITLAB_WORKHORSE_VERSION)
     - source ./scripts/review_apps/review-apps.sh
-    - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
     - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./scripts/trigger-build cng
     - check_kube_domain
     - download_gitlab_chart
@@ -1139,7 +1138,7 @@ review:
     on_stop: stop_review
   only:
     refs:
-      - branches
+      - branches@gitlab-org/gitlab-ee
     kubernetes: active
   except:
     refs:
@@ -1164,8 +1163,28 @@ stop_review:
     action: stop
   only:
     refs:
-      - branches
+      - branches@gitlab-org/gitlab-ee
     kubernetes: active
+  except:
+    - master
+    - /(^docs[\/-].*|.*-docs$)/
+
+automated_review_cleanup:
+  <<: *dedicated-no-docs-pull-cache-job
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
+  stage: build
+  allow_failure: true
+  cache: {}
+  dependencies: []
+  before_script:
+    - gem install gitlab --no-document
+  variables:
+    GIT_DEPTH: "1"
+  script:
+    - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
+  only:
+    refs:
+      - schedules@gitlab-org/gitlab-ee
   except:
     - master
     - /(^docs[\/-].*|.*-docs$)/

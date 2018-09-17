@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'spec_helper'
+
 RSpec.describe Quality::HelmClient do
   let(:namespace) { 'review-apps-ee' }
   let(:release_name) { 'my-release' }
