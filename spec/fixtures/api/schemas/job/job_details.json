@@ -6,6 +6,7 @@
   "properties": {
     "artifact": { "$ref": "artifact.json" },
     "terminal_path": { "type": "string" },
-    "trigger": { "$ref": "trigger.json" }
+    "trigger": { "$ref": "trigger.json" },
+    "deployment_status": { "$ref": "deployment_status.json" }
   }
 }

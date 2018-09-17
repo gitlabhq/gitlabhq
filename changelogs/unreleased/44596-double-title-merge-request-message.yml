@@ -1,5 +1,9 @@
 ---
 title: Fix double title in merge request chat messages.
+<<<<<<< HEAD
 merge_request:
+=======
+merge_request: 21670
+>>>>>>> upstream/master
 author: Kukovskii Vladimir
 type: fixed

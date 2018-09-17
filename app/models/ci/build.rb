@@ -658,7 +658,30 @@ module Ci
       end
     end
 
+    # Virtual deployment status depending on the environment status.
+    def deployment_status
+      return nil unless starts_environment?
+
+      if success?
+        return successful_deployment_status
+      elsif complete? && !success?
+        return :failed
+      end
+
+      :creating
+    end
+
     private
+
+    def successful_deployment_status
+      if success? && last_deployment&.last?
+        return :last
+      elsif success? && last_deployment.present?
+        return :out_of_date
+      end
+
+      :creating
+    end
 
     def each_test_report
       Ci::JobArtifact::TEST_REPORT_FILE_TYPES.each do |file_type|

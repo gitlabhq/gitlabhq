@@ -33,6 +33,32 @@ describe 'Gcp Cluster', :js do
       context 'when user filled form with valid parameters' do
         subject { click_button 'Create Kubernetes cluster' }
 
+        shared_examples 'valid cluster gcp form' do
+          it 'users sees a form with the GCP token' do
+            expect(page).to have_selector(:css, 'form[data-token="token"]')
+          end
+
+          it 'user sees a cluster details page and creation status' do
+            subject
+
+            expect(page).to have_content('Kubernetes cluster is being created on Google Kubernetes Engine...')
+
+            Clusters::Cluster.last.provider.make_created!
+
+            expect(page).to have_content('Kubernetes cluster was successfully created on Google Kubernetes Engine')
+          end
+
+          it 'user sees a error if something wrong during creation' do
+            subject
+
+            expect(page).to have_content('Kubernetes cluster is being created on Google Kubernetes Engine...')
+
+            Clusters::Cluster.last.provider.make_errored!('Something wrong!')
+
+            expect(page).to have_content('Something wrong!')
+          end
+        end
+
         before do
           allow_any_instance_of(GoogleApi::CloudPlatform::Client)
             .to receive(:projects_zones_clusters_create) do
@@ -56,28 +82,16 @@ describe 'Gcp Cluster', :js do
           fill_in 'cluster[provider_gcp_attributes][machine_type]', with: 'n1-standard-2'
         end
 
-        it 'users sees a form with the GCP token' do
-          expect(page).to have_selector(:css, 'form[data-token="token"]')
-        end
+        it_behaves_like 'valid cluster gcp form'
 
-        it 'user sees a cluster details page and creation status' do
-          subject
+        context 'rbac_clusters feature flag is enabled' do
+          before do
+            stub_feature_flags(rbac_clusters: true)
 
-          expect(page).to have_content('Kubernetes cluster is being created on Google Kubernetes Engine...')
+            check 'cluster_provider_gcp_attributes_legacy_abac'
+          end
 
-          Clusters::Cluster.last.provider.make_created!
-
-          expect(page).to have_content('Kubernetes cluster was successfully created on Google Kubernetes Engine')
-        end
-
-        it 'user sees a error if something wrong during creation' do
-          subject
-
-          expect(page).to have_content('Kubernetes cluster is being created on Google Kubernetes Engine...')
-
-          Clusters::Cluster.last.provider.make_errored!('Something wrong!')
-
-          expect(page).to have_content('Something wrong!')
+          it_behaves_like 'valid cluster gcp form'
         end
       end
 

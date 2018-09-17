@@ -19,7 +19,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `iids[]` | Array[integer] | optional | Return only the milestones having the given `iid` |
-| `state` | string | optional | Return only `active` or `closed` milestones` |
+| `state` | string | optional | Return only `active` or `closed` milestones |
 | `search` | string | optional | Return only milestones with a title or description matching the provided string |
 
 ```bash
