@@ -16,8 +16,6 @@ module SortingHelper
       sort_value_milestone        => sort_title_milestone,
       sort_value_milestone_later  => sort_title_milestone_later,
       sort_value_milestone_soon   => sort_title_milestone_soon,
-      sort_value_less_weight      => sort_title_less_weight,
-      sort_value_more_weight      => sort_title_more_weight,
       sort_value_name             => sort_title_name,
       sort_value_name_desc        => sort_title_name_desc,
       sort_value_oldest_created   => sort_title_oldest_created,
@@ -29,8 +27,7 @@ module SortingHelper
       sort_value_popularity       => sort_title_popularity,
       sort_value_priority         => sort_title_priority,
       sort_value_upvotes          => sort_title_upvotes,
-      sort_value_contacted_date   => sort_title_contacted_date,
-      sort_value_weight           => sort_title_weight
+      sort_value_contacted_date   => sort_title_contacted_date
     }
   end
 
@@ -143,10 +140,6 @@ module SortingHelper
     s_('SortOptions|Due date')
   end
 
-  def sort_title_less_weight
-    s_('SortOptions|Less weight')
-  end
-
   def sort_title_due_date_later
     s_('SortOptions|Due later')
   end
@@ -161,10 +154,6 @@ module SortingHelper
 
   def sort_title_largest_group
     s_('SortOptions|Largest group')
-  end
-
-  def sort_title_more_weight
-    s_('SortOptions|More weight')
   end
 
   def sort_title_largest_repo
@@ -209,10 +198,6 @@ module SortingHelper
 
   def sort_title_oldest_created
     s_('SortOptions|Oldest created')
-  end
-
-  def sort_title_weight
-    s_('SortOptions|Weight')
   end
 
   def sort_title_oldest_joined
@@ -312,10 +297,6 @@ module SortingHelper
     'latest_activity_desc'
   end
 
-  def sort_value_less_weight
-    'weight_asc'
-  end
-
   def sort_value_milestone
     'milestone'
   end
@@ -326,10 +307,6 @@ module SortingHelper
 
   def sort_value_milestone_soon
     'milestone_due_asc'
-  end
-
-  def sort_value_more_weight
-    'weight_desc'
   end
 
   def sort_value_name
@@ -394,9 +371,5 @@ module SortingHelper
 
   def sort_value_contacted_date
     'contacted_asc'
-  end
-
-  def sort_value_weight
-    'weight'
   end
 end
