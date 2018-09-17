@@ -10,7 +10,7 @@ module Gitlab
           include Attributable
 
           ALLOWED_KEYS = %i[tags script only except type image services
-                            allow_failure type stage when artifacts cache
+                            allow_failure type stage when autoplay_in artifacts cache
                             dependencies before_script after_script variables
                             environment coverage retry extends].freeze
 
@@ -34,6 +34,14 @@ module Gitlab
 
               validates :dependencies, array_of_strings: true
               validates :extends, type: String
+
+              with_options if: :manual_action? do
+                validates :autoplay_in, duration: true, allow_nil: true
+              end
+
+              with_options unless: :manual_action? do
+                validates :autoplay_in, presence: false
+              end
             end
           end
 
@@ -84,7 +92,7 @@ module Gitlab
                   :artifacts, :commands, :environment, :coverage, :retry
 
           attributes :script, :tags, :allow_failure, :when, :dependencies,
-                     :retry, :extends
+                     :retry, :extends, :autoplay_in
 
           def compose!(deps = nil)
             super do

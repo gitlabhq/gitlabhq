@@ -92,7 +92,8 @@ module HasStatus
     scope :failed_or_canceled, -> { where(status: [:failed, :canceled]) }
 
     scope :cancelable, -> do
-      where(status: [:running, :pending, :created])
+      where("status IN ('running', 'pending', 'created') OR " \
+            "(status = 'manual' AND EXISTS (select 1 from ci_build_schedules where ci_builds.id = ci_build_schedules.build_id))")
     end
   end
 

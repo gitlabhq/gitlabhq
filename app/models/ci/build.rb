@@ -22,6 +22,7 @@ module Ci
     }.freeze
 
     has_one :last_deployment, -> { order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
+    has_one :build_schedule, class_name: 'Ci::BuildSchedule', foreign_key: :build_id
     has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
     has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id
 
@@ -184,6 +185,12 @@ module Ci
         end
       end
 
+      after_transition any => [:manual] do |build|
+        build.run_after_commit do
+          build.schedule_delayed_execution
+        end
+      end
+
       before_transition any => [:failed] do |build|
         next unless build.project
         next if build.retries_max.zero?
@@ -227,6 +234,20 @@ module Ci
 
     def playable?
       action? && (manual? || retryable?)
+    end
+
+    def autoplay?
+      manual? && options[:autoplay_in].present?
+    end
+
+    def autoplay_at
+      ChronicDuration.parse(options[:autoplay_in])&.seconds&.from_now
+    end
+
+    def schedule_delayed_execution
+      return unless autoplay?
+
+      create_build_schedule!(execute_at: autoplay_at)
     end
 
     def action?

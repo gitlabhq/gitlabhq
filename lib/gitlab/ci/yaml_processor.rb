@@ -49,7 +49,8 @@ module Gitlab
             script: job[:script],
             after_script: job[:after_script],
             environment: job[:environment],
-            retry: job[:retry]
+            retry: job[:retry],
+            autoplay_in: job[:autoplay_in],
           }.compact }
       end
 
