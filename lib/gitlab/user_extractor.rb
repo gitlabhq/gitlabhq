@@ -18,7 +18,7 @@ module Gitlab
     def users
       return User.none unless @text.present?
 
-      @users ||= User.from("(#{union.to_sql}) users")
+      @users ||= User.from_union(union_relations)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -43,13 +43,13 @@ module Gitlab
 
     private
 
-    def union
+    def union_relations
       relations = []
 
       relations << User.by_any_email(emails) if emails.any?
       relations << User.by_username(usernames) if usernames.any?
 
-      Gitlab::SQL::Union.new(relations)
+      relations
     end
   end
 end

@@ -95,14 +95,14 @@ module Gitlab
       ancestors_table = ancestors.alias_to(groups_table)
       descendants_table = descendants.alias_to(groups_table)
 
-      union = SQL::Union.new([model.unscoped.from(ancestors_table),
-                              model.unscoped.from(descendants_table)])
-
       relation = model
         .unscoped
         .with
         .recursive(ancestors.to_arel, descendants.to_arel)
-        .from("(#{union.to_sql}) #{model.table_name}")
+        .from_union([
+          model.unscoped.from(ancestors_table),
+          model.unscoped.from(descendants_table)
+        ])
 
       read_only(relation)
     end

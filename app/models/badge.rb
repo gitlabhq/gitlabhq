@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Badge < ActiveRecord::Base
+  include FromUnion
+
   # This structure sets the placeholders that the urls
   # can have. This hash also sets which action to ask when
   # the placeholder is found.

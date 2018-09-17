@@ -306,14 +306,12 @@ class Group < Namespace
   # 3. They belong to a sub-group or project in such sub-group
   # 4. They belong to an ancestor group
   def direct_and_indirect_users
-    union = Gitlab::SQL::Union.new([
+    User.from_union([
       User
         .where(id: direct_and_indirect_members.select(:user_id))
         .reorder(nil),
       project_users_with_descendants
     ])
-
-    User.from("(#{union.to_sql}) #{User.table_name}")
   end
 
   # Returns all users that are members of projects

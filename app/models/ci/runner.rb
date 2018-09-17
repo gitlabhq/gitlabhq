@@ -7,6 +7,7 @@ module Ci
     include IgnorableColumn
     include RedisCacheable
     include ChronicDurationAttribute
+    include FromUnion
     prepend EE::Ci::Runner
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
@@ -58,18 +59,26 @@ module Ci
     }
 
     scope :owned_or_instance_wide, -> (project_id) do
-      union = Gitlab::SQL::Union.new(
-        [belonging_to_project(project_id), belonging_to_parent_group_of_project(project_id), instance_type],
+      from_union(
+        [
+          belonging_to_project(project_id),
+          belonging_to_parent_group_of_project(project_id),
+          instance_type
+        ],
         remove_duplicates: false
       )
-      from("(#{union.to_sql}) ci_runners")
     end
 
     scope :assignable_for, ->(project) do
       # FIXME: That `to_sql` is needed to workaround a weird Rails bug.
       #        Without that, placeholders would miss one and couldn't match.
+      #
+      # We use "unscoped" here so that any current Ci::Runner filters don't
+      # apply to the inner query, which is not necessary.
+      exclude_runners = unscoped { project.runners.select(:id) }.to_sql
+
       where(locked: false)
-        .where.not("ci_runners.id IN (#{project.runners.select(:id).to_sql})")
+        .where.not("ci_runners.id IN (#{exclude_runners})")
         .project_type
     end
 

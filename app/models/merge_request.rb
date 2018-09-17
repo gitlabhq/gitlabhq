@@ -15,6 +15,7 @@ class MergeRequest < ActiveRecord::Base
   include Gitlab::Utils::StrongMemoize
   include LabelEventable
   include ReactiveCaching
+  include FromUnion
 
   self.reactive_cache_key = ->(model) { [model.project.id, model.iid] }
   self.reactive_cache_refresh_interval = 10.minutes
@@ -242,11 +243,10 @@ class MergeRequest < ActiveRecord::Base
   def self.in_projects(relation)
     # unscoping unnecessary conditions that'll be applied
     # when executing `where("merge_requests.id IN (#{union.to_sql})")`
-    source = unscoped.where(source_project_id: relation).select(:id)
-    target = unscoped.where(target_project_id: relation).select(:id)
-    union  = Gitlab::SQL::Union.new([source, target])
+    source = unscoped.where(source_project_id: relation)
+    target = unscoped.where(target_project_id: relation)
 
-    where("merge_requests.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+    from_union([source, target])
   end
 
   # This is used after project import, to reset the IDs to the correct
@@ -746,11 +746,8 @@ class MergeRequest < ActiveRecord::Base
     # compared to using OR statements. We're using UNION ALL since the queries
     # used won't produce any duplicates (e.g. a note for a commit can't also be
     # a note for an MR).
-    union = Gitlab::SQL::Union
-      .new([notes, commit_notes], remove_duplicates: false)
-      .to_sql
-
-    Note.from("(#{union}) #{Note.table_name}")
+    Note
+      .from_union([notes, commit_notes], remove_duplicates: false)
       .includes(:noteable)
   end
 

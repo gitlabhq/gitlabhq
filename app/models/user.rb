@@ -20,6 +20,7 @@ class User < ActiveRecord::Base
   include BlocksJsonSerialization
   include WithUploads
   include OptionallySearch
+  include FromUnion
 
   prepend EE::User
 
@@ -295,11 +296,9 @@ class User < ActiveRecord::Base
   # user_id - The ID of the user to include.
   def self.union_with_user(user_id = nil)
     if user_id.present?
-      union = Gitlab::SQL::Union.new([all, User.unscoped.where(id: user_id)])
-
       # We use "unscoped" here so that any inner conditions are not repeated for
       # the outer query, which would be redundant.
-      User.unscoped.from("(#{union.to_sql}) #{User.table_name}")
+      User.unscoped.from_union([all, User.unscoped.where(id: user_id)])
     else
       all
     end
@@ -363,9 +362,8 @@ class User < ActiveRecord::Base
 
       emails = joins(:emails).where(emails: { email: email })
       emails = emails.confirmed if confirmed
-      union = Gitlab::SQL::Union.new([users, emails])
 
-      from("(#{union.to_sql}) #{table_name}")
+      from_union([users, emails])
     end
 
     def existing_member?(email)
@@ -694,10 +692,10 @@ class User < ActiveRecord::Base
 
   # Returns the groups a user has access to, either through a membership or a project authorization
   def authorized_groups
-    union = Gitlab::SQL::Union
-      .new([groups.select(:id), authorized_projects.select(:namespace_id)])
-
-    Group.where("namespaces.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+    Group.from_union([
+      groups,
+      authorized_projects.joins(:namespace).select('namespaces.*')
+    ])
   end
 
   # Returns the groups a user is a member of, either directly or through a parent group
@@ -762,7 +760,15 @@ class User < ActiveRecord::Base
   end
 
   def owned_projects
-    @owned_projects ||= Project.from("(#{owned_projects_union.to_sql}) AS projects")
+    @owned_projects ||= Project.from_union(
+      [
+        Project.where(namespace: namespace),
+        Project.joins(:project_authorizations)
+          .where("projects.namespace_id <> ?", namespace.id)
+          .where(project_authorizations: { user_id: id, access_level: Gitlab::Access::OWNER })
+      ],
+      remove_duplicates: false
+    )
   end
 
   # Returns projects which user can admin issues on (for example to move an issue to that project).
@@ -1160,17 +1166,17 @@ class User < ActiveRecord::Base
 
   def ci_owned_runners
     @ci_owned_runners ||= begin
-      project_runner_ids = Ci::RunnerProject
+      project_runners = Ci::RunnerProject
         .where(project: authorized_projects(Gitlab::Access::MAINTAINER))
-        .select(:runner_id)
+        .joins(:runner)
+        .select('ci_runners.*')
 
-      group_runner_ids = Ci::RunnerNamespace
+      group_runners = Ci::RunnerNamespace
         .where(namespace_id: owned_or_maintainers_groups.select(:id))
-        .select(:runner_id)
+        .joins(:runner)
+        .select('ci_runners.*')
 
-      union = Gitlab::SQL::Union.new([project_runner_ids, group_runner_ids])
-
-      Ci::Runner.where("ci_runners.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+      Ci::Runner.from_union([project_runners, group_runners])
     end
   end
 
@@ -1400,15 +1406,6 @@ class User < ActiveRecord::Base
 
   def consented_usage_stats?
     Gitlab::CurrentSettings.usage_stats_set_by_user_id == self.id
-  end
-
-  def owned_projects_union
-    Gitlab::SQL::Union.new([
-      Project.where(namespace: namespace),
-      Project.joins(:project_authorizations)
-        .where("projects.namespace_id <> ?", namespace.id)
-        .where(project_authorizations: { user_id: id, access_level: Gitlab::Access::OWNER })
-    ], remove_duplicates: false)
   end
 
   # Added according to https://github.com/plataformatec/devise/blob/7df57d5081f9884849ca15e4fde179ef164a575f/README.md#activejob-integration

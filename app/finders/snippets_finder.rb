@@ -89,9 +89,7 @@ class SnippetsFinder < UnionFinder
 
     # We use a UNION here instead of OR clauses since this results in better
     # performance.
-    union = Gitlab::SQL::Union.new([authorized_projects.select('projects.id'), visible_projects.select('projects.id')])
-
-    Project.from("(#{union.to_sql}) AS #{Project.table_name}")
+    Project.from_union([authorized_projects, visible_projects])
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

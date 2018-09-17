@@ -7,6 +7,7 @@ class Label < ActiveRecord::Base
   include Gitlab::SQL::Pattern
   include OptionallySearch
   include Sortable
+  include FromUnion
 
   # Represents a "No Label" state used for filtering Issues and Merge
   # Requests that have no label assigned.
