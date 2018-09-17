@@ -116,13 +116,14 @@ gem 'mini_magick'
 gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for backups
-gem 'fog-aws', '~> 2.0.1'
-gem 'fog-core', '~> 1.44'
+gem 'fog-aws', '~> 3.2'
+# fog-core 2.1.2 generates lot of deprecation warnings: https://github.com/fog/fog-google/issues/417
+gem 'fog-core', '= 2.1.0'
 gem 'fog-google', '~> 1.7.1'
-gem 'fog-local', '~> 0.3'
+gem 'fog-local', '~> 0.6'
 gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
-gem 'fog-aliyun', '~> 0.2.0'
+gem 'fog-aliyun', '~> 0.3'
 
 # for Google storage
 gem 'google-api-client', '~> 0.23'
