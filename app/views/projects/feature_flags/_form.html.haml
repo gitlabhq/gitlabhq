@@ -4,22 +4,26 @@
       - @feature_flag.errors.full_messages.each do |msg|
         %p= msg
 
-- unless @feature_flag.persisted?
-  .form-group.row
-    = f.label :name, class: 'col-form-label col-sm-2' do
-      Name
-    .col-sm-10
-      = f.text_field :name, required: true, autocomplete: 'off', class: 'form-control', disabled: @feature_flag.persisted?
-
-.form-group.row
-  = f.label :active, class: 'col-form-label col-sm-2' do
-    Active
-  .col-sm-10
-    = f.check_box :active
-
-.form-group.row
-  = f.label :description, class: 'col-form-label col-sm-2' do
-    Description
-  .col-sm-10
-    = f.text_area :description, rows: 5, class: 'form-control'
-    %span.help-inline Write a description of your feature flag
+%fieldset
+  .row
+    .form-group.col-md-4
+      = f.label :name, class: 'label-light', for: 'feature_flag_name' do
+        = s_('FeatureFlags|Name')
+      = f.text_field :name, class: "form-control", id: "feature_flag_name"
+  .row
+    .form-group.col-md-4
+      = f.label :description, class: 'label-light', for: 'feature_flag_description' do
+        = s_('FeatureFlags|Description')
+      = f.text_area :description, class: "form-control", id: "feature_flag_description", rows: 4
+  .row
+    .form-group.col-md-1
+      = f.label :active, class: 'label-light', for: 'feature_flag_status' do
+        = s_('FeatureFlags|Status')
+      = f.check_box :active, class: "form-control", id: "feature_flag_status", rows: 4
+.form-actions
+  - if @feature_flag.persisted?
+    = f.submit 'Save changes', class: "btn btn-save"
+  - else
+    = f.submit 'Create feature flag', class: "btn btn-save"
+  .float-right
+    = link_to _('Cancel'), project_feature_flags_path(@project), class: 'btn btn-cancel'
