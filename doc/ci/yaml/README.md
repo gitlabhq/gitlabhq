@@ -78,16 +78,18 @@ A job is defined by a list of parameters that define the job behavior.
 
 ### `extends`
 
-> Introduced in GitLab 11.3
+> Introduced in GitLab 11.3.
 
-`extends` defines an entry name that a job, that uses `extends` is going to
+`extends` defines an entry name that a job that uses `extends` is going to
 inherit from.
 
-`extends` in an alternative to using [YAML anchors](#anchors) that is a little
-more flexible and readable.
+It is an alternative to using [YAML anchors](#anchors) and is a little
+more flexible and readable:
 
 ```yaml
 .tests:
+  script: rake test
+  stage: test
   only:
     refs:
       - branches
@@ -95,16 +97,15 @@ more flexible and readable.
 rspec:
   extends: .tests
   script: rake rspec
-  stage: test
   only:
     variables:
       - $RSPEC
 ```
 
-In the example above the `rspec` job is going to inherit from `.tests`
-template. GitLab will perform a reverse deep merge, what means that it will
-merge `rspec` contents into `.tests` recursively, and it is going to result in
-following configuration of the `rspec` job:
+In the example above, the `rspec` job is going to inherit from the `.tests`
+template job. GitLab will perform a reverse deep merge, which means that it will
+merge the `rspec` contents into `.tests` recursively, and this is going to result in
+the following `rspec` job:
 
 ```yaml
 rspec:
@@ -117,13 +118,12 @@ rspec:
       - $RSPEC
 ```
 
-`.tests` in this example is a [hidden key](#hidden-keys-jobs), but it is
+`.tests` in this example is a [hidden key](#hidden-keys-jobs), but it's
 possible to inherit from regular jobs as well.
 
 `extends` supports multi-level inheritance, however it is not recommended to
-use more than three levels of inheritance. Maximum nesting level supported is
-10 levels.
-
+use more than three levels. The maximum nesting level that is supported is 10.
+The following example has two levels of inheritance:
 
 ```yaml
 .tests:

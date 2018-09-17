@@ -339,11 +339,25 @@ describe MarkupHelper do
         expect(first_line_in_markdown(object, attribute, 150, project: project)).to eq(expected)
       end
 
-      it 'preserves data-src for lazy images' do
-        object = create_object("![ImageTest](/uploads/test.png)")
-        image_url = "data-src=\".*/uploads/test.png\""
+      context 'when images are allowed' do
+        it 'preserves data-src for lazy images' do
+          object    = create_object("![ImageTest](/uploads/test.png)")
+          image_url = "data-src=\".*/uploads/test.png\""
+          text      = first_line_in_markdown(object, attribute, 150, project: project, allow_images: true)
 
-        expect(first_line_in_markdown(object, attribute, 150, project: project)).to match(image_url)
+          expect(text).to match(image_url)
+          expect(text).to match('<a')
+        end
+      end
+
+      context 'when images are not allowed' do
+        it 'removes any images' do
+          object = create_object("![ImageTest](/uploads/test.png)")
+          text   = first_line_in_markdown(object, attribute, 150, project: project)
+
+          expect(text).not_to match('<img')
+          expect(text).not_to match('<a')
+        end
       end
 
       context 'labels formatting' do

@@ -89,7 +89,7 @@ module ObjectStorage
         method: 'PUT',
         bucket_name: bucket_name,
         object_name: object_name,
-        query: { uploadId: upload_id, partNumber: part_number },
+        query: { 'uploadId' => upload_id, 'partNumber' => part_number },
         headers: upload_options
       }, expire_at)
     end
@@ -100,7 +100,7 @@ module ObjectStorage
         method: 'POST',
         bucket_name: bucket_name,
         object_name: object_name,
-        query: { uploadId: upload_id },
+        query: { 'uploadId' => upload_id },
         headers: { 'Content-Type' => 'application/xml' }
       }, expire_at)
     end
@@ -111,7 +111,7 @@ module ObjectStorage
         method: 'DELETE',
         bucket_name: bucket_name,
         object_name: object_name,
-        query: { uploadId: upload_id }
+        query: { 'uploadId' => upload_id }
       }, expire_at)
     end
 

@@ -33,6 +33,7 @@
           .form-text.text-muted
             = s_('ClusterIntegration|Enable this setting if using role-based access control (RBAC).')
             = s_('ClusterIntegration|This option will allow you to install applications on RBAC clusters.')
+            = link_to _('More information'), help_page_path('user/project/clusters/index.md', anchor: 'role-based-access-control-rbac-experimental-support'), target: '_blank'
 
     .form-group
       = field.submit s_('ClusterIntegration|Add Kubernetes cluster'), class: 'btn btn-success'

@@ -10,6 +10,7 @@ import service from '../services/notes_service';
 import loadAwardsHandler from '../../awards_handler';
 import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
 import { isInViewport, scrollToElement } from '../../lib/utils/common_utils';
+import mrWidgetEventHub from '../../vue_merge_request_widget/event_hub';
 
 let eTagPoll;
 
@@ -61,9 +62,11 @@ export const refetchDiscussionById = ({ commit, state }, { path, discussionId })
       .catch(() => {});
   });
 
-export const deleteNote = ({ commit }, note) =>
+export const deleteNote = ({ commit, dispatch }, note) =>
   service.deleteNote(note.path).then(() => {
     commit(types.DELETE_NOTE, note);
+
+    dispatch('updateMergeRequestWidget');
   });
 
 export const updateNote = ({ commit }, { endpoint, note }) =>
@@ -84,20 +87,22 @@ export const replyToDiscussion = ({ commit }, { endpoint, data }) =>
       return res;
     });
 
-export const createNewNote = ({ commit }, { endpoint, data }) =>
+export const createNewNote = ({ commit, dispatch }, { endpoint, data }) =>
   service
     .createNewNote(endpoint, data)
     .then(res => res.json())
     .then(res => {
       if (!res.errors) {
         commit(types.ADD_NEW_NOTE, res);
+
+        dispatch('updateMergeRequestWidget');
       }
       return res;
     });
 
 export const removePlaceholderNotes = ({ commit }) => commit(types.REMOVE_PLACEHOLDER_NOTES);
 
-export const toggleResolveNote = ({ commit }, { endpoint, isResolved, discussion }) =>
+export const toggleResolveNote = ({ commit, dispatch }, { endpoint, isResolved, discussion }) =>
   service
     .toggleResolveNote(endpoint, isResolved)
     .then(res => res.json())
@@ -105,6 +110,8 @@ export const toggleResolveNote = ({ commit }, { endpoint, isResolved, discussion
       const mutationType = discussion ? types.UPDATE_DISCUSSION : types.UPDATE_NOTE;
 
       commit(mutationType, res);
+
+      dispatch('updateMergeRequestWidget');
     });
 
 export const closeIssue = ({ commit, dispatch, state }) => {
@@ -332,6 +339,10 @@ export const fetchDiscussionDiffLines = ({ commit }, discussion) =>
       diffLines: data.truncated_diff_lines,
     });
   });
+
+export const updateMergeRequestWidget = () => {
+  mrWidgetEventHub.$emit('mr.discussion.updated');
+};
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

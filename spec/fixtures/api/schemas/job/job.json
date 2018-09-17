@@ -25,7 +25,9 @@
     "playable": { "type": "boolean" },
     "created_at": { "type": "string" },
     "updated_at": { "type": "string" },
-    "status": { "$ref": "../status/ci_detailed_status.json" }
+    "status": { "$ref": "../status/ci_detailed_status.json" },
+    "callout_message": { "type": "string" },
+    "recoverable": { "type": "boolean" }
   },
   "additionalProperties": true
 }

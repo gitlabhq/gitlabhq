@@ -86,7 +86,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       def create_job(name, status)
         pipeline = create(:ci_pipeline, project: project)
         create(:ci_build, :tags, :triggered, :artifacts,
-          pipeline: pipeline, name: name, status: status)
+               pipeline: pipeline, name: name, status: status)
       end
     end
 
@@ -204,6 +204,29 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           expect(json_response['status']['illustration']).to have_key('image')
           expect(json_response['status']['illustration']).to have_key('size')
           expect(json_response['status']['illustration']).to have_key('title')
+        end
+      end
+
+      context 'with no deployment' do
+        let(:job) { create(:ci_build, :success, pipeline: pipeline) }
+
+        it 'does not exposes the deployment information' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['deployment_status']).to be_nil
+        end
+      end
+
+      context 'with deployment' do
+        let(:merge_request) { create(:merge_request, source_project: project) }
+        let(:environment) { create(:environment, project: project, name: 'staging', state: :available) }
+        let(:job) { create(:ci_build, :success, environment: environment.name, pipeline: pipeline) }
+
+        it 'exposes the deployment information' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to match_schema('job/job_details')
+          expect(json_response['deployment_status']["status"]).to eq 'creating'
+          expect(json_response['deployment_status']["icon"]).to eq 'passed'
+          expect(json_response['deployment_status']["environment"]).not_to be_nil
         end
       end
     end

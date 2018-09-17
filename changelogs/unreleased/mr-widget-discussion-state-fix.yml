@@ -1,0 +1,5 @@
+---
+title: Fixed merge request widget discussion state not updating after resolving discussions
+merge_request: 21705
+author:
+type: fixed

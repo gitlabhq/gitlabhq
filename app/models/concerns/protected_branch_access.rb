@@ -3,6 +3,7 @@
 module ProtectedBranchAccess
   extend ActiveSupport::Concern
   include ProtectedRefAccess
+
   include EE::ProtectedRefAccess # Can't use prepend. It'll override wrongly
 
   included do
