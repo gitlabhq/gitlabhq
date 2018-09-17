@@ -193,14 +193,34 @@ describe Projects::PipelinesController do
 
     context 'when accessing existing stage' do
       before do
+        create(:ci_build, :retried, :failed, pipeline: pipeline, stage: 'build')
         create(:ci_build, pipeline: pipeline, stage: 'build')
-
-        get_stage('build')
       end
 
-      it 'returns html source for stage dropdown' do
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to match_response_schema('pipeline_stage')
+      context 'without retried' do
+        before do
+          get_stage('build')
+        end
+
+        it 'returns pipeline jobs without the retried builds' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('pipeline_stage')
+          expect(json_response['latest_statuses'].length).to eq 1
+          expect(json_response).not_to have_key('retried')
+        end
+      end
+
+      context 'with retried' do
+        before do
+          get_stage('build', retried: true)
+        end
+
+        it 'returns pipelines jobs with the retried builds' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('pipeline_stage')
+          expect(json_response['latest_statuses'].length).to eq 1
+          expect(json_response['retried'].length).to eq 1
+        end
       end
     end
 
@@ -214,12 +234,13 @@ describe Projects::PipelinesController do
       end
     end
 
-    def get_stage(name)
-      get :stage, namespace_id: project.namespace,
-                  project_id: project,
-                  id: pipeline.id,
-                  stage: name,
-                  format: :json
+    def get_stage(name, params = {})
+      get :stage, **params.merge(
+        namespace_id: project.namespace,
+        project_id: project,
+        id: pipeline.id,
+        stage: name,
+        format: :json)
     end
   end
 
