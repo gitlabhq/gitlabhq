@@ -27,7 +27,9 @@ module Clusters
           provider.zone,
           provider.cluster.name,
           provider.num_nodes,
-          machine_type: provider.machine_type)
+          machine_type: provider.machine_type,
+          legacy_abac: provider.legacy_abac
+        )
 
         unless operation.status == 'PENDING' || operation.status == 'RUNNING'
           return provider.make_errored!("Operation status is unexpected; #{operation.status_message}")

@@ -33,31 +33,49 @@ module KubernetesHelpers
     WebMock.stub_request(:get, deployments_url).to_return(response || kube_deployments_response)
   end
 
-  def stub_kubeclient_get_secrets(api_url, **options)
-    WebMock.stub_request(:get, api_url + '/api/v1/secrets')
-      .to_return(kube_response(kube_v1_secrets_body(options)))
+  def stub_kubeclient_get_secret(api_url, namespace: 'default', **options)
+    options[:metadata_name] ||= "default-token-1"
+
+    WebMock.stub_request(:get, api_url + "/api/v1/namespaces/#{namespace}/secrets/#{options[:metadata_name]}")
+      .to_return(kube_response(kube_v1_secret_body(options)))
   end
 
-  def stub_kubeclient_get_secrets_error(api_url)
-    WebMock.stub_request(:get, api_url + '/api/v1/secrets')
+  def stub_kubeclient_get_secret_error(api_url, name, namespace: 'default')
+    WebMock.stub_request(:get, api_url + "/api/v1/namespaces/#{namespace}/secrets/#{name}")
       .to_return(status: [404, "Internal Server Error"])
   end
 
-  def kube_v1_secrets_body(**options)
+  def stub_kubeclient_create_service_account(api_url, namespace: 'default')
+    WebMock.stub_request(:post, api_url + "/api/v1/namespaces/#{namespace}/serviceaccounts")
+      .to_return(kube_response({}))
+  end
+
+  def stub_kubeclient_create_service_account_error(api_url, namespace: 'default')
+    WebMock.stub_request(:post, api_url + "/api/v1/namespaces/#{namespace}/serviceaccounts")
+      .to_return(status: [500, "Internal Server Error"])
+  end
+
+  def stub_kubeclient_create_secret(api_url, namespace: 'default')
+    WebMock.stub_request(:post, api_url + "/api/v1/namespaces/#{namespace}/secrets")
+      .to_return(kube_response({}))
+  end
+
+  def stub_kubeclient_create_cluster_role_binding(api_url)
+    WebMock.stub_request(:post, api_url + '/apis/rbac.authorization.k8s.io/v1/clusterrolebindings')
+      .to_return(kube_response({}))
+  end
+
+  def kube_v1_secret_body(**options)
     {
       "kind" => "SecretList",
       "apiVersion": "v1",
-      "items" => [
-        {
-          "metadata": {
-            "name": options[:metadata_name] || "default-token-1",
-            "namespace": "kube-system"
-          },
-          "data": {
-            "token": options[:token] || Base64.encode64('token-sample-123')
-          }
-        }
-      ]
+      "metadata": {
+        "name": options[:metadata_name] || "default-token-1",
+        "namespace": "kube-system"
+      },
+      "data": {
+        "token": options[:token] || Base64.encode64('token-sample-123')
+      }
     }
   end
 
@@ -68,6 +86,7 @@ module KubernetesHelpers
         { "name" => "pods", "namespaced" => true, "kind" => "Pod" },
         { "name" => "deployments", "namespaced" => true, "kind" => "Deployment" },
         { "name" => "secrets", "namespaced" => true, "kind" => "Secret" },
+        { "name" => "serviceaccounts", "namespaced" => true, "kind" => "ServiceAccount" },
         { "name" => "services", "namespaced" => true, "kind" => "Service" }
       ]
     }
@@ -80,6 +99,7 @@ module KubernetesHelpers
         { "name" => "pods", "namespaced" => true, "kind" => "Pod" },
         { "name" => "deployments", "namespaced" => true, "kind" => "Deployment" },
         { "name" => "secrets", "namespaced" => true, "kind" => "Secret" },
+        { "name" => "serviceaccounts", "namespaced" => true, "kind" => "ServiceAccount" },
         { "name" => "services", "namespaced" => true, "kind" => "Service" }
       ]
     }
