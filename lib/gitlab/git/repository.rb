@@ -581,10 +581,6 @@ module Gitlab
         end
       end
 
-      def user_to_committer(user)
-        Gitlab::Git.committer_hash(email: user.email, name: user.name)
-      end
-
       # Delete the specified branch from the repository
       def delete_branch(branch_name)
         wrapped_gitaly_errors do
