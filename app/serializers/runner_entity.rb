@@ -5,8 +5,7 @@ class RunnerEntity < Grape::Entity
 
   expose :id, :description
 
-  expose :edit_path,
-    if: -> (*) { can?(request.current_user, :admin_build, project) && runner.project_type? } do |runner|
+  expose :edit_path, if: -> (*) { can_edit_runner? } do |runner|
     edit_project_runner_path(project, runner)
   end
 
@@ -16,5 +15,9 @@ class RunnerEntity < Grape::Entity
 
   def project
     request.project
+  end
+
+  def can_edit_runner?
+    can?(request.current_user, :update_runner, runner) && runner.project_type?
   end
 end
