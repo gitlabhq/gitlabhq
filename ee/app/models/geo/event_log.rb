@@ -8,6 +8,7 @@ module Geo
                        Geo::RepositoryDeletedEvent
                        Geo::RepositoryRenamedEvent
                        Geo::RepositoriesChangedEvent
+                       Geo::ResetChecksumEvent
                        Geo::HashedStorageMigratedEvent
                        Geo::HashedStorageAttachmentsEvent
                        Geo::LfsObjectDeletedEvent
@@ -54,6 +55,10 @@ module Geo
       class_name: 'Geo::UploadDeletedEvent',
       foreign_key: :upload_deleted_event_id
 
+    belongs_to :reset_checksum_event,
+      class_name: 'Geo::ResetChecksumEvent',
+      foreign_key: :reset_checksum_event_id
+
     def self.latest_event
       order(id: :desc).first
     end
@@ -76,7 +81,8 @@ module Geo
         hashed_storage_attachments_event ||
         lfs_object_deleted_event ||
         job_artifact_deleted_event ||
-        upload_deleted_event
+        upload_deleted_event ||
+        reset_checksum_event
     end
 
     def project_id

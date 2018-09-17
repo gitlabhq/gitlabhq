@@ -35,6 +35,10 @@ FactoryBot.define do
     trait :upload_deleted_event do
       upload_deleted_event factory: :geo_upload_deleted_event
     end
+
+    trait :reset_checksum_event do
+      reset_checksum_event factory: :geo_reset_checksum_event
+    end
   end
 
   factory :geo_repository_created_event, class: Geo::RepositoryCreatedEvent do
@@ -137,5 +141,9 @@ FactoryBot.define do
     trait :namespace_upload do
       upload { create(:upload, :namespace_upload) }
     end
+  end
+
+  factory :geo_reset_checksum_event, class: Geo::ResetChecksumEvent do
+    project
   end
 end

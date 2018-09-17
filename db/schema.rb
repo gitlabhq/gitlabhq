@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180907015926) do
+ActiveRecord::Schema.define(version: 20180917214204) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1085,6 +1085,7 @@ ActiveRecord::Schema.define(version: 20180907015926) do
     t.integer "hashed_storage_attachments_event_id", limit: 8
     t.integer "job_artifact_deleted_event_id", limit: 8
     t.integer "upload_deleted_event_id", limit: 8
+    t.integer "reset_checksum_event_id", limit: 8
   end
 
   add_index "geo_event_log", ["repositories_changed_event_id"], name: "index_geo_event_log_on_repositories_changed_event_id", using: :btree
@@ -1092,6 +1093,7 @@ ActiveRecord::Schema.define(version: 20180907015926) do
   add_index "geo_event_log", ["repository_deleted_event_id"], name: "index_geo_event_log_on_repository_deleted_event_id", using: :btree
   add_index "geo_event_log", ["repository_renamed_event_id"], name: "index_geo_event_log_on_repository_renamed_event_id", using: :btree
   add_index "geo_event_log", ["repository_updated_event_id"], name: "index_geo_event_log_on_repository_updated_event_id", using: :btree
+  add_index "geo_event_log", ["reset_checksum_event_id"], name: "index_geo_event_log_on_reset_checksum_event_id", using: :btree
 
   create_table "geo_hashed_storage_attachments_events", id: :bigserial, force: :cascade do |t|
     t.integer "project_id", null: false
@@ -1262,6 +1264,12 @@ ActiveRecord::Schema.define(version: 20180907015926) do
 
   add_index "geo_repository_updated_events", ["project_id"], name: "index_geo_repository_updated_events_on_project_id", using: :btree
   add_index "geo_repository_updated_events", ["source"], name: "index_geo_repository_updated_events_on_source", using: :btree
+
+  create_table "geo_reset_checksum_events", id: :bigserial, force: :cascade do |t|
+    t.integer "project_id", null: false
+  end
+
+  add_index "geo_reset_checksum_events", ["project_id"], name: "index_geo_reset_checksum_events_on_project_id", using: :btree
 
   create_table "geo_upload_deleted_events", id: :bigserial, force: :cascade do |t|
     t.integer "upload_id", null: false
@@ -3079,6 +3087,7 @@ ActiveRecord::Schema.define(version: 20180907015926) do
   add_foreign_key "geo_event_log", "geo_repository_deleted_events", column: "repository_deleted_event_id", name: "fk_c4b1c1f66e", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_renamed_events", column: "repository_renamed_event_id", name: "fk_86c84214ec", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_updated_events", column: "repository_updated_event_id", on_delete: :cascade
+  add_foreign_key "geo_event_log", "geo_reset_checksum_events", column: "reset_checksum_event_id", name: "fk_cff7185ad2", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_upload_deleted_events", column: "upload_deleted_event_id", name: "fk_c1f241c70d", on_delete: :cascade
   add_foreign_key "geo_hashed_storage_attachments_events", "projects", on_delete: :cascade
   add_foreign_key "geo_hashed_storage_migrated_events", "projects", on_delete: :cascade
@@ -3089,6 +3098,7 @@ ActiveRecord::Schema.define(version: 20180907015926) do
   add_foreign_key "geo_repository_created_events", "projects", on_delete: :cascade
   add_foreign_key "geo_repository_renamed_events", "projects", on_delete: :cascade
   add_foreign_key "geo_repository_updated_events", "projects", on_delete: :cascade
+  add_foreign_key "geo_reset_checksum_events", "projects", on_delete: :cascade
   add_foreign_key "gpg_key_subkeys", "gpg_keys", on_delete: :cascade
   add_foreign_key "gpg_keys", "users", on_delete: :cascade
   add_foreign_key "gpg_signatures", "gpg_key_subkeys", on_delete: :nullify
