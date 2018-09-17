@@ -1,0 +1,5 @@
+---
+title: Fix import error when archive does not have the correct extension
+merge_request: 21765
+author:
+type: fixed
