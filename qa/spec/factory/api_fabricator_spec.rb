@@ -134,6 +134,42 @@ describe QA::Factory::ApiFabricator do
           end
         end
       end
+
+      context '#transform_api_resource' do
+        let(:factory) do
+          Class.new do
+            def self.name
+              'FooBarFactory'
+            end
+
+            def api_get_path
+              '/foo'
+            end
+
+            def api_post_path
+              '/bar'
+            end
+
+            def api_post_body
+              { name: 'John Doe' }
+            end
+
+            def transform_api_resource(resource)
+              resource[:new] = 'foobar'
+              resource
+            end
+          end
+        end
+
+        let(:resource) { { existing: 'foo', web_url: resource_web_url } }
+        let(:transformed_resource) { { existing: 'foo', new: 'foobar', web_url: resource_web_url } }
+
+        it 'transforms the resource' do
+          expect(subject).to receive(:transform_api_resource).with(resource).and_return(transformed_resource)
+
+          subject.fabricate_via_api!
+        end
+      end
     end
   end
 end

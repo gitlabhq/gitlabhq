@@ -46,7 +46,7 @@ describe QA::Factory::Dependency do
       it 'fabricates dependency' do
         subject.build!
 
-        expect(dependency).to have_received(:fabricate_via_api!)
+        expect(dependency).to have_received(:fabricate!)
       end
 
       it 'sets product in the factory' do
@@ -56,7 +56,7 @@ describe QA::Factory::Dependency do
       end
 
       it 'calls given block with dependency factory and caller factory' do
-        expect(dependency).to receive(:fabricate_via_api!).and_yield(dependency)
+        expect(dependency).to receive(:fabricate!).and_yield(dependency)
 
         subject.build!
 
@@ -71,7 +71,7 @@ describe QA::Factory::Dependency do
         it 'does not error' do
           subject.build!
 
-          expect(dependency).to have_received(:fabricate_via_api!)
+          expect(dependency).to have_received(:fabricate!)
         end
       end
     end

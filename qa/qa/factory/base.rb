@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'airborne'
 require 'forwardable'
 require 'capybara/dsl'
 
@@ -8,7 +7,6 @@ module QA
   module Factory
     class Base
       extend SingleForwardable
-      include Airborne
       include ApiFabricator
       extend Capybara::DSL
 
@@ -19,8 +17,8 @@ module QA
         raise NotImplementedError
       end
 
-      def self.fabricate!(*args, &block)
-        do_fabricate!(*args, block) do |factory|
+      def self.fabricate!(*args, &prepare_block)
+        do_fabricate!(prepare_block, *args) do |factory|
           if factory.api_support?
             log_fabrication(:do_fabricate_via_api, factory, *args)
           else
@@ -29,19 +27,19 @@ module QA
         end
       end
 
-      def self.fabricate_via_browser_ui!(*args, &block)
-        do_fabricate!(*args, block) do |factory|
+      def self.fabricate_via_browser_ui!(*args, &prepare_block)
+        do_fabricate!(prepare_block, *args) do |factory|
           log_fabrication(:do_fabricate_via_browser_ui, factory, *args)
         end
       end
 
-      def self.fabricate_via_api!(*args, &block)
-        do_fabricate!(*args, block) do |factory|
+      def self.fabricate_via_api!(*args, &prepare_block)
+        do_fabricate!(prepare_block, *args) do |factory|
           log_fabrication(:do_fabricate_via_api, factory, *args)
         end
       end
 
-      def self.do_fabricate!(*args, prepare_block)
+      def self.do_fabricate!(prepare_block, *args)
         new.tap do |factory|
           prepare_block.call(factory) if prepare_block
 
@@ -61,8 +59,8 @@ module QA
         current_url
       end
 
-      def self.do_fabricate_via_api(factory, *args)
-        factory.fabricate_via_api!(*args)
+      def self.do_fabricate_via_api(factory, *_args)
+        factory.fabricate_via_api!
       end
 
       def self.log_fabrication(method, factory, *args)

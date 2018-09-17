@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe QA::Factory::Base do
   include Support::StubENV
 
@@ -5,9 +7,7 @@ describe QA::Factory::Base do
   let(:product) { spy('product') }
   let(:product_location) { 'http://product_location' }
 
-  shared_examples 'fabrication method' do |fabrication_method_called, actual_fabrication_method = nil|
-    let(:fabrication_method_used) { actual_fabrication_method || fabrication_method_called }
-
+  shared_context 'fabrication context' do
     subject { Class.new(described_class) }
 
     before do
@@ -16,6 +16,44 @@ describe QA::Factory::Base do
       allow(subject).to receive(:current_url).and_return(product_location)
       allow(subject).to receive(:new).and_return(factory)
     end
+  end
+
+  shared_examples 'API fabrication method' do |fabrication_method_called, actual_fabrication_method = nil|
+    let(:fabrication_method_used) { actual_fabrication_method || fabrication_method_called }
+
+    include_context 'fabrication context'
+
+    it_behaves_like 'fabrication method', fabrication_method_called, actual_fabrication_method
+
+    it 'instantiates the factory and calls factory method' do
+      expect(subject).to receive(:new).and_return(factory)
+
+      subject.public_send(fabrication_method_called)
+
+      expect(factory).to have_received(fabrication_method_used)
+    end
+
+    it 'returns fabrication product' do
+      result = subject.public_send(fabrication_method_called)
+
+      expect(result).to eq product
+    end
+
+    it 'logs the factory and build method when VERBOSE=true' do
+      stub_env('VERBOSE', 'true')
+
+      expect { subject.public_send(fabrication_method_called) }
+        .to output(/Resource #{factory.class.name} built via do_fabricate_via_api/)
+        .to_stdout
+    end
+  end
+
+  shared_examples 'Browser UI fabrication method' do |fabrication_method_called, actual_fabrication_method = nil|
+    let(:fabrication_method_used) { actual_fabrication_method || fabrication_method_called }
+
+    include_context 'fabrication context'
+
+    it_behaves_like 'fabrication method', fabrication_method_called, actual_fabrication_method
 
     it 'instantiates the factory and calls factory method' do
       expect(subject).to receive(:new).and_return(factory)
@@ -31,6 +69,20 @@ describe QA::Factory::Base do
       expect(result).to eq product
     end
 
+    it 'logs the factory and build method when VERBOSE=true' do
+      stub_env('VERBOSE', 'true')
+
+      expect { subject.public_send(fabrication_method_called, 'something') }
+        .to output(/Resource #{factory.class.name} built via do_fabricate_via_browser_ui/)
+        .to_stdout
+    end
+  end
+
+  shared_examples 'fabrication method' do |fabrication_method_called, actual_fabrication_method = nil|
+    let(:fabrication_method_used) { actual_fabrication_method || fabrication_method_called }
+
+    include_context 'fabrication context'
+
     it 'yields factory before calling factory method' do
       allow(subject).to receive(:new).and_return(factory)
 
@@ -40,15 +92,6 @@ describe QA::Factory::Base do
 
       expect(factory).to have_received(:something!).ordered
       expect(factory).to have_received(fabrication_method_used).ordered
-    end
-
-    it 'logs the factory and build method when VERBOSE=true' do
-      stub_env('VERBOSE', 'true')
-
-      via = fabrication_method_used == :fabricate_via_api! ? 'api' : 'browser_ui'
-      expect { subject.public_send(fabrication_method_called, 'something') }
-        .to output(/Resource #{factory.class.name} built via do_fabricate_via_#{via}/)
-        .to_stdout
     end
 
     it 'does not log the factory and build method when VERBOSE=false' do
@@ -66,7 +109,7 @@ describe QA::Factory::Base do
         allow(factory).to receive(:api_support?).and_return(false)
       end
 
-      it_behaves_like 'fabrication method', :fabricate!
+      it_behaves_like 'Browser UI fabrication method', :fabricate!
     end
 
     context 'when factory supports fabrication via the API' do
@@ -74,16 +117,16 @@ describe QA::Factory::Base do
         allow(factory).to receive(:api_support?).and_return(true)
       end
 
-      it_behaves_like 'fabrication method', :fabricate!, :fabricate_via_api!
+      it_behaves_like 'API fabrication method', :fabricate!, :fabricate_via_api!
     end
   end
 
   describe '.fabricate_via_api!' do
-    it_behaves_like 'fabrication method', :fabricate_via_api!
+    it_behaves_like 'API fabrication method', :fabricate_via_api!
   end
 
   describe '.fabricate_via_browser_ui!' do
-    it_behaves_like 'fabrication method', :fabricate_via_browser_ui!, :fabricate!
+    it_behaves_like 'Browser UI fabrication method', :fabricate_via_browser_ui!, :fabricate!
   end
 
   describe '.dependency' do
@@ -130,7 +173,7 @@ describe QA::Factory::Base do
       end
 
       it 'builds all dependencies first' do
-        expect(dependency).to receive(:fabricate_via_api!).once
+        expect(dependency).to receive(:fabricate!).once
 
         subject.fabricate!
       end
@@ -138,44 +181,78 @@ describe QA::Factory::Base do
   end
 
   describe '.product' do
-    subject do
-      Class.new(described_class) do
-        def fabricate!
-          "any"
+    context 'when the product is produced via the browser' do
+      subject do
+        Class.new(described_class) do
+          def fabricate!
+            "any"
+          end
+
+          # Defined only to be stubbed
+          def self.find_page
+          end
+
+          product :token do
+            find_page.do_something_on_page!
+            'resulting value'
+          end
+        end
+      end
+
+      it 'appends new product attribute' do
+        expect(subject.attributes).to be_one
+        expect(subject.attributes).to have_key(:token)
+      end
+
+      describe 'populating fabrication product with data' do
+        let(:page) { spy('page') }
+
+        before do
+          allow(QA::Factory::Product).to receive(:new).and_return(product)
+          allow(product).to receive(:page).and_return(page)
+          allow(subject).to receive(:current_url).and_return(product_location)
+          allow(subject).to receive(:find_page).and_return(page)
         end
 
-        # Defined only to be stubbed
-        def self.find_page
-        end
+        it 'populates product after fabrication' do
+          subject.fabricate!
 
-        product :token do
-          find_page.do_something_on_page!
-          'resulting value'
+          expect(product.token).to eq 'resulting value'
+          expect(page).to have_received(:do_something_on_page!)
         end
       end
     end
 
-    it 'appends new product attribute' do
-      expect(subject.attributes).to be_one
-      expect(subject.attributes).to have_key(:token)
-    end
+    context 'when the product is producted via the API' do
+      subject do
+        Class.new(described_class) do
+          def fabricate!
+            "any"
+          end
 
-    describe 'populating fabrication product with data' do
-      let(:page) { spy('page') }
-
-      before do
-        allow(factory).to receive(:class).and_return(subject)
-        allow(QA::Factory::Product).to receive(:new).and_return(product)
-        allow(product).to receive(:page).and_return(page)
-        allow(subject).to receive(:current_url).and_return(product_location)
-        allow(subject).to receive(:find_page).and_return(page)
+          product :token
+        end
       end
 
-      it 'populates product after fabrication' do
-        subject.fabricate!
+      it 'appends new product attribute' do
+        expect(subject.attributes).to be_one
+        expect(subject.attributes).to have_key(:token)
+      end
 
-        expect(product.token).to eq 'resulting value'
-        expect(page).to have_received(:do_something_on_page!)
+      describe 'populating fabrication product with data' do
+        before do
+          allow(subject).to receive(:new).and_return(factory)
+          allow(factory).to receive(:class).and_return(subject)
+          allow(factory).to receive(:api_support?).and_return(true)
+          allow(factory).to receive(:api_resource).and_return({ token: 'resulting value' })
+          allow(QA::Factory::Product).to receive(:new).and_return(product)
+        end
+
+        it 'populates product after fabrication' do
+          subject.fabricate!
+
+          expect(product.token).to eq 'resulting value'
+        end
       end
     end
   end

@@ -28,7 +28,7 @@ module QA
         end
 
         def fabricate!
-          @dependency_factory.fabricate_via_api! do |factory|
+          @dependency_factory.fabricate! do |factory|
             @dependency_factory_block&.call(factory, @caller_factory)
           end
         end

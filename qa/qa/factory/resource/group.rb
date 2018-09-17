@@ -6,9 +6,7 @@ module QA
 
         dependency Factory::Resource::Sandbox, as: :sandbox
 
-        product :id do |factory|
-          factory.api_resource ? factory.api_resource[:id] : raise('Unknown id')
-        end
+        product :id
 
         def initialize
           @path = Runtime::Namespace.name

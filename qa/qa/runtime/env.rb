@@ -3,7 +3,7 @@ module QA
     module Env
       extend self
 
-      attr_writer :user_type
+      attr_writer :personal_access_token
 
       def verbose?
         enabled?(ENV['VERBOSE'])
@@ -29,10 +29,6 @@ module QA
       # specifies token that can be used for the api
       def personal_access_token
         @personal_access_token ||= ENV['PERSONAL_ACCESS_TOKEN']
-      end
-
-      def personal_access_token=(new_personal_access_token)
-        @personal_access_token = new_personal_access_token # rubocop:disable Gitlab/ModuleWithInstanceVariables
       end
 
       def user_username

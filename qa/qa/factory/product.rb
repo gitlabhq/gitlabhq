@@ -21,7 +21,7 @@ module QA
         new(web_url).tap do |product|
           factory.class.attributes.each_value do |attribute|
             product.instance_exec(factory, attribute.block) do |factory, block|
-              value = block.call(factory)
+              value = factory.api_resource&.dig(attribute.name) || block.call(factory)
               product.define_singleton_method(attribute.name) { value }
             end
           end

@@ -9,27 +9,11 @@ module QA
 
         dependency Factory::Resource::Group, as: :group
 
-        product :name do |factory|
-          factory.name
-        end
+        product :name
 
-        product :repository_ssh_location do |factory|
-          if factory.api_resource
-            factory.api_resource[:ssh_url_to_repo]
-          else
-            Page::Project::Show.act do
-              choose_repository_clone_ssh
-              repository_location
-            end
-          end
-        end
+        product :repository_ssh_location
 
-        product :repository_http_location do
-          Page::Project::Show.act do
-            choose_repository_clone_http
-            repository_location
-          end
-        end
+        product :repository_http_location
 
         def initialize
           @description = 'My awesome project'
@@ -69,6 +53,14 @@ module QA
             description: description,
             visibility: 'public'
           }
+        end
+
+        private
+
+        def transform_api_resource(resource)
+          resource[:repository_ssh_location] = Git::Location.new(resource[:ssh_url_to_repo])
+          resource[:repository_http_location] = Git::Location.new(resource[:http_url_to_repo])
+          resource
         end
       end
     end

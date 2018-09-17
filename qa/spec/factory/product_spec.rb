@@ -3,29 +3,50 @@ describe QA::Factory::Product do
     QA::Factory::Base.new
   end
 
-  let(:attributes) do
-    { test: QA::Factory::Product::Attribute.new(:test, proc { 'returned' }) }
-  end
-
   let(:product) { spy('product') }
   let(:product_location) { 'http://product_location' }
 
   subject { described_class.new(product_location) }
 
-  before do
-    allow(QA::Factory::Base).to receive(:attributes).and_return(attributes)
-  end
-
   describe '.populate!' do
-    it 'returns a fabrication product and define factory attributes as its methods' do
-      expect(described_class).to receive(:new).with(product_location).and_return(product)
+    before do
+      allow(QA::Factory::Base).to receive(:attributes).and_return(attributes)
+    end
 
-      result = described_class.populate!(factory, product_location) do |instance|
-        instance.something = 'string'
+    context 'when the product is produced via the browser' do
+      let(:attributes) do
+        { test: QA::Factory::Product::Attribute.new(:test, proc { 'returned' }) }
       end
 
-      expect(result).to be product
-      expect(result.test).to eq('returned')
+      it 'returns a fabrication product and defines factory attributes as its methods' do
+        expect(described_class).to receive(:new).with(product_location).and_return(product)
+
+        result = described_class.populate!(factory, product_location) do |instance|
+          instance.something = 'string'
+        end
+
+        expect(result).to be product
+        expect(result.test).to eq('returned')
+      end
+    end
+
+    context 'when the product is produced via the api' do
+      let(:attributes) do
+        { test: QA::Factory::Product::Attribute.new(:test) }
+      end
+
+      it 'returns a fabrication product and defines factory attributes as its methods' do
+        allow(factory).to receive(:api_resource).and_return({ test: 'returned' })
+
+        expect(described_class).to receive(:new).with(product_location).and_return(product)
+
+        result = described_class.populate!(factory, product_location) do |instance|
+          instance.something = 'string'
+        end
+
+        expect(result).to be product
+        expect(result.test).to eq('returned')
+      end
     end
   end
 

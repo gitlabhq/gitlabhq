@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 require 'airborne'
+require 'active_support/core_ext/object/deep_dup'
 
 module QA
   module Factory
@@ -9,7 +12,7 @@ module QA
       ResourceFabricationFailedError = Class.new(RuntimeError)
       ResourceURLMissingError = Class.new(RuntimeError)
 
-      attr_reader :api_resource
+      attr_reader :api_resource, :api_response
 
       def api_get_path
         raise NotImplementedError, "Factory #{self.class.name} does not support fabrication via the API!"
@@ -24,13 +27,15 @@ module QA
         false
       end
 
-      def fabricate_via_api!(*_args)
+      def fabricate_via_api!
         resource_web_url(api_get)
       rescue ResourceNotFoundError
         resource_web_url(api_post)
       end
 
       private
+
+      attr_writer :api_resource, :api_response
 
       def resource_web_url(resource)
         unless resource.key?(:web_url)
@@ -43,26 +48,26 @@ module QA
       def api_get
         url = Runtime::API::Request.new(api_client, api_get_path).url
         response = get(url)
-        resource = parse_body(response)
+        parsed_response = parse_body(response)
 
         unless response.code == 200
-          raise ResourceNotFoundError, "Resource at #{url} could not be found (#{response.code}): `#{resource}`."
+          raise ResourceNotFoundError, "Resource at #{url} could not be found (#{response.code}): `#{parsed_response}`."
         end
 
-        store_resource(resource)
+        process_api_response(parsed_response)
       end
 
       def api_post
         response = post(
           Runtime::API::Request.new(api_client, api_post_path).url,
           api_post_body)
-        resource = parse_body(response)
+        parsed_response = parse_body(response)
 
         unless response.code == 201
-          raise ResourceFabricationFailedError, "Fabrication of #{self.class.name} using the API failed (#{response.code}) with `#{resource}`."
+          raise ResourceFabricationFailedError, "Fabrication of #{self.class.name} using the API failed (#{response.code}) with `#{parsed_response}`."
         end
 
-        store_resource(resource)
+        process_api_response(parsed_response)
       end
 
       def api_client
@@ -73,8 +78,13 @@ module QA
         JSON.parse(response.body, symbolize_names: true)
       end
 
-      def store_resource(resource)
-        @api_resource ||= resource
+      def process_api_response(parsed_response)
+        self.api_response = parsed_response
+        self.api_resource = transform_api_resource(parsed_response.deep_dup)
+      end
+
+      def transform_api_resource(resource)
+        resource
       end
     end
   end

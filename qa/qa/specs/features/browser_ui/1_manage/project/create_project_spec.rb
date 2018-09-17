@@ -7,17 +7,24 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.act { sign_in_using_credentials }
 
-        created_project = Factory::Resource::Project.fabricate! do |project|
-          project.name = 'awesome-project'
-          project.description = 'create awesome project test'
+        group = Factory::Resource::Group.fabricate!
+        group.visit!
+        Page::Group::Show.act { go_to_new_project }
+
+        name = "awesome-project-#{SecureRandom.hex(8)}"
+
+        Page::Project::New.perform do |page|
+          page.choose_test_namespace
+          page.choose_name(name)
+          page.add_description('create awesome project test')
+          page.set_visibility('Public')
+          page.create_new_project
         end
 
-        expect(created_project.name).to match /^awesome-project-\h{16}$/
-
+        expect(page).to have_content(name)
         expect(page).to have_content(
           /Project \S?awesome-project\S+ was successfully created/
         )
-
         expect(page).to have_content('create awesome project test')
         expect(page).to have_content('The repository for this project is empty')
       end
