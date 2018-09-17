@@ -254,7 +254,7 @@ export function getDiffPositionByLineCode(diffFiles) {
 
 // This method will check whether the discussion is still applicable
 // to the diff line in question regarding different versions of the MR
-export function isDiscussionApplicableToLine(discussion, diffPosition) {
+export function isDiscussionApplicableToLine(discussion, diffPosition, latestDiff) {
   const { lineCode, ...diffPositionCopy } = diffPosition;
 
   if (discussion.original_position && discussion.position) {
@@ -264,5 +264,5 @@ export function isDiscussionApplicableToLine(discussion, diffPosition) {
     return _.isEqual(refs, diffPositionCopy) || _.isEqual(originalRefs, diffPositionCopy);
   }
 
-  return discussion.active && lineCode === discussion.line_code;
+  return latestDiff && discussion.active && lineCode === discussion.line_code;
 }

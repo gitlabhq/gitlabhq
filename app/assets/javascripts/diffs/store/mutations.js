@@ -86,8 +86,6 @@ export default {
   },
 
   [types.SET_LINE_DISCUSSIONS_FOR_FILE](state, { fileHash, discussions, diffPositionByLineCode }) {
-    if (!state.latestDiff) return;
-
     const selectedFile = state.diffFiles.find(f => f.fileHash === fileHash);
     const firstDiscussion = discussions[0];
     const isDiffDiscussion = firstDiscussion.diff_discussion;
@@ -99,7 +97,7 @@ export default {
       isDiffDiscussion &&
       hasLineCode &&
       diffPosition &&
-      isDiscussionApplicableToLine(firstDiscussion, diffPosition)
+      isDiscussionApplicableToLine(firstDiscussion, diffPosition, state.latestDiff)
     ) {
       const targetLine = selectedFile.parallelDiffLines.find(
         line =>
