@@ -160,7 +160,7 @@ describe 'Merge request > User sees merge widget', :js do
     end
   end
 
-  context 'view merge request where project has CI setup but no CI status' do
+  context 'view merge request where project has CI set up but no CI status' do
     before do
       pipeline = create(:ci_pipeline, project: project,
                                       sha: merge_request.diff_head_sha,
@@ -178,7 +178,7 @@ describe 'Merge request > User sees merge widget', :js do
     end
   end
 
-  context 'view merge request in project with only-mwps setting enabled but no CI is setup' do
+  context 'view merge request in project with only-mwps setting enabled but no CI is set up' do
     before do
       visit project_merge_request_path(project_only_mwps, merge_request_in_only_mwps_project)
     end
