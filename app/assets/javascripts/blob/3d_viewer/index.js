@@ -29,12 +29,12 @@ export default class Renderer {
 
     this.scene.add(this.camera);
 
-    // Setup the viewer
+    // Set up the viewer
     this.setupRenderer();
     this.setupGrid();
     this.setupLight();
 
-    // Setup OrbitControls
+    // Set up OrbitControls
     this.controls = new OrbitControls(
       this.camera,
       this.renderer.domElement,

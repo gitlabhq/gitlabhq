@@ -760,8 +760,8 @@ test:
     host: localhost
     port: 80
 
-    # When you run tests we clone and setup gitlab-shell
-    # In order to setup it correctly you need to specify
+    # When you run tests we clone and set up gitlab-shell
+    # In order to set it up correctly you need to specify
     # your system username you use to run GitLab
     # user: YOUR_USERNAME
   pages:
