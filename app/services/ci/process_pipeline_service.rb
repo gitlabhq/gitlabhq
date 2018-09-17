@@ -53,7 +53,7 @@ module Ci
         %w[failed]
       when 'always'
         %w[success failed skipped]
-      when 'manual'
+      when 'manual', 'delayed'
         %w[success skipped]
       else
         []

@@ -2,7 +2,7 @@ module Gitlab
   module Ci
     module Status
       module Build
-        class ManualWithAutoPlay < Status::Extended
+        class Delayed < Status::Extended
           ###
           # TODO: Those are random values. We have to fix accoding to the UX review
           ###
@@ -43,7 +43,7 @@ module Gitlab
           end
 
           def self.matches?(build, user)
-            build.autoplay? && !build.canceled?
+            build.delayed? && !build.canceled?
           end
         end
       end

@@ -5,7 +5,7 @@ module Gitlab
         class Factory < Status::Factory
           def self.extended_statuses
             [[Status::Build::Erased,
-              Status::Build::ManualWithAutoPlay,
+              Status::Build::Delayed,
               Status::Build::Manual,
               Status::Build::Canceled,
               Status::Build::Created,

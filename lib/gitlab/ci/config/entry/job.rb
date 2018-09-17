@@ -10,7 +10,7 @@ module Gitlab
           include Attributable
 
           ALLOWED_KEYS = %i[tags script only except type image services
-                            allow_failure type stage when autoplay_in artifacts cache
+                            allow_failure type stage when start_in artifacts cache
                             dependencies before_script after_script variables
                             environment coverage retry extends].freeze
 
@@ -28,7 +28,7 @@ module Gitlab
                                                 greater_than_or_equal_to: 0,
                                                 less_than_or_equal_to: 2 }
               validates :when,
-                inclusion: { in: %w[on_success on_failure always manual],
+                inclusion: { in: %w[on_success on_failure always manual delayed],
                              message: 'should be on_success, on_failure, ' \
                                       'always or manual' }
 
@@ -36,11 +36,11 @@ module Gitlab
               validates :extends, type: String
 
               with_options if: :manual_action? do
-                validates :autoplay_in, duration: true, allow_nil: true
+                validates :start_in, duration: true, allow_nil: true
               end
 
               with_options unless: :manual_action? do
-                validates :autoplay_in, presence: false
+                validates :start_in, presence: false
               end
             end
           end
@@ -92,7 +92,7 @@ module Gitlab
                   :artifacts, :commands, :environment, :coverage, :retry
 
           attributes :script, :tags, :allow_failure, :when, :dependencies,
-                     :retry, :extends, :autoplay_in
+                     :retry, :extends, :start_in
 
           def compose!(deps = nil)
             super do
@@ -119,7 +119,7 @@ module Gitlab
           end
 
           def manual_action?
-            self.when == 'manual'
+            self.when == 'manual' || self.when == 'delayed'
           end
 
           def ignored?
