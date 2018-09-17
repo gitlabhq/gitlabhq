@@ -188,6 +188,7 @@ export default {
     >
       <component
         v-for="discussion in allDiscussions"
+        v-if="!discussion.notes[0].system"
         :is="getComponentName(discussion)"
         v-bind="getComponentData(discussion)"
         :key="discussion.id"
