@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 shared_examples_for 'a Geo event store' do |event_class|
-  context 'running on a secondary node' do
+  context 'when running on a secondary node' do
     before do
       stub_secondary_node
     end
