@@ -1,8 +1,9 @@
 module API
   class Boards < Grape::API
     include BoardsResponses
-    include EE::API::BoardsResponses
     include PaginationParams
+
+    prepend EE::API::BoardsResponses
 
     before { authenticate! }
 

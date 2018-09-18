@@ -3,7 +3,7 @@ module EE
     module BoardsResponses
       extend ActiveSupport::Concern
 
-      included do
+      prepended do
         helpers do
           def create_board
             forbidden! unless board_parent.multiple_issue_boards_available?
