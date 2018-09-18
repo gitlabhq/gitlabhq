@@ -151,7 +151,7 @@ the remaining issues on the GitHub issue tracker.
 
 ## I want to contribute!
 
-If you want to contribute to GitLab, [issues in the  `Backlog (Accepting merge requests)` milestone with small weight][https://gitlab.com/gitlab-org/gitlab-ce/issues?scope=all&utf8=✓&state=opened&assignee_id=0&milestone_title=Backlog%20(Accepting%20merge%20requests)]
+If you want to contribute to GitLab, [issues in the Backlog (Accepting merge requests)](https://gitlab.com/gitlab-org/gitlab-ce/issues?scope=all&utf8=✓&state=opened&assignee_id=0&milestone_title=Backlog%20&#40;Accepting%20merge%20requests&#41;)
 are a great place to start. Issues with a lower weight (1 or 2) are deemed
 suitable for beginners. These issues will be of reasonable size and challenge,
 for anyone to start contributing to GitLab. If you have any questions or need help visit [Getting Help](https://about.gitlab.com/getting-help/#discussion) to
