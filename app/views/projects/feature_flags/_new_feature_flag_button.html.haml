@@ -1,0 +1,3 @@
+- if can?(current_user, :create_feature_flags, @project)
+  = link_to new_project_feature_flag_path(@project), class: 'btn btn-new' do
+    = s_('FeatureFlags|New Feature Flag')
