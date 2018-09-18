@@ -271,8 +271,8 @@ describe('DiffsStoreActions', () => {
 
       startRenderDiffsQueue({ state, commit: pseudoCommit });
 
-      expect(state.diffFiles[0].renderIt).toBeTruthy();
-      expect(state.diffFiles[1].renderIt).toBeTruthy();
+      expect(state.diffFiles[0].renderIt).toBe(true);
+      expect(state.diffFiles[1].renderIt).toBe(true);
     });
   });
 

@@ -55,7 +55,7 @@ export function getNoteFormData(params) {
     note_project_id: '',
     target_type: noteableData.targetType,
     target_id: noteableData.id,
-    return_discussion: 'true',
+    return_discussion: true,
     note: {
       note,
       position,
