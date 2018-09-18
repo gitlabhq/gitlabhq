@@ -17,9 +17,12 @@
       = f.text_area :description, class: "form-control", id: "feature_flag_description", rows: 4
   .row
     .form-group.col-md-1
-      = f.label :active, class: 'label-light', for: 'feature_flag_status' do
+      = f.label :active, class: 'label-light' do
         = s_('FeatureFlags|Status')
-      = f.check_box :active, class: "form-control", id: "feature_flag_status", rows: 4
+      .form-check
+        = f.check_box :active, id: 'feature_flag_status', class: 'form-check-input'
+        = f.label :active, for: 'feature_flag_status', class: 'form-check-label' do
+          = s_('FeatureFlags|Active')
 .form-actions
   - if @feature_flag.persisted?
     = f.submit 'Save changes', class: "btn btn-save"
