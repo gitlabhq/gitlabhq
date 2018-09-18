@@ -11,10 +11,5 @@
       = link_to new_project_feature_flag_path(@project), class: 'btn btn-new' do
         = s_('FeatureFlags|New Feature Flag')
 
-%p.light
-  With GitLab Feature Flags
-
-%hr.clearfix
-
 = render 'configure_feature_flags_modal'
-= render 'list'
+= render 'table'
