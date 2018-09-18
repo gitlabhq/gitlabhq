@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
           username: parsedUserData.username,
           avatar_url: parsedUserData.avatar_path || parsedUserData.avatar_url,
           path: parsedUserData.path,
+          user_preference: parsedUserData.user_preference
         };
       }
 

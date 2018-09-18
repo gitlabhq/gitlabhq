@@ -1017,11 +1017,16 @@ describe Projects::IssuesController do
       end
 
       context 'when user has set discussion filter to comments only' do
-        before do
-          user.set_discussion_filter(UserPreference::DISCUSSION_FILTERS[:comments], issue)
+        it 'sets discussion filter' do
+          discussion_filter = UserPreference::DISCUSSION_FILTERS[:comments]
+
+          get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid, discussion_filter: discussion_filter
+
+          expect(user.reload.discussion_filter(issue)).to eq(discussion_filter)
         end
 
         it 'returns no system note' do
+          user.set_discussion_filter(UserPreference::DISCUSSION_FILTERS[:comments], issue)
           create(:discussion_note_on_issue, :system, noteable: issue, project: issue.project)
 
           get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
