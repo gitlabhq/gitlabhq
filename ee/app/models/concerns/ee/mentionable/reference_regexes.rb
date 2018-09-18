@@ -10,10 +10,9 @@ module EE
 
         override :other_patterns
         def other_patterns
-          [
-            ::Epic.reference_pattern,
-            *super
-          ]
+          super.unshift(
+            ::Epic.reference_pattern
+          )
         end
       end
     end

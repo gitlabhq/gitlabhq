@@ -8,7 +8,9 @@ module EE
 
     override :extracted_mentionables
     def extracted_mentionables(refs)
-      super + refs.epics
+      super.concat(
+        refs.epics
+      )
     end
   end
 end
