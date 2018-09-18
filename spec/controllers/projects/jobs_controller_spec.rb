@@ -229,6 +229,114 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           expect(json_response['deployment_status']["environment"]).not_to be_nil
         end
       end
+
+      context 'when user can edit runner' do
+        context 'that belongs to the project' do
+          let(:runner) { create(:ci_runner, :project, projects: [project]) }
+          let(:job) { create(:ci_build, :success, pipeline: pipeline, runner: runner) }
+
+          before do
+            project.add_maintainer(user)
+            sign_in(user)
+
+            get_show(id: job.id, format: :json)
+          end
+
+          it 'user can edit runner' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('job/job_details')
+            expect(json_response['runner']).to have_key('edit_path')
+          end
+        end
+
+        context 'that belongs to group' do
+          let(:group) { create(:group) }
+          let(:runner) { create(:ci_runner, :group, groups: [group]) }
+          let(:job) { create(:ci_build, :success, pipeline: pipeline, runner: runner) }
+          let(:user) { create(:user, :admin) }
+
+          before do
+            project.add_maintainer(user)
+            sign_in(user)
+
+            get_show(id: job.id, format: :json)
+          end
+
+          it 'user can not edit runner' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('job/job_details')
+            expect(json_response['runner']).not_to have_key('edit_path')
+          end
+        end
+
+        context 'that belongs to instance' do
+          let(:runner) { create(:ci_runner, :instance) }
+          let(:job) { create(:ci_build, :success, pipeline: pipeline, runner: runner) }
+          let(:user) { create(:user, :admin) }
+
+          before do
+            project.add_maintainer(user)
+            sign_in(user)
+
+            get_show(id: job.id, format: :json)
+          end
+
+          it 'user can not edit runner' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('job/job_details')
+            expect(json_response['runner']).not_to have_key('edit_path')
+          end
+        end
+      end
+
+      context 'when no runners are available' do
+        let(:runner) { create(:ci_runner, :instance, active: false) }
+        let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner: runner) }
+
+        it 'exposes needed information' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('job/job_details')
+          expect(json_response['runners']['online']).to be false
+          expect(json_response['runners']['available']).to be false
+        end
+      end
+
+      context 'when no runner is online' do
+        let(:runner) { create(:ci_runner, :instance) }
+        let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner: runner) }
+
+        it 'exposes needed information' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('job/job_details')
+          expect(json_response['runners']['online']).to be false
+          expect(json_response['runners']['available']).to be true
+        end
+      end
+
+      context 'settings_path' do
+        context 'when user is developer' do
+          it 'settings_path is not available' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('job/job_details')
+            expect(json_response['runners']).not_to have_key('settings_path')
+          end
+        end
+
+        context 'when user is maintainer' do
+          let(:user) { create(:user, :admin) }
+
+          before do
+            project.add_maintainer(user)
+            sign_in(user)
+          end
+
+          it 'settings_path is available' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('job/job_details')
+            expect(json_response['runners']['settings_path']).to match(/runners/)
+          end
+        end
+      end
     end
 
     context 'when requesting JSON job is triggered' do

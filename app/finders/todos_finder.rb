@@ -164,16 +164,13 @@ class TodosFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def by_group(items)
-    if group?
-      groups = group.self_and_descendants
-      project_todos = items.where(project_id: Project.where(group: groups).select(:id))
-      group_todos = items.where(group_id: groups.select(:id))
+    return items unless group?
 
-      union = Gitlab::SQL::Union.new([project_todos, group_todos])
-      items = Todo.from("(#{union.to_sql}) #{Todo.table_name}")
-    end
+    groups = group.self_and_descendants
+    project_todos = items.where(project_id: Project.where(group: groups).select(:id))
+    group_todos = items.where(group_id: groups.select(:id))
 
-    items
+    Todo.from_union([project_todos, group_todos])
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

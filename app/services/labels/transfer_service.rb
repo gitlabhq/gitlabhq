@@ -34,13 +34,13 @@ module Labels
 
     # rubocop: disable CodeReuse/ActiveRecord
     def labels_to_transfer
-      label_ids = []
-      label_ids << group_labels_applied_to_issues.select(:id)
-      label_ids << group_labels_applied_to_merge_requests.select(:id)
-
-      union = Gitlab::SQL::Union.new(label_ids)
-
-      Label.where("labels.id IN (#{union.to_sql})").reorder(nil).uniq # rubocop:disable GitlabSecurity/SqlInjection
+      Label
+        .from_union([
+          group_labels_applied_to_issues,
+          group_labels_applied_to_merge_requests
+        ])
+        .reorder(nil)
+        .uniq
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

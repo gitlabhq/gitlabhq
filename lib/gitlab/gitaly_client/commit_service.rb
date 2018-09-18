@@ -172,6 +172,17 @@ module Gitlab
         consume_commits_response(response)
       end
 
+      def diff_stats(left_commit_sha, right_commit_sha)
+        request = Gitaly::DiffStatsRequest.new(
+          repository: @gitaly_repo,
+          left_commit_id: left_commit_sha,
+          right_commit_id: right_commit_sha
+        )
+
+        response = GitalyClient.call(@repository.storage, :diff_service, :diff_stats, request, timeout: GitalyClient.medium_timeout)
+        response.flat_map(&:stats)
+      end
+
       def find_all_commits(opts = {})
         request = Gitaly::FindAllCommitsRequest.new(
           repository: @gitaly_repo,
