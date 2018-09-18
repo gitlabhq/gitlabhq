@@ -268,13 +268,15 @@ describe GitPushService do
 
     describe 'system hooks' do
       let!(:push_data) { push_data_from_service(project, user, oldrev, newrev, ref) }
-      let(:system_hooks_service) { SystemHooksService.new }
+      let!(:system_hooks_service) { SystemHooksService.new }
 
       it "sends a system hook after pushing a branch" do
-        expect(SystemHooksService).to receive(:new).and_return(system_hooks_service)
-        expect(system_hooks_service).to receive(:execute_hooks).with(push_data, :push_hooks)
+        allow(SystemHooksService).to receive(:new).and_return(system_hooks_service)
+        allow(system_hooks_service).to receive(:execute_hooks)
 
         execute_service(project, user, oldrev, newrev, ref)
+
+        expect(system_hooks_service).to have_received(:execute_hooks).with(push_data, :push_hooks)
       end
     end
   end

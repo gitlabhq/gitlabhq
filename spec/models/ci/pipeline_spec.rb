@@ -1160,7 +1160,11 @@ describe Ci::Pipeline, :mailer do
   end
 
   describe '#set_config_source' do
-    context 'when pipelines does not contain needed data' do
+    context 'when pipelines does not contain needed data and auto devops is disabled' do
+      before do
+        stub_application_setting(auto_devops_enabled: false)
+      end
+
       it 'defines source to be unknown' do
         pipeline.set_config_source
 
@@ -1205,7 +1209,6 @@ describe Ci::Pipeline, :mailer do
 
         context 'auto devops enabled' do
           before do
-            stub_application_setting(auto_devops_enabled: true)
             allow(project).to receive(:ci_config_path) { 'custom' }
           end
 
