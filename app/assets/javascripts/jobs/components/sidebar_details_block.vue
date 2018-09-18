@@ -130,7 +130,7 @@ export default {
         <a
           v-if="job.new_issue_path"
           :href="job.new_issue_path"
-          class="js-new-issue btn btn-new btn-inverted"
+          class="js-new-issue btn btn-success btn-inverted"
         >
           {{ __('New issue') }}
         </a>

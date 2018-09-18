@@ -111,7 +111,7 @@
             .prepend-top-10
               = select_tag :access_level, options_for_select(GroupMember.access_level_roles), class: "project-access-select select2"
             %hr
-            = button_tag _('Add users to group'), class: "btn btn-create"
+            = button_tag _('Add users to group'), class: "btn btn-success"
       = render 'shared/members/requests', membership_source: @group, requesters: @requesters, force_mobile_view: true
 
     .card

@@ -103,7 +103,7 @@ describe 'Comments on personal snippets', :js do
 
       page.within('.current-note-edit-form') do
         fill_in 'note[note]', with: 'new content'
-        find('.btn-save').click
+        find('.btn-success').click
       end
 
       page.within("#notes-list li#note_#{snippet_notes[0].id}") do
