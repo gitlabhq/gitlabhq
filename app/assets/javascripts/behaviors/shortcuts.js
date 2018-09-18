@@ -1,4 +1,4 @@
-import Shortcuts from '../shortcuts';
+import Shortcuts from './shortcuts/shortcuts';
 
 export default function initPageShortcuts() {
   const { page } = document.body.dataset;

@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import ProjectFindFile from '~/project_find_file';
-import ShortcutsFindFile from '~/shortcuts_find_file';
+import ShortcutsFindFile from '~/behaviors/shortcuts/shortcuts_find_file';
 
 document.addEventListener('DOMContentLoaded', () => {
   const findElement = document.querySelector('.js-file-finder');

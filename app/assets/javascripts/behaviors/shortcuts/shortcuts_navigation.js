@@ -1,5 +1,5 @@
 import Mousetrap from 'mousetrap';
-import findAndFollowLink from './lib/utils/navigation_utility';
+import findAndFollowLink from '../../lib/utils/navigation_utility';
 import Shortcuts from './shortcuts';
 
 export default class ShortcutsNavigation extends Shortcuts {
