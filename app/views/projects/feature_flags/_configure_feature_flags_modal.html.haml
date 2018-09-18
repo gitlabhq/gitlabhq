@@ -1,0 +1,56 @@
+#configure-feature-flags-modal.modal{ tabindex: -1,
+  role: 'dialog' }
+  .modal-dialog{ role: 'document' }
+    .modal-content
+      .modal-header
+        %h5.modal-title
+          = s_('FeatureFlags|Configure feature flags')
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: _('Close') } }
+          %span{ "aria-hidden": true } &times;
+      .modal-body
+        %p
+          = s_('FeatureFlags|Install a compatible client library and specify the API URL, application name, and instance ID during the configuration setup.')
+          = link_to s_('FeatureFlags|More information'), '#'
+
+        .form-group
+          = label_tag :api_url, s_('FeatureFlags|API URL'), class: 'label-light'
+          .input-group
+            - unleash_api_url = "#{root_url(only_path: false)}api/v4/unleash"
+            = text_field_tag :api_url,
+              unleash_api_url,
+              readonly: true,
+              class: "form-control js-select-on-focus"
+            %span.input-group-append
+              = clipboard_button(target: '#api_url',
+                title: _("Copy URL to clipboard"),
+                placement: "left",
+                container: '#configure-feature-flags-modal',
+                class: "input-group-text btn btn-default")
+
+        .form-group
+          = label_tag :application_name, s_('FeatureFlags|Application name'), class: 'label-light'
+          .input-group
+            = text_field_tag :application_name,
+              @project.id,
+              readonly: true,
+              class: "form-control js-select-on-focus"
+            %span.input-group-append
+              = clipboard_button(target: '#application_name',
+                title: _("Copy name to clipboard"),
+                placement: "left",
+                container: '#configure-feature-flags-modal',
+                class: "input-group-text btn btn-default")
+
+        .form-group
+          = label_tag :instance_id, s_('FeatureFlags|Instance ID'), class: 'label-light'
+          .input-group
+            = text_field_tag :instance_id,
+              @unleash_instanceid,
+              readonly: true,
+              class: "form-control js-select-on-focus"
+            %span.input-group-append
+              = clipboard_button(target: '#instance_id',
+                title: _("Copy ID to clipboard"),
+                placement: "left",
+                container: '#configure-feature-flags-modal',
+                class: "input-group-text btn btn-default")
