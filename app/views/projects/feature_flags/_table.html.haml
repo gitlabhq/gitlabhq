@@ -1,0 +1,33 @@
+
+.table-holder.border-top
+  .gl-responsive-table-row.table-row-header{ role: 'row' }
+    .table-section.section-10{ role: 'columnheader' }= s_('FeatureFlags|Status')
+    .table-section.section-50{ role: 'columnheader' }= s_('FeatureFlags|Feature flag')
+  - if @feature_flags.empty?
+    .nothing-here-block
+      = s_('FeatureFlags|No feature flags found.')
+  - else
+    - @feature_flags.each do |feature_flag|
+      = render 'delete_feature_flag_modal', { feature_flag: feature_flag }
+
+      .gl-responsive-table-row{ role: 'row' }
+        .table-section.section-10{ role: 'gridcell' }
+          = check_box_tag 'feature_flag_status', nil, feature_flag.active?, disabled: true
+
+        .table-section.section-50.d-flex.flex-column{ role: 'gridcell' }
+          .text-monospace= feature_flag.name
+          .text-secondary= feature_flag.description
+
+        .table-section.section-40.table-button-footer{ role: 'gridcell' }
+          .table-action-buttons
+            = link_to edit_project_feature_flag_path(@project, feature_flag),
+                class: 'btn btn-default has-tooltip',
+                type: 'button',
+                title: _('Edit') do
+              = sprite_icon('pencil', size: 16)
+
+            %button.btn.btn-danger.has-tooltip.ml-2{ type: 'button',
+                data: { toggle: 'modal',
+                  target: "#delete-feature-flag-modal-#{feature_flag.id}" },
+                title: _('Delete') }
+              = sprite_icon('remove', size: 16)
