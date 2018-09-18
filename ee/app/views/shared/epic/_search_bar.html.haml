@@ -41,7 +41,7 @@
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { action: 'submit' } }
                   %button.btn.btn-link{ type: 'button' }
-                    = icon('search')
+                    = sprite_icon('search')
                     %span
                       Press Enter or click to search
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
@@ -49,7 +49,8 @@
                   %button.btn.btn-link{ type: 'button' }
                     -# Encapsulate static class name `{{icon}}` inside #{} to bypass
                     -# haml lint's ClassAttributeWithStaticValue
-                    %i.fa{ class: "#{'{{icon}}'}" }
+                    %svg
+                      %use{ 'xlink:href': "#{'{{icon}}'}" }
                     %span.js-filter-hint
                       {{hint}}
                     %span.js-filter-tag.dropdown-light-content
