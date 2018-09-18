@@ -211,7 +211,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  after_initialize :set_user_preference
   after_initialize :set_projects_limit
 
   # User's Layout preference
@@ -1369,6 +1368,12 @@ class User < ActiveRecord::Base
     !consented_usage_stats? && 7.days.ago > self.created_at && !has_current_license? && User.single_user?
   end
 
+  # Avoid need of migrations so we only create the user preference records
+  # when they are needed.
+  def user_preference
+    super || create_user_preference
+  end
+
   # @deprecated
   alias_method :owned_or_masters_groups, :owned_or_maintainers_groups
 
@@ -1389,16 +1394,6 @@ class User < ActiveRecord::Base
 
   def consented_usage_stats?
     Gitlab::CurrentSettings.usage_stats_set_by_user_id == self.id
-  end
-
-  def set_user_preference
-    return if user_preference.present?
-
-    if persisted?
-      create_user_preference
-    else
-      build_user_preference
-    end
   end
 
   # Added according to https://github.com/plataformatec/devise/blob/7df57d5081f9884849ca15e4fde179ef164a575f/README.md#activejob-integration
