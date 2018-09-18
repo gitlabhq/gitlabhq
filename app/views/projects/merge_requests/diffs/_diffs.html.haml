@@ -14,7 +14,7 @@
           %span.ref-name= @merge_request.source_branch
           and
           %span.ref-name= @merge_request.target_branch
-          .text-center= link_to 'Create commit', project_new_blob_path(@project, @merge_request.source_branch), class: 'btn btn-save'
+          .text-center= link_to 'Create commit', project_new_blob_path(@project, @merge_request.source_branch), class: 'btn btn-success'
 - else
   - diff_viewable = @merge_request_diff ? @merge_request_diff.viewable? : true
   - if diff_viewable

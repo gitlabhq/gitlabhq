@@ -117,7 +117,7 @@
       >
         <a
           :href="newEnvironmentPath"
-          class="btn btn-create"
+          class="btn btn-success"
         >
           {{ s__("Environments|New environment") }}
         </a>

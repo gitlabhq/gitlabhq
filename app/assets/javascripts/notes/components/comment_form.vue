@@ -380,7 +380,7 @@ js-gfm-input js-autosize markdown-area js-vue-textarea"
 append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown">
                   <button
                     :disabled="isSubmitButtonDisabled"
-                    class="btn btn-create comment-btn js-comment-button js-comment-submit-button"
+                    class="btn btn-success comment-btn js-comment-button js-comment-submit-button"
                     type="submit"
                     @click.prevent="handleSave()">
                     {{ __(commentButtonTitle) }}

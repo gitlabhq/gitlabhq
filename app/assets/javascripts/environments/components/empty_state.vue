@@ -35,7 +35,7 @@ code gets deployed, such as staging or production.`) }}
       <a
         v-if="canCreateEnvironment"
         :href="newPath"
-        class="btn btn-create js-new-environment-button"
+        class="btn btn-success js-new-environment-button"
       >
         {{ s__("Environments|New environment") }}
       </a>
