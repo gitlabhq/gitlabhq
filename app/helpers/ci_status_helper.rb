@@ -123,11 +123,6 @@ module CiStatusHelper
     render_status_with_link('pipeline', pipeline.status, path, tooltip_placement: tooltip_placement)
   end
 
-  def no_runners_for_project?(project)
-    project.runners.blank? &&
-      Ci::Runner.instance_type.blank?
-  end
-
   def render_status_with_link(type, status, path = nil, tooltip_placement: 'left', cssclass: '', container: 'body', icon_size: 16)
     klass = "ci-status-link ci-status-icon-#{status.dasherize} #{cssclass}"
     title = "#{type.titleize}: #{ci_label_for_status(status)}"
