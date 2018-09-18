@@ -187,7 +187,7 @@ module Ci
 
       after_transition any => [:manual] do |build|
         build.run_after_commit do
-          build.schedule
+          build.schedule!
         end
       end
 
@@ -241,17 +241,17 @@ module Ci
     end
 
     def scheduled?
-      build.build_schedule.exist? 
+      build_schedule.present?
     end
 
-    def schedule
+    def schedule!
       return unless schedulable?
 
       create_build_schedule!(execute_at: execute_at)
     end
 
-    def unschedule
-      build&.build_schedule&.delete
+    def unschedule!
+      build_schedule.delete!
     end
 
     def execute_at
