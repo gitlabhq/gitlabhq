@@ -280,6 +280,7 @@ describe ProjectWiki do
       it 'sets the correct commit email' do
         subject.create_page('test page', 'content')
 
+        expect(user.commit_email).not_to eq(user.email)
         expect(commit.author_email).to eq(user.commit_email)
         expect(commit.committer_email).to eq(user.commit_email)
       end
@@ -329,6 +330,7 @@ describe ProjectWiki do
     end
 
     it 'sets the correct commit email' do
+      expect(user.commit_email).not_to eq(user.email)
       expect(commit.author_email).to eq(user.commit_email)
       expect(commit.committer_email).to eq(user.commit_email)
     end
@@ -363,6 +365,7 @@ describe ProjectWiki do
       it 'sets the correct commit email' do
         subject.delete_page(@page)
 
+        expect(user.commit_email).not_to eq(user.email)
         expect(commit.author_email).to eq(user.commit_email)
         expect(commit.committer_email).to eq(user.commit_email)
       end

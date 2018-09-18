@@ -84,6 +84,7 @@ describe Files::CreateService do
     it 'uses the commit email' do
       subject.execute
 
+      expect(user.commit_email).not_to eq(user.email)
       expect(commit.author_email).to eq(user.commit_email)
       expect(commit.committer_email).to eq(user.commit_email)
     end

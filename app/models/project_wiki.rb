@@ -184,11 +184,12 @@ class ProjectWiki
 
   def commit_details(action, message = nil, title = nil)
     commit_message = message || default_message(action, title)
+    git_user = Gitlab::Git::User.from_gitlab(@user)
 
     Gitlab::Git::Wiki::CommitDetails.new(@user.id,
-                                         @user.username,
-                                         @user.name,
-                                         @user.commit_email,
+                                         git_user.username,
+                                         git_user.name,
+                                         git_user.email,
                                          commit_message)
   end
 
