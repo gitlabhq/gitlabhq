@@ -93,15 +93,20 @@ module Geo
     end
 
     def fetch_geo_mirror(repository)
-      url = Gitlab::Geo.primary_node.url + repository.full_path + '.git'
-
       # Fetch the repository, using a JWT header for authentication
-      authorization = ::Gitlab::Geo::RepoSyncRequest.new.authorization
-      header = { "http.#{url}.extraHeader" => "Authorization: #{authorization}" }
-
-      repository.with_config(header) do
-        repository.fetch_as_mirror(url, remote_name: GEO_REMOTE_NAME, forced: true)
+      repository.with_config(jwt_authentication_header) do
+        repository.fetch_as_mirror(remote_url, remote_name: GEO_REMOTE_NAME, forced: true)
       end
+    end
+
+    # Build a JWT header for authentication
+    def jwt_authentication_header
+      authorization = ::Gitlab::Geo::RepoSyncRequest.new.authorization
+      { "http.#{remote_url}.extraHeader" => "Authorization: #{authorization}" }
+    end
+
+    def remote_url
+      Gitlab::Geo.primary_node.url + repository.full_path + '.git'
     end
 
     # Use snapshotting for redownloads *only* when enabled.

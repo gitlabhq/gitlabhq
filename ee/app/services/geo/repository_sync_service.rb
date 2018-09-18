@@ -46,7 +46,10 @@ module Geo
     end
 
     def update_root_ref
-      project.update_root_ref(GEO_REMOTE_NAME)
+      # Find the remote root ref, using a JWT header for authentication
+      repository.with_config(jwt_authentication_header) do
+        project.update_root_ref(GEO_REMOTE_NAME)
+      end
     end
 
     def schedule_repack
