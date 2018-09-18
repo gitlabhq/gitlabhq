@@ -66,6 +66,8 @@ module QA
           end
 
           using_wait_time 0 do
+            set_initial_password_if_present
+
             sign_in_using_gitlab_credentials(admin)
           end
 
