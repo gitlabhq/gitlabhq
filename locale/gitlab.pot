@@ -1736,15 +1736,9 @@ msgstr ""
 msgid "ClusterIntegration|Install"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "ClusterIntegration|Install Prometheus"
 msgstr ""
 
-msgid "ClusterIntegration|Install applications on your Kubernetes cluster. Read more about %{helpLink}"
-msgstr ""
-
-=======
->>>>>>> upstream/master
 msgid "ClusterIntegration|Installed"
 msgstr ""
 
