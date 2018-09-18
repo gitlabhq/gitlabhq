@@ -73,6 +73,12 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     resources :ldap_group_links, only: [:index, :create, :destroy]
 
+    # EE-specific start
+    namespace :security do
+      resource :dashboard, only: [:show], controller: :dashboard
+    end
+    # EE-specific end
+
     ## EE-specific
     resource :saml_providers, path: 'saml', only: [:show, :create, :update] do
       post :callback, to: 'omniauth_callbacks#group_saml'
