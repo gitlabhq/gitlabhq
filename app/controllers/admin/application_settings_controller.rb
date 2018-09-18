@@ -19,7 +19,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       session[:ask_for_usage_stats_consent] = current_user.requires_usage_stats_consent?
     end
 
-    redirect_path = request.referer.presence ? request.referer : admin_application_settings_path
+    redirect_path = request.referer.presence ? URI(request.referer).path : admin_application_settings_path
 
     respond_to do |format|
       if successful
