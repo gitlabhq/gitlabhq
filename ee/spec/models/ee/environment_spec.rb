@@ -29,8 +29,7 @@ describe Environment do
     subject { environment.protected? }
 
     before do
-      allow(project).to receive(:feature_available?)
-        .with(:protected_environments).and_return(feature_available)
+      stub_licensed_features(protected_environments: feature_available)
     end
 
     context 'when Protected Environments feature is not available on the project' do
@@ -63,8 +62,7 @@ describe Environment do
     subject { environment.protected_deployable_by_user?(user) }
 
     before do
-      allow(project).to receive(:feature_available?)
-        .with(:protected_environments).and_return(feature_available)
+      stub_licensed_features(protected_environments: true)
     end
 
     context 'when Protected Environments feature is not available on the project' do
