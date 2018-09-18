@@ -5,7 +5,7 @@
 = form_for [:admin, @node], html: { class: 'js-geo-node-form' } do |f|
   = render partial: 'form', locals: { form: f, geo_node: @node }
   .form-actions
-    = f.submit 'Save changes', class: 'btn btn-create'
+    = f.submit 'Save changes', class: 'btn btn-success'
     = link_to 'Cancel', admin_geo_nodes_path, class: 'btn btn-cancel'
 
 %hr

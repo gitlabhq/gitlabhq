@@ -152,7 +152,7 @@ export default {
         ref="addButton"
         :disabled="isSubmitButtonDisabled"
         type="submit"
-        class="js-add-issuable-form-add-button btn btn-new float-left">
+        class="js-add-issuable-form-add-button btn btn-success float-left">
         Add
         <gl-loading-icon
           v-if="isSubmitting"

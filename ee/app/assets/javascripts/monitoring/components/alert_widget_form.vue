@@ -12,8 +12,8 @@ const SUBMIT_ACTION_TEXT = {
 };
 
 const SUBMIT_BUTTON_CLASS = {
-  create: 'btn-create',
-  update: 'btn-save',
+  create: 'btn-success',
+  update: 'btn-success',
   delete: 'btn-remove',
 };
 

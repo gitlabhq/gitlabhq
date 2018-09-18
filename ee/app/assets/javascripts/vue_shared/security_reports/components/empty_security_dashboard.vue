@@ -41,7 +41,7 @@ export default {
         </p>
         <a
           :href="helpPath"
-          class="btn btn-new"
+          class="btn btn-success"
           rel="nofollow"
         >
           {{ __('Learn more') }}

@@ -45,7 +45,7 @@ describe('newEpic', () => {
       vm.title = 'test';
 
       Vue.nextTick(() => {
-        vm.$el.querySelector('.btn-save').click();
+        vm.$el.querySelector('.dropdown-menu .btn-success').click();
         expect(vm.service.createEpic).toHaveBeenCalled();
       });
     });
@@ -59,7 +59,7 @@ describe('newEpic', () => {
       vm.title = 'test';
 
       Vue.nextTick(() => {
-        vm.$el.querySelector('.btn-save').click();
+        vm.$el.querySelector('.dropdown-menu .btn-success').click();
       });
     });
 
@@ -68,7 +68,7 @@ describe('newEpic', () => {
       vm.title = 'test';
 
       Vue.nextTick(() => {
-        const btnSave = vm.$el.querySelector('.btn-save');
+        const btnSave = vm.$el.querySelector('.dropdown-menu .btn-success');
         const loadingIcon = btnSave.querySelector('.js-loading-button-icon');
 
         expect(loadingIcon).toBeNull();

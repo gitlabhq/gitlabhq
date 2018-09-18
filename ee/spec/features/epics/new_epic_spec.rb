@@ -15,7 +15,7 @@ describe 'New Epic', :js do
       it 'does not show the create button' do
         visit group_epics_path(group)
 
-        expect(page).not_to have_selector('.new-epic-dropdown  .btn-new')
+        expect(page).not_to have_selector('.new-epic-dropdown  .btn-success')
       end
     end
 
@@ -26,7 +26,7 @@ describe 'New Epic', :js do
       end
 
       it 'does show the create button' do
-        expect(page).to have_selector('.new-epic-dropdown .btn-new')
+        expect(page).to have_selector('.new-epic-dropdown .btn-success')
       end
     end
   end
@@ -40,7 +40,7 @@ describe 'New Epic', :js do
       end
 
       it 'does not show the create button' do
-        expect(page).not_to have_selector('.new-epic-dropdown .btn-new')
+        expect(page).not_to have_selector('.new-epic-dropdown .btn-success')
       end
     end
 
@@ -51,13 +51,13 @@ describe 'New Epic', :js do
       end
 
       it 'does show the create button' do
-        expect(page).to have_selector('.new-epic-dropdown .btn-new')
+        expect(page).to have_selector('.new-epic-dropdown .btn-success')
       end
 
       it 'can create epic' do
-        find('.new-epic-dropdown .btn-new').click
-        find('.new-epic-dropdown input').set('test epic title')
-        find('.new-epic-dropdown .btn-save').click
+        find('.new-epic-dropdown .btn-success').click
+        find('.new-epic-dropdown .dropdown-menu input').set('test epic title')
+        find('.new-epic-dropdown .dropdown-menu .btn-success').click
 
         wait_for_requests
 

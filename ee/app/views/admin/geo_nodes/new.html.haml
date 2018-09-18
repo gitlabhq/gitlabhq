@@ -10,4 +10,4 @@
   = form_for [:admin, @node], as: :geo_node, url: admin_geo_nodes_path, html: { class: 'js-geo-node-form' } do |f|
     = render partial: 'form', locals: { form: f, geo_node: @node }
     .form-actions
-      = f.submit 'Add Node', class: 'btn btn-create'
+      = f.submit 'Add Node', class: 'btn btn-success'
