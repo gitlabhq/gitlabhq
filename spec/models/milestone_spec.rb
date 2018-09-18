@@ -95,6 +95,24 @@ describe Milestone do
     end
   end
 
+  describe '.order_by_name_asc' do
+    it 'sorts by name ascending' do
+      milestone1 = create(:milestone, title: 'Foo')
+      milestone2 = create(:milestone, title: 'Bar')
+
+      expect(described_class.order_by_name_asc).to eq([milestone2, milestone1])
+    end
+  end
+
+  describe '.reorder_by_due_date_asc' do
+    it 'reorders the input relation' do
+      milestone1 = create(:milestone, due_date: Date.new(2018, 9, 30))
+      milestone2 = create(:milestone, due_date: Date.new(2018, 10, 20))
+
+      expect(described_class.reorder_by_due_date_asc).to eq([milestone1, milestone2])
+    end
+  end
+
   describe "#percent_complete" do
     it "does not count open issues" do
       milestone.issues << issue

@@ -13,7 +13,11 @@ class DashboardGroupMilestone < GlobalMilestone
   end
 
   def self.build_collection(groups)
-    MilestonesFinder.new(group_ids: groups.select(:id)).execute.map { |m| new(m) } # rubocop: disable CodeReuse/Finder
+    Milestone.of_groups(groups.select(:id))
+             .reorder_by_due_date_asc
+             .order_by_name_asc
+             .active
+             .map { |m| new(m) }
   end
 
   override :group_milestone?
