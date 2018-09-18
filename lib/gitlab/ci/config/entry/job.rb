@@ -119,7 +119,7 @@ module Gitlab
           end
 
           def manual_action?
-            self.when == 'manual' || self.when == 'delayed'
+            %w[manual delayed].include?(self.when)
           end
 
           def ignored?

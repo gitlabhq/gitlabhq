@@ -9,7 +9,11 @@ module Ci
       ::Ci::Build.preload(:build_schedule).find_by(id: build_id).try do |build|
         break unless build.build_schedule.present?
 
-        Ci::PlayBuildService.new(build.project, build.user).execute(build)
+        begin
+          Ci::PlayBuildService.new(build.project, build.user).execute(build)
+        ensure
+          build.unschedule
+        end
       end
     end
   end

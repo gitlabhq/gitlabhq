@@ -2,11 +2,7 @@ module Gitlab
   module Ci
     module Status
       module Build
-        class Delayed < Status::Extended
-          ###
-          # TODO: Those are random values. We have to fix accoding to the UX review
-          ###
-
+        class Scheduled < Status::Extended
           ###
           # Core override
           ###
@@ -23,7 +19,7 @@ module Gitlab
           end
 
           def favicon
-            'favicon_status_manual_with_auto_play'
+            'favicon_status_scheduled'
           end
 
           ###
@@ -33,17 +29,23 @@ module Gitlab
             {
               image: 'illustrations/canceled-job_empty.svg',
               size: 'svg-394',
-              title: _('This job is a scheduled job with manual actions!'),
-              content: _('auto playyyyyyyyyyyyyy! This job depends on a user to trigger its process. Often they are used to deploy code to production environments')
+              title: _("This is a scheduled to run in ") + " #{execute_in}",
+              content: _("This job will automatically run after it's timer finishes. Often they are used for incremental roll-out deploys to production environments. When unscheduled it converts into a manual action.")
             }
           end
 
           def status_tooltip
-            @status.status_tooltip + " (scheulded) : Execute in #{subject.build_schedule.execute_in.round} sec"
+            "scheduled manual action (#{execute_in})"
           end
 
           def self.matches?(build, user)
-            build.delayed? && !build.canceled?
+            build.schedulable? && !build.canceled?
+          end
+
+          private
+
+          def execute_in
+            Time.at(subject.build_schedule.execute_in).utc.strftime("%H:%M:%S")
           end
         end
       end

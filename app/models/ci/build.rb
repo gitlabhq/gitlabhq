@@ -186,9 +186,8 @@ module Ci
       end
 
       after_transition any => [:manual] do |build|
-        puts "#{self.class.name} - #{__callee__}: 1"
         build.run_after_commit do
-          build.schedule_delayed_execution
+          build.schedule
         end
       end
 
@@ -237,22 +236,30 @@ module Ci
       action? && (manual? || retryable?)
     end
 
-    def delayed?
+    def schedulable?
       manual? && options[:start_in].present?
+    end
+
+    def scheduled?
+      build.build_schedule.exist? 
+    end
+
+    def schedule
+      return unless schedulable?
+
+      create_build_schedule!(execute_at: execute_at)
+    end
+
+    def unschedule
+      build&.build_schedule&.delete
     end
 
     def execute_at
       ChronicDuration.parse(options[:start_in])&.seconds&.from_now
     end
 
-    def schedule_delayed_execution
-      return unless delayed?
-
-      create_build_schedule!(execute_at: execute_at)
-    end
-
     def action?
-      self.when == 'manual' || self.when == 'delayed'
+      %w[manual delayed].include?(self.when)
     end
 
     # rubocop: disable CodeReuse/ServiceClass
