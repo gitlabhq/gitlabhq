@@ -350,13 +350,21 @@ describe('DiffsStoreUtils', () => {
 
     it('returns true when the discussion is up to date', () => {
       expect(
-        utils.isDiscussionApplicableToLine(discussions.upToDateDiscussion1, diffPosition, true),
+        utils.isDiscussionApplicableToLine({
+          discussion: discussions.upToDateDiscussion1,
+          diffPosition,
+          latestDiff: true,
+        }),
       ).toBe(true);
     });
 
     it('returns false when the discussion is not up to date', () => {
       expect(
-        utils.isDiscussionApplicableToLine(discussions.outDatedDiscussion1, diffPosition, true),
+        utils.isDiscussionApplicableToLine({
+          discussion: discussions.outDatedDiscussion1,
+          diffPosition,
+          latestDiff: true,
+        }),
       ).toBe(false);
     });
 
@@ -366,14 +374,14 @@ describe('DiffsStoreUtils', () => {
       delete discussion.position;
 
       expect(
-        utils.isDiscussionApplicableToLine(
+        utils.isDiscussionApplicableToLine({
           discussion,
-          {
+          diffPosition: {
             ...diffPosition,
             lineCode: 'ABC_1',
           },
-          true,
-        ),
+          latestDiff: true,
+        }),
       ).toBe(false);
     });
 
@@ -383,14 +391,14 @@ describe('DiffsStoreUtils', () => {
       delete discussion.position;
 
       expect(
-        utils.isDiscussionApplicableToLine(
+        utils.isDiscussionApplicableToLine({
           discussion,
-          {
+          diffPosition: {
             ...diffPosition,
             lineCode: 'ABC_1',
           },
-          true,
-        ),
+          latestDiff: true,
+        }),
       ).toBe(true);
     });
 
@@ -400,14 +408,14 @@ describe('DiffsStoreUtils', () => {
       delete discussion.position;
 
       expect(
-        utils.isDiscussionApplicableToLine(
+        utils.isDiscussionApplicableToLine({
           discussion,
-          {
+          diffPosition: {
             ...diffPosition,
             lineCode: 'ABC_1',
           },
-          false,
-        ),
+          latestDiff: false,
+        }),
       ).toBe(false);
     });
   });

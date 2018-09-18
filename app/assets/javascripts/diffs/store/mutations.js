@@ -97,7 +97,11 @@ export default {
       isDiffDiscussion &&
       hasLineCode &&
       diffPosition &&
-      isDiscussionApplicableToLine(firstDiscussion, diffPosition, state.latestDiff)
+      isDiscussionApplicableToLine({
+        discussion: firstDiscussion,
+        diffPosition,
+        latestDiff: state.latestDiff,
+      })
     ) {
       const targetLine = selectedFile.parallelDiffLines.find(
         line =>
