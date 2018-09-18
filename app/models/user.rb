@@ -1368,10 +1368,16 @@ class User < ActiveRecord::Base
     !consented_usage_stats? && 7.days.ago > self.created_at && !has_current_license? && User.single_user?
   end
 
-  # Avoid need of migrations so we only create the user preference records
-  # when they are needed.
+  # Creates user preference once when needed.
+  # No migrations needed for existing users.
   def user_preference
-    super || create_user_preference
+    return super if super.present?
+
+    if persisted?
+      create_user_preference
+    else
+      build_user_preference
+    end
   end
 
   # @deprecated
