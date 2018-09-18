@@ -7,9 +7,11 @@
     %button.btn.btn-default{ type: 'button', data: { toggle: 'modal', target: '#configure-feature-flags-modal' } }
       = s_('FeatureFlags|Configure')
 
-    - if can?(current_user, :create_feature_flags, @project)
-      = link_to new_project_feature_flag_path(@project), class: 'btn btn-new' do
-        = s_('FeatureFlags|New Feature Flag')
+    = render 'new_feature_flag_button'
 
 = render 'configure_feature_flags_modal'
-= render 'table'
+
+- if @feature_flags.empty?
+  = render 'empty_state'
+- else
+  = render 'table'
