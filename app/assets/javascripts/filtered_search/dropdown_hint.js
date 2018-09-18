@@ -62,7 +62,7 @@ export default class DropdownHint extends FilteredSearchDropdown {
   renderContent() {
     const dropdownData = this.tokenKeys.get()
       .map(tokenKey => ({
-        icon: `fa-${tokenKey.icon}`,
+        icon: `${gon.sprite_icons}#${tokenKey.icon}`,
         hint: tokenKey.key,
         tag: `:${tokenKey.tag}`,
         type: tokenKey.type,

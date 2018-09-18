@@ -10,7 +10,7 @@ const tokenKeys = [{
   type: 'array',
   param: 'name[]',
   symbol: '~',
-  icon: 'tag',
+  icon: 'labels',
   tag: '~label',
 }];
 

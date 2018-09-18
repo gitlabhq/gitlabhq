@@ -19,14 +19,14 @@ export const tokenKeys = [{
   type: 'string',
   param: 'title',
   symbol: '%',
-  icon: 'clock-o',
+  icon: 'clock',
   tag: '%milestone',
 }, {
   key: 'label',
   type: 'array',
   param: 'name[]',
   symbol: '~',
-  icon: 'tag',
+  icon: 'labels',
   tag: '~label',
 }];
 
@@ -37,7 +37,7 @@ if (gon.current_user_id) {
     type: 'string',
     param: 'emoji',
     symbol: '',
-    icon: 'thumbs-up',
+    icon: 'thumb-up',
     tag: 'emoji',
   });
 }

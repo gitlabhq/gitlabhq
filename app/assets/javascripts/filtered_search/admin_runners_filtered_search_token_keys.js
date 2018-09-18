@@ -5,7 +5,7 @@ const tokenKeys = [{
   type: 'string',
   param: 'status',
   symbol: '',
-  icon: 'signal',
+  icon: 'messages',
   tag: 'status',
 }];
 
