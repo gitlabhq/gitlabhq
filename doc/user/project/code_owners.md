@@ -1,7 +1,7 @@
 # Code owners
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6916)
-in [Gitlab Starter](https://about.gitlab.com/pricing/) 11.3.
+in [GitLab Starter](https://about.gitlab.com/pricing/) 11.3.
 
 You can use a `CODEOWNERS` file to specify users that are responsible
 for certain files in a repository.
