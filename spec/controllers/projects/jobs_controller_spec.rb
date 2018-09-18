@@ -288,6 +288,55 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           end
         end
       end
+
+      context 'when no runners are available' do
+        let(:runner) { create(:ci_runner, :instance, active: false) }
+        let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner: runner) }
+
+        it 'exposes needed information' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('job/job_details')
+          expect(json_response['runners']['online']).to be false
+          expect(json_response['runners']['available']).to be false
+        end
+      end
+
+      context 'when no runner is online' do
+        let(:runner) { create(:ci_runner, :instance) }
+        let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner: runner) }
+
+        it 'exposes needed information' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('job/job_details')
+          expect(json_response['runners']['online']).to be false
+          expect(json_response['runners']['available']).to be true
+        end
+      end
+
+      context 'settings_path' do
+        context 'when user is developer' do
+          it 'settings_path is not available' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('job/job_details')
+            expect(json_response['runners']).not_to have_key('settings_path')
+          end
+        end
+
+        context 'when user is maintainer' do
+          let(:user) { create(:user, :admin) }
+
+          before do
+            project.add_maintainer(user)
+            sign_in(user)
+          end
+
+          it 'settings_path is available' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('job/job_details')
+            expect(json_response['runners']['settings_path']).to match(/runners/)
+          end
+        end
+      end
     end
 
     context 'when requesting JSON job is triggered' do

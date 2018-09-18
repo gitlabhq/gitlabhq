@@ -79,6 +79,20 @@ class BuildDetailsEntity < JobEntity
     expose :trigger_variables, as: :variables, using: TriggerVariableEntity
   end
 
+  expose :runners do
+    expose :online do |build|
+      build.any_runners_online?
+    end
+
+    expose :available do |build|
+      project.any_runners?
+    end
+
+    expose :settings_path, if: -> (*) { can_admin_build? } do |build|
+      project_runners_path(project)
+    end
+  end
+
   private
 
   def build_failed_issue_options
@@ -96,5 +110,9 @@ class BuildDetailsEntity < JobEntity
 
   def can_create_build_terminal?
     can?(current_user, :create_build_terminal, build) && build.has_terminal?
+  end
+
+  def can_admin_build?
+    can?(request.current_user, :admin_build, project)
   end
 end
