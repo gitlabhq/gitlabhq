@@ -533,7 +533,7 @@ describe 'File blob', :js do
         expect(page).to have_content('This project is licensed under the MIT License.')
 
         # shows a learn more link
-        expect(page).to have_link('Learn more', 'http://choosealicense.com/licenses/mit/')
+        expect(page).to have_link('Learn more', href: 'http://choosealicense.com/licenses/mit/')
       end
     end
   end
@@ -566,10 +566,10 @@ describe 'File blob', :js do
         expect(page).to have_content('This project manages its dependencies using RubyGems and defines a gem named activerecord.')
 
         # shows a link to the gem
-        expect(page).to have_link('activerecord', 'https://rubygems.org/gems/activerecord')
+        expect(page).to have_link('activerecord', href: 'https://rubygems.org/gems/activerecord')
 
         # shows a learn more link
-        expect(page).to have_link('Learn more', 'http://choosealicense.com/licenses/mit/')
+        expect(page).to have_link('Learn more', href: 'https://rubygems.org/')
       end
     end
   end
