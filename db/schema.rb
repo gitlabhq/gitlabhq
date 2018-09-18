@@ -141,7 +141,7 @@ ActiveRecord::Schema.define(version: 20180907015926) do
     t.integer "performance_bar_allowed_group_id"
     t.boolean "hashed_storage_enabled", default: false, null: false
     t.boolean "project_export_enabled", default: true, null: false
-    t.boolean "auto_devops_enabled", default: false, null: false
+    t.boolean "auto_devops_enabled", default: true, null: false
     t.integer "circuitbreaker_failure_count_threshold", default: 3
     t.integer "circuitbreaker_failure_reset_time", default: 1800
     t.integer "circuitbreaker_storage_timeout", default: 15

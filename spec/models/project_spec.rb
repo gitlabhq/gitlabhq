@@ -3229,17 +3229,17 @@ describe Project do
         expect(repository).to receive(:gitlab_ci_yml) { nil }
       end
 
-      it "CI is not available" do
-        expect(project).not_to have_ci
+      it "CI is available" do
+        expect(project).to have_ci
       end
 
-      context 'when auto devops is enabled' do
+      context 'when auto devops is disabled' do
         before do
-          stub_application_setting(auto_devops_enabled: true)
+          stub_application_setting(auto_devops_enabled: false)
         end
 
-        it "CI is available" do
-          expect(project).to have_ci
+        it "CI is not available" do
+          expect(project).not_to have_ci
         end
       end
     end
