@@ -36,6 +36,63 @@ service.
 You can follow the steps as described in the [official web site][install] or
 use the packages that are available for your OS.
 
+## Elasticsearch repository indexer (beta)
+
+In order to improve elasticsearch indexing performance GitLab has made available a [new indexer written in Go](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer).
+This will replace the included Ruby indexer in the future but should be considered beta software for now, so there may be some bugs.
+
+If you would like to use it, please follow the instructions below.
+
+### Installation
+
+First, we need to install some dependencies, then we'll build and install
+the indexer itself.
+
+#### Dependencies
+
+This project relies on [ICU](http://site.icu-project.org/) for text encoding,
+therefore we need to ensure the development packages for your platform are
+installed before running `make`.
+
+##### Debian / Ubuntu
+
+To install on Debian or Ubutu, run:
+
+```
+sudo apt install libicu-dev
+```
+
+##### Mac OSX
+
+To install on macOS, run:
+
+```
+brew install icu4c
+export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig:$PKG_CONFIG_PATH"
+```
+
+#### Building and installing
+
+To build and install the indexer, run:
+
+```
+make
+sudo make install
+```
+
+The `gitlab-elasticsearch-indexer` will be installed to `/usr/local/bin`.
+
+You can change the installation path with the `PREFIX` env variable.
+Please remember to pass the `-E` flag to `sudo` if you do so.
+
+Example:
+
+```
+PREFIX=/usr sudo -E make install
+```
+
+Once installed, enable it under your instance's elasticsearch settings explained [below](#enabling-elasticsearch).
+
 ## System Requirements
 
 Elasticsearch requires additional resources in excess of those documented in the
