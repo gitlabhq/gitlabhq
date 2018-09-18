@@ -39,7 +39,11 @@ describe Geo::RepositorySyncService do
     end
 
     it 'fetches project repository with JWT credentials' do
-      expect(repository).to receive(:with_config).with("http.#{url_to_repo}.extraHeader" => anything).and_call_original
+      expect(repository).to receive(:with_config)
+        .with("http.#{url_to_repo}.extraHeader" => anything)
+        .twice
+        .and_call_original
+
       expect(repository).to receive(:fetch_as_mirror)
         .with(url_to_repo, remote_name: 'geo', forced: true)
         .once
@@ -229,7 +233,12 @@ describe Geo::RepositorySyncService do
               subject.execute
             end
 
-            it 'updates the default branch' do
+            it 'updates the default branch with JWT credentials' do
+              expect(repository).to receive(:with_config)
+                .with("http.#{url_to_repo}.extraHeader" => anything)
+                .twice
+                .and_call_original
+
               expect(project).to receive(:change_head).with('feature').once
 
               subject.execute
@@ -250,7 +259,12 @@ describe Geo::RepositorySyncService do
               subject.execute
             end
 
-            it 'does not update the default branch' do
+            it 'updates the default branch with JWT credentials' do
+              expect(repository).to receive(:with_config)
+                .with("http.#{url_to_repo}.extraHeader" => anything)
+                .twice
+                .and_call_original
+
               expect(project).not_to receive(:change_head)
 
               subject.execute
