@@ -13,8 +13,8 @@ module ApplicationHelper
     lookup_context.exists?(partial, [], true)
   end
 
-  def view_exists?(partial)
-    lookup_context.exists?(partial, [], false)
+  def template_exists?(template)
+    lookup_context.exists?(template, [], false)
   end
 
   # Check if a particular controller is the current one

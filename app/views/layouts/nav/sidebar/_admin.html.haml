@@ -218,7 +218,7 @@
               = link_to repository_admin_application_settings_path, title: _('Repository') do
                 %span
                   = _('Repository')
-            - if view_exists?('admin/application_settings/templates')
+            - if template_exists?('admin/application_settings/templates')
               = nav_link(path: 'application_settings#templates') do
                 = link_to templates_admin_application_settings_path, title: _('Templates') do
                   %span
@@ -239,7 +239,7 @@
               = link_to network_admin_application_settings_path, title: _('Network') do
                 %span
                   = _('Network')
-            - if view_exists?('admin/application_settings/geo')
+            - if template_exists?('admin/application_settings/geo')
               = nav_link(path: 'application_settings#geo') do
                 = link_to geo_admin_application_settings_path, title: _('Geo') do
                   %span
