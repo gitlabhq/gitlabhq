@@ -53,11 +53,14 @@ description: 'Learn how to contribute to GitLab.'
 
 ## Performance guides
 
-- [Instrumentation](instrumentation.md)
-- [Performance guidelines](performance.md)
+- [Instrumentation](instrumentation.md) for Ruby code running in production
+  environments
+- [Performance guidelines](performance.md) for writing code, benchmarks, and
+  certain patterns to avoid
 - [Merge request performance guidelines](merge_request_performance_guidelines.md)
   for ensuring merge requests do not negatively impact GitLab performance
-- [Profiling](profiling.md) for profiling a URL
+- [Profiling](profiling.md) for profiling a URL, measuring performance using
+  Sherlock, or tracking down N+1 queries using Bullet
 
 ## Database guides
 
