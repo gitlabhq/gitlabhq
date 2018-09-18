@@ -47,6 +47,14 @@ describe Projects::NotesController do
       get :index, request_params
     end
 
+    context 'when user discussion_filter is present' do
+      it 'filters system notes' do
+        get :index, request_params
+
+        # TODO
+      end
+    end
+
     context 'for a discussion note' do
       let(:project) { create(:project, :repository) }
       let!(:note) { create(:discussion_note_on_merge_request, project: project) }

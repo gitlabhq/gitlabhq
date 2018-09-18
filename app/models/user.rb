@@ -1373,11 +1373,7 @@ class User < ActiveRecord::Base
   def user_preference
     return super if super.present?
 
-    if persisted?
-      create_user_preference
-    else
-      build_user_preference
-    end
+    persisted? ? create_user_preference : build_user_preference
   end
 
   # @deprecated

@@ -20,9 +20,11 @@ class UserPreference < ActiveRecord::Base
 
   # Returns the current discussion filter for a given issuable type.
   def discussion_filter(issuable)
-    filter_name = discussion_filter_for(issuable)
-
-    public_send(filter_name) # rubocop:disable GitlabSecurity/PublicSend
+    if issuable.is_a?(Issue)
+      issue_discussion_filter
+    elsif issuable.is_a?(MergeRequest)
+      merge_request_discussion_filter
+    end
   end
 
   private
