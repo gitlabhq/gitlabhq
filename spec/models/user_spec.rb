@@ -2543,6 +2543,34 @@ describe User do
     end
   end
 
+  describe '#assigned_open_merge_requests_count' do
+    it 'returns number of open merge requests from non-archived projects' do
+      user    = create(:user)
+      project = create(:project, :public)
+      archived_project = create(:project, :public, :archived)
+
+      create(:merge_request, source_project: project, author: user, assignee: user)
+      create(:merge_request, :closed, source_project: project, author: user, assignee: user)
+      create(:merge_request, source_project: archived_project, author: user, assignee: user)
+
+      expect(user.assigned_open_merge_requests_count(force: true)).to eq 1
+    end
+  end
+
+  describe '#assigned_open_issues_count' do
+    it 'returns number of open issues from non-archived projects' do
+      user    = create(:user)
+      project = create(:project, :public)
+      archived_project = create(:project, :public, :archived)
+
+      create(:issue, project: project, author: user, assignees: [user])
+      create(:issue, :closed, project: project, author: user, assignees: [user])
+      create(:issue, project: archived_project, author: user, assignees: [user])
+
+      expect(user.assigned_open_issues_count(force: true)).to eq 1
+    end
+  end
+
   describe '#personal_projects_count' do
     it 'returns the number of personal projects using a single query' do
       user = build(:user)

@@ -56,6 +56,7 @@ module Boards
         set_parent
         set_state
         set_scope
+        set_non_archived
 
         params
       end
@@ -74,6 +75,10 @@ module Boards
 
       def set_scope
         params[:include_subgroups] = board.group_board?
+      end
+
+      def set_non_archived
+        params[:non_archived] = parent.is_a?(Group)
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
