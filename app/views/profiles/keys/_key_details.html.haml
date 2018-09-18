@@ -24,5 +24,9 @@
       = @key.key
   .col-md-12
     .float-right
+<<<<<<< HEAD
       - unless @key.is_a? LDAPKey
         = link_to 'Remove', path_to_key(@key, is_admin), data: {confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove delete-key qa-delete-key-button"
+=======
+      = link_to 'Remove', path_to_key(@key, is_admin), data: {confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove delete-key qa-delete-key-button"
+>>>>>>> upstream/master
