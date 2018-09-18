@@ -2,8 +2,11 @@
 
 module ProtectedRefAccess
   extend ActiveSupport::Concern
+<<<<<<< HEAD
   include EE::ProtectedRefAccess::Scopes
   prepend EE::ProtectedRefAccess
+=======
+>>>>>>> upstream/master
 
   HUMAN_ACCESS_LEVELS = {
     Gitlab::Access::MAINTAINER => "Maintainers".freeze,

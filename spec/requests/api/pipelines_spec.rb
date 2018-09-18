@@ -370,12 +370,18 @@ describe API::Pipelines do
       end
 
       context 'without gitlab-ci.yml' do
-        it 'fails to create pipeline' do
-          post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch
+        context 'without auto devops enabled' do
+          before do
+            project.update!(auto_devops_attributes: { enabled: false })
+          end
 
-          expect(response).to have_gitlab_http_status(400)
-          expect(json_response['message']['base'].first).to eq 'Missing .gitlab-ci.yml file'
-          expect(json_response).not_to be_an Array
+          it 'fails to create pipeline' do
+            post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch
+
+            expect(response).to have_gitlab_http_status(400)
+            expect(json_response['message']['base'].first).to eq 'Missing .gitlab-ci.yml file'
+            expect(json_response).not_to be_an Array
+          end
         end
       end
     end
