@@ -83,11 +83,15 @@ function deploy() {
   gitlab_migrations_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-rails-ce"
   gitlab_sidekiq_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-sidekiq-ce"
   gitlab_unicorn_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-unicorn-ce"
+  gitlab_gitaly_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitaly"
+  gitlab_shell_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-shell"
+  gitlab_workhorse_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-workhorse-ce"
 
   if [[ "$CI_PROJECT_NAME" == "gitlab-ee" ]]; then
     gitlab_migrations_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-rails-ee"
     gitlab_sidekiq_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-sidekiq-ee"
     gitlab_unicorn_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-unicorn-ee"
+    gitlab_workhorse_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-workhorse-ee"
   fi
 
   # canary uses stable db
@@ -117,6 +121,7 @@ function deploy() {
   helm repo add gitlab https://charts.gitlab.io/
   helm dep update .
 
+HELM_CMD=$(cat << EOF
   helm upgrade --install \
     --wait \
     --timeout 600 \
@@ -142,10 +147,19 @@ function deploy() {
     --set gitlab.gitaly.image.tag="v$GITALY_VERSION" \
     --set gitlab.gitlab-shell.image.repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-shell" \
     --set gitlab.gitlab-shell.image.tag="v$GITLAB_SHELL_VERSION" \
+    --set gitlab.unicorn.workhorse.image="$gitlab_workhorse_image_repository" \
+    --set gitlab.unicorn.workhorse.tag="$CI_COMMIT_REF_NAME" \
     --namespace="$KUBE_NAMESPACE" \
     --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
     "$name" \
     .
+EOF
+)
+
+  echo "Deploying with:"
+  echo $HELM_CMD
+
+  eval $HELM_CMD
 }
 
 function delete() {
@@ -155,10 +169,13 @@ function delete() {
   if [[ "$track" != "stable" ]]; then
     name="$name-$track"
   fi
+
+  echo "Deleting release '$name'..."
   helm delete --purge "$name" || true
 }
 
 function cleanup() {
+  echo "Cleaning up $CI_ENVIRONMENT_SLUG..."
   kubectl -n "$KUBE_NAMESPACE" get ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa 2>&1 \
     | grep "$CI_ENVIRONMENT_SLUG" \
     | awk '{print $1}' \

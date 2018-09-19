@@ -158,7 +158,8 @@ module Trigger
 
     def status
       req = Net::HTTP::Get.new(@uri)
-      req['PRIVATE-TOKEN'] = ENV['GITLAB_QA_ACCESS_TOKEN']
+      # gitlab-bot's token "GitLab multi-project pipeline polling"
+      req['PRIVATE-TOKEN'] = ENV['GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN']
 
       res = Net::HTTP.start(@uri.hostname, @uri.port, use_ssl: true) do |http|
         http.request(req)
