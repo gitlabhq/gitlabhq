@@ -444,7 +444,7 @@ module Gitlab
         end
 
         Gitlab::Git::DiffStatsCollection.new(stats)
-      rescue CommandError
+      rescue CommandError, TypeError
         Gitlab::Git::DiffStatsCollection.new([])
       end
 
