@@ -224,7 +224,7 @@ on those issues. Please select someone with relevant experience from the
 the commit history for the affected files to find someone.
 
 We also use [GitLab Triage] to automate some triaging policies. This is
-currently setup as a [scheduled pipeline] running on [quality/triage-ops]
+currently set up as a [scheduled pipeline] running on [quality/triage-ops]
 project.
 
 [described in our handbook]: https://about.gitlab.com/handbook/engineering/issue-triage/
