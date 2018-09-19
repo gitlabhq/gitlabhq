@@ -1,4 +1,4 @@
-import { visitUrl } from './lib/utils/url_utility';
+import { visitUrl } from './url_utility';
 
 /**
  * Helper function that finds the href of the fiven selector and updates the location.

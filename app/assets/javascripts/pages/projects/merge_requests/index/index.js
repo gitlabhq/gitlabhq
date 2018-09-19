@@ -1,5 +1,5 @@
 import IssuableIndex from '~/issuable_index';
-import ShortcutsNavigation from '~/shortcuts_navigation';
+import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import UsersSelect from '~/users_select';
 import initFilteredSearch from '~/pages/search/init_filtered_search';
 import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';

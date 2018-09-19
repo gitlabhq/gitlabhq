@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import initBlob from '~/blob_edit/blob_bundle';
-import ShortcutsNavigation from '~/shortcuts_navigation';
+import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import NotificationsForm from '~/notifications_form';
 import UserCallout from '~/user_callout';
 import TreeView from '~/tree';

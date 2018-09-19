@@ -18,5 +18,9 @@
           = text_field_tag :expires_at, nil, class: 'form-control js-access-expiration-date', placeholder: 'Expiration date'
           %i.clear-icon.js-clear-input
       = f.submit "Add to project", class: "btn btn-success"
+<<<<<<< HEAD
       - if can?(current_user, :admin_project_member, @project) && !membership_locked?
         = link_to "Import", import_project_project_members_path(@project), class: "btn btn-default", title: "Import members from another project"
+=======
+      = link_to "Import", import_project_project_members_path(@project), class: "btn btn-default", title: "Import members from another project"
+>>>>>>> upstream/master
