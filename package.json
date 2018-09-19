@@ -116,7 +116,7 @@
     "babel-template": "^6.26.0",
     "babel-types": "^6.26.0",
     "chalk": "^2.4.1",
-    "commander": "^2.15.1",
+    "commander": "^2.18.0",
     "eslint": "~5.6.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-import-resolver-webpack": "^0.10.1",
@@ -141,7 +141,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^4.0.0-beta.0",
-    "nodemon": "^1.18.2",
+    "nodemon": "^1.18.4",
     "prettier": "1.12.1",
     "webpack-dev-server": "^3.1.8"
   }
