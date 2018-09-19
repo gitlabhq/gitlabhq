@@ -1,9 +1,37 @@
 class Admin::ApplicationSettingsController < Admin::ApplicationController
+  include InternalRedirect
   prepend EE::Admin::ApplicationSettingsController
 
   before_action :set_application_setting
 
   def show
+  end
+
+  def integrations
+  end
+
+  def repository
+  end
+
+  def templates
+  end
+
+  def ci_cd
+  end
+
+  def reporting
+  end
+
+  def metrics_and_profiling
+  end
+
+  def network
+  end
+
+  def geo
+  end
+
+  def preferences
   end
 
   def update
@@ -15,10 +43,12 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       session[:ask_for_usage_stats_consent] = current_user.requires_usage_stats_consent?
     end
 
+    redirect_path = referer_path(request) || admin_application_settings_path
+
     respond_to do |format|
       if successful
         format.json { head :ok }
-        format.html { redirect_to admin_application_settings_path, notice: 'Application settings saved successfully' }
+        format.html { redirect_to redirect_path, notice: 'Application settings saved successfully' }
       else
         format.json { head :bad_request }
         format.html { render :show }
