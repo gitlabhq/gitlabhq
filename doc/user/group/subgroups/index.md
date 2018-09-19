@@ -139,11 +139,12 @@ From the image above, we can deduct the following things:
 >**Note:**
 You need to be an Owner of a group in order to be able to add members to it.
 
+>**Note:**
+A user's permissions in a subgroup cannot be lower than in any of its ancestor groups.
+Therefore, you cannot reduce a user's permissions in a subgroup with respect to its ancestor groups.
+
 To override a user's membership of an ancestor group (the first group they were
-added to), simply add the user in the new subgroup again, but with a higher set of
-permissions. Note that a user's permissions in a subgroup cannot be lower
-than in any of its ancestor groups and, hence, you cannot reduce a user's permissions
-in a subgroup with respect to its ancestor groups.
+added to), add the user to the new subgroup again with a higher set of permissions.
 
 For example, if User0 was first added to group `group-1/group-1-1` with Developer
 permissions, then they will inherit those permissions in every other subgroup
