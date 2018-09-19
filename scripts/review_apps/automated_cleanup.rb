@@ -37,7 +37,8 @@ class AutomatedCleanup
     puts "Checking for review apps not updated in the last #{days_for_stop} days..."
 
     checked_environments = []
-    threshold_day = threshold_time(days: days_for_delete)
+    delete_threshold = threshold_time(days: days_for_delete)
+    stop_threshold = threshold_time(days: days_for_stop)
     gitlab.deployments(project_path, per_page: 50).auto_paginate do |deployment|
       next unless deployment.environment.name.start_with?('review/')
       next if checked_environments.include?(deployment.environment.slug)
@@ -47,11 +48,11 @@ class AutomatedCleanup
       checked_environments << deployment.environment.slug
       deployed_at = Time.parse(deployment.created_at)
 
-      if deployed_at < threshold_day
+      if deployed_at < delete_threshold
         print_release_state(subject: 'Review app', release_name: deployment.environment.slug, release_date: deployment.created_at, action: 'deleting')
         gitlab.delete_environment(project_path, deployment.environment.id)
         cleaned_up_releases << deployment.environment.slug
-      elsif deployed_at < threshold_day
+      elsif deployed_at < stop_threshold
         print_release_state(subject: 'Review app', release_name: deployment.environment.slug, release_date: deployment.created_at, action: 'stopping')
         gitlab.stop_environment(project_path, deployment.environment.id)
         cleaned_up_releases << deployment.environment.slug
