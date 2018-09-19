@@ -1,36 +1,35 @@
 - breadcrumb_title _("Repository")
 - page_title _("Repository")
 - @content_class = "limit-container-width" unless fluid_layout
-- expanded = Rails.env.test?
 
-%section.settings.as-mirror.no-animate#js-mirror-settings{ class: ('expanded' if expanded) }
+%section.settings.as-mirror.no-animate#js-mirror-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4
       = _('Repository mirror')
     %button.btn.js-settings-toggle{ type: 'button' }
-      = expanded ? 'Collapse' : 'Expand'
+      = expanded_by_default? ? 'Collapse' : 'Expand'
     %p
       = _('Configure push mirrors.')
   .settings-content
     = render partial: 'repository_mirrors_form'
 
-%section.settings.as-repository-storage.no-animate#js-repository-storage-settings{ class: ('expanded' if expanded) }
+%section.settings.as-repository-storage.no-animate#js-repository-storage-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4
       = _('Repository storage')
     %button.btn.btn-default.js-settings-toggle{ type: 'button' }
-      = expanded ? _('Collapse') : _('Expand')
+      = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Configure storage path and circuit breaker settings.')
   .settings-content
     = render 'repository_storage'
 
-%section.settings.as-repository-check.no-animate#js-repository-check-settings{ class: ('expanded' if expanded) }
+%section.settings.as-repository-check.no-animate#js-repository-check-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4
       = _('Repository maintenance')
     %button.btn.btn-default.js-settings-toggle{ type: 'button' }
-      = expanded ? _('Collapse') : _('Expand')
+      = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Configure automatic git checks and housekeeping on repositories.')
   .settings-content
