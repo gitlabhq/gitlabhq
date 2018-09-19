@@ -265,8 +265,4 @@ module ApplicationSettingsHelper
       :web_ide_clientside_preview_enabled
     ]
   end
-
-  def expanded_by_default?
-    Rails.env.test?
-  end
 end
