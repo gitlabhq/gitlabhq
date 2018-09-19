@@ -79,7 +79,7 @@ After installation or upgrade, remember to [convert any new tables](#tables-and-
 
 ---
 
-GitLab 8.14 has introduced [a feature](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7420) requiring `utf8mb4` encoding to be supported in your GitLab MySQL Database, which is not the case if you have setup your database before GitLab 8.16.
+GitLab 8.14 has introduced [a feature](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7420) requiring `utf8mb4` encoding to be supported in your GitLab MySQL Database, which is not the case if you have set up your database before GitLab 8.16.
 
 Follow the below instructions to ensure you use the most up to date requirements for your GitLab MySQL Database.
 

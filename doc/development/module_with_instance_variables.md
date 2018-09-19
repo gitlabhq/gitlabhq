@@ -60,7 +60,7 @@ as long as it's contained in the same module; that is, no other modules or
 objects are touching them, then it would be an acceptable use.
 
 We especially allow the case where a single instance variable is used with
-`||=` to setup the value. This would look like:
+`||=` to set up the value. This would look like:
 
 ``` ruby
 module M
