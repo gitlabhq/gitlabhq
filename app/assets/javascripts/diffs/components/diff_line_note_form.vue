@@ -22,7 +22,7 @@ export default {
       type: Object,
       required: true,
     },
-    position: {
+    linePosition: {
       type: String,
       required: false,
       default: '',
@@ -81,7 +81,7 @@ export default {
         noteTargetLine: this.noteTargetLine,
         diffViewType: this.diffViewType,
         diffFile: selectedDiffFile,
-        linePosition: this.position,
+        linePosition: this.linePosition,
       });
 
       this.saveNote(postData)

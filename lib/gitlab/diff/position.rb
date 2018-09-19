@@ -116,6 +116,10 @@ module Gitlab
         end
       end
 
+      def diff_options
+        { paths: paths, expanded: true, include_stats: false }
+      end
+
       def diff_line(repository)
         @diff_line ||= diff_file(repository)&.line_for_position(self)
       end
@@ -130,7 +134,7 @@ module Gitlab
         return unless diff_refs.complete?
         return unless comparison = diff_refs.compare_in(repository.project)
 
-        comparison.diffs(paths: paths, expanded: true).diff_files.first
+        comparison.diffs(diff_options).diff_files.first
       end
 
       def get_formatter_class(type)

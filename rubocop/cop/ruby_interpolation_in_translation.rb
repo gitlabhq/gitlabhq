@@ -6,7 +6,6 @@ module RuboCop
       MSG = "Don't use ruby interpolation \#{} inside translated strings, instead use \%{}"
 
       TRANSLATION_METHODS = ':_ :s_ :N_ :n_'
-      RUBY_INTERPOLATION_REGEX = /.*\#\{.*\}/
 
       def_node_matcher :translation_method?, <<~PATTERN
         (send nil? {#{TRANSLATION_METHODS}} $dstr ...)

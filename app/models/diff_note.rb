@@ -131,7 +131,7 @@ class DiffNote < Note
       # As an extra benefit, the returned `diff_file` already
       # has `highlighted_diff_lines` data set from Redis on
       # `Diff::FileCollection::MergeRequestDiff`.
-      noteable.diffs(paths: original_position.paths, expanded: true).diff_files.first
+      noteable.diffs(original_position.diff_options).diff_files.first
     else
       original_position.diff_file(self.project.repository)
     end
