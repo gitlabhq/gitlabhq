@@ -39,7 +39,7 @@ describe "Container Registry", :js do
       visit_container_registry
 
       expect_any_instance_of(ContainerRepository)
-        .to receive(:delete_tags!).twice.and_return(true)
+        .to receive(:delete_tags!).and_return(true)
 
       click_on(class: 'js-remove-repo')
     end
