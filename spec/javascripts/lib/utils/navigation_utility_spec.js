@@ -1,4 +1,4 @@
-import findAndFollowLink from '~/shortcuts_dashboard_navigation';
+import findAndFollowLink from '~/lib/utils/navigation_utility';
 
 describe('findAndFollowLink', () => {
   it('visits a link when the selector exists', () => {
