@@ -10,8 +10,8 @@ module Gitlab
               unknown_keys = value.try(:keys).to_a - options[:in]
 
               if unknown_keys.any?
-                record.errors.add(:config, "#{attribute} contains unknown keys: " +
-                                            unknown_keys.join(', '))
+                record.errors.add(attribute, "contains unknown keys: " +
+                                             unknown_keys.join(', '))
               end
             end
           end

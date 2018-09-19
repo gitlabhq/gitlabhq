@@ -187,7 +187,7 @@ describe Gitlab::Ci::Config::Entry::Job do
             it 'returns error about the unknown key' do
               expect(entry).not_to be_valid
               expect(entry.errors)
-                .to include 'job config retry contains unknown keys: unknown_key, one_more'
+                .to include 'job retry contains unknown keys: unknown_key, one_more'
             end
           end
 
