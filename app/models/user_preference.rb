@@ -2,7 +2,7 @@ class UserPreference < ActiveRecord::Base
   # We could use enums, but Rails 4 doesn't support multiple
   # enum options with same name for multiple fields, also it creates
   # extra methods that aren't really needed here.
-  NOTES_FILTERS = { all_activity: 0, comments: 1 }.freeze
+  NOTES_FILTERS = { all_notes: 0, only_comments: 1 }.freeze
 
   belongs_to :user
 

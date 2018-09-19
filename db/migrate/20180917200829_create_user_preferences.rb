@@ -4,7 +4,7 @@ class CreateUserPreferences < ActiveRecord::Migration
   class UserPreference < ActiveRecord::Base
     self.table_name = 'user_preferences'
 
-    NOTES_FILTERS = { all_activity: 0, comments: 1 }.freeze
+    NOTES_FILTERS = { all_notes: 0, comments: 1 }.freeze
   end
 
   def change
@@ -16,12 +16,12 @@ class CreateUserPreferences < ActiveRecord::Migration
 
       t.integer :issue_notes_filter,
                 index: true,
-                default: UserPreference::NOTES_FILTERS[:all_activity],
+                default: UserPreference::NOTES_FILTERS[:all_notes],
                 null: false, limit: 2
 
       t.integer :merge_request_notes_filter,
                 index: true,
-                default: UserPreference::NOTES_FILTERS[:all_activity],
+                default: UserPreference::NOTES_FILTERS[:all_notes],
                 null: false,
                 limit: 2
 

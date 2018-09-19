@@ -110,7 +110,7 @@ class Note < ActiveRecord::Base
 
   scope :with_notes_filter, -> (notes_filter) do
     case notes_filter
-    when UserPreference::NOTES_FILTERS[:comments]
+    when UserPreference::NOTES_FILTERS[:only_comments]
       user
     else
       all

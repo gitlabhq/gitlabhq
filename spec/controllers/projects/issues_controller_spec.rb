@@ -1018,7 +1018,7 @@ describe Projects::IssuesController do
 
       context 'when user has set discussion filter to comments only' do
         it 'sets discussion filter' do
-          notes_filter = UserPreference::NOTES_FILTERS[:comments]
+          notes_filter = UserPreference::NOTES_FILTERS[:only_comments]
 
           get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid, notes_filter: notes_filter
 
@@ -1026,7 +1026,7 @@ describe Projects::IssuesController do
         end
 
         it 'returns no system note' do
-          user.set_notes_filter(UserPreference::NOTES_FILTERS[:comments], issue)
+          user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], issue)
           create(:discussion_note_on_issue, :system, noteable: issue, project: issue.project)
 
           get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid

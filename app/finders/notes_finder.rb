@@ -59,7 +59,7 @@ class NotesFinder
 
   def notes_of_target_type
     notes =
-      notes_for_type(target_type).with_notes_filter(notes_filter)
+      notes_for_type(target_type)
 
     search(notes)
   end
@@ -108,11 +108,18 @@ class NotesFinder
   # rubocop: enable CodeReuse/ActiveRecord
 
   def notes_on_target
-    if target.respond_to?(:related_notes)
-      target.related_notes
-    else
-      target.notes
-    end
+    notes =
+      if target.respond_to?(:related_notes)
+        target.related_notes
+      else
+        target.notes
+      end
+
+    notes.with_notes_filter(user_notes_filter)
+  end
+
+  def user_notes_filter
+    @current_user&.notes_filter(target)
   end
 
   # Searches for notes matching the given query.

@@ -4,7 +4,7 @@ describe UserPreference do
   describe '#set_notes_filter' do
     let(:issuable) { build_stubbed(:issue) }
     let(:user_preference) { create(:user_preference) }
-    let(:only_comments) { described_class::NOTES_FILTERS[:comments] }
+    let(:only_comments) { described_class::NOTES_FILTERS[:only_comments] }
 
     it 'returns updated discussion filter' do
       filter_name =

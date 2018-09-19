@@ -48,10 +48,26 @@ describe Projects::NotesController do
     end
 
     context 'when user notes_filter is present' do
+      let(:notes_json) { parsed_response[:notes] }
+      let!(:comment) { create(:note, noteable: issue, project: project) }
+      let!(:system_note) { create(:note, noteable: issue, project: project, system: true) }
+
       it 'filters system notes' do
+        user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], issue)
+
         get :index, request_params
 
-        # TODO
+        expect(notes_json.count).to eq(1)
+        expect(notes_json.first[:id].to_i).to eq(comment.id)
+      end
+
+      it 'filters system notes' do
+        user.set_notes_filter(UserPreference::NOTES_FILTERS[:all_notes], issue)
+
+        get :index, request_params
+
+        expect(notes_json.count).to eq(2)
+        expect(notes_json.map { |note| note[:id].to_i }).to include(comment.id, system_note.id)
       end
     end
 
