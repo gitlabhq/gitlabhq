@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import Diff from '~/diff';
-import ShortcutsNavigation from '~/shortcuts_navigation';
+import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import GLForm from '~/gl_form';
 import IssuableForm from '~/issuable_form';
 import LabelsSelect from '~/labels_select';

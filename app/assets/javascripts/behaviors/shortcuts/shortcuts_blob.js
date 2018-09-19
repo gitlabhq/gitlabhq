@@ -1,5 +1,5 @@
 import Mousetrap from 'mousetrap';
-import { getLocationHash, visitUrl } from './lib/utils/url_utility';
+import { getLocationHash, visitUrl } from '../../lib/utils/url_utility';
 import Shortcuts from './shortcuts';
 
 const defaults = {

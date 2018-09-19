@@ -1,9 +1,9 @@
 import $ from 'jquery';
 import Cookies from 'js-cookie';
 import Mousetrap from 'mousetrap';
-import axios from './lib/utils/axios_utils';
-import { refreshCurrentPage, visitUrl } from './lib/utils/url_utility';
-import findAndFollowLink from './shortcuts_dashboard_navigation';
+import axios from '../../lib/utils/axios_utils';
+import { refreshCurrentPage, visitUrl } from '../../lib/utils/url_utility';
+import findAndFollowLink from '../../lib/utils/navigation_utility';
 
 const defaultStopCallback = Mousetrap.stopCallback;
 Mousetrap.stopCallback = (e, element, combo) => {
