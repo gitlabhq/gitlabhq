@@ -111,8 +111,8 @@
   "devDependencies": {
     "axios-mock-adapter": "^1.15.0",
     "babel-eslint": "^9.0.0",
-    "babel-plugin-istanbul": "^4.1.6",
-    "babel-plugin-rewire": "^1.1.0",
+    "babel-plugin-istanbul": "^5.0.1",
+    "babel-plugin-rewire": "^1.2.0",
     "babel-template": "^6.26.0",
     "babel-types": "^6.26.0",
     "chalk": "^2.4.1",
