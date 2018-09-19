@@ -7,7 +7,12 @@
 
     .gl-responsive-table-row{ role: 'row' }
       .table-section.section-10{ role: 'gridcell' }
-        = check_box_tag 'feature_flag_status', nil, feature_flag.active?, disabled: true
+        - if feature_flag.active?
+          %span.badge.badge-success
+            = s_('FeatureFlags|Active')
+        - else
+          %span.badge.badge-danger
+            = s_('FeatureFlags|Inactive')
 
       .table-section.section-50.d-flex.flex-column{ role: 'gridcell' }
         .text-monospace= feature_flag.name
