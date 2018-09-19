@@ -197,7 +197,15 @@ describe API::Epics do
 
   describe 'POST /groups/:id/epics' do
     let(:url) { "/groups/#{group.path}/epics" }
-    let(:params) { { title: 'new epic', description: 'epic description', labels: 'label1' } }
+    let(:params) do
+      {
+        title: 'new epic',
+        description: 'epic description',
+        labels: 'label1',
+        due_date_fixed: '2018-07-17',
+        due_date_is_fixed: true
+      }
+    end
 
     it_behaves_like 'error requests'
 
@@ -236,6 +244,10 @@ describe API::Epics do
 
           expect(epic.title).to eq('new epic')
           expect(epic.description).to eq('epic description')
+          expect(epic.start_date_fixed).to eq(nil)
+          expect(epic.start_date_is_fixed).to be_falsey
+          expect(epic.due_date_fixed).to eq(Date.new(2018, 7, 17))
+          expect(epic.due_date_is_fixed).to eq(true)
           expect(epic.labels.first.title).to eq('label1')
         end
 
@@ -308,6 +320,8 @@ describe API::Epics do
           expect(result.start_date).to eq(Date.new(2018, 7, 17))
           expect(result.start_date_fixed).to eq(Date.new(2018, 7, 17))
           expect(result.start_date_is_fixed).to eq(true)
+          expect(result.due_date_fixed).to eq(nil)
+          expect(result.due_date_is_fixed).to be_falsey
         end
 
         context 'when deprecated start_date and end_date params are present' do
@@ -321,6 +335,19 @@ describe API::Epics do
 
             expect(result.start_date_fixed).to eq(new_start_date)
             expect(result.due_date_fixed).to eq(new_due_date)
+          end
+        end
+
+        context 'when updating start_date_is_fixed by itself' do
+          let(:epic) { create(:epic, :use_fixed_dates, group: group) }
+          let(:new_start_date) { epic.start_date + 1.day }
+          let(:new_due_date) { epic.end_date + 1.day }
+          let!(:params) { { start_date_is_fixed: false } }
+
+          it 'updates start_date_is_fixed' do
+            result = epic.reload
+
+            expect(result.start_date_is_fixed).to eq(false)
           end
         end
       end

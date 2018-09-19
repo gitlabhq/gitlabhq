@@ -126,7 +126,12 @@ Example response:
 
 ## New epic
 
-Creates a new epic
+Creates a new epic.
+
+NOTE: **Note:**
+Starting with GitLab [11.3][ee-6448], `start_date` and `end_date` should no longer be assigned
+directly, as they now represent composite values. You can configure it via the `*_is_fixed` and
+`*_fixed` fields instead.
 
 ```
 POST /groups/:id/epics
@@ -138,8 +143,10 @@ POST /groups/:id/epics
 | `title`             | string           | yes        | The title of the epic |
 | `labels`            | string           | no         | The comma separated list of labels |
 | `description`       | string           | no         | The description of the epic  |
-| `start_date`        | string           | no         | The start date of the epic  |
-| `end_date`          | string.          | no         | The end date of the epic |
+| `start_date_is_fixed` | boolean        | no         | Whether start date should be sourced from `start_date_fixed` or from milestones (since 11.3) |
+| `start_date_fixed`  | string           | no         | The fixed start date of an epic (since 11.3) |
+| `due_date_is_fixed` | boolean          | no         | Whether due date should be sourced from `due_date_fixed` or from milestones (since 11.3) |
+| `due_date_fixed`    | string           | no         | The fixed due date of an epic (since 11.3) |
 
 ```bash
 curl --header POST "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/epics?title=Epic&description=Epic%20description
@@ -179,9 +186,12 @@ Example response:
 
 ## Update epic
 
-Updates an epic
+Updates an epic.
 
-Note that after [11.3][ee-6448], `start_date` and `end_date` should no longer be updated directly, as they now represent composite values. Users can configure via `_is_fixed` and `_fixed` fields instead.
+NOTE: **Note:**
+Starting with GitLab [11.3][ee-6448], `start_date` and `end_date` should no longer be assigned
+directly, as they now represent composite values. You can configure it via the `*_is_fixed` and
+`*_fixed` fields instead.
 
 ```
 PUT /groups/:id/epics/:epic_iid
@@ -194,9 +204,9 @@ PUT /groups/:id/epics/:epic_iid
 | `title`             | string           | no         | The title of an epic |
 | `description`       | string           | no         | The description of an epic  |
 | `labels`            | string           | no         | The comma separated list of labels |
-| `start_date_is_fixed` | boolean        | no         | Whether start date should be sourced from `start_date_fixed` (since 11.3) |
+| `start_date_is_fixed` | boolean        | no         | Whether start date should be sourced from `start_date_fixed` or from milestones (since 11.3) |
 | `start_date_fixed`  | string           | no         | The fixed start date of an epic (since 11.3) |
-| `due_date_is_fixed` | boolean          | no         | Whether due date should be sourced from `due_date_fixed` (since 11.3) |
+| `due_date_is_fixed` | boolean          | no         | Whether due date should be sourced from `due_date_fixed` or from milestones (since 11.3) |
 | `due_date_fixed`    | string           | no         | The fixed due date of an epic (since 11.3) |
 
 ```bash
