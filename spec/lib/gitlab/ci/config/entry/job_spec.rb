@@ -242,7 +242,7 @@ describe Gitlab::Ci::Config::Entry::Job do
 
             it 'returns error about the wrong format' do
               expect(entry).not_to be_valid
-              expect(entry.errors).to include 'job retry when cannot have unknown failures unknown_reason'
+              expect(entry.errors).to include 'job retry when contains unknown values: unknown_reason'
             end
           end
         end

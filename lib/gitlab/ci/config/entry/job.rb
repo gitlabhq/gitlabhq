@@ -26,23 +26,36 @@ module Gitlab
             validates :name, type: Symbol
 
             validates :retry, hash_or_integer: true, allowed_keys: ALLOWED_KEYS_RETRY, allow_nil: true
-            validate :validate_retry
+            validate :validate_retry, if: :validate_retry?
+
+            with_options allow_nil: true do
+              validates :tags, array_of_strings: true
+              validates :allow_failure, boolean: true
+              validates :parallel, numericality: { only_integer: true,
+                                                   greater_than_or_equal_to: 2 }
+
+              validates :when,
+                inclusion: { in: %w[on_success on_failure always manual delayed],
+                             message: 'should be on_success, on_failure, ' \
+                                      'always, manual or delayed' }
+
+              validates :dependencies, array_of_strings: true
+              validates :extends, type: String
+            end
+
+            def validate_retry?
+              config&.is_a?(Hash) &&
+                config[:retry].present? &&
+                (config[:retry].is_a?(Integer) || config[:retry].is_a?(Hash))
+            end
 
             def validate_retry
-              return if !config ||
-                  !config.is_a?(Hash) ||
-                  config[:retry].nil? ||
-                  !config[:retry].is_a?(Integer) && !config[:retry].is_a?(Hash)
-
-              check =
-                if config[:retry].is_a?(Integer)
-                  { max: config[:retry] }
-                else
-                  config[:retry]
-                end
-
-              validate_retry_max(check[:max])
-              validate_retry_when(check[:when])
+              if config[:retry].is_a?(Integer)
+                validate_retry_max(config[:retry])
+              else
+                validate_retry_max(config[:retry][:max])
+                validate_retry_when(config[:retry][:when])
+              end
             end
 
             def validate_retry_max(retry_max)
@@ -57,34 +70,30 @@ module Gitlab
             def validate_retry_when(retry_when)
               return if retry_when.blank?
 
-              possible_failures = Gitlab::Ci::Status::Build::Failed.reasons.keys.map(&:to_s) + ['always']
-
               if retry_when.is_a?(String)
-                unless possible_failures.include?(retry_when)
-                  errors[:base] << 'retry when is unknown'
-                end
+                validate_retry_when_string(retry_when)
               elsif retry_when.is_a?(Array)
-                unknown_whens = retry_when - possible_failures
-                unless unknown_whens.empty?
-                  errors[:base] << "retry when cannot have unknown failures #{unknown_whens.join(', ')}"
-                end
+                validate_retry_when_array(retry_when)
               else
                 errors[:base] << 'retry when should be an array of strings or a string'
               end
             end
 
-            with_options allow_nil: true do
-              validates :tags, array_of_strings: true
-              validates :allow_failure, boolean: true
-              validates :parallel, numericality: { only_integer: true,
-                                                   greater_than_or_equal_to: 2 }
-              validates :when,
-                inclusion: { in: %w[on_success on_failure always manual delayed],
-                             message: 'should be on_success, on_failure, ' \
-                                      'always, manual or delayed' }
+            def possible_retry_when_options
+              @possible_retry_when_options ||= Gitlab::Ci::Status::Build::Failed.reasons.keys.map(&:to_s) + ['always']
+            end
 
-              validates :dependencies, array_of_strings: true
-              validates :extends, type: String
+            def validate_retry_when_string(retry_when)
+              unless possible_retry_when_options.include?(retry_when)
+                errors[:base] << 'retry when is unknown'
+              end
+            end
+
+            def validate_retry_when_array(retry_when)
+              unknown_whens = retry_when - possible_retry_when_options
+              unless unknown_whens.empty?
+                errors[:base] << "retry when contains unknown values: #{unknown_whens.join(', ')}"
+              end
             end
 
             validates :start_in, duration: { limit: '1 day' }, if: :delayed?
