@@ -1,0 +1,5 @@
+---
+title: 'Geo: Decrease frequency of project shard schedulers when few projects to schedule'
+merge_request: 7287
+author:
+type: changed
