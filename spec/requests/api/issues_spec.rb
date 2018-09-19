@@ -1801,6 +1801,74 @@ describe API::Issues do
     end
   end
 
+  describe 'GET :id/issues/:issue_iid/related_merge_requests' do
+    def get_related_merge_requests(project_id, issue_iid, user = nil)
+      get api("/projects/#{project_id}/issues/#{issue_iid}/related_merge_requests", user)
+    end
+
+    def create_referencing_mr(user, project, issue)
+      attributes = {
+        author: user,
+        source_project: project,
+        target_project: project,
+        source_branch: "master",
+        target_branch: "test",
+        description: "See #{issue.to_reference}"
+      }
+      create(:merge_request, attributes).tap do |merge_request|
+        create(:note, :system, project: project, noteable: issue, author: user, note: merge_request.to_reference(full: true))
+      end
+    end
+
+    let!(:related_mr) { create_referencing_mr(user, project, issue) }
+
+    context 'when unauthenticated' do
+      it 'return list of referenced merge requests from issue' do
+        get_related_merge_requests(project.id, issue.iid)
+
+        expect_paginated_array_response(size: 1)
+      end
+
+      it 'renders 404 if project is not visible' do
+        private_project = create(:project, :private)
+        private_issue = create(:issue, project: private_project)
+        create_referencing_mr(user, private_project, private_issue)
+
+        get_related_merge_requests(private_project.id, private_issue.iid)
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    it 'returns merge requests that mentioned a issue' do
+      create(:merge_request,
+            :simple,
+            author: user,
+            source_project: project,
+            target_project: project,
+            description: "Some description")
+
+      get_related_merge_requests(project.id, issue.iid, user)
+
+      expect_paginated_array_response(size: 1)
+      expect(json_response.first['id']).to eq(related_mr.id)
+    end
+
+    context 'no merge request mentioned a issue' do
+      it 'returns empty array' do
+        get_related_merge_requests(project.id, closed_issue.iid, user)
+
+        expect_paginated_array_response(size: 0)
+      end
+    end
+
+    it "returns 404 when issue doesn't exists" do
+      get_related_merge_requests(project.id, 999999, user)
+
+      expect(response).to have_gitlab_http_status(404)
+    end
+  end
+
   describe "GET /projects/:id/issues/:issue_iid/user_agent_detail" do
     let!(:user_agent_detail) { create(:user_agent_detail, subject: issue) }
 

@@ -1113,6 +1113,93 @@ Example response:
 }
 ```
 
+## List merge requests related to issue
+
+Get all the merge requests that are related to the issue.
+
+```
+GET /projects/:id/issues/:issue_id/related_merge_requests
+```
+
+| Attribute   | Type    | Required | Description                          |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `issue_iid` | integer | yes      | The internal ID of a project's issue |
+
+```sh
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/issues/11/related_merge_requests
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 29,
+    "iid": 11,
+    "project_id": 1,
+    "title": "Provident eius eos blanditiis consequatur neque odit.",
+    "description": "Ut consequatur ipsa aspernatur quisquam voluptatum fugit. Qui harum corporis quo fuga ut incidunt veritatis. Autem necessitatibus et harum occaecati nihil ea.\r\n\r\ntwitter/flight#8",
+    "state": "opened",
+    "created_at": "2018-09-18T14:36:15.510Z",
+    "updated_at": "2018-09-19T07:45:13.089Z",
+    "target_branch": "v2.x",
+    "source_branch": "so_long_jquery",
+    "upvotes": 0,
+    "downvotes": 0,
+    "author": {
+      "id": 14,
+      "name": "Verna Hills",
+      "username": "lawanda_reinger",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/de68a91aeab1cff563795fb98a0c2cc0?s=80&d=identicon",
+      "web_url": "https://gitlab.example.com/lawanda_reinger"
+    },
+    "assignee": {
+      "id": 19,
+      "name": "Jody Baumbach",
+      "username": "felipa.kuvalis",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/6541fc75fc4e87e203529bd275fafd07?s=80&d=identicon",
+      "web_url": "https://gitlab.example.com/felipa.kuvalis"
+    },
+    "source_project_id": 1,
+    "target_project_id": 1,
+    "labels": [],
+    "work_in_progress": false,
+    "milestone": {
+      "id": 27,
+      "iid": 2,
+      "project_id": 1,
+      "title": "v1.0",
+      "description": "Et tenetur voluptatem minima doloribus vero dignissimos vitae.",
+      "state": "active",
+      "created_at": "2018-09-18T14:35:44.353Z",
+      "updated_at": "2018-09-18T14:35:44.353Z",
+      "due_date": null,
+      "start_date": null,
+      "web_url": "https://gitlab.example.com/twitter/flight/milestones/2"
+    },
+    "merge_when_pipeline_succeeds": false,
+    "merge_status": "cannot_be_merged",
+    "sha": "3b7b528e9353295c1c125dad281ac5b5deae5f12",
+    "merge_commit_sha": null,
+    "user_notes_count": 9,
+    "discussion_locked": null,
+    "should_remove_source_branch": null,
+    "force_remove_source_branch": false,
+    "web_url": "https://gitlab.example.com/twitter/flight/merge_requests/4",
+    "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+    },
+    "squash": false
+  }
+]
+```
+
 ## List merge requests that will close issue on merge
 
 Get all the merge requests that will close issue when merged.
