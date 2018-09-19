@@ -1,5 +1,0 @@
----
-title: Rails5 fix connection execute return integer instead of string
-merge_request: 19901
-author: Jasper Maes
-type: fixed

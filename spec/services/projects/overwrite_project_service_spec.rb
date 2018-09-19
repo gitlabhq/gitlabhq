@@ -96,10 +96,10 @@ describe Projects::OverwriteProjectService do
 
     context 'when project with elements' do
       it_behaves_like 'overwrite actions' do
-        let(:master_user) { create(:user) }
+        let(:maintainer_user) { create(:user) }
         let(:reporter_user) { create(:user) }
         let(:developer_user) { create(:user) }
-        let(:master_group) { create(:group) }
+        let(:maintainer_group) { create(:group) }
         let(:reporter_group) { create(:group) }
         let(:developer_group) { create(:group) }
 
@@ -107,10 +107,10 @@ describe Projects::OverwriteProjectService do
           create_list(:deploy_keys_project, 2, project: project_from)
           create_list(:notification_setting, 2, source: project_from)
           create_list(:users_star_project, 2, project: project_from)
-          project_from.project_group_links.create(group: master_group, group_access: Gitlab::Access::MASTER)
+          project_from.project_group_links.create(group: maintainer_group, group_access: Gitlab::Access::MAINTAINER)
           project_from.project_group_links.create(group: developer_group, group_access: Gitlab::Access::DEVELOPER)
           project_from.project_group_links.create(group: reporter_group, group_access: Gitlab::Access::REPORTER)
-          project_from.add_master(master_user)
+          project_from.add_maintainer(maintainer_user)
           project_from.add_developer(developer_user)
           project_from.add_reporter(reporter_user)
         end

@@ -1,0 +1,5 @@
+---
+title: Restrict reopening locked issues for non authorized issue authors
+merge_request: 21299
+author:
+type: changed

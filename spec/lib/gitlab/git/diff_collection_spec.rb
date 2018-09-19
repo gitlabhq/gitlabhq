@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Git::DiffCollection, seed_helper: true do
+describe Gitlab::Git::DiffCollection, :seed_helper do
   subject do
     Gitlab::Git::DiffCollection.new(
       iterator,

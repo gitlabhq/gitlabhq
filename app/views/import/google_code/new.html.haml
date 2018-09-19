@@ -1,62 +1,62 @@
-- page_title "Google Code import"
-- header_title "Projects", root_path
+- page_title _("Google Code import")
+- header_title _("Projects"), root_path
 %h3.page-title
   %i.fa.fa-google
-  Import projects from Google Code
+  = _('Import projects from Google Code')
 %hr
 
 = form_tag callback_import_google_code_path, multipart: true do
   %p
-    Follow the steps below to export your Google Code project data.
-    In the next step, you'll be able to select the projects you want to import.
+    = _('Follow the steps below to export your Google Code project data.')
+    = _("In the next step, you'll be able to select the projects you want to import.")
   %ol
     %li
       %p
-        Go to
-        #{link_to "Google Takeout", "https://www.google.com/settings/takeout", target: '_blank', rel: 'noopener noreferrer'}.
+        - link_to_google_takeout = link_to(_("Google Takeout"), "https://www.google.com/settings/takeout", target: '_blank', rel: 'noopener noreferrer')
+        = _("Go to %{link_to_google_takeout}.").html_safe % { link_to_google_takeout: link_to_google_takeout }
     %li
       %p
-        Make sure you're logged into the account that owns the projects you'd like to import.
+        = _("Make sure you're logged into the account that owns the projects you'd like to import.")
     %li
       %p
-        Click the <strong>Select none</strong> button on the right, since we only need "Google Code Project Hosting".
+        = _('Click the <strong>Select none</strong> button on the right, since we only need "Google Code Project Hosting".').html_safe
     %li
       %p
-        Scroll down to <strong>Google Code Project Hosting</strong> and enable the switch on the right.
+        = _('Scroll down to <strong>Google Code Project Hosting</strong> and enable the switch on the right.').html_safe
     %li
       %p
-        Choose <strong>Next</strong> at the bottom of the page.
+        = _('Choose <strong>Next</strong> at the bottom of the page.').html_safe
     %li
       %p
-        Leave the "File type" and "Delivery method" options on their default values.
+        = _('Leave the "File type" and "Delivery method" options on their default values.')
     %li
       %p
-        Choose <strong>Create archive</strong> and wait for archiving to complete.
+        = _('Choose <strong>Create archive</strong> and wait for archiving to complete.').html_safe
     %li
       %p
-        Click the <strong>Download</strong> button and wait for downloading to complete.
+        = _('Click the <strong>Download</strong> button and wait for downloading to complete.').html_safe
     %li
       %p
-        Find the downloaded ZIP file and decompress it.
+        = _('Find the downloaded ZIP file and decompress it.')
     %li
       %p
-        Find the newly extracted <code>Takeout/Google Code Project Hosting/GoogleCodeProjectHosting.json</code> file.
+        = _('Find the newly extracted <code>Takeout/Google Code Project Hosting/GoogleCodeProjectHosting.json</code> file.').html_safe
     %li
       %p
-        Upload <code>GoogleCodeProjectHosting.json</code> here:
+        = _('Upload <code>GoogleCodeProjectHosting.json</code> here:').html_safe
       %p
         %input{ type: "file", name: "dump_file", id: "dump_file" }
     %li
       %p
-        Do you want to customize how Google Code email addresses and usernames are imported into GitLab?
+        = _('Do you want to customize how Google Code email addresses and usernames are imported into GitLab?')
       %p
         = label_tag :create_user_map_0 do
           = radio_button_tag :create_user_map, 0, true
-          No, directly import the existing email addresses and usernames.
+          = _('No, directly import the existing email addresses and usernames.')
       %p
         = label_tag :create_user_map_1 do
           = radio_button_tag :create_user_map, 1, false
-          Yes, let me map Google Code users to full names or GitLab users.
+          = _('Yes, let me map Google Code users to full names or GitLab users.')
     %li
       %p
-        = submit_tag 'Continue to the next step', class: "btn btn-create"
+        = submit_tag _('Continue to the next step'), class: "btn btn-create"

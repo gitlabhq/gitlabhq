@@ -1,4 +1,3 @@
-# rubocop:disable all
 class AddImportCredentialsToProjectImportData < ActiveRecord::Migration
   def change
     add_column :project_import_data, :encrypted_credentials, :text

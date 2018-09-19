@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 class CommitEntity < API::Entities::Commit
   include RequestAwareEntity
 
   expose :author, using: UserEntity
 
   expose :author_gravatar_url do |commit|
-    GravatarService.new.execute(commit.author_email)
+    GravatarService.new.execute(commit.author_email) # rubocop: disable CodeReuse/ServiceClass
   end
 
   expose :commit_url do |commit|

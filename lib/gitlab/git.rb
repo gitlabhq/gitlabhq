@@ -10,9 +10,11 @@ module Gitlab
     TAG_REF_PREFIX = "refs/tags/".freeze
     BRANCH_REF_PREFIX = "refs/heads/".freeze
 
-    CommandError = Class.new(StandardError)
-    CommitError = Class.new(StandardError)
-    OSError = Class.new(StandardError)
+    BaseError = Class.new(StandardError)
+    CommandError = Class.new(BaseError)
+    CommitError = Class.new(BaseError)
+    OSError = Class.new(BaseError)
+    UnknownRef = Class.new(BaseError)
 
     class << self
       include Gitlab::EncodingHelper

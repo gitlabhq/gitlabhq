@@ -1,11 +1,11 @@
 # Database MySQL
 
->**Note:**
-- We do not recommend using MySQL due to various issues. For example, case
-[(in)sensitivity](https://dev.mysql.com/doc/refman/5.0/en/case-sensitivity.html)
-and [problems](https://bugs.mysql.com/bug.php?id=65830) that
-[suggested](https://bugs.mysql.com/bug.php?id=50909)
-[fixes](https://bugs.mysql.com/bug.php?id=65830) [have](https://bugs.mysql.com/bug.php?id=63164).
+> **Note:**
+> - We do not recommend using MySQL due to various issues. For example, case
+    [(in)sensitivity](https://dev.mysql.com/doc/refman/5.0/en/case-sensitivity.html)
+    and [problems](https://bugs.mysql.com/bug.php?id=65830) that
+    [suggested](https://bugs.mysql.com/bug.php?id=50909)
+    [fixes](https://bugs.mysql.com/bug.php?id=65830) [have](https://bugs.mysql.com/bug.php?id=63164).
 
 ## Initial database setup
 
@@ -146,10 +146,12 @@ Congrats, your GitLab database uses the right InnoDB tablespace format.
 However, you must still ensure that any **future tables** created by GitLab will still use the right format:
 
 - If `SELECT @@innodb_file_per_table` returned **1** previously, your server is running correctly.
-> It's however a requirement to check *now* that this setting is indeed persisted in your [my.cnf](https://dev.mysql.com/doc/refman/5.7/en/tablespace-enabling.html) file!
+
+    > It's however a requirement to check *now* that this setting is indeed persisted in your [my.cnf](https://dev.mysql.com/doc/refman/5.7/en/tablespace-enabling.html) file!
 
 - If `SELECT @@innodb_file_per_table` returned **0** previously, your server is not running correctly.
-> [Enable innodb_file_per_table](https://dev.mysql.com/doc/refman/5.7/en/tablespace-enabling.html) by running in a MySQL session as root the command `SET GLOBAL innodb_file_per_table=1, innodb_file_format=Barracuda;` and persist the two settings in your [my.cnf](https://dev.mysql.com/doc/refman/5.7/en/tablespace-enabling.html) file
+
+    > [Enable innodb_file_per_table](https://dev.mysql.com/doc/refman/5.7/en/tablespace-enabling.html) by running in a MySQL session as root the command `SET GLOBAL innodb_file_per_table=1, innodb_file_format=Barracuda;` and persist the two settings in your [my.cnf](https://dev.mysql.com/doc/refman/5.7/en/tablespace-enabling.html) file
 
 Now, if you have a **different result** returned by the 2 commands above, it means you have a **mix of tables format** uses in your GitLab database. This can happen if your MySQL server had different values for `innodb_file_per_table` in its life and you updated GitLab at different moments with those inconsistent values. So keep reading.
 

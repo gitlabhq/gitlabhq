@@ -1,0 +1,5 @@
+---
+title: 'Auto-DevOps.gitlab-ci.yml: update glibc package to 2.28'
+merge_request: 21191
+author: sgerrand
+type: fixed

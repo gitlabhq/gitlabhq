@@ -174,11 +174,13 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
             dispatch('updateActivityBarView', activityBarViews.edit, { root: true });
             dispatch('updateViewer', 'editor', { root: true });
 
-            router.push(
-              `/project/${rootState.currentProjectId}/blob/${getters.branchName}/-/${
-                rootGetters.activeFile.path
-              }`,
-            );
+            if (rootGetters.activeFile) {
+              router.push(
+                `/project/${rootState.currentProjectId}/blob/${getters.branchName}/-/${
+                  rootGetters.activeFile.path
+                }`,
+              );
+            }
           }
         })
         .then(() => dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH))

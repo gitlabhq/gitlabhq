@@ -27,9 +27,9 @@ describe Gitlab::GithubImport::Importer::PullRequestsImporter do
       milestone: double(:milestone, number: 4),
       user: double(:user, id: 4, login: 'alice'),
       assignee: double(:user, id: 4, login: 'alice'),
-      created_at: Time.zone.now,
-      updated_at: Time.zone.now,
-      merged_at: Time.zone.now
+      created_at: 1.second.ago,
+      updated_at: 1.second.ago,
+      merged_at: 1.second.ago
     )
   end
 
@@ -158,7 +158,6 @@ describe Gitlab::GithubImport::Importer::PullRequestsImporter do
 
       expect(importer.repository_updates_counter)
         .to receive(:increment)
-        .with(project: project.path_with_namespace)
         .and_call_original
 
       Timecop.freeze do

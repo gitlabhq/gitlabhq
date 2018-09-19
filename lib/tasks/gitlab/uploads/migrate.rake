@@ -8,7 +8,7 @@ namespace :gitlab do
       @uploader_class = args.uploader_class.constantize
       @model_class    = args.model_class.constantize
 
-      uploads.each_batch(of: batch_size, &method(:enqueue_batch)) # rubocop: disable Cop/InBatches
+      uploads.each_batch(of: batch_size, &method(:enqueue_batch))
     end
 
     def enqueue_batch(batch, index)

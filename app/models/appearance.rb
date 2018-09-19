@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Appearance < ActiveRecord::Base
   include CacheableAttributes
   include CacheMarkdownField

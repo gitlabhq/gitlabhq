@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Labels
   class FindOrCreateService
     def initialize(current_user, parent, params = {})
@@ -27,6 +29,7 @@ module Labels
 
     # Only creates the label if current_user can do so, if the label does not exist
     # and the user can not create the label, nil is returned
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_or_create_label
       new_label = available_labels.find_by(title: title)
 
@@ -37,6 +40,7 @@ module Labels
 
       new_label
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def title
       params[:title] || params[:name]

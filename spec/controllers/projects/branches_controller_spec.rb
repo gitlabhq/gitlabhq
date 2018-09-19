@@ -6,7 +6,7 @@ describe Projects::BranchesController do
   let(:developer) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     project.add_developer(user)
 
     allow(project).to receive(:branches).and_return(['master', 'foo/bar/baz'])

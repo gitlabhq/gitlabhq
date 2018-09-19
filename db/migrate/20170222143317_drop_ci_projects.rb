@@ -1,4 +1,3 @@
-# rubocop:disable Migration/Datetime
 class DropCiProjects < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

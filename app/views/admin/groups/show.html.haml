@@ -1,61 +1,58 @@
-- add_to_breadcrumbs "Groups", admin_groups_path
+- add_to_breadcrumbs _("Groups"), admin_groups_path
 - breadcrumb_title @group.name
-- page_title @group.name, "Groups"
+- page_title @group.name, _("Groups")
 %h3.page-title
-  Group: #{@group.full_name}
+  = _('Group: %{group_name}') % { group_name: @group.full_name }
 
   = link_to admin_group_edit_path(@group), class: "btn float-right" do
     %i.fa.fa-pencil-square-o
-    Edit
+    = _('Edit')
 %hr
 .row
   .col-md-6
     .card
       .card-header
-        Group info:
+        = _('Group info:')
       %ul.content-list
         %li
           .avatar-container.s60
             = group_icon(@group, class: "avatar s60")
         %li
-          %span.light Name:
+          %span.light= _('Name:')
           %strong= @group.name
         %li
-          %span.light Path:
+          %span.light= _('Path:')
           %strong
             = @group.path
 
         %li
-          %span.light Description:
+          %span.light= _('Description:')
           %strong
             = @group.description
 
         %li
-          %span.light Visibility level:
+          %span.light= _('Visibility level:')
           %strong
             = visibility_level_label(@group.visibility_level)
 
         %li
-          %span.light Created on:
+          %span.light= _('Created on:')
           %strong
             = @group.created_at.to_s(:medium)
 
         = render_if_exists 'admin/namespace_plan_info', namespace: @group
 
         %li
-          %span.light Storage:
-          %strong= storage_counter(@group.storage_size)
-          (
-          = storage_counter(@group.repository_size)
-          repositories,
-          = storage_counter(@group.build_artifacts_size)
-          build artifacts,
-          = storage_counter(@group.lfs_objects_size)
-          LFS
-          )
+          %span.light= _('Storage:')
+          - counter_storage = storage_counter(@group.storage_size)
+          - counter_repositories = storage_counter(@group.repository_size)
+          - counter_build_artifacts = storage_counter(@group.build_artifacts_size)
+          - counter_lfs_objects = storage_counter(@group.lfs_objects_size)
+          %strong
+            = _("%{counter_storage} (%{counter_repositories} repositories, %{counter_build_artifacts} build artifacts, %{counter_lfs_objects} LFS)") % { counter_storage: counter_storage, counter_repositories: counter_repositories, counter_build_artifacts: counter_build_artifacts, counter_lfs_objects: counter_lfs_objects }
 
         %li
-          %span.light Group Git LFS status:
+          %span.light= _('Group Git LFS status:')
           %strong
             = group_lfs_status(@group)
             = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
@@ -67,7 +64,7 @@
     .card
       .card-header
         %h3.card-title
-          Projects
+          = _('Projects')
           %span.badge.badge-pill
             #{@group.projects.count}
       %ul.content-list
@@ -85,7 +82,7 @@
     - if @group.shared_projects.any?
       .card
         .card-header
-          Projects shared with #{@group.name}
+          = _('Projects shared with %{group_name}') % { group_name: @group.name }
           %span.badge.badge-pill
             #{@group.shared_projects.count}
         %ul.content-list
@@ -102,11 +99,11 @@
     - if can?(current_user, :admin_group_member, @group)
       .card
         .card-header
-          Add user(s) to the group:
+          = _('Add user(s) to the group:')
         .card-body.form-holder
           %p.light
-            Read more about project permissions
-            %strong= link_to "here", help_page_path("user/permissions"), class: "vlink"
+            - link_to_help = link_to(_("here"), help_page_path("user/permissions"), class: "vlink")
+            = _('Read more about project permissions <strong>%{link_to_help}</strong>').html_safe % { link_to_help: link_to_help }
 
           = form_tag admin_group_members_update_path(@group), id: "new_project_member", class: "bulk_import", method: :put  do
             %div
@@ -114,16 +111,15 @@
             .prepend-top-10
               = select_tag :access_level, options_for_select(GroupMember.access_level_roles), class: "project-access-select select2"
             %hr
-            = button_tag 'Add users to group', class: "btn btn-create"
+            = button_tag _('Add users to group'), class: "btn btn-create"
       = render 'shared/members/requests', membership_source: @group, requesters: @requesters, force_mobile_view: true
 
     .card
       .card-header
-        %strong= @group.name
-        group members
+        = _("<strong>%{group_name}</strong> group members").html_safe % { group_name: @group.name }
         %span.badge.badge-pill= @group.members.size
         .float-right
-          = link_to icon('pencil-square-o', text: 'Manage access'), polymorphic_url([@group, :members]), class: "btn btn-sm"
+          = link_to icon('pencil-square-o', text: _('Manage access')), polymorphic_url([@group, :members]), class: "btn btn-sm"
       %ul.content-list.group-users-list.content-list.members-list
         = render partial: 'shared/members/member', collection: @members, as: :member, locals: { show_controls: false }
       .card-footer

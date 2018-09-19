@@ -198,14 +198,14 @@ And that's it, we're done!
 ## Changing The Schema For Large Tables
 
 While `change_column_type_concurrently` and `rename_column_concurrently` can be
-used for changing the schema of a table without downtime it doesn't work very
+used for changing the schema of a table without downtime, it doesn't work very
 well for large tables. Because all of the work happens in sequence the migration
 can take a very long time to complete, preventing a deployment from proceeding.
 They can also produce a lot of pressure on the database due to it rapidly
 updating many rows in sequence.
 
 To reduce database pressure you should instead use
-`change_column_type_using_background_migration` or `rename_column_concurrently`
+`change_column_type_using_background_migration` or `rename_column_using_background_migration`
 when migrating a column in a large table (e.g. `issues`). These methods work
 similarly to the concurrent counterparts but uses background migration to spread
 the work / load over a longer time period, without slowing down deployments.

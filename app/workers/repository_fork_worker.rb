@@ -23,9 +23,7 @@ class RepositoryForkWorker
   def fork_repository(target_project, source_repository_storage_name, source_disk_path)
     return unless start_fork(target_project)
 
-    Gitlab::Metrics.add_event(:fork_repository,
-                              source_path: source_disk_path,
-                              target_path: target_project.disk_path)
+    Gitlab::Metrics.add_event(:fork_repository)
 
     result = gitlab_shell.fork_repository(source_repository_storage_name, source_disk_path,
                                           target_project.repository_storage, target_project.disk_path)

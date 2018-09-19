@@ -1,5 +1,0 @@
----
-title: Fix extra blank line at start of rendered reStructuredText code block
-merge_request: 19596
-author:
-type: fixed

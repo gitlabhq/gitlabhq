@@ -1,0 +1,5 @@
+---
+title: Enable frozen in app/mailers/**/*.rb
+merge_request: 21147
+author: gfyoung
+type: performance

@@ -2,20 +2,18 @@
 /**
  * Render environments table.
  */
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import environmentItem from './environment_item.vue';
 
 export default {
   components: {
     environmentItem,
-    loadingIcon,
   },
 
   props: {
     environments: {
       type: Array,
       required: true,
-      default: () => ([]),
+      default: () => [],
     },
 
     canReadEnvironment: {
@@ -35,10 +33,7 @@ export default {
       return `${window.location.pathname}/folders/${model.folderName}`;
     },
     shouldRenderFolderContent(env) {
-      return env.isFolder &&
-        env.isOpen &&
-        env.children &&
-        env.children.length > 0;
+      return env.isFolder && env.isOpen && env.children && env.children.length > 0;
     },
   },
 };
@@ -53,7 +48,7 @@ export default {
       role="row"
     >
       <div
-        class="table-section section-10 environments-name"
+        class="table-section section-15 environments-name"
         role="columnheader"
       >
         {{ s__("Environments|Environment") }}
@@ -71,7 +66,7 @@ export default {
         {{ s__("Environments|Job") }}
       </div>
       <div
-        class="table-section section-25 environments-commit"
+        class="table-section section-20 environments-commit"
         role="columnheader"
       >
         {{ s__("Environments|Commit") }}
@@ -91,7 +86,7 @@ export default {
         :model="model"
         :can-create-deployment="canCreateDeployment"
         :can-read-environment="canReadEnvironment"
-        :key="i"
+        :key="`environment-item-${i}`"
       />
 
       <template
@@ -100,7 +95,7 @@ export default {
         <div
           v-if="model.isLoadingFolderContent"
           :key="`loading-item-${i}`">
-          <loading-icon size="2" />
+          <gl-loading-icon :size="2" />
         </div>
 
         <template v-else>

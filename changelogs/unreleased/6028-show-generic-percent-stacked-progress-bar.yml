@@ -1,0 +1,6 @@
+---
+title: Show '< 1%' when percent value evaluated is less than 1 on Stacked Progress
+  Bar
+merge_request: 21306
+author:
+type: fixed

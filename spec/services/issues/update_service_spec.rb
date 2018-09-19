@@ -18,7 +18,7 @@ describe Issues::UpdateService, :mailer do
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     project.add_developer(user2)
     project.add_developer(user3)
   end
@@ -55,6 +55,8 @@ describe Issues::UpdateService, :mailer do
       end
 
       it 'updates the issue with the given params' do
+        expect(TodosDestroyer::ConfidentialIssueWorker).not_to receive(:perform_in)
+
         update_issue(opts)
 
         expect(issue).to be_valid
@@ -72,6 +74,21 @@ describe Issues::UpdateService, :mailer do
 
         expect { update_issue(confidential: true) }
           .to change { project.open_issues_count }.from(1).to(0)
+      end
+
+      it 'enqueues ConfidentialIssueWorker when an issue is made confidential' do
+        expect(TodosDestroyer::ConfidentialIssueWorker).to receive(:perform_in).with(1.hour, issue.id)
+
+        update_issue(confidential: true)
+      end
+
+      it 'does not enqueue ConfidentialIssueWorker when an issue is made non confidential' do
+        # set confidentiality to true before the actual update
+        issue.update!(confidential: true)
+
+        expect(TodosDestroyer::ConfidentialIssueWorker).not_to receive(:perform_in)
+
+        update_issue(confidential: false)
       end
 
       it 'updates open issue counter for assignees when issue is reassigned' do
@@ -172,11 +189,12 @@ describe Issues::UpdateService, :mailer do
           expect(note.note).to include "assigned to #{user2.to_reference}"
         end
 
-        it 'creates system note about issue label edit' do
-          note = find_note('added ~')
+        it 'creates a resource label event' do
+          event = issue.resource_label_events.last
 
-          expect(note).not_to be_nil
-          expect(note.note).to include "added #{label.to_reference} label"
+          expect(event).not_to be_nil
+          expect(event.label_id).to eq label.id
+          expect(event.user_id).to eq user.id
         end
 
         it 'creates system note about title change' do
@@ -501,7 +519,7 @@ describe Issues::UpdateService, :mailer do
         let(:params) { { label_ids: [], remove_label_ids: [label.id] } }
 
         before do
-          issue.update_attributes(labels: [label, label3])
+          issue.update(labels: [label, label3])
         end
 
         it 'ignores the label_ids parameter' do
@@ -517,7 +535,7 @@ describe Issues::UpdateService, :mailer do
         let(:params) { { add_label_ids: [label3.id], remove_label_ids: [label.id] } }
 
         before do
-          issue.update_attributes(labels: [label])
+          issue.update(labels: [label])
         end
 
         it 'adds the passed labels' do
@@ -596,7 +614,7 @@ describe Issues::UpdateService, :mailer do
 
       context 'valid project' do
         before do
-          target_project.add_master(user)
+          target_project.add_maintainer(user)
         end
 
         it 'calls the move service with the proper issue and project' do

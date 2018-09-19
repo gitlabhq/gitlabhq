@@ -1,4 +1,4 @@
-require File.expand_path('../boot', __FILE__)
+require File.expand_path('boot', __dir__)
 
 require 'rails/all'
 
@@ -19,6 +19,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/request_context')
     require_dependency Rails.root.join('lib/gitlab/current_settings')
     require_dependency Rails.root.join('lib/gitlab/middleware/read_only')
+    require_dependency Rails.root.join('lib/gitlab/middleware/basic_health_check')
 
     # This needs to be loaded before DB connection is made
     # to make sure that all connections have NO_ZERO_DATE
@@ -43,10 +44,12 @@ module Gitlab
                                      #{config.root}/app/models/members
                                      #{config.root}/app/models/project_services
                                      #{config.root}/app/workers/concerns
+                                     #{config.root}/app/policies/concerns
                                      #{config.root}/app/services/concerns
                                      #{config.root}/app/serializers/concerns
                                      #{config.root}/app/finders/concerns
-                                     #{config.root}/app/graphql/resolvers/concerns])
+                                     #{config.root}/app/graphql/resolvers/concerns
+                                     #{config.root}/app/graphql/mutations/concerns])
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
@@ -82,6 +85,7 @@ module Gitlab
     # - Any parameter ending with `token`
     # - Any parameter containing `password`
     # - Any parameter containing `secret`
+    # - Any parameter ending with `key`
     # - Two-factor tokens (:otp_attempt)
     # - Repo/Project Import URLs (:import_url)
     # - Build traces (:trace)
@@ -89,15 +93,13 @@ module Gitlab
     # - GitLab Pages SSL cert/key info (:certificate, :encrypted_key)
     # - Webhook URLs (:hook)
     # - Sentry DSN (:sentry_dsn)
-    # - Deploy keys (:key)
     # - File content from Web Editor (:content)
-    config.filter_parameters += [/token$/, /password/, /secret/]
+    config.filter_parameters += [/token$/, /password/, /secret/, /key$/]
     config.filter_parameters += %i(
       certificate
       encrypted_key
       hook
       import_url
-      key
       otp_attempt
       sentry_dsn
       trace
@@ -131,7 +133,7 @@ module Gitlab
     config.assets.precompile << "print.css"
     config.assets.precompile << "notify.css"
     config.assets.precompile << "mailers/*.css"
-    config.assets.precompile << "xterm/xterm.css"
+    config.assets.precompile << "page_bundles/ide.css"
     config.assets.precompile << "performance_bar.css"
     config.assets.precompile << "lib/ace.js"
     config.assets.precompile << "test.css"
@@ -146,10 +148,18 @@ module Gitlab
     config.assets.precompile << "icons.json"
     config.assets.precompile << "illustrations/*.svg"
 
+    # Import css for xterm
+    config.assets.paths << "#{config.root}/node_modules/xterm/src/"
+    config.assets.precompile << "xterm.css"
+
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
     config.action_view.sanitized_allowed_protocols = %w(smb)
+
+    # This middleware needs to precede ActiveRecord::QueryCache and other middlewares that
+    # connect to the database.
+    config.middleware.insert_after Rails::Rack::Logger, ::Gitlab::Middleware::BasicHealthCheck
 
     config.middleware.insert_after Warden::Manager, Rack::Attack
 
@@ -186,7 +196,7 @@ module Gitlab
 
     config.cache_store = :redis_store, caching_config_hash
 
-    config.active_record.raise_in_transactional_callbacks = true
+    config.active_record.raise_in_transactional_callbacks = true unless rails5?
 
     config.active_job.queue_adapter = :sidekiq
 
@@ -211,7 +221,7 @@ module Gitlab
           next unless name.include?('namespace_project')
 
           define_method(name.sub('namespace_project', 'project')) do |project, *args|
-            send(name, project&.namespace, project, *args) # rubocop:disable GitlabSecurity/PublicSend
+            send(name, project&.namespace, project, *args)
           end
         end
       end

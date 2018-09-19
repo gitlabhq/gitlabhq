@@ -23,6 +23,6 @@ describe('IDE job description', () => {
   });
 
   it('renders CI icon', () => {
-    expect(vm.$el.querySelector('.ci-status-icon .ic-status_passed_borderless')).not.toBe(null);
+    expect(vm.$el.querySelector('.ci-status-icon .ic-status_success_borderless')).not.toBe(null);
   });
 });

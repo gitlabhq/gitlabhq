@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SystemNoteMetadata < ActiveRecord::Base
   # These notes's action text might contain a reference that is external.
   # We should always force a deep validation upon references that are found
@@ -13,7 +15,7 @@ class SystemNoteMetadata < ActiveRecord::Base
     commit description merge confidential visible label assignee cross_reference
     title time_tracking branch milestone discussion task moved
     opened closed merged duplicate locked unlocked
-    outdated
+    outdated tag due_date
   ].freeze
 
   validates :note, presence: true

@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 module ProtectedTagAccess
   extend ActiveSupport::Concern
+  include ProtectedRefAccess
 
   included do
-    include ProtectedRefAccess
-
     belongs_to :protected_tag
 
     delegate :project, to: :protected_tag

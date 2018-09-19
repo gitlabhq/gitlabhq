@@ -7,11 +7,10 @@
 
 = render 'groups/home_panel'
 
-.groups-header{ class: container_class }
-  .group-nav-container
-    .nav-controls.clearfix
+.groups-listing{ class: container_class, data: { endpoints: { default: group_children_path(@group, format: :json), shared: group_shared_projects_path(@group, format: :json) } } }
+  .top-area.group-nav-container
+    .group-search
       = render "shared/groups/search_form"
-      = render "shared/groups/dropdown", show_archive_options: true
       - if can? current_user, :create_projects, @group
         - new_project_label = _("New project")
         - new_subgroup_label = _("New subgroup")
@@ -39,7 +38,29 @@
         - else
           = link_to new_project_label, new_project_path(namespace_id: @group.id), class: "btn btn-success"
 
-  - if params[:filter].blank? && !@has_children
-    = render "shared/groups/empty_state"
-  - else
-    = render "children", children: @children, group: @group
+    .scrolling-tabs-container.inner-page-scroll-tabs
+      .fade-left= icon('angle-left')
+      .fade-right= icon('angle-right')
+      %ul.nav-links.scrolling-tabs.mobile-separator.nav.nav-tabs
+        %li.js-subgroups_and_projects-tab
+          = link_to group_path, data: { target: 'div#subgroups_and_projects', action: 'subgroups_and_projects', toggle: 'tab'} do
+            = _("Subgroups and projects")
+        %li.js-shared-tab
+          = link_to group_shared_path, data: { target: 'div#shared', action: 'shared', toggle: 'tab'} do
+            = _("Shared projects")
+        %li.js-archived-tab
+          = link_to group_archived_path, data: { target: 'div#archived', action: 'archived', toggle: 'tab'} do
+            = _("Archived projects")
+
+    .nav-controls
+      = render "shared/groups/dropdown"
+
+  .tab-content
+    #subgroups_and_projects.tab-pane
+      = render "subgroups_and_projects", group: @group
+
+    #shared.tab-pane
+      = render "shared_projects", group: @group
+
+    #archived.tab-pane
+      = render "archived_projects", group: @group

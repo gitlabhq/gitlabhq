@@ -1,20 +1,19 @@
-- page_title "FogBugz import"
-- header_title "Projects", root_path
+- page_title _("FogBugz import")
+- header_title _("Projects"), root_path
 %h3.page-title
   %i.fa.fa-bug
-  Import projects from FogBugz
+  = _('Import projects from FogBugz')
 
 - if @repos.any?
   %p.light
-    Select projects you want to import.
+    = _('Select projects you want to import.')
   %p.light
-    Optionally, you can
-    = link_to 'customize', new_user_map_import_fogbugz_path
-    how FogBugz email addresses and usernames are imported into GitLab.
+    - link_to_customize = link_to('customize', new_user_map_import_fogbugz_path)
+    = _('Optionally, you can %{link_to_customize} how FogBugz email addresses and usernames are imported into GitLab.').html_safe % { link_to_customize: link_to_customize }
   %hr
   %p
   = button_tag class: 'btn btn-import btn-success js-import-all' do
-    Import all projects
+    = _('Import all projects')
     = icon("spinner spin", class: "loading-icon")
 
 .table-responsive
@@ -24,9 +23,9 @@
     %colgroup.import-jobs-status-col
     %thead
       %tr
-        %th From FogBugz
-        %th To GitLab
-        %th Status
+        %th= _("From FogBugz")
+        %th= _("To GitLab")
+        %th= _("Status")
     %tbody
       - @already_added_projects.each do |project|
         %tr{ id: "project_#{project.id}", class: "#{project_status_css_class(project.import_status)}" }
@@ -38,10 +37,10 @@
             - if project.import_status == 'finished'
               %span
                 %i.fa.fa-check
-                done
+                = _("done")
             - elsif project.import_status == 'started'
               %i.fa.fa-spinner.fa-spin
-              started
+              = _("started")
             - else
               = project.human_import_status_name
 
@@ -53,7 +52,7 @@
             #{current_user.username}/#{repo.name}
           %td.import-actions.job-status
             = button_tag class: "btn btn-import js-add-to-import" do
-              Import
+              = _("Import")
               = icon("spinner spin", class: "loading-icon")
 
 .js-importer-status{ data: { jobs_import_path: "#{jobs_import_fogbugz_path}", import_path: "#{import_fogbugz_path}" } }

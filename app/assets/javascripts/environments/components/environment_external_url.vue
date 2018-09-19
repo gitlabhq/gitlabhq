@@ -1,30 +1,30 @@
 <script>
-  import Icon from '~/vue_shared/components/icon.vue';
-  import tooltip from '../../vue_shared/directives/tooltip';
-  import { s__ } from '../../locale';
+import Icon from '~/vue_shared/components/icon.vue';
+import tooltip from '../../vue_shared/directives/tooltip';
+import { s__ } from '../../locale';
 
-  /**
-  * Renders the external url link in environments table.
-  */
-  export default {
-    components: {
-      Icon,
+/**
+ * Renders the external url link in environments table.
+ */
+export default {
+  components: {
+    Icon,
+  },
+  directives: {
+    tooltip,
+  },
+  props: {
+    externalUrl: {
+      type: String,
+      required: true,
     },
-    directives: {
-      tooltip,
+  },
+  computed: {
+    title() {
+      return s__('Environments|Open live environment');
     },
-    props: {
-      externalUrl: {
-        type: String,
-        required: true,
-      },
-    },
-    computed: {
-      title() {
-        return s__('Environments|Open');
-      },
-    },
-  };
+  },
+};
 </script>
 <template>
   <a
@@ -37,9 +37,6 @@
     target="_blank"
     rel="noopener noreferrer nofollow"
   >
-    <icon
-      :size="12"
-      name="external-link"
-    />
+    <icon name="external-link" />
   </a>
 </template>

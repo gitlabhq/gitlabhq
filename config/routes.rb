@@ -27,6 +27,13 @@ Rails.application.routes.draw do
                 authorizations: 'oauth/authorizations'
   end
 
+  # This is here so we can "reserve" the path for the Jira integration in GitLab EE
+  # Having a non-existent controller here does not affect the scope in any way since all possible routes
+  # get a 404 proc returned. It is written in this way to minimize merge conflicts with EE
+  scope path: '/login/oauth', controller: 'oauth/jira/authorizations', as: :oauth_jira do
+    match '*all', via: [:get, :post], to: proc { [404, {}, ['']] }
+  end
+
   use_doorkeeper_openid_connect
 
   # Autocomplete
@@ -46,6 +53,7 @@ Rails.application.routes.draw do
   get 'health_check(/:checks)' => 'health_check#index', as: :health_check
 
   scope path: '-' do
+    # '/-/health' implemented by BasicHealthMiddleware
     get 'liveness' => 'health#liveness'
     get 'readiness' => 'health#readiness'
     post 'storage_check' => 'health#storage_check'
@@ -70,6 +78,8 @@ Rails.application.routes.draw do
 
     get 'ide' => 'ide#index'
     get 'ide/*vueroute' => 'ide#index', format: false
+
+    draw :instance_statistics
   end
 
   # Koding route

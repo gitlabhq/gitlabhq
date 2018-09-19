@@ -1,0 +1,5 @@
+---
+title: Disable the Sidekiq Admin Rack session
+merge_request: 21441
+author:
+type: security

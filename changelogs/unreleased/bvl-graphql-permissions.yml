@@ -1,5 +1,0 @@
----
-title: 'Expose permissions of the current user on resources in GraphQL'
-merge_request: 20152
-author:
-type: added

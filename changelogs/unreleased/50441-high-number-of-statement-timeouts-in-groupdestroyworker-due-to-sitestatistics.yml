@@ -1,0 +1,5 @@
+---
+title: Removing a group no longer triggers hooks for project deletion twice
+merge_request: 21366
+author:
+type: fixed

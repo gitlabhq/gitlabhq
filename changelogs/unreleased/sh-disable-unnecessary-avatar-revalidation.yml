@@ -1,0 +1,5 @@
+---
+title: Disable project avatar validation if avatar has not changed
+merge_request:
+author:
+type: performance

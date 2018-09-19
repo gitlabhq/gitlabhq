@@ -1,5 +1,0 @@
----
-title: "[Rails5] Fix optimistic lock value"
-merge_request: 19878
-author: "@blackst0ne"
-type: fixed

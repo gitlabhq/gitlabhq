@@ -12,8 +12,9 @@ describe 'New project' do
   it 'shows "New project" page', :js do
     visit new_project_path
 
-    expect(page).to have_content('Project path')
     expect(page).to have_content('Project name')
+    expect(page).to have_content('Project URL')
+    expect(page).to have_content('Project slug')
 
     find('#import-project-tab').click
 
@@ -23,6 +24,22 @@ describe 'New project' do
     expect(page).to have_link('Google Code')
     expect(page).to have_button('Repo by URL')
     expect(page).to have_link('GitLab export')
+  end
+
+  describe 'manifest import option' do
+    before do
+      visit new_project_path
+
+      find('#import-project-tab').click
+    end
+
+    context 'when using postgres', :postgresql do
+      it { expect(page).to have_link('Manifest file') }
+    end
+
+    context 'when using mysql', :mysql do
+      it { expect(page).not_to have_link('Manifest file') }
+    end
   end
 
   context 'Visibility level selector', :js do
@@ -49,11 +66,33 @@ describe 'New project' do
   end
 
   context 'Readme selector' do
-    it 'shows the initialize with Readme checkbox' do
+    it 'shows the initialize with Readme checkbox on "Blank project" tab' do
       visit new_project_path
 
       expect(page).to have_css('input#project_initialize_with_readme')
       expect(page).to have_content('Initialize repository with a README')
+    end
+
+    it 'does not show the initialize with Readme checkbox on "Create from template" tab' do
+      visit new_project_path
+      find('#create-from-template-pane').click
+      first('.choose-template').click
+
+      page.within '.project-fields-form' do
+        expect(page).not_to have_css('input#project_initialize_with_readme')
+        expect(page).not_to have_content('Initialize repository with a README')
+      end
+    end
+
+    it 'does not show the initialize with Readme checkbox on "Import project" tab' do
+      visit new_project_path
+      find('#import-project-tab').click
+      first('.js-import-git-toggle-button').click
+
+      page.within '.toggle-import-form' do
+        expect(page).not_to have_css('input#project_initialize_with_readme')
+        expect(page).not_to have_content('Initialize repository with a README')
+      end
     end
   end
 
@@ -94,7 +133,7 @@ describe 'New project' do
       let(:subgroup) { create(:group, parent: group) }
 
       before do
-        group.add_master(user)
+        group.add_maintainer(user)
         visit new_project_path(namespace_id: subgroup.id)
       end
 
@@ -171,7 +210,7 @@ describe 'New project' do
         collision_project = create(:project, name: 'test-name-collision', namespace: user.namespace)
 
         fill_in 'project_import_url', with: collision_project.http_url_to_repo
-        fill_in 'project_path', with: collision_project.path
+        fill_in 'project_name', with: collision_project.name
 
         click_on 'Create project'
 
@@ -199,6 +238,17 @@ describe 'New project' do
       it 'shows import instructions' do
         expect(page).to have_content('Import projects from Google Code')
         expect(current_path).to eq new_import_google_code_path
+      end
+    end
+
+    context 'from manifest file', :postgresql do
+      before do
+        first('.import_manifest').click
+      end
+
+      it 'shows import instructions' do
+        expect(page).to have_content('Manifest file import')
+        expect(current_path).to eq new_import_manifest_path
       end
     end
   end

@@ -6,6 +6,7 @@ class ExpireJobCacheWorker
 
   queue_namespace :pipeline_cache
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform(job_id)
     job = CommitStatus.joins(:pipeline, :project).find_by(id: job_id)
     return unless job
@@ -18,6 +19,7 @@ class ExpireJobCacheWorker
       store.touch(project_job_path(project, job))
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 

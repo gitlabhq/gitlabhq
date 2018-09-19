@@ -1,7 +1,7 @@
 # coding: utf-8
 require "spec_helper"
 
-describe Gitlab::Git::Blame, seed_helper: true do
+describe Gitlab::Git::Blame, :seed_helper do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
   let(:blame) do
     Gitlab::Git::Blame.new(repository, SeedRepo::Commit::ID, "CONTRIBUTING.md")

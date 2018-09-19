@@ -1,3 +1,5 @@
+- add_to_breadcrumbs "Users", admin_users_path
+- breadcrumb_title @user.name
 - page_title "Groups and projects", @user.name, "Users"
 = render 'admin/users/head'
 
@@ -5,7 +7,7 @@
   .card
     .card-header Group projects
     %ul.hover-list
-      - @user.group_members.includes(:source).each do |group_member|
+      - @user.group_members.includes(:source).each do |group_member| # rubocop: disable CodeReuse/ActiveRecord
         - group = group_member.group
         %li.group_member
           %strong= link_to group.name, admin_group_path(group)

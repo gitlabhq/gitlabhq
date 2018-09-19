@@ -4,9 +4,11 @@ class Admin::ApplicationsController < Admin::ApplicationController
   before_action :set_application, only: [:show, :edit, :update, :destroy]
   before_action :load_scopes, only: [:new, :create, :edit, :update]
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def index
     @applications = Doorkeeper::Application.where("owner_id IS NULL")
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def show
   end
@@ -45,9 +47,11 @@ class Admin::ApplicationsController < Admin::ApplicationController
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def set_application
     @application = Doorkeeper::Application.where("owner_id IS NULL").find(params[:id])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   # Only allow a trusted parameter "white list" through.
   def application_params

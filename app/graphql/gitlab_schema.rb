@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GitlabSchema < GraphQL::Schema
   use BatchLoader::GraphQL
   use Gitlab::Graphql::Authorize
@@ -7,5 +9,5 @@ class GitlabSchema < GraphQL::Schema
   query(Types::QueryType)
 
   default_max_page_size 100
-  # mutation(Types::MutationType)
+  mutation(Types::MutationType)
 end

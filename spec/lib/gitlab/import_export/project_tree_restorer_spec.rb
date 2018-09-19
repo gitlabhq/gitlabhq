@@ -16,7 +16,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         @shared = @project.import_export_shared
         allow(@shared).to receive(:export_path).and_return('spec/lib/gitlab/import_export/')
 
-        allow_any_instance_of(Repository).to receive(:fetch_ref).and_return(true)
+        allow_any_instance_of(Repository).to receive(:fetch_source_branch!).and_return(true)
         allow_any_instance_of(Gitlab::Git::Repository).to receive(:branch_exists?).and_return(false)
 
         expect_any_instance_of(Gitlab::Git::Repository).to receive(:create_branch).with('feature', 'DCBA')
@@ -87,6 +87,14 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
       it 'contains the create access levels on a protected tag' do
         expect(ProtectedTag.first.create_access_levels).not_to be_empty
+      end
+
+      it 'restores issue resource label events' do
+        expect(Issue.find_by(title: 'Voluptatem').resource_label_events).not_to be_empty
+      end
+
+      it 'restores merge requests resource label events' do
+        expect(MergeRequest.find_by(title: 'MR1').resource_label_events).not_to be_empty
       end
 
       context 'event at forth level of the tree' do

@@ -7,7 +7,7 @@ describe Projects::TreeController do
   before do
     sign_in(user)
 
-    project.add_master(user)
+    project.add_maintainer(user)
     controller.instance_variable_set(:@project, project)
   end
 

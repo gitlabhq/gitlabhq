@@ -1,26 +1,12 @@
-import Cookies from 'js-cookie';
-import { getParameterValues } from '~/lib/utils/url_utility';
-import actions from '../actions';
-import getters from '../getters';
+import * as actions from '../actions';
+import * as getters from '../getters';
 import mutations from '../mutations';
-import { INLINE_DIFF_VIEW_TYPE, DIFF_VIEW_COOKIE_NAME } from '../../constants';
+import createState from './diff_state';
 
-const viewTypeFromQueryString = getParameterValues('view')[0];
-const viewTypeFromCookie = Cookies.get(DIFF_VIEW_COOKIE_NAME);
-const defaultViewType = INLINE_DIFF_VIEW_TYPE;
-
-export default {
-  state: {
-    isLoading: true,
-    endpoint: '',
-    basePath: '',
-    commit: null,
-    diffFiles: [],
-    mergeRequestDiffs: [],
-    diffLineCommentForms: {},
-    diffViewType: viewTypeFromQueryString || viewTypeFromCookie || defaultViewType,
-  },
+export default () => ({
+  namespaced: true,
+  state: createState(),
   getters,
   actions,
   mutations,
-};
+});

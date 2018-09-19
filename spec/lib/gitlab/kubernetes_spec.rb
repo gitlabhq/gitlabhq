@@ -70,4 +70,19 @@ describe Gitlab::Kubernetes do
       it { is_expected.to eq(YAML.load_file(path)) }
     end
   end
+
+  describe '#add_terminal_auth' do
+    it 'adds authentication parameters to a hash' do
+      terminal = { original: 'value' }
+
+      add_terminal_auth(terminal, token: 'foo', max_session_time: 0, ca_pem: 'bar')
+
+      expect(terminal).to eq(
+        original: 'value',
+        headers: { 'Authorization' => ['Bearer foo'] },
+        max_session_time: 0,
+        ca_pem: 'bar'
+      )
+    end
+  end
 end

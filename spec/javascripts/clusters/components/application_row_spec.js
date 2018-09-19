@@ -1,12 +1,7 @@
 import Vue from 'vue';
 import eventHub from '~/clusters/event_hub';
 import {
-  APPLICATION_NOT_INSTALLABLE,
-  APPLICATION_SCHEDULED,
-  APPLICATION_INSTALLABLE,
-  APPLICATION_INSTALLING,
-  APPLICATION_INSTALLED,
-  APPLICATION_ERROR,
+  APPLICATION_STATUS,
   REQUEST_LOADING,
   REQUEST_SUCCESS,
   REQUEST_FAILURE,
@@ -62,10 +57,10 @@ describe('Application Row', () => {
       expect(vm.installButtonLabel).toBeUndefined();
     });
 
-    it('has disabled "Install" when APPLICATION_NOT_INSTALLABLE', () => {
+    it('has disabled "Install" when APPLICATION_STATUS.NOT_INSTALLABLE', () => {
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_NOT_INSTALLABLE,
+        status: APPLICATION_STATUS.NOT_INSTALLABLE,
       });
 
       expect(vm.installButtonLabel).toEqual('Install');
@@ -73,10 +68,10 @@ describe('Application Row', () => {
       expect(vm.installButtonDisabled).toEqual(true);
     });
 
-    it('has enabled "Install" when APPLICATION_INSTALLABLE', () => {
+    it('has enabled "Install" when APPLICATION_STATUS.INSTALLABLE', () => {
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_INSTALLABLE,
+        status: APPLICATION_STATUS.INSTALLABLE,
       });
 
       expect(vm.installButtonLabel).toEqual('Install');
@@ -84,10 +79,10 @@ describe('Application Row', () => {
       expect(vm.installButtonDisabled).toEqual(false);
     });
 
-    it('has loading "Installing" when APPLICATION_SCHEDULED', () => {
+    it('has loading "Installing" when APPLICATION_STATUS.SCHEDULED', () => {
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_SCHEDULED,
+        status: APPLICATION_STATUS.SCHEDULED,
       });
 
       expect(vm.installButtonLabel).toEqual('Installing');
@@ -95,10 +90,10 @@ describe('Application Row', () => {
       expect(vm.installButtonDisabled).toEqual(true);
     });
 
-    it('has loading "Installing" when APPLICATION_INSTALLING', () => {
+    it('has loading "Installing" when APPLICATION_STATUS.INSTALLING', () => {
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_INSTALLING,
+        status: APPLICATION_STATUS.INSTALLING,
       });
 
       expect(vm.installButtonLabel).toEqual('Installing');
@@ -106,10 +101,10 @@ describe('Application Row', () => {
       expect(vm.installButtonDisabled).toEqual(true);
     });
 
-    it('has disabled "Installed" when APPLICATION_INSTALLED', () => {
+    it('has disabled "Installed" when APPLICATION_STATUS.INSTALLED', () => {
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_INSTALLED,
+        status: APPLICATION_STATUS.INSTALLED,
       });
 
       expect(vm.installButtonLabel).toEqual('Installed');
@@ -117,10 +112,10 @@ describe('Application Row', () => {
       expect(vm.installButtonDisabled).toEqual(true);
     });
 
-    it('has enabled "Install" when APPLICATION_ERROR', () => {
+    it('has enabled "Install" when APPLICATION_STATUS.ERROR', () => {
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_ERROR,
+        status: APPLICATION_STATUS.ERROR,
       });
 
       expect(vm.installButtonLabel).toEqual('Install');
@@ -131,7 +126,7 @@ describe('Application Row', () => {
     it('has loading "Install" when REQUEST_LOADING', () => {
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_INSTALLABLE,
+        status: APPLICATION_STATUS.INSTALLABLE,
         requestStatus: REQUEST_LOADING,
       });
 
@@ -143,7 +138,7 @@ describe('Application Row', () => {
     it('has disabled "Install" when REQUEST_SUCCESS', () => {
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_INSTALLABLE,
+        status: APPLICATION_STATUS.INSTALLABLE,
         requestStatus: REQUEST_SUCCESS,
       });
 
@@ -155,7 +150,7 @@ describe('Application Row', () => {
     it('has enabled "Install" when REQUEST_FAILURE (so you can try installing again)', () => {
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_INSTALLABLE,
+        status: APPLICATION_STATUS.INSTALLABLE,
         requestStatus: REQUEST_FAILURE,
       });
 
@@ -168,7 +163,7 @@ describe('Application Row', () => {
       spyOn(eventHub, '$emit');
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_INSTALLABLE,
+        status: APPLICATION_STATUS.INSTALLABLE,
       });
       const installButton = vm.$el.querySelector('.js-cluster-application-install-button');
 
@@ -184,7 +179,7 @@ describe('Application Row', () => {
       spyOn(eventHub, '$emit');
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_INSTALLABLE,
+        status: APPLICATION_STATUS.INSTALLABLE,
         installApplicationRequestParams: { hostname: 'jupyter' },
       });
       const installButton = vm.$el.querySelector('.js-cluster-application-install-button');
@@ -201,7 +196,7 @@ describe('Application Row', () => {
       spyOn(eventHub, '$emit');
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_INSTALLING,
+        status: APPLICATION_STATUS.INSTALLING,
       });
       const installButton = vm.$el.querySelector('.js-cluster-application-install-button');
 
@@ -225,11 +220,11 @@ describe('Application Row', () => {
       expect(generalErrorMessage).toBeNull();
     });
 
-    it('shows status reason when APPLICATION_ERROR', () => {
+    it('shows status reason when APPLICATION_STATUS.ERROR', () => {
       const statusReason = 'We broke it 0.0';
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_ERROR,
+        status: APPLICATION_STATUS.ERROR,
         statusReason,
       });
       const generalErrorMessage = vm.$el.querySelector('.js-cluster-application-general-error-message');
@@ -243,7 +238,7 @@ describe('Application Row', () => {
       const requestReason = 'We broke thre request 0.0';
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_INSTALLABLE,
+        status: APPLICATION_STATUS.INSTALLABLE,
         requestStatus: REQUEST_FAILURE,
         requestReason,
       });

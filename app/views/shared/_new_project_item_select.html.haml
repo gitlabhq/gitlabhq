@@ -1,7 +1,7 @@
 - if any_projects?(@projects)
   .project-item-select-holder.btn-group
-    %a.btn.btn-new.new-project-item-link{ href: '', data: { label: local_assigns[:label], type: local_assigns[:type] } }
+    %a.btn.btn-new.new-project-item-link.qa-new-project-item-link{ href: '', data: { label: local_assigns[:label], type: local_assigns[:type] } }
       = icon('spinner spin')
     = project_select_tag :project_path, class: "project-item-select", data: { include_groups: local_assigns[:include_groups], order_by: 'last_activity_at', relative_path: local_assigns[:path] }, with_feature_enabled: local_assigns[:with_feature_enabled]
-    %button.btn.btn-new.new-project-item-select-button
+    %button.btn.btn-new.new-project-item-select-button.qa-new-project-item-select-button
       = icon('caret-down')

@@ -5,16 +5,13 @@ import { numberToHumanSize } from '~/lib/utils/number_utils';
 import '~/lib/utils/datetime_utility';
 import Job from '~/job';
 import '~/breakpoints';
+import waitForPromises from 'spec/helpers/wait_for_promises';
 
 describe('Job', () => {
   const JOB_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/-/jobs/1`;
   let mock;
   let response;
   let job;
-
-  function waitForPromise() {
-    return new Promise(resolve => requestAnimationFrame(resolve));
-  }
 
   preloadFixtures('builds/build-with-artifacts.html.raw');
 
@@ -49,7 +46,7 @@ describe('Job', () => {
       beforeEach(function (done) {
         job = new Job();
 
-        waitForPromise()
+        waitForPromises()
           .then(done)
           .catch(done.fail);
       });
@@ -93,7 +90,7 @@ describe('Job', () => {
 
         job = new Job();
 
-        waitForPromise()
+        waitForPromises()
           .then(() => {
             expect($('#build-trace .js-build-output').text()).toMatch(/Update/);
             expect(job.state).toBe('newstate');
@@ -107,7 +104,7 @@ describe('Job', () => {
             };
           })
           .then(() => jasmine.clock().tick(4001))
-          .then(waitForPromise)
+          .then(waitForPromises)
           .then(() => {
             expect($('#build-trace .js-build-output').text()).toMatch(/UpdateMore/);
             expect(job.state).toBe('finalstate');
@@ -126,7 +123,7 @@ describe('Job', () => {
 
         job = new Job();
 
-        waitForPromise()
+        waitForPromises()
           .then(() => {
             expect($('#build-trace .js-build-output').text()).toMatch(/Update/);
 
@@ -137,7 +134,7 @@ describe('Job', () => {
             };
           })
           .then(() => jasmine.clock().tick(4001))
-          .then(waitForPromise)
+          .then(waitForPromises)
           .then(() => {
             expect($('#build-trace .js-build-output').text()).not.toMatch(/Update/);
             expect($('#build-trace .js-build-output').text()).toMatch(/Different/);
@@ -160,7 +157,7 @@ describe('Job', () => {
 
           job = new Job();
 
-          waitForPromise()
+          waitForPromises()
             .then(() => {
               expect(document.querySelector('.js-truncated-info').classList).not.toContain('hidden');
             })
@@ -181,7 +178,7 @@ describe('Job', () => {
 
           job = new Job();
 
-          waitForPromise()
+          waitForPromises()
             .then(() => {
               expect(
                 document.querySelector('.js-truncated-info-size').textContent.trim(),
@@ -203,7 +200,7 @@ describe('Job', () => {
 
           job = new Job();
 
-          waitForPromise()
+          waitForPromises()
             .then(() => {
               expect(
                 document.querySelector('.js-truncated-info-size').textContent.trim(),
@@ -219,7 +216,7 @@ describe('Job', () => {
               };
             })
             .then(() => jasmine.clock().tick(4001))
-            .then(waitForPromise)
+            .then(waitForPromises)
             .then(() => {
               expect(
                 document.querySelector('.js-truncated-info-size').textContent.trim(),
@@ -258,7 +255,7 @@ describe('Job', () => {
 
           job = new Job();
 
-          waitForPromise()
+          waitForPromises()
             .then(() => {
               expect(document.querySelector('.js-truncated-info').classList).toContain('hidden');
             })
@@ -280,7 +277,7 @@ describe('Job', () => {
 
         job = new Job();
 
-        waitForPromise()
+        waitForPromises()
           .then(done)
           .catch(done.fail);
       });

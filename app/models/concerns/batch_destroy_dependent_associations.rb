@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Provides a way to work around Rails issue where dependent objects are all
 # loaded into memory before destroyed: https://github.com/rails/rails/issues/22510.
 #

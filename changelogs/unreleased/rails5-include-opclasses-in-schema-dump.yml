@@ -1,0 +1,5 @@
+---
+title: 'Rails 5: include opclasses in rails 5 schema dump'
+merge_request: 21416
+author: Jasper Maes
+type: fixed

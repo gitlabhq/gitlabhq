@@ -1,4 +1,6 @@
 ---
+- auto_devops:auto_devops_disable
+
 - cronjob:admin_email
 - cronjob:expire_build_artifacts
 - cronjob:gitlab_usage_ping
@@ -13,7 +15,6 @@
 - cronjob:repository_archive_cache
 - cronjob:repository_check_dispatch
 - cronjob:requests_profiles
-- cronjob:schedule_update_user_activity
 - cronjob:stuck_ci_jobs
 - cronjob:stuck_import_jobs
 - cronjob:stuck_merge_jobs
@@ -46,7 +47,6 @@
 - mail_scheduler:mail_scheduler_issue_due
 - mail_scheduler:mail_scheduler_notification_service
 
-- object_storage_upload
 - object_storage:object_storage_background_move
 - object_storage:object_storage_migrate_uploads
 
@@ -75,12 +75,19 @@
 - repository_check:repository_check_batch
 - repository_check:repository_check_single_repository
 
+- todos_destroyer:todos_destroyer_confidential_issue
+- todos_destroyer:todos_destroyer_entity_leave
+- todos_destroyer:todos_destroyer_project_private
+- todos_destroyer:todos_destroyer_private_features
+- todos_destroyer:todos_destroyer_group_private
+
 - default
 - mailers # ActionMailer::DeliveryJob.queue_name
 
 - authorized_projects
 - background_migration
 - create_gpg_signature
+- delete_container_repository
 - delete_merged_branches
 - delete_user
 - email_receiver
@@ -115,9 +122,9 @@
 - storage_migrator
 - system_hook_push
 - update_merge_requests
-- update_user_activity
 - upload_checksum
 - web_hook
 - repository_update_remote_mirror
 - create_note_diff_file
 - delete_diff_files
+- detect_repository_languages

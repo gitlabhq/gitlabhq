@@ -8,7 +8,7 @@ describe Projects::ProtectedBranchesController do
   let(:user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe "GET #index" do
@@ -20,10 +20,10 @@ describe Projects::ProtectedBranchesController do
   end
 
   describe "POST #create" do
-    let(:master_access_level) { [{ access_level: Gitlab::Access::MASTER }] }
+    let(:maintainer_access_level) { [{ access_level: Gitlab::Access::MAINTAINER }] }
     let(:access_level_params) do
-      { merge_access_levels_attributes: master_access_level,
-        push_access_levels_attributes: master_access_level }
+      { merge_access_levels_attributes: maintainer_access_level,
+        push_access_levels_attributes: maintainer_access_level }
     end
     let(:create_params) { attributes_for(:protected_branch).merge(access_level_params) }
 

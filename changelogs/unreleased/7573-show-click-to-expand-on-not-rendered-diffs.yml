@@ -1,0 +1,6 @@
+---
+title: Fix absent Click to Expand link on diffs not rendered on first load of Merge
+  Requests Changes tab
+merge_request: 21716
+author:
+type: fixed

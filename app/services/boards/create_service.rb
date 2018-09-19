@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Boards
   class CreateService < Boards::BaseService
     def execute

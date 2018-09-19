@@ -63,6 +63,12 @@ describe 'Pipeline', :js do
       expect(page).to have_css('#js-tab-pipeline.active')
     end
 
+    it_behaves_like 'showing user status' do
+      let(:user_with_status) { pipeline.user }
+
+      subject { visit project_pipeline_path(project, pipeline) }
+    end
+
     describe 'pipeline graph' do
       context 'when pipeline has running builds' do
         it 'shows a running icon and a cancel action for the running build' do
@@ -120,7 +126,7 @@ describe 'Pipeline', :js do
         it 'should include the failure reason' do
           page.within('#ci-badge-test') do
             build_link = page.find('.js-pipeline-graph-job-link')
-            expect(build_link['data-original-title']).to eq('test - failed <br> (unknown failure)')
+            expect(build_link['data-original-title']).to eq('test - failed - (unknown failure)')
           end
         end
       end
@@ -313,7 +319,7 @@ describe 'Pipeline', :js do
       it 'displays a tooltip with the failure reason' do
         page.within('.ci-table') do
           failed_job_link = page.find('.ci-failed')
-          expect(failed_job_link[:title]).to eq('Failed <br> (unknown failure)')
+          expect(failed_job_link[:title]).to eq('Failed - (unknown failure)')
         end
       end
     end

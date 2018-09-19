@@ -1,6 +1,0 @@
----
-title: 'Rails 5 fix Capybara::ElementNotFound: Unable to find visible css #modal-revert-commit
-  and expected: "/bar" got: "/foo"'
-merge_request: 20044
-author: Jasper Maes
-type: fixed

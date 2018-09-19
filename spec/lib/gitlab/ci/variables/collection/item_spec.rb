@@ -75,6 +75,14 @@ describe Gitlab::Ci::Variables::Collection::Item do
       expect(resource).to eq variable
     end
 
+    it 'supports using a hash with stringified values' do
+      variable = { 'key' => 'VARIABLE', 'value' => 'my value' }
+
+      resource = described_class.fabricate(variable)
+
+      expect(resource).to eq(key: 'VARIABLE', value: 'my value')
+    end
+
     it 'supports using an active record resource' do
       variable = create(:ci_variable, key: 'CI_VAR', value: '123')
       resource = described_class.fabricate(variable)

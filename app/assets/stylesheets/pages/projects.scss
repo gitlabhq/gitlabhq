@@ -115,7 +115,7 @@
 .project-feature-controls {
   display: flex;
   align-items: center;
-  margin: 8px 0;
+  margin: $gl-padding-8 0;
   max-width: 432px;
 
   .toggle-wrapper {
@@ -144,12 +144,8 @@
 .group-home-panel {
   padding-top: 24px;
   padding-bottom: 24px;
+  border-bottom: 1px solid $border-color;
 
-  @include media-breakpoint-up(sm) {
-    border-bottom: 1px solid $border-color;
-  }
-
-  .project-avatar,
   .group-avatar {
     float: none;
     margin: 0 auto;
@@ -175,7 +171,6 @@
     }
   }
 
-  .project-home-desc,
   .group-home-desc {
     margin-left: auto;
     margin-right: auto;
@@ -199,6 +194,62 @@
   }
 }
 
+.project-home-panel {
+  padding-top: $gl-padding-8;
+  padding-bottom: $gl-padding-24;
+
+  .project-title-row {
+    margin-right: $gl-padding-8;
+  }
+
+  .project-avatar {
+    width: $project-title-row-height;
+    height: $project-title-row-height;
+    flex-shrink: 0;
+    flex-basis: $project-title-row-height;
+    margin: 0 $gl-padding-8 0 0;
+  }
+
+  .project-title {
+    font-size: 20px;
+    line-height: $project-title-row-height;
+    font-weight: bold;
+  }
+
+  .project-metadata {
+    font-weight: normal;
+    font-size: 14px;
+    line-height: $gl-btn-line-height;
+    color: $gl-text-color-secondary;
+
+    .icon {
+      margin-right: $gl-padding-4;
+      font-size: 16px;
+    }
+
+    .project-visibility,
+    .project-license,
+    .project-tag-list {
+      margin-right: $gl-padding-8;
+    }
+
+    .project-license {
+      .btn {
+        line-height: 0;
+        border-width: 0;
+      }
+    }
+
+    .project-tag-list,
+    .project-license {
+      .icon {
+        position: relative;
+        top: 2px;
+      }
+    }
+  }
+}
+
 .nav > .project-repo-buttons {
   margin-top: 0;
 }
@@ -206,8 +257,6 @@
 .project-repo-buttons,
 .group-buttons {
   .btn {
-    padding: 3px 10px;
-
     &:last-child {
       margin-left: 0;
     }
@@ -222,11 +271,15 @@
 
     .fa-caret-down {
       margin-left: 3px;
+
+      &.dropdown-btn-icon {
+        margin-left: 0;
+      }
     }
   }
 
   .project-action-button {
-    margin: 15px 5px 0;
+    margin: $gl-padding $gl-padding-8 0 0;
     vertical-align: top;
   }
 
@@ -243,82 +296,45 @@
   .count-buttons {
     display: inline-block;
     vertical-align: top;
-    margin-top: 15px;
+    margin-top: $gl-padding;
+
+    .count-badge {
+      height: $input-height;
+
+      .icon {
+        top: -1px;
+      }
+    }
+
+    .count-badge-count,
+    .count-badge-button {
+      border: 1px solid $border-color;
+      line-height: 1;
+    }
+
+    .count,
+    .count-badge-button {
+      color: $gl-text-color;
+    }
+
+    .count-badge-count {
+      padding: 0 12px;
+      border-right: 0;
+      border-radius: $border-radius-base 0 0 $border-radius-base;
+      background: $gray-light;
+    }
+
+    .count-badge-button {
+      border-radius: 0 $border-radius-base $border-radius-base 0;
+    }
   }
 
   .project-clone-holder {
     display: inline-block;
-    margin: 15px 5px 0 0;
+    margin: $gl-padding $gl-padding-8 0 0;
 
     input {
-      height: 28px;
-    }
-  }
-
-  .count-with-arrow {
-    display: inline-block;
-    position: relative;
-    margin-left: 4px;
-
-    .arrow {
-      &::before {
-        content: '';
-        display: inline-block;
-        position: absolute;
-        width: 0;
-        height: 0;
-        border-color: transparent;
-        border-style: solid;
-        top: 50%;
-        left: 0;
-        margin-top: -6px;
-        border-width: 7px 5px 7px 0;
-        border-right-color: $count-arrow-border;
-        pointer-events: none;
-      }
-
-      &::after {
-        content: '';
-        position: absolute;
-        width: 0;
-        height: 0;
-        border-color: transparent;
-        border-style: solid;
-        top: 50%;
-        left: 1px;
-        margin-top: -9px;
-        border-width: 10px 7px 10px 0;
-        border-right-color: $white-light;
-        pointer-events: none;
-      }
-    }
-
-    .count {
-      @include btn-white;
-      display: inline-block;
-      background: $white-light;
-      border-radius: 2px;
-      border-width: 1px;
-      border-style: solid;
-      font-size: 13px;
-      font-weight: $gl-font-weight-bold;
-      line-height: 13px;
-      letter-spacing: 0.4px;
-      padding: 6px 14px;
-      text-align: center;
-      vertical-align: middle;
-      touch-action: manipulation;
-      background-image: none;
-      white-space: nowrap;
-      margin: 0 10px 0 4px;
-
-      a {
-        color: inherit;
-      }
-
-      &:hover {
-        background: $white-light;
-      }
+      height: $input-height;
     }
   }
 
@@ -331,6 +347,14 @@
 
     .dropdown-menu-inner-content {
       min-width: 320px;
+    }
+  }
+
+  .mobile-git-clone {
+    margin-top: $gl-padding-8;
+
+    .dropdown-menu-inner-content {
+      @extend .monospace;
     }
   }
 }
@@ -347,7 +371,7 @@
 .save-project-loader {
   margin-top: 50px;
   margin-bottom: 50px;
-  color: $save-project-loader-color;
+  color: $gl-gray-700;
 }
 
 .transfer-project .select2-container {
@@ -388,29 +412,29 @@
     line-height: $gl-btn-line-height;
 
     &:hover {
-      color: $gl-link-color;
+      color: $blue-600;
     }
   }
 }
 
 .vs-public {
-  color: $gl-primary;
+  color: $blue-500;
 }
 
 .vs-internal {
-  color: $gl-warning;
+  color: $orange-500;
 }
 
 .vs-private {
-  color: $gl-success;
+  color: $green-500;
 }
 
 .lfs-enabled {
-  color: $gl-success;
+  color: $green-500;
 }
 
 .lfs-disabled {
-  color: $gl-warning;
+  color: $orange-500;
 }
 
 .breadcrumb.repo-breadcrumb {
@@ -423,7 +447,7 @@
 
   > li + li::before {
     padding: 0 3px;
-    color: $project-breadcrumb-color;
+    color: $gl-gray-400;
   }
 
   a {
@@ -449,8 +473,8 @@
 
   &:hover:not(.disabled),
   &.forked {
-    background-color: $row-hover;
-    border-color: $row-hover-border;
+    background-color: $blue-50;
+    border-color: $blue-200;
   }
 
   .avatar-container,
@@ -490,30 +514,30 @@
     margin-bottom: 0;
   }
 
+  .tab-pane {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
   .template-option {
-    padding: $gl-padding $gl-padding $gl-padding ($gl-padding * 4);
-    position: relative;
+    .logo {
+      .btn-template-icon {
+        width: 40px !important;
+      }
+    }
+
+    padding: 16px 0;
 
     &:not(:first-child) {
       border-top: 1px solid $border-color;
     }
 
-    .btn-template-icon {
-      position: absolute;
-      left: $gl-padding;
-      top: $gl-padding;
+    .controls {
+      margin-left: auto;
     }
   }
 
-  .template-title {
-    font-size: 16px;
-  }
-
-  .template-description {
-    margin: 6px 0 12px;
-  }
-
-  .template-button {
+  .choose-template {
     input {
       position: absolute;
       clip: rect(0, 0, 0, 0);
@@ -540,8 +564,6 @@
     }
 
     .selected-icon {
-      padding-right: $gl-padding;
-
       svg {
         display: none;
         top: 7px;
@@ -575,7 +597,7 @@
     flex-wrap: wrap;
 
     .btn {
-      padding: 8px;
+      padding: $gl-padding-8;
       margin-right: 10px;
     }
 
@@ -652,7 +674,7 @@
       left: -10px;
       top: 50%;
       z-index: 10;
-      padding: 8px 0;
+      padding: $gl-padding-8 0;
       text-align: center;
       background-color: $white-light;
       color: $gl-text-color-tertiary;
@@ -666,7 +688,7 @@
         left: 50%;
         top: 0;
         transform: translateX(-50%);
-        padding: 0 8px;
+        padding: 0 $gl-padding-8;
       }
     }
 
@@ -700,17 +722,51 @@
 .project-stats {
   font-size: 0;
   text-align: center;
-  max-width: 100%;
   border-bottom: 1px solid $border-color;
 
-  .nav {
-    margin-top: $gl-padding-8;
-    margin-bottom: $gl-padding-8;
+  .scrolling-tabs-container {
+    .scrolling-tabs {
+      margin-top: $gl-padding-8;
+      margin-bottom: $gl-padding-8;
+      flex-wrap: wrap;
+      border-bottom: 0;
+    }
 
+    .fade-left,
+    .fade-right {
+      top: 0;
+      height: 100%;
+
+      .fa {
+        top: 50%;
+        margin-top: -$gl-padding-8;
+      }
+    }
+
+    .nav {
+      flex-basis: 100%;
+
+      + .nav {
+        margin: $gl-padding-8 0;
+      }
+    }
+
+    @include media-breakpoint-down(md) {
+      flex-direction: column;
+
+      .nav {
+        flex-wrap: nowrap;
+      }
+
+      .nav:first-child {
+        margin-right: $gl-padding-8;
+      }
+    }
+  }
+
+  .nav {
     > li {
       display: inline-block;
-      margin-top: $gl-padding-4;
-      margin-bottom: $gl-padding-4;
 
       &:not(:last-child) {
         margin-right: $gl-padding;
@@ -732,14 +788,18 @@
       background-color: transparent;
       font-size: $gl-font-size;
       line-height: $gl-btn-line-height;
-      color: $notes-light-color;
+      color: $gl-text-color-secondary;
+      white-space: nowrap;
     }
 
     .stat-link {
+      border-bottom: 0;
+
       &:hover,
       &:focus {
         color: $gl-text-color;
         text-decoration: underline;
+        border-bottom: 0;
       }
     }
 
@@ -750,6 +810,22 @@
 
     .btn-missing {
       @extend .btn-missing;
+    }
+  }
+}
+
+.repository-languages-bar {
+  height: 8px;
+  margin-bottom: $gl-padding-8;
+  background-color: $white-light;
+  border-radius: $border-radius-default;
+
+  .progress-bar {
+    margin-right: 2px;
+    padding: 0 $gl-padding-4;
+
+    &:last-child {
+      margin-right: 0;
     }
   }
 }
@@ -819,10 +895,6 @@ pre.light-well {
 
   .avatar-container {
     align-self: flex-start;
-
-    > a {
-      width: 100%;
-    }
   }
 
   .project-details {
@@ -857,7 +929,7 @@ pre.light-well {
 }
 
 .git-clone-holder {
-  width: 380px;
+  width: 320px;
 
   .btn-clipboard {
     border: 1px solid $border-color;
@@ -883,13 +955,13 @@ pre.light-well {
 
 .cannot-be-merged,
 .cannot-be-merged:hover {
-  color: $error-exclamation-point;
+  color: $red-500;
   margin-top: 2px;
 }
 
 .private-forks-notice .private-fork-icon {
   i:nth-child(1) {
-    color: $project-private-forks-notice-odd;
+    color: $green-600;
   }
 
   i:nth-child(2) {
@@ -950,7 +1022,7 @@ pre.light-well {
   margin-left: 5px;
 
   &.is-done {
-    color: $gl-text-green;
+    color: $green-600;
   }
 }
 
@@ -1117,12 +1189,12 @@ pre.light-well {
 .project-ci-body {
   .incorrect-syntax {
     font-size: 18px;
-    color: $lint-incorrect-color;
+    color: $red-500;
   }
 
   .correct-syntax {
     font-size: 18px;
-    color: $lint-correct-color;
+    color: $green-500;
   }
 }
 

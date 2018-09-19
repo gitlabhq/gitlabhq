@@ -46,7 +46,7 @@ describe Banzai::Filter::RedactorFilter do
       it 'allows permitted Project references' do
         user = create(:user)
         project = create(:project)
-        project.add_master(user)
+        project.add_maintainer(user)
 
         link = reference_link(project: project.id, reference_type: 'test')
         doc = filter(link, current_user: user)

@@ -20,7 +20,7 @@ describe 'Top Plus Menu', :js do
 
       click_topmenuitem("New project")
 
-      expect(page).to have_content('Project path')
+      expect(page).to have_content('Project URL')
       expect(page).to have_content('Project name')
     end
 
@@ -92,7 +92,7 @@ describe 'Top Plus Menu', :js do
         find('.header-new-group-project a').click
       end
 
-      expect(page).to have_content('Project path')
+      expect(page).to have_content('Project URL')
       expect(page).to have_content('Project name')
     end
   end

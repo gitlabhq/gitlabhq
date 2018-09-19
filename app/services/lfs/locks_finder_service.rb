@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Lfs
   class LocksFinderService < BaseService
     def execute
@@ -8,10 +10,12 @@ module Lfs
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_locks
       options = params.slice(:id, :path).compact.symbolize_keys
 
       project.lfs_file_locks.where(options)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

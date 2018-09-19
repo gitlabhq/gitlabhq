@@ -7,6 +7,8 @@ import mutations from './mutations';
 import commitModule from './modules/commit';
 import pipelines from './modules/pipelines';
 import mergeRequests from './modules/merge_requests';
+import branches from './modules/branches';
+import fileTemplates from './modules/file_templates';
 
 Vue.use(Vuex);
 
@@ -20,6 +22,8 @@ export const createStore = () =>
       commit: commitModule,
       pipelines,
       mergeRequests,
+      branches,
+      fileTemplates: fileTemplates(),
     },
   });
 

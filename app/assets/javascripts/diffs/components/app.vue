@@ -4,7 +4,6 @@ import Icon from '~/vue_shared/components/icon.vue';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
 import eventHub from '../../notes/event_hub';
-import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
 import CompareVersions from './compare_versions.vue';
 import ChangedFiles from './changed_files.vue';
 import DiffFile from './diff_file.vue';
@@ -15,7 +14,6 @@ export default {
   name: 'DiffsApp',
   components: {
     Icon,
-    LoadingIcon,
     CompareVersions,
     ChangedFiles,
     DiffFile,
@@ -41,11 +39,6 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      activeFile: '',
-    };
-  },
   computed: {
     ...mapState({
       isLoading: state => state.diffs.isLoading,
@@ -63,7 +56,8 @@ export default {
       plainDiffPath: state => state.diffs.plainDiffPath,
       emailPatchPath: state => state.diffs.emailPatchPath,
     }),
-    ...mapGetters(['isParallelView', 'isNotesFetched']),
+    ...mapGetters('diffs', ['isParallelView']),
+    ...mapGetters(['isNotesFetched', 'discussionsStructuredByLineCode']),
     targetBranch() {
       return {
         branchName: this.targetBranchName,
@@ -89,6 +83,9 @@ export default {
       }
       return __('Show latest version');
     },
+    canCurrentUserFork() {
+      return this.currentUser.canFork === true && this.currentUser.canCreateMergeRequest;
+    },
   },
   watch: {
     diffViewType() {
@@ -113,24 +110,43 @@ export default {
   },
   created() {
     this.adjustView();
+    eventHub.$once('fetchedNotesData', this.setDiscussions);
   },
   methods: {
-    ...mapActions(['setBaseConfig', 'fetchDiffFiles']),
+    ...mapActions('diffs', [
+      'setBaseConfig',
+      'fetchDiffFiles',
+      'startRenderDiffsQueue',
+      'assignDiscussionsToDiff',
+    ]),
+
     fetchData() {
-      this.fetchDiffFiles().catch(() => {
-        createFlash(__('Something went wrong on our end. Please try again!'));
-      });
+      this.fetchDiffFiles()
+        .then(() => {
+          requestIdleCallback(
+            () => {
+              this.setDiscussions();
+              this.startRenderDiffsQueue();
+            },
+            { timeout: 1000 },
+          );
+        })
+        .catch(() => {
+          createFlash(__('Something went wrong on our end. Please try again!'));
+        });
 
       if (!this.isNotesFetched) {
         eventHub.$emit('fetchNotesData');
       }
     },
-    setActive(filePath) {
-      this.activeFile = filePath;
-    },
-    unsetActive(filePath) {
-      if (this.activeFile === filePath) {
-        this.activeFile = '';
+    setDiscussions() {
+      if (this.isNotesFetched) {
+        requestIdleCallback(
+          () => {
+            this.assignDiscussionsToDiff(this.discussionsStructuredByLineCode);
+          },
+          { timeout: 1000 },
+        );
       }
     },
     adjustView() {
@@ -150,7 +166,7 @@ export default {
       v-if="isLoading"
       class="loading"
     >
-      <loading-icon />
+      <gl-loading-icon />
     </div>
     <div
       v-else
@@ -194,7 +210,6 @@ export default {
 
       <changed-files
         :diff-files="diffFiles"
-        :active-file="activeFile"
       />
 
       <div
@@ -205,9 +220,7 @@ export default {
           v-for="file in diffFiles"
           :key="file.newPath"
           :file="file"
-          :current-user="currentUser"
-          @setActive="setActive(file.filePath)"
-          @unsetActive="unsetActive(file.filePath)"
+          :can-current-user-fork="canCurrentUserFork"
         />
       </div>
       <no-changes v-else />

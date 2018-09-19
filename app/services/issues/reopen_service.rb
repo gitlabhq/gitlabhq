@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module Issues
   class ReopenService < Issues::BaseService
     def execute(issue)
-      return issue unless can?(current_user, :update_issue, issue)
+      return issue unless can?(current_user, :reopen_issue, issue)
 
       if issue.reopen
         event_service.reopen_issue(issue, current_user)

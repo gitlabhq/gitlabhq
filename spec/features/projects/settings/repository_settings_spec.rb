@@ -20,8 +20,8 @@ describe 'Projects > Settings > Repository settings' do
     end
   end
 
-  context 'for master' do
-    let(:role) { :master }
+  context 'for maintainer' do
+    let(:role) { :maintainer }
 
     context 'Deploy Keys', :js do
       let(:private_deploy_key) { create(:deploy_key, title: 'private_deploy_key', public: false) }
@@ -124,14 +124,13 @@ describe 'Projects > Settings > Repository settings' do
       let(:user2) { create(:user) }
 
       before do
-        project.add_master(user2)
+        project.add_maintainer(user2)
 
         visit project_settings_repository_path(project)
       end
 
-      it 'shows push mirror settings' do
-        expect(page).to have_selector('#project_remote_mirrors_attributes_0_enabled')
-        expect(page).to have_selector('#project_remote_mirrors_attributes_0_url')
+      it 'shows push mirror settings', :js do
+        expect(page).to have_selector('#mirror_direction')
       end
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'gitlab/email/handler/base_handler'
 
 module Gitlab
@@ -18,10 +20,6 @@ module Gitlab
           raise NoteableNotFoundError unless noteable
 
           noteable.unsubscribe(sent_notification.recipient)
-        end
-
-        def metrics_params
-          super.merge(project: project&.full_path)
         end
 
         private

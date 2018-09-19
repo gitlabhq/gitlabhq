@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   class OverwriteProjectService < BaseService
     def execute(source_project)

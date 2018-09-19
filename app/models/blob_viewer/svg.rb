@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BlobViewer
   class SVG < Base
     include Rich

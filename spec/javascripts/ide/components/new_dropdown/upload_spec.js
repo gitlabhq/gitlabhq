@@ -9,7 +9,6 @@ describe('new dropdown upload', () => {
     const Component = Vue.extend(upload);
 
     vm = createComponent(Component, {
-      branchId: 'master',
       path: '',
     });
 
@@ -20,6 +19,23 @@ describe('new dropdown upload', () => {
 
   afterEach(() => {
     vm.$destroy();
+  });
+
+  describe('openFile', () => {
+    it('calls for each file', () => {
+      const files = ['test', 'test2', 'test3'];
+
+      spyOn(vm, 'readFile');
+      spyOnProperty(vm.$refs.fileUpload, 'files').and.returnValue(files);
+
+      vm.openFile();
+
+      expect(vm.readFile.calls.count()).toBe(3);
+
+      files.forEach((file, i) => {
+        expect(vm.readFile.calls.argsFor(i)).toEqual([file]);
+      });
+    });
   });
 
   describe('readFile', () => {
@@ -65,7 +81,6 @@ describe('new dropdown upload', () => {
 
       expect(vm.$emit).toHaveBeenCalledWith('create', {
         name: file.name,
-        branchId: 'master',
         type: 'blob',
         content: target.result,
         base64: false,
@@ -77,7 +92,6 @@ describe('new dropdown upload', () => {
 
       expect(vm.$emit).toHaveBeenCalledWith('create', {
         name: file.name,
-        branchId: 'master',
         type: 'blob',
         content: binaryTarget.result.split('base64,')[1],
         base64: true,

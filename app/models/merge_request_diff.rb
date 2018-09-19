@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MergeRequestDiff < ActiveRecord::Base
   include Sortable
   include Importable
@@ -182,7 +184,7 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def diffs(diff_options = nil)
-    if without_files? && comparison = diff_refs.compare_in(project)
+    if without_files? && comparison = diff_refs&.compare_in(project)
       # It should fetch the repository when diffs are cleaned by the system.
       # We don't keep these for storage overload purposes.
       # See https://gitlab.com/gitlab-org/gitlab-ce/issues/37639
@@ -217,12 +219,14 @@ class MergeRequestDiff < ActiveRecord::Base
     self.id == merge_request.latest_merge_request_diff_id
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def compare_with(sha)
     # When compare merge request versions we want diff A..B instead of A...B
     # so we handle cases when user does squash and rebase of the commits between versions.
     # For this reason we set straight to true by default.
     CompareService.new(project, head_commit_sha).execute(project, sha, straight: true)
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   private
 
@@ -249,15 +253,13 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def load_diffs(options)
-    raw = merge_request_diff_files.map(&:to_hash)
+    collection = merge_request_diff_files
 
     if paths = options[:paths]
-      raw = raw.select do |diff|
-        paths.include?(diff[:old_path]) || paths.include?(diff[:new_path])
-      end
+      collection = collection.where('old_path IN (?) OR new_path IN (?)', paths, paths)
     end
 
-    Gitlab::Git::DiffCollection.new(raw, options)
+    Gitlab::Git::DiffCollection.new(collection.map(&:to_hash), options)
   end
 
   def load_commits
@@ -314,9 +316,7 @@ class MergeRequestDiff < ActiveRecord::Base
 
   def keep_around_commits
     [repository, merge_request.source_project.repository].uniq.each do |repo|
-      repo.keep_around(start_commit_sha)
-      repo.keep_around(head_commit_sha)
-      repo.keep_around(base_commit_sha)
+      repo.keep_around(start_commit_sha, head_commit_sha, base_commit_sha)
     end
   end
 end

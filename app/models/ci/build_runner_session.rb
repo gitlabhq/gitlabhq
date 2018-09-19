@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   # The purpose of this class is to store Build related runner session.
   # Data will be removed after transitioning from running to any state.
@@ -17,7 +19,7 @@ module Ci
       {
         subprotocols: ['terminal.gitlab.com'].freeze,
         url: "#{url}/exec".sub("https://", "wss://"),
-        headers: { Authorization: authorization.presence }.compact,
+        headers: { Authorization: [authorization.presence] }.compact,
         ca_pem: certificate.presence
       }
     end

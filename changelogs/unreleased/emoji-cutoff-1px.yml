@@ -1,0 +1,5 @@
+---
+title: Fix 1px cutoff of emojis
+merge_request: 21180
+author: gfyoung
+type: fixed

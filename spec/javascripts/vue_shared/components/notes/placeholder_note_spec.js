@@ -27,7 +27,7 @@ describe('issue placeholder system note component', () => {
         userDataMock.path,
       );
       expect(vm.$el.querySelector('.user-avatar-link img').getAttribute('src')).toEqual(
-        userDataMock.avatar_url,
+        `${userDataMock.avatar_url}?width=40`,
       );
     });
   });

@@ -1151,7 +1151,11 @@ describe Ci::Pipeline, :mailer do
   end
 
   describe '#set_config_source' do
-    context 'when pipelines does not contain needed data' do
+    context 'when pipelines does not contain needed data and auto devops is disabled' do
+      before do
+        stub_application_setting(auto_devops_enabled: false)
+      end
+
       it 'defines source to be unknown' do
         pipeline.set_config_source
 
@@ -1196,7 +1200,6 @@ describe Ci::Pipeline, :mailer do
 
         context 'auto devops enabled' do
           before do
-            stub_application_setting(auto_devops_enabled: true)
             allow(project).to receive(:ci_config_path) { 'custom' }
           end
 
@@ -1743,7 +1746,7 @@ describe Ci::Pipeline, :mailer do
         create(:ci_pipeline, config: { rspec: { script: 'rake test' } })
       end
 
-      it 'does not containyaml errors' do
+      it 'does not contain yaml errors' do
         expect(pipeline).not_to have_yaml_errors
       end
     end
@@ -1851,6 +1854,85 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#has_test_reports?' do
+    subject { pipeline.has_test_reports? }
+
+    context 'when pipeline has builds with test reports' do
+      before do
+        create(:ci_build, :test_reports, pipeline: pipeline, project: project)
+      end
+
+      context 'when pipeline status is running' do
+        let(:pipeline) { create(:ci_pipeline, :running, project: project) }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when pipeline status is success' do
+        let(:pipeline) { create(:ci_pipeline, :success, project: project) }
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when pipeline does not have builds with test reports' do
+      before do
+        create(:ci_build, :artifacts, pipeline: pipeline, project: project)
+      end
+
+      let(:pipeline) { create(:ci_pipeline, :success, project: project) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when retried build has test reports' do
+      before do
+        create(:ci_build, :retried, :test_reports, pipeline: pipeline, project: project)
+      end
+
+      let(:pipeline) { create(:ci_pipeline, :success, project: project) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#test_reports' do
+    subject { pipeline.test_reports }
+
+    context 'when pipeline has multiple builds with test reports' do
+      let!(:build_rspec) { create(:ci_build, :success, name: 'rspec', pipeline: pipeline, project: project) }
+      let!(:build_java) { create(:ci_build, :success, name: 'java', pipeline: pipeline, project: project) }
+
+      before do
+        create(:ci_job_artifact, :junit, job: build_rspec, project: project)
+        create(:ci_job_artifact, :junit_with_ant, job: build_java, project: project)
+      end
+
+      it 'returns test reports with collected data' do
+        expect(subject.total_count).to be(7)
+        expect(subject.success_count).to be(5)
+        expect(subject.failed_count).to be(2)
+      end
+
+      context 'when builds are retried' do
+        let!(:build_rspec) { create(:ci_build, :retried, :success, name: 'rspec', pipeline: pipeline, project: project) }
+        let!(:build_java) { create(:ci_build, :retried, :success, name: 'java', pipeline: pipeline, project: project) }
+
+        it 'does not take retried builds into account' do
+          expect(subject.total_count).to be(0)
+          expect(subject.success_count).to be(0)
+          expect(subject.failed_count).to be(0)
+        end
+      end
+    end
+
+    context 'when pipeline does not have any builds with test reports' do
+      it 'returns empty test reports' do
+        expect(subject.total_count).to be(0)
+      end
+    end
+  end
+
   describe '#total_size' do
     let!(:build_job1) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
     let!(:build_job2) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
@@ -1860,6 +1942,30 @@ describe Ci::Pipeline, :mailer do
 
     it 'returns all jobs (including failed and retried)' do
       expect(pipeline.total_size).to eq(5)
+    end
+  end
+
+  describe '#status' do
+    context 'when transitioning to failed' do
+      context 'when pipeline has autodevops as source' do
+        let(:pipeline) { create(:ci_pipeline, :running, :auto_devops_source) }
+
+        it 'calls autodevops disable service' do
+          expect(AutoDevops::DisableWorker).to receive(:perform_async).with(pipeline.id)
+
+          pipeline.drop
+        end
+      end
+
+      context 'when pipeline has other source' do
+        let(:pipeline) { create(:ci_pipeline, :running, :repository_source) }
+
+        it 'does not call auto devops disable service' do
+          expect(AutoDevops::DisableWorker).not_to receive(:perform_async)
+
+          pipeline.drop
+        end
+      end
     end
   end
 end

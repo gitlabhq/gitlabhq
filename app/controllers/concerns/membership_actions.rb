@@ -1,4 +1,5 @@
 module MembershipActions
+  include MembersPresentation
   extend ActiveSupport::Concern
 
   def create
@@ -20,6 +21,7 @@ module MembershipActions
       .execute(member)
       .present(current_user: current_user)
 
+    present_members([member])
     respond_to do |format|
       format.js { render 'shared/members/update', locals: { member: member } }
     end
@@ -55,6 +57,7 @@ module MembershipActions
     redirect_to members_page_url
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def leave
     member = membershipable.members_and_requesters.find_by!(user_id: current_user.id)
     Members::DestroyService.new(current_user).execute(member)
@@ -75,6 +78,7 @@ module MembershipActions
       format.json { render json: { notice: notice } }
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def resend_invite
     member = membershipable.members.find(params[:id])

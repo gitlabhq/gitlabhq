@@ -15,7 +15,7 @@ class FileUploader < GitlabUploader
   prepend ObjectStorage::Extension::RecordsUploads
 
   MARKDOWN_PATTERN = %r{\!?\[.*?\]\(/uploads/(?<secret>[0-9a-f]{32})/(?<file>.*?)\)}
-  DYNAMIC_PATH_PATTERN = %r{(?<secret>\h{32})/(?<identifier>.*)}
+  DYNAMIC_PATH_PATTERN = %r{.*(?<secret>\h{32})/(?<identifier>.*)}
 
   after :remove, :prune_store_dir
 
@@ -65,6 +65,10 @@ class FileUploader < GitlabUploader
 
   def self.generate_secret
     SecureRandom.hex
+  end
+
+  def self.extract_dynamic_path(path)
+    DYNAMIC_PATH_PATTERN.match(path)
   end
 
   def upload_paths(identifier)
@@ -118,22 +122,12 @@ class FileUploader < GitlabUploader
     }
   end
 
-  def markdown_link
-    markdown = +"[#{markdown_name}](#{secure_url})"
-    markdown.prepend("!") if image_or_video? || dangerous?
-    markdown
-  end
-
   def to_h
     {
       alt:      markdown_name,
       url:      secure_url,
       markdown: markdown_link
     }
-  end
-
-  def filename
-    self.file.filename
   end
 
   def upload=(value)
@@ -143,7 +137,7 @@ class FileUploader < GitlabUploader
     return if apply_context!(value.uploader_context)
 
     # fallback to the regex based extraction
-    if matches = DYNAMIC_PATH_PATTERN.match(value.path)
+    if matches = self.class.extract_dynamic_path(value.path)
       @secret = matches[:secret]
       @identifier = matches[:identifier]
     end
@@ -190,10 +184,6 @@ class FileUploader < GitlabUploader
 
   def prune_store_dir
     storage.delete_dir!(store_dir) # only remove when empty
-  end
-
-  def markdown_name
-    (image_or_video? ? File.basename(filename, File.extname(filename)) : filename).gsub("]", "\\]")
   end
 
   def identifier

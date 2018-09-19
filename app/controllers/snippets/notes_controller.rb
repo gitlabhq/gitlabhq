@@ -9,7 +9,7 @@ class Snippets::NotesController < ApplicationController
   private
 
   def note
-    @note ||= snippet.notes.find(params[:id])
+    @note ||= snippet.notes.inc_relations_for_view.find(params[:id])
   end
   alias_method :awardable, :note
 
@@ -17,9 +17,11 @@ class Snippets::NotesController < ApplicationController
     nil
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def snippet
     PersonalSnippet.find_by(id: params[:snippet_id])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
   alias_method :noteable, :snippet
 
   def note_params

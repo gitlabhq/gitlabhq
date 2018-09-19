@@ -66,7 +66,7 @@ export const individualNote = {
   individual_note: true,
   notes: [
     {
-      id: 1390,
+      id: '1390',
       attachment: {
         url: null,
         filename: null,
@@ -111,7 +111,7 @@ export const individualNote = {
 };
 
 export const note = {
-  id: 546,
+  id: '546',
   attachment: {
     url: null,
     filename: null,
@@ -165,6 +165,7 @@ export const note = {
   report_abuse_path:
     '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F7%23note_546&user_id=1',
   path: '/gitlab-org/gitlab-ce/notes/546',
+  cached_markdown_version: 11,
 };
 
 export const discussionMock = {
@@ -173,7 +174,7 @@ export const discussionMock = {
   expanded: true,
   notes: [
     {
-      id: 1395,
+      id: '1395',
       attachment: {
         url: null,
         filename: null,
@@ -210,7 +211,7 @@ export const discussionMock = {
       path: '/gitlab-org/gitlab-ce/notes/1395',
     },
     {
-      id: 1396,
+      id: '1396',
       attachment: {
         url: null,
         filename: null,
@@ -256,7 +257,7 @@ export const discussionMock = {
       path: '/gitlab-org/gitlab-ce/notes/1396',
     },
     {
-      id: 1437,
+      id: '1437',
       attachment: {
         url: null,
         filename: null,
@@ -307,7 +308,7 @@ export const discussionMock = {
 };
 
 export const loggedOutnoteableData = {
-  id: 98,
+  id: '98',
   iid: 26,
   author_id: 1,
   description: '',
@@ -357,7 +358,7 @@ export const collapseNotesMock = [
     individual_note: true,
     notes: [
       {
-        id: 1390,
+        id: '1390',
         attachment: null,
         author: {
           id: 1,
@@ -392,7 +393,7 @@ export const collapseNotesMock = [
     individual_note: true,
     notes: [
       {
-        id: 1391,
+        id: '1391',
         attachment: null,
         author: {
           id: 1,
@@ -432,7 +433,7 @@ export const INDIVIDUAL_NOTE_RESPONSE_MAP = {
         expanded: true,
         notes: [
           {
-            id: 1390,
+            id: '1390',
             attachment: {
               url: null,
               filename: null,
@@ -494,7 +495,7 @@ export const INDIVIDUAL_NOTE_RESPONSE_MAP = {
         expanded: true,
         notes: [
           {
-            id: 1391,
+            id: '1391',
             attachment: {
               url: null,
               filename: null,
@@ -543,7 +544,7 @@ export const INDIVIDUAL_NOTE_RESPONSE_MAP = {
     '/gitlab-org/gitlab-ce/notes/1471': {
       commands_changes: null,
       valid: true,
-      id: 1471,
+      id: '1471',
       attachment: null,
       author: {
         id: 1,
@@ -599,7 +600,7 @@ export const DISCUSSION_NOTE_RESPONSE_MAP = {
         expanded: true,
         notes: [
           {
-            id: 1471,
+            id: '1471',
             attachment: {
               url: null,
               filename: null,
@@ -670,7 +671,7 @@ export const notesWithDescriptionChanges = [
     expanded: true,
     notes: [
       {
-        id: 901,
+        id: '901',
         type: null,
         attachment: null,
         author: {
@@ -717,7 +718,7 @@ export const notesWithDescriptionChanges = [
     expanded: true,
     notes: [
       {
-        id: 902,
+        id: '902',
         type: null,
         attachment: null,
         author: {
@@ -764,7 +765,7 @@ export const notesWithDescriptionChanges = [
     expanded: true,
     notes: [
       {
-        id: 903,
+        id: '903',
         type: null,
         attachment: null,
         author: {
@@ -808,7 +809,7 @@ export const notesWithDescriptionChanges = [
     expanded: true,
     notes: [
       {
-        id: 904,
+        id: '904',
         type: null,
         attachment: null,
         author: {
@@ -853,7 +854,7 @@ export const notesWithDescriptionChanges = [
     expanded: true,
     notes: [
       {
-        id: 905,
+        id: '905',
         type: null,
         attachment: null,
         author: {
@@ -897,7 +898,7 @@ export const notesWithDescriptionChanges = [
     expanded: true,
     notes: [
       {
-        id: 906,
+        id: '906',
         type: null,
         attachment: null,
         author: {
@@ -944,7 +945,7 @@ export const collapsedSystemNotes = [
     expanded: true,
     notes: [
       {
-        id: 901,
+        id: '901',
         type: null,
         attachment: null,
         author: {
@@ -991,7 +992,7 @@ export const collapsedSystemNotes = [
     expanded: true,
     notes: [
       {
-        id: 902,
+        id: '902',
         type: null,
         attachment: null,
         author: {
@@ -1038,7 +1039,7 @@ export const collapsedSystemNotes = [
     expanded: true,
     notes: [
       {
-        id: 904,
+        id: '904',
         type: null,
         attachment: null,
         author: {
@@ -1083,7 +1084,7 @@ export const collapsedSystemNotes = [
     expanded: true,
     notes: [
       {
-        id: 905,
+        id: '905',
         type: null,
         attachment: null,
         author: {
@@ -1103,7 +1104,7 @@ export const collapsedSystemNotes = [
         resolvable: false,
         noteable_iid: 12,
         note: 'changed the description',
-        note_html: '\n  <p dir="auto">changed the description 2 times within 1 minute </p>',
+        note_html: ' <p dir="auto">changed the description 2 times within 1 minute </p>',
         current_user: { can_edit: false, can_award_emoji: true },
         resolved: false,
         resolved_by: null,
@@ -1128,7 +1129,7 @@ export const collapsedSystemNotes = [
     expanded: true,
     notes: [
       {
-        id: 906,
+        id: '906',
         type: null,
         attachment: null,
         author: {
@@ -1167,3 +1168,87 @@ export const collapsedSystemNotes = [
     diff_discussion: false,
   },
 ];
+
+export const discussion1 = {
+  id: 'abc1',
+  resolvable: true,
+  resolved: false,
+  diff_file: {
+    file_path: 'about.md',
+  },
+  position: {
+    formatter: {
+      new_line: 50,
+      old_line: null,
+    },
+  },
+  notes: [
+    {
+      created_at: '2018-07-04T16:25:41.749Z',
+    },
+  ],
+};
+
+export const resolvedDiscussion1 = {
+  id: 'abc1',
+  resolvable: true,
+  resolved: true,
+  diff_file: {
+    file_path: 'about.md',
+  },
+  position: {
+    formatter: {
+      new_line: 50,
+      old_line: null,
+    },
+  },
+  notes: [
+    {
+      created_at: '2018-07-04T16:25:41.749Z',
+    },
+  ],
+};
+
+export const discussion2 = {
+  id: 'abc2',
+  resolvable: true,
+  resolved: false,
+  diff_file: {
+    file_path: 'README.md',
+  },
+  position: {
+    formatter: {
+      new_line: null,
+      old_line: 20,
+    },
+  },
+  notes: [
+    {
+      created_at: '2018-07-04T12:05:41.749Z',
+    },
+  ],
+};
+
+export const discussion3 = {
+  id: 'abc3',
+  resolvable: true,
+  resolved: false,
+  diff_file: {
+    file_path: 'README.md',
+  },
+  position: {
+    formatter: {
+      new_line: 21,
+      old_line: null,
+    },
+  },
+  notes: [
+    {
+      created_at: '2018-07-05T17:25:41.749Z',
+    },
+  ],
+};
+
+export const unresolvableDiscussion = {
+  resolvable: false,
+};

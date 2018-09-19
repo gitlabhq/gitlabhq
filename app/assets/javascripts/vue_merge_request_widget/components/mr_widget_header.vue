@@ -1,18 +1,21 @@
 <script>
-import tooltip from '~/vue_shared/directives/tooltip';
-import { n__ } from '~/locale';
-import { webIDEUrl } from '~/lib/utils/url_utility';
-import icon from '~/vue_shared/components/icon.vue';
+import _ from 'underscore';
+import { n__, s__, sprintf } from '~/locale';
+import { mergeUrlParams, webIDEUrl } from '~/lib/utils/url_utility';
+import Icon from '~/vue_shared/components/icon.vue';
 import clipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import tooltip from '~/vue_shared/directives/tooltip';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 
 export default {
   name: 'MRWidgetHeader',
+  components: {
+    Icon,
+    clipboardButton,
+    TooltipOnTruncate,
+  },
   directives: {
     tooltip,
-  },
-  components: {
-    icon,
-    clipboardButton,
   },
   props: {
     mr: {
@@ -24,8 +27,12 @@ export default {
     shouldShowCommitsBehindText() {
       return this.mr.divergedCommitsCount > 0;
     },
-    commitsText() {
-      return n__('%d commit behind', '%d commits behind', this.mr.divergedCommitsCount);
+    commitsBehindText() {
+      return sprintf(s__('mrWidget|The source branch is %{commitsBehindLinkStart}%{commitsBehind}%{commitsBehindLinkEnd} the target branch'), {
+        commitsBehindLinkStart: `<a href="${_.escape(this.mr.targetBranchPath)}">`,
+        commitsBehind: n__('%d commit behind', '%d commits behind', this.mr.divergedCommitsCount),
+        commitsBehindLinkEnd: '</a>',
+      }, false);
     },
     branchNameClipboardData() {
       // This supports code in app/assets/javascripts/copy_to_clipboard.js that
@@ -36,122 +43,131 @@ export default {
         gfm: `\`${this.mr.sourceBranch}\``,
       });
     },
-    isSourceBranchLong() {
-      return this.isBranchTitleLong(this.mr.sourceBranch);
-    },
-    isTargetBranchLong() {
-      return this.isBranchTitleLong(this.mr.targetBranch);
-    },
     webIdePath() {
-      return webIDEUrl(this.mr.statusPath.replace('.json', ''));
+      if (this.mr.canPushToSourceBranch) {
+        return mergeUrlParams({
+          target_project: this.mr.sourceProjectFullPath !== this.mr.targetProjectFullPath ?
+            this.mr.targetProjectFullPath : '',
+        }, webIDEUrl(`/${this.mr.sourceProjectFullPath}/merge_requests/${this.mr.iid}`));
+      }
+
+      return null;
     },
-  },
-  methods: {
-    isBranchTitleLong(branchTitle) {
-      return branchTitle.length > 32;
+    ideButtonTitle() {
+      return !this.mr.canPushToSourceBranch
+        ? s__('mrWidget|You are not allowed to edit this project directly. Please fork to make changes.')
+        : '';
     },
   },
 };
 </script>
 <template>
-  <div class="mr-source-target">
-    <div class="normal">
-      <strong>
-        {{ s__("mrWidget|Request to merge") }}
-        <span
-          :class="{ 'label-truncated': isSourceBranchLong }"
-          :title="isSourceBranchLong ? mr.sourceBranch : ''"
-          :v-tooltip="isSourceBranchLong"
-          class="label-branch js-source-branch"
-          data-placement="bottom"
-          v-html="mr.sourceBranchLink"
+  <div class="mr-source-target append-bottom-default">
+    <div class="git-merge-icon-container append-right-default">
+      <icon name="git-merge" />
+    </div>
+    <div class="git-merge-container d-flex">
+      <div class="normal">
+        <strong>
+          {{ s__("mrWidget|Request to merge") }}
+          <tooltip-on-truncate
+            :title="mr.sourceBranch"
+            truncate-target="child"
+            class="label-branch label-truncate js-source-branch"
+            v-html="mr.sourceBranchLink"
+          /><clipboard-button
+            :text="branchNameClipboardData"
+            :title="__('Copy branch name to clipboard')"
+            css-class="btn-default btn-transparent btn-clipboard"
+          />
+          {{ s__("mrWidget|into") }}
+          <tooltip-on-truncate
+            :title="mr.targetBranch"
+            truncate-target="child"
+            class="label-branch label-truncate"
+          >
+            <a
+              :href="mr.targetBranchTreePath"
+              class="js-target-branch"
+            >
+              {{ mr.targetBranch }}
+            </a>
+          </tooltip-on-truncate>
+        </strong>
+        <div
+          v-if="shouldShowCommitsBehindText"
+          class="diverged-commits-count"
+          v-html="commitsBehindText"
         >
-        </span>
+        </div>
+      </div>
 
-        <clipboard-button
-          :text="branchNameClipboardData"
-          :title="__('Copy branch name to clipboard')"
-          css-class="btn-default btn-transparent btn-clipboard"
-        />
-
-        {{ s__("mrWidget|into") }}
-
+      <div
+        v-if="mr.isOpen"
+        class="branch-actions"
+      >
         <span
-          :v-tooltip="isTargetBranchLong"
-          :class="{ 'label-truncatedtooltip': isTargetBranchLong }"
-          :title="isTargetBranchLong ? mr.targetBranch : ''"
-          class="label-branch"
+          v-tooltip
+          :title="ideButtonTitle"
           data-placement="bottom"
+          tabindex="0"
         >
           <a
-            :href="mr.targetBranchTreePath"
-            class="js-target-branch"
+            v-if="!mr.sourceBranchRemoved"
+            :href="webIdePath"
+            :class="{ disabled: !mr.canPushToSourceBranch }"
+            class="btn btn-default inline js-web-ide d-none d-md-inline-block"
+            role="button"
           >
-            {{ mr.targetBranch }}
+            {{ s__("mrWidget|Open in Web IDE") }}
           </a>
         </span>
-      </strong>
-      <span
-        v-if="shouldShowCommitsBehindText"
-        class="diverged-commits-count"
-      >
-        (<a :href="mr.targetBranchPath">{{ commitsText }}</a>)
-      </span>
-    </div>
-
-    <div v-if="mr.isOpen">
-      <a
-        v-if="!mr.sourceBranchRemoved"
-        :href="webIdePath"
-        class="btn btn-sm btn-default inline js-web-ide"
-      >
-        {{ s__("mrWidget|Web IDE") }}
-      </a>
-      <button
-        :disabled="mr.sourceBranchRemoved"
-        data-target="#modal_merge_info"
-        data-toggle="modal"
-        class="btn btn-sm btn-default inline js-check-out-branch"
-        type="button"
-      >
-        {{ s__("mrWidget|Check out branch") }}
-      </button>
-      <span class="dropdown prepend-left-10">
         <button
+          :disabled="mr.sourceBranchRemoved"
+          data-target="#modal_merge_info"
+          data-toggle="modal"
+          class="btn btn-default inline js-check-out-branch"
           type="button"
-          class="btn btn-sm inline dropdown-toggle"
-          data-toggle="dropdown"
-          aria-label="Download as"
-          aria-haspopup="true"
-          aria-expanded="false"
         >
-          <icon name="download" />
-          <i
-            class="fa fa-caret-down"
-            aria-hidden="true">
-          </i>
+          {{ s__("mrWidget|Check out branch") }}
         </button>
-        <ul class="dropdown-menu dropdown-menu-right">
-          <li>
-            <a
-              :href="mr.emailPatchesPath"
-              class="js-download-email-patches"
-              download
-            >
-              {{ s__("mrWidget|Email patches") }}
-            </a>
-          </li>
-          <li>
-            <a
-              :href="mr.plainDiffPath"
-              class="js-download-plain-diff"
-              download
-            >
-              {{ s__("mrWidget|Plain diff") }}
-            </a>
-          </li>
-        </ul>
-      </span>
+        <span class="dropdown prepend-left-10">
+          <button
+            type="button"
+            class="btn inline dropdown-toggle"
+            data-toggle="dropdown"
+            aria-label="Download as"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <icon name="download" />
+            <i
+              class="fa fa-caret-down"
+              aria-hidden="true">
+            </i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-right">
+            <li>
+              <a
+                :href="mr.emailPatchesPath"
+                class="js-download-email-patches"
+                download
+              >
+                {{ s__("mrWidget|Email patches") }}
+              </a>
+            </li>
+            <li>
+              <a
+                :href="mr.plainDiffPath"
+                class="js-download-plain-diff"
+                download
+              >
+                {{ s__("mrWidget|Plain diff") }}
+              </a>
+            </li>
+          </ul>
+        </span>
+      </div>
     </div>
   </div>
 </template>

@@ -1,0 +1,5 @@
+---
+title: Enable frozen string in rest of app/models/**/*.rb
+merge_request: gfyoung
+author:
+type: performance

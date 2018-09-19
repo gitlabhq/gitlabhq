@@ -1,4 +1,5 @@
 <script>
+import _ from 'underscore';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { sprintf, __ } from '~/locale';
 import * as consts from '../../stores/modules/commit/constants';
@@ -14,7 +15,7 @@ export default {
     commitToCurrentBranchText() {
       return sprintf(
         __('Commit to %{branchName} branch'),
-        { branchName: `<strong class="monospace">${this.currentBranchId}</strong>` },
+        { branchName: `<strong class="monospace">${_.escape(this.currentBranchId)}</strong>` },
         false,
       );
     },

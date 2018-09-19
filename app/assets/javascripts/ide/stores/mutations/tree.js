@@ -1,4 +1,5 @@
 import * as types from '../mutation_types';
+import { sortTree } from '../utils';
 
 export default {
   [types.TOGGLE_TREE_OPEN](state, path) {
@@ -35,5 +36,15 @@ export default {
     Object.assign(state, {
       changedFiles: [],
     });
+  },
+  [types.RESTORE_TREE](state, path) {
+    const entry = state.entries[path];
+    const parent = entry.parentPath
+      ? state.entries[entry.parentPath]
+      : state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
+
+    if (!parent.tree.find(f => f.path === path)) {
+      parent.tree = sortTree(parent.tree.concat(entry));
+    }
   },
 };

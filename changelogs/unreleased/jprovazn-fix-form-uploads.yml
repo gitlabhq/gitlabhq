@@ -1,0 +1,5 @@
+---
+title: Accept upload files in public/uplaods/tmp when using accelerated uploads.
+merge_request:
+author:
+type: fixed

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EnumWithNil
   extend ActiveSupport::Concern
 

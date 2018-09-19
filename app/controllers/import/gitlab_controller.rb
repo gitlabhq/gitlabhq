@@ -1,4 +1,7 @@
 class Import::GitlabController < Import::BaseController
+  MAX_PROJECT_PAGES = 15
+  PER_PAGE_PROJECTS = 100
+
   before_action :verify_gitlab_import_enabled
   before_action :gitlab_auth, except: :callback
 
@@ -9,14 +12,16 @@ class Import::GitlabController < Import::BaseController
     redirect_to status_import_gitlab_url
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def status
-    @repos = client.projects
+    @repos = client.projects(starting_page: 1, page_limit: MAX_PROJECT_PAGES, per_page: PER_PAGE_PROJECTS)
 
     @already_added_projects = find_already_added_projects('gitlab')
     already_added_projects_names = @already_added_projects.pluck(:import_source)
 
     @repos = @repos.to_a.reject { |repo| already_added_projects_names.include? repo["path_with_namespace"] }
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def jobs
     render json: find_jobs('gitlab')

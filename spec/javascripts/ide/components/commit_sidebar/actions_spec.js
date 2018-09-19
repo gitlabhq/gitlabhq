@@ -46,4 +46,12 @@ describe('IDE commit sidebar actions', () => {
       done();
     });
   });
+
+  describe('commitToCurrentBranchText', () => {
+    it('escapes current branch', () => {
+      vm.$store.state.currentBranchId = '<img src="x" />';
+
+      expect(vm.commitToCurrentBranchText).not.toContain('<img src="x" />');
+    });
+  });
 });

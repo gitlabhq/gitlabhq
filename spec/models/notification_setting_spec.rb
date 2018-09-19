@@ -58,7 +58,7 @@ RSpec.describe NotificationSetting do
       1.upto(4) do |i|
         setting = create(:notification_setting, user: user)
 
-        setting.project.update_attributes(pending_delete: true) if i.even?
+        setting.project.update(pending_delete: true) if i.even?
       end
     end
 
@@ -91,6 +91,42 @@ RSpec.describe NotificationSetting do
       it 'returns false' do
         expect(subject.event_enabled?(:foo_event)).to be(false)
       end
+    end
+  end
+
+  describe '.email_events' do
+    subject { described_class.email_events }
+
+    it 'returns email events' do
+      expect(subject).to include(
+        :new_note,
+        :new_issue,
+        :reopen_issue,
+        :close_issue,
+        :reassign_issue,
+        :new_merge_request,
+        :reopen_merge_request,
+        :close_merge_request,
+        :reassign_merge_request,
+        :merge_merge_request,
+        :failed_pipeline,
+        :success_pipeline
+      )
+    end
+
+    it 'includes EXCLUDED_WATCHER_EVENTS' do
+      expect(subject).to include(*described_class::EXCLUDED_WATCHER_EVENTS)
+    end
+  end
+
+  describe '#email_events' do
+    let(:source) { build(:group) }
+
+    subject { build(:notification_setting, source: source) }
+
+    it 'calls email_events' do
+      expect(described_class).to receive(:email_events).with(source)
+      subject.email_events
     end
   end
 end

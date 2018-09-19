@@ -49,6 +49,16 @@ export const dasherize = str => str.replace(/[_\s]+/g, '-');
 export const slugify = str => str.trim().toLowerCase();
 
 /**
+ * Replaces whitespaces with hyphens and converts to lower case
+ * @param {String} str
+ * @returns {String}
+ */
+export const slugifyWithHyphens = str => {
+  const regex = new RegExp(/\s+/, 'g');
+  return str.toLowerCase().replace(regex, '-');
+};
+
+/**
  * Truncates given text
  *
  * @param {String} string
@@ -73,6 +83,20 @@ export const truncateSha = sha => sha.substr(0, 8);
  */
 export function capitalizeFirstCharacter(text) {
   return `${text[0].toUpperCase()}${text.slice(1)}`;
+}
+
+/**
+ * Returns the first character capitalized
+ *
+ * If falsey, returns empty string.
+ *
+ * @param {String} text
+ * @return {String}
+ */
+export function getFirstCharacterCapitalized(text) {
+  return text
+    ? text.charAt(0).toUpperCase()
+    : '';
 }
 
 /**

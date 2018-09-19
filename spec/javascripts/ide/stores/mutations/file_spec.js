@@ -94,6 +94,35 @@ describe('IDE store file mutations', () => {
 
       expect(localFile.raw).toBe('testing');
     });
+
+    it('adds raw data to open pending file', () => {
+      localState.openFiles.push({
+        ...localFile,
+        pending: true,
+      });
+
+      mutations.SET_FILE_RAW_DATA(localState, {
+        file: localFile,
+        raw: 'testing',
+      });
+
+      expect(localState.openFiles[0].raw).toBe('testing');
+    });
+
+    it('does not add raw data to open pending tempFile file', () => {
+      localState.openFiles.push({
+        ...localFile,
+        pending: true,
+        tempFile: true,
+      });
+
+      mutations.SET_FILE_RAW_DATA(localState, {
+        file: localFile,
+        raw: 'testing',
+      });
+
+      expect(localState.openFiles[0].raw).not.toBe('testing');
+    });
   });
 
   describe('SET_FILE_BASE_RAW_DATA', () => {
@@ -205,6 +234,11 @@ describe('IDE store file mutations', () => {
     beforeEach(() => {
       localFile.content = 'test';
       localFile.changed = true;
+      localState.currentProjectId = 'gitlab-ce';
+      localState.currentBranchId = 'master';
+      localState.trees['gitlab-ce/master'] = {
+        tree: [],
+      };
     });
 
     it('resets content and changed', () => {
@@ -212,6 +246,36 @@ describe('IDE store file mutations', () => {
 
       expect(localFile.content).toBe('');
       expect(localFile.changed).toBeFalsy();
+    });
+
+    it('adds to root tree if deleted', () => {
+      localFile.deleted = true;
+
+      mutations.DISCARD_FILE_CHANGES(localState, localFile.path);
+
+      expect(localState.trees['gitlab-ce/master'].tree).toEqual([
+        {
+          ...localFile,
+          deleted: false,
+        },
+      ]);
+    });
+
+    it('adds to parent tree if deleted', () => {
+      localFile.deleted = true;
+      localFile.parentPath = 'parentPath';
+      localState.entries.parentPath = {
+        tree: [],
+      };
+
+      mutations.DISCARD_FILE_CHANGES(localState, localFile.path);
+
+      expect(localState.entries.parentPath.tree).toEqual([
+        {
+          ...localFile,
+          deleted: false,
+        },
+      ]);
     });
   });
 

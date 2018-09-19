@@ -3,7 +3,6 @@ import $ from 'jquery';
 import { __ } from '~/locale';
 import LabelsSelect from '~/labels_select';
 import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
-import LoadingIcon from '../../loading_icon.vue';
 
 import DropdownTitle from './dropdown_title.vue';
 import DropdownValue from './dropdown_value.vue';
@@ -16,7 +15,6 @@ import DropdownCreateLabel from './dropdown_create_label.vue';
 
 export default {
   components: {
-    LoadingIcon,
     DropdownTitle,
     DropdownValue,
     DropdownValueCollapsed,
@@ -164,7 +162,7 @@ dropdown-menu-labels dropdown-menu-selectable"
             <dropdown-search-input/>
             <div class="dropdown-content"></div>
             <div class="dropdown-loading">
-              <loading-icon />
+              <gl-loading-icon />
             </div>
             <dropdown-footer
               v-if="showCreate"

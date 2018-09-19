@@ -3,6 +3,7 @@ import DiffLineNoteForm from '~/diffs/components/diff_line_note_form.vue';
 import store from '~/mr_notes/stores';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import diffFileMockData from '../mock_data/diff_file';
+import { noteableDataMock } from '../../notes/mock_data';
 
 describe('DiffLineNoteForm', () => {
   let component;
@@ -15,16 +16,15 @@ describe('DiffLineNoteForm', () => {
     diffLines = diffFile.highlightedDiffLines;
 
     component = createComponentWithStore(Vue.extend(DiffLineNoteForm), store, {
-      diffFile,
+      diffFileHash: diffFile.fileHash,
       diffLines,
       line: diffLines[0],
       noteTargetLine: diffLines[0],
     });
 
-    Object.defineProperty(component, 'isLoggedIn', {
-      get() {
-        return true;
-      },
+    Object.defineProperties(component, {
+      noteableData: { value: noteableDataMock },
+      isLoggedIn: { value: true },
     });
 
     component.$mount();
@@ -32,12 +32,37 @@ describe('DiffLineNoteForm', () => {
 
   describe('methods', () => {
     describe('handleCancelCommentForm', () => {
-      it('should call cancelCommentForm with lineCode', () => {
+      it('should ask for confirmation when shouldConfirm and isDirty passed as truthy', () => {
+        spyOn(window, 'confirm').and.returnValue(false);
+
+        component.handleCancelCommentForm(true, true);
+        expect(window.confirm).toHaveBeenCalled();
+      });
+
+      it('should ask for confirmation when one of the params false', () => {
+        spyOn(window, 'confirm').and.returnValue(false);
+
+        component.handleCancelCommentForm(true, false);
+        expect(window.confirm).not.toHaveBeenCalled();
+
+        component.handleCancelCommentForm(false, true);
+        expect(window.confirm).not.toHaveBeenCalled();
+      });
+
+      it('should call cancelCommentForm with lineCode', done => {
+        spyOn(window, 'confirm');
         spyOn(component, 'cancelCommentForm');
+        spyOn(component, 'resetAutoSave');
         component.handleCancelCommentForm();
 
-        expect(component.cancelCommentForm).toHaveBeenCalledWith({
-          lineCode: diffLines[0].lineCode,
+        expect(window.confirm).not.toHaveBeenCalled();
+        component.$nextTick(() => {
+          expect(component.cancelCommentForm).toHaveBeenCalledWith({
+            lineCode: diffLines[0].lineCode,
+          });
+          expect(component.resetAutoSave).toHaveBeenCalled();
+
+          done();
         });
       });
     });
@@ -66,7 +91,7 @@ describe('DiffLineNoteForm', () => {
 
   describe('mounted', () => {
     it('should init autosave', () => {
-      const key = 'autosave/Note/issue///DiffNote//1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_1';
+      const key = 'autosave/Note/Issue/98//DiffNote//1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_1';
 
       expect(component.autosave).toBeDefined();
       expect(component.autosave.key).toEqual(key);

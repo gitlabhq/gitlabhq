@@ -11,9 +11,11 @@ module Boards
     before_action :authorize_update_issue, only: [:update]
     skip_before_action :authenticate_user!, only: [:index]
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def index
-      issues = Boards::Issues::ListService.new(board_parent, current_user, filter_params).execute
-      issues = issues.page(params[:page]).per(params[:per] || 20)
+      list_service = Boards::Issues::ListService.new(board_parent, current_user, filter_params)
+      issues = list_service.execute
+      issues = issues.page(params[:page]).per(params[:per] || 20).without_count
       make_sure_position_is_set(issues) if Gitlab::Database.read_write?
       issues = issues.preload(:project,
                               :milestone,
@@ -22,11 +24,9 @@ module Boards
                               notes: [:award_emoji, :author]
                              )
 
-      render json: {
-        issues: serialize_as_json(issues),
-        size: issues.total_count
-      }
+      render_issues(issues, list_service.metadata)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def create
       service = Boards::Issues::CreateService.new(board_parent, project, current_user, issue_params)
@@ -50,6 +50,13 @@ module Boards
     end
 
     private
+
+    def render_issues(issues, metadata)
+      data = { issues: serialize_as_json(issues) }
+      data.merge!(metadata)
+
+      render json: data
+    end
 
     def make_sure_position_is_set(issues)
       issues.each do |issue|

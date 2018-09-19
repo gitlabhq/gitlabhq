@@ -1,7 +1,11 @@
+# frozen_string_literal: true
+
 module Types
   class MutationType < BaseObject
+    include Gitlab::Graphql::MountMutation
+
     graphql_name "Mutation"
 
-    # TODO: Add Mutations as fields
+    mount_mutation Mutations::MergeRequests::SetWip
   end
 end

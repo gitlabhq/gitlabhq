@@ -11,6 +11,10 @@ module QA
           factory.output
         end
 
+        product :project do |factory|
+          factory.project
+        end
+
         def initialize
           @file_name = 'file.txt'
           @file_content = '# This is test project'
@@ -19,11 +23,21 @@ module QA
           @new_branch = true
         end
 
-        def repository_uri
-          @repository_uri ||= begin
+        def repository_http_uri
+          @repository_http_uri ||= begin
             project.visit!
             Page::Project::Show.act do
               choose_repository_clone_http
+              repository_location.uri
+            end
+          end
+        end
+
+        def repository_ssh_uri
+          @repository_ssh_uri ||= begin
+            project.visit!
+            Page::Project::Show.act do
+              choose_repository_clone_ssh
               repository_location.uri
             end
           end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Given a list of oids, this services links the existent Lfs Objects to the project
 module Projects
   module LfsPointers
@@ -14,6 +16,7 @@ module Projects
 
       private
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def link_existing_lfs_objects(oids)
         existent_lfs_objects = LfsObject.where(oid: oids)
 
@@ -24,6 +27,7 @@ module Projects
 
         existent_lfs_objects.pluck(:oid)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

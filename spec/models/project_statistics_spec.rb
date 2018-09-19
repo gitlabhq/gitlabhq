@@ -128,6 +128,12 @@ describe ProjectStatistics do
         .by(13)
     end
 
+    it 'increases also storage size by that amount' do
+      expect { described_class.increment_statistic(project.id, :build_artifacts_size, 20) }
+        .to change { statistics.reload.storage_size }
+        .by(20)
+    end
+
     context 'when the amount is 0' do
       it 'does not execute a query' do
         project

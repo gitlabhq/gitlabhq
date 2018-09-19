@@ -25,8 +25,44 @@ describe UsersHelper do
       allow(helper).to receive(:can?).and_return(true)
     end
 
-    it 'includes all the expected tabs' do
-      expect(tabs).to include(:activity, :groups, :contributed, :projects, :snippets)
+    context 'with public profile' do
+      it 'includes all the expected tabs' do
+        expect(tabs).to include(:activity, :groups, :contributed, :projects, :snippets)
+      end
+    end
+
+    context 'with private profile' do
+      before do
+        allow(helper).to receive(:can?).with(user, :read_user_profile, nil).and_return(false)
+      end
+
+      it 'is empty' do
+        expect(tabs).to be_empty
+      end
+    end
+  end
+
+  describe '#user_internal_regex_data' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:user_default_external, :user_default_internal_regex, :result) do
+      false | nil                | { user_internal_regex_pattern: nil, user_internal_regex_options: nil }
+      false | ''                 | { user_internal_regex_pattern: nil, user_internal_regex_options: nil }
+      false | 'mockRegexPattern' | { user_internal_regex_pattern: nil, user_internal_regex_options: nil }
+      true  | nil                | { user_internal_regex_pattern: nil, user_internal_regex_options: nil }
+      true  | ''                 | { user_internal_regex_pattern: nil, user_internal_regex_options: nil }
+      true  | 'mockRegexPattern' | { user_internal_regex_pattern: 'mockRegexPattern', user_internal_regex_options: 'gi' }
+    end
+
+    with_them do
+      before do
+        stub_application_setting(user_default_external: user_default_external)
+        stub_application_setting(user_default_internal_regex: user_default_internal_regex)
+      end
+
+      subject { helper.user_internal_regex_data }
+
+      it { is_expected.to eq(result) }
     end
   end
 

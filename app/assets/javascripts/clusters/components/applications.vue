@@ -1,9 +1,18 @@
 <script>
 import _ from 'underscore';
+import helmInstallIllustration from '@gitlab-org/gitlab-svgs/illustrations/kubernetes-installation.svg';
+import elasticsearchLogo from 'images/cluster_app_logos/elasticsearch.png';
+import gitlabLogo from 'images/cluster_app_logos/gitlab.png';
+import helmLogo from 'images/cluster_app_logos/helm.png';
+import jeagerLogo from 'images/cluster_app_logos/jeager.png';
+import jupyterhubLogo from 'images/cluster_app_logos/jupyterhub.png';
+import kubernetesLogo from 'images/cluster_app_logos/kubernetes.png';
+import meltanoLogo from 'images/cluster_app_logos/meltano.png';
+import prometheusLogo from 'images/cluster_app_logos/prometheus.png';
 import { s__, sprintf } from '../../locale';
 import applicationRow from './application_row.vue';
 import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
-import { APPLICATION_INSTALLED, INGRESS } from '../constants';
+import { APPLICATION_STATUS, INGRESS } from '../constants';
 
 export default {
   components: {
@@ -37,28 +46,28 @@ export default {
       default: '',
     },
   },
+  data: () => ({
+    elasticsearchLogo,
+    gitlabLogo,
+    helmLogo,
+    jeagerLogo,
+    jupyterhubLogo,
+    kubernetesLogo,
+    meltanoLogo,
+    prometheusLogo,
+  }),
   computed: {
-    generalApplicationDescription() {
-      return sprintf(
-        _.escape(
-          s__(
-            `ClusterIntegration|Install applications on your Kubernetes cluster.
-            Read more about %{helpLink}`,
-          ),
-        ),
-        {
-          helpLink: `<a href="${this.helpPath}">
-              ${_.escape(s__('ClusterIntegration|installing applications'))}
-            </a>`,
-        },
-        false,
+    helmInstalled() {
+      return (
+        this.applications.helm.status === APPLICATION_STATUS.INSTALLED ||
+        this.applications.helm.status === APPLICATION_STATUS.UPDATED
       );
     },
     ingressId() {
       return INGRESS;
     },
     ingressInstalled() {
-      return this.applications.ingress.status === APPLICATION_INSTALLED;
+      return this.applications.ingress.status === APPLICATION_STATUS.INSTALLED;
     },
     ingressExternalIp() {
       return this.applications.ingress.externalIp;
@@ -122,230 +131,246 @@ export default {
       );
     },
     jupyterInstalled() {
-      return this.applications.jupyter.status === APPLICATION_INSTALLED;
+      return this.applications.jupyter.status === APPLICATION_STATUS.INSTALLED;
     },
     jupyterHostname() {
       return this.applications.jupyter.hostname;
     },
   },
+  created() {
+    this.helmInstallIllustration = helmInstallIllustration;
+  },
 };
 </script>
 
 <template>
-  <section
-    id="cluster-applications"
-    class="settings no-animate expanded"
-  >
-    <div class="settings-header">
-      <h4>
-        {{ s__('ClusterIntegration|Applications') }}
-      </h4>
-      <p
-        class="append-bottom-0"
-        v-html="generalApplicationDescription"
+  <section id="cluster-applications">
+    <h4>
+      {{ s__('ClusterIntegration|Applications') }}
+    </h4>
+    <p class="append-bottom-0">
+      {{ s__(`ClusterIntegration|Choose which applications to install on your Kubernetes cluster.
+        Helm Tiller is required to install any of the following applications.`) }}
+      <a :href="helpPath">
+        {{ __('More information') }}
+      </a>
+    </p>
+
+    <div class="cluster-application-list prepend-top-10">
+      <application-row
+        id="helm"
+        :logo-url="helmLogo"
+        :title="applications.helm.title"
+        :status="applications.helm.status"
+        :status-reason="applications.helm.statusReason"
+        :request-status="applications.helm.requestStatus"
+        :request-reason="applications.helm.requestReason"
+        class="rounded-top"
+        title-link="https://docs.helm.sh/"
       >
-      </p>
-    </div>
-
-    <div class="settings-content">
-      <div class="append-bottom-20">
-        <application-row
-          id="helm"
-          :title="applications.helm.title"
-          :status="applications.helm.status"
-          :status-reason="applications.helm.statusReason"
-          :request-status="applications.helm.requestStatus"
-          :request-reason="applications.helm.requestReason"
-          title-link="https://docs.helm.sh/"
+        <div slot="description">
+          {{ s__(`ClusterIntegration|Helm streamlines installing
+            and managing Kubernetes applications.
+            Tiller runs inside of your Kubernetes Cluster,
+            and manages releases of your charts.`) }}
+        </div>
+      </application-row>
+      <div
+        v-show="!helmInstalled"
+        class="cluster-application-warning"
+      >
+        <div
+          class="svg-container"
+          v-html="helmInstallIllustration"
         >
-          <div slot="description">
-            {{ s__(`ClusterIntegration|Helm streamlines installing
-              and managing Kubernetes applications.
-              Tiller runs inside of your Kubernetes Cluster,
-              and manages releases of your charts.`) }}
-          </div>
-        </application-row>
-        <application-row
-          :id="ingressId"
-          :title="applications.ingress.title"
-          :status="applications.ingress.status"
-          :status-reason="applications.ingress.statusReason"
-          :request-status="applications.ingress.requestStatus"
-          :request-reason="applications.ingress.requestReason"
-          title-link="https://kubernetes.io/docs/concepts/services-networking/ingress/"
-        >
-          <div slot="description">
-            <p>
-              {{ s__(`ClusterIntegration|Ingress gives you a way to route
-                requests to services based on the request host or path,
-                centralizing a number of services into a single entrypoint.`) }}
-            </p>
+        </div>
+        {{ s__(`ClusterIntegration|You must first install Helm Tiller before
+          installing the applications below`) }}
+      </div>
+      <application-row
+        :id="ingressId"
+        :logo-url="kubernetesLogo"
+        :title="applications.ingress.title"
+        :status="applications.ingress.status"
+        :status-reason="applications.ingress.statusReason"
+        :request-status="applications.ingress.requestStatus"
+        :request-reason="applications.ingress.requestReason"
+        :disabled="!helmInstalled"
+        title-link="https://kubernetes.io/docs/concepts/services-networking/ingress/"
+      >
+        <div slot="description">
+          <p>
+            {{ s__(`ClusterIntegration|Ingress gives you a way to route
+              requests to services based on the request host or path,
+              centralizing a number of services into a single entrypoint.`) }}
+          </p>
 
-            <template v-if="ingressInstalled">
-              <div class="form-group">
-                <label for="ingress-ip-address">
-                  {{ s__('ClusterIntegration|Ingress IP Address') }}
-                </label>
-                <div
-                  v-if="ingressExternalIp"
-                  class="input-group"
-                >
-                  <input
-                    id="ingress-ip-address"
-                    :value="ingressExternalIp"
-                    type="text"
-                    class="form-control js-ip-address"
-                    readonly
-                  />
-                  <span class="input-group-append">
-                    <clipboard-button
-                      :text="ingressExternalIp"
-                      :title="s__('ClusterIntegration|Copy Ingress IP Address to clipboard')"
-                      class="input-group-text js-clipboard-btn"
-                    />
-                  </span>
-                </div>
+          <template v-if="ingressInstalled">
+            <div class="form-group">
+              <label for="ingress-ip-address">
+                {{ s__('ClusterIntegration|Ingress IP Address') }}
+              </label>
+              <div
+                v-if="ingressExternalIp"
+                class="input-group"
+              >
                 <input
-                  v-else
+                  id="ingress-ip-address"
+                  :value="ingressExternalIp"
                   type="text"
                   class="form-control js-ip-address"
                   readonly
-                  value="?"
                 />
+                <span class="input-group-append">
+                  <clipboard-button
+                    :text="ingressExternalIp"
+                    :title="s__('ClusterIntegration|Copy Ingress IP Address to clipboard')"
+                    class="input-group-text js-clipboard-btn"
+                  />
+                </span>
               </div>
-
-              <p
-                v-if="!ingressExternalIp"
-                class="settings-message js-no-ip-message"
-              >
-                {{ s__(`ClusterIntegration|The IP address is in
-                the process of being assigned. Please check your Kubernetes
-                cluster or Quotas on Google Kubernetes Engine if it takes a long time.`) }}
-
-                <a
-                  :href="ingressHelpPath"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {{ __('More information') }}
-                </a>
-              </p>
-
-              <p>
-                {{ s__(`ClusterIntegration|Point a wildcard DNS to this
-                generated IP address in order to access
-                your application after it has been deployed.`) }}
-                <a
-                  :href="ingressDnsHelpPath"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {{ __('More information') }}
-                </a>
-              </p>
-
-            </template>
-            <div
-              v-else
-              v-html="ingressDescription"
-            >
+              <input
+                v-else
+                type="text"
+                class="form-control js-ip-address"
+                readonly
+                value="?"
+              />
             </div>
-          </div>
-        </application-row>
-        <application-row
-          id="prometheus"
-          :title="applications.prometheus.title"
-          :manage-link="managePrometheusPath"
-          :status="applications.prometheus.status"
-          :status-reason="applications.prometheus.statusReason"
-          :request-status="applications.prometheus.requestStatus"
-          :request-reason="applications.prometheus.requestReason"
-          title-link="https://prometheus.io/docs/introduction/overview/"
-        >
-          <div
-            slot="description"
-            v-html="prometheusDescription"
-          >
-          </div>
-        </application-row>
-        <application-row
-          id="runner"
-          :title="applications.runner.title"
-          :status="applications.runner.status"
-          :status-reason="applications.runner.statusReason"
-          :request-status="applications.runner.requestStatus"
-          :request-reason="applications.runner.requestReason"
-          title-link="https://docs.gitlab.com/runner/"
-        >
-          <div slot="description">
-            {{ s__(`ClusterIntegration|GitLab Runner connects to this
-              project's repository and executes CI/CD jobs,
-              pushing results back and deploying,
-              applications to production.`) }}
-          </div>
-        </application-row>
-        <application-row
-          id="jupyter"
-          :title="applications.jupyter.title"
-          :status="applications.jupyter.status"
-          :status-reason="applications.jupyter.statusReason"
-          :request-status="applications.jupyter.requestStatus"
-          :request-reason="applications.jupyter.requestReason"
-          :install-application-request-params="{ hostname: applications.jupyter.hostname }"
-          title-link="https://jupyterhub.readthedocs.io/en/stable/"
-        >
-          <div slot="description">
-            <p>
-              {{ s__(`ClusterIntegration|JupyterHub, a multi-user Hub, spawns,
-                manages, and proxies multiple instances of the single-user
-                Jupyter notebook server. JupyterHub can be used to serve
-                notebooks to a class of students, a corporate data science group,
-                or a scientific research group.`) }}
+
+            <p
+              v-if="!ingressExternalIp"
+              class="settings-message js-no-ip-message"
+            >
+              {{ s__(`ClusterIntegration|The IP address is in
+              the process of being assigned. Please check your Kubernetes
+              cluster or Quotas on Google Kubernetes Engine if it takes a long time.`) }}
+
+              <a
+                :href="ingressHelpPath"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {{ __('More information') }}
+              </a>
             </p>
 
-            <template v-if="ingressExternalIp">
-              <div class="form-group">
-                <label for="jupyter-hostname">
-                  {{ s__('ClusterIntegration|Jupyter Hostname') }}
-                </label>
+            <p>
+              {{ s__(`ClusterIntegration|Point a wildcard DNS to this
+              generated IP address in order to access
+              your application after it has been deployed.`) }}
+              <a
+                :href="ingressDnsHelpPath"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {{ __('More information') }}
+              </a>
+            </p>
 
-                <div class="input-group">
-                  <input
-                    v-model="applications.jupyter.hostname"
-                    :readonly="jupyterInstalled"
-                    type="text"
-                    class="form-control js-hostname"
-                  />
-                  <span
-                    class="input-group-btn"
-                  >
-                    <clipboard-button
-                      :text="jupyterHostname"
-                      :title="s__('ClusterIntegration|Copy Jupyter Hostname to clipboard')"
-                      class="js-clipboard-btn"
-                    />
-                  </span>
-                </div>
-              </div>
-              <p v-if="ingressInstalled">
-                {{ s__(`ClusterIntegration|Replace this with your own hostname if you want.
-                If you do so, point hostname to Ingress IP Address from above.`) }}
-                <a
-                  :href="ingressDnsHelpPath"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {{ __('More information') }}
-                </a>
-              </p>
-            </template>
+          </template>
+          <div
+            v-html="ingressDescription"
+          >
           </div>
-        </application-row>
-        <!--
-          NOTE: Don't forget to update `clusters.scss`
-          min-height for this block and uncomment `application_spec` tests
-        -->
-      </div>
+        </div>
+      </application-row>
+      <application-row
+        id="prometheus"
+        :logo-url="prometheusLogo"
+        :title="applications.prometheus.title"
+        :manage-link="managePrometheusPath"
+        :status="applications.prometheus.status"
+        :status-reason="applications.prometheus.statusReason"
+        :request-status="applications.prometheus.requestStatus"
+        :request-reason="applications.prometheus.requestReason"
+        :disabled="!helmInstalled"
+        title-link="https://prometheus.io/docs/introduction/overview/"
+      >
+        <div
+          slot="description"
+          v-html="prometheusDescription"
+        >
+        </div>
+      </application-row>
+      <application-row
+        id="runner"
+        :logo-url="gitlabLogo"
+        :title="applications.runner.title"
+        :status="applications.runner.status"
+        :status-reason="applications.runner.statusReason"
+        :request-status="applications.runner.requestStatus"
+        :request-reason="applications.runner.requestReason"
+        :disabled="!helmInstalled"
+        title-link="https://docs.gitlab.com/runner/"
+      >
+        <div slot="description">
+          {{ s__(`ClusterIntegration|GitLab Runner connects to this
+            project's repository and executes CI/CD jobs,
+            pushing results back and deploying,
+            applications to production.`) }}
+        </div>
+      </application-row>
+      <application-row
+        id="jupyter"
+        :logo-url="jupyterhubLogo"
+        :title="applications.jupyter.title"
+        :status="applications.jupyter.status"
+        :status-reason="applications.jupyter.statusReason"
+        :request-status="applications.jupyter.requestStatus"
+        :request-reason="applications.jupyter.requestReason"
+        :install-application-request-params="{ hostname: applications.jupyter.hostname }"
+        :disabled="!helmInstalled"
+        class="hide-bottom-border rounded-bottom"
+        title-link="https://jupyterhub.readthedocs.io/en/stable/"
+      >
+        <div slot="description">
+          <p>
+            {{ s__(`ClusterIntegration|JupyterHub, a multi-user Hub, spawns,
+              manages, and proxies multiple instances of the single-user
+              Jupyter notebook server. JupyterHub can be used to serve
+              notebooks to a class of students, a corporate data science group,
+              or a scientific research group.`) }}
+          </p>
+
+          <template v-if="ingressExternalIp">
+            <div class="form-group">
+              <label for="jupyter-hostname">
+                {{ s__('ClusterIntegration|Jupyter Hostname') }}
+              </label>
+
+              <div class="input-group">
+                <input
+                  v-model="applications.jupyter.hostname"
+                  :readonly="jupyterInstalled"
+                  type="text"
+                  class="form-control js-hostname"
+                />
+                <span
+                  class="input-group-btn"
+                >
+                  <clipboard-button
+                    :text="jupyterHostname"
+                    :title="s__('ClusterIntegration|Copy Jupyter Hostname to clipboard')"
+                    class="js-clipboard-btn"
+                  />
+                </span>
+              </div>
+            </div>
+            <p v-if="ingressInstalled">
+              {{ s__(`ClusterIntegration|Replace this with your own hostname if you want.
+              If you do so, point hostname to Ingress IP Address from above.`) }}
+              <a
+                :href="ingressDnsHelpPath"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {{ __('More information') }}
+              </a>
+            </p>
+          </template>
+        </div>
+      </application-row>
     </div>
   </section>
 </template>

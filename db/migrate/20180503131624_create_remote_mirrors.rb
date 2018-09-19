@@ -23,6 +23,7 @@ class CreateRemoteMirrors < ActiveRecord::Migration
       t.string :encrypted_credentials_iv
       t.string :encrypted_credentials_salt
 
+      # rubocop:disable Migration/Timestamps
       t.timestamps null: false
     end
   end

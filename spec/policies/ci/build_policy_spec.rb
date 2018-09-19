@@ -204,18 +204,18 @@ describe Ci::BuildPolicy do
         end
       end
 
-      context 'when a master erases a build' do
+      context 'when a maintainer erases a build' do
         before do
-          project.add_master(user)
+          project.add_maintainer(user)
         end
 
-        context 'when masters can push to the branch' do
+        context 'when maintainers can push to the branch' do
           before do
-            create(:protected_branch, :masters_can_push,
+            create(:protected_branch, :maintainers_can_push,
                    name: build.ref, project: project)
           end
 
-          context 'when the build was created by the master' do
+          context 'when the build was created by the maintainer' do
             let(:owner) { user }
 
             it { expect(policy).to be_allowed :erase_build }

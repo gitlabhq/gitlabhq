@@ -1,0 +1,5 @@
+---
+title: Ignore irrelevant sql commands in metrics
+merge_request: 21498
+author:
+type: other

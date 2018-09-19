@@ -9,11 +9,12 @@ describe 'Projects > Wiki > User previews markdown changes', :js do
 [relative link 1](../relative)
 [relative link 2](./relative)
 [relative link 3](./e/f/relative)
+[spaced link](title with spaces)
     HEREDOC
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
 
     sign_in(user)
 
@@ -42,6 +43,7 @@ describe 'Projects > Wiki > User previews markdown changes', :js do
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a/b/relative\">relative link 1</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a/b/c/relative\">relative link 2</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a/b/c/e/f/relative\">relative link 3</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/title%20with%20spaces\">spaced link</a>")
       end
     end
 
@@ -64,6 +66,7 @@ describe 'Projects > Wiki > User previews markdown changes', :js do
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/relative\">relative link 1</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/relative\">relative link 2</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/e/f/relative\">relative link 3</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/title%20with%20spaces\">spaced link</a>")
       end
     end
 
@@ -86,6 +89,7 @@ describe 'Projects > Wiki > User previews markdown changes', :js do
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/relative\">relative link 1</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/relative\">relative link 2</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/e/f/relative\">relative link 3</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/title%20with%20spaces\">spaced link</a>")
       end
     end
   end
@@ -119,6 +123,7 @@ describe 'Projects > Wiki > User previews markdown changes', :js do
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a/b/relative\">relative link 1</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a/b/c/relative\">relative link 2</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a/b/c/e/f/relative\">relative link 3</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/title%20with%20spaces\">spaced link</a>")
       end
     end
 
@@ -136,6 +141,7 @@ describe 'Projects > Wiki > User previews markdown changes', :js do
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/relative\">relative link 1</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/relative\">relative link 2</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/e/f/relative\">relative link 3</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/title%20with%20spaces\">spaced link</a>")
       end
     end
 
@@ -153,6 +159,35 @@ describe 'Projects > Wiki > User previews markdown changes', :js do
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/relative\">relative link 1</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/relative\">relative link 2</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/e/f/relative\">relative link 3</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/title%20with%20spaces\">spaced link</a>")
+      end
+    end
+
+    context 'when rendering the preview' do
+      it 'renders content with CommonMark' do
+        create_wiki_page 'a-page/b-page/c-page/common-mark'
+        click_link 'Edit'
+
+        fill_in :wiki_content, with: "1. one\n  - sublist\n"
+        click_on "Preview"
+
+        # the above generates two seperate lists (not embedded) in CommonMark
+        expect(page).to have_content("sublist")
+        expect(page).not_to have_xpath("//ol//li//ul")
+      end
+
+      it 'renders content with RedCarpet when legacy_render is set' do
+        wiki_page = create(:wiki_page,
+                           wiki: project.wiki,
+                           attrs: { title: 'home', content: "Empty content" })
+        visit(project_wiki_edit_path(project, wiki_page, legacy_render: 1))
+
+        fill_in :wiki_content, with: "1. one\n  - sublist\n"
+        click_on "Preview"
+
+        # the above generates a sublist list in RedCarpet
+        expect(page).to have_content("sublist")
+        expect(page).to have_xpath("//ol//li//ul")
       end
     end
   end

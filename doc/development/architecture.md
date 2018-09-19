@@ -70,7 +70,7 @@ The add-on component gitlab-shell serves repositories over SSH. It manages the S
 
 Gitaly executes git operations from gitlab-shell and the GitLab web app, and provides an API to the GitLab web app to get attributes from git (e.g. title, branches, tags, other meta data), and to get blobs (e.g. diffs, commits, files).
 
-You may also be interested in the [production architecture of GitLab.com](https://about.gitlab.com/handbook/infrastructure/production-architecture/).
+You may also be interested in the [production architecture of GitLab.com](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/).
 
 ### Installation Folder Summary
 
@@ -197,4 +197,4 @@ Note: It is recommended to log into the `git` user using `sudo -i -u git` or `su
 
 ## GitLab.com
 
-We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/handbook/infrastructure/production-architecture/) but this is probably over the top unless you have millions of users.
+We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/) but this is probably over the top unless you have millions of users.

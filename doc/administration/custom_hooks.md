@@ -1,7 +1,6 @@
 # Custom Git Hooks
 
->
-**Note:** Custom Git hooks must be configured on the filesystem of the GitLab
+> **Note:** Custom Git hooks must be configured on the filesystem of the GitLab
 server. Only GitLab server administrators will be able to complete these tasks.
 Please explore [webhooks] and [CI] as an option if you do not
 have filesystem access. For a user configurable Git hook interface, see

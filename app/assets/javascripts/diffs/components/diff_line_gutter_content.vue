@@ -13,6 +13,10 @@ export default {
     Icon,
   },
   props: {
+    line: {
+      type: Object,
+      required: true,
+    },
     fileHash: {
       type: String,
       required: true,
@@ -21,30 +25,15 @@ export default {
       type: String,
       required: true,
     },
-    lineType: {
-      type: String,
-      required: false,
-      default: '',
-    },
     lineNumber: {
       type: Number,
       required: false,
       default: 0,
     },
-    lineCode: {
-      type: String,
-      required: false,
-      default: '',
-    },
     linePosition: {
       type: String,
       required: false,
       default: '',
-    },
-    metaData: {
-      type: Object,
-      required: false,
-      default: () => ({}),
     },
     showCommentButton: {
       type: Boolean,
@@ -71,46 +60,46 @@ export default {
       required: false,
       default: false,
     },
+    isHover: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     ...mapState({
       diffViewType: state => state.diffs.diffViewType,
       diffFiles: state => state.diffs.diffFiles,
     }),
-    ...mapGetters(['isLoggedIn', 'discussionsByLineCode']),
+    ...mapGetters(['isLoggedIn']),
     lineHref() {
-      return this.lineCode ? `#${this.lineCode}` : '#';
+      return `#${this.line.lineCode || ''}`;
     },
     shouldShowCommentButton() {
       return (
         this.isLoggedIn &&
         this.showCommentButton &&
+        this.isHover &&
         !this.isMatchLine &&
         !this.isContextLine &&
-        !this.hasDiscussions &&
-        !this.isMetaLine
+        !this.isMetaLine &&
+        !this.hasDiscussions
       );
     },
-    discussions() {
-      return this.discussionsByLineCode[this.lineCode] || [];
-    },
     hasDiscussions() {
-      return this.discussions.length > 0;
+      return this.line.discussions && this.line.discussions.length > 0;
     },
     shouldShowAvatarsOnGutter() {
-      let render = this.hasDiscussions && this.showCommentButton;
-
-      if (!this.lineType && this.linePosition === LINE_POSITION_RIGHT) {
-        render = false;
+      if (!this.line.type && this.linePosition === LINE_POSITION_RIGHT) {
+        return false;
       }
-
-      return render;
+      return this.showCommentButton && this.hasDiscussions;
     },
   },
   methods: {
-    ...mapActions(['loadMoreLines', 'showCommentForm']),
+    ...mapActions('diffs', ['loadMoreLines', 'showCommentForm']),
     handleCommentButton() {
-      this.showCommentForm({ lineCode: this.lineCode });
+      this.showCommentForm({ lineCode: this.line.lineCode });
     },
     handleLoadMoreLines() {
       if (this.isRequesting) {
@@ -119,8 +108,8 @@ export default {
 
       this.isRequesting = true;
       const endpoint = this.contextLinesPath;
-      const oldLineNumber = this.metaData.oldPos || 0;
-      const newLineNumber = this.metaData.newPos || 0;
+      const oldLineNumber = this.line.metaData.oldPos || 0;
+      const newLineNumber = this.line.metaData.newPos || 0;
       const offset = newLineNumber - oldLineNumber;
       const bottom = this.isBottom;
       const { fileHash } = this;
@@ -176,7 +165,7 @@ export default {
       v-else
     >
       <button
-        v-show="shouldShowCommentButton"
+        v-if="shouldShowCommentButton"
         type="button"
         class="add-diff-note js-add-diff-note-button"
         title="Add a comment to this line"
@@ -195,7 +184,7 @@ export default {
       </a>
       <diff-gutter-avatars
         v-if="shouldShowAvatarsOnGutter"
-        :discussions="discussions"
+        :discussions="line.discussions"
       />
     </template>
   </div>

@@ -2,7 +2,7 @@ module Gitlab
   module Diff
     module FileCollection
       class Base
-        attr_reader :project, :diff_options, :diff_refs, :fallback_diff_refs
+        attr_reader :project, :diff_options, :diff_refs, :fallback_diff_refs, :diffable
 
         delegate :count, :size, :real_size, to: :diff_files
 
@@ -31,6 +31,14 @@ module Gitlab
 
         def diff_file_with_new_path(new_path)
           diff_files.find { |diff_file| diff_file.new_path == new_path }
+        end
+
+        def clear_cache
+          # No-op
+        end
+
+        def write_cache
+          # No-op
         end
 
         private

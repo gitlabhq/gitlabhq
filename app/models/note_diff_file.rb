@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NoteDiffFile < ActiveRecord::Base
   include DiffFile
 

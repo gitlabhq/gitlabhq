@@ -34,6 +34,11 @@ export default {
       type: String,
       required: true,
     },
+    markdownVersion: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -344,6 +349,7 @@ Please check your network connection and try again.`;
                 :markdown-preview-path="markdownPreviewPath"
                 :markdown-docs-path="markdownDocsPath"
                 :quick-actions-docs-path="quickActionsDocsPath"
+                :markdown-version="markdownVersion"
                 :add-spacing-classes="false">
                 <textarea
                   id="note-body"

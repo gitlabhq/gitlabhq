@@ -7,7 +7,7 @@ describe API::Labels do
   let!(:priority_label) { create(:label, title: 'bug', project: project, priority: 3) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe 'GET /projects/:id/labels' do
@@ -306,16 +306,16 @@ describe API::Labels do
     end
 
     it 'returns 400 for too long color code' do
-      post api("/projects/#{project.id}/labels", user),
-           name: 'Foo',
+      put api("/projects/#{project.id}/labels", user),
+           name: 'label1',
            color: '#FFAAFFFF'
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['message']['color']).to eq(['must be a valid color code'])
     end
 
     it 'returns 400 for invalid priority' do
-      post api("/projects/#{project.id}/labels", user),
-           name: 'Foo',
+      put api("/projects/#{project.id}/labels", user),
+           name: 'label1',
            priority: 'foo'
 
       expect(response).to have_gitlab_http_status(400)

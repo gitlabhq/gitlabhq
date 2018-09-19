@@ -109,6 +109,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           post :assign_related_issues
           get :discussions, format: :json
           post :rebase
+          get :test_reports
 
           scope constraints: { format: nil }, action: :show do
             get :commits, defaults: { tab: 'commits' }
@@ -144,7 +145,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      controller 'merge_requests/creations', path: 'merge_requests' do
+      scope path: 'merge_requests', controller: 'merge_requests/creations' do
         post '', action: :create, as: nil
 
         scope path: 'new', as: :new_merge_request do
@@ -301,12 +302,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do
         member do
-          get :test
+          post :test
         end
 
         resources :hook_logs, only: [:show] do
           member do
-            get :retry
+            post :retry
           end
         end
       end
@@ -441,7 +442,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resource :repository, only: [:show], controller: :repository do
           post :create_deploy_token, path: 'deploy_token/create'
         end
-        resources :badges, only: [:index]
       end
 
       # Since both wiki and repository routing contains wildcard characters

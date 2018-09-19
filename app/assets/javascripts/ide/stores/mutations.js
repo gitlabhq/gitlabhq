@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import * as types from './mutation_types';
 import projectMutations from './mutations/project';
 import mergeRequestMutation from './mutations/merge_request';
@@ -114,13 +115,20 @@ export default {
   },
   [types.SET_EMPTY_STATE_SVGS](
     state,
-    { emptyStateSvgPath, noChangesStateSvgPath, committedStateSvgPath, pipelinesEmptyStateSvgPath },
+    {
+      emptyStateSvgPath,
+      noChangesStateSvgPath,
+      committedStateSvgPath,
+      pipelinesEmptyStateSvgPath,
+      promotionSvgPath,
+    },
   ) {
     Object.assign(state, {
       emptyStateSvgPath,
       noChangesStateSvgPath,
       committedStateSvgPath,
       pipelinesEmptyStateSvgPath,
+      promotionSvgPath,
     });
   },
   [types.TOGGLE_FILE_FINDER](state, fileFindVisible) {
@@ -130,19 +138,28 @@ export default {
   },
   [types.UPDATE_FILE_AFTER_COMMIT](state, { file, lastCommit }) {
     const changedFile = state.changedFiles.find(f => f.path === file.path);
+    const { prevPath } = file;
 
     Object.assign(state.entries[file.path], {
       raw: file.content,
       changed: !!changedFile,
       staged: false,
-      lastCommit: Object.assign(state.entries[file.path].lastCommit, {
-        id: lastCommit.commit.id,
-        url: lastCommit.commit_path,
-        message: lastCommit.commit.message,
-        author: lastCommit.commit.author_name,
-        updatedAt: lastCommit.commit.authored_date,
-      }),
+      prevPath: '',
+      moved: false,
+      lastCommitSha: lastCommit.commit.id,
     });
+
+    if (prevPath) {
+      // Update URLs after file has moved
+      const regex = new RegExp(`${prevPath}$`);
+
+      Object.assign(state.entries[file.path], {
+        rawPath: file.rawPath.replace(regex, file.path),
+        permalink: file.permalink.replace(regex, file.path),
+        commitsPath: file.commitsPath.replace(regex, file.path),
+        blamePath: file.blamePath.replace(regex, file.path),
+      });
+    }
   },
   [types.BURST_UNUSED_SEAL](state) {
     Object.assign(state, {
@@ -165,6 +182,84 @@ export default {
   },
   [types.SET_ERROR_MESSAGE](state, errorMessage) {
     Object.assign(state, { errorMessage });
+  },
+  [types.OPEN_NEW_ENTRY_MODAL](state, { type, path }) {
+    Object.assign(state, {
+      entryModal: {
+        type,
+        path,
+        entry: { ...state.entries[path] },
+      },
+    });
+  },
+  [types.DELETE_ENTRY](state, path) {
+    const entry = state.entries[path];
+    const { tempFile = false } = entry;
+    const parent = entry.parentPath
+      ? state.entries[entry.parentPath]
+      : state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
+
+    entry.deleted = true;
+
+    parent.tree = parent.tree.filter(f => f.path !== entry.path);
+
+    if (entry.type === 'blob') {
+      if (tempFile) {
+        state.changedFiles = state.changedFiles.filter(f => f.path !== path);
+      } else {
+        state.changedFiles = state.changedFiles.concat(entry);
+      }
+    }
+  },
+  [types.RENAME_ENTRY](state, { path, name, entryPath = null }) {
+    const oldEntry = state.entries[entryPath || path];
+    const nameRegex =
+      !entryPath && oldEntry.type === 'blob'
+        ? new RegExp(`${oldEntry.name}$`)
+        : new RegExp(`^${path}`);
+    const newPath = oldEntry.path.replace(nameRegex, name);
+    const parentPath = oldEntry.parentPath ? oldEntry.parentPath.replace(nameRegex, name) : '';
+
+    state.entries[newPath] = {
+      ...oldEntry,
+      id: newPath,
+      key: `${name}-${oldEntry.type}-${oldEntry.id}`,
+      path: newPath,
+      name: entryPath ? oldEntry.name : name,
+      tempFile: true,
+      prevPath: oldEntry.tempFile ? null : oldEntry.path,
+      url: oldEntry.url.replace(new RegExp(`${oldEntry.path}/?$`), newPath),
+      tree: [],
+      parentPath,
+      raw: '',
+    };
+    oldEntry.moved = true;
+    oldEntry.movedPath = newPath;
+
+    const parent = parentPath
+      ? state.entries[parentPath]
+      : state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
+    const newEntry = state.entries[newPath];
+
+    parent.tree = sortTree(parent.tree.concat(newEntry));
+
+    if (newEntry.type === 'blob') {
+      state.changedFiles = state.changedFiles.concat(newEntry);
+    }
+
+    if (state.entries[newPath].opened) {
+      state.openFiles.push(state.entries[newPath]);
+    }
+
+    if (oldEntry.tempFile) {
+      const filterMethod = f => f.path !== oldEntry.path;
+
+      state.openFiles = state.openFiles.filter(filterMethod);
+      state.changedFiles = state.changedFiles.filter(filterMethod);
+      parent.tree = parent.tree.filter(filterMethod);
+
+      Vue.delete(state.entries, oldEntry.path);
+    }
   },
   ...projectMutations,
   ...mergeRequestMutation,

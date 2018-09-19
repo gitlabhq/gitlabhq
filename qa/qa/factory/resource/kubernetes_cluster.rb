@@ -36,15 +36,19 @@ module QA
 
           if @install_helm_tiller
             Page::Project::Operations::Kubernetes::Show.perform do |page|
+              # We must wait a few seconds for permissions to be set up correctly for new cluster
+              sleep 10
+
               # Helm must be installed before everything else
               page.install!(:helm)
               page.await_installed(:helm)
 
               page.install!(:ingress) if @install_ingress
-              page.await_installed(:ingress) if @install_ingress
               page.install!(:prometheus) if @install_prometheus
-              page.await_installed(:prometheus) if @install_prometheus
               page.install!(:runner) if @install_runner
+
+              page.await_installed(:ingress) if @install_ingress
+              page.await_installed(:prometheus) if @install_prometheus
               page.await_installed(:runner) if @install_runner
             end
           end

@@ -1,15 +1,19 @@
-import { __ } from '../../../locale';
+import flash from '~/flash';
+import { __ } from '~/locale';
 import service from '../../services';
 import * as types from '../mutation_types';
+import { activityBarViews } from '../../constants';
 
 export const getMergeRequestData = (
   { commit, dispatch, state },
-  { projectId, mergeRequestId, force = false } = {},
+  { projectId, mergeRequestId, targetProjectId = null, force = false } = {},
 ) =>
   new Promise((resolve, reject) => {
     if (!state.projects[projectId].mergeRequests[mergeRequestId] || force) {
       service
-        .getProjectMergeRequestData(projectId, mergeRequestId, { render_html: true })
+        .getProjectMergeRequestData(targetProjectId || projectId, mergeRequestId, {
+          render_html: true,
+        })
         .then(({ data }) => {
           commit(types.SET_MERGE_REQUEST, {
             projectPath: projectId,
@@ -38,12 +42,12 @@ export const getMergeRequestData = (
 
 export const getMergeRequestChanges = (
   { commit, dispatch, state },
-  { projectId, mergeRequestId, force = false } = {},
+  { projectId, mergeRequestId, targetProjectId = null, force = false } = {},
 ) =>
   new Promise((resolve, reject) => {
     if (!state.projects[projectId].mergeRequests[mergeRequestId].changes.length || force) {
       service
-        .getProjectMergeRequestChanges(projectId, mergeRequestId)
+        .getProjectMergeRequestChanges(targetProjectId || projectId, mergeRequestId)
         .then(({ data }) => {
           commit(types.SET_MERGE_REQUEST_CHANGES, {
             projectPath: projectId,
@@ -71,12 +75,12 @@ export const getMergeRequestChanges = (
 
 export const getMergeRequestVersions = (
   { commit, dispatch, state },
-  { projectId, mergeRequestId, force = false } = {},
+  { projectId, mergeRequestId, targetProjectId = null, force = false } = {},
 ) =>
   new Promise((resolve, reject) => {
     if (!state.projects[projectId].mergeRequests[mergeRequestId].versions.length || force) {
       service
-        .getProjectMergeRequestVersions(projectId, mergeRequestId)
+        .getProjectMergeRequestVersions(targetProjectId || projectId, mergeRequestId)
         .then(res => res.data)
         .then(data => {
           commit(types.SET_MERGE_REQUEST_VERSIONS, {
@@ -101,4 +105,68 @@ export const getMergeRequestVersions = (
     } else {
       resolve(state.projects[projectId].mergeRequests[mergeRequestId].versions);
     }
+  });
+
+export const openMergeRequest = (
+  { dispatch, state },
+  { projectId, targetProjectId, mergeRequestId } = {},
+) =>
+  dispatch('getMergeRequestData', {
+    projectId,
+    targetProjectId,
+    mergeRequestId,
+  })
+  .then(mr => {
+    dispatch('setCurrentBranchId', mr.source_branch);
+
+    dispatch('getBranchData', {
+      projectId,
+      branchId: mr.source_branch,
+    });
+
+    return dispatch('getFiles', {
+      projectId,
+      branchId: mr.source_branch,
+    });
+  })
+  .then(() =>
+    dispatch('getMergeRequestVersions', {
+      projectId,
+      targetProjectId,
+      mergeRequestId,
+    }),
+  )
+  .then(() =>
+    dispatch('getMergeRequestChanges', {
+      projectId,
+      targetProjectId,
+      mergeRequestId,
+    }),
+  )
+  .then(mrChanges => {
+    if (mrChanges.changes.length) {
+      dispatch('updateActivityBarView', activityBarViews.review);
+    }
+
+    mrChanges.changes.forEach((change, ind) => {
+      const changeTreeEntry = state.entries[change.new_path];
+
+      if (changeTreeEntry) {
+        dispatch('setFileMrChange', {
+          file: changeTreeEntry,
+          mrChange: change,
+        });
+
+        if (ind < 10) {
+          dispatch('getFileData', {
+            path: change.new_path,
+            makeFileActive: ind === 0,
+          });
+        }
+      }
+    });
+  })
+  .catch(e => {
+    flash(__('Error while loading the merge request. Please try again.'));
+    throw e;
   });

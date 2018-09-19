@@ -25,6 +25,7 @@ describe API::Settings, 'Settings' do
       expect(json_response['ed25519_key_restriction']).to eq(0)
       expect(json_response['circuitbreaker_failure_count_threshold']).not_to be_nil
       expect(json_response['performance_bar_allowed_group_id']).to be_nil
+      expect(json_response['instance_statistics_visibility_private']).to be(false)
       expect(json_response).not_to have_key('performance_bar_allowed_group_path')
       expect(json_response).not_to have_key('performance_bar_enabled')
     end
@@ -64,7 +65,8 @@ describe API::Settings, 'Settings' do
           circuitbreaker_check_interval: 2,
           enforce_terms: true,
           terms: 'Hello world!',
-          performance_bar_allowed_group_path: group.full_path
+          performance_bar_allowed_group_path: group.full_path,
+          instance_statistics_visibility_private: true
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['default_projects_limit']).to eq(3)
@@ -89,6 +91,7 @@ describe API::Settings, 'Settings' do
         expect(json_response['enforce_terms']).to be(true)
         expect(json_response['terms']).to eq('Hello world!')
         expect(json_response['performance_bar_allowed_group_id']).to eq(group.id)
+        expect(json_response['instance_statistics_visibility_private']).to be(true)
       end
     end
 

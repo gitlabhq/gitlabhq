@@ -1,0 +1,5 @@
+---
+title: Expose user's id in /admin/users/ show page
+merge_request:
+author: Eva Kadlecova
+type: changed

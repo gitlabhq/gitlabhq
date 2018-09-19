@@ -30,7 +30,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
     end
 
     @members = @members.page(params[:page]).per(50)
-    @members = present_members(@members.includes(:user))
+    @members = present_members(@members)
 
     @requesters = present_members(
       AccessRequestsFinder.new(@group).execute(current_user))

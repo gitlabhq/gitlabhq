@@ -1,8 +1,0 @@
----
-title: Improves performance of mr code, by fixing the state being mutated outside
-  of the store in the util function trimFirstCharOfLineContent and in map operations.
-  Avoids map operation in an empty array. Adds specs to the trimFirstCharOfLineContent
-  function
-merge_request: 20380
-author: filipa
-type: performance

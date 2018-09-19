@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class Stage < ActiveRecord::Base
     extend Gitlab::Ci::Model

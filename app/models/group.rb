@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'carrierwave/orm/activerecord'
 
 class Group < Namespace
@@ -82,12 +84,6 @@ class Group < Namespace
 
     def visible_to_user(user)
       where(id: user.authorized_groups.select(:id).reorder(nil))
-    end
-
-    def public_or_visible_to_user(user)
-      where('id IN (?) OR namespaces.visibility_level IN (?)',
-        user.authorized_groups.select(:id),
-        Gitlab::VisibilityLevel.levels_for_user(user))
     end
 
     def select_for_project_authorization
@@ -186,9 +182,12 @@ class Group < Namespace
     add_user(user, :developer, current_user: current_user)
   end
 
-  def add_master(user, current_user = nil)
-    add_user(user, :master, current_user: current_user)
+  def add_maintainer(user, current_user = nil)
+    add_user(user, :maintainer, current_user: current_user)
   end
+
+  # @deprecated
+  alias_method :add_master, :add_maintainer
 
   def add_owner(user, current_user = nil)
     add_user(user, :owner, current_user: current_user)
@@ -206,11 +205,14 @@ class Group < Namespace
     members_with_parents.owners.where(user_id: user).any?
   end
 
-  def has_master?(user)
+  def has_maintainer?(user)
     return false unless user
 
-    members_with_parents.masters.where(user_id: user).any?
+    members_with_parents.maintainers.where(user_id: user).any?
   end
+
+  # @deprecated
+  alias_method :has_master?, :has_maintainer?
 
   # Check if user is a last owner of the group.
   # Parent owners are ignored for nested groups.
@@ -234,14 +236,18 @@ class Group < Namespace
     system_hook_service.execute_hooks_for(self, :destroy)
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def system_hook_service
     SystemHooksService.new
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
+  # rubocop: disable CodeReuse/ServiceClass
   def refresh_members_authorized_projects(blocking: true)
     UserProjectAccessChangedService.new(user_ids_for_project_authorizations)
       .execute(blocking: blocking)
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def user_ids_for_project_authorizations
     members_with_parents.pluck(:user_id)
@@ -298,14 +304,12 @@ class Group < Namespace
   # 3. They belong to a sub-group or project in such sub-group
   # 4. They belong to an ancestor group
   def direct_and_indirect_users
-    union = Gitlab::SQL::Union.new([
+    User.from_union([
       User
         .where(id: direct_and_indirect_members.select(:user_id))
         .reorder(nil),
       project_users_with_descendants
     ])
-
-    User.from("(#{union.to_sql}) #{User.table_name}")
   end
 
   # Returns all users that are members of projects

@@ -2,10 +2,8 @@
 comments: false
 ---
 
-DANGER: This guide exists for reference of how an AWS deployment could work.
-We are currently seeing very slow EFS access performance which causes GitLab to
-be 5-10x slower than using NFS or Local disk. We _do not_ recommend follow this
-guide at this time.
+> **Note**: We **do not** recommend using the AWS Elastic File System (EFS), as it can result
+in [significantly degraded performance](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/administration/high_availability/nfs.md#aws-elastic-file-system).
 
 # High Availability on AWS
 
@@ -32,7 +30,7 @@ we'll be using to configure our cloud infrastructure.
 
 ### Reference Architecture
 
-![Reference Architecture](img/reference-arch.png)
+![Reference Architecture](img/reference-arch2.png)
 
 ***
 
@@ -397,5 +395,5 @@ some redundancy options but it might also imply Geographic replication.
 There is a lot of ground yet to cover so have a read through these other
 resources and feel free to open an issue to request additional material.
 
- * [GitLab High Availability](http://docs.gitlab.com/ce/administration/high_availability/README.html#sts=High Availability)
- * [GitLab Geo](http://docs.gitlab.com/ee/gitlab-geo/README.html)  
+* [GitLab High Availability](http://docs.gitlab.com/ce/administration/high_availability/README.html#sts=High%20Availability)
+* [GitLab Geo](http://docs.gitlab.com/ee/gitlab-geo/README.html)  

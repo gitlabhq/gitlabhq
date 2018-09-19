@@ -1,10 +1,13 @@
 // These need to match what is returned from the server
-export const APPLICATION_NOT_INSTALLABLE = 'not_installable';
-export const APPLICATION_INSTALLABLE = 'installable';
-export const APPLICATION_SCHEDULED = 'scheduled';
-export const APPLICATION_INSTALLING = 'installing';
-export const APPLICATION_INSTALLED = 'installed';
-export const APPLICATION_ERROR = 'errored';
+export const APPLICATION_STATUS = {
+  NOT_INSTALLABLE: 'not_installable',
+  INSTALLABLE: 'installable',
+  SCHEDULED: 'scheduled',
+  INSTALLING: 'installing',
+  INSTALLED: 'installed',
+  UPDATED: 'updated',
+  ERROR: 'errored',
+};
 
 // These are only used client-side
 export const REQUEST_LOADING = 'request-loading';

@@ -13,6 +13,7 @@ describe('ideStatusBar', () => {
 
     store.state.currentProjectId = 'abcproject';
     store.state.projects.abcproject = projectData;
+    store.state.currentBranchId = 'master';
 
     vm = createComponentWithStore(Component, store).$mount();
   });
@@ -58,6 +59,31 @@ describe('ideStatusBar', () => {
   describe('getCommitPath', () => {
     it('returns the path to the commit details', () => {
       expect(vm.getCommitPath('abc123de')).toBe('/commit/abc123de');
+    });
+  });
+
+  describe('pipeline status', () => {
+    it('opens right sidebar on clicking icon', done => {
+      spyOn(vm, 'setRightPane');
+      Vue.set(vm.$store.state.pipelines, 'latestPipeline', {
+        details: {
+          status: {
+            text: 'success',
+            details_path: 'test',
+            icon: 'status_success',
+          },
+        },
+      });
+
+      vm
+        .$nextTick()
+        .then(() => {
+          vm.$el.querySelector('.ide-status-pipeline button').click();
+
+          expect(vm.setRightPane).toHaveBeenCalledWith('pipelines-list');
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 });

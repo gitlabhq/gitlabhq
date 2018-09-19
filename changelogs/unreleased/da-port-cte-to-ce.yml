@@ -1,5 +1,0 @@
----
-title: Add Gitlab::SQL:CTE for easily building CTE statements
-merge_request:
-author:
-type: added

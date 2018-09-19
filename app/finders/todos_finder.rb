@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # TodosFinder
 #
 # Used to filter Todos by set of params
@@ -39,7 +41,6 @@ class TodosFinder
     # Filtering by project HAS TO be the last because we use
     # the project IDs yielded by the todos query thus far
     items = by_project(items)
-    items = visible_to_user(items)
 
     sort(items)
   end
@@ -96,10 +97,6 @@ class TodosFinder
       @project = Project.find(params[:project_id])
 
       @project = nil if @project.pending_delete?
-
-      unless Ability.allowed?(current_user, :read_project, @project)
-        @project = nil
-      end
     else
       @project = nil
     end
@@ -125,6 +122,7 @@ class TodosFinder
     params[:sort] ? items.sort_by_attribute(params[:sort]) : items.order_id_desc
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_action(items)
     if action?
       items = items.where(action: to_action_id)
@@ -132,7 +130,9 @@ class TodosFinder
 
     items
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_action_id(items)
     if action_id?
       items = items.where(action: action_id)
@@ -140,7 +140,9 @@ class TodosFinder
 
     items
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_author(items)
     if author?
       items = items.where(author_id: author.try(:id))
@@ -148,7 +150,9 @@ class TodosFinder
 
     items
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_project(items)
     if project?
       items = items.where(project: project)
@@ -156,33 +160,19 @@ class TodosFinder
 
     items
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_group(items)
-    if group?
-      groups = group.self_and_descendants
-      items = items.where(
-        'project_id IN (?) OR group_id IN (?)',
-        Project.where(group: groups).select(:id),
-        groups.select(:id)
-      )
-    end
+    return items unless group?
 
-    items
+    groups = group.self_and_descendants
+    project_todos = items.where(project_id: Project.where(group: groups).select(:id))
+    group_todos = items.where(group_id: groups.select(:id))
+
+    Todo.from_union([project_todos, group_todos])
   end
-
-  def visible_to_user(items)
-    projects = Project.public_or_visible_to_user(current_user)
-    groups = Group.public_or_visible_to_user(current_user)
-
-    items
-      .joins('LEFT JOIN namespaces ON namespaces.id = todos.group_id')
-      .joins('LEFT JOIN projects ON projects.id = todos.project_id')
-      .where(
-        'project_id IN (?) OR group_id IN (?)',
-        projects.select(:id),
-        groups.select(:id)
-      )
-  end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def by_state(items)
     case params[:state].to_s
@@ -193,6 +183,7 @@ class TodosFinder
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_type(items)
     if type?
       items = items.where(target_type: type)
@@ -200,4 +191,5 @@ class TodosFinder
 
     items
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

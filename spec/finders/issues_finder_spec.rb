@@ -26,7 +26,7 @@ describe IssuesFinder do
     let(:issues) { described_class.new(search_user, params.reverse_merge(scope: scope, state: 'opened')).execute }
 
     before(:context) do
-      project1.add_master(user)
+      project1.add_maintainer(user)
       project2.add_developer(user)
       project2.add_developer(user2)
       project3.add_developer(user)

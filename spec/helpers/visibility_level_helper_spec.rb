@@ -6,6 +6,29 @@ describe VisibilityLevelHelper do
   let(:personal_snippet) { build(:personal_snippet) }
   let(:project_snippet)  { build(:project_snippet) }
 
+  describe 'visibility_icon_description' do
+    context 'used with a Project' do
+      it 'delegates projects to #project_visibility_icon_description' do
+        expect(visibility_icon_description(project))
+          .to match /project/i
+      end
+
+      context 'used with a ProjectPresenter' do
+        it 'delegates projects to #project_visibility_icon_description' do
+          expect(visibility_icon_description(project.present))
+            .to match /project/i
+        end
+      end
+
+      context 'used with a Group' do
+        it 'delegates groups to #group_visibility_icon_description' do
+          expect(visibility_icon_description(group))
+            .to match /group/i
+        end
+      end
+    end
+  end
+
   describe 'visibility_level_description' do
     context 'used with a Project' do
       it 'delegates projects to #project_visibility_level_description' do

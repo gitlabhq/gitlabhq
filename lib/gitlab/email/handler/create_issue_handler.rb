@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'gitlab/email/handler/base_handler'
 
 module Gitlab
@@ -28,16 +30,14 @@ module Gitlab
             record_name: 'issue')
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def author
           @author ||= User.find_by(incoming_email_token: incoming_email_token)
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def project
           @project ||= Project.find_by_full_path(project_path)
-        end
-
-        def metrics_params
-          super.merge(project: project&.full_path)
         end
 
         private

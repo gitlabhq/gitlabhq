@@ -3,14 +3,14 @@ import jobComponent from '~/pipelines/components/graph/job_component.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('pipeline graph job component', () => {
-  let JobComponent;
+  const JobComponent = Vue.extend(jobComponent);
   let component;
 
   const mockJob = {
     id: 4256,
     name: 'test',
     status: {
-      icon: 'icon_status_success',
+      icon: 'status_success',
       text: 'passed',
       label: 'passed',
       tooltip: 'passed',
@@ -25,10 +25,6 @@ describe('pipeline graph job component', () => {
       },
     },
   };
-
-  beforeEach(() => {
-    JobComponent = Vue.extend(jobComponent);
-  });
 
   afterEach(() => {
     component.$destroy();
@@ -65,7 +61,7 @@ describe('pipeline graph job component', () => {
           id: 4257,
           name: 'test',
           status: {
-            icon: 'icon_status_success',
+            icon: 'status_success',
             text: 'passed',
             label: 'passed',
             group: 'success',
@@ -111,7 +107,7 @@ describe('pipeline graph job component', () => {
           id: 4258,
           name: 'test',
           status: {
-            icon: 'icon_status_success',
+            icon: 'status_success',
           },
         },
       });
@@ -125,7 +121,7 @@ describe('pipeline graph job component', () => {
           id: 4259,
           name: 'test',
           status: {
-            icon: 'icon_status_success',
+            icon: 'status_success',
             label: 'success',
             tooltip: 'success',
           },

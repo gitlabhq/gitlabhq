@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MergeRequests
   class ReloadDiffsService
     def initialize(merge_request, current_user)
@@ -25,10 +27,11 @@ module MergeRequests
                                                      current_user: current_user)
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def clear_cache(new_diff)
       # Executing the iteration we cache highlighted diffs for each diff file of
       # MergeRequestDiff.
-      new_diff.diffs_collection.diff_files.to_a
+      new_diff.diffs_collection.write_cache
 
       # Remove cache for all diffs on this MR. Do not use the association on the
       # model, as that will interfere with other actions happening when
@@ -36,8 +39,9 @@ module MergeRequests
       MergeRequestDiff.where(merge_request: merge_request).each do |merge_request_diff|
         next if merge_request_diff == new_diff
 
-        merge_request_diff.diffs_collection.clear_cache!
+        merge_request_diff.diffs_collection.clear_cache
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

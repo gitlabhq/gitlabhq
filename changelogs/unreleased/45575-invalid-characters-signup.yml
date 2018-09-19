@@ -1,5 +1,0 @@
----
-title: 'Fix username validation order on signup, resolves #45575'
-merge_request: 19610
-author: Jan Beckmann
-type: fixed

@@ -60,6 +60,20 @@ shared_examples_for 'AtomicInternalId' do |validate_presence: true|
 
         expect { subject }.not_to change { instance.public_send(internal_id_attribute) }
       end
+
+      context 'when the instance has an internal ID set' do
+        let(:internal_id) { 9001 }
+
+        it 'calls InternalId.update_last_value and sets the `last_value` to that of the instance' do
+          instance.send("#{internal_id_attribute}=", internal_id)
+
+          expect(InternalId)
+            .to receive(:track_greatest)
+            .with(instance, scope_attrs, usage, internal_id, any_args)
+            .and_return(internal_id)
+          subject
+        end
+      end
     end
   end
 end

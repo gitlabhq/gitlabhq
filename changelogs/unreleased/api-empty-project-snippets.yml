@@ -1,0 +1,5 @@
+---
+title: 'API: Catch empty code content for project snippets'
+merge_request: 21325
+author: Robert Schilling
+type: fixed

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A note on the root of an issue, merge request, commit, or snippet.
 #
 # A note of this type is never resolvable.
@@ -15,6 +17,7 @@ class Note < ActiveRecord::Base
   include Editable
   include Gitlab::SQL::Pattern
   include ThrottledTouch
+  include FromUnion
 
   module SpecialRole
     FIRST_TIME_CONTRIBUTOR = :first_time_contributor
@@ -101,7 +104,7 @@ class Note < ActiveRecord::Base
   scope :inc_author_project, -> { includes(:project, :author) }
   scope :inc_author, -> { includes(:author) }
   scope :inc_relations_for_view, -> do
-    includes(:project, :author, :updated_by, :resolved_by, :award_emoji,
+    includes(:project, { author: :status }, :updated_by, :resolved_by, :award_emoji,
              :system_note_metadata, :note_diff_file)
   end
 
@@ -179,6 +182,7 @@ class Note < ActiveRecord::Base
     end
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def cross_reference?
     return unless system?
 
@@ -188,6 +192,7 @@ class Note < ActiveRecord::Base
       SystemNoteService.cross_reference?(note)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def diff_note?
     false
@@ -202,7 +207,7 @@ class Note < ActiveRecord::Base
   end
 
   def hook_attrs
-    attributes
+    Gitlab::HookData::NoteBuilder.new(self).build
   end
 
   def for_commit?
@@ -387,18 +392,7 @@ class Note < ActiveRecord::Base
   end
 
   def expire_etag_cache
-    return unless noteable&.discussions_rendered_on_frontend?
-    return unless noteable&.etag_caching_enabled?
-
-    Gitlab::EtagCaching::Store.new.touch(etag_key)
-  end
-
-  def etag_key
-    Gitlab::Routing.url_helpers.project_noteable_notes_path(
-      project,
-      target_type: noteable_type.underscore,
-      target_id: noteable_id
-    )
+    noteable&.expire_note_etag_cache
   end
 
   def touch(*args)

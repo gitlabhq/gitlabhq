@@ -30,7 +30,7 @@ describe Gitlab::ImportExport::UploadsSaver do
       it 'copies the uploads to the export path' do
         saver.save
 
-        uploads = Dir.glob(File.join(saver.uploads_export_path, '**/*')).map { |file| File.basename(file) }
+        uploads = Dir.glob(File.join(shared.export_path, 'uploads/**/*')).map { |file| File.basename(file) }
 
         expect(uploads).to include('banana_sample.gif')
       end
@@ -52,7 +52,7 @@ describe Gitlab::ImportExport::UploadsSaver do
       it 'copies the uploads to the export path' do
         saver.save
 
-        uploads = Dir.glob(File.join(saver.uploads_export_path, '**/*')).map { |file| File.basename(file) }
+        uploads = Dir.glob(File.join(shared.export_path, 'uploads/**/*')).map { |file| File.basename(file) }
 
         expect(uploads).to include('banana_sample.gif')
       end

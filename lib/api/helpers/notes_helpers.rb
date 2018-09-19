@@ -92,10 +92,9 @@ module API
 
         parent = noteable_parent(noteable)
 
-        if opts[:created_at]
-          opts.delete(:created_at) unless
-            current_user.admin? || parent.owned_by?(current_user)
-        end
+        opts.delete(:created_at) unless current_user.can?(:set_note_created_at, policy_object)
+
+        opts[:updated_at] = opts[:created_at] if opts[:created_at]
 
         project = parent if parent.is_a?(Project)
         ::Notes::CreateService.new(project, current_user, opts).execute

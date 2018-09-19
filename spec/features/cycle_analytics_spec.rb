@@ -12,7 +12,7 @@ describe 'Cycle Analytics', :js do
   context 'as an allowed user' do
     context 'when project is new' do
       before  do
-        project.add_master(user)
+        project.add_maintainer(user)
 
         sign_in(user)
 
@@ -39,7 +39,7 @@ describe 'Cycle Analytics', :js do
     context "when there's cycle analytics data" do
       before do
         allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return([issue])
-        project.add_master(user)
+        project.add_maintainer(user)
 
         @build = create_cycle(user, project, issue, mr, milestone, pipeline)
         deploy_master(user, project)
@@ -95,7 +95,7 @@ describe 'Cycle Analytics', :js do
       before do
         user.update_attribute(:preferred_language, 'es')
 
-        project.add_master(user)
+        project.add_maintainer(user)
         sign_in(user)
         visit project_cycle_analytics_path(project)
         wait_for_requests

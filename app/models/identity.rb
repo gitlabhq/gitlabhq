@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Identity < ActiveRecord::Base
   def self.uniqueness_scope
     :provider

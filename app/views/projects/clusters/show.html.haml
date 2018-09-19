@@ -23,7 +23,8 @@
   .js-cluster-application-notice
     .flash-container
 
-  %section.settings.no-animate.expanded#cluster-integration
+  %section#cluster-integration
+    %h4= @cluster.name
     = render 'banner'
     = render 'integration_form'
 

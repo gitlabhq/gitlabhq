@@ -85,7 +85,7 @@ describe RemoteMirror do
 
         expect(RepositoryRemoveRemoteWorker).to receive(:perform_async).with(mirror.project.id, mirror.remote_name).and_call_original
 
-        mirror.update_attributes(url: 'http://test.com')
+        mirror.update(url: 'http://test.com')
       end
     end
   end
@@ -167,7 +167,7 @@ describe RemoteMirror do
 
     context 'with remote mirroring disabled' do
       it 'returns nil' do
-        remote_mirror.update_attributes(enabled: false)
+        remote_mirror.update(enabled: false)
 
         expect(remote_mirror.sync).to be_nil
       end
@@ -220,6 +220,18 @@ describe RemoteMirror do
     end
   end
 
+  context '#ensure_remote!' do
+    let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
+
+    it 'adds a remote multiple times with no errors' do
+      expect(remote_mirror.project.repository).to receive(:add_remote).with(remote_mirror.remote_name, remote_mirror.url).twice.and_call_original
+
+      2.times do
+        remote_mirror.ensure_remote!
+      end
+    end
+  end
+
   context '#updated_since?' do
     let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
     let(:timestamp) { Time.now - 5.minutes }
@@ -229,7 +241,7 @@ describe RemoteMirror do
     end
 
     before do
-      remote_mirror.update_attributes(last_update_started_at: Time.now)
+      remote_mirror.update(last_update_started_at: Time.now)
     end
 
     context 'when remote mirror does not have status failed' do
@@ -244,7 +256,7 @@ describe RemoteMirror do
 
     context 'when remote mirror has status failed' do
       it 'returns false when last update started after the timestamp' do
-        remote_mirror.update_attributes(update_status: 'failed')
+        remote_mirror.update(update_status: 'failed')
 
         expect(remote_mirror.updated_since?(timestamp)).to be false
       end

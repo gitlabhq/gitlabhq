@@ -166,7 +166,7 @@ describe ProjectsController do
       User.project_views.keys.each do |project_view|
         context "with #{project_view} view set" do
           before do
-            user.update_attributes(project_view: project_view)
+            user.update(project_view: project_view)
 
             get :show, namespace_id: empty_project.namespace, id: empty_project
           end
@@ -188,7 +188,7 @@ describe ProjectsController do
       User.project_views.keys.each do |project_view|
         context "with #{project_view} view set" do
           before do
-            user.update_attributes(project_view: project_view)
+            user.update(project_view: project_view)
 
             get :show, namespace_id: empty_project.namespace, id: empty_project
           end
@@ -281,6 +281,19 @@ describe ProjectsController do
         expect { get(:show, namespace_id: public_project.namespace, id: public_project) }
           .not_to exceed_query_limit(1).for_query(expected_query)
       end
+    end
+  end
+
+  describe 'GET edit' do
+    it 'sets the badge API endpoint' do
+      sign_in(user)
+      project.add_maintainer(user)
+
+      get :edit,
+          namespace_id: project.namespace.path,
+          id: project.path
+
+      expect(assigns(:badge_api_endpoint)).not_to be_nil
     end
   end
 
@@ -759,7 +772,7 @@ describe ProjectsController do
     before do
       sign_in(user)
 
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'when project export is enabled' do
@@ -787,26 +800,28 @@ describe ProjectsController do
     before do
       sign_in(user)
 
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
-    context 'when project export is enabled' do
-      it 'returns 302' do
-        get :download_export, namespace_id: project.namespace, id: project
+    context 'object storage enabled' do
+      context 'when project export is enabled' do
+        it 'returns 302' do
+          get :download_export, namespace_id: project.namespace, id: project
 
-        expect(response).to have_gitlab_http_status(302)
-      end
-    end
-
-    context 'when project export is disabled' do
-      before do
-        stub_application_setting(project_export_enabled?: false)
+          expect(response).to have_gitlab_http_status(302)
+        end
       end
 
-      it 'returns 404' do
-        get :download_export, namespace_id: project.namespace, id: project
+      context 'when project export is disabled' do
+        before do
+          stub_application_setting(project_export_enabled?: false)
+        end
 
-        expect(response).to have_gitlab_http_status(404)
+        it 'returns 404' do
+          get :download_export, namespace_id: project.namespace, id: project
+
+          expect(response).to have_gitlab_http_status(404)
+        end
       end
     end
   end
@@ -815,7 +830,7 @@ describe ProjectsController do
     before do
       sign_in(user)
 
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'when project export is enabled' do
@@ -843,7 +858,7 @@ describe ProjectsController do
     before do
       sign_in(user)
 
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'when project export is enabled' do

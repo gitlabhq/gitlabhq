@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Environment < ActiveRecord::Base
   # Used to generate random suffixes for the slug
   LETTERS = 'a'..'z'
@@ -117,7 +119,7 @@ class Environment < ActiveRecord::Base
     external_url.gsub(%r{\A.*?://}, '')
   end
 
-  def stop_action?
+  def stop_action_available?
     available? && stop_action.present?
   end
 
@@ -156,9 +158,11 @@ class Environment < ActiveRecord::Base
     prometheus_adapter.query(:additional_metrics_environment, self) if has_metrics?
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def prometheus_adapter
     @prometheus_adapter ||= Prometheus::AdapterService.new(project, deployment_platform).prometheus_adapter
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def slug
     super.presence || generate_slug
@@ -173,7 +177,7 @@ class Environment < ActiveRecord::Base
   #   * cannot end with `-`
   def generate_slug
     # Lowercase letters and numbers only
-    slugified = name.to_s.downcase.gsub(/[^a-z0-9]/, '-')
+    slugified = +name.to_s.downcase.gsub(/[^a-z0-9]/, '-')
 
     # Must start with a letter
     slugified = 'env-' + slugified unless LETTERS.cover?(slugified[0])

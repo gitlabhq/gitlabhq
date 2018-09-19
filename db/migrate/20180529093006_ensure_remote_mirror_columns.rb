@@ -6,6 +6,7 @@ class EnsureRemoteMirrorColumns < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
+    # rubocop:disable Migration/Datetime
     add_column :remote_mirrors, :last_update_started_at, :datetime unless column_exists?(:remote_mirrors, :last_update_started_at)
     add_column :remote_mirrors, :remote_name, :string unless column_exists?(:remote_mirrors, :remote_name)
 

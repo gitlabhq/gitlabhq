@@ -1,7 +1,6 @@
 class Projects::PipelinesController < Projects::ApplicationController
   before_action :whitelist_query_limiting, only: [:create, :retry]
   before_action :pipeline, except: [:index, :new, :create, :charts]
-  before_action :commit, only: [:show, :builds, :failures]
   before_action :authorize_read_pipeline!
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
@@ -97,7 +96,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
     render json: StageSerializer
       .new(project: @project, current_user: @current_user)
-      .represent(@stage, details: true)
+      .represent(@stage, details: true, retried: params[:retried])
   end
 
   # TODO: This endpoint is used by mini-pipeline-graph
@@ -160,13 +159,15 @@ class Projects::PipelinesController < Projects::ApplicationController
     params.require(:pipeline).permit(:ref, variables_attributes: %i[key secret_value])
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def pipeline
-    @pipeline ||= project.pipelines.find_by!(id: params[:id]).present(current_user: current_user)
+    @pipeline ||= project
+                    .pipelines
+                    .includes(user: :status)
+                    .find_by!(id: params[:id])
+                    .present(current_user: current_user)
   end
-
-  def commit
-    @commit ||= @pipeline.commit
-  end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def whitelist_query_limiting
     # Also see https://gitlab.com/gitlab-org/gitlab-ce/issues/42343

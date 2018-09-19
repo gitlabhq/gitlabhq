@@ -11,7 +11,7 @@ describe 'User views a wiki page' do
     end
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
     end
 
@@ -93,7 +93,7 @@ describe 'User views a wiki page' do
         allow(wiki_file).to receive(:mime_type).and_return('image/jpeg')
         allow_any_instance_of(ProjectWiki).to receive(:find_file).with('image.jpg', nil).and_return(wiki_file)
 
-        expect(page).to have_xpath('//img[@data-src="image.jpg"]')
+        expect(page).to have_xpath("//img[@data-src='#{project.wiki.wiki_base_path}/image.jpg']")
         expect(page).to have_link('image', href: "#{project.wiki.wiki_base_path}/image.jpg")
 
         click_on('image')
@@ -134,6 +134,26 @@ describe 'User views a wiki page' do
         visit(project_wiki_path(project, wiki_page, version_id: wiki_page.versions.last.id))
 
         expect(page).not_to have_selector('a.btn', text: 'Edit')
+      end
+    end
+
+    context 'when page has invalid content encoding' do
+      let(:content) { 'whatever'.force_encoding('ISO-8859-1') }
+
+      before do
+        allow(Gitlab::EncodingHelper).to receive(:encode!).and_return(content)
+
+        visit(project_wiki_path(project, wiki_page))
+      end
+
+      it 'does not show "Edit" button' do
+        expect(page).not_to have_selector('a.btn', text: 'Edit')
+      end
+
+      it 'shows error' do
+        page.within(:css, '.flash-notice') do
+          expect(page).to have_content('The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository.')
+        end
       end
     end
 

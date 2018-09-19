@@ -65,7 +65,7 @@ describe 'Task Lists' do
   before do
     Warden.test_mode!
 
-    project.add_master(user)
+    project.add_maintainer(user)
     project.add_guest(user2)
 
     login_as(user)

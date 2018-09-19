@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   class PropagateServiceTemplate
     BATCH_SIZE = 100
@@ -68,6 +70,7 @@ module Projects
       )
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def service_hash
       @service_hash ||=
         begin
@@ -81,7 +84,9 @@ module Projects
           end
         end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def run_callbacks(batch)
       if active_external_issue_tracker?
         Project.where(id: batch).update_all(has_external_issue_tracker: true)
@@ -91,6 +96,7 @@ module Projects
         Project.where(id: batch).update_all(has_external_wiki: true)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def active_external_issue_tracker?
       @template.issue_tracker? && !@template.default

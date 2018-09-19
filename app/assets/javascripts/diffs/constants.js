@@ -25,3 +25,6 @@ export const CONTEXT_LINE_CLASS_NAME = 'diff-expanded';
 export const UNFOLD_COUNT = 20;
 export const COUNT_OF_AVATARS_IN_GUTTER = 3;
 export const LENGTH_OF_AVATAR_TOOLTIP = 17;
+
+export const LINES_TO_BE_RENDERED_DIRECTLY = 100;
+export const MAX_LINES_TO_BE_RENDERED = 2000;

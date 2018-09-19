@@ -28,6 +28,7 @@ module API
     end
 
     helpers do
+      # rubocop: disable CodeReuse/ActiveRecord
       def find_merge_requests(args = {})
         args = declared_params.merge(args)
 
@@ -45,6 +46,7 @@ module API
         merge_requests
           .preload(:notes, :author, :assignee, :milestone, :latest_merge_request_diff, :labels, :timelogs)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def merge_request_pipelines_with_access
         authorize! :read_pipeline, user_project
@@ -233,6 +235,7 @@ module API
       params do
         requires :merge_request_iid, type: Integer, desc: 'The IID of a merge request'
         optional :render_html, type: Boolean, desc: 'Returns the description and title rendered HTML'
+        optional :include_diverged_commits_count, type: Boolean, desc: 'Returns the commits count behind the target branch'
       end
       desc 'Get a single merge request' do
         success Entities::MergeRequest
@@ -240,7 +243,7 @@ module API
       get ':id/merge_requests/:merge_request_iid' do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
-        present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project, render_html: params[:render_html]
+        present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project, render_html: params[:render_html], include_diverged_commits_count: params[:include_diverged_commits_count]
       end
 
       desc 'Get the participants of a merge request' do
@@ -380,7 +383,7 @@ module API
       end
       get ':id/merge_requests/:merge_request_iid/closes_issues' do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
-        issues = ::Kaminari.paginate_array(merge_request.closes_issues(current_user))
+        issues = ::Kaminari.paginate_array(merge_request.visible_closing_issues_for(current_user))
         issues = paginate(issues)
 
         external_issues, internal_issues = issues.partition { |issue| issue.is_a?(ExternalIssue) }

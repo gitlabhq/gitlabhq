@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Boards
   module Lists
     class DestroyService < Boards::BaseService
@@ -16,10 +18,12 @@ module Boards
 
       attr_reader :board
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def decrement_higher_lists(list)
         board.lists.movable.where('position > ?',  list.position)
                    .update_all('position = position - 1')
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def remove_list(list)
         list.destroy

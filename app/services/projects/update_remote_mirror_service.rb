@@ -1,14 +1,18 @@
+# frozen_string_literal: true
+
 module Projects
   class UpdateRemoteMirrorService < BaseService
     attr_reader :errors
 
     def execute(remote_mirror)
-      @errors = []
-
       return success unless remote_mirror.enabled?
 
+      errors = []
+
       begin
+        remote_mirror.ensure_remote!
         repository.fetch_remote(remote_mirror.remote_name, no_tags: true)
+        project.update_root_ref(remote_mirror.remote_name)
 
         opts = {}
         if remote_mirror.only_protected_branches?

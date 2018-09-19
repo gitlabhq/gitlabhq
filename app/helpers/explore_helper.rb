@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ExploreHelper
   def filter_projects_path(options = {})
     exist_opts = {

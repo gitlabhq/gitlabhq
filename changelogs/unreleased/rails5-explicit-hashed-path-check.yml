@@ -1,0 +1,6 @@
+---
+title: Explicit hashed path check for trace, prevents background migration from accessing
+  file_location column that doesn't exist
+merge_request: 21533
+author: Jasper Maes
+type: other

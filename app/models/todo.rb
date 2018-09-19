@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 class Todo < ActiveRecord::Base
   include Sortable
+  include FromUnion
 
   ASSIGNED           = 1
   MENTIONED          = 2

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Emails
   module Profile
     def new_user_email(user_id, token = nil)
@@ -7,6 +9,7 @@ module Emails
       mail(to: @user.notification_email, subject: subject("Account was created for you"))
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def new_ssh_key_email(key_id)
       @key = Key.find_by(id: key_id)
 
@@ -16,7 +19,9 @@ module Emails
       @target_url = user_url(@user)
       mail(to: @user.notification_email, subject: subject("SSH key was added to your account"))
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def new_gpg_key_email(gpg_key_id)
       @gpg_key = GpgKey.find_by(id: gpg_key_id)
 
@@ -26,5 +31,6 @@ module Emails
       @target_url = user_url(@user)
       mail(to: @user.notification_email, subject: subject("GPG key was added to your account"))
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

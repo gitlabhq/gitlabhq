@@ -101,7 +101,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
     @target_project = @merge_request.target_project
     @source_project = @merge_request.source_project
-    @commits = prepare_commits_for_rendering(@merge_request.commits)
+    @commits = set_commits_for_rendering(@merge_request.commits)
     @commit = @merge_request.diff_head_commit
 
     @labels = LabelsFinder.new(current_user, project_id: @project.id).execute
@@ -109,6 +109,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     set_pipeline_variables
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def selected_target_project
     if @project.id.to_s == params[:target_project_id] || !@project.forked?
       @project
@@ -119,6 +120,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
       @project.forked_from_project
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def whitelist_query_limiting
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42384')

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectPolicy < BasePolicy
   extend ClassMethods
 
@@ -46,7 +48,7 @@ class ProjectPolicy < BasePolicy
   condition(:developer) { team_access_level >= Gitlab::Access::DEVELOPER }
 
   desc "User has maintainer access"
-  condition(:master) { team_access_level >= Gitlab::Access::MASTER }
+  condition(:maintainer) { team_access_level >= Gitlab::Access::MAINTAINER }
 
   desc "Project is public"
   condition(:public_project, scope: :subject, score: 0) { project.public? }
@@ -123,14 +125,14 @@ class ProjectPolicy < BasePolicy
   rule { guest }.enable :guest_access
   rule { reporter }.enable :reporter_access
   rule { developer }.enable :developer_access
-  rule { master }.enable :master_access
+  rule { maintainer }.enable :maintainer_access
   rule { owner | admin }.enable :owner_access
 
   rule { can?(:owner_access) }.policy do
     enable :guest_access
     enable :reporter_access
     enable :developer_access
-    enable :master_access
+    enable :maintainer_access
 
     enable :change_namespace
     enable :change_visibility_level
@@ -141,6 +143,10 @@ class ProjectPolicy < BasePolicy
     enable :destroy_merge_request
     enable :destroy_issue
     enable :remove_pages
+
+    enable :set_issue_iid
+    enable :set_issue_created_at
+    enable :set_note_created_at
   end
 
   rule { can?(:guest_access) }.policy do
@@ -174,6 +180,7 @@ class ProjectPolicy < BasePolicy
     enable :fork_project
     enable :create_project_snippet
     enable :update_issue
+    enable :reopen_issue
     enable :admin_issue
     enable :admin_label
     enable :admin_list
@@ -228,7 +235,7 @@ class ProjectPolicy < BasePolicy
     enable :create_deployment
   end
 
-  rule { can?(:master_access) }.policy do
+  rule { can?(:maintainer_access) }.policy do
     enable :push_to_delete_protected_branch
     enable :update_project_snippet
     enable :update_environment
@@ -249,6 +256,7 @@ class ProjectPolicy < BasePolicy
     enable :update_pages
     enable :read_cluster
     enable :create_cluster
+    enable :create_environment_terminal
   end
 
   rule { (mirror_available & can?(:admin_project)) | admin }.enable :admin_remote_mirror
@@ -390,6 +398,7 @@ class ProjectPolicy < BasePolicy
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def project_group_member?
     return false if @user.nil?
 
@@ -399,6 +408,7 @@ class ProjectPolicy < BasePolicy
         project.group.requesters.exists?(user_id: @user.id)
       )
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def team_access_level
     return -1 if @user.nil?

@@ -190,7 +190,7 @@ describe Discussion, ResolvableDiscussion do
 
         context "when the signed in user can push to the project" do
           before do
-            subject.project.add_master(current_user)
+            subject.project.add_maintainer(current_user)
           end
 
           it "returns true" do

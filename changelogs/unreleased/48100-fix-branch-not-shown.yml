@@ -1,6 +1,0 @@
----
-title: Fix branches are not shown in Merge Request dropdown when preferred language
-  is not English
-merge_request: 20016
-author: Hiroyuki Sato
-type: fixed

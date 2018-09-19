@@ -14,7 +14,7 @@ describe Projects::CommitController, '(JavaScript fixtures)', type: :controller 
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 

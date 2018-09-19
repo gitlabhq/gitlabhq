@@ -28,7 +28,7 @@ describe Groups::MilestonesController do
   before do
     sign_in(user)
     group.add_owner(user)
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe '#index' do
@@ -138,6 +138,17 @@ describe Groups::MilestonesController do
           expect(milestone.state).to eq("closed")
         end
       end
+    end
+  end
+
+  describe "#destroy" do
+    let(:milestone) { create(:milestone, group: group) }
+
+    it "removes milestone" do
+      delete :destroy, group_id: group.to_param, id: milestone.iid, format: :js
+
+      expect(response).to be_success
+      expect { Milestone.find(milestone.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
   end
 

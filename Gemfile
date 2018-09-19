@@ -68,7 +68,7 @@ gem 'u2f', '~> 0.2.1'
 gem 'validates_hostname', '~> 1.0.6'
 
 # Browser detection
-gem 'browser', '~> 2.2'
+gem 'browser', '~> 2.5'
 
 # GPG
 gem 'gpgme'
@@ -104,10 +104,12 @@ gem 'hashie-forbidden_attributes'
 gem 'kaminari', '~> 1.0'
 
 # HAML
-gem 'hamlit', '~> 2.6.1'
+gem 'hamlit', '~> 2.8.8'
 
 # Files attachments
-gem 'carrierwave', '~> 1.2'
+# Locked until https://github.com/carrierwaveuploader/carrierwave/pull/2332/files is merged.
+# config/initializers/carrierwave_patch.rb can be removed once that change is released.
+gem 'carrierwave', '= 1.2.3'
 gem 'mini_magick'
 
 # Drag and Drop UI
@@ -116,14 +118,14 @@ gem 'dropzonejs-rails', '~> 0.7.1'
 # for backups
 gem 'fog-aws', '~> 2.0.1'
 gem 'fog-core', '~> 1.44'
-gem 'fog-google', '~> 1.3.3'
+gem 'fog-google', '~> 1.7.1'
 gem 'fog-local', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
 gem 'fog-aliyun', '~> 0.2.0'
 
 # for Google storage
-gem 'google-api-client', '~> 0.19.8'
+gem 'google-api-client', '~> 0.23'
 
 # for aws storage
 gem 'unf', '~> 0.1.4'
@@ -168,7 +170,7 @@ gem 'state_machines-activerecord', '~> 0.5.1'
 gem 'acts-as-taggable-on', '~> 5.0'
 
 # Background jobs
-gem 'sidekiq', '~> 5.1'
+gem 'sidekiq', '~> 5.2.1'
 gem 'sidekiq-cron', '~> 0.6.0'
 gem 'redis-namespace', '~> 1.6.0'
 gem 'sidekiq-limit_fetch', '~> 3.4', require: false
@@ -180,7 +182,7 @@ gem 'rufus-scheduler', '~> 3.4'
 gem 'httparty', '~> 0.13.3'
 
 # Colored output to console
-gem 'rainbow', '~> 2.2'
+gem 'rainbow', '~> 3.0'
 
 # Progress bar
 gem 'ruby-progressbar'
@@ -194,6 +196,9 @@ gem 're2', '~> 1.1.1'
 # Misc
 
 gem 'version_sorter', '~> 2.1.0'
+
+# Export Ruby Regex to Javascript
+gem 'js_regex', '~> 2.2.1'
 
 # User agent parsing
 gem 'device_detector'
@@ -214,11 +219,11 @@ gem 'jira-ruby', '~> 1.4'
 # Flowdock integration
 gem 'gitlab-flowdock-git-hook', '~> 1.0.1'
 
-# Gemnasium integration
-gem 'gemnasium-gitlab-service', '~> 0.2'
-
 # Slack integration
 gem 'slack-notifier', '~> 1.5.1'
+
+# Hangouts Chat integration
+gem 'hangouts-chat', '~> 0.0.5'
 
 # Asana integration
 gem 'asana', '~> 0.6.0'
@@ -230,7 +235,7 @@ gem 'ruby-fogbugz', '~> 0.2.1'
 gem 'kubeclient', '~> 3.1.0'
 
 # Sanitize user input
-gem 'sanitize', '~> 4.6.5'
+gem 'sanitize', '~> 4.6'
 gem 'babosa', '~> 1.0.2'
 
 # Sanitizes SVG input
@@ -295,7 +300,6 @@ gem 'peek-mysql2', '~> 1.1.0', group: :mysql
 gem 'peek-pg', '~> 1.3.0', group: :postgres
 gem 'peek-rblineprof', '~> 0.2.0'
 gem 'peek-redis', '~> 1.2.0'
-gem 'peek-sidekiq', '~> 1.0.3'
 
 # Metrics
 group :metrics do
@@ -303,7 +307,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~> 0.9.3'
+  gem 'prometheus-client-mmap', '~> 0.9.4'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -323,6 +327,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'bootsnap', '~> 1.3'
   gem 'bullet', '~> 5.5.0', require: !!ENV['ENABLE_BULLET']
   gem 'pry-byebug', '~> 3.4.1', platform: :mri
   gem 'pry-rails', '~> 0.3.4'
@@ -351,20 +356,19 @@ group :development, :test do
   gem 'spring', '~> 2.0.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
 
-  gem 'gitlab-styles', '~> 2.3', require: false
+  gem 'gitlab-styles', '~> 2.4', require: false
   # Pin these dependencies, otherwise a new rule could break the CI pipelines
-  gem 'rubocop', '~> 0.52.1'
+  gem 'rubocop', '~> 0.54.0'
   gem 'rubocop-rspec', '~> 1.22.1'
 
   gem 'scss_lint', '~> 0.56.0', require: false
   gem 'haml_lint', '~> 0.26.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
-  gem 'flay', '~> 2.10.0', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
 
   gem 'benchmark-ips', '~> 2.3.0', require: false
 
-  gem 'license_finder', '~> 3.1', require: false
+  gem 'license_finder', '~> 5.4', require: false
   gem 'knapsack', '~> 1.16'
 
   gem 'activerecord_sane_schema_dumper', gem_versions['activerecord_sane_schema_dumper']
@@ -386,6 +390,7 @@ group :test do
   gem 'sham_rack', '~> 1.3.6'
   gem 'concurrent-ruby', '~> 1.0.5'
   gem 'test-prof', '~> 0.2.5'
+  gem 'rspec_junit_formatter'
 end
 
 gem 'octokit', '~> 4.9'
@@ -396,6 +401,7 @@ gem 'email_reply_trimmer', '~> 0.1'
 gem 'html2text'
 
 gem 'ruby-prof', '~> 0.17.0'
+gem 'rbtrace', '~> 0.4', require: false
 
 # OAuth
 gem 'oauth2', '~> 1.4'
@@ -418,7 +424,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.103.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.117.0', require: 'gitaly'
 gem 'grpc', '~> 1.11.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed

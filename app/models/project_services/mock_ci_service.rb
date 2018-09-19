@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # For an example companion mocking service, see https://gitlab.com/gitlab-org/gitlab-mock-ci-service
 class MockCiService < CiService
   ALLOWED_STATES = %w[failed canceled running pending success success_with_warnings skipped not_found].freeze

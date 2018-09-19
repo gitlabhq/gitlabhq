@@ -1,4 +1,6 @@
 # coding: utf-8
+# frozen_string_literal: true
+
 class Commit
   extend ActiveModel::Naming
   extend Gitlab::Cache::RequestCache
@@ -20,6 +22,7 @@ class Commit
   attr_accessor :project, :author
   attr_accessor :redacted_description_html
   attr_accessor :redacted_title_html
+  attr_accessor :redacted_full_title_html
   attr_reader :gpg_commit
 
   DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines]
@@ -191,6 +194,7 @@ class Commit
   # otherwise returns commit message without first line
   def description
     return safe_message if full_title.length >= 100
+    return no_commit_message if safe_message.blank?
 
     safe_message.split("\n", 2)[1].try(:chomp)
   end
@@ -339,21 +343,21 @@ class Commit
   end
 
   def cherry_pick_description(user)
-    message_body = "(cherry picked from commit #{sha})"
+    message_body = ["(cherry picked from commit #{sha})"]
 
     if merged_merge_request?(user)
       commits_in_merge_request = merged_merge_request(user).commits
 
       if commits_in_merge_request.present?
-        message_body << "\n"
+        message_body << ""
 
         commits_in_merge_request.reverse.each do |commit_in_merge|
-          message_body << "\n#{commit_in_merge.short_id} #{commit_in_merge.title}"
+          message_body << "#{commit_in_merge.short_id} #{commit_in_merge.title}"
         end
       end
     end
 
-    message_body
+    message_body.join("\n")
   end
 
   def cherry_pick_message(user)
@@ -444,6 +448,10 @@ class Commit
 
   def persisted?
     true
+  end
+
+  def to_ability_name
+    model_name.singular
   end
 
   def touch

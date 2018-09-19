@@ -80,7 +80,7 @@ $space-between-cards: 8px;
 }
 
 .convdev-card-low {
-  border-top-color: $color-low-score;
+  border-top-color: $red-400;
 
   .board-card-score-big {
     background-color: $red-50;
@@ -88,7 +88,7 @@ $space-between-cards: 8px;
 }
 
 .convdev-card-average {
-  border-top-color: $color-average-score;
+  border-top-color: $orange-400;
 
   .board-card-score-big {
     background-color: $orange-50;
@@ -96,7 +96,7 @@ $space-between-cards: 8px;
 }
 
 .convdev-card-high {
-  border-top-color: $color-high-score;
+  border-top-color: $green-400;
 
   .board-card-score-big {
     background-color: $green-50;
@@ -243,13 +243,13 @@ $space-between-cards: 8px;
 }
 
 .convdev-high-score {
-  color: $color-high-score;
+  color: $green-400;
 }
 
 .convdev-average-score {
-  color: $color-average-score;
+  color: $orange-400;
 }
 
 .convdev-low-score {
-  color: $color-low-score;
+  color: $red-400;
 }

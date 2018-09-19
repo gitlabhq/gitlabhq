@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module IidRoutes
   ##
   # This automagically enforces all related routes to use `iid` instead of `id`

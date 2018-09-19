@@ -16,15 +16,25 @@ and is flexible enough to fit your needs.
 
 ### Requirements
 
-If you're using GitLab with the Omnibus package, you're all set. If you
-installed GitLab from source, make sure the following packages are installed:
-
 * rsync
+
+If you're using GitLab with the Omnibus package, you're all set. If you
+installed GitLab from source, make sure you have rsync installed.
 
 If you're using Ubuntu, you could run:
 
 ```
 sudo apt-get install -y rsync
+```
+
+* tar
+
+Backup and restore tasks use `tar` under the hood to create and extract
+archives. Ensure you have version 1.30 or above of `tar` available in your
+system. To check the version, run:
+
+```
+tar --version
 ```
 
 ### Backup timestamp
@@ -124,7 +134,7 @@ To use the `copy` strategy instead of the default streaming strategy, specify
 
 ### Excluding specific directories from the backup
 
-You can choose what should be backed up by adding the environment variable `SKIP`.
+You can choose what should be exempt from the backup up by adding the environment variable `SKIP`.
 The available options are:
 
 - `db` (database)
@@ -137,6 +147,9 @@ The available options are:
 - `pages` (Pages content)
 
 Use a comma to specify several options at the same time:
+
+All wikis will be backed up as part of the `repositories` group. Non-existent wikis
+will be skipped during a backup.
 
 ```
 # use this command if you've installed GitLab with the Omnibus package

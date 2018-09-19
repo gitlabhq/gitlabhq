@@ -33,6 +33,15 @@ rules:
     - error
     - max: 1
   promise/catch-or-return: error
+  no-param-reassign:
+    - error
+    - props: true
+      ignorePropertyModificationsFor:
+        - "acc"         # for reduce accumulators
+        - "accumulator" # for reduce accumulators
+        - "el"          # for DOM elements
+        - "element"     # for DOM elements
+        - "state"       # for Vuex mutations
   no-underscore-dangle:
     - error
     - allow:

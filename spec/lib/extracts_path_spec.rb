@@ -203,4 +203,30 @@ describe ExtractsPath do
       expect(extract_ref_without_atom('foo.atom')).to eq(nil)
     end
   end
+
+  describe '#lfs_blob_ids' do
+    shared_examples '#lfs_blob_ids' do
+      let(:tag) { @project.repository.add_tag(@project.owner, 'my-annotated-tag', 'master', 'test tag') }
+      let(:ref) { tag.target }
+      let(:params) { { ref: ref, path: 'README.md' } }
+
+      before do
+        @project = create(:project, :repository)
+      end
+
+      it 'handles annotated tags' do
+        assign_ref_vars
+
+        expect(lfs_blob_ids).to eq([])
+      end
+    end
+
+    context 'when gitaly is enabled' do
+      it_behaves_like '#lfs_blob_ids'
+    end
+
+    context 'when gitaly is disabled', :skip_gitaly_mock do
+      it_behaves_like '#lfs_blob_ids'
+    end
+  end
 end

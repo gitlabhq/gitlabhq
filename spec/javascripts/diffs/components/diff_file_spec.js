@@ -11,7 +11,7 @@ describe('DiffFile', () => {
   beforeEach(() => {
     vm = createComponentWithStore(Vue.extend(DiffFileComponent), store, {
       file: getDiffFileMock(),
-      currentUser: {},
+      canCurrentUserFork: false,
     }).$mount();
   });
 
@@ -22,27 +22,49 @@ describe('DiffFile', () => {
 
       expect(el.id).toEqual(fileHash);
       expect(el.classList.contains('diff-file')).toEqual(true);
+
       expect(el.querySelectorAll('.diff-content.hidden').length).toEqual(0);
       expect(el.querySelector('.js-file-title')).toBeDefined();
       expect(el.querySelector('.file-title-name').innerText.indexOf(filePath) > -1).toEqual(true);
       expect(el.querySelector('.js-syntax-highlight')).toBeDefined();
-      expect(el.querySelectorAll('.line_content').length > 5).toEqual(true);
+
+      expect(vm.file.renderIt).toEqual(false);
+      vm.file.renderIt = true;
+
+      vm.$nextTick(() => {
+        expect(el.querySelectorAll('.line_content').length > 5).toEqual(true);
+      });
     });
 
     describe('collapsed', () => {
       it('should not have file content', done => {
-        expect(vm.$el.querySelectorAll('.diff-content.hidden').length).toEqual(0);
+        expect(vm.$el.querySelectorAll('.diff-content').length).toEqual(1);
         expect(vm.file.collapsed).toEqual(false);
         vm.file.collapsed = true;
+        vm.file.renderIt = true;
 
         vm.$nextTick(() => {
-          expect(vm.$el.querySelectorAll('.diff-content.hidden').length).toEqual(1);
+          expect(vm.$el.querySelectorAll('.diff-content').length).toEqual(0);
 
           done();
         });
       });
 
       it('should have collapsed text and link', done => {
+        vm.file.renderIt = true;
+        vm.file.collapsed = false;
+        vm.file.highlightedDiffLines = null;
+
+        vm.$nextTick(() => {
+          expect(vm.$el.innerText).toContain('This diff is collapsed');
+          expect(vm.$el.querySelectorAll('.js-click-to-expand').length).toEqual(1);
+
+          done();
+        });
+      });
+
+      it('should have collapsed text and link even before rendered', done => {
+        vm.file.renderIt = false;
         vm.file.collapsed = true;
 
         vm.$nextTick(() => {

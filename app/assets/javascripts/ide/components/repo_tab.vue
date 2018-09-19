@@ -37,7 +37,7 @@ export default {
       return this.fileHasChanged ? !this.tabMouseOver : false;
     },
     fileHasChanged() {
-      return this.tab.changed || this.tab.tempFile || this.tab.staged;
+      return this.tab.changed || this.tab.tempFile || this.tab.staged || this.tab.deleted;
     },
   },
 
@@ -71,7 +71,8 @@ export default {
 <template>
   <li
     :class="{
-      active: tab.active
+      active: tab.active,
+      disabled: tab.pending
     }"
     @click="clickFile(tab)"
     @mouseover="mouseOverTab"
@@ -105,7 +106,6 @@ export default {
       <changed-file-icon
         v-else
         :file="tab"
-        :force-modified-icon="true"
       />
     </button>
   </li>

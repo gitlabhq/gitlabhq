@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 # To add new service you should build a class inherited from Service
 # and implement a set of methods
 class Service < ActiveRecord::Base
   include Sortable
   include Importable
+  include ProjectServicesLoggable
 
   serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
@@ -254,6 +257,7 @@ class Service < ActiveRecord::Base
       emails_on_push
       external_wiki
       flowdock
+      hangouts_chat
       hipchat
       irker
       jira

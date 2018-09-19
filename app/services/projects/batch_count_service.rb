@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Service class for getting and caching the number of elements of several projects
 # Warning: do not user this service with a really large set of projects
 # because the service use maps to retrieve the project ids.

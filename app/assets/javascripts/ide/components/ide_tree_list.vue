@@ -2,15 +2,16 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import SkeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
-import RepoFile from './repo_file.vue';
-import NewDropdown from './new_dropdown/index.vue';
+import FileRow from '~/vue_shared/components/file_row.vue';
+import NavDropdown from './nav_dropdown.vue';
+import FileRowExtra from './file_row_extra.vue';
 
 export default {
   components: {
     Icon,
-    RepoFile,
     SkeletonLoadingContainer,
-    NewDropdown,
+    NavDropdown,
+    FileRow,
   },
   props: {
     viewerType: {
@@ -21,11 +22,6 @@ export default {
       type: String,
       required: false,
       default: null,
-    },
-    disableActionDropdown: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
   },
   computed: {
@@ -39,8 +35,9 @@ export default {
     this.updateViewer(this.viewerType);
   },
   methods: {
-    ...mapActions(['updateViewer']),
+    ...mapActions(['updateViewer', 'toggleTreeOpen']),
   },
+  FileRowExtra,
 };
 </script>
 
@@ -62,15 +59,21 @@ export default {
         :class="headerClass"
         class="ide-tree-header"
       >
+        <nav-dropdown />
         <slot name="header"></slot>
       </header>
-      <repo-file
-        v-for="file in currentTree.tree"
-        :key="file.key"
-        :file="file"
-        :level="0"
-        :disable-action-dropdown="disableActionDropdown"
-      />
+      <div
+        class="ide-tree-body h-100"
+      >
+        <file-row
+          v-for="file in currentTree.tree"
+          :key="file.key"
+          :file="file"
+          :level="0"
+          :extra-component="$options.FileRowExtra"
+          @toggleTreeOpen="toggleTreeOpen"
+        />
+      </div>
     </template>
   </div>
 </template>

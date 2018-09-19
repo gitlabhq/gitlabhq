@@ -1,0 +1,5 @@
+---
+title: Fix Error 500s due to encoding issues when Wiki hooks fire
+merge_request: 21414
+author:
+type: fixed

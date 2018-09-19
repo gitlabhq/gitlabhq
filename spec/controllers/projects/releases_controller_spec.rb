@@ -14,7 +14,7 @@ describe Projects::ReleasesController do
   describe 'GET #edit' do
     it 'initializes a new release' do
       tag_id = release.tag
-      project.releases.destroy_all
+      project.releases.destroy_all # rubocop: disable DestroyAll
 
       get :edit, namespace_id: project.namespace, project_id: project, tag_id: tag_id
 

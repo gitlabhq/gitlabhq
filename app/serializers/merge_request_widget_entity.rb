@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MergeRequestWidgetEntity < IssuableEntity
   expose :state
   expose :in_progress_merge_commit_sha
@@ -10,9 +12,15 @@ class MergeRequestWidgetEntity < IssuableEntity
   expose :merge_when_pipeline_succeeds
   expose :source_branch
   expose :source_project_id
+  expose :source_project_full_path do |merge_request|
+    merge_request.source_project&.full_path
+  end
   expose :squash
   expose :target_branch
   expose :target_project_id
+  expose :target_project_full_path do |merge_request|
+    merge_request.project&.full_path
+  end
   expose :allow_collaboration
 
   expose :should_be_rebased?, as: :should_be_rebased
@@ -124,6 +132,10 @@ class MergeRequestWidgetEntity < IssuableEntity
       can?(request.current_user, :create_note, merge_request)
     end
 
+    expose :can_create_issue do |merge_request|
+      can?(current_user, :create_issue, merge_request.project)
+    end
+
     expose :can_update do |merge_request|
       can?(request.current_user, :update_merge_request, merge_request)
     end
@@ -219,13 +231,19 @@ class MergeRequestWidgetEntity < IssuableEntity
     end
   end
 
+  expose :test_reports_path do |merge_request|
+    if merge_request.has_test_reports?
+      test_reports_project_merge_request_path(merge_request.project, merge_request, format: :json)
+    end
+  end
+
   private
 
   delegate :current_user, to: :request
 
   def presenter(merge_request)
     @presenters ||= {}
-    @presenters[merge_request] ||= MergeRequestPresenter.new(merge_request, current_user: current_user)
+    @presenters[merge_request] ||= MergeRequestPresenter.new(merge_request, current_user: current_user) # rubocop: disable CodeReuse/Presenter
   end
 
   # Once SchedulePopulateMergeRequestMetricsWithEventsData fully runs,

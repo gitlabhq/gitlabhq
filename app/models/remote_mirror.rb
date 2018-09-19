@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoteMirror < ActiveRecord::Base
   include AfterCommitQueue
 
@@ -48,22 +50,22 @@ class RemoteMirror < ActiveRecord::Base
     state :failed
 
     after_transition any => :started do |remote_mirror, _|
-      Gitlab::Metrics.add_event(:remote_mirrors_running, path: remote_mirror.project.full_path)
+      Gitlab::Metrics.add_event(:remote_mirrors_running)
 
       remote_mirror.update(last_update_started_at: Time.now)
     end
 
     after_transition started: :finished do |remote_mirror, _|
-      Gitlab::Metrics.add_event(:remote_mirrors_finished, path: remote_mirror.project.full_path)
+      Gitlab::Metrics.add_event(:remote_mirrors_finished)
 
       timestamp = Time.now
-      remote_mirror.update_attributes!(
+      remote_mirror.update!(
         last_update_at: timestamp, last_successful_update_at: timestamp, last_error: nil
       )
     end
 
     after_transition started: :failed do |remote_mirror, _|
-      Gitlab::Metrics.add_event(:remote_mirrors_failed, path: remote_mirror.project.full_path)
+      Gitlab::Metrics.add_event(:remote_mirrors_failed)
 
       remote_mirror.update(last_update_at: Time.now)
     end
@@ -146,6 +148,15 @@ class RemoteMirror < ActiveRecord::Base
     result.password = '*****' if result.password
     result.user = '*****' if result.user && result.user != "git" # tokens or other data may be saved as user
     result.to_s
+  end
+
+  def ensure_remote!
+    return unless project
+    return unless remote_name && url
+
+    # If this fails or the remote already exists, we won't know due to
+    # https://gitlab.com/gitlab-org/gitaly/issues/1317
+    project.repository.add_remote(remote_name, url)
   end
 
   private

@@ -39,6 +39,10 @@
             %strong= email.email
             = link_to remove_email_admin_user_path(@user, email), data: { confirm: "Are you sure you want to remove #{email.email}?" }, method: :delete, class: "btn-sm btn btn-remove float-right", title: 'Remove secondary email', id: "remove_email_#{email.id}" do
               %i.fa.fa-times
+        %li
+          %span.light ID:
+          %strong
+            = @user.id
 
         %li.two-factor-status
           %span.light Two-factor Authentication:
@@ -128,8 +132,8 @@
   .col-md-6
     - unless @user == current_user
       - unless @user.confirmed?
-        .card.bg-info
-          .card-header
+        .card.border-info
+          .card-header.bg-info.text-white
             Confirm user
           .card-body
             - if @user.unconfirmed_email.present?
@@ -138,8 +142,8 @@
             %br
             = link_to 'Confirm user', confirm_admin_user_path(@user), method: :put, class: "btn btn-info", data: { confirm: 'Are you sure?' }
       - if @user.blocked?
-        .card.bg-info
-          .card-header
+        .card.border-info
+          .card-header.bg-info.text-white
             This user is blocked
           .card-body
             %p A blocked user cannot:
@@ -149,8 +153,8 @@
             %br
             = link_to 'Unblock user', unblock_admin_user_path(@user), method: :put, class: "btn btn-info", data: { confirm: 'Are you sure?' }
       - else
-        .card.bg-warning
-          .card-header
+        .card.border-warning
+          .card-header.bg-warning.text-white
             Block this user
           .card-body
             %p Blocking user has the following effects:
@@ -162,16 +166,16 @@
             %br
             = link_to 'Block user', block_admin_user_path(@user), data: { confirm: 'USER WILL BE BLOCKED! Are you sure?' }, method: :put, class: "btn btn-warning"
       - if @user.access_locked?
-        .card.bg-info
-          .card-header
+        .card.border-info
+          .card-header.bg-info.text-white
             This account has been locked
           .card-body
             %p This user has been temporarily locked due to excessive number of failed logins. You may manually unlock the account.
             %br
             = link_to 'Unlock user', unlock_admin_user_path(@user), method: :put, class: "btn btn-info", data: { confirm: 'Are you sure?' }
 
-      .card.bg-danger
-        .card-header
+      .card.border-danger
+        .card-header.bg-danger.text-white
           = s_('AdminUsers|Delete user')
         .card-body
           - if @user.can_be_removed? && can?(current_user, :destroy_user, @user)
@@ -196,8 +200,8 @@
               %p
                 You don't have access to delete this user.
 
-      .card.bg-danger
-        .card-header
+      .card.border-danger
+        .card-header.bg-danger.text-white
           = s_('AdminUsers|Delete user and contributions')
         .card-body
           - if can?(current_user, :destroy_user, @user)

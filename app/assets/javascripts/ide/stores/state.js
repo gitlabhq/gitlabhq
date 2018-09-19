@@ -26,4 +26,10 @@ export default () => ({
   rightPane: null,
   links: {},
   errorMessage: null,
+  entryModal: {
+    type: '',
+    path: '',
+    entry: {},
+  },
+  clientsidePreviewEnabled: false,
 });

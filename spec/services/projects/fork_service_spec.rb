@@ -135,7 +135,7 @@ describe Projects::ForkService do
       context "when project has restricted visibility level" do
         context "and only one visibility level is restricted" do
           before do
-            @from_project.update_attributes(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+            @from_project.update(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
             stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL])
           end
 
@@ -263,6 +263,14 @@ describe Projects::ForkService do
         subject.execute(fork_to_project)
 
         expect(fork_from_project.forks_count).to eq(1)
+      end
+
+      it 'leaves no LFS objects dangling' do
+        create(:lfs_objects_project, project: fork_to_project)
+
+        expect { subject.execute(fork_to_project) }
+          .to change { fork_to_project.lfs_objects_projects.count }
+          .to(0)
       end
     end
   end

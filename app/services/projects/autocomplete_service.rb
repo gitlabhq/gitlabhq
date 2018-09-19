@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   class AutocompleteService < BaseService
     def issues
@@ -45,15 +47,7 @@ module Projects
     end
 
     def commands(noteable, type)
-      noteable ||=
-        case type
-        when 'Issue'
-          @project.issues.build
-        when 'MergeRequest'
-          @project.merge_requests.build
-        end
-
-      return [] unless noteable&.is_a?(Issuable)
+      return [] unless noteable
 
       QuickActions::InterpretService.new(project, current_user).available_commands(noteable)
     end

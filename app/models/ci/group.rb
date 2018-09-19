@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   ##
   # This domain model is a representation of a group of jobs that are related

@@ -1,7 +1,10 @@
 import _ from 'underscore';
 
 function sortMetrics(metrics) {
-  return _.chain(metrics).sortBy('title').sortBy('weight').value();
+  return _.chain(metrics)
+    .sortBy('title')
+    .sortBy('weight')
+    .value();
 }
 
 function normalizeMetrics(metrics) {
@@ -39,7 +42,9 @@ export default class MonitoringStore {
   }
 
   storeEnvironmentsData(environmentsData = []) {
-    this.environmentsData = environmentsData;
+    this.environmentsData = environmentsData.filter(
+      environment => !!environment.latest.last_deployment,
+    );
   }
 
   getMetricsCount() {

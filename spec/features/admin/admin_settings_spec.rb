@@ -78,6 +78,18 @@ describe 'Admin updates settings' do
     expect(page).to have_content "Application settings saved successfully"
   end
 
+  it 'Change New users set to external', :js do
+    user_internal_regex = find('#application_setting_user_default_internal_regex', visible: :all)
+
+    expect(user_internal_regex).to be_readonly
+    expect(user_internal_regex['placeholder']).to eq 'To define internal users, first enable new users set to external'
+
+    check 'application_setting_user_default_external'
+
+    expect(user_internal_regex).not_to be_readonly
+    expect(user_internal_regex['placeholder']).to eq 'Regex pattern'
+  end
+
   it 'Change Sign-in restrictions' do
     page.within('.as-signin') do
       fill_in 'Home page URL', with: 'https://about.gitlab.com/'
@@ -175,7 +187,7 @@ describe 'Admin updates settings' do
 
   it 'Change CI/CD settings' do
     page.within('.as-ci-cd') do
-      check 'Enabled Auto DevOps for projects by default'
+      check 'Default to Auto DevOps pipeline for all projects'
       fill_in 'Auto devops domain', with: 'domain.com'
       click_button 'Save changes'
     end
@@ -272,6 +284,16 @@ describe 'Admin updates settings' do
     expect(Gitlab::CurrentSettings.allow_local_requests_from_hooks_and_services).to be true
   end
 
+  it 'Enable hiding third party offers' do
+    page.within('.as-third-party-offers') do
+      check 'Do not display offers from third parties within GitLab'
+      click_button 'Save changes'
+    end
+
+    expect(page).to have_content "Application settings saved successfully"
+    expect(Gitlab::CurrentSettings.hide_third_party_offers).to be true
+  end
+
   it 'Change Slack Notifications Service template settings' do
     first(:link, 'Service Templates').click
     click_link 'Slack notifications'
@@ -312,6 +334,15 @@ describe 'Admin updates settings' do
     expect(find_field('DSA SSH keys').value).to eq('0')
     expect(find_field('ECDSA SSH keys').value).to eq('384')
     expect(find_field('ED25519 SSH keys').value).to eq(forbidden)
+  end
+
+  it 'loads usage ping payload on click', :js do
+    expect(page).to have_button 'Preview payload'
+
+    find('.js-usage-ping-payload-trigger').click
+
+    expect(page).to have_selector '.js-usage-ping-payload'
+    expect(page).to have_button 'Hide payload'
   end
 
   def check_all_events

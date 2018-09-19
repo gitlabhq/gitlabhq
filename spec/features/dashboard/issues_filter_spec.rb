@@ -11,7 +11,7 @@ describe 'Dashboard Issues filtering', :js do
   let!(:issue2) { create(:issue, project: project, author: user, assignees: [user], milestone: milestone) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     visit_issues

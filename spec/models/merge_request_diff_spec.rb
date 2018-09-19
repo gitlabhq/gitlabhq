@@ -82,6 +82,14 @@ describe MergeRequestDiff do
 
         diff.diffs
       end
+
+      it 'returns persisted diffs if diff refs does not exist' do
+        expect(diff).to receive(:load_diffs)
+
+        diff.update!(start_commit_sha: nil, base_commit_sha: nil)
+
+        diff.diffs
+      end
     end
   end
 
@@ -117,6 +125,13 @@ describe MergeRequestDiff do
 
         it 'only returns diffs that match the (old path, new path) given' do
           expect(diffs.map(&:new_path)).to contain_exactly('files/ruby/popen.rb')
+        end
+
+        it 'only serializes diff files found by query' do
+          expect(diff_with_commits.merge_request_diff_files.count).to be > 10
+          expect_any_instance_of(MergeRequestDiffFile).to receive(:to_hash).once
+
+          diffs
         end
 
         it 'uses the diffs from the DB' do

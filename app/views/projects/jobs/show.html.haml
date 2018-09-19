@@ -10,7 +10,7 @@
       - unless @build.any_runners_online?
         .bs-callout.bs-callout-warning.js-build-stuck
           %p
-            - if no_runners_for_project?(@build.project)
+            - if @project.any_runners?
               This job is stuck, because the project doesn't have any runners online assigned to it.
             - elsif @build.tags.any?
               This job is stuck, because you don't have any active runners online with any of these tags assigned to them:
@@ -22,7 +22,7 @@
 
             %br
             Go to
-            = link_to project_runners_path(@build.project) do
+            = link_to project_runners_path(@build.project, anchor: 'js-runners-settings') do
               Runners page
 
     - if @build.starts_environment?

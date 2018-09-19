@@ -1,9 +1,9 @@
-= form_for @application_setting, url: admin_application_settings_path, html: { class: 'fieldset-form' } do |f|
+= form_for @application_setting, url: admin_application_settings_path(anchor: 'js-terminal-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
     .form-group
-      = f.label :terminal_max_session_time, 'Max session time', class: 'label-light'
+      = f.label :terminal_max_session_time, 'Max session time', class: 'label-bold'
       = f.number_field :terminal_max_session_time, class: 'form-control'
       .form-text.text-muted
         Maximum time for web terminal websocket connection (in seconds).

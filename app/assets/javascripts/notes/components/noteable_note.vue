@@ -86,6 +86,7 @@ export default {
       // eslint-disable-next-line no-alert
       if (window.confirm('Are you sure you want to delete this comment?')) {
         this.isDeleting = true;
+        this.$emit('handleDeleteNote', this.note);
 
         this.deleteNote(this.note)
           .then(() => {

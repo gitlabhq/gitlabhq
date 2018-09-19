@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectTeam
   include BulkMemberAccessLoad
 
@@ -19,9 +21,12 @@ class ProjectTeam
     add_user(user, :developer, current_user: current_user)
   end
 
-  def add_master(user, current_user: nil)
-    add_user(user, :master, current_user: current_user)
+  def add_maintainer(user, current_user: nil)
+    add_user(user, :maintainer, current_user: current_user)
   end
+
+  # @deprecated
+  alias_method :add_master, :add_maintainer
 
   def add_role(user, role, current_user: nil)
     public_send(:"add_#{role}", user, current_user: current_user) # rubocop:disable GitlabSecurity/PublicSend
@@ -81,9 +86,12 @@ class ProjectTeam
     @developers ||= fetch_members(Gitlab::Access::DEVELOPER)
   end
 
-  def masters
-    @masters ||= fetch_members(Gitlab::Access::MASTER)
+  def maintainers
+    @maintainers ||= fetch_members(Gitlab::Access::MAINTAINER)
   end
+
+  # @deprecated
+  alias_method :masters, :maintainers
 
   def owners
     @owners ||=
@@ -136,9 +144,12 @@ class ProjectTeam
     max_member_access(user.id) == Gitlab::Access::DEVELOPER
   end
 
-  def master?(user)
-    max_member_access(user.id) == Gitlab::Access::MASTER
+  def maintainer?(user)
+    max_member_access(user.id) == Gitlab::Access::MAINTAINER
   end
+
+  # @deprecated
+  alias_method :master?, :maintainer?
 
   # Checks if `user` is authorized for this project, with at least the
   # `min_access_level` (if given).

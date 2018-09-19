@@ -1,5 +1,0 @@
----
-title: Expire correct method caches after HEAD changed
-merge_request:
-author:
-type: fixed

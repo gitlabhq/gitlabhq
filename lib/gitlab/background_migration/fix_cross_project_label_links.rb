@@ -11,6 +11,7 @@ module Gitlab
       end
 
       class Label < ActiveRecord::Base
+        self.inheritance_column = :_type_disabled
         self.table_name = 'labels'
       end
 
@@ -27,6 +28,7 @@ module Gitlab
       end
 
       class Namespace < ActiveRecord::Base
+        self.inheritance_column = :_type_disabled
         self.table_name = 'namespaces'
 
         def self.groups_with_descendants_ids(start_id, stop_id)

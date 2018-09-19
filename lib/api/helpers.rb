@@ -94,6 +94,7 @@ module API
       LabelsFinder.new(current_user, search_params).execute
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_user(id)
       if id =~ /^\d+$/
         User.find_by(id: id)
@@ -101,14 +102,19 @@ module API
         User.find_by(username: id)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_project(id)
+      projects = Project.without_deleted
+
       if id.is_a?(Integer) || id =~ /^\d+$/
-        Project.find_by(id: id)
+        projects.find_by(id: id)
       elsif id.include?("/")
-        Project.find_by_full_path(id)
+        projects.find_by_full_path(id)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def find_project!(id)
       project = find_project(id)
@@ -120,6 +126,7 @@ module API
       end
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_group(id)
       if id.to_s =~ /^\d+$/
         Group.find_by(id: id)
@@ -127,6 +134,7 @@ module API
         Group.find_by_full_path(id)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def find_group!(id)
       group = find_group(id)
@@ -138,6 +146,7 @@ module API
       end
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_namespace(id)
       if id.to_s =~ /^\d+$/
         Namespace.find_by(id: id)
@@ -145,6 +154,7 @@ module API
         Namespace.find_by_full_path(id)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def find_namespace!(id)
       namespace = find_namespace(id)
@@ -156,6 +166,12 @@ module API
       end
     end
 
+    def find_branch!(branch_name)
+      user_project.repository.find_branch(branch_name) || not_found!('Branch')
+    rescue Gitlab::Git::CommandError
+      render_api_error!('The branch refname is invalid', 400)
+    end
+
     def find_project_label(id)
       labels = available_labels_for(user_project)
       label = labels.find_by_id(id) || labels.find_by_title(id)
@@ -163,13 +179,17 @@ module API
       label || not_found!('Label')
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_project_issue(iid)
       IssuesFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_project_merge_request(iid)
       MergeRequestsFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def find_project_commit(id)
       user_project.commit_by(oid: id)
@@ -180,11 +200,13 @@ module API
       SnippetsFinder.new(current_user, finder_params).find(id)
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_merge_request_with_access(iid, access_level = :read_merge_request)
       merge_request = user_project.merge_requests.find_by!(iid: iid)
       authorize! access_level, merge_request
       merge_request
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def find_build!(id)
       user_project.builds.find(id.to_i)
@@ -276,9 +298,11 @@ module API
       Gitlab.rails5? ? permitted_attrs.to_h : permitted_attrs
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def filter_by_iid(items, iid)
       items.where(iid: iid)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def filter_by_search(items, text)
       items.search(text)
@@ -375,20 +399,23 @@ module API
 
     # project helpers
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def reorder_projects(projects)
       projects.reorder(params[:order_by] => params[:sort])
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def project_finder_params
-      finder_params = {}
+      finder_params = { without_deleted: true }
       finder_params[:owned] = true if params[:owned].present?
       finder_params[:non_public] = true if params[:membership].present?
       finder_params[:starred] = true if params[:starred].present?
       finder_params[:visibility_level] = Gitlab::VisibilityLevel.level_value(params[:visibility]) if params[:visibility]
-      finder_params[:archived] = params[:archived]
+      finder_params[:archived] = archived_param unless params[:archived].nil?
       finder_params[:search] = params[:search] if params[:search]
       finder_params[:user] = params.delete(:user) if params[:user]
       finder_params[:custom_attributes] = params[:custom_attributes] if params[:custom_attributes]
+      finder_params[:min_access_level] = params[:min_access_level] if params[:min_access_level]
       finder_params
     end
 
@@ -495,6 +522,12 @@ module API
       return true unless exception.respond_to?(:status)
 
       exception.status == 500
+    end
+
+    def archived_param
+      return 'only' if params[:archived]
+
+      params[:archived]
     end
   end
 end

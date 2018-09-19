@@ -26,6 +26,12 @@ module Gitlab
         end
       end
 
+      # This is called from within a rake task only used by Admins, so allow writing
+      # to STDOUT
+      def self.log(message)
+        puts message # rubocop:disable Rails/Output
+      end
+
       attr_reader :user, :project_name, :bare_repo
 
       delegate :log, to: :class
@@ -59,11 +65,10 @@ module Gitlab
                                               import_type: 'bare_repository',
                                               namespace_id: group&.id).execute
 
-        if project.persisted? && mv_repo(project)
+        if project.persisted? && mv_repositories(project)
           log " * Created #{project.name} (#{project_full_path})".color(:green)
 
           project.write_repository_config
-          Gitlab::Git::Repository.create_hooks(project.repository.path_to_repo, Gitlab.config.gitlab_shell.hooks_path)
 
           ProjectCacheWorker.perform_async(project.id)
         else
@@ -74,12 +79,11 @@ module Gitlab
         project
       end
 
-      def mv_repo(project)
-        storage_path = storage_path_for_shard(project.repository_storage)
-        FileUtils.mv(repo_path, project.repository.path_to_repo)
+      def mv_repositories(project)
+        mv_repo(bare_repo.repo_path, project.repository)
 
         if bare_repo.wiki_exists?
-          FileUtils.mv(wiki_path, File.join(storage_path, project.disk_path + '.wiki.git'))
+          mv_repo(bare_repo.wiki_path, project.wiki.repository)
         end
 
         true
@@ -87,6 +91,11 @@ module Gitlab
         log " * Failed to move repo: #{e.message}".color(:red)
 
         false
+      end
+
+      def mv_repo(path, repository)
+        repository.create_from_bundle(bundle(path))
+        FileUtils.rm_rf(path)
       end
 
       def storage_path_for_shard(shard)
@@ -101,10 +110,17 @@ module Gitlab
         Groups::NestedCreateService.new(user, group_path: group_path).execute
       end
 
-      # This is called from within a rake task only used by Admins, so allow writing
-      # to STDOUT
-      def self.log(message)
-        puts message # rubocop:disable Rails/Output
+      def bundle(repo_path)
+        # TODO: we could save some time and disk space by using
+        # `git bundle create - --all` and streaming the bundle directly to
+        # Gitaly, rather than writing it on disk first
+        bundle_path = "#{repo_path}.bundle"
+        cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{repo_path} bundle create #{bundle_path} --all)
+        output, status = Gitlab::Popen.popen(cmd)
+
+        raise output unless status.zero?
+
+        bundle_path
       end
     end
   end

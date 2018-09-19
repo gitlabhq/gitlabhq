@@ -269,13 +269,13 @@ describe UploadsController do
 
           context "when the user has access to the project" do
             before do
-              project.add_master(user)
+              project.add_maintainer(user)
             end
 
             context "when the user is blocked" do
               before do
                 user.block
-                project.add_master(user)
+                project.add_maintainer(user)
               end
 
               it "redirects to the sign in page" do
@@ -475,13 +475,13 @@ describe UploadsController do
 
           context "when the user has access to the project" do
             before do
-              project.add_master(user)
+              project.add_maintainer(user)
             end
 
             context "when the user is blocked" do
               before do
                 user.block
-                project.add_master(user)
+                project.add_maintainer(user)
               end
 
               it "redirects to the sign in page" do

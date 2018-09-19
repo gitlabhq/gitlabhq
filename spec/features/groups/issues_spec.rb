@@ -52,6 +52,7 @@ describe 'Group issues page' do
   context 'issues list', :nested_groups do
     let(:subgroup) { create(:group, parent: group) }
     let(:subgroup_project) { create(:project, :public, group: subgroup)}
+    let(:user_in_group) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
     let!(:issue) { create(:issue, project: project, title: 'root group issue') }
     let!(:subgroup_issue) { create(:issue, project: subgroup_project, title: 'subgroup issue') }
 
@@ -67,7 +68,7 @@ describe 'Group issues page' do
 
     context 'when project is archived' do
       before do
-        project.archive!
+        ::Projects::UpdateService.new(project, user_in_group, archived: true).execute
       end
 
       it 'does not render issue' do
@@ -80,10 +81,10 @@ describe 'Group issues page' do
 
   context 'projects with issues disabled' do
     describe 'issue dropdown' do
-      let(:user_in_group) { create(:group_member, :master, user: create(:user), group: group ).user }
+      let(:user_in_group) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
 
       before do
-        [project, project_with_issues_disabled].each { |project| project.add_master(user_in_group) }
+        [project, project_with_issues_disabled].each { |project| project.add_maintainer(user_in_group) }
         sign_in(user_in_group)
         visit issues_group_path(group)
       end

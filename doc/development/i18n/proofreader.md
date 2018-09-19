@@ -11,9 +11,11 @@ are very appreciative of the work done by translators and proofreaders!
 - Chinese Traditional
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
   - Weizhe Ding - [GitLab](https://gitlab.com/d.weizhe), [Crowdin](https://crowdin.com/profile/d.weizhe)
+  - Yi-Jyun Pan - [GitLab](https://gitlab.com/pan93412), [Crowdin](https://crowdin.com/profile/pan93412)
 - Chinese Traditional, Hong Kong
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
 - Dutch
+  -  Emily Hendle - [GitLab](https://gitlab.com/pundachan), [Crowdin](https://crowdin.com/profile/pandachan)
 - Esperanto
 - French
   - Davy Defaud - [GitLab](https://gitlab.com/DevDef), [Crowdin](https://crowdin.com/profile/DevDef)
@@ -63,7 +65,6 @@ are very appreciative of the work done by translators and proofreaders!
 
     Add your language in alphabetical order, and add yourself to the list
     including:
-
     - name
     - link to your GitLab profile
     - link to your CrowdIn profile

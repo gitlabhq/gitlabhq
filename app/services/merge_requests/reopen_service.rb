@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MergeRequests
   class ReopenService < MergeRequests::BaseService
     def execute(merge_request)
@@ -12,6 +14,7 @@ module MergeRequests
         merge_request.mark_as_unchecked
         invalidate_cache_counts(merge_request, users: merge_request.assignees)
         merge_request.update_project_counter_caches
+        merge_request.cache_merge_request_closes_issues!(current_user)
       end
 
       merge_request

@@ -9,7 +9,7 @@ describe Projects::CommitController do
 
   before do
     sign_in(user)
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe 'GET show' do
@@ -230,7 +230,7 @@ describe Projects::CommitController do
             id: master_pickable_commit.id)
 
         expect(response).to redirect_to project_commits_path(project, 'master')
-        expect(flash[:notice]).to eq('The commit has been successfully cherry-picked.')
+        expect(flash[:notice]).to eq('The commit has been successfully cherry-picked into master.')
       end
     end
 

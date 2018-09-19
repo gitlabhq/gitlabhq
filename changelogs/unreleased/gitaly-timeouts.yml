@@ -1,5 +1,0 @@
----
-title: Updated Gitaly fail-fast timeout values
-merge_request: !20259
-author:
-type: performance

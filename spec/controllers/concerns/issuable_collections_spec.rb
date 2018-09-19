@@ -21,6 +21,34 @@ describe IssuableCollections do
     controller
   end
 
+  describe '#set_set_order_from_cookie' do
+    describe 'when sort param given' do
+      let(:cookies) { {} }
+      let(:params) { { sort: 'downvotes_asc' } }
+
+      it 'sets the cookie with the right values and flags' do
+        allow(controller).to receive(:cookies).and_return(cookies)
+
+        controller.send(:set_sort_order_from_cookie)
+
+        expect(cookies['issue_sort']).to eq({ value: 'popularity', secure: false, httponly: false })
+      end
+    end
+
+    describe 'when cookie exists' do
+      let(:cookies) { { 'issue_sort' => 'id_asc' } }
+      let(:params) { {} }
+
+      it 'sets the cookie with the right values and flags' do
+        allow(controller).to receive(:cookies).and_return(cookies)
+
+        controller.send(:set_sort_order_from_cookie)
+
+        expect(cookies['issue_sort']).to eq({ value: 'created_asc', secure: false, httponly: false })
+      end
+    end
+  end
+
   describe '#page_count_for_relation' do
     let(:params) { { state: 'opened' } }
 

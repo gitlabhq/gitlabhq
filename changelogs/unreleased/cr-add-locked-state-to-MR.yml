@@ -1,5 +1,0 @@
----
-title: Adds the `locked` state to the merge request API so that it can be used as a search filter.
-merge_request: 20186
-author:
-type: fixed

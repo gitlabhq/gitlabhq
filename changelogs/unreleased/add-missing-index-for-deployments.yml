@@ -1,5 +1,0 @@
----
-title: Add index on deployable_type/id for deployments
-merge_request:
-author:
-type: performance

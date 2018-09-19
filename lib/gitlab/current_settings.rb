@@ -13,6 +13,10 @@ module Gitlab
         Gitlab::FakeApplicationSettings.new(::ApplicationSetting.defaults.merge(attributes || {}))
       end
 
+      def clear_in_memory_application_settings!
+        @in_memory_application_settings = nil
+      end
+
       def method_missing(name, *args, &block)
         current_application_settings.send(name, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
       end
@@ -60,7 +64,7 @@ module Gitlab
 
       def in_memory_application_settings
         with_fallback_to_fake_application_settings do
-          @in_memory_application_settings ||= ::ApplicationSetting.build_from_defaults # rubocop:disable Gitlab/ModuleWithInstanceVariables
+          @in_memory_application_settings ||= ::ApplicationSetting.build_from_defaults
         end
       end
 

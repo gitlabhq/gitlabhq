@@ -10,7 +10,6 @@ import systemNote from '../../vue_shared/components/notes/system_note.vue';
 import commentForm from './comment_form.vue';
 import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
 import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import skeletonLoadingContainer from '../../vue_shared/components/notes/skeleton_note.vue';
 
 export default {
@@ -20,7 +19,6 @@ export default {
     noteableDiscussion,
     systemNote,
     commentForm,
-    loadingIcon,
     placeholderNote,
     placeholderSystemNote,
   },
@@ -42,6 +40,11 @@ export default {
       type: Boolean,
       required: false,
       default: true,
+    },
+    markdownVersion: {
+      type: Number,
+      required: false,
+      default: 0,
     },
   },
   data() {
@@ -133,6 +136,7 @@ export default {
         .then(() => {
           this.isLoading = false;
           this.setNotesFetchedState(true);
+          eventHub.$emit('fetchedNotesData');
         })
         .then(() => this.$nextTick())
         .then(() => this.checkLocationHash())
@@ -192,6 +196,7 @@ export default {
 
     <comment-form
       :noteable-type="noteableType"
+      :markdown-version="markdownVersion"
     />
   </div>
 </template>

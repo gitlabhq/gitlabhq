@@ -30,9 +30,11 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def user
     @user ||= User.find_by!(username: params[:user_id])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def finder(options = {})
     PersonalAccessTokensFinder.new({ user: user, impersonation: true }.merge(options))
@@ -42,6 +44,7 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
     params.require(:personal_access_token).permit(:name, :expires_at, :impersonation, scopes: [])
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def set_index_vars
     @scopes = Gitlab::Auth.available_scopes(current_user)
 
@@ -49,4 +52,5 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
     @inactive_impersonation_tokens = finder(state: 'inactive').execute
     @active_impersonation_tokens = finder(state: 'active').execute.order(:expires_at)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

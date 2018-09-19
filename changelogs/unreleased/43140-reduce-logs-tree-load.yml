@@ -1,0 +1,5 @@
+---
+title: Bulk-render commit titles in the tree view to improve performance
+merge_request: 21500
+author:
+type: performance

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Issues
   class UpdateService < Issues::BaseService
     include SpamCheckService
@@ -35,6 +37,8 @@ module Issues
       end
 
       if issue.previous_changes.include?('confidential')
+        # don't enqueue immediately to prevent todos removal in case of a mistake
+        TodosDestroyer::ConfidentialIssueWorker.perform_in(1.hour, issue.id) if issue.confidential?
         create_confidentiality_note(issue)
       end
 
@@ -63,6 +67,7 @@ module Issues
       issue.move_between(issue_before, issue_after)
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def change_issue_duplicate(issue)
       canonical_issue_id = params.delete(:canonical_issue_id)
       canonical_issue = IssuesFinder.new(current_user).find_by(id: canonical_issue_id)
@@ -71,6 +76,7 @@ module Issues
         Issues::DuplicateService.new(project, current_user).execute(issue, canonical_issue)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def move_issue_to_new_project(issue)
       target_project = params.delete(:target_project)
@@ -85,6 +91,7 @@ module Issues
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def get_issue_if_allowed(id, board_group_id = nil)
       return unless id
 
@@ -97,6 +104,7 @@ module Issues
 
       issue if can?(current_user, :update_issue, issue)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def create_confidentiality_note(issue)
       SystemNoteService.change_issue_confidentiality(issue, issue.project, current_user)

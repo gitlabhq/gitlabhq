@@ -94,7 +94,10 @@ module Gitlab
       end
 
       def restore_project
-        @project.update_columns(project_params)
+        Gitlab::Timeless.timeless(@project) do
+          @project.update(project_params)
+        end
+
         @project
       end
 
@@ -196,7 +199,7 @@ module Gitlab
       end
 
       def excluded_keys_for_relation(relation)
-        @reader.attributes_finder.find_excluded_keys(relation)
+        reader.attributes_finder.find_excluded_keys(relation)
       end
     end
   end

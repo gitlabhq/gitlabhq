@@ -34,7 +34,7 @@ FactoryBot.define do
       builds_access_level = [evaluator.builds_access_level, evaluator.repository_access_level].min
       merge_requests_access_level = [evaluator.merge_requests_access_level, evaluator.repository_access_level].min
 
-      project.project_feature.update_columns(
+      project.project_feature.update(
         wiki_access_level: evaluator.wiki_access_level,
         builds_access_level: builds_access_level,
         snippets_access_level: evaluator.snippets_access_level,
@@ -47,7 +47,7 @@ FactoryBot.define do
       # user have access to the project. Our specs don't use said service class,
       # thus we must manually refresh things here.
       unless project.group || project.pending_delete
-        project.add_master(project.owner)
+        project.add_maintainer(project.owner)
       end
 
       project.group&.refresh_members_authorized_projects
@@ -103,7 +103,7 @@ FactoryBot.define do
     end
 
     trait :with_export do
-      after(:create) do |project, evaluator|
+      after(:create) do |project, _evaluator|
         ProjectExportWorker.new.perform(project.creator.id, project.id)
       end
     end
@@ -111,6 +111,33 @@ FactoryBot.define do
     trait :broken_storage do
       after(:create) do |project|
         project.update_column(:repository_storage, 'broken')
+      end
+    end
+
+    # Build a custom repository by specifying a hash of `filename => content` in
+    # the transient `files` attribute. Each file will be created in its own
+    # commit, operating against the master branch. So, the following call:
+    #
+    #     create(:project, :custom_repo, files: { 'foo/a.txt' => 'foo', 'b.txt' => bar' })
+    #
+    # will create a repository containing two files, and two commits, in master
+    trait :custom_repo do
+      transient do
+        files {}
+      end
+
+      after :create do |project, evaluator|
+        raise "Failed to create repository!" unless project.create_repository
+
+        evaluator.files.each do |filename, content|
+          project.repository.create_file(
+            project.creator,
+            filename,
+            content,
+            message: "Automatically created file #{filename}",
+            branch_name: 'master'
+          )
+        end
       end
     end
 
@@ -217,6 +244,10 @@ FactoryBot.define do
     trait(:repository_enabled)      { repository_access_level ProjectFeature::ENABLED }
     trait(:repository_disabled)     { repository_access_level ProjectFeature::DISABLED }
     trait(:repository_private)      { repository_access_level ProjectFeature::PRIVATE }
+
+    trait :auto_devops do
+      association :auto_devops, factory: :project_auto_devops
+    end
   end
 
   # Project with empty repository

@@ -354,18 +354,12 @@ module API
           desc: 'Flowdock token'
         }
       ],
-      'gemnasium' => [
+      'hangouts-chat' => [
         {
           required: true,
-          name: :api_key,
+          name: :webhook,
           type: String,
-          desc: 'Your personal API key on gemnasium.com'
-        },
-        {
-          required: true,
-          name: :token,
-          type: String,
-          desc: "The project's slug on gemnasium.com"
+          desc: 'The Hangouts Chat webhook. e.g. https://chat.googleapis.com/v1/spaces…'
         }
       ],
       'hipchat' => [
@@ -687,7 +681,7 @@ module API
       EmailsOnPushService,
       ExternalWikiService,
       FlowdockService,
-      GemnasiumService,
+      HangoutsChatService,
       HipchatService,
       IrkerService,
       JiraService,
@@ -787,7 +781,7 @@ module API
           service = user_project.find_or_initialize_service(service_slug.underscore)
           service_params = declared_params(include_missing: false).merge(active: true)
 
-          if service.update_attributes(service_params)
+          if service.update(service_params)
             present service, with: Entities::ProjectService
           else
             render_api_error!('400 Bad Request', 400)
@@ -807,7 +801,7 @@ module API
             hash.merge!(key => nil)
           end
 
-          unless service.update_attributes(attrs.merge(active: false))
+          unless service.update(attrs.merge(active: false))
             render_api_error!('400 Bad Request', 400)
           end
         end
@@ -827,11 +821,13 @@ module API
 
     TRIGGER_SERVICES.each do |service_slug, settings|
       helpers do
+        # rubocop: disable CodeReuse/ActiveRecord
         def slash_command_service(project, service_slug, params)
           project.services.active.where(template: false).find do |service|
             service.try(:token) == params[:token] && service.to_param == service_slug.underscore
           end
         end
+        # rubocop: enable CodeReuse/ActiveRecord
       end
 
       params do

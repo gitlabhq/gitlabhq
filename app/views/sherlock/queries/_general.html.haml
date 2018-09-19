@@ -27,7 +27,7 @@
     .card-header
       .float-right
         %button.js-clipboard-trigger.btn.btn-sm{ title: t('sherlock.copy_to_clipboard'), type: :button }
-          %i.fa.fa-clipboard
+          = sprite_icon('duplicate')
         %pre.hidden
           = @query.formatted_query
       %strong
@@ -42,7 +42,7 @@
     .card-header
       .float-right
         %button.js-clipboard-trigger.btn.btn-sm{ title: t('sherlock.copy_to_clipboard'), type: :button }
-          %i.fa.fa-clipboard
+          = sprite_icon('duplicate')
         %pre.hidden
           = @query.explain
       %strong

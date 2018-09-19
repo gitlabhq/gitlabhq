@@ -32,8 +32,8 @@ class SessionsController < Devise::SessionsController
     super do |resource|
       # User has successfully signed in, so clear any unused reset token
       if resource.reset_password_token.present?
-        resource.update_attributes(reset_password_token: nil,
-                                   reset_password_sent_at: nil)
+        resource.update(reset_password_token: nil,
+                        reset_password_sent_at: nil)
       end
 
       # hide the signed-in notification
@@ -89,6 +89,14 @@ class SessionsController < Devise::SessionsController
     ).increment
   end
 
+  ##
+  # We do have some duplication between lib/gitlab/auth/activity.rb here, but
+  # leaving this method here because of backwards compatibility.
+  #
+  def login_counter
+    @login_counter ||= Gitlab::Metrics.counter(:user_session_logins_total, 'User sign in count')
+  end
+
   def log_failed_login
     Gitlab::AppLogger.info("Failed Login: username=#{user_params[:login]} ip=#{request.remote_ip}")
   end
@@ -97,12 +105,9 @@ class SessionsController < Devise::SessionsController
     (options = env["warden.options"]) && options[:action] == "unauthenticated"
   end
 
-  def login_counter
-    @login_counter ||= Gitlab::Metrics.counter(:user_session_logins_total, 'User sign in count')
-  end
-
   # Handle an "initial setup" state, where there's only one user, it's an admin,
   # and they require a password change.
+  # rubocop: disable CodeReuse/ActiveRecord
   def check_initial_setup
     return unless User.limit(2).count == 1 # Count as much 2 to know if we have exactly one
 
@@ -117,6 +122,7 @@ class SessionsController < Devise::SessionsController
     redirect_to edit_user_password_path(reset_password_token: @token),
       notice: "Please create a password for your new account."
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def user_params
     params.require(:user).permit(:login, :password, :remember_me, :otp_attempt, :device_response)
@@ -157,6 +163,8 @@ class SessionsController < Devise::SessionsController
   end
 
   def auto_sign_in_with_provider
+    return unless Gitlab::Auth.omniauth_enabled?
+
     provider = Gitlab.config.omniauth.auto_sign_in_with_provider
     return unless provider.present?
 

@@ -11,7 +11,7 @@ module ApplicationWorker
     set_queue
   end
 
-  module ClassMethods
+  class_methods do
     def inherited(subclass)
       subclass.set_queue
     end

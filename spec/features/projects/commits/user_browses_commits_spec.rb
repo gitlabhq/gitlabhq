@@ -7,7 +7,7 @@ describe 'User browses commits' do
   let(:project) { create(:project, :repository, namespace: user.namespace) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 
@@ -238,6 +238,5 @@ def check_author_link(email, author)
   author_link = find('.commit-author-link')
 
   expect(author_link['href']).to eq(user_path(author))
-  expect(author_link['title']).to eq(email)
   expect(find('.commit-author-name').text).to eq(author.name)
 end

@@ -87,18 +87,18 @@ will later see, is exposed in various places within GitLab. Each time a job that
 has an environment specified and succeeds, a deployment is recorded, remembering
 the Git SHA and environment name.
 
->**Note:**
-Starting with GitLab 8.15, the environment name is exposed to the Runner in
-two forms: `$CI_ENVIRONMENT_NAME`, and `$CI_ENVIRONMENT_SLUG`. The first is
-the name given in `.gitlab-ci.yml` (with any variables expanded), while the
-second is a "cleaned-up" version of the name, suitable for use in URLs, DNS,
-etc.
-
->**Note:**
-Starting with GitLab 9.3, the environment URL is exposed to the Runner via
-`$CI_ENVIRONMENT_URL`. The URL would be expanded from `.gitlab-ci.yml`, or if
-the URL was not defined there, the external URL from the environment would be
-used.
+> **Note:**
+> Starting with GitLab 8.15, the environment name is exposed to the Runner in
+> two forms: `$CI_ENVIRONMENT_NAME`, and `$CI_ENVIRONMENT_SLUG`. The first is
+> the name given in `.gitlab-ci.yml` (with any variables expanded), while the
+> second is a "cleaned-up" version of the name, suitable for use in URLs, DNS,
+> etc.
+>
+> **Note:**
+> Starting with GitLab 9.3, the environment URL is exposed to the Runner via
+> `$CI_ENVIRONMENT_URL`. The URL would be expanded from `.gitlab-ci.yml`, or if
+> the URL was not defined there, the external URL from the environment would be
+> used.
 
 To sum up, with the above `.gitlab-ci.yml` we have achieved that:
 
@@ -134,14 +134,15 @@ There's a bunch of information there, specifically you can see:
 - A button that re-deploys the latest deployment, meaning it runs the job
   defined by the environment name for that specific commit
 
->**Notes:**
-- While you can create environments manually in the web interface, we recommend
-  that you define your environments in `.gitlab-ci.yml` first. They will
-  be automatically created for you after the first deploy.
-- The environments page can only be viewed by Reporters and above. For more
-  information on the permissions, see the [permissions documentation][permissions].
-- Only deploys that happen after your `.gitlab-ci.yml` is properly configured
-  will show up in the "Environment" and "Last deployment" lists.
+> **Notes:**
+>
+> - While you can create environments manually in the web interface, we recommend
+>   that you define your environments in `.gitlab-ci.yml` first. They will
+>   be automatically created for you after the first deploy.
+> - The environments page can only be viewed by Reporters and above. For more
+>   information on the permissions, see the [permissions documentation][permissions].
+> - Only deploys that happen after your `.gitlab-ci.yml` is properly configured
+>   will show up in the "Environment" and "Last deployment" lists.
 
 The information shown in the Environments page is limited to the latest
 deployments, but as you may have guessed an environment can have multiple
@@ -563,13 +564,13 @@ exist, you should see something like:
 
 ## Monitoring environments
 
->**Notes:**
+> **Notes:**
 >
-- For the monitoring dashboard to appear, you need to:
-  - Have enabled the [Prometheus integration][prom]
-  - Configured Prometheus to collect at least one [supported metric](../user/project/integrations/prometheus_library/metrics.md)
-- With GitLab 9.2, all deployments to an environment are shown directly on the
-  monitoring dashboard
+> - For the monitoring dashboard to appear, you need to:
+>   - Have enabled the [Prometheus integration][prom]
+>   - Configured Prometheus to collect at least one [supported metric](../user/project/integrations/prometheus_library/metrics.md)
+> - With GitLab 9.2, all deployments to an environment are shown directly on the
+>  monitoring dashboard
 
 If you have enabled [Prometheus for monitoring system and response metrics](https://docs.gitlab.com/ee/user/project/integrations/prometheus.html), you can monitor the performance behavior of your app running in each environment.
 

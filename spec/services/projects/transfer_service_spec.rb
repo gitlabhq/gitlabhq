@@ -31,12 +31,6 @@ describe Projects::TransferService do
       transfer_project(project, user, group)
     end
 
-    it 'expires full_path cache' do
-      expect(project).to receive(:expires_full_path_cache)
-
-      transfer_project(project, user, group)
-    end
-
     it 'invalidates the user\'s personal_project_count cache' do
       expect(user).to receive(:invalidate_personal_projects_count)
 
@@ -175,6 +169,35 @@ describe Projects::TransferService do
     it { expect(project.errors[:new_namespace]).to include('Cannot move project') }
   end
 
+  context 'target namespace containing the same project name' do
+    before do
+      group.add_owner(user)
+      project.update(name: 'new_name')
+
+      create(:project, name: 'new_name', group: group, path: 'other')
+
+      @result = transfer_project(project, user, group)
+    end
+
+    it { expect(@result).to eq false }
+    it { expect(project.namespace).to eq(user.namespace) }
+    it { expect(project.errors[:new_namespace]).to include('Project with same name or path in target namespace already exists') }
+  end
+
+  context 'target namespace containing the same project path' do
+    before do
+      group.add_owner(user)
+
+      create(:project, name: 'other-name', path: project.path, group: group)
+
+      @result = transfer_project(project, user, group)
+    end
+
+    it { expect(@result).to eq false }
+    it { expect(project.namespace).to eq(user.namespace) }
+    it { expect(project.errors[:new_namespace]).to include('Project with same name or path in target namespace already exists') }
+  end
+
   def transfer_project(project, user, new_namespace)
     service = Projects::TransferService.new(project, user)
 
@@ -247,7 +270,7 @@ describe Projects::TransferService do
     let(:group_member) { create(:user) }
 
     before do
-      group.add_user(owner, GroupMember::MASTER)
+      group.add_user(owner, GroupMember::MAINTAINER)
       group.add_user(group_member, GroupMember::DEVELOPER)
     end
 

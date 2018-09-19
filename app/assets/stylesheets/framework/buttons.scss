@@ -149,7 +149,8 @@
   &.btn-success,
   &.btn-new,
   &.btn-create,
-  &.btn-save {
+  &.btn-save,
+  &.btn-register {
     @include btn-green;
   }
 
@@ -165,6 +166,10 @@
       @include btn-outline($white-light, $red-500, $red-500, $red-500, $white-light, $red-600, $red-600, $red-700);
     }
 
+    &.btn-warning {
+      @include btn-outline($white-light, $orange-500, $orange-500, $orange-500, $white-light, $orange-600, $orange-600, $orange-700);
+    }
+
     &.btn-primary,
     &.btn-info {
       @include btn-outline($white-light, $blue-500, $blue-500, $blue-500, $white-light, $blue-600, $blue-600, $blue-700);
@@ -172,8 +177,7 @@
   }
 
   &.btn-info,
-  &.btn-primary,
-  &.btn-register {
+  &.btn-primary {
     @include btn-blue;
   }
 
@@ -248,7 +252,7 @@
 .btn-terminal {
   svg {
     height: 14px;
-    width: 18px;
+    width: $default-icon-size;
   }
 }
 
@@ -294,6 +298,10 @@
 .btn-clipboard {
   border: 0;
   padding: 0 5px;
+
+  svg {
+    top: auto;
+  }
 }
 
 .input-group-prepend,
@@ -346,7 +354,7 @@
   &:focus {
     cursor: text;
     box-shadow: none;
-    border-color: lighten($dropdown-input-focus-border, 20%);
+    border-color: lighten($blue-300, 20%);
     color: $gray-darkest;
     background-color: $gray-light;
   }
@@ -361,7 +369,7 @@
 }
 
 .clone-dropdown-btn a {
-  color: $dropdown-link-color;
+  color: $gl-gray-700;
 
   &:hover {
     text-decoration: none;
@@ -430,7 +438,7 @@
     &:hover,
     &:active,
     &:focus {
-      color: $gl-link-color;
+      color: $blue-600;
       text-decoration: none;
     }
   }
@@ -441,21 +449,21 @@
     &:hover,
     &:active,
     &:focus {
-      color: $gl-link-color;
+      color: $blue-600;
       text-decoration: none;
     }
   }
 }
 
 .btn-missing {
-  color: $notes-light-color;
+  color: $gl-text-color-secondary;
   border: 1px dashed $border-gray-normal-dashed;
   border-radius: $border-radius-default;
 
   &:hover,
   &:active,
   &:focus {
-    color: $notes-light-color;
+    color: $gl-text-color-secondary;
     background-color: $white-normal;
   }
 }

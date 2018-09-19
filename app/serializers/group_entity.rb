@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GroupEntity < Grape::Entity
   include ActionView::Helpers::NumberHelper
   include RequestAwareEntity
@@ -15,9 +17,11 @@ class GroupEntity < Grape::Entity
   end
 
   expose :permissions do
+    # rubocop: disable CodeReuse/ActiveRecord
     expose :human_group_access do |group, options|
       group.group_members.find_by(user_id: request.current_user)&.human_access
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 
   expose :edit_path do |group|

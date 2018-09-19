@@ -18,7 +18,7 @@
               - commit = blame_group[:commit]
               %td.blame-commit{ class: age_map_class(commit.committed_date, project_duration) }
                 .commit
-                  = author_avatar(commit, size: 36)
+                  = author_avatar(commit, size: 36, has_tooltip: false)
                   .commit-row-title
                     %span.item-title.str-truncated-100
                       = link_to_markdown commit.title, project_commit_path(@project, commit.id), class: "cdark", title: commit.title

@@ -7,6 +7,8 @@ import actions, {
   updateActivityBarView,
   updateTempFlagForEntry,
   setErrorMessage,
+  deleteEntry,
+  renameEntry,
 } from '~/ide/stores/actions';
 import store from '~/ide/stores';
 import * as types from '~/ide/stores/mutation_types';
@@ -303,7 +305,11 @@ describe('Multi-file store actions', () => {
 
   describe('stageAllChanges', () => {
     it('adds all files from changedFiles to stagedFiles', done => {
-      store.state.changedFiles.push(file(), file('new'));
+      const openFile = { ...file(), path: 'test' };
+
+      store.state.openFiles.push(openFile);
+      store.state.stagedFiles.push(openFile);
+      store.state.changedFiles.push(openFile, file('new'));
 
       testAction(
         stageAllChanges,
@@ -314,7 +320,12 @@ describe('Multi-file store actions', () => {
           { type: types.STAGE_CHANGE, payload: store.state.changedFiles[0].path },
           { type: types.STAGE_CHANGE, payload: store.state.changedFiles[1].path },
         ],
-        [],
+        [
+          {
+            type: 'openPendingTab',
+            payload: { file: openFile, keyPrefix: 'staged' },
+          },
+        ],
         done,
       );
     });
@@ -322,7 +333,11 @@ describe('Multi-file store actions', () => {
 
   describe('unstageAllChanges', () => {
     it('removes all files from stagedFiles after unstaging', done => {
-      store.state.stagedFiles.push(file(), file('new'));
+      const openFile = { ...file(), path: 'test' };
+
+      store.state.openFiles.push(openFile);
+      store.state.changedFiles.push(openFile);
+      store.state.stagedFiles.push(openFile, file('new'));
 
       testAction(
         unstageAllChanges,
@@ -332,7 +347,12 @@ describe('Multi-file store actions', () => {
           { type: types.UNSTAGE_CHANGE, payload: store.state.stagedFiles[0].path },
           { type: types.UNSTAGE_CHANGE, payload: store.state.stagedFiles[1].path },
         ],
-        [],
+        [
+          {
+            type: 'openPendingTab',
+            payload: { file: openFile, keyPrefix: 'unstaged' },
+          },
+        ],
         done,
       );
     });
@@ -453,6 +473,75 @@ describe('Multi-file store actions', () => {
         null,
         [{ type: types.SET_ERROR_MESSAGE, payload: 'error' }],
         [],
+        done,
+      );
+    });
+  });
+
+  describe('deleteEntry', () => {
+    it('commits entry deletion', done => {
+      store.state.entries.path = 'testing';
+
+      testAction(
+        deleteEntry,
+        'path',
+        store.state,
+        [{ type: types.DELETE_ENTRY, payload: 'path' }],
+        [{ type: 'burstUnusedSeal' }],
+        done,
+      );
+    });
+  });
+
+  describe('renameEntry', () => {
+    it('renames entry', done => {
+      store.state.entries.test = {
+        tree: [],
+      };
+
+      testAction(
+        renameEntry,
+        { path: 'test', name: 'new-name' },
+        store.state,
+        [
+          {
+            type: types.RENAME_ENTRY,
+            payload: { path: 'test', name: 'new-name', entryPath: null },
+          },
+        ],
+        [{ type: 'deleteEntry', payload: 'test' }],
+        done,
+      );
+    });
+
+    it('renames all entries in tree', done => {
+      store.state.entries.test = {
+        type: 'tree',
+        tree: [
+          {
+            path: 'tree-1',
+          },
+          {
+            path: 'tree-2',
+          },
+        ],
+      };
+
+      testAction(
+        renameEntry,
+        { path: 'test', name: 'new-name' },
+        store.state,
+        [
+          {
+            type: types.RENAME_ENTRY,
+            payload: { path: 'test', name: 'new-name', entryPath: null },
+          },
+        ],
+        [
+          { type: 'renameEntry', payload: { path: 'test', name: 'new-name', entryPath: 'tree-1' } },
+          { type: 'renameEntry', payload: { path: 'test', name: 'new-name', entryPath: 'tree-2' } },
+          { type: 'deleteEntry', payload: 'test' },
+        ],
         done,
       );
     });

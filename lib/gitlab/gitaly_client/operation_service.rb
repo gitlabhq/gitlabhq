@@ -68,6 +68,22 @@ module Gitlab
         raise Gitlab::Git::Repository::InvalidRef, ex
       end
 
+      def user_update_branch(branch_name, user, newrev, oldrev)
+        request = Gitaly::UserUpdateBranchRequest.new(
+          repository: @gitaly_repo,
+          branch_name: encode_binary(branch_name),
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          newrev: encode_binary(newrev),
+          oldrev: encode_binary(oldrev)
+        )
+
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_update_branch, request)
+
+        if pre_receive_error = response.pre_receive_error.presence
+          raise Gitlab::Git::PreReceiveError, pre_receive_error
+        end
+      end
+
       def user_delete_branch(branch_name, user)
         request = Gitaly::UserDeleteBranchRequest.new(
           repository: @gitaly_repo,
@@ -128,13 +144,14 @@ module Gitlab
           branch: encode_binary(target_branch)
         )
 
-        branch_update = GitalyClient.call(
+        response = GitalyClient.call(
           @repository.storage,
           :operation_service,
           :user_ff_branch,
           request
-        ).branch_update
-        Gitlab::Git::OperationService::BranchUpdate.from_gitaly(branch_update)
+        )
+
+        Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
       rescue GRPC::FailedPrecondition => e
         raise Gitlab::Git::CommitError, e
       end
@@ -290,9 +307,9 @@ module Gitlab
           raise Gitlab::Git::CommitError, response.commit_error
         elsif response.create_tree_error.presence
           raise Gitlab::Git::Repository::CreateTreeError, response.create_tree_error
-        else
-          Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
         end
+
+        Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
       end
 
       def user_commit_files_request_header(

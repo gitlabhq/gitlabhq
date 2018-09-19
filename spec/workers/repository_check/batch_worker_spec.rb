@@ -62,4 +62,12 @@ describe RepositoryCheck::BatchWorker do
 
     expect(subject.perform(shard_name)).to eq([])
   end
+
+  it 'does not run if the exclusive lease is taken' do
+    allow(subject).to receive(:try_obtain_lease).and_return(false)
+
+    expect(subject).not_to receive(:perform_repository_checks)
+
+    subject.perform(shard_name)
+  end
 end

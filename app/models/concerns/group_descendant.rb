@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GroupDescendant
   # Returns the hierarchy of a project or group in the from of a hash upto a
   # given top.
@@ -44,8 +46,8 @@ module GroupDescendant
         This error is not user facing, but causes a +1 query.
       MSG
       extras = {
-        parent: parent,
-        child: child,
+        parent: parent.inspect,
+        child: child.inspect,
         preloaded: preloaded.map(&:full_path)
       }
       issue_url = 'https://gitlab.com/gitlab-org/gitlab-ce/issues/40785'

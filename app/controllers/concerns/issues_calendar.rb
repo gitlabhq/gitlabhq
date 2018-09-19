@@ -2,6 +2,7 @@ module IssuesCalendar
   extend ActiveSupport::Concern
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  # rubocop: disable CodeReuse/ActiveRecord
   def render_issues_calendar(issuables)
     @issues = issuables
                   .non_archived
@@ -20,5 +21,6 @@ module IssuesCalendar
       end
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 end

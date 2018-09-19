@@ -131,16 +131,43 @@ export const parseUrlPathname = url => {
   return parsedUrl.pathname.charAt(0) === '/' ? parsedUrl.pathname : `/${parsedUrl.pathname}`;
 };
 
-// We can trust that each param has one & since values containing & will be encoded
-// Remove the first character of search as it is always ?
-export const getUrlParamsArray = () =>
-  window.location.search
-    .slice(1)
-    .split('&')
-    .map(param => {
-      const split = param.split('=');
-      return [decodeURI(split[0]), split[1]].join('=');
-    });
+const splitPath = (path = '') => path
+  .replace(/^\?/, '')
+  .split('&');
+
+export const urlParamsToArray = (path = '') => splitPath(path)
+  .filter(param => param.length > 0)
+  .map(param => {
+    const split = param.split('=');
+    return [decodeURI(split[0]), split[1]].join('=');
+  });
+
+export const getUrlParamsArray = () => urlParamsToArray(window.location.search);
+
+export const urlParamsToObject = (path = '') => splitPath(path)
+  .reduce((dataParam, filterParam) => {
+    if (filterParam === '') {
+      return dataParam;
+    }
+
+    const data = dataParam;
+    let [key, value] = filterParam.split('=');
+    const isArray = key.includes('[]');
+    key = key.replace('[]', '');
+    value = decodeURIComponent(value.replace(/\+/g, ' '));
+
+    if (isArray) {
+      if (!data[key]) {
+        data[key] = [];
+      }
+
+      data[key].push(value);
+    } else {
+      data[key] = value;
+    }
+
+    return data;
+  }, {});
 
 export const isMetaKey = e => e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
 
@@ -491,7 +518,10 @@ export const setCiStatusFavicon = pageUrl =>
       }
       return resetFavicon();
     })
-    .catch(resetFavicon);
+    .catch((error) => {
+      resetFavicon();
+      throw error;
+    });
 
 export const spriteIcon = (icon, className = '') => {
   const classAttribute = className.length > 0 ? `class="${className}"` : '';
@@ -539,6 +569,26 @@ export const addSelectOnFocusBehaviour = (selector = '.js-select-on-focus') => {
         e.preventDefault();
       });
   });
+};
+
+/**
+ * Method to round of values with decimal places
+ * with provided precision.
+ *
+ * Taken from https://stackoverflow.com/a/7343013/414749
+ *
+ * Eg; roundOffFloat(3.141592, 3) = 3.142
+ *
+ * Refer to spec/javascripts/lib/utils/common_utils_spec.js for
+ * more supported examples.
+ *
+ * @param {Float} number
+ * @param {Number} precision
+ */
+export const roundOffFloat = (number, precision = 0) => {
+  // eslint-disable-next-line no-restricted-properties
+  const multiplier = Math.pow(10, precision);
+  return Math.round(number * multiplier) / multiplier;
 };
 
 window.gl = window.gl || {};

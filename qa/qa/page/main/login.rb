@@ -3,26 +3,31 @@ module QA
     module Main
       class Login < Page::Base
         view 'app/views/devise/passwords/edit.html.haml' do
-          element :password_field, 'password_field :password'
-          element :password_confirmation, 'password_field :password_confirmation'
-          element :change_password_button, 'submit "Change your password"'
+          element :password_field
+          element :password_confirmation
+          element :change_password_button
         end
 
         view 'app/views/devise/sessions/_new_base.html.haml' do
-          element :login_field, 'text_field :login'
-          element :password_field, 'password_field :password'
-          element :sign_in_button, 'submit "Sign in"'
+          element :login_field
+          element :password_field
+          element :sign_in_button
         end
 
         view 'app/views/devise/sessions/_new_ldap.html.haml' do
-          element :username_field, 'text_field_tag :username'
-          element :password_field, 'password_field_tag :password'
-          element :sign_in_button, 'submit_tag "Sign in"'
+          element :username_field
+          element :password_field
+          element :sign_in_button
         end
 
         view 'app/views/devise/shared/_tabs_ldap.html.haml' do
-          element :ldap_tab, "link_to server['label']"
-          element :standard_tab, "link_to 'Standard'"
+          element :ldap_tab
+          element :standard_tab
+        end
+
+        view 'app/views/devise/shared/_tabs_normal.html.haml' do
+          element :sign_in_tab
+          element :register_tab
         end
 
         def initialize
@@ -31,53 +36,97 @@ module QA
           # we are already logged-in so we check both cases here.
           wait(max: 500) do
             page.has_css?('.login-page') ||
-              Page::Menu::Main.act { has_personal_area? }
+              Page::Menu::Main.act { has_personal_area?(wait: 0) }
           end
         end
 
-        def sign_in_using_credentials
+        def sign_in_using_credentials(user = nil)
           # Don't try to log-in if we're already logged-in
-          return if Page::Menu::Main.act { has_personal_area? }
+          return if Page::Menu::Main.act { has_personal_area?(wait: 0) }
 
           using_wait_time 0 do
             set_initial_password_if_present
 
+            raise NotImplementedError if Runtime::User.ldap_user? && user&.credentials_given?
+
             if Runtime::User.ldap_user?
               sign_in_using_ldap_credentials
             else
-              sign_in_using_gitlab_credentials
+              sign_in_using_gitlab_credentials(user || Runtime::User)
             end
           end
+
+          Page::Menu::Main.act { has_personal_area? }
+        end
+
+        def sign_in_using_admin_credentials
+          admin = QA::Factory::Resource::User.new.tap do |user|
+            user.username = QA::Runtime::User.admin_username
+            user.password = QA::Runtime::User.admin_password
+          end
+
+          using_wait_time 0 do
+            set_initial_password_if_present
+
+            sign_in_using_gitlab_credentials(admin)
+          end
+
+          Page::Menu::Main.act { has_personal_area? }
         end
 
         def self.path
           '/users/sign_in'
         end
 
+        def sign_in_tab?
+          page.has_button?('Sign in')
+        end
+
+        def ldap_tab?
+          page.has_link?('LDAP')
+        end
+
+        def switch_to_sign_in_tab
+          click_element :sign_in_tab
+        end
+
+        def switch_to_register_tab
+          click_element :register_tab
+        end
+
+        def switch_to_ldap_tab
+          click_element :ldap_tab
+        end
+
+        def switch_to_standard_tab
+          click_element :standard_tab
+        end
+
         private
 
         def sign_in_using_ldap_credentials
-          click_link 'LDAP'
+          switch_to_ldap_tab
 
-          fill_in :username, with: Runtime::User.ldap_username
-          fill_in :password, with: Runtime::User.ldap_password
-          click_button 'Sign in'
+          fill_element :username_field, Runtime::User.ldap_username
+          fill_element :password_field, Runtime::User.ldap_password
+          click_element :sign_in_button
         end
 
-        def sign_in_using_gitlab_credentials
-          click_link 'Standard' if page.has_content?('LDAP')
+        def sign_in_using_gitlab_credentials(user)
+          switch_to_sign_in_tab unless sign_in_tab?
+          switch_to_standard_tab if ldap_tab?
 
-          fill_in :user_login, with: Runtime::User.name
-          fill_in :user_password, with: Runtime::User.password
-          click_button 'Sign in'
+          fill_element :login_field, user.username
+          fill_element :password_field, user.password
+          click_element :sign_in_button
         end
 
         def set_initial_password_if_present
           return unless page.has_content?('Change your password')
 
-          fill_in :user_password, with: Runtime::User.password
-          fill_in :user_password_confirmation, with: Runtime::User.password
-          click_button 'Change your password'
+          fill_element :password_field, Runtime::User.password
+          fill_element :password_confirmation, Runtime::User.password
+          click_element :change_password_button
         end
       end
     end

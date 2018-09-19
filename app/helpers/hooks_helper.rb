@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module HooksHelper
   def link_to_test_hook(hook, trigger)
     path = case hook
@@ -10,7 +12,7 @@ module HooksHelper
 
     trigger_human_name = trigger.to_s.tr('_', ' ').camelize
 
-    link_to path, rel: 'nofollow' do
+    link_to path, rel: 'nofollow', method: :post do
       content_tag(:span, trigger_human_name)
     end
   end

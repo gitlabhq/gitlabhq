@@ -2,7 +2,7 @@
 module StaticModel
   extend ActiveSupport::Concern
 
-  module ClassMethods
+  class_methods do
     # Used by ActiveRecord's polymorphic association to set object_id
     def primary_key
       'id'

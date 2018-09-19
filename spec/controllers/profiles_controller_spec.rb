@@ -78,6 +78,15 @@ describe ProfilesController, :request_store do
       expect(ldap_user.name).not_to eq('John')
       expect(ldap_user.location).to eq('City, Country')
     end
+
+    it 'allows setting a user status' do
+      sign_in(user)
+
+      put :update, user: { status: { message: 'Working hard!' } }
+
+      expect(user.reload.status.message).to eq('Working hard!')
+      expect(response).to have_gitlab_http_status(302)
+    end
   end
 
   describe 'PUT update_username' do

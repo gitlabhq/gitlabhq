@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProtectedBranch < ActiveRecord::Base
   include Gitlab::ShellAdapter
   include ProtectedRef

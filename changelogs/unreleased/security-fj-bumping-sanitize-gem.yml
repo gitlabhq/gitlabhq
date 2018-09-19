@@ -1,5 +1,0 @@
----
-title: Update sanitize gem to 4.6.5 to fix HTML injection vulnerability
-merge_request:
-author:
-type: security

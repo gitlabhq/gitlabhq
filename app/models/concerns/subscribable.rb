@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Subscribable concern
 #
 # Users can subscribe to these models.

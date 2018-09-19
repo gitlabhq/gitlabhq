@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Issues
   class CreateService < Issues::BaseService
     include SpamCheckService

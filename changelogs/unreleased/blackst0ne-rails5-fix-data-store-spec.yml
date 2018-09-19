@@ -1,5 +1,0 @@
----
-title: '[Rails5] Fix "-1 is not a valid data_store"'
-merge_request: 19917
-author: "@blackst0ne"
-type: fixed

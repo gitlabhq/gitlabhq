@@ -1,4 +1,5 @@
 @import 'framework/variables';
+@import 'framework/variables_overrides';
 @import 'framework/mixins';
 
 @import 'bootstrap';
@@ -26,7 +27,6 @@
 @import 'framework/header';
 @import 'framework/highlight';
 @import 'framework/issue_box';
-@import 'framework/jquery';
 @import 'framework/lists';
 @import 'framework/logo';
 @import 'framework/markdown_area';
@@ -63,3 +63,4 @@
 @import 'framework/ci_variable_list';
 @import 'framework/feature_highlight';
 @import 'framework/terms';
+@import 'framework/read_more';

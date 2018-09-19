@@ -16,6 +16,8 @@ describe 'Comments on personal snippets', :js do
   before do
     sign_in user
     visit snippet_path(snippet)
+
+    wait_for_requests
   end
 
   subject { page }
@@ -40,6 +42,15 @@ describe 'Comments on personal snippets', :js do
         expect(page).to have_content(snippet_notes[1].note)
         expect(page).not_to have_selector('.js-note-delete')
         expect(page).to have_selector('.note-emoji-button')
+      end
+    end
+
+    it 'shows the status of a note author' do
+      status = create(:user_status, user: user)
+      visit snippet_path(snippet)
+
+      within("#note_#{snippet_notes[0].id}") do
+        expect(page).to show_user_status(status)
       end
     end
   end

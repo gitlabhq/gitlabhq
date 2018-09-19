@@ -1,9 +1,10 @@
-- commits, hidden = limited_commits(@commits)
+- commits = @commits
+- hidden = @hidden_commit_count
 - commits = Commit.decorate(commits, @project)
 
 .card
   .card-header
-    Commits (#{@commits.count})
+    Commits (#{@total_commit_count})
   - if hidden > 0
     %ul.content-list
       - commits.each do |commit|

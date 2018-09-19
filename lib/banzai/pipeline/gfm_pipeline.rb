@@ -16,6 +16,7 @@ module Banzai
           Filter::MathFilter,
           Filter::ColorFilter,
           Filter::MermaidFilter,
+          Filter::SpacedLinkFilter,
           Filter::VideoLinkFilter,
           Filter::ImageLazyLoadFilter,
           Filter::ImageLinkFilter,
@@ -24,7 +25,19 @@ module Banzai
           Filter::AutolinkFilter,
           Filter::ExternalLinkFilter,
 
+          *reference_filters,
+
+          Filter::TaskListFilter,
+          Filter::InlineDiffFilter,
+
+          Filter::SetDirectionFilter
+        ]
+      end
+
+      def self.reference_filters
+        [
           Filter::UserReferenceFilter,
+          Filter::ProjectReferenceFilter,
           Filter::IssueReferenceFilter,
           Filter::ExternalIssueReferenceFilter,
           Filter::MergeRequestReferenceFilter,
@@ -32,12 +45,7 @@ module Banzai
           Filter::CommitRangeReferenceFilter,
           Filter::CommitReferenceFilter,
           Filter::LabelReferenceFilter,
-          Filter::MilestoneReferenceFilter,
-
-          Filter::TaskListFilter,
-          Filter::InlineDiffFilter,
-
-          Filter::SetDirectionFilter
+          Filter::MilestoneReferenceFilter
         ]
       end
 

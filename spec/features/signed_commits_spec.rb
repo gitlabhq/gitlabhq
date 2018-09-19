@@ -1,19 +1,20 @@
 require 'spec_helper'
 
 describe 'GPG signed commits', :js do
+  set(:ref) { :'2d1096e3a0ecf1d2baf6dee036cc80775d4940ba' }
   let(:project) { create(:project, :repository) }
 
   it 'changes from unverified to verified when the user changes his email to match the gpg key' do
     user = create :user, email: 'unrelated.user@example.org'
-    project.add_master(user)
+    project.add_maintainer(user)
 
-    Sidekiq::Testing.inline! do
+    perform_enqueued_jobs do
       create :gpg_key, key: GpgHelpers::User1.public_key, user: user
     end
 
     sign_in(user)
 
-    visit project_commits_path(project, :'signed-commits')
+    visit project_commits_path(project, ref)
 
     within '#commits-list' do
       expect(page).to have_content 'Unverified'
@@ -21,12 +22,12 @@ describe 'GPG signed commits', :js do
     end
 
     # user changes his email which makes the gpg key verified
-    Sidekiq::Testing.inline! do
+    perform_enqueued_jobs do
       user.skip_reconfirmation!
-      user.update_attributes!(email: GpgHelpers::User1.emails.first)
+      user.update!(email: GpgHelpers::User1.emails.first)
     end
 
-    visit project_commits_path(project, :'signed-commits')
+    visit project_commits_path(project, ref)
 
     within '#commits-list' do
       expect(page).to have_content 'Unverified'
@@ -36,11 +37,11 @@ describe 'GPG signed commits', :js do
 
   it 'changes from unverified to verified when the user adds the missing gpg key' do
     user = create :user, email: GpgHelpers::User1.emails.first
-    project.add_master(user)
+    project.add_maintainer(user)
 
     sign_in(user)
 
-    visit project_commits_path(project, :'signed-commits')
+    visit project_commits_path(project, ref)
 
     within '#commits-list' do
       expect(page).to have_content 'Unverified'
@@ -48,11 +49,11 @@ describe 'GPG signed commits', :js do
     end
 
     # user adds the gpg key which makes the signature valid
-    Sidekiq::Testing.inline! do
+    perform_enqueued_jobs do
       create :gpg_key, key: GpgHelpers::User1.public_key, user: user
     end
 
-    visit project_commits_path(project, :'signed-commits')
+    visit project_commits_path(project, ref)
 
     within '#commits-list' do
       expect(page).to have_content 'Unverified'
@@ -66,7 +67,7 @@ describe 'GPG signed commits', :js do
     end
 
     let(:user_1_key) do
-      Sidekiq::Testing.inline! do
+      perform_enqueued_jobs do
         create :gpg_key, key: GpgHelpers::User1.public_key, user: user_1
       end
     end
@@ -79,20 +80,20 @@ describe 'GPG signed commits', :js do
     end
 
     let(:user_2_key) do
-      Sidekiq::Testing.inline! do
+      perform_enqueued_jobs do
         create :gpg_key, key: GpgHelpers::User2.public_key, user: user_2
       end
     end
 
     before do
       user = create :user
-      project.add_master(user)
+      project.add_maintainer(user)
 
       sign_in(user)
     end
 
     it 'unverified signature' do
-      visit project_commits_path(project, :'signed-commits')
+      visit project_commits_path(project, ref)
 
       within(find('.commit', text: 'signed commit by bette cartwright')) do
         click_on 'Unverified'
@@ -107,7 +108,7 @@ describe 'GPG signed commits', :js do
     it 'unverified signature: user email does not match the committer email, but is the same user' do
       user_2_key
 
-      visit project_commits_path(project, :'signed-commits')
+      visit project_commits_path(project, ref)
 
       within(find('.commit', text: 'signed and authored commit by bette cartwright, different email')) do
         click_on 'Unverified'
@@ -124,7 +125,7 @@ describe 'GPG signed commits', :js do
     it 'unverified signature: user email does not match the committer email' do
       user_2_key
 
-      visit project_commits_path(project, :'signed-commits')
+      visit project_commits_path(project, ref)
 
       within(find('.commit', text: 'signed commit by bette cartwright')) do
         click_on 'Unverified'
@@ -141,7 +142,7 @@ describe 'GPG signed commits', :js do
     it 'verified and the gpg user has a gitlab profile' do
       user_1_key
 
-      visit project_commits_path(project, :'signed-commits')
+      visit project_commits_path(project, ref)
 
       within(find('.commit', text: 'signed and authored commit by nannie bernhard')) do
         click_on 'Verified'
@@ -158,7 +159,7 @@ describe 'GPG signed commits', :js do
     it "verified and the gpg user's profile doesn't exist anymore" do
       user_1_key
 
-      visit project_commits_path(project, :'signed-commits')
+      visit project_commits_path(project, ref)
 
       # wait for the signature to get generated
       within(find('.commit', text: 'signed and authored commit by nannie bernhard')) do

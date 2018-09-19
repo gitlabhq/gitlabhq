@@ -3,51 +3,61 @@ require 'spec_helper'
 describe Gitlab::Auth::LDAP::Access do
   include LdapHelpers
 
-  let(:access) { described_class.new user }
   let(:user) { create(:omniauth_user) }
 
-  describe '.allowed?' do
-    it 'updates the users `last_credential_check_at' do
-      allow(access).to receive(:update_user)
-      expect(access).to receive(:allowed?) { true }
-      expect(described_class).to receive(:open).and_yield(access)
+  subject(:access) { described_class.new(user) }
 
+  describe '.allowed?' do
+    before do
+      allow(access).to receive(:update_user)
+      allow(access).to receive(:allowed?).and_return(true)
+      allow(described_class).to receive(:open).and_yield(access)
+    end
+
+    it "updates the user's `last_credential_check_at`" do
       expect { described_class.allowed?(user) }
         .to change { user.last_credential_check_at }
     end
-  end
 
-  describe '#find_ldap_user' do
-    it 'finds a user by dn first' do
-      expect(Gitlab::Auth::LDAP::Person).to receive(:find_by_dn).and_return(:ldap_user)
+    it "does not update user's `last_credential_check_at` when in a read-only GitLab instance" do
+      allow(Gitlab::Database).to receive(:read_only?).and_return(true)
 
-      access.find_ldap_user
+      expect { described_class.allowed?(user) }
+        .not_to change { user.last_credential_check_at }
     end
   end
 
   describe '#allowed?' do
-    subject { access.allowed? }
-
     context 'when the user cannot be found' do
       before do
-        allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_dn).and_return(nil)
-        allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_email).and_return(nil)
+        stub_ldap_person_find_by_dn(nil)
+        stub_ldap_person_find_by_email(user.email, nil)
       end
 
-      it { is_expected.to be_falsey }
+      it 'returns false' do
+        expect(access.allowed?).to be_falsey
+      end
 
       it 'blocks user in GitLab' do
-        expect(access).to receive(:block_user).with(user, 'does not exist anymore')
+        access.allowed?
+
+        expect(user).to be_blocked
+        expect(user).to be_ldap_blocked
+      end
+
+      it 'logs the reason' do
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          "LDAP account \"123456\" does not exist anymore, " \
+          "blocking Gitlab user \"#{user.name}\" (#{user.email})"
+        )
 
         access.allowed?
       end
     end
 
     context 'when the user is found' do
-      let(:ldap_user) { Gitlab::Auth::LDAP::Person.new(Net::LDAP::Entry.new, 'ldapmain') }
-
       before do
-        allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_dn).and_return(ldap_user)
+        stub_ldap_person_find_by_dn(Net::LDAP::Entry.new)
       end
 
       context 'and the user is disabled via active directory' do
@@ -55,10 +65,22 @@ describe Gitlab::Auth::LDAP::Access do
           allow(Gitlab::Auth::LDAP::Person).to receive(:disabled_via_active_directory?).and_return(true)
         end
 
-        it { is_expected.to be_falsey }
+        it 'returns false' do
+          expect(access.allowed?).to be_falsey
+        end
 
         it 'blocks user in GitLab' do
-          expect(access).to receive(:block_user).with(user, 'is disabled in Active Directory')
+          access.allowed?
+
+          expect(user).to be_blocked
+          expect(user).to be_ldap_blocked
+        end
+
+        it 'logs the reason' do
+          expect(Gitlab::AppLogger).to receive(:info).with(
+            "LDAP account \"123456\" is disabled in Active Directory, " \
+            "blocking Gitlab user \"#{user.name}\" (#{user.email})"
+          )
 
           access.allowed?
         end
@@ -92,7 +114,17 @@ describe Gitlab::Auth::LDAP::Access do
           end
 
           it 'unblocks user in GitLab' do
-            expect(access).to receive(:unblock_user).with(user, 'is not disabled anymore')
+            access.allowed?
+
+            expect(user).not_to be_blocked
+            expect(user).not_to be_ldap_blocked
+          end
+
+          it 'logs the reason' do
+            expect(Gitlab::AppLogger).to receive(:info).with(
+              "LDAP account \"123456\" is not disabled anymore, " \
+              "unblocking Gitlab user \"#{user.name}\" (#{user.email})"
+            )
 
             access.allowed?
           end
@@ -105,18 +137,32 @@ describe Gitlab::Auth::LDAP::Access do
           allow_any_instance_of(Gitlab::Auth::LDAP::Config).to receive(:active_directory).and_return(false)
         end
 
-        it { is_expected.to be_truthy }
+        it 'returns true' do
+          expect(access.allowed?).to be_truthy
+        end
 
         context 'when user cannot be found' do
           before do
-            allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_dn).and_return(nil)
-            allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_email).and_return(nil)
+            stub_ldap_person_find_by_dn(nil)
+            stub_ldap_person_find_by_email(user.email, nil)
           end
 
-          it { is_expected.to be_falsey }
+          it 'returns false' do
+            expect(access.allowed?).to be_falsey
+          end
 
           it 'blocks user in GitLab' do
-            expect(access).to receive(:block_user).with(user, 'does not exist anymore')
+            access.allowed?
+
+            expect(user).to be_blocked
+            expect(user).to be_ldap_blocked
+          end
+
+          it 'logs the reason' do
+            expect(Gitlab::AppLogger).to receive(:info).with(
+              "LDAP account \"123456\" does not exist anymore, " \
+              "blocking Gitlab user \"#{user.name}\" (#{user.email})"
+            )
 
             access.allowed?
           end
@@ -128,7 +174,17 @@ describe Gitlab::Auth::LDAP::Access do
           end
 
           it 'unblocks the user if it exists' do
-            expect(access).to receive(:unblock_user).with(user, 'is available again')
+            access.allowed?
+
+            expect(user).not_to be_blocked
+            expect(user).not_to be_ldap_blocked
+          end
+
+          it 'logs the reason' do
+            expect(Gitlab::AppLogger).to receive(:info).with(
+              "LDAP account \"123456\" is available again, " \
+              "unblocking Gitlab user \"#{user.name}\" (#{user.email})"
+            )
 
             access.allowed?
           end
@@ -150,48 +206,6 @@ describe Gitlab::Auth::LDAP::Access do
       it 'denies access' do
         expect(access.allowed?).to be_falsey
       end
-    end
-  end
-
-  describe '#block_user' do
-    before do
-      user.activate
-      allow(Gitlab::AppLogger).to receive(:info)
-
-      access.block_user user, 'reason'
-    end
-
-    it 'blocks the user' do
-      expect(user).to be_blocked
-      expect(user).to be_ldap_blocked
-    end
-
-    it 'logs the reason' do
-      expect(Gitlab::AppLogger).to have_received(:info).with(
-        "LDAP account \"123456\" reason, " \
-        "blocking Gitlab user \"#{user.name}\" (#{user.email})"
-      )
-    end
-  end
-
-  describe '#unblock_user' do
-    before do
-      user.ldap_block
-      allow(Gitlab::AppLogger).to receive(:info)
-
-      access.unblock_user user, 'reason'
-    end
-
-    it 'activates the user' do
-      expect(user).not_to be_blocked
-      expect(user).not_to be_ldap_blocked
-    end
-
-    it 'logs the reason' do
-      Gitlab::AppLogger.info(
-        "LDAP account \"123456\" reason, " \
-        "unblocking Gitlab user \"#{user.name}\" (#{user.email})"
-      )
     end
   end
 end

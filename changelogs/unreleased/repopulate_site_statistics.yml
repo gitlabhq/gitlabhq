@@ -1,0 +1,5 @@
+---
+title: Migrate NULL wiki_access_level to correct number so we count active wikis correctly
+merge_request: 21030
+author:
+type: changed

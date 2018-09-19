@@ -1,0 +1,5 @@
+---
+title: Update Import/Export to only use new storage uploaders logic
+merge_request: 21409
+author:
+type: added

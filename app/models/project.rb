@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'carrierwave/orm/activerecord'
 
 class Project < ActiveRecord::Base
@@ -25,12 +27,16 @@ class Project < ActiveRecord::Base
   include FastDestroyAll::Helpers
   include WithUploads
   include BatchDestroyDependentAssociations
+  include FeatureGate
+  include OptionallySearch
+  include FromUnion
   extend Gitlab::Cache::RequestCache
 
   extend Gitlab::ConfigHelper
 
   BoardLimitExceeded = Class.new(StandardError)
 
+  STATISTICS_ATTRIBUTE = 'repositories_count'.freeze
   NUMBER_OF_PERMITTED_BOARDS = 1
   UNKNOWN_IMPORT_URL = 'http://unknown.git'.freeze
   # Hashed Storage versions handle rolling out new storage to project and dependents models:
@@ -78,6 +84,9 @@ class Project < ActiveRecord::Base
   after_save :create_import_state, if: ->(project) { project.import? && project.import_state.nil? }
 
   after_create :create_project_feature, unless: :project_feature
+
+  after_create -> { SiteStatistic.track(STATISTICS_ATTRIBUTE) }
+  before_destroy :untrack_site_statistics
 
   after_create :create_ci_cd_settings,
     unless: :ci_cd_settings,
@@ -132,7 +141,6 @@ class Project < ActiveRecord::Base
   has_one :flowdock_service
   has_one :assembla_service
   has_one :asana_service
-  has_one :gemnasium_service
   has_one :mattermost_slash_commands_service
   has_one :mattermost_service
   has_one :slack_slash_commands_service
@@ -154,6 +162,7 @@ class Project < ActiveRecord::Base
   has_one :mock_monitoring_service
   has_one :microsoft_teams_service
   has_one :packagist_service
+  has_one :hangouts_chat_service
 
   # TODO: replace these relations with the fork network versions
   has_one  :forked_project_link,  foreign_key: "forked_to_project_id"
@@ -171,6 +180,7 @@ class Project < ActiveRecord::Base
   has_one :fork_network, through: :fork_network_member
 
   has_one :import_state, autosave: true, class_name: 'ProjectImportState', inverse_of: :project
+  has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   # Merge Requests for target project should be removed with it
   has_many :merge_requests, foreign_key: 'target_project_id'
@@ -185,6 +195,7 @@ class Project < ActiveRecord::Base
   has_many :hooks, class_name: 'ProjectHook'
   has_many :protected_branches
   has_many :protected_tags
+  has_many :repository_languages, -> { order "share DESC" }
 
   has_many :project_authorizations
   has_many :authorized_users, through: :project_authorizations, source: :user, class_name: 'User'
@@ -221,6 +232,8 @@ class Project < ActiveRecord::Base
   has_one :cluster_project, class_name: 'Clusters::Project'
   has_many :clusters, through: :cluster_project, class_name: 'Clusters::Cluster'
   has_many :cluster_ingresses, through: :clusters, source: :application_ingress, class_name: 'Clusters::Applications::Ingress'
+
+  has_many :prometheus_metrics
 
   # Container repositories need to remove data from the container registry,
   # which is not managed by the DB. Hence we're still using dependent: :destroy
@@ -268,7 +281,8 @@ class Project < ActiveRecord::Base
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
   delegate :add_user, :add_users, to: :team
-  delegate :add_guest, :add_reporter, :add_developer, :add_master, :add_role, to: :team
+  delegate :add_guest, :add_reporter, :add_developer, :add_maintainer, :add_role, to: :team
+  delegate :add_master, to: :team # @deprecated
   delegate :group_runners_enabled, :group_runners_enabled=, :group_runners_enabled?, to: :ci_cd_settings
 
   # Validations
@@ -324,6 +338,7 @@ class Project < ActiveRecord::Base
   scope :joined, ->(user) { where('namespace_id != ?', user.namespace_id) }
   scope :starred_by, ->(user) { joins(:users_star_projects).where('users_star_projects.user_id': user.id) }
   scope :visible_to_user, ->(user) { where(id: user.authorized_projects.select(:id).reorder(nil)) }
+  scope :visible_to_user_and_access_level, ->(user, access_level) { where(id: user.authorized_projects.where('project_authorizations.access_level >= ?', access_level).select(:id).reorder(nil)) }
   scope :archived, -> { where(archived: true) }
   scope :non_archived, -> { where(archived: false) }
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
@@ -366,8 +381,30 @@ class Project < ActiveRecord::Base
   chronic_duration_attr :build_timeout_human_readable, :build_timeout, default: 3600
 
   validates :build_timeout, allow_nil: true,
-                            numericality: { greater_than_or_equal_to: 600,
-                                            message: 'needs to be at least 10 minutes' }
+                            numericality: { greater_than_or_equal_to: 10.minutes,
+                                            less_than: 1.month,
+                                            only_integer: true,
+                                            message: 'needs to be beetween 10 minutes and 1 month' }
+
+  # Paginates a collection using a `WHERE id < ?` condition.
+  #
+  # before - A project ID to use for filtering out projects with an equal or
+  #      greater ID. If no ID is given, all projects are included.
+  #
+  # limit - The maximum number of rows to include.
+  def self.paginate_in_descending_order_using_id(
+    before: nil,
+    limit: Kaminari.config.default_per_page
+  )
+    relation = order_id_desc.limit(limit)
+    relation = relation.where('projects.id < ?', before) if before
+
+    relation
+  end
+
+  def self.eager_load_namespace_and_owner
+    includes(namespace: :owner)
+  end
 
   # Returns a collection of projects that is either public or visible to the
   # logged in user.
@@ -456,6 +493,24 @@ class Project < ActiveRecord::Base
       }x
     end
 
+    def reference_postfix
+      '>'
+    end
+
+    def reference_postfix_escaped
+      '&gt;'
+    end
+
+    # Pattern used to extract `namespace/project>` project references from text.
+    # '>' or its escaped form ('&gt;') are checked for because '>' is sometimes escaped
+    # when the reference comes from an external source.
+    def markdown_reference_pattern
+      %r{
+        #{reference_pattern}
+        (#{reference_postfix}|#{reference_postfix_escaped})
+      }x
+    end
+
     def trending
       joins('INNER JOIN trending_projects ON projects.id = trending_projects.project_id')
         .reorder('trending_projects.id ASC')
@@ -487,14 +542,19 @@ class Project < ActiveRecord::Base
 
   def auto_devops_enabled?
     if auto_devops&.enabled.nil?
-      Gitlab::CurrentSettings.auto_devops_enabled?
+      has_auto_devops_implicitly_enabled?
     else
       auto_devops.enabled?
     end
   end
 
+  def has_auto_devops_implicitly_enabled?
+    auto_devops&.enabled.nil? &&
+      (Gitlab::CurrentSettings.auto_devops_enabled? || Feature.enabled?(:force_autodevops_on_by_default, self))
+  end
+
   def has_auto_devops_implicitly_disabled?
-    auto_devops&.enabled.nil? && !Gitlab::CurrentSettings.auto_devops_enabled?
+    auto_devops&.enabled.nil? && !(Gitlab::CurrentSettings.auto_devops_enabled? || Feature.enabled?(:force_autodevops_on_by_default, self))
   end
 
   def empty_repo?
@@ -510,7 +570,6 @@ class Project < ActiveRecord::Base
   end
 
   def cleanup
-    @repository&.cleanup
     @repository = nil
   end
 
@@ -535,6 +594,10 @@ class Project < ActiveRecord::Base
 
   def commit_by(oid:)
     repository.commit_by(oid: oid)
+  end
+
+  def commits_by(oids:)
+    repository.commits_by(oids: oids)
   end
 
   # ref can't be HEAD, can only be branch/tag name or SHA
@@ -636,6 +699,8 @@ class Project < ActiveRecord::Base
       project_import_data.credentials ||= {}
       project_import_data.credentials = project_import_data.credentials.merge(credentials)
     end
+
+    project_import_data
   end
 
   def import?
@@ -884,6 +949,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def to_reference_with_postfix
+    "#{to_reference(full: true)}#{self.class.reference_postfix}"
+  end
+
   # `from` argument can be a Namespace or Project.
   def to_reference(from = nil, full: false)
     if full || cross_namespace_reference?(from)
@@ -1046,12 +1115,14 @@ class Project < ActiveRecord::Base
     find_or_initialize_services.find { |service| service.to_param == name }
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def create_labels
     Label.templates.each do |label|
       params = label.attributes.except('id', 'template', 'created_at', 'updated_at')
       Labels::FindOrCreateService.new(nil, self, params).execute(skip_authorization: true)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def find_service(list, name)
     list.find { |service| service.to_param == name }
@@ -1099,6 +1170,7 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def send_move_instructions(old_path_with_namespace)
     # New project path needs to be committed to the DB or notification will
     # retrieve stale information
@@ -1106,6 +1178,7 @@ class Project < ActiveRecord::Base
       NotificationService.new.project_was_moved(self, old_path_with_namespace)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def owner
     if group
@@ -1115,15 +1188,16 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def execute_hooks(data, hooks_scope = :push_hooks)
     run_after_commit_or_now do
-      hooks.hooks_for(hooks_scope).each do |hook|
+      hooks.hooks_for(hooks_scope).select_active(hooks_scope, data).each do |hook|
         hook.async_execute(data, hooks_scope.to_s)
       end
-
       SystemHooksService.new.execute_hooks(data, hooks_scope)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def execute_services(data, hooks_scope = :push_hooks)
     # Call only service hooks that are active for this scope
@@ -1227,8 +1301,6 @@ class Project < ActiveRecord::Base
     return true if skip_disk_validation
     return false unless repository_storage
 
-    expires_full_path_cache # we need to clear cache to validate renames correctly
-
     # Check if repository with same path already exists on disk we can
     # skip this for the hashed storage because the path does not change
     if legacy_storage? && repository_with_same_path_already_exists?
@@ -1302,14 +1374,6 @@ class Project < ActiveRecord::Base
 
   def visibility_level_field
     :visibility_level
-  end
-
-  def archive!
-    update_attribute(:archived, true)
-  end
-
-  def unarchive!
-    update_attribute(:archived, false)
   end
 
   def change_head(branch)
@@ -1430,8 +1494,7 @@ class Project < ActiveRecord::Base
   end
 
   def all_runners
-    union = Gitlab::SQL::Union.new([runners, group_runners, shared_runners])
-    Ci::Runner.from("(#{union.to_sql}) ci_runners")
+    Ci::Runner.from_union([runners, group_runners, shared_runners])
   end
 
   def active_runners
@@ -1448,13 +1511,17 @@ class Project < ActiveRecord::Base
     self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def open_issues_count(current_user = nil)
     Projects::OpenIssuesCountService.new(self, current_user).count
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
+  # rubocop: disable CodeReuse/ServiceClass
   def open_merge_requests_count
     Projects::OpenMergeRequestsCountService.new(self).count
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def visibility_level_allowed_as_fork?(level = self.visibility_level)
     return true unless forked?
@@ -1535,6 +1602,7 @@ class Project < ActiveRecord::Base
   end
 
   # TODO: what to do here when not using Legacy Storage? Do we still need to rename and delay removal?
+  # rubocop: disable CodeReuse/ServiceClass
   def remove_pages
     # Projects with a missing namespace cannot have their pages removed
     return unless namespace
@@ -1550,47 +1618,34 @@ class Project < ActiveRecord::Base
       PagesWorker.perform_in(5.minutes, :remove, namespace.full_path, temp_path)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def rename_repo
-    new_full_path = build_full_path
+    path_before      = previous_changes['path'].first
+    full_path_before = full_path_was
+    full_path_after  = build_full_path
 
-    Rails.logger.error "Attempting to rename #{full_path_was} -> #{new_full_path}"
+    Gitlab::AppLogger.info("Attempting to rename #{full_path_was} -> #{full_path_after}")
 
     if has_container_registry_tags?
-      Rails.logger.error "Project #{full_path_was} cannot be renamed because container registry tags are present!"
+      Gitlab::AppLogger.info("Project #{full_path_was} cannot be renamed because container registry tags are present!")
 
-      # we currently doesn't support renaming repository if it contains images in container registry
+      # we currently don't support renaming repository if it contains images in container registry
       raise StandardError.new('Project cannot be renamed, because images are present in its container registry')
     end
 
-    expire_caches_before_rename(full_path_was)
+    expire_caches_before_rename(full_path_before)
 
-    if storage.rename_repo
-      Gitlab::AppLogger.info "Project was renamed: #{full_path_was} -> #{new_full_path}"
-      rename_repo_notify!
-      after_rename_repo
+    if rename_or_migrate_repository!
+      Gitlab::AppLogger.info("Project was renamed: #{full_path_before} -> #{full_path_after}")
+      after_rename_repository(full_path_before, path_before)
     else
-      Rails.logger.error "Repository could not be renamed: #{full_path_was} -> #{new_full_path}"
+      Gitlab::AppLogger.info("Repository could not be renamed: #{full_path_before} -> #{full_path_after}")
 
       # if we cannot move namespace directory we should rollback
       # db changes in order to prevent out of sync between db and fs
-      raise StandardError.new('repository cannot be renamed')
+      raise StandardError.new('Repository cannot be renamed')
     end
-  end
-
-  def after_rename_repo
-    write_repository_config
-
-    path_before_change = previous_changes['path'].first
-
-    # We need to check if project had been rolled out to move resource to hashed storage or not and decide
-    # if we need execute any take action or no-op.
-
-    unless hashed_storage?(:attachments)
-      Gitlab::UploadsTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
-    end
-
-    Gitlab::PagesTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
   end
 
   def write_repository_config(gl_full_path: full_path)
@@ -1601,18 +1656,6 @@ class Project < ActiveRecord::Base
   rescue Gitlab::Git::Repository::NoRepository => e
     Rails.logger.error("Error writing to .git/config for project #{full_path} (#{id}): #{e.message}.")
     nil
-  end
-
-  def rename_repo_notify!
-    # When we import a project overwriting the original project, there
-    # is a move operation. In that case we don't want to send the instructions.
-    send_move_instructions(full_path_was) unless import_started?
-    expires_full_path_cache
-
-    self.old_path_with_namespace = full_path_was
-    SystemHooksService.new.execute_hooks_for(self, :rename)
-
-    reload_repository!
   end
 
   def after_import
@@ -1636,6 +1679,7 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def after_create_default_branch
     return unless default_branch
 
@@ -1646,16 +1690,17 @@ class Project < ActiveRecord::Base
       params = {
         name: default_branch,
         push_access_levels_attributes: [{
-          access_level: Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_PUSH ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+          access_level: Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_PUSH ? Gitlab::Access::DEVELOPER : Gitlab::Access::MAINTAINER
         }],
         merge_access_levels_attributes: [{
-          access_level: Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+          access_level: Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE ? Gitlab::Access::DEVELOPER : Gitlab::Access::MAINTAINER
         }]
       }
 
       ProtectedBranches::CreateService.new(self, creator, params).execute(skip_authorization: true)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def remove_import_jid
     return unless import_jid
@@ -1703,16 +1748,12 @@ class Project < ActiveRecord::Base
     import_export_shared.archive_path
   end
 
-  def export_project_path
-    Dir.glob("#{export_path}/*export.tar.gz").max_by { |f| File.ctime(f) }
-  end
-
   def export_status
     if export_in_progress?
       :started
     elsif after_export_in_progress?
       :after_export_action
-    elsif export_project_path
+    elsif export_file_exists?
       :finished
     else
       :none
@@ -1728,15 +1769,18 @@ class Project < ActiveRecord::Base
   end
 
   def remove_exports
-    return nil unless export_path.present?
+    return unless export_file_exists?
 
-    FileUtils.rm_rf(export_path)
+    import_export_upload.remove_export_file!
+    import_export_upload.save
   end
 
-  def remove_exported_project_file
-    return unless export_project_path.present?
+  def export_file_exists?
+    export_file&.file
+  end
 
-    FileUtils.rm_f(export_project_path)
+  def export_file
+    import_export_upload&.export_file
   end
 
   def full_path_slug
@@ -1887,9 +1931,11 @@ class Project < ActiveRecord::Base
   # @deprecated cannot remove yet because it has an index with its name in elasticsearch
   alias_method :path_with_namespace, :full_path
 
+  # rubocop: disable CodeReuse/ServiceClass
   def forks_count
     Projects::ForksCountService.new(self).count
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def legacy_storage?
     [nil, 0].include?(self.storage_version)
@@ -1976,12 +2022,10 @@ class Project < ActiveRecord::Base
   def badges
     return project_badges unless group
 
-    group_badges_rel = GroupBadge.where(group: group.self_and_ancestors)
-
-    union = Gitlab::SQL::Union.new([project_badges.select(:id),
-                                    group_badges_rel.select(:id)])
-
-    Badge.where("id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+    Badge.from_union([
+      project_badges,
+      GroupBadge.where(group: group.self_and_ancestors)
+    ])
   end
 
   def merge_requests_allowing_push_to_user(user)
@@ -2032,7 +2076,61 @@ class Project < ActiveRecord::Base
     auto_cancel_pending_pipelines == 'enabled'
   end
 
+  # Update the default branch querying the remote to determine its HEAD
+  def update_root_ref(remote_name)
+    root_ref = repository.find_remote_root_ref(remote_name)
+    change_head(root_ref) if root_ref.present? && root_ref != default_branch
+  end
+
   private
+
+  # rubocop: disable CodeReuse/ServiceClass
+  def rename_or_migrate_repository!
+    if Gitlab::CurrentSettings.hashed_storage_enabled? &&
+        storage_upgradable? &&
+        Feature.disabled?(:skip_hashed_storage_upgrade) # kill switch in case we need to disable upgrade behavior
+      ::Projects::HashedStorageMigrationService.new(self, full_path_was).execute
+    else
+      storage.rename_repo
+    end
+  end
+  # rubocop: enable CodeReuse/ServiceClass
+
+  def storage_upgradable?
+    storage_version != LATEST_STORAGE_VERSION
+  end
+
+  def after_rename_repository(full_path_before, path_before)
+    execute_rename_repository_hooks!(full_path_before)
+
+    write_repository_config
+
+    # We need to check if project had been rolled out to move resource to hashed storage or not and decide
+    # if we need execute any take action or no-op.
+    unless hashed_storage?(:attachments)
+      Gitlab::UploadsTransfer.new.rename_project(path_before, self.path, namespace.full_path)
+    end
+
+    Gitlab::PagesTransfer.new.rename_project(path_before, self.path, namespace.full_path)
+  end
+
+  def untrack_site_statistics
+    SiteStatistic.untrack(STATISTICS_ATTRIBUTE)
+    self.project_feature.untrack_statistics_for_deletion!
+  end
+
+  # rubocop: disable CodeReuse/ServiceClass
+  def execute_rename_repository_hooks!(full_path_before)
+    # When we import a project overwriting the original project, there
+    # is a move operation. In that case we don't want to send the instructions.
+    send_move_instructions(full_path_before) unless import_started?
+
+    self.old_path_with_namespace = full_path_before
+    SystemHooksService.new.execute_hooks_for(self, :rename)
+
+    reload_repository!
+  end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def storage
     @storage ||=
@@ -2162,10 +2260,13 @@ class Project < ActiveRecord::Base
       merge_requests = source_of_merge_requests.opened
                          .where(allow_collaboration: true)
 
-      if branch_name
-        merge_requests.find_by(source_branch: branch_name)&.can_be_merged_by?(user)
-      else
-        merge_requests.any? { |merge_request| merge_request.can_be_merged_by?(user) }
+      # Issue for N+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/49322
+      Gitlab::GitalyClient.allow_n_plus_1_calls do
+        if branch_name
+          merge_requests.find_by(source_branch: branch_name)&.can_be_merged_by?(user)
+        else
+          merge_requests.any? { |merge_request| merge_request.can_be_merged_by?(user) }
+        end
       end
     end
 

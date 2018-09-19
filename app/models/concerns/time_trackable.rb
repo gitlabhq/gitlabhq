@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == TimeTrackable concern
 #
 # Contains functionality related to objects that support time tracking.

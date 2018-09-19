@@ -1,0 +1,6 @@
+---
+title: Adds count for different board list types (label lists, assignee lists, and
+  milestone lists) to usage statistics.
+merge_request: 21208
+author:
+type: changed

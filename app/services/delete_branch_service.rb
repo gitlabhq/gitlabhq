@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DeleteBranchService < BaseService
   def execute(branch_name)
     repository = project.repository

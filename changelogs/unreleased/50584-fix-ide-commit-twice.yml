@@ -1,0 +1,5 @@
+---
+title: Fix Web IDE unable to commit to same file twice
+merge_request: 21372
+author:
+type: fixed

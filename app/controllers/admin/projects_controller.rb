@@ -19,6 +19,7 @@ class Admin::ProjectsController < Admin::ApplicationController
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def show
     if @group
       @group_members = present_members(
@@ -30,7 +31,9 @@ class Admin::ProjectsController < Admin::ApplicationController
     @requesters = present_members(
       AccessRequestsFinder.new(@project).execute(current_user))
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def transfer
     namespace = Namespace.find_by(id: params[:new_namespace_id])
     ::Projects::TransferService.new(@project, current_user, params.dup).execute(namespace)
@@ -38,6 +41,7 @@ class Admin::ProjectsController < Admin::ApplicationController
     @project.reload
     redirect_to admin_project_path(@project)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def repository_check
     RepositoryCheck::SingleRepositoryWorker.perform_async(@project.id)

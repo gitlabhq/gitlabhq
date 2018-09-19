@@ -26,7 +26,7 @@ class Profiles::KeysController < Profiles::ApplicationController
     Keys::DestroyService.new(current_user).execute(@key)
 
     respond_to do |format|
-      format.html { redirect_to profile_keys_url, status: 302 }
+      format.html { redirect_to profile_keys_url, status: :found }
       format.js { head :ok }
     end
   end

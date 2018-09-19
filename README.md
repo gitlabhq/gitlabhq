@@ -1,11 +1,5 @@
 # GitLab
 
-[![Build status](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/build.svg)](https://gitlab.com/gitlab-org/gitlab-ce/commits/master)
-[![Overall test coverage](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg)](https://gitlab.com/gitlab-org/gitlab-ce/pipelines)
-[![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.svg)](https://codeclimate.com/github/gitlabhq/gitlabhq)
-[![Core Infrastructure Initiative Best Practices](https://bestpractices.coreinfrastructure.org/projects/42/badge)](https://bestpractices.coreinfrastructure.org/projects/42)
-[![Gitter](https://badges.gitter.im/gitlabhq/gitlabhq.svg)](https://gitter.im/gitlabhq/gitlabhq?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
 ## Test coverage
 
 - [![Ruby coverage](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=coverage)](https://gitlab-org.gitlab.io/gitlab-ce/coverage-ruby) Ruby
@@ -64,7 +58,7 @@ You can access a new installation with the login **`root`** and password **`5ive
 
 ## Contributing
 
-GitLab is an open source project and we are very happy to accept community contributions. Please refer to [CONTRIBUTING.md](/CONTRIBUTING.md) for details.
+GitLab is an open source project and we are very happy to accept community contributions. Please refer to [Contributing to GitLab page](https://about.gitlab.com/contributing/) for more details.
 
 ## Licensing
 
@@ -72,7 +66,7 @@ GitLab Community Edition (CE) is available freely under the MIT Expat license.
 
 All third party components incorporated into the GitLab Software are licensed under the original license provided by the owner of the applicable component.
 
-All Documentation content that resides under the doc/ directory of this repository is licensed under Creative Commons: CC BY-SA 4.0.
+All Documentation content that resides under the `doc/` directory of this repository is licensed under Creative Commons: CC BY-SA 4.0.
 
 ## Install a development environment
 

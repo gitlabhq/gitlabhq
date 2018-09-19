@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Milestone < ActiveRecord::Base
   # Represents a "No Milestone" state used for filtering Issues and Merge
   # Requests that have no milestone assigned.
@@ -43,6 +45,9 @@ class Milestone < ActiveRecord::Base
 
     where(conditions.reduce(:or))
   end
+
+  scope :order_by_name_asc, -> { order(Arel::Nodes::Ascending.new(arel_table[:title].lower)) }
+  scope :reorder_by_due_date_asc, -> { reorder(Gitlab::Database.nulls_last_order('due_date', 'ASC')) }
 
   validates :group, presence: true, unless: :project
   validates :project, presence: true, unless: :group
@@ -131,9 +136,10 @@ class Milestone < ActiveRecord::Base
       rel.order(:project_id, :due_date).select('DISTINCT ON (project_id) id')
     else
       rel
-        .group(:project_id)
+        .group(:project_id, :due_date, :id)
         .having('due_date = MIN(due_date)')
         .pluck(:id, :project_id, :due_date)
+        .uniq(&:second)
         .map(&:first)
     end
   end
@@ -143,18 +149,25 @@ class Milestone < ActiveRecord::Base
   end
 
   def self.sort_by_attribute(method)
-    case method.to_s
-    when 'due_date_asc'
-      reorder(Gitlab::Database.nulls_last_order('due_date', 'ASC'))
-    when 'due_date_desc'
-      reorder(Gitlab::Database.nulls_last_order('due_date', 'DESC'))
-    when 'start_date_asc'
-      reorder(Gitlab::Database.nulls_last_order('start_date', 'ASC'))
-    when 'start_date_desc'
-      reorder(Gitlab::Database.nulls_last_order('start_date', 'DESC'))
-    else
-      order_by(method)
-    end
+    sorted =
+      case method.to_s
+      when 'due_date_asc'
+        reorder_by_due_date_asc
+      when 'due_date_desc'
+        reorder(Gitlab::Database.nulls_last_order('due_date', 'DESC'))
+      when 'name_asc'
+        reorder(Arel::Nodes::Ascending.new(arel_table[:title].lower))
+      when 'name_desc'
+        reorder(Arel::Nodes::Descending.new(arel_table[:title].lower))
+      when 'start_date_asc'
+        reorder(Gitlab::Database.nulls_last_order('start_date', 'ASC'))
+      when 'start_date_desc'
+        reorder(Gitlab::Database.nulls_last_order('start_date', 'DESC'))
+      else
+        order_by(method)
+      end
+
+    sorted.with_order_id_desc
   end
 
   ##

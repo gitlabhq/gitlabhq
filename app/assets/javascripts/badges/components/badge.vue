@@ -1,13 +1,11 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import Tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
   name: 'Badge',
   components: {
     Icon,
-    LoadingIcon,
     Tooltip,
   },
   directives: {
@@ -80,7 +78,7 @@ export default {
       />
     </a>
 
-    <loading-icon
+    <gl-loading-icon
       v-show="isLoading"
       :inline="true"
     />
@@ -93,7 +91,7 @@ export default {
         <icon
           :size="16"
           class="prepend-left-8 append-right-8"
-          name="doc_image"
+          name="doc-image"
           aria-hidden="true"
         />
       </div>

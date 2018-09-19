@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import mutations from '~/notes/stores/mutations';
 import {
   note,
@@ -71,6 +72,20 @@ describe('Notes Store mutations', () => {
       mutations.EXPAND_DISCUSSION(state, { discussionId: discussion.id });
 
       expect(state.discussions[0].expanded).toEqual(true);
+    });
+  });
+
+  describe('COLLAPSE_DISCUSSION', () => {
+    it('should collpase an expanded discussion', () => {
+      const discussion = Object.assign({}, discussionMock, { expanded: true });
+
+      const state = {
+        discussions: [discussion],
+      };
+
+      mutations.COLLAPSE_DISCUSSION(state, { discussionId: discussion.id });
+
+      expect(state.discussions[0].expanded).toEqual(false);
     });
   });
 
@@ -319,7 +334,7 @@ describe('Notes Store mutations', () => {
     });
   });
 
-  describe('SET_NOTES_FETCHING_STATE', () => {
+  describe('SET_NOTES_FETCHED_STATE', () => {
     it('should set the given state', () => {
       const state = {
         isNotesFetched: false,
@@ -327,6 +342,39 @@ describe('Notes Store mutations', () => {
 
       mutations.SET_NOTES_FETCHED_STATE(state, true);
       expect(state.isNotesFetched).toEqual(true);
+    });
+  });
+
+  describe('SET_DISCUSSION_DIFF_LINES', () => {
+    it('sets truncated_diff_lines', () => {
+      const state = {
+        discussions: [
+          {
+            id: 1,
+          },
+        ],
+      };
+
+      mutations.SET_DISCUSSION_DIFF_LINES(state, { discussionId: 1, diffLines: ['test'] });
+
+      expect(state.discussions[0].truncated_diff_lines).toEqual(['test']);
+    });
+
+    it('keeps reactivity of discussion', () => {
+      const state = {};
+      Vue.set(state, 'discussions', [
+        {
+          id: 1,
+          expanded: false,
+        },
+      ]);
+      const discussion = state.discussions[0];
+
+      mutations.SET_DISCUSSION_DIFF_LINES(state, { discussionId: 1, diffLines: ['test'] });
+
+      discussion.expanded = true;
+
+      expect(state.discussions[0].expanded).toBe(true);
     });
   });
 });

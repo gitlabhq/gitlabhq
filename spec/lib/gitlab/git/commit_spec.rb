@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Gitlab::Git::Commit, seed_helper: true do
+describe Gitlab::Git::Commit, :seed_helper do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
   let(:commit) { described_class.find(repository, SeedRepo::Commit::ID) }
   let(:rugged_commit) do
@@ -27,7 +27,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
       }
 
       @parents = [repo.head.target]
-      @gitlab_parents = @parents.map { |c| described_class.decorate(repository, c) }
+      @gitlab_parents = @parents.map { |c| described_class.find(repository, c.oid) }
       @tree = @parents.first.tree
 
       sha = Rugged::Commit.create(
@@ -41,7 +41,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
       )
 
       @raw_commit = repo.lookup(sha)
-      @commit = described_class.new(repository, @raw_commit)
+      @commit = described_class.find(repository, sha)
     end
 
     it { expect(@commit.short_id).to eq(@raw_commit.oid[0..10]) }
@@ -488,13 +488,15 @@ describe Gitlab::Git::Commit, seed_helper: true do
     end
   end
 
-  describe '#init_from_rugged' do
-    let(:gitlab_commit) { described_class.new(repository, rugged_commit) }
-    subject { gitlab_commit }
+  skip 'move this test to gitaly-ruby' do
+    describe '#init_from_rugged' do
+      let(:gitlab_commit) { described_class.new(repository, rugged_commit) }
+      subject { gitlab_commit }
 
-    describe '#id' do
-      subject { super().id }
-      it { is_expected.to eq(SeedRepo::Commit::ID) }
+      describe '#id' do
+        subject { super().id }
+        it { is_expected.to eq(SeedRepo::Commit::ID) }
+      end
     end
   end
 

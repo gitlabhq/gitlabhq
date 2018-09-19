@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module NotesHelper
   def note_target_fields(note)
     if note.noteable
@@ -108,7 +110,7 @@ module NotesHelper
   end
 
   def noteable_note_url(note)
-    Gitlab::UrlBuilder.build(note)
+    Gitlab::UrlBuilder.build(note) if note.id
   end
 
   def form_resources
@@ -169,6 +171,7 @@ module NotesHelper
       registerPath: new_session_path(:user, redirect_to_referer: 'yes', anchor: 'register-pane'),
       newSessionPath: new_session_path(:user, redirect_to_referer: 'yes'),
       markdownDocsPath: help_page_path('user/markdown'),
+      markdownVersion: issuable.cached_markdown_version,
       quickActionsDocsPath: help_page_path('user/project/quick_actions'),
       closePath: close_issuable_path(issuable),
       reopenPath: reopen_issuable_path(issuable),

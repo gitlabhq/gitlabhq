@@ -10,7 +10,7 @@ describe 'Issue Boards add issue modal filtering', :js do
   let!(:issue1) { create(:issue, project: project) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
 
     sign_in(user)
   end

@@ -1,0 +1,5 @@
+---
+title: Fix label list item container height when there is no label description
+merge_request: 21106
+author:
+type: fixed

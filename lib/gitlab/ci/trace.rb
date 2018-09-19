@@ -164,6 +164,8 @@ module Gitlab
 
       def create_build_trace!(job, path)
         File.open(path) do |stream|
+          # TODO: Set `file_format: :raw` after we've cleaned up legacy traces migration
+          # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20307
           job.create_job_artifacts_trace!(
             project: job.project,
             file_type: :trace,

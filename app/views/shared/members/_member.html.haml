@@ -11,6 +11,7 @@
       = image_tag avatar_icon_for_user(user, 40), class: "avatar s40", alt: ''
       .user-info
         = link_to user.name, user_path(user), class: 'member'
+        = user_status(user)
         %span.cgray= user.to_reference
 
         - if user == current_user

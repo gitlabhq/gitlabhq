@@ -1,5 +1,0 @@
----
-title: Close revoke deploy token modal on escape keypress
-merge_request: 20347
-author: George Tsiolis
-type: changed

@@ -1,6 +1,0 @@
----
-title: Fix bug where maintainer would not be allowed to push to forks with merge requests
-  that have `Allow maintainer edits` enabled.
-merge_request: 18968
-author:
-type: fixed

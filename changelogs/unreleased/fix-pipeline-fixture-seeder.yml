@@ -1,0 +1,5 @@
+---
+title: Fix pipeline fixture seeder
+merge_request: 21088
+author:
+type: fixed

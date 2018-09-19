@@ -1,0 +1,5 @@
+---
+title: Update rubyzip to 1.2.2 (CVE-2018-1000544)
+merge_request: 21460
+author: Takuya Noguchi
+type: security

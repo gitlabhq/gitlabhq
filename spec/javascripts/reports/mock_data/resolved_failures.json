@@ -1,0 +1,37 @@
+{
+  "status": "success",
+  "summary": { "total": 11, "resolved": 2, "failed": 0 },
+  "suites": [
+    {
+      "name": "rspec:pg",
+      "status": "success",
+      "summary": { "total": 8, "resolved": 2, "failed": 0 },
+      "new_failures": [],
+      "resolved_failures": [
+        {
+          "status": "success",
+          "name": "Test#sum when a is 1 and b is 2 returns summary",
+          "execution_time": 0.000411,
+          "system_output": null,
+          "stack_trace": null
+        },
+        {
+          "status": "success",
+          "name": "Test#sum when a is 100 and b is 200 returns summary",
+          "execution_time": 7.6e-5,
+          "system_output": null,
+          "stack_trace": null
+        }
+      ],
+      "existing_failures": []
+    },
+    {
+      "name": "java ant",
+      "status": "success",
+      "summary": { "total": 3, "resolved": 0, "failed": 0 },
+      "new_failures": [],
+      "resolved_failures": [],
+      "existing_failures": []
+    }
+  ]
+}

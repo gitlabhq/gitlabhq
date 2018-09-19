@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module Filter
     # HTML filter that replaces :emoji: and unicode with images.

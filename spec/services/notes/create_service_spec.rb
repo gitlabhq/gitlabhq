@@ -10,7 +10,7 @@ describe Notes::CreateService do
 
   describe '#execute' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context "valid params" do
@@ -145,7 +145,9 @@ describe Notes::CreateService do
           let(:note_text) { %(HELLO\n/close\n/assign @#{user.username}\nWORLD) }
 
           it 'saves the note and does not alter the note text' do
-            expect_any_instance_of(Issues::UpdateService).to receive(:execute).and_call_original
+            service = double(:service)
+            allow(Issues::UpdateService).to receive(:new).and_return(service)
+            expect(service).to receive(:execute)
 
             note = described_class.new(project, user, opts.merge(note: note_text)).execute
 

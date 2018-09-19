@@ -9,7 +9,8 @@ export default {
   props: {
     author: {
       type: Object,
-      required: true,
+      required: false,
+      default: () => ({}),
     },
     createdAt: {
       type: String,
@@ -21,7 +22,7 @@ export default {
       default: '',
     },
     noteId: {
-      type: Number,
+      type: String,
       required: true,
     },
     includeToggle: {
@@ -72,12 +73,21 @@ export default {
         {{ __('Toggle discussion') }}
       </button>
     </div>
-    <a :href="author.path">
+    <a
+      v-if="Object.keys(author).length"
+      :href="author.path"
+    >
       <span class="note-header-author-name">{{ author.name }}</span>
+      <span
+        v-if="author.status_tooltip_html"
+        v-html="author.status_tooltip_html"></span>
       <span class="note-headline-light">
         @{{ author.username }}
       </span>
     </a>
+    <span v-else>
+      {{ __('A deleted user') }}
+    </span>
     <span class="note-headline-light">
       <span class="note-headline-meta">
         <template v-if="actionText">

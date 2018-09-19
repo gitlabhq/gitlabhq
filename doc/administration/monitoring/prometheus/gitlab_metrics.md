@@ -22,7 +22,7 @@ collect metrics from this endpoint. We recommend setting up another Prometheus
 server, because the embedded server configuration is overwritten once every
 [reconfigure of GitLab][reconfigure]. In the future this will not be required.
 
-## Metrics available
+## Unicorn Metrics available
 
 The following metrics are available:
 

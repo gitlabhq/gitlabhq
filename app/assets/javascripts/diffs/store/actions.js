@@ -3,6 +3,7 @@ import axios from '~/lib/utils/axios_utils';
 import Cookies from 'js-cookie';
 import { handleLocationHash, historyPushState } from '~/lib/utils/common_utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
+import { getDiffPositionByLineCode } from './utils';
 import * as types from './mutation_types';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
@@ -27,6 +28,55 @@ export const fetchDiffFiles = ({ state, commit }) => {
       return Vue.nextTick();
     })
     .then(handleLocationHash);
+};
+
+// This is adding line discussions to the actual lines in the diff tree
+// once for parallel and once for inline mode
+export const assignDiscussionsToDiff = ({ state, commit }, allLineDiscussions) => {
+  const diffPositionByLineCode = getDiffPositionByLineCode(state.diffFiles);
+
+  Object.values(allLineDiscussions).forEach(discussions => {
+    if (discussions.length > 0) {
+      const { fileHash } = discussions[0];
+      commit(types.SET_LINE_DISCUSSIONS_FOR_FILE, {
+        fileHash,
+        discussions,
+        diffPositionByLineCode,
+      });
+    }
+  });
+};
+
+export const removeDiscussionsFromDiff = ({ commit }, removeDiscussion) => {
+  const { fileHash, line_code } = removeDiscussion;
+  commit(types.REMOVE_LINE_DISCUSSIONS_FOR_FILE, { fileHash, lineCode: line_code });
+};
+
+export const startRenderDiffsQueue = ({ state, commit }) => {
+  const checkItem = () =>
+    new Promise(resolve => {
+      const nextFile = state.diffFiles.find(
+        file => !file.renderIt && (!file.collapsed || !file.text),
+      );
+
+      if (nextFile) {
+        requestAnimationFrame(() => {
+          commit(types.RENDER_FILE, nextFile);
+        });
+        requestIdleCallback(
+          () => {
+            checkItem()
+              .then(resolve)
+              .catch(() => {});
+          },
+          { timeout: 1000 },
+        );
+      } else {
+        resolve();
+      }
+    });
+
+  return checkItem();
 };
 
 export const setInlineDiffViewType = ({ commit }) => {
@@ -82,14 +132,32 @@ export const expandAllFiles = ({ commit }) => {
   commit(types.EXPAND_ALL_FILES);
 };
 
-export default {
-  setBaseConfig,
-  fetchDiffFiles,
-  setInlineDiffViewType,
-  setParallelDiffViewType,
-  showCommentForm,
-  cancelCommentForm,
-  loadMoreLines,
-  loadCollapsedDiff,
-  expandAllFiles,
+/**
+ * Toggles the file discussions after user clicked on the toggle discussions button.
+ *
+ * Gets the discussions for the provided diff.
+ *
+ * If all discussions are expanded, it will collapse all of them
+ * If all discussions are collapsed, it will expand all of them
+ * If some discussions are open and others closed, it will expand the closed ones.
+ *
+ * @param {Object} diff
+ */
+export const toggleFileDiscussions = ({ getters, dispatch }, diff) => {
+  const discussions = getters.getDiffFileDiscussions(diff);
+  const shouldCloseAll = getters.diffHasAllExpandedDiscussions(diff);
+  const shouldExpandAll = getters.diffHasAllCollpasedDiscussions(diff);
+
+  discussions.forEach(discussion => {
+    const data = { discussionId: discussion.id };
+
+    if (shouldCloseAll) {
+      dispatch('collapseDiscussion', data, { root: true });
+    } else if (shouldExpandAll || (!shouldCloseAll && !shouldExpandAll && !discussion.expanded)) {
+      dispatch('expandDiscussion', data, { root: true });
+    }
+  });
 };
+
+// prevent babel-plugin-rewire from generating an invalid default during karma tests
+export default () => {};

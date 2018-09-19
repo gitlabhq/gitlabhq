@@ -1,0 +1,63 @@
+- expanded = Rails.env.test?
+- protocols = Gitlab::UrlSanitizer::ALLOWED_SCHEMES.join('|')
+
+%section.settings.project-mirror-settings.js-mirror-settings.no-animate#js-push-remote-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4= _('Mirroring repositories')
+    %button.btn.js-settings-toggle
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically.')
+      = link_to _('Read more'), help_page_path('workflow/repository_mirroring'), target: '_blank'
+
+  .settings-content
+    = form_for @project, url: project_mirror_path(@project), html: { class: 'gl-show-field-errors js-mirror-form', autocomplete: 'false', data: mirrors_form_data_attributes } do |f|
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title= _('Mirror a repository')
+        .panel-body
+          %div= form_errors(@project)
+
+          .form-group.has-feedback
+            = label_tag :url, _('Git repository URL'), class: 'label-light'
+            = text_field_tag :url, nil, class: 'form-control js-mirror-url js-repo-url', placeholder: _('Input your repository URL'), required: true, pattern: "(#{protocols}):\/\/.+"
+
+          = render 'projects/mirrors/instructions'
+
+          = render 'projects/mirrors/mirror_repos_form', f: f
+
+          .form-check.append-bottom-10
+            = check_box_tag :only_protected_branches, '1', false, class: 'js-mirror-protected form-check-input'
+            = label_tag :only_protected_branches, _('Only mirror protected branches'), class: 'form-check-label'
+            = link_to icon('question-circle'), help_page_path('user/project/protected_branches')
+
+        .panel-footer
+          = f.submit _('Mirror repository'), class: 'btn btn-create', name: :update_remote_mirror
+
+    .panel.panel-default
+      .table-responsive
+        %table.table.push-pull-table
+          %thead
+            %tr
+              %th
+                = _('Mirrored repositories')
+                = render_if_exists 'projects/mirrors/mirrored_repositories_count'
+              %th= _('Direction')
+              %th= _('Last update')
+              %th
+              %th
+          %tbody.js-mirrors-table-body
+            = render_if_exists 'projects/mirrors/table_pull_row'
+            - @project.remote_mirrors.each_with_index do |mirror, index|
+              - if mirror.enabled
+                %tr
+                  %td= mirror.safe_url
+                  %td= _('Push')
+                  %td= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : _('Never')
+                  %td
+                    - if mirror.last_error.present?
+                      .badge.mirror-error-badge{ data: { toggle: 'tooltip', html: 'true' }, title: html_escape(mirror.last_error.try(:strip)) }= _('Error')
+                  %td.mirror-action-buttons
+                    .btn-group.mirror-actions-group.pull-right{ role: 'group' }
+                      = render 'shared/remote_mirror_update_button', remote_mirror: mirror
+                      %button.js-delete-mirror.btn.btn-danger{ type: 'button', data: { mirror_id: mirror.id, toggle: 'tooltip', container: 'body' }, title: _('Remove') }= icon('trash-o')

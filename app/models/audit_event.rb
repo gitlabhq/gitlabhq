@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AuditEvent < ActiveRecord::Base
   serialize :details, Hash # rubocop:disable Cop/ActiveRecordSerialize
 

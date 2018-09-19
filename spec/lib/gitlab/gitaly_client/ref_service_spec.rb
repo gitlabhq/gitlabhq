@@ -18,6 +18,44 @@ describe Gitlab::GitalyClient::RefService do
     end
   end
 
+  describe '#remote_branches' do
+    let(:remote_name) { 'my_remote' }
+    subject { client.remote_branches(remote_name) }
+
+    it 'sends a find_all_remote_branches message' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:find_all_remote_branches)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return([])
+
+      subject
+    end
+
+    it 'concantes and returns the response branches as Gitlab::Git::Branch objects' do
+      target_commits = create_list(:gitaly_commit, 4)
+      response_branches = target_commits.each_with_index.map do |gitaly_commit, i|
+        Gitaly::Branch.new(name: "#{remote_name}/#{i}", target_commit: gitaly_commit)
+      end
+      response = [
+        Gitaly::FindAllRemoteBranchesResponse.new(branches: response_branches[0, 2]),
+        Gitaly::FindAllRemoteBranchesResponse.new(branches: response_branches[2, 2])
+      ]
+
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:find_all_remote_branches).and_return(response)
+
+      expect(subject.length).to be(response_branches.length)
+
+      response_branches.each_with_index do |gitaly_branch, i|
+        branch = subject[i]
+        commit = Gitlab::Git::Commit.new(repository, gitaly_branch.target_commit)
+
+        expect(branch.name).to eq(i.to_s) # It removes the `remote/` prefix
+        expect(branch.dereferenced_target).to eq(commit)
+      end
+    end
+  end
+
   describe '#branch_names' do
     it 'sends a find_all_branch_names message' do
       expect_any_instance_of(Gitaly::RefService::Stub)

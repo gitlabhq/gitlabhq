@@ -71,7 +71,7 @@ describe 'create a merge request, allowing commits from members who can merge to
     end
 
     before do
-      target_project.add_master(member)
+      target_project.add_maintainer(member)
 
       sign_in(member)
     end

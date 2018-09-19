@@ -65,7 +65,9 @@ module CycleAnalyticsHelpers
   end
 
   def merge_merge_requests_closing_issue(user, project, issue)
-    merge_requests = issue.closed_by_merge_requests(user)
+    merge_requests = Issues::ReferencedMergeRequestsService
+                       .new(project, user)
+                       .closed_by_merge_requests(issue)
 
     merge_requests.each { |merge_request| MergeRequests::MergeService.new(project, user).execute(merge_request) }
   end
@@ -125,7 +127,8 @@ module CycleAnalyticsHelpers
         _, opts = args
 
         commit = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          raw_repository.commit(branch_update.newrev).rugged_commit
+          rugged = raw_repository.rugged
+          rugged.rev_parse(branch_update.newrev)
         end
 
         branch_update.newrev = commit.amend(

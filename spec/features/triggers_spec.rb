@@ -10,8 +10,8 @@ describe 'Triggers', :js do
     sign_in(user)
 
     @project = create(:project)
-    @project.add_master(user)
-    @project.add_master(user2)
+    @project.add_maintainer(user)
+    @project.add_maintainer(user2)
     @project.add_guest(guest_user)
 
     visit project_settings_ci_cd_path(@project)

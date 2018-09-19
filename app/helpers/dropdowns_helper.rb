@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DropdownsHelper
   def dropdown_tag(toggle_text, options: {}, &block)
     content_tag :div, class: "dropdown #{options[:wrapper_class] if options.key?(:wrapper_class)}" do
@@ -10,7 +12,7 @@ module DropdownsHelper
       dropdown_output = dropdown_toggle(toggle_text, data_attr, options)
 
       dropdown_output << content_tag(:div, class: "dropdown-menu dropdown-select #{options[:dropdown_class] if options.key?(:dropdown_class)}") do
-        output = ""
+        output = []
 
         if options.key?(:title)
           output << dropdown_title(options[:title])
@@ -31,8 +33,7 @@ module DropdownsHelper
         end
 
         output << dropdown_loading
-
-        output.html_safe
+        output.join.html_safe
       end
 
       dropdown_output.html_safe
@@ -50,7 +51,7 @@ module DropdownsHelper
 
   def dropdown_title(title, options: {})
     content_tag :div, class: "dropdown-title" do
-      title_output = ""
+      title_output = []
 
       if options.fetch(:back, false)
         title_output << content_tag(:button, class: "dropdown-title-button dropdown-menu-back", aria: { label: "Go back" }, type: "button") do
@@ -66,7 +67,7 @@ module DropdownsHelper
         end
       end
 
-      title_output.html_safe
+      title_output.join.html_safe
     end
   end
 

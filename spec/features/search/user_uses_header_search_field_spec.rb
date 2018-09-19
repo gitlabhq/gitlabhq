@@ -62,10 +62,6 @@ describe 'User uses header search field' do
       end
     end
 
-    it 'contains location badge' do
-      expect(page).to have_selector('.has-location-badge')
-    end
-
     context 'when clicking the search field', :js do
       before do
         page.find('#search').click

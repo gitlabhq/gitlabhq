@@ -1,5 +1,0 @@
----
-title: Rails5 fix expected `issuable.reload.updated_at` to have changed
-merge_request: 19733
-author: Jasper Maes
-type: fixed

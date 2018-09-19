@@ -22,7 +22,7 @@ export default {
       projectPath: state => state.diffs.projectPath,
       endpoint: state => state.diffs.endpoint,
     }),
-    ...mapGetters(['isInlineView', 'isParallelView']),
+    ...mapGetters('diffs', ['isInlineView', 'isParallelView']),
     diffMode() {
       const diffModeKey = Object.keys(diffModes).find(key => this.diffFile[`${key}File`]);
       return diffModes[diffModeKey] || diffModes.replaced;
@@ -39,12 +39,12 @@ export default {
     <div class="diff-viewer">
       <template v-if="isTextFile">
         <inline-diff-view
-          v-show="isInlineView"
+          v-if="isInlineView"
           :diff-file="diffFile"
           :diff-lines="diffFile.highlightedDiffLines || []"
         />
         <parallel-diff-view
-          v-show="isParallelView"
+          v-if="isParallelView"
           :diff-file="diffFile"
           :diff-lines="diffFile.parallelDiffLines || []"
         />

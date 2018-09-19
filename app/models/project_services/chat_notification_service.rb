@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Base class for Chat notifications services
 # This class is not meant to be used directly, but only to inherit from.
 class ChatNotificationService < Service

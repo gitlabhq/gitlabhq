@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Get user activity feed for projects common for a user and a logged in user
 #
 # - current_user: The user viewing the events
@@ -7,6 +9,7 @@
 class UserRecentEventsFinder
   prepend FinderWithCrossProjectAccess
   include FinderMethods
+  include Gitlab::Allowable
 
   requires_cross_project_access
 
@@ -20,15 +23,20 @@ class UserRecentEventsFinder
     @params = params
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def execute
+    return Event.none unless can?(current_user, :read_user_profile, target_user)
+
     recent_events(params[:offset] || 0)
       .joins(:project)
       .with_associations
       .limit_recent(LIMIT, params[:offset])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def recent_events(offset)
     sql = <<~SQL
       (#{projects}) AS projects_for_join
@@ -39,26 +47,15 @@ class UserRecentEventsFinder
     # Workaround for https://github.com/rails/rails/issues/24193
     Event.from([Arel.sql(sql)])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def target_events
     Event.where(author: target_user)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def projects
-    # Compile a list of projects `current_user` interacted with
-    # and `target_user` is allowed to see.
-
-    authorized = target_user
-      .project_interactions
-      .joins(:project_authorizations)
-      .where(project_authorizations: { user: current_user })
-      .select(:id)
-
-    visible = target_user
-      .project_interactions
-      .where(visibility_level: Gitlab::VisibilityLevel.levels_for_user(current_user))
-      .select(:id)
-
-    Gitlab::SQL::Union.new([authorized, visible]).to_sql
+    target_user.project_interactions.to_sql
   end
 end

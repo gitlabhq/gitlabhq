@@ -2,15 +2,15 @@ import Vue from 'vue';
 
 import dropdownButtonComponent from '~/vue_shared/components/dropdown/dropdown_button.vue';
 
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { mountComponentWithSlots } from 'spec/helpers/vue_mount_component_helper';
 
 const defaultLabel = 'Select';
 const customLabel = 'Select project';
 
-const createComponent = config => {
+const createComponent = (props, slots = {}) => {
   const Component = Vue.extend(dropdownButtonComponent);
 
-  return mountComponent(Component, config);
+  return mountComponentWithSlots(Component, { props, slots });
 };
 
 describe('DropdownButtonComponent', () => {
@@ -64,6 +64,15 @@ describe('DropdownButtonComponent', () => {
 
       expect(dropdownIconEl).not.toBeNull();
       expect(dropdownIconEl.classList.contains('fa-chevron-down')).toBe(true);
+    });
+
+    it('renders slot, if default slot exists', () => {
+      vm = createComponent({}, {
+        default: ['Lorem Ipsum Dolar'],
+      });
+
+      expect(vm.$el).not.toContainElement('.dropdown-toggle-text');
+      expect(vm.$el).toHaveText('Lorem Ipsum Dolar');
     });
   });
 });

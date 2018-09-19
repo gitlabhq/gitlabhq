@@ -1,0 +1,5 @@
+---
+title: Fix SQL error when sorting 2FA-enabled users by name in admin area
+merge_request: 21324
+author:
+type: fixed

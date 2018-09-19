@@ -1,0 +1,5 @@
+---
+title: Fix "Confidential comments" button not saving in project hooks
+merge_request: 21289
+author:
+type: fixed

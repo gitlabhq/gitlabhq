@@ -1,6 +1,0 @@
----
-title: Only show new issue / new merge request on group page when issues / merge requests
-  are enabled
-merge_request: 19869
-author: Jan Beckmann
-type: fixed

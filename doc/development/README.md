@@ -40,21 +40,35 @@ description: 'Learn how to contribute to GitLab.'
 - [View sent emails or preview mailers](emails.md)
 - [Shell commands](shell_commands.md) in the GitLab codebase
 - [`Gemfile` guidelines](gemfile.md)
+- [Pry debugging](pry_debugging.md)
 - [Sidekiq debugging](sidekiq_debugging.md)
 - [Gotchas](gotchas.md) to avoid
 - [Avoid modules with instance variables](module_with_instance_variables.md) if possible
 - [How to dump production data to staging](db_dump.md)
 - [Working with the GitHub importer](github_importer.md)
 - [Working with Merge Request diffs](diffs.md)
+- [Permissions](permissions.md)
+- [Prometheus metrics](prometheus_metrics.md)
+- [Guidelines for reusing abstractions](reusing_abstractions.md)
 
 ## Performance guides
 
-- [Instrumentation](instrumentation.md)
-- [Performance guidelines](performance.md)
+- [Instrumentation](instrumentation.md) for Ruby code running in production
+  environments
+- [Performance guidelines](performance.md) for writing code, benchmarks, and
+  certain patterns to avoid
 - [Merge request performance guidelines](merge_request_performance_guidelines.md)
   for ensuring merge requests do not negatively impact GitLab performance
+- [Profiling](profiling.md) a URL, measuring performance using Sherlock, or
+  tracking down N+1 queries using Bullet
 
-## Databases guides
+## Database guides
+
+### Tooling
+
+- [Understanding EXPLAIN plans](understanding_explain_plans.md)
+- [explain.depesz.com](https://explain.depesz.com/) for visualising the output
+  of `EXPLAIN`
 
 ### Migrations
 

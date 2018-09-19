@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import router from '~/ide/ide_router';
 import Item from '~/ide/components/merge_requests/item.vue';
 import mountCompontent from '../../../helpers/vue_mount_component_helper';
 
@@ -27,6 +28,12 @@ describe('IDE merge request item', () => {
     expect(vm.$el.textContent).toContain('gitlab-org/gitlab-ce!1');
   });
 
+  it('renders link with href', () => {
+    const expectedHref = router.resolve(`/project/${vm.item.projectPathWithNamespace}/merge_requests/${vm.item.iid}`).href;
+    expect(vm.$el).toMatch('a');
+    expect(vm.$el).toHaveAttr('href', expectedHref);
+  });
+
   it('renders icon if ID matches currentId', () => {
     expect(vm.$el.querySelector('.ic-mobile-issue-close')).not.toBe(null);
   });
@@ -49,13 +56,5 @@ describe('IDE merge request item', () => {
 
       done();
     });
-  });
-
-  it('emits click event on click', () => {
-    spyOn(vm, '$emit');
-
-    vm.$el.click();
-
-    expect(vm.$emit).toHaveBeenCalledWith('click', vm.item);
   });
 });

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Member < ActiveRecord::Base
   include AfterCommitQueue
   include Sortable
@@ -69,9 +71,11 @@ class Member < ActiveRecord::Base
   scope :guests, -> { active.where(access_level: GUEST) }
   scope :reporters, -> { active.where(access_level: REPORTER) }
   scope :developers, -> { active.where(access_level: DEVELOPER) }
-  scope :masters,  -> { active.where(access_level: MASTER) }
+  scope :maintainers, -> { active.where(access_level: MAINTAINER) }
+  scope :masters, -> { maintainers } # @deprecated
   scope :owners,  -> { active.where(access_level: OWNER) }
-  scope :owners_and_masters,  -> { active.where(access_level: [OWNER, MASTER]) }
+  scope :owners_and_maintainers,  -> { active.where(access_level: [OWNER, MAINTAINER]) }
+  scope :owners_and_masters,  -> { owners_and_maintainers } # @deprecated
 
   scope :order_name_asc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'ASC')) }
   scope :order_name_desc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'DESC')) }
@@ -99,7 +103,7 @@ class Member < ActiveRecord::Base
     def filter_by_2fa(value)
       case value
       when 'enabled'
-        left_join_users.merge(User.with_two_factor_indistinct)
+        left_join_users.merge(User.with_two_factor)
       when 'disabled'
         left_join_users.merge(User.without_two_factor)
       else
@@ -141,6 +145,7 @@ class Member < ActiveRecord::Base
     end
 
     def add_user(source, user, access_level, existing_members: nil, current_user: nil, expires_at: nil, ldap: false)
+      # rubocop: disable CodeReuse/ServiceClass
       # `user` can be either a User object, User ID or an email to be invited
       member = retrieve_member(source, user, existing_members)
       access_level = retrieve_access_level(access_level)
@@ -167,6 +172,7 @@ class Member < ActiveRecord::Base
       end
 
       member
+      # rubocop: enable CodeReuse/ServiceClass
     end
 
     def add_users(source, users, access_level, current_user: nil, expires_at: nil)
@@ -335,12 +341,14 @@ class Member < ActiveRecord::Base
     @notification_setting ||= user&.notification_settings_for(source)
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def notifiable?(type, opts = {})
     # always notify when there isn't a user yet
     return true if user.blank?
 
     NotificationRecipientService.notifiable?(user, type, notifiable_options.merge(opts))
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   private
 
@@ -370,6 +378,7 @@ class Member < ActiveRecord::Base
   # in a transaction. Doing so can lead to the job running before the
   # transaction has been committed, resulting in the job either throwing an
   # error or not doing any meaningful work.
+  # rubocop: disable CodeReuse/ServiceClass
   def refresh_member_authorized_projects
     # If user/source is being destroyed, project access are going to be
     # destroyed eventually because of DB foreign keys, so we shouldn't bother
@@ -378,6 +387,7 @@ class Member < ActiveRecord::Base
 
     UserProjectAccessChangedService.new(user_id).execute
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def after_accept_invite
     post_create_hook
@@ -391,13 +401,17 @@ class Member < ActiveRecord::Base
     post_create_hook
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def system_hook_service
     SystemHooksService.new
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
+  # rubocop: disable CodeReuse/ServiceClass
   def notification_service
     NotificationService.new
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def notifiable_options
     {}

@@ -1,8 +1,8 @@
 .nav-block.activities
+  = render 'shared/event_filter'
   .controls
     = link_to dashboard_projects_path(rss_url_options), class: 'btn rss-btn has-tooltip', title: 'Subscribe' do
       %i.fa.fa-rss
-  = render 'shared/event_filter'
 
 .content_list
 = spinner

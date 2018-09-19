@@ -1,0 +1,5 @@
+---
+title: Does not collapse runners section when using pagination
+merge_request:
+author:
+type: fixed

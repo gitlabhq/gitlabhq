@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# rubocop:disable Metrics/AbcSize
 # rubocop:disable Style/Documentation
 
 module Gitlab

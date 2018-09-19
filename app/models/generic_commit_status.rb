@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GenericCommitStatus < CommitStatus
   before_validation :set_default_values
 

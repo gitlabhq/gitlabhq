@@ -5,7 +5,6 @@ describe 'Git HTTP requests' do
   include TermsHelper
   include GitHttpHelpers
   include WorkhorseHelpers
-  include UserActivitiesHelpers
 
   shared_examples 'pulls require Basic HTTP Authentication' do
     context "when no credentials are provided" do
@@ -312,7 +311,7 @@ describe 'Git HTTP requests' do
               let(:project) { fork_project(canonical_project, nil, repository: true) }
 
               before do
-                canonical_project.add_master(user)
+                canonical_project.add_maintainer(user)
                 create(:merge_request,
                        source_project: project,
                        target_project:  canonical_project,
@@ -382,6 +381,10 @@ describe 'Git HTTP requests' do
 
           context "when authentication fails" do
             context "when the user is IP banned" do
+              before do
+                Gitlab.config.rack_attack.git_basic_auth['enabled'] = true
+              end
+
               it "responds with status 401" do
                 expect(Rack::Attack::Allow2Ban).to receive(:filter).and_return(true)
                 allow_any_instance_of(Rack::Request).to receive(:ip).and_return('1.2.3.4')
@@ -398,13 +401,13 @@ describe 'Git HTTP requests' do
 
             context "when the user has access to the project" do
               before do
-                project.add_master(user)
+                project.add_maintainer(user)
               end
 
               context "when the user is blocked" do
                 it "rejects pulls with 401 Unauthorized" do
                   user.block
-                  project.add_master(user)
+                  project.add_maintainer(user)
 
                   download(path, env) do |response|
                     expect(response).to have_gitlab_http_status(:unauthorized)
@@ -421,6 +424,10 @@ describe 'Git HTTP requests' do
               end
 
               context "when the user isn't blocked" do
+                before do
+                  Gitlab.config.rack_attack.git_basic_auth['enabled'] = true
+                end
+
                 it "resets the IP in Rack Attack on download" do
                   expect(Rack::Attack::Allow2Ban).to receive(:reset).twice
 
@@ -440,10 +447,10 @@ describe 'Git HTTP requests' do
                 end
 
                 it 'updates the user last activity', :clean_gitlab_redis_shared_state do
-                  expect(user_activity(user)).to be_nil
+                  expect(user.last_activity_on).to be_nil
 
                   download(path, env) do |response|
-                    expect(user_activity(user)).to be_present
+                    expect(user.reload.last_activity_on).to eql(Date.today)
                   end
                 end
               end
@@ -467,7 +474,7 @@ describe 'Git HTTP requests' do
                 let(:path) { "#{project.full_path}.git" }
 
                 before do
-                  project.add_master(user)
+                  project.add_maintainer(user)
                 end
 
                 context 'when username and password are provided' do
@@ -827,7 +834,7 @@ describe 'Git HTTP requests' do
 
         context 'and the user is on the team' do
           before do
-            project.add_master(user)
+            project.add_maintainer(user)
           end
 
           it "responds with status 200" do
@@ -850,7 +857,7 @@ describe 'Git HTTP requests' do
     let(:env) { { user: user.username, password: user.password } }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       enforce_terms
     end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # DEPRECATED
 #
@@ -56,7 +58,7 @@ module CiStatusHelper
     status.humanize
   end
 
-  def ci_icon_for_status(status)
+  def ci_icon_for_status(status, size: 16)
     if detailed_status?(status)
       return sprite_icon(status.icon)
     end
@@ -85,7 +87,7 @@ module CiStatusHelper
         'status_canceled'
       end
 
-    sprite_icon(icon_name, size: 16)
+    sprite_icon(icon_name, size: size)
   end
 
   def pipeline_status_cache_key(pipeline_status)
@@ -111,7 +113,8 @@ module CiStatusHelper
       'commit',
       commit.status(ref),
       path,
-      tooltip_placement: tooltip_placement)
+      tooltip_placement: tooltip_placement,
+      icon_size: 24)
   end
 
   def render_pipeline_status(pipeline, tooltip_placement: 'left')
@@ -120,21 +123,16 @@ module CiStatusHelper
     render_status_with_link('pipeline', pipeline.status, path, tooltip_placement: tooltip_placement)
   end
 
-  def no_runners_for_project?(project)
-    project.runners.blank? &&
-      Ci::Runner.instance_type.blank?
-  end
-
-  def render_status_with_link(type, status, path = nil, tooltip_placement: 'left', cssclass: '', container: 'body')
+  def render_status_with_link(type, status, path = nil, tooltip_placement: 'left', cssclass: '', container: 'body', icon_size: 16)
     klass = "ci-status-link ci-status-icon-#{status.dasherize} #{cssclass}"
     title = "#{type.titleize}: #{ci_label_for_status(status)}"
     data = { toggle: 'tooltip', placement: tooltip_placement, container: container }
 
     if path
-      link_to ci_icon_for_status(status), path,
+      link_to ci_icon_for_status(status, size: icon_size), path,
               class: klass, title: title, data: data
     else
-      content_tag :span, ci_icon_for_status(status),
+      content_tag :span, ci_icon_for_status(status, size: icon_size),
               class: klass, title: title, data: data
     end
   end

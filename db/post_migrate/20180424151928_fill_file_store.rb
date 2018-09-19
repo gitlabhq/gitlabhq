@@ -38,7 +38,7 @@ class FillFileStore < ActiveRecord::Migration
 
   def up
     # NOTE: Schedule background migrations that fill 'NULL' value by '1'(ObjectStorage::Store::LOCAL) on `file_store`, `store` columns
-    # 
+    #
     # Here are the target columns
     # - ci_job_artifacts.file_store
     # - lfs_objects.file_store

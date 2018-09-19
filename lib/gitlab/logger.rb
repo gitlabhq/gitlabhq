@@ -4,8 +4,16 @@ module Gitlab
       file_name_noext + '.log'
     end
 
+    def self.debug(message)
+      build.debug(message)
+    end
+
     def self.error(message)
       build.error(message)
+    end
+
+    def self.warn(message)
+      build.warn(message)
     end
 
     def self.info(message)

@@ -141,10 +141,10 @@
     color: inherit;
 
     &:hover {
-      color: $gl-link-hover-color;
+      color: $blue-800;
 
       .avatar {
-        border-color: rgba($avatar-border, .2);
+        border-color: rgba($gray-normal, .2);
       }
 
     }
@@ -166,7 +166,7 @@
     border-bottom: 1px solid $border-gray-normal;
     // This prevents the mess when resizing the sidebar
     // of elements repositioning themselves..
-    width: $gutter_inner_width;
+    width: $gutter-inner-width;
     // --
 
     &.issuable-sidebar-header {
@@ -197,7 +197,7 @@
     }
 
     &.assignee {
-      .author_link {
+      .author-link {
         display: block;
         padding-left: 42px;
         position: relative;
@@ -231,7 +231,7 @@
     }
 
     a.edit-link:not([href]):hover {
-      color: rgba($avatar-border, .2);
+      color: rgba($gray-normal, .2);
     }
 
     .lock-edit, // uses same style, different js behaviour
@@ -241,7 +241,7 @@
 
       &:hover {
         text-decoration: underline;
-        color: $gl-link-hover-color;
+        color: $blue-800;
       }
     }
   }
@@ -290,7 +290,7 @@
   }
 
   &.right-sidebar-expanded {
-    width: $gutter_width;
+    width: $gutter-width;
 
     .value {
       line-height: 1;
@@ -329,7 +329,7 @@
     }
 
     .btn-secondary-hover-link:hover {
-      color: $gl-link-color;
+      color: $blue-600;
     }
 
     .sidebar-collapsed-icon {
@@ -377,11 +377,11 @@
       display: block;
     }
 
-    width: $gutter_collapsed_width;
+    width: $gutter-collapsed-width;
     padding: 0;
 
     .block {
-      width: $gutter_collapsed_width - 2px;
+      width: $gutter-collapsed-width - 2px;
       padding: 15px 0 0;
       border-bottom: 0;
       overflow: hidden;
@@ -423,10 +423,10 @@
       width: 100%;
       text-align: center;
       margin-bottom: 10px;
-      color: $issuable-sidebar-color;
+      color: $gl-text-color-secondary;
 
       svg {
-        fill: $issuable-sidebar-color;
+        fill: $gl-text-color-secondary;
       }
 
       &:hover:not(.disabled),
@@ -448,8 +448,8 @@
       }
 
       .todo-undone {
-        color: $gl-link-color;
-        fill: $gl-link-color;
+        color: $blue-600;
+        fill: $blue-600;
       }
 
       .author {
@@ -457,14 +457,14 @@
       }
 
       .avatar-counter:hover {
-        color: $issuable-sidebar-color;
-        border-color: $issuable-sidebar-color;
+        color: $gl-text-color-secondary;
+        border-color: $gl-text-color-secondary;
       }
 
       .btn-clipboard {
         border: 0;
         background: transparent;
-        color: $issuable-sidebar-color;
+        color: $gl-text-color-secondary;
 
         &:hover {
           color: $gl-text-color;
@@ -487,7 +487,7 @@
       padding-bottom: 0;
       margin-bottom: 10px;
 
-      .author_link {
+      .author-link {
         padding-left: 0;
 
         .avatar {
@@ -596,7 +596,7 @@
   margin: 16px 0 0;
   font-size: 85%;
 
-  .author_link {
+  .author-link {
     color: $gray-darkest;
   }
 }
@@ -621,7 +621,7 @@
     padding-right: 0;
   }
 
-  .author_link {
+  .author-link {
     display: block;
   }
 
@@ -701,6 +701,11 @@
   align-self: center;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  .user-status-emoji {
+    margin-left: $gl-padding-4;
+    margin-right: 0;
+  }
 }
 
 .js-issuable-selector-wrap {
@@ -821,7 +826,7 @@
     svg {
       width: 16px;
       height: 16px;
-      fill: $issuable-sidebar-color;
+      fill: $gl-text-color-secondary;
     }
 
     &:hover svg {
@@ -835,33 +840,11 @@
   }
 
   .compare-meter {
-    &.within_estimate {
-      .meter-fill {
-        background: $gl-primary;
-      }
-    }
-
     &.over_estimate {
-      .meter-fill {
-        background: $red-500;
-      }
-
       .time-remaining,
       .compare-value.spent {
         color: $red-500;
       }
-    }
-  }
-
-  .meter-container {
-    background: $border-gray-light;
-    border-radius: 3px;
-
-    .meter-fill {
-      max-width: 100%;
-      height: 5px;
-      border-radius: 3px;
-      background: $gl-primary;
     }
   }
 

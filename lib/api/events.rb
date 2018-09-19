@@ -1,6 +1,7 @@
 module API
   class Events < Grape::API
     include PaginationParams
+    include APIGuard
 
     helpers do
       params :event_filter_params do
@@ -15,15 +16,19 @@ module API
                         desc: 'Return events sorted in ascending and descending order'
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def present_events(events)
         events = events.reorder(created_at: params[:sort])
                  .with_associations
 
         present paginate(events), with: Entities::Event
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     resource :events do
+      allow_access_with_scope :read_user, if: -> (request) { request.get? }
+
       desc "List currently authenticated user's events" do
         detail 'This feature was introduced in GitLab 9.3.'
         success Entities::Event
@@ -33,6 +38,7 @@ module API
         use :event_filter_params
         use :sort_params
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get do
         authenticate!
 
@@ -40,12 +46,15 @@ module API
 
         present_events(events)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     params do
       requires :id, type: String, desc: 'The ID or Username of the user'
     end
     resource :users do
+      allow_access_with_scope :read_user, if: -> (request) { request.get? }
+
       desc 'Get the contribution events of a specified user' do
         detail 'This feature was introduced in GitLab 8.13.'
         success Entities::Event
@@ -55,6 +64,7 @@ module API
         use :event_filter_params
         use :sort_params
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/events' do
         user = find_user(params[:id])
         not_found!('User') unless user
@@ -63,6 +73,7 @@ module API
 
         present_events(events)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     params do
@@ -77,11 +88,13 @@ module API
         use :event_filter_params
         use :sort_params
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ":id/events" do
         events = EventsFinder.new(params.merge(source: user_project, current_user: current_user)).execute.preload(:author, :target)
 
         present_events(events)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

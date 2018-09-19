@@ -31,7 +31,9 @@
       .note-header
         .note-header-info
           %a{ href: user_path(note.author) }
-            %span.note-header-author-name= sanitize(note.author.name)
+            %span.note-header-author-name
+              = sanitize(note.author.name)
+            = user_status(note.author)
             %span.note-headline-light
               = note.author.to_reference
           %span.note-headline-light
@@ -52,7 +54,7 @@
         .note-text.md
           = markdown_field(note, :note)
         = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago')
-        .original-note-content.hidden{ data: { post_url: note_url(note), target_id: note.noteable.id, target_type: note.noteable.class.name.underscore } }
+        .original-note-content.hidden{ data: { post_url: note_url(note), target_id: note.noteable.id, target_type: note.noteable.class.name.underscore, markdown_version: note.cached_markdown_version } }
           #{note.note}
         - if note_editable
           = render 'shared/notes/edit', note: note

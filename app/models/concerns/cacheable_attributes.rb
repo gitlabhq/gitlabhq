@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CacheableAttributes
   extend ActiveSupport::Concern
 
@@ -7,7 +9,7 @@ module CacheableAttributes
 
   class_methods do
     def cache_key
-      "#{name}:#{Gitlab::VERSION}:#{Gitlab.migrations_hash}:#{Rails.version}".freeze
+      "#{name}:#{Gitlab::VERSION}:#{Rails.version}".freeze
     end
 
     # Can be overriden
@@ -69,6 +71,6 @@ module CacheableAttributes
   end
 
   def cache!
-    Rails.cache.write(self.class.cache_key, self)
+    Rails.cache.write(self.class.cache_key, self, expires_in: 1.minute)
   end
 end

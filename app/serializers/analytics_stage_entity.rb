@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AnalyticsStageEntity < Grape::Entity
   include EntityDateHelper
 

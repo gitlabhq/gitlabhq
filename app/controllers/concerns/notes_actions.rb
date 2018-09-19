@@ -18,6 +18,7 @@ module NotesActions
     notes = notes_finder.execute
       .inc_relations_for_view
 
+    notes = ResourceEvents::MergeIntoNotesService.new(noteable, current_user, last_fetched_at: current_fetched_at).execute(notes)
     notes = prepare_notes_for_rendering(notes)
     notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
 
@@ -41,7 +42,7 @@ module NotesActions
     @note = Notes::CreateService.new(note_project, current_user, create_params).execute
 
     if @note.is_a?(Note)
-      Notes::RenderService.new(current_user).execute([@note])
+      prepare_notes_for_rendering([@note], noteable)
     end
 
     respond_to do |format|
@@ -56,7 +57,7 @@ module NotesActions
     @note = Notes::UpdateService.new(project, current_user, note_params).execute(note)
 
     if @note.is_a?(Note)
-      Notes::RenderService.new(current_user).execute([@note])
+      prepare_notes_for_rendering([@note])
     end
 
     respond_to do |format|

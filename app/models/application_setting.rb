@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ApplicationSetting < ActiveRecord::Base
   include CacheableAttributes
   include CacheMarkdownField
@@ -190,6 +192,8 @@ class ApplicationSetting < ActiveRecord::Base
             numericality: { less_than_or_equal_to: :gitaly_timeout_default },
             if: :gitaly_timeout_default
 
+  validates :user_default_internal_regex, js_regex: true, allow_nil: true
+
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end
@@ -215,6 +219,7 @@ class ApplicationSetting < ActiveRecord::Base
   validate :terms_exist, if: :enforce_terms?
 
   before_validation :ensure_uuid!
+  before_validation :strip_sentry_values
 
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
@@ -228,25 +233,27 @@ class ApplicationSetting < ActiveRecord::Base
     {
       after_sign_up_text: nil,
       akismet_enabled: false,
+      allow_local_requests_from_hooks_and_services: false,
       authorized_keys_enabled: true, # TODO default to false if the instance is configured to use AuthorizedKeysCommand
       container_registry_token_expire_delay: 5,
       default_artifacts_expire_in: '30 days',
       default_branch_protection: Settings.gitlab['default_branch_protection'],
+      default_group_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       default_projects_limit: Settings.gitlab['default_projects_limit'],
       default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
-      default_group_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       disabled_oauth_sign_in_sources: [],
       domain_whitelist: Settings.gitlab['domain_whitelist'],
       dsa_key_restriction: 0,
       ecdsa_key_restriction: 0,
       ed25519_key_restriction: 0,
+      gitaly_timeout_default: 55,
+      gitaly_timeout_fast: 10,
+      gitaly_timeout_medium: 30,
       gravatar_enabled: Settings.gravatar['enabled'],
-      help_page_text: nil,
       help_page_hide_commercial_content: false,
-      unique_ips_limit_per_user: 10,
-      unique_ips_limit_time_window: 3600,
-      unique_ips_limit_enabled: false,
+      help_page_text: nil,
+      hide_third_party_offers: false,
       housekeeping_bitmaps_enabled: true,
       housekeeping_enabled: true,
       housekeeping_full_repack_period: 50,
@@ -257,12 +264,14 @@ class ApplicationSetting < ActiveRecord::Base
       koding_url: nil,
       max_artifacts_size: Settings.artifacts['max_size'],
       max_attachment_size: Settings.gitlab['max_attachment_size'],
-      password_authentication_enabled_for_web: Settings.gitlab['signin_enabled'],
+      mirror_available: true,
       password_authentication_enabled_for_git: true,
+      password_authentication_enabled_for_web: Settings.gitlab['signin_enabled'],
       performance_bar_allowed_group_id: nil,
       rsa_key_restriction: 0,
       plantuml_enabled: false,
       plantuml_url: nil,
+      polling_interval_multiplier: 1,
       project_export_enabled: true,
       recaptcha_enabled: false,
       repository_checks_enabled: true,
@@ -277,24 +286,25 @@ class ApplicationSetting < ActiveRecord::Base
       sign_in_text: nil,
       signup_enabled: Settings.gitlab['signup_enabled'],
       terminal_max_session_time: 0,
-      throttle_unauthenticated_enabled: false,
-      throttle_unauthenticated_requests_per_period: 3600,
-      throttle_unauthenticated_period_in_seconds: 3600,
-      throttle_authenticated_web_enabled: false,
-      throttle_authenticated_web_requests_per_period: 7200,
-      throttle_authenticated_web_period_in_seconds: 3600,
       throttle_authenticated_api_enabled: false,
-      throttle_authenticated_api_requests_per_period: 7200,
       throttle_authenticated_api_period_in_seconds: 3600,
+      throttle_authenticated_api_requests_per_period: 7200,
+      throttle_authenticated_web_enabled: false,
+      throttle_authenticated_web_period_in_seconds: 3600,
+      throttle_authenticated_web_requests_per_period: 7200,
+      throttle_unauthenticated_enabled: false,
+      throttle_unauthenticated_period_in_seconds: 3600,
+      throttle_unauthenticated_requests_per_period: 3600,
       two_factor_grace_period: 48,
-      user_default_external: false,
-      polling_interval_multiplier: 1,
+      unique_ips_limit_enabled: false,
+      unique_ips_limit_per_user: 10,
+      unique_ips_limit_time_window: 3600,
       usage_ping_enabled: Settings.gitlab['usage_ping_enabled'],
-      gitaly_timeout_fast: 10,
-      gitaly_timeout_medium: 30,
-      gitaly_timeout_default: 55,
-      allow_local_requests_from_hooks_and_services: false,
-      mirror_available: true
+      instance_statistics_visibility_private: false,
+      user_default_external: false,
+      user_default_internal_regex: nil,
+      user_show_add_ssh_key_message: true,
+      usage_stats_set_by_user_id: nil
     }
   end
 
@@ -373,6 +383,11 @@ class ApplicationSetting < ActiveRecord::Base
     super(levels.map { |level| Gitlab::VisibilityLevel.level_value(level) })
   end
 
+  def strip_sentry_values
+    sentry_dsn.strip! if sentry_dsn.present?
+    clientside_sentry_dsn.strip! if clientside_sentry_dsn.present?
+  end
+
   def performance_bar_allowed_group
     Group.find_by_id(performance_bar_allowed_group_id)
   end
@@ -428,6 +443,14 @@ class ApplicationSetting < ActiveRecord::Base
 
   def password_authentication_enabled?
     password_authentication_enabled_for_web? || password_authentication_enabled_for_git?
+  end
+
+  def user_default_internal_regex_enabled?
+    user_default_external? && user_default_internal_regex.present?
+  end
+
+  def user_default_internal_regex_instance
+    Regexp.new(user_default_internal_regex, Regexp::IGNORECASE)
   end
 
   delegate :terms, to: :latest_terms, allow_nil: true

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   class DestroyService < BaseService
     include Gitlab::ShellAdapter
@@ -81,9 +83,6 @@ module Projects
     end
 
     def remove_repository(path)
-      # Skip repository removal. We use this flag when remove user or group
-      return true if params[:skip_repo] == true
-
       # There is a possibility project does not have repository or wiki
       return true unless repo_exists?(path)
 
@@ -108,15 +107,19 @@ module Projects
       mv_repository(old_path, new_path)
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def repo_exists?(path)
       gitlab_shell.exists?(project.repository_storage, path + '.git')
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def mv_repository(from_path, to_path)
       return true unless gitlab_shell.exists?(project.repository_storage, from_path + '.git')
 
       gitlab_shell.mv_repository(project.repository_storage, from_path, to_path)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def attempt_rollback(project, message)
       return unless project
@@ -124,7 +127,7 @@ module Projects
       # It's possible that the project was destroyed, but some after_commit
       # hook failed and caused us to end up here. A destroyed model will be a frozen hash,
       # which cannot be altered.
-      project.update_attributes(delete_error: message, pending_delete: false) unless project.destroyed?
+      project.update(delete_error: message, pending_delete: false) unless project.destroyed?
 
       log_error("Deletion failed on #{project.full_path} with the following message: #{message}")
     end
@@ -160,7 +163,7 @@ module Projects
     def remove_legacy_registry_tags
       return true unless Gitlab.config.registry.enabled
 
-      ContainerRepository.build_root_repository(project).tap do |repository|
+      ::ContainerRepository.build_root_repository(project).tap do |repository|
         break repository.has_tags? ? repository.delete_tags! : true
       end
     end

@@ -5,7 +5,7 @@ class Projects::RunnersController < Projects::ApplicationController
   layout 'project_settings'
 
   def index
-    redirect_to project_settings_ci_cd_path(@project)
+    redirect_to project_settings_ci_cd_path(@project, anchor: 'js-runners-settings')
   end
 
   def edit
@@ -24,7 +24,7 @@ class Projects::RunnersController < Projects::ApplicationController
       @runner.destroy
     end
 
-    redirect_to project_runners_path(@project), status: 302
+    redirect_to project_runners_path(@project), status: :found
   end
 
   def resume
@@ -50,13 +50,13 @@ class Projects::RunnersController < Projects::ApplicationController
   def toggle_shared_runners
     project.toggle!(:shared_runners_enabled)
 
-    redirect_to project_settings_ci_cd_path(@project)
+    redirect_to project_settings_ci_cd_path(@project, anchor: 'js-runners-settings')
   end
 
   def toggle_group_runners
     project.toggle_ci_cd_settings!(:group_runners_enabled)
 
-    redirect_to project_settings_ci_cd_path(@project)
+    redirect_to project_settings_ci_cd_path(@project, anchor: 'js-runners-settings')
   end
 
   protected

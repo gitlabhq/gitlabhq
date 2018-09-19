@@ -1,0 +1,5 @@
+---
+title: Fix fallback logic for automatic MR title assignment 
+merge_request: 20930
+author: Franz Liedke
+type: fixed

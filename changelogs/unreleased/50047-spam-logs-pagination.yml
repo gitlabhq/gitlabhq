@@ -1,0 +1,5 @@
+---
+title: Add gitlab theme to spam logs pagination
+merge_request: 21145
+author:
+type: fixed

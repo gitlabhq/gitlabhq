@@ -1,0 +1,5 @@
+---
+title: 'Fix: Project deletion may not log audit events during group deletion'
+merge_request: 21162
+author:
+type: fixed

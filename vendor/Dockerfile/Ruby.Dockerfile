@@ -1,4 +1,4 @@
-FROM ruby:2.4
+FROM ruby:2.5
 
 # Edit with nodejs, mysql-client, postgresql-client, sqlite3, etc. for your needs.
 # Or delete entirely if not needed.
@@ -24,4 +24,4 @@ COPY . /usr/src/app
 
 # For Rails
 EXPOSE 3000
-CMD ["rails", "server", "-b", "0.0.0.0"]
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]

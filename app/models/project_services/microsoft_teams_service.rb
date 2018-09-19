@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MicrosoftTeamsService < ChatNotificationService
   def title
     'Microsoft Teams Notification'

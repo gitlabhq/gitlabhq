@@ -76,7 +76,7 @@ describe('Issuable output', () => {
       expect(vm.$el.querySelector('.wiki').innerHTML).toContain('<p>this is a description!</p>');
       expect(vm.$el.querySelector('.js-task-list-field').value).toContain('this is a description');
       expect(formatText(editedText.innerText)).toMatch(/Edited[\s\S]+?by Some User/);
-      expect(editedText.querySelector('.author_link').href).toMatch(/\/some_user$/);
+      expect(editedText.querySelector('.author-link').href).toMatch(/\/some_user$/);
       expect(editedText.querySelector('time')).toBeTruthy();
     })
     .then(() => {
@@ -90,7 +90,7 @@ describe('Issuable output', () => {
       expect(vm.$el.querySelector('.js-task-list-field').value).toContain('42');
       expect(vm.$el.querySelector('.edited-text')).toBeTruthy();
       expect(formatText(vm.$el.querySelector('.edited-text').innerText)).toMatch(/Edited[\s\S]+?by Other User/);
-      expect(editedText.querySelector('.author_link').href).toMatch(/\/other_user$/);
+      expect(editedText.querySelector('.author-link').href).toMatch(/\/other_user$/);
       expect(editedText.querySelector('time')).toBeTruthy();
     })
     .then(done)

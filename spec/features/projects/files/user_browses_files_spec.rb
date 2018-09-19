@@ -147,11 +147,8 @@ describe "User browses files" do
         page.within(".tree-table") do
           click_link("README.md")
         end
-
-        # rubocop:disable Lint/Void
         # Test the full URLs of links instead of relative paths by `have_link(text: "...", href: "...")`.
         find("a", text: /^empty$/)["href"] == project_blob_url(project, "markdown/d/README.md")
-        # rubocop:enable Lint/Void
       end
 
       it "shows correct content of directory" do
@@ -213,9 +210,10 @@ describe "User browses files" do
     end
   end
 
-  context "when browsing a file content" do
+  context "when browsing a file content", :js do
     before do
       visit(tree_path_root_ref)
+      wait_for_requests
 
       click_link(".gitignore")
     end

@@ -188,6 +188,9 @@ sympy-plots-for-*.tex/
 *.pytxcode
 pythontex-files-*/
 
+# tcolorbox
+*.listing
+
 # thmtools
 *.loe
 
@@ -226,6 +229,9 @@ TSWLatexianTemp*
 # Texpad
 .texpadtmp
 
+# LyX
+*.lyx~
+
 # Kile
 *.backup
 
@@ -241,6 +247,3 @@ TSWLatexianTemp*
 
 # standalone packages
 *.sta
-
-# generated if using elsarticle.cls
-*.spl

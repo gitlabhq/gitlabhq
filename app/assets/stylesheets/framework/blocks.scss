@@ -353,3 +353,18 @@
 .flex-right {
   margin-left: auto;
 }
+
+.code-block {
+  background: $black;
+  color: $gray-darkest;
+  white-space: pre;
+  overflow-x: auto;
+  font-size: 12px;
+  border: 0;
+  padding: $grid-size;
+
+  code {
+    background-color: inherit;
+    padding: inherit;
+  }
+}

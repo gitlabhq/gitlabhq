@@ -11,8 +11,8 @@ describe 'Issue Boards', :js do
   let!(:user2)  { create(:user) }
 
   before do
-    project.add_master(user)
-    project.add_master(user2)
+    project.add_maintainer(user)
+    project.add_maintainer(user2)
 
     set_cookie('sidebar_collapsed', 'true')
 
@@ -44,7 +44,7 @@ describe 'Issue Boards', :js do
     end
 
     it 'creates default lists' do
-      lists = ['Backlog', 'To Do', 'Doing', 'Closed']
+      lists = ['Open', 'To Do', 'Doing', 'Closed']
 
       page.within(find('.board-blank-state')) do
         click_button('Add default lists')

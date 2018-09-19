@@ -53,6 +53,8 @@ module UploadsActions
       maximum_size: Gitlab::CurrentSettings.max_attachment_size.megabytes.to_i)
 
     render json: authorized
+  rescue SocketError
+    render json: "Error uploading file", status: :internal_server_error
   end
 
   private
@@ -87,6 +89,7 @@ module UploadsActions
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def build_uploader_from_upload
     return unless uploader = build_uploader
 
@@ -94,6 +97,7 @@ module UploadsActions
     upload = Upload.find_by(uploader: uploader_class.to_s, path: upload_paths)
     upload&.build_uploader
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def build_uploader_from_params
     return unless uploader = build_uploader

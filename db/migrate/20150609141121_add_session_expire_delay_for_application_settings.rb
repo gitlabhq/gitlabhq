@@ -1,4 +1,3 @@
-# rubocop:disable all
 class AddSessionExpireDelayForApplicationSettings < ActiveRecord::Migration
   def change
     unless column_exists?(:application_settings, :session_expire_delay)

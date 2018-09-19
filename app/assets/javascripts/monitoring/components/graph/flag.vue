@@ -52,7 +52,7 @@ export default {
       required: true,
     },
     currentCoordinates: {
-      type: Array,
+      type: Object,
       required: true,
     },
   },
@@ -91,8 +91,8 @@ export default {
   },
   methods: {
     seriesMetricValue(seriesIndex, series) {
-      const indexFromCoordinates = this.currentCoordinates[seriesIndex]
-      ? this.currentCoordinates[seriesIndex].currentDataIndex : 0;
+      const indexFromCoordinates = this.currentCoordinates[series.metricTag]
+      ? this.currentCoordinates[series.metricTag].currentDataIndex : 0;
       const index = this.deploymentFlagData
         ? this.deploymentFlagData.seriesIndex
         : indexFromCoordinates;
@@ -125,6 +125,7 @@ export default {
       :class="flagOrientation"
       class="prometheus-graph-flag popover"
     >
+      <div class="arrow-shadow"></div>
       <div class="arrow"></div>
       <div class="popover-title">
         <h5 v-if="deploymentFlagData">

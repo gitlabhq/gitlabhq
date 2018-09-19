@@ -51,7 +51,7 @@ describe StuckImportJobsWorker do
       let(:project) { create(:project, :import_scheduled) }
 
       before do
-        project.import_state.update_attributes(jid: '123')
+        project.import_state.update(jid: '123')
       end
     end
   end
@@ -61,7 +61,7 @@ describe StuckImportJobsWorker do
       let(:project) { create(:project, :import_started) }
 
       before do
-        project.import_state.update_attributes(jid: '123')
+        project.import_state.update(jid: '123')
       end
     end
   end

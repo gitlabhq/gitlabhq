@@ -18,7 +18,7 @@ describe('edited', () => {
     }).$mount();
 
     expect(formatText(editedComponent.$el.innerText)).toMatch(/Edited[\s\S]+?by Some User/);
-    expect(editedComponent.$el.querySelector('.author_link').href).toMatch(/\/some_user$/);
+    expect(editedComponent.$el.querySelector('.author-link').href).toMatch(/\/some_user$/);
     expect(editedComponent.$el.querySelector('time')).toBeTruthy();
   });
 
@@ -31,7 +31,7 @@ describe('edited', () => {
     }).$mount();
 
     expect(formatText(editedComponent.$el.innerText)).toMatch(/Edited by Some User/);
-    expect(editedComponent.$el.querySelector('.author_link').href).toMatch(/\/some_user$/);
+    expect(editedComponent.$el.querySelector('.author-link').href).toMatch(/\/some_user$/);
     expect(editedComponent.$el.querySelector('time')).toBeFalsy();
   });
 
@@ -43,7 +43,7 @@ describe('edited', () => {
     }).$mount();
 
     expect(formatText(editedComponent.$el.innerText)).not.toMatch(/by Some User/);
-    expect(editedComponent.$el.querySelector('.author_link')).toBeFalsy();
+    expect(editedComponent.$el.querySelector('.author-link')).toBeFalsy();
     expect(editedComponent.$el.querySelector('time')).toBeTruthy();
   });
 

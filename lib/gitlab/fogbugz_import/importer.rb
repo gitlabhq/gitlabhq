@@ -79,6 +79,7 @@ module Gitlab
         ::Labels::FindOrCreateService.new(nil, project, params).execute(skip_authorization: true)
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def user_info(person_id)
         user_hash = user_map[person_id.to_s]
 
@@ -95,7 +96,9 @@ module Gitlab
 
         { name: user_name, gitlab_id: gitlab_id }
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def import_cases
         return unless @cases
 
@@ -141,6 +144,7 @@ module Gitlab
           import_issue_comments(issue, comments)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def opened_content(comments)
         while comment = comments.shift
@@ -191,19 +195,19 @@ module Gitlab
         end
       end
 
-      def linkify_issues(s)
-        s = s.gsub(/([Ii]ssue) ([0-9]+)/, '\1 #\2')
-        s = s.gsub(/([Cc]ase) ([0-9]+)/, '\1 #\2')
-        s
+      def linkify_issues(str)
+        str = str.gsub(/([Ii]ssue) ([0-9]+)/, '\1 #\2')
+        str = str.gsub(/([Cc]ase) ([0-9]+)/, '\1 #\2')
+        str
       end
 
-      def escape_for_markdown(s)
-        s = s.gsub(/^#/, "\\#")
-        s = s.gsub(/^-/, "\\-")
-        s = s.gsub("`", "\\~")
-        s = s.delete("\r")
-        s = s.gsub("\n", "  \n")
-        s
+      def escape_for_markdown(str)
+        str = str.gsub(/^#/, "\\#")
+        str = str.gsub(/^-/, "\\-")
+        str = str.gsub("`", "\\~")
+        str = str.delete("\r")
+        str = str.gsub("\n", "  \n")
+        str
       end
 
       def format_content(raw_content)

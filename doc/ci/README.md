@@ -76,6 +76,8 @@ learn how to leverage its potential even more.
 - [Trigger pipelines on a schedule](../user/project/pipelines/schedules.md)
 - [Kubernetes clusters](../user/project/clusters/index.md) - Integrate one or
   more Kubernetes clusters to your project
+- [Interactive web terminal](interactive_web_terminal/index.md) - Open an interactive
+  web terminal to debug the running jobs
 
 ## GitLab CI/CD for Docker
 

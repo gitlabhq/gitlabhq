@@ -8,7 +8,7 @@ module TestEnv
 
   # When developing the seed repository, comment out the branch you will modify.
   BRANCH_SHA = {
-    'signed-commits'                     => '2d1096e',
+    'signed-commits'                     => '6101e87',
     'not-merged-branch'                  => 'b83d6e3',
     'branch-merged'                      => '498214d',
     'empty-branch'                       => '7efb185',
@@ -49,7 +49,11 @@ module TestEnv
     'add-pdf-file'                       => 'e774ebd',
     'squash-large-files'                 => '54cec52',
     'add-pdf-text-binary'                => '79faa7b',
-    'add_images_and_changes'             => '010d106'
+    'add_images_and_changes'             => '010d106',
+    'update-gitlab-shell-v-6-0-1'        => '2f61d70',
+    'update-gitlab-shell-v-6-0-3'        => 'de78448',
+    '2-mb-file'                          => 'bf12d25',
+    'with-codeowners'                    => '219560e'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
@@ -64,6 +68,7 @@ module TestEnv
 
   TMP_TEST_PATH = Rails.root.join('tmp', 'tests', '**')
   REPOS_STORAGE = 'default'.freeze
+  BROKEN_STORAGE = 'broken'.freeze
 
   # Test environment
   #
@@ -80,7 +85,7 @@ module TestEnv
 
     clean_test_path
 
-    # Setup GitLab shell for test instance
+    # Set up GitLab shell for test instance
     setup_gitlab_shell
 
     setup_gitaly
@@ -100,10 +105,6 @@ module TestEnv
   def enable_mailer
     allow_any_instance_of(NotificationService).to receive(:mailer)
       .and_call_original
-  end
-
-  def disable_pre_receive
-    allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
   end
 
   # Clean /tmp/tests
@@ -154,10 +155,11 @@ module TestEnv
     component_timed_setup('Gitaly',
       install_dir: gitaly_dir,
       version: Gitlab::GitalyClient.expected_server_version,
-      task: "gitlab:gitaly:install[#{gitaly_dir}]") do
+      task: "gitlab:gitaly:install[#{gitaly_dir},#{repos_path}]") do
 
-      # Always re-create config, in case it's outdated. This is fast anyway.
-      Gitlab::SetupHelper.create_gitaly_configuration(gitaly_dir, force: true)
+      # Re-create config, to specify the broken storage path
+      storage_paths = { 'default' => repos_path, 'broken' => broken_path }
+      Gitlab::SetupHelper.create_gitaly_configuration(gitaly_dir, storage_paths, force: true)
 
       start_gitaly(gitaly_dir)
     end
@@ -241,8 +243,20 @@ module TestEnv
     set_repo_refs(target_repo_path, refs)
   end
 
+  def create_bare_repository(path)
+    FileUtils.mkdir_p(path)
+
+    system(git_env, *%W(#{Gitlab.config.git.bin_path} -C #{path} init --bare),
+           out: '/dev/null',
+           err: '/dev/null')
+  end
+
   def repos_path
     @repos_path ||= Gitlab.config.repositories.storages[REPOS_STORAGE].legacy_disk_path
+  end
+
+  def broken_path
+    @broken_path ||= Gitlab.config.repositories.storages[BROKEN_STORAGE].legacy_disk_path
   end
 
   def backup_path
@@ -353,7 +367,7 @@ module TestEnv
     FileUtils.rm_rf(install_dir)
     exit 1
   ensure
-    puts "    #{component} setup in #{Time.now - start} seconds...\n"
+    puts "    #{component} set up in #{Time.now - start} seconds...\n"
   end
 
   def ensure_component_dir_name_is_correct!(component, path)

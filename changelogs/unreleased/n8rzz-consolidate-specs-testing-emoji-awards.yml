@@ -1,0 +1,6 @@
+---
+title: Combines emoji award spec files into single user_interacts_with_awards_in_issue_spec.rb
+  file
+merge_request: 21126
+author: Nate Geslin
+type: other

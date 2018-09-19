@@ -25,7 +25,7 @@ class Admin::IdentitiesController < Admin::ApplicationController
   end
 
   def update
-    if @identity.update_attributes(identity_params)
+    if @identity.update(identity_params)
       RepairLdapBlockedUserService.new(@user).execute
       redirect_to admin_user_identities_path(@user), notice: 'User identity was successfully updated.'
     else
@@ -44,9 +44,11 @@ class Admin::IdentitiesController < Admin::ApplicationController
 
   protected
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def user
     @user ||= User.find_by!(username: params[:user_id])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def identity
     @identity ||= user.identities.find(params[:id])

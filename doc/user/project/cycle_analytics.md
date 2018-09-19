@@ -72,7 +72,7 @@ Here's a little explanation of how this works behind the scenes:
    `<issue, merge request>` pair, the merge request has the [issue closing pattern]
    for the corresponding issue. All other issues and merge requests are **not**
    considered.
-1. Then the <issue, merge request> pairs are filtered out by last XX days (specified
+1. Then the `<issue, merge request>` pairs are filtered out by last XX days (specified
    by the UI - default is 90 days). So it prohibits these pairs from being considered.
 1. For the remaining `<issue, merge request>` pairs, we check the information that
    we need for the stages, like issue creation date, merge request merge time,

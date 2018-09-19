@@ -2,8 +2,8 @@
 - primary = local_assigns.fetch(:primary, false)
 - panel_class = primary ? 'bg-primary text-white' : ''
 
-.card{ class: panel_class }
-  .card-header
+.card
+  .card-header{ class: panel_class }
     .title
       = title
     - if show_counter

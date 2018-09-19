@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'Pages' do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
-  let(:role) { :master }
+  let(:role) { :maintainer }
 
   before do
     allow(Gitlab.config.pages).to receive(:enabled).and_return(true)

@@ -1,3 +1,5 @@
+require 'pathname'
+
 module QA
   module Page
     class View
@@ -9,7 +11,7 @@ module QA
       end
 
       def pathname
-        @pathname ||= Pathname.new(File.join(__dir__, '../../../', @path))
+        @pathname ||= ::Pathname.new(::File.join(__dir__, '../../../', @path))
           .cleanpath.expand_path
       end
 
@@ -23,7 +25,7 @@ module QA
         # elements' existence.
         #
         @missing ||= @elements.dup.tap do |elements|
-          File.foreach(pathname.to_s) do |line|
+          ::File.foreach(pathname.to_s) do |line|
             elements.reject! { |element| element.matches?(line) }
           end
         end

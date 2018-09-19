@@ -1,11 +1,9 @@
 <script>
   import ciIcon from '../../vue_shared/components/ci_icon.vue';
-  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
   export default {
     components: {
       ciIcon,
-      loadingIcon,
     },
     props: {
       status: {
@@ -32,17 +30,18 @@
   };
 </script>
 <template>
-  <div class="space-children d-flex append-right-10">
+  <div class="space-children d-flex append-right-10 widget-status-icon">
     <div
       v-if="isLoading"
       class="mr-widget-icon"
     >
-      <loading-icon />
+      <gl-loading-icon />
     </div>
 
     <ci-icon
       v-else
       :status="statusObj"
+      :size="24"
     />
 
     <button

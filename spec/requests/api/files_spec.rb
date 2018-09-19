@@ -13,12 +13,42 @@ describe API::Files do
   let(:author_email) { 'user@example.org' }
   let(:author_name) { 'John Doe' }
 
+  let(:helper) do
+    fake_class = Class.new do
+      include ::API::Helpers::HeadersHelpers
+
+      attr_reader :headers
+
+      def initialize
+        @headers = {}
+      end
+
+      def header(key, value)
+        @headers[key] = value
+      end
+    end
+
+    fake_class.new
+  end
+
   before do
     project.add_developer(user)
   end
 
   def route(file_path = nil)
     "/projects/#{project.id}/repository/files/#{file_path}"
+  end
+
+  context 'http headers' do
+    it 'converts value into string' do
+      helper.set_http_headers(test: 1)
+
+      expect(helper.headers).to eq({ 'X-Gitlab-Test' => '1' })
+    end
+
+    it 'raises exception if value is an Enumerable' do
+      expect { helper.set_http_headers(test: [1]) }.to raise_error(ArgumentError)
+    end
   end
 
   describe "HEAD /projects/:id/repository/files/:file_path" do
@@ -283,7 +313,7 @@ describe API::Files do
 
   describe "POST /projects/:id/repository/files/:file_path" do
     let!(:file_path) { "new_subfolder%2Fnewfile%2Erb" }
-    let(:valid_params) do
+    let(:params) do
       {
         branch: "master",
         content: "puts 8",
@@ -292,7 +322,7 @@ describe API::Files do
     end
 
     it "creates a new file in project repo" do
-      post api(route(file_path), user), valid_params
+      post api(route(file_path), user), params
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response["file_path"]).to eq(CGI.unescape(file_path))
@@ -307,20 +337,28 @@ describe API::Files do
       expect(response).to have_gitlab_http_status(400)
     end
 
+    it 'returns a 400 bad request if the commit message is empty' do
+      params[:commit_message] = ''
+
+      post api(route(file_path), user), params
+
+      expect(response).to have_gitlab_http_status(400)
+    end
+
     it "returns a 400 if editor fails to create file" do
       allow_any_instance_of(Repository).to receive(:create_file)
         .and_raise(Gitlab::Git::CommitError, 'Cannot create file')
 
-      post api(route("any%2Etxt"), user), valid_params
+      post api(route("any%2Etxt"), user), params
 
       expect(response).to have_gitlab_http_status(400)
     end
 
     context "when specifying an author" do
       it "creates a new file with the specified author" do
-        valid_params.merge!(author_email: author_email, author_name: author_name)
+        params.merge!(author_email: author_email, author_name: author_name)
 
-        post api(route("new_file_with_author%2Etxt"), user), valid_params
+        post api(route("new_file_with_author%2Etxt"), user), params
 
         expect(response).to have_gitlab_http_status(201)
         expect(response.content_type).to eq('application/json')
@@ -334,7 +372,7 @@ describe API::Files do
       let!(:project) { create(:project_empty_repo, namespace: user.namespace ) }
 
       it "creates a new file in project repo" do
-        post api(route("newfile%2Erb"), user), valid_params
+        post api(route("newfile%2Erb"), user), params
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['file_path']).to eq('newfile.rb')
@@ -346,7 +384,7 @@ describe API::Files do
   end
 
   describe "PUT /projects/:id/repository/files" do
-    let(:valid_params) do
+    let(:params) do
       {
         branch: 'master',
         content: 'puts 8',
@@ -355,7 +393,7 @@ describe API::Files do
     end
 
     it "updates existing file in project repo" do
-      put api(route(file_path), user), valid_params
+      put api(route(file_path), user), params
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['file_path']).to eq(CGI.unescape(file_path))
@@ -364,8 +402,16 @@ describe API::Files do
       expect(last_commit.author_name).to eq(user.name)
     end
 
+    it 'returns a 400 bad request if the commit message is empty' do
+      params[:commit_message] = ''
+
+      put api(route(file_path), user), params
+
+      expect(response).to have_gitlab_http_status(400)
+    end
+
     it "returns a 400 bad request if update existing file with stale last commit id" do
-      params_with_stale_id = valid_params.merge(last_commit_id: 'stale')
+      params_with_stale_id = params.merge(last_commit_id: 'stale')
 
       put api(route(file_path), user), params_with_stale_id
 
@@ -376,7 +422,7 @@ describe API::Files do
     it "updates existing file in project repo with accepts correct last commit id" do
       last_commit = Gitlab::Git::Commit
                         .last_for_path(project.repository, 'master', URI.unescape(file_path))
-      params_with_correct_id = valid_params.merge(last_commit_id: last_commit.id)
+      params_with_correct_id = params.merge(last_commit_id: last_commit.id)
 
       put api(route(file_path), user), params_with_correct_id
 
@@ -391,9 +437,9 @@ describe API::Files do
 
     context "when specifying an author" do
       it "updates a file with the specified author" do
-        valid_params.merge!(author_email: author_email, author_name: author_name, content: "New content")
+        params.merge!(author_email: author_email, author_name: author_name, content: "New content")
 
-        put api(route(file_path), user), valid_params
+        put api(route(file_path), user), params
 
         expect(response).to have_gitlab_http_status(200)
         last_commit = project.repository.commit.raw
@@ -404,7 +450,7 @@ describe API::Files do
   end
 
   describe "DELETE /projects/:id/repository/files" do
-    let(:valid_params) do
+    let(:params) do
       {
         branch: 'master',
         commit_message: 'Changed file'
@@ -412,7 +458,7 @@ describe API::Files do
     end
 
     it "deletes existing file in project repo" do
-      delete api(route(file_path), user), valid_params
+      delete api(route(file_path), user), params
 
       expect(response).to have_gitlab_http_status(204)
     end
@@ -423,19 +469,27 @@ describe API::Files do
       expect(response).to have_gitlab_http_status(400)
     end
 
+    it 'returns a 400 bad request if the commit message is empty' do
+      params[:commit_message] = ''
+
+      delete api(route(file_path), user), params
+
+      expect(response).to have_gitlab_http_status(400)
+    end
+
     it "returns a 400 if fails to delete file" do
       allow_any_instance_of(Repository).to receive(:delete_file).and_raise(Gitlab::Git::CommitError, 'Cannot delete file')
 
-      delete api(route(file_path), user), valid_params
+      delete api(route(file_path), user), params
 
       expect(response).to have_gitlab_http_status(400)
     end
 
     context "when specifying an author" do
       it "removes a file with the specified author" do
-        valid_params.merge!(author_email: author_email, author_name: author_name)
+        params.merge!(author_email: author_email, author_name: author_name)
 
-        delete api(route(file_path), user), valid_params
+        delete api(route(file_path), user), params
 
         expect(response).to have_gitlab_http_status(204)
       end

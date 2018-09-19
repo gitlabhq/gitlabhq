@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Clusters
   module Providers
     class Gcp < ActiveRecord::Base

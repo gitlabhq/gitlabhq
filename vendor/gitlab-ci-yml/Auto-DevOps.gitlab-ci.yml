@@ -51,6 +51,8 @@ variables:
   KUBERNETES_VERSION: 1.8.6
   HELM_VERSION: 2.6.1
 
+  DOCKER_DRIVER: overlay2
+
 stages:
   - build
   - test
@@ -67,8 +69,6 @@ build:
   image: docker:stable-git
   services:
   - docker:stable-dind
-  variables:
-    DOCKER_DRIVER: overlay2
   script:
     - setup_docker
     - build
@@ -95,8 +95,6 @@ test:
 code_quality:
   stage: test
   image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
   allow_failure: true
   services:
     - docker:stable-dind
@@ -105,14 +103,15 @@ code_quality:
     - code_quality
   artifacts:
     paths: [gl-code-quality-report.json]
+  only:
+    - branches
   except:
     variables:
       - $CODE_QUALITY_DISABLED
 
 license_management:
+  stage: test
   image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
   allow_failure: true
   services:
     - docker:stable-dind
@@ -121,6 +120,8 @@ license_management:
     - license_management
   artifacts:
     paths: [gl-license-management-report.json]
+  only:
+    - branches
   except:
     variables:
       - $LICENSE_MANAGEMENT_DISABLED
@@ -128,8 +129,6 @@ license_management:
 performance:
   stage: performance
   image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
   allow_failure: true
   services:
     - docker:stable-dind
@@ -151,8 +150,6 @@ performance:
 sast:
   stage: test
   image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
   allow_failure: true
   services:
     - docker:stable-dind
@@ -161,6 +158,8 @@ sast:
     - sast
   artifacts:
     paths: [gl-sast-report.json]
+  only:
+    - branches
   except:
     variables:
       - $SAST_DISABLED
@@ -168,8 +167,6 @@ sast:
 dependency_scanning:
   stage: test
   image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
   allow_failure: true
   services:
     - docker:stable-dind
@@ -178,6 +175,8 @@ dependency_scanning:
     - dependency_scanning
   artifacts:
     paths: [gl-dependency-scanning-report.json]
+  only:
+    - branches
   except:
     variables:
       - $DEPENDENCY_SCANNING_DISABLED
@@ -185,8 +184,6 @@ dependency_scanning:
 container_scanning:
   stage: test
   image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
   allow_failure: true
   services:
     - docker:stable-dind
@@ -195,6 +192,8 @@ container_scanning:
     - container_scanning
   artifacts:
     paths: [gl-container-scanning-report.json]
+  only:
+    - branches
   except:
     variables:
       - $CONTAINER_SCANNING_DISABLED
@@ -365,6 +364,7 @@ production_manual:
     kubernetes: active
     variables:
       - $STAGING_ENABLED
+      - $CANARY_ENABLED
   except:
     variables:
       - $INCREMENTAL_ROLLOUT_ENABLED
@@ -451,12 +451,16 @@ rollout 100%:
   # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable" for Security Products
   export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
 
-  function container_scanning() {
+  function registry_login() {
     if [[ -n "$CI_REGISTRY_USER" ]]; then
       echo "Logging to GitLab Container Registry with CI credentials..."
       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
       echo ""
     fi
+  }
+
+  function container_scanning() {
+    registry_login
 
     docker run -d --name db arminc/clair-db:latest
     docker run -p 6060:6060 --link db:postgres -d --name clair --restart on-failure arminc/clair-local-scan:v2.0.1
@@ -604,6 +608,8 @@ rollout 100%:
       --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
       "$name" \
       chart/
+
+    kubectl rollout status -n "$KUBE_NAMESPACE" -w "deployment/$name"
   }
 
   function scale() {
@@ -629,10 +635,10 @@ rollout 100%:
 
   function install_dependencies() {
     apk add -U openssl curl tar gzip bash ca-certificates git
-    wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub
-    wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.23-r3/glibc-2.23-r3.apk
-    apk add glibc-2.23-r3.apk
-    rm glibc-2.23-r3.apk
+    wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
+    wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.28-r0/glibc-2.28-r0.apk
+    apk add glibc-2.28-r0.apk
+    rm glibc-2.28-r0.apk
 
     curl "https://kubernetes-helm.storage.googleapis.com/helm-v${HELM_VERSION}-linux-amd64.tar.gz" | tar zx
     mv linux-amd64/helm /usr/bin/
@@ -665,6 +671,7 @@ rollout 100%:
       auto_chart=${AUTO_DEVOPS_CHART:-gitlab/auto-deploy-app}
       auto_chart_name=$(basename $auto_chart)
       auto_chart_name=${auto_chart_name%.tgz}
+      auto_chart_name=${auto_chart_name%.tar.gz}
     else
       auto_chart="chart"
       auto_chart_name="chart"
@@ -699,18 +706,33 @@ rollout 100%:
   }
 
   function build() {
-    if [[ -n "$CI_REGISTRY_USER" ]]; then
-      echo "Logging to GitLab Container Registry with CI credentials..."
-      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-      echo ""
-    fi
+    registry_login
 
     if [[ -f Dockerfile ]]; then
       echo "Building Dockerfile-based application..."
-      docker build -t "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" .
+      docker build \
+        --build-arg HTTP_PROXY="$HTTP_PROXY" \
+        --build-arg http_proxy="$http_proxy" \
+        --build-arg HTTPS_PROXY="$HTTPS_PROXY" \
+        --build-arg https_proxy="$https_proxy" \
+        --build-arg FTP_PROXY="$FTP_PROXY" \
+        --build-arg ftp_proxy="$ftp_proxy" \
+        --build-arg NO_PROXY="$NO_PROXY" \
+        --build-arg no_proxy="$no_proxy" \
+        -t "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" .
     else
       echo "Building Heroku-based application using gliderlabs/herokuish docker image..."
-      docker run -i -e BUILDPACK_URL --name="$CI_CONTAINER_NAME" -v "$(pwd):/tmp/app:ro" gliderlabs/herokuish /bin/herokuish buildpack build
+      docker run -i \
+        -e BUILDPACK_URL \
+        -e HTTP_PROXY \
+        -e http_proxy \
+        -e HTTPS_PROXY \
+        -e https_proxy \
+        -e FTP_PROXY \
+        -e ftp_proxy \
+        -e NO_PROXY \
+        -e no_proxy \
+        --name="$CI_CONTAINER_NAME" -v "$(pwd):/tmp/app:ro" gliderlabs/herokuish /bin/herokuish buildpack build
       docker commit "$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
       docker rm "$CI_CONTAINER_NAME" >/dev/null
       echo ""
@@ -793,7 +815,7 @@ rollout 100%:
     fi
 
     if [[ -n "$(helm ls -q "^$name$")" ]]; then
-      helm delete "$name"
+      helm delete --purge "$name"
     fi
   }
 

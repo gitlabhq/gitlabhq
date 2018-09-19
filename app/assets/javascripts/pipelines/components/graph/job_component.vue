@@ -12,7 +12,7 @@ import tooltip from '../../../vue_shared/directives/tooltip';
  *   "id": 4256,
  *   "name": "test",
  *   "status": {
- *     "icon": "icon_status_success",
+ *     "icon": "status_success",
  *     "text": "passed",
  *     "label": "passed",
  *     "group": "success",
@@ -69,7 +69,7 @@ export default {
       }
 
       if (this.status.tooltip) {
-        textBuilder.push(`${this.job.status.tooltip}`);
+        textBuilder.push(this.job.status.tooltip);
       }
 
       return textBuilder.join(' ');
@@ -105,7 +105,6 @@ export default {
       :class="cssClassJobName"
       :data-boundary="tooltipBoundary"
       data-container="body"
-      data-html="true"
       class="js-pipeline-graph-job-link"
     >
 
@@ -121,7 +120,6 @@ export default {
       :title="tooltipText"
       :class="cssClassJobName"
       class="js-job-component-tooltip non-details-job-component"
-      data-html="true"
       data-container="body"
     >
 

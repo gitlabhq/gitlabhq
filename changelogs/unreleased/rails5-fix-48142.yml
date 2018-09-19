@@ -1,5 +1,0 @@
----
-title: Rails5 fix Admin::HooksController
-merge_request: 20017
-author: Jasper Maes
-type: fixed

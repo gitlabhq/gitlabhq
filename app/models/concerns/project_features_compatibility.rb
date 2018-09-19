@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Makes api V4 compatible with old project features permissions methods
 #
 # After migrating issues_enabled merge_requests_enabled builds_enabled snippets_enabled and wiki_enabled

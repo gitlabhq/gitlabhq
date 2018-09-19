@@ -8,7 +8,7 @@ describe 'User browses a job', :js do
   let!(:build) { create(:ci_build, :success, :trace_artifact, :coverage, pipeline: pipeline) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     project.enable_ci
 
     sign_in(user)
@@ -40,7 +40,7 @@ describe 'User browses a job', :js do
     it 'displays the failure reason' do
       within('.builds-container') do
         build_link = first('.build-job > a')
-        expect(build_link['data-title']).to eq('test - failed <br> (unknown failure)')
+        expect(build_link['data-title']).to eq('test - failed - (unknown failure)')
       end
     end
   end
@@ -51,7 +51,7 @@ describe 'User browses a job', :js do
     it 'displays the failure reason and retried label' do
       within('.builds-container') do
         build_link = first('.build-job > a')
-        expect(build_link['data-title']).to eq('test - failed <br> (unknown failure) (retried)')
+        expect(build_link['data-title']).to eq('test - failed - (unknown failure) (retried)')
       end
     end
   end

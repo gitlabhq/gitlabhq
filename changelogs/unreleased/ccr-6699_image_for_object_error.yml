@@ -1,0 +1,6 @@
+---
+title: Handles exception during file upload - replaces the stack trace with a small
+  error message.
+merge_request: 21528
+author:
+type: fixed

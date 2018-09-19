@@ -1,6 +1,0 @@
----
-title: Enable Doorkeeper option to avoid generating new tokens when users login via
-  oauth
-merge_request: 20200
-author:
-type: fixed

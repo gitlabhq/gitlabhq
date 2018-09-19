@@ -60,7 +60,7 @@ module AuthenticatesWithTwoFactor
 
       remember_me(user) if user_params[:remember_me] == '1'
       user.save!
-      sign_in(user)
+      sign_in(user, message: :two_factor_authenticated)
     else
       user.increment_failed_attempts!
       Gitlab::AppLogger.info("Failed Login: user=#{user.username} ip=#{request.remote_ip} method=OTP")
@@ -77,7 +77,7 @@ module AuthenticatesWithTwoFactor
       session.delete(:challenge)
 
       remember_me(user) if user_params[:remember_me] == '1'
-      sign_in(user)
+      sign_in(user, message: :two_factor_authenticated)
     else
       user.increment_failed_attempts!
       Gitlab::AppLogger.info("Failed Login: user=#{user.username} ip=#{request.remote_ip} method=U2F")
@@ -88,6 +88,7 @@ module AuthenticatesWithTwoFactor
 
   # Setup in preparation of communication with a U2F (universal 2nd factor) device
   # Actual communication is performed using a Javascript API
+  # rubocop: disable CodeReuse/ActiveRecord
   def setup_u2f_authentication(user)
     key_handles = user.u2f_registrations.pluck(:key_handle)
     u2f = U2F::U2F.new(u2f_app_id)
@@ -99,4 +100,5 @@ module AuthenticatesWithTwoFactor
                       sign_requests: sign_requests })
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ServicesHelper
   def service_event_description(event)
     case event

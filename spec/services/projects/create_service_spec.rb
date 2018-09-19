@@ -23,7 +23,7 @@ describe Projects::CreateService, '#execute' do
 
       expect(project).to be_valid
       expect(project.owner).to eq(user)
-      expect(project.team.masters).to include(user)
+      expect(project.team.maintainers).to include(user)
       expect(project.namespace).to eq(user.namespace)
     end
   end
@@ -47,7 +47,7 @@ describe Projects::CreateService, '#execute' do
 
       expect(project).to be_persisted
       expect(project.owner).to eq(user)
-      expect(project.team.masters).to contain_exactly(user)
+      expect(project.team.maintainers).to contain_exactly(user)
       expect(project.namespace).to eq(user.namespace)
     end
   end
@@ -111,6 +111,17 @@ describe Projects::CreateService, '#execute' do
     def wiki_repo(project)
       relative_path = ProjectWiki.new(project).disk_path + '.git'
       Gitlab::Git::Repository.new(project.repository_storage, relative_path, 'foobar')
+    end
+  end
+
+  context 'import data' do
+    it 'stores import data and URL' do
+      import_data = { data: { 'test' => 'some data' } }
+      project = create_project(user, { name: 'test', import_url: 'http://import-url', import_data: import_data })
+
+      expect(project.import_data).to be_persisted
+      expect(project.import_data.data).to eq(import_data[:data])
+      expect(project.import_url).to eq('http://import-url')
     end
   end
 

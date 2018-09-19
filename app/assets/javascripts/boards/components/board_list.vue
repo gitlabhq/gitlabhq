@@ -3,7 +3,6 @@ import Sortable from 'sortablejs';
 import boardNewIssue from './board_new_issue.vue';
 import boardCard from './board_card.vue';
 import eventHub from '../eventhub';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
 const Store = gl.issueBoards.BoardsStore;
 
@@ -12,7 +11,6 @@ export default {
   components: {
     boardCard,
     boardNewIssue,
-    loadingIcon,
   },
   props: {
     groupId: {
@@ -112,12 +110,20 @@ export default {
           if (e.target) {
             const containerEl = e.target.closest('.js-board-list') || e.target.querySelector('.js-board-list');
             const toBoardType = containerEl.dataset.boardType;
+            const cloneActions = {
+              label: ['milestone', 'assignee'],
+              assignee: ['milestone', 'label'],
+              milestone: ['label', 'assignee'],
+            };
 
             if (toBoardType) {
               const fromBoardType = this.list.type;
+              // For each list we check if the destination list is
+              // a the list were we should clone the issue
+              const shouldClone = Object.entries(cloneActions).some(entry => (
+                 fromBoardType === entry[0] && entry[1].includes(toBoardType)));
 
-              if ((fromBoardType === 'assignee' && toBoardType === 'label') ||
-                  (fromBoardType === 'label' && toBoardType === 'assignee')) {
+              if (shouldClone) {
                 return 'clone';
               }
             }
@@ -145,7 +151,8 @@ export default {
         });
       },
       onUpdate: (e) => {
-        const sortedArray = this.sortable.toArray().filter(id => id !== '-1');
+        const sortedArray = this.sortable.toArray()
+          .filter(id => id !== '-1');
         gl.issueBoards.BoardsStore
           .moveIssueInList(this.list, Store.moving.issue, e.oldIndex, e.newIndex, sortedArray);
       },
@@ -194,7 +201,7 @@ export default {
       this.showIssueForm = !this.showIssueForm;
     },
     onScroll() {
-      if (!this.loadingMore && (this.scrollTop() > this.scrollHeight() - this.scrollOffset)) {
+      if (!this.list.loadingMore && (this.scrollTop() > this.scrollHeight() - this.scrollOffset)) {
         this.loadNextPage();
       }
     },
@@ -208,7 +215,7 @@ export default {
       v-if="loading"
       class="board-list-loading text-center"
       aria-label="Loading issues">
-      <loading-icon />
+      <gl-loading-icon />
     </div>
     <board-new-issue
       v-if="list.type !== 'closed' && showIssueForm"
@@ -236,7 +243,7 @@ export default {
         v-if="showCount"
         class="board-list-count text-center"
         data-issue-id="-1">
-        <loading-icon
+        <gl-loading-icon
           v-show="list.loadingMore"
           label="Loading more issues"
         />

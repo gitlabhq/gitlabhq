@@ -1,5 +1,0 @@
----
-title: Remove redundant query when removing trace
-merge_request: 20324
-author:
-type: performance

@@ -1,0 +1,5 @@
+---
+title: Adds Rubocop rule to enforce class_methods over module ClassMethods
+merge_request: 21379
+author: Jacopo Beschi @jacopo-beschi
+type: added

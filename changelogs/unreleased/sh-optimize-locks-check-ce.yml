@@ -1,5 +1,0 @@
----
-title: Eliminate N+1 queries in LFS file locks checks during a push
-merge_request:
-author:
-type: performance

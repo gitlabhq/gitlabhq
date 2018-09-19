@@ -14,7 +14,7 @@ describe LabelsFinder do
     let(:project_4) { create(:project, :public) }
     let(:project_5) { create(:project, namespace: group_1) }
 
-    let!(:project_label_1) { create(:label, project: project_1, title: 'Label 1') }
+    let!(:project_label_1) { create(:label, project: project_1, title: 'Label 1', description: 'awesome label') }
     let!(:project_label_2) { create(:label, project: project_2, title: 'Label 2') }
     let!(:project_label_4) { create(:label, project: project_4, title: 'Label 4') }
     let!(:project_label_5) { create(:label, project: project_5, title: 'Label 5') }
@@ -55,7 +55,7 @@ describe LabelsFinder do
     context 'filtering by group_id' do
       it 'returns labels available for any non-archived project within the group' do
         group_1.add_developer(user)
-        project_1.archive!
+        ::Projects::UpdateService.new(project_1, user, archived: true).execute
         finder = described_class.new(user, group_id: group_1.id)
 
         expect(finder.execute).to eq [group_label_2, group_label_1, project_label_5]
@@ -194,6 +194,20 @@ describe LabelsFinder do
         finder = described_class.new(user, name: [])
 
         expect(finder.execute).to be_empty
+      end
+    end
+
+    context 'search by title and description' do
+      it 'returns labels with a partially matching title' do
+        finder = described_class.new(user, search: '(group)')
+
+        expect(finder.execute).to eq [group_label_1]
+      end
+
+      it 'returns labels with a partially matching description' do
+        finder = described_class.new(user, search: 'awesome')
+
+        expect(finder.execute).to eq [project_label_1]
       end
     end
   end

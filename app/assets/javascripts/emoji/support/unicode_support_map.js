@@ -86,7 +86,7 @@ function generateUnicodeSupportMap(testMap) {
   canvas.height = numTestEntries * fontSize;
   ctx.fillStyle = '#000000';
   ctx.textBaseline = 'middle';
-  ctx.font = `${fontSize}px "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`;
+  ctx.font = `${fontSize}px "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"`;
   // Write each emoji to the canvas vertically
   let writeIndex = 0;
   testMapKeys.forEach(testKey => {

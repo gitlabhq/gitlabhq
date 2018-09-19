@@ -1,0 +1,5 @@
+---
+title: Remove redundant ci_builds (status) index
+merge_request: 21070
+author:
+type: performance

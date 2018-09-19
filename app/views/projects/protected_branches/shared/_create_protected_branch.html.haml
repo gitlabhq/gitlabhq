@@ -1,4 +1,5 @@
 = form_for [@project.namespace.becomes(Namespace), @project, @protected_branch], html: { class: 'new-protected-branch js-new-protected-branch' } do |f|
+  %input{ type: 'hidden', name: 'update_section', value: 'js-protected-branches-settings' }
   .card
     .card-header
       %h3.card-title

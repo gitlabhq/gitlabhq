@@ -7,7 +7,7 @@ describe 'User browses jobs' do
   let(:user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     project.enable_ci
     project.update_attribute(:build_coverage_regex, /Coverage (\d+)%/)
 
@@ -36,7 +36,7 @@ describe 'User browses jobs' do
     it 'displays a tooltip with the failure reason' do
       page.within('.ci-table') do
         failed_job_link = page.find('.ci-failed')
-        expect(failed_job_link[:title]).to eq('Failed <br> (unknown failure)')
+        expect(failed_job_link[:title]).to eq('Failed - (unknown failure)')
       end
     end
   end

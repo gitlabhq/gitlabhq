@@ -28,7 +28,7 @@ describe ProjectMigrateHashedStorageWorker, :clean_gitlab_redis_shared_state do
       migration_service = spy
 
       allow(::Projects::HashedStorageMigrationService)
-        .to receive(:new).with(project, subject.logger)
+        .to receive(:new).with(project, project.full_path, logger: subject.logger)
         .and_return(migration_service)
 
       subject.perform(project.id)

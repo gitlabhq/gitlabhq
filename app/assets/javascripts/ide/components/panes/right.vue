@@ -1,5 +1,5 @@
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState, mapGetters } from 'vuex';
 import tooltip from '../../../vue_shared/directives/tooltip';
 import Icon from '../../../vue_shared/components/icon.vue';
 import { rightSidebarViews } from '../../constants';
@@ -7,6 +7,7 @@ import PipelinesList from '../pipelines/list.vue';
 import JobsDetail from '../jobs/detail.vue';
 import MergeRequestInfo from '../merge_requests/info.vue';
 import ResizablePanel from '../resizable_panel.vue';
+import Clientside from '../preview/clientside.vue';
 
 export default {
   directives: {
@@ -18,14 +19,19 @@ export default {
     JobsDetail,
     ResizablePanel,
     MergeRequestInfo,
+    Clientside,
   },
   computed: {
-    ...mapState(['rightPane', 'currentMergeRequestId']),
+    ...mapState(['rightPane', 'currentMergeRequestId', 'clientsidePreviewEnabled']),
+    ...mapGetters(['packageJson']),
     pipelinesActive() {
       return (
         this.rightPane === rightSidebarViews.pipelines ||
         this.rightPane === rightSidebarViews.jobsDetail
       );
+    },
+    showLivePreview() {
+      return this.packageJson && this.clientsidePreviewEnabled;
     },
   },
   methods: {
@@ -49,8 +55,9 @@ export default {
       :collapsible="false"
       :initial-width="350"
       :min-size="350"
-      class="multi-file-commit-panel-inner"
+      :class="`ide-right-sidebar-${rightPane}`"
       side="right"
+      class="multi-file-commit-panel-inner"
     >
       <component :is="rightPane" />
     </resizable-panel>
@@ -95,6 +102,26 @@ export default {
             <icon
               :size="16"
               name="rocket"
+            />
+          </button>
+        </li>
+        <li v-if="showLivePreview">
+          <button
+            v-tooltip
+            :title="__('Live preview')"
+            :aria-label="__('Live preview')"
+            :class="{
+              active: rightPane === $options.rightSidebarViews.clientSidePreview
+            }"
+            data-container="body"
+            data-placement="left"
+            class="ide-sidebar-link is-right"
+            type="button"
+            @click="clickTab($event, $options.rightSidebarViews.clientSidePreview)"
+          >
+            <icon
+              :size="16"
+              name="live-preview"
             />
           </button>
         </li>

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Namespace < ActiveRecord::Base
   include CacheMarkdownField
   include Sortable
@@ -8,6 +10,8 @@ class Namespace < ActiveRecord::Base
   include Storage::LegacyNamespace
   include Gitlab::SQL::Pattern
   include IgnorableColumn
+  include FeatureGate
+  include FromUnion
 
   ignore_column :deleted_at
 
@@ -250,18 +254,6 @@ class Namespace < ActiveRecord::Base
     end
   end
 
-  # Exports belonging to projects with legacy storage are placed in a common
-  # subdirectory of the namespace, so a simple `rm -rf` is sufficient to remove
-  # them.
-  #
-  # Exports of projects using hashed storage are placed in a location defined
-  # only by the project ID, so each must be removed individually.
-  def remove_exports!
-    remove_legacy_exports!
-
-    all_projects.with_storage_feature(:repository).find_each(&:remove_exports)
-  end
-
   def refresh_project_authorizations
     owner.refresh_authorized_projects
   end
@@ -304,7 +296,6 @@ class Namespace < ActiveRecord::Base
 
   def write_projects_repository_config
     all_projects.find_each do |project|
-      project.expires_full_path_cache # we need to clear cache to validate renames correctly
       project.write_repository_config
     end
   end

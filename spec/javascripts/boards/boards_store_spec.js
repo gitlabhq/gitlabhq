@@ -161,6 +161,28 @@ describe('Store', () => {
       }, 0);
     });
 
+    it('moves an issue from backlog to a list', (done) => {
+      const backlog = gl.issueBoards.BoardsStore.addList({
+        ...listObj,
+        list_type: 'backlog',
+      });
+      const listTwo = gl.issueBoards.BoardsStore.addList(listObjDuplicate);
+
+      expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(2);
+
+      setTimeout(() => {
+        expect(backlog.issues.length).toBe(1);
+        expect(listTwo.issues.length).toBe(1);
+
+        gl.issueBoards.BoardsStore.moveIssueToList(backlog, listTwo, backlog.findIssue(1));
+
+        expect(backlog.issues.length).toBe(0);
+        expect(listTwo.issues.length).toBe(1);
+
+        done();
+      }, 0);
+    });
+
     it('moves issue to top of another list', (done) => {
       const listOne = gl.issueBoards.BoardsStore.addList(listObj);
       const listTwo = gl.issueBoards.BoardsStore.addList(listObjDuplicate);

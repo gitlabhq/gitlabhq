@@ -40,8 +40,8 @@
         if (this.issueCount === 0 && this.mergeRequestCount === 0) {
           return sprintf(
             s__(`Milestones|
-You’re about to permanently delete the milestone %{milestoneTitle} from this project.
-%{milestoneTitle} is not currently used in any issues or merge requests.`),
+You’re about to permanently delete the milestone %{milestoneTitle}.
+This milestone is not currently used in any issues or merge requests.`),
             {
               milestoneTitle,
             },
@@ -51,7 +51,7 @@ You’re about to permanently delete the milestone %{milestoneTitle} from this p
 
         return sprintf(
           s__(`Milestones|
-You’re about to permanently delete the milestone %{milestoneTitle} from this project and remove it from %{issuesWithCount} and %{mergeRequestsWithCount}.
+You’re about to permanently delete the milestone %{milestoneTitle} and remove it from %{issuesWithCount} and %{mergeRequestsWithCount}.
 Once deleted, it cannot be undone or recovered.`),
           {
             milestoneTitle,

@@ -13,7 +13,7 @@ describe API::Branches do
   let(:current_user) { nil }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe "GET /projects/:id/repository/branches" do
@@ -75,7 +75,7 @@ describe API::Branches do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'repository branches'
@@ -170,7 +170,7 @@ describe API::Branches do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'repository branch'
@@ -324,7 +324,7 @@ describe API::Branches do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       context "when a protected branch doesn't already exist" do
@@ -381,8 +381,8 @@ describe API::Branches do
             expect(json_response['protected']).to eq(true)
             expect(json_response['developers_can_push']).to eq(false)
             expect(json_response['developers_can_merge']).to eq(false)
-            expect(protected_branch.reload.push_access_levels.first.access_level).to eq(Gitlab::Access::MASTER)
-            expect(protected_branch.reload.merge_access_levels.first.access_level).to eq(Gitlab::Access::MASTER)
+            expect(protected_branch.reload.push_access_levels.first.access_level).to eq(Gitlab::Access::MAINTAINER)
+            expect(protected_branch.reload.merge_access_levels.first.access_level).to eq(Gitlab::Access::MAINTAINER)
           end
         end
 
@@ -458,7 +458,7 @@ describe API::Branches do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       context "when a protected branch doesn't already exist" do
@@ -534,7 +534,7 @@ describe API::Branches do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       context "when a protected branch doesn't already exist" do

@@ -1,5 +1,0 @@
----
-title: Invalidate merge request diffs cache if diff data change.
-merge_request:
-author:
-type: fixed

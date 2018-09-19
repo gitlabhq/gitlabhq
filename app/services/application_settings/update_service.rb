@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ApplicationSettings
   class UpdateService < ApplicationSettings::BaseService
     attr_reader :params, :application_setting
@@ -9,10 +11,18 @@ module ApplicationSettings
         params[:performance_bar_allowed_group_id] = performance_bar_allowed_group_id
       end
 
+      if usage_stats_updated? && !params.delete(:skip_usage_stats_user)
+        params[:usage_stats_set_by_user_id] = current_user.id
+      end
+
       @application_setting.update(@params)
     end
 
     private
+
+    def usage_stats_updated?
+      params.key?(:usage_ping_enabled) || params.key?(:version_check_enabled)
+    end
 
     def update_terms(terms)
       return unless terms.present?

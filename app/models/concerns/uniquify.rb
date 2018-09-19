@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Uniquify
 #
 # Return a version of the given 'base' string that is unique

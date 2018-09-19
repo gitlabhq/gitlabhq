@@ -1,5 +1,5 @@
 <script>
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 import Flash from '~/flash';
 import tooltip from '~/vue_shared/directives/tooltip';
 import issuableMixin from '~/vue_shared/mixins/issuable';
@@ -79,11 +79,9 @@ export default {
         .then(() => window.location.reload())
         .catch(() =>
           Flash(
-            this.__(
-              `Something went wrong trying to change the locked state of this ${
-                this.issuableDisplayName
-              }`,
-            ),
+            sprintf(__('Something went wrong trying to change the locked state of this %{issuableDisplayName}'), {
+              issuableDisplayName: this.issuableDisplayName,
+            }),
           ),
         );
     },

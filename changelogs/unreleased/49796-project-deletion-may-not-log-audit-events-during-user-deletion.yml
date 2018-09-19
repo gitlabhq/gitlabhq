@@ -1,0 +1,5 @@
+---
+title: 'Fix: Project deletion may not log audit events during user deletion'
+merge_request:
+author:
+type: fixed

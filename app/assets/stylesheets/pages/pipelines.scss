@@ -19,7 +19,7 @@
   background-color: $white-light;
 
   &:hover {
-    background-color: $stage-hover-bg;
+    background-color: $gray-darker;
     border: 1px solid $dropdown-toggle-active-border-color;
     color: $gl-text-color;
   }
@@ -175,7 +175,7 @@
     }
 
     .commit-sha {
-      color: $gl-link-color;
+      color: $blue-600;
     }
 
     .badge {
@@ -299,6 +299,21 @@
         right: -7px;
         top: 10px;
         border-bottom: 2px solid $border-color;
+      }
+    }
+
+    //delete when all pipelines are updated to new size
+    &.mr-widget-pipeline-stages {
+      + .stage-container {
+        margin-left: 4px;
+      }
+
+      &:not(:last-child) {
+        &::after {
+          width: 4px;
+          right: -4px;
+          top: 11px;
+        }
       }
     }
   }
@@ -580,7 +595,7 @@
 
     a.build-content:hover,
     button.build-content:hover {
-      background-color: $stage-hover-bg;
+      background-color: $gray-darker;
       border: 1px solid $dropdown-toggle-active-border-color;
     }
 
@@ -653,7 +668,7 @@
       display: block;
 
       &:hover {
-        background-color: $stage-hover-bg;
+        background-color: $gray-darker;
         border: 1px solid $dropdown-toggle-active-border-color;
 
         svg {
@@ -820,7 +835,7 @@ button.mini-pipeline-graph-dropdown-toggle {
       display: block;
 
       &:hover {
-        background-color: $stage-hover-bg;
+        background-color: $gray-darker;
         border: 1px solid $dropdown-toggle-active-border-color;
 
         svg {
@@ -919,7 +934,7 @@ button.mini-pipeline-graph-dropdown-toggle {
       &:focus {
         outline: none;
         text-decoration: none;
-        background-color: $stage-hover-bg;
+        background-color: $gray-darker;
       }
     }
   }

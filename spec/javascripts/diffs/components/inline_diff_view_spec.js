@@ -13,7 +13,7 @@ describe('InlineDiffView', () => {
   beforeEach(() => {
     const diffFile = getDiffFileMock();
 
-    store.dispatch('setInlineDiffViewType');
+    store.dispatch('diffs/setInlineDiffViewType');
     component = createComponentWithStore(Vue.extend(InlineDiffView), store, {
       diffFile,
       diffLines: diffFile.highlightedDiffLines,

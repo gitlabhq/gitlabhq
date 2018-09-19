@@ -172,6 +172,10 @@ object which can be treated like any other jasmine spy object.
 Further documentation on the babel rewire pluign API can be found on
 [its repository Readme doc](https://github.com/speedskater/babel-plugin-rewire#babel-plugin-rewire).
 
+#### Waiting in tests
+
+If you cannot avoid using [`setTimeout`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setTimeout) in tests, please use the [Jasmine mock clock](https://jasmine.github.io/api/2.9/Clock.html).
+
 ### Vue.js unit tests
 
 See this [section][vue-test].

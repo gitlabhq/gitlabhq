@@ -79,7 +79,6 @@ body.modal-open {
 
 .modal {
   background-color: $black-transparent;
-  z-index: 2100;
 
   @include media-breakpoint-up(md) {
     .modal-dialog {

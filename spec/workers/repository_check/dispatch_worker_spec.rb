@@ -11,6 +11,14 @@ describe RepositoryCheck::DispatchWorker do
     subject.perform
   end
 
+  it 'does nothing if the exclusive lease is taken' do
+    allow(subject).to receive(:try_obtain_lease).and_return(false)
+
+    expect(RepositoryCheck::BatchWorker).not_to receive(:perform_async)
+
+    subject.perform
+  end
+
   it 'dispatches work to RepositoryCheck::BatchWorker' do
     expect(RepositoryCheck::BatchWorker).to receive(:perform_async).at_least(:once)
 

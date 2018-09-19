@@ -5,7 +5,7 @@ describe 'Project active tab' do
   let(:project) { create(:project, :repository) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 

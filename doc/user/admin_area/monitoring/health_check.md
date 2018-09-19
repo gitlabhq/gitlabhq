@@ -1,12 +1,12 @@
 # Health Check
 
->**Notes:**
-  - Liveness and readiness probes were [introduced][ce-10416] in GitLab 9.1.
-  - The `health_check` endpoint was [introduced][ce-3888] in GitLab 8.8 and will
-    be deprecated in GitLab 9.1. Read more in the [old behavior](#old-behavior)
-    section.
-  - [Access token](#access-token) has been deprecated in GitLab 9.4
-    in favor of [IP whitelist](#ip-whitelist)
+> **Notes:**
+>   - Liveness and readiness probes were [introduced][ce-10416] in GitLab 9.1.
+>   - The `health_check` endpoint was [introduced][ce-3888] in GitLab 8.8 and will
+>     be deprecated in GitLab 9.1. Read more in the [old behavior](#old-behavior)
+>     section.
+>   - [Access token](#access-token) has been deprecated in GitLab 9.4
+>     in favor of [IP whitelist](#ip-whitelist)
 
 GitLab provides liveness and readiness probes to indicate service health and
 reachability to required services. These probes report on the status of the
@@ -20,14 +20,24 @@ To access monitoring resources, the client IP needs to be included in a whitelis
 
 [Read how to add IPs to a whitelist for the monitoring endpoints][admin].
 
-## Using the endpoint
+## Using the endpoints
 
 With default whitelist settings, the probes can be accessed from localhost:
 
+- `http://localhost/-/health`
 - `http://localhost/-/readiness`
 - `http://localhost/-/liveness`
 
-which will then provide a report of system health in JSON format.
+
+The first endpoint, `/-/health/`, only checks whether the application server is running. It does
+-not verify the database or other services are running. A successful response will return
+a 200 status code with the following message:
+
+```
+GitLab OK
+```
+
+The readiness and liveness probes will provide a report of system health in JSON format.
 
 Readiness example output:
 
@@ -40,12 +50,6 @@ Readiness example output:
       "status" : "ok"
    },
    "shared_state_check" : {
-      "status" : "ok"
-   },
-   "fs_shards_check" : {
-      "labels" : {
-         "shard" : "default"
-      },
       "status" : "ok"
    },
    "db_check" : {
@@ -61,9 +65,6 @@ Liveness example output:
 
 ```
 {
-   "fs_shards_check" : {
-      "status" : "ok"
-   },
    "cache_check" : {
       "status" : "ok"
    },

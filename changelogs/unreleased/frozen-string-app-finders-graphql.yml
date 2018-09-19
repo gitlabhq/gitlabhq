@@ -1,0 +1,5 @@
+---
+title: Enable frozen string in app/graphql + app/finders
+merge_request:
+author: gfyoung
+type: performance

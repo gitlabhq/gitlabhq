@@ -13,7 +13,7 @@ export default {
   path: '/root/ci-mock/pipelines/123',
   details: {
     status: {
-      icon: 'icon_status_success',
+      icon: 'status_success',
       text: 'passed',
       label: 'passed',
       group: 'success',
@@ -33,7 +33,7 @@ export default {
             name: 'test',
             size: 1,
             status: {
-              icon: 'icon_status_success',
+              icon: 'status_success',
               text: 'passed',
               label: 'passed',
               group: 'success',
@@ -58,7 +58,7 @@ export default {
                 created_at: '2017-04-13T09:25:18.959Z',
                 updated_at: '2017-04-13T09:25:23.118Z',
                 status: {
-                  icon: 'icon_status_success',
+                  icon: 'status_success',
                   text: 'passed',
                   label: 'passed',
                   group: 'success',
@@ -78,7 +78,7 @@ export default {
           },
         ],
         status: {
-          icon: 'icon_status_success',
+          icon: 'status_success',
           text: 'passed',
           label: 'passed',
           group: 'success',
@@ -91,14 +91,14 @@ export default {
         dropdown_path: '/root/ci-mock/pipelines/123/stage.json?stage=test',
       },
       {
-        name: 'deploy',
+        name: 'deploy <img src=x onerror=alert(document.domain)>',
         title: 'deploy: passed',
         groups: [
           {
             name: 'deploy to production',
             size: 1,
             status: {
-              icon: 'icon_status_success',
+              icon: 'status_success',
               text: 'passed',
               label: 'passed',
               group: 'success',
@@ -123,7 +123,7 @@ export default {
                 created_at: '2017-04-19T14:29:46.463Z',
                 updated_at: '2017-04-19T14:30:27.498Z',
                 status: {
-                  icon: 'icon_status_success',
+                  icon: 'status_success',
                   text: 'passed',
                   label: 'passed',
                   group: 'success',
@@ -145,7 +145,7 @@ export default {
             name: 'deploy to staging',
             size: 1,
             status: {
-              icon: 'icon_status_success',
+              icon: 'status_success',
               text: 'passed',
               label: 'passed',
               group: 'success',
@@ -170,7 +170,7 @@ export default {
                 created_at: '2017-04-18T16:32:08.420Z',
                 updated_at: '2017-04-18T16:32:12.631Z',
                 status: {
-                  icon: 'icon_status_success',
+                  icon: 'status_success',
                   text: 'passed',
                   label: 'passed',
                   group: 'success',
@@ -190,7 +190,7 @@ export default {
           },
         ],
         status: {
-          icon: 'icon_status_success',
+          icon: 'status_success',
           text: 'passed',
           label: 'passed',
           group: 'success',

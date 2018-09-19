@@ -12,7 +12,7 @@ Since installations from source don't have Runit, Sidekiq can't be terminated an
 
 ## Select Version to Install
 
-Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install (e.g., `11-1-stable`).
+Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install (e.g., `11-3-stable`).
 You can select the branch in the version dropdown in the top left corner of GitLab (below the menu bar).
 
 If the highest number stable branch is unclear please check the [GitLab Blog](https://about.gitlab.com/blog/) for installation guide links by version.
@@ -92,9 +92,9 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # Download and compile from source
     cd /tmp
-    curl --remote-name --progress https://www.kernel.org/pub/software/scm/git/git-2.16.3.tar.gz
-    echo 'dda229e9c73f4fbb7d4324e0d993e11311673df03f73b194c554c2e9451e17cd  git-2.16.3.tar.gz' | shasum -a256 -c - && tar -xzf git-2.16.3.tar.gz
-    cd git-2.16.3/
+    curl --remote-name --progress https://www.kernel.org/pub/software/scm/git/git-2.18.0.tar.gz
+    echo '94faf2c0b02a7920b0b46f4961d8e9cad08e81418614102898a55f980fa3e7e4  git-2.18.0.tar.gz' | shasum -a256 -c - && tar -xzf git-2.18.0.tar.gz
+    cd git-2.18.0/
     ./configure
     make prefix=/usr/local all
 
@@ -153,7 +153,7 @@ page](https://golang.org/dl).
 
     # Remove former Go installation folder
     sudo rm -rf /usr/local/go
-    
+
     curl --remote-name --progress https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz
     echo 'fa1b0e45d3b647c252f51f5e1204aba049cde4af177ef9f2181f43004f901035  go1.10.3.linux-amd64.tar.gz' | shasum -a256 -c - && \
       sudo tar -C /usr/local -xzf go1.10.3.linux-amd64.tar.gz
@@ -300,9 +300,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 11-1-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 11-3-stable gitlab
 
-**Note:** You can change `11-1-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `11-3-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -447,12 +447,45 @@ You can specify a different Git repository by providing it as an extra parameter
 
     sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse,https://example.com/gitlab-workhorse.git]" RAILS_ENV=production
 
+### Install gitlab-pages
+
+GitLab-Pages uses [GNU Make](https://www.gnu.org/software/make/). This step is optional and only needed if you wish to host static sites from within GitLab. The following commands will install GitLab-Pages in `/home/git/gitlab-pages`. For additional setup steps, please consult the [administration guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/administration/pages/source.md) for your version of GitLab as the GitLab Pages daemon can be ran several different ways.
+
+    cd /home/git
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
+    cd gitlab-pages
+    sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_PAGES_VERSION)
+    sudo -u git -H make
+
+### Install Gitaly
+
+    # Fetch Gitaly source with Git and compile with Go
+    sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_ENV=production
+
+You can specify a different Git repository by providing it as an extra parameter:
+
+    sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,https://example.com/gitaly.git]" RAILS_ENV=production
+
+Next, make sure gitaly configured:
+
+    # Restrict Gitaly socket access
+    sudo chmod 0700 /home/git/gitlab/tmp/sockets/private
+    sudo chown git /home/git/gitlab/tmp/sockets/private
+
+    # If you are using non-default settings you need to update config.toml
+    cd /home/git/gitaly
+    sudo -u git -H editor config.toml
+
+For more information about configuring Gitaly see
+[doc/administration/gitaly](../administration/gitaly).
 
 ### Initialize Database and Activate Advanced Features
 
     sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
-
     # Type 'yes' to create the database tables.
+
+    # or you can skip the question by adding force=yes
+    sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production force=yes
 
     # When done you see 'Administrator account created:'
 
@@ -481,28 +514,6 @@ If you installed GitLab in another directory or as a user other than the default
 Make GitLab start on boot:
 
     sudo update-rc.d gitlab defaults 21
-
-### Install Gitaly
-
-    # Fetch Gitaly source with Git and compile with Go
-    sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_ENV=production
-
-You can specify a different Git repository by providing it as an extra parameter:
-
-    sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,https://example.com/gitaly.git]" RAILS_ENV=production
-
-Next, make sure gitaly configured:
-
-    # Restrict Gitaly socket access
-    sudo chmod 0700 /home/git/gitlab/tmp/sockets/private
-    sudo chown git /home/git/gitlab/tmp/sockets/private
-
-    # If you are using non-default settings you need to update config.toml
-    cd /home/git/gitaly
-    sudo -u git -H editor config.toml
-
-For more information about configuring Gitaly see
-[doc/administration/gitaly](../administration/gitaly).
 
 ### Setup Logrotate
 

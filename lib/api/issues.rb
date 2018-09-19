@@ -7,6 +7,7 @@ module API
     helpers ::Gitlab::IssuableMetadata
 
     helpers do
+      # rubocop: disable CodeReuse/ActiveRecord
       def find_issues(args = {})
         args = declared_params.merge(args)
 
@@ -20,6 +21,7 @@ module API
 
         issues.reorder(args[:order_by] => args[:sort])
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       params :issues_params do
         optional :labels, type: String, desc: 'Comma-separated list of label names'
@@ -162,6 +164,9 @@ module API
                                                            desc: 'The IID of a merge request for which to resolve discussions'
         optional :discussion_to_resolve, type: String,
                                          desc: 'The ID of a discussion to resolve, also pass `merge_request_to_resolve_discussions_of`'
+        optional :iid, type: Integer,
+                       desc: 'The internal ID of a project issue. Available only for admins and project owners.'
+
         use :issue_params
       end
       post ':id/issues' do
@@ -169,10 +174,8 @@ module API
 
         authorize! :create_issue, user_project
 
-        # Setting created_at time only allowed for admins and project owners
-        unless current_user.admin? || user_project.owner == current_user
-          params.delete(:created_at)
-        end
+        params.delete(:created_at) unless current_user.can?(:set_issue_created_at, user_project)
+        params.delete(:iid) unless current_user.can?(:set_issue_iid, user_project)
 
         issue_params = declared_params(include_missing: false)
 
@@ -206,14 +209,15 @@ module API
         at_least_one_of :title, :description, :assignee_ids, :assignee_id, :milestone_id, :discussion_locked,
                         :labels, :created_at, :due_date, :confidential, :state_event
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       put ':id/issues/:issue_iid' do
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42322')
 
         issue = user_project.issues.find_by!(iid: params.delete(:issue_iid))
         authorize! :update_issue, issue
 
-        # Setting created_at time only allowed for admins and project owners
-        unless current_user.admin? || user_project.owner == current_user
+        # Setting created_at time only allowed for admins and project/group owners
+        unless current_user.admin? || user_project.owner == current_user || current_user.owned_groups.include?(user_project.owner)
           params.delete(:updated_at)
         end
 
@@ -233,6 +237,7 @@ module API
           render_validation_error!(issue)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Move an existing issue' do
         success Entities::Issue
@@ -241,6 +246,7 @@ module API
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
         requires :to_project_id, type: Integer, desc: 'The ID of the new project'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       post ':id/issues/:issue_iid/move' do
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42323')
 
@@ -257,11 +263,13 @@ module API
           render_api_error!(error.message, 400)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Delete a project issue'
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       delete ":id/issues/:issue_iid" do
         issue = user_project.issues.find_by(iid: params[:issue_iid])
         not_found!('Issue') unless issue
@@ -272,6 +280,7 @@ module API
           Issuable::DestroyService.new(user_project, current_user).execute(issue)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'List merge requests closing issue'  do
         success Entities::MergeRequestBasic
@@ -279,6 +288,7 @@ module API
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/issues/:issue_iid/closed_by' do
         issue = find_project_issue(params[:issue_iid])
 
@@ -287,6 +297,7 @@ module API
 
         present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'List participants for an issue'  do
         success Entities::UserBasic

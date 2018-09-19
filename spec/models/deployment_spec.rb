@@ -157,22 +157,4 @@ describe Deployment do
       end
     end
   end
-
-  describe '#stop_action?' do
-    subject { deployment.stop_action? }
-
-    context 'when no other actions' do
-      let(:deployment) { build(:deployment) }
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when matching action is defined' do
-      let(:build) { create(:ci_build) }
-      let(:deployment) { FactoryBot.build(:deployment, deployable: build, on_stop: 'close_app') }
-      let!(:close_action) { create(:ci_build, :manual, pipeline: build.pipeline, name: 'close_app') }
-
-      it { is_expected.to be_truthy }
-    end
-  end
 end

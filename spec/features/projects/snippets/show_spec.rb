@@ -6,7 +6,7 @@ describe 'Projects > Snippets > Project snippet', :js do
   let(:snippet) { create(:project_snippet, project: project, file_name: file_name, content: content) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 
@@ -139,6 +139,18 @@ describe 'Projects > Snippets > Project snippet', :js do
           expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')
         end
       end
+    end
+  end
+
+  it_behaves_like 'showing user status' do
+    let(:file_name) { 'ruby-style-guide.md' }
+    let(:content) { project.repository.blob_at('master', 'files/markdown/ruby-style-guide.md').data }
+
+    let(:user_with_status) { snippet.author }
+
+    subject do
+      visit project_snippet_path(project, snippet)
+      wait_for_requests
     end
   end
 end

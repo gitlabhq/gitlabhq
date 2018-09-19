@@ -102,8 +102,8 @@ describe 'Environment' do
 
           context 'with terminal' do
             shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
-              context 'for project master' do
-                let(:role) { :master }
+              context 'for project maintainer' do
+                let(:role) { :maintainer }
 
                 it 'it shows the terminal button' do
                   expect(page).to have_terminal_button
@@ -166,7 +166,8 @@ describe 'Environment' do
                 end
 
                 it 'allows to stop environment' do
-                  click_link('Stop')
+                  click_button('Stop')
+                  click_button('Stop environment') # confirm modal
 
                   expect(page).to have_content('close_app')
                 end
@@ -174,7 +175,7 @@ describe 'Environment' do
 
               context 'when user has no ability to stop environment' do
                 it 'does not allow to stop environment' do
-                  expect(page).to have_no_link('Stop')
+                  expect(page).not_to have_button('Stop')
                 end
               end
 
@@ -182,7 +183,7 @@ describe 'Environment' do
                 let(:role) { :reporter }
 
                 it 'does not show stop button' do
-                  expect(page).not_to have_link('Stop')
+                  expect(page).not_to have_button('Stop')
                 end
               end
             end
@@ -192,7 +193,7 @@ describe 'Environment' do
             let(:environment) { create(:environment, project: project, state: :stopped) }
 
             it 'does not show stop button' do
-              expect(page).not_to have_link('Stop')
+              expect(page).not_to have_button('Stop')
             end
           end
         end
@@ -230,7 +231,7 @@ describe 'Environment' do
     it 'user visits environment page' do
       visit_environment(environment)
 
-      expect(page).to have_link('Stop')
+      expect(page).to have_button('Stop')
     end
 
     it 'user deletes the branch with running environment' do
@@ -242,7 +243,7 @@ describe 'Environment' do
 
       visit_environment(environment)
 
-      expect(page).to have_no_link('Stop')
+      expect(page).not_to have_button('Stop')
     end
 
     ##

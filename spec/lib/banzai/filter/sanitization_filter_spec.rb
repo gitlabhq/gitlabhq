@@ -54,6 +54,18 @@ describe Banzai::Filter::SanitizationFilter do
       expect(instance.whitelist[:transformers].size).to eq control_count
     end
 
+    it 'customizes the whitelist only once for different instances' do
+      instance1 = described_class.new('Foo1')
+      instance2 = described_class.new('Foo2')
+      control_count = instance1.whitelist[:transformers].size
+
+      instance1.whitelist
+      instance2.whitelist
+
+      expect(instance1.whitelist[:transformers].size).to eq control_count
+      expect(instance2.whitelist[:transformers].size).to eq control_count
+    end
+
     it 'sanitizes `class` attribute from all elements' do
       act = %q{<pre class="code highlight white c"><code>&lt;span class="k"&gt;def&lt;/span&gt;</code></pre>}
       exp = %q{<pre><code>&lt;span class="k"&gt;def&lt;/span&gt;</code></pre>}

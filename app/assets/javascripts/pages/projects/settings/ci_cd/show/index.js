@@ -23,17 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
     saveEndpoint: variableListEl.dataset.saveEndpoint,
   });
 
-  // hide extra auto devops settings based on data-attributes
-  const autoDevOpsSettings = document.querySelector('.js-auto-devops-settings');
+  // hide extra auto devops settings based checkbox state
   const autoDevOpsExtraSettings = document.querySelector('.js-extra-settings');
-
-  autoDevOpsSettings.addEventListener('click', event => {
+  const instanceDefaultBadge = document.querySelector('.js-instance-default-badge');
+  document.querySelector('.js-toggle-extra-settings').addEventListener('click', event => {
     const { target } = event;
-    if (target.classList.contains('js-toggle-extra-settings')) {
-      autoDevOpsExtraSettings.classList.toggle(
-        'hidden',
-        !!(target.dataset && target.dataset.hideExtraSettings),
-      );
-    }
+    if (instanceDefaultBadge) instanceDefaultBadge.style.display = 'none';
+    autoDevOpsExtraSettings.classList.toggle('hidden', !target.checked);
   });
 });

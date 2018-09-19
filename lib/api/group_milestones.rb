@@ -41,7 +41,7 @@ module API
         use :optional_params
       end
       post ":id/milestones" do
-        authorize! :admin_milestones, user_group
+        authorize! :admin_milestone, user_group
 
         create_milestone_for(user_group)
       end
@@ -53,9 +53,19 @@ module API
         use :update_params
       end
       put ":id/milestones/:milestone_id" do
-        authorize! :admin_milestones, user_group
+        authorize! :admin_milestone, user_group
 
         update_milestone_for(user_group)
+      end
+
+      desc 'Remove a project milestone'
+      delete ":id/milestones/:milestone_id" do
+        authorize! :admin_milestone, user_group
+
+        milestone = user_group.milestones.find(params[:milestone_id])
+        Milestones::DestroyService.new(user_group, current_user).execute(milestone)
+
+        status(204)
       end
 
       desc 'Get all issues for a single group milestone' do

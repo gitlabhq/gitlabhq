@@ -4,6 +4,7 @@ import Translate from '~/vue_shared/translate';
 import ide from './components/ide.vue';
 import store from './stores';
 import router from './ide_router';
+import { convertPermissionToBoolean } from '../lib/utils/common_utils';
 
 Vue.use(Translate);
 
@@ -23,13 +24,18 @@ export function initIde(el) {
         noChangesStateSvgPath: el.dataset.noChangesStateSvgPath,
         committedStateSvgPath: el.dataset.committedStateSvgPath,
         pipelinesEmptyStateSvgPath: el.dataset.pipelinesEmptyStateSvgPath,
+        promotionSvgPath: el.dataset.promotionSvgPath,
       });
       this.setLinks({
         ciHelpPagePath: el.dataset.ciHelpPagePath,
+        webIDEHelpPagePath: el.dataset.webIdeHelpPagePath,
+      });
+      this.setInitialData({
+        clientsidePreviewEnabled: convertPermissionToBoolean(el.dataset.clientsidePreviewEnabled),
       });
     },
     methods: {
-      ...mapActions(['setEmptyStateSvgs', 'setLinks']),
+      ...mapActions(['setEmptyStateSvgs', 'setLinks', 'setInitialData']),
     },
     render(createElement) {
       return createElement('ide');

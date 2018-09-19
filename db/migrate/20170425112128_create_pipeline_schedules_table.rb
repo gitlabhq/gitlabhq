@@ -1,4 +1,3 @@
-# rubocop:disable Migration/Datetime
 # rubocop:disable Migration/Timestamps
 class CreatePipelineSchedulesTable < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers

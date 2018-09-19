@@ -2,16 +2,15 @@
   import { mapActions } from 'vuex';
   import Flash from '../../flash';
   import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
-  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
   import tooltip from '../../vue_shared/directives/tooltip';
   import tableRegistry from './table_registry.vue';
   import { errorMessages, errorMessagesTypes } from '../constants';
+  import { __ } from '../../locale';
 
   export default {
     name: 'CollapsibeContainerRegisty',
     components: {
       clipboardButton,
-      loadingIcon,
       tableRegistry,
     },
     directives: {
@@ -46,7 +45,10 @@
 
       handleDeleteRepository() {
         this.deleteRepo(this.repo)
-          .then(() => this.fetchRepos())
+          .then(() => {
+            Flash(__('This container registry has been scheduled for deletion.'), 'notice');
+            this.fetchRepos();
+          })
           .catch(() => this.showError(errorMessagesTypes.DELETE_REPO));
       },
 
@@ -103,10 +105,10 @@
       </div>
     </div>
 
-    <loading-icon
+    <gl-loading-icon
       v-if="repo.isLoading"
+      :size="2"
       class="append-bottom-20"
-      size="2"
     />
 
     <div

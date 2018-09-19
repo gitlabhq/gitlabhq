@@ -1,0 +1,5 @@
+---
+title: Hide PAT creation advice for HTTP clone if PAT exists
+merge_request: 18208
+author: George Thomas @thegeorgeous
+type: fixed

@@ -13,11 +13,8 @@ export default {
     tooltip,
   },
   computed: {
-    ...mapGetters(['currentProject', 'hasChanges']),
+    ...mapGetters(['hasChanges']),
     ...mapState(['currentActivityView']),
-    goBackUrl() {
-      return document.referrer || this.currentProject.web_url;
-    },
   },
   methods: {
     ...mapActions(['updateActivityBarView']),
@@ -36,22 +33,6 @@ export default {
 <template>
   <nav class="ide-activity-bar">
     <ul class="list-unstyled">
-      <li v-once>
-        <a
-          v-tooltip
-          :href="goBackUrl"
-          :title="s__('IDE|Go back')"
-          :aria-label="s__('IDE|Go back')"
-          data-container="body"
-          data-placement="right"
-          class="ide-sidebar-link"
-        >
-          <icon
-            :size="16"
-            name="go-back"
-          />
-        </a>
-      </li>
       <li>
         <button
           v-tooltip

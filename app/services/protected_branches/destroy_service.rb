@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ProtectedBranches
   class DestroyService < BaseService
     def execute(protected_branch)

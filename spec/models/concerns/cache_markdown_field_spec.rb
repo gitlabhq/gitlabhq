@@ -370,4 +370,20 @@ describe CacheMarkdownField do
       end
     end
   end
+
+  describe CacheMarkdownField::MarkdownEngine do
+    subject { lambda { |version| CacheMarkdownField::MarkdownEngine.from_version(version) } }
+
+    it 'returns :common_mark as a default' do
+      expect(subject.call(nil)).to eq :common_mark
+    end
+
+    it 'returns :common_mark' do
+      expect(subject.call(CacheMarkdownField::CACHE_COMMONMARK_VERSION)).to eq :common_mark
+    end
+
+    it 'returns :redcarpet' do
+      expect(subject.call(CacheMarkdownField::CACHE_REDCARPET_VERSION)).to eq :redcarpet
+    end
+  end
 end

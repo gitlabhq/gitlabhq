@@ -8,7 +8,7 @@
     .nav-controls
       = render 'shared/milestones_sort_dropdown'
       - if can?(current_user, :admin_milestone, @project)
-        = link_to new_project_milestone_path(@project), class: "btn btn-new", title: 'New milestone' do
+        = link_to new_project_milestone_path(@project), class: "btn btn-new qa-new-project-milestone", title: 'New milestone' do
           New milestone
 
   .milestones

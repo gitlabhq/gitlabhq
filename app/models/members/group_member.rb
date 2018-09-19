@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GroupMember < Member
   SOURCE_TYPE = 'Namespace'.freeze
 

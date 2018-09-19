@@ -17,7 +17,7 @@ describe 'Merge request > User merges when pipeline succeeds', :js do
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   context 'when there is active pipeline for merge request' do

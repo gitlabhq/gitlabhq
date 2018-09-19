@@ -1,0 +1,5 @@
+---
+title: Allow admins to configure the maximum Git push size
+merge_request: 20758
+author:
+type: added

@@ -10,6 +10,28 @@ module API
       expose :content
     end
 
+    class WikiAttachment < Grape::Entity
+      include Gitlab::FileMarkdownLinkBuilder
+
+      expose :file_name
+      expose :file_path
+      expose :branch
+      expose :link do
+        expose :file_path, as: :url
+        expose :markdown do |_entity|
+          self.markdown_link
+        end
+      end
+
+      def filename
+        object.file_name
+      end
+
+      def secure_url
+        object.file_path
+      end
+    end
+
     class UserSafe < Grape::Entity
       expose :id, :name, :username
     end
@@ -30,7 +52,7 @@ module API
     end
 
     class User < UserBasic
-      expose :created_at
+      expose :created_at, if: ->(user, opts) { Ability.allowed?(opts[:current_user], :read_user_profile, user) }
       expose :bio, :location, :skype, :linkedin, :twitter, :website_url, :organization
     end
 
@@ -55,10 +77,19 @@ module API
       expose :can_create_project?, as: :can_create_project
       expose :two_factor_enabled?, as: :two_factor_enabled
       expose :external
+      expose :private_profile
     end
 
     class UserWithAdmin < UserPublic
       expose :admin?, as: :is_admin
+    end
+
+    class UserStatus < Grape::Entity
+      expose :emoji
+      expose :message
+      expose :message_html do |entity|
+        MarkupHelper.markdown_field(entity, :message)
+      end
     end
 
     class Email < Grape::Entity
@@ -74,6 +105,7 @@ module API
       expose :project_id, :issues_events, :confidential_issues_events
       expose :note_events, :confidential_note_events, :pipeline_events, :wiki_page_events
       expose :job_events
+      expose :push_events_branch_filter
     end
 
     class SharedGroup < Grape::Entity
@@ -82,6 +114,7 @@ module API
         group_link.group.name
       end
       expose :group_access, as: :group_access_level
+      expose :expires_at
     end
 
     class ProjectIdentity < Grape::Entity
@@ -132,14 +165,20 @@ module API
       expose :star_count, :forks_count
       expose :last_activity_at
 
+      expose :namespace, using: 'API::Entities::NamespaceBasic'
       expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_relation(projects_relation, options =  {})
+        # Preloading tags, should be done with using only `:tags`,
+        # as `:tags` are defined as: `has_many :tags, through: :taggings`
+        # N+1 is solved then by using `subject.tags.map(&:name)`
+        # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20555
         projects_relation.preload(:project_feature, :route)
-                         .preload(:import_state)
-                         .preload(namespace: [:route, :owner],
-                                  tags: :taggings)
+                         .preload(:import_state, :tags)
+                         .preload(namespace: [:route, :owner])
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     class Project < BasicProjectDetails
@@ -191,7 +230,6 @@ module API
       expose :shared_runners_enabled
       expose :lfs_enabled?, as: :lfs_enabled
       expose :creator_id
-      expose :namespace, using: 'API::Entities::NamespaceBasic'
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda { |project, options| project.forked? }
       expose :import_status
       expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] }
@@ -211,13 +249,19 @@ module API
 
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_relation(projects_relation, options =  {})
+        # Preloading tags, should be done with using only `:tags`,
+        # as `:tags` are defined as: `has_many :tags, through: :taggings`
+        # N+1 is solved then by using `subject.tags.map(&:name)`
+        # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20555
         super(projects_relation).preload(:group)
                                 .preload(project_group_links: :group,
                                          fork_network: :root_project,
                                          forked_project_link: :forked_from_project,
-                                         forked_from_project: [:route, :forks, namespace: :route, tags: :taggings])
+                                         forked_from_project: [:route, :forks, :tags, namespace: :route])
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def self.forks_counting_projects(projects_relation)
         projects_relation + projects_relation.map(&:forked_from_project).compact
@@ -353,6 +397,10 @@ module API
       expose :can_push do |repo_branch, options|
         Gitlab::UserAccess.new(options[:current_user], project: options[:project]).can_push_to_branch?(repo_branch.name)
       end
+
+      expose :default do |repo_branch, options|
+        options[:project].default_branch == repo_branch.name
+      end
     end
 
     class TreeObject < Grape::Entity
@@ -410,6 +458,11 @@ module API
       expose :name
       expose :push_access_levels, using: Entities::ProtectedRefAccess
       expose :merge_access_levels, using: Entities::ProtectedRefAccess
+    end
+
+    class ProtectedTag < Grape::Entity
+      expose :name
+      expose :create_access_levels, using: Entities::ProtectedRefAccess
     end
 
     class Milestone < Grape::Entity
@@ -509,10 +562,12 @@ module API
         expose :total_time_spent, as: :human_total_time_spent
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def total_time_spent
         # Avoids an N+1 query since timelogs are preloaded
         object.timelogs.map(&:time_spent).sum
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     class ExternalIssue < Grape::Entity
@@ -522,6 +577,10 @@ module API
 
     class PipelineBasic < Grape::Entity
       expose :id, :sha, :ref, :status
+
+      expose :web_url do |pipeline, _options|
+        Gitlab::Routing.url_helpers.project_pipeline_url(pipeline.project, pipeline)
+      end
     end
 
     class MergeRequestSimple < ProjectEntity
@@ -635,6 +694,8 @@ module API
 
       expose :diff_refs, using: Entities::DiffRefs
 
+      expose :diverged_commits_count, as: :diverged_commits_count, if: -> (_, options) { options[:include_diverged_commits_count] }
+
       def build_available?(options)
         options[:project]&.feature_available?(:builds, options[:current_user])
       end
@@ -694,7 +755,7 @@ module API
       expose :system?, as: :system
       expose :noteable_id, :noteable_type
 
-      expose :position, if: ->(note, options) { note.diff_note? } do |note|
+      expose :position, if: ->(note, options) { note.is_a?(DiffNote) } do |note|
         note.position.to_h
       end
 
@@ -836,7 +897,7 @@ module API
     class NotificationSetting < Grape::Entity
       expose :level
       expose :events, if: ->(notification_setting, _) { notification_setting.custom? } do
-        ::NotificationSetting::EMAIL_EVENTS.each do |event|
+        ::NotificationSetting.email_events.each do |event|
           expose event
         end
       end
@@ -881,6 +942,7 @@ module API
         end
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_relation(projects_relation, options = {})
         relation = super(projects_relation, options)
 
@@ -905,6 +967,7 @@ module API
 
         relation
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     class LabelBasic < Grape::Entity
@@ -1011,9 +1074,11 @@ module API
         options[:project].repository.commit(repo_tag.dereferenced_target)
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       expose :release, using: Entities::Release do |repo_tag, options|
         options[:project].releases.find_by(tag: repo_tag.name)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     class Runner < Grape::Entity
@@ -1036,6 +1101,7 @@ module API
       expose :version, :revision, :platform, :architecture
       expose :contacted_at
       expose :token, if: lambda { |runner, options| options[:current_user].admin? || !runner.instance_type? }
+      # rubocop: disable CodeReuse/ActiveRecord
       expose :projects, with: Entities::BasicProjectDetails do |runner, options|
         if options[:current_user].admin?
           runner.projects
@@ -1043,6 +1109,8 @@ module API
           options[:current_user].authorized_projects.where(id: runner.projects)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
+      # rubocop: disable CodeReuse/ActiveRecord
       expose :groups, with: Entities::BasicGroupDetails do |runner, options|
         if options[:current_user].admin?
           runner.groups
@@ -1050,6 +1118,7 @@ module API
           options[:current_user].authorized_groups.where(id: runner.groups)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     class RunnerRegistrationDetails < Grape::Entity
@@ -1060,6 +1129,10 @@ module API
       expose :filename, :size
     end
 
+    class JobArtifact < Grape::Entity
+      expose :file_type, :size, :filename, :file_format
+    end
+
     class JobBasic < Grape::Entity
       expose :id, :status, :stage, :name, :ref, :tag, :coverage
       expose :created_at, :started_at, :finished_at
@@ -1067,10 +1140,16 @@ module API
       expose :user, with: User
       expose :commit, with: Commit
       expose :pipeline, with: PipelineBasic
+
+      expose :web_url do |job, _options|
+        Gitlab::Routing.url_helpers.project_job_url(job.project, job)
+      end
     end
 
     class Job < JobBasic
+      # artifacts_file is included in job_artifacts, but kept for backward compatibility (remove in api/v5)
       expose :artifacts_file, using: JobArtifactFile, if: -> (job, opts) { job.artifacts? }
+      expose :job_artifacts, as: :artifacts, using: JobArtifact
       expose :runner, with: Runner
       expose :artifacts_expire_at
     end
@@ -1129,7 +1208,7 @@ module API
 
     class License < Grape::Entity
       expose :key, :name, :nickname
-      expose :featured, as: :popular
+      expose :popular?, as: :popular
       expose :url, as: :html_url
       expose(:source_url) { |license| license.meta['source'] }
       expose(:description) { |license| license.meta['description'] }
@@ -1225,7 +1304,13 @@ module API
       end
 
       class Artifacts < Grape::Entity
-        expose :name, :untracked, :paths, :when, :expire_in
+        expose :name
+        expose :untracked
+        expose :paths
+        expose :when
+        expose :expire_in
+        expose :artifact_type
+        expose :artifact_format
       end
 
       class Cache < Grape::Entity
@@ -1365,6 +1450,20 @@ module API
       expose :kind do |badge|
         badge.type == 'ProjectBadge' ? 'project' : 'group'
       end
+    end
+
+    class ResourceLabelEvent < Grape::Entity
+      expose :id
+      expose :user, using: Entities::UserBasic
+      expose :created_at
+      expose :resource_type do |event, options|
+        event.issuable.class.name
+      end
+      expose :resource_id do |event, options|
+        event.issuable.id
+      end
+      expose :label, using: Entities::LabelBasic
+      expose :action
     end
   end
 end

@@ -7,7 +7,6 @@ import editSvg from 'icons/_icon_pencil.svg';
 import resolveDiscussionSvg from 'icons/_icon_resolve_discussion.svg';
 import resolvedDiscussionSvg from 'icons/_icon_status_success_solid.svg';
 import ellipsisSvg from 'icons/_ellipsis_v.svg';
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
@@ -15,21 +14,19 @@ export default {
   directives: {
     tooltip,
   },
-  components: {
-    loadingIcon,
-  },
   props: {
     authorId: {
       type: Number,
       required: true,
     },
     noteId: {
-      type: Number,
+      type: String,
       required: true,
     },
     noteUrl: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     accessLevel: {
       type: String,
@@ -152,9 +149,9 @@ export default {
             v-else
             v-html="resolveDiscussionSvg"></div>
         </template>
-        <loading-icon
+        <gl-loading-icon
           v-else
-          :inline="true"
+          inline
         />
       </button>
     </div>
@@ -171,7 +168,7 @@ export default {
         href="#"
         title="Add reaction"
       >
-        <loading-icon :inline="true" />
+        <gl-loading-icon inline/>
         <span
           class="link-highlight award-control-icon-neutral"
           v-html="emojiSmiling">
@@ -225,11 +222,11 @@ export default {
             Report as abuse
           </a>
         </li>
-        <li>
+        <li v-if="noteUrl">
           <button
             :data-clipboard-text="noteUrl"
             type="button"
-            css-class="btn-default btn-transparent"
+            class="btn-default btn-transparent js-btn-copy-note-link"
           >
             Copy link
           </button>

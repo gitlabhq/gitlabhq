@@ -19,18 +19,27 @@ class ApplicationController < ActionController::Base
   before_action :ldap_security_check
   before_action :sentry_context
   before_action :default_headers
-  before_action :add_gon_variables, unless: :peek_request?
+  before_action :add_gon_variables, unless: [:peek_request?, :json_request?]
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
+  before_action :set_usage_stats_consent_flag
 
   around_action :set_locale
 
-  after_action :set_page_title_header, if: -> { request.format == :json }
+  after_action :set_page_title_header, if: :json_request?
+  after_action :limit_unauthenticated_session_times
 
   protect_from_forgery with: :exception, prepend: true
 
   helper_method :can?
-  helper_method :import_sources_enabled?, :github_import_enabled?, :gitea_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?, :gitlab_project_import_enabled?
+  helper_method :import_sources_enabled?, :github_import_enabled?,
+    :gitea_import_enabled?, :github_import_configured?,
+    :gitlab_import_enabled?, :gitlab_import_configured?,
+    :bitbucket_import_enabled?, :bitbucket_import_configured?,
+    :bitbucket_server_import_enabled?,
+    :google_code_import_enabled?, :fogbugz_import_enabled?,
+    :git_import_enabled?, :gitlab_project_import_enabled?,
+    :manifest_import_enabled?
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -79,10 +88,30 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # By default, all sessions are given the same expiration time configured in
+  # the session store (e.g. 1 week). However, unauthenticated users can
+  # generate a lot of sessions, primarily for CSRF verification. It makes
+  # sense to reduce the TTL for unauthenticated to something much lower than
+  # the default (e.g. 1 hour) to limit Redis memory. In addition, Rails
+  # creates a new session after login, so the short TTL doesn't even need to
+  # be extended.
+  def limit_unauthenticated_session_times
+    return if current_user
+
+    # Rack sets this header, but not all tests may have it: https://github.com/rack/rack/blob/fdcd03a3c5a1c51d1f96fc97f9dfa1a9deac0c77/lib/rack/session/abstract/id.rb#L251-L259
+    return unless request.env['rack.session.options']
+
+    # This works because Rack uses these options every time a request is handled:
+    # https://github.com/rack/rack/blob/fdcd03a3c5a1c51d1f96fc97f9dfa1a9deac0c77/lib/rack/session/abstract/id.rb#L342
+    request.env['rack.session.options'][:expire_after] = Settings.gitlab['unauthenticated_session_expire_delay']
+  end
+
   protected
 
   def append_info_to_payload(payload)
     super
+
+    payload[:ua] = request.env["HTTP_USER_AGENT"]
     payload[:remote_ip] = request.remote_ip
 
     logged_user = auth_user
@@ -97,12 +126,16 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  ##
   # Controllers such as GitHttpController may use alternative methods
-  # (e.g. tokens) to authenticate the user, whereas Devise sets current_user
+  # (e.g. tokens) to authenticate the user, whereas Devise sets current_user.
+  #
   def auth_user
-    return current_user if current_user.present?
-
-    return try(:authenticated_user)
+    if user_signed_in?
+      current_user
+    else
+      try(:authenticated_user)
+    end
   end
 
   # This filter handles personal access tokens, and atom requests with rss tokens
@@ -307,6 +340,10 @@ class ApplicationController < ActionController::Base
     !Gitlab::CurrentSettings.import_sources.empty?
   end
 
+  def bitbucket_server_import_enabled?
+    Gitlab::CurrentSettings.import_sources.include?('bitbucket_server')
+  end
+
   def github_import_enabled?
     Gitlab::CurrentSettings.import_sources.include?('github')
   end
@@ -351,6 +388,10 @@ class ApplicationController < ActionController::Base
     Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
   end
 
+  def manifest_import_enabled?
+    Group.supports_nested_groups? && Gitlab::CurrentSettings.import_sources.include?('manifest')
+  end
+
   # U2F (universal 2nd factor) devices need a unique identifier for the application
   # to perform authentication.
   # https://developers.yubico.com/U2F/App_ID.html
@@ -368,7 +409,7 @@ class ApplicationController < ActionController::Base
       # actually stored in the session and a token is needed
       # for every request. If you want the token to work as a
       # sign in token, you can simply remove store: false.
-      sign_in user, store: false
+      sign_in(user, store: false, message: :sessionless_sign_in)
     end
   end
 
@@ -385,9 +426,38 @@ class ApplicationController < ActionController::Base
     request.path.start_with?('/-/peek')
   end
 
+  def json_request?
+    request.format.json?
+  end
+
   def should_enforce_terms?
     return false unless Gitlab::CurrentSettings.current_application_settings.enforce_terms
 
     !(peek_request? || devise_controller?)
+  end
+
+  def set_usage_stats_consent_flag
+    return unless current_user
+    return if sessionless_user?
+    return if session.has_key?(:ask_for_usage_stats_consent)
+
+    session[:ask_for_usage_stats_consent] = current_user.requires_usage_stats_consent?
+
+    if session[:ask_for_usage_stats_consent]
+      disable_usage_stats
+    end
+  end
+
+  def disable_usage_stats
+    application_setting_params = {
+      usage_ping_enabled: false,
+      version_check_enabled: false,
+      skip_usage_stats_user: true
+    }
+    settings = Gitlab::CurrentSettings.current_application_settings
+
+    ApplicationSettings::UpdateService
+      .new(settings, current_user, application_setting_params)
+      .execute
   end
 end

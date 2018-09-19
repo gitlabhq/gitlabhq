@@ -1,5 +1,0 @@
----
-title: Removes the environment scope field for users that cannot edit it
-merge_request: 19643
-author:
-type: changed

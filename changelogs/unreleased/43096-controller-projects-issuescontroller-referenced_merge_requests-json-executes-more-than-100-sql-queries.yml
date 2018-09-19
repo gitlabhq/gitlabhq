@@ -1,0 +1,5 @@
+---
+title: Improve performance when fetching related merge requests for an issue
+merge_request: 21237
+author:
+type: performance

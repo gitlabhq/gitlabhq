@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # NOTE: This service cannot be used directly because it is part of a
 # a bigger process. Instead, use the service MoveAccessService which moves
 # project memberships, project group links, authorizations and refreshes
@@ -23,7 +25,7 @@ module Projects
 
     def remove_remaining_members
       # Remove remaining members and authorizations from source_project
-      source_project.project_members.destroy_all
+      source_project.project_members.destroy_all # rubocop: disable DestroyAll
     end
 
     def project_members_in_target_project
@@ -31,10 +33,12 @@ module Projects
     end
 
     # Look for members in source_project that are not in the target project
+    # rubocop: disable CodeReuse/ActiveRecord
     def non_existent_members
       source_project.members
                     .select(:id)
                     .where.not(user_id: @project.project_members.select(:user_id))
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

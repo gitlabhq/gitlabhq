@@ -17,7 +17,7 @@ module Gitlab
           end
         rescue GRPC::FailedPrecondition => e
           raise Gitlab::Git::Conflict::Resolver::ConflictSideMissing.new(e.message)
-        rescue Rugged::ReferenceError, Rugged::OdbError, GRPC::BadStatus => e
+        rescue GRPC::BadStatus => e
           raise Gitlab::Git::CommandError.new(e)
         end
 

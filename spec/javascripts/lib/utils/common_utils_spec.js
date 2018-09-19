@@ -29,24 +29,46 @@ describe('common_utils', () => {
     });
   });
 
-  describe('getUrlParamsArray', () => {
-    it('should return params array', () => {
-      expect(commonUtils.getUrlParamsArray() instanceof Array).toBe(true);
-    });
-
-    it('should remove the question mark from the search params', () => {
-      const paramsArray = commonUtils.getUrlParamsArray();
-      expect(paramsArray[0][0] !== '?').toBe(true);
+  describe('urlParamsToArray', () => {
+    it('returns empty array for empty querystring', () => {
+      expect(commonUtils.urlParamsToArray('')).toEqual([]);
     });
 
     it('should decode params', () => {
-      window.history.pushState('', '', '?label_name%5B%5D=test');
-
       expect(
-        commonUtils.getUrlParamsArray()[0],
+        commonUtils.urlParamsToArray('?label_name%5B%5D=test')[0],
       ).toBe('label_name[]=test');
+    });
 
-      window.history.pushState('', '', '?');
+    it('should remove the question mark from the search params', () => {
+      const paramsArray = commonUtils.urlParamsToArray('?test=thing');
+      expect(paramsArray[0][0] !== '?').toBe(true);
+    });
+  });
+
+  describe('urlParamsToObject', () => {
+    it('parses path for label with trailing +', () => {
+      expect(
+        commonUtils.urlParamsToObject('label_name[]=label%2B', {}),
+      ).toEqual({
+        label_name: ['label+'],
+      });
+    });
+
+    it('parses path for milestone with trailing +', () => {
+      expect(
+        commonUtils.urlParamsToObject('milestone_title=A%2B', {}),
+      ).toEqual({
+        milestone_title: 'A+',
+      });
+    });
+
+    it('parses path for search terms with spaces', () => {
+      expect(
+        commonUtils.urlParamsToObject('search=two+words', {}),
+      ).toEqual({
+        search: 'two words',
+      });
     });
   });
 
@@ -403,6 +425,7 @@ describe('common_utils', () => {
     afterEach(() => {
       document.body.removeChild(document.getElementById('favicon'));
     });
+
     it('should set page favicon to provided favicon', () => {
       const faviconPath = '//custom_favicon';
       commonUtils.setFavicon(faviconPath);
@@ -479,17 +502,14 @@ describe('common_utils', () => {
     });
 
     it('should reset favicon in case of error', (done) => {
-      mock.onGet(BUILD_URL).networkError();
+      mock.onGet(BUILD_URL).replyOnce(500);
 
       commonUtils.setCiStatusFavicon(BUILD_URL)
-        .then(() => {
+        .catch(() => {
           const favicon = document.getElementById('favicon');
           expect(favicon.getAttribute('href')).toEqual(faviconDataUrl);
           done();
-        })
-        // Error is already caught in catch() block of setCiStatusFavicon,
-        // It won't throw another error for us to catch
-        .catch(done.fail);
+        });
     });
 
     it('should set page favicon to CI status favicon based on provided status', (done) => {
@@ -625,6 +645,25 @@ describe('common_utils', () => {
           ],
         ]);
       });
+    });
+  });
+
+  describe('roundOffFloat', () => {
+    it('Rounds off decimal places of a float number with provided precision', () => {
+      expect(commonUtils.roundOffFloat(3.141592, 3)).toBe(3.142);
+    });
+
+    it('Rounds off a float number to a whole number when provided precision is zero', () => {
+      expect(commonUtils.roundOffFloat(3.141592, 0)).toBe(3);
+      expect(commonUtils.roundOffFloat(3.5, 0)).toBe(4);
+    });
+
+    it('Rounds off float number to nearest 0, 10, 100, 1000 and so on when provided precision is below 0', () => {
+      expect(commonUtils.roundOffFloat(34567.14159, -1)).toBe(34570);
+      expect(commonUtils.roundOffFloat(34567.14159, -2)).toBe(34600);
+      expect(commonUtils.roundOffFloat(34567.14159, -3)).toBe(35000);
+      expect(commonUtils.roundOffFloat(34567.14159, -4)).toBe(30000);
+      expect(commonUtils.roundOffFloat(34567.14159, -5)).toBe(0);
     });
   });
 });

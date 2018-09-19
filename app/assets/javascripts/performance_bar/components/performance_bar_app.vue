@@ -1,12 +1,9 @@
 <script>
 import $ from 'jquery';
 
-import PerformanceBarService from '../services/performance_bar_service';
 import detailedMetric from './detailed_metric.vue';
 import requestSelector from './request_selector.vue';
 import simpleMetric from './simple_metric.vue';
-
-import Flash from '../../flash';
 
 export default {
   components: {
@@ -69,37 +66,13 @@ export default {
     },
   },
   mounted() {
-    this.interceptor = PerformanceBarService.registerInterceptor(
-      this.peekUrl,
-      this.loadRequestDetails,
-    );
-
-    this.loadRequestDetails(this.requestId, window.location.href);
     this.currentRequest = this.requestId;
 
     if (this.lineProfileModal.length) {
       this.lineProfileModal.modal('toggle');
     }
   },
-  beforeDestroy() {
-    PerformanceBarService.removeInterceptor(this.interceptor);
-  },
   methods: {
-    loadRequestDetails(requestId, requestUrl) {
-      if (!this.store.canTrackRequest(requestUrl)) {
-        return;
-      }
-
-      this.store.addRequest(requestId, requestUrl);
-
-      PerformanceBarService.fetchRequestDetails(this.peekUrl, requestId)
-        .then(res => {
-          this.store.addRequestDetails(requestId, res.data.data);
-        })
-        .catch(() =>
-          Flash(`Error getting performance bar results for ${requestId}`),
-        );
-    },
     changeCurrentRequest(newRequestId) {
       this.currentRequest = newRequestId;
     },

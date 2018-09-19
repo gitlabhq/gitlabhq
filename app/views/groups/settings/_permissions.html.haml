@@ -1,4 +1,5 @@
 = form_for @group, html: { multipart: true, class: 'gl-show-field-errors' }, authenticity_token: true do |f|
+  %input{ type: 'hidden', name: 'update_section', value: 'js-permissions-settings' }
   = form_errors(@group)
 
   %fieldset

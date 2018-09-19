@@ -9,6 +9,7 @@ describe 'Pipelines', :js do
     before do
       sign_in(user)
       project.add_developer(user)
+      project.update!(auto_devops_attributes: { enabled: false })
     end
 
     describe 'GET /:project/pipelines' do
@@ -406,7 +407,7 @@ describe 'Pipelines', :js do
 
             within('.js-builds-dropdown-list') do
               build_element = page.find('.mini-pipeline-graph-dropdown-item')
-              expect(build_element['data-original-title']).to eq('build - failed <br> (unknown failure)')
+              expect(build_element['data-original-title']).to eq('build - failed - (unknown failure)')
             end
           end
         end
@@ -595,7 +596,7 @@ describe 'Pipelines', :js do
 
       before do
         create(:ci_empty_pipeline, status: 'success', project: project, sha: project.commit.id, ref: 'master')
-        project.add_master(user)
+        project.add_maintainer(user)
         visit project_pipelines_path(project)
       end
 
@@ -606,7 +607,7 @@ describe 'Pipelines', :js do
       describe 'user clicks the button' do
         context 'when project already has jobs_cache_index' do
           before do
-            project.update_attributes(jobs_cache_index: 1)
+            project.update(jobs_cache_index: 1)
           end
 
           it 'increments jobs_cache_index' do
@@ -641,6 +642,7 @@ describe 'Pipelines', :js do
 
   context 'when user is not logged in' do
     before do
+      project.update!(auto_devops_attributes: { enabled: false })
       visit project_pipelines_path(project)
     end
 

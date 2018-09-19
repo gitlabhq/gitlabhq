@@ -24,26 +24,6 @@ describe('IDE activity bar', () => {
     resetStore(vm.$store);
   });
 
-  describe('goBackUrl', () => {
-    it('renders the Go Back link with the referrer when present', () => {
-      const fakeReferrer = '/example/README.md';
-      spyOnProperty(document, 'referrer').and.returnValue(fakeReferrer);
-
-      vm.$mount();
-
-      expect(vm.goBackUrl).toEqual(fakeReferrer);
-    });
-
-    it('renders the Go Back link with the project url when referrer is not present', () => {
-      const fakeReferrer = '';
-      spyOnProperty(document, 'referrer').and.returnValue(fakeReferrer);
-
-      vm.$mount();
-
-      expect(vm.goBackUrl).toEqual('testing');
-    });
-  });
-
   describe('updateActivityBarView', () => {
     beforeEach(() => {
       spyOn(vm, 'updateActivityBarView');

@@ -11,7 +11,7 @@
   - branch_label = s_('ChangeTypeActionLabel|Pick into branch')
   - title = commit.merged_merge_request(current_user) ? _('Cherry-pick this merge request') : _('Cherry-pick this commit')
 
-.modal{ id: "modal-#{type}-commit" }
+.modal{ id: "modal-#{type}-commit", tabindex: -1 }
   .modal-dialog
     .modal-content
       .modal-header
@@ -23,7 +23,7 @@
           %p= description
         = form_tag [type.underscore, @project.namespace.becomes(Namespace), @project, commit], method: :post, remote: false, class: "js-#{type}-form js-requires-input" do
           .form-group.branch
-            = label_tag 'start_branch', branch_label, class: 'label-light'
+            = label_tag 'start_branch', branch_label, class: 'label-bold'
 
             = hidden_field_tag :start_branch, @project.default_branch, id: 'start_branch'
             = dropdown_tag(@project.default_branch, options: { title: s_("BranchSwitcherTitle|Switch branch"), filter: true, placeholder: s_("BranchSwitcherPlaceholder|Search branches"), toggle_class: 'js-project-refs-dropdown dynamic', dropdown_class: 'dropdown-menu-selectable', data: { field_name: "start_branch", selected: @project.default_branch, start_branch: @project.default_branch, refs_url: project_branches_path(@project), submit_form_on_click: false } })

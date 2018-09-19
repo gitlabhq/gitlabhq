@@ -113,7 +113,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def referenced_merge_requests
-    @merge_requests, @closed_by_merge_requests = ::Issues::FetchReferencedMergeRequestsService.new(project, current_user).execute(issue)
+    @merge_requests, @closed_by_merge_requests = ::Issues::ReferencedMergeRequestsService.new(project, current_user).execute(issue)
 
     respond_to do |format|
       format.json do
@@ -161,17 +161,19 @@ class Projects::IssuesController < Projects::ApplicationController
 
   protected
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def issue
     return @issue if defined?(@issue)
 
     # The Sortable default scope causes performance issues when used with find_by
-    @issuable = @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take!
+    @issuable = @noteable = @issue ||= @project.issues.includes(author: :status).where(iid: params[:id]).reorder(nil).take!
     @note = @project.notes.new(noteable: @issuable)
 
     return render_404 unless can?(current_user, :read_issue, @issue)
 
     @issue
   end
+  # rubocop: enable CodeReuse/ActiveRecord
   alias_method :subscribable_resource, :issue
   alias_method :issuable, :issue
   alias_method :awardable, :issue

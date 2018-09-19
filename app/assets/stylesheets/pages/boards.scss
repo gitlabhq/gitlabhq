@@ -63,7 +63,7 @@
     width: 100%;
 
     &.is-compact {
-      width: calc(100% - #{$gutter_width});
+      width: calc(100% - #{$gutter-width});
     }
   }
 }
@@ -80,7 +80,6 @@
   overflow-x: scroll;
   white-space: nowrap;
   min-height: 200px;
-  display: flex;
 
   @include media-breakpoint-only(sm) {
     height: calc(100vh - #{$issue-board-list-difference-sm});
@@ -111,14 +110,16 @@
 
 .board {
   display: inline-block;
-  flex: 1;
-  min-width: 300px;
-  max-width: 400px;
+  width: calc(85vw - 15px);
   height: 100%;
   padding-right: ($gl-padding / 2);
   padding-left: ($gl-padding / 2);
   white-space: normal;
   vertical-align: top;
+
+  @include media-breakpoint-up(sm) {
+    width: 400px;
+  }
 
   &.is-expandable {
     .board-header {
@@ -127,8 +128,6 @@
   }
 
   &.is-collapsed {
-    flex: none;
-    min-width: 0;
     width: 50px;
 
     .board-header {
@@ -206,7 +205,7 @@
 
 .board-title {
   margin: 0;
-  padding: 12px $gl-padding;
+  padding: $gl-padding-8 $gl-padding;
   font-size: 1em;
   border-bottom: 1px solid $border-color;
   display: flex;
@@ -226,7 +225,7 @@
   outline: 0;
 
   &:hover {
-    color: $gl-link-color;
+    color: $blue-600;
   }
 }
 
@@ -289,7 +288,7 @@
 
   &.is-active,
   &.is-active .board-card-assignee:hover a {
-    background-color: $row-hover;
+    background-color: $blue-50;
   }
 
   .badge {

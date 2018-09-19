@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Tags
   class CreateService < BaseService
     def execute(tag_name, target, message, release_description = nil)
@@ -5,7 +7,7 @@ module Tags
       return error('Tag name invalid') unless valid_tag
 
       repository = project.repository
-      message&.strip!
+      message = message&.strip
 
       new_tag = nil
 

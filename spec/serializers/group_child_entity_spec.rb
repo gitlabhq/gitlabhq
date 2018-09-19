@@ -42,7 +42,7 @@ describe GroupChildEntity do
     end
 
     before do
-      object.add_master(user)
+      object.add_maintainer(user)
     end
 
     it 'has the correct type' do

@@ -1,5 +1,5 @@
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapState } from 'vuex';
 import diffDiscussions from './diff_discussions.vue';
 import diffLineNoteForm from './diff_line_note_form.vue';
 
@@ -13,12 +13,8 @@ export default {
       type: Object,
       required: true,
     },
-    diffFile: {
-      type: Object,
-      required: true,
-    },
-    diffLines: {
-      type: Array,
+    diffFileHash: {
+      type: String,
       required: true,
     },
     lineIndex: {
@@ -30,50 +26,46 @@ export default {
     ...mapState({
       diffLineCommentForms: state => state.diffs.diffLineCommentForms,
     }),
-    ...mapGetters(['discussionsByLineCode']),
     leftLineCode() {
-      return this.line.left.lineCode;
+      return this.line.left && this.line.left.lineCode;
     },
     rightLineCode() {
-      return this.line.right.lineCode;
-    },
-    hasDiscussion() {
-      const discussions = this.discussionsByLineCode;
-
-      return discussions[this.leftLineCode] || discussions[this.rightLineCode];
+      return this.line.right && this.line.right.lineCode;
     },
     hasExpandedDiscussionOnLeft() {
-      const discussions = this.discussionsByLineCode[this.leftLineCode];
-
-      return discussions ? discussions.every(discussion => discussion.expanded) : false;
+      return this.line.left && this.line.left.discussions
+        ? this.line.left.discussions.every(discussion => discussion.expanded)
+        : false;
     },
     hasExpandedDiscussionOnRight() {
-      const discussions = this.discussionsByLineCode[this.rightLineCode];
-
-      return discussions ? discussions.every(discussion => discussion.expanded) : false;
+      return this.line.right && this.line.right.discussions
+        ? this.line.right.discussions.every(discussion => discussion.expanded)
+        : false;
     },
     hasAnyExpandedDiscussion() {
       return this.hasExpandedDiscussionOnLeft || this.hasExpandedDiscussionOnRight;
     },
-    shouldRenderDiscussionsRow() {
-      const hasDiscussion = this.hasDiscussion && this.hasAnyExpandedDiscussion;
-      const hasCommentFormOnLeft = this.diffLineCommentForms[this.leftLineCode];
-      const hasCommentFormOnRight = this.diffLineCommentForms[this.rightLineCode];
-
-      return hasDiscussion || hasCommentFormOnLeft || hasCommentFormOnRight;
-    },
     shouldRenderDiscussionsOnLeft() {
-      return this.discussionsByLineCode[this.leftLineCode] && this.hasExpandedDiscussionOnLeft;
+      return this.line.left && this.line.left.discussions && this.hasExpandedDiscussionOnLeft;
     },
     shouldRenderDiscussionsOnRight() {
       return (
-        this.discussionsByLineCode[this.rightLineCode] &&
+        this.line.right &&
+        this.line.right.discussions &&
         this.hasExpandedDiscussionOnRight &&
         this.line.right.type
       );
     },
+    showRightSideCommentForm() {
+      return (
+        this.line.right && this.line.right.type && this.diffLineCommentForms[this.rightLineCode]
+      );
+    },
     className() {
-      return this.hasDiscussion ? '' : 'js-temp-notes-holder';
+      return (this.left && this.line.left.discussions.length > 0) ||
+        (this.right && this.line.right.discussions.length > 0)
+        ? ''
+        : 'js-temp-notes-holder';
     },
   },
 };
@@ -81,7 +73,6 @@ export default {
 
 <template>
   <tr
-    v-if="shouldRenderDiscussionsRow"
     :class="className"
     class="notes_holder"
   >
@@ -92,16 +83,15 @@ export default {
         class="content"
       >
         <diff-discussions
-          :discussions="discussionsByLineCode[leftLineCode]"
+          v-if="line.left.discussions.length"
+          :discussions="line.left.discussions"
         />
       </div>
       <diff-line-note-form
-        v-if="diffLineCommentForms[leftLineCode] &&
-        diffLineCommentForms[leftLineCode]"
-        :diff-file="diffFile"
-        :diff-lines="diffLines"
+        v-if="diffLineCommentForms[leftLineCode]"
+        :diff-file-hash="diffFileHash"
         :line="line.left"
-        :note-target-line="diffLines[lineIndex].left"
+        :note-target-line="line.left"
         position="left"
       />
     </td>
@@ -112,16 +102,15 @@ export default {
         class="content"
       >
         <diff-discussions
-          :discussions="discussionsByLineCode[rightLineCode]"
+          v-if="line.right.discussions.length"
+          :discussions="line.right.discussions"
         />
       </div>
       <diff-line-note-form
-        v-if="diffLineCommentForms[rightLineCode] &&
-        diffLineCommentForms[rightLineCode] && line.right.type"
-        :diff-file="diffFile"
-        :diff-lines="diffLines"
+        v-if="showRightSideCommentForm"
+        :diff-file-hash="diffFileHash"
         :line="line.right"
-        :note-target-line="diffLines[lineIndex].right"
+        :note-target-line="line.right"
         position="right"
       />
     </td>

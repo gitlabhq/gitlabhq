@@ -215,7 +215,7 @@ describe API::Groups do
 
     context 'when using owned in the request' do
       it 'returns an array of groups the user owns' do
-        group1.add_master(user2)
+        group1.add_maintainer(user2)
 
         get api('/groups', user2), owned: true
 
@@ -224,6 +224,25 @@ describe API::Groups do
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response.first['name']).to eq(group2.name)
+      end
+    end
+
+    context 'when using min_access_level in the request' do
+      let!(:group3) { create(:group, :private) }
+      let(:response_groups) { json_response.map { |group| group['id'] } }
+
+      before do
+        group1.add_developer(user2)
+        group3.add_master(user2)
+      end
+
+      it 'returns an array of groups the user has at least master access' do
+        get api('/groups', user2), min_access_level: 40
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups).to eq([group2.id, group3.id])
       end
     end
   end
@@ -251,14 +270,22 @@ describe API::Groups do
       projects
     end
 
+    def response_project_ids(json_response, key)
+      json_response[key].map do |project|
+        project['id'].to_i
+      end
+    end
+
     context 'when unauthenticated' do
       it 'returns 404 for a private group' do
         get api("/groups/#{group2.id}")
+
         expect(response).to have_gitlab_http_status(404)
       end
 
       it 'returns 200 for a public group' do
         get api("/groups/#{group1.id}")
+
         expect(response).to have_gitlab_http_status(200)
       end
 
@@ -268,7 +295,7 @@ describe API::Groups do
 
         get api("/groups/#{public_group.id}")
 
-        expect(json_response['projects'].map { |p| p['id'].to_i })
+        expect(response_project_ids(json_response, 'projects'))
           .to contain_exactly(projects[:public].id)
       end
 
@@ -278,7 +305,7 @@ describe API::Groups do
 
         get api("/groups/#{group1.id}")
 
-        expect(json_response['shared_projects'].map { |p| p['id'].to_i })
+        expect(response_project_ids(json_response, 'shared_projects'))
           .to contain_exactly(projects[:public].id)
       end
     end
@@ -309,6 +336,17 @@ describe API::Groups do
         expect(json_response['shared_projects'][0]['id']).to eq(project.id)
       end
 
+      it "returns one of user1's groups without projects when with_projects option is set to false" do
+        project = create(:project, namespace: group2, path: 'Foo')
+        create(:project_group_link, project: project, group: group1)
+
+        get api("/groups/#{group1.id}", user1), with_projects: false
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['projects']).to be_nil
+        expect(json_response['shared_projects']).to be_nil
+      end
+
       it "does not return a non existing group" do
         get api("/groups/1328", user1)
 
@@ -327,7 +365,7 @@ describe API::Groups do
 
         get api("/groups/#{public_group.id}", user2)
 
-        expect(json_response['projects'].map { |p| p['id'].to_i })
+        expect(response_project_ids(json_response, 'projects'))
           .to contain_exactly(projects[:public].id, projects[:internal].id)
       end
 
@@ -337,7 +375,7 @@ describe API::Groups do
 
         get api("/groups/#{group1.id}", user2)
 
-        expect(json_response['shared_projects'].map { |p| p['id'].to_i })
+        expect(response_project_ids(json_response, 'shared_projects'))
           .to contain_exactly(projects[:public].id, projects[:internal].id)
       end
     end
@@ -715,9 +753,9 @@ describe API::Groups do
         end
       end
 
-      context 'as master', :nested_groups do
+      context 'as maintainer', :nested_groups do
         before do
-          group2.add_master(user1)
+          group2.add_maintainer(user1)
         end
 
         it 'cannot create subgroups' do
@@ -793,7 +831,7 @@ describe API::Groups do
 
       it "does not remove a group if not an owner" do
         user4 = create(:user)
-        group1.add_master(user4)
+        group1.add_maintainer(user4)
 
         delete api("/groups/#{group1.id}", user3)
 

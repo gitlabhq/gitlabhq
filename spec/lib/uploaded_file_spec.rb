@@ -1,22 +1,26 @@
 require 'spec_helper'
 
 describe UploadedFile do
+  let(:temp_dir) { Dir.tmpdir }
+  let(:temp_file) { Tempfile.new("test", temp_dir) }
+
+  before do
+    FileUtils.touch(temp_file)
+  end
+
+  after do
+    FileUtils.rm_f(temp_file)
+  end
+
   describe ".from_params" do
-    let(:temp_dir) { Dir.tmpdir }
-    let(:temp_file) { Tempfile.new("test", temp_dir) }
     let(:upload_path) { nil }
+
+    after do
+      FileUtils.rm_r(upload_path) if upload_path
+    end
 
     subject do
       described_class.from_params(params, :file, upload_path)
-    end
-
-    before do
-      FileUtils.touch(temp_file)
-    end
-
-    after do
-      FileUtils.rm_f(temp_file)
-      FileUtils.rm_r(upload_path) if upload_path
     end
 
     context 'when valid file is specified' do
@@ -37,7 +41,7 @@ describe UploadedFile do
       context 'all parameters are specified' do
         let(:params) do
           { 'file.path' => temp_file.path,
-            'file.name' => 'my_file.txt',
+            'file.name' => 'dir/my file&.txt',
             'file.type' => 'my/type',
             'file.sha256' => 'sha256',
             'file.remote_id' => 'remote_id' }
@@ -48,7 +52,7 @@ describe UploadedFile do
         end
 
         it "generates filename from path" do
-          expect(subject.original_filename).to eq('my_file.txt')
+          expect(subject.original_filename).to eq('my_file_.txt')
           expect(subject.content_type).to eq('my/type')
           expect(subject.sha256).to eq('sha256')
           expect(subject.remote_id).to eq('remote_id')
@@ -112,5 +116,12 @@ describe UploadedFile do
         end
       end
     end
+  end
+
+  describe '#sanitize_filename' do
+    it { expect(described_class.new(temp_file.path).sanitize_filename('spaced name')).to eq('spaced_name') }
+    it { expect(described_class.new(temp_file.path).sanitize_filename('#$%^&')).to eq('_____') }
+    it { expect(described_class.new(temp_file.path).sanitize_filename('..')).to eq('_..') }
+    it { expect(described_class.new(temp_file.path).sanitize_filename('')).to eq('unnamed') }
   end
 end

@@ -73,37 +73,27 @@ describe Backup::Repository do
     end
   end
 
-  describe '#delete_all_repositories', :seed_helper do
-    shared_examples('delete_all_repositories') do
-      before do
-        allow(FileUtils).to receive(:mkdir_p).and_call_original
-        allow(FileUtils).to receive(:mv).and_call_original
-      end
-
-      after(:all) do
-        ensure_seeds
-      end
-
-      it 'removes all repositories' do
-        # Sanity check: there should be something for us to delete
-        expect(list_repositories).to include(File.join(SEED_STORAGE_PATH, TEST_REPO_PATH))
-
-        subject.delete_all_repositories('default', Gitlab.config.repositories.storages['default'])
-
-        expect(list_repositories).to be_empty
-      end
-
-      def list_repositories
-        Dir[File.join(SEED_STORAGE_PATH, '*.git')]
-      end
+  describe '#prepare_directories', :seed_helper do
+    before do
+      allow(FileUtils).to receive(:mkdir_p).and_call_original
+      allow(FileUtils).to receive(:mv).and_call_original
     end
 
-    context 'with gitaly' do
-      it_behaves_like 'delete_all_repositories'
+    after(:all) do
+      ensure_seeds
     end
 
-    context 'without gitaly', :skip_gitaly_mock do
-      it_behaves_like 'delete_all_repositories'
+    it' removes all repositories' do
+      # Sanity check: there should be something for us to delete
+      expect(list_repositories).to include(File.join(SEED_STORAGE_PATH, TEST_REPO_PATH))
+
+      subject.prepare_directories
+
+      expect(list_repositories).to be_empty
+    end
+
+    def list_repositories
+      Dir[File.join(SEED_STORAGE_PATH, '*.git')]
     end
   end
 

@@ -29,8 +29,9 @@ module Gitlab
 
         def self.enabled?(name)
           return true if name == 'database'
+          return true if self.ldap_provider?(name) && providers.include?(name.to_sym)
 
-          providers.include?(name.to_sym)
+          Gitlab::Auth.omniauth_enabled? && providers.include?(name.to_sym)
         end
 
         def self.ldap_provider?(name)

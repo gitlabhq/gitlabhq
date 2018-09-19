@@ -3,6 +3,11 @@
 - site_name = "GitLab"
 %head{ prefix: "og: http://ogp.me/ns#" }
   %meta{ charset: "utf-8" }
+
+  - if Feature.enabled?('asset_host_prefetch') && ActionController::Base.asset_host
+    %link{ rel: 'dns-prefetch', href: ActionController::Base.asset_host }
+    %link{ rel: 'preconnnect', href: ActionController::Base.asset_host, crossorigin: '' }
+
   %meta{ 'http-equiv' => 'X-UA-Compatible', content: 'IE=edge' }
 
   -# Open Graph - http://ogp.me/

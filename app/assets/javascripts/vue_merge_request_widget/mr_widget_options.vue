@@ -36,6 +36,7 @@ import {
   notify,
   SourceBranchRemovalStatus,
 } from './dependencies';
+import GroupedTestReportsApp from '../reports/components/grouped_test_reports_app.vue';
 import { setFaviconOverlay } from '../lib/utils/common_utils';
 
 export default {
@@ -68,6 +69,7 @@ export default {
     'mr-widget-auto-merge-failed': AutoMergeFailed,
     'mr-widget-rebase': RebaseState,
     SourceBranchRemovalStatus,
+    GroupedTestReportsApp,
   },
   props: {
     mrData: {
@@ -105,9 +107,13 @@ export default {
   created() {
     this.initPolling();
     this.bindEventHubListeners();
+    eventHub.$on('mr.discussion.updated', this.checkStatus);
   },
   mounted() {
     this.handleMounted();
+  },
+  beforeDestroy() {
+    eventHub.$off('mr.discussion.updated', this.checkStatus);
   },
   methods: {
     createService(store) {
@@ -252,41 +258,49 @@ export default {
       :pipeline="mr.pipeline"
       :ci-status="mr.ciStatus"
       :has-ci="mr.hasCI"
+      :source-branch="mr.sourceBranch"
+      :source-branch-link="mr.sourceBranchLink"
     />
     <deployment
       v-for="deployment in mr.deployments"
       :key="deployment.id"
       :deployment="deployment"
     />
-    <div class="mr-widget-section">
-      <component
-        :is="componentName"
-        :mr="mr"
-        :service="service"
+    <div class="mr-section-container">
+      <grouped-test-reports-app
+        v-if="mr.testResultsPath"
+        :endpoint="mr.testResultsPath"
       />
+      <div class="mr-widget-section">
+        <component
+          :is="componentName"
+          :mr="mr"
+          :service="service"
+        />
 
-      <section
-        v-if="mr.allowCollaboration"
-        class="mr-info-list mr-links"
+        <section
+          v-if="mr.allowCollaboration"
+          class="mr-info-list mr-links"
+        >
+          {{ s__("mrWidget|Allows commits from members who can merge to the target branch") }}
+        </section>
+
+        <mr-widget-related-links
+          v-if="shouldRenderRelatedLinks"
+          :state="mr.state"
+          :related-links="mr.relatedLinks"
+        />
+
+        <source-branch-removal-status
+          v-if="shouldRenderSourceBranchRemovalStatus"
+        />
+      </div>
+      <div
+        v-if="shouldRenderMergeHelp"
+        class="mr-widget-footer"
       >
-        {{ s__("mrWidget|Allows commits from members who can merge to the target branch") }}
-      </section>
-
-      <mr-widget-related-links
-        v-if="shouldRenderRelatedLinks"
-        :state="mr.state"
-        :related-links="mr.relatedLinks"
-      />
-
-      <source-branch-removal-status
-        v-if="shouldRenderSourceBranchRemovalStatus"
-      />
-    </div>
-    <div
-      v-if="shouldRenderMergeHelp"
-      class="mr-widget-footer"
-    >
-      <mr-widget-merge-help />
+        <mr-widget-merge-help />
+      </div>
     </div>
   </div>
 </template>

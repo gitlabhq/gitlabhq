@@ -87,6 +87,27 @@ describe 'gitlab:app namespace rake task' do
         expect { run_rake_task('gitlab:backup:restore') }.to output.to_stdout
       end
     end
+
+    context 'when the restore directory is not empty' do
+      before do
+        # We only need a backup of the repositories for this test
+        stub_env('SKIP', 'db,uploads,builds,artifacts,lfs,registry')
+      end
+
+      it 'removes stale data' do
+        expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout
+
+        excluded_project = create(:project, :repository, name: 'mepmep')
+
+        expect { run_rake_task('gitlab:backup:restore') }.to output.to_stdout
+
+        raw_repo = excluded_project.repository.raw
+
+        # The restore will not find the repository in the backup, but will create
+        # an empty one in its place
+        expect(raw_repo.empty?).to be(true)
+      end
+    end
   end # backup_restore task
 
   describe 'backup' do

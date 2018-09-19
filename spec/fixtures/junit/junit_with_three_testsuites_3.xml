@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="rspec" tests="2" skipped="0" failures="0" errors="0" time="0.001691" timestamp="2018-07-30T10:02:37+00:00" hostname="runner-7661726c-project-14-concurrent-0">
+<properties>
+<property name="seed" value="8528"/>
+</properties>
+<testcase classname="spec.string_helper_spec" name="StringHelper#concatenate when a is git and b is lab returns summary" file="./spec/string_helper_spec.rb" time="0.000287"></testcase>
+<testcase classname="spec.string_helper_spec" name="StringHelper#concatenate when a is git and b is 200 raises an error" file="./spec/string_helper_spec.rb" time="0.000706"></testcase>
+</testsuite>

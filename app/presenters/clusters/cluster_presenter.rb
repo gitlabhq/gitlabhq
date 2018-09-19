@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Clusters
   class ClusterPresenter < Gitlab::View::Presenter::Delegated
     presents :cluster

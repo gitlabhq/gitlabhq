@@ -314,6 +314,17 @@ describe Notify do
         end
       end
 
+      describe 'that are new with a description' do
+        subject { described_class.new_merge_request_email(merge_request.assignee_id, merge_request.id) }
+
+        it_behaves_like 'it should show Gmail Actions View Merge request link'
+        it_behaves_like "an unsubscribeable thread"
+
+        it 'contains the description' do
+          is_expected.to have_body_text(merge_request.description)
+        end
+      end
+
       describe 'that have been relabeled' do
         subject { described_class.relabeled_merge_request_email(recipient.id, merge_request.id, %w[foo bar baz], current_user.id) }
 
@@ -541,7 +552,7 @@ describe Notify do
     describe 'project access requested' do
       let(:project) do
         create(:project, :public, :access_requestable) do |project|
-          project.add_master(project.owner)
+          project.add_maintainer(project.owner)
         end
       end
 
@@ -616,8 +627,8 @@ describe Notify do
     end
 
     describe 'project invitation' do
-      let(:master) { create(:user).tap { |u| project.add_master(u) } }
-      let(:project_member) { invite_to_project(project, inviter: master) }
+      let(:maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
+      let(:project_member) { invite_to_project(project, inviter: maintainer) }
 
       subject { described_class.member_invited_email('project', project_member.id, project_member.invite_token) }
 
@@ -636,9 +647,9 @@ describe Notify do
 
     describe 'project invitation accepted' do
       let(:invited_user) { create(:user, name: 'invited user') }
-      let(:master) { create(:user).tap { |u| project.add_master(u) } }
+      let(:maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
       let(:project_member) do
-        invitee = invite_to_project(project, inviter: master)
+        invitee = invite_to_project(project, inviter: maintainer)
         invitee.accept_invite!(invited_user)
         invitee
       end
@@ -659,14 +670,14 @@ describe Notify do
     end
 
     describe 'project invitation declined' do
-      let(:master) { create(:user).tap { |u| project.add_master(u) } }
+      let(:maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
       let(:project_member) do
-        invitee = invite_to_project(project, inviter: master)
+        invitee = invite_to_project(project, inviter: maintainer)
         invitee.decline_invite!
         invitee
       end
 
-      subject { described_class.member_invite_declined_email('project', project.id, project_member.invite_email, master.id) }
+      subject { described_class.member_invite_declined_email('project', project.id, project_member.invite_email, maintainer.id) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -1355,7 +1366,8 @@ describe Notify do
       it 'only sends the text template' do
         stub_application_setting(html_emails_enabled: false)
 
-        EmailTemplateInterceptor.delivering_email(multipart_mail)
+        Gitlab::Email::Hook::EmailTemplateInterceptor
+          .delivering_email(multipart_mail)
 
         expect(multipart_mail).to have_part_with('text/plain')
         expect(multipart_mail).not_to have_part_with('text/html')
@@ -1366,7 +1378,8 @@ describe Notify do
       it 'sends a multipart message' do
         stub_application_setting(html_emails_enabled: true)
 
-        EmailTemplateInterceptor.delivering_email(multipart_mail)
+        Gitlab::Email::Hook::EmailTemplateInterceptor
+          .delivering_email(multipart_mail)
 
         expect(multipart_mail).to have_part_with('text/plain')
         expect(multipart_mail).to have_part_with('text/html')

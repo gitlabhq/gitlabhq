@@ -22,7 +22,9 @@ class Projects::CommitController < Projects::ApplicationController
     apply_diff_view_cookie!
 
     respond_to do |format|
-      format.html  { render }
+      format.html  do
+        render
+      end
       format.diff  do
         send_git_diff(@project.repository, @commit.diff_refs)
       end
@@ -36,6 +38,7 @@ class Projects::CommitController < Projects::ApplicationController
     render_diff_for_path(@commit.diffs(diff_options))
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def pipelines
     @pipelines = @commit.pipelines.order(id: :desc)
     @pipelines = @pipelines.where(ref: params[:ref]) if params[:ref]
@@ -56,6 +59,7 @@ class Projects::CommitController < Projects::ApplicationController
       end
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def merge_requests
     @merge_requests = @commit.merge_requests.map do |mr|
@@ -99,7 +103,7 @@ class Projects::CommitController < Projects::ApplicationController
 
     @branch_name = create_new_branch? ? @commit.cherry_pick_branch_name : @start_branch
 
-    create_commit(Commits::CherryPickService, success_notice: "The #{@commit.change_type_title(current_user)} has been successfully cherry-picked.",
+    create_commit(Commits::CherryPickService, success_notice: "The #{@commit.change_type_title(current_user)} has been successfully cherry-picked into #{@branch_name}.",
                                               success_path: -> { successful_change_path }, failure_path: failed_change_path)
   end
 
@@ -124,7 +128,10 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def commit
-    @noteable = @commit ||= @project.commit_by(oid: params[:id])
+    @noteable = @commit ||= @project.commit_by(oid: params[:id]).tap do |commit|
+      # preload author and their status for rendering
+      commit&.author&.status
+    end
   end
 
   def define_commit_vars
@@ -139,6 +146,7 @@ class Projects::CommitController < Projects::ApplicationController
     @environment = EnvironmentsFinder.new(@project, current_user, commit: @commit).execute.last
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def define_note_vars
     @noteable = @commit
     @note = @project.build_commit_note(commit)
@@ -171,6 +179,7 @@ class Projects::CommitController < Projects::ApplicationController
     @notes = (@grouped_diff_discussions.values.flatten + @discussions).flat_map(&:notes)
     @notes = prepare_notes_for_rendering(@notes, @commit)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def assign_change_commit_vars
     @start_branch = params[:start_branch]

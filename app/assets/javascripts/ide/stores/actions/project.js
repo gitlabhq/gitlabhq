@@ -124,3 +124,35 @@ export const showBranchNotFoundError = ({ dispatch }, branchId) => {
     actionPayload: branchId,
   });
 };
+
+export const openBranch = (
+  { dispatch, state },
+  { projectId, branchId, basePath },
+) => {
+  dispatch('setCurrentBranchId', branchId);
+
+  dispatch('getBranchData', {
+    projectId,
+    branchId,
+  });
+
+  return (
+    dispatch('getFiles', {
+      projectId,
+      branchId,
+    })
+    .then(() => {
+      if (basePath) {
+        const path = basePath.slice(-1) === '/' ? basePath.slice(0, -1) : basePath;
+        const treeEntryKey = Object.keys(state.entries).find(
+          key => key === path && !state.entries[key].pending,
+        );
+        const treeEntry = state.entries[treeEntryKey];
+
+        if (treeEntry) {
+          dispatch('handleTreeEntryAction', treeEntry);
+        }
+      }
+    })
+  );
+};

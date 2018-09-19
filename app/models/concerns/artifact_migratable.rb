@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Adapter class to unify the interface between mounted uploaders and the
 # Ci::Artifact model
 # Meant to be prepended so the interface can stay the same

@@ -1,5 +1,0 @@
----
-title: Rails5 fix MySQL milliseconds problem in specs
-merge_request: 20221
-author: Jasper Maes
-type: fixed

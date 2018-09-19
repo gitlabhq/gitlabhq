@@ -26,9 +26,9 @@ describe API::ProtectedBranches do
       end
     end
 
-    context 'when authenticated as a master' do
+    context 'when authenticated as a maintainer' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       it_behaves_like 'protected branches'
@@ -54,8 +54,8 @@ describe API::ProtectedBranches do
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['name']).to eq(branch_name)
-        expect(json_response['push_access_levels'][0]['access_level']).to eq(::Gitlab::Access::MASTER)
-        expect(json_response['merge_access_levels'][0]['access_level']).to eq(::Gitlab::Access::MASTER)
+        expect(json_response['push_access_levels'][0]['access_level']).to eq(::Gitlab::Access::MAINTAINER)
+        expect(json_response['merge_access_levels'][0]['access_level']).to eq(::Gitlab::Access::MAINTAINER)
       end
 
       context 'when protected branch does not exist' do
@@ -68,9 +68,9 @@ describe API::ProtectedBranches do
       end
     end
 
-    context 'when authenticated as a master' do
+    context 'when authenticated as a maintainer' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       it_behaves_like 'protected branch'
@@ -108,9 +108,9 @@ describe API::ProtectedBranches do
       expect(json_response['name']).to eq(branch_name)
     end
 
-    context 'when authenticated as a master' do
+    context 'when authenticated as a maintainer' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       it 'protects a single branch' do
@@ -118,8 +118,8 @@ describe API::ProtectedBranches do
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(branch_name)
-        expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MASTER)
-        expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::MASTER)
+        expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
+        expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
       end
 
       it 'protects a single branch and developers can push' do
@@ -128,7 +128,7 @@ describe API::ProtectedBranches do
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(branch_name)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::DEVELOPER)
-        expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::MASTER)
+        expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
       end
 
       it 'protects a single branch and developers can merge' do
@@ -136,7 +136,7 @@ describe API::ProtectedBranches do
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(branch_name)
-        expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MASTER)
+        expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::DEVELOPER)
       end
 
@@ -155,7 +155,7 @@ describe API::ProtectedBranches do
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(branch_name)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::NO_ACCESS)
-        expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::MASTER)
+        expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
       end
 
       it 'protects a single branch and no one can merge' do
@@ -163,7 +163,7 @@ describe API::ProtectedBranches do
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(branch_name)
-        expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MASTER)
+        expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::NO_ACCESS)
       end
 
@@ -189,8 +189,8 @@ describe API::ProtectedBranches do
           post post_endpoint, name: branch_name
 
           expect_protection_to_be_successful
-          expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MASTER)
-          expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::MASTER)
+          expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
+          expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
         end
       end
 
@@ -225,7 +225,7 @@ describe API::ProtectedBranches do
     let(:delete_endpoint) { api("/projects/#{project.id}/protected_branches/#{branch_name}", user) }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     it "unprotects a single branch" do

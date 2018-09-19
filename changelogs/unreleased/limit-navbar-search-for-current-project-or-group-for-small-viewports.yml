@@ -1,0 +1,5 @@
+---
+title: Limit navbar search for current project or group for small viewports
+merge_request: 18634
+author: George Tsiolis
+type: changed

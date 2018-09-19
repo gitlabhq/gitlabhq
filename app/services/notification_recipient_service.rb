@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Used by NotificationService to determine who should receive notification
 #
@@ -10,16 +12,16 @@ module NotificationRecipientService
     NotificationRecipient.new(user, *args).notifiable?
   end
 
-  def self.build_recipients(*a)
-    Builder::Default.new(*a).notification_recipients
+  def self.build_recipients(*args)
+    Builder::Default.new(*args).notification_recipients
   end
 
-  def self.build_new_note_recipients(*a)
-    Builder::NewNote.new(*a).notification_recipients
+  def self.build_new_note_recipients(*args)
+    Builder::NewNote.new(*args).notification_recipients
   end
 
-  def self.build_merge_request_unmergeable_recipients(*a)
-    Builder::MergeRequestUnmergeable.new(*a).notification_recipients
+  def self.build_merge_request_unmergeable_recipients(*args)
+    Builder::MergeRequestUnmergeable.new(*args).notification_recipients
   end
 
   module Builder
@@ -44,7 +46,6 @@ module NotificationRecipientService
         raise 'abstract'
       end
 
-      # rubocop:disable Rails/Delegate
       def project
         target.project
       end
@@ -57,6 +58,7 @@ module NotificationRecipientService
         @recipients ||= []
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def add_recipients(users, type, reason)
         if users.is_a?(ActiveRecord::Relation)
           users = users.includes(:notification_settings)
@@ -65,10 +67,13 @@ module NotificationRecipientService
         users = Array(users).compact
         recipients.concat(users.map { |u| make_recipient(u, type, reason) })
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def user_scope
         User.includes(:notification_settings)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def make_recipient(user, type, reason)
         NotificationRecipient.new(
@@ -111,6 +116,7 @@ module NotificationRecipientService
       end
 
       # Get project/group users with CUSTOM notification level
+      # rubocop: disable CodeReuse/ActiveRecord
       def add_custom_notifications
         user_ids = []
 
@@ -127,9 +133,10 @@ module NotificationRecipientService
 
         add_recipients(user_scope.where(id: user_ids), :watch, nil)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def add_project_watchers
-        add_recipients(project_watchers, :watch, nil)
+        add_recipients(project_watchers, :watch, nil) if project
       end
 
       def add_group_watchers
@@ -137,6 +144,7 @@ module NotificationRecipientService
       end
 
       # Get project users with WATCH notification level
+      # rubocop: disable CodeReuse/ActiveRecord
       def project_watchers
         project_members_ids = user_ids_notifiable_on(project)
 
@@ -150,7 +158,9 @@ module NotificationRecipientService
 
         user_scope.where(id: user_ids_with_project_setting.concat(user_ids_with_group_setting).uniq)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def group_watchers
         user_ids_with_group_global = user_ids_notifiable_on(group, :global)
         user_ids = user_ids_with_global_level_watch(user_ids_with_group_global)
@@ -158,6 +168,7 @@ module NotificationRecipientService
 
         user_scope.where(id: user_ids_with_group_setting)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def add_subscribed_users
         return unless target.respond_to? :subscribers
@@ -165,6 +176,7 @@ module NotificationRecipientService
         add_recipients(target.subscribers(project), :subscription, nil)
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def user_ids_notifiable_on(resource, notification_level = nil)
         return [] unless resource
 
@@ -176,6 +188,7 @@ module NotificationRecipientService
 
         scope.pluck(:user_id)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       # Build a list of user_ids based on project notification settings
       def select_project_members_ids(global_setting, user_ids_global_level_watch)
@@ -193,14 +206,19 @@ module NotificationRecipientService
         uids + (global_setting & user_ids_global_level_watch) - project_members
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def user_ids_with_global_level_watch(ids)
         settings_with_global_level_of(:watch, ids).pluck(:user_id)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def user_ids_with_global_level_custom(ids, action)
         settings_with_global_level_of(:custom, ids).pluck(:user_id)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def settings_with_global_level_of(level, ids)
         NotificationSetting.where(
           user_id: ids,
@@ -208,6 +226,7 @@ module NotificationRecipientService
           level: NotificationSetting.levels[level]
         )
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def add_labels_subscribers(labels: nil)
         return unless target.respond_to? :labels
@@ -219,6 +238,8 @@ module NotificationRecipientService
     end
 
     class Default < Base
+      MENTION_TYPE_ACTIONS = [:new_issue, :new_merge_request].freeze
+
       attr_reader :target
       attr_reader :current_user
       attr_reader :action
@@ -251,7 +272,7 @@ module NotificationRecipientService
 
         add_subscribed_users
 
-        if [:new_issue, :new_merge_request].include?(custom_action)
+        if self.class.mention_type_actions.include?(custom_action)
           # These will all be participants as well, but adding with the :mention
           # type ensures that users with the mention notification level will
           # receive them, too.
@@ -278,9 +299,13 @@ module NotificationRecipientService
       end
 
       # Build event key to search on custom notification level
-      # Check NotificationSetting::EMAIL_EVENTS
+      # Check NotificationSetting.email_events
       def custom_action
         @custom_action ||= "#{action}_#{target.class.model_name.name.underscore}".to_sym
+      end
+
+      def self.mention_type_actions
+        MENTION_TYPE_ACTIONS.dup
       end
     end
 

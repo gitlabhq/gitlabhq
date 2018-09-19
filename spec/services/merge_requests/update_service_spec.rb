@@ -19,7 +19,7 @@ describe MergeRequests::UpdateService, :mailer do
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     project.add_developer(user2)
     project.add_developer(user3)
   end
@@ -109,11 +109,12 @@ describe MergeRequests::UpdateService, :mailer do
         expect(note.note).to include "assigned to #{user2.to_reference}"
       end
 
-      it 'creates system note about merge_request label edit' do
-        note = find_note('added ~')
+      it 'creates a resource label event' do
+        event = merge_request.resource_label_events.last
 
-        expect(note).not_to be_nil
-        expect(note.note).to include "added #{label.to_reference} label"
+        expect(event).not_to be_nil
+        expect(event.label_id).to eq label.id
+        expect(event.user_id).to eq user.id
       end
 
       it 'creates system note about title change' do

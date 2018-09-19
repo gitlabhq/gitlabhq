@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ReadmeBlob < SimpleDelegator
   attr_reader :repository
 

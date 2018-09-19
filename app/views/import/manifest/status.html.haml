@@ -1,0 +1,42 @@
+- page_title "Manifest import"
+- header_title "Projects", root_path
+- provider = 'manifest'
+
+%h3.page-title
+  = _('Manifest file import')
+
+%p
+  = button_tag class: "btn btn-import btn-success js-import-all" do
+    = import_all_githubish_repositories_button_label
+    = icon("spinner spin", class: "loading-icon")
+
+.table-responsive
+  %table.table.import-jobs
+    %thead
+      %tr
+        %th= _('Repository URL')
+        %th= _('To GitLab')
+        %th= _('Status')
+    %tbody
+      - @already_added_projects.each do |project|
+        %tr{ id: "project_#{project.id}", class: project_status_css_class(project.import_status) }
+          %td
+            = project.import_url
+          %td
+            = link_to_project project
+          %td.job-status
+            = render 'import/project_status', project: project
+
+      - @pending_repositories.each do |repository|
+        %tr{ id: "repo_#{repository[:id]}" }
+          %td
+            = repository[:url]
+          %td.import-target
+            = import_project_target(@group.full_path, repository[:path])
+          %td.import-actions.job-status
+            = button_tag class: "btn btn-import js-add-to-import" do
+              = _('Import')
+              = icon("spinner spin", class: "loading-icon")
+
+.js-importer-status{ data: { jobs_import_path: url_for([:jobs, :import, provider]),
+                             import_path: url_for([:import, provider]) } }

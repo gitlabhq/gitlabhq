@@ -1,0 +1,5 @@
+---
+title: Allow gaps in multiseries metrics charts
+merge_request: 21427
+author:
+type: fixed

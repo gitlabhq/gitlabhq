@@ -5,7 +5,7 @@
 - page_title 'Terminal', "#{@build.name} (##{@build.id})", 'Jobs'
 
 - content_for :page_specific_javascripts do
-  = stylesheet_link_tag "xterm/xterm"
+  = stylesheet_link_tag "xterm.css"
 
 .terminal-container{ class: container_class }
   #terminal{ data: { project_path: terminal_project_job_path(@project, @build, format: :ws) } }

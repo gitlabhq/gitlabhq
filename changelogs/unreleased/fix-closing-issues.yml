@@ -1,0 +1,5 @@
+---
+title: Fix closing issue default pattern
+merge_request: 21531
+author: Samuele Kaplun
+type: fixed

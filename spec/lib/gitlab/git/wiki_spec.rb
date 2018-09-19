@@ -6,6 +6,31 @@ describe Gitlab::Git::Wiki do
   let(:project_wiki) { ProjectWiki.new(project, user) }
   subject { project_wiki.wiki }
 
+  describe '#pages' do
+    before do
+      create_page('page1', 'content')
+      create_page('page2', 'content2')
+    end
+
+    after do
+      destroy_page('page1')
+      destroy_page('page2')
+    end
+
+    it 'returns all the pages' do
+      expect(subject.pages.count).to eq(2)
+      expect(subject.pages.first.title).to eq 'page1'
+      expect(subject.pages.last.title).to eq 'page2'
+    end
+
+    it 'returns only one page' do
+      pages = subject.pages(limit: 1)
+
+      expect(pages.count).to eq(1)
+      expect(pages.first.title).to eq 'page1'
+    end
+  end
+
   describe '#page' do
     before do
       create_page('page1', 'content')

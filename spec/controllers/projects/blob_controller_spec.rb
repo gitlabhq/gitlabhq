@@ -108,7 +108,7 @@ describe Projects::BlobController do
     end
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
 
       sign_in(user)
     end
@@ -230,12 +230,12 @@ describe Projects::BlobController do
       end
     end
 
-    context 'as master' do
-      let(:master) { create(:user) }
+    context 'as maintainer' do
+      let(:maintainer) { create(:user) }
 
       before do
-        project.add_master(master)
-        sign_in(master)
+        project.add_maintainer(maintainer)
+        sign_in(maintainer)
         get :edit, default_params
       end
 
@@ -263,7 +263,7 @@ describe Projects::BlobController do
     end
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
 
       sign_in(user)
     end

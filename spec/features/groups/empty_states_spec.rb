@@ -19,7 +19,7 @@ describe 'Group empty states' do
         let(:project) { create(:project, namespace: group) }
 
         before do
-          project.add_master(user)
+          project.add_maintainer(user)
         end
 
         context "the project has #{issuable_name}s" do

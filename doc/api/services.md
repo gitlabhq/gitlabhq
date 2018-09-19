@@ -401,46 +401,52 @@ Get Flowdock service settings for a project.
 GET /projects/:id/services/flowdock
 ```
 
-## Gemnasium
+## Hangouts Chat
 
-Gemnasium monitors your project dependencies and alerts you about updates and security vulnerabilities.
+Google GSuite team collaboration tool.
 
-CAUTION: **Warning:**
-Gemnasium service integration has been deprecated in GitLab 11.0. Gemnasium has been
-[acquired by GitLab](https://about.gitlab.com/press/releases/2018-01-30-gemnasium-acquisition.html)
-in January 2018 and since May 15, 2018, the service provided by Gemnasium is no longer available.
-You can [migrate from Gemnasium to GitLab](https://docs.gitlab.com/ee/user/project/import/gemnasium.html)
-to keep monitoring your dependencies.
+>**Note:** This service was [introduced in v11.2](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20290)
 
-### Create/Edit Gemnasium service
+### Create/Edit Hangouts Chat service
 
-Set Gemnasium service for a project.
+Set Hangouts Chat service for a project.
 
 ```
-PUT /projects/:id/services/gemnasium
+PUT /projects/:id/services/hangouts_chat
 ```
+
+>**Note:** Specific event parameters (e.g. `push_events` flag) were [introduced in v10.4][11435]
 
 Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `api_key` | string | true | Your personal API KEY on gemnasium.com |
-| `token`  | string | true | The project's slug on gemnasium.com |
+| `webhook` | string | true | The Hangouts Chat webhook. e.g. https://chat.googleapis.com/v1/spaces... |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
+| `notify_only_default_branch` | boolean | false | Send notifications only for the default branch |
+| `push_events` | boolean | false | Enable notifications for push events |
+| `issues_events` | boolean | false | Enable notifications for issue events |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events |
+| `note_events` | boolean | false | Enable notifications for note events |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events |
+| `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
 
-### Delete Gemnasium service
+### Delete Hangouts Chat service
 
-Delete Gemnasium service for a project.
+Delete Hangouts Chat service for a project.
 
 ```
-DELETE /projects/:id/services/gemnasium
+DELETE /projects/:id/services/hangouts_chat
 ```
 
-### Get Gemnasium service settings
+### Get Hangouts Chat service settings
 
-Get Gemnasium service settings for a project.
+Get Hangouts Chat service settings for a project.
 
 ```
-GET /projects/:id/services/gemnasium
+GET /projects/:id/services/hangouts_chat
 ```
 
 ## HipChat
@@ -538,10 +544,10 @@ GET /projects/:id/services/jira
 
 Set JIRA service for a project.
 
->**Notes:**
-- Starting with GitLab 8.14, `api_url`, `issues_url`, `new_issue_url` and
-  `project_url` are replaced by `project_key`, `url`.  If you are using an
-  older version, [follow this documentation][old-jira-api].
+> **Notes:**
+> - Starting with GitLab 8.14, `api_url`, `issues_url`, `new_issue_url` and
+>   `project_url` are replaced by `project_key`, `url`.  If you are using an
+>   older version, [follow this documentation][old-jira-api].
 
 ```
 PUT /projects/:id/services/jira

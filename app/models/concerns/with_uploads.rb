@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Mounted uploaders are destroyed by carrierwave's after_commit
 # hook. This hook fetches upload location (local vs remote) from
 # Upload model. So it's neccessary to make sure that during that

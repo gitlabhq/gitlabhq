@@ -86,6 +86,11 @@ describe('Multi-file store utils', () => {
             base64: true,
             lastCommitSha: '123456789',
           },
+          {
+            ...file('deletedFile'),
+            path: 'deletedFile',
+            deleted: true,
+          },
         ],
         currentBranchId: 'master',
       };
@@ -107,6 +112,7 @@ describe('Multi-file store utils', () => {
             content: 'updated file content',
             encoding: 'text',
             last_commit_id: '123456789',
+            previous_path: undefined,
           },
           {
             action: 'create',
@@ -114,6 +120,15 @@ describe('Multi-file store utils', () => {
             content: 'new file content',
             encoding: 'base64',
             last_commit_id: '123456789',
+            previous_path: undefined,
+          },
+          {
+            action: 'delete',
+            file_path: 'deletedFile',
+            content: undefined,
+            encoding: 'text',
+            last_commit_id: undefined,
+            previous_path: undefined,
           },
         ],
         start_branch: undefined,
@@ -160,6 +175,7 @@ describe('Multi-file store utils', () => {
             content: 'updated file content',
             encoding: 'text',
             last_commit_id: '123456789',
+            previous_path: undefined,
           },
           {
             action: 'create',
@@ -167,10 +183,56 @@ describe('Multi-file store utils', () => {
             content: 'new file content',
             encoding: 'base64',
             last_commit_id: '123456789',
+            previous_path: undefined,
           },
         ],
         start_branch: undefined,
       });
+    });
+  });
+
+  describe('commitActionForFile', () => {
+    it('returns deleted for deleted file', () => {
+      expect(utils.commitActionForFile({ deleted: true })).toBe('delete');
+    });
+
+    it('returns create for tempFile', () => {
+      expect(utils.commitActionForFile({ tempFile: true })).toBe('create');
+    });
+
+    it('returns move for moved file', () => {
+      expect(utils.commitActionForFile({ prevPath: 'test' })).toBe('move');
+    });
+
+    it('returns update by default', () => {
+      expect(utils.commitActionForFile({})).toBe('update');
+    });
+  });
+
+  describe('getCommitFiles', () => {
+    it('returns list of files excluding moved files', () => {
+      const files = [
+        {
+          path: 'a',
+          type: 'blob',
+          deleted: true,
+        },
+        {
+          path: 'c',
+          type: 'blob',
+          moved: true,
+        },
+      ];
+
+      const flattendFiles = utils.getCommitFiles(files);
+
+      expect(flattendFiles).toEqual([
+        {
+          path: 'a',
+          type: 'blob',
+          deleted: true,
+        },
+      ]);
     });
   });
 });

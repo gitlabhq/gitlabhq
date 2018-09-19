@@ -9,7 +9,7 @@ describe 'Groups > Members > List members' do
   let(:nested_group) { create(:group, parent: group) }
 
   before do
-    gitlab_sign_in(user1)
+    sign_in(user1)
   end
 
   it 'show members from current group and parent', :nested_groups do
@@ -30,6 +30,18 @@ describe 'Groups > Members > List members' do
 
     expect(first_row.text).to include(user1.name)
     expect(second_row).to be_blank
+  end
+
+  describe 'showing status of members' do
+    before do
+      group.add_developer(user2)
+    end
+
+    subject { visit group_group_members_path(group) }
+
+    it_behaves_like 'showing user status' do
+      let(:user_with_status) { user2 }
+    end
   end
 
   def first_row

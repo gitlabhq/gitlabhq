@@ -3,10 +3,10 @@ import {
   getParameterByName,
   getUrlParamsArray,
 } from '~/lib/utils/common_utils';
+import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
 import { visitUrl } from '../lib/utils/url_utility';
 import Flash from '../flash';
 import FilteredSearchContainer from './container';
-import FilteredSearchTokenKeys from './filtered_search_token_keys';
 import RecentSearchesRoot from './recent_searches_root';
 import RecentSearchesStore from './stores/recent_searches_store';
 import RecentSearchesService from './services/recent_searches_service';
@@ -23,7 +23,7 @@ export default class FilteredSearchManager {
     isGroup = false,
     isGroupAncestor = true,
     isGroupDecendent = false,
-    filteredSearchTokenKeys = FilteredSearchTokenKeys,
+    filteredSearchTokenKeys = IssuableFilteredSearchTokenKeys,
     stateFiltersSelector = '.issues-state-filters',
   }) {
     this.isGroup = isGroup;

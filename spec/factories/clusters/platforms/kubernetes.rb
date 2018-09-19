@@ -16,5 +16,9 @@ FactoryBot.define do
         platform_kubernetes.ca_cert = File.read(pem_file)
       end
     end
+
+    trait :rbac_enabled do
+      authorization_type :rbac
+    end
   end
 end

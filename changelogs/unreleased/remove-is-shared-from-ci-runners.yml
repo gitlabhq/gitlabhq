@@ -1,5 +1,0 @@
----
-title: Remove the use of `is_shared` of `Ci::Runner`
-merge_request:
-author:
-type: other

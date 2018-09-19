@@ -1,5 +1,10 @@
 # Fast lookup of authorized SSH keys in the database
 
+NOTE: **Note:** This document describes a drop-in replacement for the
+`authorized_keys` file for normal (non-deploy key) users. Consider
+using [ssh certificates](ssh_certificates.md), they are even faster,
+but are not a drop-in replacement.
+
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/1631) in 
 > [GitLab Starter](https://about.gitlab.com/gitlab-ee) 9.3.
 >

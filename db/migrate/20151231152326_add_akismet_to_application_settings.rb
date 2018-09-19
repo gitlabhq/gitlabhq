@@ -1,4 +1,3 @@
-# rubocop:disable all
 class AddAkismetToApplicationSettings < ActiveRecord::Migration
   def change
     change_table :application_settings do |t|

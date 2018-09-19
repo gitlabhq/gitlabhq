@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Clusters
   class Cluster < ActiveRecord::Base
     include Presentable
@@ -40,6 +42,7 @@ module Clusters
     delegate :on_creation?, to: :provider, allow_nil: true
 
     delegate :active?, to: :platform_kubernetes, prefix: true, allow_nil: true
+    delegate :rbac?, to: :platform_kubernetes, prefix: true, allow_nil: true
     delegate :installed?, to: :application_helm, prefix: true, allow_nil: true
     delegate :installed?, to: :application_ingress, prefix: true, allow_nil: true
 

@@ -1,39 +1,33 @@
-- page_title 'User map', 'FogBugz import'
-- header_title "Projects", root_path
+- page_title _('User map'), _('FogBugz import')
+- header_title _("Projects"), root_path
 %h3.page-title
   %i.fa.fa-bug
-  Import projects from FogBugz
+  = _('Import projects from FogBugz')
 %hr
 
 = form_tag create_user_map_import_fogbugz_path do
   %p
-    Customize how FogBugz email addresses and usernames are imported into GitLab.
-    In the next step, you'll be able to select the projects you want to import.
+    = _("Customize how FogBugz email addresses and usernames are imported into GitLab. In the next step, you'll be able to select the projects you want to import.")
   %p
-    The user map is a mapping of the FogBugz users that participated on your projects to the way their email address and usernames will be imported into GitLab. You can change this by populating the table below.
+    = _("The user map is a mapping of the FogBugz users that participated on your projects to the way their email address and usernames will be imported into GitLab. You can change this by populating the table below.")
   %ul
     %li
-      %strong Default: Map a FogBugz account ID to a full name
+      %strong= _("Default: Map a FogBugz account ID to a full name")
       %p
-        An empty GitLab User field will add the FogBugz user's full name
-        (e.g. "By John Smith") in the description of all issues and comments.
-        It will also associate and/or assign these issues and comments with
-        the project creator.
+        = _("An empty GitLab User field will add the FogBugz user's full name (e.g. \"By John Smith\") in the description of all issues and comments. It will also associate and/or assign these issues and comments with the project creator.")
     %li
-      %strong Map a FogBugz account ID to a GitLab user
+      %strong= _("Map a FogBugz account ID to a GitLab user")
       %p
-        Selecting a GitLab user will add a link to the GitLab user in the descriptions
-        of issues and comments (e.g. "By <a href="#">@johnsmith</a>"). It will also
-        associate and/or assign these issues and comments with the selected user.
+        = _('Selecting a GitLab user will add a link to the GitLab user in the descriptions of issues and comments (e.g. "By <a href="#">@johnsmith</a>"). It will also associate and/or assign these issues and comments with the selected user.').html_safe
 
   .table-holder
     %table.table
       %thead
         %tr
-          %th ID
-          %th Name
-          %th Email
-          %th GitLab User
+          %th= _("ID")
+          %th= _("Name")
+          %th= _("Email")
+          %th= _("GitLab User")
       %tbody
         - @user_map.each do |id, user|
           %tr
@@ -45,4 +39,4 @@
                 scope: :all, email_user: true, selected: user[:gitlab_user])
 
   .form-actions
-    = submit_tag 'Continue to the next step', class: 'btn btn-create'
+    = submit_tag _('Continue to the next step'), class: 'btn btn-create'

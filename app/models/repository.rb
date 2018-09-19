@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'securerandom'
 
 class Repository
@@ -22,6 +24,7 @@ class Repository
 
   delegate :ref_name_for_sha, to: :raw_repository
   delegate :bundle_to_disk, to: :raw_repository
+  delegate :find_remote_root_ref, to: :raw_repository
 
   CreateTreeError = Class.new(StandardError)
 
@@ -79,11 +82,7 @@ class Repository
 
   alias_method :raw, :raw_repository
 
-  def cleanup
-    @raw_repository&.cleanup
-  end
-
-  # Return absolute path to repository
+  # Don't use this! It's going away. Use Gitaly to read or write from repos.
   def path_to_repo
     @path_to_repo ||=
       begin
@@ -154,12 +153,9 @@ class Repository
 
   # Returns a list of commits that are not present in any reference
   def new_commits(newrev)
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1233
-    refs = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      ::Gitlab::Git::RevList.new(raw, newrev: newrev).new_refs
-    end
+    commits = raw.new_commits(newrev)
 
-    refs.map { |sha| commit(sha.strip) }
+    ::Commit.decorate(commits, project)
   end
 
   # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/384
@@ -174,8 +170,8 @@ class Repository
     CommitCollection.new(project, commits, ref)
   end
 
-  def find_branch(name, fresh_repo: true)
-    raw_repository.find_branch(name, fresh_repo)
+  def find_branch(name)
+    raw_repository.find_branch(name)
   end
 
   def find_tag(name)
@@ -238,19 +234,32 @@ class Repository
     false
   end
 
+  def languages
+    return [] if empty?
+
+    raw_repository.languages(root_ref)
+  end
+
   # Makes sure a commit is kept around when Git garbage collection runs.
   # Git GC will delete commits from the repository that are no longer in any
   # branches or tags, but we want to keep some of these commits around, for
   # example if they have comments or CI builds.
-  def keep_around(sha)
-    return unless sha.present? && commit_by(oid: sha)
+  #
+  # For Geo's sake, pass in multiple shas rather than calling it multiple times,
+  # to avoid unnecessary syncing.
+  def keep_around(*shas)
+    shas.each do |sha|
+      begin
+        next unless sha.present? && commit_by(oid: sha)
 
-    return if kept_around?(sha)
+        next if kept_around?(sha)
 
-    # This will still fail if the file is corrupted (e.g. 0 bytes)
-    raw_repository.write_ref(keep_around_ref_name(sha), sha, shell: false)
-  rescue Gitlab::Git::CommandError => ex
-    Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
+        # This will still fail if the file is corrupted (e.g. 0 bytes)
+        raw_repository.write_ref(keep_around_ref_name(sha), sha, shell: false)
+      rescue Gitlab::Git::CommandError => ex
+        Rails.logger.error "Unable to create keep-around reference for repository #{disk_path}: #{ex}"
+      end
+    end
   end
 
   def kept_around?(sha)
@@ -315,6 +324,8 @@ class Repository
   # types - An Array of file types (e.g. `:readme`) used to refresh extra
   #         caches.
   def refresh_method_caches(types)
+    return if types.empty?
+
     to_refresh = []
 
     types.each do |type|
@@ -433,6 +444,8 @@ class Repository
   # Runs code after a repository has been forked/imported.
   def after_import
     expire_content_cache
+
+    DetectRepositoryLanguagesWorker.perform_async(project.id, project.owner.id)
   end
 
   # Runs code after a new commit has been pushed.
@@ -462,12 +475,12 @@ class Repository
     expire_branches_cache
   end
 
-  def method_missing(m, *args, &block)
-    if m == :lookup && !block_given?
-      lookup_cache[m] ||= {}
-      lookup_cache[m][args.join(":")] ||= raw_repository.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
+  def method_missing(msg, *args, &block)
+    if msg == :lookup && !block_given?
+      lookup_cache[msg] ||= {}
+      lookup_cache[msg][args.join(":")] ||= raw_repository.__send__(msg, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     else
-      raw_repository.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
+      raw_repository.__send__(msg, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     end
   end
 
@@ -564,7 +577,12 @@ class Repository
   end
 
   def rendered_readme
-    MarkupHelper.markup_unsafe(readme.name, readme.data, project: project) if readme
+    return unless readme
+
+    context = { project: project }
+    context[:markdown_engine] = :redcarpet unless MarkupHelper.commonmark_for_repositories_enabled?
+
+    MarkupHelper.markup_unsafe(readme.name, readme.data, context)
   end
   cache_method :rendered_readme
 
@@ -978,20 +996,20 @@ class Repository
                                        remote_branch: merge_request.target_branch)
   end
 
-  def blob_data_at(sha, path)
-    blob = blob_at(sha, path)
-    return unless blob
-
-    blob.load_all_data!
-    blob.data
-  end
-
   def squash(user, merge_request)
     raw.squash(user, merge_request.id, branch: merge_request.target_branch,
                                        start_sha: merge_request.diff_start_sha,
                                        end_sha: merge_request.diff_head_sha,
                                        author: merge_request.author,
                                        message: merge_request.title)
+  end
+
+  def blob_data_at(sha, path)
+    blob = blob_at(sha, path)
+    return unless blob
+
+    blob.load_all_data!
+    blob.data
   end
 
   private
@@ -1032,7 +1050,7 @@ class Repository
   end
 
   def repository_event(event, tags = {})
-    Gitlab::Metrics.add_event(event, { path: full_path }.merge(tags))
+    Gitlab::Metrics.add_event(event, tags)
   end
 
   def initialize_raw_repository

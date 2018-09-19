@@ -59,9 +59,53 @@ left.
 > [Introduced in](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19318) [GitLab Core][ce] 11.0.
 
 Switching between your authored and assigned merge requests can be done without
-leaving the Web IDE. Click the project name in the top left to open a list of
-merge requests. You will need to commit or discard all your changes before
+leaving the Web IDE. Click the dropdown in the top of the sidebar to open a list 
+of merge requests. You will need to commit or discard all your changes before
 switching to a different merge request.
+
+## Switching branches
+
+> [Introduced in](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20850) [GitLab Core][ce] 11.2.
+
+Switching between branches of the current project repository can be done without
+leaving the Web IDE. Click the dropdown in the top of the sidebar to open a list 
+of branches. You will need to commit or discard all your changes before
+switching to a different branch.
+
+## Client Side Evaluation
+
+> [Introduced in](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19764) [GitLab Core][ce] 11.2.
+
+The Web IDE can be used to preview JavaScript projects right in the browser.
+This feature uses CodeSandbox to compile and bundle the JavaScript used to
+preview the web application.
+
+![Web IDE Client Side Evaluation](img/clientside_evaluation.png)
+
+Additionally, for public projects an `Open in CodeSandbox` button is available
+to transfer the contents of the project into a public CodeSandbox project to
+quickly share your project with others.
+
+### Enabling Client Side Evaluation
+
+The Client Side Evaluation feature needs to be enabled in the GitLab instances
+admin settings. Client Side Evaluation is enabled for all projects on
+GitLab.com
+
+![Admin Client Side Evaluation setting](img/admin_clientside_evaluation.png)
+
+Once it has been enabled in application settings, projects with a
+`package.json` file and a `main` entry point can be previewed inside of the Web
+IDE. An example `package.json` is below.
+
+```json
+{
+  "main": "index.js",
+  "dependencies": {
+    "vue": "latest"
+  }
+}
+```
 
 [ce]: https://about.gitlab.com/pricing/
 [ee]: https://about.gitlab.com/pricing/

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserAgentDetail < ActiveRecord::Base
   belongs_to :subject, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 

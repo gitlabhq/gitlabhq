@@ -1,6 +1,8 @@
 <script>
 import Mousetrap from 'mousetrap';
 import { mapActions, mapState, mapGetters } from 'vuex';
+import { __ } from '~/locale';
+import NewModal from './new_dropdown/modal.vue';
 import IdeSidebar from './ide_side_bar.vue';
 import RepoTabs from './repo_tabs.vue';
 import IdeStatusBar from './ide_status_bar.vue';
@@ -8,11 +10,13 @@ import RepoEditor from './repo_editor.vue';
 import FindFile from './file_finder/index.vue';
 import RightPane from './panes/right.vue';
 import ErrorMessage from './error_message.vue';
+import CommitEditorHeader from './commit_sidebar/editor_header.vue';
 
 const originalStopCallback = Mousetrap.stopCallback;
 
 export default {
   components: {
+    NewModal,
     IdeSidebar,
     RepoTabs,
     IdeStatusBar,
@@ -20,10 +24,10 @@ export default {
     FindFile,
     RightPane,
     ErrorMessage,
+    CommitEditorHeader,
   },
   computed: {
     ...mapState([
-      'changedFiles',
       'openFiles',
       'viewer',
       'currentMergeRequestId',
@@ -32,18 +36,10 @@ export default {
       'currentProjectId',
       'errorMessage',
     ]),
-    ...mapGetters(['activeFile', 'hasChanges']),
+    ...mapGetters(['activeFile', 'hasChanges', 'someUncommitedChanges', 'isCommitModeActive']),
   },
   mounted() {
-    const returnValue = 'Are you sure you want to lose unsaved changes?';
-    window.onbeforeunload = e => {
-      if (!this.changedFiles.length) return undefined;
-
-      Object.assign(e, {
-        returnValue,
-      });
-      return returnValue;
-    };
+    window.onbeforeunload = e => this.onBeforeUnload(e);
 
     Mousetrap.bind(['t', 'command+p', 'ctrl+p'], e => {
       if (e.preventDefault) {
@@ -57,6 +53,16 @@ export default {
   },
   methods: {
     ...mapActions(['toggleFileFinder']),
+    onBeforeUnload(e = {}) {
+      const returnValue = __('Are you sure you want to lose unsaved changes?');
+
+      if (!this.someUncommitedChanges) return undefined;
+
+      Object.assign(e, {
+        returnValue,
+      });
+      return returnValue;
+    },
     mousetrapStopCallback(e, el, combo) {
       if (
         (combo === 't' && el.classList.contains('dropdown-input-field')) ||
@@ -74,13 +80,13 @@ export default {
 </script>
 
 <template>
-  <article class="ide">
+  <article class="ide position-relative d-flex flex-column align-items-stretch">
     <error-message
       v-if="errorMessage"
       :message="errorMessage"
     />
     <div
-      class="ide-view"
+      class="ide-view flex-grow d-flex"
     >
       <find-file
         v-show="fileFindVisible"
@@ -92,7 +98,12 @@ export default {
         <template
           v-if="activeFile"
         >
+          <commit-editor-header
+            v-if="isCommitModeActive"
+            :active-file="activeFile"
+          />
           <repo-tabs
+            v-else
             :active-file="activeFile"
             :files="openFiles"
             :viewer="viewer"
@@ -137,5 +148,6 @@ export default {
       />
     </div>
     <ide-status-bar :file="activeFile"/>
+    <new-modal />
   </article>
 </template>

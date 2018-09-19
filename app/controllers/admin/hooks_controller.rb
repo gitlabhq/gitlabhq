@@ -23,7 +23,7 @@ class Admin::HooksController < Admin::ApplicationController
   end
 
   def update
-    if hook.update_attributes(hook_params)
+    if hook.update(hook_params)
       flash[:notice] = 'System hook was successfully updated.'
       redirect_to admin_hooks_path
     else
@@ -34,7 +34,7 @@ class Admin::HooksController < Admin::ApplicationController
   def destroy
     hook.destroy
 
-    redirect_to admin_hooks_path, status: 302
+    redirect_to admin_hooks_path, status: :found
   end
 
   def test

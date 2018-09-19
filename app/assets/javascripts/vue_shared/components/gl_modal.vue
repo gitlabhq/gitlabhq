@@ -1,4 +1,6 @@
 <script>
+import $ from 'jquery';
+
 const buttonVariants = ['danger', 'primary', 'success', 'warning'];
 const sizeVariants = ['sm', 'md', 'lg', 'xl'];
 
@@ -38,12 +40,24 @@ export default {
       return this.modalSize === 'md' ? '' : `modal-${this.modalSize}`;
     },
   },
+  mounted() {
+    $(this.$el).on('shown.bs.modal', this.opened).on('hidden.bs.modal', this.closed);
+  },
+  beforeDestroy() {
+    $(this.$el).off('shown.bs.modal', this.opened).off('hidden.bs.modal', this.closed);
+  },
   methods: {
     emitCancel(event) {
       this.$emit('cancel', event);
     },
     emitSubmit(event) {
       this.$emit('submit', event);
+    },
+    opened() {
+      this.$emit('open');
+    },
+    closed() {
+      this.$emit('closed');
     },
   },
 };

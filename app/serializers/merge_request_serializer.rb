@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MergeRequestSerializer < BaseSerializer
   # This overrided method takes care of which entity should be used
   # to serialize the `merge_request` based on `serializer` key in `opts` param.

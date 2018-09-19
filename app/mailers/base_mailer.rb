@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BaseMailer < ActionMailer::Base
   around_action :render_with_default_locale
 

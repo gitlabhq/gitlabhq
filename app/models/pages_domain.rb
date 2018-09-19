@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PagesDomain < ActiveRecord::Base
   VERIFICATION_KEY = 'gitlab-pages-verification-code'.freeze
   VERIFICATION_THRESHOLD = 3.days.freeze
@@ -138,9 +140,11 @@ class PagesDomain < ActiveRecord::Base
     self.verification_code = SecureRandom.hex(16)
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def update_daemon
     ::Projects::UpdatePagesConfigurationService.new(project).execute
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def pages_config_changed?
     project_id_changed? ||

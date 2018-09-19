@@ -13,7 +13,7 @@ import tooltip from '../../../vue_shared/directives/tooltip';
  *   "id": 4256,
  *   "name": "test",
  *   "status": {
- *     "icon": "icon_status_success",
+ *     "icon": "status_success",
  *     "text": "passed",
  *     "label": "passed",
  *     "group": "success",

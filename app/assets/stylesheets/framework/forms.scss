@@ -8,7 +8,7 @@ input {
 
 input[type='text'].danger {
   background: $input-danger-bg !important;
-  border-color: $input-danger-border;
+  border-color: $red-400;
   text-shadow: 0 1px 1px $white-light;
 }
 
@@ -31,7 +31,7 @@ label {
     margin: 0;
   }
 
-  &.label-light {
+  &.label-bold {
     font-weight: $gl-font-weight-bold;
   }
 }
@@ -80,7 +80,7 @@ label {
   .form-control {
     height: 29px;
     background: $white-light;
-    font-family: $monospace_font;
+    font-family: $monospace-font;
   }
 
   .input-group-prepend .btn,
@@ -170,7 +170,7 @@ label {
 }
 
 .form-control::-webkit-input-placeholder {
-  color: $placeholder-text-color;
+  color: $gl-text-color-tertiary;
 }
 
 .input-group {
@@ -201,7 +201,7 @@ label {
 }
 
 .gl-show-field-errors {
-  .form-control {
+  .form-control:not(textarea) {
     height: 34px;
   }
 
@@ -254,4 +254,9 @@ label {
     transform: translateY(-50%);
     color: $theme-gray-600;
   }
+}
+
+.input-lg {
+  max-width: 320px;
+  width: 100%;
 }

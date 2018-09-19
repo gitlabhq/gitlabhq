@@ -1,0 +1,5 @@
+---
+title: Send back required object storage PUT headers in /uploads/authorize API
+merge_request: 21319
+author:
+type: changed

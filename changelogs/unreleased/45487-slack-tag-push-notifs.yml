@@ -1,5 +1,0 @@
----
-title: Fix chat service tag notifications not sending when only default branch enabled
-merge_request: 19864
-author:
-type: fixed

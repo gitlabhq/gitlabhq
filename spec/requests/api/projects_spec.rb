@@ -20,7 +20,6 @@ describe API::Projects do
   let(:admin) { create(:admin) }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:project2) { create(:project, namespace: user.namespace) }
-  let(:snippet) { create(:project_snippet, :public, author: user, project: project, title: 'example') }
   let(:project_member) { create(:project_member, :developer, user: user3, project: project) }
   let(:user4) { create(:user) }
   let(:project3) do
@@ -40,7 +39,7 @@ describe API::Projects do
     create(:project_member,
     user: user4,
     project: project3,
-    access_level: ProjectMember::MASTER)
+    access_level: ProjectMember::MAINTAINER)
   end
   let(:project4) do
     create(:project,
@@ -149,6 +148,16 @@ describe API::Projects do
         expect(json_response.first.keys).to include('open_issues_count')
       end
 
+      it 'does not include projects marked for deletion' do
+        project.update(pending_delete: true)
+
+        get api('/projects', user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.map { |p| p['id'] }).not_to include(project.id)
+      end
+
       it 'does not include open_issues_count if issues are disabled' do
         project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
 
@@ -225,7 +234,7 @@ describe API::Projects do
             path path_with_namespace
             star_count forks_count
             created_at last_activity_at
-            avatar_url
+            avatar_url namespace
           )
 
           get api('/projects?simple=true', user)
@@ -234,6 +243,39 @@ describe API::Projects do
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.first.keys).to match_array expected_keys
+        end
+      end
+
+      context 'and using archived' do
+        let!(:archived_project) { create(:project, creator_id: user.id, namespace: user.namespace, archived: true) }
+
+        it 'returns archived projects' do
+          get api('/projects?archived=true', user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(Project.public_or_visible_to_user(user).where(archived: true).size)
+          expect(json_response.map { |project| project['id'] }).to include(archived_project.id)
+        end
+
+        it 'returns non-archived projects' do
+          get api('/projects?archived=false', user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(Project.public_or_visible_to_user(user).where(archived: false).size)
+          expect(json_response.map { |project| project['id'] }).not_to include(archived_project.id)
+        end
+
+        it 'returns every project' do
+          get api('/projects', user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.map { |project| project['id'] }).to contain_exactly(*Project.public_or_visible_to_user(user).pluck(:id))
         end
       end
 
@@ -312,7 +354,7 @@ describe API::Projects do
 
         before do
           project_member
-          user3.update_attributes(starred_projects: [project, project2, project3, public_project])
+          user3.update(starred_projects: [project, project2, project3, public_project])
         end
 
         it 'returns the starred projects viewable by the user' do
@@ -333,7 +375,7 @@ describe API::Projects do
         let!(:project9) { create(:project, :public, path: 'gitlab9') }
 
         before do
-          user.update_attributes(starred_projects: [project5, project7, project8, project9])
+          user.update(starred_projects: [project5, project7, project8, project9])
         end
 
         context 'including owned filter' do
@@ -353,7 +395,7 @@ describe API::Projects do
             create(:project_member,
                    user: user,
                    project: project5,
-                   access_level: ProjectMember::MASTER)
+                   access_level: ProjectMember::MAINTAINER)
           end
 
           it 'returns only projects that satisfy all query parameters' do
@@ -365,6 +407,22 @@ describe API::Projects do
             expect(json_response.size).to eq(2)
             expect(json_response.map { |project| project['id'] }).to contain_exactly(project5.id, project7.id)
           end
+        end
+      end
+
+      context 'and with min_access_level' do
+        before do
+          project2.add_maintainer(user2)
+          project3.add_developer(user2)
+          project4.add_reporter(user2)
+        end
+
+        it 'returns an array of groups the user has at least developer access' do
+          get api('/projects', user2), { min_access_level: 30 }
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.map { |project| project['id'] }).to contain_exactly(project2.id, project3.id)
         end
       end
     end
@@ -509,6 +567,14 @@ describe API::Projects do
       expect(json_response['visibility']).to eq('private')
     end
 
+    it 'creates a new project initialized with a README.md' do
+      project = attributes_for(:project, initialize_with_readme: 1, name: 'somewhere')
+
+      post api('/projects', user), project
+
+      expect(json_response['readme_url']).to eql("#{Gitlab.config.gitlab.url}/#{json_response['namespace']['full_path']}/somewhere/blob/master/README.md")
+    end
+
     it 'sets tag list to a project' do
       project = attributes_for(:project, tag_list: %w[tagFirst tagSecond])
 
@@ -526,7 +592,7 @@ describe API::Projects do
       expect(json_response['avatar_url']).to eq("http://localhost/uploads/-/system/project/avatar/#{project_id}/banana_sample.gif")
     end
 
-    it 'sets a project as allowing outdated diff discussions to automatically resolve' do
+    it 'sets a project as not allowing outdated diff discussions to automatically resolve' do
       project = attributes_for(:project, resolve_outdated_diff_discussions: false)
 
       post api('/projects', user), project
@@ -534,7 +600,7 @@ describe API::Projects do
       expect(json_response['resolve_outdated_diff_discussions']).to be_falsey
     end
 
-    it 'sets a project as allowing outdated diff discussions to automatically resolve if resolve_outdated_diff_discussions' do
+    it 'sets a project as allowing outdated diff discussions to automatically resolve' do
       project = attributes_for(:project, resolve_outdated_diff_discussions: true)
 
       post api('/projects', user), project
@@ -648,6 +714,20 @@ describe API::Projects do
       expect(json_response).to be_an Array
       expect(json_response.map { |project| project['id'] }).to contain_exactly(public_project.id)
     end
+
+    it 'returns projects filtered by minimal access level' do
+      private_project1 = create(:project, :private, name: 'private_project1', creator_id: user4.id, namespace: user4.namespace)
+      private_project2 = create(:project, :private, name: 'private_project2', creator_id: user4.id, namespace: user4.namespace)
+      private_project1.add_developer(user2)
+      private_project2.add_reporter(user2)
+
+      get api("/users/#{user4.id}/projects/", user2), { min_access_level: 30 }
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.map { |project| project['id'] }).to contain_exactly(private_project1.id)
+    end
   end
 
   describe 'POST /projects/user/:id' do
@@ -726,7 +806,7 @@ describe API::Projects do
       expect(json_response['visibility']).to eq('private')
     end
 
-    it 'sets a project as allowing outdated diff discussions to automatically resolve' do
+    it 'sets a project as not allowing outdated diff discussions to automatically resolve' do
       project = attributes_for(:project, resolve_outdated_diff_discussions: false)
 
       post api("/projects/user/#{user.id}", admin), project
@@ -851,10 +931,26 @@ describe API::Projects do
         expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)
         expect(json_response['shared_with_groups'][0]['group_name']).to eq(group.name)
         expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
+        expect(json_response['shared_with_groups'][0]['expires_at']).to be_nil
         expect(json_response['only_allow_merge_if_pipeline_succeeds']).to eq(project.only_allow_merge_if_pipeline_succeeds)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
         expect(json_response['merge_method']).to eq(project.merge_method.to_s)
         expect(json_response['readme_url']).to eq(project.readme_url)
+      end
+
+      it 'returns a group link with expiration date' do
+        group = create(:group)
+        expires_at = 5.days.from_now.to_date
+        link = create(:project_group_link, project: project, group: group, expires_at: expires_at)
+
+        get api("/projects/#{project.id}", user)
+
+        expect(json_response['shared_with_groups']).to be_an Array
+        expect(json_response['shared_with_groups'].length).to eq(1)
+        expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)
+        expect(json_response['shared_with_groups'][0]['group_name']).to eq(group.name)
+        expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
+        expect(json_response['shared_with_groups'][0]['expires_at']).to eq(expires_at.to_s)
       end
 
       it 'returns a project by path name' do
@@ -926,6 +1022,15 @@ describe API::Projects do
         expect(json_response).not_to include("import_error")
       end
 
+      it 'returns 404 when project is marked for deletion' do
+        project.update(pending_delete: true)
+
+        get api("/projects/#{project.id}", user)
+
+        expect(response).to have_gitlab_http_status(404)
+        expect(json_response['message']).to eq('404 Project Not Found')
+      end
+
       context 'links exposure' do
         it 'exposes related resources full URIs' do
           get api("/projects/#{project.id}", user)
@@ -961,7 +1066,7 @@ describe API::Projects do
       describe 'permissions' do
         context 'all projects' do
           before do
-            project.add_master(user)
+            project.add_maintainer(user)
           end
 
           it 'contains permission information' do
@@ -969,19 +1074,19 @@ describe API::Projects do
 
             expect(response).to have_gitlab_http_status(200)
             expect(json_response.first['permissions']['project_access']['access_level'])
-            .to eq(Gitlab::Access::MASTER)
+            .to eq(Gitlab::Access::MAINTAINER)
             expect(json_response.first['permissions']['group_access']).to be_nil
           end
         end
 
         context 'personal project' do
           it 'sets project access and returns 200' do
-            project.add_master(user)
+            project.add_maintainer(user)
             get api("/projects/#{project.id}", user)
 
             expect(response).to have_gitlab_http_status(200)
             expect(json_response['permissions']['project_access']['access_level'])
-            .to eq(Gitlab::Access::MASTER)
+            .to eq(Gitlab::Access::MAINTAINER)
             expect(json_response['permissions']['group_access']).to be_nil
           end
         end
@@ -1056,144 +1161,90 @@ describe API::Projects do
     end
   end
 
-  describe 'GET /projects/:id/snippets' do
-    before do
-      snippet
-    end
-
-    it 'returns an array of project snippets' do
-      get api("/projects/#{project.id}/snippets", user)
-
-      expect(response).to have_gitlab_http_status(200)
-      expect(response).to include_pagination_headers
-      expect(json_response).to be_an Array
-      expect(json_response.first['title']).to eq(snippet.title)
-    end
-  end
-
-  describe 'GET /projects/:id/snippets/:snippet_id' do
-    it 'returns a project snippet' do
-      get api("/projects/#{project.id}/snippets/#{snippet.id}", user)
-      expect(response).to have_gitlab_http_status(200)
-      expect(json_response['title']).to eq(snippet.title)
-    end
-
-    it 'returns a 404 error if snippet id not found' do
-      get api("/projects/#{project.id}/snippets/1234", user)
-      expect(response).to have_gitlab_http_status(404)
-    end
-  end
-
-  describe 'POST /projects/:id/snippets' do
-    it 'creates a new project snippet' do
-      post api("/projects/#{project.id}/snippets", user),
-        title: 'api test', file_name: 'sample.rb', code: 'test', visibility: 'private'
-      expect(response).to have_gitlab_http_status(201)
-      expect(json_response['title']).to eq('api test')
-    end
-
-    it 'returns a 400 error if invalid snippet is given' do
-      post api("/projects/#{project.id}/snippets", user)
-      expect(status).to eq(400)
-    end
-  end
-
-  describe 'PUT /projects/:id/snippets/:snippet_id' do
-    it 'updates an existing project snippet' do
-      put api("/projects/#{project.id}/snippets/#{snippet.id}", user),
-        code: 'updated code'
-      expect(response).to have_gitlab_http_status(200)
-      expect(json_response['title']).to eq('example')
-      expect(snippet.reload.content).to eq('updated code')
-    end
-
-    it 'updates an existing project snippet with new title' do
-      put api("/projects/#{project.id}/snippets/#{snippet.id}", user),
-        title: 'other api test'
-      expect(response).to have_gitlab_http_status(200)
-      expect(json_response['title']).to eq('other api test')
-    end
-  end
-
-  describe 'DELETE /projects/:id/snippets/:snippet_id' do
-    before do
-      snippet
-    end
-
-    it 'deletes existing project snippet' do
-      expect do
-        delete api("/projects/#{project.id}/snippets/#{snippet.id}", user)
-
-        expect(response).to have_gitlab_http_status(204)
-      end.to change { Snippet.count }.by(-1)
-    end
-
-    it 'returns 404 when deleting unknown snippet id' do
-      delete api("/projects/#{project.id}/snippets/1234", user)
-      expect(response).to have_gitlab_http_status(404)
-    end
-
-    it_behaves_like '412 response' do
-      let(:request) { api("/projects/#{project.id}/snippets/#{snippet.id}", user) }
-    end
-  end
-
-  describe 'GET /projects/:id/snippets/:snippet_id/raw' do
-    it 'gets a raw project snippet' do
-      get api("/projects/#{project.id}/snippets/#{snippet.id}/raw", user)
-      expect(response).to have_gitlab_http_status(200)
-    end
-
-    it 'returns a 404 error if raw project snippet not found' do
-      get api("/projects/#{project.id}/snippets/5555/raw", user)
-      expect(response).to have_gitlab_http_status(404)
-    end
-  end
-
   describe 'fork management' do
     let(:project_fork_target) { create(:project) }
     let(:project_fork_source) { create(:project, :public) }
+    let(:private_project_fork_source) { create(:project, :private) }
 
     describe 'POST /projects/:id/fork/:forked_from_id' do
-      let(:new_project_fork_source) { create(:project, :public) }
+      context 'user is a developer' do
+        before do
+          project_fork_target.add_developer(user)
+        end
 
-      it "is not available for non admin users" do
-        post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", user)
-        expect(response).to have_gitlab_http_status(403)
+        it 'denies project to be forked from an existing project' do
+          post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", user)
+
+          expect(response).to have_gitlab_http_status(403)
+        end
       end
 
-      it 'allows project to be forked from an existing project' do
-        expect(project_fork_target.forked?).not_to be_truthy
-        post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
-        expect(response).to have_gitlab_http_status(201)
-        project_fork_target.reload
-        expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
-        expect(project_fork_target.forked_project_link).not_to be_nil
-        expect(project_fork_target.forked?).to be_truthy
-      end
-
-      it 'refreshes the forks count cachce' do
+      it 'refreshes the forks count cache' do
         expect(project_fork_source.forks_count).to be_zero
-
-        post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
-
-        expect(project_fork_source.forks_count).to eq(1)
       end
 
-      it 'fails if forked_from project which does not exist' do
-        post api("/projects/#{project_fork_target.id}/fork/9999", admin)
-        expect(response).to have_gitlab_http_status(404)
+      context 'user is maintainer' do
+        before do
+          project_fork_target.add_maintainer(user)
+        end
+
+        it 'allows project to be forked from an existing project' do
+          expect(project_fork_target).not_to be_forked
+
+          post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", user)
+          project_fork_target.reload
+
+          expect(response).to have_gitlab_http_status(201)
+          expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
+          expect(project_fork_target.forked_project_link).to be_present
+          expect(project_fork_target).to be_forked
+        end
+
+        it 'denies project to be forked from a private project' do
+          post api("/projects/#{project_fork_target.id}/fork/#{private_project_fork_source.id}", user)
+
+          expect(response).to have_gitlab_http_status(404)
+        end
       end
 
-      it 'fails with 409 if already forked' do
-        post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
-        project_fork_target.reload
-        expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
-        post api("/projects/#{project_fork_target.id}/fork/#{new_project_fork_source.id}", admin)
-        expect(response).to have_gitlab_http_status(409)
-        project_fork_target.reload
-        expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
-        expect(project_fork_target.forked?).to be_truthy
+      context 'user is admin' do
+        it 'allows project to be forked from an existing project' do
+          expect(project_fork_target).not_to be_forked
+
+          post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
+
+          expect(response).to have_gitlab_http_status(201)
+        end
+
+        it 'allows project to be forked from a private project' do
+          post api("/projects/#{project_fork_target.id}/fork/#{private_project_fork_source.id}", admin)
+
+          expect(response).to have_gitlab_http_status(201)
+        end
+
+        it 'refreshes the forks count cachce' do
+          expect do
+            post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
+          end.to change(project_fork_source, :forks_count).by(1)
+        end
+
+        it 'fails if forked_from project which does not exist' do
+          post api("/projects/#{project_fork_target.id}/fork/9999", admin)
+          expect(response).to have_gitlab_http_status(404)
+        end
+
+        it 'fails with 409 if already forked' do
+          other_project_fork_source = create(:project, :public)
+
+          Projects::ForkService.new(project_fork_source, admin).execute(project_fork_target)
+
+          post api("/projects/#{project_fork_target.id}/fork/#{other_project_fork_source.id}", admin)
+          project_fork_target.reload
+
+          expect(response).to have_gitlab_http_status(409)
+          expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
+          expect(project_fork_target).to be_forked
+        end
       end
     end
 
@@ -1215,8 +1266,8 @@ describe API::Projects do
           before do
             post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
             project_fork_target.reload
-            expect(project_fork_target.forked_from_project).not_to be_nil
-            expect(project_fork_target.forked?).to be_truthy
+            expect(project_fork_target.forked_from_project).to be_present
+            expect(project_fork_target).to be_forked
           end
 
           it 'makes forked project unforked' do
@@ -1225,7 +1276,7 @@ describe API::Projects do
             expect(response).to have_gitlab_http_status(204)
             project_fork_target.reload
             expect(project_fork_target.forked_from_project).to be_nil
-            expect(project_fork_target.forked?).not_to be_truthy
+            expect(project_fork_target).not_to be_forked
           end
 
           it_behaves_like '412 response' do
@@ -1260,8 +1311,8 @@ describe API::Projects do
         before do
           post api("/projects/#{private_fork.id}/fork/#{project_fork_source.id}", admin)
           private_fork.reload
-          expect(private_fork.forked_from_project).not_to be_nil
-          expect(private_fork.forked?).to be_truthy
+          expect(private_fork.forked_from_project).to be_present
+          expect(private_fork).to be_forked
           project_fork_source.reload
           expect(project_fork_source.forks.length).to eq(1)
           expect(project_fork_source.forks).to include(private_fork)
@@ -1451,7 +1502,7 @@ describe API::Projects do
       end
 
       it 'updates visibility_level from public to private' do
-        project3.update_attributes({ visibility_level: Gitlab::VisibilityLevel::PUBLIC })
+        project3.update({ visibility_level: Gitlab::VisibilityLevel::PUBLIC })
         project_param = { visibility: 'private' }
 
         put api("/projects/#{project3.id}", user), project_param
@@ -1526,9 +1577,23 @@ describe API::Projects do
 
         expect(response).to have_gitlab_http_status(400)
       end
+
+      it 'updates avatar' do
+        project_param = {
+          avatar: fixture_file_upload('spec/fixtures/banana_sample.gif',
+                                      'image/gif')
+        }
+
+        put api("/projects/#{project3.id}", user), project_param
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['avatar_url']).to eq('http://localhost/uploads/'\
+                                                  '-/system/project/avatar/'\
+                                                  "#{project3.id}/banana_sample.gif")
+      end
     end
 
-    context 'when authenticated as project master' do
+    context 'when authenticated as project maintainer' do
       it 'updates path' do
         project_param = { path: 'bar' }
         put api("/projects/#{project3.id}", user4), project_param
@@ -1600,7 +1665,7 @@ describe API::Projects do
 
     context 'on an archived project' do
       before do
-        project.archive!
+        ::Projects::UpdateService.new(project, user, archived: true).execute
       end
 
       it 'remains archived' do
@@ -1636,7 +1701,7 @@ describe API::Projects do
 
     context 'on an archived project' do
       before do
-        project.archive!
+        ::Projects::UpdateService.new(project, user, archived: true).execute
       end
 
       it 'unarchives the project' do

@@ -23,10 +23,10 @@
 
       = form_for @user, url: profile_notifications_path, method: :put, html: { class: 'update-notifications prepend-top-default' } do |f|
         .form-group
-          = f.label :notification_email, class: "label-light"
+          = f.label :notification_email, class: "label-bold"
           = f.select :notification_email, @user.all_emails, { include_blank: false }, class: "select2"
 
-      = label_tag :global_notification_level, "Global notification level", class: "label-light"
+      = label_tag :global_notification_level, "Global notification level", class: "label-bold"
       %br
       .clearfix
       .form-group.float-left.global-notification-setting

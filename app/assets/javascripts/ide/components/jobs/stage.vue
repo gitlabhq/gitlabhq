@@ -2,7 +2,6 @@
 import tooltip from '../../../vue_shared/directives/tooltip';
 import Icon from '../../../vue_shared/components/icon.vue';
 import CiIcon from '../../../vue_shared/components/ci_icon.vue';
-import LoadingIcon from '../../../vue_shared/components/loading_icon.vue';
 import Item from './item.vue';
 
 export default {
@@ -12,7 +11,6 @@ export default {
   components: {
     Icon,
     CiIcon,
-    LoadingIcon,
     Item,
   },
   props: {
@@ -96,7 +94,7 @@ export default {
       v-show="!stage.isCollapsed"
       class="card-body"
     >
-      <loading-icon
+      <gl-loading-icon
         v-if="showLoadingIcon"
       />
       <template v-else>

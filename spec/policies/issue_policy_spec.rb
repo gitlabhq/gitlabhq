@@ -112,6 +112,7 @@ describe IssuePolicy do
     let(:project) { create(:project, :public) }
     let(:issue) { create(:issue, project: project, assignees: [assignee], author: author) }
     let(:issue_no_assignee) { create(:issue, project: project) }
+    let(:issue_locked) { create(:issue, project: project, discussion_locked: true, author: author, assignees: [assignee]) }
 
     before do
       project.add_guest(guest)
@@ -124,36 +125,49 @@ describe IssuePolicy do
 
     it 'allows guests to read issues' do
       expect(permissions(guest, issue)).to be_allowed(:read_issue, :read_issue_iid)
-      expect(permissions(guest, issue)).to be_disallowed(:update_issue, :admin_issue)
+      expect(permissions(guest, issue)).to be_disallowed(:update_issue, :admin_issue, :reopen_issue)
 
       expect(permissions(guest, issue_no_assignee)).to be_allowed(:read_issue, :read_issue_iid)
-      expect(permissions(guest, issue_no_assignee)).to be_disallowed(:update_issue, :admin_issue)
+      expect(permissions(guest, issue_no_assignee)).to be_disallowed(:update_issue, :admin_issue, :reopen_issue)
+
+      expect(permissions(guest, issue_locked)).to be_allowed(:read_issue, :read_issue_iid)
+      expect(permissions(guest, issue_locked)).to be_disallowed(:update_issue, :admin_issue, :reopen_issue)
     end
 
-    it 'allows reporters to read, update, and admin issues' do
-      expect(permissions(reporter, issue)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue)
-      expect(permissions(reporter, issue_no_assignee)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue)
+    it 'allows reporters to read, update, reopen, and admin issues' do
+      expect(permissions(reporter, issue)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :reopen_issue)
+      expect(permissions(reporter, issue_no_assignee)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :reopen_issue)
+      expect(permissions(reporter, issue_locked)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue)
+      expect(permissions(reporter, issue_locked)).to be_disallowed(:reopen_issue)
     end
 
-    it 'allows reporters from group links to read, update, and admin issues' do
-      expect(permissions(reporter_from_group_link, issue)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue)
-      expect(permissions(reporter_from_group_link, issue_no_assignee)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue)
+    it 'allows reporters from group links to read, update, reopen and admin issues' do
+      expect(permissions(reporter_from_group_link, issue)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :reopen_issue)
+      expect(permissions(reporter_from_group_link, issue_no_assignee)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :reopen_issue)
+      expect(permissions(reporter_from_group_link, issue_locked)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue)
+      expect(permissions(reporter_from_group_link, issue_locked)).to be_disallowed(:reopen_issue)
     end
 
-    it 'allows issue authors to read and update their issues' do
-      expect(permissions(author, issue)).to be_allowed(:read_issue, :read_issue_iid, :update_issue)
+    it 'allows issue authors to read, reopen and update their issues' do
+      expect(permissions(author, issue)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :reopen_issue)
       expect(permissions(author, issue)).to be_disallowed(:admin_issue)
 
       expect(permissions(author, issue_no_assignee)).to be_allowed(:read_issue, :read_issue_iid)
-      expect(permissions(author, issue_no_assignee)).to be_disallowed(:update_issue, :admin_issue)
+      expect(permissions(author, issue_no_assignee)).to be_disallowed(:update_issue, :admin_issue, :reopen_issue)
+
+      expect(permissions(author, issue_locked)).to be_allowed(:read_issue, :read_issue_iid, :update_issue)
+      expect(permissions(author, issue_locked)).to be_disallowed(:admin_issue, :reopen_issue)
     end
 
-    it 'allows issue assignees to read and update their issues' do
-      expect(permissions(assignee, issue)).to be_allowed(:read_issue, :read_issue_iid, :update_issue)
+    it 'allows issue assignees to read, reopen and update their issues' do
+      expect(permissions(assignee, issue)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :reopen_issue)
       expect(permissions(assignee, issue)).to be_disallowed(:admin_issue)
 
       expect(permissions(assignee, issue_no_assignee)).to be_allowed(:read_issue, :read_issue_iid)
-      expect(permissions(assignee, issue_no_assignee)).to be_disallowed(:update_issue, :admin_issue)
+      expect(permissions(assignee, issue_no_assignee)).to be_disallowed(:update_issue, :admin_issue, :reopen_issue)
+
+      expect(permissions(assignee, issue_locked)).to be_allowed(:read_issue, :read_issue_iid, :update_issue)
+      expect(permissions(assignee, issue_locked)).to be_disallowed(:admin_issue, :reopen_issue)
     end
 
     context 'with confidential issues' do
