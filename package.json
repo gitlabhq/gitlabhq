@@ -143,6 +143,6 @@
     "karma-webpack": "^4.0.0-beta.0",
     "nodemon": "^1.18.2",
     "prettier": "1.12.1",
-    "webpack-dev-server": "^3.1.4"
+    "webpack-dev-server": "^3.1.8"
   }
 }
