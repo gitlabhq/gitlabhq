@@ -16,6 +16,8 @@ module Gitlab
                             dependencies before_script after_script variables
                             environment coverage retry parallel extends].freeze
 
+          ALLOWED_KEYS_RETRY = %i[max when].freeze
+
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
             validates :config, presence: true
@@ -23,12 +25,57 @@ module Gitlab
             validates :name, presence: true
             validates :name, type: Symbol
 
+            validates :retry, hash_or_integer: true, allowed_keys: ALLOWED_KEYS_RETRY, allow_nil: true
+            validate :validate_retry
+
+            def validate_retry
+              return if !config ||
+                  !config.is_a?(Hash) ||
+                  config[:retry].nil? ||
+                  !config[:retry].is_a?(Integer) && !config[:retry].is_a?(Hash)
+
+              check =
+                if config[:retry].is_a?(Integer)
+                  { max: config[:retry] }
+                else
+                  config[:retry]
+                end
+
+              validate_retry_max(check[:max])
+              validate_retry_when(check[:when])
+            end
+
+            def validate_retry_max(retry_max)
+              if retry_max.is_a?(Integer)
+                errors[:base] << "retry max #{::I18n.t('errors.messages.less_than_or_equal_to', count: 2)}" if retry_max > 2
+                errors[:base] << "retry max #{::I18n.t('errors.messages.greater_than_or_equal_to', count: 0)}" if retry_max < 0
+              else
+                errors[:base] << "retry max #{::I18n.t('errors.messages.not_an_integer')}"
+              end
+            end
+
+            def validate_retry_when(retry_when)
+              return if retry_when.blank?
+
+              possible_failures = Gitlab::Ci::Status::Build::Failed.reasons.keys.map(&:to_s) + ['always']
+
+              if retry_when.is_a?(String)
+                unless possible_failures.include?(retry_when)
+                  errors[:base] << 'retry when is unknown'
+                end
+              elsif retry_when.is_a?(Array)
+                unknown_whens = retry_when - possible_failures
+                unless unknown_whens.empty?
+                  errors[:base] << "retry when cannot have unknown failures #{unknown_whens.join(', ')}"
+                end
+              else
+                errors[:base] << 'retry when should be an array of strings or a string'
+              end
+            end
+
             with_options allow_nil: true do
               validates :tags, array_of_strings: true
               validates :allow_failure, boolean: true
-              validates :retry, numericality: { only_integer: true,
-                                                greater_than_or_equal_to: 0,
-                                                less_than_or_equal_to: 2 }
               validates :parallel, numericality: { only_integer: true,
                                                    greater_than_or_equal_to: 2 }
               validates :when,
@@ -160,7 +207,7 @@ module Gitlab
               environment: environment_defined? ? environment_value : nil,
               environment_name: environment_defined? ? environment_value[:name] : nil,
               coverage: coverage_defined? ? coverage_value : nil,
-              retry: retry_defined? ? retry_value.to_i : nil,
+              retry: retry_defined? ? retry_value : nil,
               parallel: parallel_defined? ? parallel_value.to_i : nil,
               artifacts: artifacts_value,
               after_script: after_script_value,
