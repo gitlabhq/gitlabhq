@@ -186,6 +186,70 @@ describe Gitlab::Diff::File do
     end
   end
 
+  context 'diff file stats' do
+    let(:diff_file) do
+      described_class.new(diff,
+                          diff_refs: commit.diff_refs,
+                          repository: project.repository,
+                          stats: stats)
+    end
+
+    let(:raw_diff) do
+      <<~EOS
+        --- a/files/ruby/popen.rb
+        +++ b/files/ruby/popen.rb
+        @@ -6,12 +6,18 @@ module Popen
+
+           def popen(cmd, path=nil)
+             unless cmd.is_a?(Array)
+        -      raise "System commands must be given as an array of strings"
+        +      raise RuntimeError, "System commands must be given as an array of strings"
+        +      # foobar
+             end
+      EOS
+    end
+
+    describe '#added_lines' do
+      context 'when stats argument given' do
+        let(:stats) { double(Gitaly::DiffStats, additions: 10, deletions: 15) }
+
+        it 'returns added lines from stats' do
+          expect(diff_file.added_lines).to eq(stats.additions)
+        end
+      end
+
+      context 'when stats argument not given' do
+        let(:stats) { nil }
+
+        it 'returns added lines by parsing raw diff' do
+          allow(diff_file).to receive(:raw_diff) { raw_diff }
+
+          expect(diff_file.added_lines).to eq(2)
+        end
+      end
+    end
+
+    describe '#removed_lines' do
+      context 'when stats argument given' do
+        let(:stats) { double(Gitaly::DiffStats, additions: 10, deletions: 15) }
+
+        it 'returns removed lines from stats' do
+          expect(diff_file.removed_lines).to eq(stats.deletions)
+        end
+      end
+
+      context 'when stats argument not given' do
+        let(:stats) { nil }
+
+        it 'returns removed lines by parsing raw diff' do
+          allow(diff_file).to receive(:raw_diff) { raw_diff }
+
+          expect(diff_file.removed_lines).to eq(1)
+        end
+      end
+    end
+  end
+
   describe '#simple_viewer' do
     context 'when the file is not diffable' do
       before do
