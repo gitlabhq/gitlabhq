@@ -9,15 +9,7 @@ module ApplicationHelper
   # See https://docs.gitlab.com/ee/development/ee_features.html#code-in-app-views
   # rubocop: disable CodeReuse/ActiveRecord
   def render_if_exists(partial, locals = {})
-    render(partial, locals) if partial_exists?(partial)
-  end
-
-  def partial_exists?(partial)
-    lookup_context.exists?(partial, [], true)
-  end
-
-  def template_exists?(template)
-    lookup_context.exists?(template, [], false)
+    render(partial, locals) if lookup_context.exists?(partial, [], true)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

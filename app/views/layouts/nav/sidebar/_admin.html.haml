@@ -246,54 +246,10 @@
             = sprite_icon('settings')
           %span.nav-item-name
             = _('Settings')
-
-        %ul.sidebar-sub-level-items
+        %ul.sidebar-sub-level-items.is-fly-out-only
           = nav_link(controller: :application_settings, html_options: { class: "fly-out-top-item" } ) do
             = link_to admin_application_settings_path do
               %strong.fly-out-top-item-name
                 = _('Settings')
-            %li.divider.fly-out-top-item
-            = nav_link(path: 'application_settings#show') do
-              = link_to admin_application_settings_path, title: _('General') do
-                %span
-                  = _('General')
-            = nav_link(path: 'application_settings#integrations') do
-              = link_to integrations_admin_application_settings_path, title: _('Integrations') do
-                %span
-                  = _('Integrations')
-            = nav_link(path: 'application_settings#repository') do
-              = link_to repository_admin_application_settings_path, title: _('Repository') do
-                %span
-                  = _('Repository')
-            - if template_exists?('admin/application_settings/templates')
-              = nav_link(path: 'application_settings#templates') do
-                = link_to templates_admin_application_settings_path, title: _('Templates') do
-                  %span
-                    = _('Templates')
-            = nav_link(path: 'application_settings#ci_cd') do
-              = link_to ci_cd_admin_application_settings_path, title: _('CI/CD') do
-                %span
-                  = _('CI/CD')
-            = nav_link(path: 'application_settings#reporting') do
-              = link_to reporting_admin_application_settings_path, title: _('Reporting') do
-                %span
-                  = _('Reporting')
-            = nav_link(path: 'application_settings#metrics_and_profiling') do
-              = link_to metrics_and_profiling_admin_application_settings_path, title: _('Metrics and profiling') do
-                %span
-                  = _('Metrics and profiling')
-            = nav_link(path: 'application_settings#network') do
-              = link_to network_admin_application_settings_path, title: _('Network') do
-                %span
-                  = _('Network')
-            - if template_exists?('admin/application_settings/geo')
-              = nav_link(path: 'application_settings#geo') do
-                = link_to geo_admin_application_settings_path, title: _('Geo') do
-                  %span
-                    = _('Geo')
-            = nav_link(path: 'application_settings#preferences') do
-              = link_to preferences_admin_application_settings_path, title: _('Preferences') do
-                %span
-                  = _('Preferences')
 
     = render 'shared/sidebar_toggle_button'
