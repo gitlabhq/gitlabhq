@@ -1,0 +1,5 @@
+---
+title: Check for force env var when rebuilding auth_keys
+merge_request: 7419
+author:
+type: fixed
