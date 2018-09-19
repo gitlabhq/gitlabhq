@@ -39,6 +39,14 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
     end
   end
 
+  def destroy
+    if feature_flag.destroy
+      flash[:notice] = 'Feature flag was successfully removed.'
+    end
+
+    redirect_to project_feature_flags_path(@project)
+  end
+
   protected
 
   def feature_flag
