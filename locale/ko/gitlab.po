@@ -274,7 +274,7 @@ msgstr ""
 msgid "<strong>Removes</strong> source branch"
 msgstr ""
 
-msgid "A 'Runner' is a process which runs a job. You can setup as many Runners as you need."
+msgid "A 'Runner' is a process which runs a job. You can set up as many Runners as you need."
 msgstr "'러너(Runner)'는 작업을 실행하는 프로세스입니다. 필요한 만큼 러너를 셋업할 수 있습니다."
 
 msgid "A collection of graphs regarding Continuous Integration"
@@ -721,7 +721,7 @@ msgstr ""
 msgid "Ascending"
 msgstr ""
 
-msgid "Ask your group maintainer to setup a group Runner."
+msgid "Ask your group maintainer to set up a group Runner."
 msgstr "그룹 관리자에게 그룹 Runner 를 설정하도록 요청하세요"
 
 msgid "Assertion consumer service URL"
@@ -6462,10 +6462,10 @@ msgstr "패스워드 설정"
 msgid "Settings"
 msgstr "설정"
 
-msgid "Setup a %{type} Runner manually"
+msgid "Set up a %{type} Runner manually"
 msgstr ""
 
-msgid "Setup a specific Runner automatically"
+msgid "Set up a specific Runner automatically"
 msgstr "특정 Runner 자동 설정"
 
 msgid "Share"
@@ -8056,7 +8056,7 @@ msgstr ""
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
 msgstr ""
 
-msgid "You can setup jobs to only use Runners with specific tags. Separate tags with commas."
+msgid "You can set up jobs to only use Runners with specific tags. Separate tags with commas."
 msgstr ""
 
 msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use %{link_to_primary_node} instead."

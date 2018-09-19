@@ -19,7 +19,7 @@ describe "Admin Runners" do
         create(:ci_build, pipeline: pipeline, runner_id: runner.id)
         visit admin_runners_path
 
-        expect(page).to have_text "Setup a shared Runner manually"
+        expect(page).to have_text "Set up a shared Runner manually"
         expect(page).to have_text "Runners currently online: 1"
       end
 
@@ -125,7 +125,7 @@ describe "Admin Runners" do
       end
 
       it 'has all necessary texts including no runner message' do
-        expect(page).to have_text "Setup a shared Runner manually"
+        expect(page).to have_text "Set up a shared Runner manually"
         expect(page).to have_text "Runners currently online: 0"
         expect(page).to have_text 'No runners found'
       end
