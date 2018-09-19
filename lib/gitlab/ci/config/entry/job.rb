@@ -59,38 +59,44 @@ module Gitlab
             end
 
             def validate_retry_max(retry_max)
-              if retry_max.is_a?(Integer)
-                errors[:base] << "retry max #{::I18n.t('errors.messages.less_than_or_equal_to', count: 2)}" if retry_max > 2
-                errors[:base] << "retry max #{::I18n.t('errors.messages.greater_than_or_equal_to', count: 0)}" if retry_max < 0
+              case retry_max
+              when Integer
+                validate_retry_max_integer(retry_max)
               else
                 errors[:base] << "retry max #{::I18n.t('errors.messages.not_an_integer')}"
               end
             end
 
+            def validate_retry_max_integer(retry_max)
+              errors[:base] << "retry max #{::I18n.t('errors.messages.less_than_or_equal_to', count: 2)}" if retry_max > 2
+              errors[:base] << "retry max #{::I18n.t('errors.messages.greater_than_or_equal_to', count: 0)}" if retry_max < 0
+            end
+
             def validate_retry_when(retry_when)
               return if retry_when.blank?
 
-              if retry_when.is_a?(String)
+              case retry_when
+              when String
                 validate_retry_when_string(retry_when)
-              elsif retry_when.is_a?(Array)
+              when Array
                 validate_retry_when_array(retry_when)
               else
                 errors[:base] << 'retry when should be an array of strings or a string'
               end
             end
 
-            def possible_retry_when_options
-              @possible_retry_when_options ||= Gitlab::Ci::Status::Build::Failed.reasons.keys.map(&:to_s) + ['always']
+            def possible_retry_when_values
+              @possible_retry_when_values ||= Gitlab::Ci::Status::Build::Failed.reasons.keys.map(&:to_s) + ['always']
             end
 
             def validate_retry_when_string(retry_when)
-              unless possible_retry_when_options.include?(retry_when)
+              unless possible_retry_when_values.include?(retry_when)
                 errors[:base] << 'retry when is unknown'
               end
             end
 
             def validate_retry_when_array(retry_when)
-              unknown_whens = retry_when - possible_retry_when_options
+              unknown_whens = retry_when - possible_retry_when_values
               unless unknown_whens.empty?
                 errors[:base] << "retry when contains unknown values: #{unknown_whens.join(', ')}"
               end
