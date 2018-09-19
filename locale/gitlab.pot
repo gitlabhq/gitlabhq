@@ -771,7 +771,6 @@ msgstr ""
 msgid "Artifacts"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Ascending"
 msgstr ""
 
@@ -779,9 +778,6 @@ msgid "Ask your group maintainer to set up a group Runner."
 msgstr ""
 
 msgid "Assertion consumer service URL"
-=======
-msgid "Ask your group maintainer to set up a group Runner."
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Assign custom color like #FF0000"
@@ -6777,12 +6773,9 @@ msgstr ""
 msgid "Set up a specific Runner automatically"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Set up assertions/attributes/claims (email, first_name, last_name) and NameID according to %{docsLinkStart}the documentation %{icon}%{docsLinkEnd}"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically."
 msgstr ""
 
@@ -8439,12 +8432,9 @@ msgid "You can resolve the merge conflict using either the Interactive mode, by 
 msgstr ""
 
 msgid "You can set up jobs to only use Runners with specific tags. Separate tags with commas."
-<<<<<<< HEAD
 msgstr ""
 
 msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use %{link_to_primary_node} instead."
-=======
->>>>>>> upstream/master
 msgstr ""
 
 msgid "You cannot write to this read-only GitLab instance."
