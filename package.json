@@ -35,7 +35,7 @@
     "classlist-polyfill": "^1.2.0",
     "clipboard": "^1.7.1",
     "codesandbox-api": "^0.0.18",
-    "compression-webpack-plugin": "^1.1.11",
+    "compression-webpack-plugin": "^2.0.0",
     "core-js": "^2.4.1",
     "cropper": "^2.3.0",
     "css-loader": "^1.0.0",
