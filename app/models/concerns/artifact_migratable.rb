@@ -5,7 +5,8 @@
 # Meant to be prepended so the interface can stay the same
 module ArtifactMigratable
   def artifacts_file
-    job_artifacts_archive&.file || legacy_artifacts_file
+    job_artifacts_archive&.file ||
+      (Feature.disabled?('ci_drop_support_legacy_artifacts') && legacy_artifacts_file)
   end
 
   def artifacts_metadata
@@ -21,7 +22,8 @@ module ArtifactMigratable
   end
 
   def artifacts_file_changed?
-    job_artifacts_archive&.file_changed? || attribute_changed?(:artifacts_file)
+    job_artifacts_archive&.file_changed? ||
+      (Feature.disabled?('ci_drop_support_legacy_artifacts') && attribute_changed?(:artifacts_file))
   end
 
   def remove_artifacts_file!
