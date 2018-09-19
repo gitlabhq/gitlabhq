@@ -32,7 +32,7 @@ import initSearchAutocomplete from './search_autocomplete';
 import GlFieldErrors from './gl_field_errors';
 
 // EE-only scripts
-import 'ee/main'; // eslint-disable-line import/first
+import 'ee/main';
 
 // expose jQuery as global (TODO: remove these)
 window.jQuery = jQuery;

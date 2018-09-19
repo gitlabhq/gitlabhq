@@ -114,8 +114,9 @@ class BoardsStoreEE {
       !this.$boardApp.hasAttribute('data-show-promotion') ||
       this.promotionIsHidden() ||
       this.store.disabled
-    )
+    ) {
       return;
+    }
 
     this.store.addList({
       id: 'promotion',

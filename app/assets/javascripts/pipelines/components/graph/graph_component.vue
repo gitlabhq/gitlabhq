@@ -1,7 +1,7 @@
 <script>
 import _ from 'underscore';
 import StageColumnComponent from './stage_column_component.vue';
-import LinkedPipelinesColumn from 'ee/pipelines/components/graph/linked_pipelines_column.vue'; // eslint-disable-line import/first
+import LinkedPipelinesColumn from 'ee/pipelines/components/graph/linked_pipelines_column.vue'; // eslint-disable-line import/order
 
 export default {
   components: {
