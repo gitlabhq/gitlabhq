@@ -1,7 +1,7 @@
 # Geo (development)
 
 Geo feature requires that we orchestrate a lot of components together.
-For the Database we need to setup a streaming replication. Any operation on disk
+For the Database we need to set up a streaming replication. Any operation on disk
 is logged in an events table, that will leverage the database replication itself
 from **Primary** to **Secondary** nodes. These events are processed by the
 **Geo Log Cursor** daemon (on the Secondary) and asynchronous jobs takes care of

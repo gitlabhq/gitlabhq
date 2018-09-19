@@ -81,7 +81,7 @@ When a **Master** fails to respond, it's the application's responsibility
 (in our case GitLab) to handle timeout and reconnect (querying a **Sentinel**
 for a new **Master**).
 
-To get a better understanding on how to correctly setup Sentinel, please read
+To get a better understanding on how to correctly set up Sentinel, please read
 the [Redis Sentinel documentation](http://redis.io/topics/sentinel) first, as
 failing to configure it correctly can lead to data loss or can bring your
 whole cluster down, invalidating the failover effort.
@@ -217,7 +217,7 @@ Pick the one that suits your needs.
   and configure Sentinel, jump directly to the Sentinel section in the
   [Redis HA installation from source](redis_source.md#step-3-configuring-the-redis-sentinel-instances) documentation.
 - [Omnibus GitLab **Enterprise Edition** (EE) package][ee]: Both Redis and Sentinel
-  are bundled in the package, so you can use the EE package to setup the whole
+  are bundled in the package, so you can use the EE package to set up the whole
   Redis HA infrastructure (master, slave and Sentinel) which is described in
   this document.
 - If you have installed GitLab using the Omnibus GitLab packages (CE or EE),
@@ -228,7 +228,7 @@ Pick the one that suits your needs.
 
 ## Configuring Redis HA
 
-This is the section where we install and setup the new Redis instances.
+This is the section where we install and set up the new Redis instances.
 
 > **Notes:**
 > - We assume that you have installed GitLab and all HA components from scratch. If you
@@ -374,7 +374,7 @@ You must have at least `3` Redis Sentinel servers, and they need to
 be each in an independent machine. You can configure them in the same
 machines where you've configured the other Redis servers.
 
-With GitLab Enterprise Edition, you can use the Omnibus package to setup
+With GitLab Enterprise Edition, you can use the Omnibus package to set up
 multiple machines with the Sentinel daemon.
 
 ---
@@ -539,7 +539,7 @@ In this example we consider that all servers have an internal network
 interface with IPs in the `10.0.0.x` range, and that they can connect
 to each other using these IPs.
 
-In a real world usage, you would also setup firewall rules to prevent
+In a real world usage, you would also set up firewall rules to prevent
 unauthorized access from other machines and block traffic from the
 outside (Internet).
 

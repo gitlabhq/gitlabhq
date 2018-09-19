@@ -1615,7 +1615,7 @@
   - Don't render discussion notes when requesting diff tab through AJAX
   - Add basic system information like memory and disk usage to the admin panel
   - Don't garbage collect commits that have related DB records like comments
-  - Allow to setup event by channel on slack service
+  - Allow to set up event by channel on slack service
   - More descriptive message for git hooks and file locks
   - Aliases of award emoji should be stored as original name. !5060 (dixpac)
   - Handle custom Git hook result in GitLab UI
@@ -3685,7 +3685,7 @@
 - Fix final line in EmailsOnPush email diff being rendered as error.
 - Prevent duplicate Buildkite service creation.
 - Fix git over ssh errors 'fatal: protocol error: bad line length character'
-- Automatically setup GitLab CI project for forks if origin project has GitLab CI enabled
+- Automatically set up GitLab CI project for forks if origin project has GitLab CI enabled
 - Bust group page project list cache when namespace name or path changes.
 - Explicitly set image alt-attribute to prevent graphical glitches if gravatars could not be loaded
 - Allow user to choose a public email to show on public profile
@@ -4683,7 +4683,7 @@
 - Replaced gitolite with gitlab-shell
 - Removed gitolite-related libraries
 - State machine added
-- Setup gitlab as git user
+- Set up gitlab as git user
 - Internal API
 - Show team tab for empty projects
 - Import repository feature

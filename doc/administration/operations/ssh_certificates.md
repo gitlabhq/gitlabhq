@@ -31,7 +31,7 @@ uploading user SSH keys to GitLab entirely.
 
 ## Setting up SSH certificate lookup via GitLab Shell
 
-How to fully setup SSH certificates is outside the scope of this
+How to fully set up SSH certificates is outside the scope of this
 document. See [OpenSSH's
 PROTOCOL.certkeys](https://cvsweb.openbsd.org/cgi-bin/cvsweb/src/usr.bin/ssh/PROTOCOL.certkeys?annotate=HEAD)
 for how it works, and e.g. [RedHat's documentation about
@@ -132,7 +132,7 @@ message about this being an invalid user.
 ## Interaction with the `authorized_keys` file
 
 SSH certificates can be used in conjunction with the `authorized_keys`
-file, and if setup as configured above the `authorized_keys` file will
+file, and if set up as configured above the `authorized_keys` file will
 still serve as a fallback.
 
 This is because if the `AuthorizedPrincipalsCommand` can't

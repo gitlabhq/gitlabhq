@@ -22,7 +22,7 @@ a new issue is created. You can configure webhooks to listen for specific events
 like pushes, issues or merge requests. GitLab will send a POST request with data
 to the webhook URL.
 
-In most cases, you'll need to setup your own [webhook receiver](#example-webhook-receiver)
+In most cases, you'll need to set up your own [webhook receiver](#example-webhook-receiver)
 to receive information from GitLab, and send it to another app, according to your needs.
 We already have a [built-in receiver](http://docs.gitlab.com/ce/project_services/slack.html)
 for sending [Slack](https://api.slack.com/incoming-webhooks) notifications _per project_.
@@ -47,7 +47,7 @@ Navigate to the webhooks page by going to your project's
 
 ## Use-cases
 
-- You can setup a webhook in GitLab to send a notification to
+- You can set up a webhook in GitLab to send a notification to
 [Slack](https://api.slack.com/incoming-webhooks) every time a build fails, for example
 - You can [integrate with Twilio to be notified via SMS](https://www.datadoghq.com/blog/send-alerts-sms-customizable-webhooks-twilio/)
 every time an issue is created for a specific project or group within GitLab

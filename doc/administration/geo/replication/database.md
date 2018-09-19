@@ -520,7 +520,7 @@ the instructions below:
 1. Configure the [PostgreSQL FDW][FDW] connection and credentials:
 
     Save the script below in a file, ex. `/tmp/geo_fdw.sh` and modify the connection
-    params to match your environment. Execute it to setup the FDW connection.
+    params to match your environment. Execute it to set up the FDW connection.
     
     ```bash
     #!/bin/bash

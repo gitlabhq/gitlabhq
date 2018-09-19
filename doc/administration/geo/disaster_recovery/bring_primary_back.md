@@ -14,7 +14,7 @@ Since the former primary will be out of sync with the current primary, the first
 to bring the former primary up to date. Note, deletion of data stored on disk like
 repositories and uploads will not be replayed when bringing the former primary in back
 into sync, which may result in increased disk usage.
-Alternatively, you can [setup a new secondary GitLab instance][setup-geo] to avoid this.
+Alternatively, you can [set up a new secondary GitLab instance][setup-geo] to avoid this.
 
 To bring the former primary up to date:
 
@@ -28,7 +28,7 @@ To bring the former primary up to date:
     > **Note 1:** If you [disabled primary permanently][disaster-recovery-disable-primary],
     > you need to undo those steps now. For Debian/Ubuntu you just need to run
     > `sudo systemctl enable gitlab-runsvdir`. For CentOS 6, you need to install
-    > the GitLab instance from scratch and setup it as a secondary node by
+    > the GitLab instance from scratch and set it up as a secondary node by
     > following [Setup instructions][setup-geo].  In this case you don't need to follow the next step.
     >
     > **Note 2:** If you [changed the DNS records](index.md#step-4-optional-updating-the-primary-domains-dns-record)

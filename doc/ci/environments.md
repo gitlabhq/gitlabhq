@@ -370,7 +370,7 @@ review_app:
     url: https://$CI_COMMIT_REF_SLUG.example.com
 ```
 
-It is assumed that the user has already setup NGINX and GitLab Runner in the
+It is assumed that the user has already set up NGINX and GitLab Runner in the
 server this job will run on.
 
 >**Note:**

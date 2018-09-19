@@ -1,6 +1,6 @@
 # Docker Registry for a secondary node
 
-You can setup a [Docker Registry] on your
+You can set up a [Docker Registry] on your
 secondary Geo node that mirrors the one on the primary Geo node.
 
 ## Storage support
@@ -14,7 +14,7 @@ distributed storage (`azure`, `gcs`, `s3`, `swift`, or `oss`) for your Docker
 Registry on a primary Geo node, you can use the same storage for a secondary
 Docker Registry as well. For more information, read the
 [Load balancing considerations][registry-load-balancing]
-when deploying the Registry, and how to setup the storage driver for GitLab's
+when deploying the Registry, and how to set up the storage driver for GitLab's
 integrated [Container Registry][registry-storage].
 
 [ee]: https://about.gitlab.com/pricing/
