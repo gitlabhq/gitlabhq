@@ -3,9 +3,9 @@
 
 - if assignee_lists_available || milestone_lists_available
   .dropdown.prepend-left-10#js-add-list
-    %button.btn.btn-create.btn-inverted.d-flex.js-new-board-list{ type: "button", data: board_list_data }
+    %button.btn.btn-success.btn-inverted.d-flex.js-new-board-list{ type: "button", data: board_list_data }
       %span Add list
-      = sprite_icon('chevron-down', size: 16, css_class: 'prepend-left-5 btn-new-board-list-chevron')
+      = sprite_icon('chevron-down', size: 16, css_class: 'prepend-left-5 btn-success-board-list-chevron')
     .dropdown-menu.dropdown-menu-paging.dropdown-menu-right.dropdown-menu-issues-board-new.dropdown-menu-selectable.dropdown-menu-tabs
       %ul.nav.nav-tabs.dropdown-tabs-list.js-new-board-list-tabs{ role: 'tablist' }
         %li.nav-item.dropdown-tab-item.js-tab-button-labels

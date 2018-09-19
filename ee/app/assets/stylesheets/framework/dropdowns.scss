@@ -8,7 +8,7 @@
     width: 100%;
   }
 
-  .btn-save {
+  .btn-success {
     display: flex;
     margin-top: $gl-btn-padding;
   }
@@ -17,12 +17,7 @@
 .empty-state .new-epic-dropdown {
   display: inline-flex;
 
-  .btn-save {
-    margin-left: 0;
-    margin-bottom: 0;
-  }
-
-  .btn-new {
+  .btn-success {
     margin: 0;
   }
 }

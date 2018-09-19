@@ -77,7 +77,7 @@
         Guidelines parsed with #{link_to "GitLab Flavored Markdown", help_page_path('user/markdown'), target: '_blank'}.
 
   .form-actions
-    = f.submit 'Save', class: 'btn btn-save append-right-10'
+    = f.submit 'Save', class: 'btn btn-success append-right-10'
     - if @appearance.persisted?
       Preview last save:
       = link_to 'Sign-in page', preview_sign_in_admin_appearances_path, class: 'btn', target: '_blank', rel: 'noopener noreferrer'

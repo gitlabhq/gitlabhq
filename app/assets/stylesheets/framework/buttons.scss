@@ -147,18 +147,12 @@
   }
 
   &.btn-success,
-  &.btn-new,
-  &.btn-create,
-  &.btn-save,
   &.btn-register {
     @include btn-green;
   }
 
   &.btn-inverted {
-    &.btn-success,
-    &.btn-new,
-    &.btn-create,
-    &.btn-save {
+    &.btn-success {
       @include btn-outline($white-light, $green-600, $green-500, $green-500, $white-light, $green-600, $green-600, $green-700);
     }
 

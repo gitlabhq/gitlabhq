@@ -160,7 +160,7 @@ describe('EpicsListEmptyComponent', () => {
       const newEpicBtnEl = vm.$el.querySelector('.new-epic-dropdown');
 
       expect(newEpicBtnEl).not.toBeNull();
-      expect(newEpicBtnEl.querySelector('button.btn-new').innerText.trim()).toBe('New epic');
+      expect(newEpicBtnEl.querySelector('button.btn-success').innerText.trim()).toBe('New epic');
     });
 
     it('does not render new epic button element when `hasFiltersApplied` prop is true', done => {

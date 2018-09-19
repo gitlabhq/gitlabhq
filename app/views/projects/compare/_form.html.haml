@@ -22,7 +22,7 @@
         .dropdown-toggle-text.str-truncated= params[:from] || _("Select branch/tag")
     = render 'shared/ref_dropdown'
   &nbsp;
-  = button_tag s_("CompareBranches|Compare"), class: "btn btn-create commits-compare-btn"
+  = button_tag s_("CompareBranches|Compare"), class: "btn btn-success commits-compare-btn"
   - if @merge_request.present?
     = link_to _("View open merge request"), project_merge_request_path(@project, @merge_request), class: 'prepend-left-10 btn'
   - elsif create_mr_button?

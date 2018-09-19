@@ -16,7 +16,7 @@
         %strong= _('Oops, are you sure?')
         %p= s_("Profiles|This doesn't look like a public SSH key, are you sure you want to add it?")
 
-      %button.btn.btn-create.js-add-ssh-key-validation-confirm-submit= _("Yes, add it")
+      %button.btn.btn-success.js-add-ssh-key-validation-confirm-submit= _("Yes, add it")
 
     .prepend-top-default
-      = f.submit s_('Profiles|Add key'), class: "btn btn-create js-add-ssh-key-validation-original-submit qa-add-key-button"
+      = f.submit s_('Profiles|Add key'), class: "btn btn-success js-add-ssh-key-validation-original-submit qa-add-key-button"
