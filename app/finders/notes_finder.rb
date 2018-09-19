@@ -58,7 +58,8 @@ class NotesFinder
   end
 
   def notes_of_target_type
-    notes = notes_for_type(target_type)
+    notes =
+      notes_for_type(target_type).with_notes_filter(notes_filter)
 
     search(notes)
   end
