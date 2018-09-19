@@ -1,6 +1,7 @@
 # Post deployment migrations are included by default. This file must be loaded
 # before other initializers as Rails may otherwise memoize a list of migrations
 # excluding the post deployment migrations.
+<<<<<<< HEAD
 unless ENV['SKIP_POST_DEPLOYMENT_MIGRATIONS']
   Rails.application.config.paths['db'].each do |db_path|
     path = Rails.root.join(db_path, 'post_migrate').to_s
@@ -21,3 +22,6 @@ migrate_paths.each do |migrate_path|
   Rails.application.config.paths['db/migrate'] << ee_migrate_path.to_s
   ActiveRecord::Migrator.migrations_paths << ee_migrate_path.to_s
 end
+=======
+Gitlab::Database.add_post_migrate_path_to_rails
+>>>>>>> upstream/master

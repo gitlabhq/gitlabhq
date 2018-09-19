@@ -1136,6 +1136,14 @@ describe Gitlab::Git::Repository, :seed_helper do
       expect(collection).to be_a(Enumerable)
       expect(collection.to_a).to be_empty
     end
+
+    it 'returns no Gitaly::DiffStats when there is a nil SHA' do
+      collection = repository.diff_stats(nil, 'master')
+
+      expect(collection).to be_a(Gitlab::Git::DiffStatsCollection)
+      expect(collection).to be_a(Enumerable)
+      expect(collection.to_a).to be_empty
+    end
   end
 
   describe "#ls_files" do

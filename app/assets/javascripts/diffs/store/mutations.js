@@ -90,16 +90,18 @@ export default {
     const firstDiscussion = discussions[0];
     const isDiffDiscussion = firstDiscussion.diff_discussion;
     const hasLineCode = firstDiscussion.line_code;
-    const isResolvable = firstDiscussion.resolvable;
     const diffPosition = diffPositionByLineCode[firstDiscussion.line_code];
 
     if (
       selectedFile &&
       isDiffDiscussion &&
       hasLineCode &&
-      isResolvable &&
       diffPosition &&
-      isDiscussionApplicableToLine(firstDiscussion, diffPosition)
+      isDiscussionApplicableToLine({
+        discussion: firstDiscussion,
+        diffPosition,
+        latestDiff: state.latestDiff,
+      })
     ) {
       const targetLine = selectedFile.parallelDiffLines.find(
         line =>

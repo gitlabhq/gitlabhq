@@ -61,6 +61,39 @@ describe 'gitlab:db namespace rake task' do
       expect(Rake::Task['db:migrate']).not_to receive(:invoke)
       expect { run_rake_task('gitlab:db:configure') }.to raise_error(RuntimeError, 'error')
     end
+
+    context 'SKIP_POST_DEPLOYMENT_MIGRATIONS environment variable set' do
+      let(:rails_paths) { { 'db' => ['db'], 'db/migrate' => ['db/migrate'] } }
+
+      before do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with('SKIP_POST_DEPLOYMENT_MIGRATIONS').and_return true
+
+        # Our environment has already been loaded, so we need to pretend like post_migrations were not
+        allow(Rails.application.config).to receive(:paths).and_return(rails_paths)
+        allow(ActiveRecord::Migrator).to receive(:migrations_paths).and_return(rails_paths['db/migrate'].dup)
+      end
+
+      it 'adds post deployment migrations before schema load if the schema is not already loaded' do
+        allow(ActiveRecord::Base.connection).to receive(:tables).and_return([])
+        expect(Gitlab::Database).to receive(:add_post_migrate_path_to_rails).and_call_original
+        expect(Rake::Task['db:schema:load']).to receive(:invoke)
+        expect(Rake::Task['db:seed_fu']).to receive(:invoke)
+        expect(Rake::Task['db:migrate']).not_to receive(:invoke)
+        expect { run_rake_task('gitlab:db:configure') }.not_to raise_error
+        expect(rails_paths['db/migrate'].include?(File.join(Rails.root, 'db', 'post_migrate'))).to be(true)
+      end
+
+      it 'ignores post deployment migrations  when schema has already been loaded' do
+        allow(ActiveRecord::Base.connection).to receive(:tables).and_return(%w[table1 table2])
+        expect(Rake::Task['db:migrate']).to receive(:invoke)
+        expect(Gitlab::Database).not_to receive(:add_post_migrate_path_to_rails)
+        expect(Rake::Task['db:schema:load']).not_to receive(:invoke)
+        expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
+        expect { run_rake_task('gitlab:db:configure') }.not_to raise_error
+        expect(rails_paths['db/migrate'].include?(File.join(Rails.root, 'db', 'post_migrate'))).to be(false)
+      end
+    end
   end
 
   def run_rake_task(task_name)
