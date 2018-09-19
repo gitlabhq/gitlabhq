@@ -435,16 +435,34 @@ describe Ci::CreatePipelineService do
     end
 
     context 'when builds with auto-retries are configured' do
-      before do
-        config = YAML.dump(rspec: { script: 'rspec', retry: 2 })
-        stub_ci_pipeline_yaml_file(config)
+      context 'as an integer' do
+        before do
+          config = YAML.dump(rspec: { script: 'rspec', retry: 2 })
+          stub_ci_pipeline_yaml_file(config)
+        end
+
+        it 'correctly creates builds with auto-retry value configured' do
+          pipeline = execute_service
+
+          expect(pipeline).to be_persisted
+          expect(pipeline.builds.find_by(name: 'rspec').retries_max).to eq 2
+          expect(pipeline.builds.find_by(name: 'rspec').retry_when).to eq ['always']
+        end
       end
 
-      it 'correctly creates builds with auto-retry value configured' do
-        pipeline = execute_service
+      context 'as hash' do
+        before do
+          config = YAML.dump(rspec: { script: 'rspec', retry: { max: 2, when: 'runner_system_failure' } })
+          stub_ci_pipeline_yaml_file(config)
+        end
 
-        expect(pipeline).to be_persisted
-        expect(pipeline.builds.find_by(name: 'rspec').retries_max).to eq 2
+        it 'correctly creates builds with auto-retry value configured' do
+          pipeline = execute_service
+
+          expect(pipeline).to be_persisted
+          expect(pipeline.builds.find_by(name: 'rspec').retries_max).to eq 2
+          expect(pipeline.builds.find_by(name: 'rspec').retry_when).to eq ['runner_system_failure']
+        end
       end
     end
 
