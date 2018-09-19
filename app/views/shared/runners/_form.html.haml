@@ -51,6 +51,6 @@
       = _('Tags')
     .col-sm-10
       = f.text_field :tag_list, value: runner.tag_list.sort.join(', '), class: 'form-control'
-      .form-text.text-muted= _('You can setup jobs to only use Runners with specific tags. Separate tags with commas.')
+      .form-text.text-muted= _('You can set up jobs to only use Runners with specific tags. Separate tags with commas.')
   .form-actions
     = f.submit _('Save changes'), class: 'btn btn-success'

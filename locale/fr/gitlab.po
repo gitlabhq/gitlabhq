@@ -308,7 +308,7 @@ msgstr "<strong>%{pushes}</strong> poussées Git, plus de <strong>%{commits}</s
 msgid "<strong>Removes</strong> source branch"
 msgstr "<strong>Supprime</strong> la branche source"
 
-msgid "A 'Runner' is a process which runs a job. You can setup as many Runners as you need."
+msgid "A 'Runner' is a process which runs a job. You can set up as many Runners as you need."
 msgstr "Un « exécuteur » est un processus qui exécute une tâche. Vous pouvez configurer autant d’exécuteurs que nécessaire."
 
 msgid "A collection of graphs regarding Continuous Integration"
@@ -755,7 +755,7 @@ msgstr "Artéfacts"
 msgid "Ascending"
 msgstr "Croissant"
 
-msgid "Ask your group maintainer to setup a group Runner."
+msgid "Ask your group maintainer to set up a group Runner."
 msgstr "Demandez au responsable du groupe de configurer un exécuteur de groupe."
 
 msgid "Assertion consumer service URL"
@@ -6510,10 +6510,10 @@ msgstr "définir un mot de passe"
 msgid "Settings"
 msgstr "Paramètres"
 
-msgid "Setup a %{type} Runner manually"
+msgid "Set up a %{type} Runner manually"
 msgstr ""
 
-msgid "Setup a specific Runner automatically"
+msgid "Set up a specific Runner automatically"
 msgstr "Configurer automatiquement un exécuteur spécifique"
 
 msgid "Share"
@@ -8108,7 +8108,7 @@ msgstr "Vous ne pouvez modifier des fichiers que dans une branche"
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
 msgstr "Vous pouvez résoudre le conflit de fusion Git soit en mode interactif, en cliquant sur les boutons « %{use_ours} » ou « %{use_theirs} », soit en modifiant directement les fichiers. Valider ces modifications dans la branche « %{branch_name} »"
 
-msgid "You can setup jobs to only use Runners with specific tags. Separate tags with commas."
+msgid "You can set up jobs to only use Runners with specific tags. Separate tags with commas."
 msgstr ""
 
 msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use %{link_to_primary_node} instead."

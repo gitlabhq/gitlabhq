@@ -376,7 +376,7 @@ msgstr "<strong>%{pushes}</strong> відправок (push), більше ні�
 msgid "<strong>Removes</strong> source branch"
 msgstr "<strong>Видаляє</strong> гілку-джерело"
 
-msgid "A 'Runner' is a process which runs a job. You can setup as many Runners as you need."
+msgid "A 'Runner' is a process which runs a job. You can set up as many Runners as you need."
 msgstr "'Runner' — це процес, який виконує завдання. Ви можете створити потрібну кількість Runner'ів."
 
 msgid "A collection of graphs regarding Continuous Integration"
@@ -823,7 +823,7 @@ msgstr "Артефакти"
 msgid "Ascending"
 msgstr "За зростанням"
 
-msgid "Ask your group maintainer to setup a group Runner."
+msgid "Ask your group maintainer to set up a group Runner."
 msgstr "Попросіть керівника групи, щоб налаштувати груповий Runner."
 
 msgid "Assertion consumer service URL"
@@ -6606,10 +6606,10 @@ msgstr "встановити пароль"
 msgid "Settings"
 msgstr "Налаштування"
 
-msgid "Setup a %{type} Runner manually"
+msgid "Set up a %{type} Runner manually"
 msgstr ""
 
-msgid "Setup a specific Runner automatically"
+msgid "Set up a specific Runner automatically"
 msgstr "Автоматично налаштувати специфічний runner"
 
 msgid "Share"
@@ -8212,7 +8212,7 @@ msgstr "Ви можете редагувати файли, лише перебу
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
 msgstr "Ви можете розв’язати цей конфлікт злиття за допомогою інтерактивного режиму (використовуючи кнопки %{use_ours} та %{use_theirs}), або безпосередньо редагуючи файли. Закомітити зміни у %{branch_name}"
 
-msgid "You can setup jobs to only use Runners with specific tags. Separate tags with commas."
+msgid "You can set up jobs to only use Runners with specific tags. Separate tags with commas."
 msgstr ""
 
 msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use %{link_to_primary_node} instead."

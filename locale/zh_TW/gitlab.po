@@ -274,7 +274,7 @@ msgstr "推送 <strong>%{pushes}</strong> 個，<strong>%{people}</strong> 個�
 msgid "<strong>Removes</strong> source branch"
 msgstr "<strong>刪除</strong>來源分支"
 
-msgid "A 'Runner' is a process which runs a job. You can setup as many Runners as you need."
+msgid "A 'Runner' is a process which runs a job. You can set up as many Runners as you need."
 msgstr "一個「執行器」是一個執行工作的進程。你可以安裝你需要的多個執行器。"
 
 msgid "A collection of graphs regarding Continuous Integration"
@@ -721,7 +721,7 @@ msgstr "產物"
 msgid "Ascending"
 msgstr "順序"
 
-msgid "Ask your group maintainer to setup a group Runner."
+msgid "Ask your group maintainer to set up a group Runner."
 msgstr "詢問您的群組維護者以安裝群組執行器。"
 
 msgid "Assertion consumer service URL"
@@ -6462,10 +6462,10 @@ msgstr "設定密碼"
 msgid "Settings"
 msgstr "設定"
 
-msgid "Setup a %{type} Runner manually"
+msgid "Set up a %{type} Runner manually"
 msgstr ""
 
-msgid "Setup a specific Runner automatically"
+msgid "Set up a specific Runner automatically"
 msgstr "自動設置特定的執行器"
 
 msgid "Share"
@@ -8056,7 +8056,7 @@ msgstr "您只能在分支上編輯文件"
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
 msgstr "您可以透過使用互動模式選擇 %{use_ours} 或 %{use_theirs} 按鈕、或者是直接編輯檔案來解決合併衝突，並將這些變更提交到 %{branch_name}。"
 
-msgid "You can setup jobs to only use Runners with specific tags. Separate tags with commas."
+msgid "You can set up jobs to only use Runners with specific tags. Separate tags with commas."
 msgstr ""
 
 msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use %{link_to_primary_node} instead."
