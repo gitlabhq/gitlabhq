@@ -8,8 +8,6 @@ class ContainerRepository < ActiveRecord::Base
 
   delegate :client, to: :registry
 
-  before_destroy :delete_tags!
-
   # rubocop: disable CodeReuse/ServiceClass
   def registry
     @registry ||= begin
