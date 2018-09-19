@@ -5,7 +5,8 @@ AMIs provided with each release.
 
 ## Introduction
 
-In this guide, we will explore the simplest way to install GitLab on AWS.
+In this guide, we will explore the simplest way to install GitLab on AWS using
+the [Omnibus GitLab package](https://docs.gitlab.com/omnibus).
 That means that this will be a single EC2 node, and all GitLab's components,
 including the database, will be hosted on the same instance.
 
@@ -34,15 +35,17 @@ instance type should be at least `c4.xlarge`. This is enough to accommodate 100 
 
 Here's a list of the services we will use and their costs:
 
-- **EC2** - GitLab will deployed on shared hardware which means
+- **EC2**: GitLab will deployed on shared hardware which means
   [on-demand pricing](https://aws.amazon.com/ec2/pricing/on-demand)
   will apply. If you want to run it on a dedicated or reserved instance,
   consult the [EC2 pricing page](https://aws.amazon.com/ec2/pricing/) for more
   information on the cost.
-- **EBS** - We will also use an EBS volume to store the Git data. See the
+- **EBS**: We will also use an EBS volume to store the Git data. See the
   [Amazon EBS pricing](https://aws.amazon.com/ebs/pricing/).
-- **S3** - We will use S3 to store backups. See the
+- **S3**: We will use S3 to store backups. See the
   [Amazon S3 pricing](https://aws.amazon.com/s3/pricing/).
+- **ALB**: An Application Load Balancer will be used to route requests to the
+  GitLab instance. See the [Amazon ELB pricing](https://aws.amazon.com/elasticloadbalancing/pricing/).
 
 ## Security
 
@@ -141,9 +144,9 @@ The security group is basically the firewall.
      ![Create security group](img/create_security_group.png)
 
      TIP: **Tip:**
-     Depending on your setup, you might want to allow SSH traffic from only a known
-     host. In that case, change the SSH source to be custom and give it the IP
-     you want to SSH from.
+     Based on best practices, you should only allow SSH traffic from only a known
+     host or CIDR block. In that case, change the SSH source to be custom and give
+     it the IP you want to SSH from.
 
 1. When done, click on **Create**.
 
@@ -317,12 +320,32 @@ After you set it up, login with username `root` and the newly created password.
 ## Backup and restore
 
 GitLab provides [a tool to backup](../../raketasks/backup_restore.md#creating-a-backup-of-the-gitlab-system)
-and restore its Git data, database, and other files. You can also
-[backup GitLab using S3](../../raketasks/backup_restore.md#using-amazon-s3).
+and restore its Git data, database, attachments, LFS objects, etc.
 
-Bare in mind that the backup tool does not store
-[the configuration files](../../raketasks/backup_restore.md#storing-configuration-files),
-you'll need to do it yourself.
+Some things to know:
+
+- By default, the backup files are stored locally, but you can
+  [backup GitLab using S3](../../raketasks/backup_restore.md#using-amazon-s3).
+- You can exclude [specific directories form the backup](../../raketasks/backup_restore.md#excluding-specific-directories-from-the-backup).
+- The backup/restore tool does not store some configuration files, like secrets, you'll
+  need to [do it yourself](../../raketasks/backup_restore.md#storing-configuration-files).
+
+### Backing up GitLab
+
+To backup GitLab:
+
+1. SSH into your instance.
+1. Take a backup:
+
+    ```sh
+    sudo gitlab-rake gitlab:backup:create
+    ```
+
+### Restoring GitLab from a backup
+
+To restore GitLab, first check the [restore documentation](../../raketasks/backup_restore.md#restore)
+and mainly the restore prerequisites. Then, follow the steps under the
+[Omnibus installations section](../../raketasks/backup_restore.md#restore-for-omnibus-installations).
 
 ## Updating GitLab
 
