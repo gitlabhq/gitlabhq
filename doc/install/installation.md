@@ -515,7 +515,7 @@ Make GitLab start on boot:
 
     sudo update-rc.d gitlab defaults 21
 
-### Setup Logrotate
+### Set up Logrotate
 
     sudo cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
 

@@ -841,7 +841,7 @@ entry.
 - Add `Squash and merge` to GitLab Core (CE). !18956 (@blackst0ne)
 - Adds keyboard shortcut `g k` for Kubernetes on Project pages. !19002
 - Adds keyboard shortcut `g e` for Environments on Project pages. !19002
-- Setup graphql with initial project & merge request query. !19008
+- Set up graphql with initial project & merge request query. !19008
 - Adds JupyterHub to cluster applications. !19019
 - Added ability to search by wiki titles. !19112
 - Add Avatar API. !19121 (Imre Farkas)

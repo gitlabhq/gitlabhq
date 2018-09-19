@@ -71,7 +71,7 @@ All Documentation content that resides under the `doc/` directory of this reposi
 ## Install a development environment
 
 To work on GitLab itself, we recommend setting up your development environment with [the GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit).
-If you do not use the GitLab Development Kit you need to install and setup all the dependencies yourself, this is a lot of work and error prone.
+If you do not use the GitLab Development Kit you need to install and set up all the dependencies yourself, this is a lot of work and error prone.
 One small thing you also have to do when installing it yourself is to copy the example development unicorn configuration file:
 
     cp config/unicorn.rb.example.development config/unicorn.rb

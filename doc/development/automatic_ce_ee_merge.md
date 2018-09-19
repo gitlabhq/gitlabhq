@@ -63,7 +63,7 @@ EE version of your CE merge request.
 For each commit (except on `master`), the `ee_compat_check` CI job tries to
 detect if the current branch's changes will conflict during the CE->EE merge.
 
-The job reports what files are conflicting and how to setup a merge request
+The job reports what files are conflicting and how to set up a merge request
 against EE.
 
 #### How the job works
