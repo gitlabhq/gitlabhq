@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserPreference < ActiveRecord::Base
   # We could use enums, but Rails 4 doesn't support multiple
   # enum options with same name for multiple fields, also it creates
