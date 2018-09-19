@@ -7,7 +7,7 @@ description: 'Learn how to contribute to GitLab.'
 
 ## Get started!
 
-- Setup GitLab's development environment with [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/README.md)
+- Set up GitLab's development environment with [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/README.md)
 - [GitLab contributing guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md)
 - [Architecture](architecture.md) of GitLab
 - [Rake tasks](rake_tasks.md) for development

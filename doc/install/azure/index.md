@@ -74,7 +74,7 @@ The first items we need to configure are the basic settings of the underlying vi
     > **Note:** if you're unsure which authentication type to use, select **Password**
 
     1. If you chose **SSH public key** - enter your `SSH public key` into the field provided 
-    _(read the [SSH documentation][GitLab-Docs-SSH] to learn more about how to setup SSH 
+    _(read the [SSH documentation][GitLab-Docs-SSH] to learn more about how to set up SSH 
     public keys)_
     1. If you chose **Password** - enter the password you wish to use _(this is the password that you 
     will use later in this tutorial to [SSH] into the VM, so make sure it's a strong password/passphrase)_
@@ -154,7 +154,7 @@ on the Azure Dashboard (you may need to refresh the page):
 The new VM can also be accessed by clicking the `All resources` or `Virtual machines` icons in the 
 Azure Portal sidebar navigation menu.
 
-## Setup a domain name
+## Set up a domain name
 
 The VM will have a public IP address (static by default), but Azure allows us to assign a friendly 
 DNS name to the VM, so let's go ahead and do that.
@@ -296,7 +296,7 @@ homepage for the project:
 ![GitLab - Empty Project](img/gitlab-project-home-empty.png)
 
 If you scroll further down the project's home page, you'll see some basic instructions on how to 
-setup a local clone of your new repository and push and pull from it:
+set up a local clone of your new repository and push and pull from it:
 
 ![GitLab - Empty Project - Basic Instructions](img/gitlab-project-home-instructions.png)
 
@@ -347,7 +347,7 @@ If you're running [SSH] from the command-line (terminal), then type in the follo
 connect to your VM, substituting `username` and `your-azure-domain-name.com` for the correct values. 
 
 Again, remember that your Azure VM domain name will be the one you 
-[setup previously in the tutorial](#set-up-a-domain-name). If you didn't setup a domain name for 
+[set up previously in the tutorial](#set-up-a-domain-name). If you didn't set up a domain name for 
 your VM, you can use the IP address in its place in the following command:
 
 ```bash
@@ -401,7 +401,7 @@ is now showing **"up-to-date"**:
 Naturally, we believe that GitLab is a great git repository tool. However, GitLab is a whole lot 
 more than that too. GitLab unifies issues, code review, CI and CD into a single UI, helping you to 
 move faster from idea to production, and in this tutorial we showed you how quick and easy it is to 
-setup and run your own instance of GitLab on Azure, Microsoft's cloud service. 
+set up and run your own instance of GitLab on Azure, Microsoft's cloud service. 
 
 Azure is a great way to experiment with GitLab, and if you decide (as we hope) that GitLab is for 
 you, you can continue to use Azure as your secure, scalable cloud provider or of course run GitLab
@@ -424,7 +424,7 @@ Check out our other [Technical Articles][GitLab-Technical-Articles] or browse th
     - [Azure - Properly Shutdown an Azure VM][Azure-Properly-Shutdown-VM]
 - [SSH], [PuTTY] and [Using SSH in PuTTY][Using-SSH-In-Putty]
 
-[Original-Blog-Post]: https://about.gitlab.com/2016/07/13/how-to-setup-a-gitlab-instance-on-microsoft-azure/ "How to Setup a GitLab Instance on Microsoft Azure"
+[Original-Blog-Post]: https://about.gitlab.com/2016/07/13/how-to-setup-a-gitlab-instance-on-microsoft-azure/ "How to Set up a GitLab Instance on Microsoft Azure"
 [GitLab-Docs]: https://docs.gitlab.com/ce/README.html "GitLab Documentation"
 [GitLab-Technical-Articles]: https://docs.gitlab.com/ce/articles/index.html "GitLab Technical Articles"
 [GitLab-Docs-SSH]: https://docs.gitlab.com/ce/ssh/README.html "GitLab Documentation: SSH"

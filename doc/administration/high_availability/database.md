@@ -21,7 +21,7 @@ Database Service (RDS) that runs PostgreSQL.
 
 If you use a cloud-managed service, or provide your own PostgreSQL:
 
-1. Setup PostgreSQL according to the
+1. Set up PostgreSQL according to the
    [database requirements document](../../install/requirements.md#database).
 1. Set up a `gitlab` username with a password of your choice. The `gitlab` user
    needs privileges to create the `gitlabhq_production` database.
@@ -371,7 +371,7 @@ Select one node as a primary node.
 
 ##### Secondary nodes
 
-1. Setup the repmgr standby:
+1. Set up the repmgr standby:
 
     ```sh
     gitlab-ctl repmgr standby setup MASTER_NODE_NAME

@@ -144,7 +144,7 @@ If you installed GitLab using the Omnibus packages (highly recommended):
    secondary node.
 1. [Upload the GitLab License][upload-license] on the **primary**
    Geo node to unlock Geo.
-1. [Setup the database replication][database] (`primary (read-write) <->
+1. [Set up the database replication][database] (`primary (read-write) <->
    secondary (read-only)` topology).
 1. [Configure fast lookup of authorized SSH keys in the database][fast-ssh-lookup],
    this step is required and needs to be done on both the primary AND secondary nodes.
@@ -162,7 +162,7 @@ If you installed GitLab from source:
    to the new secondary node.
 1. [Upload the GitLab License][upload-license] on the **primary**
    Geo node to unlock Geo.
-1. [Setup the database replication][database-source] (`primary (read-write)
+1. [Set up the database replication][database-source] (`primary (read-write)
    <-> secondary (read-only)` topology).
 1. [Configure fast lookup of authorized SSH keys in the database][fast-ssh-lookup],
    do this step for both primary AND secondary nodes.

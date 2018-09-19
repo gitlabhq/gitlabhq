@@ -42,7 +42,7 @@ block access to the server itself. The ports used for the protocol, be it SSH or
 HTTP, will still be accessible. What GitLab does is restrict access on the
 application level.
 
-## Allow mirrors to be setup for projects
+## Allow mirrors to be set up for projects
 
 > [Introduced][ee-3586] in Gitlab 10.3.
 

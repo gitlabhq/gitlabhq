@@ -69,7 +69,7 @@ of recovery codes.
 1. Go to **Account**.
 1. Click **Enable Two-Factor Authentication**.
 1. Plug in your U2F device.
-1. Click on **Setup New U2F Device**.
+1. Click on **Set up New U2F Device**.
 1. A light will start blinking on your device. Activate it by pressing its button.
 
 You will see a message indicating that your device was successfully set up.

@@ -46,7 +46,7 @@ We have split this stage in steps so it is easier to follow.
 
 1. The next step is to create a new user (e.g., `gitlab`) who has write access
    to projects in JIRA. Enter the user's name and a _valid_ e-mail address
-   since JIRA sends a verification e-mail to set-up the password.
+   since JIRA sends a verification e-mail to set up the password.
    _**Note:** JIRA creates the username automatically by using the e-mail
    prefix. You can change it later if you want._
 

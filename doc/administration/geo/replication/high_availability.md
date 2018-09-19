@@ -85,7 +85,7 @@ the [gitlab.rb configuration][gitlab-rb-template].
 
 After making these changes be sure to run `sudo gitlab-ctl reconfigure` so that they take effect.
 
-### Step 3: Setup the LoadBalancer
+### Step 3: Set up the LoadBalancer
 
 In this topology there will need to be a load balancers at each geographical location
 to route traffic to the application servers.

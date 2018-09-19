@@ -14,7 +14,7 @@ to read from and write to a central NFS server(host).
 
 
 ## NFS Server Setup
-> Follow  the instructions below to setup and confire your NFS server.
+> Follow the instructions below to set up and configure your NFS server.
 
 #### Step 1 - Install NFS Server on Host
 
@@ -86,7 +86,7 @@ $ mount <host_ip_address>:/home
 $ df -h
 ```
 
-#### Step 3 - Setup Automatic Mounts on Boot
+#### Step 3 - Set up Automatic Mounts on Boot
 
 Edit `/etc/fstab` on client as below to mount the remote shares automatically at boot. 
 Note that GitLab requires advisory file locking, which is only supported natively in
@@ -99,7 +99,7 @@ We recommend using version 4 and do not specifically test NFSv3.
 ```
 Reboot the client and confirm that the mount point is mounted automatically.
 
-#### Step 4 - Setup Gitlab to Use NFS mounts
+#### Step 4 - Set up Gitlab to Use NFS mounts
 
 When using the default Omnibus configuration you will need to share 5 data locations
 between all GitLab cluster nodes. No other locations should be shared. Changing the
