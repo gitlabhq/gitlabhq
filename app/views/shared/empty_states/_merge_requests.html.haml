@@ -17,7 +17,7 @@
           - if project_select_button
             = render 'shared/new_project_item_select', path: 'merge_requests/new', label: _('New merge request'), type: :merge_requests, with_feature_enabled: 'merge_requests'
           - else
-            = link_to _('New merge request'), button_path, class: 'btn btn-new', title: _('New merge request'), id: 'new_merge_request_link'
+            = link_to _('New merge request'), button_path, class: 'btn btn-success', title: _('New merge request'), id: 'new_merge_request_link'
       - else
         %h4.text-center
           = _("There are no merge requests to show")

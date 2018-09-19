@@ -33,7 +33,7 @@
             - else
               = hidden_field_tag 'create_merge_request', 1, id: nil
           .form-actions
-            = submit_tag label, class: 'btn btn-create'
+            = submit_tag label, class: 'btn btn-success'
             = link_to _("Cancel"), '#', class: "btn btn-cancel", "data-dismiss" => "modal"
 
             = render 'shared/projects/edit_information'
