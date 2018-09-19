@@ -47,7 +47,7 @@ describe Projects::NotesController do
       get :index, request_params
     end
 
-    context 'when user discussion_filter is present' do
+    context 'when user notes_filter is present' do
       it 'filters system notes' do
         get :index, request_params
 

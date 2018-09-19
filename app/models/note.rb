@@ -108,9 +108,9 @@ class Note < ActiveRecord::Base
              :system_note_metadata, :note_diff_file)
   end
 
-  scope :with_discussion_filter, -> (discussion_filter) do
-    case discussion_filter
-    when UserPreference::DISCUSSION_FILTERS[:comments]
+  scope :with_notes_filter, -> (notes_filter) do
+    case notes_filter
+    when UserPreference::NOTES_FILTERS[:comments]
       user
     else
       all

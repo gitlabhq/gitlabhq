@@ -4,7 +4,7 @@ class CreateUserPreferences < ActiveRecord::Migration
   class UserPreference < ActiveRecord::Base
     self.table_name = 'user_preferences'
 
-    DISCUSSION_FILTERS = { all_activity: 0, comments: 1 }.freeze
+    NOTES_FILTERS = { all_activity: 0, comments: 1 }.freeze
   end
 
   def change
@@ -13,12 +13,12 @@ class CreateUserPreferences < ActiveRecord::Migration
                    null: false,
                    index: { unique: true }, foreign_key: { on_delete: :cascade }
 
-      t.integer :issue_discussion_filter, index: true,
-        default: UserPreference::DISCUSSION_FILTERS[:all_activity],
+      t.integer :issue_notes_filter, index: true,
+        default: UserPreference::NOTES_FILTERS[:all_activity],
         null: false, limit: 2
 
-      t.integer :merge_request_discussion_filter, index: true,
-        default: UserPreference::DISCUSSION_FILTERS[:all_activity],
+      t.integer :merge_request_notes_filter, index: true,
+        default: UserPreference::NOTES_FILTERS[:all_activity],
         null: false, limit: 2
 
       t.timestamps_with_timezone null: false

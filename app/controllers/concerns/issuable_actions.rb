@@ -93,7 +93,7 @@ module IssuableActions
   def discussions
     notes = issuable.discussion_notes
       .inc_relations_for_view
-      .with_discussion_filter(discussion_filter)
+      .with_notes_filter(notes_filter)
       .includes(:noteable)
       .fresh
 
@@ -109,10 +109,10 @@ module IssuableActions
 
   private
 
-  def discussion_filter
-    discussion_filter_param = params.fetch(:discussion_filter, current_user&.discussion_filter(issuable))
+  def notes_filter
+    notes_filter_param = params.fetch(:notes_filter, current_user&.notes_filter(issuable))
 
-    current_user&.set_discussion_filter(discussion_filter_param, issuable)
+    current_user&.set_notes_filter(notes_filter_param, issuable)
   end
 
   def discussion_serializer

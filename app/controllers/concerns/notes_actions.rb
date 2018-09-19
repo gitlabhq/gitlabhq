@@ -17,7 +17,7 @@ module NotesActions
 
     notes = notes_finder.execute
       .inc_relations_for_view
-      .with_discussion_filter(discussion_filter)
+      .with_notes_filter(notes_filter)
 
 
     notes = ResourceEvents::MergeIntoNotesService.new(noteable, current_user, last_fetched_at: current_fetched_at).execute(notes)
@@ -81,8 +81,8 @@ module NotesActions
 
   private
 
-  def discussion_filter
-    current_user&.discussion_filter(issuable)
+  def notes_filter
+    current_user&.notes_filter(issuable)
   end
 
   def note_html(note)
