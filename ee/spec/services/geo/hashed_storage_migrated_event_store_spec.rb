@@ -1,45 +1,34 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Geo::HashedStorageMigratedEventStore do
-  let(:project) { create(:project, path: 'bar') }
+  include EE::GeoHelpers
+
   set(:secondary_node) { create(:geo_node) }
+
+  let(:project) { create(:project, path: 'bar') }
   let(:old_disk_path) { "#{project.namespace.full_path}/foo" }
   let(:old_wiki_disk_path) { "#{old_disk_path}.wiki" }
 
-  subject(:event_store) { described_class.new(project, old_storage_version: nil, old_disk_path: old_disk_path, old_wiki_disk_path: old_wiki_disk_path) }
+  subject { described_class.new(project, old_storage_version: nil, old_disk_path: old_disk_path, old_wiki_disk_path: old_wiki_disk_path) }
+
+  before do
+    TestEnv.clean_test_path
+  end
 
   describe '#create' do
-    before do
-      TestEnv.clean_test_path
-    end
-
-    it 'does not create an event when not running on a primary node' do
-      allow(Gitlab::Geo).to receive(:primary?) { false }
-
-      expect { event_store.create }.not_to change(Geo::HashedStorageMigratedEvent, :count)
-    end
+    it_behaves_like 'a Geo event store', Geo::HashedStorageMigratedEvent
 
     context 'when running on a primary node' do
       before do
-        allow(Gitlab::Geo).to receive(:primary?) { true }
-      end
-
-      it 'does not create an event when there are no secondary nodes' do
-        allow(Gitlab::Geo).to receive(:secondary_nodes) { [] }
-
-        expect { subject.create }.not_to change(Geo::HashedStorageMigratedEvent, :count)
-      end
-
-      it 'creates a hashed migration event' do
-        expect { event_store.create }.to change(Geo::HashedStorageMigratedEvent, :count).by(1)
+        stub_primary_node
       end
 
       it 'tracks project attributes' do
-        event_store.create
+        subject.create
 
-        event = Geo::HashedStorageMigratedEvent.last
-
-        expect(event).to have_attributes(
+        expect(Geo::HashedStorageMigratedEvent.last).to have_attributes(
           repository_storage_name: project.repository_storage,
           old_storage_version: nil,
           new_storage_version: project.storage_version,
