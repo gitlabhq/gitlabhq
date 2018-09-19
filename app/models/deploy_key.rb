@@ -18,7 +18,7 @@ class DeployKey < Key
   end
 
   def orphaned?
-    self.deploy_keys_projects.length == 0
+    self.deploy_keys_projects.empty?
   end
 
   def almost_orphaned?

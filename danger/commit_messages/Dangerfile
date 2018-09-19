@@ -38,6 +38,10 @@ def fail_commit(commit, message)
   fail("#{commit.sha}: #{message}")
 end
 
+def warn_commit(commit, message)
+  warn("#{commit.sha}: #{message}")
+end
+
 def lines_changed_in_commit(commit)
   commit.diff_parent.stats[:total][:lines]
 end
@@ -87,13 +91,21 @@ def lint_commits(commits)
       failures = true
     end
 
-    if subject.length > 50
+    if subject.length > 72
       fail_commit(
         commit,
-        'The commit subject may not be longer than 50 characters'
+        'The commit subject may not be longer than 72 characters'
       )
 
       failures = true
+    elsif subject.length > 50
+      warn_commit(
+        commit,
+        "This commit's subject line could be improved. " \
+          'Commit subjects are ideally no longer than roughly 50 characters, ' \
+          'though we allow up to 72 characters in the subject. ' \
+          'If possible, try to reduce the length of the subject to roughly 50 characters.'
+      )
     end
 
     unless subject_starts_with_capital?(subject)
