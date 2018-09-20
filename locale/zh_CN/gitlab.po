@@ -2078,7 +2078,7 @@ msgid "Connect repositories from GitHub"
 msgstr "从 Github 中导入代码仓库"
 
 msgid "Connect your external repositories, and CI/CD pipelines will run for new commits. A GitLab project will be created with only CI/CD features enabled."
-msgstr "连接外部仓库后，新提交将会启动CI/CD流水线。仅启用CI/CD功能的Gitlab项目将会被创建。"
+msgstr "连接外部仓库后，新提交将会启动CI/CD流水线。仅启用CI/CD功能的GitLab项目将会被创建。"
 
 msgid "Connecting..."
 msgstr "正在连接..."
@@ -3550,7 +3550,7 @@ msgid "GitLab Geo"
 msgstr "GitLab Geo"
 
 msgid "GitLab Group Runners can execute code for all the projects in this group."
-msgstr "Gitlab群组Runner可以用来运行群组内所有项目的代码。"
+msgstr "GitLab群组Runner可以用来运行群组内所有项目的代码。"
 
 msgid "GitLab Import"
 msgstr "GitLab导入"
