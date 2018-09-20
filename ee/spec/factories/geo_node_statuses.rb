@@ -40,7 +40,7 @@ FactoryBot.define do
       last_event_timestamp { Time.now.to_i }
       cursor_last_event_id 1
       cursor_last_event_timestamp { Time.now.to_i }
-      last_successful_status_check_timestamp { Time.now.beginning_of_day }
+      last_successful_status_check_timestamp { 2.minutes.ago }
       version { Gitlab::VERSION }
       revision { Gitlab.revision }
     end

@@ -1,6 +1,7 @@
 module Geo
   class UploadDeletedEvent < ActiveRecord::Base
     include Geo::Model
+    include Geo::Eventable
 
     belongs_to :upload
 

@@ -13,6 +13,14 @@ RSpec.describe Geo::EventLog, type: :model do
     it { is_expected.to belong_to(:job_artifact_deleted_event).class_name('Geo::JobArtifactDeletedEvent').with_foreign_key('job_artifact_deleted_event_id') }
   end
 
+  describe '.event_classes' do
+    it 'returns all event class reflections' do
+      reflections = described_class.reflections.map { |_k, v| v.class_name.constantize }
+
+      expect(described_class.event_classes).to contain_exactly(*reflections)
+    end
+  end
+
   describe '#event' do
     it 'returns nil when having no event associated' do
       expect(subject.event).to be_nil

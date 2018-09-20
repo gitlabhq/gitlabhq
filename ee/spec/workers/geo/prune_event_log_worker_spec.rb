@@ -2,19 +2,11 @@ require 'spec_helper'
 
 describe Geo::PruneEventLogWorker, :geo do
   include ::EE::GeoHelpers
-  include ExclusiveLeaseHelpers
 
   subject(:worker) { described_class.new }
 
   set(:primary) { create(:geo_node, :primary) }
   set(:secondary) { create(:geo_node) }
-
-  let(:lease_key) { 'geo/prune_event_log_worker' }
-  let(:lease_timeout) { Geo::PruneEventLogWorker::LEASE_TIMEOUT }
-
-  before do
-    stub_exclusive_lease(lease_key, timeout: lease_timeout)
-  end
 
   describe '#perform' do
     context 'current node secondary' do
@@ -23,7 +15,7 @@ describe Geo::PruneEventLogWorker, :geo do
       end
 
       it 'does nothing' do
-        expect(worker).not_to receive(:try_obtain_lease)
+        expect(Geo::PruneEventLogService).not_to receive(:new)
 
         worker.perform
       end
@@ -34,23 +26,49 @@ describe Geo::PruneEventLogWorker, :geo do
         stub_current_geo_node(primary)
       end
 
-      it 'logs error when it cannot obtain lease' do
-        stub_exclusive_lease_taken(lease_key, timeout: lease_timeout)
+      it 'does nothing when database is not feeling healthy' do
+        allow(Gitlab::Database).to receive(:healthy?).and_return(false)
 
-        expect(worker).to receive(:log_error).with(/^Cannot obtain an exclusive lease/)
+        expect(Geo::PruneEventLogService).not_to receive(:new)
 
         worker.perform
       end
 
-      context 'no secondary nodes' do
+      it 'does checks if it should prune' do
+        expect(worker).to receive(:prune?)
+
+        worker.perform
+      end
+
+      it 'deletes also associated event table rows' do
+        create_list(:geo_event_log, 2, :updated_event)
+        create(:geo_node_status, :healthy, cursor_last_event_id: Geo::EventLog.last.id, geo_node_id: secondary.id)
+
+        expect { worker.perform }.to change { Geo::RepositoryUpdatedEvent.count }.by(-2)
+      end
+
+      it 'delegates pruning to Geo::PruneEventLogService' do
+        create(:geo_event_log, :updated_event)
+        create(:geo_node_status, :healthy, cursor_last_event_id: Geo::EventLog.last.id, geo_node_id: secondary.id)
+
+        prune_service = spy(:prune_service)
+
+        expect(Geo::PruneEventLogService).to receive(:new).with(Geo::EventLog.last.id).and_return(prune_service)
+        expect(prune_service).to receive(:execute)
+
+        worker.perform
+      end
+
+      context 'no Geo nodes' do
         before do
           secondary.destroy
+          primary.destroy
         end
 
         it 'deletes everything from the Geo event log' do
           create_list(:geo_event_log, 2)
 
-          expect(Geo::TruncateEventLogWorker).to receive(:perform_in).with(described_class::TRUNCATE_DELAY)
+          expect(Geo::PruneEventLogService).to receive(:new).with(:all).and_call_original
 
           worker.perform
         end
@@ -58,36 +76,47 @@ describe Geo::PruneEventLogWorker, :geo do
 
       context 'multiple secondary nodes' do
         set(:secondary2) { create(:geo_node) }
-        let(:healthy_status) { build(:geo_node_status, :healthy) }
-        let(:unhealthy_status) { build(:geo_node_status, :unhealthy) }
+        let!(:events) { create_list(:geo_event_log, 5, :updated_event) }
 
-        it 'contacts all secondary nodes for their status' do
-          status = spy(:status)
+        it 'aborts when there is a node without status' do
+          create(:geo_node_status, :healthy, cursor_last_event_id: events.last.id, geo_node_id: secondary.id)
 
-          allow_any_instance_of(GeoNode).to receive(:status).and_return(status)
+          expect(worker).to receive(:log_info).with(/^Some nodes are not healthy/, unhealthy_node_count: 1)
 
-          expect(status).to receive(:cursor_last_event_id).twice.and_return(0)
-
-          worker.perform
+          expect { worker.perform }.not_to change { Geo::EventLog.count }
         end
 
-        it 'aborts when there are unhealthy nodes' do
-          events = create_list(:geo_event_log, 2)
-
+        it 'aborts when there is an unhealthy node' do
           create(:geo_node_status, :healthy, cursor_last_event_id: events.last.id, geo_node_id: secondary.id)
           create(:geo_node_status, :unhealthy, geo_node_id: secondary2.id)
 
-          expect(worker).to receive(:log_info).with(/^Could not get status of all nodes/, unhealthy_node_count: 1)
+          expect(worker).to receive(:log_info).with(/^Some nodes are not healthy/, unhealthy_node_count: 1)
+
+          expect { worker.perform }.not_to change { Geo::EventLog.count }
+        end
+
+        it 'aborts when there is a node with an old status' do
+          create(:geo_node_status, :healthy, cursor_last_event_id: events.last.id, geo_node_id: secondary.id)
+          create(:geo_node_status, :healthy, geo_node_id: secondary2.id, last_successful_status_check_at: 12.minutes.ago)
+
+          expect(worker).to receive(:log_info).with(/^Some nodes are not healthy/, unhealthy_node_count: 1)
+
+          expect { worker.perform }.not_to change { Geo::EventLog.count }
+        end
+
+        it 'aborts when there is a node with a healthy status without timestamp' do
+          create(:geo_node_status, :healthy, cursor_last_event_id: events.last.id, geo_node_id: secondary.id)
+          create(:geo_node_status, :healthy, geo_node_id: secondary2.id, last_successful_status_check_at: nil)
+
+          expect(worker).to receive(:log_info).with(/^Some nodes are not healthy/, unhealthy_node_count: 1)
 
           expect { worker.perform }.not_to change { Geo::EventLog.count }
         end
 
         it 'takes the integer-minimum value of all cursor_last_event_ids' do
-          events = create_list(:geo_event_log, 5)
-
           create(:geo_node_status, :healthy, cursor_last_event_id: events[3].id, geo_node_id: secondary.id)
           create(:geo_node_status, :healthy, cursor_last_event_id: events.last.id, geo_node_id: secondary2.id)
-          expect(worker).to receive(:log_info).with(/^Delete Geo Event Log/, geo_event_log_id: events[3].id)
+          expect(Geo::PruneEventLogService).to receive(:new).with(events[3].id).and_call_original
 
           expect { worker.perform }.to change { Geo::EventLog.count }.by(-4)
         end

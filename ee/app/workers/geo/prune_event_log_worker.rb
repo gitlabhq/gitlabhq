@@ -1,44 +1,41 @@
+# frozen_string_literal: true
+
 module Geo
   class PruneEventLogWorker
     include ApplicationWorker
     include CronjobQueue
-    include ExclusiveLeaseGuard
+    include ::Gitlab::Utils::StrongMemoize
     include ::Gitlab::Geo::LogHelpers
 
-    LEASE_TIMEOUT = 60.minutes
-    TRUNCATE_DELAY = 10.minutes
+    LEASE_TIMEOUT = 5.minutes
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def perform
       return if Gitlab::Database.read_only?
+      return unless Gitlab::Database.healthy?
 
-      try_obtain_lease do
-        if Gitlab::Geo.secondary_nodes.empty?
-          log_info('No secondary nodes configured, scheduling truncation of the Geo Event Log')
-
-          ::Geo::TruncateEventLogWorker.perform_in(TRUNCATE_DELAY)
-
-          break
-        end
-
-        cursor_last_event_ids = Gitlab::Geo.secondary_nodes.map do |node|
-          node.status&.cursor_last_event_id
-        end
-
-        if cursor_last_event_ids.include?(nil)
-          log_info('Could not get status of all nodes, not deleting any entries from Geo Event Log', unhealthy_node_count: cursor_last_event_ids.count(nil))
-          break
-        end
-
-        log_info('Delete Geo Event Log entries up to id', geo_event_log_id: cursor_last_event_ids.min)
-        Geo::EventLog.where('id <= ?', cursor_last_event_ids.min)
-                     .each_batch { |batch| batch.delete_all }
+      unless ::GeoNode.any?
+        Geo::PruneEventLogService.new(:all).execute
+        return
       end
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
 
-    def lease_timeout
-      LEASE_TIMEOUT
+      unless prune?
+        log_info('Some nodes are not healthy, prune geo event log skipped', unhealthy_node_count: unhealthy_nodes.count)
+        return
+      end
+
+      Geo::PruneEventLogService.new(min_cursor_last_event_id).execute
+    end
+
+    def prune?
+      unhealthy_nodes.empty?
+    end
+
+    def min_cursor_last_event_id
+      ::GeoNode.secondary_nodes.min_cursor_last_event_id
+    end
+
+    def unhealthy_nodes
+      ::GeoNode.secondary_nodes.unhealthy_nodes
     end
   end
 end

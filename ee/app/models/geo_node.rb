@@ -44,6 +44,7 @@ class GeoNode < ActiveRecord::Base
   alias_method :repair, :save # the `update_dependents_attributes` hook will take care of it
 
   scope :with_url_prefix, ->(prefix) { where('url LIKE ?', "#{prefix}%") }
+  scope :secondary_nodes, -> { where(primary: false) }
 
   attr_encrypted :secret_access_key,
                  key: Settings.attr_encrypted_db_key_base_truncated,
@@ -67,6 +68,34 @@ class GeoNode < ActiveRecord::Base
       return unless column_names.include?('url')
 
       GeoNode.find_by(url: current_node_url)
+    end
+
+    def primary_node
+      find_by(primary: true)
+    end
+
+    def unhealthy_nodes
+      status_table = GeoNodeStatus.arel_table
+
+      query = status_table[:id].eq(nil)
+        .or(status_table[:cursor_last_event_id].eq(nil))
+        .or(status_table[:last_successful_status_check_at].eq(nil))
+        .or(status_table[:last_successful_status_check_at].lt(10.minutes.ago))
+
+      left_join_status.where(query)
+    end
+
+    def min_cursor_last_event_id
+      left_join_status.minimum(:cursor_last_event_id)
+    end
+
+    private
+
+    def left_join_status
+      join_statement = arel_table.join(GeoNodeStatus.arel_table, Arel::Nodes::OuterJoin)
+        .on(arel_table[:id].eq(GeoNodeStatus.arel_table[:geo_node_id]))
+
+      joins(join_statement.join_sources)
     end
   end
 
