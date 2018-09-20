@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RendersCommits
   def limited_commits(commits)
     if commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE

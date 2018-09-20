@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::KeysController < Admin::ApplicationController
   before_action :user, only: [:show, :destroy]
 

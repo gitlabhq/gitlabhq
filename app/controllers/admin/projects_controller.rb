@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::ProjectsController < Admin::ApplicationController
   include MembersPresentation
 

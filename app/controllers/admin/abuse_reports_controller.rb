@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::AbuseReportsController < Admin::ApplicationController
   # rubocop: disable CodeReuse/ActiveRecord
   def index

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::ImpersonationsController < Admin::ApplicationController
   skip_before_action :authenticate_admin!
   before_action :authenticate_impersonator!

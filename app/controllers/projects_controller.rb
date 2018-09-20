@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectsController < Projects::ApplicationController
   include API::Helpers::RelatedResourcesHelpers
   include IssuableCollections
