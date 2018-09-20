@@ -1186,5 +1186,5 @@ automated_review_cleanup:
     refs:
       - schedules@gitlab-org/gitlab-ee
   except:
-    - master
+    - tags
     - /(^docs[\/-].*|.*-docs$)/
