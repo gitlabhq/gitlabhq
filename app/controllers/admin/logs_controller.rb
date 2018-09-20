@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::LogsController < Admin::ApplicationController
   prepend EE::Admin::LogsController
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::DeployKeysController < Admin::ApplicationController
   before_action :deploy_keys, only: [:index]
   before_action :deploy_key, only: [:destroy, :edit, :update]

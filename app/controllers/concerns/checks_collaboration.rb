@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ChecksCollaboration
   def can_collaborate_with_project?(project, ref: nil)
     return true if can?(current_user, :push_code, project)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module NotesActions
   include RendersNotes
   include Gitlab::Utils::StrongMemoize

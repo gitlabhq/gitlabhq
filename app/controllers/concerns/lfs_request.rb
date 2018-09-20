@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This concern assumes:
 # - a `#project` accessor
 # - a `#user` accessor

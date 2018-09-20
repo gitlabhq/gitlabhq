@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SentNotificationsController < ApplicationController
   prepend EE::SentNotificationsController
 
