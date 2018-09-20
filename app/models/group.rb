@@ -38,6 +38,9 @@ class Group < Namespace
   has_many :variables, class_name: 'Ci::GroupVariable'
   has_many :custom_attributes, class_name: 'GroupCustomAttribute'
 
+  has_one :cluster_group, class_name: 'Clusters::Group'
+  has_many :clusters, through: :cluster_group, class_name: 'Clusters::Cluster'
+
   has_many :boards
   has_many :badges, class_name: 'GroupBadge'
 
