@@ -51,10 +51,10 @@
 <template>
   <div v-if="hasNotebook">
     <component
-      v-for="(cell, index) in cells"
       :is="cellType(cell.cell_type)"
-      :cell="cell"
+      v-for="(cell, index) in cells"
       :key="index"
+      :cell="cell"
       :code-css-class="codeCssClass" />
   </div>
 </template>

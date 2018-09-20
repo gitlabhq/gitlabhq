@@ -135,8 +135,8 @@ export default {
           {{ file.name }}
         </span>
         <component
-          v-if="extraComponent"
           :is="extraComponent"
+          v-if="extraComponent"
           :file="file"
           :mouse-over="mouseOver"
         />

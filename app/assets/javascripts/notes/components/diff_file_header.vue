@@ -41,8 +41,8 @@ export default {
     </div>
     <template v-else>
       <component
-        ref="titleWrapper"
         :is="titleTag"
+        ref="titleWrapper"
         :href="diffFile.discussionPath"
       >
         <span v-html="diffFile.blobIcon"></span>

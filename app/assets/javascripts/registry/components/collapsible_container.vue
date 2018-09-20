@@ -88,8 +88,8 @@
 
       <div class="controls d-none d-sm-block float-right">
         <button
-          v-tooltip
           v-if="repo.canDelete"
+          v-tooltip
           :title="s__('ContainerRegistry|Remove repository')"
           :aria-label="s__('ContainerRegistry|Remove repository')"
           type="button"
