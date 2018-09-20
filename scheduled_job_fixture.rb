@@ -8,52 +8,52 @@
 # ### How to use ###
 #
 # ### Prerequisite
-# 1. Create a project
+# 1. Create a project (for example with path `incremental-rollout`)
 # 1. Create a .gitlab-ci.yml with the following content
 #
-# ```
-# stages:
-# - build
-# - test
-# - production
-# - rollout 10%
-# - rollout 50%
-# - rollout 100%
-# - cleanup
-# 
-# build:
-# stage: build
-# script: sleep 1s
-# 
-# test:
-# stage: test
-# script: sleep 3s
-# 
-# rollout 10%:
-# stage: rollout 10%
-# script: date
-# when: delayed
-# start_in: 10 seconds
-# allow_failure: false
-# 
-# rollout 50%:
-# stage: rollout 50%
-# script: date
-# when: delayed
-# start_in: 10 seconds
-# allow_failure: false
-# 
-# rollout 100%:
-# stage: rollout 100%
-# script: date
-# when: delayed
-# start_in: 10 seconds
-# allow_failure: false
-# 
-# cleanup:
-# stage: cleanup
-# script: date
-# ```
+=begin
+stages:
+- build
+- test
+- production
+- rollout 10%
+- rollout 50%
+- rollout 100%
+- cleanup
+
+build:
+  stage: build
+  script: sleep 1s
+
+test:
+  stage: test
+  script: sleep 3s
+
+rollout 10%:
+  stage: rollout 10%
+  script: date
+  when: delayed
+  start_in: 10 seconds
+  allow_failure: false
+
+rollout 50%:
+  stage: rollout 50%
+  script: date
+  when: delayed
+  start_in: 10 seconds
+  allow_failure: false
+
+rollout 100%:
+  stage: rollout 100%
+  script: date
+  when: delayed
+  start_in: 10 seconds
+  allow_failure: false
+
+cleanup:
+  stage: cleanup
+  script: date
+=end
 #
 # ### How to load this script
 #
@@ -65,12 +65,16 @@
 # ### Reproduce the scenario A) ~ Succeccfull timed incremantal rollout ~
 #
 # ````
-# ScheduledJobFixture.new(29, 1).create_pipeline('master')
-# ScheduledJobFixture.new(29, 1).finish_stage_until('test')  # Succeed 'build' and 'test' jobs. 'rollout 10%' job will be scheduled. See the pipeline page
-# ScheduledJobFixture.new(29, 1).finish_stage_until('rollout 10%')  # Succeed `rollout 10%` job. 'rollout 50%' job will be scheduled.
-# ScheduledJobFixture.new(29, 1).finish_stage_until('rollout 50%')  # Succeed `rollout 50%` job. 'rollout 100%' job will be scheduled.
-# ScheduledJobFixture.new(29, 1).finish_stage_until('rollout 100%')  # Succeed `rollout 100%` job. 'cleanup' job will be scheduled.
-# ScheduledJobFixture.new(29, 1).finish_stage_until('cleanup')  # Succeed `cleanup` job. The pipeline becomes green.
+# project = Project.find_by(path: 'incremental-rollout')
+# user = User.find_by(username: 'root')
+# fixture = ScheduledJobFixture.new(project.id, user.id)
+#
+# fixture.create_pipeline('master')
+# fixture.finish_stage_until('test')  # Succeed 'build' and 'test' jobs. 'rollout 10%' job will be scheduled. See the pipeline page
+# fixture.finish_stage_until('rollout 10%')  # Succeed `rollout 10%` job. 'rollout 50%' job will be scheduled.
+# fixture.finish_stage_until('rollout 50%')  # Succeed `rollout 50%` job. 'rollout 100%' job will be scheduled.
+# fixture.finish_stage_until('rollout 100%')  # Succeed `rollout 100%` job. 'cleanup' job will be scheduled.
+# fixture.finish_stage_until('cleanup')  # Succeed `cleanup` job. The pipeline becomes green.
 # ```
 class ScheduledJobFixture
   attr_reader :project
