@@ -11,7 +11,7 @@ module Ci
     after_create :schedule, unless: :importing?
 
     def execute_in
-      self.execute_at - Time.now
+      [0, self.execute_at - Time.now].max
     end
 
     private
