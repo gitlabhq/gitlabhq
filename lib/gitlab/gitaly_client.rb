@@ -302,7 +302,7 @@ module Gitlab
     # Ensures that Gitaly is not being abuse through n+1 misuse etc
     def self.enforce_gitaly_request_limits(call_site)
       # Only count limits in request-response environments (not sidekiq for example)
-      return unless RequestStore.active?
+      return unless Gitlab::SafeRequestStore.active?
 
       # This is this actual number of times this call was made. Used for information purposes only
       actual_call_count = increment_call_count("gitaly_#{call_site}_actual")
@@ -326,7 +326,7 @@ module Gitlab
     end
 
     def self.allow_n_plus_1_calls
-      return yield unless RequestStore.active?
+      return yield unless Gitlab::SafeRequestStore.active?
 
       begin
         increment_call_count(:gitaly_call_count_exception_block_depth)
@@ -337,25 +337,25 @@ module Gitlab
     end
 
     def self.get_call_count(key)
-      RequestStore.store[key] || 0
+      Gitlab::SafeRequestStore[key] || 0
     end
     private_class_method :get_call_count
 
     def self.increment_call_count(key)
-      RequestStore.store[key] ||= 0
-      RequestStore.store[key] += 1
+      Gitlab::SafeRequestStore[key] ||= 0
+      Gitlab::SafeRequestStore[key] += 1
     end
     private_class_method :increment_call_count
 
     def self.decrement_call_count(key)
-      RequestStore.store[key] -= 1
+      Gitlab::SafeRequestStore[key] -= 1
     end
     private_class_method :decrement_call_count
 
     # Returns an estimate of the number of Gitaly calls made for this
     # request
     def self.get_request_count
-      return 0 unless RequestStore.active?
+      return 0 unless Gitlab::SafeRequestStore.active?
 
       gitaly_migrate_count = get_call_count("gitaly_migrate_actual")
       gitaly_call_count = get_call_count("gitaly_call_actual")
@@ -372,28 +372,28 @@ module Gitlab
     end
 
     def self.reset_counts
-      return unless RequestStore.active?
+      return unless Gitlab::SafeRequestStore.active?
 
       %w[migrate call].each do |call_site|
-        RequestStore.store["gitaly_#{call_site}_actual"] = 0
-        RequestStore.store["gitaly_#{call_site}_permitted"] = 0
+        Gitlab::SafeRequestStore["gitaly_#{call_site}_actual"] = 0
+        Gitlab::SafeRequestStore["gitaly_#{call_site}_permitted"] = 0
       end
     end
 
     def self.add_call_details(details)
       id = details.delete(:id)
 
-      return unless id && RequestStore.active? && RequestStore.store[:peek_enabled]
+      return unless id && Gitlab::SafeRequestStore[:peek_enabled]
 
-      RequestStore.store['gitaly_call_details'] ||= {}
-      RequestStore.store['gitaly_call_details'][id] ||= {}
-      RequestStore.store['gitaly_call_details'][id].merge!(details)
+      Gitlab::SafeRequestStore['gitaly_call_details'] ||= {}
+      Gitlab::SafeRequestStore['gitaly_call_details'][id] ||= {}
+      Gitlab::SafeRequestStore['gitaly_call_details'][id].merge!(details)
     end
 
     def self.list_call_details
-      return {} unless RequestStore.active? && RequestStore.store[:peek_enabled]
+      return {} unless Gitlab::SafeRequestStore[:peek_enabled]
 
-      RequestStore.store['gitaly_call_details'] || {}
+      Gitlab::SafeRequestStore['gitaly_call_details'] || {}
     end
 
     def self.expected_server_version
@@ -431,22 +431,22 @@ module Gitlab
 
     # Count a stack. Used for n+1 detection
     def self.count_stack
-      return unless RequestStore.active?
+      return unless Gitlab::SafeRequestStore.active?
 
       stack_string = Gitlab::Profiler.clean_backtrace(caller).drop(1).join("\n")
 
-      RequestStore.store[:stack_counter] ||= Hash.new
+      Gitlab::SafeRequestStore[:stack_counter] ||= Hash.new
 
-      count = RequestStore.store[:stack_counter][stack_string] || 0
-      RequestStore.store[:stack_counter][stack_string] = count + 1
+      count = Gitlab::SafeRequestStore[:stack_counter][stack_string] || 0
+      Gitlab::SafeRequestStore[:stack_counter][stack_string] = count + 1
     end
     private_class_method :count_stack
 
     # Returns a count for the stack which called Gitaly the most times. Used for n+1 detection
     def self.max_call_count
-      return 0 unless RequestStore.active?
+      return 0 unless Gitlab::SafeRequestStore.active?
 
-      stack_counter = RequestStore.store[:stack_counter]
+      stack_counter = Gitlab::SafeRequestStore[:stack_counter]
       return 0 unless stack_counter
 
       stack_counter.values.max
@@ -455,9 +455,9 @@ module Gitlab
 
     # Returns the stacks that calls Gitaly the most times. Used for n+1 detection
     def self.max_stacks
-      return nil unless RequestStore.active?
+      return nil unless Gitlab::SafeRequestStore.active?
 
-      stack_counter = RequestStore.store[:stack_counter]
+      stack_counter = Gitlab::SafeRequestStore[:stack_counter]
       return nil unless stack_counter
 
       max = max_call_count
