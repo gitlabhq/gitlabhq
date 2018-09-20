@@ -1525,7 +1525,7 @@ module API
 
     class UnleashFeatures < Grape::Entity
       expose :version
-      expose :project_feature_flags, as: :features, with: UnleashFeature
+      expose :operations_feature_flags, as: :features, with: UnleashFeature
 
       private
 

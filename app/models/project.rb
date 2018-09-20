@@ -266,8 +266,8 @@ class Project < ActiveRecord::Base
   has_many :project_deploy_tokens
   has_many :deploy_tokens, through: :project_deploy_tokens
 
-  has_many :project_feature_flags
-  has_many :project_feature_flags_access_tokens
+  has_many :operations_feature_flags, class_name: 'Operations::FeatureFlag'
+  has_one :operations_feature_flags_access_token, class_name: 'Operations::FeatureFlagsAccessToken'
 
   has_one :auto_devops, class_name: 'ProjectAutoDevops'
   has_many :custom_attributes, class_name: 'ProjectCustomAttribute'
@@ -2103,6 +2103,10 @@ class Project < ActiveRecord::Base
 
   def auto_cancel_pending_pipelines?
     auto_cancel_pending_pipelines == 'enabled'
+  end
+
+  def feature_flag_access_token
+    (operations_feature_flags_access_token || create_operations_feature_flags_access_token!).token
   end
 
   private

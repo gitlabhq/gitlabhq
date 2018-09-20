@@ -8,16 +8,16 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
   before_action :feature_flag, only: [:edit, :update, :destroy]
 
   def index
-    @feature_flags = project.project_feature_flags
-    @unleash_instanceid = project.project_feature_flags_access_tokens.first&.token || project.project_feature_flags_access_tokens.create!.token
+    @feature_flags = project.operations_feature_flags
+    @unleash_instanceid = project.feature_flag_access_token
   end
 
   def new
-    @feature_flag = project.project_feature_flags.new
+    @feature_flag = project.operations_feature_flags.new
   end
 
   def create
-    @feature_flag = project.project_feature_flags.create(create_params)
+    @feature_flag = project.operations_feature_flags.create(create_params)
 
     if @feature_flag.persisted?
       flash[:notice] = 'Feature flag was successfully created.'
@@ -50,16 +50,16 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
   protected
 
   def feature_flag
-    @feature_flag ||= project.project_feature_flags.find(params[:id])
+    @feature_flag ||= project.operations_feature_flags.find(params[:id])
   end
 
   def create_params
-    params.require(:project_feature_flag)
+    params.require(:operations_feature_flag)
           .permit(:name, :description, :active)
   end
 
   def update_params
-    params.require(:project_feature_flag)
+    params.require(:operations_feature_flag)
           .permit(:description, :active)
   end
 end
