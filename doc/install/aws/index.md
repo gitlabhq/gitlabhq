@@ -289,6 +289,11 @@ its data to the new `/gitlab-data` directory:
 
 Read more on [storing Git data in an alternative directory](https://docs.gitlab.com/omnibus/settings/configuration.html#storing-git-data-in-an-alternative-directory).
 
+### LFS objects on S3
+
+If you intend to use Git LFS, you can
+[store the LFS objects in S3](../../workflow/lfs/lfs_administration.md#s3-for-omnibus-installations).
+
 ### Setting up a domain name
 
 After you SSH into the instance, configure the domain name:
