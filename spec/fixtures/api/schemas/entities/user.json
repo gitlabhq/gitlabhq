@@ -17,7 +17,8 @@
     "path": { "type": "string" },
     "name": { "type": "string" },
     "username": { "type": "string" },
-    "status_tooltip_html": { "$ref": "../types/nullable_string.json" }
+    "status_tooltip_html": { "$ref": "../types/nullable_string.json" },
+    "user_preference": { "type": ["object", "null"] }
   },
   "additionalProperties": false
 }
