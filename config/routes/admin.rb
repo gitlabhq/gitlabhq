@@ -125,14 +125,11 @@ namespace :admin do
     put :reset_health_check_token
     put :clear_repository_check_states
     get :integrations, :repository, :templates, :ci_cd, :reporting, :metrics_and_profiling, :network, :geo, :preferences
-<<<<<<< HEAD
   end
 
   ## EE-specific
   resource :license, only: [:show, :new, :create, :destroy] do
     get :download, on: :member
-=======
->>>>>>> upstream/master
   end
 
   resources :geo_nodes, only: [:index, :create, :new, :edit, :update]
