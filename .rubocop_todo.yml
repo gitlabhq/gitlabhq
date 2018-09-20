@@ -53,20 +53,6 @@ Layout/IndentArray:
 Layout/IndentHash:
   Enabled: false
 
-# Offense count: 11
-# Cop supports --auto-correct.
-# Configuration parameters: AllowForAlignment.
-Layout/SpaceBeforeFirstArg:
-  Exclude:
-    - 'config/routes/project.rb'
-    - 'db/migrate/20170506185517_add_foreign_key_pipeline_schedules_and_pipelines.rb'
-    - 'features/steps/project/source/browse_files.rb'
-    - 'features/steps/project/source/markdown_render.rb'
-    - 'lib/api/runners.rb'
-    - 'spec/features/search/user_uses_search_filters_spec.rb'
-    - 'spec/routing/project_routing_spec.rb'
-    - 'spec/services/system_note_service_spec.rb'
-
 # Offense count: 93
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
