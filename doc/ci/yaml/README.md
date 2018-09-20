@@ -74,7 +74,7 @@ A job is defined by a list of parameters that define the job behavior.
 | after_script  | no       | Override a set of commands that are executed after job |
 | environment   | no       | Defines a name of environment to which deployment is done by this job |
 | coverage      | no       | Define code coverage settings for a given job |
-| retry         | no       | Define how many times a job can be auto-retried in case of a failure |
+| retry         | no       | Define when and how many times a job can be auto-retried in case of a failure |
 | parallel      | no       | Defines how many instances of a job should be run in parallel |
 
 ### `extends`
@@ -1433,24 +1433,66 @@ job1:
 ## `retry`
 
 > [Introduced][ce-12909] in GitLab 9.5.
+> [Behaviour expanded][ce-21758] in GitLab 11.4 to control on which failures to retry.
 
 `retry` allows you to configure how many times a job is going to be retried in
 case of a failure.
 
-When a job fails, and has `retry` configured it is going to be processed again
+When a job fails and has `retry` configured it is going to be processed again
 up to the amount of times specified by the `retry` keyword.
 
 If `retry` is set to 2, and a job succeeds in a second run (first retry), it won't be retried
 again. `retry` value has to be a positive integer, equal or larger than 0, but
 lower or equal to 2 (two retries maximum, three runs in total).
 
-A simple example:
+A simple example to retry in all failure cases:
 
 ```yaml
 test:
   script: rspec
   retry: 2
 ```
+
+By default a job will be retried on all failure cases. To have a better control
+on which failures to retry, `retry` can be a hash with `when` and `max` keys. `max`
+specifies how many times to retry, `when` the failure cases to retry.
+
+To retry only runner system failures at maximum two times:
+
+```yaml
+test:
+  script: rspec
+  retry:
+    max: 2
+    when: runner_system_failure
+```
+
+If there is another failure than a runner system failure, the job will not be
+retried.
+
+To retry on multiple failure cases `when` can also be an array of failures:
+
+```yaml
+test:
+  script: rspec
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+```
+
+Possible values for `when` are:
+
+- `always`: retry on any failure (default)
+- `unknown_failure`: retry when the failure reason is unknown
+- `script_failure`: retry when the script failed
+- `api_failure`: retry on api failure
+- `stuck_or_timeout_failure`: retry when the job got stuck or timed out
+- `runner_system_failure`: retry if there was a runner system failure (e.g. setting up the job failed)
+- `missing_dependency_failure`: retry if a dependency was missing
+- `runner_unsupported`: retry if the runner was unsupported
+
 
 ## `parallel`
 
@@ -2052,6 +2094,7 @@ CI with various languages.
 [ce-7983]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7983
 [ce-7447]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7447
 [ce-12909]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12909
+[ce-21758]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21758
 [schedules]: ../../user/project/pipelines/schedules.md
 [variables-expressions]: ../variables/README.md#variables-expressions
 [ee]: https://about.gitlab.com/gitlab-ee/
