@@ -9,7 +9,6 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
 
   def index
     @feature_flags = project.operations_feature_flags
-    @unleash_instanceid = project.feature_flag_access_token
   end
 
   def new
