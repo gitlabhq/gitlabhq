@@ -94,6 +94,7 @@ description: 'Learn how to contribute to GitLab.'
 - [Verifying database capabilities](verifying_database_capabilities.md)
 - [Database Debugging and Troubleshooting](database_debugging.md)
 - [Query Count Limits](query_count_limits.md)
+- [Database helper modules](database_helpers.md)
 
 ## Testing guides
 
