@@ -41,7 +41,7 @@ module EE
           def log_user_changes(user, message)
             ::Gitlab::AppLogger.info(
               "SAML(#{auth_hash.provider}) account \"#{auth_hash.uid}\" #{message} " \
-              "Gitlab user \"#{user.name}\" (#{user.email})"
+              "GitLab user \"#{user.name}\" (#{user.email})"
             )
           end
 

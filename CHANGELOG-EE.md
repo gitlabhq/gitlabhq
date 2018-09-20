@@ -1618,7 +1618,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ## 9.3.5 (2017-07-05)
 
-- Make admin mirror application setting Gitlab.com exclusive. !2307
+- Make admin mirror application setting GitLab.com exclusive. !2307
 - Make Geo::RepositorySyncService force create a repo.
 
 ## 9.3.4 (2017-07-03)
@@ -3099,7 +3099,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 ## 7.5.0 (2014-11-22)
 
   - Added an ability to check each author commit's email by regex
-  - Added an ability to restrict commit authors to existing Gitlab users
+  - Added an ability to restrict commit authors to existing GitLab users
   - Add an option for automatic daily LDAP user sync
   - Added git hook for preventing tag removal to API
   - Added git hook for setting commit message regex to API
@@ -3125,7 +3125,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Show group sharing members on /my/project/team
   - Improve explanation of the LDAP permission reset
   - Fix some navigation issues
-  - Added support for multiple LDAP groups per Gitlab group
+  - Added support for multiple LDAP groups per GitLab group
 
 ## 7.2.0 (2014-08-22)
 
