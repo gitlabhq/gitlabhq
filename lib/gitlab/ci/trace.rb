@@ -142,6 +142,10 @@ module Gitlab
             job.erase_old_trace!
           end
         end
+      rescue => e
+        failed_archive_counter.increment
+        Rails.logger.error "Failed to archive trace. id: #{job.id} message: #{e.message}"
+        raise e
       end
 
       def archive_stream!(stream)
@@ -233,6 +237,10 @@ module Gitlab
       # For ExclusiveLeaseGuard concern
       def lease_timeout
         LEASE_TIMEOUT
+      end
+
+      def failed_archive_counter
+        @failed_archive_counter ||= Gitlab::Metrics.counter(:job_trace_archive_failed_total, "Counter of failed attempts of traces archiving")
       end
     end
   end

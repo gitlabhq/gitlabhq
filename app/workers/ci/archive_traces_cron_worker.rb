@@ -14,18 +14,10 @@ module Ci
         begin
           build.trace.archive!
         rescue ::Gitlab::Ci::Trace::AlreadyArchivedError
-        rescue => e
-          failed_archive_counter.increment
-          Rails.logger.error "Failed to archive stale live trace. id: #{build.id} message: #{e.message}"
+          # no-op
         end
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
-
-    private
-
-    def failed_archive_counter
-      @failed_archive_counter ||= Gitlab::Metrics.counter(:job_trace_archive_failed_total, "Counter of failed attempts of traces archiving")
-    end
   end
 end
