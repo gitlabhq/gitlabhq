@@ -2,7 +2,7 @@ import Vue from 'vue';
 import axios from '~/lib/utils/axios_utils';
 import Cookies from 'js-cookie';
 import { handleLocationHash, historyPushState } from '~/lib/utils/common_utils';
-import { mergeUrlParams } from '~/lib/utils/url_utility';
+import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
 import { getDiffPositionByLineCode } from './utils';
 import * as types from './mutation_types';
 import {
@@ -118,6 +118,25 @@ export const loadMoreLines = ({ commit }, options) => {
       fileHash,
     });
   });
+};
+
+export const scrollToLineIfNeededInline = (_, line) => {
+  const hash = getLocationHash();
+
+  if (hash && line.lineCode === hash) {
+    handleLocationHash();
+  }
+};
+
+export const scrollToLineIfNeededParallel = (_, line) => {
+  const hash = getLocationHash();
+
+  if (
+    hash &&
+    ((line.left && line.left.lineCode === hash) || (line.right && line.right.lineCode === hash))
+  ) {
+    handleLocationHash();
+  }
 };
 
 export const loadCollapsedDiff = ({ commit }, file) =>
