@@ -1050,6 +1050,9 @@ msgstr ""
 msgid "CI / CD Settings"
 msgstr ""
 
+msgid "CI/CD"
+msgstr ""
+
 msgid "CI/CD configuration"
 msgstr ""
 
@@ -2841,6 +2844,9 @@ msgstr ""
 msgid "Generate a default set of labels"
 msgstr ""
 
+msgid "Geo"
+msgstr ""
+
 msgid "Git"
 msgstr ""
 
@@ -3706,6 +3712,9 @@ msgid "Metrics - Influx"
 msgstr ""
 
 msgid "Metrics - Prometheus"
+msgstr ""
+
+msgid "Metrics and profiling"
 msgstr ""
 
 msgid "Metrics|Check out the CI/CD documentation on deploying to an environment"
@@ -4995,6 +5004,9 @@ msgstr ""
 msgid "Reply to this email directly or %{view_it_on_gitlab}."
 msgstr ""
 
+msgid "Reporting"
+msgstr ""
+
 msgid "Reports|%{failedString} and %{resolvedString}"
 msgstr ""
 
@@ -5794,6 +5806,9 @@ msgid "Team"
 msgstr ""
 
 msgid "Template"
+msgstr ""
+
+msgid "Templates"
 msgstr ""
 
 msgid "Terms of Service Agreement and Privacy Policy"
