@@ -73,14 +73,6 @@ Layout/SpaceInsideBlockBraces:
 Layout/SpaceInsideParens:
   Enabled: false
 
-# Offense count: 14
-# Cop supports --auto-correct.
-Layout/SpaceInsidePercentLiteralDelimiters:
-  Exclude:
-    - 'lib/gitlab/git_access.rb'
-    - 'lib/gitlab/health_checks/fs_shards_check.rb'
-    - 'spec/lib/gitlab/health_checks/fs_shards_check_spec.rb'
-
 # Offense count: 26
 Lint/DuplicateMethods:
   Exclude:
