@@ -139,7 +139,7 @@ stages:
     - export SCRIPT_NAME="${SCRIPT_NAME:-$CI_JOB_NAME}"
     - apk add --update openssl
     - wget $CI_PROJECT_URL/raw/$CI_COMMIT_SHA/scripts/$SCRIPT_NAME
-    - chmod 755 $SCRIPT_NAME
+    - chmod 755 $(basename $SCRIPT_NAME)
 
 .rake-exec: &rake-exec
   <<: *dedicated-no-docs-no-db-pull-cache-job
@@ -930,13 +930,13 @@ no_ee_check:
   only:
     - //@gitlab-org/gitlab-ce
 
-# GitLab CE Review apps
+# GitLab Review apps
 review:
-  <<: *dedicated-no-docs-pull-cache-job
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
   stage: test
   allow_failure: true
-  before_script: []
+  before_script:
+    - gem install gitlab --no-document
   variables:
     GIT_DEPTH: "1"
     HOST_SUFFIX: "$CI_ENVIRONMENT_SLUG"
@@ -953,6 +953,7 @@ review:
     - ensure_namespace
     - install_tiller
     - create_secret
+    - install_external_dns
     - deploy
   environment:
     name: review/$CI_COMMIT_REF_NAME
@@ -961,6 +962,7 @@ review:
   only:
     refs:
       - branches@gitlab-org/gitlab-ce
+      - branches@gitlab-org/gitlab-ee
     kubernetes: active
   except:
     refs:
@@ -970,13 +972,14 @@ review:
 stop_review:
   <<: *single-script-job
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
-  stage: post-cleanup
+  stage: test
   allow_failure: true
   cache: {}
   dependencies: []
-  before_script: []
+  variables:
+    SCRIPT_NAME: "review_apps/review-apps.sh"
   script:
-    - source ./scripts/review_apps/review-apps.sh
+    - source $(basename "${SCRIPT_NAME}")
     - delete
     - cleanup
   when: manual
@@ -985,6 +988,7 @@ stop_review:
     action: stop
   only:
     refs:
+      - branches@gitlab-org/gitlab-ce
       - branches@gitlab-org/gitlab-ee
     kubernetes: active
   except:
@@ -994,7 +998,7 @@ stop_review:
 automated_review_cleanup:
   <<: *dedicated-no-docs-pull-cache-job
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
-  stage: build
+  stage: post-cleanup
   allow_failure: true
   cache: {}
   dependencies: []
@@ -1006,6 +1010,7 @@ automated_review_cleanup:
     - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
   only:
     refs:
+      - schedules@gitlab-org/gitlab-ce
       - schedules@gitlab-org/gitlab-ee
   except:
     - master
