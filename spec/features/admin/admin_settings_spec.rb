@@ -80,15 +80,9 @@ describe 'Admin updates settings' do
         select 'Are forbidden', from: 'ED25519 SSH keys'
         click_on 'Save changes'
       end
-<<<<<<< HEAD
 
       forbidden = ApplicationSetting::FORBIDDEN_KEY_VALUE.to_s
 
-=======
-
-      forbidden = ApplicationSetting::FORBIDDEN_KEY_VALUE.to_s
-
->>>>>>> upstream/master
       expect(page).to have_content 'Application settings saved successfully'
       expect(find_field('RSA SSH keys').value).to eq(forbidden)
       expect(find_field('DSA SSH keys').value).to eq('0')
@@ -198,7 +192,6 @@ describe 'Admin updates settings' do
     end
   end
 
-<<<<<<< HEAD
   describe 'LDAP settings' do
     context 'with LDAP enabled' do
       it 'Change allow group owners to manage ldap' do
@@ -277,60 +270,6 @@ describe 'Admin updates settings' do
       expect(Gitlab::CurrentSettings.auto_devops_enabled?).to be true
       expect(Gitlab::CurrentSettings.auto_devops_domain).to eq('domain.com')
       expect(page).to have_content "Application settings saved successfully"
-=======
-  context 'Integrations page' do
-    before do
-      visit integrations_admin_application_settings_path
-    end
-
-    it 'Enable hiding third party offers' do
-      page.within('.as-third-party-offers') do
-        check 'Do not display offers from third parties within GitLab'
-        click_button 'Save changes'
-      end
-
-      expect(page).to have_content "Application settings saved successfully"
-      expect(Gitlab::CurrentSettings.hide_third_party_offers).to be true
-    end
-
-    it 'Change Slack Notifications Service template settings' do
-      first(:link, 'Service Templates').click
-      click_link 'Slack notifications'
-      fill_in 'Webhook', with: 'http://localhost'
-      fill_in 'Username', with: 'test_user'
-      fill_in 'service_push_channel', with: '#test_channel'
-      page.check('Notify only broken pipelines')
-      page.check('Notify only default branch')
-
-      check_all_events
-      click_on 'Save'
-
-      expect(page).to have_content 'Application settings saved successfully'
-
-      click_link 'Slack notifications'
-
-      page.all('input[type=checkbox]').each do |checkbox|
-        expect(checkbox).to be_checked
-      end
-      expect(find_field('Webhook').value).to eq 'http://localhost'
-      expect(find_field('Username').value).to eq 'test_user'
-      expect(find('#service_push_channel').value).to eq '#test_channel'
-    end
-  end
-
-  context 'CI/CD page' do
-    it 'Change CI/CD settings' do
-      visit ci_cd_admin_application_settings_path
-
-      page.within('.as-ci-cd') do
-        check 'Default to Auto DevOps pipeline for all projects'
-        fill_in 'Auto devops domain', with: 'domain.com'
-        click_button 'Save changes'
-      end
-
-      expect(Gitlab::CurrentSettings.auto_devops_enabled?).to be true
-      expect(Gitlab::CurrentSettings.auto_devops_domain).to eq('domain.com')
-      expect(page).to have_content "Application settings saved successfully"
     end
   end
 
@@ -338,32 +277,6 @@ describe 'Admin updates settings' do
     it 'Change Spam settings' do
       visit reporting_admin_application_settings_path
 
-      page.within('.as-spam') do
-        check 'Enable reCAPTCHA'
-        fill_in 'reCAPTCHA Site Key', with: 'key'
-        fill_in 'reCAPTCHA Private Key', with: 'key'
-        fill_in 'IPs per user', with: 15
-        click_button 'Save changes'
-      end
-
-      expect(page).to have_content "Application settings saved successfully"
-      expect(Gitlab::CurrentSettings.recaptcha_enabled).to be true
-      expect(Gitlab::CurrentSettings.unique_ips_limit_per_user).to eq(15)
-    end
-  end
-
-  context 'Metrics and profiling page' do
-    before do
-      visit metrics_and_profiling_admin_application_settings_path
->>>>>>> upstream/master
-    end
-  end
-
-  context 'Reporting page' do
-    it 'Change Spam settings' do
-      visit reporting_admin_application_settings_path
-
-<<<<<<< HEAD
       page.within('.as-spam') do
         check 'Enable reCAPTCHA'
         fill_in 'reCAPTCHA Site Key', with: 'key'
@@ -421,46 +334,6 @@ describe 'Admin updates settings' do
         click_on 'Save changes'
       end
 
-=======
-    it 'Change Influx settings' do
-      page.within('.as-influx') do
-        check 'Enable InfluxDB Metrics'
-        click_button 'Save changes'
-      end
-
-      expect(Gitlab::CurrentSettings.metrics_enabled?).to be true
-      expect(page).to have_content "Application settings saved successfully"
-    end
-
-    it 'Change Prometheus settings' do
-      page.within('.as-prometheus') do
-        check 'Enable Prometheus Metrics'
-        click_button 'Save changes'
-      end
-
-      expect(Gitlab::CurrentSettings.prometheus_metrics_enabled?).to be true
-      expect(page).to have_content "Application settings saved successfully"
-    end
-
-    it 'Change Performance bar settings' do
-      group = create(:group)
-
-      page.within('.as-performance-bar') do
-        check 'Enable the Performance Bar'
-        fill_in 'Allowed group', with: group.path
-        click_on 'Save changes'
-      end
-
-      expect(page).to have_content "Application settings saved successfully"
-      expect(find_field('Enable the Performance Bar')).to be_checked
-      expect(find_field('Allowed group').value).to eq group.path
-
-      page.within('.as-performance-bar') do
-        uncheck 'Enable the Performance Bar'
-        click_on 'Save changes'
-      end
-
->>>>>>> upstream/master
       expect(page).to have_content 'Application settings saved successfully'
       expect(find_field('Enable the Performance Bar')).not_to be_checked
       expect(find_field('Allowed group').value).to be_nil
@@ -508,7 +381,6 @@ describe 'Admin updates settings' do
       expect(Gitlab::CurrentSettings.help_page_support_url).to eq "http://example.com/help"
       expect(page).to have_content "Application settings saved successfully"
     end
-<<<<<<< HEAD
 
     it 'Change Pages settings' do
       page.within('.as-pages') do
@@ -522,21 +394,6 @@ describe 'Admin updates settings' do
       expect(page).to have_content "Application settings saved successfully"
     end
 
-=======
-
-    it 'Change Pages settings' do
-      page.within('.as-pages') do
-        fill_in 'Maximum size of pages (MB)', with: 15
-        check 'Require users to prove ownership of custom domains'
-        click_button 'Save changes'
-      end
-
-      expect(Gitlab::CurrentSettings.max_pages_size).to eq 15
-      expect(Gitlab::CurrentSettings.pages_domain_verification_enabled?).to be_truthy
-      expect(page).to have_content "Application settings saved successfully"
-    end
-
->>>>>>> upstream/master
     it 'Change Background jobs settings' do
       page.within('.as-background') do
         fill_in 'Throttling Factor', with: 1
