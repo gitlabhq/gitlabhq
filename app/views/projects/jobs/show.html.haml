@@ -6,7 +6,10 @@
 - content_for :page_specific_javascripts do
   = stylesheet_link_tag 'page_bundles/xterm'
 
+
 %div{ class: container_class }
+  #js-vue-job-app{ data: { job_endpoint: project_job_path(@project, @build, format: :json), trace_options: javascript_build_options, container_class: container_class } }
+
   .build-page.js-build-page
     #js-build-header-vue
     - if @build.stuck?

@@ -1,20 +1,16 @@
 <script>
-import ciHeader from '../../vue_shared/components/header_ci_component.vue';
-import callout from '../../vue_shared/components/callout.vue';
+import CiHeader from '../../vue_shared/components/header_ci_component.vue';
+import Callout from '../../vue_shared/components/callout.vue';
 
 export default {
   name: 'JobHeaderSection',
   components: {
-    ciHeader,
-    callout,
+    CiHeader,
+    Callout,
   },
   props: {
     job: {
       type: Object,
-      required: true,
-    },
-    isLoading: {
-      type: Boolean,
       required: true,
     },
   },
@@ -25,10 +21,9 @@ export default {
   },
   computed: {
     status() {
+      console.log('this.job', this.job);
+
       return this.job && this.job.status;
-    },
-    shouldRenderContent() {
-      return !this.isLoading && Object.keys(this.job).length;
     },
     shouldRenderReason() {
       return !!(this.job.status && this.job.callout_message);
@@ -70,7 +65,6 @@ export default {
   <header>
     <div class="js-build-header build-header top-area">
       <ci-header
-        v-if="shouldRenderContent"
         :status="status"
         :item-id="job.id"
         :time="headerTime"
@@ -79,11 +73,6 @@ export default {
         :has-sidebar-button="true"
         :should-render-triggered-label="jobStarted"
         item-name="Job"
-      />
-      <gl-loading-icon
-        v-if="isLoading"
-        :size="2"
-        class="prepend-top-default append-bottom-default"
       />
     </div>
 

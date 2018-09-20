@@ -2,6 +2,7 @@ import Vue from 'vue';
 import JobMediator from './job_details_mediator';
 import jobHeader from './components/header.vue';
 import detailsBlock from './components/sidebar_details_block.vue';
+import JobApp from './components/job_app.vue';
 
 export default () => {
   const { dataset } = document.getElementById('js-job-details-vue');
@@ -9,30 +10,55 @@ export default () => {
 
   mediator.fetchJob();
 
-  // Header
+  const datasetJob = document.getElementById('js-vue-job-app').dataset;
+
+  // NEW APP
   // eslint-disable-next-line no-new
   new Vue({
-    el: '#js-build-header-vue',
+    el: '#js-vue-job-app',
     components: {
-      jobHeader,
-    },
-    data() {
-      return {
-        mediator,
-      };
-    },
-    mounted() {
-      this.mediator.initBuildClass();
+      JobApp,
     },
     render(createElement) {
-      return createElement('job-header', {
+      return createElement('job-app', {
         props: {
-          isLoading: this.mediator.state.isLoading,
-          job: this.mediator.store.state.job,
+          jobEndpoint: datasetJob.jobEndpoint,
+          traceOptions: {
+            buildStage: datasetJob.traceOptionsBuildStage,
+            buildStatus: datasetJob.traceOptionsBuildStatus,
+            logState: datasetJob.traceOptionsLogState,
+            pagePath: datasetJob.traceOptionsPagePath,
+          },
+          containerClass: datasetJob.containerClass,
         },
       });
     },
   });
+
+  // Header
+  // eslint-disable-next-line no-new
+  // new Vue({
+  //   el: '#js-build-header-vue',
+  //   components: {
+  //     jobHeader,
+  //   },
+  //   data() {
+  //     return {
+  //       mediator,
+  //     };
+  //   },
+  //   mounted() {
+  //     this.mediator.initBuildClass();
+  //   },
+  //   render(createElement) {
+  //     return createElement('job-header', {
+  //       props: {
+  //         isLoading: this.mediator.state.isLoading,
+  //         job: this.mediator.store.state.job,
+  //       },
+  //     });
+  //   },
+  // });
 
   // Sidebar information block
   const detailsBlockElement = document.getElementById('js-details-block-vue');

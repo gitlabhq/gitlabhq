@@ -1,6 +1,13 @@
 import * as types from './mutation_types';
 
 export default {
+  [types.SET_JOB_ENDPOINT](state, endpoint) {
+    state.jobEndpoint = endpoint;
+  },
+  [types.SET_TRACE_ENDPOINT](state, endpoint) {
+    state.traceEndpoint = `${endpoint}/trace.json`;
+  },
+
   [types.REQUEST_STATUS_FAVICON](state) {
     state.fetchingStatusFavicon = true;
   },
