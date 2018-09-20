@@ -750,6 +750,9 @@ module Ci
         variables.append(key: 'GITLAB_FEATURES', value: project.licensed_features.join(','))
         variables.append(key: 'CI_SERVER_NAME', value: 'GitLab')
         variables.append(key: 'CI_SERVER_VERSION', value: Gitlab::VERSION)
+        variables.append(key: 'CI_SERVER_VERSION_MAJOR', value: gitlab_version_info.major.to_s)
+        variables.append(key: 'CI_SERVER_VERSION_MINOR', value: gitlab_version_info.minor.to_s)
+        variables.append(key: 'CI_SERVER_VERSION_PATCH', value: gitlab_version_info.patch.to_s)
         variables.append(key: 'CI_SERVER_REVISION', value: Gitlab.revision)
         variables.append(key: 'CI_JOB_NAME', value: name)
         variables.append(key: 'CI_JOB_STAGE', value: stage)
@@ -762,6 +765,10 @@ module Ci
         variables.append(key: "CI_JOB_MANUAL", value: 'true') if action?
         variables.concat(legacy_variables)
       end
+    end
+
+    def gitlab_version_info
+      @gitlab_version_info ||= Gitlab::VersionInfo.parse(Gitlab::VERSION)
     end
 
     def legacy_variables
