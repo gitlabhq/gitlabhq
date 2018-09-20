@@ -99,6 +99,7 @@ module API
     mount ::API::Environments
     mount ::API::Events
     mount ::API::Features
+    mount ::API::FeatureFlags
     mount ::API::Files
     mount ::API::GroupBoards
     mount ::API::GroupMilestones
@@ -146,7 +147,6 @@ module API
     mount ::API::Templates
     mount ::API::Todos
     mount ::API::Triggers
-    mount ::API::Unleash
     mount ::API::Users
     mount ::API::Variables
     mount ::API::Version

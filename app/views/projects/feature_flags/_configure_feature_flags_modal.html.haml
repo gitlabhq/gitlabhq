@@ -15,9 +15,8 @@
         .form-group
           = label_tag :api_url, s_('FeatureFlags|API URL'), class: 'label-light'
           .input-group
-            - unleash_api_url = "#{root_url(only_path: false)}api/v4/unleash"
             = text_field_tag :api_url,
-              unleash_api_url,
+              unleash_api_url(@project),
               readonly: true,
               class: "form-control js-select-on-focus"
             %span.input-group-append
@@ -28,29 +27,29 @@
                 class: "input-group-text btn btn-default")
 
         .form-group
-          = label_tag :application_name, s_('FeatureFlags|Application name'), class: 'label-light'
-          .input-group
-            = text_field_tag :application_name,
-              @project.id,
-              readonly: true,
-              class: "form-control js-select-on-focus"
-            %span.input-group-append
-              = clipboard_button(target: '#application_name',
-                title: _("Copy name to clipboard"),
-                placement: "left",
-                container: '#configure-feature-flags-modal',
-                class: "input-group-text btn btn-default")
-
-        .form-group
           = label_tag :instance_id, s_('FeatureFlags|Instance ID'), class: 'label-light'
           .input-group
             = text_field_tag :instance_id,
-              @unleash_instanceid,
+              unleash_api_instanceid(@project),
               readonly: true,
               class: "form-control js-select-on-focus"
             %span.input-group-append
               = clipboard_button(target: '#instance_id',
                 title: _("Copy ID to clipboard"),
+                placement: "left",
+                container: '#configure-feature-flags-modal',
+                class: "input-group-text btn btn-default")
+
+        .form-group
+          = label_tag :application_name, s_('FeatureFlags|Application name'), class: 'label-light'
+          .input-group
+            = text_field_tag :application_name,
+              "production",
+              readonly: true,
+              class: "form-control js-select-on-focus"
+            %span.input-group-append
+              = clipboard_button(target: '#application_name',
+                title: _("Copy name to clipboard"),
                 placement: "left",
                 container: '#configure-feature-flags-modal',
                 class: "input-group-text btn btn-default")
