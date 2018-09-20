@@ -161,8 +161,8 @@ export default {
     >
       {{ approvalsRequiredStringified }}
       <a
-        v-tooltip
         v-if="showApprovalDocLink"
+        v-tooltip
         :href="mr.approvalsHelpPath"
         :title="__('About this feature')"
         data-placement="bottom"

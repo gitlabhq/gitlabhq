@@ -116,8 +116,8 @@
       {{ __('Unknown') }}
     </span>
     <span
-      v-tooltip
       v-else
+      v-tooltip
       :title="syncStatusTooltip"
       class="node-sync-settings"
       data-placement="bottom"

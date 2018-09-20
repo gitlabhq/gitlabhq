@@ -38,10 +38,10 @@
     <ul>
       <linked-pipeline
         v-for="(pipeline, index) in linkedPipelines"
+        :key="pipeline.id"
         :class="{
           'flat-connector-before': index === 0 && graphPosition === 'right'
         }"
-        :key="pipeline.id"
         :pipeline-id="pipeline.id"
         :project-name="pipeline.project.name"
         :pipeline-status="pipeline.details.status"

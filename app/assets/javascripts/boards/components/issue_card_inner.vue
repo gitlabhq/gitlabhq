@@ -176,8 +176,8 @@
           tooltip-placement="bottom"
         />
         <span
-          v-tooltip
           v-if="shouldRenderCounter"
+          v-tooltip
           :title="assigneeCounterTooltip"
           class="avatar-counter"
         >
@@ -190,10 +190,10 @@
       class="board-card-footer"
     >
       <button
-        v-tooltip
         v-for="label in issue.labels"
         v-if="showLabel(label)"
         :key="label.id"
+        v-tooltip
         :style="labelStyle(label)"
         :title="label.description"
         class="badge color-label"

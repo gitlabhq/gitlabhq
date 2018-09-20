@@ -67,11 +67,11 @@ export default {
       <ul>
         <li
           v-for="(job, index) in jobs"
+          :id="jobId(job)"
           :key="job.id"
           :class="{
             'left-connector': index === 0 && (!isFirstColumn || hasTriggeredBy)
           }"
-          :id="jobId(job)"
           class="build"
         >
 

@@ -26,8 +26,8 @@ export default {
 
 <template>
   <span
-    v-tooltip
     v-if="file.file_lock"
+    v-tooltip
     :title="lockTooltip"
     data-container="body"
   >

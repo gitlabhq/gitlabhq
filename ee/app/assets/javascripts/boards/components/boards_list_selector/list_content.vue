@@ -30,8 +30,8 @@ export default {
   <div class="dropdown-content">
     <ul>
       <component
-        v-for="item in items"
         :is="listContentComponent"
+        v-for="item in items"
         :key="item.id"
         :item="item"
         @onItemSelect="handleItemClick"

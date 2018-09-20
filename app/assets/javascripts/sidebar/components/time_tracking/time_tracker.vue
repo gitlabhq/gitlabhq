@@ -1,4 +1,6 @@
 <script>
+/* eslint-disable vue/prop-name-casing */
+
 import TimeTrackingHelpState from './help_state.vue';
 import TimeTrackingCollapsedState from './collapsed_state.vue';
 import TimeTrackingSpentOnlyPane from './spent_only_pane.vue';

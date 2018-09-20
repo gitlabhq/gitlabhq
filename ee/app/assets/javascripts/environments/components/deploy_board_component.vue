@@ -101,12 +101,12 @@
         <div class="deploy-board-instances-container">
           <template v-for="(instance, i) in deployBoardData.instances">
             <instance-component
+              :key="i"
               :status="instance.status"
               :tooltip-text="instance.tooltip"
               :pod-name="instance.pod_name"
               :logs-path="logsPath"
               :stable="instance.stable"
-              :key="i"
             />
           </template>
         </div>

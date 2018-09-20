@@ -291,8 +291,8 @@ export default {
         <template
           v-for="(data, index) in graphData">
           <rect
-            v-tooltip
             :key="index"
+            v-tooltip
             :width="xScale.bandwidth()"
             :x="xScale(data.name)"
             :y="yScale(data.value)"

@@ -86,8 +86,8 @@
     </div>
     <div class="epic-group-timeframe">
       <span
-        v-tooltip
         v-if="isEpicGroupDifferent"
+        v-tooltip
         :title="epic.groupFullName"
         class="epic-group"
         data-placement="right"

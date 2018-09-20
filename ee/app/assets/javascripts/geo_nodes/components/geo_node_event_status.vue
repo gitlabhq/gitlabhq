@@ -49,8 +49,8 @@
         {{ eventString }}
       </strong>
       <span
-        v-tooltip
         v-if="eventTimeStamp"
+        v-tooltip
         :title="timeStampString"
         class="event-status-timestamp"
         data-placement="bottom"

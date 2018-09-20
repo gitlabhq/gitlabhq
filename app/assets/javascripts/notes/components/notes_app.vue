@@ -187,10 +187,10 @@ export default {
       class="notes main-notes-list timeline"
     >
       <component
-        v-for="discussion in allDiscussions"
         :is="getComponentName(discussion)"
-        v-bind="getComponentData(discussion)"
+        v-for="discussion in allDiscussions"
         :key="discussion.id"
+        v-bind="getComponentData(discussion)"
       />
     </ul>
 

@@ -45,11 +45,11 @@ export default {
           v-for="(line, index) in diffLines"
         >
           <parallel-diff-table-row
+            :key="index"
             :file-hash="diffFile.fileHash"
             :context-lines-path="diffFile.contextLinesPath"
             :line="line"
             :is-bottom="index + 1 === diffLinesLength"
-            :key="index"
           />
           <parallel-diff-comment-row
             v-if="shouldRenderParallelCommentRow(line)"
