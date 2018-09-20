@@ -138,6 +138,32 @@ describe Gitlab::Ci::Config::Entry::Job do
             expect(entry).to be_valid
           end
         end
+
+        # Those values are documented at `doc/ci/yaml/README.md`. If any of
+        # those values gets invalid, documentation must be updated. To make
+        # sure this is catched, check explicitly that all of the documented
+        # values are valid. If they are not it means the documentation and this
+        # array must be updated.
+        RETRY_WHEN_IN_DOCUMENTATION = %w[
+          always
+          unknown_failure
+          script_failure
+          api_failure
+          stuck_or_timeout_failure
+          runner_system_failure
+          missing_dependency_failure
+          runner_unsupported
+        ].freeze
+
+        RETRY_WHEN_IN_DOCUMENTATION.each do |reason|
+          context "when it is a hash with value from documentation `#{reason}`" do
+            let(:config) { { script: 'rspec', retry: { max: 2, when: reason } } }
+
+            it 'is valid' do
+              expect(entry).to be_valid
+            end
+          end
+        end
       end
 
       context 'when retry value is not correct' do
@@ -181,7 +207,7 @@ describe Gitlab::Ci::Config::Entry::Job do
         end
 
         context 'defined as a hash' do
-          context 'with unkown keys' do
+          context 'with unknown keys' do
             let(:config) { { retry: { max: 2, unknown_key: :something, one_more: :key } } }
 
             it 'returns error about the unknown key' do
