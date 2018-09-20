@@ -1,3 +1,5 @@
+/* eslint-disable jasmine/no-unsafe-spy */
+
 import CloseReopenReportToggle from '~/close_reopen_report_toggle';
 import DropLab from '~/droplab/drop_lab';
 
