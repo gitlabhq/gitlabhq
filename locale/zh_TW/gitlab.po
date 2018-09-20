@@ -1626,7 +1626,7 @@ msgid "ClusterIntegration|GitLab Integration"
 msgstr "GitLab 整合"
 
 msgid "ClusterIntegration|GitLab Runner"
-msgstr "Gitlab Runner"
+msgstr "GitLab Runner"
 
 msgid "ClusterIntegration|GitLab Runner connects to this project's repository and executes CI/CD jobs, pushing results back and deploying, applications to production."
 msgstr ""
@@ -2090,7 +2090,7 @@ msgid "ContainerRegistry|Created"
 msgstr "已建立"
 
 msgid "ContainerRegistry|First log in to GitLab&rsquo;s Container Registry using your GitLab username and password. If you have %{link_2fa} you need to use a %{link_token}:"
-msgstr "請先使用你的 Gitlab 帳號來登入 Gitlab 的 Container Registry。如果你有 %{link_2fa} ，你必須使用 %{link_token}:"
+msgstr "請先使用你的 GitLab 帳號來登入 GitLab 的 Container Registry。如果你有 %{link_2fa} ，你必須使用 %{link_token}:"
 
 msgid "ContainerRegistry|GitLab supports up to 3 levels of image names. The following examples of images are valid for your project:"
 msgstr "GitLab 支援多達 3 級的映像檔名稱。以下映像檔範例對您的專案有幫助："
@@ -6897,7 +6897,7 @@ msgid "TagsPage|Optionally, add a message to the tag."
 msgstr "增加標籤的說明（可選）"
 
 msgid "TagsPage|Optionally, add release notes to the tag. They will be stored in the GitLab database and displayed on the tags page."
-msgstr "增加標籤的發佈說明，這將會被儲存在Gitlab資料庫中，並顯示於標籤頁。（可選）"
+msgstr "增加標籤的發佈說明，這將會被儲存在GitLab資料庫中，並顯示於標籤頁。（可選）"
 
 msgid "TagsPage|Release notes"
 msgstr "發佈說明"

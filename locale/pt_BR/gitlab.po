@@ -1646,7 +1646,7 @@ msgid "ClusterIntegration|Environment scope"
 msgstr "Escopo de ambiente"
 
 msgid "ClusterIntegration|Every new Google Cloud Platform (GCP) account receives $300 in credit upon %{sign_up_link}. In partnership with Google, GitLab is able to offer an additional $200 for both new and existing GCP accounts to get started with GitLab's Google Kubernetes Engine Integration."
-msgstr "Cada nova conta no Google Cloud Plataform (GCP) recebe US$300 em créditos por se %{sign_up_link}. Em parceria com o Google, o Gitlab pode oferecer um adicional de US$200 para novas contas do GCP para começar a usar a integração GKE do GitLab."
+msgstr "Cada nova conta no Google Cloud Plataform (GCP) recebe US$300 em créditos por se %{sign_up_link}. Em parceria com o Google, o GitLab pode oferecer um adicional de US$200 para novas contas do GCP para começar a usar a integração GKE do GitLab."
 
 msgid "ClusterIntegration|Fetching machine types"
 msgstr "Recuperando tipos de máquina"
@@ -1661,7 +1661,7 @@ msgid "ClusterIntegration|GitLab Integration"
 msgstr "Integração GitLab"
 
 msgid "ClusterIntegration|GitLab Runner"
-msgstr "Gitlab Runner"
+msgstr "GitLab Runner"
 
 msgid "ClusterIntegration|GitLab Runner connects to this project's repository and executes CI/CD jobs, pushing results back and deploying, applications to production."
 msgstr ""
@@ -2127,10 +2127,10 @@ msgid "ContainerRegistry|Created"
 msgstr "Criado"
 
 msgid "ContainerRegistry|First log in to GitLab&rsquo;s Container Registry using your GitLab username and password. If you have %{link_2fa} you need to use a %{link_token}:"
-msgstr "Primeiro faça login no Container Registry do Gitlab usando seu nome de usuário e senha. Se você tiver %{link_2fa}, será necessário usar um %{link_token}:"
+msgstr "Primeiro faça login no Container Registry do GitLab usando seu nome de usuário e senha. Se você tiver %{link_2fa}, será necessário usar um %{link_token}:"
 
 msgid "ContainerRegistry|GitLab supports up to 3 levels of image names. The following examples of images are valid for your project:"
-msgstr "Gitlab suporta até três níveis de nomes de imagens. Os exemplos a seguir são de imagens válidas para seu projeto:"
+msgstr "GitLab suporta até três níveis de nomes de imagens. Os exemplos a seguir são de imagens válidas para seu projeto:"
 
 msgid "ContainerRegistry|How to use the Container Registry"
 msgstr "Como usar o Container Registry"
@@ -2163,7 +2163,7 @@ msgid "ContainerRegistry|Use different image names"
 msgstr "Use nomes de imagem diferentes"
 
 msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images."
-msgstr "Com o Container Registry do Docker integrado ao Gitlab, todo projeto pode ter seu próprio espaço para guardar suas imagens."
+msgstr "Com o Container Registry do Docker integrado ao GitLab, todo projeto pode ter seu próprio espaço para guardar suas imagens."
 
 msgid "ContainerRegistry|You can also use a %{deploy_token} for read-only access to the registry images."
 msgstr "Você pode usar também um %{deploy_token} para acesso somente-leitura às imagens do registry."
@@ -3652,7 +3652,7 @@ msgid "Google Takeout"
 msgstr "Google Takeout"
 
 msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service."
-msgstr "Autenticação do Google não está %{link_to_documentation}. Peça ao administrador do Gitlab se você deseja usar esse serviço."
+msgstr "Autenticação do Google não está %{link_to_documentation}. Peça ao administrador do GitLab se você deseja usar esse serviço."
 
 msgid "Got it!"
 msgstr "Entendi!"
@@ -5812,7 +5812,7 @@ msgid "PrometheusService|Automatically deploy and configure Prometheus on your c
 msgstr "Fazer deploy automático e configurar o Prometheus nos seus clusters para monitorar o ambiente do seu projeto"
 
 msgid "PrometheusService|By default, Prometheus listens on ‘http://localhost:9090’. It’s not recommended to change the default address and port as this might affect or conflict with other services running on the GitLab server."
-msgstr "Por padrão, Prometheus escuta em 'http://localhost:9090'. Não é recomendado mudar o endereço padrão e sua porta, porque pode conflitar com outros serviços que estão executando no sevidor do Gitlab."
+msgstr "Por padrão, Prometheus escuta em 'http://localhost:9090'. Não é recomendado mudar o endereço padrão e sua porta, porque pode conflitar com outros serviços que estão executando no sevidor do GitLab."
 
 msgid "PrometheusService|Common metrics"
 msgstr "Métricas comuns"
