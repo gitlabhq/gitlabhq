@@ -10,24 +10,6 @@
 Capybara/CurrentPathExpectation:
   Enabled: false
 
-# Offense count: 23
-FactoryBot/DynamicAttributeDefinedStatically:
-  Exclude:
-    - 'spec/factories/broadcast_messages.rb'
-    - 'spec/factories/ci/builds.rb'
-    - 'spec/factories/ci/runners.rb'
-    - 'spec/factories/clusters/applications/helm.rb'
-    - 'spec/factories/clusters/platforms/kubernetes.rb'
-    - 'spec/factories/emails.rb'
-    - 'spec/factories/gpg_keys.rb'
-    - 'spec/factories/group_members.rb'
-    - 'spec/factories/merge_requests.rb'
-    - 'spec/factories/notes.rb'
-    - 'spec/factories/oauth_access_grants.rb'
-    - 'spec/factories/project_members.rb'
-    - 'spec/factories/todos.rb'
-    - 'spec/factories/uploads.rb'
-
 # Offense count: 167
 # Cop supports --auto-correct.
 Layout/EmptyLinesAroundArguments:

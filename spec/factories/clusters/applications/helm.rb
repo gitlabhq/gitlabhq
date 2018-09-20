@@ -29,7 +29,7 @@ FactoryBot.define do
 
     trait :timeouted do
       installing
-      updated_at ClusterWaitForAppInstallationWorker::TIMEOUT.ago
+      updated_at { ClusterWaitForAppInstallationWorker::TIMEOUT.ago }
     end
 
     factory :clusters_applications_ingress, class: Clusters::Applications::Ingress do
