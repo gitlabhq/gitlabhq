@@ -411,6 +411,22 @@ The following GitLab features are used among others:
 Every GitLab instance includes the documentation, which is available from `/help`
 (`http://my-instance.com/help`), e.g., <https://gitlab.com/help>.
 
+The documentation available online on docs.gitlab.com is continuously
+deployed every hour from the `master` branch of CE, EE, Omnibus, and Runner. Therefore,
+once a merge request gets merged, it will be available online on the same day,
+but they will be shipped (and available on `/help`) within the milestone assigned
+to the MR.
+
+For instance, let's say your merge request has a milestone set to 11.3, which
+will be released on 2018-09-22. If it gets merged on 2018-09-15, it will be
+available online on 2018-09-15, but, as the feature freeze date has passed, if
+the MR does not have a "pick into 11.3" label, the milestone has to be changed
+to 11.4 and it will be shipped with all GitLab packages only on 2018-10-22,
+with GitLab 11.4. Meaning, it will only be available under `/help` from GitLab
+11.4 onwards, but available on docs.gitlab.com on the same day it was merged.
+
+### Linking to `/help`
+
 When you're building a new feature, you may need to link the documentation
 from GitLab, the application. This is normally done in files inside the
 `app/views/` directory with the help of the `help_page_path` helper method.

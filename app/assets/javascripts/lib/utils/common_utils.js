@@ -87,6 +87,7 @@ export const handleLocationHash = () => {
   const fixedTabs = document.querySelector('.js-tabs-affix');
   const fixedDiffStats = document.querySelector('.js-diff-files-changed');
   const fixedNav = document.querySelector('.navbar-gitlab');
+  const performanceBar = document.querySelector('#js-peek');
 
   let adjustment = 0;
   if (fixedNav) adjustment -= fixedNav.offsetHeight;
@@ -101,6 +102,10 @@ export const handleLocationHash = () => {
 
   if (fixedDiffStats) {
     adjustment -= fixedDiffStats.offsetHeight;
+  }
+
+  if (performanceBar) {
+    adjustment -= performanceBar.offsetHeight;
   }
 
   window.scrollBy(0, adjustment);
@@ -132,21 +137,20 @@ export const parseUrlPathname = url => {
   return parsedUrl.pathname.charAt(0) === '/' ? parsedUrl.pathname : `/${parsedUrl.pathname}`;
 };
 
-const splitPath = (path = '') => path
-  .replace(/^\?/, '')
-  .split('&');
+const splitPath = (path = '') => path.replace(/^\?/, '').split('&');
 
-export const urlParamsToArray = (path = '') => splitPath(path)
-  .filter(param => param.length > 0)
-  .map(param => {
-    const split = param.split('=');
-    return [decodeURI(split[0]), split[1]].join('=');
-  });
+export const urlParamsToArray = (path = '') =>
+  splitPath(path)
+    .filter(param => param.length > 0)
+    .map(param => {
+      const split = param.split('=');
+      return [decodeURI(split[0]), split[1]].join('=');
+    });
 
 export const getUrlParamsArray = () => urlParamsToArray(window.location.search);
 
-export const urlParamsToObject = (path = '') => splitPath(path)
-  .reduce((dataParam, filterParam) => {
+export const urlParamsToObject = (path = '') =>
+  splitPath(path).reduce((dataParam, filterParam) => {
     if (filterParam === '') {
       return dataParam;
     }
@@ -217,7 +221,7 @@ export const getParameterByName = (name, urlToParse) => {
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 };
 
-const handleSelectedRange = (range) => {
+const handleSelectedRange = range => {
   const container = range.commonAncestorContainer;
   // add context to fragment if needed
   if (container.tagName === 'OL') {
@@ -514,7 +518,7 @@ export const setFaviconOverlay = overlayPath => {
   );
 };
 
-export const setFavicon = (faviconPath) => {
+export const setFavicon = faviconPath => {
   const faviconEl = document.getElementById('favicon');
   if (faviconEl && faviconPath) {
     faviconEl.setAttribute('href', faviconPath);
@@ -539,7 +543,7 @@ export const setCiStatusFavicon = pageUrl =>
       }
       return resetFavicon();
     })
-    .catch((error) => {
+    .catch(error => {
       resetFavicon();
       throw error;
     });
