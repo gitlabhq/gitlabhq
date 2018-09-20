@@ -1,7 +1,10 @@
 class Admin::ApplicationSettingsController < Admin::ApplicationController
   include InternalRedirect
+<<<<<<< HEAD
   prepend EE::Admin::ApplicationSettingsController
 
+=======
+>>>>>>> upstream/master
   before_action :set_application_setting
 
   def show

@@ -156,6 +156,41 @@ describe('Notes Store mutations', () => {
       expect(state.discussions[2].notes[0].note).toBe(legacyNote.notes[1].note);
       expect(state.discussions.length).toEqual(3);
     });
+
+    it('adds truncated_diff_lines if discussion is a diffFile', () => {
+      const state = {
+        discussions: [],
+      };
+
+      mutations.SET_INITIAL_DISCUSSIONS(state, [
+        {
+          ...note,
+          diff_file: {
+            file_hash: 'a',
+          },
+          truncated_diff_lines: ['a'],
+        },
+      ]);
+
+      expect(state.discussions[0].truncated_diff_lines).toEqual(['a']);
+    });
+
+    it('adds empty truncated_diff_lines when not in discussion', () => {
+      const state = {
+        discussions: [],
+      };
+
+      mutations.SET_INITIAL_DISCUSSIONS(state, [
+        {
+          ...note,
+          diff_file: {
+            file_hash: 'a',
+          },
+        },
+      ]);
+
+      expect(state.discussions[0].truncated_diff_lines).toEqual([]);
+    });
   });
 
   describe('SET_LAST_FETCHED_AT', () => {

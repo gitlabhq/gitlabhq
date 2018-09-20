@@ -1280,9 +1280,12 @@ msgstr ""
 msgid "CI / CD Settings"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "CI will run using the credentials assigned above."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "CI/CD"
 msgstr ""
 
@@ -3347,6 +3350,7 @@ msgstr ""
 msgid "Geo"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Geo Nodes"
 msgstr ""
 
@@ -3623,6 +3627,8 @@ msgstr ""
 msgid "Get a free instance review"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Git"
 msgstr ""
 
@@ -4681,9 +4687,12 @@ msgstr ""
 msgid "Metrics and profiling"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Metrics|Business"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Metrics|Check out the CI/CD documentation on deploying to an environment"
 msgstr ""
 
@@ -6307,9 +6316,12 @@ msgstr ""
 msgid "Reply to this email directly or %{view_it_on_gitlab}."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Repo by URL"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Reporting"
 msgstr ""
 
