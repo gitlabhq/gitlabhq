@@ -134,11 +134,11 @@ module Projects
     end
 
     def attempt_destroy_transaction(project)
-      Project.transaction do
-        unless remove_legacy_registry_tags
-          raise_error('Failed to remove some tags in project container registry. Please try again or contact administrator.')
-        end
+      unless remove_registry_tags
+        raise_error('Failed to remove some tags in project container registry. Please try again or contact administrator.')
+      end
 
+      Project.transaction do
         log_destroy_event
         trash_repositories!
 
@@ -155,6 +155,17 @@ module Projects
 
     def log_destroy_event
       log_info("Attempting to destroy #{project.full_path} (#{project.id})")
+    end
+
+    def remove_registry_tags
+      return false unless remove_legacy_registry_tags
+
+      project.container_repositories.find_each do |container_repository|
+        service = Projects::ContainerRepository::DestroyService.new(project, current_user)
+        service.execute(container_repository)
+      end
+
+      true
     end
 
     ##
