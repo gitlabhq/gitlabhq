@@ -3,6 +3,9 @@
 - breadcrumb_title "##{@build.id}"
 - page_title "#{@build.name} (##{@build.id})", "Jobs"
 
+- content_for :page_specific_javascripts do
+  = stylesheet_link_tag 'page_bundles/xterm'
+
 %div{ class: container_class }
   .build-page.js-build-page
     #js-build-header-vue
