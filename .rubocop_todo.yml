@@ -91,14 +91,6 @@ Lint/ReturnInVoidContext:
   Exclude:
     - 'app/models/project.rb'
 
-# Offense count: 3
-# Cop supports --auto-correct.
-Lint/UnneededRequireStatement:
-  Exclude:
-    - 'db/post_migrate/20161221153951_rename_reserved_project_names.rb'
-    - 'db/post_migrate/20170313133418_rename_more_reserved_project_names.rb'
-    - 'lib/declarative_policy.rb'
-
 # Offense count: 9
 Lint/UriEscapeUnescape:
   Exclude:
