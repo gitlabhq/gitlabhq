@@ -66,8 +66,7 @@ describe Projects::NotesController do
 
         get :index, request_params
 
-        expect(notes_json.count).to eq(2)
-        expect(notes_json.map { |note| note[:id].to_i }).to include(comment.id, system_note.id)
+        expect(notes_json.map { |note| note[:id].to_i }).to contain_exactly(comment.id, system_note.id)
       end
     end
 

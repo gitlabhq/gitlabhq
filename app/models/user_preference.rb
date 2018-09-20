@@ -22,9 +22,10 @@ class UserPreference < ActiveRecord::Base
 
   # Returns the current discussion filter for a given issuable type.
   def notes_filter(issuable)
-    if issuable.is_a?(Issue)
+    case issuable
+    when Issue
       issue_notes_filter
-    elsif issuable.is_a?(MergeRequest)
+    when MergeRequest
       merge_request_notes_filter
     end
   end
