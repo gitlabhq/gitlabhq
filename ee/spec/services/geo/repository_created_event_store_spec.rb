@@ -1,39 +1,27 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Geo::RepositoryCreatedEventStore do
+  include EE::GeoHelpers
+
   set(:project) { create(:project) }
   set(:secondary_node) { create(:geo_node) }
 
-  subject(:create!) { described_class.new(project).create }
+  subject { described_class.new(project) }
 
   describe '#create' do
-    it 'does not create an event when not running on a primary node' do
-      allow(Gitlab::Geo).to receive(:primary?) { false }
-
-      expect { create! }.not_to change(Geo::RepositoryCreatedEvent, :count)
-    end
+    it_behaves_like 'a Geo event store', Geo::RepositoryCreatedEvent
 
     context 'running on a primary node' do
       before do
-        allow(Gitlab::Geo).to receive(:primary?) { true }
-      end
-
-      it 'does not create an event when there are no secondary nodes' do
-        allow(Gitlab::Geo).to receive(:secondary_nodes) { [] }
-
-        expect { create! }.not_to change(Geo::RepositoryCreatedEvent, :count)
-      end
-
-      it 'creates a created event' do
-        expect { create! }.to change(Geo::RepositoryCreatedEvent, :count).by(1)
+        stub_primary_node
       end
 
       it 'tracks information for the created project' do
-        create!
+        subject.create
 
-        event = Geo::RepositoryCreatedEvent.last
-
-        expect(event).to have_attributes(
+        expect(Geo::RepositoryCreatedEvent.last).to have_attributes(
           project_id: project.id,
           repo_path: project.disk_path,
           wiki_path: project.wiki.disk_path,
@@ -45,10 +33,9 @@ describe Geo::RepositoryCreatedEventStore do
       it 'does not set a wiki path if the wiki is disabled' do
         project.update!(wiki_enabled: false)
 
-        create!
+        subject.create
 
-        event = Geo::RepositoryCreatedEvent.last
-        expect(event.wiki_path).to be_nil
+        expect(Geo::RepositoryCreatedEvent.last.wiki_path).to be_nil
       end
     end
   end
