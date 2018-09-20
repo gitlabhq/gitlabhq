@@ -3,6 +3,17 @@ module Geo
     include Geo::Model
     include ::EachBatch
 
+    EVENT_CLASSES = %w[Geo::RepositoryCreatedEvent
+                       Geo::RepositoryUpdatedEvent
+                       Geo::RepositoryDeletedEvent
+                       Geo::RepositoryRenamedEvent
+                       Geo::RepositoriesChangedEvent
+                       Geo::HashedStorageMigratedEvent
+                       Geo::HashedStorageAttachmentsEvent
+                       Geo::LfsObjectDeletedEvent
+                       Geo::JobArtifactDeletedEvent
+                       Geo::UploadDeletedEvent].freeze
+
     belongs_to :repository_created_event,
       class_name: 'Geo::RepositoryCreatedEvent',
       foreign_key: :repository_created_event_id
@@ -45,6 +56,10 @@ module Geo
 
     def self.latest_event
       order(id: :desc).first
+    end
+
+    def self.event_classes
+      EVENT_CLASSES.map(&:constantize)
     end
 
     def self.includes_events

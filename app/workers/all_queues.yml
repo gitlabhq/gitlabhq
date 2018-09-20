@@ -175,7 +175,6 @@
 - geo:geo_repository_verification_primary_shard
 - geo:geo_repository_verification_primary_single
 - geo:geo_repository_verification_secondary_single
-- geo:geo_truncate_event_log
 
 - admin_emails
 - create_github_webhook

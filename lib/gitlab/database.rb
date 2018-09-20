@@ -99,6 +99,12 @@ module Gitlab
       Gitlab::Database.postgresql_9_or_less? ? 'pg_last_xlog_replay_location' : 'pg_last_wal_replay_lsn'
     end
 
+    def self.healthy?
+      return true unless postgresql?
+
+      !Postgresql::ReplicationSlot.lag_too_great?
+    end
+
     def self.nulls_last_order(field, direction = 'ASC')
       order = "#{field} #{direction}"
 

@@ -85,6 +85,79 @@ describe GeoNode, type: :model do
     end
   end
 
+  describe '.primary_node' do
+    before do
+      create(:geo_node)
+    end
+
+    it 'returns the primary' do
+      primary = create(:geo_node, :primary)
+
+      expect(described_class.primary_node).to eq(primary)
+    end
+
+    it 'returns nil if there is no primary' do
+      expect(described_class.primary_node).to be_nil
+    end
+  end
+
+  describe '.secondary_nodes' do
+    before do
+      create(:geo_node, :primary)
+    end
+
+    it 'returns all secondary nodes' do
+      secondaries = create_list(:geo_node, 2)
+
+      expect(described_class.secondary_nodes).to match_array(secondaries)
+    end
+
+    it 'returns empty array if there are not any secondary nodes' do
+      expect(described_class.secondary_nodes).to be_empty
+    end
+  end
+
+  describe '.unhealthy_nodes' do
+    before do
+      create(:geo_node_status, :healthy)
+    end
+
+    subject(:unhealthy_nodes) { described_class.unhealthy_nodes }
+
+    it 'returns a node without status' do
+      geo_node = create(:geo_node)
+
+      expect(unhealthy_nodes).to contain_exactly(geo_node)
+    end
+
+    it 'returns a node not having a cursor last event id' do
+      geo_node_status = create(:geo_node_status, :healthy, cursor_last_event_id: nil)
+
+      expect(unhealthy_nodes).to contain_exactly(geo_node_status.geo_node)
+    end
+
+    it 'returns a node with missing status check timestamp' do
+      geo_node_status = create(:geo_node_status, :healthy, last_successful_status_check_at: nil)
+
+      expect(unhealthy_nodes).to contain_exactly(geo_node_status.geo_node)
+    end
+
+    it 'returns a node with an old status check timestamp' do
+      geo_node_status = create(:geo_node_status, :healthy, last_successful_status_check_at: 16.minutes.ago)
+
+      expect(unhealthy_nodes).to contain_exactly(geo_node_status.geo_node)
+    end
+  end
+
+  describe '.min_cursor_last_event_id' do
+    it 'returns the minimum of cursor_last_event_id across all nodes' do
+      create(:geo_node_status, cursor_last_event_id: 10)
+      create(:geo_node_status, cursor_last_event_id: 8)
+
+      expect(described_class.min_cursor_last_event_id).to eq(8)
+    end
+  end
+
   describe '#repair' do
     it 'creates an oauth application for a Geo secondary node' do
       stub_current_geo_node(node)

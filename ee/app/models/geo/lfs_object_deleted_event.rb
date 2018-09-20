@@ -1,6 +1,7 @@
 module Geo
   class LfsObjectDeletedEvent < ActiveRecord::Base
     include Geo::Model
+    include Geo::Eventable
 
     belongs_to :lfs_object
 
