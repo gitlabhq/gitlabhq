@@ -86,6 +86,7 @@ The connection settings match those provided by [Fog](https://github.com/fog), a
 | `host` | S3 compatible host for when not using AWS, e.g. `localhost` or `storage.example.com` | s3.amazonaws.com |
 | `endpoint` | Can be used when configuring an S3 compatible service such as [Minio](https://www.minio.io), by entering a URL such as `http://127.0.0.1:9000` | (optional) |
 | `path_style` | Set to true to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Leave as false for AWS S3 | false |
+| `use_iam_profile` | Set to true to use IAM profile instead of access keys | false
 
 **In Omnibus installations:**
 
