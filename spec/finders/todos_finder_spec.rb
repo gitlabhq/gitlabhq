@@ -109,4 +109,20 @@ describe TodosFinder do
       end
     end
   end
+
+  describe '#any_for_target?' do
+    it 'returns true if there are any todos for the given target' do
+      todo = create(:todo, :pending)
+      finder = described_class.new(todo.user)
+
+      expect(finder.any_for_target?(todo.target)).to eq(true)
+    end
+
+    it 'returns false if there are no todos for the given target' do
+      issue = create(:issue)
+      finder = described_class.new(issue.author)
+
+      expect(finder.any_for_target?(issue)).to eq(false)
+    end
+  end
 end

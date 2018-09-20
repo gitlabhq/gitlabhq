@@ -47,6 +47,13 @@ class TodosFinder
     sort(items)
   end
 
+  # Returns `true` if the current user has any todos for the given target.
+  #
+  # target - The value of the `target_type` column, such as `Issue`.
+  def any_for_target?(target)
+    current_user.todos.any_for_target?(target)
+  end
+
   private
 
   def action_id?
