@@ -35,7 +35,7 @@ module API
       post ':id/labels' do
         authorize! :admin_label, user_group
 
-        label = available_labels_for(user_group).find_by(title: params[:name])
+        label = available_labels_for(user_group, { title: params[:name] })
         conflict!('Label already exists') if label
 
         label = ::Labels::CreateService.new(declared_params(include_missing: false)).execute(group: user_group)
@@ -57,7 +57,7 @@ module API
       delete ':id/labels' do
         authorize! :admin_label, user_group
 
-        label = user_group.labels.find_by(title: params[:name])
+        label = available_labels_for(user_group, { title: params[:name] })
         not_found!('Label') unless label
 
         destroy_conditionally!(label)
@@ -77,7 +77,7 @@ module API
       put ':id/labels' do
         authorize! :admin_label, user_group
 
-        label = user_group.labels.find_by(title: params[:name])
+        label = available_labels_for(user_group, { title: params[:name] })
         not_found!('Label not found') unless label
 
         label = ::Labels::UpdateService.new(declared_params(include_missing: false)).execute(label)
