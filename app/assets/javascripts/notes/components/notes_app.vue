@@ -109,6 +109,7 @@ export default {
       setTargetNoteHash: 'setTargetNoteHash',
       toggleDiscussion: 'toggleDiscussion',
       setNotesFetchedState: 'setNotesFetchedState',
+      expandDiscussionFromHash: 'expandDiscussionFromHash',
     }),
     getComponentName(discussion) {
       if (discussion.isSkeletonNote) {
@@ -157,21 +158,7 @@ export default {
       this.isPollingInitialized = true;
     },
     checkLocationHash() {
-      const hash = getLocationHash();
-      const noteId = hash && hash.replace(/^note_/, '');
-
-      if (noteId) {
-        this.discussions.forEach(discussion => {
-          if (discussion.notes) {
-            discussion.notes.forEach(note => {
-              if (`${note.id}` === `${noteId}`) {
-                // FIXME: this modifies the store state without using a mutation/action
-                Object.assign(discussion, { expanded: true });
-              }
-            });
-          }
-        });
-      }
+      this.expandDiscussionFromHash(getLocationHash());
     },
   },
 };

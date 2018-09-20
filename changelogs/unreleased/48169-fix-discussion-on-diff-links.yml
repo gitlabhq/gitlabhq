@@ -1,0 +1,5 @@
+---
+title: Fix links to discussions not expanding in diffs
+merge_request: 21812
+author:
+type: fixed

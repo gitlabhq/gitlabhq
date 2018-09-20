@@ -1,4 +1,4 @@
-import * as getters from '~/notes/stores/getters';
+import gettersModule, * as getters from '~/notes/stores/getters';
 import {
   notesDataMock,
   userDataMock,
@@ -262,6 +262,37 @@ describe('Getters Notes Store', () => {
 
       expect(getters.firstUnresolvedDiscussionId(state, localGettersFalsy)(true)).toBeFalsy();
       expect(getters.firstUnresolvedDiscussionId(state, localGettersFalsy)(false)).toBeFalsy();
+    });
+  });
+
+  describe('discussionFromHash', () => {
+    let localGetters;
+
+    beforeEach(() => {
+      localGetters = {
+        discussions: state.discussions,
+      };
+    });
+
+    it('should call "whereDiscussionMatchesHash"', () => {
+      const hash = 'TEST_HASH';
+      const whereDiscussionMatchesHash = spyOnDependency(gettersModule, 'whereDiscussionMatchesHash').and.callThrough();
+
+      getters.discussionFromHash(state, localGetters)(hash);
+
+      expect(whereDiscussionMatchesHash).toHaveBeenCalledWith(hash);
+    });
+
+    it('should return discussion if matches hash', () => {
+      const result = getters.discussionFromHash(state, localGetters)(`discussion_${individualNote.id}`);
+
+      expect(result).toEqual(individualNote);
+    });
+
+    it('should return undefined if no match', () => {
+      const result = getters.discussionFromHash(state, localGetters)('does_not_exist');
+
+      expect(result).toBeUndefined();
     });
   });
 });
