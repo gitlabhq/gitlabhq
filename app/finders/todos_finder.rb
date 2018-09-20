@@ -23,6 +23,8 @@ class TodosFinder
 
   NONE = '0'.freeze
 
+  TODO_TYPES = Set.new(%w(Issue MergeRequest Epic)).freeze
+
   attr_accessor :current_user, :params
 
   def initialize(current_user, params = {})
@@ -72,14 +74,11 @@ class TodosFinder
   end
 
   def author
-    return @author if defined?(@author)
-
-    @author =
+    strong_memoize(:author) do
       if author? && params[:author_id] != NONE
         User.find(params[:author_id])
-      else
-        nil
       end
+    end
   end
 
   def project?
@@ -91,17 +90,9 @@ class TodosFinder
   end
 
   def project
-    return @project if defined?(@project)
-
-    if project?
-      @project = Project.find(params[:project_id])
-
-      @project = nil if @project.pending_delete?
-    else
-      @project = nil
+    strong_memoize(:project) do
+      Project.find_without_deleted(params[:project_id]) if project?
     end
-
-    @project
   end
 
   def group
@@ -111,7 +102,7 @@ class TodosFinder
   end
 
   def type?
-    type.present? && %w(Issue MergeRequest Epic).include?(type)
+    type.present? && TODO_TYPES.include?(type)
   end
 
   def type
@@ -119,77 +110,66 @@ class TodosFinder
   end
 
   def sort(items)
-    params[:sort] ? items.sort_by_attribute(params[:sort]) : items.order_id_desc
+    if params[:sort]
+      items.sort_by_attribute(params[:sort])
+    else
+      items.order_id_desc
+    end
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def by_action(items)
     if action?
-      items = items.where(action: to_action_id)
+      items.for_action(to_action_id)
+    else
+      items
     end
-
-    items
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def by_action_id(items)
     if action_id?
-      items = items.where(action: action_id)
+      items.for_action(action_id)
+    else
+      items
     end
-
-    items
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def by_author(items)
     if author?
-      items = items.where(author_id: author.try(:id))
+      items.for_author(author)
+    else
+      items
     end
-
-    items
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def by_project(items)
     if project?
-      items = items.where(project: project)
+      items.for_project(project)
+    else
+      items
     end
-
-    items
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def by_group(items)
-    return items unless group?
-
-    groups = group.self_and_descendants
-    project_todos = items.where(project_id: Project.where(group: groups).select(:id))
-    group_todos = items.where(group_id: groups.select(:id))
-
-    Todo.from_union([project_todos, group_todos])
+    if group?
+      items.for_group_and_descendants(group)
+    else
+      items
+    end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def by_state(items)
-    case params[:state].to_s
-    when 'done'
+    if params[:state].to_s == 'done'
       items.done
     else
       items.pending
     end
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def by_type(items)
     if type?
-      items = items.where(target_type: type)
+      items.for_type(type)
+    else
+      items
     end
-
-    items
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 end

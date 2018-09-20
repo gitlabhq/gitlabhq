@@ -40,6 +40,11 @@ class Todo < ActiveRecord::Base
 
   scope :pending, -> { with_state(:pending) }
   scope :done, -> { with_state(:done) }
+  scope :for_action, -> (action) { where(action: action) }
+  scope :for_author, -> (author) { where(author: author) }
+  scope :for_project, -> (project) { where(project: project) }
+  scope :for_group, -> (group) { where(group: group) }
+  scope :for_type, -> (type) { where(target_type: type) }
 
   state_machine :state, initial: :pending do
     event :done do
@@ -53,6 +58,20 @@ class Todo < ActiveRecord::Base
   after_save :keep_around_commit, if: :commit_id
 
   class << self
+    # Returns all todos for the given group and its descendants.
+    #
+    # group - A `Group` to retrieve todos for.
+    #
+    # Returns an `ActiveRecord::Relation`.
+    def for_group_and_descendants(group)
+      groups = group.self_and_descendants
+
+      from_union([
+        for_project(Project.for_group(groups)),
+        for_group(groups)
+      ])
+    end
+
     # Priority sorting isn't displayed in the dropdown, because we don't show
     # milestones, but still show something if the user has a URL with that
     # selected.

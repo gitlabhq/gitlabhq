@@ -105,7 +105,6 @@ describe TodosFinder do
 
         todos = finder.new(user, { sort: 'priority' }).execute
 
-        puts todos.to_sql
         expect(todos).to eq([todo_3, todo_5, todo_4, todo_2, todo_1])
       end
     end

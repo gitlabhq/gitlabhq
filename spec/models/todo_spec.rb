@@ -173,4 +173,73 @@ describe Todo do
       expect(subject).not_to be_self_assigned
     end
   end
+
+  describe '.for_action' do
+    it 'returns the todos for a given action' do
+      create(:todo, action: Todo::MENTIONED)
+
+      todo = create(:todo, action: Todo::ASSIGNED)
+
+      expect(described_class.for_action(Todo::ASSIGNED)).to eq([todo])
+    end
+  end
+
+  describe '.for_author' do
+    it 'returns the todos for a given author' do
+      user1 = create(:user)
+      user2 = create(:user)
+      todo = create(:todo, author: user1)
+
+      create(:todo, author: user2)
+
+      expect(described_class.for_author(user1)).to eq([todo])
+    end
+  end
+
+  describe '.for_project' do
+    it 'returns the todos for a given project' do
+      project1 = create(:project)
+      project2 = create(:project)
+      todo = create(:todo, project: project1)
+
+      create(:todo, project: project2)
+
+      expect(described_class.for_project(project1)).to eq([todo])
+    end
+  end
+
+  describe '.for_group' do
+    it 'returns the todos for a given group' do
+      group1 = create(:group)
+      group2 = create(:group)
+      todo = create(:todo, group: group1)
+
+      create(:todo, group: group2)
+
+      expect(described_class.for_group(group1)).to eq([todo])
+    end
+  end
+
+  describe '.for_type' do
+    it 'returns the todos for a given target type' do
+      todo = create(:todo, target: create(:issue))
+
+      create(:todo, target: create(:merge_request))
+
+      expect(described_class.for_type(Issue)).to eq([todo])
+    end
+  end
+
+  describe '.for_group_and_descendants' do
+    it 'returns the todos for a group and its descendants' do
+      parent_group = create(:group)
+      child_group = create(:group, parent: parent_group)
+
+      todo1 = create(:todo, group: parent_group)
+      todo2 = create(:todo, group: child_group)
+
+      expect(described_class.for_group_and_descendants(parent_group))
+        .to include(todo1, todo2)
+    end
+  end
 end
