@@ -86,22 +86,10 @@ Lint/InterpolationCheck:
 Lint/MissingCopEnableDirective:
   Enabled: false
 
-# Offense count: 2
-Lint/NestedPercentLiteral:
-  Exclude:
-    - 'lib/gitlab/git/repository.rb'
-    - 'spec/support/shared_examples/email_format_shared_examples.rb'
-
 # Offense count: 1
 Lint/ReturnInVoidContext:
   Exclude:
     - 'app/models/project.rb'
-
-# Offense count: 1
-# Configuration parameters: IgnoreImplicitReferences.
-Lint/ShadowedArgument:
-  Exclude:
-    - 'lib/gitlab/database/sha_attribute.rb'
 
 # Offense count: 3
 # Cop supports --auto-correct.
@@ -149,11 +137,6 @@ Naming/HeredocDelimiterCase:
 # Blacklist: END, (?-mix:EO[A-Z]{1})
 Naming/HeredocDelimiterNaming:
   Enabled: false
-
-# Offense count: 1
-Performance/UnfreezeString:
-  Exclude:
-    - 'features/steps/project/commits/commits.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.
