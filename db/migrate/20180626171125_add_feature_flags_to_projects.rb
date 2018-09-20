@@ -5,7 +5,7 @@ class AddFeatureFlagsToProjects < ActiveRecord::Migration
   DOWNTIME = false
 
   def change
-    create_table :project_feature_flags do |t|
+    create_table :operations_feature_flags do |t|
       t.integer :project_id, null: false
       t.datetime_with_timezone :created_at, null: false
       t.datetime_with_timezone :updated_at, null: false
@@ -19,7 +19,7 @@ class AddFeatureFlagsToProjects < ActiveRecord::Migration
       t.index [:project_id, :name], unique: true
     end
 
-    create_table :project_feature_flags_access_tokens do |t|
+    create_table :operations_feature_flags_access_tokens do |t|
       t.integer :project_id, null: false
       t.string :token, null: false
 
