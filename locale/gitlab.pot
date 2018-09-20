@@ -2115,13 +2115,10 @@ msgstr ""
 msgid "Configure limits for web and API requests."
 msgstr ""
 
-msgid "Configure push and pull mirrors."
+msgid "Configure push mirrors."
 msgstr ""
 
 msgid "Configure storage path and circuit breaker settings."
-msgstr ""
-
-msgid "Configure the %{link} integration."
 msgstr ""
 
 msgid "Configure the way a user creates a new account."
@@ -3345,6 +3342,9 @@ msgid "General pipelines"
 msgstr ""
 
 msgid "Generate a default set of labels"
+msgstr ""
+
+msgid "Geo"
 msgstr ""
 
 msgid "Geo Nodes"
@@ -4676,6 +4676,9 @@ msgid "Metrics - Influx"
 msgstr ""
 
 msgid "Metrics - Prometheus"
+msgstr ""
+
+msgid "Metrics and profiling"
 msgstr ""
 
 msgid "Metrics|Business"
@@ -6305,6 +6308,9 @@ msgid "Reply to this email directly or %{view_it_on_gitlab}."
 msgstr ""
 
 msgid "Repo by URL"
+msgstr ""
+
+msgid "Reporting"
 msgstr ""
 
 msgid "Reports|%{failedString} and %{resolvedString}"
