@@ -163,4 +163,22 @@ describe('VueX test helper (testAction)', () => {
 
     testAction(promiseAction, null, {}, assertion.mutations, assertion.actions, done);
   });
+
+  it('should work with action that takes getters', done => {
+    const getterAction = ({ commit, getters }) => {
+      getters.items.forEach(item => {
+        commit('TEST', item);
+      });
+    };
+    const getters = {
+      items: ['banana', 'apply', 'monkey'],
+    };
+
+    assertion = {
+      mutations: getters.items.map(x => ({ type: 'TEST', payload: x })),
+      actions: [],
+    };
+
+    testAction(getterAction, null, getters, assertion.mutations, assertion.actions, done);
+  });
 });
