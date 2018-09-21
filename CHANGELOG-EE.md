@@ -1,5 +1,81 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 11.3.0 (2018-09-22)
+
+### Security (1 change)
+
+- Prevent regular users from moving projects to different storage shards.
+
+### Fixed (29 changes, 11 of them are from the community)
+
+- don't add empty query params to boards. !4441
+- Geo: sync disabled wikis. !6420
+- Rails 5 fix alerts controller spec for post json parameters. !6795 (Jasper Maes)
+- Fixes 500 error on user creation from admin panel with spaced username. !6804 (Jacopo Beschi @jacopo-beschi)
+- Don't show search results for projects that have been deleted when using elastic search. !6830
+- Geo: Use database-cached status if redis-cached status is unavailable. !6854
+- [Geo] Fix: Custom favicons not being replicated by Geo. !6860
+- Rails5 fix AddMilestoneToLists migration rollback deleting wrong foreign key. !6865 (Jasper Maes)
+- Rails5 fix passing Group objects array into for_projects_and_groups milestone scope. !6873 (Jasper Maes)
+- Rails5: fix mysql milliseconds problem in project_import_state_spec. !6874 (Jasper Maes)
+- Fix Jira integration duplicating branches and MRs. !6876
+- Rails5: fix mysql milliseconds problem in project_spec. !6880 (Jasper Maes)
+- Remove https from Snowplow Collector URI placeholder in Admin Areawq. !6886
+- Geo: Replicate keep around refs. !6922
+- Fixes bug that prevented a user from seeing the system header and footer settings on the admin dashboard. !6926
+- Rails5 fix duplicate gpg signature in path lock spec. !6939 (Jasper Maes)
+- Rails5: Fix audit event spec. !6940 (Jasper Maes)
+- Rails5: fix mysql milliseconds problem in project registry spec. !6943 (Jasper Maes)
+- LDAP - Does not update permissions on a read-only database. !6965
+- Rails5 fix project import spec. !6981 (Jasper Maes)
+- Geo: Resolve sticky failures when attachments are missing on primary. !6991
+- Geo: LFS batch downloads are OK to be handled by secondary. !7209
+- Geo - Synchronize the default branch in secondary nodes. !7218
+- Handle fixed dates seperately from selected dates in Epics. !7227
+- Fix tooltip string to support dynamic date type in Epic sidebar. !7243
+- Fix an error in docs about fetching artifacts using API. !7244
+- Return proper status code when creation of an alert fails. !7360 (Peter Leitzen)
+- Geo - Find the remote root ref using a JWT header for authentication. !7405
+- Add weight to issue hook.
+
+### Changed (3 changes, 1 of them is from the community)
+
+- Allow push_code when auth'd via Geo JWT. !6455
+- Prefer From address over Sender for Service Desk emails. !7006 (Andreas Josephson)
+- Add CI Job token support to Maven packages API. !7249
+
+### Performance (3 changes)
+
+- Reduce queries needed for CI artifacts on merge request widget. !6978
+- Use limited count approach on Protected Environments view. !6987
+- Limit sidekiq-cluster concurrency to a maximum of 50. !7025
+
+### Added (15 changes, 2 of them are from the community)
+
+- Allow custom notification for new epic event. !5863
+- Geo: SSH git push to secondary -> proxy to Primary. !6456
+- Allow epic start/due dates to be sourceable from issue milestones. !6470
+- Add ability to upload and download maven packages from/to GitLab. !6607
+- Added an instance-level license template project. !6631 (Dan Barker)
+- Add backend structure for ProtectedEnvironments. !6672
+- Add UI for GitLab private Maven repository feature. !6781
+- Add support for sorting epics. !6885
+- Allow specifying code owners in a CODEOWNERS file. !6916
+- Quick action for adding/removing epic to issues. !6934
+- Show total and completed instances deployed on deploy boards. !6955
+- Show security analysis status on the environments page. !6987
+- Add Instance Review for Core users. !6995
+- Introduce custom instance-level templates for Dockerfile, .gitignore, and .gitlab-ci.yml files. !7000
+- Adds Rubocop rule to enforce class_methods over module ClassMethods. !7044 (Jacopo Beschi @jacopo-beschi)
+
+### Other (4 changes)
+
+- Removes feature flag code surrounding Protected Environments feature. !7338
+- Creates vue component for shared runner limit.
+- Allow MR authors to approve their MRs.
+- Remove differences between CE and EE settings panel component.
+
+
 ## 11.2.3 (2018-08-28)
 
 - No changes.

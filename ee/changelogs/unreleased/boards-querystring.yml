@@ -1,5 +1,0 @@
----
-title: don't add empty query params to boards
-merge_request: 4441
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: 'Geo: Use database-cached status if redis-cached status is unavailable'
-merge_request: 6854
-author:
-type: fixed

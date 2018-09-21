@@ -1,5 +1,0 @@
----
-title: Remove https from Snowplow Collector URI placeholder in Admin Areawq
-merge_request: 6886
-author:
-type: fixed
