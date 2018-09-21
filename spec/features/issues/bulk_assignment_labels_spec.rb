@@ -52,7 +52,7 @@ describe 'Issues > Labels bulk assignment' do
 
         context 'to a issue' do
           before do
-            check "selected-issuable_#{issue1.id}"
+            check "selected_issue_#{issue1.id}"
             open_labels_dropdown ['bug']
             update_issues
           end
@@ -82,7 +82,7 @@ describe 'Issues > Labels bulk assignment' do
 
         context 'to a issue' do
           before do
-            check "selected-issuable_#{issue1.id}"
+            check "selected_issue_#{issue1.id}"
             open_labels_dropdown %w(bug feature)
             update_issues
           end
@@ -394,9 +394,9 @@ describe 'Issues > Labels bulk assignment' do
   def check_issue(issue, uncheck = false)
     page.within('.issues-list') do
       if uncheck
-        uncheck "selected-issuable_#{issue.id}"
+        uncheck "selected_issue_#{issue.id}"
       else
-        check "selected-issuable_#{issue.id}"
+        check "selected_issue_#{issue.id}"
       end
     end
   end
