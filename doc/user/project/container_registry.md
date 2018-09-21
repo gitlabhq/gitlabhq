@@ -245,7 +245,7 @@ This will run mitmproxy on port `9000`. In another window, run:
 curl --proxy http://localhost:9000 https://httpbin.org/status/200
 ```
 
-If everything is setup correctly, you will see information on the mitmproxy window and
+If everything is set up correctly, you will see information on the mitmproxy window and
 no errors from the curl commands.
 
 #### Running the Docker daemon with a proxy

@@ -132,7 +132,7 @@ main:
   ## Enables SSL certificate verification if encryption method is
   ## "start_tls" or "simple_tls". Defaults to true since GitLab 10.0 for
   ## security. This may break installations upon upgrade to 10.0, that did
-  ## not know their LDAP SSL certificates were not setup properly.
+  ## not know their LDAP SSL certificates were not set up properly.
   ##
   verify_certificates: true
 

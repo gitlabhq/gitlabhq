@@ -286,7 +286,7 @@ to make the EFS integration easier to manage.
     gitlab_rails['redis_port'] = 6379
 
 Finally run reconfigure, you might find it useful to run a check and
-a service status to make sure everything has been setup correctly.
+a service status to make sure everything has been set up correctly.
 
     sudo gitlab-ctl reconfigure  
     sudo gitlab-rake gitlab:check  

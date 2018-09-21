@@ -8,7 +8,7 @@ within the GitLab interface.
 
 ![Environment Dashboard](img/prometheus_dashboard.png)
 
-There are two ways to setup Prometheus integration, depending on where your apps are running:
+There are two ways to set up Prometheus integration, depending on where your apps are running:
 * For deployments on Kubernetes, GitLab can automatically [deploy and manage Prometheus](#managed-prometheus-on-kubernetes)
 * For other deployment targets, simply [specify the Prometheus server](#manual-configuration-of-prometheus).
 

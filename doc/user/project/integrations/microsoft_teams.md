@@ -25,7 +25,7 @@ At the end fill in your Microsoft Teams details:
 
 | Field | Description |
 | ----- | ----------- |
-| **Webhook** | The incoming webhook URL which you have to setup on Microsoft Teams. |
+| **Webhook** | The incoming webhook URL which you have to set up on Microsoft Teams. |
 | **Notify only broken pipelines** | If you choose to enable the **Pipeline** event and you want to be only notified about failed pipelines. |
 
 After you are all done, click **Save changes** for the changes to take effect.

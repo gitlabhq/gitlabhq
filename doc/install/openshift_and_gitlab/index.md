@@ -80,7 +80,7 @@ This will download the VirtualBox image and fire up the VM with some preconfigur
 values as you can see in the Vagrantfile. As you may have noticed, you need
 plenty of RAM (5GB in our example), so make sure you have enough.
 
-Now that OpenShift is setup, let's see how the web console looks like.
+Now that OpenShift is set up, let's see how the web console looks like.
 
 ### Explore the OpenShift web console
 

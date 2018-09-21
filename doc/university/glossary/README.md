@@ -395,7 +395,7 @@ Allow you to [organize issues](../../user/project/milestones/index.md) and merge
 
 ### Mirror Repositories
 
-A project that is setup to automatically have its branches, tags, and commits [updated from an upstream repository](https://docs.gitlab.com/ee/workflow/repository_mirroring.html). This is useful when a repository you're interested in is located on a different server, and you want to be able to browse its content and activity using the familiar GitLab interface.
+A project that is set up to automatically have its branches, tags, and commits [updated from an upstream repository](https://docs.gitlab.com/ee/workflow/repository_mirroring.html). This is useful when a repository you're interested in is located on a different server, and you want to be able to browse its content and activity using the familiar GitLab interface.
 
 ### MIT License
 
@@ -673,7 +673,7 @@ Version control is a system that records changes to a file or set of files over 
 
 ### Virtual Private Cloud (VPC)
 
-A [VPC](https://docs.gitlab.com/ce/university/glossary/README.html#virtual-private-cloud-vpc) is an on demand configurable pool of shared computing resources allocated within a public cloud environment, providing some isolation between the different users using the resources. GitLab users need to create a new Amazon VPC in order to [setup High Availability](https://docs.gitlab.com/ce/university/high-availability/aws/).
+A [VPC](https://docs.gitlab.com/ce/university/glossary/README.html#virtual-private-cloud-vpc) is an on demand configurable pool of shared computing resources allocated within a public cloud environment, providing some isolation between the different users using the resources. GitLab users need to create a new Amazon VPC in order to [set up High Availability](https://docs.gitlab.com/ce/university/high-availability/aws/).
 
 ### Virtual private server (VPS)
 
