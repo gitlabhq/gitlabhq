@@ -1,5 +1,0 @@
----
-title: 'Rails5: fix can''t quote ActiveSupport::HashWithIndifferentAccess'
-merge_request: 21397
-author: Jasper Maes
-type: other

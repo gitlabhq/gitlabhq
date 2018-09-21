@@ -1,5 +1,0 @@
----
-title: Fix workhorse temp path for namespace uploads
-merge_request: 21650
-author:
-type: fixed

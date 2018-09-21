@@ -1,5 +1,0 @@
----
-title: Don't use arguments keyword in gettext script
-merge_request: 21296
-author: gfyoung
-type: fixed
