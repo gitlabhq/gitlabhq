@@ -97,7 +97,7 @@ module IssuableActions
       .includes(:noteable)
       .fresh
 
-    notes = ResourceEvents::MergeIntoNotesService.new(issuable, current_user).execute(notes)
+    notes = ResourceEvents::MergeIntoNotesService.new(issuable, current_user, last_fetched_at: Time.now.to_i).execute(notes)
     notes = prepare_notes_for_rendering(notes)
     notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
 
@@ -112,7 +112,11 @@ module IssuableActions
   def notes_filter
     notes_filter_param = params.fetch(:notes_filter, current_user&.notes_filter(issuable))
 
-    current_user&.set_notes_filter(notes_filter_param, issuable)
+    if current_user
+      current_user.set_notes_filter(notes_filter_param, issuable)
+    else
+      notes_filter_param
+    end
   end
 
   def discussion_serializer
