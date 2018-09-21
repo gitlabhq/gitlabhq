@@ -444,10 +444,10 @@ setup-test-env:
       - vendor/gitaly-ruby
 
 danger-review:
+  <<: *pull-cache
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:danger
   stage: test
   allow_failure: true
-  cache: {}
   dependencies: []
   before_script: []
   only:
@@ -461,6 +461,7 @@ danger-review:
       - $CI_COMMIT_REF_NAME =~ /.*-stable(-ee)?-prepare-.*/
   script:
     - git version
+    - yarn install --frozen-lockfile --cache-folder .yarn-cache
     - danger --fail-on-errors=true
 
 rspec-pg 0 30: *rspec-metadata-pg
