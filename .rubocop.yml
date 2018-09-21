@@ -111,7 +111,7 @@ Naming/FileName:
     - XSRF
     - XSS
 
-# Gitlab ###################################################################
+# GitLab ###################################################################
 
 Gitlab/ModuleWithInstanceVariables:
   Enable: true

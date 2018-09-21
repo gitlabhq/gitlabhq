@@ -51,7 +51,7 @@ class WikiPage
   validates :title, presence: true
   validates :content, presence: true
 
-  # The Gitlab ProjectWiki instance.
+  # The GitLab ProjectWiki instance.
   attr_reader :wiki
 
   # The raw Gitlab::Git::WikiPage instance.
@@ -127,7 +127,7 @@ class WikiPage
     version.try(:message)
   end
 
-  # The Gitlab Commit instance for this page.
+  # The GitLab Commit instance for this page.
   def version
     return nil unless persisted?
 
