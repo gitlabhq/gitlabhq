@@ -431,7 +431,7 @@ review-docs-cleanup:
 # Trigger a docker image build in CNG (Cloud Native GitLab) repository
 #
 cloud-native-image:
-  stage: build
+  stage: test
   image: ruby:2.4-alpine
   before_script: []
   allow_failure: true
