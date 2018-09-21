@@ -1,5 +1,0 @@
----
-title: Add rake command to migrate archived traces from local storage to object storage
-merge_request: 21193
-author:
-type: added

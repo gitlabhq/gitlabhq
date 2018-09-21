@@ -1,5 +1,0 @@
----
-title: Send max_patch_bytes to Gitaly via Gitaly::CommitDiffRequest
-merge_request: 21575
-author:
-type: other
