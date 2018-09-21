@@ -14,8 +14,8 @@ describe('Job log controllers', () => {
 
     beforeEach(() => {
       vm = mountComponent(Component, {
-        rawTracePath: '/raw',
-        canEraseJob: true,
+        rawPath: '/raw',
+        erasePath: '/erase',
         size: 511952,
         canScrollToTop: true,
         canScrollToBottom: true,
@@ -36,8 +36,8 @@ describe('Job log controllers', () => {
     describe('with raw trace path', () => {
       it('renders raw trace link', () => {
         vm = mountComponent(Component, {
-          rawTracePath: '/raw',
-          canEraseJob: true,
+          rawPath: '/raw',
+          erasePath: '/erase',
           size: 511952,
           canScrollToTop: true,
           canScrollToBottom: true,
@@ -50,7 +50,7 @@ describe('Job log controllers', () => {
     describe('without raw trace path', () => {
       it('does not render raw trace link', () => {
         vm = mountComponent(Component, {
-          canEraseJob: true,
+          erasePath: '/erase',
           size: 511952,
           canScrollToTop: true,
           canScrollToBottom: true,
@@ -63,48 +63,23 @@ describe('Job log controllers', () => {
     describe('when is erasable', () => {
       beforeEach(() => {
         vm = mountComponent(Component, {
-          rawTracePath: '/raw',
-          canEraseJob: true,
+          rawPath: '/raw',
+          erasePath: '/erase',
           size: 511952,
           canScrollToTop: true,
           canScrollToBottom: true,
         });
       });
 
-      it('renders erase job button', () => {
+      it('renders erase job link', () => {
         expect(vm.$el.querySelector('.js-erase-link')).not.toBeNull();
-      });
-
-      describe('on click', () => {
-        describe('when user confirms action', () => {
-          it('emits eraseJob event', () => {
-            spyOn(window, 'confirm').and.returnValue(true);
-            spyOn(vm, '$emit');
-
-            vm.$el.querySelector('.js-erase-link').click();
-
-            expect(vm.$emit).toHaveBeenCalledWith('eraseJob');
-          });
-        });
-
-        describe('when user does not confirm action', () => {
-          it('does not emit eraseJob event', () => {
-            spyOn(window, 'confirm').and.returnValue(false);
-            spyOn(vm, '$emit');
-
-            vm.$el.querySelector('.js-erase-link').click();
-
-            expect(vm.$emit).not.toHaveBeenCalledWith('eraseJob');
-          });
-        });
       });
     });
 
     describe('when it is not erasable', () => {
       it('does not render erase button', () => {
         vm = mountComponent(Component, {
-          rawTracePath: '/raw',
-          canEraseJob: false,
+          rawPath: '/raw',
           size: 511952,
           canScrollToTop: true,
           canScrollToBottom: true,
@@ -120,8 +95,8 @@ describe('Job log controllers', () => {
       describe('when user can scroll top', () => {
         beforeEach(() => {
           vm = mountComponent(Component, {
-            rawTracePath: '/raw',
-            canEraseJob: true,
+            rawPath: '/raw',
+            erasePath: '/erase',
             size: 511952,
             canScrollToTop: true,
             canScrollToBottom: true,
@@ -143,8 +118,8 @@ describe('Job log controllers', () => {
       describe('when user can not scroll top', () => {
         beforeEach(() => {
           vm = mountComponent(Component, {
-            rawTracePath: '/raw',
-            canEraseJob: true,
+            rawPath: '/raw',
+            erasePath: '/erase',
             size: 511952,
             canScrollToTop: false,
             canScrollToBottom: true,
@@ -168,8 +143,8 @@ describe('Job log controllers', () => {
       describe('when user can scroll bottom', () => {
         beforeEach(() => {
           vm = mountComponent(Component, {
-            rawTracePath: '/raw',
-            canEraseJob: true,
+            rawPath: '/raw',
+            erasePath: '/erase',
             size: 511952,
             canScrollToTop: true,
             canScrollToBottom: true,
@@ -191,8 +166,8 @@ describe('Job log controllers', () => {
       describe('when user can not scroll bottom', () => {
         beforeEach(() => {
           vm = mountComponent(Component, {
-            rawTracePath: '/raw',
-            canEraseJob: true,
+            rawPath: '/raw',
+            erasePath: '/erase',
             size: 511952,
             canScrollToTop: true,
             canScrollToBottom: false,

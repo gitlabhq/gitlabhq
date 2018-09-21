@@ -3,7 +3,10 @@
   import { mapActions, mapGetters, mapState } from 'vuex';
   import { s__ } from '~/locale';
   import CiHeader from '~/vue_shared/components/header_ci_component.vue';
+  import EmptyState from './empty_state.vue';
   import ErasedBlock from './erased_block.vue';
+  import LogControllers from './job_log_controllers.vue';
+  import LogBlock from './job_log.vue';
   import Sidebar from './sidebar_details_block.vue';
   import StuckBlock from './stuck_block.vue';
   import createStore from '../store';
@@ -13,7 +16,10 @@
     store: createStore(),
     components: {
       CiHeader,
+      EmptyState,
       ErasedBlock,
+      LogControllers,
+      LogBlock,
       Sidebar,
       StuckBlock,
     },
@@ -47,7 +53,14 @@
       },
     },
     computed: {
-      ...mapState(['isLoading', 'job']),
+      ...mapState([
+        'isLoading',
+        'job',
+        'trace',
+        'isTraceComplete',
+        'traceSize',
+        'isTraceScrolledToBottom',
+      ]),
       ...mapGetters(['headerActions', 'headerTime', 'shouldRenderCalloutMessage']),
       /**
        * When job has not started the key will be `false`
@@ -65,7 +78,14 @@
       this.fetchJob();
     },
     methods: {
-      ...mapActions(['setJobEndpoint', 'setTraceEndpoint', 'setStagesEndpoint', 'fetchJob']),
+      ...mapActions([
+        'setJobEndpoint',
+        'setTraceEndpoint',
+        'setStagesEndpoint',
+        'fetchJob',
+        'scrollTop',
+        'scrollBottom',
+      ]),
     },
   };
 </script>
@@ -110,6 +130,37 @@
         :erased-at="job.erased_at"
       />
 
+      <!--job log -->
+      <div
+        v-if="job.running"
+        class="build-trace-container prepend-top-default"
+      >
+        <log-controllers
+          :erase-path="job.erase_path"
+          :raw-path="job.raw_path"
+          :size="traceSize"
+          :can-scroll-to-bottom="!isTraceScrolledToBottom"
+          :can-scroll-to-top="isTraceScrolledToBottom"
+          :is-trace-size-visible="isTraceSizeVisible"
+          @scrollJobLogTop="scrollTop"
+          @scrollJobLogBottom="scrollBottom"
+        />
+        <log-block
+          :trace="trace"
+          :is-complete="isTraceComplete"
+          />
+      </div>
+      <!-- EO job log -->
+
+      <!-- fl todo, check the illustrations not loading -->
+      <empty-state
+        v-else
+        :illustration-path="job.status.illustration.image"
+        :illustration-size-class="job.status.illustration.size"
+        :title="job.status.illustration.title"
+        :content="job.status.illustration.content"
+        :action="job.status.action"
+      />
       <!-- EO Body Section -->
 
       <!-- Sidebar Section -->

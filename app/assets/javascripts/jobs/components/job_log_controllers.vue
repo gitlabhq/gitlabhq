@@ -12,15 +12,16 @@
       tooltip,
     },
     props: {
-      canEraseJob: {
-        type: Boolean,
-        required: true,
+      eraseJobPath: {
+        type: String,
+        required: false,
+        default: null,
       },
       size: {
         type: Number,
         required: true,
       },
-      rawTracePath: {
+      rawPath: {
         type: String,
         required: false,
         default: null,
@@ -33,6 +34,10 @@
         type: Boolean,
         required: true,
       },
+      isTraceSizeVisible: {
+        type: Boolean,
+        required: true,
+      }
     },
     computed: {
       jobLogSize() {
@@ -44,12 +49,6 @@
       },
     },
     methods: {
-      handleEraseJobClick() {
-        // eslint-disable-next-line no-alert
-        if (window.confirm(s__('Job|Are you sure you want to erase this job?'))) {
-          this.$emit('eraseJob');
-        }
-      },
       handleScrollToTop() {
         this.$emit('scrollJobLogTop');
       },
@@ -63,11 +62,14 @@
   <div class="top-bar">
     <!-- truncate information -->
     <div class="js-truncated-info truncated-info d-none d-sm-block float-left">
-      <p v-html="jobLogSize"></p>
+      <p
+        v-if="isTraceSizeVisible"
+        v-html="jobLogSize"
+      ></p>
 
       <a
-        v-if="rawTracePath"
-        :href="rawTracePath"
+        v-if="rawPath"
+        :href="rawPath"
         class="js-raw-link raw-link"
       >
         {{ s__("Job|Complete Raw") }}
@@ -79,26 +81,27 @@
       <!-- links -->
       <a
         v-tooltip
-        v-if="rawTracePath"
+        v-if="rawPath"
         :title="s__('Job|Show complete raw')"
-        :href="rawTracePath"
+        :href="rawPath"
         class="js-raw-link-controller controllers-buttons"
         data-container="body"
       >
         <icon name="doc-text" />
       </a>
 
-      <button
+      <a
         v-tooltip
-        v-if="canEraseJob"
+        v-if="eraseJobPath"
         :title="s__('Job|Erase job log')"
-        type="button"
         class="js-erase-link controllers-buttons"
         data-container="body"
-        @click="handleEraseJobClick"
+        :href="eraseJobPath"
+        :data-confirm="__('Are you sure you want to erase this build?')"
+        data-method="post"
       >
         <icon name="remove" />
-      </button>
+      </a>
       <!-- eo links -->
 
       <!-- scroll buttons -->
