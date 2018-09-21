@@ -355,6 +355,9 @@ msgstr ""
 msgid "Add users to group"
 msgstr ""
 
+msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission"
+msgstr ""
+
 msgid "Admin Area"
 msgstr ""
 
