@@ -1,4 +1,4 @@
-# GitLab Maven Repository administration
+# GitLab Maven Repository administration **[PREMIUM ONLY]**
 
 >
 [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5811)
