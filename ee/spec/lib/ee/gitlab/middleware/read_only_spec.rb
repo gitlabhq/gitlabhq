@@ -44,7 +44,7 @@ describe Gitlab::Middleware::ReadOnly do
     context 'whitelisted requests' do
       it 'expects a PATCH request to geo_nodes update URL to be allowed' do
         expect(Rails.application.routes).to receive(:recognize_path).and_call_original
-        response = request.patch('/admin/geo_nodes/1')
+        response = request.patch('/admin/geo/nodes/1')
 
         expect(response).not_to be_redirect
         expect(subject).not_to disallow_request

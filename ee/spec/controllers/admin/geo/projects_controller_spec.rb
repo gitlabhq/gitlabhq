@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Admin::GeoProjectsController, :geo do
+describe Admin::Geo::ProjectsController, :geo do
   set(:admin) { create(:admin) }
   let(:synced_registry) { create(:geo_project_registry, :synced) }
 
