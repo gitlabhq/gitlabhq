@@ -36,14 +36,6 @@
           - if environment.try(:last_deployment)
             and will overwrite the #{deployment_link(environment.last_deployment, text: 'latest deployment')}
 
-  - if @build.erased?
-    .prepend-top-default.js-build-erased
-      .erased.alert.alert-warning
-        - if @build.erased_by_user?
-          Job has been erased by #{link_to(@build.erased_by_name, user_path(@build.erased_by))} #{time_ago_with_tooltip(@build.erased_at)}
-        - else
-          Job has been erased #{time_ago_with_tooltip(@build.erased_at)}
-
   - if @build.running? || @build.has_trace?
     .build-trace-container.prepend-top-default
       .top-bar.js-top-bar

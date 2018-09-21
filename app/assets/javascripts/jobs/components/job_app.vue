@@ -3,6 +3,7 @@
   import { mapActions, mapGetters, mapState } from 'vuex';
   import { s__ } from '~/locale';
   import CiHeader from '~/vue_shared/components/header_ci_component.vue';
+  import ErasedBlock from './erased_block.vue';
   import Sidebar from './sidebar_details_block.vue';
   import StuckBlock from './stuck_block.vue';
   import createStore from '../store';
@@ -12,6 +13,7 @@
     store: createStore(),
     components: {
       CiHeader,
+      ErasedBlock,
       Sidebar,
       StuckBlock,
     },
@@ -100,6 +102,12 @@
         :has-no-runners-for-project="job.runners.available"
         :tags="job.tag_list"
         :runners-path="runnersPath"
+      />
+
+      <erased-block
+        v-if="job.erased"
+        :user="job.erased_by"
+        :erased-at="job.erased_at"
       />
 
       <!-- EO Body Section -->
