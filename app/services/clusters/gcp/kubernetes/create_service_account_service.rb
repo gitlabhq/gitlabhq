@@ -4,46 +4,46 @@ module Clusters
   module Gcp
     module Kubernetes
       class CreateServiceAccountService
-        attr_reader :kubeclient, :rbac
+        attr_reader :kubeclient, :name, :namespace, :rbac
 
-        def initialize(kubeclient, rbac:)
+        def initialize(kubeclient, name:, namespace:, rbac:)
           @kubeclient = kubeclient
+          @name = name
+          @namespace = namespace
           @rbac = rbac
         end
 
         def execute
           kubeclient.create_service_account(service_account_resource)
           kubeclient.create_secret(service_account_token_resource)
-          kubeclient.create_cluster_role_binding(cluster_role_binding_resource) if rbac
+          kubeclient.create_role_binding(role_binding_resource) if rbac
         end
 
         private
 
         def service_account_resource
-          Gitlab::Kubernetes::ServiceAccount.new(service_account_name, service_account_namespace).generate
+          Gitlab::Kubernetes::ServiceAccount.new(name, namespace).generate
         end
 
         def service_account_token_resource
           Gitlab::Kubernetes::ServiceAccountToken.new(
-            SERVICE_ACCOUNT_TOKEN_NAME, service_account_name, service_account_namespace).generate
+            service_account_token_name, name, namespace).generate
         end
 
-        def cluster_role_binding_resource
-          subjects = [{ kind: 'ServiceAccount', name: service_account_name, namespace: service_account_namespace }]
+        def service_account_token_name
+          SERVICE_ACCOUNT_TOKEN_NAME
+        end
 
-          Gitlab::Kubernetes::ClusterRoleBinding.new(
-            CLUSTER_ROLE_BINDING_NAME,
-            CLUSTER_ROLE_NAME,
-            subjects
+        def edit_role_name
+          EDIT_ROLE_NAME
+        end
+
+        def role_binding_resource
+          Gitlab::Kubernetes::RoleBinding.new(
+            role_name: edit_role_name,
+            namespace: namespace,
+            service_account_name: name
           ).generate
-        end
-
-        def service_account_name
-          SERVICE_ACCOUNT_NAME
-        end
-
-        def service_account_namespace
-          SERVICE_ACCOUNT_NAMESPACE
         end
       end
     end

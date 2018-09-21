@@ -71,6 +71,7 @@ module Clusters
             .append(key: 'KUBE_TOKEN', value: token, public: false)
             .append(key: 'KUBE_NAMESPACE', value: actual_namespace)
             .append(key: 'KUBECONFIG', value: config, public: false, file: true)
+            .append(key: 'KUBE_SERVICE_ACCOUNT', value: service_account_name) 
 
           if ca_pem.present?
             variables
@@ -103,6 +104,12 @@ module Clusters
 
       def kubeclient
         @kubeclient ||= build_kube_client!(api_groups: ['api', 'apis/rbac.authorization.k8s.io'])
+      end
+
+      def service_account_name
+        default_name = Clusters::Gcp::Kubernetes::SERVICE_ACCOUNT_NAME
+
+        rbac? ? "#{default_name}-#{actual_namespace}" : default_name
       end
 
       private
