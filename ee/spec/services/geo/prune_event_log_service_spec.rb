@@ -31,16 +31,9 @@ describe Geo::PruneEventLogService do
   end
 
   it 'prunes all event tables' do
-    expect(service).to receive(:prune!).with(Geo::RepositoryCreatedEvent, anything)
-    expect(service).to receive(:prune!).with(Geo::RepositoryUpdatedEvent, anything)
-    expect(service).to receive(:prune!).with(Geo::RepositoryDeletedEvent, anything)
-    expect(service).to receive(:prune!).with(Geo::RepositoryRenamedEvent, anything)
-    expect(service).to receive(:prune!).with(Geo::RepositoriesChangedEvent, anything)
-    expect(service).to receive(:prune!).with(Geo::HashedStorageMigratedEvent, anything)
-    expect(service).to receive(:prune!).with(Geo::HashedStorageAttachmentsEvent, anything)
-    expect(service).to receive(:prune!).with(Geo::LfsObjectDeletedEvent, anything)
-    expect(service).to receive(:prune!).with(Geo::JobArtifactDeletedEvent, anything)
-    expect(service).to receive(:prune!).with(Geo::UploadDeletedEvent, anything)
+    Geo::EventLog::EVENT_CLASSES.each do |event_class|
+      expect(service).to receive(:prune!).with(event_class.constantize, anything)
+    end
 
     service.execute
   end

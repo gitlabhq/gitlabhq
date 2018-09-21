@@ -7,6 +7,7 @@ RSpec.describe Geo::EventLog, type: :model do
     it { is_expected.to belong_to(:repository_deleted_event).class_name('Geo::RepositoryDeletedEvent').with_foreign_key('repository_deleted_event_id') }
     it { is_expected.to belong_to(:repository_renamed_event).class_name('Geo::RepositoryRenamedEvent').with_foreign_key('repository_renamed_event_id') }
     it { is_expected.to belong_to(:repository_updated_event).class_name('Geo::RepositoryUpdatedEvent').with_foreign_key('repository_updated_event_id') }
+    it { is_expected.to belong_to(:reset_checksum_event).class_name('Geo::ResetChecksumEvent').with_foreign_key('reset_checksum_event_id') }
     it { is_expected.to belong_to(:hashed_storage_migrated_event).class_name('Geo::HashedStorageMigratedEvent').with_foreign_key('hashed_storage_migrated_event_id') }
     it { is_expected.to belong_to(:hashed_storage_attachments_event).class_name('Geo::HashedStorageAttachmentsEvent').with_foreign_key('hashed_storage_attachments_event_id') }
     it { is_expected.to belong_to(:lfs_object_deleted_event).class_name('Geo::LfsObjectDeletedEvent').with_foreign_key('lfs_object_deleted_event_id') }
@@ -94,6 +95,13 @@ RSpec.describe Geo::EventLog, type: :model do
       subject.upload_deleted_event = upload_deleted_event
 
       expect(subject.event).to eq upload_deleted_event
+    end
+
+    it 'returns reset_checksum_event when set' do
+      reset_checksum_event = build(:geo_reset_checksum_event)
+      subject.reset_checksum_event = reset_checksum_event
+
+      expect(subject.event).to eq reset_checksum_event
     end
   end
 
