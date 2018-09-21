@@ -70,6 +70,7 @@
                 - sign_in_text = allow_signup? ? _('Sign in / Register') : _('Sign in')
                 = link_to sign_in_text, new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in'
 
+      .js-set-status-modal-wrapper
       %button.navbar-toggler.d-block.d-sm-none{ type: 'button' }
         %span.sr-only= _('Toggle navigation')
         = sprite_icon('ellipsis_h', size: 12, css_class: 'more-icon js-navbar-toggle-right')

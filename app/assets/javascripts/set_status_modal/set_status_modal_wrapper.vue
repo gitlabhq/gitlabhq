@@ -8,9 +8,15 @@ export default {
       return 'set-status-modal';
     },
   },
+  mounted() {
+    eventHub.$on('openModal', this.openModal);
+  },
   methods: {
     onSubmit() {
       console.log('Do something');
+    },
+    openModal() {
+      this.$root.$emit('bv::show::modal', this.modalId)
     },
   },
 };

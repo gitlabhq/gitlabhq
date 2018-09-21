@@ -1,5 +1,6 @@
 <script>
 import { s__, sprintf } from '~/locale';
+import eventHub from './eventHub';
 
 export default {
   computed: {
@@ -11,6 +12,9 @@ export default {
     onSubmit() {
       console.log('Do something');
     },
+    openModal() {
+      eventHub.$emit('openModal');
+    }
   },
 };
 </script>
@@ -18,13 +22,13 @@ export default {
 <template>
   <li>
     <button
-      v-gl-modal="modalId"
       type="button"
       class="btn menu-item"
+      @click="openModal"
     >
       {{ s__('SetStatusModal|Set a status') }}
     </button>
-    <gl-ui-modal
+    <!-- <gl-ui-modal
       :title="s__('SetStatusModal|Set a Status')"
       :ok-title="s__('SetStatusModal|Set status')"
       :modal-id="modalId"
@@ -55,6 +59,6 @@ export default {
           name="emoji"
         />
       </form>
-    </gl-ui-modal>
+    </gl-ui-modal> -->
   </li>
 </template>
