@@ -11,7 +11,7 @@ class NotifyPreview < ActionMailer::Preview
         In this notification email, we expect to see:
 
         - The note contents (that's what you're looking at)
-        - A link to view this note on Gitlab
+        - A link to view this note on GitLab
         - An explanation for why the user is receiving this notification
       MD
 
@@ -28,7 +28,7 @@ class NotifyPreview < ActionMailer::Preview
 
         - A line saying who started this discussion
         - The note contents (that's what you're looking at)
-        - A link to view this discussion on Gitlab
+        - A link to view this discussion on GitLab
         - An explanation for why the user is receiving this notification
       MD
 
@@ -46,7 +46,7 @@ class NotifyPreview < ActionMailer::Preview
         - A line saying who started this discussion and on what file
         - The diff
         - The note contents (that's what you're looking at)
-        - A link to view this discussion on Gitlab
+        - A link to view this discussion on GitLab
         - An explanation for why the user is receiving this notification
       MD
 
