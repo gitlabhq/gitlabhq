@@ -102,7 +102,7 @@
     "vue-virtual-scroll-list": "^1.2.5",
     "vuex": "^3.0.1",
     "webpack": "^4.19.1",
-    "webpack-bundle-analyzer": "^2.13.1",
+    "webpack-bundle-analyzer": "^3.0.2",
     "webpack-cli": "^3.1.0",
     "webpack-stats-plugin": "^0.2.1",
     "worker-loader": "^2.0.0",
