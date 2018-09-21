@@ -31,7 +31,7 @@ export const requestJob = ({ commit }) => commit(types.REQUEST_JOB);
 
 export const fetchJob = ({ state, dispatch }) => {
   dispatch('requestJob');
-  debugger;
+
   eTagPoll = new Poll({
     resource: {
       getJob(endpoint) {
