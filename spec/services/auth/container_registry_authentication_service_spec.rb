@@ -145,7 +145,7 @@ describe Auth::ContainerRegistryAuthenticationService do
         { scopes: ["registry:catalog:*"] }
       end
 
-      context 'disallow browsing for users without Gitlab admin rights' do
+      context 'disallow browsing for users without GitLab admin rights' do
         it_behaves_like 'an inaccessible'
         it_behaves_like 'not a container repository factory'
       end

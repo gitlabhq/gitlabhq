@@ -3,7 +3,7 @@ import syntaxHighlight from '~/syntax_highlight';
 import renderMath from './render_math';
 import renderMermaid from './render_mermaid';
 
-// Render Gitlab flavoured Markdown
+// Render GitLab flavoured Markdown
 //
 // Delegates to syntax highlight and render math & mermaid diagrams.
 //

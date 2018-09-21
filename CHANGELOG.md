@@ -1131,7 +1131,7 @@ entry.
 - Use the default strings of timeago.js for timeago. !19350 (Takuya Noguchi)
 - Update selenium-webdriver to 3.12.0. !19351 (Takuya Noguchi)
 - Include username in output when testing SSH to GitLab. !19358
-- Update screenshot in Gitlab.com integration documentation. !19433 (Tuğçe Nur Taş)
+- Update screenshot in GitLab.com integration documentation. !19433 (Tuğçe Nur Taş)
 - Users can accept terms during registration. !19583
 - Fix issue count on sidebar.
 - Add merge requests list endpoint for groups.
@@ -1261,7 +1261,7 @@ entry.
 - Make toggle markdown preview shortcut only toggle selected field.
 - Verifiy if pipeline has commit idetails and render information in MR widget when branch is deleted.
 - Fixed inconsistent protected branch pill baseline.
-- Fix setting Gitlab metrics content types.
+- Fix setting GitLab metrics content types.
 - Display only generic message on merge error to avoid exposing any potentially sensitive or user unfriendly backend messages.
 - Fix label links update on project transfer.
 - Breaks commit not found message in pipelines table.
@@ -1631,7 +1631,7 @@ entry.
 - Add 'Assigned Issues' and 'Assigned Merge Requests' as dashboard view choices for users. !17860 (Elias Werberich)
 - Extend API for importing a project export with overwrite support. !17883
 - Create Deploy Tokens to allow permanent access to repository and registry. !17894
-- Detect commit message trailers and link users properly to their accounts on Gitlab. !17919 (cousine)
+- Detect commit message trailers and link users properly to their accounts on GitLab. !17919 (cousine)
 - Adds cancel btn to new pages domain page. !18026 (Jacopo Beschi @jacopo-beschi)
 - API: Add parameter merge_method to projects. !18031 (Jan Beckmann)
 - Introduce simpler env vars for auto devops REPLICAS and CANARY_REPLICAS #41436. !18036
@@ -3079,7 +3079,7 @@ entry.
 - [FIXED] Fix broken wiki pages that link to a wiki file. !15019
 - [FIXED] Don't rename paths that were freed up when upgrading. !15029
 - [FIXED] Fix bitbucket login. !15051
-- [FIXED] Update gitaly in Gitlab 10.1 to 0.43.1 for temp file cleanup. !15055
+- [FIXED] Update gitaly in GitLab 10.1 to 0.43.1 for temp file cleanup. !15055
 - [FIXED] Use the correct visibility attribute for projects in system hooks. !15065
 - [FIXED] Normalize LDAP DN when looking up identity.
 - [FIXED] Adds callback functions for initial request in clusters page.
@@ -4789,7 +4789,7 @@ entry.
 - Make user mentions case-insensitive. !10285 (blackst0ne)
 - Update rugged to 0.25.1.1. !10286 (Elan Ruusamäe)
 - Handle parsing OpenBSD ps output properly to display sidekiq infos on admin->monitoring->background. !10303 (Sebastian Reitenbach)
-- Log errors during generating of Gitlab Pages to debug log. !10335 (Danilo Bargen)
+- Log errors during generating of GitLab Pages to debug log. !10335 (Danilo Bargen)
 - Update issue board cards design. !10353
 - Tags can be protected, restricting creation of matching tags by user role. !10356
 - Set GIT_TERMINAL_PROMPT env variable in initializer. !10372
@@ -5202,7 +5202,7 @@ entry.
 - Restore keyboard shortcuts for "Activity" and "Charts". !9680
 - Added commit array to Syshook json. !9685 (Gabriele Pongelli)
 - Document ability to list issues with no labels using API. !9697 (Vignesh Ravichandran)
-- Fix typo in Gitlab config file. !9702 (medied)
+- Fix typo in GitLab config file. !9702 (medied)
 - Fix json response in branches controller. !9710 (George Andrinopoulos)
 - Refactor dropdown_assignee_spec. !9711 (George Andrinopoulos)
 - Delete artifacts for pages unless expiry date is specified. !9716
