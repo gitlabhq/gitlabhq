@@ -110,12 +110,12 @@ module IssuableActions
   private
 
   def notes_filter
-    notes_filter_param = params.fetch(:notes_filter, current_user&.notes_filter(issuable))
+    notes_filter_param = params[:notes_filter]
 
     if current_user
       current_user.set_notes_filter(notes_filter_param, issuable)
     else
-      notes_filter_param
+      notes_filter_param.to_i
     end
   end
 
