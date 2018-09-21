@@ -18,7 +18,7 @@ module QA
           element :no_fast_forward_message, 'Fast-forward merge is not possible'
         end
 
-        view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_squash_before_merge.vue' do
+        view 'app/assets/javascripts/vue_merge_request_widget/components/states/squash_before_merge.vue' do
           element :squash_checkbox
         end
 
