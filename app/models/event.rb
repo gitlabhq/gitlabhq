@@ -159,7 +159,7 @@ class Event < ActiveRecord::Base
     elsif merge_request? || merge_request_note?
       Ability.allowed?(user, :read_merge_request, note? ? note_target : target)
     elsif milestone?
-      Ability.allowed?(user, :read_project, project)
+      Ability.allowed?(user, :read_milestone, project)
     else
       false # No other event types are visible
     end
