@@ -45,6 +45,11 @@ module Gitlab
         :update_cluster_role_binding,
         to: :rbac_client
 
+      delegate :create_role_binding,
+        :get_role_binding,
+        :update_role_binding,
+        to: :rbac_client
+
       # Deployments resource is currently on the apis/extensions api group
       delegate :get_deployments,
         to: :extensions_client
