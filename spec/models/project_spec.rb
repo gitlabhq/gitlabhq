@@ -1072,6 +1072,18 @@ describe Project do
     it { expect(project.builds_enabled?).to be_truthy }
   end
 
+  describe '.sort_by_attribute' do
+    it 'reorders the input relation by start count desc' do
+      project1 = create(:project, star_count: 2)
+      project2 = create(:project, star_count: 1)
+      project3 = create(:project)
+
+      projects = described_class.sort_by_attribute(:stars_desc)
+
+      expect(projects).to eq([project1, project2, project3])
+    end
+  end
+
   describe '.with_shared_runners' do
     subject { described_class.with_shared_runners }
 
