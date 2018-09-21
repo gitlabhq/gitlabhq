@@ -31,11 +31,11 @@ $token-spacing-bottom: 0.5em;
     opacity: 0;
   }
 
-  li .issue-info-container {
+  li .issuable-info-container {
     padding-left: $gl-padding;
   }
 
-  a.issue-main-info:hover {
+  a.issuable-main-info:hover {
     text-decoration: none;
 
     .issue-token-title-text {
