@@ -1,8 +1,10 @@
 <script>
+  import _ from 'underscore';
   import { mapActions, mapGetters, mapState } from 'vuex';
   import { s__ } from '~/locale';
   import CiHeader from '~/vue_shared/components/header_ci_component.vue';
   import Sidebar from './sidebar_details_block.vue';
+  import StuckBlock from './stuck_block.vue';
   import createStore from '../store';
 
   export default {
@@ -11,6 +13,7 @@
     components: {
       CiHeader,
       Sidebar,
+      StuckBlock,
     },
     props: {
       jobEndpoint: {
@@ -31,6 +34,11 @@
         default: '',
       },
       terminalPath: {
+        type: String,
+        required: false,
+        default: null,
+      },
+      runnersPath: {
         type: String,
         required: false,
         default: null,
@@ -87,6 +95,13 @@
       <!-- EO Header Section -->
 
       <!-- Body Section -->
+      <stuck-block
+        v-if="job.runners.available"
+        :has-no-runners-for-project="job.runners.available"
+        :tags="job.tag_list"
+        :runners-path="runnersPath"
+      />
+
       <!-- EO Body Section -->
 
       <!-- Sidebar Section -->
