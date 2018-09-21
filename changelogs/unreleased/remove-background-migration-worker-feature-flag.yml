@@ -1,5 +1,0 @@
----
-title: Remove health check feature flag in BackgroundMigrationWorker
-merge_request:
-author:
-type: changed

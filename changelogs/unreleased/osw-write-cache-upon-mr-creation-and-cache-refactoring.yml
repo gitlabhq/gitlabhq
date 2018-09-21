@@ -1,5 +1,0 @@
----
-title: Write diff highlighting cache upon MR creation (refactors caching)
-merge_request: 21489
-author:
-type: performance

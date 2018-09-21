@@ -1,5 +1,0 @@
----
-title: 'API: Use find_branch! in all places'
-merge_request: 21614
-author: Robert Schilling
-type: fixed

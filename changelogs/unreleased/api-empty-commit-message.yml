@@ -1,5 +1,0 @@
----
-title: 'API: Catch empty commit messages'
-merge_request: 21322
-author: Robert Schilling
-type: fixed
