@@ -130,11 +130,6 @@ Naming/HeredocDelimiterCase:
 Naming/HeredocDelimiterNaming:
   Enabled: false
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Performance/UriDefaultParser:
-  Exclude:
-    - 'lib/gitlab/url_sanitizer.rb'
 
 # Offense count: 3821
 # Configuration parameters: Prefixes.
