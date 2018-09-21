@@ -461,6 +461,7 @@ danger-review:
       - $CI_COMMIT_REF_NAME =~ /.*-stable(-ee)?-prepare-.*/
   script:
     - git version
+    - node --version
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
     - danger --fail-on-errors=true
 
