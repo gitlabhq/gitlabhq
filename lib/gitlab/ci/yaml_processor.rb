@@ -50,7 +50,7 @@ module Gitlab
             after_script: job[:after_script],
             environment: job[:environment],
             retry: job[:retry],
-            start_in: job[:start_in],
+            start_in: job[:start_in]
           }.compact }
       end
 
