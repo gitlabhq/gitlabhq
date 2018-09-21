@@ -434,6 +434,10 @@ cloud-native-image:
   stage: build
   image: ruby:2.4-alpine
   before_script: []
+<<<<<<< HEAD
+=======
+  stage: test
+>>>>>>> upstream/master
   allow_failure: true
   cache: {}
   variables:

@@ -7,6 +7,9 @@ module QA
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/ready_to_merge.vue' do
           element :merge_button
           element :fast_forward_message, 'Fast-forward merge without a merge commit'
+          element :merge_moment_dropdown
+          element :merge_when_pipeline_succeeds_option
+          element :merge_immediately_option
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_merged.vue' do
@@ -29,7 +32,20 @@ module QA
         def has_merge_button?
           refresh
 
-          has_selector?('.accept-merge-request')
+          has_css?(element_selector_css(:merge_button))
+        end
+
+        def has_merge_options?
+          has_css?(element_selector_css(:merge_moment_dropdown))
+        end
+
+        def merge_immediately
+          if has_merge_options?
+            click_element :merge_moment_dropdown
+            click_element :merge_immediately_option
+          else
+            click_element :merge_button
+          end
         end
 
         def rebase!
@@ -61,7 +77,7 @@ module QA
             !first(element_selector_css(:merge_button)).disabled?
           end
 
-          click_element :merge_button
+          merge_immediately
 
           wait(reload: false) do
             has_text?('The changes were merged into')
