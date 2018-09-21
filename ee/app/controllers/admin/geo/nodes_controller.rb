@@ -1,4 +1,6 @@
-class Admin::GeoNodesController < Admin::ApplicationController
+# frozen_string_literal: true
+
+class Admin::Geo::NodesController < Admin::ApplicationController
   before_action :check_license, except: :index
   before_action :load_node, only: [:edit, :update]
 

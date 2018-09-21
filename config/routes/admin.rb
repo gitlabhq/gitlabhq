@@ -132,13 +132,15 @@ namespace :admin do
     get :download, on: :member
   end
 
-  resources :geo_nodes, only: [:index, :create, :new, :edit, :update]
+  namespace :geo do
+    resources :nodes, only: [:index, :create, :new, :edit, :update]
 
-  resources :geo_projects, only: [:index] do
-    member do
-      post :recheck
-      post :resync
-      post :force_redownload
+    resources :projects, only: :index do
+      member do
+        post :recheck
+        post :resync
+        post :force_redownload
+      end
     end
   end
 

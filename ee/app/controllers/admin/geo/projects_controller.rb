@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Admin::GeoProjectsController < Admin::ApplicationController
+class Admin::Geo::ProjectsController < Admin::ApplicationController
   before_action :check_license
   before_action :load_registry, except: [:index]
 

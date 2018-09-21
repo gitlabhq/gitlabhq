@@ -34,7 +34,7 @@ describe API::GeoNodes, :geo, :prometheus, api: true do
 
       expect(response).to have_gitlab_http_status(200)
       expect(response).to match_response_schema('public_api/v4/geo_node', dir: 'ee')
-      expect(json_response['web_edit_url']).to end_with("/admin/geo_nodes/#{primary.id}/edit")
+      expect(json_response['web_edit_url']).to end_with("/admin/geo/nodes/#{primary.id}/edit")
 
       links = json_response['_links']
       expect(links['self']).to end_with("/api/v4/geo_nodes/#{primary.id}")

@@ -3,7 +3,7 @@ export const PRIMARY_VERSION = {
   revision: 'b93c51849b',
 };
 
-export const NODE_DETAILS_PATH = '/admin/geo_nodes';
+export const NODE_DETAILS_PATH = '/admin/geo/nodes';
 
 export const mockNodes = [
   {
@@ -19,7 +19,7 @@ export const mockNodes = [
       self: 'http://127.0.0.1:3001/api/v4/geo_nodes/1',
       repair: 'http://127.0.0.1:3001/api/v4/geo_nodes/1/repair',
       status: 'http://127.0.0.1:3001/api/v4/geo_nodes/1/status',
-      web_edit: 'http://127.0.0.1:3001/admin/geo_nodes/1/edit',
+      web_edit: 'http://127.0.0.1:3001/admin/geo/nodes/1/edit',
     },
   },
   {
@@ -35,7 +35,7 @@ export const mockNodes = [
       self: 'http://127.0.0.1:3001/api/v4/geo_nodes/2',
       repair: 'http://127.0.0.1:3001/api/v4/geo_nodes/2/repair',
       status: 'http://127.0.0.1:3001/api/v4/geo_nodes/2/status',
-      web_edit: 'http://127.0.0.1:3001/admin/geo_nodes/2/edit',
+      web_edit: 'http://127.0.0.1:3001/admin/geo/nodes/2/edit',
     },
   },
 ];
@@ -50,7 +50,7 @@ export const mockNode = {
   basePath: 'http://127.0.0.1:3001/api/v4/geo_nodes/1',
   repairPath: 'http://127.0.0.1:3001/api/v4/geo_nodes/1/repair',
   statusPath: 'http://127.0.0.1:3001/api/v4/geo_nodes/1/status',
-  editPath: 'http://127.0.0.1:3001/admin/geo_nodes/1/edit',
+  editPath: 'http://127.0.0.1:3001/admin/geo/nodes/1/edit',
 };
 
 export const rawMockNodeDetails = {
