@@ -52,7 +52,7 @@ RSpec.describe InstanceConfiguration do
           expect(gitlab_pages).to eq(Settings.pages.symbolize_keys)
         end
 
-        it 'returns the Gitlab\'s pages host ip address' do
+        it 'returns the GitLab\'s pages host ip address' do
           expect(gitlab_pages.keys).to include(:ip_address)
         end
 

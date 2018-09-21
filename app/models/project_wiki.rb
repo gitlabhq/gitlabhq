@@ -80,7 +80,7 @@ class ProjectWiki
     pages(limit: 1).empty?
   end
 
-  # Returns an Array of Gitlab WikiPage instances or an
+  # Returns an Array of GitLab WikiPage instances or an
   # empty Array if this Wiki has no pages.
   def pages(limit: 0)
     wiki.pages(limit: limit).map { |page| WikiPage.new(self, page, true) }

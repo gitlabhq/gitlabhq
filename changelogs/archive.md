@@ -739,7 +739,7 @@
 - Update duration at the end of pipeline
 - ExpireBuildArtifactsWorker query builds table without ordering enqueuing one job per build to cleanup
 - Add group level labels. (!6425)
-- Add an example for testing a phoenix application with Gitlab CI in the docs (Manthan Mallikarjun)
+- Add an example for testing a phoenix application with GitLab CI in the docs (Manthan Mallikarjun)
 - Cancelled pipelines could be retried. !6927
 - Updating verbiage on git basics to be more intuitive
 - Fix project_feature record not generated on project creation
@@ -768,7 +768,7 @@
 - Log LDAP lookup errors and don't swallow unrelated exceptions. !6103 (Markus Koller)
 - Replace unique keyframes mixin with keyframe mixin with specific names (ClemMakesApps)
 - Add more tests for calendar contribution (ClemMakesApps)
-- Update Gitlab Shell to fix some problems with moving projects between storages
+- Update GitLab Shell to fix some problems with moving projects between storages
 - Cache rendered markdown in the database, rather than Redis
 - Add todo toggle event (ClemMakesApps)
 - Avoid database queries on Banzai::ReferenceParser::BaseParser for nodes without references
@@ -815,7 +815,7 @@
 - Replace static issue fixtures by script !6059 (winniehell)
 - Append issue template to existing description !6149 (Joseph Frazier)
 - Trending projects now only show public projects and the list of projects is cached for a day
-- Memoize Gitlab Shell's secret token (!6599, Justin DiPierro)
+- Memoize GitLab Shell's secret token (!6599, Justin DiPierro)
 - Revoke button in Applications Settings underlines on hover.
 - Use higher size on Gitlab::Redis connection pool on Sidekiq servers
 - Add missing values to linter !6276 (Katarzyna Kobierska Ula Budziszewska)
@@ -930,7 +930,7 @@
 
 ## 8.12.3
 
-  - Update Gitlab Shell to support low IO priority for storage moves
+  - Update GitLab Shell to support low IO priority for storage moves
 
 ## 8.12.2
 
@@ -1001,7 +1001,7 @@
   - Added ability to specify URL in environment configuration in gitlab-ci.yml
   - Escape search term before passing it to Regexp.new !6241 (winniehell)
   - Fix pinned sidebar behavior in smaller viewports !6169
-  - Fix file permissions change when updating a file on the Gitlab UI !5979
+  - Fix file permissions change when updating a file on the GitLab UI !5979
   - Added horizontal padding on build page sidebar on code coverage block. !6196 (Vitaly Baev)
   - Change merge_error column from string to text type
   - Fix issue with search filter labels not displaying
@@ -1688,7 +1688,7 @@
   - Fix commit avatar alignment in compare view. !5128
   - Fix broken migration in MySQL. !5005
   - Overwrite Host and X-Forwarded-Host headers in NGINX !5213
-  - Keeps issue number when importing from Gitlab.com
+  - Keeps issue number when importing from GitLab.com
   - Add Pending tab for Builds (Katarzyna Kobierska, Urszula Budziszewska)
 
 ## 8.9.5
@@ -4786,7 +4786,7 @@
 ## 3.1.0
 
 - Updated gems
-- Services: Gitlab CI integration
+- Services: GitLab CI integration
 - Events filter on dashboard
 - Own namespace for redis/resque
 - Optimized commit diff views
@@ -4869,7 +4869,7 @@
 
 ## 2.8.0
 
-- Gitlab Flavored Markdown
+- GitLab Flavored Markdown
 - Bulk issues update
 - Issues API
 - Cucumber coverage increased
