@@ -13,12 +13,6 @@ including the database, will be hosted on the same instance.
 If you are interested for a highly available environment, check the
 [high availability docs](../../administration/high_availability/README.md).
 
-## Architecture
-
-Below is the diagram of the architecture.
-
-![AWS architecture](img/aws_diagram.png)
-
 ## Requirements
 
 A basic familiarity with AWS and EC2 is assumed. In particular, you will need:
@@ -27,6 +21,12 @@ A basic familiarity with AWS and EC2 is assumed. In particular, you will need:
 - [Create or upload](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)
   an SSH key to connect to the instance via SSH
 - A domain name under which GitLab will be reached
+
+## Architecture
+
+Below is the diagram of the architecture.
+
+![AWS architecture](img/aws_diagram.png)
 
 ## Costs
 
