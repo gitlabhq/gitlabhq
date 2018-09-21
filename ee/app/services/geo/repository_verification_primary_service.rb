@@ -9,6 +9,8 @@ module Geo
     def execute
       verify_checksum(:repository, project.repository)
       verify_checksum(:wiki, project.wiki.repository)
+
+      Geo::ResetChecksumEventStore.new(project).create!
     end
 
     private
