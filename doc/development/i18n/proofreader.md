@@ -20,6 +20,8 @@ are very appreciative of the work done by translators and proofreaders!
 - French
   - Davy Defaud - [GitLab](https://gitlab.com/DevDef), [Crowdin](https://crowdin.com/profile/DevDef)
 - German
+- Hebrew
+  - Yaron Shahrabani - [GitLab](https://gitlab.com/yarons), [Crowdin](https://crowdin.com/profile/YaronSh)
 - Indonesian
   - Ahmad Naufal Mukhtar - [GitLab](https://gitlab.com/anaufalm), [Crowdin](https://crowdin.com/profile/anaufalm)
 - Italian
