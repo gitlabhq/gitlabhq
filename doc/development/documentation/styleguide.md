@@ -10,6 +10,8 @@ GitLab documentation. Check the
 
 Check the GitLab handbook for the [writing styles guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines).
 
+For help adhering to the guidelines, see [Linting](index.md#linting).
+
 ## Files
 
 - [Directory structure](index.md#location-and-naming-documents): place the docs
