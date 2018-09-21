@@ -148,6 +148,8 @@ class Event < ActiveRecord::Base
     end
   end
 
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
   def visible_to_user?(user = nil)
     if push? || commit_note?
       Ability.allowed?(user, :download_code, project)
@@ -159,12 +161,18 @@ class Event < ActiveRecord::Base
       Ability.allowed?(user, :read_issue, note? ? note_target : target)
     elsif merge_request? || merge_request_note?
       Ability.allowed?(user, :read_merge_request, note? ? note_target : target)
+    elsif personal_snippet_note?
+      Ability.allowed?(user, :read_personal_snippet, note_target)
+    elsif project_snippet_note?
+      Ability.allowed?(user, :read_project_snippet, note_target)
     elsif milestone?
       Ability.allowed?(user, :read_milestone, project)
     else
       false # No other event types are visible
     end
   end
+  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/CyclomaticComplexity
 
   def project_name
     if project
@@ -304,6 +312,10 @@ class Event < ActiveRecord::Base
 
   def project_snippet_note?
     note? && target && target.for_snippet?
+  end
+
+  def personal_snippet_note?
+    note? && target && target.for_personal_snippet?
   end
 
   def note_target
