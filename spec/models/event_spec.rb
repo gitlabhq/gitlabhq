@@ -151,6 +151,7 @@ describe Event do
     let(:note_on_commit) { create(:note_on_commit, project: project) }
     let(:note_on_issue) { create(:note_on_issue, noteable: issue, project: project) }
     let(:note_on_confidential_issue) { create(:note_on_issue, noteable: confidential_issue, project: project) }
+    let(:milestone_on_project) { create(:milestone, project: project) }
     let(:event) { described_class.new(project: project, target: target, author_id: author.id) }
 
     before do
@@ -265,6 +266,42 @@ describe Event do
           expect(event.visible_to_user?(member)).to eq true
           expect(event.visible_to_user?(guest)).to eq false
           expect(event.visible_to_user?(admin)).to eq true
+        end
+      end
+    end
+
+    context 'milestone event' do
+      let(:target) { milestone_on_project }
+
+      it do
+        expect(event.visible_to_user?(nil)).to be_truthy
+        expect(event.visible_to_user?(non_member)).to be_truthy
+        expect(event.visible_to_user?(member)).to be_truthy
+        expect(event.visible_to_user?(guest)).to be_truthy
+        expect(event.visible_to_user?(admin)).to be_truthy
+      end
+
+      context 'on public project with private issue tracker and merge requests' do
+        let(:project) { create(:project, :public, :issues_private, :merge_requests_private) }
+
+        it do
+          expect(event.visible_to_user?(nil)).to be_falsy
+          expect(event.visible_to_user?(non_member)).to be_falsy
+          expect(event.visible_to_user?(member)).to be_truthy
+          expect(event.visible_to_user?(guest)).to be_truthy
+          expect(event.visible_to_user?(admin)).to be_truthy
+        end
+      end
+
+      context 'on private project' do
+        let(:project) { create(:project, :private) }
+
+        it do
+          expect(event.visible_to_user?(nil)).to be_falsy
+          expect(event.visible_to_user?(non_member)).to be_falsy
+          expect(event.visible_to_user?(member)).to be_truthy
+          expect(event.visible_to_user?(guest)).to be_truthy
+          expect(event.visible_to_user?(admin)).to be_truthy
         end
       end
     end
