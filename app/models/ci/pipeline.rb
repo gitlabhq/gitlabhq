@@ -108,6 +108,10 @@ module Ci
         transition any - [:manual] => :manual
       end
 
+      event :schedule do
+        transition any - [:scheduled] => :scheduled
+      end
+
       # IMPORTANT
       # Do not add any operations to this state_machine
       # Create a separate worker for each new operation
@@ -544,6 +548,7 @@ module Ci
         when 'canceled' then cancel
         when 'skipped' then skip
         when 'manual' then block
+        when 'scheduled' then schedule
         else
           raise HasStatus::UnknownStatusError,
                 "Unknown status `#{latest_builds_status}`"

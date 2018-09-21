@@ -3,31 +3,9 @@ module Gitlab
     module Status
       module Build
         class Scheduled < Status::Extended
-          ###
-          # Core override
-          ###
-          def text
-            s_('CiStatusText|scheduled')
-          end
-
-          def label
-            s_('CiStatusLabel|scheduled')
-          end
-
-          def icon
-            'timer'
-          end
-
-          def favicon
-            'favicon_status_scheduled'
-          end
-
-          ###
-          # Extension override
-          ###
           def illustration
             {
-              image: 'illustrations/canceled-job_empty.svg',
+              image: 'illustrations/scheduled-job_countdown.svg',
               size: 'svg-394',
               title: _("This is a scheduled to run in ") + " #{execute_in}",
               content: _("This job will automatically run after it's timer finishes. Often they are used for incremental roll-out deploys to production environments. When unscheduled it converts into a manual action.")

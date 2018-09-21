@@ -77,6 +77,7 @@ module HasStatus
       state :canceled, value: 'canceled'
       state :skipped, value: 'skipped'
       state :manual, value: 'manual'
+      state :scheduled, value: 'scheduled'
     end
 
     scope :created, -> { where(status: 'created') }
@@ -88,6 +89,7 @@ module HasStatus
     scope :canceled, -> { where(status: 'canceled')  }
     scope :skipped, -> { where(status: 'skipped')  }
     scope :manual, -> { where(status: 'manual')  }
+    scope :scheduled, -> { where(status: 'scheduled')  }
     scope :alive, -> { where(status: [:created, :pending, :running]) }
     scope :created_or_pending, -> { where(status: [:created, :pending]) }
     scope :running_or_pending, -> { where(status: [:running, :pending]) }

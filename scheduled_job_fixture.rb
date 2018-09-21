@@ -62,23 +62,78 @@ cleanup:
 # require '/path/to/scheduled_job_fixture.rb'  # Load this script
 # ```
 #
-# ### Reproduce the scenario A) ~ Succeccfull timed incremantal rollout ~
+# ### Reproduce the scenario ~ when all stages succeeded ~
 #
-# ````
-# project = Project.find_by(path: 'incremental-rollout')
-# user = User.find_by(username: 'root')
-# fixture = ScheduledJobFixture.new(project.id, user.id)
+# 1. ScheduledJobFixture.new(29, 1).create_pipeline('master')
+# 1. ScheduledJobFixture.new(29, 1).finish_stage_until('test')
+# 1. Wait until rollout 10% job is triggered
+# 1. ScheduledJobFixture.new(29, 1).finish_stage_until('rollout 10%')
+# 1. Wait until rollout 50% job is triggered
+# 1. ScheduledJobFixture.new(29, 1).finish_stage_until('rollout 50%')
+# 1. Wait until rollout 100% job is triggered
+# 1. ScheduledJobFixture.new(29, 1).finish_stage_until('rollout 100%')
+# 1. ScheduledJobFixture.new(29, 1).finish_stage_until('cleanup')
 #
-# fixture.create_pipeline('master')
-# fixture.finish_stage_until('test')  # Succeed 'build' and 'test' jobs. 'rollout 10%' job will be scheduled. See the pipeline page
-# fixture.finish_stage_until('rollout 10%')  # Succeed `rollout 10%` job. 'rollout 50%' job will be scheduled.
-# fixture.finish_stage_until('rollout 50%')  # Succeed `rollout 50%` job. 'rollout 100%' job will be scheduled.
-# fixture.finish_stage_until('rollout 100%')  # Succeed `rollout 100%` job. 'cleanup' job will be scheduled.
-# fixture.finish_stage_until('cleanup')  # Succeed `cleanup` job. The pipeline becomes green.
-# ```
+# Expectation: Users see a succeccful pipeline
+#
+# ### Reproduce the scenario ~ when rollout 10% jobs failed ~
+#
+# 1. ScheduledJobFixture.new(29, 1).create_pipeline('master')
+# 1. ScheduledJobFixture.new(29, 1).finish_stage_until('test')
+# 1. Wait until rollout 10% job is triggered
+# 1. ScheduledJobFixture.new(29, 1).drop_jobs('rollout 10%')
+#
+# Expectation: Following stages should be skipped.
+#
+# ### Reproduce the scenario ~ when user clicked cancel button before build job finished ~
+#
+# 1. ScheduledJobFixture.new(29, 1).create_pipeline('master')
+# 1. ScheduledJobFixture.new(29, 1).cancel_pipeline
+#
+# Expectation: All stages should be canceled.
+#
+# ### Reproduce the scenario ~ when user canceled the pipeline after rollout 10% job is scheduled ~
+#
+# 1. ScheduledJobFixture.new(29, 1).create_pipeline('master')
+# 1. ScheduledJobFixture.new(29, 1).finish_stage_until('test')
+# 1. Run next command before rollout 10% job is triggered
+# 1. ScheduledJobFixture.new(29, 1).cancel_pipeline
+#
+# Expectation: rollout 10% job will be canceled. Following stages will be skipped.
+#
+# ### Reproduce the scenario ~ when user canceled rollout 10% job after rollout 10% job is scheduled ~
+#
+# 1. ScheduledJobFixture.new(29, 1).create_pipeline('master')
+# 1. ScheduledJobFixture.new(29, 1).finish_stage_until('test')
+# 1. Run next command before rollout 10% job is triggered
+# 1. ScheduledJobFixture.new(29, 1).cancel_jobs('rollout 10%')
+#
+# Expectation: rollout 10% job will be canceled. Following stages will be skipped.
+#
+# ### Reproduce the scenario ~ when user played rollout 10% job immidiately ~
+#
+# 1. ScheduledJobFixture.new(29, 1).create_pipeline('master')
+# 1. ScheduledJobFixture.new(29, 1).finish_stage_until('test')
+# 1. Play rollout 10% job before rollout 10% job is triggered
+#
+# Expectation: rollout 10% becomes pending immidiately
+#
+# ### Reproduce the scenario ~ when rollout 10% job is allowed to fail ~
+#
+# 1. Set `allow_failure: true` to rollout 10% job
+# 1. ScheduledJobFixture.new(29, 1).create_pipeline('master')
+# 1. ScheduledJobFixture.new(29, 1).finish_stage_until('test')
+# 1. Wait until rollout 10% job is triggered
+# 1. ScheduledJobFixture.new(29, 1).drop_jobs('rollout 10%')
+#
+# Expectation: rollout 50% job should be triggered
+#
+
 class ScheduledJobFixture
   attr_reader :project
   attr_reader :user
+
+  include GitlabRoutingHelper
 
   def initialize(project_id, user_id)
     @project = Project.find_by_id(project_id)
@@ -86,7 +141,8 @@ class ScheduledJobFixture
   end
 
   def create_pipeline(ref)
-    Ci::CreatePipelineService.new(project, user, ref: ref).execute(:web)
+    pipeline = Ci::CreatePipelineService.new(project, user, ref: ref).execute(:web)
+    Rails.application.routes.url_helpers.namespace_project_pipeline_url(project.namespace, project, pipeline)
   end
 
   def finish_stage_until(stage_name)
@@ -98,5 +154,33 @@ class ScheduledJobFixture
 
       return if stage.name == stage_name
     end
+  end
+
+  def run_jobs(stage_name)
+    pipeline = Ci::Pipeline.last
+    stage = pipeline.stages.find_by_name(stage_name)
+    stage.builds.map(&:run)
+    stage.update_status
+    pipeline.update_status
+  end
+
+  def drop_jobs(stage_name)
+    pipeline = Ci::Pipeline.last
+    stage = pipeline.stages.find_by_name(stage_name)
+    stage.builds.map(&:drop)
+    stage.update_status
+    pipeline.update_status
+  end
+
+  def cancel_jobs(stage_name)
+    pipeline = Ci::Pipeline.last
+    stage = pipeline.stages.find_by_name(stage_name)
+    stage.builds.map(&:cancel)
+    stage.update_status
+    pipeline.update_status
+  end
+
+  def cancel_pipeline
+    Ci::Pipeline.last.cancel_running
   end
 end

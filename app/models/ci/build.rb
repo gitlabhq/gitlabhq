@@ -169,11 +169,11 @@ module Ci
       end
 
       before_transition created: :scheduled do |build|
-        build_build_schedule(execute_at: execute_at)
+        build.build_build_schedule(execute_at: build.execute_at)
       end
 
       before_transition scheduled: any do |build|
-        build_schedule.delete!
+        build.build_schedule.delete
       end
 
       after_transition any => [:pending] do |build|

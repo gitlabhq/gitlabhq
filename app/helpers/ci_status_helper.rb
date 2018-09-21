@@ -7,6 +7,7 @@
 #
 # See 'detailed_status?` method and `Gitlab::Ci::Status` module.
 #
+# TODO: DO I need to update this deprecated module?
 module CiStatusHelper
   def ci_label_for_status(status)
     if detailed_status?(status)
