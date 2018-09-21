@@ -28,6 +28,7 @@
             = link_to profile_account_path do
               %strong.fly-out-top-item-name
                 = _('Account')
+<<<<<<< HEAD
       - if Gitlab::CurrentSettings.should_check_namespace_plan?
         = nav_link(controller: :billings) do
           = link_to profile_billings_path do
@@ -40,6 +41,8 @@
               = link_to profile_billings_path do
                 %strong.fly-out-top-item-name
                   #{ _('Billing') }
+=======
+>>>>>>> upstream/master
       = nav_link(controller: 'oauth/applications') do
         = link_to applications_profile_path do
           .nav-icon-container

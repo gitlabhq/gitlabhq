@@ -4,13 +4,20 @@ entry.
 
 ## 11.3.0 (2018-09-22)
 
+<<<<<<< HEAD
 ### Security (6 changes, 1 of them is from the community)
+=======
+### Security (5 changes, 1 of them is from the community)
+>>>>>>> upstream/master
 
 - Disable the Sidekiq Admin Rack session. !21441
 - Set issuable_sort, diff_view, and perf_bar_enabled cookies to secure when possible. !21442
 - Update rubyzip to 1.2.2 (CVE-2018-1000544). !21460 (Takuya Noguchi)
 - Fixed persistent XSS rendering/escaping of diff location lines.
+<<<<<<< HEAD
 - Adding CSRF protection to Hooks resend action.
+=======
+>>>>>>> upstream/master
 - Block link-local addresses in URLBlocker.
 
 ### Removed (1 change)
@@ -90,6 +97,7 @@ entry.
 - Fix absent Click to Expand link on diffs not rendered on first load of Merge Requests Changes tab. !21716
 - Update GitLab Shell to v8.3.3. !21750
 - Fix import error when archive does not have the correct extension. !21765
+<<<<<<< HEAD
 - Fix checkboxes on runner admin settings - The labels are now clickable.
 - Fixed IDE deleting new files creating wrong state.
 - Increase width of checkout branch modal box.
@@ -102,6 +110,20 @@ entry.
 - Accept upload files in public/uplaods/tmp when using accelerated uploads.
 - Increase padding in code blocks.
 - Include correct CSS file for xterm in environments page.
+=======
+- Fixed IDE deleting new files creating wrong state.
+- Does not collapse runners section when using pagination.
+- Fix Emojis cutting in the right way. (Alexander Popov)
+- Fix NamespaceUploader.base_dir for remote uploads.
+- Increase width of checkout branch modal box.
+- Fixes SVGs for empty states in job page overflowing on mobile.
+- Fix checkboxes on runner admin settings - The labels are now clickable.
+- Fixed IDE file row scrolling into view when hovering.
+- Accept upload files in public/uplaods/tmp when using accelerated uploads.
+- Include correct CSS file for xterm in environments page.
+- Increase padding in code blocks.
+- Fix: Project deletion may not log audit events during user deletion.
+>>>>>>> upstream/master
 
 ### Changed (32 changes, 5 of them are from the community)
 
@@ -133,8 +155,13 @@ entry.
 - Improved commit panel in Web IDE. !21471
 - Administrative cleanup rake tasks now leverage Gitaly. !21588
 - Remove health check feature flag in BackgroundMigrationWorker.
+<<<<<<< HEAD
 - Improved styling of top bar in IDE job trace pane.
 - Expose user's id in /admin/users/ show page. (Eva Kadlecova)
+=======
+- Expose user's id in /admin/users/ show page. (Eva Kadlecova)
+- Improved styling of top bar in IDE job trace pane.
+>>>>>>> upstream/master
 - Make terminal button more visible.
 - Shows download artifacts button for pipelines on small screens.
 
@@ -195,8 +222,13 @@ entry.
 - Added file templates to the Web IDE.
 - Enabled multiple file uploads in the Web IDE.
 - Allow to delete group milestones.
+<<<<<<< HEAD
 - Add system note when due date is changed. (Eva Kadlecova)
 - Use separate model for tracking resource label changes and render label system notes based on data from this model.
+=======
+- Use separate model for tracking resource label changes and render label system notes based on data from this model.
+- Add system note when due date is changed. (Eva Kadlecova)
+>>>>>>> upstream/master
 
 ### Other (48 changes, 16 of them are from the community)
 
@@ -236,6 +268,7 @@ entry.
 - Add margin between username and subsequent text in issuable header. !21697
 - Send artifact information in job API. !50460
 - Reduce differences between CE and EE code base in reports components.
+<<<<<<< HEAD
 - Creates Vue component for artifacts block on job page.
 - Creates vue components for stage dropdowns and job list container for job log view.
 - Creates vue component for commit block in job log page.
@@ -248,6 +281,20 @@ entry.
 - Upgrade Monaco editor.
 - Creates Vue component for trigger variables block in job log page.
 - Creates vue component for job log top bar with controllers.
+=======
+- Move project services log to a separate file.
+- Creates vue component for job log top bar with controllers.
+- Creates Vue component for trigger variables block in job log page.
+- Creates Vvue component for warning block about stuck runners.
+- Creates vue component for job log trace.
+- Creates vue component for erased block on job view.
+- Creates vue component for environments information in job log view.
+- Upgrade Monaco editor.
+- Creates empty state vue component for job view.
+- Creates vue component for commit block in job log page.
+- Creates vue components for stage dropdowns and job list container for job log view.
+- Creates Vue component for artifacts block on job page.
+>>>>>>> upstream/master
 
 
 ## 11.2.3 (2018-08-28)

@@ -111,6 +111,7 @@ ul.content-list {
     border-color: $white-normal;
     font-size: $gl-font-size;
     color: $gl-text-color;
+    word-break: break-word;
 
     &.no-description {
       .title {
