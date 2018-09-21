@@ -6997,6 +6997,9 @@ msgstr ""
 msgid "SortOptions|Most popular"
 msgstr ""
 
+msgid "SortOptions|Most stars"
+msgstr ""
+
 msgid "SortOptions|Name"
 msgstr ""
 

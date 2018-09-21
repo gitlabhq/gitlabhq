@@ -154,7 +154,7 @@ You can [read more about permissions][permissions] in general.
 
 Learn more about Cycle Analytics in the following resources:
 
-- [Cycle Analytics feature page](https://about.gitlab.com/solutions/cycle-analytics/)
+- [Cycle Analytics feature page](https://about.gitlab.com/features/cycle-analytics/)
 - [Cycle Analytics feature preview](https://about.gitlab.com/2016/09/16/feature-preview-introducing-cycle-analytics/)
 - [Cycle Analytics feature highlight](https://about.gitlab.com/2016/09/21/cycle-analytics-feature-highlight/)
 
