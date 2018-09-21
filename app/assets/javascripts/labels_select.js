@@ -449,11 +449,11 @@ export default class LabelsSelect {
   }
 
   bindEvents() {
-    return $('body').on('change', '.selected_issue', this.onSelectCheckboxIssue);
+    return $('body').on('change', '.selected-issuable', this.onSelectCheckboxIssue);
   }
   // eslint-disable-next-line class-methods-use-this
   onSelectCheckboxIssue() {
-    if ($('.selected_issue:checked').length) {
+    if ($('.selected-issuable:checked').length) {
       return;
     }
     return $('.issues-bulk-update .labels-filter .dropdown-toggle-text').text('Label');

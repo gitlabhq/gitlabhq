@@ -17,9 +17,9 @@ describe('issueItem', () => {
     vm = mountComponent(IssueItem, props);
   });
 
-  it('contains issue-info-container class when canReorder is false', () => {
+  it('contains issuable-info-container class when canReorder is false', () => {
     expect(vm.canReorder).toEqual(false);
-    expect(vm.$el.querySelector('.issue-info-container')).toBeNull();
+    expect(vm.$el.querySelector('.issuable-info-container')).toBeNull();
   });
 
   it('renders displayReference', () => {

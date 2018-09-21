@@ -23,7 +23,7 @@ export default {
 <template>
   <div
     :class="{
-      'issue-info-container': !canReorder,
+      'issuable-info-container': !canReorder,
       'card-body': canReorder,
     }"
     class="flex"

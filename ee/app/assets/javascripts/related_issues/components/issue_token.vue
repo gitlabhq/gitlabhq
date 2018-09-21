@@ -35,7 +35,7 @@ export default {
   <div
     :class="{
       'issue-token': isCondensed,
-      'flex-row issue-info-container': !isCondensed,
+      'flex-row issuable-info-container': !isCondensed,
     }"
   >
     <component
@@ -44,7 +44,7 @@ export default {
       :is="computedLinkElementType"
       :class="{
         'issue-token-link': isCondensed,
-        'issue-main-info': !isCondensed,
+        'issuable-main-info': !isCondensed,
       }"
       :href="computedPath"
       :title="issueTitle"
