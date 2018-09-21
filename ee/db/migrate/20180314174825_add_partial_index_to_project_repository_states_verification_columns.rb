@@ -9,11 +9,11 @@ class AddPartialIndexToProjectRepositoryStatesVerificationColumns < ActiveRecord
 
   def up
     unless index_exists?(:project_repository_states, :last_repository_verification_failure, name: REPOSITORY_INDEX_NAME)
-      add_concurrent_index(:project_repository_states, :last_repository_verification_failure, name: REPOSITORY_INDEX_NAME, length: Gitlab::Database.mysql? ? 20 : nil, where: 'last_repository_verification_failure IS NOT NULL')
+      add_concurrent_index(:project_repository_states, :last_repository_verification_failure, name: REPOSITORY_INDEX_NAME, length: mysql_compatible_index_length, where: 'last_repository_verification_failure IS NOT NULL')
     end
 
     unless index_exists?(:project_repository_states, :last_wiki_verification_failure, name: WIKI_INDEX_NAME)
-      add_concurrent_index(:project_repository_states, :last_wiki_verification_failure, name: WIKI_INDEX_NAME, length: Gitlab::Database.mysql? ? 20 : nil, where: 'last_wiki_verification_failure IS NOT NULL')
+      add_concurrent_index(:project_repository_states, :last_wiki_verification_failure, name: WIKI_INDEX_NAME, length: mysql_compatible_index_length, where: 'last_wiki_verification_failure IS NOT NULL')
     end
   end
 
