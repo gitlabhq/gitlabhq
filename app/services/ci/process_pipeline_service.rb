@@ -37,7 +37,7 @@ module Ci
 
     def process_build(build, current_status)
       if valid_statuses_for_when(build.when).include?(current_status)
-        build.action? ? build.actionize : enqueue_build(build)
+        proceed_build(build)
         true
       else
         build.skip
@@ -53,8 +53,10 @@ module Ci
         %w[failed]
       when 'always'
         %w[success failed skipped]
-      when 'manual', 'delayed'
+      when 'manual'
         %w[success skipped]
+      when 'delayed'
+        %w[success skipped] # This might be `success` only
       else
         []
       end
@@ -102,8 +104,14 @@ module Ci
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    def enqueue_build(build)
-      Ci::EnqueueBuildService.new(project, @user).execute(build)
+    def proceed_build(build)
+      if build.schedulable?
+        build.schedule!
+      elsif build.action?
+        build.actionize
+      else
+        Ci::EnqueueBuildService.new(project, @user).execute(build)
+      end
     end
   end
 end

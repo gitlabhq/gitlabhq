@@ -4,14 +4,15 @@ module HasStatus
   extend ActiveSupport::Concern
 
   DEFAULT_STATUS = 'created'.freeze
-  BLOCKED_STATUS = 'manual'.freeze
-  AVAILABLE_STATUSES = %w[created pending running success failed canceled skipped manual].freeze
-  STARTED_STATUSES = %w[running success failed skipped manual].freeze
+  BLOCKED_STATUS = %w[manual scheduled].freeze
+  AVAILABLE_STATUSES = %w[created pending running success failed canceled skipped manual scheduled].freeze
+  STARTED_STATUSES = %w[running success failed skipped manual scheduled].freeze
   ACTIVE_STATUSES = %w[pending running].freeze
   COMPLETED_STATUSES = %w[success failed canceled skipped].freeze
-  ORDERED_STATUSES = %w[failed pending running manual canceled success skipped created].freeze
+  ORDERED_STATUSES = %w[failed pending running manual scheduled canceled success skipped created].freeze
   STATUSES_ENUM = { created: 0, pending: 1, running: 2, success: 3,
-                    failed: 4, canceled: 5, skipped: 6, manual: 7 }.freeze
+                    failed: 4, canceled: 5, skipped: 6, manual: 7,
+                    scheduled: 8 }.freeze
 
   UnknownStatusError = Class.new(StandardError)
 
@@ -24,6 +25,7 @@ module HasStatus
       created = scope_relevant.created.select('count(*)').to_sql
       success = scope_relevant.success.select('count(*)').to_sql
       manual = scope_relevant.manual.select('count(*)').to_sql
+      scheduled = scope_relevant.scheduled.select('count(*)').to_sql
       pending = scope_relevant.pending.select('count(*)').to_sql
       running = scope_relevant.running.select('count(*)').to_sql
       skipped = scope_relevant.skipped.select('count(*)').to_sql
@@ -31,6 +33,7 @@ module HasStatus
       warnings = scope_warnings.select('count(*) > 0').to_sql.presence || 'false'
 
       "(CASE
+        WHEN (#{scheduled})>0 THEN 'scheduled'
         WHEN (#{builds})=(#{skipped}) AND (#{warnings}) THEN 'success'
         WHEN (#{builds})=(#{skipped}) THEN 'skipped'
         WHEN (#{builds})=(#{success}) THEN 'success'
@@ -92,8 +95,7 @@ module HasStatus
     scope :failed_or_canceled, -> { where(status: [:failed, :canceled]) }
 
     scope :cancelable, -> do
-      where("status IN ('running', 'pending', 'created') OR " \
-            "(status = 'manual' AND EXISTS (select 1 from ci_build_schedules where ci_builds.id = ci_build_schedules.build_id))")
+      where("status IN ('running', 'pending', 'created', 'scheduled')")
     end
   end
 

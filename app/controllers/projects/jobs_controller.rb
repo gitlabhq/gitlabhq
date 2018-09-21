@@ -113,7 +113,7 @@ class Projects::JobsController < Projects::ApplicationController
   def unschedule
     return respond_422 unless @build.scheduled?
 
-    @build.unschedule
+    @build.unschedule!
     redirect_to build_path(@build)
   end
 

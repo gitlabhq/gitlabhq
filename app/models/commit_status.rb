@@ -26,7 +26,7 @@ class CommitStatus < ActiveRecord::Base
   scope :failed_but_allowed, -> do
     where(allow_failure: true, status: [:failed, :canceled])
   end
-
+  
   scope :exclude_ignored, -> do
     # We want to ignore failed but allowed to fail jobs.
     #
@@ -71,7 +71,7 @@ class CommitStatus < ActiveRecord::Base
     end
 
     event :enqueue do
-      transition [:created, :skipped, :manual] => :pending
+      transition [:created, :skipped, :manual, :scheduled] => :pending
     end
 
     event :run do
@@ -91,10 +91,10 @@ class CommitStatus < ActiveRecord::Base
     end
 
     event :cancel do
-      transition [:created, :pending, :running, :manual] => :canceled
+      transition [:created, :pending, :running, :manual, :scheduled] => :canceled
     end
 
-    before_transition [:created, :skipped, :manual] => :pending do |commit_status|
+    before_transition [:created, :skipped, :manual, :scheduled] => :pending do |commit_status|
       commit_status.queued_at = Time.now
     end
 

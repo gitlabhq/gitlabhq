@@ -35,11 +35,11 @@ module Gitlab
               validates :dependencies, array_of_strings: true
               validates :extends, type: String
 
-              with_options if: :manual_action? do
-                validates :start_in, duration: true, allow_nil: true
+              with_options if: :delayed? do
+                validates :start_in, duration: true, allow_nil: false
               end
 
-              with_options unless: :manual_action? do
+              with_options unless: :delayed? do
                 validates :start_in, presence: false
               end
             end
@@ -119,7 +119,11 @@ module Gitlab
           end
 
           def manual_action?
-            %w[manual delayed].include?(self.when)
+            self.when == 'manual'
+          end
+
+          def delayed?
+            self.when == 'delayed'
           end
 
           def ignored?

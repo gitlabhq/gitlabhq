@@ -160,6 +160,22 @@ module Ci
         transition created: :manual
       end
 
+      event :schedule do
+        transition created: :scheduled
+      end
+
+      event :unschedule do
+        transition scheduled: :manual
+      end
+
+      before_transition created: :scheduled do |build|
+        build_build_schedule(execute_at: execute_at)
+      end
+
+      before_transition scheduled: any do |build|
+        build_schedule.delete!
+      end
+
       after_transition any => [:pending] do |build|
         build.run_after_commit do
           BuildQueueWorker.perform_async(id)
@@ -182,12 +198,6 @@ module Ci
         build.run_after_commit do
           BuildSuccessWorker.perform_async(id)
           PagesWorker.perform_async(:deploy, id) if build.pages_generator?
-        end
-      end
-
-      after_transition any => [:manual] do |build|
-        build.run_after_commit do
-          build.schedule!
         end
       end
 
@@ -233,25 +243,11 @@ module Ci
     end
 
     def playable?
-      action? && (manual? || retryable?)
+      action? && (manual? || scheduled? || retryable?)
     end
 
     def schedulable?
-      manual? && options[:start_in].present?
-    end
-
-    def scheduled?
-      build_schedule.present?
-    end
-
-    def schedule!
-      return unless schedulable?
-
-      create_build_schedule!(execute_at: execute_at)
-    end
-
-    def unschedule!
-      build_schedule.delete!
+      self.when == 'delayed' && options[:start_in].present?
     end
 
     def execute_at
@@ -259,7 +255,7 @@ module Ci
     end
 
     def action?
-      %w[manual delayed].include?(self.when)
+      %w[manual scheduled].include?(self.when)
     end
 
     # rubocop: disable CodeReuse/ServiceClass
