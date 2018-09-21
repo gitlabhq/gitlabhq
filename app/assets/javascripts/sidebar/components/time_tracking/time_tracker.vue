@@ -1,6 +1,4 @@
 <script>
-/* eslint-disable vue/prop-name-casing */
-
 import TimeTrackingHelpState from './help_state.vue';
 import TimeTrackingCollapsedState from './collapsed_state.vue';
 import TimeTrackingSpentOnlyPane from './spent_only_pane.vue';
@@ -21,19 +19,23 @@ export default {
     TimeTrackingHelpState,
   },
   props: {
+    // eslint-disable-next-line vue/prop-name-casing
     time_estimate: {
       type: Number,
       required: true,
     },
+    // eslint-disable-next-line vue/prop-name-casing
     time_spent: {
       type: Number,
       required: true,
     },
+    // eslint-disable-next-line vue/prop-name-casing
     human_time_estimate: {
       type: String,
       required: false,
       default: '',
     },
+    // eslint-disable-next-line vue/prop-name-casing
     human_time_spent: {
       type: String,
       required: false,
