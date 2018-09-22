@@ -6,6 +6,9 @@ module Ci
     include ObjectStorage::BackgroundMove
     extend Gitlab::Ci::Model
 
+    self.primary_key = 'id'
+    self.table_name = 'ci_job_artifacts'
+
     NotSupportedAdapterError = Class.new(StandardError)
 
     TEST_REPORT_FILE_TYPES = %w[junit].freeze

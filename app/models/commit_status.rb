@@ -8,6 +8,7 @@ class CommitStatus < ActiveRecord::Base
   include EnumWithNil
 
   self.table_name = 'ci_builds'
+  self.primary_key = 'id'
 
   belongs_to :user
   belongs_to :project

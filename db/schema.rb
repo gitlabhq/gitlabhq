@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180907015926) do
+ActiveRecord::Schema.define(version: 20180922113322) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -262,6 +262,26 @@ ActiveRecord::Schema.define(version: 20180907015926) do
 
   add_index "chat_teams", ["namespace_id"], name: "index_chat_teams_on_namespace_id", unique: true, using: :btree
 
+  create_table "ci_build_artifacts", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "job_id", null: false
+    t.integer "file_type", null: false
+    t.integer "file_store"
+    t.integer "size", limit: 8
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.datetime_with_timezone "expire_at"
+    t.string "file"
+    t.binary "file_sha256"
+    t.integer "file_format", limit: 2
+    t.integer "file_location", limit: 2
+  end
+
+  add_index "ci_build_artifacts", ["expire_at", "job_id"], name: "index_ci_build_artifacts_on_expire_at_and_job_id", using: :btree
+  add_index "ci_build_artifacts", ["file_store"], name: "index_ci_build_artifacts_on_file_store", using: :btree
+  add_index "ci_build_artifacts", ["job_id", "file_type"], name: "index_ci_build_artifacts_on_job_id_and_file_type", unique: true, using: :btree
+  add_index "ci_build_artifacts", ["project_id"], name: "index_ci_build_artifacts_on_project_id", using: :btree
+
   create_table "ci_build_trace_chunks", id: :bigserial, force: :cascade do |t|
     t.integer "build_id", null: false
     t.integer "chunk_index", null: false
@@ -292,7 +312,7 @@ ActiveRecord::Schema.define(version: 20180907015926) do
   add_index "ci_build_trace_sections", ["project_id"], name: "index_ci_build_trace_sections_on_project_id", using: :btree
   add_index "ci_build_trace_sections", ["section_name_id"], name: "index_ci_build_trace_sections_on_section_name_id", using: :btree
 
-  create_table "ci_builds", force: :cascade do |t|
+  create_table "ci_builds_d4", force: :cascade do |t|
     t.string "status"
     t.datetime "finished_at"
     t.text "trace"
@@ -301,12 +321,12 @@ ActiveRecord::Schema.define(version: 20180907015926) do
     t.datetime "started_at"
     t.integer "runner_id"
     t.float "coverage"
-    t.integer "commit_id"
+    t.integer "pipeline_id"
     t.text "commands"
     t.string "name"
     t.text "options"
     t.boolean "allow_failure", default: false, null: false
-    t.string "stage"
+    t.string "stage_name"
     t.integer "trigger_request_id"
     t.integer "stage_idx"
     t.boolean "tag"
@@ -321,7 +341,7 @@ ActiveRecord::Schema.define(version: 20180907015926) do
     t.integer "erased_by_id"
     t.datetime "erased_at"
     t.datetime "artifacts_expire_at"
-    t.string "environment"
+    t.string "environment_name"
     t.integer "artifacts_size", limit: 8
     t.string "when"
     t.text "yaml_variables"
@@ -338,22 +358,22 @@ ActiveRecord::Schema.define(version: 20180907015926) do
     t.integer "failure_reason"
   end
 
-  add_index "ci_builds", ["artifacts_expire_at"], name: "index_ci_builds_on_artifacts_expire_at", where: "(artifacts_file <> ''::text)", using: :btree
-  add_index "ci_builds", ["auto_canceled_by_id"], name: "index_ci_builds_on_auto_canceled_by_id", using: :btree
-  add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree
-  add_index "ci_builds", ["commit_id", "status", "type"], name: "index_ci_builds_on_commit_id_and_status_and_type", using: :btree
-  add_index "ci_builds", ["commit_id", "type", "name", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_name_and_ref", using: :btree
-  add_index "ci_builds", ["commit_id", "type", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_ref", using: :btree
-  add_index "ci_builds", ["id"], name: "partial_index_ci_builds_on_id_with_legacy_artifacts", where: "(artifacts_file <> ''::text)", using: :btree
-  add_index "ci_builds", ["project_id", "id"], name: "index_ci_builds_on_project_id_and_id", using: :btree
-  add_index "ci_builds", ["protected"], name: "index_ci_builds_on_protected", using: :btree
-  add_index "ci_builds", ["runner_id"], name: "index_ci_builds_on_runner_id", using: :btree
-  add_index "ci_builds", ["stage_id", "stage_idx"], name: "tmp_build_stage_position_index", where: "(stage_idx IS NOT NULL)", using: :btree
-  add_index "ci_builds", ["stage_id"], name: "index_ci_builds_on_stage_id", using: :btree
-  add_index "ci_builds", ["status", "type", "runner_id"], name: "index_ci_builds_on_status_and_type_and_runner_id", using: :btree
-  add_index "ci_builds", ["token"], name: "index_ci_builds_on_token", unique: true, using: :btree
-  add_index "ci_builds", ["updated_at"], name: "index_ci_builds_on_updated_at", using: :btree
-  add_index "ci_builds", ["user_id"], name: "index_ci_builds_on_user_id", using: :btree
+  add_index "ci_builds_d4", ["artifacts_expire_at"], name: "index_ci_builds_d4_on_artifacts_expire_at", where: "(artifacts_file <> ''::text)", using: :btree
+  add_index "ci_builds_d4", ["auto_canceled_by_id"], name: "index_ci_builds_d4_on_auto_canceled_by_id", using: :btree
+  add_index "ci_builds_d4", ["id"], name: "partial_index_ci_builds_on_id_with_legacy_artifacts", where: "(artifacts_file <> ''::text)", using: :btree
+  add_index "ci_builds_d4", ["pipeline_id", "stage_idx", "created_at"], name: "index_ci_builds_d4_on_pipeline_id_and_stage_idx_and_created_at", using: :btree
+  add_index "ci_builds_d4", ["pipeline_id", "status", "type"], name: "index_ci_builds_d4_on_pipeline_id_and_status_and_type", using: :btree
+  add_index "ci_builds_d4", ["pipeline_id", "type", "name", "ref"], name: "index_ci_builds_d4_on_pipeline_id_and_type_and_name_and_ref", using: :btree
+  add_index "ci_builds_d4", ["pipeline_id", "type", "ref"], name: "index_ci_builds_d4_on_pipeline_id_and_type_and_ref", using: :btree
+  add_index "ci_builds_d4", ["project_id", "id"], name: "index_ci_builds_d4_on_project_id_and_id", using: :btree
+  add_index "ci_builds_d4", ["protected"], name: "index_ci_builds_d4_on_protected", using: :btree
+  add_index "ci_builds_d4", ["runner_id"], name: "index_ci_builds_d4_on_runner_id", using: :btree
+  add_index "ci_builds_d4", ["stage_id", "stage_idx"], name: "tmp_build_stage_position_index", where: "(stage_idx IS NOT NULL)", using: :btree
+  add_index "ci_builds_d4", ["stage_id"], name: "index_ci_builds_d4_on_stage_id", using: :btree
+  add_index "ci_builds_d4", ["status", "type", "runner_id"], name: "index_ci_builds_d4_on_status_and_type_and_runner_id", using: :btree
+  add_index "ci_builds_d4", ["token"], name: "index_ci_builds_d4_on_token", unique: true, using: :btree
+  add_index "ci_builds_d4", ["updated_at"], name: "index_ci_builds_d4_on_updated_at", using: :btree
+  add_index "ci_builds_d4", ["user_id"], name: "index_ci_builds_d4_on_user_id", using: :btree
 
   create_table "ci_builds_metadata", force: :cascade do |t|
     t.integer "build_id", null: false
@@ -387,26 +407,6 @@ ActiveRecord::Schema.define(version: 20180907015926) do
   end
 
   add_index "ci_group_variables", ["group_id", "key"], name: "index_ci_group_variables_on_group_id_and_key", unique: true, using: :btree
-
-  create_table "ci_job_artifacts", force: :cascade do |t|
-    t.integer "project_id", null: false
-    t.integer "job_id", null: false
-    t.integer "file_type", null: false
-    t.integer "file_store"
-    t.integer "size", limit: 8
-    t.datetime_with_timezone "created_at", null: false
-    t.datetime_with_timezone "updated_at", null: false
-    t.datetime_with_timezone "expire_at"
-    t.string "file"
-    t.binary "file_sha256"
-    t.integer "file_format", limit: 2
-    t.integer "file_location", limit: 2
-  end
-
-  add_index "ci_job_artifacts", ["expire_at", "job_id"], name: "index_ci_job_artifacts_on_expire_at_and_job_id", using: :btree
-  add_index "ci_job_artifacts", ["file_store"], name: "index_ci_job_artifacts_on_file_store", using: :btree
-  add_index "ci_job_artifacts", ["job_id", "file_type"], name: "index_ci_job_artifacts_on_job_id_and_file_type", unique: true, using: :btree
-  add_index "ci_job_artifacts", ["project_id"], name: "index_ci_job_artifacts_on_project_id", using: :btree
 
   create_table "ci_pipeline_schedule_variables", force: :cascade do |t|
     t.string "key", null: false
@@ -2286,21 +2286,21 @@ ActiveRecord::Schema.define(version: 20180907015926) do
   add_foreign_key "boards", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
-  add_foreign_key "ci_build_trace_chunks", "ci_builds", column: "build_id", on_delete: :cascade
+  add_foreign_key "ci_build_artifacts", "ci_builds_d4", column: "job_id", on_delete: :cascade
+  add_foreign_key "ci_build_artifacts", "projects", on_delete: :cascade
+  add_foreign_key "ci_build_trace_chunks", "ci_builds_d4", column: "build_id", on_delete: :cascade
   add_foreign_key "ci_build_trace_section_names", "projects", on_delete: :cascade
   add_foreign_key "ci_build_trace_sections", "ci_build_trace_section_names", column: "section_name_id", name: "fk_264e112c66", on_delete: :cascade
-  add_foreign_key "ci_build_trace_sections", "ci_builds", column: "build_id", name: "fk_4ebe41f502", on_delete: :cascade
+  add_foreign_key "ci_build_trace_sections", "ci_builds_d4", column: "build_id", name: "fk_4ebe41f502", on_delete: :cascade
   add_foreign_key "ci_build_trace_sections", "projects", on_delete: :cascade
-  add_foreign_key "ci_builds", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_a2141b1522", on_delete: :nullify
-  add_foreign_key "ci_builds", "ci_pipelines", column: "commit_id", name: "fk_d3130c9a7f", on_delete: :cascade
-  add_foreign_key "ci_builds", "ci_stages", column: "stage_id", name: "fk_3a9eaa254d", on_delete: :cascade
-  add_foreign_key "ci_builds", "projects", name: "fk_befce0568a", on_delete: :cascade
-  add_foreign_key "ci_builds_metadata", "ci_builds", column: "build_id", on_delete: :cascade
+  add_foreign_key "ci_builds_d4", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_a2141b1522", on_delete: :nullify
+  add_foreign_key "ci_builds_d4", "ci_pipelines", column: "pipeline_id", name: "fk_d3130c9a7f", on_delete: :cascade
+  add_foreign_key "ci_builds_d4", "ci_stages", column: "stage_id", name: "fk_3a9eaa254d", on_delete: :cascade
+  add_foreign_key "ci_builds_d4", "projects", name: "fk_befce0568a", on_delete: :cascade
+  add_foreign_key "ci_builds_metadata", "ci_builds_d4", column: "build_id", on_delete: :cascade
   add_foreign_key "ci_builds_metadata", "projects", on_delete: :cascade
-  add_foreign_key "ci_builds_runner_session", "ci_builds", column: "build_id", on_delete: :cascade
+  add_foreign_key "ci_builds_runner_session", "ci_builds_d4", column: "build_id", on_delete: :cascade
   add_foreign_key "ci_group_variables", "namespaces", column: "group_id", name: "fk_33ae4d58d8", on_delete: :cascade
-  add_foreign_key "ci_job_artifacts", "ci_builds", column: "job_id", on_delete: :cascade
-  add_foreign_key "ci_job_artifacts", "projects", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedule_variables", "ci_pipeline_schedules", column: "pipeline_schedule_id", name: "fk_41c35fda51", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedules", "projects", name: "fk_8ead60fcc4", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedules", "users", column: "owner_id", name: "fk_9ea99f58d2", on_delete: :nullify
@@ -2450,4 +2450,9 @@ ActiveRecord::Schema.define(version: 20180907015926) do
   add_foreign_key "users_star_projects", "projects", name: "fk_22cd27ddfc", on_delete: :cascade
   add_foreign_key "web_hook_logs", "web_hooks", on_delete: :cascade
   add_foreign_key "web_hooks", "projects", name: "fk_0c8ca6d9d1", on_delete: :cascade
+
+  # TODO: Hack to test everything on CI
+  # Ideally this will not be needed
+  execute('create view ci_builds as SELECT *,pipeline_id as commit_id,environment_name as environment,stage_name as stage FROM ci_builds_d4')
+  execute('create view ci_job_artifacts as SELECT * FROM ci_build_artifacts')
 end

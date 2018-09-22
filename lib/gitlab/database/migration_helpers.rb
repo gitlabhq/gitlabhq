@@ -1073,6 +1073,97 @@ into similar problems in the future (e.g. when new tables are created).
 
         connection.select_value(index_sql).to_i > 0
       end
+
+      def create_view_with_columns(from, to, columns = {})
+        view_select = ['*'] + columns.map { |column, new_column| "#{new_column} as #{column}" }
+        create_view(from, "SELECT #{view_select.join(",")} FROM #{to}")
+      end
+
+      def temporary_table_name(table, columns = {})
+        columns = columns.sort.to_json
+        "#{table}_" + Digest::SHA256.hexdigest("#{columns}").first(2)
+      end
+
+      # This method:
+      # 1. Renames columns on table,
+      # 2. Renames a table to temporary name (PostgreSQL)
+      # 3. Creates a view with column aliases on (PostgreSQL)
+      def rename_table_columns(table, columns = {})
+        columns.each do |column, new_column|
+          rename_column(table, column, new_column)
+        end
+
+        if Gitlab::Database.postgresql?
+          new_table = temporary_table_name(table, columns)
+          rename_table(table, new_table)
+          create_view_with_columns(table, new_table, columns)
+        end
+      end
+
+      # This method:
+      # 1. Drops a view with column aliases (PostgreSQL),
+      # 2. Renames table back to original name
+      def cleanup_rename_table_columns(table, columns = {})
+        return unless Gitlab::Database.postgresql?
+        
+        revert do
+          new_table = temporary_table_name(table, columns)
+          create_view_with_columns(table, new_table, columns)
+          rename_table(table, new_table)
+        end
+      end
+
+      # This method:
+      # 1. Renames a table to a new name
+      # 2. Creates a view under old table name (PostgreSQL)
+      def rename_table_with_view(table, new_table)
+        rename_table(table, new_table)
+
+        if Gitlab::Database.postgresql?
+          create_view_with_columns(table, new_table)
+        end
+      end
+
+      # This method:
+      # 1. Drops a view under old table name (PostgreSQL)
+      def cleanup_rename_table_with_view(table, new_table)
+        return unless Gitlab::Database.postgresql?
+        
+        revert do
+          create_view_with_columns(table, new_table)
+        end
+      end
     end
+  end
+end
+
+# DRY changes to add :create_view functionality to Rails models
+# This makes `:create_view/:drop_view` to be revertible migration
+
+class ActiveRecord::Migration::CommandRecorder
+  def create_view(name, sql)
+    record(:create_view, [name, sql])
+  end
+
+  def invert_create_view(args)
+    [:drop_view, [args.first]]
+  end
+
+  def drop_view(name, sql = nil)
+    record(:drop_view, [name])
+  end
+
+  def invert_drop_view(args)
+    [:create_view, args]
+  end
+end
+
+module ActiveRecord::ConnectionAdapters::SchemaStatements
+  def create_view(name, sql)
+    execute("create view #{name} as #{sql}")
+  end
+
+  def drop_view(name)
+    execute("drop view #{name}")
   end
 end
