@@ -9,8 +9,8 @@
       autocomplete: 'off', class: 'form-control pad qa-issuable-form-title', placeholder: _('Title')
 
   - if issuable.respond_to?(:work_in_progress?)
-    %p.form-text.text-muted
-      %span.js-wip-explanation
+    .form-text.text-muted
+      .js-wip-explanation
         %a.js-toggle-wip{ href: '', tabindex: -1 }
           Remove the
           %code WIP:
@@ -18,7 +18,7 @@
         to allow this
         %strong Work In Progress
         merge request to be merged when it's ready.
-      %span.js-no-wip-explanation
+      .js-no-wip-explanation
         - if has_wip_commits
           It looks like you have some WIP commits in this branch.
           %br
