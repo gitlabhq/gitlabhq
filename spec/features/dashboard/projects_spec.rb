@@ -103,6 +103,14 @@ describe 'Dashboard Projects' do
       expect(page).not_to have_content(project.name)
       expect(page).to have_content(project3.name)
     end
+
+    it 'sorts projects by most stars when sorting by most stars' do
+      project_with_most_stars = create(:project, namespace: user.namespace, star_count: 10)
+
+      visit dashboard_projects_path(sort: :stars_desc)
+
+      expect(first('.project-row')).to have_content(project_with_most_stars.title)
+    end
   end
 
   context 'when on Starred projects tab' do

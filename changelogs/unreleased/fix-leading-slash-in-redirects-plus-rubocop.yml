@@ -1,0 +1,5 @@
+---
+title: Fix leading slash in redirects and add rubocop cop
+merge_request: 21828
+author: Sanad Liaquat
+type: fixed

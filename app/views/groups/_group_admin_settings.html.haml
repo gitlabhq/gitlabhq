@@ -1,5 +1,5 @@
 .form-group.row
-  = f.label :lfs_enabled, 'Large File Storage', class: 'col-form-label col-sm-2'
+  = f.label :lfs_enabled, 'Large File Storage', class: 'col-form-label col-sm-2 pt-0'
   .col-sm-10
     .form-check
       = f.check_box :lfs_enabled, checked: @group.lfs_enabled?, class: 'form-check-input'
@@ -13,7 +13,7 @@
 = render partial: 'groups/ee/project_creation_level', locals: { form: f, group: @group }
 
 .form-group.row
-  = f.label :require_two_factor_authentication, 'Two-factor authentication', class: 'col-form-label col-sm-2'
+  = f.label :require_two_factor_authentication, 'Two-factor authentication', class: 'col-form-label col-sm-2 pt-0'
   .col-sm-10
     .form-check
       = f.check_box :require_two_factor_authentication, class: 'form-check-input'
