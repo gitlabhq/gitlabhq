@@ -470,6 +470,10 @@ describe Epic do
 
   describe '#to_reference' do
     let(:group) { create(:group, path: 'group-a') }
+    let(:subgroup) { create(:group) }
+    let(:group_project) { create(:project, group: group) }
+    let(:subgroup_project) { create(:project, group: subgroup) }
+    let(:other_project) { create(:project) }
     let(:epic) { create(:epic, iid: 1, group: group) }
 
     context 'when nil argument' do
@@ -478,15 +482,33 @@ describe Epic do
       end
     end
 
-    context 'when group argument equals epic group' do
+    context 'when from argument equals epic group' do
       it 'returns epic id' do
         expect(epic.to_reference(epic.group)).to eq('&1')
       end
     end
 
-    context 'when group argument differs from epic group' do
+    context 'when from argument is a group different from epic group' do
       it 'returns complete path to the epic' do
         expect(epic.to_reference(create(:group))).to eq('group-a&1')
+      end
+    end
+
+    context 'when from argument is a project under the epic group' do
+      it 'returns epic id' do
+        expect(epic.to_reference(group_project)).to eq('&1')
+      end
+    end
+
+    context 'when from argument is a project under the epic subgroup' do
+      it 'returns complete path to the epic' do
+        expect(epic.to_reference(subgroup_project)).to eq('group-a&1')
+      end
+    end
+
+    context 'when from argument is a project in another group' do
+      it 'returns complete path to the epic' do
+        expect(epic.to_reference(other_project)).to eq('group-a&1')
       end
     end
 
@@ -495,6 +517,7 @@ describe Epic do
         expect(epic.to_reference(full: true)).to             eq('group-a&1')
         expect(epic.to_reference(epic.group, full: true)).to eq('group-a&1')
         expect(epic.to_reference(group, full: true)).to      eq('group-a&1')
+        expect(epic.to_reference(group_project, full: true)).to eq('group-a&1')
       end
     end
   end
