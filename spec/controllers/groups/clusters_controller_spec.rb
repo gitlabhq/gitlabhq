@@ -24,4 +24,46 @@ describe Groups::ClustersController do
       end
     end
   end
+
+  describe 'GET new' do
+    describe 'functionality' do
+      it 'has new object' do
+        get :new, group_id: group
+
+        expect(assigns(:user_cluster)).to be_an_instance_of(Clusters::Cluster)
+      end
+    end
+  end
+
+  describe 'POST create for existing cluster' do
+    let(:params) do
+      {
+        cluster: {
+          name: 'new-cluster',
+          platform_kubernetes_attributes: {
+            api_url: 'http://my-url',
+            token: 'test',
+            namespace: 'aaa'
+          }
+        }
+      }
+    end
+
+    describe 'functionality' do
+      context 'when creates a cluster' do
+        it 'creates a new cluster' do
+          expect(ClusterProvisionWorker).to receive(:perform_async)
+
+          expect do
+            post :create_user, params.merge(group_id: group)
+          end.to change { Clusters::Cluster.count }.and change { Clusters::Platforms::Kubernetes.count }
+
+          expect(response).to redirect_to(group_cluster_path(group, group.clusters.first))
+
+          expect(group.clusters.first).to be_user
+          expect(group.clusters.first).to be_kubernetes
+        end
+      end
+    end
+  end
 end

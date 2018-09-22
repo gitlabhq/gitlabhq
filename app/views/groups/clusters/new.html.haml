@@ -1,0 +1,23 @@
+- breadcrumb_title 'Kubernetes'
+- page_title _("Kubernetes Cluster")
+- active_tab = local_assigns.fetch(:active_tab, 'user')
+= javascript_include_tag 'https://apis.google.com/js/api.js'
+
+= render_gcp_signup_offer
+
+.row.prepend-top-default
+  .col-md-9.js-toggle-container
+    %ul.nav-links.nav-tabs.gitlab-tabs.nav{ role: 'tablist' }
+      %li.nav-item{ role: 'presentation' }
+        %a.nav-link{ href: '#create-gcp-cluster-pane', id: 'create-gcp-cluster-tab', class: active_when(active_tab == 'gcp'), data: { toggle: 'tab' }, role: 'tab' }
+          %span Create new Cluster on GKE
+      %li.nav-item{ role: 'presentation' }
+        %a.nav-link{ href: '#add-user-cluster-pane', id: 'add-user-cluster-tab', class: active_when(active_tab == 'user'), data: { toggle: 'tab' }, role: 'tab' }
+          %span Add existing cluster
+
+    .tab-content.gitlab-tab-content
+      .tab-pane{ id: 'create-gcp-cluster-pane', class: active_when(active_tab == 'gcp'), role: 'tabpanel' }
+        %p Coming Soon
+
+      .tab-pane{ id: 'add-user-cluster-pane', class: active_when(active_tab == 'user'), role: 'tabpanel' }
+        = render 'groups/clusters/user/form'
