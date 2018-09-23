@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Groups::BoardsController < Groups::ApplicationController
   include BoardsResponses
 

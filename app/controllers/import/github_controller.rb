@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Import::GithubController < Import::BaseController
   before_action :verify_import_enabled
   before_action :provider_auth, only: [:status, :jobs, :create]
