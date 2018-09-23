@@ -149,6 +149,20 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
             end
           end
 
+          it 'allows user to comment' do
+            page.within '.diff-content' do
+              find('.js-note-text').set 'testing'
+
+              click_button 'Comment'
+
+              wait_for_requests
+            end
+
+            page.within '.line-resolve-all-container' do
+              expect(page).to have_content('1/1 discussion resolved')
+            end
+          end
+
           it 'allows user to unresolve from reply form without a comment' do
             page.within '.diff-content' do
               click_button 'Unresolve discussion'
