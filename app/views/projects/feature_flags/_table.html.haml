@@ -7,16 +7,20 @@
 
     .gl-responsive-table-row{ role: 'row' }
       .table-section.section-10{ role: 'gridcell' }
-        - if feature_flag.active?
-          %span.badge.badge-success
-            = s_('FeatureFlags|Active')
-        - else
-          %span.badge.badge-danger
-            = s_('FeatureFlags|Inactive')
+        .table-mobile-header{ role: "rowheader" }= s_('FeatureFlags|Status')
+        .table-mobile-content
+          - if feature_flag.active?
+            %span.badge.badge-success
+              = s_('FeatureFlags|Active')
+          - else
+            %span.badge.badge-danger
+              = s_('FeatureFlags|Inactive')
 
-      .table-section.section-50.d-flex.flex-column{ role: 'gridcell' }
-        .text-monospace= feature_flag.name
-        .text-secondary= feature_flag.description
+      .table-section.section-50{ role: 'gridcell' }
+        .table-mobile-header{ role: "rowheader" }= s_('FeatureFlags|Feature Flag')
+        .table-mobile-content.d-flex.flex-column
+          .text-monospace= feature_flag.name
+          .text-secondary= feature_flag.description
 
       .table-section.section-40.table-button-footer{ role: 'gridcell' }
         .table-action-buttons.btn-group
