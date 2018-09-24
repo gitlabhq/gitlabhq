@@ -135,6 +135,43 @@ describe Groups::EpicsController do
       end
     end
 
+    describe 'GET #discussions' do
+      before do
+        sign_in(user)
+        group.add_developer(user)
+        SystemNoteService.epic_issue(epic, issue, user, :added)
+      end
+
+      context 'when issue note is returned' do
+        shared_examples 'issue link presence' do
+          let(:issue) { create(:issue, project: project, description: "Project Issue") }
+
+          it 'the link to the issue is included' do
+            get :discussions, group_id: group, id: epic.to_param
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(json_response.size).to eq(1)
+            discussion = json_response[0]
+            notes = discussion["notes"]
+            expect(notes.size).to eq(1)
+            expect(notes[0]["note_html"]).to include(project_issue_path(project, issue))
+          end
+        end
+
+        describe 'project default namespace' do
+          it_behaves_like 'issue link presence' do
+            let(:project) { create(:project, :public) }
+          end
+        end
+
+        describe 'project group namespace' do
+          it_behaves_like 'issue link presence' do
+            let(:project) {create(:project, namespace: group)}
+          end
+        end
+      end
+    end
+
     describe 'GET #show' do
       def show_epic(format = :html)
         get :show, group_id: group, id: epic.to_param, format: format
