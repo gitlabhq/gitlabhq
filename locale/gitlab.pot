@@ -93,10 +93,16 @@ msgstr ""
 msgid "%{counter_storage} (%{counter_repositories} repositories, %{counter_build_artifacts} build artifacts, %{counter_lfs_objects} LFS)"
 msgstr ""
 
+msgid "%{count} more assignees"
+msgstr ""
+
 msgid "%{count} participant"
 msgid_plural "%{count} participants"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "%{estimate}"
+msgstr ""
 
 msgid "%{filePath} deleted"
 msgstr ""
@@ -2383,9 +2389,6 @@ msgid "DownloadSource|Download"
 msgstr ""
 
 msgid "Downvotes"
-msgstr ""
-
-msgid "Due Date"
 msgstr ""
 
 msgid "Due date"
@@ -6135,6 +6138,9 @@ msgstr ""
 msgid "Time between merge request creation and merge/close"
 msgstr ""
 
+msgid "Time estimate"
+msgstr ""
+
 msgid "Time remaining"
 msgstr ""
 
@@ -6377,6 +6383,9 @@ msgid "ToggleButton|Toggle Status: ON"
 msgstr ""
 
 msgid "Token"
+msgstr ""
+
+msgid "Tomorrow"
 msgstr ""
 
 msgid "Too many changes to show."
