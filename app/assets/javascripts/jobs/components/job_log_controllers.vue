@@ -2,7 +2,7 @@
   import Icon from '~/vue_shared/components/icon.vue';
   import tooltip from '~/vue_shared/directives/tooltip';
   import { numberToHumanSize } from '~/lib/utils/number_utils';
-  import { s__, sprintf } from '~/locale';
+  import { sprintf } from '~/locale';
 
   export default {
     components: {
@@ -37,7 +37,7 @@
       isTraceSizeVisible: {
         type: Boolean,
         required: true,
-      }
+      },
     },
     computed: {
       jobLogSize() {
@@ -94,10 +94,10 @@
         v-tooltip
         v-if="eraseJobPath"
         :title="s__('Job|Erase job log')"
-        class="js-erase-link controllers-buttons"
-        data-container="body"
         :href="eraseJobPath"
         :data-confirm="__('Are you sure you want to erase this build?')"
+        class="js-erase-link controllers-buttons"
+        data-container="body"
         data-method="post"
       >
         <icon name="remove" />

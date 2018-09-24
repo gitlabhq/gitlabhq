@@ -108,7 +108,8 @@
           <button
             :aria-label="__('Toggle Sidebar')"
             type="button"
-            class="btn btn-blank gutter-toggle float-right d-block d-md-none js-sidebar-build-toggle"
+            class="btn btn-blank gutter-toggle
+      float-right d-block d-md-none js-sidebar-build-toggle"
           >
             <i
               aria-hidden="true"

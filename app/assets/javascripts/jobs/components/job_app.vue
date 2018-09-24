@@ -1,7 +1,5 @@
 <script>
-  import _ from 'underscore';
   import { mapActions, mapGetters, mapState } from 'vuex';
-  import { s__ } from '~/locale';
   import CiHeader from '~/vue_shared/components/header_ci_component.vue';
   import EmptyState from './empty_state.vue';
   import ErasedBlock from './erased_block.vue';
@@ -73,9 +71,12 @@
     created() {
       this.setJobEndpoint(this.jobEndpoint);
 
-      //this.setTraceEndpoint();
+      this.setTraceEndpoint(this.traceOptions.pagePath);
 
+      // set traceState
       this.fetchJob();
+
+      this.fetchTrace();
     },
     methods: {
       ...mapActions([
@@ -83,6 +84,7 @@
         'setTraceEndpoint',
         'setStagesEndpoint',
         'fetchJob',
+        'fetchTrace',
         'scrollTop',
         'scrollBottom',
       ]),
@@ -148,7 +150,7 @@
         <log-block
           :trace="trace"
           :is-complete="isTraceComplete"
-          />
+        />
       </div>
       <!-- EO job log -->
 

@@ -7,10 +7,6 @@
       TimeagoTooltip,
     },
     props: {
-      erasedByUser: {
-        type: Boolean,
-        required: true,
-      },
       user: {
         type: Object,
         required: false,
