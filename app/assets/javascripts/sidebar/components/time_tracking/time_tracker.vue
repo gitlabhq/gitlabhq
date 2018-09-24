@@ -19,19 +19,23 @@ export default {
     TimeTrackingHelpState,
   },
   props: {
+    // eslint-disable-next-line vue/prop-name-casing
     time_estimate: {
       type: Number,
       required: true,
     },
+    // eslint-disable-next-line vue/prop-name-casing
     time_spent: {
       type: Number,
       required: true,
     },
+    // eslint-disable-next-line vue/prop-name-casing
     human_time_estimate: {
       type: String,
       required: false,
       default: '',
     },
+    // eslint-disable-next-line vue/prop-name-casing
     human_time_spent: {
       type: String,
       required: false,

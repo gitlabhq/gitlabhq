@@ -61,12 +61,12 @@
     padding: 3px 5px;
     font-size: 11px;
     line-height: 10px;
-    color: $kdb-color;
+    color: $gl-gray-700;
     vertical-align: middle;
     background-color: $kdb-bg;
     border-width: 1px;
     border-style: solid;
-    border-color: $kdb-border $kdb-border $kdb-border-bottom;
+    border-color: $gl-gray-200 $gl-gray-200 $kdb-border-bottom;
     border-image: none;
     border-radius: 3px;
     box-shadow: 0 -1px 0 $kdb-shadow inset;

@@ -10,6 +10,7 @@ import RepoEditor from './repo_editor.vue';
 import FindFile from './file_finder/index.vue';
 import RightPane from './panes/right.vue';
 import ErrorMessage from './error_message.vue';
+import CommitEditorHeader from './commit_sidebar/editor_header.vue';
 
 const originalStopCallback = Mousetrap.stopCallback;
 
@@ -23,6 +24,7 @@ export default {
     FindFile,
     RightPane,
     ErrorMessage,
+    CommitEditorHeader,
   },
   computed: {
     ...mapState([
@@ -34,7 +36,7 @@ export default {
       'currentProjectId',
       'errorMessage',
     ]),
-    ...mapGetters(['activeFile', 'hasChanges', 'someUncommitedChanges']),
+    ...mapGetters(['activeFile', 'hasChanges', 'someUncommitedChanges', 'isCommitModeActive']),
   },
   mounted() {
     window.onbeforeunload = e => this.onBeforeUnload(e);
@@ -96,7 +98,12 @@ export default {
         <template
           v-if="activeFile"
         >
+          <commit-editor-header
+            v-if="isCommitModeActive"
+            :active-file="activeFile"
+          />
           <repo-tabs
+            v-else
             :active-file="activeFile"
             :files="openFiles"
             :viewer="viewer"

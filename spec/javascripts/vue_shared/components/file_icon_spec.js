@@ -62,9 +62,11 @@ describe('File Icon component', () => {
       loading: true,
     });
 
-    expect(
-      vm.$el.querySelector('i').getAttribute('class'),
-    ).toEqual('fa fa-spin fa-spinner fa-1x');
+    const { classList } = vm.$el.querySelector('i');
+    expect(classList.contains('fa')).toEqual(true);
+    expect(classList.contains('fa-spin')).toEqual(true);
+    expect(classList.contains('fa-spinner')).toEqual(true);
+    expect(classList.contains('fa-1x')).toEqual(true);
   });
 
   it('should add a special class and a size class', () => {

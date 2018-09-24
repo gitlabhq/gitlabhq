@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class RepositoryCheckMailer < BaseMailer
+  # rubocop: disable CodeReuse/ActiveRecord
   def notify(failed_count)
     @message =
       if failed_count == 1
@@ -14,4 +15,5 @@ class RepositoryCheckMailer < BaseMailer
       subject: "GitLab Admin | #{@message}"
     )
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

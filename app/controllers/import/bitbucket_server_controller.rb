@@ -52,6 +52,7 @@ class Import::BitbucketServerController < Import::BaseController
     redirect_to status_import_bitbucket_server_path
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def status
     repos = bitbucket_client.repos
 
@@ -66,6 +67,7 @@ class Import::BitbucketServerController < Import::BaseController
     clear_session_data
     redirect_to new_import_bitbucket_server_path
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def jobs
     render json: find_jobs('bitbucket_server')

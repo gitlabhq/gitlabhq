@@ -49,13 +49,11 @@ module Gitlab
             .where('p_ns.share_with_group_lock IS FALSE')
         ]
 
-        union = Gitlab::SQL::Union.new(relations)
-
         ProjectAuthorization
           .unscoped
           .with
           .recursive(cte.to_arel)
-          .select_from_union(union)
+          .select_from_union(relations)
       end
 
       private

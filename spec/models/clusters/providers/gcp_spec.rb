@@ -74,6 +74,24 @@ describe Clusters::Providers::Gcp do
     end
   end
 
+  describe '#legacy_abac?' do
+    let(:gcp) { build(:cluster_provider_gcp) }
+
+    subject { gcp }
+
+    it 'should default to true' do
+      is_expected.to be_legacy_abac
+    end
+
+    context 'legacy_abac is set to false' do
+      let(:gcp) { build(:cluster_provider_gcp, legacy_abac: false) }
+
+      it 'is false' do
+        is_expected.not_to be_legacy_abac
+      end
+    end
+  end
+
   describe '#state_machine' do
     context 'when any => [:created]' do
       let(:gcp) { build(:cluster_provider_gcp, :creating) }

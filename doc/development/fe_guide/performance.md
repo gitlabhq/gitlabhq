@@ -74,7 +74,7 @@ bundle and included on the page.
 > `content_for :page_specific_javascripts` within haml files, along with
 > manually generated webpack bundles. However under this new system you should
 > not ever need to manually add an entry point to the `webpack.config.js` file.
-
+>
 > **Tip:**
 > If you are unsure what controller and action corresponds to a given page, you
 > can find this out by inspecting `document.body.dataset.page` within your
@@ -109,7 +109,6 @@ bundle and included on the page.
       `my_widget.js` is only imported within `pages/widget/show/index.js`, you
       should place the module at `pages/widget/show/my_widget.js` and import it
       with a relative path (e.g. `import initMyWidget from './my_widget';`).
-
     - If a class or module is _used by multiple routes_, place it within a
       shared directory at the closest common parent directory for the entry
       points that import it.  For example, if `my_widget.js` is imported within

@@ -153,7 +153,7 @@ trade-off:
 - Unit tests are usually cheap, and you should consider them like the basement
   of your house: you need them to be confident that your code is behaving
   correctly. However if you run only unit tests without integration / system
-  tests, you might [miss] the [big] [picture]!
+  tests, you might [miss] the [big] / [picture] !
 - Integration tests are a bit more expensive, but don't abuse them. A system test
   is often better than an integration test that is stubbing a lot of internals.
 - System tests are expensive (compared to unit tests), even more if they require

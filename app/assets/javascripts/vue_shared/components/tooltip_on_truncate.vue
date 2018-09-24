@@ -51,8 +51,8 @@ export default {
 
 <template>
   <span
-    v-tooltip
     v-if="showTooltip"
+    v-tooltip
     :title="title"
     :data-placement="placement"
     class="js-show-tooltip"

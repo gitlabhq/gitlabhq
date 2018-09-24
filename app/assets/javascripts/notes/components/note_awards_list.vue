@@ -25,7 +25,7 @@ export default {
       required: true,
     },
     noteId: {
-      type: Number,
+      type: String,
       required: true,
     },
     canAwardEmoji: {
@@ -182,9 +182,9 @@ export default {
   <div class="note-awards">
     <div class="awards js-awards-block">
       <button
-        v-tooltip
         v-for="(awardList, awardName, index) in groupedAwards"
         :key="index"
+        v-tooltip
         :class="getAwardClassBindings(awardList)"
         :title="awardTitle(awardList)"
         class="btn award-control"

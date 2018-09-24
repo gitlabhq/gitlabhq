@@ -1,5 +1,0 @@
----
-title: Fix git submodule link for subgroup projects with relative path
-merge_request: 21154
-author:
-type: fixed

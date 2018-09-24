@@ -16,6 +16,7 @@ module Projects
 
       private
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def link_existing_lfs_objects(oids)
         existent_lfs_objects = LfsObject.where(oid: oids)
 
@@ -26,6 +27,7 @@ module Projects
 
         existent_lfs_objects.pluck(:oid)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

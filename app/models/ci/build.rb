@@ -40,6 +40,7 @@ module Ci
     delegate :url, to: :runner_session, prefix: true, allow_nil: true
     delegate :terminal_specification, to: :runner_session, allow_nil: true
     delegate :gitlab_deploy_token, to: :project
+    delegate :trigger_short_token, to: :trigger_request, allow_nil: true
 
     ##
     # The "environment" field for builds is a String, and is the unexpanded name!
@@ -139,9 +140,11 @@ module Ci
       end
 
       def retry(build, current_user)
+        # rubocop: disable CodeReuse/ServiceClass
         Ci::RetryBuildService
           .new(build.project, current_user)
           .execute(build)
+        # rubocop: enable CodeReuse/ServiceClass
       end
     end
 
@@ -224,11 +227,13 @@ module Ci
       self.when == 'manual'
     end
 
+    # rubocop: disable CodeReuse/ServiceClass
     def play(current_user)
       Ci::PlayBuildService
         .new(project, current_user)
         .execute(self)
     end
+    # rubocop: enable CodeReuse/ServiceClass
 
     def cancelable?
       active? || created?
@@ -385,9 +390,11 @@ module Ci
       update(coverage: coverage) if coverage.present?
     end
 
+    # rubocop: disable CodeReuse/ServiceClass
     def parse_trace_sections!
       ExtractSectionsFromBuildTraceService.new(project, user).execute(self)
     end
+    # rubocop: enable CodeReuse/ServiceClass
 
     def trace
       Gitlab::Ci::Trace.new(self)
@@ -647,7 +654,30 @@ module Ci
       end
     end
 
+    # Virtual deployment status depending on the environment status.
+    def deployment_status
+      return nil unless starts_environment?
+
+      if success?
+        return successful_deployment_status
+      elsif complete? && !success?
+        return :failed
+      end
+
+      :creating
+    end
+
     private
+
+    def successful_deployment_status
+      if success? && last_deployment&.last?
+        return :last
+      elsif success? && last_deployment.present?
+        return :out_of_date
+      end
+
+      :creating
+    end
 
     def each_test_report
       Ci::JobArtifact::TEST_REPORT_FILE_TYPES.each do |file_type|

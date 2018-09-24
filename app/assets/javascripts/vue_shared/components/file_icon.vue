@@ -1,6 +1,5 @@
 <script>
 import getIconForFile from './file_icon/file_icon_map';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import icon from '../../vue_shared/components/icon.vue';
 
 /* This is a re-usable vue component for rendering a svg sprite
@@ -17,7 +16,6 @@ import icon from '../../vue_shared/components/icon.vue';
   */
 export default {
   components: {
-    loadingIcon,
     icon,
   },
   props: {
@@ -84,7 +82,7 @@ export default {
       :size="size"
       css-classes="folder-icon"
     />
-    <loading-icon
+    <gl-loading-icon
       v-if="loading"
       :inline="true"
     />

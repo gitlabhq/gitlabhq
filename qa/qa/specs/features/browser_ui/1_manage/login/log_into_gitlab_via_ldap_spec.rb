@@ -3,10 +3,6 @@
 module QA
   context :manage, :orchestrated, :ldap do
     describe 'LDAP login' do
-      before do
-        Runtime::Env.user_type = 'ldap'
-      end
-
       it 'user logs into GitLab using LDAP credentials' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.act { sign_in_using_credentials }

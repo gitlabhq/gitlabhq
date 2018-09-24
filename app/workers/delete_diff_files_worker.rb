@@ -3,6 +3,7 @@
 class DeleteDiffFilesWorker
   include ApplicationWorker
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform(merge_request_diff_id)
     merge_request_diff = MergeRequestDiff.find(merge_request_diff_id)
 
@@ -16,4 +17,5 @@ class DeleteDiffFilesWorker
         .delete_all
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

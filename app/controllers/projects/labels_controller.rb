@@ -90,6 +90,7 @@ class Projects::LabelsController < Projects::ApplicationController
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def set_priorities
     Label.transaction do
       available_labels_ids = @available_labels.where(id: params[:label_ids]).pluck(:id)
@@ -105,6 +106,7 @@ class Projects::LabelsController < Projects::ApplicationController
       format.json { render json: { message: 'success' } }
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def promote
     promote_service = Labels::PromoteService.new(@project, @current_user)
@@ -163,7 +165,12 @@ class Projects::LabelsController < Projects::ApplicationController
       LabelsFinder.new(current_user,
                        project_id: @project.id,
                        include_ancestor_groups: params[:include_ancestor_groups],
-                       search: params[:search]).execute
+                       search: params[:search],
+                       sort: sort).execute
+  end
+
+  def sort
+    @sort ||= params[:sort] || 'name_asc'
   end
 
   def authorize_admin_labels!

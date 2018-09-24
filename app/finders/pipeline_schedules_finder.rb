@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PipelineSchedulesFinder
   attr_reader :project, :pipeline_schedules
 
@@ -6,6 +8,7 @@ class PipelineSchedulesFinder
     @pipeline_schedules = project.pipeline_schedules
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def execute(scope: nil)
     scoped_schedules =
       case scope
@@ -19,4 +22,5 @@ class PipelineSchedulesFinder
 
     scoped_schedules.order(id: :desc)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

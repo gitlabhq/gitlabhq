@@ -308,7 +308,7 @@ msgstr ""
 msgid "<strong>Removes</strong> source branch"
 msgstr ""
 
-msgid "A 'Runner' is a process which runs a job. You can setup as many Runners as you need."
+msgid "A 'Runner' is a process which runs a job. You can set up as many Runners as you need."
 msgstr ""
 
 msgid "A collection of graphs regarding Continuous Integration"
@@ -755,7 +755,7 @@ msgstr ""
 msgid "Ascending"
 msgstr ""
 
-msgid "Ask your group maintainer to setup a group Runner."
+msgid "Ask your group maintainer to set up a group Runner."
 msgstr ""
 
 msgid "Assertion consumer service URL"
@@ -6510,10 +6510,10 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-msgid "Setup a %{type} Runner manually"
+msgid "Set up a %{type} Runner manually"
 msgstr ""
 
-msgid "Setup a specific Runner automatically"
+msgid "Set up a specific Runner automatically"
 msgstr ""
 
 msgid "Share"
@@ -8108,7 +8108,7 @@ msgstr ""
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
 msgstr ""
 
-msgid "You can setup jobs to only use Runners with specific tags. Separate tags with commas."
+msgid "You can set up jobs to only use Runners with specific tags. Separate tags with commas."
 msgstr ""
 
 msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use %{link_to_primary_node} instead."

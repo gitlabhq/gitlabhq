@@ -394,12 +394,6 @@ describe Namespace do
           child.destroy
         end
       end
-
-      it 'removes the exports folder' do
-        expect(namespace).to receive(:remove_exports!)
-
-        namespace.destroy
-      end
     end
 
     context 'hashed storage' do
@@ -413,12 +407,6 @@ describe Namespace do
         namespace.destroy
 
         expect(File.exist?(deleted_path_in_dir)).to be(false)
-      end
-
-      it 'removes the exports folder' do
-        expect(namespace).to receive(:remove_exports!)
-
-        namespace.destroy
       end
     end
   end
@@ -703,26 +691,6 @@ describe Namespace do
       expect(nested_group.root_ancestor).to eq(root_group)
       expect(deep_nested_group.root_ancestor).to eq(root_group)
       expect(very_deep_nested_group.root_ancestor).to eq(root_group)
-    end
-  end
-
-  describe '#remove_exports' do
-    let(:legacy_project) { create(:project, :with_export, :legacy_storage, namespace: namespace) }
-    let(:hashed_project) { create(:project, :with_export, namespace: namespace) }
-    let(:export_path) { Dir.mktmpdir('namespace_remove_exports_spec') }
-    let(:legacy_export) { legacy_project.export_project_path }
-    let(:hashed_export) { hashed_project.export_project_path }
-
-    it 'removes exports for legacy and hashed projects' do
-      allow(Gitlab::ImportExport).to receive(:storage_path) { export_path }
-
-      expect(File.exist?(legacy_export)).to be_truthy
-      expect(File.exist?(hashed_export)).to be_truthy
-
-      namespace.remove_exports!
-
-      expect(File.exist?(legacy_export)).to be_falsy
-      expect(File.exist?(hashed_export)).to be_falsy
     end
   end
 

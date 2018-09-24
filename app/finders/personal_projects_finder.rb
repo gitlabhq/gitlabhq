@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PersonalProjectsFinder < UnionFinder
   include Gitlab::Allowable
 
@@ -15,6 +17,7 @@ class PersonalProjectsFinder < UnionFinder
   #                  min_access_level: integer
   #
   # Returns an ActiveRecord::Relation.
+  # rubocop: disable CodeReuse/ActiveRecord
   def execute(current_user = nil)
     return Project.none unless can?(current_user, :read_user_profile, @user)
 
@@ -22,6 +25,7 @@ class PersonalProjectsFinder < UnionFinder
 
     find_union(segments, Project).includes(:namespace).order_updated_desc
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 

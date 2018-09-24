@@ -5,6 +5,7 @@ class ProjectMigrateHashedStorageWorker
 
   LEASE_TIMEOUT = 30.seconds.to_i
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform(project_id, old_disk_path = nil)
     project = Project.find_by(id: project_id)
     return if project.nil? || project.pending_delete?
@@ -19,6 +20,7 @@ class ProjectMigrateHashedStorageWorker
     cancel_lease_for(project_id, uuid) if uuid
     raise ex
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def lease_for(project_id)
     Gitlab::ExclusiveLease.new(lease_key(project_id), timeout: LEASE_TIMEOUT)

@@ -661,6 +661,7 @@ POST /projects
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
 | `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
 | `ci_config_path` | string | no | The path to CI config file |
+| `initialize_with_readme` | boolean | no | `false` by default |
 
 ## Create project for user
 

@@ -1,5 +1,0 @@
----
-title: 'Auto-DevOps.gitlab-ci.yml: fix redeploying deleted app gives helm error'
-merge_request: 21429
-author:
-type: fixed

@@ -99,7 +99,7 @@ Below are the shared Runners settings.
 | Default Docker image                  | `ruby:2.5`                                        | -          |
 | `privileged` (run [Docker in Docker]) | `true`                                            | `false`    |
 
-[ci_version_dashboard]: https://monitor.gitlab.net/dashboard/db/ci?from=now-1h&to=now&refresh=5m&orgId=1&panelId=12&fullscreen&theme=light
+[ci_version_dashboard]: https://dashboards.gitlab.com/dashboard/db/ci?from=now-1h&to=now&refresh=5m&orgId=1&panelId=12&fullscreen&theme=light
 
 ### `config.toml`
 

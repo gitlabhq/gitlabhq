@@ -81,9 +81,11 @@ module Gitlab
           end
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def total_failures
           @total_failures ||= failing_info.sum { |info_for_host| info_for_host[:failure_count] }
         end
+        # rubocop: enable CodeReuse/ActiveRecord
       end
     end
   end

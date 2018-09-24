@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # LicenseTemplateFinder
 #
 # Used to find license templates, which may come from a variety of external

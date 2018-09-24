@@ -54,7 +54,7 @@ describe('Edit Actions components', () => {
 
     Vue.nextTick(() => {
       expect(
-        vm.$el.querySelector('.btn-save').getAttribute('disabled'),
+        vm.$el.querySelector('.btn-success').getAttribute('disabled'),
       ).toBe('disabled');
 
       done();
@@ -72,7 +72,7 @@ describe('Edit Actions components', () => {
 
   describe('updateIssuable', () => {
     it('sends update.issauble event when clicking save button', () => {
-      vm.$el.querySelector('.btn-save').click();
+      vm.$el.querySelector('.btn-success').click();
 
       expect(
         eventHub.$emit,
@@ -80,11 +80,11 @@ describe('Edit Actions components', () => {
     });
 
     it('shows loading icon after clicking save button', (done) => {
-      vm.$el.querySelector('.btn-save').click();
+      vm.$el.querySelector('.btn-success').click();
 
       Vue.nextTick(() => {
         expect(
-          vm.$el.querySelector('.btn-save .fa'),
+          vm.$el.querySelector('.btn-success .fa'),
         ).not.toBeNull();
 
         done();
@@ -92,11 +92,11 @@ describe('Edit Actions components', () => {
     });
 
     it('disabled button after clicking save button', (done) => {
-      vm.$el.querySelector('.btn-save').click();
+      vm.$el.querySelector('.btn-success').click();
 
       Vue.nextTick(() => {
         expect(
-          vm.$el.querySelector('.btn-save').getAttribute('disabled'),
+          vm.$el.querySelector('.btn-success').getAttribute('disabled'),
         ).toBe('disabled');
 
         done();

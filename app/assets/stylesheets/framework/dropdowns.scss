@@ -607,25 +607,25 @@
   width: 100%;
   min-height: 30px;
   padding: 0 7px;
-  color: $dropdown-input-color;
+  color: $gl-gray-700;
   line-height: 30px;
   border: 1px solid $dropdown-divider-color;
   border-radius: 2px;
   outline: 0;
 
   &:focus {
-    color: $dropdown-link-color;
+    color: $gl-gray-700;
     border-color: $blue-300;
     box-shadow: 0 0 4px $dropdown-input-focus-shadow;
 
     ~ .fa {
-      color: $dropdown-link-color;
+      color: $gl-gray-700;
     }
   }
 
   &:hover {
     ~ .fa {
-      color: $dropdown-link-color;
+      color: $gl-gray-700;
     }
   }
 }
@@ -890,7 +890,7 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
       position: absolute;
       top: 13px;
       right: 25px;
-      color: $md-area-border;
+      color: $gray-100;
     }
   }
 
@@ -929,7 +929,7 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
 
   &:hover {
     .frequent-items-item-avatar-container .avatar {
-      border-color: $md-area-border;
+      border-color: $gray-100;
     }
   }
 

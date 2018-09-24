@@ -50,6 +50,10 @@ module Gitlab
       check_authentication_abilities!(cmd)
       check_command_disabled!(cmd)
       check_command_existence!(cmd)
+
+      custom_action = check_custom_action(cmd)
+      return custom_action if custom_action
+
       check_db_accessibility!(cmd)
 
       ensure_project_on_push!(cmd, changes)
@@ -65,7 +69,7 @@ module Gitlab
         check_push_access!
       end
 
-      true
+      ::Gitlab::GitAccessResult::Success.new
     end
 
     def guest_can_download_code?
@@ -91,6 +95,10 @@ module Gitlab
     end
 
     private
+
+    def check_custom_action(cmd)
+      nil
+    end
 
     def check_valid_actor!
       return unless actor.is_a?(Key)
@@ -233,8 +241,6 @@ module Gitlab
         end
       elsif user
         # User access is verified in check_change_access!
-      elsif authed_via_jwt?
-        # Authenticated via JWT
       else
         raise UnauthorizedError, ERROR_MESSAGES[:upload]
       end
@@ -321,10 +327,6 @@ module Gitlab
 
     def receive_pack_disabled_over_http?
       !Gitlab.config.gitlab_shell.receive_pack
-    end
-
-    def authed_via_jwt?
-      false
     end
 
     protected

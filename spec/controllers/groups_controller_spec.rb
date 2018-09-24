@@ -38,14 +38,6 @@ describe GroupsController do
       project
     end
 
-    context 'as html' do
-      it 'assigns whether or not a group has children' do
-        get :show, id: group.to_param
-
-        expect(assigns(:has_children)).to be_truthy
-      end
-    end
-
     context 'as atom' do
       it 'assigns events for all the projects in the group' do
         create(:event, project: project)

@@ -5,6 +5,7 @@ module Clusters
     class Kubernetes < ActiveRecord::Base
       include Gitlab::Kubernetes
       include ReactiveCaching
+      include EnumWithNil
 
       self.table_name = 'cluster_platforms_kubernetes'
       self.reactive_cache_key = ->(kubernetes) { [kubernetes.class.model_name.singular, kubernetes.id] }
@@ -46,6 +47,12 @@ module Clusters
       delegate :managed?, to: :cluster, allow_nil: true
 
       alias_method :active?, :enabled?
+
+      enum_with_nil authorization_type: {
+        unknown_authorization: nil,
+        rbac: 1,
+        abac: 2
+      }
 
       def actual_namespace
         if namespace.present?
@@ -95,7 +102,7 @@ module Clusters
       end
 
       def kubeclient
-        @kubeclient ||= build_kubeclient!
+        @kubeclient ||= build_kube_client!(api_groups: ['api', 'apis/rbac.authorization.k8s.io'])
       end
 
       private
@@ -115,15 +122,16 @@ module Clusters
         slug.gsub(/[^-a-z0-9]/, '-').gsub(/^-+/, '')
       end
 
-      def build_kubeclient!(api_path: 'api', api_version: 'v1')
+      def build_kube_client!(api_groups: ['api'], api_version: 'v1')
         raise "Incomplete settings" unless api_url && actual_namespace
 
         unless (username && password) || token
           raise "Either username/password or token is required to access API"
         end
 
-        ::Kubeclient::Client.new(
-          join_api_url(api_path),
+        Gitlab::Kubernetes::KubeClient.new(
+          api_url,
+          api_groups,
           api_version,
           auth_options: kubeclient_auth_options,
           ssl_options: kubeclient_ssl_options,
@@ -133,7 +141,7 @@ module Clusters
 
       # Returns a hash of all pods in the namespace
       def read_pods
-        kubeclient = build_kubeclient!
+        kubeclient = build_kube_client!
 
         kubeclient.get_pods(namespace: actual_namespace).as_json
       rescue Kubeclient::HttpError => err
@@ -155,15 +163,6 @@ module Clusters
 
       def kubeclient_auth_options
         { bearer_token: token }
-      end
-
-      def join_api_url(api_path)
-        url = URI.parse(api_url)
-        prefix = url.path.sub(%r{/+\z}, '')
-
-        url.path = [prefix, api_path].join("/")
-
-        url.to_s
       end
 
       def terminal_auth

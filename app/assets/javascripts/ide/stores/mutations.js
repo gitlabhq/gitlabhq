@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign */
+import Vue from 'vue';
 import * as types from './mutation_types';
 import projectMutations from './mutations/project';
 import mergeRequestMutation from './mutations/merge_request';
@@ -227,7 +227,7 @@ export default {
       path: newPath,
       name: entryPath ? oldEntry.name : name,
       tempFile: true,
-      prevPath: oldEntry.path,
+      prevPath: oldEntry.tempFile ? null : oldEntry.path,
       url: oldEntry.url.replace(new RegExp(`${oldEntry.path}/?$`), newPath),
       tree: [],
       parentPath,
@@ -245,6 +245,20 @@ export default {
 
     if (newEntry.type === 'blob') {
       state.changedFiles = state.changedFiles.concat(newEntry);
+    }
+
+    if (state.entries[newPath].opened) {
+      state.openFiles.push(state.entries[newPath]);
+    }
+
+    if (oldEntry.tempFile) {
+      const filterMethod = f => f.path !== oldEntry.path;
+
+      state.openFiles = state.openFiles.filter(filterMethod);
+      state.changedFiles = state.changedFiles.filter(filterMethod);
+      parent.tree = parent.tree.filter(filterMethod);
+
+      Vue.delete(state.entries, oldEntry.path);
     }
   },
   ...projectMutations,

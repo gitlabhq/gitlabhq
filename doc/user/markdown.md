@@ -7,13 +7,13 @@
 > this document currently work on our documentation website.
 >
 > For the best result, we encourage you to check this document out as rendered
-by GitLab: [markdown.md]
+> by GitLab: [markdown.md]
 
-_GitLab uses (as of 11.1) the [CommonMark Ruby Library][commonmarker] for Markdown processing of all new issues, merge requests, comments, and other Markdown content in the GitLab system.  Previous content, wiki pages and Markdown files (`.md`) in the repositories are still processed using the [Redcarpet Ruby library][redcarpet]._
+_GitLab uses (as of 11.1) the [CommonMark Ruby Library][commonmarker] for Markdown processing of all new issues, merge requests, comments, and other Markdown content in the GitLab system.  As of 11.3, wiki pages and Markdown files (`.md`) in the repositories are also processed with CommonMark.  Older content in issues/comments are still processed using the [Redcarpet Ruby library][redcarpet]._
 
 _Where there are significant differences, we will try to call them out in this document._
 
-GitLab uses "GitLab Flavored Markdown" (GFM). It extends the standard Markdown in a few significant ways to add some useful functionality. It was inspired by [GitHub Flavored Markdown](https://help.github.com/articles/basic-writing-and-formatting-syntax/).
+GitLab uses "GitLab Flavored Markdown" (GFM). It extends the [CommonMark specification][commonmark-spec] (which is based on standard Markdown) in a few significant ways to add some useful functionality. It was inspired by [GitHub Flavored Markdown](https://help.github.com/articles/basic-writing-and-formatting-syntax/).
 
 You can use GFM in the following areas:
 
@@ -22,31 +22,59 @@ You can use GFM in the following areas:
 - merge requests
 - milestones
 - snippets (the snippet must be named with a `.md` extension)
-- wiki pages (currently only rendered by Redcarpet)
-- markdown documents inside the repository (currently only rendered by Redcarpet)
+- wiki pages
+- markdown documents inside the repository
 
 You can also use other rich text files in GitLab. You might have to install a
 dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
+
+### Transitioning to CommonMark
+
+You may have Markdown documents in your repository that were written using some of the nuances of RedCarpet's version of Markdown.  Since CommonMark uses a slightly stricter syntax, these documents may now display a little strangely since we've transitioned to CommonMark.  Numbered lists with nested lists in particular can be displayed incorrectly.
+
+It is usually quite easy to fix.  In the case of a nested list such as this:
+
+```markdown
+1. Chocolate
+  - dark
+  - milk
+```
+
+simply add a space to each nested item:
+
+```markdown
+1. Chocolate
+   - dark
+   - milk
+```
+
+In the documentation below, we try to highlight some of the differences.
+
+If you have a need to view a document using RedCarpet, you can add the token `legacy_render=1` to the end of the url, like this:
+
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md?legacy_render=1
+
+If you have a large volume of Markdown files, it can be tedious to determine if they will be displayed correctly or not.  You can use the [diff_redcarpet_cmark](https://gitlab.com/digitalmoksha/diff_redcarpet_cmark) tool (not an officially supported product) to generate a list of files and differences between how RedCarpet and CommonMark render the files.  It can give you a great idea if anything needs to be changed - many times nothing will need to changed.
 
 ### Newlines
 
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#newlines
 
-GFM honors the markdown specification in how [paragraphs and line breaks are handled](https://daringfireball.net/projects/markdown/syntax#p).
+GFM honors the markdown specification in how [paragraphs and line breaks are handled][commonmark-spec].
 
 A paragraph is simply one or more consecutive lines of text, separated by one or more blank lines.
 Line-breaks, or soft returns, are rendered if you end a line with two or more spaces:
 
-[//]: # (Do *NOT* remove the two ending whitespaces in the following line.)
-[//]: # (They are needed for the Markdown text to render correctly.)
+<!-- (Do *NOT* remove the two ending whitespaces in the following line.) -->
+<!-- (They are needed for the Markdown text to render correctly.) -->
     Roses are red [followed by two or more spaces]  
     Violets are blue
 
     Sugar is sweet
 
-[//]: # (Do *NOT* remove the two ending whitespaces in the following line.)
-[//]: # (They are needed for the Markdown text to render correctly.)
+<!-- (Do *NOT* remove the two ending whitespaces in the following line.) -->
+<!-- (They are needed for the Markdown text to render correctly.) -->
 Roses are red  
 Violets are blue
 
@@ -444,7 +472,7 @@ Become:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15107) in
 GitLab 10.3.
-
+>
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#mermaid
 
@@ -979,8 +1007,9 @@ A link starting with a `/` is relative to the wiki root.
 ## References
 
 - This document leveraged heavily from the [Markdown-Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
-- The [Markdown Syntax Guide](https://daringfireball.net/projects/markdown/syntax) at Daring Fireball is an excellent resource for a detailed explanation of standard markdown.
-- [Dillinger.io](http://dillinger.io) is a handy tool for testing standard markdown.
+- The original [Markdown Syntax Guide](https://daringfireball.net/projects/markdown/syntax) at Daring Fireball is an excellent resource for a detailed explanation of standard markdown.
+- The detailed specification for CommonMark can be found in the [CommonMark Spec][commonmark-spec]
+- The [CommonMark Dingus](http://try.commonmark.org) is a handy tool for testing CommonMark syntax.
 
 [^1]: This link will be broken if you see this document from the Help page or docs.gitlab.com
 [^2]: This is my awesome footnote.
@@ -993,3 +1022,4 @@ A link starting with a `/` is relative to the wiki root.
 [katex-subset]: https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX "Macros supported by KaTeX"
 [asciidoctor-manual]: http://asciidoctor.org/docs/user-manual/#activating-stem-support "Asciidoctor user manual"
 [commonmarker]: https://github.com/gjtorikian/commonmarker
+[commonmark-spec]: https://spec.commonmark.org/current/

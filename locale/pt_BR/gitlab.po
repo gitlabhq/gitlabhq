@@ -308,7 +308,7 @@ msgstr "<strong>%{pushes}</strong> pushes, mais que <strong>%{commits}</strong> 
 msgid "<strong>Removes</strong> source branch"
 msgstr "<strong>Remover</strong> branch de origem"
 
-msgid "A 'Runner' is a process which runs a job. You can setup as many Runners as you need."
+msgid "A 'Runner' is a process which runs a job. You can set up as many Runners as you need."
 msgstr "'Runner' é um processo que executa um job. Você pode configurar quantos Runners você precisar."
 
 msgid "A collection of graphs regarding Continuous Integration"
@@ -755,7 +755,7 @@ msgstr "Artefatos"
 msgid "Ascending"
 msgstr "Ascendente"
 
-msgid "Ask your group maintainer to setup a group Runner."
+msgid "Ask your group maintainer to set up a group Runner."
 msgstr "Solicite a um mantenedor do grupo para configurar um Runner de grupo."
 
 msgid "Assertion consumer service URL"
@@ -6510,10 +6510,10 @@ msgstr "defina uma senha"
 msgid "Settings"
 msgstr "Configurações"
 
-msgid "Setup a %{type} Runner manually"
+msgid "Set up a %{type} Runner manually"
 msgstr ""
 
-msgid "Setup a specific Runner automatically"
+msgid "Set up a specific Runner automatically"
 msgstr "Configurar um Runner específico automaticamente"
 
 msgid "Share"
@@ -8108,7 +8108,7 @@ msgstr "Você só pode editar arquivos quando estiver em um branch"
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
 msgstr "Você pode resolver o conflito de merge usando o modo Interativo, escolhendo os botões %{use_ours} ou %{use_theirs} ou editando os arquivos diretamente. Confirme essas alterações em %{branch_name}"
 
-msgid "You can setup jobs to only use Runners with specific tags. Separate tags with commas."
+msgid "You can set up jobs to only use Runners with specific tags. Separate tags with commas."
 msgstr ""
 
 msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use %{link_to_primary_node} instead."

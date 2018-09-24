@@ -31,6 +31,7 @@ module Projects
         render 'show'
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def define_protected_refs
         @protected_branches = @project.protected_branches.order(:name).page(params[:page])
         @protected_tags = @project.protected_tags.order(:name).page(params[:page])
@@ -42,6 +43,7 @@ module Projects
 
         load_gon_index
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def remote_mirror
         @remote_mirror = project.remote_mirrors.first_or_initialize

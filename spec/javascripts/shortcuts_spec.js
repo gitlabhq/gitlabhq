@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import Shortcuts from '~/shortcuts';
+import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 
 describe('Shortcuts', () => {
   const fixtureName = 'snippets/show.html.raw';

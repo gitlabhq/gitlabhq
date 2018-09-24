@@ -555,6 +555,19 @@ ProjectCustomAttribute:
 - project_id
 - key
 - value
+PrometheusMetric:
+- id
+- created_at
+- updated_at
+- project_id
+- y_label
+- unit
+- legend
+- title
+- query
+- group
+- common
+- identifier
 Badge:
 - id
 - link_url
@@ -566,3 +579,11 @@ Badge:
 - type
 ProjectCiCdSetting:
 - group_runners_enabled
+ResourceLabelEvent:
+- id
+- action
+- issue_id
+- merge_request_id
+- label_id
+- user_id
+- created_at

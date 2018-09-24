@@ -1,7 +1,8 @@
-.groups-empty-state.qa-groups-empty-state
-  = custom_icon("icon_empty_groups")
+.group-empty-state.row.align-items-center.justify-content-center.qa-groups-empty-state
+  .icon.text-center.order-md-2
+    = custom_icon("icon_empty_groups")
 
-  .text-content
+  .text-content.m-0.order-md-1
     %h4= s_("GroupsEmptyState|A group is a collection of several projects.")
     %p= s_("GroupsEmptyState|If you organize your projects under a group, it works like a folder.")
     %p= s_("GroupsEmptyState|You can manage your group member’s permissions and access to each project in the group.")

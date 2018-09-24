@@ -8,6 +8,7 @@ module MergeRequests
       @merge_request = merge_request
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def execute
       diffs = @merge_request.non_latest_diffs.with_files
 
@@ -16,5 +17,6 @@ module MergeRequests
         DeleteDiffFilesWorker.bulk_perform_in(index * 5.minutes, ids)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

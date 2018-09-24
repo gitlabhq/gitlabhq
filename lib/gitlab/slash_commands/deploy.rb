@@ -36,6 +36,7 @@ module Gitlab
 
       private
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def find_action(from, to)
         environment = project.environments.find_by(name: from)
         return unless environment
@@ -50,6 +51,7 @@ module Gitlab
           actions.first
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

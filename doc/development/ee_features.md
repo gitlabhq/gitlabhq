@@ -166,47 +166,53 @@ There are a few gotchas with it:
   to make it call the other method we want to extend, like a [template method
   pattern](https://en.wikipedia.org/wiki/Template_method_pattern).
   For example, given this base:
-  ``` ruby
-    class Base
-      def execute
-        return unless enabled?
 
-        # ...
-        # ...
+    ```ruby
+      class Base
+        def execute
+          return unless enabled?
+  
+          # ...
+          # ...
+        end
       end
-    end
-  ```
-  Instead of just overriding `Base#execute`, we should update it and extract
-  the behaviour into another method:
-  ``` ruby
-    class Base
-      def execute
-        return unless enabled?
+    ```
 
-        do_something
+    Instead of just overriding `Base#execute`, we should update it and extract
+    the behaviour into another method:
+
+    ```ruby
+      class Base
+        def execute
+          return unless enabled?
+  
+          do_something
+        end
+  
+        private
+  
+        def do_something
+          # ...
+          # ...
+        end
       end
+    ```
 
-      private
+    Then we're free to override that `do_something` without worrying about the
+    guards:
 
-      def do_something
-        # ...
-        # ...
+    ```ruby
+      module EE::Base
+        extend ::Gitlab::Utils::Override
+  
+        override :do_something
+        def do_something
+          # Follow the above pattern to call super and extend it
+        end
       end
-    end
-  ```
-  Then we're free to override that `do_something` without worrying about the
-  guards:
-  ``` ruby
-    module EE::Base
-      extend ::Gitlab::Utils::Override
-
-      override :do_something
-      def do_something
-        # Follow the above pattern to call super and extend it
-      end
-    end
-  ```
-  This would require updating CE first, or make sure this is back ported to CE.
+    ```
+  
+    This would require updating CE first, or make sure this is back ported to CE.
 
 When prepending, place them in the `ee/` specific sub-directory, and
 wrap class or module in `module EE` to avoid naming conflicts.
@@ -469,7 +475,7 @@ Put the EE module files following
 
 For EE API routes, we put them in a `prepended` block:
 
-``` ruby
+```ruby
 module EE
   module API
     module MergeRequests
@@ -503,7 +509,7 @@ interface first here.
 For example, suppose we have a few more optional params for EE, given this CE
 API code:
 
-``` ruby
+```ruby
 module API
   class MergeRequests < Grape::API
     # EE::API::MergeRequests would override the following helpers
@@ -525,7 +531,7 @@ end
 
 And then we could override it in EE module:
 
-``` ruby
+```ruby
 module EE
   module API
     module MergeRequests
@@ -552,7 +558,7 @@ To make it easy for an EE module to override the CE helpers, we need to define
 those helpers we want to extend first. Try to do that immediately after the
 class definition to make it easy and clear:
 
-``` ruby
+```ruby
 module API
   class JobArtifacts < Grape::API
     # EE::API::JobArtifacts would override the following helpers
@@ -569,7 +575,7 @@ end
 
 And then we can follow regular object-oriented practices to override it:
 
-``` ruby
+```ruby
 module EE
   module API
     module JobArtifacts
@@ -596,7 +602,7 @@ therefore can't be simply overridden. We need to extract them into a standalone
 method, or introduce some "hooks" where we could inject behavior in the CE
 route. Something like this:
 
-``` ruby
+```ruby
 module API
   class MergeRequests < Grape::API
     helpers do
@@ -623,7 +629,7 @@ end
 Note that `update_merge_request_ee` doesn't do anything in CE, but
 then we could override it in EE:
 
-``` ruby
+```ruby
 module EE
   module API
     module MergeRequests
@@ -662,7 +668,7 @@ For example, in one place we need to pass an extra argument to
 `at_least_one_of` so that the API could consider an EE-only argument as the
 least argument. This is not quite beautiful but it's working:
 
-``` ruby
+```ruby
 module API
   class MergeRequests < Grape::API
     def self.update_params_at_least_one_of
@@ -683,7 +689,7 @@ end
 
 And then we could easily extend that argument in the EE class method:
 
-``` ruby
+```ruby
 module EE
   module API
     module MergeRequests

@@ -44,3 +44,5 @@ do.
 | `/shrug`                   | Append the comment with `¯\＿(ツ)＿/¯` |
 | <code>/copy_metadata #issue &#124; !merge_request</code> | Copy labels and milestone from other issue or merge request |
 | `/confidential`            | Makes the issue confidential |
+| `/lock`                    | Lock the discussion |
+| `/unlock`                  | Unlock the discussion |

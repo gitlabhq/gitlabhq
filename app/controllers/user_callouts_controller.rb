@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserCalloutsController < ApplicationController
   def create
     if ensure_callout.persisted?
@@ -13,9 +15,11 @@ class UserCalloutsController < ApplicationController
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def ensure_callout
     current_user.callouts.find_or_create_by(feature_name: UserCallout.feature_names[feature_name])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def feature_name
     params.require(:feature_name)

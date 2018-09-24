@@ -36,7 +36,7 @@ describe 'Projects > Files > Project owner creates a license file', :js do
   end
 
   it 'project maintainer creates a license file from the "Add license" link' do
-    click_link 'Add License'
+    click_link 'Add license'
 
     expect(page).to have_content('New file')
     expect(current_path).to eq(

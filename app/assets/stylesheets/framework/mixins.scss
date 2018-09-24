@@ -20,7 +20,7 @@
   display: inline-block;
   overflow-x: auto;
   border: 0;
-  border-color: $md-area-border;
+  border-color: $gray-100;
 
   @supports (width: fit-content) {
     display: block;
@@ -29,11 +29,11 @@
 
   tr {
     th {
-      border-bottom: solid 2px $md-area-border;
+      border-bottom: solid 2px $gray-100;
     }
 
     td {
-      border-color: $md-area-border;
+      border-color: $gray-100;
     }
   }
 }

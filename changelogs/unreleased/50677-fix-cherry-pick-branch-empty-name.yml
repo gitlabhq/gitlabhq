@@ -1,0 +1,5 @@
+---
+title: Fixes 500 for cherry pick API with empty branch name
+merge_request: 21501
+author: Jacopo Beschi @jacopo-beschi
+type: fixed

@@ -25,7 +25,6 @@ describe 'Import/Export - project export integration test', :js do
 
   before do
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
-    stub_feature_flags(import_export_object_storage: false)
   end
 
   after do
@@ -49,6 +48,8 @@ describe 'Import/Export - project export integration test', :js do
       expect(page).to have_content('Download export')
 
       expect(file_permissions(project.export_path)).to eq(0700)
+
+      expect(project.export_file.path).to include('tar.gz')
 
       in_directory_with_expanded_export(project) do |exit_status, tmpdir|
         expect(exit_status).to eq(0)

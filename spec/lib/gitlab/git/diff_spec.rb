@@ -2,12 +2,24 @@ require "spec_helper"
 
 describe Gitlab::Git::Diff, :seed_helper do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
+  let(:gitaly_diff) do
+    Gitlab::GitalyClient::Diff.new(
+      from_path: '.gitmodules',
+      to_path: '.gitmodules',
+      old_mode: 0100644,
+      new_mode: 0100644,
+      from_id: '0792c58905eff3432b721f8c4a64363d8e28d9ae',
+      to_id: 'efd587ccb47caf5f31fc954edb21f0a713d9ecc3',
+      overflow_marker: false,
+      collapsed: false,
+      too_large: false,
+      patch: "@@ -4,3 +4,6 @@\n [submodule \"gitlab-shell\"]\n \tpath = gitlab-shell\n \turl = https://github.com/gitlabhq/gitlab-shell.git\n+[submodule \"gitlab-grack\"]\n+\tpath = gitlab-grack\n+\turl = https://gitlab.com/gitlab-org/gitlab-grack.git\n"
+    )
+  end
 
   before do
     @raw_diff_hash = {
       diff: <<EOT.gsub(/^ {8}/, "").sub(/\n$/, ""),
-        --- a/.gitmodules
-        +++ b/.gitmodules
         @@ -4,3 +4,6 @@
          [submodule "gitlab-shell"]
          \tpath = gitlab-shell
@@ -26,12 +38,6 @@ EOT
       deleted_file: false,
       too_large: false
     }
-
-    # TODO use a Gitaly diff object instead
-    @rugged_diff = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      repository.rugged.diff("5937ac0a7beb003549fc5fd26fc247adbce4a52e^", "5937ac0a7beb003549fc5fd26fc247adbce4a52e", paths:
-                                              [".gitmodules"]).patches.first
-    end
   end
 
   describe '.new' do
@@ -60,7 +66,7 @@ EOT
 
     context 'using a Rugged::Patch' do
       context 'with a small diff' do
-        let(:diff) { described_class.new(@rugged_diff) }
+        let(:diff) { described_class.new(gitaly_diff) }
 
         it 'initializes the diff' do
           expect(diff.to_hash).to eq(@raw_diff_hash)
@@ -73,10 +79,8 @@ EOT
 
       context 'using a diff that is too large' do
         it 'prunes the diff' do
-          expect_any_instance_of(String).to receive(:bytesize)
-            .and_return(1024 * 1024 * 1024)
-
-          diff = described_class.new(@rugged_diff)
+          gitaly_diff.too_large = true
+          diff = described_class.new(gitaly_diff)
 
           expect(diff.diff).to be_empty
           expect(diff).to be_too_large
@@ -84,31 +88,13 @@ EOT
       end
 
       context 'using a collapsable diff that is too large' do
-        before do
-          # The patch total size is 200, with lines between 21 and 54.
-          # This is a quick-and-dirty way to test this. Ideally, a new patch is
-          # added to the test repo with a size that falls between the real limits.
-          stub_const("#{described_class}::SIZE_LIMIT", 150)
-          stub_const("#{described_class}::COLLAPSE_LIMIT", 100)
-        end
-
         it 'prunes the diff as a large diff instead of as a collapsed diff' do
-          diff = described_class.new(@rugged_diff, expanded: false)
+          gitaly_diff.too_large = true
+          diff = described_class.new(gitaly_diff, expanded: false)
 
           expect(diff.diff).to be_empty
           expect(diff).to be_too_large
           expect(diff).not_to be_collapsed
-        end
-      end
-
-      context 'using a large binary diff' do
-        it 'does not prune the diff' do
-          expect_any_instance_of(Rugged::Diff::Delta).to receive(:binary?)
-            .and_return(true)
-
-          diff = described_class.new(@rugged_diff)
-
-          expect(diff.diff).not_to be_empty
         end
       end
     end
@@ -259,31 +245,37 @@ EOT
     end
 
     it 'leave non-binary diffs as-is' do
-      diff = described_class.new(@rugged_diff)
+      diff = described_class.new(gitaly_diff)
 
       expect(diff.json_safe_diff).to eq(diff.diff)
     end
   end
 
   describe '#submodule?' do
-    before do
-      # TODO use a Gitaly diff object instead
-      rugged_commit = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        repository.rugged.rev_parse('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
-      end
-
-      @diffs = rugged_commit.parents[0].diff(rugged_commit).patches
+    let(:gitaly_submodule_diff) do
+      Gitlab::GitalyClient::Diff.new(
+        from_path: 'gitlab-grack',
+        to_path: 'gitlab-grack',
+        old_mode: 0,
+        new_mode: 57344,
+        from_id: '0000000000000000000000000000000000000000',
+        to_id: '645f6c4c82fd3f5e06f67134450a570b795e55a6',
+        overflow_marker: false,
+        collapsed: false,
+        too_large: false,
+        patch: "@@ -0,0 +1 @@\n+Subproject commit 645f6c4c82fd3f5e06f67134450a570b795e55a6\n"
+      )
     end
 
-    it { expect(described_class.new(@diffs[0]).submodule?).to eq(false) }
-    it { expect(described_class.new(@diffs[1]).submodule?).to eq(true) }
+    it { expect(described_class.new(gitaly_diff).submodule?).to eq(false) }
+    it { expect(described_class.new(gitaly_submodule_diff).submodule?).to eq(true) }
   end
 
   describe '#line_count' do
     it 'returns the correct number of lines' do
-      diff = described_class.new(@rugged_diff)
+      diff = described_class.new(gitaly_diff)
 
-      expect(diff.line_count).to eq(9)
+      expect(diff.line_count).to eq(7)
     end
   end
 

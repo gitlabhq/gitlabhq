@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Setup Mattermost slash commands', :js do
+describe 'Set up Mattermost slash commands', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:service) { project.create_mattermost_slash_commands_service }

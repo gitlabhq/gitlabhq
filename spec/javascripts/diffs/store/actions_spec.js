@@ -5,19 +5,56 @@ import {
   INLINE_DIFF_VIEW_TYPE,
   PARALLEL_DIFF_VIEW_TYPE,
 } from '~/diffs/constants';
-import * as actions from '~/diffs/store/actions';
+import actions, {
+  setBaseConfig,
+  fetchDiffFiles,
+  assignDiscussionsToDiff,
+  removeDiscussionsFromDiff,
+  startRenderDiffsQueue,
+  setInlineDiffViewType,
+  setParallelDiffViewType,
+  showCommentForm,
+  cancelCommentForm,
+  loadMoreLines,
+  scrollToLineIfNeededInline,
+  scrollToLineIfNeededParallel,
+  loadCollapsedDiff,
+  expandAllFiles,
+  toggleFileDiscussions,
+  saveDiffDiscussion,
+} from '~/diffs/store/actions';
 import * as types from '~/diffs/store/mutation_types';
+import { reduceDiscussionsToLineCodes } from '~/notes/stores/utils';
 import axios from '~/lib/utils/axios_utils';
 import testAction from '../../helpers/vuex_action_helper';
 
 describe('DiffsStoreActions', () => {
+  const originalMethods = {
+    requestAnimationFrame: global.requestAnimationFrame,
+    requestIdleCallback: global.requestIdleCallback,
+  };
+
+  beforeEach(() => {
+    ['requestAnimationFrame', 'requestIdleCallback'].forEach(method => {
+      global[method] = cb => {
+        cb();
+      };
+    });
+  });
+
+  afterEach(() => {
+    ['requestAnimationFrame', 'requestIdleCallback'].forEach(method => {
+      global[method] = originalMethods[method];
+    });
+  });
+
   describe('setBaseConfig', () => {
     it('should set given endpoint and project path', done => {
       const endpoint = '/diffs/set/endpoint';
       const projectPath = '/root/project';
 
       testAction(
-        actions.setBaseConfig,
+        setBaseConfig,
         { endpoint, projectPath },
         { endpoint: '', projectPath: '' },
         [{ type: types.SET_BASE_CONFIG, payload: { endpoint, projectPath } }],
@@ -35,7 +72,7 @@ describe('DiffsStoreActions', () => {
       mock.onGet(endpoint).reply(200, res);
 
       testAction(
-        actions.fetchDiffFiles,
+        fetchDiffFiles,
         {},
         { endpoint },
         [
@@ -53,10 +90,196 @@ describe('DiffsStoreActions', () => {
     });
   });
 
+  describe('assignDiscussionsToDiff', () => {
+    it('should merge discussions into diffs', done => {
+      const state = {
+        diffFiles: [
+          {
+            fileHash: 'ABC',
+            parallelDiffLines: [
+              {
+                left: {
+                  lineCode: 'ABC_1_1',
+                  discussions: [],
+                },
+                right: {
+                  lineCode: 'ABC_1_1',
+                  discussions: [],
+                },
+              },
+            ],
+            highlightedDiffLines: [
+              {
+                lineCode: 'ABC_1_1',
+                discussions: [],
+                oldLine: 5,
+                newLine: null,
+              },
+            ],
+            diffRefs: {
+              baseSha: 'abc',
+              headSha: 'def',
+              startSha: 'ghi',
+            },
+            newPath: 'file1',
+            oldPath: 'file2',
+          },
+        ],
+      };
+
+      const diffPosition = {
+        baseSha: 'abc',
+        headSha: 'def',
+        startSha: 'ghi',
+        newLine: null,
+        newPath: 'file1',
+        oldLine: 5,
+        oldPath: 'file2',
+      };
+
+      const singleDiscussion = {
+        line_code: 'ABC_1_1',
+        diff_discussion: {},
+        diff_file: {
+          file_hash: 'ABC',
+        },
+        fileHash: 'ABC',
+        resolvable: true,
+        position: {
+          formatter: diffPosition,
+        },
+        original_position: {
+          formatter: diffPosition,
+        },
+      };
+
+      const discussions = reduceDiscussionsToLineCodes([singleDiscussion]);
+
+      testAction(
+        assignDiscussionsToDiff,
+        discussions,
+        state,
+        [
+          {
+            type: types.SET_LINE_DISCUSSIONS_FOR_FILE,
+            payload: {
+              fileHash: 'ABC',
+              discussions: [singleDiscussion],
+              diffPositionByLineCode: {
+                ABC_1_1: {
+                  baseSha: 'abc',
+                  headSha: 'def',
+                  startSha: 'ghi',
+                  newLine: null,
+                  newPath: 'file1',
+                  oldLine: 5,
+                  oldPath: 'file2',
+                  lineCode: 'ABC_1_1',
+                },
+              },
+            },
+          },
+        ],
+        [],
+        () => {
+          done();
+        },
+      );
+    });
+  });
+
+  describe('removeDiscussionsFromDiff', () => {
+    it('should remove discussions from diffs', done => {
+      const state = {
+        diffFiles: [
+          {
+            fileHash: 'ABC',
+            parallelDiffLines: [
+              {
+                left: {
+                  lineCode: 'ABC_1_1',
+                  discussions: [
+                    {
+                      id: 1,
+                    },
+                  ],
+                },
+                right: {
+                  lineCode: 'ABC_1_1',
+                  discussions: [],
+                },
+              },
+            ],
+            highlightedDiffLines: [
+              {
+                lineCode: 'ABC_1_1',
+                discussions: [],
+              },
+            ],
+          },
+        ],
+      };
+      const singleDiscussion = {
+        fileHash: 'ABC',
+        line_code: 'ABC_1_1',
+      };
+
+      testAction(
+        removeDiscussionsFromDiff,
+        singleDiscussion,
+        state,
+        [
+          {
+            type: types.REMOVE_LINE_DISCUSSIONS_FOR_FILE,
+            payload: {
+              fileHash: 'ABC',
+              lineCode: 'ABC_1_1',
+            },
+          },
+        ],
+        [],
+        () => {
+          done();
+        },
+      );
+    });
+  });
+
+  describe('startRenderDiffsQueue', () => {
+    it('should set all files to RENDER_FILE', () => {
+      const state = {
+        diffFiles: [
+          {
+            id: 1,
+            renderIt: false,
+            collapsed: false,
+          },
+          {
+            id: 2,
+            renderIt: false,
+            collapsed: false,
+          },
+        ],
+      };
+
+      const pseudoCommit = (commitType, file) => {
+        expect(commitType).toBe(types.RENDER_FILE);
+        Object.assign(file, {
+          renderIt: true,
+        });
+      };
+
+      startRenderDiffsQueue({ state, commit: pseudoCommit });
+
+      expect(state.diffFiles[0].renderIt).toBe(true);
+      expect(state.diffFiles[1].renderIt).toBe(true);
+    });
+  });
+
   describe('setInlineDiffViewType', () => {
     it('should set diff view type to inline and also set the cookie properly', done => {
       testAction(
-        actions.setInlineDiffViewType,
+        setInlineDiffViewType,
         null,
         {},
         [{ type: types.SET_DIFF_VIEW_TYPE, payload: INLINE_DIFF_VIEW_TYPE }],
@@ -74,7 +297,7 @@ describe('DiffsStoreActions', () => {
   describe('setParallelDiffViewType', () => {
     it('should set diff view type to parallel and also set the cookie properly', done => {
       testAction(
-        actions.setParallelDiffViewType,
+        setParallelDiffViewType,
         null,
         {},
         [{ type: types.SET_DIFF_VIEW_TYPE, payload: PARALLEL_DIFF_VIEW_TYPE }],
@@ -94,7 +317,7 @@ describe('DiffsStoreActions', () => {
       const payload = { lineCode: 'lineCode' };
 
       testAction(
-        actions.showCommentForm,
+        showCommentForm,
         payload,
         {},
         [{ type: types.ADD_COMMENT_FORM_LINE, payload }],
@@ -109,7 +332,7 @@ describe('DiffsStoreActions', () => {
       const payload = { lineCode: 'lineCode' };
 
       testAction(
-        actions.cancelCommentForm,
+        cancelCommentForm,
         payload,
         {},
         [{ type: types.REMOVE_COMMENT_FORM_LINE, payload }],
@@ -131,7 +354,7 @@ describe('DiffsStoreActions', () => {
       mock.onGet(endpoint).reply(200, contextLines);
 
       testAction(
-        actions.loadMoreLines,
+        loadMoreLines,
         options,
         {},
         [
@@ -157,7 +380,7 @@ describe('DiffsStoreActions', () => {
       mock.onGet(file.loadCollapsedDiffUrl).reply(200, data);
 
       testAction(
-        actions.loadCollapsedDiff,
+        loadCollapsedDiff,
         file,
         {},
         [
@@ -178,7 +401,7 @@ describe('DiffsStoreActions', () => {
   describe('expandAllFiles', () => {
     it('should change the collapsed prop from the diffFiles', done => {
       testAction(
-        actions.expandAllFiles,
+        expandAllFiles,
         null,
         {},
         [
@@ -202,9 +425,13 @@ describe('DiffsStoreActions', () => {
 
       const dispatch = jasmine.createSpy('dispatch');
 
-      actions.toggleFileDiscussions({ getters, dispatch });
+      toggleFileDiscussions({ getters, dispatch });
 
-      expect(dispatch).toHaveBeenCalledWith('collapseDiscussion', { discussionId: 1 }, { root: true });
+      expect(dispatch).toHaveBeenCalledWith(
+        'collapseDiscussion',
+        { discussionId: 1 },
+        { root: true },
+      );
     });
 
     it('should dispatch expandDiscussion when all discussions are collapsed', () => {
@@ -216,9 +443,13 @@ describe('DiffsStoreActions', () => {
 
       const dispatch = jasmine.createSpy();
 
-      actions.toggleFileDiscussions({ getters, dispatch });
+      toggleFileDiscussions({ getters, dispatch });
 
-      expect(dispatch).toHaveBeenCalledWith('expandDiscussion', { discussionId: 1 }, { root: true });
+      expect(dispatch).toHaveBeenCalledWith(
+        'expandDiscussion',
+        { discussionId: 1 },
+        { root: true },
+      );
     });
 
     it('should dispatch expandDiscussion when some discussions are collapsed and others are expanded for the collapsed discussion', () => {
@@ -230,9 +461,151 @@ describe('DiffsStoreActions', () => {
 
       const dispatch = jasmine.createSpy();
 
-      actions.toggleFileDiscussions({ getters, dispatch });
+      toggleFileDiscussions({ getters, dispatch });
 
-      expect(dispatch).toHaveBeenCalledWith('expandDiscussion', { discussionId: 1 }, { root: true });
+      expect(dispatch).toHaveBeenCalledWith(
+        'expandDiscussion',
+        { discussionId: 1 },
+        { root: true },
+      );
+    });
+  });
+
+  describe('scrollToLineIfNeededInline', () => {
+    const lineMock = {
+      lineCode: 'ABC_123',
+    };
+
+    it('should not call handleLocationHash when there is not hash', () => {
+      window.location.hash = '';
+
+      const handleLocationHashSpy = spyOnDependency(actions, 'handleLocationHash').and.stub();
+
+      scrollToLineIfNeededInline({}, lineMock);
+
+      expect(handleLocationHashSpy).not.toHaveBeenCalled();
+    });
+
+    it('should not call handleLocationHash when the hash does not match any line', () => {
+      window.location.hash = 'XYZ_456';
+
+      const handleLocationHashSpy = spyOnDependency(actions, 'handleLocationHash').and.stub();
+
+      scrollToLineIfNeededInline({}, lineMock);
+
+      expect(handleLocationHashSpy).not.toHaveBeenCalled();
+    });
+
+    it('should call handleLocationHash only when the hash matches a line', () => {
+      window.location.hash = 'ABC_123';
+
+      const handleLocationHashSpy = spyOnDependency(actions, 'handleLocationHash').and.stub();
+
+      scrollToLineIfNeededInline(
+        {},
+        {
+          lineCode: 'ABC_456',
+        },
+      );
+      scrollToLineIfNeededInline({}, lineMock);
+      scrollToLineIfNeededInline(
+        {},
+        {
+          lineCode: 'XYZ_456',
+        },
+      );
+
+      expect(handleLocationHashSpy).toHaveBeenCalled();
+      expect(handleLocationHashSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('scrollToLineIfNeededParallel', () => {
+    const lineMock = {
+      left: null,
+      right: {
+        lineCode: 'ABC_123',
+      },
+    };
+
+    it('should not call handleLocationHash when there is not hash', () => {
+      window.location.hash = '';
+
+      const handleLocationHashSpy = spyOnDependency(actions, 'handleLocationHash').and.stub();
+
+      scrollToLineIfNeededParallel({}, lineMock);
+
+      expect(handleLocationHashSpy).not.toHaveBeenCalled();
+    });
+
+    it('should not call handleLocationHash when the hash does not match any line', () => {
+      window.location.hash = 'XYZ_456';
+
+      const handleLocationHashSpy = spyOnDependency(actions, 'handleLocationHash').and.stub();
+
+      scrollToLineIfNeededParallel({}, lineMock);
+
+      expect(handleLocationHashSpy).not.toHaveBeenCalled();
+    });
+
+    it('should call handleLocationHash only when the hash matches a line', () => {
+      window.location.hash = 'ABC_123';
+
+      const handleLocationHashSpy = spyOnDependency(actions, 'handleLocationHash').and.stub();
+
+      scrollToLineIfNeededParallel(
+        {},
+        {
+          left: null,
+          right: {
+            lineCode: 'ABC_456',
+          },
+        },
+      );
+      scrollToLineIfNeededParallel({}, lineMock);
+      scrollToLineIfNeededParallel(
+        {},
+        {
+          left: null,
+          right: {
+            lineCode: 'XYZ_456',
+          },
+        },
+      );
+
+      expect(handleLocationHashSpy).toHaveBeenCalled();
+      expect(handleLocationHashSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('saveDiffDiscussion', () => {
+    beforeEach(() => {
+      spyOnDependency(actions, 'getNoteFormData').and.returnValue('testData');
+      spyOnDependency(actions, 'reduceDiscussionsToLineCodes').and.returnValue('discussions');
+    });
+
+    it('dispatches actions', done => {
+      const dispatch = jasmine.createSpy('dispatch').and.callFake(name => {
+        switch (name) {
+          case 'saveNote':
+            return Promise.resolve({
+              discussion: 'test',
+            });
+          case 'updateDiscussion':
+            return Promise.resolve('discussion');
+          default:
+            return Promise.resolve({});
+        }
+      });
+
+      saveDiffDiscussion({ dispatch }, { note: {}, formData: {} })
+        .then(() => {
+          expect(dispatch.calls.argsFor(0)).toEqual(['saveNote', 'testData', { root: true }]);
+          expect(dispatch.calls.argsFor(1)).toEqual(['updateDiscussion', 'test', { root: true }]);
+          expect(dispatch.calls.argsFor(2)).toEqual(['assignDiscussionsToDiff', 'discussions']);
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 });

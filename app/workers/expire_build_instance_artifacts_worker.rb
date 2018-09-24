@@ -3,6 +3,7 @@
 class ExpireBuildInstanceArtifactsWorker
   include ApplicationWorker
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform(build_id)
     build = Ci::Build
       .with_expired_artifacts
@@ -14,4 +15,5 @@ class ExpireBuildInstanceArtifactsWorker
     Rails.logger.info "Removing artifacts for build #{build.id}..."
     build.erase_artifacts!
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

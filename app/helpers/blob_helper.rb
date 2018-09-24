@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BlobHelper
   def highlight(blob_name, blob_content, repository: nil, plain: false)
     plain ||= blob_content.length > Blob::MAXIMUM_TEXT_HIGHLIGHT_SIZE

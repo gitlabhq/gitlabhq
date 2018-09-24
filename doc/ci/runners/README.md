@@ -29,7 +29,7 @@ are:
 - **Specific Runners** are useful for jobs that have special requirements or for
   projects with a specific demand. If a job has certain requirements, you can set
   up the specific Runner with this in mind, while not having to do this for all
-  Runners. For example, if you want to deploy a certain project, you can setup
+  Runners. For example, if you want to deploy a certain project, you can set up
   a specific Runner to have the right credentials for this. The [usage of tags](#using-tags)
   may be useful in this case. Specific Runners process jobs using a [FIFO] queue.
 - **Group Runners** are useful when you have multiple projects under one group
@@ -144,9 +144,8 @@ An admin can enable/disable a specific Runner for projects:
 
 ## Protected Runners
 
->
-[Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13194)
-in GitLab 10.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13194)
+> in GitLab 10.0.
 
 You can protect Runners from revealing sensitive information.
 Whenever a Runner is protected, the Runner picks only jobs created on
@@ -223,7 +222,7 @@ should keep in mind.
 
 ### Using tags
 
-You must setup a Runner to be able to run all the different types of jobs
+You must set up a Runner to be able to run all the different types of jobs
 that it may encounter on the projects it's shared over. This would be
 problematic for large amounts of projects, if it wasn't for tags.
 
@@ -299,7 +298,7 @@ and using more secure [Runner Executors](https://docs.gitlab.com/runner/executor
 ### Forks
 
 Whenever a project is forked, it copies the settings of the jobs that relate
-to it. This means that if you have shared Runners setup for a project and
+to it. This means that if you have shared Runners set up for a project and
 someone forks that project, the shared Runners will also serve jobs of this
 project.
 

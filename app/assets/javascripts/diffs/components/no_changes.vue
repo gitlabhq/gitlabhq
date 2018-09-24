@@ -38,7 +38,7 @@ export default {
         <div class="text-center">
           <a
             :href="newBlobPath"
-            class="btn btn-save"
+            class="btn btn-success"
           >
             {{ __('Create commit') }}
           </a>

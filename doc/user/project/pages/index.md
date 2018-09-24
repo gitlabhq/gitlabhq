@@ -12,16 +12,16 @@ With GitLab Pages it's easy to publish your project website. GitLab Pages is a h
 to get you started quickly, or,
 alternatively, start from an existing project as follows:
 
-- 1. [Fork](../../../gitlab-basics/fork-project.md#how-to-fork-a-project) an [example project](https://gitlab.com/pages):
-by forking a project, you create a copy of the codebase you're forking from to start from a template instead of starting from scratch.
-- 2. Change a file to trigger a GitLab CI/CD pipeline: GitLab CI/CD will build and deploy your site to GitLab Pages.
-- 3. Visit your project's **Settings > Pages** to see your **website link**, and click on it. Bam! Your website is live! :)
+1. [Fork](../../../gitlab-basics/fork-project.md#how-to-fork-a-project) an [example project](https://gitlab.com/pages):
+   by forking a project, you create a copy of the codebase you're forking from to start from a template instead of starting from scratch.
+2. Change a file to trigger a GitLab CI/CD pipeline: GitLab CI/CD will build and deploy your site to GitLab Pages.
+3. Visit your project's **Settings > Pages** to see your **website link**, and click on it. Bam! Your website is live! :)
 
-_Further steps (optional):_
+    _Further steps (optional):_
 
-- 4. Remove the [fork relationship](getting_started_part_two.md#fork-a-project-to-get-started-from)
-(_You don't need the relationship unless you intent to contribute back to the example project you forked from_).
-- 5. Make it a [user/group website](getting_started_part_one.md#user-and-group-websites)
+4. Remove the [fork relationship](getting_started_part_two.md#fork-a-project-to-get-started-from)
+   (_You don't need the relationship unless you intent to contribute back to the example project you forked from_).
+5. Make it a [user/group website](getting_started_part_one.md#user-and-group-websites)
 
 **Watch a video with the steps above: https://www.youtube.com/watch?v=TWqh9MtT4Bg**
 

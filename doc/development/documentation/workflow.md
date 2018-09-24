@@ -31,7 +31,7 @@ only and does not directly affect the way that any regular user or
 administrator would interact with GitLab.
 
 NOTE: **Note:**
-When refactoring documentation in needed, it should be submitted it in its own MR.
+When refactoring documentation, it should be submitted in its own MR.
 **Do not** join new features' MRs with refactoring existing docs, as they might have
 different priorities.
 

@@ -1,12 +1,12 @@
 # Health Check
 
->**Notes:**
-  - Liveness and readiness probes were [introduced][ce-10416] in GitLab 9.1.
-  - The `health_check` endpoint was [introduced][ce-3888] in GitLab 8.8 and will
-    be deprecated in GitLab 9.1. Read more in the [old behavior](#old-behavior)
-    section.
-  - [Access token](#access-token) has been deprecated in GitLab 9.4
-    in favor of [IP whitelist](#ip-whitelist)
+> **Notes:**
+>   - Liveness and readiness probes were [introduced][ce-10416] in GitLab 9.1.
+>   - The `health_check` endpoint was [introduced][ce-3888] in GitLab 8.8 and will
+>     be deprecated in GitLab 9.1. Read more in the [old behavior](#old-behavior)
+>     section.
+>   - [Access token](#access-token) has been deprecated in GitLab 9.4
+>     in favor of [IP whitelist](#ip-whitelist)
 
 GitLab provides liveness and readiness probes to indicate service health and
 reachability to required services. These probes report on the status of the

@@ -113,6 +113,19 @@ October 07, 2014 11:25: User "Claudie Hodkiewicz" (nasir_stehr@olson.co.uk)  was
 October 07, 2014 11:25: Project "project133" was removed
 ```
 
+## `integrations_json.log`
+
+This file lives in `/var/log/gitlab/gitlab-rails/integrations_json.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/integrations_json.log` for
+installations from source.
+
+It contains information about [integrations](../user/project/integrations/project_services.md) activities such as JIRA, Asana and Irker services. It uses JSON format like the example below:  
+
+``` json
+{"severity":"ERROR","time":"2018-09-06T14:56:20.439Z","service_class":"JiraService","project_id":8,"project_path":"h5bp/html5-boilerplate","message":"Error sending message","client_url":"http://jira.gitlap.com:8080","error":"execution expired"}
+{"severity":"INFO","time":"2018-09-06T17:15:16.365Z","service_class":"JiraService","project_id":3,"project_path":"namespace2/project2","message":"Successfully posted","client_url":"http://jira.example.net"}
+```
+
 ## `githost.log`
 
 This file lives in `/var/log/gitlab/gitlab-rails/githost.log` for

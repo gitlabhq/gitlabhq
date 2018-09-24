@@ -544,10 +544,10 @@ GET /projects/:id/services/jira
 
 Set JIRA service for a project.
 
->**Notes:**
-- Starting with GitLab 8.14, `api_url`, `issues_url`, `new_issue_url` and
-  `project_url` are replaced by `project_key`, `url`.  If you are using an
-  older version, [follow this documentation][old-jira-api].
+> **Notes:**
+> - Starting with GitLab 8.14, `api_url`, `issues_url`, `new_issue_url` and
+>   `project_url` are replaced by `project_key`, `url`.  If you are using an
+>   older version, [follow this documentation][old-jira-api].
 
 ```
 PUT /projects/:id/services/jira

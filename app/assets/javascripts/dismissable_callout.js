@@ -1,4 +1,4 @@
-import PersistentUserCallout from './persistent_user_callout';
+import PersistentUserCallout from '../../persistent_user_callout';
 
 export default function initDismissableCallout(alertSelector) {
   const alertEl = document.querySelector(alertSelector);
@@ -6,5 +6,5 @@ export default function initDismissableCallout(alertSelector) {
     return;
   }
 
-  new PersistentUserCallout(alertEl); // eslint-disable-line no-new
+  new PersistentUserCallout(alertEl);
 }

@@ -26,13 +26,13 @@ describe 'Projects > Settings > User manages group links' do
     end
   end
 
-  it 'shares a project with a group', :js do
-    click_link('Share with group')
+  it 'invites a group to a project', :js do
+    click_link('Invite group')
 
     select2(group_market.id, from: '#link_group_id')
     select('Maintainer', from: 'link_group_access')
 
-    click_button('Share')
+    click_button('Invite')
 
     page.within('.project-members-groups') do
       expect(page).to have_content('Market')

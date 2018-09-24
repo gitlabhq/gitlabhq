@@ -10,6 +10,7 @@ module Todos
         @user_id = user_id
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def execute
         ProjectFeature.where(project_id: project_ids).each do |project_features|
           target_types = []
@@ -22,6 +23,7 @@ module Todos
           remove_todos(project_features.project_id, target_types)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       private
 
@@ -29,6 +31,7 @@ module Todos
         feature_level == ProjectFeature::PRIVATE
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def remove_todos(project_id, target_types)
         items = Todo.where(project_id: project_id)
         items = items.where(user_id: user_id) if user_id
@@ -37,6 +40,7 @@ module Todos
           .where(target_type: target_types)
           .delete_all
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

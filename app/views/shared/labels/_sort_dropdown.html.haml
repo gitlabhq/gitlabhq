@@ -1,0 +1,9 @@
+- sort_title = label_sort_options_hash[@sort] || sort_title_name_desc
+.dropdown.inline
+  %button.dropdown-toggle{ type: 'button', data: { toggle: 'dropdown' } }
+    = sort_title
+    = icon('chevron-down')
+  %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-sort
+    %li
+      - label_sort_options_hash.each do |value, title|
+        = sortable_item(title, page_filter_path(sort: value, label: true), sort_title)

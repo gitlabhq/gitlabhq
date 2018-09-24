@@ -125,3 +125,6 @@ pwd
 ```
 clear
 ```
+### Sample Git taskflow
+
+If you are completely new to Git, looking through some [sample taskflows](https://rogerdudler.github.io/git-guide/) will help you understand best practices for using these commands as you work.

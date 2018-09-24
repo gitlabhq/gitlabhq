@@ -24,6 +24,21 @@ describe UrlValidator do
 
       expect(badge.errors.empty?).to be true
     end
+
+    it 'strips urls' do
+      badge.link_url = "\n\r\n\nhttps://127.0.0.1\r\n\r\n\n\n\n"
+
+      # It's unusual for a validator to modify its arguments. Some extensions,
+      # such as attr_encrypted, freeze the string to signal that modifications
+      # will not be persisted, so freeze this string to ensure the scheme is
+      # compatible with them.
+      badge.link_url.freeze
+
+      subject
+
+      expect(badge.errors).to be_empty
+      expect(badge.link_url).to eq('https://127.0.0.1')
+    end
   end
 
   context 'when allow_localhost is set to false' do

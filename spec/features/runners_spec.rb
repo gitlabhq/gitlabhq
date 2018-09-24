@@ -198,7 +198,7 @@ describe 'Runners' do
           expect(page).to have_content 'This group does not provide any group Runners yet'
 
           expect(page).to have_content 'Group maintainers can register group runners in the Group CI/CD settings'
-          expect(page).not_to have_content 'Ask your group maintainer to setup a group Runner'
+          expect(page).not_to have_content 'Ask your group maintainer to set up a group Runner'
         end
       end
     end
@@ -224,7 +224,7 @@ describe 'Runners' do
           expect(page).to have_content 'This group does not provide any group Runners yet.'
 
           expect(page).not_to have_content 'Group maintainers can register group runners in the Group CI/CD settings'
-          expect(page).to have_content 'Ask your group maintainer to setup a group Runner.'
+          expect(page).to have_content 'Ask your group maintainer to set up a group Runner.'
         end
       end
 

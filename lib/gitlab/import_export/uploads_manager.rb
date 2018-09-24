@@ -5,18 +5,13 @@ module Gitlab
 
       UPLOADS_BATCH_SIZE = 100
 
-      def initialize(project:, shared:, relative_export_path: 'uploads', from: nil)
+      def initialize(project:, shared:, relative_export_path: 'uploads')
         @project = project
         @shared = shared
         @relative_export_path = relative_export_path
-        @from = from || default_uploads_path
       end
 
       def save
-        if File.file?(@from) && @relative_export_path == 'avatar'
-          copy_files(@from, File.join(uploads_export_path, @project.avatar.filename))
-        end
-
         copy_project_uploads
 
         true
@@ -55,15 +50,9 @@ module Gitlab
 
             copy_files(uploader.absolute_path, File.join(uploads_export_path, uploader.upload.path))
           else
-            next unless Gitlab::ImportExport.object_storage?
-
             download_and_copy(uploader)
           end
         end
-      end
-
-      def default_uploads_path
-        FileUploader.absolute_base_dir(@project)
       end
 
       def uploads_export_path

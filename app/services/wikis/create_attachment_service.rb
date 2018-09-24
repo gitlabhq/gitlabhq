@@ -11,7 +11,7 @@ module Wikis
     def initialize(*args)
       super
 
-      @file_name = truncate_file_name(params[:file_name])
+      @file_name = clean_file_name(params[:file_name])
       @file_path = File.join(ATTACHMENT_PATH, SecureRandom.hex, @file_name) if @file_name
       @commit_message ||= "Upload attachment #{@file_name}"
       @branch_name ||= wiki.default_branch
@@ -23,8 +23,16 @@ module Wikis
 
     private
 
-    def truncate_file_name(file_name)
+    def clean_file_name(file_name)
       return unless file_name.present?
+
+      file_name = truncate_file_name(file_name)
+      # CommonMark does not allow Urls with whitespaces, so we have to replace them
+      # Using the same regex Carrierwave use to replace invalid characters
+      file_name.gsub(CarrierWave::SanitizedFile.sanitize_regexp, '_')
+    end
+
+    def truncate_file_name(file_name)
       return file_name if file_name.length <= MAX_FILENAME_LENGTH
 
       extension = File.extname(file_name)

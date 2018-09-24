@@ -62,9 +62,9 @@ export default {
       <ul>
         <li
           v-for="(job, index) in jobs"
+          :id="jobId(job)"
           :key="job.id"
           :class="buildConnnectorClass(index)"
-          :id="jobId(job)"
           class="build"
         >
 

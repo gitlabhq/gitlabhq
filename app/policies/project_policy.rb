@@ -398,6 +398,7 @@ class ProjectPolicy < BasePolicy
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def project_group_member?
     return false if @user.nil?
 
@@ -407,6 +408,7 @@ class ProjectPolicy < BasePolicy
         project.group.requesters.exists?(user_id: @user.id)
       )
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def team_access_level
     return -1 if @user.nil?

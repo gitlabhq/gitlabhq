@@ -5,9 +5,11 @@ class Projects::PagesController < Projects::ApplicationController
   before_action :authorize_read_pages!, only: [:show]
   before_action :authorize_update_pages!, except: [:show]
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def show
     @domains = @project.pages_domains.order(:domain)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def destroy
     project.remove_pages

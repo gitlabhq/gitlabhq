@@ -9,7 +9,7 @@ import '~/vue_shared/models/assignee';
 
 import FilteredSearchBoards from './filtered_search_boards';
 import eventHub from './eventhub';
-import sidebarEventHub from '~/sidebar/event_hub'; // eslint-disable-line import/first
+import sidebarEventHub from '~/sidebar/event_hub';
 import './models/issue';
 import './models/list';
 import './models/milestone';
@@ -24,7 +24,7 @@ import './components/board';
 import './components/board_sidebar';
 import './components/new_list_dropdown';
 import BoardAddIssuesModal from './components/modal/index.vue';
-import '~/vue_shared/vue_resource_interceptor'; // eslint-disable-line import/first
+import '~/vue_shared/vue_resource_interceptor';
 
 export default () => {
   const $boardApp = document.getElementById('board-app');
@@ -229,7 +229,7 @@ export default () => {
       template: `
         <div class="board-extra-actions">
           <button
-            class="btn btn-create prepend-left-10"
+            class="btn btn-success prepend-left-10"
             type="button"
             data-placement="bottom"
             ref="addIssuesButton"

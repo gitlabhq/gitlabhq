@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectsController < Projects::ApplicationController
   include API::Helpers::RelatedResourcesHelpers
   include IssuableCollections
@@ -25,12 +27,14 @@ class ProjectsController < Projects::ApplicationController
     redirect_to(current_user ? root_path : explore_root_path)
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def new
     namespace = Namespace.find_by(id: params[:namespace_id]) if params[:namespace_id]
     return access_denied! if namespace && !can?(current_user, :create_projects, namespace)
 
     @project = Project.new(namespace_id: namespace&.id)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def edit
     @badge_api_endpoint = expose_url(api_v4_projects_badges_path(id: @project.id))
@@ -75,6 +79,7 @@ class ProjectsController < Projects::ApplicationController
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def transfer
     return access_denied! unless can?(current_user, :change_namespace, @project)
 
@@ -85,6 +90,7 @@ class ProjectsController < Projects::ApplicationController
       flash[:alert] = @project.errors[:new_namespace].first
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def remove_fork
     return access_denied! unless can?(current_user, :remove_fork_project, @project)
@@ -191,10 +197,8 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def download_export
-    if export_project_object_storage?
-      send_upload(@project.import_export_upload.export_file)
-    elsif export_project_path
-      send_file export_project_path, disposition: 'attachment'
+    if @project.export_file_exists?
+      send_upload(@project.export_file, attachment: @project.export_file.filename)
     else
       redirect_to(
         edit_project_path(@project, anchor: 'js-export-project'),
@@ -233,6 +237,7 @@ class ProjectsController < Projects::ApplicationController
     }
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def refs
     find_refs = params['find']
 
@@ -267,6 +272,7 @@ class ProjectsController < Projects::ApplicationController
 
     render json: options.to_json
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   # Render project landing depending of which features are available
   # So if page is not availble in the list it renders the next page
@@ -305,6 +311,7 @@ class ProjectsController < Projects::ApplicationController
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def load_events
     projects = Project.where(id: @project.id)
 
@@ -314,6 +321,7 @@ class ProjectsController < Projects::ApplicationController
 
     Events::RenderService.new(current_user).execute(@events, atom_request: request.format.atom?)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def project_params
     params.require(:project)
@@ -424,13 +432,5 @@ class ProjectsController < Projects::ApplicationController
 
   def whitelist_query_limiting
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42440')
-  end
-
-  def export_project_path
-    @export_project_path ||= @project.export_project_path
-  end
-
-  def export_project_object_storage?
-    @project.export_project_object_exists?
   end
 end

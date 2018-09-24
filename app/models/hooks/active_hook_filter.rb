@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ActiveHookFilter
   def initialize(hook)
     @hook = hook

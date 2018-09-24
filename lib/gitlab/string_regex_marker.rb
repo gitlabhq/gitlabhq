@@ -1,5 +1,6 @@
 module Gitlab
   class StringRegexMarker < StringRangeMarker
+    # rubocop: disable CodeReuse/ActiveRecord
     def mark(regex, group: 0, &block)
       ranges = []
 
@@ -11,5 +12,6 @@ module Gitlab
 
       super(ranges, &block)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

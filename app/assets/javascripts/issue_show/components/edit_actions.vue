@@ -53,7 +53,7 @@
     <button
       :class="{ disabled: formState.updateLoading || !isSubmitEnabled }"
       :disabled="formState.updateLoading || !isSubmitEnabled"
-      class="btn btn-save float-left"
+      class="btn btn-success float-left"
       type="submit"
       @click.prevent="updateIssuable">
       Save changes

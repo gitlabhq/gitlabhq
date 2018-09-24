@@ -16,7 +16,7 @@ export default {
   expanded: true,
   notes: [
     {
-      id: 1749,
+      id: '1749',
       type: 'DiffNote',
       attachment: null,
       author: {
@@ -68,7 +68,7 @@ export default {
         '/gitlab-org/gitlab-test/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
     },
     {
-      id: 1753,
+      id: '1753',
       type: 'DiffNote',
       attachment: null,
       author: {
@@ -120,7 +120,7 @@ export default {
         '/gitlab-org/gitlab-test/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
     },
     {
-      id: 1754,
+      id: '1754',
       type: 'DiffNote',
       attachment: null,
       author: {
@@ -162,7 +162,7 @@ export default {
         '/gitlab-org/gitlab-test/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
     },
     {
-      id: 1755,
+      id: '1755',
       type: 'DiffNote',
       attachment: null,
       author: {
@@ -204,7 +204,7 @@ export default {
         '/gitlab-org/gitlab-test/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
     },
     {
-      id: 1756,
+      id: '1756',
       type: 'DiffNote',
       attachment: null,
       author: {

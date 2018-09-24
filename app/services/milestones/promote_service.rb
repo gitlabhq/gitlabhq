@@ -26,6 +26,7 @@ module Milestones
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def milestone_ids_for_merge(group_milestone)
       # Pluck need to be used here instead of select so the array of ids
       # is persistent after old milestones gets deleted.
@@ -35,6 +36,7 @@ module Milestones
         milestones.pluck(:id)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def move_children_to_group_milestone(group_milestone)
       milestone_ids_for_merge(group_milestone).in_groups_of(100, false) do |milestone_ids|
@@ -59,6 +61,7 @@ module Milestones
       milestone
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def update_children(group_milestone, milestone_ids)
       issues = Issue.where(project_id: group_project_ids, milestone_id: milestone_ids)
       merge_requests = MergeRequest.where(source_project_id: group_project_ids, milestone_id: milestone_ids)
@@ -67,18 +70,23 @@ module Milestones
         issuable_collection.update_all(milestone_id: group_milestone.id)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def group
       @group ||= parent.group || raise_error('Project does not belong to a group.')
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def destroy_old_milestones(milestone)
       Milestone.where(id: milestone_ids_for_merge(milestone)).destroy_all # rubocop: disable DestroyAll
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def group_project_ids
       @group_project_ids ||= group.projects.pluck(:id)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def raise_error(message)
       raise PromoteMilestoneError, "Promotion failed - #{message}"

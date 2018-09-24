@@ -11,6 +11,7 @@ module QA
         view 'app/views/projects/_new_project_fields.html.haml' do
           element :project_namespace_select
           element :project_namespace_field, 'namespaces_options'
+          element :project_name, 'text_field :name'
           element :project_path, 'text_field :path'
           element :project_description, 'text_area :description'
           element :project_create_button, "submit 'Create project'"
@@ -32,7 +33,7 @@ module QA
         end
 
         def choose_name(name)
-          fill_in 'project_path', with: name
+          fill_in 'project_name', with: name
         end
 
         def add_description(description)
