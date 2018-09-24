@@ -1,3 +1,5 @@
+- feature_flag_name = capture do
+  %span.text-monospace= feature_flag.name
 .modal{ id: "delete-feature-flag-modal-#{feature_flag.id}",
   tabindex: -1,
   role: 'dialog' }
@@ -5,12 +7,12 @@
     .modal-content
       .modal-header
         %h5.modal-title
-          = s_('FeatureFlags|Delete feature flag?')
+          = s_('FeatureFlags|Delete %{feature_flag_name}?').html_safe % { feature_flag_name: feature_flag_name }
         %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: _('Close') } }
           %span{ "aria-hidden": true } &times;
       .modal-body
         %p
-          = s_('FeatureFlags|Feature flag %{feature_flag_name} will be removed. Are you sure?') % { feature_flag_name: feature_flag.name }
+          = s_('FeatureFlags|Feature flag %{feature_flag_name} will be removed. Are you sure?').html_safe % { feature_flag_name: feature_flag_name }
       .modal-footer
         %button{ type: 'button', data: { dismiss: 'modal' }, class: 'btn btn-default' } Cancel
 
