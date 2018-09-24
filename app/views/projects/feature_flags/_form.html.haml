@@ -7,17 +7,17 @@
 %fieldset
   .row
     .form-group.col-md-4
-      = f.label :name, class: 'label-light', for: 'feature_flag_name' do
+      = f.label :name, class: 'label-bold', for: 'feature_flag_name' do
         = s_('FeatureFlags|Name')
       = f.text_field :name, class: "form-control", id: "feature_flag_name"
   .row
     .form-group.col-md-4
-      = f.label :description, class: 'label-light', for: 'feature_flag_description' do
+      = f.label :description, class: 'label-bold', for: 'feature_flag_description' do
         = s_('FeatureFlags|Description')
       = f.text_area :description, class: "form-control", id: "feature_flag_description", rows: 4
   .row
     .form-group.col-md-1
-      = f.label :active, class: 'label-light' do
+      = f.label :active, class: 'label-bold' do
         = s_('FeatureFlags|Status')
       .form-check
         = f.check_box :active, id: 'feature_flag_status', class: 'form-check-input'
@@ -25,8 +25,8 @@
           = s_('FeatureFlags|Active')
 .form-actions
   - if @feature_flag.persisted?
-    = f.submit 'Save changes', class: "btn btn-save"
+    = f.submit 'Save changes', class: "btn btn-success"
   - else
-    = f.submit 'Create feature flag', class: "btn btn-save"
+    = f.submit 'Create feature flag', class: "btn btn-success"
   .float-right
     = link_to _('Cancel'), project_feature_flags_path(@project), class: 'btn btn-cancel'

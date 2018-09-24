@@ -13,7 +13,7 @@
           = link_to s_('FeatureFlags|More information'), '#'
 
         .form-group
-          = label_tag :api_url, s_('FeatureFlags|API URL'), class: 'label-light'
+          = label_tag :api_url, s_('FeatureFlags|API URL'), class: 'label-bold'
           .input-group
             = text_field_tag :api_url,
               unleash_api_url(@project),
@@ -27,7 +27,7 @@
                 class: "input-group-text btn btn-default")
 
         .form-group
-          = label_tag :instance_id, s_('FeatureFlags|Instance ID'), class: 'label-light'
+          = label_tag :instance_id, s_('FeatureFlags|Instance ID'), class: 'label-bold'
           .input-group
             = text_field_tag :instance_id,
               unleash_api_instanceid(@project),
@@ -41,7 +41,7 @@
                 class: "input-group-text btn btn-default")
 
         .form-group
-          = label_tag :application_name, s_('FeatureFlags|Application name'), class: 'label-light'
+          = label_tag :application_name, s_('FeatureFlags|Application name'), class: 'label-bold'
           .input-group
             = text_field_tag :application_name,
               "production",
