@@ -1,10 +1,10 @@
--# - @content_class = "limit-container-width" unless fluid_layout
+- @content_class = "limit-container-width" unless fluid_layout
 - @no_container = true
 - add_to_breadcrumbs "Wiki", get_project_wiki_path(@project)
 - breadcrumb_title s_("Wiki|Pages")
 - page_title s_("Wiki|Pages"), _("Wiki")
 
-%div{ class: container_class }
+%div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
   .wiki-page-header
 
     .nav-text
