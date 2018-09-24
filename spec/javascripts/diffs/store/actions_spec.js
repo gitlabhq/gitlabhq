@@ -21,6 +21,7 @@ import actions, {
   loadCollapsedDiff,
   expandAllFiles,
   toggleFileDiscussions,
+  saveDiffDiscussion,
 } from '~/diffs/store/actions';
 import * as types from '~/diffs/store/mutation_types';
 import { reduceDiscussionsToLineCodes } from '~/notes/stores/utils';
@@ -245,7 +246,7 @@ describe('DiffsStoreActions', () => {
   });
 
   describe('startRenderDiffsQueue', () => {
-    it('should set all files to RENDER_FILE', done => {
+    it('should set all files to RENDER_FILE', () => {
       const state = {
         diffFiles: [
           {
@@ -268,16 +269,10 @@ describe('DiffsStoreActions', () => {
         });
       };
 
-      startRenderDiffsQueue({ state, commit: pseudoCommit })
-        .then(() => {
-          expect(state.diffFiles[0].renderIt).toBeTruthy();
-          expect(state.diffFiles[1].renderIt).toBeTruthy();
+      startRenderDiffsQueue({ state, commit: pseudoCommit });
 
-          done();
-        })
-        .catch(() => {
-          done.fail();
-        });
+      expect(state.diffFiles[0].renderIt).toBe(true);
+      expect(state.diffFiles[1].renderIt).toBe(true);
     });
   });
 
@@ -580,6 +575,37 @@ describe('DiffsStoreActions', () => {
 
       expect(handleLocationHashSpy).toHaveBeenCalled();
       expect(handleLocationHashSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('saveDiffDiscussion', () => {
+    beforeEach(() => {
+      spyOnDependency(actions, 'getNoteFormData').and.returnValue('testData');
+      spyOnDependency(actions, 'reduceDiscussionsToLineCodes').and.returnValue('discussions');
+    });
+
+    it('dispatches actions', done => {
+      const dispatch = jasmine.createSpy('dispatch').and.callFake(name => {
+        switch (name) {
+          case 'saveNote':
+            return Promise.resolve({
+              discussion: 'test',
+            });
+          case 'updateDiscussion':
+            return Promise.resolve('discussion');
+          default:
+            return Promise.resolve({});
+        }
+      });
+
+      saveDiffDiscussion({ dispatch }, { note: {}, formData: {} })
+        .then(() => {
+          expect(dispatch.calls.argsFor(0)).toEqual(['saveNote', 'testData', { root: true }]);
+          expect(dispatch.calls.argsFor(1)).toEqual(['updateDiscussion', 'test', { root: true }]);
+          expect(dispatch.calls.argsFor(2)).toEqual(['assignDiscussionsToDiff', 'discussions']);
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 });
