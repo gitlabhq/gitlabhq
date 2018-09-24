@@ -81,6 +81,12 @@ describe MergeRequests::MergeService do
         expect(service.hooks_validation_pass?(merge_request)).to be_falsey
         expect(merge_request.merge_error).not_to be_empty
       end
+
+      it 'validates against the commit email' do
+        user.commit_email = 'foo@unmatchedemaildomain.com'
+
+        expect(service.hooks_validation_pass?(merge_request)).to be_truthy
+      end
     end
 
     context 'fast forward merge request' do
