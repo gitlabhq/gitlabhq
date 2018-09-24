@@ -4,6 +4,8 @@ describe Notes::BuildService do
   let(:note) { create(:discussion_note_on_issue) }
   let(:project) { note.project }
   let(:author) { note.author }
+  let(:merge_request) { create(:merge_request, source_project: project) }
+  let(:mr_note) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project, author: author) }
 
   describe '#execute' do
     context 'when in_reply_to_discussion_id is specified' do
@@ -12,6 +14,19 @@ describe Notes::BuildService do
           new_note = described_class.new(project, author, note: 'Test', in_reply_to_discussion_id: note.discussion_id).execute
           expect(new_note).to be_valid
           expect(new_note.in_reply_to?(note)).to be_truthy
+          expect(new_note.resolved?).to be_falsey
+        end
+
+        context 'when discussion is resolved' do
+          before do
+            mr_note.resolve!(author)
+          end
+
+          it 'resolves the note' do
+            new_note = described_class.new(project, author, note: 'Test', in_reply_to_discussion_id: mr_note.discussion_id).execute
+            expect(new_note).to be_valid
+            expect(new_note.resolved?).to be_truthy
+          end
         end
       end
 
