@@ -19,8 +19,8 @@
       .table-section.section-50{ role: 'gridcell' }
         .table-mobile-header{ role: "rowheader" }= s_('FeatureFlags|Feature Flag')
         .table-mobile-content.d-flex.flex-column
-          .text-monospace= feature_flag.name
-          .text-secondary= feature_flag.description
+          .text-monospace.text-truncate= feature_flag.name
+          .text-secondary.text-truncate= feature_flag.description
 
       .table-section.section-40.table-button-footer{ role: 'gridcell' }
         .table-action-buttons.btn-group
