@@ -29,6 +29,16 @@ describe Gitlab::UrlBlocker do
       expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git', protocols: ['http'])).to be true
     end
 
+    it 'returns true for localhost IPs' do
+      expect(described_class.blocked_url?('https://0.0.0.0/foo/foo.git')).to be true
+      expect(described_class.blocked_url?('https://[::1]/foo/foo.git')).to be true
+      expect(described_class.blocked_url?('https://127.0.0.1/foo/foo.git')).to be true
+    end
+
+    it 'returns true for loopback IP' do
+      expect(described_class.blocked_url?('https://127.0.0.2/foo/foo.git')).to be true
+    end
+
     it 'returns true for alternative version of 127.0.0.1 (0177.1)' do
       expect(described_class.blocked_url?('https://0177.1:65535/foo/foo.git')).to be true
     end
@@ -84,6 +94,16 @@ describe Gitlab::UrlBlocker do
           end
         end
 
+        it 'allows localhost endpoints' do
+          expect(described_class).not_to be_blocked_url('http://0.0.0.0', allow_localhost: true)
+          expect(described_class).not_to be_blocked_url('http://localhost', allow_localhost: true)
+          expect(described_class).not_to be_blocked_url('http://127.0.0.1', allow_localhost: true)
+        end
+
+        it 'allows loopback endpoints' do
+          expect(described_class).not_to be_blocked_url('http://127.0.0.2', allow_localhost: true)
+        end
+
         it 'allows IPv4 link-local endpoints' do
           expect(described_class).not_to be_blocked_url('http://169.254.169.254')
           expect(described_class).not_to be_blocked_url('http://169.254.168.100')
@@ -122,7 +142,7 @@ describe Gitlab::UrlBlocker do
       end
 
       def stub_domain_resolv(domain, ip)
-        allow(Addrinfo).to receive(:getaddrinfo).with(domain, any_args).and_return([double(ip_address: ip, ipv4_private?: true, ipv6_link_local?: false)])
+        allow(Addrinfo).to receive(:getaddrinfo).with(domain, any_args).and_return([double(ip_address: ip, ipv4_private?: true, ipv6_link_local?: false, ipv4_loopback?: false, ipv6_loopback?: false)])
       end
 
       def unstub_domain_resolv
