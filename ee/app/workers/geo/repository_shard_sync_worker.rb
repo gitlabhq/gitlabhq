@@ -4,30 +4,18 @@ module Geo
 
     attr_accessor :shard_name
 
-    BACKOFF_TIME = 5.minutes
-
     def perform(shard_name)
       @shard_name = shard_name
 
       return unless Gitlab::ShardHealthCache.healthy_shard?(shard_name)
-
-      return if should_be_skipped?
 
       super()
     end
 
     private
 
-    def skip_shard_key
+    def skip_cache_key
       "#{self.class.name.underscore}:shard:#{shard_name}:skip"
-    end
-
-    def should_be_skipped?
-      Rails.cache.read(skip_shard_key)
-    end
-
-    def set_backoff_time!
-      Rails.cache.write(skip_shard_key, true, expires_in: BACKOFF_TIME.minutes)
     end
 
     def worker_metadata
@@ -70,15 +58,11 @@ module Geo
       resources = find_project_ids_not_synced(batch_size: db_retrieve_batch_size)
       remaining_capacity = db_retrieve_batch_size - resources.size
 
-      pending_resources = if remaining_capacity.zero?
-                            resources
-                          else
-                            resources + find_project_ids_updated_recently(batch_size: remaining_capacity)
-                          end
-
-      set_backoff_time! if pending_resources.empty?
-
-      pending_resources
+      if remaining_capacity.zero?
+        resources
+      else
+        resources + find_project_ids_updated_recently(batch_size: remaining_capacity)
+      end
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

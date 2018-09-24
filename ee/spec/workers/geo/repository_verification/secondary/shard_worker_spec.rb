@@ -163,5 +163,26 @@ describe Geo::RepositoryVerification::Secondary::ShardWorker, :postgresql, :clea
 
       Sidekiq::Testing.inline! { subject.perform(shard_name) }
     end
+
+    context 'backoff time' do
+      let(:cache_key) { "#{described_class.name.underscore}:shard:#{shard_name}:skip" }
+
+      it 'sets the back off time when there are no pending items' do
+        expect(Rails.cache).to receive(:write).with(cache_key, true, expires_in: 300.seconds).once
+
+        subject.perform(shard_name)
+      end
+
+      it 'does not perform Geo::RepositoryVerification::Secondary::SingleWorker when the backoff time is set' do
+        create(:repository_state, :repository_verified, project: project)
+        create(:geo_project_registry, :synced, :repository_verification_outdated, project: project)
+
+        expect(Rails.cache).to receive(:read).with(cache_key).and_return(true)
+
+        expect(Geo::RepositoryVerification::Secondary::SingleWorker).not_to receive(:perform_async)
+
+        subject.perform(shard_name)
+      end
+    end
   end
 end

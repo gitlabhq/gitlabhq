@@ -3,7 +3,6 @@ module Geo
     module Secondary
       class ShardWorker < Geo::Scheduler::Secondary::SchedulerWorker
         include CronjobQueue
-
         attr_accessor :shard_name
 
         def perform(shard_name)
@@ -16,6 +15,10 @@ module Geo
 
         private
 
+        def skip_cache_key
+          "#{self.class.name.underscore}:shard:#{shard_name}:skip"
+        end
+
         def worker_metadata
           { shard: shard_name }
         end
@@ -26,8 +29,7 @@ module Geo
 
         # rubocop: disable CodeReuse/ActiveRecord
         def load_pending_resources
-          finder.find_registries_to_verify(batch_size: db_retrieve_batch_size)
-                .pluck(:id)
+          finder.find_registries_to_verify(batch_size: db_retrieve_batch_size).pluck(:id)
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
