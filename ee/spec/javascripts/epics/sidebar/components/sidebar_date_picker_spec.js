@@ -11,6 +11,7 @@ const createComponent = (datePickerProps = mockDatePickerProps) => {
 };
 
 describe('SidebarParticipants', () => {
+  window.gon = { gitlab_url: gl.TEST_HOST };
   let vm;
 
   beforeEach(() => {
@@ -102,7 +103,9 @@ describe('SidebarParticipants', () => {
       });
 
       it('returns popover config object containing `content` with href pointing to correct documentation', () => {
-        expect(vm.popoverOptions.content.trim()).toBe('<a href="https://docs.gitlab.com/ee/user/group/epics/#Dates">More information</a>');
+        const hrefContent = vm.popoverOptions.content.trim();
+        expect(hrefContent).toContain(`${gon.gitlab_url}/help/user/group/epics/index.md#planned-start-date-and-planned-finish-date`);
+        expect(hrefContent).toContain('More information');
       });
     });
 
@@ -112,7 +115,9 @@ describe('SidebarParticipants', () => {
       });
 
       it('returns popover config object containing `content` with href pointing to correct documentation', () => {
-        expect(vm.dateInvalidPopoverOptions.content.trim()).toBe('<a href="https://docs.gitlab.com/ee/user/group/epics/#Dates">How can I solve this?</a>');
+        const hrefContent = vm.dateInvalidPopoverOptions.content.trim();
+        expect(hrefContent).toContain(`${gon.gitlab_url}/help/user/group/epics/index.md#planned-start-date-and-planned-finish-date`);
+        expect(hrefContent).toContain('How can I solve this?');
       });
     });
   });
