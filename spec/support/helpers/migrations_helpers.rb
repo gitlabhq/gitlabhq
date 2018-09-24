@@ -3,6 +3,10 @@ module MigrationsHelpers
     Class.new(ActiveRecord::Base) do
       self.table_name = name
       self.inheritance_column = :_type_disabled
+
+      def self.name
+        table_name.singularize.camelcase
+      end
     end
   end
 
