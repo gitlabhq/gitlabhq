@@ -14,8 +14,8 @@ module Clusters
         else
           check_timeout
         end
-      rescue Kubeclient::HttpError => ke
-        app.make_errored!("Kubernetes error: #{ke.message}") unless app.errored?
+      rescue Kubeclient::HttpError
+        app.make_errored!("Kubernetes error") unless app.errored?
       end
 
       private
@@ -27,7 +27,7 @@ module Clusters
       end
 
       def on_failed
-        app.make_errored!(installation_errors || 'Installation silently failed')
+        app.make_errored!('Installation failed')
       ensure
         remove_installation_pod
       end
