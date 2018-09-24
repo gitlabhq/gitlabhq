@@ -52,7 +52,10 @@ project:
 - source_pipelines
 - sourced_pipelines
 - prometheus_metrics
+- vulnerabilities
 - vulnerability_feedback
+- vulnerability_identifiers
+- vulnerability_scanners
 - prometheus_alerts
 - software_license_policies
 - project_registry
