@@ -13,6 +13,10 @@ describe Clusters::Cluster do
   it { is_expected.to delegate_method(:status_reason).to(:provider) }
   it { is_expected.to delegate_method(:status_name).to(:provider) }
   it { is_expected.to delegate_method(:on_creation?).to(:provider) }
+  it { is_expected.to delegate_method(:active?).to(:platform_kubernetes).with_prefix }
+  it { is_expected.to delegate_method(:rbac?).to(:platform_kubernetes).with_prefix }
+  it { is_expected.to delegate_method(:installed?).to(:application_helm).with_prefix }
+  it { is_expected.to delegate_method(:installed?).to(:application_ingress).with_prefix }
   it { is_expected.to respond_to :project }
 
   describe '.enabled' do

@@ -19,6 +19,7 @@ module Ci
       end
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def reprocess!(build)
       unless can?(current_user, :update_build, build)
         raise Gitlab::Access::AccessDeniedError
@@ -41,5 +42,6 @@ module Ci
         project.builds.create!(Hash[attributes])
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

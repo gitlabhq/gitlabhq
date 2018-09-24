@@ -43,7 +43,7 @@ export default {
     <a
       v-if="newPipelinePath"
       :href="newPipelinePath"
-      class="btn btn-create js-run-pipeline"
+      class="btn btn-success js-run-pipeline"
     >
       {{ s__('Pipelines|Run Pipeline') }}
     </a>

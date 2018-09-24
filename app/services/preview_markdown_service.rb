@@ -43,6 +43,10 @@ class PreviewMarkdownService < BaseService
   end
 
   def markdown_engine
-    CacheMarkdownField::MarkdownEngine.from_version(params[:markdown_version].to_i)
+    if params[:legacy_render]
+      :redcarpet
+    else
+      CacheMarkdownField::MarkdownEngine.from_version(params[:markdown_version].to_i)
+    end
   end
 end

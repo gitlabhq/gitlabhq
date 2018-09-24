@@ -2,13 +2,11 @@
 /**
  * Render environments table.
  */
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import environmentItem from './environment_item.vue';
 
 export default {
   components: {
     environmentItem,
-    loadingIcon,
   },
 
   props: {
@@ -85,10 +83,10 @@ export default {
       :model="model">
       <div
         is="environment-item"
+        :key="`environment-item-${i}`"
         :model="model"
         :can-create-deployment="canCreateDeployment"
         :can-read-environment="canReadEnvironment"
-        :key="`environment-item-${i}`"
       />
 
       <template
@@ -97,17 +95,17 @@ export default {
         <div
           v-if="model.isLoadingFolderContent"
           :key="`loading-item-${i}`">
-          <loading-icon size="2" />
+          <gl-loading-icon :size="2" />
         </div>
 
         <template v-else>
           <div
             is="environment-item"
             v-for="(children, index) in model.children"
+            :key="`env-item-${i}-${index}`"
             :model="children"
             :can-create-deployment="canCreateDeployment"
             :can-read-environment="canReadEnvironment"
-            :key="`env-item-${i}-${index}`"
           />
 
           <div :key="`sub-div-${i}`">

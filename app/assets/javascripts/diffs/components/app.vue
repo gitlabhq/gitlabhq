@@ -4,7 +4,6 @@ import Icon from '~/vue_shared/components/icon.vue';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
 import eventHub from '../../notes/event_hub';
-import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
 import CompareVersions from './compare_versions.vue';
 import ChangedFiles from './changed_files.vue';
 import DiffFile from './diff_file.vue';
@@ -15,7 +14,6 @@ export default {
   name: 'DiffsApp',
   components: {
     Icon,
-    LoadingIcon,
     CompareVersions,
     ChangedFiles,
     DiffFile,
@@ -59,7 +57,7 @@ export default {
       emailPatchPath: state => state.diffs.emailPatchPath,
     }),
     ...mapGetters('diffs', ['isParallelView']),
-    ...mapGetters(['isNotesFetched']),
+    ...mapGetters(['isNotesFetched', 'discussionsStructuredByLineCode']),
     targetBranch() {
       return {
         branchName: this.targetBranchName,
@@ -112,13 +110,26 @@ export default {
   },
   created() {
     this.adjustView();
+    eventHub.$once('fetchedNotesData', this.setDiscussions);
   },
   methods: {
-    ...mapActions('diffs', ['setBaseConfig', 'fetchDiffFiles', 'startRenderDiffsQueue']),
+    ...mapActions('diffs', [
+      'setBaseConfig',
+      'fetchDiffFiles',
+      'startRenderDiffsQueue',
+      'assignDiscussionsToDiff',
+    ]),
+
     fetchData() {
       this.fetchDiffFiles()
         .then(() => {
-          requestIdleCallback(this.startRenderDiffsQueue, { timeout: 1000 });
+          requestIdleCallback(
+            () => {
+              this.setDiscussions();
+              this.startRenderDiffsQueue();
+            },
+            { timeout: 1000 },
+          );
         })
         .catch(() => {
           createFlash(__('Something went wrong on our end. Please try again!'));
@@ -126,6 +137,16 @@ export default {
 
       if (!this.isNotesFetched) {
         eventHub.$emit('fetchNotesData');
+      }
+    },
+    setDiscussions() {
+      if (this.isNotesFetched) {
+        requestIdleCallback(
+          () => {
+            this.assignDiscussionsToDiff(this.discussionsStructuredByLineCode);
+          },
+          { timeout: 1000 },
+        );
       }
     },
     adjustView() {
@@ -145,7 +166,7 @@ export default {
       v-if="isLoading"
       class="loading"
     >
-      <loading-icon />
+      <gl-loading-icon />
     </div>
     <div
       v-else

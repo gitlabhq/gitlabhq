@@ -21,6 +21,8 @@ Disallow: /groups/new
 Disallow: /groups/*/edit
 Disallow: /users
 Disallow: /help
+# Only specifically allow the Sign In page to avoid very ugly search results
+Allow: /users/sign_in
 
 # Global snippets
 User-Agent: *

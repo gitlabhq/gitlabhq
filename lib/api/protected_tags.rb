@@ -17,11 +17,13 @@ module API
       params do
         use :pagination
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/protected_tags' do
         protected_tags = user_project.protected_tags.preload(:create_access_levels)
 
         present paginate(protected_tags), with: Entities::ProtectedTag, project: user_project
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Get a single protected tag' do
         detail 'This feature was introduced in GitLab 11.3.'
@@ -30,11 +32,13 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the tag or wildcard'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/protected_tags/:name', requirements: TAG_ENDPOINT_REQUIREMENTS do
         protected_tag = user_project.protected_tags.find_by!(name: params[:name])
 
         present protected_tag, with: Entities::ProtectedTag, project: user_project
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Protect a single tag or wildcard' do
         detail 'This feature was introduced in GitLab 11.3.'
@@ -43,7 +47,7 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the protected tag'
         optional :create_access_level, type: Integer, default: Gitlab::Access::MAINTAINER,
-                                       values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS,
+                                       values: ProtectedTag::CreateAccessLevel.allowed_access_levels,
                                        desc: 'Access levels allowed to create (defaults: `40`, maintainer access level)'
       end
       post ':id/protected_tags' do
@@ -69,11 +73,13 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the protected tag'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       delete ':id/protected_tags/:name', requirements: TAG_ENDPOINT_REQUIREMENTS do
         protected_tag = user_project.protected_tags.find_by!(name: params[:name])
 
         destroy_conditionally!(protected_tag)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

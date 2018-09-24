@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class HealthController < ActionController::Base
   protect_from_forgery with: :exception, except: :storage_check, prepend: true
   include RequiresWhitelistedMonitoringClient

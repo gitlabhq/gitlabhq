@@ -11,6 +11,7 @@ class Namespace < ActiveRecord::Base
   include Gitlab::SQL::Pattern
   include IgnorableColumn
   include FeatureGate
+  include FromUnion
 
   ignore_column :deleted_at
 
@@ -251,18 +252,6 @@ class Namespace < ActiveRecord::Base
       previous_parent = Group.find_by(id: parent_id_was)
       previous_parent.full_path + '/' + path_was
     end
-  end
-
-  # Exports belonging to projects with legacy storage are placed in a common
-  # subdirectory of the namespace, so a simple `rm -rf` is sufficient to remove
-  # them.
-  #
-  # Exports of projects using hashed storage are placed in a location defined
-  # only by the project ID, so each must be removed individually.
-  def remove_exports!
-    remove_legacy_exports!
-
-    all_projects.with_storage_feature(:repository).find_each(&:remove_exports)
   end
 
   def refresh_project_authorizations

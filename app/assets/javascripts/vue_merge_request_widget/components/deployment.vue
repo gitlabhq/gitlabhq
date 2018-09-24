@@ -106,8 +106,8 @@ export default {
               </tooltip-on-truncate>
             </template>
             <span
-              v-tooltip
               v-if="hasDeploymentTime"
+              v-tooltip
               :title="deployment.deployed_at_formatted"
               class="js-deploy-time"
             >

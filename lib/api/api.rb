@@ -15,6 +15,7 @@ module API
                   include: [
                     GrapeLogging::Loggers::FilterParameters.new,
                     GrapeLogging::Loggers::ClientEnv.new,
+                    Gitlab::GrapeLogging::Loggers::RouteLogger.new,
                     Gitlab::GrapeLogging::Loggers::UserLogger.new,
                     Gitlab::GrapeLogging::Loggers::QueueDurationLogger.new,
                     Gitlab::GrapeLogging::Loggers::PerfLogger.new
@@ -117,6 +118,7 @@ module API
     mount ::API::Namespaces
     mount ::API::Notes
     mount ::API::Discussions
+    mount ::API::ResourceLabelEvents
     mount ::API::NotificationSettings
     mount ::API::PagesDomains
     mount ::API::Pipelines

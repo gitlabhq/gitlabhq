@@ -37,8 +37,8 @@ export default {
     <ul class="report-block-list">
       <li
         v-for="(issue, index) in issues"
-        :class="{ 'is-dismissed': issue.isDismissed }"
         :key="index"
+        :class="{ 'is-dismissed': issue.isDismissed }"
         class="report-block-list-issue"
       >
         <issue-status-icon
@@ -47,8 +47,8 @@ export default {
         />
 
         <component
-          v-if="component"
           :is="component"
+          v-if="component"
           :issue="issue"
           :status="issue.status || status"
           :is-new="isNew"

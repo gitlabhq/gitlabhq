@@ -1,15 +1,22 @@
 module Gitlab
   module Ci
-    ##
+    #
     # Base GitLab CI Configuration facade
     #
     class Config
-      # EE would override this and utilize opts argument
+      ConfigError = Class.new(StandardError)
+
       def initialize(config, opts = {})
-        @config = Loader.new(config).load!
+        @config = Config::Extendable
+          .new(build_config(config, opts))
+          .to_hash
 
         @global = Entry::Global.new(@config)
         @global.compose!
+      rescue Loader::FormatError, Extendable::ExtensionError => e
+        raise Config::ConfigError, e.message
+      rescue ::Gitlab::Ci::External::Processor::FileError => e
+        raise ::Gitlab::Ci::YamlProcessor::ValidationError, e.message
       end
 
       def valid?
@@ -57,6 +64,24 @@ module Gitlab
 
       def jobs
         @global.jobs_value
+      end
+
+      private
+
+      def build_config(config, opts = {})
+        initial_config = Loader.new(config).load!
+        project = opts.fetch(:project, nil)
+
+        if project
+          process_external_files(initial_config, project, opts)
+        else
+          initial_config
+        end
+      end
+
+      def process_external_files(config, project, opts)
+        sha = opts.fetch(:sha) { project.repository.root_ref_sha }
+        ::Gitlab::Ci::External::Processor.new(config, project, sha).perform
       end
     end
   end

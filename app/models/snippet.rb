@@ -12,6 +12,7 @@ class Snippet < ActiveRecord::Base
   include Spammable
   include Editable
   include Gitlab::SQL::Pattern
+  include FromUnion
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description

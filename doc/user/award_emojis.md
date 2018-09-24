@@ -1,10 +1,10 @@
 # Award emoji
 
->**Notes:**
-- First [introduced][1825] in GitLab 8.2.
-- GitLab 9.0 [introduced][ce-9570] the usage of native emojis if the platform
-  supports them and falls back to images or CSS sprites. This change greatly
-  improved the award emoji performance overall.
+> **Notes:**
+> - First [introduced][1825] in GitLab 8.2.
+> - GitLab 9.0 [introduced][ce-9570] the usage of native emojis if the platform
+>  supports them and falls back to images or CSS sprites. This change greatly
+>  improved the award emoji performance overall.
 
 When you're collaborating online, you get fewer opportunities for high-fives
 and thumbs-ups. Emoji can be awarded to issues, merge requests, snippets, and

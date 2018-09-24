@@ -37,7 +37,7 @@ You can specify a wildcard protected tag, which will protect all tags
 matching the wildcard. For example:
 
 | Wildcard Protected Tag | Matching Tags                 |
-|------------------------+-------------------------------|
+|------------------------|-------------------------------|
 | `v*`                   | `v1.0.0`, `version-9.1`       |
 | `*-deploy`             | `march-deploy`, `1.0-deploy`  |
 | `*gitlab*`             | `gitlab`, `gitlab/v1`         |

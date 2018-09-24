@@ -57,11 +57,13 @@ module ObjectStorage
 
     include Report
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def self.enqueue!(uploads, model_class, mounted_as, to_store)
       sanity_check!(uploads, model_class, mounted_as)
 
       perform_async(uploads.ids, model_class.to_s, mounted_as, to_store)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # We need to be sure all the uploads are for the same uploader and model type
     # and that the mount point exists if provided.
@@ -78,6 +80,7 @@ module ObjectStorage
       raise(SanityCheckError, "Mount point #{mounted_as} not found in #{model_class}.") unless model_has_mount
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def perform(*args)
       args_check!(args)
 
@@ -97,6 +100,7 @@ module ObjectStorage
       # do not retry: the job is insane
       Rails.logger.warn "#{self.class}: Sanity check error (#{e.message})"
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def sanity_check!(uploads)
       self.class.sanity_check!(uploads, @model_class, @mounted_as)

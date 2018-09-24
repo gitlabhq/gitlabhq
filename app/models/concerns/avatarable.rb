@@ -9,7 +9,7 @@ module Avatarable
     include Gitlab::Utils::StrongMemoize
 
     validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
-    validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
+    validates :avatar, file_size: { maximum: 200.kilobytes.to_i }, if: :avatar_changed?
 
     mount_uploader :avatar, AvatarUploader
 

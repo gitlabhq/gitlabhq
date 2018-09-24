@@ -87,6 +87,8 @@ module Ci
     end
 
     def hashed_path?
+      return true if trace? # ArchiveLegacyTraces background migration might not have `file_location` column
+
       super || self.file_location.nil?
     end
 

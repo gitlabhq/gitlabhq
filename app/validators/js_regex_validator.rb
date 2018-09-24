@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class JsRegexValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
     return true if value.blank?

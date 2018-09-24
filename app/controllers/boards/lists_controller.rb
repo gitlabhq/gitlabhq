@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Boards
   class ListsController < Boards::ApplicationController
     include BoardsResponses

@@ -64,7 +64,7 @@ describe('Boards blank state', () => {
   });
 
   it('creates pre-defined labels', (done) => {
-    vm.$el.querySelector('.btn-create').click();
+    vm.$el.querySelector('.btn-success').click();
 
     setTimeout(() => {
       expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(2);
@@ -78,7 +78,7 @@ describe('Boards blank state', () => {
   it('resets the store if request fails', (done) => {
     fail = true;
 
-    vm.$el.querySelector('.btn-create').click();
+    vm.$el.querySelector('.btn-success').click();
 
     setTimeout(() => {
       expect(gl.issueBoards.BoardsStore.welcomeIsHidden()).toBeFalsy();

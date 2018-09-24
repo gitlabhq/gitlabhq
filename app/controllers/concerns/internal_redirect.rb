@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module InternalRedirect
   extend ActiveSupport::Concern
 
@@ -35,5 +37,11 @@ module InternalRedirect
   def full_path_for_uri(uri)
     path_with_query = [uri.path, uri.query].compact.join('?')
     [path_with_query, uri.fragment].compact.join("#")
+  end
+
+  def referer_path(request)
+    return unless request.referer.presence
+
+    URI(request.referer).path
   end
 end

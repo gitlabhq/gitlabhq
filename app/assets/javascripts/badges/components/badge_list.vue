@@ -1,6 +1,5 @@
 <script>
 import { mapState } from 'vuex';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import BadgeListRow from './badge_list_row.vue';
 import { GROUP_BADGE } from '../constants';
 
@@ -8,7 +7,6 @@ export default {
   name: 'BadgeList',
   components: {
     BadgeListRow,
-    LoadingIcon,
   },
   computed: {
     ...mapState(['badges', 'isLoading', 'kind']),
@@ -31,10 +29,10 @@ export default {
         class="badge badge-pill"
       >{{ badges.length }}</span>
     </div>
-    <loading-icon
+    <gl-loading-icon
       v-show="isLoading"
+      :size="2"
       class="card-body"
-      size="2"
     />
     <div
       v-if="hasNoBadges"

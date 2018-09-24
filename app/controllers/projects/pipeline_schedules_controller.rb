@@ -8,12 +8,14 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   before_action :authorize_update_pipeline_schedule!, except: [:index, :new, :create, :play]
   before_action :authorize_admin_pipeline_schedule!, only: [:destroy]
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def index
     @scope = params[:scope]
     @all_schedules = PipelineSchedulesFinder.new(@project).execute
     @schedules = PipelineSchedulesFinder.new(@project).execute(scope: params[:scope])
       .includes(:last_pipeline)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def new
     @schedule = project.pipeline_schedules.new

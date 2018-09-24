@@ -21,6 +21,7 @@ module QA
         # Disable code_quality check in Auto DevOps pipeline as it takes
         # too long and times out the test
         Factory::Resource::SecretVariable.fabricate! do |resource|
+          resource.project = project
           resource.key = 'CODE_QUALITY_DISABLED'
           resource.value = '1'
         end
@@ -30,7 +31,7 @@ module QA
           push.project = project
           push.directory = Pathname
             .new(__dir__)
-            .join('../../../fixtures/auto_devops_rack')
+            .join('../../../../../fixtures/auto_devops_rack')
           push.commit_message = 'Create Auto DevOps compatible rack application'
         end
 

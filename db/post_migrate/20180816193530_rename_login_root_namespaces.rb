@@ -7,10 +7,14 @@ class RenameLoginRootNamespaces < ActiveRecord::Migration
 
   # We're taking over the /login namespace as part of a fix for the Jira integration
   def up
-    rename_root_paths 'login'
+    disable_statement_timeout do
+      rename_root_paths 'login'
+    end
   end
 
   def down
-    revert_renames
+    disable_statement_timeout do
+      revert_renames
+    end
   end
 end

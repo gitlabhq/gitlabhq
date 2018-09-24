@@ -92,6 +92,30 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     end
   end
 
+  describe '#kubeclient' do
+    subject { kubernetes.kubeclient }
+
+    let(:kubernetes) { build(:cluster_platform_kubernetes, :configured, namespace: 'a-namespace') }
+
+    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::KubeClient) }
+  end
+
+  describe '#rbac?' do
+    subject { kubernetes.rbac? }
+
+    let(:kubernetes) { build(:cluster_platform_kubernetes, :configured) }
+
+    context 'when authorization type is rbac' do
+      let(:kubernetes) { build(:cluster_platform_kubernetes, :rbac_enabled, :configured) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when authorization type is nil' do
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#actual_namespace' do
     subject { kubernetes.actual_namespace }
 

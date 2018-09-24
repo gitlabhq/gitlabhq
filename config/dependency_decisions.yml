@@ -235,8 +235,9 @@
     :why: https://github.com/component/inherit/blob/master/LICENSE
     :versions: []
     :when: 2017-01-14 20:10:41.804804000 Z
-- - :approve
+- - :license
   - fsevents
+  - MIT
   - :who: Matt Lee
     :why: https://github.com/strongloop/fsevents/blob/master/LICENSE
     :versions: []
@@ -380,8 +381,9 @@
     :why: https://github.com/Tjatse/ansi-html/blob/master/LICENSE
     :versions: []
     :when: 2017-04-10 05:42:12.898178000 Z
-- - :approve
+- - :license
   - map-stream
+  - MIT
   - :who: Mike Greiling
     :why: https://github.com/dominictarr/map-stream/blob/master/LICENCE
     :versions: []
@@ -458,8 +460,9 @@
     :why: CC0 1.0 - https://github.com/jonathantneal/svg4everybody/blob/master/LICENSE.md
     :versions: []
     :when: 2017-09-13 17:31:16.425819400 Z
-- - :approve
+- - :license
   - "@gitlab-org/gitlab-svgs"
+  - MIT
   - :who: Tim Zallmann
     :why: Our own library - GitLab License https://gitlab.com/gitlab-org/gitlab-svgs
     :versions: []
@@ -528,8 +531,9 @@
     :why: https://github.com/mafintosh/cyclist/blob/master/LICENSE
     :versions: []
     :when: 2018-02-20 21:37:43.774978000 Z
-- - :approve
+- - :license
   - bitsyntax
+  - MIT
   - :who: Mike Greiling
     :why: https://github.com/squaremo/bitsyntax-js/blob/master/LICENSE-MIT
     :versions: []
@@ -540,8 +544,9 @@
     :why: https://github.com/xtuc/webassemblyjs/blob/master/LICENSE
     :versions: []
     :when: 2018-06-08 05:30:56.764116000 Z
-- - :approve
+- - :license
   - "@gitlab-org/gitlab-ui"
+  - MIT
   - :who: Clement Ho
     :why: Our own library
     :versions: []
@@ -552,20 +557,23 @@
     :why: https://github.com/pieroxy/lz-string/blob/master/LICENSE.txt
     :versions: []
     :when: 2018-08-03 08:22:44.973457000 Z
-- - :approve
+- - :license
   - smooshpack
+  - LGPL
   - :who: Phil Hughes
     :why: https://github.com/CompuIves/codesandbox-client/blob/master/packages/sandpack/LICENSE.md
     :versions: []
     :when: 2018-08-03 08:24:29.578991000 Z
-- - :approve
+- - :license
   - codesandbox-import-util-types
+  - LGPL
   - :who: Phil Hughes
     :why: https://github.com/codesandbox-app/codesandbox-importers/blob/master/packages/types/LICENSE
     :versions: []
     :when: 2018-08-03 12:22:47.574421000 Z
-- - :approve
+- - :license
   - codesandbox-import-utils
+  - LGPL
   - :who: Phil Hughes
     :why: https://github.com/codesandbox-app/codesandbox-importers/blob/master/packages/import-utils/LICENSE
     :versions: []
@@ -573,7 +581,7 @@
 - - :ignore_group
   - devDependencies
   - :who: Winnie Hellmann
-    :why: NPM packages used for development are not distributed with the final product and are therefore
-      exempt.
+    :why: NPM packages used for development are not distributed with the final product
+      and are therefore exempt.
     :versions: []
     :when: 2018-08-30 12:06:35.668181000 Z

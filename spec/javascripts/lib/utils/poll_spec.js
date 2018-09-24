@@ -1,3 +1,5 @@
+/* eslint-disable jasmine/no-unsafe-spy */
+
 import Poll from '~/lib/utils/poll';
 import { successCodes } from '~/lib/utils/http_status';
 

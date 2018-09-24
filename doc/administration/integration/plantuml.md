@@ -74,28 +74,27 @@ our AsciiDoc snippets, wikis and repos using delimited blocks:
     ```plantuml
     Bob -> Alice : hello
     Alice -> Bob : Go Away
-    ```
-    </pre>
+    ```</pre>
 
 - **AsciiDoc**
 
-    <pre>
+    ```
     [plantuml, format="png", id="myDiagram", width="200px"]
     --
     Bob->Alice : hello
     Alice -> Bob : Go Away
     --
-    </pre>
+    ```
 
 - **reStructuredText**
 
-    <pre>
+    ```
     .. plantuml::
        :caption: Caption with **bold** and *italic*
 
        Bob -> Alice: hello
        Alice -> Bob: Go Away
-    </pre>
+    ```
 
     You can also use the `uml::` directive for compatibility with [sphinxcontrib-plantuml](https://pypi.python.org/pypi/sphinxcontrib-plantuml), but please note that we currently only support the `caption` option.
 

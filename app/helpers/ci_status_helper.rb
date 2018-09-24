@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # DEPRECATED
 #
@@ -119,11 +121,6 @@ module CiStatusHelper
     project = pipeline.project
     path = project_pipeline_path(project, pipeline)
     render_status_with_link('pipeline', pipeline.status, path, tooltip_placement: tooltip_placement)
-  end
-
-  def no_runners_for_project?(project)
-    project.runners.blank? &&
-      Ci::Runner.instance_type.blank?
   end
 
   def render_status_with_link(type, status, path = nil, tooltip_placement: 'left', cssclass: '', container: 'body', icon_size: 16)

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'New merge request breadcrumbs' do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user)    { project.creator }
 
   before do

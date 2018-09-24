@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Types
   class ProjectType < BaseObject
     expose_permissions Types::PermissionTypes::Project

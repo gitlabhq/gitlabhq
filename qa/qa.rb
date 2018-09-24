@@ -57,6 +57,7 @@ module QA
       autoload :Wiki, 'qa/factory/resource/wiki'
       autoload :File, 'qa/factory/resource/file'
       autoload :Fork, 'qa/factory/resource/fork'
+      autoload :SSHKey, 'qa/factory/resource/ssh_key'
     end
 
     module Repository
@@ -100,7 +101,7 @@ module QA
       end
 
       module Sanity
-        autoload :Failing, 'qa/scenario/test/sanity/failing'
+        autoload :Framework, 'qa/scenario/test/sanity/framework'
         autoload :Selectors, 'qa/scenario/test/sanity/selectors'
       end
     end
@@ -217,6 +218,7 @@ module QA
 
     module Profile
       autoload :PersonalAccessTokens, 'qa/page/profile/personal_access_tokens'
+      autoload :SSHKeys, 'qa/page/profile/ssh_keys'
     end
 
     module Issuable
@@ -250,6 +252,7 @@ module QA
     module Component
       autoload :ClonePanel, 'qa/page/component/clone_panel'
       autoload :Dropzone, 'qa/page/component/dropzone'
+      autoload :GroupsFilter, 'qa/page/component/groups_filter'
       autoload :Select2, 'qa/page/component/select2'
     end
   end

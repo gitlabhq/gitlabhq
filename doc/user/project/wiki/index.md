@@ -40,11 +40,6 @@ support Markdown, RDoc and AsciiDoc. For Markdown based pages, all the
 [Markdown features](../../markdown.md) are supported and for links there is
 some [wiki specific](../../markdown.md#wiki-specific-markdown) behavior.
 
->**Note:**
-The wiki is based on a Git repository and contains only text files. Uploading
-files via the web interface will upload them in GitLab itself, and they will
-not be available if you clone the wiki repo locally.
-
 In the web interface the commit message is optional, but the GitLab Wiki is
 based on Git and needs a commit message, so one will be created for you if you
 do not enter one.
@@ -52,6 +47,14 @@ do not enter one.
 When you're ready, click the **Create page** and the new page will be created.
 
 ![New page](img/wiki_create_new_page.png)
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/33475) in GitLab 11.3.
+
+Starting with GitLab 11.3, any file that is uploaded to the wiki via GitLab's
+interface will be stored in the wiki Git repository, and it will be available
+if you clone the wiki repository locally. All uploaded files prior to GitLab
+11.3 are stored in GitLab itself. If you want them to be part of the wiki's Git
+repository, you will have to upload them again.
 
 ## Editing a wiki page
 

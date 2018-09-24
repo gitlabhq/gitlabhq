@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ActiveSessionsHelper
   # Maps a device type as defined in `ActiveSession` to an svg icon name and
   # outputs the icon html.

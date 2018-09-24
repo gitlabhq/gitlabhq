@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Finders::MergeRequest class
 #
 # Used to filter MergeRequests collections by set of params
@@ -41,19 +43,23 @@ class MergeRequestsFinder < IssuableFinder
     @source_branch ||= params[:source_branch].presence
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_source_branch(items)
     return items unless source_branch
 
     items.where(source_branch: source_branch)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def target_branch
     @target_branch ||= params[:target_branch].presence
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_target_branch(items)
     return items unless target_branch
 
     items.where(target_branch: target_branch)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

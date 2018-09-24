@@ -6,20 +6,6 @@ class Gitlab::Seeder::CycleAnalytics
     @project = project
     @user = User.admins.first
     @issue_count = perf ? 1000 : 5
-    stub_git_pre_receive!
-  end
-
-  # The GitLab API needn't be running for the fixtures to be
-  # created. Since we're performing a number of git actions
-  # here (like creating a branch or committing a file), we need
-  # to disable the `pre_receive` hook in order to remove this
-  # dependency on the GitLab API.
-  def stub_git_pre_receive!
-    Gitlab::Git::HooksService.class_eval do
-      def run_hook(name)
-        [true, '']
-      end
-    end
   end
 
   def seed_metrics!

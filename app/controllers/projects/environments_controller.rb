@@ -31,6 +31,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def folder
     folder_environments = project.environments.where(environment_type: params[:id])
     @environments = folder_environments.with_state(params[:scope] || :available)
@@ -51,10 +52,13 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       end
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def show
     @deployments = environment.deployments.order(id: :desc).page(params[:page])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def new
     @environment = project.environments.new

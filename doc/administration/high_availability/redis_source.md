@@ -24,7 +24,7 @@ the Omnibus Redis HA documentation.
 
 ## Configuring your own Redis server
 
-This is the section where we install and setup the new Redis instances.
+This is the section where we install and set up the new Redis instances.
 
 ### Prerequisites
 
@@ -204,7 +204,7 @@ In this example we consider that all servers have an internal network
 interface with IPs in the `10.0.0.x` range, and that they can connect
 to each other using these IPs.
 
-In a real world usage, you would also setup firewall rules to prevent
+In a real world usage, you would also set up firewall rules to prevent
 unauthorized access from other machines, and block traffic from the
 outside ([Internet][it]).
 

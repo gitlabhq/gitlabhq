@@ -1,7 +1,6 @@
 <script>
   import { __, n__, sprintf } from '~/locale';
   import tooltip from '~/vue_shared/directives/tooltip';
-  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
   import userAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 
   export default {
@@ -9,7 +8,6 @@
       tooltip,
     },
     components: {
-      loadingIcon,
       userAvatarImage,
     },
     props: {
@@ -93,7 +91,7 @@
         aria-hidden="true"
       >
       </i>
-      <loading-icon
+      <gl-loading-icon
         v-if="loading"
         class="js-participants-collapsed-loading-icon"
       />
@@ -105,7 +103,7 @@
       </span>
     </div>
     <div class="title hide-collapsed">
-      <loading-icon
+      <gl-loading-icon
         v-if="loading"
         :inline="true"
         class="js-participants-expanded-loading-icon"

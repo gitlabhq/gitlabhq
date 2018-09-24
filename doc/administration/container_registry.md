@@ -1,11 +1,11 @@
 # GitLab Container Registry administration
 
 > **Notes:**
-- [Introduced][ce-4040] in GitLab 8.8.
-- Container Registry manifest `v1` support was added in GitLab 8.9 to support
-  Docker versions earlier than 1.10.
-- This document is about the admin guide. To learn how to use GitLab Container
-  Registry [user documentation](../user/project/container_registry.md).
+> - [Introduced][ce-4040] in GitLab 8.8.
+> - Container Registry manifest `v1` support was added in GitLab 8.9 to support
+>   Docker versions earlier than 1.10.
+> - This document is about the admin guide. To learn how to use GitLab Container
+>   Registry [user documentation](../user/project/container_registry.md).
 
 With the Container Registry integrated into GitLab, every project can have its
 own space to store its Docker images.
@@ -203,10 +203,10 @@ If you have a [wildcard certificate][], you need to specify the path to the
 certificate in addition to the URL, in this case `/etc/gitlab/gitlab.rb` will
 look like:
 >
-```ruby
-registry_nginx['ssl_certificate'] = "/etc/gitlab/ssl/certificate.pem"
-registry_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/certificate.key"
-```
+> ```ruby
+> registry_nginx['ssl_certificate'] = "/etc/gitlab/ssl/certificate.pem"
+> registry_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/certificate.key"
+> ```
 
 ---
 
@@ -375,7 +375,7 @@ Read more about the individual driver's config options in the
 > **Warning** GitLab will not backup Docker images that are not stored on the
 filesystem. Remember to enable backups with your object storage provider if
 desired.
-
+> 
 > **Important** Enabling storage driver other than `filesystem` would mean
 that your Docker client needs to be able to access the storage backend directly.
 So you must use an address that resolves and is accessible outside GitLab server.
@@ -598,11 +598,11 @@ thus the error above.
 
 While GitLab doesn't support using self-signed certificates with Container
 Registry out of the box, it is possible to make it work if you follow
-[Docker's documentation][docker-insecure]. You may find some additional
+[Docker's documentation][docker-insecure-self-signed]. You may find some additional
 information in [issue 18239][ce-18239].
 
 [ce-18239]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18239
-[docker-insecure]: https://docs.docker.com/registry/insecure/#using-self-signed-certificates
+[docker-insecure-self-signed]: https://docs.docker.com/registry/insecure/#use-self-signed-certificates
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart gitlab]: restart_gitlab.md#installations-from-source
 [wildcard certificate]: https://en.wikipedia.org/wiki/Wildcard_certificate

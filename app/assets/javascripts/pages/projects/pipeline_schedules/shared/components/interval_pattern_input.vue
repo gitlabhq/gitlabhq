@@ -147,8 +147,8 @@
     <div class="cron-interval-input-wrapper">
       <input
         id="schedule_cron"
-        :placeholder="__('Define a custom pattern with cron syntax')"
         v-model="cronInterval"
+        :placeholder="__('Define a custom pattern with cron syntax')"
         :name="inputNameAttribute"
         :disabled="!isEditable"
         class="form-control inline cron-interval-input"

@@ -2,14 +2,10 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import eventHub from '../eventhub';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import Api from '../../api';
 
 export default {
   name: 'BoardProjectSelect',
-  components: {
-    loadingIcon,
-  },
   props: {
     groupId: {
       type: Number,
@@ -119,7 +115,7 @@ export default {
         </div>
         <div class="dropdown-content"></div>
         <div class="dropdown-loading">
-          <loading-icon />
+          <gl-loading-icon />
         </div>
       </div>
     </div>

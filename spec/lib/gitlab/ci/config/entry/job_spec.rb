@@ -1,4 +1,5 @@
-require 'spec_helper'
+require 'fast_spec_helper'
+require_dependency 'active_model'
 
 describe Gitlab::Ci::Config::Entry::Job do
   let(:entry) { described_class.new(config, name: :rspec) }
@@ -81,6 +82,15 @@ describe Gitlab::Ci::Config::Entry::Job do
         end
       end
 
+      context 'when extends key is not a string' do
+        let(:config) { { extends: 123 } }
+
+        it 'returns error about wrong value type' do
+          expect(entry).not_to be_valid
+          expect(entry.errors).to include "job extends should be a string"
+        end
+      end
+
       context 'when retry value is not correct' do
         context 'when it is not a numeric value' do
           let(:config) { { retry: true } }
@@ -124,6 +134,8 @@ describe Gitlab::Ci::Config::Entry::Job do
 
   describe '#relevant?' do
     it 'is a relevant entry' do
+      entry = described_class.new({ script: 'rspec' }, name: :rspec)
+
       expect(entry).to be_relevant
     end
   end

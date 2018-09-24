@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DashboardController < Dashboard::ApplicationController
   include IssuesAction
   include MergeRequestsAction

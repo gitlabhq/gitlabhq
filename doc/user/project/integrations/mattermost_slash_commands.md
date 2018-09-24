@@ -102,7 +102,7 @@ in a new slash command.
 
     ![Mattermost add command configuration](img/mattermost_slash_command_configuration.png)
 
-1. After you setup all the values, copy the token (we will use it below) and
+1. After you set up all the values, copy the token (we will use it below) and
    click **Done**.
 
     ![Mattermost slash command token](img/mattermost_slash_command_token.png)

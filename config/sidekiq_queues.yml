@@ -46,6 +46,7 @@
   - [project_service, 1]
   - [delete_user, 1]
   - [todos_destroyer, 1]
+  - [delete_container_repository, 1]
   - [delete_merged_branches, 1]
   - [authorized_projects, 1]
   - [expire_build_instance_artifacts, 1]
@@ -78,3 +79,4 @@
   - [create_note_diff_file, 1]
   - [delete_diff_files, 1]
   - [detect_repository_languages, 1]
+  - [auto_devops, 2]

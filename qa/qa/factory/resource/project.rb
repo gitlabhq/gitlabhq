@@ -20,6 +20,13 @@ module QA
           end
         end
 
+        product :repository_http_location do
+          Page::Project::Show.act do
+            choose_repository_clone_http
+            repository_location
+          end
+        end
+
         def initialize
           @description = 'My awesome project'
         end

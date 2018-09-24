@@ -29,7 +29,7 @@ describe QA::Git::Repository do
 
   def cd_empty_temp_directory
     tmp_dir = 'tmp/git-repository-spec/'
-    FileUtils.rm_r(tmp_dir) if ::File.exist?(tmp_dir)
+    FileUtils.rm_rf(tmp_dir) if ::File.exist?(tmp_dir)
     FileUtils.mkdir_p tmp_dir
     FileUtils.cd tmp_dir
   end

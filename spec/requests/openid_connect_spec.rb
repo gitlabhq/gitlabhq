@@ -121,7 +121,7 @@ describe 'OpenID Connect requests' do
         expect(@payload).to match(a_hash_including(id_token_claims))
       end
 
-      it 'includes the Gitlab root URL' do
+      it 'includes the GitLab root URL' do
         expect(@payload['iss']).to eq Gitlab.config.gitlab.url
       end
 

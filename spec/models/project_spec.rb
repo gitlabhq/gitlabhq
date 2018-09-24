@@ -1072,6 +1072,18 @@ describe Project do
     it { expect(project.builds_enabled?).to be_truthy }
   end
 
+  describe '.sort_by_attribute' do
+    it 'reorders the input relation by start count desc' do
+      project1 = create(:project, star_count: 2)
+      project2 = create(:project, star_count: 1)
+      project3 = create(:project)
+
+      projects = described_class.sort_by_attribute(:stars_desc)
+
+      expect(projects).to eq([project1, project2, project3])
+    end
+  end
+
   describe '.with_shared_runners' do
     subject { described_class.with_shared_runners }
 
@@ -2854,73 +2866,12 @@ describe Project do
   end
 
   describe '#remove_export' do
-    let(:legacy_project) { create(:project, :legacy_storage, :with_export) }
     let(:project) { create(:project, :with_export) }
 
-    before do
-      stub_feature_flags(import_export_object_storage: false)
-    end
-
-    it 'removes the exports directory for the project' do
-      expect(File.exist?(project.export_path)).to be_truthy
-
-      allow(FileUtils).to receive(:rm_rf).and_call_original
-      expect(FileUtils).to receive(:rm_rf).with(project.export_path).and_call_original
+    it 'removes the export' do
       project.remove_exports
 
-      expect(File.exist?(project.export_path)).to be_falsy
-    end
-
-    it 'is a no-op on legacy projects when there is no namespace' do
-      export_path = legacy_project.export_path
-
-      legacy_project.namespace.delete
-      legacy_project.reload
-
-      expect(FileUtils).not_to receive(:rm_rf).with(export_path)
-
-      legacy_project.remove_exports
-
-      expect(File.exist?(export_path)).to be_truthy
-    end
-
-    it 'runs on hashed storage projects when there is no namespace' do
-      export_path = project.export_path
-
-      project.namespace.delete
-      legacy_project.reload
-
-      allow(FileUtils).to receive(:rm_rf).and_call_original
-      expect(FileUtils).to receive(:rm_rf).with(export_path).and_call_original
-
-      project.remove_exports
-
-      expect(File.exist?(export_path)).to be_falsy
-    end
-
-    it 'is run when the project is destroyed' do
-      expect(project).to receive(:remove_exports).and_call_original
-
-      project.destroy
-    end
-  end
-
-  describe '#remove_exported_project_file' do
-    let(:project) { create(:project, :with_export) }
-
-    it 'removes the exported project file' do
-      stub_feature_flags(import_export_object_storage: false)
-
-      exported_file = project.export_project_path
-
-      expect(File.exist?(exported_file)).to be_truthy
-
-      allow(FileUtils).to receive(:rm_rf).and_call_original
-      expect(FileUtils).to receive(:rm_rf).with(exported_file).and_call_original
-
-      project.remove_exported_project_file
-
-      expect(File.exist?(exported_file)).to be_falsy
+      expect(project.export_file_exists?).to be_falsey
     end
   end
 
@@ -3290,17 +3241,17 @@ describe Project do
         expect(repository).to receive(:gitlab_ci_yml) { nil }
       end
 
-      it "CI is not available" do
-        expect(project).not_to have_ci
+      it "CI is available" do
+        expect(project).to have_ci
       end
 
-      context 'when auto devops is enabled' do
+      context 'when auto devops is disabled' do
         before do
-          stub_application_setting(auto_devops_enabled: true)
+          stub_application_setting(auto_devops_enabled: false)
         end
 
-        it "CI is available" do
-          expect(project).to have_ci
+        it "CI is not available" do
+          expect(project).not_to have_ci
         end
       end
     end
@@ -3734,21 +3685,45 @@ describe Project do
   end
 
   describe '#execute_hooks' do
-    it 'executes the projects hooks with the specified scope' do
-      hook1 = create(:project_hook, merge_requests_events: true, tag_push_events: false)
-      hook2 = create(:project_hook, merge_requests_events: false, tag_push_events: true)
-      project = create(:project, hooks: [hook1, hook2])
+    let(:data) { { ref: 'refs/heads/master', data: 'data' } }
+    it 'executes active projects hooks with the specified scope' do
+      hook = create(:project_hook, merge_requests_events: false, push_events: true)
+      expect(ProjectHook).to receive(:select_active)
+        .with(:push_hooks, data)
+        .and_return([hook])
+      project = create(:project, hooks: [hook])
 
       expect_any_instance_of(ProjectHook).to receive(:async_execute).once
 
-      project.execute_hooks({}, :tag_push_hooks)
+      project.execute_hooks(data, :push_hooks)
+    end
+
+    it 'does not execute project hooks that dont match the specified scope' do
+      hook = create(:project_hook, merge_requests_events: true, push_events: false)
+      project = create(:project, hooks: [hook])
+
+      expect_any_instance_of(ProjectHook).not_to receive(:async_execute).once
+
+      project.execute_hooks(data, :push_hooks)
+    end
+
+    it 'does not execute project hooks which are not active' do
+      hook = create(:project_hook, push_events: true)
+      expect(ProjectHook).to receive(:select_active)
+        .with(:push_hooks, data)
+        .and_return([])
+      project = create(:project, hooks: [hook])
+
+      expect_any_instance_of(ProjectHook).not_to receive(:async_execute).once
+
+      project.execute_hooks(data, :push_hooks)
     end
 
     it 'executes the system hooks with the specified scope' do
-      expect_any_instance_of(SystemHooksService).to receive(:execute_hooks).with({ data: 'data' }, :merge_request_hooks)
+      expect_any_instance_of(SystemHooksService).to receive(:execute_hooks).with(data, :merge_request_hooks)
 
       project = build(:project)
-      project.execute_hooks({ data: 'data' }, :merge_request_hooks)
+      project.execute_hooks(data, :merge_request_hooks)
     end
 
     it 'executes the system hooks when inside a transaction' do
@@ -3763,7 +3738,7 @@ describe Project do
       # actually get to the `after_commit` hook that queues these jobs.
       expect do
         project.transaction do
-          project.execute_hooks({ data: 'data' }, :merge_request_hooks)
+          project.execute_hooks(data, :merge_request_hooks)
         end
       end.not_to raise_error # Sidekiq::Worker::EnqueueFromTransactionError
     end

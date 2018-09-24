@@ -7,11 +7,12 @@
 # the old Rails 4 schema layout is still used
 module MysqlSetLengthForBinaryIndex
   def add_index(table_name, column_names, options = {})
+    options[:length] ||= {}
     Array(column_names).each do |column_name|
       column = ActiveRecord::Base.connection.columns(table_name).find { |c| c.name == column_name }
 
       if column&.type == :binary
-        options[:length] = 20
+        options[:length][column_name] = 20
       end
     end
 
@@ -27,11 +28,12 @@ if Gitlab.rails5?
   module MysqlSetLengthForBinaryIndexAndIgnorePostgresOptionsForSchema
     # This method is used in Rails 5 schema loading as t.index
     def index(column_names, options = {})
+      options[:length] ||= {}
       Array(column_names).each do |column_name|
         column = columns.find { |c| c.name == column_name }
 
         if column&.type == :binary
-          options[:length] = 20
+          options[:length][column_name] = 20
         end
       end
 

@@ -2,7 +2,7 @@ import * as actions from '../actions';
 import * as getters from '../getters';
 import mutations from '../mutations';
 
-export default {
+export default () => ({
   state: {
     discussions: [],
     targetNoteHash: null,
@@ -24,4 +24,4 @@ export default {
   actions,
   getters,
   mutations,
-};
+});

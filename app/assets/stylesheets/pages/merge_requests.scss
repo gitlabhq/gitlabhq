@@ -460,7 +460,7 @@
     display: -webkit-flex;
     display: flex;
 
-    .issue-info-container {
+    .issuable-info-container {
       -webkit-flex: 1;
       flex: 1;
     }
@@ -910,7 +910,7 @@
     opacity: .65;
 
     &:hover {
-      color: $file-mode-changed;
+      color: $gl-gray-500;
       text-decoration: none;
     }
   }

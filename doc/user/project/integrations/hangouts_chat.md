@@ -15,7 +15,7 @@ See also [the Hangouts Chat documentation for configuring incoming webhooks](htt
 
 ## On GitLab
 
-When you have the **Webhook URL** for your Hangouts Chat room webhook, you can setup the GitLab service.
+When you have the **Webhook URL** for your Hangouts Chat room webhook, you can set up the GitLab service.
 
 1. Navigate to the [Integrations page](project_services.md#accessing-the-project-services) in your project's settings, i.e. **Project > Settings > Integrations**.
 1. Select the **Hangouts Chat** project service to configure it.

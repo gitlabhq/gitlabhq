@@ -21,6 +21,8 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   def render_diffs
     @environment = @merge_request.environments_for(current_user).last
 
+    @diffs.write_cache
+
     render json: DiffsSerializer.new(current_user: current_user).represent(@diffs, additional_attributes)
   end
 
@@ -32,13 +34,16 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
     @diffs = @compare.diffs(diff_options)
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def commit
     return nil unless commit_id = params[:commit_id].presence
     return nil unless @merge_request.all_commits.exists?(sha: commit_id)
 
     @commit ||= @project.commit(commit_id)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def find_merge_request_diff_compare
     @merge_request_diff =
       if diff_id = params[:diff_id].presence
@@ -66,6 +71,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       @merge_request_diff
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def additional_attributes
     {

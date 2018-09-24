@@ -154,7 +154,7 @@ He credits himself as being entirely responsible for moving his company to GitLa
 #### Updating to the latest release
 Matthieu introduced his company to GitLab. He is responsible for maintaining and managing the company's installation in addition to his day job. He feels updates are too frequent and he doesn't always have sufficient time to update GitLab. As a result, he's not up to date with releases. 
 
-Matthieu tried to set up automatic updates, however, as he isn't a Systems Administrator, he wasn't confident in his set-up. He feels he should be able to "upgrade without users even noticing" but hasn't figured out how to do this yet. Matthieu would like the "update process to be triggered from the Admin Panel, perhaps accompanied with a changelog and the option to skip updates."
+Matthieu tried to set up automatic updates, however, as he isn't a Systems Administrator, he wasn't confident in his setup. He feels he should be able to "upgrade without users even noticing" but hasn't figured out how to do this yet. Matthieu would like the "update process to be triggered from the Admin Panel, perhaps accompanied with a changelog and the option to skip updates."
 
 Matthieu is looking for confirmation that his update procedure is "secure and efficient" so more tutorials related to this topic would be useful to him.
 

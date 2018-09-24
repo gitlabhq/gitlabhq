@@ -20,7 +20,7 @@
 .graphs {
   .graph-author-email {
     float: right;
-    color: $graph-author-email-color;
+    color: $gl-gray-500;
   }
 
   .graph-additions {
@@ -58,7 +58,7 @@
 
   .y-axis-label {
     line {
-      stroke: $stat-graph-axis-fill;
+      stroke: $gl-gray-350;
     }
 
     text {

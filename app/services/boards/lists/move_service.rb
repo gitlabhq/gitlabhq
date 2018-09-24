@@ -34,17 +34,21 @@ module Boards
         end
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def decrement_intermediate_lists
         board.lists.movable.where('position > ?',  old_position)
                            .where('position <= ?', new_position)
                            .update_all('position = position - 1')
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def increment_intermediate_lists
         board.lists.movable.where('position >= ?', new_position)
                            .where('position < ?',  old_position)
                            .update_all('position = position + 1')
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def update_list_position(list)
         list.update_attribute(:position, new_position)

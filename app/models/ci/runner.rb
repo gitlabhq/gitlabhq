@@ -7,11 +7,14 @@ module Ci
     include IgnorableColumn
     include RedisCacheable
     include ChronicDurationAttribute
+    include FromUnion
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     ONLINE_CONTACT_TIMEOUT = 1.hour
     UPDATE_DB_RUNNER_INFO_EVERY = 40.minutes
-    AVAILABLE_SCOPES = %w[specific shared active paused online].freeze
+    AVAILABLE_TYPES = %w[specific shared].freeze
+    AVAILABLE_STATUSES = %w[active paused online offline].freeze
+    AVAILABLE_SCOPES = (AVAILABLE_TYPES + AVAILABLE_STATUSES).freeze
     FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level maximum_timeout_human_readable].freeze
 
     ignore_column :is_shared
@@ -29,6 +32,13 @@ module Ci
     scope :active, -> { where(active: true) }
     scope :paused, -> { where(active: false) }
     scope :online, -> { where('contacted_at > ?', contact_time_deadline) }
+    # The following query using negation is cheaper than using `contacted_at <= ?`
+    # because there are less runners online than have been created. The
+    # resulting query is quickly finding online ones and then uses the regular
+    # indexed search and rejects the ones that are in the previous set. If we
+    # did `contacted_at <= ?` the query would effectively have to do a seq
+    # scan.
+    scope :offline, -> { where.not(id: online) }
     scope :ordered, -> { order(id: :desc) }
 
     # BACKWARD COMPATIBILITY: There are needed to maintain compatibility with `AVAILABLE_SCOPES` used by `lib/api/runners.rb`
@@ -48,20 +58,31 @@ module Ci
     }
 
     scope :owned_or_instance_wide, -> (project_id) do
-      union = Gitlab::SQL::Union.new(
-        [belonging_to_project(project_id), belonging_to_parent_group_of_project(project_id), instance_type],
+      from_union(
+        [
+          belonging_to_project(project_id),
+          belonging_to_parent_group_of_project(project_id),
+          instance_type
+        ],
         remove_duplicates: false
       )
-      from("(#{union.to_sql}) ci_runners")
     end
 
     scope :assignable_for, ->(project) do
       # FIXME: That `to_sql` is needed to workaround a weird Rails bug.
       #        Without that, placeholders would miss one and couldn't match.
+      #
+      # We use "unscoped" here so that any current Ci::Runner filters don't
+      # apply to the inner query, which is not necessary.
+      exclude_runners = unscoped { project.runners.select(:id) }.to_sql
+
       where(locked: false)
-        .where.not("ci_runners.id IN (#{project.runners.select(:id).to_sql})")
+        .where.not("ci_runners.id IN (#{exclude_runners})")
         .project_type
     end
+
+    scope :order_contacted_at_asc, -> { order(contacted_at: :asc) }
+    scope :order_created_at_desc, -> { order(created_at: :desc) }
 
     validate :tag_constraints
     validates :access_level, presence: true
@@ -113,6 +134,14 @@ module Ci
 
     def self.contact_time_deadline
       ONLINE_CONTACT_TIMEOUT.ago
+    end
+
+    def self.order_by(order)
+      if order == 'contacted_asc'
+        order_contacted_at_asc
+      else
+        order_created_at_desc
+      end
     end
 
     def set_default_values

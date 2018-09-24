@@ -65,7 +65,6 @@ are very appreciative of the work done by translators and proofreaders!
 
     Add your language in alphabetical order, and add yourself to the list
     including:
-
     - name
     - link to your GitLab profile
     - link to your CrowdIn profile

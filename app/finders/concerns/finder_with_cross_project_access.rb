@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Module to prepend into finders to specify wether or not the finder requires
 # cross project access
 #
@@ -14,6 +16,7 @@ module FinderWithCrossProjectAccess
   end
 
   override :execute
+  # rubocop: disable CodeReuse/ActiveRecord
   def execute(*args)
     check = Gitlab::CrossProjectAccess.find_check(self)
     original = super
@@ -27,6 +30,7 @@ module FinderWithCrossProjectAccess
       original
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   # We can skip the cross project check for finding indivitual records.
   # this would be handled by the `can?(:read_*, result)` call in `FinderMethods`

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module HooksHelper
   def link_to_test_hook(hook, trigger)
     path = case hook

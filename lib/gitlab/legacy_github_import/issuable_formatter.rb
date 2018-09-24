@@ -55,12 +55,14 @@ module Gitlab
         end
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def milestone
         if raw_data.milestone.present?
           milestone = MilestoneFormatter.new(project, raw_data.milestone)
           project.milestones.find_by(milestone.find_condition)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

@@ -22,18 +22,27 @@ module Gitlab
 
         project = repository.project
 
-        {
+        attrs = {
           GL_ID: Gitlab::GlId.gl_id(user),
           GL_REPOSITORY: Gitlab::GlRepository.gl_repository(project, is_wiki),
           GL_USERNAME: user&.username,
           ShowAllRefs: show_all_refs,
           Repository: repository.gitaly_repository.to_h,
           RepoPath: 'ignored but not allowed to be empty in gitlab-workhorse',
+          GitConfigOptions: [],
           GitalyServer: {
             address: Gitlab::GitalyClient.address(project.repository_storage),
             token: Gitlab::GitalyClient.token(project.repository_storage)
           }
         }
+
+        # Custom option for git-receive-pack command
+        receive_max_input_size = Gitlab::CurrentSettings.receive_max_input_size.to_i
+        if receive_max_input_size > 0
+          attrs[:GitConfigOptions] << "receive.maxInputSize=#{receive_max_input_size.megabytes}"
+        end
+
+        attrs
       end
 
       def send_git_blob(repository, blob)

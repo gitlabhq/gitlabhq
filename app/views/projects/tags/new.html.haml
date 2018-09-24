@@ -42,7 +42,7 @@
       .form-text.text-muted
         = s_('TagsPage|Optionally, add release notes to the tag. They will be stored in the GitLab database and displayed on the tags page.')
   .form-actions
-    = button_tag s_('TagsPage|Create tag'), class: 'btn btn-create'
+    = button_tag s_('TagsPage|Create tag'), class: 'btn btn-success'
     = link_to s_('TagsPage|Cancel'), project_tags_path(@project), class: 'btn btn-cancel'
 -# haml-lint:disable InlineJavaScript
 %script#availableRefs{ type: "application/json" }= @project.repository.ref_names.to_json.html_safe

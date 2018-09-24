@@ -102,7 +102,7 @@ module API
       end
       optional :repository_checks_enabled, type: Boolean, desc: "GitLab will periodically run 'git fsck' in all project and wiki repositories to look for silent disk corruption issues."
       optional :repository_storages, type: Array[String], desc: 'Storage paths for new projects'
-      optional :require_two_factor_authentication, type: Boolean, desc: 'Require all users to setup Two-factor authentication'
+      optional :require_two_factor_authentication, type: Boolean, desc: 'Require all users to set up Two-factor authentication'
       given require_two_factor_authentication: ->(val) { val } do
         requires :two_factor_grace_period, type: Integer, desc: 'Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication'
       end

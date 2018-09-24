@@ -1,0 +1,5 @@
+---
+title: Fix long webhook URL overflow for custom integration.
+merge_request:
+author: Kukovskii Vladimir
+type: fixed

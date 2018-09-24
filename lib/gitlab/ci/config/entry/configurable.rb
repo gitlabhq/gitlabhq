@@ -24,6 +24,7 @@ module Gitlab
             end
           end
 
+          # rubocop: disable CodeReuse/ActiveRecord
           def compose!(deps = nil)
             return unless valid?
 
@@ -41,6 +42,7 @@ module Gitlab
               entry.compose!(deps)
             end
           end
+          # rubocop: enable CodeReuse/ActiveRecord
 
           class_methods do
             def nodes
@@ -49,12 +51,14 @@ module Gitlab
 
             private
 
+            # rubocop: disable CodeReuse/ActiveRecord
             def entry(key, entry, metadata)
               factory = Entry::Factory.new(entry)
                 .with(description: metadata[:description])
 
               (@nodes ||= {}).merge!(key.to_sym => factory)
             end
+            # rubocop: enable CodeReuse/ActiveRecord
 
             def helpers(*nodes)
               nodes.each do |symbol|

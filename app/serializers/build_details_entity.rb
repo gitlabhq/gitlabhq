@@ -1,11 +1,25 @@
 # frozen_string_literal: true
 
 class BuildDetailsEntity < JobEntity
+  include EnvironmentHelper
+  include RequestAwareEntity
+  include CiStatusHelper
+
   expose :coverage, :erased_at, :duration
   expose :tag_list, as: :tags
   expose :user, using: UserEntity
   expose :runner, using: RunnerEntity
   expose :pipeline, using: PipelineEntity
+
+  expose :deployment_status, if: -> (*) { build.has_environment? } do
+    expose :deployment_status, as: :status
+
+    expose :icon do |build|
+      ci_label_for_status(build.status)
+    end
+
+    expose :persisted_environment, as: :environment, with: EnvironmentEntity
+  end
 
   expose :metadata, using: BuildMetadataEntity
 
@@ -36,6 +50,10 @@ class BuildDetailsEntity < JobEntity
     erase_project_job_path(project, build)
   end
 
+  expose :terminal_path, if: -> (*) { can_create_build_terminal? } do |build|
+    terminal_project_job_path(project, build)
+  end
+
   expose :merge_request, if: -> (*) { can?(current_user, :read_merge_request, build.merge_request) } do
     expose :iid do |build|
       build.merge_request.iid
@@ -55,6 +73,26 @@ class BuildDetailsEntity < JobEntity
     raw_project_job_path(project, build)
   end
 
+  expose :trigger, if: -> (*) { build.trigger_request } do
+    expose :trigger_short_token, as: :short_token
+
+    expose :trigger_variables, as: :variables, using: TriggerVariableEntity
+  end
+
+  expose :runners do
+    expose :online do |build|
+      build.any_runners_online?
+    end
+
+    expose :available do |build|
+      project.any_runners?
+    end
+
+    expose :settings_path, if: -> (*) { can_admin_build? } do |build|
+      project_runners_path(project)
+    end
+  end
+
   private
 
   def build_failed_issue_options
@@ -68,5 +106,13 @@ class BuildDetailsEntity < JobEntity
 
   def project
     build.project
+  end
+
+  def can_create_build_terminal?
+    can?(current_user, :create_build_terminal, build) && build.has_terminal?
+  end
+
+  def can_admin_build?
+    can?(request.current_user, :admin_build, project)
   end
 end

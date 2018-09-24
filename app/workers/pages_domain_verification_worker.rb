@@ -3,6 +3,7 @@
 class PagesDomainVerificationWorker
   include ApplicationWorker
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform(domain_id)
     domain = PagesDomain.find_by(id: domain_id)
 
@@ -10,4 +11,5 @@ class PagesDomainVerificationWorker
 
     VerifyPagesDomainService.new(domain).execute
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

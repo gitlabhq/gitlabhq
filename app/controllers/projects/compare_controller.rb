@@ -96,8 +96,10 @@ class Projects::CompareController < Projects::ApplicationController
     @diff_notes_disabled = compare.present?
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def merge_request
     @merge_request ||= MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened
       .find_by(source_project: @project, source_branch: head_ref, target_branch: start_ref)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

@@ -1,4 +1,4 @@
-# Searches and reads file present on Gitlab installation directory
+# Searches and reads file present on GitLab installation directory
 module Gitlab
   module Template
     module Finders

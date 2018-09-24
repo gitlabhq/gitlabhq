@@ -68,7 +68,7 @@ gem 'u2f', '~> 0.2.1'
 gem 'validates_hostname', '~> 1.0.6'
 
 # Browser detection
-gem 'browser', '~> 2.2'
+gem 'browser', '~> 2.5'
 
 # GPG
 gem 'gpgme'
@@ -107,7 +107,9 @@ gem 'kaminari', '~> 1.0'
 gem 'hamlit', '~> 2.8.8'
 
 # Files attachments
-gem 'carrierwave', '~> 1.2'
+# Locked until https://github.com/carrierwaveuploader/carrierwave/pull/2332/files is merged.
+# config/initializers/carrierwave_patch.rb can be removed once that change is released.
+gem 'carrierwave', '= 1.2.3'
 gem 'mini_magick'
 
 # Drag and Drop UI
@@ -168,7 +170,7 @@ gem 'state_machines-activerecord', '~> 0.5.1'
 gem 'acts-as-taggable-on', '~> 5.0'
 
 # Background jobs
-gem 'sidekiq', '~> 5.1'
+gem 'sidekiq', '~> 5.2.1'
 gem 'sidekiq-cron', '~> 0.6.0'
 gem 'redis-namespace', '~> 1.6.0'
 gem 'sidekiq-limit_fetch', '~> 3.4', require: false
@@ -298,7 +300,6 @@ gem 'peek-mysql2', '~> 1.1.0', group: :mysql
 gem 'peek-pg', '~> 1.3.0', group: :postgres
 gem 'peek-rblineprof', '~> 0.2.0'
 gem 'peek-redis', '~> 1.2.0'
-gem 'peek-sidekiq', '~> 1.0.3'
 
 # Metrics
 group :metrics do
@@ -423,7 +424,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.113.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.117.0', require: 'gitaly'
 gem 'grpc', '~> 1.11.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed

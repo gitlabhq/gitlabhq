@@ -1,7 +1,6 @@
 <script>
   import Flash from '~/flash';
   import tooltip from '~/vue_shared/directives/tooltip';
-  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
   import { s__, __ } from '~/locale';
   import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
   import MrWidgetAuthorTime from '../../components/mr_widget_author_time.vue';
@@ -15,7 +14,6 @@
     },
     components: {
       MrWidgetAuthorTime,
-      loadingIcon,
       statusIcon,
       ClipboardButton,
     },
@@ -116,8 +114,8 @@
           :date-readable="mr.metrics.readableMergedAt"
         />
         <a
-          v-tooltip
           v-if="mr.canRevertInCurrentMR"
+          v-tooltip
           :title="revertTitle"
           class="btn btn-close btn-sm"
           href="#modal-revert-commit"
@@ -127,8 +125,8 @@
           {{ revertLabel }}
         </a>
         <a
-          v-tooltip
           v-else-if="mr.revertInForkPath"
+          v-tooltip
           :href="mr.revertInForkPath"
           :title="revertTitle"
           class="btn btn-close btn-sm"
@@ -137,8 +135,8 @@
           {{ revertLabel }}
         </a>
         <a
-          v-tooltip
           v-if="mr.canCherryPickInCurrentMR"
+          v-tooltip
           :title="cherryPickTitle"
           class="btn btn-default btn-sm"
           href="#modal-cherry-pick-commit"
@@ -148,8 +146,8 @@
           {{ cherryPickLabel }}
         </a>
         <a
-          v-tooltip
           v-else-if="mr.cherryPickInForkPath"
+          v-tooltip
           :href="mr.cherryPickInForkPath"
           :title="cherryPickTitle"
           class="btn btn-default btn-sm"
@@ -195,7 +193,7 @@
           </button>
         </p>
         <p v-if="shouldShowSourceBranchRemoving">
-          <loading-icon :inline="true" />
+          <gl-loading-icon :inline="true" />
           <span>
             {{ s__("mrWidget|The source branch is being removed") }}
           </span>

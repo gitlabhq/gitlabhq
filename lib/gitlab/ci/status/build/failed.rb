@@ -13,6 +13,8 @@ module Gitlab
             runner_unsupported: 'unsupported runner'
           }.freeze
 
+          private_constant :REASONS
+
           def status_tooltip
             base_message
           end
@@ -23,6 +25,10 @@ module Gitlab
 
           def self.matches?(build, user)
             build.failed?
+          end
+
+          def self.reasons
+            REASONS
           end
 
           private
@@ -36,7 +42,7 @@ module Gitlab
           end
 
           def failure_reason_message
-            REASONS.fetch(subject.failure_reason.to_sym)
+            self.class.reasons.fetch(subject.failure_reason.to_sym)
           end
         end
       end
