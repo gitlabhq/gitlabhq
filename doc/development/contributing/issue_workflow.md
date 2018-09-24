@@ -200,7 +200,7 @@ If you've decided that you would like to work on an issue, please @-mention
 the [appropriate product manager](https://about.gitlab.com/handbook/product/#who-to-talk-to-for-what)
 as soon as possible. The product manager will then pull in appropriate GitLab team
 members to further discuss scope, design, and technical considerations. This will
-ensure that that your contribution is aligned with the GitLab product and minimize
+ensure that your contribution is aligned with the GitLab product and minimize
 any rework and delay in getting it merged into master.
 
 GitLab team members who apply the ~"Accepting Merge Requests" label to an issue
@@ -250,7 +250,7 @@ code snippet right after your description in a new line: `~"feature proposal"`.
 Please keep feature proposals as small and simple as possible, complex ones
 might be edited to make them small and simple.
 
-Please submit Feature Proposals using the ['Feature Proposal' issue template](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab/issue_templates/Feature%20Proposal.md) provided on the issue tracker.
+Please submit Feature Proposals using the ['Feature Proposal' issue template](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab/issue_templates/Feature%20proposal.md) provided on the issue tracker.
 
 For changes in the interface, it is helpful to include a mockup. Issues that add to, or change, the interface should
 be given the ~"UX" label. This will allow the UX team to provide input and guidance. You may
