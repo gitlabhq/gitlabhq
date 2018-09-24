@@ -1,17 +1,15 @@
-- page_title 'Feature Flags'
-
-%h3.page-title.with-button
-  Feature Flags
-
-  .pull-right
-    %button.btn.btn-primary.btn-inverted.append-right-8{ type: 'button', data: { toggle: 'modal', target: '#configure-feature-flags-modal' } }>
-      = s_('FeatureFlags|Configure')
-
-    = render 'new_feature_flag_button'
+- page_title _('Feature Flags')
 
 = render 'configure_feature_flags_modal'
 
 - if @feature_flags.empty?
   = render 'empty_state'
 - else
+  %h3.page-title.with-button
+    = _('Feature Flags')
+
+    .pull-right
+      = render 'configure_feature_flags_button'
+      = render 'new_feature_flag_button'
+
   = render 'table'
