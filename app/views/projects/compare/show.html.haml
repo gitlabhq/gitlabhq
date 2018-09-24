@@ -1,8 +1,9 @@
+- @content_class = "limit-container-width" unless fluid_layout
 - @no_container = true
 - add_to_breadcrumbs _("Compare Revisions"), project_compare_index_path(@project)
 - page_title "#{params[:from]}...#{params[:to]}"
 
-%div{ class: container_class }
+%div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
   .sub-header-block.no-bottom-space
     = render "form"
 
