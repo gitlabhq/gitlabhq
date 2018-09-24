@@ -7032,9 +7032,16 @@ vue-style-loader@^4.1.0:
     hash-sum "^1.0.2"
     loader-utils "^1.0.2"
 
-vue-template-compiler@^2.5.0, vue-template-compiler@^2.5.16:
+vue-template-compiler@^2.5.0:
   version "2.5.16"
   resolved "https://registry.yarnpkg.com/vue-template-compiler/-/vue-template-compiler-2.5.16.tgz#93b48570e56c720cdf3f051cc15287c26fbd04cb"
+  dependencies:
+    de-indent "^1.0.2"
+    he "^1.1.0"
+
+vue-template-compiler@^2.5.17:
+  version "2.5.17"
+  resolved "https://registry.yarnpkg.com/vue-template-compiler/-/vue-template-compiler-2.5.17.tgz#52a4a078c327deb937482a509ae85c06f346c3cb"
   dependencies:
     de-indent "^1.0.2"
     he "^1.1.0"
@@ -7050,6 +7057,10 @@ vue-virtual-scroll-list@^1.2.5:
 vue@^2.5.16:
   version "2.5.16"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.16.tgz#07edb75e8412aaeed871ebafa99f4672584a0085"
+
+vue@^2.5.17:
+  version "2.5.17"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.17.tgz#0f8789ad718be68ca1872629832ed533589c6ada"
 
 vuex@^3.0.1:
   version "3.0.1"
