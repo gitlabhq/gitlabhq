@@ -1,14 +1,18 @@
 .border-top
   .row.empty-state
-  .col-12
-    .text-content
-      %h4.text-center= s_('FeatureFlags|Get started with feature flags')
-      %p.text-center
-        = s_('FeatureFlags|Feature flags allow you to configure your code into different flavors by dynamically toggling certain functionality.')
-        = link_to 'More information', '#'
+    .col-12
+      .svg-content
+        = image_tag 'illustrations/feature_flag.svg'
 
-      .text-center.append-bottom-8
-        = render 'new_feature_flag_button'
+    .col-12
+      .text-content
+        %h4.text-center= s_('FeatureFlags|Get started with feature flags')
+        %p
+          = s_('FeatureFlags|Feature flags allow you to configure your code into different flavors by dynamically toggling certain functionality.')
+          = link_to 'More information', '#'
 
-      .text-center
-        = render 'configure_feature_flags_button'
+        .text-center
+          = render 'new_feature_flag_button'
+
+        .text-center
+          = render 'configure_feature_flags_button'
