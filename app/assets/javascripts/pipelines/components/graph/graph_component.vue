@@ -95,14 +95,11 @@ export default {
         <stage-column-component
           v-for="(stage, index) in graph"
           :key="stage.name"
-<<<<<<< HEAD
           :class="{
             'has-upstream': index === 0 && hasTriggeredBy,
             'has-downstream': index === graph.length - 1 && hasTriggered,
             'has-only-one-job': stage.groups.length === 1
           }"
-=======
->>>>>>> upstream/master
           :title="capitalizeStageName(stage.name)"
           :jobs="stage.groups"
           :stage-connector-class="stageConnectorClass(index, stage)"
