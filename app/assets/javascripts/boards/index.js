@@ -10,6 +10,11 @@ import '~/vue_shared/models/assignee';
 import FilteredSearchBoards from './filtered_search_boards';
 import eventHub from './eventhub';
 import sidebarEventHub from '~/sidebar/event_hub';
+<<<<<<< HEAD
+=======
+import './models/issue';
+import './models/list';
+>>>>>>> upstream/master
 import './models/milestone';
 import './models/project';
 import './stores/boards_store';
@@ -22,6 +27,7 @@ import './components/board_sidebar';
 import './components/new_list_dropdown';
 import BoardAddIssuesModal from './components/modal/index.vue';
 import '~/vue_shared/vue_resource_interceptor';
+<<<<<<< HEAD
 
 import 'ee/boards/models/list';
 import 'ee/boards/models/issue';
@@ -34,6 +40,8 @@ import 'ee/boards/components/boards_selector';
 import collapseIcon from 'ee/boards/icons/fullscreen_collapse.svg';
 import expandIcon from 'ee/boards/icons/fullscreen_expand.svg';
 import tooltip from '~/vue_shared/directives/tooltip';
+=======
+>>>>>>> upstream/master
 
 export default () => {
   const $boardApp = document.getElementById('board-app');

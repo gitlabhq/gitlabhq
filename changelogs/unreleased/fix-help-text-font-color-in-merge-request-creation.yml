@@ -1,0 +1,5 @@
+---
+title: Fix wrong text color of help text in merge request creation
+merge_request:
+author: Gerard Montemayor
+type: fixed

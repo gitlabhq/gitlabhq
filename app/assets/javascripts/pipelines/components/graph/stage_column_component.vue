@@ -69,9 +69,13 @@ export default {
           v-for="(job, index) in jobs"
           :id="jobId(job)"
           :key="job.id"
+<<<<<<< HEAD
           :class="{
             'left-connector': index === 0 && (!isFirstColumn || hasTriggeredBy)
           }"
+=======
+          :class="buildConnnectorClass(index)"
+>>>>>>> upstream/master
           class="build"
         >
 
