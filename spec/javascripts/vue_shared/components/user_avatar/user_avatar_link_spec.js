@@ -95,15 +95,4 @@ describe('User Avatar Link Component', function() {
       ).toEqual(this.propsData.tooltipPlacement);
     });
   });
-
-  describe('no image', function() {
-    beforeEach(function(done) {
-      this.userAvatarLink.imgSrc = null;
-      Vue.nextTick(done);
-    });
-
-    it('should render user-avatar-empty', function() {
-      expect(this.userAvatarLink.$el.querySelector('.no-avatar')).not.toBeNull();
-    });
-  });
 });

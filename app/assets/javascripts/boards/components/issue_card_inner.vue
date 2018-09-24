@@ -1,10 +1,11 @@
 <script>
 import $ from 'jquery';
+import { sprintf, __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
+import IssueSummaryItems from './issue_summary_items.vue';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import eventHub from '../eventhub';
 import tooltip from '../../vue_shared/directives/tooltip';
-import IssueDueDate from './issue_due_date.vue';
 
 const Store = gl.issueBoards.BoardsStore;
 
@@ -12,7 +13,7 @@ export default {
   components: {
     Icon,
     UserAvatarLink,
-    IssueDueDate,
+    IssueSummaryItems,
   },
   directives: {
     tooltip,
@@ -48,11 +49,10 @@ export default {
   },
   data() {
     return {
-      limitBeforeCounter: 3,
-      maxRender: 4,
+      limitBeforeCounter: 2,
+      maxRender: 3,
       maxCounter: 99,
-      noAssigneesTitle: 'No assignee',
-      noAvatarUrl: 'no-avatar',
+      assigneesImgSize: 24,
     };
   },
   computed: {
@@ -60,7 +60,8 @@ export default {
       return this.issue.assignees.length - this.limitBeforeCounter;
     },
     assigneeCounterTooltip() {
-      return `${this.assigneeCounterLabel} more`;
+      const count = this.assigneeCounterLabel;
+      return sprintf(__('%{count} more assignees'), { count: count.replace('+', '') });
     },
     assigneeCounterLabel() {
       if (this.numberOverLimit > this.maxCounter) {
@@ -85,9 +86,16 @@ export default {
     showLabelFooter() {
       return this.issue.labels.find(l => this.showLabel(l)) !== undefined;
     },
-    shouldRenderNoAssignee() {
-      return this.issue.assignees.length === 0;
+    issueReferencePath() {
+      const { referencePath, project } = this.issue;
+      return project && referencePath.includes(project.path) ? referencePath.split('#')[0] : null;
     },
+  },
+  updated() {
+    this.toggleIssuePathTooltip();
+  },
+  mounted() {
+    this.toggleIssuePathTooltip();
   },
   methods: {
     isIndexLessThanlimit(index) {
@@ -108,11 +116,11 @@ export default {
       return `${this.rootPath}${assignee.username}`;
     },
     assigneeUrlTitle(assignee) {
-      if (!assignee) return this.noAssigneesTitle;
-      return `Assigned to ${assignee.name}`;
+      return `<span class="bold">Assignee</span><br/>${assignee.name} <span class="text-white-50">@${
+        assignee.username
+      }</span>`;
     },
     avatarUrlTitle(assignee) {
-      if (!assignee) return this.noAssigneesTitle;
       return `Avatar for ${assignee.name}`;
     },
     showLabel(label) {
@@ -121,17 +129,29 @@ export default {
     },
     filterByLabel(label, e) {
       if (!this.updateFilters) return;
-
-      const filterPath = gl.issueBoards.BoardsStore.filter.path.split('&');
       const labelTitle = encodeURIComponent(label.title);
-      const param = `label_name[]=${labelTitle}`;
-      const labelIndex = filterPath.indexOf(param);
+      const filter = `label_name[]=${labelTitle}`;
       $(e.currentTarget).tooltip('hide');
 
-      if (labelIndex === -1) {
-        filterPath.push(param);
+      this.applyFilter(filter);
+    },
+    filterByWeight(weight, e) {
+      if (!this.updateFilters) return;
+
+      const issueWeight = encodeURIComponent(weight);
+      const filter = `weight=${issueWeight}`;
+      $(e.currentTarget).tooltip('hide');
+
+      this.applyFilter(filter);
+    },
+    applyFilter(filter) {
+      const filterPath = gl.issueBoards.BoardsStore.filter.path.split('&');
+      const filterIndex = filterPath.indexOf(filter);
+
+      if (filterIndex === -1) {
+        filterPath.push(filter);
       } else {
-        filterPath.splice(labelIndex, 1);
+        filterPath.splice(filterIndex, 1);
       }
 
       gl.issueBoards.BoardsStore.filter.path = filterPath.join('&');
@@ -146,19 +166,32 @@ export default {
         color: label.textColor,
       };
     },
+    toggleIssuePathTooltip() {
+      const issuePathEl = this.$el.querySelector('.board-issue-path');
+
+      if (!issuePathEl) return;
+
+      // If the element has an ellipsis enable tooltips
+      if (issuePathEl.offsetWidth < issuePathEl.scrollWidth) {
+        $(issuePathEl).tooltip('enable');
+      } else {
+        $(issuePathEl).tooltip('disable');
+      }
+    },
   },
 };
 </script>
 <template>
   <div>
     <div class="board-card-header">
-      <h4 class="board-card-title">
-        <i
+      <h4 class="board-card-title append-bottom-8 prepend-top-0">
+        <icon
           v-if="issue.confidential"
-          class="fa fa-eye-slash confidential-icon"
-          aria-hidden="true"
-        ></i>
-        <a
+          v-tooltip
+          name="eye-slash"
+          title="Confidential"
+          class="confidential-icon append-right-4"
+        /><a
           :href="issue.path"
           :title="issue.title"
           class="js-no-trigger">{{ issue.title }}</a>
@@ -166,7 +199,7 @@ export default {
     </div>
     <div
       v-if="showLabelFooter"
-      class="board-card-labels"
+      class="board-card-labels append-bottom-4"
     >
       <button
         v-for="label in issue.labels"
@@ -175,7 +208,7 @@ export default {
         v-tooltip
         :style="labelStyle(label)"
         :title="label.description"
-        class="badge color-label"
+        class="badge color-label append-right-4 append-bottom-4"
         type="button"
         data-container="body"
         @click="filterByLabel(label, $event)"
@@ -183,29 +216,28 @@ export default {
         {{ label.title }}
       </button>
     </div>
-    <div class="board-card-issue-summary">
-      <span
-        v-if="issue.dueDate"
-        class="board-card-issue-due"
-      >
-        <icon name="calendar"/>
-        <IssueDueDate :date="issue.dueDate" />
-      </span>
-      <span class="board-card-issue-estimate">
-        <icon name="hourglass"/>
-        2d
-      </span>
-      <span class="board-card-issue-wight">
-        <icon name="scale"/>8
-      </span>
-    </div>
-    <div class="board-card-footer">
-      <span
-        v-if="issueId"
-        class="board-card-number"
-      >
-        {{ issue.project.path }}{{ issue.referencePath }}
-      </span>
+    <div class="board-card-footer d-flex justify-content-between align-items-end">
+      <div class="d-flex align-items-start board-card-number-container">
+        <span
+          v-if="issue.referencePath"
+          class="board-card-number append-right-8 append-bottom-8"
+        >
+          <span
+            v-if="issueReferencePath"
+            v-tooltip
+            :title="issueReferencePath"
+            class="board-issue-path block-truncated bold"
+            data-container="body"
+            data-placement="bottom"
+          >
+            {{ issueReferencePath }}
+          </span>#{{ issue.iid }}
+        </span>
+        <issue-summary-items
+          :issue="issue"
+          @filterweight="filterByWeight(issue.weight, $event)"
+        />
+      </div>
       <div class="board-card-assignee">
         <user-avatar-link
           v-for="(assignee, index) in issue.assignees"
@@ -215,13 +247,7 @@ export default {
           :img-alt="avatarUrlTitle(assignee)"
           :img-src="assignee.avatar"
           :tooltip-text="assigneeUrlTitle(assignee)"
-          class="js-no-trigger"
-          tooltip-placement="bottom"
-        />
-        <user-avatar-link
-          v-if="shouldRenderNoAssignee"
-          :link-href="assigneeUrl()"
-          :tooltip-text="assigneeUrlTitle()"
+          :img-size="assigneesImgSize"
           class="js-no-trigger"
           tooltip-placement="bottom"
         />
@@ -230,6 +256,7 @@ export default {
           v-tooltip
           :title="assigneeCounterTooltip"
           class="avatar-counter"
+          data-placement="bottom"
         >
           {{ assigneeCounterLabel }}
         </span>

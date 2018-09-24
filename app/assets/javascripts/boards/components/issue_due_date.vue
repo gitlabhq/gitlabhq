@@ -1,10 +1,14 @@
 <script>
 import dateFormat from 'dateformat';
 import tooltip from '~/vue_shared/directives/tooltip';
+import Icon from '~/vue_shared/components/icon.vue';
 import { sprintf, __ } from '~/locale';
 import { getDayDifference, getTimeago } from '~/lib/utils/datetime_utility';
 
 export default {
+  components: {
+    Icon,
+  },
   directives: {
     tooltip,
   },
@@ -17,33 +21,28 @@ export default {
   computed: {
     title() {
       const timeago = getTimeago();
-      const { timeDifference } = this;
-      const formatedDate = dateFormat(this.issueDueDate, 'mmm d, yyyy', true);
+      const { timeDifference, standardDateFormat, cssClass } = this;
+      const formatedDate = standardDateFormat;
+      const className = cssClass ? `${cssClass}-muted` : '';
       let title = timeago.format(this.issueDueDate);
 
-      if (timeDifference === 0) {
-        title = formatedDate;
-      } else if (timeDifference < 0 || timeDifference < 7) {
+      if (timeDifference >= -1 && timeDifference < 7) {
         title = `${title} (${formatedDate})`;
       }
 
-      return `<strong>${__('Due Date')}</strong> <br> <span class="${this.cssClass}">${sprintf(
+      return `<span class="bold">${__('Due date')}</span><br><span class="${className}">${sprintf(
         __('%{title}'),
         { title },
       )}<span>`;
     },
     body() {
-      const { timeDifference, issueDueDate } = this;
-      const currentYear = new Date().getFullYear();
+      const { timeDifference, issueDueDate, standardDateFormat } = this;
 
       if (timeDifference === 0) return __('Today');
+      if (timeDifference === 1) return __('Tomorrow');
       if (timeDifference === -1) return __('Yesterday');
-      if (timeDifference > 0 && timeDifference < 7) {
-        return dateFormat(this.issueDueDate, 'dddd', true);
-      }
-      // If due date is in the current year, don’t show the year.
-      const format = currentYear === issueDueDate.getFullYear() ? 'mmm d' : 'mmm d, yyyy';
-      return dateFormat(issueDueDate, format, true);
+      if (timeDifference > 0 && timeDifference < 7) return dateFormat(issueDueDate, 'dddd', true);
+      return standardDateFormat;
     },
     issueDueDate() {
       return new Date(this.date);
@@ -54,21 +53,35 @@ export default {
     },
     cssClass() {
       if (this.timeDifference < 0) return 'text-danger';
-      return '';
+      return null;
+    },
+    isDueInCurrentYear() {
+      const today = new Date();
+      return today.getFullYear() === this.issueDueDate.getFullYear();
+    },
+    standardDateFormat() {
+      const yearformat = this.isDueInCurrentYear ? '' : ', yyyy';
+      return dateFormat(this.issueDueDate, `mmm d${yearformat}`, true);
     },
   },
 };
 </script>
 
 <template>
-  <time
+  <span
     v-tooltip
-    :class="cssClass"
     :title="title"
-    :datetime="date"
+    class="board-card-info card-number"
     data-html="true"
     data-placement="bottom"
     data-container="body"
-    v-text="body">
-  </time>
+  >
+    <icon
+      :css-classes="cssClass"
+      name="calendar"
+    /><time
+      :class="cssClass"
+      datetime="date"
+      class="board-card-info-text">{{ body }}</time>
+  </span>
 </template>

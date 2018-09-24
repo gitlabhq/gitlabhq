@@ -105,5 +105,6 @@ export default {
     :title="tooltipText"
     class="avatar"
     data-boundary="window"
+    data-html="true"
   />
 </template>

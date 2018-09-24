@@ -18,14 +18,12 @@
 */
 
 import userAvatarImage from './user_avatar_image.vue';
-import userAvatarEmpty from './user_avatar_empty.vue';
 import tooltip from '../../directives/tooltip';
 
 export default {
   name: 'UserAvatarLink',
   components: {
     userAvatarImage,
-    userAvatarEmpty,
   },
   directives: {
     tooltip,

@@ -29,6 +29,7 @@ class ListIssue {
     this.toggleSubscriptionEndpoint = obj.toggle_subscription_endpoint;
     this.milestone_id = obj.milestone_id;
     this.project_id = obj.project_id;
+    this.timeEstimate = obj.time_estimate;
 
     if (obj.project) {
       this.project = new IssueProject(obj.project);
