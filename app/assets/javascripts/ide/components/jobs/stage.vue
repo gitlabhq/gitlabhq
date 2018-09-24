@@ -69,8 +69,8 @@ export default {
         :size="24"
       />
       <strong
-        v-tooltip="showTooltip"
         ref="stageTitle"
+        v-tooltip="showTooltip"
         :title="showTooltip ? stage.name : null"
         data-container="body"
         class="prepend-left-8 ide-stage-title"

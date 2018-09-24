@@ -78,8 +78,8 @@
     <div class="controllers float-right">
       <!-- links -->
       <a
-        v-tooltip
         v-if="rawTracePath"
+        v-tooltip
         :title="s__('Job|Show complete raw')"
         :href="rawTracePath"
         class="js-raw-link-controller controllers-buttons"
@@ -89,8 +89,8 @@
       </a>
 
       <button
-        v-tooltip
         v-if="canEraseJob"
+        v-tooltip
         :title="s__('Job|Erase job log')"
         type="button"
         class="js-erase-link controllers-buttons"

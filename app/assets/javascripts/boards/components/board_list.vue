@@ -231,14 +231,14 @@ export default {
       <board-card
         v-for="(issue, index) in issues"
         ref="issue"
+        :key="issue.id"
         :index="index"
         :list="list"
         :issue="issue"
         :issue-link-base="issueLinkBase"
         :group-id="groupId"
         :root-path="rootPath"
-        :disabled="disabled"
-        :key="issue.id" />
+        :disabled="disabled" />
       <li
         v-if="showCount"
         class="board-list-count text-center"

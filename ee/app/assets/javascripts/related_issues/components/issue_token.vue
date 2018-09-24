@@ -39,9 +39,9 @@ export default {
     }"
   >
     <component
-      v-tooltip
-      ref="link"
       :is="computedLinkElementType"
+      ref="link"
+      v-tooltip
       :class="{
         'issue-token-link': isCondensed,
         'issuable-main-info': !isCondensed,
@@ -51,9 +51,9 @@ export default {
       data-placement="top"
     >
       <component
+        :is="innerComponentType"
         v-if="hasTitle"
         ref="title"
-        :is="innerComponentType"
         :class="{
           'issue-token-title issue-token-end': isCondensed,
           'issue-title block-truncated': !isCondensed,
@@ -66,16 +66,16 @@ export default {
         </span>
       </component>
       <component
-        ref="reference"
         :is="innerComponentType"
+        ref="reference"
         :class="{
           'issue-token-reference': isCondensed,
           'issuable-info': !isCondensed,
         }"
       >
         <icon
-          v-tooltip
           v-if="hasState"
+          v-tooltip
           :css-classes="iconClass"
           :name="iconName"
           :size="12"
@@ -86,9 +86,9 @@ export default {
       </component>
     </component>
     <button
-      v-tooltip
       v-if="canRemove"
       ref="removeButton"
+      v-tooltip
       :class="{
         'issue-token-remove-button': isCondensed,
         'btn btn-default': !isCondensed

@@ -248,8 +248,8 @@ export default {
           <template v-if="dateFixed">
             <span>{{ dateFixedWords }}</span>
             <icon
-              v-popover="dateInvalidPopoverOptions"
               v-if="isDateInvalid && selectedDateIsFixed"
+              v-popover="dateInvalidPopoverOptions"
               name="warning"
               css-classes="date-warning-icon append-right-5 prepend-left-5"
               tab-index="0"
@@ -294,8 +294,8 @@ export default {
         <span class="prepend-left-5">{{ __('From milestones:') }}</span>
         <span class="value-content">{{ dateFromMilestonesWords }}</span>
         <icon
-          v-popover="dateInvalidPopoverOptions"
           v-if="isDateInvalid && !selectedDateIsFixed"
+          v-popover="dateInvalidPopoverOptions"
           name="warning"
           css-classes="date-warning-icon prepend-left-5"
           tab-index="0"

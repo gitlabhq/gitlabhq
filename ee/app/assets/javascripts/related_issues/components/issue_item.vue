@@ -37,8 +37,8 @@ export default {
       </a>
       <div class="block text-secondary">
         <icon
-          v-tooltip
           v-if="hasState"
+          v-tooltip
           :css-classes="iconClass"
           :name="iconName"
           :size="12"
@@ -49,9 +49,9 @@ export default {
       </div>
     </div>
     <button
-      v-tooltip
       v-if="canRemove"
       ref="removeButton"
+      v-tooltip
       :disabled="removeDisabled"
       type="button"
       class="btn btn-default js-issue-item-remove-button flex-align-self-center flex-right"

@@ -294,9 +294,9 @@ export default {
             />
 
             <board-weight-select
+              v-model="board.weight"
               :board="board"
               :weights="weightsArray"
-              v-model="board.weight"
               :can-edit="canAdminBoard"
             />
           </div>

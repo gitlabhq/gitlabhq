@@ -74,8 +74,8 @@
     >
       <input
         ref="title"
-        :placeholder="s__('Title')"
         v-model="title"
+        :placeholder="s__('Title')"
         type="text"
         class="form-control"
       />

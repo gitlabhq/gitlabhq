@@ -23,8 +23,8 @@ export default {
     class="dropdown-input"
   >
     <input
-      :placeholder="__('Search')"
       v-model.trim="query"
+      :placeholder="__('Search')"
       type="search"
       class="dropdown-input-field"
       @keyup="handleInputChange"

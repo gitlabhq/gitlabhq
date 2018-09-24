@@ -75,8 +75,8 @@
             class="node-details-loading prepend-left-10 inline"
           />
           <icon
-            v-tooltip
             v-if="showNodeStatusIcon"
+            v-tooltip
             :name="nodeStatusIconName"
             :size="18"
             :css-classes="nodeStatusIconClass"

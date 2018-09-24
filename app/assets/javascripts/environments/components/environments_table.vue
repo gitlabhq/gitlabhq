@@ -4,7 +4,7 @@
  */
 import environmentItem from './environment_item.vue';
 
-import deployBoard from 'ee/environments/components/deploy_board_component.vue'; // eslint-disable-line import/first
+import deployBoard from 'ee/environments/components/deploy_board_component.vue'; // eslint-disable-line import/order
 
 export default {
   components: {
@@ -86,10 +86,10 @@ export default {
       :model="model">
       <div
         is="environment-item"
+        :key="`environment-item-${i}`"
         :model="model"
         :can-create-deployment="canCreateDeployment"
         :can-read-environment="canReadEnvironment"
-        :key="`environment-item-${i}`"
       />
 
       <div
@@ -120,10 +120,10 @@ export default {
           <div
             is="environment-item"
             v-for="(children, index) in model.children"
+            :key="`env-item-${i}-${index}`"
             :model="children"
             :can-create-deployment="canCreateDeployment"
             :can-read-environment="canReadEnvironment"
-            :key="`env-item-${i}-${index}`"
           />
 
           <div :key="`sub-div-${i}`">

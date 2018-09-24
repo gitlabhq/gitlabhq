@@ -118,8 +118,8 @@
 
           <td class="content">
             <button
-              v-tooltip
               v-if="item.canDelete"
+              v-tooltip
               :title="s__('ContainerRegistry|Remove tag')"
               :aria-label="s__('ContainerRegistry|Remove tag')"
               type="button"

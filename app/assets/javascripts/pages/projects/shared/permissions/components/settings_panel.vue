@@ -253,8 +253,8 @@
         help-text="Lightweight issue tracking system for this project"
       >
         <project-feature-setting
-          :options="featureAccessLevelOptions"
           v-model="issuesAccessLevel"
+          :options="featureAccessLevelOptions"
           name="project[project_feature_attributes][issues_access_level]"
         />
       </project-setting-row>
@@ -263,8 +263,8 @@
         help-text="View and edit files in this project"
       >
         <project-feature-setting
-          :options="featureAccessLevelOptions"
           v-model="repositoryAccessLevel"
+          :options="featureAccessLevelOptions"
           name="project[project_feature_attributes][repository_access_level]"
         />
       </project-setting-row>
@@ -274,8 +274,8 @@
           help-text="Submit changes to be merged upstream"
         >
           <project-feature-setting
-            :options="repoFeatureAccessLevelOptions"
             v-model="mergeRequestsAccessLevel"
+            :options="repoFeatureAccessLevelOptions"
             :disabled-input="!repositoryEnabled"
             name="project[project_feature_attributes][merge_requests_access_level]"
           />
@@ -285,8 +285,8 @@
           help-text="Build, test, and deploy your changes"
         >
           <project-feature-setting
-            :options="repoFeatureAccessLevelOptions"
             v-model="buildsAccessLevel"
+            :options="repoFeatureAccessLevelOptions"
             :disabled-input="!repositoryEnabled"
             name="project[project_feature_attributes][builds_access_level]"
           />
@@ -333,8 +333,8 @@
         help-text="Pages for project documentation"
       >
         <project-feature-setting
-          :options="featureAccessLevelOptions"
           v-model="wikiAccessLevel"
+          :options="featureAccessLevelOptions"
           name="project[project_feature_attributes][wiki_access_level]"
         />
       </project-setting-row>
@@ -343,8 +343,8 @@
         help-text="Share code pastes with others out of Git repository"
       >
         <project-feature-setting
-          :options="featureAccessLevelOptions"
           v-model="snippetsAccessLevel"
+          :options="featureAccessLevelOptions"
           name="project[project_feature_attributes][snippets_access_level]"
         />
       </project-setting-row>

@@ -1,7 +1,7 @@
 <script>
 import _ from 'underscore';
 import StageColumnComponent from './stage_column_component.vue';
-import LinkedPipelinesColumn from 'ee/pipelines/components/graph/linked_pipelines_column.vue'; // eslint-disable-line import/first
+import LinkedPipelinesColumn from 'ee/pipelines/components/graph/linked_pipelines_column.vue'; // eslint-disable-line import/order
 
 export default {
   components: {
@@ -94,6 +94,7 @@ export default {
       >
         <stage-column-component
           v-for="(stage, index) in graph"
+          :key="stage.name"
           :class="{
             'has-upstream': index === 0 && hasTriggeredBy,
             'has-downstream': index === graph.length - 1 && hasTriggered,
@@ -101,7 +102,6 @@ export default {
           }"
           :title="capitalizeStageName(stage.name)"
           :jobs="stage.groups"
-          :key="stage.name"
           :stage-connector-class="stageConnectorClass(index, stage)"
           :is-first-column="isFirstColumn(index)"
           :has-triggered-by="hasTriggeredBy"

@@ -80,8 +80,8 @@
   >
     <span class="timeline-header-blank"></span>
     <component
-      v-for="(timeframeItem, index) in timeframe"
       :is="headerItemComponentForPreset"
+      v-for="(timeframeItem, index) in timeframe"
       :key="index"
       :timeframe-index="index"
       :timeframe-item="timeframeItem"

@@ -103,8 +103,8 @@ export default {
     </div>
 
     <button
-      v-tooltip
       v-show="hasError"
+      v-tooltip
       :title="s__('Badges|Reload badge image')"
       class="btn btn-transparent btn-sm text-primary"
       type="button"

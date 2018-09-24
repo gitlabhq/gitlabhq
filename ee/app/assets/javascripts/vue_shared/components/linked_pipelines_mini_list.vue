@@ -93,9 +93,9 @@
     />
 
     <a
-      v-tooltip
       v-for="pipeline in linkedPipelinesTrimmed"
       :key="pipeline.id"
+      v-tooltip
       :href="pipeline.path"
       :title="pipelineTooltipText(pipeline)"
       :class="triggerButtonClass(pipeline.details.status.group)"
@@ -109,8 +109,8 @@
     </a>
 
     <a
-      v-tooltip
       v-if="shouldRenderCounter"
+      v-tooltip
       :title="counterTooltipText"
       :href="pipelinePath"
       class="linked-pipelines-counter linked-pipeline-mini-item"

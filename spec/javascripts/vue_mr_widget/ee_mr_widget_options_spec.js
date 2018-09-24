@@ -10,7 +10,7 @@ import { TEST_HOST } from 'spec/test_constants';
 import state from 'ee/vue_shared/security_reports/store/state';
 import mockData, { baseIssues, headIssues, basePerformance, headPerformance } from './mock_data';
 
-import {
+import { // eslint-disable-line import/order
   sastIssues,
   sastIssuesBase,
   dockerReport,
@@ -19,7 +19,7 @@ import {
   dastBase,
   sastBaseAllIssues,
   sastHeadAllIssues,
-} from 'ee_spec/vue_shared/security_reports/mock_data'; // eslint-disable-line import/first
+} from 'ee_spec/vue_shared/security_reports/mock_data';
 
 describe('ee merge request widget options', () => {
   let vm;

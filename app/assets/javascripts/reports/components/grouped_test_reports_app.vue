@@ -92,16 +92,16 @@
         v-for="(report, i) in reports"
       >
         <summary-row
+          :key="`summary-row-${i}`"
           :summary="reportText(report)"
           :status-icon="getReportIcon(report)"
-          :key="`summary-row-${i}`"
         />
         <issues-list
           v-if="shouldRenderIssuesList(report)"
+          :key="`issues-list-${i}`"
           :unresolved-issues="report.existing_failures"
           :new-issues="report.new_failures"
           :resolved-issues="report.resolved_failures"
-          :key="`issues-list-${i}`"
           :component="$options.componentNames.TestIssueBody"
           class="report-block-group-list"
         />

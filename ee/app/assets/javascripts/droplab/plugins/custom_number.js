@@ -32,8 +32,9 @@ const CustomNumber = {
         92, // right window
         93, // select
       ].indexOf(e.detail.which || e.detail.keyCode) > -1
-    )
+    ) {
       return;
+    }
 
     if (this.timeout) clearTimeout(this.timeout);
     this.timeout = setTimeout(this.keydown.bind(this, e), 200);

@@ -127,8 +127,8 @@
         {{ itemTitle }}
       </span>
       <icon
-        v-popover="popoverConfig"
         v-if="hasHelpInfo"
+        v-popover="popoverConfig"
         :size="12"
         css-classes="node-detail-help-text prepend-left-5"
         name="question"
@@ -156,8 +156,8 @@
         :total-count="itemValue.totalCount"
       />
       <icon
-        v-tooltip
         v-show="itemValueStale"
+        v-tooltip
         :title="itemValueStaleTooltip"
         name="time-out"
         css-classes="prepend-left-10 detail-value-stale-icon"

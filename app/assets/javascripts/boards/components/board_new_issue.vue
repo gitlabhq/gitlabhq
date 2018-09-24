@@ -113,9 +113,9 @@ export default {
           Title
         </label>
         <input
+          :id="list.id + '-title'"
           ref="input"
           v-model="title"
-          :id="list.id + '-title'"
           class="form-control"
           type="text"
           name="issue_title"
