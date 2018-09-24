@@ -7,7 +7,12 @@ module EESpecificCheck
     'doc/**/*', # https://gitlab.com/gitlab-org/gitlab-ee/issues/4948#note_59945483
     'qa/**/*', # https://gitlab.com/gitlab-org/gitlab-ee/issues/4997#note_59764702
     'scripts/**/*',
-    'spec/javascripts/**/*', # https://gitlab.com/gitlab-org/gitlab-ee/issues/3871
+    # https://gitlab.com/gitlab-org/gitlab-ee/issues/3871
+    'spec/javascripts/ee/boards/models/list_spec.js',
+    'spec/javascripts/jobs/shared_runner_limit_block_spec.js',
+    'spec/javascripts/monitoring/alert_widget_form_spec.js',
+    'spec/javascripts/monitoring/alert_widget_spec.js',
+    'spec/javascripts/vue_mr_widget/ee_mr_widget_options_spec.js',
     'vendor/assets/javascripts/jasmine-jquery.js',
     '.gitlab-ci.yml',
     'db/schema.rb',
