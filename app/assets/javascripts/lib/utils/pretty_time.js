@@ -39,12 +39,16 @@ export function parseSeconds(seconds, { daysPerWeek = 5, hoursPerDay = 8 } = {})
 /*
 * Accepts a timeObject (see parseSeconds) and returns a condensed string representation of it
 * (e.g. '1w 2d 3h 1m' or '1h 30m'). Zero value units are not included.
+* If the 'full' paramter is passed it returns a non condensed string eg '1 week 3 days'
 */
 
-export function stringifyTime(timeObject) {
+export function stringifyTime(timeObject, full = false) {
   const reducedTime = _.reduce(timeObject, (memo, unitValue, unitName) => {
     const isNonZero = !!unitValue;
-    return isNonZero ? `${memo} ${unitValue}${unitName.charAt(0)}` : memo;
+    let finalUnitValue = (isNonZero && unitValue > 1) ? unitName : unitName.replace(/s$/, '');
+    finalUnitValue = full ? ` ${finalUnitValue}` : unitName.charAt(0);
+
+    return isNonZero ? `${memo} ${unitValue}${finalUnitValue}` : memo;
   }, '').trim();
   return reducedTime.length ? reducedTime : '0m';
 }

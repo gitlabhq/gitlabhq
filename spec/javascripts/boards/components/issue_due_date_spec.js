@@ -38,6 +38,19 @@ describe('Issue Due Date component', () => {
     expect(vm.$el.textContent.trim()).toEqual('Yesterday');
   });
 
+  it('should render "Tomorrow" if the due date is one day from now', () => {
+    const date = new Date();
+    date.setDate(date.getDate() + 1);
+    const yesterday = dateFormat(date, 'yyyy-mm-dd', true);
+    vm = new IssueDueDate({
+      propsData: {
+        date: yesterday,
+      },
+    }).$mount();
+
+    expect(vm.$el.textContent.trim()).toEqual('Tomorrow');
+  });
+
   it('should render day of the week if due date is one week away', () => {
     const date = new Date();
     date.setDate(date.getDate() + 5);
@@ -74,19 +87,8 @@ describe('Issue Due Date component', () => {
       },
     }).$mount();
 
-    expect(vm.$el.classList.contains('text-danger')).toEqual(true);
-  });
+    const $timeContainer = vm.$el.querySelector('time');
 
-  it('should render month, day and year when due date is not current year', () => {
-    const date = new Date();
-    date.setDate(date.getDate() + 365);
-    const dueDate = dateFormat(date, 'yyyy-mm-dd', true);
-    vm = new IssueDueDate({
-      propsData: {
-        date: dueDate,
-      },
-    }).$mount();
-
-    expect(vm.$el.textContent.trim()).toEqual(dateFormat(dueDate, 'mmm d, yyyy', true));
+    expect($timeContainer.classList.contains('text-danger')).toEqual(true);
   });
 });

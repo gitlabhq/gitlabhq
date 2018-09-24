@@ -122,7 +122,7 @@ describe('Issue card component', () => {
           component.$el
             .querySelector('.board-card-assignee img')
             .getAttribute('data-original-title'),
-        ).toContain(`Assigned to ${user.name}`);
+        ).toContain(`${user.name}`);
       });
 
       it('sets users path', () => {
@@ -155,7 +155,7 @@ describe('Issue card component', () => {
       it('displays defaults avatar if users avatar is null', () => {
         expect(component.$el.querySelector('.board-card-assignee img')).not.toBeNull();
         expect(component.$el.querySelector('.board-card-assignee img').getAttribute('src')).toBe(
-          'default_avatar?width=20',
+          'default_avatar?width=24',
         );
       });
     });
@@ -189,7 +189,7 @@ describe('Issue card component', () => {
     });
 
     it('renders all four assignees', () => {
-      expect(component.$el.querySelectorAll('.board-card-assignee .avatar').length).toEqual(4);
+      expect(component.$el.querySelectorAll('.board-card-assignee .avatar').length).toEqual(2);
     });
 
     describe('more than four assignees', () => {
@@ -209,11 +209,11 @@ describe('Issue card component', () => {
       it('renders more avatar counter', () => {
         expect(
           component.$el.querySelector('.board-card-assignee .avatar-counter').innerText,
-        ).toEqual('+2');
+        ).toEqual('+3');
       });
 
       it('renders three assignees', () => {
-        expect(component.$el.querySelectorAll('.board-card-assignee .avatar').length).toEqual(3);
+        expect(component.$el.querySelectorAll('.board-card-assignee .avatar').length).toEqual(2);
       });
 
       it('renders 99+ avatar counter', done => {
