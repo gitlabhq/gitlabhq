@@ -114,7 +114,7 @@ module HasStatus
   end
 
   def blocked?
-    BLOCKED_STATUS == status
+    BLOCKED_STATUS.include?(status)
   end
 
   private

@@ -300,7 +300,7 @@ describe HasStatus do
 
   describe '::BLOCKED_STATUS' do
     it 'is a status manual' do
-      expect(described_class::BLOCKED_STATUS).to eq 'manual'
+      expect(described_class::BLOCKED_STATUS).to eq %w[manual scheduled]
     end
   end
 end
