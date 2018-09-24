@@ -9,8 +9,10 @@
           %span{ "aria-hidden": true } &times;
       .modal-body
         %p
-          = s_('FeatureFlags|Install a compatible client library and specify the API URL, application name, and instance ID during the configuration setup.')
-          = link_to s_('FeatureFlags|More information'), '#'
+          - client_libraries_url = help_page_path("user/project/operations/feature_flags", anchor: "client-libraries")
+          = s_('FeatureFlags|Install a %{docs_link_start}compatible client library%{docs_link_end} and specify the API URL, application name, and instance ID during the configuration setup.').html_safe % { docs_link_start: %Q{<a href="#{client_libraries_url}">}.html_safe,
+            docs_link_end: '</a>'.html_safe }
+          = link_to s_('FeatureFlags|More information'), help_page_path("user/project/operations/feature_flags")
 
         .form-group
           = label_tag :api_url, s_('FeatureFlags|API URL'), class: 'label-bold'
