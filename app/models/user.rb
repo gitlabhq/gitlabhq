@@ -581,10 +581,12 @@ class User < ActiveRecord::Base
 
   # Returns the groups a user has access to, either through a membership or a project authorization
   def authorized_groups
-    union = Gitlab::SQL::Union
-      .new([groups.select(:id), authorized_projects.select(:namespace_id)])
+    Group.unscoped do
+      union = Gitlab::SQL::Union
+        .new([groups.select(:id), authorized_projects.select(:namespace_id)])
 
-    Group.where("namespaces.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+      Group.where("namespaces.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+    end
   end
 
   # Returns the groups a user is a member of, either directly or through a parent group

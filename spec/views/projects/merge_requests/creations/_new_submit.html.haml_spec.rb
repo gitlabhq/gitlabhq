@@ -10,6 +10,7 @@ describe 'projects/merge_requests/creations/_new_submit.html.haml' do
     assign(:merge_request, merge_request)
     assign(:commits, merge_request.commits)
     assign(:project, merge_request.target_project)
+    assign(:mr_presenter, merge_request.present(current_user: merge_request.author))
 
     allow(view).to receive(:can?).and_return(true)
     allow(view).to receive(:url_for).and_return('#')
