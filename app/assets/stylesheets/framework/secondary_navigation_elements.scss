@@ -48,6 +48,9 @@
 .top-area {
   @include clearfix;
   border-bottom: 1px solid $border-color;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
 
   .nav-text {
     padding-top: 16px;
@@ -63,9 +66,8 @@
   }
 
   .nav-links {
-    margin-bottom: 0;
-    border-bottom: 0;
-    float: left;
+    flex-grow: 1;
+    margin-bottom: -1px;
 
     &.wide {
       width: 100%;
@@ -91,11 +93,7 @@
   }
 
   .nav-controls {
-    display: inline-block;
-    float: right;
-    text-align: right;
     padding: 11px 0;
-    margin-bottom: 0;
 
     > .btn,
     > .btn-container,
@@ -108,7 +106,6 @@
 
       &:last-child {
         margin-right: 0;
-        float: right;
       }
     }
 
