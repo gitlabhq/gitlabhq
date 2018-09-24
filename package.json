@@ -95,7 +95,7 @@
     "url-loader": "^1.1.1",
     "visibilityjs": "^1.2.4",
     "vue": "^2.5.17",
-    "vue-loader": "^15.2.4",
+    "vue-loader": "^15.4.2",
     "vue-resource": "^1.5.0",
     "vue-router": "^3.0.1",
     "vue-template-compiler": "^2.5.17",
