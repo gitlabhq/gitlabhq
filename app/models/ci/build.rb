@@ -22,7 +22,6 @@ module Ci
     }.freeze
 
     has_one :last_deployment, -> { order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
-    has_one :build_schedule, class_name: 'Ci::BuildSchedule', foreign_key: :build_id
     has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
     has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id
 
@@ -168,12 +167,26 @@ module Ci
         transition scheduled: :manual
       end
 
-      before_transition created: :scheduled do |build|
-        build.build_build_schedule(execute_at: build.execute_at)
+      event :enqueue_scheduled do
+        transition scheduled: :pending do
+          validate do |build|
+            build.scheduled_at && build.scheduled_at < Time.now
+          end
+        end
       end
 
       before_transition scheduled: any do |build|
-        build.build_schedule.delete
+        build.scheduled_at = nil
+      end
+
+      before_transition created: :scheduled do |build|
+        build.scheduled_at = build.get_scheduled_at
+      end
+
+      after_transition created: :scheduled do |build|
+        build.run_after_commit do
+          Ci::BuildScheduleWorker.perform_at(build.scheduled_at, build.id)
+        end
       end
 
       after_transition any => [:pending] do |build|
@@ -250,7 +263,7 @@ module Ci
       self.when == 'delayed' && options[:start_in].present?
     end
 
-    def execute_at
+    def get_scheduled_at
       ChronicDuration.parse(options[:start_in])&.seconds&.from_now
     end
 

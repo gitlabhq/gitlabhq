@@ -23,7 +23,7 @@ module Gitlab
           private
 
           def execute_in
-            Time.at(subject.build_schedule.execute_in).utc.strftime("%H:%M:%S")
+            Time.at(subject.scheduled_at).utc.strftime("%H:%M:%S")
           end
         end
       end

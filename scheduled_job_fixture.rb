@@ -64,15 +64,15 @@ cleanup:
 #
 # ### Reproduce the scenario ~ when all stages succeeded ~
 #
-# 1. ScheduledJobFixture.new(29, 1).create_pipeline('master')
-# 1. ScheduledJobFixture.new(29, 1).finish_stage_until('test')
+# 1. ScheduledJobFixture.new(16, 1).create_pipeline('master')
+# 1. ScheduledJobFixture.new(16, 1).finish_stage_until('test')
 # 1. Wait until rollout 10% job is triggered
-# 1. ScheduledJobFixture.new(29, 1).finish_stage_until('rollout 10%')
+# 1. ScheduledJobFixture.new(16, 1).finish_stage_until('rollout 10%')
 # 1. Wait until rollout 50% job is triggered
-# 1. ScheduledJobFixture.new(29, 1).finish_stage_until('rollout 50%')
+# 1. ScheduledJobFixture.new(16, 1).finish_stage_until('rollout 50%')
 # 1. Wait until rollout 100% job is triggered
-# 1. ScheduledJobFixture.new(29, 1).finish_stage_until('rollout 100%')
-# 1. ScheduledJobFixture.new(29, 1).finish_stage_until('cleanup')
+# 1. ScheduledJobFixture.new(16, 1).finish_stage_until('rollout 100%')
+# 1. ScheduledJobFixture.new(16, 1).finish_stage_until('cleanup')
 #
 # Expectation: Users see a succeccful pipeline
 #
