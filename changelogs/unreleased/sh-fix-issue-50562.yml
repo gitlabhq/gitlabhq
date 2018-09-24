@@ -1,5 +1,0 @@
----
-title: Fix remote mirrors failing if Git remotes have not been added
-merge_request: 21351
-author:
-type: fixed

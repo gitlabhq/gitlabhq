@@ -214,12 +214,7 @@ export default {
 
   [types.SET_DISCUSSION_DIFF_LINES](state, { discussionId, diffLines }) {
     const discussion = utils.findNoteObjectById(state.discussions, discussionId);
-    const index = state.discussions.indexOf(discussion);
 
-    const discussionWithDiffLines = Object.assign({}, discussion, {
-      truncated_diff_lines: diffLines,
-    });
-
-    state.discussions.splice(index, 1, discussionWithDiffLines);
+    discussion.truncated_diff_lines = diffLines;
   },
 };
