@@ -69,22 +69,21 @@ describe('DiffLineNoteForm', () => {
 
     describe('saveNoteForm', () => {
       it('should call saveNote action with proper params', done => {
-        let isPromiseCalled = false;
-        const formDataSpy = spyOnDependency(DiffLineNoteForm, 'getNoteFormData').and.returnValue({
-          postData: 1,
-        });
-        const saveNoteSpy = spyOn(component, 'saveNote').and.returnValue(
-          new Promise(() => {
-            isPromiseCalled = true;
-            done();
-          }),
+        const saveDiffDiscussionSpy = spyOn(component, 'saveDiffDiscussion').and.returnValue(
+          Promise.resolve(),
         );
+        spyOnProperty(component, 'formData').and.returnValue('formData');
 
-        component.handleSaveNote('note body');
-
-        expect(formDataSpy).toHaveBeenCalled();
-        expect(saveNoteSpy).toHaveBeenCalled();
-        expect(isPromiseCalled).toEqual(true);
+        component
+          .handleSaveNote('note body')
+          .then(() => {
+            expect(saveDiffDiscussionSpy).toHaveBeenCalledWith({
+              note: 'note body',
+              formData: 'formData',
+            });
+          })
+          .then(done)
+          .catch(done.fail);
       });
     });
   });

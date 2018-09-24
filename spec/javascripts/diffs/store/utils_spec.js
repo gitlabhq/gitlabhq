@@ -136,6 +136,7 @@ describe('DiffsStoreUtils', () => {
         note_project_id: '',
         target_type: options.noteableType,
         target_id: options.noteableData.id,
+        return_discussion: true,
         note: {
           noteable_type: options.noteableType,
           noteable_id: options.noteableData.id,
@@ -194,6 +195,7 @@ describe('DiffsStoreUtils', () => {
         note_project_id: '',
         target_type: options.noteableType,
         target_id: options.noteableData.id,
+        return_discussion: true,
         note: {
           noteable_type: options.noteableType,
           noteable_id: options.noteableData.id,
