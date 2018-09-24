@@ -57,6 +57,14 @@ You can turn this off in the webhook settings in your GitLab projects.
 
 ![SSL Verification](img/webhooks_ssl.png)
 
+## Branch filtering
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/20338) in GitLab 11.3.
+
+Push events can be filtered by branch using a branch name or wildcard pattern
+to limit which push events are sent to your webhook endpoint. By default the
+field is blank causing all push events to be sent to your webhook endpoint.
+
 ## Events
 
 Below are described the supported events.

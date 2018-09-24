@@ -1,5 +1,0 @@
----
-title: Fixes double +/- on inline diff view
-merge_request: 21634
-author:
-type: fixed

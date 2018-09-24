@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GroupTree
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   # rubocop: disable CodeReuse/ActiveRecord

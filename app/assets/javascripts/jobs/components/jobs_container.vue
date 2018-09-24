@@ -25,9 +25,9 @@
       class="build-job"
     >
       <a
-        v-tooltip
         v-for="job in jobs"
         :key="job.id"
+        v-tooltip
         :href="job.path"
         :title="job.tooltip"
         :class="{ active: job.active, retried: job.retried }"

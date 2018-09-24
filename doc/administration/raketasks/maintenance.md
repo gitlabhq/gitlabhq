@@ -56,7 +56,7 @@ Runs the following rake tasks:
 - `gitlab:sidekiq:check`
 - `gitlab:app:check`
 
-It will check that each component was setup according to the installation guide and suggest fixes for issues found.
+It will check that each component was set up according to the installation guide and suggest fixes for issues found.
 
 You may also have a look at our Trouble Shooting Guides:
 - [Trouble Shooting Guide (GitLab)](http://docs.gitlab.com/ee/README.html#troubleshooting)

@@ -355,6 +355,9 @@ msgstr ""
 msgid "Add users to group"
 msgstr ""
 
+msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission"
+msgstr ""
+
 msgid "Admin Area"
 msgstr ""
 
@@ -1048,6 +1051,9 @@ msgid "CI / CD"
 msgstr ""
 
 msgid "CI / CD Settings"
+msgstr ""
+
+msgid "CI/CD"
 msgstr ""
 
 msgid "CI/CD configuration"
@@ -2841,6 +2847,9 @@ msgstr ""
 msgid "Generate a default set of labels"
 msgstr ""
 
+msgid "Geo"
+msgstr ""
+
 msgid "Git"
 msgstr ""
 
@@ -3681,9 +3690,6 @@ msgstr ""
 msgid "MergeRequests|Toggle comments for this file"
 msgstr ""
 
-msgid "MergeRequests|Updating discussions failed"
-msgstr ""
-
 msgid "MergeRequests|View file @ %{commitId}"
 msgstr ""
 
@@ -3706,6 +3712,9 @@ msgid "Metrics - Influx"
 msgstr ""
 
 msgid "Metrics - Prometheus"
+msgstr ""
+
+msgid "Metrics and profiling"
 msgstr ""
 
 msgid "Metrics|Check out the CI/CD documentation on deploying to an environment"
@@ -4995,6 +5004,9 @@ msgstr ""
 msgid "Reply to this email directly or %{view_it_on_gitlab}."
 msgstr ""
 
+msgid "Reporting"
+msgstr ""
+
 msgid "Reports|%{failedString} and %{resolvedString}"
 msgstr ""
 
@@ -5536,6 +5548,9 @@ msgstr ""
 msgid "SortOptions|Most popular"
 msgstr ""
 
+msgid "SortOptions|Most stars"
+msgstr ""
+
 msgid "SortOptions|Name"
 msgstr ""
 
@@ -5794,6 +5809,9 @@ msgid "Team"
 msgstr ""
 
 msgid "Template"
+msgstr ""
+
+msgid "Templates"
 msgstr ""
 
 msgid "Terms of Service Agreement and Privacy Policy"

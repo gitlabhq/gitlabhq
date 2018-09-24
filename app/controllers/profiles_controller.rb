@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProfilesController < Profiles::ApplicationController
   include ActionView::Helpers::SanitizeHelper
 

@@ -94,8 +94,8 @@ export default {
       :tooltip-text="avatarTooltipText"
       :tooltip-placement="tooltipPlacement"
     /><span
-      v-tooltip
       v-if="shouldShowUsername"
+      v-tooltip
       :title="tooltipText"
       :tooltip-placement="tooltipPlacement"
     >{{ username }}</span>

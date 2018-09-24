@@ -80,8 +80,8 @@
     <div class="controllers float-right">
       <!-- links -->
       <a
-        v-tooltip
         v-if="rawPath"
+        v-tooltip
         :title="s__('Job|Show complete raw')"
         :href="rawPath"
         class="js-raw-link-controller controllers-buttons"

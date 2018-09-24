@@ -331,7 +331,7 @@ class Project < ActiveRecord::Base
 
   # last_activity_at is throttled every minute, but last_repository_updated_at is updated with every push
   scope :sorted_by_activity, -> { reorder("GREATEST(COALESCE(last_activity_at, '1970-01-01'), COALESCE(last_repository_updated_at, '1970-01-01')) DESC") }
-  scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
+  scope :sorted_by_stars, -> { reorder(star_count: :desc) }
 
   scope :in_namespace, ->(namespace_ids) { where(namespace_id: namespace_ids) }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
@@ -481,6 +481,8 @@ class Project < ActiveRecord::Base
         reorder(last_activity_at: :desc)
       when 'latest_activity_asc'
         reorder(last_activity_at: :asc)
+      when 'stars_desc'
+        sorted_by_stars
       else
         order_by(method)
       end
@@ -2074,12 +2076,6 @@ class Project < ActiveRecord::Base
 
   def auto_cancel_pending_pipelines?
     auto_cancel_pending_pipelines == 'enabled'
-  end
-
-  # Update the default branch querying the remote to determine its HEAD
-  def update_root_ref(remote_name)
-    root_ref = repository.find_remote_root_ref(remote_name)
-    change_head(root_ref) if root_ref.present? && root_ref != default_branch
   end
 
   private

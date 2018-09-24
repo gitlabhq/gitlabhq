@@ -181,8 +181,8 @@ export default {
         </span>
 
         <strong
-          v-tooltip
           v-else
+          v-tooltip
           :title="filePath"
           class="file-title-name"
           data-container="body"
@@ -255,8 +255,8 @@ export default {
       </a>
 
       <a
-        v-tooltip
         v-if="diffFile.externalUrl"
+        v-tooltip
         :href="diffFile.externalUrl"
         :title="`View on ${diffFile.formattedExternalUrl}`"
         target="_blank"

@@ -1072,6 +1072,18 @@ describe Project do
     it { expect(project.builds_enabled?).to be_truthy }
   end
 
+  describe '.sort_by_attribute' do
+    it 'reorders the input relation by start count desc' do
+      project1 = create(:project, star_count: 2)
+      project2 = create(:project, star_count: 1)
+      project3 = create(:project)
+
+      projects = described_class.sort_by_attribute(:stars_desc)
+
+      expect(projects).to eq([project1, project2, project3])
+    end
+  end
+
   describe '.with_shared_runners' do
     subject { described_class.with_shared_runners }
 
@@ -3980,40 +3992,6 @@ describe Project do
 
     it 'retrieves several commits from the repository by oid' do
       expect(project.commits_by(oids: commit_shas)).to eq commits
-    end
-  end
-
-  describe '#update_root_ref' do
-    let(:project) { create(:project, :repository) }
-
-    it 'updates the default branch when HEAD has changed' do
-      stub_find_remote_root_ref(project, ref: 'feature')
-
-      expect { project.update_root_ref('origin') }
-        .to change { project.default_branch }
-        .from('master')
-        .to('feature')
-    end
-
-    it 'does not update the default branch when HEAD does not change' do
-      stub_find_remote_root_ref(project, ref: 'master')
-
-      expect { project.update_root_ref('origin') }
-        .not_to change { project.default_branch }
-    end
-
-    it 'does not update the default branch when HEAD does not exist' do
-      stub_find_remote_root_ref(project, ref: 'foo')
-
-      expect { project.update_root_ref('origin') }
-        .not_to change { project.default_branch }
-    end
-
-    def stub_find_remote_root_ref(project, ref:)
-      allow(project.repository)
-        .to receive(:find_remote_root_ref)
-        .with('origin')
-        .and_return(ref)
     end
   end
 
