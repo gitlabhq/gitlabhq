@@ -6154,6 +6154,7 @@
       "status": "failed",
       "started_at": null,
       "finished_at": null,
+      "user_id": 9999,
       "duration": null,
       "notes": [
         {
