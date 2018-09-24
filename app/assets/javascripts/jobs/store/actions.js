@@ -7,8 +7,8 @@ import flash from '../../flash';
 import { __ } from '../../locale';
 
 export const setJobEndpoint = ({ commit }, endpoint) => commit(types.SET_JOB_ENDPOINT, endpoint);
-export const setTraceEndpoint = ({ commit }, endpoint) =>
-  commit(types.SET_TRACE_ENDPOINT, endpoint);
+export const setTraceOptions = ({ commit }, options) =>
+  commit(types.SET_TRACE_OPTIONS, options);
 export const setStagesEndpoint = ({ commit }, endpoint) =>
   commit(types.SET_STAGES_ENDPOINT, endpoint);
 export const setJobsEndpoint = ({ commit }, endpoint) => commit(types.SET_JOBS_ENDPOINT, endpoint);
@@ -95,6 +95,7 @@ export const fetchTrace = ({ dispatch, state }) => {
       if (!state.fetchingStatusFavicon) {
         dispatch('fetchFavicon');
       }
+
       dispatch('receiveTraceSuccess', data);
 
       if (!data.complete) {
@@ -120,7 +121,7 @@ export const receiveTraceError = ({ commit }) => {
 
 export const fetchFavicon = ({ state, dispatch }) => {
   dispatch('requestStatusFavicon');
-  setCiStatusFavicon(`${state.pagePath}/status.json`)
+  setCiStatusFavicon(`${state.traceEndpoint}/status.json`)
     .then(() => dispatch('receiveStatusFaviconSuccess'))
     .catch(() => dispatch('requestStatusFaviconError'));
 };

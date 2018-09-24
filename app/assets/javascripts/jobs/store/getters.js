@@ -18,5 +18,7 @@ export const headerTime = state => (state.job.started ? state.job.started : stat
 export const shouldRenderCalloutMessage = state =>
   !!(state.job.status && state.job.callout_message);
 
+export const jobHasTrace = state => state.job.trace !== '';
+
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

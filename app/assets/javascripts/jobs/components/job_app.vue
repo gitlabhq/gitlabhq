@@ -61,8 +61,9 @@
         'isTraceComplete',
         'traceSize',
         'isTraceScrolledToBottom',
+        'isTraceSizeVisible',
       ]),
-      ...mapGetters(['headerActions', 'headerTime', 'shouldRenderCalloutMessage']),
+      ...mapGetters(['headerActions', 'headerTime', 'shouldRenderCalloutMessage', 'jobHasTrace']),
       /**
        * When job has not started the key will be `false`
        * When job started the key will be a string with a date.
@@ -77,7 +78,7 @@
     created() {
       this.setJobEndpoint(this.jobEndpoint);
 
-      this.setTraceEndpoint(this.traceOptions.pagePath);
+      this.setTraceOptions(this.traceOptions);
 
       // set traceState
       this.fetchJob();
@@ -87,7 +88,7 @@
     methods: {
       ...mapActions([
         'setJobEndpoint',
-        'setTraceEndpoint',
+        'setTraceOptions',
         'setStagesEndpoint',
         'fetchJob',
         'fetchTrace',
@@ -145,7 +146,7 @@
 
       <!--job log -->
       <div
-        v-if="job.running"
+        v-if="jobHasTrace"
         class="build-trace-container prepend-top-default"
       >
         <log-controllers

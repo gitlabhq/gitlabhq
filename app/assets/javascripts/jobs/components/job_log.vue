@@ -22,7 +22,7 @@
     </code>
 
     <div
-      v-if="isComplete"
+      v-if="!isComplete"
       class="js-log-animation build-loader-animation"
     >
       <div class="dot"></div>

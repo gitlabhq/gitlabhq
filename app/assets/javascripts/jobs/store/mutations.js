@@ -5,8 +5,9 @@ export default {
     state.jobEndpoint = endpoint;
   },
 
-  [types.SET_TRACE_ENDPOINT](state, endpoint) {
-    state.traceEndpoint = `${endpoint}/trace.json`;
+  [types.SET_TRACE_OPTIONS](state, options = {}) {
+    state.traceEndpoint = options.pagePath;
+    state.traceState = options.logState;
   },
 
   [types.REQUEST_STATUS_FAVICON](state) {
@@ -19,10 +20,15 @@ export default {
     state.fetchingStatusFavicon = false;
   },
 
+  [types.REQUEST_TRACE](state) {
+    state.isLoadingTrace = true;
+  },
   [types.RECEIVE_TRACE_SUCCESS](state, log) {
     if (log.state) {
       state.traceState = log.state;
     }
+
+    debugger;
 
     if (log.append) {
       state.trace += log.html;
