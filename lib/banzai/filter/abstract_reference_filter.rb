@@ -327,7 +327,7 @@ module Banzai
       end
 
       def current_project_namespace_path
-        @current_project_namespace_path ||= project&.namespace&.full_path
+        @current_project_namespace_path ||= (project&.namespace || group)&.full_path
       end
 
       private
