@@ -1,7 +1,9 @@
 <script>
+  import _ from 'underscore';
   import { mapActions, mapGetters, mapState } from 'vuex';
   import CiHeader from '~/vue_shared/components/header_ci_component.vue';
   import EmptyState from './empty_state.vue';
+  import EnvironmentsBlock from './environments_block.vue';
   import ErasedBlock from './erased_block.vue';
   import LogControllers from './job_log_controllers.vue';
   import LogBlock from './job_log.vue';
@@ -15,6 +17,7 @@
     components: {
       CiHeader,
       EmptyState,
+      EnvironmentsBlock,
       ErasedBlock,
       LogControllers,
       LogBlock,
@@ -67,6 +70,9 @@
       jobStarted() {
         return !this.job.started === false;
       },
+      hasEnvironment() {
+        return this.job.deployment_status && !_.isEmpty(this.job.deployment_status);
+      }
     },
     created() {
       this.setJobEndpoint(this.jobEndpoint);
@@ -124,6 +130,11 @@
         :has-no-runners-for-project="job.runners.available"
         :tags="job.tag_list"
         :runners-path="runnersPath"
+      />
+
+      <environments-block
+        v-if="hasEnvironment"
+        :deployment-status="job.deployment_status"
       />
 
       <erased-block
