@@ -60,8 +60,8 @@ export default {
       <div class="position-relative">
         <input
           ref="searchInput"
-          :placeholder="__('Search branches')"
           v-model="search"
+          :placeholder="__('Search branches')"
           type="search"
           class="form-control dropdown-input-field"
           @input="searchBranches"
