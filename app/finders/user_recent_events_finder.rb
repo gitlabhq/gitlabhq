@@ -1,6 +1,7 @@
 # Get user activity feed for projects common for a user and a logged in user
 #
 # - current_user: The user viewing the events
+#                 WARNING: does not consider project feature visibility!
 # - user: The user for which to load the events
 # - params:
 #   - offset: The page of events to return
