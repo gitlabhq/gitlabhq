@@ -1,0 +1,6 @@
+---
+title: Make sure that epic_id column exists in resource_label_events when upgrading
+  from CE to EE.
+merge_request:
+author:
+type: fixed
