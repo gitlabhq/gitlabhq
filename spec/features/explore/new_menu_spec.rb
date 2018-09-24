@@ -38,7 +38,7 @@ describe 'Top Plus Menu', :js do
 
       click_topmenuitem("New snippet")
 
-      expect(page).to have_content('New Snippet')
+      expect(page).to have_content('New snippet')
       expect(page).to have_content('Title')
     end
 
@@ -70,7 +70,7 @@ describe 'Top Plus Menu', :js do
         find('.header-new-project-snippet a').click
       end
 
-      expect(page).to have_content('New Snippet')
+      expect(page).to have_content('New snippet')
       expect(page).to have_content('Title')
     end
 
