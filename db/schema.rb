@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180917172041) do
+ActiveRecord::Schema.define(version: 20180924141949) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -171,6 +171,7 @@ ActiveRecord::Schema.define(version: 20180917172041) do
     t.boolean "user_show_add_ssh_key_message", default: true, null: false
     t.integer "usage_stats_set_by_user_id"
     t.integer "receive_max_input_size"
+    t.integer "diff_max_patch_bytes", default: 102400, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
