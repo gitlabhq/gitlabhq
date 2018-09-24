@@ -1,6 +1,12 @@
 <script>
+  import { __, sprintf } from '~/locale';
   import updateMixin from '../mixins/update';
   import eventHub from '../event_hub';
+
+  const issuableTypes = {
+    issue: __('Issue'),
+    epic: __('Epic'),
+  };
 
   export default {
     mixins: [updateMixin],
@@ -17,6 +23,10 @@
         type: Boolean,
         required: false,
         default: true,
+      },
+      issuableType: {
+        type: String,
+        required: true,
       },
     },
     data() {
@@ -37,8 +47,11 @@
         eventHub.$emit('close.form');
       },
       deleteIssuable() {
+        const confirmMessage = sprintf(__('%{issuableType} will be removed! Are you sure?'), {
+          issuableType: issuableTypes[this.issuableType],
+        });
         // eslint-disable-next-line no-alert
-        if (window.confirm('Issue will be removed! Are you sure?')) {
+        if (window.confirm(confirmMessage)) {
           this.deleteLoading = true;
 
           eventHub.$emit('delete.issuable');

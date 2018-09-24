@@ -15,6 +15,7 @@ describe('Inline edit form component', () => {
           description: 'a',
           lockedWarningVisible: false,
         },
+        issuableType: 'issue',
         markdownPreviewPath: '/',
         markdownDocsPath: '/',
         projectPath: '/',
