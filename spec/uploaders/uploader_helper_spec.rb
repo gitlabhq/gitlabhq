@@ -11,27 +11,10 @@ describe UploaderHelper do
     example_uploader.new
   end
 
-  def upload_fixture(filename)
-    fixture_file_upload(File.join('spec', 'fixtures', filename))
-  end
-
-  describe '#image_or_video?' do
-    it 'returns true for an image file' do
-      uploader.store!(upload_fixture('dk.png'))
-
-      expect(uploader).to be_image_or_video
-    end
-
-    it 'it returns true for a video file' do
-      uploader.store!(upload_fixture('video_sample.mp4'))
-
-      expect(uploader).to be_image_or_video
-    end
-
-    it 'returns false for other extensions' do
-      uploader.store!(upload_fixture('doc_sample.txt'))
-
-      expect(uploader).not_to be_image_or_video
+  describe '#extension_match?' do
+    it 'returns false if file does not exists' do
+      expect(uploader.file).to be_nil
+      expect(uploader.send(:extension_match?, 'jpg')).to eq false
     end
   end
 end

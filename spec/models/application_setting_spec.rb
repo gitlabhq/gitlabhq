@@ -305,6 +305,36 @@ describe ApplicationSetting do
     end
   end
 
+  describe 'setting Sentry DSNs' do
+    context 'server DSN' do
+      it 'strips leading and trailing whitespace' do
+        subject.update(sentry_dsn: ' http://test ')
+
+        expect(subject.sentry_dsn).to eq('http://test')
+      end
+
+      it 'handles nil values' do
+        subject.update(sentry_dsn: nil)
+
+        expect(subject.sentry_dsn).to be_nil
+      end
+    end
+
+    context 'client-side DSN' do
+      it 'strips leading and trailing whitespace' do
+        subject.update(clientside_sentry_dsn: ' http://test ')
+
+        expect(subject.clientside_sentry_dsn).to eq('http://test')
+      end
+
+      it 'handles nil values' do
+        subject.update(clientside_sentry_dsn: nil)
+
+        expect(subject.clientside_sentry_dsn).to be_nil
+      end
+    end
+  end
+
   describe '#disabled_oauth_sign_in_sources=' do
     before do
       allow(Devise).to receive(:omniauth_providers).and_return([:github])
@@ -536,6 +566,30 @@ describe ApplicationSetting do
       allow(setting).to receive(:password_authentication_enabled_for_web?).and_return(false)
 
       expect(setting.allow_signup?).to be_falsey
+    end
+  end
+
+  describe '#user_default_internal_regex_enabled?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:user_default_external, :user_default_internal_regex, :result) do
+      false | nil                        | false
+      false | ''                         | false
+      false | '^(?:(?!\.ext@).)*$\r?\n?' | false
+      true  | ''                         | false
+      true  | nil                        | false
+      true  | '^(?:(?!\.ext@).)*$\r?\n?' | true
+    end
+
+    with_them do
+      before do
+        setting.update(user_default_external: user_default_external)
+        setting.update(user_default_internal_regex: user_default_internal_regex)
+      end
+
+      subject { setting.user_default_internal_regex_enabled? }
+
+      it { is_expected.to eq(result) }
     end
   end
 end

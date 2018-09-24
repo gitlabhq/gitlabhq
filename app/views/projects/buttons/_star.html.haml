@@ -1,21 +1,19 @@
 - if current_user
-  %button.btn.btn-default.star-btn.toggle-star{ type: "button", data: { endpoint: toggle_star_project_path(@project, :json) } }>
-    - if current_user.starred?(@project)
-      = sprite_icon('star')
-      %span.starred= _('Unstar')
-    - else
-      = sprite_icon('star-o')
-      %span= s_('StarProject|Star')
-  .count-with-arrow
-    %span.arrow
-    %span.count.star-count
+  .count-badge.d-inline-flex.align-item-stretch.append-right-8
+    %span.star-count.count-badge-count.d-flex.align-items-center
       = @project.star_count
+    %button.count-badge-button.btn.btn-default.d-flex.align-items-center.star-btn.toggle-star{ type: "button", data: { endpoint: toggle_star_project_path(@project, :json) } }
+      - if current_user.starred?(@project)
+        = sprite_icon('star', { css_class: 'icon' })
+        %span.starred= s_('ProjectOverview|Unstar')
+      - else
+        = sprite_icon('star-o', { css_class: 'icon' })
+        %span= s_('ProjectOverview|Star')
 
 - else
-  = link_to new_user_session_path, class: 'btn has-tooltip star-btn', title: _('You must sign in to star a project') do
-    = sprite_icon('star')
-    #{ s_('StarProject|Star') }
-  .count-with-arrow
-    %span.arrow
-    %span.count
+  .count-badge.d-inline-flex.align-item-stretch.append-right-8
+    %span.star-count.count-badge-count.d-flex.align-items-center
       = @project.star_count
+    = link_to new_user_session_path, class: 'btn btn-default has-tooltip count-badge-button d-flex align-items-center star-btn', title: s_('ProjectOverview|You must sign in to star a project') do
+      = sprite_icon('star-o', { css_class: 'icon' })
+      %span= s_('ProjectOverview|Star')

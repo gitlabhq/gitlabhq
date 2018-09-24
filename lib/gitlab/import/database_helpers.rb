@@ -8,6 +8,7 @@ module Gitlab
       # attributes - The attributes/columns to set.
       # relation - An ActiveRecord::Relation to use for finding the ID of the row
       #            when using MySQL.
+      # rubocop: disable CodeReuse/ActiveRecord
       def insert_and_return_id(attributes, relation)
         # We use bulk_insert here so we can bypass any queries executed by
         # callbacks or validation rules, as doing this wouldn't scale when
@@ -20,6 +21,7 @@ module Gitlab
         result.first ||
           relation.where(iid: attributes[:iid]).limit(1).pluck(:id).first
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

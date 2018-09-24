@@ -43,7 +43,7 @@
   color: $brand-info;
 }
 
-.hint { font-style: italic; color: $hint-color; }
+.hint { font-style: italic; color: $gl-gray-400; }
 .light { color: $gl-text-color; }
 
 .slead {
@@ -68,13 +68,6 @@ pre {
     border: 0;
     margin: 0;
     padding: 0;
-  }
-
-  &.card.card-body-pre {
-    border: 1px solid $gray-darker;
-    background: $gray-light;
-    border-radius: 0;
-    color: $well-pre-color;
   }
 
   &.wrap {
@@ -121,49 +114,24 @@ hr {
   text-decoration: none;
 }
 
-.back-link {
-  font-size: 14px;
-}
-
 table {
   a code {
     position: relative;
     top: -2px;
     margin-right: 3px;
   }
-
-  td.permission-x {
-    background: $table-permission-x-bg !important;
-    text-align: center;
-  }
 }
 
 .loading {
   margin: 20px auto;
   height: 40px;
-  color: $loading-color;
+  color: $gl-gray-700;
   font-size: 32px;
   text-align: center;
 }
 
-span.update-author {
-  display: block;
-  color: $update-author-color;
-  font-weight: $gl-font-weight-normal;
-  font-style: italic;
-
-  strong {
-    font-weight: $gl-font-weight-bold;
-    font-style: normal;
-  }
-}
-
-.field_with_errors {
-  display: inline;
-}
-
 p.time {
-  color: $time-color;
+  color: $gl-gray-400;
   font-size: 90%;
   margin: 30px 3px 3px 2px;
 }
@@ -197,38 +165,9 @@ li.note {
   background-color: inherit;
 }
 
-.project_member_show {
-  td:first-child {
-    color: $project-member-show-color;
-  }
-}
-
-.rss-icon {
-  img {
-    width: 24px;
-    vertical-align: top;
-  }
-
-  strong {
-    line-height: 24px;
-  }
-}
-
 .show-suppressed-diff,
 .show-all-commits {
   cursor: pointer;
-}
-
-.git_error_tips {
-  @extend .col-lg-6;
-  text-align: left;
-  margin-top: 40px;
-
-  pre {
-    background: $white-light;
-    border: 0;
-    font-size: 12px;
-  }
 }
 
 .error-message {
@@ -258,7 +197,7 @@ li.note {
 
 .gitlab-promo {
   a {
-    color: $gl-promo-color;
+    color: $gl-gray-350;
     margin-right: 30px;
   }
 }
@@ -268,19 +207,6 @@ li.note {
     margin-top: 4px;
     box-shadow: none;
     background-color: $border-gray-light;
-  }
-}
-
-.control-group {
-  .controls {
-    span {
-      &.descr {
-        position: relative;
-        top: 2px;
-        left: 5px;
-        color: $control-group-descr-color;
-      }
-    }
   }
 }
 
@@ -302,12 +228,6 @@ img.emoji {
   margin-bottom: 10px;
 }
 
-.side-filters {
-  fieldset {
-    margin-bottom: 15px;
-  }
-}
-
 .footer-links {
   margin-bottom: 20px;
 
@@ -327,25 +247,6 @@ img.emoji {
 .search_box {
   @extend .card.card-body;
   text-align: center;
-}
-
-.header-with-avatar {
-  h3 {
-    margin: 0;
-    font-weight: $gl-font-weight-bold;
-  }
-
-  .username {
-    font-size: 18px;
-    color: $username-color;
-    margin-top: 8px;
-  }
-
-  .description {
-    font-size: $gl-font-size;
-    color: $description-color;
-    margin-top: 8px;
-  }
 }
 
 .dropzone .dz-preview .dz-progress {
@@ -384,16 +285,6 @@ img.emoji {
     min-width: 250px;
     visibility: hidden;
   }
-}
-
-.content-separator {
-  margin-left: -$gl-padding;
-  margin-right: -$gl-padding;
-  border-top: 1px solid $border-color;
-}
-
-.hide-bottom-border {
-  border-bottom: 0 !important;
 }
 
 .gl-accessibility {

@@ -109,6 +109,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     set_pipeline_variables
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def selected_target_project
     if @project.id.to_s == params[:target_project_id] || !@project.forked?
       @project
@@ -119,6 +120,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
       @project.forked_from_project
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def whitelist_query_limiting
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42384')

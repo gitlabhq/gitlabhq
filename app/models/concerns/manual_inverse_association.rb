@@ -3,7 +3,7 @@
 module ManualInverseAssociation
   extend ActiveSupport::Concern
 
-  module ClassMethods
+  class_methods do
     def manual_inverse_association(association, inverse)
       define_method(association) do |*args|
         super(*args).tap do |value|

@@ -1,13 +1,11 @@
 <script>
 import ciHeader from '../../vue_shared/components/header_ci_component.vue';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import callout from '../../vue_shared/components/callout.vue';
 
 export default {
   name: 'JobHeaderSection',
   components: {
     ciHeader,
-    loadingIcon,
     callout,
   },
   props: {
@@ -59,7 +57,7 @@ export default {
         actions.push({
           label: 'New issue',
           path: this.job.new_issue_path,
-          cssClass: 'js-new-issue btn btn-new btn-inverted d-none d-md-block d-lg-block d-xl-block',
+          cssClass: 'js-new-issue btn btn-success btn-inverted d-none d-md-block d-lg-block d-xl-block',
           type: 'link',
         });
       }
@@ -82,9 +80,9 @@ export default {
         :should-render-triggered-label="jobStarted"
         item-name="Job"
       />
-      <loading-icon
+      <gl-loading-icon
         v-if="isLoading"
-        size="2"
+        :size="2"
         class="prepend-top-default append-bottom-default"
       />
     </div>

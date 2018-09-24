@@ -37,8 +37,8 @@ export default {
   <div class="accept-control inline">
     <label class="merge-param-checkbox">
       <input
-        :disabled="isMergeButtonDisabled"
         v-model="squashBeforeMerge"
+        :disabled="isMergeButtonDisabled"
         type="checkbox"
         name="squash"
         class="qa-squash-checkbox"

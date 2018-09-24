@@ -88,8 +88,8 @@ export default {
 
 <template>
   <img
-    v-tooltip
     v-if="showImage"
+    v-tooltip
     :class="{
       lazy: lazy,
       [avatarSizeClass]: true,

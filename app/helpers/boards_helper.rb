@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BoardsHelper
   def board
     @board ||= @board || @boards.first

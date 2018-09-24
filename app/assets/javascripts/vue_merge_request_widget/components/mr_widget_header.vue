@@ -4,6 +4,7 @@ import { n__, s__, sprintf } from '~/locale';
 import { mergeUrlParams, webIDEUrl } from '~/lib/utils/url_utility';
 import Icon from '~/vue_shared/components/icon.vue';
 import clipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import tooltip from '~/vue_shared/directives/tooltip';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 
 export default {
@@ -12,6 +13,9 @@ export default {
     Icon,
     clipboardButton,
     TooltipOnTruncate,
+  },
+  directives: {
+    tooltip,
   },
   props: {
     mr: {
@@ -40,10 +44,19 @@ export default {
       });
     },
     webIdePath() {
-      return mergeUrlParams({
-        target_project: this.mr.sourceProjectFullPath !== this.mr.targetProjectFullPath ?
-          this.mr.targetProjectFullPath : '',
-      }, webIDEUrl(`/${this.mr.sourceProjectFullPath}/merge_requests/${this.mr.iid}`));
+      if (this.mr.canPushToSourceBranch) {
+        return mergeUrlParams({
+          target_project: this.mr.sourceProjectFullPath !== this.mr.targetProjectFullPath ?
+            this.mr.targetProjectFullPath : '',
+        }, webIDEUrl(`/${this.mr.sourceProjectFullPath}/merge_requests/${this.mr.iid}`));
+      }
+
+      return null;
+    },
+    ideButtonTitle() {
+      return !this.mr.canPushToSourceBranch
+        ? s__('mrWidget|You are not allowed to edit this project directly. Please fork to make changes.')
+        : '';
     },
   },
 };
@@ -93,13 +106,22 @@ export default {
         v-if="mr.isOpen"
         class="branch-actions"
       >
-        <a
-          v-if="!mr.sourceBranchRemoved"
-          :href="webIdePath"
-          class="btn btn-default inline js-web-ide d-none d-md-inline-block"
+        <span
+          v-tooltip
+          :title="ideButtonTitle"
+          data-placement="bottom"
+          tabindex="0"
         >
-          {{ s__("mrWidget|Open in Web IDE") }}
-        </a>
+          <a
+            v-if="!mr.sourceBranchRemoved"
+            :href="webIdePath"
+            :class="{ disabled: !mr.canPushToSourceBranch }"
+            class="btn btn-default inline js-web-ide d-none d-md-inline-block"
+            role="button"
+          >
+            {{ s__("mrWidget|Open in Web IDE") }}
+          </a>
+        </span>
         <button
           :disabled="mr.sourceBranchRemoved"
           data-target="#modal_merge_info"

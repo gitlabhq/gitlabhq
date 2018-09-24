@@ -11,13 +11,17 @@ module Todos
 
       private
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def without_authorized(items)
         items.where('user_id NOT IN (?)', authorized_users)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def authorized_users
         ProjectAuthorization.select(:user_id).where(project_id: project_ids)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def todos
         raise NotImplementedError

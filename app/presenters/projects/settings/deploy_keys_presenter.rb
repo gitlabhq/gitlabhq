@@ -12,9 +12,11 @@ module Projects
         @key ||= DeployKey.new.tap { |dk| dk.deploy_keys_projects.build }
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def enabled_keys
         @enabled_keys ||= project.deploy_keys.includes(:projects)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def any_keys_enabled?
         enabled_keys.any?
@@ -24,14 +26,17 @@ module Projects
         @available_keys ||= current_user.accessible_deploy_keys - enabled_keys
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def available_project_keys
         @available_project_keys ||= current_user.project_deploy_keys.includes(:projects) - enabled_keys
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def key_available?(deploy_key)
         available_keys.include?(deploy_key)
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def available_public_keys
         return @available_public_keys if defined?(@available_public_keys)
 
@@ -41,9 +46,10 @@ module Projects
         # in @available_project_keys.
         @available_public_keys -= available_project_keys
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def as_json
-        serializer = DeployKeySerializer.new
+        serializer = DeployKeySerializer.new # rubocop: disable CodeReuse/Serializer
         opts = { user: current_user }
 
         {

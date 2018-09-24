@@ -56,27 +56,6 @@ describe QA::Runtime::Env do
     end
   end
 
-  describe '.user_type' do
-    it 'returns standard if not defined' do
-      expect(described_class.user_type).to eq('standard')
-    end
-
-    it 'returns standard as defined' do
-      stub_env('GITLAB_USER_TYPE', 'standard')
-      expect(described_class.user_type).to eq('standard')
-    end
-
-    it 'returns ldap as defined' do
-      stub_env('GITLAB_USER_TYPE', 'ldap')
-      expect(described_class.user_type).to eq('ldap')
-    end
-
-    it 'returns an error if invalid user type' do
-      stub_env('GITLAB_USER_TYPE', 'foobar')
-      expect { described_class.user_type }.to raise_error(ArgumentError)
-    end
-  end
-
   describe '.forker?' do
     it 'returns false if no forker credentials are defined' do
       expect(described_class).not_to be_forker
@@ -104,6 +83,8 @@ describe QA::Runtime::Env do
 
   describe '.github_access_token' do
     it 'returns "" if GITHUB_ACCESS_TOKEN is not defined' do
+      stub_env('GITHUB_ACCESS_TOKEN', nil)
+
       expect(described_class.github_access_token).to eq('')
     end
 
@@ -115,6 +96,8 @@ describe QA::Runtime::Env do
 
   describe '.require_github_access_token!' do
     it 'raises ArgumentError if GITHUB_ACCESS_TOKEN is not defined' do
+      stub_env('GITHUB_ACCESS_TOKEN', nil)
+
       expect { described_class.require_github_access_token! }.to raise_error(ArgumentError)
     end
 

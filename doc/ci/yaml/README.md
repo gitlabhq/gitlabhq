@@ -56,6 +56,7 @@ A job is defined by a list of parameters that define the job behavior.
 | Keyword       | Required | Description |
 |---------------|----------|-------------|
 | script        | yes      | Defines a shell script which is executed by Runner |
+| extends       | no       | Defines a configuration entry that this job is going to inherit from |
 | image         | no       | Use docker image, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
 | services      | no       | Use docker services, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
 | stage         | no       | Defines a job stage (default: `test`) |
@@ -74,6 +75,81 @@ A job is defined by a list of parameters that define the job behavior.
 | environment   | no       | Defines a name of environment to which deployment is done by this job |
 | coverage      | no       | Define code coverage settings for a given job |
 | retry         | no       | Define how many times a job can be auto-retried in case of a failure |
+
+### `extends`
+
+> Introduced in GitLab 11.3.
+
+`extends` defines an entry name that a job that uses `extends` is going to
+inherit from.
+
+It is an alternative to using [YAML anchors](#anchors) and is a little
+more flexible and readable:
+
+```yaml
+.tests:
+  script: rake test
+  stage: test
+  only:
+    refs:
+      - branches
+
+rspec:
+  extends: .tests
+  script: rake rspec
+  only:
+    variables:
+      - $RSPEC
+```
+
+In the example above, the `rspec` job is going to inherit from the `.tests`
+template job. GitLab will perform a reverse deep merge, which means that it will
+merge the `rspec` contents into `.tests` recursively, and this is going to result in
+the following `rspec` job:
+
+```yaml
+rspec:
+  script: rake rspec
+  stage: test
+  only:
+    refs:
+      - branches
+    variables:
+      - $RSPEC
+```
+
+`.tests` in this example is a [hidden key](#hidden-keys-jobs), but it's
+possible to inherit from regular jobs as well.
+
+`extends` supports multi-level inheritance, however it is not recommended to
+use more than three levels. The maximum nesting level that is supported is 10.
+The following example has two levels of inheritance:
+
+```yaml
+.tests:
+  only:
+    - pushes
+
+.rspec:
+  extends: .tests
+  script: rake rspec
+
+rspec 1:
+  variables:
+    RSPEC_SUITE: '1'
+  extends: .rspec
+
+rspec 2:
+  variables:
+    RSPEC_SUITE: '2'
+  extends: .rspec
+
+spinach:
+  extends: .tests
+  script: rake spinach
+```
+
+`extends` works across configuration files combined with [`include`](#include).
 
 ### `pages`
 
@@ -309,7 +385,7 @@ except master.
 ## `only` and `except` (complex)
 
 > `refs` and `kubernetes` policies introduced in GitLab 10.0
-
+>
 > `variables` policy introduced in 10.7
 
 CAUTION: **Warning:**
@@ -389,6 +465,28 @@ job:
 
 The specification above, will make sure that `job` is built by a Runner that
 has both `ruby` AND `postgres` tags defined.
+
+Tags are also a great way to run different jobs on different platforms, for
+example, given an OS X Runner with tag `osx` and Windows Runner with tag
+`windows`, the following jobs run on respective platforms:
+
+```yaml
+windows job:
+  stage:
+    - build
+  tags:
+    - windows
+  script:
+    - echo Hello, %USERNAME%!
+
+osx job:
+  stage:
+    - build
+  tags:
+    - osx
+  script:
+    - echo "Hello, $USER!"
+```
 
 ## `allow_failure`
 
@@ -487,9 +585,10 @@ The above script will:
 ### `when:manual`
 
 > **Notes:**
-- Introduced in GitLab 8.10.
-- Blocking manual actions were introduced in GitLab 9.0.
-- Protected actions were introduced in GitLab 9.2.
+>
+> - Introduced in GitLab 8.10.
+> - Blocking manual actions were introduced in GitLab 9.0.
+> - Protected actions were introduced in GitLab 9.2.
 
 Manual actions are a special type of job that are not executed automatically,
 they need to be explicitly started by a user. An example usage of manual actions
@@ -520,11 +619,11 @@ have ability to merge to this branch.
 
 ## `environment`
 
+> **Notes:**
 >
-**Notes:**
-- Introduced in GitLab 8.9.
-- You can read more about environments and find more examples in the
-  [documentation about environments][environment].
+> - Introduced in GitLab 8.9.
+> - You can read more about environments and find more examples in the
+>   [documentation about environments][environment].
 
 `environment` is used to define that a job deploys to a specific environment.
 If `environment` is specified and no environment under that name exists, a new
@@ -545,15 +644,15 @@ deployment to the `production` environment.
 
 ### `environment:name`
 
+> **Notes:**
 >
-**Notes:**
-- Introduced in GitLab 8.11.
-- Before GitLab 8.11, the name of an environment could be defined as a string like
-  `environment: production`. The recommended way now is to define it under the
-  `name` keyword.
-- The `name` parameter can use any of the defined CI variables,
-  including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
-  You however cannot use variables defined under `script`.
+> - Introduced in GitLab 8.11.
+> - Before GitLab 8.11, the name of an environment could be defined as a string like
+>   `environment: production`. The recommended way now is to define it under the
+>   `name` keyword.
+> - The `name` parameter can use any of the defined CI variables,
+>   including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
+>   You however cannot use variables defined under `script`.
 
 The `environment` name can contain:
 
@@ -584,14 +683,14 @@ deploy to production:
 
 ### `environment:url`
 
+> **Notes:**
 >
-**Notes:**
-- Introduced in GitLab 8.11.
-- Before GitLab 8.11, the URL could be added only in GitLab's UI. The
-  recommended way now is to define it in `.gitlab-ci.yml`.
-- The `url` parameter can use any of the defined CI variables,
-  including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
-  You however cannot use variables defined under `script`.
+> - Introduced in GitLab 8.11.
+> - Before GitLab 8.11, the URL could be added only in GitLab's UI. The
+>   recommended way now is to define it in `.gitlab-ci.yml`.
+> - The `url` parameter can use any of the defined CI variables,
+>   including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
+>   You however cannot use variables defined under `script`.
 
 This is an optional value that when set, it exposes buttons in various places
 in GitLab which when clicked take you to the defined URL.
@@ -611,12 +710,12 @@ deploy to production:
 
 ### `environment:on_stop`
 
+> **Notes:**
 >
-**Notes:**
-- [Introduced][ce-6669] in GitLab 8.13.
-- Starting with GitLab 8.14, when you have an environment that has a stop action
-  defined, GitLab will automatically trigger a stop action when the associated
-  branch is deleted.
+> - [Introduced][ce-6669] in GitLab 8.13.
+> - Starting with GitLab 8.14, when you have an environment that has a stop action
+>   defined, GitLab will automatically trigger a stop action when the associated
+>   branch is deleted.
 
 Closing (stoping) environments can be achieved with the `on_stop` keyword defined under
 `environment`. It declares a different job that runs in order to close
@@ -667,13 +766,13 @@ The `stop_review_app` job is **required** to have the following keywords defined
 
 ### Dynamic environments
 
+> **Notes:**
 >
-**Notes:**
-- [Introduced][ce-6323] in GitLab 8.12 and GitLab Runner 1.6.
-- The `$CI_ENVIRONMENT_SLUG` was [introduced][ce-7983] in GitLab 8.15.
-- The `name` and `url` parameters can use any of the defined CI variables,
-  including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
-  You however cannot use variables defined under `script`.
+> - [Introduced][ce-6323] in GitLab 8.12 and GitLab Runner 1.6.
+> - The `$CI_ENVIRONMENT_SLUG` was [introduced][ce-7983] in GitLab 8.15.
+> - The `name` and `url` parameters can use any of the defined CI variables,
+>   including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
+>   You however cannot use variables defined under `script`.
 
 For example:
 
@@ -703,13 +802,13 @@ as Review Apps. You can see a simple example using Review Apps at
 
 ## `cache`
 
+> **Notes:**
 >
-**Notes:**
-- Introduced in GitLab Runner v0.7.0.
-- `cache` can be set globally and per-job.
-- From GitLab 9.0, caching is enabled and shared between pipelines and jobs
-  by default.
-- From GitLab 9.2, caches are restored before [artifacts](#artifacts).
+> - Introduced in GitLab Runner v0.7.0.
+> - `cache` can be set globally and per-job.
+> - From GitLab 9.0, caching is enabled and shared between pipelines and jobs
+>   by default.
+> - From GitLab 9.2, caches are restored before [artifacts](#artifacts).
 
 TIP: **Learn more:**
 Read how caching works and find out some good practices in the
@@ -871,13 +970,13 @@ skip the download step.
 
 ## `artifacts`
 
+> **Notes:**
 >
-**Notes:**
-- Introduced in GitLab Runner v0.7.0 for non-Windows platforms.
-- Windows support was added in GitLab Runner v.1.0.0.
-- From GitLab 9.2, caches are restored before artifacts.
-- Not all executors are [supported](https://docs.gitlab.com/runner/executors/#compatibility-chart).
-- Job artifacts are only collected for successful jobs by default.
+> - Introduced in GitLab Runner v0.7.0 for non-Windows platforms.
+> - Windows support was added in GitLab Runner v.1.0.0.
+> - From GitLab 9.2, caches are restored before artifacts.
+> - Not all executors are [supported](https://docs.gitlab.com/runner/executors/#compatibility-chart).
+> - Job artifacts are only collected for successful jobs by default.
 
 `artifacts` is used to specify a list of files and directories which should be
 attached to the job after success.
@@ -1132,13 +1231,16 @@ rspec:
 ```
 
 The collected JUnit reports will be uploaded to GitLab as an artifact and will
-be automatically [shown in merge requests](../junit_test_reports.md).
+be automatically shown in merge requests.
+
+For more examples, see [JUnit test reports](../junit_test_reports.md).
 
 NOTE: **Note:**
 In case the JUnit tool you use exports to multiple XML files, you can specify
-multiple test report paths within a single job
-(`junit: [rspec-1.xml, rspec-2.xml, rspec-3.xml]`) and they will be automatically
-concatenated into a single file.
+multiple test report paths within a single job and they will be automatically
+concatenated into a single file. Use a filename pattern (`junit: rspec-*.xml`),
+an array of filenames (`junit: [rspec-1.xml, rspec-2.xml, rspec-3.xml]`), or a
+combination thereof (`junit: [rspec.xml, test-results/TEST-*.xml]`).
 
 ## `dependencies`
 
@@ -1255,6 +1357,187 @@ test:
   retry: 2
 ```
 
+## `include`
+
+> Introduced in [GitLab Edition Premium][ee] 10.5.
+> Available for Starter, Premium and Ultimate [versions][gitlab-versions] since 10.6.
+> Behaviour expanded in GitLab 10.8 to allow more flexible overriding.
+> Available for Libre since [11.4](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21603)
+
+Using the `include` keyword, you can allow the inclusion of external YAML files.
+
+In the following example, the content of `.before-script-template.yml` will be
+automatically fetched and evaluated along with the content of `.gitlab-ci.yml`:
+
+```yaml
+# Content of https://gitlab.com/awesome-project/raw/master/.before-script-template.yml
+
+before_script:
+  - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
+  - gem install bundler --no-ri --no-rdoc
+  - bundle install --jobs $(nproc)  "${FLAGS[@]}"
+```
+
+```yaml
+# Content of .gitlab-ci.yml
+
+include: 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
+
+rspec:
+  script:
+    - bundle exec rspec
+```
+
+You can define it either as a single string, or, in case you want to include
+more than one files, an array of different values . The following examples
+are both valid cases:
+
+```yaml
+# Single string
+
+include: '/templates/.after-script-template.yml'
+```
+
+```yaml
+# Array
+
+include:
+  - 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
+  - '/templates/.after-script-template.yml'
+```
+
+---
+
+`include` supports two types of files:
+
+- **local** to the same repository, referenced by using full paths in the same
+  repository, with `/` being the root directory. For example:
+
+    ```yaml
+    # Within the repository
+    include: '/templates/.gitlab-ci-template.yml'
+    ```
+
+    NOTE: **Note:**
+    You can only use files that are currently tracked by Git on the same branch
+    your configuration file is. In other words, when using a **local file**, make
+    sure that both `.gitlab-ci.yml` and the local file are on the same branch.
+
+    NOTE: **Note:**
+    We don't support the inclusion of local files through Git submodules paths.
+
+- **remote** in a different location, accessed using HTTP/HTTPS, referenced
+  using the full URL. For example:
+
+    ```yaml
+    include: 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-template.yml'
+    ```
+
+    NOTE: **Note:**
+    The remote file must be publicly accessible through a simple GET request, as we don't support authentication schemas in the remote URL.
+
+---
+
+
+Since GitLab 10.8 we are now recursively merging the files defined in `include`
+with those in `.gitlab-ci.yml`. Files defined by `include` are always
+evaluated first and recursively merged with the content of `.gitlab-ci.yml`, no
+matter the position of the `include` keyword. You can take advantage of
+recursive merging to customize and override details in included CI
+configurations with local definitions.
+
+The following example shows specific YAML-defined variables and details of the
+`production` job from an include file being customized in `.gitlab-ci.yml`.
+
+```yaml
+# Content of https://company.com/autodevops-template.yml
+
+variables:
+  POSTGRES_USER: user
+  POSTGRES_PASSWORD: testing_password
+  POSTGRES_DB: $CI_ENVIRONMENT_SLUG
+
+production:
+  stage: production
+  script:
+    - install_dependencies
+    - deploy
+  environment:
+    name: production
+    url: https://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
+  only:
+    - master
+```
+
+```yaml
+# Content of .gitlab-ci.yml
+
+include: 'https://company.com/autodevops-template.yml'
+
+image: alpine:latest
+
+variables:
+  POSTGRES_USER: root
+  POSTGRES_PASSWORD: secure_password
+
+stages:
+  - build
+  - test
+  - production
+
+production:
+  environment:
+    url: https://domain.com
+```
+
+In this case, the variables `POSTGRES_USER` and `POSTGRES_PASSWORD` along
+with the environment url of the `production` job defined in
+`autodevops-template.yml` have been overridden by new values defined in
+`.gitlab-ci.yml`.
+
+NOTE: **Note:**
+Recursive includes are not supported meaning your external files
+should not use the `include` keyword, as it will be ignored.
+
+Recursive merging lets you extend and override dictionary mappings, but
+you cannot add or modify items to an included array. For example, to add
+an additional item to the production job script, you must repeat the
+existing script items.
+
+```yaml
+# Content of https://company.com/autodevops-template.yml
+
+production:
+  stage: production
+  script:
+    - install_dependencies
+    - deploy
+```
+
+```yaml
+# Content of .gitlab-ci.yml
+
+include: 'https://company.com/autodevops-template.yml'
+
+stages:
+  - production
+
+production:
+  script:
+    - install_depedencies
+    - deploy
+    - notify_owner
+```
+
+In this case, if `install_dependencies` and `deploy` were not repeated in
+`.gitlab-ci.yml`, they would not be part of the script for the `production`
+job in the combined CI configuration.
+
+NOTE: **Note:**
+We currently do not support using YAML aliases across different YAML files
+sourced by `include`. You must only refer to aliases in the same file. Instead
+of using YAML anchors you can use [`extends` keyword](#extends).
+
 ## `variables`
 
 > Introduced in GitLab Runner v0.5.0.
@@ -1359,7 +1642,9 @@ There are three possible values: `none`, `normal`, and `recursive`:
     ```
 
 - `recursive` means that all submodules (including submodules of submodules)
-  will be included. It is equivalent to:
+  will be included. This feature needs Git v1.8.1 and later. When using a
+  GitLab Runner with an executor not based on Docker, make sure the Git version
+  meets that requirement. It is equivalent to:
 
     ```
     git submodule sync --recursive

@@ -1969,6 +1969,23 @@ describe NotificationService, :mailer do
     end
   end
 
+  context 'Auto DevOps notifications' do
+    describe '#autodevops_disabled' do
+      let(:owner) { create(:user) }
+      let(:namespace) { create(:namespace, owner: owner) }
+      let(:project) { create(:project, :repository, :auto_devops, namespace: namespace) }
+      let(:pipeline_user) { create(:user) }
+      let(:pipeline) { create(:ci_pipeline, :failed, project: project, user: pipeline_user) }
+
+      it 'emails project owner and user that triggered the pipeline' do
+        notification.autodevops_disabled(pipeline, [owner.email, pipeline_user.email])
+
+        should_email(owner)
+        should_email(pipeline_user)
+      end
+    end
+  end
+
   def build_team(project)
     @u_watcher               = create_global_setting_for(create(:user), :watch)
     @u_participating         = create_global_setting_for(create(:user), :participating)

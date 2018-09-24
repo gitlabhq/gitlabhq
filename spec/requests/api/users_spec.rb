@@ -1031,17 +1031,32 @@ describe API::Users do
       expect(json_response['error']).to eq('email is missing')
     end
 
-    it "creates email" do
+    it "creates unverified email" do
       email_attrs = attributes_for :email
       expect do
         post api("/users/#{user.id}/emails", admin), email_attrs
       end.to change { user.emails.count }.by(1)
+
+      email = Email.find_by(user_id: user.id, email: email_attrs[:email])
+      expect(email).not_to be_confirmed
     end
 
     it "returns a 400 for invalid ID" do
       post api("/users/999999/emails", admin)
 
       expect(response).to have_gitlab_http_status(400)
+    end
+
+    it "creates verified email" do
+      email_attrs = attributes_for :email
+      email_attrs[:skip_confirmation] = true
+
+      post api("/users/#{user.id}/emails", admin), email_attrs
+
+      expect(response).to have_gitlab_http_status(201)
+
+      email = Email.find_by(user_id: user.id, email: email_attrs[:email])
+      expect(email).to be_confirmed
     end
   end
 

@@ -37,14 +37,15 @@ module Projects
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def transfer(project)
       @old_path = project.full_path
       @old_group = project.group
       @new_path = File.join(@new_namespace.try(:full_path) || '', project.path)
       @old_namespace = project.namespace
 
-      if Project.where(path: project.path, namespace_id: @new_namespace.try(:id)).exists?
-        raise TransferError.new("Project with same path in target namespace already exists")
+      if Project.where(namespace_id: @new_namespace.try(:id)).where('path = ? or name = ?', project.path, project.name).exists?
+        raise TransferError.new("Project with same name or path in target namespace already exists")
       end
 
       if project.has_container_registry_tags?
@@ -54,6 +55,7 @@ module Projects
 
       attempt_transfer_transaction
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def attempt_transfer_transaction
       Project.transaction do
@@ -118,6 +120,7 @@ module Projects
 
     def rollback_side_effects
       rollback_folder_move
+      project.reload
       update_namespace_and_visibility(@old_namespace)
       write_repository_config(@old_path)
     end

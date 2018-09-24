@@ -1,0 +1,19 @@
+{
+  "oneOf": [
+    { "type": "null" },
+    {
+      "type": "object",
+      "required": [
+        "image",
+        "size",
+        "title"
+      ],
+      "properties": {
+        "image": { "type": "string" },
+        "size": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" }
+      }
+    }
+  ]
+}

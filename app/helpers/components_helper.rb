@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ComponentsHelper
   def gitlab_workhorse_version
     if request.headers['Gitlab-Workhorse'].present?

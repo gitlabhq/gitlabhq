@@ -101,4 +101,11 @@ describe PreviewMarkdownService do
 
     expect(result[:markdown_engine]).to eq :common_mark
   end
+
+  it 'honors the legacy_render parameter' do
+    service = described_class.new(project, user, { legacy_render: '1' })
+    result  = service.execute
+
+    expect(result[:markdown_engine]).to eq :redcarpet
+  end
 end

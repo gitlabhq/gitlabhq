@@ -1,5 +1,3 @@
-- boards_page = controller.controller_name == 'boards'
-
 .issues-filters
   .issues-details-filters.row-content-block.second-block
     = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :search]), method: :get, class: 'filter-form js-filter-form' do

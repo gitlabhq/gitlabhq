@@ -16,6 +16,9 @@
         = _('Add new application')
       = render 'form', application: @application
       %hr
+    - else
+      .bs-callout.bs-callout-disabled
+        = _('Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission')
     - if user_oauth_applications?
       .oauth-applications
         %h5
@@ -62,7 +65,7 @@
                 %th
             %tbody
               - @authorized_apps.each do |app|
-                - token = app.authorized_tokens.order('created_at desc').first
+                - token = app.authorized_tokens.order('created_at desc').first # rubocop: disable CodeReuse/ActiveRecord
                 %tr{ id: "application_#{app.id}" }
                   %td= app.name
                   %td= token.created_at

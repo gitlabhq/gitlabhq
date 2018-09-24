@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'nokogiri'
 
 module MarkupHelper
@@ -72,14 +74,21 @@ module MarkupHelper
   # the tag contents are truncated without removing the closing tag.
   def first_line_in_markdown(object, attribute, max_chars = nil, options = {})
     md = markdown_field(object, attribute, options)
+    return nil unless md.present?
 
-    text = truncate_visible(md, max_chars || md.length) if md.present?
+    tags = %w(a gl-emoji b pre code p span)
+    tags << 'img' if options[:allow_images]
 
-    sanitize(
+    text = truncate_visible(md, max_chars || md.length)
+    text = sanitize(
       text,
-      tags: %w(a img gl-emoji b pre code p span),
+      tags: tags,
       attributes: Rails::Html::WhiteListSanitizer.allowed_attributes + ['style', 'data-src', 'data-name', 'data-unicode-version']
     )
+
+    # since <img> tags are stripped, this can leave empty <a> tags hanging around
+    # (as our markdown wraps images in links)
+    options[:allow_images] ? text : strip_empty_link_tags(text).html_safe
   end
 
   def markdown(text, context = {})
@@ -107,23 +116,23 @@ module MarkupHelper
 
   def markup(file_name, text, context = {})
     context[:project] ||= @project
-    context[:markdown_engine] ||= :redcarpet
+    context[:markdown_engine] ||= :redcarpet unless commonmark_for_repositories_enabled?
     html = context.delete(:rendered) || markup_unsafe(file_name, text, context)
     prepare_for_rendering(html, context)
   end
 
-  def render_wiki_content(wiki_page)
+  def render_wiki_content(wiki_page, context = {})
     text = wiki_page.content
     return '' unless text.present?
 
-    context = {
+    context.merge!(
       pipeline: :wiki,
       project: @project,
       project_wiki: @project_wiki,
       page_slug: wiki_page.slug,
-      issuable_state_filter_enabled: true,
-      markdown_engine: :redcarpet
-    }
+      issuable_state_filter_enabled: true
+    )
+    context[:markdown_engine] ||= :redcarpet unless commonmark_for_repositories_enabled?
 
     html =
       case wiki_page.format
@@ -178,6 +187,10 @@ module MarkupHelper
     end
   end
 
+  def commonmark_for_repositories_enabled?
+    Feature.enabled?(:commonmark_for_repositories, default_enabled: true)
+  end
+
   private
 
   # Return +text+, truncated to +max_chars+ characters, excluding any HTML
@@ -227,6 +240,16 @@ module MarkupHelper
     else
       truncated
     end
+  end
+
+  def strip_empty_link_tags(text)
+    scrubber = Loofah::Scrubber.new do |node|
+      node.remove if node.name == 'a' && node.content.blank?
+    end
+
+    # Use `Loofah` directly instead of `sanitize`
+    # as we still use the `rails-deprecated_sanitizer` gem
+    Loofah.fragment(text).scrub!(scrubber).to_s
   end
 
   def markdown_toolbar_button(options = {})

@@ -1,5 +1,0 @@
----
-title: Truncate branch names and update "commits behind" text in MR page
-merge_request: 21206
-author:
-type: changed

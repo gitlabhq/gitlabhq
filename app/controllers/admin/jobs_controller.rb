@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 class Admin::JobsController < Admin::ApplicationController
+  # rubocop: disable CodeReuse/ActiveRecord
   def index
     @scope = params[:scope]
     @all_builds = Ci::Build
@@ -16,6 +19,7 @@ class Admin::JobsController < Admin::ApplicationController
       end
     @builds = @builds.page(params[:page]).per(30)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def cancel_all
     Ci::Build.running_or_pending.each(&:cancel)

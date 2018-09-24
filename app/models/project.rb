@@ -29,6 +29,7 @@ class Project < ActiveRecord::Base
   include BatchDestroyDependentAssociations
   include FeatureGate
   include OptionallySearch
+  include FromUnion
   extend Gitlab::Cache::RequestCache
 
   extend Gitlab::ConfigHelper
@@ -232,6 +233,8 @@ class Project < ActiveRecord::Base
   has_many :clusters, through: :cluster_project, class_name: 'Clusters::Cluster'
   has_many :cluster_ingresses, through: :clusters, source: :application_ingress, class_name: 'Clusters::Applications::Ingress'
 
+  has_many :prometheus_metrics
+
   # Container repositories need to remove data from the container registry,
   # which is not managed by the DB. Hence we're still using dependent: :destroy
   # here.
@@ -328,7 +331,7 @@ class Project < ActiveRecord::Base
 
   # last_activity_at is throttled every minute, but last_repository_updated_at is updated with every push
   scope :sorted_by_activity, -> { reorder("GREATEST(COALESCE(last_activity_at, '1970-01-01'), COALESCE(last_repository_updated_at, '1970-01-01')) DESC") }
-  scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
+  scope :sorted_by_stars, -> { reorder(star_count: :desc) }
 
   scope :in_namespace, ->(namespace_ids) { where(namespace_id: namespace_ids) }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
@@ -478,6 +481,8 @@ class Project < ActiveRecord::Base
         reorder(last_activity_at: :desc)
       when 'latest_activity_asc'
         reorder(last_activity_at: :asc)
+      when 'stars_desc'
+        sorted_by_stars
       else
         order_by(method)
       end
@@ -567,7 +572,6 @@ class Project < ActiveRecord::Base
   end
 
   def cleanup
-    @repository&.cleanup
     @repository = nil
   end
 
@@ -1113,12 +1117,14 @@ class Project < ActiveRecord::Base
     find_or_initialize_services.find { |service| service.to_param == name }
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def create_labels
     Label.templates.each do |label|
       params = label.attributes.except('id', 'template', 'created_at', 'updated_at')
       Labels::FindOrCreateService.new(nil, self, params).execute(skip_authorization: true)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def find_service(list, name)
     list.find { |service| service.to_param == name }
@@ -1166,6 +1172,7 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def send_move_instructions(old_path_with_namespace)
     # New project path needs to be committed to the DB or notification will
     # retrieve stale information
@@ -1173,6 +1180,7 @@ class Project < ActiveRecord::Base
       NotificationService.new.project_was_moved(self, old_path_with_namespace)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def owner
     if group
@@ -1182,15 +1190,16 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def execute_hooks(data, hooks_scope = :push_hooks)
     run_after_commit_or_now do
-      hooks.hooks_for(hooks_scope).each do |hook|
+      hooks.hooks_for(hooks_scope).select_active(hooks_scope, data).each do |hook|
         hook.async_execute(data, hooks_scope.to_s)
       end
-
       SystemHooksService.new.execute_hooks(data, hooks_scope)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def execute_services(data, hooks_scope = :push_hooks)
     # Call only service hooks that are active for this scope
@@ -1487,8 +1496,7 @@ class Project < ActiveRecord::Base
   end
 
   def all_runners
-    union = Gitlab::SQL::Union.new([runners, group_runners, shared_runners])
-    Ci::Runner.from("(#{union.to_sql}) ci_runners")
+    Ci::Runner.from_union([runners, group_runners, shared_runners])
   end
 
   def active_runners
@@ -1505,13 +1513,17 @@ class Project < ActiveRecord::Base
     self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def open_issues_count(current_user = nil)
     Projects::OpenIssuesCountService.new(self, current_user).count
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
+  # rubocop: disable CodeReuse/ServiceClass
   def open_merge_requests_count
     Projects::OpenMergeRequestsCountService.new(self).count
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def visibility_level_allowed_as_fork?(level = self.visibility_level)
     return true unless forked?
@@ -1592,6 +1604,7 @@ class Project < ActiveRecord::Base
   end
 
   # TODO: what to do here when not using Legacy Storage? Do we still need to rename and delay removal?
+  # rubocop: disable CodeReuse/ServiceClass
   def remove_pages
     # Projects with a missing namespace cannot have their pages removed
     return unless namespace
@@ -1607,6 +1620,7 @@ class Project < ActiveRecord::Base
       PagesWorker.perform_in(5.minutes, :remove, namespace.full_path, temp_path)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def rename_repo
     path_before      = previous_changes['path'].first
@@ -1667,6 +1681,7 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def after_create_default_branch
     return unless default_branch
 
@@ -1687,6 +1702,7 @@ class Project < ActiveRecord::Base
       ProtectedBranches::CreateService.new(self, creator, params).execute(skip_authorization: true)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def remove_import_jid
     return unless import_jid
@@ -1734,16 +1750,12 @@ class Project < ActiveRecord::Base
     import_export_shared.archive_path
   end
 
-  def export_project_path
-    Dir.glob("#{export_path}/*export.tar.gz").max_by { |f| File.ctime(f) }
-  end
-
   def export_status
     if export_in_progress?
       :started
     elsif after_export_in_progress?
       :after_export_action
-    elsif export_project_path || export_project_object_exists?
+    elsif export_file_exists?
       :finished
     else
       :none
@@ -1758,21 +1770,19 @@ class Project < ActiveRecord::Base
     import_export_shared.after_export_in_progress?
   end
 
-  def remove_exports(path = export_path)
-    if path.present?
-      FileUtils.rm_rf(path)
-    elsif export_project_object_exists?
-      import_export_upload.remove_export_file!
-      import_export_upload.save
-    end
+  def remove_exports
+    return unless export_file_exists?
+
+    import_export_upload.remove_export_file!
+    import_export_upload.save
   end
 
-  def remove_exported_project_file
-    remove_exports(export_project_path)
+  def export_file_exists?
+    export_file&.file
   end
 
-  def export_project_object_exists?
-    Gitlab::ImportExport.object_storage? && import_export_upload&.export_file&.file
+  def export_file
+    import_export_upload&.export_file
   end
 
   def full_path_slug
@@ -1923,9 +1933,11 @@ class Project < ActiveRecord::Base
   # @deprecated cannot remove yet because it has an index with its name in elasticsearch
   alias_method :path_with_namespace, :full_path
 
+  # rubocop: disable CodeReuse/ServiceClass
   def forks_count
     Projects::ForksCountService.new(self).count
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def legacy_storage?
     [nil, 0].include?(self.storage_version)
@@ -2012,12 +2024,10 @@ class Project < ActiveRecord::Base
   def badges
     return project_badges unless group
 
-    group_badges_rel = GroupBadge.where(group: group.self_and_ancestors)
-
-    union = Gitlab::SQL::Union.new([project_badges.select(:id),
-                                    group_badges_rel.select(:id)])
-
-    Badge.where("id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+    Badge.from_union([
+      project_badges,
+      GroupBadge.where(group: group.self_and_ancestors)
+    ])
   end
 
   def merge_requests_allowing_push_to_user(user)
@@ -2070,6 +2080,7 @@ class Project < ActiveRecord::Base
 
   private
 
+  # rubocop: disable CodeReuse/ServiceClass
   def rename_or_migrate_repository!
     if Gitlab::CurrentSettings.hashed_storage_enabled? &&
         storage_upgradable? &&
@@ -2079,6 +2090,7 @@ class Project < ActiveRecord::Base
       storage.rename_repo
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def storage_upgradable?
     storage_version != LATEST_STORAGE_VERSION
@@ -2103,6 +2115,7 @@ class Project < ActiveRecord::Base
     self.project_feature.untrack_statistics_for_deletion!
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def execute_rename_repository_hooks!(full_path_before)
     # When we import a project overwriting the original project, there
     # is a move operation. In that case we don't want to send the instructions.
@@ -2113,6 +2126,7 @@ class Project < ActiveRecord::Base
 
     reload_repository!
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def storage
     @storage ||=

@@ -29,6 +29,7 @@ module Gitlab
       @blobs_count ||= blobs.count
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def limited_notes_count
       return @limited_notes_count if defined?(@limited_notes_count)
 
@@ -42,6 +43,7 @@ module Gitlab
 
       @limited_notes_count
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def wiki_blobs_count
       @wiki_blobs_count ||= wiki_blobs.count
@@ -118,9 +120,11 @@ module Gitlab
       @notes ||= notes_finder(nil)
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def notes_finder(type)
       NotesFinder.new(project, @current_user, search: query, target_type: type).execute.user.order('updated_at DESC')
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def commits
       @commits ||= find_commits(query)

@@ -81,10 +81,6 @@ class Repository
 
   alias_method :raw, :raw_repository
 
-  def cleanup
-    @raw_repository&.cleanup
-  end
-
   # Don't use this! It's going away. Use Gitaly to read or write from repos.
   def path_to_repo
     @path_to_repo ||=
@@ -580,7 +576,12 @@ class Repository
   end
 
   def rendered_readme
-    MarkupHelper.markup_unsafe(readme.name, readme.data, project: project, markdown_engine: :redcarpet) if readme
+    return unless readme
+
+    context = { project: project }
+    context[:markdown_engine] = :redcarpet unless MarkupHelper.commonmark_for_repositories_enabled?
+
+    MarkupHelper.markup_unsafe(readme.name, readme.data, context)
   end
   cache_method :rendered_readme
 
@@ -994,20 +995,20 @@ class Repository
                                        remote_branch: merge_request.target_branch)
   end
 
-  def blob_data_at(sha, path)
-    blob = blob_at(sha, path)
-    return unless blob
-
-    blob.load_all_data!
-    blob.data
-  end
-
   def squash(user, merge_request)
     raw.squash(user, merge_request.id, branch: merge_request.target_branch,
                                        start_sha: merge_request.diff_start_sha,
                                        end_sha: merge_request.diff_head_sha,
                                        author: merge_request.author,
                                        message: merge_request.title)
+  end
+
+  def blob_data_at(sha, path)
+    blob = blob_at(sha, path)
+    return unless blob
+
+    blob.load_all_data!
+    blob.data
   end
 
   private

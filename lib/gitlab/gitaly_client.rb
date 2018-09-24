@@ -174,10 +174,29 @@ module Gitlab
     end
     private_class_method :current_transaction_labels
 
+    # For some time related tasks we can't rely on `Time.now` since it will be
+    # affected by Timecop in some tests, and the clock of some gitaly-related
+    # components (grpc's c-core and gitaly server) use system time instead of
+    # timecop's time, so tests will fail.
+    # `Time.at(Process.clock_gettime(Process::CLOCK_REALTIME))` will circumvent
+    # timecop.
+    def self.real_time
+      Time.at(Process.clock_gettime(Process::CLOCK_REALTIME))
+    end
+    private_class_method :real_time
+
+    def self.authorization_token(storage)
+      token = token(storage).to_s
+      issued_at = real_time.to_i.to_s
+      hmac = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new, token, issued_at)
+
+      "v2.#{hmac}.#{issued_at}"
+    end
+    private_class_method :authorization_token
+
     def self.request_kwargs(storage, timeout, remote_storage: nil)
-      encoded_token = Base64.strict_encode64(token(storage).to_s)
       metadata = {
-        'authorization' => "Bearer #{encoded_token}",
+        'authorization' => "Bearer #{authorization_token(storage)}",
         'client_name' => CLIENT_NAME
       }
 
@@ -195,18 +214,13 @@ module Gitlab
 
       return result unless timeout > 0
 
-      # Do not use `Time.now` for deadline calculation, since it
-      # will be affected by Timecop in some tests, but grpc's c-core
-      # uses system time instead of timecop's time, so tests will fail
-      # `Time.at(Process.clock_gettime(Process::CLOCK_REALTIME))` will
-      # circumvent timecop
-      deadline = Time.at(Process.clock_gettime(Process::CLOCK_REALTIME)) + timeout
+      deadline = real_time + timeout
       result[:deadline] = deadline
 
       result
     end
 
-    SERVER_FEATURE_FLAGS = %w[gogit_findcommit].freeze
+    SERVER_FEATURE_FLAGS = %w[gogit_findcommit git_v2].freeze
 
     def self.server_feature_flags
       SERVER_FEATURE_FLAGS.map do |f|

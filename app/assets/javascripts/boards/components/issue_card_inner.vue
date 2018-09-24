@@ -169,10 +169,10 @@ export default {
       class="board-card-labels"
     >
       <button
-        v-tooltip
         v-for="label in issue.labels"
         v-if="showLabel(label)"
         :key="label.id"
+        v-tooltip
         :style="labelStyle(label)"
         :title="label.description"
         class="badge color-label"
@@ -226,8 +226,8 @@ export default {
           tooltip-placement="bottom"
         />
         <span
-          v-tooltip
           v-if="shouldRenderCounter"
+          v-tooltip
           :title="assigneeCounterTooltip"
           class="avatar-counter"
         >

@@ -41,7 +41,7 @@
           data: { confirm: s_('Branches|Deleting the merged branches cannot be undone. Are you sure?'),
             container: 'body' } do
           = s_('Branches|Delete merged branches')
-        = link_to new_project_branch_path(@project), class: 'btn btn-create' do
+        = link_to new_project_branch_path(@project), class: 'btn btn-success' do
           = s_('Branches|New branch')
 
   - if can?(current_user, :admin_project, @project)

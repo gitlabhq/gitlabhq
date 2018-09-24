@@ -38,14 +38,6 @@ describe GroupsController do
       project
     end
 
-    context 'as html' do
-      it 'assigns whether or not a group has children' do
-        get :show, id: group.to_param
-
-        expect(assigns(:has_children)).to be_truthy
-      end
-    end
-
     context 'as atom' do
       it 'assigns events for all the projects in the group' do
         create(:event, project: project)
@@ -54,6 +46,16 @@ describe GroupsController do
 
         expect(assigns(:events)).not_to be_empty
       end
+    end
+  end
+
+  describe 'GET edit' do
+    it 'sets the badge API endpoint' do
+      sign_in(owner)
+
+      get :edit, id: group.to_param
+
+      expect(assigns(:badge_api_endpoint)).not_to be_nil
     end
   end
 

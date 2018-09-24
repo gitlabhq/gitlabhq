@@ -113,7 +113,6 @@ linters:
       - Lint/ParenthesesAsGroupedExpression
       - Lint/RedundantWithIndex
       - Lint/Syntax
-      - Lint/UselessAssignment
       - Metrics/BlockNesting
       - Naming/VariableName
       - Performance/RedundantMatch

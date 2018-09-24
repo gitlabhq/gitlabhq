@@ -204,7 +204,7 @@ describe Projects::DestroyService do
       context 'when image repository deletion fails' do
         it 'raises an exception' do
           expect_any_instance_of(ContainerRepository)
-            .to receive(:delete_tags!).and_return(false)
+            .to receive(:delete_tags!).and_raise(RuntimeError)
 
           expect(destroy_project(project, user)).to be false
         end

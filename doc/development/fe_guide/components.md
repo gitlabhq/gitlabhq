@@ -42,7 +42,7 @@ See also the [corresponding UX guide](../ux_guide/components.md#dropdowns).
 
 See also the [corresponding UX guide](../ux_guide/components.md#modals).
 
-We have a reusable Vue component for modals: [vue_shared/components/gl-modal.vue](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/vue_shared/components/gl-modal.vue)
+We have a reusable Vue component for modals: [vue_shared/components/gl_modal.vue](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/vue_shared/components/gl_modal.vue)
 
 Here is an example of how to use it:
 

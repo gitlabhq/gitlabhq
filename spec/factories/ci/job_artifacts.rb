@@ -24,6 +24,12 @@ FactoryBot.define do
       end
     end
 
+    trait :legacy_archive do
+      archive
+
+      file_location :legacy_path
+    end
+
     trait :metadata do
       file_type :metadata
       file_format :gzip

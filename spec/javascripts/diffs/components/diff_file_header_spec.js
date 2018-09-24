@@ -16,8 +16,8 @@ describe('diff_file_header', () => {
 
   const store = new Vuex.Store({
     modules: {
-      diffs: diffsModule,
-      notes: notesModule,
+      diffs: diffsModule(),
+      notes: notesModule(),
     },
   });
 
@@ -450,13 +450,14 @@ describe('diff_file_header', () => {
           propsCopy.diffFile.deletedFile = true;
 
           const discussionGetter = () => [diffDiscussionMock];
-          notesModule.getters.discussions = discussionGetter;
+          const notesModuleMock = notesModule();
+          notesModuleMock.getters.discussions = discussionGetter;
           vm = mountComponentWithStore(Component, {
             props: propsCopy,
             store: new Vuex.Store({
               modules: {
-                diffs: diffsModule,
-                notes: notesModule,
+                diffs: diffsModule(),
+                notes: notesModuleMock,
               },
             }),
           });

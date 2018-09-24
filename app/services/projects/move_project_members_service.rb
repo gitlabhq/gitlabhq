@@ -33,10 +33,12 @@ module Projects
     end
 
     # Look for members in source_project that are not in the target project
+    # rubocop: disable CodeReuse/ActiveRecord
     def non_existent_members
       source_project.members
                     .select(:id)
                     .where.not(user_id: @project.project_members.select(:user_id))
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

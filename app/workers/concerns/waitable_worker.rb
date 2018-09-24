@@ -3,7 +3,7 @@
 module WaitableWorker
   extend ActiveSupport::Concern
 
-  module ClassMethods
+  class_methods do
     # Schedules multiple jobs and waits for them to be completed.
     def bulk_perform_and_wait(args_list, timeout: 10)
       # Short-circuit: it's more efficient to do small numbers of jobs inline

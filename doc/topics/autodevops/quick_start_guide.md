@@ -143,7 +143,7 @@ In the next section we'll break down the pipeline and explain what each job does
 
 By now you should see the pipeline running, but what is it running exactly?
 
-To navigate inside the pipeline, click its status badge. (It's status should be "running").
+To navigate inside the pipeline, click its status badge. (Its status should be "running").
 The pipeline is split into 4 stages, each running a couple of jobs.
 
 ![Pipeline stages](img/guide_pipeline_stages.png)
@@ -194,7 +194,7 @@ applications. In the rightmost column for the production environment, you can ma
 
 - The first icon will open the URL of the application that is deployed in
   production. It's a very simple page, but the important part is that it works!
-- The next icon with the small graph will take you to the metrics page where
+- The next icon, with the small graph, will take you to the metrics page where
   Prometheus collects data about the Kubernetes cluster and how the application
   affects it (in terms of memory/CPU usage, latency, etc.).
 
@@ -217,7 +217,7 @@ under **Settings > CI/CD > Variables**.
 
 ### Working with branches
 
-Following the [GitLab flow](../../workflow/gitlab_flow.md#working-with-feature-branches)
+Following the [GitLab flow](../../workflow/gitlab_flow.md#working-with-feature-branches),
 let's create a feature branch that will add some content to the application.
 
 Under your repository, navigate to the following file: `app/views/welcome/index.html.erb`.
@@ -235,7 +235,7 @@ by clicking **Commit**.
 ![Web IDE commit](img/guide_ide_commit.png)
 
 Once you submit the merge request, you'll see the pipeline running. This will
-run all the jobs as [described previously](#deploying-the-application), as well
+run all the jobs as [described previously](#deploying-the-application), as well as
 a few more that run only on branches other than `master`.
 
 ![Merge request](img/guide_merge_request.png)
@@ -278,7 +278,7 @@ and the application will be eventually deployed straight to production.
 
 After implementing this project, you should now have a solid understanding of the basics of Auto DevOps.
 We started from building and testing to deploying and monitoring an application
-all within GitLab. Despite its automatic nature, Audo DevOps can also be configured
+all within GitLab. Despite its automatic nature, Auto DevOps can also be configured
 and customized to fit your workflow. Here are some helpful resources for further reading:
 
 1. [Auto DevOps](index.md)

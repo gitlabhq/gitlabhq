@@ -33,6 +33,15 @@ rules:
     - error
     - max: 1
   promise/catch-or-return: error
+  no-param-reassign:
+    - error
+    - props: true
+      ignorePropertyModificationsFor:
+        - "acc"         # for reduce accumulators
+        - "accumulator" # for reduce accumulators
+        - "el"          # for DOM elements
+        - "element"     # for DOM elements
+        - "state"       # for Vuex mutations
   no-underscore-dangle:
     - error
     - allow:
@@ -47,6 +56,10 @@ rules:
         component: always
       svg: always
       math: always
+  camelcase:
+    - error
+    - properties: never
+      ignoreDestructuring: true
   ## Conflicting rules with prettier:
   space-before-function-paren: off
   curly: off
@@ -54,7 +67,7 @@ rules:
   function-paren-newline: off
   object-curly-newline: off
   padded-blocks: off
-  # Disabled for now, to make the eslint 3 -> eslint 4 update smoother
+  # Disabled for now, to make the eslint 3 -> eslint 5 update smoother
   ## Indent rule. We are using the old for now: https://eslint.org/docs/user-guide/migrating-to-4.0.0#indent-rewrite
   indent: off
   indent-legacy:
@@ -69,3 +82,18 @@ rules:
       FunctionExpression:
         parameters: 1
         body: 1
+  # Disabled for now, to make the airbnb-base 12.1.0 -> 13.1.0 update smoother
+  operator-linebreak: off
+  implicit-arrow-linebreak: off
+  no-else-return:
+    - error
+    - allowElseIf: true
+  import/no-useless-path-segments: off
+  lines-between-class-members: off
+  # Disabled for now, to make the plugin-vue 4.5 -> 5.0 update smoother
+  vue/html-closing-bracket-newline: off
+  vue/html-closing-bracket-spacing: off
+  vue/no-confusing-v-for-v-if: error
+  vue/no-unused-components: off
+  vue/no-use-v-if-with-v-for: off
+  vue/no-v-html: off

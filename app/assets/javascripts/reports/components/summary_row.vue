@@ -1,6 +1,5 @@
 <script>
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import Popover from '~/vue_shared/components/help_popover.vue';
 
 /**
@@ -15,7 +14,6 @@ export default {
   name: 'ReportSummaryRow',
   components: {
     CiIcon,
-    LoadingIcon,
     Popover,
   },
   props: {
@@ -46,7 +44,7 @@ export default {
 <template>
   <div class="report-block-list-issue report-block-list-issue-parent">
     <div class="report-block-list-icon append-right-10 prepend-left-5">
-      <loading-icon
+      <gl-loading-icon
         v-if="statusIcon === 'loading'"
         css-class="report-block-list-loading-icon"
       />

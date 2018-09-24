@@ -46,6 +46,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Plugins](plugins.md): With custom plugins, GitLab administrators can introduce custom integrations without modifying GitLab's source code.
 - [Enforcing Terms of Service](../user/admin_area/settings/terms.md)
 - [Third party offers](../user/admin_area/settings/third_party_offers.md)
+- [Compliance](compliance.md): A collection of features from across the application that you may configure to help ensure that your GitLab instance and DevOps workflow meet compliance standards.
 
 #### Customizing GitLab's appearance
 
@@ -134,15 +135,15 @@ created in snippets, wikis, and repos.
 
 - [Monitoring GitLab](monitoring/index.md):
   - [Monitoring uptime](../user/admin_area/monitoring/health_check.md): Check the server status using the health check endpoint.
-    - [IP whitelist](monitoring/ip_whitelist.md): Monitor endpoints that provide health check information when probed.
-    - [Monitoring GitHub imports](monitoring/github_imports.md): GitLab's GitHub Importer displays Prometheus metrics to monitor the health and progress of the importer.
+  - [IP whitelist](monitoring/ip_whitelist.md): Monitor endpoints that provide health check information when probed.
+  - [Monitoring GitHub imports](monitoring/github_imports.md): GitLab's GitHub Importer displays Prometheus metrics to monitor the health and progress of the importer.
 
 ### Performance Monitoring
 
 - [GitLab Performance Monitoring](monitoring/performance/index.md):
   - [Enable Performance Monitoring](monitoring/performance/gitlab_configuration.md): Enable GitLab Performance Monitoring.
   - [GitLab performance monitoring with InfluxDB](monitoring/performance/influxdb_configuration.md): Configure GitLab and InfluxDB for measuring performance metrics.
-    - [InfluxDB Schema](monitoring/performance/influxdb_schema.md): Measurements stored in InfluxDB.
+  - [InfluxDB Schema](monitoring/performance/influxdb_schema.md): Measurements stored in InfluxDB.
   - [GitLab performance monitoring with Prometheus](monitoring/prometheus/index.md): Configure GitLab and Prometheus for measuring performance metrics.
   - [GitLab performance monitoring with Grafana](monitoring/performance/grafana_configuration.md): Configure GitLab to visualize time series metrics through graphs and dashboards.
   - [Request Profiling](monitoring/performance/request_profiling.md): Get a detailed profile on slow requests.

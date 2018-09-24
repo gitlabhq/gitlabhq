@@ -13,7 +13,7 @@ module Gitlab
         Storage is invalid because it has no `path` key.
 
         For source installations, update your config/gitlab.yml Refer to gitlab.yml.example for an updated example.
-        If you're using the Gitlab Development Kit, you can update your configuration running `gdk reconfigure`.
+        If you're using the GitLab Development Kit, you can update your configuration running `gdk reconfigure`.
       MSG
 
       # This class will give easily recognizable NoMethodErrors

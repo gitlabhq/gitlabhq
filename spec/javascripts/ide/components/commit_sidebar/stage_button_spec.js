@@ -29,7 +29,7 @@ describe('IDE stage file button', () => {
   });
 
   it('renders button to discard & stage', () => {
-    expect(vm.$el.querySelectorAll('.btn').length).toBe(2);
+    expect(vm.$el.querySelectorAll('.btn-blank').length).toBe(2);
   });
 
   it('calls store with stage button', () => {
@@ -39,7 +39,7 @@ describe('IDE stage file button', () => {
   });
 
   it('calls store with discard button', () => {
-    vm.$el.querySelector('.dropdown-menu button').click();
+    vm.$el.querySelector('.btn-danger').click();
 
     expect(vm.discardFileChanges).toHaveBeenCalledWith(f.path);
   });

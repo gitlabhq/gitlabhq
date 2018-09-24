@@ -170,12 +170,14 @@ describe Projects::ClustersController do
   end
 
   describe 'POST create for new cluster' do
+    let(:legacy_abac_param) { 'true' }
     let(:params) do
       {
         cluster: {
           name: 'new-cluster',
           provider_gcp_attributes: {
-            gcp_project_id: 'gcp-project-12345'
+            gcp_project_id: 'gcp-project-12345',
+            legacy_abac: legacy_abac_param
           }
         }
       }
@@ -201,6 +203,18 @@ describe Projects::ClustersController do
           expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
           expect(project.clusters.first).to be_gcp
           expect(project.clusters.first).to be_kubernetes
+          expect(project.clusters.first.provider_gcp).to be_legacy_abac
+        end
+
+        context 'when legacy_abac param is false' do
+          let(:legacy_abac_param) { 'false' }
+
+          it 'creates a new cluster with legacy_abac_disabled' do
+            expect(ClusterProvisionWorker).to receive(:perform_async)
+            expect { go }.to change { Clusters::Cluster.count }
+              .and change { Clusters::Providers::Gcp.count }
+            expect(project.clusters.first.provider_gcp).not_to be_legacy_abac
+          end
         end
       end
 
@@ -274,11 +288,43 @@ describe Projects::ClustersController do
       context 'when creates a cluster' do
         it 'creates a new cluster' do
           expect(ClusterProvisionWorker).to receive(:perform_async)
+
           expect { go }.to change { Clusters::Cluster.count }
             .and change { Clusters::Platforms::Kubernetes.count }
+
           expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
+
           expect(project.clusters.first).to be_user
           expect(project.clusters.first).to be_kubernetes
+        end
+      end
+
+      context 'when creates a RBAC-enabled cluster' do
+        let(:params) do
+          {
+            cluster: {
+              name: 'new-cluster',
+              platform_kubernetes_attributes: {
+                api_url: 'http://my-url',
+                token: 'test',
+                namespace: 'aaa',
+                authorization_type: 'rbac'
+              }
+            }
+          }
+        end
+
+        it 'creates a new cluster' do
+          expect(ClusterProvisionWorker).to receive(:perform_async)
+
+          expect { go }.to change { Clusters::Cluster.count }
+            .and change { Clusters::Platforms::Kubernetes.count }
+
+          expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
+
+          expect(project.clusters.first).to be_user
+          expect(project.clusters.first).to be_kubernetes
+          expect(project.clusters.first).to be_platform_kubernetes_rbac
         end
       end
     end

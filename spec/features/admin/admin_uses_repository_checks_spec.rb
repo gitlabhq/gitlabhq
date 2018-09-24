@@ -33,7 +33,7 @@ describe 'Admin uses repository checks' do
   end
 
   it 'to clear all repository checks', :js do
-    visit admin_application_settings_path
+    visit repository_admin_application_settings_path
 
     expect(RepositoryCheck::ClearWorker).to receive(:perform_async)
 

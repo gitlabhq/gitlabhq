@@ -101,7 +101,7 @@ Other common configuration options:
 - `provider`: Optimizes the deployment for a cloud provider. The default is `gke` for [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/), with `acs` also supported for the [Azure Container Service](https://azure.microsoft.com/en-us/services/container-service/).
 
 For additional configuration options, consult the
-[`values.yaml`](https://gitlab.com/charts/charts.gitlab.io/blob/master/charts/gitlab-omnibus/values.yaml).
+[`values.yaml`](https://gitlab.com/charts/gitlab-omnibus/blob/master/values.yaml).
 
 ### Choosing a different GitLab release version
 
@@ -228,7 +228,7 @@ helm upgrade gitlab --set gitlab=ee,gitlabEEImage=gitlab/gitlab-ee:9.5.5-ee.0 gi
 To uninstall the GitLab Chart, run the following:
 
 ```bash
-helm delete gitlab
+helm delete --purge gitlab
 ```
 
 ## Troubleshooting

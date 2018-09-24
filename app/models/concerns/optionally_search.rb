@@ -3,7 +3,7 @@
 module OptionallySearch
   extend ActiveSupport::Concern
 
-  module ClassMethods
+  class_methods do
     def search(*)
       raise(
         NotImplementedError,

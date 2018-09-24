@@ -95,17 +95,9 @@ export default {
       :size="imgSize"
       :tooltip-text="avatarTooltipText"
       :tooltip-placement="tooltipPlacement"
-    />
-    <user-avatar-empty
-      v-else
-      :css-classes="imgCssClasses"
-      :size="imgSize"
-      :tooltip-text="avatarTooltipText"
-      :tooltip-placement="tooltipPlacement"
-    />
-    <span
-      v-tooltip
+    /><span
       v-if="shouldShowUsername"
+      v-tooltip
       :title="tooltipText"
       :tooltip-placement="tooltipPlacement"
     >{{ username }}</span>

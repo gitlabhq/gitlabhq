@@ -4,7 +4,6 @@ import Flash from '../../flash';
 import Poll from '../../lib/utils/poll';
 import EmptyState from '../components/empty_state.vue';
 import SvgBlankState from '../components/blank_state.vue';
-import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
 import PipelinesTableComponent from '../components/pipelines_table.vue';
 import eventHub from '../event_hub';
 import { CANCEL_REQUEST } from '../constants';
@@ -14,7 +13,6 @@ export default {
     PipelinesTableComponent,
     SvgBlankState,
     EmptyState,
-    LoadingIcon,
   },
   data() {
     return {

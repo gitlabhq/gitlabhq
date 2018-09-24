@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Boards
   class IssuesController < Boards::ApplicationController
     include BoardsResponses
@@ -11,6 +13,7 @@ module Boards
     before_action :authorize_update_issue, only: [:update]
     skip_before_action :authenticate_user!, only: [:index]
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def index
       list_service = Boards::Issues::ListService.new(board_parent, current_user, filter_params)
       issues = list_service.execute
@@ -25,6 +28,7 @@ module Boards
 
       render_issues(issues, list_service.metadata)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def create
       service = Boards::Issues::CreateService.new(board_parent, project, current_user, issue_params)

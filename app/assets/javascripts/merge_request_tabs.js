@@ -115,8 +115,9 @@ export default class MergeRequestTabs {
       this.mergeRequestTabs &&
       this.mergeRequestTabs.querySelector(`a[data-action='${action}']`) &&
       this.mergeRequestTabs.querySelector(`a[data-action='${action}']`).click
-    )
+    ) {
       this.mergeRequestTabs.querySelector(`a[data-action='${action}']`).click();
+    }
     this.initAffix();
   }
 

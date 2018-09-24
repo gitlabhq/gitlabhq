@@ -11,7 +11,7 @@ You can read more about it here:
 ## Enforcing 2FA for all users
 
 Users on GitLab, can enable it without any admin's intervention. If you want to
-enforce everyone to setup 2FA, you can choose from two different ways:
+enforce everyone to set up 2FA, you can choose from two different ways:
 
  1. Enforce on next login
  2. Suggest on next login, but allow a grace period before enforcing.

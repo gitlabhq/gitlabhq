@@ -68,11 +68,13 @@ class IssuableBaseService < BaseService
     find_or_create_label_ids
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def filter_labels_in_param(key)
     return if params[key].to_a.empty?
 
     params[key] = available_labels.where(id: params[key]).pluck(:id)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def find_or_create_label_ids
     labels = params.delete(:labels)
@@ -129,28 +131,19 @@ class IssuableBaseService < BaseService
     params.merge!(command_params)
   end
 
-  def create_issuable(issuable, attributes, label_ids:)
-    issuable.with_transaction_returning_status do
-      if issuable.save
-        issuable.update(label_ids: label_ids)
-      end
-    end
-  end
-
   def create(issuable)
     handle_quick_actions_on_create(issuable)
     filter_params(issuable)
 
     params.delete(:state_event)
     params[:author] ||= current_user
-
-    label_ids = process_label_ids(params)
+    params[:label_ids] = issuable.label_ids.to_a + process_label_ids(params)
 
     issuable.assign_attributes(params)
 
     before_create(issuable)
 
-    if params.present? && create_issuable(issuable, params, label_ids: label_ids)
+    if issuable.save
       after_create(issuable)
       execute_hooks(issuable)
       invalidate_cache_counts(issuable, users: issuable.assignees)
@@ -256,6 +249,7 @@ class IssuableBaseService < BaseService
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def change_todo(issuable)
     case params.delete(:todo_event)
     when 'add'
@@ -265,6 +259,7 @@ class IssuableBaseService < BaseService
       todo_service.mark_todos_as_done_by_ids(todo, current_user) if todo
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def toggle_award(issuable)
     award = params.delete(:emoji_award)

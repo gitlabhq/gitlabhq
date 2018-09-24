@@ -4,6 +4,7 @@ module Gitlab
       class AdditionalMetricsEnvironmentQuery < BaseQuery
         include QueryAdditionalMetrics
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def query(environment_id)
           ::Environment.find_by(id: environment_id).try do |environment|
             query_metrics(
@@ -13,6 +14,7 @@ module Gitlab
             )
           end
         end
+        # rubocop: enable CodeReuse/ActiveRecord
       end
     end
   end

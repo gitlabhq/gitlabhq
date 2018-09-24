@@ -57,6 +57,7 @@ describe MergeRequests::ReloadDiffsService, :use_clean_rails_memory_store_cachin
         expect(Rails.cache).to receive(:delete).with(old_cache_key).and_call_original
         expect(Rails.cache).to receive(:read).with(new_cache_key).and_call_original
         expect(Rails.cache).to receive(:write).with(new_cache_key, anything, anything).and_call_original
+
         subject.execute
       end
     end

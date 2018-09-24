@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TriggersHelper
   def builds_trigger_url(project_id, ref: nil)
     if ref.nil?

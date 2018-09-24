@@ -50,9 +50,11 @@ class Projects::DiscussionsController < Projects::ApplicationController
     }
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def merge_request
     @merge_request ||= MergeRequestsFinder.new(current_user, project_id: @project.id).find_by!(iid: params[:merge_request_id])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def discussion
     @discussion ||= @merge_request.find_discussion(params[:id]) || render_404

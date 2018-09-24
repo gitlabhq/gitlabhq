@@ -30,11 +30,13 @@
         %pre.dark#merge-info-3
           - if @merge_request.for_fork?
             :preserve
-              git checkout #{h @merge_request.target_branch}
+              git fetch origin
+              git checkout origin/#{h @merge_request.target_branch}
               git merge --no-ff #{h @merge_request.source_project_path}-#{h @merge_request.source_branch}
           - else
             :preserve
-              git checkout #{h @merge_request.target_branch}
+              git fetch origin
+              git checkout origin/#{h @merge_request.target_branch}
               git merge --no-ff #{h @merge_request.source_branch}
         %p
           %strong Step 4.

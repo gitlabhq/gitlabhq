@@ -1,5 +1,5 @@
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import DiffTableCell from './diff_table_cell.vue';
 import {
   NEW_LINE_TYPE,
@@ -33,11 +33,6 @@ export default {
       required: false,
       default: false,
     },
-    discussions: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
   },
   data() {
     return {
@@ -68,7 +63,11 @@ export default {
     this.linePositionLeft = LINE_POSITION_LEFT;
     this.linePositionRight = LINE_POSITION_RIGHT;
   },
+  mounted() {
+    this.scrollToLineIfNeededInline(this.line);
+  },
   methods: {
+    ...mapActions('diffs', ['scrollToLineIfNeededInline']),
     handleMouseMove(e) {
       // To show the comment icon on the gutter we need to know if we hover the line.
       // Current table structure doesn't allow us to do this with CSS in both of the diff view types
@@ -94,7 +93,6 @@ export default {
       :is-bottom="isBottom"
       :is-hover="isHover"
       :show-comment-button="true"
-      :discussions="discussions"
       class="diff-line-num old_line"
     />
     <diff-table-cell
@@ -104,7 +102,6 @@ export default {
       :line-type="newLineType"
       :is-bottom="isBottom"
       :is-hover="isHover"
-      :discussions="discussions"
       class="diff-line-num new_line"
     />
     <td

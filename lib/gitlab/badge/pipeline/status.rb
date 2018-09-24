@@ -18,11 +18,13 @@ module Gitlab
           'pipeline'
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def status
           @project.pipelines
             .where(sha: @sha)
             .latest_status(@ref) || 'unknown'
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def metadata
           @metadata ||= Pipeline::Metadata.new(self)

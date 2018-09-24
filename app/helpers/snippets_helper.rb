@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SnippetsHelper
   def reliable_snippet_path(snippet, opts = nil)
     if snippet.project_id?

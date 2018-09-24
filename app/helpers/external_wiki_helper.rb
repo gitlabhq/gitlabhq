@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ExternalWikiHelper
   def get_project_wiki_path(project)
     external_wiki_service = project.external_wiki

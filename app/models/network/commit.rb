@@ -18,7 +18,7 @@ module Network
     end
 
     def space
-      if @spaces.size > 0
+      if @spaces.present?
         @spaces.first
       else
         0
