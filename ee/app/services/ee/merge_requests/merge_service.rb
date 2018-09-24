@@ -31,8 +31,8 @@ module EE
           return false
         end
 
-        unless push_rule.author_email_allowed?(current_user.email)
-          handle_merge_error(log_message: "Commit author's email '#{current_user.email}' does not follow the pattern '#{push_rule.author_email_regex}'", save_message_on_model: true)
+        unless push_rule.author_email_allowed?(current_user.commit_email)
+          handle_merge_error(log_message: "Commit author's email '#{current_user.commit_email}' does not follow the pattern '#{push_rule.author_email_regex}'", save_message_on_model: true)
           return false
         end
 
