@@ -12,6 +12,7 @@ class ApplicationController < ActionController::Base
   include WorkhorseHelper
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
+  include InvalidUTF8ErrorHandler
 
   before_action :authenticate_sessionless_user!
   before_action :authenticate_user!
