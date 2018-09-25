@@ -42,7 +42,7 @@ describe Clusters::Applications::InstallService do
         service.execute
 
         expect(application).to be_errored
-        expect(application.status_reason).to match(/kubernetes error:/i)
+        expect(application.status_reason).to match('Kubernetes error.')
       end
     end
 
