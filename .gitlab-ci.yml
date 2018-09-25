@@ -1114,7 +1114,8 @@ review:
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
   stage: test
   allow_failure: true
-  before_script: []
+  before_script:
+    - gem install gitlab --no-document
   variables:
     GIT_DEPTH: "1"
     HOST_SUFFIX: "$CI_ENVIRONMENT_SLUG"

@@ -71,11 +71,6 @@ For an overview on the creation of Auto DevOps, read the blog post [From 2/3 of 
 
 ## Requirements
 
-TIP: **Tip:**
-For self-hosted installations, the easiest way to make use of Auto DevOps is to
-install GitLab inside a Kubernetes cluster using the [GitLab Omnibus Helm Chart]
-which automatically installs and configures everything you need!
-
 To make full use of Auto DevOps, you will need:
 
 1. **GitLab Runner** (needed for all stages) - Your Runner needs to be
@@ -101,10 +96,6 @@ To make full use of Auto DevOps, you will need:
        Kubernetes cluster using the
        [`nginx-ingress`](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress)
        Helm chart.
-    1. **Wildcard TLS termination** - You can deploy the
-       [`kube-lego`](https://github.com/kubernetes/charts/tree/master/stable/kube-lego)
-       Helm chart to your Kubernetes cluster to automatically issue certificates
-       for your domains using Let's Encrypt.
 1. **Prometheus** (needed for Auto Monitoring) - To enable Auto Monitoring, you
    will need Prometheus installed somewhere (inside or outside your cluster) and
    configured to scrape your Kubernetes cluster. To get response metrics
@@ -147,11 +138,6 @@ Auto DevOps base domain to `1.2.3.4.nip.io`.
 
 Once set up, all requests will hit the load balancer, which in turn will route
 them to the Kubernetes pods that run your application(s).
-
-NOTE: **Note:**
-If GitLab is installed using the [GitLab Omnibus Helm Chart], there are two
-options: provide a static IP, or have one assigned. For more information see the
-relevant docs on the [network prerequisites](../../install/kubernetes/gitlab_omnibus.md#networking-prerequisites).
 
 ## Using multiple Kubernetes clusters **[PREMIUM]**
 
@@ -482,10 +468,7 @@ The metrics include:
 - **Response Metrics:** latency, throughput, error rate
 - **System Metrics:** CPU utilization, memory utilization
 
-If GitLab has been deployed using the [GitLab Omnibus Helm Chart], no
-configuration is required.
-
-If you have installed GitLab using a different method, you need to:
+In order to make use of monitoring you need to:
 
 1. [Deploy Prometheus](../../user/project/integrations/prometheus.md#configuring-your-own-prometheus-server-within-kubernetes) into your Kubernetes cluster
 1. If you would like response metrics, ensure you are running at least version
@@ -850,6 +833,5 @@ curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https:/
 [container-registry]: ../../user/project/container_registry.md
 [postgresql]: https://www.postgresql.org/
 [Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Auto-DevOps.gitlab-ci.yml
-[GitLab Omnibus Helm Chart]: ../../install/kubernetes/gitlab_omnibus.md
 [ee]: https://about.gitlab.com/pricing/
 [ce-19507]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19507

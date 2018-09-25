@@ -5,6 +5,7 @@ module Notes
     prepend ::EE::Notes::BuildService
 
     def execute
+      should_resolve = false
       in_reply_to_discussion_id = params.delete(:in_reply_to_discussion_id)
 
       if in_reply_to_discussion_id.present?
@@ -17,11 +18,16 @@ module Notes
         end
 
         params.merge!(discussion.reply_attributes)
+        should_resolve = discussion.resolved?
       end
 
       note = Note.new(params)
       note.project = project
       note.author = current_user
+
+      if should_resolve
+        note.resolve_without_save(current_user)
+      end
 
       note
     end
