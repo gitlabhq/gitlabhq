@@ -16,10 +16,10 @@ class StuckCiJobsWorker
 
     Rails.logger.info "#{self.class}: Cleaning stuck builds"
 
-    drop :running, :updated_at, BUILD_RUNNING_OUTDATED_TIMEOUT, :stuck_or_timeout_failure
-    drop :pending, :updated_at, BUILD_PENDING_OUTDATED_TIMEOUT, :stuck_or_timeout_failure
-    drop :scheduled, :scheduled_at, BUILD_SCHEDULED_OUTDATED_TIMEOUT, :schedule_expired
-    drop_stuck :pending, :updated_at, BUILD_PENDING_STUCK_TIMEOUT, :stuck_or_timeout_failure
+    drop :running, condition_for_outdated_running, :stuck_or_timeout_failure
+    drop :pending, condition_for_outdated_pending, :stuck_or_timeout_failure
+    drop :scheduled, condition_for_outdated_scheduled, :schedule_expired
+    drop_stuck :pending, condition_for_outdated_pending_stuck, :stuck_or_timeout_failure
 
     remove_lease
   end
@@ -34,27 +34,41 @@ class StuckCiJobsWorker
     Gitlab::ExclusiveLease.cancel(EXCLUSIVE_LEASE_KEY, @uuid)
   end
 
-  def drop(status, column, timeout, reason)
-    search(status, column, timeout) do |build|
-      drop_build :outdated, build, status, timeout, reason
+  def drop(status, condition, reason)
+    search(status, condition) do |build|
+      drop_build :outdated, build, status, reason
     end
   end
 
-  def drop_stuck(status, column, timeout, reason)
-    search(status, column, timeout) do |build|
+  def drop_stuck(status, condition, reason)
+    search(status, condition) do |build|
       break unless build.stuck?
 
-      drop_build :stuck, build, status, timeout, reason
+      drop_build :stuck, build, status, reason
     end
+  end
+
+  def condition_for_outdated_running
+    ["updated_at < ?", BUILD_RUNNING_OUTDATED_TIMEOUT.ago]
+  end
+
+  def condition_for_outdated_pending
+    ["updated_at < ?", BUILD_PENDING_OUTDATED_TIMEOUT.ago]
+  end
+
+  def condition_for_outdated_scheduled
+    ["scheduled_at <> '' && scheduled_at < ?", BUILD_SCHEDULED_OUTDATED_TIMEOUT.ago]
+  end
+
+  def condition_for_outdated_pending_stuck
+    ["updated_at < ?", BUILD_PENDING_STUCK_TIMEOUT.ago]
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def search(status, column, timeout)
-    quoted_column = ActiveRecord::Base.connection.quote_column_name(column)
-
+  def search(status, condition)
     loop do
       jobs = Ci::Build.where(status: status)
-        .where("#{quoted_column} < ?", timeout.ago)
+        .where(*condition)
         .includes(:tags, :runner, project: :namespace)
         .limit(100)
         .to_a
@@ -67,8 +81,8 @@ class StuckCiJobsWorker
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def drop_build(type, build, status, timeout, reason)
-    Rails.logger.info "#{self.class}: Dropping #{type} build #{build.id} for runner #{build.runner_id} (status: #{status}, timeout: #{timeout})"
+  def drop_build(type, build, status, reason)
+    Rails.logger.info "#{self.class}: Dropping #{type} build #{build.id} for runner #{build.runner_id} (status: #{status})"
     Gitlab::OptimisticLocking.retry_lock(build, 3) do |b|
       b.drop(reason)
     end

@@ -1,4 +1,10 @@
 ##
+# ###
+# IMPORTANT
+# - Enable the feature flag `ci_enable_scheduled_build` on rails console! You can do `Feature.enable('ci_enable_scheduled_build')`
+#   This feature is off by default!
+#
+#
 # This is a debug script to reproduce specific scenarios for scheduled jobs (https://gitlab.com/gitlab-org/gitlab-ce/issues/51352)
 # By using this script, you don't need to setup GitLab runner.
 # This script is specifically made for FE/UX engineers. They can quickly check how scheduled jobs behave.
@@ -78,42 +84,42 @@ cleanup:
 #
 # ### Reproduce the scenario ~ when rollout 10% jobs failed ~
 #
-# 1. ScheduledJobFixture.new(29, 1).create_pipeline('master')
-# 1. ScheduledJobFixture.new(29, 1).finish_stage_until('test')
+# 1. ScheduledJobFixture.new(16, 1).create_pipeline('master')
+# 1. ScheduledJobFixture.new(16, 1).finish_stage_until('test')
 # 1. Wait until rollout 10% job is triggered
-# 1. ScheduledJobFixture.new(29, 1).drop_jobs('rollout 10%')
+# 1. ScheduledJobFixture.new(16, 1).drop_jobs('rollout 10%')
 #
 # Expectation: Following stages should be skipped.
 #
 # ### Reproduce the scenario ~ when user clicked cancel button before build job finished ~
 #
-# 1. ScheduledJobFixture.new(29, 1).create_pipeline('master')
-# 1. ScheduledJobFixture.new(29, 1).cancel_pipeline
+# 1. ScheduledJobFixture.new(16, 1).create_pipeline('master')
+# 1. ScheduledJobFixture.new(16, 1).cancel_pipeline
 #
 # Expectation: All stages should be canceled.
 #
 # ### Reproduce the scenario ~ when user canceled the pipeline after rollout 10% job is scheduled ~
 #
-# 1. ScheduledJobFixture.new(29, 1).create_pipeline('master')
-# 1. ScheduledJobFixture.new(29, 1).finish_stage_until('test')
+# 1. ScheduledJobFixture.new(16, 1).create_pipeline('master')
+# 1. ScheduledJobFixture.new(16, 1).finish_stage_until('test')
 # 1. Run next command before rollout 10% job is triggered
-# 1. ScheduledJobFixture.new(29, 1).cancel_pipeline
+# 1. ScheduledJobFixture.new(16, 1).cancel_pipeline
 #
 # Expectation: rollout 10% job will be canceled. Following stages will be skipped.
 #
 # ### Reproduce the scenario ~ when user canceled rollout 10% job after rollout 10% job is scheduled ~
 #
-# 1. ScheduledJobFixture.new(29, 1).create_pipeline('master')
-# 1. ScheduledJobFixture.new(29, 1).finish_stage_until('test')
+# 1. ScheduledJobFixture.new(16, 1).create_pipeline('master')
+# 1. ScheduledJobFixture.new(16, 1).finish_stage_until('test')
 # 1. Run next command before rollout 10% job is triggered
-# 1. ScheduledJobFixture.new(29, 1).cancel_jobs('rollout 10%')
+# 1. ScheduledJobFixture.new(16, 1).cancel_jobs('rollout 10%')
 #
 # Expectation: rollout 10% job will be canceled. Following stages will be skipped.
 #
 # ### Reproduce the scenario ~ when user played rollout 10% job immidiately ~
 #
-# 1. ScheduledJobFixture.new(29, 1).create_pipeline('master')
-# 1. ScheduledJobFixture.new(29, 1).finish_stage_until('test')
+# 1. ScheduledJobFixture.new(16, 1).create_pipeline('master')
+# 1. ScheduledJobFixture.new(16, 1).finish_stage_until('test')
 # 1. Play rollout 10% job before rollout 10% job is triggered
 #
 # Expectation: rollout 10% becomes pending immidiately
@@ -121,10 +127,10 @@ cleanup:
 # ### Reproduce the scenario ~ when rollout 10% job is allowed to fail ~
 #
 # 1. Set `allow_failure: true` to rollout 10% job
-# 1. ScheduledJobFixture.new(29, 1).create_pipeline('master')
-# 1. ScheduledJobFixture.new(29, 1).finish_stage_until('test')
+# 1. ScheduledJobFixture.new(16, 1).create_pipeline('master')
+# 1. ScheduledJobFixture.new(16, 1).finish_stage_until('test')
 # 1. Wait until rollout 10% job is triggered
-# 1. ScheduledJobFixture.new(29, 1).drop_jobs('rollout 10%')
+# 1. ScheduledJobFixture.new(16, 1).drop_jobs('rollout 10%')
 #
 # Expectation: rollout 50% job should be triggered
 #

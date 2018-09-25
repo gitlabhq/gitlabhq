@@ -23,7 +23,8 @@ module Gitlab
           private
 
           def execute_in
-            Time.at(subject.scheduled_at).utc.strftime("%H:%M:%S")
+            diff = [0, subject.scheduled_at - Time.now].max
+            Time.at(diff).utc.strftime("%H:%M:%S")
           end
         end
       end
