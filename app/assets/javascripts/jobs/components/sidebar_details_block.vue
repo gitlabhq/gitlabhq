@@ -23,10 +23,6 @@
         type: Object,
         required: true,
       },
-      isLoading: {
-        type: Boolean,
-        required: true,
-      },
       runnerHelpUrl: {
         type: String,
         required: false,
@@ -39,9 +35,6 @@
       },
     },
     computed: {
-      shouldRenderContent() {
-        return !this.isLoading && Object.keys(this.job).length > 0;
-      },
       coverage() {
         return `${this.job.coverage}%`;
       },
@@ -97,11 +90,12 @@
       },
       hasStages() {
         return (
-          this.job &&
-          this.job.pipeline &&
-          this.job.pipeline.stages &&
-          this.job.pipeline.stages.length > 0
-        ) || false;
+          (this.job &&
+            this.job.pipeline &&
+            this.job.pipeline.stages &&
+            this.job.pipeline.stages.length > 0) ||
+          false
+        );
       },
       commit() {
         return this.job.pipeline.commit || {};
@@ -271,11 +265,5 @@
         :commit="commit"
         :merge-request="job.merge_request"
       />
-    </template>
-    <gl-loading-icon
-      v-if="isLoading"
-      :size="2"
-      class="prepend-top-10"
-    />
-  </div>
+  </aside>
 </template>
