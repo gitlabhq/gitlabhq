@@ -97,7 +97,7 @@ module HasStatus
     scope :failed_or_canceled, -> { where(status: [:failed, :canceled]) }
 
     scope :cancelable, -> do
-      where("status IN ('running', 'pending', 'created', 'scheduled')")
+      where(status: [:running, :pending, :created, :scheduled])
     end
   end
 
