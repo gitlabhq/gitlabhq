@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Groups::AvatarsController < Groups::ApplicationController
   before_action :authorize_admin_group!
 

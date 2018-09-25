@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Groups
   module Settings
     class CiCdController < Groups::ApplicationController

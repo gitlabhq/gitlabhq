@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Groups::LabelsController < Groups::ApplicationController
   include ToggleSubscriptionAction
 

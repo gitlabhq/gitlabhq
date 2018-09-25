@@ -23,6 +23,7 @@ module QA
         view 'app/views/devise/shared/_tabs_ldap.html.haml' do
           element :ldap_tab
           element :standard_tab
+          element :register_tab
         end
 
         view 'app/views/devise/shared/_tabs_normal.html.haml' do
@@ -35,7 +36,7 @@ module QA
           # we need to wait for the instance to start. That said, in some cases
           # we are already logged-in so we check both cases here.
           wait(max: 500) do
-            page.has_css?('.login-page') ||
+            has_css?('.login-page') ||
               Page::Menu::Main.act { has_personal_area?(wait: 0) }
           end
         end
@@ -78,12 +79,28 @@ module QA
           '/users/sign_in'
         end
 
+        def has_sign_in_tab?
+          has_element?(:sign_in_tab)
+        end
+
+        def has_ldap_tab?
+          has_element?(:ldap_tab)
+        end
+
+        def has_standard_tab?
+          has_element?(:standard_tab)
+        end
+
         def sign_in_tab?
-          page.has_button?('Sign in')
+          has_css?(".active", text: 'Sign in')
         end
 
         def ldap_tab?
-          page.has_link?('LDAP')
+          has_css?(".active", text: 'LDAP')
+        end
+
+        def standard_tab?
+          has_css?(".active", text: 'Standard')
         end
 
         def switch_to_sign_in_tab
@@ -113,8 +130,8 @@ module QA
         end
 
         def sign_in_using_gitlab_credentials(user)
-          switch_to_sign_in_tab unless sign_in_tab?
-          switch_to_standard_tab if ldap_tab?
+          switch_to_sign_in_tab if has_sign_in_tab?
+          switch_to_standard_tab if has_standard_tab?
 
           fill_element :login_field, user.username
           fill_element :password_field, user.password
@@ -122,7 +139,7 @@ module QA
         end
 
         def set_initial_password_if_present
-          return unless page.has_content?('Change your password')
+          return unless has_content?('Change your password')
 
           fill_element :password_field, Runtime::User.password
           fill_element :password_confirmation, Runtime::User.password
