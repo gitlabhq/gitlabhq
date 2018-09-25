@@ -939,12 +939,9 @@ msgstr ""
 msgid "Background Jobs"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Background color"
 msgstr ""
 
-=======
->>>>>>> 0d2e3b56b1bc175ef1d348d01eb8dfa3ac206ccb
 msgid "Badges"
 msgstr ""
 
@@ -2969,7 +2966,6 @@ msgstr ""
 msgid "Environments|You don't have any environments right now."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Environments|protected"
 msgstr ""
 
@@ -3009,11 +3005,9 @@ msgstr ""
 msgid "Epics|start"
 msgstr ""
 
-=======
 msgid "Epic"
 msgstr ""
 
->>>>>>> 0d2e3b56b1bc175ef1d348d01eb8dfa3ac206ccb
 msgid "Error"
 msgstr ""
 
