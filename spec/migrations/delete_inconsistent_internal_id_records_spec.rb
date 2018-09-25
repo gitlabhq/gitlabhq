@@ -122,13 +122,27 @@ describe DeleteInconsistentInternalIdRecords, :migration do
     let!(:group1) { create(:group) }
     let!(:group2) { create(:group) }
     let!(:group3) { create(:group) }
+    let!(:user)   { create(:user) }
 
     let(:internal_id_query) { ->(group) { InternalId.where(usage: InternalId.usages['epics'], namespace: group) } }
 
     before do
-      create_list(:epic, 3, group: group1)
-      create_list(:epic, 3, group: group2)
-      create_list(:epic, 3, group: group3)
+      # we use state enum in Epic but state field was added after this migration
+      epics = table(:epics)
+
+      epics.belongs_to(:group)
+      epics.include(AtomicInternalId)
+      epics.has_internal_id(:iid, scope: :group, init: ->(s) { s&.group&.epics&.maximum(:iid) })
+
+      epics.create!(title: 'Epic 1', title_html: 'Epic 1', group_id: group1.id, author_id: user.id)
+      epics.create!(title: 'Epic 2', title_html: 'Epic 2', group_id: group1.id, author_id: user.id)
+      epics.create!(title: 'Epic 3', title_html: 'Epic 3', group_id: group1.id, author_id: user.id)
+      epics.create!(title: 'Epic 4', title_html: 'Epic 4', group_id: group2.id, author_id: user.id)
+      epics.create!(title: 'Epic 5', title_html: 'Epic 5', group_id: group2.id, author_id: user.id)
+      epics.create!(title: 'Epic 6', title_html: 'Epic 6', group_id: group2.id, author_id: user.id)
+      epics.create!(title: 'Epic 7', title_html: 'Epic 7', group_id: group3.id, author_id: user.id)
+      epics.create!(title: 'Epic 8', title_html: 'Epic 8', group_id: group3.id, author_id: user.id)
+      epics.create!(title: 'Epic 9', title_html: 'Epic 9', group_id: group3.id, author_id: user.id)
 
       internal_id_query.call(group1).first.tap do |iid|
         iid.last_value = iid.last_value - 2

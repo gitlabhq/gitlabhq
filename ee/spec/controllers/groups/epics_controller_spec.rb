@@ -225,25 +225,71 @@ describe Groups::EpicsController do
     end
 
     describe 'PUT #update' do
-      let(:date) { Date.new(2002, 1, 1)}
+      let(:date) { Date.new(2002, 1, 1) }
+      let(:params) do
+        {
+          title: 'New title',
+          label_ids: [label.id],
+          start_date_fixed: '2002-01-01',
+          start_date_is_fixed: true
+        }
+      end
 
       before do
         group.add_developer(user)
-        put :update, group_id: group, id: epic.to_param, epic: { title: 'New title', label_ids: [label.id], start_date_fixed: '2002-01-01', start_date_is_fixed: true }, format: :json
       end
 
-      it 'returns status 200' do
-        expect(response.status).to eq(200)
+      context 'with correct basic params'  do
+        it 'returns status 200' do
+          update_epic(epic, params)
+
+          expect(response.status).to eq(200)
+        end
+
+        it 'updates the epic correctly' do
+          update_epic(epic, params)
+
+          expect(epic.reload).to have_attributes(
+            title: 'New title',
+            labels: [label],
+            start_date_fixed: date,
+            start_date: date,
+            start_date_is_fixed: true,
+            state: 'opened'
+          )
+        end
       end
 
-      it 'updates the epic correctly' do
-        epic.reload
+      context 'when state_event param is close' do
+        it 'allows epic to be closed' do
+          update_epic(epic, params.merge(state_event: 'close'))
 
-        expect(epic.title).to eq('New title')
-        expect(epic.labels).to eq([label])
-        expect(epic.start_date_fixed).to eq(date)
-        expect(epic.start_date).to eq(date)
-        expect(epic.start_date_is_fixed).to eq(true)
+          epic.reload
+
+          expect(epic).to be_closed
+          expect(epic.closed_at).not_to be_nil
+          expect(epic.closed_by).to eq(user)
+        end
+      end
+
+      context 'when state_event param is reopen' do
+        before do
+          epic.update!(state: 'closed', closed_at: Time.now, closed_by: user)
+        end
+
+        it 'allows epic to be reopened' do
+          update_epic(epic, params.merge(state_event: 'reopen'))
+
+          epic.reload
+
+          expect(epic).to be_opened
+          expect(epic.closed_at).to be_nil
+          expect(epic.closed_by).to be_nil
+        end
+      end
+
+      def update_epic(epic, params)
+        put :update, group_id: epic.group.to_param, id: epic.to_param, epic: params, format: :json
       end
     end
 

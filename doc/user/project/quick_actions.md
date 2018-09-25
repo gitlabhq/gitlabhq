@@ -12,8 +12,8 @@ do.
 
 | Command                    | Action       |
 |:---------------------------|:-------------|
-| `/close`                   | Close the issue or merge request |
-| `/reopen`                  | Reopen the issue or merge request |
+| `/close`                   | Close the issue, merge request or epic |
+| `/reopen`                  | Reopen the issue, merge request or epic |
 | `/merge`                   | Merge (when pipeline succeeds) |
 | `/title <New title>`       | Change title |
 | `/assign @user1 @user2 `   | Add assignee(s) |

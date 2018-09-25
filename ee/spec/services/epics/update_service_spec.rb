@@ -1,14 +1,16 @@
 require 'spec_helper'
 
 describe Epics::UpdateService do
-  let(:group) { create(:group, :internal)}
+  let(:group) { create(:group, :internal) }
   let(:user) { create(:user) }
   let(:epic) { create(:epic, group: group) }
 
   describe '#execute' do
     before do
       stub_licensed_features(epics: true)
+      group.add_master(user)
     end
+
     def update_epic(opts)
       described_class.new(group, user, opts).execute(epic)
     end
@@ -21,7 +23,8 @@ describe Epics::UpdateService do
           start_date_fixed: '2017-01-09',
           start_date_is_fixed: true,
           due_date_fixed: '2017-10-21',
-          due_date_is_fixed: true
+          due_date_is_fixed: true,
+          state_event: 'close'
         }
       end
 
@@ -34,6 +37,7 @@ describe Epics::UpdateService do
           start_date_fixed: Date.strptime(opts[:start_date_fixed]),
           due_date_fixed: Date.strptime(opts[:due_date_fixed])
         )
+        expect(epic).to be_closed
       end
 
       it 'updates the last_edited_at value' do

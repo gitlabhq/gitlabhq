@@ -2,7 +2,7 @@ module Epics
   class BaseService < IssuableBaseService
     attr_reader :group
 
-    def initialize(group, current_user, params)
+    def initialize(group, current_user, params = {})
       @group, @current_user, @params = group, current_user, params
     end
 
@@ -19,6 +19,14 @@ module Epics
 
     def parent
       group
+    end
+
+    def close_service
+      Epics::CloseService
+    end
+
+    def reopen_service
+      Epics::ReopenService
     end
   end
 end

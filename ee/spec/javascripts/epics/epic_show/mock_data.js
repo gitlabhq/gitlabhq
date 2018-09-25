@@ -29,7 +29,7 @@ export const mockParticipants = [
 
 export const contentProps = {
   epicId: 1,
-  endpoint: '',
+  endpoint: gl.TEST_HOST,
   toggleSubscriptionPath: gl.TEST_HOST,
   updateEndpoint: gl.TEST_HOST,
   todoPath: gl.TEST_HOST,
@@ -62,6 +62,7 @@ export const contentProps = {
   participants: mockParticipants,
   subscribed: true,
   todoExists: false,
+  state: 'opened',
 };
 
 export const headerProps = {
@@ -72,6 +73,9 @@ export const headerProps = {
     name: 'Administrator',
   },
   created: (new Date()).toISOString(),
+  open: true,
+  canUpdate: true,
+  canDelete: true,
 };
 
 export const mockDatePickerProps = {

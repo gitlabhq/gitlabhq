@@ -35,8 +35,15 @@
 }
 
 @include media-breakpoint-down(xs) {
-  .epic-page-container .detail-page-header {
-    display: flex;
+  .epic-page-container {
+    .detail-page-header {
+      display: flex;
+    }
+
+    .detail-page-header-actions {
+      width: auto;
+      margin-top: 0;
+    }
   }
 }
 

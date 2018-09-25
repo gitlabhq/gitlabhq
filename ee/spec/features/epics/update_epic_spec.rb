@@ -139,10 +139,10 @@ describe 'Update Epic', :js do
       wait_for_requests
     end
 
-    it 'does not show delete button inside the edit form' do
+    it 'shows delete button inside the edit form' do
       find('.btn-edit').click
 
-      expect(page).not_to have_selector('.issuable-details .btn-danger')
+      expect(page).to have_selector('.issuable-details .btn-danger')
     end
   end
 end

@@ -5,7 +5,8 @@ module Notes
     UPDATE_SERVICES = {
       'Issue' => Issues::UpdateService,
       'MergeRequest' => MergeRequests::UpdateService,
-      'Commit' => Commits::TagService
+      'Commit' => Commits::TagService,
+      'Epic' => Epics::UpdateService
     }.freeze
 
     def self.noteable_update_service(note)

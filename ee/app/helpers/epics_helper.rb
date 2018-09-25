@@ -25,7 +25,8 @@ module EpicsHelper
       due_date_fixed: epic.due_date_fixed,
       due_date_from_milestones: epic.due_date_from_milestones,
       due_date_sourcing_milestone_title: epic.due_date_sourcing_milestone&.title,
-      end_date: epic.end_date
+      end_date: epic.end_date,
+      state: epic.state
     }
 
     epic_meta[:todo_delete_path] = dashboard_todo_path(todo) if todo.present?
