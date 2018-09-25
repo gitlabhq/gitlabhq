@@ -523,7 +523,7 @@ more of the following options:
 
 - `BACKUP=timestamp_of_backup` - Required if more than one backup exists.
   Read what the [backup timestamp is about](#backup-timestamp).
-- `force=yes` - Does not ask if the authorized_keys file should get regenerated and assumes 'yes' for warning that database tables will be removed.
+- `force=yes` - Does not ask if the authorized_keys file should get regenerated and assumes 'yes' for warning that database tables will be removed, enabling the "Write to authorized_keys file" setting, and updating LDAP providers.
 
 If you are restoring into directories that are mountpoints you will need to make
 sure these directories are empty before attempting a restore. Otherwise GitLab
