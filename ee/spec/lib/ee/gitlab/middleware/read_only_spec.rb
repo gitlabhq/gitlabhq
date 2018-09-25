@@ -34,7 +34,7 @@ describe Gitlab::Middleware::ReadOnly do
     end
   end
 
-  context 'normal requests to a read-only Gitlab instance' do
+  context 'normal requests to a read-only GitLab instance' do
     let(:fake_app) { lambda { |env| [200, { 'Content-Type' => 'text/plain' }, ['OK']] } }
 
     before do

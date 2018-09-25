@@ -1,4 +1,4 @@
-# This controller's role is to mimic and rewire the Gitlab OAuth
+# This controller's role is to mimic and rewire the GitLab OAuth
 # flow routes for Jira DVCS integration.
 # See https://gitlab.com/gitlab-org/gitlab-ee/issues/2381
 #
