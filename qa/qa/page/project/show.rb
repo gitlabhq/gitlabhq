@@ -42,6 +42,10 @@ module QA
           element :web_ide_button
         end
 
+        view 'app/views/projects/tree/_tree_content.html.haml' do
+          element :file_tree
+        end
+
         def project_name
           find('.qa-project-name').text
         end
@@ -49,6 +53,12 @@ module QA
         def create_new_file!
           click_element :create_new_dropdown
           click_element :new_file_option
+        end
+
+        def go_to_file(filename)
+          within_element(:file_tree) do
+            click_on filename
+          end
         end
 
         def switch_to_branch(branch_name)
