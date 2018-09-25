@@ -368,16 +368,6 @@ describe 'Admin updates settings' do
       expect(Gitlab::CurrentSettings.pages_domain_verification_enabled?).to be_truthy
       expect(page).to have_content "Application settings saved successfully"
     end
-
-    it 'Change Background jobs settings' do
-      page.within('.as-background') do
-        fill_in 'Throttling Factor', with: 1
-        click_button 'Save changes'
-      end
-
-      expect(Gitlab::CurrentSettings.sidekiq_throttling_factor).to eq(1)
-      expect(page).to have_content "Application settings saved successfully"
-    end
   end
 
   def check_all_events
