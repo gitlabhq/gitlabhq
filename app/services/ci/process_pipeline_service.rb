@@ -37,7 +37,7 @@ module Ci
 
     def process_build(build, current_status)
       if valid_statuses_for_when(build.when).include?(current_status)
-        Ci::ProceedBuildService.new(project, @user).execute(build)
+        Ci::ProcessBuildService.new(project, @user).execute(build)
         true
       else
         build.skip

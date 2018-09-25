@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class ProceedBuildService < BaseService
+  class ProcessBuildService < BaseService
     def execute(build)
       if build.schedulable?
         build.schedule!
