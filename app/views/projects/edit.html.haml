@@ -59,7 +59,7 @@
             - if @project.avatar?
               %hr
               = link_to _('Remove avatar'), project_avatar_path(@project), data: { confirm: _("Avatar will be removed. Are you sure?") }, method: :delete, class: "btn btn-danger btn-inverted"
-        = f.submit 'Save changes', class: "btn btn-success js-btn-save-general-project-settings"
+        = f.submit 'Save changes', class: "btn btn-success js-btn-success-general-project-settings"
 
   %section.settings.sharing-permissions.no-animate#js-shared-permissions{ class: ('expanded' if expanded) }
     .settings-header
@@ -75,7 +75,7 @@
         -# haml-lint:disable InlineJavaScript
         %script.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data_json(@project)
         .js-project-permissions-form
-        = f.submit 'Save changes', class: "btn btn-save"
+        = f.submit 'Save changes', class: "btn btn-success"
 
   = render_if_exists 'projects/issues_settings'
 
@@ -93,7 +93,7 @@
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "merge-request-settings-form" }, authenticity_token: true do |f|
         %input{ name: 'update_section', type: 'hidden', value: 'js-merge-request-settings' }
         = render 'projects/merge_request_settings', form: f
-        = f.submit 'Save changes', class: "btn btn-save qa-save-merge-request-changes"
+        = f.submit 'Save changes', class: "btn btn-success qa-save-merge-request-changes"
 
   = render_if_exists 'projects/service_desk_settings'
 

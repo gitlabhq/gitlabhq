@@ -40,7 +40,7 @@ describe 'Project > Members > Invite group', :js do
 
           select2 group_to_share_with.id, from: '#link_group_id'
           page.find('body').click
-          find('.btn-create').click
+          find('.btn-success').click
 
           page.within('.project-members-groups') do
             expect(page).to have_content(group_to_share_with.name)
@@ -122,7 +122,7 @@ describe 'Project > Members > Invite group', :js do
 
       fill_in 'expires_at_groups', with: (Time.now + 4.5.days).strftime('%Y-%m-%d')
       click_on 'invite-group-tab'
-      find('.btn-create').click
+      find('.btn-success').click
     end
 
     it 'the group link shows the expiration time with a warning class' do

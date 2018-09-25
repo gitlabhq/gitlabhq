@@ -76,8 +76,8 @@ export default {
     >
     </h2>
     <button
-      v-tooltip
       v-if="showInlineEditButton && canUpdate"
+      v-tooltip
       type="button"
       class="btn btn-default btn-edit btn-svg js-issuable-edit"
       title="Edit title and description"

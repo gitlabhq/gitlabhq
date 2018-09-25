@@ -107,9 +107,15 @@ export default {
   created() {
     this.initPolling();
     this.bindEventHubListeners();
+    eventHub.$on('mr.discussion.updated', this.checkStatus);
   },
   mounted() {
     this.handleMounted();
+  },
+  beforeDestroy() {
+    eventHub.$off('mr.discussion.updated', this.checkStatus);
+    this.pollingInterval.destroy();
+    this.deploymentsInterval.destroy();
   },
   methods: {
     createService(store) {

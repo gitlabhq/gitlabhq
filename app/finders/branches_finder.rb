@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BranchesFinder
   def initialize(repository, params = {})
     @repository = repository

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180906101639) do
+ActiveRecord::Schema.define(version: 20180914201132) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -119,9 +119,6 @@ ActiveRecord::Schema.define(version: 20180906101639) do
     t.integer "housekeeping_incremental_repack_period", default: 10, null: false
     t.integer "housekeeping_full_repack_period", default: 50, null: false
     t.integer "housekeeping_gc_period", default: 200, null: false
-    t.boolean "sidekiq_throttling_enabled", default: false
-    t.string "sidekiq_throttling_queues"
-    t.decimal "sidekiq_throttling_factor"
     t.boolean "html_emails_enabled", default: true
     t.string "plantuml_url"
     t.boolean "plantuml_enabled"
@@ -141,7 +138,7 @@ ActiveRecord::Schema.define(version: 20180906101639) do
     t.integer "performance_bar_allowed_group_id"
     t.boolean "hashed_storage_enabled", default: false, null: false
     t.boolean "project_export_enabled", default: true, null: false
-    t.boolean "auto_devops_enabled", default: false, null: false
+    t.boolean "auto_devops_enabled", default: true, null: false
     t.integer "circuitbreaker_failure_count_threshold", default: 3
     t.integer "circuitbreaker_failure_reset_time", default: 1800
     t.integer "circuitbreaker_storage_timeout", default: 15
@@ -620,6 +617,7 @@ ActiveRecord::Schema.define(version: 20180906101639) do
     t.string "endpoint"
     t.text "encrypted_access_token"
     t.string "encrypted_access_token_iv"
+    t.boolean "legacy_abac", default: true, null: false
   end
 
   add_index "cluster_providers_gcp", ["cluster_id"], name: "index_cluster_providers_gcp_on_cluster_id", unique: true, using: :btree
@@ -943,8 +941,8 @@ ActiveRecord::Schema.define(version: 20180906101639) do
   add_index "gpg_signatures", ["project_id"], name: "index_gpg_signatures_on_project_id", using: :btree
 
   create_table "group_custom_attributes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.integer "group_id", null: false
     t.string "key", null: false
     t.string "value", null: false
@@ -1550,8 +1548,8 @@ ActiveRecord::Schema.define(version: 20180906101639) do
   add_index "project_ci_cd_settings", ["project_id"], name: "index_project_ci_cd_settings_on_project_id", unique: true, using: :btree
 
   create_table "project_custom_attributes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.integer "project_id", null: false
     t.string "key", null: false
     t.string "value", null: false
@@ -2207,6 +2205,7 @@ ActiveRecord::Schema.define(version: 20180906101639) do
     t.string "feed_token"
     t.boolean "private_profile"
     t.boolean "include_private_contributions"
+    t.string "commit_email"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

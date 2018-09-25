@@ -4,7 +4,6 @@ import Icon from '~/vue_shared/components/icon.vue';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
 import eventHub from '../../notes/event_hub';
-import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
 import CompareVersions from './compare_versions.vue';
 import ChangedFiles from './changed_files.vue';
 import DiffFile from './diff_file.vue';
@@ -15,7 +14,6 @@ export default {
   name: 'DiffsApp',
   components: {
     Icon,
-    LoadingIcon,
     CompareVersions,
     ChangedFiles,
     DiffFile,
@@ -168,7 +166,7 @@ export default {
       v-if="isLoading"
       class="loading"
     >
-      <loading-icon />
+      <gl-loading-icon />
     </div>
     <div
       v-else

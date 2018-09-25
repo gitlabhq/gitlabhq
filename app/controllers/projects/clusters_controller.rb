@@ -141,7 +141,8 @@ class Projects::ClustersController < Projects::ApplicationController
         :gcp_project_id,
         :zone,
         :num_nodes,
-        :machine_type
+        :machine_type,
+        :legacy_abac
       ]).merge(
         provider_type: :gcp,
         platform_type: :kubernetes

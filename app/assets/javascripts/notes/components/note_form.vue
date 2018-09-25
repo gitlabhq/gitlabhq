@@ -171,8 +171,8 @@ export default {
           id="note_note"
           ref="textarea"
           slot="textarea"
-          :data-supports-quick-actions="!isEditing"
           v-model="updatedNoteBody"
+          :data-supports-quick-actions="!isEditing"
           name="note[note]"
           class="note-textarea js-gfm-input js-note-text
 js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
@@ -188,7 +188,7 @@ js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
         <button
           :disabled="isDisabled"
           type="button"
-          class="js-vue-issue-save btn btn-save js-comment-button "
+          class="js-vue-issue-save btn btn-success js-comment-button "
           @click="handleUpdate()">
           {{ saveButtonTitle }}
         </button>

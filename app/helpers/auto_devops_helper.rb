@@ -26,6 +26,7 @@ module AutoDevopsHelper
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def cluster_ingress_ip(project)
     project
       .cluster_ingresses
@@ -34,6 +35,7 @@ module AutoDevopsHelper
       .pluck(:external_ip)
       .first
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 

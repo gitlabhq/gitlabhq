@@ -220,8 +220,8 @@ export default {
       :show-panels="showPanels"
     >
       <graph
-        v-for="(graphData, index) in groupData.metrics"
-        :key="index"
+        v-for="(graphData, graphIndex) in groupData.metrics"
+        :key="graphIndex"
         :graph-data="graphData"
         :hover-data="hoverData"
         :deployment-data="store.deploymentData"

@@ -1,13 +1,11 @@
 <script>
 import $ from 'jquery';
 import { mapActions, mapState } from 'vuex';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
 
 export default {
   components: {
     DropdownButton,
-    LoadingIcon,
   },
   props: {
     data: {
@@ -102,9 +100,9 @@ export default {
         ></i>
       </div>
       <div class="dropdown-content">
-        <loading-icon
+        <gl-loading-icon
           v-if="showLoading"
-          size="2"
+          :size="2"
         />
         <ul v-else>
           <li

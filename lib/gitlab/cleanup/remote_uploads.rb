@@ -33,6 +33,7 @@ module Gitlab
 
       private
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def each_orphan_file
         # we want to skip files already moved to lost_and_found directory
         lost_dir_match = "^#{lost_and_found_dir}\/"
@@ -50,6 +51,7 @@ module Gitlab
           end
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def move_to_lost_and_found(file)
         new_path = "#{lost_and_found_dir}/#{file.key}"

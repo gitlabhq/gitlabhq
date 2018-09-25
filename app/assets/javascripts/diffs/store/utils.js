@@ -4,6 +4,7 @@ import {
   LINE_POSITION_LEFT,
   LINE_POSITION_RIGHT,
   TEXT_DIFF_POSITION_TYPE,
+  LEGACY_DIFF_NOTE_TYPE,
   DIFF_NOTE_TYPE,
   NEW_LINE_TYPE,
   OLD_LINE_TYPE,
@@ -54,13 +55,17 @@ export function getNoteFormData(params) {
     note_project_id: '',
     target_type: noteableData.targetType,
     target_id: noteableData.id,
+    return_discussion: true,
     note: {
       note,
       position,
       noteable_type: noteableType,
       noteable_id: noteableData.id,
       commit_id: '',
-      type: DIFF_NOTE_TYPE,
+      type:
+        diffFile.diffRefs.startSha && diffFile.diffRefs.headSha
+          ? DIFF_NOTE_TYPE
+          : LEGACY_DIFF_NOTE_TYPE,
       line_code: noteTargetLine.lineCode,
     },
   };
@@ -230,7 +235,16 @@ export function getDiffPositionByLineCode(diffFiles) {
         const { lineCode, oldLine, newLine } = line;
 
         if (lineCode) {
-          acc[lineCode] = { baseSha, headSha, startSha, newPath, oldPath, oldLine, newLine };
+          acc[lineCode] = {
+            baseSha,
+            headSha,
+            startSha,
+            newPath,
+            oldPath,
+            oldLine,
+            newLine,
+            lineCode,
+          };
         }
       });
     }
@@ -241,9 +255,15 @@ export function getDiffPositionByLineCode(diffFiles) {
 
 // This method will check whether the discussion is still applicable
 // to the diff line in question regarding different versions of the MR
-export function isDiscussionApplicableToLine(discussion, diffPosition) {
-  const originalRefs = convertObjectPropsToCamelCase(discussion.original_position.formatter);
-  const refs = convertObjectPropsToCamelCase(discussion.position.formatter);
+export function isDiscussionApplicableToLine({ discussion, diffPosition, latestDiff }) {
+  const { lineCode, ...diffPositionCopy } = diffPosition;
 
-  return _.isEqual(refs, diffPosition) || _.isEqual(originalRefs, diffPosition);
+  if (discussion.original_position && discussion.position) {
+    const originalRefs = convertObjectPropsToCamelCase(discussion.original_position.formatter);
+    const refs = convertObjectPropsToCamelCase(discussion.position.formatter);
+
+    return _.isEqual(refs, diffPositionCopy) || _.isEqual(originalRefs, diffPositionCopy);
+  }
+
+  return latestDiff && discussion.active && lineCode === discussion.line_code;
 }

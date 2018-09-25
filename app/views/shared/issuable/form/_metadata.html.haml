@@ -34,4 +34,4 @@
         = form.label :due_date, "Due date", class: "col-form-label col-md-2 col-lg-4"
         .col-8
           .issuable-form-select-holder
-            = form.text_field :due_date, id: "issuable-due-date", class: "datepicker form-control", placeholder: "Select due date"
+            = form.text_field :due_date, id: "issuable-due-date", class: "datepicker form-control", placeholder: "Select due date", autocomplete: 'off'

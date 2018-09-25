@@ -107,6 +107,7 @@ module IssuablesHelper
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def user_dropdown_label(user_id, default_label)
     return default_label if user_id.nil?
     return "Unassigned" if user_id == "0"
@@ -119,7 +120,9 @@ module IssuablesHelper
       default_label
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def project_dropdown_label(project_id, default_label)
     return default_label if project_id.nil?
     return "Any project" if project_id == "0"
@@ -132,7 +135,9 @@ module IssuablesHelper
       default_label
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def group_dropdown_label(group_id, default_label)
     return default_label if group_id.nil?
     return "Any group" if group_id == "0"
@@ -145,6 +150,7 @@ module IssuablesHelper
       default_label
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def milestone_dropdown_label(milestone_title, default_label = "Milestone")
     title =
@@ -185,17 +191,19 @@ module IssuablesHelper
 
     output << content_tag(:span, (issuable_first_contribution_icon if issuable.first_contribution?), class: 'has-tooltip', title: _('1st contribution!'))
 
-    output << content_tag(:span, (issuable.task_status if issuable.tasks?), id: "task_status", class: "d-none d-sm-none d-md-inline-block")
+    output << content_tag(:span, (issuable.task_status if issuable.tasks?), id: "task_status", class: "d-none d-sm-none d-md-inline-block prepend-left-8")
     output << content_tag(:span, (issuable.task_status_short if issuable.tasks?), id: "task_status_short", class: "d-md-none")
 
     output.join.html_safe
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def issuable_todo(issuable)
     if current_user
       current_user.todos.find_by(target: issuable, state: :pending)
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def issuable_labels_tooltip(labels, limit: 5)
     first, last = labels.partition.with_index { |_, i| i < limit  }

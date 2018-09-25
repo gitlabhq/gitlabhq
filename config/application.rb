@@ -85,6 +85,7 @@ module Gitlab
     # - Any parameter ending with `token`
     # - Any parameter containing `password`
     # - Any parameter containing `secret`
+    # - Any parameter ending with `key`
     # - Two-factor tokens (:otp_attempt)
     # - Repo/Project Import URLs (:import_url)
     # - Build traces (:trace)
@@ -92,15 +93,13 @@ module Gitlab
     # - GitLab Pages SSL cert/key info (:certificate, :encrypted_key)
     # - Webhook URLs (:hook)
     # - Sentry DSN (:sentry_dsn)
-    # - Deploy keys (:key)
     # - File content from Web Editor (:content)
-    config.filter_parameters += [/token$/, /password/, /secret/]
+    config.filter_parameters += [/token$/, /password/, /secret/, /key$/]
     config.filter_parameters += %i(
       certificate
       encrypted_key
       hook
       import_url
-      key
       otp_attempt
       sentry_dsn
       trace
@@ -135,6 +134,7 @@ module Gitlab
     config.assets.precompile << "notify.css"
     config.assets.precompile << "mailers/*.css"
     config.assets.precompile << "page_bundles/ide.css"
+    config.assets.precompile << "page_bundles/xterm.css"
     config.assets.precompile << "performance_bar.css"
     config.assets.precompile << "lib/ace.js"
     config.assets.precompile << "test.css"
@@ -205,7 +205,7 @@ module Gitlab
     ENV['GITLAB_PATH_OUTSIDE_HOOK'] = ENV['PATH']
     ENV['GIT_TERMINAL_PROMPT'] = '0'
 
-    # Gitlab Read-only middleware support
+    # GitLab Read-only middleware support
     config.middleware.insert_after ActionDispatch::Flash, ::Gitlab::Middleware::ReadOnly
 
     config.generators do |g|

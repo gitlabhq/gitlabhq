@@ -66,11 +66,33 @@ describe 'New project' do
   end
 
   context 'Readme selector' do
-    it 'shows the initialize with Readme checkbox' do
+    it 'shows the initialize with Readme checkbox on "Blank project" tab' do
       visit new_project_path
 
       expect(page).to have_css('input#project_initialize_with_readme')
       expect(page).to have_content('Initialize repository with a README')
+    end
+
+    it 'does not show the initialize with Readme checkbox on "Create from template" tab' do
+      visit new_project_path
+      find('#create-from-template-pane').click
+      first('.choose-template').click
+
+      page.within '.project-fields-form' do
+        expect(page).not_to have_css('input#project_initialize_with_readme')
+        expect(page).not_to have_content('Initialize repository with a README')
+      end
+    end
+
+    it 'does not show the initialize with Readme checkbox on "Import project" tab' do
+      visit new_project_path
+      find('#import-project-tab').click
+      first('.js-import-git-toggle-button').click
+
+      page.within '.toggle-import-form' do
+        expect(page).not_to have_css('input#project_initialize_with_readme')
+        expect(page).not_to have_content('Initialize repository with a README')
+      end
     end
   end
 

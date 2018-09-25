@@ -85,7 +85,7 @@ module TestEnv
 
     clean_test_path
 
-    # Setup GitLab shell for test instance
+    # Set up GitLab shell for test instance
     setup_gitlab_shell
 
     setup_gitaly
@@ -105,10 +105,6 @@ module TestEnv
   def enable_mailer
     allow_any_instance_of(NotificationService).to receive(:mailer)
       .and_call_original
-  end
-
-  def disable_pre_receive
-    allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
   end
 
   # Clean /tmp/tests
@@ -371,7 +367,7 @@ module TestEnv
     FileUtils.rm_rf(install_dir)
     exit 1
   ensure
-    puts "    #{component} setup in #{Time.now - start} seconds...\n"
+    puts "    #{component} set up in #{Time.now - start} seconds...\n"
   end
 
   def ensure_component_dir_name_is_correct!(component, path)

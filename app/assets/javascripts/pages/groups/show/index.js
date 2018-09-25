@@ -6,7 +6,7 @@ import NewGroupChild from '~/groups/new_group_child';
 import notificationsDropdown from '~/notifications_dropdown';
 import NotificationsForm from '~/notifications_form';
 import ProjectsList from '~/projects_list';
-import ShortcutsNavigation from '~/shortcuts_navigation';
+import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import GroupTabs from './group_tabs';
 
 document.addEventListener('DOMContentLoaded', () => {

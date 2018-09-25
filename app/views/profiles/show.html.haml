@@ -91,6 +91,9 @@
       = f.select :public_email, options_for_select(@user.all_emails, selected: @user.public_email),
         { help: s_("Profiles|This email will be displayed on your public profile."), include_blank: s_("Profiles|Do not show on profile") },
         control_class: 'select2'
+      = f.select :commit_email, options_for_select(@user.verified_emails, selected: @user.commit_email),
+        { help: 'This email will be used for web based operations, such as edits and merges.' },
+        control_class: 'select2'
       = f.select :preferred_language, Gitlab::I18n::AVAILABLE_LANGUAGES.map { |value, label| [label, value] },
         { help: s_("Profiles|This feature is experimental and translations are not complete yet.") },
         control_class: 'select2'

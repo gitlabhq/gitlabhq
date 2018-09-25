@@ -38,9 +38,11 @@ module Ci
       EOS
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_stage
       @build.pipeline.stages.find_by(name: @build.stage)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def create_stage
       Ci::Stage.create!(name: @build.stage,

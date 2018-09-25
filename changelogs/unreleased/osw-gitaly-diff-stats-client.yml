@@ -1,0 +1,5 @@
+---
+title: Add Gitaly diff stats RPC client
+merge_request: 21732
+author:
+type: changed

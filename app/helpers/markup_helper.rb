@@ -74,14 +74,21 @@ module MarkupHelper
   # the tag contents are truncated without removing the closing tag.
   def first_line_in_markdown(object, attribute, max_chars = nil, options = {})
     md = markdown_field(object, attribute, options)
+    return nil unless md.present?
 
-    text = truncate_visible(md, max_chars || md.length) if md.present?
+    tags = %w(a gl-emoji b pre code p span)
+    tags << 'img' if options[:allow_images]
 
-    sanitize(
+    text = truncate_visible(md, max_chars || md.length)
+    text = sanitize(
       text,
-      tags: %w(a img gl-emoji b pre code p span),
+      tags: tags,
       attributes: Rails::Html::WhiteListSanitizer.allowed_attributes + ['style', 'data-src', 'data-name', 'data-unicode-version']
     )
+
+    # since <img> tags are stripped, this can leave empty <a> tags hanging around
+    # (as our markdown wraps images in links)
+    options[:allow_images] ? text : strip_empty_link_tags(text).html_safe
   end
 
   def markdown(text, context = {})
@@ -233,6 +240,16 @@ module MarkupHelper
     else
       truncated
     end
+  end
+
+  def strip_empty_link_tags(text)
+    scrubber = Loofah::Scrubber.new do |node|
+      node.remove if node.name == 'a' && node.content.blank?
+    end
+
+    # Use `Loofah` directly instead of `sanitize`
+    # as we still use the `rails-deprecated_sanitizer` gem
+    Loofah.fragment(text).scrub!(scrubber).to_s
   end
 
   def markdown_toolbar_button(options = {})

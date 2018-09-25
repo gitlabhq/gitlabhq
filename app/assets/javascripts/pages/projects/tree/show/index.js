@@ -4,7 +4,7 @@ import initBlob from '~/blob_edit/blob_bundle';
 import commitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
 import GpgBadges from '~/gpg_badges';
 import TreeView from '../../../../tree';
-import ShortcutsNavigation from '../../../../shortcuts_navigation';
+import ShortcutsNavigation from '../../../../behaviors/shortcuts/shortcuts_navigation';
 import BlobViewer from '../../../../blob/viewer';
 import NewCommitForm from '../../../../new_commit_form';
 import { ajaxGet } from '../../../../lib/utils/common_utils';

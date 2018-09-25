@@ -172,6 +172,17 @@ module Gitlab
         consume_commits_response(response)
       end
 
+      def diff_stats(left_commit_sha, right_commit_sha)
+        request = Gitaly::DiffStatsRequest.new(
+          repository: @gitaly_repo,
+          left_commit_id: left_commit_sha,
+          right_commit_id: right_commit_sha
+        )
+
+        response = GitalyClient.call(@repository.storage, :diff_service, :diff_stats, request, timeout: GitalyClient.medium_timeout)
+        response.flat_map(&:stats)
+      end
+
       def find_all_commits(opts = {})
         request = Gitaly::FindAllCommitsRequest.new(
           repository: @gitaly_repo,
@@ -229,27 +240,29 @@ module Gitlab
       end
 
       def find_commit(revision)
-        if RequestStore.active?
-          # We don't use RequeStstore.fetch(key) { ... } directly because `revision`
-          # can be a branch name, so we can't use it as a key as it could point
-          # to another commit later on (happens a lot in tests).
+        if Gitlab::SafeRequestStore.active?
+          # We don't use Gitlab::SafeRequestStore.fetch(key) { ... } directly
+          # because `revision` can be a branch name, so we can't use it as a key
+          # as it could point to another commit later on (happens a lot in
+          # tests).
           key = {
             storage: @gitaly_repo.storage_name,
             relative_path: @gitaly_repo.relative_path,
             commit_id: revision
           }
-          return RequestStore[key] if RequestStore.exist?(key)
+          return Gitlab::SafeRequestStore[key] if Gitlab::SafeRequestStore.exist?(key)
 
           commit = call_find_commit(revision)
           return unless commit
 
           key[:commit_id] = commit.id
-          RequestStore[key] = commit
+          Gitlab::SafeRequestStore[key] = commit
         else
           call_find_commit(revision)
         end
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def patch(revision)
         request = Gitaly::CommitPatchRequest.new(
           repository: @gitaly_repo,
@@ -259,6 +272,7 @@ module Gitlab
 
         response.sum(&:data)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def commit_stats(revision)
         request = Gitaly::CommitStatsRequest.new(

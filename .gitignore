@@ -78,3 +78,4 @@ eslint-report.html
 /.gitlab_pages_secret
 package-lock.json
 /junit_rspec.xml
+/junit_karma.xml

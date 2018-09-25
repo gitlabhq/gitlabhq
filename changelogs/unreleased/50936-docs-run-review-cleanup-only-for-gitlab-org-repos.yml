@@ -1,5 +1,0 @@
----
-title: Run review-docs-cleanup job for gitlab-org repos only
-merge_request: 21463
-author: Takuya Noguchi
-type: other

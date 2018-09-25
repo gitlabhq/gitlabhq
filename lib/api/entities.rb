@@ -168,6 +168,7 @@ module API
       expose :namespace, using: 'API::Entities::NamespaceBasic'
       expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_relation(projects_relation, options =  {})
         # Preloading tags, should be done with using only `:tags`,
         # as `:tags` are defined as: `has_many :tags, through: :taggings`
@@ -177,6 +178,7 @@ module API
                          .preload(:import_state, :tags)
                          .preload(namespace: [:route, :owner])
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     class Project < BasicProjectDetails
@@ -247,6 +249,7 @@ module API
 
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_relation(projects_relation, options =  {})
         # Preloading tags, should be done with using only `:tags`,
         # as `:tags` are defined as: `has_many :tags, through: :taggings`
@@ -258,6 +261,7 @@ module API
                                          forked_project_link: :forked_from_project,
                                          forked_from_project: [:route, :forks, :tags, namespace: :route])
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def self.forks_counting_projects(projects_relation)
         projects_relation + projects_relation.map(&:forked_from_project).compact
@@ -558,10 +562,12 @@ module API
         expose :total_time_spent, as: :human_total_time_spent
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def total_time_spent
         # Avoids an N+1 query since timelogs are preloaded
         object.timelogs.map(&:time_spent).sum
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     class ExternalIssue < Grape::Entity
@@ -936,6 +942,7 @@ module API
         end
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_relation(projects_relation, options = {})
         relation = super(projects_relation, options)
 
@@ -960,6 +967,7 @@ module API
 
         relation
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     class LabelBasic < Grape::Entity
@@ -1066,9 +1074,11 @@ module API
         options[:project].repository.commit(repo_tag.dereferenced_target)
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       expose :release, using: Entities::Release do |repo_tag, options|
         options[:project].releases.find_by(tag: repo_tag.name)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     class Runner < Grape::Entity
@@ -1091,6 +1101,7 @@ module API
       expose :version, :revision, :platform, :architecture
       expose :contacted_at
       expose :token, if: lambda { |runner, options| options[:current_user].admin? || !runner.instance_type? }
+      # rubocop: disable CodeReuse/ActiveRecord
       expose :projects, with: Entities::BasicProjectDetails do |runner, options|
         if options[:current_user].admin?
           runner.projects
@@ -1098,6 +1109,8 @@ module API
           options[:current_user].authorized_projects.where(id: runner.projects)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
+      # rubocop: disable CodeReuse/ActiveRecord
       expose :groups, with: Entities::BasicGroupDetails do |runner, options|
         if options[:current_user].admin?
           runner.groups
@@ -1105,6 +1118,7 @@ module API
           options[:current_user].authorized_groups.where(id: runner.groups)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     class RunnerRegistrationDetails < Grape::Entity

@@ -251,7 +251,7 @@ below.
   (in that order) that introduced it. The above quote would be then transformed to:
 
     ```md
-    > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/1242) in GitLab 8.3.
+    > [Introduced](<link-to-issue>) in GitLab 8.3.
     ```
 
 - If the feature is only available in GitLab Enterprise Edition, don't forget to mention
@@ -259,9 +259,21 @@ below.
   the feature is available in:
 
     ```md
-    > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/1242)
-    in [GitLab Starter](https://about.gitlab.com/pricing/) 8.3.
+    > [Introduced](<link-to-issue>) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.3.
     ```
+
+#### Early versions of EE
+
+If the feature was created before GitLab 9.2 (before [different EE tiers were introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1851)):
+
+- Declare it as "Introduced in GitLab Enterprise Edition X.Y".
+- Note which tier the feature is available in.
+
+For example:
+
+```md
+> [Introduced](<link-to-issue>) in GitLab Enterprise Edition 9.0. Available in [GitLab Premium](https://about.gitlab.com/pricing/).
+```
 
 ### Product badges
 

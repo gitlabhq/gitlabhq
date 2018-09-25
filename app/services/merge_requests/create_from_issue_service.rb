@@ -32,9 +32,11 @@ module MergeRequests
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def issue
       @issue ||= IssuesFinder.new(current_user, project_id: project.id).find_by(iid: @issue_iid)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def branch_name
       @branch ||= @branch_name || issue.to_branch_name

@@ -53,6 +53,7 @@ module MilestonesHelper
   # Returns count of milestones for different states
   # Uses explicit hash keys as the 'opened' state URL params differs from the db value
   # and we need to add the total
+  # rubocop: disable CodeReuse/ActiveRecord
   def milestone_counts(milestones)
     counts = milestones.reorder(nil).group(:state).count
 
@@ -62,6 +63,7 @@ module MilestonesHelper
       all: counts.values.sum || 0
     }
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   # Show 'active' class if provided GET param matches check
   # `or_blank` allows the function to return 'active' when given an empty param

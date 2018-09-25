@@ -39,7 +39,10 @@ contains some settings that are common for all providers.
 Before configuring individual OmniAuth providers there are a few global settings
 that are in common for all providers that we need to consider.
 
-- Omniauth needs to be enabled, see details below for example.
+> **NOTE:**
+> Starting from GitLab 11.4, Omniauth is enabled by default. If you're using an
+> earlier version, you'll need to explicitly enable it.
+
 - `allow_single_sign_on` allows you to specify the providers you want to allow to
   automatically create an account. It defaults to `false`. If `false` users must
   be created manually or they will not be able to sign in via OmniAuth.
@@ -74,7 +77,8 @@ To change these settings:
     and change:
 
     ```ruby
-    gitlab_rails['omniauth_enabled'] = true
+    # Versions prior to 11.4 require this to be set to true
+    # gitlab_rails['omniauth_enabled'] = nil
 
     # CAUTION!
     # This allows users to login without having a user account first. Define the allowed providers
@@ -101,7 +105,8 @@ To change these settings:
      ## OmniAuth settings
       omniauth:
         # Allow login via Twitter, Google, etc. using OmniAuth providers
-        enabled: true
+        # Versions prior to 11.4 require this to be set to true
+        # enabled: true
 
         # CAUTION!
         # This allows users to login without having a user account first. Define the allowed providers
@@ -226,6 +231,27 @@ In order to enable/disable an OmniAuth provider, go to Admin Area -> Settings ->
 
 ![Enabled OAuth Sign-In sources](img/enabled-oauth-sign-in-sources.png)
 
+
+## Disabling Omniauth
+
+Starting from version 11.4 of GitLab, Omniauth is enabled by default. This only
+has an effect if providers are configured and [enabled](#enable-or-disable-sign-in-with-an-omniauth-provider-without-disabling-import-sources).
+
+If omniauth providers are causing problems even when individually disabled, you
+can disable the entire omniauth subsystem by modifying the configuration file:
+
+**For Omnibus installations**
+
+```ruby
+gitlab_rails['omniauth_enabled'] = false
+```
+
+**For installations from source**
+
+```yaml
+  omniauth:
+    enabled: false
+```
 
 ## Keep OmniAuth user profiles up to date
 

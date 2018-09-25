@@ -71,7 +71,7 @@ module API
         detail 'This feature was introduced in GitLab 8.13'
       end
       params do
-        requires :branch, type: String, desc: 'Name of the branch to commit into. To create a new branch, also provide `start_branch`.'
+        requires :branch, type: String, desc: 'Name of the branch to commit into. To create a new branch, also provide `start_branch`.', allow_blank: false
         requires :commit_message, type: String, desc: 'Commit message'
         requires :actions, type: Array[Hash], desc: 'Actions to perform in commit'
         optional :start_branch, type: String, desc: 'Name of the branch to start the new commit from'
@@ -136,6 +136,7 @@ module API
         use :pagination
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/repository/commits/:sha/comments', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
 
@@ -144,6 +145,7 @@ module API
 
         present paginate(notes), with: Entities::CommitNote
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Cherry pick commit into a branch' do
         detail 'This feature was introduced in GitLab 8.15'
@@ -151,7 +153,7 @@ module API
       end
       params do
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag to be cherry picked'
-        requires :branch, type: String, desc: 'The name of the branch'
+        requires :branch, type: String, desc: 'The name of the branch', allow_blank: false
       end
       post ':id/repository/commits/:sha/cherry_pick', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         authorize_push_to_branch!(params[:branch])

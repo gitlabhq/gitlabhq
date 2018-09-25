@@ -68,11 +68,13 @@ class IssuableBaseService < BaseService
     find_or_create_label_ids
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def filter_labels_in_param(key)
     return if params[key].to_a.empty?
 
     params[key] = available_labels.where(id: params[key]).pluck(:id)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def find_or_create_label_ids
     labels = params.delete(:labels)
@@ -247,6 +249,7 @@ class IssuableBaseService < BaseService
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def change_todo(issuable)
     case params.delete(:todo_event)
     when 'add'
@@ -256,6 +259,7 @@ class IssuableBaseService < BaseService
       todo_service.mark_todos_as_done_by_ids(todo, current_user) if todo
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def toggle_award(issuable)
     award = params.delete(:emoji_award)

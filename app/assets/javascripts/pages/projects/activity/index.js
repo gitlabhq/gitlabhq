@@ -1,5 +1,5 @@
 import Activities from '~/activities';
-import ShortcutsNavigation from '~/shortcuts_navigation';
+import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 
 document.addEventListener('DOMContentLoaded', () => {
   new Activities(); // eslint-disable-line no-new

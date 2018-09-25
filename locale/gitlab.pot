@@ -107,6 +107,9 @@ msgstr ""
 msgid "%{group_docs_link_start}Groups%{group_docs_link_end} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects."
 msgstr ""
 
+msgid "%{issuableType} will be removed! Are you sure?"
+msgstr ""
+
 msgid "%{loadingIcon} Started"
 msgstr ""
 
@@ -250,7 +253,7 @@ msgstr ""
 msgid "<strong>Removes</strong> source branch"
 msgstr ""
 
-msgid "A 'Runner' is a process which runs a job. You can setup as many Runners as you need."
+msgid "A 'Runner' is a process which runs a job. You can set up as many Runners as you need."
 msgstr ""
 
 msgid "A collection of graphs regarding Continuous Integration"
@@ -353,6 +356,9 @@ msgid "Add user(s) to the group:"
 msgstr ""
 
 msgid "Add users to group"
+msgstr ""
+
+msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission"
 msgstr ""
 
 msgid "Admin Area"
@@ -637,7 +643,7 @@ msgstr ""
 msgid "Artifacts"
 msgstr ""
 
-msgid "Ask your group maintainer to setup a group Runner."
+msgid "Ask your group maintainer to set up a group Runner."
 msgstr ""
 
 msgid "Assign custom color like #FF0000"
@@ -782,9 +788,6 @@ msgid "Background Jobs"
 msgstr ""
 
 msgid "Background color"
-msgstr ""
-
-msgid "Background jobs"
 msgstr ""
 
 msgid "Badges"
@@ -1048,6 +1051,9 @@ msgid "CI / CD"
 msgstr ""
 
 msgid "CI / CD Settings"
+msgstr ""
+
+msgid "CI/CD"
 msgstr ""
 
 msgid "CI/CD configuration"
@@ -1353,6 +1359,9 @@ msgstr ""
 msgid "ClusterIntegration|Certificate Authority bundle (PEM format)"
 msgstr ""
 
+msgid "ClusterIntegration|Choose which applications to install on your Kubernetes cluster. Helm Tiller is required to install any of the following applications."
+msgstr ""
+
 msgid "ClusterIntegration|Choose which of your environments will use this cluster."
 msgstr ""
 
@@ -1441,9 +1450,6 @@ msgid "ClusterIntegration|Ingress gives you a way to route requests to services 
 msgstr ""
 
 msgid "ClusterIntegration|Install"
-msgstr ""
-
-msgid "ClusterIntegration|Install applications on your Kubernetes cluster. Read more about %{helpLink}"
 msgstr ""
 
 msgid "ClusterIntegration|Installed"
@@ -1653,6 +1659,9 @@ msgstr ""
 msgid "ClusterIntegration|With a Kubernetes cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
 msgstr ""
 
+msgid "ClusterIntegration|You must first install Helm Tiller before installing the applications below"
+msgstr ""
+
 msgid "ClusterIntegration|Your account must have %{link_to_kubernetes_engine}"
 msgstr ""
 
@@ -1669,9 +1678,6 @@ msgid "ClusterIntegration|documentation"
 msgstr ""
 
 msgid "ClusterIntegration|help page"
-msgstr ""
-
-msgid "ClusterIntegration|installing applications"
 msgstr ""
 
 msgid "ClusterIntegration|meets the requirements"
@@ -1802,9 +1808,6 @@ msgid "Confidentiality"
 msgstr ""
 
 msgid "Configure Gitaly timeouts."
-msgstr ""
-
-msgid "Configure Sidekiq job throttling."
 msgstr ""
 
 msgid "Configure automatic git checks and housekeeping on repositories."
@@ -2553,6 +2556,9 @@ msgstr ""
 msgid "Environments|You don't have any environments right now."
 msgstr ""
 
+msgid "Epic"
+msgstr ""
+
 msgid "Error"
 msgstr ""
 
@@ -2839,6 +2845,9 @@ msgid "General pipelines"
 msgstr ""
 
 msgid "Generate a default set of labels"
+msgstr ""
+
+msgid "Geo"
 msgstr ""
 
 msgid "Git"
@@ -3293,6 +3302,9 @@ msgstr ""
 msgid "Invite"
 msgstr ""
 
+msgid "Issue"
+msgstr ""
+
 msgid "Issue Boards"
 msgstr ""
 
@@ -3362,7 +3374,7 @@ msgstr ""
 msgid "Job|The artifacts were removed"
 msgstr ""
 
-msgid "Job|The artifacts will be removed"
+msgid "Job|The artifacts will be removed in"
 msgstr ""
 
 msgid "Job|This job is stuck, because the project doesn't have any runners online assigned to it."
@@ -3461,6 +3473,9 @@ msgid "Last Pipeline"
 msgstr ""
 
 msgid "Last commit"
+msgstr ""
+
+msgid "Last contact"
 msgstr ""
 
 msgid "Last edited %{date}"
@@ -3678,9 +3693,6 @@ msgstr ""
 msgid "MergeRequests|Toggle comments for this file"
 msgstr ""
 
-msgid "MergeRequests|Updating discussions failed"
-msgstr ""
-
 msgid "MergeRequests|View file @ %{commitId}"
 msgstr ""
 
@@ -3703,6 +3715,9 @@ msgid "Metrics - Influx"
 msgstr ""
 
 msgid "Metrics - Prometheus"
+msgstr ""
+
+msgid "Metrics and profiling"
 msgstr ""
 
 msgid "Metrics|Check out the CI/CD documentation on deploying to an environment"
@@ -3975,6 +3990,9 @@ msgid "No public groups"
 msgstr ""
 
 msgid "No repository"
+msgstr ""
+
+msgid "No runners found"
 msgstr ""
 
 msgid "No schedules"
@@ -4436,6 +4454,9 @@ msgid "Preferences"
 msgstr ""
 
 msgid "Preferences|Navigation theme"
+msgstr ""
+
+msgid "Press Enter or click to search"
 msgstr ""
 
 msgid "Preview"
@@ -4909,6 +4930,9 @@ msgstr ""
 msgid "Real-time features"
 msgstr ""
 
+msgid "Recent searches"
+msgstr ""
+
 msgid "Reference:"
 msgstr ""
 
@@ -4981,6 +5005,9 @@ msgid "Rename folder"
 msgstr ""
 
 msgid "Reply to this email directly or %{view_it_on_gitlab}."
+msgstr ""
+
+msgid "Reporting"
 msgstr ""
 
 msgid "Reports|%{failedString} and %{resolvedString}"
@@ -5111,7 +5138,22 @@ msgstr ""
 msgid "Run untagged jobs"
 msgstr ""
 
+msgid "Runner cannot be assigned to other projects"
+msgstr ""
+
+msgid "Runner runs jobs from all unassigned projects"
+msgstr ""
+
+msgid "Runner runs jobs from all unassigned projects in its group"
+msgstr ""
+
+msgid "Runner runs jobs from assigned projects"
+msgstr ""
+
 msgid "Runner token"
+msgstr ""
+
+msgid "Runner will not receive any new jobs"
 msgstr ""
 
 msgid "Runners"
@@ -5121,6 +5163,12 @@ msgid "Runners API"
 msgstr ""
 
 msgid "Runners can be placed on separate users, servers, and even on your local machine."
+msgstr ""
+
+msgid "Runners can be placed on separate users, servers, even on your local machine."
+msgstr ""
+
+msgid "Runners currently online: %{active_runners_count}"
 msgstr ""
 
 msgid "Runners page"
@@ -5193,6 +5241,9 @@ msgid "Search merge requests"
 msgstr ""
 
 msgid "Search milestones"
+msgstr ""
+
+msgid "Search or filter results..."
 msgstr ""
 
 msgid "Search or jump to…"
@@ -5327,6 +5378,12 @@ msgstr ""
 msgid "Set up Koding"
 msgstr ""
 
+msgid "Set up a %{type} Runner manually"
+msgstr ""
+
+msgid "Set up a specific Runner automatically"
+msgstr ""
+
 msgid "Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically."
 msgstr ""
 
@@ -5334,12 +5391,6 @@ msgid "SetPasswordToCloneLink|set a password"
 msgstr ""
 
 msgid "Settings"
-msgstr ""
-
-msgid "Setup a %{type} Runner manually"
-msgstr ""
-
-msgid "Setup a specific Runner automatically"
 msgstr ""
 
 msgid "Share"
@@ -5473,6 +5524,9 @@ msgstr ""
 msgid "SortOptions|Largest repository"
 msgstr ""
 
+msgid "SortOptions|Last Contact"
+msgstr ""
+
 msgid "SortOptions|Last created"
 msgstr ""
 
@@ -5495,6 +5549,9 @@ msgid "SortOptions|Milestone due soon"
 msgstr ""
 
 msgid "SortOptions|Most popular"
+msgstr ""
+
+msgid "SortOptions|Most stars"
 msgstr ""
 
 msgid "SortOptions|Name"
@@ -5755,6 +5812,9 @@ msgid "Team"
 msgstr ""
 
 msgid "Template"
+msgstr ""
+
+msgid "Templates"
 msgstr ""
 
 msgid "Terms of Service Agreement and Privacy Policy"
@@ -6346,6 +6406,9 @@ msgstr ""
 msgid "Twitter"
 msgstr ""
 
+msgid "Type"
+msgstr ""
+
 msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
@@ -6482,6 +6545,9 @@ msgid "Various settings that affect GitLab performance."
 msgstr ""
 
 msgid "Verified"
+msgstr ""
+
+msgid "Version"
 msgstr ""
 
 msgid "View file @ "
@@ -6748,10 +6814,13 @@ msgstr ""
 msgid "You can only edit files when you are on a branch"
 msgstr ""
 
+msgid "You can reset runners registration token by pressing a button below."
+msgstr ""
+
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
 msgstr ""
 
-msgid "You can setup jobs to only use Runners with specific tags. Separate tags with commas."
+msgid "You can set up jobs to only use Runners with specific tags. Separate tags with commas."
 msgstr ""
 
 msgid "You cannot write to this read-only GitLab instance."
@@ -7125,6 +7194,9 @@ msgid "mrWidget|into"
 msgstr ""
 
 msgid "mrWidget|to be merged automatically when the pipeline succeeds"
+msgstr ""
+
+msgid "n/a"
 msgstr ""
 
 msgid "new merge request"

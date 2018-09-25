@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Resolvers
   class MergeRequestResolver < BaseResolver
     argument :iid, GraphQL::ID_TYPE,
@@ -8,6 +10,7 @@ module Resolvers
 
     alias_method :project, :object
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def resolve(iid:)
       return unless project.present?
 
@@ -16,5 +19,6 @@ module Resolvers
         results.each { |mr| loader.call(mr.iid.to_s, mr) }
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

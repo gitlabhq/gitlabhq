@@ -4,6 +4,7 @@ module Labels
   class PromoteService < BaseService
     BATCH_SIZE = 1000
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def execute(label)
       return unless project.group &&
           label.is_a?(ProjectLabel)
@@ -27,9 +28,11 @@ module Labels
         new_label
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def subscribe_users(new_label, label_ids)
       # users can be subscribed to multiple labels that will be merged into the group one
       # we want to keep only one subscription / user
@@ -38,7 +41,9 @@ module Labels
         .pluck('MAX(id)')
       Subscription.where(id: ids_to_update).update_all(subscribable_id: new_label.id)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def label_ids_for_merge(new_label)
       LabelsFinder
         .new(current_user, title: new_label.title, group_id: project.group.id)
@@ -46,34 +51,45 @@ module Labels
         .where.not(id: new_label)
         .select(:id)  # Can't use pluck() to avoid object-creation because of the batching
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def update_issuables(new_label, label_ids)
       LabelLink
         .where(label: label_ids)
         .update_all(label_id: new_label)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def update_resource_label_events(new_label, label_ids)
       ResourceLabelEvent
         .where(label: label_ids)
         .update_all(label_id: new_label)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def update_issue_board_lists(new_label, label_ids)
       List
         .where(label: label_ids)
         .update_all(label_id: new_label)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def update_priorities(new_label, label_ids)
       LabelPriority
         .where(label: label_ids)
         .update_all(label_id: new_label)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def update_project_labels(label_ids)
       Label.where(id: label_ids).destroy_all # rubocop: disable DestroyAll
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def clone_label_to_group_label(label)
       params = label.attributes.slice('title', 'description', 'color')

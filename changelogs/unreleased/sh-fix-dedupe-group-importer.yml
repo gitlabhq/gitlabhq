@@ -1,5 +1,0 @@
----
-title: Fix importers not assigning a new default group
-merge_request: 21456
-author:
-type: fixed

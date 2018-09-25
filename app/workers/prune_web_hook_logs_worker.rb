@@ -9,6 +9,7 @@ class PruneWebHookLogsWorker
   # The maximum number of rows to remove in a single job.
   DELETE_LIMIT = 50_000
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform
     # MySQL doesn't allow "DELETE FROM ... WHERE id IN ( ... )" if the inner
     # query refers to the same table. To work around this we wrap the IN body in
@@ -23,4 +24,5 @@ class PruneWebHookLogsWorker
       )
       .delete_all
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

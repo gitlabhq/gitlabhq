@@ -25,12 +25,15 @@ module API
           requires :eventable_id, types: [Integer, String], desc: 'The ID of the eventable'
           use :pagination
         end
+
+        # rubocop: disable CodeReuse/ActiveRecord
         get ":id/#{eventables_str}/:eventable_id/resource_label_events" do
           eventable = find_noteable(parent_type, eventables_str, params[:eventable_id])
           events = eventable.resource_label_events.includes(:label, :user)
 
           present paginate(events), with: Entities::ResourceLabelEvent
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         desc "Get a single #{eventable_type.to_s.downcase} resource label event" do
           success Entities::ResourceLabelEvent

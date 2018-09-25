@@ -12,10 +12,10 @@ module Projects
         @new_deploy_token = DeployTokens::CreateService.new(@project, current_user, deploy_token_params).execute
 
         if @new_deploy_token.persisted?
-          flash.now[:notice] = s_('DeployTokens|Your new project deploy token has been created.')
+          flash[:notice] = s_('DeployTokens|Your new project deploy token has been created.')
         end
 
-        render_show
+        redirect_to action: :show
       end
 
       private
@@ -31,6 +31,7 @@ module Projects
         render 'show'
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def define_protected_refs
         @protected_branches = @project.protected_branches.order(:name).page(params[:page])
         @protected_tags = @project.protected_tags.order(:name).page(params[:page])
@@ -42,6 +43,7 @@ module Projects
 
         load_gon_index
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def remote_mirror
         @remote_mirror = project.remote_mirrors.first_or_initialize

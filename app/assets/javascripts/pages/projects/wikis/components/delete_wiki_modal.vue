@@ -1,12 +1,8 @@
 <script>
 import _ from 'underscore';
-import GlModal from '~/vue_shared/components/gl_modal.vue';
 import { s__, sprintf } from '~/locale';
 
 export default {
-  components: {
-    GlModal,
-  },
   props: {
     deleteWikiUrl: {
       type: String,

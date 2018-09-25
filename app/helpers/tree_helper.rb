@@ -7,6 +7,7 @@ module TreeHelper
   # their corresponding partials
   #
   # tree - A `Tree` object for the current tree
+  # rubocop: disable CodeReuse/ActiveRecord
   def render_tree(tree)
     # Sort submodules and folders together by name ahead of files
     folders, files, submodules = tree.trees, tree.blobs, tree.submodules
@@ -22,6 +23,7 @@ module TreeHelper
     tree << render(partial: 'projects/tree/tree_row', collection: items) if items.present?
     tree.join.html_safe
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   # Return an image icon depending on the file type and mode
   #
@@ -124,6 +126,7 @@ module TreeHelper
   end
 
   # returns the relative path of the first subdir that doesn't have only one directory descendant
+  # rubocop: disable CodeReuse/ActiveRecord
   def flatten_tree(root_path, tree)
     return tree.flat_path.sub(%r{\A#{Regexp.escape(root_path)}/}, '') if tree.flat_path.present?
 
@@ -134,6 +137,7 @@ module TreeHelper
       return tree.name
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def selected_branch
     @branch_name || tree_edit_branch

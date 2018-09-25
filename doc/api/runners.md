@@ -15,7 +15,7 @@ GET /runners?scope=active
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `scope`   | string  | no       | The scope of specific runners to show, one of: `active`, `paused`, `online`; showing all runners if none provided |
+| `scope`   | string  | no       | The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
 
 ```
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/runners"
@@ -60,7 +60,7 @@ GET /runners/all?scope=online
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `scope`   | string  | no       | The scope of runners to show, one of: `specific`, `shared`, `active`, `paused`, `online`; showing all runners if none provided |
+| `scope`   | string  | no       | The scope of runners to show, one of: `specific`, `shared`, `active`, `paused`, `online`, `offline`; showing all runners if none provided |
 
 ```
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/runners/all"

@@ -21,6 +21,7 @@ class VariableDuplicatesValidator < ActiveModel::EachValidator
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def validate_duplicates(record, attribute, values)
     duplicates = values.reject(&:marked_for_destruction?).group_by(&:key).select { |_, v| v.many? }.map(&:first)
     if duplicates.any?
@@ -29,4 +30,5 @@ class VariableDuplicatesValidator < ActiveModel::EachValidator
       record.errors.add(attribute, error_message)
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

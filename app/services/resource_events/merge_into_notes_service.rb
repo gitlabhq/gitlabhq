@@ -30,6 +30,7 @@ module ResourceEvents
       end
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def label_events_by_discussion_id
       return [] unless resource.respond_to?(:resource_label_events)
 
@@ -38,6 +39,7 @@ module ResourceEvents
 
       events.group_by { |event| event.discussion_id }
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def since_fetch_at(events)
       return events unless params[:last_fetched_at].present?

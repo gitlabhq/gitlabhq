@@ -1,7 +1,7 @@
 import initDismissableCallout from '~/dismissable_callout';
 import initGkeDropdowns from '~/projects/gke_cluster_dropdowns';
 import Project from './project';
-import ShortcutsNavigation from '../../shortcuts_navigation';
+import ShortcutsNavigation from '../../behaviors/shortcuts/shortcuts_navigation';
 
 document.addEventListener('DOMContentLoaded', () => {
   const { page } = document.body.dataset;

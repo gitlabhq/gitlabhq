@@ -86,7 +86,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       def create_job(name, status)
         pipeline = create(:ci_pipeline, project: project)
         create(:ci_build, :tags, :triggered, :artifacts,
-          pipeline: pipeline, name: name, status: status)
+               pipeline: pipeline, name: name, status: status)
       end
     end
 
@@ -192,6 +192,194 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('job/job_details')
           expect(json_response['terminal_path']).to match(%r{/terminal})
+        end
+      end
+
+      context 'when job passed with no trace' do
+        let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
+
+        it 'exposes empty state illustrations' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('job/job_details')
+          expect(json_response['status']['illustration']).to have_key('image')
+          expect(json_response['status']['illustration']).to have_key('size')
+          expect(json_response['status']['illustration']).to have_key('title')
+        end
+      end
+
+      context 'with no deployment' do
+        let(:job) { create(:ci_build, :success, pipeline: pipeline) }
+
+        it 'does not exposes the deployment information' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['deployment_status']).to be_nil
+        end
+      end
+
+      context 'with deployment' do
+        let(:merge_request) { create(:merge_request, source_project: project) }
+        let(:environment) { create(:environment, project: project, name: 'staging', state: :available) }
+        let(:job) { create(:ci_build, :success, environment: environment.name, pipeline: pipeline) }
+
+        it 'exposes the deployment information' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to match_schema('job/job_details')
+          expect(json_response['deployment_status']["status"]).to eq 'creating'
+          expect(json_response['deployment_status']["icon"]).to eq 'passed'
+          expect(json_response['deployment_status']["environment"]).not_to be_nil
+        end
+      end
+
+      context 'when user can edit runner' do
+        context 'that belongs to the project' do
+          let(:runner) { create(:ci_runner, :project, projects: [project]) }
+          let(:job) { create(:ci_build, :success, pipeline: pipeline, runner: runner) }
+
+          before do
+            project.add_maintainer(user)
+            sign_in(user)
+
+            get_show(id: job.id, format: :json)
+          end
+
+          it 'user can edit runner' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('job/job_details')
+            expect(json_response['runner']).to have_key('edit_path')
+          end
+        end
+
+        context 'that belongs to group' do
+          let(:group) { create(:group) }
+          let(:runner) { create(:ci_runner, :group, groups: [group]) }
+          let(:job) { create(:ci_build, :success, pipeline: pipeline, runner: runner) }
+          let(:user) { create(:user, :admin) }
+
+          before do
+            project.add_maintainer(user)
+            sign_in(user)
+
+            get_show(id: job.id, format: :json)
+          end
+
+          it 'user can not edit runner' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('job/job_details')
+            expect(json_response['runner']).not_to have_key('edit_path')
+          end
+        end
+
+        context 'that belongs to instance' do
+          let(:runner) { create(:ci_runner, :instance) }
+          let(:job) { create(:ci_build, :success, pipeline: pipeline, runner: runner) }
+          let(:user) { create(:user, :admin) }
+
+          before do
+            project.add_maintainer(user)
+            sign_in(user)
+
+            get_show(id: job.id, format: :json)
+          end
+
+          it 'user can not edit runner' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('job/job_details')
+            expect(json_response['runner']).not_to have_key('edit_path')
+          end
+        end
+      end
+
+      context 'when no runners are available' do
+        let(:runner) { create(:ci_runner, :instance, active: false) }
+        let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner: runner) }
+
+        it 'exposes needed information' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('job/job_details')
+          expect(json_response['runners']['online']).to be false
+          expect(json_response['runners']['available']).to be false
+        end
+      end
+
+      context 'when no runner is online' do
+        let(:runner) { create(:ci_runner, :instance) }
+        let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner: runner) }
+
+        it 'exposes needed information' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('job/job_details')
+          expect(json_response['runners']['online']).to be false
+          expect(json_response['runners']['available']).to be true
+        end
+      end
+
+      context 'settings_path' do
+        context 'when user is developer' do
+          it 'settings_path is not available' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('job/job_details')
+            expect(json_response['runners']).not_to have_key('settings_path')
+          end
+        end
+
+        context 'when user is maintainer' do
+          let(:user) { create(:user, :admin) }
+
+          before do
+            project.add_maintainer(user)
+            sign_in(user)
+          end
+
+          it 'settings_path is available' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('job/job_details')
+            expect(json_response['runners']['settings_path']).to match(/runners/)
+          end
+        end
+      end
+    end
+
+    context 'when requesting JSON job is triggered' do
+      let!(:merge_request) { create(:merge_request, source_project: project) }
+      let(:trigger) { create(:ci_trigger, project: project) }
+      let(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, trigger: trigger) }
+      let(:job) { create(:ci_build, pipeline: pipeline, trigger_request: trigger_request) }
+
+      before do
+        project.add_developer(user)
+        sign_in(user)
+
+        allow_any_instance_of(Ci::Build).to receive(:merge_request).and_return(merge_request)
+      end
+
+      context 'with no variables' do
+        before do
+          get_show(id: job.id, format: :json)
+        end
+
+        it 'exposes trigger information' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('job/job_details')
+          expect(json_response['trigger']['short_token']).to eq 'toke'
+          expect(json_response['trigger']['variables'].length).to eq 0
+        end
+      end
+
+      context 'with variables' do
+        before do
+          create(:ci_pipeline_variable, pipeline: pipeline, key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1')
+
+          get_show(id: job.id, format: :json)
+        end
+
+        it 'exposes trigger information and variables' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('job/job_details')
+          expect(json_response['trigger']['short_token']).to eq 'toke'
+          expect(json_response['trigger']['variables'].length).to eq 1
+          expect(json_response['trigger']['variables'].first['key']).to eq "TRIGGER_KEY_1"
+          expect(json_response['trigger']['variables'].first['value']).to eq "TRIGGER_VALUE_1"
+          expect(json_response['trigger']['variables'].first['public']).to eq false
         end
       end
     end

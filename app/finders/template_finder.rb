@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TemplateFinder
   VENDORED_TEMPLATES = {
     dockerfiles: ::Gitlab::Template::DockerfileTemplate,
@@ -8,7 +10,7 @@ class TemplateFinder
   class << self
     def build(type, params = {})
       if type == :licenses
-        LicenseTemplateFinder.new(params)
+        LicenseTemplateFinder.new(params) # rubocop: disable CodeReuse/Finder
       else
         new(type, params)
       end

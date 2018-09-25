@@ -138,7 +138,9 @@ class ProjectMember < Member
     super
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def event_service
     EventCreateService.new
   end
+  # rubocop: enable CodeReuse/ServiceClass
 end

@@ -631,7 +631,7 @@ export default class Notes {
    *
    * deactivates the submit button when text is empty
    * hides the preview button when text is empty
-   * setup GFM auto complete
+   * set up GFM auto complete
    * show the form
    */
   setupNoteForm(form, enableGFM = defaultAutocompleteConfig) {
@@ -954,7 +954,7 @@ export default class Notes {
    * Note: dataHolder must have the "discussionId" and "lineCode" data attributes set.
    */
   setupDiscussionNoteForm(dataHolder, form) {
-    // setup note target
+    // set up note target
     let diffFileData = dataHolder.closest('.text-file');
 
     if (diffFileData.length === 0) {
@@ -1036,7 +1036,7 @@ export default class Notes {
 
     $diffFile[0].dispatchEvent(clickEvent);
 
-    // Setup comment form
+    // Set up comment form
     let newForm;
     const $noteContainer = $link.closest('.diff-viewer').find('.note-container');
     const $form = $noteContainer.find('> .discussion-form');

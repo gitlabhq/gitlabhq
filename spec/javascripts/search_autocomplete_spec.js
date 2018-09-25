@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import '~/gl_dropdown';
-import SearchAutocomplete from '~/search_autocomplete';
+import initSearchAutocomplete from '~/search_autocomplete';
 import '~/lib/utils/common_utils';
 
 describe('Search autocomplete dropdown', () => {
@@ -132,7 +132,7 @@ describe('Search autocomplete dropdown', () => {
     window.gon.current_user_id = userId;
     window.gon.current_username = userName;
 
-    return (widget = new SearchAutocomplete());
+    return (widget = initSearchAutocomplete());
   });
 
   afterEach(function() {

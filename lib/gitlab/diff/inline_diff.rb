@@ -67,6 +67,7 @@ module Gitlab
         private
 
         # Finds pairs of old/new line pairs that represent the same line that changed
+        # rubocop: disable CodeReuse/ActiveRecord
         def find_changed_line_pairs(lines)
           # Prefixes of all diff lines, indicating their types
           # For example: `" - +  -+  ---+++ --+  -++"`
@@ -89,6 +90,7 @@ module Gitlab
 
           changed_line_pairs
         end
+        # rubocop: enable CodeReuse/ActiveRecord
       end
 
       private

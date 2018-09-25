@@ -29,6 +29,14 @@ describe Gitlab::Diff::FileCollection::MergeRequestDiff do
     expect(mr_diff.cache_key).not_to eq(key)
   end
 
+  it_behaves_like 'diff statistics' do
+    let(:collection_default_args) do
+      { diff_options: {} }
+    end
+    let(:diffable) { merge_request.merge_request_diff }
+    let(:stub_path) { '.gitignore' }
+  end
+
   shared_examples 'initializes a DiffCollection' do
     it 'returns a valid instance of a DiffCollection' do
       expect(diff_files).to be_a(Gitlab::Git::DiffCollection)

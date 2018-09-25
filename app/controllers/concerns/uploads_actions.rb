@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UploadsActions
   extend ActiveSupport::Concern
 
@@ -89,6 +91,7 @@ module UploadsActions
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def build_uploader_from_upload
     return unless uploader = build_uploader
 
@@ -96,6 +99,7 @@ module UploadsActions
     upload = Upload.find_by(uploader: uploader_class.to_s, path: upload_paths)
     upload&.build_uploader
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def build_uploader_from_params
     return unless uploader = build_uploader

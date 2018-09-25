@@ -222,6 +222,7 @@ module ProjectsHelper
   #
   # If no limit is applied we'll just issue a COUNT since the result set could
   # be too large to load into memory.
+  # rubocop: disable CodeReuse/ActiveRecord
   def any_projects?(projects)
     return projects.any? if projects.is_a?(Array)
 
@@ -231,6 +232,7 @@ module ProjectsHelper
       projects.except(:offset).any?
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def show_projects?(projects, params)
     !!(params[:personal] || params[:name] || any_projects?(projects))

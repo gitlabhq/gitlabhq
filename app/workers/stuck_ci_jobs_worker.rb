@@ -46,6 +46,7 @@ class StuckCiJobsWorker
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def search(status, timeout)
     loop do
       jobs = Ci::Build.where(status: status)
@@ -60,6 +61,7 @@ class StuckCiJobsWorker
       end
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def drop_build(type, build, status, timeout)
     Rails.logger.info "#{self.class}: Dropping #{type} build #{build.id} for runner #{build.runner_id} (status: #{status}, timeout: #{timeout})"

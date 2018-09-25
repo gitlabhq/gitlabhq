@@ -26,6 +26,7 @@ module Gitlab
         !!(signature_text && signed_text)
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def signature
         return unless has_signature?
 
@@ -36,6 +37,7 @@ module Gitlab
 
         @signature = create_cached_signature!
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def update_signature!(cached_signature)
         using_keychain do |gpg_key|
@@ -113,9 +115,11 @@ module Gitlab
         gpg_key&.verified_user_infos&.first || gpg_key&.user_infos&.first || {}
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def find_gpg_key(keyid)
         GpgKey.find_by(primary_keyid: keyid) || GpgKeySubkey.find_by(keyid: keyid)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

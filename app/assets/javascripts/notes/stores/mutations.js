@@ -4,7 +4,8 @@ import * as constants from '../constants';
 import { isInMRPage } from '../../lib/utils/common_utils';
 
 export default {
-  [types.ADD_NEW_NOTE](state, note) {
+  [types.ADD_NEW_NOTE](state, data) {
+    const note = data.discussion ? data.discussion.notes[0] : data;
     const { discussion_id, type } = note;
     const [exists] = state.discussions.filter(n => n.id === note.discussion_id);
     const isDiscussion = type === constants.DISCUSSION_NOTE || type === constants.DIFF_NOTE;
@@ -100,7 +101,10 @@ export default {
 
     discussionsData.forEach(discussion => {
       if (discussion.diff_file) {
-        Object.assign(discussion, { fileHash: discussion.diff_file.file_hash });
+        Object.assign(discussion, {
+          fileHash: discussion.diff_file.file_hash,
+          truncated_diff_lines: discussion.truncated_diff_lines || [],
+        });
       }
 
       // To support legacy notes, should be very rare case.
@@ -214,12 +218,7 @@ export default {
 
   [types.SET_DISCUSSION_DIFF_LINES](state, { discussionId, diffLines }) {
     const discussion = utils.findNoteObjectById(state.discussions, discussionId);
-    const index = state.discussions.indexOf(discussion);
 
-    const discussionWithDiffLines = Object.assign({}, discussion, {
-      truncated_diff_lines: diffLines,
-    });
-
-    state.discussions.splice(index, 1, discussionWithDiffLines);
+    discussion.truncated_diff_lines = diffLines;
   },
 };

@@ -7,8 +7,10 @@ module Files
     def initialize(*args)
       super
 
-      @author_email = params[:author_email] || current_user&.email
-      @author_name = params[:author_name] || current_user&.name
+      git_user = Gitlab::Git::User.from_gitlab(current_user) if current_user.present?
+
+      @author_email = params[:author_email] || git_user&.email
+      @author_name = params[:author_name] || git_user&.name
       @commit_message = params[:commit_message]
       @last_commit_sha = params[:last_commit_sha]
 

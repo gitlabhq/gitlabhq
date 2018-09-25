@@ -11,6 +11,7 @@ class Namespace < ActiveRecord::Base
   include Gitlab::SQL::Pattern
   include IgnorableColumn
   include FeatureGate
+  include FromUnion
 
   ignore_column :deleted_at
 
@@ -147,8 +148,8 @@ class Namespace < ActiveRecord::Base
   def find_fork_of(project)
     return nil unless project.fork_network
 
-    if RequestStore.active?
-      forks_in_namespace = RequestStore.fetch("namespaces:#{id}:forked_projects") do
+    if Gitlab::SafeRequestStore.active?
+      forks_in_namespace = Gitlab::SafeRequestStore.fetch("namespaces:#{id}:forked_projects") do
         Hash.new do |found_forks, project|
           found_forks[project] = project.fork_network.find_forks_in(projects).first
         end

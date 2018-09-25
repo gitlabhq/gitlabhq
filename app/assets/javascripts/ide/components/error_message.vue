@@ -1,11 +1,7 @@
 <script>
 import { mapActions } from 'vuex';
-import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
 
 export default {
-  components: {
-    LoadingIcon,
-  },
   props: {
     message: {
       type: Object,
@@ -59,7 +55,7 @@ export default {
         @click.stop.prevent="clickAction"
       >
         {{ message.actionText }}
-        <loading-icon
+        <gl-loading-icon
           v-show="isLoading"
           inline
         />

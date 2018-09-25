@@ -12,7 +12,7 @@
             = search_field_tag :name, project_name, class: "form-control search-text-input js-search-input", autofocus: true, spellcheck: false, placeholder: 'Search by name'
             = icon("search", class: "search-icon")
           = render "shared/groups/dropdown", options_hash: admin_groups_sort_options_hash
-          = link_to new_admin_group_path, class: "btn btn-new" do
+          = link_to new_admin_group_path, class: "btn btn-success" do
             = _('New group')
   %ul.content-list
     = render @groups

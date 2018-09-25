@@ -1,12 +1,13 @@
+# frozen_string_literal: true
+
 class Admin::RunnersController < Admin::ApplicationController
   before_action :runner, except: :index
 
   def index
-    sort = params[:sort] == 'contacted_asc' ? { contacted_at: :asc } : { id: :desc }
-    @runners = Ci::Runner.order(sort)
-    @runners = @runners.search(params[:search]) if params[:search].present?
-    @runners = @runners.page(params[:page]).per(30)
-    @active_runners_cnt = Ci::Runner.online.count
+    finder = Admin::RunnersFinder.new(params: params)
+    @runners = finder.execute
+    @active_runners_count = Ci::Runner.online.count
+    @sort = finder.sort_key
   end
 
   def show
@@ -57,6 +58,7 @@ class Admin::RunnersController < Admin::ApplicationController
     params.require(:runner).permit(Ci::Runner::FORM_EDITABLE)
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def assign_builds_and_projects
     @builds = runner.builds.order('id DESC').first(30)
     @projects =
@@ -69,4 +71,5 @@ class Admin::RunnersController < Admin::ApplicationController
     @projects = @projects.where.not(id: runner.projects.select(:id)) if runner.projects.any?
     @projects = @projects.page(params[:page]).per(30)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

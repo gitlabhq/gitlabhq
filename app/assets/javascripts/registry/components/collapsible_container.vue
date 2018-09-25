@@ -2,7 +2,6 @@
   import { mapActions } from 'vuex';
   import Flash from '../../flash';
   import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
-  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
   import tooltip from '../../vue_shared/directives/tooltip';
   import tableRegistry from './table_registry.vue';
   import { errorMessages, errorMessagesTypes } from '../constants';
@@ -12,7 +11,6 @@
     name: 'CollapsibeContainerRegisty',
     components: {
       clipboardButton,
-      loadingIcon,
       tableRegistry,
     },
     directives: {
@@ -90,8 +88,8 @@
 
       <div class="controls d-none d-sm-block float-right">
         <button
-          v-tooltip
           v-if="repo.canDelete"
+          v-tooltip
           :title="s__('ContainerRegistry|Remove repository')"
           :aria-label="s__('ContainerRegistry|Remove repository')"
           type="button"
@@ -107,10 +105,10 @@
       </div>
     </div>
 
-    <loading-icon
+    <gl-loading-icon
       v-if="repo.isLoading"
+      :size="2"
       class="append-bottom-20"
-      size="2"
     />
 
     <div

@@ -24,7 +24,7 @@
         - if runner.belongs_to_one_project?
           = link_to _('Remove Runner'), project_runner_path(@project, runner), data: { confirm: _("Are you sure?") }, method: :delete, class: 'btn btn-danger btn-sm'
         - else
-          - runner_project = @project.runner_projects.find_by(runner_id: runner)
+          - runner_project = @project.runner_projects.find_by(runner_id: runner) # rubocop: disable CodeReuse/ActiveRecord
           = link_to _('Disable for this project'), project_runner_project_path(@project, runner_project), data: { confirm: _("Are you sure?") }, method: :delete, class: 'btn btn-danger btn-sm'
       - elsif runner.project_type?
         = form_for [@project.namespace.becomes(Namespace), @project, @project.runner_projects.new] do |f|

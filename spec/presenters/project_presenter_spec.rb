@@ -412,7 +412,7 @@ describe ProjectPresenter do
     end
 
     describe '#koding_anchor_data' do
-      it 'returns link to setup Koding if user can push and no koding YML exists' do
+      it 'returns link to set up Koding if user can push and no koding YML exists' do
         project.add_developer(user)
         allow(project.repository).to receive(:koding_yml).and_return(nil)
         allow(Gitlab::CurrentSettings).to receive(:koding_enabled?).and_return(true)

@@ -885,4 +885,18 @@ describe Projects::MergeRequestsController do
       end
     end
   end
+
+  describe 'GET edit' do
+    it 'responds successfully' do
+      get :edit, namespace_id: project.namespace, project_id: project, id: merge_request
+
+      expect(response).to have_gitlab_http_status(:success)
+    end
+
+    it 'assigns the noteable to make sure autocompletes work' do
+      get :edit, namespace_id: project.namespace, project_id: project, id: merge_request
+
+      expect(assigns(:noteable)).not_to be_nil
+    end
+  end
 end

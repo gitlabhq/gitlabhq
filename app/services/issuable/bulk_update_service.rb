@@ -2,6 +2,7 @@
 
 module Issuable
   class BulkUpdateService < IssuableBaseService
+    # rubocop: disable CodeReuse/ActiveRecord
     def execute(type)
       model_class = type.classify.constantize
       update_class = type.classify.pluralize.constantize::UpdateService
@@ -28,6 +29,7 @@ module Issuable
         success:  !items.count.zero?
       }
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     private
 

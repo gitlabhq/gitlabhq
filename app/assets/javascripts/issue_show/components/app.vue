@@ -293,6 +293,7 @@
         :show-delete-button="showDeleteButton"
         :can-attach-file="canAttachFile"
         :enable-autocomplete="enableAutocomplete"
+        :issuable-type="issuableType"
       />
 
       <recaptcha-modal

@@ -580,6 +580,7 @@ module SystemNoteService
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def notes_for_mentioner(mentioner, noteable, notes)
     if mentioner.is_a?(Commit)
       text = "#{cross_reference_note_prefix}%#{mentioner.to_reference(nil)}"
@@ -590,6 +591,7 @@ module SystemNoteService
       notes.where(note: [text, text.capitalize])
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def create_note(note_summary)
     note = Note.create(note_summary.note.merge(system: true))

@@ -1,6 +1,6 @@
 import ZenMode from '~/zen_mode';
 import initIssuableSidebar from '~/init_issuable_sidebar';
-import ShortcutsIssuable from '~/shortcuts_issuable';
+import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
 import { handleLocationHash } from '~/lib/utils/common_utils';
 import howToMerge from '~/how_to_merge';
 import initPipelines from '~/commit/pipelines/pipelines_bundle';

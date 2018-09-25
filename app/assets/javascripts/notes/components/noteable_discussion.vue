@@ -348,10 +348,10 @@ Please check your network connection and try again.`;
               <div class="discussion-notes">
                 <ul class="notes">
                   <component
-                    v-for="note in discussion.notes"
                     :is="componentName(note)"
-                    :note="componentData(note)"
+                    v-for="note in discussion.notes"
                     :key="note.id"
+                    :note="componentData(note)"
                     @handleDeleteNote="deleteNoteHandler"
                   />
                 </ul>

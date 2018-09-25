@@ -3,6 +3,8 @@
 Automate GitLab via a simple and powerful API. All definitions can be found
 under [`/lib/api`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/api).
 
+The main GitLab API is a [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API. Therefore, documentation in this section assumes knowledge of REST concepts.
+
 ## Resources
 
 Documentation for various API resources can be found separately in the
@@ -78,8 +80,8 @@ Going forward, we will start on moving to
 controller-specific endpoints. GraphQL has a number of benefits:
 
 1. We avoid having to maintain two different APIs.
-2. Callers of the API can request only what they need.
-3. It is versioned by default.
+1. Callers of the API can request only what they need.
+1. It is versioned by default.
 
 It will co-exist with the current v4 REST API. If we have a v5 API, this should
 be a compatibility layer on top of GraphQL.
@@ -140,8 +142,9 @@ There are three ways to authenticate with the GitLab API:
 1. [Session cookie](#session-cookie)
 
 For admins who want to authenticate with the API as a specific user, or who want to build applications or scripts that do so, two options are available:
+
 1. [Impersonation tokens](#impersonation-tokens)
-2. [Sudo](#sudo)
+1. [Sudo](#sudo)
 
 If authentication information is invalid or omitted, an error message will be
 returned with status code `401`:
@@ -220,7 +223,8 @@ Impersonation tokens are used exactly like regular personal access tokens, and c
 
 ### Sudo
 
-> Needs admin permissions.
+NOTE: **Note:**
+Only available to [administrators](../user/permissions.md).
 
 All API requests support performing an API call as if you were another user,
 provided you are authenticated as an administrator with an OAuth or Personal Access Token that has the `sudo` scope.
@@ -446,28 +450,23 @@ curl --request POST --header "PRIVATE-TOKEN: ********************" \
 
 ## `id` vs `iid`
 
-When you work with the API, you may notice two similar fields in API entities:
-`id` and `iid`. The main difference between them is scope.
+ Some resources have two similarly-named fields. For example, [issues](issues.md), [merge requests](merge_requests.md), and [project milestones](merge_requests.md). The fields are:
 
-For example, an issue might have `id: 46` and `iid: 5`.
+- `id`: ID that is unique across all projects.
+- `iid`: additional, internal ID that is unique in the scope of a single project.
 
-| Parameter | Description |
-| --------- | ----------- |
-| `id`  | Is unique across all issues and is used for any API call |
-| `iid` | Is unique only in scope of a single project. When you browse issues or merge requests with the Web UI, you see the `iid` |
+NOTE: **Note:**
+The `iid` is displayed in the web UI.
 
-That means that if you want to get an issue via the API you should use the `id`:
+If a resource has the `iid` field and the `id` field, the `iid` field is usually used instead of `id` to fetch the resource.
 
-```
-GET /projects/42/issues/:id
-```
+For example, suppose a project with `id: 42` has an issue with `id: 46` and `iid: 5`. In this case:
 
-On the other hand, if you want to create a link to a web page you should use
-the `iid`:
+- A valid API call to retrieve the issue is  `GET /projects/42/issues/5`
+- An invalid API call to retrieve the issue is `GET /projects/42/issues/46`.
 
-```
-GET /projects/42/issues/:iid
-```
+NOTE: **Note:**
+Not all resources with the `iid` field are fetched by `iid`. For guidance on which field to use, see the documentation for the specific resource.
 
 ## Data validation and error reporting
 

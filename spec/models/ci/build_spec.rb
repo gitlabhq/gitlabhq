@@ -2981,4 +2981,46 @@ describe Ci::Build do
       end
     end
   end
+
+  describe '#deployment_status' do
+    context 'when build is a last deployment' do
+      let(:build) { create(:ci_build, :success, environment: 'production') }
+      let(:environment) { create(:environment, name: 'production', project: build.project) }
+      let!(:deployment) { create(:deployment, environment: environment, project: environment.project, deployable: build) }
+
+      it { expect(build.deployment_status).to eq(:last) }
+    end
+
+    context 'when there is a newer build with deployment' do
+      let(:build) { create(:ci_build, :success, environment: 'production') }
+      let(:environment) { create(:environment, name: 'production', project: build.project) }
+      let!(:deployment) { create(:deployment, environment: environment, project: environment.project, deployable: build) }
+      let!(:last_deployment) { create(:deployment, environment: environment, project: environment.project) }
+
+      it { expect(build.deployment_status).to eq(:out_of_date) }
+    end
+
+    context 'when build with deployment has failed' do
+      let(:build) { create(:ci_build, :failed, environment: 'production') }
+      let(:environment) { create(:environment, name: 'production', project: build.project) }
+      let!(:deployment) { create(:deployment, environment: environment, project: environment.project, deployable: build) }
+
+      it { expect(build.deployment_status).to eq(:failed) }
+    end
+
+    context 'when build with deployment is running' do
+      let(:build) { create(:ci_build, environment: 'production') }
+      let(:environment) { create(:environment, name: 'production', project: build.project) }
+      let!(:deployment) { create(:deployment, environment: environment, project: environment.project, deployable: build) }
+
+      it { expect(build.deployment_status).to eq(:creating) }
+    end
+
+    context 'when build is successful but deployment is not ready yet' do
+      let(:build) { create(:ci_build, :success, environment: 'production') }
+      let(:environment) { create(:environment, name: 'production', project: build.project) }
+
+      it { expect(build.deployment_status).to eq(:creating) }
+    end
+  end
 end

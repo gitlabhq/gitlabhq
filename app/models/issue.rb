@@ -172,6 +172,7 @@ class Issue < ActiveRecord::Base
 
   # All branches containing the current issue's ID, except for
   # those with a merge request open referencing the current issue.
+  # rubocop: disable CodeReuse/ServiceClass
   def related_branches(current_user)
     branches_with_iid = project.repository.branch_names.select do |branch|
       branch =~ /\A#{iid}-(?!\d+-stable)/i
@@ -185,6 +186,7 @@ class Issue < ActiveRecord::Base
 
     branches_with_iid - branches_with_merge_request
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def suggested_branch_name
     return to_branch_name unless project.repository.branch_exists?(to_branch_name)
@@ -278,9 +280,11 @@ class Issue < ActiveRecord::Base
     true
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def update_project_counter_caches
     Projects::OpenIssuesCountService.new(project).refresh_cache
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   private
 

@@ -170,12 +170,14 @@ describe Projects::ClustersController do
   end
 
   describe 'POST create for new cluster' do
+    let(:legacy_abac_param) { 'true' }
     let(:params) do
       {
         cluster: {
           name: 'new-cluster',
           provider_gcp_attributes: {
-            gcp_project_id: 'gcp-project-12345'
+            gcp_project_id: 'gcp-project-12345',
+            legacy_abac: legacy_abac_param
           }
         }
       }
@@ -201,6 +203,18 @@ describe Projects::ClustersController do
           expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
           expect(project.clusters.first).to be_gcp
           expect(project.clusters.first).to be_kubernetes
+          expect(project.clusters.first.provider_gcp).to be_legacy_abac
+        end
+
+        context 'when legacy_abac param is false' do
+          let(:legacy_abac_param) { 'false' }
+
+          it 'creates a new cluster with legacy_abac_disabled' do
+            expect(ClusterProvisionWorker).to receive(:perform_async)
+            expect { go }.to change { Clusters::Cluster.count }
+              .and change { Clusters::Providers::Gcp.count }
+            expect(project.clusters.first.provider_gcp).not_to be_legacy_abac
+          end
         end
       end
 

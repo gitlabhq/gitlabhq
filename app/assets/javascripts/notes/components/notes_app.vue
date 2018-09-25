@@ -10,7 +10,6 @@ import systemNote from '../../vue_shared/components/notes/system_note.vue';
 import commentForm from './comment_form.vue';
 import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
 import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import skeletonLoadingContainer from '../../vue_shared/components/notes/skeleton_note.vue';
 
 export default {
@@ -20,7 +19,6 @@ export default {
     noteableDiscussion,
     systemNote,
     commentForm,
-    loadingIcon,
     placeholderNote,
     placeholderSystemNote,
   },
@@ -189,10 +187,10 @@ export default {
       class="notes main-notes-list timeline"
     >
       <component
-        v-for="discussion in allDiscussions"
         :is="getComponentName(discussion)"
-        v-bind="getComponentData(discussion)"
+        v-for="discussion in allDiscussions"
         :key="discussion.id"
+        v-bind="getComponentData(discussion)"
       />
     </ul>
 

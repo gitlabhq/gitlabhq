@@ -17,6 +17,7 @@ class Note < ActiveRecord::Base
   include Editable
   include Gitlab::SQL::Pattern
   include ThrottledTouch
+  include FromUnion
 
   module SpecialRole
     FIRST_TIME_CONTRIBUTOR = :first_time_contributor
@@ -181,6 +182,7 @@ class Note < ActiveRecord::Base
     end
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def cross_reference?
     return unless system?
 
@@ -190,6 +192,7 @@ class Note < ActiveRecord::Base
       SystemNoteService.cross_reference?(note)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def diff_note?
     false

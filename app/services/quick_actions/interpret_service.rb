@@ -111,10 +111,12 @@ module QuickActions
     end
 
     desc 'Assign'
+    # rubocop: disable CodeReuse/ActiveRecord
     explanation do |users|
       users = issuable.allows_multiple_assignees? ? users : users.take(1)
       "Assigns #{users.map(&:to_reference).to_sentence}."
     end
+    # rubocop: enable CodeReuse/ActiveRecord
     params do
       issuable.allows_multiple_assignees? ? '@user1 @user2' : '@user'
     end
@@ -124,6 +126,7 @@ module QuickActions
     parse_params do |assignee_param|
       extract_users(assignee_param)
     end
+    # rubocop: disable CodeReuse/ActiveRecord
     command :assign do |users|
       next if users.empty?
 
@@ -134,6 +137,7 @@ module QuickActions
           [users.first.id]
         end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     desc do
       if issuable.allows_multiple_assignees?
@@ -160,6 +164,7 @@ module QuickActions
       # When multiple users are assigned, all will be unassigned if multiple assignees are no longer allowed
       extract_users(unassign_param) if issuable.allows_multiple_assignees?
     end
+    # rubocop: disable CodeReuse/ActiveRecord
     command :unassign do |users = nil|
       @updates[:assignee_ids] =
         if users&.any?
@@ -168,6 +173,7 @@ module QuickActions
           []
         end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     desc 'Set milestone'
     explanation do |milestone|
@@ -546,6 +552,7 @@ module QuickActions
         current_user.can?(:"update_#{issuable.to_ability_name}", issuable) &&
         issuable.project.boards.count == 1
     end
+    # rubocop: disable CodeReuse/ActiveRecord
     command :board_move do |target_list_name|
       label_ids = find_label_ids(target_list_name)
 
@@ -560,6 +567,7 @@ module QuickActions
         @updates[:add_label_ids] = [label_id]
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     desc 'Mark this issue as a duplicate of another issue'
     explanation do |duplicate_reference|
@@ -625,6 +633,7 @@ module QuickActions
       @updates[:tag_message] = message
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def extract_users(params)
       return [] if params.nil?
 
@@ -641,6 +650,7 @@ module QuickActions
 
       users
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def find_milestones(project, params = {})
       MilestonesFinder.new(params.merge(project_ids: [project.id], group_ids: [project.group&.id])).execute
@@ -677,6 +687,7 @@ module QuickActions
       end
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def extract_references(arg, type)
       ext = Gitlab::ReferenceExtractor.new(project, current_user)
 
@@ -684,5 +695,6 @@ module QuickActions
 
       ext.references(type)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

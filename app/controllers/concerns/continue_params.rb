@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ContinueParams
   include InternalRedirect
   extend ActiveSupport::Concern

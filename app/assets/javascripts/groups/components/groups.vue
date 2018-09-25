@@ -1,11 +1,11 @@
 <script>
-import tablePagination from '~/vue_shared/components/table_pagination.vue';
+import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
 import eventHub from '../event_hub';
 import { getParameterByName } from '../../lib/utils/common_utils';
 
 export default {
   components: {
-    tablePagination,
+    PaginationLinks,
   },
   props: {
     groups: {
@@ -49,15 +49,18 @@ export default {
     >
       {{ searchEmptyMessage }}
     </div>
-    <group-folder
-      v-if="!searchEmpty"
-      :groups="groups"
-      :action="action"
-    />
-    <table-pagination
-      v-if="!searchEmpty"
-      :change="change"
-      :page-info="pageInfo"
-    />
+    <template
+      v-else
+    >
+      <group-folder
+        :groups="groups"
+        :action="action"
+      />
+      <pagination-links
+        :change="change"
+        :page-info="pageInfo"
+        class="d-flex justify-content-center prepend-top-default"
+      />
+    </template>
   </div>
 </template>

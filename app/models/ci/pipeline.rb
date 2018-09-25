@@ -387,10 +387,12 @@ module Ci
       end
     end
 
+    # rubocop: disable CodeReuse/ServiceClass
     def retry_failed(current_user)
       Ci::RetryPipelineService.new(project, current_user)
         .execute(self)
     end
+    # rubocop: enable CodeReuse/ServiceClass
 
     def mark_as_processable_after_stage(stage_idx)
       builds.skipped.after_stage(stage_idx).find_each(&:process)
@@ -464,7 +466,7 @@ module Ci
       return @config_processor if defined?(@config_processor)
 
       @config_processor ||= begin
-        Gitlab::Ci::YamlProcessor.new(ci_yaml_file)
+        ::Gitlab::Ci::YamlProcessor.new(ci_yaml_file, { project: project, sha: sha })
       rescue Gitlab::Ci::YamlProcessor::ValidationError => e
         self.yaml_errors = e.message
         nil
@@ -525,9 +527,11 @@ module Ci
       project.notes.for_commit_id(sha)
     end
 
+    # rubocop: disable CodeReuse/ServiceClass
     def process!
       Ci::ProcessPipelineService.new(project, user).execute(self)
     end
+    # rubocop: enable CodeReuse/ServiceClass
 
     def update_status
       retry_optimistic_lock(self) do

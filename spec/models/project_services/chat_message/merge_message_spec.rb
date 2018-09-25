@@ -27,13 +27,30 @@ describe ChatMessage::MergeMessage do
     }
   end
 
+  # Integration point in EE
+  context 'when state is overridden' do
+    it 'respects the overridden state' do
+      allow(subject).to receive(:state_or_action_text) { 'devoured' }
+
+      aggregate_failures do
+        expect(subject.summary).not_to include('opened')
+        expect(subject.summary).to include('devoured')
+
+        activity_title = subject.activity[:title]
+
+        expect(activity_title).not_to include('opened')
+        expect(activity_title).to include('devoured')
+      end
+    end
+  end
+
   context 'without markdown' do
     let(:color) { '#345' }
 
     context 'open' do
       it 'returns a message regarding opening of merge requests' do
         expect(subject.pretext).to eq(
-          'Test User (test.user) opened <http://somewhere.com/merge_requests/100|!100 *Merge Request title*> in <http://somewhere.com|project_name>: *Merge Request title*')
+          'Test User (test.user) opened <http://somewhere.com/merge_requests/100|!100 *Merge Request title*> in <http://somewhere.com|project_name>')
         expect(subject.attachments).to be_empty
       end
     end
@@ -44,7 +61,7 @@ describe ChatMessage::MergeMessage do
       end
       it 'returns a message regarding closing of merge requests' do
         expect(subject.pretext).to eq(
-          'Test User (test.user) closed <http://somewhere.com/merge_requests/100|!100 *Merge Request title*> in <http://somewhere.com|project_name>: *Merge Request title*')
+          'Test User (test.user) closed <http://somewhere.com/merge_requests/100|!100 *Merge Request title*> in <http://somewhere.com|project_name>')
         expect(subject.attachments).to be_empty
       end
     end
@@ -58,7 +75,7 @@ describe ChatMessage::MergeMessage do
     context 'open' do
       it 'returns a message regarding opening of merge requests' do
         expect(subject.pretext).to eq(
-          'Test User (test.user) opened [!100 *Merge Request title*](http://somewhere.com/merge_requests/100) in [project_name](http://somewhere.com): *Merge Request title*')
+          'Test User (test.user) opened [!100 *Merge Request title*](http://somewhere.com/merge_requests/100) in [project_name](http://somewhere.com)')
         expect(subject.attachments).to be_empty
         expect(subject.activity).to eq({
           title: 'Merge Request opened by Test User (test.user)',
@@ -76,7 +93,7 @@ describe ChatMessage::MergeMessage do
 
       it 'returns a message regarding closing of merge requests' do
         expect(subject.pretext).to eq(
-          'Test User (test.user) closed [!100 *Merge Request title*](http://somewhere.com/merge_requests/100) in [project_name](http://somewhere.com): *Merge Request title*')
+          'Test User (test.user) closed [!100 *Merge Request title*](http://somewhere.com/merge_requests/100) in [project_name](http://somewhere.com)')
         expect(subject.attachments).to be_empty
         expect(subject.activity).to eq({
           title: 'Merge Request closed by Test User (test.user)',
