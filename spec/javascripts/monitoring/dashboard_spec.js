@@ -150,7 +150,7 @@ describe('Dashboard', () => {
         propsData: { ...propsData, hasMetrics: true, showPanels: false },
       });
 
-      expect(component.forceRedraw).toEqual('dashboard-key-0');
+      expect(component.forceRedraw).toEqual(0);
 
       const navSidebarEl = document.querySelector('.nav-sidebar');
       navSidebarEl.classList.add('nav-sidebar-collapsed');
@@ -161,7 +161,7 @@ describe('Dashboard', () => {
           return Vue.nextTick();
         })
         .then(() => {
-          expect(component.forceRedraw).toEqual('dashboard-key-1');
+          expect(component.forceRedraw).toEqual(component.elWidth);
           done();
         })
         .catch(done.fail);

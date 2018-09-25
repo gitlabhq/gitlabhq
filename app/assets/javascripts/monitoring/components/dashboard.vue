@@ -98,12 +98,12 @@ export default {
       state: 'gettingStarted',
       showEmptyState: true,
       hoverData: {},
-      updateDashboardKeyNumber: 0,
+      elWidth: 0,
     };
   },
   computed: {
     forceRedraw() {
-      return `dashboard-key-${this.updateDashboardKeyNumber}`;
+      return this.elWidth;
     },
   },
   created() {
@@ -165,7 +165,7 @@ export default {
         });
     },
     resize() {
-      this.updateDashboardKeyNumber += 1;
+      this.elWidth = this.$el.clientWidth;
     },
     hoverChanged(data) {
       this.hoverData = data;
