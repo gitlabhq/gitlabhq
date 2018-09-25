@@ -23,7 +23,7 @@ export default {
   <span
     v-tooltip
     :title="__('Weight')"
-    class="board-card-weight card-number prepend-left-5"
+    class="board-card-weight card-number prepend-left-5 d-inline-block"
     data-container="body"
     data-placement="bottom"
   >
