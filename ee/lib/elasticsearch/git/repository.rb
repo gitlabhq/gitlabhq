@@ -176,7 +176,7 @@ module Elasticsearch
         #    email - commit author email
         #    time - commit time
         #  }
-        #  commiter {
+        #  committer {
         #    name - committer name
         #    email - committer email
         #    time - commit time
