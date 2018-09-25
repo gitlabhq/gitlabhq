@@ -55,6 +55,10 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       collection do
         post :create_user
       end
+
+      member do
+        get :status, format: :json
+      end
     end
 
     resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do

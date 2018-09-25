@@ -79,4 +79,20 @@ describe Groups::ClustersController do
       end
     end
   end
+
+  describe 'GET status' do
+    let(:cluster) { create(:cluster, :providing_by_gcp, groups: [group]) }
+
+    describe 'functionality' do
+      it "responds with matching schema" do
+        get :status,
+          group_id: group,
+          id: cluster,
+          format: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('cluster_status')
+      end
+    end
+  end
 end

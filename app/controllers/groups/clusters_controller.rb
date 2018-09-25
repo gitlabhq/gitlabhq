@@ -7,6 +7,8 @@ module Groups
     before_action :user_cluster, only: [:new]
     before_action :authorize_create_cluster!, only: [:new]
 
+    STATUS_POLLING_INTERVAL = 10_000
+
     def index
       @clusters = []
     end
@@ -27,6 +29,18 @@ module Groups
     end
 
     def show
+    end
+
+    def status
+      respond_to do |format|
+        format.json do
+          Gitlab::PollingInterval.set_header(response, interval: STATUS_POLLING_INTERVAL)
+
+          render json: ClusterSerializer
+            .new(group: @group, current_user: @current_user)
+            .represent_status(@cluster)
+        end
+      end
     end
 
     private
