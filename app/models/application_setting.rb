@@ -26,7 +26,6 @@ class ApplicationSetting < ActiveRecord::Base
   serialize :domain_whitelist, Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :domain_blacklist, Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :repository_storages # rubocop:disable Cop/ActiveRecordSerialize
-  serialize :sidekiq_throttling_queues, Array # rubocop:disable Cop/ActiveRecordSerialize
 
   cache_markdown_field :sign_in_text
   cache_markdown_field :help_page_text
@@ -130,15 +129,6 @@ class ApplicationSetting < ActiveRecord::Base
   validates :domain_blacklist,
             presence: { message: 'Domain blacklist cannot be empty if Blacklist is enabled.' },
             if: :domain_blacklist_enabled?
-
-  validates :sidekiq_throttling_factor,
-            numericality: { greater_than: 0, less_than: 1 },
-            presence: { message: 'Throttling factor cannot be empty if Sidekiq Throttling is enabled.' },
-            if: :sidekiq_throttling_enabled?
-
-  validates :sidekiq_throttling_queues,
-            presence: { message: 'Queues to throttle cannot be empty if Sidekiq Throttling is enabled.' },
-            if: :sidekiq_throttling_enabled?
 
   validates :housekeeping_incremental_repack_period,
             presence: true,
@@ -282,7 +272,6 @@ class ApplicationSetting < ActiveRecord::Base
       send_user_confirmation_email: false,
       shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
       shared_runners_text: nil,
-      sidekiq_throttling_enabled: false,
       sign_in_text: nil,
       signup_enabled: Settings.gitlab['signup_enabled'],
       terminal_max_session_time: 0,
@@ -326,10 +315,6 @@ class ApplicationSetting < ActiveRecord::Base
 
   def help_page_support_url_column_exists?
     ::Gitlab::Database.cached_column_exists?(:application_settings, :help_page_support_url)
-  end
-
-  def sidekiq_throttling_column_exists?
-    ::Gitlab::Database.cached_column_exists?(:application_settings, :sidekiq_throttling_enabled)
   end
 
   def disabled_oauth_sign_in_sources=(sources)
@@ -409,12 +394,6 @@ class ApplicationSetting < ActiveRecord::Base
 
   def health_check_access_token
     ensure_health_check_access_token!
-  end
-
-  def sidekiq_throttling_enabled?
-    return false unless sidekiq_throttling_column_exists?
-
-    sidekiq_throttling_enabled
   end
 
   def usage_ping_can_be_configured?

@@ -10,7 +10,7 @@ module Gitlab
             redis.del(*all_storage_keys) unless all_storage_keys.empty?
           end
 
-          RequestStore.delete(:circuitbreaker_cache)
+          Gitlab::SafeRequestStore.delete(:circuitbreaker_cache)
         end
 
         def self.load(cache_key)

@@ -91,7 +91,11 @@ describe Feature do
   end
 
   describe '.flipper' do
-    shared_examples 'a memoized Flipper instance' do
+    before do
+      described_class.instance_variable_set(:@flipper, nil)
+    end
+
+    context 'when request store is inactive' do
       it 'memoizes the Flipper instance' do
         expect(Flipper).to receive(:new).once.and_call_original
 
@@ -101,16 +105,14 @@ describe Feature do
       end
     end
 
-    context 'when request store is inactive' do
-      before do
+    context 'when request store is active', :request_store do
+      it 'memoizes the Flipper instance' do
+        expect(Flipper).to receive(:new).once.and_call_original
+
+        described_class.flipper
         described_class.instance_variable_set(:@flipper, nil)
+        described_class.flipper
       end
-
-      it_behaves_like 'a memoized Flipper instance'
-    end
-
-    context 'when request store is inactive', :request_store do
-      it_behaves_like 'a memoized Flipper instance'
     end
   end
 

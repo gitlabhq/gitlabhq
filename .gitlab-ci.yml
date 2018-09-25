@@ -130,7 +130,6 @@ stages:
 
 .single-script-job: &single-script-job
   image: ruby:2.4-alpine
-  before_script: []
   stage: test
   cache: {}
   dependencies: []
@@ -259,6 +258,7 @@ package-and-qa:
     SCRIPT_NAME: trigger-build
   retry: 0
   script:
+    - gem install gitlab --no-document
     - ./$SCRIPT_NAME omnibus
   when: manual
   only:
@@ -285,7 +285,7 @@ review-docs-deploy-manual:
   <<: *review-docs
   stage: build
   script:
-    - gem install gitlab --no-ri --no-rdoc
+    - gem install gitlab --no-document
     - ./$SCRIPT_NAME deploy
   when: manual
   only:
@@ -299,7 +299,7 @@ review-docs-deploy:
   <<: *review-docs
   stage: post-test
   script:
-    - gem install gitlab --no-ri --no-rdoc
+    - gem install gitlab --no-document
     - ./$SCRIPT_NAME deploy
   only:
     - /(^docs[\/-].*|.*-docs$)/@gitlab-org/gitlab-ce
@@ -314,7 +314,7 @@ review-docs-cleanup:
     name: review-docs/$CI_COMMIT_REF_SLUG
     action: stop
   script:
-    - gem install gitlab --no-ri --no-rdoc
+    - gem install gitlab --no-document
     - ./$SCRIPT_NAME cleanup
   when: manual
   only:
@@ -333,8 +333,8 @@ cloud-native-image:
     GIT_DEPTH: "1"
   cache: {}
   script:
-    - gem install gitlab --no-ri --no-rdoc
-    - BUILD_TRIGGER_TOKEN=$CI_JOB_TOKEN scripts/trigger-build cng
+    - gem install gitlab --no-document
+    - CNG_PROJECT_PATH="gitlab-org/build/CNG" BUILD_TRIGGER_TOKEN=$CI_JOB_TOKEN ./scripts/trigger-build cng
   only:
     - tags@gitlab-org/gitlab-ce
     - tags@gitlab-org/gitlab-ee
@@ -366,7 +366,7 @@ update-tests-metadata:
       - rspec_flaky/
     policy: push
   script:
-    - retry gem install fog-aws mime-types activesupport --no-ri --no-rdoc
+    - retry gem install fog-aws mime-types activesupport --no-document
     - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg_node_*.json
     - scripts/merge-reports ${FLAKY_RSPEC_SUITE_REPORT_PATH} rspec_flaky/all_*_*.json
     - FLAKY_RSPEC_GENERATE_REPORT=1 scripts/prune-old-flaky-specs ${FLAKY_RSPEC_SUITE_REPORT_PATH}

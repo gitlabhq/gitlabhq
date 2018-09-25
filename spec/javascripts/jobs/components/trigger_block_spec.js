@@ -13,7 +13,9 @@ describe('Trigger block', () => {
   describe('with short token', () => {
     it('renders short token', () => {
       vm = mountComponent(Component, {
-        shortToken: '0a666b2',
+        trigger: {
+          short_token: '0a666b2',
+        },
       });
 
       expect(vm.$el.querySelector('.js-short-token').textContent).toContain('0a666b2');
@@ -22,7 +24,7 @@ describe('Trigger block', () => {
 
   describe('without short token', () => {
     it('does not render short token', () => {
-      vm = mountComponent(Component, {});
+      vm = mountComponent(Component, { trigger: {} });
 
       expect(vm.$el.querySelector('.js-short-token')).toBeNull();
     });
@@ -32,9 +34,12 @@ describe('Trigger block', () => {
     describe('reveal variables', () => {
       it('reveals variables on click', done => {
         vm = mountComponent(Component, {
-          variables: {
-            key: 'value',
-            variable: 'foo',
+          trigger: {
+            short_token: 'bd7e',
+            variables: [
+              { key: 'UPLOAD_TO_GCS', value: 'false', public: false },
+              { key: 'UPLOAD_TO_S3', value: 'true', public: false },
+            ],
           },
         });
 
@@ -44,10 +49,10 @@ describe('Trigger block', () => {
           .$nextTick()
           .then(() => {
             expect(vm.$el.querySelector('.js-build-variables')).not.toBeNull();
-            expect(vm.$el.querySelector('.js-build-variables').textContent).toContain('key');
-            expect(vm.$el.querySelector('.js-build-variables').textContent).toContain('value');
-            expect(vm.$el.querySelector('.js-build-variables').textContent).toContain('variable');
-            expect(vm.$el.querySelector('.js-build-variables').textContent).toContain('foo');
+            expect(vm.$el.querySelector('.js-build-variables').textContent).toContain('UPLOAD_TO_GCS');
+            expect(vm.$el.querySelector('.js-build-variables').textContent).toContain('false');
+            expect(vm.$el.querySelector('.js-build-variables').textContent).toContain('UPLOAD_TO_S3');
+            expect(vm.$el.querySelector('.js-build-variables').textContent).toContain('true');
           })
           .then(done)
           .catch(done.fail);
@@ -57,7 +62,7 @@ describe('Trigger block', () => {
 
   describe('without variables', () => {
     it('does not render variables', () => {
-      vm = mountComponent(Component);
+      vm = mountComponent(Component, { trigger: {} });
 
       expect(vm.$el.querySelector('.js-reveal-variables')).toBeNull();
       expect(vm.$el.querySelector('.js-build-variables')).toBeNull();

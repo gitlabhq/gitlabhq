@@ -6,8 +6,8 @@ require 'gitlab'
 # Configure credentials to be used with gitlab gem
 #
 Gitlab.configure do |config|
-  config.endpoint       = 'https://gitlab.com/api/v4'
-  config.private_token  = ENV["DOCS_API_TOKEN"] # GitLab Docs bot access token with Developer access to gitlab-docs
+  config.endpoint      = 'https://gitlab.com/api/v4'
+  config.private_token = ENV["DOCS_API_TOKEN"] # GitLab Docs bot access token with Developer access to gitlab-docs
 end
 
 #
@@ -99,7 +99,7 @@ def trigger_pipeline
 
   puts "=> Follow the status of the triggered pipeline:"
   puts ""
-  puts "https://gitlab.com/gitlab-com/gitlab-docs/pipelines/#{pipeline.id}"
+  puts pipeline.web_url
   puts ""
   puts "=> In a few minutes, you will be able to preview your changes under the following URL:"
   puts ""

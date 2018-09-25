@@ -1,19 +1,30 @@
 <script>
+  import _ from 'underscore';
   import timeagoMixin from '~/vue_shared/mixins/timeago';
   import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
   import Icon from '~/vue_shared/components/icon.vue';
   import DetailRow from './sidebar_detail_row.vue';
+  import ArtifactsBlock from './artifacts_block.vue';
+  import TriggerBlock from './trigger_block.vue';
+  import CommitBlock from './commit_block.vue';
 
   export default {
     name: 'SidebarDetailsBlock',
     components: {
+      ArtifactsBlock,
+      CommitBlock,
       DetailRow,
       Icon,
+      TriggerBlock,
     },
     mixins: [timeagoMixin],
     props: {
       job: {
         type: Object,
+        required: true,
+      },
+      isLoading: {
+        type: Boolean,
         required: true,
       },
       runnerHelpUrl: {
@@ -28,6 +39,9 @@
       },
     },
     computed: {
+      shouldRenderContent() {
+        return !this.isLoading && Object.keys(this.job).length > 0;
+      },
       coverage() {
         return `${this.job.coverage}%`;
       },
@@ -74,6 +88,23 @@
           this.job.tags.length ||
           this.job.cancel_path
         );
+      },
+      hasArtifact() {
+        return !_.isEmpty(this.job.artifact);
+      },
+      hasTriggers() {
+        return !_.isEmpty(this.job.trigger);
+      },
+      hasStages() {
+        return (
+          this.job &&
+          this.job.pipeline &&
+          this.job.pipeline.stages &&
+          this.job.pipeline.stages.length > 0
+        ) || false;
+      },
+      commit() {
+        return this.job.pipeline.commit || {};
       },
     },
   };
@@ -227,6 +258,24 @@
           </div>
         </div>
       </div>
-    </div>
-  </aside>
+      <artifacts-block
+        v-if="hasArtifact"
+        :artifact="job.artifact"
+      />
+      <trigger-block
+        v-if="hasTriggers"
+        :trigger="job.trigger"
+      />
+      <commit-block
+        :is-last-block="hasStages"
+        :commit="commit"
+        :merge-request="job.merge_request"
+      />
+    </template>
+    <gl-loading-icon
+      v-if="isLoading"
+      :size="2"
+      class="prepend-top-10"
+    />
+  </div>
 </template>

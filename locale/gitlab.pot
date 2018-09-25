@@ -107,6 +107,9 @@ msgstr ""
 msgid "%{group_docs_link_start}Groups%{group_docs_link_end} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects."
 msgstr ""
 
+msgid "%{issuableType} will be removed! Are you sure?"
+msgstr ""
+
 msgid "%{loadingIcon} Started"
 msgstr ""
 
@@ -785,9 +788,6 @@ msgid "Background Jobs"
 msgstr ""
 
 msgid "Background color"
-msgstr ""
-
-msgid "Background jobs"
 msgstr ""
 
 msgid "Badges"
@@ -1810,9 +1810,6 @@ msgstr ""
 msgid "Configure Gitaly timeouts."
 msgstr ""
 
-msgid "Configure Sidekiq job throttling."
-msgstr ""
-
 msgid "Configure automatic git checks and housekeeping on repositories."
 msgstr ""
 
@@ -2559,6 +2556,9 @@ msgstr ""
 msgid "Environments|You don't have any environments right now."
 msgstr ""
 
+msgid "Epic"
+msgstr ""
+
 msgid "Error"
 msgstr ""
 
@@ -3302,6 +3302,9 @@ msgstr ""
 msgid "Invite"
 msgstr ""
 
+msgid "Issue"
+msgstr ""
+
 msgid "Issue Boards"
 msgstr ""
 
@@ -3371,7 +3374,7 @@ msgstr ""
 msgid "Job|The artifacts were removed"
 msgstr ""
 
-msgid "Job|The artifacts will be removed"
+msgid "Job|The artifacts will be removed in"
 msgstr ""
 
 msgid "Job|This job is stuck, because the project doesn't have any runners online assigned to it."
