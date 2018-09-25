@@ -1757,9 +1757,16 @@ describe Repository do
 
   describe '#expire_exists_cache' do
     let(:cache) { repository.send(:cache) }
+    let(:request_store_cache) { repository.send(:request_store_cache) }
 
     it 'expires the cache' do
       expect(cache).to receive(:expire).with(:exists?)
+
+      repository.expire_exists_cache
+    end
+
+    it 'expires the request store cache', :request_store do
+      expect(request_store_cache).to receive(:expire).with(:exists?)
 
       repository.expire_exists_cache
     end

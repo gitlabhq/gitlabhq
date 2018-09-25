@@ -136,12 +136,20 @@ module Gitlab
 
         clear_memoization(memoizable_name(name))
       end
+
+      expire_request_store_method_caches(methods)
     end
 
     private
 
     def memoizable_name(name)
       "#{name.to_s.tr('?!', '')}"
+    end
+
+    def expire_request_store_method_caches(methods)
+      methods.each do |name|
+        request_store_cache.expire(name)
+      end
     end
 
     # All cached repository methods depend on the existence of a Git repository,
