@@ -149,7 +149,8 @@
         <a
           :href="issue.path"
           :title="issue.title"
-          class="js-no-trigger">{{ issue.title }}</a>
+          class="js-no-trigger"
+          @mousemove.stop>{{ issue.title }}</a>
         <span
           v-if="issueId"
           class="board-card-number"
