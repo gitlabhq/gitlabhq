@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   include Gitlab::GonHelper
   include Gitlab::Allowable

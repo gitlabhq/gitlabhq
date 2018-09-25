@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Dashboard::GroupsController < Dashboard::ApplicationController
   include GroupTree
 
