@@ -1,0 +1,5 @@
+---
+title: Fix xss vulnerability sourced from package.json
+merge_request:
+author:
+type: security
