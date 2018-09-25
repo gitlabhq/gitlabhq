@@ -57,7 +57,7 @@ Please use your best judgement when to use it and please contribute new points t
 - [ ] Are there any big changes on how and especially how frequently we use the API then let production know about it
 - [ ] Smoke test of the RC on dev., staging., canary deployments and .com
 - [ ] Follow up on issues that came out of the review. Create issues for discovered edge cases that should be covered in future iterations.
-- [ ] When opening the Merge Request, make sure to add approvers of all relevant areas. Follow [the regular reviewer/maintainer process](../code_review.html#getting-your-merge-request-reviewed-approved-and-merged) for engineering and for UXs assign to the UX Designer assigned to the corresponding issue.
+- [ ] When opening the Merge Request, make sure to add approvers of all relevant areas. Follow [the regular reviewer/maintainer process](../code_review.html#getting-your-merge-request-reviewed-approved-and-merged) for engineering. For UX, assign to the UX Designer assigned to the corresponding issue.
 
 ---
 
