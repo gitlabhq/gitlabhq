@@ -9,8 +9,7 @@ import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import issueShowData from 'spec/issue_show/mock_data';
 import { props } from '../mock_data';
 
-// eslint-disable-next-line
-fdescribe('EpicShowApp', () => {
+describe('EpicShowApp', () => {
   let mock;
   let vm;
   let headerVm;
@@ -18,7 +17,7 @@ fdescribe('EpicShowApp', () => {
 
   beforeEach((done) => {
     mock = new MockAdapter(axios);
-    mock.onGet('/realtime_changes').reply(200, issueShowData.initialRequest);
+    mock.onGet(`${gl.TEST_HOST}/realtime_changes`).reply(200, issueShowData.initialRequest);
 
     const {
       canUpdate,
