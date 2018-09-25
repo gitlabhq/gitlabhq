@@ -1,0 +1,5 @@
+---
+title: Fix stored XSS in merge requests from imported repository
+merge_request:
+author:
+type: security
