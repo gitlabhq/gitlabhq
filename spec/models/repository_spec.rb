@@ -1044,6 +1044,47 @@ describe Repository do
         expect_to_raise_storage_error { broken_repository.exists? }
       end
     end
+
+    context 'asymmetric caching', :use_clean_rails_memory_store_caching, :request_store do
+      let(:cache) { repository.send(:cache) }
+      let(:request_store_cache) { repository.send(:request_store_cache) }
+
+      context 'when it returns true' do
+        before do
+          expect(repository.raw_repository).to receive(:exists?).once.and_return(true)
+        end
+
+        it 'caches the output in RequestStore' do
+          expect do
+            repository.exists?
+          end.to change { request_store_cache.read(:exists?) }.from(nil).to(true)
+        end
+
+        it 'caches the output in RepositoryCache' do
+          expect do
+            repository.exists?
+          end.to change { cache.read(:exists?) }.from(nil).to(true)
+        end
+      end
+
+      context 'when it returns false' do
+        before do
+          expect(repository.raw_repository).to receive(:exists?).once.and_return(false)
+        end
+
+        it 'caches the output in RequestStore' do
+          expect do
+            repository.exists?
+          end.to change { request_store_cache.read(:exists?) }.from(nil).to(false)
+        end
+
+        it 'does NOT cache the output in RepositoryCache' do
+          expect do
+            repository.exists?
+          end.not_to change { cache.read(:exists?) }.from(nil)
+        end
+      end
+    end
   end
 
   describe '#has_visible_content?' do
@@ -1892,7 +1933,7 @@ describe Repository do
         match[1].to_sym if match
       end.compact
 
-      expect(methods).to match_array(Repository::CACHED_METHODS + Repository::MEMOIZED_CACHED_METHODS)
+      expect(Repository::CACHED_METHODS + Repository::MEMOIZED_CACHED_METHODS).to include(*methods)
     end
   end
 

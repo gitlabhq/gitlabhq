@@ -15,6 +15,20 @@ module Gitlab
         wrap_method(name, :cache_method_output, fallback: fallback)
       end
 
+      # Caches truthy values from the method. All values are strongly memoized,
+      # and cached in RequestStore.
+      #
+      # Currently only used to cache `exists?` since stale false values are
+      # particularly troublesome. This can occur, for example, when an NFS mount
+      # is temporarily down.
+      #
+      # This only works for methods that do not take any arguments.
+      #
+      # name - The name of the method to be cached.
+      def cache_method_asymmetrically(name)
+        wrap_method(name, :cache_method_output_asymmetrically)
+      end
+
       # Strongly memoizes the method.
       #
       # This only works for methods that do not take any arguments.
@@ -42,6 +56,12 @@ module Gitlab
       end
     end
 
+    # RequestStore-backed RepositoryCache to be used. Should be overridden by
+    # the including class
+    def request_store_cache
+      raise NotImplementedError
+    end
+
     # RepositoryCache to be used. Should be overridden by the including class
     def cache
       raise NotImplementedError
@@ -60,6 +80,22 @@ module Gitlab
     def cache_method_output(name, fallback: nil, &block)
       memoize_method_output(name, fallback: fallback) do
         cache.fetch(name, &block)
+      end
+    end
+
+    # Caches truthy values from the supplied block. All values are strongly
+    # memoized, and cached in RequestStore.
+    #
+    # Currently only used to cache `exists?` since stale false values are
+    # particularly troublesome. This can occur, for example, when an NFS mount
+    # is temporarily down.
+    #
+    # name - The name of the method to be cached.
+    def cache_method_output_asymmetrically(name, &block)
+      memoize_method_output(name) do
+        request_store_cache.fetch(name) do
+          cache.fetch_without_caching_false(name, &block)
+        end
       end
     end
 

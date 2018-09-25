@@ -510,7 +510,7 @@ class Repository
 
     raw_repository.exists?
   end
-  cache_method :exists?
+  cache_method_asymmetrically :exists?
 
   # We don't need to cache the output of this method because both exists? and
   # has_visible_content? are already memoized and cached. There's no guarantee
@@ -1027,6 +1027,10 @@ class Repository
 
   def cache
     @cache ||= Gitlab::RepositoryCache.new(self)
+  end
+
+  def request_store_cache
+    @request_store_cache ||= Gitlab::RepositoryCache.new(self, backend: Gitlab::SafeRequestStore)
   end
 
   def tags_sorted_by_committed_date
