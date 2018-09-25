@@ -14,15 +14,15 @@ module Geo
           super()
         end
 
+        # We need a custom key here since we are running one worker per shard
+        def lease_key
+          @lease_key ||= "#{self.class.name.underscore}:shard:#{shard_name}"
+        end
+
         private
 
         def worker_metadata
           { shard: shard_name }
-        end
-
-        # We need a custom key here since we are running one worker per shard
-        def lease_key
-          @lease_key ||= "#{self.class.name.underscore}:shard:#{shard_name}"
         end
 
         def max_capacity

@@ -19,6 +19,14 @@ describe Geo::RepositoryVerification::Primary::ShardWorker, :postgresql, :clean_
       Gitlab::ShardHealthCache.update([shard_name])
     end
 
+    context 'shard worker scheduler' do
+      it 'acquires lock namespacing it per shard name' do
+        subject.perform(shard_name)
+
+        expect(subject.lease_key).to include(shard_name)
+      end
+    end
+
     it 'performs Geo::RepositoryVerification::Primary::SingleWorker for each project' do
       create_list(:project, 2)
 

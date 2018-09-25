@@ -14,6 +14,10 @@ module Geo
           super()
         end
 
+        def lease_key
+          @lease_key ||= "#{self.class.name.underscore}:shard:#{shard_name}"
+        end
+
         private
 
         def worker_metadata

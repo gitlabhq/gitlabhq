@@ -1,0 +1,6 @@
+---
+title: 'Geo: repository shard verification job should have unique lease keys per shard
+  name'
+merge_request: 7474
+author:
+type: fixed
