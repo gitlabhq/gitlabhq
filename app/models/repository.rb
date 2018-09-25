@@ -612,7 +612,7 @@ class Repository
 
     Licensee::License.new(license_key)
   end
-  cache_method :license, memoize_only: true
+  memoize_method :license
 
   def gitignore
     file_on_head(:gitignore)

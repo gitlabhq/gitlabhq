@@ -1,19 +1,41 @@
 module Gitlab
   module RepositoryCacheAdapter
     extend ActiveSupport::Concern
+    include Gitlab::Utils::StrongMemoize
 
     class_methods do
-      # Wraps around the given method and caches its output in Redis and an instance
-      # variable.
+      # Caches and strongly memoizes the method.
       #
       # This only works for methods that do not take any arguments.
-      def cache_method(name, fallback: nil, memoize_only: false)
+      #
+      # name     - The name of the method to be cached.
+      # fallback - A value to fall back to if the repository does not exist, or
+      #            in case of a Git error. Defaults to nil.
+      def cache_method(name, fallback: nil)
+        wrap_method(name, :cache_method_output, fallback: fallback)
+      end
+
+      # Strongly memoizes the method.
+      #
+      # This only works for methods that do not take any arguments.
+      #
+      # name     - The name of the method to be memoized.
+      # fallback - A value to fall back to if the repository does not exist, or
+      #            in case of a Git error. Defaults to nil. The fallback value
+      #            is not memoized.
+      def memoize_method(name, fallback: nil)
+        wrap_method(name, :memoize_method_output, fallback: fallback)
+      end
+
+      # Prepends "_uncached_" to the target method name, and redefines the method
+      # but wraps it in the `wrapper` method.
+      def wrap_method(name, wrapper, *options)
         original = :"_uncached_#{name}"
 
         alias_method(original, name)
 
         define_method(name) do
-          cache_method_output(name, fallback: fallback, memoize_only: memoize_only) do
+          __send__(wrapper, name, *options) do # rubocop:disable GitlabSecurity/PublicSend
             __send__(original) # rubocop:disable GitlabSecurity/PublicSend
           end
         end
@@ -30,65 +52,69 @@ module Gitlab
       raise NotImplementedError
     end
 
-    # Caches the supplied block both in a cache and in an instance variable.
+    # Caches and strongly memoizes the supplied block.
     #
-    # The cache key and instance variable are named the same way as the value of
-    # the `key` argument.
-    #
-    # This method will return `nil` if the corresponding instance variable is also
-    # set to `nil`. This ensures we don't keep yielding the block when it returns
-    # `nil`.
-    #
-    # key - The name of the key to cache the data in.
-    # fallback - A value to fall back to in the event of a Git error.
-    def cache_method_output(key, fallback: nil, memoize_only: false, &block)
-      ivar = cache_instance_variable_name(key)
-
-      if instance_variable_defined?(ivar)
-        instance_variable_get(ivar)
-      else
-        # If the repository doesn't exist and a fallback was specified we return
-        # that value inmediately. This saves us Rugged/gRPC invocations.
-        return fallback unless fallback.nil? || cache.repository.exists?
-
-        begin
-          value =
-            if memoize_only
-              yield
-            else
-              cache.fetch(key, &block)
-            end
-
-          instance_variable_set(ivar, value)
-        rescue Gitlab::Git::Repository::NoRepository
-          # Even if the above `#exists?` check passes these errors might still
-          # occur (for example because of a non-existing HEAD). We want to
-          # gracefully handle this and not cache anything
-          fallback
-        end
+    # name     - The name of the method to be cached.
+    # fallback - A value to fall back to if the repository does not exist, or
+    #            in case of a Git error. Defaults to nil.
+    def cache_method_output(name, fallback: nil, &block)
+      memoize_method_output(name, fallback: fallback) do
+        cache.fetch(name, &block)
       end
+    end
+
+    # Strongly memoizes the supplied block.
+    #
+    # name     - The name of the method to be memoized.
+    # fallback - A value to fall back to if the repository does not exist, or
+    #            in case of a Git error. Defaults to nil. The fallback value is
+    #            not memoized.
+    def memoize_method_output(name, fallback: nil, &block)
+      no_repository_fallback(name, fallback: fallback) do
+        strong_memoize(memoizable_name(name), &block)
+      end
+    end
+
+    # Returns the fallback value if the repository does not exist
+    def no_repository_fallback(name, fallback: nil, &block)
+      # Avoid unnecessary gRPC invocations
+      return fallback if fallback && fallback_early?(name)
+
+      yield
+    rescue Gitlab::Git::Repository::NoRepository
+      # Even if the `#exists?` check in `fallback_early?` passes, these errors
+      # might still occur (for example because of a non-existing HEAD). We
+      # want to gracefully handle this and not memoize anything.
+      fallback
     end
 
     # Expires the caches of a specific set of methods
     def expire_method_caches(methods)
-      methods.each do |key|
-        unless cached_methods.include?(key.to_sym)
-          Rails.logger.error "Requested to expire non-existent method '#{key}' for Repository"
+      methods.each do |name|
+        unless cached_methods.include?(name.to_sym)
+          Rails.logger.error "Requested to expire non-existent method '#{name}' for Repository"
           next
         end
 
-        cache.expire(key)
+        cache.expire(name)
 
-        ivar = cache_instance_variable_name(key)
-
-        remove_instance_variable(ivar) if instance_variable_defined?(ivar)
+        clear_memoization(memoizable_name(name))
       end
     end
 
     private
 
-    def cache_instance_variable_name(key)
-      :"@#{key.to_s.tr('?!', '')}"
+    def memoizable_name(name)
+      "#{name.to_s.tr('?!', '')}"
+    end
+
+    # All cached repository methods depend on the existence of a Git repository,
+    # so if the repository doesn't exist, we already know not to call it.
+    def fallback_early?(method_name)
+      # Avoid infinite loop
+      return false if method_name == :exists?
+
+      !exists?
     end
   end
 end
