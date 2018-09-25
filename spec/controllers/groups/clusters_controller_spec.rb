@@ -66,4 +66,17 @@ describe Groups::ClustersController do
       end
     end
   end
+
+  describe 'GET show' do
+    let(:cluster) { create(:cluster, :provided_by_user, groups: [group]) }
+
+    describe 'functionality' do
+      it "renders view" do
+        get :show, group_id: group, id: cluster
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:cluster)).to eq(cluster)
+      end
+    end
+  end
 end

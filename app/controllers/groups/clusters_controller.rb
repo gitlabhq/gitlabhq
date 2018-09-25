@@ -2,6 +2,7 @@
 
 module Groups
   class ClustersController < Groups::ApplicationController
+    before_action :cluster, except: [:index, :new, :create_gcp, :create_user]
     before_action :authorize_read_cluster!
     before_action :user_cluster, only: [:new]
     before_action :authorize_create_cluster!, only: [:new]
@@ -25,7 +26,15 @@ module Groups
       end
     end
 
+    def show
+    end
+
     private
+
+    def cluster
+      @cluster ||= group.clusters.find(params[:id])
+        .present(current_user: current_user)
+    end
 
     def user_cluster
       @user_cluster = ::Clusters::Cluster.new.tap do |cluster|
