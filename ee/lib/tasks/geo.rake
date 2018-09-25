@@ -261,13 +261,13 @@ namespace :geo do
 
     print 'Wikis: '.rjust(COLUMN_WIDTH)
     show_failed_value(current_node_status.wikis_failed_count)
-    print "#{current_node_status.wikis_synced_count}/#{current_node_status.wikis_count} "
+    print "#{current_node_status.wikis_synced_count}/#{current_node_status.projects_count} "
     puts using_percentage(current_node_status.wikis_synced_in_percentage)
 
     if Gitlab::Geo.repository_verification_enabled?
       print 'Verified Wikis: '.rjust(COLUMN_WIDTH)
       show_failed_value(current_node_status.wikis_verification_failed_count)
-      print "#{current_node_status.wikis_verified_count}/#{current_node_status.wikis_count} "
+      print "#{current_node_status.wikis_verified_count}/#{current_node_status.projects_count} "
       puts using_percentage(current_node_status.wikis_verified_in_percentage)
     end
 

@@ -1145,7 +1145,6 @@ ActiveRecord::Schema.define(version: 20180920043317) do
   create_table "geo_node_statuses", force: :cascade do |t|
     t.integer "geo_node_id", null: false
     t.integer "db_replication_lag_seconds"
-    t.integer "repositories_count"
     t.integer "repositories_synced_count"
     t.integer "repositories_failed_count"
     t.integer "lfs_objects_count"
@@ -1165,7 +1164,6 @@ ActiveRecord::Schema.define(version: 20180920043317) do
     t.integer "replication_slots_count"
     t.integer "replication_slots_used_count"
     t.integer "replication_slots_max_retained_wal_bytes", limit: 8
-    t.integer "wikis_count"
     t.integer "wikis_synced_count"
     t.integer "wikis_failed_count"
     t.integer "job_artifacts_count"
@@ -2570,7 +2568,6 @@ ActiveRecord::Schema.define(version: 20180920043317) do
 
   create_table "site_statistics", force: :cascade do |t|
     t.integer "repositories_count", default: 0, null: false
-    t.integer "wikis_count", default: 0, null: false
   end
 
   create_table "slack_integrations", force: :cascade do |t|

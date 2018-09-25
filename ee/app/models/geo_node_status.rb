@@ -22,13 +22,16 @@ class GeoNodeStatus < ActiveRecord::Base
 
   sha_attribute :storage_configuration_digest
 
+  # It's needed for backward compatibility as we expose them via public API
+  alias_attribute :wikis_count, :projects_count
+  alias_attribute :repositories_count, :projects_count
+
   # Be sure to keep this consistent with Prometheus naming conventions
   PROMETHEUS_METRICS = {
     db_replication_lag_seconds: 'Database replication lag (seconds)',
     repositories_count: 'Total number of repositories available on primary',
     repositories_synced_count: 'Number of repositories synced on secondary',
     repositories_failed_count: 'Number of repositories failed to sync on secondary',
-    wikis_count: 'Total number of wikis available on primary',
     wikis_synced_count: 'Number of wikis synced on secondary',
     wikis_failed_count: 'Number of wikis failed to sync on secondary',
     repositories_checksummed_count: 'Number of repositories checksummed on primary',
@@ -161,11 +164,6 @@ class GeoNodeStatus < ActiveRecord::Base
     self.last_successful_status_check_at = Time.now
     self.storage_shards = StorageShard.all
     self.storage_configuration_digest = StorageShard.build_digest
-
-    # Backward compatibility. These are deprecated and not used normally. Only needed for smooth update
-    # when secondary node is outdated yet
-    self.repositories_count = projects_finder.count_projects
-    self.wikis_count = projects_finder.count_projects
 
     self.version = Gitlab::VERSION
     self.revision = Gitlab.revision
@@ -313,7 +311,7 @@ class GeoNodeStatus < ActiveRecord::Base
   end
 
   def wikis_synced_in_percentage
-    calc_percentage(wikis_count, wikis_synced_count)
+    calc_percentage(projects_count, wikis_synced_count)
   end
 
   def repositories_checksummed_in_percentage
@@ -321,7 +319,7 @@ class GeoNodeStatus < ActiveRecord::Base
   end
 
   def wikis_checksummed_in_percentage
-    calc_percentage(wikis_count, wikis_checksummed_count)
+    calc_percentage(projects_count, wikis_checksummed_count)
   end
 
   def repositories_verified_in_percentage
@@ -329,7 +327,7 @@ class GeoNodeStatus < ActiveRecord::Base
   end
 
   def wikis_verified_in_percentage
-    calc_percentage(wikis_count, wikis_verified_count)
+    calc_percentage(projects_count, wikis_verified_count)
   end
 
   def repositories_checked_in_percentage
@@ -361,15 +359,6 @@ class GeoNodeStatus < ActiveRecord::Base
 
   def [](key)
     public_send(key) # rubocop:disable GitlabSecurity/PublicSend
-  end
-
-  # This method is for backward compatibility only.
-  # During the app update the secondary node can be outdated, and it does not provide
-  # us with the projects_count which is already expected by updated primary node.
-  # So we just fallback to old repositories_count
-  def projects_count
-    projects_count_attr = read_attribute(:projects_count)
-    projects_count_attr.nil? ? repositories_count : projects_count_attr
   end
 
   private

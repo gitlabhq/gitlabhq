@@ -4,7 +4,7 @@ class SiteStatistic < ActiveRecord::Base
   # prevents the creation of multiple rows
   default_value_for :id, 1
 
-  COUNTER_ATTRIBUTES = %w(repositories_count wikis_count).freeze
+  COUNTER_ATTRIBUTES = %w(repositories_count).freeze
   REQUIRED_SCHEMA_VERSION = 20180629153018
 
   # Tracks specific attribute

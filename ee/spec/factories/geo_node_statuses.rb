@@ -17,11 +17,9 @@ FactoryBot.define do
       job_artifacts_failed_count 3
       job_artifacts_synced_count 577
       job_artifacts_synced_missing_on_primary_count 91
-      repositories_count 10
       projects_count 10
       repositories_synced_count 5
       repositories_failed_count 0
-      wikis_count 9
       wikis_synced_count 4
       wikis_failed_count 1
       repositories_checksummed_count 600
