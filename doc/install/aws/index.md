@@ -49,6 +49,8 @@ Here's a list of the services we will use and their costs:
 - **RDS**: An Amazon Relational Database Service using PostgreSQL will be used
   to provide database High Availability. See the
   [Amazon RDS pricing](https://aws.amazon.com/rds/postgresql/pricing/).
+- **ElastiCache**: An in-memory cache environment will be used to provide Redis
+  High Availability. See the [Amazon ElastiCache pricing](https://aws.amazon.com/elasticache/pricing/).
 
 ## Creating an IAM EC2 instance role and profile
 
@@ -221,7 +223,7 @@ Now, it's time to create the database:
        [Storage for Amazon RDS](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html).
 
 1. The rest of the settings on this page request a DB isntance identifier, username
-   and a master password. We've chosen to use `gitlab-ha`, `gitlab` and a
+   and a master password. We've chosen to use `gitlab-db-ha`, `gitlab` and a
    very secure password respectively. Keep these in hand for later.
 1. Click on **Next** to proceed to the advanced settings.
 1. Make sure to choose our gitlab VPC, our subnet group, set public accessibility to
@@ -233,33 +235,50 @@ Now, it's time to create the database:
 
 ---
 
+
+
 Now that the database is created, let's move on setting up Redis with ElasticCache.
 
 ## Redis with ElastiCache
 
-EC is an in-memory hosted caching solution. Redis maintains its own
-persistence and is used for certain types of application.
+ElastiCache is an in-memory hosted caching solution. Redis maintains its own
+persistence and is used for certain types of the GitLab application.
 
-Let's choose the ElastiCache service in the Database section from our
-AWS console. Now lets create a cache subnet group which will be very
-similar to the RDS subnet group. Make sure to select our VPC and its
-private subnets.
+To set up Redis:
 
-![ElastiCache](img/ec-subnet.png)
+1. Navigate to the ElastiCache dashboard from your AWS console.
+1. Go to **Subnet Groups** in the left menu, and create a new subnet group.
+   Make sure to select our VPC and its [private subnets](#subnets). Click
+   **Create** when ready.
 
-Now press the Launch a Cache Cluster and choose Redis for our
-DB engine. You'll be able to configure details such as replication,
-Multi AZ and node types. The second section will allow us to choose our
-subnet and security group and     
+    ![ElastiCache subnet](img/ec_subnet.png)
 
-![Redis Cluster details](img/redis-cluster-det.png)
+1. Select **Redis** on the left menu and click on **Create** to create a new
+   Redis cluster. Depending on your load, you can choose whether to enable
+   cluster mode or not. Even without cluster mode on, you still get the
+   chance to deploy Redis in multi availability zones. In this guide, we chose
+   not to enable it.
+1. In the settings section:
+    1. Give the cluster a name (`gitlab-redis`) and a description.
+    1. For the version, select the latest of `3.2` series (e.g., `3.2.10`).
+    1. Select the node type and the number of replicas.
+1. In the advanced settings section:
+   1. Select the multi-AZ auto-failover option.
+   1. Select the subnet group we created previously.
+   1. Manually select the preferred availability zones, and under "Replica 2"
+      choose a different zone than the other two.
 
-![Redis Network](img/redis-net.png)
+        ![Redis availability zones](img/ec_az.png)
+
+1. In the security settings, edit the security groups and choose the
+   `gitlab-security-group` we had previously created.
+1. Leave the rest of the settings to their default values or edit to your liking.
+1. When done, click **Create**.
 
 ## Deploying GitLab
 
 We'll use AWS's wizard to deploy GitLab and then SSH into the instance to
-configure the domain name.
+configure the PostgreSQL and Redis connections.
 
 ### Choose the AMI
 
@@ -283,9 +302,9 @@ instance type should be at least `c4.xlarge`. This is enough to accommodate 100 
 
 ### Configure instance
 
-1. Configure the instance. At "Network" choose `gitlab-vpc` and the subnet we
-   created for that VPC. Select "Enable" for the "Auto-assign Public IP" and
-   choose the `GitLabAdmin` IAM role.
+1. Configure the instance. At "Network" choose `gitlab-vpc` and one of the public
+   [subnets](#subnets) we created for that VPC. Select "Enable" for the
+   "Auto-assign Public IP", and choose the `GitLabAdmin` IAM role.
 
     ![Configure instance](img/configure_instance.png)
 
@@ -333,7 +352,6 @@ namely `gitlab-ec2-security-group`, and edit select the RDS security
 group and edit the inbound rules. Choose the rule type to be PostgreSQL
 and paste the name under source.
 
-![RDS security group](img/rds-sec-group.png)
 
 Similar to the above we'll jump to the `gitlab-ec2-security-group` group
 and add a custom TCP rule for port 6379 accessible within itself.
@@ -399,7 +417,6 @@ scroll down to Advanced Details we can choose to receive traffic from ELBs.
 Lets enable that option and select our ELB. We also want to use the ELB's
 health check.
 
-![Auto scaling](img/auto-scaling-det.png)
 
 ### Policies
 
@@ -409,7 +426,6 @@ scale between 2 and 4 instances where one instance will be added if CPU
 utilization is greater than 60% and one instance is removed if it falls
 to less than 45%. Here are the complete policies:
 
-![Policies](img/policies.png)
 
 You'll notice that after we save this AWS starts launching our two
 instances in different AZs and without a public IP which is exactly what
@@ -422,39 +438,60 @@ Let's connect to it and configure some things before logging in.
 
 ### Configuring GitLab to connect with postgres and Redis
 
-While connected to your server edit the `gitlab.rb` file at `/etc/gitlab/gitlab.rb`
+While connected to your server, let's connect to the RDS instance to verify
+access and to install a required extension:
+
+```sh
+sudo /opt/gitlab/embedded/bin/psql -U gitlab -h <rds-endpoint> -d gitlabhq_production
+```
+
+Edit the `gitlab.rb` file at `/etc/gitlab/gitlab.rb`
 find the `external_url 'http://gitlab.example.com'` option and change it
 to the domain you will be using or the public IP address of the current
 instance to test the configuration.
 
-For a more detailed description about configuring GitLab read [Configuring GitLab for HA](http://docs.gitlab.com/ee/administration/high_availability/gitlab.html)
+For a more detailed description about configuring GitLab read [Configuring GitLab for HA](../../administration/high_availability/gitlab.md)
 
 Now look for the GitLab database settings and uncomment as necessary. In
 our current case we'll specify the adapter, encoding, host, db name,
-username, and password.
+username, and password:
 
-    gitlab_rails['db_adapter'] = "postgresql"
-    gitlab_rails['db_encoding'] = "unicode"    
-    gitlab_rails['db_database'] = "gitlabhq_production"   
-    gitlab_rails['db_username'] = "gitlab"
-    gitlab_rails['db_password'] = "mypassword"
-    gitlab_rails['db_host'] = "<rds-endpoint>"
+```ruby
+# Disable the built-in Postgres
+postgresql['enable'] = false
+
+# Fill in the connection details
+gitlab_rails['db_adapter'] = "postgresql"
+gitlab_rails['db_encoding'] = "unicode"
+gitlab_rails['db_database'] = "gitlabhq_production"
+gitlab_rails['db_username'] = "gitlab"
+gitlab_rails['db_password'] = "mypassword"
+gitlab_rails['db_host'] = "<rds-endpoint>"
+```
 
 Next we only need to configure the Redis section by adding the host and
-uncommenting the port.
+uncommenting the port:
+
+```ruby
+# Disable the built-in Redis
+redis['enable'] = false
+
+# Fill in the connection details
+gitlab_rails['redis_host'] = "<redis-endpoint>"
+gitlab_rails['redis_port'] = 6379
+```
 
 The last configuration step is to [change the default file locations ](http://docs.gitlab.com/ee/administration/high_availability/nfs.html)
 to make the EFS integration easier to manage.
 
-    gitlab_rails['redis_host'] = "<redis-endpoint>"
-    gitlab_rails['redis_port'] = 6379
-
 Finally run reconfigure, you might find it useful to run a check and
 a service status to make sure everything has been setup correctly.
 
-    sudo gitlab-ctl reconfigure  
-    sudo gitlab-rake gitlab:check  
-    sudo gitlab-ctl status  
+```sh
+sudo gitlab-ctl reconfigure
+sudo gitlab-rake gitlab:check
+sudo gitlab-ctl status
+```
 
 If everything looks good copy the Elastic IP over to your browser and
 test the instance manually.
