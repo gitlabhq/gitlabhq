@@ -22,7 +22,15 @@ describe Geo::RepositoryVerification::Secondary::ShardWorker, :postgresql, :clea
       Gitlab::ShardHealthCache.update([shard_name])
     end
 
-    it 'schedules job for each project' do
+    context 'shard worker scheduler' do
+      it 'acquires lock namespacing it per shard name' do
+        subject.perform(shard_name)
+
+        expect(subject.lease_key).to include(shard_name)
+      end
+    end
+
+    it 'schedule a job for each project' do
       other_project = create(:project)
       create(:repository_state, :repository_verified, project: project)
       create(:repository_state, :repository_verified, project: other_project)
@@ -34,7 +42,7 @@ describe Geo::RepositoryVerification::Secondary::ShardWorker, :postgresql, :clea
       subject.perform(shard_name)
     end
 
-    it 'schedules job for projects missing repository verification' do
+    it 'schedule jobs for projects missing repository verification' do
       create(:repository_state, :repository_verified, :wiki_verified, project: project)
       missing_repository_verification = create(:geo_project_registry, :synced, :wiki_verified, project: project)
 
@@ -43,7 +51,7 @@ describe Geo::RepositoryVerification::Secondary::ShardWorker, :postgresql, :clea
       subject.perform(shard_name)
     end
 
-    it 'schedules job for projects missing wiki verification' do
+    it 'schedule jobs for projects missing wiki verification' do
       create(:repository_state, :repository_verified, :wiki_verified, project: project)
       missing_wiki_verification = create(:geo_project_registry, :synced, :repository_verified, project: project)
 
@@ -73,7 +81,7 @@ describe Geo::RepositoryVerification::Secondary::ShardWorker, :postgresql, :clea
 
       let(:project1_repo_verified) { create(:repository_state, :repository_verified).project }
       let(:project2_repo_verified) { create(:repository_state, :repository_verified).project }
-      let(:project3_repo_failed)   { create(:repository_state, :repository_failed).project }
+      let(:project3_repo_failed) { create(:repository_state, :repository_failed).project }
       let(:project4_wiki_verified) { create(:repository_state, :wiki_verified).project }
       let(:project5_both_verified) { create(:repository_state, :repository_verified, :wiki_verified).project }
       let(:project6_both_verified) { create(:repository_state, :repository_verified, :wiki_verified).project }
