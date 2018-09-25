@@ -31,7 +31,8 @@ module BlobViewer
     end
 
     def homepage
-      json_data['homepage']
+      url = json_data['homepage']
+      url if Gitlab::UrlSanitizer.valid?(url)
     end
 
     def npm_url
