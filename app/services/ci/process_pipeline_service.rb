@@ -37,7 +37,7 @@ module Ci
 
     def process_build(build, current_status)
       if valid_statuses_for_when(build.when).include?(current_status)
-        proceed_build(build)
+        Ci::ProceedBuildService.new(project, @user).execute(build)
         true
       else
         build.skip
@@ -103,15 +103,5 @@ module Ci
         .update_all(retried: true) if latest_statuses.any?
     end
     # rubocop: enable CodeReuse/ActiveRecord
-
-    def proceed_build(build)
-      if build.schedulable?
-        build.schedule!
-      elsif build.action?
-        build.actionize
-      else
-        Ci::EnqueueBuildService.new(project, @user).execute(build)
-      end
-    end
   end
 end

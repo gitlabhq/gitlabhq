@@ -180,7 +180,7 @@ module Ci
       end
 
       before_transition created: :scheduled do |build|
-        build.scheduled_at = build.get_scheduled_at
+        build.scheduled_at = build.options_scheduled_at
       end
 
       after_transition created: :scheduled do |build|
@@ -263,7 +263,7 @@ module Ci
       self.when == 'delayed' && options[:start_in].present?
     end
 
-    def get_scheduled_at
+    def options_scheduled_at
       ChronicDuration.parse(options[:start_in])&.seconds&.from_now
     end
 

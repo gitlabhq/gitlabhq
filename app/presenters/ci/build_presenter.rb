@@ -36,7 +36,7 @@ module Ci
     end
 
     def execute_in
-      [0, scheduled_at - Time.now].max
+      scheduled? && scheduled_at && [0, scheduled_at - Time.now].max
     end
 
     private
