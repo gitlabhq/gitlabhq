@@ -10,6 +10,7 @@ class EventsFinder
   # Arguments:
   #   source - which user or project to looks for events on
   #   current_user - only return events for projects visible to this user
+  #                  WARNING: does not consider project feature visibility!
   #   params:
   #     action: string
   #     target_type: string
