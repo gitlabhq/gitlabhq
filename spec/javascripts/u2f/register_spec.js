@@ -16,7 +16,7 @@ describe('U2FRegister', function () {
 
   it('allows registering a U2F device', () => {
     const setupButton = this.container.find('#js-setup-u2f-device');
-    expect(setupButton.text()).toBe('Setup new U2F device');
+    expect(setupButton.text()).toBe('Set up new U2F device');
     setupButton.trigger('click');
     const inProgressMessage = this.container.children('p');
     expect(inProgressMessage.text()).toContain('Trying to communicate with your device');

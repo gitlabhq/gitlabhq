@@ -2,7 +2,7 @@
   .diff-content
     - if markup?(@blob.name)
       .file-content.wiki
-        = markup(@blob.name, @content)
+        = markup(@blob.name, @content, legacy_render_context(params))
     - else
       .file-content.code.js-syntax-highlight
         - unless @diff_lines.empty?

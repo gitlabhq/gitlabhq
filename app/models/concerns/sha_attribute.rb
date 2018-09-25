@@ -3,7 +3,7 @@
 module ShaAttribute
   extend ActiveSupport::Concern
 
-  module ClassMethods
+  class_methods do
     def sha_attribute(name)
       return if ENV['STATIC_VERIFICATION']
 

@@ -2,7 +2,7 @@
 
 To enable the Microsoft Azure OAuth2 OmniAuth provider you must register your application with Azure. Azure will generate a client ID and secret key for you to use.
 
-1.  Sign in to the [Azure Management Portal](https://manage.windowsazure.com>).
+1.  Sign in to the [Azure Management Portal](https://manage.windowsazure.com).
 
 1.  Select "Active Directory" on the left and choose the directory you want to use to register GitLab.
 

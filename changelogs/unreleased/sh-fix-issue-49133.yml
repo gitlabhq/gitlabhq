@@ -1,5 +1,0 @@
----
-title: Fix symlink vulnerability in project import
-merge_request:
-author:
-type: security

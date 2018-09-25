@@ -5,6 +5,7 @@ import commitState from '~/ide/stores/modules/commit/state';
 import mergeRequestsState from '~/ide/stores/modules/merge_requests/state';
 import pipelinesState from '~/ide/stores/modules/pipelines/state';
 import branchesState from '~/ide/stores/modules/branches/state';
+import fileTemplatesState from '~/ide/stores/modules/file_templates/state';
 
 export const resetStore = store => {
   const newState = {
@@ -13,6 +14,7 @@ export const resetStore = store => {
     mergeRequests: mergeRequestsState(),
     pipelines: pipelinesState(),
     branches: branchesState(),
+    fileTemplates: fileTemplatesState(),
   };
   store.replaceState(newState);
 };

@@ -100,7 +100,7 @@ export default {
           </ul>
         </div>
         <div class="dropdown-loading">
-          <loading-icon />
+          <gl-loading-icon />
         </div>
       </div>
     </div>

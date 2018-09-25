@@ -11,7 +11,7 @@ module Gitlab
                  to: :failure_info
 
         def self.for_storage(storage)
-          cached_circuitbreakers = RequestStore.fetch(:circuitbreaker_cache) do
+          cached_circuitbreakers = Gitlab::SafeRequestStore.fetch(:circuitbreaker_cache) do
             Hash.new do |hash, storage_name|
               hash[storage_name] = build(storage_name)
             end

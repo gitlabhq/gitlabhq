@@ -78,5 +78,12 @@ describe Admin::ApplicationSettingsController do
       expect(response).to redirect_to(admin_application_settings_path)
       expect(ApplicationSetting.current.restricted_visibility_levels).to be_empty
     end
+
+    it 'updates the receive_max_input_size setting' do
+      put :update, application_setting: { receive_max_input_size: "1024" }
+
+      expect(response).to redirect_to(admin_application_settings_path)
+      expect(ApplicationSetting.current.receive_max_input_size).to eq(1024)
+    end
   end
 end

@@ -21,8 +21,6 @@
 # This bug was fixed in Rails 5.1 by https://github.com/rails/rails/pull/24745/commits/aa062318c451512035c10898a1af95943b1a3803
 
 if Gitlab.rails5?
-  ActiveSupport::Deprecation.warn("#{__FILE__} is a monkey patch which must be removed when upgrading to Rails 5.1")
-
   if Rails.version.start_with?("5.1")
     raise "Remove this monkey patch: #{__FILE__}"
   end

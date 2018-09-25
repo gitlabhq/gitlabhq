@@ -36,7 +36,7 @@ describe 'User browses jobs' do
     it 'displays a tooltip with the failure reason' do
       page.within('.ci-table') do
         failed_job_link = page.find('.ci-failed')
-        expect(failed_job_link[:title]).to eq('Failed <br> (unknown failure)')
+        expect(failed_job_link[:title]).to eq('Failed - (unknown failure)')
       end
     end
   end

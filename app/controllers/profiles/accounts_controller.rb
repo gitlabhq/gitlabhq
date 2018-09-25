@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Profiles::AccountsController < Profiles::ApplicationController
   include AuthHelper
 
@@ -5,6 +7,7 @@ class Profiles::AccountsController < Profiles::ApplicationController
     @user = current_user
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def unlink
     provider = params[:provider]
     identity = current_user.identities.find_by(provider: provider)
@@ -19,4 +22,5 @@ class Profiles::AccountsController < Profiles::ApplicationController
 
     redirect_to profile_account_path
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

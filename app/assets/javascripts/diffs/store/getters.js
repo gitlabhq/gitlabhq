@@ -17,7 +17,10 @@ export const commitId = state => (state.commit && state.commit.id ? state.commit
 export const diffHasAllExpandedDiscussions = (state, getters) => diff => {
   const discussions = getters.getDiffFileDiscussions(diff);
 
-  return (discussions.length && discussions.every(discussion => discussion.expanded)) || false;
+  return (
+    (discussions && discussions.length && discussions.every(discussion => discussion.expanded)) ||
+    false
+  );
 };
 
 /**
@@ -28,7 +31,10 @@ export const diffHasAllExpandedDiscussions = (state, getters) => diff => {
 export const diffHasAllCollpasedDiscussions = (state, getters) => diff => {
   const discussions = getters.getDiffFileDiscussions(diff);
 
-  return (discussions.length && discussions.every(discussion => !discussion.expanded)) || false;
+  return (
+    (discussions && discussions.length && discussions.every(discussion => !discussion.expanded)) ||
+    false
+  );
 };
 
 /**
@@ -40,7 +46,9 @@ export const diffHasExpandedDiscussions = (state, getters) => diff => {
   const discussions = getters.getDiffFileDiscussions(diff);
 
   return (
-    (discussions.length && discussions.find(discussion => discussion.expanded) !== undefined) ||
+    (discussions &&
+      discussions.length &&
+      discussions.find(discussion => discussion.expanded) !== undefined) ||
     false
   );
 };
@@ -64,45 +72,38 @@ export const getDiffFileDiscussions = (state, getters, rootState, rootGetters) =
       discussion.diff_discussion && _.isEqual(discussion.diff_file.file_hash, diff.fileHash),
   ) || [];
 
-export const singleDiscussionByLineCode = (state, getters, rootState, rootGetters) => lineCode => {
-  if (!lineCode || lineCode === undefined) return [];
-  const discussions = rootGetters.discussionsByLineCode;
-  return discussions[lineCode] || [];
-};
+export const shouldRenderParallelCommentRow = state => line => {
+  const hasDiscussion =
+    (line.left && line.left.discussions && line.left.discussions.length) ||
+    (line.right && line.right.discussions && line.right.discussions.length);
 
-export const shouldRenderParallelCommentRow = (state, getters) => line => {
-  const leftLineCode = line.left.lineCode;
-  const rightLineCode = line.right.lineCode;
-  const leftDiscussions = getters.singleDiscussionByLineCode(leftLineCode);
-  const rightDiscussions = getters.singleDiscussionByLineCode(rightLineCode);
-  const hasDiscussion = leftDiscussions.length || rightDiscussions.length;
-
-  const hasExpandedDiscussionOnLeft = leftDiscussions.length
-    ? leftDiscussions.every(discussion => discussion.expanded)
-    : false;
-  const hasExpandedDiscussionOnRight = rightDiscussions.length
-    ? rightDiscussions.every(discussion => discussion.expanded)
-    : false;
+  const hasExpandedDiscussionOnLeft =
+    line.left && line.left.discussions && line.left.discussions.length
+      ? line.left.discussions.every(discussion => discussion.expanded)
+      : false;
+  const hasExpandedDiscussionOnRight =
+    line.right && line.right.discussions && line.right.discussions.length
+      ? line.right.discussions.every(discussion => discussion.expanded)
+      : false;
 
   if (hasDiscussion && (hasExpandedDiscussionOnLeft || hasExpandedDiscussionOnRight)) {
     return true;
   }
 
-  const hasCommentFormOnLeft = state.diffLineCommentForms[leftLineCode];
-  const hasCommentFormOnRight = state.diffLineCommentForms[rightLineCode];
+  const hasCommentFormOnLeft = line.left && state.diffLineCommentForms[line.left.lineCode];
+  const hasCommentFormOnRight = line.right && state.diffLineCommentForms[line.right.lineCode];
 
   return hasCommentFormOnLeft || hasCommentFormOnRight;
 };
 
-export const shouldRenderInlineCommentRow = (state, getters) => line => {
+export const shouldRenderInlineCommentRow = state => line => {
   if (state.diffLineCommentForms[line.lineCode]) return true;
 
-  const lineDiscussions = getters.singleDiscussionByLineCode(line.lineCode);
-  if (lineDiscussions.length === 0) {
+  if (!line.discussions || line.discussions.length === 0) {
     return false;
   }
 
-  return lineDiscussions.every(discussion => discussion.expanded);
+  return line.discussions.every(discussion => discussion.expanded);
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma∂ tests

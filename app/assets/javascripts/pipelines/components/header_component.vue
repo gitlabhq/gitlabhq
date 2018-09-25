@@ -1,13 +1,11 @@
 <script>
 import ciHeader from '../../vue_shared/components/header_ci_component.vue';
 import eventHub from '../event_hub';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
 export default {
   name: 'PipelineHeaderSection',
   components: {
     ciHeader,
-    loadingIcon,
   },
   props: {
     pipeline: {
@@ -89,9 +87,9 @@ export default {
       item-name="Pipeline"
       @actionClicked="postAction"
     />
-    <loading-icon
+    <gl-loading-icon
       v-if="isLoading"
-      size="2"
+      :size="2"
       class="prepend-top-default append-bottom-default"
     />
   </div>

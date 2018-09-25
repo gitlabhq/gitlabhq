@@ -1,5 +1,8 @@
 require 'active_support/core_ext/hash/transform_values'
 require 'active_support/hash_with_indifferent_access'
+require 'active_support/dependencies'
+
+require_dependency 'gitlab'
 
 module StubConfiguration
   def stub_application_setting(messages)
@@ -66,6 +69,10 @@ module StubConfiguration
     end
 
     allow(Gitlab.config.repositories).to receive(:storages).and_return(Settingslogic.new(messages))
+  end
+
+  def stub_kerberos_setting(messages)
+    allow(Gitlab.config.kerberos).to receive_messages(to_settings(messages))
   end
 
   private

@@ -25,7 +25,7 @@ export default {
       required: true,
     },
     noteId: {
-      type: Number,
+      type: String,
       required: true,
     },
     canAwardEmoji: {
@@ -82,29 +82,17 @@ export default {
     getAwardHTML(name) {
       return glEmojiTag(name);
     },
-    getAwardClassBindings(awardList, awardName) {
+    getAwardClassBindings(awardList) {
       return {
         active: this.hasReactionByCurrentUser(awardList),
-        disabled: !this.canInteractWithEmoji(awardList, awardName),
+        disabled: !this.canInteractWithEmoji(),
       };
     },
-    canInteractWithEmoji(awardList, awardName) {
-      let isAllowed = true;
-      const restrictedEmojis = ['thumbsup', 'thumbsdown'];
-
-      // Users can not add :+1: and :-1: to their own notes
-      if (
-        this.getUserData.id === this.noteAuthorId &&
-        restrictedEmojis.indexOf(awardName) > -1
-      ) {
-        isAllowed = false;
-      }
-
-      return this.getUserData.id && isAllowed;
+    canInteractWithEmoji() {
+      return this.getUserData.id;
     },
     hasReactionByCurrentUser(awardList) {
-      return awardList.filter(award => award.user.id === this.getUserData.id)
-        .length;
+      return awardList.filter(award => award.user.id === this.getUserData.id).length;
     },
     awardTitle(awardsList) {
       const hasReactionByCurrentUser = this.hasReactionByCurrentUser(
@@ -194,10 +182,10 @@ export default {
   <div class="note-awards">
     <div class="awards js-awards-block">
       <button
-        v-tooltip
         v-for="(awardList, awardName, index) in groupedAwards"
         :key="index"
-        :class="getAwardClassBindings(awardList, awardName)"
+        v-tooltip
+        :class="getAwardClassBindings(awardList)"
         :title="awardTitle(awardList)"
         class="btn award-control"
         data-boundary="viewport"

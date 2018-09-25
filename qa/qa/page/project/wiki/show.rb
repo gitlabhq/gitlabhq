@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 module QA
   module Page
     module Project
       module Wiki
         class Show < Page::Base
-          include Page::Shared::ClonePanel
+          include Page::Component::ClonePanel
 
           view 'app/views/projects/wikis/pages.html.haml' do
             element :clone_repository_link, 'Clone repository'

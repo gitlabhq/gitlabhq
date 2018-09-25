@@ -167,12 +167,6 @@ describe API::AwardEmoji do
         expect(response).to have_gitlab_http_status(401)
       end
 
-      it "returns a 404 error if the user authored issue" do
-        post api("/projects/#{project.id}/issues/#{issue2.id}/award_emoji", user), name: 'thumbsup'
-
-        expect(response).to have_gitlab_http_status(404)
-      end
-
       it "normalizes +1 as thumbsup award" do
         post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user), name: '+1'
 
@@ -213,12 +207,6 @@ describe API::AwardEmoji do
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['user']['username']).to eq(user.username)
-    end
-
-    it "it returns 404 error when user authored note" do
-      post api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note2.id}/award_emoji", user), name: 'thumbsup'
-
-      expect(response).to have_gitlab_http_status(404)
     end
 
     it "normalizes +1 as thumbsup award" do

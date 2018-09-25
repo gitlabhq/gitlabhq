@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Explore::ProjectsController < Explore::ApplicationController
   include ParamsBackwardCompatibility
   include RendersMemberAccess
@@ -34,6 +36,7 @@ class Explore::ProjectsController < Explore::ApplicationController
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def starred
     @projects = load_projects.reorder('star_count DESC')
 
@@ -46,9 +49,11 @@ class Explore::ProjectsController < Explore::ApplicationController
       end
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def load_projects
     projects = ProjectsFinder.new(current_user: current_user, params: params)
                  .execute
@@ -58,4 +63,5 @@ class Explore::ProjectsController < Explore::ApplicationController
 
     prepare_projects_for_rendering(projects)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

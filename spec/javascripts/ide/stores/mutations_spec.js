@@ -339,5 +339,13 @@ describe('Multi-file store mutations', () => {
 
       expect(localState.entries.parentPath.tree.length).toBe(1);
     });
+
+    it('adds to openFiles if previously opened', () => {
+      localState.entries.oldPath.opened = true;
+
+      mutations.RENAME_ENTRY(localState, { path: 'oldPath', name: 'newPath' });
+
+      expect(localState.openFiles).toEqual([localState.entries.newPath]);
+    });
   });
 });

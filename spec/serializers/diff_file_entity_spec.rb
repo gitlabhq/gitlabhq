@@ -67,4 +67,21 @@ describe DiffFileEntity do
       end
     end
   end
+
+  context '#parallel_diff_lines' do
+    it 'exposes parallel diff lines correctly' do
+      response = subject
+
+      lines = response[:parallel_diff_lines]
+
+      # make sure at least one line is present for each side
+      expect(lines.map { |line| line[:right] }.compact).to be_present
+      expect(lines.map { |line| line[:left] }.compact).to be_present
+      # make sure all lines are in correct format
+      lines.each do |parallel_line|
+        expect(parallel_line[:left].as_json).to match_schema('entities/diff_line') if parallel_line[:left]
+        expect(parallel_line[:right].as_json).to match_schema('entities/diff_line') if parallel_line[:right]
+      end
+    end
+  end
 end

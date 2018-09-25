@@ -19,7 +19,7 @@
   background-color: $white-light;
 
   &:hover {
-    background-color: $stage-hover-bg;
+    background-color: $gray-darker;
     border: 1px solid $dropdown-toggle-active-border-color;
     color: $gl-text-color;
   }
@@ -595,7 +595,7 @@
 
     a.build-content:hover,
     button.build-content:hover {
-      background-color: $stage-hover-bg;
+      background-color: $gray-darker;
       border: 1px solid $dropdown-toggle-active-border-color;
     }
 
@@ -668,7 +668,7 @@
       display: block;
 
       &:hover {
-        background-color: $stage-hover-bg;
+        background-color: $gray-darker;
         border: 1px solid $dropdown-toggle-active-border-color;
 
         svg {
@@ -835,7 +835,7 @@ button.mini-pipeline-graph-dropdown-toggle {
       display: block;
 
       &:hover {
-        background-color: $stage-hover-bg;
+        background-color: $gray-darker;
         border: 1px solid $dropdown-toggle-active-border-color;
 
         svg {
@@ -934,7 +934,7 @@ button.mini-pipeline-graph-dropdown-toggle {
       &:focus {
         outline: none;
         text-decoration: none;
-        background-color: $stage-hover-bg;
+        background-color: $gray-darker;
       }
     }
   }

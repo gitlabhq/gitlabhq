@@ -5,7 +5,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
   let(:user) { create(:user) }
   let(:user_access_level) { :developer }
   let(:project) { create(:project, :repository) }
-  let(:pipeline) { create(:ci_pipeline, project: project) }
+  let(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit('HEAD').sha) }
 
   let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
   let(:job2) { create(:ci_build) }
@@ -20,7 +20,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
   end
 
   describe "GET /:project/jobs" do
-    let!(:job) { create(:ci_build,  pipeline: pipeline) }
+    let!(:job) { create(:ci_build, pipeline: pipeline) }
 
     context "Pending scope" do
       before do
@@ -115,22 +115,28 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
     context "Job from project" do
       let(:job) { create(:ci_build, :success, :trace_live, pipeline: pipeline) }
 
-      before do
-        visit project_job_path(project, job)
-      end
-
       it 'shows status name', :js do
+        visit project_job_path(project, job)
+
+        wait_for_requests
+
         expect(page).to have_css('.ci-status.ci-success', text: 'passed')
       end
 
-      it 'shows commit`s data' do
-        expect(page.status_code).to eq(200)
+      it 'shows commit`s data', :js do
+        requests = inspect_requests() do
+          visit project_job_path(project, job)
+        end
+
+        wait_for_requests
+        expect(requests.first.status_code).to eq(200)
         expect(page).to have_content pipeline.sha[0..7]
-        expect(page).to have_content pipeline.git_commit_message
-        expect(page).to have_content pipeline.git_author_name
+        expect(page).to have_content pipeline.commit.title
       end
 
       it 'shows active job' do
+        visit project_job_path(project, job)
+
         expect(page).to have_selector('.build-job.active')
       end
     end
@@ -199,7 +205,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       it { expect(page.status_code).to eq(404) }
     end
 
-    context "Download artifacts" do
+    context "Download artifacts", :js do
       before do
         job.update(legacy_artifacts_file: artifacts_file)
         visit project_job_path(project, job)
@@ -208,9 +214,22 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       it 'has button to download artifacts' do
         expect(page).to have_content 'Download'
       end
+
+      it 'downloads the zip file when user clicks the download button' do
+        requests = inspect_requests() do
+          click_link 'Download'
+        end
+
+        artifact_request = requests.find { |req| req.url.match(%r{artifacts/download}) }
+
+        expect(artifact_request.response_headers["Content-Disposition"]).to eq(%Q{attachment; filename="#{job.artifacts_file.filename}"})
+        expect(artifact_request.response_headers['Content-Transfer-Encoding']).to eq("binary")
+        expect(artifact_request.response_headers['Content-Type']).to eq("image/gif")
+        expect(artifact_request.body).to eq(job.artifacts_file.file.read.b)
+      end
     end
 
-    context 'Artifacts expire date' do
+    context 'Artifacts expire date', :js do
       before do
         job.update(legacy_artifacts_file: artifacts_file,
                    artifacts_expire_at: expire_at)
@@ -231,12 +250,12 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         context 'when user has ability to update job' do
           it 'keeps artifacts when keep button is clicked' do
-            expect(page).to have_content 'The artifacts will be removed'
+            expect(page).to have_content 'The artifacts will be removed in'
 
             click_link 'Keep'
 
             expect(page).to have_no_link 'Keep'
-            expect(page).to have_no_content 'The artifacts will be removed'
+            expect(page).to have_no_content 'The artifacts will be removed in'
           end
         end
 
@@ -314,6 +333,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
       shared_examples 'expected variables behavior' do
         it 'shows variable key and value after click', :js do
+          expect(page).to have_content('Token')
           expect(page).to have_css('.js-reveal-variables')
           expect(page).not_to have_css('.js-build-variable')
           expect(page).not_to have_css('.js-build-value')
@@ -542,20 +562,26 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
     end
   end
 
-  describe "GET /:project/jobs/:id/download" do
+  describe "GET /:project/jobs/:id/download", :js do
     before do
       job.update(legacy_artifacts_file: artifacts_file)
       visit project_job_path(project, job)
+
       click_link 'Download'
     end
 
     context "Build from other project" do
       before do
         job2.update(legacy_artifacts_file: artifacts_file)
-        visit download_project_job_artifacts_path(project, job2)
       end
 
-      it { expect(page.status_code).to eq(404) }
+      it do
+        requests = inspect_requests() do
+          visit download_project_job_artifacts_path(project, job2)
+        end
+
+        expect(requests.first.status_code).to eq(404)
+      end
     end
   end
 

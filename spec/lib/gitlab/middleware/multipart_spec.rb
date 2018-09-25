@@ -75,6 +75,26 @@ describe Gitlab::Middleware::Multipart do
     it_behaves_like 'multipart upload files'
   end
 
+  it 'allows files in uploads/tmp directory' do
+    Dir.mktmpdir do |dir|
+      uploads_dir = File.join(dir, 'public/uploads/tmp')
+      FileUtils.mkdir_p(uploads_dir)
+
+      allow(Rails).to receive(:root).and_return(dir)
+      allow(Dir).to receive(:tmpdir).and_return(File.join(Dir.tmpdir, 'tmpsubdir'))
+
+      Tempfile.open('top-level', uploads_dir) do |tempfile|
+        env = post_env({ 'file' => tempfile.path }, { 'file.name' => original_filename, 'file.path' => tempfile.path }, Gitlab::Workhorse.secret, 'gitlab-workhorse')
+
+        expect(app).to receive(:call) do |env|
+          expect(Rack::Request.new(env).params['file']).to be_a(::UploadedFile)
+        end
+
+        middleware.call(env)
+      end
+    end
+  end
+
   it 'allows symlinks for uploads dir' do
     Tempfile.open('two-levels') do |tempfile|
       symlinked_dir = '/some/dir/uploads'

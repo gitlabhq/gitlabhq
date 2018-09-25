@@ -101,8 +101,13 @@ documentation on configuring Gitaly
 authentication](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/configuration/README.md#authentication)
 .
 
-> 
-**NOTE:** In most or all cases the storage paths below end in `/repositories` which is 
+Gitaly must trigger some callbacks to GitLab via GitLab Shell. As a result, 
+the GitLab Shell secret must be the same between the other GitLab servers and
+the Gitaly server. The easiest way to accomplish this is to copy `/etc/gitlab/gitlab-secrets.json`
+from an existing GitLab server to the Gitaly server. Without this shared secret,
+Git operations in GitLab will result in an API error. 
+
+> **NOTE:** In most or all cases the storage paths below end in `/repositories` which is 
 different than `path` in `git_data_dirs` of Omnibus installations. Check the
 directory layout on your Gitaly server to be sure.
 
@@ -149,7 +154,7 @@ listen_addr = '0.0.0.0:8075'
 [auth]
 token = 'abc123secret'
 
-[[storage]
+[[storage]]
 name = 'default'
 path = '/mnt/gitlab/default/repositories'
 

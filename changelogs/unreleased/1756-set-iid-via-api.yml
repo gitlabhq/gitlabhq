@@ -1,5 +1,0 @@
----
-title: Allow issues API to receive an internal ID (iid) on create
-merge_request: 20626
-author: Jamie Schembri
-type: fixed

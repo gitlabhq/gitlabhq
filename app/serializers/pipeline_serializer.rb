@@ -4,6 +4,7 @@ class PipelineSerializer < BaseSerializer
   include WithPagination
   entity PipelineDetailsEntity
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def represent(resource, opts = {})
     if resource.is_a?(ActiveRecord::Relation)
       resource = resource.preload([
@@ -33,6 +34,7 @@ class PipelineSerializer < BaseSerializer
 
     super(resource, opts)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def represent_status(resource)
     return {} unless resource.present?

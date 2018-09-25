@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ClustersFinder
   def initialize(project, user, scope)
     @project = project

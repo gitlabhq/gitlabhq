@@ -111,9 +111,9 @@
 
       &:hover:not(.tree-truncated-warning) {
         td {
-          background-color: $row-hover;
-          border-top: 1px solid $row-hover-border;
-          border-bottom: 1px solid $row-hover-border;
+          background-color: $blue-50;
+          border-top: 1px solid $blue-200;
+          border-bottom: 1px solid $blue-200;
           cursor: pointer;
         }
       }
@@ -229,7 +229,7 @@
 
 .upload-link {
   font-weight: $gl-font-weight-normal;
-  color: $md-link-color;
+  color: $blue-600;
 }
 
 .repo-charts {

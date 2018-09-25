@@ -1,0 +1,11 @@
+{
+  "required" : [
+    "left",
+    "right"
+  ],
+  "properties" : {
+    "left": { "$ref": "diff_line.json" },
+    "right": { "$ref": "diff_line.json" }
+  },
+  "additionalProperties": false
+}

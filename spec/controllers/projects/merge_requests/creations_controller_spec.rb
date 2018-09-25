@@ -29,6 +29,55 @@ describe Projects::MergeRequests::CreationsController do
         expect(response).to be_success
       end
     end
+
+    context 'merge request with some commits' do
+      render_views
+
+      let(:large_diff_params) do
+        {
+          namespace_id: fork_project.namespace.to_param,
+          project_id: fork_project,
+          merge_request: {
+            source_branch: 'master',
+            target_branch: 'fix'
+          }
+        }
+      end
+
+      describe 'with artificial limits' do
+        before do
+          # Load MergeRequestdiff so stub_const won't override it with its own definition
+          # See https://github.com/rspec/rspec-mocks/issues/1079
+          stub_const("#{MergeRequestDiff}::COMMITS_SAFE_SIZE", 2)
+        end
+
+        it 'limits total commits' do
+          get :new, large_diff_params
+
+          expect(response).to be_success
+
+          total = assigns(:total_commit_count)
+          expect(assigns(:commits)).to be_an Array
+          expect(total).to be > 0
+          expect(assigns(:hidden_commit_count)).to be > 0
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.body).to match %r(<span class="commits-count">2 commits</span>)
+        end
+      end
+
+      it 'shows total commits' do
+        get :new, large_diff_params
+
+        expect(response).to be_success
+
+        total = assigns(:total_commit_count)
+        expect(assigns(:commits)).to be_an Array
+        expect(total).to be > 0
+        expect(assigns(:hidden_commit_count)).to eq(0)
+        expect(response).to have_gitlab_http_status(200)
+        expect(response.body).to match %r(<span class="commits-count">#{total} commits</span>)
+      end
+    end
   end
 
   describe 'GET diffs' do

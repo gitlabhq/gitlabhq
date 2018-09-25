@@ -155,10 +155,7 @@
         />
       </form>
     </template>
-    <template
-      slot="secondary-button"
-      slot-scope="props"
-    >
+    <template slot="secondary-button">
       <button
         :disabled="!canSubmit"
         type="button"

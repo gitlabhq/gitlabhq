@@ -118,9 +118,11 @@ class Projects::MilestonesController < Projects::ApplicationController
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def milestone
     @milestone ||= @project.milestones.find_by!(iid: params[:id])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def authorize_admin_milestone!
     return render_404 unless can?(current_user, :admin_milestone, @project)

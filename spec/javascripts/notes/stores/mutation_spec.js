@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import mutations from '~/notes/stores/mutations';
 import {
   note,
@@ -154,6 +155,41 @@ describe('Notes Store mutations', () => {
       expect(state.discussions[1].notes[0].note).toBe(legacyNote.notes[0].note);
       expect(state.discussions[2].notes[0].note).toBe(legacyNote.notes[1].note);
       expect(state.discussions.length).toEqual(3);
+    });
+
+    it('adds truncated_diff_lines if discussion is a diffFile', () => {
+      const state = {
+        discussions: [],
+      };
+
+      mutations.SET_INITIAL_DISCUSSIONS(state, [
+        {
+          ...note,
+          diff_file: {
+            file_hash: 'a',
+          },
+          truncated_diff_lines: ['a'],
+        },
+      ]);
+
+      expect(state.discussions[0].truncated_diff_lines).toEqual(['a']);
+    });
+
+    it('adds empty truncated_diff_lines when not in discussion', () => {
+      const state = {
+        discussions: [],
+      };
+
+      mutations.SET_INITIAL_DISCUSSIONS(state, [
+        {
+          ...note,
+          diff_file: {
+            file_hash: 'a',
+          },
+        },
+      ]);
+
+      expect(state.discussions[0].truncated_diff_lines).toEqual([]);
     });
   });
 
@@ -333,7 +369,7 @@ describe('Notes Store mutations', () => {
     });
   });
 
-  describe('SET_NOTES_FETCHING_STATE', () => {
+  describe('SET_NOTES_FETCHED_STATE', () => {
     it('should set the given state', () => {
       const state = {
         isNotesFetched: false,
@@ -341,6 +377,39 @@ describe('Notes Store mutations', () => {
 
       mutations.SET_NOTES_FETCHED_STATE(state, true);
       expect(state.isNotesFetched).toEqual(true);
+    });
+  });
+
+  describe('SET_DISCUSSION_DIFF_LINES', () => {
+    it('sets truncated_diff_lines', () => {
+      const state = {
+        discussions: [
+          {
+            id: 1,
+          },
+        ],
+      };
+
+      mutations.SET_DISCUSSION_DIFF_LINES(state, { discussionId: 1, diffLines: ['test'] });
+
+      expect(state.discussions[0].truncated_diff_lines).toEqual(['test']);
+    });
+
+    it('keeps reactivity of discussion', () => {
+      const state = {};
+      Vue.set(state, 'discussions', [
+        {
+          id: 1,
+          expanded: false,
+        },
+      ]);
+      const discussion = state.discussions[0];
+
+      mutations.SET_DISCUSSION_DIFF_LINES(state, { discussionId: 1, diffLines: ['test'] });
+
+      discussion.expanded = true;
+
+      expect(state.discussions[0].expanded).toBe(true);
     });
   });
 });

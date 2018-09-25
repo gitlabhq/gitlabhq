@@ -1,6 +1,13 @@
 require 'spec_helper'
 
 describe Feature do
+  before do
+    # We mock all calls to .enabled? to return true in order to force all
+    # specs to run the feature flag gated behavior, but here we need a clean
+    # behavior from the class
+    allow(described_class).to receive(:enabled?).and_call_original
+  end
+
   describe '.get' do
     let(:feature) { double(:feature) }
     let(:key) { 'my_feature' }
@@ -84,7 +91,11 @@ describe Feature do
   end
 
   describe '.flipper' do
-    shared_examples 'a memoized Flipper instance' do
+    before do
+      described_class.instance_variable_set(:@flipper, nil)
+    end
+
+    context 'when request store is inactive' do
       it 'memoizes the Flipper instance' do
         expect(Flipper).to receive(:new).once.and_call_original
 
@@ -94,16 +105,81 @@ describe Feature do
       end
     end
 
-    context 'when request store is inactive' do
-      before do
-        described_class.instance_variable_set(:@flipper, nil)
-      end
+    context 'when request store is active', :request_store do
+      it 'memoizes the Flipper instance' do
+        expect(Flipper).to receive(:new).once.and_call_original
 
-      it_behaves_like 'a memoized Flipper instance'
+        described_class.flipper
+        described_class.instance_variable_set(:@flipper, nil)
+        described_class.flipper
+      end
+    end
+  end
+
+  describe '.enabled?' do
+    it 'returns false for undefined feature' do
+      expect(described_class.enabled?(:some_random_feature_flag)).to be_falsey
     end
 
-    context 'when request store is inactive', :request_store do
-      it_behaves_like 'a memoized Flipper instance'
+    it 'returns true for undefined feature with default_enabled' do
+      expect(described_class.enabled?(:some_random_feature_flag, default_enabled: true)).to be_truthy
+    end
+
+    it 'returns false for existing disabled feature in the database' do
+      described_class.disable(:disabled_feature_flag)
+
+      expect(described_class.enabled?(:disabled_feature_flag)).to be_falsey
+    end
+
+    it 'returns true for existing enabled feature in the database' do
+      described_class.enable(:enabled_feature_flag)
+
+      expect(described_class.enabled?(:enabled_feature_flag)).to be_truthy
+    end
+
+    context 'with an individual actor' do
+      CustomActor = Struct.new(:flipper_id)
+
+      let(:actor) { CustomActor.new(flipper_id: 'CustomActor:5') }
+      let(:another_actor) { CustomActor.new(flipper_id: 'CustomActor:10') }
+
+      before do
+        described_class.enable(:enabled_feature_flag, actor)
+      end
+
+      it 'returns true when same actor is informed' do
+        expect(described_class.enabled?(:enabled_feature_flag, actor)).to be_truthy
+      end
+
+      it 'returns false when different actor is informed' do
+        expect(described_class.enabled?(:enabled_feature_flag, another_actor)).to be_falsey
+      end
+
+      it 'returns false when no actor is informed' do
+        expect(described_class.enabled?(:enabled_feature_flag)).to be_falsey
+      end
+    end
+  end
+
+  describe '.disable?' do
+    it 'returns true for undefined feature' do
+      expect(described_class.disabled?(:some_random_feature_flag)).to be_truthy
+    end
+
+    it 'returns false for undefined feature with default_enabled' do
+      expect(described_class.disabled?(:some_random_feature_flag, default_enabled: true)).to be_falsey
+    end
+
+    it 'returns true for existing disabled feature in the database' do
+      described_class.disable(:disabled_feature_flag)
+
+      expect(described_class.disabled?(:disabled_feature_flag)).to be_truthy
+    end
+
+    it 'returns false for existing enabled feature in the database' do
+      described_class.enable(:enabled_feature_flag)
+
+      expect(described_class.disabled?(:enabled_feature_flag)).to be_falsey
     end
   end
 end

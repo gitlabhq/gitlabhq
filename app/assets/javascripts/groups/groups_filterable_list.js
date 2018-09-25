@@ -4,13 +4,23 @@ import eventHub from './event_hub';
 import { normalizeHeaders, getParameterByName } from '../lib/utils/common_utils';
 
 export default class GroupFilterableList extends FilterableList {
-  constructor({ form, filter, holder, filterEndpoint, pagePath, dropdownSel, filterInputField }) {
+  constructor({
+    form,
+    filter,
+    holder,
+    filterEndpoint,
+    pagePath,
+    dropdownSel,
+    filterInputField,
+    action,
+  }) {
     super(form, filter, holder, filterInputField);
     this.form = form;
     this.filterEndpoint = filterEndpoint;
     this.pagePath = pagePath;
     this.filterInputField = filterInputField;
     this.$dropdown = $(dropdownSel);
+    this.action = action;
   }
 
   getFilterEndpoint() {
@@ -20,15 +30,16 @@ export default class GroupFilterableList extends FilterableList {
   getPagePath(queryData) {
     const params = queryData ? $.param(queryData) : '';
     const queryString = params ? `?${params}` : '';
-    return `${this.pagePath}${queryString}`;
+    const path = this.pagePath || window.location.pathname;
+    return `${path}${queryString}`;
   }
 
   bindEvents() {
     super.bindEvents();
 
-    this.onFilterOptionClikWrapper = this.onOptionClick.bind(this);
+    this.onFilterOptionClickWrapper = this.onOptionClick.bind(this);
 
-    this.$dropdown.on('click', 'a', this.onFilterOptionClikWrapper);
+    this.$dropdown.on('click', 'a', this.onFilterOptionClickWrapper);
   }
 
   onFilterInput() {
@@ -53,7 +64,12 @@ export default class GroupFilterableList extends FilterableList {
   }
 
   setDefaultFilterOption() {
-    const defaultOption = $.trim(this.$dropdown.find('.dropdown-menu li.js-filter-sort-order a').first().text());
+    const defaultOption = $.trim(
+      this.$dropdown
+        .find('.dropdown-menu li.js-filter-sort-order a')
+        .first()
+        .text(),
+    );
     this.$dropdown.find('.dropdown-label').text(defaultOption);
   }
 
@@ -65,11 +81,19 @@ export default class GroupFilterableList extends FilterableList {
     // Get type of option selected from dropdown
     const currentTargetClassList = e.currentTarget.parentElement.classList;
     const isOptionFilterBySort = currentTargetClassList.contains('js-filter-sort-order');
-    const isOptionFilterByArchivedProjects = currentTargetClassList.contains('js-filter-archived-projects');
+    const isOptionFilterByArchivedProjects = currentTargetClassList.contains(
+      'js-filter-archived-projects',
+    );
 
     // Get option query param, also preserve currently applied query param
-    const sortParam = getParameterByName('sort', isOptionFilterBySort ? e.currentTarget.href : window.location.href);
-    const archivedParam = getParameterByName('archived', isOptionFilterByArchivedProjects ? e.currentTarget.href : window.location.href);
+    const sortParam = getParameterByName(
+      'sort',
+      isOptionFilterBySort ? e.currentTarget.href : window.location.href,
+    );
+    const archivedParam = getParameterByName(
+      'archived',
+      isOptionFilterByArchivedProjects ? e.currentTarget.href : window.location.href,
+    );
 
     if (sortParam) {
       queryData.sort = sortParam;
@@ -86,7 +110,9 @@ export default class GroupFilterableList extends FilterableList {
       this.$dropdown.find('.dropdown-label').text($.trim(e.currentTarget.text));
       this.$dropdown.find('.dropdown-menu li.js-filter-sort-order a').removeClass('is-active');
     } else if (isOptionFilterByArchivedProjects) {
-      this.$dropdown.find('.dropdown-menu li.js-filter-archived-projects a').removeClass('is-active');
+      this.$dropdown
+        .find('.dropdown-menu li.js-filter-archived-projects a')
+        .removeClass('is-active');
     }
 
     $(e.target).addClass('is-active');
@@ -98,11 +124,19 @@ export default class GroupFilterableList extends FilterableList {
   onFilterSuccess(res, queryData) {
     const currentPath = this.getPagePath(queryData);
 
-    window.history.replaceState({
-      page: currentPath,
-    }, document.title, currentPath);
+    window.history.replaceState(
+      {
+        page: currentPath,
+      },
+      document.title,
+      currentPath,
+    );
 
-    eventHub.$emit('updateGroups', res.data, Object.prototype.hasOwnProperty.call(queryData, this.filterInputField));
-    eventHub.$emit('updatePagination', normalizeHeaders(res.headers));
+    eventHub.$emit(
+      `${this.action}updateGroups`,
+      res.data,
+      Object.prototype.hasOwnProperty.call(queryData, this.filterInputField),
+    );
+    eventHub.$emit(`${this.action}updatePagination`, normalizeHeaders(res.headers));
   }
 }

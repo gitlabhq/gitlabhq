@@ -1,25 +1,24 @@
 # Full project: https://gitlab.com/pages/middleman
-image: ruby:2.4
-variables:
-  LANG: "C.UTF-8"
+image: ruby:2.3
 
 cache:
   paths:
   - vendor
 
-before_script:
+test:
+  script:
   - apt-get update -yqqq
   - apt-get install -y nodejs
   - bundle install --path vendor
-
-test:
-  script:
   - bundle exec middleman build
   except:
     - master
 
 pages:
   script:
+  - apt-get update -yqqq
+  - apt-get install -y nodejs
+  - bundle install --path vendor
   - bundle exec middleman build
   artifacts:
     paths:

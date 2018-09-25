@@ -43,6 +43,7 @@ module API
         requires :ref, type: String,  desc: 'Reference'
         optional :variables, Array, desc: 'Array of variables available in the pipeline'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       post ':id/pipeline' do
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42124')
 
@@ -63,6 +64,7 @@ module API
           render_validation_error!(new_pipeline)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Gets a specific pipeline for the project' do
         detail 'This feature was introduced in GitLab 8.11'

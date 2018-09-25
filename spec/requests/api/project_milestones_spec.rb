@@ -39,19 +39,6 @@ describe API::ProjectMilestones do
 
       expect(response).to have_gitlab_http_status(404)
     end
-
-    it "rejects a member with reporter access from deleting a milestone" do
-      delete api("/projects/#{project.id}/milestones/#{milestone.id}", reporter)
-
-      expect(response).to have_gitlab_http_status(403)
-    end
-
-    it 'deletes the milestone when the user has developer access to the project' do
-      delete api("/projects/#{project.id}/milestones/#{milestone.id}", user)
-
-      expect(project.milestones.find_by_id(milestone.id)).to be_nil
-      expect(response).to have_gitlab_http_status(204)
-    end
   end
 
   describe 'PUT /projects/:id/milestones/:milestone_id to test observer on close' do

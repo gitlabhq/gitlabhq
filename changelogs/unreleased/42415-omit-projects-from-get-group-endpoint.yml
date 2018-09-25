@@ -1,5 +1,0 @@
----
-title: Adds with_projects optional parameter to GET /groups/:id API endpoint
-merge_request: 20494
-author:
-type: changed

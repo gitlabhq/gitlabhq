@@ -161,6 +161,12 @@ module Ci
           PipelineNotificationWorker.perform_async(pipeline.id)
         end
       end
+
+      after_transition any => [:failed] do |pipeline|
+        next unless pipeline.auto_devops_source?
+
+        pipeline.run_after_commit { AutoDevops::DisableWorker.perform_async(pipeline.id) }
+      end
     end
 
     scope :internal, -> { where(source: internal_sources) }
@@ -381,10 +387,12 @@ module Ci
       end
     end
 
+    # rubocop: disable CodeReuse/ServiceClass
     def retry_failed(current_user)
       Ci::RetryPipelineService.new(project, current_user)
         .execute(self)
     end
+    # rubocop: enable CodeReuse/ServiceClass
 
     def mark_as_processable_after_stage(stage_idx)
       builds.skipped.after_stage(stage_idx).find_each(&:process)
@@ -458,7 +466,7 @@ module Ci
       return @config_processor if defined?(@config_processor)
 
       @config_processor ||= begin
-        Gitlab::Ci::YamlProcessor.new(ci_yaml_file)
+        ::Gitlab::Ci::YamlProcessor.new(ci_yaml_file, { project: project, sha: sha })
       rescue Gitlab::Ci::YamlProcessor::ValidationError => e
         self.yaml_errors = e.message
         nil
@@ -519,9 +527,11 @@ module Ci
       project.notes.for_commit_id(sha)
     end
 
+    # rubocop: disable CodeReuse/ServiceClass
     def process!
       Ci::ProcessPipelineService.new(project, user).execute(self)
     end
+    # rubocop: enable CodeReuse/ServiceClass
 
     def update_status
       retry_optimistic_lock(self) do
@@ -649,8 +659,7 @@ module Ci
     def keep_around_commits
       return unless project
 
-      project.repository.keep_around(self.sha)
-      project.repository.keep_around(self.before_sha)
+      project.repository.keep_around(self.sha, self.before_sha)
     end
 
     def valid_source

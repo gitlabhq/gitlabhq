@@ -28,11 +28,7 @@ class Feature
     end
 
     def persisted_names
-      if RequestStore.active?
-        RequestStore[:flipper_persisted_names] ||= FlipperFeature.feature_names
-      else
-        FlipperFeature.feature_names
-      end
+      Gitlab::SafeRequestStore[:flipper_persisted_names] ||= FlipperFeature.feature_names
     end
 
     def persisted?(feature)
@@ -42,12 +38,21 @@ class Feature
       persisted_names.include?(feature.name.to_s)
     end
 
-    def enabled?(key, thing = nil)
-      get(key).enabled?(thing)
+    # use `default_enabled: true` to default the flag to being `enabled`
+    # unless set explicitly.  The default is `disabled`
+    def enabled?(key, thing = nil, default_enabled: false)
+      feature = Feature.get(key)
+
+      # If we're not default enabling the flag or the feature has been set, always evaluate.
+      # `persisted?` can potentially generate DB queries and also checks for inclusion
+      # in an array of feature names (177 at last count), possibly reducing performance by half.
+      # So we only perform the `persisted` check if `default_enabled: true`
+      !default_enabled || Feature.persisted?(feature) ? feature.enabled?(thing) : true
     end
 
-    def disabled?(key, thing = nil)
-      !enabled?(key, thing)
+    def disabled?(key, thing = nil, default_enabled: false)
+      # we need to make different method calls to make it easy to mock / define expectations in test mode
+      thing.nil? ? !enabled?(key, default_enabled: default_enabled) : !enabled?(key, thing, default_enabled: default_enabled)
     end
 
     def enable(key, thing = true)
@@ -67,11 +72,7 @@ class Feature
     end
 
     def flipper
-      if RequestStore.active?
-        RequestStore[:flipper] ||= build_flipper_instance
-      else
-        @flipper ||= build_flipper_instance
-      end
+      @flipper ||= (Gitlab::SafeRequestStore[:flipper] ||= build_flipper_instance)
     end
 
     def build_flipper_instance

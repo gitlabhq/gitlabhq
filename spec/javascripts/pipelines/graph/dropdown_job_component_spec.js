@@ -82,12 +82,4 @@ describe('dropdown job component', () => {
   it('renders dropdown with jobs', () => {
     expect(vm.$el.querySelectorAll('.scrollable-menu>ul>li').length).toEqual(mock.jobs.length);
   });
-
-  it('escapes tooltip title', () => {
-    expect(
-      vm.$el.querySelector('.js-pipeline-graph-job-link').getAttribute('data-original-title'),
-    ).toEqual(
-      '&lt;img src=x onerror=alert(document.domain)&gt; - passed',
-    );
-  });
 });

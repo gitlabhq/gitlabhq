@@ -113,6 +113,9 @@ describe('Graph', () => {
       projectPath,
     });
 
+    // simulate moving mouse over data series
+    component.seriesUnderMouse = component.timeSeries;
+
     component.positionFlag();
     expect(component.currentData).toBe(component.timeSeries[0].values[10]);
   });

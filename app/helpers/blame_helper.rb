@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BlameHelper
   def age_map_duration(blame_groups, project)
     now = Time.zone.now

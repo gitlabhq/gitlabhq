@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class IdeController < ApplicationController
-  layout 'nav_only'
+  layout 'fullscreen'
 
   def index
   end

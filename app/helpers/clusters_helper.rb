@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ClustersHelper
   def has_multiple_clusters?(project)
     false
@@ -10,5 +12,9 @@ module ClustersHelper
     content_tag :section, class: 'no-animate expanded' do
       render 'projects/clusters/gcp_signup_offer_banner'
     end
+  end
+
+  def rbac_clusters_feature_enabled?
+    Feature.enabled?(:rbac_clusters)
   end
 end

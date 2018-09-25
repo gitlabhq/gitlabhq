@@ -4,8 +4,8 @@ shared_examples_for 'fast destroyable' do
       expect(external_data_counter).to be > 0
       expect(subjects.count).to be > 0
 
-      expect { subjects.first.destroy }.to raise_error('`destroy` and `destroy_all` are forbbiden. Please use `fast_destroy_all`')
-      expect { subjects.destroy_all }.to raise_error('`destroy` and `destroy_all` are forbbiden. Please use `fast_destroy_all`')
+      expect { subjects.first.destroy }.to raise_error('`destroy` and `destroy_all` are forbidden. Please use `fast_destroy_all`')
+      expect { subjects.destroy_all }.to raise_error('`destroy` and `destroy_all` are forbidden. Please use `fast_destroy_all`') # rubocop: disable DestroyAll
 
       expect(subjects.count).to be > 0
       expect(external_data_counter).to be > 0

@@ -82,7 +82,7 @@ namespace :gettext do
 
     # `gettext:find` writes touches to temp files to `stderr` which would cause
     # `static-analysis` to report failures. We can ignore these.
-    silence_stream($stderr) do
+    silence_sdterr do
       Rake::Task['gettext:find'].invoke
     end
 
@@ -117,5 +117,16 @@ namespace :gettext do
         puts "#{spaces}#{error}"
       end
     end
+  end
+
+  def silence_sdterr(&block)
+    old_stderr = $stderr.dup
+    $stderr.reopen(File::NULL)
+    $stderr.sync = true
+
+    yield
+  ensure
+    $stderr.reopen(old_stderr)
+    old_stderr.close
   end
 end

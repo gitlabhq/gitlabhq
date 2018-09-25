@@ -25,25 +25,25 @@
 
 /* Variations */
 .bs-callout-danger {
-  background-color: $callout-danger-bg;
-  border-color: $callout-danger-border;
-  color: $callout-danger-color;
+  background-color: $red-100;
+  border-color: $red-200;
+  color: $red-700;
 }
 
 .bs-callout-warning {
-  background-color: $callout-warning-bg;
-  border-color: $callout-warning-border;
-  color: $callout-warning-color;
+  background-color: $orange-100;
+  border-color: $orange-200;
+  color: $orange-700;
 }
 
 .bs-callout-info {
-  background-color: $callout-info-bg;
-  border-color: $callout-info-border;
-  color: $callout-info-color;
+  background-color: $blue-100;
+  border-color: $blue-200;
+  color: $blue-700;
 }
 
 .bs-callout-success {
-  background-color: $callout-success-bg;
-  border-color: $callout-success-border;
-  color: $callout-success-color;
+  background-color: $green-100;
+  border-color: $green-200;
+  color: $green-700;
 }

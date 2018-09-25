@@ -3,8 +3,7 @@
 ## Log arguments to Sidekiq jobs
 
 If you want to see what arguments are being passed to Sidekiq jobs you can set
-the `SIDEKIQ_LOG_ARGUMENTS` [environment variable]
-(https://docs.gitlab.com/omnibus/settings/environment-variables.html) to `1` (true).
+the `SIDEKIQ_LOG_ARGUMENTS` [environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.html) to `1` (true).
 
 Example:
 

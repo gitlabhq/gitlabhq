@@ -4,6 +4,7 @@ describe Gitlab::ImportExport::UploadsManager do
   let(:shared) { project.import_export_shared }
   let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
   let(:project) { create(:project) }
+  let(:upload) { create(:upload, :issuable_upload, :object_storage, model: project) }
   let(:exported_file_path) { "#{shared.export_path}/uploads/#{upload.secret}/#{File.basename(upload.path)}" }
 
   subject(:manager) { described_class.new(project: project, shared: shared) }
@@ -36,45 +37,53 @@ describe Gitlab::ImportExport::UploadsManager do
 
         expect(File).to exist(exported_file_path)
       end
-    end
 
-    context 'using object storage' do
-      let!(:upload) { create(:upload, :issuable_upload, :object_storage, model: project) }
+      context 'with orphaned project upload files' do
+        let(:orphan_path) { File.join(FileUploader.absolute_base_dir(project), 'f93f088ddf492ffd950cf059002cbbb6', 'orphan.jpg') }
+        let(:exported_orphan_path) { "#{shared.export_path}/uploads/f93f088ddf492ffd950cf059002cbbb6/orphan.jpg" }
 
-      before do
-        stub_feature_flags(import_export_object_storage: true)
-        stub_uploads_object_storage(FileUploader)
-      end
-
-      it 'saves the file' do
-        fake_uri = double
-
-        expect(fake_uri).to receive(:open).and_return(StringIO.new('File content'))
-        expect(URI).to receive(:parse).and_return(fake_uri)
-
-        manager.save
-
-        expect(File.read(exported_file_path)).to eq('File content')
-      end
-    end
-
-    describe '#restore' do
-      context 'using object storage' do
         before do
-          stub_feature_flags(import_export_object_storage: true)
-          stub_uploads_object_storage(FileUploader)
-
-          FileUtils.mkdir_p(File.join(shared.export_path, 'uploads/72a497a02fe3ee09edae2ed06d390038'))
-          FileUtils.touch(File.join(shared.export_path, 'uploads/72a497a02fe3ee09edae2ed06d390038', "dummy.txt"))
+          FileUtils.mkdir_p(File.dirname(orphan_path))
+          FileUtils.touch(orphan_path)
         end
 
-        it 'restores the file' do
-          manager.restore
+        after do
+          File.delete(orphan_path) if File.exist?(orphan_path)
+        end
 
-          expect(project.uploads.size).to eq(1)
-          expect(project.uploads.first.build_uploader.filename).to eq('dummy.txt')
+        it 'excludes orphaned upload files' do
+          manager.save
+
+          expect(File).not_to exist(exported_orphan_path)
         end
       end
+
+      context 'with an upload missing its file' do
+        before do
+          File.delete(upload.absolute_path)
+        end
+
+        it 'does not cause errors' do
+          manager.save
+
+          expect(shared.errors).to be_empty
+        end
+      end
+    end
+  end
+
+  describe '#restore' do
+    before do
+      stub_uploads_object_storage(FileUploader)
+
+      FileUtils.mkdir_p(File.join(shared.export_path, 'uploads/72a497a02fe3ee09edae2ed06d390038'))
+      FileUtils.touch(File.join(shared.export_path, 'uploads/72a497a02fe3ee09edae2ed06d390038', "dummy.txt"))
+    end
+
+    it 'restores the file' do
+      manager.restore
+
+      expect(project.uploads.map { |u| u.build_uploader.filename }).to include('dummy.txt')
     end
   end
 end

@@ -1,5 +1,0 @@
----
-title: Fix broken JavaScript in IE11
-merge_request: 21214
-author:
-type: fixed

@@ -80,7 +80,7 @@ class ProjectWiki
     pages(limit: 1).empty?
   end
 
-  # Returns an Array of Gitlab WikiPage instances or an
+  # Returns an Array of GitLab WikiPage instances or an
   # empty Array if this Wiki has no pages.
   def pages(limit: 0)
     wiki.pages(limit: limit).map { |page| WikiPage.new(self, page, true) }
@@ -184,11 +184,12 @@ class ProjectWiki
 
   def commit_details(action, message = nil, title = nil)
     commit_message = message || default_message(action, title)
+    git_user = Gitlab::Git::User.from_gitlab(@user)
 
     Gitlab::Git::Wiki::CommitDetails.new(@user.id,
-                                         @user.username,
-                                         @user.name,
-                                         @user.email,
+                                         git_user.username,
+                                         git_user.name,
+                                         git_user.email,
                                          commit_message)
   end
 

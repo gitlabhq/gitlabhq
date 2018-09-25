@@ -42,6 +42,30 @@ describe UsersHelper do
     end
   end
 
+  describe '#user_internal_regex_data' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:user_default_external, :user_default_internal_regex, :result) do
+      false | nil                | { user_internal_regex_pattern: nil, user_internal_regex_options: nil }
+      false | ''                 | { user_internal_regex_pattern: nil, user_internal_regex_options: nil }
+      false | 'mockRegexPattern' | { user_internal_regex_pattern: nil, user_internal_regex_options: nil }
+      true  | nil                | { user_internal_regex_pattern: nil, user_internal_regex_options: nil }
+      true  | ''                 | { user_internal_regex_pattern: nil, user_internal_regex_options: nil }
+      true  | 'mockRegexPattern' | { user_internal_regex_pattern: 'mockRegexPattern', user_internal_regex_options: 'gi' }
+    end
+
+    with_them do
+      before do
+        stub_application_setting(user_default_external: user_default_external)
+        stub_application_setting(user_default_internal_regex: user_default_internal_regex)
+      end
+
+      subject { helper.user_internal_regex_data }
+
+      it { is_expected.to eq(result) }
+    end
+  end
+
   describe '#current_user_menu_items' do
     subject(:items) { helper.current_user_menu_items }
 

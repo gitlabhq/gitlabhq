@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AvatarsHelper
   def project_icon(project_id, options = {})
     source_icon(Project, project_id, options)
@@ -125,9 +127,9 @@ module AvatarsHelper
 
   def source_identicon(source, options = {})
     bg_key = (source.id % 7) + 1
-    options[:class] ||= ''
-    options[:class] << ' identicon'
-    options[:class] << " bg#{bg_key}"
+
+    options[:class] =
+      [*options[:class], "identicon bg#{bg_key}"].join(' ')
 
     content_tag(:div, class: options[:class].strip) do
       source.name[0, 1].upcase

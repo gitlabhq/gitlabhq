@@ -27,39 +27,6 @@ describe Gitlab::GithubImport do
     end
   end
 
-  describe '.insert_and_return_id' do
-    let(:attributes) { { iid: 1, title: 'foo' } }
-    let(:project) { create(:project) }
-
-    context 'on PostgreSQL' do
-      it 'returns the ID returned by the query' do
-        expect(Gitlab::Database)
-          .to receive(:bulk_insert)
-          .with(Issue.table_name, [attributes], return_ids: true)
-          .and_return([10])
-
-        id = described_class.insert_and_return_id(attributes, project.issues)
-
-        expect(id).to eq(10)
-      end
-    end
-
-    context 'on MySQL' do
-      it 'uses a separate query to retrieve the ID' do
-        issue = create(:issue, project: project, iid: attributes[:iid])
-
-        expect(Gitlab::Database)
-          .to receive(:bulk_insert)
-          .with(Issue.table_name, [attributes], return_ids: true)
-          .and_return([])
-
-        id = described_class.insert_and_return_id(attributes, project.issues)
-
-        expect(id).to eq(issue.id)
-      end
-    end
-  end
-
   describe '.ghost_user_id', :clean_gitlab_redis_cache do
     it 'returns the ID of the ghost user' do
       expect(described_class.ghost_user_id).to eq(User.ghost.id)

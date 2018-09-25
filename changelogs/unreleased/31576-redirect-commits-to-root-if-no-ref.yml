@@ -1,5 +1,0 @@
----
-title: Redirect commits to root if no ref is provided (31576)
-merge_request: 20738
-author: Kia Mei Somabes
-type: added

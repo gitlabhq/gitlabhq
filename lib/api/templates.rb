@@ -4,15 +4,12 @@ module API
 
     GLOBAL_TEMPLATE_TYPES = {
       gitignores: {
-        klass: Gitlab::Template::GitignoreTemplate,
         gitlab_version: 8.8
       },
       gitlab_ci_ymls: {
-        klass: Gitlab::Template::GitlabCiYmlTemplate,
         gitlab_version: 8.9
       },
       dockerfiles: {
-        klass: Gitlab::Template::DockerfileTemplate,
         gitlab_version: 8.15
       }
     }.freeze
@@ -36,7 +33,7 @@ module API
       popular = declared(params)[:popular]
       popular = to_boolean(popular) if popular.present?
 
-      templates = LicenseTemplateFinder.new(popular: popular).execute
+      templates = TemplateFinder.build(:licenses, popular: popular).execute
 
       present paginate(::Kaminari.paginate_array(templates)), with: ::API::Entities::License
     end
@@ -49,7 +46,7 @@ module API
       requires :name, type: String, desc: 'The name of the template'
     end
     get "templates/licenses/:name", requirements: { name: /[\w\.-]+/ } do
-      templates = LicenseTemplateFinder.new.execute
+      templates = TemplateFinder.build(:licenses).execute
       template = templates.find { |template| template.key == params[:name] }
 
       not_found!('License') unless template.present?
@@ -63,7 +60,6 @@ module API
     end
 
     GLOBAL_TEMPLATE_TYPES.each do |template_type, properties|
-      klass = properties[:klass]
       gitlab_version = properties[:gitlab_version]
 
       desc 'Get the list of the available template' do
@@ -74,7 +70,7 @@ module API
         use :pagination
       end
       get "templates/#{template_type}" do
-        templates = ::Kaminari.paginate_array(klass.all)
+        templates = ::Kaminari.paginate_array(TemplateFinder.new(template_type).execute)
         present paginate(templates), with: Entities::TemplatesList
       end
 
@@ -86,7 +82,8 @@ module API
         requires :name, type: String, desc: 'The name of the template'
       end
       get "templates/#{template_type}/:name" do
-        new_template = klass.find(declared(params)[:name])
+        finder = TemplateFinder.build(template_type, name: declared(params)[:name])
+        new_template = finder.execute
 
         render_response(template_type, new_template)
       end

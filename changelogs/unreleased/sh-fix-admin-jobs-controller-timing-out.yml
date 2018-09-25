@@ -1,5 +1,0 @@
----
-title: Fix /admin/jobs failing to load due to statement timeout
-merge_request: 20909
-author:
-type: performance

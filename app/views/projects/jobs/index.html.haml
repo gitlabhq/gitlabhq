@@ -8,7 +8,7 @@
 
     .nav-controls
       - if can?(current_user, :update_build, @project)
-        - if @all_builds.running_or_pending.limit(1).any?
+        - if @all_builds.running_or_pending.limit(1).any? # rubocop: disable CodeReuse/ActiveRecord
           = link_to 'Cancel running', cancel_all_project_jobs_path(@project),
             data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
 

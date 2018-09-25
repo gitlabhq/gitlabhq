@@ -220,6 +220,18 @@ describe RemoteMirror do
     end
   end
 
+  context '#ensure_remote!' do
+    let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
+
+    it 'adds a remote multiple times with no errors' do
+      expect(remote_mirror.project.repository).to receive(:add_remote).with(remote_mirror.remote_name, remote_mirror.url).twice.and_call_original
+
+      2.times do
+        remote_mirror.ensure_remote!
+      end
+    end
+  end
+
   context '#updated_since?' do
     let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
     let(:timestamp) { Time.now - 5.minutes }

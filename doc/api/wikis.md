@@ -97,12 +97,12 @@ curl --data "format=rdoc&title=Hello&content=Hello world" --header "PRIVATE-TOKE
 Example response:
 
 ```json
-{ 
+{
   "content" : "Hello world",
   "format" : "markdown",
   "slug" : "Hello",
   "title" : "Hello"
-} 
+}
 ```
 
 ## Edit an existing wiki page
@@ -154,6 +154,44 @@ DELETE /projects/:id/wikis/:slug
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/wikis/foo"
 ```
 
-On success the HTTP status code is `204` and no JSON response is expected. 
+On success the HTTP status code is `204` and no JSON response is expected.
 
 [ce-13372]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13372
+
+## Upload an attachment to the wiki repository
+
+Uploads a file to the attachment folder inside the wiki's repository. The
+ attachment folder is the `uploads` folder.
+
+```
+POST /projects/:id/wikis/attachments
+```
+
+| Attribute     | Type    | Required | Description                  |
+| ------------- | ------- | -------- | ---------------------------- |
+| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `file` | string | yes | The attachment to be uploaded |
+| `branch` | string | no | The name of the branch. Defaults to the wiki repository default branch |
+
+To upload a file from your filesystem, use the `--form` argument. This causes
+cURL to post data using the header `Content-Type: multipart/form-data`.
+The `file=` parameter must point to a file on your filesystem and be preceded
+by `@`. For example:
+
+```bash
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "file=@dk.png" https://gitlab.example.com/api/v4/projects/1/wikis/attachments
+```
+
+Example response:
+
+```json
+{
+  "file_name" : "dk.png",
+  "file_path" : "uploads/6a061c4cf9f1c28cb22c384b4b8d4e3c/dk.png",
+  "branch" : "master",
+  "link" : {
+    "url" : "uploads/6a061c4cf9f1c28cb22c384b4b8d4e3c/dk.png",
+    "markdown" : "![dk](uploads/6a061c4cf9f1c28cb22c384b4b8d4e3c/dk.png)"
+  }
+}
+```

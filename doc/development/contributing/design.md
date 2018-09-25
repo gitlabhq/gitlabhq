@@ -25,10 +25,12 @@ There is a special type label called ~"product discovery". It represents a disco
 The initial issue should be about the problem we are solving. If a separate [product discovery issue](#product-discovery-issues) is needed for additional research and design work, it will be created by a PM or UX person. Assign the ~UX, ~"product discovery" and ~"Deliverable" labels, add a milestone and use a title that makes it clear that the scheduled issue is product discovery
 (e.g. `Product discovery for XYZ`).
 
-When the ~"product discovery" issue has been completed, the UXer removes the ~UX
-label, adds the ~"UX ready" label and closes the issue. This indicates the
-UX work for the issue is complete. The UXer will also copy any designs to related
-issues for implementation in an upcoming milestone.
+In order to complete a product discovery issue in a release, you must complete the following:
+
+1. UXer removes the ~UX label, adds the ~"UX ready" label.
+1. Modify the issue description in the product discovery issue to contain the final design. If it makes sense, the original information indicating the need for the design can be moved to a lower "Original Information" section.
+1. Copy the design to the description of the delivery issue for which the product discovery issue was created. Do not simply refer to the product discovery issue as a separate source of truth.
+1. In some cases, a product discovery issue also identifies future enhancements that will not go into the issue that originated the product discovery issue. For these items, create new issues containing the designs to ensure they are not lost. Put the issues in the backlog if they are agreed upon as good ideas. Otherwise leave them for triage.
 
 ## Style guides
 

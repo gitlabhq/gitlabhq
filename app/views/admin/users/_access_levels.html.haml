@@ -34,8 +34,12 @@
   .form-group.row
     .col-sm-2.text-right
       = f.label :external, class: 'col-form-label'
+    .hidden{ data: user_internal_regex_data }
     .col-sm-10
       = f.check_box :external do
         External
       %p.light
         External users cannot see internal or private projects unless access is explicitly granted. Also, external users cannot create projects or groups.
+      %row.hidden#warning_external_automatically_set.hidden
+        .badge.badge-warning.text-white
+          = _('Automatically marked as default internal user')

@@ -109,8 +109,6 @@ export class AwardsHandler {
     }
 
     const $menu = $(`.${this.menuClass}`);
-    const $thumbsBtn = $menu.find('[data-name="thumbsup"], [data-name="thumbsdown"]').parent();
-    const $userAuthored = this.isUserAuthored($addBtn);
     if ($menu.length) {
       if ($menu.is('.is-visible')) {
         $addBtn.removeClass('is-active');
@@ -134,9 +132,6 @@ export class AwardsHandler {
         }, 200);
       });
     }
-
-    $thumbsBtn.toggleClass('disabled', $userAuthored);
-    $thumbsBtn.prop('disabled', $userAuthored);
   }
 
   // Create the emoji menu with the first category of emojis.
@@ -364,10 +359,6 @@ export class AwardsHandler {
     return $emojiButton.hasClass('active');
   }
 
-  isUserAuthored($button) {
-    return $button.hasClass('js-user-authored');
-  }
-
   decrementCounter($emojiButton, emoji) {
     const counter = $('.js-counter', $emojiButton);
     const counterNumber = parseInt(counter.text(), 10);
@@ -474,20 +465,16 @@ export class AwardsHandler {
   }
 
   postEmoji($emojiButton, awardUrl, emoji, callback) {
-    if (this.isUserAuthored($emojiButton)) {
-      this.userAuthored($emojiButton);
-    } else {
-      axios
-        .post(awardUrl, {
-          name: emoji,
-        })
-        .then(({ data }) => {
-          if (data.ok) {
-            callback();
-          }
-        })
-        .catch(() => flash(__('Something went wrong on our end.')));
-    }
+    axios
+      .post(awardUrl, {
+        name: emoji,
+      })
+      .then(({ data }) => {
+        if (data.ok) {
+          callback();
+        }
+      })
+      .catch(() => flash(__('Something went wrong on our end.')));
   }
 
   findEmojiIcon(votesBlock, emoji) {

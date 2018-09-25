@@ -1,6 +1,6 @@
 - if (@page && @page.persisted?)
   - if can?(current_user, :create_wiki, @project)
-    = link_to '#modal-new-wiki', class: "add-new-wiki btn btn-new", "data-toggle" => "modal" do
+    = link_to '#modal-new-wiki', class: "add-new-wiki btn btn-success", "data-toggle" => "modal" do
       = s_("Wiki|New page")
   = link_to project_wiki_history_path(@project, @page), class: "btn" do
     = s_("Wiki|Page history")

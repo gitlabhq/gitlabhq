@@ -103,65 +103,6 @@ describe('RepoCommitSection', () => {
     });
   });
 
-  it('adds changed files into staged files', done => {
-    vm.$el.querySelector('.multi-file-discard-btn .btn').click();
-    vm
-      .$nextTick()
-      .then(() => vm.$el.querySelector('.multi-file-discard-btn .btn').click())
-      .then(vm.$nextTick)
-      .then(() => {
-        expect(vm.$el.querySelector('.ide-commit-list-container').textContent).toContain(
-          'No changes',
-        );
-      })
-      .then(done)
-      .catch(done.fail);
-  });
-
-  it('stages a single file', done => {
-    vm.$el.querySelector('.multi-file-discard-btn .btn').click();
-
-    Vue.nextTick(() => {
-      expect(
-        vm.$el
-          .querySelector('.ide-commit-list-container')
-          .querySelectorAll('.multi-file-commit-list > li').length,
-      ).toBe(1);
-
-      done();
-    });
-  });
-
-  it('discards a single file', done => {
-    vm.$el.querySelector('.multi-file-discard-btn .dropdown-menu button').click();
-
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelector('.ide-commit-list-container').textContent).not.toContain('file1');
-      expect(
-        vm.$el
-          .querySelector('.ide-commit-list-container')
-          .querySelectorAll('.multi-file-commit-list > li').length,
-      ).toBe(1);
-
-      done();
-    });
-  });
-
-  it('unstages a single file', done => {
-    vm.$el
-      .querySelectorAll('.multi-file-discard-btn')[2]
-      .querySelector('.btn')
-      .click();
-
-    Vue.nextTick(() => {
-      expect(
-        vm.$el.querySelectorAll('.ide-commit-list-container')[1].querySelectorAll('li').length,
-      ).toBe(1);
-
-      done();
-    });
-  });
-
   describe('mounted', () => {
     it('opens last opened file', () => {
       expect(store.state.openFiles.length).toBe(1);

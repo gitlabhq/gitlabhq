@@ -148,10 +148,9 @@ export default {
         </tr>
         <tr class="notes_holder">
           <td
-            class="notes_line"
-            colspan="2"
-          ></td>
-          <td class="notes_content">
+            class="notes_content"
+            colspan="3"
+          >
             <slot></slot>
           </td>
         </tr>

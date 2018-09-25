@@ -32,9 +32,13 @@
         = _('Otherwise it is recommended you start with one of the options below.')
       .prepend-top-20
 
-%nav.project-stats{ class: container_class }
-  = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_anchors
-  = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons
+%nav.project-stats{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
+  .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
+    .fade-left= icon('angle-left')
+    .fade-right= icon('angle-right')
+    .nav-links.scrolling-tabs
+      = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_anchors
+      = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons
 
 - if can?(current_user, :push_code, @project)
   %div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
@@ -42,7 +46,7 @@
     .empty_wrapper
       %h3#repo-command-line-instructions.page-title-empty
         Command line instructions
-      .git-empty
+      .git-empty.js-git-empty
         %fieldset
           %h5 Git global setup
           %pre.bg-light
@@ -54,7 +58,7 @@
           %h5 Create a new repository
           %pre.bg-light
             :preserve
-              git clone #{ content_tag(:span, default_url_to_repo, class: 'clone')}
+              git clone #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
               cd #{h @project.path}
               touch README.md
               git add README.md
@@ -69,7 +73,7 @@
             :preserve
               cd existing_folder
               git init
-              git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
+              git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
               git add .
               git commit -m "Initial commit"
             - if @project.can_current_user_push_to_default_branch?
@@ -82,7 +86,7 @@
             :preserve
               cd existing_repo
               git remote rename origin old-origin
-              git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
+              git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
             - if @project.can_current_user_push_to_default_branch?
               %span><
                 git push -u origin --all

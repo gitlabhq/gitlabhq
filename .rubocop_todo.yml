@@ -808,20 +808,6 @@ Style/UnlessElse:
 Style/UnneededInterpolation:
   Enabled: false
 
-# Offense count: 11
-# Cop supports --auto-correct.
-Style/ZeroLengthPredicate:
-  Exclude:
-    - 'app/models/deploy_key.rb'
-    - 'app/models/network/commit.rb'
-    - 'app/models/network/graph.rb'
-    - 'app/models/project_services/asana_service.rb'
-    - 'app/services/boards/create_service.rb'
-    - 'app/services/merge_requests/conflicts/list_service.rb'
-    - 'lib/declarative_policy/dsl.rb'
-    - 'lib/extracts_path.rb'
-    - 'lib/gitlab/git/repository.rb'
-
 # Offense count: 22840
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https

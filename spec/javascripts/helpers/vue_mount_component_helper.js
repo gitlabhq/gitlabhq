@@ -1,3 +1,5 @@
+import Vue from 'vue';
+
 const mountComponent = (Component, props = {}, el = null) =>
   new Component({
     propsData: props,
@@ -24,5 +26,13 @@ export const mountComponentWithSlots = (Component, { props, slots }) => {
 
   return component.$mount();
 };
+
+/**
+ * Mount a component with the given render method.
+ *
+ * This helps with inserting slots that need to be compiled.
+ */
+export const mountComponentWithRender = (render, el = null) =>
+  mountComponent(Vue.extend({ render }), {}, el);
 
 export default mountComponent;

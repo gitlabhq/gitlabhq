@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Profiles::KeysController < Profiles::ApplicationController
   skip_before_action :authenticate_user!, only: [:get_keys]
 

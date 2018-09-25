@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ContributedProjectsFinder < UnionFinder
   def initialize(user)
     @user = user
@@ -10,11 +12,13 @@ class ContributedProjectsFinder < UnionFinder
   #                visible by this user.
   #
   # Returns an ActiveRecord::Relation.
+  # rubocop: disable CodeReuse/ActiveRecord
   def execute(current_user = nil)
     segments = all_projects(current_user)
 
     find_union(segments, Project).includes(:namespace).order_id_desc
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 

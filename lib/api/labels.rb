@@ -27,6 +27,7 @@ module API
         optional :description, type: String, desc: 'The description of label to be created'
         optional :priority, type: Integer, desc: 'The priority of the label', allow_blank: true
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       post ':id/labels' do
         authorize! :admin_label, user_project
 
@@ -43,6 +44,7 @@ module API
           render_validation_error!(label)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Delete an existing label' do
         success Entities::Label
@@ -50,6 +52,7 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the label to be deleted'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       delete ':id/labels' do
         authorize! :admin_label, user_project
 
@@ -58,6 +61,7 @@ module API
 
         destroy_conditionally!(label)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Update an existing label. At least one optional parameter is required.' do
         success Entities::Label
@@ -70,6 +74,7 @@ module API
         optional :priority, type: Integer, desc: 'The priority of the label', allow_blank: true
         at_least_one_of :new_name, :color, :description, :priority
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       put ':id/labels' do
         authorize! :admin_label, user_project
 
@@ -95,6 +100,7 @@ module API
 
         present label, with: Entities::Label, current_user: current_user, project: user_project
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

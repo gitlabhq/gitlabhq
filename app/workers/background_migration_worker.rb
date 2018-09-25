@@ -10,17 +10,7 @@ class BackgroundMigrationWorker
   # maintenance related tasks have plenty of time to clean up after a migration
   # has been performed.
   def self.minimum_interval
-    if enable_health_check?
-      2.minutes.to_i
-    else
-      5.minutes.to_i
-    end
-  end
-
-  def self.enable_health_check?
-    Rails.env.development? ||
-      Rails.env.test? ||
-      Feature.enabled?('background_migration_health_check')
+    2.minutes.to_i
   end
 
   # Performs the background migration.
@@ -86,8 +76,6 @@ class BackgroundMigrationWorker
   # class_name - The name of the background migration that we might want to
   #              run.
   def healthy_database?
-    return true unless self.class.enable_health_check?
-
     return true unless Gitlab::Database.postgresql?
 
     !Postgresql::ReplicationSlot.lag_too_great?

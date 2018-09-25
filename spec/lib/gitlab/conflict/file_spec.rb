@@ -69,10 +69,6 @@ describe Gitlab::Conflict::File do
       CGI.unescapeHTML(ActionView::Base.full_sanitizer.sanitize(html)).delete("\n")
     end
 
-    it 'modifies the existing lines' do
-      expect { conflict_file.highlight_lines! }.to change { conflict_file.lines.map(&:instance_variables) }
-    end
-
     it 'is called implicitly when rich_text is accessed on a line' do
       expect(conflict_file).to receive(:highlight_lines!).once.and_call_original
 

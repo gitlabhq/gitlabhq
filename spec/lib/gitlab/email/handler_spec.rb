@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::Email::Handler do
@@ -40,7 +42,7 @@ describe Gitlab::Email::Handler do
   end
 
   def ce_handlers
-    @ce_handlers ||= Gitlab::Email::Handler::HANDLERS.reject do |handler|
+    @ce_handlers ||= Gitlab::Email::Handler.handlers.reject do |handler|
       handler.name.start_with?('Gitlab::Email::Handler::EE::')
     end
   end

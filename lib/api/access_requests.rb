@@ -18,6 +18,7 @@ module API
         params do
           use :pagination
         end
+        # rubocop: disable CodeReuse/ActiveRecord
         get ":id/access_requests" do
           source = find_source(source_type, params[:id])
 
@@ -26,6 +27,7 @@ module API
 
           present access_requesters, with: Entities::AccessRequester
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         desc "Requests access for the authenticated user to a #{source_type}." do
           detail 'This feature was introduced in GitLab 8.11.'
@@ -50,6 +52,7 @@ module API
           requires :user_id, type: Integer, desc: 'The user ID of the access requester'
           optional :access_level, type: Integer, desc: 'A valid access level (defaults: `30`, developer access level)'
         end
+        # rubocop: disable CodeReuse/ActiveRecord
         put ':id/access_requests/:user_id/approve' do
           source = find_source(source_type, params[:id])
 
@@ -61,6 +64,7 @@ module API
           status :created
           present member, with: Entities::Member
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         desc 'Denies an access request for the given user.' do
           detail 'This feature was introduced in GitLab 8.11.'
@@ -68,6 +72,7 @@ module API
         params do
           requires :user_id, type: Integer, desc: 'The user ID of the access requester'
         end
+        # rubocop: disable CodeReuse/ActiveRecord
         delete ":id/access_requests/:user_id" do
           source = find_source(source_type, params[:id])
           member = source.requesters.find_by!(user_id: params[:user_id])
@@ -76,6 +81,7 @@ module API
             ::Members::DestroyService.new(current_user).execute(member)
           end
         end
+        # rubocop: enable CodeReuse/ActiveRecord
       end
     end
   end

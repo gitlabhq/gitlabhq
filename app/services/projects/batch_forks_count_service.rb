@@ -5,6 +5,7 @@
 # because the service use maps to retrieve the project ids
 module Projects
   class BatchForksCountService < Projects::BatchCountService
+    # rubocop: disable CodeReuse/ActiveRecord
     def global_count
       @global_count ||= begin
         count_service.query(project_ids)
@@ -12,6 +13,7 @@ module Projects
                      .count
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def count_service
       ::Projects::ForksCountService

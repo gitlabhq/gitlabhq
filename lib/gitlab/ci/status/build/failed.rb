@@ -13,6 +13,8 @@ module Gitlab
             runner_unsupported: 'unsupported runner'
           }.freeze
 
+          private_constant :REASONS
+
           def status_tooltip
             base_message
           end
@@ -25,6 +27,10 @@ module Gitlab
             build.failed?
           end
 
+          def self.reasons
+            REASONS
+          end
+
           private
 
           def base_message
@@ -32,11 +38,11 @@ module Gitlab
           end
 
           def description
-            "<br> (#{failure_reason_message})"
+            "- (#{failure_reason_message})"
           end
 
           def failure_reason_message
-            REASONS.fetch(subject.failure_reason.to_sym)
+            self.class.reasons.fetch(subject.failure_reason.to_sym)
           end
         end
       end

@@ -1,6 +1,5 @@
 <script>
   import datePicker from '../pikaday.vue';
-  import loadingIcon from '../loading_icon.vue';
   import toggleSidebar from './toggle_sidebar.vue';
   import collapsedCalendarIcon from './collapsed_calendar_icon.vue';
   import { dateInWords } from '../../../lib/utils/datetime_utility';
@@ -10,7 +9,6 @@
     components: {
       datePicker,
       toggleSidebar,
-      loadingIcon,
       collapsedCalendarIcon,
     },
     props: {
@@ -112,7 +110,7 @@
     />
     <div class="title">
       {{ label }}
-      <loading-icon
+      <gl-loading-icon
         v-if="isLoading"
         :inline="true"
       />

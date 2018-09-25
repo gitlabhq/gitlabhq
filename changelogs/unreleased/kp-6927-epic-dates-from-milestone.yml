@@ -1,5 +1,0 @@
----
-title: Add 'tabindex' attribute support on Icon component to show BS4 popover on trigger type 'focus'
-merge_request: 21066
-author:
-type: other

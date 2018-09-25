@@ -45,6 +45,7 @@ module Gitlab
 
           private
 
+          # rubocop: disable CodeReuse/ActiveRecord
           def compose_jobs!
             factory = Entry::Factory.new(Entry::Jobs)
               .value(@config.except(*self.class.nodes.keys))
@@ -53,6 +54,7 @@ module Gitlab
 
             @entries[:jobs] = factory.create!
           end
+          # rubocop: enable CodeReuse/ActiveRecord
 
           def compose_deprecated_entries!
             ##

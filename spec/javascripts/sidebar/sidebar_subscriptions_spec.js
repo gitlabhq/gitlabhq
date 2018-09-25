@@ -12,7 +12,7 @@ describe('Sidebar Subscriptions', function () {
 
   beforeEach(() => {
     SidebarSubscriptions = Vue.extend(sidebarSubscriptions);
-    // Setup the stores, services, etc
+    // Set up the stores, services, etc
     // eslint-disable-next-line no-new
     new SidebarMediator(Mock.mediator);
   });

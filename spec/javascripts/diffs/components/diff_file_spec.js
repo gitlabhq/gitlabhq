@@ -51,6 +51,20 @@ describe('DiffFile', () => {
       });
 
       it('should have collapsed text and link', done => {
+        vm.file.renderIt = true;
+        vm.file.collapsed = false;
+        vm.file.highlightedDiffLines = null;
+
+        vm.$nextTick(() => {
+          expect(vm.$el.innerText).toContain('This diff is collapsed');
+          expect(vm.$el.querySelectorAll('.js-click-to-expand').length).toEqual(1);
+
+          done();
+        });
+      });
+
+      it('should have collapsed text and link even before rendered', done => {
+        vm.file.renderIt = false;
         vm.file.collapsed = true;
 
         vm.$nextTick(() => {

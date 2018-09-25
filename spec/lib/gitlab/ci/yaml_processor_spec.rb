@@ -562,6 +562,58 @@ module Gitlab
         end
       end
 
+      context 'when using `extends`' do
+        let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config) }
+
+        subject { config_processor.builds.first }
+
+        context 'when using simple `extends`' do
+          let(:config) do
+            <<~YAML
+              .template:
+                script: test
+
+              rspec:
+                extends: .template
+                image: ruby:alpine
+            YAML
+          end
+
+          it 'correctly extends rspec job' do
+            expect(config_processor.builds).to be_one
+            expect(subject.dig(:commands)).to eq 'test'
+            expect(subject.dig(:options, :image, :name)).to eq 'ruby:alpine'
+          end
+        end
+
+        context 'when using recursive `extends`' do
+          let(:config) do
+            <<~YAML
+              rspec:
+                extends: .test
+                script: rspec
+                when: always
+
+              .template:
+                before_script:
+                  - bundle install
+
+              .test:
+                extends: .template
+                script: test
+                image: image:test
+            YAML
+          end
+
+          it 'correctly extends rspec job' do
+            expect(config_processor.builds).to be_one
+            expect(subject.dig(:commands)).to eq "bundle install\nrspec"
+            expect(subject.dig(:options, :image, :name)).to eq 'image:test'
+            expect(subject.dig(:when)).to eq 'always'
+          end
+        end
+      end
+
       describe "When" do
         %w(on_success on_failure always).each do |when_state|
           it "returns #{when_state} when defined" do
@@ -1308,6 +1360,14 @@ module Gitlab
           expect { Gitlab::Ci::YamlProcessor.new(config) }
             .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
                             'jobs:rspec:only variables invalid expression syntax')
+        end
+
+        it 'returns errors if extended hash configuration is invalid' do
+          config = YAML.dump({ rspec: { extends: 'something', script: 'test' } })
+
+          expect { Gitlab::Ci::YamlProcessor.new(config) }
+            .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
+                            'rspec: unknown key in `extends`')
         end
       end
 

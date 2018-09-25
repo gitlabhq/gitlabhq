@@ -1,6 +1,6 @@
 import DropdownUtils from '~/filtered_search/dropdown_utils';
 import FilteredSearchDropdownManager from '~/filtered_search/filtered_search_dropdown_manager';
-import FilteredSearchTokenKeys from '~/filtered_search/filtered_search_token_keys';
+import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
 import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
 
 describe('Dropdown Utils', () => {
@@ -137,7 +137,7 @@ describe('Dropdown Utils', () => {
       `);
 
       input = document.getElementById('test');
-      allowedKeys = FilteredSearchTokenKeys.getKeys();
+      allowedKeys = IssuableFilteredSearchTokenKeys.getKeys();
     });
 
     function config() {

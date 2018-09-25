@@ -1,6 +1,6 @@
 import initIssuableSidebar from '~/init_issuable_sidebar';
 import Issue from '~/issue';
-import ShortcutsIssuable from '~/shortcuts_issuable';
+import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
 import ZenMode from '~/zen_mode';
 import '~/notes/index';
 import '~/issue_show/index';

@@ -692,21 +692,6 @@ describe('IDE store file actions', () => {
         .then(done)
         .catch(done.fail);
     });
-
-    it('calls scrollToTab', done => {
-      const scrollToTabSpy = jasmine.createSpy('scrollToTab');
-      const oldScrollToTab = store._actions.scrollToTab; // eslint-disable-line
-      store._actions.scrollToTab = [scrollToTabSpy]; // eslint-disable-line
-
-      store
-        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
-        .then(() => {
-          expect(scrollToTabSpy).toHaveBeenCalled();
-          store._actions.scrollToTab = oldScrollToTab; // eslint-disable-line
-        })
-        .then(done)
-        .catch(done.fail);
-    });
   });
 
   describe('removePendingTab', () => {

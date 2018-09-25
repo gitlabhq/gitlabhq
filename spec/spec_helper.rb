@@ -29,6 +29,7 @@ end
 
 # require rainbow gem String monkeypatch, so we can test SystemChecks
 require 'rainbow/ext/string'
+Rainbow.enabled = false
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -41,6 +42,7 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 RSpec.configure do |config|
   config.use_transactional_fixtures = false
   config.use_instantiated_fixtures  = false
+  config.fixture_path = Rails.root
 
   config.verbose_retry = true
   config.display_try_failure_messages = true
@@ -131,6 +133,10 @@ RSpec.configure do |config|
 
   config.after(:example) do
     Fog.unmock! if Fog.mock?
+  end
+
+  config.after(:example) do
+    Gitlab::CurrentSettings.clear_in_memory_application_settings!
   end
 
   config.before(:example, :mailer) do

@@ -78,7 +78,7 @@ describe Ci::BuildPresenter do
       it 'returns the reason of failure' do
         status_title = presenter.status_title
 
-        expect(status_title).to eq('Failed <br> (unknown failure)')
+        expect(status_title).to eq('Failed - (unknown failure)')
       end
     end
 
@@ -89,7 +89,7 @@ describe Ci::BuildPresenter do
         status_title = presenter.status_title
 
         expect(status_title).not_to include('(retried)')
-        expect(status_title).to eq('Failed <br> (unknown failure)')
+        expect(status_title).to eq('Failed - (unknown failure)')
       end
     end
 
@@ -99,7 +99,7 @@ describe Ci::BuildPresenter do
       it 'returns the reason of failure' do
         status_title = presenter.status_title
 
-        expect(status_title).to eq('Failed <br> (unknown failure)')
+        expect(status_title).to eq('Failed - (unknown failure)')
       end
     end
 
@@ -173,7 +173,7 @@ describe Ci::BuildPresenter do
       it 'returns the reason of failure' do
         tooltip = subject.tooltip_message
 
-        expect(tooltip).to eq("#{build.name} - failed <br> (script failure)")
+        expect(tooltip).to eq("#{build.name} - failed - (script failure)")
       end
     end
 
@@ -183,7 +183,7 @@ describe Ci::BuildPresenter do
       it 'should include the reason of failure and the retried title' do
         tooltip = subject.tooltip_message
 
-        expect(tooltip).to eq("#{build.name} - failed <br> (script failure) (retried)")
+        expect(tooltip).to eq("#{build.name} - failed - (script failure) (retried)")
       end
     end
 
@@ -193,7 +193,7 @@ describe Ci::BuildPresenter do
       it 'should include the reason of failure' do
         tooltip = subject.tooltip_message
 
-        expect(tooltip).to eq("#{build.name} - failed <br> (script failure) (allowed to fail)")
+        expect(tooltip).to eq("#{build.name} - failed - (script failure) (allowed to fail)")
       end
     end
 
