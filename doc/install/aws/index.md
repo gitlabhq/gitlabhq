@@ -86,7 +86,7 @@ Let's create a VPC:
 
     ![Create VPC](img/create_vpc.png)
 
-### Subnet
+### Subnets
 
 Now, let's create some subnets in different Availability Zones. Make sure
 that each subnet is associated the the VPC we just created and
@@ -105,12 +105,12 @@ RDS instances as well:
 
 1. Follow the same steps to create all subnets:
 
-    | Name tag | Availability Zone | CIDR block |
-    | -------- | ----------------- | ---------- |
-    | gitlab-public-10.0.0.0  | us-west-2a | 10.0.0.0 |
-    | gitlab-private-10.0.1.0 | us-west-2a | 10.0.1.0 |
-    | gitlab-public-10.0.2.0  | us-west-2b | 10.0.2.0 |
-    | gitlab-private-10.0.3.0 | us-west-2b | 10.0.3.0 |
+    | Name tag | Type |Availability Zone | CIDR block |
+    | -------- | ---- | ---------------- | ---------- |
+    | gitlab-public-10.0.0.0  | public  | us-west-2a | 10.0.0.0 |
+    | gitlab-private-10.0.1.0 | private | us-west-2a | 10.0.1.0 |
+    | gitlab-public-10.0.2.0  | public  | us-west-2b | 10.0.2.0 |
+    | gitlab-private-10.0.3.0 | private | us-west-2b | 10.0.3.0 |
 
 ### Route Table
 
@@ -163,7 +163,7 @@ Now that we're done with the network, let's create a security group.
 
 ## Creating a security group
 
-The security group is basically the firewall.
+The security group is basically the firewall:
 
 1. Select **Security Groups** from the left menu.
 1. Click on **Create Security Group** and fill in the details. Give it a name,
@@ -184,44 +184,56 @@ The security group is basically the firewall.
 ## PostgreSQL with RDS
 
 For our database server we will use Amazon RDS which offers Multi AZ
-for redundancy. Lets start by creating a subnet group and then we'll
+for redundancy. Let's start by creating a subnet group and then we'll
 create the actual RDS instance.
 
 ### RDS Subnet Group
 
-From the RDS dashboard select Subnet Groups. Lets select our VPC from
-the VPC ID dropdown and at the bottom we can add our private subnets.
+1. Navigate to the RDS dashboard and select **Subnet Groups** from the left menu.
+1. Give it a name (`gitlab-rds-group`), a description, and choose the VPC from
+   the VPC dropdown.
+1. Click on "Add all the subnets related to this VPC" and
+   remove the public ones, we only want the **private subnets**.
+   In the end, you should see `10.0.1.0/24` and `10.0.3.0/24` (as
+   we defined them in the [subnets section](#subnets)).
+   Click **Create** when ready.
 
-![Subnet Group](img/db-subnet-group.png)
+    ![RDS Subnet Group](img/rds_subnet_group.png)
 
 ### Creating the database
 
-Select the RDS service from the Database section and create a new
-PostgreSQL instance. After choosing between a Production or
-Development instance we'll start with the actual configuration. On the
-image bellow we have the settings for this article but note the
-following two options which are of particular interest for HA:
+Now, it's time to create the database:
 
-1. Multi-AZ-Deployment is recommended as redundancy. Read more at
-[High Availability (Multi-AZ)](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html)
-1. While we chose a General Purpose (SSD) for this article a Provisioned
-IOPS (SSD) is best suited for HA. Read more about it at
-[Storage for Amazon RDS](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html)
+1. Select **Instances** from the left menu and click on **Create database**.
+1. Select PostgreSQL and click **Next**.
+1. Since this is a production server, let's choose "Production". Click **Next**.
+1. Let's see the instance specifications:
+    1. Leave the license model as is (`postgresql-license`).
+    1. For the version, select the latest of the 9.6 series (check the
+       [database requirements](../../install/requirements.md#postgresql-requirements))
+       if there are any updates on this).
+    1. For the size, let's select a `t2.medium` instance.
+    1. Multi-AZ-deployment is recommended as redundancy, so choose "Create
+       replica in different zone". Read more at
+       [High Availability (Multi-AZ)](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html).
+    1. A Provisioned IOPS (SSD) storage type is best suited for HA (though you can
+       choose a General Purpose (SSD) to reduce the costs). Read more about it at
+       [Storage for Amazon RDS](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html).
 
-![RDS Instance Specs](img/instance_specs.png)
+1. The rest of the settings on this page request a DB isntance identifier, username
+   and a master password. We've chosen to use `gitlab-ha`, `gitlab` and a
+   very secure password respectively. Keep these in hand for later.
+1. Click on **Next** to proceed to the advanced settings.
+1. Make sure to choose our gitlab VPC, our subnet group, set public accessibility to
+   **No**, and to leave it to create a new security group. The only additional
+    change which will be helpful is the database name for which we can use
+    `gitlabhq_production`. At the very bottom, there's an option to enable
+    auto updates to minor versions. You may want to turn it off.
+1. When done, click **Create database**.
 
-The rest of the setting on this page request a DB identifier, username
-and a master password. We've chosen to use `gitlab-ha`, `gitlab` and a
-very secure password respectively. Keep these in hand for later.
+---
 
-![Network and Security](img/rds-net-opt.png)
-
-Make sure to choose our gitlab VPC, our subnet group, not have it public,
-and to leave it to create a new security group. The only additional
-change which will be helpful is the database name for which we can use
-`gitlabhq_production`.
-
-***
+Now that the database is created, let's move on setting up Redis with ElasticCache.
 
 ## Redis with ElastiCache
 
