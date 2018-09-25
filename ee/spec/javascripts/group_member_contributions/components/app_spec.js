@@ -70,7 +70,7 @@ describe('AppComponent', () => {
         setTimeout(() => {
           expect(vm.isLoading).toBe(false);
           expect(document.querySelector('.flash-text').innerText.trim()).toBe(
-            'Something went wrong while fetching group member contributions',
+            'Something went wrong while fetching the environments for this merge request. Please try again.',
           );
           done();
         }, 0);
