@@ -1,0 +1,5 @@
+---
+title: Fix NULL pipeline import problem and pipeline user mapping issue
+merge_request: 21875
+author:
+type: fixed

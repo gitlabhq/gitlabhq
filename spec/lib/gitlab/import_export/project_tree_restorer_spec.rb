@@ -59,7 +59,11 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
 
       it 'creates a valid pipeline note' do
-        expect(Ci::Pipeline.first.notes).not_to be_empty
+        expect(Ci::Pipeline.find_by_sha('sha-notes').notes).not_to be_empty
+      end
+
+      it 'pipeline has the correct user ID' do
+        expect(Ci::Pipeline.find_by_sha('sha-notes').user_id).to eq(@user.id)
       end
 
       it 'restores pipelines with missing ref' do

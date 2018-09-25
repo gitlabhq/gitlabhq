@@ -55,10 +55,13 @@ Sidekiq.configure_server do |config|
   end
   Sidekiq::Cron::Job.load_from_hash! cron_jobs
 
+<<<<<<< HEAD
   Gitlab::Mirror.configure_cron_job!
 
   Gitlab::Geo.configure_cron_jobs!
 
+=======
+>>>>>>> 0d2e3b56b1bc175ef1d348d01eb8dfa3ac206ccb
   Gitlab::SidekiqVersioning.install!
 
   config = Gitlab::Database.config ||

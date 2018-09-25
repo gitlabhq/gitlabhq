@@ -112,7 +112,7 @@ main:
   uid: 'sAMAccountName' # This should be the attribute, not the value that maps to uid.
 
   ##
-  ## Examples: 'america\\momo' or 'CN=Gitlab Git,CN=Users,DC=mydomain,DC=com'
+  ## Examples: 'america\momo' or 'CN=Gitlab Git,CN=Users,DC=mydomain,DC=com'
   ##
   bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
   password: '_the_password_of_the_bind_user'

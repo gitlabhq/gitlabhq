@@ -28,11 +28,7 @@ class Feature
     end
 
     def persisted_names
-      if RequestStore.active?
-        RequestStore[:flipper_persisted_names] ||= FlipperFeature.feature_names
-      else
-        FlipperFeature.feature_names
-      end
+      Gitlab::SafeRequestStore[:flipper_persisted_names] ||= FlipperFeature.feature_names
     end
 
     def persisted?(feature)
@@ -76,11 +72,7 @@ class Feature
     end
 
     def flipper
-      if RequestStore.active?
-        RequestStore[:flipper] ||= build_flipper_instance
-      else
-        @flipper ||= build_flipper_instance
-      end
+      @flipper ||= (Gitlab::SafeRequestStore[:flipper] ||= build_flipper_instance)
     end
 
     def build_flipper_instance

@@ -65,7 +65,7 @@ describe Commit do
 
       key = "Commit:author:#{commit.author_email.downcase}"
 
-      expect(RequestStore.store[key]).to eq(user)
+      expect(Gitlab::SafeRequestStore[key]).to eq(user)
       expect(commit.author).to eq(user)
     end
 

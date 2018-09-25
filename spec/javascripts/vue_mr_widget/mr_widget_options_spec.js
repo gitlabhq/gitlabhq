@@ -27,6 +27,10 @@ describe('mrWidgetOptions', () => {
     });
   });
 
+  afterEach(() => {
+    vm.$destroy();
+  });
+
   describe('data', () => {
     it('should instantiate Store and Service', () => {
       expect(vm.mr).toBeDefined();

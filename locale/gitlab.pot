@@ -939,9 +939,12 @@ msgstr ""
 msgid "Background Jobs"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Background color"
 msgstr ""
 
+=======
+>>>>>>> 0d2e3b56b1bc175ef1d348d01eb8dfa3ac206ccb
 msgid "Badges"
 msgstr ""
 
@@ -2966,6 +2969,7 @@ msgstr ""
 msgid "Environments|You don't have any environments right now."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Environments|protected"
 msgstr ""
 
@@ -3005,6 +3009,11 @@ msgstr ""
 msgid "Epics|start"
 msgstr ""
 
+=======
+msgid "Epic"
+msgstr ""
+
+>>>>>>> 0d2e3b56b1bc175ef1d348d01eb8dfa3ac206ccb
 msgid "Error"
 msgstr ""
 
@@ -4248,7 +4257,7 @@ msgstr ""
 msgid "Job|The artifacts were removed"
 msgstr ""
 
-msgid "Job|The artifacts will be removed"
+msgid "Job|The artifacts will be removed in"
 msgstr ""
 
 msgid "Job|This job is stuck, because the project doesn't have any runners online assigned to it."
