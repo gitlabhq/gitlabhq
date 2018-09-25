@@ -28,6 +28,7 @@ Parameters:
     "created_at": "2015-09-03T07:24:01.670Z",
     "bio": null,
     "location": null,
+    "public_email": "john@example.com",
     "skype": "",
     "linkedin": "",
     "twitter": "",
