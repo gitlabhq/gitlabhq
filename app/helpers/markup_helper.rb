@@ -140,6 +140,8 @@ module MarkupHelper
         markdown_unsafe(text, context)
       when :asciidoc
         asciidoc_unsafe(text)
+      when :org
+        other_markup_unsafe(wiki_page.filename, text, context)
       else
         wiki_page.formatted_content.html_safe
       end

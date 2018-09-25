@@ -261,6 +261,10 @@ class WikiPage
     page.version.to_s
   end
 
+  def filename
+    "#{title}.#{format}"
+  end
+
   def title_changed?
     title.present? && self.class.unhyphenize(@page.url_path) != title
   end
