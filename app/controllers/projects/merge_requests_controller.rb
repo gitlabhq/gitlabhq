@@ -313,6 +313,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @source_project = @merge_request.source_project
     @target_project = @merge_request.target_project
     @target_branches = @merge_request.target_project.repository.branch_names
+
+    # FIXME: We have to assign a presenter to another instance variable
+    # due to class_name checks being made with issuable classes
+    @mr_presenter = @merge_request.present(current_user: current_user)
   end
 
   def finder_type

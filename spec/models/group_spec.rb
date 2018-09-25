@@ -169,22 +169,42 @@ describe Group do
     end
   end
 
-  describe '.visible_to_user' do
-    let!(:group) { create(:group) }
-    let!(:user)  { create(:user) }
+  describe '.public_or_visible_to_user' do
+    let!(:private_group)  { create(:group, :private)  }
+    let!(:internal_group) { create(:group, :internal) }
 
-    subject { described_class.visible_to_user(user) }
+    subject { described_class.public_or_visible_to_user(user) }
 
-    describe 'when the user has access to a group' do
-      before do
-        group.add_user(user, Gitlab::Access::MASTER)
-      end
+    context 'when user is nil' do
+      let!(:user) { nil }
 
-      it { is_expected.to eq([group]) }
+      it { is_expected.to match_array([group]) }
     end
 
-    describe 'when the user does not have access to any groups' do
-      it { is_expected.to eq([]) }
+    context 'when user' do
+      let!(:user) { create(:user) }
+
+      context 'when user does not have access to any private group' do
+        it { is_expected.to match_array([internal_group, group]) }
+      end
+
+      context 'when user is a member of private group' do
+        before do
+          private_group.add_user(user, Gitlab::Access::DEVELOPER)
+        end
+
+        it { is_expected.to match_array([private_group, internal_group, group]) }
+      end
+
+      context 'when user is a member of private subgroup', :postgresql do
+        let!(:private_subgroup) { create(:group, :private, parent: private_group) }
+
+        before do
+          private_subgroup.add_user(user, Gitlab::Access::DEVELOPER)
+        end
+
+        it { is_expected.to match_array([private_subgroup, internal_group, group]) }
+      end
     end
   end
 
