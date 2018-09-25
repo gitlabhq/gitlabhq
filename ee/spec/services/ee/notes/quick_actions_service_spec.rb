@@ -109,4 +109,65 @@ describe Notes::QuickActionsService do
       end
     end
   end
+
+  describe 'Epics' do
+    describe '/close' do
+      let(:note_text) { "/close" }
+      let(:note) { create(:note, noteable: epic, note: note_text) }
+
+      before do
+        group.add_developer(user)
+      end
+
+      context 'when epics are not enabled' do
+        it 'does not close the epic' do
+          expect { execute(note) }.not_to change { epic.state }
+        end
+      end
+
+      context 'when epics are enabled' do
+        before do
+          stub_licensed_features(epics: true)
+        end
+
+        it 'closes the epic' do
+          expect { execute(note) }.to change { epic.reload.state }.from('opened').to('closed')
+        end
+
+        it 'leaves the note empty' do
+          expect(execute(note)).to eq('')
+        end
+      end
+    end
+
+    describe '/reopen' do
+      let(:note_text) { "/reopen" }
+      let(:note) { create(:note, noteable: epic, note: note_text) }
+
+      before do
+        group.add_developer(user)
+        epic.update!(state: 'closed')
+      end
+
+      context 'when epics are not enabled' do
+        it 'does not reopen the epic' do
+          expect { execute(note) }.not_to change { epic.state }
+        end
+      end
+
+      context 'when epics are enabled' do
+        before do
+          stub_licensed_features(epics: true)
+        end
+
+        it 'reopens the epic' do
+          expect { execute(note) }.to change { epic.reload.state }.from('closed').to('opened')
+        end
+
+        it 'leaves the note empty' do
+          expect(execute(note)).to eq('')
+        end
+      end
+    end
+  end
 end

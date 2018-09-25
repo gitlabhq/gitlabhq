@@ -29,7 +29,7 @@ describe EpicsHelper do
       expected_keys = %i(initial meta namespace labels_path toggle_subscription_path labels_web_url epics_web_url)
       expect(data.keys).to match_array(expected_keys)
       expect(meta_data.keys).to match_array(%w[
-        created author epic_id todo_exists todo_path
+        created author epic_id todo_exists todo_path state
         start_date start_date_fixed start_date_is_fixed start_date_from_milestones start_date_sourcing_milestone_title
         end_date due_date due_date_fixed due_date_is_fixed due_date_from_milestones due_date_sourcing_milestone_title
       ])
@@ -43,6 +43,40 @@ describe EpicsHelper do
       expect(meta_data['start_date_sourcing_milestone_title']).to eq(milestone.title)
       expect(meta_data['due_date']).to eq('2000-01-02')
       expect(meta_data['due_date_sourcing_milestone_title']).to eq(milestone.title)
+    end
+
+    context 'when a user can update an epic' do
+      let(:milestone) { create(:milestone, title: 'make me a sandwich') }
+
+      let!(:epic) do
+        create(
+          :epic,
+          author: user,
+          start_date_sourcing_milestone: milestone,
+          start_date: Date.new(2000, 1, 1),
+          due_date_sourcing_milestone: milestone,
+          due_date: Date.new(2000, 1, 2)
+        )
+      end
+
+      before do
+        epic.group.add_developer(user)
+      end
+
+      it 'returns extra date fields' do
+        data = helper.epic_show_app_data(epic, initial: {}, author_icon: 'icon_path')
+        meta_data = JSON.parse(data[:meta])
+
+        expect(meta_data.keys).to match_array(%w[
+          created author epic_id todo_exists todo_path state
+          start_date start_date_fixed start_date_is_fixed start_date_from_milestones start_date_sourcing_milestone_title
+          end_date due_date due_date_fixed due_date_is_fixed due_date_from_milestones due_date_sourcing_milestone_title
+        ])
+        expect(meta_data['start_date']).to eq('2000-01-01')
+        expect(meta_data['start_date_sourcing_milestone_title']).to eq(milestone.title)
+        expect(meta_data['due_date']).to eq('2000-01-02')
+        expect(meta_data['due_date_sourcing_milestone_title']).to eq(milestone.title)
+      end
     end
   end
 

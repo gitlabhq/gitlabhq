@@ -11,6 +11,22 @@ module EE
       include Awardable
       include LabelEventable
 
+      enum state: { opened: 1, closed: 2 }
+
+      belongs_to :closed_by, class_name: 'User'
+
+      def reopen
+        return if opened?
+
+        update(state: :opened, closed_at: nil, closed_by: nil)
+      end
+
+      def close
+        return if closed?
+
+        update(state: :closed, closed_at: Time.zone.now)
+      end
+
       belongs_to :assignee, class_name: "User"
       belongs_to :group
       belongs_to :start_date_sourcing_milestone, class_name: 'Milestone'

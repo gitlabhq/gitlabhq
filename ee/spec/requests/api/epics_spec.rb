@@ -269,7 +269,15 @@ describe API::Epics do
 
   describe 'PUT /groups/:id/epics/:epic_iid' do
     let(:url) { "/groups/#{group.path}/epics/#{epic.iid}" }
-    let(:params) { { title: 'new title', description: 'new description', labels: 'label2', start_date_fixed: "2018-07-17", start_date_is_fixed: true } }
+    let(:params) do
+      {
+        title: 'new title',
+        description: 'new description',
+        labels: 'label2',
+        start_date_fixed: "2018-07-17",
+        start_date_is_fixed: true
+      }
+    end
 
     it_behaves_like 'error requests'
 
@@ -299,38 +307,61 @@ describe API::Epics do
       context 'when the request is correct' do
         before do
           group.add_developer(user)
-
-          put api(url, user), params
         end
 
-        it 'returns 200 status' do
-          expect(response).to have_gitlab_http_status(200)
+        context 'with basic params' do
+          before do
+            put api(url, user), params
+          end
+
+          it 'returns 200 status' do
+            expect(response).to have_gitlab_http_status(200)
+          end
+
+          it 'matches the response schema' do
+            expect(response).to match_response_schema('public_api/v4/epic', dir: 'ee')
+          end
+
+          it 'updates the epic' do
+            result = epic.reload
+
+            expect(result.title).to eq('new title')
+            expect(result.description).to eq('new description')
+            expect(result.labels.first.title).to eq('label2')
+            expect(result.start_date).to eq(Date.new(2018, 7, 17))
+            expect(result.start_date_fixed).to eq(Date.new(2018, 7, 17))
+            expect(result.start_date_is_fixed).to eq(true)
+            expect(result.due_date_fixed).to eq(nil)
+            expect(result.due_date_is_fixed).to be_falsey
+          end
         end
 
-        it 'matches the response schema' do
-          expect(response).to match_response_schema('public_api/v4/epic', dir: 'ee')
+        context 'when state_event is close' do
+          it 'allows epic to be closed' do
+            put api(url, user), state_event: 'close'
+
+            expect(epic.reload).to be_closed
+          end
         end
 
-        it 'updates the epic' do
-          result = epic.reload
+        context 'when state_event is reopen' do
+          it 'allows epic to be reopend' do
+            epic.update!(state: 'closed')
 
-          expect(result.title).to eq('new title')
-          expect(result.description).to eq('new description')
-          expect(result.labels.first.title).to eq('label2')
-          expect(result.start_date).to eq(Date.new(2018, 7, 17))
-          expect(result.start_date_fixed).to eq(Date.new(2018, 7, 17))
-          expect(result.start_date_is_fixed).to eq(true)
-          expect(result.due_date_fixed).to eq(nil)
-          expect(result.due_date_is_fixed).to be_falsey
+            put api(url, user), state_event: 'reopen'
+
+            expect(epic.reload).to be_opened
+          end
         end
 
         context 'when deprecated start_date and end_date params are present' do
           let(:epic) { create(:epic, :use_fixed_dates, group: group) }
           let(:new_start_date) { epic.start_date + 1.day }
           let(:new_due_date) { epic.end_date + 1.day }
-          let!(:params) { { start_date: new_start_date, end_date: new_due_date } }
 
           it 'updates start_date_fixed and due_date_fixed' do
+            put api(url, user), start_date: new_start_date, end_date: new_due_date
+
             result = epic.reload
 
             expect(result.start_date_fixed).to eq(new_start_date)
@@ -342,9 +373,10 @@ describe API::Epics do
           let(:epic) { create(:epic, :use_fixed_dates, group: group) }
           let(:new_start_date) { epic.start_date + 1.day }
           let(:new_due_date) { epic.end_date + 1.day }
-          let!(:params) { { start_date_is_fixed: false } }
 
           it 'updates start_date_is_fixed' do
+            put api(url, user), start_date_is_fixed: false
+
             result = epic.reload
 
             expect(result.start_date_is_fixed).to eq(false)

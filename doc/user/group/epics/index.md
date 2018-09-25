@@ -64,6 +64,23 @@ A modal will pop-up to confirm your action.
 Deleting an epic releases all existing issues from their associated epic in the
 system.
 
+## Closing and reopening epics
+
+### Using buttons
+
+Whenever you decide that there is no longer need for that epic,
+close the epic using the close button:
+
+![close epic - button](img/button_close_epic.png)
+
+You can always reopen it using the reopen button.
+
+![reopen epic - button](img/button_reopen_epic.png)
+
+### Using quick actions
+
+You can close or reopen an epic using [Quick actions](../../project/quick_actions.md)
+
 ## Navigating to an epic from an issue
 
 If an issue belongs to an epic, you can navigate to the containing epic with the

@@ -9,6 +9,10 @@ module MigrationsHelpers
     Class.new(active_record_base) do
       self.table_name = name
       self.inheritance_column = :_type_disabled
+
+      def self.name
+        table_name.singularize.camelcase
+      end
     end
   end
 

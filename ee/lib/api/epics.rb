@@ -112,7 +112,8 @@ module API
         optional :end_date, as: :due_date_fixed, type: String, desc: 'The due date of an epic'
         optional :due_date_is_fixed, type: Boolean, desc: 'Indicates due date should be sourced from due_date_fixed field not the issue milestones'
         optional :labels, type: String, desc: 'Comma-separated list of label names'
-        at_least_one_of :title, :description, :start_date_fixed, :start_date_is_fixed, :due_date_fixed, :due_date_is_fixed, :labels
+        optional :state_event, type: String, values: %w[reopen close], desc: 'State event for an epic'
+        at_least_one_of :title, :description, :start_date_fixed, :start_date_is_fixed, :due_date_fixed, :due_date_is_fixed, :labels, :state_event
       end
       put ':id/(-/)epics/:epic_iid' do
         authorize_can_admin!

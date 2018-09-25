@@ -439,6 +439,35 @@ describe Epic do
     end
   end
 
+  describe '#close' do
+    subject(:epic) { create(:epic, state: 'opened') }
+
+    it 'sets closed_at to Time.now when an epic is closed' do
+      expect { epic.close }.to change { epic.closed_at }.from(nil)
+    end
+
+    it 'changes the state to closed' do
+      expect { epic.close }.to change { epic.state }.from('opened').to('closed')
+    end
+  end
+
+  describe '#reopen' do
+    let(:user) { create(:user) }
+    subject(:epic) { create(:epic, state: 'closed', closed_at: Time.now, closed_by: user) }
+
+    it 'sets closed_at to nil when an epic is reopend' do
+      expect { epic.reopen }.to change { epic.closed_at }.to(nil)
+    end
+
+    it 'sets closed_by to nil when an epic is reopend' do
+      expect { epic.reopen }.to change { epic.closed_by }.from(user).to(nil)
+    end
+
+    it 'changes the state to opened' do
+      expect { epic.reopen }.to change { epic.state }.from('closed').to('opened')
+    end
+  end
+
   describe '#to_reference' do
     let(:group) { create(:group, path: 'group-a') }
     let(:epic) { create(:epic, iid: 1, group: group) }

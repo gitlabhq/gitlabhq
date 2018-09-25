@@ -1,11 +1,15 @@
 <script>
   /* eslint-disable vue/require-default-prop */
+  import $ from 'jquery';
   import issuableApp from '~/issue_show/components/app.vue';
+  import flash from '~/flash';
+  import { __ } from '~/locale';
   import relatedIssuesRoot from 'ee/related_issues/components/related_issues_root.vue';
-  import issuableAppEventHub from '~/issue_show/event_hub';
   import epicSidebar from '../../sidebar/components/sidebar_app.vue';
   import SidebarContext from '../sidebar_context';
   import epicHeader from './epic_header.vue';
+  import EpicsService from '../../service/epics_service';
+  import { status, stateEvent } from '../../constants';
 
   export default {
     name: 'EpicShowApp',
@@ -174,6 +178,11 @@
         type: String,
         required: true,
       },
+      state: {
+        type: String,
+        required: true,
+        default: status.open,
+      },
     },
     data() {
       return {
@@ -181,14 +190,42 @@
         issuableRef: '',
         projectPath: this.groupPath,
         projectNamespace: '',
+        service: new EpicsService({
+          endpoint: this.endpoint,
+        }),
       };
+    },
+    computed: {
+      open() {
+        return this.state === status.open;
+      },
     },
     mounted() {
       this.sidebarContext = new SidebarContext();
     },
     methods: {
-      deleteEpic() {
-        issuableAppEventHub.$emit('delete.issuable');
+      triggerDocumentEvent(eventName, isClosed) {
+        $(document).trigger(eventName, isClosed);
+      },
+      toggleEpicStatus(stateEventType) {
+        return this.service
+          .updateStatus(stateEventType)
+          .then(() => {
+            const isClosed = stateEventType === stateEvent.close;
+
+            // Ensure that status change is reflected across the page.
+            // As `Close`/`Reopen` button is also present under
+            // comment form (part of Notes app)
+            // We've wrapped call to `$(document).trigger` for ease of testing
+            this.triggerDocumentEvent('issuable_vue_app:change', isClosed);
+            this.triggerDocumentEvent('issuable:change', isClosed);
+          })
+          .catch(() => {
+            flash(__('Unable to update this epic at this time.'));
+            const isClosed = stateEventType !== stateEvent.close;
+            this.triggerDocumentEvent('issuable_vue_app:change', isClosed);
+            this.triggerDocumentEvent('issuable:change', isClosed);
+          });
       },
     },
   };
@@ -199,8 +236,10 @@
     <epic-header
       :author="author"
       :created="created"
+      :open="open"
       :can-delete="canDestroy"
-      @deleteEpic="deleteEpic"
+      :can-update="canUpdate"
+      @toggleEpicStatus="toggleEpicStatus"
     />
     <div class="issuable-details content-block">
       <div class="detail-page-description">
@@ -219,7 +258,7 @@
           :project-path="projectPath"
           :project-namespace="projectNamespace"
           :show-inline-edit-button="true"
-          :show-delete-button="false"
+          :show-delete-button="canDestroy"
           :enable-autocomplete="true"
           issuable-type="epic"
         />

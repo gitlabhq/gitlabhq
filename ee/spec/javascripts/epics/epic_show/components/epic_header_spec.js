@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import epicHeader from 'ee/epics/epic_show/components/epic_header.vue';
+import { stateEvent } from 'ee/epics/constants';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { headerProps } from '../mock_data';
 
@@ -38,41 +39,90 @@ describe('epicHeader', () => {
     expect(vm.$el.querySelector('button.js-sidebar-toggle')).not.toBe(null);
   });
 
-  describe('canDelete', () => {
-    it('should not show loading button by default', () => {
-      expect(vm.$el.querySelector('.btn-remove')).toBeNull();
+  it('should render status badge', () => {
+    const badgeEl = vm.$el.querySelector('.issuable-status-box');
+    const badgeIconEl = badgeEl.querySelector('svg use');
+    expect(badgeEl).not.toBe(null);
+    expect(badgeEl.innerText.trim()).toBe('Open');
+    expect(badgeIconEl.getAttribute('xlink:href')).toContain('issue-open-m');
+  });
+
+  it('should render `Close epic` button when `isEpicOpen` & `canUpdate` props are true', () => {
+    vm.isEpicOpen = true;
+    const closeButtonEl = vm.$el.querySelector('.js-issuable-actions .js-btn-epic-action');
+    expect(closeButtonEl).not.toBe(null);
+    expect(closeButtonEl.innerText.trim()).toBe('Close epic');
+  });
+
+  describe('computed', () => {
+    describe('statusIcon', () => {
+      it('returns `issue-open-m` when `isEpicOpen` prop is true', () => {
+        vm.isEpicOpen = true;
+        expect(vm.statusIcon).toBe('issue-open-m');
+      });
+
+      it('returns `mobile-issue-close` when `isEpicOpen` prop is false', () => {
+        vm.isEpicOpen = false;
+        expect(vm.statusIcon).toBe('mobile-issue-close');
+      });
     });
 
-    it('should show loading button if canDelete', done => {
-      vm.canDelete = true;
-      Vue.nextTick(() => {
-        expect(vm.$el.querySelector('.btn-remove')).toBeDefined();
-        done();
+    describe('statusText', () => {
+      it('returns `Open` when `isEpicOpen` prop is true', () => {
+        vm.isEpicOpen = true;
+        expect(vm.statusText).toBe('Open');
+      });
+
+      it('returns `Closed` when `isEpicOpen` prop is false', () => {
+        vm.isEpicOpen = false;
+        expect(vm.statusText).toBe('Closed');
+      });
+    });
+
+    describe('actionButtonClass', () => {
+      it('returns classes `btn btn-grouped js-btn-epic-action` & `btn-close` when `isEpicOpen` prop is true', () => {
+        vm.isEpicOpen = true;
+        expect(vm.actionButtonClass).toContain('btn btn-grouped js-btn-epic-action btn-close');
+      });
+
+      it('returns classes `btn btn-grouped js-btn-epic-action` & `btn-open` when `isEpicOpen` prop is false', () => {
+        vm.isEpicOpen = false;
+        expect(vm.actionButtonClass).toContain('btn btn-grouped js-btn-epic-action btn-open');
+      });
+    });
+
+    describe('actionButtonText', () => {
+      it('returns `Close epic` when `isEpicOpen` prop is true', () => {
+        vm.isEpicOpen = true;
+        expect(vm.actionButtonText).toBe('Close epic');
+      });
+
+      it('returns `Reopen epic` when `isEpicOpen` prop is false', () => {
+        vm.isEpicOpen = false;
+        expect(vm.actionButtonText).toBe('Reopen epic');
       });
     });
   });
 
-  describe('delete epic', () => {
-    let deleteEpic;
+  describe('methods', () => {
+    describe('toggleStatus', () => {
+      it('emits `toggleEpicStatus` on component with stateEventType param as `close` when `isEpicOpen` prop is true', () => {
+        spyOn(vm, '$emit');
 
-    beforeEach(done => {
-      deleteEpic = jasmine.createSpy();
-      spyOn(window, 'confirm').and.returnValue(true);
-      vm.canDelete = true;
-      vm.$on('deleteEpic', deleteEpic);
-
-      Vue.nextTick(() => {
-        vm.$el.querySelector('.btn-remove').click();
-        done();
+        vm.isEpicOpen = true;
+        vm.toggleStatus();
+        expect(vm.statusUpdating).toBe(true);
+        expect(vm.$emit).toHaveBeenCalledWith('toggleEpicStatus', stateEvent.close);
       });
-    });
 
-    it('should set deleteLoading', () => {
-      expect(vm.deleteLoading).toEqual(true);
-    });
+      it('emits `toggleEpicStatus` on component with stateEventType param as `reopen` when `isEpicOpen` prop is false', () => {
+        spyOn(vm, '$emit');
 
-    it('should emit deleteEpic event', () => {
-      expect(deleteEpic).toHaveBeenCalled();
+        vm.isEpicOpen = false;
+        vm.toggleStatus();
+        expect(vm.statusUpdating).toBe(true);
+        expect(vm.$emit).toHaveBeenCalledWith('toggleEpicStatus', stateEvent.reopen);
+      });
     });
   });
 });

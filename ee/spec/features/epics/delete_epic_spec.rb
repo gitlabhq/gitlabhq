@@ -25,11 +25,12 @@ describe 'Delete Epic', :js do
       group.add_owner(user)
       visit group_epic_path(group, epic)
       wait_for_requests
+      find('.js-issuable-edit').click
     end
 
     it 'deletes the issue and redirect to epic list' do
       page.accept_alert 'Epic will be removed! Are you sure?' do
-        find('.detail-page-header button').click
+        find(:button, text: 'Delete').click
       end
 
       wait_for_requests

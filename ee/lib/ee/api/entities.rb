@@ -180,6 +180,7 @@ module EE
         expose :end_date, as: :due_date
         expose :due_date_is_fixed?, as: :due_date_is_fixed, if: can_admin_epic
         expose :due_date_fixed, :due_date_from_milestones, if: can_admin_epic
+        expose :state
         expose :created_at
         expose :updated_at
         expose :labels do |epic, options|

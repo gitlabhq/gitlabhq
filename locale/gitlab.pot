@@ -125,6 +125,9 @@ msgstr ""
 msgid "%{group_docs_link_start}Groups%{group_docs_link_end} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects."
 msgstr ""
 
+msgid "%{issuableType} will be removed! Are you sure?"
+msgstr ""
+
 msgid "%{loadingIcon} Started"
 msgstr ""
 
@@ -1587,6 +1590,9 @@ msgid "Clone repository"
 msgstr ""
 
 msgid "Close"
+msgstr ""
+
+msgid "Close epic"
 msgstr ""
 
 msgid "Closed"
@@ -4161,6 +4167,9 @@ msgstr ""
 msgid "Invite"
 msgstr ""
 
+msgid "Issue"
+msgstr ""
+
 msgid "Issue Boards"
 msgstr ""
 
@@ -6295,6 +6304,9 @@ msgstr ""
 msgid "Rename folder"
 msgstr ""
 
+msgid "Reopen epic"
+msgstr ""
+
 msgid "Repair authentication"
 msgstr ""
 
@@ -7961,6 +7973,9 @@ msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
 msgid "Unable to sign you in to the group with SAML due to \"%{reason}\""
+msgstr ""
+
+msgid "Unable to update this epic at this time."
 msgstr ""
 
 msgid "Undo"

@@ -84,15 +84,32 @@ describe Issue do
     end
   end
 
-  describe '#closed_at' do
-    it 'sets closed_at to Time.now when issue is closed' do
-      issue = create(:issue, state: 'opened')
+  describe '#close' do
+    subject(:issue) { create(:issue, state: 'opened') }
 
-      expect(issue.closed_at).to be_nil
+    it 'sets closed_at to Time.now when an issue is closed' do
+      expect { issue.close }.to change { issue.closed_at }.from(nil)
+    end
 
-      issue.close
+    it 'changes the state to closed' do
+      expect { issue.close }.to change { issue.state }.from('opened').to('closed')
+    end
+  end
 
-      expect(issue.closed_at).to be_present
+  describe '#reopen' do
+    let(:user) { create(:user) }
+    let(:issue) { create(:issue, state: 'closed', closed_at: Time.now, closed_by: user) }
+
+    it 'sets closed_at to nil when an issue is reopend' do
+      expect { issue.reopen }.to change { issue.closed_at }.to(nil)
+    end
+
+    it 'sets closed_by to nil when an issue is reopend' do
+      expect { issue.reopen }.to change { issue.closed_by }.from(user).to(nil)
+    end
+
+    it 'changes the state to opened' do
+      expect { issue.reopen }.to change { issue.state }.from('closed').to('opened')
     end
   end
 

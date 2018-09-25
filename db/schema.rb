@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180917214204) do
+ActiveRecord::Schema.define(version: 20180920043317) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -973,10 +973,14 @@ ActiveRecord::Schema.define(version: 20180917214204) do
     t.date "due_date_fixed"
     t.boolean "start_date_is_fixed"
     t.boolean "due_date_is_fixed"
+    t.integer "state", limit: 2, default: 1, null: false
+    t.integer "closed_by_id"
+    t.datetime "closed_at"
   end
 
   add_index "epics", ["assignee_id"], name: "index_epics_on_assignee_id", using: :btree
   add_index "epics", ["author_id"], name: "index_epics_on_author_id", using: :btree
+  add_index "epics", ["closed_by_id"], name: "index_epics_on_closed_by_id", using: :btree
   add_index "epics", ["end_date"], name: "index_epics_on_end_date", using: :btree
   add_index "epics", ["group_id"], name: "index_epics_on_group_id", using: :btree
   add_index "epics", ["iid"], name: "index_epics_on_iid", using: :btree
@@ -3123,6 +3127,7 @@ ActiveRecord::Schema.define(version: 20180917214204) do
   add_foreign_key "epics", "namespaces", column: "group_id", name: "fk_f081aa4489", on_delete: :cascade
   add_foreign_key "epics", "users", column: "assignee_id", name: "fk_dccd3f98fc", on_delete: :nullify
   add_foreign_key "epics", "users", column: "author_id", name: "fk_3654b61b03", on_delete: :cascade
+  add_foreign_key "epics", "users", column: "closed_by_id", name: "fk_aa5798e761", on_delete: :nullify
   add_foreign_key "events", "projects", on_delete: :cascade
   add_foreign_key "events", "users", column: "author_id", name: "fk_edfd187b6f", on_delete: :cascade
   add_foreign_key "fork_network_members", "fork_networks", on_delete: :cascade
