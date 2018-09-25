@@ -47,7 +47,7 @@ module Gitlab
       end
 
       def appearance
-        RequestStore.store[:appearance] ||= (Appearance.current || Appearance.new)
+        Gitlab::SafeRequestStore[:appearance] ||= (Appearance.current || Appearance.new)
       end
 
       def appearance_favicon

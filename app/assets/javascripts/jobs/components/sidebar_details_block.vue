@@ -1,89 +1,113 @@
 <script>
-import timeagoMixin from '~/vue_shared/mixins/timeago';
-import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
-import Icon from '~/vue_shared/components/icon.vue';
-import DetailRow from './sidebar_detail_row.vue';
+  import _ from 'underscore';
+  import timeagoMixin from '~/vue_shared/mixins/timeago';
+  import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
+  import Icon from '~/vue_shared/components/icon.vue';
+  import DetailRow from './sidebar_detail_row.vue';
+  import ArtifactsBlock from './artifacts_block.vue';
+  import TriggerBlock from './trigger_block.vue';
+  import CommitBlock from './commit_block.vue';
 
-export default {
-  name: 'SidebarDetailsBlock',
-  components: {
-    DetailRow,
-    Icon,
-  },
-  mixins: [timeagoMixin],
-  props: {
-    job: {
-      type: Object,
-      required: true,
+  export default {
+    name: 'SidebarDetailsBlock',
+    components: {
+      ArtifactsBlock,
+      CommitBlock,
+      DetailRow,
+      Icon,
+      TriggerBlock,
     },
-    isLoading: {
-      type: Boolean,
-      required: true,
+    mixins: [timeagoMixin],
+    props: {
+      job: {
+        type: Object,
+        required: true,
+      },
+      isLoading: {
+        type: Boolean,
+        required: true,
+      },
+      runnerHelpUrl: {
+        type: String,
+        required: false,
+        default: '',
+      },
+      terminalPath: {
+        type: String,
+        required: false,
+        default: null,
+      },
     },
-    runnerHelpUrl: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    terminalPath: {
-      type: String,
-      required: false,
-      default: null,
-    },
-  },
-  computed: {
-    shouldRenderContent() {
-      return !this.isLoading && Object.keys(this.job).length > 0;
-    },
-    coverage() {
-      return `${this.job.coverage}%`;
-    },
-    duration() {
-      return timeIntervalInWords(this.job.duration);
-    },
-    queued() {
-      return timeIntervalInWords(this.job.queued);
-    },
-    runnerId() {
-      return `${this.job.runner.description} (#${this.job.runner.id})`;
-    },
-    retryButtonClass() {
-      let className =
-        'js-retry-button float-right btn btn-retry d-none d-md-block d-lg-block d-xl-block';
-      className +=
-        this.job.status && this.job.recoverable ? ' btn-primary' : ' btn-inverted-secondary';
-      return className;
-    },
-    hasTimeout() {
-      return this.job.metadata != null && this.job.metadata.timeout_human_readable !== null;
-    },
-    timeout() {
-      if (this.job.metadata == null) {
-        return '';
-      }
+    computed: {
+      shouldRenderContent() {
+        return !this.isLoading && Object.keys(this.job).length > 0;
+      },
+      coverage() {
+        return `${this.job.coverage}%`;
+      },
+      duration() {
+        return timeIntervalInWords(this.job.duration);
+      },
+      queued() {
+        return timeIntervalInWords(this.job.queued);
+      },
+      runnerId() {
+        return `${this.job.runner.description} (#${this.job.runner.id})`;
+      },
+      retryButtonClass() {
+        let className =
+          'js-retry-button float-right btn btn-retry d-none d-md-block d-lg-block d-xl-block';
+        className +=
+          this.job.status && this.job.recoverable ? ' btn-primary' : ' btn-inverted-secondary';
+        return className;
+      },
+      hasTimeout() {
+        return this.job.metadata != null && this.job.metadata.timeout_human_readable !== null;
+      },
+      timeout() {
+        if (this.job.metadata == null) {
+          return '';
+        }
 
-      let t = this.job.metadata.timeout_human_readable;
-      if (this.job.metadata.timeout_source !== '') {
-        t += ` (from ${this.job.metadata.timeout_source})`;
-      }
+        let t = this.job.metadata.timeout_human_readable;
+        if (this.job.metadata.timeout_source !== '') {
+          t += ` (from ${this.job.metadata.timeout_source})`;
+        }
 
-      return t;
+        return t;
+      },
+      renderBlock() {
+        return (
+          this.job.merge_request ||
+          this.job.duration ||
+          this.job.finished_data ||
+          this.job.erased_at ||
+          this.job.queued ||
+          this.job.runner ||
+          this.job.coverage ||
+          this.job.tags.length ||
+          this.job.cancel_path
+        );
+      },
+      hasArtifact() {
+        return !_.isEmpty(this.job.artifact);
+      },
+      hasTriggers() {
+        return !_.isEmpty(this.job.trigger);
+      },
+      hasStages() {
+        return (
+          this.job &&
+          this.job.pipeline &&
+          this.job.pipeline.stages &&
+          this.job.pipeline.stages.length > 0
+        ) || false;
+      },
+      commit() {
+        return this.job.pipeline.commit || {};
+      },
     },
-    renderBlock() {
-      return (
-        this.job.merge_request ||
-        this.job.duration ||
-        this.job.finished_data ||
-        this.job.erased_at ||
-        this.job.queued ||
-        this.job.runner ||
-        this.job.coverage ||
-        this.job.tags.length ||
-        this.job.cancel_path
-      );
-    },
-  },
-};
+  };
 </script>
 <template>
   <div>
@@ -229,6 +253,19 @@ export default {
           </a>
         </div>
       </div>
+      <artifacts-block
+        v-if="hasArtifact"
+        :artifact="job.artifact"
+      />
+      <trigger-block
+        v-if="hasTriggers"
+        :trigger="job.trigger"
+      />
+      <commit-block
+        :is-last-block="hasStages"
+        :commit="commit"
+        :merge-request="job.merge_request"
+      />
     </template>
     <gl-loading-icon
       v-if="isLoading"

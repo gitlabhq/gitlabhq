@@ -52,6 +52,7 @@ export default {
     </strong>
     <changed-file-icon
       :file="activeFile"
+      class="ml-0"
     />
     <div class="ml-auto">
       <button

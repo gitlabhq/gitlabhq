@@ -7,11 +7,16 @@ describe('Commit block', () => {
   let vm;
 
   const props = {
-    pipelineShortSha: '1f0fb84f',
-    pipelineShaPath: 'commit/1f0fb84fb6770d74d97eee58118fd3909cd4f48c',
-    mergeRequestReference: '!21244',
-    mergeRequestPath: 'merge_requests/21244',
-    gitCommitTitlte: 'Regenerate pot files',
+    commit: {
+      short_id: '1f0fb84f',
+      commit_path: 'commit/1f0fb84fb6770d74d97eee58118fd3909cd4f48c',
+      title: 'Update README.md',
+    },
+    mergeRequest: {
+      iid: '!21244',
+      path: 'merge_requests/21244',
+    },
+    isLastBlock: true,
   };
 
   afterEach(() => {
@@ -26,12 +31,18 @@ describe('Commit block', () => {
     });
 
     it('renders pipeline short sha link', () => {
-      expect(vm.$el.querySelector('.js-commit-sha').getAttribute('href')).toEqual(props.pipelineShaPath);
-      expect(vm.$el.querySelector('.js-commit-sha').textContent.trim()).toEqual(props.pipelineShortSha);
+      expect(vm.$el.querySelector('.js-commit-sha').getAttribute('href')).toEqual(
+        props.commit.commit_path,
+      );
+      expect(vm.$el.querySelector('.js-commit-sha').textContent.trim()).toEqual(
+        props.commit.short_id,
+      );
     });
 
     it('renders clipboard button', () => {
-      expect(vm.$el.querySelector('button').getAttribute('data-clipboard-text')).toEqual(props.pipelineShortSha);
+      expect(vm.$el.querySelector('button').getAttribute('data-clipboard-text')).toEqual(
+        props.commit.short_id,
+      );
     });
   });
 
@@ -41,17 +52,19 @@ describe('Commit block', () => {
         ...props,
       });
 
-      expect(vm.$el.querySelector('.js-link-commit').getAttribute('href')).toEqual(props.mergeRequestPath);
-      expect(vm.$el.querySelector('.js-link-commit').textContent.trim()).toEqual(props.mergeRequestReference);
-
+      expect(vm.$el.querySelector('.js-link-commit').getAttribute('href')).toEqual(
+        props.mergeRequest.path,
+      );
+      expect(vm.$el.querySelector('.js-link-commit').textContent.trim()).toEqual(
+        props.mergeRequest.iid,
+      );
     });
   });
 
   describe('without merge request', () => {
     it('does not render merge request', () => {
       const copyProps = Object.assign({}, props);
-      delete copyProps.mergeRequestPath;
-      delete copyProps.mergeRequestReference;
+      delete copyProps.mergeRequest;
 
       vm = mountComponent(Component, {
         ...copyProps,
@@ -67,7 +80,7 @@ describe('Commit block', () => {
         ...props,
       });
 
-      expect(vm.$el.textContent).toContain(props.gitCommitTitlte);
+      expect(vm.$el.textContent).toContain(props.commit.title);
     });
   });
 });
