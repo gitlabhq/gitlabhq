@@ -46,17 +46,6 @@
   .settings-content
     = render 'realtime'
 
-%section.settings.as-background.no-animate#js-background-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4
-      = _('Background jobs')
-    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
-      = _('Configure Sidekiq job throttling.')
-  .settings-content
-    = render 'background_jobs'
-
 %section.settings.as-gitaly.no-animate#js-gitaly-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4

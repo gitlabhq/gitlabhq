@@ -209,8 +209,7 @@ Indexing is 65.55% complete (6555/10000 projects)
 
 By default, one job is created for every 300 projects. For large numbers of
 projects, you may wish to increase the batch size, by setting the `BATCH`
-environment variable. You may also wish to consider [throttling](../administration/operations/sidekiq_job_throttling.md)
-the `elastic_batch_project_indexer` queue, as this step can be I/O-intensive.
+environment variable.
 
 You can also run the initial indexing synchronously - this is most useful if
 you have a small number of projects, or need finer-grained control over indexing

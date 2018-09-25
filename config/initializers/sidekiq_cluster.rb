@@ -1,12 +1,4 @@
 if ENV['ENABLE_SIDEKIQ_CLUSTER']
-  # Throttling should be disabled for dedicated workers.
-  module Gitlab
-    class SidekiqThrottler
-      def self.execute!
-      end
-    end
-  end
-
   Thread.new do
     Thread.current.abort_on_exception = true
 

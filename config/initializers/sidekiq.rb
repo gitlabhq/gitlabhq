@@ -59,8 +59,6 @@ Sidekiq.configure_server do |config|
 
   Gitlab::Geo.configure_cron_jobs!
 
-  Gitlab::SidekiqThrottler.execute!
-
   Gitlab::SidekiqVersioning.install!
 
   config = Gitlab::Database.config ||
