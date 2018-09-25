@@ -1,45 +1,39 @@
 require 'spec_helper'
 
 describe QuickActions::InterpretService do
+  let(:current_user) { create(:user) }
   let(:user) { create(:user) }
-  let(:developer) { create(:user) }
-  let(:developer2) { create(:user) }
-  let(:developer3) { create(:user) }
+  let(:user2) { create(:user) }
+  let(:user3) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, :public, group: group) }
   let(:issue) { create(:issue, project: project) }
-  let(:service) { described_class.new(project, developer) }
+  let(:service) { described_class.new(project, current_user) }
 
   before do
     stub_licensed_features(multiple_issue_assignees: true)
 
-    project.add_developer(developer)
+    project.add_developer(current_user)
   end
 
   describe '#execute' do
     context 'assign command' do
-      let(:content) { "/assign @#{developer.username}" }
-
       context 'Issue' do
         it 'fetches assignees and populates them if content contains /assign' do
-          issue.assignees << user
+          issue.update(assignee_ids: [user.id, user2.id])
 
-          _, updates = service.execute(content, issue)
+          _, updates = service.execute("/unassign @#{user2.username}\n/assign @#{user3.username}", issue)
 
-          expect(updates[:assignee_ids]).to match_array([developer.id, user.id])
+          expect(updates[:assignee_ids]).to match_array([user.id, user3.id])
         end
 
         context 'assign command with multiple assignees' do
-          let(:content) { "/assign @#{developer.username} @#{developer2.username}" }
-
-          before do
-            project.add_developer(developer2)
-          end
-
           it 'fetches assignee and populates assignee_ids if content contains /assign' do
-            _, updates = service.execute(content, issue)
+            issue.update(assignee_ids: [user.id])
 
-            expect(updates[:assignee_ids]).to match_array([developer.id, developer2.id])
+            _, updates = service.execute("/unassign @#{user.username}\n/assign @#{user2.username} @#{user3.username}", issue)
+
+            expect(updates[:assignee_ids]).to match_array([user2.id, user3.id])
           end
         end
       end
@@ -50,27 +44,25 @@ describe QuickActions::InterpretService do
 
       context 'Issue' do
         it 'unassigns user if content contains /unassign @user' do
-          issue.update(assignee_ids: [developer.id, developer2.id])
+          issue.update(assignee_ids: [user.id, user2.id])
 
-          _, updates = service.execute("/unassign @#{developer2.username}", issue)
+          _, updates = service.execute("/assign @#{user3.username}\n/unassign @#{user2.username}", issue)
 
-          expect(updates).to eq(assignee_ids: [developer.id])
+          expect(updates[:assignee_ids]).to match_array([user.id, user3.id])
         end
 
         it 'unassigns both users if content contains /unassign @user @user1' do
-          user = create(:user)
+          issue.update(assignee_ids: [user.id, user2.id])
 
-          issue.update(assignee_ids: [developer.id, developer2.id, user.id])
+          _, updates = service.execute("/assign @#{user3.username}\n/unassign @#{user2.username} @#{user3.username}", issue)
 
-          _, updates = service.execute("/unassign @#{developer2.username} @#{developer.username}", issue)
-
-          expect(updates).to eq(assignee_ids: [user.id])
+          expect(updates[:assignee_ids]).to match_array([user.id])
         end
 
         it 'unassigns all the users if content contains /unassign' do
-          issue.update(assignee_ids: [developer.id, developer2.id])
+          issue.update(assignee_ids: [user.id, user2.id])
 
-          _, updates = service.execute('/unassign', issue)
+          _, updates = service.execute("/assign @#{user3.username}\n/unassign", issue)
 
           expect(updates[:assignee_ids]).to be_empty
         end
@@ -78,7 +70,7 @@ describe QuickActions::InterpretService do
     end
 
     context 'reassign command' do
-      let(:content) { "/reassign @#{user.username}" }
+      let(:content) { "/reassign @#{current_user.username}" }
 
       context 'Merge Request' do
         let(:merge_request) { create(:merge_request, source_project: project) }
@@ -91,10 +83,10 @@ describe QuickActions::InterpretService do
       end
 
       context 'Issue' do
-        let(:content) { "/reassign @#{user.username}" }
+        let(:content) { "/reassign @#{current_user.username}" }
 
         before do
-          issue.update(assignee_ids: [developer.id])
+          issue.update(assignee_ids: [user.id])
         end
 
         context 'unlicensed' do
@@ -110,9 +102,9 @@ describe QuickActions::InterpretService do
         end
 
         it 'reassigns user if content contains /reassign @user' do
-          _, updates = service.execute("/reassign @#{user.username}", issue)
+          _, updates = service.execute("/reassign @#{current_user.username}", issue)
 
-          expect(updates).to eq(assignee_ids: [user.id])
+          expect(updates[:assignee_ids]).to match_array([current_user.id])
         end
       end
     end
@@ -190,34 +182,34 @@ describe QuickActions::InterpretService do
   describe '#explain' do
     describe 'unassign command' do
       let(:content) { '/unassign' }
-      let(:issue) { create(:issue, project: project, assignees: [developer, developer2]) }
+      let(:issue) { create(:issue, project: project, assignees: [user, user2]) }
 
       it "includes all assignees' references" do
         _, explanations = service.explain(content, issue)
 
-        expect(explanations).to eq(["Removes assignees @#{developer.username} and @#{developer2.username}."])
+        expect(explanations).to eq(["Removes assignees @#{user.username} and @#{user2.username}."])
       end
     end
 
     describe 'unassign command with assignee references' do
-      let(:content) { "/unassign @#{developer.username} @#{developer3.username}" }
-      let(:issue) { create(:issue, project: project, assignees: [developer, developer2, developer3]) }
+      let(:content) { "/unassign @#{user.username} @#{user3.username}" }
+      let(:issue) { create(:issue, project: project, assignees: [user, user2, user3]) }
 
       it 'includes only selected assignee references' do
         _, explanations = service.explain(content, issue)
 
-        expect(explanations).to eq(["Removes assignees @#{developer.username} and @#{developer3.username}."])
+        expect(explanations).to eq(["Removes assignees @#{user.username} and @#{user3.username}."])
       end
     end
 
     describe 'unassign command with non-existent assignee reference' do
-      let(:content) { "/unassign @#{developer.username} @#{developer3.username}" }
-      let(:issue) { create(:issue, project: project, assignees: [developer, developer2]) }
+      let(:content) { "/unassign @#{user.username} @#{user3.username}" }
+      let(:issue) { create(:issue, project: project, assignees: [user, user2]) }
 
       it 'ignores non-existent assignee references' do
         _, explanations = service.explain(content, issue)
 
-        expect(explanations).to eq(["Removes assignee @#{developer.username}."])
+        expect(explanations).to eq(["Removes assignee @#{user.username}."])
       end
     end
   end
