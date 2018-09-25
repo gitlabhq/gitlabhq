@@ -3005,9 +3005,6 @@ msgstr ""
 msgid "Epics|start"
 msgstr ""
 
-msgid "Epic"
-msgstr ""
-
 msgid "Error"
 msgstr ""
 
