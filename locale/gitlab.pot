@@ -107,6 +107,9 @@ msgstr ""
 msgid "%{group_docs_link_start}Groups%{group_docs_link_end} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects."
 msgstr ""
 
+msgid "%{issuableType} will be removed! Are you sure?"
+msgstr ""
+
 msgid "%{loadingIcon} Started"
 msgstr ""
 
@@ -2553,6 +2556,9 @@ msgstr ""
 msgid "Environments|You don't have any environments right now."
 msgstr ""
 
+msgid "Epic"
+msgstr ""
+
 msgid "Error"
 msgstr ""
 
@@ -3294,6 +3300,9 @@ msgid "Introducing Cycle Analytics"
 msgstr ""
 
 msgid "Invite"
+msgstr ""
+
+msgid "Issue"
 msgstr ""
 
 msgid "Issue Boards"

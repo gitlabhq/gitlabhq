@@ -27,6 +27,10 @@
         required: false,
         default: () => [],
       },
+      issuableType: {
+        type: String,
+        required: true,
+      },
       markdownPreviewPath: {
         type: String,
         required: true,
@@ -110,6 +114,7 @@
       :form-state="formState"
       :can-destroy="canDestroy"
       :show-delete-button="showDeleteButton"
+      :issuable-type="issuableType"
     />
   </form>
 </template>
