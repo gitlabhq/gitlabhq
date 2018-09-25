@@ -1,4 +1,6 @@
 class Burndown
+  include Gitlab::Utils::StrongMemoize
+
   class Issue
     attr_reader :closed_at, :weight, :state
 
@@ -13,7 +15,7 @@ class Burndown
     end
   end
 
-  attr_reader :start_date, :due_date, :end_date, :issues_count, :issues_weight, :accurate, :legacy_data
+  attr_reader :start_date, :due_date, :end_date, :accurate, :legacy_data, :milestone
   alias_method :accurate?, :accurate
   alias_method :empty?, :legacy_data
 
@@ -26,8 +28,6 @@ class Burndown
 
     @accurate = milestone_issues.all?(&:closed_at)
     @legacy_data = milestone_issues.any? && milestone_issues.none?(&:closed_at)
-
-    @issues_count, @issues_weight = milestone.issues.reorder(nil).pluck('COUNT(*), COALESCE(SUM(weight), 0)').first
   end
 
   # Returns the chart data in the following format:
@@ -35,14 +35,18 @@ class Burndown
   def as_json(opts = nil)
     return [] unless valid?
 
-    open_issues_count  = issues_count
-    open_issues_weight = issues_weight
+    open_issues_count = 0
+    open_issues_weight = 0
 
     start_date.upto(end_date).each_with_object([]) do |date, chart_data|
       closed, reopened = closed_and_reopened_issues_by(date)
 
       closed_issues_count = closed.count
       closed_issues_weight = sum_issues_weight(closed)
+
+      issues_created = opened_issues_on(date)
+      open_issues_count += issues_created.count
+      open_issues_weight += sum_issues_weight(issues_created)
 
       open_issues_count -= closed_issues_count
       open_issues_weight -= closed_issues_weight
@@ -62,6 +66,37 @@ class Burndown
   end
 
   private
+
+  def opened_issues_on(date)
+    return {} if opened_issues_grouped_by_date.empty?
+
+    date = date.to_date
+
+    # If issues.created_at < milestone.start_date
+    # we consider all of them created at milestone.start_date
+    if date == start_date
+      first_issue_created_at = opened_issues_grouped_by_date.keys.first
+      days_before_start_date = start_date.downto(first_issue_created_at).to_a
+      opened_issues_grouped_by_date.values_at(*days_before_start_date).flatten.compact
+    else
+      opened_issues_grouped_by_date[date] || []
+    end
+  end
+
+  def opened_issues_grouped_by_date
+    strong_memoize(:opened_issues_grouped_by_date) do
+      issues =
+        @milestone
+          .issues
+          .where('created_at <= ?', end_date)
+          .reorder(nil)
+          .order(:created_at).to_a
+
+      issues.group_by do |issue|
+        issue.created_at.to_date
+      end
+    end
+  end
 
   def sum_issues_weight(issues)
     issues.map(&:weight).compact.sum

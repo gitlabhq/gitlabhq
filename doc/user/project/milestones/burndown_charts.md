@@ -63,13 +63,6 @@ Since it only tracks when an issue was last closed (and not its full history), t
 assumes that issue was open on days prior to that date. Reopened issues are
 considered as open on one day after they were closed.
 
-Note that with this design, if you create a new issue in the middle of the milestone period
-(and assign the milestone to the issue), the Burndown Chart will appear as if the
-issue was already open at the beginning of the milestone. A workaround is to simply
-close the issue (so that a closed timestamp is stored in the system), and reopen
-it to get the desired effect, with a rise in the chart appearing on the day after.
-This is what appears in the example below.
-
 The Burndown Chart can also be toggled to display the cumulative open issue
 weight for a given day. When using this feature, make sure issue weights have
 been properly assigned, since an open issue with no weight adds zero to the
