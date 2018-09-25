@@ -1,0 +1,5 @@
+---
+title: 'Geo: Downgrade Exclusive Lease warnings from Log Cursor to debug'
+merge_request: 7476
+author:
+type: changed
