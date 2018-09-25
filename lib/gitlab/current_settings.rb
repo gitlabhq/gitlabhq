@@ -2,11 +2,7 @@ module Gitlab
   module CurrentSettings
     class << self
       def current_application_settings
-        if RequestStore.active?
-          RequestStore.fetch(:current_application_settings) { ensure_application_settings! }
-        else
-          ensure_application_settings!
-        end
+        Gitlab::SafeRequestStore.fetch(:current_application_settings) { ensure_application_settings! }
       end
 
       def fake_application_settings(attributes = {})

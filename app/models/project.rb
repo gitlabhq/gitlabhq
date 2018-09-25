@@ -2266,11 +2266,7 @@ class Project < ActiveRecord::Base
       end
     end
 
-    if RequestStore.active?
-      RequestStore.fetch("project-#{id}:branch-#{branch_name}:user-#{user.id}:branch_allows_collaboration") do
-        check_access.call
-      end
-    else
+    Gitlab::SafeRequestStore.fetch("project-#{id}:branch-#{branch_name}:user-#{user.id}:branch_allows_collaboration") do
       check_access.call
     end
   end
