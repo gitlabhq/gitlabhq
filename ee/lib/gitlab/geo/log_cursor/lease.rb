@@ -23,7 +23,7 @@ module Gitlab
 
           unless lease[:ttl].zero? || exclusive_lease.same_uuid?
             $stdout.puts lease_taken_message
-            logger.info(lease_taken_message)
+            logger.debug(lease_taken_message)
 
             return lease
           end

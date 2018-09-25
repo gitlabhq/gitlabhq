@@ -41,6 +41,22 @@ describe Gitlab::Geo::LogCursor::Lease, :clean_gitlab_redis_shared_state do
       expect(result[:uuid]).to be_present
     end
 
+    it 'does not log an error or info message when could not obtain lease' do
+      logger = spy(:logger)
+      lease = stub_exclusive_lease(described_class::LEASE_KEY, 'uuid')
+
+      allow(lease).to receive(:try_obtain_with_ttl).and_return({ ttl: 10, uuid: 'uuid' })
+      allow(lease).to receive(:same_uuid?).and_return(false)
+      allow(described_class).to receive(:exclusive_lease).and_return(lease)
+      allow(described_class).to receive(:logger).and_return(logger).at_least(:once)
+
+      expect(logger).not_to receive(:info)
+      expect(logger).not_to receive(:error)
+      expect(logger).to receive(:debug).with('Cannot obtain an exclusive lease. There must be another process already in execution.')
+
+      described_class.try_obtain_with_ttl {}
+    end
+
     it 'returns > 0 if there is a lease' do
       allow(described_class).to receive(:try_obtain_with_ttl).and_return({ ttl: 1, uuid: false })
 
