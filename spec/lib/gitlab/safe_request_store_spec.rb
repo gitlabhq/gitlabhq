@@ -219,11 +219,11 @@ describe Gitlab::SafeRequestStore do
     end
 
     context 'when RequestStore is NOT active' do
-      around do |example|
+      before do
         RequestStore.write('foo', true)
+      end
 
-        example.run
-
+      after do
         RequestStore.clear! # Clean up
       end
 
