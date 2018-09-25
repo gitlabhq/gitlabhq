@@ -61,8 +61,13 @@ module QA
         end
 
         def has_personal_area?(wait: Capybara.default_max_wait_time)
-          # No need to wait, either we're logged-in, or not.
-          using_wait_time(wait) { page.has_selector?('.qa-user-avatar') }
+          using_wait_time(wait) do
+            page.has_selector?(element_selector_css(:user_avatar))
+          end
+        end
+
+        def assert_has_personal_area
+          raise "Failed to sign in" unless has_personal_area?
         end
 
         private
