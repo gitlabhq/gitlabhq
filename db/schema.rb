@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180914201132) do
+ActiveRecord::Schema.define(version: 20180917172041) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1908,7 +1908,6 @@ ActiveRecord::Schema.define(version: 20180914201132) do
 
   create_table "site_statistics", force: :cascade do |t|
     t.integer "repositories_count", default: 0, null: false
-    t.integer "wikis_count", default: 0, null: false
   end
 
   create_table "snippets", force: :cascade do |t|
