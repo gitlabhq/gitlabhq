@@ -126,19 +126,16 @@ namespace :gitlab do
 
     puts authorized_keys_is_disabled_warning
 
-    answer = prompt('Do you want to permanently enable the "Write to authorized_keys file" setting now (yes/no)? '.color(:blue), %w{yes no})
-    if answer == 'yes'
-      puts 'Enabling the "Write to authorized_keys file" setting...'
-      uncached_settings = ApplicationSetting.last
-      uncached_settings.authorized_keys_enabled = true
-      uncached_settings.save!
-      puts 'Successfully enabled "Write to authorized_keys file"!'
-      puts ''
-    else
-      puts 'Leaving the "Write to authorized_keys file" setting disabled.'
-      puts 'Failed to rebuild authorized_keys file...'.color(:red)
-      exit 1
+    unless ENV['force'] == 'yes'
+      puts 'Do you want to permanently enable the "Write to authorized_keys file" setting now?'
+      ask_to_continue
     end
+
+    puts 'Enabling the "Write to authorized_keys file" setting...'
+    Gitlab::CurrentSettings.current_application_settings.update!(authorized_keys_enabled: true)
+
+    puts 'Successfully enabled "Write to authorized_keys file"!'
+    puts ''
   end
 
   def authorized_keys_is_disabled_warning
