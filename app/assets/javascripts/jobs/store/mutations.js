@@ -28,8 +28,6 @@ export default {
       state.traceState = log.state;
     }
 
-    debugger;
-
     if (log.append) {
       state.trace += log.html;
       state.traceSize += log.size;
@@ -72,12 +70,26 @@ export default {
   },
 
   [types.SCROLL_TO_TOP](state) {
-    state.isTraceScrolledToBottom = false;
     state.hasBeenScrolled = true;
   },
+
   [types.SCROLL_TO_BOTTOM](state) {
-    state.isTraceScrolledToBottom = true;
     state.hasBeenScrolled = true;
+  },
+  [types.ENABLE_SCROLL_TOP](state){
+    state.isScrollTopDisabled = false;
+  },
+  [types.DISABLE_SCROLL_TOP](state){
+    state.isScrollTopDisabled = true;
+  },
+  [types.ENABLE_SCROLL_BOTTOM](state){
+    state.isScrollBottomDisabled = false;
+  },
+  [types.DISABLE_SCROLL_BOTTOM](state) {
+    state.isScrollBottomDisabled = true;
+  },
+  [types.TOGGLE_SCROLL_ANIMATION](state, toggle) {
+    state.isScrollingDown = toggle;
   },
 
   [types.REQUEST_STAGES](state) {

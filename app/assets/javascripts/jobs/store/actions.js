@@ -2,13 +2,19 @@ import Visibility from 'visibilityjs';
 import * as types from './mutation_types';
 import axios from '../../lib/utils/axios_utils';
 import Poll from '../../lib/utils/poll';
+import {
+  canScroll,
+  isScrolledToBottom,
+  isScrolledToTop,
+  isScrolledToMiddle,
+} from '../../lib/utils/scroll_utils';
+
 import { setCiStatusFavicon } from '../../lib/utils/common_utils';
 import flash from '../../flash';
 import { __ } from '../../locale';
 
 export const setJobEndpoint = ({ commit }, endpoint) => commit(types.SET_JOB_ENDPOINT, endpoint);
-export const setTraceOptions = ({ commit }, options) =>
-  commit(types.SET_TRACE_OPTIONS, options);
+export const setTraceOptions = ({ commit }, options) => commit(types.SET_TRACE_OPTIONS, options);
 export const setStagesEndpoint = ({ commit }, endpoint) =>
   commit(types.SET_STAGES_ENDPOINT, endpoint);
 export const setJobsEndpoint = ({ commit }, endpoint) => commit(types.SET_JOBS_ENDPOINT, endpoint);
@@ -71,15 +77,44 @@ export const receiveJobError = ({ commit }) => {
 /**
  * Job's Trace
  */
-export const scrollTop = ({ commit }) => {
+export const scrollTop = ({ commit, dispatch }) => {
   commit(types.SCROLL_TO_TOP);
   window.scrollTo({ top: 0 });
+  dispatch('toggleScrollButtons');
 };
 
-export const scrollBottom = ({ commit }) => {
+export const scrollBottom = ({ commit, dispatch }) => {
   commit(types.SCROLL_TO_BOTTOM);
   window.scrollTo({ top: document.height });
+  dispatch('toggleScrollButtons');
 };
+
+export const toggleScrollButtons = ({ dispatch }) => {
+  console.log('yo!');
+  debugger;
+  if (canScroll()) {
+    if (isScrolledToMiddle()) {
+      dispatch('enableScrollTop');
+      dispatch('enableScrollBottom');
+    } else if (isScrolledToTop()) {
+      dispatch('disableScrollTop');
+      dispatch('enableScrollBottom');
+    } else if (isScrolledToBottom()) {
+      dispatch('disableScrollBottom');
+      dispatch('enableScrollTop');
+    }
+  } else {
+    dispatch('disableScrollBottom');
+    dispatch('disableScrollTop');
+  }
+};
+
+export const disableScrollBottom = ({ commit }) => commit(types.DISABLE_SCROLL_BOTTOM);
+export const disableScrollTop = ({ commit }) => commit(types.DISABLE_SCROLL_TOP);
+export const enableScrollBottom = ({ commit }) => commit(types.ENABLE_SCROLL_BOTTOM);
+export const enableScrollTop = ({ commit }) => commit(types.ENABLE_SCROLL_TOP);
+export const toggleScrollAnimation = ({ commit}, toggle) => commit(types.TOGGLE_SCROLL_ANIMATION, toggle)
+
 
 export const requestTrace = ({ commit }) => commit(types.REQUEST_TRACE);
 
@@ -104,10 +139,20 @@ export const fetchTrace = ({ dispatch, state }) => {
         }, 4000);
       } else {
         dispatch('stopPollingTrace');
+        dispatch('toggleScrollAnimation');
       }
     })
-    .catch(() => dispatch('receiveTraceError'));
+    .catch(() => dispatch('receiveTraceError'))
+    .then(() => {
+      if (isScrolledToBottom()) {
+        dispatch('scrollBottom')
+      }
+    })
+    .then(() => {
+      dispatch('toggleScrollButtons');
+    });
 };
+
 export const stopPollingTrace = ({ commit }) => {
   commit(types.STOP_POLLING_TRACE);
   clearTimeout(traceTimeout);

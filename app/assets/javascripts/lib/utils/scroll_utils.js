@@ -26,4 +26,13 @@ export const toggleDisableButton = ($button, disable) => {
   $button.prop('disabled', disable);
 };
 
+export const isScrolledToTop = () => $(document).scrollTop() === 0;
+export const isScrolledToMiddle = () => {
+  const $document = $(document);
+  const currentPosition = $document.scrollTop();
+  const scrollHeight = $document.height();
+
+  return currentPosition > 0 && scrollHeight - currentPosition !== windowHeight;
+}
+
 export default {};

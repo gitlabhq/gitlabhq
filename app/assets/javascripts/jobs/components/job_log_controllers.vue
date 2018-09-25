@@ -12,7 +12,7 @@
       tooltip,
     },
     props: {
-      eraseJobPath: {
+      erasePath: {
         type: String,
         required: false,
         default: null,
@@ -26,11 +26,15 @@
         required: false,
         default: null,
       },
-      canScrollToTop: {
+      isScrollTopDisabled: {
         type: Boolean,
         required: true,
       },
-      canScrollToBottom: {
+      isScrollBottomDisabled: {
+        type: Boolean,
+        required: true,
+      },
+      isScrollingDown: {
         type: Boolean,
         required: true,
       },
@@ -62,18 +66,17 @@
   <div class="top-bar">
     <!-- truncate information -->
     <div class="js-truncated-info truncated-info d-none d-sm-block float-left">
-      <p
-        v-if="isTraceSizeVisible"
-        v-html="jobLogSize"
-      ></p>
+      <template v-if="isTraceSizeVisible">
+        <p v-html="jobLogSize"></p>
 
-      <a
-        v-if="rawPath"
-        :href="rawPath"
-        class="js-raw-link raw-link"
-      >
-        {{ s__("Job|Complete Raw") }}
-      </a>
+        <a
+          v-if="rawPath"
+          :href="rawPath"
+          class="js-raw-link raw-link"
+        >
+          {{ s__("Job|Complete Raw") }}
+        </a>
+      </template>
     </div>
     <!-- eo truncate information -->
 
@@ -92,9 +95,9 @@
 
       <a
         v-tooltip
-        v-if="eraseJobPath"
+        v-if="erasePath"
         :title="s__('Job|Erase job log')"
-        :href="eraseJobPath"
+        :href="erasePath"
         :data-confirm="__('Are you sure you want to erase this build?')"
         class="js-erase-link controllers-buttons"
         data-container="body"
@@ -112,7 +115,7 @@
         data-container="body"
       >
         <button
-          :disabled="!canScrollToTop"
+          :disabled="isScrollTopDisabled"
           type="button"
           class="js-scroll-top btn-scroll btn-transparent btn-blank"
           @click="handleScrollToTop"
@@ -128,10 +131,11 @@
         data-container="body"
       >
         <button
-          :disabled="!canScrollToBottom"
+          :disabled="isScrollBottomDisabled"
           type="button"
           class="js-scroll-bottom btn-scroll btn-transparent btn-blank"
           @click="handleScrollToBottom"
+          :class="{ animate: isScrollingDown }"
         >
           <icon name="scroll_down"/>
         </button>

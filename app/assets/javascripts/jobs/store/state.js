@@ -18,8 +18,11 @@ export default () => ({
 
   trace: '',
 
-  isTraceScrolledToBottom: false,
+  isScrollingDown: false,
   hasBeenScrolled: false,
+
+  isScrollTopDisabled: true,
+  isScrollBottomDisabled: true,
 
   isTraceComplete: false,
   traceSize: 0, // todo_fl: needs to be converted into human readable format in components

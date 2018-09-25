@@ -1,6 +1,7 @@
 <script>
   import _ from 'underscore';
   import { mapActions, mapGetters, mapState } from 'vuex';
+  import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
   import CiHeader from '~/vue_shared/components/header_ci_component.vue';
   import EmptyState from './empty_state.vue';
   import EnvironmentsBlock from './environments_block.vue';
@@ -60,8 +61,11 @@
         'trace',
         'isTraceComplete',
         'traceSize',
-        'isTraceScrolledToBottom',
+        'isScrollingDown',
         'isTraceSizeVisible',
+        'isScrollTopDisabled',
+        'isScrollBottomDisabled',
+        'isScrollingDown',
       ]),
       ...mapGetters(['headerActions', 'headerTime', 'shouldRenderCalloutMessage', 'jobHasTrace']),
       /**
@@ -73,7 +77,7 @@
       },
       hasEnvironment() {
         return this.job.deployment_status && !_.isEmpty(this.job.deployment_status);
-      }
+      },
     },
     created() {
       this.setJobEndpoint(this.jobEndpoint);
@@ -85,6 +89,12 @@
 
       this.fetchTrace();
     },
+    mounted() {
+      window.addEventListener('scroll', this.onScroll);
+    },
+    destroyed() {
+      window.removeEventListener('scroll', this.onScroll);
+    },
     methods: {
       ...mapActions([
         'setJobEndpoint',
@@ -94,7 +104,19 @@
         'fetchTrace',
         'scrollTop',
         'scrollBottom',
+        'toggleScrollButtons',
+        'toggleScrollAnimation',
       ]),
+      onScroll() {
+        debugger;
+        if (!isScrolledToBottom()) {
+          this.toggleScrollAnimation(false);
+        } else if (isScrolledToBottom() && !this.isLogComplete) {
+          this.toggleScrollAnimation(true);
+        }
+
+        _.throttle(this.toggleScrollButtons(), 100);
+      },
     },
   };
 </script>
@@ -153,12 +175,14 @@
           :erase-path="job.erase_path"
           :raw-path="job.raw_path"
           :size="traceSize"
-          :can-scroll-to-bottom="!isTraceScrolledToBottom"
-          :can-scroll-to-top="isTraceScrolledToBottom"
+          :is-scroll-bottom-disabled="isScrollBottomDisabled"
+          :is-scroll-top-disabled="isScrollTopDisabled"
           :is-trace-size-visible="isTraceSizeVisible"
+          :is-scrolling-down="isScrollingDown"
           @scrollJobLogTop="scrollTop"
           @scrollJobLogBottom="scrollBottom"
         />
+
         <log-block
           :trace="trace"
           :is-complete="isTraceComplete"

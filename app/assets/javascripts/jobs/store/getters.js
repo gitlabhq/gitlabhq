@@ -1,3 +1,5 @@
+import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
+
 export const headerActions = state => {
   if (state.job.new_issue_path) {
     return [
@@ -19,6 +21,7 @@ export const shouldRenderCalloutMessage = state =>
   !!(state.job.status && state.job.callout_message);
 
 export const jobHasTrace = state => state.job.trace !== '';
+
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};
