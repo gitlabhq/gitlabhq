@@ -16,8 +16,7 @@ describe Clusters::Applications::ScheduleInstallationService do
   end
 
   describe '#execute' do
-    let(:project) { double(:project) }
-    let(:service) { described_class.new(project, nil) }
+    let(:service) { described_class.new(nil) }
 
     context 'when application is installable' do
       let(:application) { create(:clusters_applications_helm, :installable) }

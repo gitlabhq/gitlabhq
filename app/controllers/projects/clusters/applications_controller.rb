@@ -20,7 +20,7 @@ class Projects::Clusters::ApplicationsController < Projects::ApplicationControll
 
     application.save!
 
-    Clusters::Applications::ScheduleInstallationService.new(project, current_user).execute(application)
+    Clusters::Applications::ScheduleInstallationService.new(current_user).execute(application)
 
     head :no_content
   rescue StandardError

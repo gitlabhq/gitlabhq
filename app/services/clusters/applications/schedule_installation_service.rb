@@ -2,7 +2,13 @@
 
 module Clusters
   module Applications
-    class ScheduleInstallationService < ::BaseService
+    class ScheduleInstallationService
+      attr_accessor :current_user, :params
+
+      def initialize(user = nil, params = {})
+        @current_user, @params = user, params.dup
+      end
+
       def execute(application)
         application.make_scheduled!
 
