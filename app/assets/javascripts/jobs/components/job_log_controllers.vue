@@ -45,9 +45,7 @@
     },
     computed: {
       jobLogSize() {
-        return sprintf('Showing last %{startSpanTag} %{size} %{endSpanTag} of log -', {
-          startSpanTag: '<span class="s-truncated-info-size truncated-info-size">',
-          endSpanTag: '</span>',
+        return sprintf('Showing last %{size} of log -', {
           size: numberToHumanSize(this.size),
         });
       },
@@ -67,7 +65,7 @@
     <!-- truncate information -->
     <div class="js-truncated-info truncated-info d-none d-sm-block float-left">
       <template v-if="isTraceSizeVisible">
-        <p v-html="jobLogSize"></p>
+        <div class="float-left" v-html="jobLogSize"></div>
 
         <a
           v-if="rawPath"

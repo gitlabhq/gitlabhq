@@ -69,10 +69,13 @@ export default {
     state.job = {};
   },
 
+  [types.TOGGLE_IS_SCROLL_IN_BOTTOM](state, toggle) {
+    state.isScrollInBottom = toggle;
+  },
+
   [types.SCROLL_TO_TOP](state) {
     state.hasBeenScrolled = true;
   },
-
   [types.SCROLL_TO_BOTTOM](state) {
     state.hasBeenScrolled = true;
   },

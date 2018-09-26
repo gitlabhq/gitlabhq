@@ -19,6 +19,7 @@ export default () => ({
   trace: '',
 
   isScrollingDown: false,
+  isScrollInBottom: false,
   hasBeenScrolled: false,
 
   isScrollTopDisabled: true,

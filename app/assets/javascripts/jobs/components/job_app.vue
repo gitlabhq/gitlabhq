@@ -107,7 +107,6 @@
         'toggleScrollAnimation',
       ]),
       onScroll() {
-        debugger;
         if (!isScrolledToBottom()) {
           this.toggleScrollAnimation(false);
         } else if (isScrolledToBottom() && !this.isLogComplete) {
@@ -116,12 +115,19 @@
 
         _.throttle(this.toggleScrollButtons(), 100);
       },
+      // TODO: Handle page resize: Not on current codebase
+      onResize() {
+      }
     },
   };
 </script>
 <template>
   <div class="build-page">
-    <gl-loading-icon v-if="isLoading" />
+    <gl-loading-icon
+      v-if="isLoading"
+      :size="3"
+      class="prepend-top-20"
+      />
 
     <template v-else>
       <!-- Header Section -->
@@ -185,6 +191,7 @@
         <log-block
           :trace="trace"
           :is-complete="isTraceComplete"
+          class="float-left"
         />
       </div>
       <!-- EO job log -->
