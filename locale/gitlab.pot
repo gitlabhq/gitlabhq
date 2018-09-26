@@ -2040,6 +2040,9 @@ msgstr ""
 msgid "CommitMessage|Add %{file_name}"
 msgstr ""
 
+msgid "CommitWidget|authored"
+msgstr ""
+
 msgid "Commits"
 msgstr ""
 
@@ -7895,6 +7898,9 @@ msgid "Todos"
 msgstr ""
 
 msgid "Toggle Sidebar"
+msgstr ""
+
+msgid "Toggle commit description"
 msgstr ""
 
 msgid "Toggle discussion"
