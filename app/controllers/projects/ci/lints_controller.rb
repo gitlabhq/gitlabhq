@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::Ci::LintsController < Projects::ApplicationController
   before_action :authorize_create_pipeline!
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Controller for a specific Commit
 #
 # Not to be confused with CommitsController, plural.

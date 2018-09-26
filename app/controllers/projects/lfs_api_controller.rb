@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::LfsApiController < Projects::GitHttpClientController
   include LfsRequest
 
