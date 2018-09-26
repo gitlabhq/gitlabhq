@@ -17,7 +17,7 @@ module Gitlab
           end
 
           def self.matches?(build, user)
-            build.scheduled?
+            build.scheduled? && build.scheduled_at
           end
 
           private
