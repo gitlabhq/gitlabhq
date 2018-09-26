@@ -24,5 +24,19 @@ describe Clusters::ClusterPolicy, :models do
       it { expect(policy).to be_allowed :update_cluster }
       it { expect(policy).to be_allowed :admin_cluster }
     end
+
+    context 'group cluster' do
+      let(:group) { create(:group) }
+      let(:cluster) { create(:cluster, groups: [group]) }
+
+      context 'when maintainer' do
+        before do
+          group.add_maintainer(user)
+        end
+
+        it { expect(policy).to be_allowed :update_cluster }
+        it { expect(policy).to be_allowed :admin_cluster }
+      end
+    end
   end
 end
