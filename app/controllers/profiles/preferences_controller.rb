@@ -36,7 +36,8 @@ class Profiles::PreferencesController < Profiles::ApplicationController
       :layout,
       :dashboard,
       :project_view,
-      :theme_id
+      :theme_id,
+      user_preference_attributes: [:merge_request_notes_filter, :issue_notes_filter]
     )
   end
 end

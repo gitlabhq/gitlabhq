@@ -50,6 +50,24 @@ describe Profiles::PreferencesController do
 
         go params: prefs
       end
+
+      it "creates user preferences record" do
+        prefs = {
+          color_scheme_id: '1',
+          dashboard: 'stars',
+          theme_id: '2',
+          user_preference_attributes: {
+            merge_request_notes_filter: 1,
+            issue_notes_filter: 1
+          }
+        }.with_indifferent_access
+
+        go params: prefs
+
+        user_preferences = user.reload.user_preference
+        expect(user_preferences.merge_request_notes_filter).to eq(1)
+        expect(user_preferences.issue_notes_filter).to eq(1)
+      end
     end
 
     context 'on failed update' do

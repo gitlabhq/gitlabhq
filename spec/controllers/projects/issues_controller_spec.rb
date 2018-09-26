@@ -1016,22 +1016,31 @@ describe Projects::IssuesController do
           .not_to exceed_query_limit(control)
       end
 
-      context 'when user has set discussion filter to comments only' do
-        it 'sets discussion filter' do
-          notes_filter = UserPreference::NOTES_FILTERS[:only_comments]
+      context 'with notes filter' do
+        let!(:system_note) { create(:discussion_note_on_issue, :system, noteable: issue, project: issue.project) }
 
-          get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid, notes_filter: notes_filter
+        context 'when user has set notes filter to comments only' do
+          it 'returns only comments' do
+            user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], issue)
 
-          expect(user.reload.notes_filter(issue)).to eq(notes_filter)
+            get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+
+            discussions = JSON.parse(response.body)
+            expect(discussions.count).to eq(1)
+            expect(discussions.map { |discussion| discussion['id'] }).not_to include(system_note.discussion_id)
+          end
         end
 
-        it 'returns no system note' do
-          user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], issue)
-          create(:discussion_note_on_issue, :system, noteable: issue, project: issue.project)
+        context 'when user has set notes filter to all notes' do
+          it 'returns all notes' do
+            user.set_notes_filter(UserPreference::NOTES_FILTERS[:all_notes], issue)
 
-          get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+            get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
 
-          expect(JSON.parse(response.body).count).to eq(1)
+            discussions = JSON.parse(response.body)
+            expect(discussions.count).to eq(2)
+            expect(discussions.map { |discussion| discussion['id'] }).to include(system_note.discussion_id)
+          end
         end
       end
 
