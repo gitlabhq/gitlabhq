@@ -1371,18 +1371,6 @@ module Gitlab
         end
       end
 
-      describe "Validate configuration templates" do
-        templates = Dir.glob("#{Rails.root.join('vendor/gitlab-ci-yml')}/**/*.gitlab-ci.yml")
-
-        templates.each do |file|
-          it "does not return errors for #{file}" do
-            file = File.read(file)
-
-            expect { Gitlab::Ci::YamlProcessor.new(file) }.not_to raise_error
-          end
-        end
-      end
-
       describe "#validation_message" do
         subject { Gitlab::Ci::YamlProcessor.validation_message(content) }
 

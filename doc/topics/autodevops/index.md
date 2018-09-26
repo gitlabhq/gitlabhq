@@ -145,7 +145,7 @@ When using Auto DevOps, you may want to deploy different environments to
 different Kubernetes clusters. This is possible due to the 1:1 connection that
 [exists between them](../../user/project/clusters/index.md#multiple-kubernetes-clusters).
 
-In the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Auto-DevOps.gitlab-ci.yml)
+In the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
 (used behind the scenes by Auto DevOps), there are currently 3 defined environment names that you need to know:
 
 - `review/` (every environment starting with `review/`)
@@ -832,6 +832,6 @@ curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https:/
 [review-app]: ../../ci/review_apps/index.md
 [container-registry]: ../../user/project/container_registry.md
 [postgresql]: https://www.postgresql.org/
-[Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Auto-DevOps.gitlab-ci.yml
+[Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml
 [ee]: https://about.gitlab.com/pricing/
 [ce-19507]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19507
