@@ -546,7 +546,7 @@ msgid "An application called %{link_to_client} is requesting access to your GitL
 msgstr "Une application appelée %{link_to_client} demande l’accès à votre compte GitLab."
 
 msgid "An empty GitLab User field will add the FogBugz user's full name (e.g. \"By John Smith\") in the description of all issues and comments. It will also associate and/or assign these issues and comments with the project creator."
-msgstr "Un champ utilisateur Gitlab vide ajoutera le nom complet de l’utilisateur FogBugz (p. ex., « Par John Smith ») dans la description de tous les tickets et commentaires. Il associera ou assignera ces tickets et commentaires au créateur du projet."
+msgstr "Un champ utilisateur GitLab vide ajoutera le nom complet de l’utilisateur FogBugz (p. ex., « Par John Smith ») dans la description de tous les tickets et commentaires. Il associera ou assignera ces tickets et commentaires au créateur du projet."
 
 msgid "An error accured whilst committing your changes."
 msgstr "Une erreur est survenue lors du commit de vos modifications."
@@ -4020,7 +4020,7 @@ msgid "ImportButtons|Connect repositories from"
 msgstr "Connecter des dépôts provenant de"
 
 msgid "Improve Issue boards with GitLab Enterprise Edition."
-msgstr "Améliorez le tableau des tickets avec Gitlab Entreprise Edition."
+msgstr "Améliorez le tableau des tickets avec GitLab Entreprise Edition."
 
 msgid "Improve issues management with Issue weight and GitLab Enterprise Edition."
 msgstr "Améliorez la gestion des tickets grâce à la pondération disponible dans la version Entreprise Edition de GitLab."
@@ -7004,7 +7004,7 @@ msgid "Thanks! Don't show me this again"
 msgstr "Merci ! Ne plus afficher ce message"
 
 msgid "The Advanced Global Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
-msgstr "La recherche globale avancée de Gitlab est un outil puissant qui vous fait gagner du temps. Au lieu de perdre du temps à recréer du code existant, vous pouvez maintenant faire des recherches dans le code d’autres équipes afin de vous aider sur votre projet."
+msgstr "La recherche globale avancée de GitLab est un outil puissant qui vous fait gagner du temps. Au lieu de perdre du temps à recréer du code existant, vous pouvez maintenant faire des recherches dans le code d’autres équipes afin de vous aider sur votre projet."
 
 msgid "The Git LFS objects will <strong>not</strong> be synced."
 msgstr ""

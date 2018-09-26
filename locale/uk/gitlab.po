@@ -431,7 +431,7 @@ msgid "Access to failing storages has been temporarily disabled to allow the mou
 msgstr "Доступ до сховищ, що вийшли з ладу, тимчасово прибраний задля відновлення монтування. Після вирішення проблеми обнуліть інформацію сховища для відновлення доступу."
 
 msgid "Access your runner token, customize your pipeline configuration, and view your pipeline status and coverage report."
-msgstr "Отримайте доступ до Gitlab Runner токену, налаштуйте конфігурацію конвеєра та перегляньте його статус, а також звіт про покриття."
+msgstr "Отримайте доступ до GitLab Runner токену, налаштуйте конфігурацію конвеєра та перегляньте його статус, а також звіт про покриття."
 
 msgid "Account"
 msgstr "Обліковий запис"
@@ -614,7 +614,7 @@ msgid "An application called %{link_to_client} is requesting access to your GitL
 msgstr "Додаток під назвою %{link_to_client} запитує доступ до вашого GitLab аккаунту."
 
 msgid "An empty GitLab User field will add the FogBugz user's full name (e.g. \"By John Smith\") in the description of all issues and comments. It will also associate and/or assign these issues and comments with the project creator."
-msgstr "Порожнє поле Gitlab-користувача буде заповнено іменем користувача з FogBugz (наприклад \"John Smith\") в описі всіх проблем та коментарів. Крім того ці проблеми та коментарі будуть асоційовані з та/або призначені на автора проекту."
+msgstr "Порожнє поле GitLab-користувача буде заповнено іменем користувача з FogBugz (наприклад \"John Smith\") в описі всіх проблем та коментарів. Крім того ці проблеми та коментарі будуть асоційовані з та/або призначені на автора проекту."
 
 msgid "An error accured whilst committing your changes."
 msgstr "Трапилася помилка при коміті ваших змін."
@@ -3667,7 +3667,7 @@ msgid "GitLab Geo"
 msgstr "GitLab Geo"
 
 msgid "GitLab Group Runners can execute code for all the projects in this group."
-msgstr "Групові Runner'и Gitlab можуть виконувати код для усіх проектів у цій групі."
+msgstr "Групові Runner'и GitLab можуть виконувати код для усіх проектів у цій групі."
 
 msgid "GitLab Import"
 msgstr "Імпорт з GitLab"
@@ -6541,7 +6541,7 @@ msgid "Select the custom project template source group."
 msgstr ""
 
 msgid "Selecting a GitLab user will add a link to the GitLab user in the descriptions of issues and comments (e.g. \"By <a href=\"#\">@johnsmith</a>\"). It will also associate and/or assign these issues and comments with the selected user."
-msgstr "При виборі користувача Gitlab посилання на нього буде додане до опису проблем та коментарів (напр. \"<a href=\"#\"> @johnsmith</a>\"). Також це призведе до асоціації та/або призначення цих проблем та коментарів на вибраного користувача."
+msgstr "При виборі користувача GitLab посилання на нього буде додане до опису проблем та коментарів (напр. \"<a href=\"#\"> @johnsmith</a>\"). Також це призведе до асоціації та/або призначення цих проблем та коментарів на вибраного користувача."
 
 msgid "Selective synchronization"
 msgstr "Вибіркова синхронізація"
@@ -7149,7 +7149,7 @@ msgid "The number of attempts GitLab will make to access a storage."
 msgstr "Кількість спроб, які зробить GitLab для отримання доступу до сховища даних."
 
 msgid "The number of failures after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
-msgstr "Кількість збоїв після чого Gitlab повністю заблокує доступ до сховища данних. Лічильник кількості збоїв може бути скинутий в інтерфейсі адміністратора %{link_to_health_page}, або через %{api_documentation_link}."
+msgstr "Кількість збоїв після чого GitLab повністю заблокує доступ до сховища данних. Лічильник кількості збоїв може бути скинутий в інтерфейсі адміністратора %{link_to_health_page}, або через %{api_documentation_link}."
 
 msgid "The passphrase required to decrypt the private key. This is optional and the value is encrypted at rest."
 msgstr "Пароль, який потрібен для дешифрування приватного ключа. Він є необов’язковим і зберігається у зашифрованому вигляді."
@@ -7230,7 +7230,7 @@ msgid "The user map is a JSON document mapping the Google Code users that partic
 msgstr "Мапа користувачів — це JSON-документ, який задає як адреси електронної пошти та імена користувачів Google Code, що приймали участь у ваших проектах будуть імпортовані у GitLab. Ви можете змінити його шляхом зміни значень, що стоять справа від <code>:</code>. Не видаляйте лапки та інші знаки пунктуації, а також не змінюйте адреси електронної пошти чи імена користувачів зліва."
 
 msgid "The user map is a mapping of the FogBugz users that participated on your projects to the way their email address and usernames will be imported into GitLab. You can change this by populating the table below."
-msgstr "Мапа користувачів — це правила імпортування користувачів FogBugz, які приймали участь у ваших проектах до Gitlab (зокрема їх імен та адрес електронної пошти). Ви можете вносити зміни шляхом заповнення таблиці нижче."
+msgstr "Мапа користувачів — це правила імпортування користувачів FogBugz, які приймали участь у ваших проектах до GitLab (зокрема їх імен та адрес електронної пошти). Ви можете вносити зміни шляхом заповнення таблиці нижче."
 
 msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
 msgstr "Середнє значення в рядку. Приклад: між 3, 5, 9, середніми 5, між 3, 5, 7, 8, середніми (5 + 7) / 2 = 6."
@@ -7625,7 +7625,7 @@ msgid "To connect GitHub repositories, you can use a %{personal_access_token_lin
 msgstr "Для підключення репозиторіїв з GitHub, ви можете використовувати %{personal_access_token_link}. Коли ви створюватимете ваш персональний токен доступу, вам потрібно буде вибрати область дії <code>repo</code>, щоб ми могли відобразити список ваших публічних та приватних репозиторіїв, доступних для підключення."
 
 msgid "To connect GitHub repositories, you first need to authorize GitLab to access the list of your GitHub repositories:"
-msgstr "Для підключення репозиторіїв з GitHub, ви спочатку повинні дозволити Gitlab доступ до списку ваших репозиторіїв на GitHub:"
+msgstr "Для підключення репозиторіїв з GitHub, ви спочатку повинні дозволити GitLab доступ до списку ваших репозиторіїв на GitHub:"
 
 msgid "To connect an SVN repository, check out %{svn_link}."
 msgstr "Для приєднання SVN-репозиторію, перегляньте %{svn_link}."
@@ -7643,7 +7643,7 @@ msgid "To import GitHub repositories, you can use a %{personal_access_token_link
 msgstr "Для імпортування репозиторіїв з GitHub, ви можете використовувати %{personal_access_token_link}. Коли ви створюватимете ваш персональний токен доступу, вам потрібно буде вибрати область дії <code>repo</code>, щоб ми могли відобразити список ваших публічних та приватних репозиторіїв, доступних для підключення."
 
 msgid "To import GitHub repositories, you first need to authorize GitLab to access the list of your GitHub repositories:"
-msgstr "Для імпорту репозиторіїв з GitHub, ви спочатку повинні дозволити Gitlab доступ до списку ваших репозиторіїв на GitHub:"
+msgstr "Для імпорту репозиторіїв з GitHub, ви спочатку повинні дозволити GitLab доступ до списку ваших репозиторіїв на GitHub:"
 
 msgid "To import an SVN repository, check out %{svn_link}."
 msgstr "Для імпортування SVN-репозиторію, перегляньте %{svn_link}."
@@ -8177,7 +8177,7 @@ msgid "You are going to transfer %{project_full_name} to another owner. Are you 
 msgstr "Ви збираєтеся передати проект %{project_full_name} іншому власнику. Ви АБСОЛЮТНО впевнені?"
 
 msgid "You are on a read-only GitLab instance."
-msgstr "Ви знаходитеся на інстансі Gitlab \"тільки для читання\"."
+msgstr "Ви знаходитеся на інстансі GitLab \"тільки для читання\"."
 
 msgid "You are on a secondary, <b>read-only</b> Geo node. If you want to make changes, you must visit this page on the %{primary_node}."
 msgstr "Ви знаходитесь на вторинному <b>лише для читання</b> Geo-вузлі. Якщо ви хочете внести будь-які зміни, ви повинні відвідати %{primary_node}."

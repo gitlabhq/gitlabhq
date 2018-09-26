@@ -6884,7 +6884,7 @@ msgid "Specify an e-mail address regex pattern to identify default internal user
 msgstr ""
 
 msgid "Specify the following URL during the Runner setup:"
-msgstr "Укажите следующий URL во время настройки Gitlab Runner:"
+msgstr "Укажите следующий URL во время настройки GitLab Runner:"
 
 msgid "Squash commits"
 msgstr ""

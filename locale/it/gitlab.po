@@ -143,7 +143,7 @@ msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow 
 msgstr "%{number_of_failures} di %{maximum_failures} fallimenti. GitLab consentirà l'accesso al prossimo tentativo."
 
 msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will not retry automatically. Reset storage information when the problem is resolved."
-msgstr "%{number_of_failures} di %{maximum_failures} fallimenti. Gitlab non ritenterà automaticamente. Ripristina l'informazioni d'archiviazione quando il problema è risolto."
+msgstr "%{number_of_failures} di %{maximum_failures} fallimenti. GitLab non ritenterà automaticamente. Ripristina l'informazioni d'archiviazione quando il problema è risolto."
 
 msgid "%{openOrClose} %{noteable}"
 msgstr ""
@@ -1091,7 +1091,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}"
-msgstr "La branch <strong>%{branch_name}</strong> è stata creata. Per impostare un rilascio automatico scegli un template CI di Gitlab e committa le tue modifiche %{link_to_autodeploy_doc}"
+msgstr "La branch <strong>%{branch_name}</strong> è stata creata. Per impostare un rilascio automatico scegli un template CI di GitLab e committa le tue modifiche %{link_to_autodeploy_doc}"
 
 msgid "Branch has changed"
 msgstr "La branche è cambiata"
@@ -1661,7 +1661,7 @@ msgid "ClusterIntegration|GitLab Integration"
 msgstr ""
 
 msgid "ClusterIntegration|GitLab Runner"
-msgstr "Gitlab Runner"
+msgstr "GitLab Runner"
 
 msgid "ClusterIntegration|GitLab Runner connects to this project's repository and executes CI/CD jobs, pushing results back and deploying, applications to production."
 msgstr ""
@@ -2163,7 +2163,7 @@ msgid "ContainerRegistry|Use different image names"
 msgstr "Utilizza nomi d'immagine differenti"
 
 msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images."
-msgstr "Con il Docker Container Registry integrato in Gitlab, ogni progetto può avere il suo spazio d'archiviazione sulle immagini Docker."
+msgstr "Con il Docker Container Registry integrato in GitLab, ogni progetto può avere il suo spazio d'archiviazione sulle immagini Docker."
 
 msgid "ContainerRegistry|You can also use a %{deploy_token} for read-only access to the registry images."
 msgstr ""
@@ -3652,7 +3652,7 @@ msgid "Google Takeout"
 msgstr ""
 
 msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service."
-msgstr "L'autenticazione Google non è %{link_to_documentation}. Richiedi al tuo amministratore Gitlab se desideri utilizzare il servizio."
+msgstr "L'autenticazione Google non è %{link_to_documentation}. Richiedi al tuo amministratore GitLab se desideri utilizzare il servizio."
 
 msgid "Got it!"
 msgstr ""
