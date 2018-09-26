@@ -12,5 +12,6 @@ module Operations
         with: Gitlab::Regex.feature_flag_regex,
         message: Gitlab::Regex.feature_flag_regex_message
       }
+    validates :description, length: 0..1000
   end
 end
