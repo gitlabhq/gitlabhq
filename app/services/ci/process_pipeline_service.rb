@@ -56,7 +56,7 @@ module Ci
       when 'manual'
         %w[success skipped]
       when 'delayed'
-        %w[success skipped] # This might be `success` only
+        %w[success skipped]
       else
         []
       end

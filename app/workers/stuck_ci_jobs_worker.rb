@@ -16,10 +16,10 @@ class StuckCiJobsWorker
 
     Rails.logger.info "#{self.class}: Cleaning stuck builds"
 
-    drop :running, condition_for_outdated_running, :stuck_or_timeout_failure
-    drop :pending, condition_for_outdated_pending, :stuck_or_timeout_failure
-    drop :scheduled, condition_for_outdated_scheduled, :schedule_expired
-    drop_stuck :pending, condition_for_outdated_pending_stuck, :stuck_or_timeout_failure
+    drop :running, BUILD_RUNNING_OUTDATED_TIMEOUT
+    drop :pending, BUILD_PENDING_OUTDATED_TIMEOUT
+    drop_stuck :pending, BUILD_PENDING_STUCK_TIMEOUT
+    drop_stale_scheduled_builds
 
     remove_lease
   end
@@ -34,41 +34,25 @@ class StuckCiJobsWorker
     Gitlab::ExclusiveLease.cancel(EXCLUSIVE_LEASE_KEY, @uuid)
   end
 
-  def drop(status, condition, reason)
-    search(status, condition) do |build|
-      drop_build :outdated, build, status, reason
+  def drop(status, timeout)
+    search(status, timeout) do |build|
+      drop_build :outdated, build, status, timeout, :stuck_or_timeout_failure
     end
   end
 
-  def drop_stuck(status, condition, reason)
-    search(status, condition) do |build|
+  def drop_stuck(status, timeout)
+    search(status, timeout) do |build|
       break unless build.stuck?
 
-      drop_build :stuck, build, status, reason
+      drop_build :stuck, build, status, timeout, :stuck_or_timeout_failure
     end
-  end
-
-  def condition_for_outdated_running
-    ["updated_at < ?", BUILD_RUNNING_OUTDATED_TIMEOUT.ago]
-  end
-
-  def condition_for_outdated_pending
-    ["updated_at < ?", BUILD_PENDING_OUTDATED_TIMEOUT.ago]
-  end
-
-  def condition_for_outdated_scheduled
-    ["scheduled_at <> '' && scheduled_at < ?", BUILD_SCHEDULED_OUTDATED_TIMEOUT.ago]
-  end
-
-  def condition_for_outdated_pending_stuck
-    ["updated_at < ?", BUILD_PENDING_STUCK_TIMEOUT.ago]
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def search(status, condition)
+  def search(status, timeout)
     loop do
       jobs = Ci::Build.where(status: status)
-        .where(*condition)
+        .where('ci_builds.updated_at < ?', timeout.ago)
         .includes(:tags, :runner, project: :namespace)
         .limit(100)
         .to_a
@@ -81,10 +65,21 @@ class StuckCiJobsWorker
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def drop_build(type, build, status, reason)
-    Rails.logger.info "#{self.class}: Dropping #{type} build #{build.id} for runner #{build.runner_id} (status: #{status})"
+  def drop_build(type, build, status, timeout, reason)
+    Rails.logger.info "#{self.class}: Dropping #{type} build #{build.id} for runner #{build.runner_id} (status: #{status}, timeout: #{timeout}, reason: #{reason})"
     Gitlab::OptimisticLocking.retry_lock(build, 3) do |b|
       b.drop(reason)
+    end
+  end
+
+  def drop_stale_scheduled_builds
+    # `ci_builds` table has a partial index on `id` with `scheduled_at <> NULL` condition.
+    # Therefore this query's first step uses Index Search, and the following expensive
+    # filter `scheduled_at < ?` will only perform on a small subset (max: 100 rows)
+    Ci::Build.include(EachBach).where('scheduled_at <> NULL').each_batch(of: 100) do |relation|
+      relation.where('scheduled_at < ?', BUILD_SCHEDULED_OUTDATED_TIMEOUT.ago).find_each do |build|
+        drop_build(:outdated, build, :scheduled, BUILD_SCHEDULED_OUTDATED_TIMEOUT, :schedule_expired)
+      end
     end
   end
 end
