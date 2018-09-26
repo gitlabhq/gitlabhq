@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
-import SkeletonLoading from '@gitlab-org/gitlab-ui/dist/components/base/skeleton_loading';
+import { SkeletonLoading } from '@gitlab-org/gitlab-ui';
 import IdeTree from './ide_tree.vue';
 import ResizablePanel from './resizable_panel.vue';
 import ActivityBar from './activity_bar.vue';

@@ -1,5 +1,5 @@
 <script>
-  import Link from '@gitlab-org/gitlab-ui/dist/components/base/link';
+  import { Link } from '@gitlab-org/gitlab-ui';
 
   export default {
     components: {

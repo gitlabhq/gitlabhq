@@ -1,7 +1,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
-import SkeletonLoading from '@gitlab-org/gitlab-ui/dist/components/base/skeleton_loading';
+import { SkeletonLoading } from '@gitlab-org/gitlab-ui';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import NavDropdown from './nav_dropdown.vue';
 import FileRowExtra from './file_row_extra.vue';
