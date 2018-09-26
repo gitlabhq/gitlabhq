@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::ProjectMembersController < Projects::ApplicationController
   include MembershipActions
   include MembersPresentation

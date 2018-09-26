@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::EnvironmentsController < Projects::ApplicationController
   layout 'project'
   before_action :authorize_read_environment!

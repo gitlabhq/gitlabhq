@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::AvatarsController < Projects::ApplicationController
   include SendsBlob
 
