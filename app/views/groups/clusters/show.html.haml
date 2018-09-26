@@ -7,7 +7,7 @@
 
 - status_path = status_group_cluster_path(@group, @cluster.id, format: :json) # if can?(current_user, :admin_cluster, @cluster)
 .edit-cluster-form.js-edit-cluster-form{ data: { status_path: status_path,
-  install_helm_path: '',
+  install_helm_path: install_applications_group_cluster_path(@group, @cluster, :helm),
   install_ingress_path: '',
   install_prometheus_path: '',
   install_runner_path: '',
