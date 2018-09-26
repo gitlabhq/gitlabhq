@@ -3,6 +3,7 @@ import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper
 import { TEST_HOST } from 'spec/test_constants';
 import App from '~/diffs/components/app.vue';
 import createDiffsStore from '../create_diffs_store';
+import getDiffWithCommit from '../mock_data/diff_with_commit';
 
 describe('diffs/components/app', () => {
   const oldMrTabs = window.mrTabs;
@@ -36,12 +37,17 @@ describe('diffs/components/app', () => {
     vm.$destroy();
   });
 
+  it('does not show commit info', () => {
+    expect(vm.$el).not.toContainElement('.blob-commit-info');
+  });
+
   it('shows comments message, with commit', done => {
-    vm.$store.state.diffs.commit = {};
+    vm.$store.state.diffs.commit = getDiffWithCommit().commit;
 
     vm.$nextTick()
       .then(() => {
         expect(vm.$el).toContainText('Only comments from the following commit are shown below');
+        expect(vm.$el).toContainElement('.blob-commit-info');
       })
       .then(done)
       .catch(done.fail);

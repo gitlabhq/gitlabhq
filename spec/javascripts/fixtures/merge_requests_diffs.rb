@@ -9,6 +9,7 @@ describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)', type
   let(:project) { create(:project, :repository, namespace: namespace, path: 'merge-requests-project') }
   let(:merge_request) { create(:merge_request, :with_diffs, source_project: project, target_project: project, description: '- [ ] Task List Item') }
   let(:path) { "files/ruby/popen.rb" }
+  let(:selected_commit) { merge_request.all_commits[0] }
   let(:position) do
     Gitlab::Diff::Position.new(
       old_path: path,
@@ -33,6 +34,14 @@ describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)', type
     remove_repository(project)
   end
 
+  it 'merge_request_diffs/with_commit.json' do |example|
+    # Create a user that matches the selected commit author
+    # This is so that the "author" information will be populated
+    create(:user, email: selected_commit.author_email, name: selected_commit.author_name)
+
+    render_merge_request(example.description, merge_request, commit_id: selected_commit.sha)
+  end
+
   it 'merge_request_diffs/inline_changes_tab_with_comments.json' do |example|
     create(:diff_note_on_merge_request, project: project, author: admin, position: position, noteable: merge_request)
     create(:note_on_merge_request, author: admin, project: project, noteable: merge_request)
@@ -47,13 +56,14 @@ describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)', type
 
   private
 
-  def render_merge_request(fixture_file_name, merge_request, view: 'inline')
+  def render_merge_request(fixture_file_name, merge_request, view: 'inline', **extra_params)
     get :show,
       namespace_id: project.namespace.to_param,
       project_id: project,
       id: merge_request.to_param,
       format: :json,
-      view: view
+      view: view,
+      **extra_params
 
     expect(response).to be_success
     store_frontend_fixture(response, fixture_file_name)
