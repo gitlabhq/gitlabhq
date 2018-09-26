@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@gitlab-org/gitlab-svgs": "^1.29.0",
-    "@gitlab-org/gitlab-ui": "^1.7.1",
+    "@gitlab-org/gitlab-ui": "https://gitlab.com/gitlab-org/gitlab-ui/-/jobs/102764692/artifacts/raw/gitlab-ui.42-add-bootstrap-vue-s-alert.tgz",
     "autosize": "^4.0.0",
     "axios": "^0.17.1",
     "babel-core": "^6.26.3",
