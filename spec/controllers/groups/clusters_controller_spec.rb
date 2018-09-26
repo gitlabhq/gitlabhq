@@ -95,4 +95,23 @@ describe Groups::ClustersController do
       end
     end
   end
+
+  describe 'DELETE destroy' do
+    describe 'functionality' do
+      context 'when cluster is provided by user' do
+        let!(:cluster) { create(:cluster, :provided_by_user, :production_environment, groups: [group]) }
+
+        it "destroys and redirects back to clusters list" do
+          expect do
+            delete :destroy, group_id: group, id: cluster
+          end.to change { Clusters::Cluster.count }.by(-1)
+            .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
+            .and change { Clusters::Providers::Gcp.count }.by(0)
+
+          expect(response).to redirect_to(group_clusters_path(group))
+          expect(flash[:notice]).to eq('Kubernetes cluster integration was successfully removed.')
+        end
+      end
+    end
+  end
 end

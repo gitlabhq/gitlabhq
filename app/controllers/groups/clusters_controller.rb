@@ -43,6 +43,16 @@ module Groups
       end
     end
 
+    def destroy
+      if cluster.destroy
+        flash[:notice] = _('Kubernetes cluster integration was successfully removed.')
+        redirect_to group_clusters_path(group), status: :found
+      else
+        flash[:notice] = _('Kubernetes cluster integration was not removed.')
+        render :show
+      end
+    end
+
     private
 
     def cluster
