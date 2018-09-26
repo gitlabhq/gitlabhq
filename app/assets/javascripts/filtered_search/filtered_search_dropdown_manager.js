@@ -96,6 +96,11 @@ export default class FilteredSearchDropdownManager {
         gl: NullDropdown,
         element: this.container.querySelector('#js-dropdown-admin-runner-status'),
       },
+      type: {
+        reference: null,
+        gl: NullDropdown,
+        element: this.container.querySelector('#js-dropdown-admin-runner-type'),
+      },
     };
 
     supportedTokens.forEach((type) => {

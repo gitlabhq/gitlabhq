@@ -10,6 +10,7 @@ class Admin::RunnersFinder < UnionFinder
   def execute
     search!
     filter_by_status!
+    filter_by_runner_type!
     sort!
     paginate!
 
@@ -36,10 +37,11 @@ class Admin::RunnersFinder < UnionFinder
   end
 
   def filter_by_status!
-    status = @params[:status_status]
-    if status.present? && Ci::Runner::AVAILABLE_STATUSES.include?(status)
-      @runners = @runners.public_send(status) # rubocop:disable GitlabSecurity/PublicSend
-    end
+    filter_by!(:status_status, Ci::Runner::AVAILABLE_STATUSES)
+  end
+
+  def filter_by_runner_type!
+    filter_by!(:type_type, Ci::Runner::AVAILABLE_TYPES)
   end
 
   def sort!
@@ -48,5 +50,13 @@ class Admin::RunnersFinder < UnionFinder
 
   def paginate!
     @runners = @runners.page(@params[:page]).per(NUMBER_OF_RUNNERS_PER_PAGE)
+  end
+
+  def filter_by!(scope_name, available_scopes)
+    scope = @params[scope_name]
+
+    if scope.present? && available_scopes.include?(scope)
+      @runners = @runners.public_send(scope) # rubocop:disable GitlabSecurity/PublicSend
+    end
   end
 end
