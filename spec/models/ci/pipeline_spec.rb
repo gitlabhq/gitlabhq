@@ -75,6 +75,18 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#schedule' do
+    subject { pipeline.schedule }
+
+    let(:pipeline) { build(:ci_pipeline, status: :created) }
+
+    it 'changes pipeline status to schedule' do
+      subject
+
+      expect(pipeline).to be_scheduled
+    end
+  end
+
   describe '#valid_commit_sha' do
     context 'commit.sha can not start with 00000000' do
       before do
@@ -1285,6 +1297,19 @@ describe Ci::Pipeline, :mailer do
       it 'updates pipeline status to running' do
         expect { pipeline.update_status }
           .to change { pipeline.reload.status }.to 'running'
+      end
+    end
+
+    context 'when updating status to scheduled' do
+      before do
+        allow(pipeline)
+          .to receive_message_chain(:statuses, :latest, :status)
+          .and_return(:scheduled)
+      end
+
+      it 'updates pipeline status to scheduled' do
+        expect { pipeline.update_status }
+          .to change { pipeline.reload.status }.to 'scheduled'
       end
     end
 
