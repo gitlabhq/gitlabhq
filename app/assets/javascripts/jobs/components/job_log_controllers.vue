@@ -1,4 +1,5 @@
 <script>
+  import { polyfillSticky } from '~/lib/utils/sticky';
   import Icon from '~/vue_shared/components/icon.vue';
   import tooltip from '~/vue_shared/directives/tooltip';
   import { numberToHumanSize } from '~/lib/utils/number_utils';
@@ -57,6 +58,9 @@
       handleScrollToBottom() {
         this.$emit('scrollJobLogBottom');
       },
+    },
+    mounted() {
+      polyfillSticky(this.$el);
     },
   };
 </script>
@@ -133,7 +137,7 @@
           type="button"
           class="js-scroll-bottom btn-scroll btn-transparent btn-blank"
           @click="handleScrollToBottom"
-          :class="{ animate: isScrollingDown }"
+          :class="{ animate: true }"
         >
           <icon name="scroll_down"/>
         </button>

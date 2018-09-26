@@ -1,4 +1,5 @@
 <script>
+import { placeholderImage } from '~/lazy_loader';
   export default {
     props: {
       illustrationPath: {
@@ -32,6 +33,7 @@
         },
       },
     },
+    placeholderImage: placeholderImage,
   };
 </script>
 <template>
@@ -41,7 +43,12 @@
         :class="illustrationSizeClass"
         class="svg-content"
       >
-        <img :src="illustrationPath" />
+        <img
+          :data-src="illustrationPath"
+          class="lazy"
+          :src="$options.placeholderImage"
+        />
+
       </div>
     </div>
 
