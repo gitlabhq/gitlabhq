@@ -76,7 +76,7 @@ class StuckCiJobsWorker
     # `ci_builds` table has a partial index on `id` with `scheduled_at <> NULL` condition.
     # Therefore this query's first step uses Index Search, and the following expensive
     # filter `scheduled_at < ?` will only perform on a small subset (max: 100 rows)
-    Ci::Build.include(EachBach).where('scheduled_at <> NULL').each_batch(of: 100) do |relation|
+    Ci::Build.include(EachBatch).where('scheduled_at <> NULL').each_batch(of: 100) do |relation|
       relation.where('scheduled_at < ?', BUILD_SCHEDULED_OUTDATED_TIMEOUT.ago).find_each do |build|
         drop_build(:outdated, build, :scheduled, BUILD_SCHEDULED_OUTDATED_TIMEOUT, :schedule_expired)
       end
