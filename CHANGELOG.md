@@ -528,6 +528,18 @@ entry.
 - Moves help_popover component to a common location.
 
 
+## 11.1.7 (2018-09-26)
+
+### Security (6 changes)
+
+- Redact confidential events in the API.
+- Set timeout for syntax highlighting.
+- Sanitize JSON data properly to fix XSS on Issue details page.
+- Fix stored XSS in merge requests from imported repository.
+- Fix xss vulnerability sourced from package.json.
+- Block loopback addresses in UrlBlocker.
+
+
 ## 11.1.6 (2018-08-28)
 
 ### Fixed (1 change)
