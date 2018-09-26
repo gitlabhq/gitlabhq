@@ -6,7 +6,7 @@ import MergeRequest from '../../../merge_request';
 import Flash from '../../../flash';
 import statusIcon from '../mr_widget_status_icon.vue';
 import eventHub from '../../event_hub';
-import SquashBeforeMerge from './mr_widget_squash_before_merge.vue';
+import SquashBeforeMerge from './squash_before_merge.vue';
 
 export default {
   name: 'ReadyToMerge',
