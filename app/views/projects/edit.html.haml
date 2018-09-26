@@ -40,7 +40,7 @@
 
         .form-group
           = f.label :tag_list, "Tags", class: 'label-bold'
-          = f.text_field :tag_list, value: @project.tag_list.sort.join(', '), maxlength: 2000, class: "form-control"
+          = f.text_field :tag_list, value: @project.tag_list.join(', '), maxlength: 2000, class: "form-control"
           %p.form-text.text-muted Separate tags with commas.
         %fieldset.features
           %h5.prepend-top-0= _("Project avatar")

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::VariablesController < Projects::ApplicationController
   prepend ::EE::Projects::VariablesController
 

@@ -51,7 +51,7 @@ To download a repository using a Deploy Token, you just need to:
 
 
 ```bash
-git clone http://<username>:<deploy_token>@gitlab.example.com/tanuki/awesome_project.git
+git clone https://<username>:<deploy_token>@gitlab.example.com/tanuki/awesome_project.git
 ```
 
 Just replace `<username>` and `<deploy_token>` with the proper values

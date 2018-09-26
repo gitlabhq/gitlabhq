@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::PipelinesController < Projects::ApplicationController
   prepend ::EE::Projects::PipelinesController
 

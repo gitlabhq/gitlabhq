@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file should be identical in GitLab Community Edition and Enterprise Edition
 
 class Projects::GitHttpClientController < Projects::ApplicationController

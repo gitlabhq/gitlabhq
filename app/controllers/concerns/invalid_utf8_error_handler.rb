@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module InvalidUTF8ErrorHandler
   extend ActiveSupport::Concern
 
