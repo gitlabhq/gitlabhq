@@ -111,7 +111,7 @@ class Project < ActiveRecord::Base
   after_create :ensure_storage_path_exists
   after_save :ensure_storage_path_exists, if: :namespace_id_changed?
 
-  acts_as_taggable
+  acts_as_ordered_taggable
 
   attr_accessor :old_path_with_namespace
   attr_accessor :template_name
