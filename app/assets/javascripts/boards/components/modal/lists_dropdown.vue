@@ -1,7 +1,11 @@
 <script>
+import Link from '@gitlab-org/gitlab-ui/dist/components/base/link';
 import ModalStore from '../../stores/modal_store';
 
 export default {
+  components: {
+    'gl-link': Link,
+  },
   data() {
     return {
       modal: ModalStore.store,
@@ -38,7 +42,7 @@ export default {
           v-for="(list, i) in state.lists"
           v-if="list.type == 'label'"
           :key="i">
-          <a
+          <gl-link
             :class="{ 'is-active': list.id == selected.id }"
             href="#"
             role="button"
@@ -48,7 +52,7 @@ export default {
               class="dropdown-label-box">
             </span>
             {{ list.title }}
-          </a>
+          </gl-link>
         </li>
       </ul>
     </div>
