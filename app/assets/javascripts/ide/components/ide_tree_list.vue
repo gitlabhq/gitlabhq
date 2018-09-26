@@ -43,7 +43,7 @@ export default {
 
 <template>
   <div
-    class="ide-file-list"
+    class="ide-file-list qa-file-list"
   >
     <template v-if="showLoading">
       <div
