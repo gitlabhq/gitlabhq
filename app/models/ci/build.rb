@@ -168,10 +168,8 @@ module Ci
       end
 
       event :enqueue_scheduled do
-        transition scheduled: :pending do
-          validate do |build|
-            build.scheduled_at && build.scheduled_at < Time.now
-          end
+        transition scheduled: :pending, if: ->(build) do
+          build.scheduled_at && build.scheduled_at < Time.now
         end
       end
 
@@ -269,7 +267,7 @@ module Ci
     end
 
     def action?
-      %w[manual scheduled].include?(self.when)
+      %w[manual delayed].include?(self.when)
     end
 
     # rubocop: disable CodeReuse/ServiceClass
