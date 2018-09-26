@@ -16,6 +16,6 @@
           = _('To widen your search, change or remove filters.')
         - else
           = _('Track groups of issues that share a theme, across projects and milestones')
-      .text-center
-        - if can?(current_user, :create_epic, @group)
+      - if can?(current_user, :create_epic, @group)
+        .text-center
           #new-epic-app{ data: { endpoint: request.url } }
