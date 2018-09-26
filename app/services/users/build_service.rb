@@ -68,7 +68,9 @@ module Users
         :twitter,
         :username,
         :website_url,
-        :private_profile
+        :private_profile,
+        :organization,
+        :location
       ]
     end
 
