@@ -109,11 +109,14 @@ export default {
       store: new MonitoringStore(),
       state: 'gettingStarted',
       showEmptyState: true,
-      updateAspectRatio: false,
-      updatedAspectRatios: 0,
       hoverData: {},
-      resizeThrottled: {},
+      elWidth: 0,
     };
+  },
+  computed: {
+    forceRedraw() {
+      return this.elWidth;
+    },
   },
   created() {
     this.service = new MonitoringService({
@@ -121,16 +124,20 @@ export default {
       deploymentEndpoint: this.deploymentEndpoint,
       environmentsEndpoint: this.environmentsEndpoint,
     });
-    eventHub.$on('toggleAspectRatio', this.toggleAspectRatio);
+    this.mutationObserverConfig = {
+      attributes: true,
+      childList: false,
+      subtree: false,
+    };
     eventHub.$on('hoverChanged', this.hoverChanged);
   },
   beforeDestroy() {
-    eventHub.$off('toggleAspectRatio', this.toggleAspectRatio);
     eventHub.$off('hoverChanged', this.hoverChanged);
     window.removeEventListener('resize', this.resizeThrottled, false);
+    this.sidebarMutationObserver.disconnect();
   },
   mounted() {
-    this.resizeThrottled = _.throttle(this.resize, 600);
+    this.resizeThrottled = _.debounce(this.resize, 100);
     this.servicePromises = [
       this.service
         .getGraphsData()
@@ -152,6 +159,11 @@ export default {
       }
       this.getGraphsData();
       window.addEventListener('resize', this.resizeThrottled, false);
+
+      const sidebarEl = document.querySelector('.nav-sidebar');
+      // The sidebar listener
+      this.sidebarMutationObserver = new MutationObserver(this.resizeThrottled);
+      this.sidebarMutationObserver.observe(sidebarEl, this.mutationObserverConfig);
     }
   },
   methods: {
@@ -171,14 +183,7 @@ export default {
         });
     },
     resize() {
-      this.updateAspectRatio = true;
-    },
-    toggleAspectRatio() {
-      this.updatedAspectRatios += 1;
-      if (this.store.getMetricsCount() === this.updatedAspectRatios) {
-        this.updateAspectRatio = !this.updateAspectRatio;
-        this.updatedAspectRatios = 0;
-      }
+      this.elWidth = this.$el.clientWidth;
     },
     hoverChanged(data) {
       this.hoverData = data;
@@ -190,6 +195,7 @@ export default {
 <template>
   <div
     v-if="!showEmptyState"
+    :key="updateDashboardKey"
     class="prometheus-graphs prepend-top-default"
   >
     <div
@@ -239,7 +245,6 @@ export default {
         :key="graphIndex"
         :graph-data="graphData"
         :hover-data="hoverData"
-        :update-aspect-ratio="updateAspectRatio"
         :deployment-data="store.deploymentData"
         :project-path="projectPath"
         :tags-path="tagsPath"
