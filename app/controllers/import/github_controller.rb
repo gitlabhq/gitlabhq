@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Import::GithubController < Import::BaseController
   prepend ::EE::Import::GithubController
 
