@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-26 11:23\n"
+"PO-Revision-Date: 2018-09-26 23:41\n"
 
 msgid " Status"
 msgstr "状态"
@@ -5727,7 +5727,7 @@ msgid "Profiles|Website"
 msgstr ""
 
 msgid "Profiles|What's your status?"
-msgstr ""
+msgstr "你当前的状态？"
 
 msgid "Profiles|You can change your avatar here"
 msgstr ""
@@ -5760,7 +5760,7 @@ msgid "Profiles|Your name was automatically set based on your %{provider_label} 
 msgstr ""
 
 msgid "Profiles|Your status"
-msgstr ""
+msgstr "你的状态"
 
 msgid "Profiles|e.g. My MacBook key"
 msgstr "例如: My MacBook Key"
