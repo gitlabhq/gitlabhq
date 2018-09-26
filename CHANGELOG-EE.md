@@ -191,6 +191,14 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Geo: Log to geo.log when the Log Cursor skips an event.
 
 
+## 11.1.7 (2018-09-26)
+
+### Security (2 changes)
+
+- Project groups approvers no longer leak private groups info.
+- Protect against CSRF attacks when adding Slack app.
+
+
 ## 11.1.6 (2018-08-28)
 
 - No changes.
