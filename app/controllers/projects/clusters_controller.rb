@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::ClustersController < Projects::ApplicationController
   prepend EE::Projects::ClustersController
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::MergeRequests::ApplicationController < Projects::ApplicationController
   prepend ::EE::Projects::MergeRequests::ApplicationController
 

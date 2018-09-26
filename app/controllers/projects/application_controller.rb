@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::ApplicationController < ApplicationController
   prepend EE::Projects::ApplicationController
   include CookiesHelper

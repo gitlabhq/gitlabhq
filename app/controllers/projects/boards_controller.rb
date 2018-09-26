@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::BoardsController < Projects::ApplicationController
   prepend EE::Boards::BoardsController
   include BoardsResponses

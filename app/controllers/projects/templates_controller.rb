@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::TemplatesController < Projects::ApplicationController
   before_action :authenticate_user!, :get_template_class
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::MergeRequests::CreationsController < Projects::MergeRequests::ApplicationController
   include DiffForPath
   include DiffHelper
