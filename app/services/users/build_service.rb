@@ -70,7 +70,8 @@ module Users
         :website_url,
         :private_profile,
         :organization,
-        :location
+        :location,
+        :public_email
       ]
     end
 

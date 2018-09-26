@@ -43,7 +43,8 @@ describe Users::BuildService do
             website_url: 1,
             private_profile: 1,
             organization: 1,
-            location: 1
+            location: 1,
+            public_email: 1
           }
         end
 
