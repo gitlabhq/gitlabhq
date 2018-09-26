@@ -65,7 +65,6 @@
         'isTraceSizeVisible',
         'isScrollTopDisabled',
         'isScrollBottomDisabled',
-        'isScrollingDown',
       ]),
       ...mapGetters(['headerActions', 'headerTime', 'shouldRenderCalloutMessage', 'jobHasTrace']),
       /**

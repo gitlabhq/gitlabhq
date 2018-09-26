@@ -91,7 +91,7 @@ export const scrollBottom = ({ commit, dispatch }) => {
 
 export const toggleScrollButtons = ({ dispatch }) => {
   console.log('yo!');
-  debugger;
+
   if (canScroll()) {
     if (isScrolledToMiddle()) {
       dispatch('enableScrollTop');
@@ -113,8 +113,8 @@ export const disableScrollBottom = ({ commit }) => commit(types.DISABLE_SCROLL_B
 export const disableScrollTop = ({ commit }) => commit(types.DISABLE_SCROLL_TOP);
 export const enableScrollBottom = ({ commit }) => commit(types.ENABLE_SCROLL_BOTTOM);
 export const enableScrollTop = ({ commit }) => commit(types.ENABLE_SCROLL_TOP);
-export const toggleScrollAnimation = ({ commit}, toggle) => commit(types.TOGGLE_SCROLL_ANIMATION, toggle)
-
+export const toggleScrollAnimation = ({ commit }, toggle) =>
+  commit(types.TOGGLE_SCROLL_ANIMATION, toggle);
 
 export const requestTrace = ({ commit }) => commit(types.REQUEST_TRACE);
 
@@ -139,13 +139,13 @@ export const fetchTrace = ({ dispatch, state }) => {
         }, 4000);
       } else {
         dispatch('stopPollingTrace');
-        dispatch('toggleScrollAnimation');
+        dispatch('toggleScrollAnimation', false);
       }
     })
     .catch(() => dispatch('receiveTraceError'))
     .then(() => {
       if (isScrolledToBottom()) {
-        dispatch('scrollBottom')
+        dispatch('scrollBottom');
       }
     })
     .then(() => {

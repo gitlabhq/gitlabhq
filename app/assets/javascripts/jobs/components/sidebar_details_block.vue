@@ -251,19 +251,20 @@
             </a>
           </div>
         </div>
+        <artifacts-block
+          v-if="hasArtifact"
+          :artifact="job.artifact"
+        />
+        <trigger-block
+          v-if="hasTriggers"
+          :trigger="job.trigger"
+        />
+        <commit-block
+          :is-last-block="hasStages"
+          :commit="commit"
+          :merge-request="job.merge_request"
+        />
       </div>
-      <artifacts-block
-        v-if="hasArtifact"
-        :artifact="job.artifact"
-      />
-      <trigger-block
-        v-if="hasTriggers"
-        :trigger="job.trigger"
-      />
-      <commit-block
-        :is-last-block="hasStages"
-        :commit="commit"
-        :merge-request="job.merge_request"
-      />
+    </div>
   </aside>
 </template>
