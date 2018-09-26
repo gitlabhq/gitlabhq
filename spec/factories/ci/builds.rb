@@ -98,6 +98,15 @@ FactoryBot.define do
       success
     end
 
+    trait :schedulable do
+      self.when 'delayed'
+      options start_in: '1 minute'
+    end
+
+    trait :actionable do
+      self.when 'manual'
+    end
+
     trait :retried do
       retried true
     end
