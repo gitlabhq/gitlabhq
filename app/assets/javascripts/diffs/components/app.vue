@@ -9,6 +9,7 @@ import ChangedFiles from './changed_files.vue';
 import DiffFile from './diff_file.vue';
 import NoChanges from './no_changes.vue';
 import HiddenFilesWarning from './hidden_files_warning.vue';
+import CommitWidget from './commit_widget.vue';
 
 export default {
   name: 'DiffsApp',
@@ -19,6 +20,7 @@ export default {
     DiffFile,
     NoChanges,
     HiddenFilesWarning,
+    CommitWidget,
   },
   props: {
     endpoint: {
@@ -207,6 +209,11 @@ export default {
           </div>
         </div>
       </div>
+
+      <commit-widget
+        v-if="commit"
+        :commit="commit"
+      />
 
       <changed-files
         :diff-files="diffFiles"
