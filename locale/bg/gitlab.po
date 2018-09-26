@@ -7109,7 +7109,7 @@ msgid "The tabs below will be removed in a future version"
 msgstr ""
 
 msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
-msgstr "Етапът на тестване показва времето, което е нужно на „Gitlab CI“ да изпълни всяка схема от задачи за свързаната заявка за сливане. Данните ще бъдат добавени автоматично след като приключи изпълнението на първата Ви схема."
+msgstr "Етапът на тестване показва времето, което е нужно на „GitLab CI“ да изпълни всяка схема от задачи за свързаната заявка за сливане. Данните ще бъдат добавени автоматично след като приключи изпълнението на първата Ви схема."
 
 msgid "The time in seconds GitLab will keep failure information. When no failures occur during this time, information about the mount is reset."
 msgstr ""

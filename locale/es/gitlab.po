@@ -2130,7 +2130,7 @@ msgid "ContainerRegistry|First log in to GitLab&rsquo;s Container Registry using
 msgstr ""
 
 msgid "ContainerRegistry|GitLab supports up to 3 levels of image names. The following examples of images are valid for your project:"
-msgstr "Gitlab soporta hasta 3 niveles para nombres de imágenes. Los siguientes ejemplos de imágenes son válidos para tu proyecto:"
+msgstr "GitLab soporta hasta 3 niveles para nombres de imágenes. Los siguientes ejemplos de imágenes son válidos para tu proyecto:"
 
 msgid "ContainerRegistry|How to use the Container Registry"
 msgstr ""

@@ -3571,7 +3571,7 @@ msgid "Git revision"
 msgstr ""
 
 msgid "Git storage health information has been reset"
-msgstr "Informationen über den Speicherzustand von Gitlab wurden zurückgesetzt."
+msgstr "Informationen über den Speicherzustand von GitLab wurden zurückgesetzt."
 
 msgid "Git strategy for pipelines"
 msgstr ""
