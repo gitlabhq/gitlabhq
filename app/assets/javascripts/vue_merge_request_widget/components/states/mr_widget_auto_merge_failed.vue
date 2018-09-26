@@ -1,11 +1,13 @@
 <script>
   import eventHub from '../../event_hub';
   import statusIcon from '../mr_widget_status_icon.vue';
+  import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
   export default {
     name: 'MRWidgetAutoMergeFailed',
     components: {
       statusIcon,
+      'gl-loading-icon': LoadingIcon,
     },
     props: {
       mr: {

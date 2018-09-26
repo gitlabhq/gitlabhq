@@ -1,4 +1,5 @@
 <script>
+  import { Pagination } from '@gitlab-org/gitlab-ui';
   import { s__ } from '../../locale';
 
   const PAGINATION_UI_BUTTON_LIMIT = 4;
@@ -10,6 +11,9 @@
   const LAST = s__('Pagination|Last »');
 
   export default {
+    components: {
+      'gl-pagination': Pagination,
+    },
     props: {
       /**
         This function will take the information given by the pagination component

@@ -7,12 +7,14 @@ import SvgBlankState from '../components/blank_state.vue';
 import PipelinesTableComponent from '../components/pipelines_table.vue';
 import eventHub from '../event_hub';
 import { CANCEL_REQUEST } from '../constants';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   components: {
     PipelinesTableComponent,
     SvgBlankState,
     EmptyState,
+    'gl-loading-icon': LoadingIcon,
   },
   data() {
     return {

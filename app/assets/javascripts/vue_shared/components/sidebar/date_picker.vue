@@ -3,6 +3,7 @@
   import toggleSidebar from './toggle_sidebar.vue';
   import collapsedCalendarIcon from './collapsed_calendar_icon.vue';
   import { dateInWords } from '../../../lib/utils/datetime_utility';
+  import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
   export default {
     name: 'SidebarDatePicker',
@@ -10,6 +11,7 @@
       datePicker,
       toggleSidebar,
       collapsedCalendarIcon,
+      'gl-loading-icon': LoadingIcon,
     },
     props: {
       blockClass: {

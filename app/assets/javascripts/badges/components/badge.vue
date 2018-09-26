@@ -1,12 +1,14 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
 import Tooltip from '~/vue_shared/directives/tooltip';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   name: 'Badge',
   components: {
     Icon,
     Tooltip,
+    'gl-loading-icon': LoadingIcon,
   },
   directives: {
     Tooltip,

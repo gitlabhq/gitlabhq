@@ -1,10 +1,12 @@
 <script>
 import _ from 'underscore';
 import StageColumnComponent from './stage_column_component.vue';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   components: {
     StageColumnComponent,
+    'gl-loading-icon': LoadingIcon,
   },
   props: {
     isLoading: {

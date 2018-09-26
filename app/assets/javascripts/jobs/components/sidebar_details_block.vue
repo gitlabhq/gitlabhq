@@ -7,6 +7,7 @@
   import ArtifactsBlock from './artifacts_block.vue';
   import TriggerBlock from './trigger_block.vue';
   import CommitBlock from './commit_block.vue';
+  import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
   export default {
     name: 'SidebarDetailsBlock',
@@ -16,6 +17,7 @@
       DetailRow,
       Icon,
       TriggerBlock,
+      'gl-loading-icon': LoadingIcon,
     },
     mixins: [timeagoMixin],
     props: {

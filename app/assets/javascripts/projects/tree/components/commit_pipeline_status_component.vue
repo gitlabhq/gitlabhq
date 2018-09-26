@@ -6,6 +6,7 @@ import Flash from '~/flash';
 import { s__, sprintf } from '~/locale';
 import tooltip from '~/vue_shared/directives/tooltip';
 import CommitPipelineService from '../services/commit_pipeline_service';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   directives: {
@@ -13,6 +14,7 @@ export default {
   },
   components: {
     ciIcon,
+    'gl-loading-icon': LoadingIcon,
   },
   props: {
     endpoint: {

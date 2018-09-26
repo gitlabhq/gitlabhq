@@ -2,6 +2,7 @@
 import $ from 'jquery';
 import { __ } from '~/locale';
 import LabelsSelect from '~/labels_select';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
 
 import DropdownTitle from './dropdown_title.vue';
@@ -24,6 +25,7 @@ export default {
     DropdownSearchInput,
     DropdownFooter,
     DropdownCreateLabel,
+    'gl-loading-icon': LoadingIcon,
   },
   props: {
     showCreate: {

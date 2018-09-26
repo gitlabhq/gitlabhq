@@ -4,12 +4,14 @@ import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import { PROJECT_BADGE } from '../constants';
 import Badge from './badge.vue';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   name: 'BadgeListRow',
   components: {
     Badge,
     Icon,
+    'gl-loading-icon': LoadingIcon,
   },
   props: {
     badge: {

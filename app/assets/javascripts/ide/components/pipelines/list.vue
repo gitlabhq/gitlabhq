@@ -8,6 +8,7 @@ import Tabs from '../../../vue_shared/components/tabs/tabs';
 import Tab from '../../../vue_shared/components/tabs/tab.vue';
 import EmptyState from '../../../pipelines/components/empty_state.vue';
 import JobsList from '../jobs/list.vue';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   components: {
@@ -17,6 +18,7 @@ export default {
     Tab,
     JobsList,
     EmptyState,
+    'gl-loading-icon': LoadingIcon,
   },
   computed: {
     ...mapState(['pipelinesEmptyStateSvgPath', 'links']),

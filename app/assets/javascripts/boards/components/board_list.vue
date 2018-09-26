@@ -3,6 +3,7 @@ import Sortable from 'sortablejs';
 import boardNewIssue from './board_new_issue.vue';
 import boardCard from './board_card.vue';
 import eventHub from '../eventhub';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 const Store = gl.issueBoards.BoardsStore;
 
@@ -11,6 +12,7 @@ export default {
   components: {
     boardCard,
     boardNewIssue,
+    'gl-loading-icon': LoadingIcon,
   },
   props: {
     groupId: {

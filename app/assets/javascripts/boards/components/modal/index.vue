@@ -6,6 +6,7 @@
   import ModalFooter from './footer.vue';
   import EmptyState from './empty_state.vue';
   import ModalStore from '../../stores/modal_store';
+  import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
   export default {
     components: {
@@ -13,6 +14,7 @@
       ModalHeader,
       ModalList,
       ModalFooter,
+      'gl-loading-icon': LoadingIcon,
     },
     props: {
       newIssuePath: {

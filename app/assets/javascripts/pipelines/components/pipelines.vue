@@ -9,12 +9,14 @@ import NavigationTabs from '../../vue_shared/components/navigation_tabs.vue';
 import NavigationControls from './nav_controls.vue';
 import { getParameterByName } from '../../lib/utils/common_utils';
 import CIPaginationMixin from '../../vue_shared/mixins/ci_pagination_api_mixin';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   components: {
     TablePagination,
     NavigationTabs,
     NavigationControls,
+    'gl-loading-icon': LoadingIcon,
   },
   mixins: [pipelinesMixin, CIPaginationMixin],
   props: {

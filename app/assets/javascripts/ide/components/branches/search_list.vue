@@ -3,11 +3,13 @@ import { mapActions, mapState } from 'vuex';
 import _ from 'underscore';
 import Icon from '~/vue_shared/components/icon.vue';
 import Item from './item.vue';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   components: {
     Item,
     Icon,
+    'gl-loading-icon': LoadingIcon,
   },
   data() {
     return {

@@ -8,9 +8,13 @@ import resolveDiscussionSvg from 'icons/_icon_resolve_discussion.svg';
 import resolvedDiscussionSvg from 'icons/_icon_status_success_solid.svg';
 import ellipsisSvg from 'icons/_ellipsis_v.svg';
 import tooltip from '~/vue_shared/directives/tooltip';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   name: 'NoteActions',
+  components: {
+    'gl-loading-icon': LoadingIcon,
+  },
   directives: {
     tooltip,
   },

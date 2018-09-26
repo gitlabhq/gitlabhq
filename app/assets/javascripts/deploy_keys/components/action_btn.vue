@@ -1,7 +1,11 @@
 <script>
 import eventHub from '../eventhub';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
+  components: {
+    'gl-loading-icon': LoadingIcon,
+  },
   props: {
     deployKey: {
       type: Object,

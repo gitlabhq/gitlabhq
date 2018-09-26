@@ -6,11 +6,13 @@ import eventHub from '../eventhub';
 import DeployKeysService from '../service';
 import DeployKeysStore from '../store';
 import KeysPanel from './keys_panel.vue';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   components: {
     KeysPanel,
     NavigationTabs,
+    'gl-loading-icon': LoadingIcon,
   },
   props: {
     endpoint: {

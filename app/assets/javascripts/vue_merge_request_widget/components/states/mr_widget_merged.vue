@@ -6,6 +6,7 @@
   import MrWidgetAuthorTime from '../../components/mr_widget_author_time.vue';
   import statusIcon from '../mr_widget_status_icon.vue';
   import eventHub from '../../event_hub';
+  import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
   export default {
     name: 'MRWidgetMerged',
@@ -16,6 +17,7 @@
       MrWidgetAuthorTime,
       statusIcon,
       ClipboardButton,
+      'gl-loading-icon': LoadingIcon,
     },
     props: {
       mr: {

@@ -2,6 +2,7 @@
 import eventHub from '../event_hub';
 import icon from '../../vue_shared/components/icon.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   directives: {
@@ -9,6 +10,7 @@ export default {
   },
   components: {
     icon,
+    'gl-loading-icon': LoadingIcon,
   },
   props: {
     actions: {

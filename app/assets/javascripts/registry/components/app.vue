@@ -4,11 +4,13 @@
   import store from '../stores';
   import collapsibleContainer from './collapsible_container.vue';
   import { errorMessages, errorMessagesTypes } from '../constants';
+  import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
   export default {
     name: 'RegistryListApp',
     components: {
       collapsibleContainer,
+      'gl-loading-icon': LoadingIcon,
     },
     props: {
       endpoint: {

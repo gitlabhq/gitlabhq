@@ -1,10 +1,12 @@
 <script>
 import { mapActions } from 'vuex';
 import Stage from './stage.vue';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   components: {
     Stage,
+    'gl-loading-icon': LoadingIcon,
   },
   props: {
     stages: {

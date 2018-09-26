@@ -8,12 +8,14 @@ import { isMobile, updateExistingFrequentItem } from '../utils';
 import FrequentItemsSearchInput from './frequent_items_search_input.vue';
 import FrequentItemsList from './frequent_items_list.vue';
 import frequentItemsMixin from './frequent_items_mixin';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   store,
   components: {
     FrequentItemsSearchInput,
     FrequentItemsList,
+    'gl-loading-icon': LoadingIcon,
   },
   mixins: [frequentItemsMixin],
   props: {

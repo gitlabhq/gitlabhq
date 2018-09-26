@@ -10,6 +10,7 @@ import DiffFile from './diff_file.vue';
 import NoChanges from './no_changes.vue';
 import HiddenFilesWarning from './hidden_files_warning.vue';
 import CommitWidget from './commit_widget.vue';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   name: 'DiffsApp',
@@ -21,6 +22,7 @@ export default {
     NoChanges,
     HiddenFilesWarning,
     CommitWidget,
+    'gl-loading-icon': LoadingIcon,
   },
   props: {
     endpoint: {

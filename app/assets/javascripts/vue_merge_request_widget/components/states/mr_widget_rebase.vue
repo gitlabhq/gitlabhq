@@ -3,11 +3,13 @@
   import eventHub from '../../event_hub';
   import statusIcon from '../mr_widget_status_icon.vue';
   import Flash from '../../../flash';
+  import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
   export default {
     name: 'MRWidgetRebase',
     components: {
       statusIcon,
+      'gl-loading-icon': LoadingIcon,
     },
     props: {
       mr: {

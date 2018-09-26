@@ -5,11 +5,13 @@ import { __, sprintf } from '~/locale';
 import createFlash from '~/flash';
 import DiffFileHeader from './diff_file_header.vue';
 import DiffContent from './diff_content.vue';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   components: {
     DiffFileHeader,
     DiffContent,
+    'gl-loading-icon': LoadingIcon,
   },
   props: {
     file: {

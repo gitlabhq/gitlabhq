@@ -6,6 +6,7 @@ import { s__, sprintf } from '~/locale';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import createEmptyBadge from '../empty_badge';
 import Badge from './badge.vue';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 const badgePreviewDelayInMilliseconds = 1500;
 
@@ -14,6 +15,7 @@ export default {
   components: {
     Badge,
     LoadingButton,
+    'gl-loading-icon': LoadingIcon,
   },
   props: {
     isEditing: {

@@ -1,7 +1,11 @@
 <script>
+import { Pagination } from '@gitlab-org/gitlab-ui';
 import { s__ } from '../../locale';
 
 export default {
+  components: {
+    'gl-pagination': Pagination,
+  },
   props: {
     change: {
       type: Function,

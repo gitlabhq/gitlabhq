@@ -21,11 +21,13 @@ import Icon from '../../vue_shared/components/icon.vue';
 import JobComponent from './graph/job_component.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
 import { PIPELINES_TABLE } from '../constants';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   components: {
     Icon,
     JobComponent,
+    'gl-loading-icon': LoadingIcon,
   },
 
   directives: {

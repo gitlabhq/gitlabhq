@@ -16,8 +16,12 @@
     />
 
   */
+  import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
   export default {
+    components: {
+      'gl-loading-icon': LoadingIcon,
+    },
     props: {
       loading: {
         type: Boolean,

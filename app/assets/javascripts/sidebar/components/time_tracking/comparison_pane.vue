@@ -1,9 +1,13 @@
 <script>
+import { ProgressBar } from '@gitlab-org/gitlab-ui';
 import { parseSeconds, stringifyTime } from '../../../lib/utils/pretty_time';
 import tooltip from '../../../vue_shared/directives/tooltip';
 
 export default {
   name: 'TimeTrackingComparisonPane',
+  components: {
+    'gl-progress-bar': ProgressBar,
+  },
   directives: {
     tooltip,
   },

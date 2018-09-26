@@ -6,10 +6,12 @@ import { listen } from 'codesandbox-api';
 import Navigator from './navigator.vue';
 import { packageJsonPath } from '../../constants';
 import { createPathWithExt } from '../../utils';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   components: {
     Navigator,
+    'gl-loading-icon': LoadingIcon,
   },
   data() {
     return {

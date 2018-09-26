@@ -6,12 +6,14 @@
   import tableRegistry from './table_registry.vue';
   import { errorMessages, errorMessagesTypes } from '../constants';
   import { __ } from '../../locale';
+  import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
   export default {
     name: 'CollapsibeContainerRegisty',
     components: {
       clipboardButton,
       tableRegistry,
+      'gl-loading-icon': LoadingIcon,
     },
     directives: {
       tooltip,

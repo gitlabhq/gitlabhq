@@ -1,7 +1,11 @@
 <script>
 import { __ } from '~/locale';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
+  components: {
+    'gl-loading-icon': LoadingIcon,
+  },
   props: {
     isDisabled: {
       type: Boolean,

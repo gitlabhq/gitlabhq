@@ -3,9 +3,13 @@ import $ from 'jquery';
 import _ from 'underscore';
 import eventHub from '../eventhub';
 import Api from '../../api';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   name: 'BoardProjectSelect',
+  components: {
+    'gl-loading-icon': LoadingIcon,
+  },
   props: {
     groupId: {
       type: Number,

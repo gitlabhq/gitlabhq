@@ -1,6 +1,7 @@
 <script>
 import getIconForFile from './file_icon/file_icon_map';
 import icon from '../../vue_shared/components/icon.vue';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 /* This is a re-usable vue component for rendering a svg sprite
     icon
@@ -17,6 +18,7 @@ import icon from '../../vue_shared/components/icon.vue';
 export default {
   components: {
     icon,
+    'gl-loading-icon': LoadingIcon,
   },
   props: {
     fileName: {

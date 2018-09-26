@@ -1,11 +1,13 @@
 <script>
 import ciHeader from '../../vue_shared/components/header_ci_component.vue';
 import eventHub from '../event_hub';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   name: 'PipelineHeaderSection',
   components: {
     ciHeader,
+    'gl-loading-icon': LoadingIcon,
   },
   props: {
     pipeline: {

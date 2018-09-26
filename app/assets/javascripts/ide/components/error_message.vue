@@ -1,7 +1,11 @@
 <script>
 import { mapActions } from 'vuex';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
+  components: {
+    'gl-loading-icon': LoadingIcon,
+  },
   props: {
     message: {
       type: Object,

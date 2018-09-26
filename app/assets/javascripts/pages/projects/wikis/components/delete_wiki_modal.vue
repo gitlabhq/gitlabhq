@@ -1,8 +1,15 @@
 <script>
 import _ from 'underscore';
 import { s__, sprintf } from '~/locale';
+import { Modal, ModalDirective } from '@gitlab-org/gitlab-ui';
 
 export default {
+  components: {
+    'gl-ui-modal': Modal,
+  },
+  directives: {
+    'gl-modal': ModalDirective,
+  },
   props: {
     deleteWikiUrl: {
       type: String,

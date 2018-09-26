@@ -1,6 +1,7 @@
 <script>
   import { s__ } from '../../locale';
   import icon from './icon.vue';
+  import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
   const ICON_ON = 'status_success_borderless';
   const ICON_OFF = 'status_failed_borderless';
@@ -10,6 +11,7 @@
   export default {
     components: {
       icon,
+      'gl-loading-icon': LoadingIcon,
     },
 
     model: {

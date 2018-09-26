@@ -11,11 +11,13 @@ import { mergeUrlParams } from '~/lib/utils/url_utility';
 import eventHub from '../event_hub';
 import { COMMON_STR, CONTENT_LIST_CLASS } from '../constants';
 import groupsComponent from './groups.vue';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   components: {
     DeprecatedModal,
     groupsComponent,
+    'gl-loading-icon': LoadingIcon,
   },
   props: {
     action: {

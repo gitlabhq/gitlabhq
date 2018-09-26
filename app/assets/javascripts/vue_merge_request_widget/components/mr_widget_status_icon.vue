@@ -1,9 +1,11 @@
 <script>
   import ciIcon from '../../vue_shared/components/ci_icon.vue';
+  import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
   export default {
     components: {
       ciIcon,
+      'gl-loading-icon': LoadingIcon,
     },
     props: {
       status: {
