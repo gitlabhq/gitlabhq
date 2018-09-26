@@ -222,12 +222,12 @@ The main return value of a Vue component is the rendered output. In order to tes
 need to test the rendered output. [Vue][vue-test] guide's to unit test show us exactly that:
 
 ## Vue.js Expert Role
-One should apply to be a Vue.js expert by opening an MR when the MR's they create and review show:
+One should apply to be a Vue.js expert by opening an MR when the Merge Request's they create and review show:
 - Deep understanding of Vue and Vuex reactivy
 - Vue and Vuex code are structured according to both official and our guidelines
-- Full test coverage of a Vue and Vuex application
+- Full understanding of testing a Vue and Vuex application
 - Vuex code follows the [documented pattern](./vuex.md#actions-pattern-request-and-receive-namespaces)
-- Knowledge about the existing Vue and Vuex codebase and existing reusable components
+- Knowledge about the existing Vue and Vuex applications and existing reusable components
 
 
 [vue-docs]: http://vuejs.org/guide/index.html
