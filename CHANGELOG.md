@@ -249,6 +249,18 @@ entry.
 - Creates Vue component for artifacts block on job page.
 
 
+## 11.2.4 (2018-09-26)
+
+### Security (6 changes)
+
+- Redact confidential events in the API.
+- Set timeout for syntax highlighting.
+- Sanitize JSON data properly to fix XSS on Issue details page.
+- Fix stored XSS in merge requests from imported repository.
+- Fix xss vulnerability sourced from package.json.
+- Block loopback addresses in UrlBlocker.
+
+
 ## 11.2.3 (2018-08-28)
 
 ### Fixed (1 change)
