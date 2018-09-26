@@ -38,8 +38,13 @@ export { default as CheckingState } from './components/states/mr_widget_checking
 export { default as MRWidgetStore } from 'ee/vue_merge_request_widget/stores/mr_widget_store';
 export { default as MRWidgetService } from 'ee/vue_merge_request_widget/services/mr_widget_service';
 export { default as eventHub } from './event_hub';
+<<<<<<< HEAD
 export { default as getStateKey } from 'ee/vue_merge_request_widget/stores/get_state_key';
 export { default as stateMaps } from 'ee/vue_merge_request_widget/stores/state_maps';
+=======
+export { default as getStateKey } from './stores/get_state_key';
+export { default as stateMaps } from './stores/state_maps';
+>>>>>>> upstream/master
 export { default as SquashBeforeMerge } from './components/states/squash_before_merge.vue';
 export { default as notify } from '../lib/utils/notify';
 export { default as SourceBranchRemovalStatus } from './components/source_branch_removal_status.vue';
