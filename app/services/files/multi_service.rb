@@ -2,7 +2,7 @@
 
 module Files
   class MultiService < Files::BaseService
-    UPDATE_FILE_ACTIONS = %w(update move delete).freeze
+    UPDATE_FILE_ACTIONS = %w(update move delete chmod).freeze
 
     def create_commit!
       transformer = Lfs::FileTransformer.new(project, @branch_name)

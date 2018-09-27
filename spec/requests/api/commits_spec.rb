@@ -238,7 +238,7 @@ describe API::Commits do
 
     describe 'create' do
       let(:message) { 'Created file' }
-      let!(:invalid_c_params) do
+      let(:invalid_c_params) do
         {
           branch: 'master',
           commit_message: message,
@@ -251,7 +251,7 @@ describe API::Commits do
           ]
         }
       end
-      let!(:valid_c_params) do
+      let(:valid_c_params) do
         {
           branch: 'master',
           commit_message: message,
@@ -264,7 +264,7 @@ describe API::Commits do
           ]
         }
       end
-      let!(:valid_utf8_c_params) do
+      let(:valid_utf8_c_params) do
         {
           branch: 'master',
           commit_message: message,
@@ -315,7 +315,7 @@ describe API::Commits do
 
     describe 'delete' do
       let(:message) { 'Deleted file' }
-      let!(:invalid_d_params) do
+      let(:invalid_d_params) do
         {
           branch: 'markdown',
           commit_message: message,
@@ -327,7 +327,7 @@ describe API::Commits do
           ]
         }
       end
-      let!(:valid_d_params) do
+      let(:valid_d_params) do
         {
           branch: 'markdown',
           commit_message: message,
@@ -356,7 +356,7 @@ describe API::Commits do
 
     describe 'move' do
       let(:message) { 'Moved file' }
-      let!(:invalid_m_params) do
+      let(:invalid_m_params) do
         {
           branch: 'feature',
           commit_message: message,
@@ -370,7 +370,7 @@ describe API::Commits do
           ]
         }
       end
-      let!(:valid_m_params) do
+      let(:valid_m_params) do
         {
           branch: 'feature',
           commit_message: message,
@@ -401,7 +401,7 @@ describe API::Commits do
 
     describe 'update' do
       let(:message) { 'Updated file' }
-      let!(:invalid_u_params) do
+      let(:invalid_u_params) do
         {
           branch: 'master',
           commit_message: message,
@@ -414,7 +414,7 @@ describe API::Commits do
           ]
         }
       end
-      let!(:valid_u_params) do
+      let(:valid_u_params) do
         {
           branch: 'master',
           commit_message: message,
@@ -442,9 +442,57 @@ describe API::Commits do
       end
     end
 
+    describe 'chmod' do
+      let(:message) { 'Chmod +x file' }
+      let(:file_path) { 'files/ruby/popen.rb' }
+      let(:execute_filemode) { true }
+      let(:params) do
+        {
+          branch: 'master',
+          commit_message: message,
+          actions: [
+            {
+              action: 'chmod',
+              file_path: file_path,
+              execute_filemode: execute_filemode
+            }
+          ]
+        }
+      end
+
+      it 'responds with success' do
+        post api(url, user), params
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['title']).to eq(message)
+      end
+
+      context 'when execute_filemode is false' do
+        let(:execute_filemode) { false }
+
+        it 'responds with success' do
+          post api(url, user), params
+
+          expect(response).to have_gitlab_http_status(201)
+          expect(json_response['title']).to eq(message)
+        end
+      end
+
+      context "when the file doesn't exists" do
+        let(:file_path) { 'foo/bar.baz' }
+
+        it "responds with 400" do
+          post api(url, user), params
+
+          expect(response).to have_gitlab_http_status(400)
+          expect(json_response['message']).to eq("A file with this name doesn't exist")
+        end
+      end
+    end
+
     describe 'multiple operations' do
       let(:message) { 'Multiple actions' }
-      let!(:invalid_mo_params) do
+      let(:invalid_mo_params) do
         {
           branch: 'master',
           commit_message: message,
@@ -468,11 +516,16 @@ describe API::Commits do
               action: 'update',
               file_path: 'foo/bar.baz',
               content: 'puts 8'
+            },
+            {
+              action: 'chmod',
+              file_path: 'files/ruby/popen.rb',
+              execute_filemode: true
             }
           ]
         }
       end
-      let!(:valid_mo_params) do
+      let(:valid_mo_params) do
         {
           branch: 'master',
           commit_message: message,
@@ -496,6 +549,11 @@ describe API::Commits do
               action: 'update',
               file_path: 'files/ruby/popen.rb',
               content: 'puts 8'
+            },
+            {
+              action: 'chmod',
+              file_path: 'files/ruby/popen.rb',
+              execute_filemode: true
             }
           ]
         }
