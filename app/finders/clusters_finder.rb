@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ClustersFinder
+class ClustersFinder < UnionFinder
   def initialize(project, user, scope)
     @project = project
     @user = user
@@ -9,7 +9,9 @@ class ClustersFinder
 
   def execute
     clusters = project.clusters
-    filter_by_scope(clusters)
+    clusters = filter_by_scope(clusters)
+
+    Clusters::Cluster.from_union([clusters, project.group_clusters])
   end
 
   private
