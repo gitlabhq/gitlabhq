@@ -3338,9 +3338,6 @@ msgstr ""
 msgid "Jobs"
 msgstr ""
 
-msgid "Job|Are you sure you want to erase this job?"
-msgstr ""
-
 msgid "Job|Browse"
 msgstr ""
 

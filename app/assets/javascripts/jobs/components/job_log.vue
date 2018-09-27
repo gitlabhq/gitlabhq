@@ -6,7 +6,7 @@
         type: String,
         required: true,
       },
-      isReceivingBuildTrace: {
+      isComplete: {
         type: Boolean,
         required: true,
       },
@@ -22,7 +22,7 @@
     </code>
 
     <div
-      v-if="isReceivingBuildTrace"
+      v-if="isComplete"
       class="js-log-animation build-loader-animation"
     >
       <div class="dot"></div>
