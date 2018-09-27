@@ -119,7 +119,7 @@ class NotesFinder
   end
 
   def user_notes_filter
-    @current_user&.notes_filter(target)
+    @current_user&.notes_filter_for(target)
   end
 
   # Searches for notes matching the given query.

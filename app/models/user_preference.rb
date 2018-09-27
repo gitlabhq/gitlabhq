@@ -12,16 +12,17 @@ class UserPreference < ActiveRecord::Base
 
   def set_notes_filter(filter_id, issuable)
     # No need to update the column if the value is already set.
-    if filter_id && filter_id != notes_filter(issuable)
-      filter_name = notes_filter_for(issuable)
+    if filter_id && filter_id != notes_filter_for(issuable)
+      filter_name = notes_filter_field_for(issuable)
       update_column(filter_name, filter_id)
+      expire_polling_etag_cache(issuable)
     end
 
-    notes_filter(issuable)
+    notes_filter_for(issuable)
   end
 
   # Returns the current discussion filter for a given issuable type.
-  def notes_filter(issuable)
+  def notes_filter_for(issuable)
     case issuable
     when Issue
       issue_notes_filter
@@ -32,8 +33,15 @@ class UserPreference < ActiveRecord::Base
 
   private
 
-  def notes_filter_for(issuable)
+  def notes_filter_field_for(issuable)
     issuable_klass = issuable.model_name.param_key
     "#{issuable_klass}_notes_filter"
+  end
+
+  # We need to invalidate the cache for polling notes otherwise it will
+  # ignore the filter.
+  # The ideal would be to invalidate the cache for each user.
+  def expire_polling_etag_cache(issuable)
+    issuable.expire_note_etag_cache
   end
 end
