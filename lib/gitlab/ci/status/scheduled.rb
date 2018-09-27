@@ -11,7 +11,7 @@ module Gitlab
         end
 
         def icon
-          'timer' # TODO: 'status_scheduled'
+          'status_scheduled'
         end
 
         def favicon
