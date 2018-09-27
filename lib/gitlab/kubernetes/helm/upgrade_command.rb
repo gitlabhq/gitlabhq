@@ -1,4 +1,4 @@
-require_dependency 'gitlab/kubernetes/helm.rb'
+# frozen_string_literal: true
 
 module Gitlab
   module Kubernetes
