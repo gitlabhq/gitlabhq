@@ -42,7 +42,7 @@ module Gitlab
           .where(
             'EXISTS (?) AND NOT EXISTS (?)',
             Migratable::CommitStatus.of_type('GenericCommitStatus').has_pipeline.select(1),
-            Migratable::CommitStatus.of_type('Ci::Build').has_pipeline.select(1),
+            Migratable::CommitStatus.of_type('Ci::Build').has_pipeline.select(1)
           )
       end
     end

@@ -4,29 +4,34 @@ require 'spec_helper'
 
 describe Gitlab::BackgroundMigration::PopulateExternalPipelineSource, :migration, schema: 20180916011959 do
   let(:migration) { described_class.new }
-  let(:projects) { table(:projects) }
-  let(:pipelines) { table(:ci_pipelines) }
-  let(:statuses) { table(:ci_builds) }
-  let(:builds) { table(:ci_builds) }
 
-  let!(:internal_pipeline) { pipelines.create(id: 1, source: described_class::Migratable::Pipeline.sources[:web]) }
-  let!(:external_pipeline) { pipelines.create(id: 2, source: nil) }
-  let!(:second_external_pipeline) { pipelines.create(id: 3, source: nil) }
-  let!(:status) { statuses.create(id: 1, commit_id: 2, type: 'GenericCommitStatus') }
-  let!(:build) { builds.create(id: 2, commit_id: 1, type: 'Ci::Build') }
+  let!(:internal_pipeline) { create(:ci_pipeline, source: Ci::Pipeline.sources[:web]) }
+  let!(:external_pipeline) do
+    build(:ci_pipeline, source: Ci::Pipeline.sources[:unknown])
+      .tap { |pipeline| pipeline.save(validate: false) }
+  end
+  let!(:second_external_pipeline) do
+    build(:ci_pipeline, source: Ci::Pipeline.sources[:unknown])
+      .tap { |pipeline| pipeline.save(validate: false) }
+  end
 
-  subject { migration.perform(1, 2) }
+  before do
+    create(:generic_commit_status, pipeline: external_pipeline)
+    create(:ci_build, pipeline: internal_pipeline)
+  end
+
+  subject { migration.perform(external_pipeline.id, second_external_pipeline.id) }
 
   it 'populates the pipeline source' do
     subject
 
-    expect(external_pipeline.reload.source).to eq(described_class::Migratable::Pipeline.sources[:external])
+    expect(external_pipeline.reload.source).to eq('external')
   end
 
   it 'only processes a single batch of links at a time' do
     subject
 
-    expect(second_external_pipeline.reload.source).to eq(nil)
+    expect(second_external_pipeline.reload.source).to eq('unknown')
   end
 
   it 'can be repeated without effect' do
