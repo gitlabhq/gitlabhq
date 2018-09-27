@@ -29,36 +29,10 @@ module Ci
       if HasStatus::COMPLETED_STATUSES.include?(current_status)
         created_builds_in_stage(index).select do |build|
           Gitlab::OptimisticLocking.retry_lock(build) do |subject|
-            process_build(subject, current_status)
+            Ci::ProcessBuildService.new(project, @user)
+              .execute(build, current_status)
           end
         end
-      end
-    end
-
-    def process_build(build, current_status)
-      if valid_statuses_for_when(build.when).include?(current_status)
-        Ci::ProcessBuildService.new(project, @user).execute(build)
-        true
-      else
-        build.skip
-        false
-      end
-    end
-
-    def valid_statuses_for_when(value)
-      case value
-      when 'on_success'
-        %w[success skipped]
-      when 'on_failure'
-        %w[failed]
-      when 'always'
-        %w[success failed skipped]
-      when 'manual'
-        %w[success skipped]
-      when 'delayed'
-        %w[success skipped]
-      else
-        []
       end
     end
 
