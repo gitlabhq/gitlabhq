@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-26 11:22\n"
+"PO-Revision-Date: 2018-09-27 10:14\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -125,7 +125,7 @@ msgid "%{group_docs_link_start}Groups%{group_docs_link_end} allow you to manage 
 msgstr "Les %{group_docs_link_start}groupes%{group_docs_link_end} vous permettent de gérer plusieurs projets et d’y collaborer. Les membres d’un groupe ont accès à tous ses projets."
 
 msgid "%{issuableType} will be removed! Are you sure?"
-msgstr ""
+msgstr "%{issuableType} sera supprimé ! Êtes‐vous sûr ?"
 
 msgid "%{loadingIcon} Started"
 msgstr "%{loadingIcon} Démarré"
@@ -194,10 +194,10 @@ msgid "%{unstaged} unstaged and %{staged} staged changes"
 msgstr "%{staged} changements prêts à être validés et %{unstaged} autres changements"
 
 msgid "%{usage_ping_link_start}Learn more%{usage_ping_link_end} about what information is shared with GitLab Inc."
-msgstr ""
+msgstr "%{usage_ping_link_start}En savoir plus%{usage_ping_link_end} sur les informations partagées avec GitLab Inc."
 
 msgid "+ %{count} more"
-msgstr ""
+msgstr "+ %{count} de plus"
 
 msgid "+ %{moreCount} more"
 msgstr "+ %{moreCount} de plus"
@@ -318,16 +318,16 @@ msgid "<strong>Removes</strong> source branch"
 msgstr "<strong>Supprime</strong> la branche source"
 
 msgid "A 'Runner' is a process which runs a job. You can set up as many Runners as you need."
-msgstr ""
+msgstr "Un « exécuteur » est un processus qui exécute une tâche. Vous pouvez configurer autant d’exécuteurs que nécessaire."
 
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr "Un ensemble de graphiques concernant l’intégration continue (CI)"
 
 msgid "A default branch cannot be chosen for an empty project."
-msgstr ""
+msgstr "Une branche par défaut ne peut pas être choisie pour un projet vide."
 
 msgid "A deleted user"
-msgstr ""
+msgstr "Un utilisateur supprimé"
 
 msgid "A new branch will be created in your fork and a new merge request will be started."
 msgstr "Une nouvelle branche sera créée dans votre dépôt divergent (fork) et une nouvelle demande de fusion sera lancée."
