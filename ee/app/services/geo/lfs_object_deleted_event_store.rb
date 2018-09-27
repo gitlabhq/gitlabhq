@@ -1,5 +1,7 @@
 module Geo
   class LfsObjectDeletedEventStore < EventStore
+    extend ::Gitlab::Utils::Override
+
     self.event_type = :lfs_object_deleted_event
 
     attr_reader :lfs_object
@@ -8,7 +10,8 @@ module Geo
       @lfs_object = lfs_object
     end
 
-    def create
+    override :create!
+    def create!
       return unless lfs_object.local_store?
 
       super

@@ -11,7 +11,7 @@ module EE
               project,
               old_attachments_path: old_disk_path,
               new_attachments_path: new_disk_path
-            ).create
+            ).create!
           end
         end
       end

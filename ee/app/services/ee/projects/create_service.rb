@@ -38,7 +38,7 @@ module EE
       private
 
       def log_geo_event(project)
-        ::Geo::RepositoryCreatedEventStore.new(project).create
+        ::Geo::RepositoryCreatedEventStore.new(project).create!
       end
 
       override :after_create_actions

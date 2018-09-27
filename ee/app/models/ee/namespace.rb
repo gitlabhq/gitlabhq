@@ -57,7 +57,7 @@ module EE
             project,
             old_path: project.path,
             old_path_with_namespace: old_path_with_namespace_for(project)
-          ).create
+          ).create!
         end
       end
 

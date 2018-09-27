@@ -19,7 +19,7 @@ describe Geo::RepositoryCreatedEventStore do
       end
 
       it 'tracks information for the created project' do
-        subject.create
+        subject.create!
 
         expect(Geo::RepositoryCreatedEvent.last).to have_attributes(
           project_id: project.id,
@@ -33,7 +33,7 @@ describe Geo::RepositoryCreatedEventStore do
       it 'does not set a wiki path if the wiki is disabled' do
         project.update!(wiki_enabled: false)
 
-        subject.create
+        subject.create!
 
         expect(Geo::RepositoryCreatedEvent.last.wiki_path).to be_nil
       end

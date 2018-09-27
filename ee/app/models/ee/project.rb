@@ -602,7 +602,7 @@ module EE
         self,
         old_path: path_before,
         old_path_with_namespace: full_path_before
-      ).create
+      ).create!
     end
   end
 end

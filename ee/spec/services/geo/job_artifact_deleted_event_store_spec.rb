@@ -22,11 +22,11 @@ describe Geo::JobArtifactDeletedEventStore do
       it 'does not create an event when LFS object is not on a local store' do
         allow(job_artifact).to receive(:local_store?).and_return(false)
 
-        expect { subject.create }.not_to change(Geo::JobArtifactDeletedEvent, :count)
+        expect { subject.create! }.not_to change(Geo::JobArtifactDeletedEvent, :count)
       end
 
       it 'tracks LFS object attributes' do
-        subject.create
+        subject.create!
 
         expect(Geo::JobArtifactDeletedEvent.last).to have_attributes(
           job_artifact_id: job_artifact.id,
@@ -49,7 +49,7 @@ describe Geo::JobArtifactDeletedEventStore do
         expect(Gitlab::Geo::Logger).to receive(:error)
           .with(expected_message).and_call_original
 
-        subject.create
+        subject.create!
       end
     end
   end

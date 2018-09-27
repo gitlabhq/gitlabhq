@@ -25,7 +25,7 @@ describe Geo::RepositoryDeletedEventStore do
       end
 
       it 'tracks information for the deleted project' do
-        subject.create
+        subject.create!
 
         expect(Geo::RepositoryDeletedEvent.last).to have_attributes(
           project_id: project_id,
