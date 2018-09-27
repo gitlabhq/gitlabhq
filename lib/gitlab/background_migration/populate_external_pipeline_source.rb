@@ -34,9 +34,8 @@ module Gitlab
       end
 
       def perform(start_id, stop_id)
-        external_pipelines(start_id, stop_id).each do |pipeline|
-          pipeline.update_attribute(:source, Migratable::Pipeline.sources[:external])
-        end
+        external_pipelines(start_id, stop_id)
+          .update_all(:source, Migratable::Pipeline.sources[:external])
       end
 
       private
