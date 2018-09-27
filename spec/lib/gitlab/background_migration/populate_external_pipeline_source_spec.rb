@@ -12,7 +12,7 @@ describe Gitlab::BackgroundMigration::PopulateExternalPipelineSource, :migration
   let!(:internal_pipeline) { pipelines.create(id: 1, source: described_class::Migratable::Pipeline.sources[:web]) }
   let!(:external_pipeline) { pipelines.create(id: 2, source: nil) }
   let!(:second_external_pipeline) { pipelines.create(id: 3, source: nil) }
-  let!(:status) { statuses.create(id: 1, commit_id: 2, type: 'CommitStatus') }
+  let!(:status) { statuses.create(id: 1, commit_id: 2, type: 'GenericCommitStatus') }
   let!(:build) { builds.create(id: 2, commit_id: 1, type: 'Ci::Build') }
 
   subject { migration.perform(1, 2) }

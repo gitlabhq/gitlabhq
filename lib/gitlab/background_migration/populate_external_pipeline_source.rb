@@ -24,18 +24,15 @@ module Gitlab
         class CommitStatus < ActiveRecord::Base
           self.table_name = 'ci_builds'
           self.inheritance_column = :_type_disabled
-        end
 
-        class Build < CommitStatus
-        end
-
-        class GenericCommitStatus < CommitStatus
+          scope :has_pipeline, -> { where('ci_builds.commit_id=ci_pipelines.id') }
+          scope :of_type, -> (type) { where('type=?', type) }
         end
       end
 
       def perform(start_id, stop_id)
         external_pipelines(start_id, stop_id)
-          .update_all(:source, Migratable::Pipeline.sources[:external])
+          .update_all(source: Migratable::Pipeline.sources[:external])
       end
 
       private
@@ -44,8 +41,8 @@ module Gitlab
         Migratable::Pipeline.where(id: (start_id..stop_id))
           .where(
             'EXISTS (?) AND NOT EXISTS (?)',
-            Migratable::GenericCommitStatus.where("type='CommitStatus'").where('ci_builds.commit_id=ci_pipelines.id').select(1),
-            Migratable::Build.where("type='Ci::Build'").where('ci_builds.commit_id=ci_pipelines.id').select(1)
+            Migratable::CommitStatus.of_type('GenericCommitStatus').has_pipeline.select(1),
+            Migratable::CommitStatus.of_type('Ci::Build').has_pipeline.select(1),
           )
       end
     end
