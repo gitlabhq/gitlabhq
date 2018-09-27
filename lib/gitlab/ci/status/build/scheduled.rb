@@ -5,7 +5,7 @@ module Gitlab
         class Scheduled < Status::Extended
           def illustration
             {
-              image: 'illustrations/scheduled-job_countdown.svg',
+              image: 'illustrations/illustrations_scheduled-job_countdown.svg',
               size: 'svg-394',
               title: _("This is a scheduled to run in ") + " #{execute_in}",
               content: _("This job will automatically run after it's timer finishes. " \
