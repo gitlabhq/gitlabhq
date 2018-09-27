@@ -195,7 +195,7 @@ export default {
 <template>
   <div
     v-if="!showEmptyState"
-    :key="updateDashboardKey"
+    :key="forceRedraw"
     class="prometheus-graphs prepend-top-default"
   >
     <div
