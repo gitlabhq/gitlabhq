@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-27 10:53\n"
+"PO-Revision-Date: 2018-09-27 11:02\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -6713,7 +6713,7 @@ msgid "Select the branch you want to set as the default for this project. All me
 msgstr ""
 
 msgid "Select the custom project template source group."
-msgstr ""
+msgstr "Sélectionnez le groupe source de modèles de projet personnalisés."
 
 msgid "Selecting a GitLab user will add a link to the GitLab user in the descriptions of issues and comments (e.g. \"By <a href=\"#\">@johnsmith</a>\"). It will also associate and/or assign these issues and comments with the selected user."
 msgstr "La sélection d’un utilisateur de GitLab va ajouter un lien vers cet utilisateur dans les descriptions des tickets et des commentaires (p. ex., « Par <a href=\"#\">@johnsmith</a> »). Les tickets et commentaires seront également associés ou assignés à cet utilisateur."
@@ -6776,7 +6776,7 @@ msgid "Set up a %{type} Runner manually"
 msgstr ""
 
 msgid "Set up a specific Runner automatically"
-msgstr ""
+msgstr "Configurer automatiquement un exécuteur spécifique"
 
 msgid "Set up assertions/attributes/claims (email, first_name, last_name) and NameID according to %{docsLinkStart}the documentation %{icon}%{docsLinkEnd}"
 msgstr "Configure les assertions, attributs et revendications (courriel, prénom et nom), ainsi que le NameID, conformément à %{docsLinkStart}la documentation %{icon}%{docsLinkEnd}"
@@ -6907,7 +6907,7 @@ msgid "Something went wrong trying to change the confidentiality of this issue"
 msgstr "Une erreur est survenue lors de la tentative de modification de la confidentialité de ce ticket"
 
 msgid "Something went wrong trying to change the locked state of this %{issuableDisplayName}"
-msgstr ""
+msgstr "Une erreur est survenue lors de la tentative de modification de l’état de verrouillage de ce·t·te %{issuableDisplayName}"
 
 msgid "Something went wrong when toggling the button"
 msgstr "Une erreur s’est produite lors du basculement du bouton"
@@ -6916,7 +6916,7 @@ msgid "Something went wrong while closing the %{issuable}. Please try again late
 msgstr "Une erreur s’est produite lors de la fermeture du / de la %{issuable}. Veuillez réessayer plus tard"
 
 msgid "Something went wrong while fetching %{listType} list"
-msgstr ""
+msgstr "Une erreur est survenue lors de la récupération de la liste de %{listType}"
 
 msgid "Something went wrong while fetching group member contributions"
 msgstr "Une erreur s’est produite lors de la récupération des contributions des membres du groupe"
