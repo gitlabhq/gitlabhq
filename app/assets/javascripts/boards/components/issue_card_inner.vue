@@ -152,7 +152,7 @@
           class="js-no-trigger">{{ issue.title }}</a>
         <span
           v-if="issueId"
-          class="board-card-number"
+          class="board-card-number append-right-5"
         >
           {{ issue.referencePath }}
         </span>
