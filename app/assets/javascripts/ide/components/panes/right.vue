@@ -1,5 +1,6 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
+import { __ } from '~/locale';
 import tooltip from '../../../vue_shared/directives/tooltip';
 import Icon from '../../../vue_shared/components/icon.vue';
 import { rightSidebarViews } from '../../constants';
@@ -21,6 +22,13 @@ export default {
     MergeRequestInfo,
     Clientside,
   },
+  props: {
+    extensionTabs: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+  },
   computed: {
     ...mapState(['rightPane', 'currentMergeRequestId', 'clientsidePreviewEnabled']),
     ...mapGetters(['packageJson']),
@@ -33,6 +41,36 @@ export default {
     showLivePreview() {
       return this.packageJson && this.clientsidePreviewEnabled;
     },
+    defaultTabs() {
+      return [
+        {
+          show: this.currentMergeRequestId,
+          title: __('Merge Request'),
+          isActive: this.rightPane === rightSidebarViews.mergeRequestInfo,
+          view: rightSidebarViews.mergeRequestInfo,
+          icon: 'text-description',
+        },
+        {
+          show: true,
+          title: __('Pipelines'),
+          isActive: this.pipelinesActive,
+          view: rightSidebarViews.pipelines,
+          icon: 'rocket',
+        },
+        {
+          show: this.showLivePreview,
+          title: __('Live preview'),
+          isActive: this.rightPane === rightSidebarViews.clientSidePreview,
+          view: rightSidebarViews.clientSidePreview,
+          icon: 'live-preview',
+        },
+      ];
+    },
+    tabs() {
+      return this.defaultTabs
+        .concat(this.extensionTabs)
+        .filter(tab => tab.show);
+    },
   },
   methods: {
     ...mapActions(['setRightPane']),
@@ -42,7 +80,6 @@ export default {
       this.setRightPane(view);
     },
   },
-  rightSidebarViews,
 };
 </script>
 
@@ -64,64 +101,25 @@ export default {
     <nav class="ide-activity-bar">
       <ul class="list-unstyled">
         <li
-          v-if="currentMergeRequestId"
+          v-for="tab of tabs"
+          :key="tab.title"
         >
           <button
             v-tooltip
-            :title="__('Merge Request')"
-            :aria-label="__('Merge Request')"
+            :title="tab.title"
+            :aria-label="tab.title"
             :class="{
-              active: rightPane === $options.rightSidebarViews.mergeRequestInfo
+              active: tab.isActive
             }"
             data-container="body"
             data-placement="left"
             class="ide-sidebar-link is-right"
             type="button"
-            @click="clickTab($event, $options.rightSidebarViews.mergeRequestInfo)"
+            @click="clickTab($event, tab.view)"
           >
             <icon
               :size="16"
-              name="text-description"
-            />
-          </button>
-        </li>
-        <li>
-          <button
-            v-tooltip
-            :title="__('Pipelines')"
-            :aria-label="__('Pipelines')"
-            :class="{
-              active: pipelinesActive
-            }"
-            data-container="body"
-            data-placement="left"
-            class="ide-sidebar-link is-right"
-            type="button"
-            @click="clickTab($event, $options.rightSidebarViews.pipelines)"
-          >
-            <icon
-              :size="16"
-              name="rocket"
-            />
-          </button>
-        </li>
-        <li v-if="showLivePreview">
-          <button
-            v-tooltip
-            :title="__('Live preview')"
-            :aria-label="__('Live preview')"
-            :class="{
-              active: rightPane === $options.rightSidebarViews.clientSidePreview
-            }"
-            data-container="body"
-            data-placement="left"
-            class="ide-sidebar-link is-right"
-            type="button"
-            @click="clickTab($event, $options.rightSidebarViews.clientSidePreview)"
-          >
-            <icon
-              :size="16"
-              name="live-preview"
+              :name="tab.icon"
             />
           </button>
         </li>
