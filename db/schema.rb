@@ -344,7 +344,7 @@ ActiveRecord::Schema.define(version: 20180924201039) do
   add_index "ci_builds", ["commit_id", "type", "name", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_name_and_ref", using: :btree
   add_index "ci_builds", ["commit_id", "type", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_ref", using: :btree
   add_index "ci_builds", ["id"], name: "partial_index_ci_builds_on_id_with_legacy_artifacts", where: "(artifacts_file <> ''::text)", using: :btree
-  add_index "ci_builds", ["id"], name: "partial_index_ci_builds_on_id_with_scheduled_jobs", where: "(scheduled_at <> NULL::timestamp with time zone)", using: :btree
+  add_index "ci_builds", ["id"], name: "partial_index_ci_builds_on_id_with_scheduled_jobs", where: "(scheduled_at IS NOT NULL)", using: :btree
   add_index "ci_builds", ["project_id", "id"], name: "index_ci_builds_on_project_id_and_id", using: :btree
   add_index "ci_builds", ["protected"], name: "index_ci_builds_on_protected", using: :btree
   add_index "ci_builds", ["runner_id"], name: "index_ci_builds_on_runner_id", using: :btree
