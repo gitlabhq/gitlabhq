@@ -18,9 +18,10 @@ describe('Erased block', () => {
   describe('with job erased by user', () => {
     beforeEach(() => {
       vm = mountComponent(Component, {
-        erasedByUser: true,
-        username: 'root',
-        linkToUser: 'gitlab.com/root',
+        user: {
+          username: 'root',
+          web_url: 'gitlab.com/root',
+        },
         erasedAt,
       });
     });
@@ -40,7 +41,6 @@ describe('Erased block', () => {
   describe('with erased job', () => {
     beforeEach(() => {
       vm = mountComponent(Component, {
-        erasedByUser: false,
         erasedAt,
       });
     });
