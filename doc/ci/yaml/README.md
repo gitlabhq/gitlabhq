@@ -188,7 +188,7 @@ used for time of the job. The configuration of this feature is covered in
 
 ## `before_script` and `after_script`
 
-> Introduced in GitLab 8.7 and requires Gitlab Runner v1.2
+> Introduced in GitLab 8.7 and requires GitLab Runner v1.2
 
 `before_script` is used to define the command that should be run before all
 jobs, including deploy jobs, but after the restoration of [artifacts](#artifacts).

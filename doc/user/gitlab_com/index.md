@@ -221,7 +221,7 @@ and the following environment variables:
 
 ## Cron jobs
 
-Periodically executed jobs by Sidekiq, to self-heal Gitlab, do external
+Periodically executed jobs by Sidekiq, to self-heal GitLab, do external
 synchronizations, run scheduled pipelines, etc.:
 
 | Setting                     | GitLab.com   | Default      |

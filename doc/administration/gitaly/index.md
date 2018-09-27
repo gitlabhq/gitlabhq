@@ -219,7 +219,7 @@ repository from your GitLab server over HTTP.
 
 If you are running Gitaly [as a remote
 service](#running-gitaly-on-its-own-server) you may want to disable
-the local Gitaly service that runs on your Gitlab server by default.
+the local Gitaly service that runs on your GitLab server by default.
 
 > 'Disabling Gitaly' only makes sense when you run GitLab in a custom
 cluster configuration, where different services run on different
