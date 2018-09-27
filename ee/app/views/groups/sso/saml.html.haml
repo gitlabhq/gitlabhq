@@ -7,4 +7,4 @@
 
     %p= _("This group allows you to sign in with your %{group_name} Single Sign-On account. This will redirect you to an external sign in page.") % { group_name: @group_name }
 
-    = saml_link _('Sign in with Single Sign-On'), @group_path, html_class: 'btn btn-success btn-block'
+    = saml_link _('Sign in with Single Sign-On'), @group_path, html_class: 'btn btn-success btn-block qa-saml-sso-signin-button'
