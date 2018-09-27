@@ -25,9 +25,11 @@ module Gitlab
 
           private
 
+          include TimeHelper
+
           def execute_in
-            diff = [0, subject.scheduled_at - Time.now].max
-            Time.at(diff).utc.strftime("%H:%M:%S")
+            remaining_seconds = [0, subject.scheduled_at - Time.now].max
+            duration_in_numbers(remaining_seconds, true)
           end
         end
       end

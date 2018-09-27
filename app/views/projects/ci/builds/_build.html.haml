@@ -106,7 +106,7 @@
             .btn.btn-default.has-tooltip{ disabled: true,
               title: job.scheduled_at }
               = sprite_icon('planning')
-              = duration_in_numbers(job.execute_in)
+              = duration_in_numbers(job.execute_in, true)
             .btn.btn-default.btn-build.has-tooltip{ title: s_('DelayedJobs|Start now') }
               = sprite_icon('play')
             .btn.btn-default.btn-build.has-tooltip{ title: s_('DelayedJobs|Unschedule') }
