@@ -68,8 +68,12 @@ module Ci
         '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').archive)
     end
 
+    scope :with_existing_job_artifacts, ->(query) do
+      where('EXISTS (?)', ::Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').merge(query))
+    end
+
     scope :with_archived_trace, ->() do
-      where('EXISTS (?)', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').trace)
+      with_existing_job_artifacts(Ci::JobArtifact.trace)
     end
 
     scope :without_archived_trace, ->() do
@@ -77,9 +81,11 @@ module Ci
     end
 
     scope :with_test_reports, ->() do
-      includes(:job_artifacts_junit) # Prevent N+1 problem when iterating each ci_job_artifact row
-        .where('EXISTS (?)', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').test_reports)
+      with_existing_job_artifacts(Ci::JobArtifact.test_reports)
+        .eager_load_job_artifacts
     end
+
+    scope :eager_load_job_artifacts, -> { includes(:job_artifacts) }
 
     scope :with_artifacts_stored_locally, -> { with_artifacts_archive.where(artifacts_file_store: [nil, LegacyArtifactUploader::Store::LOCAL]) }
     scope :with_archived_trace_stored_locally, -> { with_archived_trace.where(artifacts_file_store: [nil, LegacyArtifactUploader::Store::LOCAL]) }
@@ -404,8 +410,8 @@ module Ci
       trace.exist?
     end
 
-    def has_test_reports?
-      job_artifacts.test_reports.any?
+    def has_job_artifacts?
+      job_artifacts.any?
     end
 
     def has_old_trace?
@@ -469,28 +475,23 @@ module Ci
       end
     end
 
-    def erase_artifacts!
-      remove_artifacts_file!
-      remove_artifacts_metadata!
-      save
-    end
-
-    def erase_test_reports!
-      # TODO: Use fast_destroy_all in the context of https://gitlab.com/gitlab-org/gitlab-ce/issues/35240
-      job_artifacts_junit&.destroy
+    # and use that for `ExpireBuildInstanceArtifactsWorker`?
+    def erase_erasable_artifacts!
+      job_artifacts.erasable.destroy_all # rubocop: disable DestroyAll
+      erase_old_artifacts!
     end
 
     def erase(opts = {})
       return false unless erasable?
 
-      erase_artifacts!
-      erase_test_reports!
+      job_artifacts.destroy_all # rubocop: disable DestroyAll
+      erase_old_artifacts!
       erase_trace!
       update_erased!(opts[:erased_by])
     end
 
     def erasable?
-      complete? && (artifacts? || has_test_reports? || has_trace?)
+      complete? && (artifacts? || has_job_artifacts? || has_trace?)
     end
 
     def erased?
@@ -648,8 +649,8 @@ module Ci
 
     def collect_test_reports!(test_reports)
       test_reports.get_suite(group_name).tap do |test_suite|
-        each_test_report do |file_type, blob|
-          Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, test_suite)
+        each_report(Ci::JobArtifact::TEST_REPORT_FILE_TYPES) do |file_type, blob|
+          Gitlab::Ci::Parsers::Test.fabricate!(file_type).parse!(blob, test_suite)
         end
       end
     end
@@ -669,6 +670,13 @@ module Ci
 
     private
 
+    def erase_old_artifacts!
+      # TODO: To be removed once we get rid of
+      remove_artifacts_file!
+      remove_artifacts_metadata!
+      save
+    end
+
     def successful_deployment_status
       if success? && last_deployment&.last?
         return :last
@@ -679,12 +687,17 @@ module Ci
       :creating
     end
 
-    def each_test_report
-      Ci::JobArtifact::TEST_REPORT_FILE_TYPES.each do |file_type|
-        public_send("job_artifacts_#{file_type}").each_blob do |blob| # rubocop:disable GitlabSecurity/PublicSend
-          yield file_type, blob
+    def each_report(report_types)
+      job_artifacts_for_types(report_types).each do |report_artifact|
+        report_artifact.each_blob do |blob|
+          yield report_artifact.file_type, blob
         end
       end
+    end
+
+    def job_artifacts_for_types(report_types)
+      # Use select to leverage cached associations and avoid N+1 queries
+      job_artifacts.select { |artifact| artifact.file_type.in?(report_types) }
     end
 
     def update_artifacts_size
