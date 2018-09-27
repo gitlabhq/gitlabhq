@@ -8,7 +8,7 @@ module Gitlab
           end
 
           def label
-            s_('CiStatusLabel|waiting for manual action')
+            s_('CiStatusLabel|waiting for manual action or delayed job')
           end
 
           def self.matches?(pipeline, user)

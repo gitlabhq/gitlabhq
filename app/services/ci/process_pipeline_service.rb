@@ -24,7 +24,7 @@ module Ci
     def process_stage(index)
       current_status = status_for_prior_stages(index)
 
-      return if HasStatus::BLOCKED_STATUS == current_status
+      return if HasStatus::BLOCKED_STATUS.include?(current_status)
 
       if HasStatus::COMPLETED_STATUSES.include?(current_status)
         created_builds_in_stage(index).select do |build|
