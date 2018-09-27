@@ -16,12 +16,12 @@ describe Gitlab::Ci::External::Processor do
     end
 
     context 'when an invalid local file is defined' do
-      let(:values) { { include: '/vendor/gitlab-ci-yml/non-existent-file.yml', image: 'ruby:2.2' } }
+      let(:values) { { include: '/lib/gitlab/ci/templates/non-existent-file.yml', image: 'ruby:2.2' } }
 
       it 'should raise an error' do
         expect { processor.perform }.to raise_error(
           described_class::FileError,
-          "Local file '/vendor/gitlab-ci-yml/non-existent-file.yml' is not valid."
+          "Local file '/lib/gitlab/ci/templates/non-existent-file.yml' is not valid."
         )
       end
     end
@@ -79,7 +79,7 @@ describe Gitlab::Ci::External::Processor do
     end
 
     context 'with a valid local external file is defined' do
-      let(:values) { { include: '/vendor/gitlab-ci-yml/template.yml', image: 'ruby:2.2' } }
+      let(:values) { { include: '/lib/gitlab/ci/templates/template.yml', image: 'ruby:2.2' } }
       let(:local_file_content) do
         <<-HEREDOC
         before_script:
@@ -145,7 +145,7 @@ describe Gitlab::Ci::External::Processor do
     end
 
     context 'when external files are defined but not valid' do
-      let(:values) { { include: '/vendor/gitlab-ci-yml/template.yml', image: 'ruby:2.2' } }
+      let(:values) { { include: '/lib/gitlab/ci/templates/template.yml', image: 'ruby:2.2' } }
 
       let(:local_file_content) { 'invalid content file ////' }
 

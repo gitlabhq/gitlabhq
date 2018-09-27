@@ -138,6 +138,7 @@ export default {
   },
   mounted() {
     this.resizeThrottled = _.debounce(this.resize, 100);
+<<<<<<< HEAD
     this.servicePromises = [
       this.service
         .getGraphsData()
@@ -148,6 +149,8 @@ export default {
         .then(data => this.store.storeDeploymentData(data))
         .catch(() => Flash(s__('Metrics|There was an error getting deployment information.'))),
     ];
+=======
+>>>>>>> upstream/master
     if (!this.hasMetrics) {
       this.state = 'gettingStarted';
     } else {
@@ -195,7 +198,11 @@ export default {
 <template>
   <div
     v-if="!showEmptyState"
+<<<<<<< HEAD
     :key="updateDashboardKey"
+=======
+    :key="forceRedraw"
+>>>>>>> upstream/master
     class="prometheus-graphs prepend-top-default"
   >
     <div
