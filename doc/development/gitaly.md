@@ -9,7 +9,7 @@ status of the migration.
 
 ## Developing new Git features
 
-Starting with Gitlab 10.8, all new Git features should be developed in
+Starting with GitLab 10.8, all new Git features should be developed in
 Gitaly.
 
 > This is a new process that is not clearly defined yet. If you want

@@ -612,7 +612,7 @@ consul['configuration'] = {
 }
 ```
 
-[Reconfigure Omnibus GitLab][reconfigure Gitlab] for the changes to take effect.
+[Reconfigure Omnibus GitLab][reconfigure GitLab] for the changes to take effect.
 
 ##### Example recommended setup for PostgreSQL servers
 
@@ -648,7 +648,7 @@ consul['configuration'] = {
 }
 ```
 
-[Reconfigure Omnibus GitLab][reconfigure Gitlab] for the changes to take effect.
+[Reconfigure Omnibus GitLab][reconfigure GitLab] for the changes to take effect.
 
 ###### Secondary nodes
 
@@ -661,7 +661,7 @@ configuration
 repmgr['master_on_initialization'] = false
 ```
 
-[Reconfigure Omnibus GitLab][reconfigure Gitlab] for the changes to take effect.
+[Reconfigure Omnibus GitLab][reconfigure GitLab] for the changes to take effect.
 
 ##### Example recommended setup for application server
 
@@ -699,7 +699,7 @@ consul['configuration'] = {
 }
 ```
 
-[Reconfigure Omnibus GitLab][reconfigure Gitlab] for the changes to take effect.
+[Reconfigure Omnibus GitLab][reconfigure GitLab] for the changes to take effect.
 
 ##### Example recommended setup manual steps
 
@@ -803,7 +803,7 @@ consul['configuration'] = {
 }
 ```
 
-[Reconfigure Omnibus GitLab][reconfigure Gitlab] for the changes to take effect.
+[Reconfigure Omnibus GitLab][reconfigure GitLab] for the changes to take effect.
 
 ###### Secondary nodes
 
@@ -851,7 +851,7 @@ consul['configuration'] = {
 }
 ```
 
-[Reconfigure Omnibus GitLab][reconfigure Gitlab] for the changes to take effect.
+[Reconfigure Omnibus GitLab][reconfigure GitLab] for the changes to take effect.
 
 ##### Example minimal setup manual steps
 

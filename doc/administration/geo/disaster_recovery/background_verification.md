@@ -2,7 +2,7 @@
 
 NOTE: **Note:**
 Automatic background verification of repositories and wikis was added in
-GitLab EE 10.6 but is enabled by default only on Gitlab EE 11.1. You can
+GitLab EE 10.6 but is enabled by default only on GitLab EE 11.1. You can
 disable or enable this feature manually by following
 [these instructions][feature-flag].
 

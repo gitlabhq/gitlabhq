@@ -44,7 +44,7 @@ application level.
 
 ## Allow mirrors to be set up for projects
 
-> [Introduced][ee-3586] in Gitlab 10.3.
+> [Introduced][ee-3586] in GitLab 10.3.
 
 This option is enabled by default. By disabling it, both pull and push mirroring will no longer
 work in every repository and can only be re-enabled on a per-project basis by an admin.
