@@ -1,0 +1,290 @@
+[
+  {
+    "id": "wzexrctyu",
+    "report_type": "sast",
+    "name": "Cipher with no integrity",
+    "description": "Insecure variable usage",
+    "severity": "medium",
+    "confidence": "high",
+    "solution": "GCM mode introduces an HMAC into the resulting encrypted data, providing integrity of the result.",
+    "scanner": {
+      "external_id": "find_sec_bugs",
+      "name": "Find Security Bugs"
+    },
+    "location": {
+      "file": "maven/src/main/java/com/gitlab/security_products/tests/App.java",
+      "start_line": 29,
+      "end_line": 29,
+      "class": "com.gitlab.security_products.tests.App",
+      "method": "insecureCypher"
+    },
+    "identifiers": [
+      {
+        "external_type": "find_sec_bugs_type",
+        "external_id": "CIPHER_INTEGRITY",
+        "name": "Find Security Bugs-CIPHER_INTEGRITY",
+        "primary": true,
+        "url": "https://find-sec-bugs.github.io/bugs.htm#CIPHER_INTEGRITY"
+      },
+      {
+        "external_type": "cwe",
+        "external_id": "353",
+        "name": "CWE-353",
+        "primary": false,
+        "url": "https://cwe.mitre.org/data/definitions/353.html"
+      }
+    ],
+    "links": [
+      {
+        "name": "Cipher does not check for integrity first?",
+        "url": "https://crypto.stackexchange.com/questions/31428/pbewithmd5anddes-cipher-does-not-check-for-integrity-first"
+      }
+    ],
+    "project_fingerprint": "a42cbe949d1471a4310e3bd6fc16619ad2691f3f",
+    "vulnerability_feedback_url": "https://gitlab.com/gitlab-org/security-products/analyzers/common/vulnerability_feedback",
+    "project": {
+      "name_with_namespace": "GitLab.org / security-products / binaries",
+      "web_url": "https://gitlab.com/gitlab-org/security-products/analyzers/common"
+    },
+    "dismissal_feedback": {
+      "id": 19,
+      "project_id": 6126012,
+      "author": {
+        "id": 30915,
+        "name": "Philippe Lafoucrière",
+        "username": "plafoucriere",
+        "state": "active",
+        "avatar_url": "https://secure.gravatar.com/avatar/79f933bb7e06a2400302f5b30f28689e?s=80\u0026d=identicon",
+        "web_url": "https://gitlab.com/plafoucriere",
+        "status_tooltip_html": null,
+        "path": "/plafoucriere"
+      },
+      "issue_id": null,
+      "pipeline": {
+        "id": 23035216,
+        "path": "/gitlab-org/security-products/analyzers/common/pipelines/23035216"
+      },
+      "category": "sast",
+      "feedback_type": "dismissal",
+      "branch": "gitlab-ee-5043_enrich_sast_reports",
+      "project_fingerprint": "1235d9f927a0dee633570a53c0773249e0a734a8"
+    },
+    "issue_feedback": null
+  },
+  {
+    "id": "jawodjbwkdjbawkdjba",
+    "report_type": "sast",
+    "name": "Cipher with no integrity",
+    "description": "The cipher does not provide data integrity update 1",
+    "severity": "unknown",
+    "confidence": "",
+    "solution": "GCM mode introduces an HMAC into the resulting encrypted data, providing integrity of the result.",
+    "scanner": {
+      "external_id": "find_sec_bugs",
+      "name": "Find Security Bugs"
+    },
+    "location": {
+      "file": "maven/src/main/java/com/gitlab/security_products/tests/App.java",
+      "start_line": 29,
+      "end_line": 29,
+      "class": "com.gitlab.security_products.tests.App",
+      "method": "insecureCypher"
+    },
+    "identifiers": [
+      {
+        "external_type": "find_sec_bugs_type",
+        "external_id": "CIPHER_INTEGRITY",
+        "name": "Find Security Bugs-CIPHER_INTEGRITY",
+        "primary": true,
+        "url": "https://find-sec-bugs.github.io/bugs.htm#CIPHER_INTEGRITY"
+      },
+      {
+        "external_type": "cwe",
+        "external_id": "353",
+        "name": "CWE-353",
+        "primary": false,
+        "url": "https://cwe.mitre.org/data/definitions/353.html"
+      }
+    ],
+    "links": [
+      {
+        "name": "Cipher does not check for integrity first?",
+        "url": "https://crypto.stackexchange.com/questions/31428/pbewithmd5anddes-cipher-does-not-check-for-integrity-first"
+      }
+    ],
+    "project_fingerprint": "a42cbe949d1471a4310e3bd6fc16619ad2691f3f",
+    "vulnerability_feedback_url": "https://gitlab.com/gitlab-org/security-products/analyzers/common/vulnerability_feedback",
+    "project": {
+      "name_with_namespace": "GitLab.org / Security Products / Analyzers / Common",
+      "web_url": "https://gitlab.com/gitlab-org/security-products/analyzers/common"
+    },
+    "dismissal_feedback": {
+      "id": 19,
+      "project_id": 6126012,
+      "author": {
+        "id": 30915,
+        "name": "Philippe Lafoucrière",
+        "username": "plafoucriere",
+        "state": "active",
+        "avatar_url": "https://secure.gravatar.com/avatar/79f933bb7e06a2400302f5b30f28689e?s=80\u0026d=identicon",
+        "web_url": "https://gitlab.com/plafoucriere",
+        "status_tooltip_html": null,
+        "path": "/plafoucriere"
+      },
+      "issue_id": null,
+      "pipeline": {
+        "id": 23035216,
+        "path": "/gitlab-org/security-products/analyzers/common/pipelines/23035216"
+      },
+      "category": "sast",
+      "feedback_type": "dismissal",
+      "branch": "gitlab-ee-5043_enrich_sast_reports",
+      "project_fingerprint": "1235d9f927a0dee633570a53c0773249e0a734a8"
+    },
+    "issue_feedback": null
+  },
+  {
+    "id": "wertvbvtc",
+    "report_type": "sast",
+    "name": "Cipher with no integrity",
+    "description": "The cipher does not provide data integrity update 1",
+    "severity": "low",
+    "confidence": "high",
+    "solution": "GCM mode introduces an HMAC into the resulting encrypted data, providing integrity of the result.",
+    "scanner": {
+      "external_id": "find_sec_bugs",
+      "name": "Find Security Bugs"
+    },
+    "location": {
+      "file": "maven/src/main/java/com/gitlab/security_products/tests/App.java",
+      "start_line": 29,
+      "end_line": 29,
+      "class": "com.gitlab.security_products.tests.App",
+      "method": "insecureCypher"
+    },
+    "identifiers": [
+      {
+        "external_type": "find_sec_bugs_type",
+        "external_id": "CIPHER_INTEGRITY",
+        "name": "Find Security Bugs-CIPHER_INTEGRITY",
+        "primary": true,
+        "url": "https://find-sec-bugs.github.io/bugs.htm#CIPHER_INTEGRITY"
+      },
+      {
+        "external_type": "cwe",
+        "external_id": "353",
+        "name": "CWE-353",
+        "primary": false,
+        "url": "https://cwe.mitre.org/data/definitions/353.html"
+      }
+    ],
+    "links": [
+      {
+        "name": "Cipher does not check for integrity first?",
+        "url": "https://crypto.stackexchange.com/questions/31428/pbewithmd5anddes-cipher-does-not-check-for-integrity-first"
+      }
+    ],
+    "project_fingerprint": "a42cbe949d1471a4310e3bd6fc16619ad2691f3f",
+    "vulnerability_feedback_url": "https://gitlab.com/gitlab-org/security-products/analyzers/common/vulnerability_feedback",
+    "project": {
+      "name_with_namespace": "GitLab.org / Security Products / Analyzers / Common",
+      "web_url": "https://gitlab.com/gitlab-org/security-products/analyzers/common"
+    },
+    "dismissal_feedback": {
+      "id": 19,
+      "project_id": 6126012,
+      "author": {
+        "id": 30915,
+        "name": "Philippe Lafoucrière",
+        "username": "plafoucriere",
+        "state": "active",
+        "avatar_url": "https://secure.gravatar.com/avatar/79f933bb7e06a2400302f5b30f28689e?s=80\u0026d=identicon",
+        "web_url": "https://gitlab.com/plafoucriere",
+        "status_tooltip_html": null,
+        "path": "/plafoucriere"
+      },
+      "issue_id": null,
+      "pipeline": {
+        "id": 23035216,
+        "path": "/gitlab-org/security-products/analyzers/common/pipelines/23035216"
+      },
+      "category": "sast",
+      "feedback_type": "dismissal",
+      "branch": "gitlab-ee-5043_enrich_sast_reports",
+      "project_fingerprint": "1235d9f927a0dee633570a53c0773249e0a734a8"
+    },
+    "issue_feedback": null
+  },
+  {
+    "id": "iouygdfei",
+    "report_type": "sast",
+    "name": "Cipher with no integrity",
+    "description": "The cipher does not provide data integrity update 1",
+    "severity": "critical",
+    "confidence": "ignore",
+    "solution": "GCM mode introduces an HMAC into the resulting encrypted data, providing integrity of the result.",
+    "scanner": {
+      "external_id": "find_sec_bugs",
+      "name": "Find Security Bugs"
+    },
+    "location": {
+      "file": "maven/src/main/java/com/gitlab/security_products/tests/App.java",
+      "start_line": 29,
+      "end_line": 29,
+      "class": "com.gitlab.security_products.tests.App",
+      "method": "insecureCypher"
+    },
+    "identifiers": [
+      {
+        "external_type": "find_sec_bugs_type",
+        "external_id": "CIPHER_INTEGRITY",
+        "name": "Find Security Bugs-CIPHER_INTEGRITY",
+        "primary": true,
+        "url": "https://find-sec-bugs.github.io/bugs.htm#CIPHER_INTEGRITY"
+      },
+      {
+        "external_type": "cwe",
+        "external_id": "353",
+        "name": "CWE-353",
+        "primary": false,
+        "url": "https://cwe.mitre.org/data/definitions/353.html"
+      }
+    ],
+    "links": [
+      {
+        "name": "Cipher does not check for integrity first?",
+        "url": "https://crypto.stackexchange.com/questions/31428/pbewithmd5anddes-cipher-does-not-check-for-integrity-first"
+      }
+    ],
+    "project_fingerprint": "a42cbe949d1471a4310e3bd6fc16619ad2691f3f",
+    "vulnerability_feedback_url": "https://gitlab.com/gitlab-org/security-products/analyzers/common/vulnerability_feedback",
+    "project": {
+      "name_with_namespace": "GitLab.org / Security Products / Analyzers / Common",
+      "web_url": "https://gitlab.com/gitlab-org/security-products/analyzers/common"
+    },
+    "dismissal_feedback": {
+      "id": 19,
+      "project_id": 6126012,
+      "author": {
+        "id": 30915,
+        "name": "Philippe Lafoucrière",
+        "username": "plafoucriere",
+        "state": "active",
+        "avatar_url": "https://secure.gravatar.com/avatar/79f933bb7e06a2400302f5b30f28689e?s=80\u0026d=identicon",
+        "web_url": "https://gitlab.com/plafoucriere",
+        "status_tooltip_html": null,
+        "path": "/plafoucriere"
+      },
+      "issue_id": null,
+      "pipeline": {
+        "id": 23035216,
+        "path": "/gitlab-org/security-products/analyzers/common/pipelines/23035216"
+      },
+      "category": "sast",
+      "feedback_type": "dismissal",
+      "branch": "gitlab-ee-5043_enrich_sast_reports",
+      "project_fingerprint": "1235d9f927a0dee633570a53c0773249e0a734a8"
+    },
+    "issue_feedback": null
+  }
+]

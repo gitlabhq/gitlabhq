@@ -6328,10 +6328,25 @@ msgstr ""
 msgid "Reports|Class"
 msgstr ""
 
+msgid "Reports|Confidence"
+msgstr ""
+
+msgid "Reports|Dismiss Vulnerability"
+msgstr ""
+
 msgid "Reports|Execution time"
 msgstr ""
 
 msgid "Reports|Failure"
+msgstr ""
+
+msgid "Reports|More info"
+msgstr ""
+
+msgid "Reports|New Issue"
+msgstr ""
+
+msgid "Reports|Severity"
 msgstr ""
 
 msgid "Reports|System output"
@@ -6344,6 +6359,9 @@ msgid "Reports|Test summary failed loading results"
 msgstr ""
 
 msgid "Reports|Test summary results are being parsed"
+msgstr ""
+
+msgid "Reports|Vulnerability"
 msgstr ""
 
 msgid "Reports|no changed test results"
@@ -6520,6 +6538,9 @@ msgid "SAML Single Sign On"
 msgstr ""
 
 msgid "SAML Single Sign On Settings"
+msgstr ""
+
+msgid "SAST"
 msgstr ""
 
 msgid "SHA1 fingerprint of the SAML token signing certificate. Get this from your identity provider, where it can also be called \"Thumbprint\"."
