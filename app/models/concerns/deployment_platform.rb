@@ -13,6 +13,7 @@ module DeploymentPlatform
 
   def find_deployment_platform(environment)
     find_cluster_platform_kubernetes(environment: environment) ||
+      find_group_cluster_platform_kubernetes(environment: environment) ||
       find_kubernetes_service_integration ||
       build_cluster_and_deployment_platform
   end
@@ -20,6 +21,11 @@ module DeploymentPlatform
   # EE would override this and utilize environment argument
   def find_cluster_platform_kubernetes(environment: nil)
     clusters.enabled.default_environment
+      .last&.platform_kubernetes
+  end
+
+  def find_group_cluster_platform_kubernetes(environment: nil)
+    group_clusters.enabled.default_environment
       .last&.platform_kubernetes
   end
 

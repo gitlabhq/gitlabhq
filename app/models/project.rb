@@ -1502,6 +1502,10 @@ class Project < ActiveRecord::Base
     @group_runners ||= group_runners_enabled? ? Ci::Runner.belonging_to_parent_group_of_project(self.id) : Ci::Runner.none
   end
 
+  def group_clusters
+    Clusters::Cluster.belonging_to_parent_group_of_project(id)
+  end
+
   def all_runners
     Ci::Runner.from_union([runners, group_runners, shared_runners])
   end
