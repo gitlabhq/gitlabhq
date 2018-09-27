@@ -166,11 +166,6 @@ export default {
       unusedSeal: false,
     });
   },
-  [types.SET_RIGHT_PANE](state, view) {
-    Object.assign(state, {
-      rightPane: state.rightPane === view ? null : view,
-    });
-  },
   [types.SET_LINKS](state, links) {
     Object.assign(state, { links });
   },

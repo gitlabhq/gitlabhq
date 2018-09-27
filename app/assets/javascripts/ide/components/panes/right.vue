@@ -1,5 +1,6 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
+import _ from 'underscore';
 import { __ } from '~/locale';
 import tooltip from '../../../vue_shared/directives/tooltip';
 import Icon from '../../../vue_shared/components/icon.vue';
@@ -30,14 +31,10 @@ export default {
     },
   },
   computed: {
-    ...mapState(['rightPane', 'currentMergeRequestId', 'clientsidePreviewEnabled']),
+    ...mapState(['currentMergeRequestId', 'clientsidePreviewEnabled']),
+    ...mapState('rightPane', ['isOpen', 'currentView']),
     ...mapGetters(['packageJson']),
-    pipelinesActive() {
-      return (
-        this.rightPane === rightSidebarViews.pipelines ||
-        this.rightPane === rightSidebarViews.jobsDetail
-      );
-    },
+    ...mapGetters('rightPane', ['isActiveView', 'isAliveView']),
     showLivePreview() {
       return this.packageJson && this.clientsidePreviewEnabled;
     },
@@ -46,22 +43,26 @@ export default {
         {
           show: this.currentMergeRequestId,
           title: __('Merge Request'),
-          isActive: this.rightPane === rightSidebarViews.mergeRequestInfo,
-          view: rightSidebarViews.mergeRequestInfo,
+          views: [
+            rightSidebarViews.mergeRequestInfo,
+          ],
           icon: 'text-description',
         },
         {
           show: true,
           title: __('Pipelines'),
-          isActive: this.pipelinesActive,
-          view: rightSidebarViews.pipelines,
+          views: [
+            rightSidebarViews.pipelines,
+            rightSidebarViews.jobsDetail,
+          ],
           icon: 'rocket',
         },
         {
           show: this.showLivePreview,
           title: __('Live preview'),
-          isActive: this.rightPane === rightSidebarViews.clientSidePreview,
-          view: rightSidebarViews.clientSidePreview,
+          views: [
+            rightSidebarViews.clientSidePreview,
+          ],
           icon: 'live-preview',
         },
       ];
@@ -71,13 +72,26 @@ export default {
         .concat(this.extensionTabs)
         .filter(tab => tab.show);
     },
+    tabViews() {
+      return _.flatten(this.tabs.map(tab => tab.views));
+    },
+    aliveTabViews() {
+      return this.tabViews.filter(view => this.isAliveView(view.name));
+    },
   },
   methods: {
-    ...mapActions(['setRightPane']),
-    clickTab(e, view) {
+    ...mapActions('rightPane', ['toggleOpen', 'open']),
+    clickTab(e, tab) {
       e.target.blur();
 
-      this.setRightPane(view);
+      if (this.isActiveTab(tab)) {
+        this.toggleOpen();
+      } else {
+        this.open(tab.views[0]);
+      }
+    },
+    isActiveTab(tab) {
+      return tab.views.some(view => this.isActiveView(view.name));
     },
   },
 };
@@ -88,15 +102,22 @@ export default {
     class="multi-file-commit-panel ide-right-sidebar"
   >
     <resizable-panel
-      v-if="rightPane"
+      v-show="isOpen"
       :collapsible="false"
       :initial-width="350"
       :min-size="350"
-      :class="`ide-right-sidebar-${rightPane}`"
+      :class="`ide-right-sidebar-${currentView}`"
       side="right"
       class="multi-file-commit-panel-inner"
     >
-      <component :is="rightPane" />
+      <div
+        v-for="tabView in aliveTabViews"
+        v-show="isActiveView(tabView.name)"
+        :key="tabView.name"
+        class="h-100"
+      >
+        <component :is="tabView.name" />
+      </div>
     </resizable-panel>
     <nav class="ide-activity-bar">
       <ul class="list-unstyled">
@@ -109,13 +130,13 @@ export default {
             :title="tab.title"
             :aria-label="tab.title"
             :class="{
-              active: tab.isActive
+              active: isActiveTab(tab) && isOpen
             }"
             data-container="body"
             data-placement="left"
             class="ide-sidebar-link is-right"
             type="button"
-            @click="clickTab($event, tab.view)"
+            @click="clickTab($event, tab)"
           >
             <icon
               :size="16"
