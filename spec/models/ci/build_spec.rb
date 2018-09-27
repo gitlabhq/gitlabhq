@@ -243,12 +243,16 @@ describe Ci::Build do
     let(:build) { create(:ci_build, :created, :schedulable, user: user, project: project) }
 
     it 'transits to scheduled' do
+      allow(Ci::BuildScheduleWorker).to receive(:perform_at)
+
       subject
 
       expect(build).to be_scheduled
     end
 
     it 'updates scheduled_at column' do
+      allow(Ci::BuildScheduleWorker).to receive(:perform_at)
+
       subject
 
       expect(build.scheduled_at).not_to be_nil
