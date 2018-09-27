@@ -15,21 +15,21 @@ Vue.use(Translate);
  * @param {Object} options - Extra options for the IDE (Used by EE).
  * @param {(e:Element) => Object} options.extraInitialData -
  *   Function that returns extra properties to seed initial data.
+ * @param {Component} options.rootComponent -
+ *   Component that overrides the root component.
  */
 export function initIde(el, options = {}) {
   if (!el) return null;
 
   const {
     extraInitialData = () => ({}),
+    rootComponent = ide,
   } = options;
 
   return new Vue({
     el,
     store,
     router,
-    components: {
-      ide,
-    },
     created() {
       this.setEmptyStateSvgs({
         emptyStateSvgPath: el.dataset.emptyStateSvgPath,
@@ -51,7 +51,7 @@ export function initIde(el, options = {}) {
       ...mapActions(['setEmptyStateSvgs', 'setLinks', 'setInitialData']),
     },
     render(createElement) {
-      return createElement('ide');
+      return createElement(rootComponent);
     },
   });
 }
