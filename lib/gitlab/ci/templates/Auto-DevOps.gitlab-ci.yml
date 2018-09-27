@@ -159,7 +159,10 @@ sast:
   artifacts:
     paths: [gl-sast-report.json]
   only:
-    - branches
+    refs:
+      - branches
+    variables:
+      - $GITLAB_FEATURES =~ /\bsast\b/
   except:
     variables:
       - $SAST_DISABLED
@@ -176,7 +179,10 @@ dependency_scanning:
   artifacts:
     paths: [gl-dependency-scanning-report.json]
   only:
-    - branches
+    refs:
+      - branches
+    variables:
+      - $GITLAB_FEATURES =~ /\bdependency_scanning\b/
   except:
     variables:
       - $DEPENDENCY_SCANNING_DISABLED
@@ -193,7 +199,10 @@ container_scanning:
   artifacts:
     paths: [gl-container-scanning-report.json]
   only:
-    - branches
+    refs:
+      - branches
+    variables:
+      - $GITLAB_FEATURES =~ /\bsast_container\b/
   except:
     variables:
       - $CONTAINER_SCANNING_DISABLED
@@ -212,6 +221,8 @@ dast:
     refs:
       - branches
     kubernetes: active
+    variables:
+      - $GITLAB_FEATURES =~ /\bdast\b/
   except:
     refs:
       - master
