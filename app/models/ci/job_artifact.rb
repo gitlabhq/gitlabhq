@@ -9,8 +9,28 @@ module Ci
     NotSupportedAdapterError = Class.new(StandardError)
 
     TEST_REPORT_FILE_TYPES = %w[junit].freeze
-    DEFAULT_FILE_NAMES = { junit: 'junit.xml' }.freeze
-    TYPE_AND_FORMAT_PAIRS = { archive: :zip, metadata: :gzip, trace: :raw, junit: :gzip }.freeze
+    NON_ERASABLE_FILE_TYPES = %w[trace].freeze
+    DEFAULT_FILE_NAMES = {
+      archive: nil,
+      metadata: nil,
+      trace: nil,
+      junit: 'junit.xml',
+      sast: 'gl-sast-report.json',
+      dependency_scanning: 'gl-dependency-scanning-report.json',
+      container_scanning: 'gl-container-scanning-report.json',
+      dast: 'gl-dast-report.json'
+    }.freeze
+
+    TYPE_AND_FORMAT_PAIRS = {
+      archive: :zip,
+      metadata: :gzip,
+      trace: :raw,
+      junit: :gzip,
+      sast: :gzip,
+      dependency_scanning: :gzip,
+      container_scanning: :gzip,
+      dast: :gzip
+    }.freeze
 
     belongs_to :project
     belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id
@@ -27,8 +47,18 @@ module Ci
 
     scope :with_files_stored_locally, -> { where(file_store: [nil, ::JobArtifactUploader::Store::LOCAL]) }
 
+    scope :with_file_types, -> (file_types) do
+      types = self.file_types.select { |file_type| file_types.include?(file_type) }.values
+
+      where(file_type: types)
+    end
+
     scope :test_reports, -> do
-      types = self.file_types.select { |file_type| TEST_REPORT_FILE_TYPES.include?(file_type) }.values
+      with_file_types(TEST_REPORT_FILE_TYPES)
+    end
+
+    scope :erasable, -> do
+      types = self.file_types.reject { |file_type| NON_ERASABLE_FILE_TYPES.include?(file_type) }.values
 
       where(file_type: types)
     end
@@ -39,7 +69,11 @@ module Ci
       archive: 1,
       metadata: 2,
       trace: 3,
-      junit: 4
+      junit: 4,
+      sast: 5, ## EE-specific
+      dependency_scanning: 6, ## EE-specific
+      container_scanning: 7, ## EE-specific
+      dast: 8 ## EE-specific
     }
 
     enum file_format: {

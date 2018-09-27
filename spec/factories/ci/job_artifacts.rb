@@ -14,6 +14,33 @@ FactoryBot.define do
       artifact.project ||= artifact.job.project
     end
 
+    trait :raw do
+      file_format :raw
+
+      after(:build) do |artifact, _|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/trace/sample_trace'), 'text/plain')
+      end
+    end
+
+    trait :zip do
+      file_format :zip
+
+      after(:build) do |artifact, _|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/ci_build_artifacts.zip'), 'application/zip')
+      end
+    end
+
+    trait :gzip do
+      file_format :gzip
+
+      after(:build) do |artifact, _|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'), 'application/x-gzip')
+      end
+    end
+
     trait :archive do
       file_type :archive
       file_format :zip
