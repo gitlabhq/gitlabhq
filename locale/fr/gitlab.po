@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-27 10:34\n"
+"PO-Revision-Date: 2018-09-27 10:53\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -2684,19 +2684,19 @@ msgid "Disable group Runners"
 msgstr "Désactiver les exécuteurs de groupe"
 
 msgid "Discard"
-msgstr ""
+msgstr "Rejeter"
 
 msgid "Discard all changes"
-msgstr ""
+msgstr "Rejeter tous les changements"
 
 msgid "Discard all unstaged changes?"
-msgstr ""
+msgstr "Rejeter toutes les modifications non indexées ?"
 
 msgid "Discard changes"
 msgstr "Abandonner les modifications"
 
 msgid "Discard changes to %{path}?"
-msgstr ""
+msgstr "Rejeter les modifications de %{path} ?"
 
 msgid "Discard draft"
 msgstr "Abandonner le brouillon"
@@ -2915,7 +2915,7 @@ msgid "Environments|Environments"
 msgstr "Environnements"
 
 msgid "Environments|Environments are places where code gets deployed, such as staging or production."
-msgstr ""
+msgstr "Les environnements sont des endroits où le code est déployé, tel que l’étape ou la production."
 
 msgid "Environments|Job"
 msgstr "Tâche"
@@ -3113,7 +3113,7 @@ msgid "Expand sidebar"
 msgstr "Étendre la barre latérale"
 
 msgid "Expiration date"
-msgstr ""
+msgstr "Date d’expiration"
 
 msgid "Explore"
 msgstr "Explorer"
@@ -3197,7 +3197,7 @@ msgid "Fields on this page are now uneditable, you can configure"
 msgstr "Les champs de cette page sont désormais non modifiables, vous pouvez configurer"
 
 msgid "File templates"
-msgstr ""
+msgstr "Modèles de fichiers"
 
 msgid "Files"
 msgstr "Fichiers"
@@ -3209,13 +3209,13 @@ msgid "Fill in the fields below, turn on <strong>%{enable_label}</strong>, and p
 msgstr "Renseignez les champs ci‐dessous, activez <strong>%{enable_label}</strong> et appuyez sur <strong>%{save_changes}</strong>"
 
 msgid "Filter"
-msgstr ""
+msgstr "Filtrer"
 
 msgid "Filter by commit message"
 msgstr "Filtrer par message de commit"
 
 msgid "Filter..."
-msgstr ""
+msgstr "Filtrer…"
 
 msgid "Find by path"
 msgstr "Rechercher par chemin d’accès"
@@ -4167,10 +4167,10 @@ msgid "Introducing Cycle Analytics"
 msgstr "Introduction à l’analyseur de cycle"
 
 msgid "Invite"
-msgstr ""
+msgstr "Inviter"
 
 msgid "Issue"
-msgstr ""
+msgstr "Ticket"
 
 msgid "Issue Boards"
 msgstr "Tableaux des tickets"
@@ -4358,7 +4358,7 @@ msgid "Last commit"
 msgstr "Dernier commit"
 
 msgid "Last contact"
-msgstr ""
+msgstr "Dernier contact"
 
 msgid "Last edited %{date}"
 msgstr "Dernière modification le %{date}"
@@ -4510,7 +4510,7 @@ msgid "Lock not found"
 msgstr "Verrou non trouvé"
 
 msgid "Lock this %{issuableDisplayName}? Only <strong>project members</strong> will be able to comment."
-msgstr ""
+msgstr "Verrouiller ce·t·te %{issuableDisplayName} ? Seuls les <strong>membres du projet</strong> seront en mesure de commenter."
 
 msgid "Lock to current projects"
 msgstr "Verrouiller aux projets en cours"
@@ -4684,10 +4684,10 @@ msgid "Metrics - Prometheus"
 msgstr "Métriques — Prometheus"
 
 msgid "Metrics and profiling"
-msgstr ""
+msgstr "Statistiques et rapports"
 
 msgid "Metrics|Business"
-msgstr ""
+msgstr "Affaires"
 
 msgid "Metrics|Check out the CI/CD documentation on deploying to an environment"
 msgstr "Consultez la documentation sur l’intégration et la livraison continues (CI/CD) concernant le déploiement dans un environnement"
@@ -4798,7 +4798,7 @@ msgid "Milestones"
 msgstr "Jalons"
 
 msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle} and remove it from %{issuesWithCount} and %{mergeRequestsWithCount}. Once deleted, it cannot be undone or recovered."
-msgstr ""
+msgstr "Vous êtes sur le point de supprimer définitivement le jalon %{milestoneTitle} et de le supprimer de %{issuesWithCount} et %{mergeRequestsWithCount}. La suppression est irréversible."
 
 msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle}. This milestone is not currently used in any issues or merge requests."
 msgstr "Vous êtes sur le point de supprimer définitivement le jalon %{milestoneTitle}. Ce jalon n’est actuellement référencé par aucun ticket ni aucune demande de fusion."
@@ -4840,7 +4840,7 @@ msgid "Mirror repository"
 msgstr ""
 
 msgid "Mirror user"
-msgstr ""
+msgstr "Utilisateur accédant au miroir"
 
 msgid "Mirrored repositories"
 msgstr "Dépôts mis en miroir"
@@ -5019,7 +5019,7 @@ msgid "No container images stored for this project. Add one by following the ins
 msgstr "Aucune image de conteneur stockée pour ce projet. Ajoutez‐en une en suivant les instructions ci‐dessous."
 
 msgid "No contributions were found"
-msgstr ""
+msgstr "Aucune contribution n’a été trouvée"
 
 msgid "No due date"
 msgstr "Aucune date d’échéance"
@@ -5043,7 +5043,7 @@ msgid "No labels with such name or description"
 msgstr "Aucune étiquette avec un tel nom ou une telle description"
 
 msgid "No license. All rights reserved"
-msgstr ""
+msgstr "Aucune licence. Tous droits réservés"
 
 msgid "No merge requests for the selected time period."
 msgstr "Aucune demande de fusion pour la période sélectionnée."
@@ -5112,7 +5112,7 @@ msgid "Not enough data"
 msgstr "Données insuffisantes"
 
 msgid "Not now"
-msgstr ""
+msgstr "Pas maintenant"
 
 msgid "Note that the master branch is automatically protected. %{link_to_protected_branches}"
 msgstr "Notez que la branche principale « master » est automatiquement protégée. %{link_to_protected_branches}"
@@ -5381,7 +5381,7 @@ msgid "Pipeline"
 msgstr "Pipeline"
 
 msgid "Pipeline %{pipelineLinkStart} #%{pipelineId} %{pipelineLinkEnd} from %{pipelineLinkRefStart} %{pipelineRef} %{pipelineLinkRefEnd}"
-msgstr ""
+msgstr "Pipeline %{pipelineLinkStart} nᵒ %{pipelineId} %{pipelineLinkEnd} de %{pipelineLinkRefStart} %{pipelineRef} %{pipelineLinkRefEnd}"
 
 msgid "Pipeline Health"
 msgstr "État de santé du pipeline"
@@ -5591,7 +5591,7 @@ msgid "Preferences|Navigation theme"
 msgstr "Thème de navigation"
 
 msgid "Press Enter or click to search"
-msgstr ""
+msgstr "Appuyez sur Entrée ou cliquez pour rechercher"
 
 msgid "Preview"
 msgstr "Aperçu"
@@ -5840,7 +5840,7 @@ msgid "Project Badges"
 msgstr "Badges numériques du projet"
 
 msgid "Project URL"
-msgstr ""
+msgstr "URL du projet"
 
 msgid "Project access must be granted explicitly to each user."
 msgstr "L’accès au projet doit être explicitement accordé à chaque utilisateur."
@@ -6674,7 +6674,7 @@ msgid "Select Archive Format"
 msgstr "Sélectionnez le format de l’archive"
 
 msgid "Select a group to invite"
-msgstr ""
+msgstr "Sélectionnez un groupe à inviter"
 
 msgid "Select a namespace to fork the project"
 msgstr "Sélectionnez un espace de noms afin de créer une divergence du projet"
