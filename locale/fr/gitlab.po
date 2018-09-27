@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-27 15:32\n"
+"PO-Revision-Date: 2018-09-27 15:43\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -2861,7 +2861,7 @@ msgid "Enable usage ping"
 msgstr "Activer la collecte des données d’utilisation"
 
 msgid "Enable usage ping to get an overview of how you are using GitLab from a feature perspective."
-msgstr ""
+msgstr "Activez la collecte des données d’utilisation afin d’avoir une vue d’ensemble de la manière dont vous utilisez les fonctionnalités de GitLab."
 
 msgid "Enabled"
 msgstr "activé"
