@@ -3,7 +3,7 @@
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/50144) in GitLab 11.3.
 
 Interactive web terminals give the user access to a terminal in GitLab for
-running one-of commands for their CI pipeline.
+running one-off commands for their CI pipeline.
 
 NOTE: **Note:**
 This is not available for the shared Runners on GitLab.com.
