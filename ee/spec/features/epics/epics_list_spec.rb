@@ -119,12 +119,22 @@ describe 'epics list', :js do
   end
 
   context 'when no epics exist for the group' do
-    it 'renders the empty list page' do
+    before do
       visit group_epics_path(group)
+    end
 
+    it 'renders the empty list page' do
       within('#content-body') do
         expect(find('.empty-state h4'))
           .to have_content('Epics let you manage your portfolio of projects more efficiently and with less effort')
+      end
+    end
+
+    it 'shows epics tabs for each status type' do
+      page.within('.epics-state-filters') do
+        expect(page).to have_selector('li > a#state-opened')
+        expect(page).to have_selector('li > a#state-closed')
+        expect(page).to have_selector('li > a#state-all')
       end
     end
   end
