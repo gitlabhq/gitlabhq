@@ -3,20 +3,29 @@
 - can_admin_label = can?(current_user, :admin_label, @group)
 - issuables = ['issues', 'merge requests']
 - search = params[:search]
+- subscribed = params[:subscribed]
+- labels_or_filters = @labels.exists? || search.present? || subscribed.present?
 
 - if can_admin_label
   - content_for(:header_content) do
     .nav-controls
       = link_to _('New label'), new_group_label_path(@group), class: "btn btn-success"
 
-- if @labels.exists? || search.present?
+- if labels_or_filters
   #promote-label-modal
   %div{ class: container_class }
     .top-area.adjust
-      .nav-text
-        = _('Labels can be applied to %{features}. Group labels are available for any project within the group.') % { features: issuables.to_sentence }
+      %ul.nav-links.nav.nav-tabs
+        %li{ class: active_when(subscribed != 'true') }>
+          = link_to group_labels_path(@group) do
+            = _('All')
+        - if current_user
+          %li{ class: active_when(subscribed == 'true') }>
+            = link_to group_labels_path(@group, subscribed: 'true') do
+              = _('Subscribed')
       .nav-controls
         = form_tag group_labels_path(@group), method: :get do
+          = hidden_field_tag :subscribed, params[:subscribed]
           .input-group
             = search_field_tag :search, params[:search], { placeholder: _('Filter'), id: 'label-search', class: 'form-control search-text-input input-short', spellcheck: false }
             %span.input-group-append
@@ -26,6 +35,8 @@
 
     .labels-container.prepend-top-5
       - if @labels.any?
+        .text-muted
+          = _('Labels can be applied to %{features}. Group labels are available for any project within the group.') % { features: issuables.to_sentence }
         .other-labels
           %h5= _('Labels')
           %ul.content-list.manage-labels-list.js-other-labels
@@ -34,6 +45,9 @@
       - elsif search.present?
         .nothing-here-block
           = _('No labels with such name or description')
+      - elsif subscribed.present?
+        .nothing-here-block
+          = _('You do not have any subscriptions yet')
 - else
   = render 'shared/empty_states/labels'
 
