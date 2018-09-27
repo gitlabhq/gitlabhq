@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: uk\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-26 11:23\n"
+"PO-Revision-Date: 2018-09-27 08:45\n"
 
 msgid " Status"
 msgstr " Статус"
@@ -2628,7 +2628,7 @@ msgid "DeployKeys|Privately accessible deploy keys"
 msgstr "Приватні ключі розгортання"
 
 msgid "DeployKeys|Project usage"
-msgstr "Використання у проектах"
+msgstr ""
 
 msgid "DeployKeys|Publicly accessible deploy keys"
 msgstr "Публічні колючі розгортання"
