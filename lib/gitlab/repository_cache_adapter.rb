@@ -12,7 +12,13 @@ module Gitlab
       # fallback - A value to fall back to if the repository does not exist, or
       #            in case of a Git error. Defaults to nil.
       def cache_method(name, fallback: nil)
-        wrap_method(name, :cache_method_output, fallback: fallback)
+        uncached_name = alias_uncached_method(name)
+
+        define_method(name) do
+          cache_method_output(name, fallback: fallback) do
+            __send__(uncached_name) # rubocop:disable GitlabSecurity/PublicSend
+          end
+        end
       end
 
       # Caches truthy values from the method. All values are strongly memoized,
@@ -26,7 +32,13 @@ module Gitlab
       #
       # name - The name of the method to be cached.
       def cache_method_asymmetrically(name)
-        wrap_method(name, :cache_method_output_asymmetrically)
+        uncached_name = alias_uncached_method(name)
+
+        define_method(name) do
+          cache_method_output_asymmetrically(name) do
+            __send__(uncached_name) # rubocop:disable GitlabSecurity/PublicSend
+          end
+        end
       end
 
       # Strongly memoizes the method.
@@ -38,21 +50,24 @@ module Gitlab
       #            in case of a Git error. Defaults to nil. The fallback value
       #            is not memoized.
       def memoize_method(name, fallback: nil)
-        wrap_method(name, :memoize_method_output, fallback: fallback)
-      end
-
-      # Prepends "_uncached_" to the target method name, and redefines the method
-      # but wraps it in the `wrapper` method.
-      def wrap_method(name, wrapper, *options)
-        original = :"_uncached_#{name}"
-
-        alias_method(original, name)
+        uncached_name = alias_uncached_method(name)
 
         define_method(name) do
-          __send__(wrapper, name, *options) do # rubocop:disable GitlabSecurity/PublicSend
-            __send__(original) # rubocop:disable GitlabSecurity/PublicSend
+          memoize_method_output(name, fallback: fallback) do
+            __send__(uncached_name) # rubocop:disable GitlabSecurity/PublicSend
           end
         end
+      end
+
+      # Prepends "_uncached_" to the target method name
+      #
+      # Returns the uncached method name
+      def alias_uncached_method(name)
+        uncached_name = :"_uncached_#{name}"
+
+        alias_method(uncached_name, name)
+
+        uncached_name
       end
     end
 
