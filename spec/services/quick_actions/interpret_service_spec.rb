@@ -1,9 +1,6 @@
-<<<<<<< HEAD
 # coding: utf-8
-=======
 # frozen_string_literal: true
 
->>>>>>> upstream/master
 require 'spec_helper'
 
 describe QuickActions::InterpretService do
