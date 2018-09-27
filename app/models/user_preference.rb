@@ -13,12 +13,12 @@ class UserPreference < ActiveRecord::Base
 
   def set_notes_filter(filter_id, issuable)
     # No need to update the column if the value is already set.
-    if filter_id && filter_id != notes_filter_for(issuable)
+    if filter_id && filter_id != notes_filter(issuable)
       filter_name = notes_filter_field_for(issuable)
       update_column(filter_name, filter_id)
     end
 
-    notes_filter_for(issuable)
+    notes_filter(issuable)
   end
 
   # Returns the current discussion filter for a given issuable type.
