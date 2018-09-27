@@ -2233,6 +2233,9 @@ msgstr ""
 msgid "Copy HTTPS clone URL"
 msgstr ""
 
+msgid "Copy ID to clipboard"
+msgstr ""
+
 msgid "Copy SSH clone URL"
 msgstr ""
 
@@ -2255,6 +2258,9 @@ msgid "Copy file path to clipboard"
 msgstr ""
 
 msgid "Copy incoming email address to clipboard"
+msgstr ""
+
+msgid "Copy name to clipboard"
 msgstr ""
 
 msgid "Copy reference to clipboard"
@@ -3172,6 +3178,81 @@ msgid "Failure"
 msgstr ""
 
 msgid "Faster as it re-uses the project workspace (falling back to clone if it doesn't exist)"
+msgstr ""
+
+msgid "Feature Flags"
+msgstr ""
+
+msgid "FeatureFlags|API URL"
+msgstr ""
+
+msgid "FeatureFlags|Active"
+msgstr ""
+
+msgid "FeatureFlags|Application name"
+msgstr ""
+
+msgid "FeatureFlags|Configure"
+msgstr ""
+
+msgid "FeatureFlags|Configure feature flags"
+msgstr ""
+
+msgid "FeatureFlags|Create feature flag"
+msgstr ""
+
+msgid "FeatureFlags|Delete %{feature_flag_name}?"
+msgstr ""
+
+msgid "FeatureFlags|Description"
+msgstr ""
+
+msgid "FeatureFlags|Edit %{feature_flag_name}"
+msgstr ""
+
+msgid "FeatureFlags|Edit Feature Flag"
+msgstr ""
+
+msgid "FeatureFlags|Feature Flag"
+msgstr ""
+
+msgid "FeatureFlags|Feature flag"
+msgstr ""
+
+msgid "FeatureFlags|Feature flag %{feature_flag_name} will be removed. Are you sure?"
+msgstr ""
+
+msgid "FeatureFlags|Feature flags allow you to configure your code into different flavors by dynamically toggling certain functionality."
+msgstr ""
+
+msgid "FeatureFlags|Get started with feature flags"
+msgstr ""
+
+msgid "FeatureFlags|Inactive"
+msgstr ""
+
+msgid "FeatureFlags|Install a %{docs_link_start}compatible client library%{docs_link_end} and specify the API URL, application name, and instance ID during the configuration setup."
+msgstr ""
+
+msgid "FeatureFlags|Instance ID"
+msgstr ""
+
+msgid "FeatureFlags|More information"
+msgstr ""
+
+msgid "FeatureFlags|Name"
+msgstr ""
+
+msgid "FeatureFlags|New"
+msgstr ""
+
+msgid "FeatureFlags|New Feature Flag"
+msgstr ""
+
+msgid "FeatureFlags|Save changes"
+msgstr ""
+
+msgid "FeatureFlags|Status"
 msgstr ""
 
 msgid "Feb"

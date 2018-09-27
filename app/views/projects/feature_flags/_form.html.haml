@@ -25,8 +25,8 @@
           = s_('FeatureFlags|Active')
 .form-actions
   - if @feature_flag.persisted?
-    = f.submit 'Save changes', class: "btn btn-success"
+    = f.submit s_('FeatureFlags|Save changes'), class: "btn btn-success"
   - else
-    = f.submit 'Create feature flag', class: "btn btn-success"
+    = f.submit s_('FeatureFlags|Create feature flag'), class: "btn btn-success"
   .float-right
     = link_to _('Cancel'), project_feature_flags_path(@project), class: 'btn btn-cancel'

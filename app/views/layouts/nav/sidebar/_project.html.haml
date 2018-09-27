@@ -251,7 +251,7 @@
 
             - if project_nav_tab? :feature_flags
               = nav_link(controller: :feature_flags) do
-                = link_to project_feature_flags_path(@project), title: 'Feature Flags', class: 'shortcuts-feature-flags' do
+                = link_to project_feature_flags_path(@project), title: _('Feature Flags'), class: 'shortcuts-feature-flags' do
                   %span
                     = _('Feature Flags')
 
