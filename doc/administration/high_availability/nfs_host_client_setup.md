@@ -99,7 +99,7 @@ We recommend using version 4 and do not specifically test NFSv3.
 ```
 Reboot the client and confirm that the mount point is mounted automatically.
 
-#### Step 4 - Set up Gitlab to Use NFS mounts
+#### Step 4 - Set up GitLab to Use NFS mounts
 
 When using the default Omnibus configuration you will need to share 5 data locations
 between all GitLab cluster nodes. No other locations should be shared. Changing the

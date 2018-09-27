@@ -1153,7 +1153,7 @@ PUT /projects/:id/services/jenkins-deprecated
 Parameters:
 
 - `project_url` (**required**) - Jenkins project URL like http://jenkins.example.com/job/my-project/
-- `multiproject_enabled` (optional) - Multi-project mode is configured in Jenkins Gitlab Hook plugin
+- `multiproject_enabled` (optional) - Multi-project mode is configured in Jenkins GitLab Hook plugin
 - `pass_unstable` (optional) - Unstable builds will be treated as passing
 
 ### Delete Jenkins CI (Deprecated) service

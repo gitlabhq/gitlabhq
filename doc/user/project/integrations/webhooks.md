@@ -1195,7 +1195,7 @@ You can trigger the webhook manually. Sample data from the project will be used.
 
 ## Troubleshoot webhooks
 
-Gitlab stores each perform of the webhook.
+GitLab stores each perform of the webhook.
 You can find records for last 2 days in "Recent Deliveries" section on the edit page of each webhook.
 
 ![Recent deliveries](img/webhook_logs.png)
