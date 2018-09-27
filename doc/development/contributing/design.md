@@ -1,13 +1,4 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [Implement design & UI elements](#implement-design--ui-elements)
-- [Style guides](#style-guides)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-## Implement design & UI elements
+# Implement design & UI elements
 
 For guidance on UX implementation at GitLab, please refer to our [Design System](https://design.gitlab.com/).
 
@@ -34,27 +25,27 @@ In order to complete a product discovery issue in a release, you must complete t
 
 ## Style guides
 
-1.  [Ruby](https://github.com/bbatsov/ruby-style-guide).
-    Important sections include [Source Code Layout][rss-source] and
-    [Naming][rss-naming]. Use:
-    - multi-line method chaining style **Option A**: dot `.` on the second line
-    - string literal quoting style **Option A**: single quoted by default
-1.  [Rails](https://github.com/bbatsov/rails-style-guide)
-1.  [Newlines styleguide][newlines-styleguide]
-1.  [Testing][testing]
-1.  [JavaScript styleguide][js-styleguide]
-1.  [SCSS styleguide][scss-styleguide]
-1.  [Shell commands](../shell_commands.md) created by GitLab
-    contributors to enhance security
-1.  [Database Migrations](../migration_style_guide.md)
-1.  [Markdown](http://www.cirosantilli.com/markdown-styleguide)
-1.  [Documentation styleguide](https://docs.gitlab.com/ee/development/documentation/styleguide.html)
-1.  Interface text should be written subjectively instead of objectively. It
-    should be the GitLab core team addressing a person. It should be written in
-    present time and never use past tense (has been/was). For example instead
-    of _prohibited this user from being saved due to the following errors:_ the
-    text should be _sorry, we could not create your account because:_
-1.  Code should be written in [US English][us-english]
+1. [Ruby](https://github.com/bbatsov/ruby-style-guide).
+   Important sections include [Source Code Layout][rss-source] and
+   [Naming][rss-naming]. Use:
+   - multi-line method chaining style **Option A**: dot `.` on the second line
+   - string literal quoting style **Option A**: single quoted by default
+1. [Rails](https://github.com/bbatsov/rails-style-guide)
+1. [Newlines styleguide][newlines-styleguide]
+1. [Testing][testing]
+1. [JavaScript styleguide][js-styleguide]
+1. [SCSS styleguide][scss-styleguide]
+1. [Shell commands](../shell_commands.md) created by GitLab
+   contributors to enhance security
+1. [Database Migrations](../migration_style_guide.md)
+1. [Markdown](http://www.cirosantilli.com/markdown-styleguide)
+1. [Documentation styleguide](https://docs.gitlab.com/ee/development/documentation/styleguide.html)
+1. Interface text should be written subjectively instead of objectively. It
+   should be the GitLab core team addressing a person. It should be written in
+   present time and never use past tense (has been/was). For example instead
+   of _prohibited this user from being saved due to the following errors:_ the
+   text should be _sorry, we could not create your account because:_
+1. Code should be written in [US English][us-english]
 
 This is also the style used by linting tools such as
 [RuboCop](https://github.com/bbatsov/rubocop),
