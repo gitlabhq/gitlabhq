@@ -22,7 +22,7 @@ export default {
 </script>
 
 <template>
-  <span class="append-bottom-8 board-info-items">
+  <span class="board-info-items prepend-top-8">
     <issue-due-date
       v-if="issue.dueDate"
       :date="issue.dueDate"

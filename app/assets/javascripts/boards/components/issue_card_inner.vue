@@ -184,7 +184,7 @@ export default {
 <template>
   <div>
     <div class="board-card-header">
-      <h4 class="board-card-title append-bottom-8 prepend-top-0">
+      <h4 class="board-card-title append-bottom-4 prepend-top-0">
         <icon
           v-if="issue.confidential"
           v-tooltip
@@ -199,7 +199,7 @@ export default {
     </div>
     <div
       v-if="showLabelFooter"
-      class="board-card-labels append-bottom-4"
+      class="board-card-labels"
     >
       <button
         v-for="label in issue.labels"
@@ -208,7 +208,7 @@ export default {
         v-tooltip
         :style="labelStyle(label)"
         :title="label.description"
-        class="badge color-label append-right-4 append-bottom-4"
+        class="badge color-label append-right-4 prepend-top-4"
         type="button"
         data-container="body"
         @click="filterByLabel(label, $event)"
@@ -220,7 +220,7 @@ export default {
       <div class="d-flex align-items-start board-card-number-container">
         <span
           v-if="issue.referencePath"
-          class="board-card-number append-right-8 append-bottom-8"
+          class="board-card-number append-right-8 prepend-top-8"
         >
           <span
             v-if="issueReferencePath"

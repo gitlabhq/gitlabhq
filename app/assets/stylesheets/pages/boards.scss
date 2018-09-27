@@ -407,12 +407,10 @@
 .board-card-number-container {
   flex-wrap: wrap-reverse;
   overflow: hidden;
-  margin-bottom: -1 * $gl-padding-8; // conteract warp margin on child elements
 }
 
 
 .board-card-footer {
-  margin: 0 0 5px;
 
   .badge {
     margin-top: 5px;
