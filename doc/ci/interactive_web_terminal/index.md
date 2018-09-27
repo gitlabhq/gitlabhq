@@ -25,11 +25,9 @@ Two things need to be configured for the interactive web terminal to work:
 NOTE: **Note:** Not all executors are
 [supported](https://docs.gitlab.com/runner/executors/#compatibility-chart).
 
-NOTE: **Note:** The `docker` executor does not keep running
-after the build script is finished. At that point, the terminal will automatically
-disconnect and will not wait for the user to finish. Please follow [this
-issue](https://gitlab.com/gitlab-org/gitlab-runner/issues/3605) for updates on
-improving this behavior.
+NOTE: **Note:** For full support on `docker` executor please use the
+[DOCKER_STRATEGY: exec][docker-strategy] inside of `.gitlab-ci.yml` variables
+declaration.
 
 Sometimes, when a job is running, things don't go as you would expect, and it
 would be helpful if one can have a shell to aid debugging. When a job is
@@ -52,3 +50,4 @@ close the terminal window.
 ![finished job with terminal open](img/finished_job_with_terminal_open.png)
 
 [session-server]: https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section
+[docker-strategy]: ../yaml/README.md#docker-strategy

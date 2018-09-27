@@ -1800,6 +1800,42 @@ variables:
 
 You can set it globally or per-job in the [`variables`](#variables) section.
 
+### Docker Strategy
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/issues/3605) in GitLab 11.4.
+
+You can set the `DOCKER_STRATEGY` either globally or per-job in
+[`variables`](#variables) section. If left unspecified, the default is
+`attach` which is the same behavior pre 11.4.
+
+`DOCKER_STRATEGY` defines the behavior of how the runner handle the build
+containers.
+
+`attach` is the default option, and follow the same behavior that the runner
+has been using. A container is started with the build script as the main
+process and exists as soon as the script is done.
+
+```yaml
+variables:
+  DOCKER_STRATEGY: attach
+```
+
+`exec` is the new workflow the runner follows to handle the build container,
+which tries to mimic the same way our [kubernetes
+executor](https://docs.gitlab.com/runner/executors/kubernetes.html) work.
+Meaning the build container is started in [detached
+mode](https://docs.docker.com/engine/reference/run/#detached--d) that invokes
+a shell. This allows the container to keep running until stopped/killed as
+the end of the stage. The build script is then executed using the `exec`
+functionality. Doing so will allow the runner to access the container even
+after the build script has started, such as [interactive web
+terminals][debugging-running-job].
+
+```yaml
+variables:
+  DOCKER_STRATEGY: exec
+```
+
 ## Special YAML features
 
 It's possible to use special YAML features like anchors (`&`), aliases (`*`)
@@ -1995,3 +2031,4 @@ CI with various languages.
 [ce-12909]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12909
 [schedules]: ../../user/project/pipelines/schedules.md
 [variables-expressions]: ../variables/README.md#variables-expressions
+[debugging-running-job]: ../interactive_web_terminal/index.md#debugging-a-running-job
