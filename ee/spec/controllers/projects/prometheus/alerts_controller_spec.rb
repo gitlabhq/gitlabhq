@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Projects::Prometheus::AlertsController do
@@ -83,30 +85,27 @@ describe Projects::Prometheus::AlertsController do
   end
 
   describe 'POST #notify' do
-    it 'sends a notification' do
-      alert = create(:prometheus_alert, project: project, environment: environment, prometheus_metric: metric)
-      notification_service = spy
+    let(:notify_service) { spy }
+    let(:payload) { {} }
 
-      alert_params = {
-        "alert" => alert.title,
-        "expr" => "#{alert.query} #{alert.computed_operator} #{alert.threshold}",
-        "for" => "5m",
-        "labels" => {
-          "gitlab" => "hook",
-          "gitlab_alert_id" => alert.prometheus_metric_id
-        }
-      }
+    before do
+      allow(Projects::Prometheus::Alerts::NotifyService).to receive(:new).and_return(notify_service)
+    end
 
-      allow(NotificationService).to receive(:new).and_return(notification_service)
-      expect(notification_service).to receive_message_chain(:async, :prometheus_alerts_fired).with(project, [alert_params])
+    it 'sends a notification for firing alerts only' do
+      expect(notify_service).to receive(:execute).and_return(true)
 
-      if Gitlab.rails5?
-        post :notify, params: project_params(alerts: [alert.to_param]), as: :json
-      else
-        post :notify, project_params(alerts: [alert]), as: :json
-      end
+      post :notify, project_params(payload), as: :json
 
       expect(response).to have_gitlab_http_status(200)
+    end
+
+    it 'renders unprocessable entity if notification fails' do
+      expect(notify_service).to receive(:execute).and_return(false)
+
+      post :notify, project_params, as: :json
+
+      expect(response).to have_gitlab_http_status(422)
     end
   end
 

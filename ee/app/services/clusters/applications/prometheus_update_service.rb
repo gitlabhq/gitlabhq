@@ -96,7 +96,7 @@ module Clusters
             "webhook_configs" => [
               {
                 "url" => notify_url,
-                "send_resolved" => false
+                "send_resolved" => true
               }
             ]
           }

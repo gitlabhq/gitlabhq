@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   module Prometheus
     class AlertsController < Projects::ApplicationController
@@ -22,9 +24,13 @@ module Projects
       end
 
       def notify
-        NotificationService.new.async.prometheus_alerts_fired(project, params["alerts"])
+        notify = Projects::Prometheus::Alerts::NotifyService.new(project, current_user, params)
 
-        head :ok
+        if notify.execute
+          head :ok
+        else
+          head :unprocessable_entity
+        end
       end
 
       def create
