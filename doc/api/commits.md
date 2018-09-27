@@ -79,6 +79,7 @@ POST /projects/:id/repository/commits
 | `actions[]` | array | yes | An array of action hashes to commit as a batch. See the next table for what attributes it can take. |
 | `author_email` | string | no | Specify the commit author's email address |
 | `author_name` | string | no | Specify the commit author's name |
+| `stats` | boolean | no | Include commit stats. Default is true |
 
 
 | `actions[]` Attribute | Type | Required | Description |
