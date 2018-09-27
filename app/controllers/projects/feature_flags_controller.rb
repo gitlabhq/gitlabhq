@@ -9,6 +9,8 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
 
   def index
     @feature_flags = project.operations_feature_flags
+      .order(:name)
+      .page(params[:page]).per(30)
   end
 
   def new
@@ -59,6 +61,6 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
 
   def update_params
     params.require(:operations_feature_flag)
-          .permit(:description, :active)
+          .permit(:name, :description, :active)
   end
 end

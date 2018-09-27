@@ -35,3 +35,5 @@
                 target: "#delete-feature-flag-modal-#{feature_flag.id}" },
               title: _('Delete') }
             = sprite_icon('remove', size: 16)
+
+= paginate @feature_flags, theme: "gitlab"
