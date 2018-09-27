@@ -290,8 +290,7 @@ module QuickActions
     end
     params '#issue | !merge_request'
     condition do
-      issuable.persisted? &&
-        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+      current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
     end
     parse_params do |issuable_param|
       extract_references(issuable_param, :issue).first ||
