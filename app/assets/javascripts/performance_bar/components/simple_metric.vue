@@ -1,16 +1,29 @@
 <script>
-export default {
-  props: {
-    currentRequest: {
-      type: Object,
-      required: true,
+  export default {
+    props: {
+      currentRequest: {
+        type: Object,
+        required: true,
+      },
+      metric: {
+        type: String,
+        required: true,
+      },
     },
-    metric: {
-      type: String,
-      required: true,
+    computed: {
+      duration() {
+        return (
+          this.currentRequest.details[this.metric] &&
+          this.currentRequest.details[this.metric].duration
+        );
+      },
+      calls() {
+        return (
+          this.currentRequest.details[this.metric] && this.currentRequest.details[this.metric].calls
+        );
+      },
     },
-  },
-};
+  };
 </script>
 <template>
   <div
@@ -21,9 +34,9 @@ export default {
       v-if="currentRequest.details"
       class="bold"
     >
-      {{ currentRequest.details[metric].duration }}
+      {{ duration }}
       /
-      {{ currentRequest.details[metric].calls }}
+      {{ calls }}
     </span>
     {{ metric }}
   </div>
