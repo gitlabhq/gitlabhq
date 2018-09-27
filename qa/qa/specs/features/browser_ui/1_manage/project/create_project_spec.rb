@@ -7,21 +7,12 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.act { sign_in_using_credentials }
 
-        group = Factory::Resource::Group.fabricate!
-        group.visit!
-        Page::Group::Show.act { go_to_new_project }
-
-        name = "awesome-project-#{SecureRandom.hex(8)}"
-
-        Page::Project::New.perform do |page|
-          page.choose_test_namespace
-          page.choose_name(name)
-          page.add_description('create awesome project test')
-          page.set_visibility('Public')
-          page.create_new_project
+        created_project = Factory::Resource::Project.fabricate_via_browser_ui! do |project|
+          project.name = 'awesome-project'
+          project.description = 'create awesome project test'
         end
 
-        expect(page).to have_content(name)
+        expect(page).to have_content(created_project.name)
         expect(page).to have_content(
           /Project \S?awesome-project\S+ was successfully created/
         )

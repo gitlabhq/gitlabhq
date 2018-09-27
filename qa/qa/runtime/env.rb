@@ -6,7 +6,7 @@ module QA
       attr_writer :personal_access_token
 
       def verbose?
-        enabled?(ENV['VERBOSE'])
+        enabled?(ENV['VERBOSE'], default: false)
       end
 
       # set to 'false' to have Chrome run visibly instead of headless
@@ -48,7 +48,7 @@ module QA
       end
 
       def forker?
-        forker_username && forker_password
+        !!(forker_username && forker_password)
       end
 
       def forker_username

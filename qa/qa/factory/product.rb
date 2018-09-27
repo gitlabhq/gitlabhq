@@ -5,27 +5,46 @@ module QA
     class Product
       include Capybara::DSL
 
-      attr_reader :web_url
+      NoValueError = Class.new(RuntimeError)
+
+      attr_reader :factory, :web_url
 
       Attribute = Struct.new(:name, :block)
 
-      def initialize(web_url)
+      def initialize(factory, web_url)
+        @factory = factory
         @web_url = web_url
+
+        populate_attributes!
       end
 
       def visit!
-        visit @web_url
+        visit(web_url)
       end
 
       def self.populate!(factory, web_url)
-        new(web_url).tap do |product|
-          factory.class.attributes.each_value do |attribute|
-            product.instance_exec(factory, attribute.block) do |factory, block|
-              value = factory.api_resource&.dig(attribute.name) || block.call(factory)
-              product.define_singleton_method(attribute.name) { value }
-            end
+        new(factory, web_url)
+      end
+
+      private
+
+      def populate_attributes!
+        factory.class.attributes.each do |attribute|
+          instance_exec(factory, attribute.block) do |factory, block|
+            value = attribute_value(attribute, block)
+
+            raise NoValueError, "No value was computed for product #{attribute.name} of factory #{factory.class.name}." unless value
+
+            define_singleton_method(attribute.name) { value }
           end
         end
+      end
+
+      def attribute_value(attribute, block)
+        value = factory.api_resource&.dig(attribute.name) || (factory.respond_to?(attribute.name) && factory.public_send(attribute.name))
+        value ||= block.call(factory) if block
+
+        value
       end
     end
   end

@@ -35,15 +35,15 @@ describe QA::Runtime::Env do
   end
 
   describe '.verbose?' do
-    it_behaves_like 'boolean method', :chrome_headless?, 'CHROME_HEADLESS', true
-  end
-
-  describe '.chrome_headless?' do
-    it_behaves_like 'boolean method', :chrome_headless?, 'CHROME_HEADLESS', true
+    it_behaves_like 'boolean method', :verbose?, 'VERBOSE', false
   end
 
   describe '.signup_disabled?' do
     it_behaves_like 'boolean method', :signup_disabled?, 'SIGNUP_DISABLED', false
+  end
+
+  describe '.chrome_headless?' do
+    it_behaves_like 'boolean method', :chrome_headless?, 'CHROME_HEADLESS', true
   end
 
   describe '.running_in_ci?' do
@@ -111,6 +111,11 @@ describe QA::Runtime::Env do
   end
 
   describe '.forker?' do
+    before do
+      stub_env('GITLAB_FORKER_USERNAME', nil)
+      stub_env('GITLAB_FORKER_PASSWORD', nil)
+    end
+
     it 'returns false if no forker credentials are defined' do
       expect(described_class).not_to be_forker
     end

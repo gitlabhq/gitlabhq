@@ -11,9 +11,19 @@ module QA
 
         product :name
 
-        product :repository_ssh_location
+        product :repository_ssh_location do
+          Page::Project::Show.act do
+            choose_repository_clone_ssh
+            repository_location
+          end
+        end
 
-        product :repository_http_location
+        product :repository_http_location do
+          Page::Project::Show.act do
+            choose_repository_clone_http
+            repository_location
+          end
+        end
 
         def initialize
           @description = 'My awesome project'

@@ -6,7 +6,9 @@ module QA
 
         dependency Factory::Resource::Sandbox, as: :sandbox
 
-        product :id
+        product :id do
+          true # We don't retrieve the Group ID when using the Browser UI
+        end
 
         def initialize
           @path = Runtime::Namespace.name
@@ -36,6 +38,12 @@ module QA
               end
             end
           end
+        end
+
+        def fabricate_via_api!
+          resource_web_url(api_get)
+        rescue ResourceNotFoundError
+          super
         end
 
         def api_get_path
