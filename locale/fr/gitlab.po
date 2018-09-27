@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-27 11:02\n"
+"PO-Revision-Date: 2018-09-27 15:32\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -2040,7 +2040,7 @@ msgid "CommitMessage|Add %{file_name}"
 msgstr "Ajout de %{file_name}"
 
 msgid "CommitWidget|authored"
-msgstr ""
+msgstr "réalisé"
 
 msgid "Commits"
 msgstr "Commits"
@@ -2121,7 +2121,7 @@ msgid "Configure limits for web and API requests."
 msgstr "Configurer les limites pour les requêtes Web et d’API."
 
 msgid "Configure push mirrors."
-msgstr ""
+msgstr "Configurez les miroirs où pousser le code."
 
 msgid "Configure storage path and circuit breaker settings."
 msgstr "Configurez les paramètres du chemin de stockage et du disjoncteur."
@@ -2211,7 +2211,7 @@ msgid "Contribution guide"
 msgstr "Guide de contribution"
 
 msgid "Contributions for <strong>%{calendar_date}</strong>"
-msgstr ""
+msgstr "Contributions du <strong>%{calendar_date}</strong>"
 
 msgid "Contributions per group member"
 msgstr "Contributions par membre du groupe"
@@ -2247,13 +2247,13 @@ msgid "ConvDev Index"
 msgstr "Index ConvDev"
 
 msgid "Copy %{protocol} clone URL"
-msgstr ""
+msgstr "Copier l’URL %{protocol} de clonage"
 
 msgid "Copy HTTPS clone URL"
-msgstr ""
+msgstr "Copier l’URL HTTPS de clonage"
 
 msgid "Copy SSH clone URL"
-msgstr ""
+msgstr "Copier l’URL SSH de clonage"
 
 msgid "Copy SSH public key to clipboard"
 msgstr "Copier la clef SSH publique dans le presse‐papiers"
@@ -2858,7 +2858,7 @@ msgid "Enable the Performance Bar for a given group."
 msgstr "Activer la barre de performance pour un groupe donné."
 
 msgid "Enable usage ping"
-msgstr ""
+msgstr "Activer la collecte des données d’utilisation"
 
 msgid "Enable usage ping to get an overview of how you are using GitLab from a feature perspective."
 msgstr ""
@@ -3350,7 +3350,7 @@ msgid "Generate a default set of labels"
 msgstr "Générer un jeu d’étiquettes par défaut"
 
 msgid "Geo"
-msgstr ""
+msgstr "Geo"
 
 msgid "Geo Nodes"
 msgstr "Nœuds Geo"
