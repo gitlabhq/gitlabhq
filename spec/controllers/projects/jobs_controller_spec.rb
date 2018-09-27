@@ -337,6 +337,22 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           end
         end
       end
+
+      context 'when no trace is available' do
+        it 'has_trace is false' do
+          expect(response).to match_response_schema('job/job_details')
+          expect(json_response['has_trace']).to be false
+        end
+      end
+
+      context 'when job has trace' do
+        let(:job) { create(:ci_build, :running, :trace_live, pipeline: pipeline) }
+
+        it "has_trace is true" do
+          expect(response).to match_response_schema('job/job_details')
+          expect(json_response['has_trace']).to be true
+        end
+      end
     end
 
     context 'when requesting JSON job is triggered' do
