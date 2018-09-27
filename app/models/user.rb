@@ -227,8 +227,8 @@ class User < ActiveRecord::Base
   enum project_view: [:readme, :activity, :files]
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
-  delegate :notes_filter_for, to: :user_preference
-  delegate :set_notes_filter, to: :user_preference
+  delegate :notes_filter_for, to: :user_preference, allow_nil: true
+  delegate :set_notes_filter, to: :user_preference, allow_nil: true
 
   state_machine :state, initial: :active do
     event :block do
