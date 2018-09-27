@@ -1,13 +1,16 @@
 - @registries.each do |project_registry|
   .card.project-card.prepend-top-15
-    .card-header{ id: "project-#{project_registry.project.id}-header" }
+    .card-header{ id: "project-#{project_registry.project_id}-header" }
       .d-flex
-        %strong.header-text-primary.flex-fill
-          = link_to project_registry.project.full_name, admin_namespace_project_path(project_registry.project.namespace, project_registry.project)
-        = link_to(recheck_admin_geo_project_path(project_registry), method: :post, class: 'btn btn-outline btn-sm mr-2') do
-          = s_('Geo|Recheck')
-        = link_to(resync_admin_geo_project_path(project_registry), method: :post, class: 'btn btn-outline-primary btn-sm') do
-          = s_('Geo|Resync')
+        - if project_registry.project.nil?
+          = render partial: 'removed', locals: { project_registry: project_registry }
+        - else
+          %strong.header-text-primary.flex-fill
+            = link_to project_registry.project.full_name, admin_namespace_project_path(project_registry.project.namespace, project_registry.project)
+          = link_to(recheck_admin_geo_project_path(project_registry), method: :post, class: 'btn btn-outline btn-sm mr-2') do
+            = s_('Geo|Recheck')
+          = link_to(resync_admin_geo_project_path(project_registry), method: :post, class: 'btn btn-outline-primary btn-sm') do
+            = s_('Geo|Resync')
 
     .card-body
       .container.project-container

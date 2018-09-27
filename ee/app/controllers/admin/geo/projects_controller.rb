@@ -21,6 +21,16 @@ class Admin::Geo::ProjectsController < Admin::ApplicationController
                   end
   end
 
+  def destroy
+    unless @registry.project.nil?
+      return redirect_back_or_admin_geo_projects(alert: s_('Geo|Could not remove tracking entry for an existing project.'))
+    end
+
+    @registry.destroy
+
+    redirect_back_or_admin_geo_projects(notice: s_('Geo|Tracking entry for project (%{project_id}) was successfully removed.') % { project_id: @registry.project_id })
+  end
+
   def recheck
     @registry.flag_repository_for_recheck!
 

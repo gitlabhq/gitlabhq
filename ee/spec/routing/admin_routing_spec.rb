@@ -9,15 +9,19 @@ describe 'EE-specific admin routing' do
       expect(get('/admin/geo/projects')).to route_to('admin/geo/projects#index')
     end
 
-    it 'routes /:id/recheck to #recheck' do
+    it 'routes delete /:id to #destroy' do
+      expect(delete("/admin/geo/projects/#{project_registry.id}")).to route_to('admin/geo/projects#destroy', id: project_registry.to_param)
+    end
+
+    it 'routes post /:id/recheck to #recheck' do
       expect(post("admin/geo/projects/#{project_registry.id}/recheck")).to route_to('admin/geo/projects#recheck', id: project_registry.to_param)
     end
 
-    it 'routes /id:/resync to #resync' do
+    it 'routes post /:id/resync to #resync' do
       expect(post("admin/geo/projects/#{project_registry.id}/resync")).to route_to('admin/geo/projects#resync', id: project_registry.to_param)
     end
 
-    it 'routes /id:/force_redownload to #force_redownload' do
+    it 'routes post /:id/force_redownload to #force_redownload' do
       expect(post("admin/geo/projects/#{project_registry.id}/force_redownload")).to route_to('admin/geo/projects#force_redownload', id: project_registry.to_param)
     end
   end
