@@ -30,19 +30,14 @@ module Gitlab
               validates :when,
                 inclusion: { in: %w[on_success on_failure always manual delayed],
                              message: 'should be on_success, on_failure, ' \
-                                      'always or manual' }
+                                      'always, manual or delayed' }
 
               validates :dependencies, array_of_strings: true
               validates :extends, type: String
-
-              with_options if: :delayed? do
-                validates :start_in, duration: true, allow_nil: false
-              end
-
-              with_options unless: :delayed? do
-                validates :start_in, presence: false
-              end
             end
+
+            validates :start_in, duration: true, if: :delayed?
+            validates :start_in, absence: true, unless: :delayed?
           end
 
           entry :before_script, Entry::Script,
