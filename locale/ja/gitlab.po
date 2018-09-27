@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-26 11:21\n"
+"PO-Revision-Date: 2018-09-27 12:58\n"
 
 msgid " Status"
 msgstr " ステータス"
@@ -4088,7 +4088,7 @@ msgid "Install GitLab Runner"
 msgstr ""
 
 msgid "Install Runner on Kubernetes"
-msgstr ""
+msgstr "Kubernetes に Runner をインストール"
 
 msgid "Instance"
 msgid_plural "Instances"
@@ -8913,7 +8913,7 @@ msgid "mrWidget|Email patches"
 msgstr ""
 
 msgid "mrWidget|Failed to load deployment statistics"
-msgstr ""
+msgstr "デプロイ統計のロードに失敗しました"
 
 msgid "mrWidget|Fast-forward merge is not possible. To merge this request, first rebase locally."
 msgstr ""
@@ -8925,7 +8925,7 @@ msgid "mrWidget|If the %{missingBranchName} branch exists in your local reposito
 msgstr ""
 
 msgid "mrWidget|Loading deployment statistics"
-msgstr ""
+msgstr "デプロイ統計を読み込み中"
 
 msgid "mrWidget|Mentions"
 msgstr "メンション"
