@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-27 10:28\n"
+"PO-Revision-Date: 2018-09-27 10:34\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -1643,7 +1643,7 @@ msgid "ClusterIntegration|Certificate Authority bundle (PEM format)"
 msgstr "Ensemble de certificats des autorités de certification (format PEM)"
 
 msgid "ClusterIntegration|Choose which applications to install on your Kubernetes cluster. Helm Tiller is required to install any of the following applications."
-msgstr ""
+msgstr "Choisissez les applications à installer sur votre grappe de serveurs Kubernetes. L’installation de n’importe quelle des applications suivantes nécessite Helm Tiller."
 
 msgid "ClusterIntegration|Choose which of your environments will use this cluster."
 msgstr ""
@@ -1988,7 +1988,7 @@ msgid "ClusterIntegration|sign up"
 msgstr "s’inscrire"
 
 msgid "Code owners"
-msgstr ""
+msgstr "Propriétaires du code"
 
 msgid "Cohorts"
 msgstr "Cohortes"
@@ -2478,7 +2478,7 @@ msgid "Decline and sign out"
 msgstr "Refuser et se déconnecter"
 
 msgid "Default Branch"
-msgstr ""
+msgstr "Branche par défaut"
 
 msgid "Default classification label"
 msgstr "Étiquette de classement par défaut"
