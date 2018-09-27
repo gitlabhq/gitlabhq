@@ -108,6 +108,7 @@ module QA
         end
 
         def switch_to_register_tab
+          set_initial_password_if_present
           click_element :register_tab
         end
 

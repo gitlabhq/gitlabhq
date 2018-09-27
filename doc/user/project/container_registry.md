@@ -27,7 +27,7 @@ to enable it.
 1. First, ask your system administrator to enable GitLab Container Registry
    following the [administration documentation](../../administration/container_registry.md).
    If you are using GitLab.com, this is enabled by default so you can start using
-   the Registry immediately. Currently there is a soft (10GB) size restriction for 
+   the Registry immediately. Currently there is a soft (10GB) size restriction for
    registry on GitLab.com, as part of the [repository size limit](repository/index.html#repository-size).
 1. Go to your [project's General settings](settings/index.md#sharing-and-permissions)
    and enable the **Container Registry** feature on your project. For new
@@ -216,7 +216,7 @@ needs to trust the mitmproxy SSL certificates for this to work.
 
 The following installation instructions assume you are running Ubuntu:
 
-1. Install mitmproxy (see http://docs.mitmproxy.org/en/stable/install.html)
+1. [Install mitmproxy](https://docs.mitmproxy.org/stable/overview-installation/).
 1. Run `mitmproxy --port 9000` to generate its certificates.
    Enter <kbd>CTRL</kbd>-<kbd>C</kbd> to quit.
 1. Install the certificate from `~/.mitmproxy` to your system:

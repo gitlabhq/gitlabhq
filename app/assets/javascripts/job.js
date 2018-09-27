@@ -6,7 +6,7 @@ import { visitUrl } from './lib/utils/url_utility';
 import bp from './breakpoints';
 import { numberToHumanSize } from './lib/utils/number_utils';
 import { setCiStatusFavicon } from './lib/utils/common_utils';
-import { isScrolledToBottom, scrollDown } from './lib/utils/scroll_utils';
+import { isScrolledToBottom, scrollDown, scrollUp } from './lib/utils/scroll_utils';
 import LogOutputBehaviours from './lib/utils/logoutput_behaviours';
 
 export default class Job extends LogOutputBehaviours {
@@ -80,7 +80,7 @@ export default class Job extends LogOutputBehaviours {
   }
 
   scrollToTop() {
-    $(document).scrollTop(0);
+    scrollUp();
     this.hasBeenScrolled = true;
     this.toggleScroll();
   }

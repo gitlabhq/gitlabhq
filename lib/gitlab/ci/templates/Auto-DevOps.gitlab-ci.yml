@@ -49,7 +49,7 @@ variables:
   POSTGRES_DB: $CI_ENVIRONMENT_SLUG
 
   KUBERNETES_VERSION: 1.8.6
-  HELM_VERSION: 2.6.1
+  HELM_VERSION: 2.10.0
 
   DOCKER_DRIVER: overlay2
 
@@ -122,6 +122,9 @@ license_management:
     paths: [gl-license-management-report.json]
   only:
     - branches
+  only:
+    variables:
+      - $GITLAB_FEATURES =~ /\blicense_management\b/
   except:
     variables:
       - $LICENSE_MANAGEMENT_DISABLED
@@ -484,15 +487,11 @@ rollout 100%:
   }
 
   function license_management() {
-    if echo $GITLAB_FEATURES |grep license_management > /dev/null ; then
-      # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable"
-      LICENSE_MANAGEMENT_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+    # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable"
+    LICENSE_MANAGEMENT_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
 
-      docker run --volume "$PWD:/code" \
-                 "registry.gitlab.com/gitlab-org/security-products/license-management:$LICENSE_MANAGEMENT_VERSION" analyze /code
-    else
-      echo "License management is not available in your subscription"
-    fi
+    docker run --volume "$PWD:/code" \
+                                    "registry.gitlab.com/gitlab-org/security-products/license-management:$LICENSE_MANAGEMENT_VERSION" analyze /code
   }
 
   function sast() {
@@ -605,7 +604,6 @@ rollout 100%:
       --set postgresql.postgresPassword="$POSTGRES_PASSWORD" \
       --set postgresql.postgresDatabase="$POSTGRES_DB" \
       --namespace="$KUBE_NAMESPACE" \
-      --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
       "$name" \
       chart/
 

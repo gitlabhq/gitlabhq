@@ -42,7 +42,7 @@ export default {
       keys: ['feature', 'request'],
     },
   ],
-  simpleMetrics: ['redis', 'sidekiq'],
+  simpleMetrics: ['redis'],
   data() {
     return { currentRequestId: '' };
   },

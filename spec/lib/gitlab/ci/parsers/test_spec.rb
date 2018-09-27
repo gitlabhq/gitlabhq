@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Parsers do
+describe Gitlab::Ci::Parsers::Test do
   describe '.fabricate!' do
     subject { described_class.fabricate!(file_type) }
 
@@ -16,7 +16,7 @@ describe Gitlab::Ci::Parsers do
       let(:file_type) { 'undefined' }
 
       it 'raises an error' do
-        expect { subject }.to raise_error(NameError)
+        expect { subject }.to raise_error(Gitlab::Ci::Parsers::Test::ParserNotFoundError)
       end
     end
   end

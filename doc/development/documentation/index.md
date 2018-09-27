@@ -43,13 +43,13 @@ how to structure GitLab docs.
 
 Currently GitLab docs use Redcarpet as [markdown](../../user/markdown.md) engine, but there's an [open discussion](https://gitlab.com/gitlab-com/gitlab-docs/issues/50) for implementing Kramdown in the near future.
 
-All the docs follow the [documentation style guidelines](styleguide.md).
+All the docs follow the [documentation style guidelines](styleguide.md). See [Linting](#linting) for help to follow the guidelines.
 
 ## Documentation directory structure
 
 The documentation is structured based on the GitLab UI structure itself,
 separated by [`user`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/user),
-[`administrator`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/administration), and [`contributor`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/development). 
+[`administrator`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/administration), and [`contributor`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/development).
 
 In order to have a [solid site structure](https://searchengineland.com/seo-benefits-developing-solid-site-structure-277456) for our documentation,
 all docs should be linked. Every new document should be cross-linked to its related documentation, and linked from its topic-related index, when existent.
@@ -223,6 +223,108 @@ redirect_from: 'https://docs.gitlab.com/my-old-location/README.html'
 Note: it is necessary to include the file name in the `redirect_from` URL,
 even if it's `index.html` or `README.html`.
 
+## Linting
+
+To help adhere to the [documentation style guidelines](styleguide.md), and to improve the content
+ added to documentation, consider locally installing and running documentation linters. This will
+ help you catch common issues before raising merge requests for review of documentation.
+
+The following are some suggested linters you can install locally and sample configuration:
+
+- `proselint`
+- `markdownlint`
+
+NOTE: **Note:**
+This list does not limit what other linters you can add to your local documentation writing
+ toolchain.
+
+### `proselint`
+
+`proselint` checks for common problems with English prose. It provides a
+ [plethora of checks](http://proselint.com/checks/) that are helpful for technical writing.
+
+`proselint` can be used [on the command line](http://proselint.com/utility/), either on a single
+ Markdown file or on all Markdown files in a project. For example, to run `proselint` on all
+ documentation in the [`gitlab-ce` project](https://gitlab.com/gitlab-org/gitlab-ce), run the
+ following commands from within the `gitlab-ce` project:
+
+```sh
+cd doc
+proselint **/*.md
+```
+
+`proselint` can also be run from within editors using plugins. For example, the following plugins
+ are available:
+
+- [Sublime Text](https://packagecontrol.io/packages/SublimeLinter-contrib-proselint)
+- [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=PatrykPeszko.vscode-proselint)
+- [Others](https://github.com/amperser/proselint#plugins-for-other-software)
+
+#### Sample `proselint` configuration
+
+All of the checks are good to use. However, excluding the `typography.symbols` checks might reduce
+ noise. The following sample `proselint` configuration disables the `typography.symbols` checks:
+
+```json
+{
+  "checks": {
+    "typography.symbols": false
+  }
+}
+```
+
+A file with `proselint` configuration must be placed in a
+ [valid location](https://github.com/amperser/proselint#checks). For example, `~/.config/proselint/config`.
+
+### `markdownlint`
+
+`markdownlint` checks that certain rules ([example](https://github.com/DavidAnson/markdownlint/blob/master/README.md#rules--aliases))
+ are followed for Markdown syntax. Our [style guidelines](styleguide.md) elaborate on which choices
+ must be made when selecting Markdown syntax for GitLab documentation and this tool helps
+ catch deviations from those guidelines.
+
+`markdownlint` can be used [on the command line](https://github.com/igorshubovych/markdownlint-cli#markdownlint-cli--),
+ either on a single Markdown file or on all Markdown files in a project. For example, to run
+ `markdownlint` on all documentation in the [`gitlab-ce` project](https://gitlab.com/gitlab-org/gitlab-ce),
+ run the following commands from within the `gitlab-ce` project:
+
+```sh
+cd doc
+markdownlint **/*.md
+```
+
+`markdownlint` can also be run from within editors using plugins. For example, the following plugins
+ are available:
+
+- [Sublime Text](https://packagecontrol.io/packages/SublimeLinter-contrib-markdownlint)
+- [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
+- [Others](https://github.com/DavidAnson/markdownlint#related)
+
+#### Sample `markdownlint` configuration
+
+The following sample `markdownlint` configuration modifies the available default rules to:
+
+- Adhere to the [style guidelines](styleguide.md).
+- Apply conventions found in the GitLab documentation.
+
+```json
+{
+  "default": true,
+  "header-style": { "style": "atx" },
+  "ul-style": { "style": "dash" },
+  "line-length": false,
+  "no-trailing-punctuation": false,
+  "ol-prefix": { "style": "one" },
+  "blanks-around-fences": false,
+  "hr-style": { "style": "---" },
+  "fenced-code-language": false
+}
+```
+
+For [`markdownlint`](https://gitahub.com/DavidAnson/markdownlint/), this configuration must be
+ placed in a [valid location](https://github.com/igorshubovych/markdownlint-cli#configuration). For
+ example, `~/.markdownlintrc`.
+
 ## Testing
 
 We treat documentation as code, thus have implemented some testing.
@@ -277,7 +379,6 @@ for GitLab Team members.
 - Use the correct [branch name](#branch-naming)
 - Label the MR `Documentation`
 - Assign the correct milestone (see note below)
-
 
 NOTE: **Note:**
 If the release version you want to add the documentation to has already been
