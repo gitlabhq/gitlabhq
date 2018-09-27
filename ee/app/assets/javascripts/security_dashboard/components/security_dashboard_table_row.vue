@@ -1,4 +1,5 @@
 <script>
+import { SkeletonLoading } from '@gitlab-org/gitlab-ui';
 import SeverityBadge from 'ee/vue_shared/security_reports/components/severity_badge.vue';
 import SecurityDashboardActionButtons from './security_dashboard_action_buttons.vue';
 
@@ -7,11 +8,18 @@ export default {
   components: {
     SeverityBadge,
     SecurityDashboardActionButtons,
+    SkeletonLoading,
   },
   props: {
     vulnerability: {
       type: Object,
-      required: true,
+      required: false,
+      default: () => ({}),
+    },
+    isLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -19,10 +27,7 @@ export default {
       return this.vulnerability.confidence || '–';
     },
     severity() {
-      return this.vulnerability.severity || '–';
-    },
-    description() {
-      return this.vulnerability.description;
+      return this.vulnerability.severity || ' ';
     },
     projectNamespace() {
       const { project } = this.vulnerability;
@@ -54,13 +59,20 @@ export default {
         {{ s__('Reports|Vulnerability') }}
       </div>
       <div class="table-mobile-content">
-        <span>{{ description }}</span>
-        <br />
-        <span
-          v-if="projectNamespace"
-          class="vulnerability-namespace">
-          {{ projectNamespace }}
-        </span>
+        <skeleton-loading
+          v-if="isLoading"
+          class="mt-2 js-skeleton-loader"
+          :lines="2"
+        />
+        <div v-else>
+          <span>{{ vulnerability.description }}</span>
+          <br />
+          <span
+            v-if="projectNamespace"
+            class="vulnerability-namespace">
+            {{ projectNamespace }}
+          </span>
+        </div>
       </div>
     </div>
 
@@ -71,7 +83,7 @@ export default {
       >
         {{ s__('Reports|Confidence') }}
       </div>
-      <div class="table-mobile-content">
+      <div class="table-mobile-content text-capitalize">
         {{ confidence }}
       </div>
     </div>
@@ -97,7 +109,7 @@ export default {
 <style>
 @media (min-width: 768px) {
   .vulnerabilities-row {
-    padding: .6em .4em;
+    padding: 0.6em 0.4em;
   }
 
   .vulnerabilities-row:hover,
@@ -126,6 +138,6 @@ export default {
 
 .vulnerability-namespace {
   color: #707070;
-  font-size: .8em;
+  font-size: 0.8em;
 }
 </style>

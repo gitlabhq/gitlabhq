@@ -1,45 +1,66 @@
+import axios from '~/lib/utils/axios_utils';
 import * as types from './mutation_types';
-import mockData from './mock_data.json';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 
-export const fetchVulnerabilities = ({ dispatch }, params = {}) => {
+export const fetchVulnerabilitiesCount = ({ state, dispatch }) => {
+  dispatch('requestVulnerabilitiesCount');
+
+  axios({
+    method: 'GET',
+    url: state.vulnerabilitiesCountEndpoint,
+  })
+    .then(response => {
+      const { data } = response;
+      dispatch('receiveVulnerabilitiesCountSuccess', { data });
+    })
+    .catch(() => {
+      dispatch('receiveVulnerabilitiesCountError');
+    });
+};
+
+export const requestVulnerabilitiesCount = ({ commit }) => {
+  commit(types.REQUEST_VULNERABILITIES_COUNT);
+};
+
+export const receiveVulnerabilitiesCountSuccess = ({ commit }, response) => {
+  commit(types.RECEIVE_VULNERABILITIES_COUNT_SUCCESS, response.data);
+};
+
+export const receiveVulnerabilitiesCountError = ({ commit }) => {
+  commit(types.RECEIVE_VULNERABILITIES_COUNT_ERROR);
+};
+
+export const fetchVulnerabilities = ({ state, dispatch }, page = 1) => {
   dispatch('requestVulnerabilities');
 
-  // TODO: Replace with axios when we can use the actual API
-  Promise.resolve({
-    data: mockData,
-    headers: {
-      'X-Page': params.page || 1,
-      'X-Next-Page': 2,
-      'X-Prev-Page': 1,
-      'X-Per-Page': 20,
-      'X-Total': 100,
-      'X-Total-Pages': 5,
-    } })
+  axios({
+    method: 'GET',
+    url: state.vulnerabilitiesEndpoint,
+    params: { page },
+  })
     .then(response => {
-      dispatch('receiveVulnerabilitiesSuccess', response);
+      const { headers, data } = response;
+      dispatch('receiveVulnerabilitiesSuccess', { headers, data });
     })
-    .catch(error => {
-      dispatch('receiveVulnerabilitiesError', error);
+    .catch(() => {
+      dispatch('receiveVulnerabilitiesError');
     });
 };
 
 export const requestVulnerabilities = ({ commit }) => {
-  commit(types.SET_LOADING, true);
+  commit(types.REQUEST_VULNERABILITIES);
 };
 
 export const receiveVulnerabilitiesSuccess = ({ commit }, response = {}) => {
   const normalizedHeaders = normalizeHeaders(response.headers);
-  const paginationInformation = parseIntPagination(normalizedHeaders);
+  const pageInfo = parseIntPagination(normalizedHeaders);
+  const vulnerabilities = response.data;
 
-  commit(types.SET_LOADING, false);
-  commit(types.SET_VULNERABILITIES, response.data);
-  commit(types.SET_PAGINATION, paginationInformation);
+  commit(types.RECEIVE_VULNERABILITIES_SUCCESS, { pageInfo, vulnerabilities });
 };
 
 export const receiveVulnerabilitiesError = ({ commit }) => {
-  // TODO: Show error state when we get it from UX
-  commit(types.SET_LOADING, false);
+  commit(types.RECEIVE_VULNERABILITIES_ERROR);
 };
 
 export default () => {};

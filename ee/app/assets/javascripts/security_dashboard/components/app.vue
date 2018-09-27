@@ -1,7 +1,9 @@
 <script>
+import { mapActions, mapGetters } from 'vuex';
 import Tabs from '~/vue_shared/components/tabs/tabs';
 import Tab from '~/vue_shared/components/tabs/tab.vue';
 import SecurityDashboardTable from './security_dashboard_table.vue';
+import VulnerabilityCountList from './vulnerability_count_list.vue';
 
 export default {
   name: 'SecurityDashboardApp',
@@ -9,31 +11,34 @@ export default {
     Tabs,
     Tab,
     SecurityDashboardTable,
+    VulnerabilityCountList,
   },
   computed: {
-    count() {
-      // TODO: Get the count from the overview API
-      return {
-        sast: null,
-      };
+    ...mapGetters('vulnerabilities', ['vulnerabilitiesCountByReportType']),
+    sastCount() {
+      return this.vulnerabilitiesCountByReportType('sast');
     },
-    showSastCount() {
-      return this.count && this.count.sast;
-    },
+  },
+  created() {
+    this.fetchVulnerabilitiesCount();
+  },
+  methods: {
+    ...mapActions('vulnerabilities', ['fetchVulnerabilitiesCount']),
   },
 };
 </script>
 
 <template>
   <div>
+    <vulnerability-count-list />
     <tabs stop-propagation>
       <tab active>
         <template slot="title">
           {{ __('SAST') }}
           <span
-            v-if="showSastCount"
+            v-if="sastCount"
             class="badge badge-pill">
-            {{ count.sast }}
+            {{ sastCount }}
           </span>
         </template>
 
@@ -42,4 +47,3 @@ export default {
     </tabs>
   </div>
 </template>
-

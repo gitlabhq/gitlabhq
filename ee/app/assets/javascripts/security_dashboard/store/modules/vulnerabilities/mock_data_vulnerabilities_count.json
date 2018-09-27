@@ -1,0 +1,30 @@
+{
+  "sast": {
+     "critical": 2,
+     "high": 4,
+     "low": 7,
+     "medium": 8,
+     "unknown": 9
+  },
+  "container_scanning": {
+     "critical": 3,
+     "high": 3,
+     "low": 2,
+     "medium": 9,
+     "unknown": 7
+  },
+  "dependency_scanning": {
+     "critical": 2,
+     "high": 3,
+     "low": 9,
+     "medium": 4,
+     "unknown": 7
+  },
+  "dast": {
+     "critical": 2,
+     "high": 3,
+     "low": 9,
+     "medium": 4,
+     "unknown": 7
+  }
+}
