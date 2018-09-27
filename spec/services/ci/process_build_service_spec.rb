@@ -20,9 +20,14 @@ describe Ci::ProcessBuildService, '#execute' do
       end
 
       it 'schedules the build' do
-        subject
+        Timecop.freeze do
+          expect(Ci::BuildScheduleWorker)
+            .to receive(:perform_at).with(1.minute.since, build.id)
 
-        expect(build).to be_scheduled
+          subject
+
+          expect(build).to be_scheduled
+        end
       end
     end
 
@@ -34,7 +39,7 @@ describe Ci::ProcessBuildService, '#execute' do
       it 'enqueues the build' do
         subject
 
-        expect(build).to be_pending
+        expect(build).to be_manual
       end
     end
   end
