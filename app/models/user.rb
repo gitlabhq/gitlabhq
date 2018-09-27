@@ -152,9 +152,7 @@ class User < ActiveRecord::Base
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
 
   has_one :status, class_name: 'UserStatus'
-  has_one :user_preference, inverse_of: :user
-
-  accepts_nested_attributes_for :user_preference, update_only: true
+  has_one :user_preference
 
   #
   # Validations
@@ -227,7 +225,7 @@ class User < ActiveRecord::Base
   enum project_view: [:readme, :activity, :files]
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
-  delegate :notes_filter_for, to: :user_preference
+  delegate :notes_filter, to: :user_preference
   delegate :set_notes_filter, to: :user_preference
 
   state_machine :state, initial: :active do
@@ -1367,6 +1365,14 @@ class User < ActiveRecord::Base
 
   def requires_usage_stats_consent?
     !consented_usage_stats? && 7.days.ago > self.created_at && !has_current_license? && User.single_user?
+  end
+
+  # Creates user preference once when needed.
+  # No migrations needed for existing users.
+  def user_preference
+    return super if super.present?
+
+    persisted? ? create_user_preference : build_user_preference
   end
 
   # @deprecated

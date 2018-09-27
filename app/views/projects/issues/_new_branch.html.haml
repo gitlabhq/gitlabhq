@@ -18,7 +18,7 @@
     -# Changing this needs to toggle /noteable/issue/89/notes?notes_filter=0 or 1
     - if current_user
       = select_tag :notes_filter,
-        options_for_select(UserPreference::NOTES_FILTERS, current_user.notes_filter_for(@issue))
+        options_for_select(UserPreference::NOTES_FILTERS, current_user.notes_filter(@issue))
 
     .btn-group.available.hidden
       %button.btn.js-create-merge-request.btn-success.btn-inverted{ type: 'button', data: { action: data_action } }
