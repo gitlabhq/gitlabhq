@@ -63,14 +63,6 @@ class StuckCiJobsWorker
       end
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
-
-  def drop_build(type, build, status, timeout, reason)
-    Rails.logger.info "#{self.class}: Dropping #{type} build #{build.id} for runner #{build.runner_id} (status: #{status}, timeout: #{timeout}, reason: #{reason})"
-    Gitlab::OptimisticLocking.retry_lock(build, 3) do |b|
-      b.drop(reason)
-    end
-  end
 
   def drop_stale_scheduled_builds
     # `ci_builds` table has a partial index on `id` with `scheduled_at <> NULL` condition.
@@ -80,6 +72,14 @@ class StuckCiJobsWorker
       relation.where('scheduled_at < ?', BUILD_SCHEDULED_OUTDATED_TIMEOUT.ago).find_each do |build|
         drop_build(:outdated, build, :scheduled, BUILD_SCHEDULED_OUTDATED_TIMEOUT, :schedule_expired)
       end
+    end
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
+
+  def drop_build(type, build, status, timeout, reason)
+    Rails.logger.info "#{self.class}: Dropping #{type} build #{build.id} for runner #{build.runner_id} (status: #{status}, timeout: #{timeout}, reason: #{reason})"
+    Gitlab::OptimisticLocking.retry_lock(build, 3) do |b|
+      b.drop(reason)
     end
   end
 end
