@@ -8,7 +8,10 @@ module Gitlab
               image: 'illustrations/scheduled-job_countdown.svg',
               size: 'svg-394',
               title: _("This is a scheduled to run in ") + " #{execute_in}",
-              content: _("This job will automatically run after it's timer finishes. Often they are used for incremental roll-out deploys to production environments. When unscheduled it converts into a manual action.")
+              content: _("This job will automatically run after it's timer finishes. " \
+                         "Often they are used for incremental roll-out deploys " \
+                         "to production environments. When unscheduled it converts " \
+                         "into a manual action.")
             }
           end
 
