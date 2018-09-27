@@ -40,7 +40,7 @@
               = link_to_label(label, subject: issue.project, css_class: 'label-link')
 
           - if issue.weight
-            %span.issuable-weight.has-tooltip{ data: { container: 'body' }, title: _('Weight') }
+            %span.issuable-weight.d-none.d-sm-inline-block.has-tooltip{ data: { container: 'body' }, title: _('Weight') }
               &nbsp;
               = icon('balance-scale')
               = issue.weight
