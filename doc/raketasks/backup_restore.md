@@ -594,8 +594,8 @@ First make sure your backup tar file is in the backup directory described in the
 `/var/opt/gitlab/backups`. It needs to be owned by the `git` user.
 
 ```shell
-chown git.git 11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar
 sudo cp 11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar /var/opt/gitlab/backups/
+sudo chown git.git /var/opt/gitlab/backups/11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar
 ```
 
 Stop the processes that are connected to the database.  Leave the rest of GitLab
