@@ -1,10 +1,10 @@
 <script>
   import { mapGetters, mapActions } from 'vuex';
+  import { LoadingIcon } from '@gitlab-org/gitlab-ui';
   import Flash from '../../flash';
   import store from '../stores';
   import collapsibleContainer from './collapsible_container.vue';
   import { errorMessages, errorMessagesTypes } from '../constants';
-  import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
   export default {
     name: 'RegistryListApp',

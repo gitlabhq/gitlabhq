@@ -1,9 +1,9 @@
 <script>
+  import { LoadingIcon } from '@gitlab-org/gitlab-ui';
   import datePicker from '../pikaday.vue';
   import toggleSidebar from './toggle_sidebar.vue';
   import collapsedCalendarIcon from './collapsed_calendar_icon.vue';
   import { dateInWords } from '../../../lib/utils/datetime_utility';
-  import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
   export default {
     name: 'SidebarDatePicker',

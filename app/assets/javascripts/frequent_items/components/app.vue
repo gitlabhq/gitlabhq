@@ -1,6 +1,7 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
 import AccessorUtilities from '~/lib/utils/accessor';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 import eventHub from '../event_hub';
 import store from '../store/';
 import { FREQUENT_ITEMS, STORAGE_KEY } from '../constants';
@@ -8,7 +9,6 @@ import { isMobile, updateExistingFrequentItem } from '../utils';
 import FrequentItemsSearchInput from './frequent_items_search_input.vue';
 import FrequentItemsList from './frequent_items_list.vue';
 import frequentItemsMixin from './frequent_items_mixin';
-import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   store,

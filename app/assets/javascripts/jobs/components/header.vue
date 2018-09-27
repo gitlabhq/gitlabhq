@@ -1,7 +1,7 @@
 <script>
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 import ciHeader from '../../vue_shared/components/header_ci_component.vue';
 import callout from '../../vue_shared/components/callout.vue';
-import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   name: 'JobHeaderSection',

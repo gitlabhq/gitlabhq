@@ -1,9 +1,9 @@
 <script>
 import Sortable from 'sortablejs';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 import boardNewIssue from './board_new_issue.vue';
 import boardCard from './board_card.vue';
 import eventHub from '../eventhub';
-import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 const Store = gl.issueBoards.BoardsStore;
 

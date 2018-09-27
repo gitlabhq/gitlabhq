@@ -3,6 +3,7 @@ import { mapState, mapGetters, mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 import eventHub from '../../notes/event_hub';
 import CompareVersions from './compare_versions.vue';
 import ChangedFiles from './changed_files.vue';
@@ -10,7 +11,6 @@ import DiffFile from './diff_file.vue';
 import NoChanges from './no_changes.vue';
 import HiddenFilesWarning from './hidden_files_warning.vue';
 import CommitWidget from './commit_widget.vue';
-import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   name: 'DiffsApp',

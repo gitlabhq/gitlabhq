@@ -4,9 +4,9 @@ import { mapActions, mapState } from 'vuex';
 import createFlash from '~/flash';
 import { s__, sprintf } from '~/locale';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 import createEmptyBadge from '../empty_badge';
 import Badge from './badge.vue';
-import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 const badgePreviewDelayInMilliseconds = 1500;
 

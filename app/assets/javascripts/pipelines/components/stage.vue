@@ -13,6 +13,7 @@
  */
 
 import $ from 'jquery';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 import { __ } from '../../locale';
 import Flash from '../../flash';
 import axios from '../../lib/utils/axios_utils';
@@ -21,7 +22,6 @@ import Icon from '../../vue_shared/components/icon.vue';
 import JobComponent from './graph/job_component.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
 import { PIPELINES_TABLE } from '../constants';
-import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   components: {

@@ -3,10 +3,10 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import _ from 'underscore';
 import { Manager } from 'smooshpack';
 import { listen } from 'codesandbox-api';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 import Navigator from './navigator.vue';
 import { packageJsonPath } from '../../constants';
 import { createPathWithExt } from '../../utils';
-import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   components: {

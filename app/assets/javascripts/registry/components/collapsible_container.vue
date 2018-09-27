@@ -1,12 +1,12 @@
 <script>
   import { mapActions } from 'vuex';
+  import { LoadingIcon } from '@gitlab-org/gitlab-ui';
   import Flash from '../../flash';
   import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
   import tooltip from '../../vue_shared/directives/tooltip';
   import tableRegistry from './table_registry.vue';
   import { errorMessages, errorMessagesTypes } from '../constants';
   import { __ } from '../../locale';
-  import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
   export default {
     name: 'CollapsibeContainerRegisty',

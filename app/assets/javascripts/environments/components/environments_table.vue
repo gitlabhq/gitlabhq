@@ -2,8 +2,8 @@
 /**
  * Render environments table.
  */
-import environmentItem from './environment_item.vue';
 import { LoadingIcon } from '@gitlab-org/gitlab-ui';
+import environmentItem from './environment_item.vue';
 
 export default {
   components: {

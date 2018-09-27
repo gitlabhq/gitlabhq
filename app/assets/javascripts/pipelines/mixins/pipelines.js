@@ -1,4 +1,5 @@
 import Visibility from 'visibilityjs';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 import { __ } from '../../locale';
 import Flash from '../../flash';
 import Poll from '../../lib/utils/poll';
@@ -7,7 +8,6 @@ import SvgBlankState from '../components/blank_state.vue';
 import PipelinesTableComponent from '../components/pipelines_table.vue';
 import eventHub from '../event_hub';
 import { CANCEL_REQUEST } from '../constants';
-import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   components: {

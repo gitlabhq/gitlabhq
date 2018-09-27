@@ -1,7 +1,7 @@
 <script>
 import _ from 'underscore';
-import StageColumnComponent from './stage_column_component.vue';
 import { LoadingIcon } from '@gitlab-org/gitlab-ui';
+import StageColumnComponent from './stage_column_component.vue';
 
 export default {
   components: {

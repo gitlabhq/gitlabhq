@@ -1,9 +1,9 @@
 <script>
 import $ from 'jquery';
 import _ from 'underscore';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 import eventHub from '../eventhub';
 import Api from '../../api';
-import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   name: 'BoardProjectSelect',

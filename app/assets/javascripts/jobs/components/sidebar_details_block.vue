@@ -3,11 +3,11 @@
   import timeagoMixin from '~/vue_shared/mixins/timeago';
   import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
   import Icon from '~/vue_shared/components/icon.vue';
+  import { LoadingIcon } from '@gitlab-org/gitlab-ui';
   import DetailRow from './sidebar_detail_row.vue';
   import ArtifactsBlock from './artifacts_block.vue';
   import TriggerBlock from './trigger_block.vue';
   import CommitBlock from './commit_block.vue';
-  import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
   export default {
     name: 'SidebarDetailsBlock',

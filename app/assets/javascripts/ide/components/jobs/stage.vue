@@ -1,9 +1,9 @@
 <script>
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 import tooltip from '../../../vue_shared/directives/tooltip';
 import Icon from '../../../vue_shared/components/icon.vue';
 import CiIcon from '../../../vue_shared/components/ci_icon.vue';
 import Item from './item.vue';
-import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   directives: {

@@ -1,6 +1,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import _ from 'underscore';
+import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 import { sprintf, __ } from '../../../locale';
 import Icon from '../../../vue_shared/components/icon.vue';
 import CiIcon from '../../../vue_shared/components/ci_icon.vue';
@@ -8,7 +9,6 @@ import Tabs from '../../../vue_shared/components/tabs/tabs';
 import Tab from '../../../vue_shared/components/tabs/tab.vue';
 import EmptyState from '../../../pipelines/components/empty_state.vue';
 import JobsList from '../jobs/list.vue';
-import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   components: {

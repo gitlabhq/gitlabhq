@@ -1,7 +1,7 @@
 <script>
 import { mapActions } from 'vuex';
-import Stage from './stage.vue';
 import { LoadingIcon } from '@gitlab-org/gitlab-ui';
+import Stage from './stage.vue';
 
 export default {
   components: {

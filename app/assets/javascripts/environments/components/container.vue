@@ -1,7 +1,7 @@
 <script>
+  import { LoadingIcon } from '@gitlab-org/gitlab-ui';
   import tablePagination from '../../vue_shared/components/table_pagination.vue';
   import environmentTable from '../components/environments_table.vue';
-  import { LoadingIcon } from '@gitlab-org/gitlab-ui';
 
   export default {
     components: {

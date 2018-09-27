@@ -1,6 +1,6 @@
 <script>
-import eventHub from '../eventhub';
 import { LoadingIcon } from '@gitlab-org/gitlab-ui';
+import eventHub from '../eventhub';
 
 export default {
   components: {
