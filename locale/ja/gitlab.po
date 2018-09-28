@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-27 12:58\n"
+"PO-Revision-Date: 2018-09-28 12:44\n"
 
 msgid " Status"
 msgstr " ステータス"
@@ -2964,7 +2964,7 @@ msgstr ""
 msgid "Epics|To schedule your epic's %{epicDateType} date based on milestones, assign a milestone with a %{epicDateType} date to any issue in the epic."
 msgstr ""
 
-msgid "Epics|finish"
+msgid "Epics|due"
 msgstr ""
 
 msgid "Epics|start"
@@ -3207,7 +3207,7 @@ msgstr "プッシュした人"
 msgid "Fixed date"
 msgstr ""
 
-msgid "Fixed finish date"
+msgid "Fixed due date"
 msgstr ""
 
 msgid "Fixed start date"
@@ -3729,14 +3729,14 @@ msgstr "申し訳ありません、検索にマッチするエピックはあり
 msgid "GroupRoadmap|The roadmap shows the progress of your epics along a timeline"
 msgstr "ロードマップは時間の経過とともにエピックの進行を表示します"
 
-msgid "GroupRoadmap|To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from %{startDate} to %{endDate}."
-msgstr "ロードマップを表示するには、予定開始日か予定終了日をこのグループか子グループのエピックの1つに追加してください。月表示では、前月、当月、もしくは5ヶ月先のエピックのみが表示されます。 &ndash; %{startDate} 〜 %{endDate}"
+msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from %{startDate} to %{endDate}."
+msgstr ""
 
-msgid "GroupRoadmap|To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the quarters view, only epics in the past quarter, current quarter, and next 4 quarters are shown &ndash; from %{startDate} to %{endDate}."
-msgstr "ロードマップを表示するには、予定開始日か予定終了日をこのグループか子グループのエピックの1つに追加してください。四半期表示では、前四半期、当四半期、もしくは4つ先の四半期までのエピックのみが表示されます。 &ndash; %{startDate} 〜 %{endDate}"
+msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the quarters view, only epics in the past quarter, current quarter, and next 4 quarters are shown &ndash; from %{startDate} to %{endDate}."
+msgstr ""
 
-msgid "GroupRoadmap|To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the weeks view, only epics in the past week, current week, and next 4 weeks are shown &ndash; from %{startDate} to %{endDate}."
-msgstr "ロードマップを表示するには、予定開始日か予定終了日をこのグループか子グループのエピックの1つに追加してください。週表示では、先週、今週、もしくは4週先までのエピックのみが表示されます。 &ndash; %{startDate} 〜 %{endDate}"
+msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the weeks view, only epics in the past week, current week, and next 4 weeks are shown &ndash; from %{startDate} to %{endDate}."
+msgstr ""
 
 msgid "GroupRoadmap|To widen your search, change or remove filters. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from %{startDate} to %{endDate}."
 msgstr "検索対象を広げるには、フィルターを変更するか削除してください。月表示では、先月、今月もしくは5ヶ月先までのエピックのみが表示されます。 &ndash; %{startDate} 〜 %{endDate}"
@@ -4171,9 +4171,6 @@ msgstr "ジョブが消去されました"
 
 msgid "Jobs"
 msgstr "ジョブ"
-
-msgid "Job|Are you sure you want to erase this job?"
-msgstr ""
 
 msgid "Job|Browse"
 msgstr ""
@@ -5502,12 +5499,6 @@ msgstr "ステージあり"
 msgid "Plain diff"
 msgstr ""
 
-msgid "Planned finish date"
-msgstr ""
-
-msgid "Planned start date"
-msgstr ""
-
 msgid "PlantUML"
 msgstr "PlantUML"
 
@@ -6283,10 +6274,25 @@ msgstr ""
 msgid "Reports|Class"
 msgstr ""
 
+msgid "Reports|Confidence"
+msgstr ""
+
+msgid "Reports|Dismiss Vulnerability"
+msgstr ""
+
 msgid "Reports|Execution time"
 msgstr ""
 
 msgid "Reports|Failure"
+msgstr ""
+
+msgid "Reports|More info"
+msgstr ""
+
+msgid "Reports|New Issue"
+msgstr ""
+
+msgid "Reports|Severity"
 msgstr ""
 
 msgid "Reports|System output"
@@ -6299,6 +6305,9 @@ msgid "Reports|Test summary failed loading results"
 msgstr ""
 
 msgid "Reports|Test summary results are being parsed"
+msgstr ""
+
+msgid "Reports|Vulnerability"
 msgstr ""
 
 msgid "Reports|no changed test results"
@@ -6475,6 +6484,9 @@ msgstr "SAML シングル サインオン"
 
 msgid "SAML Single Sign On Settings"
 msgstr "SAML シングル サインオンの設定"
+
+msgid "SAST"
+msgstr ""
 
 msgid "SHA1 fingerprint of the SAML token signing certificate. Get this from your identity provider, where it can also be called \"Thumbprint\"."
 msgstr "SAML トークンの SHA1 フィンガープリントで証明書に署名します。これはサムプリントと呼ばれアイデンティティプロバイダーから取得できます。"
@@ -6979,12 +6991,6 @@ msgstr "サインイン順"
 msgid "SortOptions|Oldest updated"
 msgstr "古い更新順"
 
-msgid "SortOptions|Planned finish date"
-msgstr ""
-
-msgid "SortOptions|Planned start date"
-msgstr ""
-
 msgid "SortOptions|Popularity"
 msgstr "人気順"
 
@@ -6993,6 +6999,9 @@ msgstr ""
 
 msgid "SortOptions|Recent sign in"
 msgstr "最近のサインイン順"
+
+msgid "SortOptions|Start date"
+msgstr ""
 
 msgid "SortOptions|Start later"
 msgstr "古い順"
@@ -7068,6 +7077,9 @@ msgstr ""
 
 msgid "Start a %{new_merge_request} with these changes"
 msgstr "この変更で %{new_merge_request} を作成する"
+
+msgid "Start date"
+msgstr ""
 
 msgid "Start the Runner!"
 msgstr "Runner を起動!"
@@ -7457,10 +7469,10 @@ msgstr ""
 msgid "This container registry has been scheduled for deletion."
 msgstr ""
 
-msgid "This date is after the planned finish date, so this epic won't appear in the roadmap."
+msgid "This date is after the due date, so this epic won't appear in the roadmap."
 msgstr ""
 
-msgid "This date is before the planned start date, so this epic won't appear in the roadmap."
+msgid "This date is before the start date, so this epic won't appear in the roadmap."
 msgstr ""
 
 msgid "This diff is collapsed."
@@ -7834,7 +7846,7 @@ msgstr ""
 msgid "To validate your GitLab CI configurations, go to 'CI/CD → Pipelines' inside your project, and click on the 'CI Lint' button."
 msgstr "GitLab CI の設定ファイルを検証するには、プロジェクト内の「CI / CD→Pipelines」に行き、「CI Lint」ボタンをクリックしてください。"
 
-msgid "To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. Only epics in the past 3 months and the next 3 months are shown."
+msgid "To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown."
 msgstr ""
 
 msgid "To widen your search, change or remove filters."
