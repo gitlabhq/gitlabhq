@@ -22,7 +22,7 @@ export default {
   },
 
   data() {
-    return { currentValue: this.defaultFilter };
+    return { currentValue: this.defaultValue };
   },
   methods: {
     handleClick(e) {
