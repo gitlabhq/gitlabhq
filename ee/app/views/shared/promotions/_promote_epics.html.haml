@@ -1,6 +1,6 @@
 - promotion_feature = 'promote_epics_sidebar_dismissed'
 
-- if !@project.feature_available?(:epics) && show_promotions? && show_callout?(promotion_feature)
+- if promote_feature?(:epic)
   .block.js-epics-sidebar-callout.promotion-issue-sidebar{ data: { uid: promotion_feature } }
     .sidebar-collapsed-icon{ data: { toggle: "dropdown", target: ".js-epics-sidebar-callout" } }
       %span{ data: { toggle: "tooltip", placement: "left", container: "body" }, title: _('Epic') }
