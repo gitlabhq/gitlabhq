@@ -112,8 +112,8 @@ GFM will autolink almost any URL you copy and paste into your text:
 * https://www.google.com
 * https://google.com/
 * ftp://ftp.us.debian.org/debian/
-* smb://foo/bar/baz
-* irc://irc.freenode.net/gitlab
+* <a href="smb://foo/bar/baz">smb://foo/bar/baz</a>
+* <a href="irc://irc.freenode.net/gitlab">irc://irc.freenode.net/gitlab</a>
 * http://localhost:3000
 
 ### Multiline Blockquote
@@ -138,17 +138,13 @@ you can quote that without having to manually prepend `>` to every line!
 >>>
 ```
 
->>>
-If you paste a message from somewhere else
-
-that
-
-spans
-
-multiple lines,
-
-you can quote that without having to manually prepend `>` to every line!
->>>
+<blockquote dir="auto">
+<p>If you paste a message from somewhere else</p>
+<p>that</p>
+<p>spans</p>
+<p>multiple lines,</p>
+<p>you can quote that without having to manually prepend <code>&gt;</code> to every line!</p>
+</blockquote>
 
 ### Code and Syntax Highlighting
 
@@ -269,15 +265,15 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#emoji
 	Ubuntu 18.04 (like many modern Linux distros) has this font installed by default.
 
 
-Sometimes you want to :monkey: around a bit and add some :star2: to your :speech_balloon:. Well we have a gift for you:
+Sometimes you want to <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/monkey.png" style="width:20px;height:20px;"> around a bit and add some <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/star2.png" style="width:20px;height:20px;"> to your <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/speech_balloon.png" style="width:20px;height:20px;">. Well we have a gift for you:
 
-:zap: You can use emoji anywhere GFM is supported. :v:
+<img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/zap.png" style="width:20px;height:20px;">You can use emoji anywhere GFM is supported. <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/v.png" style="width:20px;height:20px;">
 
-You can use it to point out a :bug: or warn about :speak_no_evil: patches. And if someone improves your really :snail: code, send them some :birthday:. People will :heart: you for that.
+You can use it to point out a <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/bug.png" style="width:20px;height:20px;"> or warn about <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/speak_no_evil.png" style="width:20px;height:20px;"> patches. And if someone improves your really <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/snail.png" style="width:20px;height:20px;"> code, send them some <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/birthday.png" style="width:20px;height:20px;">. People will <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/heart.png" style="width:20px;height:20px;"> you for that.
 
-If you are new to this, don't be :fearful:. You can easily join the emoji :family:. All you need to do is to look up one of the supported codes.
+If you are new to this, don't be <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/fearful.png" style="width:20px;height:20px;">. You can easily join the emoji <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/family.png" style="width:20px;height:20px;">. All you need to do is to look up one of the supported codes.
 
-Consult the [Emoji Cheat Sheet](https://www.emojicopy.com) for a list of all supported emoji codes. :thumbsup:
+Consult the [Emoji Cheat Sheet](https://www.emojicopy.com) for a list of all supported emoji codes. <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/thumbsup.png" style="width:20px;height:20px;">
 
 Most emoji are natively supported on macOS, Windows, iOS, Android and will fallback to image-based emoji where there is lack of support.
 
@@ -356,11 +352,25 @@ You can add task lists to issues, merge requests and comments. To create a task 
     - [ ] Sub-task 3
 ```
 
-- [x] Completed task
-- [ ] Incomplete task
-    - [ ] Sub-task 1
-    - [x] Sub-task 2
-    - [ ] Sub-task 3
+<ul class="task-list" dir="auto">
+   <li class="task-list-item">
+      <input type="checkbox" class="task-list-item-checkbox" checked="" disabled=""> Completed task
+   </li>
+   <li class="task-list-item">
+      <input type="checkbox" class="task-list-item-checkbox" disabled=""> Incomplete task
+      <ul class="task-list">
+         <li class="task-list-item">
+            <input type="checkbox" class="task-list-item-checkbox" disabled=""> Sub-task 1
+         </li>
+         <li class="task-list-item">
+            <input type="checkbox" class="task-list-item-checkbox" checked="" disabled=""> Sub-task 2
+         </li>
+         <li class="task-list-item">
+            <input type="checkbox" class="task-list-item-checkbox" disabled=""> Sub-task 3
+         </li>
+      </ul>
+   </li>
+</ul>
 
 Tasks formatted as ordered lists are supported as well:
 
@@ -371,10 +381,22 @@ Tasks formatted as ordered lists are supported as well:
     1. [x] Sub-task 2
 ```
 
-1. [x] Completed task
-1. [ ] Incomplete task
-    1. [ ] Sub-task 1
-    1. [x] Sub-task 2
+<ol class="task-list" dir="auto">
+   <li class="task-list-item">
+      <input type="checkbox" class="task-list-item-checkbox" checked="" disabled=""> Completed task
+   </li>
+   <li class="task-list-item">
+      <input type="checkbox" class="task-list-item-checkbox" disabled=""> Incomplete task
+      <ol class="task-list">
+         <li class="task-list-item">
+            <input type="checkbox" class="task-list-item-checkbox" disabled=""> Sub-task 1
+         </li>
+         <li class="task-list-item">
+            <input type="checkbox" class="task-list-item-checkbox" checked="" disabled=""> Sub-task 2
+         </li>
+      </ol>
+   </li>
+</ol>
 
 Task lists can only be created in descriptions, not in titles. Task item state can be managed by editing the description's Markdown or by toggling the rendered check boxes.
 
@@ -393,7 +415,10 @@ The valid video extensions are `.mp4`, `.m4v`, `.mov`, `.webm`, and `.ogv`.
 
 Here's a sample video:
 
-![Sample Video](img/markdown_video.mp4)
+<div class="video-container">
+   <video src="img/markdown_video.mp4" width="400" controls="true" data-setup="{}" data-title="Sample Video"></video>
+   <p><a href="img/markdown_video.mp4" target="_blank" rel="noopener noreferrer" title="Download 'Sample Video'">Sample Video</a></p>
+</div>
 
 ### Math
 
@@ -417,12 +442,11 @@ Example:
 
 Becomes:
 
-This math is inline $`a^2+b^2=c^2`$.
+This math is inline ![alt text](img/math-inline-sup-render-gfm.png).
 
 This is on a separate line
-```math
-a^2+b^2=c^2
-```
+
+<div style="width:100%;height:20px;margin:auto;text-align:center;"><img src="./img/math-inline-sup-render-gfm.png" style="width:106px;height:30px;"></div>
 
 _Be advised that KaTeX only supports a [subset][katex-subset] of LaTeX._
 
@@ -452,15 +476,7 @@ Examples:
 
 Become:
 
-`#F00`  
-`#F00A`  
-`#FF0000`  
-`#FF0000AA`  
-`RGB(0,255,0)`  
-`RGB(0%,100%,0%)`  
-`RGBA(0,255,0,0.7)`  
-`HSL(540,70%,50%)`  
-`HSLA(540,70%,50%,0.7)`
+![alt color-inline-colorchip-render-gfm](img/color-inline-colorchip-render-gfm.png)
 
 #### Supported formats:
 
@@ -492,13 +508,7 @@ Example:
 
 Becomes:
 
-```mermaid
-graph TD;
-  A-->B;
-  A-->C;
-  B-->D;
-  C-->D;
-```
+<img src="./img/mermaid-diagram-render-gfm.svg" style="width:200px;height:400px;">
 
 For details see the [Mermaid official page][mermaid].
 
