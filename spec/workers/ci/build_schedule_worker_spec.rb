@@ -10,7 +10,7 @@ describe Ci::BuildScheduleWorker do
       it 'executes RunScheduledBuildService' do
         expect_any_instance_of(Ci::RunScheduledBuildService)
           .to receive(:execute).once
-        
+
         subject
       end
     end

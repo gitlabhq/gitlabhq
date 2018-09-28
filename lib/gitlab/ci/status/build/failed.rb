@@ -11,7 +11,7 @@ module Gitlab
             runner_system_failure: 'runner system failure',
             missing_dependency_failure: 'missing dependency failure',
             runner_unsupported: 'unsupported runner',
-            schedule_expired: 'schedule expired',
+            schedule_expired: 'schedule expired'
           }.freeze
 
           private_constant :REASONS

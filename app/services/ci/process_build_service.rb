@@ -11,6 +11,7 @@ module Ci
         else
           build.enqueue
         end
+
         true
       else
         build.skip

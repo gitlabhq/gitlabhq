@@ -257,7 +257,7 @@ describe Ci::ProcessPipelineService, '#execute' do
         it 'properly processes the pipeline' do
           expect(process_pipeline).to be_truthy
           expect(builds_names_and_statuses).to eq({ 'build': 'pending' })
-  
+
           succeed_pending
 
           expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'scheduled' })
@@ -283,7 +283,7 @@ describe Ci::ProcessPipelineService, '#execute' do
         it 'properly processes the pipeline' do
           expect(process_pipeline).to be_truthy
           expect(builds_names_and_statuses).to eq({ 'build': 'pending' })
-  
+
           fail_running_or_pending
 
           expect(builds_names_and_statuses).to eq({ 'build': 'failed' })
@@ -295,11 +295,11 @@ describe Ci::ProcessPipelineService, '#execute' do
         it 'properly processes the pipeline' do
           expect(process_pipeline).to be_truthy
           expect(builds_names_and_statuses).to eq({ 'build': 'pending' })
-  
+
           succeed_pending
 
           expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'scheduled' })
-  
+
           unschedule
 
           expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'manual' })
@@ -324,11 +324,11 @@ describe Ci::ProcessPipelineService, '#execute' do
         it 'properly processes the pipeline' do
           expect(process_pipeline).to be_truthy
           expect(builds_names_and_statuses).to eq({ 'build': 'pending' })
-  
+
           succeed_pending
 
           expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'scheduled' })
-  
+
           enqueue_scheduled('rollout10%')
           fail_running_or_pending
 
@@ -354,11 +354,11 @@ describe Ci::ProcessPipelineService, '#execute' do
         it 'properly processes the pipeline' do
           expect(process_pipeline).to be_truthy
           expect(builds_names_and_statuses).to eq({ 'build': 'pending' })
-  
+
           succeed_pending
 
           expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'scheduled' })
-  
+
           play_manual_action('rollout10%')
 
           expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'pending' })
@@ -718,7 +718,10 @@ describe Ci::ProcessPipelineService, '#execute' do
   end
 
   def builds_names_and_statuses
-    builds.inject({}) { |h, b| h[b.name.to_sym] = b.status; h }
+    builds.each_with_object({}) do |h, b|
+      h[b.name.to_sym] = b.status
+      h
+    end
   end
 
   def all_builds_names
