@@ -22,11 +22,11 @@ describe Geo::UploadDeletedEventStore do
       it 'does not create an event when the upload does not use local storage' do
         allow(upload).to receive(:local?).and_return(false)
 
-        expect { subject.create }.not_to change(Geo::UploadDeletedEvent, :count)
+        expect { subject.create! }.not_to change(Geo::UploadDeletedEvent, :count)
       end
 
       it 'tracks upload attributes' do
-        subject.create
+        subject.create!
 
         expect(Geo::UploadDeletedEvent.last).to have_attributes(
           upload_id: upload.id,

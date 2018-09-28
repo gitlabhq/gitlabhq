@@ -30,7 +30,7 @@ describe Geo::RepositoryUpdatedEventStore do
 
       context 'when repository is being updated' do
         it 'does not track ref name when post-receive event affect multiple refs' do
-          subject.create
+          subject.create!
 
           expect(Geo::RepositoryUpdatedEvent.last.ref).to be_nil
         end
@@ -40,19 +40,19 @@ describe Geo::RepositoryUpdatedEventStore do
           changes = [{ before: '123456', after: blankrev, ref: 'refs/heads/tést' }]
           subject = described_class.new(project, refs: refs, changes: changes)
 
-          subject.create
+          subject.create!
 
           expect(Geo::RepositoryUpdatedEvent.last.ref).to eq 'refs/heads/tést'
         end
 
         it 'tracks number of branches post-receive event affects' do
-          subject.create
+          subject.create!
 
           expect(Geo::RepositoryUpdatedEvent.last.branches_affected).to eq 1
         end
 
         it 'tracks number of tags post-receive event affects' do
-          subject.create
+          subject.create!
 
           expect(Geo::RepositoryUpdatedEvent.last.tags_affected).to eq 1
         end
@@ -65,7 +65,7 @@ describe Geo::RepositoryUpdatedEventStore do
           ]
           subject = described_class.new(project, refs: refs, changes: changes)
 
-          subject.create
+          subject.create!
 
           expect(Geo::RepositoryUpdatedEvent.last.new_branch).to eq true
         end
@@ -78,7 +78,7 @@ describe Geo::RepositoryUpdatedEventStore do
           ]
           subject = described_class.new(project, refs: refs, changes: changes)
 
-          subject.create
+          subject.create!
 
           expect(Geo::RepositoryUpdatedEvent.last.remove_branch).to eq true
         end
@@ -88,7 +88,7 @@ describe Geo::RepositoryUpdatedEventStore do
         it 'does not track any information' do
           subject = described_class.new(project, source: Geo::RepositoryUpdatedEvent::WIKI)
 
-          subject.create
+          subject.create!
 
           expect(Geo::RepositoryUpdatedEvent.last).to have_attributes(
             ref: be_nil,

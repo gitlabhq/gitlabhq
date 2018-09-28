@@ -1,5 +1,7 @@
 module Geo
   class JobArtifactDeletedEventStore < EventStore
+    extend ::Gitlab::Utils::Override
+
     self.event_type = :job_artifact_deleted_event
 
     attr_reader :job_artifact
@@ -8,7 +10,8 @@ module Geo
       @job_artifact = job_artifact
     end
 
-    def create
+    override :create!
+    def create!
       return unless job_artifact.local_store?
 
       super

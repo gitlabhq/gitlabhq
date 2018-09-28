@@ -1,5 +1,7 @@
 module Geo
   class UploadDeletedEventStore < EventStore
+    extend ::Gitlab::Utils::Override
+
     self.event_type = :upload_deleted_event
 
     attr_reader :upload
@@ -8,7 +10,8 @@ module Geo
       @upload = upload
     end
 
-    def create
+    override :create!
+    def create!
       return unless upload.local?
 
       super

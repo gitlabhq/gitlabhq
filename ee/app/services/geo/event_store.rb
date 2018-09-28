@@ -30,7 +30,7 @@ module Geo
       @params  = params
     end
 
-    def create
+    def create!
       return unless Gitlab::Geo.primary?
       return unless Gitlab::Geo.secondary_nodes.any? # no need to create an event if no one is listening
 

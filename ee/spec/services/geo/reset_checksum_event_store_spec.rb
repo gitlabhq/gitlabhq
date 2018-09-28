@@ -19,7 +19,7 @@ describe Geo::ResetChecksumEventStore do
       end
 
       it 'tracks the project that checksum must be wiped' do
-        subject.create
+        subject.create!
 
         expect(Geo::ResetChecksumEvent.last).to have_attributes(project_id: project.id)
       end

@@ -27,7 +27,7 @@ describe Geo::HashedStorageAttachmentsEventStore do
       end
 
       it 'tracks project attributes' do
-        subject.create
+        subject.create!
 
         expect(Geo::HashedStorageAttachmentsEvent.last).to have_attributes(
           old_attachments_path: old_attachments_path,

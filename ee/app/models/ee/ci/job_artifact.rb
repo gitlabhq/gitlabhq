@@ -16,7 +16,7 @@ module EE
     private
 
     def log_geo_event
-      ::Geo::JobArtifactDeletedEventStore.new(self).create
+      ::Geo::JobArtifactDeletedEventStore.new(self).create!
     end
   end
 end

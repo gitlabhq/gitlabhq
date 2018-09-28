@@ -7,7 +7,7 @@ shared_examples_for 'a Geo event store' do |event_class|
     end
 
     it 'does not create an event ' do
-      expect { subject.create }.not_to change(event_class, :count)
+      expect { subject.create! }.not_to change(event_class, :count)
     end
   end
 
@@ -19,11 +19,11 @@ shared_examples_for 'a Geo event store' do |event_class|
     it 'does not create an event if there are no secondary nodes' do
       allow(Gitlab::Geo).to receive(:secondary_nodes) { [] }
 
-      expect { subject.create }.not_to change(event_class, :count)
+      expect { subject.create! }.not_to change(event_class, :count)
     end
 
     it 'creates an event' do
-      expect { subject.create }.to change(event_class, :count).by(1)
+      expect { subject.create! }.to change(event_class, :count).by(1)
     end
   end
 end
