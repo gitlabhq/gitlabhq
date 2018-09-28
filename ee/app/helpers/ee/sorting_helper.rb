@@ -15,11 +15,11 @@ module EE
     end
 
     def sort_title_start_date
-      s_('SortOptions|Planned start date')
+      s_('SortOptions|Start date')
     end
 
     def sort_title_end_date
-      s_('SortOptions|Planned finish date')
+      s_('SortOptions|Due date')
     end
 
     def sort_title_less_weight

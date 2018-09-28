@@ -231,7 +231,7 @@ export default {
       return true;
     },
     getDateTypeString(dateType) {
-      return dateType === DateTypes.start ? s__('Epics|start') : s__('Epics|finish');
+      return dateType === DateTypes.start ? s__('Epics|start') : s__('Epics|due');
     },
     getDateFromMilestonesTooltip(dateType = 'start') {
       const { startDateTimeFromMilestones, dueDateTimeFromMilestones } = this.store;
@@ -457,8 +457,8 @@ export default {
         :date-from-milestones-tooltip="getDateFromMilestonesTooltip('start')"
         :show-toggle-sidebar="!isUserSignedIn"
         :date-picker-label="__('Fixed start date')"
-        :label="__('Planned start date')"
-        :date-invalid-tooltip="__(`This date is after the planned finish date,
+        :label="__('Start date')"
+        :date-invalid-tooltip="__(`This date is after the due date,
           so this epic won't appear in the roadmap.`)"
         block-class="start-date"
         @saveDate="saveStartDate"
@@ -476,9 +476,9 @@ export default {
         :date-fixed="store.dueDateTimeFixed"
         :date-from-milestones="store.dueDateTimeFromMilestones"
         :date-from-milestones-tooltip="getDateFromMilestonesTooltip('due')"
-        :date-picker-label="__('Fixed finish date')"
-        :label="__('Planned finish date')"
-        :date-invalid-tooltip="__(`This date is before the planned start date,
+        :date-picker-label="__('Fixed due date')"
+        :label="__('Due date')"
+        :date-invalid-tooltip="__(`This date is before the start date,
           so this epic won't appear in the roadmap.`)"
         block-class="end-date"
         @saveDate="saveEndDate"

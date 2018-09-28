@@ -19,7 +19,7 @@ selected group. From your group page:
 1. Enter a descriptive title and hit **Create epic**
 
 Once created, you will be taken to the view for that newly-created epic where
-you can change its title, description, planned start date, and planned finish date.
+you can change its title, description, start date, and due date.
 
 ![epic view](img/epic_view.png)
 
@@ -35,14 +35,17 @@ When you add an issue to an epic that's already associated with another epic,
 the issue is automatically removed from the previous epic. In other words, an
 issue can be associated with at most one epic.
 
-## Planned start date and planned finish date
+## Start date and due date
 
-For each of the the planned dates in the sidebar of an epic, you can choose either entering
-a fixed value or inheriting a dynamic value, called "From milestones". If you select
-"From milestones" for the planned start date, GitLab will automatically set the 
+For each of the dates in the sidebar of an epic, you can choose to either:
+
+- Enter a fixed value.
+- Inherit a dynamic value called "From milestones".
+
+If you select "From milestones" for the start date, GitLab will automatically set the 
 date to be earliest start date across all milestones that are currently assigned 
 to the issues that are attached to the epic. Similarly, if you select "From milestones"
-for the planned end date, GitLab will set it to be the latest due date across all 
+for the due date, GitLab will set it to be the latest due date across all 
 milestones that are currently assigned to those issues.
 
 These are dynamic dates in that if milestones are re-assigned to the issues, if the
@@ -106,7 +109,12 @@ It will display a dropdown menu, from which you can add an author. You can also 
 text to search by epic title or description. When done, press <kbd>Enter</kbd> on your
 keyboard to filter the list.
 
-You can also sort epics list by **Created date**, **Last updated**, **Planned start date**, or **Planned finish date**.
+You can also sort epics list by:
+
+- **Created date**
+- **Last updated**
+- **Start date**
+- **Due date**
 
 ![epics sort](img/epics_sort.png)
 

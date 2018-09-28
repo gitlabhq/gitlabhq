@@ -56,8 +56,8 @@ describe 'group epic roadmap', :js do
             expect(page).to have_selector('li a', count: 4)
             expect(page).to have_content('Created date')
             expect(page).to have_content('Last updated')
-            expect(page).to have_content('Planned start date')
-            expect(page).to have_content('Planned finish date')
+            expect(page).to have_content('Start date')
+            expect(page).to have_content('Due date')
           end
         end
       end

@@ -70,7 +70,7 @@ describe('EpicsListEmptyComponent', () => {
         it('returns default empty state sub-message when `hasFiltersApplied` props is false', done => {
           Vue.nextTick()
             .then(() => {
-              expect(vm.subMessage).toBe('To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the quarters view, only epics in the past quarter, current quarter, and next 4 quarters are shown &ndash; from Oct 1, 2017 to Mar 31, 2019.');
+              expect(vm.subMessage).toBe('To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the quarters view, only epics in the past quarter, current quarter, and next 4 quarters are shown &ndash; from Oct 1, 2017 to Mar 31, 2019.');
             })
             .then(done)
             .catch(done.fail);
@@ -95,7 +95,7 @@ describe('EpicsListEmptyComponent', () => {
         it('returns default empty state sub-message when `hasFiltersApplied` props is false', done => {
           Vue.nextTick()
             .then(() => {
-              expect(vm.subMessage).toBe('To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from Dec 1, 2017 to Jun 30, 2018.');
+              expect(vm.subMessage).toBe('To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from Dec 1, 2017 to Jun 30, 2018.');
             })
             .then(done)
             .catch(done.fail);
@@ -125,7 +125,7 @@ describe('EpicsListEmptyComponent', () => {
         it('returns default empty state sub-message when `hasFiltersApplied` props is false', done => {
           Vue.nextTick()
             .then(() => {
-              expect(vm.subMessage).toBe('To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the weeks view, only epics in the past week, current week, and next 4 weeks are shown &ndash; from Dec 24, 2017 to Feb 9, 2018.');
+              expect(vm.subMessage).toBe('To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the weeks view, only epics in the past week, current week, and next 4 weeks are shown &ndash; from Dec 24, 2017 to Feb 9, 2018.');
             })
             .then(done)
             .catch(done.fail);

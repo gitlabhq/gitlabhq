@@ -104,7 +104,7 @@ describe('SidebarParticipants', () => {
 
       it('returns popover config object containing `content` with href pointing to correct documentation', () => {
         const hrefContent = vm.popoverOptions.content.trim();
-        expect(hrefContent).toContain(`${gon.gitlab_url}/help/user/group/epics/index.md#planned-start-date-and-planned-finish-date`);
+        expect(hrefContent).toContain(`${gon.gitlab_url}/help/user/group/epics/index.md#start-date-and-due-date`);
         expect(hrefContent).toContain('More information');
       });
     });
@@ -116,7 +116,7 @@ describe('SidebarParticipants', () => {
 
       it('returns popover config object containing `content` with href pointing to correct documentation', () => {
         const hrefContent = vm.dateInvalidPopoverOptions.content.trim();
-        expect(hrefContent).toContain(`${gon.gitlab_url}/help/user/group/epics/index.md#planned-start-date-and-planned-finish-date`);
+        expect(hrefContent).toContain(`${gon.gitlab_url}/help/user/group/epics/index.md#start-date-and-due-date`);
         expect(hrefContent).toContain('How can I solve this?');
       });
     });
