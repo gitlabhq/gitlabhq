@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ko\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-28 14:02\n"
+"PO-Revision-Date: 2018-09-28 14:11\n"
 
 msgid " Status"
 msgstr " 상태"
@@ -51,7 +51,7 @@ msgstr[0] "%d건의 테스트가 실패하였습니다."
 
 msgid "%d fixed test result"
 msgid_plural "%d fixed test results"
-msgstr[0] ""
+msgstr[0] "%d건의 테스트 결과를 고쳤습니다."
 
 msgid "%d issue"
 msgid_plural "%d issues"
@@ -539,7 +539,7 @@ msgid "An error accured whilst committing your changes."
 msgstr ""
 
 msgid "An error has occurred"
-msgstr ""
+msgstr "에러가 발생했습니다."
 
 msgid "An error occured creating the new branch."
 msgstr "새 브랜치를 만드는 동안 오류가 발생했습니다."
@@ -893,13 +893,13 @@ msgid "Available group Runners : %{runners}."
 msgstr "사용 가능한 그룹 Runner: %{runners}."
 
 msgid "Avatar will be removed. Are you sure?"
-msgstr ""
+msgstr "아바타가 삭제됩니다. 확실합니까?"
 
 msgid "Average per day: %{average}"
 msgstr ""
 
 msgid "Background Color"
-msgstr ""
+msgstr "배경 색"
 
 msgid "Background Jobs"
 msgstr ""
@@ -1004,22 +1004,22 @@ msgid "BillingPlans|Automatic downgrade and upgrade to some plans is currently n
 msgstr ""
 
 msgid "BillingPlans|Current plan"
-msgstr ""
+msgstr "현재 요금제"
 
 msgid "BillingPlans|Customer Support"
-msgstr ""
+msgstr "고객 지원"
 
 msgid "BillingPlans|Downgrade"
-msgstr ""
+msgstr "다운그레이드"
 
 msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}, or start a free 30-day trial of GitLab.com Gold."
-msgstr ""
+msgstr "%{faq_link}을 읽음으로써 플랜에 대해 더 자세히 알아보거나 GitLab.com Gold 무료 30 일 평가판을 시작하세요."
 
 msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}."
-msgstr ""
+msgstr "%{faq_link} 을 읽어 플랜에 대해 자세히 알아보십시오."
 
 msgid "BillingPlans|Manage plan"
-msgstr "BillingPlans|플랜 관리"
+msgstr "플랜 관리"
 
 msgid "BillingPlans|Please contact %{customer_support_link} in that case."
 msgstr ""
@@ -1034,31 +1034,31 @@ msgid "BillingPlans|To manage the plan for this group, visit the billing section
 msgstr ""
 
 msgid "BillingPlans|Upgrade"
-msgstr "BillingPlans|업그레이드"
+msgstr "업그레이드"
 
 msgid "BillingPlans|You are currently on the %{plan_link} plan."
-msgstr "BillingPlans|현재 %{plan_link} 플랜을 이용중입니다."
+msgstr "현재 %{plan_link} 플랜을 이용중입니다."
 
 msgid "BillingPlans|Your GitLab.com trial expired on %{expiration_date}. %{learn_more_text}"
-msgstr "BillingPlans|GitLab.com 평가판이 %{expiration_date}에 만료되었습니다. %{learn_more_text}"
+msgstr "GitLab.com 평가판이 %{expiration_date}에 만료되었습니다. %{learn_more_text}"
 
 msgid "BillingPlans|Your Gold trial will <strong>expire after %{expiration_date}</strong>. You can learn more about GitLab.com Gold by reading about our %{features_link}."
-msgstr "BillingPlans|골드 체험판이 <strong>%{expiration_date} 후에 만료됩니다.</strong>. GitLab.com Gold에 대한 자세한 정보는 %{features_link}에서 읽어볼 수 있습니다."
+msgstr "골드 체험판이 <strong>%{expiration_date} 후에 만료됩니다.</strong>. GitLab.com Gold에 대한 자세한 정보는 %{features_link}에서 읽어볼 수 있습니다."
 
 msgid "BillingPlans|features"
-msgstr "BillingPlans|기능"
+msgstr "기능"
 
 msgid "BillingPlans|frequently asked questions"
-msgstr "BillingPlans|자주 묻는 질문"
+msgstr "자주 묻는 질문"
 
 msgid "BillingPlans|monthly"
-msgstr "BillingPlans|월"
+msgstr "월"
 
 msgid "BillingPlans|paid annually at %{price_per_year}"
 msgstr ""
 
 msgid "BillingPlans|per user"
-msgstr ""
+msgstr "사용자 당"
 
 msgid "Bitbucket Server Import"
 msgstr ""
@@ -1143,7 +1143,7 @@ msgid "Branches|Merged into %{default_branch}"
 msgstr ""
 
 msgid "Branches|New branch"
-msgstr ""
+msgstr "새 브랜치"
 
 msgid "Branches|No branches to show"
 msgstr ""
@@ -1152,25 +1152,25 @@ msgid "Branches|Once you confirm and press %{delete_protected_branch}, it cannot
 msgstr ""
 
 msgid "Branches|Only a project maintainer or owner can delete a protected branch"
-msgstr ""
+msgstr "프로젝트 관리자 또는 소유자 만 보호 브랜치를 삭제할 수 있습니다."
 
 msgid "Branches|Overview"
-msgstr ""
+msgstr "개요"
 
 msgid "Branches|Protected branches can be managed in %{project_settings_link}."
-msgstr ""
+msgstr "보호된 브랜치는 %{project_settings_link} 에서 관리할 수 있습니다."
 
 msgid "Branches|Show active branches"
-msgstr ""
+msgstr "활성된 브랜치 보기"
 
 msgid "Branches|Show all branches"
-msgstr ""
+msgstr "모든 브랜치 보기"
 
 msgid "Branches|Show more active branches"
-msgstr ""
+msgstr "활성된 브랜치 더 보기"
 
 msgid "Branches|Show more stale branches"
-msgstr ""
+msgstr "안정화된 브랜치 더 보기"
 
 msgid "Branches|Show overview of the branches"
 msgstr ""
@@ -1257,7 +1257,7 @@ msgid "CI/CD configuration"
 msgstr ""
 
 msgid "CI/CD for external repo"
-msgstr ""
+msgstr "외부 저장소용 CI/CD"
 
 msgid "CI/CD settings"
 msgstr "CI/CD 설정"
@@ -1302,10 +1302,10 @@ msgid "CICD|instance enabled"
 msgstr "인스턴스 사용"
 
 msgid "Callback URL"
-msgstr ""
+msgstr "콜백 URL"
 
 msgid "Callback url"
-msgstr ""
+msgstr "콜백 url"
 
 msgid "Can't find HEAD commit for this branch"
 msgstr ""
@@ -1314,7 +1314,7 @@ msgid "Cancel"
 msgstr "취소"
 
 msgid "Cancel this job"
-msgstr ""
+msgstr "이 작업 취소"
 
 msgid "Cannot be merged automatically"
 msgstr ""
@@ -2481,52 +2481,52 @@ msgid "Deploy Keys"
 msgstr "배포 키"
 
 msgid "DeployKeys|+%{count} others"
-msgstr "DeployKeys|+%{count} 기타"
+msgstr "+%{count} 기타"
 
 msgid "DeployKeys|Current project"
-msgstr "DeployKeys|현재 프로젝트"
+msgstr "현재 프로젝트"
 
 msgid "DeployKeys|Deploy key"
-msgstr "DeployKeys|배포 키"
+msgstr "배포 키"
 
 msgid "DeployKeys|Enabled deploy keys"
-msgstr "DeployKeys|활성화된 배포 키"
+msgstr "활성화된 배포 키"
 
 msgid "DeployKeys|Error enabling deploy key"
-msgstr "DeployKeys|배포키 사용 오류"
+msgstr "배포키 사용 오류"
 
 msgid "DeployKeys|Error getting deploy keys"
-msgstr "DeployKeys|배포키 가져오기 오류"
+msgstr "배포키 가져오기 오류"
 
 msgid "DeployKeys|Error removing deploy key"
-msgstr "DeployKeys|배포키 제거 오류"
+msgstr "배포키 제거 오류"
 
 msgid "DeployKeys|Expand %{count} other projects"
 msgstr "DeployKeys|확장 %{count} 기타 프로젝트"
 
 msgid "DeployKeys|Loading deploy keys"
-msgstr "DeployKeys|배포키 로드"
+msgstr "배포키 로드"
 
 msgid "DeployKeys|No deploy keys found. Create one with the form above."
-msgstr "DeployKeys|배포키가 존재하지 않습니다. 위의 양식을 이용해 만드세요."
+msgstr "배포키가 존재하지 않습니다. 위의 양식을 이용해 만드세요."
 
 msgid "DeployKeys|Privately accessible deploy keys"
-msgstr "DeployKeys|비공개적으로 엑세스 가능한 배포키"
+msgstr "비공개적으로 엑세스 가능한 배포키"
 
 msgid "DeployKeys|Project usage"
-msgstr "DeployKeys|프로젝트 사용현황"
+msgstr "프로젝트 사용현황"
 
 msgid "DeployKeys|Publicly accessible deploy keys"
-msgstr "DeployKeys|공개적으로 엑세스 가능한 배포키"
+msgstr "공개적으로 엑세스 가능한 배포키"
 
 msgid "DeployKeys|Read access only"
-msgstr "DeployKeys|읽기 엑세스 전용"
+msgstr "읽기 엑세스 전용"
 
 msgid "DeployKeys|Write access allowed"
-msgstr "DeployKeys|쓰기 액세스 허용"
+msgstr "쓰기 액세스 허용"
 
 msgid "DeployKeys|You are going to remove this deploy key. Are you sure?"
-msgstr "DeployKeys|이 배포키를 제거하려고 합니다. 확실합니까?"
+msgstr "이 배포키를 제거하려고 합니다. 확실합니까?"
 
 msgid "DeployTokens|Active Deploy Tokens (%{active_tokens})"
 msgstr ""
