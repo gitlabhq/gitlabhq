@@ -113,7 +113,11 @@ module IssuableActions
     notes_filter_param = params[:notes_filter]
 
     if current_user
-      current_user.set_notes_filter(notes_filter_param, issuable)
+      if request.put?
+        current_user.set_notes_filter(notes_filter_param, issuable)
+      else
+        current_user.notes_filter_for(issuable)
+      end
     else
       notes_filter_param.to_i
     end

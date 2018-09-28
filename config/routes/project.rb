@@ -108,6 +108,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           post :remove_wip
           post :assign_related_issues
           get :discussions, format: :json
+
+          # The PUT method is used when user is setting notes filter
+          # which is saved in the database. Gitlab Geo does not expect
+          # UPDATE or INSERT statements to happen in GET requests.
+          put :discussions, format: :json
+
           post :rebase
           get :test_reports
 
@@ -363,6 +369,11 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :realtime_changes
           post :create_merge_request
           get :discussions, format: :json
+
+          # The PUT method is used when user is setting notes filter
+          # which is saved in the database. Gitlab Geo does not expect
+          # UPDATE or INSERT statements to happen in GET requests.
+          put :discussions, format: :json
         end
         collection do
           post  :bulk_update

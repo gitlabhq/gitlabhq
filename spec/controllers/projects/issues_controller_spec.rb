@@ -1016,23 +1016,11 @@ describe Projects::IssuesController do
           .not_to exceed_query_limit(control)
       end
 
-      context 'when user has set discussion filter to comments only' do
-        it 'sets discussion filter' do
-          notes_filter = UserPreference::NOTES_FILTERS[:only_comments]
+      context 'when user is setting notes filters' do
+        let(:issuable) { issue }
+        let!(:discussion_note) { create(:discussion_note_on_issue, :system, noteable: issuable, project: project) }
 
-          get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid, notes_filter: notes_filter
-
-          expect(user.reload.notes_filter(issue)).to eq(notes_filter)
-        end
-
-        it 'returns no system note' do
-          user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], issue)
-          create(:discussion_note_on_issue, :system, noteable: issue, project: issue.project)
-
-          get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
-
-          expect(JSON.parse(response.body).count).to eq(1)
-        end
+        it_behaves_like 'issuable notes filter'
       end
 
       context 'with cross-reference system note', :request_store do
