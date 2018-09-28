@@ -4,6 +4,9 @@
   ],
   "description": "An extension of job.json with more detailed information",
   "required": [
+    "artifact",
+    "runner",
+    "runners",
     "has_trace"
   ],
   "properties": {
@@ -12,7 +15,7 @@
     "trigger": { "$ref": "trigger.json" },
     "deployment_status": { "$ref": "deployment_status.json" },
     "runner": { "$ref": "runner.json" },
-    "runners": { "type": "runners.json" },
+    "runners": { "$ref": "runners.json" },
     "has_trace": { "type": "boolean" }
   }
 }
