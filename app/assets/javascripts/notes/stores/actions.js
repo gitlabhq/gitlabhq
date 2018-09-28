@@ -36,9 +36,9 @@ export const setNotesFetchedState = ({ commit }, state) =>
 
 export const toggleDiscussion = ({ commit }, data) => commit(types.TOGGLE_DISCUSSION, data);
 
-export const fetchDiscussions = ({ commit }, path) =>
+export const fetchDiscussions = ({ commit }, { path, filter }) =>
   service
-    .fetchDiscussions(path)
+    .fetchDiscussions(path, filter)
     .then(res => res.json())
     .then(discussions => {
       commit(types.SET_INITIAL_DISCUSSIONS, discussions);

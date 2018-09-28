@@ -82,6 +82,10 @@ export default {
     this.setUserData(this.userData);
     this.setTargetNoteHash(getLocationHash());
     eventHub.$once('fetchNotesData', this.fetchNotes);
+    eventHub.$on('notes.filter', (filter) => {
+      this.isLoading = true;
+      this.fetchNotes(filter)
+    });
   },
   mounted() {
     if (this.shouldShow) {
@@ -128,8 +132,8 @@ export default {
     getComponentData(discussion) {
       return discussion.individual_note ? { note: discussion.notes[0] } : { discussion };
     },
-    fetchNotes() {
-      return this.fetchDiscussions(this.getNotesDataByProp('discussionsPath'))
+    fetchNotes(filter) {
+      return this.fetchDiscussions({ path: this.getNotesDataByProp('discussionsPath'), filter })
         .then(() => {
           this.initPolling();
         })

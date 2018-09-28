@@ -52,6 +52,7 @@
                 Changes
                 %span.badge.badge-pill= @merge_request.diff_size
 
+        #js-vue-discussion-filter{ data: { current_user_data: UserSerializer.new.represent(current_user, only_path: true).to_json } }
         #js-vue-discussion-counter
 
     .tab-content#diff-notes-app
