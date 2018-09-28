@@ -446,7 +446,7 @@ This math is inline ![alt text](img/math-inline-sup-render-gfm.png).
 
 This is on a separate line
 
-<div style="width:100%;height:20px;margin:auto;text-align:center;"><img src="./img/math-inline-sup-render-gfm.png" style="width:106px;height:30px;"></div>
+<div align="center"><img src="./img/math-inline-sup-render-gfm.png" ></div>
 
 _Be advised that KaTeX only supports a [subset][katex-subset] of LaTeX._
 
@@ -508,7 +508,7 @@ Example:
 
 Becomes:
 
-<img src="./doc/user/img/mermaid-diagram-render-gfm.svg" style="width:200px;height:400px;">
+<img src="./doc/user/img/mermaid-diagram-render-gfm.svg" width="200px" height="400px">
 
 For details see the [Mermaid official page][mermaid].
 
