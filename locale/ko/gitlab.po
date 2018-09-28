@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ko\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-28 12:44\n"
+"PO-Revision-Date: 2018-09-28 14:02\n"
 
 msgid " Status"
 msgstr " 상태"
@@ -108,7 +108,7 @@ msgid "%{group_docs_link_start}Groups%{group_docs_link_end} allow you to manage 
 msgstr "%{group_docs_link_start}그룹%{group_docs_link_end}을 사용하면 여러 프로젝트를 관리하고 공동 작업을 수행 할 수 있습니다. 그룹 회원은 모든 프로젝트에 액세스 할 수 있습니다."
 
 msgid "%{issuableType} will be removed! Are you sure?"
-msgstr ""
+msgstr "%{issuableType}이 삭제됩니다! 확실합니까?"
 
 msgid "%{loadingIcon} Started"
 msgstr "%{loadingIcon} 시작됨"
@@ -153,7 +153,7 @@ msgstr "%{title} 변경"
 
 msgid "%{type} detected 1 fixed vulnerability"
 msgid_plural "%{type} detected %{vulnerabilityCount} fixed vulnerabilities"
-msgstr[0] ""
+msgstr[0] "%{type} 에서 취약점을 %{vulnerabilityCount} 개 찾았습니다"
 
 msgid "%{type} detected 1 new vulnerability"
 msgid_plural "%{type} detected %{vulnerabilityCount} new vulnerabilities"
@@ -239,19 +239,19 @@ msgid "2FA enabled"
 msgstr "2FA 사용"
 
 msgid "403|Please contact your GitLab administrator to get the permission."
-msgstr "403|권한을 얻으려면 GitLab 관리자에게 문의하십시오."
+msgstr "권한을 얻으려면 GitLab 관리자에게 문의하십시오."
 
 msgid "403|You don't have the permission to access this page."
-msgstr "403|이 페이지에 대한 액세스 권한이 없습니다."
+msgstr "이 페이지에 대한 액세스 권한이 없습니다."
 
 msgid "404|Make sure the address is correct and the page hasn't moved."
-msgstr "404|주소가 정확하고 페이지가 이동하지 않았는지 확인하십시오."
+msgstr "주소가 정확하고 페이지가 이동하지 않았는지 확인하십시오."
 
 msgid "404|Page Not Found"
 msgstr "페이지를 찾을 수 없습니다"
 
 msgid "404|Please contact your GitLab administrator if you think this is a mistake."
-msgstr "404|이것이 실수에 의한 것이라고 생각한다면 GitLab 관리자에게 문의하세요."
+msgstr "이것이 실수에 의한 것이라고 생각한다면 GitLab 관리자에게 문의하세요."
 
 msgid "<code>\"johnsmith@example.com\": \"@johnsmith\"</code> will add \"By <a href=\"#\">@johnsmith</a>\" to all issues and comments originally created by johnsmith@example.com, and will set <a href=\"#\">@johnsmith</a> as the assignee on all issues originally assigned to johnsmith@example.com."
 msgstr ""
@@ -377,7 +377,7 @@ msgid "Add Group Webhooks and GitLab Enterprise Edition."
 msgstr ""
 
 msgid "Add Kubernetes cluster"
-msgstr ""
+msgstr "Kubernetes 클러스터 추가"
 
 msgid "Add Readme"
 msgstr ""
@@ -386,19 +386,19 @@ msgid "Add additional text to appear in all email communications. %{character_li
 msgstr ""
 
 msgid "Add license"
-msgstr ""
+msgstr "라이선스 추가"
 
 msgid "Add new application"
-msgstr ""
+msgstr "새 애플리케이션 추가"
 
 msgid "Add new directory"
 msgstr "새 디렉토리 추가"
 
 msgid "Add reaction"
-msgstr ""
+msgstr "반응 추가"
 
 msgid "Add todo"
-msgstr ""
+msgstr "할 일 추가"
 
 msgid "Add user(s) to the group:"
 msgstr ""
@@ -542,7 +542,7 @@ msgid "An error has occurred"
 msgstr ""
 
 msgid "An error occured creating the new branch."
-msgstr ""
+msgstr "새 브랜치를 만드는 동안 오류가 발생했습니다."
 
 msgid "An error occured whilst fetching the job trace."
 msgstr ""
@@ -551,13 +551,13 @@ msgid "An error occured whilst fetching the latest pipline."
 msgstr ""
 
 msgid "An error occured whilst loading all the files."
-msgstr ""
+msgstr "모든 파일을 로드하는 중에 오류가 발생했습니다."
 
 msgid "An error occured whilst loading the file content."
-msgstr ""
+msgstr "파일 내용을 로드하는 중에 오류가 발생했습니다."
 
 msgid "An error occured whilst loading the file."
-msgstr ""
+msgstr "파일을 로드하는 중에 오류가 발생했습니다."
 
 msgid "An error occured whilst loading the merge request changes."
 msgstr ""
@@ -755,16 +755,16 @@ msgid "Assign custom color like #FF0000"
 msgstr ""
 
 msgid "Assign labels"
-msgstr ""
+msgstr "라벨 지정"
 
 msgid "Assign milestone"
-msgstr ""
+msgstr "마일스톤 지정"
 
 msgid "Assign to"
 msgstr ""
 
 msgid "Assigned Issues"
-msgstr ""
+msgstr "할당된 이슈"
 
 msgid "Assigned Merge Requests"
 msgstr ""
@@ -773,10 +773,10 @@ msgid "Assigned to :name"
 msgstr ""
 
 msgid "Assigned to me"
-msgstr ""
+msgstr "나에게 할당 됨"
 
 msgid "Assignee"
-msgstr ""
+msgstr "담당자"
 
 msgid "Assignee lists not available with your current license"
 msgstr ""
@@ -800,7 +800,7 @@ msgid "August"
 msgstr "8월"
 
 msgid "Authentication Log"
-msgstr ""
+msgstr "인증 로그"
 
 msgid "Authentication log"
 msgstr ""
@@ -878,7 +878,7 @@ msgid "AutoDevOps|add a Kubernetes cluster"
 msgstr "Kubernetes cluster 추가"
 
 msgid "AutoDevOps|enable Auto DevOps"
-msgstr "AutoDevOps | Auto DevOps 활성화"
+msgstr "Auto DevOps 활성화"
 
 msgid "Automatically marked as default internal user"
 msgstr ""
@@ -911,7 +911,7 @@ msgid "Badges"
 msgstr "배지"
 
 msgid "Badges|A new badge was added."
-msgstr ""
+msgstr "새로운 배지가 추가되었습니다."
 
 msgid "Badges|Add badge"
 msgstr "배지 추가"
@@ -920,10 +920,10 @@ msgid "Badges|Adding the badge failed, please check the entered URLs and try aga
 msgstr ""
 
 msgid "Badges|Badge image URL"
-msgstr ""
+msgstr "배지 이미지 URL"
 
 msgid "Badges|Badge image preview"
-msgstr ""
+msgstr "배지 이미지 미리 보기"
 
 msgid "Badges|Delete badge"
 msgstr "배지 삭제"
@@ -944,13 +944,13 @@ msgid "Badges|No badge image"
 msgstr ""
 
 msgid "Badges|No image to preview"
-msgstr ""
+msgstr "미리 볼 이미지가 없습니다"
 
 msgid "Badges|Please fill in a valid URL"
 msgstr ""
 
 msgid "Badges|Project Badge"
-msgstr ""
+msgstr "프로젝트 배지"
 
 msgid "Badges|Reload badge image"
 msgstr ""
@@ -959,7 +959,7 @@ msgid "Badges|Save changes"
 msgstr "변경 사항 저장"
 
 msgid "Badges|Saving the badge failed, please check the entered URLs and try again."
-msgstr ""
+msgstr "배지 저장 실패, 입력한 URL을 확인하시고 다시 시도하십시오."
 
 msgid "Badges|The %{docsLinkStart}variables%{docsLinkEnd} GitLab supports: %{placeholders}"
 msgstr ""
@@ -995,7 +995,7 @@ msgid "Below you will find all the groups that are public."
 msgstr ""
 
 msgid "Billing"
-msgstr ""
+msgstr "결제"
 
 msgid "BillingPlans|%{group_name} is currently on the %{plan_link} plan."
 msgstr ""
