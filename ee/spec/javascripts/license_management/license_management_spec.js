@@ -1,9 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-
 import LicenseManagement from 'ee/vue_shared/license_management/license_management.vue';
 import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
-
 import { trimText } from 'spec/helpers/vue_component_helper';
 import { TEST_HOST } from 'spec/test_constants';
 import { approvedLicense, blacklistedLicense } from 'ee_spec/license_management/mock_data';
@@ -34,6 +32,41 @@ describe('LicenseManagement', () => {
 
   afterEach(() => {
     vm.$destroy();
+  });
+
+  describe('License Form', () => {
+    it('should render the form if the form is open', done => {
+      vm.formIsOpen = true;
+
+      return Vue.nextTick().then(() => {
+        const formEl = vm.$el.querySelector('.js-add-license-form');
+        expect(formEl).not.toBeNull();
+        const buttonEl = vm.$el.querySelector('.js-open-form');
+        expect(buttonEl).toBeNull();
+        done();
+      });
+    });
+
+    it('should render the button if the form is closed', done => {
+      vm.formIsOpen = false;
+
+      return Vue.nextTick().then(() => {
+        const formEl = vm.$el.querySelector('.js-add-license-form');
+        expect(formEl).toBeNull();
+        const buttonEl = vm.$el.querySelector('.js-open-form');
+        expect(buttonEl).not.toBeNull();
+        done();
+      });
+    });
+
+    it('clicking the Add a license button opens the form', () => {
+      const linkEl = vm.$el.querySelector('.js-open-form');
+      expect(vm.formIsOpen).toBe(false);
+
+      linkEl.click();
+
+      expect(vm.formIsOpen).toBe(true);
+    });
   });
 
   it('should render loading icon', done => {

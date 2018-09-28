@@ -4522,6 +4522,15 @@ msgstr ""
 msgid "License"
 msgstr ""
 
+msgid "LicenseManagement|Add a license"
+msgstr ""
+
+msgid "LicenseManagement|Add licenses manually to approve or blacklist"
+msgstr ""
+
+msgid "LicenseManagement|Approve"
+msgstr ""
+
 msgid "LicenseManagement|Approve license"
 msgstr ""
 
@@ -4529,6 +4538,9 @@ msgid "LicenseManagement|Approve license?"
 msgstr ""
 
 msgid "LicenseManagement|Approved"
+msgstr ""
+
+msgid "LicenseManagement|Blacklist"
 msgstr ""
 
 msgid "LicenseManagement|Blacklist license"
@@ -4540,6 +4552,9 @@ msgstr ""
 msgid "LicenseManagement|Blacklisted"
 msgstr ""
 
+msgid "LicenseManagement|Cancel"
+msgstr ""
+
 msgid "LicenseManagement|License"
 msgstr ""
 
@@ -4547,6 +4562,9 @@ msgid "LicenseManagement|License Management"
 msgstr ""
 
 msgid "LicenseManagement|License details"
+msgstr ""
+
+msgid "LicenseManagement|License name"
 msgstr ""
 
 msgid "LicenseManagement|Manage approved and blacklisted licenses for this project."
@@ -4561,7 +4579,13 @@ msgstr ""
 msgid "LicenseManagement|Remove license?"
 msgstr ""
 
+msgid "LicenseManagement|Submit"
+msgstr ""
+
 msgid "LicenseManagement|There are currently no approved or blacklisted licenses in this project."
+msgstr ""
+
+msgid "LicenseManagement|This license already exists in this project."
 msgstr ""
 
 msgid "LicenseManagement|URL"
