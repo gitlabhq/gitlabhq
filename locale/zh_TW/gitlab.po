@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-TW\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-26 11:23\n"
+"PO-Revision-Date: 2018-09-28 12:45\n"
 
 msgid " Status"
 msgstr ""
@@ -2963,7 +2963,7 @@ msgstr ""
 msgid "Epics|To schedule your epic's %{epicDateType} date based on milestones, assign a milestone with a %{epicDateType} date to any issue in the epic."
 msgstr ""
 
-msgid "Epics|finish"
+msgid "Epics|due"
 msgstr ""
 
 msgid "Epics|start"
@@ -3206,7 +3206,7 @@ msgstr "推送者："
 msgid "Fixed date"
 msgstr ""
 
-msgid "Fixed finish date"
+msgid "Fixed due date"
 msgstr ""
 
 msgid "Fixed start date"
@@ -3728,14 +3728,14 @@ msgstr "抱歉，沒有任何 Epic 符合您的搜尋。"
 msgid "GroupRoadmap|The roadmap shows the progress of your epics along a timeline"
 msgstr "開發藍圖顯示時間軸上您的 Epic 進度"
 
-msgid "GroupRoadmap|To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from %{startDate} to %{endDate}."
-msgstr "若要檢視開發藍圖，請新增這個群組或其子群組中一個 Epic 的計畫開始與完成日期。月檢視中，只會顯示上個月、這個月、和接下來五個月的 Epic &ndash; 從 %{startDate} 到 %{endDate}。"
+msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from %{startDate} to %{endDate}."
+msgstr ""
 
-msgid "GroupRoadmap|To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the quarters view, only epics in the past quarter, current quarter, and next 4 quarters are shown &ndash; from %{startDate} to %{endDate}."
-msgstr "若要檢視開發藍圖，請新增這個群組或其子群組中一個 Epic 的計畫開始與完成日期。季度檢視中，只會顯示上個季度、這個季度、和接下來四個季度的 Epic &ndash; 從 %{startDate} 到 %{endDate}。"
+msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the quarters view, only epics in the past quarter, current quarter, and next 4 quarters are shown &ndash; from %{startDate} to %{endDate}."
+msgstr ""
 
-msgid "GroupRoadmap|To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the weeks view, only epics in the past week, current week, and next 4 weeks are shown &ndash; from %{startDate} to %{endDate}."
-msgstr "若要檢視開發藍圖，請新增這個群組或其子群組中一個 Epic 的計畫開始與完成日期。週檢視中，只會顯示上週、這週、和接下來四週的 Epic &ndash; 從 %{startDate} 到 %{endDate}。"
+msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the weeks view, only epics in the past week, current week, and next 4 weeks are shown &ndash; from %{startDate} to %{endDate}."
+msgstr ""
 
 msgid "GroupRoadmap|To widen your search, change or remove filters. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from %{startDate} to %{endDate}."
 msgstr "若要擴大您的搜尋，請嘗試修改或移除篩選器。月檢視中，只會顯示上個月、這個月、和接下來五個月的 Epic &ndash; 從 %{startDate} 到 %{endDate}。"
@@ -4170,9 +4170,6 @@ msgstr "工作已被抹除"
 
 msgid "Jobs"
 msgstr "任務"
-
-msgid "Job|Are you sure you want to erase this job?"
-msgstr ""
 
 msgid "Job|Browse"
 msgstr ""
@@ -5501,12 +5498,6 @@ msgstr "於階段"
 msgid "Plain diff"
 msgstr "本文差異"
 
-msgid "Planned finish date"
-msgstr "計畫完成日期"
-
-msgid "Planned start date"
-msgstr "計畫開始日期"
-
 msgid "PlantUML"
 msgstr "PlantUML"
 
@@ -6282,10 +6273,25 @@ msgstr ""
 msgid "Reports|Class"
 msgstr ""
 
+msgid "Reports|Confidence"
+msgstr ""
+
+msgid "Reports|Dismiss Vulnerability"
+msgstr ""
+
 msgid "Reports|Execution time"
 msgstr ""
 
 msgid "Reports|Failure"
+msgstr ""
+
+msgid "Reports|More info"
+msgstr ""
+
+msgid "Reports|New Issue"
+msgstr ""
+
+msgid "Reports|Severity"
 msgstr ""
 
 msgid "Reports|System output"
@@ -6298,6 +6304,9 @@ msgid "Reports|Test summary failed loading results"
 msgstr ""
 
 msgid "Reports|Test summary results are being parsed"
+msgstr ""
+
+msgid "Reports|Vulnerability"
 msgstr ""
 
 msgid "Reports|no changed test results"
@@ -6474,6 +6483,9 @@ msgstr "SAML 單一登入"
 
 msgid "SAML Single Sign On Settings"
 msgstr "SAML 單一登入設定"
+
+msgid "SAST"
+msgstr ""
 
 msgid "SHA1 fingerprint of the SAML token signing certificate. Get this from your identity provider, where it can also be called \"Thumbprint\"."
 msgstr "SAML 憑證登入憑證的 SHA1 指紋。從您的身份提供者取得這個指紋 -- 它可能被稱為「Thumbprint」"
@@ -6978,12 +6990,6 @@ msgstr "最早登入"
 msgid "SortOptions|Oldest updated"
 msgstr "最早提交"
 
-msgid "SortOptions|Planned finish date"
-msgstr ""
-
-msgid "SortOptions|Planned start date"
-msgstr ""
-
 msgid "SortOptions|Popularity"
 msgstr "最有人氣"
 
@@ -6992,6 +6998,9 @@ msgstr "優先"
 
 msgid "SortOptions|Recent sign in"
 msgstr "最近登入"
+
+msgid "SortOptions|Start date"
+msgstr ""
 
 msgid "SortOptions|Start later"
 msgstr "稍後開始"
@@ -7067,6 +7076,9 @@ msgstr "星標項目"
 
 msgid "Start a %{new_merge_request} with these changes"
 msgstr "以這些改動建立一個新的 %{new_merge_request} "
+
+msgid "Start date"
+msgstr ""
 
 msgid "Start the Runner!"
 msgstr "啟動 Runner!"
@@ -7456,10 +7468,10 @@ msgstr ""
 msgid "This container registry has been scheduled for deletion."
 msgstr ""
 
-msgid "This date is after the planned finish date, so this epic won't appear in the roadmap."
+msgid "This date is after the due date, so this epic won't appear in the roadmap."
 msgstr ""
 
-msgid "This date is before the planned start date, so this epic won't appear in the roadmap."
+msgid "This date is before the start date, so this epic won't appear in the roadmap."
 msgstr ""
 
 msgid "This diff is collapsed."
@@ -7833,8 +7845,8 @@ msgstr ""
 msgid "To validate your GitLab CI configurations, go to 'CI/CD → Pipelines' inside your project, and click on the 'CI Lint' button."
 msgstr "若要驗證您的 GitLab CI 設定，請前往您專案內的「CI/CD → 流水線」，並按下「CI Lint」按鈕。"
 
-msgid "To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. Only epics in the past 3 months and the next 3 months are shown."
-msgstr "若要檢視開發藍圖，請在您群組或子群組中的其中一個 Epic 中增加計畫開始或完成時間。只會顯示最近三個月或接下來三個月的 Epic。"
+msgid "To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown."
+msgstr ""
 
 msgid "To widen your search, change or remove filters."
 msgstr "若要擴大搜尋範圍，請變更或移除篩選器。"
