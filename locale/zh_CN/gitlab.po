@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-27 00:29\n"
+"PO-Revision-Date: 2018-09-28 03:47\n"
 
 msgid " Status"
 msgstr "状态"
@@ -422,10 +422,10 @@ msgid "Admin area"
 msgstr "管理中心"
 
 msgid "AdminArea| You are about to permanently delete the user %{username}. Issues, merge requests, and groups linked to them will be transferred to a system-wide \"Ghost-user\". To avoid data loss, consider using the %{strong_start}block user%{strong_end} feature instead. Once you %{strong_start}Delete user%{strong_end}, it cannot be undone or recovered."
-msgstr "您即将永久删除用户 %{username}。该用户的问题、合并请求以及链接到该用户的群组将被转移到系统的“Ghost用户”。为避免数据丢失，建议您使用 %{strong_start}禁用用户%{strong_end} 功能。一旦您 %{strong_start}删除用户%{strong_end}，将无法撤消或恢复。"
+msgstr ""
 
 msgid "AdminArea| You are about to permanently delete the user %{username}. This will delete all of the issues, merge requests, and groups linked to them. To avoid data loss, consider using the %{strong_start}block user%{strong_end} feature instead. Once you %{strong_start}Delete user%{strong_end}, it cannot be undone or recovered."
-msgstr "您即将永久删除用户 %{username}。此操作会删除该用户的所有问题、合并请求以及链接到该用户的群组。为避免数据丢失，建议您使用 %{strong_start}禁用用户%{strong_end} 功能。一旦您 %{strong_start}删除用户%{strong_end}，将无法撤消或恢复。"
+msgstr ""
 
 msgid "AdminArea|Stop all jobs"
 msgstr "停止所有作业"
