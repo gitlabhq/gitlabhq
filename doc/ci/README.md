@@ -132,3 +132,78 @@ your whole GitLab instance as well as in each project.
 - [New CI job permissions model](../user/project/new_ci_build_permissions_model.md)
   Read about what changed in GitLab 8.12 and how that affects your jobs.
   There's a new way to access your Git submodules and LFS objects in jobs.
+
+![GitLab CI/CD logo](img/ci-cd-logo_2x.png)
+
+## Rated \#1 in the Forrester CI Wave
+
+![GitLab CI/CD Forrester review](img/forrester-ci-wave-graphic.svg)
+
+> "GitLab supports development teams with a well-documented installation and
+> configuration processes, an easy-to-follow UI, and a flexible per-seat pricing
+> model that supports self service. GitLab’s vision is to serve enterprise-scale,
+> integrated software development teams that want to spend more time writing code
+> and less time maintaining their tool chain.” - Forrester CI Wave™
+
+[Learn more](https://about.gitlab.com/resources/forrester-wave-ci-2017/)
+
+## What Are The Advantages?
+
+- **Integrated**: GitLab CI/CD is part of GitLab. You can use it for free on [GitLab.com](https://gitlab.com).
+- **Easy to learn**: See the [Quick Start guide](quick_start/README.md).
+- **Beautiful**: GitLab CI/CD offers the same great experience as GitLab. Familiar, easy to use, and beautiful.
+- **Scalable**: Tests run distributed on separate machines of which you can add as many as you want
+- **Faster results**: Each build can be split in multiple jobs that run in parallel on multiple machines
+- **Continuous Delivery (CD)**: Multiple stages, manual deploys, environments, and variables
+- **Open source**: CI/CD is included with both the open source GitLab Community Edition and the proprietary GitLab Enterprise Edition
+
+!["GitLab CI/CD"](img/ci-cd-test-deploy-illustration_2x.png)
+
+## Features
+
+- **Multi-platform**: You can execute builds on Unix, Windows, macOS, and any other platform that supports Go.
+- **Multi-language**: Build scripts are command line driven and work with Java, PHP, Ruby, C, and any other language.
+- **Stable**: Your builds run on a different machine than GitLab.
+- **Parallel builds**: GitLab CI/CD splits builds over multiple machines, for fast execution.
+- **Realtime logging**: A link in the merge request takes you to the current build log that updates dynamically.
+- **Versioned tests**: A .gitlab-ci.yml file that contains your tests, allowing everyone to contribute changes and ensuring every branch gets the tests it needs.
+- **Pipeline**: You can define multiple jobs per stage and you can trigger other builds
+- **Autoscaling**: You can automatically spin up and down VMs to make sure your builds get processed immediately and minimize costs.
+- **Job artifacts**: you can upload binaries and other job artifacts to GitLab and browse and download them.
+- **Test locally**: There are multiple executors and you can reproduce tests locally
+- **Docker support**: You can use custom Docker images, spin up services as part of testing, and build new Docker images, even run on Kubernetes.
+
+## Entire DevOps lifecycle
+
+- **Build** your application using GitLab Runners
+- Run unit and integration **tests** to check if your code is valid
+- Look at a live preview of your development branch with Review Apps before merging into stable
+- **Deploy** to multiple environments like staging and production, and support advanced features such as canary deployments
+- **Monitor** performances and status of your application
+
+!["DevOps"](img/ci-cd-devops-loop_2x.png)
+
+## Fully integrated with GitLab
+
+- Quick project setup:
+Add projects with a single click, all hooks are set up automatically via the GitLab API.
+- Merge request integration:
+See the status of each build within the Merge Request in GitLab.
+
+!["Integrated GitLab CI/CD"](img/ci-cd-integrated_2x.png)
+
+## Architecture
+
+**GitLab CI/CD** is a part of GitLab, a web application with an API
+that stores its state in a database. It manages projects/builds and provides a nice user interface,
+besides all the features of GitLab.
+
+To perform the actual build, you need to install **GitLab Runner** which
+is written in Go, it can be deployed separately and works with GitLab CI/CD through an API.
+It can run on any platform for which you can build Go binaries,
+including Linux, OSX, Windows, FreeBSD and Docker.
+It can test any programming language including .Net, Java, Python, C, PHP and others.
+
+In order to run tests, you need at least one GitLab instance and one GitLab Runner.
+
+![Architecture](img/ci-cd-architecture_2x.png)
