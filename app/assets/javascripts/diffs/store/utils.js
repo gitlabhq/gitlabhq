@@ -230,7 +230,7 @@ export function getDiffPositionByLineCode(diffFiles) {
         const { lineCode, oldLine, newLine } = line;
 
         if (lineCode) {
-          acc[lineCode] = { baseSha, headSha, startSha, newPath, oldPath, oldLine, newLine };
+          acc[lineCode] = { baseSha, headSha, startSha, newPath, oldPath, oldLine, newLine, positionType: 'text' };
         }
       });
     }
@@ -242,8 +242,8 @@ export function getDiffPositionByLineCode(diffFiles) {
 // This method will check whether the discussion is still applicable
 // to the diff line in question regarding different versions of the MR
 export function isDiscussionApplicableToLine(discussion, diffPosition) {
-  const originalRefs = convertObjectPropsToCamelCase(discussion.original_position.formatter);
-  const refs = convertObjectPropsToCamelCase(discussion.position.formatter);
+  const originalRefs = convertObjectPropsToCamelCase(discussion.original_position);
+  const refs = convertObjectPropsToCamelCase(discussion.position);
 
   return _.isEqual(refs, diffPosition) || _.isEqual(originalRefs, diffPosition);
 }
