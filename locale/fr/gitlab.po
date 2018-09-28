@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-27 15:43\n"
+"PO-Revision-Date: 2018-09-28 12:45\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -3001,8 +3001,8 @@ msgstr "Ces dates affectent la manière dont vos épopées apparaissent sur la f
 msgid "Epics|To schedule your epic's %{epicDateType} date based on milestones, assign a milestone with a %{epicDateType} date to any issue in the epic."
 msgstr ""
 
-msgid "Epics|finish"
-msgstr "fini"
+msgid "Epics|due"
+msgstr ""
 
 msgid "Epics|start"
 msgstr "commence"
@@ -3244,8 +3244,8 @@ msgstr "poussé par"
 msgid "Fixed date"
 msgstr "Date fixée"
 
-msgid "Fixed finish date"
-msgstr "Date de fin fixe"
+msgid "Fixed due date"
+msgstr ""
 
 msgid "Fixed start date"
 msgstr "Date de début fixe"
@@ -3766,14 +3766,14 @@ msgstr "Désolé, aucune épopée ne correspond à votre recherche"
 msgid "GroupRoadmap|The roadmap shows the progress of your epics along a timeline"
 msgstr "La feuille de route affiche la progression de vos épopées dans le temps"
 
-msgid "GroupRoadmap|To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from %{startDate} to %{endDate}."
-msgstr "Pour afficher la feuille de route, ajoutez une date prévisionnelle de début ou de fin à l’une de vos épopées dans ce groupe ou ses sous‐groupes. Dans la vue multi‐mensuelle, seules les épopées du mois dernier, du mois courant et des cinq prochains mois sont affichées, du %{startDate} au %{endDate}."
+msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from %{startDate} to %{endDate}."
+msgstr ""
 
-msgid "GroupRoadmap|To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the quarters view, only epics in the past quarter, current quarter, and next 4 quarters are shown &ndash; from %{startDate} to %{endDate}."
-msgstr "Pour afficher la feuille de route, ajoutez une date prévisionnelle de début ou de fin à l’une de vos épopées dans ce groupe ou ses sous‐groupes. Dans la vue multi‐trimestrielle, seules les épopées du trimestre dernier, du trimestre courant et des quatre prochains trimestres sont affichées, du %{startDate} au %{endDate}."
+msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the quarters view, only epics in the past quarter, current quarter, and next 4 quarters are shown &ndash; from %{startDate} to %{endDate}."
+msgstr ""
 
-msgid "GroupRoadmap|To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the weeks view, only epics in the past week, current week, and next 4 weeks are shown &ndash; from %{startDate} to %{endDate}."
-msgstr "Pour afficher la feuille de route, ajoutez une date prévisionnelle de début ou de fin à l’une de vos épopées dans ce groupe ou ses sous‐groupes. Dans la vue multi‐hebdomadaire, seules les épopées de la semaine dernière, de la semaine courante et des quatre prochaines semaines sont affichées, du %{startDate} au %{endDate}."
+msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the weeks view, only epics in the past week, current week, and next 4 weeks are shown &ndash; from %{startDate} to %{endDate}."
+msgstr ""
 
 msgid "GroupRoadmap|To widen your search, change or remove filters. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from %{startDate} to %{endDate}."
 msgstr "Afin d’élargir votre recherche, modifiez ou supprimez des filtres. Dans la vue multi‐mensuelle, seules les épopées du mois dernier, du mois courant et des cinq prochains mois sont affichées, du %{startDate} au %{endDate}."
@@ -4210,9 +4210,6 @@ msgstr "La tâche a été supprimée"
 
 msgid "Jobs"
 msgstr "Tâches"
-
-msgid "Job|Are you sure you want to erase this job?"
-msgstr "Êtes‐vous sûr de vouloir supprimer cette tâche ?"
 
 msgid "Job|Browse"
 msgstr "Parcourir"
@@ -5545,12 +5542,6 @@ msgstr "avec les étapes"
 msgid "Plain diff"
 msgstr "Diff brut"
 
-msgid "Planned finish date"
-msgstr "Date de fin prévisionnelle"
-
-msgid "Planned start date"
-msgstr "Date de début prévisionnelle"
-
 msgid "PlantUML"
 msgstr "PlantUML"
 
@@ -6327,11 +6318,26 @@ msgstr "%{failedString} et %{resolvedString}"
 msgid "Reports|Class"
 msgstr "Classe"
 
+msgid "Reports|Confidence"
+msgstr ""
+
+msgid "Reports|Dismiss Vulnerability"
+msgstr ""
+
 msgid "Reports|Execution time"
 msgstr "Durée d’exécution"
 
 msgid "Reports|Failure"
 msgstr "Échec"
+
+msgid "Reports|More info"
+msgstr ""
+
+msgid "Reports|New Issue"
+msgstr ""
+
+msgid "Reports|Severity"
+msgstr ""
 
 msgid "Reports|System output"
 msgstr "Sortie du système"
@@ -6344,6 +6350,9 @@ msgstr "Échec du chargement des résultats de la synthèse des tests"
 
 msgid "Reports|Test summary results are being parsed"
 msgstr "Les résultats de la synthèse des tests sont en cours d’analyse"
+
+msgid "Reports|Vulnerability"
+msgstr ""
 
 msgid "Reports|no changed test results"
 msgstr "aucun résultat de test modifié"
@@ -6520,6 +6529,9 @@ msgstr "Authentification unique SAML"
 
 msgid "SAML Single Sign On Settings"
 msgstr "Paramètres d’authentification unique SAML"
+
+msgid "SAST"
+msgstr ""
 
 msgid "SHA1 fingerprint of the SAML token signing certificate. Get this from your identity provider, where it can also be called \"Thumbprint\"."
 msgstr "Empreinte SHA-1 du certificat de signature de jetons SAML. Obtenez‐la auprès de votre fournisseur d’identité, parfois sous la dénomination « Thumbprint »."
@@ -7026,12 +7038,6 @@ msgstr "Date d’inscription croissante"
 msgid "SortOptions|Oldest updated"
 msgstr "Date de mise à jour croissante"
 
-msgid "SortOptions|Planned finish date"
-msgstr ""
-
-msgid "SortOptions|Planned start date"
-msgstr ""
-
 msgid "SortOptions|Popularity"
 msgstr "Popularité"
 
@@ -7040,6 +7046,9 @@ msgstr "Priorité"
 
 msgid "SortOptions|Recent sign in"
 msgstr "Date d’inscription décroissante"
+
+msgid "SortOptions|Start date"
+msgstr ""
 
 msgid "SortOptions|Start later"
 msgstr "Commence plus tard"
@@ -7115,6 +7124,9 @@ msgstr "Projets favoris"
 
 msgid "Start a %{new_merge_request} with these changes"
 msgstr "Créer une %{new_merge_request} avec ces changements"
+
+msgid "Start date"
+msgstr ""
 
 msgid "Start the Runner!"
 msgstr "Démarrer l’exécuteur !"
@@ -7505,11 +7517,11 @@ msgstr "Cette branche a changé depuis que vous y avez apporté des modification
 msgid "This container registry has been scheduled for deletion."
 msgstr ""
 
-msgid "This date is after the planned finish date, so this epic won't appear in the roadmap."
-msgstr "Cette date est postérieure à la date prévisionnelle de fin, cette épopée n’apparaîtra donc pas dans la feuille de route."
+msgid "This date is after the due date, so this epic won't appear in the roadmap."
+msgstr ""
 
-msgid "This date is before the planned start date, so this epic won't appear in the roadmap."
-msgstr "Cette date est antérieure à la date prévisionnelle de début, cette épopée n’apparaîtra donc pas dans la feuille de route."
+msgid "This date is before the start date, so this epic won't appear in the roadmap."
+msgstr ""
 
 msgid "This diff is collapsed."
 msgstr "Ce diff est replié."
@@ -7884,8 +7896,8 @@ msgstr "À cette instance de GitLab"
 msgid "To validate your GitLab CI configurations, go to 'CI/CD → Pipelines' inside your project, and click on the 'CI Lint' button."
 msgstr "Pour valider vos configurations GitLab CI, allez dans « CI / CD » → « Pipelines » dans votre projet, et cliquez sur le bouton « CI Lint »."
 
-msgid "To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. Only epics in the past 3 months and the next 3 months are shown."
-msgstr "Pour afficher la feuille de route, ajoutez une date de début ou de fin planifiée à l’une de vos épopées dans ce groupe ou ses sous‐groupes. Seules les épopées des trois derniers mois et des trois prochains mois sont affichées."
+msgid "To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown."
+msgstr ""
 
 msgid "To widen your search, change or remove filters."
 msgstr "Afin d’élargir votre recherche, modifiez ou supprimez des filtres."
