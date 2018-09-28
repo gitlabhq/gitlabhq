@@ -5,7 +5,7 @@ module Ci
     def execute(build, current_status)
       if valid_statuses_for_when(build.when).include?(current_status)
         if build.schedulable?
-          build.schedule!
+          build.schedule
         elsif build.action?
           build.actionize
         else

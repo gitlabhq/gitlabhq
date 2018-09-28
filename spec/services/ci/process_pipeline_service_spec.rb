@@ -31,17 +31,14 @@ describe Ci::ProcessPipelineService, '#execute' do
       succeed_pending
 
       expect(builds.success.count).to eq(2)
-      expect(process_pipeline).to be_truthy
 
       succeed_pending
 
       expect(builds.success.count).to eq(4)
-      expect(process_pipeline).to be_truthy
 
       succeed_pending
 
       expect(builds.success.count).to eq(5)
-      expect(process_pipeline).to be_falsey
     end
 
     it 'does not process pipeline if existing stage is running' do
@@ -718,7 +715,7 @@ describe Ci::ProcessPipelineService, '#execute' do
   end
 
   def builds_names_and_statuses
-    builds.each_with_object({}) do |h, b|
+    builds.each_with_object({}) do |b, h|
       h[b.name.to_sym] = b.status
       h
     end
