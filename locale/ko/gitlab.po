@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ko\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-28 14:17\n"
+"PO-Revision-Date: 2018-09-28 14:28\n"
 
 msgid " Status"
 msgstr " 상태"
@@ -3117,7 +3117,7 @@ msgid "ExternalAuthorizationService|When no classification label is set the defa
 msgstr ""
 
 msgid "Facebook"
-msgstr ""
+msgstr "Facebook"
 
 msgid "Failed"
 msgstr "실패"
@@ -3267,7 +3267,7 @@ msgid "Format"
 msgstr "포맷"
 
 msgid "Found errors in your .gitlab-ci.yml:"
-msgstr ""
+msgstr ".gitlab-ci.yml에서 오류를 발견했습니다:"
 
 msgid "From %{provider_title}"
 msgstr ""
@@ -3594,7 +3594,7 @@ msgid "Git"
 msgstr "Git"
 
 msgid "Git repository URL"
-msgstr ""
+msgstr "Git 저장소 URL"
 
 msgid "Git revision"
 msgstr "Git 리비전"
@@ -3606,10 +3606,10 @@ msgid "Git strategy for pipelines"
 msgstr ""
 
 msgid "Git version"
-msgstr ""
+msgstr "Git 버전"
 
 msgid "GitHub import"
-msgstr ""
+msgstr "GitHub 가져오기"
 
 msgid "GitLab CI Linter has been moved"
 msgstr ""
@@ -3639,7 +3639,7 @@ msgid "GitLab.com import"
 msgstr ""
 
 msgid "GitLab’s issue tracker"
-msgstr ""
+msgstr "GitLab의 이슈 트래커"
 
 msgid "Gitaly"
 msgstr "Gitaly"
@@ -3657,22 +3657,22 @@ msgid "Gitea Import"
 msgstr ""
 
 msgid "Go Back"
-msgstr ""
+msgstr "이전으로"
 
 msgid "Go back"
-msgstr ""
+msgstr "뒤로 가기"
 
 msgid "Go to"
 msgstr ""
 
 msgid "Go to %{link_to_google_takeout}."
-msgstr ""
+msgstr "%{link_to_google_takeout}로 이동하십시오."
 
 msgid "Google Code import"
-msgstr ""
+msgstr "Google Code 가져오기"
 
 msgid "Google Takeout"
-msgstr ""
+msgstr "Google Takeout"
 
 msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service."
 msgstr "Google 인증을 사용할 수 없습니다. %{link_to_documentation} GitLab 관리자에게 문의하세요."
@@ -3684,7 +3684,7 @@ msgid "Graph"
 msgstr "그래프"
 
 msgid "Group"
-msgstr ""
+msgstr "그룹"
 
 msgid "Group CI/CD settings"
 msgstr "그룹 CI/CD 설정"
@@ -3699,13 +3699,13 @@ msgid "Group Runners"
 msgstr "그룹 Runner"
 
 msgid "Group avatar"
-msgstr ""
+msgstr "그룹 아바타"
 
 msgid "Group details"
-msgstr ""
+msgstr "그룹 세부 정보"
 
 msgid "Group info:"
-msgstr ""
+msgstr "그룹 정보:"
 
 msgid "Group maintainers can register group runners in the %{link}"
 msgstr ""
@@ -3952,7 +3952,7 @@ msgid "IDE|Review"
 msgstr "리뷰"
 
 msgid "IP Address"
-msgstr ""
+msgstr "IP 주소"
 
 msgid "Identifier"
 msgstr ""
@@ -3970,7 +3970,7 @@ msgid "If disabled, the access level will depend on the user's permissions in th
 msgstr ""
 
 msgid "If enabled"
-msgstr ""
+msgstr "만약 활성화 된 경우"
 
 msgid "If enabled, access to projects will be validated on an external service using their classification label."
 msgstr ""
@@ -3982,7 +3982,7 @@ msgid "If you already have files you can push them using the %{link_to_cli} belo
 msgstr ""
 
 msgid "If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>."
-msgstr ""
+msgstr "HTTP 저장소를 공개적으로 액세스할 수 없는 경우, URL에 인증 정보를 추가하십시오:<code>https://username:password@gitlab.company.com/group/project.git</code>."
 
 msgid "ImageDiffViewer|2-up"
 msgstr ""
@@ -4000,13 +4000,13 @@ msgid "Import Projects from Gitea"
 msgstr ""
 
 msgid "Import all compatible projects"
-msgstr ""
+msgstr "호환되는 모든 프로젝트 가져오기"
 
 msgid "Import all projects"
-msgstr ""
+msgstr "모든 프로젝트 가져오기"
 
 msgid "Import all repositories"
-msgstr ""
+msgstr "모든 저장소 가져오기"
 
 msgid "Import an exported GitLab project"
 msgstr ""
@@ -4018,7 +4018,7 @@ msgid "Import multiple repositories by uploading a manifest file."
 msgstr ""
 
 msgid "Import project"
-msgstr ""
+msgstr "프로젝트 가져오기"
 
 msgid "Import projects from Bitbucket"
 msgstr ""
@@ -4069,7 +4069,7 @@ msgid "Include the username in the URL if required: <code>https://username@gitla
 msgstr ""
 
 msgid "Incompatible Project"
-msgstr ""
+msgstr "호환되지 않는 프로젝트"
 
 msgid "Indicates whether this runner can pick jobs without tags"
 msgstr ""
@@ -4368,7 +4368,7 @@ msgid "Leave the \"File type\" and \"Delivery method\" options on their default 
 msgstr ""
 
 msgid "License"
-msgstr ""
+msgstr "라이센스"
 
 msgid "LicenseManagement|Approve license"
 msgstr ""
@@ -4389,13 +4389,13 @@ msgid "LicenseManagement|Blacklisted"
 msgstr ""
 
 msgid "LicenseManagement|License"
-msgstr ""
+msgstr "라이센스"
 
 msgid "LicenseManagement|License Management"
-msgstr ""
+msgstr "라이센스 관리"
 
 msgid "LicenseManagement|License details"
-msgstr ""
+msgstr "라이선스 정보"
 
 msgid "LicenseManagement|Manage approved and blacklisted licenses for this project."
 msgstr ""
@@ -4404,7 +4404,7 @@ msgid "LicenseManagement|Packages"
 msgstr ""
 
 msgid "LicenseManagement|Remove license"
-msgstr ""
+msgstr "라이센스 제거"
 
 msgid "LicenseManagement|Remove license?"
 msgstr ""
@@ -4419,14 +4419,14 @@ msgid "LicenseManagement|You are about to remove the license, %{name}, from this
 msgstr ""
 
 msgid "Licenses"
-msgstr ""
+msgstr "라이센스"
 
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
 msgstr[0] ""
 
 msgid "LinkedIn"
-msgstr ""
+msgstr "LinkedIn"
 
 msgid "List"
 msgstr "목록"
@@ -4444,13 +4444,13 @@ msgid "List your GitHub repositories"
 msgstr ""
 
 msgid "Live preview"
-msgstr ""
+msgstr "실시간 미리보기"
 
 msgid "Loading contribution stats for group members"
 msgstr ""
 
 msgid "Loading the GitLab IDE..."
-msgstr ""
+msgstr "GitLab IDE 로드 중..."
 
 msgid "Loading..."
 msgstr ""
@@ -4925,7 +4925,7 @@ msgid "New issue"
 msgstr "새 이슈"
 
 msgid "New label"
-msgstr ""
+msgstr "새 라벨"
 
 msgid "New merge request"
 msgstr "새 머지 리퀘스트(MR)"
@@ -4934,7 +4934,7 @@ msgid "New pipelines will cancel older, pending pipelines on the same branch"
 msgstr ""
 
 msgid "New project"
-msgstr ""
+msgstr "새 프로젝트"
 
 msgid "New schedule"
 msgstr "새 일정"
@@ -4943,19 +4943,19 @@ msgid "New snippet"
 msgstr "새 스니펫"
 
 msgid "New subgroup"
-msgstr ""
+msgstr "새 서브그룹"
 
 msgid "New tag"
 msgstr "새 태그 "
 
 msgid "New..."
-msgstr ""
+msgstr "새로운..."
 
 msgid "No"
 msgstr "아니오"
 
 msgid "No Label"
-msgstr ""
+msgstr "라벨 없음"
 
 msgid "No assignee"
 msgstr "담당자 없음"
@@ -5187,7 +5187,7 @@ msgid "One or more of your Google Code projects cannot be imported into GitLab d
 msgstr ""
 
 msgid "Online IDE integration settings."
-msgstr ""
+msgstr "온라인 IDE 통합 설정."
 
 msgid "Only admins"
 msgstr ""
@@ -5199,7 +5199,7 @@ msgid "Only mirror protected branches"
 msgstr ""
 
 msgid "Only project members can comment."
-msgstr ""
+msgstr "프로젝트 구성원만 댓글을 달 수 있습니다."
 
 msgid "Oops, are you sure?"
 msgstr ""
@@ -5208,7 +5208,7 @@ msgid "Open"
 msgstr "열기"
 
 msgid "Open in Xcode"
-msgstr ""
+msgstr "Xcode에서 열기"
 
 msgid "Open sidebar"
 msgstr ""
@@ -5280,7 +5280,7 @@ msgid "Pages"
 msgstr ""
 
 msgid "Pagination|Last »"
-msgstr ""
+msgstr "마지막 »"
 
 msgid "Pagination|Next"
 msgstr ""
@@ -5601,7 +5601,7 @@ msgid "Profiles|Avatar will be removed. Are you sure?"
 msgstr ""
 
 msgid "Profiles|Change username"
-msgstr ""
+msgstr "사용자명 변경"
 
 msgid "Profiles|Choose file..."
 msgstr ""
@@ -5610,7 +5610,7 @@ msgid "Profiles|Choose to show contributions of private projects on your public 
 msgstr ""
 
 msgid "Profiles|Clear status"
-msgstr ""
+msgstr "상태 지우기"
 
 msgid "Profiles|Current path: %{path}"
 msgstr ""
@@ -5718,7 +5718,7 @@ msgid "Profiles|Website"
 msgstr ""
 
 msgid "Profiles|What's your status?"
-msgstr ""
+msgstr "상태는 어떤가요?"
 
 msgid "Profiles|You can change your avatar here"
 msgstr ""
@@ -5751,7 +5751,7 @@ msgid "Profiles|Your name was automatically set based on your %{provider_label} 
 msgstr ""
 
 msgid "Profiles|Your status"
-msgstr ""
+msgstr "나의 상태"
 
 msgid "Profiles|e.g. My MacBook key"
 msgstr ""
@@ -5787,7 +5787,7 @@ msgid "Project Badges"
 msgstr ""
 
 msgid "Project URL"
-msgstr ""
+msgstr "프로젝트 URL"
 
 msgid "Project access must be granted explicitly to each user."
 msgstr "프로젝트 액세스는 각 사용자에게 명시적으로 부여되어야합니다."
@@ -5814,7 +5814,7 @@ msgid "Project export started. A download link will be sent by email."
 msgstr "프로젝트 내보내기가 시작되었습니다. 다운로드 링크는 이메일로 전송됩니다."
 
 msgid "Project name"
-msgstr ""
+msgstr "프로젝트 이름"
 
 msgid "Project slug"
 msgstr ""
@@ -5874,7 +5874,7 @@ msgid "ProjectSettings|Badges"
 msgstr ""
 
 msgid "ProjectSettings|Contact an admin to change this setting."
-msgstr ""
+msgstr "이 설정을 변경하려면 관리자에게 문의하세요."
 
 msgid "ProjectSettings|Customize your project badges."
 msgstr ""
