@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-28 03:47\n"
+"PO-Revision-Date: 2018-09-28 12:46\n"
 
 msgid " Status"
 msgstr "状态"
@@ -2963,8 +2963,8 @@ msgstr ""
 msgid "Epics|To schedule your epic's %{epicDateType} date based on milestones, assign a milestone with a %{epicDateType} date to any issue in the epic."
 msgstr ""
 
-msgid "Epics|finish"
-msgstr "完成"
+msgid "Epics|due"
+msgstr ""
 
 msgid "Epics|start"
 msgstr "开始"
@@ -3206,8 +3206,8 @@ msgstr "推送者:"
 msgid "Fixed date"
 msgstr "修复日期"
 
-msgid "Fixed finish date"
-msgstr "修复完成日期"
+msgid "Fixed due date"
+msgstr ""
 
 msgid "Fixed start date"
 msgstr "修复开始日期"
@@ -3728,14 +3728,14 @@ msgstr "对不起，没有搜索到任何符合条件的史诗故事"
 msgid "GroupRoadmap|The roadmap shows the progress of your epics along a timeline"
 msgstr "路线图显示了史诗故事沿着时间线的进展情况"
 
-msgid "GroupRoadmap|To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from %{startDate} to %{endDate}."
-msgstr "如需查看路线图，请将计划的开始或结束日期添加到当前群组或其子组中的某个史诗故事。在月视图中，只显示上个月，本月以及接下来5个月的史诗故事&ndash; 从 %{startDate} 至 %{endDate}."
+msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from %{startDate} to %{endDate}."
+msgstr ""
 
-msgid "GroupRoadmap|To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the quarters view, only epics in the past quarter, current quarter, and next 4 quarters are shown &ndash; from %{startDate} to %{endDate}."
-msgstr "如需查看路线图，请将计划的开始或结束日期添加到当前群组或其子组中的某个史诗故事。在季度视图中，只显示上个季度，本季度以及接下来4个季度的史诗故事&ndash; 从 %{startDate} 至 %{endDate}."
+msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the quarters view, only epics in the past quarter, current quarter, and next 4 quarters are shown &ndash; from %{startDate} to %{endDate}."
+msgstr ""
 
-msgid "GroupRoadmap|To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the weeks view, only epics in the past week, current week, and next 4 weeks are shown &ndash; from %{startDate} to %{endDate}."
-msgstr "如需查看路线图，请将计划的开始或结束日期添加到当前群组或其子组中的某个史诗故事。在周视图中，只显示上周，本周以及接下来四周的史诗故事&ndash; 从 %{startDate} 至 %{endDate}."
+msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the weeks view, only epics in the past week, current week, and next 4 weeks are shown &ndash; from %{startDate} to %{endDate}."
+msgstr ""
 
 msgid "GroupRoadmap|To widen your search, change or remove filters. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from %{startDate} to %{endDate}."
 msgstr "要扩大搜索范围，请更改或删除过滤器。在月视图中，只显示上月，本月和接下来的四个月的史诗故事 &ndash; 从 %{startDate} 到 %{endDate} 。"
@@ -4170,9 +4170,6 @@ msgstr "作业已被删除"
 
 msgid "Jobs"
 msgstr "作业"
-
-msgid "Job|Are you sure you want to erase this job?"
-msgstr "你确定要删除该作业吗？"
 
 msgid "Job|Browse"
 msgstr "浏览"
@@ -5501,12 +5498,6 @@ msgstr "于阶段"
 msgid "Plain diff"
 msgstr "文本差异"
 
-msgid "Planned finish date"
-msgstr "计划完成日期"
-
-msgid "Planned start date"
-msgstr "计划开始日期"
-
 msgid "PlantUML"
 msgstr "PlantUML"
 
@@ -6282,11 +6273,26 @@ msgstr ""
 msgid "Reports|Class"
 msgstr "类"
 
+msgid "Reports|Confidence"
+msgstr ""
+
+msgid "Reports|Dismiss Vulnerability"
+msgstr ""
+
 msgid "Reports|Execution time"
 msgstr "执行时间"
 
 msgid "Reports|Failure"
 msgstr "失败"
+
+msgid "Reports|More info"
+msgstr ""
+
+msgid "Reports|New Issue"
+msgstr ""
+
+msgid "Reports|Severity"
+msgstr ""
 
 msgid "Reports|System output"
 msgstr "系统输出"
@@ -6299,6 +6305,9 @@ msgstr "测试摘要加载失败"
 
 msgid "Reports|Test summary results are being parsed"
 msgstr "正在分析测试摘要"
+
+msgid "Reports|Vulnerability"
+msgstr ""
 
 msgid "Reports|no changed test results"
 msgstr ""
@@ -6474,6 +6483,9 @@ msgstr "SAML 单点登录"
 
 msgid "SAML Single Sign On Settings"
 msgstr "SAML 单点登录设置"
+
+msgid "SAST"
+msgstr ""
 
 msgid "SHA1 fingerprint of the SAML token signing certificate. Get this from your identity provider, where it can also be called \"Thumbprint\"."
 msgstr "SAML令牌签名证书的SHA1指纹。请从身份验证提供商处获取（也可以被称为“指纹”）。"
@@ -6978,12 +6990,6 @@ msgstr "最早的登录"
 msgid "SortOptions|Oldest updated"
 msgstr "最早更新"
 
-msgid "SortOptions|Planned finish date"
-msgstr ""
-
-msgid "SortOptions|Planned start date"
-msgstr ""
-
 msgid "SortOptions|Popularity"
 msgstr "人气"
 
@@ -6992,6 +6998,9 @@ msgstr "优先"
 
 msgid "SortOptions|Recent sign in"
 msgstr "最近登录"
+
+msgid "SortOptions|Start date"
+msgstr ""
 
 msgid "SortOptions|Start later"
 msgstr "稍后开始"
@@ -7067,6 +7076,9 @@ msgstr "已星标项目"
 
 msgid "Start a %{new_merge_request} with these changes"
 msgstr "由此更改 %{new_merge_request}"
+
+msgid "Start date"
+msgstr ""
 
 msgid "Start the Runner!"
 msgstr "启动 Runner!"
@@ -7456,10 +7468,10 @@ msgstr "自您开始编辑后, 此分支已更改。您想创建一个新的分�
 msgid "This container registry has been scheduled for deletion."
 msgstr ""
 
-msgid "This date is after the planned finish date, so this epic won't appear in the roadmap."
+msgid "This date is after the due date, so this epic won't appear in the roadmap."
 msgstr ""
 
-msgid "This date is before the planned start date, so this epic won't appear in the roadmap."
+msgid "This date is before the start date, so this epic won't appear in the roadmap."
 msgstr ""
 
 msgid "This diff is collapsed."
@@ -7833,8 +7845,8 @@ msgstr "转至此GitLab实例"
 msgid "To validate your GitLab CI configurations, go to 'CI/CD → Pipelines' inside your project, and click on the 'CI Lint' button."
 msgstr "如需验证GitLab CI设置，请访问当前项目的'CI/CD → 流水线'，然后点击'CI Lint'按钮。"
 
-msgid "To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. Only epics in the past 3 months and the next 3 months are shown."
-msgstr "如需查看路线图，请将计划的开始或结束日期添加到当前群组或其子组中的某个史诗故事。只显示过去3个月和接下来3个月的史诗故事。"
+msgid "To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown."
+msgstr ""
 
 msgid "To widen your search, change or remove filters."
 msgstr "需要扩大搜索范围，请更改或移除过滤条件。"
