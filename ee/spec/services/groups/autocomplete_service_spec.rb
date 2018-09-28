@@ -6,8 +6,10 @@ describe Groups::AutocompleteService do
   let(:user) { create(:user) }
   let!(:epic) { create(:epic, group: group, author: user) }
 
+  subject { described_class.new(group, user) }
+
   before do
-    create(:group_member, group: group, user: user)
+    group.add_developer(user)
   end
 
   def expect_labels_to_equal(labels, expected_labels)
@@ -22,8 +24,8 @@ describe Groups::AutocompleteService do
     let!(:parent_group_label) { create(:group_label, group: group.parent, group_id: group.id) }
 
     it 'returns labels from own group and ancestor groups' do
-      service = described_class.new(group, user)
-      results = service.labels_as_hash(nil)
+      results = subject.labels_as_hash(nil)
+
       expected_labels = [label1, label2, parent_group_label]
 
       expect_labels_to_equal(results, expected_labels)
@@ -35,8 +37,7 @@ describe Groups::AutocompleteService do
       end
 
       it 'marks already assigned as set' do
-        service = described_class.new(group, user)
-        results = service.labels_as_hash(epic)
+        results = subject.labels_as_hash(epic)
         expected_labels = [label1, label2, parent_group_label]
 
         expect_labels_to_equal(results, expected_labels)
@@ -56,16 +57,29 @@ describe Groups::AutocompleteService do
   describe '#epics' do
     it 'returns nothing if not allowed' do
       allow(Ability).to receive(:allowed?).with(user, :read_epic, group).and_return(false)
-      service = described_class.new(group, user)
 
-      expect(service.epics).to eq([])
+      expect(subject.epics).to eq([])
     end
 
     it 'returns epics from group' do
       allow(Ability).to receive(:allowed?).with(user, :read_epic, group).and_return(true)
-      service = described_class.new(group, user)
 
-      expect(service.epics).to contain_exactly(epic)
+      expect(subject.epics).to contain_exactly(epic)
+    end
+  end
+
+  describe '#commands' do
+    context 'when target is an epic' do
+      before do
+        stub_licensed_features(epics: true)
+      end
+
+      it 'returns available commands' do
+        expect(subject.commands(epic).map { |c| c[:name] })
+          .to match_array(
+            [:todo, :unsubscribe, :award, :shrug, :tableflip, :cc, :title, :close]
+          )
+      end
     end
   end
 end

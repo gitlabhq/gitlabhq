@@ -100,6 +100,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
         get 'members'
         get 'labels'
         get 'epics'
+        get 'commands'
       end
     end
 
