@@ -1,9 +1,8 @@
 # Subgroups
 
 NOTE: **Note:**
-> - [Introduced][ce-2772] in GitLab 9.0.
-> - Not available when using MySQL as external database (support removed in
->   GitLab 9.3 [due to performance reasons][issue]).
+[Introduced][ce-2772] in GitLab 9.0. Not available when using MySQL as external
+database (support removed in GitLab 9.3 [due to performance reasons][issue]).
 
 With subgroups (aka nested groups or hierarchical groups) you can have
 up to 20 levels of nested groups, which among other things can help you to:
@@ -80,13 +79,13 @@ structure.
 ## Creating a subgroup
 
 NOTE: **Note:**
-> - You need to be an Owner of a group in order to be able to create
->   a subgroup. For more information check the [permissions table][permissions].
-> - For a list of words that are not allowed to be used as group names see the
->   [reserved names][reserved].
-> - Users can always create subgroups if they are explicitly added as an Owner to
->   a parent group even if group creation is disabled by an administrator in their
->   settings.
+You need to be an Owner of a group in order to be able to create a subgroup. For
+more information check the [permissions table][permissions].
+For a list of words that are not allowed to be used as group names see the
+[reserved names][reserved].
+Users can always create subgroups if they are explicitly added as an Owner to
+a parent group even if group creation is disabled by an administrator in their
+settings.
 
 To create a subgroup:
 
