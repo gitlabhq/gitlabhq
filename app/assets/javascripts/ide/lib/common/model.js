@@ -12,12 +12,12 @@ export default class Model {
     this.disposable.add(
       (this.originalModel = monacoEditor.createModel(
         head ? head.content : this.file.raw,
-        undefined,
+        'typescript',
         new Uri(false, false, `original/${this.path}`),
       )),
       (this.model = monacoEditor.createModel(
         this.content,
-        undefined,
+        'typescript',
         new Uri(false, false, this.path),
       )),
     );

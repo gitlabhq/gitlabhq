@@ -1,5 +1,8 @@
 import _ from 'underscore';
 import { editor as monacoEditor, KeyCode, KeyMod } from 'monaco-editor';
+import { loadWASM } from 'onigasm';
+import { Registry } from 'monaco-textmate';
+import { wireTmGrammars } from 'monaco-editor-textmate';
 import store from '../stores';
 import DecorationsController from './decorations/controller';
 import DirtyDiffController from './diff/controller';
@@ -8,11 +11,36 @@ import ModelManager from './common/model_manager';
 import editorOptions, { defaultEditorOptions } from './editor_options';
 import gitlabTheme from './themes/gl_theme';
 import keymap from './keymap.json';
+import js from './js.json';
 
 function setupMonacoTheme() {
   monacoEditor.defineTheme(gitlabTheme.themeName, gitlabTheme.monacoTheme);
   monacoEditor.setTheme('gitlab');
 }
+
+loadWASM(require('onigasm/lib/onigasm.wasm'))
+  .then(() => {
+    const registry = new Registry({
+      getGrammarDefinition: scopeName => {
+        console.log(scopeName);
+        return {
+          format: 'json',
+          content: js,
+        };
+      },
+    });
+
+    const grammars = new Map();
+    grammars.set('css', 'source.css');
+    grammars.set('html', 'text.html.basic');
+    grammars.set('typescript', 'source.ts');
+    grammars.set('javascript', 'source.ts');
+
+    return wireTmGrammars(window.monaco, registry, grammars);
+  })
+  .catch(e => {
+    console.log(e);
+  });
 
 export const clearDomElement = el => {
   if (!el || !el.firstChild) return;
@@ -37,6 +65,7 @@ export default class Editor {
     this.disposable = new Disposable();
     this.modelManager = new ModelManager();
     this.decorationsController = new DecorationsController(this);
+    window.editor = this;
 
     setupMonacoTheme();
 
