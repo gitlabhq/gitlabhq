@@ -6,39 +6,57 @@ describe Gitlab::BackgroundMigration::PopulateExternalPipelineSource, :migration
   let(:migration) { described_class.new }
 
   let!(:internal_pipeline) { create(:ci_pipeline, source: :web) }
-  let(:pipelines) { [internal_pipeline, external_pipeline, second_external_pipeline].map(&:id) }
+  let(:pipelines) { [internal_pipeline, unknown_pipeline].map(&:id) }
 
-  let!(:external_pipeline) do
+  let!(:unknown_pipeline) do
     build(:ci_pipeline, source: :unknown)
       .tap { |pipeline| pipeline.save(validate: false) }
-  end
-  let!(:second_external_pipeline) do
-    build(:ci_pipeline, source: :unknown)
-      .tap { |pipeline| pipeline.save(validate: false) }
-  end
-
-  before do
-    create(:generic_commit_status, pipeline: external_pipeline)
-    create(:ci_build, pipeline: internal_pipeline)
   end
 
   subject { migration.perform(pipelines.min, pipelines.max) }
 
-  it 'populates the pipeline source' do
-    subject
-
-    expect(external_pipeline.reload.source).to eq('external')
+  shared_examples 'no changes' do
+    it 'does not change the pipeline source' do
+      expect { subject }.not_to change { unknown_pipeline.reload.source }
+    end
   end
 
-  it 'only processes a single batch of links at a time' do
-    subject
+  context 'when unknown pipeline is external' do
+    before do
+      create(:generic_commit_status, pipeline: unknown_pipeline)
+    end
 
-    expect(second_external_pipeline.reload.source).to eq('unknown')
+    it 'populates the pipeline source' do
+      subject
+
+      expect(unknown_pipeline.reload.source).to eq('external')
+    end
+
+    it 'can be repeated without effect' do
+      subject
+
+      expect { subject }.not_to change { unknown_pipeline.reload.source }
+    end
   end
 
-  it 'can be repeated without effect' do
-    subject
+  context 'when unknown pipeline has just a build' do
+    before do
+      create(:ci_build, pipeline: unknown_pipeline)
+    end
 
-    expect { subject }.not_to change { external_pipeline.reload.source }
+    it_behaves_like 'no changes'
+  end
+
+  context 'when unknown pipeline has no statuses' do
+    it_behaves_like 'no changes'
+  end
+
+  context 'when unknown pipeline has a build and a status' do
+    before do
+      create(:generic_commit_status, pipeline: unknown_pipeline)
+      create(:ci_build, pipeline: unknown_pipeline)
+    end
+
+    it_behaves_like 'no changes'
   end
 end
