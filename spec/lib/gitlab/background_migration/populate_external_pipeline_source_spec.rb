@@ -5,13 +5,14 @@ require 'spec_helper'
 describe Gitlab::BackgroundMigration::PopulateExternalPipelineSource, :migration, schema: 20180916011959 do
   let(:migration) { described_class.new }
 
-  let!(:internal_pipeline) { create(:ci_pipeline, source: Ci::Pipeline.sources[:web]) }
+  let!(:internal_pipeline) { create(:ci_pipeline, source: :web) }
+
   let!(:external_pipeline) do
-    build(:ci_pipeline, source: Ci::Pipeline.sources[:unknown])
+    build(:ci_pipeline, source: :unknown)
       .tap { |pipeline| pipeline.save(validate: false) }
   end
   let!(:second_external_pipeline) do
-    build(:ci_pipeline, source: Ci::Pipeline.sources[:unknown])
+    build(:ci_pipeline, source: :unknown)
       .tap { |pipeline| pipeline.save(validate: false) }
   end
 
