@@ -6,5 +6,9 @@ module Clusters
 
     belongs_to :cluster, class_name: 'Clusters::Cluster'
     belongs_to :project, class_name: '::Project'
+
+    def namespace
+      cluster.platform.actual_namespace
+    end
   end
 end
