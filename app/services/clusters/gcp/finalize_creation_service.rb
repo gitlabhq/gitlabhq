@@ -9,9 +9,8 @@ module Clusters
         @provider = provider
 
         configure_provider
+        create_gitlab_service_account!
         configure_kubernetes
-        create_gitlab_services_account!
-        configure_kubernetes_token
 
         cluster.save!
       rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
@@ -24,8 +23,8 @@ module Clusters
 
       private
 
-      def create_gitlab_services_account!
-        Clusters::Gcp::ServicesAccountService.new(kube_client, cluster).execute
+      def create_gitlab_service_account!
+        Clusters::Gcp::Kubernetes::CreateServiceAccountService.new(kube_client, rbac: create_rbac_cluster?).execute
       end
 
       def configure_provider
@@ -40,25 +39,19 @@ module Clusters
           ca_cert: Base64.decode64(gke_cluster.master_auth.cluster_ca_certificate),
           username: gke_cluster.master_auth.username,
           password: gke_cluster.master_auth.password,
-          authorization_type: authorization_type
-        )
-      end
-
-      def configure_kubernetes_token
-        cluster.platform_kubernetes.token = request_kubernetes_token
+          authorization_type: authorization_type,
+          token: request_kubernetes_token)
       end
 
       def request_kubernetes_token
-        namespace = rbac_cluster? ? cluster.platform_kubernetes.actual_namespace : Clusters::Gcp::Kubernetes::SERVICE_ACCOUNT_NAMESPACE
-
-        Clusters::Gcp::Kubernetes::FetchKubernetesTokenService.new(kube_client, namespace).execute
+        Clusters::Gcp::Kubernetes::FetchKubernetesTokenService.new(kube_client).execute
       end
 
       def authorization_type
-        rbac_cluster? ? 'rbac' : 'abac'
+        create_rbac_cluster? ? 'rbac' : 'abac'
       end
 
-      def rbac_cluster?
+      def create_rbac_cluster?
         !provider.legacy_abac?
       end
 
