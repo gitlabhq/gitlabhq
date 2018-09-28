@@ -24,7 +24,7 @@ FactoryBot.define do
 
   factory :push_event, class: PushEvent do
     project factory: :project_empty_repo
-    author factory: :user
+    author(factory: :user) { project.creator }
     action Event::PUSHED
   end
 

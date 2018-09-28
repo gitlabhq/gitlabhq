@@ -1,4 +1,5 @@
-# coding: utf-8
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe QuickActions::InterpretService do
@@ -934,6 +935,13 @@ describe QuickActions::InterpretService do
       it_behaves_like 'empty command' do
         let(:content) { '/copy_metadata' }
         let(:issuable) { issue }
+      end
+
+      it_behaves_like 'copy_metadata command' do
+        let(:source_issuable) { create(:labeled_issue, project: project, labels: [inreview_label, todo_label]) }
+
+        let(:content) { "/copy_metadata #{source_issuable.to_reference}" }
+        let(:issuable) { build(:issue, project: project) }
       end
 
       it_behaves_like 'copy_metadata command' do

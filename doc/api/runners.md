@@ -294,6 +294,7 @@ Example response:
             "created_at": "2017-11-16T18:38:46.000Z",
             "bio": null,
             "location": null,
+            "public_email": "",
             "skype": "",
             "linkedin": "",
             "twitter": "",

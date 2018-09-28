@@ -9,6 +9,7 @@ class BuildDetailsEntity < JobEntity
 
   expose :coverage, :erased_at, :duration
   expose :tag_list, as: :tags
+  expose :has_trace?, as: :has_trace
   expose :user, using: UserEntity
   expose :runner, using: RunnerEntity
   expose :pipeline, using: PipelineEntity

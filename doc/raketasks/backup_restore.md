@@ -591,10 +591,11 @@ This procedure assumes that:
 
 First make sure your backup tar file is in the backup directory described in the
 `gitlab.rb` configuration `gitlab_rails['backup_path']`. The default is
-`/var/opt/gitlab/backups`.
+`/var/opt/gitlab/backups`. It needs to be owned by the `git` user.
 
 ```shell
 sudo cp 11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar /var/opt/gitlab/backups/
+sudo chown git.git /var/opt/gitlab/backups/11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar
 ```
 
 Stop the processes that are connected to the database.  Leave the rest of GitLab

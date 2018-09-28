@@ -281,9 +281,10 @@ class ApplicationController < ActionController::Base
   end
 
   def event_filter
-    # Split using comma to maintain backward compatibility Ex/ "filter1,filter2"
-    filters = cookies['event_filter'].split(',')[0] if cookies['event_filter'].present?
-    @event_filter ||= EventFilter.new(filters)
+    @event_filter ||=
+      EventFilter.new(params[:event_filter].presence || cookies[:event_filter]).tap do |new_event_filter|
+        cookies[:event_filter] = new_event_filter.filter
+      end
   end
 
   # JSON for infinite scroll via Pager object
