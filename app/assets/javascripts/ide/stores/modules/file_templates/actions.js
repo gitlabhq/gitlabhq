@@ -1,5 +1,6 @@
 import Api from '~/api';
 import { __ } from '~/locale';
+import { normalizeHeaders } from '~/lib/utils/common_utils';
 import * as types from './mutation_types';
 import eventHub from '../../../eventhub';
 
@@ -22,13 +23,21 @@ export const receiveTemplateTypesError = ({ commit, dispatch }) => {
 export const receiveTemplateTypesSuccess = ({ commit }, templates) =>
   commit(types.RECEIVE_TEMPLATE_TYPES_SUCCESS, templates);
 
-export const fetchTemplateTypes = ({ dispatch, state }) => {
+export const fetchTemplateTypes = ({ dispatch, state }, page = 1) => {
   if (!Object.keys(state.selectedTemplateType).length) return Promise.reject();
 
   dispatch('requestTemplateTypes');
 
-  return Api.templates(state.selectedTemplateType.key)
-    .then(({ data }) => dispatch('receiveTemplateTypesSuccess', data))
+  return Api.templates(state.selectedTemplateType.key, { page })
+    .then(({ data, headers }) => {
+      const nextPage = parseInt(normalizeHeaders(headers)['X-NEXT-PAGE'], 10);
+
+      dispatch('receiveTemplateTypesSuccess', data);
+
+      if (nextPage) {
+        dispatch('fetchTemplateTypes', nextPage);
+      }
+    })
     .catch(() => dispatch('receiveTemplateTypesError'));
 };
 
