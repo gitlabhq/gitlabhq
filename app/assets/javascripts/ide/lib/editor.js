@@ -1,8 +1,9 @@
 import _ from 'underscore';
-import { editor as monacoEditor, KeyCode, KeyMod } from 'monaco-editor';
+import { editor as monacoEditor, languages, KeyCode, KeyMod } from 'monaco-editor';
 import { loadWASM } from 'onigasm';
 import { Registry } from 'monaco-textmate';
 import { wireTmGrammars } from 'monaco-editor-textmate';
+import { grammars as textmateGrammars } from 'monaco-textmate-languages/dist/manifest';
 import store from '../stores';
 import DecorationsController from './decorations/controller';
 import DirtyDiffController from './diff/controller';
@@ -11,7 +12,8 @@ import ModelManager from './common/model_manager';
 import editorOptions, { defaultEditorOptions } from './editor_options';
 import gitlabTheme from './themes/gl_theme';
 import keymap from './keymap.json';
-import js from './js.json';
+
+languages.register({ id: 'vue', extensions: ['vue'], mimeTypes: ['text/html'] });
 
 function setupMonacoTheme() {
   const rules = gitlabTheme.monacoTheme.rules.reduce((acc, token) => {
@@ -43,12 +45,12 @@ function setupMonacoTheme() {
 window.MonacoEnvironment = {
   getWorker(workerId, label) {
     if (label === 'editorWorkerService') {
-      const a = require('worker-loader!monaco-editor/esm/vs/editor/editor.worker.js');
-      return new a();
+      const Worker = require('worker-loader!monaco-editor/esm/vs/editor/editor.worker.js');
+      return new Worker();
     }
 
-    const a = require('worker-loader!monaco-editor/esm/vs/language/typescript/ts.worker');
-    return new a();
+    const Worker = require('worker-loader!monaco-editor/esm/vs/language/typescript/ts.worker');
+    return new Worker();
   },
 };
 
@@ -59,16 +61,19 @@ const loadSyntaxHighlighting = () => {
       onigasmLoaded = true;
 
       const registry = new Registry({
-        getGrammarDefinition: scopeName =>
-          Promise.resolve({
+        getGrammarDefinition: scopeName => {
+          const { path } = textmateGrammars.find(g => g.scopeName === scopeName);
+          return import(`monaco-textmate-languages/grammars/${path}`).then(content => ({
             format: 'json',
-            content: js,
-          }),
+            content: content.default,
+          }));
+        },
       });
 
       const grammars = new Map();
       grammars.set('typescript', 'source.tsx');
       grammars.set('javascript', 'source.tsx');
+      grammars.set('vue', 'text.html.vue');
 
       return wireTmGrammars(window.monaco, registry, grammars);
     })
