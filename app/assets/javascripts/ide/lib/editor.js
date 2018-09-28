@@ -14,33 +14,68 @@ import keymap from './keymap.json';
 import js from './js.json';
 
 function setupMonacoTheme() {
-  monacoEditor.defineTheme(gitlabTheme.themeName, gitlabTheme.monacoTheme);
+  const rules = gitlabTheme.monacoTheme.rules.reduce((acc, token) => {
+    const settings = {
+      foreground: token.settings.foreground,
+      background: token.settings.background,
+      fontStyle: token.settings.fontStyle,
+    };
+    const scope =
+      typeof token.scope === 'string' ? token.scope.split(',').map(a => a.trim()) : token.scope;
+
+    scope.forEach(s => {
+      acc.push({
+        token: s,
+        ...settings,
+      });
+    });
+
+    return acc;
+  }, []);
+
+  monacoEditor.defineTheme(gitlabTheme.themeName, {
+    ...gitlabTheme.monacoTheme,
+    rules,
+  });
   monacoEditor.setTheme('gitlab');
 }
 
-loadWASM(require('onigasm/lib/onigasm.wasm'))
-  .then(() => {
-    const registry = new Registry({
-      getGrammarDefinition: scopeName => {
-        console.log(scopeName);
-        return {
-          format: 'json',
-          content: js,
-        };
-      },
+window.MonacoEnvironment = {
+  getWorker(workerId, label) {
+    if (label === 'editorWorkerService') {
+      const a = require('worker-loader!monaco-editor/esm/vs/editor/editor.worker.js');
+      return new a();
+    }
+
+    const a = require('worker-loader!monaco-editor/esm/vs/language/typescript/ts.worker');
+    return new a();
+  },
+};
+
+let onigasmLoaded = false;
+const loadSyntaxHighlighting = () => {
+  (onigasmLoaded ? Promise.resolve() : loadWASM(require('onigasm/lib/onigasm.wasm')))
+    .then(() => {
+      onigasmLoaded = true;
+
+      const registry = new Registry({
+        getGrammarDefinition: scopeName =>
+          Promise.resolve({
+            format: 'json',
+            content: js,
+          }),
+      });
+
+      const grammars = new Map();
+      grammars.set('typescript', 'source.tsx');
+      grammars.set('javascript', 'source.tsx');
+
+      return wireTmGrammars(window.monaco, registry, grammars);
+    })
+    .catch(e => {
+      throw e;
     });
-
-    const grammars = new Map();
-    grammars.set('css', 'source.css');
-    grammars.set('html', 'text.html.basic');
-    grammars.set('typescript', 'source.ts');
-    grammars.set('javascript', 'source.ts');
-
-    return wireTmGrammars(window.monaco, registry, grammars);
-  })
-  .catch(e => {
-    console.log(e);
-  });
+};
 
 export const clearDomElement = el => {
   if (!el || !el.firstChild) return;
@@ -147,6 +182,8 @@ export default class Editor {
     );
 
     if (this.dirtyDiffController) this.dirtyDiffController.reDecorate(model);
+
+    loadSyntaxHighlighting();
   }
 
   attachMergeRequestModel(model) {
