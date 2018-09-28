@@ -8,8 +8,9 @@ module QA
           Page::Main::Login.act { sign_in_using_credentials }
           Page::Menu::Main.act { go_to_admin_area }
           Page::Menu::Admin.act { go_to_settings }
+          Page::Menu::Side.act { click_repository }
 
-          Page::Admin::Settings::Main.perform do |setting|
+          Page::Admin::Settings::Repository.perform do |setting|
             setting.expand_repository_storage do |page|
               page.enable_hashed_storage
               page.save_settings
