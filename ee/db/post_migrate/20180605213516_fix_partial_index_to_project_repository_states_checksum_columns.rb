@@ -23,7 +23,7 @@ class FixPartialIndexToProjectRepositoryStatesChecksumColumns < ActiveRecord::Mi
     add_concurrent_index(:project_repository_states,
       [:repository_verification_checksum, :wiki_verification_checksum],
       name: OLD_INDEX_NAME,
-      length: Gitlab::Database.mysql? ? 20 : nil,
+      length: mysql_compatible_index_length,
       where: 'repository_verification_checksum IS NULL OR wiki_verification_checksum IS NULL'
                         )
   end
