@@ -107,8 +107,8 @@ describe Gitlab::Git::Push do
 
   describe '#modified_paths' do
     context 'when a push is a branch update' do
-      let(:oldrev) { '281d3a76f31c812dbf48abce82ccf6860adedd81' }
-      let(:new_rev) { '1b12f15a11fc6e62177bef08f47bc7b5ce50b141' }
+      let(:newrev) { '498214d' }
+      let(:oldrev) { '281d3a7' }
 
       it 'returns modified paths' do
         expect(subject.modified_paths).to eq ['bar/branch-test.txt',
