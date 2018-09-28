@@ -352,25 +352,7 @@ You can add task lists to issues, merge requests and comments. To create a task 
     - [ ] Sub-task 3
 ```
 
-<ul class="task-list" dir="auto">
-   <li class="task-list-item">
-      <input type="checkbox" class="task-list-item-checkbox" checked="" disabled=""> Completed task
-   </li>
-   <li class="task-list-item">
-      <input type="checkbox" class="task-list-item-checkbox" disabled=""> Incomplete task
-      <ul class="task-list">
-         <li class="task-list-item">
-            <input type="checkbox" class="task-list-item-checkbox" disabled=""> Sub-task 1
-         </li>
-         <li class="task-list-item">
-            <input type="checkbox" class="task-list-item-checkbox" checked="" disabled=""> Sub-task 2
-         </li>
-         <li class="task-list-item">
-            <input type="checkbox" class="task-list-item-checkbox" disabled=""> Sub-task 3
-         </li>
-      </ul>
-   </li>
-</ul>
+![alt unordered-check-list-render-gfm](unordered-check-list-render-gfm.png)
 
 Tasks formatted as ordered lists are supported as well:
 
@@ -381,22 +363,7 @@ Tasks formatted as ordered lists are supported as well:
     1. [x] Sub-task 2
 ```
 
-<ol class="task-list" dir="auto">
-   <li class="task-list-item">
-      <input type="checkbox" class="task-list-item-checkbox" checked="" disabled=""> Completed task
-   </li>
-   <li class="task-list-item">
-      <input type="checkbox" class="task-list-item-checkbox" disabled=""> Incomplete task
-      <ol class="task-list">
-         <li class="task-list-item">
-            <input type="checkbox" class="task-list-item-checkbox" disabled=""> Sub-task 1
-         </li>
-         <li class="task-list-item">
-            <input type="checkbox" class="task-list-item-checkbox" checked="" disabled=""> Sub-task 2
-         </li>
-      </ol>
-   </li>
-</ol>
+![alt task-list-ordered-render-gfm](img/task-list-ordered-render-gfm.png)
 
 Task lists can only be created in descriptions, not in titles. Task item state can be managed by editing the description's Markdown or by toggling the rendered check boxes.
 
