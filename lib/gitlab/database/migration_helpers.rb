@@ -1073,6 +1073,10 @@ into similar problems in the future (e.g. when new tables are created).
 
         connection.select_value(index_sql).to_i > 0
       end
+
+      def mysql_compatible_index_length
+        Gitlab::Database.mysql? ? 20 : nil
+      end
     end
   end
 end
