@@ -10,8 +10,8 @@
 
   .col-lg-8.append-bottom-default
     - if plugins.any?
-      .panel.panel-default
-        .panel-heading
+      .card
+        .card-header
           Plugins (#{plugins.count})
         %ul.content-list
           - plugins.each do |file|
@@ -19,5 +19,5 @@
               .monospace
                 = File.basename(file)
     - else
-      %p.light-well.text-center
-        No plugins found.
+      .card.bg-light.text-center
+        .nothing-here-block No plugins found.

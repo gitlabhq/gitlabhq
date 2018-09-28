@@ -78,8 +78,8 @@ in the **Authorized applications** section under **Profile Settings > Applicatio
 ---
 
 GitLab's OAuth applications support scopes, which allow various actions that any given
-application can perform. Although there are only two scopes available at the
-moment – `read_user` and `api` – the groundwork has been laid to add more scopes easily.
+application can perform such as `read_user` and `api`. There are many more scopes
+available.
 
 At any time you can revoke any access by just clicking **Revoke**.
 

@@ -87,17 +87,31 @@ module Gitlab
       end
 
       def included(base = nil)
-        return super if base.nil? # Rails concern, ignoring it
-
         super
+
+        queue_verification(base) if base
+      end
+
+      def prepended(base = nil)
+        super
+
+        queue_verification(base) if base
+      end
+
+      def extended(mod = nil)
+        super
+
+        queue_verification(mod.singleton_class) if mod
+      end
+
+      def queue_verification(base)
+        return unless ENV['STATIC_VERIFICATION']
 
         if base.is_a?(Class) # We could check for Class in `override`
           # This could be `nil` if `override` was never called
           Override.extensions[self]&.add_class(base)
         end
       end
-
-      alias_method :prepended, :included
 
       def self.extensions
         @extensions ||= {}

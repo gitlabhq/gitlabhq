@@ -1,8 +1,8 @@
-- can_create_merge_request = can?(current_user, :create_merge_request, @project)
-- data_action = can_create_merge_request ? 'create-mr' : 'create-branch'
-- value = can_create_merge_request ? 'Create merge request' : 'Create branch'
-
 - if can?(current_user, :push_code, @project)
+  - can_create_merge_request = can?(current_user, :create_merge_request_in, @project)
+  - data_action = can_create_merge_request ? 'create-mr' : 'create-branch'
+  - value = can_create_merge_request ? 'Create merge request' : 'Create branch'
+
   - can_create_path = can_create_branch_project_issue_path(@project, @issue)
   - create_mr_path = create_merge_request_project_issue_path(@project, @issue, branch_name: @issue.to_branch_name, ref: @project.default_branch)
   - create_branch_path = project_branches_path(@project, branch_name: @issue.to_branch_name, ref: @project.default_branch, issue_iid: @issue.iid)
@@ -14,15 +14,15 @@
         = icon('spinner', class: 'fa-spin')
         %span.text
           Checking branch availability…
-    .btn-group.available.hide
+    .btn-group.available.hidden
       %button.btn.js-create-merge-request.btn-success.btn-inverted{ type: 'button', data: { action: data_action } }
         = value
 
-      %button.btn.create-merge-request-dropdown-toggle.dropdown-toggle.btn-success.btn-inverted.js-dropdown-toggle{ type: 'button', data: { dropdown: { trigger: '#create-merge-request-dropdown' } } }
+      %button.btn.create-merge-request-dropdown-toggle.dropdown-toggle.btn-success.btn-inverted.js-dropdown-toggle{ type: 'button', data: { dropdown: { trigger: '#create-merge-request-dropdown' }, display: 'static' } }
         = icon('caret-down')
 
       .droplab-dropdown
-        %ul#create-merge-request-dropdown.create-merge-request-dropdown-menu.dropdown-menu.dropdown-menu-align-right.gl-show-field-errors{ data: { dropdown: true } }
+        %ul#create-merge-request-dropdown.create-merge-request-dropdown-menu.dropdown-menu.dropdown-menu-right.gl-show-field-errors{ data: { dropdown: true } }
           - if can_create_merge_request
             %li.droplab-item-selected{ role: 'button', data: { value: 'create-mr', text: _('Create merge request') } }
               .menu-item
@@ -40,13 +40,13 @@
               %label{ for: 'new-branch-name' }
                 = _('Branch name')
               %input#new-branch-name.js-branch-name.form-control{ type: 'text', placeholder: "#{@issue.to_branch_name}", value: "#{@issue.to_branch_name}" }
-              %span.js-branch-message.help-block
+              %span.js-branch-message.form-text
 
             .form-group
               %label{ for: 'source-name' }
                 = _('Source (branch or tag)')
               %input#source-name.js-ref.ref.form-control{ type: 'text', placeholder: "#{@project.default_branch}", value: "#{@project.default_branch}", data: { value: "#{@project.default_branch}" } }
-              %span.js-ref-message.help-block
+              %span.js-ref-message.form-text.text-muted
 
             .form-group
               %button.btn.btn-success.js-create-target{ type: 'button', data: { action: 'create-mr' } }

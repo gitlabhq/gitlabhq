@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class RetryBuildService < ::BaseService
     CLONE_ACCESSORS = %i[pipeline project ref tag options commands name
@@ -17,6 +19,7 @@ module Ci
       end
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def reprocess!(build)
       unless can?(current_user, :update_build, build)
         raise Gitlab::Access::AccessDeniedError
@@ -39,5 +42,6 @@ module Ci
         project.builds.create!(Hash[attributes])
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

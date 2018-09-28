@@ -20,5 +20,4 @@
         %td
           = service.description
         %td.light
-          = time_ago_in_words service.updated_at
-          ago
+          = time_ago_with_tooltip service.updated_at

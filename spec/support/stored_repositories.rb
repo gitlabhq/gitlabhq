@@ -1,10 +1,6 @@
 RSpec.configure do |config|
-  config.before(:each, :repository) do
-    TestEnv.clean_test_path
-  end
-
   config.before(:all, :broken_storage) do
-    FileUtils.rm_rf Gitlab.config.repositories.storages.broken['path']
+    FileUtils.rm_rf Gitlab.config.repositories.storages.broken.legacy_disk_path
   end
 
   config.before(:each, :broken_storage) do

@@ -1,13 +1,13 @@
 <script>
+import $ from 'jquery';
 import { __ } from '~/locale';
 import LabelsSelect from '~/labels_select';
-import LoadingIcon from '../../loading_icon.vue';
+import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
 
 import DropdownTitle from './dropdown_title.vue';
 import DropdownValue from './dropdown_value.vue';
 import DropdownValueCollapsed from './dropdown_value_collapsed.vue';
 import DropdownButton from './dropdown_button.vue';
-import DropdownHiddenInput from './dropdown_hidden_input.vue';
 import DropdownHeader from './dropdown_header.vue';
 import DropdownSearchInput from './dropdown_search_input.vue';
 import DropdownFooter from './dropdown_footer.vue';
@@ -15,7 +15,6 @@ import DropdownCreateLabel from './dropdown_create_label.vue';
 
 export default {
   components: {
-    LoadingIcon,
     DropdownTitle,
     DropdownValue,
     DropdownValueCollapsed,
@@ -98,10 +97,17 @@ export default {
     this.labelsDropdown = new LabelsSelect(this.$refs.dropdownButton, {
       handleClick: this.handleClick,
     });
+    $(this.$refs.dropdown).on('hidden.gl.dropdown', this.handleDropdownHidden);
   },
   methods: {
     handleClick(label) {
       this.$emit('onLabelClick', label);
+    },
+    handleCollapsedValueClick() {
+      this.$emit('toggleCollapse');
+    },
+    handleDropdownHidden() {
+      this.$emit('onDropdownClose');
     },
   },
 };
@@ -112,6 +118,7 @@ export default {
     <dropdown-value-collapsed
       v-if="showCreate"
       :labels="context.labels"
+      @onValueClick="handleCollapsedValueClick"
     />
     <dropdown-title
       :can-edit="canEdit"
@@ -131,9 +138,12 @@ export default {
         v-for="label in context.labels"
         :key="label.id"
         :name="hiddenInputName"
-        :label="label"
+        :value="label.id"
       />
-      <div class="dropdown">
+      <div
+        ref="dropdown"
+        class="dropdown"
+      >
         <dropdown-button
           :ability-name="abilityName"
           :field-name="hiddenInputName"
@@ -152,7 +162,7 @@ dropdown-menu-labels dropdown-menu-selectable"
             <dropdown-search-input/>
             <div class="dropdown-content"></div>
             <div class="dropdown-loading">
-              <loading-icon />
+              <gl-loading-icon />
             </div>
             <dropdown-footer
               v-if="showCreate"

@@ -1,6 +1,6 @@
 # Services API
 
->**Note:** This API requires an access token with Master or Owner permissions
+>**Note:** This API requires an access token with Maintainer or Owner permissions
 
 ## Asana
 
@@ -401,39 +401,52 @@ Get Flowdock service settings for a project.
 GET /projects/:id/services/flowdock
 ```
 
-## Gemnasium
+## Hangouts Chat
 
-Gemnasium monitors your project dependencies and alerts you about updates and security vulnerabilities.
+Google GSuite team collaboration tool.
 
-### Create/Edit Gemnasium service
+>**Note:** This service was [introduced in v11.2](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20290)
 
-Set Gemnasium service for a project.
+### Create/Edit Hangouts Chat service
+
+Set Hangouts Chat service for a project.
 
 ```
-PUT /projects/:id/services/gemnasium
+PUT /projects/:id/services/hangouts_chat
 ```
+
+>**Note:** Specific event parameters (e.g. `push_events` flag) were [introduced in v10.4][11435]
 
 Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `api_key` | string | true | Your personal API KEY on gemnasium.com |
-| `token`  | string | true | The project's slug on gemnasium.com |
+| `webhook` | string | true | The Hangouts Chat webhook. e.g. https://chat.googleapis.com/v1/spaces... |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
+| `notify_only_default_branch` | boolean | false | Send notifications only for the default branch |
+| `push_events` | boolean | false | Enable notifications for push events |
+| `issues_events` | boolean | false | Enable notifications for issue events |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events |
+| `note_events` | boolean | false | Enable notifications for note events |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events |
+| `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
 
-### Delete Gemnasium service
+### Delete Hangouts Chat service
 
-Delete Gemnasium service for a project.
+Delete Hangouts Chat service for a project.
 
 ```
-DELETE /projects/:id/services/gemnasium
+DELETE /projects/:id/services/hangouts_chat
 ```
 
-### Get Gemnasium service settings
+### Get Hangouts Chat service settings
 
-Get Gemnasium service settings for a project.
+Get Hangouts Chat service settings for a project.
 
 ```
-GET /projects/:id/services/gemnasium
+GET /projects/:id/services/hangouts_chat
 ```
 
 ## HipChat
@@ -531,10 +544,10 @@ GET /projects/:id/services/jira
 
 Set JIRA service for a project.
 
->**Notes:**
-- Starting with GitLab 8.14, `api_url`, `issues_url`, `new_issue_url` and
-  `project_url` are replaced by `project_key`, `url`.  If you are using an
-  older version, [follow this documentation][old-jira-api].
+> **Notes:**
+> - Starting with GitLab 8.14, `api_url`, `issues_url`, `new_issue_url` and
+>   `project_url` are replaced by `project_key`, `url`.  If you are using an
+>   older version, [follow this documentation][old-jira-api].
 
 ```
 PUT /projects/:id/services/jira
@@ -968,7 +981,7 @@ Group Chat Software
 Set Microsoft Teams service for a project.
 
 ```
-PUT /projects/:id/services/microsoft_teams
+PUT /projects/:id/services/microsoft-teams
 ```
 
 Parameters:
@@ -982,7 +995,7 @@ Parameters:
 Delete Microsoft Teams service for a project.
 
 ```
-DELETE /projects/:id/services/microsoft_teams
+DELETE /projects/:id/services/microsoft-teams
 ```
 
 ### Get Microsoft Teams service settings
@@ -990,7 +1003,7 @@ DELETE /projects/:id/services/microsoft_teams
 Get Microsoft Teams service settings for a project.
 
 ```
-GET /projects/:id/services/microsoft_teams
+GET /projects/:id/services/microsoft-teams
 ```
 
 ## Mattermost notifications

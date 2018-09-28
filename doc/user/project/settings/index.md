@@ -1,7 +1,7 @@
 # Project settings
 
 NOTE: **Note:**
-Only project Masters and Admin users have the [permissions] to access a project
+Only project Maintainers and Admin users have the [permissions] to access a project
 settings.
 
 You can adjust your [project](../index.md) settings by navigating
@@ -34,7 +34,7 @@ Set up your project's merge request settings:
 
 - Set up the merge request method (merge commit, [fast-forward merge](../merge_requests/fast_forward_merge.html)).
 - Merge request [description templates](../description_templates.md#description-templates).
-- Enable [merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html#merge-request-approvals), _available in [GitLab Starter](https://about.gitlab.com/products/)_.
+- Enable [merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html#merge-request-approvals). **[STARTER]**
 - Enable [merge only of pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).
 - Enable [merge only when all discussions are resolved](../../discussions/index.md#only-allow-merge-requests-to-be-merged-if-all-discussions-are-resolved).
 
@@ -42,7 +42,7 @@ Set up your project's merge request settings:
 
 ### Service Desk
 
-Enable [Service Desk](https://docs.gitlab.com/ee/user/project/service_desk.html) for your project to offer customer support. Service Desk is available in [GitLab Premium](https://about.gitlab.com/products/).
+Enable [Service Desk](https://docs.gitlab.com/ee/user/project/service_desk.html) for your project to offer customer support. Service Desk is available in [GitLab Premium](https://about.gitlab.com/pricing/).
 
 ### Export project
 
@@ -57,19 +57,24 @@ Here you can run housekeeping, archive, rename, transfer, or remove a project.
 NOTE: **Note:**
 Only project Owners and Admin users have the [permissions] to archive a project.
 
-An archived project will be hidden by default in the project listings.
+Archiving a project makes it read-only for all users and indicates that it is
+no longer actively maintained. Projects that have been archived can also be
+unarchived.
+
+When a project is archived, the repository, issues, merge requests and all
+other features are read-only. Archived projects are also hidden
+in project listings.
+
+To archive a project:
 
 1. Navigate to your project's **Settings > General > Advanced settings**.
-1. Under "Archive project", hit the **Archive project** button.
+1. In the Archive project section, click the **Archive project** button.
 1. Confirm the action when asked to.
-
-An archived project can be fully restored and will therefore retain its
-repository and all associated resources whilst in an archived state.
 
 #### Renaming a repository
 
 NOTE: **Note:**
-Only project Masters and Admin users have the [permissions] to rename a
+Only project Maintainers and Admin users have the [permissions] to rename a
 repository. Not to be confused with a project's name where it can also be
 changed from the [general project settings](#general-project-settings).
 
@@ -93,7 +98,7 @@ Only project Owners and Admin users have the [permissions] to transfer a project
 
 You can transfer an existing project into a [group](../../group/index.md) if:
 
-1. you have at least **Master** [permissions] to that group
+1. you have at least **Maintainer** [permissions] to that group
 1. you are an **Owner** of the project.
 
 Similarly, if you are an owner of a group, you can transfer any of its projects

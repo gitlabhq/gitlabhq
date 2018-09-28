@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-feature 'Edit group settings' do
-  given(:user)  { create(:user) }
-  given(:group) { create(:group, path: 'foo') }
+describe 'Edit group settings' do
+  let(:user)  { create(:user) }
+  let(:group) { create(:group, path: 'foo') }
 
-  background do
+  before do
     group.add_owner(user)
     sign_in(user)
   end
@@ -14,14 +14,14 @@ feature 'Edit group settings' do
     let(:old_group_full_path) { "/#{group.path}" }
     let(:new_group_full_path) { "/#{new_group_path}" }
 
-    scenario 'the group is accessible via the new path' do
+    it 'the group is accessible via the new path' do
       update_path(new_group_path)
       visit new_group_full_path
       expect(current_path).to eq(new_group_full_path)
       expect(find('h1.group-title')).to have_content(group.name)
     end
 
-    scenario 'the old group path redirects to the new path' do
+    it 'the old group path redirects to the new path' do
       update_path(new_group_path)
       visit old_group_full_path
       expect(current_path).to eq(new_group_full_path)
@@ -29,18 +29,18 @@ feature 'Edit group settings' do
     end
 
     context 'with a subgroup' do
-      given!(:subgroup) { create(:group, parent: group, path: 'subgroup') }
-      given(:old_subgroup_full_path) { "/#{group.path}/#{subgroup.path}" }
-      given(:new_subgroup_full_path) { "/#{new_group_path}/#{subgroup.path}" }
+      let!(:subgroup) { create(:group, parent: group, path: 'subgroup') }
+      let(:old_subgroup_full_path) { "/#{group.path}/#{subgroup.path}" }
+      let(:new_subgroup_full_path) { "/#{new_group_path}/#{subgroup.path}" }
 
-      scenario 'the subgroup is accessible via the new path' do
+      it 'the subgroup is accessible via the new path' do
         update_path(new_group_path)
         visit new_subgroup_full_path
         expect(current_path).to eq(new_subgroup_full_path)
         expect(find('h1.group-title')).to have_content(subgroup.name)
       end
 
-      scenario 'the old subgroup path redirects to the new path' do
+      it 'the old subgroup path redirects to the new path' do
         update_path(new_group_path)
         visit old_subgroup_full_path
         expect(current_path).to eq(new_subgroup_full_path)
@@ -49,9 +49,9 @@ feature 'Edit group settings' do
     end
 
     context 'with a project' do
-      given!(:project) { create(:project, group: group) }
-      given(:old_project_full_path) { "/#{group.path}/#{project.path}" }
-      given(:new_project_full_path) { "/#{new_group_path}/#{project.path}" }
+      let!(:project) { create(:project, group: group) }
+      let(:old_project_full_path) { "/#{group.path}/#{project.path}" }
+      let(:new_project_full_path) { "/#{new_group_path}/#{project.path}" }
 
       before(:context) do
         TestEnv.clean_test_path
@@ -61,14 +61,14 @@ feature 'Edit group settings' do
         TestEnv.clean_test_path
       end
 
-      scenario 'the project is accessible via the new path' do
+      it 'the project is accessible via the new path' do
         update_path(new_group_path)
         visit new_project_full_path
         expect(current_path).to eq(new_project_full_path)
         expect(find('.breadcrumbs')).to have_content(project.path)
       end
 
-      scenario 'the old project path redirects to the new path' do
+      it 'the old project path redirects to the new path' do
         update_path(new_group_path)
         visit old_project_full_path
         expect(current_path).to eq(new_project_full_path)
@@ -76,10 +76,40 @@ feature 'Edit group settings' do
       end
     end
   end
-end
 
-def update_path(new_group_path)
-  visit edit_group_path(group)
-  fill_in 'group_path', with: new_group_path
-  click_button 'Save group'
+  describe 'edit group avatar' do
+    before do
+      visit edit_group_path(group)
+
+      attach_file(:group_avatar, Rails.root.join('spec', 'fixtures', 'banana_sample.gif'))
+
+      expect { save_group }.to change { group.reload.avatar? }.to(true)
+    end
+
+    it 'uploads new group avatar' do
+      expect(group.avatar).to be_instance_of AvatarUploader
+      expect(group.avatar.url).to eq "/uploads/-/system/group/avatar/#{group.id}/banana_sample.gif"
+      expect(page).to have_link('Remove avatar')
+    end
+
+    it 'removes group avatar' do
+      expect { click_link 'Remove avatar' }.to change { group.reload.avatar? }.to(false)
+      expect(page).not_to have_link('Remove avatar')
+    end
+  end
+
+  def update_path(new_group_path)
+    visit edit_group_path(group)
+
+    page.within('.gs-advanced') do
+      fill_in 'group_path', with: new_group_path
+      click_button 'Change group path'
+    end
+  end
+
+  def save_group
+    page.within('.gs-general') do
+      click_button 'Save group'
+    end
+  end
 end

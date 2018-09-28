@@ -4,18 +4,22 @@ describe GroupPolicy do
   let(:guest) { create(:user) }
   let(:reporter) { create(:user) }
   let(:developer) { create(:user) }
-  let(:master) { create(:user) }
+  let(:maintainer) { create(:user) }
   let(:owner) { create(:user) }
   let(:admin) { create(:admin) }
-  let(:group) { create(:group) }
+  let(:group) { create(:group, :private) }
 
-  let(:guest_permissions) { [:read_group, :upload_file, :read_namespace] }
+  let(:guest_permissions) do
+    [:read_label, :read_group, :upload_file, :read_namespace, :read_group_activity,
+     :read_group_issues, :read_group_boards, :read_group_labels, :read_group_milestones,
+     :read_group_merge_requests]
+  end
 
   let(:reporter_permissions) { [:admin_label] }
 
-  let(:developer_permissions) { [:admin_milestones] }
+  let(:developer_permissions) { [:admin_milestone] }
 
-  let(:master_permissions) do
+  let(:maintainer_permissions) do
     [
       :create_projects
     ]
@@ -27,6 +31,7 @@ describe GroupPolicy do
       :admin_namespace,
       :admin_group_member,
       :change_visibility_level,
+      :set_note_created_at,
       (Gitlab::Database.postgresql? ? :create_subgroup : nil)
     ].compact
   end
@@ -35,7 +40,7 @@ describe GroupPolicy do
     group.add_guest(guest)
     group.add_reporter(reporter)
     group.add_developer(developer)
-    group.add_master(master)
+    group.add_maintainer(maintainer)
     group.add_owner(owner)
   end
 
@@ -50,6 +55,7 @@ describe GroupPolicy do
   end
 
   context 'with no user' do
+    let(:group) { create(:group, :public) }
     let(:current_user) { nil }
 
     it do
@@ -57,9 +63,31 @@ describe GroupPolicy do
       expect_disallowed(:upload_file)
       expect_disallowed(*reporter_permissions)
       expect_disallowed(*developer_permissions)
-      expect_disallowed(*master_permissions)
+      expect_disallowed(*maintainer_permissions)
       expect_disallowed(*owner_permissions)
       expect_disallowed(:read_namespace)
+    end
+  end
+
+  context 'has projects' do
+    let(:current_user) { create(:user) }
+    let(:project) { create(:project, namespace: group) }
+
+    before do
+      project.add_developer(current_user)
+    end
+
+    it do
+      expect_allowed(:read_group, :read_label)
+    end
+
+    context 'in subgroups', :nested_groups do
+      let(:subgroup) { create(:group, :private, parent: group) }
+      let(:project) { create(:project, namespace: subgroup) }
+
+      it do
+        expect_allowed(:read_group, :read_label)
+      end
     end
   end
 
@@ -70,7 +98,7 @@ describe GroupPolicy do
       expect_allowed(*guest_permissions)
       expect_disallowed(*reporter_permissions)
       expect_disallowed(*developer_permissions)
-      expect_disallowed(*master_permissions)
+      expect_disallowed(*maintainer_permissions)
       expect_disallowed(*owner_permissions)
     end
   end
@@ -82,7 +110,7 @@ describe GroupPolicy do
       expect_allowed(*guest_permissions)
       expect_allowed(*reporter_permissions)
       expect_disallowed(*developer_permissions)
-      expect_disallowed(*master_permissions)
+      expect_disallowed(*maintainer_permissions)
       expect_disallowed(*owner_permissions)
     end
   end
@@ -94,19 +122,19 @@ describe GroupPolicy do
       expect_allowed(*guest_permissions)
       expect_allowed(*reporter_permissions)
       expect_allowed(*developer_permissions)
-      expect_disallowed(*master_permissions)
+      expect_disallowed(*maintainer_permissions)
       expect_disallowed(*owner_permissions)
     end
   end
 
-  context 'master' do
-    let(:current_user) { master }
+  context 'maintainer' do
+    let(:current_user) { maintainer }
 
     it do
       expect_allowed(*guest_permissions)
       expect_allowed(*reporter_permissions)
       expect_allowed(*developer_permissions)
-      expect_allowed(*master_permissions)
+      expect_allowed(*maintainer_permissions)
       expect_disallowed(*owner_permissions)
     end
   end
@@ -120,7 +148,7 @@ describe GroupPolicy do
       expect_allowed(*guest_permissions)
       expect_allowed(*reporter_permissions)
       expect_allowed(*developer_permissions)
-      expect_allowed(*master_permissions)
+      expect_allowed(*maintainer_permissions)
       expect_allowed(*owner_permissions)
     end
   end
@@ -134,7 +162,7 @@ describe GroupPolicy do
       expect_allowed(*guest_permissions)
       expect_allowed(*reporter_permissions)
       expect_allowed(*developer_permissions)
-      expect_allowed(*master_permissions)
+      expect_allowed(*maintainer_permissions)
       expect_allowed(*owner_permissions)
     end
   end
@@ -176,9 +204,9 @@ describe GroupPolicy do
       nested_group.add_guest(guest)
       nested_group.add_guest(reporter)
       nested_group.add_guest(developer)
-      nested_group.add_guest(master)
+      nested_group.add_guest(maintainer)
 
-      group.owners.destroy_all
+      group.owners.destroy_all # rubocop: disable DestroyAll
 
       group.add_guest(owner)
       nested_group.add_owner(owner)
@@ -193,7 +221,7 @@ describe GroupPolicy do
         expect_disallowed(*guest_permissions)
         expect_disallowed(*reporter_permissions)
         expect_disallowed(*developer_permissions)
-        expect_disallowed(*master_permissions)
+        expect_disallowed(*maintainer_permissions)
         expect_disallowed(*owner_permissions)
       end
     end
@@ -205,7 +233,7 @@ describe GroupPolicy do
         expect_allowed(*guest_permissions)
         expect_disallowed(*reporter_permissions)
         expect_disallowed(*developer_permissions)
-        expect_disallowed(*master_permissions)
+        expect_disallowed(*maintainer_permissions)
         expect_disallowed(*owner_permissions)
       end
     end
@@ -217,7 +245,7 @@ describe GroupPolicy do
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
         expect_disallowed(*developer_permissions)
-        expect_disallowed(*master_permissions)
+        expect_disallowed(*maintainer_permissions)
         expect_disallowed(*owner_permissions)
       end
     end
@@ -229,19 +257,19 @@ describe GroupPolicy do
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
-        expect_disallowed(*master_permissions)
+        expect_disallowed(*maintainer_permissions)
         expect_disallowed(*owner_permissions)
       end
     end
 
-    context 'master' do
-      let(:current_user) { master }
+    context 'maintainer' do
+      let(:current_user) { maintainer }
 
       it do
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
-        expect_allowed(*master_permissions)
+        expect_allowed(*maintainer_permissions)
         expect_disallowed(*owner_permissions)
       end
     end
@@ -255,7 +283,7 @@ describe GroupPolicy do
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
-        expect_allowed(*master_permissions)
+        expect_allowed(*maintainer_permissions)
         expect_allowed(*owner_permissions)
       end
     end

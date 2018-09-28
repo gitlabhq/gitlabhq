@@ -1,8 +1,16 @@
+# frozen_string_literal: true
+
 module MergeRequests
   class RefreshService < MergeRequests::BaseService
     def execute(oldrev, newrev, ref)
       return true unless Gitlab::Git.branch_ref?(ref)
 
+      do_execute(oldrev, newrev, ref)
+    end
+
+    private
+
+    def do_execute(oldrev, newrev, ref)
       @oldrev, @newrev = oldrev, newrev
       @branch_name = Gitlab::Git.ref_name(ref)
 
@@ -21,14 +29,12 @@ module MergeRequests
         comment_mr_branch_presence_changed
       end
 
-      comment_mr_with_commits
+      notify_about_push
       mark_mr_as_wip_from_commits
       execute_mr_web_hooks
 
       true
     end
-
-    private
 
     def close_upon_missing_source_branch_ref
       # MergeRequest#reload_diff ignores not opened MRs. This means it won't
@@ -45,6 +51,7 @@ module MergeRequests
     # and close if push to master include last commit from merge request
     # We need this to close(as merged) merge requests that were merged into
     # target branch manually
+    # rubocop: disable CodeReuse/ActiveRecord
     def post_merge_manually_merged
       commit_ids = @commits.map(&:id)
       merge_requests = @project.merge_requests.preload(:latest_merge_request_diff).opened.where(target_branch: @branch_name).to_a
@@ -61,6 +68,7 @@ module MergeRequests
           .execute(merge_request)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def force_push?
       Gitlab::Checks::ForcePush.force_push?(@project, @oldrev, @newrev)
@@ -68,6 +76,7 @@ module MergeRequests
 
     # Refresh merge request diff if we push to source or target branch of merge request
     # Note: we should update merge requests from forks too
+    # rubocop: disable CodeReuse/ActiveRecord
     def reload_merge_requests
       merge_requests = @project.merge_requests.opened
         .by_source_or_target_branch(@branch_name).to_a
@@ -95,6 +104,7 @@ module MergeRequests
       # @source_merge_requests diffs (for MergeRequest#commit_shas for instance).
       merge_requests_for_source_branch(reload: true)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def reset_merge_when_pipeline_succeeds
       merge_requests_for_source_branch.each(&:reset_merge_when_pipeline_succeeds)
@@ -141,8 +151,8 @@ module MergeRequests
       end
     end
 
-    # Add comment about pushing new commits to merge requests
-    def comment_mr_with_commits
+    # Add comment about pushing new commits to merge requests and send nofitication emails
+    def notify_about_push
       return unless @commits.present?
 
       merge_requests_for_source_branch.each do |merge_request|
@@ -155,6 +165,8 @@ module MergeRequests
         SystemNoteService.add_commits(merge_request, merge_request.project,
                                       @current_user, new_commits,
                                       existing_commits, @oldrev)
+
+        notification_service.push_to_merge_request(merge_request, @current_user, new_commits: new_commits, existing_commits: existing_commits)
       end
     end
 
@@ -189,11 +201,13 @@ module MergeRequests
 
     # If the merge requests closes any issues, save this information in the
     # `MergeRequestsClosingIssues` model (as a performance optimization).
+    # rubocop: disable CodeReuse/ActiveRecord
     def cache_merge_requests_closing_issues
       @project.merge_requests.where(source_branch: @branch_name).each do |merge_request|
         merge_request.cache_merge_request_closes_issues!(@current_user)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def filter_merge_requests(merge_requests)
       merge_requests.uniq.select(&:source_project)

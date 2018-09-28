@@ -5,9 +5,9 @@ require Rails.root.join('db', 'post_migrate', '20180202111106_remove_project_lab
 
 describe RemoveProjectLabelsGroupId, :delete do
   let(:migration) { described_class.new }
-  let(:group) { create(:group) }
-  let!(:project_label) { create(:label, group_id: group.id) }
-  let!(:group_label) { create(:group_label) }
+  let(:group) { create(:group) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
+  let!(:project_label) { create(:label, group_id: group.id) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
+  let!(:group_label) { create(:group_label) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
 
   describe '#up' do
     it 'updates the project labels group ID' do

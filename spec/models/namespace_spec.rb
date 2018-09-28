@@ -5,6 +5,7 @@ describe Namespace do
 
   let!(:namespace) { create(:namespace) }
   let(:gitlab_shell) { Gitlab::Shell.new }
+  let(:repository_storage) { 'default' }
 
   describe 'associations' do
     it { is_expected.to have_many :projects }
@@ -199,9 +200,37 @@ describe Namespace do
       end
 
       it "moves dir if path changed" do
-        namespace.update_attributes(path: namespace.full_path + '_new')
+        namespace.update(path: namespace.full_path + '_new')
 
-        expect(gitlab_shell.exists?(project.repository_storage_path, "#{namespace.path}/#{project.path}.git")).to be_truthy
+        expect(gitlab_shell.exists?(project.repository_storage, "#{namespace.path}/#{project.path}.git")).to be_truthy
+      end
+
+      context 'when #write_projects_repository_config raises an error' do
+        context 'in test environment' do
+          it 'raises an exception' do
+            expect(namespace).to receive(:write_projects_repository_config).and_raise('foo')
+
+            expect do
+              namespace.update(path: namespace.full_path + '_new')
+            end.to raise_error('foo')
+          end
+        end
+
+        context 'in production environment' do
+          it 'does not cancel later callbacks' do
+            expect(namespace).to receive(:write_projects_repository_config).and_raise('foo')
+            expect(namespace).to receive(:move_dir).and_wrap_original do |m, *args|
+              move_dir_result = m.call(*args)
+
+              expect(move_dir_result).to be_truthy # Must be truthy, or else later callbacks would be canceled
+
+              move_dir_result
+            end
+            expect(Gitlab::Sentry).to receive(:should_raise?).and_return(false) # like prod
+
+            namespace.update(path: namespace.full_path + '_new')
+          end
+        end
       end
 
       context 'with subgroups', :nested_groups do
@@ -278,10 +307,10 @@ describe Namespace do
 
       it "repository directory remains unchanged if path changed" do
         before_disk_path = project.disk_path
-        namespace.update_attributes(path: namespace.full_path + '_new')
+        namespace.update(path: namespace.full_path + '_new')
 
         expect(before_disk_path).to eq(project.disk_path)
-        expect(gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_truthy
+        expect(gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_truthy
       end
     end
 
@@ -294,18 +323,34 @@ describe Namespace do
 
       parent.update(path: 'mygroup_new')
 
+      # Routes are loaded when creating the projects, so we need to manually
+      # reload them for the below code to be aware of the above UPDATE.
+      [
+        project_in_parent_group,
+        hashed_project_in_subgroup,
+        legacy_project_in_subgroup
+      ].each do |project|
+        project.route.reload
+      end
+
       expect(project_rugged(project_in_parent_group).config['gitlab.fullpath']).to eq "mygroup_new/#{project_in_parent_group.path}"
       expect(project_rugged(hashed_project_in_subgroup).config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{hashed_project_in_subgroup.path}"
       expect(project_rugged(legacy_project_in_subgroup).config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{legacy_project_in_subgroup.path}"
     end
 
     def project_rugged(project)
-      project.repository.rugged
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        project.repository.rugged
+      end
     end
   end
 
   describe '#rm_dir', 'callback' do
-    let(:repository_storage_path) { Gitlab.config.repositories.storages.default['path'] }
+    let(:repository_storage_path) do
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        Gitlab.config.repositories.storages.default.legacy_disk_path
+      end
+    end
     let(:path_in_dir) { File.join(repository_storage_path, namespace.full_path) }
     let(:deleted_path) { namespace.full_path.gsub(namespace.path, "#{namespace.full_path}+#{namespace.id}+deleted") }
     let(:deleted_path_in_dir) { File.join(repository_storage_path, deleted_path) }
@@ -322,7 +367,7 @@ describe Namespace do
       end
 
       it 'schedules the namespace for deletion' do
-        expect(GitlabShellWorker).to receive(:perform_in).with(5.minutes, :rm_namespace, repository_storage_path, deleted_path)
+        expect(GitlabShellWorker).to receive(:perform_in).with(5.minutes, :rm_namespace, repository_storage, deleted_path)
 
         namespace.destroy
       end
@@ -344,16 +389,10 @@ describe Namespace do
         end
 
         it 'schedules the namespace for deletion' do
-          expect(GitlabShellWorker).to receive(:perform_in).with(5.minutes, :rm_namespace, repository_storage_path, deleted_path)
+          expect(GitlabShellWorker).to receive(:perform_in).with(5.minutes, :rm_namespace, repository_storage, deleted_path)
 
           child.destroy
         end
-      end
-
-      it 'removes the exports folder' do
-        expect(namespace).to receive(:remove_exports!)
-
-        namespace.destroy
       end
     end
 
@@ -368,12 +407,6 @@ describe Namespace do
         namespace.destroy
 
         expect(File.exist?(deleted_path_in_dir)).to be(false)
-      end
-
-      it 'removes the exports folder' do
-        expect(namespace).to receive(:remove_exports!)
-
-        namespace.destroy
       end
     end
   end
@@ -395,6 +428,21 @@ describe Namespace do
     it "cleans the path and makes sure it's available" do
       expect(described_class.clean_path("-john+gitlab-ETC%.git@gmail.com")).to eq("johngitlab-ETC2")
       expect(described_class.clean_path("--%+--valid_*&%name=.git.%.atom.atom.@email.com")).to eq("valid_name")
+    end
+  end
+
+  describe '#self_and_hierarchy', :nested_groups do
+    let!(:group) { create(:group, path: 'git_lab') }
+    let!(:nested_group) { create(:group, parent: group) }
+    let!(:deep_nested_group) { create(:group, parent: nested_group) }
+    let!(:very_deep_nested_group) { create(:group, parent: deep_nested_group) }
+    let!(:another_group) { create(:group, path: 'gitllab') }
+    let!(:another_group_nested) { create(:group, path: 'foo', parent: another_group) }
+
+    it 'returns the correct tree' do
+      expect(group.self_and_hierarchy).to contain_exactly(group, nested_group, deep_nested_group, very_deep_nested_group)
+      expect(nested_group.self_and_hierarchy).to contain_exactly(group, nested_group, deep_nested_group, very_deep_nested_group)
+      expect(very_deep_nested_group.self_and_hierarchy).to contain_exactly(group, nested_group, deep_nested_group, very_deep_nested_group)
     end
   end
 
@@ -633,23 +681,16 @@ describe Namespace do
     end
   end
 
-  describe '#remove_exports' do
-    let(:legacy_project) { create(:project, :with_export, :legacy_storage, namespace: namespace) }
-    let(:hashed_project) { create(:project, :with_export, namespace: namespace) }
-    let(:export_path) { Dir.mktmpdir('namespace_remove_exports_spec') }
-    let(:legacy_export) { legacy_project.export_project_path }
-    let(:hashed_export) { hashed_project.export_project_path }
+  describe '#root_ancestor' do
+    it 'returns the top most ancestor', :nested_groups do
+      root_group = create(:group)
+      nested_group = create(:group, parent: root_group)
+      deep_nested_group = create(:group, parent: nested_group)
+      very_deep_nested_group = create(:group, parent: deep_nested_group)
 
-    it 'removes exports for legacy and hashed projects' do
-      allow(Gitlab::ImportExport).to receive(:storage_path) { export_path }
-
-      expect(File.exist?(legacy_export)).to be_truthy
-      expect(File.exist?(hashed_export)).to be_truthy
-
-      namespace.remove_exports!
-
-      expect(File.exist?(legacy_export)).to be_falsy
-      expect(File.exist?(hashed_export)).to be_falsy
+      expect(nested_group.root_ancestor).to eq(root_group)
+      expect(deep_nested_group.root_ancestor).to eq(root_group)
+      expect(very_deep_nested_group.root_ancestor).to eq(root_group)
     end
   end
 

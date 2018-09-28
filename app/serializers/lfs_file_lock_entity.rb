@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LfsFileLockEntity < Grape::Entity
   root 'locks', 'lock'
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PersonalAccessTokensFinder
   attr_accessor :params
 
@@ -16,11 +18,13 @@ class PersonalAccessTokensFinder
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_user(tokens)
     return tokens unless @params[:user]
 
     tokens.where(user: @params[:user])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def by_impersonation(tokens)
     case @params[:impersonation]

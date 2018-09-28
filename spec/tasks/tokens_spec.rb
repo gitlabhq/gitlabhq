@@ -13,9 +13,9 @@ describe 'tokens rake tasks' do
     end
   end
 
-  describe 'reset_all_rss task' do
+  describe 'reset_all_feed task' do
     it 'invokes create_hooks task' do
-      expect { run_rake_task('tokens:reset_all_rss') }.to change { user.reload.rss_token }
+      expect { run_rake_task('tokens:reset_all_feed') }.to change { user.reload.feed_token }
     end
   end
 end

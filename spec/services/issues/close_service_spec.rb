@@ -9,7 +9,7 @@ describe Issues::CloseService do
   let!(:todo) { create(:todo, :assigned, user: user, project: project, target: issue, author: user2) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     project.add_developer(user2)
     project.add_guest(guest)
   end
@@ -65,6 +65,10 @@ describe Issues::CloseService do
       it 'closes the issue' do
         expect(issue).to be_valid
         expect(issue).to be_closed
+      end
+
+      it 'records closed user' do
+        expect(issue.closed_by_id).to be(user.id)
       end
 
       it 'sends email to user2 about assign of new issue' do

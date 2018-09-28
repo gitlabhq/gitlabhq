@@ -7,7 +7,7 @@ describe Gitlab::Ci::Variables::Collection do
 
       collection = described_class.new([variable])
 
-      expect(collection.first.to_hash).to eq variable
+      expect(collection.first.to_runner_variable).to eq variable
     end
 
     it 'can be initialized without an argument' do
@@ -29,7 +29,7 @@ describe Gitlab::Ci::Variables::Collection do
     end
 
     it 'appends an internal resource' do
-      collection = described_class.new([{ key: 'TEST', value: 1 }])
+      collection = described_class.new([{ key: 'TEST', value: '1' }])
 
       subject.append(collection.first)
 
@@ -74,15 +74,15 @@ describe Gitlab::Ci::Variables::Collection do
 
   describe '#+' do
     it 'makes it possible to combine with an array' do
-      collection = described_class.new([{ key: 'TEST', value: 1 }])
+      collection = described_class.new([{ key: 'TEST', value: '1' }])
       variables = [{ key: 'TEST', value: 'something' }]
 
       expect((collection + variables).count).to eq 2
     end
 
     it 'makes it possible to combine with another collection' do
-      collection = described_class.new([{ key: 'TEST', value: 1 }])
-      other = described_class.new([{ key: 'TEST', value: 2 }])
+      collection = described_class.new([{ key: 'TEST', value: '1' }])
+      other = described_class.new([{ key: 'TEST', value: '2' }])
 
       expect((collection + other).count).to eq 2
     end
@@ -90,10 +90,25 @@ describe Gitlab::Ci::Variables::Collection do
 
   describe '#to_runner_variables' do
     it 'creates an array of hashes in a runner-compatible format' do
-      collection = described_class.new([{ key: 'TEST', value: 1 }])
+      collection = described_class.new([{ key: 'TEST', value: '1' }])
 
       expect(collection.to_runner_variables)
-        .to eq [{ key: 'TEST', value: 1, public: true }]
+        .to eq [{ key: 'TEST', value: '1', public: true }]
+    end
+  end
+
+  describe '#to_hash' do
+    it 'returns regular hash in valid order without duplicates' do
+      collection = described_class.new
+        .append(key: 'TEST1', value: 'test-1')
+        .append(key: 'TEST2', value: 'test-2')
+        .append(key: 'TEST1', value: 'test-3')
+
+      expect(collection.to_hash).to eq('TEST1' => 'test-3',
+                                       'TEST2' => 'test-2')
+
+      expect(collection.to_hash).to include(TEST1: 'test-3')
+      expect(collection.to_hash).not_to include(TEST1: 'test-1')
     end
   end
 end

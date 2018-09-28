@@ -1,3 +1,6 @@
+require 'flipper/adapters/active_record'
+require 'flipper/adapters/active_support_cache_store'
+
 class Feature
   # Classes to override flipper table names
   class FlipperFeature < Flipper::Adapters::ActiveRecord::Feature
@@ -25,22 +28,31 @@ class Feature
     end
 
     def persisted_names
-      if RequestStore.active?
-        RequestStore[:flipper_persisted_names] ||= FlipperFeature.feature_names
-      else
-        FlipperFeature.feature_names
-      end
+      Gitlab::SafeRequestStore[:flipper_persisted_names] ||= FlipperFeature.feature_names
     end
 
     def persisted?(feature)
       # Flipper creates on-memory features when asked for a not-yet-created one.
       # If we want to check if a feature has been actually set, we look for it
       # on the persisted features list.
-      persisted_names.include?(feature.name)
+      persisted_names.include?(feature.name.to_s)
     end
 
-    def enabled?(key, thing = nil)
-      get(key).enabled?(thing)
+    # use `default_enabled: true` to default the flag to being `enabled`
+    # unless set explicitly.  The default is `disabled`
+    def enabled?(key, thing = nil, default_enabled: false)
+      feature = Feature.get(key)
+
+      # If we're not default enabling the flag or the feature has been set, always evaluate.
+      # `persisted?` can potentially generate DB queries and also checks for inclusion
+      # in an array of feature names (177 at last count), possibly reducing performance by half.
+      # So we only perform the `persisted` check if `default_enabled: true`
+      !default_enabled || Feature.persisted?(feature) ? feature.enabled?(thing) : true
+    end
+
+    def disabled?(key, thing = nil, default_enabled: false)
+      # we need to make different method calls to make it easy to mock / define expectations in test mode
+      thing.nil? ? !enabled?(key, default_enabled: default_enabled) : !enabled?(key, thing, default_enabled: default_enabled)
     end
 
     def enable(key, thing = true)
@@ -60,13 +72,28 @@ class Feature
     end
 
     def flipper
-      @flipper ||= Flipper.instance
+      @flipper ||= (Gitlab::SafeRequestStore[:flipper] ||= build_flipper_instance)
+    end
+
+    def build_flipper_instance
+      Flipper.new(flipper_adapter).tap { |flip| flip.memoize = true }
     end
 
     # This method is called from config/initializers/flipper.rb and can be used
     # to register Flipper groups.
     # See https://docs.gitlab.com/ee/development/feature_flags.html#feature-groups
     def register_feature_groups
+    end
+
+    def flipper_adapter
+      active_record_adapter = Flipper::Adapters::ActiveRecord.new(
+        feature_class: FlipperFeature,
+        gate_class: FlipperGate)
+
+      Flipper::Adapters::ActiveSupportCacheStore.new(
+        active_record_adapter,
+        Rails.cache,
+        expires_in: 1.hour)
     end
   end
 end

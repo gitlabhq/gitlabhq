@@ -1,0 +1,32 @@
+{
+  "type": "object",
+  "required": [
+    "name",
+    "status",
+    "summary",
+    "new_failures",
+    "resolved_failures",
+    "existing_failures"
+  ],
+  "properties": {
+    "name": { "type": "string" },
+    "status": { "type": "string" },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "total": { "type": "integer" },
+        "resolved": { "type": "integer" },
+        "failed": { "type": "integer" }
+      },
+      "required": [
+        "total",
+        "resolved",
+        "failed"
+      ]
+    },
+    "new_failures": { "type": "array", "items": { "$ref": "test_case.json" } },
+    "resolved_failures": { "type": "array", "items": { "$ref": "test_case.json" } },
+    "existing_failures": { "type": "array", "items": { "$ref": "test_case.json" } }
+  },
+  "additionalProperties": false
+}

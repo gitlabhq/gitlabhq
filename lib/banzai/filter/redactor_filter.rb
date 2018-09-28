@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module Filter
     # HTML filter that removes references to records that the current user does
@@ -7,7 +9,11 @@ module Banzai
     #
     class RedactorFilter < HTML::Pipeline::Filter
       def call
-        Redactor.new(project, current_user).redact([doc]) unless context[:skip_redaction]
+        unless context[:skip_redaction]
+          context = RenderContext.new(project, current_user)
+
+          Redactor.new(context).redact([doc])
+        end
 
         doc
       end

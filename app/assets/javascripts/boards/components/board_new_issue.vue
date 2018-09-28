@@ -49,11 +49,12 @@ export default {
       this.error = false;
 
       const labels = this.list.label ? [this.list.label] : [];
+      const assignees = this.list.assignee ? [this.list.assignee] : [];
       const issue = new ListIssue({
         title: this.title,
         labels,
         subscribed: true,
-        assignees: [],
+        assignees,
         project_id: this.selectedProject.id,
       });
 
@@ -92,29 +93,30 @@ export default {
 
 <template>
   <div class="board-new-issue-form">
-    <div class="card">
+    <div class="board-card">
       <form @submit="submit($event)">
         <div
-          class="flash-container"
           v-if="error"
+          class="flash-container"
         >
           <div class="flash-alert">
             An error occurred. Please try again.
           </div>
         </div>
         <label
-          class="label-light"
           :for="list.id + '-title'"
+          class="label-bold"
         >
           Title
         </label>
         <input
+          :id="list.id + '-title'"
+          ref="input"
+          v-model="title"
           class="form-control"
           type="text"
-          v-model="title"
-          ref="input"
+          name="issue_title"
           autocomplete="off"
-          :id="list.id + '-title'"
         />
         <project-select
           v-if="groupId"
@@ -122,15 +124,15 @@ export default {
         />
         <div class="clearfix prepend-top-10">
           <button
-            class="btn btn-success pull-left"
-            type="submit"
-            :disabled="disabled"
             ref="submit-button"
+            :disabled="disabled"
+            class="btn btn-success float-left"
+            type="submit"
           >
             Submit issue
           </button>
           <button
-            class="btn btn-default pull-right"
+            class="btn btn-default float-right"
             type="button"
             @click="cancel"
           >
@@ -141,4 +143,3 @@ export default {
     </div>
   </div>
 </template>
-

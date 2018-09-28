@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Namespace < ActiveRecord::Base
   include CacheMarkdownField
   include Sortable
@@ -8,6 +10,8 @@ class Namespace < ActiveRecord::Base
   include Storage::LegacyNamespace
   include Gitlab::SQL::Pattern
   include IgnorableColumn
+  include FeatureGate
+  include FromUnion
 
   ignore_column :deleted_at
 
@@ -20,6 +24,9 @@ class Namespace < ActiveRecord::Base
 
   has_many :projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :project_statistics
+
+  has_many :runner_namespaces, inverse_of: :namespace, class_name: 'Ci::RunnerNamespace'
+  has_many :runners, through: :runner_namespaces, source: :runner, class_name: 'Ci::Runner'
 
   # This should _not_ be `inverse_of: :namespace`, because that would also set
   # `user.namespace` when this user creates a group with themselves as `owner`.
@@ -141,8 +148,8 @@ class Namespace < ActiveRecord::Base
   def find_fork_of(project)
     return nil unless project.fork_network
 
-    if RequestStore.active?
-      forks_in_namespace = RequestStore.fetch("namespaces:#{id}:forked_projects") do
+    if Gitlab::SafeRequestStore.active?
+      forks_in_namespace = Gitlab::SafeRequestStore.fetch("namespaces:#{id}:forked_projects") do
         Hash.new do |found_forks, project|
           found_forks[project] = project.fork_network.find_forks_in(projects).first
         end
@@ -161,6 +168,13 @@ class Namespace < ActiveRecord::Base
 
   def shared_runners_enabled?
     projects.with_shared_runners.any?
+  end
+
+  # Returns all ancestors, self, and descendants of the current namespace.
+  def self_and_hierarchy
+    Gitlab::GroupHierarchy
+      .new(self.class.where(id: id))
+      .all_groups
   end
 
   # Returns all the ancestors of the current namespaces.
@@ -218,6 +232,10 @@ class Namespace < ActiveRecord::Base
     parent.present?
   end
 
+  def root_ancestor
+    ancestors.reorder(nil).find_by(parent_id: nil)
+  end
+
   def subgroup?
     has_parent?
   end
@@ -236,20 +254,8 @@ class Namespace < ActiveRecord::Base
     end
   end
 
-  # Exports belonging to projects with legacy storage are placed in a common
-  # subdirectory of the namespace, so a simple `rm -rf` is sufficient to remove
-  # them.
-  #
-  # Exports of projects using hashed storage are placed in a location defined
-  # only by the project ID, so each must be removed individually.
-  def remove_exports!
-    remove_legacy_exports!
-
-    all_projects.with_storage_feature(:repository).find_each(&:remove_exports)
-  end
-
-  def features
-    []
+  def refresh_project_authorizations
+    owner.refresh_authorized_projects
   end
 
   private
@@ -290,7 +296,6 @@ class Namespace < ActiveRecord::Base
 
   def write_projects_repository_config
     all_projects.find_each do |project|
-      project.expires_full_path_cache # we need to clear cache to validate renames correctly
       project.write_repository_config
     end
   end

@@ -52,10 +52,10 @@
 <template>
   <span
     v-tooltip
-    data-container="body"
     :data-placement="tooltipPlacement"
     :class="cssClass"
     :title="title"
+    data-container="body"
   >
     <icon :name="iconName" />
     <span

@@ -1,0 +1,17 @@
+# Full project: https://gitlab.com/pages/hugo
+image: dettmering/hugo-build
+
+pages:
+  script:
+  - hugo
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
+  
+test:
+  script:
+  - hugo
+  except:
+  - master

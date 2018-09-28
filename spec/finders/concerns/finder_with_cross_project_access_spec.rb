@@ -25,7 +25,7 @@ describe FinderWithCrossProjectAccess do
   let!(:result) { create(:issue) }
 
   before do
-    result.project.add_master(user)
+    result.project.add_maintainer(user)
   end
 
   def expect_access_check_on_result

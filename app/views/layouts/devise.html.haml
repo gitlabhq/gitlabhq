@@ -1,7 +1,7 @@
 !!! 5
-%html.devise-layout-html
+%html.devise-layout-html{ class: system_message_class }
   = render "layouts/head"
-  %body.ui_indigo.login-page.application.navless{ data: { page: body_data_page } }
+  %body.ui-indigo.login-page.application.navless{ data: { page: body_data_page } }
     .page-wrap
       = render "layouts/header/empty"
       .login-page-broadcast
@@ -10,28 +10,27 @@
         .content
           = render "layouts/flash"
           .row
-            .col-sm-5.pull-right.new-session-forms-container
-              = yield
-            .col-sm-7.brand-holder.pull-left
+            .col-sm-7.brand-holder
               %h1
                 = brand_title
               = brand_image
-              - if brand_item&.description?
+              - if current_appearance&.description?
                 = brand_text
               - else
-                %h3 Open source software to collaborate on code
+                %h3
+                  = _('Open source software to collaborate on code')
 
                 %p
-                  Manage Git repositories with fine-grained access controls that keep your code secure.
-                  Perform code reviews and enhance collaboration with merge requests.
-                  Each project can also have an issue tracker and a wiki.
+                  = _('Manage Git repositories with fine-grained access controls that keep your code secure. Perform code reviews and enhance collaboration with merge requests. Each project can also have an issue tracker and a wiki.')
 
               - if Gitlab::CurrentSettings.sign_in_text.present?
                 = markdown_field(Gitlab::CurrentSettings.current_application_settings, :sign_in_text)
+            .col-sm-5.new-session-forms-container
+              = yield
 
       %hr.footer-fixed
       .container.footer-container
         .footer-links
-          = link_to "Explore", explore_root_path
-          = link_to "Help", help_path
-          = link_to "About GitLab", "https://about.gitlab.com/"
+          = link_to _("Explore"), explore_root_path
+          = link_to _("Help"), help_path
+          = link_to _("About GitLab"), "https://about.gitlab.com/"

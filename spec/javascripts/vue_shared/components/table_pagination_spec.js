@@ -5,13 +5,13 @@ describe('Pagination component', () => {
   let component;
   let PaginationComponent;
   let spy;
-  let mountComponet;
+  let mountComponent;
 
   beforeEach(() => {
     spy = jasmine.createSpy('spy');
     PaginationComponent = Vue.extend(paginationComp);
 
-    mountComponet = function (props) {
+    mountComponent = function (props) {
       return new PaginationComponent({
         propsData: props,
       }).$mount();
@@ -20,7 +20,7 @@ describe('Pagination component', () => {
 
   describe('render', () => {
     it('should not render anything', () => {
-      component = mountComponet({
+      component = mountComponent({
         pageInfo: {
           nextPage: 1,
           page: 1,
@@ -37,7 +37,7 @@ describe('Pagination component', () => {
 
     describe('prev button', () => {
       it('should be disabled and non clickable', () => {
-        component = mountComponet({
+        component = mountComponent({
           pageInfo: {
             nextPage: 2,
             page: 1,
@@ -51,7 +51,7 @@ describe('Pagination component', () => {
 
         expect(
           component.$el.querySelector('.js-previous-button').classList.contains('disabled'),
-          ).toEqual(true);
+        ).toEqual(true);
 
         component.$el.querySelector('.js-previous-button a').click();
 
@@ -59,7 +59,7 @@ describe('Pagination component', () => {
       });
 
       it('should be enabled and clickable', () => {
-        component = mountComponet({
+        component = mountComponent({
           pageInfo: {
             nextPage: 3,
             page: 2,
@@ -78,7 +78,7 @@ describe('Pagination component', () => {
 
     describe('first button', () => {
       it('should call the change callback with the first page', () => {
-        component = mountComponet({
+        component = mountComponent({
           pageInfo: {
             nextPage: 3,
             page: 2,
@@ -102,7 +102,7 @@ describe('Pagination component', () => {
 
     describe('last button', () => {
       it('should call the change callback with the last page', () => {
-        component = mountComponet({
+        component = mountComponent({
           pageInfo: {
             nextPage: 3,
             page: 2,
@@ -126,7 +126,7 @@ describe('Pagination component', () => {
 
     describe('next button', () => {
       it('should be disabled and non clickable', () => {
-        component = mountComponet({
+        component = mountComponent({
           pageInfo: {
             nextPage: 5,
             page: 5,
@@ -148,7 +148,7 @@ describe('Pagination component', () => {
       });
 
       it('should be enabled and clickable', () => {
-        component = mountComponet({
+        component = mountComponent({
           pageInfo: {
             nextPage: 4,
             page: 3,
@@ -168,7 +168,7 @@ describe('Pagination component', () => {
 
     describe('numbered buttons', () => {
       it('should render 5 pages', () => {
-        component = mountComponet({
+        component = mountComponent({
           pageInfo: {
             nextPage: 4,
             page: 3,
@@ -185,7 +185,7 @@ describe('Pagination component', () => {
     });
 
     it('should render the spread operator', () => {
-      component = mountComponet({
+      component = mountComponent({
         pageInfo: {
           nextPage: 4,
           page: 3,

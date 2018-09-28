@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IssuableBaseService < BaseService
   private
 
@@ -51,9 +53,10 @@ class IssuableBaseService < BaseService
     return unless milestone_id
 
     params[:milestone_id] = '' if milestone_id == IssuableFinder::NONE
+    group_ids = project.group&.self_and_ancestors&.pluck(:id)
 
     milestone =
-      Milestone.for_projects_and_groups([project.id], [project.group&.id]).find_by_id(milestone_id)
+      Milestone.for_projects_and_groups([project.id], group_ids).find_by_id(milestone_id)
 
     params[:milestone_id] = '' unless milestone
   end
@@ -65,11 +68,13 @@ class IssuableBaseService < BaseService
     find_or_create_label_ids
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def filter_labels_in_param(key)
     return if params[key].to_a.empty?
 
     params[key] = available_labels.where(id: params[key]).pluck(:id)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def find_or_create_label_ids
     labels = params.delete(:labels)
@@ -106,7 +111,7 @@ class IssuableBaseService < BaseService
   end
 
   def available_labels
-    @available_labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute
+    @available_labels ||= LabelsFinder.new(current_user, project_id: @project.id, include_ancestor_groups: true).execute
   end
 
   def handle_quick_actions_on_create(issuable)
@@ -126,28 +131,19 @@ class IssuableBaseService < BaseService
     params.merge!(command_params)
   end
 
-  def create_issuable(issuable, attributes, label_ids:)
-    issuable.with_transaction_returning_status do
-      if issuable.save
-        issuable.update_attributes(label_ids: label_ids)
-      end
-    end
-  end
-
   def create(issuable)
     handle_quick_actions_on_create(issuable)
     filter_params(issuable)
 
     params.delete(:state_event)
     params[:author] ||= current_user
-
-    label_ids = process_label_ids(params)
+    params[:label_ids] = issuable.label_ids.to_a + process_label_ids(params)
 
     issuable.assign_attributes(params)
 
     before_create(issuable)
 
-    if params.present? && create_issuable(issuable, params, label_ids: label_ids)
+    if issuable.save
       after_create(issuable)
       execute_hooks(issuable)
       invalidate_cache_counts(issuable, users: issuable.assignees)
@@ -182,7 +178,10 @@ class IssuableBaseService < BaseService
     old_associations = associations_before_update(issuable)
 
     label_ids = process_label_ids(params, existing_label_ids: issuable.label_ids)
-    params[:label_ids] = label_ids if labels_changing?(issuable.label_ids, label_ids)
+    if labels_changing?(issuable.label_ids, label_ids)
+      params[:label_ids] = label_ids
+      issuable.touch
+    end
 
     if issuable.changed? || params.present?
       issuable.assign_attributes(params.merge(updated_by: current_user))
@@ -250,6 +249,7 @@ class IssuableBaseService < BaseService
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def change_todo(issuable)
     case params.delete(:todo_event)
     when 'add'
@@ -259,6 +259,7 @@ class IssuableBaseService < BaseService
       todo_service.mark_todos_as_done_by_ids(todo, current_user) if todo
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def toggle_award(issuable)
     award = params.delete(:emoji_award)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A note on the root of an issue, merge request, commit, or snippet.
 #
 # A note of this type is never resolvable.
@@ -15,6 +17,7 @@ class Note < ActiveRecord::Base
   include Editable
   include Gitlab::SQL::Pattern
   include ThrottledTouch
+  include FromUnion
 
   module SpecialRole
     FIRST_TIME_CONTRIBUTOR = :first_time_contributor
@@ -63,6 +66,7 @@ class Note < ActiveRecord::Base
   has_many :todos
   has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_one :system_note_metadata
+  has_one :note_diff_file, inverse_of: :diff_note, foreign_key: :diff_note_id
 
   delegate :gfm_reference, :local_reference, to: :noteable
   delegate :name, to: :project, prefix: true
@@ -100,7 +104,8 @@ class Note < ActiveRecord::Base
   scope :inc_author_project, -> { includes(:project, :author) }
   scope :inc_author, -> { includes(:author) }
   scope :inc_relations_for_view, -> do
-    includes(:project, :author, :updated_by, :resolved_by, :award_emoji, :system_note_metadata)
+    includes(:project, { author: :status }, :updated_by, :resolved_by, :award_emoji,
+             :system_note_metadata, :note_diff_file)
   end
 
   scope :diff_notes, -> { where(type: %w(LegacyDiffNote DiffNote)) }
@@ -177,6 +182,7 @@ class Note < ActiveRecord::Base
     end
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def cross_reference?
     return unless system?
 
@@ -186,6 +192,7 @@ class Note < ActiveRecord::Base
       SystemNoteService.cross_reference?(note)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def diff_note?
     false
@@ -200,7 +207,7 @@ class Note < ActiveRecord::Base
   end
 
   def hook_attrs
-    attributes
+    Gitlab::HookData::NoteBuilder.new(self).build
   end
 
   def for_commit?
@@ -225,6 +232,10 @@ class Note < ActiveRecord::Base
 
   def for_project_noteable?
     !for_personal_snippet?
+  end
+
+  def for_issuable?
+    for_issue? || for_merge_request?
   end
 
   def skip_project_check?
@@ -266,6 +277,10 @@ class Note < ActiveRecord::Base
     return unless noteable.author_id == self.author_id
 
     self.special_role = Note::SpecialRole::FIRST_TIME_CONTRIBUTOR
+  end
+
+  def confidential?
+    noteable.try(:confidential?)
   end
 
   def editable?
@@ -377,14 +392,7 @@ class Note < ActiveRecord::Base
   end
 
   def expire_etag_cache
-    return unless noteable&.discussions_rendered_on_frontend?
-
-    key = Gitlab::Routing.url_helpers.project_noteable_notes_path(
-      project,
-      target_type: noteable_type.underscore,
-      target_id: noteable_id
-    )
-    Gitlab::EtagCaching::Store.new.touch(key)
+    noteable&.expire_note_etag_cache
   end
 
   def touch(*args)
@@ -424,6 +432,10 @@ class Note < ActiveRecord::Base
 
   def banzai_render_context(field)
     super.merge(noteable: noteable)
+  end
+
+  def retrieve_upload(_identifier, paths)
+    Upload.find_by(model: self, path: paths)
   end
 
   private

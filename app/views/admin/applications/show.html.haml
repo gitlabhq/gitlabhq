@@ -32,5 +32,5 @@
     = render "shared/tokens/scopes_list", token: @application
 
 .form-actions
-  = link_to 'Edit', edit_admin_application_path(@application), class: 'btn btn-primary wide pull-left'
+  = link_to 'Edit', edit_admin_application_path(@application), class: 'btn btn-primary wide float-left'
   = render 'delete_form', application: @application, submit_btn_css: 'btn btn-danger prepend-left-10'

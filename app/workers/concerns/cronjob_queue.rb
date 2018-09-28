@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Concern that sets various Sidekiq settings for workers executed using a
 # cronjob.
 module CronjobQueue

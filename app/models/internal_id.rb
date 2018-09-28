@@ -1,5 +1,10 @@
+# frozen_string_literal: true
+
 # An InternalId is a strictly monotone sequence of integers
 # generated for a given scope and usage.
+#
+# The monotone sequence may be broken if an ID is explicitly provided
+# to `.track_greatest_and_save!` or `#track_greatest`.
 #
 # For example, issues use their project to scope internal ids:
 # In that sense, scope is "project" and usage is "issues".
@@ -12,8 +17,9 @@
 # * (Optionally) add columns to `internal_ids` if needed for scope.
 class InternalId < ActiveRecord::Base
   belongs_to :project
+  belongs_to :namespace
 
-  enum usage: { issues: 0 }
+  enum usage: { issues: 0, merge_requests: 1, deployments: 2, milestones: 3, epics: 4, ci_pipelines: 5 }
 
   validates :usage, presence: true
 
@@ -24,13 +30,34 @@ class InternalId < ActiveRecord::Base
   # The operation locks the record and gathers a `ROW SHARE` lock (in PostgreSQL).
   # As such, the increment is atomic and safe to be called concurrently.
   def increment_and_save!
+    update_and_save { self.last_value = (last_value || 0) + 1 }
+  end
+
+  # Increments #last_value with new_value if it is greater than the current,
+  # and saves the record
+  #
+  # The operation locks the record and gathers a `ROW SHARE` lock (in PostgreSQL).
+  # As such, the increment is atomic and safe to be called concurrently.
+  def track_greatest_and_save!(new_value)
+    update_and_save { self.last_value = [last_value || 0, new_value].max }
+  end
+
+  private
+
+  def update_and_save(&block)
     lock!
-    self.last_value = (last_value || 0) + 1
+    yield
     save!
     last_value
   end
 
   class << self
+    def track_greatest(subject, scope, usage, new_value, init)
+      return new_value unless available?
+
+      InternalIdGenerator.new(subject, scope, usage, init).track_greatest(new_value)
+    end
+
     def generate_next(subject, scope, usage, init)
       # Shortcut if `internal_ids` table is not available (yet)
       # This can be the case in other (unrelated) migration specs
@@ -84,12 +111,22 @@ class InternalId < ActiveRecord::Base
 
     # Generates next internal id and returns it
     def generate
-      subject.transaction do
+      InternalId.transaction do
         # Create a record in internal_ids if one does not yet exist
         # and increment its last value
         #
         # Note this will acquire a ROW SHARE lock on the InternalId record
         (lookup || create_record).increment_and_save!
+      end
+    end
+
+    # Create a record in internal_ids if one does not yet exist
+    # and set its new_value if it is higher than the current last_value
+    #
+    # Note this will acquire a ROW SHARE lock on the InternalId record
+    def track_greatest(new_value)
+      InternalId.transaction do
+        (lookup || create_record).track_greatest_and_save!(new_value)
       end
     end
 
@@ -111,7 +148,7 @@ class InternalId < ActiveRecord::Base
     # violation. We can safely roll-back the nested transaction and perform
     # a lookup instead to retrieve the record.
     def create_record
-      subject.transaction(requires_new: true) do
+      InternalId.transaction(requires_new: true) do
         InternalId.create!(
           **scope,
           usage: usage_value,

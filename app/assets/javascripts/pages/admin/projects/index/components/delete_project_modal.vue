@@ -1,11 +1,11 @@
 <script>
   import _ from 'underscore';
-  import modal from '~/vue_shared/components/modal.vue';
+  import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
   import { s__, sprintf } from '~/locale';
 
   export default {
     components: {
-      modal,
+      DeprecatedModal,
     },
     props: {
       deleteProjectUrl: {
@@ -79,13 +79,13 @@
 </script>
 
 <template>
-  <modal
+  <deprecated-modal
     id="delete-project-modal"
     :title="title"
     :text="text"
-    kind="danger"
     :primary-button-label="primaryButtonLabel"
     :submit-disabled="!canSubmit"
+    kind="danger"
     @submit="onSubmit"
     @cancel="onCancel"
   >
@@ -107,19 +107,19 @@
           value="delete"
         />
         <input
+          :value="csrfToken"
           type="hidden"
           name="authenticity_token"
-          :value="csrfToken"
         />
         <input
+          v-model="enteredProjectName"
           name="projectName"
           class="form-control"
           type="text"
-          v-model="enteredProjectName"
           aria-labelledby="input-label"
           autocomplete="off"
         />
       </form>
     </template>
-  </modal>
+  </deprecated-modal>
 </template>

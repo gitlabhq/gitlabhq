@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 class MergeRequestDiffFile < ActiveRecord::Base
   include Gitlab::EncodingHelper
+  include DiffFile
 
   belongs_to :merge_request_diff
 
@@ -11,11 +14,5 @@ class MergeRequestDiffFile < ActiveRecord::Base
 
   def diff
     binary? ? super.unpack('m0').first : super
-  end
-
-  def to_hash
-    keys = Gitlab::Git::Diff::SERIALIZE_KEYS - [:diff]
-
-    as_json(only: keys).merge(diff: diff).with_indifferent_access
   end
 end

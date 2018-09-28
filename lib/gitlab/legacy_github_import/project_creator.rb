@@ -35,7 +35,10 @@ module Gitlab
       end
 
       def visibility_level
-        repo.private ? Gitlab::VisibilityLevel::PRIVATE : Gitlab::CurrentSettings.default_project_visibility
+        visibility_level = repo.private ? Gitlab::VisibilityLevel::PRIVATE : Gitlab::VisibilityLevel::PUBLIC
+        visibility_level = Gitlab::CurrentSettings.default_project_visibility if Gitlab::CurrentSettings.restricted_visibility_levels.include?(visibility_level)
+
+        visibility_level
       end
 
       #

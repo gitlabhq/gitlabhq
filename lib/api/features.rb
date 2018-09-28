@@ -14,6 +14,7 @@ module API
         end
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def gate_targets(params)
         targets = []
         targets << Feature.group(params[:feature_group]) if params[:feature_group]
@@ -21,6 +22,7 @@ module API
 
         targets
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     resource :features do
@@ -64,6 +66,13 @@ module API
         end
 
         present feature, with: Entities::Feature, current_user: current_user
+      end
+
+      desc 'Remove the gate value for the given feature'
+      delete ':name' do
+        Feature.get(params[:name]).remove
+
+        status 204
       end
     end
   end

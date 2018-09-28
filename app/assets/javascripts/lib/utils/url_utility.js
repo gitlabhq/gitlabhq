@@ -47,11 +47,11 @@ export function removeParamQueryString(url, param) {
   return urlVariables.filter(variable => variable.indexOf(param) === -1).join('&');
 }
 
-export function removeParams(params) {
+export function removeParams(params, source = window.location.href) {
   const url = document.createElement('a');
-  url.href = window.location.href;
+  url.href = source;
 
-  params.forEach((param) => {
+  params.forEach(param => {
     url.search = removeParamQueryString(url.search, param);
   });
 
@@ -82,4 +82,12 @@ export function refreshCurrentPage() {
 
 export function redirectTo(url) {
   return window.location.assign(url);
+}
+
+export function webIDEUrl(route = undefined) {
+  let returnUrl = `${gon.relative_url_root || ''}/-/ide/`;
+  if (route) {
+    returnUrl += `project${route.replace(new RegExp(`^${gon.relative_url_root || ''}`), '')}`;
+  }
+  return returnUrl;
 }

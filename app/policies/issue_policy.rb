@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IssuePolicy < IssuablePolicy
   # This class duplicates the same check of Issue#readable_by? for performance reasons
   # Make sure to sync this class checks with issue.rb to avoid security problems.
@@ -18,5 +20,7 @@ class IssuePolicy < IssuablePolicy
     prevent :admin_issue
   end
 
-  rule { can?(:read_issue) | visible_to_user }.enable :read_issue_iid
+  rule { locked }.policy do
+    prevent :reopen_issue
+  end
 end

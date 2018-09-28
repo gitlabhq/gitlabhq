@@ -14,4 +14,4 @@
           = author_avatar(deployment.commit, size: 20)
           = link_to_markdown commit_title, project_commit_path(@project, deployment.sha), class: "commit-row-message"
         - else
-          Cant find HEAD commit for this branch
+          = _("Can't find HEAD commit for this branch")

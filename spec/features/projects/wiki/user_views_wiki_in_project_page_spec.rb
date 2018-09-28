@@ -4,13 +4,14 @@ describe 'Projects > Wiki > User views wiki in project page' do
   let(:user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 
   context 'when repository is disabled for project' do
     let(:project) do
       create(:project,
+             :wiki_repo,
              :repository_disabled,
              :merge_requests_disabled,
              :builds_disabled)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ConversationalDevelopmentIndex
   class IdeaToProductionStep
     attr_accessor :metric, :title, :features

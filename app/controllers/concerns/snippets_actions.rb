@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SnippetsActions
   extend ActiveSupport::Concern
 
@@ -16,6 +18,10 @@ module SnippetsActions
     )
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+  def js_request?
+    request.format.js?
+  end
 
   private
 

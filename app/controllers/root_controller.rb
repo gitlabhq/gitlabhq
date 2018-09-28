@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # RootController
 #
 # This controller exists solely to handle requests to `root_url`. When a user is
@@ -42,6 +44,10 @@ class RootController < Dashboard::ProjectsController
       redirect_to(dashboard_groups_path)
     when 'todos'
       redirect_to(dashboard_todos_path)
+    when 'issues'
+      redirect_to(issues_dashboard_path(assignee_id: current_user.id))
+    when 'merge_requests'
+      redirect_to(merge_requests_dashboard_path(assignee_id: current_user.id))
     end
   end
 

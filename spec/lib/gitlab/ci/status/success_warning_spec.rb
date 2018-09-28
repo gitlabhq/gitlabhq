@@ -1,8 +1,10 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Status::SuccessWarning do
+  let(:status) { double('status') }
+
   subject do
-    described_class.new(double('status'))
+    described_class.new(status)
   end
 
   describe '#test' do

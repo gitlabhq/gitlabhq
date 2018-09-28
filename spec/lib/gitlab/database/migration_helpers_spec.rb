@@ -48,10 +48,10 @@ describe Gitlab::Database::MigrationHelpers do
         allow(model).to receive(:transaction_open?).and_return(false)
       end
 
-      context 'using PostgreSQL' do
+      context 'using PostgreSQL', :postgresql do
         before do
           allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
-          allow(model).to receive(:disable_statement_timeout)
+          allow(model).to receive(:disable_statement_timeout).and_call_original
         end
 
         it 'creates the index concurrently' do
@@ -67,16 +67,34 @@ describe Gitlab::Database::MigrationHelpers do
 
           model.add_concurrent_index(:users, :foo, unique: true)
         end
+
+        it 'does nothing if the index exists already' do
+          expect(model).to receive(:index_exists?)
+            .with(:users, :foo, { algorithm: :concurrently, unique: true }).and_return(true)
+          expect(model).not_to receive(:add_index)
+
+          model.add_concurrent_index(:users, :foo, unique: true)
+        end
       end
 
       context 'using MySQL' do
-        it 'creates a regular index' do
-          expect(Gitlab::Database).to receive(:postgresql?).and_return(false)
+        before do
+          allow(Gitlab::Database).to receive(:postgresql?).and_return(false)
+        end
 
+        it 'creates a regular index' do
           expect(model).to receive(:add_index)
             .with(:users, :foo, {})
 
           model.add_concurrent_index(:users, :foo)
+        end
+
+        it 'does nothing if the index exists already' do
+          expect(model).to receive(:index_exists?)
+            .with(:users, :foo, { unique: true }).and_return(true)
+          expect(model).not_to receive(:add_index)
+
+          model.add_concurrent_index(:users, :foo, unique: true)
         end
       end
     end
@@ -95,32 +113,56 @@ describe Gitlab::Database::MigrationHelpers do
     context 'outside a transaction' do
       before do
         allow(model).to receive(:transaction_open?).and_return(false)
+        allow(model).to receive(:index_exists?).and_return(true)
+        allow(model).to receive(:disable_statement_timeout).and_call_original
       end
 
       context 'using PostgreSQL' do
         before do
           allow(model).to receive(:supports_drop_index_concurrently?).and_return(true)
-          allow(model).to receive(:disable_statement_timeout)
         end
 
-        it 'removes the index concurrently by column name' do
-          expect(model).to receive(:remove_index)
-            .with(:users, { algorithm: :concurrently, column: :foo })
+        describe 'by column name' do
+          it 'removes the index concurrently' do
+            expect(model).to receive(:remove_index)
+              .with(:users, { algorithm: :concurrently, column: :foo })
 
-          model.remove_concurrent_index(:users, :foo)
+            model.remove_concurrent_index(:users, :foo)
+          end
+
+          it 'does nothing if the index does not exist' do
+            expect(model).to receive(:index_exists?)
+              .with(:users, :foo, { algorithm: :concurrently, unique: true }).and_return(false)
+            expect(model).not_to receive(:remove_index)
+
+            model.remove_concurrent_index(:users, :foo, unique: true)
+          end
         end
 
-        it 'removes the index concurrently by index name' do
-          expect(model).to receive(:remove_index)
-            .with(:users, { algorithm: :concurrently, name: "index_x_by_y" })
+        describe 'by index name' do
+          before do
+            allow(model).to receive(:index_exists_by_name?).with(:users, "index_x_by_y").and_return(true)
+          end
 
-          model.remove_concurrent_index_by_name(:users, "index_x_by_y")
+          it 'removes the index concurrently by index name' do
+            expect(model).to receive(:remove_index)
+              .with(:users, { algorithm: :concurrently, name: "index_x_by_y" })
+
+            model.remove_concurrent_index_by_name(:users, "index_x_by_y")
+          end
+
+          it 'does nothing if the index does not exist' do
+            expect(model).to receive(:index_exists_by_name?).with(:users, "index_x_by_y").and_return(false)
+            expect(model).not_to receive(:remove_index)
+
+            model.remove_concurrent_index_by_name(:users, "index_x_by_y")
+          end
         end
       end
 
       context 'using MySQL' do
         it 'removes an index' do
-          expect(Gitlab::Database).to receive(:postgresql?).and_return(false)
+          expect(Gitlab::Database).to receive(:postgresql?).and_return(false).twice
 
           expect(model).to receive(:remove_index)
             .with(:users, { column: :foo })
@@ -141,6 +183,10 @@ describe Gitlab::Database::MigrationHelpers do
   end
 
   describe '#add_concurrent_foreign_key' do
+    before do
+      allow(model).to receive(:foreign_key_exists?).and_return(false)
+    end
+
     context 'inside a transaction' do
       it 'raises an error' do
         expect(model).to receive(:transaction_open?).and_return(true)
@@ -157,11 +203,20 @@ describe Gitlab::Database::MigrationHelpers do
       end
 
       context 'using MySQL' do
-        it 'creates a regular foreign key' do
+        before do
           allow(Gitlab::Database).to receive(:mysql?).and_return(true)
+        end
 
+        it 'creates a regular foreign key' do
           expect(model).to receive(:add_foreign_key)
             .with(:projects, :users, column: :user_id, on_delete: :cascade)
+
+          model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
+        end
+
+        it 'does not create a foreign key if it exists already' do
+          expect(model).to receive(:foreign_key_exists?).with(:projects, :users, column: :user_id).and_return(true)
+          expect(model).not_to receive(:add_foreign_key)
 
           model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
         end
@@ -169,25 +224,38 @@ describe Gitlab::Database::MigrationHelpers do
 
       context 'using PostgreSQL' do
         before do
+          allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
           allow(Gitlab::Database).to receive(:mysql?).and_return(false)
         end
 
         it 'creates a concurrent foreign key and validates it' do
-          expect(model).to receive(:disable_statement_timeout)
+          expect(model).to receive(:disable_statement_timeout).and_call_original
+          expect(model).to receive(:execute).with(/statement_timeout/)
           expect(model).to receive(:execute).ordered.with(/NOT VALID/)
           expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+          expect(model).to receive(:execute).with(/RESET ALL/)
 
           model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
         end
 
         it 'appends a valid ON DELETE statement' do
-          expect(model).to receive(:disable_statement_timeout)
+          expect(model).to receive(:disable_statement_timeout).and_call_original
+          expect(model).to receive(:execute).with(/statement_timeout/)
           expect(model).to receive(:execute).with(/ON DELETE SET NULL/)
           expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+          expect(model).to receive(:execute).with(/RESET ALL/)
 
           model.add_concurrent_foreign_key(:projects, :users,
                                            column: :user_id,
                                            on_delete: :nullify)
+        end
+
+        it 'does not create a foreign key if it exists already' do
+          expect(model).to receive(:foreign_key_exists?).with(:projects, :users, column: :user_id).and_return(true)
+          expect(model).not_to receive(:execute).with(/ADD CONSTRAINT/)
+          expect(model).to receive(:execute).with(/VALIDATE CONSTRAINT/)
+
+          model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
         end
       end
     end
@@ -203,14 +271,92 @@ describe Gitlab::Database::MigrationHelpers do
     end
   end
 
+  describe '#foreign_key_exists?' do
+    before do
+      key = ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(:projects, :users, { column: :non_standard_id })
+      allow(model).to receive(:foreign_keys).with(:projects).and_return([key])
+    end
+
+    it 'finds existing foreign keys by column' do
+      expect(model.foreign_key_exists?(:projects, :users, column: :non_standard_id)).to be_truthy
+    end
+
+    it 'finds existing foreign keys by target table only' do
+      expect(model.foreign_key_exists?(:projects, :users)).to be_truthy
+    end
+
+    it 'compares by column name if given' do
+      expect(model.foreign_key_exists?(:projects, :users, column: :user_id)).to be_falsey
+    end
+
+    it 'compares by target if no column given' do
+      expect(model.foreign_key_exists?(:projects, :other_table)).to be_falsey
+    end
+  end
+
   describe '#disable_statement_timeout' do
     context 'using PostgreSQL' do
-      it 'disables statement timeouts' do
+      it 'disables statement timeouts to current transaction only' do
         expect(Gitlab::Database).to receive(:postgresql?).and_return(true)
 
-        expect(model).to receive(:execute).with('SET statement_timeout TO 0')
+        expect(model).to receive(:execute).with('SET LOCAL statement_timeout TO 0')
 
         model.disable_statement_timeout
+      end
+
+      # this specs runs without an enclosing transaction (:delete truncation method for db_cleaner)
+      context 'with real environment', :postgresql, :delete do
+        before do
+          model.execute("SET statement_timeout TO '20000'")
+        end
+
+        after do
+          model.execute('RESET ALL')
+        end
+
+        it 'defines statement to 0 only for current transaction' do
+          expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('20s')
+
+          model.connection.transaction do
+            model.disable_statement_timeout
+            expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('0')
+          end
+
+          expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('20s')
+        end
+      end
+
+      context 'when passing a blocks' do
+        it 'disables statement timeouts on session level and executes the block' do
+          expect(Gitlab::Database).to receive(:postgresql?).and_return(true)
+          expect(model).to receive(:execute).with('SET statement_timeout TO 0')
+          expect(model).to receive(:execute).with('RESET ALL')
+
+          expect { |block| model.disable_statement_timeout(&block) }.to yield_control
+        end
+
+        # this specs runs without an enclosing transaction (:delete truncation method for db_cleaner)
+        context 'with real environment', :postgresql, :delete do
+          before do
+            model.execute("SET statement_timeout TO '20000'")
+          end
+
+          after do
+            model.execute('RESET ALL')
+          end
+
+          it 'defines statement to 0 for any code run inside the block' do
+            expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('20s')
+
+            model.disable_statement_timeout do
+              model.connection.transaction do
+                expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('0')
+              end
+
+              expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('0')
+            end
+          end
+        end
       end
     end
 
@@ -221,6 +367,16 @@ describe Gitlab::Database::MigrationHelpers do
         expect(model).not_to receive(:execute)
 
         model.disable_statement_timeout
+      end
+
+      context 'when passing a blocks' do
+        it 'executes the block of code' do
+          expect(Gitlab::Database).to receive(:postgresql?).and_return(false)
+
+          expect(model).not_to receive(:execute)
+
+          expect { |block| model.disable_statement_timeout(&block) }.to yield_control
+        end
       end
     end
   end
@@ -1092,6 +1248,61 @@ describe Gitlab::Database::MigrationHelpers do
     end
   end
 
+  describe '#rename_column_using_background_migration' do
+    let!(:issue) { create(:issue, :closed, closed_at: Time.zone.now) }
+
+    it 'renames a column using a background migration' do
+      expect(model)
+        .to receive(:add_column)
+        .with(
+          'issues',
+          :closed_at_timestamp,
+          :datetime_with_timezone,
+          limit: anything,
+          precision: anything,
+          scale: anything
+        )
+
+      expect(model)
+        .to receive(:install_rename_triggers)
+        .with('issues', :closed_at, :closed_at_timestamp)
+
+      expect(BackgroundMigrationWorker)
+        .to receive(:perform_in)
+        .ordered
+        .with(
+          10.minutes,
+          'CopyColumn',
+          ['issues', :closed_at, :closed_at_timestamp, issue.id, issue.id]
+        )
+
+      expect(BackgroundMigrationWorker)
+        .to receive(:perform_in)
+        .ordered
+        .with(
+          1.hour + 10.minutes,
+          'CleanupConcurrentRename',
+          ['issues', :closed_at, :closed_at_timestamp]
+        )
+
+      expect(Gitlab::BackgroundMigration)
+        .to receive(:steal)
+        .ordered
+        .with('CopyColumn')
+
+      expect(Gitlab::BackgroundMigration)
+        .to receive(:steal)
+        .ordered
+        .with('CleanupConcurrentRename')
+
+      model.rename_column_using_background_migration(
+        'issues',
+        :closed_at,
+        :closed_at_timestamp
+      )
+    end
+  end
+
   describe '#perform_background_migration_inline?' do
     it 'returns true in a test environment' do
       allow(Rails.env)
@@ -1123,6 +1334,35 @@ describe Gitlab::Database::MigrationHelpers do
         .and_return(false)
 
       expect(model.perform_background_migration_inline?).to eq(false)
+    end
+  end
+
+  describe '#index_exists_by_name?' do
+    it 'returns true if an index exists' do
+      expect(model.index_exists_by_name?(:projects, 'index_projects_on_path'))
+        .to be_truthy
+    end
+
+    it 'returns false if the index does not exist' do
+      expect(model.index_exists_by_name?(:projects, 'this_does_not_exist'))
+        .to be_falsy
+    end
+
+    context 'when an index with a function exists', :postgresql do
+      before do
+        ActiveRecord::Base.connection.execute(
+          'CREATE INDEX test_index ON projects (LOWER(path));'
+        )
+      end
+
+      after do
+        'DROP INDEX IF EXISTS test_index;'
+      end
+
+      it 'returns true if an index exists' do
+        expect(model.index_exists_by_name?(:projects, 'test_index'))
+          .to be_truthy
+      end
     end
   end
 end

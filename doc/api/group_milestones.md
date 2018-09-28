@@ -22,7 +22,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `iids[]` | Array[integer] | optional | Return only the milestones having the given `iid` |
-| `state` | string | optional | Return only `active` or `closed` milestones` |
+| `state` | string | optional | Return only `active` or `closed` milestones |
 | `search` | string | optional | Return only milestones with a title or description matching the provided string |
 
 ```bash
@@ -95,6 +95,19 @@ Parameters:
 - `due_date` (optional) - The due date of the milestone
 - `start_date` (optional) - The start date of the milestone
 - `state_event` (optional) - The state event of the milestone (close|activate)
+
+## Delete group milestone
+
+Only for user with developer access to the group.
+
+```
+DELETE /groups/:id/milestones/:milestone_id
+```
+
+Parameters:
+
+- `id` (required) - The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user
+- `milestone_id` (required) - The ID of the group's milestone
 
 ## Get all issues assigned to a single milestone
 

@@ -5,7 +5,7 @@ describe 'Project deploy keys', :js do
   let(:project) { create(:project_empty_repo) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 
@@ -18,12 +18,13 @@ describe 'Project deploy keys', :js do
       visit project_settings_repository_path(project)
 
       page.within(find('.deploy-keys')) do
-        expect(page).to have_selector('.deploy-keys li', count: 1)
+        expect(page).to have_selector('.deploy-key', count: 1)
 
-        accept_confirm { find(:button, text: 'Remove').send_keys(:return) }
+        accept_confirm { find('.ic-remove').click() }
 
-        expect(page).not_to have_selector('.fa-spinner', count: 0)
-        expect(page).to have_selector('.deploy-keys li', count: 0)
+        wait_for_requests
+
+        expect(page).to have_selector('.deploy-key', count: 0)
       end
     end
   end

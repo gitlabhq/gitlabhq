@@ -1,0 +1,17 @@
+# FIXME: git.info_for_file raises the following error
+# /usr/local/bundle/gems/git-1.4.0/lib/git/lib.rb:956:in `command':  (Danger::DSLError)
+# [!] Invalid `Dangerfile` file:
+# [!] Invalid `Dangerfile` file: git '--git-dir=/builds/gitlab-org/gitlab-ce/.git' '--work-tree=/builds/gitlab-org/gitlab-ce' cat-file '-t' ''  2>&1:fatal: Not a valid object name
+# This seems to be the same as https://github.com/danger/danger/issues/535.
+
+# locale_files_updated = git.modified_files.select { |path| path.start_with?('locale') }
+# locale_files_updated.each do |locale_file_updated|
+#   git_stats = git.info_for_file(locale_file_updated)
+#   message "Git stats for #{locale_file_updated}: #{git_stats[:insertions]} insertions, #{git_stats[:deletions]} insertions"
+# end
+
+if git.lines_of_code > 2_000
+  warn "This merge request is definitely too big (more than #{git.lines_of_code} lines changed), please split it into multiple merge requests."
+elsif git.lines_of_code > 500
+  warn "This merge request is quite big  (more than #{git.lines_of_code} lines changed), please consider splitting it into multiple merge requests."
+end

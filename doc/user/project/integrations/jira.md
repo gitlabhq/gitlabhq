@@ -49,7 +49,7 @@ We have split this stage in steps so it is easier to follow.
 
 1. The next step is to create a new user (e.g., `gitlab`) who has write access
    to projects in JIRA. Enter the user's name and a _valid_ e-mail address
-   since JIRA sends a verification e-mail to set-up the password.
+   since JIRA sends a verification e-mail to set up the password.
    _**Note:** JIRA creates the username automatically by using the e-mail
    prefix. You can change it later if you want._
 
@@ -92,15 +92,15 @@ password as they will be needed when configuring GitLab in the next section.
 
 ### Configuring GitLab
 
->**Notes:**
-- The currently supported JIRA versions are `v6.x` and `v7.x.`. GitLab 7.8 or
-  higher is required.
-- GitLab 8.14 introduced a new way to integrate with JIRA which greatly simplified
-  the configuration options you have to enter. If you are using an older version,
-  [follow this documentation][jira-repo-old-docs].
-- In order to support Oracle's Access Manager, GitLab will send additional cookies
-  to enable Basic Auth. The cookie being added to each request is `OBBasicAuth` with
-  a value of `fromDialog`.
+> **Notes:**
+> - The currently supported JIRA versions are `v6.x` and `v7.x.`. GitLab 7.8 or
+>   higher is required.
+> - GitLab 8.14 introduced a new way to integrate with JIRA which greatly simplified
+>   the configuration options you have to enter. If you are using an older version,
+>   [follow this documentation][jira-repo-old-docs].
+> - In order to support Oracle's Access Manager, GitLab will send additional cookies
+>   to enable Basic Auth. The cookie being added to each request is `OBBasicAuth` with
+>   a value of `fromDialog`.
 
 To enable JIRA integration in a project, navigate to the
 [Integrations page](project_services.md#accessing-the-project-services), click
@@ -111,9 +111,22 @@ in the table below.
 | ----- | ----------- |
 | `Web URL` | The base URL to the JIRA instance web interface which is being linked to this GitLab project. E.g., `https://jira.example.com`. |
 | `JIRA API URL` | The base URL to the JIRA instance API. Web URL value will be used if not set. E.g., `https://jira-api.example.com`. |
-| `Username` | The user name created in [configuring JIRA step](#configuring-jira). |
+| `Username` | The user name created in [configuring JIRA step](#configuring-jira). Using the email address will cause `401 unauthorized`. |
 | `Password` |The password of the user created in [configuring JIRA step](#configuring-jira). |
-| `Transition ID` | This is the ID of a transition that moves issues to a closed state. You can find this number under JIRA workflow administration ([see screenshot](img/jira_workflow_screenshot.png)). **Closing JIRA issues via commits or Merge Requests won't work if you don't set the ID correctly.** |
+| `Transition ID` | This is the ID of a transition that moves issues to the desired state. It is possible to insert transition ids separated by `,` or `;` which means the issue will be moved to each state after another using the given order.  **Closing JIRA issues via commits or Merge Requests won't work if you don't set the ID correctly.** |
+
+### Getting a transition ID
+
+In the most recent JIRA UI, you can no longer see transition IDs in the workflow
+administration UI. You can get the ID you need in either of the following ways:
+
+1. By using the API, with a request like `https://yourcompany.atlassian.net/rest/api/2/issue/ISSUE-123/transitions`
+   using an issue that is in the appropriate "open" state
+1. By mousing over the link for the transition you want and looking for the
+   "action" parameter in the URL
+
+Note that the transition ID may vary between workflows (e.g., bug vs. story),
+even if the status you are changing to is the same.
 
 After saving the configuration, your GitLab project will be able to interact
 with all JIRA projects in your JIRA instance and you'll see the JIRA link on the GitLab project pages that takes you to the appropriate JIRA project.
@@ -169,11 +182,11 @@ the same goal:
 
 where `PROJECT-1` is the issue ID of the JIRA project.
 
->**Note:**
-- Only commits and merges into the project's default branch (usually **master**) will
-  close an issue in Jira. You can change your projects default branch under
-  [project settings](img/jira_project_settings.png).
-- The JIRA issue will not be transitioned if it has a resolution.
+> **Notes:**
+> - Only commits and merges into the project's default branch (usually **master**) will
+>   close an issue in Jira. You can change your projects default branch under
+>   [project settings](img/jira_project_settings.png).
+> - The JIRA issue will not be transitioned if it has a resolution.
 
 ### JIRA issue closing example
 

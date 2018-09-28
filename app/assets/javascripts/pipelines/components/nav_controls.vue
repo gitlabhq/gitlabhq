@@ -1,59 +1,59 @@
 <script>
-  import LoadingButton from '../../vue_shared/components/loading_button.vue';
+import LoadingButton from '../../vue_shared/components/loading_button.vue';
 
-  export default {
-    name: 'PipelineNavControls',
-    components: {
-      LoadingButton,
+export default {
+  name: 'PipelineNavControls',
+  components: {
+    LoadingButton,
+  },
+  props: {
+    newPipelinePath: {
+      type: String,
+      required: false,
+      default: null,
     },
-    props: {
-      newPipelinePath: {
-        type: String,
-        required: false,
-        default: null,
-      },
 
-      resetCachePath: {
-        type: String,
-        required: false,
-        default: null,
-      },
-
-      ciLintPath: {
-        type: String,
-        required: false,
-        default: null,
-      },
-
-      isResetCacheButtonLoading: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
+    resetCachePath: {
+      type: String,
+      required: false,
+      default: null,
     },
-    methods: {
-      onClickResetCache() {
-        this.$emit('resetRunnersCache', this.resetCachePath);
-      },
+
+    ciLintPath: {
+      type: String,
+      required: false,
+      default: null,
     },
-  };
+
+    isResetCacheButtonLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+  methods: {
+    onClickResetCache() {
+      this.$emit('resetRunnersCache', this.resetCachePath);
+    },
+  },
+};
 </script>
 <template>
   <div class="nav-controls">
     <a
       v-if="newPipelinePath"
       :href="newPipelinePath"
-      class="btn btn-create js-run-pipeline"
+      class="btn btn-success js-run-pipeline"
     >
       {{ s__('Pipelines|Run Pipeline') }}
     </a>
 
     <loading-button
       v-if="resetCachePath"
-      @click="onClickResetCache"
       :loading="isResetCacheButtonLoading"
-      class="btn btn-default js-clear-cache"
       :label="s__('Pipelines|Clear Runner Caches')"
+      class="btn btn-default js-clear-cache"
+      @click="onClickResetCache"
     />
 
     <a

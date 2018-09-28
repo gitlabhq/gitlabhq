@@ -1,12 +1,13 @@
 #modal-shortcuts.modal{ tabindex: -1 }
-  .modal-dialog
+  .modal-dialog.modal-lg
     .modal-content
       .modal-header
-        %a.close{ href: "#", "data-dismiss" => "modal" } ×
-        %h4
+        %h4.modal-title
           Keyboard Shortcuts
           %small
             = link_to '(Show all)', '#', class: 'js-more-help-button'
+        %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
+          %span{ "aria-hidden": true } &times;
       .modal-body
         .row
           .col-lg-4
@@ -17,71 +18,71 @@
                   %th Global Shortcuts
                 %tr
                   %td.shortcut
-                    .key s
+                    %kbd s
                   %td Focus Search
                 %tr
                   %td.shortcut
-                    .key f
+                    %kbd f
                   %td Focus Filter
                 - if performance_bar_enabled?
                   %tr
                     %td.shortcut
-                      .key p b
+                      %kbd p b
                     %td Show/hide the Performance Bar
                 %tr
                   %td.shortcut
-                    .key ?
+                    %kbd ?
                   %td Show/hide this dialog
                 %tr
                   %td.shortcut
                     - if browser.platform.mac?
-                      .key &#8984; shift p
+                      %kbd &#8984; shift p
                     - else
-                      .key ctrl shift p
+                      %kbd ctrl shift p
                   %td Toggle Markdown preview
                 %tr
                   %td.shortcut
-                    .key
+                    %kbd
                       %i.fa.fa-arrow-up
                   %td Edit last comment (when focused on an empty textarea)
                 %tr
                   %td.shortcut
-                    .key shift t
+                    %kbd shift t
                   %td
                     Go to todos
                 %tr
                   %td.shortcut
-                    .key shift a
+                    %kbd shift a
                   %td
                     Go to the activity feed
                 %tr
                   %td.shortcut
-                    .key shift p
+                    %kbd shift p
                   %td
                     Go to projects
                 %tr
                   %td.shortcut
-                    .key shift i
+                    %kbd shift i
                   %td
                     Go to issues
                 %tr
                   %td.shortcut
-                    .key shift m
+                    %kbd shift m
                   %td
                     Go to merge requests
                 %tr
                   %td.shortcut
-                    .key shift g
+                    %kbd shift g
                   %td
                     Go to groups
                 %tr
                   %td.shortcut
-                    .key shift l
+                    %kbd shift l
                   %td
                     Go to milestones
                 %tr
                   %td.shortcut
-                    .key shift s
+                    %kbd shift s
                   %td
                     Go to snippets
               %tbody
@@ -90,21 +91,21 @@
                   %th Finding Project File
                 %tr
                   %td.shortcut
-                    .key
+                    %kbd
                       %i.fa.fa-arrow-up
                   %td Move selection up
                 %tr
                   %td.shortcut
-                    .key
+                    %kbd
                       %i.fa.fa-arrow-down
                   %td Move selection down
                 %tr
                   %td.shortcut
-                    .key enter
+                    %kbd enter
                   %td Open Selection
                 %tr
                   %td.shortcut
-                    .key esc
+                    %kbd esc
                   %td Go back
           .col-lg-4
             %table.shortcut-mappings
@@ -114,83 +115,101 @@
                   %th Project
                 %tr
                   %td.shortcut
-                    .key g
-                    .key p
+                    %kbd g
+                    %kbd p
                   %td
                     Go to the project's overview page
                 %tr
                   %td.shortcut
-                    .key g
-                    .key e
+                    %kbd g
+                    %kbd v
                   %td
                     Go to the project's activity feed
                 %tr
                   %td.shortcut
-                    .key g
-                    .key f
+                    %kbd g
+                    %kbd f
                   %td
                     Go to files
                 %tr
                   %td.shortcut
-                    .key g
-                    .key c
+                    %kbd g
+                    %kbd c
                   %td
                     Go to commits
                 %tr
                   %td.shortcut
-                    .key g
-                    .key j
+                    %kbd g
+                    %kbd j
                   %td
                     Go to jobs
                 %tr
                   %td.shortcut
-                    .key g
-                    .key n
+                    %kbd g
+                    %kbd n
                   %td
                     Go to network graph
                 %tr
                   %td.shortcut
-                    .key g
-                    .key d
+                    %kbd g
+                    %kbd d
                   %td
                     Go to repository charts
                 %tr
                   %td.shortcut
-                    .key g
-                    .key i
+                    %kbd g
+                    %kbd i
                   %td
                     Go to issues
                 %tr
                   %td.shortcut
-                    .key g
-                    .key b
+                    %kbd g
+                    %kbd b
                   %td
                     Go to issue boards
                 %tr
                   %td.shortcut
-                    .key g
-                    .key m
+                    %kbd g
+                    %kbd m
                   %td
                     Go to merge requests
                 %tr
                   %td.shortcut
-                    .key g
-                    .key s
+                    %kbd g
+                    %kbd e
+                  %td
+                    Go to environments
+                %tr
+                  %td.shortcut
+                    %kbd g
+                    %kbd l
+                  %td
+                    Go to metrics
+                %tr
+                  %td.shortcut
+                    %kbd g
+                    %kbd k
+                  %td
+                    Go to kubernetes
+                %tr
+                  %td.shortcut
+                    %kbd g
+                    %kbd s
                   %td
                     Go to snippets
                 %tr
                   %td.shortcut
-                    .key g
-                    .key w
+                    %kbd g
+                    %kbd w
                   %td
                     Go to wiki
                 %tr
                   %td.shortcut
-                    .key t
+                    %kbd t
                   %td Go to finding file
                 %tr
                   %td.shortcut
-                    .key i
+                    %kbd i
                   %td New issue
 
               %tbody
@@ -199,17 +218,17 @@
                   %th Project Files browsing
                 %tr
                   %td.shortcut
-                    .key
+                    %kbd
                       %i.fa.fa-arrow-up
                   %td Move selection up
                 %tr
                   %td.shortcut
-                    .key
+                    %kbd
                       %i.fa.fa-arrow-down
                   %td Move selection down
                 %tr
                   %td.shortcut
-                    .key enter
+                    %kbd enter
                   %td Open Selection
               %tbody
                 %tr
@@ -217,113 +236,124 @@
                   %th Project File
                 %tr
                   %td.shortcut
-                    .key y
+                    %kbd y
                   %td Go to file permalink
+              %tbody
+                %tr
+                  %th
+                  %th Web IDE
+                %tr
+                  %td.shortcut
+                    - if browser.platform.mac?
+                      %kbd &#8984; p
+                    - else
+                      %kbd ctrl p
+                  %td Go to file
           .col-lg-4
             %table.shortcut-mappings
-              %tbody.hidden-shortcut.network{ style: 'display:none' }
+              %tbody.hidden-shortcut{ style: 'display:none' }
                 %tr
                   %th
                   %th Network Graph
                 %tr
                   %td.shortcut
-                    .key
+                    %kbd
                       %i.fa.fa-arrow-left
                     \/
-                    .key h
+                    %kbd h
                   %td Scroll left
                 %tr
                   %td.shortcut
-                    .key
+                    %kbd
                       %i.fa.fa-arrow-right
                     \/
-                    .key l
+                    %kbd l
                   %td Scroll right
                 %tr
                   %td.shortcut
-                    .key
+                    %kbd
                       %i.fa.fa-arrow-up
                     \/
-                    .key k
+                    %kbd k
                   %td Scroll up
                 %tr
                   %td.shortcut
-                    .key
+                    %kbd
                       %i.fa.fa-arrow-down
                     \/
-                    .key j
+                    %kbd j
                   %td Scroll down
                 %tr
                   %td.shortcut
-                    .key
+                    %kbd
                       shift
                       %i.fa.fa-arrow-up
                     \/
-                    .key
+                    %kbd
                       shift k
                   %td Scroll to top
                 %tr
                   %td.shortcut
-                    .key
+                    %kbd
                       shift
                       %i.fa.fa-arrow-down
                     \/
-                    .key
+                    %kbd
                       shift j
                   %td Scroll to bottom
-              %tbody.hidden-shortcut.issues{ style: 'display:none' }
+              %tbody.hidden-shortcut{ style: 'display:none' }
                 %tr
                   %th
                   %th Issues
                 %tr
                   %td.shortcut
-                    .key a
+                    %kbd a
                   %td Change assignee
                 %tr
                   %td.shortcut
-                    .key m
+                    %kbd m
                   %td Change milestone
                 %tr
                   %td.shortcut
-                    .key r
+                    %kbd r
                   %td Reply (quoting selected text)
                 %tr
                   %td.shortcut
-                    .key e
+                    %kbd e
                   %td Edit issue
                 %tr
                   %td.shortcut
-                    .key l
+                    %kbd l
                   %td Change Label
-              %tbody.hidden-shortcut.merge_requests{ style: 'display:none' }
+              %tbody.hidden-shortcut{ style: 'display:none' }
                 %tr
                   %th
                   %th Merge Requests
                 %tr
                   %td.shortcut
-                    .key a
+                    %kbd a
                   %td Change assignee
                 %tr
                   %td.shortcut
-                    .key m
+                    %kbd m
                   %td Change milestone
                 %tr
                   %td.shortcut
-                    .key r
+                    %kbd r
                   %td Reply (quoting selected text)
                 %tr
                   %td.shortcut
-                    .key e
+                    %kbd e
                   %td Edit merge request
                 %tr
                   %td.shortcut
-                    .key l
+                    %kbd l
                   %td Change Label
-              %tbody.hidden-shortcut.wiki{ style: 'display:none' }
+              %tbody.hidden-shortcut{ style: 'display:none' }
                 %tr
                   %th
                   %th Wiki pages
                 %tr
                   %td.shortcut
-                    .key e
+                    %kbd e
                   %td Edit wiki page

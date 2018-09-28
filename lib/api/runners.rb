@@ -9,12 +9,20 @@ module API
         success Entities::Runner
       end
       params do
-        optional :scope, type: String, values: %w[active paused online],
+        optional :scope, type: String, values: Ci::Runner::AVAILABLE_STATUSES,
                          desc: 'The scope of specific runners to show'
+        optional :type, type: String, values: Ci::Runner::AVAILABLE_TYPES,
+                        desc: 'The type of the runners to show'
+        optional :status, type: String, values: Ci::Runner::AVAILABLE_STATUSES,
+                          desc: 'The status of the runners to show'
         use :pagination
       end
       get do
-        runners = filter_runners(current_user.ci_authorized_runners, params[:scope], without: %w(specific shared))
+        runners = current_user.ci_owned_runners
+        runners = filter_runners(runners, params[:scope], allowed_scopes: Ci::Runner::AVAILABLE_STATUSES)
+        runners = filter_runners(runners, params[:type], allowed_scopes: Ci::Runner::AVAILABLE_TYPES)
+        runners = filter_runners(runners, params[:status], allowed_scopes: Ci::Runner::AVAILABLE_STATUSES)
+
         present paginate(runners), with: Entities::Runner
       end
 
@@ -22,13 +30,22 @@ module API
         success Entities::Runner
       end
       params do
-        optional :scope, type: String, values: %w[active paused online specific shared],
+        optional :scope, type: String, values: Ci::Runner::AVAILABLE_SCOPES,
                          desc: 'The scope of specific runners to show'
+        optional :type, type: String, values: Ci::Runner::AVAILABLE_TYPES,
+                        desc: 'The type of the runners to show'
+        optional :status, type: String, values: Ci::Runner::AVAILABLE_STATUSES,
+                          desc: 'The status of the runners to show'
         use :pagination
       end
       get 'all' do
         authenticated_as_admin!
-        runners = filter_runners(Ci::Runner.all, params[:scope])
+
+        runners = Ci::Runner.all
+        runners = filter_runners(runners, params[:scope])
+        runners = filter_runners(runners, params[:type], allowed_scopes: Ci::Runner::AVAILABLE_TYPES)
+        runners = filter_runners(runners, params[:status], allowed_scopes: Ci::Runner::AVAILABLE_STATUSES)
+
         present paginate(runners), with: Entities::Runner
       end
 
@@ -57,7 +74,8 @@ module API
         optional :locked, type: Boolean, desc: 'Flag indicating the runner is locked'
         optional :access_level, type: String, values: Ci::Runner.access_levels.keys,
                                 desc: 'The access_level of the runner'
-        at_least_one_of :description, :active, :tag_list, :run_untagged, :locked, :access_level
+        optional :maximum_timeout, type: Integer, desc: 'Maximum timeout set when this Runner will handle the job'
+        at_least_one_of :description, :active, :tag_list, :run_untagged, :locked, :access_level, :maximum_timeout
       end
       put ':id' do
         runner = get_runner(params.delete(:id))
@@ -113,12 +131,20 @@ module API
         success Entities::Runner
       end
       params do
-        optional :scope, type: String, values: %w[active paused online specific shared],
+        optional :scope, type: String, values: Ci::Runner::AVAILABLE_SCOPES,
                          desc: 'The scope of specific runners to show'
+        optional :type, type: String, values: Ci::Runner::AVAILABLE_TYPES,
+                        desc: 'The type of the runners to show'
+        optional :status, type: String, values: Ci::Runner::AVAILABLE_STATUSES,
+                          desc: 'The status of the runners to show'
         use :pagination
       end
       get ':id/runners' do
-        runners = filter_runners(Ci::Runner.owned_or_shared(user_project.id), params[:scope])
+        runners = Ci::Runner.owned_or_instance_wide(user_project.id)
+        runners = filter_runners(runners, params[:scope])
+        runners = filter_runners(runners, params[:type], allowed_scopes: Ci::Runner::AVAILABLE_TYPES)
+        runners = filter_runners(runners, params[:status], allowed_scopes: Ci::Runner::AVAILABLE_STATUSES)
+
         present paginate(runners), with: Entities::Runner
       end
 
@@ -132,12 +158,10 @@ module API
         runner = get_runner(params[:runner_id])
         authenticate_enable_runner!(runner)
 
-        runner_project = runner.assign_to(user_project)
-
-        if runner_project.persisted?
+        if runner.assign_to(user_project)
           present runner, with: Entities::Runner
         else
-          conflict!("Runner was already enabled for this project")
+          render_validation_error!(runner)
         end
       end
 
@@ -147,6 +171,7 @@ module API
       params do
         requires :runner_id, type: Integer, desc: 'The ID of the runner'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       delete ':id/runners/:runner_id' do
         runner_project = user_project.runner_projects.find_by(runner_id: params[:runner_id])
         not_found!('Runner') unless runner_project
@@ -156,19 +181,20 @@ module API
 
         destroy_conditionally!(runner_project)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     helpers do
-      def filter_runners(runners, scope, options = {})
+      def filter_runners(runners, scope, allowed_scopes: ::Ci::Runner::AVAILABLE_SCOPES)
         return runners unless scope.present?
 
-        available_scopes = ::Ci::Runner::AVAILABLE_SCOPES
-        if options[:without]
-          available_scopes = available_scopes - options[:without]
+        unless allowed_scopes.include?(scope)
+          render_api_error!('Scope contains invalid value', 400)
         end
 
-        if (available_scopes & [scope]).empty?
-          render_api_error!('Scope contains invalid value', 400)
+        # Support deprecated scopes
+        if runners.respond_to?("deprecated_#{scope}")
+          scope = "deprecated_#{scope}"
         end
 
         runners.public_send(scope) # rubocop:disable GitlabSecurity/PublicSend
@@ -181,42 +207,37 @@ module API
       end
 
       def authenticate_show_runner!(runner)
-        return if runner.is_shared || current_user.admin?
+        return if runner.instance_type? || current_user.admin?
 
-        forbidden!("No access granted") unless user_can_access_runner?(runner)
+        forbidden!("No access granted") unless can?(current_user, :read_runner, runner)
       end
 
       def authenticate_update_runner!(runner)
         return if current_user.admin?
 
-        forbidden!("Runner is shared") if runner.is_shared?
-        forbidden!("No access granted") unless user_can_access_runner?(runner)
+        forbidden!("No access granted") unless can?(current_user, :update_runner, runner)
       end
 
       def authenticate_delete_runner!(runner)
         return if current_user.admin?
 
-        forbidden!("Runner is shared") if runner.is_shared?
         forbidden!("Runner associated with more than one project") if runner.projects.count > 1
-        forbidden!("No access granted") unless user_can_access_runner?(runner)
+        forbidden!("No access granted") unless can?(current_user, :delete_runner, runner)
       end
 
       def authenticate_enable_runner!(runner)
-        forbidden!("Runner is shared") if runner.is_shared?
-        forbidden!("Runner is locked") if runner.locked?
+        forbidden!("Runner is a group runner") if runner.group_type?
+
         return if current_user.admin?
 
-        forbidden!("No access granted") unless user_can_access_runner?(runner)
+        forbidden!("Runner is locked") if runner.locked?
+        forbidden!("No access granted") unless can?(current_user, :assign_runner, runner)
       end
 
       def authenticate_list_runners_jobs!(runner)
         return if current_user.admin?
 
-        forbidden!("No access granted") unless user_can_access_runner?(runner)
-      end
-
-      def user_can_access_runner?(runner)
-        current_user.ci_authorized_runners.exists?(runner.id)
+        forbidden!("No access granted") unless can?(current_user, :read_runner, runner)
       end
     end
   end

@@ -46,8 +46,9 @@ linters:
   # - properties
   # - @include declarations with inner @content
   # - nested rule sets.
+  # Disabled to minimize Bootstrap migration footprint
   DeclarationOrder:
-    enabled: true
+    enabled: false
 
   # `scss-lint:disable` control comments should be preceded by a comment
   # explaining why these linters are being disabled for this file.
@@ -59,6 +60,8 @@ linters:
   # Reports when you define the same property twice in a single rule set.
   DuplicateProperty:
     enabled: true
+    ignore_consecutive:
+      - cursor
 
   # Separate rule, function, and mixin declarations with empty lines.
   EmptyLineBetweenBlocks:

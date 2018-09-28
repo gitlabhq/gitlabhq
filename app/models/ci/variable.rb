@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class Variable < ActiveRecord::Base
     extend Gitlab::Ci::Model
@@ -5,6 +7,8 @@ module Ci
     include Presentable
 
     belongs_to :project
+
+    alias_attribute :secret_value, :value
 
     validates :key, uniqueness: {
       scope: [:project_id, :environment_scope],

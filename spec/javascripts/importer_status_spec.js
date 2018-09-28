@@ -45,7 +45,25 @@ describe('Importer Status', () => {
         currentTarget: document.querySelector('.js-add-to-import'),
       })
       .then(() => {
-        expect(document.querySelector('tr').classList.contains('active')).toEqual(true);
+        expect(document.querySelector('tr').classList.contains('table-active')).toEqual(true);
+        done();
+      })
+      .catch(done.fail);
+    });
+
+    it('shows error message after failed POST request', (done) => {
+      appendSetFixtures('<div class="flash-container"></div>');
+
+      mock.onPost(importUrl).reply(422, {
+        errors: 'You forgot your lunch',
+      });
+
+      instance.addToImport({
+        currentTarget: document.querySelector('.js-add-to-import'),
+      })
+      .then(() => {
+        const flashMessage = document.querySelector('.flash-text');
+        expect(flashMessage.textContent.trim()).toEqual('An error occurred while importing project: You forgot your lunch');
         done();
       })
       .catch(done.fail);

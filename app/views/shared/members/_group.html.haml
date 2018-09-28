@@ -5,16 +5,16 @@
 %li.member.group_member{ id: dom_id }
   %span.list-item-name
     = group_icon(group, class: "avatar s40", alt: '')
-    %strong
-      = link_to group.full_name, group_path(group)
-    .cgray
-      Joined #{time_ago_with_tooltip(group.created_at)}
-      - if group_link.expires?
-        ·
-        %span{ class: ('text-warning' if group_link.expires_soon?) }
-          Expires in #{distance_of_time_in_words_to_now(group_link.expires_at)}
+    .user-info
+      = link_to group.full_name, group_path(group), class: 'member'
+      .cgray
+        Given access #{time_ago_with_tooltip(group_link.created_at)}
+        - if group_link.expires?
+          ·
+          %span{ class: ('text-warning' if group_link.expires_soon?) }
+            Expires in #{distance_of_time_in_words_to_now(group_link.expires_at)}
   .controls.member-controls
-    = form_tag project_group_link_path(@project, group_link), method: :put, remote: true, class: 'form-horizontal js-edit-member-form' do
+    = form_tag project_group_link_path(@project, group_link), method: :put, remote: true, class: 'js-edit-member-form form-group row append-right-5' do
       = hidden_field_tag "group_link[group_access]", group_link.group_access
       .member-form-control.dropdown.append-right-5
         %button.dropdown-menu-toggle.js-member-permissions-dropdown{ type: "button",
@@ -23,7 +23,7 @@
           %span.dropdown-toggle-text
             = group_link.human_access
           = icon("chevron-down")
-        .dropdown-menu.dropdown-select.dropdown-menu-align-right.dropdown-menu-selectable
+        .dropdown-menu.dropdown-select.dropdown-menu-right.dropdown-menu-selectable
           = dropdown_title("Change permissions")
           .dropdown-content
             %ul
@@ -40,6 +40,6 @@
         method: :delete,
         data: { confirm: "Are you sure you want to remove #{group.name}?" },
         class: 'btn btn-remove prepend-left-10' do
-        %span.visible-xs-block
+        %span.d-block.d-sm-none
           Delete
-        = icon('trash', class: 'hidden-xs')
+        = icon('trash', class: 'd-none d-sm-block')

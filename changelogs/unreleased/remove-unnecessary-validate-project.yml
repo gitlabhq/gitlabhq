@@ -1,5 +1,0 @@
----
-title: 'Remove unecessary validate: true from belongs_to :project'
-merge_request:
-author:
-type: fixed

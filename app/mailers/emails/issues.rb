@@ -1,6 +1,14 @@
+# frozen_string_literal: true
+
 module Emails
   module Issues
     def new_issue_email(recipient_id, issue_id, reason = nil)
+      setup_issue_mail(issue_id, recipient_id)
+
+      mail_new_thread(@issue, issue_thread_options(@issue.author_id, recipient_id, reason))
+    end
+
+    def issue_due_email(recipient_id, issue_id, reason = nil)
       setup_issue_mail(issue_id, recipient_id)
 
       mail_new_thread(@issue, issue_thread_options(@issue.author_id, recipient_id, reason))
@@ -11,6 +19,7 @@ module Emails
       mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, recipient_id, reason))
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def reassigned_issue_email(recipient_id, issue_id, previous_assignee_ids, updated_by_user_id, reason = nil)
       setup_issue_mail(issue_id, recipient_id)
 
@@ -19,6 +28,7 @@ module Emails
 
       mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, recipient_id, reason))
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def closed_issue_email(recipient_id, issue_id, updated_by_user_id, reason = nil)
       setup_issue_mail(issue_id, recipient_id)

@@ -1,9 +1,9 @@
 .prepend-top-default
-  .panel.panel-default
-    .panel-heading
+  .card
+    .card-header
       %strong
         = t('sherlock.general')
-    %ul.well-list
+    %ul.content-list
       %li
         %span.light
           #{t('sherlock.time')}:
@@ -23,31 +23,31 @@
           = t('sherlock.line')
           = frame.line
 
-  .panel.panel-default
-    .panel-heading
-      .pull-right
-        %button.js-clipboard-trigger.btn.btn-xs{ title: t('sherlock.copy_to_clipboard'), type: :button }
-          %i.fa.fa-clipboard
+  .card
+    .card-header
+      .float-right
+        %button.js-clipboard-trigger.btn.btn-sm{ title: t('sherlock.copy_to_clipboard'), type: :button }
+          = sprite_icon('duplicate')
         %pre.hidden
           = @query.formatted_query
       %strong
         = t('sherlock.query')
-    %ul.well-list
+    %ul.content-list
       %li
         .code.js-syntax-highlight.sherlock-code
           :preserve
             #{highlight("#{@query.id}.sql", @query.formatted_query)}
 
-  .panel.panel-default
-    .panel-heading
-      .pull-right
-        %button.js-clipboard-trigger.btn.btn-xs{ title: t('sherlock.copy_to_clipboard'), type: :button }
-          %i.fa.fa-clipboard
+  .card
+    .card-header
+      .float-right
+        %button.js-clipboard-trigger.btn.btn-sm{ title: t('sherlock.copy_to_clipboard'), type: :button }
+          = sprite_icon('duplicate')
         %pre.hidden
           = @query.explain
       %strong
         = t('sherlock.query_plan')
-    %ul.well-list
+    %ul.content-list
       %li
         .code.js-syntax-highlight.sherlock-code
           %pre

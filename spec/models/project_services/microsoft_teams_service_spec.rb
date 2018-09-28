@@ -30,7 +30,7 @@ describe MicrosoftTeamsService do
 
   describe "#execute" do
     let(:user)    { create(:user) }
-    let(:project) { create(:project, :repository) }
+    set(:project) { create(:project, :repository, :wiki_repo) }
 
     before do
       allow(chat_service).to receive_messages(
@@ -225,10 +225,15 @@ describe MicrosoftTeamsService do
 
       it 'calls Microsoft Teams API for pipeline events' do
         data = Gitlab::DataBuilder::Pipeline.build(pipeline)
+        data[:markdown] = true
 
         chat_service.execute(data)
 
-        expect(WebMock).to have_requested(:post, webhook_url).once
+        message = ChatMessage::PipelineMessage.new(data)
+
+        expect(WebMock).to have_requested(:post, webhook_url)
+          .with(body: hash_including({ summary: message.summary }))
+          .once
       end
     end
 

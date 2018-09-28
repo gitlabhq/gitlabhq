@@ -1,7 +1,11 @@
+# frozen_string_literal: true
+
 class CommitStatus < ActiveRecord::Base
   include HasStatus
   include Importable
   include AfterCommitQueue
+  include Presentable
+  include EnumWithNil
 
   self.table_name = 'ci_builds'
 
@@ -38,13 +42,14 @@ class CommitStatus < ActiveRecord::Base
   scope :retried_ordered, -> { retried.ordered.includes(project: :namespace) }
   scope :after_stage, -> (index) { where('stage_idx > ?', index) }
 
-  enum failure_reason: {
+  enum_with_nil failure_reason: {
     unknown_failure: nil,
     script_failure: 1,
     api_failure: 2,
     stuck_or_timeout_failure: 3,
     runner_system_failure: 4,
-    missing_dependency_failure: 5
+    missing_dependency_failure: 5,
+    runner_unsupported: 6
   }
 
   ##
@@ -53,9 +58,11 @@ class CommitStatus < ActiveRecord::Base
   # These are pages deployments and external statuses.
   #
   before_create unless: :importing? do
+    # rubocop: disable CodeReuse/ServiceClass
     Ci::EnsureStageService.new(project, user).execute(self) do |stage|
       self.run_after_commit { StageUpdateWorker.perform_async(stage.id) }
     end
+    # rubocop: enable CodeReuse/ServiceClass
   end
 
   state_machine :status do
@@ -87,7 +94,7 @@ class CommitStatus < ActiveRecord::Base
       transition [:created, :pending, :running, :manual] => :canceled
     end
 
-    before_transition created: [:pending, :running] do |commit_status|
+    before_transition [:created, :skipped, :manual] => :pending do |commit_status|
       commit_status.queued_at = Time.now
     end
 
@@ -125,10 +132,12 @@ class CommitStatus < ActiveRecord::Base
     after_transition any => :failed do |commit_status|
       next unless commit_status.project
 
+      # rubocop: disable CodeReuse/ServiceClass
       commit_status.run_after_commit do
         MergeRequests::AddTodoWhenBuildFailsService
           .new(project, nil).execute(self)
       end
+      # rubocop: enable CodeReuse/ServiceClass
     end
   end
 
@@ -141,7 +150,7 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def group_name
-    name.to_s.gsub(%r{\d+[\.\s:/\\]+\d+\s*}, '').strip
+    name.to_s.gsub(%r{\d+[\s:/\\]+\d+\s*}, '').strip
   end
 
   def failed_but_allowed?

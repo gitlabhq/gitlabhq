@@ -1,12 +1,12 @@
 import Vue from 'vue';
-import authorTimeComponent from '~/vue_merge_request_widget/components/mr_widget_author_time.vue';
+import MrWidgetAuthorTime from '~/vue_merge_request_widget/components/mr_widget_author_time.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
-describe('MRWidgetAuthorTime', () => {
+describe('MrWidgetAuthorTime', () => {
   let vm;
 
   beforeEach(() => {
-    const Component = Vue.extend(authorTimeComponent);
+    const Component = Vue.extend(MrWidgetAuthorTime);
 
     vm = mountComponent(Component, {
       actionText: 'Merged by',
@@ -34,7 +34,7 @@ describe('MRWidgetAuthorTime', () => {
   });
 
   it('renders provided time', () => {
-    expect(vm.$el.querySelector('time').getAttribute('title')).toEqual('2017-03-23T23:02:00.807Z');
+    expect(vm.$el.querySelector('time').getAttribute('data-original-title')).toEqual('2017-03-23T23:02:00.807Z');
     expect(vm.$el.querySelector('time').textContent.trim()).toEqual('12 hours ago');
   });
 });

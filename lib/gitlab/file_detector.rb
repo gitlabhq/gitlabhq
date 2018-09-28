@@ -8,12 +8,13 @@ module Gitlab
       # Project files
       readme: %r{\Areadme[^/]*\z}i,
       changelog: %r{\A(changelog|history|changes|news)[^/]*\z}i,
-      license: %r{\A(licen[sc]e|copying)(\.[^/]+)?\z}i,
+      license: %r{\A((un)?licen[sc]e|copying)(\.[^/]+)?\z}i,
       contributing: %r{\Acontributing[^/]*\z}i,
       version: 'version',
       avatar: /\Alogo\.(png|jpg|gif)\z/,
       issue_template: %r{\A\.gitlab/issue_templates/[^/]+\.md\z},
       merge_request_template: %r{\A\.gitlab/merge_request_templates/[^/]+\.md\z},
+      xcode_config: %r{\A[^/]*\.(xcodeproj|xcworkspace)(/.+)?\z},
 
       # Configuration files
       gitignore: '.gitignore',

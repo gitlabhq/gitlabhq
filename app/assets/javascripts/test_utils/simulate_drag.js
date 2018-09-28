@@ -38,14 +38,14 @@ function simulateEvent(el, type, options = {}) {
 
 function isLast(target) {
   const el = typeof target.el === 'string' ? document.getElementById(target.el.substr(1)) : target.el;
-  const children = el.children;
+  const { children } = el;
 
   return children.length - 1 === target.index;
 }
 
 function getTarget(target) {
   const el = typeof target.el === 'string' ? document.getElementById(target.el.substr(1)) : target.el;
-  const children = el.children;
+  const { children } = el;
 
   return (
     children[target.index] ||

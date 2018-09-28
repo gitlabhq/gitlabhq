@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IssueEntity < IssuableEntity
   include TimeTrackableEntity
 
@@ -28,6 +30,10 @@ class IssueEntity < IssuableEntity
 
     expose :can_update do |issue|
       can?(request.current_user, :update_issue, issue)
+    end
+
+    expose :can_award_emoji do |issue|
+      can?(request.current_user, :award_emoji, issue)
     end
   end
 

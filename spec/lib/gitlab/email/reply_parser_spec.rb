@@ -3,8 +3,8 @@ require "spec_helper"
 # Inspired in great part by Discourse's Email::Receiver
 describe Gitlab::Email::ReplyParser do
   describe '#execute' do
-    def test_parse_body(mail_string)
-      described_class.new(Mail::Message.new(mail_string)).execute
+    def test_parse_body(mail_string, params = {})
+      described_class.new(Mail::Message.new(mail_string), params).execute
     end
 
     it "returns an empty string if the message is blank" do
@@ -211,6 +211,20 @@ describe Gitlab::Email::ReplyParser do
 
     it "does not wrap links with no href in unnecessary brackets" do
       expect(test_parse_body(fixture_file("emails/html_empty_link.eml"))).to eq("no brackets!")
+    end
+
+    it "does not trim reply if trim_reply option is false" do
+      expect(test_parse_body(fixture_file("emails/valid_new_issue_with_quote.eml"), { trim_reply: false }))
+        .to eq(
+          <<-BODY.strip_heredoc.chomp
+          The reply by email functionality should be extended to allow creating a new issue by email.
+          even when the email is forwarded to the project which may include lines that begin with ">"
+
+          there should be a quote below this line:
+
+          > this is a quote
+          BODY
+        )
     end
   end
 end

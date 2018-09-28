@@ -1,11 +1,13 @@
 <script>
-  import { __, n__, sprintf } from '../../../locale';
-  import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
-  import userAvatarImage from '../../../vue_shared/components/user_avatar/user_avatar_image.vue';
+  import { __, n__, sprintf } from '~/locale';
+  import tooltip from '~/vue_shared/directives/tooltip';
+  import userAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 
   export default {
+    directives: {
+      tooltip,
+    },
     components: {
-      loadingIcon,
       userAvatarImage,
     },
     props: {
@@ -66,19 +68,30 @@
       toggleMoreParticipants() {
         this.isShowingMoreParticipants = !this.isShowingMoreParticipants;
       },
+      onClickCollapsedIcon() {
+        this.$emit('toggleSidebar');
+      },
     },
   };
 </script>
 
 <template>
   <div>
-    <div class="sidebar-collapsed-icon">
+    <div
+      v-tooltip
+      :title="participantLabel"
+      class="sidebar-collapsed-icon"
+      data-container="body"
+      data-placement="left"
+      data-boundary="viewport"
+      @click="onClickCollapsedIcon"
+    >
       <i
         class="fa fa-users"
         aria-hidden="true"
       >
       </i>
-      <loading-icon
+      <gl-loading-icon
         v-if="loading"
         class="js-participants-collapsed-loading-icon"
       />
@@ -90,7 +103,7 @@
       </span>
     </div>
     <div class="title hide-collapsed">
-      <loading-icon
+      <gl-loading-icon
         v-if="loading"
         :inline="true"
         class="js-participants-expanded-loading-icon"
@@ -104,15 +117,15 @@
         class="participants-author js-participants-author"
       >
         <a
-          class="author_link"
           :href="participant.web_url"
+          class="author-link"
         >
           <user-avatar-image
             :lazy="true"
             :img-src="participant.avatar_url"
-            css-classes="avatar-inline"
             :size="24"
             :tooltip-text="participant.name"
+            css-classes="avatar-inline"
             tooltip-placement="bottom"
           />
         </a>

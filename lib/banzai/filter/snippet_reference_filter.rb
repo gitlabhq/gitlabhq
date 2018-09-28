@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module Filter
     # HTML filter that replaces snippet references with links. References to
@@ -12,6 +14,8 @@ module Banzai
       end
 
       def find_object(project, id)
+        return unless project.is_a?(Project)
+
         project.snippets.find_by(id: id)
       end
 

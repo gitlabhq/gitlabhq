@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Notify < BaseMailer
   include ActionDispatch::Routing::PolymorphicRoutes
   include GitlabRoutingHelper
@@ -10,12 +12,14 @@ class Notify < BaseMailer
   include Emails::Profile
   include Emails::Pipelines
   include Emails::Members
+  include Emails::AutoDevops
 
   helper MergeRequestsHelper
   helper DiffHelper
   helper BlobHelper
   helper EmailsHelper
   helper MembersHelper
+  helper AvatarsHelper
   helper GitlabRoutingHelper
 
   def test_email(recipient_email, subject, body)
@@ -91,11 +95,14 @@ class Notify < BaseMailer
   #   >> subject('Lorem ipsum', 'Dolor sit amet')
   #   => "Lorem ipsum | Dolor sit amet"
   def subject(*extra)
-    subject = ""
-    subject << "#{@project.name} | " if @project
-    subject << extra.join(' | ') if extra.present?
-    subject << " | #{Gitlab.config.gitlab.email_subject_suffix}" if Gitlab.config.gitlab.email_subject_suffix.present?
-    subject
+    subject = []
+
+    subject << @project.name if @project
+    subject << @group.name if @group
+    subject.concat(extra) if extra.present?
+    subject << Gitlab.config.gitlab.email_subject_suffix if Gitlab.config.gitlab.email_subject_suffix.present?
+
+    subject.join(' | ')
   end
 
   # Return a string suitable for inclusion in the 'Message-Id' mail header.
@@ -116,19 +123,23 @@ class Notify < BaseMailer
     @reason = headers['X-GitLab-NotificationReason']
 
     if Gitlab::IncomingEmail.enabled? && @sent_notification
-      address = Mail::Address.new(Gitlab::IncomingEmail.reply_address(reply_key))
-      address.display_name = @project.full_name
-
-      headers['Reply-To'] = address
+      headers['Reply-To'] = Mail::Address.new(Gitlab::IncomingEmail.reply_address(reply_key)).tap do |address|
+        address.display_name = reply_display_name(model)
+      end
 
       fallback_reply_message_id = "<reply-#{reply_key}@#{Gitlab.config.gitlab.host}>".freeze
       headers['References'] ||= []
-      headers['References'] << fallback_reply_message_id
+      headers['References'].unshift(fallback_reply_message_id)
 
       @reply_by_email = true
     end
 
     mail(headers)
+  end
+
+  # `model` is used on EE code
+  def reply_display_name(_model)
+    @project.full_name
   end
 
   # Send an email that starts a new conversation thread,
@@ -152,7 +163,7 @@ class Notify < BaseMailer
   def mail_answer_thread(model, headers = {})
     headers['Message-ID'] = "<#{SecureRandom.hex}@#{Gitlab.config.gitlab.host}>"
     headers['In-Reply-To'] = message_id(model)
-    headers['References'] = message_id(model)
+    headers['References'] = [message_id(model)]
 
     headers[:subject]&.prepend('Re: ')
 

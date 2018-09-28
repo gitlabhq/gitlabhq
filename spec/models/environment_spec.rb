@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Environment do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :stubbed_repository) }
   subject(:environment) { create(:environment, project: project) }
 
   it { is_expected.to belong_to(:project) }
@@ -170,8 +170,8 @@ describe Environment do
     end
   end
 
-  describe '#stop_action?' do
-    subject { environment.stop_action? }
+  describe '#stop_action_available?' do
+    subject { environment.stop_action_available? }
 
     context 'when no other actions' do
       it { is_expected.to be_falsey }
@@ -179,8 +179,17 @@ describe Environment do
 
     context 'when matching action is defined' do
       let(:build) { create(:ci_build) }
-      let!(:deployment) { create(:deployment, environment: environment, deployable: build, on_stop: 'close_app') }
-      let!(:close_action) { create(:ci_build, :manual, pipeline: build.pipeline, name: 'close_app') }
+
+      let!(:deployment) do
+        create(:deployment, environment: environment,
+                            deployable: build,
+                            on_stop: 'close_app')
+      end
+
+      let!(:close_action) do
+        create(:ci_build, :manual, pipeline: build.pipeline,
+                                   name: 'close_app')
+      end
 
       context 'when environment is available' do
         before do
@@ -201,7 +210,7 @@ describe Environment do
   end
 
   describe '#stop_with_action!' do
-    let(:user) { create(:admin) }
+    let(:user) { create(:user) }
 
     subject { environment.stop_with_action!(user) }
 
@@ -365,6 +374,32 @@ describe Environment do
       end
 
       it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '#deployment_platform' do
+    context 'when there is a deployment platform for environment' do
+      let!(:cluster) do
+        create(:cluster, :provided_by_gcp,
+               environment_scope: '*', projects: [project])
+      end
+
+      it 'finds a deployment platform' do
+        expect(environment.deployment_platform).to eq cluster.platform
+      end
+    end
+
+    context 'when there is no deployment platform for environment' do
+      it 'returns nil' do
+        expect(environment.deployment_platform).to be_nil
+      end
+    end
+
+    it 'checks deployment platforms associated with a project' do
+      expect(project).to receive(:deployment_platform)
+        .with(environment: environment.name)
+
+      environment.deployment_platform
     end
   end
 
@@ -536,7 +571,7 @@ describe Environment do
 
     it "is not regenerated if name changes" do
       original_slug = environment.slug
-      environment.update_attributes!(name: environment.name.reverse)
+      environment.update!(name: environment.name.reverse)
 
       expect(environment.slug).to eq(original_slug)
     end

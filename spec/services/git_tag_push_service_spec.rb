@@ -118,7 +118,9 @@ describe GitTagPushService do
 
       before do
         # Create the lightweight tag
-        project.repository.raw_repository.rugged.tags.create(tag_name, newrev)
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          project.repository.raw_repository.rugged.tags.create(tag_name, newrev)
+        end
 
         # Clear tag list cache
         project.repository.expire_tags_cache

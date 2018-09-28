@@ -513,7 +513,7 @@ const fileNameIcons = {
   'credits.md': 'credits',
   'credits.md.rendered': 'credits',
   '.flowconfig': 'flow',
-  'favicon.ico': 'favicon',
+  'favicon.png': 'favicon',
   'karma.conf.js': 'karma',
   'karma.conf.ts': 'karma',
   'karma.conf.coffee': 'karma',

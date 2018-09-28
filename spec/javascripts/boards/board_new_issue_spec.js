@@ -1,4 +1,3 @@
-/* global BoardService */
 /* global List */
 
 import Vue from 'vue';

@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class BaseService
   include Gitlab::Allowable
 
   attr_accessor :project, :current_user, :params
 
-  def initialize(project, user, params = {})
+  def initialize(project, user = nil, params = {})
     @project, @current_user, @params = project, user, params.dup
   end
 

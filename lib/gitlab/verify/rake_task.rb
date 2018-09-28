@@ -45,7 +45,7 @@ module Gitlab
         return unless verbose?
 
         failures.each do |object, error|
-          say "  - #{verifier.describe(object)}: #{error.inspect}".color(:red)
+          say "  - #{verifier.describe(object)}: #{error}".color(:red)
         end
       end
     end

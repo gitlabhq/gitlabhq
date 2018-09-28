@@ -49,7 +49,7 @@ module API
       params do
         requires :title, type: String, desc: 'The title of the snippet'
         requires :file_name, type: String, desc: 'The file name of the snippet'
-        requires :code, type: String, desc: 'The content of the snippet'
+        requires :code, type: String, allow_blank: false, desc: 'The content of the snippet'
         optional :description, type: String, desc: 'The description of a snippet'
         requires :visibility, type: String,
                               values: Gitlab::VisibilityLevel.string_values,
@@ -78,13 +78,14 @@ module API
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
         optional :title, type: String, desc: 'The title of the snippet'
         optional :file_name, type: String, desc: 'The file name of the snippet'
-        optional :code, type: String, desc: 'The content of the snippet'
+        optional :code, type: String, allow_blank: false, desc: 'The content of the snippet'
         optional :description, type: String, desc: 'The description of a snippet'
         optional :visibility, type: String,
                               values: Gitlab::VisibilityLevel.string_values,
                               desc: 'The visibility of the snippet'
         at_least_one_of :title, :file_name, :code, :visibility_level
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       put ":id/snippets/:snippet_id" do
         snippet = snippets_for_current_user.find_by(id: params.delete(:snippet_id))
         not_found!('Snippet') unless snippet
@@ -107,11 +108,13 @@ module API
           render_validation_error!(snippet)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Delete a project snippet'
       params do
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       delete ":id/snippets/:snippet_id" do
         snippet = snippets_for_current_user.find_by(id: params[:snippet_id])
         not_found!('Snippet') unless snippet
@@ -120,11 +123,13 @@ module API
 
         destroy_conditionally!(snippet)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Get a raw project snippet'
       params do
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ":id/snippets/:snippet_id/raw" do
         snippet = snippets_for_current_user.find_by(id: params[:snippet_id])
         not_found!('Snippet') unless snippet
@@ -133,6 +138,7 @@ module API
         content_type 'text/plain'
         present snippet.content
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Get the user agent details for a project snippet' do
         success Entities::UserAgentDetail
@@ -140,15 +146,17 @@ module API
       params do
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ":id/snippets/:snippet_id/user_agent_detail" do
         authenticated_as_admin!
 
         snippet = Snippet.find_by!(id: params[:snippet_id], project_id: params[:id])
 
-        return not_found!('UserAgentDetail') unless snippet.user_agent_detail
+        break not_found!('UserAgentDetail') unless snippet.user_agent_detail
 
         present snippet.user_agent_detail, with: Entities::UserAgentDetail
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

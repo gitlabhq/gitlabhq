@@ -1,0 +1,17 @@
+- Gitlab::ProjectTemplate.all.each do |template|
+  .template-option.d-flex.align-items-center
+    .logo.append-right-10
+      = custom_icon(template.logo, size: 40)
+    .description
+      %strong
+        = template.title
+      %br
+      .text-muted
+        = template.description
+    .controls.d-flex.align-items-center
+      %label.btn.btn-success.template-button.choose-template.append-right-10.append-bottom-0{ for: template.name }
+        %input{ type: "radio",  autocomplete: "off", name: "project[template_name]", id: template.name, value: template.name }
+        %span
+          = _("Use template")
+      %a.btn.btn-default{ href: template.preview, rel: 'noopener noreferrer', target: '_blank' }
+        = _("Preview")

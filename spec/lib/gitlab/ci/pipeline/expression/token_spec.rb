@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'fast_spec_helper'
 
 describe Gitlab::Ci::Pipeline::Expression::Token do
   let(:value) { '$VARIABLE' }

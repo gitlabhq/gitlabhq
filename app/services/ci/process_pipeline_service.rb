@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class ProcessPipelineService < BaseService
     attr_reader :pipeline
@@ -35,7 +37,7 @@ module Ci
 
     def process_build(build, current_status)
       if valid_statuses_for_when(build.when).include?(current_status)
-        build.action? ? build.actionize : build.enqueue
+        build.action? ? build.actionize : enqueue_build(build)
         true
       else
         build.skip
@@ -58,17 +60,23 @@ module Ci
       end
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def status_for_prior_stages(index)
       pipeline.builds.where('stage_idx < ?', index).latest.status || 'success'
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def stage_indexes_of_created_builds
       created_builds.order(:stage_idx).pluck('distinct stage_idx')
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def created_builds_in_stage(index)
       created_builds.where(stage_idx: index)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def created_builds
       pipeline.builds.created
@@ -78,6 +86,7 @@ module Ci
     # This replicates what is db/post_migrate/20170416103934_upate_retried_for_ci_build.rb
     # and ensures that functionality will not be broken before migration is run
     # this updates only when there are data that needs to be updated, there are two groups with no retried flag
+    # rubocop: disable CodeReuse/ActiveRecord
     def update_retried
       # find the latest builds for each name
       latest_statuses = pipeline.statuses.latest
@@ -90,6 +99,11 @@ module Ci
         .where(name: latest_statuses.map(&:second))
         .where.not(id: latest_statuses.map(&:first))
         .update_all(retried: true) if latest_statuses.any?
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    def enqueue_build(build)
+      Ci::EnqueueBuildService.new(project, @user).execute(build)
     end
   end
 end

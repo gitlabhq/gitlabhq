@@ -2,8 +2,9 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %a.close{ href: "#", "data-dismiss" => "modal" } ×
         %h3.page-title= s_("WikiNewPageTitle|New Wiki Page")
+        %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
+          %span{ "aria-hidden": true } &times;
       .modal-body
         %form.new-wiki-page
           .form-group
@@ -14,4 +15,4 @@
               = icon('lightbulb-o')
               = s_("WikiNewPageTip|Tip: You can specify the full path for the new file. We will automatically create any missing directories.")
           .form-actions
-            = button_tag s_("Wiki|Create page"), class: "build-new-wiki btn btn-create"
+            = button_tag s_("Wiki|Create page"), class: "build-new-wiki btn btn-success"

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe FileMover do
   let(:filename) { 'banana_sample.gif' }
-  let(:file) { fixture_file_upload(Rails.root.join('spec', 'fixtures', filename)) }
+  let(:file) { fixture_file_upload(File.join('spec', 'fixtures', filename)) }
   let(:temp_file_path) { File.join('uploads/-/system/temp', 'secret55', filename) }
 
   let(:temp_description) do
@@ -35,6 +35,12 @@ describe FileMover do
 
       it 'creates a new update record' do
         expect { subject }.to change { Upload.count }.by(1)
+      end
+
+      it 'schedules a background migration' do
+        expect_any_instance_of(PersonalFileUploader).to receive(:schedule_background_upload).once
+
+        subject
       end
     end
 

@@ -17,6 +17,7 @@ describe Issue do
     it_behaves_like 'AtomicInternalId' do
       let(:internal_id_attribute) { :iid }
       let(:instance) { build(:issue) }
+      let(:scope) { :project }
       let(:scope_attrs) { { project: instance.project } }
       let(:usage) { :issues }
     end
@@ -83,15 +84,32 @@ describe Issue do
     end
   end
 
-  describe '#closed_at' do
-    it 'sets closed_at to Time.now when issue is closed' do
-      issue = create(:issue, state: 'opened')
+  describe '#close' do
+    subject(:issue) { create(:issue, state: 'opened') }
 
-      expect(issue.closed_at).to be_nil
+    it 'sets closed_at to Time.now when an issue is closed' do
+      expect { issue.close }.to change { issue.closed_at }.from(nil)
+    end
 
-      issue.close
+    it 'changes the state to closed' do
+      expect { issue.close }.to change { issue.state }.from('opened').to('closed')
+    end
+  end
 
-      expect(issue.closed_at).to be_present
+  describe '#reopen' do
+    let(:user) { create(:user) }
+    let(:issue) { create(:issue, state: 'closed', closed_at: Time.now, closed_by: user) }
+
+    it 'sets closed_at to nil when an issue is reopend' do
+      expect { issue.reopen }.to change { issue.closed_at }.to(nil)
+    end
+
+    it 'sets closed_by to nil when an issue is reopend' do
+      expect { issue.reopen }.to change { issue.closed_by }.from(user).to(nil)
+    end
+
+    it 'changes the state to opened' do
+      expect { issue.reopen }.to change { issue.state }.from('closed').to('opened')
     end
   end
 
@@ -187,98 +205,6 @@ describe Issue do
     end
   end
 
-  describe '#closed_by_merge_requests' do
-    let(:project) { create(:project, :repository) }
-    let(:issue) { create(:issue, project: project)}
-    let(:closed_issue) { build(:issue, :closed, project: project)}
-
-    let(:mr) do
-      opts = {
-        title: 'Awesome merge_request',
-        description: "Fixes #{issue.to_reference}",
-        source_branch: 'feature',
-        target_branch: 'master'
-      }
-      MergeRequests::CreateService.new(project, project.owner, opts).execute
-    end
-
-    let(:closed_mr) do
-      opts = {
-        title: 'Awesome merge_request 2',
-        description: "Fixes #{issue.to_reference}",
-        source_branch: 'feature',
-        target_branch: 'master',
-        state: 'closed'
-      }
-      MergeRequests::CreateService.new(project, project.owner, opts).execute
-    end
-
-    it 'returns the merge request to close this issue' do
-      expect(issue.closed_by_merge_requests(mr.author)).to eq([mr])
-    end
-
-    it "returns an empty array when the merge request is closed already" do
-      expect(issue.closed_by_merge_requests(closed_mr.author)).to eq([])
-    end
-
-    it "returns an empty array when the current issue is closed already" do
-      expect(closed_issue.closed_by_merge_requests(closed_issue.author)).to eq([])
-    end
-  end
-
-  describe '#referenced_merge_requests' do
-    let(:project) { create(:project, :public) }
-    let(:issue) do
-      create(:issue, description: merge_request.to_reference, project: project)
-    end
-    let!(:merge_request) do
-      create(:merge_request,
-             source_project: project,
-             source_branch:  'master',
-             target_branch:  'feature')
-    end
-
-    it 'returns the referenced merge requests' do
-      mr2 = create(:merge_request,
-                   source_project: project,
-                   source_branch:  'feature',
-                   target_branch:  'master')
-
-      create(:note_on_issue,
-             noteable:   issue,
-             note:       mr2.to_reference,
-             project_id: project.id)
-
-      expect(issue.referenced_merge_requests).to eq([merge_request, mr2])
-    end
-
-    it 'returns cross project referenced merge requests' do
-      other_project = create(:project, :public)
-      cross_project_merge_request = create(:merge_request, source_project: other_project)
-      create(:note_on_issue,
-             noteable:   issue,
-             note:       cross_project_merge_request.to_reference(issue.project),
-             project_id: issue.project.id)
-
-      expect(issue.referenced_merge_requests).to eq([merge_request, cross_project_merge_request])
-    end
-
-    it 'excludes cross project references if the user cannot read cross project' do
-      user = create(:user)
-      allow(Ability).to receive(:allowed?).and_call_original
-      expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
-
-      other_project = create(:project, :public)
-      cross_project_merge_request = create(:merge_request, source_project: other_project)
-      create(:note_on_issue,
-             noteable:   issue,
-             note:       cross_project_merge_request.to_reference(issue.project),
-             project_id: issue.project.id)
-
-      expect(issue.referenced_merge_requests(user)).to eq([merge_request])
-    end
-  end
-
   describe '#can_move?' do
     let(:user) { create(:user) }
     let(:issue) { create(:issue) }
@@ -364,7 +290,12 @@ describe Issue do
                                                source_project: subject.project,
                                                source_branch: "#{subject.iid}-branch" })
       merge_request.create_cross_references!(user)
-      expect(subject.referenced_merge_requests(user)).not_to be_empty
+
+      referenced_merge_requests = Issues::ReferencedMergeRequestsService
+                                    .new(subject.project, user)
+                                    .referenced_merge_requests(subject)
+
+      expect(referenced_merge_requests).not_to be_empty
       expect(subject.related_branches(user)).to eq([subject.to_branch_name])
     end
 
@@ -373,6 +304,48 @@ describe Issue do
         .and_return(["#{subject.iid}-0-stable"])
 
       expect(subject.related_branches(user)).to eq []
+    end
+  end
+
+  describe '#suggested_branch_name' do
+    let(:repository) { double }
+
+    subject { build(:issue) }
+
+    before do
+      allow(subject.project).to receive(:repository).and_return(repository)
+    end
+
+    context '#to_branch_name does not exists' do
+      before do
+        allow(repository).to receive(:branch_exists?).and_return(false)
+      end
+
+      it 'returns #to_branch_name' do
+        expect(subject.suggested_branch_name).to eq(subject.to_branch_name)
+      end
+    end
+
+    context '#to_branch_name exists not ending with -index' do
+      before do
+        allow(repository).to receive(:branch_exists?).and_return(true)
+        allow(repository).to receive(:branch_exists?).with(/#{subject.to_branch_name}-\d/).and_return(false)
+      end
+
+      it 'returns #to_branch_name ending with -2' do
+        expect(subject.suggested_branch_name).to eq("#{subject.to_branch_name}-2")
+      end
+    end
+
+    context '#to_branch_name exists ending with -index' do
+      before do
+        allow(repository).to receive(:branch_exists?).and_return(true)
+        allow(repository).to receive(:branch_exists?).with("#{subject.to_branch_name}-3").and_return(false)
+      end
+
+      it 'returns #to_branch_name ending with max index + 1' do
+        expect(subject.suggested_branch_name).to eq("#{subject.to_branch_name}-3")
+      end
     end
   end
 
@@ -423,6 +396,27 @@ describe Issue do
       issue = create(:issue, title: 'testing-issue', confidential: true)
       expect(issue.to_branch_name).to match /confidential-issue\z/
     end
+  end
+
+  describe '#can_be_worked_on?' do
+    let(:project) { build(:project) }
+    subject { build(:issue, :opened, project: project) }
+
+    context 'is closed' do
+      subject { build(:issue, :closed) }
+
+      it { is_expected.not_to be_can_be_worked_on }
+    end
+
+    context 'project is forked' do
+      before do
+        allow(project).to receive(:forked?).and_return(true)
+      end
+
+      it { is_expected.not_to be_can_be_worked_on }
+    end
+
+    it { is_expected.to be_can_be_worked_on }
   end
 
   describe '#participants' do
@@ -605,7 +599,7 @@ describe Issue do
 
         context 'when the user is the project owner' do
           before do
-            project.add_master(user)
+            project.add_maintainer(user)
           end
 
           it 'returns true for a regular issue' do

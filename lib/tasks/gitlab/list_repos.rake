@@ -10,9 +10,8 @@ namespace :gitlab do
     end
 
     scope.find_each do |project|
-      base = File.join(project.repository_storage_path, project.disk_path)
-      puts base + '.git'
-      puts base + '.wiki.git'
+      puts project.repository.path_to_repo
+      puts project.wiki.repository.path_to_repo
     end
   end
 end

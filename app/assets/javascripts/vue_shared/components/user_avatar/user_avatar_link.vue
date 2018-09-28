@@ -84,8 +84,8 @@ export default {
 
 <template>
   <a
-    class="user-avatar-link"
-    :href="linkHref">
+    :href="linkHref"
+    class="user-avatar-link">
     <user-avatar-image
       :img-src="imgSrc"
       :img-alt="imgAlt"

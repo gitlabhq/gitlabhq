@@ -14,6 +14,7 @@ GET /projects/:id/pipelines
 | `scope`   | string  | no       | The scope of pipelines, one of: `running`, `pending`, `finished`, `branches`, `tags` |
 | `status`  | string  | no       | The status of pipelines, one of: `running`, `pending`, `success`, `failed`, `canceled`, `skipped` |
 | `ref`     | string  | no       | The ref of pipelines |
+| `sha`     | string  | no       | The sha or pipelines |
 | `yaml_errors`| boolean  | no       | Returns pipelines with invalid configurations |
 | `name`| string  | no       | The name of the user who triggered pipelines |
 | `username`| string  | no       | The username of the user who triggered pipelines |
@@ -32,13 +33,15 @@ Example of response
     "id": 47,
     "status": "pending",
     "ref": "new-pipeline",
-    "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a"
+    "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+    "web_url": "https://example.com/foo/bar/pipelines/47"
   },
   {
     "id": 48,
     "status": "pending",
     "ref": "new-pipeline",
-    "sha": "eb94b618fb5865b26e80fdd8ae531b7a63ad851a"
+    "sha": "eb94b618fb5865b26e80fdd8ae531b7a63ad851a",
+    "web_url": "https://example.com/foo/bar/pipelines/48"
   }
 ]
 ```
@@ -85,7 +88,8 @@ Example of response
   "finished_at": "2016-08-11T11:32:35.145Z",
   "committed_at": null,
   "duration": null,
-  "coverage": "30.0"
+  "coverage": "30.0",
+  "web_url": "https://example.com/foo/bar/pipelines/46"
 }
 ```
 
@@ -101,6 +105,7 @@ POST /projects/:id/pipeline
 |------------|---------|----------|---------------------|
 | `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `ref`       | string | yes      | Reference to commit |
+| `variables` | array | no | An array containing the variables available in the pipeline, matching the structure [{ 'key' => 'UPLOAD_TO_S3', 'value' => 'true' }] |
 
 ```
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=master"
@@ -131,7 +136,8 @@ Example of response
   "finished_at": null,
   "committed_at": null,
   "duration": null,
-  "coverage": null
+  "coverage": null,
+  "web_url": "https://example.com/foo/bar/pipelines/61"
 }
 ```
 
@@ -149,7 +155,7 @@ POST /projects/:id/pipelines/:pipeline_id/retry
 | `pipeline_id` | integer | yes   | The ID of a pipeline |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/retry"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/retry"
 ```
 
 Response:
@@ -177,7 +183,8 @@ Response:
   "finished_at": "2016-08-11T11:32:35.145Z",
   "committed_at": null,
   "duration": null,
-  "coverage": null
+  "coverage": null,
+  "web_url": "https://example.com/foo/bar/pipelines/46"
 }
 ```
 
@@ -195,7 +202,7 @@ POST /projects/:id/pipelines/:pipeline_id/cancel
 | `pipeline_id` | integer | yes   | The ID of a pipeline |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/cancel"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/cancel"
 ```
 
 Response:
@@ -223,7 +230,8 @@ Response:
   "finished_at": "2016-08-11T11:32:35.145Z",
   "committed_at": null,
   "duration": null,
-  "coverage": null
+  "coverage": null,
+  "web_url": "https://example.com/foo/bar/pipelines/46"
 }
 ```
 

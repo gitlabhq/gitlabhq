@@ -1,5 +1,0 @@
-%td
-  = hidden_field_tag "allowed_to_create_#{protected_tag.id}", protected_tag.create_access_levels.first.access_level
-  = dropdown_tag( (protected_tag.create_access_levels.first.humanize || 'Select') ,
-                 options: { toggle_class: 'js-allowed-to-create', dropdown_class: 'dropdown-menu-selectable capitalize-header js-allowed-to-create-container',
-                 data: { field_name: "allowed_to_create_#{protected_tag.id}", access_level_id: protected_tag.create_access_levels.first.id }})

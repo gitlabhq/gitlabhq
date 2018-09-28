@@ -9,11 +9,11 @@ describe CleanupNonexistingNamespacePendingDeleteProjects do
   end
 
   describe '#up' do
-    set(:some_project) { create(:project) }
+    set(:some_project) { create(:project) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
 
     it 'only cleans up when namespace does not exist' do
-      create(:project, pending_delete: true)
-      project = build(:project, pending_delete: true, namespace: nil, namespace_id: Namespace.maximum(:id).to_i.succ)
+      create(:project, pending_delete: true) # rubocop:disable RSpec/FactoriesInMigrationSpecs
+      project = build(:project, pending_delete: true, namespace: nil, namespace_id: Namespace.maximum(:id).to_i.succ) # rubocop:disable RSpec/FactoriesInMigrationSpecs
       project.save(validate: false)
 
       expect(NamespacelessProjectDestroyWorker).to receive(:bulk_perform_async).with([[project.id]])
@@ -22,7 +22,7 @@ describe CleanupNonexistingNamespacePendingDeleteProjects do
     end
 
     it 'does nothing when no pending delete projects without namespace found' do
-      create(:project, pending_delete: true, namespace: create(:namespace))
+      create(:project, pending_delete: true, namespace: create(:namespace)) # rubocop:disable RSpec/FactoriesInMigrationSpecs
 
       expect(NamespacelessProjectDestroyWorker).not_to receive(:bulk_perform_async)
 

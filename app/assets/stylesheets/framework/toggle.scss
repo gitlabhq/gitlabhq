@@ -31,7 +31,7 @@
   height: 24px;
   cursor: pointer;
   user-select: none;
-  background: $feature-toggle-color-disabled;
+  background: $gl-gray-400;
   border-radius: 12px;
   padding: 3px;
   transition: all .4s ease;
@@ -40,6 +40,10 @@
   &::before::selection,
   &::after::selection {
     background: none;
+  }
+
+  &:focus {
+    outline: none;
   }
 
   .toggle-icon {
@@ -52,12 +56,12 @@
 
     &,
     .toggle-icon-svg {
-      width: 18px;
-      height: 18px;
+      width: $default-icon-size;
+      height: $default-icon-size;
     }
 
     .toggle-icon-svg {
-      fill: $feature-toggle-color-disabled;
+      fill: $gl-gray-400;
     }
 
     .toggle-status-checked {
@@ -121,7 +125,7 @@
     cursor: not-allowed;
   }
 
-  @media (max-width: $screen-xs-min) {
+  @include media-breakpoint-down(xs) {
     width: 50px;
 
     &::before,

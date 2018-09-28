@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ServicesHelper
   def service_event_description(event)
     case event
@@ -7,9 +9,11 @@ module ServicesHelper
       "Event will be triggered when a new tag is pushed to the repository"
     when "note", "note_events"
       "Event will be triggered when someone adds a comment"
+    when "confidential_note", "confidential_note_events"
+      "Event will be triggered when someone adds a comment on a confidential issue"
     when "issue", "issue_events"
       "Event will be triggered when an issue is created/updated/closed"
-    when "confidential_issue", "confidential_issue_events"
+    when "confidential_issue", "confidential_issues_events"
       "Event will be triggered when a confidential issue is created/updated/closed"
     when "merge_request", "merge_request_events"
       "Event will be triggered when a merge request is created/updated/merged"
@@ -28,7 +32,7 @@ module ServicesHelper
   end
 
   def service_save_button(service)
-    button_tag(class: 'btn btn-save', type: 'submit', disabled: service.deprecated?) do
+    button_tag(class: 'btn btn-success', type: 'submit', disabled: service.deprecated?) do
       icon('spinner spin', class: 'hidden js-btn-spinner') +
         content_tag(:span, 'Save changes', class: 'js-btn-label')
     end

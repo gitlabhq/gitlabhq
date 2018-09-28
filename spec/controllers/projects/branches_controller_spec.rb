@@ -6,7 +6,7 @@ describe Projects::BranchesController do
   let(:developer) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     project.add_developer(user)
 
     allow(project).to receive(:branches).and_return(['master', 'foo/bar/baz'])
@@ -145,6 +145,24 @@ describe Projects::BranchesController do
           end
 
           it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+        end
+
+        it 'redirects to autodeploy setup page' do
+          result = { status: :success, branch: double(name: branch) }
+
+          create(:cluster, :provided_by_gcp, projects: [project])
+
+          expect_any_instance_of(CreateBranchService).to receive(:execute).and_return(result)
+          expect(SystemNoteService).to receive(:new_issue_branch).and_return(true)
+
+          post :create,
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            branch_name: branch,
+            issue_iid: issue.iid
+
+          expect(response.location).to include(project_new_blob_path(project, branch))
+          expect(response).to have_gitlab_http_status(302)
         end
       end
 
@@ -398,6 +416,22 @@ describe Projects::BranchesController do
       end
     end
 
+    # We need :request_store because Gitaly only counts the queries whenever
+    # `RequestStore.active?` in GitalyClient.enforce_gitaly_request_limits
+    # And the main goal of this test is making sure TooManyInvocationsError
+    # was not raised whenever the cache is enabled yet cold.
+    context 'when cache is enabled yet cold', :request_store do
+      it 'return with a status 200' do
+        get :index,
+            namespace_id: project.namespace,
+            project_id: project,
+            state: 'all',
+            format: :html
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+    end
+
     context 'when branch contains an invalid UTF-8 sequence' do
       before do
         project.repository.create_branch("wrong-\xE5-utf8-sequence")
@@ -414,7 +448,7 @@ describe Projects::BranchesController do
       end
     end
 
-    context 'when depreated sort/search/page parameters are specified' do
+    context 'when deprecated sort/search/page parameters are specified' do
       it 'returns with a status 301 when sort specified' do
         get :index,
             namespace_id: project.namespace,

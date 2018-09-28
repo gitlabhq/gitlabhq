@@ -1,6 +1,0 @@
----
-title: Fix "Remove source branch" button in Merge request widget during merge when pipeline
-  succeeds state
-merge_request: 17192
-author:
-type: fixed

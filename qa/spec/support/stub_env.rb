@@ -32,6 +32,8 @@ module Support
       allow(ENV).to receive(:[]).and_call_original
       allow(ENV).to receive(:key?).and_call_original
       allow(ENV).to receive(:fetch).and_call_original
+      # Prevent secrets from leaking in CI
+      allow(ENV).to receive(:inspect).and_return([])
       add_stubbed_value(STUBBED_KEY, true)
     end
   end

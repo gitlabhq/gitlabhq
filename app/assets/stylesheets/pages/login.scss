@@ -100,6 +100,22 @@
     p {
       margin: 0;
     }
+
+    .omniauth-btn {
+      margin-bottom: $gl-padding;
+      width: 48%;
+      padding: $gl-padding-8;
+
+      @include media-breakpoint-down(md) {
+        width: 100%;
+      }
+
+      img {
+        width: $default-icon-size;
+        height: $default-icon-size;
+        margin-right: $gl-padding;
+      }
+    }
   }
 
   .new-session-tabs {
@@ -154,26 +170,10 @@
       a {
         width: 100%;
         font-size: 18px;
-        margin-right: 0;
-
-        &:hover {
-          border: 1px solid transparent;
-        }
       }
 
-      &.active {
-        border-bottom: 1px solid $border-color;
-
-        a {
-          border: 0;
-          border-bottom: 2px solid $link-underline-blue;
-          margin-right: 0;
-          color: $black;
-
-          &:hover {
-            border-bottom: 2px solid $link-underline-blue;
-          }
-        }
+      &.active > a {
+        cursor: default;
       }
     }
   }
@@ -183,10 +183,6 @@
     &:focus {
       background-color: $white-light;
     }
-  }
-
-  label {
-    font-weight: $gl-font-weight-normal;
   }
 
   .submit-container {
@@ -202,26 +198,17 @@
     h2 {
       margin-top: 0;
       font-size: 14px;
-      color: $login-devise-error-color;
+      color: $red-700;
     }
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@include media-breakpoint-down(xs) {
   .login-page {
-    .col-sm-5.pull-right {
+    .col-md-5.float-right {
       float: none !important;
       margin-bottom: 45px;
     }
-  }
-}
-
-.oauth-image-link {
-  margin-right: 10px;
-
-  img {
-    width: 32px;
-    height: 32px;
   }
 }
 
@@ -253,13 +240,13 @@
     }
 
     .login-page-broadcast {
-      margin-top: 50px;
+      margin-top: 40px;
     }
 
     .navless-container {
       padding: 65px 15px; // height of footer + bottom padding of email confirmation link
 
-      @media (max-width: $screen-xs-max) {
+      @include media-breakpoint-down(xs) {
         padding: 0 15px 65px;
       }
     }

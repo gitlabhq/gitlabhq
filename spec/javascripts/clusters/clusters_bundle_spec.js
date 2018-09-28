@@ -1,11 +1,9 @@
 import Clusters from '~/clusters/clusters_bundle';
 import {
-  APPLICATION_INSTALLABLE,
-  APPLICATION_INSTALLING,
-  APPLICATION_INSTALLED,
   REQUEST_LOADING,
   REQUEST_SUCCESS,
   REQUEST_FAILURE,
+  APPLICATION_STATUS,
 } from '~/clusters/constants';
 import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 
@@ -45,16 +43,32 @@ describe('Clusters', () => {
   });
 
   describe('showToken', () => {
-    it('should update tye field type', () => {
+    it('should update token field type', () => {
       cluster.showTokenButton.click();
+
       expect(
         cluster.tokenField.getAttribute('type'),
       ).toEqual('text');
 
       cluster.showTokenButton.click();
+
       expect(
         cluster.tokenField.getAttribute('type'),
       ).toEqual('password');
+    });
+
+    it('should update show token button text', () => {
+      cluster.showTokenButton.click();
+
+      expect(
+        cluster.showTokenButton.textContent,
+      ).toEqual('Hide');
+
+      cluster.showTokenButton.click();
+
+      expect(
+        cluster.showTokenButton.textContent,
+      ).toEqual('Show');
     });
   });
 
@@ -68,7 +82,7 @@ describe('Clusters', () => {
     it('does not show alert when things transition from initial null state to something', () => {
       cluster.checkForNewInstalls(INITIAL_APP_MAP, {
         ...INITIAL_APP_MAP,
-        helm: { status: APPLICATION_INSTALLABLE, title: 'Helm Tiller' },
+        helm: { status: APPLICATION_STATUS.INSTALLABLE, title: 'Helm Tiller' },
       });
 
       const flashMessage = document.querySelector('.js-cluster-application-notice .flash-text');
@@ -78,10 +92,10 @@ describe('Clusters', () => {
     it('shows an alert when something gets newly installed', () => {
       cluster.checkForNewInstalls({
         ...INITIAL_APP_MAP,
-        helm: { status: APPLICATION_INSTALLING, title: 'Helm Tiller' },
+        helm: { status: APPLICATION_STATUS.INSTALLING, title: 'Helm Tiller' },
       }, {
         ...INITIAL_APP_MAP,
-        helm: { status: APPLICATION_INSTALLED, title: 'Helm Tiller' },
+        helm: { status: APPLICATION_STATUS.INSTALLED, title: 'Helm Tiller' },
       });
 
       const flashMessage = document.querySelector('.js-cluster-application-notice .flash-text');
@@ -92,12 +106,12 @@ describe('Clusters', () => {
     it('shows an alert when multiple things gets newly installed', () => {
       cluster.checkForNewInstalls({
         ...INITIAL_APP_MAP,
-        helm: { status: APPLICATION_INSTALLING, title: 'Helm Tiller' },
-        ingress: { status: APPLICATION_INSTALLABLE, title: 'Ingress' },
+        helm: { status: APPLICATION_STATUS.INSTALLING, title: 'Helm Tiller' },
+        ingress: { status: APPLICATION_STATUS.INSTALLABLE, title: 'Ingress' },
       }, {
         ...INITIAL_APP_MAP,
-        helm: { status: APPLICATION_INSTALLED, title: 'Helm Tiller' },
-        ingress: { status: APPLICATION_INSTALLED, title: 'Ingress' },
+        helm: { status: APPLICATION_STATUS.INSTALLED, title: 'Helm Tiller' },
+        ingress: { status: APPLICATION_STATUS.INSTALLED, title: 'Ingress' },
       });
 
       const flashMessage = document.querySelector('.js-cluster-application-notice .flash-text');
@@ -207,11 +221,11 @@ describe('Clusters', () => {
       spyOn(cluster.service, 'installApplication').and.returnValue(Promise.resolve());
       expect(cluster.store.state.applications.helm.requestStatus).toEqual(null);
 
-      cluster.installApplication('helm');
+      cluster.installApplication({ id: 'helm' });
 
       expect(cluster.store.state.applications.helm.requestStatus).toEqual(REQUEST_LOADING);
       expect(cluster.store.state.applications.helm.requestReason).toEqual(null);
-      expect(cluster.service.installApplication).toHaveBeenCalledWith('helm');
+      expect(cluster.service.installApplication).toHaveBeenCalledWith('helm', undefined);
 
       getSetTimeoutPromise()
         .then(() => {
@@ -226,11 +240,11 @@ describe('Clusters', () => {
       spyOn(cluster.service, 'installApplication').and.returnValue(Promise.resolve());
       expect(cluster.store.state.applications.ingress.requestStatus).toEqual(null);
 
-      cluster.installApplication('ingress');
+      cluster.installApplication({ id: 'ingress' });
 
       expect(cluster.store.state.applications.ingress.requestStatus).toEqual(REQUEST_LOADING);
       expect(cluster.store.state.applications.ingress.requestReason).toEqual(null);
-      expect(cluster.service.installApplication).toHaveBeenCalledWith('ingress');
+      expect(cluster.service.installApplication).toHaveBeenCalledWith('ingress', undefined);
 
       getSetTimeoutPromise()
         .then(() => {
@@ -245,11 +259,11 @@ describe('Clusters', () => {
       spyOn(cluster.service, 'installApplication').and.returnValue(Promise.resolve());
       expect(cluster.store.state.applications.runner.requestStatus).toEqual(null);
 
-      cluster.installApplication('runner');
+      cluster.installApplication({ id: 'runner' });
 
       expect(cluster.store.state.applications.runner.requestStatus).toEqual(REQUEST_LOADING);
       expect(cluster.store.state.applications.runner.requestReason).toEqual(null);
-      expect(cluster.service.installApplication).toHaveBeenCalledWith('runner');
+      expect(cluster.service.installApplication).toHaveBeenCalledWith('runner', undefined);
 
       getSetTimeoutPromise()
         .then(() => {
@@ -260,11 +274,29 @@ describe('Clusters', () => {
         .catch(done.fail);
     });
 
+    it('tries to install jupyter', (done) => {
+      spyOn(cluster.service, 'installApplication').and.returnValue(Promise.resolve());
+      expect(cluster.store.state.applications.jupyter.requestStatus).toEqual(null);
+      cluster.installApplication({ id: 'jupyter', params: { hostname: cluster.store.state.applications.jupyter.hostname } });
+
+      expect(cluster.store.state.applications.jupyter.requestStatus).toEqual(REQUEST_LOADING);
+      expect(cluster.store.state.applications.jupyter.requestReason).toEqual(null);
+      expect(cluster.service.installApplication).toHaveBeenCalledWith('jupyter', { hostname: cluster.store.state.applications.jupyter.hostname });
+
+      getSetTimeoutPromise()
+      .then(() => {
+        expect(cluster.store.state.applications.jupyter.requestStatus).toEqual(REQUEST_SUCCESS);
+        expect(cluster.store.state.applications.jupyter.requestReason).toEqual(null);
+      })
+      .then(done)
+      .catch(done.fail);
+    });
+
     it('sets error request status when the request fails', (done) => {
       spyOn(cluster.service, 'installApplication').and.returnValue(Promise.reject(new Error('STUBBED ERROR')));
       expect(cluster.store.state.applications.helm.requestStatus).toEqual(null);
 
-      cluster.installApplication('helm');
+      cluster.installApplication({ id: 'helm' });
 
       expect(cluster.store.state.applications.helm.requestStatus).toEqual(REQUEST_LOADING);
       expect(cluster.store.state.applications.helm.requestReason).toEqual(null);

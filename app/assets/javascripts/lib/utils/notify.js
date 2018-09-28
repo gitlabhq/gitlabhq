@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, one-var, one-var-declaration-per-line, consistent-return, prefer-arrow-callback, no-return-assign, object-shorthand, comma-dangle, no-param-reassign, max-len */
+/* eslint-disable func-names, no-var, consistent-return, prefer-arrow-callback, no-return-assign, object-shorthand, comma-dangle, max-len */
 
 function notificationGranted(message, opts, onclick) {
   var notification;

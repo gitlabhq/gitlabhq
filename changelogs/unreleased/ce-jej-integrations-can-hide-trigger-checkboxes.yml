@@ -1,6 +1,0 @@
----
-title: Avoid showing unnecessary Trigger checkboxes for project Integrations with
-  only one event
-merge_request: 17607
-author:
-type: changed

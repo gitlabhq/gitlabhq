@@ -3,6 +3,7 @@ require 'spec_helper'
 describe SystemNoteService do
   include Gitlab::Routing
   include RepoHelpers
+  include AssetsHelpers
 
   set(:group)    { create(:group) }
   set(:project)  { create(:project, :repository, group: group) }
@@ -107,6 +108,25 @@ describe SystemNoteService do
     end
   end
 
+  describe '.tag_commit' do
+    let(:noteable) do
+      project.commit
+    end
+    let(:tag_name) { 'v1.2.3' }
+
+    subject { described_class.tag_commit(noteable, project, author, tag_name) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'tag' }
+    end
+
+    it 'sets the note text' do
+      link = "http://localhost/#{project.full_path}/tags/#{tag_name}"
+
+      expect(subject.note).to eq "tagged commit #{noteable.sha} to [`#{tag_name}`](#{link})"
+    end
+  end
+
   describe '.change_assignee' do
     subject { described_class.change_assignee(noteable, project, author, assignee) }
 
@@ -177,45 +197,6 @@ describe SystemNoteService do
     end
   end
 
-  describe '.change_label' do
-    subject { described_class.change_label(noteable, project, author, added, removed) }
-
-    let(:labels)  { create_list(:label, 2, project: project) }
-    let(:added)   { [] }
-    let(:removed) { [] }
-
-    it_behaves_like 'a system note' do
-      let(:action) { 'label' }
-    end
-
-    context 'with added labels' do
-      let(:added)   { labels }
-      let(:removed) { [] }
-
-      it 'sets the note text' do
-        expect(subject.note).to eq "added ~#{labels[0].id} ~#{labels[1].id} labels"
-      end
-    end
-
-    context 'with removed labels' do
-      let(:added)   { [] }
-      let(:removed) { labels }
-
-      it 'sets the note text' do
-        expect(subject.note).to eq "removed ~#{labels[0].id} ~#{labels[1].id} labels"
-      end
-    end
-
-    context 'with added and removed labels' do
-      let(:added)   { [labels[0]] }
-      let(:removed) { [labels[1]] }
-
-      it 'sets the note text' do
-        expect(subject.note).to eq "added ~#{labels[0].id} and removed ~#{labels[1].id} labels"
-      end
-    end
-  end
-
   describe '.change_milestone' do
     context 'for a project milestone' do
       subject { described_class.change_milestone(noteable, project, author, milestone) }
@@ -264,6 +245,30 @@ describe SystemNoteService do
         it 'sets the note text' do
           expect(subject.note).to eq 'removed milestone'
         end
+      end
+    end
+  end
+
+  describe '.change_due_date' do
+    subject { described_class.change_due_date(noteable, project, author, due_date) }
+
+    let(:due_date) { Date.today }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'due_date' }
+    end
+
+    context 'when due date added' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "changed due date to #{Date.today.to_s(:long)}"
+      end
+    end
+
+    context 'when due date removed' do
+      let(:due_date) { nil }
+
+      it 'sets the note text' do
+        expect(subject.note).to eq 'removed due date'
       end
     end
   end
@@ -705,7 +710,7 @@ describe SystemNoteService do
     let(:jira_tracker)    { project.jira_service }
     let(:commit)          { project.commit }
     let(:comment_url)     { jira_api_comment_url(jira_issue.id) }
-    let(:success_message) { "JiraService SUCCESS: Successfully posted to http://jira.example.net." }
+    let(:success_message) { "SUCCESS: Successfully posted to http://jira.example.net." }
 
     before do
       stub_jira_urls(jira_issue.id)
@@ -743,7 +748,7 @@ describe SystemNoteService do
           expect(cross_reference(type)).to eq("Events for #{type.pluralize.humanize.downcase} are disabled.")
         end
 
-        it "blocks cross reference when #{type.underscore}_events is true" do
+        it "creates cross reference when #{type.underscore}_events is true" do
           jira_tracker.update("#{type}_events" => true)
 
           expect(cross_reference(type)).to eq(success_message)
@@ -769,6 +774,8 @@ describe SystemNoteService do
     end
 
     describe "new reference" do
+      let(:favicon_path) { "http://localhost/assets/#{find_asset('favicon.png').digest_path}" }
+
       before do
         allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
       end
@@ -789,7 +796,7 @@ describe SystemNoteService do
               object: {
                 url: project_commit_url(project, commit),
                 title: "GitLab: Mentioned on commit - #{commit.title}",
-                icon: { title: "GitLab", url16x16: "http://localhost/favicon.ico" },
+                icon: { title: "GitLab", url16x16: favicon_path },
                 status: { resolved: false }
               }
             )
@@ -815,7 +822,7 @@ describe SystemNoteService do
               object: {
                 url: project_issue_url(project, issue),
                 title: "GitLab: Mentioned on issue - #{issue.title}",
-                icon: { title: "GitLab", url16x16: "http://localhost/favicon.ico" },
+                icon: { title: "GitLab", url16x16: favicon_path },
                 status: { resolved: false }
               }
             )
@@ -841,7 +848,7 @@ describe SystemNoteService do
               object: {
                 url: project_snippet_url(project, snippet),
                 title: "GitLab: Mentioned on snippet - #{snippet.title}",
-                icon: { title: "GitLab", url16x16: "http://localhost/favicon.ico" },
+                icon: { title: "GitLab", url16x16: favicon_path },
                 status: { resolved: false }
               }
             )

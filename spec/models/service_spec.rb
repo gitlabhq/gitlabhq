@@ -10,6 +10,22 @@ describe Service do
     it { is_expected.to validate_presence_of(:type) }
   end
 
+  describe 'Scopes' do
+    describe '.confidential_note_hooks' do
+      it 'includes services where confidential_note_events is true' do
+        create(:service, active: true, confidential_note_events: true)
+
+        expect(described_class.confidential_note_hooks.count).to eq 1
+      end
+
+      it 'excludes services where confidential_note_events is false' do
+        create(:service, active: true, confidential_note_events: false)
+
+        expect(described_class.confidential_note_hooks.count).to eq 0
+      end
+    end
+  end
+
   describe "Test Button" do
     describe '#can_test?' do
       let(:service) { create(:service, project: project) }
@@ -58,6 +74,21 @@ describe Service do
   end
 
   describe "Template" do
+    describe '.build_from_template' do
+      context 'when template is invalid' do
+        it 'sets service template to inactive when template is invalid' do
+          project = create(:project)
+          template = KubernetesService.new(template: true, active: true)
+          template.save(validate: false)
+
+          service = described_class.build_from_template(project.id, template)
+
+          expect(service).to be_valid
+          expect(service.active).to be false
+        end
+      end
+    end
+
     describe "for pushover service" do
       let!(:service_template) do
         PushoverService.create(
@@ -249,7 +280,7 @@ describe Service do
         service.save!
 
         expect do
-          service.update_attributes(active: false)
+          service.update(active: false)
         end.to change { service.project.has_external_issue_tracker }.from(true).to(false)
       end
     end
@@ -312,6 +343,33 @@ describe Service do
 
     it 'filters out sensitive fields' do
       expect(service.api_field_names).to eq(['safe_field'])
+    end
+  end
+
+  context 'logging' do
+    let(:project) { create(:project) }
+    let(:service) { create(:service, project: project) }
+    let(:test_message) { "test message" }
+    let(:arguments) do
+      {
+        service_class: service.class.name,
+        project_path: project.full_path,
+        project_id: project.id,
+        message: test_message,
+        additional_argument: 'some argument'
+      }
+    end
+
+    it 'logs info messages using json logger' do
+      expect(Gitlab::JsonLogger).to receive(:info).with(arguments)
+
+      service.log_info(test_message, additional_argument: 'some argument')
+    end
+
+    it 'logs error messages using json logger' do
+      expect(Gitlab::JsonLogger).to receive(:error).with(arguments)
+
+      service.log_error(test_message, additional_argument: 'some argument')
     end
   end
 end

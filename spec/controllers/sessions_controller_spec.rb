@@ -50,24 +50,23 @@ describe SessionsController do
       end
 
       context 'when using valid password', :clean_gitlab_redis_shared_state do
-        include UserActivitiesHelpers
-
         let(:user) { create(:user) }
+        let(:user_params) { { login: user.username, password: user.password } }
 
         it 'authenticates user correctly' do
-          post(:create, user: { login: user.username, password: user.password })
+          post(:create, user: user_params)
 
           expect(subject.current_user). to eq user
         end
 
         it 'creates an audit log record' do
-          expect { post(:create, user: { login: user.username, password: user.password }) }.to change { SecurityEvent.count }.by(1)
+          expect { post(:create, user: user_params) }.to change { SecurityEvent.count }.by(1)
           expect(SecurityEvent.last.details[:with]).to eq('standard')
         end
 
         include_examples 'user login request with unique ip limit', 302 do
           def request
-            post(:create, user: { login: user.username, password: user.password })
+            post(:create, user: user_params)
             expect(subject.current_user).to eq user
             subject.sign_out user
           end
@@ -75,8 +74,51 @@ describe SessionsController do
 
         it 'updates the user activity' do
           expect do
-            post(:create, user: { login: user.username, password: user.password })
-          end.to change { user_activity(user) }
+            post(:create, user: user_params)
+          end.to change { user.reload.last_activity_on }.to(Date.today)
+        end
+      end
+
+      context 'when reCAPTCHA is enabled' do
+        let(:user) { create(:user) }
+        let(:user_params) { { login: user.username, password: user.password } }
+
+        before do
+          stub_application_setting(recaptcha_enabled: true)
+          request.headers[described_class::CAPTCHA_HEADER] = 1
+        end
+
+        it 'displays an error when the reCAPTCHA is not solved' do
+          # Without this, `verify_recaptcha` arbitraily returns true in test env
+          Recaptcha.configuration.skip_verify_env.delete('test')
+          counter = double(:counter)
+
+          expect(counter).to receive(:increment)
+          expect(Gitlab::Metrics).to receive(:counter)
+                                      .with(:failed_login_captcha_total, anything)
+                                      .and_return(counter)
+
+          post(:create, user: user_params)
+
+          expect(response).to render_template(:new)
+          expect(flash[:alert]).to include 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'
+          expect(subject.current_user).to be_nil
+        end
+
+        it 'successfully logs in a user when reCAPTCHA is solved' do
+          # Avoid test ordering issue and ensure `verify_recaptcha` returns true
+          Recaptcha.configuration.skip_verify_env << 'test'
+          counter = double(:counter)
+
+          expect(counter).to receive(:increment)
+          expect(Gitlab::Metrics).to receive(:counter)
+                                      .with(:successful_login_captcha_total, anything)
+                                      .and_return(counter)
+          expect(Gitlab::Metrics).to receive(:counter).and_call_original
+
+          post(:create, user: user_params)
+
+          expect(subject.current_user).to eq user
         end
       end
     end
@@ -257,15 +299,15 @@ describe SessionsController do
     end
   end
 
-  describe '#new' do
+  describe "#new" do
     before do
       set_devise_mapping(context: @request)
     end
 
-    it 'redirects correctly for referer on same host with params' do
-      search_path = '/search?search=seed_project'
-      allow(controller.request).to receive(:referer)
-        .and_return('http://%{host}%{path}' % { host: Gitlab.config.gitlab.host, path: search_path })
+    it "redirects correctly for referer on same host with params" do
+      host = "test.host"
+      search_path = "/search?search=seed_project"
+      request.headers[:HTTP_REFERER] = "http://#{host}#{search_path}"
 
       get(:new, redirect_to_referer: :yes)
 

@@ -12,7 +12,7 @@ module API
 
         key = Key.find(params[:id])
 
-        present key, with: Entities::SSHKeyWithUser
+        present key, with: Entities::SSHKeyWithUser, current_user: current_user
       end
     end
   end

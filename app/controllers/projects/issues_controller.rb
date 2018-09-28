@@ -1,17 +1,20 @@
+# frozen_string_literal: true
+
 class Projects::IssuesController < Projects::ApplicationController
   include RendersNotes
   include ToggleSubscriptionAction
   include IssuableActions
   include ToggleAwardEmoji
   include IssuableCollections
+  include IssuesCalendar
   include SpammableActions
 
   prepend_before_action :authenticate_user!, only: [:new]
 
   before_action :whitelist_query_limiting, only: [:create, :create_merge_request, :move, :bulk_update]
   before_action :check_issues_available!
-  before_action :issue, except: [:index, :new, :create, :bulk_update]
-  before_action :set_issuables_index, only: [:index]
+  before_action :issue, except: [:index, :calendar, :new, :create, :bulk_update]
+  before_action :set_issuables_index, only: [:index, :calendar]
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
@@ -20,7 +23,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_update_issuable!, only: [:edit, :update, :move]
 
   # Allow create a new branch and empty WIP merge request from current issue
-  before_action :authorize_create_merge_request!, only: [:create_merge_request]
+  before_action :authorize_create_merge_request_from!, only: [:create_merge_request]
 
   respond_to :html
 
@@ -37,6 +40,10 @@ class Projects::IssuesController < Projects::ApplicationController
         }
       end
     end
+  end
+
+  def calendar
+    render_issues_calendar(@issuables)
   end
 
   def new
@@ -108,7 +115,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def referenced_merge_requests
-    @merge_requests, @closed_by_merge_requests = ::Issues::FetchReferencedMergeRequestsService.new(project, current_user).execute(issue)
+    @merge_requests, @closed_by_merge_requests = ::Issues::ReferencedMergeRequestsService.new(project, current_user).execute(issue)
 
     respond_to do |format|
       format.json do
@@ -134,11 +141,11 @@ class Projects::IssuesController < Projects::ApplicationController
   def can_create_branch
     can_create = current_user &&
       can?(current_user, :push_code, @project) &&
-      @issue.can_be_worked_on?(current_user)
+      @issue.can_be_worked_on?
 
     respond_to do |format|
       format.json do
-        render json: { can_create_branch: can_create, has_related_branch: @issue.has_related_branch? }
+        render json: { can_create_branch: can_create, suggested_branch_name: @issue.suggested_branch_name }
       end
     end
   end
@@ -156,17 +163,19 @@ class Projects::IssuesController < Projects::ApplicationController
 
   protected
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def issue
     return @issue if defined?(@issue)
 
     # The Sortable default scope causes performance issues when used with find_by
-    @issuable = @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take!
+    @issuable = @noteable = @issue ||= @project.issues.includes(author: :status).where(iid: params[:id]).reorder(nil).take!
     @note = @project.notes.new(noteable: @issuable)
 
     return render_404 unless can?(current_user, :read_issue, @issue)
 
     @issue
   end
+  # rubocop: enable CodeReuse/ActiveRecord
   alias_method :subscribable_resource, :issue
   alias_method :issuable, :issue
   alias_method :awardable, :issue
@@ -177,7 +186,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def authorize_create_merge_request!
-    render_404 unless can?(current_user, :push_code, @project) && @issue.can_be_worked_on?(current_user)
+    render_404 unless can?(current_user, :push_code, @project) && @issue.can_be_worked_on?
   end
 
   def render_issue_json

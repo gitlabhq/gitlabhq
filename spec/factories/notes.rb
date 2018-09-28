@@ -1,4 +1,4 @@
-require_relative '../support/repo_helpers'
+require_relative '../support/helpers/repo_helpers'
 
 include ActionDispatch::TestProcess
 
@@ -39,6 +39,7 @@ FactoryBot.define do
 
     factory :legacy_diff_note_on_merge_request, traits: [:on_merge_request, :legacy_diff_note], class: LegacyDiffNote do
       association :project, :repository
+      position ''
     end
 
     factory :diff_note_on_merge_request, traits: [:on_merge_request], class: DiffNote do
@@ -130,11 +131,11 @@ FactoryBot.define do
     end
 
     trait :with_attachment do
-      attachment { fixture_file_upload(Rails.root.join( "spec/fixtures/dk.png"), "image/png") }
+      attachment { fixture_file_upload("spec/fixtures/dk.png", "image/png") }
     end
 
     trait :with_svg_attachment do
-      attachment { fixture_file_upload(Rails.root.join("spec/fixtures/unsanitized.svg"), "image/svg+xml") }
+      attachment { fixture_file_upload("spec/fixtures/unsanitized.svg", "image/svg+xml") }
     end
 
     transient do

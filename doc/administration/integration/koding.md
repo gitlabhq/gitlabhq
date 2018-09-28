@@ -1,10 +1,10 @@
 # Koding & GitLab
 
->**Notes:**
-- **As of GitLab 10.0, the Koding integration is deprecated and will be removed
-  in a future version. The option to configure it is removed from GitLab's admin
-  area.**
-- [Introduced][ce-5909] in GitLab 8.11.
+> **Notes:**
+> - **As of GitLab 10.0, the Koding integration is deprecated and will be removed
+>   in a future version. The option to configure it is removed from GitLab's admin
+>   area.**
+> - [Introduced][ce-5909] in GitLab 8.11.
 
 This document will guide you through installing and configuring Koding with
 GitLab.
@@ -100,14 +100,14 @@ As it's pointed out before, you will need public access to this machine that
 you've installed Koding and GitLab on. Better to use a domain but a static IP
 is also fine.
 
-For IP based installation you can use [xip.io](https://xip.io) service which is
+For IP based installation you can use [nip.io](https://nip.io) service which is
 free and provides DNS resolution to IP based requests like following;
 
-  - 127.0.0.1.xip.io              -> resolves to 127.0.0.1
-  - foo.bar.baz.127.0.0.1.xip.io  -> resolves to 127.0.0.1
+  - 127.0.0.1.nip.io              -> resolves to 127.0.0.1
+  - foo.bar.baz.127.0.0.1.nip.io  -> resolves to 127.0.0.1
   - and so on...
 
-As Koding needs subdomains for team names; `foo.127.0.0.1.xip.io` requests for
+As Koding needs subdomains for team names; `foo.127.0.0.1.nip.io` requests for
 a running koding instance on `127.0.0.1` server will be handled as `foo` team
 requests.
 
@@ -117,18 +117,17 @@ requests.
 You need to enable Koding integration from Settings under Admin Area. To do
 that login with an Admin account and do followings;
 
- - open [http://127.0.0.1:3000/admin/application_settings](http://127.0.0.1:3000/admin/application_settings)
- - scroll to bottom of the page until Koding section
- - check `Enable Koding` checkbox
- - provide GitLab team page for running Koding instance as `Koding URL`*
-
-* For `Koding URL` you need to provide the gitlab integration enabled team on
+- open [http://127.0.0.1:3000/admin/application_settings](http://127.0.0.1:3000/admin/application_settings)
+- scroll to bottom of the page until Koding section
+- check `Enable Koding` checkbox
+- provide GitLab team page for running Koding instance as `Koding URL`*
+  * For `Koding URL` you need to provide the gitlab integration enabled team on
 your Koding installation. Team called `gitlab` has integration on Koding out
 of the box, so if you didn't change anything your team on Koding should be
 `gitlab`.
 
-So, if your Koding is running on `http://1.2.3.4.xip.io:8090` your URL needs
-to be `http://gitlab.1.2.3.4.xip.io:8090`. You need to provide the same host
+So, if your Koding is running on `http://1.2.3.4.nip.io:8090` your URL needs
+to be `http://gitlab.1.2.3.4.nip.io:8090`. You need to provide the same host
 with your Koding installation here.
 
 
@@ -192,7 +191,7 @@ cd koding
 docker-compose run                              \
   --service-ports backend                       \
   /opt/koding/scripts/bootstrap-container build \
-  --host=**YOUR_IP**.xip.io                     \
+  --host=**YOUR_IP**.nip.io                     \
   --gitlabHost=**GITLAB_IP**                    \
   --gitlabPort=**GITLAB_PORT**                  \
   --gitlabToken=**SECRET_TOKEN**                \
@@ -224,7 +223,7 @@ cd koding
 docker-compose run                              \
   --service-ports backend                       \
   /opt/koding/scripts/bootstrap-container build \
-  --host=**YOUR_IP**.xip.io                     \
+  --host=**YOUR_IP**.nip.io                     \
 ```
 
 #### Enable Single Sign On
@@ -233,7 +232,7 @@ Once you restarted your Koding and logged in with your username and password
 you need to activate oauth authentication for your user. To do that
 
  - Navigate to Dashboard on Koding from;
-   `http://gitlab.**YOUR_IP**.xip.io:8090/Home/my-account`
+   `http://gitlab.**YOUR_IP**.nip.io:8090/Home/my-account`
  - Scroll down to Integrations section
  - Click on toggle to turn On integration in GitLab integration section
 

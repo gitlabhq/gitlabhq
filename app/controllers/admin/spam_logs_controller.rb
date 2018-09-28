@@ -1,7 +1,11 @@
+# frozen_string_literal: true
+
 class Admin::SpamLogsController < Admin::ApplicationController
+  # rubocop: disable CodeReuse/ActiveRecord
   def index
     @spam_logs = SpamLog.order(id: :desc).page(params[:page])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def destroy
     spam_log = SpamLog.find(params[:id])

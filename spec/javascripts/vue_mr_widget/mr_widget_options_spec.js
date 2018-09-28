@@ -1,10 +1,11 @@
 import Vue from 'vue';
-import mrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
+import mrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import notify from '~/lib/utils/notify';
 import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import mockData from './mock_data';
+import { faviconDataUrl, overlayDataUrl, faviconWithOverlayDataUrl } from '../lib/utils/mock_data';
 
 const returnPromise = data => new Promise((resolve) => {
   resolve({
@@ -24,6 +25,10 @@ describe('mrWidgetOptions', () => {
     vm = mountComponent(MrWidgetOptions, {
       mrData: { ...mockData },
     });
+  });
+
+  afterEach(() => {
+    vm.$destroy();
   });
 
   describe('data', () => {
@@ -273,6 +278,7 @@ describe('mrWidgetOptions', () => {
       beforeEach(() => {
         const favicon = document.createElement('link');
         favicon.setAttribute('id', 'favicon');
+        favicon.setAttribute('data-original-href', faviconDataUrl);
         document.body.appendChild(favicon);
 
         faviconElement = document.getElementById('favicon');
@@ -282,10 +288,13 @@ describe('mrWidgetOptions', () => {
         document.body.removeChild(document.getElementById('favicon'));
       });
 
-      it('should call setFavicon method', () => {
-        vm.setFaviconHelper();
-
-        expect(faviconElement.getAttribute('href')).toEqual(vm.mr.ciStatusFaviconPath);
+      it('should call setFavicon method', (done) => {
+        vm.mr.ciStatusFaviconPath = overlayDataUrl;
+        vm.setFaviconHelper().then(() => {
+          expect(faviconElement.getAttribute('href')).toEqual(faviconWithOverlayDataUrl);
+          done();
+        })
+        .catch(done.fail);
       });
 
       it('should not call setFavicon when there is no ciStatusFaviconPath', () => {

@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import axios from '~/lib/utils/axios_utils';
 import Visibility from 'visibilityjs';
 import Flash from '../../flash';
 import Poll from '../../lib/utils/poll';
@@ -9,35 +10,51 @@ import service from '../services/notes_service';
 import loadAwardsHandler from '../../awards_handler';
 import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
 import { isInViewport, scrollToElement } from '../../lib/utils/common_utils';
+import mrWidgetEventHub from '../../vue_merge_request_widget/event_hub';
 
 let eTagPoll;
 
-export const setNotesData = ({ commit }, data) =>
-  commit(types.SET_NOTES_DATA, data);
-export const setNoteableData = ({ commit }, data) =>
-  commit(types.SET_NOTEABLE_DATA, data);
-export const setUserData = ({ commit }, data) =>
-  commit(types.SET_USER_DATA, data);
-export const setLastFetchedAt = ({ commit }, data) =>
-  commit(types.SET_LAST_FETCHED_AT, data);
-export const setInitialNotes = ({ commit }, data) =>
-  commit(types.SET_INITIAL_NOTES, data);
-export const setTargetNoteHash = ({ commit }, data) =>
-  commit(types.SET_TARGET_NOTE_HASH, data);
-export const toggleDiscussion = ({ commit }, data) =>
-  commit(types.TOGGLE_DISCUSSION, data);
+export const expandDiscussion = ({ commit }, data) => commit(types.EXPAND_DISCUSSION, data);
 
-export const fetchNotes = ({ commit }, path) =>
+export const collapseDiscussion = ({ commit }, data) => commit(types.COLLAPSE_DISCUSSION, data);
+
+export const setNotesData = ({ commit }, data) => commit(types.SET_NOTES_DATA, data);
+
+export const setNoteableData = ({ commit }, data) => commit(types.SET_NOTEABLE_DATA, data);
+
+export const setUserData = ({ commit }, data) => commit(types.SET_USER_DATA, data);
+
+export const setLastFetchedAt = ({ commit }, data) => commit(types.SET_LAST_FETCHED_AT, data);
+
+export const setInitialNotes = ({ commit }, discussions) =>
+  commit(types.SET_INITIAL_DISCUSSIONS, discussions);
+
+export const setTargetNoteHash = ({ commit }, data) => commit(types.SET_TARGET_NOTE_HASH, data);
+
+export const setNotesFetchedState = ({ commit }, state) =>
+  commit(types.SET_NOTES_FETCHED_STATE, state);
+
+export const toggleDiscussion = ({ commit }, data) => commit(types.TOGGLE_DISCUSSION, data);
+
+export const fetchDiscussions = ({ commit }, path) =>
   service
-    .fetchNotes(path)
+    .fetchDiscussions(path)
     .then(res => res.json())
-    .then(res => {
-      commit(types.SET_INITIAL_NOTES, res);
+    .then(discussions => {
+      commit(types.SET_INITIAL_DISCUSSIONS, discussions);
     });
 
-export const deleteNote = ({ commit }, note) =>
+export const updateDiscussion = ({ commit, state }, discussion) => {
+  commit(types.UPDATE_DISCUSSION, discussion);
+
+  return utils.findNoteObjectById(state.discussions, discussion.id);
+};
+
+export const deleteNote = ({ commit, dispatch }, note) =>
   service.deleteNote(note.path).then(() => {
     commit(types.DELETE_NOTE, note);
+
+    dispatch('updateMergeRequestWidget');
   });
 
 export const updateNote = ({ commit }, { endpoint, note }) =>
@@ -58,33 +75,31 @@ export const replyToDiscussion = ({ commit }, { endpoint, data }) =>
       return res;
     });
 
-export const createNewNote = ({ commit }, { endpoint, data }) =>
+export const createNewNote = ({ commit, dispatch }, { endpoint, data }) =>
   service
     .createNewNote(endpoint, data)
     .then(res => res.json())
     .then(res => {
       if (!res.errors) {
         commit(types.ADD_NEW_NOTE, res);
+
+        dispatch('updateMergeRequestWidget');
       }
       return res;
     });
 
-export const removePlaceholderNotes = ({ commit }) =>
-  commit(types.REMOVE_PLACEHOLDER_NOTES);
+export const removePlaceholderNotes = ({ commit }) => commit(types.REMOVE_PLACEHOLDER_NOTES);
 
-export const toggleResolveNote = (
-  { commit },
-  { endpoint, isResolved, discussion },
-) =>
+export const toggleResolveNote = ({ commit, dispatch }, { endpoint, isResolved, discussion }) =>
   service
     .toggleResolveNote(endpoint, isResolved)
     .then(res => res.json())
     .then(res => {
-      const mutationType = discussion
-        ? types.UPDATE_DISCUSSION
-        : types.UPDATE_NOTE;
+      const mutationType = discussion ? types.UPDATE_DISCUSSION : types.UPDATE_NOTE;
 
       commit(mutationType, res);
+
+      dispatch('updateMergeRequestWidget');
     });
 
 export const closeIssue = ({ commit, dispatch, state }) => {
@@ -114,7 +129,7 @@ export const reopenIssue = ({ commit, dispatch, state }) => {
 export const toggleStateButtonLoading = ({ commit }, value) =>
   commit(types.TOGGLE_STATE_BUTTON_LOADING, value);
 
-export const emitStateChangedEvent = ({ commit, getters }, data) => {
+export const emitStateChangedEvent = ({ getters }, data) => {
   const event = new CustomEvent('issuable_vue_app:change', {
     detail: {
       data,
@@ -134,32 +149,35 @@ export const toggleIssueLocalState = ({ commit }, newState) => {
 };
 
 export const saveNote = ({ commit, dispatch }, noteData) => {
-  const { note } = noteData.data.note;
+  // For MR discussuions we need to post as `note[note]` and issue we use `note.note`.
+  const note = noteData.data['note[note]'] || noteData.data.note.note;
   let placeholderText = note;
   const hasQuickActions = utils.hasQuickActions(placeholderText);
   const replyId = noteData.data.in_reply_to_discussion_id;
   const methodToDispatch = replyId ? 'replyToDiscussion' : 'createNewNote';
 
-  commit(types.REMOVE_PLACEHOLDER_NOTES); // remove previous placeholders
   $('.notes-form .flash-container').hide(); // hide previous flash notification
+  commit(types.REMOVE_PLACEHOLDER_NOTES); // remove previous placeholders
 
-  if (hasQuickActions) {
-    placeholderText = utils.stripQuickActions(placeholderText);
-  }
+  if (replyId) {
+    if (hasQuickActions) {
+      placeholderText = utils.stripQuickActions(placeholderText);
+    }
 
-  if (placeholderText.length) {
-    commit(types.SHOW_PLACEHOLDER_NOTE, {
-      noteBody: placeholderText,
-      replyId,
-    });
-  }
+    if (placeholderText.length) {
+      commit(types.SHOW_PLACEHOLDER_NOTE, {
+        noteBody: placeholderText,
+        replyId,
+      });
+    }
 
-  if (hasQuickActions) {
-    commit(types.SHOW_PLACEHOLDER_NOTE, {
-      isSystemNote: true,
-      noteBody: utils.getQuickActionText(note),
-      replyId,
-    });
+    if (hasQuickActions) {
+      commit(types.SHOW_PLACEHOLDER_NOTE, {
+        isSystemNote: true,
+        noteBody: utils.getQuickActionText(note),
+        replyId,
+      });
+    }
   }
 
   return dispatch(methodToDispatch, noteData).then(res => {
@@ -179,10 +197,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
 
         loadAwardsHandler()
           .then(awardsHandler => {
-            awardsHandler.addAwardToEmojiBar(
-              votesBlock,
-              commandsChanges.emoji_award,
-            );
+            awardsHandler.addAwardToEmojiBar(votesBlock, commandsChanges.emoji_award);
             awardsHandler.scrollToAwards();
           })
           .catch(() => {
@@ -194,10 +209,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
           });
       }
 
-      if (
-        commandsChanges.spend_time != null ||
-        commandsChanges.time_estimate != null
-      ) {
+      if (commandsChanges.spend_time != null || commandsChanges.time_estimate != null) {
         sidebarTimeTrackingEventHub.$emit('timeTrackingUpdated', res);
       }
     }
@@ -205,30 +217,28 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
     if (errors && errors.commands_only) {
       Flash(errors.commands_only, 'notice', noteData.flashContainer);
     }
-    commit(types.REMOVE_PLACEHOLDER_NOTES);
+    if (replyId) {
+      commit(types.REMOVE_PLACEHOLDER_NOTES);
+    }
 
     return res;
   });
 };
 
-const pollSuccessCallBack = (resp, commit, state, getters) => {
+const pollSuccessCallBack = (resp, commit, state, getters, dispatch) => {
   if (resp.notes && resp.notes.length) {
     const { notesById } = getters;
 
     resp.notes.forEach(note => {
       if (notesById[note.id]) {
         commit(types.UPDATE_NOTE, note);
-      } else if (
-        note.type === constants.DISCUSSION_NOTE ||
-        note.type === constants.DIFF_NOTE
-      ) {
-        const discussion = utils.findNoteObjectById(
-          state.notes,
-          note.discussion_id,
-        );
+      } else if (note.type === constants.DISCUSSION_NOTE || note.type === constants.DIFF_NOTE) {
+        const discussion = utils.findNoteObjectById(state.discussions, note.discussion_id);
 
         if (discussion) {
           commit(types.ADD_NEW_REPLY_TO_DISCUSSION, note);
+        } else if (note.type === constants.DIFF_NOTE) {
+          dispatch('fetchDiscussions', state.notesData.discussionsPath);
         } else {
           commit(types.ADD_NEW_NOTE, note);
         }
@@ -243,17 +253,14 @@ const pollSuccessCallBack = (resp, commit, state, getters) => {
   return resp;
 };
 
-export const poll = ({ commit, state, getters }) => {
+export const poll = ({ commit, state, getters, dispatch }) => {
   eTagPoll = new Poll({
     resource: service,
     method: 'poll',
     data: state,
     successCallback: resp =>
-      resp
-        .json()
-        .then(data => pollSuccessCallBack(data, commit, state, getters)),
-    errorCallback: () =>
-      Flash('Something went wrong while fetching latest comments.'),
+      resp.json().then(data => pollSuccessCallBack(data, commit, state, getters, dispatch)),
+    errorCallback: () => Flash('Something went wrong while fetching latest comments.'),
   });
 
   if (!Visibility.hidden()) {
@@ -292,14 +299,11 @@ export const fetchData = ({ commit, state, getters }) => {
     .catch(() => Flash('Something went wrong while fetching latest comments.'));
 };
 
-export const toggleAward = (
-  { commit, state, getters, dispatch },
-  { awardName, noteId },
-) => {
+export const toggleAward = ({ commit, getters }, { awardName, noteId }) => {
   commit(types.TOGGLE_AWARD, { awardName, note: getters.notesById[noteId] });
 };
 
-export const toggleAwardRequest = ({ commit, getters, dispatch }, data) => {
+export const toggleAwardRequest = ({ dispatch }, data) => {
   const { endpoint, awardName } = data;
 
   return service
@@ -315,3 +319,18 @@ export const scrollToNoteIfNeeded = (context, el) => {
     scrollToElement(el);
   }
 };
+
+export const fetchDiscussionDiffLines = ({ commit }, discussion) =>
+  axios.get(discussion.truncatedDiffLinesPath).then(({ data }) => {
+    commit(types.SET_DISCUSSION_DIFF_LINES, {
+      discussionId: discussion.id,
+      diffLines: data.truncated_diff_lines,
+    });
+  });
+
+export const updateMergeRequestWidget = () => {
+  mrWidgetEventHub.$emit('mr.discussion.updated');
+};
+
+// prevent babel-plugin-rewire from generating an invalid default during karma tests
+export default () => {};

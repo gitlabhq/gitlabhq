@@ -53,4 +53,14 @@ describe Gitlab::Ci::Status::Build::Action do
       end
     end
   end
+
+  describe '#badge_tooltip' do
+    let(:user) { create(:user) }
+    let(:build) { create(:ci_build, :non_playable) }
+    let(:status) { Gitlab::Ci::Status::Core.new(build, user) }
+
+    it 'returns the status' do
+      expect(subject.badge_tooltip).to eq('created')
+    end
+  end
 end

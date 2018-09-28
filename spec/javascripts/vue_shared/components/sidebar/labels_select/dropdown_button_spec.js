@@ -2,9 +2,9 @@ import Vue from 'vue';
 
 import dropdownButtonComponent from '~/vue_shared/components/sidebar/labels_select/dropdown_button.vue';
 
-import { mockConfig, mockLabels } from './mock_data';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
-import mountComponent from '../../../../helpers/vue_mount_component_helper';
+import { mockConfig, mockLabels } from './mock_data';
 
 const componentConfig = Object.assign({}, mockConfig, {
   fieldName: 'label_id[]',

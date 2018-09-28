@@ -24,7 +24,7 @@ module API
           optional :state_event, type: String, values: %w[close activate],
                                  desc: 'The state event of the milestone '
           use :optional_params
-          at_least_one_of :title, :description, :due_date, :state_event
+          at_least_one_of :title, :description, :start_date, :due_date, :state_event
         end
 
         def list_milestones_for(parent)

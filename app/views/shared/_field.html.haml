@@ -9,11 +9,11 @@
 - help = field[:help]
 - disabled = disable_fields_service?(@service)
 
-.form-group
+.form-group.row
   - if type == "password" && value.present?
-    = form.label name, "Enter new #{title.downcase}", class: "control-label"
+    = form.label name, "Enter new #{title.downcase}", class: "col-form-label col-sm-2"
   - else
-    = form.label name, title, class: "control-label"
+    = form.label name, title, class: "col-form-label col-sm-2"
   .col-sm-10
     - if type == 'text'
       = form.text_field name, class: "form-control", placeholder: placeholder, required: required, disabled: disabled
@@ -26,4 +26,4 @@
     - elsif type == 'password'
       = form.password_field name, autocomplete: "new-password", class: "form-control", required: value.blank? && required, disabled: disabled
     - if help
-      %span.help-block= help
+      %span.form-text.text-muted= help

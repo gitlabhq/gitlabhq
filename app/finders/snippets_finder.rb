@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Snippets Finder
 #
 # Used to filter Snippets collections by a set of params
@@ -41,6 +43,7 @@ class SnippetsFinder < UnionFinder
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def authorized_snippets_from_project
     if can?(current_user, :read_project_snippet, project)
       if project.team.member?(current_user)
@@ -52,11 +55,17 @@ class SnippetsFinder < UnionFinder
       Snippet.none
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def authorized_snippets
-    Snippet.where(feature_available_projects.or(not_project_related))
+    # This query was intentionally converted to a raw one to get it work in Rails 5.0.
+    # In Rails 5.0 and 5.1 there's a bug: https://github.com/rails/arel/issues/531
+    # Please convert it back when on rails 5.2 as it works again as expected since 5.2.
+    Snippet.where("#{feature_available_projects} OR #{not_project_related}")
       .public_or_visible_to_user(current_user)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   # Returns a collection of projects that is either public or visible to the
   # logged in user.
@@ -65,6 +74,7 @@ class SnippetsFinder < UnionFinder
   # the query, e.g. to apply .with_feature_available_for_user on top of it.
   # This is useful for performance as we can stick those additional filters
   # at the bottom of e.g. the UNION.
+  # rubocop: disable CodeReuse/ActiveRecord
   def projects_for_user
     return yield(Project.public_to_user) unless current_user
 
@@ -79,31 +89,33 @@ class SnippetsFinder < UnionFinder
 
     # We use a UNION here instead of OR clauses since this results in better
     # performance.
-    union = Gitlab::SQL::Union.new([authorized_projects.select('projects.id'), visible_projects.select('projects.id')])
-
-    Project.from("(#{union.to_sql}) AS #{Project.table_name}")
+    Project.from_union([authorized_projects, visible_projects])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def feature_available_projects
     # Don't return any project related snippets if the user cannot read cross project
-    return table[:id].eq(nil) unless Ability.allowed?(current_user, :read_cross_project)
+    return table[:id].eq(nil).to_sql unless Ability.allowed?(current_user, :read_cross_project)
 
     projects = projects_for_user do |part|
       part.with_feature_available_for_user(:snippets, current_user)
     end.select(:id)
 
-    arel_query = Arel::Nodes::SqlLiteral.new(projects.to_sql)
-    table[:project_id].in(arel_query)
+    # This query was intentionally converted to a raw one to get it work in Rails 5.0.
+    # In Rails 5.0 and 5.1 there's a bug: https://github.com/rails/arel/issues/531
+    # Please convert it back when on rails 5.2 as it works again as expected since 5.2.
+    "snippets.project_id IN (#{projects.to_sql})"
   end
 
   def not_project_related
-    table[:project_id].eq(nil)
+    table[:project_id].eq(nil).to_sql
   end
 
   def table
     Snippet.arel_table
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_visibility(items)
     visibility = params[:visibility] || visibility_from_scope
 
@@ -111,12 +123,15 @@ class SnippetsFinder < UnionFinder
 
     items.where(visibility_level: visibility)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_author(items)
     return items unless params[:author]
 
     items.where(author_id: params[:author].id)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def visibility_from_scope
     case params[:scope].to_s

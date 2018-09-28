@@ -21,6 +21,11 @@ export default {
       type: Object,
       required: true,
     },
+    action: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     leaveBtnTitle() {
@@ -32,7 +37,7 @@ export default {
   },
   methods: {
     onLeaveGroup() {
-      eventHub.$emit('showLeaveGroupModal', this.group, this.parentGroup);
+      eventHub.$emit(`${this.action}showLeaveGroupModal`, this.group, this.parentGroup);
     },
   },
 };
@@ -41,8 +46,8 @@ export default {
 <template>
   <div class="controls">
     <a
-      v-tooltip
       v-if="group.canEdit"
+      v-tooltip
       :href="group.editPath"
       :title="editBtnTitle"
       :aria-label="editBtnTitle"
@@ -52,15 +57,15 @@ export default {
       <icon name="settings"/>
     </a>
     <a
-      v-tooltip
       v-if="group.canLeave"
-      @click.prevent="onLeaveGroup"
+      v-tooltip
       :href="group.leavePath"
       :title="leaveBtnTitle"
       :aria-label="leaveBtnTitle"
       data-container="body"
       data-placement="bottom"
-      class="leave-group btn no-expand">
+      class="leave-group btn no-expand"
+      @click.prevent="onLeaveGroup">
       <icon name="leave"/>
     </a>
   </div>

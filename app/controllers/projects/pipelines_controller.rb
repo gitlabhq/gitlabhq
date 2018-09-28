@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 class Projects::PipelinesController < Projects::ApplicationController
   before_action :whitelist_query_limiting, only: [:create, :retry]
   before_action :pipeline, except: [:index, :new, :create, :charts]
-  before_action :commit, only: [:show, :builds, :failures]
   before_action :authorize_read_pipeline!
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
@@ -13,24 +14,15 @@ class Projects::PipelinesController < Projects::ApplicationController
   def index
     @scope = params[:scope]
     @pipelines = PipelinesFinder
-      .new(project, scope: @scope)
+      .new(project, current_user, scope: @scope)
       .execute
       .page(params[:page])
       .per(30)
 
-    @running_count = PipelinesFinder
-      .new(project, scope: 'running').execute.count
-
-    @pending_count = PipelinesFinder
-      .new(project, scope: 'pending').execute.count
-
-    @finished_count = PipelinesFinder
-      .new(project, scope: 'finished').execute.count
-
-    @pipelines_count = PipelinesFinder
-      .new(project).execute.count
-
-    @pipelines.map(&:commit) # List commits for batch loading
+    @running_count = limited_pipelines_count(project, 'running')
+    @pending_count = limited_pipelines_count(project, 'pending')
+    @finished_count = limited_pipelines_count(project, 'finished')
+    @pipelines_count = limited_pipelines_count(project)
 
     respond_to do |format|
       format.html
@@ -41,7 +33,7 @@ class Projects::PipelinesController < Projects::ApplicationController
           pipelines: PipelineSerializer
             .new(project: @project, current_user: @current_user)
             .with_pagination(request, response)
-            .represent(@pipelines),
+            .represent(@pipelines, disable_coverage: true, preload: true),
           count: {
             all: @pipelines_count,
             running: @running_count,
@@ -87,7 +79,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def failures
-    if @pipeline.statuses.latest.failed.present?
+    if @pipeline.failed_builds.present?
       render_show
     else
       redirect_to pipeline_path(@pipeline)
@@ -104,9 +96,18 @@ class Projects::PipelinesController < Projects::ApplicationController
     @stage = pipeline.legacy_stage(params[:stage])
     return not_found unless @stage
 
-    respond_to do |format|
-      format.json { render json: { html: view_to_html_string('projects/pipelines/_stage') } }
-    end
+    render json: StageSerializer
+      .new(project: @project, current_user: @current_user)
+      .represent(@stage, details: true, retried: params[:retried])
+  end
+
+  # TODO: This endpoint is used by mini-pipeline-graph
+  # TODO: This endpoint should be migrated to `stage.json`
+  def stage_ajax
+    @stage = pipeline.legacy_stage(params[:stage])
+    return not_found unless @stage
+
+    render json: { html: view_to_html_string('projects/pipelines/_stage') }
   end
 
   def retry
@@ -157,19 +158,31 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def create_params
-    params.require(:pipeline).permit(:ref)
+    params.require(:pipeline).permit(:ref, variables_attributes: %i[key secret_value])
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def pipeline
-    @pipeline ||= project.pipelines.find_by!(id: params[:id]).present(current_user: current_user)
+    @pipeline ||= project
+                    .pipelines
+                    .includes(user: :status)
+                    .find_by!(id: params[:id])
+                    .present(current_user: current_user)
   end
-
-  def commit
-    @commit ||= @pipeline.commit
-  end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def whitelist_query_limiting
     # Also see https://gitlab.com/gitlab-org/gitlab-ce/issues/42343
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42339')
+  end
+
+  def authorize_update_pipeline!
+    return access_denied! unless can?(current_user, :update_pipeline, @pipeline)
+  end
+
+  def limited_pipelines_count(project, scope = nil)
+    finder = PipelinesFinder.new(project, current_user, scope: scope)
+
+    view_context.limited_counter_with_delimiter(finder.execute)
   end
 end

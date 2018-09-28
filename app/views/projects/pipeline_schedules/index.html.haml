@@ -11,12 +11,12 @@
 
     - if can?(current_user, :create_pipeline_schedule, @project)
       .nav-controls
-        = link_to new_project_pipeline_schedule_path(@project), class: 'btn btn-create' do
+        = link_to new_project_pipeline_schedule_path(@project), class: 'btn btn-success' do
           %span= _('New schedule')
 
   - if @schedules.present?
     %ul.content-list
       = render partial: "table"
   - else
-    .light-well
+    .card.bg-light
       .nothing-here-block= _("No schedules")

@@ -11,7 +11,7 @@ Available `RAILS_ENV`
 
  - `production` (generally not for your main GDK db, but you may need this for e.g. omnibus)
  - `development` (this is your main GDK db)
- - `test` (used for tests like rspec and spinach)
+ - `test` (used for tests like rspec)
 
 
 ## Nuke everything and start over
@@ -33,7 +33,7 @@ If your test DB is giving you problems, it is safe to nuke it because it doesn't
  - `bundle exec rake db:migrate RAILS_ENV=development`: Execute any pending migrations that you may have picked up from a MR
  - `bundle exec rake db:migrate:status RAILS_ENV=development`: Check if all migrations are `up` or `down`
  - `bundle exec rake db:migrate:down VERSION=20170926203418 RAILS_ENV=development`: Tear down a migration
- - `bundle exec rake db:migrate:up VERSION=20170926203418 RAILS_ENV=development`: Setup a migration
+ - `bundle exec rake db:migrate:up VERSION=20170926203418 RAILS_ENV=development`: Set up a migration
  - `bundle exec rake db:migrate:redo VERSION=20170926203418 RAILS_ENV=development`: Re-run a specific migration
 
 

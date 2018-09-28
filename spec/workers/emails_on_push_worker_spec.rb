@@ -100,10 +100,6 @@ describe EmailsOnPushWorker, :mailer do
     end
 
     context "when there are multiple recipients" do
-      let(:recipients) do
-        1.upto(5).map { |i| user.email.sub('@', "+#{i}@") }.join("\n")
-      end
-
       before do
         # This is a hack because we modify the mail object before sending, for efficency,
         # but the TestMailer adapter just appends the objects to an array. To clone a mail
@@ -114,16 +110,57 @@ describe EmailsOnPushWorker, :mailer do
         end
       end
 
-      it "sends the mail to each of the recipients" do
-        perform
-        expect(ActionMailer::Base.deliveries.count).to eq(5)
-        expect(ActionMailer::Base.deliveries.map(&:to).flatten).to contain_exactly(*recipients.split)
+      context "when the recipient addresses are a list of email addresses" do
+        let(:recipients) do
+          1.upto(5).map { |i| user.email.sub('@', "+#{i}@") }.join("\n")
+        end
+
+        it "sends the mail to each of the recipients" do
+          perform
+
+          expect(ActionMailer::Base.deliveries.count).to eq(5)
+          expect(email_recipients).to contain_exactly(*recipients.split)
+        end
+
+        it "only generates the mail once" do
+          expect(Notify).to receive(:repository_push_email).once.and_call_original
+          expect(Premailer::Rails::CustomizedPremailer).to receive(:new).once.and_call_original
+
+          perform
+        end
       end
 
-      it "only generates the mail once" do
-        expect(Notify).to receive(:repository_push_email).once.and_call_original
-        expect(Premailer::Rails::CustomizedPremailer).to receive(:new).once.and_call_original
-        perform
+      context "when the recipient addresses contains angle brackets and are separated by spaces" do
+        let(:recipients) { "John Doe <johndoe@example.com> Jane Doe <janedoe@example.com>" }
+
+        it "accepts emails separated by whitespace" do
+          perform
+
+          expect(ActionMailer::Base.deliveries.count).to eq(2)
+          expect(email_recipients).to contain_exactly("johndoe@example.com", "janedoe@example.com")
+        end
+      end
+
+      context "when the recipient addresses contain a mix of emails with and without angle brackets" do
+        let(:recipients) { "johndoe@example.com Jane Doe <janedoe@example.com>" }
+
+        it "accepts both kind of emails" do
+          perform
+
+          expect(ActionMailer::Base.deliveries.count).to eq(2)
+          expect(email_recipients).to contain_exactly("johndoe@example.com", "janedoe@example.com")
+        end
+      end
+
+      context "when the recipient addresses contains angle brackets and are separated by newlines" do
+        let(:recipients) { "John Doe <johndoe@example.com>\nJane Doe <janedoe@example.com>" }
+
+        it "accepts emails separated by newlines" do
+          perform
+
+          expect(ActionMailer::Base.deliveries.count).to eq(2)
+          expect(email_recipients).to contain_exactly("johndoe@example.com", "janedoe@example.com")
+        end
       end
     end
   end

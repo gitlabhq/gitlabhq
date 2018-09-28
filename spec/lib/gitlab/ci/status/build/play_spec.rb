@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Gitlab::Ci::Status::Build::Play do
   let(:user) { create(:user) }
-  let(:project) { build.project }
-  let(:build) { create(:ci_build, :manual) }
+  let(:project) { create(:project, :stubbed_repository) }
+  let(:build) { create(:ci_build, :manual, project: project) }
   let(:status) { Gitlab::Ci::Status::Core.new(build, user) }
 
   subject { described_class.new(status) }
@@ -11,6 +11,22 @@ describe Gitlab::Ci::Status::Build::Play do
   describe '#label' do
     it 'has a label that says it is a manual action' do
       expect(subject.label).to eq 'manual play action'
+    end
+  end
+
+  describe '#status_tooltip' do
+    it 'does not override status status_tooltip' do
+      expect(status).to receive(:status_tooltip)
+
+      subject.status_tooltip
+    end
+  end
+
+  describe '#badge_tooltip' do
+    it 'does not override status badge_tooltip' do
+      expect(status).to receive(:badge_tooltip)
+
+      subject.badge_tooltip
     end
   end
 
@@ -30,6 +46,8 @@ describe Gitlab::Ci::Status::Build::Play do
       context 'when user can not push to the branch' do
         before do
           build.project.add_developer(user)
+          create(:protected_branch, :maintainers_can_push,
+                 name: build.ref, project: project)
         end
 
         it { is_expected.not_to have_action }
@@ -51,6 +69,10 @@ describe Gitlab::Ci::Status::Build::Play do
 
   describe '#action_title' do
     it { expect(subject.action_title).to eq 'Play' }
+  end
+
+  describe '#action_button_title' do
+    it { expect(subject.action_button_title).to eq 'Trigger this manual action' }
   end
 
   describe '.matches?' do

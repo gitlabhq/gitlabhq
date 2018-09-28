@@ -47,15 +47,15 @@ namespace :gitlab do
       puts ""
       puts "GitLab information".color(:yellow)
       puts "Version:\t#{Gitlab::VERSION}"
-      puts "Revision:\t#{Gitlab::REVISION}"
+      puts "Revision:\t#{Gitlab.revision}"
       puts "Directory:\t#{Rails.root}"
       puts "DB Adapter:\t#{database_adapter}"
       puts "URL:\t\t#{Gitlab.config.gitlab.url}"
       puts "HTTP Clone URL:\t#{http_clone_url}"
       puts "SSH Clone URL:\t#{ssh_clone_url}"
       puts "Using LDAP:\t#{Gitlab.config.ldap.enabled ? "yes".color(:green) : "no"}"
-      puts "Using Omniauth:\t#{Gitlab.config.omniauth.enabled ? "yes".color(:green) : "no"}"
-      puts "Omniauth Providers: #{omniauth_providers.join(', ')}" if Gitlab.config.omniauth.enabled
+      puts "Using Omniauth:\t#{Gitlab::Auth.omniauth_enabled? ? "yes".color(:green) : "no"}"
+      puts "Omniauth Providers: #{omniauth_providers.join(', ')}" if Gitlab::Auth.omniauth_enabled?
 
       # check Gitolite version
       gitlab_shell_version_file = "#{Gitlab.config.gitlab_shell.hooks_path}/../VERSION"
@@ -67,8 +67,10 @@ namespace :gitlab do
       puts "GitLab Shell".color(:yellow)
       puts "Version:\t#{gitlab_shell_version || "unknown".color(:red)}"
       puts "Repository storage paths:"
-      Gitlab.config.repositories.storages.each do |name, repository_storage|
-        puts "- #{name}: \t#{repository_storage['path']}"
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        Gitlab.config.repositories.storages.each do |name, repository_storage|
+          puts "- #{name}: \t#{repository_storage.legacy_disk_path}"
+        end
       end
       puts "Hooks:\t\t#{Gitlab.config.gitlab_shell.hooks_path}"
       puts "Git:\t\t#{Gitlab.config.git.bin_path}"

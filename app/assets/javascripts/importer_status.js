@@ -36,6 +36,8 @@ class ImporterStatus {
     const $targetField = $tr.find('.import-target');
     const $namespaceInput = $targetField.find('.js-select-namespace option:selected');
     const id = $tr.attr('id').replace('repo_', '');
+    const repoData = $tr.data();
+
     let targetNamespace;
     let newName;
     if ($namespaceInput.length > 0) {
@@ -45,12 +47,20 @@ class ImporterStatus {
     }
     $btn.disable().addClass('is-loading');
 
-    return axios.post(this.importUrl, {
+    this.id = id;
+
+    let attributes = {
       repo_id: id,
       target_namespace: targetNamespace,
       new_name: newName,
       ci_cd_only: this.ciCdOnly,
-    })
+    };
+
+    if (repoData) {
+      attributes = Object.assign(repoData, attributes);
+    }
+
+    return axios.post(this.importUrl, attributes)
     .then(({ data }) => {
       const job = $(`tr#repo_${id}`);
       job.attr('id', `project_${data.id}`);
@@ -58,7 +68,7 @@ class ImporterStatus {
       job.find('.import-target').html(`<a href="${data.full_path}">${data.full_path}</a>`);
       $('table.import-jobs tbody').prepend(job);
 
-      job.addClass('active');
+      job.addClass('table-active');
       const connectingVerb = this.ciCdOnly ? __('connecting') : __('importing');
       job.find('.import-actions').html(sprintf(
         _.escape(__('%{loadingIcon} Started')), {
@@ -67,7 +77,18 @@ class ImporterStatus {
         false,
       ));
     })
-    .catch(() => flash(__('An error occurred while importing project')));
+    .catch((error) => {
+      let details = error;
+
+      const $statusField = $(`#repo_${this.id} .job-status`);
+      $statusField.text(__('Failed'));
+
+      if (error.response && error.response.data && error.response.data.errors) {
+        details = error.response.data.errors;
+      }
+
+      flash(sprintf(__('An error occurred while importing project: %{details}'), { details }));
+    });
   }
 
   autoUpdate() {
@@ -81,7 +102,7 @@ class ImporterStatus {
 
           switch (job.import_status) {
             case 'finished':
-              jobItem.removeClass('active').addClass('success');
+              jobItem.removeClass('table-active').addClass('table-success');
               statusField.html(`<span><i class="fa fa-check"></i> ${__('Done')}</span>`);
               break;
             case 'scheduled':

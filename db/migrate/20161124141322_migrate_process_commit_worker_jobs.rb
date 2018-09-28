@@ -1,8 +1,18 @@
-# See http://doc.gitlab.com/ce/development/migration_style_guide.html
-# for more information on how to write migrations for GitLab.
-
 class MigrateProcessCommitWorkerJobs < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
+
+  class Repository
+    attr_reader :storage
+
+    def initialize(storage, relative_path)
+      @storage = storage
+      @relative_path = relative_path
+    end
+
+    def gitaly_repository
+      Gitaly::Repository.new(storage_name: @storage, relative_path: @relative_path)
+    end
+  end
 
   class Project < ActiveRecord::Base
     def self.find_including_path(id)
@@ -11,17 +21,12 @@ class MigrateProcessCommitWorkerJobs < ActiveRecord::Migration
         .find_by(id: id)
     end
 
-    def repository_storage_path
-      Gitlab.config.repositories.storages[repository_storage]['path']
-    end
-
-    def repository_path
-      # TODO: review if the change from Legacy storage needs to reflect here as well.
-      File.join(repository_storage_path, read_attribute(:path_with_namespace) + '.git')
+    def commit(rev)
+      Gitlab::GitalyClient::CommitService.new(repository).find_commit(rev)
     end
 
     def repository
-      @repository ||= Rugged::Repository.new(repository_path)
+      @repository ||= Repository.new(repository_storage, read_attribute(:path_with_namespace) + '.git')
     end
   end
 
@@ -40,22 +45,19 @@ class MigrateProcessCommitWorkerJobs < ActiveRecord::Migration
 
         next unless project
 
-        begin
-          commit = project.repository.lookup(payload['args'][2])
-        rescue Rugged::OdbError
-          next
-        end
+        commit = project.commit(payload['args'][2])
+        next unless commit
 
         hash = {
-          id: commit.oid,
-          message: encode(commit.message),
-          parent_ids: commit.parent_ids,
-          authored_date: commit.author[:time],
-          author_name: encode(commit.author[:name]),
-          author_email: encode(commit.author[:email]),
-          committed_date: commit.committer[:time],
-          committer_email: encode(commit.committer[:email]),
-          committer_name: encode(commit.committer[:name])
+          id: commit.id,
+          message: encode(commit.body),
+          parent_ids: commit.parent_ids.to_a,
+          authored_date: Time.at(commit.author.date.seconds).utc,
+          author_name: encode(commit.author.name),
+          author_email: encode(commit.author.email),
+          committed_date: Time.at(commit.committer.date.seconds).utc,
+          committer_email: encode(commit.committer.email),
+          committer_name: encode(commit.committer.name)
         }
 
         payload['args'][2] = hash

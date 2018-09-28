@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Referable concern
 #
 # Contains functionality related to making a model referable in Markdown, such
@@ -38,7 +40,7 @@ module Referable
     end
   end
 
-  module ClassMethods
+  class_methods do
     # The character that prefixes the actual reference identifier
     #
     # This should be overridden by the including class.

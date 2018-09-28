@@ -13,6 +13,10 @@ describe Clusters::Cluster do
   it { is_expected.to delegate_method(:status_reason).to(:provider) }
   it { is_expected.to delegate_method(:status_name).to(:provider) }
   it { is_expected.to delegate_method(:on_creation?).to(:provider) }
+  it { is_expected.to delegate_method(:active?).to(:platform_kubernetes).with_prefix }
+  it { is_expected.to delegate_method(:rbac?).to(:platform_kubernetes).with_prefix }
+  it { is_expected.to delegate_method(:installed?).to(:application_helm).with_prefix }
+  it { is_expected.to delegate_method(:installed?).to(:application_ingress).with_prefix }
   it { is_expected.to respond_to :project }
 
   describe '.enabled' do
@@ -34,6 +38,42 @@ describe Clusters::Cluster do
 
     before do
       create(:cluster, enabled: true)
+    end
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
+  describe '.user_provided' do
+    subject { described_class.user_provided }
+
+    let!(:cluster) { create(:cluster, :provided_by_user) }
+
+    before do
+      create(:cluster, :provided_by_gcp)
+    end
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
+  describe '.gcp_provided' do
+    subject { described_class.gcp_provided }
+
+    let!(:cluster) { create(:cluster, :provided_by_gcp) }
+
+    before do
+      create(:cluster, :provided_by_user)
+    end
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
+  describe '.gcp_installed' do
+    subject { described_class.gcp_installed }
+
+    let!(:cluster) { create(:cluster, :provided_by_gcp) }
+
+    before do
+      create(:cluster, :providing_by_gcp)
     end
 
     it { is_expected.to contain_exactly(cluster) }
@@ -198,9 +238,10 @@ describe Clusters::Cluster do
       let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
       let!(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
       let!(:runner) { create(:clusters_applications_runner, cluster: cluster) }
+      let!(:jupyter) { create(:clusters_applications_jupyter, cluster: cluster) }
 
       it 'returns a list of created applications' do
-        is_expected.to contain_exactly(helm, ingress, prometheus, runner)
+        is_expected.to contain_exactly(helm, ingress, prometheus, runner, jupyter)
       end
     end
   end

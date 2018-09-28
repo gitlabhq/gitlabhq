@@ -8,12 +8,16 @@ module Gitlab
   module Auth
     module LDAP
       class User < Gitlab::Auth::OAuth::User
+        extend ::Gitlab::Utils::Override
+
         class << self
+          # rubocop: disable CodeReuse/ActiveRecord
           def find_by_uid_and_provider(uid, provider)
             identity = ::Identity.with_extern_uid(provider, uid).take
 
             identity && identity.user
           end
+          # rubocop: enable CodeReuse/ActiveRecord
         end
 
         def save
@@ -29,7 +33,8 @@ module Gitlab
           self.class.find_by_uid_and_provider(auth_hash.uid, auth_hash.provider)
         end
 
-        def changed?
+        override :should_save?
+        def should_save?
           gl_user.changed? || gl_user.identities.any?(&:changed?)
         end
 
@@ -39,6 +44,10 @@ module Gitlab
 
         def allowed?
           Gitlab::Auth::LDAP::Access.allowed?(gl_user)
+        end
+
+        def valid_sign_in?
+          allowed? && super
         end
 
         def ldap_config

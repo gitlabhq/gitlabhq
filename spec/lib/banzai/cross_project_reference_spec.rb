@@ -14,6 +14,16 @@ describe Banzai::CrossProjectReference do
       end
     end
 
+    context 'when no project was referenced in group context' do
+      it 'returns the group from context' do
+        group = double
+
+        allow(self).to receive(:context).and_return({ group: group })
+
+        expect(parent_from_ref(nil)).to eq group
+      end
+    end
+
     context 'when referenced project does not exist' do
       it 'returns nil' do
         expect(parent_from_ref('invalid/reference')).to be_nil

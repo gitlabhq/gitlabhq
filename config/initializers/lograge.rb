@@ -22,11 +22,13 @@ unless Sidekiq.server?
         params: params,
         remote_ip: event.payload[:remote_ip],
         user_id: event.payload[:user_id],
-        username: event.payload[:username]
+        username: event.payload[:username],
+        ua: event.payload[:ua]
       }
 
       gitaly_calls = Gitlab::GitalyClient.get_request_count
       payload[:gitaly_calls] = gitaly_calls if gitaly_calls > 0
+      payload[:response] = event.payload[:response] if event.payload[:response]
 
       payload
     end

@@ -1,12 +1,10 @@
 <script>
-  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
   import tablePagination from '../../vue_shared/components/table_pagination.vue';
   import environmentTable from '../components/environments_table.vue';
 
   export default {
     components: {
       environmentTable,
-      loadingIcon,
       tablePagination,
     },
     props: {
@@ -42,17 +40,18 @@
 <template>
   <div class="environments-container">
 
-    <loading-icon
-      label="Loading environments"
+    <gl-loading-icon
       v-if="isLoading"
-      size="3"
+      :size="3"
+      class="prepend-top-default"
+      label="Loading environments"
     />
 
     <slot name="emptyState"></slot>
 
     <div
-      class="table-holder"
-      v-if="!isLoading && environments.length > 0">
+      v-if="!isLoading && environments.length > 0"
+      class="table-holder">
 
       <environment-table
         :environments="environments"

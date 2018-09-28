@@ -52,21 +52,97 @@ describe Commit do
     end
   end
 
-  describe '#author' do
+  describe '#author', :request_store do
     it 'looks up the author in a case-insensitive way' do
       user = create(:user, email: commit.author_email.upcase)
       expect(commit.author).to eq(user)
     end
 
-    it 'caches the author', :request_store do
+    it 'caches the author' do
       user = create(:user, email: commit.author_email)
-      expect(User).to receive(:find_by_any_email).and_call_original
 
       expect(commit.author).to eq(user)
+
       key = "Commit:author:#{commit.author_email.downcase}"
-      expect(RequestStore.store[key]).to eq(user)
 
+      expect(Gitlab::SafeRequestStore[key]).to eq(user)
       expect(commit.author).to eq(user)
+    end
+
+    context 'using eager loading' do
+      let!(:alice) { create(:user, email: 'alice@example.com') }
+      let!(:bob) { create(:user, email: 'hunter2@example.com') }
+
+      let(:alice_commit) do
+        described_class.new(RepoHelpers.sample_commit, project).tap do |c|
+          c.author_email = 'alice@example.com'
+        end
+      end
+
+      let(:bob_commit) do
+        # The commit for Bob uses one of his alternative Emails, instead of the
+        # primary one.
+        described_class.new(RepoHelpers.sample_commit, project).tap do |c|
+          c.author_email = 'bob@example.com'
+        end
+      end
+
+      let(:eve_commit) do
+        described_class.new(RepoHelpers.sample_commit, project).tap do |c|
+          c.author_email = 'eve@example.com'
+        end
+      end
+
+      let!(:commits) { [alice_commit, bob_commit, eve_commit] }
+
+      before do
+        create(:email, user: bob, email: 'bob@example.com')
+      end
+
+      it 'executes only two SQL queries' do
+        recorder = ActiveRecord::QueryRecorder.new do
+          # Running this first ensures we don't run one query for every
+          # commit.
+          commits.each(&:lazy_author)
+
+          # This forces the execution of the SQL queries necessary to load the
+          # data.
+          commits.each { |c| c.author.try(:id) }
+        end
+
+        expect(recorder.count).to eq(2)
+      end
+
+      it "preloads the authors for Commits matching a user's primary Email" do
+        commits.each(&:lazy_author)
+
+        expect(alice_commit.author).to eq(alice)
+      end
+
+      it "preloads the authors for Commits using a User's alternative Email" do
+        commits.each(&:lazy_author)
+
+        expect(bob_commit.author).to eq(bob)
+      end
+
+      it 'sets the author to Nil if an author could not be found for a Commit' do
+        commits.each(&:lazy_author)
+
+        expect(eve_commit.author).to be_nil
+      end
+
+      it 'does not execute SQL queries once the authors are preloaded' do
+        commits.each(&:lazy_author)
+        commits.each { |c| c.author.try(:id) }
+
+        recorder = ActiveRecord::QueryRecorder.new do
+          alice_commit.author
+          bob_commit.author
+          eve_commit.author
+        end
+
+        expect(recorder.count).to be_zero
+      end
     end
   end
 
@@ -149,6 +225,12 @@ eos
   end
 
   describe 'description' do
+    it 'returns no_commit_message when safe_message is blank' do
+      allow(commit).to receive(:safe_message).and_return(nil)
+
+      expect(commit.description).to eq('--no commit message')
+    end
+
     it 'returns description of commit message if title less than 100 characters' do
       message = <<eos
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis id blandit.
@@ -182,18 +264,17 @@ eos
     it { is_expected.to respond_to(:date) }
     it { is_expected.to respond_to(:diffs) }
     it { is_expected.to respond_to(:id) }
-    it { is_expected.to respond_to(:to_patch) }
   end
 
   describe '#closes_issues' do
     let(:issue) { create :issue, project: project }
     let(:other_project) { create(:project, :public) }
     let(:other_issue) { create :issue, project: other_project }
-    let(:commiter) { create :user }
+    let(:committer) { create :user }
 
     before do
-      project.add_developer(commiter)
-      other_project.add_developer(commiter)
+      project.add_developer(committer)
+      other_project.add_developer(committer)
     end
 
     it 'detects issues that this commit is marked as closing' do
@@ -201,7 +282,7 @@ eos
 
       allow(commit).to receive_messages(
         safe_message: "Fixes ##{issue.iid} and #{ext_ref}",
-        committer_email: commiter.email
+        committer_email: committer.email
       )
 
       expect(commit.closes_issues).to include(issue)
@@ -439,25 +520,21 @@ eos
   end
 
   describe '#uri_type' do
-    shared_examples 'URI type' do
-      it 'returns the URI type at the given path' do
-        expect(commit.uri_type('files/html')).to be(:tree)
-        expect(commit.uri_type('files/images/logo-black.png')).to be(:raw)
-        expect(project.commit('video').uri_type('files/videos/intro.mp4')).to be(:raw)
-        expect(commit.uri_type('files/js/application.js')).to be(:blob)
-      end
-
-      it "returns nil if the path doesn't exists" do
-        expect(commit.uri_type('this/path/doesnt/exist')).to be_nil
-      end
+    it 'returns the URI type at the given path' do
+      expect(commit.uri_type('files/html')).to be(:tree)
+      expect(commit.uri_type('files/images/logo-black.png')).to be(:raw)
+      expect(project.commit('video').uri_type('files/videos/intro.mp4')).to be(:raw)
+      expect(commit.uri_type('files/js/application.js')).to be(:blob)
     end
 
-    context 'when Gitaly commit_tree_entry feature is enabled' do
-      it_behaves_like 'URI type'
+    it "returns nil if the path doesn't exists" do
+      expect(commit.uri_type('this/path/doesnt/exist')).to be_nil
+      expect(commit.uri_type('../path/doesnt/exist')).to be_nil
     end
 
-    context 'when Gitaly commit_tree_entry feature is disabled', :disable_gitaly do
-      it_behaves_like 'URI type'
+    it 'is nil if the path is nil or empty' do
+      expect(commit.uri_type(nil)).to be_nil
+      expect(commit.uri_type("")).to be_nil
     end
   end
 

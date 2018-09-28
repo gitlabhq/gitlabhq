@@ -91,6 +91,10 @@ describe API::DeployKeys do
       expect do
         post api("/projects/#{project.id}/deploy_keys", admin), key_attrs
       end.to change { project.deploy_keys.count }.by(1)
+
+      new_key = project.deploy_keys.last
+      expect(new_key.key).to eq(key_attrs[:key])
+      expect(new_key.user).to eq(admin)
     end
 
     it 'returns an existing ssh key when attempting to add a duplicate' do
@@ -167,12 +171,50 @@ describe API::DeployKeys do
       deploy_key
     end
 
-    it 'deletes existing key' do
+    it 'removes existing key from project' do
       expect do
         delete api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", admin)
 
         expect(response).to have_gitlab_http_status(204)
       end.to change { project.deploy_keys.count }.by(-1)
+    end
+
+    context 'when the deploy key is public' do
+      it 'does not delete the deploy key' do
+        expect do
+          delete api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", admin)
+
+          expect(response).to have_gitlab_http_status(204)
+        end.not_to change { DeployKey.count }
+      end
+    end
+
+    context 'when the deploy key is not public' do
+      let!(:deploy_key) { create(:deploy_key, public: false) }
+
+      context 'when the deploy key is only used by this project' do
+        it 'deletes the deploy key' do
+          expect do
+            delete api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", admin)
+
+            expect(response).to have_gitlab_http_status(204)
+          end.to change { DeployKey.count }.by(-1)
+        end
+      end
+
+      context 'when the deploy key is used by other projects' do
+        before do
+          create(:deploy_keys_project, project: project2, deploy_key: deploy_key)
+        end
+
+        it 'does not delete the deploy key' do
+          expect do
+            delete api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", admin)
+
+            expect(response).to have_gitlab_http_status(204)
+          end.not_to change { DeployKey.count }
+        end
+      end
     end
 
     it 'returns 404 Not Found with invalid ID' do

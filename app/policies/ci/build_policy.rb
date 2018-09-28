@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class BuildPolicy < CommitStatusPolicy
     condition(:protected_ref) do
@@ -11,7 +13,15 @@ module Ci
     end
 
     condition(:owner_of_job) do
-      can?(:developer_access) && @subject.triggered_by?(@user)
+      @subject.triggered_by?(@user)
+    end
+
+    condition(:branch_allows_collaboration) do
+      @subject.project.branch_allows_collaboration?(@user, @subject.ref)
+    end
+
+    condition(:terminal, scope: :subject) do
+      @subject.has_terminal?
     end
 
     rule { protected_ref }.policy do
@@ -19,6 +29,13 @@ module Ci
       prevent :erase_build
     end
 
-    rule { can?(:master_access) | owner_of_job }.enable :erase_build
+    rule { can?(:admin_build) | (can?(:update_build) & owner_of_job) }.enable :erase_build
+
+    rule { can?(:public_access) & branch_allows_collaboration }.policy do
+      enable :update_build
+      enable :update_commit_status
+    end
+
+    rule { can?(:update_build) & terminal }.enable :create_build_terminal
   end
 end

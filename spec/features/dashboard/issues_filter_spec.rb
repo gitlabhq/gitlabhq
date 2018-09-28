@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-feature 'Dashboard Issues filtering', :js do
-  include SortingHelper
+describe 'Dashboard Issues filtering', :js do
+  include Spec::Support::Helpers::Features::SortingHelpers
 
   let(:user)      { create(:user) }
   let(:project)   { create(:project) }
@@ -11,10 +11,16 @@ feature 'Dashboard Issues filtering', :js do
   let!(:issue2) { create(:issue, project: project, author: user, assignees: [user], milestone: milestone) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     visit_issues
+  end
+
+  context 'without any filter' do
+    it 'shows error message' do
+      expect(page).to have_content 'Please select at least one filter to see results'
+    end
   end
 
   context 'filtering by milestone' do
@@ -25,15 +31,6 @@ feature 'Dashboard Issues filtering', :js do
 
       expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).to have_selector('.issue', count: 1)
-    end
-
-    it 'shows all issues with any milestone' do
-      show_milestone_dropdown
-
-      click_link 'Any Milestone'
-
-      expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
-      expect(page).to have_selector('.issue', count: 2)
     end
 
     it 'shows all issues with the selected milestone' do
@@ -50,15 +47,15 @@ feature 'Dashboard Issues filtering', :js do
     it 'updates atom feed link' do
       visit_issues(milestone_title: '', assignee_id: user.id)
 
-      link = find('.nav-controls a[title="Subscribe"]')
+      link = find('.nav-controls a[title="Subscribe to RSS feed"]')
       params = CGI.parse(URI.parse(link[:href]).query)
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
       auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
 
-      expect(params).to include('rss_token' => [user.rss_token])
+      expect(params).to include('feed_token' => [user.feed_token])
       expect(params).to include('milestone_title' => [''])
       expect(params).to include('assignee_id' => [user.id.to_s])
-      expect(auto_discovery_params).to include('rss_token' => [user.rss_token])
+      expect(auto_discovery_params).to include('feed_token' => [user.feed_token])
       expect(auto_discovery_params).to include('milestone_title' => [''])
       expect(auto_discovery_params).to include('assignee_id' => [user.id.to_s])
     end
@@ -67,13 +64,6 @@ feature 'Dashboard Issues filtering', :js do
   context 'filtering by label' do
     let(:label) { create(:label, project: project) }
     let!(:label_link) { create(:label_link, label: label, target: issue) }
-
-    it 'shows all issues without filter' do
-      page.within 'ul.content-list' do
-        expect(page).to have_content issue.title
-        expect(page).to have_content issue2.title
-      end
-    end
 
     it 'shows all issues with the selected label' do
       page.within '.labels-filter' do
@@ -89,15 +79,19 @@ feature 'Dashboard Issues filtering', :js do
   end
 
   context 'sorting' do
-    it 'shows sorted issues' do
-      sorting_by('Created date')
-      visit_issues
+    before do
+      visit_issues(assignee_id: user.id)
+    end
+
+    it 'remembers last sorting value' do
+      sort_by('Created date')
+      visit_issues(assignee_id: user.id)
 
       expect(find('.issues-filters')).to have_content('Created date')
     end
 
     it 'keeps sorting issues after visiting Projects Issues page' do
-      sorting_by('Created date')
+      sort_by('Created date')
       visit project_issues_path(project)
 
       expect(find('.issues-filters')).to have_content('Created date')

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Members
   class UpdateService < Members::BaseService
     # returns the updated member
@@ -6,7 +8,7 @@ module Members
 
       old_access_level = member.human_access
 
-      if member.update_attributes(params)
+      if member.update(params)
         after_execute(action: permission, old_access_level: old_access_level, member: member)
       end
 

@@ -1,5 +1,4 @@
 <script>
-
 /* This is a re-usable vue component for rendering a user avatar that
   does not need to link to the user's profile. The image and an optional
   tooltip can be configured by props passed to this component.
@@ -67,7 +66,9 @@ export default {
     // we provide an empty string when we use it inside user avatar link.
     // In both cases we should render the defaultAvatarUrl
     sanitizedSource() {
-      return this.imgSrc === '' || this.imgSrc === null ? defaultAvatarUrl : this.imgSrc;
+      let baseSrc = this.imgSrc === '' || this.imgSrc === null ? defaultAvatarUrl : this.imgSrc;
+      if (baseSrc.indexOf('?') === -1) baseSrc += `?width=${this.size}`;
+      return baseSrc;
     },
     resultantSrcAttribute() {
       return this.lazy ? placeholderImage : this.sanitizedSource;
@@ -85,7 +86,6 @@ export default {
 <template>
   <img
     v-tooltip
-    class="avatar"
     :class="{
       lazy: lazy,
       [avatarSizeClass]: true,
@@ -99,5 +99,7 @@ export default {
     :data-container="tooltipContainer"
     :data-placement="tooltipPlacement"
     :title="tooltipText"
+    class="avatar"
+    data-boundary="window"
   />
 </template>

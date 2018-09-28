@@ -75,7 +75,7 @@
     padding: 8px $gl-padding;
     border-bottom: 1px solid $border-color;
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       text-align: left;
     }
 
@@ -112,7 +112,7 @@
 
     &.image_file,
     &.video {
-      background: $file-image-bg;
+      background: $gray-darker;
       text-align: center;
       padding: 30px;
 
@@ -125,13 +125,13 @@
     &.wiki {
       padding: $gl-padding;
 
-      @media (min-width: $screen-md-min) {
+      @include media-breakpoint-up(md) {
         padding: $gl-padding * 2;
       }
     }
 
     &.blob-no-preview {
-      background: $blob-bg;
+      background: $gray-darker;
       text-shadow: 0 1px 2px $white-light;
       padding: 100px 0;
     }
@@ -146,7 +146,7 @@
       }
 
       tr {
-        border-bottom: 1px solid $blame-border;
+        border-bottom: 1px solid $gray-darker;
 
         &:last-child {
           border-bottom: 0;
@@ -184,7 +184,7 @@
 
         &.line-numbers {
           float: none;
-          border-left: 1px solid $blame-line-numbers-border;
+          border-left: 1px solid $gl-gray-100;
 
           i {
             float: none;
@@ -211,7 +211,7 @@
     }
 
     &.logs {
-      background: $logs-bg;
+      background: $gray-darker;
       max-height: 700px;
       overflow-y: auto;
 
@@ -233,7 +233,7 @@
           }
 
           &:hover {
-            background: $row-hover;
+            background: $blue-50;
           }
         }
       }
@@ -286,19 +286,19 @@ span.idiff {
 
   .new-file {
     a {
-      color: $gl-text-green;
+      color: $green-600;
     }
   }
 
   .renamed-file {
     a {
-      color: $gl-text-orange;
+      color: $orange-600;
     }
   }
 
   .deleted-file {
     a {
-      color: $gl-text-red;
+      color: $red-500;
     }
   }
 
@@ -312,24 +312,27 @@ span.idiff {
     text-decoration: none;
 
     .new-file {
-      color: $notify-new-file;
+      color: $green-600;
     }
 
     .deleted-file {
-      color: $notify-deleted-file;
+      color: $red-700;
     }
   }
 }
 
 .file-title-flex-parent {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: $gray-light;
-  border-bottom: 1px solid $border-color;
-  padding: 5px $gl-padding;
-  margin: 0;
-  border-radius: $border-radius-default $border-radius-default 0 0;
+  &,
+  .file-holder & {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: $gray-light;
+    border-bottom: 1px solid $border-color;
+    padding: 5px $gl-padding;
+    margin: 0;
+    border-radius: $border-radius-default $border-radius-default 0 0;
+  }
 
   .file-header-content {
     white-space: nowrap;
@@ -337,6 +340,17 @@ span.idiff {
     text-overflow: ellipsis;
     padding-right: 30px;
     position: relative;
+    width: auto;
+
+    @media (max-width: map-get($grid-breakpoints, sm)-1) {
+      width: 100%;
+    }
+  }
+
+  .file-holder & {
+    .file-actions {
+      position: static;
+    }
   }
 
   .btn-clipboard {
@@ -364,7 +378,7 @@ span.idiff {
     }
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     display: block;
 
     .file-actions {
@@ -399,4 +413,52 @@ span.idiff {
 .label-lfs {
   color: $common-gray-light;
   border: 1px solid $common-gray-light;
+}
+
+.preview-container {
+  height: 100%;
+  overflow: auto;
+
+  .file-container {
+    background-color: $gray-darker;
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    .file-content {
+      padding: $gl-padding;
+      max-width: 100%;
+      max-height: 100%;
+
+      img {
+        max-width: 90%;
+        max-height: 70vh;
+      }
+
+      .is-zoomable {
+        cursor: pointer;
+        cursor: zoom-in;
+
+        &.is-zoomed {
+          cursor: pointer;
+          cursor: zoom-out;
+          max-width: none;
+          max-height: none;
+          margin-right: $gl-padding;
+        }
+      }
+    }
+
+    .file-info {
+      font-size: $label-font-size;
+      color: $diff-image-info-color;
+    }
+  }
+
+  .md-previewer {
+    padding: $gl-padding;
+  }
 }

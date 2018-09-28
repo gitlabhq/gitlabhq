@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Mini Pipeline Graph in Commit View', :js do
+describe 'Mini Pipeline Graph in Commit View', :js do
   let(:project) { create(:project, :public, :repository) }
 
   context 'when commit has pipelines' do

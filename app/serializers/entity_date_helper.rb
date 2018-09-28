@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module EntityDateHelper
   include ActionView::Helpers::DateHelper
+  include ActionView::Helpers::TagHelper
 
   def interval_in_words(diff)
     return 'Not started' unless diff
@@ -33,5 +36,36 @@ module EntityDateHelper
     duration_hash[:seconds] = seconds if seconds > 0
 
     duration_hash
+  end
+
+  # Generates an HTML-formatted string for remaining dates based on start_date and due_date
+  #
+  # It returns "Past due" for expired entities
+  # It returns "Upcoming" for upcoming entities
+  # If due date is provided, it returns "# days|weeks|months remaining|ago"
+  # If start date is provided and elapsed, with no due date, it returns "# days elapsed"
+  def remaining_days_in_words(entity)
+    if entity.try(:expired?)
+      content_tag(:strong, 'Past due')
+    elsif entity.try(:upcoming?)
+      content_tag(:strong, 'Upcoming')
+    elsif entity.due_date
+      is_upcoming = (entity.due_date - Date.today).to_i > 0
+      time_ago = time_ago_in_words(entity.due_date)
+
+      # https://gitlab.com/gitlab-org/gitlab-ce/issues/49440
+      #
+      # Need to improve the i18n here and do a full translation
+      # of the string instead of piecewise translations.
+      content = time_ago
+        .gsub(/\d+/) { |match| "<strong>#{match}</strong>" }
+        .remove("about ")
+      remaining_or_ago = is_upcoming ? _("remaining") : _("ago")
+
+      "#{content} #{remaining_or_ago}".html_safe
+    elsif entity.start_date && entity.start_date.past?
+      days = entity.elapsed_days
+      "#{content_tag(:strong, days)} #{'day'.pluralize(days)} elapsed".html_safe
+    end
   end
 end

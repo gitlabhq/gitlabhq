@@ -22,6 +22,31 @@ describe Gitlab::UrlBuilder do
       end
     end
 
+    context 'when passing a Milestone' do
+      let(:group) { create(:group) }
+      let(:project) { create(:project, :public, namespace: group) }
+
+      context 'belonging to a project' do
+        it 'returns a proper URL' do
+          milestone = create(:milestone, project: project)
+
+          url = described_class.build(milestone)
+
+          expect(url).to eq "#{Settings.gitlab['url']}/#{milestone.project.full_path}/milestones/#{milestone.iid}"
+        end
+      end
+
+      context 'belonging to a group' do
+        it 'returns a proper URL' do
+          milestone = create(:milestone, group: group)
+
+          url = described_class.build(milestone)
+
+          expect(url).to eq "#{Settings.gitlab['url']}/groups/#{milestone.group.full_path}/-/milestones/#{milestone.iid}"
+        end
+      end
+    end
+
     context 'when passing a MergeRequest' do
       it 'returns a proper URL' do
         merge_request = build_stubbed(:merge_request, iid: 42)

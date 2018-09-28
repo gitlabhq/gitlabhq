@@ -1,12 +1,12 @@
 - display_issuable_type = issuable_display_type(issuable)
 - button_action = issuable.closed? ? 'reopen' : 'close'
 - display_button_action = button_action.capitalize
-- button_responsive_class = 'hidden-xs hidden-sm'
+- button_responsive_class = 'd-none d-sm-none d-md-block'
 - button_class = "#{button_responsive_class} btn btn-grouped js-issuable-close-button js-btn-issue-action issuable-close-button"
 - toggle_class = "#{button_responsive_class} btn btn-nr dropdown-toggle js-issuable-close-toggle"
 - button_method = issuable_close_reopen_button_method(issuable)
 
-.pull-left.btn-group.prepend-left-10.issuable-close-dropdown.droplab-dropdown.js-issuable-close-dropdown
+.float-left.btn-group.prepend-left-10.issuable-close-dropdown.droplab-dropdown.js-issuable-close-dropdown
   = link_to "#{display_button_action} #{display_issuable_type}", close_reopen_issuable_path(issuable),
             method: button_method, class: "#{button_class} btn-#{button_action}", title: "#{display_button_action} #{display_issuable_type}"
 
@@ -14,7 +14,7 @@
                data: { 'dropdown-trigger' => '#issuable-close-menu' }, 'aria-label' => 'Toggle dropdown' do
     = icon('caret-down', class: 'toggle-icon icon')
 
-  %ul#issuable-close-menu.js-issuable-close-menu.dropdown-menu{ class: button_responsive_class, data: { dropdown: true } }
+  %ul#issuable-close-menu.js-issuable-close-menu.dropdown-menu{ data: { dropdown: true } }
     %li.close-item{ class: "#{issuable_button_visibility(issuable, true) || 'droplab-item-selected'}",
                     data: { text: "Close #{display_issuable_type}", url: close_issuable_path(issuable),
                     button_class: "#{button_class} btn-close", toggle_class: "#{toggle_class} btn-close-color", method: button_method } }

@@ -86,7 +86,7 @@ describe Ci::StopEnvironmentsService do
 
       context 'when user has permission to stop environments' do
         before do
-          project.add_master(user)
+          project.add_maintainer(user)
         end
 
         it 'does not stop environment' do

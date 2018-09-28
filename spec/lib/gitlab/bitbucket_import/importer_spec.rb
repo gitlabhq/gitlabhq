@@ -19,6 +19,18 @@ describe Gitlab::BitbucketImport::Importer do
     ]
   end
 
+  let(:reporters) do
+    [
+      nil,
+      { "username" => "reporter1" },
+      nil,
+      { "username" => "reporter2" },
+      { "username" => "reporter1" },
+      nil,
+      { "username" => "reporter3" }
+    ]
+  end
+
   let(:sample_issues_statuses) do
     issues = []
 
@@ -34,6 +46,10 @@ describe Gitlab::BitbucketImport::Importer do
             html: "Some content to issue #{index}"
         }
       }
+    end
+
+    reporters.map.with_index do |reporter, index|
+      issues[index]['reporter'] = reporter
     end
 
     issues
@@ -53,6 +69,7 @@ describe Gitlab::BitbucketImport::Importer do
   let(:project) do
     create(
       :project,
+      :repository,
       import_source: project_identifier,
       import_url: "https://bitbucket.org/#{project_identifier}.git",
       import_data_attributes: { credentials: data }
@@ -69,8 +86,82 @@ describe Gitlab::BitbucketImport::Importer do
     }
   end
 
+  let(:sample) { RepoHelpers.sample_compare }
+
   before do
     allow(importer).to receive(:gitlab_shell) { gitlab_shell }
+  end
+
+  subject { described_class.new(project) }
+
+  describe '#import_pull_requests' do
+    before do
+      allow(subject).to receive(:import_wiki)
+      allow(subject).to receive(:import_issues)
+
+      pull_request = instance_double(
+        Bitbucket::Representation::PullRequest,
+        iid: 10,
+        source_branch_sha: sample.commits.last,
+        source_branch_name: Gitlab::Git::BRANCH_REF_PREFIX + sample.source_branch,
+        target_branch_sha: sample.commits.first,
+        target_branch_name: Gitlab::Git::BRANCH_REF_PREFIX + sample.target_branch,
+        title: 'This is a title',
+        description: 'This is a test pull request',
+        state: 'merged',
+        author: 'other',
+        created_at: Time.now,
+        updated_at: Time.now)
+
+      # https://gitlab.com/gitlab-org/gitlab-test/compare/c1acaa58bbcbc3eafe538cb8274ba387047b69f8...5937ac0a7beb003549fc5fd26fc247ad
+      @inline_note = instance_double(
+        Bitbucket::Representation::PullRequestComment,
+        iid: 2,
+        file_path: '.gitmodules',
+        old_pos: nil,
+        new_pos: 4,
+        note: 'Hello world',
+        author: 'root',
+        created_at: Time.now,
+        updated_at: Time.now,
+        inline?: true,
+        has_parent?: false)
+
+      @reply = instance_double(
+        Bitbucket::Representation::PullRequestComment,
+        iid: 3,
+        file_path: '.gitmodules',
+        note: 'Hello world',
+        author: 'root',
+        created_at: Time.now,
+        updated_at: Time.now,
+        inline?: true,
+        has_parent?: true,
+        parent_id: 2)
+
+      comments = [@inline_note, @reply]
+
+      allow(subject.client).to receive(:repo)
+      allow(subject.client).to receive(:pull_requests).and_return([pull_request])
+      allow(subject.client).to receive(:pull_request_comments).with(anything, pull_request.iid).and_return(comments)
+    end
+
+    it 'imports threaded discussions' do
+      expect { subject.execute }.to change { MergeRequest.count }.by(1)
+
+      merge_request = MergeRequest.first
+      expect(merge_request.notes.count).to eq(2)
+      expect(merge_request.notes.map(&:discussion_id).uniq.count).to eq(1)
+
+      notes = merge_request.notes.order(:id).to_a
+      start_note = notes.first
+      expect(start_note).to be_a(DiffNote)
+      expect(start_note.note).to eq(@inline_note.note)
+
+      reply_note = notes.last
+      expect(reply_note).to be_a(DiffNote)
+      expect(reply_note.note).to eq(@reply.note)
+    end
   end
 
   context 'issues statuses' do
@@ -137,13 +228,27 @@ describe Gitlab::BitbucketImport::Importer do
       it 'imports to the project disk_path' do
         expect(project.wiki).to receive(:repository_exists?) { false }
         expect(importer.gitlab_shell).to receive(:import_repository).with(
-          project.repository_storage_path,
+          project.repository_storage,
           project.wiki.disk_path,
           project.import_url + '/wiki'
         )
 
         importer.execute
 
+        expect(importer.errors).to be_empty
+      end
+    end
+
+    describe 'issue import' do
+      it 'maps reporters to anonymous if bitbucket reporter is nil' do
+        allow(importer).to receive(:import_wiki)
+        importer.execute
+
+        expect(project.issues.size).to eq(7)
+        expect(project.issues.where("description LIKE ?", '%Anonymous%').size).to eq(3)
+        expect(project.issues.where("description LIKE ?", '%reporter1%').size).to eq(2)
+        expect(project.issues.where("description LIKE ?", '%reporter2%').size).to eq(1)
+        expect(project.issues.where("description LIKE ?", '%reporter3%').size).to eq(1)
         expect(importer.errors).to be_empty
       end
     end

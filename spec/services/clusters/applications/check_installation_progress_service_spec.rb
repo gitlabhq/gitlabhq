@@ -43,7 +43,7 @@ describe Clusters::Applications::CheckInstallationProgressService do
           service.execute
 
           expect(application).to be_errored
-          expect(application.status_reason).to match(/\btimeouted\b/)
+          expect(application.status_reason).to match(/\btimed out\b/)
         end
       end
     end

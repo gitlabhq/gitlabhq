@@ -1,4 +1,4 @@
-- @content_class = "limit-container-width limit-container-width-sm" unless fluid_layout
+- @content_class = "limit-container-width" unless fluid_layout
 - page_title _("Edit"), @page.title.capitalize, _("Wiki")
 
 = wiki_page_errors(@error)
@@ -22,15 +22,14 @@
 
   .nav-controls
     - if can?(current_user, :create_wiki, @project)
-      = link_to '#modal-new-wiki', class: "add-new-wiki btn btn-new", "data-toggle" => "modal" do
+      = link_to '#modal-new-wiki', class: "add-new-wiki btn btn-success", "data-toggle" => "modal" do
         = s_("Wiki|New page")
     - if @page.persisted?
       = link_to project_wiki_history_path(@project, @page), class: "btn" do
         = s_("Wiki|Page history")
       - if can?(current_user, :admin_wiki, @project)
-        = link_to project_wiki_path(@project, @page), data: { confirm: s_("WikiPageConfirmDelete|Are you sure you want to delete this page?")}, method: :delete, class: "btn btn-danger" do
-          = _("Delete")
+        #delete-wiki-modal-wrapper{ data: { delete_wiki_url: project_wiki_path(@project, @page), page_title: @page.title.capitalize } }
 
-= render 'form'
+= render 'form', uploads_path: wiki_attachment_upload_url
 
 = render 'sidebar'

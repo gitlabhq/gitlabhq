@@ -15,7 +15,7 @@ export default class UserCallout {
 
   init() {
     if (!this.isCalloutDismissed || this.isCalloutDismissed === 'false') {
-      $('.js-close-callout').on('click', e => this.dismissCallout(e));
+      this.userCalloutBody.find('.js-close-callout').on('click', e => this.dismissCallout(e));
     }
   }
 
@@ -23,12 +23,15 @@ export default class UserCallout {
     const $currentTarget = $(e.currentTarget);
 
     if (this.options.setCalloutPerProject) {
-      Cookies.set(this.cookieName, 'true', { expires: 365, path: this.userCalloutBody.data('projectPath') });
+      Cookies.set(this.cookieName, 'true', {
+        expires: 365,
+        path: this.userCalloutBody.data('projectPath'),
+      });
     } else {
       Cookies.set(this.cookieName, 'true', { expires: 365 });
     }
 
-    if ($currentTarget.hasClass('close')) {
+    if ($currentTarget.hasClass('close') || $currentTarget.hasClass('js-close')) {
       this.userCalloutBody.remove();
     }
   }

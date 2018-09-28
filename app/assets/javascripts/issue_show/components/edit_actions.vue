@@ -1,6 +1,12 @@
 <script>
+  import { __, sprintf } from '~/locale';
   import updateMixin from '../mixins/update';
   import eventHub from '../event_hub';
+
+  const issuableTypes = {
+    issue: __('Issue'),
+    epic: __('Epic'),
+  };
 
   export default {
     mixins: [updateMixin],
@@ -17,6 +23,10 @@
         type: Boolean,
         required: false,
         default: true,
+      },
+      issuableType: {
+        type: String,
+        required: true,
       },
     },
     data() {
@@ -37,8 +47,11 @@
         eventHub.$emit('close.form');
       },
       deleteIssuable() {
+        const confirmMessage = sprintf(__('%{issuableType} will be removed! Are you sure?'), {
+          issuableType: issuableTypes[this.issuableType],
+        });
         // eslint-disable-next-line no-alert
-        if (confirm('Issue will be removed! Are you sure?')) {
+        if (window.confirm(confirmMessage)) {
           this.deleteLoading = true;
 
           eventHub.$emit('delete.issuable');
@@ -51,36 +64,36 @@
 <template>
   <div class="prepend-top-default append-bottom-default clearfix">
     <button
-      class="btn btn-save pull-left"
       :class="{ disabled: formState.updateLoading || !isSubmitEnabled }"
-      type="submit"
       :disabled="formState.updateLoading || !isSubmitEnabled"
+      class="btn btn-success float-left"
+      type="submit"
       @click.prevent="updateIssuable">
       Save changes
       <i
+        v-if="formState.updateLoading"
         class="fa fa-spinner fa-spin"
-        aria-hidden="true"
-        v-if="formState.updateLoading">
+        aria-hidden="true">
       </i>
     </button>
     <button
-      class="btn btn-default pull-right"
+      class="btn btn-default float-right"
       type="button"
       @click="closeForm">
       Cancel
     </button>
     <button
       v-if="shouldShowDeleteButton"
-      class="btn btn-danger pull-right append-right-default"
       :class="{ disabled: deleteLoading }"
-      type="button"
       :disabled="deleteLoading"
+      class="btn btn-danger float-right append-right-default"
+      type="button"
       @click="deleteIssuable">
       Delete
       <i
+        v-if="deleteLoading"
         class="fa fa-spinner fa-spin"
-        aria-hidden="true"
-        v-if="deleteLoading">
+        aria-hidden="true">
       </i>
     </button>
   </div>

@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, one-var, one-var-declaration-per-line, no-use-before-define, comma-dangle, max-len */
+/* eslint-disable one-var, one-var-declaration-per-line, no-use-before-define, comma-dangle */
 
 import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
@@ -92,6 +92,7 @@ describe('Issue', function() {
       function mockCanCreateBranch(canCreateBranch) {
         mock.onGet(/(.*)\/can_create_branch$/).reply(200, {
           can_create_branch: canCreateBranch,
+          suggested_branch_name: 'foo-99',
         });
       }
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Email < ActiveRecord::Base
   include Sortable
   include Gitlab::SQL::Pattern
@@ -23,6 +25,10 @@ class Email < ActiveRecord::Base
 
   def unique_email
     self.errors.add(:email, 'has already been taken') if User.exists?(email: self.email)
+  end
+
+  def accept_pending_invitations!
+    user.accept_pending_invitations!
   end
 
   # once email is confirmed, update the gpg signatures

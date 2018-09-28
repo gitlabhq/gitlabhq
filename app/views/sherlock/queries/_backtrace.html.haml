@@ -1,9 +1,9 @@
 .prepend-top-default
-  .panel.panel-default
-    .panel-heading
+  .card
+    .card-header
       %strong
         = t('sherlock.application_backtrace')
-    %ul.well-list
+    %ul.content-list
       - @query.application_backtrace.each do |location|
         %li
           %strong
@@ -15,11 +15,11 @@
             = t('sherlock.line')
             = location.line
 
-  .panel.panel-default
-    .panel-heading
+  .card
+    .card-header
       %strong
         = t('sherlock.full_backtrace')
-    %ul.well-list
+    %ul.content-list
       - @query.backtrace.each do |location|
         %li
           - if location.application?

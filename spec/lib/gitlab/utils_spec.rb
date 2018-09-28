@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::Utils do
-  delegate :to_boolean, :boolean_to_yes_no, :slugify, :random_string, :which, :ensure_array_from_string, to: :described_class
+  delegate :to_boolean, :boolean_to_yes_no, :slugify, :random_string, :which, :ensure_array_from_string,
+   :bytes_to_megabytes, to: :described_class
 
   describe '.slugify' do
     {
@@ -95,6 +96,14 @@ describe Gitlab::Utils do
       str = 'seven, eight, 9, 10'
 
       expect(ensure_array_from_string(str)).to eq(%w[seven eight 9 10])
+    end
+  end
+
+  describe '.bytes_to_megabytes' do
+    it 'converts bytes to megabytes' do
+      bytes = 1.megabyte
+
+      expect(bytes_to_megabytes(bytes)).to eq(1)
     end
   end
 end

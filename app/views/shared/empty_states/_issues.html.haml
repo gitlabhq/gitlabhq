@@ -3,10 +3,10 @@
 - has_button = button_path || project_select_button
 
 .row.empty-state
-  .col-xs-12
+  .col-12
     .svg-content
       = image_tag 'illustrations/issues.svg'
-  .col-xs-12
+  .col-12
     .text-content
       - if current_user
         %h4
@@ -16,7 +16,7 @@
         - if has_button
           .text-center
             - if project_select_button
-              = render 'shared/new_project_item_select', path: 'issues/new', label: 'New issue', type: :issues
+              = render 'shared/new_project_item_select', path: 'issues/new', label: 'New issue', type: :issues, with_feature_enabled: 'issues'
             - else
               = link_to 'New issue', button_path, class: 'btn btn-success', title: 'New issue', id: 'new_issue_link'
       - else

@@ -1,6 +1,8 @@
 module Gitlab
   module Database
     module MigrationHelpers
+      include Gitlab::Database::ArelMethods
+
       BACKGROUND_MIGRATION_BATCH_SIZE = 1000 # Number of rows to process per job
       BACKGROUND_MIGRATION_JOB_BUFFER_SIZE = 1000 # Number of jobs to bulk queue at a time
 
@@ -56,10 +58,16 @@ module Gitlab
 
         if Database.postgresql?
           options = options.merge({ algorithm: :concurrently })
-          disable_statement_timeout
         end
 
-        add_index(table_name, column_name, options)
+        if index_exists?(table_name, column_name, options)
+          Rails.logger.warn "Index not created because it already exists (this may be due to an aborted migration or similar): table_name: #{table_name}, column_name: #{column_name}"
+          return
+        end
+
+        disable_statement_timeout do
+          add_index(table_name, column_name, options)
+        end
       end
 
       # Removes an existed index, concurrently when supported
@@ -80,10 +88,16 @@ module Gitlab
 
         if supports_drop_index_concurrently?
           options = options.merge({ algorithm: :concurrently })
-          disable_statement_timeout
         end
 
-        remove_index(table_name, options.merge({ column: column_name }))
+        unless index_exists?(table_name, column_name, options)
+          Rails.logger.warn "Index not removed because it does not exist (this may be due to an aborted migration or similar): table_name: #{table_name}, column_name: #{column_name}"
+          return
+        end
+
+        disable_statement_timeout do
+          remove_index(table_name, options.merge({ column: column_name }))
+        end
       end
 
       # Removes an existing index, concurrently when supported
@@ -104,10 +118,16 @@ module Gitlab
 
         if supports_drop_index_concurrently?
           options = options.merge({ algorithm: :concurrently })
-          disable_statement_timeout
         end
 
-        remove_index(table_name, options.merge({ name: index_name }))
+        unless index_exists_by_name?(table_name, index_name)
+          Rails.logger.warn "Index not removed because it does not exist (this may be due to an aborted migration or similar): table_name: #{table_name}, index_name: #{index_name}"
+          return
+        end
+
+        disable_statement_timeout do
+          remove_index(table_name, options.merge({ name: index_name }))
+        end
       end
 
       # Only available on Postgresql >= 9.2
@@ -140,6 +160,13 @@ module Gitlab
         # of PostgreSQL's "VALIDATE CONSTRAINT". As a result we'll just fall
         # back to the normal foreign key procedure.
         if Database.mysql?
+          if foreign_key_exists?(source, target, column: column)
+            Rails.logger.warn "Foreign key not created because it exists already " \
+              "(this may be due to an aborted migration or similar): " \
+              "source: #{source}, target: #{target}, column: #{column}"
+            return
+          end
+
           return add_foreign_key(source, target,
                                  column: column,
                                  on_delete: on_delete)
@@ -147,27 +174,45 @@ module Gitlab
           on_delete = 'SET NULL' if on_delete == :nullify
         end
 
-        disable_statement_timeout
-
         key_name = concurrent_foreign_key_name(source, column)
 
-        # Using NOT VALID allows us to create a key without immediately
-        # validating it. This means we keep the ALTER TABLE lock only for a
-        # short period of time. The key _is_ enforced for any newly created
-        # data.
-        execute <<-EOF.strip_heredoc
-        ALTER TABLE #{source}
-        ADD CONSTRAINT #{key_name}
-        FOREIGN KEY (#{column})
-        REFERENCES #{target} (id)
-        #{on_delete ? "ON DELETE #{on_delete.upcase}" : ''}
-        NOT VALID;
-        EOF
+        unless foreign_key_exists?(source, target, column: column)
+          Rails.logger.warn "Foreign key not created because it exists already " \
+            "(this may be due to an aborted migration or similar): " \
+            "source: #{source}, target: #{target}, column: #{column}"
+
+          # Using NOT VALID allows us to create a key without immediately
+          # validating it. This means we keep the ALTER TABLE lock only for a
+          # short period of time. The key _is_ enforced for any newly created
+          # data.
+          execute <<-EOF.strip_heredoc
+          ALTER TABLE #{source}
+          ADD CONSTRAINT #{key_name}
+          FOREIGN KEY (#{column})
+          REFERENCES #{target} (id)
+          #{on_delete ? "ON DELETE #{on_delete.upcase}" : ''}
+          NOT VALID;
+          EOF
+        end
 
         # Validate the existing constraint. This can potentially take a very
         # long time to complete, but fortunately does not lock the source table
         # while running.
-        execute("ALTER TABLE #{source} VALIDATE CONSTRAINT #{key_name};")
+        #
+        # Note this is a no-op in case the constraint is VALID already
+        disable_statement_timeout do
+          execute("ALTER TABLE #{source} VALIDATE CONSTRAINT #{key_name};")
+        end
+      end
+
+      def foreign_key_exists?(source, target = nil, column: nil)
+        foreign_keys(source).any? do |key|
+          if column
+            key.options[:column].to_s == column.to_s
+          else
+            key.to_table.to_s == target.to_s
+          end
+        end
       end
 
       # Returns the name for a concurrent foreign key.
@@ -182,8 +227,48 @@ module Gitlab
       # Long-running migrations may take more than the timeout allowed by
       # the database. Disable the session's statement timeout to ensure
       # migrations don't get killed prematurely. (PostgreSQL only)
+      #
+      # There are two possible ways to disable the statement timeout:
+      #
+      # - Per transaction (this is the preferred and default mode)
+      # - Per connection (requires a cleanup after the execution)
+      #
+      # When using a per connection disable statement, code must be inside
+      # a block so we can automatically execute `RESET ALL` after block finishes
+      # otherwise the statement will still be disabled until connection is dropped
+      # or `RESET ALL` is executed
       def disable_statement_timeout
-        execute('SET statement_timeout TO 0') if Database.postgresql?
+        # bypass disabled_statement logic when not using postgres, but still execute block when one is given
+        unless Database.postgresql?
+          if block_given?
+            yield
+          end
+
+          return
+        end
+
+        if block_given?
+          begin
+            execute('SET statement_timeout TO 0')
+
+            yield
+          ensure
+            execute('RESET ALL')
+          end
+        else
+          unless transaction_open?
+            raise <<~ERROR
+              Cannot call disable_statement_timeout() without a transaction open or outside of a transaction block.
+              If you don't want to use a transaction wrap your code in a block call:
+
+              disable_statement_timeout { # code that requires disabled statement here }
+
+              This will make sure statement_timeout is disabled before and reset after the block execution is finished.
+            ERROR
+          end
+
+          execute('SET LOCAL statement_timeout TO 0')
+        end
       end
 
       def true_value
@@ -274,7 +359,7 @@ module Gitlab
           stop_arel = yield table, stop_arel if block_given?
           stop_row = exec_query(stop_arel.to_sql).to_hash.first
 
-          update_arel = Arel::UpdateManager.new(ActiveRecord::Base)
+          update_arel = arel_update_manager
             .table(table)
             .set([[table[column], value]])
             .where(table[:id].gteq(start_id))
@@ -325,30 +410,30 @@ module Gitlab
             'in the body of your migration class'
         end
 
-        disable_statement_timeout
+        disable_statement_timeout do
+          transaction do
+            if limit
+              add_column(table, column, type, default: nil, limit: limit)
+            else
+              add_column(table, column, type, default: nil)
+            end
 
-        transaction do
-          if limit
-            add_column(table, column, type, default: nil, limit: limit)
-          else
-            add_column(table, column, type, default: nil)
+            # Changing the default before the update ensures any newly inserted
+            # rows already use the proper default value.
+            change_column_default(table, column, default)
           end
 
-          # Changing the default before the update ensures any newly inserted
-          # rows already use the proper default value.
-          change_column_default(table, column, default)
-        end
+          begin
+            update_column_in_batches(table, column, default, &block)
 
-        begin
-          update_column_in_batches(table, column, default, &block)
+            change_column_null(table, column, false) unless allow_null
+          # We want to rescue _all_ exceptions here, even those that don't inherit
+          # from StandardError.
+          rescue Exception => error # rubocop: disable all
+            remove_column(table, column)
 
-          change_column_null(table, column, false) unless allow_null
-        # We want to rescue _all_ exceptions here, even those that don't inherit
-        # from StandardError.
-        rescue Exception => error # rubocop: disable all
-          remove_column(table, column)
-
-          raise error
+            raise error
+          end
         end
       end
 
@@ -551,6 +636,97 @@ module Gitlab
           # migration inline in dev / test environments.
           Gitlab::BackgroundMigration.steal('CopyColumn')
           Gitlab::BackgroundMigration.steal('CleanupConcurrentTypeChange')
+        end
+      end
+
+      # Renames a column using a background migration.
+      #
+      # Because this method uses a background migration it's more suitable for
+      # large tables. For small tables it's better to use
+      # `rename_column_concurrently` since it can complete its work in a much
+      # shorter amount of time and doesn't rely on Sidekiq.
+      #
+      # Example usage:
+      #
+      #     rename_column_using_background_migration(
+      #       :users,
+      #       :feed_token,
+      #       :rss_token
+      #     )
+      #
+      # table - The name of the database table containing the column.
+      #
+      # old - The old column name.
+      #
+      # new - The new column name.
+      #
+      # type - The type of the new column. If no type is given the old column's
+      #        type is used.
+      #
+      # batch_size - The number of rows to schedule in a single background
+      #              migration.
+      #
+      # interval - The time interval between every background migration.
+      def rename_column_using_background_migration(
+        table,
+        old_column,
+        new_column,
+        type: nil,
+        batch_size: 10_000,
+        interval: 10.minutes
+      )
+
+        check_trigger_permissions!(table)
+
+        old_col = column_for(table, old_column)
+        new_type = type || old_col.type
+        max_index = 0
+
+        add_column(table, new_column, new_type,
+                   limit: old_col.limit,
+                   precision: old_col.precision,
+                   scale: old_col.scale)
+
+        # We set the default value _after_ adding the column so we don't end up
+        # updating any existing data with the default value. This isn't
+        # necessary since we copy over old values further down.
+        change_column_default(table, new_column, old_col.default) if old_col.default
+
+        install_rename_triggers(table, old_column, new_column)
+
+        model = Class.new(ActiveRecord::Base) do
+          self.table_name = table
+
+          include ::EachBatch
+        end
+
+        # Schedule the jobs that will copy the data from the old column to the
+        # new one. Rows with NULL values in our source column are skipped since
+        # the target column is already NULL at this point.
+        model.where.not(old_column => nil).each_batch(of: batch_size) do |batch, index|
+          start_id, end_id = batch.pluck('MIN(id), MAX(id)').first
+          max_index = index
+
+          BackgroundMigrationWorker.perform_in(
+            index * interval,
+            'CopyColumn',
+            [table, old_column, new_column, start_id, end_id]
+          )
+        end
+
+        # Schedule the renaming of the column to happen (initially) 1 hour after
+        # the last batch finished.
+        BackgroundMigrationWorker.perform_in(
+          (max_index * interval) + 1.hour,
+          'CleanupConcurrentRename',
+          [table, old_column, new_column]
+        )
+
+        if perform_background_migration_inline?
+          # To ensure the schema is up to date immediately we perform the
+          # migration inline in dev / test environments.
+          Gitlab::BackgroundMigration.steal('CopyColumn')
+          Gitlab::BackgroundMigration.steal('CleanupConcurrentRename')
         end
       end
 
@@ -820,7 +996,7 @@ into similar problems in the future (e.g. when new tables are created).
       # Each job is scheduled with a `delay_interval` in between.
       # If you use a small interval, then some jobs may run at the same time.
       #
-      # model_class - The table being iterated over
+      # model_class - The table or relation being iterated over
       # job_class_name - The background migration job class as a string
       # delay_interval - The duration between each job's scheduled time (must respond to `to_f`)
       # batch_size - The maximum number of rows per job
@@ -846,8 +1022,8 @@ into similar problems in the future (e.g. when new tables are created).
 
         # To not overload the worker too much we enforce a minimum interval both
         # when scheduling and performing jobs.
-        if delay_interval < BackgroundMigrationWorker::MIN_INTERVAL
-          delay_interval = BackgroundMigrationWorker::MIN_INTERVAL
+        if delay_interval < BackgroundMigrationWorker.minimum_interval
+          delay_interval = BackgroundMigrationWorker.minimum_interval
         end
 
         model_class.each_batch(of: batch_size) do |relation, index|
@@ -860,17 +1036,46 @@ into similar problems in the future (e.g. when new tables are created).
         end
       end
 
-      def foreign_key_exists?(table, column)
-        foreign_keys(table).any? do |key|
-          key.options[:column] == column.to_s
+      # Fetches indexes on a column by name for postgres.
+      #
+      # This will include indexes using an expression on the column, for example:
+      # `CREATE INDEX CONCURRENTLY index_name ON table (LOWER(column));`
+      #
+      # For mysql, it falls back to the default ActiveRecord implementation that
+      # will not find custom indexes. But it will select by name without passing
+      # a column.
+      #
+      # We can remove this when upgrading to Rails 5 with an updated `index_exists?`:
+      # - https://github.com/rails/rails/commit/edc2b7718725016e988089b5fb6d6fb9d6e16882
+      #
+      # Or this can be removed when we no longer support postgres < 9.5, so we
+      # can use `CREATE INDEX IF NOT EXISTS`.
+      def index_exists_by_name?(table, index)
+        # We can't fall back to the normal `index_exists?` method because that
+        # does not find indexes without passing a column name.
+        if indexes(table).map(&:name).include?(index.to_s)
+          true
+        elsif Gitlab::Database.postgresql?
+          postgres_exists_by_name?(table, index)
+        else
+          false
         end
       end
 
-      # Rails' index_exists? doesn't work when you only give it a table and index
-      # name. As such we have to use some extra code to check if an index exists for
-      # a given name.
-      def index_exists_by_name?(table, index)
-        indexes(table).map(&:name).include?(index)
+      def postgres_exists_by_name?(table, name)
+        index_sql = <<~SQL
+          SELECT COUNT(*)
+          FROM pg_index
+          JOIN pg_class i ON (indexrelid=i.oid)
+          JOIN pg_class t ON (indrelid=t.oid)
+          WHERE i.relname = '#{name}' AND t.relname = '#{table}'
+        SQL
+
+        connection.select_value(index_sql).to_i > 0
+      end
+
+      def mysql_compatible_index_length
+        Gitlab::Database.mysql? ? 20 : nil
       end
     end
   end

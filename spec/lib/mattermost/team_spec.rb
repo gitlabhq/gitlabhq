@@ -2,35 +2,38 @@ require 'spec_helper'
 
 describe Mattermost::Team do
   before do
-    Mattermost::Session.base_uri('http://mattermost.example.com')
+    session = Mattermost::Session.new(nil)
+    session.base_uri = 'http://mattermost.example.com'
 
     allow_any_instance_of(Mattermost::Client).to receive(:with_session)
-      .and_yield(Mattermost::Session.new(nil))
+      .and_yield(session)
   end
 
   describe '#all' do
     subject { described_class.new(nil).all }
 
+    let(:test_team) do
+      {
+        "id" => "xiyro8huptfhdndadpz8r3wnbo",
+        "create_at" => 1482174222155,
+        "update_at" => 1482174222155,
+        "delete_at" => 0,
+        "display_name" => "chatops",
+        "name" => "chatops",
+        "email" => "admin@example.com",
+        "type" => "O",
+        "company_name" => "",
+        "allowed_domains" => "",
+        "invite_id" => "o4utakb9jtb7imctdfzbf9r5ro",
+        "allow_open_invite" => false
+      }
+    end
+
     context 'for valid request' do
-      let(:response) do
-        { "xiyro8huptfhdndadpz8r3wnbo" => {
-          "id" => "xiyro8huptfhdndadpz8r3wnbo",
-          "create_at" => 1482174222155,
-          "update_at" => 1482174222155,
-          "delete_at" => 0,
-          "display_name" => "chatops",
-          "name" => "chatops",
-          "email" => "admin@example.com",
-          "type" => "O",
-          "company_name" => "",
-          "allowed_domains" => "",
-          "invite_id" => "o4utakb9jtb7imctdfzbf9r5ro",
-          "allow_open_invite" => false
-        } }
-      end
+      let(:response) { [test_team] }
 
       before do
-        stub_request(:get, 'http://mattermost.example.com/api/v3/teams/all')
+        stub_request(:get, 'http://mattermost.example.com/api/v4/users/me/teams')
           .to_return(
             status: 200,
             headers: { 'Content-Type' => 'application/json' },
@@ -38,14 +41,14 @@ describe Mattermost::Team do
           )
       end
 
-      it 'returns a token' do
-        is_expected.to eq(response.values)
+      it 'returns teams' do
+        is_expected.to eq(response)
       end
     end
 
     context 'for error message' do
       before do
-        stub_request(:get, 'http://mattermost.example.com/api/v3/teams/all')
+        stub_request(:get, 'http://mattermost.example.com/api/v4/users/me/teams')
           .to_return(
             status: 500,
             headers: { 'Content-Type' => 'application/json' },
@@ -88,9 +91,9 @@ describe Mattermost::Team do
       end
 
       before do
-        stub_request(:post, "http://mattermost.example.com/api/v3/teams/create")
+        stub_request(:post, "http://mattermost.example.com/api/v4/teams")
           .to_return(
-            status: 200,
+            status: 201,
             body: response.to_json,
             headers: { 'Content-Type' => 'application/json' }
           )
@@ -103,7 +106,7 @@ describe Mattermost::Team do
 
     context 'for existing team' do
       before do
-        stub_request(:post, 'http://mattermost.example.com/api/v3/teams/create')
+        stub_request(:post, 'http://mattermost.example.com/api/v4/teams')
           .to_return(
             status: 400,
             headers: { 'Content-Type' => 'application/json' },

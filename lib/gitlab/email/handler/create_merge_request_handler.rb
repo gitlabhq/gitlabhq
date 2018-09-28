@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'gitlab/email/handler/base_handler'
 require 'gitlab/email/handler/reply_processing'
 
@@ -23,7 +25,8 @@ module Gitlab
         def execute
           raise ProjectNotFound unless project
 
-          validate_permission!(:create_merge_request)
+          validate_permission!(:create_merge_request_in)
+          validate_permission!(:create_merge_request_from)
 
           verify_record!(
             record: create_merge_request,
@@ -31,16 +34,14 @@ module Gitlab
             record_name: 'merge_request')
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def author
           @author ||= User.find_by(incoming_email_token: incoming_email_token)
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def project
           @project ||= Project.find_by_full_path(project_path)
-        end
-
-        def metrics_params
-          super.merge(project: project&.full_path)
         end
 
         private

@@ -3,13 +3,13 @@ require Rails.root.join('db', 'post_migrate', '20170518200835_rename_users_with_
 
 describe RenameUsersWithRenamedNamespace, :delete do
   it 'renames a user that had their namespace renamed to the namespace path' do
-    other_user = create(:user, username: 'kodingu')
-    other_user1 = create(:user, username: 'api0')
+    other_user = create(:user, username: 'kodingu') # rubocop:disable RSpec/FactoriesInMigrationSpecs
+    other_user1 = create(:user, username: 'api0') # rubocop:disable RSpec/FactoriesInMigrationSpecs
 
-    user = create(:user, username: "Users0")
-    user.update_attribute(:username, 'Users')
-    user1 = create(:user, username: "import0")
-    user1.update_attribute(:username, 'import')
+    user = create(:user, username: "Users0") # rubocop:disable RSpec/FactoriesInMigrationSpecs
+    user.update_column(:username, 'Users')
+    user1 = create(:user, username: "import0") # rubocop:disable RSpec/FactoriesInMigrationSpecs
+    user1.update_column(:username, 'import')
 
     described_class.new.up
 

@@ -24,6 +24,14 @@ describe MergeRequests::RefreshService do
                               merge_when_pipeline_succeeds: true,
                               merge_user: @user)
 
+      @another_merge_request = create(:merge_request,
+                                      source_project: @project,
+                                      source_branch: 'master',
+                                      target_branch: 'test',
+                                      target_project: @project,
+                                      merge_when_pipeline_succeeds: true,
+                                      merge_user: @user)
+
       @fork_merge_request = create(:merge_request,
                                    source_project: @fork_project,
                                    source_branch: 'master',
@@ -52,9 +60,11 @@ describe MergeRequests::RefreshService do
 
     context 'push to origin repo source branch' do
       let(:refresh_service) { service.new(@project, @user) }
+      let(:notification_service) { spy('notification_service') }
 
       before do
         allow(refresh_service).to receive(:execute_hooks)
+        allow(NotificationService).to receive(:new) { notification_service }
       end
 
       it 'executes hooks with update action' do
@@ -63,6 +73,11 @@ describe MergeRequests::RefreshService do
 
         expect(refresh_service).to have_received(:execute_hooks)
           .with(@merge_request, 'update', old_rev: @oldrev)
+
+        expect(notification_service).to have_received(:push_to_merge_request)
+          .with(@merge_request, @user, new_commits: anything, existing_commits: anything)
+        expect(notification_service).to have_received(:push_to_merge_request)
+          .with(@another_merge_request, @user, new_commits: anything, existing_commits: anything)
 
         expect(@merge_request.notes).not_to be_empty
         expect(@merge_request).to be_open
@@ -119,11 +134,13 @@ describe MergeRequests::RefreshService do
 
     context 'push to origin repo source branch when an MR was reopened' do
       let(:refresh_service) { service.new(@project, @user) }
+      let(:notification_service) { spy('notification_service') }
 
       before do
         @merge_request.update(state: :reopened)
 
         allow(refresh_service).to receive(:execute_hooks)
+        allow(NotificationService).to receive(:new) { notification_service }
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
         reload_mrs
       end
@@ -131,6 +148,10 @@ describe MergeRequests::RefreshService do
       it 'executes hooks with update action' do
         expect(refresh_service).to have_received(:execute_hooks)
           .with(@merge_request, 'update', old_rev: @oldrev)
+        expect(notification_service).to have_received(:push_to_merge_request)
+          .with(@merge_request, @user, new_commits: anything, existing_commits: anything)
+        expect(notification_service).to have_received(:push_to_merge_request)
+          .with(@another_merge_request, @user, new_commits: anything, existing_commits: anything)
 
         expect(@merge_request.notes).not_to be_empty
         expect(@merge_request).to be_open

@@ -6,7 +6,7 @@ describe 'Merge request > User sees deleted target branch', :js do
   let(:user) { project.creator }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     DeleteBranchService.new(project, user).execute('feature')
     sign_in(user)
     visit project_merge_request_path(project, merge_request)

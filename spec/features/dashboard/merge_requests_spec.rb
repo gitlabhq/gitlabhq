@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Dashboard Merge Requests' do
+describe 'Dashboard Merge Requests' do
+  include Spec::Support::Helpers::Features::SortingHelpers
   include FilterItemSelectHelper
-  include SortingHelper
   include ProjectForksHelper
 
   let(:current_user) { create :user }
@@ -12,7 +12,7 @@ feature 'Dashboard Merge Requests' do
   let(:forked_project) { fork_project(public_project, current_user, repository: true) }
 
   before do
-    project.add_master(current_user)
+    project.add_maintainer(current_user)
     sign_in(current_user)
   end
 
@@ -20,7 +20,7 @@ feature 'Dashboard Merge Requests' do
     let(:project_with_disabled_merge_requests) { create(:project, :merge_requests_disabled) }
 
     before do
-      project_with_disabled_merge_requests.add_master(current_user)
+      project_with_disabled_merge_requests.add_maintainer(current_user)
       visit merge_requests_dashboard_path
     end
 
@@ -103,19 +103,15 @@ feature 'Dashboard Merge Requests' do
       expect(page).not_to have_content(other_merge_request.title)
     end
 
-    it 'shows all merge requests', :js do
+    it 'shows error message without filter', :js do
       filter_item_select('Any Assignee', '.js-assignee-search')
       filter_item_select('Any Author', '.js-author-search')
 
-      expect(page).to have_content(authored_merge_request.title)
-      expect(page).to have_content(authored_merge_request_from_fork.title)
-      expect(page).to have_content(assigned_merge_request.title)
-      expect(page).to have_content(assigned_merge_request_from_fork.title)
-      expect(page).to have_content(other_merge_request.title)
+      expect(page).to have_content('Please select at least one filter to see results')
     end
 
     it 'shows sorted merge requests' do
-      sorting_by('Created date')
+      sort_by('Created date')
 
       visit merge_requests_dashboard_path(assignee_id: current_user.id)
 
@@ -123,7 +119,7 @@ feature 'Dashboard Merge Requests' do
     end
 
     it 'keeps sorting merge requests after visiting Projects MR page' do
-      sorting_by('Created date')
+      sort_by('Created date')
 
       visit project_merge_requests_path(project)
 

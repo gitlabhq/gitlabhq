@@ -1,8 +1,8 @@
 - @sort ||= sort_value_latest_activity
 .dropdown.js-project-filter-dropdown-wrap
   - toggle_text = projects_sort_options_hash[@sort]
-  = dropdown_toggle(toggle_text, { toggle: 'dropdown' }, { id: 'sort-projects-dropdown' })
-  %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-selectable
+  = dropdown_toggle(toggle_text, { toggle: 'dropdown', display: 'static' }, { id: 'sort-projects-dropdown' })
+  %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable
     %li.dropdown-header
       Sort by
     - projects_sort_options_hash.each do |value, title|

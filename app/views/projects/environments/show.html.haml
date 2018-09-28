@@ -4,6 +4,33 @@
 - page_title "Environments"
 
 %div{ class: container_class }
+  - if can?(current_user, :stop_environment, @environment)
+    #stop-environment-modal.modal.fade{ tabindex: -1 }
+      .modal-dialog
+        .modal-content
+          .modal-header
+            %h4.modal-title.d-flex.mw-100
+              Stopping
+              %span.has-tooltip.text-truncate.ml-1.mr-1.flex-fill{ title: @environment.name, data: { container: '#stop-environment-modal' } }
+                = @environment.name
+              ?
+          .modal-body
+            %p= s_('Environments|Are you sure you want to stop this environment?')
+            - unless @environment.stop_action_available?
+              .warning_message
+                %p= s_('Environments|Note that this action will stop the environment, but it will %{emphasis_start}not%{emphasis_end} have an effect on any existing deployment due to no “stop environment action” being defined in the %{ci_config_link_start}.gitlab-ci.yml%{ci_config_link_end} file.').html_safe % { emphasis_start: '<strong>'.html_safe,
+                  emphasis_end: '</strong>'.html_safe,
+                  ci_config_link_start: '<a href="https://docs.gitlab.com/ee/ci/yaml/" target="_blank" rel="noopener noreferrer">'.html_safe,
+                  ci_config_link_end: '</a>'.html_safe }
+                %a{ href: 'https://docs.gitlab.com/ee/ci/environments.html#stopping-an-environment',
+                  target: '_blank',
+                  rel: 'noopener noreferrer' }
+                  = s_('Environments|Learn more about stopping environments')
+          .modal-footer
+            = button_tag _('Cancel'), type: 'button', class: 'btn btn-cancel', data: { dismiss: 'modal' }
+            = button_to stop_project_environment_path(@project, @environment), class: 'btn btn-danger has-tooltip', method: :post do
+              = s_('Environments|Stop environment')
+
   .row.top-area.adjust
     .col-md-7
       %h3.page-title= @environment.name
@@ -15,7 +42,10 @@
         - if can?(current_user, :update_environment, @environment)
           = link_to 'Edit', edit_project_environment_path(@project, @environment), class: 'btn'
         - if can?(current_user, :stop_environment, @environment)
-          = link_to 'Stop', stop_project_environment_path(@project, @environment), data: { confirm: 'Are you sure you want to stop this environment?' }, class: 'btn btn-danger', method: :post
+          = button_tag class: 'btn btn-danger', type: 'button', data: { toggle: 'modal',
+            target: '#stop-environment-modal' } do
+            = sprite_icon('stop')
+            = s_('Environments|Stop')
 
   .environments-container
     - if @deployments.blank?

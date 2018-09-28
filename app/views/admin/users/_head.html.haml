@@ -7,14 +7,14 @@
   - if @user.admin
     %span.cred (Admin)
 
-  .pull-right
+  .float-right
     - if @user != current_user && @user.can?(:log_in)
       = link_to 'Impersonate', impersonate_admin_user_path(@user), method: :post, class: "btn btn-nr btn-grouped btn-info"
     = link_to edit_admin_user_path(@user), class: "btn btn-nr btn-grouped" do
       %i.fa.fa-pencil-square-o
       Edit
 %hr
-%ul.nav-links
+%ul.nav-links.nav.nav-tabs
   = nav_link(path: 'users#show') do
     = link_to "Account", admin_user_path(@user)
   = nav_link(path: 'users#projects') do

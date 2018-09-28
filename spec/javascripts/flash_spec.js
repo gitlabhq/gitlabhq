@@ -57,8 +57,11 @@ describe('Flash', () => {
       hideFlash(el);
 
       expect(
-        el.style.transition,
-      ).toBe('opacity 0.3s');
+        el.style['transition-property'],
+      ).toBe('opacity');
+      expect(
+        el.style['transition-duration'],
+      ).toBe('0.3s');
     });
 
     it('sets opacity style', () => {

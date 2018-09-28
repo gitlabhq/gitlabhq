@@ -2,9 +2,9 @@ import Vue from 'vue';
 
 import dropdownValueComponent from '~/vue_shared/components/sidebar/labels_select/dropdown_value.vue';
 
-import { mockConfig, mockLabels } from './mock_data';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
-import mountComponent from '../../../../helpers/vue_mount_component_helper';
+import { mockConfig, mockLabels } from './mock_data';
 
 const createComponent = (
   labels = mockLabels,
@@ -82,7 +82,7 @@ describe('DropdownValueComponent', () => {
     });
 
     it('renders label element with tooltip and styles based on label details', () => {
-      const labelEl = vm.$el.querySelector('a span.label.color-label');
+      const labelEl = vm.$el.querySelector('a span.badge.color-label');
       expect(labelEl).not.toBeNull();
       expect(labelEl.dataset.placement).toBe('bottom');
       expect(labelEl.dataset.container).toBe('body');

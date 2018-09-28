@@ -32,7 +32,7 @@ RSpec.describe 'admin issues labels' do
 
     it 'deletes all labels', :js do
       page.within '.labels' do
-        page.all('.btn-remove').each do |remove|
+        page.all('.remove-row').each do |remove|
           accept_confirm { remove.click }
           wait_for_requests
         end

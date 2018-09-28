@@ -1,14 +1,18 @@
 module Gitlab
   module Template
     class BaseTemplate
-      def initialize(path, project = nil)
+      attr_reader :category
+
+      def initialize(path, project = nil, category: nil)
         @path = path
+        @category = category
         @finder = self.class.finder(project)
       end
 
       def name
         File.basename(@path, self.class.extension)
       end
+      alias_method :id, :name
 
       def content
         @finder.read(@path)
@@ -62,7 +66,7 @@ module Gitlab
           directory = category_directory(category)
           files = finder(project).list_files_for(directory)
 
-          files.map { |f| new(f, project) }.sort
+          files.map { |f| new(f, project, category: category) }.sort
         end
 
         def category_directory(category)

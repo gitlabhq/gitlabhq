@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-return-assign */
+/* eslint-disable no-return-assign */
 
 import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
@@ -19,9 +19,11 @@ import IssuablesHelper from '~/helpers/issuables_helper';
         spyOn(axios, 'patch').and.callThrough();
         mock = new MockAdapter(axios);
 
-        mock.onPatch(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`).reply(200, {});
+        mock
+          .onPatch(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`)
+          .reply(200, {});
 
-        return this.merge = new MergeRequest();
+        return (this.merge = new MergeRequest());
       });
 
       afterEach(() => {
@@ -32,17 +34,22 @@ import IssuablesHelper from '~/helpers/issuables_helper';
         spyOn($, 'ajax').and.stub();
         const changeEvent = document.createEvent('HTMLEvents');
         changeEvent.initEvent('change', true, true);
-        $('input[type=checkbox]').attr('checked', true)[0].dispatchEvent(changeEvent);
+        $('input[type=checkbox]')
+          .attr('checked', true)[0]
+          .dispatchEvent(changeEvent);
         return expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
       });
 
-      it('submits an ajax request on tasklist:changed', (done) => {
+      it('submits an ajax request on tasklist:changed', done => {
         $('.js-task-list-field').trigger('tasklist:changed');
 
         setTimeout(() => {
-          expect(axios.patch).toHaveBeenCalledWith(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`, {
-            merge_request: { description: '- [ ] Task List Item' },
-          });
+          expect(axios.patch).toHaveBeenCalledWith(
+            `${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`,
+            {
+              merge_request: { description: '- [ ] Task List Item' },
+            },
+          );
           done();
         });
       });
@@ -119,4 +126,4 @@ import IssuablesHelper from '~/helpers/issuables_helper';
       });
     });
   });
-}).call(window);
+}.call(window));

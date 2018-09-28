@@ -56,8 +56,8 @@
 
 <template>
   <div
-    class="pdf-viewer"
-    v-if="hasPDF">
+    v-if="hasPDF"
+    class="pdf-viewer">
     <page
       v-for="(page, index) in pages"
       :key="index"

@@ -3,12 +3,12 @@ module Gitlab
     module Variables
       class Collection
         class Item
-          def initialize(**options)
+          def initialize(key:, value:, public: true, file: false)
+            raise ArgumentError, "`value` must be of type String, while it was: #{value.class}" unless
+              value.is_a?(String) || value.nil?
+
             @variable = {
-              key: options.fetch(:key),
-              value: options.fetch(:value),
-              public: options.fetch(:public, true),
-              file: options.fetch(:files, false)
+              key: key, value: value, public: public, file: file
             }
           end
 
@@ -17,7 +17,7 @@ module Gitlab
           end
 
           def ==(other)
-            to_hash == self.class.fabricate(other).to_hash
+            to_runner_variable == self.class.fabricate(other).to_runner_variable
           end
 
           ##
@@ -25,7 +25,7 @@ module Gitlab
           # don't expose `file` attribute at all (stems from what the runner
           # expects).
           #
-          def to_hash
+          def to_runner_variable
             @variable.reject do |hash_key, hash_value|
               hash_key == :file && hash_value == false
             end
@@ -34,7 +34,7 @@ module Gitlab
           def self.fabricate(resource)
             case resource
             when Hash
-              self.new(resource)
+              self.new(resource.symbolize_keys)
             when ::HasVariable
               self.new(resource.to_runner_variable)
             when self

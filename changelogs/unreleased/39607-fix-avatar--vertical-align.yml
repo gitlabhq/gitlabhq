@@ -1,5 +1,0 @@
----
-title: "Fix user avatar's vertical align on the issues and merge requests pages"
-merge_request: 17072
-author: Laszlo Karpati
-type: fixed

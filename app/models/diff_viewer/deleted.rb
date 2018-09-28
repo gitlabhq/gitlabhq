@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DiffViewer
   class Deleted < Base
     include Simple

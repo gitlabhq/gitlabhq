@@ -10,9 +10,9 @@ RSpec.shared_examples 'a creatable merge request' do
   let!(:label2)      { create(:label, project: target_project) }
 
   before do
-    source_project.add_master(user)
-    target_project.add_master(user)
-    target_project.add_master(user2)
+    source_project.add_maintainer(user)
+    target_project.add_maintainer(user)
+    target_project.add_maintainer(user2)
 
     sign_in(user)
     visit project_new_merge_request_path(
@@ -79,7 +79,7 @@ RSpec.shared_examples 'a creatable merge request' do
     end
   end
 
-  it 'updates the branches when selecting a new target project' do
+  it 'updates the branches when selecting a new target project', :js do
     target_project_member = target_project.owner
     CreateBranchService.new(target_project, target_project_member)
     .execute('a-brand-new-branch-to-test', 'master')
@@ -92,7 +92,7 @@ RSpec.shared_examples 'a creatable merge request' do
 
     first('.js-target-branch').click
 
-    within('.dropdown-target-branch .dropdown-content') do
+    within('.js-target-branch-dropdown .dropdown-content') do
       expect(page).to have_content('a-brand-new-branch-to-test')
     end
   end

@@ -8,6 +8,7 @@ describe TreeHelper do
   describe '.render_tree' do
     before do
       @id = sha
+      @path = ""
       @project = project
       @lfs_blob_ids = []
     end
@@ -59,6 +60,15 @@ describe TreeHelper do
         it "returns the flattened path with the root path suffix removed" do
           expect(subject).to match('path/correct')
         end
+      end
+    end
+
+    context 'when the root path contains a plus character' do
+      let(:root_path) { 'gtk/C++' }
+      let(:tree_item) { double(flat_path: 'gtk/C++/glade') }
+
+      it 'returns the flattened path' do
+        expect(subject).to eq('glade')
       end
     end
   end

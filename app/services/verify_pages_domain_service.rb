@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'resolv'
 
 class VerifyPagesDomainService < BaseService
@@ -34,7 +36,8 @@ class VerifyPagesDomainService < BaseService
     # Prevent any pre-existing grace period from being truncated
     reverify = [domain.enabled_until, VERIFICATION_PERIOD.from_now].compact.max
 
-    domain.update!(verified_at: Time.now, enabled_until: reverify)
+    domain.assign_attributes(verified_at: Time.now, enabled_until: reverify)
+    domain.save!(validate: false)
 
     if was_disabled
       notify(:enabled)
@@ -47,7 +50,9 @@ class VerifyPagesDomainService < BaseService
 
   def unverify_domain!
     if domain.verified?
-      domain.update!(verified_at: nil)
+      domain.assign_attributes(verified_at: nil)
+      domain.save!(validate: false)
+
       notify(:verification_failed)
     end
 
@@ -55,7 +60,8 @@ class VerifyPagesDomainService < BaseService
   end
 
   def disable_domain!
-    domain.update!(verified_at: nil, enabled_until: nil)
+    domain.assign_attributes(verified_at: nil, enabled_until: nil)
+    domain.save!(validate: false)
 
     notify(:disabled)
 

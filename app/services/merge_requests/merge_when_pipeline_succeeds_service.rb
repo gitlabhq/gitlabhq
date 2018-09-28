@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MergeRequests
   class MergeWhenPipelineSucceedsService < MergeRequests::BaseService
     # Marks the passed `merge_request` to be merged when the pipeline succeeds or
@@ -24,11 +26,7 @@ module MergeRequests
 
       pipeline_merge_requests(pipeline) do |merge_request|
         next unless merge_request.merge_when_pipeline_succeeds?
-
-        unless merge_request.mergeable?
-          todo_service.merge_request_became_unmergeable(merge_request)
-          next
-        end
+        next unless merge_request.mergeable?
 
         merge_request.merge_async(merge_request.merge_user_id, merge_request.merge_params)
       end

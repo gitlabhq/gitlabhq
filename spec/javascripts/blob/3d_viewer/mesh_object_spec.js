@@ -26,7 +26,7 @@ describe('Mesh object', () => {
     const object = new MeshObject(
       new BoxGeometry(10, 10, 10),
     );
-    const radius = object.geometry.boundingSphere.radius;
+    const { radius } = object.geometry.boundingSphere;
 
     expect(radius).not.toBeGreaterThan(4);
   });
@@ -35,7 +35,7 @@ describe('Mesh object', () => {
     const object = new MeshObject(
       new BoxGeometry(1, 1, 1),
     );
-    const radius = object.geometry.boundingSphere.radius;
+    const { radius } = object.geometry.boundingSphere;
 
     expect(radius).toBeLessThan(1);
   });

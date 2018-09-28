@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 class Event < ActiveRecord::Base
   include Sortable
   include IgnorableColumn
+  include FromUnion
   default_scope { reorder(nil) }
 
   CREATED   = 1
@@ -40,6 +43,7 @@ class Event < ActiveRecord::Base
   ).freeze
 
   RESET_PROJECT_ACTIVITY_INTERVAL = 1.hour
+  REPOSITORY_UPDATED_AT_INTERVAL = 5.minutes
 
   delegate :name, :email, :public_email, :username, to: :author, prefix: true, allow_nil: true
   delegate :title, to: :issue, prefix: true, allow_nil: true
@@ -52,12 +56,12 @@ class Event < ActiveRecord::Base
   belongs_to :target, -> {
     # If the association for "target" defines an "author" association we want to
     # eager-load this so Banzai & friends don't end up performing N+1 queries to
-    # get the authors of notes, issues, etc.
-    if reflections['events'].active_record.reflect_on_association(:author)
-      includes(:author)
-    else
-      self
+    # get the authors of notes, issues, etc. (likewise for "noteable").
+    incs = %i(author noteable).select do |a|
+      reflections['events'].active_record.reflect_on_association(a)
     end
+
+    incs.reduce(self) { |obj, a| obj.includes(a) }
   }, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
   has_one :push_event_payload
@@ -110,7 +114,10 @@ class Event < ActiveRecord::Base
       end
     end
 
+    # Remove this method when removing Gitlab.rails5? code.
     def subclass_from_attributes(attrs)
+      return super if Gitlab.rails5?
+
       # Without this Rails will keep calling this method on the returned class,
       # resulting in an infinite loop.
       return unless self == Event
@@ -145,15 +152,17 @@ class Event < ActiveRecord::Base
     if push? || commit_note?
       Ability.allowed?(user, :download_code, project)
     elsif membership_changed?
-      true
+      Ability.allowed?(user, :read_project, project)
     elsif created_project?
-      true
+      Ability.allowed?(user, :read_project, project)
     elsif issue? || issue_note?
       Ability.allowed?(user, :read_issue, note? ? note_target : target)
     elsif merge_request? || merge_request_note?
       Ability.allowed?(user, :read_merge_request, note? ? note_target : target)
+    elsif milestone?
+      Ability.allowed?(user, :read_project, project)
     else
-      milestone?
+      false # No other event types are visible
     end
   end
 
@@ -388,6 +397,7 @@ class Event < ActiveRecord::Base
 
   def set_last_repository_updated_at
     Project.unscoped.where(id: project_id)
+      .where("last_repository_updated_at < ? OR last_repository_updated_at IS NULL", REPOSITORY_UPDATED_AT_INTERVAL.ago)
       .update_all(last_repository_updated_at: created_at)
   end
 

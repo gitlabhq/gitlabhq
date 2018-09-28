@@ -43,3 +43,17 @@ yarn prettier-all-save
 Formats all files in the repository with Prettier. (This should only be used to test global rule updates otherwise you would end up with huge MR's).
 
 The source of these Yarn scripts can be found in `/scripts/frontend/prettier.js`.
+
+### Scripts during Conversion period
+
+```
+node ./scripts/frontend/prettier.js check ./vendor/
+```
+
+This will go over all files in a specific folder check it.
+
+```
+node ./scripts/frontend/prettier.js save ./vendor/
+```
+
+This will go over all files in a specific folder and save it.

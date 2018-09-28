@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NamespacePolicy < BasePolicy
   rule { anonymous }.prevent_all
 

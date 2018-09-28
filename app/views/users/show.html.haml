@@ -12,7 +12,7 @@
   .cover-block.user-cover-block.top-area
     .cover-controls
       - if @user == current_user
-        = link_to profile_path, class: 'btn btn-gray has-tooltip', title: 'Edit profile', 'aria-label': 'Edit profile' do
+        = link_to profile_path, class: 'btn btn-default has-tooltip', title: 'Edit profile', 'aria-label': 'Edit profile' do
           = icon('pencil')
       - elsif current_user
         - if @user.abuse_report
@@ -20,13 +20,14 @@
             data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } }
             = icon('exclamation-circle')
         - else
-          = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referrer), class: 'btn btn-gray',
+          = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referrer), class: 'btn',
             title: 'Report abuse', data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
             = icon('exclamation-circle')
-      = link_to user_path(@user, rss_url_options), class: 'btn btn-gray has-tooltip', title: 'Subscribe', 'aria-label': 'Subscribe' do
-        = icon('rss')
+      - if can?(current_user, :read_user_profile, @user)
+        = link_to user_path(@user, rss_url_options), class: 'btn btn-default has-tooltip', title: 'Subscribe', 'aria-label': 'Subscribe' do
+          = icon('rss')
       - if current_user && current_user.admin?
-        = link_to [:admin, @user], class: 'btn btn-gray', title: 'View user in admin area',
+        = link_to [:admin, @user], class: 'btn btn-default', title: 'View user in admin area',
           data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
           = icon('users')
 
@@ -35,15 +36,22 @@
         = link_to avatar_icon_for_user(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
           = image_tag avatar_icon_for_user(@user, 90), class: "avatar s90", alt: ''
 
-      .user-info
+      .user-info.prepend-left-default.append-right-default
         .cover-title
           = @user.name
 
+        - if @user.status
+          .cover-status
+            = emoji_icon(@user.status.emoji)
+            = markdown_field(@user.status, :message)
+
         .cover-desc.member-date
-          %span.middle-dot-divider
-            @#{@user.username}
-          %span.middle-dot-divider
-            Member since #{@user.created_at.to_date.to_s(:long)}
+          %p
+            %span.middle-dot-divider
+              @#{@user.username}
+            - if can?(current_user, :read_user_profile, @user)
+              %span.middle-dot-divider
+                Member since #{@user.created_at.to_date.to_s(:long)}
 
         .cover-desc
           - unless @user.public_email.blank?
@@ -78,36 +86,37 @@
         %p.profile-user-bio
           = @user.bio
 
-    .scrolling-tabs-container
-      .fade-left= icon('angle-left')
-      .fade-right= icon('angle-right')
-      %ul.nav-links.user-profile-nav.scrolling-tabs
-        - if profile_tab?(:activity)
-          %li.js-activity-tab
-            = link_to user_path, data: { target: 'div#activity', action: 'activity', toggle: 'tab' } do
-              Activity
-        - if profile_tab?(:groups)
-          %li.js-groups-tab
-            = link_to user_groups_path, data: { target: 'div#groups', action: 'groups', toggle: 'tab', endpoint: user_groups_path(format: :json) } do
-              Groups
-        - if profile_tab?(:contributed)
-          %li.js-contributed-tab
-            = link_to user_contributed_projects_path, data: { target: 'div#contributed', action: 'contributed', toggle: 'tab', endpoint: user_contributed_projects_path(format: :json) } do
-              Contributed projects
-        - if profile_tab?(:projects)
-          %li.js-projects-tab
-            = link_to user_projects_path, data: { target: 'div#projects', action: 'projects', toggle: 'tab', endpoint: user_projects_path(format: :json) } do
-              Personal projects
-        - if profile_tab?(:snippets)
-          %li.js-snippets-tab
-            = link_to user_snippets_path, data: { target: 'div#snippets', action: 'snippets', toggle: 'tab', endpoint: user_snippets_path(format: :json) } do
-              Snippets
+    - unless profile_tabs.empty?
+      .scrolling-tabs-container
+        .fade-left= icon('angle-left')
+        .fade-right= icon('angle-right')
+        %ul.nav-links.user-profile-nav.scrolling-tabs.nav.nav-tabs
+          - if profile_tab?(:activity)
+            %li.js-activity-tab
+              = link_to user_path, data: { target: 'div#activity', action: 'activity', toggle: 'tab' } do
+                Activity
+          - if profile_tab?(:groups)
+            %li.js-groups-tab
+              = link_to user_groups_path, data: { target: 'div#groups', action: 'groups', toggle: 'tab', endpoint: user_groups_path(format: :json) } do
+                Groups
+          - if profile_tab?(:contributed)
+            %li.js-contributed-tab
+              = link_to user_contributed_projects_path, data: { target: 'div#contributed', action: 'contributed', toggle: 'tab', endpoint: user_contributed_projects_path(format: :json) } do
+                Contributed projects
+          - if profile_tab?(:projects)
+            %li.js-projects-tab
+              = link_to user_projects_path, data: { target: 'div#projects', action: 'projects', toggle: 'tab', endpoint: user_projects_path(format: :json) } do
+                Personal projects
+          - if profile_tab?(:snippets)
+            %li.js-snippets-tab
+              = link_to user_snippets_path, data: { target: 'div#snippets', action: 'snippets', toggle: 'tab', endpoint: user_snippets_path(format: :json) } do
+                Snippets
 
   %div{ class: container_class }
     .tab-content
       - if profile_tab?(:activity)
         #activity.tab-pane
-          .row-content-block.calender-block.white.second-block.hidden-xs
+          .row-content-block.calender-block.white.second-block.d-none.d-sm-block
             .user-calendar{ data: { calendar_path: user_calendar_path(@user, :json), calendar_activities_path: user_calendar_activities_path, utc_offset: Time.zone.utc_offset } }
               %h4.center.light
                 %i.fa.fa-spinner.fa-spin
@@ -137,3 +146,13 @@
 
     .loading-status
       = spinner
+
+  - if profile_tabs.empty?
+    .row
+      .col-12
+        .svg-content
+          = image_tag 'illustrations/profile_private_mode.svg'
+      .col-12.text-center
+        .text-content
+          %h4
+            This user has a private profile

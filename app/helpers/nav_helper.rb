@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module NavHelper
   def header_links
     @header_links ||= get_header_links
@@ -11,6 +13,7 @@ module NavHelper
     class_name = page_gutter_class
     class_name << 'page-with-contextual-sidebar' if defined?(@left_sidebar) && @left_sidebar
     class_name << 'page-with-icon-sidebar' if collapsed_sidebar? && @left_sidebar
+    class_name -= ['right-sidebar-expanded'] if defined?(@right_sidebar) && !@right_sidebar
 
     class_name
   end
@@ -28,7 +31,7 @@ module NavHelper
       end
     elsif current_path?('jobs#show')
       %w[page-gutter build-sidebar right-sidebar-expanded]
-    elsif current_controller?('wikis') && current_action?('show', 'create', 'edit', 'update', 'history', 'git_access')
+    elsif current_controller?('wikis') && current_action?('show', 'create', 'edit', 'update', 'history', 'git_access', 'destroy')
       %w[page-gutter wiki-sidebar right-sidebar-expanded]
     else
       []

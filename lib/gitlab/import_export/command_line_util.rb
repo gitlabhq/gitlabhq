@@ -18,6 +18,21 @@ module Gitlab
 
       private
 
+      def download_or_copy_upload(uploader, upload_path)
+        if uploader.upload.local?
+          copy_files(uploader.path, upload_path)
+        else
+          download(uploader.url, upload_path)
+        end
+      end
+
+      def download(url, upload_path)
+        File.open(upload_path, 'w') do |file|
+          # Download (stream) file from the uploader's location
+          IO.copy_stream(URI.parse(url).open, file)
+        end
+      end
+
       def tar_with_options(archive:, dir:, options:)
         execute(%W(tar -#{options} #{archive} -C #{dir} .))
       end

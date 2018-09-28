@@ -28,12 +28,16 @@ class Gitlab::Seeder::Environments
   end
 
   def create_merge_request_review_deployments!
-    @project.merge_requests.sample(4).map do |merge_request|
+    @project
+      .merge_requests
+      .select { |mr| mr.source_branch.match?(/[a-zA-Z0-9]+/) }
+      .sample(4)
+      .each do |merge_request|
       next unless merge_request.diff_head_sha
 
       create_deployment!(
         merge_request.source_project,
-        "review/#{merge_request.source_branch.gsub(/[^a-zA-Z0-9]/, '')}",
+        "review/#{merge_request.source_branch.gsub(/[^a-zA-Z0-9]+/, '')}",
         merge_request.source_branch,
         merge_request.diff_head_sha
       )

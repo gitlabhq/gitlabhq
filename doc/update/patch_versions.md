@@ -92,18 +92,28 @@ sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_
 cd /home/git/gitlab-shell
 
 sudo -u git -H git fetch --all --tags
-sudo -u git -H git checkout v`cat /home/git/gitlab/GITLAB_SHELL_VERSION` -b v`cat /home/git/gitlab/GITLAB_SHELL_VERSION`
+sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_SHELL_VERSION) -b v$(</home/git/gitlab/GITLAB_SHELL_VERSION)
 sudo -u git -H sh -c 'if [ -x bin/compile ]; then bin/compile; fi'
 ```
 
-### 7. Start application
+### 7. Update gitlab-pages to the corresponding version (skip if not using pages)
+
+```bash
+cd /home/git/gitlab-pages
+
+sudo -u git -H git fetch --all --tags
+sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_PAGES_VERSION)
+sudo -u git -H make
+```
+
+### 8. Start application
 
 ```bash
 sudo service gitlab start
 sudo service nginx restart
 ```
 
-### 8. Check application status
+### 9. Check application status
 
 Check if GitLab and its environment are configured correctly:
 

@@ -16,23 +16,25 @@ describe RspecFlaky::Config, :aggregate_failures do
       end
     end
 
-    context "when ENV['FLAKY_RSPEC_GENERATE_REPORT'] is set to 'false'" do
-      before do
-        stub_env('FLAKY_RSPEC_GENERATE_REPORT', 'false')
+    context "when ENV['FLAKY_RSPEC_GENERATE_REPORT'] is set" do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:env_value, :result) do
+        '1'      | true
+        'true'   | true
+        'foo'    | false
+        '0'      | false
+        'false'  | false
       end
 
-      it 'returns false' do
-        expect(described_class).not_to be_generate_report
-      end
-    end
+      with_them do
+        before do
+          stub_env('FLAKY_RSPEC_GENERATE_REPORT', env_value)
+        end
 
-    context "when ENV['FLAKY_RSPEC_GENERATE_REPORT'] is set to 'true'" do
-      before do
-        stub_env('FLAKY_RSPEC_GENERATE_REPORT', 'true')
-      end
-
-      it 'returns true' do
-        expect(described_class).to be_generate_report
+        it 'returns false' do
+          expect(described_class.generate_report?).to be(result)
+        end
       end
     end
   end

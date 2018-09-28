@@ -1,14 +1,16 @@
+# frozen_string_literal: true
+
 module SystemNoteHelper
   ICON_NAMES_BY_ACTION = {
     'commit' => 'commit',
-    'description' => 'pencil',
+    'description' => 'pencil-square',
     'merge' => 'git-merge',
     'merged' => 'git-merge',
     'opened' => 'issue-open',
     'closed' => 'issue-close',
     'time_tracking' => 'timer',
     'assignee' => 'user',
-    'title' => 'pencil',
+    'title' => 'pencil-square',
     'task' => 'task-done',
     'label' => 'label',
     'cross_reference' => 'comment-dots',
@@ -18,10 +20,11 @@ module SystemNoteHelper
     'milestone' => 'clock',
     'discussion' => 'comment',
     'moved' => 'arrow-right',
-    'outdated' => 'pencil',
+    'outdated' => 'pencil-square',
     'duplicate' => 'issue-duplicate',
     'locked' => 'lock',
-    'unlocked' => 'lock-open'
+    'unlocked' => 'lock-open',
+    'due_date' => 'calendar'
   }.freeze
 
   def system_note_icon_name(note)

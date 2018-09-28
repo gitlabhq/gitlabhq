@@ -53,7 +53,7 @@ module Gitlab
       end
 
       def config_file
-        ENV['MAIL_ROOM_GITLAB_CONFIG_FILE'] || File.expand_path('../../../config/gitlab.yml', __FILE__)
+        ENV['MAIL_ROOM_GITLAB_CONFIG_FILE'] || File.expand_path('../../config/gitlab.yml', __dir__)
       end
     end
   end

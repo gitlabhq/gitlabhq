@@ -100,9 +100,10 @@ module API
       end
 
       def can_award_awardable?
-        awardable.user_can_award?(current_user, params[:name])
+        awardable.user_can_award?(current_user)
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def awardable
         @awardable ||=
           begin
@@ -119,6 +120,7 @@ module API
             end
           end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def read_ability(awardable)
         case awardable

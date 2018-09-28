@@ -115,5 +115,74 @@ describe Projects::AutocompleteService do
 
       expect(milestone_titles).to eq([group_milestone2.title, group_milestone1.title])
     end
+
+    context 'with nested groups', :nested_groups do
+      let(:subgroup) { create(:group, :public, parent: group) }
+      let!(:subgroup_milestone) { create(:milestone, group: subgroup) }
+
+      before do
+        project.update(namespace: subgroup)
+      end
+
+      it 'includes project milestones and all acestors milestones' do
+        expect(milestone_titles).to match_array(
+          [project_milestone.title, group_milestone2.title, group_milestone1.title, subgroup_milestone.title]
+        )
+      end
+    end
+  end
+
+  describe '#labels_as_hash' do
+    def expect_labels_to_equal(labels, expected_labels)
+      expect(labels.size).to eq(expected_labels.size)
+      extract_title = lambda { |label| label['title'] }
+      expect(labels.map(&extract_title)).to eq(expected_labels.map(&extract_title))
+    end
+
+    let(:user) { create(:user) }
+    let(:group) { create(:group, :nested) }
+    let!(:sub_group) { create(:group, parent: group) }
+    let(:project) { create(:project, :public, group: group) }
+    let(:issue) { create(:issue, project: project) }
+
+    let!(:label1) { create(:label, project: project) }
+    let!(:label2) { create(:label, project: project) }
+    let!(:sub_group_label) { create(:group_label, group: sub_group) }
+    let!(:parent_group_label) { create(:group_label, group: group.parent) }
+
+    before do
+      create(:group_member, group: group, user: user)
+    end
+
+    it 'returns labels from project and ancestor groups' do
+      service = described_class.new(project, user)
+      results = service.labels_as_hash
+      expected_labels = [label1, label2, parent_group_label]
+
+      expect_labels_to_equal(results, expected_labels)
+    end
+
+    context 'some labels are already assigned' do
+      before do
+        issue.labels << label1
+      end
+
+      it 'marks already assigned as set' do
+        service = described_class.new(project, user)
+        results = service.labels_as_hash(issue)
+        expected_labels = [label1, label2, parent_group_label]
+
+        expect_labels_to_equal(results, expected_labels)
+
+        assigned_label_titles = issue.labels.map(&:title)
+        results.each do |hash|
+          if assigned_label_titles.include?(hash['title'])
+            expect(hash[:set]).to eq(true)
+          else
+            expect(hash.key?(:set)).to eq(false)
+          end
+        end
+      end
+    end
   end
 end

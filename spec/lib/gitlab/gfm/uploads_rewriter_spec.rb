@@ -20,37 +20,55 @@ describe Gitlab::Gfm::UploadsRewriter do
       "Text and #{image_uploader.markdown_link} and #{zip_uploader.markdown_link}"
     end
 
-    describe '#rewrite' do
-      let!(:new_text) { rewriter.rewrite(new_project) }
+    shared_examples "files are accessible" do
+      describe '#rewrite' do
+        let!(:new_text) { rewriter.rewrite(new_project) }
 
-      let(:old_files) { [image_uploader, zip_uploader].map(&:file) }
-      let(:new_files) do
-        described_class.new(new_text, new_project, user).files
+        let(:old_files) { [image_uploader, zip_uploader] }
+        let(:new_files) do
+          described_class.new(new_text, new_project, user).files
+        end
+
+        let(:old_paths) { old_files.map(&:path) }
+        let(:new_paths) { new_files.map(&:path) }
+
+        it 'rewrites content' do
+          expect(new_text).not_to eq text
+          expect(new_text.length).to eq text.length
+        end
+
+        it 'copies files' do
+          expect(new_files).to all(exist)
+          expect(old_paths).not_to match_array new_paths
+          expect(old_paths).to all(include(old_project.disk_path))
+          expect(new_paths).to all(include(new_project.disk_path))
+        end
+
+        it 'does not remove old files' do
+          expect(old_files).to all(exist)
+        end
+
+        it 'generates a new secret for each file' do
+          expect(new_paths).not_to include image_uploader.secret
+          expect(new_paths).not_to include zip_uploader.secret
+        end
+      end
+    end
+
+    context "file are stored locally" do
+      include_examples "files are accessible"
+    end
+
+    context "files are stored remotely" do
+      before do
+        stub_uploads_object_storage(FileUploader)
+
+        old_files.each do |file|
+          file.migrate!(ObjectStorage::Store::REMOTE)
+        end
       end
 
-      let(:old_paths) { old_files.map(&:path) }
-      let(:new_paths) { new_files.map(&:path) }
-
-      it 'rewrites content' do
-        expect(new_text).not_to eq text
-        expect(new_text.length).to eq text.length
-      end
-
-      it 'copies files' do
-        expect(new_files).to all(exist)
-        expect(old_paths).not_to match_array new_paths
-        expect(old_paths).to all(include(old_project.disk_path))
-        expect(new_paths).to all(include(new_project.disk_path))
-      end
-
-      it 'does not remove old files' do
-        expect(old_files).to all(exist)
-      end
-
-      it 'generates a new secret for each file' do
-        expect(new_paths).not_to include image_uploader.secret
-        expect(new_paths).not_to include zip_uploader.secret
-      end
+      include_examples "files are accessible"
     end
 
     describe '#needs_rewrite?' do

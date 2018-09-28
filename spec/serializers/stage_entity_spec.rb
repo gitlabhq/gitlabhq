@@ -26,7 +26,7 @@ describe StageEntity do
     end
 
     it 'contains detailed status' do
-      expect(subject[:status]).to include :text, :label, :group, :icon
+      expect(subject[:status]).to include :text, :label, :group, :icon, :tooltip
       expect(subject[:status][:label]).to eq 'passed'
     end
 

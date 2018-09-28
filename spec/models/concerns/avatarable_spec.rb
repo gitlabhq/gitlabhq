@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Avatarable do
-  set(:project) { create(:project, avatar: fixture_file_upload(File.join(Rails.root, 'spec/fixtures/dk.png'))) }
+  let(:project) { create(:project, :with_avatar) }
 
   let(:gitlab_host) { "https://gitlab.example.com" }
   let(:relative_url_root) { "/gitlab" }
@@ -10,6 +10,26 @@ describe Avatarable do
   before do
     stub_config_setting(base_url: gitlab_host)
     stub_config_setting(relative_url_root: relative_url_root)
+  end
+
+  describe '#update' do
+    let(:validator) { project._validators[:avatar].detect { |v| v.is_a?(FileSizeValidator) } }
+
+    context 'when avatar changed' do
+      it 'validates the file size' do
+        expect(validator).to receive(:validate_each).and_call_original
+
+        project.update(avatar: 'uploads/avatar.png')
+      end
+    end
+
+    context 'when avatar was not changed' do
+      it 'skips validation of file size' do
+        expect(validator).not_to receive(:validate_each)
+
+        project.update(name: 'Hello world')
+      end
+    end
   end
 
   describe '#avatar_path' do
@@ -37,10 +57,26 @@ describe Avatarable do
         project.visibility_level = visibility_level
       end
 
-      let(:avatar_path) { (avatar_path_prefix + [project.avatar.url]).join }
+      let(:avatar_path) { (avatar_path_prefix + [project.avatar.local_url]).join }
 
       it 'returns the expected avatar path' do
         expect(project.avatar_path(only_path: only_path)).to eq(avatar_path)
+      end
+
+      it 'returns the expected avatar path with width parameter' do
+        expect(project.avatar_path(only_path: only_path, size: 128)).to eq(avatar_path + "?width=128")
+      end
+
+      context "when avatar is stored remotely" do
+        before do
+          stub_uploads_object_storage(AvatarUploader)
+
+          project.avatar.migrate!(ObjectStorage::Store::REMOTE)
+        end
+
+        it 'returns the expected avatar path' do
+          expect(project.avatar_url(only_path: only_path)).to eq(avatar_path)
+        end
       end
     end
   end

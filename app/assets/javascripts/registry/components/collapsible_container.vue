@@ -2,16 +2,15 @@
   import { mapActions } from 'vuex';
   import Flash from '../../flash';
   import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
-  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
   import tooltip from '../../vue_shared/directives/tooltip';
   import tableRegistry from './table_registry.vue';
   import { errorMessages, errorMessagesTypes } from '../constants';
+  import { __ } from '../../locale';
 
   export default {
     name: 'CollapsibeContainerRegisty',
     components: {
       clipboardButton,
-      loadingIcon,
       tableRegistry,
     },
     directives: {
@@ -27,11 +26,6 @@
       return {
         isOpen: false,
       };
-    },
-    computed: {
-      clipboardText() {
-        return `docker pull ${this.repo.location}`;
-      },
     },
     methods: {
       ...mapActions([
@@ -51,7 +45,10 @@
 
       handleDeleteRepository() {
         this.deleteRepo(this.repo)
-          .then(() => this.fetchRepos())
+          .then(() => {
+            Flash(__('This container registry has been scheduled for deletion.'), 'notice');
+            this.fetchRepos();
+          })
           .catch(() => this.showError(errorMessagesTypes.DELETE_REPO));
       },
 
@@ -67,15 +64,15 @@
     <div class="container-image-head">
       <button
         type="button"
-        @click="toggleRepo"
         class="js-toggle-repo btn-link"
+        @click="toggleRepo"
       >
         <i
-          class="fa"
           :class="{
             'fa-chevron-right': !isOpen,
             'fa-chevron-up': isOpen,
           }"
+          class="fa"
           aria-hidden="true"
         >
         </i>
@@ -84,19 +81,19 @@
 
       <clipboard-button
         v-if="repo.location"
-        :text="clipboardText"
+        :text="repo.location"
         :title="repo.location"
         css-class="btn-default btn-transparent btn-clipboard"
       />
 
-      <div class="controls hidden-xs pull-right">
+      <div class="controls d-none d-sm-block float-right">
         <button
           v-if="repo.canDelete"
-          type="button"
-          class="js-remove-repo btn btn-danger"
+          v-tooltip
           :title="s__('ContainerRegistry|Remove repository')"
           :aria-label="s__('ContainerRegistry|Remove repository')"
-          v-tooltip
+          type="button"
+          class="js-remove-repo btn btn-danger"
           @click="handleDeleteRepository"
         >
           <i
@@ -108,10 +105,10 @@
       </div>
     </div>
 
-    <loading-icon
+    <gl-loading-icon
       v-if="repo.isLoading"
+      :size="2"
       class="append-bottom-20"
-      size="2"
     />
 
     <div

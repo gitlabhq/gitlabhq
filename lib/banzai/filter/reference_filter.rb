@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module Filter
     # Base class for GitLab Flavored Markdown reference filters.
@@ -65,15 +67,19 @@ module Banzai
         context[:skip_project_check]
       end
 
-      def reference_class(type)
-        "gfm gfm-#{type} has-tooltip"
+      def reference_class(type, tooltip: true)
+        gfm_klass = "gfm gfm-#{type}"
+
+        return gfm_klass unless tooltip
+
+        "#{gfm_klass} has-tooltip"
       end
 
       # Ensure that a :project key exists in context
       #
       # Note that while the key might exist, its value could be nil!
       def validate
-        needs :project
+        needs :project unless skip_project_check?
       end
 
       # Iterates over all <a> and text() nodes in a document.

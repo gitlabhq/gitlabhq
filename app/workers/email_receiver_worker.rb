@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EmailReceiverWorker
   include ApplicationWorker
 
@@ -13,14 +15,14 @@ class EmailReceiverWorker
 
   private
 
-  def handle_failure(raw, e)
-    Rails.logger.warn("Email can not be processed: #{e}\n\n#{raw}")
+  def handle_failure(raw, error)
+    Rails.logger.warn("Email can not be processed: #{error}\n\n#{raw}")
 
     return unless raw.present?
 
     can_retry = false
     reason =
-      case e
+      case error
       when Gitlab::Email::UnknownIncomingEmail
         "We couldn't figure out what the email is for. Please create your issue or comment through the web interface."
       when Gitlab::Email::SentNotificationNotFoundError
@@ -40,7 +42,7 @@ class EmailReceiverWorker
         "The thread you are replying to no longer exists, perhaps it was deleted? If you believe this is in error, contact a staff member."
       when Gitlab::Email::InvalidRecordError
         can_retry = true
-        e.message
+        error.message
       end
 
     if reason

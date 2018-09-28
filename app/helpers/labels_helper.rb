@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LabelsHelper
   extend self
   include ActionView::Helpers::TagHelper
@@ -81,7 +83,7 @@ module LabelsHelper
 
     # Intentionally not using content_tag here so that this method can be called
     # by LabelReferenceFilter
-    span = %(<span class="label color-label #{"has-tooltip" if tooltip}" ) +
+    span = %(<span class="badge color-label #{"has-tooltip" if tooltip}" ) +
       %(style="background-color: #{label.color}; color: #{text_color}" ) +
       %(title="#{escape_once(label.description)}" data-container="body">) +
       %(#{escape_once(label.name)}#{label_suffix}</span>)
@@ -129,13 +131,17 @@ module LabelsHelper
     end
   end
 
-  def labels_filter_path(only_group_labels = false)
+  def labels_filter_path(only_group_labels = false, include_ancestor_groups: true, include_descendant_groups: false)
     project = @target_project || @project
 
+    options = {}
+    options[:include_ancestor_groups] = include_ancestor_groups if include_ancestor_groups
+    options[:include_descendant_groups] = include_descendant_groups if include_descendant_groups
+
     if project
-      project_labels_path(project, :json)
+      project_labels_path(project, :json, options)
     elsif @group
-      options = { only_group_labels: only_group_labels } if only_group_labels
+      options[:only_group_labels] = only_group_labels if only_group_labels
       group_labels_path(@group, :json, options)
     else
       dashboard_labels_path(:json)
@@ -205,6 +211,14 @@ module LabelsHelper
     else
       _('View labels')
     end
+  end
+
+  def label_status_tooltip(label, status)
+    type = label.is_a?(ProjectLabel) ? 'project' : 'group'
+    level = status.unsubscribed? ? type : status.sub('-level', '')
+    action = status.unsubscribed? ? 'Subscribe' : 'Unsubscribe'
+
+    "#{action} at #{level} level"
   end
 
   # Required for Banzai::Filter::LabelReferenceFilter

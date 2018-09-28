@@ -4,7 +4,7 @@ require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20161226122833_remove_dot_git_from_usernames.rb')
 
 describe RemoveDotGitFromUsernames do
-  let(:user) { create(:user) }
+  let(:user) { create(:user) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
   let(:migration) { described_class.new }
 
   describe '#up' do
@@ -23,13 +23,15 @@ describe RemoveDotGitFromUsernames do
 
   context 'when new path exists already' do
     describe '#up' do
-      let(:user2) { create(:user) }
+      let(:user2) { create(:user) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
 
       before do
         update_namespace(user, 'test.git')
         update_namespace(user2, 'test_git')
 
-        storages = { 'default' => 'tmp/tests/custom_repositories' }
+        default_hash = Gitlab.config.repositories.storages.default.to_h
+        default_hash['path'] = 'tmp/tests/custom_repositories'
+        storages = { 'default' => Gitlab::GitalyClient::StorageSettings.new(default_hash) }
 
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
         allow(migration).to receive(:route_exists?).with('test_git').and_return(true)

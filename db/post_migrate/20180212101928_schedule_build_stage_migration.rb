@@ -1,26 +1,11 @@
 class ScheduleBuildStageMigration < ActiveRecord::Migration
-  include Gitlab::Database::MigrationHelpers
-
-  DOWNTIME = false
-  MIGRATION = 'MigrateBuildStage'.freeze
-  BATCH_SIZE = 500
-
-  disable_ddl_transaction!
-
-  class Build < ActiveRecord::Base
-    include EachBatch
-    self.table_name = 'ci_builds'
-  end
+  ##
+  # This migration has been rescheduled to run again, see
+  # `20180405101928_reschedule_builds_stages_migration.rb`
+  #
 
   def up
-    disable_statement_timeout
-
-    Build.where('stage_id IS NULL').tap do |relation|
-      queue_background_migration_jobs_by_range_at_intervals(relation,
-                                                            MIGRATION,
-                                                            5.minutes,
-                                                            batch_size: BATCH_SIZE)
-    end
+    # noop
   end
 
   def down

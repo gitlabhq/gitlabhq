@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Board < ActiveRecord::Base
   belongs_to :group
   belongs_to :project
@@ -25,5 +27,9 @@ class Board < ActiveRecord::Base
 
   def closed_list
     lists.merge(List.closed).take
+  end
+
+  def scoped?
+    false
   end
 end

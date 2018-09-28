@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # UsersFinder
 #
 # Used to filter users by set of params
@@ -32,6 +34,7 @@ class UsersFinder
     users = by_active(users)
     users = by_external_identity(users)
     users = by_external(users)
+    users = by_2fa(users)
     users = by_created_at(users)
     users = by_custom_attributes(users)
 
@@ -40,11 +43,13 @@ class UsersFinder
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_username(users)
     return users unless params[:username]
 
     users.where(username: params[:username])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def by_search(users)
     return users unless params[:search].present?
@@ -64,16 +69,31 @@ class UsersFinder
     users.active
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_external_identity(users)
     return users unless current_user&.admin? && params[:extern_uid] && params[:provider]
 
     users.joins(:identities).merge(Identity.with_extern_uid(params[:provider], params[:extern_uid]))
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_external(users)
     return users = users.where.not(external: true) unless current_user&.admin?
     return users unless params[:external]
 
     users.external
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
+
+  def by_2fa(users)
+    case params[:two_factor]
+    when 'enabled'
+      users.with_two_factor
+    when 'disabled'
+      users.without_two_factor
+    else
+      users
+    end
   end
 end

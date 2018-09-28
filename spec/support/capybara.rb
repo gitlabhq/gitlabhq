@@ -7,6 +7,16 @@ require 'selenium-webdriver'
 # Give CI some extra time
 timeout = (ENV['CI'] || ENV['CI_SERVER']) ? 60 : 30
 
+# Define an error class for JS console messages
+JSConsoleError = Class.new(StandardError)
+
+# Filter out innocuous JS console messages
+JS_CONSOLE_FILTER = Regexp.union([
+  '"[HMR] Waiting for update signal from WDS..."',
+  '"[WDS] Hot Module Replacement enabled."',
+  "Download the Vue Devtools extension"
+])
+
 Capybara.register_driver :chrome do |app|
   capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
     # This enables access to logs with `page.driver.manage.get_log(:browser)`
@@ -25,13 +35,7 @@ Capybara.register_driver :chrome do |app|
   options.add_argument("no-sandbox")
 
   # Run headless by default unless CHROME_HEADLESS specified
-  unless ENV['CHROME_HEADLESS'] =~ /^(false|no|0)$/i
-    options.add_argument("headless")
-
-    # Chrome documentation says this flag is needed for now
-    # https://developers.google.com/web/updates/2017/04/headless-chrome#cli
-    options.add_argument("disable-gpu")
-  end
+  options.add_argument("headless") unless ENV['CHROME_HEADLESS'] =~ /^(false|no|0)$/i
 
   # Disable /dev/shm use in CI. See https://gitlab.com/gitlab-org/gitlab-ee/issues/4252
   options.add_argument("disable-dev-shm-usage") if ENV['CI'] || ENV['CI_SERVER']
@@ -56,6 +60,8 @@ Capybara::Screenshot.register_driver(:chrome) do |driver, path|
 end
 
 RSpec.configure do |config|
+  config.include CapybaraHelpers, type: :feature
+
   config.before(:context, :js) do
     next if $capybara_server_already_started
 
@@ -78,6 +84,15 @@ RSpec.configure do |config|
   end
 
   config.after(:example, :js) do |example|
+    # when a test fails, display any messages in the browser's console
+    if example.exception
+      console = page.driver.browser.manage.logs.get(:browser)&.reject { |log| log.message =~ JS_CONSOLE_FILTER }
+      if console.present?
+        message = "Unexpected browser console output:\n" + console.map(&:message).join("\n")
+        raise JSConsoleError, message
+      end
+    end
+
     # prevent localStorage from introducing side effects based on test order
     unless ['', 'about:blank', 'data:,'].include? Capybara.current_session.driver.browser.current_url
       execute_script("localStorage.clear();")

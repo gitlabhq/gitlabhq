@@ -6,6 +6,7 @@ describe API::Helpers do
   include API::APIGuard::HelperMethods
   include described_class
   include SentryHelper
+  include TermsHelper
 
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
@@ -163,6 +164,23 @@ describe API::Helpers do
         expect { current_user }.to raise_error /403/
       end
 
+      context 'when terms are enforced' do
+        before do
+          enforce_terms
+          env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        end
+
+        it 'returns a 403 when a user has not accepted the terms' do
+          expect { current_user }.to raise_error /must accept the Terms of Service/
+        end
+
+        it 'sets the current user when the user accepted the terms' do
+          accept_terms(user)
+
+          expect(current_user).to eq(user)
+        end
+      end
+
       it "sets current_user" do
         env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
         expect(current_user).to eq(user)
@@ -183,7 +201,7 @@ describe API::Helpers do
       end
 
       it 'does not allow expired tokens' do
-        personal_access_token.update_attributes!(expires_at: 1.day.ago)
+        personal_access_token.update!(expires_at: 1.day.ago)
         env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
         expect { current_user }.to raise_error Gitlab::Auth::ExpiredError

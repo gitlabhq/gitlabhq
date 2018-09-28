@@ -1,25 +1,3 @@
-@mixin application-theme-preview($color-1, $color-2, $color-3, $color-4) {
-  .one {
-    background-color: $color-1;
-    border-top-left-radius: $border-radius-default;
-  }
-
-  .two {
-    background-color: $color-2;
-    border-top-right-radius: $border-radius-default;
-  }
-
-  .three {
-    background-color: $color-3;
-    border-bottom-left-radius: $border-radius-default;
-  }
-
-  .four {
-    background-color: $color-4;
-    border-bottom-right-radius: $border-radius-default;
-  }
-}
-
 .multi-file-editor-options {
   label {
     margin-right: 20px;
@@ -38,49 +16,67 @@
 
 .application-theme {
   label {
-    margin-right: 20px;
+    margin: 0 $gl-padding-32 $gl-padding 0;
     text-align: center;
   }
 
   .preview {
     font-size: 0;
-    margin-bottom: 10px;
+    height: 48px;
+    border-radius: 4px;
+    min-width: 112px;
+    margin-bottom: $gl-padding-8;
 
-    &.indigo {
-      @include application-theme-preview($indigo-900, $indigo-700, $indigo-800, $indigo-500);
+    &.ui-indigo {
+      background-color: $indigo-900;
     }
 
-    &.dark {
-      @include application-theme-preview($theme-gray-900, $theme-gray-700, $theme-gray-800, $theme-gray-600);
+    &.ui-light-indigo {
+      background-color: $indigo-700;
     }
 
-    &.light {
-      @include application-theme-preview($theme-gray-600, $theme-gray-200, $theme-gray-400, $theme-gray-100);
+    &.ui-blue {
+      background-color: $theme-blue-900;
     }
 
-    &.blue {
-      @include application-theme-preview($theme-blue-900, $theme-blue-700, $theme-blue-800, $theme-blue-500);
+    &.ui-light-blue {
+      background-color: $theme-light-blue-700;
     }
 
-    &.green {
-      @include application-theme-preview($theme-green-900, $theme-green-700, $theme-green-800, $theme-green-500);
+    &.ui-green {
+      background-color: $theme-green-900;
+    }
+
+    &.ui-light-green {
+      background-color: $theme-light-green-700;
+    }
+
+    &.ui-red {
+      background-color: $theme-red-900;
+    }
+
+    &.ui-light-red {
+      background-color: $theme-light-red-700;
+    }
+
+    &.ui-dark {
+      background-color: $theme-gray-900;
+    }
+
+    &.ui-light {
+      background-color: $theme-gray-200;
     }
   }
 
   .preview-row {
     display: block;
   }
-
-  .quadrant {
-    display: inline-block;
-    height: 50px;
-    width: 80px;
-  }
 }
 
 .syntax-theme {
   label {
-    margin-right: 20px;
+    margin-right: $gl-padding-32;
+    margin-bottom: $gl-padding;
     text-align: center;
 
     .preview {
@@ -89,7 +85,6 @@
 
       img {
         border-radius: 4px;
-
         max-width: 100%;
       }
     }

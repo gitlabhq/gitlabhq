@@ -58,5 +58,17 @@ describe Gitlab::GithubImport::BulkImporting do
 
       importer.bulk_insert(model, rows, batch_size: 5)
     end
+
+    it 'calls pre_hook for each slice if given' do
+      rows = [{ title: 'Foo' }] * 10
+      model = double(:model, table_name: 'kittens')
+      pre_hook = double('pre_hook', call: nil)
+      allow(Gitlab::Database).to receive(:bulk_insert)
+
+      expect(pre_hook).to receive(:call).with(rows[0..4])
+      expect(pre_hook).to receive(:call).with(rows[5..9])
+
+      importer.bulk_insert(model, rows, batch_size: 5, pre_hook: pre_hook)
+    end
   end
 end

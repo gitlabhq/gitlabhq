@@ -1,25 +1,22 @@
-/* eslint-disable class-methods-use-this */
-import Vue from 'vue';
-import VueResource from 'vue-resource';
-
-Vue.use(VueResource);
+import axios from '~/lib/utils/axios_utils';
 
 export default class EnvironmentsService {
   constructor(endpoint) {
-    this.environments = Vue.resource(endpoint);
+    this.environmentsEndpoint = endpoint;
     this.folderResults = 3;
   }
 
-  get(options = {}) {
+  fetchEnvironments(options = {}) {
     const { scope, page } = options;
-    return this.environments.get({ scope, page });
+    return axios.get(this.environmentsEndpoint, { params: { scope, page } });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   postAction(endpoint) {
-    return Vue.http.post(endpoint, {}, { emulateJSON: true });
+    return axios.post(endpoint, {});
   }
 
   getFolderContent(folderUrl) {
-    return Vue.http.get(`${folderUrl}.json?per_page=${this.folderResults}`);
+    return axios.get(`${folderUrl}.json?per_page=${this.folderResults}`);
   }
 }

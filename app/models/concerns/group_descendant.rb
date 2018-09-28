@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GroupDescendant
   # Returns the hierarchy of a project or group in the from of a hash upto a
   # given top.
@@ -37,7 +39,20 @@ module GroupDescendant
     parent ||= preloaded.detect { |possible_parent| possible_parent.is_a?(Group) && possible_parent.id == child.parent_id }
 
     if parent.nil? && !child.parent_id.nil?
-      raise ArgumentError.new('parent was not preloaded')
+      parent = child.parent
+
+      exception = ArgumentError.new <<~MSG
+        parent: [GroupDescendant: #{parent.inspect}] was not preloaded for [#{child.inspect}]")
+        This error is not user facing, but causes a +1 query.
+      MSG
+      extras = {
+        parent: parent.inspect,
+        child: child.inspect,
+        preloaded: preloaded.map(&:full_path)
+      }
+      issue_url = 'https://gitlab.com/gitlab-org/gitlab-ce/issues/40785'
+
+      Gitlab::Sentry.track_exception(exception, issue_url: issue_url, extra: extras)
     end
 
     if parent.nil? && hierarchy_top.present?

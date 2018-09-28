@@ -1,3 +1,4 @@
+require 'google/apis/compute_v1'
 require 'google/apis/container_v1'
 require 'google/apis/cloudbilling_v1'
 require 'google/apis/cloudresourcemanager_v1'
@@ -42,22 +43,6 @@ module GoogleApi
         true
       end
 
-      def projects_list
-        service = Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService.new
-        service.authorization = access_token
-
-        service.fetch_all(items: :projects) do |token|
-          service.list_projects(page_token: token, options: user_agent_header)
-        end
-      end
-
-      def projects_get_billing_info(project_id)
-        service = Google::Apis::CloudbillingV1::CloudbillingService.new
-        service.authorization = access_token
-
-        service.get_project_billing_info("projects/#{project_id}", options: user_agent_header)
-      end
-
       def projects_zones_clusters_get(project_id, zone, cluster_id)
         service = Google::Apis::ContainerV1::ContainerService.new
         service.authorization = access_token
@@ -65,7 +50,7 @@ module GoogleApi
         service.get_zone_cluster(project_id, zone, cluster_id, options: user_agent_header)
       end
 
-      def projects_zones_clusters_create(project_id, zone, cluster_name, cluster_size, machine_type:)
+      def projects_zones_clusters_create(project_id, zone, cluster_name, cluster_size, machine_type:, legacy_abac:)
         service = Google::Apis::ContainerV1::ContainerService.new
         service.authorization = access_token
 
@@ -78,7 +63,7 @@ module GoogleApi
                 "machine_type": machine_type
               },
               "legacy_abac": {
-                "enabled": true
+                "enabled": legacy_abac
               }
             }
           }

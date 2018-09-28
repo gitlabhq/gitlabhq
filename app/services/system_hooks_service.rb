@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SystemHooksService
   def execute_hooks_for(model, event)
     data = build_event_data(model, event)

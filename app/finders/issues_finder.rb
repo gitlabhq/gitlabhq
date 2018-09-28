@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Finders::Issues class
 #
 # Used to filter Issues collections by set of params
@@ -5,7 +7,7 @@
 # Arguments:
 #   current_user - which user use
 #   params:
-#     scope: 'created-by-me' or 'assigned-to-me' or 'all'
+#     scope: 'created_by_me' or 'assigned_to_me' or 'all'
 #     state: 'open' or 'closed' or 'all'
 #     group_id: integer
 #     project_id: integer
@@ -29,10 +31,13 @@ class IssuesFinder < IssuableFinder
     @scalar_params ||= super + [:due_date]
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def klass
     Issue.includes(:author)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def with_confidentiality_access_check
     return Issue.all if user_can_see_all_confidential_issues?
     return Issue.where('issues.confidential IS NOT TRUE') if user_cannot_see_confidential_issues?
@@ -46,6 +51,7 @@ class IssuesFinder < IssuableFinder
       user_id: current_user.id,
       project_ids: current_user.authorized_projects(CONFIDENTIAL_ACCESS_LEVEL).select(:id))
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 
@@ -75,6 +81,8 @@ class IssuesFinder < IssuableFinder
         items = items.due_between(Date.today.beginning_of_week, Date.today.end_of_week)
       elsif filter_by_due_this_month?
         items = items.due_between(Date.today.beginning_of_month, Date.today.end_of_month)
+      elsif filter_by_due_next_month_and_previous_two_weeks?
+        items = items.due_between(Date.today - 2.weeks, (Date.today + 1.month).end_of_month)
       end
     end
 
@@ -95,6 +103,10 @@ class IssuesFinder < IssuableFinder
 
   def filter_by_due_this_month?
     due_date? && params[:due_date] == Issue::DueThisMonth.name
+  end
+
+  def filter_by_due_next_month_and_previous_two_weeks?
+    due_date? && params[:due_date] == Issue::DueNextMonthAndPreviousTwoWeeks.name
   end
 
   def due_date?
@@ -119,6 +131,7 @@ class IssuesFinder < IssuableFinder
     current_user.blank?
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_assignee(items)
     if assignee
       items.assigned_to(assignee)
@@ -130,8 +143,5 @@ class IssuesFinder < IssuableFinder
       items
     end
   end
-
-  def item_project_ids(items)
-    items&.reorder(nil)&.select(:project_id)
-  end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

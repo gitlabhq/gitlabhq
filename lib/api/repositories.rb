@@ -88,7 +88,7 @@ module API
       end
       get ':id/repository/archive', requirements: { format: Gitlab::PathRegex.archive_formats_regex } do
         begin
-          send_git_archive user_project.repository, ref: params[:sha], format: params[:format]
+          send_git_archive user_project.repository, ref: params[:sha], format: params[:format], append_sha: true
         rescue
           not_found!('File')
         end
@@ -100,9 +100,10 @@ module API
       params do
         requires :from, type: String, desc: 'The commit, branch name, or tag name to start comparison'
         requires :to, type: String, desc: 'The commit, branch name, or tag name to stop comparison'
+        optional :straight, type: Boolean, desc: 'Comparison method, `true` for direct comparison between `from` and `to` (`from`..`to`), `false` to compare using merge base (`from`...`to`)', default: false
       end
       get ':id/repository/compare' do
-        compare = Gitlab::Git::Compare.new(user_project.repository.raw_repository, params[:from], params[:to])
+        compare = Gitlab::Git::Compare.new(user_project.repository.raw_repository, params[:from], params[:to], straight: params[:straight])
         present compare, with: Entities::Compare
       end
 
@@ -111,8 +112,8 @@ module API
       end
       params do
         use :pagination
-        optional :order_by, type: String, values: %w[email name commits], default: nil, desc: 'Return contributors ordered by `name` or `email` or `commits`'
-        optional :sort, type: String, values: %w[asc desc], default: nil, desc: 'Sort by asc (ascending) or desc (descending)'
+        optional :order_by, type: String, values: %w[email name commits], default: 'commits', desc: 'Return contributors ordered by `name` or `email` or `commits`'
+        optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
       end
       get ':id/repository/contributors' do
         begin
@@ -120,6 +121,39 @@ module API
           present paginate(contributors), with: Entities::Contributor
         rescue
           not_found!
+        end
+      end
+
+      desc 'Get the common ancestor between commits' do
+        success Entities::Commit
+      end
+      params do
+        # For now we just support 2 refs passed, but `merge-base` supports
+        # multiple defining this as an Array instead of 2 separate params will
+        # make sure we don't need to deprecate this API in favor of one
+        # supporting multiple commits when this functionality gets added to
+        # Gitaly
+        requires :refs, type: Array[String]
+      end
+      get ':id/repository/merge_base' do
+        refs = params[:refs]
+
+        unless refs.size == 2
+          render_api_error!('Provide exactly 2 refs', 400)
+        end
+
+        merge_base = Gitlab::Git::MergeBase.new(user_project.repository, refs)
+
+        if merge_base.unknown_refs.any?
+          ref_noun = 'ref'.pluralize(merge_base.unknown_refs.size)
+          message = "Could not find #{ref_noun}: #{merge_base.unknown_refs.join(', ')}"
+          render_api_error!(message, 400)
+        end
+
+        if merge_base.commit
+          present merge_base.commit, with: Entities::Commit
+        else
+          not_found!("Merge Base")
         end
       end
     end

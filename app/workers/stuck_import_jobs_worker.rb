@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StuckImportJobsWorker
   include ApplicationWorker
   include CronjobQueue
@@ -21,8 +23,10 @@ class StuckImportJobsWorker
     end.count
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def mark_projects_with_jid_as_failed!
-    jids_and_ids = enqueued_projects_with_jid.pluck(:import_jid, :id).to_h
+    # TODO: Rollback this change to use SQL through #pluck
+    jids_and_ids = enqueued_projects_with_jid.map { |project| [project.import_jid, project.id] }.to_h
 
     # Find the jobs that aren't currently running or that exceeded the threshold.
     completed_jids = Gitlab::SidekiqStatus.completed_jids(jids_and_ids.keys)
@@ -40,18 +44,25 @@ class StuckImportJobsWorker
       project.mark_import_as_failed(error_message)
     end.count
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def enqueued_projects
-    Project.with_import_status(:scheduled, :started)
+    Project.joins_import_state.where("(import_state.status = 'scheduled' OR import_state.status = 'started') OR (projects.import_status = 'scheduled' OR projects.import_status = 'started')")
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def enqueued_projects_with_jid
-    enqueued_projects.where.not(import_jid: nil)
+    enqueued_projects.where.not("import_state.jid IS NULL AND projects.import_jid IS NULL")
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def enqueued_projects_without_jid
-    enqueued_projects.where(import_jid: nil)
+    enqueued_projects.where("import_state.jid IS NULL AND projects.import_jid IS NULL")
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def error_message
     "Import timed out. Import took longer than #{IMPORT_JOBS_EXPIRATION} seconds"

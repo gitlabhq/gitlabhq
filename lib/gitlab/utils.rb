@@ -27,6 +27,11 @@ module Gitlab
         .gsub(/(\A-+|-+\z)/, '')
     end
 
+    # Converts newlines into HTML line break elements
+    def nlbr(str)
+      ActionView::Base.full_sanitizer.sanitize(str, tags: []).gsub(/\r?\n/, '<br>').html_safe
+    end
+
     def remove_line_breaks(str)
       str.gsub(/\r?\n/, '')
     end
@@ -66,6 +71,10 @@ module Gitlab
       end
 
       nil
+    end
+
+    def bytes_to_megabytes(bytes)
+      bytes.to_f / Numeric::MEGABYTE
     end
 
     # Used in EE

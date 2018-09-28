@@ -3,10 +3,10 @@ import {
   getParameterByName,
   getUrlParamsArray,
 } from '~/lib/utils/common_utils';
+import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
 import { visitUrl } from '../lib/utils/url_utility';
 import Flash from '../flash';
 import FilteredSearchContainer from './container';
-import FilteredSearchTokenKeys from './filtered_search_token_keys';
 import RecentSearchesRoot from './recent_searches_root';
 import RecentSearchesStore from './stores/recent_searches_store';
 import RecentSearchesService from './services/recent_searches_service';
@@ -21,9 +21,9 @@ export default class FilteredSearchManager {
   constructor({
     page,
     isGroup = false,
-    isGroupAncestor = false,
+    isGroupAncestor = true,
     isGroupDecendent = false,
-    filteredSearchTokenKeys = FilteredSearchTokenKeys,
+    filteredSearchTokenKeys = IssuableFilteredSearchTokenKeys,
     stateFiltersSelector = '.issues-state-filters',
   }) {
     this.isGroup = isGroup;
@@ -86,6 +86,7 @@ export default class FilteredSearchManager {
         page: this.page,
         isGroup: this.isGroup,
         isGroupAncestor: this.isGroupAncestor,
+        isGroupDecendent: this.isGroupDecendent,
         filteredSearchTokenKeys: this.filteredSearchTokenKeys,
       });
 
@@ -234,7 +235,7 @@ export default class FilteredSearchManager {
 
   checkForEnter(e) {
     if (e.keyCode === 38 || e.keyCode === 40) {
-      const selectionStart = this.filteredSearchInput.selectionStart;
+      const { selectionStart } = this.filteredSearchInput;
 
       e.preventDefault();
       this.filteredSearchInput.setSelectionRange(selectionStart, selectionStart);
@@ -495,7 +496,7 @@ export default class FilteredSearchManager {
           // Replace underscore with hyphen in the sanitizedkey.
           // e.g. 'my_reaction' => 'my-reaction'
           sanitizedKey = sanitizedKey.replace('_', '-');
-          const symbol = match.symbol;
+          const { symbol } = match;
           let quotationsToUse = '';
 
           if (sanitizedValue.indexOf(' ') !== -1) {

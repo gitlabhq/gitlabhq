@@ -60,17 +60,23 @@ en:
     scopes:
       api: Access the authenticated user's API
       read_user: Read the authenticated user's personal information
+      read_repository: Allows read-access to the repository
+      read_registry: Grants permission to read container registry images
       openid: Authenticate using OpenID Connect
-      sudo: Perform API actions as any user in the system (if the authenticated user is an admin)
+      sudo: Perform API actions as any user in the system
     scope_desc:
       api:
-        Full access to GitLab as the user, including read/write on all their groups and projects
+        Grants complete read/write access to the API, including all groups and projects.
       read_user:
-        Read-only access to the user's profile information, like username, public email and full name
+        Grants read-only access to the authenticated user's profile through the /user API endpoint, which includes username, public email, and full name. Also grants access to read-only API endpoints under /users.
+      read_repository:
+        Grants read-only access to repositories on private projects using Git-over-HTTP (not using the API).
+      read_registry:
+        Grants read-only access to container registry images on private projects.
       openid:
-        The ability to authenticate using GitLab, and read-only access to the user's profile information and group memberships
+        Grants permission to authenticate with GitLab using OpenID Connect. Also gives read-only access to the user's profile and group memberships.
       sudo:
-        Access to the Sudo feature, to perform API actions as any user in the system (only available for admins)
+        Grants permission to perform API actions as any user in the system, when authenticated as an admin user.
     flash:
       applications:
         create:

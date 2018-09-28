@@ -11,7 +11,7 @@ describe 'User interacts with labels' do
   let(:label_enhancement) { create(:label, project: project, title: 'enhancement') }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     issue1.labels << [label_bug, label_feature]

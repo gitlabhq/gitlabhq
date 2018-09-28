@@ -21,7 +21,7 @@
       .file-content.wiki
         - snippet_chunks.each do |chunk|
           - unless chunk[:data].empty?
-            = markup(snippet.file_name, chunk[:data])
+            = markup(snippet.file_name, chunk[:data], legacy_render_context(params))
           - else
             .file-content.code
               .nothing-here-block Empty file

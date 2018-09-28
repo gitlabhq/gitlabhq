@@ -50,3 +50,5 @@ able to proofread and instructions on becoming a proofreader yourself.
 ## Release
 
 Translations are typically included in the next major or minor release.
+
+See [Merging translations from Crowdin](merging_translations.md)

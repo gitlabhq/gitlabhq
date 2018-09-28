@@ -40,8 +40,8 @@
   <gl-modal
     id="stop-jobs-modal"
     :header-title-text="s__('AdminArea|Stop all jobs?')"
-    footer-primary-button-variant="danger"
     :footer-primary-button-text="s__('AdminArea|Stop jobs')"
+    footer-primary-button-variant="danger"
     @submit="onSubmit"
   >
     {{ text }}

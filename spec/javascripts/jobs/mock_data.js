@@ -14,13 +14,13 @@ export default {
   finished_at: threeWeeksAgo.toISOString(),
   queued: 9.54,
   status: {
-    icon: 'icon_status_success',
+    icon: 'status_success',
     text: 'passed',
     label: 'passed',
     group: 'success',
     has_details: true,
     details_path: '/root/ci-mock/-/jobs/4757',
-    favicon: '/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico',
+    favicon: '/assets/ci_favicons/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.png',
     action: {
       icon: 'retry',
       title: 'Retry',
@@ -72,13 +72,13 @@ export default {
     },
     details: {
       status: {
-        icon: 'icon_status_success',
+        icon: 'status_success',
         text: 'passed',
         label: 'passed',
         group: 'success',
         has_details: true,
         details_path: '/root/ci-mock/pipelines/140',
-        favicon: '/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico',
+        favicon: '/assets/ci_favicons/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.png',
       },
       duration: 6,
       finished_at: '2017-06-01T17:32:00.042Z',
@@ -114,6 +114,10 @@ export default {
       commit_url: 'http://localhost:3000/root/ci-mock/commit/c58647773a6b5faf066d4ad6ff2c9fbba5f180f6',
       commit_path: '/root/ci-mock/commit/c58647773a6b5faf066d4ad6ff2c9fbba5f180f6',
     },
+  },
+  metadata: {
+    timeout_human_readable: '1m 40s',
+    timeout_source: 'runner',
   },
   merge_request: {
     iid: 2,

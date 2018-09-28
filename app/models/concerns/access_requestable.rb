@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == AccessRequestable concern
 #
 # Contains functionality related to objects that can receive request for access.

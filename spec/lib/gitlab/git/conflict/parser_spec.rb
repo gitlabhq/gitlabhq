@@ -212,13 +212,6 @@ CONFLICT
             .not_to raise_error
         end
       end
-
-      context 'when the file contains non-UTF-8 characters' do
-        it 'raises UnsupportedEncoding' do
-          expect { parse_text("a\xC4\xFC".force_encoding(Encoding::ASCII_8BIT)) }
-            .to raise_error(Gitlab::Git::Conflict::Parser::UnsupportedEncoding)
-        end
-      end
     end
   end
 end

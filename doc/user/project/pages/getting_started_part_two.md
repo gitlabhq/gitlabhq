@@ -50,14 +50,14 @@ created for the steps below.
 1. [Fork a sample project](../../../gitlab-basics/fork-project.md) from the [Pages group](https://gitlab.com/pages)
 1. Trigger a build (push a change to any file)
 1. As soon as the build passes, your website will have been deployed with GitLab Pages. Your website URL will be available under your project's **Settings** > **Pages**
-1. Optionally, remove the fork relationship by navigating to your project's **Settings** > expanding **Advanced settings** and scrolling down to **Remove fork relashionship**:
+1. Optionally, remove the fork relationship by navigating to your project's **Settings** > expanding **Advanced settings** and scrolling down to **Remove fork relationship**:
 
-    ![remove fork relashionship](img/remove_fork_relashionship.png)
+    ![remove fork relationship](img/remove_fork_relationship.png)
 
 To turn a **project website** forked from the Pages group into a **user/group** website, you'll need to:
 
 - Rename it to `namespace.gitlab.io`: navigate to project's **Settings** > expand **Advanced settings** > and scroll down to **Rename repository**
-- Adjust your SSG's [base URL](#urls-and-baseurls) to from `"project-name"` to `""`. This setting will be at a different place for each SSG, as each of them have their own structure and file tree. Most likelly, it will be in the SSG's config file.
+- Adjust your SSG's [base URL](#urls-and-baseurls) to from `"project-name"` to `""`. This setting will be at a different place for each SSG, as each of them have their own structure and file tree. Most likely, it will be in the SSG's config file.
 
 > **Notes:**
 >
@@ -94,7 +94,7 @@ where you'll find its default URL.
 >
 > - GitLab Pages [supports any SSG](https://about.gitlab.com/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/), but,
 if you don't find yours among the templates, you'll need
-to configure your own `.gitlab-ci.yml`. Do do that, please
+to configure your own `.gitlab-ci.yml`. To do that, please
 read through the article [Creating and Tweaking GitLab CI/CD for GitLab Pages](getting_started_part_four.md). New SSGs are very welcome among
 the [example projects](https://gitlab.com/pages). If you set
 up a new one, please

@@ -15,7 +15,7 @@ describe Group do
     it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
     it { is_expected.to have_many(:labels).class_name('GroupLabel') }
     it { is_expected.to have_many(:variables).class_name('Ci::GroupVariable') }
-    it { is_expected.to have_many(:uploads).dependent(:destroy) }
+    it { is_expected.to have_many(:uploads) }
     it { is_expected.to have_one(:chat_team) }
     it { is_expected.to have_many(:custom_attributes).class_name('GroupCustomAttribute') }
     it { is_expected.to have_many(:badges).class_name('GroupBadge') }
@@ -64,6 +64,30 @@ describe Group do
         group = build(:group, path: 'tree', parent: create(:group))
 
         expect(group).not_to be_valid
+      end
+    end
+
+    describe '#notification_settings', :nested_groups do
+      let(:user) { create(:user) }
+      let(:group) { create(:group) }
+      let(:sub_group) { create(:group, parent_id: group.id) }
+
+      before do
+        group.add_developer(user)
+        sub_group.add_developer(user)
+      end
+
+      it 'also gets notification settings from parent groups' do
+        expect(sub_group.notification_settings.size).to eq(2)
+        expect(sub_group.notification_settings).to include(group.notification_settings.first)
+      end
+
+      context 'when sub group is deleted' do
+        it 'does not delete parent notification settings' do
+          expect do
+            sub_group.destroy
+          end.to change { NotificationSetting.count }.by(-1)
+        end
       end
     end
 
@@ -153,7 +177,7 @@ describe Group do
 
     describe 'when the user has access to a group' do
       before do
-        group.add_user(user, Gitlab::Access::MASTER)
+        group.add_user(user, Gitlab::Access::MAINTAINER)
       end
 
       it { is_expected.to eq([group]) }
@@ -205,10 +229,10 @@ describe Group do
     let(:user) { create(:user) }
 
     before do
-      group.add_user(user, GroupMember::MASTER)
+      group.add_user(user, GroupMember::MAINTAINER)
     end
 
-    it { expect(group.group_members.masters.map(&:user)).to include(user) }
+    it { expect(group.group_members.maintainers.map(&:user)).to include(user) }
   end
 
   describe '#add_users' do
@@ -230,7 +254,7 @@ describe Group do
     let(:user) { create(:user) }
 
     before do
-      group.add_user(user, GroupMember::MASTER)
+      group.add_user(user, GroupMember::MAINTAINER)
     end
 
     it "is true if avatar is image" do
@@ -240,7 +264,7 @@ describe Group do
 
     it "is false if avatar is html page" do
       group.update_attribute(:avatar, 'uploads/avatar.html')
-      expect(group.avatar_type).to eq(["only images allowed"])
+      expect(group.avatar_type).to eq(["file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico"])
     end
   end
 
@@ -250,7 +274,7 @@ describe Group do
 
     context 'when avatar file is uploaded' do
       before do
-        group.add_master(user)
+        group.add_maintainer(user)
       end
 
       it 'shows correct avatar url' do
@@ -293,7 +317,7 @@ describe Group do
     end
 
     it { expect(group.has_owner?(@members[:owner])).to be_truthy }
-    it { expect(group.has_owner?(@members[:master])).to be_falsey }
+    it { expect(group.has_owner?(@members[:maintainer])).to be_falsey }
     it { expect(group.has_owner?(@members[:developer])).to be_falsey }
     it { expect(group.has_owner?(@members[:reporter])).to be_falsey }
     it { expect(group.has_owner?(@members[:guest])).to be_falsey }
@@ -301,19 +325,19 @@ describe Group do
     it { expect(group.has_owner?(nil)).to be_falsey }
   end
 
-  describe '#has_master?' do
+  describe '#has_maintainer?' do
     before do
       @members = setup_group_members(group)
-      create(:group_member, :invited, :master, group: group)
+      create(:group_member, :invited, :maintainer, group: group)
     end
 
-    it { expect(group.has_master?(@members[:owner])).to be_falsey }
-    it { expect(group.has_master?(@members[:master])).to be_truthy }
-    it { expect(group.has_master?(@members[:developer])).to be_falsey }
-    it { expect(group.has_master?(@members[:reporter])).to be_falsey }
-    it { expect(group.has_master?(@members[:guest])).to be_falsey }
-    it { expect(group.has_master?(@members[:requester])).to be_falsey }
-    it { expect(group.has_master?(nil)).to be_falsey }
+    it { expect(group.has_maintainer?(@members[:owner])).to be_falsey }
+    it { expect(group.has_maintainer?(@members[:maintainer])).to be_truthy }
+    it { expect(group.has_maintainer?(@members[:developer])).to be_falsey }
+    it { expect(group.has_maintainer?(@members[:reporter])).to be_falsey }
+    it { expect(group.has_maintainer?(@members[:guest])).to be_falsey }
+    it { expect(group.has_maintainer?(@members[:requester])).to be_falsey }
+    it { expect(group.has_maintainer?(nil)).to be_falsey }
   end
 
   describe '#lfs_enabled?' do
@@ -377,7 +401,7 @@ describe Group do
   def setup_group_members(group)
     members = {
       owner: create(:user),
-      master: create(:user),
+      maintainer: create(:user),
       developer: create(:user),
       reporter: create(:user),
       guest: create(:user),
@@ -385,7 +409,7 @@ describe Group do
     }
 
     group.add_user(members[:owner], GroupMember::OWNER)
-    group.add_user(members[:master], GroupMember::MASTER)
+    group.add_user(members[:maintainer], GroupMember::MAINTAINER)
     group.add_user(members[:developer], GroupMember::DEVELOPER)
     group.add_user(members[:reporter], GroupMember::REPORTER)
     group.add_user(members[:guest], GroupMember::GUEST)
@@ -415,25 +439,114 @@ describe Group do
 
   describe '#members_with_parents', :nested_groups do
     let!(:group) { create(:group, :nested) }
-    let!(:master) { group.parent.add_user(create(:user), GroupMember::MASTER) }
+    let!(:maintainer) { group.parent.add_user(create(:user), GroupMember::MAINTAINER) }
     let!(:developer) { group.add_user(create(:user), GroupMember::DEVELOPER) }
 
     it 'returns parents members' do
       expect(group.members_with_parents).to include(developer)
-      expect(group.members_with_parents).to include(master)
+      expect(group.members_with_parents).to include(maintainer)
+    end
+  end
+
+  describe '#direct_and_indirect_members', :nested_groups do
+    let!(:group) { create(:group, :nested) }
+    let!(:sub_group) { create(:group, parent: group) }
+    let!(:maintainer) { group.parent.add_user(create(:user), GroupMember::MAINTAINER) }
+    let!(:developer) { group.add_user(create(:user), GroupMember::DEVELOPER) }
+    let!(:other_developer) { group.add_user(create(:user), GroupMember::DEVELOPER) }
+
+    it 'returns parents members' do
+      expect(group.direct_and_indirect_members).to include(developer)
+      expect(group.direct_and_indirect_members).to include(maintainer)
+    end
+
+    it 'returns descendant members' do
+      expect(group.direct_and_indirect_members).to include(other_developer)
+    end
+  end
+
+  describe '#users_with_descendants', :nested_groups do
+    let(:user_a) { create(:user) }
+    let(:user_b) { create(:user) }
+
+    let(:group) { create(:group) }
+    let(:nested_group) { create(:group, parent: group) }
+    let(:deep_nested_group) { create(:group, parent: nested_group) }
+
+    it 'returns member users on every nest level without duplication' do
+      group.add_developer(user_a)
+      nested_group.add_developer(user_b)
+      deep_nested_group.add_developer(user_a)
+
+      expect(group.users_with_descendants).to contain_exactly(user_a, user_b)
+      expect(nested_group.users_with_descendants).to contain_exactly(user_a, user_b)
+      expect(deep_nested_group.users_with_descendants).to contain_exactly(user_a)
+    end
+  end
+
+  describe '#direct_and_indirect_users', :nested_groups do
+    let(:user_a) { create(:user) }
+    let(:user_b) { create(:user) }
+    let(:user_c) { create(:user) }
+    let(:user_d) { create(:user) }
+
+    let(:group) { create(:group) }
+    let(:nested_group) { create(:group, parent: group) }
+    let(:deep_nested_group) { create(:group, parent: nested_group) }
+    let(:project) { create(:project, namespace: group) }
+
+    before do
+      group.add_developer(user_a)
+      group.add_developer(user_c)
+      nested_group.add_developer(user_b)
+      deep_nested_group.add_developer(user_a)
+      project.add_developer(user_d)
+    end
+
+    it 'returns member users on every nest level without duplication' do
+      expect(group.direct_and_indirect_users).to contain_exactly(user_a, user_b, user_c, user_d)
+      expect(nested_group.direct_and_indirect_users).to contain_exactly(user_a, user_b, user_c)
+      expect(deep_nested_group.direct_and_indirect_users).to contain_exactly(user_a, user_b, user_c)
+    end
+
+    it 'does not return members of projects belonging to ancestor groups' do
+      expect(nested_group.direct_and_indirect_users).not_to include(user_d)
+    end
+  end
+
+  describe '#project_users_with_descendants', :nested_groups do
+    let(:user_a) { create(:user) }
+    let(:user_b) { create(:user) }
+    let(:user_c) { create(:user) }
+
+    let(:group) { create(:group) }
+    let(:nested_group) { create(:group, parent: group) }
+    let(:deep_nested_group) { create(:group, parent: nested_group) }
+    let(:project_a) { create(:project, namespace: group) }
+    let(:project_b) { create(:project, namespace: nested_group) }
+    let(:project_c) { create(:project, namespace: deep_nested_group) }
+
+    it 'returns members of all projects in group and subgroups' do
+      project_a.add_developer(user_a)
+      project_b.add_developer(user_b)
+      project_c.add_developer(user_c)
+
+      expect(group.project_users_with_descendants).to contain_exactly(user_a, user_b, user_c)
+      expect(nested_group.project_users_with_descendants).to contain_exactly(user_b, user_c)
+      expect(deep_nested_group.project_users_with_descendants).to contain_exactly(user_c)
     end
   end
 
   describe '#user_ids_for_project_authorizations' do
     it 'returns the user IDs for which to refresh authorizations' do
-      master = create(:user)
+      maintainer = create(:user)
       developer = create(:user)
 
-      group.add_user(master, GroupMember::MASTER)
+      group.add_user(maintainer, GroupMember::MAINTAINER)
       group.add_user(developer, GroupMember::DEVELOPER)
 
       expect(group.user_ids_for_project_authorizations)
-        .to include(master.id, developer.id)
+        .to include(maintainer.id, developer.id)
     end
   end
 
@@ -504,7 +617,7 @@ describe Group do
           expect(group).to receive(:system_hook_service).and_return(system_hook_service)
           expect(system_hook_service).to receive(:execute_hooks_for).with(group, :rename)
 
-          group.update_attributes!(path: new_path)
+          group.update!(path: new_path)
         end
       end
 
@@ -512,7 +625,7 @@ describe Group do
         it 'does not trigger system hook' do
           expect(group).not_to receive(:system_hook_service)
 
-          group.update_attributes!(name: 'new name')
+          group.update!(name: 'new name')
         end
       end
     end
@@ -600,6 +713,14 @@ describe Group do
         group = create(:group, parent: nil)
         expect(group.has_parent?).to be_falsy
       end
+    end
+  end
+
+  context 'with uploads' do
+    it_behaves_like 'model with mounted uploader', true do
+      let(:model_object) { create(:group, :with_avatar) }
+      let(:upload_attribute) { :avatar }
+      let(:uploader_class) { AttachmentUploader }
     end
   end
 end

@@ -35,10 +35,7 @@ export default {
 };
 </script>
 <template>
-  <div
-    id="peek-request-selector"
-    class="append-right-5 pull-right"
-  >
+  <div id="peek-request-selector">
     <select v-model="currentRequestId">
       <option
         v-for="request in requests"

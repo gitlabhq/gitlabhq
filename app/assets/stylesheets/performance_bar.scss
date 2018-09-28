@@ -1,5 +1,4 @@
 @import 'framework/variables';
-@import 'peek/views/performance_bar';
 @import 'peek/views/rblineprof';
 
 #js-peek {
@@ -7,13 +6,17 @@
   left: 0;
   top: 0;
   width: 100%;
-  z-index: 2000;
-  overflow-x: hidden;
+  z-index: 1039;
 
   height: $performance-bar-height;
   background: $black;
   line-height: $performance-bar-height;
-  color: $perf-bar-text;
+  color: $gl-gray-400;
+
+  select {
+    color: $gl-gray-400;
+    width: 200px;
+  }
 
   &.disabled {
     display: none;
@@ -43,12 +46,6 @@
     }
   }
 
-  .wrapper {
-    width: 80%;
-    height: $performance-bar-height;
-    margin: 0 auto;
-  }
-
   // UI Elements
   .bucket {
     background: $perf-bar-bucket-bg;
@@ -56,7 +53,7 @@
     padding: 4px 6px;
     font-family: Consolas, 'Liberation Mono', Courier, monospace;
     line-height: 1;
-    color: $perf-bar-bucket-color;
+    color: $gl-gray-200;
     border-radius: 3px;
     box-shadow: 0 1px 0 $perf-bar-bucket-box-shadow-from,
       inset 0 1px 2px $perf-bar-bucket-box-shadow-to;
@@ -84,7 +81,7 @@
 
   .view {
     margin-right: 15px;
-    float: left;
+    flex-shrink: 0;
 
     &:last-child {
       margin-right: 0;
@@ -108,8 +105,14 @@
     }
   }
 
-  .performance-bar-modal .modal-footer {
-    display: none;
+  .performance-bar-modal {
+    .modal-body {
+      padding: 0;
+    }
+
+    .modal-footer {
+      display: none;
+    }
   }
 }
 

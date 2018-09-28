@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MergeRequests
   # MergeService class
   #
@@ -34,6 +36,19 @@ module MergeRequests
       handle_merge_error(log_message: e.message, save_message_on_model: true)
     end
 
+    def source
+      return merge_request.diff_head_sha unless merge_request.squash
+
+      squash_result = ::MergeRequests::SquashService.new(project, current_user, params).execute(merge_request)
+
+      case squash_result[:status]
+      when :success
+        squash_result[:squash_sha]
+      when :error
+        raise ::MergeRequests::MergeService::MergeError, squash_result[:message]
+      end
+    end
+
     private
 
     def error_check!
@@ -50,21 +65,30 @@ module MergeRequests
     end
 
     def commit
+      log_info("Git merge started on JID #{merge_jid}")
+      commit_id = try_merge
+
+      if commit_id
+        log_info("Git merge finished on JID #{merge_jid} commit #{commit_id}")
+      else
+        raise MergeError, 'Conflicts detected during merge'
+      end
+
+      merge_request.update!(merge_commit_sha: commit_id)
+    end
+
+    def try_merge
       message = params[:commit_message] || merge_request.merge_commit_message
 
-      log_info("Git merge started on JID #{merge_jid}")
-      commit_id = repository.merge(current_user, source, merge_request, message)
-      log_info("Git merge finished on JID #{merge_jid} commit #{commit_id}")
-
-      raise MergeError, 'Conflicts detected during merge' unless commit_id
-
-      merge_request.update(merge_commit_sha: commit_id)
-    rescue Gitlab::Git::HooksService::PreReceiveError => e
-      raise MergeError, e.message
-    rescue StandardError => e
-      raise MergeError, "Something went wrong during merge: #{e.message}"
+      repository.merge(current_user, source, merge_request, message)
+    rescue Gitlab::Git::PreReceiveError => e
+      handle_merge_error(log_message: e.message)
+      raise MergeError, 'Something went wrong during merge pre-receive hook'
+    rescue => e
+      handle_merge_error(log_message: e.message)
+      raise MergeError, 'Something went wrong during merge'
     ensure
-      merge_request.update(in_progress_merge_commit_sha: nil)
+      merge_request.update!(in_progress_merge_commit_sha: nil)
     end
 
     def after_merge
@@ -106,10 +130,6 @@ module MergeRequests
 
     def merge_request_info
       merge_request.to_reference(full: true)
-    end
-
-    def source
-      @source ||= @merge_request.diff_head_sha
     end
   end
 end

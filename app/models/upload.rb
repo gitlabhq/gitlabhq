@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Upload < ActiveRecord::Base
   # Upper limit for foreground checksum processing
   CHECKSUM_THRESHOLD = 100.megabytes
@@ -8,6 +10,8 @@ class Upload < ActiveRecord::Base
   validates :path, presence: true
   validates :model, presence: true
   validates :uploader, presence: true
+
+  scope :with_files_stored_locally, -> { where(store: [nil, ObjectStorage::Store::LOCAL]) }
 
   before_save  :calculate_checksum!, if: :foreground_checksummable?
   after_commit :schedule_checksum,   if: :checksummable?
@@ -21,6 +25,7 @@ class Upload < ActiveRecord::Base
   end
 
   def absolute_path
+    raise ObjectStorage::RemoteStoreError, "Remote object has no absolute path." unless local?
     return path unless relative_path?
 
     uploader_class.absolute_path(self)
@@ -30,11 +35,11 @@ class Upload < ActiveRecord::Base
     self.checksum = nil
     return unless checksummable?
 
-    self.checksum = self.class.hexdigest(absolute_path)
+    self.checksum = Digest::SHA256.file(absolute_path).hexdigest
   end
 
-  def build_uploader
-    uploader_class.new(model, mount_point, **uploader_context).tap do |uploader|
+  def build_uploader(mounted_as = nil)
+    uploader_class.new(model, mounted_as || mount_point).tap do |uploader|
       uploader.upload = self
       uploader.retrieve_from_store!(identifier)
     end
@@ -51,6 +56,12 @@ class Upload < ActiveRecord::Base
     }.compact
   end
 
+  def local?
+    return true if store.nil?
+
+    store == ObjectStorage::Store::LOCAL
+  end
+
   private
 
   def delete_file!
@@ -59,10 +70,6 @@ class Upload < ActiveRecord::Base
 
   def checksummable?
     checksum.nil? && local? && exist?
-  end
-
-  def local?
-    true
   end
 
   def foreground_checksummable?

@@ -21,7 +21,7 @@ describe 'help/index' do
       render
 
       expect(rendered).to match '8.0.2'
-      expect(rendered).to have_link('abcdefg', 'https://gitlab.com/gitlab-org/gitlab-ce/commits/abcdefg')
+      expect(rendered).to have_link('abcdefg', href: 'https://gitlab.com/gitlab-org/gitlab-ce/commits/abcdefg')
     end
   end
 
@@ -29,7 +29,7 @@ describe 'help/index' do
     it 'is visible to guests' do
       render
 
-      expect(rendered).to have_link(nil, help_instance_configuration_url)
+      expect(rendered).to have_link(nil, href: help_instance_configuration_url)
     end
   end
 
@@ -39,7 +39,7 @@ describe 'help/index' do
 
   def stub_version(version, revision)
     stub_const('Gitlab::VERSION', version)
-    stub_const('Gitlab::REVISION', revision)
+    allow(Gitlab).to receive(:revision).and_return(revision)
   end
 
   def stub_helpers

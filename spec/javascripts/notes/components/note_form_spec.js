@@ -1,23 +1,25 @@
 import Vue from 'vue';
-import store from '~/notes/stores';
+import createStore from '~/notes/stores';
 import issueNoteForm from '~/notes/components/note_form.vue';
 import { noteableDataMock, notesDataMock } from '../mock_data';
 import { keyboardDownEvent } from '../../issue_show/helpers';
 
 describe('issue_note_form component', () => {
+  let store;
   let vm;
   let props;
 
   beforeEach(() => {
     const Component = Vue.extend(issueNoteForm);
 
+    store = createStore();
     store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
 
     props = {
       isEditing: false,
       noteBody: 'Magni suscipit eius consectetur enim et ex et commodi.',
-      noteId: 545,
+      noteId: '545',
     };
 
     vm = new Component({
@@ -30,15 +32,35 @@ describe('issue_note_form component', () => {
     vm.$destroy();
   });
 
+  describe('noteHash', () => {
+    it('returns note hash string based on `noteId`', () => {
+      expect(vm.noteHash).toBe(`#note_${props.noteId}`);
+    });
+
+    it('return note hash as `#` when `noteId` is empty', done => {
+      vm.noteId = '';
+      Vue.nextTick()
+        .then(() => {
+          expect(vm.noteHash).toBe('#');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
   describe('conflicts editing', () => {
-    it('should show conflict message if note changes outside the component', (done) => {
+    it('should show conflict message if note changes outside the component', done => {
       vm.isEditing = true;
       vm.noteBody = 'Foo';
-      const message = 'This comment has changed since you started editing, please review the updated comment to ensure information is not lost.';
+      const message =
+        'This comment has changed since you started editing, please review the updated comment to ensure information is not lost.';
 
       Vue.nextTick(() => {
         expect(
-          vm.$el.querySelector('.js-conflict-edit-warning').textContent.replace(/\s+/g, ' ').trim(),
+          vm.$el
+            .querySelector('.js-conflict-edit-warning')
+            .textContent.replace(/\s+/g, ' ')
+            .trim(),
         ).toEqual(message);
         done();
       });
@@ -47,14 +69,16 @@ describe('issue_note_form component', () => {
 
   describe('form', () => {
     it('should render text area with placeholder', () => {
-      expect(
-        vm.$el.querySelector('textarea').getAttribute('placeholder'),
-      ).toEqual('Write a comment or drag your files here...');
+      expect(vm.$el.querySelector('textarea').getAttribute('placeholder')).toEqual(
+        'Write a comment or drag your files here…',
+      );
     });
 
     it('should link to markdown docs', () => {
       const { markdownDocsPath } = notesDataMock;
-      expect(vm.$el.querySelector(`a[href="${markdownDocsPath}"]`).textContent.trim()).toEqual('Markdown');
+      expect(vm.$el.querySelector(`a[href="${markdownDocsPath}"]`).textContent.trim()).toEqual(
+        'Markdown',
+      );
     });
 
     describe('keyboard events', () => {
@@ -87,7 +111,7 @@ describe('issue_note_form component', () => {
     });
 
     describe('actions', () => {
-      it('should be possible to cancel', (done) => {
+      it('should be possible to cancel', done => {
         spyOn(vm, 'cancelHandler').and.callThrough();
         vm.isEditing = true;
 
@@ -101,7 +125,7 @@ describe('issue_note_form component', () => {
         });
       });
 
-      it('should be possible to update the note', (done) => {
+      it('should be possible to update the note', done => {
         vm.isEditing = true;
 
         Vue.nextTick(() => {

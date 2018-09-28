@@ -58,7 +58,7 @@ module Banzai
       def can_read_project_reference?(node)
         node_id = node.attr('data-project').to_i
 
-        project && project.id == node_id
+        project_for_node(node)&.id == node_id
       end
 
       def nodes_user_can_reference(current_user, nodes)
@@ -71,6 +71,7 @@ module Banzai
         nodes.select do |node|
           project_id = node.attr(project_attr)
           user_id = node.attr(author_attr)
+          project = project_for_node(node)
 
           if project && project_id && project.id == project_id.to_i
             true

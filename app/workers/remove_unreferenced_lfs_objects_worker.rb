@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoveUnreferencedLfsObjectsWorker
   include ApplicationWorker
   include CronjobQueue

@@ -207,4 +207,51 @@ describe Banzai::Filter::CommitReferenceFilter do
       expect(reference_filter(act).to_html).to match(%r{<a.+>#{Regexp.escape(invalidate_reference(reference))}</a>})
     end
   end
+
+  context 'URL reference for a commit patch' do
+    let(:namespace) { create(:namespace) }
+    let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
+    let(:commit)    { project2.commit }
+    let(:link)      { urls.project_commit_url(project2, commit.id) }
+    let(:extension) { '.patch' }
+    let(:reference) { link + extension }
+
+    it 'links to a valid reference' do
+      doc = reference_filter("See #{reference}")
+
+      expect(doc.css('a').first.attr('href'))
+        .to eq reference
+    end
+
+    it 'has valid text' do
+      doc = reference_filter("See #{reference}")
+
+      expect(doc.text).to eq("See #{commit.reference_link_text(project)} (patch)")
+    end
+
+    it 'does not link to patch when extension match is after the path' do
+      invalidate_commit_reference = reference_filter("#{link}/builds.patch")
+
+      doc = reference_filter("See (#{invalidate_commit_reference})")
+
+      expect(doc.css('a').first.attr('href')).to eq "#{link}/builds"
+      expect(doc.text).to eq("See (#{commit.reference_link_text(project)} (builds).patch)")
+    end
+  end
+
+  context 'group context' do
+    let(:context) { { project: nil, group: create(:group) } }
+
+    it 'ignores internal references' do
+      exp = act = "See #{commit.id}"
+
+      expect(reference_filter(act, context).to_html).to eq exp
+    end
+
+    it 'links to a valid reference' do
+      act = "See #{project.full_path}@#{commit.id}"
+
+      expect(reference_filter(act, context).css('a').first.text).to eql("#{project.full_path}@#{commit.short_id}")
+    end
+  end
 end

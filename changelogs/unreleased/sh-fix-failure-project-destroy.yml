@@ -1,5 +1,0 @@
----
-title: Fix "Can't modify frozen hash" error when project is destroyed
-merge_request:
-author:
-type: fixed

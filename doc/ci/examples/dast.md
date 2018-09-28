@@ -14,9 +14,10 @@ called `dast`:
 
 ```yaml
 dast:
-  image: owasp/zap2docker-stable
+  image: registry.gitlab.com/gitlab-org/security-products/zaproxy
   variables:
     website: "https://example.com"
+  allow_failure: true
   script:
     - mkdir /zap/wrk/
     - /zap/zap-baseline.py -J gl-dast-report.json -t $website || true
@@ -30,6 +31,28 @@ the tests on the URL defined in the `website` variable (change it to use your
 own) and finally write the results in the `gl-dast-report.json` file. You can
 then download and analyze the report artifact in JSON format.
 
+It's also possible to authenticate the user before performing DAST checks:
+
+```yaml
+dast:
+  image: registry.gitlab.com/gitlab-org/security-products/zaproxy
+  variables:
+    website: "https://example.com"
+    login_url: "https://example.com/sign-in"
+  allow_failure: true
+  script:
+    - mkdir /zap/wrk/
+    - /zap/zap-baseline.py -J gl-dast-report.json -t $website
+        --auth-url $login_url
+        --auth-username "john.doe@example.com"
+        --auth-password "john-doe-password" || true
+    - cp /zap/wrk/gl-dast-report.json .
+  artifacts:
+    paths: [gl-dast-report.json]
+```
+See [zaproxy documentation](https://gitlab.com/gitlab-org/security-products/zaproxy)
+to learn more about authentication settings.
+
 TIP: **Tip:**
 Starting with [GitLab Ultimate][ee] 10.4, this information will
 be automatically extracted and shown right in the merge request widget. To do
@@ -37,4 +60,4 @@ so, the CI job must be named `dast` and the artifact path must be
 `gl-dast-report.json`.
 [Learn more about DAST results shown in merge requests](https://docs.gitlab.com/ee/user/project/merge_requests/dast.html).
 
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/

@@ -1,5 +1,0 @@
----
-title: Ensure the API returns https links when https is configured
-merge_request: 17681
-author:
-type: fixed

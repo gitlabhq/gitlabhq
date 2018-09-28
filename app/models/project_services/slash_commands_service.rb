@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Base class for Chat services
 # This class is not meant to be used directly, but only to inherrit from.
 class SlashCommandsService < Service
@@ -42,11 +44,15 @@ class SlashCommandsService < Service
 
   private
 
+  # rubocop: disable CodeReuse/ServiceClass
   def find_chat_user(params)
     ChatNames::FindUserService.new(self, params).execute
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
+  # rubocop: disable CodeReuse/ServiceClass
   def authorize_chat_name_url(params)
     ChatNames::AuthorizeUserService.new(self, params).execute
   end
+  # rubocop: enable CodeReuse/ServiceClass
 end

@@ -1,12 +1,7 @@
 /** Common mobile (screen XS, SM) styles **/
-@media (max-width: $screen-xs-max) {
+@include media-breakpoint-down(xs) {
   .container .content {
     margin-top: 20px;
-  }
-
-  .container-fluid {
-    padding-left: 5px;
-    padding-right: 5px;
   }
 
   .nav-links > li > a {
@@ -14,7 +9,7 @@
     font-size: 12px;
     margin-right: 3px;
 
-    .badge {
+    .badge.badge-pill {
       display: none;
     }
   }
@@ -40,10 +35,6 @@
   .project-home-panel {
     padding-left: 0 !important;
 
-    .project-avatar {
-      display: block;
-    }
-
     .project-repo-buttons,
     .git-clone-holder {
       display: none;
@@ -53,12 +44,8 @@
     .project-repo-buttons {
       display: block;
 
-      .count-buttons .btn {
-        margin: 0 10px;
-      }
-
-      .count-buttons .count-with-arrow {
-        display: none;
+      .count-buttons .count-badge {
+        margin-top: $gl-padding-8;
       }
     }
   }
@@ -90,7 +77,7 @@
   }
 }
 
-@media (max-width: $screen-sm-max) {
+@include media-breakpoint-down(sm) {
   .issues-filters {
     .milestone-filter {
       display: none;

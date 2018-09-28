@@ -89,7 +89,7 @@ A [copy](https://git-scm.com/docs/git-clone) of a repository stored on your mach
 
 ### Code Review
 
-Examination of a progam's code. The main aim is to maintain high quality standards of code that is being shipped. Merge requests [serve as a code review tool](https://about.gitlab.com/2014/09/29/gitlab-flow/) in GitLab.
+Examination of a program's code. The main aim is to maintain high quality standards of code that is being shipped. Merge requests [serve as a code review tool](https://about.gitlab.com/2014/09/29/gitlab-flow/) in GitLab.
 
 ### Code Snippet
 
@@ -395,7 +395,7 @@ Allow you to [organize issues](../../user/project/milestones/index.md) and merge
 
 ### Mirror Repositories
 
-A project that is setup to automatically have its branches, tags, and commits [updated from an upstream repository](https://docs.gitlab.com/ee/workflow/repository_mirroring.html). This is useful when a repository you're interested in is located on a different server, and you want to be able to browse its content and activity using the familiar GitLab interface.
+A project that is set up to automatically have its branches, tags, and commits [updated from an upstream repository](https://docs.gitlab.com/ee/workflow/repository_mirroring.html). This is useful when a repository you're interested in is located on a different server, and you want to be able to browse its content and activity using the familiar GitLab interface.
 
 ### MIT License
 
@@ -557,10 +557,6 @@ Software that is hosted centrally and accessed on-demand (i.e. whenever you want
 
 This term is often used by people when they mean "Version Control."
 
-#### SCLAU
-
-Abbreviation for SQO Count [Large And Up](https://about.gitlab.com/handbook/sales/#market-segmentation). This is the number of opportunities in large and strategic organizations passed from marketing to sales.
-
 ### Scrum 
 
 An Agile [framework](https://www.scrum.org/Resources/What-is-Scrum) designed to typically help complete complex software projects. It's made up of several parts: product requirements backlog, sprint planning, sprint (development), sprint review, and retrospec (analyzing the sprint). The goal is to end up with potentially shippable products.
@@ -677,7 +673,7 @@ Version control is a system that records changes to a file or set of files over 
 
 ### Virtual Private Cloud (VPC)
 
-A [VPC](https://docs.gitlab.com/ce/university/glossary/README.html#virtual-private-cloud-vpc) is an on demand configurable pool of shared computing resources allocated within a public cloud environment, providing some isolation between the different users using the resources. GitLab users need to create a new Amazon VPC in order to [setup High Availability](https://docs.gitlab.com/ce/university/high-availability/aws/).
+A [VPC](https://docs.gitlab.com/ce/university/glossary/README.html#virtual-private-cloud-vpc) is an on demand configurable pool of shared computing resources allocated within a public cloud environment, providing some isolation between the different users using the resources. GitLab users need to create a new Amazon VPC in order to [set up High Availability](https://docs.gitlab.com/ce/university/high-availability/aws/).
 
 ### Virtual private server (VPS)
 

@@ -146,7 +146,7 @@ export default class EnvironmentsStore {
    * @return {Array}
    */
   updateEnvironmentProp(environment, prop, newValue) {
-    const environments = this.state.environments;
+    const { environments } = this.state;
 
     const updatedEnvironments = environments.map((env) => {
       const updateEnv = Object.assign({}, env);
@@ -161,7 +161,7 @@ export default class EnvironmentsStore {
   }
 
   getOpenFolders() {
-    const environments = this.state.environments;
+    const { environments } = this.state;
 
     return environments.filter(env => env.isFolder && env.isOpen);
   }

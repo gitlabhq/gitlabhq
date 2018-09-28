@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module EachBatch
   extend ActiveSupport::Concern
 
-  module ClassMethods
+  class_methods do
     # Iterates over the rows in a relation in batches, similar to Rails'
     # `in_batches` but in a more efficient way.
     #

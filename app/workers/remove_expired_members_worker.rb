@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoveExpiredMembersWorker
   include ApplicationWorker
   include CronjobQueue

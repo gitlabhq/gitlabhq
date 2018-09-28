@@ -8,7 +8,7 @@ describe Projects::ForkService do
       before do
         @from_user = create(:user)
         @from_namespace = @from_user.namespace
-        avatar = fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")
+        avatar = fixture_file_upload("spec/fixtures/dk.png", "image/png")
         @from_project = create(:project,
                                :repository,
                                creator_id: @from_user.id,
@@ -105,14 +105,14 @@ describe Projects::ForkService do
 
       context 'repository already exists' do
         let(:repository_storage) { 'default' }
-        let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
+        let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
 
         before do
           gitlab_shell.create_repository(repository_storage, "#{@to_user.namespace.full_path}/#{@from_project.path}")
         end
 
         after do
-          gitlab_shell.remove_repository(repository_storage_path, "#{@to_user.namespace.full_path}/#{@from_project.path}")
+          gitlab_shell.remove_repository(repository_storage, "#{@to_user.namespace.full_path}/#{@from_project.path}")
         end
 
         it 'does not allow creation' do
@@ -135,7 +135,7 @@ describe Projects::ForkService do
       context "when project has restricted visibility level" do
         context "and only one visibility level is restricted" do
           before do
-            @from_project.update_attributes(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+            @from_project.update(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
             stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL])
           end
 
@@ -263,6 +263,14 @@ describe Projects::ForkService do
         subject.execute(fork_to_project)
 
         expect(fork_from_project.forks_count).to eq(1)
+      end
+
+      it 'leaves no LFS objects dangling' do
+        create(:lfs_objects_project, project: fork_to_project)
+
+        expect { subject.execute(fork_to_project) }
+          .to change { fork_to_project.lfs_objects_projects.count }
+          .to(0)
       end
     end
   end

@@ -13,7 +13,7 @@ module QA
         visit current_url
       end
 
-      def wait(max: 60, time: 1, reload: true)
+      def wait(max: 60, time: 0.1, reload: true)
         start = Time.now
 
         while Time.now - start < max
@@ -64,12 +64,20 @@ module QA
         find(element_selector_css(name))
       end
 
+      def all_elements(name)
+        all(element_selector_css(name))
+      end
+
       def click_element(name)
         find_element(name).click
       end
 
       def fill_element(name, content)
         find_element(name).set(content)
+      end
+
+      def has_element?(name)
+        has_css?(element_selector_css(name))
       end
 
       def within_element(name)

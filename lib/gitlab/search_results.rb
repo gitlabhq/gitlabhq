@@ -62,10 +62,13 @@ module Gitlab
       without_count ? collection.without_count : collection
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def limited_projects_count
       @limited_projects_count ||= projects.limit(count_limit).count
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def limited_issues_count
       return @limited_issues_count if @limited_issues_count
 
@@ -77,14 +80,19 @@ module Gitlab
       sum = issues(public_only: true).limit(count_limit).count
       @limited_issues_count = sum < count_limit ? issues.limit(count_limit).count : sum
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def limited_merge_requests_count
       @limited_merge_requests_count ||= merge_requests.limit(count_limit).count
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def limited_milestones_count
       @limited_milestones_count ||= milestones.limit(count_limit).count
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def single_commit_result?
       false
@@ -100,6 +108,7 @@ module Gitlab
       limit_projects.search(query)
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def issues(finder_params = {})
       issues = IssuesFinder.new(current_user, finder_params).execute
       unless default_project_filter
@@ -115,13 +124,17 @@ module Gitlab
 
       issues.reorder('updated_at DESC')
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def milestones
       milestones = Milestone.where(project_id: project_ids_relation)
       milestones = milestones.search(query)
       milestones.reorder('updated_at DESC')
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def merge_requests
       merge_requests = MergeRequestsFinder.new(current_user).execute
       unless default_project_filter
@@ -137,13 +150,16 @@ module Gitlab
 
       merge_requests.reorder('updated_at DESC')
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def default_scope
       'projects'
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def project_ids_relation
       limit_projects.select(:id).reorder(nil)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

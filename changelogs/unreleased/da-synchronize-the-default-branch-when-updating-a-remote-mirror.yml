@@ -1,0 +1,5 @@
+---
+title: Synchronize the default branch when updating a remote mirror
+merge_request: 21653
+author:
+type: fixed

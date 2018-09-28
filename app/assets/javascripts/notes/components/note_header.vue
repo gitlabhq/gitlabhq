@@ -9,7 +9,8 @@ export default {
   props: {
     author: {
       type: Object,
-      required: true,
+      required: false,
+      default: () => ({}),
     },
     createdAt: {
       type: String,
@@ -20,13 +21,8 @@ export default {
       required: false,
       default: '',
     },
-    actionTextHtml: {
-      type: String,
-      required: false,
-      default: '',
-    },
     noteId: {
-      type: Number,
+      type: String,
       required: true,
     },
     includeToggle: {
@@ -62,26 +58,51 @@ export default {
 
 <template>
   <div class="note-header-info">
-    <a :href="author.path">
+    <div
+      v-if="includeToggle"
+      class="discussion-actions">
+      <button
+        class="note-action-button discussion-toggle-button js-vue-toggle-button"
+        type="button"
+        @click="handleToggle">
+        <i
+          :class="toggleChevronClass"
+          class="fa"
+          aria-hidden="true">
+        </i>
+        {{ __('Toggle discussion') }}
+      </button>
+    </div>
+    <a
+      v-if="Object.keys(author).length"
+      :href="author.path"
+    >
       <span class="note-header-author-name">{{ author.name }}</span>
+      <span
+        v-if="author.status_tooltip_html"
+        v-html="author.status_tooltip_html"></span>
       <span class="note-headline-light">
         @{{ author.username }}
       </span>
     </a>
+    <span v-else>
+      {{ __('A deleted user') }}
+    </span>
     <span class="note-headline-light">
       <span class="note-headline-meta">
         <template v-if="actionText">
           {{ actionText }}
         </template>
-        <span
-          v-if="actionTextHtml"
-          v-html="actionTextHtml"
-          class="system-note-message">
+        <span class="system-note-message">
+          <slot></slot>
+        </span>
+        <span class="system-note-separator">
+          &middot;
         </span>
         <a
           :href="noteTimestampLink"
-          @click="updateTargetNoteHash"
-          class="note-timestamp">
+          class="note-timestamp system-note-separator"
+          @click="updateTargetNoteHash">
           <time-ago-tooltip
             :time="createdAt"
             tooltip-placement="bottom"
@@ -95,20 +116,5 @@ export default {
         </i>
       </span>
     </span>
-    <div
-      v-if="includeToggle"
-      class="discussion-actions">
-      <button
-        @click="handleToggle"
-        class="note-action-button discussion-toggle-button js-vue-toggle-button"
-        type="button">
-        <i
-          :class="toggleChevronClass"
-          class="fa"
-          aria-hidden="true">
-        </i>
-        Toggle discussion
-      </button>
-    </div>
   </div>
 </template>

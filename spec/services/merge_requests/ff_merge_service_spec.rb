@@ -13,7 +13,7 @@ describe MergeRequests::FfMergeService do
   let(:project) { merge_request.project }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     project.add_developer(user2)
   end
 
@@ -72,7 +72,7 @@ describe MergeRequests::FfMergeService do
       it 'logs and saves error if there is an PreReceiveError exception' do
         error_message = 'error message'
 
-        allow(service).to receive(:repository).and_raise(Gitlab::Git::HooksService::PreReceiveError, error_message)
+        allow(service).to receive(:repository).and_raise(Gitlab::Git::PreReceiveError, error_message)
         allow(service).to receive(:execute_hooks)
 
         service.execute(merge_request)

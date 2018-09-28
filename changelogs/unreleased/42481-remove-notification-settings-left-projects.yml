@@ -1,5 +1,0 @@
----
-title: Remove user notification settings for groups and projects when user leaves
-merge_request: 16906
-author: Jacopo Beschi @jacopo-beschi
-type: fixed

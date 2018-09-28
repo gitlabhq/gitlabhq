@@ -24,8 +24,8 @@ describe Gitlab::ImportExport::WikiRestorer do
 
     after do
       FileUtils.rm_rf(export_path)
-      Gitlab::Shell.new.remove_repository(project_with_wiki.wiki.repository_storage_path, project_with_wiki.wiki.disk_path)
-      Gitlab::Shell.new.remove_repository(project.wiki.repository_storage_path, project.wiki.disk_path)
+      Gitlab::Shell.new.remove_repository(project_with_wiki.wiki.repository_storage, project_with_wiki.wiki.disk_path)
+      Gitlab::Shell.new.remove_repository(project.wiki.repository_storage, project.wiki.disk_path)
     end
 
     it 'restores the wiki repo successfully' do

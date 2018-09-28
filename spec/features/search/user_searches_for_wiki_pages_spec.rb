@@ -2,11 +2,11 @@ require 'spec_helper'
 
 describe 'User searches for wiki pages', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:project, namespace: user.namespace) }
+  let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
   let!(:wiki_page) { create(:wiki_page, wiki: project.wiki, attrs: { title: 'test_wiki', content: 'Some Wiki content' }) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     visit(search_path)

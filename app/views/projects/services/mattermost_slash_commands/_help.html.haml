@@ -1,18 +1,19 @@
 - enabled = Gitlab.config.mattermost.enabled
 
-.well
-  %p
-    This service allows users to perform common operations on this
-    project by entering slash commands in Mattermost.
-    = link_to help_page_path('user/project/integrations/mattermost_slash_commands.md'), target: '_blank' do
-      View documentation
-      = icon('external-link')
-  %p.inline
-    See list of available commands in Mattermost after setting up this service,
-    by entering
-  %kbd.inline /&lt;trigger&gt; help
-  - unless enabled || @service.template?
-    = render 'projects/services/mattermost_slash_commands/detailed_help', subject: @service
+.info-well
+  .well-segment
+    %p
+      This service allows users to perform common operations on this
+      project by entering slash commands in Mattermost.
+      = link_to help_page_path('user/project/integrations/mattermost_slash_commands.md'), target: '_blank' do
+        View documentation
+        = sprite_icon('external-link', size: 16)
+    %p.inline
+      See list of available commands in Mattermost after setting up this service,
+      by entering
+    %kbd.inline /&lt;trigger&gt; help
+    - unless enabled || @service.template?
+      = render 'projects/services/mattermost_slash_commands/detailed_help', subject: @service
 
 - if enabled && !@service.template?
   = render 'projects/services/mattermost_slash_commands/installation_info', subject: @service

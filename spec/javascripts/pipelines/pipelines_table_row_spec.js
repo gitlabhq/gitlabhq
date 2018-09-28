@@ -1,9 +1,10 @@
 import Vue from 'vue';
 import tableRowComp from '~/pipelines/components/pipelines_table_row.vue';
+import eventHub from '~/pipelines/event_hub';
 
 describe('Pipelines Table Row', () => {
   const jsonFixtureName = 'pipelines/pipelines.json';
-  const buildComponent = (pipeline) => {
+  const buildComponent = pipeline => {
     const PipelinesTableRowComponent = Vue.extend(tableRowComp);
     return new PipelinesTableRowComponent({
       el: document.querySelector('.test-dom-element'),
@@ -23,7 +24,7 @@ describe('Pipelines Table Row', () => {
   preloadFixtures(jsonFixtureName);
 
   beforeEach(() => {
-    const pipelines = getJSONFixture(jsonFixtureName).pipelines;
+    const { pipelines } = getJSONFixture(jsonFixtureName);
 
     pipeline = pipelines.find(p => p.user !== null && p.commit !== null);
     pipelineWithoutAuthor = pipelines.find(p => p.user === null && p.commit !== null);
@@ -51,9 +52,9 @@ describe('Pipelines Table Row', () => {
     });
 
     it('should render status text', () => {
-      expect(
-        component.$el.querySelector('.table-section.commit-link a').textContent,
-      ).toContain(pipeline.details.status.text);
+      expect(component.$el.querySelector('.table-section.commit-link a').textContent).toContain(
+        pipeline.details.status.text,
+      );
     });
   });
 
@@ -77,11 +78,15 @@ describe('Pipelines Table Row', () => {
     describe('when a user is provided', () => {
       it('should render user information', () => {
         expect(
-          component.$el.querySelector('.table-section:nth-child(2) a:nth-child(3)').getAttribute('href'),
+          component.$el
+            .querySelector('.table-section:nth-child(2) a:nth-child(3)')
+            .getAttribute('href'),
         ).toEqual(pipeline.user.path);
 
         expect(
-          component.$el.querySelector('.table-section:nth-child(2) img').getAttribute('data-original-title'),
+          component.$el
+            .querySelector('.table-section:nth-child(2) img')
+            .getAttribute('data-original-title'),
         ).toEqual(pipeline.user.name);
       });
     });
@@ -104,7 +109,9 @@ describe('Pipelines Table Row', () => {
       }
 
       const commitAuthorLink = commitAuthorElement.getAttribute('href');
-      const commitAuthorName = commitAuthorElement.querySelector('img.avatar').getAttribute('data-original-title');
+      const commitAuthorName = commitAuthorElement
+        .querySelector('img.avatar')
+        .getAttribute('data-original-title');
 
       return { commitAuthorElement, commitAuthorLink, commitAuthorName };
     };
@@ -144,20 +151,54 @@ describe('Pipelines Table Row', () => {
 
     it('should render an icon for each stage', () => {
       expect(
-        component.$el.querySelectorAll('.table-section:nth-child(4) .js-builds-dropdown-button').length,
+        component.$el.querySelectorAll('.table-section:nth-child(4) .js-builds-dropdown-button')
+          .length,
       ).toEqual(pipeline.details.stages.length);
     });
   });
 
   describe('actions column', () => {
     beforeEach(() => {
-      component = buildComponent(pipeline);
+      const withActions = Object.assign({}, pipeline);
+      withActions.flags.cancelable = true;
+      withActions.flags.retryable = true;
+      withActions.cancel_path = '/cancel';
+      withActions.retry_path = '/retry';
+
+      component = buildComponent(withActions);
     });
 
     it('should render the provided actions', () => {
-      expect(
-        component.$el.querySelectorAll('.table-section:nth-child(6) ul li').length,
-      ).toEqual(pipeline.details.manual_actions.length);
+      expect(component.$el.querySelector('.js-pipelines-retry-button')).not.toBeNull();
+      expect(component.$el.querySelector('.js-pipelines-cancel-button')).not.toBeNull();
+    });
+
+    it('emits `retryPipeline` event when retry button is clicked and toggles loading', () => {
+      eventHub.$on('retryPipeline', endpoint => {
+        expect(endpoint).toEqual('/retry');
+      });
+
+      component.$el.querySelector('.js-pipelines-retry-button').click();
+      expect(component.isRetrying).toEqual(true);
+    });
+
+    it('emits `openConfirmationModal` event when cancel button is clicked and toggles loading', () => {
+      eventHub.$once('openConfirmationModal', data => {
+        expect(data.endpoint).toEqual('/cancel');
+        expect(data.pipelineId).toEqual(pipeline.id);
+      });
+
+      component.$el.querySelector('.js-pipelines-cancel-button').click();
+    });
+
+    it('renders a loading icon when `cancelingPipeline` matches pipeline id', done => {
+      component.cancelingPipeline = pipeline.id;
+      component.$nextTick()
+        .then(() => {
+          expect(component.isCancelling).toEqual(true);
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 });

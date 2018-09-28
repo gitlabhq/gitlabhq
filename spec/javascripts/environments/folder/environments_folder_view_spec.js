@@ -1,13 +1,15 @@
-import _ from 'underscore';
 import Vue from 'vue';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import environmentsFolderViewComponent from '~/environments/folder/environments_folder_view.vue';
-import { headersInterceptor } from 'spec/helpers/vue_resource_helper';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { environmentsList } from '../mock_data';
 
 describe('Environments Folder View', () => {
   let Component;
   let component;
+  let mock;
+
   const mockData = {
     endpoint: 'environments.json',
     folderName: 'review',
@@ -17,44 +19,33 @@ describe('Environments Folder View', () => {
   };
 
   beforeEach(() => {
+    mock = new MockAdapter(axios);
+
     Component = Vue.extend(environmentsFolderViewComponent);
   });
 
   afterEach(() => {
+    mock.restore();
+
     component.$destroy();
   });
 
   describe('successfull request', () => {
-    const environmentsResponseInterceptor = (request, next) => {
-      next(request.respondWith(JSON.stringify({
+    beforeEach(() => {
+      mock.onGet(mockData.endpoint).reply(200, {
         environments: environmentsList,
         stopped_count: 1,
         available_count: 0,
-      }), {
-        status: 200,
-        headers: {
-          'X-nExt-pAge': '2',
-          'x-page': '1',
-          'X-Per-Page': '2',
-          'X-Prev-Page': '',
-          'X-TOTAL': '20',
-          'X-Total-Pages': '10',
-        },
-      }));
-    };
-
-    beforeEach(() => {
-      Vue.http.interceptors.push(environmentsResponseInterceptor);
-      Vue.http.interceptors.push(headersInterceptor);
+      }, {
+        'X-nExt-pAge': '2',
+        'x-page': '1',
+        'X-Per-Page': '2',
+        'X-Prev-Page': '',
+        'X-TOTAL': '20',
+        'X-Total-Pages': '10',
+      });
 
       component = mountComponent(Component, mockData);
-    });
-
-    afterEach(() => {
-      Vue.http.interceptors = _.without(
-        Vue.http.interceptors, environmentsResponseInterceptor,
-      );
-      Vue.http.interceptors = _.without(Vue.http.interceptors, headersInterceptor);
     });
 
     it('should render a table with environments', (done) => {
@@ -135,25 +126,15 @@ describe('Environments Folder View', () => {
   });
 
   describe('unsuccessfull request', () => {
-    const environmentsErrorResponseInterceptor = (request, next) => {
-      next(request.respondWith(JSON.stringify([]), {
-        status: 500,
-      }));
-    };
-
     beforeEach(() => {
-      Vue.http.interceptors.push(environmentsErrorResponseInterceptor);
-    });
+      mock.onGet(mockData.endpoint).reply(500, {
+        environments: [],
+      });
 
-    afterEach(() => {
-      Vue.http.interceptors = _.without(
-        Vue.http.interceptors, environmentsErrorResponseInterceptor,
-      );
+      component = mountComponent(Component, mockData);
     });
 
     it('should not render a table', (done) => {
-      component = mountComponent(Component, mockData);
-
       setTimeout(() => {
         expect(
           component.$el.querySelector('table'),
@@ -190,25 +171,13 @@ describe('Environments Folder View', () => {
   });
 
   describe('methods', () => {
-    const environmentsEmptyResponseInterceptor = (request, next) => {
-      next(request.respondWith(JSON.stringify([]), {
-        status: 200,
-      }));
-    };
-
     beforeEach(() => {
-      Vue.http.interceptors.push(environmentsEmptyResponseInterceptor);
-      Vue.http.interceptors.push(headersInterceptor);
+      mock.onGet(mockData.endpoint).reply(200, {
+        environments: [],
+      });
 
       component = mountComponent(Component, mockData);
-      spyOn(history, 'pushState').and.stub();
-    });
-
-    afterEach(() => {
-      Vue.http.interceptors = _.without(
-        Vue.http.interceptors, environmentsEmptyResponseInterceptor,
-      );
-      Vue.http.interceptors = _.without(Vue.http.interceptors, headersInterceptor);
+      spyOn(window.history, 'pushState').and.stub();
     });
 
     describe('updateContent', () => {

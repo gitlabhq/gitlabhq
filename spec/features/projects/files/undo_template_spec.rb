@@ -1,11 +1,10 @@
 require 'spec_helper'
 
-feature 'Template Undo Button', :js do
+describe 'Projects > Files > Template Undo Button', :js do
   let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  let(:user) { project.owner }
 
   before do
-    project.add_master(user)
     sign_in user
   end
 
@@ -15,7 +14,7 @@ feature 'Template Undo Button', :js do
       select_file_template('.js-license-selector', 'Apache License 2.0')
     end
 
-    scenario 'reverts template application' do
+    it 'reverts template application' do
       try_template_undo('http://www.apache.org/licenses/', 'Apply a license template')
     end
   end
@@ -27,7 +26,7 @@ feature 'Template Undo Button', :js do
       select_file_template('.js-license-selector', 'Apache License 2.0')
     end
 
-    scenario 'reverts template application' do
+    it 'reverts template application' do
       try_template_undo('http://www.apache.org/licenses/', 'Apply a license template')
     end
   end

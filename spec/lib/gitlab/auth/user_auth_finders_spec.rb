@@ -46,42 +46,62 @@ describe Gitlab::Auth::UserAuthFinders do
     end
   end
 
-  describe '#find_user_from_rss_token' do
+  describe '#find_user_from_feed_token' do
     context 'when the request format is atom' do
       before do
         env['HTTP_ACCEPT'] = 'application/atom+xml'
       end
 
-      it 'returns user if valid rss_token' do
-        set_param(:rss_token, user.rss_token)
+      context 'when feed_token param is provided' do
+        it 'returns user if valid feed_token' do
+          set_param(:feed_token, user.feed_token)
 
-        expect(find_user_from_rss_token).to eq user
+          expect(find_user_from_feed_token).to eq user
+        end
+
+        it 'returns nil if feed_token is blank' do
+          expect(find_user_from_feed_token).to be_nil
+        end
+
+        it 'returns exception if invalid feed_token' do
+          set_param(:feed_token, 'invalid_token')
+
+          expect { find_user_from_feed_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
+        end
       end
 
-      it 'returns nil if rss_token is blank' do
-        expect(find_user_from_rss_token).to be_nil
-      end
+      context 'when rss_token param is provided' do
+        it 'returns user if valid rssd_token' do
+          set_param(:rss_token, user.feed_token)
 
-      it 'returns exception if invalid rss_token' do
-        set_param(:rss_token, 'invalid_token')
+          expect(find_user_from_feed_token).to eq user
+        end
 
-        expect { find_user_from_rss_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
+        it 'returns nil if rss_token is blank' do
+          expect(find_user_from_feed_token).to be_nil
+        end
+
+        it 'returns exception if invalid rss_token' do
+          set_param(:rss_token, 'invalid_token')
+
+          expect { find_user_from_feed_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
+        end
       end
     end
 
     context 'when the request format is not atom' do
       it 'returns nil' do
-        set_param(:rss_token, user.rss_token)
+        set_param(:feed_token, user.feed_token)
 
-        expect(find_user_from_rss_token).to be_nil
+        expect(find_user_from_feed_token).to be_nil
       end
     end
 
     context 'when the request format is empty' do
       it 'the method call does not modify the original value' do
-        env['action_dispatch.request.formats'] = nil
+        env.delete('action_dispatch.request.formats')
 
-        find_user_from_rss_token
+        find_user_from_feed_token
 
         expect(env['action_dispatch.request.formats']).to be_nil
       end

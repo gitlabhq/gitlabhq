@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == TimeTrackable concern
 #
 # Contains functionality related to objects that support time tracking.
@@ -49,6 +51,10 @@ module TimeTrackable
 
   def human_time_estimate
     Gitlab::TimeTrackingFormatter.output(time_estimate)
+  end
+
+  def time_estimate=(val)
+    val.is_a?(Integer) ? super([val, Gitlab::Database::MAX_INT_VALUE].min) : super(val)
   end
 
   private

@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-feature 'User Cluster', :js do
+describe 'User Cluster', :js do
   include GoogleApi::CloudPlatformHelpers
 
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     gitlab_sign_in(user)
     allow(Projects::ClustersController).to receive(:STATUS_POLLING_INTERVAL) { 100 }
   end
@@ -17,24 +17,47 @@ feature 'User Cluster', :js do
       visit project_clusters_path(project)
 
       click_link 'Add Kubernetes cluster'
-      click_link 'Add an existing Kubernetes cluster'
+      click_link 'Add existing cluster'
     end
 
     context 'when user filled form with valid parameters' do
+      shared_examples 'valid cluster user form' do
+        it 'user sees a cluster details page' do
+          subject
+
+          expect(page).to have_content('Kubernetes cluster integration')
+          expect(page.find_field('cluster[name]').value).to eq('dev-cluster')
+          expect(page.find_field('cluster[platform_kubernetes_attributes][api_url]').value)
+            .to have_content('http://example.com')
+          expect(page.find_field('cluster[platform_kubernetes_attributes][token]').value)
+            .to have_content('my-token')
+        end
+      end
+
       before do
         fill_in 'cluster_name', with: 'dev-cluster'
         fill_in 'cluster_platform_kubernetes_attributes_api_url', with: 'http://example.com'
         fill_in 'cluster_platform_kubernetes_attributes_token', with: 'my-token'
-        click_button 'Add Kubernetes cluster'
       end
 
-      it 'user sees a cluster details page' do
-        expect(page).to have_content('Kubernetes cluster integration')
-        expect(page.find_field('cluster[name]').value).to eq('dev-cluster')
-        expect(page.find_field('cluster[platform_kubernetes_attributes][api_url]').value)
-          .to have_content('http://example.com')
-        expect(page.find_field('cluster[platform_kubernetes_attributes][token]').value)
-          .to have_content('my-token')
+      subject { click_button 'Add Kubernetes cluster' }
+
+      it_behaves_like 'valid cluster user form'
+
+      context 'rbac_clusters feature flag is enabled' do
+        before do
+          stub_feature_flags(rbac_clusters: true)
+
+          check 'cluster_platform_kubernetes_attributes_authorization_type'
+        end
+
+        it_behaves_like 'valid cluster user form'
+
+        it 'user sees a cluster details page with RBAC enabled' do
+          subject
+
+          expect(page.find_field('cluster[platform_kubernetes_attributes][authorization_type]', disabled: true)).to be_checked
+        end
       end
     end
 
@@ -63,7 +86,6 @@ feature 'User Cluster', :js do
     context 'when user disables the cluster' do
       before do
         page.find(:css, '.js-cluster-enable-toggle-area .js-project-feature-toggle').click
-        fill_in 'cluster_name', with: 'dev-cluster'
         page.within('#cluster-integration') { click_button 'Save changes' }
       end
 

@@ -1,16 +1,18 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import Vue from 'vue';
-import store from '~/notes/stores';
+import createStore from '~/notes/stores';
 import issueNote from '~/notes/components/noteable_note.vue';
 import { noteableDataMock, notesDataMock, note } from '../mock_data';
 
 describe('issue_note', () => {
+  let store;
   let vm;
 
   beforeEach(() => {
     const Component = Vue.extend(issueNote);
 
+    store = createStore();
     store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
 
@@ -27,12 +29,14 @@ describe('issue_note', () => {
   });
 
   it('should render user information', () => {
-    expect(vm.$el.querySelector('.user-avatar-link img').getAttribute('src')).toEqual(note.author.avatar_url);
+    expect(vm.$el.querySelector('.user-avatar-link img').getAttribute('src')).toEqual(
+      note.author.avatar_url,
+    );
   });
 
   it('should render note header content', () => {
-    expect(vm.$el.querySelector('.note-header .note-header-author-name').textContent.trim()).toEqual(note.author.name);
-    expect(vm.$el.querySelector('.note-header .note-headline-meta').textContent.trim()).toContain('commented');
+    const el = vm.$el.querySelector('.note-header .note-header-author-name');
+    expect(el.textContent.trim()).toEqual(note.author.name);
   });
 
   it('should render note actions', () => {
@@ -43,7 +47,7 @@ describe('issue_note', () => {
     expect(vm.$el.querySelector('.note-text').innerHTML).toEqual(note.note_html);
   });
 
-  it('prevents note preview xss', (done) => {
+  it('prevents note preview xss', done => {
     const imgSrc = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
     const noteBody = `<img src="${imgSrc}" onload="alert(1)" />`;
     const alertSpy = spyOn(window, 'alert');
@@ -59,7 +63,7 @@ describe('issue_note', () => {
   });
 
   describe('cancel edit', () => {
-    it('restores content of updated note', (done) => {
+    it('restores content of updated note', done => {
       const noteBody = 'updated note text';
       vm.updateNote = () => Promise.resolve();
 

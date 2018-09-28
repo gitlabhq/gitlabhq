@@ -11,6 +11,12 @@ Rails.application.routes.draw do
     post :toggle_award_emoji, on: :member
   end
 
+  favicon_redirect = redirect do |_params, _request|
+    ActionController::Base.helpers.asset_url(Gitlab::Favicon.main)
+  end
+  get 'favicon.png', to: favicon_redirect
+  get 'favicon.ico', to: favicon_redirect
+
   draw :sherlock
   draw :development
   draw :ci
@@ -19,6 +25,13 @@ Rails.application.routes.draw do
     controllers applications: 'oauth/applications',
                 authorized_applications: 'oauth/authorized_applications',
                 authorizations: 'oauth/authorizations'
+  end
+
+  # This is here so we can "reserve" the path for the Jira integration in GitLab EE
+  # Having a non-existent controller here does not affect the scope in any way since all possible routes
+  # get a 404 proc returned. It is written in this way to minimize merge conflicts with EE
+  scope path: '/login/oauth', controller: 'oauth/jira/authorizations', as: :oauth_jira do
+    match '*all', via: [:get, :post], to: proc { [404, {}, ['']] }
   end
 
   use_doorkeeper_openid_connect
@@ -40,6 +53,7 @@ Rails.application.routes.draw do
   get 'health_check(/:checks)' => 'health_check#index', as: :health_check
 
   scope path: '-' do
+    # '/-/health' implemented by BasicHealthMiddleware
     get 'liveness' => 'health#liveness'
     get 'readiness' => 'health#readiness'
     post 'storage_check' => 'health#storage_check'
@@ -61,6 +75,11 @@ Rails.application.routes.draw do
 
     # UserCallouts
     resources :user_callouts, only: [:create]
+
+    get 'ide' => 'ide#index'
+    get 'ide/*vueroute' => 'ide#index', format: false
+
+    draw :instance_statistics
   end
 
   # Koding route

@@ -1,7 +1,20 @@
 module Gitlab
   module GitalyClient
     class RemoteService
+      include Gitlab::EncodingHelper
+
       MAX_MSG_SIZE = 128.kilobytes.freeze
+
+      def self.exists?(remote_url)
+        request = Gitaly::FindRemoteRepositoryRequest.new(remote: remote_url)
+
+        response = GitalyClient.call(GitalyClient.random_storage,
+                                     :remote_service,
+                                     :find_remote_repository, request,
+                                     timeout: GitalyClient.medium_timeout)
+
+        response.exists
+      end
 
       def initialize(repository)
         @repository = repository
@@ -17,13 +30,13 @@ module Gitlab
           mirror_refmaps: Array.wrap(mirror_refmaps).map(&:to_s)
         )
 
-        GitalyClient.call(@storage, :remote_service, :add_remote, request)
+        GitalyClient.call(@storage, :remote_service, :add_remote, request, timeout: GitalyClient.fast_timeout)
       end
 
       def remove_remote(name)
         request = Gitaly::RemoveRemoteRequest.new(repository: @gitaly_repo, name: name)
 
-        response = GitalyClient.call(@storage, :remote_service, :remove_remote, request)
+        response = GitalyClient.call(@storage, :remote_service, :remove_remote, request, timeout: GitalyClient.fast_timeout)
 
         response.result
       end
@@ -39,6 +52,18 @@ module Gitlab
                                      remote_storage: repository.storage)
 
         response.result
+      end
+
+      def find_remote_root_ref(remote_name)
+        request = Gitaly::FindRemoteRootRefRequest.new(
+          repository: @gitaly_repo,
+          remote: remote_name
+        )
+
+        response = GitalyClient.call(@storage, :remote_service,
+                                     :find_remote_root_ref, request)
+
+        encode_utf8(response.ref)
       end
 
       def update_remote_mirror(ref_name, only_branches_matching)

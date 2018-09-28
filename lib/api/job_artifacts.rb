@@ -21,6 +21,7 @@ module API
         requires :job,      type: String, desc: 'The name for the job'
       end
       route_setting :authentication, job_token_allowed: true
+      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/jobs/artifacts/:ref_name/download',
         requirements: { ref_name: /.+/ } do
         authorize_download_artifacts!
@@ -28,8 +29,9 @@ module API
         builds = user_project.latest_successful_builds_for(params[:ref_name])
         latest_build = builds.find_by!(name: params[:job])
 
-        present_artifacts!(latest_build.artifacts_file)
+        present_carrierwave_file!(latest_build.artifacts_file)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Download the artifacts archive from a job' do
         detail 'This feature was introduced in GitLab 8.5'
@@ -43,7 +45,7 @@ module API
 
         build = find_build!(params[:job_id])
 
-        present_artifacts!(build.artifacts_file)
+        present_carrierwave_file!(build.artifacts_file)
       end
 
       desc 'Download a specific file from artifacts archive' do
@@ -77,7 +79,7 @@ module API
 
         build = find_build!(params[:job_id])
         authorize!(:update_build, build)
-        return not_found!(build) unless build.artifacts?
+        break not_found!(build) unless build.artifacts?
 
         build.keep_artifacts!
 

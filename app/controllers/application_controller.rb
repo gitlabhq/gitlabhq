@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'gon'
 require 'fogbugz'
 
@@ -5,30 +7,42 @@ class ApplicationController < ActionController::Base
   include Gitlab::GonHelper
   include GitlabRoutingHelper
   include PageLayoutHelper
+  include SafeParamsHelper
   include SentryHelper
   include WorkhorseHelper
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
+  include InvalidUTF8ErrorHandler
 
   before_action :authenticate_sessionless_user!
   before_action :authenticate_user!
+  before_action :enforce_terms!, if: :should_enforce_terms?
   before_action :validate_user_service_ticket!
   before_action :check_password_expiration
   before_action :ldap_security_check
   before_action :sentry_context
   before_action :default_headers
-  before_action :add_gon_variables, unless: -> { request.path.start_with?('/-/peek') }
+  before_action :add_gon_variables, unless: [:peek_request?, :json_request?]
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
+  before_action :set_usage_stats_consent_flag
 
   around_action :set_locale
 
-  after_action :set_page_title_header, if: -> { request.format == :json }
+  after_action :set_page_title_header, if: :json_request?
+  after_action :limit_unauthenticated_session_times
 
-  protect_from_forgery with: :exception
+  protect_from_forgery with: :exception, prepend: true
 
   helper_method :can?
-  helper_method :import_sources_enabled?, :github_import_enabled?, :gitea_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?, :gitlab_project_import_enabled?
+  helper_method :import_sources_enabled?, :github_import_enabled?,
+    :gitea_import_enabled?, :github_import_configured?,
+    :gitlab_import_enabled?, :gitlab_import_configured?,
+    :bitbucket_import_enabled?, :bitbucket_import_configured?,
+    :bitbucket_server_import_enabled?,
+    :google_code_import_enabled?, :fogbugz_import_enabled?,
+    :git_import_enabled?, :gitlab_project_import_enabled?,
+    :manifest_import_enabled?
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -77,10 +91,30 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # By default, all sessions are given the same expiration time configured in
+  # the session store (e.g. 1 week). However, unauthenticated users can
+  # generate a lot of sessions, primarily for CSRF verification. It makes
+  # sense to reduce the TTL for unauthenticated to something much lower than
+  # the default (e.g. 1 hour) to limit Redis memory. In addition, Rails
+  # creates a new session after login, so the short TTL doesn't even need to
+  # be extended.
+  def limit_unauthenticated_session_times
+    return if current_user
+
+    # Rack sets this header, but not all tests may have it: https://github.com/rack/rack/blob/fdcd03a3c5a1c51d1f96fc97f9dfa1a9deac0c77/lib/rack/session/abstract/id.rb#L251-L259
+    return unless request.env['rack.session.options']
+
+    # This works because Rack uses these options every time a request is handled:
+    # https://github.com/rack/rack/blob/fdcd03a3c5a1c51d1f96fc97f9dfa1a9deac0c77/lib/rack/session/abstract/id.rb#L342
+    request.env['rack.session.options'][:expire_after] = Settings.gitlab['unauthenticated_session_expire_delay']
+  end
+
   protected
 
   def append_info_to_payload(payload)
     super
+
+    payload[:ua] = request.env["HTTP_USER_AGENT"]
     payload[:remote_ip] = request.remote_ip
 
     logged_user = auth_user
@@ -89,14 +123,22 @@ class ApplicationController < ActionController::Base
       payload[:user_id] = logged_user.try(:id)
       payload[:username] = logged_user.try(:username)
     end
+
+    if response.status == 422 && response.body.present? && response.content_type == 'application/json'.freeze
+      payload[:response] = response.body
+    end
   end
 
+  ##
   # Controllers such as GitHttpController may use alternative methods
-  # (e.g. tokens) to authenticate the user, whereas Devise sets current_user
+  # (e.g. tokens) to authenticate the user, whereas Devise sets current_user.
+  #
   def auth_user
-    return current_user if current_user.present?
-
-    return try(:authenticated_user)
+    if user_signed_in?
+      current_user
+    else
+      try(:authenticated_user)
+    end
   end
 
   # This filter handles personal access tokens, and atom requests with rss tokens
@@ -109,7 +151,8 @@ class ApplicationController < ActionController::Base
   def log_exception(exception)
     Raven.capture_exception(exception) if sentry_enabled?
 
-    application_trace = ActionDispatch::ExceptionWrapper.new(env, exception).application_trace
+    backtrace_cleaner = Gitlab.rails5? ? env["action_dispatch.backtrace_cleaner"] : env
+    application_trace = ActionDispatch::ExceptionWrapper.new(backtrace_cleaner, exception).application_trace
     application_trace.map! { |t| "  #{t}\n" }
     logger.error "\n#{exception.class.name} (#{exception.message}):\n#{application_trace.join}"
   end
@@ -127,12 +170,17 @@ class ApplicationController < ActionController::Base
   end
 
   def access_denied!(message = nil)
+    # If we display a custom access denied message to the user, we don't want to
+    # hide existence of the resource, rather tell them they cannot access it using
+    # the provided message
+    status = message.present? ? :forbidden : :not_found
+
     respond_to do |format|
-      format.any { head :not_found }
+      format.any { head status }
       format.html do
         render "errors/access_denied",
                layout: "errors",
-               status: 404,
+               status: status,
                locals: { message: message }
       end
     end
@@ -143,14 +191,15 @@ class ApplicationController < ActionController::Base
   end
 
   def render_403
-    head :forbidden
+    respond_to do |format|
+      format.any { head :forbidden }
+      format.html { render "errors/access_denied", layout: "errors", status: 403 }
+    end
   end
 
   def render_404
     respond_to do |format|
-      format.html do
-        render file: Rails.root.join("public", "404"), layout: false, status: "404"
-      end
+      format.html { render "errors/not_found", layout: "errors", status: 404 }
       # Prevent the Rails CSRF protector from thinking a missing .js file is a JavaScript file
       format.js { render json: '', status: :not_found, content_type: 'application/json' }
       format.any { head :not_found }
@@ -224,13 +273,10 @@ class ApplicationController < ActionController::Base
   end
 
   def event_filter
-    # Split using comma to maintain backward compatibility Ex/ "filter1,filter2"
-    filters = cookies['event_filter'].split(',')[0] if cookies['event_filter'].present?
-    @event_filter ||= EventFilter.new(filters)
-  end
-
-  def gitlab_ldap_access(&block)
-    Gitlab::Auth::LDAP::Access.open { |access| yield(access) }
+    @event_filter ||=
+      EventFilter.new(params[:event_filter].presence || cookies[:event_filter]).tap do |new_event_filter|
+        cookies[:event_filter] = new_event_filter.filter
+      end
   end
 
   # JSON for infinite scroll via Pager object
@@ -271,8 +317,35 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def enforce_terms!
+    return unless current_user
+    return if current_user.terms_accepted?
+
+    message = _("Please accept the Terms of Service before continuing.")
+
+    if sessionless_user?
+      access_denied!(message)
+    else
+      # Redirect to the destination if the request is a get.
+      # Redirect to the source if it was a post, so the user can re-submit after
+      # accepting the terms.
+      redirect_path = if request.get?
+                        request.fullpath
+                      else
+                        URI(request.referer).path if request.referer
+                      end
+
+      flash[:notice] = message
+      redirect_to terms_path(redirect: redirect_path), status: :found
+    end
+  end
+
   def import_sources_enabled?
     !Gitlab::CurrentSettings.import_sources.empty?
+  end
+
+  def bitbucket_server_import_enabled?
+    Gitlab::CurrentSettings.import_sources.include?('bitbucket_server')
   end
 
   def github_import_enabled?
@@ -319,6 +392,10 @@ class ApplicationController < ActionController::Base
     Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
   end
 
+  def manifest_import_enabled?
+    Group.supports_nested_groups? && Gitlab::CurrentSettings.import_sources.include?('manifest')
+  end
+
   # U2F (universal 2nd factor) devices need a unique identifier for the application
   # to perform authentication.
   # https://developers.yubico.com/U2F/App_ID.html
@@ -336,12 +413,55 @@ class ApplicationController < ActionController::Base
       # actually stored in the session and a token is needed
       # for every request. If you want the token to work as a
       # sign in token, you can simply remove store: false.
-      sign_in user, store: false
+      sign_in(user, store: false, message: :sessionless_sign_in)
     end
   end
 
   def set_page_title_header
     # Per https://tools.ietf.org/html/rfc5987, headers need to be ISO-8859-1, not UTF-8
     response.headers['Page-Title'] = URI.escape(page_title('GitLab'))
+  end
+
+  def sessionless_user?
+    current_user && !session.keys.include?('warden.user.user.key')
+  end
+
+  def peek_request?
+    request.path.start_with?('/-/peek')
+  end
+
+  def json_request?
+    request.format.json?
+  end
+
+  def should_enforce_terms?
+    return false unless Gitlab::CurrentSettings.current_application_settings.enforce_terms
+
+    !(peek_request? || devise_controller?)
+  end
+
+  def set_usage_stats_consent_flag
+    return unless current_user
+    return if sessionless_user?
+    return if session.has_key?(:ask_for_usage_stats_consent)
+
+    session[:ask_for_usage_stats_consent] = current_user.requires_usage_stats_consent?
+
+    if session[:ask_for_usage_stats_consent]
+      disable_usage_stats
+    end
+  end
+
+  def disable_usage_stats
+    application_setting_params = {
+      usage_ping_enabled: false,
+      version_check_enabled: false,
+      skip_usage_stats_user: true
+    }
+    settings = Gitlab::CurrentSettings.current_application_settings
+
+    ApplicationSettings::UpdateService
+      .new(settings, current_user, application_setting_params)
+      .execute
   end
 end

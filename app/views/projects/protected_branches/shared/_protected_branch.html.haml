@@ -5,7 +5,7 @@
     %span.ref-name= protected_branch.name
 
     - if @project.root_ref?(protected_branch.name)
-      %span.label.label-info.prepend-left-5 default
+      %span.badge.badge-info.prepend-left-5 default
   %td
     - if protected_branch.wildcard?
       - matching_branches = protected_branch.matching(repository.branches)
@@ -21,4 +21,4 @@
 
   - if can_admin_project
     %td
-      = link_to 'Unprotect', [@project.namespace.becomes(Namespace), @project, protected_branch], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: 'btn btn-warning'
+      = link_to 'Unprotect', [@project.namespace.becomes(Namespace), @project, protected_branch, { update_section: 'js-protected-branches-settings' }], disabled: local_assigns[:disabled], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: "btn btn-warning"

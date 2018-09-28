@@ -1,5 +1,5 @@
 %ul
   - projects.each do |project|
     %li
-      %a{ href: "#", class: "#{('is-active' if selected == project.id)}", data: { id: project.id } }
+      %a{ href: "#", class: "#{('is-active' if selected == project.id)}", data: { id: project.id, 'refs-url': refs_project_path(project) } }
         = project.full_path

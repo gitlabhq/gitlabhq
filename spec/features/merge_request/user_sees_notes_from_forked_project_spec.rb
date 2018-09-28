@@ -25,7 +25,7 @@ describe 'Merge request > User sees notes from forked project', :js do
     page.within('.discussion-notes') do
       find('.btn-text-field').click
       find('#note_note').send_keys('A reply comment')
-      find('.comment-btn').click
+      find('.js-comment-button').click
     end
 
     wait_for_requests

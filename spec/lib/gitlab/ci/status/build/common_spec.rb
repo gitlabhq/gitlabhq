@@ -38,4 +38,10 @@ describe Gitlab::Ci::Status::Build::Common do
       expect(subject.details_path).to include "jobs/#{build.id}"
     end
   end
+
+  describe '#illustration' do
+    it 'provides a fallback empty state illustration' do
+      expect(subject.illustration).not_to be_empty
+    end
+  end
 end

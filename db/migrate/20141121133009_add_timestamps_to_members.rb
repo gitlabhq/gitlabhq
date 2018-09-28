@@ -1,4 +1,3 @@
-# rubocop:disable all
 # In 20140914145549_migrate_to_new_members_model.rb we forgot to set the
 # created_at and updated_at times for new records in the 'members' table. This
 # became a problem after commit c8e78d972a5a628870eefca0f2ccea0199c55bda which

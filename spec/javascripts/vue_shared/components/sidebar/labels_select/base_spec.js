@@ -3,9 +3,9 @@ import Vue from 'vue';
 import LabelsSelect from '~/labels_select';
 import baseComponent from '~/vue_shared/components/sidebar/labels_select/base.vue';
 
-import { mockConfig, mockLabels } from './mock_data';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
-import mountComponent from '../../../../helpers/vue_mount_component_helper';
+import { mockConfig, mockLabels } from './mock_data';
 
 const createComponent = (config = mockConfig) => {
   const Component = Vue.extend(baseComponent);
@@ -71,6 +71,22 @@ describe('BaseComponent', () => {
         spyOn(vm, '$emit');
         vm.handleClick(mockLabels[0]);
         expect(vm.$emit).toHaveBeenCalledWith('onLabelClick', mockLabels[0]);
+      });
+    });
+
+    describe('handleCollapsedValueClick', () => {
+      it('emits toggleCollapse event on component', () => {
+        spyOn(vm, '$emit');
+        vm.handleCollapsedValueClick();
+        expect(vm.$emit).toHaveBeenCalledWith('toggleCollapse');
+      });
+    });
+
+    describe('handleDropdownHidden', () => {
+      it('emits onDropdownClose event on component', () => {
+        spyOn(vm, '$emit');
+        vm.handleDropdownHidden();
+        expect(vm.$emit).toHaveBeenCalledWith('onDropdownClose');
       });
     });
   });

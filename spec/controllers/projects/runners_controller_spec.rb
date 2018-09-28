@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Projects::RunnersController do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
-  let(:runner) { create(:ci_runner) }
+  let(:runner) { create(:ci_runner, :project, projects: [project]) }
 
   let(:params) do
     {
@@ -15,8 +15,7 @@ describe Projects::RunnersController do
 
   before do
     sign_in(user)
-    project.add_master(user)
-    project.runners << runner
+    project.add_maintainer(user)
   end
 
   describe '#update' do

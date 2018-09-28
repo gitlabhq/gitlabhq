@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# rubocop:disable Metrics/LineLength
 # rubocop:disable Style/Documentation
 
 class Gitlab::BackgroundMigration::CreateGpgKeySubkeysFromGpgKeys

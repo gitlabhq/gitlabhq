@@ -94,6 +94,19 @@ describe Ci::BuildPolicy do
           end
         end
       end
+
+      context 'when maintainer is allowed to push to pipeline branch' do
+        let(:project) { create(:project, :public) }
+        let(:owner) { user }
+
+        it 'enables update_build if user is maintainer' do
+          allow_any_instance_of(Project).to receive(:empty_repo?).and_return(false)
+          allow_any_instance_of(Project).to receive(:branch_allows_collaboration?).and_return(true)
+
+          expect(policy).to be_allowed :update_build
+          expect(policy).to be_allowed :update_commit_status
+        end
+      end
     end
 
     describe 'rules for protected ref' do
@@ -191,18 +204,18 @@ describe Ci::BuildPolicy do
         end
       end
 
-      context 'when a master erases a build' do
+      context 'when a maintainer erases a build' do
         before do
-          project.add_master(user)
+          project.add_maintainer(user)
         end
 
-        context 'when masters can push to the branch' do
+        context 'when maintainers can push to the branch' do
           before do
-            create(:protected_branch, :masters_can_push,
+            create(:protected_branch, :maintainers_can_push,
                    name: build.ref, project: project)
           end
 
-          context 'when the build was created by the master' do
+          context 'when the build was created by the maintainer' do
             let(:owner) { user }
 
             it { expect(policy).to be_allowed :erase_build }

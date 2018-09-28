@@ -91,6 +91,23 @@ describe Note do
     it "keeps the commit around" do
       expect(note.project.repository.kept_around?(commit.id)).to be_truthy
     end
+
+    it 'does not generate N+1 queries for participants', :request_store do
+      def retrieve_participants
+        commit.notes_with_associations.map(&:participants).to_a
+      end
+
+      # Project authorization checks are cached, establish a baseline
+      retrieve_participants
+
+      control_count = ActiveRecord::QueryRecorder.new do
+        retrieve_participants
+      end
+
+      create(:note_on_commit, project: note.project, note: 'another note', noteable_id: commit.id)
+
+      expect { retrieve_participants }.not_to exceed_query_limit(control_count)
+    end
   end
 
   describe 'authorization' do
@@ -127,8 +144,8 @@ describe Note do
     describe 'admin' do
       before do
         @p1.project_members.create(user: @u1, access_level: ProjectMember::REPORTER)
-        @p1.project_members.create(user: @u2, access_level: ProjectMember::MASTER)
-        @p2.project_members.create(user: @u3, access_level: ProjectMember::MASTER)
+        @p1.project_members.create(user: @u2, access_level: ProjectMember::MAINTAINER)
+        @p2.project_members.create(user: @u3, access_level: ProjectMember::MAINTAINER)
       end
 
       it { expect(Ability.allowed?(@u1, :admin_note, @p1)).to be_falsey }
@@ -191,9 +208,24 @@ describe Note do
     end
   end
 
+  describe "confidential?" do
+    it "delegates to noteable" do
+      issue_note = build(:note, :on_issue)
+      confidential_note = build(:note, noteable: create(:issue, confidential: true))
+
+      expect(issue_note.confidential?).to be_falsy
+      expect(confidential_note.confidential?).to be_truthy
+    end
+
+    it "is falsey when noteable can't be confidential" do
+      commit_note = build(:note_on_commit)
+      expect(commit_note.confidential?).to be_falsy
+    end
+  end
+
   describe "cross_reference_not_visible_for?" do
     let(:private_user)    { create(:user) }
-    let(:private_project) { create(:project, namespace: private_user.namespace) { |p| p.add_master(private_user) } }
+    let(:private_project) { create(:project, namespace: private_user.namespace) { |p| p.add_maintainer(private_user) } }
     let(:private_issue)   { create(:issue, project: private_project) }
 
     let(:ext_proj)  { create(:project, :public) }
@@ -795,6 +827,16 @@ describe Note do
       expect_expiration(note)
 
       note.destroy!
+    end
+
+    context 'when issuable etag caching is disabled' do
+      it 'does not store cache key' do
+        allow(note.noteable).to receive(:etag_caching_enabled?).and_return(false)
+
+        expect_any_instance_of(Gitlab::EtagCaching::Store).not_to receive(:touch)
+
+        note.save!
+      end
     end
   end
 end

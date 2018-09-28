@@ -24,7 +24,7 @@ Environments are like tags for your CI jobs, describing where code gets deployed
 Deployments are created when [jobs] deploy versions of code to environments,
 so every environment can have one or more deployments. GitLab keeps track of
 your deployments, so you always know what is currently being deployed on your
-servers. If you have a deployment service such as [Kubernetes][kubernetes-service]
+servers. If you have a deployment service such as [Kubernetes][kube]
 enabled for your project, you can use it to assist with your deployments, and
 can even access a [web terminal](#web-terminals) for your environment from within GitLab!
 
@@ -87,18 +87,18 @@ will later see, is exposed in various places within GitLab. Each time a job that
 has an environment specified and succeeds, a deployment is recorded, remembering
 the Git SHA and environment name.
 
->**Note:**
-Starting with GitLab 8.15, the environment name is exposed to the Runner in
-two forms: `$CI_ENVIRONMENT_NAME`, and `$CI_ENVIRONMENT_SLUG`. The first is
-the name given in `.gitlab-ci.yml` (with any variables expanded), while the
-second is a "cleaned-up" version of the name, suitable for use in URLs, DNS,
-etc.
-
->**Note:**
-Starting with GitLab 9.3, the environment URL is exposed to the Runner via
-`$CI_ENVIRONMENT_URL`. The URL would be expanded from `.gitlab-ci.yml`, or if
-the URL was not defined there, the external URL from the environment would be
-used.
+> **Note:**
+> Starting with GitLab 8.15, the environment name is exposed to the Runner in
+> two forms: `$CI_ENVIRONMENT_NAME`, and `$CI_ENVIRONMENT_SLUG`. The first is
+> the name given in `.gitlab-ci.yml` (with any variables expanded), while the
+> second is a "cleaned-up" version of the name, suitable for use in URLs, DNS,
+> etc.
+>
+> **Note:**
+> Starting with GitLab 9.3, the environment URL is exposed to the Runner via
+> `$CI_ENVIRONMENT_URL`. The URL would be expanded from `.gitlab-ci.yml`, or if
+> the URL was not defined there, the external URL from the environment would be
+> used.
 
 To sum up, with the above `.gitlab-ci.yml` we have achieved that:
 
@@ -114,7 +114,7 @@ Let's now see how that information is exposed within GitLab.
 
 ## Viewing the current status of an environment
 
-The environment list under your project's **Pipelines ➔ Environments**, is
+The environment list under your project's **Operations > Environments**, is
 where you can find information of the last deployment status of an environment.
 
 Here's how the Environments page looks so far.
@@ -134,14 +134,15 @@ There's a bunch of information there, specifically you can see:
 - A button that re-deploys the latest deployment, meaning it runs the job
   defined by the environment name for that specific commit
 
->**Notes:**
-- While you can create environments manually in the web interface, we recommend
-  that you define your environments in `.gitlab-ci.yml` first. They will
-  be automatically created for you after the first deploy.
-- The environments page can only be viewed by Reporters and above. For more
-  information on the permissions, see the [permissions documentation][permissions].
-- Only deploys that happen after your `.gitlab-ci.yml` is properly configured
-  will show up in the "Environment" and "Last deployment" lists.
+> **Notes:**
+>
+> - While you can create environments manually in the web interface, we recommend
+>   that you define your environments in `.gitlab-ci.yml` first. They will
+>   be automatically created for you after the first deploy.
+> - The environments page can only be viewed by Reporters and above. For more
+>   information on the permissions, see the [permissions documentation][permissions].
+> - Only deploys that happen after your `.gitlab-ci.yml` is properly configured
+>   will show up in the "Environment" and "Last deployment" lists.
 
 The information shown in the Environments page is limited to the latest
 deployments, but as you may have guessed an environment can have multiple
@@ -167,7 +168,7 @@ that works.
 You can't control everything, so sometimes things go wrong. When that unfortunate
 time comes GitLab has you covered. Simply by clicking the **Rollback** button
 that can be found in the deployments page
-(**Pipelines ➔ Environments ➔ `environment name`**) you can relaunch the
+(**Operations > Environments > `environment name`**) you can relaunch the
 job with the commit associated with it.
 
 >**Note:**
@@ -246,11 +247,14 @@ As the name suggests, it is possible to create environments on the fly by just
 declaring their names dynamically in `.gitlab-ci.yml`. Dynamic environments is
 the basis of [Review apps](review_apps/index.md).
 
->**Note:**
-The `name` and `url` parameters can use any of the defined CI variables,
-including predefined, secure variables and `.gitlab-ci.yml`
-[`variables`](yaml/README.md#variables).
-You however cannot use variables defined under `script` or on the Runner's side.
+NOTE: **Note:**
+The `name` and `url` parameters can use most of the CI/CD variables,
+including [predefined](variables/README.md#predefined-variables-environment-variables),
+[project/group ones](variables/README.md#variables) and
+[`.gitlab-ci.yml` variables](yaml/README.md#variables). You however cannot use variables
+defined under `script` or on the Runner's side. There are also other variables that
+are unsupported in the context of `environment:name`. You can read more about
+[where variables can be used](variables/where_variables_can_be_used.md).
 
 GitLab Runner exposes various [environment variables][variables] when a job runs,
 and as such, you can use them as environment names. Let's add another job in
@@ -366,7 +370,7 @@ review_app:
     url: https://$CI_COMMIT_REF_SLUG.example.com
 ```
 
-It is assumed that the user has already setup NGINX and GitLab Runner in the
+It is assumed that the user has already set up NGINX and GitLab Runner in the
 server this job will run on.
 
 >**Note:**
@@ -560,13 +564,13 @@ exist, you should see something like:
 
 ## Monitoring environments
 
->**Notes:**
+> **Notes:**
 >
-- For the monitoring dashboard to appear, you need to:
-  - Have enabled the [Prometheus integration][prom]
-  - Configured Prometheus to collect at least one [supported metric](../user/project/integrations/prometheus_library/metrics.md)
-- With GitLab 9.2, all deployments to an environment are shown directly on the
-  monitoring dashboard
+> - For the monitoring dashboard to appear, you need to:
+>   - Have enabled the [Prometheus integration][prom]
+>   - Configured Prometheus to collect at least one [supported metric](../user/project/integrations/prometheus_library/metrics.md)
+> - With GitLab 9.2, all deployments to an environment are shown directly on the
+>  monitoring dashboard
 
 If you have enabled [Prometheus for monitoring system and response metrics](https://docs.gitlab.com/ee/user/project/integrations/prometheus.html), you can monitor the performance behavior of your app running in each environment.
 
@@ -590,10 +594,10 @@ version of the app, all without leaving GitLab.
 
 >**Note:**
 Web terminals were added in GitLab 8.15 and are only available to project
-masters and owners.
+maintainers and owners.
 
 If you deploy to your environments with the help of a deployment service (e.g.,
-the [Kubernetes service][kubernetes-service]), GitLab can open
+the [Kubernetes integration][kube]), GitLab can open
 a terminal session to your environment! This is a very powerful feature that
 allows you to debug issues without leaving the comfort of your web browser. To
 enable it, just follow the instructions given in the service integration
@@ -659,7 +663,6 @@ Below are some links you may find interesting:
 [Pipelines]: pipelines.md
 [jobs]: yaml/README.md#jobs
 [yaml]: yaml/README.md
-[kubernetes-service]: ../user/project/integrations/kubernetes.md
 [environments]: #environments
 [deployments]: #deployments
 [permissions]: ../user/permissions.md
@@ -671,5 +674,5 @@ Below are some links you may find interesting:
 [gitlab-flow]: ../workflow/gitlab_flow.md
 [gitlab runner]: https://docs.gitlab.com/runner/
 [git-strategy]: yaml/README.md#git-strategy
-[kube]: ../user/project/integrations/kubernetes.md
+[kube]: ../user/project/clusters/index.md
 [prom]: ../user/project/integrations/prometheus.md

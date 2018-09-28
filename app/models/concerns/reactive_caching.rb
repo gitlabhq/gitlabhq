@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # The ReactiveCaching concern is used to fetch some data in the background and
 # store it in the Rails cache, keeping it up-to-date for as long as it is being
 # requested.  If the data hasn't been requested for +reactive_cache_lifetime+,
@@ -42,6 +44,8 @@
 module ReactiveCaching
   extend ActiveSupport::Concern
 
+  InvalidateReactiveCache = Class.new(StandardError)
+
   included do
     class_attribute :reactive_cache_lease_timeout
 
@@ -59,32 +63,56 @@ module ReactiveCaching
       raise NotImplementedError
     end
 
+    def reactive_cache_updated(*args)
+    end
+
     def with_reactive_cache(*args, &blk)
-      within_reactive_cache_lifetime(*args) do
+      unless within_reactive_cache_lifetime?(*args)
+        refresh_reactive_cache!(*args)
+        return nil
+      end
+
+      keep_alive_reactive_cache!(*args)
+
+      begin
         data = Rails.cache.read(full_reactive_cache_key(*args))
         yield data if data.present?
+      rescue InvalidateReactiveCache
+        refresh_reactive_cache!(*args)
+        nil
       end
-    ensure
-      Rails.cache.write(alive_reactive_cache_key(*args), true, expires_in: self.class.reactive_cache_lifetime)
-      ReactiveCachingWorker.perform_async(self.class, id, *args)
     end
 
     def clear_reactive_cache!(*args)
       Rails.cache.delete(full_reactive_cache_key(*args))
+      Rails.cache.delete(alive_reactive_cache_key(*args))
     end
 
     def exclusively_update_reactive_cache!(*args)
       locking_reactive_cache(*args) do
-        within_reactive_cache_lifetime(*args) do
+        if within_reactive_cache_lifetime?(*args)
           enqueuing_update(*args) do
-            value = calculate_reactive_cache(*args)
-            Rails.cache.write(full_reactive_cache_key(*args), value)
+            key = full_reactive_cache_key(*args)
+            new_value = calculate_reactive_cache(*args)
+            old_value = Rails.cache.read(key)
+            Rails.cache.write(key, new_value)
+            reactive_cache_updated(*args) if new_value != old_value
           end
         end
       end
     end
 
     private
+
+    def refresh_reactive_cache!(*args)
+      clear_reactive_cache!(*args)
+      keep_alive_reactive_cache!(*args)
+      ReactiveCachingWorker.perform_async(self.class, id, *args)
+    end
+
+    def keep_alive_reactive_cache!(*args)
+      Rails.cache.write(alive_reactive_cache_key(*args), true, expires_in: self.class.reactive_cache_lifetime)
+    end
 
     def full_reactive_cache_key(*qualifiers)
       prefix = self.class.reactive_cache_key
@@ -105,8 +133,8 @@ module ReactiveCaching
       Gitlab::ExclusiveLease.cancel(full_reactive_cache_key(*args), uuid)
     end
 
-    def within_reactive_cache_lifetime(*args)
-      yield if Rails.cache.read(alive_reactive_cache_key(*args))
+    def within_reactive_cache_lifetime?(*args)
+      !!Rails.cache.read(alive_reactive_cache_key(*args))
     end
 
     def enqueuing_update(*args)

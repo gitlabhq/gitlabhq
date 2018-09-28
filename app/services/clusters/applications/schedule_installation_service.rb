@@ -1,21 +1,12 @@
+# frozen_string_literal: true
+
 module Clusters
   module Applications
     class ScheduleInstallationService < ::BaseService
-      def execute
-        application_class.find_or_create_by!(cluster: cluster).try do |application|
-          application.make_scheduled!
-          ClusterInstallAppWorker.perform_async(application.name, application.id)
-        end
-      end
+      def execute(application)
+        application.make_scheduled!
 
-      private
-
-      def application_class
-        params[:application_class]
-      end
-
-      def cluster
-        params[:cluster]
+        ClusterInstallAppWorker.perform_async(application.name, application.id)
       end
     end
   end

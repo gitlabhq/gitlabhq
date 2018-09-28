@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Banzai::Redactor do
   let(:user) { create(:user) }
   let(:project) { build(:project) }
-  let(:redactor) { described_class.new(project, user) }
+  let(:redactor) { described_class.new(Banzai::RenderContext.new(project, user)) }
 
   describe '#redact' do
     context 'when reference not visible to user' do
@@ -54,7 +54,7 @@ describe Banzai::Redactor do
 
     context 'when project is in pending delete' do
       let!(:issue) { create(:issue, project: project) }
-      let(:redactor) { described_class.new(project, user) }
+      let(:redactor) { described_class.new(Banzai::RenderContext.new(project, user)) }
 
       before do
         project.update(pending_delete: true)

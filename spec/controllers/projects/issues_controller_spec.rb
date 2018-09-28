@@ -1,4 +1,4 @@
-require('spec_helper')
+require 'spec_helper'
 
 describe Projects::IssuesController do
   let(:project) { create(:project) }
@@ -695,7 +695,7 @@ describe Projects::IssuesController do
       let(:project) { merge_request.source_project }
 
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         sign_in user
       end
 
@@ -869,7 +869,7 @@ describe Projects::IssuesController do
       def post_spam
         admin = create(:admin)
         create(:user_agent_detail, subject: issue)
-        project.add_master(admin)
+        project.add_maintainer(admin)
         sign_in(admin)
         post :mark_as_spam, {
           namespace_id: project.namespace,
@@ -938,7 +938,7 @@ describe Projects::IssuesController do
   end
 
   describe 'POST create_merge_request' do
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :repository, :public) }
 
     before do
       project.add_developer(user)
@@ -953,6 +953,22 @@ describe Projects::IssuesController do
       create_merge_request
 
       expect(response).to match_response_schema('merge_request')
+    end
+
+    it 'is not available when the project is archived' do
+      project.update!(archived: true)
+
+      create_merge_request
+
+      expect(response).to have_gitlab_http_status(404)
+    end
+
+    it 'is not available for users who cannot create merge requests' do
+      sign_in(create(:user))
+
+      create_merge_request
+
+      expect(response).to have_gitlab_http_status(404)
     end
 
     def create_merge_request
@@ -974,7 +990,30 @@ describe Projects::IssuesController do
       it 'returns discussion json' do
         get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
 
-        expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes diff_discussion individual_note resolvable resolve_with_issue_path resolved])
+        expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes diff_discussion discussion_path individual_note resolvable resolved resolved_at resolved_by resolved_by_push commit_id for_commit project_id])
+      end
+
+      it 'renders the author status html if there is a status' do
+        create(:user_status, user: discussion.author)
+
+        get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+
+        note_json = json_response.first['notes'].first
+
+        expect(note_json['author']['status_tooltip_html']).to be_present
+      end
+
+      it 'does not cause an extra query for the status' do
+        control = ActiveRecord::QueryRecorder.new do
+          get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+        end
+
+        create(:user_status, user: discussion.author)
+        second_discussion = create(:discussion_note_on_issue, noteable: issue, project: issue.project, author: create(:user))
+        create(:user_status, user: second_discussion.author)
+
+        expect { get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid }
+          .not_to exceed_query_limit(control)
       end
 
       context 'with cross-reference system note', :request_store do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # SystemNoteService
 #
 # Used for creating system notes (e.g., when a user references a merge request
@@ -21,11 +23,28 @@ module SystemNoteService
     total_count  = new_commits.length + existing_commits.length
     commits_text = "#{total_count} commit".pluralize(total_count)
 
-    body = "added #{commits_text}\n\n"
-    body << commits_list(noteable, new_commits, existing_commits, oldrev)
-    body << "\n\n[Compare with previous version](#{diff_comparison_url(noteable, project, oldrev)})"
+    text_parts = ["added #{commits_text}"]
+    text_parts << commits_list(noteable, new_commits, existing_commits, oldrev)
+    text_parts << "[Compare with previous version](#{diff_comparison_url(noteable, project, oldrev)})"
+
+    body = text_parts.join("\n\n")
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'commit', commit_count: total_count))
+  end
+
+  # Called when a commit was tagged
+  #
+  # noteable  - Noteable object
+  # project   - Project owning noteable
+  # author    - User performing the tag
+  # tag_name  - The created tag name
+  #
+  # Returns the created Note object
+  def tag_commit(noteable, project, author, tag_name)
+    link = url_helpers.project_tag_url(project, id: tag_name)
+    body = "tagged commit #{noteable.sha} to [`#{tag_name}`](#{link})"
+
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'tag'))
   end
 
   # Called when the assignee of a Noteable is changed or removed
@@ -79,46 +98,6 @@ module SystemNoteService
     create_note(NoteSummary.new(issue, project, author, body, action: 'assignee'))
   end
 
-  # Called when one or more labels on a Noteable are added and/or removed
-  #
-  # noteable       - Noteable object
-  # project        - Project owning noteable
-  # author         - User performing the change
-  # added_labels   - Array of Labels added
-  # removed_labels - Array of Labels removed
-  #
-  # Example Note text:
-  #
-  #   "added ~1 and removed ~2 ~3 labels"
-  #
-  #   "added ~4 label"
-  #
-  #   "removed ~5 label"
-  #
-  # Returns the created Note object
-  def change_label(noteable, project, author, added_labels, removed_labels)
-    labels_count = added_labels.count + removed_labels.count
-
-    references     = ->(label) { label.to_reference(format: :id) }
-    added_labels   = added_labels.map(&references).join(' ')
-    removed_labels = removed_labels.map(&references).join(' ')
-
-    body = ''
-
-    if added_labels.present?
-      body << "added #{added_labels}"
-      body << ' and ' if removed_labels.present?
-    end
-
-    if removed_labels.present?
-      body << "removed #{removed_labels}"
-    end
-
-    body << ' ' << 'label'.pluralize(labels_count)
-
-    create_note(NoteSummary.new(noteable, project, author, body, action: 'label'))
-  end
-
   # Called when the milestone of a Noteable is changed
   #
   # noteable  - Noteable object
@@ -138,6 +117,26 @@ module SystemNoteService
     body = milestone.nil? ? 'removed milestone' : "changed milestone to #{milestone.to_reference(project, format: format)}"
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'milestone'))
+  end
+
+  # Called when the due_date of a Noteable is changed
+  #
+  # noteable  - Noteable object
+  # project   - Project owning noteable
+  # author    - User performing the change
+  # due_date  - Due date being assigned, or nil
+  #
+  # Example Note text:
+  #
+  #   "removed due date"
+  #
+  #   "changed due date to September 20, 2018"
+  #
+  # Returns the created Note object
+  def change_due_date(noteable, project, author, due_date)
+    body = due_date ? "changed due date to #{due_date.to_s(:long)}" : 'removed due date'
+
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'due_date'))
   end
 
   # Called when the estimated time of a Noteable is changed
@@ -188,8 +187,10 @@ module SystemNoteService
       spent_at = noteable.spent_at
       parsed_time = Gitlab::TimeTrackingFormatter.output(time_spent.abs)
       action = time_spent > 0 ? 'added' : 'subtracted'
-      body = "#{action} #{parsed_time} of time spent"
-      body << " at #{spent_at}" if spent_at
+
+      text_parts = ["#{action} #{parsed_time} of time spent"]
+      text_parts << "at #{spent_at}" if spent_at
+      body = text_parts.join(' ')
     end
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'time_tracking'))
@@ -268,17 +269,19 @@ module SystemNoteService
     diff_refs = change_position.diff_refs
     version_index = merge_request.merge_request_diffs.viewable.count
 
-    body = "changed this line in"
+    text_parts = ["changed this line in"]
     if version_params = merge_request.version_params_for(diff_refs)
       line_code = change_position.line_code(project.repository)
       url = url_helpers.diffs_project_merge_request_url(project, merge_request, version_params.merge(anchor: line_code))
 
-      body << " [version #{version_index} of the diff](#{url})"
+      text_parts << "[version #{version_index} of the diff](#{url})"
     else
-      body << " version #{version_index} of the diff"
+      text_parts << "version #{version_index} of the diff"
     end
 
+    body = text_parts.join(' ')
     note_attributes = discussion.reply_attributes.merge(project: project, author: author, note: body)
+
     note = Note.create(note_attributes.merge(system: true))
     note.system_note_metadata = SystemNoteMetadata.new(action: 'outdated')
 
@@ -429,7 +432,7 @@ module SystemNoteService
   def cross_reference(noteable, mentioner, author)
     return if cross_reference_disallowed?(noteable, mentioner)
 
-    gfm_reference = mentioner.gfm_reference(noteable.project)
+    gfm_reference = mentioner.gfm_reference(noteable.project || noteable.group)
     body = cross_reference_note_content(gfm_reference)
 
     if noteable.is_a?(ExternalIssue)
@@ -577,16 +580,18 @@ module SystemNoteService
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def notes_for_mentioner(mentioner, noteable, notes)
     if mentioner.is_a?(Commit)
       text = "#{cross_reference_note_prefix}%#{mentioner.to_reference(nil)}"
       notes.where('(note LIKE ? OR note LIKE ?)', text, text.capitalize)
     else
-      gfm_reference = mentioner.gfm_reference(noteable.project)
+      gfm_reference = mentioner.gfm_reference(noteable.project || noteable.group)
       text = cross_reference_note_content(gfm_reference)
       notes.where(note: [text, text.capitalize])
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def create_note(note_summary)
     note = Note.create(note_summary.note.merge(system: true))

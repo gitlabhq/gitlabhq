@@ -1,4 +1,3 @@
-# rubocop:disable all
 class AddSentNotifications < ActiveRecord::Migration
   def change
     create_table :sent_notifications do |t|

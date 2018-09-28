@@ -1,6 +1,0 @@
----
-title: Keep "Import project" tab/form active when validation fails trying to import
-  "Repo by URL"
-merge_request: 17136
-author:
-type: fixed

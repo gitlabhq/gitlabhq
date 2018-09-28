@@ -29,35 +29,35 @@ export default {
       <span>
         <icon name="archive" />
         <strong
-          v-html="diffFile.submoduleLink"
           class="file-title-name"
+          v-html="diffFile.submoduleLink"
         ></strong>
         <clipboard-button
-          title="Copy file path to clipboard"
           :text="diffFile.submoduleLink"
+          title="Copy file path to clipboard"
           css-class="btn-default btn-transparent btn-clipboard"
         />
       </span>
     </div>
     <template v-else>
       <component
-        ref="titleWrapper"
         :is="titleTag"
+        ref="titleWrapper"
         :href="diffFile.discussionPath"
       >
         <span v-html="diffFile.blobIcon"></span>
         <span v-if="diffFile.renamedFile">
           <strong
-            class="file-title-name has-tooltip"
             :title="diffFile.oldPath"
+            class="file-title-name has-tooltip"
             data-container="body"
           >
             {{ diffFile.oldPath }}
           </strong>
           &rarr;
           <strong
-            class="file-title-name has-tooltip"
             :title="diffFile.newPath"
+            class="file-title-name has-tooltip"
             data-container="body"
           >
             {{ diffFile.newPath }}
@@ -66,8 +66,8 @@ export default {
 
         <strong
           v-else
-          class="file-title-name has-tooltip"
           :title="diffFile.oldPath"
+          class="file-title-name has-tooltip"
           data-container="body"
         >
           {{ diffFile.filePath }}
@@ -78,8 +78,8 @@ export default {
       </component>
 
       <clipboard-button
-        title="Copy file path to clipboard"
         :text="diffFile.filePath"
+        title="Copy file path to clipboard"
         css-class="btn-default btn-transparent btn-clipboard"
       />
 

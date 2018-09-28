@@ -2,10 +2,10 @@
 - viewing_issues = controller.controller_name == 'issues' || controller.action_name == 'issues'
 
 .dropdown.inline.prepend-left-10
-  %button.dropdown-toggle{ type: 'button', data: { toggle: 'dropdown' } }
+  %button.dropdown-toggle{ type: 'button', data: { toggle: 'dropdown', display: 'static' } }
     = sorted_by
     = icon('chevron-down')
-  %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-selectable.dropdown-menu-sort
+  %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable.dropdown-menu-sort
     %li
       = sortable_item(sort_title_priority,         page_filter_path(sort: sort_value_priority,         label: true), sorted_by)
       = sortable_item(sort_title_created_date,     page_filter_path(sort: sort_value_created_date,     label: true), sorted_by)

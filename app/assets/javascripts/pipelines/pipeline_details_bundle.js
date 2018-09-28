@@ -10,7 +10,7 @@ import eventHub from './event_hub';
 Vue.use(Translate);
 
 export default () => {
-  const dataset = document.querySelector('.js-pipeline-details-vue').dataset;
+  const { dataset } = document.querySelector('.js-pipeline-details-vue');
 
   const mediator = new PipelinesMediator({ endpoint: dataset.endpoint });
 
@@ -27,11 +27,23 @@ export default () => {
         mediator,
       };
     },
+    methods: {
+      requestRefreshPipelineGraph() {
+        // When an action is clicked
+        // (wether in the dropdown or in the main nodes, we refresh the big graph)
+        this.mediator
+          .refreshPipeline()
+          .catch(() => Flash(__('An error occurred while making the request.')));
+      },
+    },
     render(createElement) {
       return createElement('pipeline-graph', {
         props: {
           isLoading: this.mediator.state.isLoading,
           pipeline: this.mediator.store.state.pipeline,
+        },
+        on: {
+          refreshPipelineGraph: this.requestRefreshPipelineGraph,
         },
       });
     },
@@ -56,7 +68,8 @@ export default () => {
     },
     methods: {
       postAction(action) {
-        this.mediator.service.postAction(action.path)
+        this.mediator.service
+          .postAction(action.path)
           .then(() => this.mediator.refreshPipeline())
           .catch(() => Flash(__('An error occurred while making the request.')));
       },

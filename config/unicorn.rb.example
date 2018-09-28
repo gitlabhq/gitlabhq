@@ -67,11 +67,11 @@ pid "/home/git/gitlab/tmp/pids/unicorn.pid"
 stderr_path "/home/git/gitlab/log/unicorn.stderr.log"
 stdout_path "/home/git/gitlab/log/unicorn.stdout.log"
 
-# combine Ruby 2.0.0dev or REE with "preload_app true" for memory savings
-# http://rubyenterpriseedition.com/faq.html#adapt_apps_for_cow
+# Save memory by sharing the application code among multiple Unicorn workers
+# with "preload_app true". See:
+# https://www.rubydoc.info/gems/unicorn/5.1.0/Unicorn%2FConfigurator:preload_app
+# https://brandur.org/ruby-memory#copy-on-write
 preload_app true
-GC.respond_to?(:copy_on_write_friendly=) and
-  GC.copy_on_write_friendly = true
 
 # Enable this flag to have unicorn test client connections by writing the
 # beginning of the HTTP headers before calling the application.  This
@@ -80,6 +80,17 @@ GC.respond_to?(:copy_on_write_friendly=) and
 # host unicorn runs on, and unlikely to detect disconnects even on a
 # fast LAN.
 check_client_connection false
+
+before_exec do |server|
+  # The following is necessary to ensure stale Prometheus metrics don't
+  # accumulate over time. It needs to be done in this hook as opposed to
+  # inside an init script to ensure metrics files aren't deleted after new
+  # unicorn workers start after a SIGUSR2 is received.
+  if ENV['prometheus_multiproc_dir']
+    old_metrics = Dir[File.join(ENV['prometheus_multiproc_dir'], '*.db')]
+    FileUtils.rm_rf(old_metrics)
+  end
+end
 
 before_fork do |server, worker|
   # the following is highly recommended for Rails + "preload_app true"
@@ -113,6 +124,10 @@ before_fork do |server, worker|
 end
 
 after_fork do |server, worker|
+  # Unicorn clears out signals before it forks, so rbtrace won't work
+  # unless it is enabled after the fork.
+  require 'rbtrace' if ENV['ENABLE_RBTRACE']
+
   # per-process listener ports for debugging/admin/migrations
   # addr = "127.0.0.1:#{9293 + worker.nr}"
   # server.listen(addr, :tries => -1, :delay => 5, :tcp_nopush => true)

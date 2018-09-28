@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::ProtectedBranchesController < Projects::ProtectedRefsController
   protected
 
@@ -5,12 +7,8 @@ class Projects::ProtectedBranchesController < Projects::ProtectedRefsController
     @project.repository.branches
   end
 
-  def create_service_class
-    ::ProtectedBranches::CreateService
-  end
-
-  def update_service_class
-    ::ProtectedBranches::UpdateService
+  def service_namespace
+    ::ProtectedBranches
   end
 
   def load_protected_ref

@@ -17,7 +17,7 @@ module Gitlab
           path: repo["path"],
           description: repo["description"],
           namespace_id: namespace.id,
-          visibility_level: repo["visibility_level"],
+          visibility_level: Gitlab::VisibilityLevel.level_value(repo["visibility"]),
           import_type: "gitlab",
           import_source: repo["path_with_namespace"],
           import_url: repo["http_url_to_repo"].sub("://", "://oauth2:#{@session_data[:gitlab_access_token]}@")

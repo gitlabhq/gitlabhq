@@ -9,6 +9,7 @@
 4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6 refs/heads/master
 5937ac0a7beb003549fc5fd26fc247adbce4a52e refs/heads/merge-test
 9596bc54a6f0c0c98248fe97077eb5ccf48a98d0 refs/heads/missing-gitmodules
+4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6 refs/heads/Ääh-test-utf-8
 f4e6814c3e4e7a0de82a9e7cd20c626cc963a2f8 refs/tags/v1.0.0
 ^6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
 8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b refs/tags/v1.1.0

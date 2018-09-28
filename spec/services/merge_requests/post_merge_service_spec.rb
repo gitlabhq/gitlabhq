@@ -6,7 +6,7 @@ describe MergeRequests::PostMergeService do
   let(:project) { merge_request.project }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe '#execute' do
@@ -34,6 +34,31 @@ describe MergeRequests::PostMergeService do
       expect(metrics_service).to receive(:merge)
 
       described_class.new(project, user, {}).execute(merge_request)
+    end
+
+    it 'deletes non-latest diffs' do
+      diff_removal_service = instance_double(MergeRequests::DeleteNonLatestDiffsService, execute: nil)
+
+      expect(MergeRequests::DeleteNonLatestDiffsService)
+        .to receive(:new).with(merge_request)
+        .and_return(diff_removal_service)
+
+      described_class.new(project, user, {}).execute(merge_request)
+
+      expect(diff_removal_service).to have_received(:execute)
+    end
+
+    it 'marks MR as merged regardless of errors when closing issues' do
+      merge_request.update(target_branch: 'foo')
+      allow(project).to receive(:default_branch).and_return('foo')
+
+      issue = create(:issue, project: project)
+      allow(merge_request).to receive(:visible_closing_issues_for).and_return([issue])
+      allow_any_instance_of(Issues::CloseService).to receive(:execute).with(issue, commit: merge_request).and_raise
+
+      expect { described_class.new(project, user, {}).execute(merge_request) }.to raise_error
+
+      expect(merge_request.reload).to be_merged
     end
   end
 end

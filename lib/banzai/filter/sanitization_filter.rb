@@ -1,34 +1,30 @@
+# frozen_string_literal: true
+
 module Banzai
   module Filter
     # Sanitize HTML
     #
     # Extends HTML::Pipeline::SanitizationFilter with a custom whitelist.
     class SanitizationFilter < HTML::Pipeline::SanitizationFilter
+      include Gitlab::Utils::StrongMemoize
+
       UNSAFE_PROTOCOLS = %w(data javascript vbscript).freeze
       TABLE_ALIGNMENT_PATTERN = /text-align: (?<alignment>center|left|right)/
 
       def whitelist
-        whitelist = super
-
-        customize_whitelist(whitelist)
-
-        whitelist
+        strong_memoize(:whitelist) do
+          customize_whitelist(super.deep_dup)
+        end
       end
 
       private
 
-      def customized?(transformers)
-        transformers.last.source_location[0] == __FILE__
-      end
-
       def customize_whitelist(whitelist)
-        # Only push these customizations once
-        return if customized?(whitelist[:transformers])
-
-        # Allow table alignment; we whitelist specific style properties in a
+        # Allow table alignment; we whitelist specific text-align values in a
         # transformer below
         whitelist[:attributes]['th'] = %w(style)
         whitelist[:attributes]['td'] = %w(style)
+        whitelist[:css] = { properties: ['text-align'] }
 
         # Allow span elements
         whitelist[:elements].push('span')

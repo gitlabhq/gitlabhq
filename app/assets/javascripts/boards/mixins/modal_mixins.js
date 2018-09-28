@@ -1,6 +1,6 @@
-const ModalStore = gl.issueBoards.ModalStore;
+import ModalStore from '../stores/modal_store';
 
-gl.issueBoards.ModalMixins = {
+export default {
   methods: {
     toggleModal(toggle) {
       ModalStore.store.showAddIssuesModal = toggle;

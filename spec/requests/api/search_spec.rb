@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::Search do
   set(:user) { create(:user) }
   set(:group) { create(:group) }
-  set(:project) { create(:project, :public, name: 'awesome project', group: group) }
+  set(:project) { create(:project, :wiki_repo, :public, name: 'awesome project', group: group) }
   set(:repo_project) { create(:project, :public, :repository, group: group) }
 
   shared_examples 'response is correct' do |schema:, size: 1|
@@ -312,6 +312,30 @@ describe API::Search do
         end
 
         it_behaves_like 'response is correct', schema: 'public_api/v4/blobs', size: 2
+
+        context 'filters' do
+          it 'by filename' do
+            get api("/projects/#{repo_project.id}/search", user), scope: 'blobs', search: 'mon filename:PROCESS.md'
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(json_response.size).to eq(2)
+            expect(json_response.first['filename']).to eq('PROCESS.md')
+          end
+
+          it 'by path' do
+            get api("/projects/#{repo_project.id}/search", user), scope: 'blobs', search: 'mon path:markdown'
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(json_response.size).to eq(8)
+          end
+
+          it 'by extension' do
+            get api("/projects/#{repo_project.id}/search", user), scope: 'blobs', search: 'mon extension:md'
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(json_response.size).to eq(11)
+          end
+        end
       end
     end
   end

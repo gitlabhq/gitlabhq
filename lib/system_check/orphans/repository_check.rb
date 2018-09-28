@@ -5,14 +5,18 @@ module SystemCheck
       attr_accessor :orphans
 
       def multi_check
-        Gitlab.config.repositories.storages.each do |storage_name, repository_storage|
-          $stdout.puts
-          $stdout.puts "* Storage: #{storage_name} (#{repository_storage['path']})".color(:yellow)
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          Gitlab.config.repositories.storages.each do |storage_name, repository_storage|
+            storage_path = repository_storage.legacy_disk_path
 
-          repositories = disk_repositories(repository_storage['path'])
-          orphans = (repositories - fetch_repositories(storage_name))
+            $stdout.puts
+            $stdout.puts "* Storage: #{storage_name} (#{storage_path})".color(:yellow)
 
-          print_orphans(orphans, storage_name)
+            repositories = disk_repositories(storage_path)
+            orphans = (repositories - fetch_repositories(storage_name))
+
+            print_orphans(orphans, storage_name)
+          end
         end
       end
 

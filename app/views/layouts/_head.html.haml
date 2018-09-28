@@ -3,6 +3,11 @@
 - site_name = "GitLab"
 %head{ prefix: "og: http://ogp.me/ns#" }
   %meta{ charset: "utf-8" }
+
+  - if Feature.enabled?('asset_host_prefetch') && ActionController::Base.asset_host
+    %link{ rel: 'dns-prefetch', href: ActionController::Base.asset_host }
+    %link{ rel: 'preconnnect', href: ActionController::Base.asset_host, crossorigin: '' }
+
   %meta{ 'http-equiv' => 'X-UA-Compatible', content: 'IE=edge' }
 
   -# Open Graph - http://ogp.me/
@@ -25,7 +30,7 @@
   %title= page_title(site_name)
   %meta{ name: "description", content: page_description }
 
-  = favicon_link_tag favicon, id: 'favicon'
+  = favicon_link_tag favicon, id: 'favicon', data: { original_href: favicon }, type: 'image/png'
 
   = stylesheet_link_tag "application", media: "all"
   = stylesheet_link_tag "print",       media: "print"
@@ -38,9 +43,6 @@
     = yield :library_javascripts
 
   = javascript_include_tag locale_path unless I18n.locale == :en
-  = webpack_bundle_tag "webpack_runtime"
-  = webpack_bundle_tag "common"
-  = webpack_bundle_tag "main"
   = webpack_bundle_tag "raven" if Gitlab::CurrentSettings.clientside_sentry_enabled
 
   - if content_for?(:page_specific_javascripts)

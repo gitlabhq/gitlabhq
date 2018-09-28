@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Git::AttributesParser, seed_helper: true do
+describe Gitlab::Git::AttributesParser, :seed_helper do
   let(:attributes_path) { File.join(SEED_STORAGE_PATH, 'with-git-attributes.git', 'info', 'attributes') }
   let(:data) { File.read(attributes_path) }
 
@@ -63,18 +63,6 @@ describe Gitlab::Git::AttributesParser, seed_helper: true do
     context 'using a path without any attributes' do
       it 'returns an empty Hash' do
         expect(subject.attributes('test.foo')).to eq({})
-      end
-    end
-
-    context 'when attributes data is a file handle' do
-      subject do
-        File.open(attributes_path, 'r') do |file_handle|
-          described_class.new(file_handle)
-        end
-      end
-
-      it 'returns the attributes as a Hash' do
-        expect(subject.attributes('test.txt')).to eq({ 'text' => true })
       end
     end
 

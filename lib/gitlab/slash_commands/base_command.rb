@@ -40,9 +40,11 @@ module Gitlab
 
       private
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def find_by_iid(iid)
         collection.find_by(iid: iid)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

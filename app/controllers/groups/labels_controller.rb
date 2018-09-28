@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Groups::LabelsController < Groups::ApplicationController
   include ToggleSubscriptionAction
 
@@ -10,18 +12,9 @@ class Groups::LabelsController < Groups::ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @labels = @group.labels.page(params[:page])
+        @labels = GroupLabelsFinder.new(@group, params.merge(sort: sort)).execute
       end
-
       format.json do
-        available_labels = LabelsFinder.new(
-          current_user,
-          group_id: @group.id,
-          only_group_labels: params[:only_group_labels],
-          include_ancestor_groups: params[:include_ancestor_groups],
-          include_descendant_groups: params[:include_descendant_groups]
-        ).execute
-
         render json: LabelSerializer.new.represent_appearance(available_labels)
       end
     end
@@ -112,5 +105,20 @@ class Groups::LabelsController < Groups::ApplicationController
 
   def save_previous_label_path
     session[:previous_labels_path] = URI(request.referer || '').path
+  end
+
+  def available_labels
+    @available_labels ||=
+      LabelsFinder.new(
+        current_user,
+        group_id: @group.id,
+        only_group_labels: params[:only_group_labels],
+        include_ancestor_groups: params[:include_ancestor_groups],
+        include_descendant_groups: params[:include_descendant_groups],
+        search: params[:search]).execute
+  end
+
+  def sort
+    @sort ||= params[:sort] || 'name_asc'
   end
 end

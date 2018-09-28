@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Prioritize labels' do
+describe 'Prioritize labels' do
   include DragTo
 
   let(:user)     { create(:user) }
@@ -17,7 +17,7 @@ feature 'Prioritize labels' do
       sign_in user
     end
 
-    scenario 'user can prioritize a group label', :js do
+    it 'user can prioritize a group label', :js do
       visit project_labels_path(project)
 
       expect(page).to have_content('Star labels to start sorting by priority')
@@ -34,7 +34,7 @@ feature 'Prioritize labels' do
       end
     end
 
-    scenario 'user can unprioritize a group label', :js do
+    it 'user can unprioritize a group label', :js do
       create(:label_priority, project: project, label: feature, priority: 1)
 
       visit project_labels_path(project)
@@ -52,7 +52,7 @@ feature 'Prioritize labels' do
       end
     end
 
-    scenario 'user can prioritize a project label', :js do
+    it 'user can prioritize a project label', :js do
       visit project_labels_path(project)
 
       expect(page).to have_content('Star labels to start sorting by priority')
@@ -69,7 +69,7 @@ feature 'Prioritize labels' do
       end
     end
 
-    scenario 'user can unprioritize a project label', :js do
+    it 'user can unprioritize a project label', :js do
       create(:label_priority, project: project, label: bug, priority: 1)
 
       visit project_labels_path(project)
@@ -88,7 +88,7 @@ feature 'Prioritize labels' do
       end
     end
 
-    scenario 'user can sort prioritized labels and persist across reloads', :js do
+    it 'user can sort prioritized labels and persist across reloads', :js do
       create(:label_priority, project: project, label: bug, priority: 1)
       create(:label_priority, project: project, label: feature, priority: 2)
 
@@ -102,16 +102,16 @@ feature 'Prioritize labels' do
       drag_to(selector: '.label-list-item', from_index: 1, to_index: 2)
 
       page.within('.prioritized-labels') do
-        expect(first('li')).to have_content('feature')
-        expect(page.all('li').last).to have_content('bug')
+        expect(first('.label-list-item')).to have_content('feature')
+        expect(page.all('.label-list-item').last).to have_content('bug')
       end
 
       refresh
       wait_for_requests
 
       page.within('.prioritized-labels') do
-        expect(first('li')).to have_content('feature')
-        expect(page.all('li').last).to have_content('bug')
+        expect(first('.label-list-item')).to have_content('feature')
+        expect(page.all('.label-list-item').last).to have_content('bug')
       end
     end
 

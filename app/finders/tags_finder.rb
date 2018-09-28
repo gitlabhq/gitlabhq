@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TagsFinder
   def initialize(repository, params)
     @repository = repository

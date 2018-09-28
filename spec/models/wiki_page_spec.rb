@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe WikiPage do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :wiki_repo) }
   let(:user) { project.owner }
   let(:wiki) { ProjectWiki.new(project, user) }
 
@@ -554,6 +554,16 @@ describe WikiPage do
     end
   end
 
+  describe '#hook_attrs' do
+    it 'adds absolute urls for images in the content' do
+      create_page("test page", "test![WikiPage_Image](/uploads/abc/WikiPage_Image.png)")
+      page = wiki.wiki.page(title: "test page")
+      wiki_page = described_class.new(wiki, page, true)
+
+      expect(wiki_page.hook_attrs['content']).to eq("test![WikiPage_Image](#{Settings.gitlab.url}/uploads/abc/WikiPage_Image.png)")
+    end
+  end
+
   private
 
   def remove_temp_repo(path)
@@ -561,7 +571,7 @@ describe WikiPage do
   end
 
   def commit_details
-    Gitlab::Git::Wiki::CommitDetails.new(user.name, user.email, "test commit")
+    Gitlab::Git::Wiki::CommitDetails.new(user.id, user.username, user.name, user.email, "test commit")
   end
 
   def create_page(name, content)

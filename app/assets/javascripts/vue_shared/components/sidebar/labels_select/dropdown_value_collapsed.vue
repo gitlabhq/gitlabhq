@@ -26,16 +26,22 @@ export default {
       return labelsString;
     },
   },
+  methods: {
+    handleClick() {
+      this.$emit('onValueClick');
+    },
+  },
 };
 </script>
 
 <template>
   <div
     v-tooltip
+    :title="labelsList"
     class="sidebar-collapsed-icon"
     data-placement="left"
     data-container="body"
-    :title="labelsList"
+    @click="handleClick"
   >
     <i
       aria-hidden="true"

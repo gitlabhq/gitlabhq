@@ -1,86 +1,222 @@
 require 'rails_helper'
 
 describe Gitlab::Kubernetes::Helm::InstallCommand do
-  let(:application) { create(:clusters_applications_prometheus) }
-  let(:namespace) { Gitlab::Kubernetes::Helm::NAMESPACE }
+  let(:files) { { 'ca.pem': 'some file content' } }
+  let(:repository) { 'https://repository.example.com' }
+  let(:rbac) { false }
+  let(:version) { '1.2.3' }
 
   let(:install_command) do
     described_class.new(
-      application.name,
-      chart: application.chart,
-      values: application.values
+      name: 'app-name',
+      chart: 'chart-name',
+      rbac: rbac,
+      files: files,
+      version: version,
+      repository: repository
     )
   end
 
-  describe '#generate_script' do
-    let(:command) do
-      <<~MSG
-      set -eo pipefail
-      apk add -U ca-certificates openssl >/dev/null
-      wget -q -O - https://kubernetes-helm.storage.googleapis.com/helm-v2.7.0-linux-amd64.tar.gz | tar zxC /tmp >/dev/null
-      mv /tmp/linux-amd64/helm /usr/bin/
+  subject { install_command }
+
+  it_behaves_like 'helm commands' do
+    let(:commands) do
+      <<~EOS
       helm init --client-only >/dev/null
-      helm install #{application.chart} --name #{application.name} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
-      MSG
+      helm repo add app-name https://repository.example.com
+      #{helm_install_comand}
+      EOS
     end
 
-    subject { install_command.generate_script }
-
-    it 'should return appropriate command' do
-      is_expected.to eq(command)
+    let(:helm_install_comand) do
+      <<~EOS.squish
+      helm install chart-name
+        --name app-name
+        --tls
+        --tls-ca-cert /data/helm/app-name/config/ca.pem
+        --tls-cert /data/helm/app-name/config/cert.pem
+        --tls-key /data/helm/app-name/config/key.pem
+        --version 1.2.3
+        --namespace gitlab-managed-apps
+        -f /data/helm/app-name/config/values.yaml >/dev/null
+      EOS
     end
+  end
 
-    context 'with an application with a repository' do
-      let(:ci_runner) { create(:ci_runner) }
-      let(:application) { create(:clusters_applications_runner, runner: ci_runner) }
-      let(:install_command) do
-        described_class.new(
-          application.name,
-          chart: application.chart,
-          values: application.values,
-          repository: application.repository
-        )
-      end
+  context 'when rbac is true' do
+    let(:rbac) { true }
 
-      let(:command) do
-        <<~MSG
-        set -eo pipefail
-        apk add -U ca-certificates openssl >/dev/null
-        wget -q -O - https://kubernetes-helm.storage.googleapis.com/helm-v2.7.0-linux-amd64.tar.gz | tar zxC /tmp >/dev/null
-        mv /tmp/linux-amd64/helm /usr/bin/
+    it_behaves_like 'helm commands' do
+      let(:commands) do
+        <<~EOS
         helm init --client-only >/dev/null
-        helm repo add #{application.name} #{application.repository}
-        helm install #{application.chart} --name #{application.name} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
-        MSG
+        helm repo add app-name https://repository.example.com
+        #{helm_install_command}
+        EOS
       end
 
-      it 'should return appropriate command' do
-        is_expected.to eq(command)
+      let(:helm_install_command) do
+        <<~EOS.squish
+        helm install chart-name
+          --name app-name
+          --tls
+          --tls-ca-cert /data/helm/app-name/config/ca.pem
+          --tls-cert /data/helm/app-name/config/cert.pem
+          --tls-key /data/helm/app-name/config/key.pem
+          --version 1.2.3
+          --set rbac.create\\=true,rbac.enabled\\=true
+          --namespace gitlab-managed-apps
+          -f /data/helm/app-name/config/values.yaml >/dev/null
+        EOS
       end
     end
   end
 
-  describe '#config_map?' do
-    subject { install_command.config_map? }
+  context 'when there is no repository' do
+    let(:repository) { nil }
 
-    it { is_expected.to be_truthy }
+    it_behaves_like 'helm commands' do
+      let(:commands) do
+        <<~EOS
+        helm init --client-only >/dev/null
+        #{helm_install_command}
+        EOS
+      end
+
+      let(:helm_install_command) do
+        <<~EOS.squish
+        helm install chart-name
+          --name app-name
+          --tls
+          --tls-ca-cert /data/helm/app-name/config/ca.pem
+          --tls-cert /data/helm/app-name/config/cert.pem
+          --tls-key /data/helm/app-name/config/key.pem
+          --version 1.2.3
+          --namespace gitlab-managed-apps
+          -f /data/helm/app-name/config/values.yaml >/dev/null
+        EOS
+      end
+    end
+  end
+
+  context 'when there is no ca.pem file' do
+    let(:files) { { 'file.txt': 'some content' } }
+
+    it_behaves_like 'helm commands' do
+      let(:commands) do
+        <<~EOS
+        helm init --client-only >/dev/null
+        helm repo add app-name https://repository.example.com
+        #{helm_install_command}
+        EOS
+      end
+
+      let(:helm_install_command) do
+        <<~EOS.squish
+        helm install chart-name
+           --name app-name
+           --version 1.2.3
+           --namespace gitlab-managed-apps
+           -f /data/helm/app-name/config/values.yaml >/dev/null
+        EOS
+      end
+    end
+  end
+
+  context 'when there is no version' do
+    let(:version) { nil }
+
+    it_behaves_like 'helm commands' do
+      let(:commands) do
+        <<~EOS
+        helm init --client-only >/dev/null
+        helm repo add app-name https://repository.example.com
+        #{helm_install_command}
+        EOS
+      end
+
+      let(:helm_install_command) do
+        <<~EOS.squish
+        helm install chart-name
+          --name app-name
+          --tls
+          --tls-ca-cert /data/helm/app-name/config/ca.pem
+          --tls-cert /data/helm/app-name/config/cert.pem
+          --tls-key /data/helm/app-name/config/key.pem
+          --namespace gitlab-managed-apps
+          -f /data/helm/app-name/config/values.yaml >/dev/null
+        EOS
+      end
+    end
+  end
+
+  describe '#rbac?' do
+    subject { install_command.rbac? }
+
+    context 'rbac is enabled' do
+      let(:rbac) { true }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'rbac is not enabled' do
+      let(:rbac) { false }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#pod_resource' do
+    subject { install_command.pod_resource }
+
+    context 'rbac is enabled' do
+      let(:rbac) { true }
+
+      it 'generates a pod that uses the tiller serviceAccountName' do
+        expect(subject.spec.serviceAccountName).to eq('tiller')
+      end
+    end
+
+    context 'rbac is not enabled' do
+      let(:rbac) { false }
+
+      it 'generates a pod that uses the default serviceAccountName' do
+        expect(subject.spec.serviceAcccountName).to be_nil
+      end
+    end
   end
 
   describe '#config_map_resource' do
     let(:metadata) do
       {
-        name: "values-content-configuration-#{application.name}",
-        namespace: namespace,
-        labels: { name: "values-content-configuration-#{application.name}" }
+        name: "values-content-configuration-app-name",
+        namespace: 'gitlab-managed-apps',
+        labels: { name: "values-content-configuration-app-name" }
       }
     end
 
-    let(:resource) { ::Kubeclient::Resource.new(metadata: metadata, data: { values: application.values }) }
+    let(:resource) { ::Kubeclient::Resource.new(metadata: metadata, data: files) }
 
     subject { install_command.config_map_resource }
 
     it 'returns a KubeClient resource with config map content for the application' do
       is_expected.to eq(resource)
+    end
+  end
+
+  describe '#service_account_resource' do
+    subject { install_command.service_account_resource }
+
+    it 'returns nothing' do
+      is_expected.to be_nil
+    end
+  end
+
+  describe '#cluster_role_binding_resource' do
+    subject { install_command.cluster_role_binding_resource }
+
+    it 'returns nothing' do
+      is_expected.to be_nil
     end
   end
 end

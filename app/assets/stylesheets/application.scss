@@ -37,7 +37,11 @@
 /*
  * Code highlight
  */
-@import "highlight/**/*";
+@import "highlight/dark";
+@import "highlight/monokai";
+@import "highlight/solarized_dark";
+@import "highlight/solarized_light";
+@import "highlight/white";
 
 /*
  * Styles for JS behaviors.

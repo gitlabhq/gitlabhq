@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Base class for monitoring services
 #
 # These services integrate with a deployment solution like Prometheus

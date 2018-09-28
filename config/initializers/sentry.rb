@@ -13,7 +13,7 @@ def configure_sentry
   if sentry_enabled
     Raven.configure do |config|
       config.dsn = Gitlab::CurrentSettings.current_application_settings.sentry_dsn
-      config.release = Gitlab::REVISION
+      config.release = Gitlab.revision
 
       # Sanitize fields based on those sanitized from Rails.
       config.sanitize_fields = Rails.application.config.filter_parameters.map(&:to_s)

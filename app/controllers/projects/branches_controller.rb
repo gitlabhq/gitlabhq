@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::BranchesController < Projects::ApplicationController
   include ActionView::Helpers::SanitizeHelper
   include SortingHelper
@@ -21,15 +23,18 @@ class Projects::BranchesController < Projects::ApplicationController
         fetch_branches_by_mode
 
         @refs_pipelines = @project.pipelines.latest_successful_for_refs(@branches.map(&:name))
-        @merged_branch_names =
-          repository.merged_branch_names(@branches.map(&:name))
-        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37429
+        @merged_branch_names = repository.merged_branch_names(@branches.map(&:name))
+
+        # n+1: https://gitlab.com/gitlab-org/gitaly/issues/992
         Gitlab::GitalyClient.allow_n_plus_1_calls do
           @max_commits = @branches.reduce(0) do |memo, branch|
             diverging_commit_counts = repository.diverging_commit_counts(branch)
             [memo, diverging_commit_counts[:behind], diverging_commit_counts[:ahead]].max
           end
+        end
 
+        # https://gitlab.com/gitlab-org/gitlab-ce/issues/48097
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
           render
         end
       end
@@ -45,6 +50,7 @@ class Projects::BranchesController < Projects::ApplicationController
     @branches = @repository.recent_branches
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def create
     branch_name = sanitize(strip_tags(params[:branch_name]))
     branch_name = Addressable::URI.unescape(branch_name)
@@ -85,6 +91,7 @@ class Projects::BranchesController < Projects::ApplicationController
       end
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def destroy
     @branch_name = Addressable::URI.unescape(params[:id])
@@ -95,7 +102,7 @@ class Projects::BranchesController < Projects::ApplicationController
         flash_type = result[:status] == :error ? :alert : :notice
         flash[flash_type] = result[:message]
 
-        redirect_to project_branches_path(@project), status: 303
+        redirect_to project_branches_path(@project), status: :see_other
       end
 
       format.js { render nothing: true, status: result[:return_code] }

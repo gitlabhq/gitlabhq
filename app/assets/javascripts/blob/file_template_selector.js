@@ -32,6 +32,10 @@ export default class FileTemplateSelector {
     }
   }
 
+  isHidden() {
+    return this.$wrapper.hasClass('hidden');
+  }
+
   getToggleText() {
     return this.$dropdownToggleText.text();
   }

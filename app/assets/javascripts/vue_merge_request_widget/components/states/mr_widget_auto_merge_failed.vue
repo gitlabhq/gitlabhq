@@ -1,5 +1,4 @@
 <script>
-  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
   import eventHub from '../../event_hub';
   import statusIcon from '../mr_widget_status_icon.vue';
 
@@ -7,7 +6,6 @@
     name: 'MRWidgetAutoMergeFailed',
     components: {
       statusIcon,
-      loadingIcon,
     },
     props: {
       mr: {
@@ -39,12 +37,12 @@
         {{ s__("mrWidget|This merge request failed to be merged automatically") }}
       </span>
       <button
-        @click="refreshWidget"
         :disabled="isRefreshing"
         type="button"
-        class="btn btn-xs btn-default"
+        class="btn btn-sm btn-default"
+        @click="refreshWidget"
       >
-        <loading-icon
+        <gl-loading-icon
           v-if="isRefreshing"
           :inline="true"
         />

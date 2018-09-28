@@ -1,5 +1,0 @@
----
-title: Improve performance of pipeline page by reducing DB queries
-merge_request: 17168
-author:
-type: performance

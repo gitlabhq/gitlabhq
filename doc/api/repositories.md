@@ -130,6 +130,7 @@ Parameters:
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `from` (required) - the commit SHA or branch name
 - `to` (required) - the commit SHA or branch name
+- `straight` (optional) - comparison method, `true` for direct comparison between `from` and `to` (`from`..`to`), `false` to compare using merge base (`from`...`to`)'. Default is `false`.
 
 ```
 GET /projects/:id/repository/compare?from=master&to=feature
@@ -183,7 +184,7 @@ GET /projects/:id/repository/contributors
 Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
-- `order_by` (optional) - Return contributors ordered by `name`, `email`, or `commits` fields. If not given contributors are ordered by commit date.
+- `order_by` (optional) - Return contributors ordered by `name`, `email`, or `commits` (orders by commit date) fields. Default is `commits`
 - `sort` (optional) - Return contributors sorted in `asc` or `desc` order. Default is `asc`
 
 Response:
@@ -202,4 +203,40 @@ Response:
   "additions": 338,
   "deletions": 244
 }]
+```
+
+## Merge Base
+
+Get the common ancestor for 2 refs (commit SHAs, branch names or tags).
+
+```
+GET /projects/:id/repository/merge_base
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `refs` | array | yes | The refs to find the common ancestor of, for now only 2 refs are supported |
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/merge_base?refs[]=304d257dcb821665ab5110318fc58a007bd104ed&refs[]=0031876facac3f2b2702a0e53a26e89939a42209"
+```
+
+Example response:
+
+```json
+{
+	"id": "1a0b36b3cdad1d2ee32457c102a8c0b7056fa863",
+	"short_id": "1a0b36b3",
+	"title": "Initial commit",
+	"created_at": "2014-02-27T08:03:18.000Z",
+	"parent_ids": [],
+	"message": "Initial commit\n",
+	"author_name": "Dmitriy Zaporozhets",
+	"author_email": "dmitriy.zaporozhets@gmail.com",
+	"authored_date": "2014-02-27T08:03:18.000Z",
+	"committer_name": "Dmitriy Zaporozhets",
+	"committer_email": "dmitriy.zaporozhets@gmail.com",
+	"committed_date": "2014-02-27T08:03:18.000Z"
+}
 ```

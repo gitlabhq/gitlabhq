@@ -1,25 +1,25 @@
 require 'spec_helper'
 
-feature 'Groups > Members > Request access' do
+describe 'Groups > Members > Request access' do
   let(:user) { create(:user) }
   let(:owner) { create(:user) }
   let(:group) { create(:group, :public, :access_requestable) }
   let!(:project) { create(:project, :private, namespace: group) }
 
-  background do
+  before do
     group.add_owner(owner)
     sign_in(user)
     visit group_path(group)
   end
 
-  scenario 'request access feature is disabled' do
-    group.update_attributes(request_access_enabled: false)
+  it 'request access feature is disabled' do
+    group.update(request_access_enabled: false)
     visit group_path(group)
 
     expect(page).not_to have_content 'Request Access'
   end
 
-  scenario 'user can request access to a group' do
+  it 'user can request access to a group' do
     perform_enqueued_jobs { click_link 'Request Access' }
 
     expect(ActionMailer::Base.deliveries.last.to).to eq [owner.notification_email]
@@ -32,13 +32,13 @@ feature 'Groups > Members > Request access' do
     expect(page).not_to have_content 'Leave group'
   end
 
-  scenario 'user does not see private projects' do
+  it 'user does not see private projects' do
     perform_enqueued_jobs { click_link 'Request Access' }
 
     expect(page).not_to have_content project.name
   end
 
-  scenario 'user does not see group in the Dashboard > Groups page' do
+  it 'user does not see group in the Dashboard > Groups page' do
     perform_enqueued_jobs { click_link 'Request Access' }
 
     visit dashboard_groups_path
@@ -46,7 +46,7 @@ feature 'Groups > Members > Request access' do
     expect(page).not_to have_content group.name
   end
 
-  scenario 'user is not listed in the group members page' do
+  it 'user is not listed in the group members page' do
     click_link 'Request Access'
 
     expect(group.requesters.exists?(user_id: user)).to be_truthy
@@ -58,7 +58,7 @@ feature 'Groups > Members > Request access' do
     end
   end
 
-  scenario 'user can withdraw its request for access' do
+  it 'user can withdraw its request for access' do
     click_link 'Request Access'
 
     expect(group.requesters.exists?(user_id: user)).to be_truthy
@@ -69,7 +69,7 @@ feature 'Groups > Members > Request access' do
     expect(page).to have_content 'Your access request to the group has been withdrawn.'
   end
 
-  scenario 'member does not see the request access button' do
+  it 'member does not see the request access button' do
     group.add_owner(user)
     visit group_path(group)
 

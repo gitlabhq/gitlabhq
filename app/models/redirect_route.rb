@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RedirectRoute < ActiveRecord::Base
   belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
@@ -16,33 +18,5 @@ class RedirectRoute < ActiveRecord::Base
              end
 
     where(wheres, path, "#{sanitize_sql_like(path)}/%")
-  end
-
-  scope :permanent, -> do
-    if column_permanent_exists?
-      where(permanent: true)
-    else
-      none
-    end
-  end
-
-  scope :temporary, -> do
-    if column_permanent_exists?
-      where(permanent: [false, nil])
-    else
-      all
-    end
-  end
-
-  default_value_for :permanent, false
-
-  def permanent=(value)
-    if self.class.column_permanent_exists?
-      super
-    end
-  end
-
-  def self.column_permanent_exists?
-    ActiveRecord::Base.connection.column_exists?(:redirect_routes, :permanent)
   end
 end

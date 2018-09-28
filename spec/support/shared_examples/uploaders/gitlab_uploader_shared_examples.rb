@@ -4,7 +4,7 @@ shared_examples "matches the method pattern" do |method|
   let(:pattern) { patterns[method] }
 
   it do
-    return skip "No pattern provided, skipping." unless pattern
+    skip "No pattern provided, skipping." unless pattern
 
     expect(target.method(method).call(*args)).to match(pattern)
   end

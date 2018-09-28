@@ -1,4 +1,10 @@
 #!/usr/bin/env ruby
+
+# Remove these two lines below when upgraded to rails 5.0.
+# Allow run `rspec` command as `RAILS5=1 rspec ...` instead of `BUNDLE_GEMFILE=Gemfile.rails5 rspec ...`
+gemfile = %w[1 true].include?(ENV["RAILS5"]) ? "Gemfile.rails5" : "Gemfile"
+ENV['BUNDLE_GEMFILE'] ||= File.expand_path("../#{gemfile}", __dir__)
+
 begin
   load File.expand_path('../spring', __FILE__)
 rescue LoadError => e

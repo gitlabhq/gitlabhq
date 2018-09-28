@@ -1,8 +1,10 @@
-class AttachmentUploader < GitlabUploader
-  include UploaderHelper
-  include RecordsUploads::Concern
+# frozen_string_literal: true
 
-  storage :file
+class AttachmentUploader < GitlabUploader
+  include RecordsUploads::Concern
+  include ObjectStorage::Concern
+  prepend ObjectStorage::Extension::RecordsUploads
+  include UploaderHelper
 
   private
 

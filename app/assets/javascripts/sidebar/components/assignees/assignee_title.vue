@@ -41,7 +41,7 @@ export default {
     </i>
     <a
       v-if="editable"
-      class="js-sidebar-dropdown-toggle edit-link pull-right"
+      class="js-sidebar-dropdown-toggle edit-link float-right"
       href="#"
     >
       {{ __('Edit') }}
@@ -49,7 +49,7 @@ export default {
     <a
       v-if="showToggle"
       aria-label="Toggle sidebar"
-      class="gutter-toggle pull-right js-sidebar-toggle"
+      class="gutter-toggle float-right js-sidebar-toggle"
       href="#"
       role="button"
     >

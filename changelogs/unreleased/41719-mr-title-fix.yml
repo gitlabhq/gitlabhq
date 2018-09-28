@@ -1,5 +1,0 @@
----
-title: Render htmlentities correctly for links not supported by Rinku
-merge_request:
-author:
-type: fixed

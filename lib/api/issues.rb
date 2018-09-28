@@ -2,23 +2,26 @@ module API
   class Issues < Grape::API
     include PaginationParams
 
-    before { authenticate! }
+    before { authenticate_non_get! }
 
     helpers ::Gitlab::IssuableMetadata
 
     helpers do
+      # rubocop: disable CodeReuse/ActiveRecord
       def find_issues(args = {})
         args = declared_params.merge(args)
 
         args.delete(:id)
         args[:milestone_title] = args.delete(:milestone)
         args[:label_name] = args.delete(:labels)
+        args[:scope] = args[:scope].underscore if args[:scope]
 
         issues = IssuesFinder.new(current_user, args).execute
-          .preload(:assignees, :labels, :notes, :timelogs)
+          .preload(:assignees, :labels, :notes, :timelogs, :project, :author)
 
         issues.reorder(args[:order_by] => args[:sort])
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       params :issues_params do
         optional :labels, type: String, desc: 'Comma-separated list of label names'
@@ -36,8 +39,8 @@ module API
         optional :updated_before, type: DateTime, desc: 'Return issues updated before the specified time'
         optional :author_id, type: Integer, desc: 'Return issues which are authored by the user with the given ID'
         optional :assignee_id, type: Integer, desc: 'Return issues which are assigned to the user with the given ID'
-        optional :scope, type: String, values: %w[created-by-me assigned-to-me all],
-                         desc: 'Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`'
+        optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all],
+                         desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
         optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
         use :pagination
       end
@@ -66,10 +69,11 @@ module API
         optional :state, type: String, values: %w[opened closed all], default: 'all',
                          desc: 'Return opened, closed, or all issues'
         use :issues_params
-        optional :scope, type: String, values: %w[created-by-me assigned-to-me all], default: 'created-by-me',
-                         desc: 'Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`'
+        optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all], default: 'created_by_me',
+                         desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
       end
       get do
+        authenticate! unless params[:scope] == 'all'
         issues = paginate(find_issues)
 
         options = {
@@ -97,7 +101,7 @@ module API
       get ":id/issues" do
         group = find_group!(params[:id])
 
-        issues = paginate(find_issues(group_id: group.id))
+        issues = paginate(find_issues(group_id: group.id, include_subgroups: true))
 
         options = {
           with: Entities::IssueBasic,
@@ -160,6 +164,9 @@ module API
                                                            desc: 'The IID of a merge request for which to resolve discussions'
         optional :discussion_to_resolve, type: String,
                                          desc: 'The ID of a discussion to resolve, also pass `merge_request_to_resolve_discussions_of`'
+        optional :iid, type: Integer,
+                       desc: 'The internal ID of a project issue. Available only for admins and project owners.'
+
         use :issue_params
       end
       post ':id/issues' do
@@ -167,10 +174,8 @@ module API
 
         authorize! :create_issue, user_project
 
-        # Setting created_at time only allowed for admins and project owners
-        unless current_user.admin? || user_project.owner == current_user
-          params.delete(:created_at)
-        end
+        params.delete(:created_at) unless current_user.can?(:set_issue_created_at, user_project)
+        params.delete(:iid) unless current_user.can?(:set_issue_iid, user_project)
 
         issue_params = declared_params(include_missing: false)
 
@@ -204,14 +209,15 @@ module API
         at_least_one_of :title, :description, :assignee_ids, :assignee_id, :milestone_id, :discussion_locked,
                         :labels, :created_at, :due_date, :confidential, :state_event
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       put ':id/issues/:issue_iid' do
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42322')
 
         issue = user_project.issues.find_by!(iid: params.delete(:issue_iid))
         authorize! :update_issue, issue
 
-        # Setting created_at time only allowed for admins and project owners
-        unless current_user.admin? || user_project.owner == current_user
+        # Setting created_at time only allowed for admins and project/group owners
+        unless current_user.admin? || user_project.owner == current_user || current_user.owned_groups.include?(user_project.owner)
           params.delete(:updated_at)
         end
 
@@ -231,6 +237,7 @@ module API
           render_validation_error!(issue)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Move an existing issue' do
         success Entities::Issue
@@ -239,6 +246,7 @@ module API
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
         requires :to_project_id, type: Integer, desc: 'The ID of the new project'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       post ':id/issues/:issue_iid/move' do
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42323')
 
@@ -255,11 +263,13 @@ module API
           render_api_error!(error.message, 400)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Delete a project issue'
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       delete ":id/issues/:issue_iid" do
         issue = user_project.issues.find_by(iid: params[:issue_iid])
         not_found!('Issue') unless issue
@@ -270,6 +280,7 @@ module API
           Issuable::DestroyService.new(user_project, current_user).execute(issue)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'List merge requests closing issue'  do
         success Entities::MergeRequestBasic
@@ -277,6 +288,7 @@ module API
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/issues/:issue_iid/closed_by' do
         issue = find_project_issue(params[:issue_iid])
 
@@ -285,6 +297,7 @@ module API
 
         present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'List participants for an issue'  do
         success Entities::UserBasic
@@ -310,7 +323,7 @@ module API
 
         issue = find_project_issue(params[:issue_iid])
 
-        return not_found!('UserAgentDetail') unless issue.user_agent_detail
+        break not_found!('UserAgentDetail') unless issue.user_agent_detail
 
         present issue.user_agent_detail, with: Entities::UserAgentDetail
       end

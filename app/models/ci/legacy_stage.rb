@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   # Currently this is artificial object, constructed dynamically
   # We should migrate this object to actual database record in the future
@@ -16,11 +18,7 @@ module Ci
     end
 
     def groups
-      @groups ||= statuses.ordered.latest
-        .sort_by(&:sortable_name).group_by(&:group_name)
-        .map do |group_name, grouped_statuses|
-          Ci::Group.new(self, name: group_name, jobs: grouped_statuses)
-        end
+      @groups ||= Ci::Group.fabricate(self)
     end
 
     def to_param

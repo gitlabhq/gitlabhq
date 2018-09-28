@@ -1,11 +1,11 @@
 <script>
-  import modal from '~/vue_shared/components/modal.vue';
+  import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
   import { __, s__, sprintf } from '~/locale';
   import csrf from '~/lib/utils/csrf';
 
   export default {
     components: {
-      modal,
+      DeprecatedModal,
     },
     props: {
       actionUrl: {
@@ -76,14 +76,14 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
 </script>
 
 <template>
-  <modal
+  <deprecated-modal
     id="delete-account-modal"
     :title="s__('Profiles|Delete your account?')"
     :text="text"
-    kind="danger"
     :primary-button-label="s__('Profiles|Delete account')"
-    @submit="onSubmit"
-    :submit-disabled="!canSubmit()">
+    :submit-disabled="!canSubmit()"
+    kind="danger"
+    @submit="onSubmit">
 
     <template
       slot="body"
@@ -101,9 +101,9 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
           value="delete"
         />
         <input
+          :value="csrfToken"
           type="hidden"
           name="authenticity_token"
-          :value="csrfToken"
         />
 
         <p
@@ -114,22 +114,22 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
 
         <input
           v-if="confirmWithPassword"
+          v-model="enteredPassword"
           name="password"
           class="form-control"
           type="password"
-          v-model="enteredPassword"
           aria-labelledby="input-label"
         />
         <input
           v-else
+          v-model="enteredUsername"
           name="username"
           class="form-control"
           type="text"
-          v-model="enteredUsername"
           aria-labelledby="input-label"
         />
       </form>
     </template>
 
-  </modal>
+  </deprecated-modal>
 </template>

@@ -13,7 +13,7 @@ date: 2017-08-31
 
 GitLab features our applications with Continuous Integration, and it is possible to easily deploy the new code changes to the production server whenever we want.
 
-In this tutorial, we'll show you how to initialize a [Laravel](http://laravel.com/) application and setup our [Envoy](https://laravel.com/docs/envoy) tasks, then we'll jump into see how to test and deploy it with [GitLab CI/CD](../README.md) via [Continuous Delivery](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/).
+In this tutorial, we'll show you how to initialize a [Laravel](http://laravel.com/) application and set up our [Envoy](https://laravel.com/docs/envoy) tasks, then we'll jump into see how to test and deploy it with [GitLab CI/CD](../README.md) via [Continuous Delivery](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/).
 
 We assume you have a basic experience with Laravel, Linux servers,
 and you know how to use GitLab.
@@ -23,7 +23,7 @@ It has a great community with a [fantastic documentation](https://laravel.com/do
 Aside from the usual routing, controllers, requests, responses, views, and (blade) templates, out of the box Laravel provides plenty of additional services such as cache, events, localization, authentication and many others.
 
 We will use [Envoy](https://laravel.com/docs/master/envoy) as an SSH task runner based on PHP.
-It uses a clean, minimal [Blade syntax](https://laravel.com/docs/blade) to setup tasks that can run on remote servers, such as, cloning your project from the repository, installing the Composer dependencies, and running [Artisan commands](https://laravel.com/docs/artisan).
+It uses a clean, minimal [Blade syntax](https://laravel.com/docs/blade) to set up tasks that can run on remote servers, such as, cloning your project from the repository, installing the Composer dependencies, and running [Artisan commands](https://laravel.com/docs/artisan).
 
 ## Initialize our Laravel app on GitLab
 
@@ -116,11 +116,11 @@ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 cat ~/.ssh/id_rsa
 ```
 
-Now, let's add it to your GitLab project as a [secret variable](../../variables/README.md#secret-variables).
-Secret variables are user-defined variables and are stored out of `.gitlab-ci.yml`, for security purposes.
+Now, let's add it to your GitLab project as a [variable](../../variables/README.md#variables).
+Variables are user-defined variables and are stored out of `.gitlab-ci.yml`, for security purposes.
 They can be added per project by navigating to the project's **Settings** > **CI/CD**.
 
-![secret variables page](img/secret_variables_page.png)
+![variables page](img/secret_variables_page.png)
 
 To the field **KEY**, add the name `SSH_PRIVATE_KEY`, and to the **VALUE** field, paste the private key you've copied earlier.
 We'll use this variable in the `.gitlab-ci.yml` later, to easily connect to our remote server as the deployer user without entering its password.
@@ -190,7 +190,7 @@ To start, we create an `Envoy.blade.php` in the root of our app with a simple ta
 ```php
 @servers(['web' => 'remote_username@remote_host'])
 
-@task('list', [on => 'web'])
+@task('list', ['on' => 'web'])
     ls -l
 @endtask
 ```
@@ -372,7 +372,7 @@ At the end, our `Envoy.blade.php` file will look like this:
 
 One more thing we should do before any deployment is to manually copy our application `storage` folder to the `/var/www/app` directory on the server for the first time.
 You might want to create another Envoy task to do that for you.
-We also create the `.env` file in the same path to setup our production environment variables for Laravel.
+We also create the `.env` file in the same path to set up our production environment variables for Laravel.
 These are persistent data and will be shared to every new release.
 
 Now, we would need to deploy our app by running `envoy run deploy`, but it won't be necessary since GitLab can handle that for us with CI's [environments](../../environments.md), which will be described [later](#setting-up-gitlab-ci-cd) in this tutorial.
@@ -587,7 +587,7 @@ unit_test:
   script:
     # Install app dependencies
     - composer install
-    # Setup .env
+    # Set up .env
     - cp .env.example .env
     # Generate an environment key
     - php artisan key:generate

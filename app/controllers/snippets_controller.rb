@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SnippetsController < ApplicationController
   include RendersNotes
   include ToggleAwardEmoji
@@ -5,6 +7,8 @@ class SnippetsController < ApplicationController
   include SnippetsActions
   include RendersBlob
   include PreviewMarkdown
+
+  skip_before_action :verify_authenticity_token, only: [:show], if: :js_request?
 
   before_action :snippet, only: [:show, :edit, :destroy, :update, :raw]
 
@@ -22,6 +26,7 @@ class SnippetsController < ApplicationController
   layout 'snippets'
   respond_to :html
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def index
     if params[:username].present?
       @user = User.find_by(username: params[:username])
@@ -36,6 +41,7 @@ class SnippetsController < ApplicationController
       redirect_to(current_user ? dashboard_snippets_path : explore_snippets_path)
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def new
     @snippet = PersonalSnippet.new
@@ -77,6 +83,8 @@ class SnippetsController < ApplicationController
       format.json do
         render_blob_json(blob)
       end
+
+      format.js { render 'shared/snippets/show' }
     end
   end
 
@@ -85,14 +93,16 @@ class SnippetsController < ApplicationController
 
     @snippet.destroy
 
-    redirect_to snippets_path, status: 302
+    redirect_to snippets_path, status: :found
   end
 
   protected
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def snippet
-    @snippet ||= PersonalSnippet.find_by(id: params[:id])
+    @snippet ||= PersonalSnippet.inc_relations_for_view.find_by(id: params[:id])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   alias_method :awardable, :snippet
   alias_method :spammable, :snippet

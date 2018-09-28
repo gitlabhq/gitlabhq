@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UpdateVisibilityLevel
   def valid_visibility_level_change?(target, new_visibility)
     # check that user is allowed to set specified visibility_level

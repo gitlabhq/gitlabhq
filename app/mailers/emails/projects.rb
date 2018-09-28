@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Emails
   module Projects
     def project_was_moved_email(project_id, user_id, old_path_with_namespace)

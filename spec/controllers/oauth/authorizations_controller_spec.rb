@@ -2,19 +2,12 @@ require 'spec_helper'
 
 describe Oauth::AuthorizationsController do
   let(:user) { create(:user) }
-
-  let(:doorkeeper) do
-    Doorkeeper::Application.create(
-      name: "MyApp",
-      redirect_uri: 'http://example.com',
-      scopes: "")
-  end
-
+  let!(:application) { create(:oauth_application, scopes: 'api read_user', redirect_uri: 'http://example.com') }
   let(:params) do
     {
       response_type: "code",
-      client_id: doorkeeper.uid,
-      redirect_uri: doorkeeper.redirect_uri,
+      client_id: application.uid,
+      redirect_uri: application.redirect_uri,
       state: 'state'
     }
   end
@@ -44,13 +37,32 @@ describe Oauth::AuthorizationsController do
       end
 
       it 'deletes session.user_return_to and redirects when skip authorization' do
-        doorkeeper.update(trusted: true)
+        application.update(trusted: true)
         request.session['user_return_to'] = 'http://example.com'
 
         get :new, params
 
         expect(request.session['user_return_to']).to be_nil
         expect(response).to have_gitlab_http_status(302)
+      end
+
+      context 'when there is already an access token for the application' do
+        context 'when the request scope matches any of the created token scopes' do
+          before do
+            scopes = Doorkeeper::OAuth::Scopes.from_string('api')
+
+            allow(Doorkeeper.configuration).to receive(:scopes).and_return(scopes)
+
+            create :oauth_access_token, application: application, resource_owner_id: user.id, scopes: scopes
+          end
+
+          it 'authorizes the request and redirects' do
+            get :new, params
+
+            expect(request.session['user_return_to']).to be_nil
+            expect(response).to have_gitlab_http_status(302)
+          end
+        end
       end
     end
   end

@@ -1,10 +1,21 @@
 # Webhooks
 
->**Note:**
-Starting from GitLab 8.5:
-- the `repository` key is deprecated in favor of the `project` key
-- the `project.ssh_url` key is deprecated in favor of the `project.git_ssh_url` key
-- the `project.http_url` key is deprecated in favor of the `project.git_http_url` key
+> **Note:**
+> Starting from GitLab 8.5:
+> - the `repository` key is deprecated in favor of the `project` key
+> - the `project.ssh_url` key is deprecated in favor of the `project.git_ssh_url` key
+> - the `project.http_url` key is deprecated in favor of the `project.git_http_url` key
+>
+> **Note:**
+> Starting from GitLab 11.1, the logs of web hooks are automatically removed after
+> one month.
+>
+> **Note:**
+> Starting from GitLab 11.2:
+> - The `description` field for issues, merge requests, comments, and wiki pages
+>   is rewritten so that simple Markdown image references (like
+>   `![](/uploads/...)`) have their target URL changed to an absolute URL. See
+>   [image URL rewriting](#image-url-rewriting) for more details.
 
 Project webhooks allow you to trigger a URL if for example new code is pushed or
 a new issue is created. You can configure webhooks to listen for specific events
@@ -46,6 +57,14 @@ You can turn this off in the webhook settings in your GitLab projects.
 
 ![SSL Verification](img/webhooks_ssl.png)
 
+## Branch filtering
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/20338) in GitLab 11.3.
+
+Push events can be filtered by branch using a branch name or wildcard pattern
+to limit which push events are sent to your webhook endpoint. By default the
+field is blank causing all push events to be sent to your webhook endpoint.
+
 ## Events
 
 Below are described the supported events.
@@ -56,9 +75,9 @@ Triggered when you push to the repository except when pushing tags.
 
 > **Note:** When more than 20 commits are pushed at once, the `commits` web hook 
   attribute will only contain the first 20 for performance reasons. Loading 
-  detailed commit data is expensive. Note that despite only 20 commits being 
+  detailed commit data is expensive. Note that despite only 20 commits being
   present in the `commits` attribute, the `total_commits_count` attribute will
-  contain the actual total. 
+  contain the actual total.
 
 **Request header**:
 
@@ -309,7 +328,7 @@ X-Gitlab-Event: Issue Hook
 }
 ```
 
-**Note**: `assignee` and `assignee_id` keys are deprecated and now show the first assignee only.
+> **Note**: `assignee` and `assignee_id` keys are deprecated and now show the first assignee only.
 
 ### Comment events
 
@@ -608,7 +627,7 @@ X-Gitlab-Event: Note Hook
 }
 ```
 
-**Note**: `assignee_id` field is deprecated and now shows the first assignee only.
+> **Note**: `assignee_id` field is deprecated and now shows the first assignee only.
 
 #### Comment on code snippet
 
@@ -1091,6 +1110,7 @@ X-Gitlab-Event: Build Hook
   "build_finished_at": null,
   "build_duration": null,
   "build_allow_failure": false,
+  "build_failure_reason": "script_failure",
   "project_id": 380,
   "project_name": "gitlab-org/gitlab-test",
   "user": {
@@ -1111,7 +1131,6 @@ X-Gitlab-Event: Build Hook
   },
   "repository": {
     "name": "gitlab_test",
-    "git_ssh_url": "git@192.168.64.1:gitlab-org/gitlab-test.git",
     "description": "Atque in sunt eos similique dolores voluptatem.",
     "homepage": "http://192.168.64.1:3005/gitlab-org/gitlab-test",
     "git_ssh_url": "git@192.168.64.1:gitlab-org/gitlab-test.git",
@@ -1120,6 +1139,27 @@ X-Gitlab-Event: Build Hook
   }
 }
 ```
+
+## Image URL rewriting
+
+From GitLab 11.2, simple image references are rewritten to use an absolute URL
+in webhooks. So if an image, merge request, comment, or wiki page has this in
+its description:
+
+```markdown
+![image](/uploads/$sha/image.png)
+```
+
+It will appear in the webhook body as the below (assuming that GitLab is
+installed at gitlab.example.com):
+
+```markdown
+![image](https://gitlab.example.com/uploads/$sha/image.png)
+```
+
+This will not rewrite URLs that already are pointing to HTTP, HTTPS, or
+protocol-relative URLs. It will also not rewrite image URLs using advanced
+Markdown features, like link labels.
 
 ## Testing webhooks
 
@@ -1130,7 +1170,7 @@ You can trigger the webhook manually. Sample data from the project will be used.
 
 ## Troubleshoot webhooks
 
-Gitlab stores each perform of the webhook.
+GitLab stores each perform of the webhook.
 You can find records for last 2 days in "Recent Deliveries" section on the edit page of each webhook.
 
 ![Recent deliveries](img/webhook_logs.png)
@@ -1142,18 +1182,18 @@ On this page, you can see data that GitLab sends (request headers and body) and 
 
 From this page, you can repeat delivery with the same data by clicking `Resend Request` button.
 
->**Note:** If URL or secret token of the webhook were updated, data will be delivered to the new address.
+> **Note:** If URL or secret token of the webhook were updated, data will be delivered to the new address.
 
 ### Receiving duplicate or multiple web hook requests triggered by one event
 
 When GitLab sends a webhook it expects a response in 10 seconds (set default value). If it does not receive one, it'll retry the webhook.
 If the endpoint doesn't send its HTTP response within those 10 seconds, GitLab may decide the hook failed and retry it.
 
-If you are receiving multiple requests, you can try increasing the default value to wait for the HTTP response after sending the webhook 
+If you are receiving multiple requests, you can try increasing the default value to wait for the HTTP response after sending the webhook
 by uncommenting or adding the following setting to your `/etc/gitlab/gitlab.rb`:
 
 ```
-gitlab_rails['webhook_timeout'] = 10 
+gitlab_rails['webhook_timeout'] = 10
 ```
 
 ## Example webhook receiver

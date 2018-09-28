@@ -1,7 +1,6 @@
-/* global BoardService */
 import Vue from 'vue';
 import '~/boards/stores/boards_store';
-import boardBlankState from '~/boards/components/board_blank_state';
+import BoardBlankState from '~/boards/components/board_blank_state.vue';
 import { mockBoardService } from './mock_data';
 
 describe('Boards blank state', () => {
@@ -9,7 +8,7 @@ describe('Boards blank state', () => {
   let fail = false;
 
   beforeEach((done) => {
-    const Comp = Vue.extend(boardBlankState);
+    const Comp = Vue.extend(BoardBlankState);
 
     gl.issueBoards.BoardsStore.create();
     gl.boardService = mockBoardService();
@@ -65,7 +64,7 @@ describe('Boards blank state', () => {
   });
 
   it('creates pre-defined labels', (done) => {
-    vm.$el.querySelector('.btn-create').click();
+    vm.$el.querySelector('.btn-success').click();
 
     setTimeout(() => {
       expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(2);
@@ -79,7 +78,7 @@ describe('Boards blank state', () => {
   it('resets the store if request fails', (done) => {
     fail = true;
 
-    vm.$el.querySelector('.btn-create').click();
+    vm.$el.querySelector('.btn-success').click();
 
     setTimeout(() => {
       expect(gl.issueBoards.BoardsStore.welcomeIsHidden()).toBeFalsy();

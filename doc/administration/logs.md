@@ -13,7 +13,7 @@ This guide talks about how to read and use these system log files.
 
 This file lives in `/var/log/gitlab/gitlab-rails/production_json.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/production_json.log` for
-installations from source. (When Gitlab is running in an environment
+installations from source. (When GitLab is running in an environment
 other than production, the corresponding logfile is shown here.)
 
 It contains a structured log for Rails controller requests received from
@@ -42,7 +42,7 @@ In addition, the log contains the IP address from which the request originated
 
 This file lives in `/var/log/gitlab/gitlab-rails/production.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/production.log` for
-installations from source. (When Gitlab is running in an environment
+installations from source. (When GitLab is running in an environment
 other than production, the corresponding logfile is shown here.)
 
 It contains information about all performed requests. You can see the
@@ -113,6 +113,19 @@ October 07, 2014 11:25: User "Claudie Hodkiewicz" (nasir_stehr@olson.co.uk)  was
 October 07, 2014 11:25: Project "project133" was removed
 ```
 
+## `integrations_json.log`
+
+This file lives in `/var/log/gitlab/gitlab-rails/integrations_json.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/integrations_json.log` for
+installations from source.
+
+It contains information about [integrations](../user/project/integrations/project_services.md) activities such as JIRA, Asana and Irker services. It uses JSON format like the example below:  
+
+``` json
+{"severity":"ERROR","time":"2018-09-06T14:56:20.439Z","service_class":"JiraService","project_id":8,"project_path":"h5bp/html5-boilerplate","message":"Error sending message","client_url":"http://jira.gitlap.com:8080","error":"execution expired"}
+{"severity":"INFO","time":"2018-09-06T17:15:16.365Z","service_class":"JiraService","project_id":3,"project_path":"namespace2/project2","message":"Successfully posted","client_url":"http://jira.example.net"}
+```
+
 ## `githost.log`
 
 This file lives in `/var/log/gitlab/gitlab-rails/githost.log` for
@@ -146,13 +159,35 @@ this file. For example:
 2014-06-10T18:18:26Z 14299 TID-55uqo INFO: Booting Sidekiq 3.0.0 with redis options {:url=>"redis://localhost:6379/0", :namespace=>"sidekiq"}
 ```
 
+Instead of the format above, you can opt to generate JSON logs for
+Sidekiq. For example:
+
+```json
+{"severity":"INFO","time":"2018-04-03T22:57:22.071Z","queue":"cronjob:update_all_mirrors","args":[],"class":"UpdateAllMirrorsWorker","retry":false,"queue_namespace":"cronjob","jid":"06aeaa3b0aadacf9981f368e","created_at":"2018-04-03T22:57:21.930Z","enqueued_at":"2018-04-03T22:57:21.931Z","pid":10077,"message":"UpdateAllMirrorsWorker JID-06aeaa3b0aadacf9981f368e: done: 0.139 sec","job_status":"done","duration":0.139,"completed_at":"2018-04-03T22:57:22.071Z"}
+```
+
+For Omnibus GitLab installations, add the configuration option:
+
+```ruby
+sidekiq['log_format'] = 'json'
+```
+
+For source installations, edit the `gitlab.yml` and set the Sidekiq
+`log_format` configuration option:
+
+```yaml
+  ## Sidekiq
+  sidekiq:
+    log_format: json
+```
+
 ## `gitlab-shell.log`
 
 This file lives in `/var/log/gitlab/gitlab-shell/gitlab-shell.log` for
 Omnibus GitLab packages or in `/home/git/gitlab-shell/gitlab-shell.log` for
 installations from source.
 
-GitLab shell is used by Gitlab for executing Git commands and provide
+GitLab shell is used by GitLab for executing Git commands and provide
 SSH access to Git repositories. For example:
 
 ```
@@ -197,6 +232,15 @@ installations from source.
 
 It logs information whenever a [repository check is run][repocheck] on a project.
 
+## `importer.log`
+
+Introduced in GitLab 11.3. This file lives in `/var/log/gitlab/gitlab-rails/importer.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/importer.log` for
+installations from source.
+
+Currently it logs the progress of project imports from the Bitbucket Server
+importer. Future importers may use this file.
+
 ## Reconfigure Logs
 
 Reconfigure log files live in `/var/log/gitlab/reconfigure` for Omnibus GitLab 
@@ -205,5 +249,13 @@ is populated whenever `gitlab-ctl reconfigure` is run manually or as part of an 
 
 Reconfigure logs files are named according to the UNIX timestamp of when the reconfigure
 was initiated, such as `1509705644.log`
+
+## `sidekiq_exporter.log`
+
+If Prometheus metrics and the Sidekiq Exporter are both enabled, Sidekiq will
+start a Web server and listen to the defined port (default: 3807). Access logs
+will be generated in `/var/log/gitlab/gitlab-rails/sidekiq_exporter.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/sidekiq_exporter.log` for
+installations from source.
 
 [repocheck]: repository_checks.md

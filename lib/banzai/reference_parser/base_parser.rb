@@ -45,9 +45,13 @@ module Banzai
         @data_attribute ||= "data-#{reference_type.to_s.dasherize}"
       end
 
-      def initialize(project = nil, current_user = nil)
-        @project = project
-        @current_user = current_user
+      # context - An instance of `Banzai::RenderContext`.
+      def initialize(context)
+        @context = context
+      end
+
+      def project_for_node(node)
+        context.project_for_node(node)
       end
 
       # Returns all the nodes containing references that the user can refer to.
@@ -162,7 +166,7 @@ module Banzai
       # objects that have not yet been queried. For objects that have already
       # been queried the object is returned from the cache.
       def collection_objects_for_ids(collection, ids)
-        if RequestStore.active?
+        if Gitlab::SafeRequestStore.active?
           ids = ids.map(&:to_i)
           cache = collection_cache[collection_cache_key(collection)]
           to_query = ids - cache.keys
@@ -224,7 +228,11 @@ module Banzai
 
       private
 
-      attr_reader :current_user, :project
+      attr_reader :context
+
+      def current_user
+        context.current_user
+      end
 
       # When a feature is disabled or visible only for
       # team members we should not allow team members
@@ -240,7 +248,7 @@ module Banzai
       end
 
       def collection_cache
-        RequestStore[:banzai_collection_cache] ||= Hash.new do |hash, key|
+        Gitlab::SafeRequestStore[:banzai_collection_cache] ||= Hash.new do |hash, key|
           hash[key] = {}
         end
       end

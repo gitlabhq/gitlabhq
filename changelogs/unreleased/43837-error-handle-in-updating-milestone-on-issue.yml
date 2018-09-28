@@ -1,5 +1,0 @@
----
-title: Stop loading spinner on error of milestone update on issue
-merge_request: 17507
-author: Takuya Noguchi
-type: fixed

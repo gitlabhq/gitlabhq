@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LabelsFinder < UnionFinder
   prepend FinderWithCrossProjectAccess
   include FinderMethods
@@ -10,17 +12,21 @@ class LabelsFinder < UnionFinder
     @params = params
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def execute(skip_authorization: false)
     @skip_authorization = skip_authorization
     items = find_union(label_ids, Label) || Label.none
     items = with_title(items)
+    items = by_search(items)
     sort(items)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 
   attr_reader :current_user, :params, :skip_authorization
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def label_ids
     label_ids = []
 
@@ -28,9 +34,10 @@ class LabelsFinder < UnionFinder
       if project
         if project.group.present?
           labels_table = Label.arel_table
+          group_ids = group_ids_for(project.group)
 
           label_ids << Label.where(
-            labels_table[:type].eq('GroupLabel').and(labels_table[:group_id].eq(project.group.id)).or(
+            labels_table[:type].eq('GroupLabel').and(labels_table[:group_id].in(group_ids)).or(
               labels_table[:type].eq('ProjectLabel').and(labels_table[:project_id].eq(project.id))
             )
           )
@@ -38,41 +45,70 @@ class LabelsFinder < UnionFinder
           label_ids << project.labels
         end
       end
-    elsif only_group_labels?
-      label_ids << Label.where(group_id: group_ids)
     else
+      if group?
+        group = Group.find(params[:group_id])
+        label_ids << Label.where(group_id: group_ids_for(group))
+      end
+
       label_ids << Label.where(group_id: projects.group_ids)
-      label_ids << Label.where(project_id: projects.select(:id))
+      label_ids << Label.where(project_id: projects.select(:id)) unless only_group_labels?
     end
 
     label_ids
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def sort(items)
-    items.reorder(title: :asc)
+    if params[:sort]
+      items.order_by(params[:sort])
+    else
+      items.reorder(title: :asc)
+    end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def with_title(items)
     return items if title.nil?
     return items.none if title.blank?
 
     items.where(title: title)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
-  def group_ids
+  def by_search(labels)
+    return labels unless search?
+
+    labels.search(params[:search])
+  end
+
+  # Gets redacted array of group ids
+  # which can include the ancestors and descendants of the requested group.
+  def group_ids_for(group)
     strong_memoize(:group_ids) do
-      groups_user_can_read_labels(groups_to_include).map(&:id)
+      groups = groups_to_include(group)
+
+      groups_user_can_read_labels(groups).map(&:id)
     end
   end
 
-  def groups_to_include
-    group = Group.find(params[:group_id])
+  def groups_to_include(group)
     groups = [group]
 
-    groups += group.ancestors if params[:include_ancestor_groups].present?
-    groups += group.descendants if params[:include_descendant_groups].present?
+    groups += group.ancestors if include_ancestor_groups?
+    groups += group.descendants if include_descendant_groups?
 
     groups
+  end
+
+  def include_ancestor_groups?
+    params[:include_ancestor_groups]
+  end
+
+  def include_descendant_groups?
+    params[:include_descendant_groups]
   end
 
   def group?
@@ -89,6 +125,10 @@ class LabelsFinder < UnionFinder
 
   def only_group_labels?
     params[:only_group_labels]
+  end
+
+  def search?
+    params[:search].present?
   end
 
   def title
@@ -108,13 +148,14 @@ class LabelsFinder < UnionFinder
     @project
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def projects
     return @projects if defined?(@projects)
 
     @projects = if skip_authorization
                   Project.all
                 else
-                  ProjectsFinder.new(params: { non_archived: true }, current_user: current_user).execute
+                  ProjectsFinder.new(params: { non_archived: true }, current_user: current_user).execute # rubocop: disable CodeReuse/Finder
                 end
 
     @projects = @projects.in_namespace(params[:group_id]) if group?
@@ -123,6 +164,7 @@ class LabelsFinder < UnionFinder
 
     @projects
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def authorized_to_read_labels?(label_parent)
     return true if skip_authorization

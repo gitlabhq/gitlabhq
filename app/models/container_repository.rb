@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ContainerRepository < ActiveRecord::Base
   belongs_to :project
 
@@ -6,8 +8,7 @@ class ContainerRepository < ActiveRecord::Base
 
   delegate :client, to: :registry
 
-  before_destroy :delete_tags!
-
+  # rubocop: disable CodeReuse/ServiceClass
   def registry
     @registry ||= begin
       token = Auth::ContainerRegistryAuthenticationService.full_access_token(path)
@@ -18,6 +19,7 @@ class ContainerRepository < ActiveRecord::Base
       ContainerRegistry::Registry.new(url, token: token, path: host_port)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def path
     @path ||= [project.full_path, name]

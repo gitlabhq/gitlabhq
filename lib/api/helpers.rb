@@ -83,16 +83,18 @@ module API
     end
 
     def available_labels_for(label_parent)
-      search_params =
-        if label_parent.is_a?(Project)
-          { project_id: label_parent.id }
-        else
-          { group_id: label_parent.id, only_group_labels: true }
-        end
+      search_params = { include_ancestor_groups: true }
+
+      if label_parent.is_a?(Project)
+        search_params[:project_id] = label_parent.id
+      else
+        search_params.merge!(group_id: label_parent.id, only_group_labels: true)
+      end
 
       LabelsFinder.new(current_user, search_params).execute
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_user(id)
       if id =~ /^\d+$/
         User.find_by(id: id)
@@ -100,14 +102,19 @@ module API
         User.find_by(username: id)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_project(id)
-      if id =~ /^\d+$/
-        Project.find_by(id: id)
-      else
-        Project.find_by_full_path(id)
+      projects = Project.without_deleted
+
+      if id.is_a?(Integer) || id =~ /^\d+$/
+        projects.find_by(id: id)
+      elsif id.include?("/")
+        projects.find_by_full_path(id)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def find_project!(id)
       project = find_project(id)
@@ -119,6 +126,7 @@ module API
       end
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_group(id)
       if id.to_s =~ /^\d+$/
         Group.find_by(id: id)
@@ -126,6 +134,7 @@ module API
         Group.find_by_full_path(id)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def find_group!(id)
       group = find_group(id)
@@ -137,6 +146,7 @@ module API
       end
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_namespace(id)
       if id.to_s =~ /^\d+$/
         Namespace.find_by(id: id)
@@ -144,6 +154,7 @@ module API
         Namespace.find_by_full_path(id)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def find_namespace!(id)
       namespace = find_namespace(id)
@@ -155,6 +166,12 @@ module API
       end
     end
 
+    def find_branch!(branch_name)
+      user_project.repository.find_branch(branch_name) || not_found!('Branch')
+    rescue Gitlab::Git::CommandError
+      render_api_error!('The branch refname is invalid', 400)
+    end
+
     def find_project_label(id)
       labels = available_labels_for(user_project)
       label = labels.find_by_id(id) || labels.find_by_title(id)
@@ -162,12 +179,20 @@ module API
       label || not_found!('Label')
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_project_issue(iid)
       IssuesFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_project_merge_request(iid)
       MergeRequestsFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    def find_project_commit(id)
+      user_project.commit_by(oid: id)
     end
 
     def find_project_snippet(id)
@@ -175,11 +200,13 @@ module API
       SnippetsFinder.new(current_user, finder_params).find(id)
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_merge_request_with_access(iid, access_level = :read_merge_request)
       merge_request = user_project.merge_requests.find_by!(iid: iid)
       authorize! access_level, merge_request
       merge_request
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def find_build!(id)
       user_project.builds.find(id.to_i)
@@ -267,12 +294,15 @@ module API
           attrs[key] = params_hash[key]
         end
       end
-      ActionController::Parameters.new(attrs).permit!
+      permitted_attrs = ActionController::Parameters.new(attrs).permit!
+      Gitlab.rails5? ? permitted_attrs.to_h : permitted_attrs
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def filter_by_iid(items, iid)
       items.where(iid: iid)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def filter_by_search(items, text)
       items.search(text)
@@ -369,48 +399,29 @@ module API
 
     # project helpers
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def reorder_projects(projects)
       projects.reorder(params[:order_by] => params[:sort])
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def project_finder_params
-      finder_params = {}
+      finder_params = { without_deleted: true }
       finder_params[:owned] = true if params[:owned].present?
       finder_params[:non_public] = true if params[:membership].present?
       finder_params[:starred] = true if params[:starred].present?
       finder_params[:visibility_level] = Gitlab::VisibilityLevel.level_value(params[:visibility]) if params[:visibility]
-      finder_params[:archived] = params[:archived]
+      finder_params[:archived] = archived_param unless params[:archived].nil?
       finder_params[:search] = params[:search] if params[:search]
       finder_params[:user] = params.delete(:user) if params[:user]
       finder_params[:custom_attributes] = params[:custom_attributes] if params[:custom_attributes]
+      finder_params[:min_access_level] = params[:min_access_level] if params[:min_access_level]
       finder_params
     end
 
     # file helpers
 
-    def uploaded_file(field, uploads_path)
-      if params[field]
-        bad_request!("#{field} is not a file") unless params[field][:filename]
-        return params[field]
-      end
-
-      return nil unless params["#{field}.path"] && params["#{field}.name"]
-
-      # sanitize file paths
-      # this requires all paths to exist
-      required_attributes! %W(#{field}.path)
-      uploads_path = File.realpath(uploads_path)
-      file_path = File.realpath(params["#{field}.path"])
-      bad_request!('Bad file path') unless file_path.start_with?(uploads_path)
-
-      UploadedFile.new(
-        file_path,
-        params["#{field}.name"],
-        params["#{field}.type"] || 'application/octet-stream'
-      )
-    end
-
-    def present_file!(path, filename, content_type = 'application/octet-stream')
+    def present_disk_file!(path, filename, content_type = 'application/octet-stream')
       filename ||= File.basename(path)
       header['Content-Disposition'] = "attachment; filename=#{filename}"
       header['Content-Transfer-Encoding'] = 'binary'
@@ -426,13 +437,17 @@ module API
       end
     end
 
-    def present_artifacts!(artifacts_file)
-      return not_found! unless artifacts_file.exists?
+    def present_carrierwave_file!(file, supports_direct_download: true)
+      return not_found! unless file.exists?
 
-      if artifacts_file.file_storage?
-        present_file!(artifacts_file.path, artifacts_file.filename)
+      if file.file_storage?
+        present_disk_file!(file.path, file.filename)
+      elsif supports_direct_download && file.class.direct_download_enabled?
+        redirect(file.url)
       else
-        redirect_to(artifacts_file.url)
+        header(*Gitlab::Workhorse.send_url(file.url))
+        status :ok
+        body
       end
     end
 
@@ -485,8 +500,8 @@ module API
       header(*Gitlab::Workhorse.send_git_blob(repository, blob))
     end
 
-    def send_git_archive(repository, ref:, format:)
-      header(*Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format))
+    def send_git_archive(repository, **kwargs)
+      header(*Gitlab::Workhorse.send_git_archive(repository, **kwargs))
     end
 
     def send_artifacts_entry(build, entry)
@@ -507,6 +522,12 @@ module API
       return true unless exception.respond_to?(:status)
 
       exception.status == 500
+    end
+
+    def archived_param
+      return 'only' if params[:archived]
+
+      params[:archived]
     end
   end
 end

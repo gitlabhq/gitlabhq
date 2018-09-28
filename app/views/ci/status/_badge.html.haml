@@ -4,10 +4,10 @@
 - css_classes = "ci-status ci-#{status.group} #{'has-tooltip' if title.present?}"
 
 - if link && status.has_details?
-  = link_to status.details_path, class: css_classes, title: title do
+  = link_to status.details_path, class: css_classes, title: title, data: { html: title.present? } do
     = sprite_icon(status.icon)
     = status.text
 - else
-  %span{ class: css_classes, title: title }
+  %span{ class: css_classes, title: title, data: { html: title.present? } }
     = sprite_icon(status.icon)
     = status.text

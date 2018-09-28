@@ -71,7 +71,7 @@ Devise.setup do |config|
   # a value less than 10 in other environments.
   config.stretches = Rails.env.test? ? 1 : 10
 
-  # Setup a pepper to generate the encrypted password.
+  # Set up a pepper to generate the encrypted password.
   # config.pepper = "2ef62d549c4ff98a5d3e0ba211e72cff592060247e3bbbb9f499af1222f876f53d39b39b823132affb32858168c79c1d7741d26499901b63c6030a42129924ef"
 
   # ==> Configuration for :confirmable
@@ -219,49 +219,7 @@ Devise.setup do |config|
     end
   end
 
-  Gitlab.config.omniauth.providers.each do |provider|
-    provider_arguments = []
-
-    %w[app_id app_secret].each do |argument|
-      provider_arguments << provider[argument] if provider[argument]
-    end
-
-    case provider['args']
-    when Array
-      # An Array from the configuration will be expanded.
-      provider_arguments.concat provider['args']
-    when Hash
-      # Add procs for handling SLO
-      if provider['name'] == 'cas3'
-        provider['args'][:on_single_sign_out] = lambda do |request|
-          ticket = request.params[:session_index]
-          raise "Service Ticket not found." unless Gitlab::Auth::OAuth::Session.valid?(:cas3, ticket)
-
-          Gitlab::Auth::OAuth::Session.destroy(:cas3, ticket)
-          true
-        end
-      end
-
-      if provider['name'] == 'authentiq'
-        provider['args'][:remote_sign_out_handler] = lambda do |request|
-          authentiq_session = request.params['sid']
-          if Gitlab::Auth::OAuth::Session.valid?(:authentiq, authentiq_session)
-            Gitlab::Auth::OAuth::Session.destroy(:authentiq, authentiq_session)
-            true
-          else
-            false
-          end
-        end
-      end
-
-      if provider['name'] == 'shibboleth'
-        provider['args'][:fail_with_empty_uid] = true
-      end
-
-      # A Hash from the configuration will be passed as is.
-      provider_arguments << provider['args'].symbolize_keys
-    end
-
-    config.omniauth provider['name'].to_sym, *provider_arguments
+  if Gitlab::Auth.omniauth_enabled?
+    Gitlab::OmniauthInitializer.new(config).execute(Gitlab.config.omniauth.providers)
   end
 end

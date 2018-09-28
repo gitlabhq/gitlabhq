@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :todo do
     project
-    author { project.creator }
-    user { project.creator }
+    author { project&.creator || user }
+    user { project&.creator || user }
     target factory: :issue
     action { Todo::ASSIGNED }
 

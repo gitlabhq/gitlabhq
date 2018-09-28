@@ -30,7 +30,7 @@ module Gitlab
       return unless enabled?
 
       @mutex.synchronize do
-        return thread if thread?
+        break thread if thread?
 
         @thread = Thread.new { start_working }
       end
@@ -38,7 +38,7 @@ module Gitlab
 
     def stop
       @mutex.synchronize do
-        return unless thread?
+        break unless thread?
 
         stop_working
 

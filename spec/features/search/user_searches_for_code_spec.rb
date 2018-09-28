@@ -6,7 +6,7 @@ describe 'User searches for code' do
 
   context 'when signed in' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
     end
 

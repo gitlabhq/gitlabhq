@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Pipeline Schedules', :js do
+describe 'Pipeline Schedules', :js do
   include PipelineSchedulesHelper
 
   let!(:project) { create(:project, :repository) }
@@ -9,9 +9,9 @@ feature 'Pipeline Schedules', :js do
   let(:scope) { nil }
   let!(:user) { create(:user) }
 
-  context 'logged in as master' do
+  context 'logged in as maintainer' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       gitlab_sign_in(user)
     end
 
@@ -155,18 +155,18 @@ feature 'Pipeline Schedules', :js do
     end
 
     context 'when user creates a new pipeline schedule with variables' do
-      background do
+      before do
         visit_pipelines_schedules
         click_link 'New schedule'
         fill_in_schedule_form
         all('[name="schedule[variables_attributes][][key]"]')[0].set('AAA')
-        all('[name="schedule[variables_attributes][][value]"]')[0].set('AAA123')
+        all('[name="schedule[variables_attributes][][secret_value]"]')[0].set('AAA123')
         all('[name="schedule[variables_attributes][][key]"]')[1].set('BBB')
-        all('[name="schedule[variables_attributes][][value]"]')[1].set('BBB123')
+        all('[name="schedule[variables_attributes][][secret_value]"]')[1].set('BBB123')
         save_pipeline_schedule
       end
 
-      scenario 'user sees the new variable in edit window' do
+      it 'user sees the new variable in edit window' do
         find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
         page.within('.ci-variable-list') do
           expect(find(".ci-variable-row:nth-child(1) .js-ci-variable-input-key").value).to eq('AAA')
@@ -178,7 +178,7 @@ feature 'Pipeline Schedules', :js do
     end
 
     context 'when user edits a variable of a pipeline schedule' do
-      background do
+      before do
         create(:ci_pipeline_schedule, project: project, owner: user).tap do |pipeline_schedule|
           create(:ci_pipeline_schedule_variable, key: 'AAA', value: 'AAA123', pipeline_schedule: pipeline_schedule)
         end
@@ -192,7 +192,7 @@ feature 'Pipeline Schedules', :js do
         click_button 'Save pipeline schedule'
       end
 
-      scenario 'user sees the updated variable in edit window' do
+      it 'user sees the updated variable in edit window' do
         find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
         page.within('.ci-variable-list') do
           expect(find(".ci-variable-row:nth-child(1) .js-ci-variable-input-key").value).to eq('foo')
@@ -202,7 +202,7 @@ feature 'Pipeline Schedules', :js do
     end
 
     context 'when user removes a variable of a pipeline schedule' do
-      background do
+      before do
         create(:ci_pipeline_schedule, project: project, owner: user).tap do |pipeline_schedule|
           create(:ci_pipeline_schedule_variable, key: 'AAA', value: 'AAA123', pipeline_schedule: pipeline_schedule)
         end
@@ -213,7 +213,7 @@ feature 'Pipeline Schedules', :js do
         click_button 'Save pipeline schedule'
       end
 
-      scenario 'user does not see the removed variable in edit window' do
+      it 'user does not see the removed variable in edit window' do
         find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
         page.within('.ci-variable-list') do
           expect(find(".ci-variable-row:nth-child(1) .js-ci-variable-input-key").value).to eq('')
@@ -223,13 +223,13 @@ feature 'Pipeline Schedules', :js do
     end
 
     context 'when active is true and next_run_at is NULL' do
-      background do
+      before do
         create(:ci_pipeline_schedule, project: project, owner: user).tap do |pipeline_schedule|
           pipeline_schedule.update_attribute(:cron, nil) # Consequently next_run_at will be nil
         end
       end
 
-      scenario 'user edit and recover the problematic pipeline schedule' do
+      it 'user edit and recover the problematic pipeline schedule' do
         visit_pipelines_schedules
         find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
         fill_in 'schedule_cron', with: '* 1 2 3 4'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ProtectedRef
   extend ActiveSupport::Concern
 
@@ -23,7 +25,7 @@ module ProtectedRef
         # If we don't `protected_branch` or `protected_tag` would be empty and
         # `project` cannot be delegated to it, which in turn would cause validations
         # to fail.
-        has_many :"#{type}_access_levels", inverse_of: self.model_name.singular # rubocop:disable Cop/ActiveRecordDependent
+        has_many :"#{type}_access_levels", inverse_of: self.model_name.singular
 
         validates :"#{type}_access_levels", length: { is: 1, message: "are restricted to a single instance per #{self.model_name.human}." }
 
@@ -31,7 +33,7 @@ module ProtectedRef
       end
     end
 
-    def protected_ref_accessible_to?(ref, user, action:, protected_refs: nil)
+    def protected_ref_accessible_to?(ref, user, project:, action:, protected_refs: nil)
       access_levels_for_ref(ref, action: action, protected_refs: protected_refs).any? do |access_level|
         access_level.check_access(user)
       end
@@ -48,14 +50,20 @@ module ProtectedRef
         .map(&:"#{action}_access_levels").flatten
     end
 
+    # Returns all protected refs that match the given ref name.
+    # This checks all records from the scope built up so far, and does
+    # _not_ return a relation.
+    #
+    # This method optionally takes in a list of `protected_refs` to search
+    # through, to avoid calling out to the database.
     def matching(ref_name, protected_refs: nil)
-      ProtectedRefMatcher.matching(self, ref_name, protected_refs: protected_refs)
+      (protected_refs || self.all).select { |protected_ref| protected_ref.matches?(ref_name) }
     end
   end
 
   private
 
   def ref_matcher
-    @ref_matcher ||= ProtectedRefMatcher.new(self)
+    @ref_matcher ||= RefMatcher.new(self.name)
   end
 end

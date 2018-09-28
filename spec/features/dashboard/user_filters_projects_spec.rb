@@ -7,7 +7,7 @@ describe 'Dashboard > User filters projects' do
   let(:project2) { create(:project, name: 'Treasure', namespace: user2.namespace) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
 
     sign_in(user)
   end

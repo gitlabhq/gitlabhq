@@ -22,4 +22,13 @@ document.addEventListener('DOMContentLoaded', () => {
     errorBox: variableListEl.querySelector('.js-ci-variable-error-box'),
     saveEndpoint: variableListEl.dataset.saveEndpoint,
   });
+
+  // hide extra auto devops settings based checkbox state
+  const autoDevOpsExtraSettings = document.querySelector('.js-extra-settings');
+  const instanceDefaultBadge = document.querySelector('.js-instance-default-badge');
+  document.querySelector('.js-toggle-extra-settings').addEventListener('click', event => {
+    const { target } = event;
+    if (instanceDefaultBadge) instanceDefaultBadge.style.display = 'none';
+    autoDevOpsExtraSettings.classList.toggle('hidden', !target.checked);
+  });
 });

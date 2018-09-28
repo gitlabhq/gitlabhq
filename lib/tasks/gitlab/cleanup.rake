@@ -1,41 +1,29 @@
-# Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/954
-#
+# frozen_string_literal: true
+require 'set'
+
 namespace :gitlab do
   namespace :cleanup do
-    HASHED_REPOSITORY_NAME = '@hashed'.freeze
-
     desc "GitLab | Cleanup | Clean namespaces"
     task dirs: :gitlab_environment do
-      warn_user_is_not_gitlab
-      remove_flag = ENV['REMOVE']
+      namespaces = Set.new(Namespace.pluck(:path))
+      namespaces << Storage::HashedProject::ROOT_PATH_PREFIX
 
-      namespaces  = Namespace.pluck(:path)
-      namespaces << HASHED_REPOSITORY_NAME  # add so that it will be ignored
-      Gitlab.config.repositories.storages.each do |name, repository_storage|
-        git_base_path = repository_storage['path']
-        all_dirs = Dir.glob(git_base_path + '/*')
+      Gitaly::Server.all.each do |server|
+        all_dirs = Gitlab::GitalyClient::StorageService
+          .new(server.storage)
+          .list_directories(depth: 0)
+          .reject { |dir| dir.ends_with?('.git') || namespaces.include?(File.basename(dir)) }
 
-        puts git_base_path.color(:yellow)
         puts "Looking for directories to remove... "
-
-        all_dirs.reject! do |dir|
-          # skip if git repo
-          dir =~ /.git$/
-        end
-
-        all_dirs.reject! do |dir|
-          dir_name = File.basename dir
-
-          # skip if namespace present
-          namespaces.include?(dir_name)
-        end
-
         all_dirs.each do |dir_path|
-          if remove_flag
-            if FileUtils.rm_rf dir_path
-              puts "Removed...#{dir_path}".color(:red)
-            else
-              puts "Cannot remove #{dir_path}".color(:red)
+          if remove?
+            begin
+              Gitlab::GitalyClient::NamespaceService.new(server.storage)
+                .remove(dir_path)
+
+              puts "Removed...#{dir_path}"
+            rescue StandardError => e
+              puts "Cannot remove #{dir_path}: #{e.message}".color(:red)
             end
           else
             puts "Can be removed: #{dir_path}".color(:red)
@@ -43,35 +31,36 @@ namespace :gitlab do
         end
       end
 
-      unless remove_flag
+      unless remove?
         puts "To cleanup this directories run this command with REMOVE=true".color(:yellow)
       end
     end
 
     desc "GitLab | Cleanup | Clean repositories"
     task repos: :gitlab_environment do
-      warn_user_is_not_gitlab
-
       move_suffix = "+orphaned+#{Time.now.to_i}"
-      Gitlab.config.repositories.storages.each do |name, repository_storage|
-        repo_root = repository_storage['path']
-        # Look for global repos (legacy, depth 1) and normal repos (depth 2)
-        IO.popen(%W(find #{repo_root} -mindepth 1 -maxdepth 2 -name *.git)) do |find|
-          find.each_line do |path|
-            path.chomp!
-            repo_with_namespace = path
-              .sub(repo_root, '')
-              .sub(%r{^/*}, '')
-              .chomp('.git')
-              .chomp('.wiki')
 
-            # TODO ignoring hashed repositories for now.  But revisit to fully support
-            # possible orphaned hashed repos
-            next if repo_with_namespace.start_with?("#{HASHED_REPOSITORY_NAME}/") || Project.find_by_full_path(repo_with_namespace)
+      Gitaly::Server.all.each do |server|
+        Gitlab::GitalyClient::StorageService
+          .new(server.storage)
+          .list_directories
+          .each do |path|
+          repo_with_namespace = path.chomp('.git').chomp('.wiki')
 
-            new_path = path + move_suffix
-            puts path.inspect + ' -> ' + new_path.inspect
-            File.rename(path, new_path)
+          # TODO ignoring hashed repositories for now.  But revisit to fully support
+          # possible orphaned hashed repos
+          next if repo_with_namespace.start_with?(Storage::HashedProject::ROOT_PATH_PREFIX)
+          next if Project.find_by_full_path(repo_with_namespace)
+
+          new_path = path + move_suffix
+          puts path.inspect + ' -> ' + new_path.inspect
+
+          begin
+            Gitlab::GitalyClient::NamespaceService
+              .new(server.storage)
+              .rename(path, new_path)
+          rescue StandardError => e
+            puts "Error occured while moving the repository: #{e.message}".color(:red)
           end
         end
       end
@@ -104,27 +93,46 @@ namespace :gitlab do
       end
     end
 
-    # This is a rake task which removes faulty refs. These refs where only
-    # created in the 8.13.RC cycle, and fixed in the stable builds which were
-    # released. So likely this should only be run once on gitlab.com
-    # Faulty refs are moved so they are kept around, else some features break.
-    desc 'GitLab | Cleanup | Remove faulty deployment refs'
-    task move_faulty_deployment_refs: :gitlab_environment do
-      projects = Project.where(id: Deployment.select(:project_id).distinct)
+    desc "GitLab | Cleanup | Clean orphaned project uploads"
+    task project_uploads: :gitlab_environment do
+      warn_user_is_not_gitlab
 
-      projects.find_each do |project|
-        rugged = project.repository.rugged
+      cleaner = Gitlab::Cleanup::ProjectUploads.new(logger: logger)
+      cleaner.run!(dry_run: dry_run?)
 
-        max_iid = project.deployments.maximum(:iid)
-
-        rugged.references.each('refs/environments/**/*') do |ref|
-          id = ref.name.split('/').last.to_i
-          next unless id > max_iid
-
-          project.deployments.find(id).create_ref
-          project.repository.delete_refs(ref)
-        end
+      if dry_run?
+        logger.info "To clean up these files run this command with DRY_RUN=false".color(:yellow)
       end
+    end
+
+    desc 'GitLab | Cleanup | Clean orphan remote upload files that do not exist in the db'
+    task remote_upload_files: :environment do
+      cleaner = Gitlab::Cleanup::RemoteUploads.new(logger: logger)
+      cleaner.run!(dry_run: dry_run?)
+
+      if dry_run?
+        logger.info "To cleanup these files run this command with DRY_RUN=false".color(:yellow)
+      end
+    end
+
+    def remove?
+      ENV['REMOVE'] == 'true'
+    end
+
+    def dry_run?
+      ENV['DRY_RUN'] != 'false'
+    end
+
+    def logger
+      return @logger if defined?(@logger)
+
+      @logger = if Rails.env.development? || Rails.env.production?
+                  Logger.new(STDOUT).tap do |stdout_logger|
+                    stdout_logger.extend(ActiveSupport::Logger.broadcast(Rails.logger))
+                  end
+                else
+                  Rails.logger
+                end
     end
   end
 end

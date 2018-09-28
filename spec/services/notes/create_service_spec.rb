@@ -10,7 +10,7 @@ describe Notes::CreateService do
 
   describe '#execute' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context "valid params" do
@@ -57,13 +57,97 @@ describe Notes::CreateService do
       end
     end
 
+    context 'note diff file' do
+      let(:project_with_repo) { create(:project, :repository) }
+      let(:merge_request) do
+        create(:merge_request,
+               source_project: project_with_repo,
+               target_project: project_with_repo)
+      end
+      let(:line_number) { 14 }
+      let(:position) do
+        Gitlab::Diff::Position.new(old_path: "files/ruby/popen.rb",
+                                   new_path: "files/ruby/popen.rb",
+                                   old_line: nil,
+                                   new_line: line_number,
+                                   diff_refs: merge_request.diff_refs)
+      end
+      let(:previous_note) do
+        create(:diff_note_on_merge_request, noteable: merge_request, project: project_with_repo)
+      end
+
+      context 'when eligible to have a note diff file' do
+        let(:new_opts) do
+          opts.merge(in_reply_to_discussion_id: nil,
+                     type: 'DiffNote',
+                     noteable_type: 'MergeRequest',
+                     noteable_id: merge_request.id,
+                     position: position.to_h)
+        end
+
+        it 'note is associated with a note diff file' do
+          note = described_class.new(project_with_repo, user, new_opts).execute
+
+          expect(note).to be_persisted
+          expect(note.note_diff_file).to be_present
+        end
+      end
+
+      context 'when DiffNote is a reply' do
+        let(:new_opts) do
+          opts.merge(in_reply_to_discussion_id: previous_note.discussion_id,
+                     type: 'DiffNote',
+                     noteable_type: 'MergeRequest',
+                     noteable_id: merge_request.id,
+                     position: position.to_h)
+        end
+
+        it 'note is not associated with a note diff file' do
+          note = described_class.new(project_with_repo, user, new_opts).execute
+
+          expect(note).to be_persisted
+          expect(note.note_diff_file).to be_nil
+        end
+
+        context 'when DiffNote from an image' do
+          let(:image_position) do
+            Gitlab::Diff::Position.new(old_path: "files/images/6049019_460s.jpg",
+                                       new_path: "files/images/6049019_460s.jpg",
+                                       width: 100,
+                                       height: 100,
+                                       x: 1,
+                                       y: 100,
+                                       diff_refs: merge_request.diff_refs,
+                                       position_type: 'image')
+          end
+
+          let(:new_opts) do
+            opts.merge(in_reply_to_discussion_id: nil,
+                       type: 'DiffNote',
+                       noteable_type: 'MergeRequest',
+                       noteable_id: merge_request.id,
+                       position: image_position.to_h)
+          end
+
+          it 'note is not associated with a note diff file' do
+            note = described_class.new(project_with_repo, user, new_opts).execute
+
+            expect(note).to be_persisted
+            expect(note.note_diff_file).to be_nil
+          end
+        end
+      end
+    end
+
     context 'note with commands' do
       context 'as a user who can update the target' do
         context '/close, /label, /assign & /milestone' do
           let(:note_text) { %(HELLO\n/close\n/assign @#{user.username}\nWORLD) }
 
           it 'saves the note and does not alter the note text' do
-            expect_any_instance_of(Issues::UpdateService).to receive(:execute).and_call_original
+            service = double(:service)
+            allow(Issues::UpdateService).to receive(:new).and_return(service)
+            expect(service).to receive(:execute)
 
             note = described_class.new(project, user, opts.merge(note: note_text)).execute
 

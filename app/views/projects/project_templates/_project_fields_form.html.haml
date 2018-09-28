@@ -1,0 +1,12 @@
+.row
+  .form-group.col-sm-12
+    %label.label-bold
+      = _('Template')
+    .input-group.template-input-group
+      .input-group-prepend
+        .input-group-text
+          .selected-icon.append-right-10
+          .selected-template
+      .input-group-append
+        %button.btn.btn-default.change-template{ type: "button" }
+          = _('Change template')

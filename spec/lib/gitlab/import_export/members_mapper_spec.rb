@@ -111,7 +111,7 @@ describe Gitlab::ImportExport::MembersMapper do
       end
 
       it 'maps the project member if it already exists' do
-        project.add_master(user2)
+        project.add_maintainer(user2)
 
         expect(members_mapper.map[exported_user_id]).to eq(user2.id)
       end

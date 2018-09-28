@@ -1,4 +1,3 @@
-# rubocop:disable all
 class RemoveDuplicatedKeys < ActiveRecord::Migration
   def up
     select_all("SELECT fingerprint FROM #{quote_table_name(:keys)} GROUP BY fingerprint HAVING COUNT(*) > 1").each do |row|

@@ -49,6 +49,7 @@ Example response:
   "title": "test",
   "file_name": "add.rb",
   "description": "Ruby test snippet",
+  "visibility": "private",
   "author": {
     "id": 1,
     "username": "john_smith",
@@ -99,6 +100,7 @@ Example response:
   "title": "This is a snippet",
   "file_name": "test.txt",
   "description": "Hello World snippet",
+  "visibility": "internal",
   "author": {
     "id": 1,
     "username": "john_smith",
@@ -150,6 +152,7 @@ Example response:
   "title": "test",
   "file_name": "add.rb",
   "description": "description of snippet",
+  "visibility": "internal",
   "author": {
     "id": 1,
     "username": "john_smith",
@@ -238,7 +241,8 @@ Example response:
         "raw_url": "http://localhost:3000/snippets/48/raw",
         "title": "Minus similique nesciunt vel fugiat qui ullam sunt.",
         "updated_at": "2016-11-25T16:53:34.479Z",
-        "web_url": "http://localhost:3000/snippets/48"
+        "web_url": "http://localhost:3000/snippets/48",
+        "visibility": "public"
     }
 ]
 ```

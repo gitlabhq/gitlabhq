@@ -6,7 +6,7 @@ describe Projects::RepositoriesController do
   describe "GET archive" do
     context 'as a guest' do
       it 'responds with redirect in correct format' do
-        get :archive, namespace_id: project.namespace, project_id: project, format: "zip", ref: 'master'
+        get :archive, namespace_id: project.namespace, project_id: project, id: "master", format: "zip"
 
         expect(response.header["Content-Type"]).to start_with('text/html')
         expect(response).to be_redirect
@@ -22,8 +22,45 @@ describe Projects::RepositoriesController do
       end
 
       it "uses Gitlab::Workhorse" do
-        get :archive, namespace_id: project.namespace, project_id: project, ref: "master", format: "zip"
+        get :archive, namespace_id: project.namespace, project_id: project, id: "master", format: "zip"
 
+        expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-archive:")
+      end
+
+      it 'responds with redirect to the short name archive if fully qualified' do
+        get :archive, namespace_id: project.namespace, project_id: project, id: "master/#{project.path}-master", format: "zip"
+
+        expect(assigns(:ref)).to eq("master")
+        expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-archive:")
+      end
+
+      it 'handles legacy queries with no ref' do
+        get :archive, namespace_id: project.namespace, project_id: project, format: "zip"
+
+        expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-archive:")
+      end
+
+      it 'handles legacy queries with the ref specified as ref in params' do
+        get :archive, namespace_id: project.namespace, project_id: project, ref: 'feature', format: 'zip'
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(assigns(:ref)).to eq('feature')
+        expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-archive:")
+      end
+
+      it 'handles legacy queries with the ref specified as id in params' do
+        get :archive, namespace_id: project.namespace, project_id: project, id: 'feature', format: 'zip'
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(assigns(:ref)).to eq('feature')
+        expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-archive:")
+      end
+
+      it 'prioritizes the id param over the ref param when both are specified' do
+        get :archive, namespace_id: project.namespace, project_id: project, id: 'feature', ref: 'feature_conflict', format: 'zip'
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(assigns(:ref)).to eq('feature')
         expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-archive:")
       end
 
@@ -33,7 +70,7 @@ describe Projects::RepositoriesController do
         end
 
         it "renders Not Found" do
-          get :archive, namespace_id: project.namespace, project_id: project, ref: "master", format: "zip"
+          get :archive, namespace_id: project.namespace, project_id: project, id: "master", format: "zip"
 
           expect(response).to have_gitlab_http_status(404)
         end

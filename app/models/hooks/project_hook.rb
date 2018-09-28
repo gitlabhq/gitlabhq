@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectHook < WebHook
   include TriggerableHooks
 
@@ -7,6 +9,7 @@ class ProjectHook < WebHook
     :issue_hooks,
     :confidential_issue_hooks,
     :note_hooks,
+    :confidential_note_hooks,
     :merge_request_hooks,
     :job_hooks,
     :pipeline_hooks,

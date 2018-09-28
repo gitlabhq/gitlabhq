@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::ImpersonationsController < Admin::ApplicationController
   skip_before_action :authenticate_admin!
   before_action :authenticate_impersonator!
@@ -11,7 +13,7 @@ class Admin::ImpersonationsController < Admin::ApplicationController
 
     session[:impersonator_id] = nil
 
-    redirect_to admin_user_path(original_user), status: 302
+    redirect_to admin_user_path(original_user), status: :found
   end
 
   private

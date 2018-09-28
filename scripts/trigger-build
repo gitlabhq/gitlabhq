@@ -1,0 +1,207 @@
+#!/usr/bin/env ruby
+
+require 'gitlab'
+
+#
+# Configure credentials to be used with gitlab gem
+#
+Gitlab.configure do |config|
+  config.endpoint      = 'https://gitlab.com/api/v4'
+  config.private_token = ENV['GITLAB_QA_ACCESS_TOKEN'] # gitlab-qa bot access token
+end
+
+module Trigger
+  TOKEN = ENV['BUILD_TRIGGER_TOKEN']
+
+  def self.ee?
+    ENV['CI_PROJECT_NAME'] == 'gitlab-ee' || File.exist?('CHANGELOG-EE.md')
+  end
+
+  class Base
+    def initialize(api_token)
+      Gitlab.private_token = api_token
+    end
+
+    def invoke!(post_comment: false)
+      pipeline = Gitlab.run_trigger(
+        downstream_project_path,
+        Trigger::TOKEN,
+        ref,
+        variables)
+
+      puts "Triggered #{pipeline.web_url}"
+      puts "Waiting for downstream pipeline status"
+
+      begin
+        Trigger::CommitComment.post!(downstream_project_path, pipeline) if post_comment
+      rescue Gitlab::Error::Error => error
+        puts "Ignoring the following error: #{error}"
+      end
+      Trigger::Pipeline.new(downstream_project_path, pipeline.id)
+    end
+
+    private
+
+    # Must be overriden
+    def downstream_project_path
+      raise NotImplementedError
+    end
+
+    # Must be overriden
+    def ref
+      raise NotImplementedError
+    end
+
+    # Can be overriden
+    def extra_variables
+      {}
+    end
+
+    # Can be overriden
+    def version_param_value(version_file)
+      File.read(version_file).strip
+    end
+
+    def variables
+      base_variables.merge(extra_variables).merge(version_file_variables)
+    end
+
+    def base_variables
+      {
+        'TRIGGERED_USER' => ENV['GITLAB_USER_NAME'],
+        'TRIGGER_SOURCE' => ENV['CI_JOB_URL']
+      }
+    end
+
+    # Read version files from all components
+    def version_file_variables
+      Dir.glob("*_VERSION").each_with_object({}) do |version_file, params|
+        params[version_file] = version_param_value(version_file)
+      end
+    end
+  end
+
+  class Omnibus < Base
+    private
+
+    def downstream_project_path
+      'gitlab-org/omnibus-gitlab'.freeze
+    end
+
+    def ref
+      ENV['OMNIBUS_BRANCH'] || 'master'
+    end
+
+    def extra_variables
+      {
+        'GITLAB_VERSION' => ENV['CI_COMMIT_SHA'],
+        'ALTERNATIVE_SOURCES' => 'true',
+        'ee' => Trigger.ee? ? 'true' : 'false'
+      }
+    end
+  end
+
+  class CNG < Base
+    private
+
+    def downstream_project_path
+      ENV['CNG_PROJECT_PATH'] || 'gitlab-org/build/CNG-mirror'
+    end
+
+    def ref
+      ENV['CNG_BRANCH'] || 'master'
+    end
+
+    def extra_variables
+      edition = Trigger.ee? ? 'EE' : 'CE'
+
+      {
+        "GITLAB_#{edition}_VERSION" => ENV['CI_COMMIT_REF_NAME'],
+        "#{edition}_PIPELINE" => 'true'
+      }
+    end
+
+    def version_param_value(_version_file)
+      raw_version = super
+
+      # if the version matches semver format, treat it as a tag and prepend `v`
+      if raw_version =~ Regexp.compile(/^\d+\.\d+\.\d+(-rc\d+)?(-ee)?$/)
+        "v#{raw_version}"
+      else
+        raw_version
+      end
+    end
+  end
+
+  class CommitComment
+    def self.post!(downstream_project_path, downstream_pipeline)
+      Gitlab.create_commit_comment(
+        ENV['CI_PROJECT_PATH'],
+        ENV['CI_COMMIT_SHA'],
+        "The [`#{ENV['CI_JOB_NAME']}`](#{ENV['CI_JOB_URL']}) job from pipeline #{ENV['CI_PIPELINE_URL']} triggered #{downstream_pipeline.web_url} downstream.")
+    end
+  end
+
+  class Pipeline
+    INTERVAL = 60 # seconds
+    MAX_DURATION = 3600 * 3 # 3 hours
+
+    attr_reader :project, :id
+
+    def initialize(project, id)
+      @project = project
+      @id = id
+      @start = Time.now.to_i
+
+      # gitlab-bot's token "GitLab multi-project pipeline polling"
+      Gitlab.private_token = ENV['GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN']
+    end
+
+    def wait!
+      loop do
+        raise "Pipeline timed out after waiting for #{duration} minutes!" if timeout?
+
+        case status
+        when :created, :pending, :running
+          print "."
+          sleep INTERVAL
+        when :success
+          puts "Pipeline succeeded in #{duration} minutes!"
+          break
+        else
+          raise "Pipeline did not succeed!"
+        end
+
+        STDOUT.flush
+      end
+    end
+
+    def timeout?
+      Time.now.to_i > (@start + MAX_DURATION)
+    end
+
+    def duration
+      (Time.now.to_i - @start) / 60
+    end
+
+    def status
+      Gitlab.pipeline(project, id).status.to_sym
+    rescue Gitlab::Error::Error => error
+      puts "Ignoring the following error: #{error}"
+      # Ignore GitLab API hiccups. If GitLab is really down, we'll hit the job
+      # timeout anyway.
+      :running
+    end
+  end
+end
+
+case ARGV[0]
+when 'omnibus'
+  Trigger::Omnibus.new(ENV['GITLAB_QA_ACCESS_TOKEN']).invoke!(post_comment: true).wait!
+when 'cng'
+  Trigger::CNG.new(ENV['GITLAB_QA_ACCESS_TOKEN']).invoke!.wait!
+else
+  puts "Please provide a valid option:
+  omnibus - Triggers a pipeline that builds the omnibus-gitlab package
+  cng - Triggers a pipeline that builds images used by the GitLab helm chart"
+end

@@ -18,6 +18,30 @@ describe AuthHelper do
     end
   end
 
+  describe "providers_for_base_controller" do
+    it 'returns all enabled providers from devise' do
+      allow(helper).to receive(:auth_providers) { [:twitter, :github] }
+      expect(helper.providers_for_base_controller).to include(*[:twitter, :github])
+    end
+
+    it 'excludes ldap providers' do
+      allow(helper).to receive(:auth_providers) { [:twitter, :ldapmain] }
+      expect(helper.providers_for_base_controller).not_to include(:ldapmain)
+    end
+  end
+
+  describe "form_based_providers" do
+    it 'includes LDAP providers' do
+      allow(helper).to receive(:auth_providers) { [:twitter, :ldapmain] }
+      expect(helper.form_based_providers).to eq %i(ldapmain)
+    end
+
+    it 'includes crowd provider' do
+      allow(helper).to receive(:auth_providers) { [:twitter, :crowd] }
+      expect(helper.form_based_providers).to eq %i(crowd)
+    end
+  end
+
   describe 'enabled_button_based_providers' do
     before do
       allow(helper).to receive(:auth_providers) { [:twitter, :github] }

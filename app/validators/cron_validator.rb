@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # CronValidator
 #
 # Custom validator for Cron.

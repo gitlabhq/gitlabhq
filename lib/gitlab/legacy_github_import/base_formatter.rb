@@ -10,6 +10,7 @@ module Gitlab
         @formatter = Gitlab::ImportFormatter.new
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def create!
         association = project.public_send(project_association) # rubocop:disable GitlabSecurity/PublicSend
 
@@ -17,6 +18,7 @@ module Gitlab
           record.attributes = attributes
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def url
         raw_data.url || ''

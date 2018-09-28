@@ -1,9 +1,9 @@
 .prepend-top-default
-  .panel.panel-default
-    .panel-heading
+  .card
+    .card-header
       %strong
         = t('sherlock.general')
-    %ul.well-list
+    %ul.content-list
       %li
         %span.light
           #{t('sherlock.id')}:
@@ -35,5 +35,4 @@
         %span.light
           #{t('sherlock.finished_at')}:
         %strong
-          = time_ago_in_words(@transaction.finished_at)
-          = t('sherlock.ago')
+          = time_ago_with_tooltip @transaction.finished_at

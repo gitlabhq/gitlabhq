@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe API::Todos do
-  let(:project_1) { create(:project, :repository) }
+  let(:group)     { create(:group) }
+  let(:project_1) { create(:project, :repository, group: group) }
   let(:project_2) { create(:project) }
   let(:author_1) { create(:user) }
   let(:author_2) { create(:user) }
@@ -89,6 +90,17 @@ describe API::Todos do
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(1)
+        end
+      end
+
+      context 'and using the group filter' do
+        it 'filters based on project_id param' do
+          get api('/todos', john_doe), { group_id: group.id, sort: :target_id }
+
+          expect(response.status).to eq(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(2)
         end
       end
 

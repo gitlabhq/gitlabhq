@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # NOTE:
 # We'll move this class to Clusters::Platforms::Kubernetes, which contains exactly the same logic.
@@ -24,7 +26,7 @@ class KubernetesService < DeploymentService
   prop_accessor :ca_pem
 
   with_options presence: true, if: :activated? do
-    validates :api_url, url: true
+    validates :api_url, public_url: true
     validates :token
   end
 
@@ -94,10 +96,10 @@ class KubernetesService < DeploymentService
 
   # Check we can connect to the Kubernetes API
   def test(*args)
-    kubeclient = build_kubeclient!
+    kubeclient = build_kube_client!
 
-    kubeclient.discover
-    { success: kubeclient.discovered, result: "Checked API discovery endpoint" }
+    kubeclient.core_client.discover
+    { success: kubeclient.core_client.discovered, result: "Checked API discovery endpoint" }
   rescue => err
     { success: false, result: err }
   end
@@ -142,7 +144,7 @@ class KubernetesService < DeploymentService
   end
 
   def kubeclient
-    @kubeclient ||= build_kubeclient!
+    @kubeclient ||= build_kube_client!(api_groups: ['api', 'apis/rbac.authorization.k8s.io'])
   end
 
   def deprecated?
@@ -180,11 +182,12 @@ class KubernetesService < DeploymentService
     slug.gsub(/[^-a-z0-9]/, '-').gsub(/^-+/, '')
   end
 
-  def build_kubeclient!(api_path: 'api', api_version: 'v1')
+  def build_kube_client!(api_groups: ['api'], api_version: 'v1')
     raise "Incomplete settings" unless api_url && actual_namespace && token
 
-    ::Kubeclient::Client.new(
-      join_api_url(api_path),
+    Gitlab::Kubernetes::KubeClient.new(
+      api_url,
+      api_groups,
       api_version,
       auth_options: kubeclient_auth_options,
       ssl_options: kubeclient_ssl_options,
@@ -194,7 +197,7 @@ class KubernetesService < DeploymentService
 
   # Returns a hash of all pods in the namespace
   def read_pods
-    kubeclient = build_kubeclient!
+    kubeclient = build_kube_client!
 
     kubeclient.get_pods(namespace: actual_namespace).as_json
   rescue Kubeclient::HttpError => err
@@ -218,15 +221,6 @@ class KubernetesService < DeploymentService
     { bearer_token: token }
   end
 
-  def join_api_url(api_path)
-    url = URI.parse(api_url)
-    prefix = url.path.sub(%r{/+\z}, '')
-
-    url.path = [prefix, api_path].join("/")
-
-    url.to_s
-  end
-
   def terminal_auth
     {
       token: token,
@@ -240,7 +234,7 @@ class KubernetesService < DeploymentService
   end
 
   def deprecation_validation
-    return if active_changed?(from: true, to: false)
+    return if active_changed?(from: true, to: false) || (new_record? && !active?)
 
     if deprecated?
       errors[:base] << deprecation_message
