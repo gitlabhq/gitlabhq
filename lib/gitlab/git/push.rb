@@ -3,10 +3,17 @@
 module Gitlab
   module Git
     class Push
+      attr_reader :oldrev, :newrev
+
       def initialize(project, oldrev, newrev, ref)
-        @project, @oldrev, @newrev = project, oldrev, newrev
-        @repository = project.repository
-        @branch_name = Gitlab::Git.ref_name(ref)
+        @project = project
+        @oldrev = oldrev
+        @newrev = newrev
+        @ref = ref
+      end
+
+      def branch_name
+        @branch_name ||= Gitlab::Git.ref_name(@ref)
       end
 
       def branch_added?
@@ -19,6 +26,10 @@ module Gitlab
 
       def force_push?
         Gitlab::Checks::ForcePush.force_push?(@project, @oldrev, @newrev)
+      end
+
+      def branch_push?
+        Gitlab::Git.branch_ref?(@ref)
       end
     end
   end
