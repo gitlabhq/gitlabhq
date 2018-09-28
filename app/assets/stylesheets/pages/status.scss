@@ -27,6 +27,7 @@
 
   &.ci-canceled,
   &.ci-disabled,
+  &.ci-scheduled,
   &.ci-manual {
     color: $gl-text-color;
     border-color: $gl-text-color;
