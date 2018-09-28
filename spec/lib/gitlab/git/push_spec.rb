@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::Git::Push do
   set(:project) { create(:project, :repository) }
 
-  let(:oldrev) { project.commit('HEAD~10').id }
+  let(:oldrev) { project.commit('HEAD~2').id }
   let(:newrev) { project.commit.id }
   let(:ref) { 'refs/heads/some-branch' }
 
@@ -35,9 +35,33 @@ describe Gitlab::Git::Push do
     end
 
     context 'when it is a tag push' do
-      let(:ref) { 'refs/tags/my-branch' }
+      let(:ref) { 'refs/tags/my-tag' }
 
       it { is_expected.not_to be_branch_push }
+    end
+  end
+
+  describe '#branch_updated?' do
+    context 'when it is a branch push with correct old and new revisions' do
+      it { is_expected.to be_branch_updated }
+    end
+
+    context 'when it is not a branch push' do
+      let(:ref) { 'refs/tags/my-tag' }
+
+      it { is_expected.not_to be_branch_updated }
+    end
+
+    context 'when old revision is blank' do
+      let(:oldrev) { Gitlab::Git::BLANK_SHA }
+
+      it { is_expected.not_to be_branch_updated }
+    end
+
+    context 'when it is not a branch push' do
+      let(:newrev) { Gitlab::Git::BLANK_SHA }
+
+      it { is_expected.not_to be_branch_updated }
     end
   end
 
@@ -78,6 +102,27 @@ describe Gitlab::Git::Push do
       let(:newrev) { Gitlab::Git::BLANK_SHA }
 
       it { is_expected.to be_branch_removed }
+    end
+  end
+
+  describe '#modified_paths' do
+    context 'when a push is a branch update' do
+      let(:oldrev) { '281d3a76f31c812dbf48abce82ccf6860adedd81' }
+      let(:new_rev) { '1b12f15a11fc6e62177bef08f47bc7b5ce50b141' }
+
+      it 'returns modified paths' do
+        expect(subject.modified_paths).to eq ['bar/branch-test.txt',
+                                              'files/js/commit.coffee',
+                                              'with space/README.md']
+      end
+    end
+
+    context 'when a push is not a branch update' do
+      let(:oldrev) { Gitlab::Git::BLANK_SHA }
+
+      it 'raises an error' do
+        expect { subject.modified_paths }.to raise_error(ArgumentError)
+      end
     end
   end
 end

@@ -28,6 +28,10 @@ module Gitlab
         Gitlab::Git.blank_ref?(@newrev)
       end
 
+      def branch_updated?
+        branch_push? && !branch_added? && !branch_removed?
+      end
+
       def force_push?
         Gitlab::Checks::ForcePush.force_push?(@project, @oldrev, @newrev)
       end
@@ -35,6 +39,16 @@ module Gitlab
       def branch_push?
         strong_memoize(:branch_push) do
           Gitlab::Git.branch_ref?(@ref)
+        end
+      end
+
+      def modified_paths
+        unless branch_updated?
+          raise ArgumentError, 'Unable to calculate modified paths!'
+        end
+
+        strong_memoize(:modified_paths) do
+          @project.repository.diff_stats(@oldrev, @newrev).paths
         end
       end
     end

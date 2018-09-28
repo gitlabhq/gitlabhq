@@ -18,6 +18,10 @@ module Gitlab
         indexed_by_path[path]
       end
 
+      def paths
+        @collection.map(&:path)
+      end
+
       private
 
       def indexed_by_path
