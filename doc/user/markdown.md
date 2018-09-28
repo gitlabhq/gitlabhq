@@ -352,7 +352,7 @@ You can add task lists to issues, merge requests and comments. To create a task 
     - [ ] Sub-task 3
 ```
 
-![alt unordered-check-list-render-gfm](unordered-check-list-render-gfm.png)
+![alt unordered-check-list-render-gfm](img/unordered-check-list-render-gfm.png)
 
 Tasks formatted as ordered lists are supported as well:
 
