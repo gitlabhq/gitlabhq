@@ -3,6 +3,8 @@
 module Gitlab
   module Git
     class Push
+      include Gitlab::Utils::StrongMemoize
+
       attr_reader :oldrev, :newrev
 
       def initialize(project, oldrev, newrev, ref)
@@ -13,7 +15,9 @@ module Gitlab
       end
 
       def branch_name
-        @branch_name ||= Gitlab::Git.ref_name(@ref)
+        strong_memoize(:branch_name) do
+          Gitlab::Git.branch_name(@ref)
+        end
       end
 
       def branch_added?
@@ -29,7 +33,9 @@ module Gitlab
       end
 
       def branch_push?
-        Gitlab::Git.branch_ref?(@ref)
+        strong_memoize(:branch_push) do
+          Gitlab::Git.branch_ref?(@ref)
+        end
       end
     end
   end
