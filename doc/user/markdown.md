@@ -508,7 +508,7 @@ Example:
 
 Becomes:
 
-<img src="./doc/user/img/mermaid-diagram-render-gfm.svg" width="200px" height="400px">
+<img src="./img/mermaid-diagram-render-gfm.png" width="200px" height="400px">
 
 For details see the [Mermaid official page][mermaid].
 
