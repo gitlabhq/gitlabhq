@@ -35,7 +35,7 @@ export default {
   },
   computed: {
     currentFilter() {
-      const selectedValue = this.currentValue || this.filters[0].value;
+      const selectedValue = this.currentValue !== undefined ? this.currentValue : this.filters[0].value;
       return this.filters.find(filter => filter.value === selectedValue );
     }
   },

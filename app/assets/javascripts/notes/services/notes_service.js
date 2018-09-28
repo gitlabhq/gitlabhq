@@ -6,8 +6,9 @@ Vue.use(VueResource);
 
 export default {
   fetchDiscussions(endpoint, filter) {
-    const config = filter ? { params: { notes_filter: filter } } : {};
-    return Vue.http.get(endpoint, config);
+    const config = filter !== undefined ? { params: { notes_filter: filter } } : null;
+    if (!config) return Vue.http.get(endpoint);
+    return Vue.http.put(endpoint, {}, config);
   },
   deleteNote(endpoint) {
     return Vue.http.delete(endpoint);
