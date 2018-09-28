@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: uk\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-27 08:45\n"
+"PO-Revision-Date: 2018-09-28 12:46\n"
 
 msgid " Status"
 msgstr " Статус"
@@ -3077,7 +3077,7 @@ msgstr ""
 msgid "Epics|To schedule your epic's %{epicDateType} date based on milestones, assign a milestone with a %{epicDateType} date to any issue in the epic."
 msgstr ""
 
-msgid "Epics|finish"
+msgid "Epics|due"
 msgstr ""
 
 msgid "Epics|start"
@@ -3320,7 +3320,7 @@ msgstr "відправлено"
 msgid "Fixed date"
 msgstr "Дата виправлення"
 
-msgid "Fixed finish date"
+msgid "Fixed due date"
 msgstr ""
 
 msgid "Fixed start date"
@@ -3842,14 +3842,14 @@ msgstr "Вибачте, жоден епік не задовольняє крит
 msgid "GroupRoadmap|The roadmap shows the progress of your epics along a timeline"
 msgstr "План-графік епіків відображає стан ваших епіків у часі"
 
-msgid "GroupRoadmap|To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from %{startDate} to %{endDate}."
-msgstr "Для перегляду плану-графіку додайте заплановані дати початку та завершення до одного з ваших епіків у цій групі або її підгрупах. При помісячному перегляді показуються лише епіки за попередній, поточний та наступні 5 місяців: від %{startDate} до %{endDate}."
+msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from %{startDate} to %{endDate}."
+msgstr ""
 
-msgid "GroupRoadmap|To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the quarters view, only epics in the past quarter, current quarter, and next 4 quarters are shown &ndash; from %{startDate} to %{endDate}."
-msgstr "Для перегляду плану-графіку додайте заплановані дати початку та завершення до одного з ваших епіків у цій групі або її підгрупах. При поквартальному перегляді показуються лише епіки за попередній, поточний та наступні 4 квартали: від %{startDate} до %{endDate}."
+msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the quarters view, only epics in the past quarter, current quarter, and next 4 quarters are shown &ndash; from %{startDate} to %{endDate}."
+msgstr ""
 
-msgid "GroupRoadmap|To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the weeks view, only epics in the past week, current week, and next 4 weeks are shown &ndash; from %{startDate} to %{endDate}."
-msgstr "Для перегляду плану-графіку додайте заплановані дати початку та завершення до одного з ваших епіків у цій групі або її підгрупах. При потижневому перегляді показуються лише епіки за попередній, поточний та наступні 4 тижні: &ndash; від %{startDate} до %{endDate}."
+msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the weeks view, only epics in the past week, current week, and next 4 weeks are shown &ndash; from %{startDate} to %{endDate}."
+msgstr ""
 
 msgid "GroupRoadmap|To widen your search, change or remove filters. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from %{startDate} to %{endDate}."
 msgstr "Для розширення пошуку змініть або видаліть фільтри. При помісячному перегляді показуються епіки лише за попередній, поточний та наступні 5 місяців: &ndash; від %{startDate} до %{endDate}."
@@ -4290,9 +4290,6 @@ msgstr "Завдання було стерте"
 
 msgid "Jobs"
 msgstr "Завдання"
-
-msgid "Job|Are you sure you want to erase this job?"
-msgstr "Ви дійсно хочете видалити це завдання?"
 
 msgid "Job|Browse"
 msgstr ""
@@ -5633,12 +5630,6 @@ msgstr "зі стадіями"
 msgid "Plain diff"
 msgstr "Просте порівняння"
 
-msgid "Planned finish date"
-msgstr "Запланована дата завершення"
-
-msgid "Planned start date"
-msgstr "Запланована дата початку"
-
 msgid "PlantUML"
 msgstr "PlantUML"
 
@@ -6417,11 +6408,26 @@ msgstr "%{failedString} та %{resolvedString}"
 msgid "Reports|Class"
 msgstr "Клас"
 
+msgid "Reports|Confidence"
+msgstr ""
+
+msgid "Reports|Dismiss Vulnerability"
+msgstr ""
+
 msgid "Reports|Execution time"
 msgstr "Час виконання"
 
 msgid "Reports|Failure"
 msgstr "Помилка"
+
+msgid "Reports|More info"
+msgstr ""
+
+msgid "Reports|New Issue"
+msgstr ""
+
+msgid "Reports|Severity"
+msgstr ""
 
 msgid "Reports|System output"
 msgstr ""
@@ -6433,6 +6439,9 @@ msgid "Reports|Test summary failed loading results"
 msgstr ""
 
 msgid "Reports|Test summary results are being parsed"
+msgstr ""
+
+msgid "Reports|Vulnerability"
 msgstr ""
 
 msgid "Reports|no changed test results"
@@ -6612,6 +6621,9 @@ msgstr "Єдиний вхід SAML"
 
 msgid "SAML Single Sign On Settings"
 msgstr "Налаштування єдиного входу SAML"
+
+msgid "SAST"
+msgstr ""
 
 msgid "SHA1 fingerprint of the SAML token signing certificate. Get this from your identity provider, where it can also be called \"Thumbprint\"."
 msgstr "Відбиток SHA1 сертифікату для підписування токенів SAML. Отримайте його від провайдера ідентифікації, де він також може називатися \"Thumbprint\"."
@@ -7122,12 +7134,6 @@ msgstr "Залогінений найраніше"
 msgid "SortOptions|Oldest updated"
 msgstr "Оновлений найраніше"
 
-msgid "SortOptions|Planned finish date"
-msgstr ""
-
-msgid "SortOptions|Planned start date"
-msgstr ""
-
 msgid "SortOptions|Popularity"
 msgstr "Популярність"
 
@@ -7136,6 +7142,9 @@ msgstr "Пріоритет"
 
 msgid "SortOptions|Recent sign in"
 msgstr "Нещодавно зареєстровані"
+
+msgid "SortOptions|Start date"
+msgstr ""
 
 msgid "SortOptions|Start later"
 msgstr "Розпочатий пізніше"
@@ -7211,6 +7220,9 @@ msgstr "Обрані проекти"
 
 msgid "Start a %{new_merge_request} with these changes"
 msgstr "Почати %{new_merge_request} з цими змінами"
+
+msgid "Start date"
+msgstr ""
 
 msgid "Start the Runner!"
 msgstr "Запустіть Runner!"
@@ -7603,10 +7615,10 @@ msgstr "Ця гілка була змінена після того момент
 msgid "This container registry has been scheduled for deletion."
 msgstr ""
 
-msgid "This date is after the planned finish date, so this epic won't appear in the roadmap."
+msgid "This date is after the due date, so this epic won't appear in the roadmap."
 msgstr ""
 
-msgid "This date is before the planned start date, so this epic won't appear in the roadmap."
+msgid "This date is before the start date, so this epic won't appear in the roadmap."
 msgstr ""
 
 msgid "This diff is collapsed."
@@ -7986,8 +7998,8 @@ msgstr "До цього інстансу GitLab"
 msgid "To validate your GitLab CI configurations, go to 'CI/CD → Pipelines' inside your project, and click on the 'CI Lint' button."
 msgstr "Щоб перевірити налаштування GitLab CI, перейдіть до \"CI / CD → Конвеєри\" у вашому проекті та натисніть кнопку \"Перевірка конфігурації (CI Lint)\"."
 
-msgid "To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. Only epics in the past 3 months and the next 3 months are shown."
-msgstr "Для перегляду плану-графіку додайте заплановані дати початку та завершення до одного з ваших епіків у цій групі або її підгрупах. Відображаються лише епіки за попередні та наступні 3 місяці."
+msgid "To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown."
+msgstr ""
 
 msgid "To widen your search, change or remove filters."
 msgstr "Щоб розширити пошук, змініть або видаліть фільтри."
