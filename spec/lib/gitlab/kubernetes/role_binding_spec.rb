@@ -9,7 +9,7 @@ describe Gitlab::Kubernetes::RoleBinding, '#generate' do
 
   let(:subjects) do
     [
-      { 
+      {
         kind: 'ServiceAccount',
         name: service_account_name,
         namespace: namespace
@@ -20,14 +20,14 @@ describe Gitlab::Kubernetes::RoleBinding, '#generate' do
   let(:role_ref) do
     {
       apiGroup: 'rbac.authorization.k8s.io',
-      kind: 'RoleBinding',
+      kind: 'Role',
       name: role_name
     }
   end
 
   let(:resource) do
     ::Kubeclient::Resource.new(
-      metadata: { name: 'gitlab-edit' },
+      metadata: { name: 'gitlab-edit', namespace: namespace },
       roleRef: role_ref,
       subjects: subjects
     )
@@ -35,8 +35,8 @@ describe Gitlab::Kubernetes::RoleBinding, '#generate' do
 
   subject do
     described_class.new(
-      role_name: role_name, 
-      namespace: namespace, 
+      role_name: role_name,
+      namespace: namespace,
       service_account_name: service_account_name
     ).generate
   end
