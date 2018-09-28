@@ -110,8 +110,7 @@
             .btn.btn-default.btn-build.has-tooltip{ title: s_('DelayedJobs|Start now') }
               = sprite_icon('play')
             .btn.btn-default.btn-build.has-tooltip{ title: s_('DelayedJobs|Unschedule') }
-              = sprite_icon('cancel')
-              -# sprite_icon('status_scheduled_borderless')
+              = sprite_icon('time-out')
         - elsif allow_retry
           - if job.playable? && !admin && can?(current_user, :update_build, job)
             = link_to play_project_job_path(job.project, job, return_to: request.original_url), method: :post, title: 'Play', class: 'btn btn-build' do
