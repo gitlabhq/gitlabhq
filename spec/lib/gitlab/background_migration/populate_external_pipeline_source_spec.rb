@@ -6,6 +6,7 @@ describe Gitlab::BackgroundMigration::PopulateExternalPipelineSource, :migration
   let(:migration) { described_class.new }
 
   let!(:internal_pipeline) { create(:ci_pipeline, source: :web) }
+  let(:pipelines) { [internal_pipeline, external_pipeline, second_external_pipeline].map(&:id) }
 
   let!(:external_pipeline) do
     build(:ci_pipeline, source: :unknown)
@@ -21,7 +22,7 @@ describe Gitlab::BackgroundMigration::PopulateExternalPipelineSource, :migration
     create(:ci_build, pipeline: internal_pipeline)
   end
 
-  subject { migration.perform(external_pipeline.id, second_external_pipeline.id) }
+  subject { migration.perform(pipelines.min, pipelines.max) }
 
   it 'populates the pipeline source' do
     subject
