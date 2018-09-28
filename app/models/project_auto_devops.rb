@@ -29,11 +29,6 @@ class ProjectAutoDevops < ActiveRecord::Base
         variables.append(key: 'AUTO_DEVOPS_DOMAIN',
                          value: domain.presence || instance_domain)
       end
-
-      if manual?
-        variables.append(key: 'STAGING_ENABLED', value: '1')
-        variables.append(key: 'INCREMENTAL_ROLLOUT_ENABLED', value: '1')
-      end
     end
   end
 

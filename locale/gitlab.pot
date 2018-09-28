@@ -1068,19 +1068,7 @@ msgstr ""
 msgid "CICD|Auto DevOps will automatically build, test, and deploy your application based on a predefined Continuous Integration and Delivery configuration."
 msgstr ""
 
-msgid "CICD|Automatic deployment to staging, manual deployment to production"
-msgstr ""
-
-msgid "CICD|Continuous deployment to production"
-msgstr ""
-
 msgid "CICD|Default to Auto DevOps pipeline"
-msgstr ""
-
-msgid "CICD|Deployment strategy"
-msgstr ""
-
-msgid "CICD|Deployment strategy needs a domain name to work correctly."
 msgstr ""
 
 msgid "CICD|Jobs"

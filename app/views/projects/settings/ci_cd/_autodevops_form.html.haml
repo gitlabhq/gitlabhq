@@ -30,19 +30,4 @@
                     = s_('%{nip_domain} can be used as an alternative to a custom domain.').html_safe % { nip_domain: "<code>#{cluster_ingress_ip}.nip.io</code>".html_safe }
                   = link_to icon('question-circle'), help_page_path('topics/autodevops/index.md', anchor: 'auto-devops-base-domain'), target: '_blank'
 
-                %label.prepend-top-10
-                  %strong= s_('CICD|Deployment strategy')
-                %p.settings-message.text-center
-                  = s_('CICD|Deployment strategy needs a domain name to work correctly.')
-                .form-check
-                  = form.radio_button :deploy_strategy, 'continuous', class: 'form-check-input'
-                  = form.label :deploy_strategy_continuous, class: 'form-check-label' do
-                    = s_('CICD|Continuous deployment to production')
-                    = link_to icon('question-circle'), help_page_path('topics/autodevops/index.md', anchor: 'auto-deploy'), target: '_blank'
-                .form-check
-                  = form.radio_button :deploy_strategy, 'manual', class: 'form-check-input'
-                  = form.label :deploy_strategy_manual, class: 'form-check-label' do
-                    = s_('CICD|Automatic deployment to staging, manual deployment to production')
-                    = link_to icon('question-circle'), help_page_path('ci/environments.md', anchor: 'manually-deploying-to-environments'), target: '_blank'
-
           = f.submit _('Save changes'), class: "btn btn-success prepend-top-15"
