@@ -31,7 +31,7 @@ describe 'epics list', :js do
     end
 
     it 'sorts by end_date ASC by default' do
-      expect(page).to have_button('Planned finish date')
+      expect(page).to have_button('Due date')
 
       page.within('.content-wrapper .content') do
         expect(find('.top-area')).to have_content('All 3')
@@ -54,18 +54,18 @@ describe 'epics list', :js do
 
     it 'sorts by the selected value and stores the selection for epic list & roadmap' do
       page.within('.epics-other-filters') do
-        click_button 'Planned finish date'
+        click_button 'Due date'
         sort_options = find('ul.dropdown-menu-sort li').all('a').collect(&:text)
 
         expect(sort_options[0]).to eq('Created date')
         expect(sort_options[1]).to eq('Last updated')
-        expect(sort_options[2]).to eq('Planned start date')
-        expect(sort_options[3]).to eq('Planned finish date')
+        expect(sort_options[2]).to eq('Start date')
+        expect(sort_options[3]).to eq('Due date')
 
-        click_link 'Planned start date'
+        click_link 'Start date'
       end
 
-      expect(page).to have_button('Planned start date')
+      expect(page).to have_button('Start date')
 
       page.within('.content-wrapper .content') do
         expect(find('.top-area')).to have_content('All 3')
@@ -87,11 +87,11 @@ describe 'epics list', :js do
 
       visit group_epics_path(group)
 
-      expect(page).to have_button('Planned start date')
+      expect(page).to have_button('Start date')
 
       visit group_roadmap_path(group)
 
-      expect(page).to have_button('Planned start date')
+      expect(page).to have_button('Start date')
     end
 
     it 'renders the epic detail correctly after clicking the link' do

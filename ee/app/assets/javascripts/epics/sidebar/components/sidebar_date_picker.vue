@@ -122,7 +122,7 @@ export default {
         title: s__('Epics|These dates affect how your epics appear in the roadmap. Dates from milestones come from the milestones assigned to issues in the epic. You can also set fixed dates or remove them entirely.'),
         content: `
           <a
-            href="${gon.gitlab_url}/help/user/group/epics/index.md#planned-start-date-and-planned-finish-date"
+            href="${gon.gitlab_url}/help/user/group/epics/index.md#start-date-and-due-date"
             target="_blank"
             rel="noopener noreferrer"
           >${s__('Epics|More information')}</a>
@@ -134,7 +134,7 @@ export default {
         title: this.dateInvalidTooltip,
         content: `
           <a
-            href="${gon.gitlab_url}/help/user/group/epics/index.md#planned-start-date-and-planned-finish-date"
+            href="${gon.gitlab_url}/help/user/group/epics/index.md#start-date-and-due-date"
             target="_blank"
             rel="noopener noreferrer"
           >${s__('Epics|How can I solve this?')}</a>

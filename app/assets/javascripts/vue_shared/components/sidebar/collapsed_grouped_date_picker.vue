@@ -64,7 +64,7 @@
         return date ? parsedDateWords : 'None';
       },
       tooltipText(dateType = 'min') {
-        const defaultText = dateType === 'min' ? __('Planned start date') : __('Planned finish date');
+        const defaultText = dateType === 'min' ? __('Start date') : __('Due date');
         const date = this[`${dateType}Date`];
         const timeAgo = dateType === 'min' ? this.timeFormated(date) : timeFor(date);
         const dateText = date ? [
