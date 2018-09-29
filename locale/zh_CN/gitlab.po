@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-29 12:23\n"
+"PO-Revision-Date: 2018-09-29 12:42\n"
 
 msgid " Status"
 msgstr "状态"
@@ -611,7 +611,7 @@ msgid "An error occurred while fetching the jobs."
 msgstr "获取作业列表时发生错误"
 
 msgid "An error occurred while fetching the pipeline."
-msgstr "获取流水线时出错"
+msgstr "获取流水线时发生错误"
 
 msgid "An error occurred while getting projects"
 msgstr "获取项目时发生错误"
