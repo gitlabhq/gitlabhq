@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: pt-BR\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-29 02:04\n"
+"PO-Revision-Date: 2018-09-29 02:21\n"
 
 msgid " Status"
 msgstr " Status"
@@ -3578,10 +3578,10 @@ msgid "Geo|Projects in certain storage shards"
 msgstr "Projetos em certos pedaços de armazenamento"
 
 msgid "Geo|Recheck"
-msgstr ""
+msgstr "Verificar novamente"
 
 msgid "Geo|Redownload"
-msgstr ""
+msgstr "Baixar novamente"
 
 msgid "Geo|Repository sync capacity"
 msgstr "Capacidade de sincronização de repositório"
@@ -4158,7 +4158,7 @@ msgid "Internal - The project can be accessed by any logged in user."
 msgstr "Interno - O projeto pode ser acessado por qualquer usuário autenticado."
 
 msgid "Internal users"
-msgstr ""
+msgstr "Usuários internos"
 
 msgid "Interval Pattern"
 msgstr "Padrão de intervalo"
@@ -4212,37 +4212,37 @@ msgid "Jobs"
 msgstr "Jobs"
 
 msgid "Job|Browse"
-msgstr ""
+msgstr "Navegar"
 
 msgid "Job|Complete Raw"
-msgstr ""
+msgstr "Raw completo"
 
 msgid "Job|Download"
-msgstr ""
+msgstr "Baixar"
 
 msgid "Job|Erase job log"
-msgstr ""
+msgstr "Apagar log da tarefa"
 
 msgid "Job|Job artifacts"
 msgstr ""
 
 msgid "Job|Job has been erased"
-msgstr ""
+msgstr "A tarefa foi apagada"
 
 msgid "Job|Job has been erased by"
-msgstr ""
+msgstr "A tarefa foi apagada por"
 
 msgid "Job|Keep"
-msgstr ""
+msgstr "Manter"
 
 msgid "Job|Scroll to bottom"
-msgstr ""
+msgstr "Rolar para baixo"
 
 msgid "Job|Scroll to top"
-msgstr ""
+msgstr "Rolar para o topo"
 
 msgid "Job|Show complete raw"
-msgstr ""
+msgstr "Mostrar raw completo"
 
 msgid "Job|The artifacts were removed"
 msgstr ""
@@ -4341,7 +4341,7 @@ msgid "Labels|Promote Label"
 msgstr "Promover etiqueta"
 
 msgid "Labels|Promoting %{labelTitle} will make it available for all projects inside %{groupName}. Existing project labels with the same title will be merged. This action cannot be reversed."
-msgstr ""
+msgstr "Promover %{labelTitle} irá disponibilizá-la para todos os projetos dentro de %{groupName}. Etiquetas de projetos existentes com o mesmo título serão mescladas. Esta ação não pode ser revertida."
 
 msgid "Last %d day"
 msgid_plural "Last %d days"
@@ -4412,55 +4412,55 @@ msgid "License"
 msgstr "Licença"
 
 msgid "LicenseManagement|Approve license"
-msgstr ""
+msgstr "Aprovar licença"
 
 msgid "LicenseManagement|Approve license?"
-msgstr ""
+msgstr "Aprovar licença?"
 
 msgid "LicenseManagement|Approved"
-msgstr ""
+msgstr "Aprovada"
 
 msgid "LicenseManagement|Blacklist license"
 msgstr ""
 
 msgid "LicenseManagement|Blacklist license?"
-msgstr ""
+msgstr "Adicionar licença à lista negra?"
 
 msgid "LicenseManagement|Blacklisted"
-msgstr ""
+msgstr "Na lista negra"
 
 msgid "LicenseManagement|License"
-msgstr ""
+msgstr "Licença"
 
 msgid "LicenseManagement|License Management"
-msgstr ""
+msgstr "Gerenciamento de Licenças"
 
 msgid "LicenseManagement|License details"
-msgstr ""
+msgstr "Detalhes da licença"
 
 msgid "LicenseManagement|Manage approved and blacklisted licenses for this project."
 msgstr ""
 
 msgid "LicenseManagement|Packages"
-msgstr ""
+msgstr "Pacotes"
 
 msgid "LicenseManagement|Remove license"
-msgstr ""
+msgstr "Remover licença"
 
 msgid "LicenseManagement|Remove license?"
-msgstr ""
+msgstr "Remover licença?"
 
 msgid "LicenseManagement|There are currently no approved or blacklisted licenses in this project."
 msgstr ""
 
 msgid "LicenseManagement|URL"
-msgstr ""
+msgstr "URL"
 
 msgid "LicenseManagement|You are about to remove the license, %{name}, from this project."
 msgstr ""
 
 msgid "Licenses"
-msgstr ""
+msgstr "Licenças"
 
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
@@ -5312,13 +5312,13 @@ msgid "Owner"
 msgstr "Proprietário"
 
 msgid "Package information"
-msgstr ""
+msgstr "Informações do pacote"
 
 msgid "Package was removed"
-msgstr ""
+msgstr "O pacote foi removido"
 
 msgid "Packages"
-msgstr ""
+msgstr "Pacotes"
 
 msgid "Pages"
 msgstr "Páginas"
@@ -5582,10 +5582,10 @@ msgid "Preferences|Navigation theme"
 msgstr "Tema de navegação"
 
 msgid "Press Enter or click to search"
-msgstr ""
+msgstr "Pressione Enter ou clique para pesquisar"
 
 msgid "Preview"
-msgstr ""
+msgstr "Pré-visualizar"
 
 msgid "Preview payload"
 msgstr ""
@@ -5624,7 +5624,7 @@ msgid "Profiles| You are about to permanently delete %{yourAccount}, and all of 
 msgstr ""
 
 msgid "Profiles| You are going to change the username %{currentUsernameBold} to %{newUsernameBold}. Profile and projects will be redirected to the %{newUsername} namespace but this redirect will expire once the %{currentUsername} namespace is registered by another user or group. Please update your Git repository remotes as soon as possible."
-msgstr ""
+msgstr "Você vai alterar o nome de usuário %{currentUsernameBold} para %{newUsernameBold}. O perfil e os projetos serão redirecionados para %{newUsername} mas esse redirecionamento expirará quando %{currentUsername} for registrado por outro usuário ou grupo. Por favor, atualize seus repositórios remotos Git o mais rápido possível."
 
 msgid "Profiles|%{author_name} made a private contribution"
 msgstr ""
@@ -5636,7 +5636,7 @@ msgid "Profiles|Add key"
 msgstr "Adicionar chave"
 
 msgid "Profiles|Add status emoji"
-msgstr ""
+msgstr "Adicionar emoji de status"
 
 msgid "Profiles|Avatar cropper"
 msgstr ""
@@ -5648,19 +5648,19 @@ msgid "Profiles|Change username"
 msgstr "Alterar nome de usuário"
 
 msgid "Profiles|Choose file..."
-msgstr ""
+msgstr "Escolher arquivo..."
 
 msgid "Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information."
 msgstr ""
 
 msgid "Profiles|Clear status"
-msgstr ""
+msgstr "Limpar status"
 
 msgid "Profiles|Current path: %{path}"
 msgstr "Caminho atual: %{path}"
 
 msgid "Profiles|Current status"
-msgstr ""
+msgstr "Status atual"
 
 msgid "Profiles|Delete Account"
 msgstr "Excluir conta"
@@ -5675,13 +5675,13 @@ msgid "Profiles|Deleting an account has the following effects:"
 msgstr "Apagando conta tem os seguintes efeitos:"
 
 msgid "Profiles|Do not show on profile"
-msgstr ""
+msgstr "Não mostrar no perfil"
 
 msgid "Profiles|Don't display activity-related personal information on your profiles"
-msgstr ""
+msgstr "Não exibir informações pessoais relacionadas à atividade em seus perfis"
 
 msgid "Profiles|Edit Profile"
-msgstr ""
+msgstr "Editar perfil"
 
 msgid "Profiles|Invalid password"
 msgstr "Senha inválida"
@@ -5690,52 +5690,52 @@ msgid "Profiles|Invalid username"
 msgstr "Nome de usuário inválido"
 
 msgid "Profiles|Main settings"
-msgstr ""
+msgstr "Configurações principais"
 
 msgid "Profiles|No file chosen"
-msgstr ""
+msgstr "Nenhum arquivo escolhido"
 
 msgid "Profiles|Path"
 msgstr "Caminho"
 
 msgid "Profiles|Position and size your new avatar"
-msgstr ""
+msgstr "Posicione e dimensione seu novo avatar"
 
 msgid "Profiles|Private contributions"
-msgstr ""
+msgstr "Contribuições privadas"
 
 msgid "Profiles|Public Avatar"
-msgstr ""
+msgstr "Avatar público"
 
 msgid "Profiles|Remove avatar"
-msgstr ""
+msgstr "Remover avatar"
 
 msgid "Profiles|Set new profile picture"
-msgstr ""
+msgstr "Definir nova foto de perfil"
 
 msgid "Profiles|Some options are unavailable for LDAP accounts"
 msgstr ""
 
 msgid "Profiles|Tell us about yourself in fewer than 250 characters."
-msgstr ""
+msgstr "Conte-nos sobre você em menos de 250 caracteres."
 
 msgid "Profiles|The maximum file size allowed is 200KB."
-msgstr ""
+msgstr "O tamanho máximo de arquivo permitido é de 200KB."
 
 msgid "Profiles|This doesn't look like a public SSH key, are you sure you want to add it?"
 msgstr "Isso não se parece com uma chave pública SSH, você tem certeza que gostaria de adicioná-la?"
 
 msgid "Profiles|This email will be displayed on your public profile."
-msgstr ""
+msgstr "Este e-mail será exibido no seu perfil público."
 
 msgid "Profiles|This emoji and message will appear on your profile and throughout the interface."
-msgstr ""
+msgstr "Este emoji e mensagem aparecerão no seu perfil e em toda a interface."
 
 msgid "Profiles|This feature is experimental and translations are not complete yet."
 msgstr ""
 
 msgid "Profiles|This information will appear on your profile."
-msgstr ""
+msgstr "Esta informação aparecerá no seu perfil."
 
 msgid "Profiles|Type your %{confirmationValue} to confirm:"
 msgstr "Escreva %{confirmationValue} para confirmar:"
@@ -5744,13 +5744,13 @@ msgid "Profiles|Typically starts with \"ssh-rsa …\""
 msgstr "Geralmente se inicia com \"ssh-rsa …\""
 
 msgid "Profiles|Update profile settings"
-msgstr ""
+msgstr "Atualizar configurações do perfil"
 
 msgid "Profiles|Update username"
 msgstr "Atualizar nome de usuário"
 
 msgid "Profiles|Upload new avatar"
-msgstr ""
+msgstr "Enviar novo avatar"
 
 msgid "Profiles|Username change failed - %{message}"
 msgstr "Falha na alteração de nome de usuário - %{message}"
@@ -5759,10 +5759,10 @@ msgid "Profiles|Username successfully changed"
 msgstr "Alteração de nome de usuário realizada com sucesso"
 
 msgid "Profiles|Website"
-msgstr ""
+msgstr "Website"
 
 msgid "Profiles|What's your status?"
-msgstr ""
+msgstr "Qual é o seu status?"
 
 msgid "Profiles|You can change your avatar here"
 msgstr ""
@@ -5795,7 +5795,7 @@ msgid "Profiles|Your name was automatically set based on your %{provider_label} 
 msgstr ""
 
 msgid "Profiles|Your status"
-msgstr ""
+msgstr "Seu status"
 
 msgid "Profiles|e.g. My MacBook key"
 msgstr "por exemplo, Chave do meu MacBook"
@@ -5831,7 +5831,7 @@ msgid "Project Badges"
 msgstr "Selos de projeto"
 
 msgid "Project URL"
-msgstr ""
+msgstr "URL do projeto"
 
 msgid "Project access must be granted explicitly to each user."
 msgstr "Acesso ao projeto deve ser concedido explicitamente para cada usuário."
@@ -5861,7 +5861,7 @@ msgid "Project name"
 msgstr "Nome do projeto"
 
 msgid "Project slug"
-msgstr ""
+msgstr "Slug do projeto"
 
 msgid "ProjectActivityRSS|Subscribe"
 msgstr "Inscreva-se"
@@ -5915,13 +5915,13 @@ msgid "ProjectPage|Project ID: %{project_id}"
 msgstr "ID do Projeto: %{project_id}"
 
 msgid "ProjectSettings|Badges"
-msgstr ""
+msgstr "Selos"
 
 msgid "ProjectSettings|Contact an admin to change this setting."
 msgstr "Contate um administrador para alterar essa configuração."
 
 msgid "ProjectSettings|Customize your project badges."
-msgstr ""
+msgstr "Personalize os selos do seu projeto."
 
 msgid "ProjectSettings|Failed to protect the tag"
 msgstr "Falha ao proteger a tag"
@@ -5930,7 +5930,7 @@ msgid "ProjectSettings|Failed to update tag!"
 msgstr "Falha ao atualizar a tag!"
 
 msgid "ProjectSettings|Learn more about badges."
-msgstr ""
+msgstr "Saiba mais sobre os selos."
 
 msgid "ProjectSettings|Only signed commits can be pushed to this repository."
 msgstr "Apenas para commits assinados pode-se fazer push para este repositório."
@@ -6107,10 +6107,10 @@ msgid "Promotions|Upgrade plan"
 msgstr "Aprimorar plano"
 
 msgid "Protected"
-msgstr ""
+msgstr "Protegido"
 
 msgid "Protected Environments"
-msgstr ""
+msgstr "Ambientes Protegidos"
 
 msgid "ProtectedEnvironment|%{environment_name} will be writable for developers. Are you sure?"
 msgstr ""
@@ -6122,10 +6122,10 @@ msgid "ProtectedEnvironment|Choose who is allowed to deploy"
 msgstr ""
 
 msgid "ProtectedEnvironment|Environment"
-msgstr ""
+msgstr "Ambiente"
 
 msgid "ProtectedEnvironment|Protect"
-msgstr ""
+msgstr "Proteger"
 
 msgid "ProtectedEnvironment|Protect Environments in order to restrict who can execute deployments."
 msgstr ""
@@ -6143,7 +6143,7 @@ msgid "ProtectedEnvironment|There are currently no protected environments, prote
 msgstr ""
 
 msgid "ProtectedEnvironment|Unprotect"
-msgstr ""
+msgstr "Desproteger"
 
 msgid "ProtectedEnvironment|Your environment can't be unprotected"
 msgstr ""
@@ -6173,10 +6173,10 @@ msgid "Public pipelines"
 msgstr "Pipelines públicos"
 
 msgid "Pull"
-msgstr ""
+msgstr "Pull"
 
 msgid "Push"
-msgstr ""
+msgstr "Push"
 
 msgid "Push Rules"
 msgstr "Regras de push"
@@ -6232,7 +6232,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Regenerate key"
-msgstr ""
+msgstr "Gerar uma nova chave"
 
 msgid "Regex pattern"
 msgstr ""
@@ -6289,13 +6289,13 @@ msgid "Remove project"
 msgstr "Remover projeto"
 
 msgid "Rename"
-msgstr ""
+msgstr "Renomear"
 
 msgid "Rename file"
-msgstr ""
+msgstr "Renomear arquivo"
 
 msgid "Rename folder"
-msgstr ""
+msgstr "Renomear pasta"
 
 msgid "Reopen epic"
 msgstr ""
@@ -6316,7 +6316,7 @@ msgid "Reports|%{failedString} and %{resolvedString}"
 msgstr ""
 
 msgid "Reports|Class"
-msgstr ""
+msgstr "Classe"
 
 msgid "Reports|Confidence"
 msgstr ""
@@ -6325,25 +6325,25 @@ msgid "Reports|Dismiss Vulnerability"
 msgstr ""
 
 msgid "Reports|Execution time"
-msgstr ""
+msgstr "Tempo de execução"
 
 msgid "Reports|Failure"
-msgstr ""
+msgstr "Falha"
 
 msgid "Reports|More info"
-msgstr ""
+msgstr "Mais informações"
 
 msgid "Reports|New Issue"
 msgstr ""
 
 msgid "Reports|Severity"
-msgstr ""
+msgstr "Gravidade"
 
 msgid "Reports|System output"
-msgstr ""
+msgstr "Saída do sistema"
 
 msgid "Reports|Test summary"
-msgstr ""
+msgstr "Resumo do teste"
 
 msgid "Reports|Test summary failed loading results"
 msgstr ""
@@ -6436,7 +6436,7 @@ msgid "Retry verification"
 msgstr "Tentar novamente a verificação"
 
 msgid "Reveal Variables"
-msgstr ""
+msgstr "Revelar variáveis"
 
 msgid "Reveal value"
 msgid_plural "Reveal values"
@@ -6543,7 +6543,7 @@ msgid "SSH host keys"
 msgstr ""
 
 msgid "SSH public key"
-msgstr ""
+msgstr "Chave SSH pública"
 
 msgid "SSL Verification"
 msgstr "Verificação SSL"
@@ -6615,7 +6615,7 @@ msgid "Search or filter results..."
 msgstr ""
 
 msgid "Search or jump to…"
-msgstr ""
+msgstr "Pesquise ou pule para…"
 
 msgid "Search project"
 msgstr "Procurar projeto"
@@ -6657,7 +6657,7 @@ msgid "Secret:"
 msgstr "Secreto:"
 
 msgid "Security"
-msgstr ""
+msgstr "Segurança"
 
 msgid "Security Dashboard"
 msgstr "Painel de controle de segurança"
@@ -6812,7 +6812,7 @@ msgid "Shared Runners"
 msgstr "Runners Compartilhados"
 
 msgid "Shared projects"
-msgstr ""
+msgstr "Projetos compartilhados"
 
 msgid "SharedRunnersMinutesSettings|By resetting the pipeline minutes for this namespace, the currently used minutes will be set to zero."
 msgstr "Ao redefinir os minutos de pipeline para esse espaço de nomes, os minutos atualmente usados serão definido para zero."
@@ -6889,7 +6889,7 @@ msgid "Sign-up restrictions"
 msgstr "Restrições de cadastro"
 
 msgid "Size"
-msgstr ""
+msgstr "Tamanho"
 
 msgid "Size and domain settings for static websites"
 msgstr "Configurações de tamanho e domínio para sites estáticos"
@@ -7126,7 +7126,7 @@ msgid "Start a %{new_merge_request} with these changes"
 msgstr "Iniciar um %{new_merge_request} a partir dessas alterações"
 
 msgid "Start date"
-msgstr ""
+msgstr "Data de início"
 
 msgid "Start the Runner!"
 msgstr "Inicie o Runner!"
@@ -7162,7 +7162,7 @@ msgid "Subgroups"
 msgstr "Subgrupos"
 
 msgid "Subgroups and projects"
-msgstr ""
+msgstr "Subgrupos e projetos"
 
 msgid "Submit as spam"
 msgstr "Enviar como spam"
@@ -7209,7 +7209,7 @@ msgid "Tags"
 msgstr "Tags"
 
 msgid "Tags feed"
-msgstr ""
+msgstr "Feed de tags"
 
 msgid "Tags:"
 msgstr "Tags:"
@@ -7293,10 +7293,10 @@ msgid "Team"
 msgstr "Equipe"
 
 msgid "Template"
-msgstr ""
+msgstr "Modelo"
 
 msgid "Templates"
-msgstr ""
+msgstr "Modelos"
 
 msgid "Terms of Service Agreement and Privacy Policy"
 msgstr "Contrato de Termos de Serviço e Política de Privacidade"
@@ -7446,7 +7446,7 @@ msgid "The value lying at the midpoint of a series of observed values. E.g., bet
 msgstr "O valor situado no ponto médio de uma série de valores observados. Ex., entre 3, 5, 9, a mediana é 5. Entre 3, 5, 7, 8, a mediana é (5+7)/2 = 6."
 
 msgid "There are no archived projects yet"
-msgstr ""
+msgstr "Ainda não há projetos arquivados"
 
 msgid "There are no issues to show"
 msgstr "Não há issues para mostrar"
@@ -7930,7 +7930,7 @@ msgid "ToggleButton|Toggle Status: ON"
 msgstr "Mudar Status: Ligado"
 
 msgid "Token"
-msgstr ""
+msgstr "Token"
 
 msgid "Too many changes to show."
 msgstr "Alterações demais para mostrar."
@@ -7984,7 +7984,7 @@ msgid "Twitter"
 msgstr "Twitter"
 
 msgid "Type"
-msgstr ""
+msgstr "Tipo"
 
 msgid "Unable to load the diff. %{button_try_again}"
 msgstr "Não é possível carregar o diff. %{button_try_again}"
@@ -7996,7 +7996,7 @@ msgid "Unable to update this epic at this time."
 msgstr ""
 
 msgid "Undo"
-msgstr ""
+msgstr "Desfazer"
 
 msgid "Unknown"
 msgstr "Desconhecido"
@@ -8053,13 +8053,13 @@ msgid "Update"
 msgstr "Atualizar"
 
 msgid "Update now"
-msgstr ""
+msgstr "Atualizar agora"
 
 msgid "Update your group name, description, avatar, and other general settings."
 msgstr "Atualize o nome do seu grupo, descrição, avatar e outras configurações gerais."
 
 msgid "Updating"
-msgstr ""
+msgstr "Atualizando"
 
 msgid "Upgrade your plan to activate Advanced Global Search."
 msgstr "Aprimore seu plano para ativar a Pesquisa Global Avançada."
@@ -8110,7 +8110,7 @@ msgid "Use one line per URI"
 msgstr "Use uma linha por URI"
 
 msgid "Use template"
-msgstr ""
+msgstr "Utilizar modelo"
 
 msgid "Use the following registration token during setup:"
 msgstr "Use o seguinte token de registro durante a configuração:"
@@ -8158,7 +8158,7 @@ msgid "Verified"
 msgstr "Verificado"
 
 msgid "Version"
-msgstr ""
+msgstr "Versão"
 
 msgid "View epics list"
 msgstr "Ve lista de épicos"
@@ -8581,7 +8581,7 @@ msgid "Your projects"
 msgstr "Seus projetos"
 
 msgid "a deleted user"
-msgstr ""
+msgstr "um usuário excluído"
 
 msgid "ago"
 msgstr "atrás"
@@ -8806,8 +8806,8 @@ msgstr "Atualizar %{name} de %{version} para %{fixed}."
 
 msgid "ciReport|Used by %{packagesString}"
 msgid_plural "ciReport|Used by %{packagesString}, and %{lastPackage}"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Usado por %{packagesString}"
+msgstr[1] "Usado por %{packagesString} e %{lastPackage}"
 
 msgid "ciReport|View full report"
 msgstr "Visualizar relatório completo"
@@ -8876,7 +8876,7 @@ msgid "here"
 msgstr "aqui"
 
 msgid "https://your-bitbucket-server"
-msgstr ""
+msgstr "https://seu-servidor-do-bitbucket"
 
 msgid "import flow"
 msgstr "fluxo de importação"
@@ -8905,7 +8905,7 @@ msgid "latest version"
 msgstr "versão mais recente"
 
 msgid "license management"
-msgstr ""
+msgstr "gerenciamento de licenças"
 
 msgid "locked by %{path_lock_user_name} %{created_at}"
 msgstr "bloqueador por %{path_lock_user_name} %{created_at}"
@@ -9185,7 +9185,7 @@ msgid "remaining"
 msgstr "restante"
 
 msgid "remove"
-msgstr ""
+msgstr "remover"
 
 msgid "remove due date"
 msgstr "remover a data de vencimento"
