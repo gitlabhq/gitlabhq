@@ -3,7 +3,8 @@
     { "$ref": "../../../../../../spec/fixtures/api/schemas/job/job_details.json" },
     {
       "properties": {
-        "runner": { "$ref": "runner.json" }
+        "runner": { "$ref": "runner.json" },
+        "runners": { "$ref": "runners.json" }
       }
     }
   ]
