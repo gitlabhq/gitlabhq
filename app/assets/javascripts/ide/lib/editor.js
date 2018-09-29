@@ -16,46 +16,27 @@ import keymap from './keymap.json';
 languages.register({ id: 'vue', extensions: ['vue'], mimeTypes: ['text/html'] });
 
 function setupMonacoTheme() {
-  const rules = gitlabTheme.monacoTheme.rules.reduce((acc, token) => {
-    const settings = {
-      foreground: token.settings.foreground,
-      background: token.settings.background,
-      fontStyle: token.settings.fontStyle,
-    };
-    const scope =
-      typeof token.scope === 'string' ? token.scope.split(',').map(a => a.trim()) : token.scope;
-
-    scope.forEach(s => {
-      acc.push({
-        token: s,
-        ...settings,
-      });
-    });
-
-    return acc;
-  }, []);
-
   monacoEditor.defineTheme(gitlabTheme.themeName, {
     ...gitlabTheme.monacoTheme,
-    rules,
+    rules: gitlabTheme.monacoTheme.rules.reduce(
+      (acc, token) =>
+        acc.concat(
+          (typeof token.scope === 'string' ? token.scope.split(',') : token.scope).map(s => ({
+            token: s.trim(),
+            foreground: token.settings.foreground,
+            background: token.settings.background,
+            fontStyle: token.settings.fontStyle,
+          })),
+        ),
+      [],
+    ),
   });
-  monacoEditor.setTheme('gitlab');
+  monacoEditor.setTheme(gitlabTheme.themeName);
 }
-
-window.MonacoEnvironment = {
-  getWorker(workerId, label) {
-    if (label === 'editorWorkerService') {
-      const Worker = require('worker-loader!monaco-editor/esm/vs/editor/editor.worker.js');
-      return new Worker();
-    }
-
-    const Worker = require('worker-loader!monaco-editor/esm/vs/language/typescript/ts.worker');
-    return new Worker();
-  },
-};
 
 let onigasmLoaded = false;
 const loadSyntaxHighlighting = () => {
+  // eslint-disable-next-line global-require
   (onigasmLoaded ? Promise.resolve() : loadWASM(require('onigasm/lib/onigasm.wasm')))
     .then(() => {
       onigasmLoaded = true;
@@ -74,6 +55,9 @@ const loadSyntaxHighlighting = () => {
       grammars.set('typescript', 'source.tsx');
       grammars.set('javascript', 'source.tsx');
       grammars.set('vue', 'text.html.vue');
+      grammars.set('html', 'text.html.basic');
+      grammars.set('css', 'source.css');
+      grammars.set('json', 'source.json');
 
       return wireTmGrammars(window.monaco, registry, grammars);
     })
@@ -105,7 +89,25 @@ export default class Editor {
     this.disposable = new Disposable();
     this.modelManager = new ModelManager();
     this.decorationsController = new DecorationsController(this);
-    window.editor = this;
+
+    languages
+      .getLanguages()
+      .filter(
+        l =>
+          l.id === 'javascript' ||
+          l.id === 'typescript' ||
+          l.id === 'html' ||
+          l.id === 'css' ||
+          l.id === 'json',
+      )
+      .forEach(lang => {
+        // eslint-disable-next-line no-param-reassign
+        lang.loader = () =>
+          Promise.resolve({
+            language: { tokenizer: { root: [] } },
+            conf: {},
+          });
+      });
 
     setupMonacoTheme();
 
@@ -188,7 +190,9 @@ export default class Editor {
 
     if (this.dirtyDiffController) this.dirtyDiffController.reDecorate(model);
 
-    loadSyntaxHighlighting();
+    if (typeof WebAssembly === 'object') {
+      loadSyntaxHighlighting();
+    }
   }
 
   attachMergeRequestModel(model) {
