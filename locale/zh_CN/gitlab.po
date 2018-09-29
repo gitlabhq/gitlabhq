@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-29 09:18\n"
+"PO-Revision-Date: 2018-09-29 09:21\n"
 
 msgid " Status"
 msgstr "状态"
@@ -1569,7 +1569,7 @@ msgid "ClusterIntegration|%{appList} was successfully installed on your Kubernet
 msgstr "%{appList} 已成功安装到Kubernetes集群上"
 
 msgid "ClusterIntegration|%{boldNotice} This will add some extra resources like a load balancer, which may incur additional costs depending on the hosting provider your Kubernetes cluster is installed on. If you are using Google Kubernetes Engine, you can %{pricingLink}."
-msgstr ""
+msgstr "%{boldNotice} 这将添加一些额外的资源，如负载均衡器，这可能会产生额外的成本，具体取决于您安装Kubernetes集群的托管服务提供商。如果您使用的是Google Kubernetes Engine，则可以 %{pricingLink}。"
 
 msgid "ClusterIntegration|API URL"
 msgstr "API地址"
@@ -1581,7 +1581,7 @@ msgid "ClusterIntegration|Advanced options on this Kubernetes cluster's integrat
 msgstr "Kubernetes集群集成的高级选项"
 
 msgid "ClusterIntegration|After installing Ingress, you will need to point your wildcard DNS at the generated external IP address in order to view your app after it is deployed. %{ingressHelpLink}"
-msgstr ""
+msgstr "安装Ingress后，您需要在生成的外部IP地址上指向DNS，以便在部署后查看您的应用程序。 %{ingressHelpLink}"
 
 msgid "ClusterIntegration|An error occured while trying to fetch project zones: %{error}"
 msgstr "尝试获取项目地域时发生错误：%{error}"
@@ -1593,7 +1593,7 @@ msgid "ClusterIntegration|An error occured while trying to fetch zone machine ty
 msgstr "尝试获取设备类型时发生错误：%{error}"
 
 msgid "ClusterIntegration|An error occurred when trying to contact the Google Cloud API. Please try again later."
-msgstr ""
+msgstr "尝试联系Google Cloud API时发生错误。请稍后再试。"
 
 msgid "ClusterIntegration|Applications"
 msgstr "应用程序"
@@ -1668,7 +1668,7 @@ msgid "ClusterIntegration|GitLab Runner"
 msgstr "GitLab Runner"
 
 msgid "ClusterIntegration|GitLab Runner connects to this project's repository and executes CI/CD jobs, pushing results back and deploying, applications to production."
-msgstr ""
+msgstr "GitLab Runner连接到该项目的存储库并执行CI / CD作业，将结果推回，并部署应用程序到生产环境。"
 
 msgid "ClusterIntegration|Google Cloud Platform project"
 msgstr "Google 云平台项目"
@@ -1683,7 +1683,7 @@ msgid "ClusterIntegration|Helm Tiller"
 msgstr "Helm Tiller"
 
 msgid "ClusterIntegration|Helm streamlines installing and managing Kubernetes applications. Tiller runs inside of your Kubernetes Cluster, and manages releases of your charts."
-msgstr ""
+msgstr "Helm简化了Kubernetes应用程序的安装和管理。 Tiller在您的Kubernetes集群内部运行，并管理图表的发布。"
 
 msgid "ClusterIntegration|Hide"
 msgstr "隐藏"
@@ -1701,7 +1701,7 @@ msgid "ClusterIntegration|Ingress IP Address"
 msgstr "Ingress IP地址"
 
 msgid "ClusterIntegration|Ingress gives you a way to route requests to services based on the request host or path, centralizing a number of services into a single entrypoint."
-msgstr ""
+msgstr "Ingress为您提供了一种基于请求主机或路径将请求路由到服务的方法，将多个服务集中到一个入口点。"
 
 msgid "ClusterIntegration|Install"
 msgstr "安装"
@@ -1728,7 +1728,7 @@ msgid "ClusterIntegration|JupyterHub"
 msgstr "JupyterHub"
 
 msgid "ClusterIntegration|JupyterHub, a multi-user Hub, spawns, manages, and proxies multiple instances of the single-user Jupyter notebook server. JupyterHub can be used to serve notebooks to a class of students, a corporate data science group, or a scientific research group."
-msgstr ""
+msgstr "JupyterHub是一个多用户Hub，它生成，管理和代理单用户 Jupyter笔记本服务器的多个实例。 JupyterHub可用于为一类学生，企业数据科学小组或科研小组提供笔记本电脑。"
 
 msgid "ClusterIntegration|Kubernetes cluster"
 msgstr "Kubernetes 集群"
@@ -1809,7 +1809,7 @@ msgid "ClusterIntegration|Please make sure that your Google account meets the fo
 msgstr "请确保您的 Google 帐户符合以下要求："
 
 msgid "ClusterIntegration|Point a wildcard DNS to this generated IP address in order to access your application after it has been deployed."
-msgstr ""
+msgstr "将DNS指向生成的这个IP地址，以便在部署后访问您的应用程序。"
 
 msgid "ClusterIntegration|Project namespace"
 msgstr "项目命名空间"
@@ -7160,7 +7160,7 @@ msgid "Tags"
 msgstr "标签"
 
 msgid "Tags feed"
-msgstr ""
+msgstr "标签动态"
 
 msgid "Tags:"
 msgstr "标签："
@@ -7265,7 +7265,7 @@ msgid "The Advanced Global Search in GitLab is a powerful search service that sa
 msgstr "GitLab 中的高级全局搜索功能是一个强大且节省您的时间的搜索服务。您可以搜索其他团队的代码以帮助您完善自己项目中的代码。从而避免创建重复的代码或浪费时间。"
 
 msgid "The Git LFS objects will <strong>not</strong> be synced."
-msgstr ""
+msgstr "Git LFS对象将<strong>不会</strong>被同步。"
 
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project"
 msgstr "议题跟踪用于管理需求改进或者解决的问题"
@@ -9031,10 +9031,10 @@ msgid "mrWidget|The changes will be merged into"
 msgstr "更改将被合并到"
 
 msgid "mrWidget|The pipeline for this merge request failed. Please retry the job or push a new commit to fix the failure"
-msgstr ""
+msgstr "此合并请求的流水线失败。请重试该作业或推送新的提交以修复失败"
 
 msgid "mrWidget|The source branch HEAD has recently changed. Please reload the page and review the changes before merging"
-msgstr ""
+msgstr "源分支HEAD最近已更改。请在重新合并之前重新加载页面并查看更改"
 
 msgid "mrWidget|The source branch has been removed"
 msgstr "源分支已被删除"
@@ -9067,7 +9067,7 @@ msgid "mrWidget|This project is archived, write access has been disabled"
 msgstr "该项目已存档，禁止写入"
 
 msgid "mrWidget|You are not allowed to edit this project directly. Please fork to make changes."
-msgstr ""
+msgstr "不允许直接编辑此项目。请派生(fork)后进行更改。"
 
 msgid "mrWidget|You can merge this merge request manually using the"
 msgstr "可以手动合并此合并请求，使用以下"
@@ -9088,7 +9088,7 @@ msgid "mrWidget|to be merged automatically when the pipeline succeeds"
 msgstr "流水线成功时自动合并"
 
 msgid "n/a"
-msgstr ""
+msgstr "不适用"
 
 msgid "new merge request"
 msgstr "新建合并请求"
