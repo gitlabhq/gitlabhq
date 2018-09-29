@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   # External applications API
   class Applications < Grape::API

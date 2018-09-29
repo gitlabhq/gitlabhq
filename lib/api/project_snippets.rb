@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class ProjectSnippets < Grape::API
     include PaginationParams

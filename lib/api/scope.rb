@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Encapsulate a scope used for authorization, such as `api`, or `read_user`
 module API
   class Scope

@@ -11,10 +11,6 @@ describe Backup::Manager do
     allow(progress).to receive(:puts)
     allow(progress).to receive(:print)
 
-    allow_any_instance_of(String).to receive(:color) do |string, _color|
-      string
-    end
-
     @old_progress = $progress # rubocop:disable Style/GlobalVars
     $progress = progress # rubocop:disable Style/GlobalVars
   end
