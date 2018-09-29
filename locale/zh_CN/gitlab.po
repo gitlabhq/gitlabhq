@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-29 12:42\n"
+"PO-Revision-Date: 2018-09-29 12:47\n"
 
 msgid " Status"
 msgstr "状态"
@@ -440,7 +440,7 @@ msgid "AdminArea|Stopping jobs failed"
 msgstr "停止作业失败"
 
 msgid "AdminArea|You’re about to stop all jobs.This will halt all current jobs that are running."
-msgstr "您即将停止所有作业。所有正在运行的都会被停止。"
+msgstr "您即将停止所有作业。这会中断并结束所有正在运行的作业。"
 
 msgid "AdminHealthPageLink|health page"
 msgstr "运行状况页面"
