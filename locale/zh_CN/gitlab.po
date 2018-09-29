@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-29 11:26\n"
+"PO-Revision-Date: 2018-09-29 11:47\n"
 
 msgid " Status"
 msgstr "状态"
@@ -2174,7 +2174,7 @@ msgid "Contribution guide"
 msgstr "贡献指南"
 
 msgid "Contributions for <strong>%{calendar_date}</strong>"
-msgstr ""
+msgstr "<strong>%{calendar_date}</strong>的贡献"
 
 msgid "Contributions per group member"
 msgstr "每名群组成员的贡献"
@@ -2820,7 +2820,7 @@ msgid "Enable the Performance Bar for a given group."
 msgstr "对指定群组启用性能栏。"
 
 msgid "Enable usage ping"
-msgstr ""
+msgstr "启用使用情况检测(usage ping)"
 
 msgid "Enable usage ping to get an overview of how you are using GitLab from a feature perspective."
 msgstr ""
@@ -2958,13 +2958,13 @@ msgid "Epics|More information"
 msgstr "更多信息"
 
 msgid "Epics|These dates affect how your epics appear in the roadmap. Dates from milestones come from the milestones assigned to issues in the epic. You can also set fixed dates or remove them entirely."
-msgstr ""
+msgstr "这些日期会影响史诗故事在路线图中的显示方式。里程碑日期来自于史诗故事中的议题所属的里程碑。您还可以设置固定日期或完全删除它们。"
 
 msgid "Epics|To schedule your epic's %{epicDateType} date based on milestones, assign a milestone with a %{epicDateType} date to any issue in the epic."
-msgstr ""
+msgstr "如需根据里程碑来安排史诗故事的 %{epicDateType} 日期，请为史诗故事中的任一议题指定带有 %{epicDateType} 日期的里程碑。"
 
 msgid "Epics|due"
-msgstr ""
+msgstr "到期"
 
 msgid "Epics|start"
 msgstr "开始"
@@ -3843,10 +3843,10 @@ msgid "GroupsTree|Loading groups"
 msgstr "加载群组中"
 
 msgid "GroupsTree|No groups matched your search"
-msgstr ""
+msgstr "没有搜索到任何符合的群组"
 
 msgid "GroupsTree|No groups or projects matched your search"
-msgstr ""
+msgstr "没有任何群组或项目符合您的搜索"
 
 msgid "GroupsTree|Search by name"
 msgstr "按名称搜索"
@@ -3891,7 +3891,7 @@ msgid "Hide host keys manual input"
 msgstr "手工输入隐藏热键"
 
 msgid "Hide payload"
-msgstr ""
+msgstr "隐藏有效数据"
 
 msgid "Hide value"
 msgid_plural "Hide values"
@@ -4301,7 +4301,7 @@ msgid "Labels|Promote Label"
 msgstr "升级标记"
 
 msgid "Labels|Promoting %{labelTitle} will make it available for all projects inside %{groupName}. Existing project labels with the same title will be merged. This action cannot be reversed."
-msgstr ""
+msgstr "提升 %{labelTitle} 将使其可用于 %{groupName} 内的所有项目。现有的同名项目标记将被合并。该操作不可撤销。"
 
 msgid "Last %d day"
 msgid_plural "Last %d days"
@@ -4759,7 +4759,7 @@ msgid "Milestones| You’re about to permanently delete the milestone %{mileston
 msgstr "您即将永久删除里程碑 %{milestoneTitle}。此里程碑当前未用于任何议题或合并请求。"
 
 msgid "Milestones|<p>%{milestonePromotion}</p> %{finalWarning}"
-msgstr ""
+msgstr "<p>%{milestonePromotion}</p> %{finalWarning}"
 
 msgid "Milestones|Delete milestone"
 msgstr "删除里程碑"
@@ -4780,7 +4780,7 @@ msgid "Milestones|Promote Milestone"
 msgstr "升级里程碑"
 
 msgid "Milestones|Promoting %{milestone} will make it available for all projects inside %{groupName}. Existing project milestones with the same name will be merged. "
-msgstr ""
+msgstr "提升 %{milestone} 将使其可用于 %{groupName} 内的所有项目。现有的同名项目里程碑将被合并。 "
 
 msgid "Milestones|This action cannot be reversed."
 msgstr "该操作无法撤销。"
@@ -4789,7 +4789,7 @@ msgid "Mirror a repository"
 msgstr "镜像存储库"
 
 msgid "Mirror direction"
-msgstr ""
+msgstr "镜像方向"
 
 msgid "Mirror repository"
 msgstr "镜像存储库"
@@ -5334,7 +5334,7 @@ msgid "Pipeline"
 msgstr "流水线"
 
 msgid "Pipeline %{pipelineLinkStart} #%{pipelineId} %{pipelineLinkEnd} from %{pipelineLinkRefStart} %{pipelineRef} %{pipelineLinkRefEnd}"
-msgstr ""
+msgstr "流水线 %{pipelineLinkStart} #%{pipelineId} %{pipelineLinkEnd} 来自 %{pipelineLinkRefStart} %{pipelineRef} %{pipelineLinkRefEnd}"
 
 msgid "Pipeline Health"
 msgstr "流水线运行状况指标"
@@ -5688,10 +5688,10 @@ msgid "Profiles|This emoji and message will appear on your profile and throughou
 msgstr "这个表情符号和这条消息会在您的个人资料和整个工作界面中出现。"
 
 msgid "Profiles|This feature is experimental and translations are not complete yet."
-msgstr ""
+msgstr "此功能是实验性的，翻译尚未完成。"
 
 msgid "Profiles|This information will appear on your profile."
-msgstr ""
+msgstr "此信息将显示在您的个人资料中。"
 
 msgid "Profiles|Type your %{confirmationValue} to confirm:"
 msgstr "键入您的 %{confirmationValue} 以确认："
@@ -5817,7 +5817,7 @@ msgid "Project name"
 msgstr "项目名称"
 
 msgid "Project slug"
-msgstr ""
+msgstr "项目标识串(slug)"
 
 msgid "ProjectActivityRSS|Subscribe"
 msgstr "订阅"
@@ -6184,7 +6184,7 @@ msgstr "刷新"
 
 msgid "Refreshing in a second to show the updated status..."
 msgid_plural "Refreshing in %d seconds to show the updated status..."
-msgstr[0] ""
+msgstr[0] "%d 秒后刷新以显示更新状态..."
 
 msgid "Regenerate key"
 msgstr "重新生成密钥"
@@ -6428,7 +6428,7 @@ msgid "Run untagged jobs"
 msgstr "运行未标记的作业"
 
 msgid "Runner cannot be assigned to other projects"
-msgstr ""
+msgstr "无法将Runner分配给其他项目"
 
 msgid "Runner runs jobs from all unassigned projects"
 msgstr ""
@@ -6455,7 +6455,7 @@ msgid "Runners can be placed on separate users, servers, and even on your local 
 msgstr "Runner可以放在不同的用户、服务器，甚至本地机器上。"
 
 msgid "Runners can be placed on separate users, servers, even on your local machine."
-msgstr ""
+msgstr "Runner可以放在不同的用户、服务器，甚至本地机器上。"
 
 msgid "Runners currently online: %{active_runners_count}"
 msgstr "当前在线Runner： %{active_runners_count}"
@@ -6675,7 +6675,7 @@ msgid "Select target branch"
 msgstr "选择目标分支"
 
 msgid "Select the branch you want to set as the default for this project. All merge requests and commits will automatically be made against this branch unless you specify a different one."
-msgstr ""
+msgstr "选择当前项目的默认分支。除非另行指定，否则所有合并请求和提交都将指向此分支。"
 
 msgid "Select the custom project template source group."
 msgstr "选择自定义项目模板源组。"
@@ -7385,7 +7385,7 @@ msgid "The update action will time out after %{number_of_minutes} minutes. For b
 msgstr "更新操作将在 %{number_of_minutes} 分钟后超时。对于大型存储库，请使用clone/push组合。"
 
 msgid "The usage ping is disabled, and cannot be configured through this form."
-msgstr ""
+msgstr "使用情况检测(usage ping)已禁用，无法通过此表单进行配置。"
 
 msgid "The user map is a JSON document mapping the Google Code users that participated on your projects to the way their email addresses and usernames will be imported into GitLab. You can change this by changing the value on the right hand side of <code>:</code>. Be sure to preserve the surrounding double quotes, other punctuation and the email address or username on the left hand side."
 msgstr "用户映射是一个JSON文档，将参与项目的Google Code用户映射到他们将导入GitLab的电子邮件地址和用户名的方式。您可以通过更改 <code>:</code>右侧的值来更改此值。请务必在左侧保留周围的双引号，其他标点符号以及电子邮件地址或用户名。"
@@ -7466,7 +7466,7 @@ msgid "This branch has changed since you started editing. Would you like to crea
 msgstr "自您开始编辑后, 此分支已更改。您想创建一个新的分支吗？"
 
 msgid "This container registry has been scheduled for deletion."
-msgstr ""
+msgstr "此容器注册表已安排删除。"
 
 msgid "This date is after the due date, so this epic won't appear in the roadmap."
 msgstr ""
@@ -7595,10 +7595,10 @@ msgid "This user has no identities"
 msgstr "该用户没有身份标识"
 
 msgid "This user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches."
-msgstr ""
+msgstr "此用户将成为活动流中所有事件的作者，例如创建新分支或者推送新提交到现有分支。"
 
 msgid "This user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches. Upon creation or when reassigning you can only assign yourself to be the mirror user."
-msgstr ""
+msgstr "此用户将成为活动流中所有事件的作者，例如创建新分支或者推送新提交到现有分支。在创建或重新指定时您仅可将自己指定为镜像用户。"
 
 msgid "This will delete the custom metric, Are you sure?"
 msgstr "此操作将删除自定义指标，确定继续吗？"
@@ -7804,7 +7804,7 @@ msgid "To define internal users, first enable new users set to external"
 msgstr "要定义内部用户，请首先启用设置为外部的新用户"
 
 msgid "To enable it and see User Cohorts, visit %{application_settings_link_start}application settings%{application_settings_link_end}."
-msgstr ""
+msgstr "要启用它并查看用户世代表，请访问 %{application_settings_link_start}应用程序设置%{application_settings_link_end}。"
 
 msgid "To get started you enter your FogBugz URL and login information below. In the next steps, you'll be able to map users and select the projects you want to import."
 msgstr "首先请在下面输入您的FogBugz URL和登录信息。下一步，您将可以映射用户并选择要导入的项目。"
@@ -7861,7 +7861,7 @@ msgid "Toggle Sidebar"
 msgstr "切换侧边栏"
 
 msgid "Toggle commit description"
-msgstr ""
+msgstr "切换提交描述"
 
 msgid "Toggle discussion"
 msgstr "开关讨论"
@@ -8071,7 +8071,7 @@ msgid "Used by members to sign in to your group in GitLab"
 msgstr "供成员登录您的GitLab群组"
 
 msgid "User Cohorts are only shown when the %{usage_ping_link_start}usage ping%{usage_ping_link_end} is enabled."
-msgstr ""
+msgstr "用户世代表仅在启用 %{usage_ping_link_start}使用情况检测(usage ping)%{usage_ping_link_end} 时显示。"
 
 msgid "User Settings"
 msgstr "用户设置"
@@ -8401,7 +8401,7 @@ msgid "You can only edit files when you are on a branch"
 msgstr "只能在分支上编辑文件"
 
 msgid "You can reset runners registration token by pressing a button below."
-msgstr ""
+msgstr "您可以通过下面的按钮重置Runner注册令牌。"
 
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
 msgstr "您可以使用交互模式，通过选择 %{use_ours} 或 %{use_theirs} 按钮来解决合并冲突。也可以通过直接编辑文件来解决合并冲突。然后将这些更改提交到 %{branch_name}"
@@ -9101,7 +9101,7 @@ msgstr "或"
 
 msgid "out of %d total test"
 msgid_plural "out of %d total tests"
-msgstr[0] ""
+msgstr[0] "总共 %d 次测试中"
 
 msgid "parent"
 msgid_plural "parents"
@@ -9144,7 +9144,7 @@ msgid "to help your contributors communicate effectively!"
 msgstr "帮助您的贡献者进行有效沟通！"
 
 msgid "toggle collapse"
-msgstr ""
+msgstr "切换折叠"
 
 msgid "username"
 msgstr "用户名"
