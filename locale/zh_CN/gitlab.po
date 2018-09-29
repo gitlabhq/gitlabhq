@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-29 11:47\n"
+"PO-Revision-Date: 2018-09-29 11:51\n"
 
 msgid " Status"
 msgstr "状态"
@@ -869,7 +869,7 @@ msgid "AutoDevOps|Learn more in the %{link_to_documentation}"
 msgstr "想了解更多请访问 %{link_to_documentation}"
 
 msgid "AutoDevOps|The Auto DevOps pipeline has been enabled and will be used if no alternative CI configuration file is found. %{more_information_link}"
-msgstr ""
+msgstr "Auto DevOps流水线已启用。如果未找到CI配置文件，将使用该流水线。 %{more_information_link}"
 
 msgid "AutoDevOps|You can automatically build and test your application if you %{link_to_auto_devops_settings} for this project. You can automatically deploy it as well, if you %{link_to_add_kubernetes_cluster}."
 msgstr "如果当前项目%{link_to_auto_devops_settings}, 可以自动的构建和测试应用。如果已%{link_to_add_kubernetes_cluster}，则也可以实现自动部署。"
@@ -2003,7 +2003,7 @@ msgid "CommitMessage|Add %{file_name}"
 msgstr "添加 %{file_name}"
 
 msgid "CommitWidget|authored"
-msgstr ""
+msgstr "作者"
 
 msgid "Commits"
 msgstr "提交"
@@ -5583,7 +5583,7 @@ msgid "Profiles| You are going to change the username %{currentUsernameBold} to 
 msgstr "您将更改用户名 %{currentUsernameBold} 为 %{newUsernameBold}。配置文件和项目将重定向到 %{newUsername} 命名空间，但是一旦 %{currentUsername} 命名空间被另一个用户或组注册，此重定向将过期。请尽快更新您的远端Git仓库。"
 
 msgid "Profiles|%{author_name} made a private contribution"
-msgstr ""
+msgstr "%{author_name} 作出了私有贡献"
 
 msgid "Profiles|Account scheduled for removal."
 msgstr "帐户已安排被删除。"
@@ -5607,7 +5607,7 @@ msgid "Profiles|Choose file..."
 msgstr "选择文件..."
 
 msgid "Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information."
-msgstr ""
+msgstr "选择在公开个人资料中显示私有项目的贡献，但不显示任何项目，存储库或组织信息。"
 
 msgid "Profiles|Clear status"
 msgstr "清除状态"
@@ -5634,7 +5634,7 @@ msgid "Profiles|Do not show on profile"
 msgstr "不在个人资料中显示"
 
 msgid "Profiles|Don't display activity-related personal information on your profiles"
-msgstr ""
+msgstr "不要在个人资料上显示与活动相关的个人信息"
 
 msgid "Profiles|Edit Profile"
 msgstr "编辑个人资料"
