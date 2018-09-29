@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-29 11:51\n"
+"PO-Revision-Date: 2018-09-29 12:06\n"
 
 msgid " Status"
 msgstr "状态"
@@ -2823,7 +2823,7 @@ msgid "Enable usage ping"
 msgstr "启用使用情况检测(usage ping)"
 
 msgid "Enable usage ping to get an overview of how you are using GitLab from a feature perspective."
-msgstr ""
+msgstr "启用使用情况检测(usage ping)以从功能角度总体上了解您如何使用GitLab。"
 
 msgid "Enabled"
 msgstr "已启用"
@@ -3246,7 +3246,7 @@ msgid "For more information, go to the "
 msgstr "如需了解详细信息，请参阅"
 
 msgid "For more information, see the documentation on %{deactivating_usage_ping_link_start}deactivating the usage ping%{deactivating_usage_ping_link_end}."
-msgstr ""
+msgstr "欲了解更多相关信息，请参阅 %{deactivating_usage_ping_link_start}使用情况检测(usage ping)%{deactivating_usage_ping_link_end}的文档。"
 
 msgid "For private projects, any member (guest or higher) can view pipelines and access job details (output logs and artifacts)"
 msgstr "对于私有项目，任何成员（访客或更高级别）都可以查看流水线并访问作业详情（输出日志和工件）"
@@ -3729,13 +3729,13 @@ msgid "GroupRoadmap|The roadmap shows the progress of your epics along a timelin
 msgstr "路线图显示了史诗故事沿着时间线的进展情况"
 
 msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from %{startDate} to %{endDate}."
-msgstr ""
+msgstr "如需查看路线图，请将开始或结束日期添加到当前群组或其子组中的某个史诗故事。在月视图中，只显示上个月，本月以及接下来5个月的史诗故事&ndash; 从 %{startDate} 至 %{endDate}."
 
 msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the quarters view, only epics in the past quarter, current quarter, and next 4 quarters are shown &ndash; from %{startDate} to %{endDate}."
-msgstr ""
+msgstr "如需查看路线图，请将开始或结束日期添加到当前群组或其子组中的某个史诗故事。在季度视图中，只显示上个季度，本季度以及接下来4个季度的史诗故事&ndash; 从 %{startDate} 至 %{endDate}."
 
 msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the weeks view, only epics in the past week, current week, and next 4 weeks are shown &ndash; from %{startDate} to %{endDate}."
-msgstr ""
+msgstr "如需查看路线图，请将开始或结束日期添加到当前群组或其子组中的某个史诗故事。在周视图中，只显示上周，本周以及接下来四周的史诗故事&ndash; 从 %{startDate} 至 %{endDate}."
 
 msgid "GroupRoadmap|To widen your search, change or remove filters. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from %{startDate} to %{endDate}."
 msgstr "要扩大搜索范围，请更改或删除过滤器。在月视图中，只显示上月，本月和接下来的四个月的史诗故事 &ndash; 从 %{startDate} 到 %{endDate} 。"
@@ -4057,7 +4057,7 @@ msgid "Improve search with Advanced Global Search and GitLab Enterprise Edition.
 msgstr "使用GitLab企业版全局搜索带来的增强搜索功能"
 
 msgid "In order to enable instance-level analytics, please ask an admin to enable %{usage_ping_link_start}usage ping%{usage_ping_link_end}."
-msgstr ""
+msgstr "要启用实例级分析，请要求管理员启用 %{usage_ping_link_start}使用情况检测(usage ping)%{usage_ping_link_end}。"
 
 msgid "In the next step, you'll be able to select the projects you want to import."
 msgstr "继续下一步，选择想要导入的项目"
@@ -6289,7 +6289,7 @@ msgid "Reports|More info"
 msgstr "更多信息"
 
 msgid "Reports|New Issue"
-msgstr ""
+msgstr "新建议题"
 
 msgid "Reports|Severity"
 msgstr "严重性"
@@ -7469,10 +7469,10 @@ msgid "This container registry has been scheduled for deletion."
 msgstr "此容器注册表已安排删除。"
 
 msgid "This date is after the due date, so this epic won't appear in the roadmap."
-msgstr ""
+msgstr "此日期在截止日期之后，因此该史诗故事不会出现在路线图中。"
 
 msgid "This date is before the start date, so this epic won't appear in the roadmap."
-msgstr ""
+msgstr "此日期在开始日期之前，因此该史诗故事不会出现在路线图中。"
 
 msgid "This diff is collapsed."
 msgstr "此差异已折叠。"
