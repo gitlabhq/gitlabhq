@@ -30,7 +30,7 @@ module Geo
     def create_repository_updated_event!
       Geo::RepositoryUpdatedEventStore.new(
         project, refs: refs, changes: changes, source: source
-      ).create
+      ).create!
     end
 
     def reset_repository_checksum!

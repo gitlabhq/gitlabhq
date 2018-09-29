@@ -84,6 +84,12 @@ module QA
           end
         end
 
+        def click_repository
+          within_sidebar do
+            click_link('Repository')
+          end
+        end
+
         private
 
         def hover_settings

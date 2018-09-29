@@ -26,7 +26,7 @@ describe Geo::HashedStorageMigratedEventStore do
       end
 
       it 'tracks project attributes' do
-        subject.create
+        subject.create!
 
         expect(Geo::HashedStorageMigratedEvent.last).to have_attributes(
           repository_storage_name: project.repository_storage,

@@ -22,7 +22,7 @@ describe Geo::RepositoryRenamedEventStore do
       end
 
       it 'tracks old and new paths for project repositories' do
-        subject.create
+        subject.create!
 
         expect(Geo::RepositoryRenamedEvent.last).to have_attributes(
           repository_storage_name: project.repository_storage,

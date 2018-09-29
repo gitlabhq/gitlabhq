@@ -16,7 +16,7 @@ module EE
     private
 
     def log_geo_event
-      ::Geo::LfsObjectDeletedEventStore.new(self).create
+      ::Geo::LfsObjectDeletedEventStore.new(self).create!
     end
   end
 end

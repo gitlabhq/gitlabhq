@@ -15,7 +15,7 @@ module EE
           project,
           old_path: project.path,
           old_path_with_namespace: @old_path # rubocop:disable Gitlab/ModuleWithInstanceVariables
-        ).create
+        ).create!
       end
     end
   end

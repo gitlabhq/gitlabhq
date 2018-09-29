@@ -22,11 +22,11 @@ describe Geo::LfsObjectDeletedEventStore do
       it 'does not create an event when LFS object is not on a local store' do
         allow(lfs_object).to receive(:local_store?).and_return(false)
 
-        expect { subject.create }.not_to change(Geo::LfsObjectDeletedEvent, :count)
+        expect { subject.create! }.not_to change(Geo::LfsObjectDeletedEvent, :count)
       end
 
       it 'tracks LFS object attributes' do
-        subject.create
+        subject.create!
 
         expect(Geo::LfsObjectDeletedEvent.last).to have_attributes(
           lfs_object_id: lfs_object.id,
@@ -50,7 +50,7 @@ describe Geo::LfsObjectDeletedEventStore do
         expect(Gitlab::Geo::Logger).to receive(:error)
           .with(expected_message).and_call_original
 
-        subject.create
+        subject.create!
       end
     end
   end
