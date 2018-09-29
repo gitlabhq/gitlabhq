@@ -1,0 +1,5 @@
+---
+title: Prevent SSRF attacks in HipChat integration
+merge_request:
+author:
+type: security
