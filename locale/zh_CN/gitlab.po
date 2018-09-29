@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-28 12:46\n"
+"PO-Revision-Date: 2018-09-29 09:06\n"
 
 msgid " Status"
 msgstr "状态"
@@ -108,7 +108,7 @@ msgid "%{group_docs_link_start}Groups%{group_docs_link_end} allow you to manage 
 msgstr "%{group_docs_link_start}群组%{group_docs_link_end} 允许您管理、协作多个项目。群组的成员可以访问群组下的所有项目。"
 
 msgid "%{issuableType} will be removed! Are you sure?"
-msgstr ""
+msgstr "%{issuableType} 将被删除！您确定吗？"
 
 msgid "%{loadingIcon} Started"
 msgstr "%{loadingIcon} 已开始"
@@ -171,10 +171,10 @@ msgid "%{unstaged} unstaged and %{staged} staged changes"
 msgstr "%{unstaged}个未暂存的更改及%{staged}个已暂存的更改"
 
 msgid "%{usage_ping_link_start}Learn more%{usage_ping_link_end} about what information is shared with GitLab Inc."
-msgstr ""
+msgstr "%{usage_ping_link_start}了解更多%{usage_ping_link_end}关于GitLab Inc.的共享信息。"
 
 msgid "+ %{count} more"
-msgstr ""
+msgstr "+ 其余 %{count} 项"
 
 msgid "+ %{moreCount} more"
 msgstr "+ 其余 %{moreCount} 项"
@@ -284,16 +284,16 @@ msgid "<strong>Removes</strong> source branch"
 msgstr "<strong>删除</strong>源分支"
 
 msgid "A 'Runner' is a process which runs a job. You can set up as many Runners as you need."
-msgstr ""
+msgstr "Runner是一个执行任务的进程。您可以根据需要配置任意数量的Runner。"
 
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr "持续集成数据图"
 
 msgid "A default branch cannot be chosen for an empty project."
-msgstr ""
+msgstr "无法为空项目选择默认分支。"
 
 msgid "A deleted user"
-msgstr ""
+msgstr "已删除的用户"
 
 msgid "A new branch will be created in your fork and a new merge request will be started."
 msgstr "将在派生(fork)项目中中创建一个新的分支, 并开启一个新的合并请求。"
@@ -338,7 +338,7 @@ msgid "Access denied! Please verify you can add deploy keys to this repository."
 msgstr "拒绝访问！请核查您是否有权限将部署密钥添加到此仓库。"
 
 msgid "Access expiration date"
-msgstr ""
+msgstr "访问到期日期"
 
 msgid "Access to '%{classification_label}' not allowed"
 msgstr "不允许访问%{classification_label}"
@@ -386,7 +386,7 @@ msgid "Add additional text to appear in all email communications. %{character_li
 msgstr "添加包含在所有电子邮件中的附加文本。 长度不超过%{character_limit} 字符"
 
 msgid "Add license"
-msgstr ""
+msgstr "添加许可证"
 
 msgid "Add new application"
 msgstr "新建应用"
@@ -407,7 +407,7 @@ msgid "Add users to group"
 msgstr "将用户加入群组"
 
 msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission"
-msgstr ""
+msgstr "当前GitLab实例禁止添加新应用程序。请联系您的GitLab管理员以获得相关权限。"
 
 msgid "Additional text"
 msgstr "附加文本"
@@ -422,10 +422,10 @@ msgid "Admin area"
 msgstr "管理中心"
 
 msgid "AdminArea| You are about to permanently delete the user %{username}. Issues, merge requests, and groups linked to them will be transferred to a system-wide \"Ghost-user\". To avoid data loss, consider using the %{strong_start}block user%{strong_end} feature instead. Once you %{strong_start}Delete user%{strong_end}, it cannot be undone or recovered."
-msgstr ""
+msgstr "您即将永久删除用户 %{username}。该用户的议题、合并请求以及链接到该用户的群组将被转移到系统的“Ghost用户”。为避免数据丢失，建议您使用 %{strong_start}禁用用户%{strong_end} 功能。一旦您 %{strong_start}删除用户%{strong_end}，将无法撤消或恢复。"
 
 msgid "AdminArea| You are about to permanently delete the user %{username}. This will delete all of the issues, merge requests, and groups linked to them. To avoid data loss, consider using the %{strong_start}block user%{strong_end} feature instead. Once you %{strong_start}Delete user%{strong_end}, it cannot be undone or recovered."
-msgstr ""
+msgstr "您即将永久删除用户 %{username}。此操作会删除该用户的所有议题、合并请求以及链接到该用户的群组。为避免数据丢失，建议您使用 %{strong_start}禁用用户%{strong_end} 功能。一旦您 %{strong_start}删除用户%{strong_end}，将无法撤消或恢复。"
 
 msgid "AdminArea|Stop all jobs"
 msgstr "停止所有作业"
@@ -599,16 +599,16 @@ msgid "An error occurred while fetching sidebar data"
 msgstr "获取侧边栏数据时发生错误"
 
 msgid "An error occurred while fetching stages."
-msgstr ""
+msgstr "获取阶段时发生错误"
 
 msgid "An error occurred while fetching the job log."
-msgstr ""
+msgstr "获取作业日志时发生错误。"
 
 msgid "An error occurred while fetching the job."
-msgstr ""
+msgstr "获取作业详情时发生错误"
 
 msgid "An error occurred while fetching the jobs."
-msgstr ""
+msgstr "获取作业列表时发生错误"
 
 msgid "An error occurred while fetching the pipeline."
 msgstr "获取流水线时出错"
@@ -707,7 +707,7 @@ msgid "Archived project! Repository and other project resources are read-only"
 msgstr "已归档项目！仓库和其他项目资源均为只读"
 
 msgid "Archived projects"
-msgstr ""
+msgstr "已存档项目"
 
 msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr "确定要删除此流水线计划吗？"
@@ -746,7 +746,7 @@ msgid "Ascending"
 msgstr "升序排列"
 
 msgid "Ask your group maintainer to set up a group Runner."
-msgstr ""
+msgstr "请群组维护者配置一个群组级 Runner。"
 
 msgid "Assertion consumer service URL"
 msgstr "断言消费者服务 URL"
@@ -947,7 +947,7 @@ msgid "Badges|No image to preview"
 msgstr "无图像可预览"
 
 msgid "Badges|Please fill in a valid URL"
-msgstr ""
+msgstr "请输入正确的 URL"
 
 msgid "Badges|Project Badge"
 msgstr "项目徽章"
