@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-29 10:26\n"
+"PO-Revision-Date: 2018-09-29 11:26\n"
 
 msgid " Status"
 msgstr "状态"
@@ -1959,7 +1959,7 @@ msgid "Cohorts"
 msgstr "世代表"
 
 msgid "Collapse"
-msgstr "收起"
+msgstr "折叠"
 
 msgid "Collapse sidebar"
 msgstr "折叠侧边栏"
