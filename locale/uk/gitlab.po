@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: uk\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-28 12:46\n"
+"PO-Revision-Date: 2018-09-29 20:41\n"
 
 msgid " Status"
 msgstr " Статус"
@@ -159,7 +159,7 @@ msgid "%{group_docs_link_start}Groups%{group_docs_link_end} allow you to manage 
 msgstr "%{group_docs_link_start}Групи%{group_docs_link_end} дозволяють вам керувати і взаємодіяти між кількома проектами. Члени групи мають доступ до усіх її проектів."
 
 msgid "%{issuableType} will be removed! Are you sure?"
-msgstr ""
+msgstr "%{issuableType} буде видалено! Ви впевнені?"
 
 msgid "%{loadingIcon} Started"
 msgstr "%{loadingIcon} Початок"
@@ -240,10 +240,10 @@ msgid "%{unstaged} unstaged and %{staged} staged changes"
 msgstr "%{unstaged} неіндексованих та %{staged} проіндексованих змін"
 
 msgid "%{usage_ping_link_start}Learn more%{usage_ping_link_end} about what information is shared with GitLab Inc."
-msgstr ""
+msgstr "%{usage_ping_link_start}Довідатись більше%{usage_ping_link_end} про те, якою інформацією Ви ділитесь із GitLab Inc."
 
 msgid "+ %{count} more"
-msgstr ""
+msgstr "+ ще %{count}"
 
 msgid "+ %{moreCount} more"
 msgstr "+ ще %{moreCount}"
@@ -386,13 +386,13 @@ msgid "<strong>Removes</strong> source branch"
 msgstr "<strong>Видаляє</strong> гілку-джерело"
 
 msgid "A 'Runner' is a process which runs a job. You can set up as many Runners as you need."
-msgstr ""
+msgstr "'Runner' — це процес, який виконує завдання. Ви можете створити потрібну кількість Runner'ів."
 
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr "Набір графіків відносно безперервної інтеграції"
 
 msgid "A default branch cannot be chosen for an empty project."
-msgstr ""
+msgstr "Гілку за замовчуванням не може бути обрано для порожнього проекту."
 
 msgid "A deleted user"
 msgstr ""
@@ -440,7 +440,7 @@ msgid "Access denied! Please verify you can add deploy keys to this repository."
 msgstr "Доступ заборонено! Будь-ласка, перевірте, чи ви можете додавати ключі для розгортування до цього сховища."
 
 msgid "Access expiration date"
-msgstr ""
+msgstr "Дата припинення доступу"
 
 msgid "Access to '%{classification_label}' not allowed"
 msgstr "Доступ до \"%{classification_label}\" заборонено"
@@ -6882,7 +6882,7 @@ msgid "Set up a %{type} Runner manually"
 msgstr ""
 
 msgid "Set up a specific Runner automatically"
-msgstr ""
+msgstr "Автоматично налаштувати специфічний runner"
 
 msgid "Set up assertions/attributes/claims (email, first_name, last_name) and NameID according to %{docsLinkStart}the documentation %{icon}%{docsLinkEnd}"
 msgstr "Налаштуйте твердження/атрибути (email, ім'я, прізвище) і NameID відповідно до %{docsLinkStart} документації %{icon}%{docsLinkEnd}"
