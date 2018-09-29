@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-29 09:21\n"
+"PO-Revision-Date: 2018-09-29 09:30\n"
 
 msgid " Status"
 msgstr "状态"
@@ -737,7 +737,7 @@ msgid "Are you sure?"
 msgstr "确定吗？"
 
 msgid "Artifact ID"
-msgstr ""
+msgstr "作业产物ID"
 
 msgid "Artifacts"
 msgstr "产物"
@@ -1821,7 +1821,7 @@ msgid "ClusterIntegration|Prometheus"
 msgstr "Prometheus"
 
 msgid "ClusterIntegration|Prometheus is an open-source monitoring system with %{gitlabIntegrationLink} to monitor deployed applications."
-msgstr ""
+msgstr "Prometheus是一个开源监控系统，其中 %{gitlabIntegrationLink} 用于监控已部署的应用程序。"
 
 msgid "ClusterIntegration|RBAC-enabled cluster (experimental)"
 msgstr "启用 RBAC 的群集 (实验功能)"
@@ -1839,7 +1839,7 @@ msgid "ClusterIntegration|Remove this Kubernetes cluster's configuration from th
 msgstr "从当前项目中删除此Kubernetes集群的配置。该操作并不会删除实际Kubernetes集群。"
 
 msgid "ClusterIntegration|Replace this with your own hostname if you want. If you do so, point hostname to Ingress IP Address from above."
-msgstr ""
+msgstr "如果需要，可将其替换为您自己的主机名。如果这样做，请将主机名从上级指向Ingress IP地址。"
 
 msgid "ClusterIntegration|Request to begin installing failed"
 msgstr "请求安装失败"
@@ -1893,7 +1893,7 @@ msgid "ClusterIntegration|Something went wrong while installing %{title}"
 msgstr "安装 %{title} 时发生故障"
 
 msgid "ClusterIntegration|The IP address is in the process of being assigned. Please check your Kubernetes cluster or Quotas on Google Kubernetes Engine if it takes a long time."
-msgstr ""
+msgstr "IP地址正在分配中。如果花费时间过长，请检查您的Kubernetes集群或谷歌Kubernetes引擎(GKE) 上的配额。"
 
 msgid "ClusterIntegration|The default cluster configuration grants access to many functionalities needed to successfully build and deploy a containerised application."
 msgstr "默认集群配置提供了成功构建和部署容器化应用所需的众多相关功能。"
@@ -2216,7 +2216,7 @@ msgid "Copy HTTPS clone URL"
 msgstr "复制HTTPS克隆URL"
 
 msgid "Copy SSH clone URL"
-msgstr ""
+msgstr "复制SSH克隆URL"
 
 msgid "Copy SSH public key to clipboard"
 msgstr "将 SSH 公钥复制到剪贴板"
@@ -2441,7 +2441,7 @@ msgid "Decline and sign out"
 msgstr "拒绝并退出"
 
 msgid "Default Branch"
-msgstr ""
+msgstr "默认分支"
 
 msgid "Default classification label"
 msgstr "默认分类标记"
@@ -2646,19 +2646,19 @@ msgid "Disable group Runners"
 msgstr "禁用群组Runner"
 
 msgid "Discard"
-msgstr ""
+msgstr "放弃"
 
 msgid "Discard all changes"
-msgstr ""
+msgstr "放弃所有更改"
 
 msgid "Discard all unstaged changes?"
-msgstr ""
+msgstr "放弃所有未暂存的修改？"
 
 msgid "Discard changes"
 msgstr "放弃更改"
 
 msgid "Discard changes to %{path}?"
-msgstr ""
+msgstr "放弃对 %{path} 的更改吗？"
 
 msgid "Discard draft"
 msgstr "取消"
@@ -2811,7 +2811,7 @@ msgid "Enable or disable the Pseudonymizer data collection."
 msgstr "启用或禁用匿名化数据收集."
 
 msgid "Enable or disable version check and usage ping."
-msgstr "启用或禁用版本检查及使用ping。"
+msgstr "启用或禁用版本检查及使用情况检测(usage ping)。"
 
 msgid "Enable reCAPTCHA or Akismet and set IP limits."
 msgstr "启用reCAPTCHA或Akismet并设置IP限制。"
@@ -2832,7 +2832,7 @@ msgid "Ends at (UTC)"
 msgstr "结束于(UTC)"
 
 msgid "Enter in your Bitbucket Server URL and personal access token below"
-msgstr ""
+msgstr "输入您的Bitbucket服务器URL和个人访问令牌"
 
 msgid "Enter the issue description"
 msgstr "输入议题描述"
@@ -2895,7 +2895,7 @@ msgid "Environments|No pod name has been specified"
 msgstr "未指定pod名称"
 
 msgid "Environments|Note that this action will stop the environment, but it will %{emphasisStart}not%{emphasisEnd} have an effect on any existing deployment due to no “stop environment action” being defined in the %{ciConfigLinkStart}.gitlab-ci.yml%{ciConfigLinkEnd} file."
-msgstr ""
+msgstr "注意：继续操作将终止当前环境！由于未在%{ciConfigLinkStart}.gitlab-ci.yml%{ciConfigLinkEnd}文件中定义“终止环境操作”，因此%{emphasisStart}不会%{emphasisEnd}影响已经存在的部署。"
 
 msgid "Environments|Note that this action will stop the environment, but it will %{emphasis_start}not%{emphasis_end} have an effect on any existing deployment due to no “stop environment action” being defined in the %{ci_config_link_start}.gitlab-ci.yml%{ci_config_link_end} file."
 msgstr "注意：继续操作将终止当前环境！由于未在%{ci_config_link_start}.gitlab-ci.yml%{ci_config_link_end}文件中定义“终止环境操作”，因此%{emphasis_start}不会%{emphasis_end}影响已经存在的部署。"
@@ -2931,7 +2931,7 @@ msgid "Environments|You don't have any environments right now."
 msgstr "当前未设置环境"
 
 msgid "Environments|protected"
-msgstr ""
+msgstr "受保护的"
 
 msgid "Epic"
 msgstr "史诗故事"
@@ -2949,7 +2949,7 @@ msgid "Epics let you manage your portfolio of projects more efficiently and with
 msgstr "利用史诗故事(Epics)，产品线管理会变得更轻松且更高效"
 
 msgid "Epics|An error occurred while saving %{epicDateType} date"
-msgstr ""
+msgstr "保存 %{epicDateType} 日期时发生错误"
 
 msgid "Epics|How can I solve this?"
 msgstr "我该如何解决该问题？"
@@ -2991,7 +2991,7 @@ msgid "Error fetching refs"
 msgstr "获取refs时出错。"
 
 msgid "Error fetching usage ping data."
-msgstr "获取使用情况(usage ping) 数据时出错。"
+msgstr "获取使用情况(usage ping)数据时出错。"
 
 msgid "Error loading branch data. Please try again."
 msgstr "加载分支数据失败，请重试。"
@@ -3075,7 +3075,7 @@ msgid "Expand sidebar"
 msgstr "展开侧边栏"
 
 msgid "Expiration date"
-msgstr ""
+msgstr "到期时间"
 
 msgid "Explore"
 msgstr "探索"
@@ -3159,7 +3159,7 @@ msgid "Fields on this page are now uneditable, you can configure"
 msgstr "当前页面上的字段不可编辑，可以配置"
 
 msgid "File templates"
-msgstr ""
+msgstr "文件模板"
 
 msgid "Files"
 msgstr "文件"
@@ -3177,7 +3177,7 @@ msgid "Filter by commit message"
 msgstr "按提交消息过滤"
 
 msgid "Filter..."
-msgstr ""
+msgstr "过滤..."
 
 msgid "Find by path"
 msgstr "按路径查找"
@@ -3207,7 +3207,7 @@ msgid "Fixed date"
 msgstr "修复日期"
 
 msgid "Fixed due date"
-msgstr ""
+msgstr "固定截止日期"
 
 msgid "Fixed start date"
 msgstr "修复开始日期"
@@ -3312,7 +3312,7 @@ msgid "Generate a default set of labels"
 msgstr "生成一组默认的标记"
 
 msgid "Geo"
-msgstr ""
+msgstr "Geo"
 
 msgid "Geo Nodes"
 msgstr "Geo 节点"
@@ -3480,13 +3480,13 @@ msgid "GeoNodes|You have configured Geo nodes using an insecure HTTP connection.
 msgstr "当前Geo节点配置使用不安全的HTTP连接, 建议使用HTTPS。"
 
 msgid "Geo|%{name} is scheduled for forced re-download"
-msgstr ""
+msgstr "%{name} 计划强制重新下载"
 
 msgid "Geo|%{name} is scheduled for re-check"
-msgstr ""
+msgstr "%{name} 计划重新检查"
 
 msgid "Geo|%{name} is scheduled for re-sync"
-msgstr ""
+msgstr "%{name} 已计划重新同步"
 
 msgid "Geo|All projects"
 msgstr "所有项目"
@@ -3504,7 +3504,7 @@ msgid "Geo|Groups to synchronize"
 msgstr "需同步的群组"
 
 msgid "Geo|In sync"
-msgstr ""
+msgstr "已同步"
 
 msgid "Geo|Last successful sync"
 msgstr "最近一次成功的同步"
@@ -3585,7 +3585,7 @@ msgid "Geo|Waiting for scheduler"
 msgstr "等待调度"
 
 msgid "Geo|You need a different license to use Geo replication"
-msgstr ""
+msgstr "您需要不同的许可证才能使用 geo 复制"
 
 msgid "Get a free instance review"
 msgstr ""
@@ -3750,13 +3750,13 @@ msgid "GroupRoadmap|Until %{dateWord}"
 msgstr "直到 %{dateWord}"
 
 msgid "GroupSettings|Badges"
-msgstr ""
+msgstr "徽章"
 
 msgid "GroupSettings|Customize your group badges."
-msgstr ""
+msgstr "自定义群组徽章。"
 
 msgid "GroupSettings|Learn more about badges."
-msgstr ""
+msgstr "了解有关徽章的更多信息。"
 
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
 msgstr "禁止与其他群组共享 %{group} 中的项目"
@@ -3822,7 +3822,7 @@ msgid "GroupsEmptyState|You can manage your group member’s permissions and acc
 msgstr "您可以管理群组成员的权限并访问群组中的每个项目。"
 
 msgid "GroupsTree|Are you sure you want to leave the \"%{fullName}\" group?"
-msgstr ""
+msgstr "您确定要退出群组“%{fullName}”吗？"
 
 msgid "GroupsTree|Create a project in this group."
 msgstr "在此群组中创建一个项目。"
@@ -3849,7 +3849,7 @@ msgid "GroupsTree|No groups or projects matched your search"
 msgstr ""
 
 msgid "GroupsTree|Search by name"
-msgstr ""
+msgstr "按名称搜索"
 
 msgid "Have your users email"
 msgstr "请让用户发送电子邮件至"
@@ -3916,7 +3916,7 @@ msgid "ID"
 msgstr "ID"
 
 msgid "IDE|Allow live previews of JavaScript projects in the Web IDE using CodeSandbox client side evaluation."
-msgstr ""
+msgstr "允许Web IDE中的JavaScript项目使用CodeSandbox客户端的实时预览。"
 
 msgid "IDE|Back"
 msgstr "返回"
@@ -4072,7 +4072,7 @@ msgid "Incompatible Project"
 msgstr "不兼容的项目"
 
 msgid "Indicates whether this runner can pick jobs without tags"
-msgstr ""
+msgstr "指示此runner是否可以选择没有标记的作业"
 
 msgid "Inline"
 msgstr "内联"
@@ -4097,7 +4097,7 @@ msgid "Instance Statistics"
 msgstr "实例统计"
 
 msgid "Instance Statistics visibility"
-msgstr ""
+msgstr "实例统计信息可见性"
 
 msgid "Instance does not support multiple Kubernetes clusters"
 msgstr "实例不支持多个Kubernetes集群"
@@ -4127,10 +4127,10 @@ msgid "Introducing Cycle Analytics"
 msgstr "周期分析简介"
 
 msgid "Invite"
-msgstr ""
+msgstr "邀请"
 
 msgid "Issue"
-msgstr ""
+msgstr "议题"
 
 msgid "Issue Boards"
 msgstr "议题看板"
@@ -4184,13 +4184,13 @@ msgid "Job|Erase job log"
 msgstr "删除作业日志"
 
 msgid "Job|Job artifacts"
-msgstr ""
+msgstr "作业产物"
 
 msgid "Job|Job has been erased"
 msgstr "作业已被删除"
 
 msgid "Job|Job has been erased by"
-msgstr ""
+msgstr "作业已被删除"
 
 msgid "Job|Keep"
 msgstr "保持"
@@ -4205,13 +4205,13 @@ msgid "Job|Show complete raw"
 msgstr "显示完整源"
 
 msgid "Job|The artifacts were removed"
-msgstr ""
+msgstr "作业产物已被删除"
 
 msgid "Job|The artifacts will be removed in"
-msgstr ""
+msgstr "作业产物将被删除于"
 
 msgid "Job|This job is stuck, because the project doesn't have any runners online assigned to it."
-msgstr ""
+msgstr "此作业已停止，因为没有任何在线的runner被分配给该项目。"
 
 msgid "Jul"
 msgstr "七"
@@ -4314,7 +4314,7 @@ msgid "Last commit"
 msgstr "最后提交"
 
 msgid "Last contact"
-msgstr ""
+msgstr "最后联系"
 
 msgid "Last edited %{date}"
 msgstr "最后修改 %{date}"
@@ -4398,7 +4398,7 @@ msgid "LicenseManagement|License details"
 msgstr "许可证信息"
 
 msgid "LicenseManagement|Manage approved and blacklisted licenses for this project."
-msgstr ""
+msgstr "管理此项目的已批准和列入黑名单的许可证。"
 
 msgid "LicenseManagement|Packages"
 msgstr "包"
@@ -4410,7 +4410,7 @@ msgid "LicenseManagement|Remove license?"
 msgstr "删除许可证？"
 
 msgid "LicenseManagement|There are currently no approved or blacklisted licenses in this project."
-msgstr ""
+msgstr "此项目目前没有已批准或列入黑名单的许可证。"
 
 msgid "LicenseManagement|URL"
 msgstr "URL"
@@ -4465,7 +4465,7 @@ msgid "Lock not found"
 msgstr "未找到锁"
 
 msgid "Lock this %{issuableDisplayName}? Only <strong>project members</strong> will be able to comment."
-msgstr ""
+msgstr "锁定%{issuableDisplayName}？只有 <strong>项目成员</strong> 可以发表评论。"
 
 msgid "Lock to current projects"
 msgstr "锁定到当前项目"
@@ -4621,7 +4621,7 @@ msgid "MergeRequests|View replaced file @ %{commitId}"
 msgstr "查看已替换文件 @ %{commitId}"
 
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
-msgstr ""
+msgstr " %{paragraphStart}将描述更改为 %{descriptionChangedTimes} 次 %{timeDifferenceMinutes}%{paragraphEnd}"
 
 msgid "Merged"
 msgstr "已合并"
@@ -4753,10 +4753,10 @@ msgid "Milestones"
 msgstr "里程碑"
 
 msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle} and remove it from %{issuesWithCount} and %{mergeRequestsWithCount}. Once deleted, it cannot be undone or recovered."
-msgstr ""
+msgstr "您即将永久删除里程碑 %{milestoneTitle} 并将其从 %{issuesWithCount} 和 %{mergeRequestsWithCount} 删除。删除后，无法撤消或恢复。"
 
 msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle}. This milestone is not currently used in any issues or merge requests."
-msgstr ""
+msgstr "您即将永久删除里程碑 %{milestoneTitle}。此里程碑当前未用于任何议题或合并请求。"
 
 msgid "Milestones|<p>%{milestonePromotion}</p> %{finalWarning}"
 msgstr ""
@@ -5102,7 +5102,7 @@ msgid "NotificationEvent|Merge merge request"
 msgstr "合并请求被合并"
 
 msgid "NotificationEvent|New epic"
-msgstr ""
+msgstr "新建史诗"
 
 msgid "NotificationEvent|New issue"
 msgstr "新建议题"
@@ -5178,7 +5178,7 @@ msgstr "仓库导入后，可以通过 SSH 拉取镜像。了解更多 %{ssh_lin
 
 msgid "One more item"
 msgid_plural "%d more items"
-msgstr[0] ""
+msgstr[0] "更多项目"
 
 msgid "One or more of your Bitbucket projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
 msgstr "您的一个或多个Bitbucket项目无法直接导入GitLab，因为它们使用Subversion或Mercurial进行版本控制，而不是Git。"
@@ -5448,7 +5448,7 @@ msgid "Pipelines|There are currently no pipelines."
 msgstr "当前没有流水线。"
 
 msgid "Pipelines|There was an error fetching the pipelines. Try again in a few moments or contact your support team."
-msgstr ""
+msgstr "获取流水线时出现错误。请稍后重试或尝试联系您的支持团队。"
 
 msgid "Pipelines|This project is not currently set up to run pipelines."
 msgstr "此项目当前未配置运行流水线。"
@@ -5577,7 +5577,7 @@ msgid "Profile Settings"
 msgstr "账户设置"
 
 msgid "Profiles| You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account. Once you confirm %{deleteAccount}, it cannot be undone or recovered."
-msgstr ""
+msgstr "您即将永久删除 %{yourAccount}，以及与您的帐户关联的所有议题，合并请求和群组。一旦确认 %{deleteAccount}，此操作便无法撤销和恢复。"
 
 msgid "Profiles| You are going to change the username %{currentUsernameBold} to %{newUsernameBold}. Profile and projects will be redirected to the %{newUsername} namespace but this redirect will expire once the %{currentUsername} namespace is registered by another user or group. Please update your Git repository remotes as soon as possible."
 msgstr "您将更改用户名 %{currentUsernameBold} 为 %{newUsernameBold}。配置文件和项目将重定向到 %{newUsername} 命名空间，但是一旦 %{currentUsername} 命名空间被另一个用户或组注册，此重定向将过期。请尽快更新您的远端Git仓库。"
@@ -5592,7 +5592,7 @@ msgid "Profiles|Add key"
 msgstr "添加密钥"
 
 msgid "Profiles|Add status emoji"
-msgstr ""
+msgstr "在状态中添加表情符号"
 
 msgid "Profiles|Avatar cropper"
 msgstr "头像裁剪"
@@ -5604,13 +5604,13 @@ msgid "Profiles|Change username"
 msgstr "更改用户名"
 
 msgid "Profiles|Choose file..."
-msgstr ""
+msgstr "选择文件..."
 
 msgid "Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information."
 msgstr ""
 
 msgid "Profiles|Clear status"
-msgstr ""
+msgstr "清除状态"
 
 msgid "Profiles|Current path: %{path}"
 msgstr "当前路径： %{path}"
@@ -5637,7 +5637,7 @@ msgid "Profiles|Don't display activity-related personal information on your prof
 msgstr ""
 
 msgid "Profiles|Edit Profile"
-msgstr ""
+msgstr "编辑个人资料"
 
 msgid "Profiles|Invalid password"
 msgstr "密码无效"
@@ -5646,46 +5646,46 @@ msgid "Profiles|Invalid username"
 msgstr "用户名无效"
 
 msgid "Profiles|Main settings"
-msgstr ""
+msgstr "主要设置"
 
 msgid "Profiles|No file chosen"
-msgstr ""
+msgstr "未选择文件"
 
 msgid "Profiles|Path"
 msgstr "路径"
 
 msgid "Profiles|Position and size your new avatar"
-msgstr ""
+msgstr "您新头像的位置和大小"
 
 msgid "Profiles|Private contributions"
-msgstr ""
+msgstr "私人贡献者"
 
 msgid "Profiles|Public Avatar"
-msgstr ""
+msgstr "公共头像"
 
 msgid "Profiles|Remove avatar"
-msgstr ""
+msgstr "删除头像"
 
 msgid "Profiles|Set new profile picture"
-msgstr ""
+msgstr "设置新个人资料图片"
 
 msgid "Profiles|Some options are unavailable for LDAP accounts"
-msgstr ""
+msgstr "某些选项对于 LDAP 帐户不可用"
 
 msgid "Profiles|Tell us about yourself in fewer than 250 characters."
-msgstr ""
+msgstr "在少于250个字符的情况下介绍您自己。"
 
 msgid "Profiles|The maximum file size allowed is 200KB."
-msgstr ""
+msgstr "允许的最大文件大小为200KB。"
 
 msgid "Profiles|This doesn't look like a public SSH key, are you sure you want to add it?"
 msgstr "这看起来不像 SSH 公钥，确定要添加它吗？"
 
 msgid "Profiles|This email will be displayed on your public profile."
-msgstr ""
+msgstr "此电子邮件将显示在您的公开个人资料中。"
 
 msgid "Profiles|This emoji and message will appear on your profile and throughout the interface."
-msgstr ""
+msgstr "这个表情符号和这条消息会在您的个人资料和整个工作界面中出现。"
 
 msgid "Profiles|This feature is experimental and translations are not complete yet."
 msgstr ""
