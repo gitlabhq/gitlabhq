@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: pt-BR\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-29 02:01\n"
+"PO-Revision-Date: 2018-09-29 02:04\n"
 
 msgid " Status"
 msgstr " Status"
@@ -420,7 +420,7 @@ msgid "Add additional text to appear in all email communications. %{character_li
 msgstr "Coloque um texto adicional para aparecer em todas as comunicações por email. Limite de %{character_limit} caracteres"
 
 msgid "Add license"
-msgstr ""
+msgstr "Adicionar licença"
 
 msgid "Add new application"
 msgstr "Adicionar novo aplicativo"
@@ -741,7 +741,7 @@ msgid "Archived project! Repository and other project resources are read-only"
 msgstr "Projeto arquivado! Repositório e outros recursos de projeto são somente leitura"
 
 msgid "Archived projects"
-msgstr ""
+msgstr "Projetos arquivados"
 
 msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr "Tem certeza que deseja excluir este agendamento de pipeline?"
@@ -840,7 +840,7 @@ msgid "Authentication log"
 msgstr "Log de autenticação"
 
 msgid "Authentication method"
-msgstr ""
+msgstr "Método de autenticação"
 
 msgid "Author"
 msgstr "Autor"
@@ -981,7 +981,7 @@ msgid "Badges|No image to preview"
 msgstr "Sem imagem para pré-visualizar"
 
 msgid "Badges|Please fill in a valid URL"
-msgstr ""
+msgstr "Por favor, preencha um URL válido"
 
 msgid "Badges|Project Badge"
 msgstr "Selo de projeto"
@@ -1017,7 +1017,7 @@ msgid "Badges|Your badges"
 msgstr "Seus selos"
 
 msgid "Badges|e.g. %{exampleUrl}"
-msgstr ""
+msgstr "por exemplo, %{exampleUrl}"
 
 msgid "Begin with the selected commit"
 msgstr "Comece com o commit selecionado"
@@ -1364,7 +1364,7 @@ msgid "Change Weight"
 msgstr "Alterar Peso"
 
 msgid "Change template"
-msgstr ""
+msgstr "Mudar modelo"
 
 msgid "Change this value to influence how frequently the GitLab UI polls for updates."
 msgstr "Altere esse valor para influenciar com que frequência a interface do usuário do GitLab pesquisa atualizações."
@@ -1424,10 +1424,10 @@ msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to s
 msgstr "Escolha a branch/tag (ex: %{master}) ou número do commit (ex: %{sha}) para ver o que mudou ou para criar um merge request."
 
 msgid "Choose a template..."
-msgstr ""
+msgstr "Escolha um modelo..."
 
 msgid "Choose a type..."
-msgstr ""
+msgstr "Escolha um tipo..."
 
 msgid "Choose any color."
 msgstr "Escolha qualquer cor."
@@ -2873,16 +2873,16 @@ msgid "Enter in your Bitbucket Server URL and personal access token below"
 msgstr ""
 
 msgid "Enter the issue description"
-msgstr ""
+msgstr "Digite a descrição da issue"
 
 msgid "Enter the issue title"
-msgstr ""
+msgstr "Digite o título da issue"
 
 msgid "Enter the merge request description"
-msgstr ""
+msgstr "Digite a descrição do merge request"
 
 msgid "Enter the merge request title"
-msgstr ""
+msgstr "Digite o título do merge request"
 
 msgid "Environments"
 msgstr "Ambientes"
@@ -2969,7 +2969,7 @@ msgid "Environments|You don't have any environments right now."
 msgstr "Você não tem nenhum ambiente."
 
 msgid "Environments|protected"
-msgstr ""
+msgstr "protegido"
 
 msgid "Epic"
 msgstr "Epic"
@@ -2990,10 +2990,10 @@ msgid "Epics|An error occurred while saving %{epicDateType} date"
 msgstr ""
 
 msgid "Epics|How can I solve this?"
-msgstr ""
+msgstr "Como posso resolver isso?"
 
 msgid "Epics|More information"
-msgstr ""
+msgstr "Mais informações"
 
 msgid "Epics|These dates affect how your epics appear in the roadmap. Dates from milestones come from the milestones assigned to issues in the epic. You can also set fixed dates or remove them entirely."
 msgstr ""
@@ -3008,7 +3008,7 @@ msgid "Epics|start"
 msgstr ""
 
 msgid "Error"
-msgstr ""
+msgstr "Erro"
 
 msgid "Error Reporting and Logging"
 msgstr "Relatório e registro de erros"
@@ -3230,7 +3230,7 @@ msgid "Find the newly extracted <code>Takeout/Google Code Project Hosting/Google
 msgstr "Encontre o arquivo recém-extraído <code>Takeout/Google Code Project Hosting/GoogleCodeProjectHosting.json</code>."
 
 msgid "Fingerprints"
-msgstr ""
+msgstr "Impressões digitais"
 
 msgid "Finished"
 msgstr "Finalizado"
@@ -3281,7 +3281,7 @@ msgid "For internal projects, any logged in user can view pipelines and access j
 msgstr "Para projetos internos, qualquer usuário conectado pode visualizar pipelines e acessar detalhes do job (logs de saída e artefatos)"
 
 msgid "For more information, go to the "
-msgstr ""
+msgstr "Para mais informações, vá para o "
 
 msgid "For more information, see the documentation on %{deactivating_usage_ping_link_start}deactivating the usage ping%{deactivating_usage_ping_link_end}."
 msgstr ""
@@ -3314,7 +3314,7 @@ msgid "From Bitbucket"
 msgstr "Do Bitbucket"
 
 msgid "From Bitbucket Server"
-msgstr ""
+msgstr "Do servidor do Bitbucket"
 
 msgid "From FogBugz"
 msgstr "Do FogBugz"
@@ -3542,7 +3542,7 @@ msgid "Geo|Groups to synchronize"
 msgstr "Grupos para sincronizar"
 
 msgid "Geo|In sync"
-msgstr ""
+msgstr "Em sincronia"
 
 msgid "Geo|Last successful sync"
 msgstr ""
@@ -3551,25 +3551,25 @@ msgid "Geo|Last sync attempt"
 msgstr ""
 
 msgid "Geo|Last time verified"
-msgstr ""
+msgstr "Última vez verificada"
 
 msgid "Geo|Never"
-msgstr ""
+msgstr "Nunca"
 
 msgid "Geo|Next sync scheduled at"
 msgstr ""
 
 msgid "Geo|No errors"
-msgstr ""
+msgstr "Sem erros"
 
 msgid "Geo|Pending"
-msgstr ""
+msgstr "Pendente"
 
 msgid "Geo|Pending synchronization"
-msgstr ""
+msgstr "Sincronização pendente"
 
 msgid "Geo|Pending verification"
-msgstr ""
+msgstr "Verificação pendente"
 
 msgid "Geo|Projects in certain groups"
 msgstr "Projetos em certos grupos"
