@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: uk\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 19:21\n"
+"PO-Revision-Date: 2018-09-30 19:27\n"
 
 msgid " Status"
 msgstr " Статус"
@@ -5754,7 +5754,7 @@ msgid "Profiles|Choose file..."
 msgstr "Вибрати файл..."
 
 msgid "Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information."
-msgstr ""
+msgstr "Виберіть для показу внесків до приватних репозиторіїв у вашому публічному профілі без інформації про проекти, репозиторії або організації."
 
 msgid "Profiles|Clear status"
 msgstr "Очистити статус"
@@ -5763,7 +5763,7 @@ msgid "Profiles|Current path: %{path}"
 msgstr "Поточний шлях: %{path}"
 
 msgid "Profiles|Current status"
-msgstr ""
+msgstr "Поточний стан"
 
 msgid "Profiles|Delete Account"
 msgstr "Видалити обліковий запис"
@@ -5778,13 +5778,13 @@ msgid "Profiles|Deleting an account has the following effects:"
 msgstr "Видалення облікового запису несе наступні наслідки:"
 
 msgid "Profiles|Do not show on profile"
-msgstr ""
+msgstr "Не відображати у профілі"
 
 msgid "Profiles|Don't display activity-related personal information on your profiles"
-msgstr ""
+msgstr "Не відображати особисту інформацію, пов’язану із активностями, у ваших профілях"
 
 msgid "Profiles|Edit Profile"
-msgstr ""
+msgstr "Редагувати профіль"
 
 msgid "Profiles|Invalid password"
 msgstr "Неправильний пароль"
@@ -5793,52 +5793,52 @@ msgid "Profiles|Invalid username"
 msgstr "Неправильне ім'я користувача"
 
 msgid "Profiles|Main settings"
-msgstr ""
+msgstr "Головні налаштування"
 
 msgid "Profiles|No file chosen"
-msgstr ""
+msgstr "Файл не вибрано"
 
 msgid "Profiles|Path"
 msgstr "Шлях"
 
 msgid "Profiles|Position and size your new avatar"
-msgstr ""
+msgstr "Спозиціонуйте ваш аватар та задайте його розмір"
 
 msgid "Profiles|Private contributions"
-msgstr ""
+msgstr "Приватні внески"
 
 msgid "Profiles|Public Avatar"
-msgstr ""
+msgstr "Публічний аватар"
 
 msgid "Profiles|Remove avatar"
-msgstr ""
+msgstr "Видалити аватар"
 
 msgid "Profiles|Set new profile picture"
-msgstr ""
+msgstr "Встановити нове зображення для профілю"
 
 msgid "Profiles|Some options are unavailable for LDAP accounts"
-msgstr ""
+msgstr "Деякі параметри недоступні для облікових записів LDAP"
 
 msgid "Profiles|Tell us about yourself in fewer than 250 characters."
-msgstr ""
+msgstr "Розкажіть про себе в межах 250 символів."
 
 msgid "Profiles|The maximum file size allowed is 200KB."
-msgstr ""
+msgstr "Максимальний розмір файлу 200КБ."
 
 msgid "Profiles|This doesn't look like a public SSH key, are you sure you want to add it?"
 msgstr "Це не схоже на публічниц ключ SSH. Ви впевнені, що хочете його додати?"
 
 msgid "Profiles|This email will be displayed on your public profile."
-msgstr ""
+msgstr "Ця електронна адреса буде відображатися у вашому публічному профілі."
 
 msgid "Profiles|This emoji and message will appear on your profile and throughout the interface."
-msgstr ""
+msgstr "Цей смайлик та повідомлення будуть показані у вашому профілі та в інтерфейсі."
 
 msgid "Profiles|This feature is experimental and translations are not complete yet."
-msgstr ""
+msgstr "Ця функція є експериментальною і переклади ще не завершені."
 
 msgid "Profiles|This information will appear on your profile."
-msgstr ""
+msgstr "Ця інформація буде відображатися у вашому профілі."
 
 msgid "Profiles|Type your %{confirmationValue} to confirm:"
 msgstr "Введіть ваш %{confirmationValue} для підтвердження:"
@@ -5847,13 +5847,13 @@ msgid "Profiles|Typically starts with \"ssh-rsa …\""
 msgstr "Зазвичай починається з \"ssh-rsa ...\""
 
 msgid "Profiles|Update profile settings"
-msgstr ""
+msgstr "Оновити налаштування профілю"
 
 msgid "Profiles|Update username"
 msgstr "Оновити ім'я користувача"
 
 msgid "Profiles|Upload new avatar"
-msgstr ""
+msgstr "Завантажити новий аватар"
 
 msgid "Profiles|Username change failed - %{message}"
 msgstr "Помилка при збереженні імені користувача - %{message}"
@@ -5862,22 +5862,22 @@ msgid "Profiles|Username successfully changed"
 msgstr "Ім’я користувача успішно збережено"
 
 msgid "Profiles|Website"
-msgstr ""
+msgstr "Вебсайт"
 
 msgid "Profiles|What's your status?"
 msgstr "Який ваш статус?"
 
 msgid "Profiles|You can change your avatar here"
-msgstr ""
+msgstr "Тут ви можете змінити свій аватар"
 
 msgid "Profiles|You can change your avatar here or remove the current avatar to revert to %{gravatar_link}"
-msgstr ""
+msgstr "Тут ви можете змінити свій аватар або видалити його та повернутися до %{gravatar_link}"
 
 msgid "Profiles|You can upload your avatar here"
-msgstr ""
+msgstr "Тут ви можете завантажити свій аватар"
 
 msgid "Profiles|You can upload your avatar here or change it at %{gravatar_link}"
-msgstr ""
+msgstr "Тут ви можете завантажити свій аватар або змінити його на %{gravatar_link}"
 
 msgid "Profiles|You don't have access to delete this user."
 msgstr "У вас немає доступу для видалення цього користувача."
@@ -5889,10 +5889,10 @@ msgid "Profiles|Your account is currently an owner in these groups:"
 msgstr "Ваш обліковий запис є власником в цих групах:"
 
 msgid "Profiles|Your email address was automatically set based on your %{provider_label} account."
-msgstr ""
+msgstr "Ваша адреса електронної пошти була автоматично встановлена на основі вашого облікового запису %{provider_label}."
 
 msgid "Profiles|Your location was automatically set based on your %{provider_label} account."
-msgstr ""
+msgstr "Ваше місцезнаходження було автоматично встановлено на основі вашого облікового запису %{provider_label}."
 
 msgid "Profiles|Your name was automatically set based on your %{provider_label} account, so people you know can recognize you."
 msgstr ""
