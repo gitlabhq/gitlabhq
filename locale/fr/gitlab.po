@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 12:15\n"
+"PO-Revision-Date: 2018-09-30 12:31\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -6409,19 +6409,19 @@ msgid "Resolve discussion"
 msgstr "Résoudre la discussion"
 
 msgid "Response metrics (AWS ELB)"
-msgstr ""
+msgstr "Métriques de réponse (AWS ELB)"
 
 msgid "Response metrics (Custom)"
 msgstr "Métriques de réponse (personnalisées)"
 
 msgid "Response metrics (HA Proxy)"
-msgstr ""
+msgstr "Métriques de réponse (HA Proxy)"
 
 msgid "Response metrics (NGINX Ingress)"
-msgstr ""
+msgstr "Métriques de réponse (nginx Ingress)"
 
 msgid "Response metrics (NGINX)"
-msgstr ""
+msgstr "Métriques de réponse (nginx)"
 
 msgid "Resume"
 msgstr "Reprendre"
@@ -6489,7 +6489,7 @@ msgid "Runner token"
 msgstr "Jeton de l’exécuteur"
 
 msgid "Runner will not receive any new jobs"
-msgstr ""
+msgstr "L’exécuteur ne recevra aucune nouvelle tâche"
 
 msgid "Runners"
 msgstr "Exécuteurs"
