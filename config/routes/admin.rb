@@ -135,7 +135,7 @@ namespace :admin do
   namespace :geo do
     resources :nodes, only: [:index, :create, :new, :edit, :update]
 
-    resources :projects, only: :index do
+    resources :projects, only: [:index, :destroy] do
       member do
         post :recheck
         post :resync

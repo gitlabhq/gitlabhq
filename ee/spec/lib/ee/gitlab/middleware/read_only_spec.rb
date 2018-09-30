@@ -49,6 +49,38 @@ describe Gitlab::Middleware::ReadOnly do
         expect(response).not_to be_redirect
         expect(subject).not_to disallow_request
       end
+
+      it 'expects a DELETE request to geo projects delete URL to be allowed' do
+        expect(Rails.application.routes).to receive(:recognize_path).and_call_original
+        response = request.delete('/admin/geo/projects/1')
+
+        expect(response).not_to be_redirect
+        expect(subject).not_to disallow_request
+      end
+
+      it 'expects a POST request to geo projects resync URL to be allowed' do
+        expect(Rails.application.routes).to receive(:recognize_path).and_call_original
+        response = request.post('/admin/geo/projects/1/resync')
+
+        expect(response).not_to be_redirect
+        expect(subject).not_to disallow_request
+      end
+
+      it 'expects a POST request to geo projects recheck URL to be allowed' do
+        expect(Rails.application.routes).to receive(:recognize_path).and_call_original
+        response = request.post('/admin/geo/projects/1/recheck')
+
+        expect(response).not_to be_redirect
+        expect(subject).not_to disallow_request
+      end
+
+      it 'expects a POST request to geo projects force redownload URL to be allowed' do
+        expect(Rails.application.routes).to receive(:recognize_path).and_call_original
+        response = request.post('/admin/geo/projects/1/force_redownload')
+
+        expect(response).not_to be_redirect
+        expect(subject).not_to disallow_request
+      end
     end
   end
 end

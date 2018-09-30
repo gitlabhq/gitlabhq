@@ -1,14 +1,17 @@
 - @registries.each do |project_registry|
   .card.project-card.prepend-top-15
-    .card-header{ id: "project-#{project_registry.project.id}-header" }
+    .card-header{ id: "project-#{project_registry.project_id}-header" }
       .d-flex
-        %strong.header-text-primary.flex-fill
-          = link_to project_registry.project.full_name, admin_namespace_project_path(project_registry.project.namespace, project_registry.project)
-        - if project_registry.candidate_for_redownload?
-          = link_to(force_redownload_admin_geo_project_path(project_registry), method: :post, class: 'btn btn-outline btn-sm mr-2') do
-            = s_('Geo|Redownload')
-        = link_to(resync_admin_geo_project_path(project_registry), method: :post, class: 'btn btn-outline-primary btn-sm') do
-          = s_('Geo|Resync')
+        - if project_registry.project.nil?
+          = render partial: 'removed', locals: { project_registry: project_registry }
+        - else
+          %strong.header-text-primary.flex-fill
+            = link_to project_registry.project.full_name, admin_namespace_project_path(project_registry.project.namespace, project_registry.project)
+          - if project_registry.candidate_for_redownload?
+            = link_to(force_redownload_admin_geo_project_path(project_registry), method: :post, class: 'btn btn-outline btn-sm mr-2') do
+              = s_('Geo|Redownload')
+          = link_to(resync_admin_geo_project_path(project_registry), method: :post, class: 'btn btn-outline-primary btn-sm') do
+            = s_('Geo|Resync')
 
     .card-body
       .container.project-container
@@ -43,15 +46,15 @@
     .project-card-errors
       .card-header.bg-transparent.border-bottom-0.border-top
         %button.btn.btn-link.btn-card-header.collapsed.d-flex{ type: 'button',
-          data: { toggle: 'collapse', target: "#project-errors-#{project_registry.project.id}" },
+          data: { toggle: 'collapse', target: "#project-errors-#{project_registry.project_id}" },
           'aria-expanded' => 'false',
-          'aria-controls' => "project-errors-#{project_registry.project.id}" }
+          'aria-controls' => "project-errors-#{project_registry.project_id}" }
           = sprite_icon('chevron-down', size: 18, css_class: 'append-right-5 card-expand-icon')
           = sprite_icon('chevron-up', size: 18, css_class: 'append-right-5 card-collapse-icon')
           .header-text-secondary
             More
-      .collapse{ id: "project-errors-#{project_registry.project.id}",
-        'aria-labelledby' => "project-#{project_registry.project.id}-header" }
+      .collapse{ id: "project-errors-#{project_registry.project_id}",
+        'aria-labelledby' => "project-#{project_registry.project_id}-header" }
         .card-body
           .container.project-container
             %ul.unstyled-list.errors-list
