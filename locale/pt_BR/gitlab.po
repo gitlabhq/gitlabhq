@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: pt-BR\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 18:47\n"
+"PO-Revision-Date: 2018-09-30 22:01\n"
 
 msgid " Status"
 msgstr " Status"
@@ -5636,7 +5636,7 @@ msgid "Profile Settings"
 msgstr "Configurações do perfil"
 
 msgid "Profiles| You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account. Once you confirm %{deleteAccount}, it cannot be undone or recovered."
-msgstr ""
+msgstr "Você está prestes a excluir permanentemente a %{yourAccount}, e todas as issues, merge requests e grupos vinculados a sua conta. Depois de confirmar clicando em %{deleteAccount}, isso não poderá ser desfeito ou recuperado."
 
 msgid "Profiles| You are going to change the username %{currentUsernameBold} to %{newUsernameBold}. Profile and projects will be redirected to the %{newUsername} namespace but this redirect will expire once the %{currentUsername} namespace is registered by another user or group. Please update your Git repository remotes as soon as possible."
 msgstr "Você vai alterar o nome de usuário %{currentUsernameBold} para %{newUsernameBold}. O perfil e os projetos serão redirecionados para %{newUsername} mas esse redirecionamento expirará quando %{currentUsername} for registrado por outro usuário ou grupo. Por favor, atualize seus repositórios remotos Git o mais rápido possível."
@@ -5753,7 +5753,7 @@ msgid "Profiles|This information will appear on your profile."
 msgstr "Esta informação aparecerá no seu perfil."
 
 msgid "Profiles|Type your %{confirmationValue} to confirm:"
-msgstr "Escreva %{confirmationValue} para confirmar:"
+msgstr "Escreva sua %{confirmationValue} para confirmar:"
 
 msgid "Profiles|Typically starts with \"ssh-rsa …\""
 msgstr "Geralmente se inicia com \"ssh-rsa …\""
