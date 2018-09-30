@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 09:56\n"
+"PO-Revision-Date: 2018-09-30 10:06\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -3284,7 +3284,7 @@ msgid "For more information, go to the "
 msgstr "Pour plus d’informations, consultez "
 
 msgid "For more information, see the documentation on %{deactivating_usage_ping_link_start}deactivating the usage ping%{deactivating_usage_ping_link_end}."
-msgstr ""
+msgstr "Pour plus d’informations, consultez la documentation sur la %{deactivating_usage_ping_link_start}désactivation de la collecte des données d’utilisation%{deactivating_usage_ping_link_end}."
 
 msgid "For private projects, any member (guest or higher) can view pipelines and access job details (output logs and artifacts)"
 msgstr "Pour les projets privés, tout membre (invité ou supérieur) peut afficher les pipelines et accéder aux détails des tâches (journaux de sortie et artefacts)"
@@ -7912,7 +7912,7 @@ msgid "Toggle Sidebar"
 msgstr "Afficher/masquer la barre latérale"
 
 msgid "Toggle commit description"
-msgstr ""
+msgstr "Afficher ou masquer la description du commit"
 
 msgid "Toggle discussion"
 msgstr "Basculer la discussion"
@@ -7993,10 +7993,10 @@ msgid "Unable to sign you in to the group with SAML due to \"%{reason}\""
 msgstr "Impossible de vous connecter au groupe via SAML en raison de « %{reason} »"
 
 msgid "Unable to update this epic at this time."
-msgstr ""
+msgstr "Impossible de mettre à jour cette épopée pour le moment."
 
 msgid "Undo"
-msgstr ""
+msgstr "Annuler"
 
 msgid "Unknown"
 msgstr "Inconnu"
@@ -8014,7 +8014,7 @@ msgid "Unresolve discussion"
 msgstr "Marquer la discussion comme non résolue"
 
 msgid "Unstage"
-msgstr ""
+msgstr "Désindexer"
 
 msgid "Unstage all changes"
 msgstr "Désindexer les changements en étape"
@@ -8092,7 +8092,7 @@ msgid "Upvotes"
 msgstr "Votes positifs"
 
 msgid "Usage ping is not enabled"
-msgstr ""
+msgstr "L’envoi des données d’utilisation est désactivé"
 
 msgid "Usage statistics"
 msgstr "Statistiques d’utilisation"
