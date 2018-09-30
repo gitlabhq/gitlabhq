@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 16:01\n"
+"PO-Revision-Date: 2018-09-30 18:48\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -3529,6 +3529,9 @@ msgstr "%{name} est programmé pour la re‐synchronisation"
 msgid "Geo|All projects"
 msgstr "Tous les projets"
 
+msgid "Geo|Could not remove tracking entry for an existing project."
+msgstr ""
+
 msgid "Geo|Error message"
 msgstr "Indication d’erreur"
 
@@ -3571,6 +3574,9 @@ msgstr "En attente de synchronisation"
 msgid "Geo|Pending verification"
 msgstr "En attente de vérification"
 
+msgid "Geo|Project (ID: %{project_id}) no longer exists on the primary. It is safe to remove this entry, as this will not remove any data on disk."
+msgstr ""
+
 msgid "Geo|Projects in certain groups"
 msgstr "Projets de certains groupes"
 
@@ -3582,6 +3588,9 @@ msgstr "Revérifier"
 
 msgid "Geo|Redownload"
 msgstr "Re‐télécharger"
+
+msgid "Geo|Remove"
+msgstr ""
 
 msgid "Geo|Repository sync capacity"
 msgstr "Capacité de synchronisation du dépôt"
@@ -3609,6 +3618,12 @@ msgstr "Synchronisé"
 
 msgid "Geo|Synchronization failed - %{error}"
 msgstr "Synchro en échec — %{error}"
+
+msgid "Geo|Tracking entry for project (%{project_id}) was successfully removed."
+msgstr ""
+
+msgid "Geo|Tracking entry will be removed. Are you sure?"
+msgstr ""
 
 msgid "Geo|Unknown state"
 msgstr "État inconnu"
