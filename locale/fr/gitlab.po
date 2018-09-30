@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 10:37\n"
+"PO-Revision-Date: 2018-09-30 10:51\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -1646,7 +1646,7 @@ msgid "ClusterIntegration|Choose which applications to install on your Kubernete
 msgstr "Choisissez les applications à installer sur votre grappe de serveurs Kubernetes. L’installation de n’importe quelle des applications suivantes nécessite Helm Tiller."
 
 msgid "ClusterIntegration|Choose which of your environments will use this cluster."
-msgstr ""
+msgstr "Choisissez lequel de vos environnements utilisera cette grappe de serveurs."
 
 msgid "ClusterIntegration|Copy API URL"
 msgstr "Copier l’URL de l’API"
@@ -1673,10 +1673,10 @@ msgid "ClusterIntegration|Did you know?"
 msgstr "Le saviez‐vous ?"
 
 msgid "ClusterIntegration|Enable or disable GitLab's connection to your Kubernetes cluster."
-msgstr ""
+msgstr "Activez ou désactivez la connexion de GitLab à votre grappe de serveurs Kubernetes."
 
 msgid "ClusterIntegration|Enable this setting if using role-based access control (RBAC)."
-msgstr ""
+msgstr "Activez ce paramètre si vous utilisez le contrôle d’accès basé sur les rôles (RBAC)."
 
 msgid "ClusterIntegration|Enter the details for your Kubernetes cluster"
 msgstr "Entrez les détails de votre grappe de serveurs Kubernetes"
@@ -1859,7 +1859,7 @@ msgid "ClusterIntegration|Prometheus is an open-source monitoring system with %{
 msgstr "Prometheus est un système de supervision libre avec %{gitlabIntegrationLink} permettant de surveiller les applications déployées."
 
 msgid "ClusterIntegration|RBAC-enabled cluster (experimental)"
-msgstr ""
+msgstr "Grappe de serveurs avec accès RBAC (expérimental)"
 
 msgid "ClusterIntegration|Read our %{link_to_help_page} on Kubernetes cluster integration."
 msgstr "Lisez notre %{link_to_help_page} sur l’intégration d’une grappe de serveurs Kubernetes."
@@ -1931,7 +1931,7 @@ msgid "ClusterIntegration|The IP address is in the process of being assigned. Pl
 msgstr "L’adresse IP est en cours d’affectation. Si cela dure trop longtemps, veuillez vérifier votre grappe de serveurs Kubernetes ou vos quotas sur Google Kubernetes Engine."
 
 msgid "ClusterIntegration|The default cluster configuration grants access to many functionalities needed to successfully build and deploy a containerised application."
-msgstr ""
+msgstr "La configuration par défaut de la grappe de serveurs permet d’accéder à un large éventail de fonctionnalités nécessaires pour construire et déployer une application conteneurisée."
 
 msgid "ClusterIntegration|This account must have permissions to create a Kubernetes cluster in the %{link_to_container_project} specified below"
 msgstr "Ce compte doit disposer des autorisations pour créer une grappe de serveurs Kubernetes dans le %{link_to_container_project} spécifié ci‐dessous"
@@ -4248,7 +4248,7 @@ msgid "Job|The artifacts were removed"
 msgstr "Les artefacts ont été supprimés"
 
 msgid "Job|The artifacts will be removed in"
-msgstr ""
+msgstr "Les artefacts seront supprimés dans"
 
 msgid "Job|This job is stuck, because the project doesn't have any runners online assigned to it."
 msgstr "Cette tâche est bloquée, car aucun exécuteur en ligne n’est attribué au projet."
@@ -5070,7 +5070,7 @@ msgid "No repository"
 msgstr "Aucun dépôt"
 
 msgid "No runners found"
-msgstr ""
+msgstr "Aucun exécuteur trouvé"
 
 msgid "No schedules"
 msgstr "Aucune planification"
@@ -5588,7 +5588,7 @@ msgid "Preview"
 msgstr "Aperçu"
 
 msgid "Preview payload"
-msgstr ""
+msgstr "Aperçu de la charge utile"
 
 msgid "Primary"
 msgstr "Principal"
