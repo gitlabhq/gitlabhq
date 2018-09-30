@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 15:12\n"
+"PO-Revision-Date: 2018-09-30 15:26\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -7864,10 +7864,10 @@ msgid "To get started, please enter your Gitea Host URL and a %{link_to_personal
 msgstr "Pour commencer, entrez l’URL de votre hôte Gitea et un %{link_to_personal_token}."
 
 msgid "To help improve GitLab and its user experience, GitLab will periodically collect usage information."
-msgstr ""
+msgstr "Afin d’aider à améliorer GitLab et son expérience utilisateur, GitLab va recueillir périodiquement des informations sur son utilisation."
 
 msgid "To help improve GitLab, we would like to periodically collect usage information. This can be changed at any time in %{settings_link_start}Settings%{link_end}. %{info_link_start}More Information%{link_end}"
-msgstr ""
+msgstr "Afin d’aider à améliorer GitLab, nous aimerions recueillir périodiquement des informations sur son utilisation. Vous pourrez modifier ceci à tout moment dans les %{settings_link_start}paramètres%{link_end}. %{info_link_start}Plus d’informations…%{link_end}"
 
 msgid "To import GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
 msgstr "Pour importer les dépôts GitHub, vous pouvez utiliser un %{personal_access_token_link}. Lorsque vous créez votre jeton d’accès, vous devrez sélectionner le champ <code>repo</code>, afin que nous puissions afficher une liste de vos dépôts publics et privés qui sont disponibles pour être importés."
@@ -7897,7 +7897,7 @@ msgid "To validate your GitLab CI configurations, go to 'CI/CD → Pipelines' in
 msgstr "Pour valider vos configurations GitLab CI, allez dans « CI / CD » → « Pipelines » dans votre projet, et cliquez sur le bouton « CI Lint »."
 
 msgid "To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown."
-msgstr ""
+msgstr "Afin d’afficher la feuille de route, ajoutez une date de début ou d’échéance à l’une de vos épopées dans ce groupe ou ses sous‐groupes. Dans la vue multi‐mensuelle, seules les épopées du mois dernier, du mois courant et des cinq prochains mois sont affichées."
 
 msgid "To widen your search, change or remove filters."
 msgstr "Afin d’élargir votre recherche, modifiez ou supprimez des filtres."
@@ -8452,13 +8452,13 @@ msgid "You can only edit files when you are on a branch"
 msgstr "Vous ne pouvez modifier des fichiers que dans une branche"
 
 msgid "You can reset runners registration token by pressing a button below."
-msgstr ""
+msgstr "Vous pouvez réinitialiser le jeton d’inscription des exécuteurs en appuyant sur un bouton ci‐dessous."
 
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
 msgstr "Vous pouvez résoudre le conflit de fusion Git soit en mode interactif, en cliquant sur les boutons « %{use_ours} » ou « %{use_theirs} », soit en modifiant directement les fichiers. Valider ces modifications dans la branche « %{branch_name} »"
 
 msgid "You can set up jobs to only use Runners with specific tags. Separate tags with commas."
-msgstr ""
+msgstr "Vous pouvez configurer des tâches pour n’utiliser des exécuteurs qu’avec des étiquettes spécifiques. Séparez les étiquettes par des virgules."
 
 msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use %{link_to_primary_node} instead."
 msgstr "Vous ne pouvez pas écrire sur une instance GitLab Geo secondaire en lecture seule. Veuillez utiliser le %{link_to_primary_node} à la place."
@@ -8497,10 +8497,10 @@ msgid "You need permission."
 msgstr "Vous avez besoin d’une autorisation."
 
 msgid "You will loose all changes you've made to this file. This action cannot be undone."
-msgstr ""
+msgstr "Vous allez perdre toutes les modifications apportées à ce fichier. Cette action ne peut pas être annulée."
 
 msgid "You will loose all the unstaged changes you've made in this project. This action cannot be undone."
-msgstr ""
+msgstr "Vous allez perdre toutes les modifications non indexées que vous avez effectuées sur ce projet. Cette action ne peut pas être annulée."
 
 msgid "You will not get any notifications via email"
 msgstr "Vous ne recevrez aucune notification par courriel"
