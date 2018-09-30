@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 14:58\n"
+"PO-Revision-Date: 2018-09-30 15:12\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -6504,7 +6504,7 @@ msgid "Runners can be placed on separate users, servers, even on your local mach
 msgstr "Les exécuteurs peuvent fonctionner sur différents serveurs, avec différents comptes d’utilisateur, y compris sur votre machine locale."
 
 msgid "Runners currently online: %{active_runners_count}"
-msgstr ""
+msgstr "Exécuteurs actuellement en ligne : %{active_runners_count}"
 
 msgid "Runners page"
 msgstr "Page des exécuteurs"
@@ -7518,10 +7518,10 @@ msgid "This container registry has been scheduled for deletion."
 msgstr "Ce registre de conteneur a été programmé pour suppression."
 
 msgid "This date is after the due date, so this epic won't appear in the roadmap."
-msgstr ""
+msgstr "Cette date est postérieure à la date d’échéance, cette épopée n’apparaîtra donc pas dans la feuille de route."
 
 msgid "This date is before the start date, so this epic won't appear in the roadmap."
-msgstr ""
+msgstr "Cette date est antérieure à la date de début, cette épopée n’apparaîtra donc pas dans la feuille de route."
 
 msgid "This diff is collapsed."
 msgstr "Ce diff est replié."
@@ -7855,7 +7855,7 @@ msgid "To define internal users, first enable new users set to external"
 msgstr "Afin de définir les utilisateurs internes, veuillez d’abord activer les nouveaux utilisateurs définis comme externes"
 
 msgid "To enable it and see User Cohorts, visit %{application_settings_link_start}application settings%{application_settings_link_end}."
-msgstr ""
+msgstr "Afin d’activer et d’afficher les cohortes d’utilisateurs, consultez les %{application_settings_link_start}paramètres de l’application%{application_settings_link_end}."
 
 msgid "To get started you enter your FogBugz URL and login information below. In the next steps, you'll be able to map users and select the projects you want to import."
 msgstr "Pour commencer, entrez votre URL FogBugz et vos informations de connexion ci‐dessous. Dans les étapes suivantes, vous pourrez mettre en correspondance les comptes des utilisateurs et sélectionner les projets à importer."
