@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 10:17\n"
+"PO-Revision-Date: 2018-09-30 10:37\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -3626,7 +3626,7 @@ msgid "Geo|You need a different license to use Geo replication"
 msgstr "Il faut une licence différente pour utiliser la réplication géographique"
 
 msgid "Get a free instance review"
-msgstr ""
+msgstr "Obtenez une revue d’instance gratuite"
 
 msgid "Git"
 msgstr "Git"
@@ -3887,7 +3887,7 @@ msgid "GroupsTree|No groups or projects matched your search"
 msgstr ""
 
 msgid "GroupsTree|Search by name"
-msgstr ""
+msgstr "Rechercher par nom"
 
 msgid "Have your users email"
 msgstr "Récupérer les adresses de courriel des utilisateurs"
@@ -4600,7 +4600,7 @@ msgid "Maven package"
 msgstr "Paquet Maven"
 
 msgid "Max access level"
-msgstr ""
+msgstr "Niveau d’accès maximum"
 
 msgid "Maximum git storage failures"
 msgstr "Nombre maximum d’échecs du stockage Git"
@@ -5705,7 +5705,7 @@ msgid "Profiles|Private contributions"
 msgstr ""
 
 msgid "Profiles|Public Avatar"
-msgstr ""
+msgstr "Avatar public"
 
 msgid "Profiles|Remove avatar"
 msgstr ""
@@ -5759,7 +5759,7 @@ msgid "Profiles|Username successfully changed"
 msgstr "Changement de nom d’utilisateur effectué"
 
 msgid "Profiles|Website"
-msgstr ""
+msgstr "Site Web"
 
 msgid "Profiles|What's your status?"
 msgstr "Quel est votre statut ?"
