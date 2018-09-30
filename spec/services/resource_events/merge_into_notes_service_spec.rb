@@ -24,6 +24,16 @@ describe ResourceEvents::MergeIntoNotesService do
   let(:time) { Time.now }
 
   describe '#execute' do
+    it 'does not merge label events if user preference filter is set to "only comments"' do
+      user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], resource)
+      create_note(created_at: 4.days.ago)
+      create_event(created_at: 3.days.ago)
+
+      notes = described_class.new(resource, user).execute([])
+
+      expect(notes).to be_empty
+    end
+
     it 'merges label events into notes in order of created_at' do
       note1 = create_note(created_at: 4.days.ago)
       note2 = create_note(created_at: 2.days.ago)
