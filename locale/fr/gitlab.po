@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 12:31\n"
+"PO-Revision-Date: 2018-09-30 14:37\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -6474,10 +6474,10 @@ msgid "Run untagged jobs"
 msgstr "Exécuter les tâches non étiquetées"
 
 msgid "Runner cannot be assigned to other projects"
-msgstr ""
+msgstr "L’exécuteur ne peut être affecté à d’autres projets"
 
 msgid "Runner runs jobs from all unassigned projects"
-msgstr ""
+msgstr "L’exécuteur exécute des tâches de tous les projets non attribués"
 
 msgid "Runner runs jobs from all unassigned projects in its group"
 msgstr ""
@@ -7515,7 +7515,7 @@ msgid "This branch has changed since you started editing. Would you like to crea
 msgstr "Cette branche a changé depuis que vous y avez apporté des modifications. Souhaitez‐vous créer une nouvelle branche ?"
 
 msgid "This container registry has been scheduled for deletion."
-msgstr ""
+msgstr "Ce registre de conteneur a été programmé pour suppression."
 
 msgid "This date is after the due date, so this epic won't appear in the roadmap."
 msgstr ""
