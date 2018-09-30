@@ -1,5 +1,7 @@
 <script>
+import $ from 'jquery';
 import Icon from '~/vue_shared/components/icon.vue';
+import { mapActions, mapGetters } from 'vuex';
 import dropdown from '~/vue_shared/directives/dropdown.js'
 import eventHub from '../event_hub';
 
@@ -27,13 +29,19 @@ export default {
   methods: {
     handleClick(e) {
       const { value } =  e.target;
+      const newValue = parseInt(value, 10);
+
+      if (newValue === this.currentValue) return;
 
       e.stopImmediatePropagation();
-      this.currentValue = parseInt(value, 10);
+      this.currentValue = newValue;
       eventHub.$emit('notes.filter', this.currentValue);
     },
   },
   computed: {
+    ...mapGetters([
+      'discussionTabCounter',
+    ]),
     currentFilter() {
       const selectedValue = this.currentValue !== undefined ? this.currentValue : this.filters[0].value;
       return this.filters.find(filter => filter.value === selectedValue );
@@ -43,8 +51,11 @@ export default {
 </script>
 
 <template>
-  <div class="prepend-top-10 float-right">
+  <div
+    v-if="discussionTabCounter > 0"
+    class="line-resolve-all-container prepend-top-10">
     <button
+      v-dropdown
       id="discussion-filter-dropdown"
       class="dropdown-toggle btn btn-default"
       data-toggle="dropdown"
@@ -57,7 +68,6 @@ export default {
       />
     </button>
     <div
-      v-dropdown
       class="dropdown-menu dropdown-menu-selectable"
       aria-labelledby="discussion-filter-dropdown">
       <div class="dropdown-content">

@@ -89,7 +89,7 @@ export default function initMrNotes() {
       return createElement('discussion-counter');
     },
   });
-
+  
   const parsedUserData = JSON.parse(document.getElementById('js-vue-discussion-filter').dataset.currentUserData);
   const defaultValue = parsedUserData.user_preference.merge_request_notes_filter;
 
@@ -111,6 +111,7 @@ export default function initMrNotes() {
     components: {
       discussionFilter,
     },
+    store,
     render(createElement) {
       return createElement('discussion-filter', {
         props: {
