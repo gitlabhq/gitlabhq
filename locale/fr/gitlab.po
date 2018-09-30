@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 11:36\n"
+"PO-Revision-Date: 2018-09-30 11:52\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -5627,7 +5627,7 @@ msgid "Profiles| You are going to change the username %{currentUsernameBold} to 
 msgstr "Vous êtes sur le point de changer le nom d’utilisateur %{currentUsernameBold} en %{newUsernameBold}. Le profil et les projets seront redirigés vers l’espace de noms %{newUsername}, mais cette redirection expire si un nouvel utilisateur ou un nouveau groupe est créé avec l’ancien nom %{currentUsername}. Veuillez mettre à jour vos dépôts Git dès que possible."
 
 msgid "Profiles|%{author_name} made a private contribution"
-msgstr ""
+msgstr "%{author_name} a fait une contribution privée"
 
 msgid "Profiles|Account scheduled for removal."
 msgstr "Compte programmé pour suppression."
@@ -5639,16 +5639,16 @@ msgid "Profiles|Add status emoji"
 msgstr "Ajouter un émoji de statut"
 
 msgid "Profiles|Avatar cropper"
-msgstr ""
+msgstr "Rogneur d’avatar"
 
 msgid "Profiles|Avatar will be removed. Are you sure?"
-msgstr ""
+msgstr "L’avatar sera supprimé. Êtes‐vous sûr·e ?"
 
 msgid "Profiles|Change username"
 msgstr "Changer le nom d’utilisateur·rice"
 
 msgid "Profiles|Choose file..."
-msgstr ""
+msgstr "Choisir un fichier…"
 
 msgid "Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information."
 msgstr ""
@@ -5660,7 +5660,7 @@ msgid "Profiles|Current path: %{path}"
 msgstr "Chemin d’accès actuel : %{path}"
 
 msgid "Profiles|Current status"
-msgstr ""
+msgstr "État actuel"
 
 msgid "Profiles|Delete Account"
 msgstr "Supprimer un compte"
@@ -5681,7 +5681,7 @@ msgid "Profiles|Don't display activity-related personal information on your prof
 msgstr ""
 
 msgid "Profiles|Edit Profile"
-msgstr ""
+msgstr "Modifier le profil"
 
 msgid "Profiles|Invalid password"
 msgstr "Mot de passe incorrect"
@@ -5690,28 +5690,28 @@ msgid "Profiles|Invalid username"
 msgstr "Nom d’utilisateur incorrect"
 
 msgid "Profiles|Main settings"
-msgstr ""
+msgstr "Paramètres principaux"
 
 msgid "Profiles|No file chosen"
-msgstr ""
+msgstr "Aucun fichier choisi"
 
 msgid "Profiles|Path"
 msgstr "Chemin d’accès"
 
 msgid "Profiles|Position and size your new avatar"
-msgstr ""
+msgstr "Position et taille de votre nouvel avatar"
 
 msgid "Profiles|Private contributions"
-msgstr ""
+msgstr "Contributions privées"
 
 msgid "Profiles|Public Avatar"
 msgstr "Avatar public"
 
 msgid "Profiles|Remove avatar"
-msgstr ""
+msgstr "Supprimer l’avatar"
 
 msgid "Profiles|Set new profile picture"
-msgstr ""
+msgstr "Définir une nouvelle photo de profil"
 
 msgid "Profiles|Some options are unavailable for LDAP accounts"
 msgstr ""
@@ -5903,13 +5903,13 @@ msgid "ProjectOverview|Star"
 msgstr "Mettre une étoile"
 
 msgid "ProjectOverview|Unstar"
-msgstr ""
+msgstr "Supprimer l’étoile"
 
 msgid "ProjectOverview|You have reached your project limit"
 msgstr ""
 
 msgid "ProjectOverview|You must sign in to star a project"
-msgstr ""
+msgstr "Vous devez vous authentifier afin de pouvoir ajouter une étoile à un projet"
 
 msgid "ProjectPage|Project ID: %{project_id}"
 msgstr "Identifiant de projet : %{project_id}"
@@ -6218,7 +6218,7 @@ msgid "Real-time features"
 msgstr "Fonctionnalités en temps réel"
 
 msgid "Recent searches"
-msgstr ""
+msgstr "Recherches récentes"
 
 msgid "Reference:"
 msgstr "Référence :"
@@ -6298,7 +6298,7 @@ msgid "Rename folder"
 msgstr "Renommer le dossier"
 
 msgid "Reopen epic"
-msgstr ""
+msgstr "Rouvrir l’épopée"
 
 msgid "Repair authentication"
 msgstr "Réparer l’authentification"
@@ -6319,10 +6319,10 @@ msgid "Reports|Class"
 msgstr "Classe"
 
 msgid "Reports|Confidence"
-msgstr ""
+msgstr "Confiance"
 
 msgid "Reports|Dismiss Vulnerability"
-msgstr ""
+msgstr "Rejeter la vulnérabilité"
 
 msgid "Reports|Execution time"
 msgstr "Durée d’exécution"
@@ -6331,13 +6331,13 @@ msgid "Reports|Failure"
 msgstr "Échec"
 
 msgid "Reports|More info"
-msgstr ""
+msgstr "Plus d’informations"
 
 msgid "Reports|New Issue"
-msgstr ""
+msgstr "Nouveau ticket"
 
 msgid "Reports|Severity"
-msgstr ""
+msgstr "Sévérité"
 
 msgid "Reports|System output"
 msgstr "Sortie du système"
@@ -6352,7 +6352,7 @@ msgid "Reports|Test summary results are being parsed"
 msgstr "Les résultats de la synthèse des tests sont en cours d’analyse"
 
 msgid "Reports|Vulnerability"
-msgstr ""
+msgstr "Vulnérabilité"
 
 msgid "Reports|no changed test results"
 msgstr "aucun résultat de test modifié"
