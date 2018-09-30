@@ -113,13 +113,15 @@ module IssuableActions
     notes_filter_param = params[:notes_filter]
 
     if current_user
+      # GitLab Geo does not expect database UPDATE or INSERT statements to happen
+      # on GET requests.
       if request.put?
         current_user.set_notes_filter(notes_filter_param, issuable)
       else
         current_user.notes_filter_for(issuable)
       end
     else
-      notes_filter_param.to_i
+      notes_filter_param
     end
   end
 
