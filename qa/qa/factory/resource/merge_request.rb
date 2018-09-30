@@ -6,6 +6,7 @@ module QA
       class MergeRequest < Factory::Base
         attr_accessor :title,
                       :description,
+                      :label,
                       :source_branch,
                       :target_branch,
                       :assignee,
@@ -56,6 +57,10 @@ module QA
             page.fill_title(@title)
             page.fill_description(@description)
             page.choose_milestone(@milestone) if @milestone
+            labels.each do |label|
+              page.select_label(label)
+            end
+
             page.create_merge_request
           end
         end
