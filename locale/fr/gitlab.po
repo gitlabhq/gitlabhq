@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 11:19\n"
+"PO-Revision-Date: 2018-09-30 11:25\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -6722,7 +6722,7 @@ msgid "Select target branch"
 msgstr "Sélectionner une branche cible"
 
 msgid "Select the branch you want to set as the default for this project. All merge requests and commits will automatically be made against this branch unless you specify a different one."
-msgstr ""
+msgstr "Sélectionnez la branche que vous souhaitez définir comme branche par défaut pour ce projet. Toutes les demandes de fusion et les commits seront automatiquement effectués sur cette branche, à moins que vous n’en spécifiez une autre."
 
 msgid "Select the custom project template source group."
 msgstr "Sélectionnez le groupe source de modèles de projet personnalisés."
@@ -6737,7 +6737,7 @@ msgid "Send email"
 msgstr "Envoyer un courriel"
 
 msgid "Send usage data"
-msgstr ""
+msgstr "Envoyer des données d’utilisation"
 
 msgid "Sep"
 msgstr "sept."
@@ -6785,7 +6785,7 @@ msgid "Set up Koding"
 msgstr "Configurer Koding"
 
 msgid "Set up a %{type} Runner manually"
-msgstr ""
+msgstr "Configurer manuellement un exécuteur %{type}"
 
 msgid "Set up a specific Runner automatically"
 msgstr "Configurer automatiquement un exécuteur spécifique"
@@ -6812,7 +6812,7 @@ msgid "Shared Runners"
 msgstr "Exécuteurs partagés"
 
 msgid "Shared projects"
-msgstr ""
+msgstr "Projets partagés"
 
 msgid "SharedRunnersMinutesSettings|By resetting the pipeline minutes for this namespace, the currently used minutes will be set to zero."
 msgstr "En réinitialisant le compteur de minutes du pipeline pour cet espace de noms, les minutes actuellement utilisées seront mises à zéro."
@@ -6898,7 +6898,7 @@ msgid "Slack application"
 msgstr "Application Slack"
 
 msgid "Slack integration allows you to interact with GitLab via slash commands in a chat window."
-msgstr ""
+msgstr "L’intégration de Slack permet d’interagir avec GitLab via des commandes slash dans une fenêtre de messagerie instantanée."
 
 msgid "Slower but makes sure the project workspace is pristine as it clones the repository from scratch for every job"
 msgstr "Plus lent, mais permet de s’assurer que l’espace de travail du projet est vierge, comme il clone le dépôt à partir de zéro pour chaque tâche"
@@ -7015,7 +7015,7 @@ msgid "SortOptions|Most popular"
 msgstr "Popularité décroissante"
 
 msgid "SortOptions|Most stars"
-msgstr ""
+msgstr "Avec le plus d’étoiles"
 
 msgid "SortOptions|Name"
 msgstr "Nom"
@@ -7048,7 +7048,7 @@ msgid "SortOptions|Recent sign in"
 msgstr "Date d’inscription décroissante"
 
 msgid "SortOptions|Start date"
-msgstr ""
+msgstr "Date de début"
 
 msgid "SortOptions|Start later"
 msgstr "Commence plus tard"
