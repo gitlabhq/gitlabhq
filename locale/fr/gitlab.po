@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 10:06\n"
+"PO-Revision-Date: 2018-09-30 10:17\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -4096,7 +4096,7 @@ msgid "Improve search with Advanced Global Search and GitLab Enterprise Edition.
 msgstr "Améliorez vos recherches avec la recherche globale avancée de GitLab Enterprise Edition."
 
 msgid "In order to enable instance-level analytics, please ask an admin to enable %{usage_ping_link_start}usage ping%{usage_ping_link_end}."
-msgstr ""
+msgstr "Afin d’activer les statistiques au niveau de l’instance, veuillez demander à un administrateur d’activer la %{usage_ping_link_start}collecte des données d’utilisation%{usage_ping_link_end}."
 
 msgid "In the next step, you'll be able to select the projects you want to import."
 msgstr "À la prochaine étape, vous pourrez sélectionner les projets que vous souhaitez importer."
@@ -7434,7 +7434,7 @@ msgid "The update action will time out after %{number_of_minutes} minutes. For b
 msgstr "L’action de mise à jour expirera au bout de %{number_of_minutes} minutes. Pour les gros dépôts, utilisez une combinaison de clone et push."
 
 msgid "The usage ping is disabled, and cannot be configured through this form."
-msgstr ""
+msgstr "La collecte des données d’utilisation est désactivée et ne peut pas être configurée par le biais de ce formulaire."
 
 msgid "The user map is a JSON document mapping the Google Code users that participated on your projects to the way their email addresses and usernames will be imported into GitLab. You can change this by changing the value on the right hand side of <code>:</code>. Be sure to preserve the surrounding double quotes, other punctuation and the email address or username on the left hand side."
 msgstr "La carte des utilisateurs (<code>user map</code>) est un document JSON qui met en correspondance les utilisateurs de Google Code qui ont participé à vos projets en précisant la manière dont leurs adresses de courriel et leurs noms d’utilisateur sont importés dans GitLab. Vous pouvez y apporter des modifications en changeant la valeur à droite du « <code>:</code> ». Assurez‐vous de conserver les guillemets droits doubles (<code>\"</code>), les autres signes de ponctuation, ainsi que l’adresse de courriel ou le nom d’utilisateur à gauche du deux‐points."
@@ -8122,7 +8122,7 @@ msgid "Used by members to sign in to your group in GitLab"
 msgstr "Utilisé par les membres pour se connecter à votre groupe dans GitLab"
 
 msgid "User Cohorts are only shown when the %{usage_ping_link_start}usage ping%{usage_ping_link_end} is enabled."
-msgstr ""
+msgstr "Les cohortes d’utilisateurs ne sont affichées que lorsque la %{usage_ping_link_start}collecte des données d’utilisation%{usage_ping_link_end} est activée."
 
 msgid "User Settings"
 msgstr "Paramètres de l’utilisateur"
