@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 10:57\n"
+"PO-Revision-Date: 2018-09-30 11:14\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -3767,10 +3767,10 @@ msgid "GroupRoadmap|The roadmap shows the progress of your epics along a timelin
 msgstr "La feuille de route affiche la progression de vos épopées dans le temps"
 
 msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from %{startDate} to %{endDate}."
-msgstr ""
+msgstr "Afin d’afficher la feuille de route, ajoutez une date de début ou d’échéance à l’une de vos épopées dans ce groupe ou ses sous‐groupes. Dans la vue multi‐mensuelle, seules les épopées du mois dernier, du mois courant et des cinq prochains mois sont affichées, du %{startDate} au %{endDate}."
 
 msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the quarters view, only epics in the past quarter, current quarter, and next 4 quarters are shown &ndash; from %{startDate} to %{endDate}."
-msgstr ""
+msgstr "Pour afficher la feuille de route, ajoutez une date de début ou d’échéance à l’une de vos épopées dans ce groupe ou ses sous‐groupes. Dans la vue multi‐trimestrielle, seules les épopées du trimestre dernier, du trimestre courant et des quatre prochains trimestres sont affichées, du %{startDate} au %{endDate}."
 
 msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the weeks view, only epics in the past week, current week, and next 4 weeks are shown &ndash; from %{startDate} to %{endDate}."
 msgstr ""
