@@ -3,11 +3,11 @@ import _ from 'underscore';
 import Vue from 'vue';
 import notesApp from '~/notes/components/notes_app.vue';
 import service from '~/notes/services/notes_service';
+import eventHub from '~/notes/event_hub';
 import createStore from '~/notes/stores';
 import '~/behaviors/markdown/render_gfm';
 import { mountComponentWithStore } from 'spec/helpers';
 import * as mockData from '../mock_data';
-import eventHub from '~/notes/event_hub';
 
 const vueMatchers = {
   toIncludeElement() {

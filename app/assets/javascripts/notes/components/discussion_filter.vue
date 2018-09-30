@@ -1,34 +1,42 @@
 <script>
-import $ from 'jquery';
 import Icon from '~/vue_shared/components/icon.vue';
-import { mapActions, mapGetters } from 'vuex';
-import dropdown from '~/vue_shared/directives/dropdown.js'
+import { mapGetters } from 'vuex';
+import dropdown from '~/vue_shared/directives/dropdown';
 import eventHub from '../event_hub';
 
 export default {
   components: {
     Icon,
   },
+  directives: {
+    dropdown,
+  },
   props: {
     filters: {
       type: Array,
-      required: true
+      required: true,
     },
     defaultValue: {
       type: Number,
-      required: false
+      default: null,
+      required: false,
     },
   },
-   directives: {
-    dropdown,
-  },
-
   data() {
     return { currentValue: this.defaultValue };
   },
+  computed: {
+    ...mapGetters([
+      'discussionTabCounter',
+    ]),
+    currentFilter() {
+      const selectedValue = this.currentValue ? this.currentValue : this.filters[0].value;
+      return this.filters.find(filter => filter.value === selectedValue );
+    },
+  },
   methods: {
     handleClick(e) {
-      const { value } =  e.target;
+      const { value } = e.target;
       const newValue = parseInt(value, 10);
 
       if (newValue === this.currentValue) return;
@@ -38,16 +46,7 @@ export default {
       eventHub.$emit('notes.filter', this.currentValue);
     },
   },
-  computed: {
-    ...mapGetters([
-      'discussionTabCounter',
-    ]),
-    currentFilter() {
-      const selectedValue = this.currentValue ? this.currentValue : this.filters[0].value;
-      return this.filters.find(filter => filter.value === selectedValue );
-    }
-  },
-}
+};
 </script>
 
 <template>
@@ -88,6 +87,4 @@ export default {
       </div>
     </div>
   </div>
-  
 </template>
-
