@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 14:52\n"
+"PO-Revision-Date: 2018-09-30 14:58\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -6501,7 +6501,7 @@ msgid "Runners can be placed on separate users, servers, and even on your local 
 msgstr "Les exécuteurs peuvent être placés sur différents utilisateurs et serveurs, voire sur votre machine locale."
 
 msgid "Runners can be placed on separate users, servers, even on your local machine."
-msgstr ""
+msgstr "Les exécuteurs peuvent fonctionner sur différents serveurs, avec différents comptes d’utilisateur, y compris sur votre machine locale."
 
 msgid "Runners currently online: %{active_runners_count}"
 msgstr ""
