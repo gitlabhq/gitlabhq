@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 11:56\n"
+"PO-Revision-Date: 2018-09-30 12:15\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -5675,10 +5675,10 @@ msgid "Profiles|Deleting an account has the following effects:"
 msgstr "Supprimer un compte aura les conséquences suivantes :"
 
 msgid "Profiles|Do not show on profile"
-msgstr ""
+msgstr "Ne pas montrer sur le profil"
 
 msgid "Profiles|Don't display activity-related personal information on your profiles"
-msgstr ""
+msgstr "Ne pas afficher les informations personnelles liées à l’activité sur vos profils"
 
 msgid "Profiles|Edit Profile"
 msgstr "Modifier le profil"
@@ -5714,28 +5714,28 @@ msgid "Profiles|Set new profile picture"
 msgstr "Définir une nouvelle photo de profil"
 
 msgid "Profiles|Some options are unavailable for LDAP accounts"
-msgstr ""
+msgstr "Certaines options ne sont pas disponibles pour les comptes LDAP"
 
 msgid "Profiles|Tell us about yourself in fewer than 250 characters."
-msgstr ""
+msgstr "Parlez‐nous de vous en moins de 250 caractères."
 
 msgid "Profiles|The maximum file size allowed is 200KB."
-msgstr ""
+msgstr "La taille de fichier maximale autorisée est de 200 Kio."
 
 msgid "Profiles|This doesn't look like a public SSH key, are you sure you want to add it?"
 msgstr "Ceci ne ressemble pas à une clef SSH publique, êtes‐vous sûr(e) de vouloir l’ajouter ?"
 
 msgid "Profiles|This email will be displayed on your public profile."
-msgstr ""
+msgstr "Cette adresse de courriel sera affichée sur votre profil public."
 
 msgid "Profiles|This emoji and message will appear on your profile and throughout the interface."
 msgstr "Cet émoji et ce message apparaîtront sur votre profil et partout dans l’interface."
 
 msgid "Profiles|This feature is experimental and translations are not complete yet."
-msgstr ""
+msgstr "Cette fonctionnalité est expérimentale et les traductions ne sont pas encore complètes."
 
 msgid "Profiles|This information will appear on your profile."
-msgstr ""
+msgstr "Cette information apparaîtra sur votre profil."
 
 msgid "Profiles|Type your %{confirmationValue} to confirm:"
 msgstr "Saisissez votre %{confirmationValue} pour confirmer :"
@@ -5744,13 +5744,13 @@ msgid "Profiles|Typically starts with \"ssh-rsa …\""
 msgstr "Commence généralement par « ssh-rsa […] »"
 
 msgid "Profiles|Update profile settings"
-msgstr ""
+msgstr "Mettre à jour les paramètres du profil"
 
 msgid "Profiles|Update username"
 msgstr "Mettre à jour le nom d’utilisateur"
 
 msgid "Profiles|Upload new avatar"
-msgstr ""
+msgstr "Téléverser un nouvel avatar"
 
 msgid "Profiles|Username change failed - %{message}"
 msgstr "Le changement de nom d’utilisateur a échoué : %{message}"
@@ -5765,16 +5765,16 @@ msgid "Profiles|What's your status?"
 msgstr "Quel est votre statut ?"
 
 msgid "Profiles|You can change your avatar here"
-msgstr ""
+msgstr "Vous pouvez changer votre avatar ici"
 
 msgid "Profiles|You can change your avatar here or remove the current avatar to revert to %{gravatar_link}"
-msgstr ""
+msgstr "Vous pouvez changer votre avatar ici ou supprimer l’avatar actuel et revenir à %{gravatar_link}"
 
 msgid "Profiles|You can upload your avatar here"
-msgstr ""
+msgstr "Vous pouvez téléverser votre avatar ici"
 
 msgid "Profiles|You can upload your avatar here or change it at %{gravatar_link}"
-msgstr ""
+msgstr "Vous pouvez téléverser votre avatar ici ou le changer en %{gravatar_link}"
 
 msgid "Profiles|You don't have access to delete this user."
 msgstr "Vous n’avez pas les autorisations suffisantes pour supprimer cet utilisateur ou cette utilisatrice."
@@ -5786,13 +5786,13 @@ msgid "Profiles|Your account is currently an owner in these groups:"
 msgstr "Votre compte est actuellement propriétaire des groupes suivants :"
 
 msgid "Profiles|Your email address was automatically set based on your %{provider_label} account."
-msgstr ""
+msgstr "Votre adresse de courriel a été automatiquement définie en fonction de votre compte %{provider_label}."
 
 msgid "Profiles|Your location was automatically set based on your %{provider_label} account."
-msgstr ""
+msgstr "Votre localisation a été automatiquement définie en fonction de votre compte %{provider_label}."
 
 msgid "Profiles|Your name was automatically set based on your %{provider_label} account, so people you know can recognize you."
-msgstr ""
+msgstr "Votre nom a été automatiquement défini en fonction de votre compte %{provider_label}, afin que les personnes que vous connaissez puissent vous identifier."
 
 msgid "Profiles|Your status"
 msgstr "Votre statut"
@@ -7446,7 +7446,7 @@ msgid "The value lying at the midpoint of a series of observed values. E.g., bet
 msgstr "La valeur située au point médian d’une série de valeur observée. Par exemple., entre 3, 5 et 9, le médian est 5. Entre 3, 5, 7 et 8, le médian est (5+7)/2 = 6."
 
 msgid "There are no archived projects yet"
-msgstr ""
+msgstr "Il n’y a pas encore de projets archivés"
 
 msgid "There are no issues to show"
 msgstr "Il n’y a aucun ticket à afficher"
@@ -7458,13 +7458,13 @@ msgid "There are no merge requests to show"
 msgstr "Il n’y a aucune demande de fusion à afficher"
 
 msgid "There are no projects shared with this group yet"
-msgstr ""
+msgstr "Il n’y a pas encore de projets partagés avec ce groupe"
 
 msgid "There are no staged changes"
-msgstr ""
+msgstr "Il n’y a aucune modification indexée"
 
 msgid "There are no unstaged changes"
-msgstr ""
+msgstr "Il n’y a aucune modification non indexée"
 
 msgid "There are problems accessing Git storage: "
 msgstr "Il y a des difficultés à accéder aux données Git : "
