@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: uk\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 19:27\n"
+"PO-Revision-Date: 2018-09-30 19:33\n"
 
 msgid " Status"
 msgstr " Статус"
@@ -5895,7 +5895,7 @@ msgid "Profiles|Your location was automatically set based on your %{provider_lab
 msgstr "Ваше місцезнаходження було автоматично встановлено на основі вашого облікового запису %{provider_label}."
 
 msgid "Profiles|Your name was automatically set based on your %{provider_label} account, so people you know can recognize you."
-msgstr ""
+msgstr "Ваше ім’я було автоматично встановлено на основі вашого облікового запису %{provider_label} щоб люди могли вас впізнати."
 
 msgid "Profiles|Your status"
 msgstr "Ваш статус"
@@ -6457,7 +6457,7 @@ msgid "Reports|Test summary results are being parsed"
 msgstr ""
 
 msgid "Reports|Vulnerability"
-msgstr ""
+msgstr "Вразливість"
 
 msgid "Reports|no changed test results"
 msgstr ""
@@ -6846,7 +6846,7 @@ msgid "Send email"
 msgstr "Надіслати листа"
 
 msgid "Send usage data"
-msgstr ""
+msgstr "Відправити дані про використання"
 
 msgid "Sep"
 msgstr "вер."
