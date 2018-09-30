@@ -6,7 +6,6 @@ module QA
       class MergeRequest < Factory::Base
         attr_accessor :title,
                       :description,
-                      :label,
                       :source_branch,
                       :target_branch,
                       :assignee,
