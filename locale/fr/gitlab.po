@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 11:52\n"
+"PO-Revision-Date: 2018-09-30 11:56\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -5651,7 +5651,7 @@ msgid "Profiles|Choose file..."
 msgstr "Choisir un fichier…"
 
 msgid "Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information."
-msgstr ""
+msgstr "Afficher les contributions de projets privés sur votre profil public sans aucune information sur les projets, les dépôts ou les organisations."
 
 msgid "Profiles|Clear status"
 msgstr "Effacer le statut"
