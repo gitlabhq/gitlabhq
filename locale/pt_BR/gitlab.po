@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: pt-BR\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 22:01\n"
+"PO-Revision-Date: 2018-09-30 22:17\n"
 
 msgid " Status"
 msgstr " Status"
@@ -6639,7 +6639,7 @@ msgid "Search users"
 msgstr "Procurar usuários"
 
 msgid "SearchAutocomplete|All GitLab"
-msgstr ""
+msgstr "Todo o GitLab"
 
 msgid "SearchAutocomplete|Issues I've created"
 msgstr ""
@@ -6648,19 +6648,19 @@ msgid "SearchAutocomplete|Issues assigned to me"
 msgstr ""
 
 msgid "SearchAutocomplete|Merge requests I've created"
-msgstr ""
+msgstr "Merge requests que eu criei"
 
 msgid "SearchAutocomplete|Merge requests assigned to me"
-msgstr ""
+msgstr "Merge requests atribuídas a mim"
 
 msgid "SearchAutocomplete|in all GitLab"
-msgstr ""
+msgstr "em todo o GitLab"
 
 msgid "SearchAutocomplete|in this group"
-msgstr ""
+msgstr "neste grupo"
 
 msgid "SearchAutocomplete|in this project"
-msgstr ""
+msgstr "neste projeto"
 
 msgid "Seconds before reseting failure information"
 msgstr "Segundos antes de redefinir as informações de falha"
