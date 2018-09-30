@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-29 12:47\n"
+"PO-Revision-Date: 2018-09-30 18:49\n"
 
 msgid " Status"
 msgstr "状态"
@@ -3491,6 +3491,9 @@ msgstr "%{name} 已计划重新同步"
 msgid "Geo|All projects"
 msgstr "所有项目"
 
+msgid "Geo|Could not remove tracking entry for an existing project."
+msgstr ""
+
 msgid "Geo|Error message"
 msgstr "错误消息"
 
@@ -3533,6 +3536,9 @@ msgstr "待同步"
 msgid "Geo|Pending verification"
 msgstr "待验证"
 
+msgid "Geo|Project (ID: %{project_id}) no longer exists on the primary. It is safe to remove this entry, as this will not remove any data on disk."
+msgstr ""
+
 msgid "Geo|Projects in certain groups"
 msgstr "指定群组中的项目"
 
@@ -3544,6 +3550,9 @@ msgstr "重新检查"
 
 msgid "Geo|Redownload"
 msgstr "重新下载"
+
+msgid "Geo|Remove"
+msgstr ""
 
 msgid "Geo|Repository sync capacity"
 msgstr "仓库同步容量"
@@ -3571,6 +3580,12 @@ msgstr "同步"
 
 msgid "Geo|Synchronization failed - %{error}"
 msgstr "同步失败 - %{error}"
+
+msgid "Geo|Tracking entry for project (%{project_id}) was successfully removed."
+msgstr ""
+
+msgid "Geo|Tracking entry will be removed. Are you sure?"
+msgstr ""
 
 msgid "Geo|Unknown state"
 msgstr "未知状态"
