@@ -50,6 +50,7 @@ export default {
   data() {
     return {
       isLoading: true,
+      currentFilter: null,
     };
   },
   computed: {
@@ -83,8 +84,10 @@ export default {
     this.setTargetNoteHash(getLocationHash());
     eventHub.$once('fetchNotesData', this.fetchNotes);
     eventHub.$on('notes.filter', (filter) => {
-      this.isLoading = true;
-      this.fetchNotes(filter)
+      if (this.currentFilter  !== filter) {
+        this.isLoading = true;
+        this.fetchNotes(filter)
+      }
     });
   },
   mounted() {

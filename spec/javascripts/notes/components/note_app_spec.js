@@ -7,6 +7,7 @@ import createStore from '~/notes/stores';
 import '~/behaviors/markdown/render_gfm';
 import { mountComponentWithStore } from 'spec/helpers';
 import * as mockData from '../mock_data';
+import eventHub from '~/notes/event_hub';
 
 const vueMatchers = {
   toIncludeElement() {
@@ -97,8 +98,7 @@ describe('note_app', () => {
     });
 
     it('should render list of notes', done => {
-      const note =
-        mockData.INDIVIDUAL_NOTE_RESPONSE_MAP.GET[
+      const note = mockData.INDIVIDUAL_NOTE_RESPONSE_MAP.GET[
           '/gitlab-org/gitlab-ce/issues/26/discussions.json'
         ][0].notes[0];
 
@@ -125,6 +125,22 @@ describe('note_app', () => {
       expect(vm.$el.querySelector('.js-note-new-discussion').getAttribute('disabled')).toEqual(
         'disabled',
       );
+    });
+
+    it('should update when a filter is applied', () => {
+      spyOn(vm, 'fetchNotes');
+      eventHub.$emit('notes.filter', 0);
+
+      expect(vm.isLoading).toBe(true);
+      expect(vm.fetchNotes).toHaveBeenCalledWith(0);
+    });
+
+    it('should not update if filter did not change ', () => {
+      spyOn(vm, 'fetchNotes');
+      vm.currentFilter = 0;
+      eventHub.$emit('notes.filter', 0);
+
+      expect(vm.fetchNotes).not.toHaveBeenCalled();
     });
   });
 
