@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-28 12:45\n"
+"PO-Revision-Date: 2018-09-30 09:51\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -3002,7 +3002,7 @@ msgid "Epics|To schedule your epic's %{epicDateType} date based on milestones, a
 msgstr ""
 
 msgid "Epics|due"
-msgstr ""
+msgstr "Échéance"
 
 msgid "Epics|start"
 msgstr "commence"
@@ -3245,7 +3245,7 @@ msgid "Fixed date"
 msgstr "Date fixée"
 
 msgid "Fixed due date"
-msgstr ""
+msgstr "Date d’échéance fixée"
 
 msgid "Fixed start date"
 msgstr "Date de début fixe"
@@ -3929,7 +3929,7 @@ msgid "Hide host keys manual input"
 msgstr "Masquer la saisie manuelle des clefs d’hôtes"
 
 msgid "Hide payload"
-msgstr ""
+msgstr "Masquer la charge utile"
 
 msgid "Hide value"
 msgid_plural "Hide values"
