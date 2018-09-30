@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: uk\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 18:49\n"
+"PO-Revision-Date: 2018-09-30 19:21\n"
 
 msgid " Status"
 msgstr " Статус"
@@ -848,7 +848,7 @@ msgid "Ascending"
 msgstr "За зростанням"
 
 msgid "Ask your group maintainer to set up a group Runner."
-msgstr ""
+msgstr "Зверніться до керівника групи, щоб налаштувати груповий Runner."
 
 msgid "Assertion consumer service URL"
 msgstr "URL-адреса служби обробника тверджень"
@@ -1079,7 +1079,7 @@ msgid "Badges|This project has no badges"
 msgstr "У цього проекту немає значків"
 
 msgid "Badges|You are going to delete this badge. Deleted badges <strong>cannot</strong> be restored."
-msgstr ""
+msgstr "Ви збираєтеся видалити цей значок. Вилучені значки <strong>не можуть</strong> бути відновлені."
 
 msgid "Badges|Your badges"
 msgstr "Ваші значки"
@@ -3273,7 +3273,7 @@ msgid "Fields on this page are now uneditable, you can configure"
 msgstr "Поля на цій сторінці зараз недоступні для редагування, ви можете налаштувати"
 
 msgid "File templates"
-msgstr ""
+msgstr "Шаблони файлів"
 
 msgid "Files"
 msgstr "Файли"
@@ -3357,10 +3357,10 @@ msgid "For internal projects, any logged in user can view pipelines and access j
 msgstr "Для внутрішніх проектів будь-який зареєстрований користувач може переглядати конвеєри та отримати доступ до інформації про роботу (логи та артефакти)"
 
 msgid "For more information, go to the "
-msgstr ""
+msgstr "Для отримання додаткової інформації, відвідайте "
 
 msgid "For more information, see the documentation on %{deactivating_usage_ping_link_start}deactivating the usage ping%{deactivating_usage_ping_link_end}."
-msgstr ""
+msgstr "Для отримання додаткової інформації, перегляньте документацію по %{deactivating_usage_ping_link_start}деактивації даних про використання%{deactivating_usage_ping_link_end}."
 
 msgid "For private projects, any member (guest or higher) can view pipelines and access job details (output logs and artifacts)"
 msgstr "Для приватних проектів будь-який користувач (гість або вище) може переглядати конвеєри та отримати доступ до інформації про роботу (логи та артефакти)"
@@ -3408,7 +3408,7 @@ msgid "From merge request merge until deploy to production"
 msgstr "Від виконання запиту на злиття до розгортання на production"
 
 msgid "From milestones:"
-msgstr ""
+msgstr "З етапів:"
 
 msgid "From the Kubernetes cluster details view, install Runner from the applications list"
 msgstr "Із сторінки деталей Kubernetes-кластера, встановіть runner зі списку застосунків"
@@ -5724,13 +5724,13 @@ msgid "Profile Settings"
 msgstr "Налаштування профілю"
 
 msgid "Profiles| You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account. Once you confirm %{deleteAccount}, it cannot be undone or recovered."
-msgstr ""
+msgstr "Ви збираєтеся остаточно видалити %{yourAccount}, а також всі проблеми, запити на злиття та групи, пов'язані з вашим обліковим записом. Після підтвердження %{deleteAccount}, його неможливо буде відновити."
 
 msgid "Profiles| You are going to change the username %{currentUsernameBold} to %{newUsernameBold}. Profile and projects will be redirected to the %{newUsername} namespace but this redirect will expire once the %{currentUsername} namespace is registered by another user or group. Please update your Git repository remotes as soon as possible."
-msgstr ""
+msgstr "Ви збираєтеся змінити ім'я користувача %{currentUsernameBold} на %{newUsernameBold}. Профіль та проекти будуть перенаправлятися на простір імен %{newUsername}, але таке перенаправлення закінчиться, коли простір імен %{currentUsername} буде зареєстровано на іншого користувача або групу. Будь ласка, оновіть віддалені адреси в репозиторіях Git якомога швидше."
 
 msgid "Profiles|%{author_name} made a private contribution"
-msgstr ""
+msgstr "%{author_name} створив приватний внесок"
 
 msgid "Profiles|Account scheduled for removal."
 msgstr "Обліковий запис запланований для видалення."
@@ -5739,19 +5739,19 @@ msgid "Profiles|Add key"
 msgstr "Додати ключ"
 
 msgid "Profiles|Add status emoji"
-msgstr ""
+msgstr "Додати смайлик-статус"
 
 msgid "Profiles|Avatar cropper"
-msgstr ""
+msgstr "Обрізка аватарів"
 
 msgid "Profiles|Avatar will be removed. Are you sure?"
-msgstr ""
+msgstr "Аватар буде видалено. Ви впевнені?"
 
 msgid "Profiles|Change username"
 msgstr "Змінити ім'я користувача"
 
 msgid "Profiles|Choose file..."
-msgstr ""
+msgstr "Вибрати файл..."
 
 msgid "Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information."
 msgstr ""
