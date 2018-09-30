@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: gl\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-28 12:44\n"
+"PO-Revision-Date: 2018-09-30 18:48\n"
 
 msgid " Status"
 msgstr ""
@@ -3529,6 +3529,9 @@ msgstr ""
 msgid "Geo|All projects"
 msgstr ""
 
+msgid "Geo|Could not remove tracking entry for an existing project."
+msgstr ""
+
 msgid "Geo|Error message"
 msgstr ""
 
@@ -3571,6 +3574,9 @@ msgstr ""
 msgid "Geo|Pending verification"
 msgstr ""
 
+msgid "Geo|Project (ID: %{project_id}) no longer exists on the primary. It is safe to remove this entry, as this will not remove any data on disk."
+msgstr ""
+
 msgid "Geo|Projects in certain groups"
 msgstr ""
 
@@ -3581,6 +3587,9 @@ msgid "Geo|Recheck"
 msgstr ""
 
 msgid "Geo|Redownload"
+msgstr ""
+
+msgid "Geo|Remove"
 msgstr ""
 
 msgid "Geo|Repository sync capacity"
@@ -3608,6 +3617,12 @@ msgid "Geo|Synced"
 msgstr ""
 
 msgid "Geo|Synchronization failed - %{error}"
+msgstr ""
+
+msgid "Geo|Tracking entry for project (%{project_id}) was successfully removed."
+msgstr ""
+
+msgid "Geo|Tracking entry will be removed. Are you sure?"
 msgstr ""
 
 msgid "Geo|Unknown state"
