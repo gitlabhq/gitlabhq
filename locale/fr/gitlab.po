@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 11:14\n"
+"PO-Revision-Date: 2018-09-30 11:19\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -3773,7 +3773,7 @@ msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your 
 msgstr "Pour afficher la feuille de route, ajoutez une date de début ou d’échéance à l’une de vos épopées dans ce groupe ou ses sous‐groupes. Dans la vue multi‐trimestrielle, seules les épopées du trimestre dernier, du trimestre courant et des quatre prochains trimestres sont affichées, du %{startDate} au %{endDate}."
 
 msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the weeks view, only epics in the past week, current week, and next 4 weeks are shown &ndash; from %{startDate} to %{endDate}."
-msgstr ""
+msgstr "Pour afficher la feuille de route, ajoutez une date de début ou d’échéance à l’une de vos épopées dans ce groupe ou ses sous‐groupes. Dans la vue multi‐hebdomadaire, seules les épopées de la semaine dernière, de la semaine courante et des quatre prochaines semaines sont affichées, du %{startDate} au %{endDate}."
 
 msgid "GroupRoadmap|To widen your search, change or remove filters. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from %{startDate} to %{endDate}."
 msgstr "Afin d’élargir votre recherche, modifiez ou supprimez des filtres. Dans la vue multi‐mensuelle, seules les épopées du mois dernier, du mois courant et des cinq prochains mois sont affichées, du %{startDate} au %{endDate}."
@@ -3860,7 +3860,7 @@ msgid "GroupsEmptyState|You can manage your group member’s permissions and acc
 msgstr "Vous pouvez gérer les autorisations des membres de votre groupe et accéder à chacun de ses projets."
 
 msgid "GroupsTree|Are you sure you want to leave the \"%{fullName}\" group?"
-msgstr ""
+msgstr "Êtes-vous sûr·e de vouloir quitter le groupe « %{fullName} » ?"
 
 msgid "GroupsTree|Create a project in this group."
 msgstr "Créez un projet dans ce groupe."
@@ -3881,10 +3881,10 @@ msgid "GroupsTree|Loading groups"
 msgstr "Chargement des groupes"
 
 msgid "GroupsTree|No groups matched your search"
-msgstr ""
+msgstr "Aucun groupe ne correspond à votre recherche"
 
 msgid "GroupsTree|No groups or projects matched your search"
-msgstr ""
+msgstr "Aucun groupe ni projet ne correspond à votre recherche"
 
 msgid "GroupsTree|Search by name"
 msgstr "Rechercher par nom"
@@ -6531,7 +6531,7 @@ msgid "SAML Single Sign On Settings"
 msgstr "Paramètres d’authentification unique SAML"
 
 msgid "SAST"
-msgstr ""
+msgstr "SAST"
 
 msgid "SHA1 fingerprint of the SAML token signing certificate. Get this from your identity provider, where it can also be called \"Thumbprint\"."
 msgstr "Empreinte SHA-1 du certificat de signature de jetons SAML. Obtenez‐la auprès de votre fournisseur d’identité, parfois sous la dénomination « Thumbprint »."
@@ -6612,7 +6612,7 @@ msgid "Search milestones"
 msgstr "Rechercher des jalons"
 
 msgid "Search or filter results..."
-msgstr ""
+msgstr "Rechercher ou filtrer les résultats…"
 
 msgid "Search or jump to…"
 msgstr "Rechercher ou aller à…"
@@ -7126,7 +7126,7 @@ msgid "Start a %{new_merge_request} with these changes"
 msgstr "Créer une %{new_merge_request} avec ces changements"
 
 msgid "Start date"
-msgstr ""
+msgstr "Date de début"
 
 msgid "Start the Runner!"
 msgstr "Démarrer l’exécuteur !"
