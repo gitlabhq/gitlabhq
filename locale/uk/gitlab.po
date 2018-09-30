@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: uk\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-29 20:41\n"
+"PO-Revision-Date: 2018-09-30 10:07\n"
 
 msgid " Status"
 msgstr " Статус"
@@ -395,7 +395,7 @@ msgid "A default branch cannot be chosen for an empty project."
 msgstr "Гілку за замовчуванням не може бути обрано для порожнього проекту."
 
 msgid "A deleted user"
-msgstr ""
+msgstr "Видалений користувач"
 
 msgid "A new branch will be created in your fork and a new merge request will be started."
 msgstr "У вашому форку буде створено нову гілку, а також буде ініційований новий запит на злиття."
@@ -488,7 +488,7 @@ msgid "Add additional text to appear in all email communications. %{character_li
 msgstr "Створіть додатковий текст, який буде присутній у всіх повідомленнях електронної пошти. Максимальна кількість символів — %{character_limit}"
 
 msgid "Add license"
-msgstr ""
+msgstr "Додати ліцензію"
 
 msgid "Add new application"
 msgstr "Додати новий додаток"
@@ -809,7 +809,7 @@ msgid "Archived project! Repository and other project resources are read-only"
 msgstr "Архівований проект! Репозиторій та інші ресурси проекту доступні лише для читання"
 
 msgid "Archived projects"
-msgstr ""
+msgstr "Заархівовані проекти"
 
 msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr "Ви впевнені, що хочете видалити цей розклад для конвеєра?"
@@ -1494,10 +1494,10 @@ msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to s
 msgstr "Виберіть гілку чи тег (напр. %{master}) або введіть коміт (напр. %{sha}) для перегляду змін або для створення запиту на злиття."
 
 msgid "Choose a template..."
-msgstr ""
+msgstr "Виберіть тему-шаблон..."
 
 msgid "Choose a type..."
-msgstr ""
+msgstr "Виберіть тип..."
 
 msgid "Choose any color."
 msgstr "Вибрати будь-який колір."
@@ -1662,7 +1662,7 @@ msgid "Close"
 msgstr "Закрити"
 
 msgid "Close epic"
-msgstr ""
+msgstr "Закрити епік"
 
 msgid "Closed"
 msgstr "Закрито"
@@ -2628,7 +2628,7 @@ msgid "DeployKeys|Privately accessible deploy keys"
 msgstr "Приватні ключі розгортання"
 
 msgid "DeployKeys|Project usage"
-msgstr ""
+msgstr "Використовується у проектах"
 
 msgid "DeployKeys|Publicly accessible deploy keys"
 msgstr "Публічні колючі розгортання"
@@ -2760,10 +2760,10 @@ msgid "Disable group Runners"
 msgstr "Вимкнути групові Runner'и"
 
 msgid "Discard"
-msgstr ""
+msgstr "Скасувати"
 
 msgid "Discard all changes"
-msgstr ""
+msgstr "Скасувати всі зміни"
 
 msgid "Discard all unstaged changes?"
 msgstr ""
@@ -3291,7 +3291,7 @@ msgid "Filter by commit message"
 msgstr "Фільтрувати за коміт-повідомленням"
 
 msgid "Filter..."
-msgstr ""
+msgstr "Фільтр..."
 
 msgid "Find by path"
 msgstr "Пошук по шляху"
@@ -4250,7 +4250,7 @@ msgid "Invite"
 msgstr ""
 
 msgid "Issue"
-msgstr ""
+msgstr "Проблема"
 
 msgid "Issue Boards"
 msgstr "Дошки обговорення проблем"
@@ -6409,7 +6409,7 @@ msgid "Reports|Class"
 msgstr "Клас"
 
 msgid "Reports|Confidence"
-msgstr ""
+msgstr "Впевненість"
 
 msgid "Reports|Dismiss Vulnerability"
 msgstr ""
@@ -6421,13 +6421,13 @@ msgid "Reports|Failure"
 msgstr "Помилка"
 
 msgid "Reports|More info"
-msgstr ""
+msgstr "Детальніше"
 
 msgid "Reports|New Issue"
-msgstr ""
+msgstr "Нова проблема"
 
 msgid "Reports|Severity"
-msgstr ""
+msgstr "Серйозність"
 
 msgid "Reports|System output"
 msgstr ""
@@ -6623,7 +6623,7 @@ msgid "SAML Single Sign On Settings"
 msgstr "Налаштування єдиного входу SAML"
 
 msgid "SAST"
-msgstr ""
+msgstr "SAST"
 
 msgid "SHA1 fingerprint of the SAML token signing certificate. Get this from your identity provider, where it can also be called \"Thumbprint\"."
 msgstr "Відбиток SHA1 сертифікату для підписування токенів SAML. Отримайте його від провайдера ідентифікації, де він також може називатися \"Thumbprint\"."
@@ -7144,7 +7144,7 @@ msgid "SortOptions|Recent sign in"
 msgstr "Нещодавно зареєстровані"
 
 msgid "SortOptions|Start date"
-msgstr ""
+msgstr "Дата початку"
 
 msgid "SortOptions|Start later"
 msgstr "Розпочатий пізніше"
@@ -7222,7 +7222,7 @@ msgid "Start a %{new_merge_request} with these changes"
 msgstr "Почати %{new_merge_request} з цими змінами"
 
 msgid "Start date"
-msgstr ""
+msgstr "Дата початку"
 
 msgid "Start the Runner!"
 msgstr "Запустіть Runner!"
