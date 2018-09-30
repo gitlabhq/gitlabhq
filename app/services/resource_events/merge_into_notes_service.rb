@@ -19,10 +19,16 @@ module ResourceEvents
     end
 
     def execute(notes = [])
+      return notes unless fetch_label_notes?
+
       (notes + label_notes).sort_by { |n| n.created_at }
     end
 
     private
+
+    def fetch_label_notes?
+      current_user&.notes_filter_for(resource) == UserPreference::NOTES_FILTERS[:all_notes]
+    end
 
     def label_notes
       label_events_by_discussion_id.map do |discussion_id, events|

@@ -11,6 +11,8 @@ class UserPreference < ActiveRecord::Base
   validates :issue_notes_filter, :merge_request_notes_filter, inclusion: { in: NOTES_FILTERS.values }, presence: true
 
   def set_notes_filter(filter_id, issuable)
+    save! unless persisted?
+
     # No need to update the column if the value is already set.
     if filter_id && filter_id != notes_filter_for(issuable)
       filter_name = notes_filter_field_for(issuable)

@@ -97,7 +97,7 @@ module IssuableActions
       .includes(:noteable)
       .fresh
 
-    notes = ResourceEvents::MergeIntoNotesService.new(issuable, current_user, last_fetched_at: Time.now.to_i).execute(notes)
+    notes = ResourceEvents::MergeIntoNotesService.new(issuable, current_user).execute(notes)
     notes = prepare_notes_for_rendering(notes)
     notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
 
@@ -112,14 +112,12 @@ module IssuableActions
   def notes_filter
     notes_filter_param = params[:notes_filter]
 
-    if current_user
-      if request.put?
-        current_user.set_notes_filter(notes_filter_param, issuable)
-      else
-        current_user.notes_filter_for(issuable)
-      end
+    if request.put?
+      # GitLab Geo does not expect database UPDATE or INSERT statements to happen
+      # on GET requests.
+      current_user&.set_notes_filter(notes_filter_param, issuable) || notes_filter_param
     else
-      notes_filter_param.to_i
+      current_user&.notes_filter_for(issuable) || notes_filter_param
     end
   end
 

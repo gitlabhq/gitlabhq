@@ -5,6 +5,7 @@ shared_examples 'issuable notes filter' do
     put :discussions, namespace_id: project.namespace, project_id: project, id: issuable.iid, notes_filter: notes_filter
 
     expect(user.reload.notes_filter_for(issuable)).to eq(notes_filter)
+    expect(UserPreference.count).to eq(1)
   end
 
   it 'does not set notes filter in GET requests' do
