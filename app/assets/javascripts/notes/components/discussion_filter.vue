@@ -1,5 +1,4 @@
 <script>
-import $ from 'jquery';
 import Icon from '~/vue_shared/components/icon.vue';
 import { mapActions, mapGetters } from 'vuex';
 import dropdown from '~/vue_shared/directives/dropdown.js'
