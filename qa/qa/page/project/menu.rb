@@ -22,7 +22,7 @@ module QA
           element :activity_link, "title: _('Activity')" # rubocop:disable QA/ElementWithPattern
           element :wiki_link_text, "Wiki" # rubocop:disable QA/ElementWithPattern
           element :milestones_link
-          element :labels_link, "title: 'Labels'"
+          element :labels_link
         end
 
         view 'app/assets/javascripts/fly_out_nav.js' do

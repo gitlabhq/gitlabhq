@@ -21,7 +21,7 @@ module QA
         view 'app/views/shared/issuable/_milestone_dropdown.html.haml' do
           element :issuable_dropdown_menu_milestone
         end
-        
+
         view 'app/views/shared/issuable/_label_dropdown.html.haml' do
           element :issuable_label
         end
@@ -44,7 +44,7 @@ module QA
             click_on milestone.title
           end
         end
-        
+
         def select_label(label)
           click_element :issuable_label
 

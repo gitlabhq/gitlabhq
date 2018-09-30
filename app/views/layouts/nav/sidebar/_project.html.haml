@@ -115,7 +115,7 @@
                   = boards_link_text
 
             = nav_link(controller: :labels) do
-              = link_to project_labels_path(@project), title: _('Labels') do
+              = link_to project_labels_path(@project), title: _('Labels'), class: 'qa-labels-link' do
                 %span
                   = _('Labels')
 
