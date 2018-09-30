@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 11:25\n"
+"PO-Revision-Date: 2018-09-30 11:36\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -5891,16 +5891,16 @@ msgid "ProjectLifecycle|Stage"
 msgstr "Étape"
 
 msgid "ProjectOverview|Fork"
-msgstr ""
+msgstr "Créer une divergence"
 
 msgid "ProjectOverview|Forks"
-msgstr ""
+msgstr "Divergences"
 
 msgid "ProjectOverview|Go to your fork"
-msgstr ""
+msgstr "Aller à votre divergence"
 
 msgid "ProjectOverview|Star"
-msgstr ""
+msgstr "Mettre une étoile"
 
 msgid "ProjectOverview|Unstar"
 msgstr ""
@@ -6310,7 +6310,7 @@ msgid "Repo by URL"
 msgstr "Dépôt par URL"
 
 msgid "Reporting"
-msgstr ""
+msgstr "Rapports"
 
 msgid "Reports|%{failedString} and %{resolvedString}"
 msgstr "%{failedString} et %{resolvedString}"
@@ -6982,7 +6982,7 @@ msgid "SortOptions|Largest repository"
 msgstr "Taille de dépôt"
 
 msgid "SortOptions|Last Contact"
-msgstr ""
+msgstr "Contact le plus récent"
 
 msgid "SortOptions|Last created"
 msgstr "Créé récemment"
@@ -7162,7 +7162,7 @@ msgid "Subgroups"
 msgstr "Sous‐groupes"
 
 msgid "Subgroups and projects"
-msgstr ""
+msgstr "Sous‐groupes et projets"
 
 msgid "Submit as spam"
 msgstr "Soumettre comme indésirable"
@@ -7198,7 +7198,7 @@ msgid "System metrics (Custom)"
 msgstr "Métriques du système (personnalisées)"
 
 msgid "System metrics (Kubernetes)"
-msgstr ""
+msgstr "Métriques du système (Kubernetes)"
 
 msgid "Tag (%{tag_count})"
 msgid_plural "Tags (%{tag_count})"
@@ -9130,7 +9130,7 @@ msgid "mrWidget|This project is archived, write access has been disabled"
 msgstr "Ce projet est archivé, l’accès en écriture a été désactivé"
 
 msgid "mrWidget|You are not allowed to edit this project directly. Please fork to make changes."
-msgstr ""
+msgstr "Vous n’êtes pas autorisé à modifier directement ce projet. Veuillez créer un projet divergent afin d’effectuer des changements."
 
 msgid "mrWidget|You can merge this merge request manually using the"
 msgstr "Vous pouvez fusionner cette demande de fusion manuellement à l’aide de la"
