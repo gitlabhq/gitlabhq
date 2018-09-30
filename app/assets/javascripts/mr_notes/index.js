@@ -1,11 +1,10 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import { mapActions, mapState, mapGetters } from 'vuex';
-import { __ } from '~/locale';
 import initDiffsApp from '../diffs';
 import notesApp from '../notes/components/notes_app.vue';
 import discussionCounter from '../notes/components/discussion_counter.vue';
-import discussionFilter from '../notes/components/discussion_filter.vue';
+import initDiscussionFilters from '../notes/discussion_filters';
 import store from './stores';
 import MergeRequest from '../merge_request';
 
@@ -89,38 +88,7 @@ export default function initMrNotes() {
       return createElement('discussion-counter');
     },
   });
-  
-  const parsedUserData = JSON.parse(document.getElementById('js-vue-discussion-filter').dataset.currentUserData);
-  const defaultValue = parsedUserData.user_preference.merge_request_notes_filter;
 
-  const filterValues = [
-    {
-      title: __('Show all activity'),
-      value: 0,
-    },
-    {
-      title: __('Show comments only'),
-      value: 1,
-    },
-  ];
-
-  // eslint-disable-next-line no-new
-  new Vue({
-    el: '#js-vue-discussion-filter',
-    name: 'DiscussionFilter',
-    components: {
-      discussionFilter,
-    },
-    store,
-    render(createElement) {
-      return createElement('discussion-filter', {
-        props: {
-          filters: filterValues,
-          defaultValue,
-        },
-      });
-    },
-  });
-
+  initDiscussionFilters(store);
   initDiffsApp(store);
 }

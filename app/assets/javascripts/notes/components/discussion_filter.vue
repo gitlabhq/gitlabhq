@@ -43,7 +43,7 @@ export default {
       'discussionTabCounter',
     ]),
     currentFilter() {
-      const selectedValue = this.currentValue !== undefined ? this.currentValue : this.filters[0].value;
+      const selectedValue = this.currentValue ? this.currentValue : this.filters[0].value;
       return this.filters.find(filter => filter.value === selectedValue );
     }
   },
@@ -53,7 +53,7 @@ export default {
 <template>
   <div
     v-if="discussionTabCounter > 0"
-    class="line-resolve-all-container prepend-top-10">
+    class="line-resolve-all-container prepend-top-10 append-bottom-10 d-inline-flex">
     <button
       v-dropdown
       id="discussion-filter-dropdown"

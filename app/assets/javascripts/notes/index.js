@@ -1,9 +1,12 @@
 import Vue from 'vue';
 import notesApp from './components/notes_app.vue';
+import initDiscussionFilters from './discussion_filters';
 import createStore from './stores';
 
 document.addEventListener('DOMContentLoaded', () => {
   const store = createStore();
+
+  initDiscussionFilters(store);
 
   return new Vue({
     el: '#js-vue-notes',
