@@ -80,11 +80,11 @@ green, pending work in grey, and failures in red.
 # Using checksums to compare Geo nodes
 
 To check the health of Geo secondary nodes, we use a checksum over the list of
-Git references and theirs values. Right now the checksum only includes `heads`
-and `tags`. We should include all references ([issue #5196][ee-5196]), including
-GitLab-specific references to ensure true consistency. If two nodes have the
-same checksum, then they definitely hold the same data. We compute the checksum
-for every node after every update to make sure that they are all in sync.
+Git references and their values. The checksum includes `HEAD`, `heads`, `tags`,
+`notes`, and GitLab-specific references to ensure true consistency. If two nodes
+have the same checksum, then they definitely hold the same references. We compute
+the checksum for every node after every update to make sure that they are all
+in sync.
 
 # Reset verification for projects where verification has failed
 

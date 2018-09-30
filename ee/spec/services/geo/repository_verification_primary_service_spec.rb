@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Geo::RepositoryVerificationPrimaryService do
+  include EE::GeoHelpers
+
   let(:project) { create(:project) }
   let(:repository) { double(checksum: 'f123') }
   let(:wiki) { double(checksum: 'e321') }
@@ -140,6 +142,24 @@ describe Geo::RepositoryVerificationPrimaryService do
         wiki_retry_at: nil,
         wiki_retry_count: nil
       )
+    end
+
+    context 'when running on a primary node' do
+      before do
+        stub_primary_node
+      end
+
+      it 'does not create a Geo::ResetChecksumEvent event if there are no secondary nodes' do
+        allow(Gitlab::Geo).to receive(:secondary_nodes) { [] }
+
+        expect { subject.execute }.not_to change(Geo::ResetChecksumEvent, :count)
+      end
+
+      it 'creates a Geo::ResetChecksumEvent event' do
+        allow(Gitlab::Geo).to receive(:secondary_nodes) { [build(:geo_node)] }
+
+        expect { subject.execute }.to change(Geo::ResetChecksumEvent, :count).by(1)
+      end
     end
 
     context 'when checksum calculation fails' do
