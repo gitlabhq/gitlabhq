@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 14:37\n"
+"PO-Revision-Date: 2018-09-30 14:52\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -6480,10 +6480,10 @@ msgid "Runner runs jobs from all unassigned projects"
 msgstr "L’exécuteur exécute des tâches de tous les projets non attribués"
 
 msgid "Runner runs jobs from all unassigned projects in its group"
-msgstr ""
+msgstr "L’exécuteur exécute des tâches de tous les projets non attribués de son groupe"
 
 msgid "Runner runs jobs from assigned projects"
-msgstr ""
+msgstr "L’exécuteur exécute des tâches de projets attribués"
 
 msgid "Runner token"
 msgstr "Jeton de l’exécuteur"
