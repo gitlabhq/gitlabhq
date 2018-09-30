@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 10:51\n"
+"PO-Revision-Date: 2018-09-30 10:57\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -1937,7 +1937,7 @@ msgid "ClusterIntegration|This account must have permissions to create a Kuberne
 msgstr "Ce compte doit disposer des autorisations pour créer une grappe de serveurs Kubernetes dans le %{link_to_container_project} spécifié ci‐dessous"
 
 msgid "ClusterIntegration|This option will allow you to install applications on RBAC clusters."
-msgstr ""
+msgstr "Cette option vous permettra d’installer des applications sur des grappes de serveurs avec contrôle d’accès basé sur le rôle (RBAC)."
 
 msgid "ClusterIntegration|Toggle Kubernetes Cluster"
 msgstr "Activer la grappe de serveurs Kubernetes"
@@ -1958,7 +1958,7 @@ msgid "ClusterIntegration|With a Kubernetes cluster associated to this project, 
 msgstr "Avec une grappe de serveurs Kubernetes associée à ce projet, vous pouvez utiliser des applications de revue, déployer vos applications, exécuter vos pipelines, et bien plus encore."
 
 msgid "ClusterIntegration|You must first install Helm Tiller before installing the applications below"
-msgstr ""
+msgstr "Vous devez d’abord installer Helm Tiller avant d’installer les applications ci‐dessous"
 
 msgid "ClusterIntegration|Your account must have %{link_to_kubernetes_engine}"
 msgstr "Votre compte doit disposer de %{link_to_kubernetes_engine}"
