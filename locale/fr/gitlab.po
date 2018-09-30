@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 15:26\n"
+"PO-Revision-Date: 2018-09-30 16:01\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -5861,7 +5861,7 @@ msgid "Project name"
 msgstr "Nom du projet"
 
 msgid "Project slug"
-msgstr ""
+msgstr "Identifiant « slug » du projet"
 
 msgid "ProjectActivityRSS|Subscribe"
 msgstr "S’abonner"
