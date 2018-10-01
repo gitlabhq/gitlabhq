@@ -336,7 +336,6 @@ doorkeeper,4.3.2,MIT
 doorkeeper-openid_connect,1.5.0,MIT
 dot-prop,4.2.0,MIT
 dropzone,4.2.0,MIT
-dropzonejs-rails,0.7.2,MIT
 duplexer,0.1.1,MIT
 duplexer3,0.1.4,New BSD
 duplexify,3.5.3,MIT
