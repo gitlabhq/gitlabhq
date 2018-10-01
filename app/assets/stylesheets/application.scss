@@ -5,7 +5,6 @@
  *= require jquery.atwho
  *= require select2
  *= require_self
- *= require dropzone/basic
  *= require cropper.css
 */
 
@@ -18,6 +17,7 @@
  */
 
 @import "../../../node_modules/pikaday/scss/pikaday";
+@import "../../../node_modules/dropzone/dist/basic.css";
 
 /*
  * GitLab UI framework

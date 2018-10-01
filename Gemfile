@@ -115,9 +115,6 @@ gem 'hamlit', '~> 2.8.8'
 gem 'carrierwave', '= 1.2.3'
 gem 'mini_magick'
 
-# Drag and Drop UI
-gem 'dropzonejs-rails', '~> 0.7.1'
-
 # for backups
 gem 'fog-aws', '~> 2.0.1'
 gem 'fog-core', '~> 1.44'
