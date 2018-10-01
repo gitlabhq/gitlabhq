@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 18:47\n"
+"PO-Revision-Date: 2018-10-01 16:27\n"
 
 msgid " Status"
 msgstr " ステータス"
@@ -3173,6 +3173,12 @@ msgstr "下記項目に必要事項を入力し、 <strong>%{enable_label}</stro
 
 msgid "Filter"
 msgstr "フィルター"
+
+msgid "Filter by %{issuable_type} that are currently closed."
+msgstr ""
+
+msgid "Filter by %{issuable_type} that are currently opened."
+msgstr ""
 
 msgid "Filter by commit message"
 msgstr "コミットメッセージで絞り込み"
