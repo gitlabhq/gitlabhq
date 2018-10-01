@@ -59,7 +59,7 @@
   }
 
   @include media-breakpoint-up(sm) {
-    .btn:first-of-type {
+    .btn:nth-child(1) {
       margin-left: auto;
     }
   }
