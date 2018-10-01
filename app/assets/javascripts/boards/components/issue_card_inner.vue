@@ -184,7 +184,7 @@ export default {
 <template>
   <div>
     <div class="board-card-header">
-      <h4 class="board-card-title append-bottom-4 prepend-top-0">
+      <h4 class="board-card-title append-bottom-0 prepend-top-0">
         <icon
           v-if="issue.confidential"
           v-tooltip
@@ -199,7 +199,7 @@ export default {
     </div>
     <div
       v-if="showLabelFooter"
-      class="board-card-labels"
+      class="board-card-labels prepend-top-5"
     >
       <button
         v-for="label in issue.labels"
