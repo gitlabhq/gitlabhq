@@ -1,0 +1,5 @@
+---
+title: Retroactively fill pipeline source for external pipelines.
+merge_request: 21814
+author:
+type: other
