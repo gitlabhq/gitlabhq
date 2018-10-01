@@ -21,7 +21,7 @@ describe 'help/index' do
       render
 
       expect(rendered).to match '8.0.2'
-      expect(rendered).to have_link('abcdefg', href: 'https://gitlab.com/gitlab-org/gitlab-ce/commits/abcdefg')
+      expect(rendered).to have_link('8.0.2', href: 'https://gitlab.com/gitlab-org/gitlab-ce/tags/v8.0.2')
     end
   end
 
