@@ -319,8 +319,8 @@ describe('RepoEditor', () => {
       });
     });
 
-    it('calls updateDimensions when rightPane is updated', done => {
-      vm.$store.state.rightPane = 'testing';
+    it('calls updateDimensions when rightPane is opened', done => {
+      vm.$store.state.rightPane.isOpen = true;
 
       vm.$nextTick(() => {
         expect(vm.editor.updateDimensions).toHaveBeenCalled();
