@@ -27,11 +27,7 @@ module TimeHelper
       minutes = (duration_in_seconds / 1.minute) % (1.hour / 1.minute)
       hours = duration_in_seconds / 1.hour
 
-      if hours == 0
-        "%02d:%02d" % [minutes, seconds]
-      else
-        "%02d:%02d:%02d" % [hours, minutes, seconds]
-      end
+      "%02d:%02d:%02d" % [hours, minutes, seconds]
     else
       time_format = duration_in_seconds < 1.hour ? "%M:%S" : "%H:%M:%S"
 

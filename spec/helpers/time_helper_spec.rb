@@ -39,10 +39,10 @@ describe TimeHelper do
 
     context "with allow_overflow = true" do
       where(:duration, :formatted_string) do
-        0                              | "00:00"
-        1.second                       | "00:01"
-        42.seconds                     | "00:42"
-        2.minutes + 1.second           | "02:01"
+        0                              | "00:00:00"
+        1.second                       | "00:00:01"
+        42.seconds                     | "00:00:42"
+        2.minutes + 1.second           | "00:02:01"
         3.hours + 2.minutes + 1.second | "03:02:01"
         30.hours                       | "30:00:00"
       end
