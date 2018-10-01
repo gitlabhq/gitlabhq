@@ -24,6 +24,7 @@ describe 'projects/merge_requests/edit.html.haml' do
   before do
     assign(:project, project)
     assign(:merge_request, closed_merge_request)
+    assign(:mr_presenter, closed_merge_request.present(current_user: user))
 
     allow(view).to receive(:can?).and_return(true)
     allow(view).to receive(:current_user)

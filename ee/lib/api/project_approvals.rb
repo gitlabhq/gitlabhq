@@ -15,7 +15,7 @@ module API
           success ::API::Entities::ApprovalSettings
         end
         get '/' do
-          present user_project, with: ::API::Entities::ApprovalSettings
+          present user_project.present(current_user: current_user), with: ::API::Entities::ApprovalSettings
         end
 
         desc 'Change approval-related configuration' do
@@ -34,7 +34,7 @@ module API
           result = ::Projects::UpdateService.new(user_project, current_user, project_params).execute
 
           if result[:status] == :success
-            present user_project, with: ::API::Entities::ApprovalSettings
+            present user_project.present(current_user: current_user), with: ::API::Entities::ApprovalSettings
           else
             render_validation_error!(user_project)
           end
@@ -53,7 +53,7 @@ module API
         result = ::Projects::UpdateService.new(user_project, current_user, declared(params, include_parent_namespaces: false).merge(remove_old_approvers: true)).execute
 
         if result[:status] == :success
-          present user_project, with: ::API::Entities::ApprovalSettings
+          present user_project.present(current_user: current_user), with: ::API::Entities::ApprovalSettings
         else
           render_validation_error!(user_project)
         end

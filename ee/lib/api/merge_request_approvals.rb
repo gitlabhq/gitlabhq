@@ -42,7 +42,7 @@ module API
         get 'approvals' do
           merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
-          present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
+          present merge_request.present(current_user: current_user), with: Entities::MergeRequestApprovals, current_user: current_user
         end
 
         desc 'Change approval-related configuration' do
@@ -60,7 +60,7 @@ module API
           merge_request = ::MergeRequests::UpdateService.new(user_project, current_user, approvals_before_merge: params[:approvals_required]).execute(merge_request)
 
           if merge_request.valid?
-            present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
+            present merge_request.present(current_user: current_user), with: Entities::MergeRequestApprovals, current_user: current_user
           else
             handle_merge_request_errors! merge_request.errors
           end
@@ -80,7 +80,7 @@ module API
           merge_request = ::MergeRequests::UpdateService.new(user_project, current_user, declared(params, include_parent_namespaces: false).merge(remove_old_approvers: true)).execute(merge_request)
 
           if merge_request.valid?
-            present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
+            present merge_request.present(current_user: current_user), with: Entities::MergeRequestApprovals, current_user: current_user
           else
             handle_merge_request_errors! merge_request.errors
           end
@@ -111,7 +111,7 @@ module API
             .new(user_project, current_user)
             .execute(merge_request)
 
-          present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
+          present merge_request.present(current_user: current_user), with: Entities::MergeRequestApprovals, current_user: current_user
         end
 
         desc 'Remove an approval from a merge request' do
@@ -126,7 +126,7 @@ module API
             .new(user_project, current_user)
             .execute(merge_request)
 
-          present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
+          present merge_request.present(current_user: current_user), with: Entities::MergeRequestApprovals, current_user: current_user
         end
       end
     end
