@@ -595,6 +595,7 @@ ActiveRecord::Schema.define(version: 20181013005024) do
     t.integer "cluster_id", null: false
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
+    t.string "namespace"
   end
 
   add_index "cluster_projects", ["cluster_id"], name: "index_cluster_projects_on_cluster_id", using: :btree
