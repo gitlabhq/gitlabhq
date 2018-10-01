@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: uk\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-10-01 10:03\n"
+"PO-Revision-Date: 2018-10-01 16:31\n"
 
 msgid " Status"
 msgstr " Статус"
@@ -66,14 +66,14 @@ msgstr[3] "%d експортерів"
 msgid "%d failed test result"
 msgid_plural "%d failed test results"
 msgstr[0] "%d невдалий результат тесту"
-msgstr[1] ""
+msgstr[1] "%d невдалі результати тестів"
 msgstr[2] "%d невдалих результатів тестів"
 msgstr[3] "%d невдалих результатів тестів"
 
 msgid "%d fixed test result"
 msgid_plural "%d fixed test results"
 msgstr[0] "%d виправлений результат тесту"
-msgstr[1] ""
+msgstr[1] "%d виправлені результати тесту"
 msgstr[2] "%d виправлених результатів тесту"
 msgstr[3] "%d виправлених результатів тесту"
 
@@ -231,10 +231,10 @@ msgstr[3] "%{type} виявило %{vulnerabilityCount} вразливостей
 
 msgid "%{type} detected 1 vulnerability for the source branch only"
 msgid_plural "%{type} detected %{vulnerabilityCount} vulnerabilities for the source branch only"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%{type} виявило 1 вразливість тільки для гілки-джерела"
+msgstr[1] "%{type} виявило %{vulnerabilityCount} вразливості тільки для гілки-джерела"
+msgstr[2] "%{type} виявило %{vulnerabilityCount} вразливостей тільки для гілки-джерела"
+msgstr[3] "%{type} виявило %{vulnerabilityCount} вразливостей тільки для гілки-джерела"
 
 msgid "%{unstaged} unstaged and %{staged} staged changes"
 msgstr "%{unstaged} неіндексованих та %{staged} проіндексованих змін"
@@ -509,7 +509,7 @@ msgid "Add users to group"
 msgstr "Додати користувача до групи"
 
 msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission"
-msgstr ""
+msgstr "Додавання нових проектів для вашого інстансу GitLab заборонено. Зверніться до свого адміністратора GitLab, щоб отримати дозвіл"
 
 msgid "Additional text"
 msgstr "Додатковий текст"
@@ -3287,6 +3287,12 @@ msgstr "Заповніть поля нижче, увімкніть <strong>%{ena
 msgid "Filter"
 msgstr "Фільтр"
 
+msgid "Filter by %{issuable_type} that are currently closed."
+msgstr ""
+
+msgid "Filter by %{issuable_type} that are currently opened."
+msgstr ""
+
 msgid "Filter by commit message"
 msgstr "Фільтрувати за коміт-повідомленням"
 
@@ -4014,7 +4020,7 @@ msgid "Help page text and support page url."
 msgstr "Текст сторінки довідки та url-адреса сторінки підтримки."
 
 msgid "Here is the public SSH key that needs to be added to the remote server. For more information, please refer to the documentation."
-msgstr ""
+msgstr "Це відкритий (публічний) SSH ключ, який потрібно додати на віддалений сервер. Для отримання додаткової інформації, зверніться до документації."
 
 msgid "Hide host keys manual input"
 msgstr ""
@@ -5685,7 +5691,7 @@ msgid "Preferences|Navigation theme"
 msgstr "Тема навігації"
 
 msgid "Press Enter or click to search"
-msgstr ""
+msgstr "Для пошуку натисніть Enter або клікніть"
 
 msgid "Preview"
 msgstr "Попередній перегляд"
@@ -7574,7 +7580,7 @@ msgid "There are no projects shared with this group yet"
 msgstr ""
 
 msgid "There are no staged changes"
-msgstr ""
+msgstr "Немає індексованих змін"
 
 msgid "There are no unstaged changes"
 msgstr ""
