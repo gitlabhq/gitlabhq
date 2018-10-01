@@ -344,6 +344,10 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
+      before do
+        allow(ClusterProvisionWorker).to receive(:perform_async)
+      end
+
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }

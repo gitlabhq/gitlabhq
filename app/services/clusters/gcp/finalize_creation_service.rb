@@ -13,6 +13,8 @@ module Clusters
         configure_kubernetes
 
         cluster.save!
+
+        ClusterPlatformConfigureWorker.perform_async(cluster.id)
       rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
         provider.make_errored!("Failed to request to CloudPlatform; #{e.message}")
       rescue Kubeclient::HttpError => e

@@ -9,6 +9,8 @@ class ClusterProvisionWorker
       cluster.provider.try do |provider|
         Clusters::Gcp::ProvisionService.new.execute(provider) if cluster.gcp?
       end
+
+      ClusterPlatformConfigureWorker.perform_async(cluster.id) if cluster.user?
     end
   end
 end

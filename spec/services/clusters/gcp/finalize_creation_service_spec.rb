@@ -20,6 +20,12 @@ describe Clusters::Gcp::FinalizeCreationService do
 
         expect(provider).to be_created
       end
+
+      it 'configures kubernetes platform' do
+        expect(ClusterPlatformConfigureWorker).to receive(:perform_async).with(cluster.id)
+
+        subject
+      end
     end
 
     shared_examples 'error' do
@@ -38,6 +44,8 @@ describe Clusters::Gcp::FinalizeCreationService do
       let(:secret_name) { 'gitlab-token' }
 
       before do
+        allow(ClusterPlatformConfigureWorker).to receive(:perform_async)
+
         stub_cloud_platform_get_zone_cluster(
           gcp_project_id, zone, cluster_name,
           {
