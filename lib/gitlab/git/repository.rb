@@ -953,6 +953,12 @@ module Gitlab
         end
       end
 
+      def list_last_commits_for_tree(sha, path, offset: 0, limit: 25)
+        wrapped_gitaly_errors do
+          gitaly_commit_client.list_last_commits_for_tree(sha, path, offset: offset, limit: limit)
+        end
+      end
+
       def last_commit_for_path(sha, path)
         wrapped_gitaly_errors do
           gitaly_commit_client.last_commit_for_path(sha, path)

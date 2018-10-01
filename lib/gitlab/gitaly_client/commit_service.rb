@@ -148,6 +148,24 @@ module Gitlab
         GitalyClient.call(@repository.storage, :commit_service, :count_commits, request, timeout: GitalyClient.medium_timeout).count
       end
 
+      def list_last_commits_for_tree(revision, path, offset: 0, limit: 25)
+        request = Gitaly::ListLastCommitsForTreeRequest.new(
+          repository: @gitaly_repo,
+          revision: encode_binary(revision),
+          path: encode_binary(path.to_s),
+          offset: offset,
+          limit: limit
+        )
+
+        response = GitalyClient.call(@repository.storage, :commit_service, :list_last_commits_for_tree, request, timeout: GitalyClient.medium_timeout)
+
+        response.each_with_object({}) do |gitaly_response, hsh|
+          gitaly_response.commits.each do |commit_for_tree|
+            hsh[commit_for_tree.path] = Gitlab::Git::Commit.new(@repository, commit_for_tree.commit)
+          end
+        end
+      end
+
       def last_commit_for_path(revision, path)
         request = Gitaly::LastCommitForPathRequest.new(
           repository: @gitaly_repo,
