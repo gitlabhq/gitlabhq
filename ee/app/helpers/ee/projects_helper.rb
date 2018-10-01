@@ -35,7 +35,7 @@ module EE
     override :tab_ability_map
     def tab_ability_map
       tab_ability_map = super
-      tab_ability_map[:feature_flags] = read_feature_flags
+      tab_ability_map[:feature_flags] = :read_feature_flags
       tab_ability_map
     end
 

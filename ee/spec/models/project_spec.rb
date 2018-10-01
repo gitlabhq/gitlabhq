@@ -1767,4 +1767,24 @@ describe Project do
         .and_return(ref)
     end
   end
+
+  describe '#feature_flag_access_token' do
+    let(:project) { create(:project) }
+
+    subject { project.feature_flag_access_token }
+
+    context 'when there is no access token' do
+      it "creates a new one" do
+        is_expected.not_to be_empty
+      end
+    end
+
+    context 'when there is access token' do
+      let!(:access_token) { create(:operations_feature_flags_access_token, project: project, token: 'token') }
+
+      it "provides an existing one" do
+        is_expected.to eq('token')
+      end
+    end
+  end
 end
