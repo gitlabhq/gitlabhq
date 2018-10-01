@@ -128,7 +128,7 @@ class IssuableFinder
     labels_count = 1 if use_cte_for_search?
 
     finder.execute.reorder(nil).group(:state).count.each do |key, value|
-      counts[Array(key).last.to_sym] += value / labels_count
+      counts[count_key(key)] += value / labels_count
     end
 
     counts[:all] = counts.values.sum
@@ -295,6 +295,10 @@ class IssuableFinder
 
   def init_collection
     klass.all
+  end
+
+  def count_key(value)
+    Array(value).last.to_sym
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
