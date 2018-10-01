@@ -108,7 +108,6 @@ module API
     mount ::API::Environments
     mount ::API::Events
     mount ::API::Features
-    mount ::API::FeatureFlags
     mount ::API::Files
     mount ::API::GroupBoards
     mount ::API::GroupMilestones
@@ -167,6 +166,7 @@ module API
     ## EE-specific API V4 endpoints START
     mount ::EE::API::Boards
     mount ::EE::API::GroupBoards
+    mount ::API::Unleash
 
     mount ::API::EpicIssues
     mount ::API::Epics

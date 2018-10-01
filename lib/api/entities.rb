@@ -1516,26 +1516,6 @@ module API
       expose :label, using: Entities::LabelBasic
       expose :action
     end
-
-    class UnleashFeature < Grape::Entity
-      expose :name
-      expose :description, unless: ->(feature) { feature.description.nil? }
-      expose :active, as: :enabled
-    end
-
-    class UnleashFeatures < Grape::Entity
-      expose :version
-      expose :operations_feature_flags, as: :features, with: UnleashFeature
-
-      private
-
-      def version
-        1
-      end
-
-      def features
-      end
-    end
   end
 end
 

@@ -1,5 +1,5 @@
 module API
-  class FeatureFlags < Grape::API
+  class Unleash < Grape::API
     include PaginationParams
 
     resource :feature_flags do

@@ -25,7 +25,18 @@ module EE
         nav_tabs << :packages
       end
 
+      if can?(current_user, :read_feature_flags, project) && !nav_tabs.include?(:operations)
+        nav_tabs << :operations
+      end
+
       nav_tabs
+    end
+    
+    override :tab_ability_map
+    def tab_ability_map
+      tab_ability_map = super
+      tab_ability_map[:feature_flags] = read_feature_flags
+      tab_ability_map
     end
 
     override :project_permissions_settings

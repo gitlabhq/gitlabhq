@@ -235,7 +235,6 @@ class ProjectPolicy < BasePolicy
     enable :update_container_image
     enable :create_environment
     enable :create_deployment
-    enable :read_feature_flags
   end
 
   rule { can?(:maintainer_access) }.policy do
@@ -260,9 +259,6 @@ class ProjectPolicy < BasePolicy
     enable :read_cluster
     enable :create_cluster
     enable :create_environment_terminal
-    enable :create_feature_flags
-    enable :update_feature_flags
-    enable :admin_feature_flags
   end
 
   rule { (mirror_available & can?(:admin_project)) | admin }.enable :admin_remote_mirror

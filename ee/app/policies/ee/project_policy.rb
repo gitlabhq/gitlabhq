@@ -99,6 +99,9 @@ module EE
         enable :admin_board
         enable :admin_vulnerability_feedback
         enable :create_package
+        enable :read_feature_flags
+        enable :create_feature_flags
+        enable :update_feature_flags
       end
 
       rule { can?(:public_access) }.enable :read_package
@@ -122,6 +125,7 @@ module EE
         enable :admin_path_locks
         enable :update_approvers
         enable :destroy_package
+        enable :admin_feature_flags
       end
 
       rule { license_management_enabled & can?(:maintainer_access) }.enable :admin_software_license_policy
