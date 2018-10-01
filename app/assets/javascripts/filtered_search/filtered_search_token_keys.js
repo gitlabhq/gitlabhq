@@ -23,18 +23,18 @@ export default class FilteredSearchTokenKeys {
     return this.conditions;
   }
 
-  static shouldUppercaseTokenName(tokenKey) {
-    const token = FilteredSearchTokenKeys.searchByKey(tokenKey.toLowerCase());
+  shouldUppercaseTokenName(tokenKey) {
+    const token = this.searchByKey(tokenKey.toLowerCase());
     return token && token.uppercaseTokenName;
   }
 
-  static shouldCapitalizeTokenValue(tokenKey) {
-    const token = FilteredSearchTokenKeys.searchByKey(tokenKey.toLowerCase());
+  shouldCapitalizeTokenValue(tokenKey) {
+    const token = this.searchByKey(tokenKey.toLowerCase());
     return token && token.capitalizeTokenValue;
   }
 
-  static searchByKey(key) {
-    return tokenKeys.find(tokenKey => tokenKey.key === key) || null;
+  searchByKey(key) {
+    return this.tokenKeys.find(tokenKey => tokenKey.key === key) || null;
   }
 
   searchBySymbol(symbol) {
@@ -66,20 +66,20 @@ export default class FilteredSearchTokenKeys {
       .find(condition => condition.tokenKey === key && condition.value === value) || null;
   }
 
-  static addExtraTokensForMergeRequests() {
+  addExtraTokensForMergeRequests() {
     const wipToken = {
       key: 'wip',
       type: 'string',
       param: '',
       symbol: '',
-      icon: 'wrench',
+      icon: 'admin',
       tag: 'Yes or No',
       lowercaseValueOnSubmit: true,
       uppercaseTokenName: true,
       capitalizeTokenValue: true,
     };
 
-    tokenKeys.push(wipToken);
-    tokenKeysWithAlternative.push(wipToken);
+    this.tokenKeys.push(wipToken);
+    this.tokenKeysWithAlternative.push(wipToken);
   }
 }

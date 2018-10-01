@@ -7,7 +7,7 @@ import { FILTERED_SEARCH } from '~/pages/constants';
 import { ISSUABLE_INDEX } from '~/pages/projects/constants';
 
 document.addEventListener('DOMContentLoaded', () => {
-  FilteredSearchTokenKeys.addExtraTokensForMergeRequests();
+  IssuableFilteredSearchTokenKeys.addExtraTokensForMergeRequests();
 
   initFilteredSearch({
     page: FILTERED_SEARCH.MERGE_REQUESTS,
