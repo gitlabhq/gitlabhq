@@ -1,4 +1,5 @@
 <script>
+import { formatTime } from '~/lib/utils/datetime_utility';
 import eventHub from '../event_hub';
 import icon from '../../vue_shared/components/icon.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
@@ -35,6 +36,11 @@ export default {
 
       return !action.playable;
     },
+
+    remainingTime(action) {
+      const remainingMilliseconds = new Date(action.scheduled_at).getTime() - Date.now();
+      return formatTime(remainingMilliseconds);
+    },
   },
 };
 </script>
@@ -63,8 +69,8 @@ export default {
 
     <ul class="dropdown-menu dropdown-menu-right">
       <li
-        v-for="(action, i) in actions"
-        :key="i"
+        v-for="action in actions"
+        :key="action.path"
       >
         <button
           :class="{ disabled: isActionDisabled(action) }"
@@ -74,6 +80,13 @@ export default {
           @click="onClickAction(action.path)"
         >
           {{ action.name }}
+          <span
+            v-if="action.scheduled_at"
+            class="pull-right"
+          >
+            <icon name="clock" />
+            {{ remainingTime(action) }}
+          </span>
         </button>
       </li>
     </ul>

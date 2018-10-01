@@ -59,6 +59,9 @@ export default {
     };
   },
   computed: {
+    actions() {
+      return [...this.pipeline.details.manual_actions, ...this.pipeline.details.scheduled_actions];
+    },
     /**
      * If provided, returns the commit tag.
      * Needed to render the commit component column.
@@ -321,8 +324,8 @@ export default {
     >
       <div class="btn-group table-action-buttons">
         <pipelines-actions-component
-          v-if="pipeline.details.manual_actions.length"
-          :actions="pipeline.details.manual_actions"
+          v-if="actions.length > 0"
+          :actions="actions"
         />
 
         <pipelines-artifacts-component
