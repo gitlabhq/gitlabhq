@@ -596,6 +596,8 @@ ActiveRecord::Schema.define(version: 20181013005024) do
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
     t.string "namespace"
+    t.string "service_account_name"
+    t.text "encrypted_service_account_token"
   end
 
   add_index "cluster_projects", ["cluster_id"], name: "index_cluster_projects_on_cluster_id", using: :btree

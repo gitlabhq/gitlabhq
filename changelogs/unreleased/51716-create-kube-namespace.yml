@@ -1,0 +1,5 @@
+---
+title: Persist project's namespace on kubernetes cluster
+merge_request: 22011
+author:
+type: other

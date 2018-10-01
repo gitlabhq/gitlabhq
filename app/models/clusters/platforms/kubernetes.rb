@@ -6,6 +6,7 @@ module Clusters
       include Gitlab::Kubernetes
       include ReactiveCaching
       include EnumWithNil
+      include AfterCommitQueue
 
       self.table_name = 'cluster_platforms_kubernetes'
       self.reactive_cache_key = ->(kubernetes) { [kubernetes.class.model_name.singular, kubernetes.id] }
@@ -39,12 +40,15 @@ module Clusters
       validate :prevent_modification, on: :update
 
       after_save :clear_reactive_cache!
+      after_update :update_kubernetes_namespace
 
       alias_attribute :ca_pem, :ca_cert
 
       delegate :project, to: :cluster, allow_nil: true
       delegate :enabled?, to: :cluster, allow_nil: true
       delegate :managed?, to: :cluster, allow_nil: true
+
+      delegate :cluster_project, to: :project, allow_nil: true
 
       alias_method :active?, :enabled?
 
@@ -55,6 +59,12 @@ module Clusters
       }
 
       def actual_namespace
+        cluster_project&.namespace || fallback_actual_namespace
+      end
+
+      # DEPRECATED
+      # To remove after migration of data to cluster_projects
+      def fallback_actual_namespace
         if namespace.present?
           namespace
         else
@@ -115,6 +125,7 @@ module Clusters
           ca_pem: ca_pem)
       end
 
+      # DEPRECATED
       def default_namespace
         return unless project
 
@@ -123,7 +134,7 @@ module Clusters
       end
 
       def build_kube_client!(api_groups: ['api'], api_version: 'v1')
-        raise "Incomplete settings" unless api_url && actual_namespace
+        raise "Incomplete settings" unless api_url
 
         unless (username && password) || token
           raise "Either username/password or token is required to access API"
@@ -186,6 +197,14 @@ module Clusters
         end
 
         true
+      end
+
+      def update_kubernetes_namespace
+        return unless namespace_changed?
+
+        run_after_commit do
+          ClusterPlatformConfigureWorker.perform_async(cluster.id)
+        end
       end
     end
   end

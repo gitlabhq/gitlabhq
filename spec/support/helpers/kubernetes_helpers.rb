@@ -65,6 +65,16 @@ module KubernetesHelpers
       .to_return(kube_response({}))
   end
 
+  def stub_kubeclient_create_namespace(api_url)
+    WebMock.stub_request(:post, api_url + "/api/v1/namespaces")
+      .to_return(kube_response({}))
+  end
+
+  def stub_kubeclient_get_namespace(api_url, namespace: 'default')
+    WebMock.stub_request(:get, api_url + "/api/v1/namespaces/#{namespace}")
+      .to_return(kube_response({}))
+  end
+
   def kube_v1_secret_body(**options)
     {
       "kind" => "SecretList",

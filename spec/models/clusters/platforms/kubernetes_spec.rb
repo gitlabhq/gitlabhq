@@ -123,6 +123,16 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     let(:project) { cluster.project }
     let(:kubernetes) { create(:cluster_platform_kubernetes, :configured, namespace: namespace) }
 
+    context 'namespace is persisted' do
+      let(:namespace) { 'namespace-123' }
+
+      before do
+        project.cluster_project.update!(namespace: 'hello-namespace')
+      end
+
+      it { is_expected.to eq('hello-namespace') }
+    end
+
     context 'when namespace is present' do
       let(:namespace) { 'namespace-123' }
 
@@ -133,25 +143,6 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
       let(:namespace) { nil }
 
       it { is_expected.to eq("#{project.path}-#{project.id}") }
-    end
-  end
-
-  describe '#default_namespace' do
-    subject { kubernetes.send(:default_namespace) }
-
-    let(:kubernetes) { create(:cluster_platform_kubernetes, :configured) }
-
-    context 'when cluster belongs to a project' do
-      let!(:cluster) { create(:cluster, :project, platform_kubernetes: kubernetes) }
-      let(:project) { cluster.project }
-
-      it { is_expected.to eq("#{project.path}-#{project.id}") }
-    end
-
-    context 'when cluster belongs to nothing' do
-      let!(:cluster) { create(:cluster, platform_kubernetes: kubernetes) }
-
-      it { is_expected.to be_nil }
     end
   end
 
@@ -288,6 +279,28 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
       end
 
       it { is_expected.to include(pods: []) }
+    end
+  end
+
+  describe '#update_kubernetes_namespace' do
+    let(:kubernetes) { create(:cluster_platform_kubernetes, namespace: 'my-namespace') }
+
+    context 'when namespace changed' do
+      it 'calls ClusterPlatformConfigureWorker' do
+        expect(ClusterPlatformConfigureWorker).to receive(:perform_async).with(kubernetes.cluster_id)
+
+        kubernetes.namespace = 'new-namespace'
+        kubernetes.save
+      end
+    end
+
+    context 'when namespace does not changed' do
+      it 'does not call ClusterPlatformConfiureWorker' do
+        expect(ClusterPlatformConfigureWorker).not_to receive(:perform_async)
+
+        kubernetes.cluster.name = 'another-name'
+        kubernetes.save
+      end
     end
   end
 end

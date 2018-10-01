@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Projects::ClustersController do
   include AccessMatchersForController
   include GoogleApi::CloudPlatformHelpers
+  include KubernetesHelpers
 
   set(:project) { create(:project) }
 
@@ -390,7 +391,23 @@ describe Projects::ClustersController do
   end
 
   describe 'PUT update' do
+<<<<<<< HEAD
     let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+=======
+    before do
+      allow(ClusterPlatformConfigureWorker).to receive(:perform_async)
+      stub_kubeclient_get_namespace('my-namespace')
+    end
+
+    context 'when cluster is provided by GCP' do
+      let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+      let(:user) { create(:user) }
+
+      before do
+        project.add_maintainer(user)
+        sign_in(user)
+      end
+>>>>>>> Extract actual_namespace logic to service
 
     let(:params) do
       {
