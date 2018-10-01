@@ -31,7 +31,7 @@ export default {
     ]),
     currentFilter() {
       const selectedValue = this.currentValue ? this.currentValue : this.filters[0].value;
-      return this.filters.find(filter => filter.value === selectedValue );
+      return this.filters.find(filter => filter.value === selectedValue);
     },
   },
   methods: {

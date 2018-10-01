@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import discussionFilter from './components/discussion_filter.vue';
 import { __ } from '~/locale';
+import discussionFilter from './components/discussion_filter.vue';
 
 export default (store) => {
   const discussionFilterEl = document.getElementById('js-vue-discussion-filter');
