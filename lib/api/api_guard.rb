@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Guard API with OAuth 2.0 Access Token
 
 require 'rack/oauth2'

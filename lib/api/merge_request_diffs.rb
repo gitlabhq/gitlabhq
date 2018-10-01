@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   # MergeRequestDiff API
   class MergeRequestDiffs < Grape::API

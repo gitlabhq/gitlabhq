@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class PagesDomains < Grape::API
     include PaginationParams

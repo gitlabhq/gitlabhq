@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class GroupVariables < Grape::API
     include PaginationParams

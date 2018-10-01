@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Events < Grape::API
     include PaginationParams
