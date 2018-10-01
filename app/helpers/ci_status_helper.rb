@@ -7,7 +7,6 @@
 #
 # See 'detailed_status?` method and `Gitlab::Ci::Status` module.
 #
-# TODO: DO I need to update this deprecated module?
 module CiStatusHelper
   def ci_label_for_status(status)
     if detailed_status?(status)
@@ -21,6 +20,8 @@ module CiStatusHelper
               'passed with warnings'
             when 'manual'
               'waiting for manual action'
+            when 'scheduled'
+              'waiting for delayed job'
             else
               status
             end
@@ -40,6 +41,8 @@ module CiStatusHelper
       s_('CiStatusText|passed')
     when 'manual'
       s_('CiStatusText|blocked')
+    when 'scheduled'
+      s_('CiStatusText|scheduled')
     else
       # All states are already being translated inside the detailed statuses:
       # :running => Gitlab::Ci::Status::Running
@@ -84,6 +87,8 @@ module CiStatusHelper
         'status_skipped'
       when 'manual'
         'status_manual'
+      when 'scheduled'
+        'status_scheduled'
       else
         'status_canceled'
       end
