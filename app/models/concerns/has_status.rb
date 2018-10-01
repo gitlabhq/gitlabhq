@@ -33,7 +33,6 @@ module HasStatus
       warnings = scope_warnings.select('count(*) > 0').to_sql.presence || 'false'
 
       "(CASE
-        WHEN (#{scheduled})>0 THEN 'scheduled'
         WHEN (#{builds})=(#{skipped}) AND (#{warnings}) THEN 'success'
         WHEN (#{builds})=(#{skipped}) THEN 'skipped'
         WHEN (#{builds})=(#{success}) THEN 'success'
@@ -43,6 +42,7 @@ module HasStatus
         WHEN (#{builds})=(#{created})+(#{skipped})+(#{pending}) THEN 'pending'
         WHEN (#{running})+(#{pending})>0 THEN 'running'
         WHEN (#{manual})>0 THEN 'manual'
+        WHEN (#{scheduled})>0 THEN 'scheduled'
         WHEN (#{created})>0 THEN 'running'
         ELSE 'failed'
       END)"
