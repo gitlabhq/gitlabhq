@@ -9,7 +9,7 @@ export default {
   },
   [types.RECEIVE_TEMPLATE_TYPES_SUCCESS](state, templates) {
     state.isLoading = false;
-    state.templates = templates;
+    state.templates = state.templates.concat(templates);
   },
   [types.SET_SELECTED_TEMPLATE_TYPE](state, type) {
     state.selectedTemplateType = type;
