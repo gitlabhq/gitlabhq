@@ -1,0 +1,5 @@
+---
+title: Remove redundant indexes
+merge_request: 21178
+author:
+type: performance

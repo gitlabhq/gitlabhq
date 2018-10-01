@@ -477,7 +477,6 @@ ActiveRecord::Schema.define(version: 20180930001102) do
   add_index "ci_pipelines", ["project_id", "sha"], name: "index_ci_pipelines_on_project_id_and_sha", using: :btree
   add_index "ci_pipelines", ["project_id", "source"], name: "index_ci_pipelines_on_project_id_and_source", using: :btree
   add_index "ci_pipelines", ["project_id", "status", "config_source"], name: "index_ci_pipelines_on_project_id_and_status_and_config_source", using: :btree
-  add_index "ci_pipelines", ["project_id"], name: "index_ci_pipelines_on_project_id", using: :btree
   add_index "ci_pipelines", ["status"], name: "index_ci_pipelines_on_status", using: :btree
   add_index "ci_pipelines", ["user_id"], name: "index_ci_pipelines_on_user_id", using: :btree
 
