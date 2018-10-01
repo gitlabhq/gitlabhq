@@ -97,13 +97,13 @@ end
 automated_cleanup = AutomatedCleanup.new
 
 timed('Review apps cleanup') do
-  automated_cleanup.perform_gitlab_environment_cleanup!(days_for_stop: 5, days_for_delete: 6)
+  automated_cleanup.perform_gitlab_environment_cleanup!(days_for_stop: 2, days_for_delete: 3)
 end
 
 puts
 
 timed('Helm releases cleanup') do
-  automated_cleanup.perform_helm_releases_cleanup!(days: 7)
+  automated_cleanup.perform_helm_releases_cleanup!(days: 3)
 end
 
 exit(0)

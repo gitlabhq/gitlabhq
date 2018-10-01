@@ -57,7 +57,6 @@ module Users
         :force_random_password,
         :hide_no_password,
         :hide_no_ssh_key,
-        :key_id,
         :linkedin,
         :name,
         :password,
@@ -71,7 +70,10 @@ module Users
         :twitter,
         :username,
         :website_url,
-        :private_profile
+        :private_profile,
+        :organization,
+        :location,
+        :public_email
       ]
     end
 

@@ -5,10 +5,10 @@ describe EpicsFinder do
   let(:search_user) { create(:user)  }
   let(:group) { create(:group, :private) }
   let(:another_group) { create(:group) }
-  let!(:epic1) { create(:epic, group: group, title: 'This is awesome epic', created_at: 1.week.ago) }
-  let!(:epic2) { create(:epic, group: group, created_at: 4.days.ago, author: user, start_date: 2.days.ago, end_date: 3.days.from_now) }
-  let!(:epic3) { create(:epic, group: group, description: 'not so awesome', start_date: 5.days.ago, end_date: 3.days.ago) }
-  let!(:epic4) { create(:epic, group: another_group) }
+  let!(:epic1) { create(:epic, :opened, group: group, title: 'This is awesome epic', created_at: 1.week.ago) }
+  let!(:epic2) { create(:epic, :opened, group: group, created_at: 4.days.ago, author: user, start_date: 2.days.ago, end_date: 3.days.from_now) }
+  let!(:epic3) { create(:epic, :closed, group: group, description: 'not so awesome', start_date: 5.days.ago, end_date: 3.days.ago) }
+  let!(:epic4) { create(:epic, :closed, group: another_group) }
 
   describe '#execute' do
     def epics(params = {})
@@ -106,6 +106,12 @@ describe EpicsFinder do
           end
         end
 
+        context 'by state' do
+          it 'returns all epics with given state' do
+            expect(epics(state: :closed)).to contain_exactly(epic3)
+          end
+        end
+
         context 'when subgroups are supported', :nested_groups do
           let(:subgroup) { create(:group, :private, parent: group) }
           let(:subgroup2) { create(:group, :private, parent: subgroup) }
@@ -182,6 +188,19 @@ describe EpicsFinder do
       params = { group_id: group.id, label_name: [label.title, label2.title] }
 
       expect(described_class.new(search_user, params).row_count).to eq(1)
+    end
+  end
+
+  describe '#count_by_state' do
+    before do
+      group.add_developer(search_user)
+      stub_licensed_features(epics: true)
+    end
+
+    it 'returns correct counts' do
+      results = described_class.new(search_user, group_id: group.id).count_by_state
+
+      expect(results).to eq('opened' => 2, 'closed' => 1, 'all' => 3)
     end
   end
 end

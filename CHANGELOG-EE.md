@@ -1,5 +1,13 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 11.3.1 (2018-09-26)
+
+### Security (2 changes)
+
+- Project groups approvers no longer leak private groups info.
+- Protect against CSRF attacks when adding Slack app.
+
+
 ## 11.3.0 (2018-09-22)
 
 ### Security (1 change)
@@ -74,6 +82,14 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Creates vue component for shared runner limit.
 - Allow MR authors to approve their MRs.
 - Remove differences between CE and EE settings panel component.
+
+
+## 11.2.4 (2018-09-26)
+
+### Security (2 changes)
+
+- Project groups approvers no longer leak private groups info.
+- Protect against CSRF attacks when adding Slack app.
 
 
 ## 11.2.3 (2018-08-28)
@@ -181,6 +197,14 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Geo: Add rake task to resync projects where verification has failed. !6727
 - updates column sizes in licence and security modals. !6808
 - Geo: Log to geo.log when the Log Cursor skips an event.
+
+
+## 11.1.7 (2018-09-26)
+
+### Security (2 changes)
+
+- Project groups approvers no longer leak private groups info.
+- Protect against CSRF attacks when adding Slack app.
 
 
 ## 11.1.6 (2018-08-28)

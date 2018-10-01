@@ -1,26 +1,26 @@
 require 'spec_helper'
 
 describe Approvable do
-  let(:merge_request) { create(:merge_request, :with_approver) }
+  let(:merge_request) { create(:merge_request) }
 
-  describe '#approvers_left' do
-    it 'only queries once' do
-      merge_request
+  describe '#approvers_overwritten?' do
+    subject { merge_request.approvers_overwritten? }
 
-      expect(User).to receive(:where).and_call_original.once
-
-      3.times { merge_request.approvers_left }
+    it 'returns false when merge request has no approvers' do
+      is_expected.to be false
     end
-  end
 
-  describe '#reset_approval_cache!' do
-    it 'clears the cache of approvers left' do
-      user_can_approve = merge_request.approvers_left.first
-      merge_request.approvals.create!(user: user_can_approve)
+    it 'returns true when merge request has user approver' do
+      create(:approver, target: merge_request)
 
-      merge_request.reset_approval_cache!
+      is_expected.to be true
+    end
 
-      expect(merge_request.approvers_left).to be_empty
+    it 'returns true when merge request has group approver' do
+      group = create(:group_with_members)
+      create(:approver_group, target: merge_request, group: group)
+
+      is_expected.to be true
     end
   end
 end

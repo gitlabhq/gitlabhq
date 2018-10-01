@@ -169,7 +169,7 @@ describe API::Groups do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(response_groups).to eq(Group.visible_to_user(user1).order(:name).pluck(:name))
+        expect(response_groups).to eq(groups_visible_to_user(user1).order(:name).pluck(:name))
       end
 
       it "sorts in descending order when passed" do
@@ -178,7 +178,7 @@ describe API::Groups do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(response_groups).to eq(Group.visible_to_user(user1).order(name: :desc).pluck(:name))
+        expect(response_groups).to eq(groups_visible_to_user(user1).order(name: :desc).pluck(:name))
       end
 
       it "sorts by path in order_by param" do
@@ -187,7 +187,7 @@ describe API::Groups do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(response_groups).to eq(Group.visible_to_user(user1).order(:path).pluck(:name))
+        expect(response_groups).to eq(groups_visible_to_user(user1).order(:path).pluck(:name))
       end
 
       it "sorts by id in the order_by param" do
@@ -196,7 +196,7 @@ describe API::Groups do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(response_groups).to eq(Group.visible_to_user(user1).order(:id).pluck(:name))
+        expect(response_groups).to eq(groups_visible_to_user(user1).order(:id).pluck(:name))
       end
 
       it "sorts also by descending id with pagination fix" do
@@ -205,7 +205,7 @@ describe API::Groups do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(response_groups).to eq(Group.visible_to_user(user1).order(id: :desc).pluck(:name))
+        expect(response_groups).to eq(groups_visible_to_user(user1).order(id: :desc).pluck(:name))
       end
 
       it "sorts identical keys by id for good pagination" do
@@ -224,6 +224,10 @@ describe API::Groups do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(response_groups_ids).to eq(Group.select { |group| group['name'] == 'same-name' }.map { |group| group['id'] }.sort)
+      end
+
+      def groups_visible_to_user(user)
+        Group.where(id: user.authorized_groups.select(:id).reorder(nil))
       end
     end
 

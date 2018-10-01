@@ -188,6 +188,57 @@ describe Repository do
     end
   end
 
+  describe '#list_last_commits_for_tree' do
+    let(:path_to_commit) do
+      {
+        "encoding" => "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+        "files" => "570e7b2abdd848b95f2f578043fc23bd6f6fd24d",
+        ".gitignore" => "c1acaa58bbcbc3eafe538cb8274ba387047b69f8",
+        ".gitmodules" => "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9",
+        "CHANGELOG" => "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+        "CONTRIBUTING.md" => "6d394385cf567f80a8fd85055db1ab4c5295806f",
+        "Gemfile.zip" => "ae73cb07c9eeaf35924a10f713b364d32b2dd34f",
+        "LICENSE" => "1a0b36b3cdad1d2ee32457c102a8c0b7056fa863",
+        "MAINTENANCE.md" => "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+        "PROCESS.md" => "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+        "README.md" => "1a0b36b3cdad1d2ee32457c102a8c0b7056fa863",
+        "VERSION" => "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+        "gitlab-shell" => "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9",
+        "six" => "cfe32cf61b73a0d5e9f13e774abde7ff789b1660"
+      }
+    end
+
+    subject { repository.list_last_commits_for_tree(sample_commit.id, '.').id }
+
+    it 'returns the last commits for every entry in the current path' do
+      result = repository.list_last_commits_for_tree(sample_commit.id, '.')
+
+      result.each do |key, value|
+        result[key] = value.id
+      end
+
+      expect(result).to include(path_to_commit)
+    end
+
+    it 'returns the last commits for every entry in the current path starting from the offset' do
+      result = repository.list_last_commits_for_tree(sample_commit.id, '.', offset: path_to_commit.size - 1)
+
+      expect(result.size).to eq(1)
+    end
+
+    it 'returns a limited number of last commits for every entry in the current path starting from the offset' do
+      result = repository.list_last_commits_for_tree(sample_commit.id, '.', limit: 1)
+
+      expect(result.size).to eq(1)
+    end
+
+    it 'returns an empty hash when offset is out of bounds' do
+      result = repository.list_last_commits_for_tree(sample_commit.id, '.', offset: path_to_commit.size)
+
+      expect(result.size).to eq(0)
+    end
+  end
+
   describe '#last_commit_for_path' do
     shared_examples 'getting last commit for path' do
       subject { repository.last_commit_for_path(sample_commit.id, '.gitignore').id }

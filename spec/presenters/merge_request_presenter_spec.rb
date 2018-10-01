@@ -434,33 +434,6 @@ describe MergeRequestPresenter do
     end
   end
 
-  describe '#approvals_path' do
-    before do
-      allow(resource).to receive(:requires_approve?) { requires_approve }
-    end
-
-    subject do
-      described_class.new(resource, current_user: user).approvals_path
-    end
-
-    context 'when approvals required' do
-      let(:requires_approve) { true }
-
-      it 'returns path' do
-        is_expected
-            .to eq("/#{resource.project.full_path}/merge_requests/#{resource.iid}/approvals")
-      end
-    end
-
-    context 'when approvals not required' do
-      let(:requires_approve) { false }
-
-      it 'returns nil' do
-        is_expected.to be_nil
-      end
-    end
-  end
-
   describe '#rebase_path' do
     before do
       allow(resource).to receive(:rebase_in_progress?) { rebase_in_progress }

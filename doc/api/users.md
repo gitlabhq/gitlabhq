@@ -291,6 +291,7 @@ Parameters:
 - `provider` (optional)          - External provider name
 - `bio` (optional)               - User's biography
 - `location` (optional)          - User's location
+- `public_email` (optional)      - The public email of the user
 - `admin` (optional)             - User is admin - true or false (default)
 - `can_create_group` (optional)  - User can create groups - true or false
 - `skip_confirmation` (optional) - Skip confirmation - true or false (default)
@@ -309,27 +310,28 @@ PUT /users/:id
 
 Parameters:
 
-- `email`                       - Email
-- `username`                    - Username
-- `name`                        - Name
-- `password`                    - Password
-- `skype`                       - Skype ID
-- `linkedin`                    - LinkedIn
-- `twitter`                     - Twitter account
-- `website_url`                 - Website URL
-- `organization`                - Organization name
-- `projects_limit`              - Limit projects each user can create
-- `extern_uid`                  - External UID
-- `provider`                    - External provider name
-- `bio`                         - User's biography
-- `location` (optional)         - User's location
-- `admin` (optional)            - User is admin - true or false (default)
-- `can_create_group` (optional) - User can create groups - true or false
+- `email`                          - Email
+- `username`                       - Username
+- `name`                           - Name
+- `password`                       - Password
+- `skype`                          - Skype ID
+- `linkedin`                       - LinkedIn
+- `twitter`                        - Twitter account
+- `website_url`                    - Website URL
+- `organization`                   - Organization name
+- `projects_limit`                 - Limit projects each user can create
+- `extern_uid`                     - External UID
+- `provider`                       - External provider name
+- `bio`                            - User's biography
+- `location` (optional)            - User's location
+- `public_email` (optional)        - The public email of the user
+- `admin` (optional)               - User is admin - true or false (default)
+- `can_create_group` (optional)    - User can create groups - true or false
 - `skip_reconfirmation` (optional) - Skip reconfirmation - true or false (default)
-- `external` (optional)         - Flags the user as external - true or false(default)
+- `external` (optional)            - Flags the user as external - true or false(default)
 - `shared_runners_minutes_limit` (optional) - Pipeline minutes quota for this user
-- `avatar` (optional)           - Image file for user's avatar
-- `private_profile` (optional)  - User's profile is private - true or false
+- `avatar` (optional)              - Image file for user's avatar
+- `private_profile` (optional)     - User's profile is private - true or false
 
 On password update, user will be forced to change it upon next login.
 Note, at the moment this method does only return a `404` error,

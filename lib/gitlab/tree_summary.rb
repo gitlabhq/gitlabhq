@@ -75,25 +75,29 @@ module Gitlab
     end
 
     def fill_last_commits!(entries)
-      # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37433
-      Gitlab::GitalyClient.allow_n_plus_1_calls do
-        entries.each do |entry|
-          raw_commit = repository.last_commit_for_path(commit.id, entry_path(entry))
+      # Ensure the path is in "path/" format
+      ensured_path =
+        if path
+          File.join(*[path, ""])
+        end
 
-          if raw_commit
-            commit = resolve_commit(raw_commit)
+      commits_hsh = repository.list_last_commits_for_tree(commit.id, ensured_path, offset: offset, limit: limit)
 
-            entry[:commit] = commit
-            entry[:commit_path] =  commit_path(commit)
-          end
+      entries.each do |entry|
+        path_key = entry_path(entry)
+        commit = cache_commit(commits_hsh[path_key])
+
+        if commit
+          entry[:commit] = commit
+          entry[:commit_path] = commit_path(commit)
         end
       end
     end
 
-    def resolve_commit(raw_commit)
-      return nil unless raw_commit.present?
+    def cache_commit(commit)
+      return nil unless commit.present?
 
-      resolved_commits[raw_commit.id] ||= ::Commit.new(raw_commit, project)
+      resolved_commits[commit.id] ||= commit
     end
 
     def commit_path(commit)

@@ -1,4 +1,5 @@
-%ul.content-list.issuable-list
-  = render partial: 'groups/epics/epic', collection: @epics
+.card.card-small.card-without-border
+  %ul.content-list.issuable-list
+    = render partial: 'groups/epics/epic', collection: @epics
 
 = paginate @epics, theme: "gitlab"

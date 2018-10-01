@@ -3212,6 +3212,12 @@ msgstr ""
 msgid "Filter"
 msgstr ""
 
+msgid "Filter by %{issuable_type} that are currently closed."
+msgstr ""
+
+msgid "Filter by %{issuable_type} that are currently opened."
+msgstr ""
+
 msgid "Filter by commit message"
 msgstr ""
 

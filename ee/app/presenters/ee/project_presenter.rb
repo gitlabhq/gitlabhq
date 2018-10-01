@@ -20,6 +20,10 @@ module EE
       anchors
     end
 
+    def approver_groups
+      ::ApproverGroup.filtered_approver_groups(project.approver_groups, current_user)
+    end
+
     private
 
     def security_dashboard_data
