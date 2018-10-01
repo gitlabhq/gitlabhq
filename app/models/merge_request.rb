@@ -6,6 +6,7 @@ class MergeRequest < ActiveRecord::Base
   include Issuable
   include Noteable
   include Referable
+  include Presentable
   include IgnorableColumn
   include TimeTrackable
   include ManualInverseAssociation

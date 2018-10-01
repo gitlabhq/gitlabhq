@@ -56,5 +56,22 @@ describe Gitlab::Highlight do
 
       described_class.highlight('file.name', 'Contents')
     end
+
+    context 'timeout' do
+      subject { described_class.new('file.name', 'Contents') }
+
+      it 'utilizes timeout for web' do
+        expect(Timeout).to receive(:timeout).with(described_class::TIMEOUT_FOREGROUND).and_call_original
+
+        subject.highlight("Content")
+      end
+
+      it 'utilizes longer timeout for sidekiq' do
+        allow(Sidekiq).to receive(:server?).and_return(true)
+        expect(Timeout).to receive(:timeout).with(described_class::TIMEOUT_BACKGROUND).and_call_original
+
+        subject.highlight("Content")
+      end
+    end
   end
 end

@@ -82,7 +82,7 @@ describe Clusters::Applications::CheckInstallationProgressService do
         service.execute
 
         expect(application).to be_errored
-        expect(application.status_reason).to eq(errors)
+        expect(application.status_reason).to eq("Installation failed")
       end
     end
 
