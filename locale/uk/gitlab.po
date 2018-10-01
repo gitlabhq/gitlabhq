@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: uk\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-10-01 06:09\n"
+"PO-Revision-Date: 2018-10-01 09:58\n"
 
 msgid " Status"
 msgstr " Статус"
@@ -65,17 +65,17 @@ msgstr[3] "%d експортерів"
 
 msgid "%d failed test result"
 msgid_plural "%d failed test results"
-msgstr[0] ""
+msgstr[0] "%d невдалий результат тесту"
 msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[2] "%d невдалих результатів тестів"
+msgstr[3] "%d невдалих результатів тестів"
 
 msgid "%d fixed test result"
 msgid_plural "%d fixed test results"
-msgstr[0] ""
+msgstr[0] "%d виправлений результат тесту"
 msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[2] "%d виправлених результатів тесту"
+msgstr[3] "%d виправлених результатів тесту"
 
 msgid "%d issue"
 msgid_plural "%d issues"
@@ -210,17 +210,17 @@ msgstr "%{title} зміни"
 
 msgid "%{type} detected 1 fixed vulnerability"
 msgid_plural "%{type} detected %{vulnerabilityCount} fixed vulnerabilities"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%{type} виявило 1 виправлену вразливість"
+msgstr[1] "%{type} виявило %{vulnerabilityCount} виправлені вразливості"
+msgstr[2] "%{type} виявило %{vulnerabilityCount} виправлених вразливостей"
+msgstr[3] "%{type} виявило %{vulnerabilityCount} виправлених вразливостей"
 
 msgid "%{type} detected 1 new vulnerability"
 msgid_plural "%{type} detected %{vulnerabilityCount} new vulnerabilities"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%{type} виявило 1 нову вразливість"
+msgstr[1] "%{type} виявило %{vulnerabilityCount} нові вразливості"
+msgstr[2] "%{type} виявило %{vulnerabilityCount} нових вразливостей"
+msgstr[3] "%{type} виявило %{vulnerabilityCount} нових вразливостей"
 
 msgid "%{type} detected 1 vulnerability"
 msgid_plural "%{type} detected %{vulnerabilityCount} vulnerabilities"
@@ -5994,19 +5994,19 @@ msgid "ProjectLifecycle|Stage"
 msgstr "Стадія"
 
 msgid "ProjectOverview|Fork"
-msgstr ""
+msgstr "Форк"
 
 msgid "ProjectOverview|Forks"
-msgstr ""
+msgstr "Форки"
 
 msgid "ProjectOverview|Go to your fork"
-msgstr ""
+msgstr "Перейти до вашого форку"
 
 msgid "ProjectOverview|Star"
-msgstr ""
+msgstr "В обрані"
 
 msgid "ProjectOverview|Unstar"
-msgstr ""
+msgstr "Видалити із обраних"
 
 msgid "ProjectOverview|You have reached your project limit"
 msgstr ""
@@ -6225,7 +6225,7 @@ msgid "ProtectedEnvironment|Choose who is allowed to deploy"
 msgstr ""
 
 msgid "ProtectedEnvironment|Environment"
-msgstr ""
+msgstr "Середовище"
 
 msgid "ProtectedEnvironment|Protect"
 msgstr ""
@@ -6240,7 +6240,7 @@ msgid "ProtectedEnvironment|Protected Environment (%{protected_environments_coun
 msgstr ""
 
 msgid "ProtectedEnvironment|Select an environment"
-msgstr ""
+msgstr "Виберіть середовище"
 
 msgid "ProtectedEnvironment|There are currently no protected environments, protect an environment with the form above."
 msgstr ""
@@ -6321,7 +6321,7 @@ msgid "Real-time features"
 msgstr "Фунції реального часу"
 
 msgid "Recent searches"
-msgstr ""
+msgstr "Останні пошукові запити"
 
 msgid "Reference:"
 msgstr "Посилання:"
@@ -6403,7 +6403,7 @@ msgid "Rename folder"
 msgstr "Перейменувати папку"
 
 msgid "Reopen epic"
-msgstr ""
+msgstr "Повторне відкриття епіку"
 
 msgid "Repair authentication"
 msgstr "Відновити аутентифікацію"
@@ -6514,16 +6514,16 @@ msgid "Resolve discussion"
 msgstr "Завершити обговорення"
 
 msgid "Response metrics (AWS ELB)"
-msgstr ""
+msgstr "Метрики відповідей (AWS ELB)"
 
 msgid "Response metrics (Custom)"
 msgstr "Метрики відповідей (Власні)"
 
 msgid "Response metrics (HA Proxy)"
-msgstr ""
+msgstr "Метрики відповідей (HA Proxy)"
 
 msgid "Response metrics (NGINX Ingress)"
-msgstr ""
+msgstr "Метрики відповідей (NGINX Ingress)"
 
 msgid "Response metrics (NGINX)"
 msgstr ""
@@ -6921,7 +6921,7 @@ msgid "Shared Runners"
 msgstr "Загальні Runner'и"
 
 msgid "Shared projects"
-msgstr ""
+msgstr "Спільні проекти"
 
 msgid "SharedRunnersMinutesSettings|By resetting the pipeline minutes for this namespace, the currently used minutes will be set to zero."
 msgstr "При обнуленні хвилин конвеєрів для цього простору імен, кількість вже використаних хвилин буде дорівнювати 0."
@@ -7030,7 +7030,7 @@ msgid "Something went wrong trying to change the confidentiality of this issue"
 msgstr "Помилка при зміні конфіденційності цієї проблеми"
 
 msgid "Something went wrong trying to change the locked state of this %{issuableDisplayName}"
-msgstr ""
+msgstr "Щось пішло не так, при спробі зміни стану блокування %{issuableDisplayName}"
 
 msgid "Something went wrong when toggling the button"
 msgstr "Помилка при перемиканні кнопки"
@@ -7093,7 +7093,7 @@ msgid "SortOptions|Largest repository"
 msgstr "Найбільший репозиторій"
 
 msgid "SortOptions|Last Contact"
-msgstr ""
+msgstr "Останній контакт"
 
 msgid "SortOptions|Last created"
 msgstr "Останній створений"
@@ -7309,7 +7309,7 @@ msgid "System metrics (Custom)"
 msgstr "Системні метрики (Власні)"
 
 msgid "System metrics (Kubernetes)"
-msgstr ""
+msgstr "Системні метрики (Kubernetes)"
 
 msgid "Tag (%{tag_count})"
 msgid_plural "Tags (%{tag_count})"
@@ -8113,7 +8113,7 @@ msgid "Unable to update this epic at this time."
 msgstr ""
 
 msgid "Undo"
-msgstr ""
+msgstr "Скасувати"
 
 msgid "Unknown"
 msgstr "Невідомо"
@@ -8122,7 +8122,7 @@ msgid "Unlock"
 msgstr "Розблокувати"
 
 msgid "Unlock this %{issuableDisplayName}? <strong>Everyone</strong> will be able to comment."
-msgstr ""
+msgstr "Розблокувати %{issuableDisplayName}? <strong>Будь-хто</strong> зможе залишати коментарі."
 
 msgid "Unlocked"
 msgstr "Розблоковано"
@@ -8131,7 +8131,7 @@ msgid "Unresolve discussion"
 msgstr "Повторно відкрити обговорення"
 
 msgid "Unstage"
-msgstr ""
+msgstr "Не індексувати"
 
 msgid "Unstage all changes"
 msgstr "Не індексувати всі зміни"
@@ -8952,7 +8952,7 @@ msgid "confidentiality|You are going to turn off the confidentiality. This means
 msgstr "Ви вимикаєте конфіденційність. Це означає, що <strong>будь-хто</strong> зможе бачити і залишати коментарі для цієї проблеми."
 
 msgid "confidentiality|You are going to turn on the confidentiality. This means that only team members with <strong>at least Reporter access</strong> are able to see and leave comments on the issue."
-msgstr ""
+msgstr "Ви вмикаєте конфіденційність. Це означає що лише члени команди <strong>рівня репортер або вище</strong> матимуть змогу бачити та залишати коментарі для цієї проблеми."
 
 msgid "connecting"
 msgstr "з'єднання"
@@ -9292,7 +9292,7 @@ msgid "mrWidget|to be merged automatically when the pipeline succeeds"
 msgstr "буде злито автоматично, коли конвеєр завершиться успішно"
 
 msgid "n/a"
-msgstr ""
+msgstr "н/д"
 
 msgid "new merge request"
 msgstr "Новий запит на злиття"
