@@ -12,6 +12,7 @@ module Gitlab
                           .merge(features_usage_data)
                           .merge(components_usage_data)
                           .merge(cycle_analytics_usage_data)
+                          .merge(usage_counters)
       end
 
       def to_json(force_refresh: false)
@@ -106,6 +107,10 @@ module Gitlab
           reply_by_email_enabled: Gitlab::IncomingEmail.enabled?,
           signup_enabled: Gitlab::CurrentSettings.allow_signup?
         }
+      end
+
+      def usage_counters
+        UsageCounters.first_or_create.totals
       end
 
       def components_usage_data

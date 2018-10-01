@@ -278,6 +278,12 @@ describe API::Commits do
         }
       end
 
+      it 'does not increment the usage counters using access token authentication' do
+        post api(url, user), valid_c_params
+
+        expect_any_instance_of(::UsageCounters).not_to receive(:increment_counters)
+      end
+
       it 'a new file in project repo' do
         post api(url, user), valid_c_params
 
