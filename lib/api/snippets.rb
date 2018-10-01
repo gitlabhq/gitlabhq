@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   # Snippets API
   class Snippets < Grape::API

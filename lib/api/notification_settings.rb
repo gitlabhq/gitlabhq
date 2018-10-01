@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   # notification_settings API
   class NotificationSettings < Grape::API

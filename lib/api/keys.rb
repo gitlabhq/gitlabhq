@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   # Keys API
   class Keys < Grape::API

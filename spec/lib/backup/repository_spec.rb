@@ -11,10 +11,6 @@ describe Backup::Repository do
     allow(FileUtils).to receive(:mkdir_p).and_return(true)
     allow(FileUtils).to receive(:mv).and_return(true)
 
-    allow_any_instance_of(String).to receive(:color) do |string, _color|
-      string
-    end
-
     allow_any_instance_of(described_class).to receive(:progress).and_return(progress)
   end
 

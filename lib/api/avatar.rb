@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Avatar < Grape::API
     resource :avatar do

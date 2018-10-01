@@ -158,6 +158,12 @@ excluded_attributes:
     - :reference
     - :reference_html
     - :epic_id
+  hooks:
+    - :token
+    - :encrypted_token
+    - :encrypted_token_iv
+    - :encrypted_url
+    - :encrypted_url_iv
 
 methods:
   labels:
