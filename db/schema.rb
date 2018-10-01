@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180917172041) do
+ActiveRecord::Schema.define(version: 20180930001102) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -477,7 +477,6 @@ ActiveRecord::Schema.define(version: 20180917172041) do
   add_index "ci_pipelines", ["project_id", "sha"], name: "index_ci_pipelines_on_project_id_and_sha", using: :btree
   add_index "ci_pipelines", ["project_id", "source"], name: "index_ci_pipelines_on_project_id_and_source", using: :btree
   add_index "ci_pipelines", ["project_id", "status", "config_source"], name: "index_ci_pipelines_on_project_id_and_status_and_config_source", using: :btree
-  add_index "ci_pipelines", ["project_id"], name: "index_ci_pipelines_on_project_id", using: :btree
   add_index "ci_pipelines", ["status"], name: "index_ci_pipelines_on_status", using: :btree
   add_index "ci_pipelines", ["user_id"], name: "index_ci_pipelines_on_user_id", using: :btree
 
@@ -539,7 +538,6 @@ ActiveRecord::Schema.define(version: 20180917172041) do
 
   add_index "ci_stages", ["pipeline_id", "name"], name: "index_ci_stages_on_pipeline_id_and_name", unique: true, using: :btree
   add_index "ci_stages", ["pipeline_id", "position"], name: "index_ci_stages_on_pipeline_id_and_position", using: :btree
-  add_index "ci_stages", ["pipeline_id"], name: "index_ci_stages_on_pipeline_id", using: :btree
   add_index "ci_stages", ["project_id"], name: "index_ci_stages_on_project_id", using: :btree
 
   create_table "ci_trigger_requests", force: :cascade do |t|
@@ -703,7 +701,6 @@ ActiveRecord::Schema.define(version: 20180917172041) do
   end
 
   add_index "container_repositories", ["project_id", "name"], name: "index_container_repositories_on_project_id_and_name", unique: true, using: :btree
-  add_index "container_repositories", ["project_id"], name: "index_container_repositories_on_project_id", using: :btree
 
   create_table "conversational_development_index_metrics", force: :cascade do |t|
     t.float "leader_issues", null: false
@@ -1429,7 +1426,6 @@ ActiveRecord::Schema.define(version: 20180917172041) do
 
   add_index "notification_settings", ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type", using: :btree
   add_index "notification_settings", ["user_id", "source_id", "source_type"], name: "index_notifications_on_user_id_and_source_id_and_source_type", unique: true, using: :btree
-  add_index "notification_settings", ["user_id"], name: "index_notification_settings_on_user_id", using: :btree
 
   create_table "oauth_access_grants", force: :cascade do |t|
     t.integer "resource_owner_id", null: false
@@ -1494,9 +1490,7 @@ ActiveRecord::Schema.define(version: 20180917172041) do
 
   add_index "pages_domains", ["domain"], name: "index_pages_domains_on_domain", unique: true, using: :btree
   add_index "pages_domains", ["project_id", "enabled_until"], name: "index_pages_domains_on_project_id_and_enabled_until", using: :btree
-  add_index "pages_domains", ["project_id"], name: "index_pages_domains_on_project_id", using: :btree
   add_index "pages_domains", ["verified_at", "enabled_until"], name: "index_pages_domains_on_verified_at_and_enabled_until", using: :btree
-  add_index "pages_domains", ["verified_at"], name: "index_pages_domains_on_verified_at", using: :btree
 
   create_table "personal_access_tokens", force: :cascade do |t|
     t.integer "user_id", null: false
@@ -1982,9 +1976,7 @@ ActiveRecord::Schema.define(version: 20180917172041) do
   end
 
   add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true, using: :btree
-  add_index "taggings", ["tag_id"], name: "index_taggings_on_tag_id", using: :btree
   add_index "taggings", ["taggable_id", "taggable_type", "context"], name: "index_taggings_on_taggable_id_and_taggable_type_and_context", using: :btree
-  add_index "taggings", ["taggable_id", "taggable_type"], name: "index_taggings_on_taggable_id_and_taggable_type", using: :btree
 
   create_table "tags", force: :cascade do |t|
     t.string "name"
@@ -2003,7 +1995,6 @@ ActiveRecord::Schema.define(version: 20180917172041) do
 
   add_index "term_agreements", ["term_id"], name: "index_term_agreements_on_term_id", using: :btree
   add_index "term_agreements", ["user_id", "term_id"], name: "term_agreements_unique_index", unique: true, using: :btree
-  add_index "term_agreements", ["user_id"], name: "index_term_agreements_on_user_id", using: :btree
 
   create_table "timelogs", force: :cascade do |t|
     t.integer "time_spent", null: false
