@@ -354,20 +354,6 @@ module API
           desc: 'Flowdock token'
         }
       ],
-      'gemnasium' => [
-        {
-          required: true,
-          name: :api_key,
-          type: String,
-          desc: 'Your personal API key on gemnasium.com'
-        },
-        {
-          required: true,
-          name: :token,
-          type: String,
-          desc: "The project's slug on gemnasium.com"
-        }
-      ],
       'hangouts-chat' => [
         {
           required: true,
@@ -695,7 +681,6 @@ module API
       EmailsOnPushService,
       ExternalWikiService,
       FlowdockService,
-      GemnasiumService,
       HangoutsChatService,
       HipchatService,
       IrkerService,
@@ -836,11 +821,13 @@ module API
 
     TRIGGER_SERVICES.each do |service_slug, settings|
       helpers do
+        # rubocop: disable CodeReuse/ActiveRecord
         def slash_command_service(project, service_slug, params)
           project.services.active.where(template: false).find do |service|
             service.try(:token) == params[:token] && service.to_param == service_slug.underscore
           end
         end
+        # rubocop: enable CodeReuse/ActiveRecord
       end
 
       params do

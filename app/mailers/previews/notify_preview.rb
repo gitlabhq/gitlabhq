@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NotifyPreview < ActionMailer::Preview
   def note_merge_request_email_for_individual_note
     note_email(:note_merge_request_email) do
@@ -7,7 +9,7 @@ class NotifyPreview < ActionMailer::Preview
         In this notification email, we expect to see:
 
         - The note contents (that's what you're looking at)
-        - A link to view this note on Gitlab
+        - A link to view this note on GitLab
         - An explanation for why the user is receiving this notification
       MD
 
@@ -24,7 +26,7 @@ class NotifyPreview < ActionMailer::Preview
 
         - A line saying who started this discussion
         - The note contents (that's what you're looking at)
-        - A link to view this discussion on Gitlab
+        - A link to view this discussion on GitLab
         - An explanation for why the user is receiving this notification
       MD
 
@@ -42,7 +44,7 @@ class NotifyPreview < ActionMailer::Preview
         - A line saying who started this discussion and on what file
         - The diff
         - The note contents (that's what you're looking at)
-        - A link to view this discussion on Gitlab
+        - A link to view this discussion on GitLab
         - An explanation for why the user is receiving this notification
       MD
 
@@ -121,6 +123,10 @@ class NotifyPreview < ActionMailer::Preview
 
   def pipeline_failed_email
     Notify.pipeline_failed_email(pipeline, pipeline.user.try(:email))
+  end
+
+  def autodevops_disabled_email
+    Notify.autodevops_disabled_email(pipeline, user.email).message
   end
 
   private

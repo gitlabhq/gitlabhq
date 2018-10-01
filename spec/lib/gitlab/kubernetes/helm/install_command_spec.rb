@@ -3,14 +3,17 @@ require 'rails_helper'
 describe Gitlab::Kubernetes::Helm::InstallCommand do
   let(:files) { { 'ca.pem': 'some file content' } }
   let(:repository) { 'https://repository.example.com' }
+  let(:rbac) { false }
   let(:version) { '1.2.3' }
 
   let(:install_command) do
     described_class.new(
       name: 'app-name',
       chart: 'chart-name',
+      rbac: rbac,
       files: files,
-      version: version, repository: repository
+      version: version,
+      repository: repository
     )
   end
 
@@ -21,8 +24,51 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
       <<~EOS
       helm init --client-only >/dev/null
       helm repo add app-name https://repository.example.com
-      helm install chart-name --name app-name --tls --tls-ca-cert /data/helm/app-name/config/ca.pem --tls-cert /data/helm/app-name/config/cert.pem --tls-key /data/helm/app-name/config/key.pem --version 1.2.3 --namespace gitlab-managed-apps -f /data/helm/app-name/config/values.yaml >/dev/null
+      #{helm_install_comand}
       EOS
+    end
+
+    let(:helm_install_comand) do
+      <<~EOS.squish
+      helm install chart-name
+        --name app-name
+        --tls
+        --tls-ca-cert /data/helm/app-name/config/ca.pem
+        --tls-cert /data/helm/app-name/config/cert.pem
+        --tls-key /data/helm/app-name/config/key.pem
+        --version 1.2.3
+        --namespace gitlab-managed-apps
+        -f /data/helm/app-name/config/values.yaml >/dev/null
+      EOS
+    end
+  end
+
+  context 'when rbac is true' do
+    let(:rbac) { true }
+
+    it_behaves_like 'helm commands' do
+      let(:commands) do
+        <<~EOS
+        helm init --client-only >/dev/null
+        helm repo add app-name https://repository.example.com
+        #{helm_install_command}
+        EOS
+      end
+
+      let(:helm_install_command) do
+        <<~EOS.squish
+        helm install chart-name
+          --name app-name
+          --tls
+          --tls-ca-cert /data/helm/app-name/config/ca.pem
+          --tls-cert /data/helm/app-name/config/cert.pem
+          --tls-key /data/helm/app-name/config/key.pem
+          --version 1.2.3
+          --set rbac.create\\=true,rbac.enabled\\=true
+          --namespace gitlab-managed-apps
+          -f /data/helm/app-name/config/values.yaml >/dev/null
+        EOS
+      end
     end
   end
 
@@ -32,8 +78,22 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     it_behaves_like 'helm commands' do
       let(:commands) do
         <<~EOS
-         helm init --client-only >/dev/null
-         helm install chart-name --name app-name --tls --tls-ca-cert /data/helm/app-name/config/ca.pem --tls-cert /data/helm/app-name/config/cert.pem --tls-key /data/helm/app-name/config/key.pem --version 1.2.3 --namespace gitlab-managed-apps -f /data/helm/app-name/config/values.yaml >/dev/null
+        helm init --client-only >/dev/null
+        #{helm_install_command}
+        EOS
+      end
+
+      let(:helm_install_command) do
+        <<~EOS.squish
+        helm install chart-name
+          --name app-name
+          --tls
+          --tls-ca-cert /data/helm/app-name/config/ca.pem
+          --tls-cert /data/helm/app-name/config/cert.pem
+          --tls-key /data/helm/app-name/config/key.pem
+          --version 1.2.3
+          --namespace gitlab-managed-apps
+          -f /data/helm/app-name/config/values.yaml >/dev/null
         EOS
       end
     end
@@ -45,9 +105,19 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     it_behaves_like 'helm commands' do
       let(:commands) do
         <<~EOS
-         helm init --client-only >/dev/null
-         helm repo add app-name https://repository.example.com
-         helm install chart-name --name app-name --version 1.2.3 --namespace gitlab-managed-apps -f /data/helm/app-name/config/values.yaml >/dev/null
+        helm init --client-only >/dev/null
+        helm repo add app-name https://repository.example.com
+        #{helm_install_command}
+        EOS
+      end
+
+      let(:helm_install_command) do
+        <<~EOS.squish
+        helm install chart-name
+           --name app-name
+           --version 1.2.3
+           --namespace gitlab-managed-apps
+           -f /data/helm/app-name/config/values.yaml >/dev/null
         EOS
       end
     end
@@ -59,10 +129,59 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     it_behaves_like 'helm commands' do
       let(:commands) do
         <<~EOS
-         helm init --client-only >/dev/null
-         helm repo add app-name https://repository.example.com
-         helm install chart-name --name app-name --tls --tls-ca-cert /data/helm/app-name/config/ca.pem --tls-cert /data/helm/app-name/config/cert.pem --tls-key /data/helm/app-name/config/key.pem --namespace gitlab-managed-apps -f /data/helm/app-name/config/values.yaml >/dev/null
+        helm init --client-only >/dev/null
+        helm repo add app-name https://repository.example.com
+        #{helm_install_command}
         EOS
+      end
+
+      let(:helm_install_command) do
+        <<~EOS.squish
+        helm install chart-name
+          --name app-name
+          --tls
+          --tls-ca-cert /data/helm/app-name/config/ca.pem
+          --tls-cert /data/helm/app-name/config/cert.pem
+          --tls-key /data/helm/app-name/config/key.pem
+          --namespace gitlab-managed-apps
+          -f /data/helm/app-name/config/values.yaml >/dev/null
+        EOS
+      end
+    end
+  end
+
+  describe '#rbac?' do
+    subject { install_command.rbac? }
+
+    context 'rbac is enabled' do
+      let(:rbac) { true }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'rbac is not enabled' do
+      let(:rbac) { false }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#pod_resource' do
+    subject { install_command.pod_resource }
+
+    context 'rbac is enabled' do
+      let(:rbac) { true }
+
+      it 'generates a pod that uses the tiller serviceAccountName' do
+        expect(subject.spec.serviceAccountName).to eq('tiller')
+      end
+    end
+
+    context 'rbac is not enabled' do
+      let(:rbac) { false }
+
+      it 'generates a pod that uses the default serviceAccountName' do
+        expect(subject.spec.serviceAcccountName).to be_nil
       end
     end
   end
@@ -82,6 +201,22 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
 
     it 'returns a KubeClient resource with config map content for the application' do
       is_expected.to eq(resource)
+    end
+  end
+
+  describe '#service_account_resource' do
+    subject { install_command.service_account_resource }
+
+    it 'returns nothing' do
+      is_expected.to be_nil
+    end
+  end
+
+  describe '#cluster_role_binding_resource' do
+    subject { install_command.cluster_role_binding_resource }
+
+    it 'returns nothing' do
+      is_expected.to be_nil
     end
   end
 end

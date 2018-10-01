@@ -1,4 +1,4 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.4.4-golang-1.9-git-2.18-chrome-67.0-node-8.x-yarn-1.2-postgresql-9.6-graphicsmagick-1.3.29"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.4.4-golang-1.9-git-2.18-chrome-69.0-node-8.x-yarn-1.2-postgresql-9.6-graphicsmagick-1.3.29"
 
 .dedicated-runner: &dedicated-runner
   retry: 1
@@ -130,8 +130,7 @@ stages:
 
 .single-script-job: &single-script-job
   image: ruby:2.4-alpine
-  before_script: []
-  stage: build
+  stage: test
   cache: {}
   dependencies: []
   variables: &single-script-job-variables
@@ -171,7 +170,7 @@ stages:
     - '[[ -f $FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${FLAKY_RSPEC_REPORT_PATH}'
     - '[[ -f $NEW_FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${NEW_FLAKY_RSPEC_REPORT_PATH}'
     - scripts/gitaly-test-spawn
-    - knapsack rspec "--color --format documentation"
+    - knapsack rspec "--color --format documentation --format RspecJunitFormatter --out junit_rspec.xml"
   artifacts:
     expire_in: 31d
     when: always
@@ -180,6 +179,8 @@ stages:
       - knapsack/
       - rspec_flaky/
       - tmp/capybara/
+    reports:
+      junit: junit_rspec.xml
 
 .rspec-metadata-pg: &rspec-metadata-pg
   <<: *rspec-metadata
@@ -257,6 +258,7 @@ package-and-qa:
     SCRIPT_NAME: trigger-build
   retry: 0
   script:
+    - gem install gitlab --no-document
     - ./$SCRIPT_NAME omnibus
   when: manual
   only:
@@ -283,7 +285,7 @@ review-docs-deploy-manual:
   <<: *review-docs
   stage: build
   script:
-    - gem install gitlab --no-ri --no-rdoc
+    - gem install gitlab --no-document
     - ./$SCRIPT_NAME deploy
   when: manual
   only:
@@ -297,7 +299,7 @@ review-docs-deploy:
   <<: *review-docs
   stage: post-test
   script:
-    - gem install gitlab --no-ri --no-rdoc
+    - gem install gitlab --no-document
     - ./$SCRIPT_NAME deploy
   only:
     - /(^docs[\/-].*|.*-docs$)/@gitlab-org/gitlab-ce
@@ -311,10 +313,13 @@ review-docs-cleanup:
   environment:
     name: review-docs/$CI_COMMIT_REF_SLUG
     action: stop
-  when: manual
   script:
-    - gem install gitlab --no-ri --no-rdoc
+    - gem install gitlab --no-document
     - ./$SCRIPT_NAME cleanup
+  when: manual
+  only:
+    - branches@gitlab-org/gitlab-ce
+    - branches@gitlab-org/gitlab-ee
 
 ##
 # Trigger a docker image build in CNG (Cloud Native GitLab) repository
@@ -322,14 +327,14 @@ review-docs-cleanup:
 cloud-native-image:
   image: ruby:2.4-alpine
   before_script: []
-  stage: build
+  stage: test
   allow_failure: true
   variables:
     GIT_DEPTH: "1"
   cache: {}
   script:
-    - gem install gitlab --no-ri --no-rdoc
-    - BUILD_TRIGGER_TOKEN=$CI_JOB_TOKEN scripts/trigger-build cng
+    - gem install gitlab --no-document
+    - CNG_PROJECT_PATH="gitlab-org/build/CNG" BUILD_TRIGGER_TOKEN=$CI_JOB_TOKEN ./scripts/trigger-build cng
   only:
     - tags@gitlab-org/gitlab-ce
     - tags@gitlab-org/gitlab-ee
@@ -361,7 +366,7 @@ update-tests-metadata:
       - rspec_flaky/
     policy: push
   script:
-    - retry gem install fog-aws mime-types activesupport --no-ri --no-rdoc
+    - retry gem install fog-aws mime-types activesupport --no-document
     - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg_node_*.json
     - scripts/merge-reports ${FLAKY_RSPEC_SUITE_REPORT_PATH} rspec_flaky/all_*_*.json
     - FLAKY_RSPEC_GENERATE_REPORT=1 scripts/prune-old-flaky-specs ${FLAKY_RSPEC_SUITE_REPORT_PATH}
@@ -703,7 +708,6 @@ gitlab:assets:compile:
     SETUP_DB: "false"
     SKIP_STORAGE_VALIDATION: "true"
     WEBPACK_REPORT: "true"
-    NO_COMPRESSION: "true"
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584
   script:
@@ -717,6 +721,7 @@ gitlab:assets:compile:
     expire_in: 31d
     paths:
       - webpack-report/
+      - public/assets/
 
 karma:
   <<: *dedicated-no-docs-and-no-qa-pull-cache-job
@@ -724,6 +729,9 @@ karma:
   dependencies:
     - compile-assets
     - setup-test-env
+  variables:
+    # we override the max_old_space_size to prevent OOM errors
+    NODE_OPTIONS: --max_old_space_size=3584
   script:
     - export BABEL_ENV=coverage CHROME_LOG_FILE=chrome_debug.log
     - date
@@ -738,8 +746,10 @@ karma:
     paths:
       - chrome_debug.log
       - coverage-javascript/
+    reports:
+      junit: junit_karma.xml
 
-codequality:
+code_quality:
   <<: *dedicated-no-docs-no-db-pull-cache-job
   image: docker:stable
   allow_failure: true
@@ -757,9 +767,13 @@ codequality:
   script:
     # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable" for Security Products
     - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
-    - docker run --env SOURCE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
+    - docker run
+        --env SOURCE_CODE="$PWD"
+        --volume "$PWD":/code
+        --volume /var/run/docker.sock:/var/run/docker.sock
+        "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
   artifacts:
-    paths: [codeclimate.json]
+    paths: [gl-code-quality-report.json]
     expire_in: 1 week
 
 sast:

@@ -1,9 +1,8 @@
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import _ from 'underscore';
 import { __, sprintf } from '~/locale';
 import createFlash from '~/flash';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import DiffFileHeader from './diff_file_header.vue';
 import DiffContent from './diff_content.vue';
 
@@ -11,7 +10,6 @@ export default {
   components: {
     DiffFileHeader,
     DiffContent,
-    LoadingIcon,
   },
   props: {
     file: {
@@ -30,6 +28,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(['isNotesFetched', 'discussionsStructuredByLineCode']),
     isCollapsed() {
       return this.file.collapsed || false;
     },
@@ -44,18 +43,27 @@ export default {
       );
     },
     showExpandMessage() {
-      return this.isCollapsed && !this.isLoadingCollapsedDiff && !this.file.tooLarge;
+      return (
+        this.isCollapsed ||
+        !this.file.highlightedDiffLines &&
+        !this.isLoadingCollapsedDiff &&
+        !this.file.tooLarge &&
+        this.file.text
+      );
+    },
+    showLoadingIcon() {
+      return this.isLoadingCollapsedDiff || (!this.file.renderIt && !this.isCollapsed);
     },
   },
   methods: {
-    ...mapActions('diffs', ['loadCollapsedDiff']),
+    ...mapActions('diffs', ['loadCollapsedDiff', 'assignDiscussionsToDiff']),
     handleToggle() {
-      const { collapsed, highlightedDiffLines, parallelDiffLines } = this.file;
-
-      if (collapsed && !highlightedDiffLines && !parallelDiffLines.length) {
+      const { highlightedDiffLines, parallelDiffLines } = this.file;
+      if (!highlightedDiffLines && parallelDiffLines !== undefined && !parallelDiffLines.length) {
         this.handleLoadCollapsedDiff();
       } else {
         this.file.collapsed = !this.file.collapsed;
+        this.file.renderIt = true;
       }
     },
     handleLoadCollapsedDiff() {
@@ -65,6 +73,15 @@ export default {
         .then(() => {
           this.isLoadingCollapsedDiff = false;
           this.file.collapsed = false;
+          this.file.renderIt = true;
+        })
+        .then(() => {
+          requestIdleCallback(
+            () => {
+              this.assignDiscussionsToDiff(this.discussionsStructuredByLineCode);
+            },
+            { timeout: 1000 },
+          );
         })
         .catch(() => {
           this.isLoadingCollapsedDiff = false;
@@ -121,16 +138,16 @@ export default {
     </div>
 
     <diff-content
-      v-if="!isCollapsed"
+      v-if="!isCollapsed && file.renderIt"
       :class="{ hidden: isCollapsed || file.tooLarge }"
       :diff-file="file"
     />
-    <loading-icon
-      v-if="isLoadingCollapsedDiff"
+    <gl-loading-icon
+      v-if="showLoadingIcon"
       class="diff-content loading"
     />
     <div
-      v-if="showExpandMessage"
+      v-else-if="showExpandMessage"
       class="nothing-here-block diff-collapsed"
     >
       {{ __('This diff is collapsed.') }}

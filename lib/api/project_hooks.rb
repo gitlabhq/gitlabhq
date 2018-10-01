@@ -20,6 +20,7 @@ module API
         optional :wiki_page_events, type: Boolean, desc: "Trigger hook on wiki events"
         optional :enable_ssl_verification, type: Boolean, desc: "Do SSL verification when triggering the hook"
         optional :token, type: String, desc: "Secret token to validate received payloads; this will not be returned in the response"
+        optional :push_events_branch_filter, type: String, desc: "Trigger hook on specified branch only"
       end
     end
 
@@ -63,6 +64,7 @@ module API
           present hook, with: Entities::ProjectHook
         else
           error!("Invalid url given", 422) if hook.errors[:url].present?
+          error!("Invalid branch filter given", 422) if hook.errors[:push_events_branch_filter].present?
 
           not_found!("Project hook #{hook.errors.messages}")
         end
@@ -84,6 +86,7 @@ module API
           present hook, with: Entities::ProjectHook
         else
           error!("Invalid url given", 422) if hook.errors[:url].present?
+          error!("Invalid branch filter given", 422) if hook.errors[:push_events_branch_filter].present?
 
           not_found!("Project hook #{hook.errors.messages}")
         end

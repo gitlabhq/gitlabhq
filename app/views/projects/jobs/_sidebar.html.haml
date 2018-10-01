@@ -3,63 +3,6 @@
     .blocks-container
       #js-details-block-vue{ data: { terminal_path: can?(current_user, :create_build_terminal, @build) && @build.has_terminal? ? terminal_project_job_path(@project, @build) : nil } }
 
-      - if can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?)
-        .block
-          .title
-            Job artifacts
-          - if @build.artifacts_expired?
-            %p.build-detail-row
-              The artifacts were removed
-              #{time_ago_with_tooltip(@build.artifacts_expire_at)}
-          - elsif @build.has_expiring_artifacts?
-            %p.build-detail-row
-              The artifacts will be removed
-              #{time_ago_with_tooltip(@build.artifacts_expire_at)}
-
-          - if @build.artifacts?
-            .btn-group.d-flex{ role: :group }
-              - if @build.has_expiring_artifacts? && can?(current_user, :update_build, @build)
-                = link_to keep_project_job_artifacts_path(@project, @build), class: 'btn btn-sm btn-default', method: :post do
-                  Keep
-
-              = link_to download_project_job_artifacts_path(@project, @build), rel: 'nofollow', download: '', class: 'btn btn-sm btn-default' do
-                Download
-
-              - if @build.browsable_artifacts?
-                = link_to browse_project_job_artifacts_path(@project, @build), class: 'btn btn-sm btn-default' do
-                  Browse
-
-      - if @build.trigger_request
-        .build-widget.block
-          %h4.title
-            Trigger
-
-          - if @build.trigger_request&.trigger&.short_token
-            %p
-              %span.build-light-text Token:
-              #{@build.trigger_request.trigger.short_token}
-
-          - if @build.trigger_variables.any?
-            %p
-              %button.btn.group.js-reveal-variables Reveal Variables
-
-            %dl.js-build-variables.trigger-build-variables.hide
-              - @build.trigger_variables.each do |trigger_variable|
-                %dt.js-build-variable.trigger-build-variable= trigger_variable[:key]
-                %dd.js-build-value.trigger-build-value= trigger_variable[:value]
-
-      %div{ class: (@build.pipeline.stages_count > 1 ? "block" : "block-last") }
-        %p
-          Commit
-          = link_to @build.pipeline.short_sha, project_commit_path(@project, @build.pipeline.sha), class: 'commit-sha link-commit'
-          = clipboard_button(text: @build.pipeline.short_sha, title: "Copy commit SHA to clipboard")
-          - if @build.merge_request
-            in
-            = link_to "#{@build.merge_request.to_reference}", merge_request_path(@build.merge_request), class: 'link-commit'
-
-        %p.build-light-text.append-bottom-0
-          #{@build.pipeline.git_commit_title}
-
       - if @build.pipeline.stages_count > 1
         .block-last.dropdown.build-dropdown
           %div
@@ -82,7 +25,7 @@
         - builds.select{|build| build.status == build_status}.each do |build|
           .build-job{ class: sidebar_build_class(build, @build), data: { stage: build.stage } }
             - tooltip = sanitize(build.tooltip_message.dup)
-            = link_to(project_job_path(@project, build), data: { toggle: 'tooltip', html: 'true', title: tooltip, container: 'body' }) do
+            = link_to(project_job_path(@project, build), data: { toggle: 'tooltip', title: tooltip, container: 'body' }) do
               = sprite_icon('arrow-right', size:16, css_class: 'icon-arrow-right')
               %span{ class: "ci-status-icon-#{build.status}" }
                 = ci_icon_for_status(build.status)

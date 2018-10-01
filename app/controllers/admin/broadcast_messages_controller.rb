@@ -1,12 +1,16 @@
+# frozen_string_literal: true
+
 class Admin::BroadcastMessagesController < Admin::ApplicationController
   include BroadcastMessagesHelper
 
   before_action :finder, only: [:edit, :update, :destroy]
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def index
     @broadcast_messages = BroadcastMessage.order(ends_at: :desc).page(params[:page])
     @broadcast_message  = BroadcastMessage.new
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def edit
   end

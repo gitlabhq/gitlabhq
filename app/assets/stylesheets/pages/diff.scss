@@ -25,17 +25,13 @@
     color: $gl-text-color;
     border-radius: 0 0 3px 3px;
 
-    .code {
-      padding: 0;
-    }
-
     .unfold {
       cursor: pointer;
     }
 
     .file-mode-changed {
       padding: 10px;
-      color: $file-mode-changed;
+      color: $gl-gray-500;
     }
 
     .suppressed-container {
@@ -76,6 +72,7 @@
       .line_holder td {
         line-height: $code-line-height;
         font-size: $code-font-size;
+        vertical-align: top;
 
         &.noteable_line {
           position: relative;
@@ -186,7 +183,7 @@
   }
 
   .image {
-    background: $file-image-bg;
+    background: $gray-darker;
     text-align: center;
     padding: 30px;
 
@@ -248,7 +245,7 @@
 
       .swipe-wrap {
         overflow: hidden;
-        border-left: 1px solid $diff-swipe-border;
+        border-left: 1px solid $gl-gray-400;
         position: absolute;
         display: block;
         top: 13px;
@@ -511,13 +508,13 @@
   padding: 0;
   background-color: transparent;
   border: 0;
-  color: $gl-link-color;
+  color: $blue-600;
   font-weight: $gl-font-weight-bold;
 
   &:hover,
   &:focus {
     outline: none;
-    color: $gl-link-hover-color;
+    color: $blue-800;
   }
 
   .caret-icon {
@@ -751,6 +748,10 @@
 
   @include media-breakpoint-up(sm) {
     left: $gl-padding;
+  }
+
+  .dropdown-input .dropdown-input-search {
+    pointer-events: all;
   }
 
   .diff-changed-file {

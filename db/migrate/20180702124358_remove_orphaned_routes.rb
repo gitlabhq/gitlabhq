@@ -28,16 +28,16 @@ class RemoveOrphanedRoutes < ActiveRecord::Migration
     # which is pretty close to our 15 second statement timeout. To ensure a
     # smooth deployment procedure we disable the statement timeouts for this
     # migration, just in case.
-    disable_statement_timeout
-
-    # On GitLab.com there are around 4000 orphaned project routes, and around
-    # 150 orphaned namespace routes.
-    [
-      Route.orphaned_project_routes,
-      Route.orphaned_namespace_routes
-    ].each do |relation|
-      relation.each_batch(of: 1_000) do |batch|
-        batch.delete_all
+    disable_statement_timeout do
+      # On GitLab.com there are around 4000 orphaned project routes, and around
+      # 150 orphaned namespace routes.
+      [
+        Route.orphaned_project_routes,
+        Route.orphaned_namespace_routes
+      ].each do |relation|
+        relation.each_batch(of: 1_000) do |batch|
+          batch.delete_all
+        end
       end
     end
   end

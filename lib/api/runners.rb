@@ -9,12 +9,20 @@ module API
         success Entities::Runner
       end
       params do
-        optional :scope, type: String, values: %w[active paused online],
+        optional :scope, type: String, values: Ci::Runner::AVAILABLE_STATUSES,
                          desc: 'The scope of specific runners to show'
+        optional :type, type: String, values: Ci::Runner::AVAILABLE_TYPES,
+                        desc: 'The type of the runners to show'
+        optional :status, type: String, values: Ci::Runner::AVAILABLE_STATUSES,
+                          desc: 'The status of the runners to show'
         use :pagination
       end
       get do
-        runners = filter_runners(current_user.ci_owned_runners, params[:scope], without: %w(specific shared))
+        runners = current_user.ci_owned_runners
+        runners = filter_runners(runners, params[:scope], allowed_scopes: Ci::Runner::AVAILABLE_STATUSES)
+        runners = filter_runners(runners, params[:type], allowed_scopes: Ci::Runner::AVAILABLE_TYPES)
+        runners = filter_runners(runners, params[:status], allowed_scopes: Ci::Runner::AVAILABLE_STATUSES)
+
         present paginate(runners), with: Entities::Runner
       end
 
@@ -22,13 +30,22 @@ module API
         success Entities::Runner
       end
       params do
-        optional :scope, type: String, values: %w[active paused online specific shared],
+        optional :scope, type: String, values: Ci::Runner::AVAILABLE_SCOPES,
                          desc: 'The scope of specific runners to show'
+        optional :type, type: String, values: Ci::Runner::AVAILABLE_TYPES,
+                        desc: 'The type of the runners to show'
+        optional :status, type: String, values: Ci::Runner::AVAILABLE_STATUSES,
+                          desc: 'The status of the runners to show'
         use :pagination
       end
       get 'all' do
         authenticated_as_admin!
-        runners = filter_runners(Ci::Runner.all, params[:scope])
+
+        runners = Ci::Runner.all
+        runners = filter_runners(runners, params[:scope])
+        runners = filter_runners(runners, params[:type], allowed_scopes: Ci::Runner::AVAILABLE_TYPES)
+        runners = filter_runners(runners, params[:status], allowed_scopes: Ci::Runner::AVAILABLE_STATUSES)
+
         present paginate(runners), with: Entities::Runner
       end
 
@@ -114,12 +131,20 @@ module API
         success Entities::Runner
       end
       params do
-        optional :scope, type: String, values: %w[active paused online specific shared],
+        optional :scope, type: String, values: Ci::Runner::AVAILABLE_SCOPES,
                          desc: 'The scope of specific runners to show'
+        optional :type, type: String, values: Ci::Runner::AVAILABLE_TYPES,
+                        desc: 'The type of the runners to show'
+        optional :status, type: String, values: Ci::Runner::AVAILABLE_STATUSES,
+                          desc: 'The status of the runners to show'
         use :pagination
       end
       get ':id/runners' do
-        runners = filter_runners(Ci::Runner.owned_or_instance_wide(user_project.id), params[:scope])
+        runners = Ci::Runner.owned_or_instance_wide(user_project.id)
+        runners = filter_runners(runners, params[:scope])
+        runners = filter_runners(runners, params[:type], allowed_scopes: Ci::Runner::AVAILABLE_TYPES)
+        runners = filter_runners(runners, params[:status], allowed_scopes: Ci::Runner::AVAILABLE_STATUSES)
+
         present paginate(runners), with: Entities::Runner
       end
 
@@ -146,6 +171,7 @@ module API
       params do
         requires :runner_id, type: Integer, desc: 'The ID of the runner'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       delete ':id/runners/:runner_id' do
         runner_project = user_project.runner_projects.find_by(runner_id: params[:runner_id])
         not_found!('Runner') unless runner_project
@@ -155,18 +181,14 @@ module API
 
         destroy_conditionally!(runner_project)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     helpers do
-      def filter_runners(runners, scope, options = {})
+      def filter_runners(runners, scope, allowed_scopes: ::Ci::Runner::AVAILABLE_SCOPES)
         return runners unless scope.present?
 
-        available_scopes = ::Ci::Runner::AVAILABLE_SCOPES
-        if options[:without]
-          available_scopes = available_scopes - options[:without]
-        end
-
-        if (available_scopes & [scope]).empty?
+        unless allowed_scopes.include?(scope)
           render_api_error!('Scope contains invalid value', 400)
         end
 

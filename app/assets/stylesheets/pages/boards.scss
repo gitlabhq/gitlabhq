@@ -136,15 +136,23 @@
       right: 0;
       bottom: 0;
       left: 0;
+
+      button {
+        display: none;
+      }
     }
 
     .board-title {
       padding: 0;
       border-bottom: 0;
+      justify-content: center;
 
       > span {
+        width: 100%;
+        margin-top: -12px;
         display: block;
-        transform: rotate(90deg) translate(35px, 10px);
+        transform: rotate(90deg) translate(35px, 0);
+        overflow: initial;
       }
     }
 
@@ -225,7 +233,7 @@
   outline: 0;
 
   &:hover {
-    color: $gl-link-color;
+    color: $blue-600;
   }
 }
 
@@ -265,7 +273,7 @@
   margin-bottom: 0;
   padding: 5px;
   list-style: none;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
 }
 
@@ -288,7 +296,7 @@
 
   &.is-active,
   &.is-active .board-card-assignee:hover a {
-    background-color: $row-hover;
+    background-color: $blue-50;
   }
 
   .badge {

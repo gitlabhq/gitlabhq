@@ -352,6 +352,7 @@ Parameters:
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `merge_request_iid` (required) - The internal ID of the merge request
 - `render_html` (optional) - If `true` response includes rendered HTML for title and description
+- `include_diverged_commits_count` (optional) - If `true` response includes the commits behind the target branch
 
 ```json
 {
@@ -435,7 +436,13 @@ Parameters:
     "username" : "root",
     "id" : 1,
     "name" : "Administrator"
-  }
+  },
+  "diff_refs": {
+    "base_sha": "1111111111111111111111111111111111111111",
+    "head_sha": "2222222222222222222222222222222222222222",
+    "start_sha": "3333333333333333333333333333333333333333"
+  },
+  "diverged_commits_count": 2
 }
 ```
 

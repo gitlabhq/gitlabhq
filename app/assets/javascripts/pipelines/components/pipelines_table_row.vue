@@ -132,10 +132,8 @@ export default {
       if (this.pipeline.ref) {
         return Object.keys(this.pipeline.ref).reduce((accumulator, prop) => {
           if (prop === 'path') {
-            // eslint-disable-next-line no-param-reassign
             accumulator.ref_url = this.pipeline.ref[prop];
           } else {
-            // eslint-disable-next-line no-param-reassign
             accumulator[prop] = this.pipeline.ref[prop];
           }
           return accumulator;
@@ -330,7 +328,7 @@ export default {
         <pipelines-artifacts-component
           v-if="pipeline.details.artifacts.length"
           :artifacts="pipeline.details.artifacts"
-          class="d-none d-sm-none d-md-block"
+          class="d-md-block"
         />
 
         <loading-button

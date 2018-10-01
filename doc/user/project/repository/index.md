@@ -155,6 +155,18 @@ The repository graph displays visually the Git flow strategy used in that reposi
 
 Find it under your project's **Repository > Graph**.
 
+## Repository Languages
+
+For the default branch of each repository, GitLab will determine what programming languages
+were used and display this on the projects pages. If this information is missing, it will
+be added after updating the default branch on the project. This process can take up to 5
+minutes.
+
+![Repository Languages bar](img/repository_languages.png)
+
+Not all files are detected, among others; documentation, 
+vendored code, and most markup languages are excluded.
+
 ## Compare
 
 Select branches to compare and view the changes inline:

@@ -26,7 +26,6 @@ class ApplicationSetting < ActiveRecord::Base
   serialize :domain_whitelist, Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :domain_blacklist, Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :repository_storages # rubocop:disable Cop/ActiveRecordSerialize
-  serialize :sidekiq_throttling_queues, Array # rubocop:disable Cop/ActiveRecordSerialize
 
   cache_markdown_field :sign_in_text
   cache_markdown_field :help_page_text
@@ -131,15 +130,6 @@ class ApplicationSetting < ActiveRecord::Base
             presence: { message: 'Domain blacklist cannot be empty if Blacklist is enabled.' },
             if: :domain_blacklist_enabled?
 
-  validates :sidekiq_throttling_factor,
-            numericality: { greater_than: 0, less_than: 1 },
-            presence: { message: 'Throttling factor cannot be empty if Sidekiq Throttling is enabled.' },
-            if: :sidekiq_throttling_enabled?
-
-  validates :sidekiq_throttling_queues,
-            presence: { message: 'Queues to throttle cannot be empty if Sidekiq Throttling is enabled.' },
-            if: :sidekiq_throttling_enabled?
-
   validates :housekeeping_incremental_repack_period,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
@@ -192,6 +182,8 @@ class ApplicationSetting < ActiveRecord::Base
             numericality: { less_than_or_equal_to: :gitaly_timeout_default },
             if: :gitaly_timeout_default
 
+  validates :user_default_internal_regex, js_regex: true, allow_nil: true
+
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end
@@ -217,6 +209,7 @@ class ApplicationSetting < ActiveRecord::Base
   validate :terms_exist, if: :enforce_terms?
 
   before_validation :ensure_uuid!
+  before_validation :strip_sentry_values
 
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
@@ -279,7 +272,6 @@ class ApplicationSetting < ActiveRecord::Base
       send_user_confirmation_email: false,
       shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
       shared_runners_text: nil,
-      sidekiq_throttling_enabled: false,
       sign_in_text: nil,
       signup_enabled: Settings.gitlab['signup_enabled'],
       terminal_max_session_time: 0,
@@ -298,7 +290,10 @@ class ApplicationSetting < ActiveRecord::Base
       unique_ips_limit_time_window: 3600,
       usage_ping_enabled: Settings.gitlab['usage_ping_enabled'],
       instance_statistics_visibility_private: false,
-      user_default_external: false
+      user_default_external: false,
+      user_default_internal_regex: nil,
+      user_show_add_ssh_key_message: true,
+      usage_stats_set_by_user_id: nil
     }
   end
 
@@ -320,10 +315,6 @@ class ApplicationSetting < ActiveRecord::Base
 
   def help_page_support_url_column_exists?
     ::Gitlab::Database.cached_column_exists?(:application_settings, :help_page_support_url)
-  end
-
-  def sidekiq_throttling_column_exists?
-    ::Gitlab::Database.cached_column_exists?(:application_settings, :sidekiq_throttling_enabled)
   end
 
   def disabled_oauth_sign_in_sources=(sources)
@@ -377,6 +368,11 @@ class ApplicationSetting < ActiveRecord::Base
     super(levels.map { |level| Gitlab::VisibilityLevel.level_value(level) })
   end
 
+  def strip_sentry_values
+    sentry_dsn.strip! if sentry_dsn.present?
+    clientside_sentry_dsn.strip! if clientside_sentry_dsn.present?
+  end
+
   def performance_bar_allowed_group
     Group.find_by_id(performance_bar_allowed_group_id)
   end
@@ -398,12 +394,6 @@ class ApplicationSetting < ActiveRecord::Base
 
   def health_check_access_token
     ensure_health_check_access_token!
-  end
-
-  def sidekiq_throttling_enabled?
-    return false unless sidekiq_throttling_column_exists?
-
-    sidekiq_throttling_enabled
   end
 
   def usage_ping_can_be_configured?
@@ -432,6 +422,14 @@ class ApplicationSetting < ActiveRecord::Base
 
   def password_authentication_enabled?
     password_authentication_enabled_for_web? || password_authentication_enabled_for_git?
+  end
+
+  def user_default_internal_regex_enabled?
+    user_default_external? && user_default_internal_regex.present?
+  end
+
+  def user_default_internal_regex_instance
+    Regexp.new(user_default_internal_regex, Regexp::IGNORECASE)
   end
 
   delegate :terms, to: :latest_terms, allow_nil: true

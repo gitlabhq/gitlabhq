@@ -16,6 +16,7 @@ module Banzai
           Filter::MathFilter,
           Filter::ColorFilter,
           Filter::MermaidFilter,
+          Filter::SpacedLinkFilter,
           Filter::VideoLinkFilter,
           Filter::ImageLazyLoadFilter,
           Filter::ImageLinkFilter,

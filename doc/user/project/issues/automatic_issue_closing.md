@@ -26,8 +26,10 @@ used:
 ```
 
 Note that `%{issue_ref}` is a complex regular expression defined inside GitLab's
-source code that can match a reference to 1) a local issue (`#123`),
-2) a cross-project issue (`group/project#123`) or 3) a link to an issue
+source code that can match references to:
+1. a local issue (`#123`),
+2. a cross-project issue (`group/project#123`) 
+3. a link to an issue
 (`https://gitlab.example.com/group/project/issues/123`).
 
 ---

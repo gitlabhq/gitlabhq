@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationController
   include ToggleSubscriptionAction
   include IssuableActions
@@ -79,7 +81,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     # Get commits from repository
     # or from cache if already merged
     @commits =
-      prepare_commits_for_rendering(@merge_request.commits.with_pipeline_status)
+      set_commits_for_rendering(@merge_request.commits.with_pipeline_status)
 
     render json: { html: view_to_html_string('projects/merge_requests/_commits') }
   end
@@ -330,6 +332,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @source_project = @merge_request.source_project
     @target_project = @merge_request.target_project
     @target_branches = @merge_request.target_project.repository.branch_names
+    @noteable = @merge_request
   end
 
   def finder_type

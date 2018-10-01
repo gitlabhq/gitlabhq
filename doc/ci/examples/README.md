@@ -4,8 +4,8 @@ comments: false
 
 # GitLab CI/CD Examples
 
-A collection of `.gitlab-ci.yml` template files is maintained at the [GitLab CI/CD YAML project][gitlab-ci-templates]. When you create a new file via the UI,
-GitLab will give you the option to choose one of the templates existent on this project.
+A collection of [`.gitlab-ci.yml` template files][gitlab-ci-templates] is maintained in GitLab. When you create a new file via the UI,
+GitLab will give you the option to choose one of these templates.
 If your favorite programming language or framework are missing we would love your
 help by sending a merge request with a new `.gitlab-ci.yml` to this project.
 
@@ -42,6 +42,10 @@ There's also a collection of repositories with [example projects](https://gitlab
 
 - [Using `dpl` as deployment tool](deployment/README.md)
 - [The `.gitlab-ci.yml` file for GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml)
+
+## Test Reports
+
+[Collect test reports in Verify stage](../junit_test_reports.md).
 
 ## Code Quality analysis
 
@@ -83,4 +87,4 @@ language users and GitLab by sending a merge request with a guide for that langu
 You may want to apply for the [GitLab Community Writers Program](https://about.gitlab.com/community-writers/)
 to get paid for writing complete articles for GitLab.
 
-[gitlab-ci-templates]: https://gitlab.com/gitlab-org/gitlab-ci-yml
+[gitlab-ci-templates]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/gitlab/ci/templates

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::MirrorsController < Projects::ApplicationController
   include RepositorySettingsRedirect
 

@@ -2,7 +2,7 @@
   %div{ class: container_class }
     .prepend-top-default.append-bottom-default
       .wiki
-        = render_wiki_content(@wiki_home)
+        = render_wiki_content(@wiki_home, legacy_render_context(params))
 - else
   - can_create_wiki = can?(current_user, :create_wiki, @project)
   .project-home-empty{ class: [('row-content-block' if can_create_wiki), ('content-block' unless can_create_wiki)] }

@@ -1,3 +1,5 @@
+require 'toml-rb'
+
 module Gitlab
   module SetupHelper
     class << self
@@ -9,7 +11,7 @@ module Gitlab
       # because it uses a Unix socket.
       # For development and testing purposes, an extra storage is added to gitaly,
       # which is not known to Rails, but must be explicitly stubbed.
-      def gitaly_configuration_toml(gitaly_dir, gitaly_ruby: true)
+      def gitaly_configuration_toml(gitaly_dir, storage_paths, gitaly_ruby: true)
         storages = []
         address = nil
 
@@ -24,10 +26,7 @@ module Gitlab
             address = val['gitaly_address']
           end
 
-          # https://gitlab.com/gitlab-org/gitaly/issues/1238
-          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            storages << { name: key, path: val.legacy_disk_path }
-          end
+          storages << { name: key, path: storage_paths[key] }
         end
 
         if Rails.env.test?
@@ -44,12 +43,12 @@ module Gitlab
       end
 
       # rubocop:disable Rails/Output
-      def create_gitaly_configuration(dir, force: false)
+      def create_gitaly_configuration(dir, storage_paths, force: false)
         config_path = File.join(dir, 'config.toml')
         FileUtils.rm_f(config_path) if force
 
         File.open(config_path, File::WRONLY | File::CREAT | File::EXCL) do |f|
-          f.puts gitaly_configuration_toml(dir)
+          f.puts gitaly_configuration_toml(dir, storage_paths)
         end
       rescue Errno::EEXIST
         puts "Skipping config.toml generation:"

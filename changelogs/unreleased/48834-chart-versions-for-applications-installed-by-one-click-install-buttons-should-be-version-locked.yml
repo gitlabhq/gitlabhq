@@ -1,6 +1,0 @@
----
-title: Chart versions for applications installed by one click install buttons should
-  be version locked
-merge_request: 20765
-author:
-type: fixed

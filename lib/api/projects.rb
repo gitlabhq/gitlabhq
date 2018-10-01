@@ -198,6 +198,7 @@ module API
         use :optional_project_params
         use :create_params
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       post "user/:user_id" do
         authenticated_as_admin!
         user = User.find_by(id: params.delete(:user_id))
@@ -214,6 +215,7 @@ module API
           render_validation_error!(project)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     params do
@@ -386,7 +388,7 @@ module API
         requires :forked_from_id, type: String, desc: 'The ID of the project it was forked from'
       end
       post ":id/fork/:forked_from_id" do
-        authenticated_as_admin!
+        authorize! :admin_project, user_project
 
         fork_from_project = find_project!(params[:forked_from_id])
 
@@ -444,6 +446,7 @@ module API
       params do
         requires :group_id, type: Integer, desc: 'The ID of the group'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       delete ":id/share/:group_id" do
         authorize! :admin_project, user_project
 
@@ -452,6 +455,7 @@ module API
 
         destroy_conditionally!(link)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Upload a file'
       params do

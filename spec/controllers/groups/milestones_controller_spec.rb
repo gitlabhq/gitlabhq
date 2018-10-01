@@ -141,6 +141,17 @@ describe Groups::MilestonesController do
     end
   end
 
+  describe "#destroy" do
+    let(:milestone) { create(:milestone, group: group) }
+
+    it "removes milestone" do
+      delete :destroy, group_id: group.to_param, id: milestone.iid, format: :js
+
+      expect(response).to be_success
+      expect { Milestone.find(milestone.id) }.to raise_exception(ActiveRecord::RecordNotFound)
+    end
+  end
+
   describe '#ensure_canonical_path' do
     before do
       sign_in(user)

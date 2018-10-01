@@ -11,7 +11,7 @@ and [Blog Articles](https://about.gitlab.com/blog/).
 
 Would you like to contribute to GitLab University? Then please take a look at our contribution [process](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/PROCESS.md) for more information.
 
-## Gitlab University Curriculum
+## GitLab University Curriculum
 
 The curriculum is composed of GitLab videos, screencasts, presentations, projects and external GitLab content hosted on other services and has been organized into the following sections.
 
@@ -73,10 +73,10 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 #### 1.7 Community and Support
 
 1. [Getting Help](https://about.gitlab.com/getting-help/)
-  - Proposing Features and Reporting and Tracking bugs for GitLab
-  - The GitLab IRC channel, Gitter Chat Room, Community Forum and Mailing List
-  - Getting Technical Support
-  - Being part of our Great Community and Contributing to GitLab
+   - Proposing Features and Reporting and Tracking bugs for GitLab
+   - The GitLab IRC channel, Gitter Chat Room, Community Forum and Mailing List
+   - Getting Technical Support
+   - Being part of our Great Community and Contributing to GitLab
 1. [Getting Started with the GitLab Development Kit (GDK)](https://about.gitlab.com/2016/06/08/getting-started-with-gitlab-development-kit/)
 1. [Contributing Technical Articles to the GitLab Blog](https://about.gitlab.com/2016/01/26/call-for-writers/)
 1. [GitLab Training Workshops](https://docs.gitlab.com/ce/university/training/end-user/)

@@ -13,4 +13,4 @@
   %h4.underlined-title Available specific runners
   %ul.bordered-list.available-specific-runners
     = render partial: 'projects/runners/runner', collection: @assignable_runners, as: :runner
-  = paginate @assignable_runners, theme: "gitlab"
+  = paginate @assignable_runners, theme: "gitlab", :params => { :anchor => '#js-runners-settings' }

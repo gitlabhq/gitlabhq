@@ -236,14 +236,18 @@ class Group < Namespace
     system_hook_service.execute_hooks_for(self, :destroy)
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def system_hook_service
     SystemHooksService.new
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
+  # rubocop: disable CodeReuse/ServiceClass
   def refresh_members_authorized_projects(blocking: true)
     UserProjectAccessChangedService.new(user_ids_for_project_authorizations)
       .execute(blocking: blocking)
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def user_ids_for_project_authorizations
     members_with_parents.pluck(:user_id)
@@ -300,14 +304,12 @@ class Group < Namespace
   # 3. They belong to a sub-group or project in such sub-group
   # 4. They belong to an ancestor group
   def direct_and_indirect_users
-    union = Gitlab::SQL::Union.new([
+    User.from_union([
       User
         .where(id: direct_and_indirect_members.select(:user_id))
         .reorder(nil),
       project_users_with_descendants
     ])
-
-    User.from("(#{union.to_sql}) #{User.table_name}")
   end
 
   # Returns all users that are members of projects

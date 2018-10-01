@@ -53,6 +53,7 @@ module Gitlab
       @first_collection_page_count = first_collection_page.total_pages
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def first_collection_last_page_size
       return @first_collection_last_page_size if defined?(@first_collection_last_page_size)
 
@@ -60,5 +61,6 @@ module Gitlab
                                            .except(:select)
                                            .size
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

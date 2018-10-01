@@ -4,6 +4,7 @@ class PipelineScheduleWorker
   include ApplicationWorker
   include CronjobQueue
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform
     Ci::PipelineSchedule.active.where("next_run_at < ?", Time.now)
       .preload(:owner, :project).find_each do |schedule|
@@ -21,4 +22,5 @@ class PipelineScheduleWorker
       end
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

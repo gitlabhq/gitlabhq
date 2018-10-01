@@ -64,7 +64,7 @@ module QA
               end
 
               page.wait(reload: false) do
-                !page.first('.btn-create').disabled?
+                !page.first('.btn-success').disabled?
               end
 
               page.protect_branch

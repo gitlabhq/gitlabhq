@@ -47,7 +47,7 @@ there because this will also affect performance. We recommend that the log files
 stored on a local volume.
 
 For more details on another person's experience with EFS, see
-[Amazon's Elastic File System: Burst Credits](https://www.rawkode.io/2017/04/amazons-elastic-file-system-burst-credits/)
+[Amazon's Elastic File System: Burst Credits](https://rawkode.com/2017/04/16/amazons-elastic-file-system-burst-credits/)
 
 ## NFS Client mount options
 
@@ -55,14 +55,14 @@ Below is an example of an NFS mount point defined in `/etc/fstab` we use on
 GitLab.com:
 
 ```
-10.1.1.1:/var/opt/gitlab/git-data /var/opt/gitlab/git-data nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nobootwait,lookupcache=positive 0 2
+10.1.1.1:/var/opt/gitlab/git-data /var/opt/gitlab/git-data nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
 ```
 
 Notice several options that you should consider using:
 
 | Setting | Description |
 | ------- | ----------- |
-| `nobootwait` | Don't halt boot process waiting for this mount to become available
+| `nofail` | Don't halt boot process waiting for this mount to become available
 | `lookupcache=positive` | Tells the NFS client to honor `positive` cache results but invalidates any `negative` cache results. Negative cache results cause problems with Git. Specifically, a `git push` can fail to register uniformly across all NFS clients. The negative cache causes the clients to 'remember' that the files did not exist previously.
 
 ## A single NFS mount

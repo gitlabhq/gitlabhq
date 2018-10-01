@@ -31,7 +31,7 @@ uploading user SSH keys to GitLab entirely.
 
 ## Setting up SSH certificate lookup via GitLab Shell
 
-How to fully setup SSH certificates is outside the scope of this
+How to fully set up SSH certificates is outside the scope of this
 document. See [OpenSSH's
 PROTOCOL.certkeys](https://cvsweb.openbsd.org/cgi-bin/cvsweb/src/usr.bin/ssh/PROTOCOL.certkeys?annotate=HEAD)
 for how it works, and e.g. [RedHat's documentation about
@@ -132,7 +132,7 @@ message about this being an invalid user.
 ## Interaction with the `authorized_keys` file
 
 SSH certificates can be used in conjunction with the `authorized_keys`
-file, and if setup as configured above the `authorized_keys` file will
+file, and if set up as configured above the `authorized_keys` file will
 still serve as a fallback.
 
 This is because if the `AuthorizedPrincipalsCommand` can't
@@ -163,3 +163,20 @@ Such a restriction can currently be hacked in by e.g. providing a
 custom `AuthorizedKeysCommand` which checks if the discovered key-ID
 returned from `gitlab-shell-authorized-keys-check` is a deploy key or
 not (all non-deploy keys should be refused).
+
+## Disabling the global warning about users lacking SSH keys
+
+By default GitLab will show a "You won't be able to pull or push
+project code via SSH" warning to users who have not uploaded an SSH
+key to their profile.
+
+This is counterproductive when using SSH certificates, since users
+aren't expected to upload their own keys.
+
+To disable this warning globally, go to "Application settings ->
+Account and limit settings" and disable the "Show user add SSH key
+message" setting.
+
+This setting was added specifically for use with SSH certificates, but
+can be turned off without using them if you'd like to hide the warning
+for some other reason.

@@ -1,7 +1,7 @@
 - expanded = Rails.env.test?
 - protocols = Gitlab::UrlSanitizer::ALLOWED_SCHEMES.join('|')
 
-%section.settings.project-mirror-settings.js-mirror-settings.no-animate{ class: ('expanded' if expanded) }
+%section.settings.project-mirror-settings.js-mirror-settings.no-animate#js-push-remote-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4= _('Mirroring repositories')
     %button.btn.js-settings-toggle
@@ -32,7 +32,7 @@
             = link_to icon('question-circle'), help_page_path('user/project/protected_branches')
 
         .panel-footer
-          = f.submit _('Mirror repository'), class: 'btn btn-create', name: :update_remote_mirror
+          = f.submit _('Mirror repository'), class: 'btn btn-success', name: :update_remote_mirror
 
     .panel.panel-default
       .table-responsive

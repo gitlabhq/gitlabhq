@@ -9,7 +9,7 @@
   .col-lg-8.append-bottom-default
     = form_for @hook, as: :hook, url: polymorphic_path([@project.namespace.becomes(Namespace), @project, :hooks]) do |f|
       = render partial: 'shared/web_hooks/form', locals: { form: f, hook: @hook }
-      = f.submit 'Add webhook', class: 'btn btn-create'
+      = f.submit 'Add webhook', class: 'btn btn-success'
 
     %hr
     %h5.prepend-top-default

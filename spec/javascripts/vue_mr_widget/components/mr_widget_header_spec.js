@@ -45,7 +45,7 @@ describe('MRWidgetHeader', () => {
       });
     });
 
-    describe('commitsText', () => {
+    describe('commitsBehindText', () => {
       it('returns singular when there is one commit', () => {
         vm = mountComponent(Component, {
           mr: {
@@ -53,11 +53,12 @@ describe('MRWidgetHeader', () => {
             sourceBranch: 'mr-widget-refactor',
             sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">Link</a>',
             targetBranch: 'master',
+            targetBranchPath: '/foo/bar/master',
             statusPath: 'abc',
           },
         });
 
-        expect(vm.commitsText).toEqual('1 commit behind');
+        expect(vm.commitsBehindText).toEqual('The source branch is <a href="/foo/bar/master">1 commit behind</a> the target branch');
       });
 
       it('returns plural when there is more than one commit', () => {
@@ -67,11 +68,12 @@ describe('MRWidgetHeader', () => {
             sourceBranch: 'mr-widget-refactor',
             sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">Link</a>',
             targetBranch: 'master',
+            targetBranchPath: '/foo/bar/master',
             statusPath: 'abc',
           },
         });
 
-        expect(vm.commitsText).toEqual('2 commits behind');
+        expect(vm.commitsBehindText).toEqual('The source branch is <a href="/foo/bar/master">2 commits behind</a> the target branch');
       });
     });
   });
@@ -112,28 +114,31 @@ describe('MRWidgetHeader', () => {
     });
 
     describe('with an open merge request', () => {
+      const mrDefaultOptions = {
+        iid: 1,
+        divergedCommitsCount: 12,
+        sourceBranch: 'mr-widget-refactor',
+        sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">mr-widget-refactor</a>',
+        sourceBranchRemoved: false,
+        targetBranchPath: 'foo/bar/commits-path',
+        targetBranchTreePath: 'foo/bar/tree/path',
+        targetBranch: 'master',
+        isOpen: true,
+        canPushToSourceBranch: true,
+        emailPatchesPath: '/mr/email-patches',
+        plainDiffPath: '/mr/plainDiffPath',
+        statusPath: 'abc',
+        sourceProjectFullPath: 'root/gitlab-ce',
+        targetProjectFullPath: 'gitlab-org/gitlab-ce',
+      };
+
       afterEach(() => {
         vm.$destroy();
       });
 
       beforeEach(() => {
         vm = mountComponent(Component, {
-          mr: {
-            iid: 1,
-            divergedCommitsCount: 12,
-            sourceBranch: 'mr-widget-refactor',
-            sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">mr-widget-refactor</a>',
-            sourceBranchRemoved: false,
-            targetBranchPath: 'foo/bar/commits-path',
-            targetBranchTreePath: 'foo/bar/tree/path',
-            targetBranch: 'master',
-            isOpen: true,
-            emailPatchesPath: '/mr/email-patches',
-            plainDiffPath: '/mr/plainDiffPath',
-            statusPath: 'abc',
-            sourceProjectFullPath: 'root/gitlab-ce',
-            targetProjectFullPath: 'gitlab-org/gitlab-ce',
-          },
+          mr: Object.assign({}, mrDefaultOptions),
         });
       });
 
@@ -149,9 +154,19 @@ describe('MRWidgetHeader', () => {
         const button = vm.$el.querySelector('.js-web-ide');
 
         expect(button.textContent.trim()).toEqual('Open in Web IDE');
+        expect(button.classList.contains('disabled')).toBe(false);
         expect(button.getAttribute('href')).toEqual(
           '/-/ide/project/root/gitlab-ce/merge_requests/1?target_project=gitlab-org%2Fgitlab-ce',
         );
+      });
+
+      it('renders web ide button in disabled state with no href', () => {
+        const mr = Object.assign({}, mrDefaultOptions, { canPushToSourceBranch: false });
+        vm = mountComponent(Component, { mr });
+
+        const link = vm.$el.querySelector('.js-web-ide');
+        expect(link.classList.contains('disabled')).toBe(true);
+        expect(link.getAttribute('href')).toBeNull();
       });
 
       it('renders web ide button with blank query string if target & source project branch', done => {
@@ -280,9 +295,9 @@ describe('MRWidgetHeader', () => {
       });
 
       it('renders diverged commits info', () => {
-        expect(vm.$el.querySelector('.diverged-commits-count').textContent).toMatch(
-          /(mr-widget-refactor[\s\S]+?is 12 commits behind[\s\S]+?master)/,
-        );
+        expect(vm.$el.querySelector('.diverged-commits-count').textContent).toEqual('The source branch is 12 commits behind the target branch');
+        expect(vm.$el.querySelector('.diverged-commits-count a').textContent).toEqual('12 commits behind');
+        expect(vm.$el.querySelector('.diverged-commits-count a')).toHaveAttr('href', vm.mr.targetBranchPath);
       });
     });
   });

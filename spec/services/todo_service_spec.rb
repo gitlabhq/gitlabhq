@@ -280,7 +280,7 @@ describe TodoService do
       end
 
       it 'does not create a todo if unassigned' do
-        issue.assignees.destroy_all
+        issue.assignees.destroy_all # rubocop: disable DestroyAll
 
         should_not_create_any_todo { service.reassigned_issue(issue, author) }
       end

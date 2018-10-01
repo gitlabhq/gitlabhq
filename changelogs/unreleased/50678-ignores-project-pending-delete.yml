@@ -1,0 +1,5 @@
+---
+title: Excludes project marked from deletion to projects API
+merge_request: 21542
+author: Jacopo Beschi @jacopo-beschi
+type: changed

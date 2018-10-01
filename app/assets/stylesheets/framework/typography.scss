@@ -7,7 +7,7 @@
   }
 
   a {
-    color: $md-link-color;
+    color: $blue-600;
   }
 
   img:not(.emoji) {
@@ -61,12 +61,12 @@
     padding: 3px 5px;
     font-size: 11px;
     line-height: 10px;
-    color: $kdb-color;
+    color: $gl-gray-700;
     vertical-align: middle;
     background-color: $kdb-bg;
     border-width: 1px;
     border-style: solid;
-    border-color: $kdb-border $kdb-border $kdb-border-bottom;
+    border-color: $gl-gray-200 $gl-gray-200 $kdb-border-bottom;
     border-image: none;
     border-radius: 3px;
     box-shadow: 0 -1px 0 $kdb-shadow inset;
@@ -180,7 +180,7 @@
   }
 
   a > code {
-    color: $gl-link-color;
+    color: $blue-600;
   }
 
   dd {
@@ -286,7 +286,7 @@ body {
 }
 
 .page-title {
-  margin-top: $gl-padding;
+  margin: #{2 * $grid-size} 0;
   line-height: 1.3;
   font-size: 1.25em;
   font-weight: $gl-font-weight-bold;
@@ -327,7 +327,7 @@ h6 {
 pre {
   font-family: $monospace-font;
   display: block;
-  padding: $gl-padding-8;
+  padding: $gl-padding-8 $input-horizontal-padding;
   margin: 0 0 $gl-padding-8;
   font-size: 13px;
   word-break: break-all;
@@ -423,25 +423,25 @@ h4 {
 input,
 textarea {
   &::-webkit-input-placeholder {
-    color: $placeholder-text-color;
+    color: $gl-text-color-tertiary;
   }
 
   // support firefox 19+ vendor prefix
   &::-moz-placeholder {
-    color: $placeholder-text-color;
+    color: $gl-text-color-tertiary;
     opacity: 1; // FF defaults to 0.54
   }
 
   // scss-lint:disable PseudoElement
   // support Edge vendor prefix
   &::-ms-input-placeholder {
-    color: $placeholder-text-color;
+    color: $gl-text-color-tertiary;
   }
 
   // scss-lint:disable PseudoElement
   // support IE vendor prefix
   &:-ms-input-placeholder {
-    color: $placeholder-text-color;
+    color: $gl-text-color-tertiary;
   }
 }
 

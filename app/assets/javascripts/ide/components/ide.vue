@@ -1,4 +1,5 @@
 <script>
+import Vue from 'vue';
 import Mousetrap from 'mousetrap';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { __ } from '~/locale';
@@ -10,6 +11,7 @@ import RepoEditor from './repo_editor.vue';
 import FindFile from './file_finder/index.vue';
 import RightPane from './panes/right.vue';
 import ErrorMessage from './error_message.vue';
+import CommitEditorHeader from './commit_sidebar/editor_header.vue';
 
 const originalStopCallback = Mousetrap.stopCallback;
 
@@ -21,8 +23,15 @@ export default {
     IdeStatusBar,
     RepoEditor,
     FindFile,
-    RightPane,
     ErrorMessage,
+    CommitEditorHeader,
+  },
+  props: {
+    rightPaneComponent: {
+      type: Vue.Component,
+      required: false,
+      default: () => RightPane,
+    },
   },
   computed: {
     ...mapState([
@@ -34,7 +43,7 @@ export default {
       'currentProjectId',
       'errorMessage',
     ]),
-    ...mapGetters(['activeFile', 'hasChanges', 'someUncommitedChanges']),
+    ...mapGetters(['activeFile', 'hasChanges', 'someUncommitedChanges', 'isCommitModeActive']),
   },
   mounted() {
     window.onbeforeunload = e => this.onBeforeUnload(e);
@@ -78,13 +87,13 @@ export default {
 </script>
 
 <template>
-  <article class="ide">
+  <article class="ide position-relative d-flex flex-column align-items-stretch">
     <error-message
       v-if="errorMessage"
       :message="errorMessage"
     />
     <div
-      class="ide-view"
+      class="ide-view flex-grow d-flex"
     >
       <find-file
         v-show="fileFindVisible"
@@ -96,7 +105,12 @@ export default {
         <template
           v-if="activeFile"
         >
+          <commit-editor-header
+            v-if="isCommitModeActive"
+            :active-file="activeFile"
+          />
           <repo-tabs
+            v-else
             :active-file="activeFile"
             :files="openFiles"
             :viewer="viewer"
@@ -136,7 +150,8 @@ export default {
           </div>
         </template>
       </div>
-      <right-pane
+      <component
+        :is="rightPaneComponent"
         v-if="currentProjectId"
       />
     </div>

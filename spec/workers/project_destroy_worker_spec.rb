@@ -18,13 +18,6 @@ describe ProjectDestroyWorker do
       expect(Dir.exist?(path)).to be_falsey
     end
 
-    it 'deletes the project but skips repo deletion' do
-      subject.perform(project.id, project.owner.id, { "skip_repo" => true })
-
-      expect(Project.all).not_to include(project)
-      expect(Dir.exist?(path)).to be_truthy
-    end
-
     it 'does not raise error when project could not be found' do
       expect do
         subject.perform(-1, project.owner.id, {})

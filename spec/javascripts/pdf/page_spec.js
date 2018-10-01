@@ -3,53 +3,45 @@ import pdfjsLib from 'vendor/pdf';
 import workerSrc from 'vendor/pdf.worker.min';
 
 import PageComponent from '~/pdf/page/index.vue';
-import testPDF from '../fixtures/blob/pdf/test.pdf';
-
-const Component = Vue.extend(PageComponent);
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import testPDF from 'spec/fixtures/blob/pdf/test.pdf';
 
 describe('Page component', () => {
+  const Component = Vue.extend(PageComponent);
   let vm;
   let testPage;
-  pdfjsLib.PDFJS.workerSrc = workerSrc;
 
-  const checkRendered = (done) => {
-    if (vm.rendering) {
-      setTimeout(() => {
-        checkRendered(done);
-      }, 100);
-    } else {
-      done();
-    }
-  };
-
-  beforeEach((done) => {
-    pdfjsLib.getDocument(testPDF)
+  beforeEach(done => {
+    pdfjsLib.PDFJS.workerSrc = workerSrc;
+    pdfjsLib
+      .getDocument(testPDF)
       .then(pdf => pdf.getPage(1))
-      .then((page) => {
+      .then(page => {
         testPage = page;
-        done();
       })
-      .catch((error) => {
-        done.fail(error);
-      });
+      .then(done)
+      .catch(done.fail);
   });
 
-  describe('render', () => {
-    beforeEach((done) => {
-      vm = new Component({
-        propsData: {
-          page: testPage,
-          number: 1,
-        },
-      });
+  afterEach(() => {
+    vm.$destroy();
+  });
 
-      vm.$mount();
-
-      checkRendered(done);
+  it('renders the page when mounting', done => {
+    const promise = Promise.resolve();
+    spyOn(testPage, 'render').and.callFake(() => promise);
+    vm = mountComponent(Component, {
+      page: testPage,
+      number: 1,
     });
+    expect(vm.rendering).toBe(true);
 
-    it('renders first page', () => {
-      expect(vm.$el.tagName).toBeDefined();
-    });
+    promise
+      .then(() => {
+        expect(testPage.render).toHaveBeenCalledWith(vm.renderContext);
+        expect(vm.rendering).toBe(false);
+      })
+      .then(done)
+      .catch(done.fail);
   });
 });

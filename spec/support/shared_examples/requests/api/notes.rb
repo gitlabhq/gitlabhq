@@ -111,17 +111,79 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
       post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), body: 'hi!'
     end
 
-    context 'when an admin or owner makes the request' do
-      it 'accepts the creation date to be set' do
-        creation_time = 2.weeks.ago
-        post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user),
-          body: 'hi!', created_at: creation_time
+    context 'setting created_at' do
+      let(:creation_time) { 2.weeks.ago }
+      let(:params) { { body: 'hi!', created_at: creation_time } }
 
-        expect(response).to have_gitlab_http_status(201)
-        expect(json_response['body']).to eq('hi!')
-        expect(json_response['author']['username']).to eq(user.username)
-        expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
-        expect(Time.parse(json_response['updated_at'])).to be_like_time(creation_time)
+      context 'by an admin' do
+        it 'sets the creation time on the new note' do
+          admin = create(:admin)
+          post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", admin), params
+
+          expect(response).to have_gitlab_http_status(201)
+          expect(json_response['body']).to eq('hi!')
+          expect(json_response['author']['username']).to eq(admin.username)
+          expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
+          expect(Time.parse(json_response['updated_at'])).to be_like_time(creation_time)
+        end
+      end
+
+      if parent_type == 'projects'
+        context 'by a project owner' do
+          it 'sets the creation time on the new note' do
+            post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params
+
+            expect(response).to have_gitlab_http_status(201)
+            expect(json_response['body']).to eq('hi!')
+            expect(json_response['author']['username']).to eq(user.username)
+            expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
+            expect(Time.parse(json_response['updated_at'])).to be_like_time(creation_time)
+          end
+        end
+
+        context 'by a group owner' do
+          it 'sets the creation time on the new note' do
+            user2 = create(:user)
+            group = create(:group)
+            group.add_owner(user2)
+            parent.update!(namespace: group)
+            user2.refresh_authorized_projects
+
+            post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user2), params
+
+            expect(response).to have_gitlab_http_status(201)
+            expect(json_response['body']).to eq('hi!')
+            expect(json_response['author']['username']).to eq(user2.username)
+            expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
+            expect(Time.parse(json_response['updated_at'])).to be_like_time(creation_time)
+          end
+        end
+      elsif parent_type == 'groups'
+        context 'by a group owner' do
+          it 'sets the creation time on the new note' do
+            post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params
+
+            expect(response).to have_gitlab_http_status(201)
+            expect(json_response['body']).to eq('hi!')
+            expect(json_response['author']['username']).to eq(user.username)
+            expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
+            expect(Time.parse(json_response['updated_at'])).to be_like_time(creation_time)
+          end
+        end
+      end
+
+      context 'by another user' do
+        it 'ignores the given creation time' do
+          user2 = create(:user)
+          parent.add_developer(user2)
+          post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user2), params
+
+          expect(response).to have_gitlab_http_status(201)
+          expect(json_response['body']).to eq('hi!')
+          expect(json_response['author']['username']).to eq(user2.username)
+          expect(Time.parse(json_response['created_at'])).not_to be_like_time(creation_time)
+          expect(Time.parse(json_response['updated_at'])).not_to be_like_time(creation_time)
+        end
       end
     end
 

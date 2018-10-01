@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SessionsController < Devise::SessionsController
   include InternalRedirect
   include AuthenticatesWithTwoFactor
@@ -107,6 +109,7 @@ class SessionsController < Devise::SessionsController
 
   # Handle an "initial setup" state, where there's only one user, it's an admin,
   # and they require a password change.
+  # rubocop: disable CodeReuse/ActiveRecord
   def check_initial_setup
     return unless User.limit(2).count == 1 # Count as much 2 to know if we have exactly one
 
@@ -121,6 +124,7 @@ class SessionsController < Devise::SessionsController
     redirect_to edit_user_password_path(reset_password_token: @token),
       notice: "Please create a password for your new account."
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def user_params
     params.require(:user).permit(:login, :password, :remember_me, :otp_attempt, :device_response)

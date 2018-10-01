@@ -213,6 +213,33 @@ describe('Multi-file store mutations', () => {
 
       expect(localState.changedFiles).toEqual([localState.entries.filePath]);
     });
+
+    it('does not add tempFile into changedFiles', () => {
+      localState.entries.filePath = {
+        deleted: false,
+        type: 'blob',
+        tempFile: true,
+      };
+
+      mutations.DELETE_ENTRY(localState, 'filePath');
+
+      expect(localState.changedFiles).toEqual([]);
+    });
+
+    it('removes tempFile from changedFiles when deleted', () => {
+      localState.entries.filePath = {
+        path: 'filePath',
+        deleted: false,
+        type: 'blob',
+        tempFile: true,
+      };
+
+      localState.changedFiles.push({ ...localState.entries.filePath });
+
+      mutations.DELETE_ENTRY(localState, 'filePath');
+
+      expect(localState.changedFiles).toEqual([]);
+    });
   });
 
   describe('UPDATE_FILE_AFTER_COMMIT', () => {
@@ -311,6 +338,14 @@ describe('Multi-file store mutations', () => {
       mutations.RENAME_ENTRY(localState, { path: 'oldPath', name: 'newPath' });
 
       expect(localState.entries.parentPath.tree.length).toBe(1);
+    });
+
+    it('adds to openFiles if previously opened', () => {
+      localState.entries.oldPath.opened = true;
+
+      mutations.RENAME_ENTRY(localState, { path: 'oldPath', name: 'newPath' });
+
+      expect(localState.openFiles).toEqual([localState.entries.newPath]);
     });
   });
 });

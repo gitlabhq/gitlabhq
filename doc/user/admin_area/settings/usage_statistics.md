@@ -6,7 +6,7 @@ to perform various actions.
 All statistics are opt-out, you can enable/disable them from the admin panel
 under **Admin area > Settings > Usage statistics**.
 
-## Version check
+## Version check **[CORE ONLY]**
 
 If enabled, version check will inform you if a new version is available and the
 importance of it through a status. This is shown on the help page (i.e. `/help`)
@@ -23,17 +23,18 @@ GitLab Inc. collects your instance's version and hostname (through the HTTP
 referer) as part of the version check. No other information is collected.
 
 This information is used, among other things, to identify to which versions
-patches will need to be back ported, making sure active GitLab instances remain
+patches will need to be backported, making sure active GitLab instances remain
 secure.
 
 If you disable version check, this information will not be collected.  Enable or
 disable the version check at **Admin area > Settings > Usage statistics**.
 
-## Usage ping
+## Usage ping **[CORE ONLY]**
 
 > [Introduced][ee-557] in GitLab Enterprise Edition 8.10. More statistics
 [were added][ee-735] in GitLab Enterprise Edition
-8.12. [Moved to GitLab Community Edition][ce-23361] in 9.1.
+8.12. [Moved to GitLab Core][ce-23361] in 9.1. More statistics
+[were added][ee-6602] in GitLab Ultimate 11.2.
 
 GitLab sends a weekly payload containing usage data to GitLab Inc. The usage
 ping uses high-level data to help our product, support, and sales teams. It does
@@ -67,6 +68,16 @@ production: &base
     usage_ping_enabled: false
 ```
 
+## Instance statistics visibility **[CORE ONLY]**
+
+Once usage ping is enabled, GitLab will gather data from other instances and
+will be able to show [usage statistics](../../instance_statistics/index.md)
+of your instance to your users.
+
+This can be restricted to admins by selecting "Only admins" in the Instance
+Statistics visibility section under **Admin area > Settings > Usage statistics**.
+
 [ee-557]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/557
 [ee-735]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/735
 [ce-23361]: https://gitlab.com/gitlab-org/gitlab-ce/issues/23361
+[ee-6602]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6602

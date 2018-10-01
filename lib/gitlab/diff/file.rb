@@ -20,8 +20,9 @@ module Gitlab
         DiffViewer::Image
       ].sort_by { |v| v.binary? ? 0 : 1 }.freeze
 
-      def initialize(diff, repository:, diff_refs: nil, fallback_diff_refs: nil)
+      def initialize(diff, repository:, diff_refs: nil, fallback_diff_refs: nil, stats: nil)
         @diff = diff
+        @stats = stats
         @repository = repository
         @diff_refs = diff_refs
         @fallback_diff_refs = fallback_diff_refs
@@ -165,11 +166,11 @@ module Gitlab
       end
 
       def added_lines
-        diff_lines.count(&:added?)
+        @stats&.additions || diff_lines.count(&:added?)
       end
 
       def removed_lines
-        diff_lines.count(&:removed?)
+        @stats&.deletions || diff_lines.count(&:removed?)
       end
 
       def file_identifier
@@ -211,13 +212,17 @@ module Gitlab
         old_blob && new_blob && old_blob.binary? != new_blob.binary?
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def size
         valid_blobs.map(&:size).sum
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def raw_size
         valid_blobs.map(&:raw_size).sum
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def raw_binary?
         try_blobs(:raw_binary?)

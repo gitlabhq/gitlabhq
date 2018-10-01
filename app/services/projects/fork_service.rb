@@ -17,6 +17,14 @@ module Projects
 
       link_fork_network(fork_to_project)
 
+      # A forked project stores its LFS objects in the `forked_from_project`.
+      # So the LFS objects become inaccessible, and therefore delete them from
+      # the database so they'll get cleaned up.
+      #
+      # TODO: refactor this to get the correct lfs objects when implementing
+      #       https://gitlab.com/gitlab-org/gitlab-ce/issues/39769
+      fork_to_project.lfs_objects_projects.delete_all
+
       fork_to_project
     end
 

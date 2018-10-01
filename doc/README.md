@@ -133,6 +133,7 @@ scales to run your tests faster.
 - [GitLab CI/CD](ci/README.md): Explore the features and capabilities of Continuous Integration, Continuous Delivery, and Continuous Deployment with GitLab.
 - [Review Apps](ci/review_apps/index.md): Preview changes to your app right from a merge request.
 - [Pipeline Graphs](ci/pipelines.md#pipeline-graphs)
+- [JUnit test reports](ci/junit_test_reports.md)
 
 ### Package
 
@@ -190,7 +191,7 @@ instant how code changes impact your production environment.
 ### User account
 
 - [User account](user/profile/index.md): Manage your account
-  - [Authentication](topics/authentication/index.md): Account security with two-factor authentication, setup your ssh keys and deploy keys for secure access to your projects.
+  - [Authentication](topics/authentication/index.md): Account security with two-factor authentication, set up your ssh keys and deploy keys for secure access to your projects.
   - [Profile settings](user/profile/index.md#profile-settings): Manage your profile settings, two factor authentication and more.
 - [User permissions](user/permissions.md): Learn what each role in a project (external/guest/reporter/developer/maintainer/owner) can do.
 

@@ -29,10 +29,22 @@ describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab_redis
 
       expect(importer)
         .to receive(:bulk_insert)
-        .with(Milestone, [milestone_hash])
+        .with(Milestone, [milestone_hash], any_args)
 
       expect(importer)
         .to receive(:build_milestones_cache)
+
+      importer.execute
+    end
+
+    it 'tracks internal ids' do
+      milestone_hash = { iid: 1, title: '1.0', project_id: project.id }
+      allow(importer)
+        .to receive(:build_milestones)
+        .and_return([milestone_hash])
+
+      expect(InternalId).to receive(:track_greatest)
+        .with(nil, { project: project }, :milestones, 1, any_args)
 
       importer.execute
     end

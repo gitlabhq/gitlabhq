@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ProjectsHelper
   def link_to_project(project)
     link_to [project.namespace.becomes(Namespace), project], title: h(project.name) do
@@ -50,7 +52,7 @@ module ProjectsHelper
 
     return "(deleted)" unless author
 
-    author_html = ""
+    author_html = []
 
     # Build avatar image tag
     author_html << link_to_member_avatar(author, opts) if opts[:avatar]
@@ -60,7 +62,7 @@ module ProjectsHelper
 
     author_html << capture(&block) if block
 
-    author_html = author_html.html_safe
+    author_html = author_html.join.html_safe
 
     if opts[:name]
       link_to(author_html, user_path(author), class: "author-link #{"#{opts[:extra_class]}" if opts[:extra_class]} #{"#{opts[:mobile_classes]}" if opts[:mobile_classes]}").html_safe
@@ -80,15 +82,8 @@ module ProjectsHelper
       end
 
     project_link = link_to project_path(project) do
-      output =
-        if project.avatar_url && !Rails.env.test?
-          project_icon(project, alt: project.name, class: 'avatar-tile', width: 15, height: 15)
-        else
-          ""
-        end
-
-      output << content_tag("span", simple_sanitize(project.name), class: "breadcrumb-item-text js-breadcrumb-item-text")
-      output.html_safe
+      icon = project_icon(project, alt: project.name, class: 'avatar-tile', width: 15, height: 15) if project.avatar_url && !Rails.env.test?
+      [icon, content_tag("span", simple_sanitize(project.name), class: "breadcrumb-item-text js-breadcrumb-item-text")].join.html_safe
     end
 
     namespace_link = breadcrumb_list_item(namespace_link) unless project.group
@@ -192,12 +187,23 @@ module ProjectsHelper
   end
 
   def show_no_ssh_key_message?
-    cookies[:hide_no_ssh_message].blank? && !current_user.hide_no_ssh_key && current_user.require_ssh_key?
+    Gitlab::CurrentSettings.user_show_add_ssh_key_message? &&
+      cookies[:hide_no_ssh_message].blank? &&
+      !current_user.hide_no_ssh_key &&
+      current_user.require_ssh_key?
   end
 
   def show_no_password_message?
     cookies[:hide_no_password_message].blank? && !current_user.hide_no_password &&
       current_user.require_extra_setup_for_git_auth?
+  end
+
+  def show_auto_devops_implicitly_enabled_banner?(project)
+    cookie_key = "hide_auto_devops_implicitly_enabled_banner_#{project.id}"
+
+    project.has_auto_devops_implicitly_enabled? &&
+      cookies[cookie_key.to_sym].blank? &&
+      (project.owner == current_user || project.team.maintainer?(current_user))
   end
 
   def link_to_set_password
@@ -216,6 +222,7 @@ module ProjectsHelper
   #
   # If no limit is applied we'll just issue a COUNT since the result set could
   # be too large to load into memory.
+  # rubocop: disable CodeReuse/ActiveRecord
   def any_projects?(projects)
     return projects.any? if projects.is_a?(Array)
 
@@ -225,6 +232,7 @@ module ProjectsHelper
       projects.except(:offset).any?
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def show_projects?(projects, params)
     !!(params[:personal] || params[:name] || any_projects?(projects))
@@ -247,6 +255,10 @@ module ProjectsHelper
 
   def xcode_uri_to_repo(project = @project)
     "xcode://clone?repo=#{CGI.escape(default_url_to_repo(project))}"
+  end
+
+  def legacy_render_context(params)
+    params[:legacy_render] ? { markdown_engine: :redcarpet } : {}
   end
 
   private
@@ -348,6 +360,10 @@ module ProjectsHelper
     end
   end
 
+  def default_clone_label
+    _("Copy %{protocol} clone URL") % { protocol: default_clone_protocol.upcase }
+  end
+
   def default_clone_protocol
     if allowed_protocols_present?
       enabled_protocol
@@ -444,7 +460,7 @@ module ProjectsHelper
   end
 
   def project_permissions_panel_data(project)
-    data = {
+    {
       currentSettings: project_permissions_settings(project),
       canChangeVisibilityLevel: can_change_visibility_level?(project, current_user),
       allowedVisibilityOptions: project_allowed_visibility_levels(project),
@@ -454,8 +470,10 @@ module ProjectsHelper
       lfsAvailable: Gitlab.config.lfs.enabled,
       lfsHelpPath: help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
     }
+  end
 
-    data.to_json.html_safe
+  def project_permissions_panel_data_json(project)
+    project_permissions_panel_data(project).to_json.html_safe
   end
 
   def project_allowed_visibility_levels(project)

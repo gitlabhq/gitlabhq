@@ -131,7 +131,7 @@ class DiffNote < Note
       # As an extra benefit, the returned `diff_file` already
       # has `highlighted_diff_lines` data set from Redis on
       # `Diff::FileCollection::MergeRequestDiff`.
-      noteable.diffs(paths: original_position.paths, expanded: true).diff_files.first
+      noteable.diffs(original_position.diff_options).diff_files.first
     else
       original_position.diff_file(self.project.repository)
     end
@@ -191,14 +191,18 @@ class DiffNote < Note
   end
 
   def keep_around_commits
-    project.repository.keep_around(self.original_position.base_sha)
-    project.repository.keep_around(self.original_position.start_sha)
-    project.repository.keep_around(self.original_position.head_sha)
+    shas = [
+      self.original_position.base_sha,
+      self.original_position.start_sha,
+      self.original_position.head_sha
+    ]
 
     if self.position != self.original_position
-      project.repository.keep_around(self.position.base_sha)
-      project.repository.keep_around(self.position.start_sha)
-      project.repository.keep_around(self.position.head_sha)
+      shas << self.position.base_sha
+      shas << self.position.start_sha
+      shas << self.position.head_sha
     end
+
+    project.repository.keep_around(*shas)
   end
 end

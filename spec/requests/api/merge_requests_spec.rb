@@ -353,6 +353,15 @@ describe API::MergeRequests do
       end
     end
 
+    it 'returns the commits behind the target branch when include_diverged_commits_count is present' do
+      allow_any_instance_of(merge_request.class).to receive(:diverged_commits_count).and_return(1)
+
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), include_diverged_commits_count: true
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response['diverged_commits_count']).to eq(1)
+    end
+
     it "returns a 404 error if merge_request_iid not found" do
       get api("/projects/#{project.id}/merge_requests/999", user)
       expect(response).to have_gitlab_http_status(404)

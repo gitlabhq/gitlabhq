@@ -40,7 +40,7 @@ export { default as MRWidgetService } from './services/mr_widget_service';
 export { default as eventHub } from './event_hub';
 export { default as getStateKey } from './stores/get_state_key';
 export { default as stateMaps } from './stores/state_maps';
-export { default as SquashBeforeMerge } from './components/states/mr_widget_squash_before_merge.vue';
+export { default as SquashBeforeMerge } from './components/states/squash_before_merge.vue';
 export { default as notify } from '../lib/utils/notify';
 export { default as SourceBranchRemovalStatus } from './components/source_branch_removal_status.vue';
 

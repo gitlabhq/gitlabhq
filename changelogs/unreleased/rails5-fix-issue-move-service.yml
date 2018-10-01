@@ -1,0 +1,6 @@
+---
+title: 'Rails 5: fix issue move service In rails 5, the attributes method for an enum
+  returns the name instead of the database integer.'
+merge_request: 21616
+author: Jasper Maes
+type: other

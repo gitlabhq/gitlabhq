@@ -103,11 +103,11 @@ describe Admin::HooksController, "routing" do
   end
 end
 
-# admin_hook_hook_log_retry GET    /admin/hooks/:hook_id/hook_logs/:id/retry(.:format) admin/hook_logs#retry
+# admin_hook_hook_log_retry POST    /admin/hooks/:hook_id/hook_logs/:id/retry(.:format) admin/hook_logs#retry
 # admin_hook_hook_log       GET    /admin/hooks/:hook_id/hook_logs/:id(.:format)       admin/hook_logs#show
 describe Admin::HookLogsController, 'routing' do
   it 'to #retry' do
-    expect(get('/admin/hooks/1/hook_logs/1/retry')).to route_to('admin/hook_logs#retry', hook_id: '1', id: '1')
+    expect(post('/admin/hooks/1/hook_logs/1/retry')).to route_to('admin/hook_logs#retry', hook_id: '1', id: '1')
   end
 
   it 'to #show' do

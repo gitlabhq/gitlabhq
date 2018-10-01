@@ -74,22 +74,17 @@ or over the size limit, you can [reduce your repository size with Git](../projec
 ## Shared Runners
 
 Shared Runners on GitLab.com run in [autoscale mode] and powered by
-Google Cloud Platform and DigitalOcean. Autoscaling means reduced
+Google Cloud Platform. Autoscaling means reduced
 waiting times to spin up CI/CD jobs, and isolated VMs for each project,
 thus maximizing security.
 They're free to use for public open source projects and limited to 2000 CI
 minutes per month per group for private projects. Read about all
 [GitLab.com plans](https://about.gitlab.com/pricing/).
 
-In case of DigitalOcean based Runners, all your CI/CD jobs run on ephemeral
-instances with 2GB of RAM, CoreOS and the latest Docker Engine installed.
-Instances provide 2 vCPUs and 60GB of SSD disk space. The default region of the
-VMs is NYC1.
-
-In case of Google Cloud Platform based Runners, all your CI/CD jobs run on
-ephemeral instances with 3.75GB of RAM, CoreOS and the latest Docker Engine
+All your CI/CD jobs run on [n1-standard-1 instances](https://cloud.google.com/compute/docs/machine-types) with 3.75GB of RAM, CoreOS and the latest Docker Engine
 installed. Instances provide 1 vCPU and 25GB of HDD disk space. The default
 region of the VMs is US East1.
+Each instance is used only for one job, this ensures any sensitive data left on the system can't be accessed by other people their CI jobs.
 
 Jobs handled by the shared Runners on GitLab.com (`shared-runners-manager-X.gitlab.com`),
 **will be timed out after 3 hours**, regardless of the timeout configured in a
@@ -104,7 +99,7 @@ Below are the shared Runners settings.
 | Default Docker image                  | `ruby:2.5`                                        | -          |
 | `privileged` (run [Docker in Docker]) | `true`                                            | `false`    |
 
-[ci_version_dashboard]: https://monitor.gitlab.net/dashboard/db/ci?from=now-1h&to=now&refresh=5m&orgId=1&panelId=12&fullscreen&theme=light
+[ci_version_dashboard]: https://dashboards.gitlab.com/dashboard/db/ci?from=now-1h&to=now&refresh=5m&orgId=1&panelId=12&fullscreen&theme=light
 
 ### `config.toml`
 
@@ -226,7 +221,7 @@ and the following environment variables:
 
 ## Cron jobs
 
-Periodically executed jobs by Sidekiq, to self-heal Gitlab, do external
+Periodically executed jobs by Sidekiq, to self-heal GitLab, do external
 synchronizations, run scheduled pipelines, etc.:
 
 | Setting                     | GitLab.com   | Default      |

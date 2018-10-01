@@ -4,23 +4,23 @@ import Icon from '~/vue_shared/components/icon.vue';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
 import eventHub from '../../notes/event_hub';
-import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
 import CompareVersions from './compare_versions.vue';
 import ChangedFiles from './changed_files.vue';
 import DiffFile from './diff_file.vue';
 import NoChanges from './no_changes.vue';
 import HiddenFilesWarning from './hidden_files_warning.vue';
+import CommitWidget from './commit_widget.vue';
 
 export default {
   name: 'DiffsApp',
   components: {
     Icon,
-    LoadingIcon,
     CompareVersions,
     ChangedFiles,
     DiffFile,
     NoChanges,
     HiddenFilesWarning,
+    CommitWidget,
   },
   props: {
     endpoint: {
@@ -59,7 +59,7 @@ export default {
       emailPatchPath: state => state.diffs.emailPatchPath,
     }),
     ...mapGetters('diffs', ['isParallelView']),
-    ...mapGetters(['isNotesFetched']),
+    ...mapGetters(['isNotesFetched', 'discussionsStructuredByLineCode']),
     targetBranch() {
       return {
         branchName: this.targetBranchName,
@@ -112,16 +112,43 @@ export default {
   },
   created() {
     this.adjustView();
+    eventHub.$once('fetchedNotesData', this.setDiscussions);
   },
   methods: {
-    ...mapActions('diffs', ['setBaseConfig', 'fetchDiffFiles']),
+    ...mapActions('diffs', [
+      'setBaseConfig',
+      'fetchDiffFiles',
+      'startRenderDiffsQueue',
+      'assignDiscussionsToDiff',
+    ]),
+
     fetchData() {
-      this.fetchDiffFiles().catch(() => {
-        createFlash(__('Something went wrong on our end. Please try again!'));
-      });
+      this.fetchDiffFiles()
+        .then(() => {
+          requestIdleCallback(
+            () => {
+              this.setDiscussions();
+              this.startRenderDiffsQueue();
+            },
+            { timeout: 1000 },
+          );
+        })
+        .catch(() => {
+          createFlash(__('Something went wrong on our end. Please try again!'));
+        });
 
       if (!this.isNotesFetched) {
         eventHub.$emit('fetchNotesData');
+      }
+    },
+    setDiscussions() {
+      if (this.isNotesFetched) {
+        requestIdleCallback(
+          () => {
+            this.assignDiscussionsToDiff(this.discussionsStructuredByLineCode);
+          },
+          { timeout: 1000 },
+        );
       }
     },
     adjustView() {
@@ -141,7 +168,7 @@ export default {
       v-if="isLoading"
       class="loading"
     >
-      <loading-icon />
+      <gl-loading-icon />
     </div>
     <div
       v-else
@@ -182,6 +209,11 @@ export default {
           </div>
         </div>
       </div>
+
+      <commit-widget
+        v-if="commit"
+        :commit="commit"
+      />
 
       <changed-files
         :diff-files="diffFiles"

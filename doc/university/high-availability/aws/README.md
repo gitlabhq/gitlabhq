@@ -30,7 +30,7 @@ we'll be using to configure our cloud infrastructure.
 
 ### Reference Architecture
 
-![Reference Architecture](img/reference-arch.png)
+![Reference Architecture](img/reference-arch2.png)
 
 ***
 
@@ -286,7 +286,7 @@ to make the EFS integration easier to manage.
     gitlab_rails['redis_port'] = 6379
 
 Finally run reconfigure, you might find it useful to run a check and
-a service status to make sure everything has been setup correctly.
+a service status to make sure everything has been set up correctly.
 
     sudo gitlab-ctl reconfigure  
     sudo gitlab-rake gitlab:check  
@@ -395,5 +395,5 @@ some redundancy options but it might also imply Geographic replication.
 There is a lot of ground yet to cover so have a read through these other
 resources and feel free to open an issue to request additional material.
 
- * [GitLab High Availability](http://docs.gitlab.com/ce/administration/high_availability/README.html#sts=High Availability)
- * [GitLab Geo](http://docs.gitlab.com/ee/gitlab-geo/README.html)  
+* [GitLab High Availability](http://docs.gitlab.com/ce/administration/high_availability/README.html#sts=High%20Availability)
+* [GitLab Geo](http://docs.gitlab.com/ee/gitlab-geo/README.html)  

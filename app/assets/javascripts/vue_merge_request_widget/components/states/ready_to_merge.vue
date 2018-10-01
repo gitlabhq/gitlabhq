@@ -6,7 +6,7 @@ import MergeRequest from '../../../merge_request';
 import Flash from '../../../flash';
 import statusIcon from '../mr_widget_status_icon.vue';
 import eventHub from '../../event_hub';
-import SquashBeforeMerge from './mr_widget_squash_before_merge.vue';
+import SquashBeforeMerge from './squash_before_merge.vue';
 
 export default {
   name: 'ReadyToMerge',
@@ -255,7 +255,7 @@ export default {
             data-toggle="dropdown"
             aria-label="Select merge moment">
             <i
-              class="fa fa-chevron-down"
+              class="fa fa-chevron-down qa-merge-moment-dropdown"
               aria-hidden="true"
             ></i>
           </button>
@@ -265,7 +265,7 @@ export default {
             role="menu">
             <li>
               <a
-                class="merge_when_pipeline_succeeds"
+                class="merge_when_pipeline_succeeds qa-merge-when-pipeline-succeeds-option"
                 href="#"
                 @click.prevent="handleMergeButtonClick(true)">
                 <span class="media">
@@ -279,7 +279,7 @@ export default {
             </li>
             <li>
               <a
-                class="accept-merge-request"
+                class="accept-merge-request qa-merge-immediately-option"
                 href="#"
                 @click.prevent="handleMergeButtonClick(false, true)">
                 <span class="media">

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Import::BitbucketController < Import::BaseController
   before_action :verify_bitbucket_import_enabled
   before_action :bitbucket_auth, except: :callback
@@ -16,6 +18,7 @@ class Import::BitbucketController < Import::BaseController
     redirect_to status_import_bitbucket_url
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def status
     bitbucket_client = Bitbucket::Client.new(credentials)
     repos = bitbucket_client.repos
@@ -27,6 +30,7 @@ class Import::BitbucketController < Import::BaseController
 
     @repos.to_a.reject! { |repo| already_added_projects_names.include?(repo.full_name) }
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def jobs
     render json: find_jobs('bitbucket')

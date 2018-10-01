@@ -132,7 +132,6 @@ describe Gitlab::Cleanup::ProjectUploads do
             let!(:path) { File.join(FileUploader.root, orphaned.model.full_path, orphaned.path) }
 
             before do
-              stub_feature_flags(import_export_object_storage: true)
               stub_uploads_object_storage(FileUploader)
 
               FileUtils.mkdir_p(File.dirname(path))
@@ -156,7 +155,6 @@ describe Gitlab::Cleanup::ProjectUploads do
             let!(:new_path) { File.join(FileUploader.root, '-', 'project-lost-found', 'wrong', orphaned.path) }
 
             before do
-              stub_feature_flags(import_export_object_storage: true)
               stub_uploads_object_storage(FileUploader)
 
               FileUtils.mkdir_p(File.dirname(path))
@@ -244,9 +242,11 @@ describe Gitlab::Cleanup::ProjectUploads do
         orphaned1 = create(:upload, :personal_snippet_upload, :with_file)
         orphaned2 = create(:upload, :namespace_upload, :with_file)
         orphaned3 = create(:upload, :attachment_upload, :with_file)
+        orphaned4 = create(:upload, :favicon_upload, :with_file)
         paths << orphaned1.absolute_path
         paths << orphaned2.absolute_path
         paths << orphaned3.absolute_path
+        paths << orphaned4.absolute_path
         Upload.delete_all
 
         expect(logger).not_to receive(:info).with(/move|fix/i)

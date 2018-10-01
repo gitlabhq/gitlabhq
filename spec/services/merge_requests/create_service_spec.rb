@@ -134,9 +134,11 @@ describe MergeRequests::CreateService do
         let!(:pipeline_3) { create(:ci_pipeline, project: project, ref: "other_branch", project_id: project.id) }
 
         before do
+          # rubocop: disable DestroyAll
           project.merge_requests
             .where(source_branch: opts[:source_branch], target_branch: opts[:target_branch])
             .destroy_all
+          # rubocop: enable DestroyAll
         end
 
         it 'sets head pipeline' do

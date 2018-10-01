@@ -4,9 +4,60 @@
   }
 }
 
-.cluster-applications-table {
-  // Wait for the Vue to kick-in and render the applications block
-  min-height: 628px;
+.cluster-application-row {
+  background: $gray-lighter;
+
+  &.cluster-application-installed {
+    background: none;
+  }
+
+  .settings-message {
+    padding: $gl-vert-padding $gl-padding-8;
+  }
+}
+
+@media (min-width: map-get($grid-breakpoints, md)) {
+  .cluster-application-list {
+    border: 1px solid $border-color;
+    border-radius: $border-radius-default;
+  }
+
+  .cluster-application-row {
+    border-bottom: 1px solid $border-color;
+    padding: $gl-padding;
+  }
+}
+
+.cluster-application-logo {
+  border: 3px solid $white-light;
+  box-shadow: 0 0 0 1px $gray-normal;
+
+  &.avatar:hover {
+    border-color: $white-light;
+  }
+}
+
+.cluster-application-warning {
+  font-weight: bold;
+  text-align: center;
+  padding: $gl-padding;
+  border-bottom: 1px solid $white-normal;
+
+  .svg-container {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: $gl-padding-8;
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.cluster-application-description {
+  flex: 1;
+}
+
+.cluster-application-disabled {
+  opacity: 0.5;
 }
 
 .clusters-dropdown-menu {

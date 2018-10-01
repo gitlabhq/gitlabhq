@@ -1,12 +1,13 @@
 - @no_container = true
-- page_title 'ConvDev Index'
+- page_title _('ConvDev Index')
+- usage_ping_enabled = Gitlab::CurrentSettings.usage_ping_enabled
 
 .container
-  - if show_callout?('convdev_intro_callout_dismissed')
+  - if usage_ping_enabled && show_callout?('convdev_intro_callout_dismissed')
     = render 'callout'
 
   .prepend-top-default
-  - if !Gitlab::CurrentSettings.usage_ping_enabled
+  - if !usage_ping_enabled
     = render 'disabled'
   - elsif @metric.blank?
     = render 'no_data'
@@ -19,7 +20,7 @@
           index
           %br
           score
-          = link_to icon('question-circle', 'aria-hidden' => 'true'), help_page_path('user/admin_area/monitoring/convdev')
+          = link_to icon('question-circle', 'aria-hidden' => 'true'), help_page_path('user/instance_statistics/convdev')
 
       .convdev-cards.board-card-container
         - @metric.cards.each do |card|

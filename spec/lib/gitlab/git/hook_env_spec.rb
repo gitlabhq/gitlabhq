@@ -4,11 +4,7 @@ describe Gitlab::Git::HookEnv do
   let(:gl_repository) { 'project-123' }
 
   describe ".set" do
-    context 'with RequestStore.store disabled' do
-      before do
-        allow(RequestStore).to receive(:active?).and_return(false)
-      end
-
+    context 'with RequestStore disabled' do
       it 'does not store anything' do
         described_class.set(gl_repository, GIT_OBJECT_DIRECTORY_RELATIVE: 'foo')
 
@@ -16,11 +12,7 @@ describe Gitlab::Git::HookEnv do
       end
     end
 
-    context 'with RequestStore.store enabled' do
-      before do
-        allow(RequestStore).to receive(:active?).and_return(true)
-      end
-
+    context 'with RequestStore enabled', :request_store do
       it 'whitelist some `GIT_*` variables and stores them using RequestStore' do
         described_class.set(
           gl_repository,
@@ -41,9 +33,8 @@ describe Gitlab::Git::HookEnv do
   end
 
   describe ".all" do
-    context 'with RequestStore.store enabled' do
+    context 'with RequestStore enabled', :request_store do
       before do
-        allow(RequestStore).to receive(:active?).and_return(true)
         described_class.set(
           gl_repository,
           GIT_OBJECT_DIRECTORY_RELATIVE: 'foo',
@@ -60,7 +51,7 @@ describe Gitlab::Git::HookEnv do
   end
 
   describe ".to_env_hash" do
-    context 'with RequestStore.store enabled' do
+    context 'with RequestStore enabled', :request_store do
       using RSpec::Parameterized::TableSyntax
 
       let(:key) { 'GIT_OBJECT_DIRECTORY_RELATIVE' }
@@ -76,7 +67,6 @@ describe Gitlab::Git::HookEnv do
 
       with_them do
         before do
-          allow(RequestStore).to receive(:active?).and_return(true)
           described_class.set(gl_repository, key.to_sym => input)
         end
 
@@ -92,7 +82,7 @@ describe Gitlab::Git::HookEnv do
   end
 
   describe 'thread-safety' do
-    context 'with RequestStore.store enabled' do
+    context 'with RequestStore enabled', :request_store do
       before do
         allow(RequestStore).to receive(:active?).and_return(true)
         described_class.set(gl_repository, GIT_OBJECT_DIRECTORY_RELATIVE: 'foo')

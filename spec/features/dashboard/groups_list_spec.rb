@@ -125,7 +125,7 @@ describe 'Dashboard Groups page', :js do
     end
 
     it 'loads results for next page' do
-      expect(page).to have_selector('.gl-pagination .page', count: 2)
+      expect(page).to have_selector('.gl-pagination .page-item a[role=menuitemradio]', count: 2)
 
       # Check first page
       expect(page).to have_content(group2.full_name)
@@ -134,7 +134,7 @@ describe 'Dashboard Groups page', :js do
       expect(page).not_to have_selector("#group-#{group.id}")
 
       # Go to next page
-      find(".gl-pagination .page:not(.active) a").click
+      find('.gl-pagination .page-item:not(.active) a[role=menuitemradio]').click
 
       wait_for_requests
 

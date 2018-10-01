@@ -4,7 +4,7 @@ class SiteStatistic < ActiveRecord::Base
   # prevents the creation of multiple rows
   default_value_for :id, 1
 
-  COUNTER_ATTRIBUTES = %w(repositories_count wikis_count).freeze
+  COUNTER_ATTRIBUTES = %w(repositories_count).freeze
   REQUIRED_SCHEMA_VERSION = 20180629153018
 
   # Tracks specific attribute
@@ -49,7 +49,7 @@ class SiteStatistic < ActiveRecord::Base
   #
   # @return [SiteStatistic] record with tracked information
   def self.fetch
-    SiteStatistic.transaction(requires_new: true) do
+    transaction(requires_new: true) do
       SiteStatistic.first_or_create!
     end
   rescue ActiveRecord::RecordNotUnique

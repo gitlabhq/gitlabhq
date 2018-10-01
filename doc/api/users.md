@@ -199,6 +199,7 @@ Parameters:
   "created_at": "2012-05-23T08:00:58Z",
   "bio": null,
   "location": null,
+  "public_email": "john@example.com",
   "skype": "",
   "linkedin": "",
   "twitter": "",
@@ -230,6 +231,7 @@ Parameters:
   "is_admin": false,
   "bio": null,
   "location": null,
+  "public_email": "john@example.com",
   "skype": "",
   "linkedin": "",
   "twitter": "",
@@ -263,7 +265,7 @@ GET /users/:id?with_custom_attributes=true
 
 ## User creation
 
-Creates a new user. Note only administrators can create new users. Either `password` or `reset_password` should be specified (`reset_password` takes priority).
+Creates a new user. Note only administrators can create new users. Either `password` or `reset_password` should be specified (`reset_password` takes priority). If `reset_password` is `false`, then `password` is required.
 
 ```
 POST /users
@@ -367,6 +369,7 @@ GET /user
   "created_at": "2012-05-23T08:00:58Z",
   "bio": null,
   "location": null,
+  "public_email": "john@example.com",
   "skype": "",
   "linkedin": "",
   "twitter": "",
@@ -415,6 +418,7 @@ GET /user
   "is_admin": false,
   "bio": null,
   "location": null,
+  "public_email": "john@example.com",
   "skype": "",
   "linkedin": "",
   "twitter": "",
@@ -504,7 +508,7 @@ PUT /user/status
 When both parameters `emoji` and `message` are empty, the status will be cleared.
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "emoji=coffee" --data "emoji=I crave coffee" https://gitlab.example.com/api/v4/user/status
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "emoji=coffee" --data "message=I crave coffee" https://gitlab.example.com/api/v4/user/status
 ```
 
 Example responses
@@ -972,6 +976,7 @@ Parameters:
 
 - `id` (required)    - id of specified user
 - `email` (required) - email address
+- `skip_confirmation` (optional) - Skip confirmation and assume e-mail is verified - true or false (default)
 
 ## Delete email for current user
 

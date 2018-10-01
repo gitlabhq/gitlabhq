@@ -6,6 +6,7 @@ module Projects
 
     ValidationError = Class.new(StandardError)
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def execute
       validate!
 
@@ -26,11 +27,12 @@ module Projects
     rescue ValidationError => e
       error(e.message)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def run_auto_devops_pipeline?
       return false if project.repository.gitlab_ci_yml || !project.auto_devops&.previous_changes&.include?('enabled')
 
-      project.auto_devops.enabled? || (project.auto_devops.enabled.nil? && Gitlab::CurrentSettings.auto_devops_enabled?)
+      project.auto_devops_enabled?
     end
 
     private

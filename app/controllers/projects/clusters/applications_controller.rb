@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 class Projects::Clusters::ApplicationsController < Projects::ApplicationController
   before_action :cluster
   before_action :application_class, only: [:create]
   before_action :authorize_read_cluster!
   before_action :authorize_create_cluster!, only: [:create]
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def create
     application = @application_class.find_or_initialize_by(cluster: @cluster)
 
@@ -23,6 +26,7 @@ class Projects::Clusters::ApplicationsController < Projects::ApplicationControll
   rescue StandardError
     head :bad_request
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 

@@ -7,16 +7,20 @@ module Todos
 
       attr_reader :group
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def initialize(group_id)
         @group = Group.find_by(id: group_id)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       private
 
       override :todos
+      # rubocop: disable CodeReuse/ActiveRecord
       def todos
         Todo.where(group_id: group.id)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       override :authorized_users
       def authorized_users

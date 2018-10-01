@@ -20,6 +20,8 @@ module MergeRequests
       if merge_request.can_be_created
         compare_branches
         assign_title_and_description
+        assign_labels
+        assign_milestone
       end
 
       merge_request
@@ -128,12 +130,25 @@ module MergeRequests
     #
     def assign_title_and_description
       assign_title_and_description_from_single_commit
-      assign_title_from_issue if target_project.issues_enabled? || target_project.external_issue_tracker
-
+      merge_request.title ||= title_from_issue if target_project.issues_enabled? || target_project.external_issue_tracker
       merge_request.title ||= source_branch.titleize.humanize
       merge_request.title = wip_title if compare_commits.empty?
 
       append_closes_description
+    end
+
+    def assign_labels
+      return unless target_project.issues_enabled? && issue
+      return if merge_request.label_ids&.any?
+
+      merge_request.label_ids = issue.try(:label_ids)
+    end
+
+    def assign_milestone
+      return unless target_project.issues_enabled? && issue
+      return if merge_request.milestone_id.present?
+
+      merge_request.milestone_id = issue.try(:milestone_id)
     end
 
     def append_closes_description
@@ -159,20 +174,18 @@ module MergeRequests
       merge_request.description ||= commit.description.try(:strip)
     end
 
-    def assign_title_from_issue
+    def title_from_issue
       return unless issue
 
-      merge_request.title = "Resolve \"#{issue.title}\"" if issue.is_a?(Issue)
+      return "Resolve \"#{issue.title}\"" if issue.is_a?(Issue)
 
-      return if merge_request.title.present?
+      return if issue_iid.blank?
 
-      if issue_iid.present?
-        title_parts = ["Resolve #{issue.to_reference}"]
-        branch_title = source_branch.downcase.remove(issue_iid.downcase).titleize.humanize
+      title_parts = ["Resolve #{issue.to_reference}"]
+      branch_title = source_branch.downcase.remove(issue_iid.downcase).titleize.humanize
 
-        title_parts << "\"#{branch_title}\"" if branch_title.present?
-        merge_request.title = title_parts.join(' ')
-      end
+      title_parts << "\"#{branch_title}\"" if branch_title.present?
+      title_parts.join(' ')
     end
 
     def issue_iid
@@ -188,7 +201,9 @@ module MergeRequests
     end
 
     def issue
-      @issue ||= target_project.get_issue(issue_iid, current_user)
+      strong_memoize(:issue) do
+        target_project.get_issue(issue_iid, current_user)
+      end
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProfilesController < Profiles::ApplicationController
   include ActionView::Helpers::SanitizeHelper
 
@@ -44,11 +46,13 @@ class ProfilesController < Profiles::ApplicationController
     redirect_to profile_personal_access_tokens_path
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def audit_log
     @events = AuditEvent.where(entity_type: "User", entity_id: current_user.id)
       .order("created_at DESC")
       .page(params[:page])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def update_username
     result = Users::UpdateService.new(current_user, user: @user, username: username_param).execute
@@ -94,6 +98,7 @@ class ProfilesController < Profiles::ApplicationController
       :location,
       :name,
       :public_email,
+      :commit_email,
       :skype,
       :twitter,
       :username,
@@ -101,6 +106,7 @@ class ProfilesController < Profiles::ApplicationController
       :organization,
       :preferred_language,
       :private_profile,
+      :include_private_contributions,
       status: [:emoji, :message]
     )
   end

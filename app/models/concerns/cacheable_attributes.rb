@@ -27,11 +27,7 @@ module CacheableAttributes
     end
 
     def cached
-      if RequestStore.active?
-        RequestStore[:"#{name}_cached_attributes"] ||= retrieve_from_cache
-      else
-        retrieve_from_cache
-      end
+      Gitlab::SafeRequestStore[:"#{name}_cached_attributes"] ||= retrieve_from_cache
     end
 
     def retrieve_from_cache

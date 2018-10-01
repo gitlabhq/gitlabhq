@@ -1,8 +1,12 @@
 import Vue from 'vue';
 import axios from '~/lib/utils/axios_utils';
 import Cookies from 'js-cookie';
+import createFlash from '~/flash';
+import { s__ } from '~/locale';
 import { handleLocationHash, historyPushState } from '~/lib/utils/common_utils';
-import { mergeUrlParams } from '~/lib/utils/url_utility';
+import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
+import { reduceDiscussionsToLineCodes } from '../../notes/stores/utils';
+import { getDiffPositionByLineCode, getNoteFormData } from './utils';
 import * as types from './mutation_types';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
@@ -27,6 +31,55 @@ export const fetchDiffFiles = ({ state, commit }) => {
       return Vue.nextTick();
     })
     .then(handleLocationHash);
+};
+
+// This is adding line discussions to the actual lines in the diff tree
+// once for parallel and once for inline mode
+export const assignDiscussionsToDiff = ({ state, commit }, allLineDiscussions) => {
+  const diffPositionByLineCode = getDiffPositionByLineCode(state.diffFiles);
+
+  Object.values(allLineDiscussions).forEach(discussions => {
+    if (discussions.length > 0) {
+      const { fileHash } = discussions[0];
+      commit(types.SET_LINE_DISCUSSIONS_FOR_FILE, {
+        fileHash,
+        discussions,
+        diffPositionByLineCode,
+      });
+    }
+  });
+};
+
+export const removeDiscussionsFromDiff = ({ commit }, removeDiscussion) => {
+  const { fileHash, line_code } = removeDiscussion;
+  commit(types.REMOVE_LINE_DISCUSSIONS_FOR_FILE, { fileHash, lineCode: line_code });
+};
+
+export const startRenderDiffsQueue = ({ state, commit }) => {
+  const checkItem = () =>
+    new Promise(resolve => {
+      const nextFile = state.diffFiles.find(
+        file => !file.renderIt && (!file.collapsed || !file.text),
+      );
+
+      if (nextFile) {
+        requestAnimationFrame(() => {
+          commit(types.RENDER_FILE, nextFile);
+        });
+        requestIdleCallback(
+          () => {
+            checkItem()
+              .then(resolve)
+              .catch(() => {});
+          },
+          { timeout: 1000 },
+        );
+      } else {
+        resolve();
+      }
+    });
+
+  return checkItem();
 };
 
 export const setInlineDiffViewType = ({ commit }) => {
@@ -70,6 +123,25 @@ export const loadMoreLines = ({ commit }, options) => {
   });
 };
 
+export const scrollToLineIfNeededInline = (_, line) => {
+  const hash = getLocationHash();
+
+  if (hash && line.lineCode === hash) {
+    handleLocationHash();
+  }
+};
+
+export const scrollToLineIfNeededParallel = (_, line) => {
+  const hash = getLocationHash();
+
+  if (
+    hash &&
+    ((line.left && line.left.lineCode === hash) || (line.right && line.right.lineCode === hash))
+  ) {
+    handleLocationHash();
+  }
+};
+
 export const loadCollapsedDiff = ({ commit }, file) =>
   axios.get(file.loadCollapsedDiffUrl).then(res => {
     commit(types.ADD_COLLAPSED_DIFFS, {
@@ -107,6 +179,20 @@ export const toggleFileDiscussions = ({ getters, dispatch }, diff) => {
       dispatch('expandDiscussion', data, { root: true });
     }
   });
+};
+
+export const saveDiffDiscussion = ({ dispatch }, { note, formData }) => {
+  const postData = getNoteFormData({
+    note,
+    ...formData,
+  });
+
+  return dispatch('saveNote', postData, { root: true })
+    .then(result => dispatch('updateDiscussion', result.discussion, { root: true }))
+    .then(discussion =>
+      dispatch('assignDiscussionsToDiff', reduceDiscussionsToLineCodes([discussion])),
+    )
+    .catch(() => createFlash(s__('MergeRequests|Saving the comment failed')));
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

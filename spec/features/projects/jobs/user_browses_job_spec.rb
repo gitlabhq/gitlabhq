@@ -40,7 +40,7 @@ describe 'User browses a job', :js do
     it 'displays the failure reason' do
       within('.builds-container') do
         build_link = first('.build-job > a')
-        expect(build_link['data-title']).to eq('test - failed <br> (unknown failure)')
+        expect(build_link['data-title']).to eq('test - failed - (unknown failure)')
       end
     end
   end
@@ -51,7 +51,7 @@ describe 'User browses a job', :js do
     it 'displays the failure reason and retried label' do
       within('.builds-container') do
         build_link = first('.build-job > a')
-        expect(build_link['data-title']).to eq('test - failed <br> (unknown failure) (retried)')
+        expect(build_link['data-title']).to eq('test - failed - (unknown failure) (retried)')
       end
     end
   end

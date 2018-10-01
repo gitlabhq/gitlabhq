@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Import::GithubController < Import::BaseController
   before_action :verify_import_enabled
   before_action :provider_auth, only: [:status, :jobs, :create]
@@ -22,6 +24,7 @@ class Import::GithubController < Import::BaseController
     redirect_to status_import_url
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def status
     @repos = client.repos
     @already_added_projects = find_already_added_projects(provider)
@@ -29,6 +32,7 @@ class Import::GithubController < Import::BaseController
 
     @repos.reject! { |repo| already_added_projects_names.include? repo.full_name }
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def jobs
     render json: find_jobs(provider)
@@ -104,9 +108,11 @@ class Import::GithubController < Import::BaseController
     :github
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def logged_in_with_provider?
     current_user.identities.exists?(provider: provider)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def provider_auth
     if session[access_token_key].blank?

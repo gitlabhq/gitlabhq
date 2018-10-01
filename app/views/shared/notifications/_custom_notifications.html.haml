@@ -19,7 +19,7 @@
                   - paragraph = _('Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notification_link}.') % { notification_link: notification_link.html_safe }
                   #{ paragraph.html_safe }
               .col-lg-8
-                - NotificationSetting::EMAIL_EVENTS.each_with_index do |event, index|
+                - notification_setting.email_events.each_with_index do |event, index|
                   - field_id = "#{notifications_menu_identifier("modal", notification_setting)}_notification_setting[#{event}]"
                   .form-group
                     .form-check{ class: ("prepend-top-0" if index == 0) }

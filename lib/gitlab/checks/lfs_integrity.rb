@@ -6,6 +6,7 @@ module Gitlab
         @newrev = newrev
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def objects_missing?
         return false unless @newrev && @project.lfs_enabled?
 
@@ -20,6 +21,7 @@ module Gitlab
 
         existing_count != new_lfs_pointers.count
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

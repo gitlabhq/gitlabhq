@@ -107,9 +107,15 @@ export default {
   created() {
     this.initPolling();
     this.bindEventHubListeners();
+    eventHub.$on('mr.discussion.updated', this.checkStatus);
   },
   mounted() {
     this.handleMounted();
+  },
+  beforeDestroy() {
+    eventHub.$off('mr.discussion.updated', this.checkStatus);
+    this.pollingInterval.destroy();
+    this.deploymentsInterval.destroy();
   },
   methods: {
     createService(store) {
@@ -254,6 +260,7 @@ export default {
       :pipeline="mr.pipeline"
       :ci-status="mr.ciStatus"
       :has-ci="mr.hasCI"
+      :source-branch="mr.sourceBranch"
       :source-branch-link="mr.sourceBranchLink"
     />
     <deployment

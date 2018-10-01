@@ -39,6 +39,10 @@
             %strong= email.email
             = link_to remove_email_admin_user_path(@user, email), data: { confirm: "Are you sure you want to remove #{email.email}?" }, method: :delete, class: "btn-sm btn btn-remove float-right", title: 'Remove secondary email', id: "remove_email_#{email.id}" do
               %i.fa.fa-times
+        %li
+          %span.light ID:
+          %strong
+            = @user.id
 
         %li.two-factor-status
           %span.light Two-factor Authentication:

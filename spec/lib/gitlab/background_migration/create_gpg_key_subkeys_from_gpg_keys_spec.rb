@@ -5,7 +5,7 @@ describe Gitlab::BackgroundMigration::CreateGpgKeySubkeysFromGpgKeys, :migration
     let!(:gpg_key) { create(:gpg_key, key: GpgHelpers::User3.public_key) }
 
     before do
-      GpgKeySubkey.destroy_all
+      GpgKeySubkey.destroy_all # rubocop: disable DestroyAll
     end
 
     it 'generate the subkeys' do

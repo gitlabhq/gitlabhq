@@ -11,10 +11,16 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     runner_unsupported: 'Your runner is outdated, please upgrade your runner'
   }.freeze
 
+  private_constant :CALLOUT_FAILURE_MESSAGES
+
   presents :build
 
+  def self.callout_failure_messages
+    CALLOUT_FAILURE_MESSAGES
+  end
+
   def callout_failure_message
-    CALLOUT_FAILURE_MESSAGES.fetch(failure_reason.to_sym)
+    self.class.callout_failure_messages.fetch(failure_reason.to_sym)
   end
 
   def recoverable?

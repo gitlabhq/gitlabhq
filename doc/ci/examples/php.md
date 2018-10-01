@@ -199,7 +199,7 @@ pecl install <extension>
 ```
 
 It's not advised to add this to `.gitlab-ci.yml`. You should execute this
-command once, only to setup the build environment.
+command once, only to set up the build environment.
 
 ## Extend your tests
 

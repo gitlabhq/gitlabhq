@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CommitsHelper
   # Returns a link to the commit author. If the author has a matching user and
   # is a member of the current @project it will link to the team member page.
@@ -208,17 +210,6 @@ module CommitsHelper
 
   def clean(string)
     Sanitize.clean(string, remove_contents: true)
-  end
-
-  def limited_commits(commits)
-    if commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
-      [
-        commits.first(MergeRequestDiff::COMMITS_SAFE_SIZE),
-        commits.size - MergeRequestDiff::COMMITS_SAFE_SIZE
-      ]
-    else
-      [commits, 0]
-    end
   end
 
   def commit_path(project, commit, merge_request: nil)

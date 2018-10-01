@@ -17,12 +17,7 @@
 
   */
 
-  import loadingIcon from './loading_icon.vue';
-
   export default {
-    components: {
-      loadingIcon,
-    },
     props: {
       loading: {
         type: Boolean,
@@ -60,7 +55,7 @@
     @click="onClick"
   >
     <transition name="fade">
-      <loading-icon
+      <gl-loading-icon
         v-if="loading"
         :inline="true"
         :class="{

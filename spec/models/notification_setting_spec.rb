@@ -94,9 +94,39 @@ RSpec.describe NotificationSetting do
     end
   end
 
-  context 'email events' do
-    it 'includes EXCLUDED_WATCHER_EVENTS in EMAIL_EVENTS' do
-      expect(described_class::EMAIL_EVENTS).to include(*described_class::EXCLUDED_WATCHER_EVENTS)
+  describe '.email_events' do
+    subject { described_class.email_events }
+
+    it 'returns email events' do
+      expect(subject).to include(
+        :new_note,
+        :new_issue,
+        :reopen_issue,
+        :close_issue,
+        :reassign_issue,
+        :new_merge_request,
+        :reopen_merge_request,
+        :close_merge_request,
+        :reassign_merge_request,
+        :merge_merge_request,
+        :failed_pipeline,
+        :success_pipeline
+      )
+    end
+
+    it 'includes EXCLUDED_WATCHER_EVENTS' do
+      expect(subject).to include(*described_class::EXCLUDED_WATCHER_EVENTS)
+    end
+  end
+
+  describe '#email_events' do
+    let(:source) { build(:group) }
+
+    subject { build(:notification_setting, source: source) }
+
+    it 'calls email_events' do
+      expect(described_class).to receive(:email_events).with(source)
+      subject.email_events
     end
   end
 end

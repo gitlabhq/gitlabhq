@@ -6,7 +6,7 @@
   font-size: $gl-font-size;
   padding: $gl-padding-top 0 $gl-padding-top 40px;
   border-bottom: 1px solid $white-normal;
-  color: $list-text-color;
+  color: $gl-text-color;
   position: relative;
 
   &.event-inline {
@@ -58,7 +58,7 @@
   .event-title {
     @include str-truncated(calc(100% - 174px));
     font-weight: $gl-font-weight-bold;
-    color: $list-text-color;
+    color: $gl-text-color;
   }
 
   .event-body {
@@ -87,7 +87,7 @@
         border: 0;
         background: $gray-light;
         border-radius: 0;
-        color: $events-pre-color;
+        color: $gl-gray-500;
         overflow: hidden;
       }
 
@@ -104,7 +104,7 @@
     }
 
     .event-note-icon {
-      color: $events-pre-color;
+      color: $gl-gray-500;
       float: left;
       font-size: $gl-font-size;
       line-height: 16px;

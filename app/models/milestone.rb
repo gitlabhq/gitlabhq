@@ -46,6 +46,9 @@ class Milestone < ActiveRecord::Base
     where(conditions.reduce(:or))
   end
 
+  scope :order_by_name_asc, -> { order(Arel::Nodes::Ascending.new(arel_table[:title].lower)) }
+  scope :reorder_by_due_date_asc, -> { reorder(Gitlab::Database.nulls_last_order('due_date', 'ASC')) }
+
   validates :group, presence: true, unless: :project
   validates :project, presence: true, unless: :group
 
@@ -149,7 +152,7 @@ class Milestone < ActiveRecord::Base
     sorted =
       case method.to_s
       when 'due_date_asc'
-        reorder(Gitlab::Database.nulls_last_order('due_date', 'ASC'))
+        reorder_by_due_date_asc
       when 'due_date_desc'
         reorder(Gitlab::Database.nulls_last_order('due_date', 'DESC'))
       when 'name_asc'

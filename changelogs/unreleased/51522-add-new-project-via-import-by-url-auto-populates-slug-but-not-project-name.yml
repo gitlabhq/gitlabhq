@@ -1,0 +1,5 @@
+---
+title: Removes the 'required' attribute from the 'project name' field
+merge_request: 21770
+author:
+type: other

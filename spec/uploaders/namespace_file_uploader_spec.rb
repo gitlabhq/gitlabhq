@@ -26,6 +26,26 @@ describe NamespaceFileUploader do
                     upload_path: IDENTIFIER
   end
 
+  context '.base_dir' do
+    it 'returns local storage base_dir without store param' do
+      expect(described_class.base_dir(group)).to eq("uploads/-/system/namespace/#{group.id}")
+    end
+
+    it 'returns local storage base_dir when store param is Store::LOCAL' do
+      expect(described_class.base_dir(group, ObjectStorage::Store::LOCAL)).to eq("uploads/-/system/namespace/#{group.id}")
+    end
+
+    it 'returns remote base_dir when store param is Store::REMOTE' do
+      expect(described_class.base_dir(group, ObjectStorage::Store::REMOTE)).to eq("namespace/#{group.id}")
+    end
+  end
+
+  describe '#workhorse_local_upload_path' do
+    it 'returns the correct path in uploads directory' do
+      expect(described_class.workhorse_local_upload_path).to end_with('/uploads/tmp/uploads')
+    end
+  end
+
   describe "#migrate!" do
     before do
       uploader.store!(fixture_file_upload(File.join('spec/fixtures/doc_sample.txt')))

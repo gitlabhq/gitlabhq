@@ -25,67 +25,47 @@ them to review it for you.
 We use the [monthly release blog post](https://about.gitlab.com/handbook/marketing/blog/release-posts/#monthly-releases) as a changelog checklist to ensure everything
 is documented.
 
-Whenever you submit a merge request for the documentation, use the documentation MR description template.
+Whenever you submit a merge request for the documentation, use the
+"Documentation" MR description template. If you're changing documentation
+location, use the MR description template called "Change documentation
+location" instead.
 
-Please check the [documentation workflow](https://about.gitlab.com/handbook/product/technical-writing/workflow/) before getting started.
+## Documentation workflow
+
+Please read through the [documentation workflow](workflow.md) before getting started.
 
 ## Documentation structure
 
-- Overview and use cases: what it is, why it is necessary, why one would use it
-- Requirements: what do we need to get started
-- Tutorial: how to set it up, how to use it
-
-Always link a new document from its topic-related index, otherwise, it will
-not be included it in the documentation site search.
-
-_Note: to be extended._
-
-### Feature overview and use cases
-
-Every major feature (regardless if present in GitLab Community or Enterprise editions)
-should present, at the beginning of the document, two main sections: **overview** and
-**use cases**. Every GitLab EE-only feature should also contain these sections.
-
-**Overview**: as the name suggests, the goal here is to provide an overview of the feature.
-Describe what is it, what it does, why it is important/cool/nice-to-have,
-what problem it solves, and what you can do with this feature that you couldn't
-do before.
-
-**Use cases**: provide at least two, ideally three, use cases for every major feature.
-You should answer this question: what can you do with this feature/change? Use cases
-are examples of how this feature or change can be used in real life.
-
-Examples:
-- CE and EE: [Issues](../user/project/issues/index.md#use-cases)
-- CE and EE: [Merge Requests](../user/project/merge_requests/index.md#overview)
-- EE-only: [Geo](https://docs.gitlab.com/ee/gitlab-geo/README.html#overview)
-- EE-only: [Jenkins integration](https://docs.gitlab.com/ee/integration/jenkins.md#overview)
-
-Note that if you don't have anything to add between the doc title (`<h1>`) and
-the header `## Overview`, you can omit the header, but keep the content of the
-overview there.
-
-> **Overview** and **use cases** are required to **every** Enterprise Edition feature,
-and for every **major** feature present in Community Edition.
+Follow through the [documentation structure guide](structure.md) for learning
+how to structure GitLab docs.
 
 ## Markdown and styles
 
-Currently GitLab docs use Redcarpet as [markdown](../user/markdown.md) engine, but there's an [open discussion](https://gitlab.com/gitlab-com/gitlab-docs/issues/50) for implementing Kramdown in the near future.
+Currently GitLab docs use Redcarpet as [markdown](../../user/markdown.md) engine, but there's an [open discussion](https://gitlab.com/gitlab-com/gitlab-docs/issues/50) for implementing Kramdown in the near future.
 
-All the docs follow the [documentation style guidelines](styleguide.md).
+All the docs follow the [documentation style guidelines](styleguide.md). See [Linting](#linting) for help to follow the guidelines.
 
 ## Documentation directory structure
 
 The documentation is structured based on the GitLab UI structure itself,
 separated by [`user`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/user),
-[`administrator`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/administration), and [`contributor`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/development). 
+[`administrator`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/administration), and [`contributor`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/development).
 
 In order to have a [solid site structure](https://searchengineland.com/seo-benefits-developing-solid-site-structure-277456) for our documentation,
 all docs should be linked. Every new document should be cross-linked to its related documentation, and linked from its topic-related index, when existent.
 
 The directories `/workflow/`, `/gitlab-basics/`, `/university/`, and `/articles/` have
-been deprecated and the majority their docs have been moved to their correct location
+been **deprecated** and the majority their docs have been moved to their correct location
 in small iterations. Please don't create new docs in these folders.
+
+### Documentation files
+
+- When you create a new directory, always start with an `index.md` file.
+Do not use another file name and **do not** create `README.md` files
+- **Do not** use special chars and spaces, or capital letters in file names,
+directory names, branch names, and anything that generates a path.
+- Max screenshot size: 100KB
+- We do not support videos (yet)
 
 ### Location and naming documents
 
@@ -116,7 +96,7 @@ The table below shows what kind of documentation goes where.
 
 ---
 
-**General rules:**
+**General rules & best practices:**
 
 1. The correct naming and location of a new document, is a combination
    of the relative URL of the document in question and the GitLab Map design
@@ -203,7 +183,7 @@ Things to note:
   documentation, sometimes it might be useful to search a path deeper.
 - The `*.md` extension is not used when a document is linked to GitLab's
   built-in help page, that's why we omit it in `git grep`.
-- Use the checklist on the documentation MR description template.
+- Use the checklist on the "Change documentation location" MR description template.
 
 #### Alternative redirection method
 
@@ -243,6 +223,108 @@ redirect_from: 'https://docs.gitlab.com/my-old-location/README.html'
 Note: it is necessary to include the file name in the `redirect_from` URL,
 even if it's `index.html` or `README.html`.
 
+## Linting
+
+To help adhere to the [documentation style guidelines](styleguide.md), and to improve the content
+ added to documentation, consider locally installing and running documentation linters. This will
+ help you catch common issues before raising merge requests for review of documentation.
+
+The following are some suggested linters you can install locally and sample configuration:
+
+- `proselint`
+- `markdownlint`
+
+NOTE: **Note:**
+This list does not limit what other linters you can add to your local documentation writing
+ toolchain.
+
+### `proselint`
+
+`proselint` checks for common problems with English prose. It provides a
+ [plethora of checks](http://proselint.com/checks/) that are helpful for technical writing.
+
+`proselint` can be used [on the command line](http://proselint.com/utility/), either on a single
+ Markdown file or on all Markdown files in a project. For example, to run `proselint` on all
+ documentation in the [`gitlab-ce` project](https://gitlab.com/gitlab-org/gitlab-ce), run the
+ following commands from within the `gitlab-ce` project:
+
+```sh
+cd doc
+proselint **/*.md
+```
+
+`proselint` can also be run from within editors using plugins. For example, the following plugins
+ are available:
+
+- [Sublime Text](https://packagecontrol.io/packages/SublimeLinter-contrib-proselint)
+- [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=PatrykPeszko.vscode-proselint)
+- [Others](https://github.com/amperser/proselint#plugins-for-other-software)
+
+#### Sample `proselint` configuration
+
+All of the checks are good to use. However, excluding the `typography.symbols` checks might reduce
+ noise. The following sample `proselint` configuration disables the `typography.symbols` checks:
+
+```json
+{
+  "checks": {
+    "typography.symbols": false
+  }
+}
+```
+
+A file with `proselint` configuration must be placed in a
+ [valid location](https://github.com/amperser/proselint#checks). For example, `~/.config/proselint/config`.
+
+### `markdownlint`
+
+`markdownlint` checks that certain rules ([example](https://github.com/DavidAnson/markdownlint/blob/master/README.md#rules--aliases))
+ are followed for Markdown syntax. Our [style guidelines](styleguide.md) elaborate on which choices
+ must be made when selecting Markdown syntax for GitLab documentation and this tool helps
+ catch deviations from those guidelines.
+
+`markdownlint` can be used [on the command line](https://github.com/igorshubovych/markdownlint-cli#markdownlint-cli--),
+ either on a single Markdown file or on all Markdown files in a project. For example, to run
+ `markdownlint` on all documentation in the [`gitlab-ce` project](https://gitlab.com/gitlab-org/gitlab-ce),
+ run the following commands from within the `gitlab-ce` project:
+
+```sh
+cd doc
+markdownlint **/*.md
+```
+
+`markdownlint` can also be run from within editors using plugins. For example, the following plugins
+ are available:
+
+- [Sublime Text](https://packagecontrol.io/packages/SublimeLinter-contrib-markdownlint)
+- [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
+- [Others](https://github.com/DavidAnson/markdownlint#related)
+
+#### Sample `markdownlint` configuration
+
+The following sample `markdownlint` configuration modifies the available default rules to:
+
+- Adhere to the [style guidelines](styleguide.md).
+- Apply conventions found in the GitLab documentation.
+
+```json
+{
+  "default": true,
+  "header-style": { "style": "atx" },
+  "ul-style": { "style": "dash" },
+  "line-length": false,
+  "no-trailing-punctuation": false,
+  "ol-prefix": { "style": "one" },
+  "blanks-around-fences": false,
+  "hr-style": { "style": "---" },
+  "fenced-code-language": false
+}
+```
+
+For [`markdownlint`](https://gitahub.com/DavidAnson/markdownlint/), this configuration must be
+ placed in a [valid location](https://github.com/igorshubovych/markdownlint-cli#configuration). For
+ example, `~/.markdownlintrc`.
+
 ## Testing
 
 We treat documentation as code, thus have implemented some testing.
@@ -277,6 +359,15 @@ choices:
 If your branch name matches any of the above, it will run only the docs
 tests. If it doesn't, the whole test suite will run (including docs).
 
+## Danger bot
+
+GitLab uses [danger bot](https://github.com/danger/danger) for some elements in
+code review. For docs changes in merge requests, the following actions are taken:
+
+1. Whenever a change under `/doc` is made, the bot leaves a comment for the
+   author to mention `@gl-docsteam`, so that the docs can be properly
+   reviewed.
+
 ## Merge requests for GitLab documentation
 
 Before getting started, make sure you read the introductory section
@@ -288,7 +379,6 @@ for GitLab Team members.
 - Use the correct [branch name](#branch-naming)
 - Label the MR `Documentation`
 - Assign the correct milestone (see note below)
-
 
 NOTE: **Note:**
 If the release version you want to add the documentation to has already been
@@ -422,6 +512,22 @@ The following GitLab features are used among others:
 Every GitLab instance includes the documentation, which is available from `/help`
 (`http://my-instance.com/help`), e.g., <https://gitlab.com/help>.
 
+The documentation available online on docs.gitlab.com is continuously
+deployed every hour from the `master` branch of CE, EE, Omnibus, and Runner. Therefore,
+once a merge request gets merged, it will be available online on the same day,
+but they will be shipped (and available on `/help`) within the milestone assigned
+to the MR.
+
+For instance, let's say your merge request has a milestone set to 11.3, which
+will be released on 2018-09-22. If it gets merged on 2018-09-15, it will be
+available online on 2018-09-15, but, as the feature freeze date has passed, if
+the MR does not have a "pick into 11.3" label, the milestone has to be changed
+to 11.4 and it will be shipped with all GitLab packages only on 2018-10-22,
+with GitLab 11.4. Meaning, it will only be available under `/help` from GitLab
+11.4 onwards, but available on docs.gitlab.com on the same day it was merged.
+
+### Linking to `/help`
+
 When you're building a new feature, you may need to link the documentation
 from GitLab, the application. This is normally done in files inside the
 `app/views/` directory with the help of the `help_page_path` helper method.
@@ -514,7 +620,7 @@ Suppose there's a process to go from point A to point B in 5 steps: `(A) 1 > 2 >
 
 A **guide** can be understood as a description of certain processes to achieve a particular objective. A guide brings you from A to B describing the characteristics of that process, but not necessarily going over each step. It can mention, for example, steps 2 and 3, but does not necessarily explain how to accomplish them.
 
-- Live example: "[Static sites and GitLab Pages domains (Part 1)](../user/project/pages/getting_started_part_one.md) to [Creating and Tweaking GitLab CI/CD for GitLab Pages (Part 4)](../../user/project/pages/getting_started_part_four.md)"
+- Live example: "[Static sites and GitLab Pages domains (Part 1)](../../user/project/pages/getting_started_part_one.md) to [Creating and Tweaking GitLab CI/CD for GitLab Pages (Part 4)](../../user/project/pages/getting_started_part_four.md)"
 
 A **tutorial** requires a clear **step-by-step** guidance to achieve a singular objective. It brings you from A to B, describing precisely all the necessary steps involved in that process, showing each of the 5 steps to go from A to B.
 It does not only describes steps 2 and 3, but also shows you how to accomplish them.

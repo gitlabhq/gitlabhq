@@ -5,6 +5,6 @@ class RemoveExpiredGroupLinksWorker
   include CronjobQueue
 
   def perform
-    ProjectGroupLink.expired.destroy_all
+    ProjectGroupLink.expired.destroy_all # rubocop: disable DestroyAll
   end
 end

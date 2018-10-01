@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::JobsController < Projects::ApplicationController
   include SendFileUpload
 
@@ -11,6 +13,7 @@ class Projects::JobsController < Projects::ApplicationController
 
   layout 'project'
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def index
     @scope = params[:scope]
     @all_builds = project.builds.relevant
@@ -33,6 +36,7 @@ class Projects::JobsController < Projects::ApplicationController
     ])
     @builds = @builds.page(params[:page]).per(30).without_count
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def cancel_all
     return access_denied! unless can?(current_user, :update_build, project)
@@ -44,6 +48,7 @@ class Projects::JobsController < Projects::ApplicationController
     redirect_to project_jobs_path(project)
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def show
     @pipeline = @build.pipeline
     @builds = @pipeline.builds
@@ -61,6 +66,7 @@ class Projects::JobsController < Projects::ApplicationController
       end
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def trace
     build.trace.read do |stream|

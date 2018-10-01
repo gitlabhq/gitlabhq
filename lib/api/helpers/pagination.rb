@@ -91,6 +91,7 @@ module API
           @request_context = request_context
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def paginate(relation)
           pagination = KeysetPaginationInfo.new(relation, request_context)
 
@@ -112,6 +113,7 @@ module API
 
           paged_relation
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         private
 
@@ -183,6 +185,7 @@ module API
 
         private
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def add_default_order(relation)
           if relation.is_a?(ActiveRecord::Relation) && relation.order_values.empty?
             relation = relation.order(:id)
@@ -190,6 +193,7 @@ module API
 
           relation
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def add_pagination_headers(paginated_data)
           header 'X-Per-Page',    paginated_data.limit_value.to_s

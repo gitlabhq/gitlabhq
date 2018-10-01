@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Dashboard::TodosController < Dashboard::ApplicationController
   include ActionView::Helpers::NumberHelper
 
@@ -73,6 +75,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
     params.permit(:action_id, :author_id, :project_id, :type, :sort, :state, :group_id)
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def redirect_out_of_range(todos)
     total_pages =
       if todo_params.except(:sort, :page).empty?
@@ -91,4 +94,5 @@ class Dashboard::TodosController < Dashboard::ApplicationController
 
     out_of_range
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

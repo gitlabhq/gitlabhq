@@ -1,27 +1,4 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [Workflow labels](#workflow-labels)
-  - [Type labels](#type-labels)
-  - [Subject labels](#subject-labels)
-  - [Team labels](#team-labels)
-  - [Release Scoping labels](#release-scoping-labels)
-  - [Priority labels](#priority-labels)
-  - [Severity labels](#severity-labels)
-    - [Severity impact guidance](#severity-impact-guidance)
-  - [Label for community contributors](#label-for-community-contributors)
-  - [Issue triaging](#issue-triaging)
-  - [Feature proposals](#feature-proposals)
-  - [Issue tracker guidelines](#issue-tracker-guidelines)
-  - [Issue weight](#issue-weight)
-  - [Regression issues](#regression-issues)
-  - [Technical and UX debt](#technical-and-ux-debt)
-  - [Stewardship](#stewardship)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-## Workflow labels
+# Workflow labels
 
 To allow for asynchronous issue handling, we use [milestones][milestones-page]
 and [labels][labels-page]. Leads and product managers handle most of the
@@ -45,7 +22,7 @@ labels, you can _always_ add the team and type, and often also the subject.
 [milestones-page]: https://gitlab.com/gitlab-org/gitlab-ce/milestones
 [labels-page]: https://gitlab.com/gitlab-org/gitlab-ce/labels
 
-### Type labels
+## Type labels
 
 Type labels are very important. They define what kind of issue this is. Every
 issue should have one or more.
@@ -61,7 +38,7 @@ already reserved for subject labels).
 
 The descriptions on the [labels page][labels-page] explain what falls under each type label.
 
-### Subject labels
+## Subject labels
 
 Subject labels are labels that define what area or feature of GitLab this issue
 hits. They are not always necessary, but very convenient.
@@ -75,7 +52,7 @@ issue is labeled with a subject label corresponding to your expertise.
 
 Subject labels are always all-lowercase.
 
-### Team labels
+## Team labels
 
 Team labels specify what team is responsible for this issue.
 Assigning a team label makes sure issues get the attention of the appropriate
@@ -107,7 +84,7 @@ indicate if an issue needs backend work, frontend work, or both.
 Team labels are always capitalized so that they show up as the first label for
 any issue.
 
-### Release Scoping labels
+## Release Scoping labels
 
 Release Scoping labels help us clearly communicate expectations of the work for the
 release. There are three levels of Release Scoping labels:
@@ -138,7 +115,7 @@ This label documents the planned timeline & urgency which is used to measure aga
 | ~P3   | Medium Priority | Within the next 3 releases (approx one quarter)                  |
 | ~P4   | Low Priority    | Anything outside the next 3 releases (approx beyond one quarter) |
 
-### Severity labels
+## Severity labels
 
 Severity labels help us clearly communicate the impact of a ~bug on users.
 
@@ -149,7 +126,7 @@ Severity labels help us clearly communicate the impact of a ~bug on users.
 | ~S3   | Major Severity    | Broken Feature, workaround acceptable                 | Can create merge requests only from the Merge Requests page, not through the Issue. |
 | ~S4   | Low Severity      | Functionality inconvenience or cosmetic issue         | Label colors are incorrect / not being displayed. |
 
-#### Severity impact guidance
+### Severity impact guidance
 
 Severity levels can be applied further depending on the facet of the impact; e.g. Affected customers, GitLab.com availability, performance and etc. The below is a guideline.
 
@@ -160,7 +137,7 @@ Severity levels can be applied further depending on the facet of the impact; e.g
 | ~S3      | A few users or a single paid customer affected                      | Limited impact on important portions of GitLab.com | Degradation is likely to occur in the near future     |
 | ~S4      | No paid users/customer affected, or expected to in the near future  | Minor impact on on GitLab.com                      | Degradation _may_ occur but it's not likely           |
 
-### Label for community contributors
+## Label for community contributors
 
 Issues that are beneficial to our users, 'nice to haves', that we currently do
 not have the capacity for or want to give the priority to, are labeled as
@@ -200,7 +177,7 @@ If you've decided that you would like to work on an issue, please @-mention
 the [appropriate product manager](https://about.gitlab.com/handbook/product/#who-to-talk-to-for-what)
 as soon as possible. The product manager will then pull in appropriate GitLab team
 members to further discuss scope, design, and technical considerations. This will
-ensure that that your contribution is aligned with the GitLab product and minimize
+ensure that your contribution is aligned with the GitLab product and minimize
 any rework and delay in getting it merged into master.
 
 GitLab team members who apply the ~"Accepting Merge Requests" label to an issue
@@ -210,8 +187,7 @@ any potential community contributor to @-mention per above.
 [up-for-grabs]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=Accepting+Merge+Requests&scope=all&sort=weight_asc&state=opened
 [firt-timers]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name%5B%5D=Accepting+Merge+Requests&scope=all&sort=upvotes_desc&state=opened&weight=1
 
-
-### Issue triaging
+## Issue triaging
 
 Our issue triage policies are [described in our handbook]. You are very welcome
 to help the GitLab team triage issues. We also organize [issue bash events] once
@@ -224,7 +200,7 @@ on those issues. Please select someone with relevant experience from the
 the commit history for the affected files to find someone.
 
 We also use [GitLab Triage] to automate some triaging policies. This is
-currently setup as a [scheduled pipeline] running on [quality/triage-ops]
+currently set up as a [scheduled pipeline] running on [quality/triage-ops]
 project.
 
 [described in our handbook]: https://about.gitlab.com/handbook/engineering/issue-triage/
@@ -233,7 +209,7 @@ project.
 [scheduled pipeline]: https://gitlab.com/gitlab-org/quality/triage-ops/pipeline_schedules/10512/edit
 [quality/triage-ops]: https://gitlab.com/gitlab-org/quality/triage-ops
 
-### Feature proposals
+## Feature proposals
 
 To create a feature proposal for CE, open an issue on the
 [issue tracker of CE][ce-tracker].
@@ -250,7 +226,7 @@ code snippet right after your description in a new line: `~"feature proposal"`.
 Please keep feature proposals as small and simple as possible, complex ones
 might be edited to make them small and simple.
 
-Please submit Feature Proposals using the ['Feature Proposal' issue template](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab/issue_templates/Feature Proposal.md) provided on the issue tracker.
+Please submit Feature Proposals using the ['Feature Proposal' issue template](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab/issue_templates/Feature%20proposal.md) provided on the issue tracker.
 
 For changes in the interface, it is helpful to include a mockup. Issues that add to, or change, the interface should
 be given the ~"UX" label. This will allow the UX team to provide input and guidance. You may
@@ -259,7 +235,7 @@ need to ask one of the [core team] members to add the label, if you do not have 
 If you want to create something yourself, consider opening an issue first to
 discuss whether it is interesting to include this in GitLab.
 
-### Issue tracker guidelines
+## Issue tracker guidelines
 
 **[Search the issue tracker][ce-tracker]** for similar entries before
 submitting your own, there's a good chance somebody else had the same issue or
@@ -271,7 +247,7 @@ The text in the parenthesis is there to help you with what to include. Omit it
 when submitting the actual issue. You can copy-paste it and then edit as you
 see fit.
 
-### Issue weight
+## Issue weight
 
 Issue weight allows us to get an idea of the amount of work required to solve
 one or multiple issues. This makes it possible to schedule work more accurately.
@@ -293,7 +269,7 @@ is probably 1, adding a new Git Hook maybe 4 or 5, big features 7-9.
 issues or chunks. You can simply not set the weight of a parent issue and set
 weights to children issues.
 
-### Regression issues
+## Regression issues
 
 Every monthly release has a corresponding issue on the CE issue tracker to keep
 track of functionality broken by that release and any fixes that need to be
@@ -313,7 +289,7 @@ addressed.
 [8.3 Regressions]: https://gitlab.com/gitlab-org/gitlab-ce/issues/4127
 [update the notes]: https://gitlab.com/gitlab-org/release-tools/blob/master/doc/pro-tips.md#update-the-regression-issue
 
-### Technical and UX debt
+## Technical and UX debt
 
 In order to track things that can be improved in GitLab's codebase,
 we use the ~"technical debt" label in [GitLab's issue tracker][ce-tracker].
@@ -337,7 +313,7 @@ for a release by the appropriate person.
 Make sure to mention the merge request that the ~"technical debt" issue or
 ~"UX debt" issue is associated with in the description of the issue.
 
-### Stewardship
+## Stewardship
 
 For issues related to the open source stewardship of GitLab,
 there is the ~"stewardship" label.

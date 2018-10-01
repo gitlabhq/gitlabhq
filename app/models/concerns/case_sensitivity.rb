@@ -4,28 +4,51 @@
 module CaseSensitivity
   extend ActiveSupport::Concern
 
-  module ClassMethods
+  class_methods do
     # Queries the given columns regardless of the casing used.
     #
     # Unlike other ActiveRecord methods this method only operates on a Hash.
     def iwhere(params)
-      criteria   = self
-      cast_lower = Gitlab::Database.postgresql?
+      criteria = self
 
       params.each do |key, value|
-        column = ActiveRecord::Base.connection.quote_table_name(key)
-
-        condition =
-          if cast_lower
-            "LOWER(#{column}) = LOWER(:value)"
-          else
-            "#{column} = :value"
-          end
-
-        criteria = criteria.where(condition, value: value)
+        criteria = case value
+                   when Array
+                     criteria.where(value_in(key, value))
+                   else
+                     criteria.where(value_equal(key, value))
+                   end
       end
 
       criteria
+    end
+
+    private
+
+    def value_equal(column, value)
+      lower_value = lower_value(value)
+
+      lower_column(arel_table[column]).eq(lower_value).to_sql
+    end
+
+    def value_in(column, values)
+      lower_values = values.map do |value|
+        lower_value(value)
+      end
+
+      lower_column(arel_table[column]).in(lower_values).to_sql
+    end
+
+    def lower_value(value)
+      return value if Gitlab::Database.mysql?
+
+      Arel::Nodes::NamedFunction.new('LOWER', [Arel::Nodes.build_quoted(value)])
+    end
+
+    def lower_column(column)
+      return column if Gitlab::Database.mysql?
+
+      column.lower
     end
   end
 end

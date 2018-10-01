@@ -19,9 +19,16 @@
           = text_field_tag :issuable_email, email, class: "monospace js-select-on-focus form-control", readonly: true
           .input-group-append
             = clipboard_button(target: '#issuable_email', class: 'btn btn-clipboard input-group-text btn-transparent d-none d-sm-block')
+
+            - if issuable_type == 'issue'
+              - enter_title_text =  _('Enter the issue title')
+              - enter_description_text = _('Enter the issue description')
+            - else
+              - enter_title_text = _('Enter the merge request title')
+              - enter_description_text = _('Enter the merge request description')
             = mail_to email, class: 'btn btn-clipboard btn-transparent',
-              subject: _("Enter the #{name} title"),
-              body: _("Enter the #{name} description"),
+              subject: enter_title_text,
+              body: enter_description_text,
               title: _('Send email'),
               data: { toggle: 'tooltip', placement: 'bottom' } do
               = sprite_icon('mail')

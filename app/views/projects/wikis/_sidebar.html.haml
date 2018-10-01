@@ -12,7 +12,7 @@
     .blocks-container
       .block.block-first
         - if @sidebar_page
-          = render_wiki_content(@sidebar_page)
+          = render_wiki_content(@sidebar_page, legacy_render_context(params))
         - else
           %ul.wiki-pages
             = render @sidebar_wiki_entries, context: 'sidebar'

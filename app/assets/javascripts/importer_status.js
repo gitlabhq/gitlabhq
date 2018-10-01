@@ -87,7 +87,7 @@ class ImporterStatus {
         details = error.response.data.errors;
       }
 
-      flash(__(`An error occurred while importing project: ${details}`));
+      flash(sprintf(__('An error occurred while importing project: %{details}'), { details }));
     });
   }
 

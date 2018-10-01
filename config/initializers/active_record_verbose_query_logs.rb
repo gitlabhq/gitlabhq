@@ -47,7 +47,9 @@ module ActiveRecord
       end
     end
 
-    unless Gitlab.rails5?
+    if Rails.version.start_with?("5.2")
+      raise "Remove this monkey patch: #{__FILE__}"
+    else
       prepend(VerboseQueryLogs) unless Rails.env.production?
     end
   end

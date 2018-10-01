@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import Graph from '~/monitoring/components/graph.vue';
 import MonitoringMixins from '~/monitoring/mixins/monitoring_mixins';
-import eventHub from '~/monitoring/event_hub';
 import {
   deploymentData,
   convertDatesMultipleSeries,
@@ -69,23 +68,6 @@ describe('Graph', () => {
     });
   });
 
-  it('sends an event to the eventhub when it has finished resizing', done => {
-    const component = createComponent({
-      graphData: convertedMetrics[1],
-      updateAspectRatio: false,
-      deploymentData,
-      tagsPath,
-      projectPath,
-    });
-    spyOn(eventHub, '$emit');
-
-    component.updateAspectRatio = true;
-    Vue.nextTick(() => {
-      expect(eventHub.$emit).toHaveBeenCalled();
-      done();
-    });
-  });
-
   it('has a title for the y-axis and the chart legend that comes from the backend', () => {
     const component = createComponent({
       graphData: convertedMetrics[1],
@@ -112,6 +94,9 @@ describe('Graph', () => {
       tagsPath,
       projectPath,
     });
+
+    // simulate moving mouse over data series
+    component.seriesUnderMouse = component.timeSeries;
 
     component.positionFlag();
     expect(component.currentData).toBe(component.timeSeries[0].values[10]);

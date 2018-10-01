@@ -35,7 +35,9 @@ parser.parse!
 abort("Missing options. Use #{$0} --help to see the list of options available".red) if options.values.include?(nil)
 abort("Wrong version format #{options[:version].bold}".red) unless options[:version] =~ /\A\d*\-\d*\Z/
 
-branch = [BRANCH_PREFIX, options[:branch], options[:version]].join('-').freeze
+branch = "#{options[:branch]}-#{options[:version]}"
+branch.prepend("#{BRANCH_PREFIX}-") unless branch.start_with?("#{BRANCH_PREFIX}-")
+branch = branch.freeze
 stable_branch = "#{BRANCH_PREFIX}-#{options[:version]}".freeze
 
 command = "git fetch #{REMOTE} #{stable_branch} && git checkout #{stable_branch} && git pull #{REMOTE} #{stable_branch} && git checkout -B #{branch} && git cherry-pick #{options[:sha]} && git push #{REMOTE} #{branch}"

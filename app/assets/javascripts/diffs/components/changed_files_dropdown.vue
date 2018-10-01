@@ -63,7 +63,7 @@ export default {
           v-else
           role="button"
           class="fa fa-times dropdown-input-search"
-          @click="clearSearch"
+          @click.stop.prevent="clearSearch"
         ></i>
       </div>
       <div class="dropdown-content">

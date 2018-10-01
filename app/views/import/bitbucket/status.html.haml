@@ -63,7 +63,7 @@
                   = text_field_tag :path, current_user.namespace_path, class: "input-group-text input-large form-control", tabindex: 1, disabled: true
               %span.input-group-prepend
                 .input-group-text /
-              = text_field_tag :path, repo.name, class: "input-mini form-control", tabindex: 2, autofocus: true, required: true
+              = text_field_tag :path, sanitize_project_name(repo.slug), class: "input-mini form-control", tabindex: 2, autofocus: true, required: true
           %td.import-actions.job-status
             = button_tag class: 'btn btn-import js-add-to-import' do
               = _('Import')

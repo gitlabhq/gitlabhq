@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Dashboard::LabelsController < Dashboard::ApplicationController
   def index
     respond_to do |format|

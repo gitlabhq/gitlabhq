@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::LfsApiController < Projects::GitHttpClientController
   include LfsRequest
 
@@ -41,11 +43,13 @@ class Projects::LfsApiController < Projects::GitHttpClientController
     params[:operation] == 'upload'
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def existing_oids
     @existing_oids ||= begin
       project.all_lfs_objects.where(oid: objects.map { |o| o['oid'].to_s }).pluck(:oid)
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def download_objects!
     objects.each do |object|

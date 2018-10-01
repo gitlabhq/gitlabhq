@@ -47,12 +47,8 @@ class ProjectAutoDevops < ActiveRecord::Base
   end
 
   def needs_to_create_deploy_token?
-    auto_devops_enabled? &&
+    project.auto_devops_enabled? &&
       !project.public? &&
       !project.deploy_tokens.find_by(name: DeployToken::GITLAB_DEPLOY_TOKEN_NAME).present?
-  end
-
-  def auto_devops_enabled?
-    Gitlab::CurrentSettings.auto_devops_enabled? || enabled?
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::PipelinesSettingsController < Projects::ApplicationController
   before_action :authorize_admin_pipeline!
 

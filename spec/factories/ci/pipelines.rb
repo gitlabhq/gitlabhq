@@ -77,6 +77,14 @@ FactoryBot.define do
           pipeline.builds << build(:ci_build, :test_reports, pipeline: pipeline, project: pipeline.project)
         end
       end
+
+      trait :auto_devops_source do
+        config_source { Ci::Pipeline.config_sources[:auto_devops_source] }
+      end
+
+      trait :repository_source do
+        config_source { Ci::Pipeline.config_sources[:repository_source] }
+      end
     end
   end
 end

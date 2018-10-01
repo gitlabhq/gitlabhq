@@ -27,7 +27,7 @@ class JobEntity < Grape::Entity
   expose :playable?, as: :playable
   expose :created_at
   expose :updated_at
-  expose :detailed_status, as: :status, with: StatusEntity
+  expose :detailed_status, as: :status, with: DetailedStatusEntity
   expose :callout_message, if: -> (*) { failed? && !build.script_failure? }
   expose :recoverable, if: -> (*) { failed? }
 

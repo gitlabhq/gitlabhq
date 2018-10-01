@@ -12,6 +12,26 @@ describe Avatarable do
     stub_config_setting(relative_url_root: relative_url_root)
   end
 
+  describe '#update' do
+    let(:validator) { project._validators[:avatar].detect { |v| v.is_a?(FileSizeValidator) } }
+
+    context 'when avatar changed' do
+      it 'validates the file size' do
+        expect(validator).to receive(:validate_each).and_call_original
+
+        project.update(avatar: 'uploads/avatar.png')
+      end
+    end
+
+    context 'when avatar was not changed' do
+      it 'skips validation of file size' do
+        expect(validator).not_to receive(:validate_each)
+
+        project.update(name: 'Hello world')
+      end
+    end
+  end
+
   describe '#avatar_path' do
     using RSpec::Parameterized::TableSyntax
 

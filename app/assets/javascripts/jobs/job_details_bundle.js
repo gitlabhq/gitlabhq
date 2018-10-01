@@ -1,34 +1,36 @@
+import { mapState } from 'vuex';
 import Vue from 'vue';
-import JobMediator from './job_details_mediator';
-import jobHeader from './components/header.vue';
-import detailsBlock from './components/sidebar_details_block.vue';
+import Job from '../job';
+import JobHeader from './components/header.vue';
+import DetailsBlock from './components/sidebar_details_block.vue';
+import createStore from './store';
 
 export default () => {
   const { dataset } = document.getElementById('js-job-details-vue');
-  const mediator = new JobMediator({ endpoint: dataset.endpoint });
 
-  mediator.fetchJob();
+  // eslint-disable-next-line no-new
+  new Job();
+
+  const store = createStore();
+  store.dispatch('setJobEndpoint', dataset.endpoint);
+  store.dispatch('fetchJob');
 
   // Header
   // eslint-disable-next-line no-new
   new Vue({
     el: '#js-build-header-vue',
     components: {
-      jobHeader,
+      JobHeader,
     },
-    data() {
-      return {
-        mediator,
-      };
-    },
-    mounted() {
-      this.mediator.initBuildClass();
+    store,
+    computed: {
+      ...mapState(['job', 'isLoading']),
     },
     render(createElement) {
       return createElement('job-header', {
         props: {
-          isLoading: this.mediator.state.isLoading,
-          job: this.mediator.store.state.job,
+          isLoading: this.isLoading,
+          job: this.job,
         },
       });
     },
@@ -41,18 +43,17 @@ export default () => {
   new Vue({
     el: detailsBlockElement,
     components: {
-      detailsBlock,
+      DetailsBlock,
     },
-    data() {
-      return {
-        mediator,
-      };
+    store,
+    computed: {
+      ...mapState(['job', 'isLoading']),
     },
     render(createElement) {
       return createElement('details-block', {
         props: {
-          isLoading: this.mediator.state.isLoading,
-          job: this.mediator.store.state.job,
+          isLoading: this.isLoading,
+          job: this.job,
           runnerHelpUrl: dataset.runnerHelpUrl,
           terminalPath: detailsBlockDataset.terminalPath,
         },

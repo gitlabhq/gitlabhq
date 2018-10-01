@@ -290,23 +290,24 @@ export default {
 ```
 
 ### Vuex Gotchas
+
 1. Do not call a mutation directly. Always use an action to commit a mutation. Doing so will keep consistency throughout the application. From Vuex docs:
 
-  >  why don't we just call store.commit('action') directly? Well, remember that mutations must be synchronous? Actions aren't. We can perform asynchronous operations inside an action.
+    >  why don't we just call store.commit('action') directly? Well, remember that mutations must be synchronous? Actions aren't. We can perform asynchronous operations inside an action.
 
-  ```javascript
-    // component.vue
-
-    // bad
-    created() {
-      this.$store.commit('mutation');
-    }
-
-    // good
-    created() {
-      this.$store.dispatch('action');
-    }
-  ```
+    ```javascript
+      // component.vue
+  
+      // bad
+      created() {
+        this.$store.commit('mutation');
+      }
+  
+      // good
+      created() {
+        this.$store.dispatch('action');
+      }
+    ```
 1. Use mutation types instead of hardcoding strings. It will be less error prone.
 1. The State will be accessible in all components descending from the use where the store is instantiated.
 
@@ -342,7 +343,7 @@ describe('component', () => {
       name: 'Foo',
       age: '30',
     };
-    
+
     store = createStore();
 
     // populate the store

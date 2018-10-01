@@ -352,10 +352,22 @@ describe('IDE store file actions', () => {
       it('calls also getBaseRawFileData service method', done => {
         spyOn(service, 'getBaseRawFileData').and.returnValue(Promise.resolve('baseraw'));
 
+        store.state.currentProjectId = 'gitlab-org/gitlab-ce';
+        store.state.currentMergeRequestId = '1';
+        store.state.projects = {
+          'gitlab-org/gitlab-ce': {
+            mergeRequests: {
+              1: {
+                baseCommitSha: 'SHA',
+              },
+            },
+          },
+        };
+
         tmpFile.mrChange = { new_file: false };
 
         store
-          .dispatch('getRawFileData', { path: tmpFile.path, baseSha: 'SHA' })
+          .dispatch('getRawFileData', { path: tmpFile.path })
           .then(() => {
             expect(service.getBaseRawFileData).toHaveBeenCalledWith(tmpFile, 'SHA');
             expect(tmpFile.baseRaw).toBe('baseraw');
@@ -392,10 +404,7 @@ describe('IDE store file actions', () => {
         const dispatch = jasmine.createSpy('dispatch');
 
         actions
-          .getRawFileData(
-            { state: store.state, commit() {}, dispatch },
-            { path: tmpFile.path, baseSha: tmpFile.baseSha },
-          )
+          .getRawFileData({ state: store.state, commit() {}, dispatch }, { path: tmpFile.path })
           .then(done.fail)
           .catch(() => {
             expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
@@ -404,7 +413,6 @@ describe('IDE store file actions', () => {
               actionText: 'Please try again',
               actionPayload: {
                 path: tmpFile.path,
-                baseSha: tmpFile.baseSha,
               },
             });
 
@@ -680,21 +688,6 @@ describe('IDE store file actions', () => {
         .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
         .then(() => {
           expect(router.push).toHaveBeenCalledWith('/project/123/tree/master/');
-        })
-        .then(done)
-        .catch(done.fail);
-    });
-
-    it('calls scrollToTab', done => {
-      const scrollToTabSpy = jasmine.createSpy('scrollToTab');
-      const oldScrollToTab = store._actions.scrollToTab; // eslint-disable-line
-      store._actions.scrollToTab = [scrollToTabSpy]; // eslint-disable-line
-
-      store
-        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
-        .then(() => {
-          expect(scrollToTabSpy).toHaveBeenCalled();
-          store._actions.scrollToTab = oldScrollToTab; // eslint-disable-line
         })
         .then(done)
         .catch(done.fail);

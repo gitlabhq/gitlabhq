@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::BuildArtifactsController < Projects::ApplicationController
   include ExtractsPath
   include RendersBlob
@@ -42,14 +44,18 @@ class Projects::BuildArtifactsController < Projects::ApplicationController
     @job ||= job_from_id || job_from_ref
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def job_from_id
     project.builds.find_by(id: params[:build_id]) if params[:build_id]
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def job_from_ref
     return unless @ref_name
 
     jobs = project.latest_successful_builds_for(@ref_name)
     jobs.find_by(name: params[:job])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

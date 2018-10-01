@@ -71,11 +71,6 @@ For an overview on the creation of Auto DevOps, read the blog post [From 2/3 of 
 
 ## Requirements
 
-TIP: **Tip:**
-For self-hosted installations, the easiest way to make use of Auto DevOps is to
-install GitLab inside a Kubernetes cluster using the [GitLab Omnibus Helm Chart]
-which automatically installs and configures everything you need!
-
 To make full use of Auto DevOps, you will need:
 
 1. **GitLab Runner** (needed for all stages) - Your Runner needs to be
@@ -101,10 +96,6 @@ To make full use of Auto DevOps, you will need:
        Kubernetes cluster using the
        [`nginx-ingress`](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress)
        Helm chart.
-    1. **Wildcard TLS termination** - You can deploy the
-       [`kube-lego`](https://github.com/kubernetes/charts/tree/master/stable/kube-lego)
-       Helm chart to your Kubernetes cluster to automatically issue certificates
-       for your domains using Let's Encrypt.
 1. **Prometheus** (needed for Auto Monitoring) - To enable Auto Monitoring, you
    will need Prometheus installed somewhere (inside or outside your cluster) and
    configured to scrape your Kubernetes cluster. To get response metrics
@@ -148,18 +139,13 @@ Auto DevOps base domain to `1.2.3.4.nip.io`.
 Once set up, all requests will hit the load balancer, which in turn will route
 them to the Kubernetes pods that run your application(s).
 
-NOTE: **Note:**
-If GitLab is installed using the [GitLab Omnibus Helm Chart], there are two
-options: provide a static IP, or have one assigned. For more information see the
-relevant docs on the [network prerequisites](../../install/kubernetes/gitlab_omnibus.md#networking-prerequisites).
-
 ## Using multiple Kubernetes clusters **[PREMIUM]**
 
 When using Auto DevOps, you may want to deploy different environments to
 different Kubernetes clusters. This is possible due to the 1:1 connection that
 [exists between them](../../user/project/clusters/index.md#multiple-kubernetes-clusters).
 
-In the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Auto-DevOps.gitlab-ci.yml)
+In the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
 (used behind the scenes by Auto DevOps), there are currently 3 defined environment names that you need to know:
 
 - `review/` (every environment starting with `review/`)
@@ -232,6 +218,17 @@ If you are a GitLab Administrator, you can enable Auto DevOps instance wide
 in **Admin Area > Settings > Continuous Integration and Deployment**. Doing that,
 all the projects that haven't explicitly set an option will have Auto DevOps
 enabled by default.
+
+NOTE: **Note:**
+There is also a feature flag to enable Auto DevOps to a percentage of projects
+which can be enabled from the console with
+`Feature.get(:force_autodevops_on_by_default).enable_percentage_of_actors(10)`.
+
+NOTE: **Enabled by default:**
+Starting with GitLab 11.3, the Auto DevOps pipeline will be enabled by default for all
+projects. If it's not explicitly enabled for the project, Auto DevOps will be automatically
+disabled on the first pipeline failure. Your project will continue to use an alternative
+[CI/CD configuration file](../../ci/yaml/README.md) if one is found.
 
 ### Deployment strategy
 
@@ -445,7 +442,7 @@ executed somewhere else, it cannot be accessed again.
 
 > [Introduced][ce-19507] in GitLab 11.0.
 
-For internal and private projects a [GitLab Deploy Token](../../user/project/deploy_tokens/index.md###gitlab-deploy-token) 
+For internal and private projects a [GitLab Deploy Token](../../user/project/deploy_tokens/index.md###gitlab-deploy-token)
 will be automatically created, when Auto DevOps is enabled and the Auto DevOps settings are saved. This Deploy Token
 can be used for permanent access to the registry.
 
@@ -471,10 +468,7 @@ The metrics include:
 - **Response Metrics:** latency, throughput, error rate
 - **System Metrics:** CPU utilization, memory utilization
 
-If GitLab has been deployed using the [GitLab Omnibus Helm Chart], no
-configuration is required.
-
-If you have installed GitLab using a different method, you need to:
+In order to make use of monitoring you need to:
 
 1. [Deploy Prometheus](../../user/project/integrations/prometheus.md#configuring-your-own-prometheus-server-within-kubernetes) into your Kubernetes cluster
 1. If you would like response metrics, ensure you are running at least version
@@ -569,13 +563,13 @@ postgres://user:password@postgres-host:postgres-port/postgres-database
 ### Environment variables
 
 The following variables can be used for setting up the Auto DevOps domain,
-providing a custom Helm chart, or scaling your application. PostgreSQL can be
+providing a custom Helm chart, or scaling your application. PostgreSQL can
 also be customized, and you can easily use a [custom buildpack](#custom-buildpacks).
 
 | **Variable**                 | **Description**                                                                                                                                                                                                               |
 | ------------                 | ---------------                                                                                                                                                                                                               |
 | `AUTO_DEVOPS_DOMAIN`         | The [Auto DevOps domain](#auto-devops-domain); by default set automatically by the [Auto DevOps setting](#enabling-auto-devops).                                                                                              |
-| `AUTO_DEVOPS_CHART`          | The Helm Chart used to deploy your apps; defaults to the one [provided by GitLab](https://gitlab.com/charts/charts.gitlab.io/tree/master/charts/auto-deploy-app).                                                             |
+| `AUTO_DEVOPS_CHART`          | The Helm Chart used to deploy your apps; defaults to the one [provided by GitLab](https://gitlab.com/charts/auto-deploy-app).                                                             |
 | `REPLICAS`                   | The number of replicas to deploy; defaults to 1.                                                                                                                                                                              |
 | `PRODUCTION_REPLICAS`        | The number of replicas to deploy in the production environment. This takes precedence over `REPLICAS`; defaults to 1.                                                                                                         |
 | `CANARY_REPLICAS`            | The number of canary replicas to deploy for [Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html); defaults to 1                                                                              |
@@ -838,7 +832,6 @@ curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https:/
 [review-app]: ../../ci/review_apps/index.md
 [container-registry]: ../../user/project/container_registry.md
 [postgresql]: https://www.postgresql.org/
-[Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Auto-DevOps.gitlab-ci.yml
-[GitLab Omnibus Helm Chart]: ../../install/kubernetes/gitlab_omnibus.md
+[Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml
 [ee]: https://about.gitlab.com/pricing/
 [ce-19507]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19507

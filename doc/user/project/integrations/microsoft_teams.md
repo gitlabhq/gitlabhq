@@ -2,7 +2,7 @@
 
 ## On Microsoft Teams
 
-To enable Microsoft Teams integration you must create an incoming webhook integration on Microsoft Teams by following the steps described in this [document](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/connectors#setting-up-a-custom-incoming-webhook).
+To enable Microsoft Teams integration you must create an incoming webhook integration on Microsoft Teams by following the steps described in this [document](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/connectors/connectors-using#setting-up-a-custom-incoming-webhook).
 
 ## On GitLab
 
@@ -25,7 +25,7 @@ At the end fill in your Microsoft Teams details:
 
 | Field | Description |
 | ----- | ----------- |
-| **Webhook** | The incoming webhook URL which you have to setup on Microsoft Teams. |
+| **Webhook** | The incoming webhook URL which you have to set up on Microsoft Teams. |
 | **Notify only broken pipelines** | If you choose to enable the **Pipeline** event and you want to be only notified about failed pipelines. |
 
 After you are all done, click **Save changes** for the changes to take effect.

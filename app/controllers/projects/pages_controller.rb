@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::PagesController < Projects::ApplicationController
   layout 'project_settings'
 
@@ -5,13 +7,15 @@ class Projects::PagesController < Projects::ApplicationController
   before_action :authorize_read_pages!, only: [:show]
   before_action :authorize_update_pages!, except: [:show]
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def show
     @domains = @project.pages_domains.order(:domain)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def destroy
     project.remove_pages
-    project.pages_domains.destroy_all
+    project.pages_domains.destroy_all # rubocop: disable DestroyAll
 
     respond_to do |format|
       format.html  do

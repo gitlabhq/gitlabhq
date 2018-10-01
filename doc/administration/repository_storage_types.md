@@ -42,7 +42,7 @@ Registry, etc.
 ## Hashed Storage
 
 > **Warning:** Hashed storage is in **Beta**. For the latest updates, check the
-> associated [issue](https://gitlab.com/gitlab-com/infrastructure/issues/2821)
+> associated [issue](https://gitlab.com/gitlab-com/infrastructure/issues/3542)
 > and please report any problems you encounter.
 
 Hashed Storage is the new storage behavior we are rolling out with 10.0. Instead

@@ -152,7 +152,7 @@
           class="js-no-trigger">{{ issue.title }}</a>
         <span
           v-if="issueId"
-          class="board-card-number"
+          class="board-card-number append-right-5"
         >
           {{ issue.referencePath }}
         </span>
@@ -170,8 +170,8 @@
           tooltip-placement="bottom"
         />
         <span
-          v-tooltip
           v-if="shouldRenderCounter"
+          v-tooltip
           :title="assigneeCounterTooltip"
           class="avatar-counter"
         >
@@ -184,10 +184,10 @@
       class="board-card-footer"
     >
       <button
-        v-tooltip
         v-for="label in issue.labels"
         v-if="showLabel(label)"
         :key="label.id"
+        v-tooltip
         :style="labelStyle(label)"
         :title="label.description"
         class="badge color-label"

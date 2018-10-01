@@ -130,5 +130,15 @@ describe 'User edit profile' do
       visit user_path(user)
       expect(page).not_to have_selector '.cover-status'
     end
+
+    it 'displays a default emoji if only message is entered' do
+      message = 'a status without emoji'
+      visit(profile_path)
+      fill_in 'js-status-message-field', with: message
+
+      within('.js-toggle-emoji-menu') do
+        expect(page).to have_emoji('speech_balloon')
+      end
+    end
   end
 end

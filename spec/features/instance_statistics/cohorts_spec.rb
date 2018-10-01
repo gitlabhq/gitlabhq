@@ -3,6 +3,8 @@ require 'rails_helper'
 describe 'Cohorts page' do
   before do
     sign_in(create(:admin))
+
+    stub_application_setting(usage_ping_enabled: true)
   end
 
   it 'See users count per month' do

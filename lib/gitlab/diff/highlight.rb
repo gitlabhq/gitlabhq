@@ -37,7 +37,7 @@ module Gitlab
             end
           end
 
-          diff_line.text = rich_line
+          diff_line.rich_text = rich_line
 
           diff_line
         end

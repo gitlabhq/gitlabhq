@@ -10,9 +10,6 @@ describe Gitlab::BareRepositoryImport::Importer, :seed_helper do
   subject(:importer) { described_class.new(admin, bare_repository) }
 
   before do
-    @rainbow = Rainbow.enabled
-    Rainbow.enabled = false
-
     allow(described_class).to receive(:log)
   end
 
@@ -20,7 +17,6 @@ describe Gitlab::BareRepositoryImport::Importer, :seed_helper do
     FileUtils.rm_rf(base_dir)
     TestEnv.clean_test_path
     ensure_seeds
-    Rainbow.enabled = @rainbow
   end
 
   shared_examples 'importing a repository' do

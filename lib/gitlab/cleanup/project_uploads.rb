@@ -38,6 +38,7 @@ module Gitlab
       end
 
       # Accepts a path in the form of "#{hex_secret}/#{filename}"
+      # rubocop: disable CodeReuse/ActiveRecord
       def find_correct_path(upload_path)
         upload = Upload.find_by(uploader: 'FileUploader', path: upload_path)
         return unless upload && upload.local? && upload.model
@@ -52,6 +53,7 @@ module Gitlab
         # I.e. the project record might be missing, which raises an exception.
         nil
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def move_to_lost_and_found(path, dry_run)
         new_path = path.sub(/\A#{ProjectUploadFileFinder::ABSOLUTE_UPLOAD_DIR}/, LOST_AND_FOUND)
@@ -107,18 +109,22 @@ module Gitlab
           new(path_matched[1], path_matched[2])
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def orphan?
           return true if full_path.nil? || upload_path.nil?
 
           # It's possible to reduce to one query, but `where_full_path_in` is complex
           !Upload.exists?(path: upload_path, model_id: project_id, model_type: 'Project', uploader: 'FileUploader')
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         private
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def project_id
           @project_id ||= Project.where_full_path_in([full_path]).pluck(:id)
         end
+        # rubocop: enable CodeReuse/ActiveRecord
       end
     end
   end

@@ -143,6 +143,10 @@ class ProjectPolicy < BasePolicy
     enable :destroy_merge_request
     enable :destroy_issue
     enable :remove_pages
+
+    enable :set_issue_iid
+    enable :set_issue_created_at
+    enable :set_note_created_at
   end
 
   rule { can?(:guest_access) }.policy do
@@ -176,6 +180,7 @@ class ProjectPolicy < BasePolicy
     enable :fork_project
     enable :create_project_snippet
     enable :update_issue
+    enable :reopen_issue
     enable :admin_issue
     enable :admin_label
     enable :admin_list
@@ -393,6 +398,7 @@ class ProjectPolicy < BasePolicy
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def project_group_member?
     return false if @user.nil?
 
@@ -402,6 +408,7 @@ class ProjectPolicy < BasePolicy
         project.group.requesters.exists?(user_id: @user.id)
       )
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def team_access_level
     return -1 if @user.nil?

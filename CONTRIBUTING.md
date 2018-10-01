@@ -64,23 +64,25 @@ As of July 2018, all the documentation for contributing to the GitLab project ha
 
 ## Contribute to GitLab
 
-For a first-time step-by-step guide to the contribution process, see
+Thank you for your interest in contributing to GitLab. This guide details how
+to contribute to GitLab in a way that is easy for everyone.
+
+For a first-time step-by-step guide to the contribution process, please see
 ["Contributing to GitLab"](https://about.gitlab.com/contributing/).
 
-Thank you for your interest in contributing to GitLab. This guide details how
-to contribute to GitLab in a way that is efficient for everyone.
+Looking for something to work on? Look for issues in the [Backlog (Accepting merge requests) milestone](#i-want-to-contribute).
 
-Looking for something to work on? Look for issues with the label [Accepting Merge Requests](#i-want-to-contribute).
-
-GitLab comes into two flavors, GitLab Community Edition (CE) our free and open
+GitLab comes in two flavors, GitLab Community Edition (CE) our free and open
 source edition, and GitLab Enterprise Edition (EE) which is our commercial
 edition. Throughout this guide you will see references to CE and EE for
 abbreviation.
 
-If you have read this guide and want to know how the GitLab [core team]
+To get an overview of GitLab community membership including those that would be reviewing or merging your contributions, please visit [the community roles page](doc/development/contributing/community_roles.md).
+
+If you want to know how the GitLab [core team]
 operates please see [the GitLab contributing process](PROCESS.md).
 
-- [GitLab Inc engineers should refer to the engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/)
+[GitLab Inc engineers should refer to the engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/)
 
 ## Security vulnerability disclosure
 
@@ -151,8 +153,8 @@ the remaining issues on the GitHub issue tracker.
 
 ## I want to contribute!
 
-If you want to contribute to GitLab [issues with the label `Accepting Merge Requests` and small weight][accepting-mrs-weight]
-is a great place to start. Issues with a lower weight (1 or 2) are deemed
+If you want to contribute to GitLab, [issues in the Backlog (Accepting merge requests)](https://gitlab.com/gitlab-org/gitlab-ce/issues?scope=all&utf8=✓&state=opened&assignee_id=0&milestone_title=Backlog%20&#40;Accepting%20merge%20requests&#41;)
+are a great place to start. Issues with a lower weight (1 or 2) are deemed
 suitable for beginners. These issues will be of reasonable size and challenge,
 for anyone to start contributing to GitLab. If you have any questions or need help visit [Getting Help](https://about.gitlab.com/getting-help/#discussion) to
 learn how to communicate with GitLab. If you're looking for a Gitter or Slack channel
@@ -314,7 +316,7 @@ This [documentation](doc/development/contributing/merge_request_workflow.md) has
 
 ## Definition of done
 
-This [documentation](doc/development/contributing/merge_request_workflow.md)) has been moved.
+This [documentation](doc/development/contributing/merge_request_workflow.md) has been moved.
 
 
 ## Style guides

@@ -111,10 +111,12 @@ module QuickActions
     end
 
     desc 'Assign'
+    # rubocop: disable CodeReuse/ActiveRecord
     explanation do |users|
       users = issuable.allows_multiple_assignees? ? users : users.take(1)
       "Assigns #{users.map(&:to_reference).to_sentence}."
     end
+    # rubocop: enable CodeReuse/ActiveRecord
     params do
       issuable.allows_multiple_assignees? ? '@user1 @user2' : '@user'
     end
@@ -127,12 +129,12 @@ module QuickActions
     command :assign do |users|
       next if users.empty?
 
-      @updates[:assignee_ids] =
-        if issuable.allows_multiple_assignees?
-          issuable.assignees.pluck(:id) + users.map(&:id)
-        else
-          [users.first.id]
-        end
+      if issuable.allows_multiple_assignees?
+        @updates[:assignee_ids] ||= issuable.assignees.map(&:id)
+        @updates[:assignee_ids] += users.map(&:id)
+      else
+        @updates[:assignee_ids] = [users.first.id]
+      end
     end
 
     desc do
@@ -161,12 +163,12 @@ module QuickActions
       extract_users(unassign_param) if issuable.allows_multiple_assignees?
     end
     command :unassign do |users = nil|
-      @updates[:assignee_ids] =
-        if users&.any?
-          issuable.assignees.pluck(:id) - users.map(&:id)
-        else
-          []
-        end
+      if issuable.allows_multiple_assignees? && users&.any?
+        @updates[:assignee_ids] ||= issuable.assignees.map(&:id)
+        @updates[:assignee_ids] -= users.map(&:id)
+      else
+        @updates[:assignee_ids] = []
+      end
     end
 
     desc 'Set milestone'
@@ -284,8 +286,7 @@ module QuickActions
     end
     params '#issue | !merge_request'
     condition do
-      issuable.persisted? &&
-        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+      current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
     end
     parse_params do |issuable_param|
       extract_references(issuable_param, :issue).first ||
@@ -402,7 +403,7 @@ module QuickActions
       match[1] if match
     end
     command :award do |name|
-      if name && issuable.user_can_award?(current_user, name)
+      if name && issuable.user_can_award?(current_user)
         @updates[:emoji_award] = name
       end
     end
@@ -489,6 +490,30 @@ module QuickActions
       "#{comment} #{TABLEFLIP}"
     end
 
+    desc "Lock the discussion"
+    explanation "Locks the discussion"
+    condition do
+      issuable.is_a?(Issuable) &&
+        issuable.persisted? &&
+        !issuable.discussion_locked? &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
+    end
+    command :lock do
+      @updates[:discussion_locked] = true
+    end
+
+    desc "Unlock the discussion"
+    explanation "Unlocks the discussion"
+    condition do
+      issuable.is_a?(Issuable) &&
+        issuable.persisted? &&
+        issuable.discussion_locked? &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
+    end
+    command :unlock do
+      @updates[:discussion_locked] = false
+    end
+
     # This is a dummy command, so that it appears in the autocomplete commands
     desc 'CC'
     params '@user'
@@ -522,6 +547,7 @@ module QuickActions
         current_user.can?(:"update_#{issuable.to_ability_name}", issuable) &&
         issuable.project.boards.count == 1
     end
+    # rubocop: disable CodeReuse/ActiveRecord
     command :board_move do |target_list_name|
       label_ids = find_label_ids(target_list_name)
 
@@ -536,6 +562,7 @@ module QuickActions
         @updates[:add_label_ids] = [label_id]
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     desc 'Mark this issue as a duplicate of another issue'
     explanation do |duplicate_reference|
@@ -601,6 +628,7 @@ module QuickActions
       @updates[:tag_message] = message
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def extract_users(params)
       return [] if params.nil?
 
@@ -617,6 +645,7 @@ module QuickActions
 
       users
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def find_milestones(project, params = {})
       MilestonesFinder.new(params.merge(project_ids: [project.id], group_ids: [project.group&.id])).execute
@@ -653,6 +682,7 @@ module QuickActions
       end
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def extract_references(arg, type)
       ext = Gitlab::ReferenceExtractor.new(project, current_user)
 
@@ -660,5 +690,6 @@ module QuickActions
 
       ext.references(type)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

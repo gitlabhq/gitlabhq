@@ -1,8 +1,14 @@
+# frozen_string_literal: true
+
 module ImportHelper
   include ::Gitlab::Utils::StrongMemoize
 
   def has_ci_cd_only_params?
     false
+  end
+
+  def sanitize_project_name(name)
+    name.gsub(/[^\w\-]/, '-')
   end
 
   def import_project_target(owner, name)

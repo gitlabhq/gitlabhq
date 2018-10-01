@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe API::Events do
   include ApiHelpers
+
   let(:user) { create(:user) }
   let(:non_member) { create(:user) }
-  let(:other_user) { create(:user, username: 'otheruser') }
   let(:private_project) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
   let(:closed_issue) { create(:closed_issue, project: private_project, author: user) }
   let!(:closed_issue_event) { create(:event, project: private_project, author: user, target: closed_issue, action: Event::CLOSED, created_at: Date.new(2016, 12, 30)) }
@@ -28,12 +28,52 @@ describe API::Events do
         expect(json_response.size).to eq(1)
       end
     end
+
+    context 'when the requesting token has "read_user" scope' do
+      let(:token) { create(:personal_access_token, scopes: ['read_user'], user: user) }
+
+      it 'returns users events' do
+        get api('/events?action=closed&target_type=issue&after=2016-12-1&before=2016-12-31', personal_access_token: token)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(1)
+      end
+    end
+
+    context 'when the requesting token does not have "read_user" or "api" scope' do
+      let(:token_without_scopes) { create(:personal_access_token, scopes: ['read_repository'], user: user) }
+
+      it 'returns a "403" response' do
+        get api('/events', personal_access_token: token_without_scopes)
+
+        expect(response).to have_gitlab_http_status(403)
+      end
+    end
   end
 
   describe 'GET /users/:id/events' do
-    context "as a user that cannot see the event's project" do
-      it 'returns no events' do
-        get api("/users/#{user.id}/events", other_user)
+    context "as a user that cannot see another user" do
+      it 'returns a "404" response' do
+        allow(Ability).to receive(:allowed?).and_call_original
+        allow(Ability).to receive(:allowed?).with(non_member, :read_user, user).and_return(false)
+
+        get api("/users/#{user.id}/events", non_member)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to be_empty
+      end
+    end
+
+    context "as a user token that cannot see another user" do
+      let(:non_member_token) { create(:personal_access_token, scopes: ['read_user'], user: non_member) }
+
+      it 'returns a "404" response' do
+        allow(Ability).to receive(:allowed?).and_call_original
+        allow(Ability).to receive(:allowed?).with(non_member, :read_user, user).and_return(false)
+
+        get api("/users/#{user.id}/events", personal_access_token: non_member_token)
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_empty

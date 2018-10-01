@@ -5,7 +5,7 @@ replying to notification emails.
 
 ## Requirement
 
-Make sure [incoming email](incoming_email.md) is setup.
+Make sure [incoming email](incoming_email.md) is set up.
 
 ## How it works?
 

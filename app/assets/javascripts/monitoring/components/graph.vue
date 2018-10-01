@@ -32,10 +32,6 @@ export default {
       type: Object,
       required: true,
     },
-    updateAspectRatio: {
-      type: Boolean,
-      required: true,
-    },
     deploymentData: {
       type: Array,
       required: true,
@@ -82,11 +78,12 @@ export default {
         value: 0,
       },
       currentXCoordinate: 0,
-      currentCoordinates: [],
+      currentCoordinates: {},
       showFlag: false,
       showFlagContent: false,
       timeSeries: [],
       realPixelRatio: 1,
+      seriesUnderMouse: [],
     };
   },
   computed: {
@@ -109,15 +106,6 @@ export default {
     },
   },
   watch: {
-    updateAspectRatio() {
-      if (this.updateAspectRatio) {
-        this.graphHeight = 450;
-        this.graphWidth = 600;
-        this.measurements = measurements.large;
-        this.draw();
-        eventHub.$emit('toggleAspectRatio');
-      }
-    },
     hoverData() {
       this.positionFlag();
     },
@@ -126,6 +114,9 @@ export default {
     this.draw();
   },
   methods: {
+    showDot(path) {
+      return this.showFlagContent && this.seriesUnderMouse.includes(path);
+    },
     draw() {
       const breakpointSize = bp.getBreakpointSize();
       const query = this.graphData.queries[0];
@@ -155,7 +146,24 @@ export default {
       point.y = e.clientY;
       point = point.matrixTransform(this.$refs.graphData.getScreenCTM().inverse());
       point.x += 7;
-      const firstTimeSeries = this.timeSeries[0];
+
+      this.seriesUnderMouse = this.timeSeries.filter((series) => {
+        const mouseX = series.timeSeriesScaleX.invert(point.x);
+        let minDistance = Infinity;
+
+        const closestTickMark = Object.keys(this.allXAxisValues).reduce((closest, x) => {
+          const distance = Math.abs(Number(new Date(x)) - Number(mouseX));
+          if (distance < minDistance) {
+            minDistance = distance;
+            return x;
+          }
+          return closest;
+        });
+
+        return series.values.find(v => v.time.toString() === closestTickMark);
+      });
+
+      const firstTimeSeries = this.seriesUnderMouse[0];
       const timeValueOverlay = firstTimeSeries.timeSeriesScaleX.invert(point.x);
       const overlayIndex = bisectDate(firstTimeSeries.values, timeValueOverlay, 1);
       const d0 = firstTimeSeries.values[overlayIndex - 1];
@@ -189,6 +197,17 @@ export default {
       const allValues = this.timeSeries.reduce((all, { values }) => all.concat(values), []);
       axisXScale.domain(d3.extent(allValues, d => d.time));
       axisYScale.domain([0, d3.max(allValues.map(d => d.value))]);
+
+      this.allXAxisValues = this.timeSeries.reduce((obj, series) => {
+        const seriesKeys = {};
+        series.values.forEach(v => {
+          seriesKeys[v.time] = true;
+        });
+        return {
+          ...obj,
+          ...seriesKeys,
+        };
+      }, {});
 
       const xAxis = d3
         .axisBottom()
@@ -277,9 +296,8 @@ export default {
             :line-style="path.lineStyle"
             :line-color="path.lineColor"
             :area-color="path.areaColor"
-            :current-coordinates="currentCoordinates[index]"
-            :current-time-series-index="index"
-            :show-dot="showFlagContent"
+            :current-coordinates="currentCoordinates[path.metricTag]"
+            :show-dot="showDot(path)"
           />
           <graph-deployment
             :deployment-data="reducedDeploymentData"
@@ -303,7 +321,7 @@ export default {
         :graph-height="graphHeight"
         :graph-height-offset="graphHeightOffset"
         :show-flag-content="showFlagContent"
-        :time-series="timeSeries"
+        :time-series="seriesUnderMouse"
         :unit-of-display="unitOfDisplay"
         :legend-title="legendTitle"
         :deployment-flag-data="deploymentFlagData"

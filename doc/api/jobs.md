@@ -33,8 +33,9 @@ Example of response
     },
     "coverage": null,
     "created_at": "2015-12-24T15:51:21.727Z",
-    "artifacts_file": null,
+    "started_at": "2015-12-24T17:54:24.729Z",
     "finished_at": "2015-12-24T17:54:24.921Z",
+    "duration": 0.192,
     "artifacts_expire_at": "2016-01-23T17:54:24.921Z",
     "id": 6,
     "name": "rspec:other",
@@ -45,25 +46,28 @@ Example of response
       "status": "pending"
     },
     "ref": "master",
+    "artifacts": [],
     "runner": null,
     "stage": "test",
-    "started_at": "2015-12-24T17:54:24.729Z",
     "status": "failed",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/6",
     "user": {
-      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-      "bio": null,
-      "created_at": "2015-12-21T13:14:24.077Z",
       "id": 1,
-      "linkedin": "",
       "name": "Administrator",
-      "skype": "",
-      "state": "active",
-      "twitter": "",
       "username": "root",
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
       "web_url": "http://gitlab.dev/root",
-      "website_url": ""
+      "created_at": "2015-12-21T13:14:24.077Z",
+      "bio": null,
+      "location": null,
+      "public_email": "",
+      "skype": "",
+      "linkedin": "",
+      "twitter": "",
+      "website_url": "",
+      "organization": ""
     }
   },
   {
@@ -78,11 +82,19 @@ Example of response
     },
     "coverage": null,
     "created_at": "2015-12-24T15:51:21.802Z",
+    "started_at": "2015-12-24T17:54:27.722Z",
+    "finished_at": "2015-12-24T17:54:27.895Z",
+    "duration": 0.173,
     "artifacts_file": {
       "filename": "artifacts.zip",
       "size": 1000
     },
-    "finished_at": "2015-12-24T17:54:27.895Z",
+    "artifacts": [
+      {"file_type": "archive", "size": 1000, "filename": "artifacts.zip", "file_format": "zip"},
+      {"file_type": "metadata", "size": 186, "filename": "metadata.gz", "file_format": "gzip"},
+      {"file_type": "trace", "size": 1500, "filename": "job.log", "file_format": "raw"},
+      {"file_type": "junit", "size": 750, "filename": "junit.xml.gz", "file_format": "gzip"}
+    ],
     "artifacts_expire_at": "2016-01-23T17:54:27.895Z",
     "id": 7,
     "name": "teaspoon",
@@ -93,25 +105,28 @@ Example of response
       "status": "pending"
     },
     "ref": "master",
+    "artifacts": [],
     "runner": null,
     "stage": "test",
-    "started_at": "2015-12-24T17:54:27.722Z",
     "status": "failed",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/7",
     "user": {
-      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-      "bio": null,
-      "created_at": "2015-12-21T13:14:24.077Z",
       "id": 1,
-      "linkedin": "",
       "name": "Administrator",
-      "skype": "",
-      "state": "active",
-      "twitter": "",
       "username": "root",
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
       "web_url": "http://gitlab.dev/root",
-      "website_url": ""
+      "created_at": "2015-12-21T13:14:24.077Z",
+      "bio": null,
+      "location": null,
+      "public_email": "",
+      "skype": "",
+      "linkedin": "",
+      "twitter": "",
+      "website_url": "",
+      "organization": ""
     }
   }
 ]
@@ -151,8 +166,9 @@ Example of response
     },
     "coverage": null,
     "created_at": "2015-12-24T15:51:21.727Z",
-    "artifacts_file": null,
+    "started_at": "2015-12-24T17:54:24.729Z",
     "finished_at": "2015-12-24T17:54:24.921Z",
+    "duration": 0.192,
     "artifacts_expire_at": "2016-01-23T17:54:24.921Z",
     "id": 6,
     "name": "rspec:other",
@@ -163,25 +179,28 @@ Example of response
       "status": "pending"
     },
     "ref": "master",
+    "artifacts": [],
     "runner": null,
     "stage": "test",
-    "started_at": "2015-12-24T17:54:24.729Z",
     "status": "failed",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/6",
     "user": {
-      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-      "bio": null,
-      "created_at": "2015-12-21T13:14:24.077Z",
       "id": 1,
-      "linkedin": "",
       "name": "Administrator",
-      "skype": "",
-      "state": "active",
-      "twitter": "",
       "username": "root",
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
       "web_url": "http://gitlab.dev/root",
-      "website_url": ""
+      "created_at": "2015-12-21T13:14:24.077Z",
+      "bio": null,
+      "location": null,
+      "public_email": "",
+      "skype": "",
+      "linkedin": "",
+      "twitter": "",
+      "website_url": "",
+      "organization": ""
     }
   },
   {
@@ -196,11 +215,19 @@ Example of response
     },
     "coverage": null,
     "created_at": "2015-12-24T15:51:21.802Z",
+    "started_at": "2015-12-24T17:54:27.722Z",
+    "finished_at": "2015-12-24T17:54:27.895Z",
+    "duration": 0.173,
     "artifacts_file": {
       "filename": "artifacts.zip",
       "size": 1000
     },
-    "finished_at": "2015-12-24T17:54:27.895Z",
+    "artifacts": [
+      {"file_type": "archive", "size": 1000, "filename": "artifacts.zip", "file_format": "zip"},
+      {"file_type": "metadata", "size": 186, "filename": "metadata.gz", "file_format": "gzip"},
+      {"file_type": "trace", "size": 1500, "filename": "job.log", "file_format": "raw"},
+      {"file_type": "junit", "size": 750, "filename": "junit.xml.gz", "file_format": "gzip"}
+    ],
     "artifacts_expire_at": "2016-01-23T17:54:27.895Z",
     "id": 7,
     "name": "teaspoon",
@@ -211,25 +238,28 @@ Example of response
       "status": "pending"
     },
     "ref": "master",
+    "artifacts": [],
     "runner": null,
     "stage": "test",
-    "started_at": "2015-12-24T17:54:27.722Z",
     "status": "failed",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/7",
     "user": {
-      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-      "bio": null,
-      "created_at": "2015-12-21T13:14:24.077Z",
       "id": 1,
-      "linkedin": "",
       "name": "Administrator",
-      "skype": "",
-      "state": "active",
-      "twitter": "",
       "username": "root",
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
       "web_url": "http://gitlab.dev/root",
-      "website_url": ""
+      "created_at": "2015-12-21T13:14:24.077Z",
+      "bio": null,
+      "location": null,
+      "public_email": "",
+      "skype": "",
+      "linkedin": "",
+      "twitter": "",
+      "website_url": "",
+      "organization": ""
     }
   }
 ]
@@ -267,8 +297,9 @@ Example of response
   },
   "coverage": null,
   "created_at": "2015-12-24T15:51:21.880Z",
-  "artifacts_file": null,
+  "started_at": "2015-12-24T17:54:30.733Z",
   "finished_at": "2015-12-24T17:54:31.198Z",
+  "duration": 0.465,
   "artifacts_expire_at": "2016-01-23T17:54:31.198Z",
   "id": 8,
   "name": "rubocop",
@@ -279,25 +310,28 @@ Example of response
     "status": "pending"
   },
   "ref": "master",
+  "artifacts": [],
   "runner": null,
   "stage": "test",
-  "started_at": "2015-12-24T17:54:30.733Z",
   "status": "failed",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/8",
   "user": {
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "bio": null,
-    "created_at": "2015-12-21T13:14:24.077Z",
     "id": 1,
-    "linkedin": "",
     "name": "Administrator",
-    "skype": "",
-    "state": "active",
-    "twitter": "",
     "username": "root",
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
     "web_url": "http://gitlab.dev/root",
-    "website_url": ""
+    "created_at": "2015-12-21T13:14:24.077Z",
+    "bio": null,
+    "location": null,
+    "public_email": "",
+    "skype": "",
+    "linkedin": "",
+    "twitter": "",
+    "website_url": "",
+    "organization": ""
   }
 }
 ```
@@ -305,7 +339,8 @@ Example of response
 ## Get job artifacts
 
 > **Notes**:
-- [Introduced][ce-2893] in GitLab 8.5.
+>
+> - [Introduced][ce-2893] in GitLab 8.5.
 
 Get job artifacts of a project.
 
@@ -336,7 +371,8 @@ Response:
 ## Download the artifacts archive
 
 > **Notes**:
-- [Introduced][ce-5347] in GitLab 8.10.
+>
+> - [Introduced][ce-5347] in GitLab 8.10.
 
 Download the artifacts archive from the given reference name and job provided the
 job finished successfully.
@@ -458,14 +494,15 @@ Example of response
   },
   "coverage": null,
   "created_at": "2016-01-11T10:13:33.506Z",
-  "artifacts_file": null,
-  "finished_at": "2016-01-11T10:14:09.526Z",
+  "started_at": "2016-01-11T10:14:09.526Z",
+  "finished_at": null,
+  "duration": 8,
   "id": 42,
   "name": "rubocop",
   "ref": "master",
+  "artifacts": [],
   "runner": null,
   "stage": "test",
-  "started_at": null,
   "status": "canceled",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/42",
@@ -505,14 +542,15 @@ Example of response
   },
   "coverage": null,
   "created_at": "2016-01-11T10:13:33.506Z",
-  "artifacts_file": null,
+  "started_at": null,
   "finished_at": null,
+  "duration": null,
   "id": 42,
   "name": "rubocop",
   "ref": "master",
+  "artifacts": [],
   "runner": null,
   "stage": "test",
-  "started_at": null,
   "status": "pending",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/42",
@@ -559,11 +597,13 @@ Example of response
   "id": 42,
   "name": "rubocop",
   "ref": "master",
+  "artifacts": [],
   "runner": null,
   "stage": "test",
   "created_at": "2016-01-11T10:13:33.506Z",
   "started_at": "2016-01-11T10:13:33.506Z",
   "finished_at": "2016-01-11T10:15:10.506Z",
+  "duration": 97.0,
   "status": "failed",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/42",
@@ -610,11 +650,13 @@ Example response:
   "id": 42,
   "name": "rubocop",
   "ref": "master",
+  "artifacts": [],
   "runner": null,
   "stage": "test",
   "created_at": "2016-01-11T10:13:33.506Z",
   "started_at": "2016-01-11T10:13:33.506Z",
   "finished_at": "2016-01-11T10:15:10.506Z",
+  "duration": 97.0,
   "status": "failed",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/42",
@@ -654,14 +696,15 @@ Example of response
   },
   "coverage": null,
   "created_at": "2016-01-11T10:13:33.506Z",
-  "artifacts_file": null,
+  "started_at": null,
   "finished_at": null,
+  "duration": null,
   "id": 42,
   "name": "rubocop",
   "ref": "master",
+  "artifacts": [],
   "runner": null,
   "stage": "test",
-  "started_at": null,
   "status": "started",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/42",

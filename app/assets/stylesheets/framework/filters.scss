@@ -92,8 +92,8 @@
   display: -webkit-flex;
   display: flex;
   flex-shrink: 0;
-  margin-top: 5px;
-  margin-bottom: 5px;
+  margin-top: 4px;
+  margin-bottom: 4px;
 
   .selectable {
     display: -webkit-flex;
@@ -206,7 +206,7 @@
   &.focus,
   &.focus:hover {
     border-color: $blue-300;
-    box-shadow: 0 0 4px $search-input-focus-shadow-color;
+    box-shadow: 0 0 4px $dropdown-input-focus-shadow;
   }
 
   gl-emoji {
@@ -216,8 +216,8 @@
     vertical-align: inherit;
 
     img {
-      height: 18px;
-      width: 18px;
+      height: $default-icon-size;
+      width: $default-icon-size;
     }
   }
 
@@ -389,9 +389,8 @@
   .btn {
     text-overflow: ellipsis;
 
-    .fa {
-      width: 15px;
-      line-height: $line-height-base;
+    svg {
+      margin-right: $gl-padding-8;
     }
 
     .dropdown-label-box {

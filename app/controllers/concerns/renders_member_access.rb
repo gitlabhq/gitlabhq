@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RendersMemberAccess
   def prepare_groups_for_rendering(groups)
     preload_max_member_access_for_collection(Group, groups)
@@ -13,6 +15,7 @@ module RendersMemberAccess
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def preload_max_member_access_for_collection(klass, collection)
     return if !current_user || collection.blank?
 
@@ -20,4 +23,5 @@ module RendersMemberAccess
 
     current_user.public_send(method_name, collection.ids) # rubocop:disable GitlabSecurity/PublicSend
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

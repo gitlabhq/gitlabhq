@@ -46,6 +46,13 @@ FactoryBot.define do
       secret SecureRandom.hex
     end
 
+    trait :favicon_upload do
+      model { build(:appearance) }
+      path { File.join(secret, filename) }
+      uploader "FaviconUploader"
+      secret SecureRandom.hex
+    end
+
     trait :attachment_upload do
       transient do
         mount_point :attachment

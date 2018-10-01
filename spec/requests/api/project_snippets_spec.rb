@@ -116,6 +116,14 @@ describe API::ProjectSnippets do
       expect(response).to have_gitlab_http_status(400)
     end
 
+    it 'returns 400 for empty code field' do
+      params[:code] = ''
+
+      post api("/projects/#{project.id}/snippets/", admin), params
+
+      expect(response).to have_gitlab_http_status(400)
+    end
+
     context 'when the snippet is spam' do
       def create_snippet(project, snippet_params = {})
         project.add_developer(user)
@@ -176,6 +184,14 @@ describe API::ProjectSnippets do
 
     it 'returns 400 for missing parameters' do
       put api("/projects/#{project.id}/snippets/1234", admin)
+
+      expect(response).to have_gitlab_http_status(400)
+    end
+
+    it 'returns 400 for empty code field' do
+      new_content = ''
+
+      put api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin), code: new_content
 
       expect(response).to have_gitlab_http_status(400)
     end
