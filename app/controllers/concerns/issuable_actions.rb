@@ -112,9 +112,10 @@ module IssuableActions
   def notes_filter
     notes_filter_param = params[:notes_filter]
 
+    # GitLab Geo does not expect database UPDATE or INSERT statements to happen
+    # on GET requests.
+    # This is just a fail-safe in case notes_filter is sent via GET request.
     if request.put?
-      # GitLab Geo does not expect database UPDATE or INSERT statements to happen
-      # on GET requests.
       current_user&.set_notes_filter(notes_filter_param, issuable) || notes_filter_param
     else
       current_user&.notes_filter_for(issuable) || notes_filter_param
