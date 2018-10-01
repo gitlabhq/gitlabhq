@@ -1,9 +1,11 @@
 <script>
+import { Link } from '@gitlab-org/gitlab-ui';
 import Icon from '../../icon.vue';
 import { numberToHumanSize } from '../../../../lib/utils/number_utils';
 
 export default {
   components: {
+    'gl-link': Link,
     Icon,
   },
   props: {
@@ -37,7 +39,7 @@ export default {
           ({{ fileSizeReadable }})
         </template>
       </p>
-      <a
+      <gl-link
         :href="path"
         class="btn btn-default"
         rel="nofollow"
@@ -49,7 +51,7 @@ export default {
           css-classes="float-left append-right-8"
         />
         {{ __('Download') }}
-      </a>
+      </gl-link>
     </div>
   </div>
 </template>

@@ -3,13 +3,14 @@
 module Emails
   module MergeRequests
     def new_merge_request_email(recipient_id, merge_request_id, reason = nil)
-      setup_merge_request_mail(merge_request_id, recipient_id)
+      setup_merge_request_mail(merge_request_id, recipient_id, present: true)
 
       mail_new_thread(@merge_request, merge_request_thread_options(@merge_request.author_id, recipient_id, reason))
     end
 
     def new_mention_in_merge_request_email(recipient_id, merge_request_id, updated_by_user_id, reason = nil)
-      setup_merge_request_mail(merge_request_id, recipient_id)
+      setup_merge_request_mail(merge_request_id, recipient_id, present: true)
+
       mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason))
     end
 
@@ -75,10 +76,15 @@ module Emails
 
     private
 
-    def setup_merge_request_mail(merge_request_id, recipient_id)
+    def setup_merge_request_mail(merge_request_id, recipient_id, present: false)
       @merge_request = MergeRequest.find(merge_request_id)
       @project = @merge_request.project
       @target_url = project_merge_request_url(@project, @merge_request)
+
+      if present
+        recipient = User.find(recipient_id)
+        @mr_presenter = @merge_request.present(current_user: recipient)
+      end
 
       @sent_notification = SentNotification.record(@merge_request, recipient_id, reply_key)
     end

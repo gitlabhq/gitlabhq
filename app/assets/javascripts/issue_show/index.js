@@ -1,10 +1,11 @@
 import Vue from 'vue';
+import sanitize from 'sanitize-html';
 import issuableApp from './components/app.vue';
 import '../vue_shared/vue_resource_interceptor';
 
-document.addEventListener('DOMContentLoaded', () => {
+export default function initIssueableApp() {
   const initialDataEl = document.getElementById('js-issuable-app-initial-data');
-  const props = JSON.parse(initialDataEl.innerHTML.replace(/&quot;/g, '"'));
+  const props = JSON.parse(sanitize(initialDataEl.textContent).replace(/&quot;/g, '"'));
 
   return new Vue({
     el: document.getElementById('js-issuable-app'),
@@ -17,4 +18,4 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     },
   });
-});
+}

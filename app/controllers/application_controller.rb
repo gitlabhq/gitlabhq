@@ -109,6 +109,15 @@ class ApplicationController < ActionController::Base
     request.env['rack.session.options'][:expire_after] = Settings.gitlab['unauthenticated_session_expire_delay']
   end
 
+  def render(*args)
+    super.tap do
+      # Set a header for custom error pages to prevent them from being intercepted by gitlab-workhorse
+      if response.content_type == 'text/html' && (400..599).cover?(response.status)
+        response.headers['X-GitLab-Custom-Error'] = '1'
+      end
+    end
+  end
+
   protected
 
   def append_info_to_payload(payload)

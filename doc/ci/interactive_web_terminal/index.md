@@ -17,7 +17,7 @@ Two things need to be configured for the interactive web terminal to work:
 
 - The Runner needs to have [`[session_server]` configured
   properly][session-server]
-- Web terminals need to be
+- If you are using a reverse proxy with your GitLab instance, web terminals need to be
   [enabled](../../administration/integration/terminal.md#enabling-and-disabling-terminal-support)
 
 ## Debugging a running job
