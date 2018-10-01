@@ -15,6 +15,7 @@ module Gitlab
               Status::Build::Retryable],
              [Status::Build::Failed],
              [Status::Build::FailedAllowed,
+              Status::Build::Unschedule,
               Status::Build::Play,
               Status::Build::Stop],
              [Status::Build::Action],
