@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 18:49\n"
+"PO-Revision-Date: 2018-10-01 16:30\n"
 
 msgid " Status"
 msgstr "状态"
@@ -3172,6 +3172,12 @@ msgstr "填写下面的字段，启用<strong>%{enable_label}</strong>，然后�
 
 msgid "Filter"
 msgstr "筛选器"
+
+msgid "Filter by %{issuable_type} that are currently closed."
+msgstr ""
+
+msgid "Filter by %{issuable_type} that are currently opened."
+msgstr ""
 
 msgid "Filter by commit message"
 msgstr "按提交消息过滤"
