@@ -24,14 +24,33 @@ describe ResourceEvents::MergeIntoNotesService do
   let(:time) { Time.now }
 
   describe '#execute' do
-    it 'does not merge label events if user preference filter is set to "only comments"' do
-      user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], resource)
-      create_note(created_at: 4.days.ago)
-      create_event(created_at: 3.days.ago)
+    context 'when notes filters are present' do
+      before do
+        create_note(created_at: 4.days.ago)
+        create_event(created_at: 3.days.ago)
+      end
 
-      notes = described_class.new(resource, user).execute([])
+      it 'does not merge label events if user preference filter is set to "only comments"' do
+        user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], resource)
 
-      expect(notes).to be_empty
+        notes = described_class.new(resource, user).execute([])
+
+        expect(notes).to be_empty
+      end
+
+      it 'merges label events if user preference filter is set to "all activity"' do
+        user.set_notes_filter(UserPreference::NOTES_FILTERS[:all_notes], resource)
+
+        notes = described_class.new(resource, user).execute([])
+
+        expect(notes).to be_present
+      end
+
+      it 'merges label events if there is no logged user' do
+        notes = described_class.new(resource, nil).execute([])
+
+        expect(notes).to be_present
+      end
     end
 
     it 'merges label events into notes in order of created_at' do
