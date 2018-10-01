@@ -20,7 +20,7 @@ describe 'Resolving all open discussions in a merge request from an issue', :js 
     end
 
     it 'shows a button to resolve all discussions by creating a new issue' do
-      within('.line-resolve-all-container') do
+      within('.line-resolve-all-container:last-child') do
         expect(page).to have_selector resolve_all_discussions_link_selector
       end
     end
