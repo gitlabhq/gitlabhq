@@ -1,0 +1,5 @@
+---
+title: Allow setting user's organization and location attributes through the API by adding them to the list of allowed parameters
+merge_request: 21938
+author: Alexis Reigel
+type: fixed
