@@ -31,8 +31,8 @@ describe Gitlab::Auth::Saml::User do
       allow(Gitlab::Auth::Saml::Config).to receive_messages({ options: { name: 'saml', groups_attribute: 'groups', required_groups: groups, args: {} } })
     end
 
-    def stub_saml_admin_group_config(groups)
-      allow(Gitlab::Auth::Saml::Config).to receive_messages({ options: { name: 'saml', groups_attribute: 'groups', admin_groups: groups, args: {} } })
+    def stub_saml_group_config(type, groups)
+      allow(Gitlab::Auth::Saml::Config).to receive_messages({ options: { name: 'saml', groups_attribute: 'groups', "#{type}_groups": groups, args: {} } })
     end
 
     before do
@@ -44,37 +44,47 @@ describe Gitlab::Auth::Saml::User do
         stub_omniauth_config({ allow_single_sign_on: ['saml'], auto_link_saml_user: true })
       end
 
-      context 'admin groups' do
-        context 'are defined' do
-          it 'marks the user as admin' do
-            stub_saml_admin_group_config(%w(Developers))
+      context 'admin/auditor groups' do
+        %w(admin auditor).each do |group_type|
+          it "marks the user as #{group_type} when the user is in the configured group" do
+            stub_saml_group_config(group_type, %w(Developers))
             saml_user.save
 
             expect(gl_user).to be_valid
-            expect(gl_user.admin).to be_truthy
+            expect(gl_user.public_send(group_type)).to be_truthy
           end
-        end
 
-        before do
-          stub_saml_admin_group_config(%w(Admins))
-        end
-
-        context 'are defined but the user does not belong there' do
-          it 'does not mark the user as admin' do
+          it "does not mark the user as #{group_type} when the user is not in the configured group" do
+            stub_saml_group_config(group_type, %w(Admin))
             saml_user.save
 
             expect(gl_user).to be_valid
-            expect(gl_user.admin).to be_falsey
+            expect(gl_user.public_send(group_type)).to be_falsey
           end
-        end
 
-        context 'user was admin, now should not be' do
-          it 'makes user non admin' do
-            create(:user, email: 'john@mail.com', username: 'john').update_attribute('admin', true)
+          it "demotes from #{group_type} if not in the configured group" do
+            create(:user, email: 'john@mail.com', username: 'john').update_attribute(group_type, true)
+            stub_saml_group_config(group_type, %w(Admin))
             saml_user.save
 
             expect(gl_user).to be_valid
-            expect(gl_user.admin).to be_falsey
+            expect(gl_user.public_send(group_type)).to be_falsey
+          end
+
+          it "does not demote from #{group_type} if not configured" do
+            create(:user, email: 'john@mail.com', username: 'john').update_attribute(group_type, true)
+            stub_saml_group_config(group_type, [])
+            saml_user.save
+
+            expect(gl_user).to be_valid
+            expect(gl_user.public_send(group_type)).to be_truthy
+          end
+
+          it "skips #{group_type} if not configured" do
+            saml_user.save
+
+            expect(gl_user).to be_valid
+            expect(gl_user.public_send(group_type)).to be_falsey
           end
         end
       end
@@ -123,28 +133,6 @@ describe Gitlab::Auth::Saml::User do
             auth_hash.extra.raw_info.set("groups", orig_groups)
 
             expect(saml_user.find_user).to be_ldap_blocked
-          end
-        end
-      end
-
-      context 'admin groups' do
-        context 'are defined' do
-          it 'marks the user as admin' do
-            stub_saml_admin_group_config(%w(Developers))
-            saml_user.save
-
-            expect(gl_user).to be_valid
-            expect(gl_user.admin).to be_truthy
-          end
-        end
-
-        context 'are defined but the user does not belong there' do
-          it 'does not mark the user as admin' do
-            stub_saml_admin_group_config(%w(Admins))
-            saml_user.save
-
-            expect(gl_user).to be_valid
-            expect(gl_user.admin).to be_falsey
           end
         end
       end

@@ -236,6 +236,27 @@ considered `admin groups`.
         } }
 ```
 
+## Auditor Groups
+
+>**Note:**
+This setting is only available on GitLab 11.4 EE and above.
+
+This setting also follows the requirements documented for the `External Groups` setting.  GitLab uses the Group information provided by your IdP to determine if a user should be assigned the `auditor` role.
+
+```yaml
+{ name: 'saml',
+  label: 'Our SAML Provider',
+  groups_attribute: 'Groups',
+  auditor_groups: ['Auditors', 'Security'],
+  args: {
+          assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
+          idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+          idp_sso_target_url: 'https://login.example.com/idp',
+          issuer: 'https://gitlab.example.com',
+          name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+        } }
+```
+
 ## Bypass two factor authentication
 
 If you want some SAML authentication methods to count as 2FA on a per session basis, you can register them in the
