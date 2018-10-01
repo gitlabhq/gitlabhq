@@ -25,6 +25,12 @@ class StageEntity < Grape::Entity
     retried_statuses
   end
 
+  expose :ordered_statuses,
+         if: -> (_, opts) { opts[:ordered_statuses] },
+         with: JobEntity do |stage|
+    ordered_statuses
+  end
+
   expose :detailed_status, as: :status, with: DetailedStatusEntity
 
   expose :path do |stage|
@@ -58,6 +64,10 @@ class StageEntity < Grape::Entity
     @grouped_retried_statuses ||= stage.statuses.retried_ordered.group_by(&:status)
   end
 
+  def statuses
+    @statuses ||= stage.statuses.group_by(&:status)
+  end
+
   def latest_statuses
     HasStatus::ORDERED_STATUSES.map do |ordered_status|
       grouped_statuses.fetch(ordered_status, [])
@@ -67,6 +77,12 @@ class StageEntity < Grape::Entity
   def retried_statuses
     HasStatus::ORDERED_STATUSES.map do |ordered_status|
       grouped_retried_statuses.fetch(ordered_status, [])
+    end.flatten
+  end
+
+  def ordered_statuses
+    HasStatus::ORDERED_STATUSES.map do |ordered_status|
+      statuses.fetch(ordered_status, [])
     end.flatten
   end
 end

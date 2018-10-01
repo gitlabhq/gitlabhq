@@ -199,10 +199,11 @@ describe Projects::PipelinesController do
     context 'when accessing existing stage' do
       before do
         create(:ci_build, :retried, :failed, pipeline: pipeline, stage: 'build')
-        create(:ci_build, pipeline: pipeline, stage: 'build')
+        create(:ci_build, :retried, :canceled, pipeline: pipeline, stage: 'build')
+        create(:ci_build, :success, pipeline: pipeline, stage: 'build')
       end
 
-      context 'without retried' do
+      context 'without retried or ordered_statues' do
         before do
           get_stage('build')
         end
@@ -212,6 +213,7 @@ describe Projects::PipelinesController do
           expect(response).to match_response_schema('pipeline_stage')
           expect(json_response['latest_statuses'].length).to eq 1
           expect(json_response).not_to have_key('retried')
+          expect(json_response).not_to have_key('ordered_statues')
         end
       end
 
@@ -224,7 +226,23 @@ describe Projects::PipelinesController do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('pipeline_stage')
           expect(json_response['latest_statuses'].length).to eq 1
-          expect(json_response['retried'].length).to eq 1
+          expect(json_response['retried'].length).to eq 2
+        end
+      end
+
+      context 'with ordered_statues' do
+        before do
+          get_stage('build', ordered_statuses: true)
+        end
+
+        it 'returns pipelines with all jobs in ordered form' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('pipeline_stage')
+          expect(json_response['latest_statuses'].length).to eq 1
+          expect(json_response['ordered_statuses'].length).to eq 3
+          expect(json_response['ordered_statuses'][0]['status']['group']).to eq 'failed'
+          expect(json_response['ordered_statuses'][1]['status']['group']).to eq 'canceled'
+          expect(json_response['ordered_statuses'][2]['status']['group']).to eq 'success'
         end
       end
     end
