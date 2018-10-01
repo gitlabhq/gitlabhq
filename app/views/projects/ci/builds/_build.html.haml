@@ -49,6 +49,8 @@
         %span.badge.badge-danger allowed to fail
       - if job.action?
         %span.badge.badge-info manual
+      - if job.scheduled?
+        %span.badge.badge-info= s_('DelayedJobs|scheduled')
 
   - if pipeline_link
     %td
