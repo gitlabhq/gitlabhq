@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: uk\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-10-01 09:58\n"
+"PO-Revision-Date: 2018-10-01 10:03\n"
 
 msgid " Status"
 msgstr " Статус"
@@ -368,7 +368,7 @@ msgid "<code>\"johnsmith@example.com\": \"johnsmith@example.com\"</code> will ad
 msgstr "<code>\"johnsmith@example.com\": \"johnsmith@example.com\"</code> додасть \"<a href=\"#\">johnsmith@example.com</a>\" до всіх проблем та коментарів, які були створені johnsmith@example.com. За замовчуванням ім’я користувача та його електронна адреса заблоковані для забезпечення конфіденційності. Використовуйте цю опцію, якщо ви хочете показувати електронну адресу повністю."
 
 msgid "<strong>%{changedFilesLength} unstaged</strong> and <strong>%{stagedFilesLength} staged</strong> changes"
-msgstr ""
+msgstr "<strong>%{changedFilesLength} неіндексованих</strong> та <strong>%{stagedFilesLength} індексованих</strong> змін"
 
 msgid "<strong>%{created_count}</strong> created, <strong>%{accepted_count}</strong> accepted."
 msgstr "<strong>%{created_count}</strong> створено, <strong>%{accepted_count}</strong> прийнято."
@@ -881,7 +881,7 @@ msgid "Assignee"
 msgstr "Виконавець"
 
 msgid "Assignee lists not available with your current license"
-msgstr ""
+msgstr "Списки виконавців не доступні з вашою поточною ліцензією"
 
 msgid "Assignee lists show all issues assigned to the selected user."
 msgstr "Списки виконавців показують усі проблеми, призначені вибраному користувачу."
@@ -2058,7 +2058,7 @@ msgid "ClusterIntegration|sign up"
 msgstr "зареєструвати"
 
 msgid "Code owners"
-msgstr ""
+msgstr "Власники коду"
 
 msgid "Cohorts"
 msgstr "Когорти"
@@ -2195,7 +2195,7 @@ msgid "Configure limits for web and API requests."
 msgstr "Налаштуйте обмеження для веб та API запитів."
 
 msgid "Configure push mirrors."
-msgstr ""
+msgstr "Налаштуйте вихідні дзеркала."
 
 msgid "Configure storage path and circuit breaker settings."
 msgstr "Налаштуйте шлях до сховищ та circuit breaker."
@@ -2285,7 +2285,7 @@ msgid "Contribution guide"
 msgstr "Інструкція для учасників"
 
 msgid "Contributions for <strong>%{calendar_date}</strong>"
-msgstr ""
+msgstr "Внески за <strong>%{calendar_date}</strong>"
 
 msgid "Contributions per group member"
 msgstr "Кількість внесків на кожного учасника групи"
@@ -2766,13 +2766,13 @@ msgid "Discard all changes"
 msgstr "Скасувати всі зміни"
 
 msgid "Discard all unstaged changes?"
-msgstr ""
+msgstr "Скасувати всі неіндексовані зміни?"
 
 msgid "Discard changes"
 msgstr "Відхилити зміни"
 
 msgid "Discard changes to %{path}?"
-msgstr ""
+msgstr "Скасувати зміни до %{path}?"
 
 msgid "Discard draft"
 msgstr "Видалити чернетку"
@@ -3249,7 +3249,7 @@ msgid "Failed to remove issue from board, please try again."
 msgstr "Не вдалося видалити проблему з дошки, будь ласка, спробуйте ще раз."
 
 msgid "Failed to remove mirror."
-msgstr ""
+msgstr "Не вдалося видалити дзеркало."
 
 msgid "Failed to remove the pipeline schedule"
 msgstr "Не вдалося видалити розклад конвеєра"
@@ -3426,7 +3426,7 @@ msgid "Generate a default set of labels"
 msgstr "Створити стандартний набір міток"
 
 msgid "Geo"
-msgstr ""
+msgstr "Geo"
 
 msgid "Geo Nodes"
 msgstr "Гео-Вузли"
@@ -3951,7 +3951,7 @@ msgid "GroupsEmptyState|You can manage your group member’s permissions and acc
 msgstr "Ви можете керувати правами доступу членів групи мати доступ до кожного проекту в ній."
 
 msgid "GroupsTree|Are you sure you want to leave the \"%{fullName}\" group?"
-msgstr ""
+msgstr "Ви впевнені, що хочете залишити групу \"%{fullName}\"?"
 
 msgid "GroupsTree|Create a project in this group."
 msgstr "Створити проект у групі."
@@ -3978,7 +3978,7 @@ msgid "GroupsTree|No groups or projects matched your search"
 msgstr ""
 
 msgid "GroupsTree|Search by name"
-msgstr ""
+msgstr "Пошук за іменем"
 
 msgid "Have your users email"
 msgstr "Електронна пошта для звертань користувачів"
@@ -4262,7 +4262,7 @@ msgid "Introducing Cycle Analytics"
 msgstr "Представляємо аналітику циклу"
 
 msgid "Invite"
-msgstr ""
+msgstr "Запрошення"
 
 msgid "Issue"
 msgstr "Проблема"
@@ -4307,7 +4307,7 @@ msgid "Jobs"
 msgstr "Завдання"
 
 msgid "Job|Browse"
-msgstr ""
+msgstr "Переглянути"
 
 msgid "Job|Complete Raw"
 msgstr ""
@@ -4325,10 +4325,10 @@ msgid "Job|Job has been erased"
 msgstr "Завдання було стерте"
 
 msgid "Job|Job has been erased by"
-msgstr ""
+msgstr "Завдання було стерте"
 
 msgid "Job|Keep"
-msgstr ""
+msgstr "Залишити"
 
 msgid "Job|Scroll to bottom"
 msgstr "Прокрутити вниз"
@@ -5210,7 +5210,7 @@ msgid "Not enough data"
 msgstr "Недостатньо даних"
 
 msgid "Not now"
-msgstr ""
+msgstr "Пізніше"
 
 msgid "Note that the master branch is automatically protected. %{link_to_protected_branches}"
 msgstr "Майте на увазі, що гілка master захищена автоматично. %{link_to_protected_branches}"
@@ -5934,7 +5934,7 @@ msgid "Project Badges"
 msgstr "Значки проекту"
 
 msgid "Project URL"
-msgstr ""
+msgstr "URL-адреса проекту"
 
 msgid "Project access must be granted explicitly to each user."
 msgstr "Доступ до проекту повинен надаватися кожному користувачеві."
@@ -5964,7 +5964,7 @@ msgid "Project name"
 msgstr "Назва проекту"
 
 msgid "Project slug"
-msgstr ""
+msgstr "Шлях проекту"
 
 msgid "ProjectActivityRSS|Subscribe"
 msgstr "Підписатися"
@@ -6276,10 +6276,10 @@ msgid "Public pipelines"
 msgstr "Публічні конвеєри"
 
 msgid "Pull"
-msgstr ""
+msgstr "Отримати (pull)"
 
 msgid "Push"
-msgstr ""
+msgstr "Відправити (push)"
 
 msgid "Push Rules"
 msgstr "Push-правила"
