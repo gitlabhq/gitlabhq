@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: uk\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-09-30 19:33\n"
+"PO-Revision-Date: 2018-10-01 06:09\n"
 
 msgid " Status"
 msgstr " Статус"
@@ -3666,7 +3666,7 @@ msgid "Geo|Redownload"
 msgstr "Повторне завантаження"
 
 msgid "Geo|Remove"
-msgstr ""
+msgstr "Видалити"
 
 msgid "Geo|Repository sync capacity"
 msgstr "Пропускна здатність синхронізації репозиторіїв"
