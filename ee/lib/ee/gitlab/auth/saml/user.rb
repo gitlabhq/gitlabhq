@@ -18,9 +18,10 @@ module EE
             end
 
             if user
-              # Check if there is overlap between the user's groups and the external groups
-              # setting then set user as external or internal.
+              # Check if there is overlap between the user's groups and the admin/auditor groups
+              # setting then set user as admin, auditor, or neither.
               user.admin = !(auth_hash.groups & saml_config.admin_groups).empty? if admin_groups_enabled?
+              user.auditor = !(auth_hash.groups & saml_config.auditor_groups).empty? if auditor_groups_enabled?
             end
 
             user
@@ -51,7 +52,11 @@ module EE
           end
 
           def admin_groups_enabled?
-            !saml_config.admin_groups.nil?
+            !saml_config.admin_groups.blank?
+          end
+
+          def auditor_groups_enabled?
+            !saml_config.auditor_groups.blank?
           end
         end
       end

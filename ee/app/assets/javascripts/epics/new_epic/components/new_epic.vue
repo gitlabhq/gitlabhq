@@ -61,7 +61,7 @@
 <template>
   <div class="dropdown new-epic-dropdown">
     <button
-      class="btn btn-success "
+      class="btn btn-success"
       type="button"
       data-toggle="dropdown"
       @click="focusInput"
@@ -83,7 +83,7 @@
         :disabled="isCreatingDisabled"
         :loading="creating"
         :label="buttonLabel"
-        container-class="btn btn-success btn-inverted"
+        container-class="btn btn-success btn-inverted prepend-top-10"
         @click.stop="createEpic"
       />
     </div>

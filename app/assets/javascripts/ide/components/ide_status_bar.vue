@@ -50,7 +50,9 @@ export default {
     this.stopPipelinePolling();
   },
   methods: {
-    ...mapActions(['setRightPane']),
+    ...mapActions('rightPane', {
+      openRightPane: 'open',
+    }),
     ...mapActions('pipelines', ['fetchLatestPipeline', 'stopPipelinePolling']),
     startTimer() {
       this.intervalId = setInterval(() => {
@@ -88,7 +90,7 @@ export default {
         <button
           type="button"
           class="p-0 border-0 h-50"
-          @click="setRightPane($options.rightSidebarViews.pipelines)"
+          @click="openRightPane($options.rightSidebarViews.pipelines)"
         >
           <ci-icon
             v-tooltip

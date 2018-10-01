@@ -673,6 +673,14 @@ class Repository
     end
   end
 
+  def list_last_commits_for_tree(sha, path, offset: 0, limit: 25)
+    commits = raw_repository.list_last_commits_for_tree(sha, path, offset: offset, limit: limit)
+
+    commits.each do |path, commit|
+      commits[path] = ::Commit.new(commit, @project)
+    end
+  end
+
   def last_commit_for_path(sha, path)
     commit = raw_repository.last_commit_for_path(sha, path)
     ::Commit.new(commit, @project) if commit

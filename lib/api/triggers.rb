@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Triggers < Grape::API
     include PaginationParams

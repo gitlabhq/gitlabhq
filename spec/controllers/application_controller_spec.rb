@@ -728,4 +728,80 @@ describe ApplicationController do
       end
     end
   end
+
+  context 'X-GitLab-Custom-Error header' do
+    before do
+      sign_in user
+    end
+
+    context 'given a 422 error page' do
+      controller do
+        def index
+          render 'errors/omniauth_error', layout: 'errors', status: 422
+        end
+      end
+
+      it 'sets a custom header' do
+        get :index
+
+        expect(response.headers['X-GitLab-Custom-Error']).to eq '1'
+      end
+    end
+
+    context 'given a 500 error page' do
+      controller do
+        def index
+          render 'errors/omniauth_error', layout: 'errors', status: 500
+        end
+      end
+
+      it 'sets a custom header' do
+        get :index
+
+        expect(response.headers['X-GitLab-Custom-Error']).to eq '1'
+      end
+    end
+
+    context 'given a 200 success page' do
+      controller do
+        def index
+          render 'errors/omniauth_error', layout: 'errors', status: 200
+        end
+      end
+
+      it 'does not set a custom header' do
+        get :index
+
+        expect(response.headers['X-GitLab-Custom-Error']).to be_nil
+      end
+    end
+
+    context 'given a json response' do
+      controller do
+        def index
+          render json: {}, status: :unprocessable_entity
+        end
+      end
+
+      it 'does not set a custom header' do
+        get :index, format: :json
+
+        expect(response.headers['X-GitLab-Custom-Error']).to be_nil
+      end
+    end
+
+    context 'given a json response for an html request' do
+      controller do
+        def index
+          render json: {}, status: :unprocessable_entity
+        end
+      end
+
+      it 'does not set a custom header' do
+        get :index
+
+        expect(response.headers['X-GitLab-Custom-Error']).to be_nil
+      end
+    end
+  end
 end

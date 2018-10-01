@@ -11,26 +11,10 @@ class EpicsFinder < IssuableFinder
     items = by_search(items)
     items = by_author(items)
     items = by_timeframe(items)
+    items = by_state(items)
     items = by_label(items)
 
     sort(items)
-  end
-
-  def row_count
-    count = execute.count
-
-    # When filtering by multiple labels, count returns a hash of
-    # records grouped by id - so we just have to get length of the Hash.
-    # Once we have state for epics, we can use default issuables row_count
-    # method.
-    count.is_a?(Hash) ? count.length : count
-  end
-
-  # we don't have states for epics for now this method (#4017)
-  def count_by_state
-    {
-      all: row_count
-    }
   end
 
   def group
@@ -52,6 +36,10 @@ class EpicsFinder < IssuableFinder
   # rubocop: enable CodeReuse/ActiveRecord
 
   private
+
+  def count_key(value)
+    Epic.states.invert[Array(value).last].to_sym
+  end
 
   # rubocop: disable CodeReuse/ActiveRecord
   def groups_user_can_read_epics(groups)

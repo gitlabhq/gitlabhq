@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Files < Grape::API
     FILE_ENDPOINT_REQUIREMENTS = API::PROJECT_ENDPOINT_REQUIREMENTS.merge(file_path: API::NO_SLASH_URL_PART_REGEX)
