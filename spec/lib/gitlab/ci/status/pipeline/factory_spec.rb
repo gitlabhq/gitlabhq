@@ -32,10 +32,10 @@ describe Gitlab::Ci::Status::Pipeline::Factory do
           it 'does not match extended statuses' do
             expect(factory.extended_statuses).to be_empty
           end
-        end
 
-        it "fabricates a core status #{simple_status}" do
-          expect(status).to be_a expected_status
+          it "fabricates a core status #{simple_status}" do
+            expect(status).to be_a expected_status
+          end
         end
 
         it 'extends core status with common pipeline methods' do

@@ -29,7 +29,7 @@ describe Ci::RunScheduledBuildService do
       context 'when scheduled_at is not expired' do
         let(:build) { create(:ci_build, :scheduled, user: user, project: project, pipeline: pipeline) }
 
-        it 'can run the build' do
+        it 'can not run the build' do
           expect { subject }.to raise_error(StateMachines::InvalidTransition)
 
           expect(build).to be_scheduled
