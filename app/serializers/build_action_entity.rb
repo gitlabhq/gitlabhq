@@ -12,6 +12,7 @@ class BuildActionEntity < Grape::Entity
   end
 
   expose :playable?, as: :playable
+  expose :scheduled_at
 
   private
 

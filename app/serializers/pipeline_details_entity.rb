@@ -5,5 +5,6 @@ class PipelineDetailsEntity < PipelineEntity
     expose :ordered_stages, as: :stages, using: StageEntity
     expose :artifacts, using: BuildArtifactEntity
     expose :manual_actions, using: BuildActionEntity
+    expose :scheduled_actions, using: BuildActionEntity
   end
 end
