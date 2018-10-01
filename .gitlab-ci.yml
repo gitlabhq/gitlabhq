@@ -95,7 +95,7 @@ stages:
 
 # Skip all jobs except the ones that begin with 'docs/'.
 # Used for commits including ONLY documentation changes.
-# https://docs.gitlab.com/ce/development/writing_documentation.html#testing
+# https://docs.gitlab.com/ce/development/documentation/#testing
 .except-docs: &except-docs
   except:
     - /(^docs[\/-].*|.*-docs$)/
