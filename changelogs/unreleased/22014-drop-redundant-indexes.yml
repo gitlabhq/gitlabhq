@@ -1,5 +1,5 @@
 ---
 title: Redundant indexes removed
 merge_request: 22014
-author: NikolayS
+author:
 type: performance
