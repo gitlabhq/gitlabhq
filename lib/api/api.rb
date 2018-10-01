@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class API < Grape::API
     include APIGuard
