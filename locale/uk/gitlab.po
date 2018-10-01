@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: uk\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-10-01 16:31\n"
+"PO-Revision-Date: 2018-10-01 21:33\n"
 
 msgid " Status"
 msgstr " Статус"
@@ -3288,10 +3288,10 @@ msgid "Filter"
 msgstr "Фільтр"
 
 msgid "Filter by %{issuable_type} that are currently closed."
-msgstr ""
+msgstr "Фільтрувати закриті за %{issuable_type}."
 
 msgid "Filter by %{issuable_type} that are currently opened."
-msgstr ""
+msgstr "Фільтрувати відкриті за %{issuable_type}."
 
 msgid "Filter by commit message"
 msgstr "Фільтрувати за коміт-повідомленням"
@@ -7583,7 +7583,7 @@ msgid "There are no staged changes"
 msgstr "Немає індексованих змін"
 
 msgid "There are no unstaged changes"
-msgstr ""
+msgstr "Немає неіндексованих змін"
 
 msgid "There are problems accessing Git storage: "
 msgstr "Є проблеми з доступом до сховища git: "
