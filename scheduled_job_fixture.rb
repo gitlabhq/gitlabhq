@@ -189,4 +189,26 @@ class ScheduledJobFixture
   def cancel_pipeline
     Ci::Pipeline.last.cancel_running
   end
+
+  def create_stale_scheduled_builds
+    count = 100
+    rows = []
+    last_pipeline = Ci::Pipeline.last
+    last_stage = last_pipeline.stages.last
+
+    count.times do |i|
+      rows << {
+        name: "delayed-job-bulk-#{i}",
+        project_id: project.id,
+        commit_id: last_pipeline.id,
+        status: 'scheduled',
+        scheduled_at: 1.day.ago,
+        user_id: user.id,
+        stage_id: last_stage.id,
+        type: 'Ci::Build'
+      }
+    end
+
+    Gitlab::Database.bulk_insert('ci_builds', rows)
+  end
 end
