@@ -395,7 +395,7 @@ describe Ci::ProcessPipelineService, '#execute' do
         enqueue_scheduled('delayed1')
 
         expect(builds_names_and_statuses).to eq({ 'delayed1': 'pending', 'delayed2': 'scheduled' })
-        expect(pipeline.reload.status).to eq 'scheduled'
+        expect(pipeline.reload.status).to eq 'running'
       end
     end
 
