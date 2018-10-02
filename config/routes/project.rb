@@ -108,7 +108,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           post :remove_wip
           post :assign_related_issues
           get :discussions, format: :json
-
           post :rebase
           get :test_reports
 
