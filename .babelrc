@@ -1,24 +1,40 @@
 {
-  "presets": [["latest", { "es2015": { "modules": false } }], "stage-2"],
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "modules": false,
+        "targets": {
+          "ie": "11"
+        }
+      }
+    ]
+  ],
+  "plugins": [
+    "@babel/plugin-syntax-dynamic-import",
+    "@babel/plugin-syntax-import-meta",
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-proposal-json-strings"
+  ],
   "env": {
     "karma": {
-      "plugins": ["rewire"]
+      "plugins": ["babel-plugin-rewire"]
     },
     "coverage": {
       "plugins": [
         [
-          "istanbul",
+          "babel-plugin-istanbul",
           {
             "exclude": ["spec/javascripts/**/*", "app/assets/javascripts/locale/**/app.js"]
           }
         ],
         [
-          "transform-define",
+          "babel-plugin-transform-define",
           {
             "process.env.BABEL_ENV": "coverage"
           }
         ],
-        "rewire"
+        "babel-plugin-rewire"
       ]
     }
   }
