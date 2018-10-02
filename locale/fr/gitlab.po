@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-10-01 16:29\n"
+"PO-Revision-Date: 2018-10-02 09:29\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -169,26 +169,6 @@ msgstr "%{text} est disponible"
 
 msgid "%{title} changes"
 msgstr "Changements %{title}"
-
-msgid "%{type} detected 1 fixed vulnerability"
-msgid_plural "%{type} detected %{vulnerabilityCount} fixed vulnerabilities"
-msgstr[0] "%{type} a détecté une vulnérabilité corrigée"
-msgstr[1] "%{type} a détecté %{vulnerabilityCount} vulnérabilités corrigées"
-
-msgid "%{type} detected 1 new vulnerability"
-msgid_plural "%{type} detected %{vulnerabilityCount} new vulnerabilities"
-msgstr[0] "%{type} a détecté une nouvelle vulnérabilité"
-msgstr[1] "%{type} a détecté %{vulnerabilityCount} nouvelles vulnérabilités"
-
-msgid "%{type} detected 1 vulnerability"
-msgid_plural "%{type} detected %{vulnerabilityCount} vulnerabilities"
-msgstr[0] "%{type} a détecté 1 vulnérabilité"
-msgstr[1] "%{type} a détecté %{vulnerabilityCount} vulnérabilités"
-
-msgid "%{type} detected 1 vulnerability for the source branch only"
-msgid_plural "%{type} detected %{vulnerabilityCount} vulnerabilities for the source branch only"
-msgstr[0] "%{type} a détecté une vulnérabilité uniquement dans la branche source"
-msgstr[1] "%{type} a détecté %{vulnerabilityCount} vulnérabilités uniquement dans la branche source"
 
 msgid "%{unstaged} unstaged and %{staged} staged changes"
 msgstr "%{staged} changements prêts à être validés et %{unstaged} autres changements"
@@ -6683,14 +6663,6 @@ msgstr "Sécurité"
 msgid "Security Dashboard"
 msgstr "Tableau de bord de sécurité"
 
-msgid "Security scanning detected %d vulnerability for the source branch only"
-msgid_plural "Security scanning detected %d vulnerabilities for the source branch only"
-msgstr[0] "L’analyse de sécurité a détecté %d vulnérabilité dans la branche source"
-msgstr[1] "L’analyse de sécurité a détecté %d vulnérabilités dans la branche source"
-
-msgid "Security scanning detected no vulnerabilities for the source branch only"
-msgstr "L’analyse de sécurité n’a détecté aucune vulnérabilité dans la branche source"
-
 msgid "SecurityDashboard| The security dashboard displays the latest security report. Use it to find and fix vulnerabilities."
 msgstr "Le tableau de bord de sécurité affiche le dernier rapport de sécurité. Utilisez‐le pour rechercher et corriger les vulnérabilités."
 
@@ -8610,16 +8582,6 @@ msgstr "auparavant "
 msgid "among other things"
 msgstr "entre autres choses"
 
-msgid "and %d fixed vulnerability"
-msgid_plural "and %d fixed vulnerabilities"
-msgstr[0] "et %d vulnérabilité corrigée"
-msgstr[1] "et %d vulnérabilités corrigées"
-
-msgid "and 1 fixed vulnerability"
-msgid_plural "and %d fixed vulnerabilities"
-msgstr[0] "et une vulnérabilité corrigée"
-msgstr[1] "et %d vulnérabilités corrigées"
-
 msgid "assign yourself"
 msgstr "assignez vous"
 
@@ -8647,20 +8609,55 @@ msgstr "%{namespace} est affecté par « %{vulnerability} »."
 msgid "ciReport|%{remainingPackagesCount} more"
 msgstr "%{remainingPackagesCount} restant(s)"
 
-msgid "ciReport|%{reportName} is loading"
-msgstr "%{reportName} est en cours de chargement"
+msgid "ciReport|%{reportType} %{status} detected %{fixedCount} fixed vulnerability"
+msgid_plural "ciReport|%{reportType} %{status} detected %{fixedCount} fixed vulnerabilities"
+msgstr[0] ""
+msgstr[1] ""
 
-msgid "ciReport|%{reportName} resulted in error while loading results"
-msgstr "%{reportName} a provoqué une erreur lors du chargement des résultats"
+msgid "ciReport|%{reportType} %{status} detected %{newCount} new vulnerability"
+msgid_plural "ciReport|%{reportType} %{status} detected %{newCount} new vulnerabilities"
+msgstr[0] ""
+msgstr[1] ""
 
-msgid "ciReport|%{type} detected no new security vulnerabilities"
-msgstr "%{type} n’a détecté aucune nouvelle vulnérabilité de sécurité"
+msgid "ciReport|%{reportType} %{status} detected %{newCount} new, and %{fixedCount} fixed vulnerabilities"
+msgstr ""
 
-msgid "ciReport|%{type} detected no security vulnerabilities"
-msgstr "%{type} n’a détecté aucune vulnérabilité de sécurité"
+msgid "ciReport|%{reportType} %{status} detected %{newCount} vulnerability for the source branch only"
+msgid_plural "ciReport|%{reportType} %{status} detected %{newCount} vulnerabilities for the source branch only"
+msgstr[0] ""
+msgstr[1] ""
 
-msgid "ciReport|%{type} detected no vulnerabilities"
-msgstr "%{type} n’a détecté aucune vulnérabilité"
+msgid "ciReport|%{reportType} %{status} detected no new vulnerabilities"
+msgstr ""
+
+msgid "ciReport|%{reportType} %{status} detected no vulnerabilities"
+msgstr ""
+
+msgid "ciReport|%{reportType} %{status} detected no vulnerabilities for the source branch only"
+msgstr ""
+
+msgid "ciReport|%{reportType} detected %{vulnerabilityCount} vulnerability"
+msgid_plural "ciReport|%{reportType} detected %{vulnerabilityCount} vulnerabilities"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "ciReport|%{reportType} detected no vulnerabilities"
+msgstr ""
+
+msgid "ciReport|%{reportType} is loading"
+msgstr ""
+
+msgid "ciReport|%{reportType}: Loading resulted in an error"
+msgstr ""
+
+msgid "ciReport|(errors when loading results)"
+msgstr ""
+
+msgid "ciReport|(is loading)"
+msgstr ""
+
+msgid "ciReport|(is loading, errors when loading results)"
+msgstr ""
 
 msgid "ciReport|Class"
 msgstr "Classe"
@@ -8671,38 +8668,29 @@ msgstr "Qualité du code"
 msgid "ciReport|Confidence"
 msgstr "Niveau de confiance"
 
+msgid "ciReport|Container scanning"
+msgstr ""
+
 msgid "ciReport|Container scanning detected"
 msgstr "Analyse de conteneur détectée"
 
 msgid "ciReport|Container scanning detects known vulnerabilities in your docker images."
 msgstr "L’analyse des conteneurs permet la détection de vulnérabilités connues dans vos images Docker."
 
-msgid "ciReport|Container scanning is loading"
-msgstr "Chargement de l’analyse de conteneur en cours"
-
-msgid "ciReport|Container scanning resulted in error while loading results"
-msgstr "L’analyse de conteneur a provoqué une erreur lors du chargement des résultats"
+msgid "ciReport|DAST"
+msgstr ""
 
 msgid "ciReport|DAST detected"
 msgstr "DAST détecté"
 
-msgid "ciReport|DAST is loading"
-msgstr "DAST en cours de chargement"
-
-msgid "ciReport|DAST resulted in error while loading results"
-msgstr "DAST a provoqué une erreur lors du chargement des résultats"
-
 msgid "ciReport|Dependency Scanning detects known vulnerabilities in your source code's dependencies."
 msgstr "L’analyse des dépendances a détecté une vulnérabilité connue dans les dépendances de votre code source."
 
+msgid "ciReport|Dependency scanning"
+msgstr ""
+
 msgid "ciReport|Dependency scanning detected"
 msgstr "Analyse de dépendances détectée"
-
-msgid "ciReport|Dependency scanning is loading"
-msgstr "Chargement de l’analyse des dépendances en cours"
-
-msgid "ciReport|Dependency scanning resulted in error while loading results"
-msgstr "L’analyse des dépendance a provoqué une erreur lors du chargement des résultats"
 
 msgid "ciReport|Description"
 msgstr "Description"
@@ -8774,23 +8762,17 @@ msgstr "Indicateurs de performance"
 msgid "ciReport|Revert dismissal"
 msgstr "Annuler le rejet"
 
+msgid "ciReport|SAST"
+msgstr ""
+
 msgid "ciReport|SAST detected"
 msgstr "SAST détecté"
-
-msgid "ciReport|SAST is loading"
-msgstr "Chargement de SAST en cours"
-
-msgid "ciReport|SAST resulted in error while loading results"
-msgstr "SAST a provoqué une erreur lors du chargement des résultats"
 
 msgid "ciReport|Security scanning"
 msgstr "Analyse de sécurité"
 
 msgid "ciReport|Security scanning failed loading any results"
 msgstr "L’analyse de sécurité n’a pas réussi à charger de résultats"
-
-msgid "ciReport|Security scanning is loading"
-msgstr "Chargement de l’analyse de sécurité en cours"
 
 msgid "ciReport|Severity"
 msgstr "Sévérité"
@@ -8864,19 +8846,6 @@ msgstr[1] "jours"
 
 msgid "deploy token"
 msgstr "jeton de déploiement"
-
-msgid "detected %d fixed vulnerability"
-msgid_plural "detected %d fixed vulnerabilities"
-msgstr[0] "a détecté %d vulnérabilité corrigée"
-msgstr[1] "a détecté %d vulnérabilités corrigées"
-
-msgid "detected %d new vulnerability"
-msgid_plural "detected %d new vulnerabilities"
-msgstr[0] "a détecté %d nouvelle vulnérabilité"
-msgstr[1] "a détecté %d nouvelles vulnérabilités"
-
-msgid "detected no vulnerabilities"
-msgstr "n’a détecté aucune vulnérabilité"
 
 msgid "disabled"
 msgstr "désactivé"
