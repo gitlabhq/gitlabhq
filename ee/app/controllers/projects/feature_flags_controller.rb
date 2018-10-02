@@ -21,8 +21,7 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
     @feature_flag = project.operations_feature_flags.create(create_params)
 
     if @feature_flag.persisted?
-      flash[:notice] = 'Feature flag was successfully created.'
-      redirect_to project_feature_flags_path(@project)
+      redirect_to project_feature_flags_path(@project), status: 302, notice: 'Feature flag was successfully created.'
     else
       render :new
     end
@@ -33,8 +32,7 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
 
   def update
     if feature_flag.update(update_params)
-      flash[:notice] = 'Feature flag was successfully updated.'
-      redirect_to project_feature_flags_path(@project)
+      redirect_to project_feature_flags_path(@project), status: 302, notice: 'Feature flag was successfully updated.'
     else
       render :edit
     end
@@ -42,10 +40,10 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
 
   def destroy
     if feature_flag.destroy
-      flash[:notice] = 'Feature flag was successfully removed.'
+      redirect_to project_feature_flags_path(@project), status: 302, notice: 'Feature flag was successfully removed.'
+    else
+      redirect_to project_feature_flags_path(@project), status: 302, alert: 'Feature flag was not removed.'
     end
-
-    redirect_to project_feature_flags_path(@project)
   end
 
   protected
