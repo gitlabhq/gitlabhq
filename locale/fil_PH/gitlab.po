@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fil\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-10-01 16:29\n"
+"PO-Revision-Date: 2018-10-02 09:29\n"
 
 msgid " Status"
 msgstr ""
@@ -169,26 +169,6 @@ msgstr ""
 
 msgid "%{title} changes"
 msgstr ""
-
-msgid "%{type} detected 1 fixed vulnerability"
-msgid_plural "%{type} detected %{vulnerabilityCount} fixed vulnerabilities"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%{type} detected 1 new vulnerability"
-msgid_plural "%{type} detected %{vulnerabilityCount} new vulnerabilities"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%{type} detected 1 vulnerability"
-msgid_plural "%{type} detected %{vulnerabilityCount} vulnerabilities"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%{type} detected 1 vulnerability for the source branch only"
-msgid_plural "%{type} detected %{vulnerabilityCount} vulnerabilities for the source branch only"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "%{unstaged} unstaged and %{staged} staged changes"
 msgstr ""
@@ -6683,14 +6663,6 @@ msgstr ""
 msgid "Security Dashboard"
 msgstr ""
 
-msgid "Security scanning detected %d vulnerability for the source branch only"
-msgid_plural "Security scanning detected %d vulnerabilities for the source branch only"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "Security scanning detected no vulnerabilities for the source branch only"
-msgstr ""
-
 msgid "SecurityDashboard| The security dashboard displays the latest security report. Use it to find and fix vulnerabilities."
 msgstr ""
 
@@ -8610,16 +8582,6 @@ msgstr ""
 msgid "among other things"
 msgstr ""
 
-msgid "and %d fixed vulnerability"
-msgid_plural "and %d fixed vulnerabilities"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "and 1 fixed vulnerability"
-msgid_plural "and %d fixed vulnerabilities"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "assign yourself"
 msgstr ""
 
@@ -8647,19 +8609,54 @@ msgstr ""
 msgid "ciReport|%{remainingPackagesCount} more"
 msgstr ""
 
-msgid "ciReport|%{reportName} is loading"
+msgid "ciReport|%{reportType} %{status} detected %{fixedCount} fixed vulnerability"
+msgid_plural "ciReport|%{reportType} %{status} detected %{fixedCount} fixed vulnerabilities"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "ciReport|%{reportType} %{status} detected %{newCount} new vulnerability"
+msgid_plural "ciReport|%{reportType} %{status} detected %{newCount} new vulnerabilities"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "ciReport|%{reportType} %{status} detected %{newCount} new, and %{fixedCount} fixed vulnerabilities"
 msgstr ""
 
-msgid "ciReport|%{reportName} resulted in error while loading results"
+msgid "ciReport|%{reportType} %{status} detected %{newCount} vulnerability for the source branch only"
+msgid_plural "ciReport|%{reportType} %{status} detected %{newCount} vulnerabilities for the source branch only"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "ciReport|%{reportType} %{status} detected no new vulnerabilities"
 msgstr ""
 
-msgid "ciReport|%{type} detected no new security vulnerabilities"
+msgid "ciReport|%{reportType} %{status} detected no vulnerabilities"
 msgstr ""
 
-msgid "ciReport|%{type} detected no security vulnerabilities"
+msgid "ciReport|%{reportType} %{status} detected no vulnerabilities for the source branch only"
 msgstr ""
 
-msgid "ciReport|%{type} detected no vulnerabilities"
+msgid "ciReport|%{reportType} detected %{vulnerabilityCount} vulnerability"
+msgid_plural "ciReport|%{reportType} detected %{vulnerabilityCount} vulnerabilities"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "ciReport|%{reportType} detected no vulnerabilities"
+msgstr ""
+
+msgid "ciReport|%{reportType} is loading"
+msgstr ""
+
+msgid "ciReport|%{reportType}: Loading resulted in an error"
+msgstr ""
+
+msgid "ciReport|(errors when loading results)"
+msgstr ""
+
+msgid "ciReport|(is loading)"
+msgstr ""
+
+msgid "ciReport|(is loading, errors when loading results)"
 msgstr ""
 
 msgid "ciReport|Class"
@@ -8671,37 +8668,28 @@ msgstr ""
 msgid "ciReport|Confidence"
 msgstr ""
 
+msgid "ciReport|Container scanning"
+msgstr ""
+
 msgid "ciReport|Container scanning detected"
 msgstr ""
 
 msgid "ciReport|Container scanning detects known vulnerabilities in your docker images."
 msgstr ""
 
-msgid "ciReport|Container scanning is loading"
-msgstr ""
-
-msgid "ciReport|Container scanning resulted in error while loading results"
+msgid "ciReport|DAST"
 msgstr ""
 
 msgid "ciReport|DAST detected"
 msgstr ""
 
-msgid "ciReport|DAST is loading"
-msgstr ""
-
-msgid "ciReport|DAST resulted in error while loading results"
-msgstr ""
-
 msgid "ciReport|Dependency Scanning detects known vulnerabilities in your source code's dependencies."
 msgstr ""
 
+msgid "ciReport|Dependency scanning"
+msgstr ""
+
 msgid "ciReport|Dependency scanning detected"
-msgstr ""
-
-msgid "ciReport|Dependency scanning is loading"
-msgstr ""
-
-msgid "ciReport|Dependency scanning resulted in error while loading results"
 msgstr ""
 
 msgid "ciReport|Description"
@@ -8774,22 +8762,16 @@ msgstr ""
 msgid "ciReport|Revert dismissal"
 msgstr ""
 
+msgid "ciReport|SAST"
+msgstr ""
+
 msgid "ciReport|SAST detected"
-msgstr ""
-
-msgid "ciReport|SAST is loading"
-msgstr ""
-
-msgid "ciReport|SAST resulted in error while loading results"
 msgstr ""
 
 msgid "ciReport|Security scanning"
 msgstr ""
 
 msgid "ciReport|Security scanning failed loading any results"
-msgstr ""
-
-msgid "ciReport|Security scanning is loading"
 msgstr ""
 
 msgid "ciReport|Severity"
@@ -8863,19 +8845,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "deploy token"
-msgstr ""
-
-msgid "detected %d fixed vulnerability"
-msgid_plural "detected %d fixed vulnerabilities"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "detected %d new vulnerability"
-msgid_plural "detected %d new vulnerabilities"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "detected no vulnerabilities"
 msgstr ""
 
 msgid "disabled"
