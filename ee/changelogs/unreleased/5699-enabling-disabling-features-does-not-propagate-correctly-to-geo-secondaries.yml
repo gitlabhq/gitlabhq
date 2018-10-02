@@ -1,0 +1,6 @@
+---
+title: Geo - Send a cache invalidation event via the log cursor whenever features
+  are changed on the primary
+merge_request: 7738
+author:
+type: fixed
