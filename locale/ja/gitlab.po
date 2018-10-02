@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-10-02 09:28\n"
+"PO-Revision-Date: 2018-10-02 11:46\n"
 
 msgid " Status"
 msgstr " ステータス"
@@ -514,8 +514,7 @@ msgid "An SSH key will be automatically generated when the form is submitted. Fo
 msgstr ""
 
 msgid "An application called %{link_to_client} is requesting access to your GitLab account."
-msgstr "アプリケーションの %{link_to_client} があなたの\n"
-" GitLab アカウントへのアクセスを要求しています。"
+msgstr "アプリケーションの %{link_to_client} があなたの GitLab アカウントへのアクセスを要求しています。"
 
 msgid "An empty GitLab User field will add the FogBugz user's full name (e.g. \"By John Smith\") in the description of all issues and comments. It will also associate and/or assign these issues and comments with the project creator."
 msgstr "GitLab ユーザフィールドが空の場合、すべての問題とコメントの説明に FogBugz ユーザのフルネーム （例えば、By John Smith）を追加します。また、これらの問題やコメントをプロジェクト作成者に関連付けるか、または割り当てます。"
