@@ -2,17 +2,17 @@ module Gitlab
   module Ci
     module Status
       module Pipeline
-        class Blocked < Status::Extended
+        class Scheduled < Status::Extended
           def text
-            s_('CiStatusText|blocked')
+            s_('CiStatusText|scheduled')
           end
 
           def label
-            s_('CiStatusLabel|waiting for manual action')
+            s_('CiStatusLabel|waiting for delayed job')
           end
 
           def self.matches?(pipeline, user)
-            pipeline.blocked?
+            pipeline.scheduled?
           end
         end
       end
