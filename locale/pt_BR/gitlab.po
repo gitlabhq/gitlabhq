@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: pt-BR\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-10-02 11:53\n"
+"PO-Revision-Date: 2018-10-02 12:08\n"
 
 msgid " Status"
 msgstr " Status"
@@ -2020,7 +2020,7 @@ msgid "CommitMessage|Add %{file_name}"
 msgstr "Adicionar %{file_name}"
 
 msgid "CommitWidget|authored"
-msgstr ""
+msgstr "Escrito"
 
 msgid "Commits"
 msgstr "Commits"
