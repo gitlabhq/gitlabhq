@@ -459,7 +459,9 @@ For example, in a rails application :
   bin/setup`
 * `DB_MIGRATE` can be set to `cd /app && RAILS_ENV=production bin/update`
 
-Note that `/app` is the location of the application as [configured by
+NOTE: **Note:**
+The `/app` path is the directory of your project inside the docker image
+as [configured by
 Herokuish](https://github.com/gliderlabs/herokuish#paths)
 
 > [Introduced][ce-19507] in GitLab 11.0.
