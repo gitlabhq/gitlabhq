@@ -25,7 +25,7 @@ module Gitlab
             include Entry::Validatable
             include Entry::Attributable
 
-            ALLOWED_KEYS = %i[refs kubernetes variables changes]
+            ALLOWED_KEYS = %i[refs kubernetes variables changes].freeze
             attributes :refs, :kubernetes, :variables, :changes
 
             validations do
