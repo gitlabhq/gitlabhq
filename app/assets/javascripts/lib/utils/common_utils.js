@@ -616,6 +616,17 @@ export const roundOffFloat = (number, precision = 0) => {
   return Math.round(number * multiplier) / multiplier;
 };
 
+/**
+ * Represents navigation type constants of the Performance Navigation API.
+ * Detailed explanation see https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigation.
+ */
+export const NavigationType = {
+  TYPE_NAVIGATE: 0,
+  TYPE_RELOAD: 1,
+  TYPE_BACK_FORWARD: 2,
+  TYPE_RESERVED: 255,
+};
+
 window.gl = window.gl || {};
 window.gl.utils = {
   ...(window.gl.utils || {}),
