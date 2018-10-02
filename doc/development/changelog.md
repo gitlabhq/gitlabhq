@@ -110,7 +110,8 @@ At this point the script would ask you to select the category of the change (map
 4. New deprecation
 5. Feature removal
 6. Security fix
-7. Other
+7. Performance improvement
+8. Other
 ```
 
 The entry filename is based on the name of the current Git branch. If you run

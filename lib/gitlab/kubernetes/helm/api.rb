@@ -17,6 +17,12 @@ module Gitlab
           kubeclient.create_pod(command.pod_resource)
         end
 
+        def update(command)
+          namespace.ensure_exists!
+          update_config_map(command)
+          kubeclient.create_pod(command.pod_resource)
+        end
+
         ##
         # Returns Pod phase
         #
@@ -36,6 +42,12 @@ module Gitlab
           kubeclient.delete_pod(pod_name, namespace.name)
         end
 
+        def get_config_map(config_map_name)
+          namespace.ensure_exists!
+
+          kubeclient.get_config_map(config_map_name, namespace.name)
+        end
+
         private
 
         attr_reader :kubeclient, :namespace
@@ -43,6 +55,12 @@ module Gitlab
         def create_config_map(command)
           command.config_map_resource.tap do |config_map_resource|
             kubeclient.create_config_map(config_map_resource)
+          end
+        end
+
+        def update_config_map(command)
+          command.config_map_resource.tap do |config_map_resource|
+            kubeclient.update_config_map(config_map_resource)
           end
         end
 

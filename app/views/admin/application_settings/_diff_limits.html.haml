@@ -1,0 +1,16 @@
+= form_for @application_setting, url: admin_application_settings_path(anchor: 'js-merge-request-settings'), html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      = f.label :diff_max_patch_bytes, 'Maximum diff patch size (Bytes)', class: 'label-light'
+      = f.number_field :diff_max_patch_bytes, class: 'form-control'
+      %span.form-text.text-muted
+        Diff files surpassing this limit will be presented as 'too large'
+        and won't be expandable.
+
+        = link_to icon('question-circle'),
+          help_page_path('user/admin_area/diff_limits',
+          anchor: 'maximum-diff-patch-size')
+
+  = f.submit _('Save changes'), class: 'btn btn-success'

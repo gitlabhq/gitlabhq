@@ -1,0 +1,5 @@
+---
+title: Fix migration to avoid an exception during upgrade
+merge_request: 22055
+author:
+type: fixed

@@ -182,6 +182,12 @@ class ApplicationSetting < ActiveRecord::Base
             numericality: { less_than_or_equal_to: :gitaly_timeout_default },
             if: :gitaly_timeout_default
 
+  validates :diff_max_patch_bytes,
+            presence: true,
+            numericality: { only_integer: true,
+                            greater_than_or_equal_to: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
+                            less_than_or_equal_to: Gitlab::Git::Diff::MAX_PATCH_BYTES_UPPER_BOUND }
+
   validates :user_default_internal_regex, js_regex: true, allow_nil: true
 
   SUPPORTED_KEY_TYPES.each do |type|
@@ -293,7 +299,8 @@ class ApplicationSetting < ActiveRecord::Base
       user_default_external: false,
       user_default_internal_regex: nil,
       user_show_add_ssh_key_message: true,
-      usage_stats_set_by_user_id: nil
+      usage_stats_set_by_user_id: nil,
+      diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES
     }
   end
 
