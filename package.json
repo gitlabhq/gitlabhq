@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@gitlab-org/gitlab-svgs": "^1.29.0",
-    "@gitlab-org/gitlab-ui": "https://gitlab.com/gitlab-org/gitlab-ui/-/jobs/101969901/artifacts/raw/gitlab-ui.jivl-add-text-button-component.tgz",
+    "@gitlab-org/gitlab-ui": "^1.8.0",
     "autosize": "^4.0.0",
     "axios": "^0.17.1",
     "babel-core": "^6.26.3",
