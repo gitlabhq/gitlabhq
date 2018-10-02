@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe QA::Runtime::Env do
   include Support::StubENV
 
@@ -34,12 +36,12 @@ describe QA::Runtime::Env do
     end
   end
 
-  describe '.verbose?' do
-    it_behaves_like 'boolean method', :verbose?, 'VERBOSE', false
-  end
-
   describe '.signup_disabled?' do
     it_behaves_like 'boolean method', :signup_disabled?, 'SIGNUP_DISABLED', false
+  end
+
+  describe '.debug?' do
+    it_behaves_like 'boolean method', :debug?, 'QA_DEBUG', false
   end
 
   describe '.chrome_headless?' do
@@ -164,6 +166,20 @@ describe QA::Runtime::Env do
       stub_env('GITHUB_ACCESS_TOKEN', ' abc123 ')
 
       expect { described_class.require_github_access_token! }.not_to raise_error
+    end
+  end
+
+  describe '.log_destination' do
+    it 'returns $stdout if QA_LOG_PATH is not defined' do
+      stub_env('QA_LOG_PATH', nil)
+
+      expect(described_class.log_destination).to eq($stdout)
+    end
+
+    it 'returns the path if QA_LOG_PATH is defined' do
+      stub_env('QA_LOG_PATH', 'path/to_file')
+
+      expect(described_class.log_destination).to eq('path/to_file')
     end
   end
 end

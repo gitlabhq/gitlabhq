@@ -18,6 +18,7 @@ module QA
     autoload :Address, 'qa/runtime/address'
     autoload :Path, 'qa/runtime/path'
     autoload :Fixtures, 'qa/runtime/fixtures'
+    autoload :Logger, 'qa/runtime/logger'
 
     module API
       autoload :Client, 'qa/runtime/api/client'
@@ -322,6 +323,14 @@ module QA
         autoload :Base, 'qa/vendor/saml_idp/page/base'
         autoload :Login, 'qa/vendor/saml_idp/page/login'
       end
+    end
+  end
+
+  # Classes that provide support to other parts of the framework.
+  #
+  module Support
+    module Page
+      autoload :Logging, 'qa/support/page/logging'
     end
   end
 end
