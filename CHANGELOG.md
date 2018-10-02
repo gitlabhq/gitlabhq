@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.3.1 (2018-09-26)
+
+### Security (6 changes)
+
+- Redact confidential events in the API.
+- Set timeout for syntax highlighting.
+- Sanitize JSON data properly to fix XSS on Issue details page.
+- Fix stored XSS in merge requests from imported repository.
+- Fix xss vulnerability sourced from package.json.
+- Block loopback addresses in UrlBlocker.
+
+
 ## 11.3.0 (2018-09-22)
 
 ### Security (5 changes, 1 of them is from the community)
