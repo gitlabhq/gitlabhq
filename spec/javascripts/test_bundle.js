@@ -155,8 +155,8 @@ describe('test errors', () => {
 // if we're generating coverage reports, make sure to include all files so
 // that we can catch files with 0% coverage
 // see: https://github.com/deepsweet/istanbul-instrumenter-loader/issues/15
-if (process.env.BABEL_ENV === 'coverage') {
   // exempt these files from the coverage report
+if (GENERATE_COVERAGE_REPORT) {
   const troubleMakers = [
     './blob_edit/blob_bundle.js',
     './boards/components/modal/empty_state.vue',

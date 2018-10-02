@@ -6,6 +6,7 @@ const argumentsParser = require('commander');
 const webpackConfig = require('./webpack.config.js');
 
 const ROOT_PATH = path.resolve(__dirname, '..');
+const GENERATE_COVERAGE_REPORT = process.env.BABEL_ENV === 'coverage' || process.env.NODE_ENV === 'coverage';
 
 function fatalError(message) {
   console.error(chalk.red(`\nError: ${message}\n`));
@@ -21,6 +22,10 @@ webpackConfig.optimization.splitChunks = false;
 
 // use quicker sourcemap option
 webpackConfig.devtool = 'cheap-inline-source-map';
+
+webpackConfig.plugins.push(
+  new webpack.DefinePlugin({ GENERATE_COVERAGE_REPORT }),
+);
 
 const specFilters = argumentsParser
   .option(
@@ -118,7 +123,7 @@ module.exports = function(config) {
     };
   }
 
-  if (process.env.BABEL_ENV === 'coverage' || process.env.NODE_ENV === 'coverage') {
+  if (GENERATE_COVERAGE_REPORT) {
     karmaConfig.reporters.push('coverage-istanbul');
     karmaConfig.coverageIstanbulReporter = {
       reports: ['html', 'text-summary'],
