@@ -48,7 +48,6 @@ describe 'Feature Flags', :js do
         it 'displays an error message' do
           add_feature_flag(name, description, false)
 
-          expect(current_path).to eq project_feature_flag_path(project)
           expect(page).to have_selector '.alert-danger', text: error_message
         end
       end
@@ -79,7 +78,6 @@ describe 'Feature Flags', :js do
         it 'displays an error message' do
           edit_feature_flag('feature-flag-to-edit', name, description, false)
 
-          expect(current_path).to eq project_feature_flag_path(project)
           expect(page).to have_selector '.alert-danger', text: error_message
         end
       end
