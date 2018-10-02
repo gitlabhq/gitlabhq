@@ -24,6 +24,7 @@ class NotesFinder
   def execute
     notes = init_collection
     notes = since_fetch_at(notes)
+
     notes.fresh
   end
 
@@ -107,18 +108,11 @@ class NotesFinder
   # rubocop: enable CodeReuse/ActiveRecord
 
   def notes_on_target
-    notes =
-      if target.respond_to?(:related_notes)
-        target.related_notes
-      else
-        target.notes
-      end
-
-    notes.with_notes_filter(user_notes_filter)
-  end
-
-  def user_notes_filter
-    @current_user&.notes_filter_for(target)
+    if target.respond_to?(:related_notes)
+      target.related_notes
+    else
+      target.notes
+    end
   end
 
   # Searches for notes matching the given query.

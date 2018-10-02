@@ -11,13 +11,14 @@ class UserPreference < ActiveRecord::Base
   validates :issue_notes_filter, :merge_request_notes_filter, inclusion: { in: NOTES_FILTERS.values }, presence: true
 
   def set_notes_filter(filter_id, issuable)
-    save! unless persisted?
-
     # No need to update the column if the value is already set.
-    if filter_id && filter_id != notes_filter_for(issuable)
-      filter_name = notes_filter_field_for(issuable)
-      update_column(filter_name, filter_id)
-      expire_polling_etag_cache(issuable)
+    if filter_id && filter_id.to_i != notes_filter_for(issuable)
+      field = notes_filter_field_for(issuable)
+      self[field] = filter_id
+
+      if attribute_changed?(field) && save
+        expire_polling_etag_cache(issuable)
+      end
     end
 
     notes_filter_for(issuable)
@@ -25,12 +26,7 @@ class UserPreference < ActiveRecord::Base
 
   # Returns the current discussion filter for a given issuable type.
   def notes_filter_for(issuable)
-    case issuable
-    when Issue
-      issue_notes_filter
-    when MergeRequest
-      merge_request_notes_filter
-    end
+    self[notes_filter_field_for(issuable)]
   end
 
   private

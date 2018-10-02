@@ -2131,8 +2131,6 @@ ActiveRecord::Schema.define(version: 20180917200829) do
     t.datetime_with_timezone "updated_at", null: false
   end
 
-  add_index "user_preferences", ["issue_notes_filter"], name: "index_user_preferences_on_issue_notes_filter", using: :btree
-  add_index "user_preferences", ["merge_request_notes_filter"], name: "index_user_preferences_on_merge_request_notes_filter", using: :btree
   add_index "user_preferences", ["user_id"], name: "index_user_preferences_on_user_id", unique: true, using: :btree
 
   create_table "user_statuses", primary_key: "user_id", force: :cascade do |t|

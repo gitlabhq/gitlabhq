@@ -15,10 +15,16 @@ module NotesActions
 
     notes_json = { notes: [], last_fetched_at: current_fetched_at }
 
-    notes = notes_finder.execute
-      .inc_relations_for_view
+    notes = notes_finder
+              .execute
+              .with_notes_filter(notes_filter)
+              .inc_relations_for_view
 
-    notes = ResourceEvents::MergeIntoNotesService.new(noteable, current_user, last_fetched_at: current_fetched_at).execute(notes)
+    notes =
+      ResourceEvents::MergeIntoNotesService
+        .new(noteable, current_user, last_fetched_at: current_fetched_at, notes_filter: notes_filter)
+        .execute(notes)
+
     notes = prepare_notes_for_rendering(notes)
     notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
 
@@ -78,6 +84,10 @@ module NotesActions
   end
 
   private
+
+  def notes_filter
+    current_user&.notes_filter_for(noteable)
+  end
 
   def note_html(note)
     render_to_string(

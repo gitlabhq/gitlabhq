@@ -27,7 +27,13 @@ module ResourceEvents
     private
 
     def fetch_label_notes?
-      current_user&.notes_filter_for(resource) == UserPreference::NOTES_FILTERS[:all_notes]
+      return true unless notes_filter?
+
+      params[:notes_filter] == UserPreference::NOTES_FILTERS[:all_notes]
+    end
+
+    def notes_filter?
+      params[:notes_filter].present?
     end
 
     def label_notes

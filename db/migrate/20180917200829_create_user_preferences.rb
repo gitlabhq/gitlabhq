@@ -17,12 +17,10 @@ class CreateUserPreferences < ActiveRecord::Migration
                    foreign_key: { on_delete: :cascade }
 
       t.integer :issue_notes_filter,
-                index: true,
                 default: UserPreference::NOTES_FILTERS[:all_notes],
                 null: false, limit: 2
 
       t.integer :merge_request_notes_filter,
-                index: true,
                 default: UserPreference::NOTES_FILTERS[:all_notes],
                 null: false,
                 limit: 2
