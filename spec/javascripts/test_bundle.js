@@ -155,7 +155,7 @@ describe('test errors', () => {
 // if we're generating coverage reports, make sure to include all files so
 // that we can catch files with 0% coverage
 // see: https://github.com/deepsweet/istanbul-instrumenter-loader/issues/15
-if (GENERATE_COVERAGE_REPORT) { // eslint-disable-line no-undef
+if (process.env.BABEL_ENV === 'coverage') {
   // exempt these files from the coverage report
   const troubleMakers = [
     './blob_edit/blob_bundle.js',

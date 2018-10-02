@@ -6,7 +6,6 @@ const argumentsParser = require('commander');
 const webpackConfig = require('./webpack.config.js');
 
 const ROOT_PATH = path.resolve(__dirname, '..');
-const GENERATE_COVERAGE_REPORT = process.env.BABEL_ENV === 'coverage' || process.env.NODE_ENV === 'coverage';
 
 function fatalError(message) {
   console.error(chalk.red(`\nError: ${message}\n`));
@@ -24,7 +23,11 @@ webpackConfig.optimization.splitChunks = false;
 webpackConfig.devtool = 'cheap-inline-source-map';
 
 webpackConfig.plugins.push(
-  new webpack.DefinePlugin({ GENERATE_COVERAGE_REPORT }),
+  new webpack.DefinePlugin({
+    'process.env': {
+      BABEL_ENV: JSON.stringify(process.env.BABEL_ENV || process.env.NODE_ENV || null),
+    },
+  })
 );
 
 const specFilters = argumentsParser
@@ -89,7 +92,7 @@ module.exports = function(config) {
     basePath: ROOT_PATH,
     browsers: ['ChromeHeadlessCustom'],
     client: {
-      color: !process.env.CI
+      color: !process.env.CI,
     },
     customLaunchers: {
       ChromeHeadlessCustom: {
@@ -123,7 +126,7 @@ module.exports = function(config) {
     };
   }
 
-  if (GENERATE_COVERAGE_REPORT) {
+  if (process.env.BABEL_ENV === 'coverage' || process.env.NODE_ENV === 'coverage') {
     karmaConfig.reporters.push('coverage-istanbul');
     karmaConfig.coverageIstanbulReporter = {
       reports: ['html', 'text-summary'],

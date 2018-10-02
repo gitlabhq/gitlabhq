@@ -28,12 +28,6 @@
             "exclude": ["spec/javascripts/**/*", "app/assets/javascripts/locale/**/app.js"]
           }
         ],
-        [
-          "babel-plugin-transform-define",
-          {
-            "process.env.BABEL_ENV": "coverage"
-          }
-        ],
         "babel-plugin-rewire"
       ]
     }

@@ -29,7 +29,6 @@
     "autosize": "^4.0.0",
     "axios": "^0.17.1",
     "babel-loader": "^8.0.4",
-    "babel-plugin-transform-define": "^1.3.0",
     "blackst0ne-mermaid": "^7.1.0-fixed",
     "bootstrap": "4.1.1",
     "brace-expansion": "^1.1.8",
