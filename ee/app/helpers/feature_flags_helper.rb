@@ -2,10 +2,10 @@
 
 module FeatureFlagsHelper
   def unleash_api_url(project)
-    "#{root_url(only_path: false)}api/v4/feature_flags/projects/#{project.id}/unleash"
+    "#{root_url(only_path: false)}api/v4/feature_flags/unleash/#{project.id}"
   end
 
   def unleash_api_instanceid(project)
-    project.feature_flag_access_token
+    project.feature_flag_instance_token
   end
 end

@@ -51,7 +51,7 @@ module EE
       has_many :prometheus_alert_events, inverse_of: :project
 
       has_many :operations_feature_flags, class_name: 'Operations::FeatureFlag'
-      has_one :operations_feature_flags_access_token, class_name: 'Operations::FeatureFlagsAccessToken'
+      has_one :operations_feature_flags_instance, class_name: 'Operations::FeatureFlagsInstance'
 
       scope :with_shared_runners_limit_enabled, -> { with_shared_runners.non_public_only }
 
@@ -562,8 +562,9 @@ module EE
       change_head(root_ref) if root_ref.present? && root_ref != default_branch
     end
 
-    def feature_flag_access_token
-      (operations_feature_flags_access_token || create_operations_feature_flags_access_token!).token
+    def feature_flags_instance_token
+      instance = operations_feature_flags_instance || create_operations_feature_flags_instance!
+      instance.token
     end
 
     private
