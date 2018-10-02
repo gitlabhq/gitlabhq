@@ -50,7 +50,7 @@ class CommitStatus < ActiveRecord::Base
     runner_system_failure: 4,
     missing_dependency_failure: 5,
     runner_unsupported: 6,
-    schedule_expired: 7
+    stale_schedule: 7
   }
 
   ##

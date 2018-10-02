@@ -75,7 +75,7 @@ class StuckCiJobsWorker
       relation
         .where('scheduled_at < ?', BUILD_SCHEDULED_OUTDATED_TIMEOUT.ago)
         .find_each(batch_size: BUILD_SCHEDULED_OUTDATED_BATCH_SIZE) do |build|
-        drop_build(:outdated, build, :scheduled, BUILD_SCHEDULED_OUTDATED_TIMEOUT, :schedule_expired)
+        drop_build(:outdated, build, :scheduled, BUILD_SCHEDULED_OUTDATED_TIMEOUT, :stale_schedule)
       end
     end
   end
