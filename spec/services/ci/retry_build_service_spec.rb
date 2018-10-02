@@ -26,7 +26,8 @@ describe Ci::RetryBuildService do
        erased_at auto_canceled_by job_artifacts job_artifacts_archive
        job_artifacts_metadata job_artifacts_trace job_artifacts_junit
        job_artifacts_sast job_artifacts_dependency_scanning
-       job_artifacts_container_scanning job_artifacts_dast].freeze
+       job_artifacts_container_scanning job_artifacts_dast
+       job_artifacts_codequality].freeze
 
   IGNORE_ACCESSORS =
     %i[type lock_version target_url base_tags trace_sections

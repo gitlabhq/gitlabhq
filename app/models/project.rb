@@ -1381,6 +1381,18 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # Filters `users` to return only authorized users of the project
+  def members_among(users)
+    if users.is_a?(ActiveRecord::Relation) && !users.loaded?
+      authorized_users.merge(users)
+    else
+      return [] if users.empty?
+
+      user_ids = authorized_users.where(users: { id: users.map(&:id) }).pluck(:id)
+      users.select { |user| user_ids.include?(user.id) }
+    end
+  end
+
   def default_branch
     @default_branch ||= repository.root_ref if repository.exists?
   end
