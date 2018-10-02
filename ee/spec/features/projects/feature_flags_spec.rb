@@ -47,8 +47,7 @@ describe 'Feature Flags', :js do
         it 'displays an error message' do
           add_feature_flag(name, description, false)
 
-          # TODO: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/7433#note_104442383
-          # expect(current_path).to eq new_project_feature_flag_path(project)
+          expect(current_path).to eq project_feature_flags_path(project)
           expect(page).to have_selector '.alert-danger', text: error_message
         end
       end
@@ -79,8 +78,7 @@ describe 'Feature Flags', :js do
         it 'displays an error message' do
           edit_feature_flag('feature-flag-to-edit', name, description, false)
 
-          # TODO: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/7433#note_104442383
-          # expect(current_path).to eq new_project_feature_flag_path(project)
+          expect(current_path).to eq project_feature_flags_path(project)
           expect(page).to have_selector '.alert-danger', text: error_message
         end
       end
