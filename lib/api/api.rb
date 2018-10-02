@@ -166,7 +166,7 @@ module API
     ## EE-specific API V4 endpoints START
     mount ::EE::API::Boards
     mount ::EE::API::GroupBoards
-    
+
     mount ::API::Unleash
     mount ::API::EpicIssues
     mount ::API::Epics

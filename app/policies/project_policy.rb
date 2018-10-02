@@ -15,7 +15,6 @@ class ProjectPolicy < BasePolicy
     note
     pipeline
     pipeline_schedule
-    feature_flags
     build
     trigger
     environment
@@ -307,7 +306,6 @@ class ProjectPolicy < BasePolicy
     prevent(*create_read_update_admin_destroy(:build))
     prevent(*create_read_update_admin_destroy(:pipeline_schedule))
     prevent(*create_read_update_admin_destroy(:environment))
-    prevent(*create_read_update_admin_destroy(:feature_flags))
     prevent(*create_read_update_admin_destroy(:cluster))
     prevent(*create_read_update_admin_destroy(:deployment))
   end

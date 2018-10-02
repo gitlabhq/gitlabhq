@@ -8,6 +8,7 @@ module EE
       approvers
       vulnerability_feedback
       license_management
+      feature_flag
     ].freeze
 
     prepended do
