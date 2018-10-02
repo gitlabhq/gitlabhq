@@ -7,54 +7,75 @@ in comments of issues, epics, merge requests, and commits. Each command should b
 on a separate line in order to be properly detected and executed. Once executed,
 the commands are removed from the text body and not visible to anyone else.
 
-Below is a list of all of the available commands, where they apply, and descriptions
-about what they do.
+## Quick actions for issues and merge requests
 
-docs-quick-actions-table
+The following quick actions are applicable to both issues and merge requests threads,
+discussions, and descriptions:
 
-
-
-| Command                    | Action                 | Issue | Epic | Merge request | Commit |
-|:---------------------------|:-----------------------|:------|:-----|:--------------|:-------|
-| `/close`                   | Close                  | ✓     | ✓    | ✓             |        |
-| `/reopen`                  | Reopen                 | ✓     | ✓    | ✓             |        |
-| `/merge`                   | Merge (when pipeline succeeds) | |    | ✓             |        |
-| `/title <New title>`       | Change title |         | ✓     |  ✓   | ✓             |        |
-| `/assign @username`        | Assign                 | ✓     |      | ✓             |        |  
-| `/unassign`                | Remove assignee        | ✓     |      | ✓             |        |  
-| `/milestone %milestone`    | Set milestone          | ✓     |      | ✓             |        |  
-| `/remove_milestone`        | Remove milestone       | ✓     |      | ✓             |        |  
-| `/label ~foo ~"bar baz"`   | Add label(s)           | ✓     |      | ✓             |        |  
-| `/unlabel ~foo ~"bar baz"` | Remove all or specific label(s)| ✓ |  | ✓             |        |
-| `/relabel ~foo ~"bar baz"` | Replace all label(s)   | ✓     |      | ✓             |        |  
-| `/todo`                    | Add a todo             | ✓     | ✓    | ✓             |        |  
-| `/done`                    | Mark todo as done      | ✓     | ✓    | ✓             |        |  
-| `/subscribe`               | Subscribe              | ✓     | ✓    | ✓             |        |  
-| `/unsubscribe`             | Unsubscribe            | ✓     | ✓    | ✓             |        |  
-| <code>/due &lt;in 2 days &#124; this Friday &#124; December 31st&gt;</code> | Set due date | ✓ | | | |
-| `/remove_due_date`         | Remove due date        | ✓     |      |               |        |  
-| `/wip`                     | Toggle the Work In Progress status | | | ✓ | |
-| <code>/estimate &lt;1w 3d 2h 14m&gt;</code> | Set time estimate | ✓ | | ✓ | |
-| `/remove_estimate`       | Remove estimated time | ✓ | | ✓ | |
-| <code>/spend &lt;time(1h 30m &#124; -1h 5m)&gt; &lt;date(YYYY-MM-DD)&gt;</code> | Add or subtract spent time; optionally, specify the date that time was spent on | ✓ | | | ✓ |
-| `/remove_time_spent`       | Remove time spent | ✓ | | ✓ | |
-| `/target_branch <Branch Name>` | Set target branch for current merge request | | | ✓ | |
-| `/award :emoji:`  | Toggle award for :emoji: | ✓ | ✓ | ✓ | |
-| `/weight <0-999999999>` | Set the weight of the issue | ✓     |      |             |        |  
-| `/clear_weight` | Clears the issue weight | ✓     |      |             |        |  
-| `/board_move ~column`      | Move issue to column on the board | ✓ | | | |
-| `/duplicate #issue`        | Closes this issue and marks it as a duplicate of another issue | ✓ | | | |
-| `/move path/to/project`        | Moves issue to another project | ✓ | | | |
-| `/tag v1.2.3 <message>`    | Tags a commit with a given tag name and optional message | | | | ✓ |
-| `/tableflip`               | Append the comment with `(╯°□°)╯︵ ┻━┻` | ✓ | ✓ | ✓ | ✓ |
-| `/shrug`                   | Append the comment with `¯\＿(ツ)＿/¯` | ✓ | ✓ | ✓ | ✓ |
-| <code>/copy_metadata #issue &#124; !merge_request</code> | Copy labels and milestone from other issue or merge request | ✓ | | ✓ | |
-| `/confidential`            | Makes the issue confidential | ✓ | | | |
-| `/epic <group&epic OR Epic URL>` | Adds an issue to an epic | | ✓ | | |
-| `/remove_epic`             | Removes an issue from an epic | | ✓ | | |
-| `/lock`                    | Lock the discussion | ✓ | | | ✓ |
-| `/unlock`                  | Unlock the discussion | ✓ | | |  ✓|
+| Command                    | Action                         | Issue | Merge request |
+|:---------------------------|:------------------------------ |:------|:--------------|
+| `/tableflip <Comment>`     | Append the comment with `(╯°□°)╯︵ ┻━┻` | ✓ | ✓        |
+| `/shrug <Comment>`         | Append the comment with `¯\＿(ツ)＿/¯` | ✓ | ✓         |
+| `/todo`                    | Add a todo                     | ✓     | ✓             |
+| `/done`                    | Mark todo as done              | ✓     | ✓             |
+| `/subscribe`               | Subscribe                      | ✓     | ✓             |
+| `/unsubscribe`             | Unsubscribe                    | ✓     | ✓             |
+| `/close`                   | Close                          | ✓     | ✓             |
+| `/reopen`                  | Reopen                         | ✓     | ✓             |
+| `/title <New title>`       | Change title                   | ✓     |  ✓            |
+| `/award :emoji:`           | Toggle emoji award             | ✓     | ✓             |
+| `/assign @user`            | Assign one user                | ✓     | ✓             |
+| `/assign @user1 @user2`    | Assign multiple users **[STARTER]** | ✓ |              |
+| `/unassign`                | Remove assignee(s)             | ✓     | ✓             |
+| `/reassign @user1 @user2`  | Change assignee                | ✓     | ✓             |
+| `/milestone %milestone`    | Set milestone                  | ✓     | ✓             |
+| `/remove_milestone`        | Remove milestone               | ✓     | ✓             |
+| `/label ~label1 ~label2`   | Add label(s)                   | ✓     | ✓             |
+| `/unlabel ~label1 ~label2` | Remove all or specific label(s)| ✓     | ✓             |
+| `/relabel ~label1 ~label2` | Replace label                  | ✓     | ✓             |
+| <code>/copy_metadata #issue &#124; !merge_request</code> | Copy labels and milestone from other issue or merge request | ✓     | ✓             |
+| <code>/estimate &lt;1w 3d 2h 14m&gt;</code> | Set time estimate | ✓     | ✓             |
+| `/remove_estimate`       | Remove time estimate             | ✓     | ✓             |
+| <code>/spend &lt;time(1h 30m &#124; -1h 5m)&gt; &lt;date(YYYY-MM-DD)&gt;</code> | Add or subtract spent time; optionally, specify the date that time was spent on | ✓     | ✓             |
+| `/remove_time_spent`       | Remove time spent              | ✓     | ✓             |
+| <code>/due &lt;in 2 days &#124; this Friday &#124; December 31st&gt;</code>| Set due date | ✓ |
+| `/remove_due_date`         | Remove due date                | ✓     |               |
+| `/weight 0,1,2, ...`       | Set weight **[STARTER]**       | ✓     |               |
+| `/clear_weight`            | Clears weight **[STARTER]**    | ✓     |               |
+| `/epic <group&epic &#124; Epic URL>` | Add to epic **[ULTIMATE]** | ✓ |             |
+| `/remove_epic`             | Removes from epic **[ULTIMATE]** | ✓   |               |
+| `/confidential`            | Make confidential              | ✓     |               |
+| `/duplicate #issue`        | Mark this issue as a duplicate of another issue | ✓    |
+| `/move path/to/project`    | Move this issue to another project | ✓ |               |
+| `/target_branch <Local branch Name>` | Set target branch    |       | ✓             |
+| `/wip`                     | Toggle the Work In Progress status |   | ✓             |
+| `/merge`                   | Merge (when pipeline succeeds) |       | ✓             |
 
 
-Note: In GitLab Starter every issue can have more than one assignee, so commands `/assign`, `/unassign` and `/reassign`
-support multiple assignees.
+## Quick actions for commit messages
+
+The following quick actions are applicable for commit messages:
+
+| Command                 | Action                                    |
+|:------------------------|:------------------------------------------|
+| `/tag v1.2.3 <message>` | Tags this commit with an optional message |
+
+## Quick actions for Epics **[ULTIMATE]**
+
+The following quick actions are applicable for epics threads and description:
+
+| Command                    | Action                                  |
+|:---------------------------|:----------------------------------------|
+| `/tableflip <Comment>`     | Append the comment with `(╯°□°)╯︵ ┻━┻` |
+| `/shrug <Comment>`         | Append the comment with `¯\＿(ツ)＿/¯`  |
+| `/todo`                    | Add a todo                              | 
+| `/done`                    | Mark todo as done                       |
+| `/subscribe`               | Subscribe                               |
+| `/unsubscribe`             | Unsubscribe                             |
+| `/close`                   | Close                                   |
+| `/reopen`                  | Reopen                                  |
+| `/title <New title>`       | Change title                            |
+| `/award :emoji:`           | Toggle emoji award                      |
+| `/label ~label1 ~label2`   | Add label(s)                            |
+| `/unlabel ~label1 ~label2` | Remove all or specific label(s)         |
+| `/relabel ~label1 ~label2` | Replace label                           |
