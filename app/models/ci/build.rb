@@ -522,6 +522,13 @@ module Ci
       self.job_artifacts.update_all(expire_at: nil)
     end
 
+    def artifacts_file_for_type(type)
+      file = job_artifacts.find_by(file_type: Ci::JobArtifact.file_types[type])&.file
+      # TODO: to be removed once legacy artifacts is removed
+      file ||= legacy_artifacts_file if type == :archive
+      file
+    end
+
     def coverage_regex
       super || project.try(:build_coverage_regex)
     end
