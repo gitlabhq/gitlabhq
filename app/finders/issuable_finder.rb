@@ -236,16 +236,16 @@ class IssuableFinder
   # rubocop: enable CodeReuse/ActiveRecord
 
   def assignee_id?
-    params[:assignee_id].present? && params[:assignee_id] != NONE
+    params[:assignee_id].present? && params[:assignee_id].to_s != NONE
   end
 
   def assignee_username?
-    params[:assignee_username].present? && params[:assignee_username] != NONE
+    params[:assignee_username].present? && params[:assignee_username].to_s != NONE
   end
 
   def no_assignee?
     # Assignee_id takes precedence over assignee_username
-    params[:assignee_id] == NONE || params[:assignee_username] == NONE
+    params[:assignee_id].to_s == NONE || params[:assignee_username].to_s == NONE
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

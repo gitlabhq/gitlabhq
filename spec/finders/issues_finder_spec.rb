@@ -72,6 +72,7 @@ describe IssuesFinder do
         end
       end
 
+<<<<<<< HEAD
       context 'filtering by assignee IDs' do
         set(:user3) { create(:user) }
         let(:params) { { assignee_ids: [user2.id, user3.id] } }
@@ -99,6 +100,13 @@ describe IssuesFinder do
 
         it 'returns issues assigned to those users' do
           expect(issues).to contain_exactly(issue3)
+=======
+      context 'filtering by no assignee' do
+        let(:params) { { assignee_id: 0 } }
+
+        it 'returns issues not assign to any assignee' do
+          expect(issues).to contain_exactly(issue4)
+>>>>>>> upstream/master
         end
       end
 

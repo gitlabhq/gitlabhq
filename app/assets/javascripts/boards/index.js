@@ -22,6 +22,7 @@ import './components/board_sidebar';
 import './components/new_list_dropdown';
 import BoardAddIssuesModal from './components/modal/index.vue';
 import '~/vue_shared/vue_resource_interceptor';
+import { NavigationType } from '~/lib/utils/common_utils';
 
 import 'ee/boards/models/list';
 import 'ee/boards/models/issue';
@@ -41,6 +42,16 @@ export default () => {
   const issueBoardsContent = document.querySelector('.content-wrapper > .js-focus-mode-board');
 
   window.gl = window.gl || {};
+
+  // check for browser back and trigger a hard reload to circumvent browser caching.
+  window.addEventListener('pageshow', (event) => {
+    const isNavTypeBackForward = window.performance &&
+        window.performance.navigation.type === NavigationType.TYPE_BACK_FORWARD;
+
+    if (event.persisted || isNavTypeBackForward) {
+      window.location.reload();
+    }
+  });
 
   if (gl.IssueBoardsApp) {
     gl.IssueBoardsApp.$destroy(true);
