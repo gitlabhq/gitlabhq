@@ -112,7 +112,7 @@ module API
           commit_detail = user_project.repository.commit(result[:result])
 
           if find_user_from_warden
-            UsageCounters.first_or_create.increment_counters(:web_ide_commits)
+            Gitlab::WebIdeCommitsCounter.increment
             ::Gitlab::Metrics::MultiFileEditor.new(user_project, current_user, commit_detail).log
           end
 

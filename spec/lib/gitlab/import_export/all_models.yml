@@ -327,6 +327,3 @@ resource_label_events:
 - merge_request
 - epic
 - label
-usage_counters:
-- project
-- web_ide_commits

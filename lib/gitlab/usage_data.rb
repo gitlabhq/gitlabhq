@@ -110,7 +110,9 @@ module Gitlab
       end
 
       def usage_counters
-        UsageCounters.first_or_create.totals
+        {
+          web_ide_commits: Gitlab::WebIdeCommitsCounter.total_count
+        }
       end
 
       def components_usage_data
