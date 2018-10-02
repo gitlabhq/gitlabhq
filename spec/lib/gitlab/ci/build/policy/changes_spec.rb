@@ -19,7 +19,7 @@ describe Gitlab::Ci::Build::Policy::Changes do
 
   before do
     allow(pipeline).to receive(:modified_paths) do
-      %w[some/modified/ruby/file.rb some/other_file.txt]
+      %w[some/modified/ruby/file.rb some/other_file.txt some/.dir/file]
     end
   end
 
@@ -38,6 +38,12 @@ describe Gitlab::Ci::Build::Policy::Changes do
 
     it 'is satisfied by matching recusive pattern' do
       policy = described_class.new(%w[some/**/*.rb])
+
+      expect(policy).to be_satisfied_by(pipeline, seed)
+    end
+
+    it 'is satisfied by matching a pattern with a dot' do
+      policy = described_class.new(%w[some/*/file])
 
       expect(policy).to be_satisfied_by(pipeline, seed)
     end

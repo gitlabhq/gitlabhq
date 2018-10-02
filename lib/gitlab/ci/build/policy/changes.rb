@@ -11,7 +11,9 @@ module Gitlab
             return true unless pipeline.branch_updated?
 
             pipeline.modified_paths.any? do |path|
-              @globs.any? { |glob| File.fnmatch?(glob, path, File::FNM_PATHNAME) }
+              @globs.any? do |glob|
+                File.fnmatch?(glob, path, File::FNM_PATHNAME | File::FNM_DOTMATCH)
+              end
             end
           end
         end
