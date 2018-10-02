@@ -82,6 +82,27 @@ describe Namespace do
     it { expect(namespace.human_name).to eq(namespace.owner_name) }
   end
 
+  describe '#first_project_with_container_registry_tags' do
+    let(:container_repository) { create(:container_repository) }
+    let!(:project) { create(:project, namespace: namespace, container_repositories: [container_repository]) }
+
+    before do
+      stub_container_registry_config(enabled: true)
+    end
+
+    it 'returns the project' do
+      stub_container_registry_tags(repository: :any, tags: ['tag'])
+
+      expect(namespace.first_project_with_container_registry_tags).to eq(project)
+    end
+
+    it 'returns no project' do
+      stub_container_registry_tags(repository: :any, tags: nil)
+
+      expect(namespace.first_project_with_container_registry_tags).to be_nil
+    end
+  end
+
   describe '.search' do
     let(:namespace) { create(:namespace) }
 
@@ -184,7 +205,8 @@ describe Namespace do
         end
 
         it 'raises an error about not movable project' do
-          expect { namespace.move_dir }.to raise_error(/Namespace cannot be moved/)
+          expect { namespace.move_dir }.to raise_error(Gitlab::UpdatePathError,
+                                                       /Namespace .* cannot be moved/)
         end
       end
     end
