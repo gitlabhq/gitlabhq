@@ -6,6 +6,6 @@ module FeatureFlagsHelper
   end
 
   def unleash_api_instanceid(project)
-    project.feature_flags_instance_token
+    project.feature_flags_client_token
   end
 end

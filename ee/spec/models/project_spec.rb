@@ -1780,7 +1780,7 @@ describe Project do
     end
 
     context 'when there is access token' do
-      let!(:instance) { create(:operations_feature_flags_instance, project: project, token: 'token') }
+      let!(:instance) { create(:operations_feature_flags_client, project: project, token: 'token') }
 
       it "provides an existing one" do
         is_expected.to eq('token')

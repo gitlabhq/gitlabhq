@@ -1954,12 +1954,12 @@ ActiveRecord::Schema.define(version: 20180926140319) do
 
   add_index "operations_feature_flags", ["project_id", "name"], name: "index_operations_feature_flags_on_project_id_and_name", unique: true, using: :btree
 
-  create_table "operations_feature_flags_instances", force: :cascade do |t|
+  create_table "operations_feature_flags_clients", force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "token", null: false
   end
 
-  add_index "operations_feature_flags_instances", ["token"], name: "index_operations_feature_flags_instances_on_token", unique: true, using: :btree
+  add_index "operations_feature_flags_clients", ["token"], name: "index_operations_feature_flags_clients_on_token", unique: true, using: :btree
 
   create_table "packages_maven_metadata", id: :bigserial, force: :cascade do |t|
     t.integer "package_id", limit: 8, null: false
@@ -3252,7 +3252,7 @@ ActiveRecord::Schema.define(version: 20180926140319) do
   add_foreign_key "notification_settings", "users", name: "fk_0c95e91db7", on_delete: :cascade
   add_foreign_key "oauth_openid_requests", "oauth_access_grants", column: "access_grant_id", name: "fk_oauth_openid_requests_oauth_access_grants_access_grant_id"
   add_foreign_key "operations_feature_flags", "projects", on_delete: :cascade
-  add_foreign_key "operations_feature_flags_instances", "projects", on_delete: :cascade
+  add_foreign_key "operations_feature_flags_clients", "projects", on_delete: :cascade
   add_foreign_key "packages_maven_metadata", "packages_packages", column: "package_id", name: "fk_be88aed360", on_delete: :cascade
   add_foreign_key "packages_package_files", "packages_packages", column: "package_id", name: "fk_86f0f182f8", on_delete: :cascade
   add_foreign_key "packages_packages", "projects", on_delete: :cascade

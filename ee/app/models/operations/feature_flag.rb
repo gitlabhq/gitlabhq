@@ -13,6 +13,6 @@ module Operations
         message: Gitlab::Regex.feature_flag_regex_message
       }
     validates :name, uniqueness: { scope: :project_id }
-    validates :description, length: 0..255
+    validates :description, allow_blank: true, length: 0..255
   end
 end

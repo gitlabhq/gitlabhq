@@ -4,7 +4,7 @@ class AddFeatureFlagsToProjects < ActiveRecord::Migration
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
-  def up
+  def change
     create_table :operations_feature_flags do |t|
       t.integer :project_id, null: false
       t.datetime_with_timezone :created_at, null: false
@@ -19,7 +19,7 @@ class AddFeatureFlagsToProjects < ActiveRecord::Migration
       t.index [:project_id, :name], unique: true
     end
 
-    create_table :operations_feature_flags_instances do |t|
+    create_table :operations_feature_flags_clients do |t|
       t.integer :project_id, null: false
       t.string :token, null: false
 
@@ -27,10 +27,5 @@ class AddFeatureFlagsToProjects < ActiveRecord::Migration
 
       t.foreign_key :projects, column: :project_id, on_delete: :cascade
     end
-  end
-
-  def down
-    drop_table :operations_feature_flags
-    drop_table :operations_feature_flags_instances
   end
 end

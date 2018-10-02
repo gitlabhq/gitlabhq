@@ -1,8 +1,8 @@
 module Operations
-  class FeatureFlagsInstance < ActiveRecord::Base
+  class FeatureFlagsClient < ActiveRecord::Base
     include TokenAuthenticatable
 
-    self.table_name = 'operations_feature_flags_instances'
+    self.table_name = 'operations_feature_flags_clients'
 
     belongs_to :project
 
