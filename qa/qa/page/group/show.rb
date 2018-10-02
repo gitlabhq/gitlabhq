@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QA
   module Page
     module Group
@@ -25,11 +27,7 @@ module QA
         end
 
         def has_subgroup?(name)
-          filter_by_name(name)
-
-          page.has_text?(/#{name}|No groups or projects matched your search/, wait: 60)
-
-          page.has_text?(name, wait: 0)
+          has_filtered_group?(name)
         end
 
         def go_to_new_subgroup
