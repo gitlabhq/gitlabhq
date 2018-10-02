@@ -12,8 +12,7 @@ module EE
     def extra_statistics_anchors
       anchors = []
 
-      if can?(current_user, :read_project_security_dashboard, project) &&
-          project.latest_pipeline_with_security_reports
+      if can?(current_user, :read_project_security_dashboard, project)
         anchors << security_dashboard_data
       end
 
