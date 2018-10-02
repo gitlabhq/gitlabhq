@@ -7,7 +7,7 @@ import {
   parseDastIssues,
   filterByKey,
   getUnapprovedVulnerabilities,
-  textBuilder,
+  groupedTextBuilder,
   statusIcon,
 } from 'ee/vue_shared/security_reports/store/utils';
 import {
@@ -200,27 +200,29 @@ describe('security reports utils', () => {
   describe('textBuilder', () => {
     describe('with no issues', () => {
       it('should return no vulnerabiltities text', () => {
-        expect(textBuilder('', { head: 'foo', base: 'bar' }, 0, 0, 0)).toEqual(
-          ' detected no security vulnerabilities',
+        expect(groupedTextBuilder('', { head: 'foo', base: 'bar' }, 0, 0, 0)).toEqual(
+          ' detected no vulnerabilities',
         );
       });
     });
 
     describe('with only `all` issues', () => {
       it('should return no new vulnerabiltities text', () => {
-        expect(textBuilder('', {}, 0, 0, 1)).toEqual(' detected no new security vulnerabilities');
+        expect(groupedTextBuilder('', { head: 'foo', base: 'bar' }, 0, 0, 1)).toEqual(
+          ' detected no new vulnerabilities',
+        );
       });
     });
 
     describe('with new issues and without base', () => {
       it('should return unable to compare text', () => {
-        expect(textBuilder('', { head: 'foo' }, 1, 0, 0)).toEqual(
+        expect(groupedTextBuilder('', { head: 'foo' }, 1, 0, 0)).toEqual(
           ' detected 1 vulnerability for the source branch only',
         );
       });
 
       it('should return unable to compare text with no vulnerability', () => {
-        expect(textBuilder('', { head: 'foo' }, 0, 0, 0)).toEqual(
+        expect(groupedTextBuilder('', { head: 'foo' }, 0, 0, 0)).toEqual(
           ' detected no vulnerabilities for the source branch only',
         );
       });
@@ -229,10 +231,10 @@ describe('security reports utils', () => {
     describe('with base and head', () => {
       describe('with only new issues', () => {
         it('should return new issues text', () => {
-          expect(textBuilder('', { head: 'foo', base: 'foo' }, 1, 0, 0)).toEqual(
+          expect(groupedTextBuilder('', { head: 'foo', base: 'foo' }, 1, 0, 0)).toEqual(
             ' detected 1 new vulnerability',
           );
-          expect(textBuilder('', { head: 'foo', base: 'foo' }, 2, 0, 0)).toEqual(
+          expect(groupedTextBuilder('', { head: 'foo', base: 'foo' }, 2, 0, 0)).toEqual(
             ' detected 2 new vulnerabilities',
           );
         });
@@ -241,20 +243,20 @@ describe('security reports utils', () => {
       describe('with new and resolved issues', () => {
         it('should return new and fixed issues text', () => {
           expect(
-            textBuilder('', { head: 'foo', base: 'foo' }, 1, 1, 0).replace(/\n+\s+/m, ' '),
-          ).toEqual(' detected 1 new vulnerability and 1 fixed vulnerability');
+            groupedTextBuilder('', { head: 'foo', base: 'foo' }, 1, 1, 0).replace(/\n+\s+/m, ' '),
+          ).toEqual(' detected 1 new, and 1 fixed vulnerabilities');
           expect(
-            textBuilder('', { head: 'foo', base: 'foo' }, 2, 2, 0).replace(/\n+\s+/m, ' '),
-          ).toEqual(' detected 2 new vulnerabilities and 2 fixed vulnerabilities');
+            groupedTextBuilder('', { head: 'foo', base: 'foo' }, 2, 2, 0).replace(/\n+\s+/m, ' '),
+          ).toEqual(' detected 2 new, and 2 fixed vulnerabilities');
         });
       });
 
       describe('with only resolved issues', () => {
         it('should return fixed issues text', () => {
-          expect(textBuilder('', { head: 'foo', base: 'foo' }, 0, 1, 0)).toEqual(
+          expect(groupedTextBuilder('', { head: 'foo', base: 'foo' }, 0, 1, 0)).toEqual(
             ' detected 1 fixed vulnerability',
           );
-          expect(textBuilder('', { head: 'foo', base: 'foo' }, 0, 2, 0)).toEqual(
+          expect(groupedTextBuilder('', { head: 'foo', base: 'foo' }, 0, 2, 0)).toEqual(
             ' detected 2 fixed vulnerabilities',
           );
         });

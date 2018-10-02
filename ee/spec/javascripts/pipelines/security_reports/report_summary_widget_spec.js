@@ -116,7 +116,7 @@ describe('Report summary widget', () => {
             .querySelector('.js-sast-summary')
             .textContent.trim()
             .replace(/\s\s+/g, ' '),
-        ).toEqual('SAST resulted in error while loading results');
+        ).toEqual('SAST: Loading resulted in an error');
 
         expect(vm.$el.querySelector('.js-sast-summary .js-ci-status-icon-warning')).not.toBeNull();
         done();
@@ -131,7 +131,7 @@ describe('Report summary widget', () => {
               .querySelector('.js-dss-summary')
               .textContent.trim()
               .replace(/\s\s+/g, ' '),
-          ).toEqual('Dependency scanning resulted in error while loading results');
+          ).toEqual('Dependency scanning: Loading resulted in an error');
 
           expect(vm.$el.querySelector('.js-dss-summary .js-ci-status-icon-warning')).not.toBeNull();
         })
@@ -147,7 +147,7 @@ describe('Report summary widget', () => {
               .querySelector('.js-sast-container-summary')
               .textContent.trim()
               .replace(/\s\s+/g, ' '),
-          ).toEqual('Container scanning resulted in error while loading results');
+          ).toEqual('Container scanning: Loading resulted in an error');
 
           expect(vm.$el.querySelector('.js-sast-container-summary .js-ci-status-icon-warning')).not.toBeNull();
         })
@@ -163,7 +163,7 @@ describe('Report summary widget', () => {
               .querySelector('.js-dast-summary')
               .textContent.trim()
               .replace(/\s\s+/g, ' '),
-          ).toEqual('DAST resulted in error while loading results');
+          ).toEqual('DAST: Loading resulted in an error');
 
           expect(vm.$el.querySelector('.js-dast-summary .js-ci-status-icon-warning')).not.toBeNull();
         })

@@ -3,12 +3,14 @@ import { mapState } from 'vuex';
 import $ from 'jquery';
 import { n__, s__ } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import messages from 'ee/vue_shared/security_reports/store/messages';
 
 export default {
   name: 'SummaryReport',
   components: {
     CiIcon,
   },
+  messages,
   computed: {
     ...mapState(['sast', 'dependencyScanning', 'dast', 'sastContainer']),
     sastLink() {
@@ -123,10 +125,10 @@ export default {
         class="prepend-left-10 flex flex-align-self-center"
       >
         <template v-if="hasSastError">
-          {{ s__('ciReport|SAST resulted in error while loading results') }}
+          {{ $options.messages.SAST_HAS_ERROR }}
         </template>
         <template v-else-if="isLoadingSast">
-          {{ s__('ciReport|SAST is loading') }}
+          {{ $options.messages.SAST_IS_LOADING }}
         </template>
         <template v-else>
           {{ s__('ciReport|SAST detected') }}
@@ -157,10 +159,10 @@ export default {
         class="prepend-left-10 flex flex-align-self-center"
       >
         <template v-if="hasDependencyScanningError">
-          {{ s__('ciReport|Dependency scanning resulted in error while loading results') }}
+          {{ $options.messages.DEPENDENCY_SCANNING_HAS_ERROR }}
         </template>
         <template v-else-if="isLoadingDependencyScanning">
-          {{ s__('ciReport|Dependency scanning is loading') }}
+          {{ $options.messages.DEPENDENCY_SCANNING_IS_LOADING }}
         </template>
         <template v-else>
           {{ s__('ciReport|Dependency scanning detected') }}
@@ -191,10 +193,10 @@ export default {
         class="prepend-left-10 flex flex-align-self-center"
       >
         <template v-if="hasSastContainerError">
-          {{ s__('ciReport|Container scanning resulted in error while loading results') }}
+          {{ $options.messages.CONTAINER_SCANNING_HAS_ERROR }}
         </template>
         <template v-else-if="isLoadingSastContainer">
-          {{ s__('ciReport|Container scanning is loading') }}
+          {{ $options.messages.CONTAINER_SCANNING_IS_LOADING }}
         </template>
         <template v-else>
           {{ s__('ciReport|Container scanning detected') }}
@@ -225,10 +227,10 @@ export default {
         class="prepend-left-10 flex flex-align-self-center"
       >
         <template v-if="hasDastError">
-          {{ s__('ciReport|DAST resulted in error while loading results') }}
+          {{ $options.messages.DAST_HAS_ERROR }}
         </template>
         <template v-else-if="isLoadingDast">
-          {{ s__('ciReport|DAST is loading') }}
+          {{ $options.messages.DAST_IS_LOADING }}
         </template>
         <template v-else>
           {{ s__('ciReport|DAST detected') }}

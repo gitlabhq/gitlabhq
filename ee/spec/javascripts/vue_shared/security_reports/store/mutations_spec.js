@@ -118,6 +118,7 @@ describe('security reports mutations', () => {
         expect(stateCopy.sast.isLoading).toEqual(false);
         expect(stateCopy.sast.newIssues).toEqual(parsedSastIssuesHead);
         expect(stateCopy.sast.resolvedIssues).toEqual(parsedSastBaseStore);
+        expect(stateCopy.summaryCounts).toEqual({ added: 2, fixed: 1, existing: 1 });
       });
     });
 
@@ -130,6 +131,7 @@ describe('security reports mutations', () => {
 
         expect(stateCopy.sast.isLoading).toEqual(false);
         expect(stateCopy.sast.newIssues).toEqual(parsedSastIssuesStore);
+        expect(stateCopy.summaryCounts).toEqual({ added: 3, fixed: 0, existing: 0 });
       });
     });
   });
@@ -177,6 +179,7 @@ describe('security reports mutations', () => {
         expect(stateCopy.sastContainer.isLoading).toEqual(false);
         expect(stateCopy.sastContainer.newIssues).toEqual(dockerNewIssues);
         expect(stateCopy.sastContainer.resolvedIssues).toEqual([]);
+        expect(stateCopy.summaryCounts).toEqual({ added: 1, fixed: 0, existing: 0 });
       });
     });
 
@@ -188,6 +191,7 @@ describe('security reports mutations', () => {
 
         expect(stateCopy.sastContainer.isLoading).toEqual(false);
         expect(stateCopy.sastContainer.newIssues).toEqual(dockerOnlyHeadParsed);
+        expect(stateCopy.summaryCounts).toEqual({ added: 2, fixed: 0, existing: 0 });
       });
     });
   });
@@ -237,6 +241,7 @@ describe('security reports mutations', () => {
 
         expect(stateCopy.dast.newIssues).toEqual(parsedDastNewIssues);
         expect(stateCopy.dast.resolvedIssues).toEqual([]);
+        expect(stateCopy.summaryCounts).toEqual({ added: 1, fixed: 0, existing: 0 });
       });
     });
 
@@ -248,6 +253,7 @@ describe('security reports mutations', () => {
 
         expect(stateCopy.dast.isLoading).toEqual(false);
         expect(stateCopy.dast.newIssues).toEqual(parsedDast);
+        expect(stateCopy.summaryCounts).toEqual({ added: 2, fixed: 0, existing: 0 });
       });
     });
   });
@@ -297,8 +303,10 @@ describe('security reports mutations', () => {
 
         expect(stateCopy.dependencyScanning.isLoading).toEqual(false);
         expect(stateCopy.dependencyScanning.newIssues).toEqual(parsedDependencyScanningIssuesHead);
-        expect(stateCopy.dependencyScanning.resolvedIssues)
-          .toEqual(parsedDependencyScanningBaseStore);
+        expect(stateCopy.dependencyScanning.resolvedIssues).toEqual(
+          parsedDependencyScanningBaseStore,
+        );
+        expect(stateCopy.summaryCounts).toEqual({ added: 2, fixed: 1, existing: 1 });
       });
     });
 
@@ -310,6 +318,7 @@ describe('security reports mutations', () => {
         });
         expect(stateCopy.dependencyScanning.isLoading).toEqual(false);
         expect(stateCopy.dependencyScanning.newIssues).toEqual(parsedDependencyScanningIssuesStore);
+        expect(stateCopy.summaryCounts).toEqual({ added: 3, fixed: 0, existing: 0 });
       });
     });
   });
@@ -486,7 +495,7 @@ describe('security reports mutations', () => {
     it('updates issue in the new issues list', () => {
       stateCopy.sast.newIssues = parsedSastIssuesHead;
       stateCopy.sast.resolvedIssues = [];
-      stateCopy.sast.AllIssues = [];
+      stateCopy.sast.allIssues = [];
       const updatedIssue = {
         ...parsedSastIssuesHead[0],
         foo: 'bar',
@@ -499,7 +508,7 @@ describe('security reports mutations', () => {
     it('updates issue in the resolved issues list', () => {
       stateCopy.sast.newIssues = [];
       stateCopy.sast.resolvedIssues = parsedSastIssuesHead;
-      stateCopy.sast.AllIssues = [];
+      stateCopy.sast.allIssues = [];
       const updatedIssue = {
         ...parsedSastIssuesHead[0],
         foo: 'bar',
@@ -512,14 +521,14 @@ describe('security reports mutations', () => {
     it('updates issue in the all issues list', () => {
       stateCopy.sast.newIssues = [];
       stateCopy.sast.resolvedIssues = [];
-      stateCopy.sast.AllIssues = parsedSastIssuesHead;
+      stateCopy.sast.allIssues = parsedSastIssuesHead;
       const updatedIssue = {
         ...parsedSastIssuesHead[0],
         foo: 'bar',
       };
 
       mutations[types.UPDATE_SAST_ISSUE](stateCopy, updatedIssue);
-      expect(stateCopy.sast.AllIssues[0]).toEqual(updatedIssue);
+      expect(stateCopy.sast.allIssues[0]).toEqual(updatedIssue);
     });
   });
 
@@ -527,7 +536,7 @@ describe('security reports mutations', () => {
     it('updates issue in the new issues list', () => {
       stateCopy.dependencyScanning.newIssues = parsedDependencyScanningIssuesHead;
       stateCopy.dependencyScanning.resolvedIssues = [];
-      stateCopy.dependencyScanning.AllIssues = [];
+      stateCopy.dependencyScanning.allIssues = [];
       const updatedIssue = {
         ...parsedDependencyScanningIssuesHead[0],
         foo: 'bar',
@@ -540,7 +549,7 @@ describe('security reports mutations', () => {
     it('updates issue in the resolved issues list', () => {
       stateCopy.sast.newIssues = [];
       stateCopy.sast.resolvedIssues = parsedDependencyScanningIssuesHead;
-      stateCopy.sast.AllIssues = [];
+      stateCopy.sast.allIssues = [];
       const updatedIssue = {
         ...parsedDependencyScanningIssuesHead[0],
         foo: 'bar',
@@ -553,14 +562,14 @@ describe('security reports mutations', () => {
     it('updates issue in the all issues list', () => {
       stateCopy.dependencyScanning.newIssues = [];
       stateCopy.dependencyScanning.resolvedIssues = [];
-      stateCopy.dependencyScanning.AllIssues = parsedDependencyScanningIssuesHead;
+      stateCopy.dependencyScanning.allIssues = parsedDependencyScanningIssuesHead;
       const updatedIssue = {
         ...parsedDependencyScanningIssuesHead[0],
         foo: 'bar',
       };
 
       mutations[types.UPDATE_DEPENDENCY_SCANNING_ISSUE](stateCopy, updatedIssue);
-      expect(stateCopy.dependencyScanning.AllIssues[0]).toEqual(updatedIssue);
+      expect(stateCopy.dependencyScanning.allIssues[0]).toEqual(updatedIssue);
     });
   });
 
@@ -617,4 +626,3 @@ describe('security reports mutations', () => {
     });
   });
 });
-

@@ -1,78 +1,54 @@
-import { n__, s__ } from '~/locale';
-import { textBuilder, statusIcon } from './utils';
+import { s__, sprintf } from '~/locale';
+import { groupedTextBuilder, statusIcon } from './utils';
 import { LOADING, ERROR, SUCCESS } from './constants';
+import messages from './messages';
 
-export const groupedSastText = ({ sast }) => {
-  if (sast.hasError) {
-    return s__('ciReport|SAST resulted in error while loading results');
+const groupedReportText = (report, name, errorMessage, loadingMessage) => {
+  if (report.hasError) {
+    return errorMessage;
   }
 
-  if (sast.isLoading) {
-    return s__('ciReport|SAST is loading');
+  if (report.isLoading) {
+    return loadingMessage;
   }
 
-  return textBuilder(
-    'SAST',
-    sast.paths,
-    sast.newIssues.length,
-    sast.resolvedIssues.length,
-    sast.allIssues.length,
+  return groupedTextBuilder(
+    name,
+    report.paths,
+    (report.newIssues || []).length,
+    (report.resolvedIssues || []).length,
+    (report.allIssues || []).length,
   );
 };
 
-export const groupedSastContainerText = ({ sastContainer }) => {
-  if (sastContainer.hasError) {
-    return s__('ciReport|Container scanning resulted in error while loading results');
-  }
+export const groupedSastText = ({ sast }) =>
+  groupedReportText(sast, messages.SAST, messages.SAST_HAS_ERROR, messages.SAST_IS_LOADING);
 
-  if (sastContainer.isLoading) {
-    return s__('ciReport|Container scanning is loading');
-  }
-
-  return textBuilder(
-    'Container scanning',
-    sastContainer.paths,
-    sastContainer.newIssues.length,
-    sastContainer.resolvedIssues.length,
+export const groupedSastContainerText = ({ sastContainer }) =>
+  groupedReportText(
+    sastContainer,
+    messages.CONTAINER_SCANNING,
+    messages.CONTAINER_SCANNING_HAS_ERROR,
+    messages.CONTAINER_SCANNING_IS_LOADING,
   );
-};
 
-export const groupedDastText = ({ dast }) => {
-  if (dast.hasError) {
-    return s__('ciReport|DAST resulted in error while loading results');
-  }
+export const groupedDastText = ({ dast }) =>
+  groupedReportText(dast, messages.DAST, messages.DAST_HAS_ERROR, messages.DAST_IS_LOADING);
 
-  if (dast.isLoading) {
-    return s__('ciReport|DAST is loading');
-  }
-
-  return textBuilder('DAST', dast.paths, dast.newIssues.length, dast.resolvedIssues.length);
-};
-
-export const groupedDependencyText = ({ dependencyScanning }) => {
-  if (dependencyScanning.hasError) {
-    return s__('ciReport|Dependency scanning resulted in error while loading results');
-  }
-
-  if (dependencyScanning.isLoading) {
-    return s__('ciReport|Dependency scanning is loading');
-  }
-
-  return textBuilder(
-    'Dependency scanning',
-    dependencyScanning.paths,
-    dependencyScanning.newIssues.length,
-    dependencyScanning.resolvedIssues.length,
-    dependencyScanning.allIssues.length,
+export const groupedDependencyText = ({ dependencyScanning }) =>
+  groupedReportText(
+    dependencyScanning,
+    messages.DEPENDENCY_SCANNING,
+    messages.DEPENDENCY_SCANNING_HAS_ERROR,
+    messages.DEPENDENCY_SCANNING_IS_LOADING,
   );
-};
 
 export const groupedSummaryText = (state, getters) => {
-  const { added, fixed } = state.summaryCounts;
+  const reportType = s__('ciReport|Security scanning');
 
   // All reports are loading
   if (getters.areAllReportsLoading) {
-    return s__('ciReport|Security scanning is loading');
+    return sprintf(messages.TRANSLATION_IS_LOADING, { reportType });
   }
 
   // All reports returned error
@@ -80,53 +56,25 @@ export const groupedSummaryText = (state, getters) => {
     return s__('ciReport|Security scanning failed loading any results');
   }
 
-  // No base is present in any report
-  if (getters.noBaseInAllReports) {
-    if (added > 0) {
-      return n__(
-        'Security scanning detected %d vulnerability for the source branch only',
-        'Security scanning detected %d vulnerabilities for the source branch only',
-        added,
-      );
-    }
+  const { added, fixed, existing } = state.summaryCounts;
 
-    return s__(
-      'Security scanning detected no vulnerabilities for the source branch only',
-    );
-  }
-
-  const text = [s__('ciReport|Security scanning')];
+  let status = '';
 
   if (getters.areReportsLoading && getters.anyReportHasError) {
-    text.push('(is loading, errors when loading results)');
+    status = s__('ciReport|(is loading, errors when loading results)');
   } else if (getters.areReportsLoading && !getters.anyReportHasError) {
-    text.push('(is loading)');
+    status = s__('ciReport|(is loading)');
   } else if (!getters.areReportsLoading && getters.anyReportHasError) {
-    text.push('(errors when loading results)');
+    status = s__('ciReport|(errors when loading results)');
   }
 
-  if (added > 0 && fixed === 0) {
-    text.push(n__('detected %d new vulnerability', 'detected %d new vulnerabilities', added));
-  }
+  /*
+   In order to correct wording, we ne to set the base property to true,
+   if at least one report has a base.
+   */
+  const paths = { head: true, base: !getters.noBaseInAllReports };
 
-  if (added > 0 && fixed > 0) {
-    text.push(
-      `${n__('detected %d new vulnerability', 'detected %d new vulnerabilities', added)} ${n__(
-        'and %d fixed vulnerability',
-        'and %d fixed vulnerabilities',
-        fixed,
-      )}`,
-    );
-  }
-
-  if (added === 0 && fixed > 0) {
-    text.push(n__('detected %d fixed vulnerability', 'detected %d fixed vulnerabilities', fixed));
-  }
-
-  if (added === 0 && fixed === 0) {
-    text.push(s__('detected no vulnerabilities'));
-  }
-  return text.join(' ');
+  return groupedTextBuilder(reportType, paths, added, fixed, existing, status);
 };
 
 export const summaryStatus = (state, getters) => {

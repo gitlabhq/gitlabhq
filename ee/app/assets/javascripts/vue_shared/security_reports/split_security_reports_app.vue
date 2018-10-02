@@ -7,12 +7,14 @@ import { componentNames } from 'ee/vue_shared/components/reports/issue_body';
 import IssueModal from './components/modal.vue';
 import mixin from './mixins/security_report_mixin';
 import reportsMixin from './mixins/reports_mixin';
+import messages from './store/messages';
 
 export default {
   components: {
     ReportSection,
     IssueModal,
   },
+  messages,
   mixins: [mixin, reportsMixin],
   props: {
     alwaysOpen: {
@@ -93,22 +95,25 @@ export default {
     ...mapState(['sast', 'dependencyScanning', 'sastContainer', 'dast']),
 
     sastText() {
-      return this.summaryTextBuilder('SAST', this.sast.newIssues.length);
+      return this.summaryTextBuilder(messages.SAST, this.sast.newIssues.length);
     },
 
     dependencyScanningText() {
       return this.summaryTextBuilder(
-        'Dependency scanning',
+        messages.DEPENDENCY_SCANNING,
         this.dependencyScanning.newIssues.length,
       );
     },
 
     sastContainerText() {
-      return this.summaryTextBuilder('Container scanning', this.sastContainer.newIssues.length);
+      return this.summaryTextBuilder(
+        messages.CONTAINER_SCANNING,
+        this.sastContainer.newIssues.length,
+      );
     },
 
     dastText() {
-      return this.summaryTextBuilder('DAST', this.dast.newIssues.length);
+      return this.summaryTextBuilder(messages.DAST, this.dast.newIssues.length);
     },
 
     issuesCount() {
@@ -184,26 +189,20 @@ export default {
       'setCanCreateIssuePermission',
       'setCanCreateFeedbackPermission',
     ]),
-    summaryTextBuilder(type, issuesCount = 0) {
+    summaryTextBuilder(reportType, issuesCount = 0) {
       if (issuesCount === 0) {
-        return sprintf(s__('ciReport|%{type} detected no vulnerabilities'), {
-          type,
+        return sprintf(s__('ciReport|%{reportType} detected no vulnerabilities'), {
+          reportType,
         });
       }
       return sprintf(
-        n__('%{type} detected 1 vulnerability', '%{type} detected %{vulnerabilityCount} vulnerabilities', issuesCount),
-        { type, vulnerabilityCount: issuesCount },
+        n__(
+          'ciReport|%{reportType} detected %{vulnerabilityCount} vulnerability',
+          'ciReport|%{reportType} detected %{vulnerabilityCount} vulnerabilities',
+          issuesCount,
+        ),
+        { reportType, vulnerabilityCount: issuesCount },
       );
-    },
-    translateText(type) {
-      return {
-        error: sprintf(s__('ciReport|%{reportName} resulted in error while loading results'), {
-          reportName: type,
-        }),
-        loading: sprintf(s__('ciReport|%{reportName} is loading'), {
-          reportName: type,
-        }),
-      };
     },
   },
 };
@@ -215,8 +214,8 @@ export default {
       :always-open="alwaysOpen"
       :component="$options.componentNames.SastIssueBody"
       :status="checkReportStatus(sast.isLoading, sast.hasError)"
-      :loading-text="translateText('SAST').loading"
-      :error-text="translateText('SAST').error"
+      :loading-text="$options.messages.SAST_IS_LOADING"
+      :error-text="$options.messages.SAST_HAS_ERROR"
       :success-text="sastText"
       :unresolved-issues="sast.newIssues"
       :has-issues="sast.newIssues.length > 0"
@@ -229,8 +228,8 @@ export default {
       :always-open="alwaysOpen"
       :component="$options.componentNames.SastIssueBody"
       :status="checkReportStatus(dependencyScanning.isLoading, dependencyScanning.hasError)"
-      :loading-text="translateText('Dependency scanning').loading"
-      :error-text="translateText('Dependency scanning').error"
+      :loading-text="$options.messages.DEPENDENCY_SCANNING_IS_LOADING"
+      :error-text="$options.messages.DEPENDENCY_SCANNING_HAS_ERROR"
       :success-text="dependencyScanningText"
       :unresolved-issues="dependencyScanning.newIssues"
       :has-issues="dependencyScanning.newIssues.length > 0"
@@ -243,8 +242,8 @@ export default {
       :always-open="alwaysOpen"
       :component="$options.componentNames.SastContainerIssueBody"
       :status="checkReportStatus(sastContainer.isLoading, sastContainer.hasError)"
-      :loading-text="translateText('Container scanning').loading"
-      :error-text="translateText('Container scanning').error"
+      :loading-text="$options.messages.CONTAINER_SCANNING_IS_LOADING"
+      :error-text="$options.messages.CONTAINER_SCANNING_HAS_ERROR"
       :success-text="sastContainerText"
       :unresolved-issues="sastContainer.newIssues"
       :has-issues="sastContainer.newIssues.length > 0"
@@ -257,8 +256,8 @@ export default {
       :always-open="alwaysOpen"
       :component="$options.componentNames.DastIssueBody"
       :status="checkReportStatus(dast.isLoading, dast.hasError)"
-      :loading-text="translateText('DAST').loading"
-      :error-text="translateText('DAST').error"
+      :loading-text="$options.messages.DAST_IS_LOADING"
+      :error-text="$options.messages.DAST_HAS_ERROR"
       :success-text="dastText"
       :unresolved-issues="dast.newIssues"
       :has-issues="dast.newIssues.length > 0"
