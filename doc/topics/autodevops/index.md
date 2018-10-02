@@ -440,6 +440,28 @@ no longer be valid as soon as the deployment job finishes. This means that
 Kubernetes can run the application, but in case it should be restarted or
 executed somewhere else, it cannot be accessed again.
 
+> [Introduced][ce-21955] in GitLab 11.4
+
+Database initialization and migrations can be configured to run within
+the application pod by setting the project variables `DB_INITIALIZE` and
+`DB_MIGRATE` respectively.
+
+If present, `DB_INITIALIZE` will be run as a shell command within an application pod as a helm
+post-install hook. Note that this means that if any deploy succeeds,
+`DB_INITIALIZE` will not be processed thereafter.
+
+If present, `DB_MIGRATE` will be run as a shell command within an application pod as
+a helm pre-upgrade hook.
+
+For example, in a rails application :
+
+* `DB_INITIALIZE` can be set to `cd /app && RAILS_ENV=production
+  bin/setup`
+* `DB_MIGRATE` can be set to `cd /app && RAILS_ENV=production bin/update`
+
+Note that `/app` is the location of the application as [configured by
+Herokuish](https://github.com/gliderlabs/herokuish#paths)
+
 > [Introduced][ce-19507] in GitLab 11.0.
 
 For internal and private projects a [GitLab Deploy Token](../../user/project/deploy_tokens/index.md###gitlab-deploy-token)
@@ -581,6 +603,8 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `BUILDPACK_URL`              | The buildpack's full URL. It can point to either Git repositories or a tarball URL. For Git repositories, it is possible to point to a specific `ref`, for example `https://github.com/heroku/heroku-buildpack-ruby.git#v142` |
 | `SAST_CONFIDENCE_LEVEL`      | The minimum confidence level of security issues you want to be reported; `1` for Low, `2` for Medium, `3` for High; defaults to `3`.|
 | `DEP_SCAN_DISABLE_REMOTE_CHECKS` | Whether remote Dependency Scanning checks are disabled; defaults to `"false"`. Set to `"true"` to disable checks that send data to GitLab central servers. [Read more about remote checks](https://gitlab.com/gitlab-org/security-products/dependency-scanning#remote-checks).|
+| `DB_INITIALIZE`              | From GitLab 11.4, this variable can be used to specify the command to run to initialize the application's database. Run inside the application pod. |
+| `DB_MIGRATE`                 | From GitLab 11.4, this variable can be used to specify the command to run to migrate the application's database. Run inside the application pod. |
 | `STAGING_ENABLED`            | From GitLab 10.8, this variable can be used to define a [deploy policy for staging and production environments](#deploy-policy-for-staging-and-production-environments). |
 | `CANARY_ENABLED`             | From GitLab 11.0, this variable can be used to define a [deploy policy for canary environments](#deploy-policy-for-canary-environments). |
 | `INCREMENTAL_ROLLOUT_ENABLED`| From GitLab 10.8, this variable can be used to enable an [incremental rollout](#incremental-rollout-to-production) of your application for the production environment. |
@@ -834,4 +858,5 @@ curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https:/
 [postgresql]: https://www.postgresql.org/
 [Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml
 [ee]: https://about.gitlab.com/pricing/
+[ce-21955]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21955
 [ce-19507]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19507
