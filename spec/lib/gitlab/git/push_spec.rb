@@ -63,6 +63,12 @@ describe Gitlab::Git::Push do
 
       it { is_expected.not_to be_branch_updated }
     end
+
+    context 'when oldrev is nil' do
+      let(:oldrev) { nil }
+
+      it { is_expected.not_to be_branch_updated }
+    end
   end
 
   describe '#force_push?' do
@@ -122,6 +128,38 @@ describe Gitlab::Git::Push do
 
       it 'raises an error' do
         expect { subject.modified_paths }.to raise_error(ArgumentError)
+      end
+    end
+  end
+
+  describe '#oldrev' do
+    context 'when a valid oldrev is provided' do
+      it 'returns oldrev' do
+        expect(subject.oldrev).to eq oldrev
+      end
+    end
+
+    context 'when a nil valud is provided' do
+      let(:oldrev) { nil }
+
+      it 'returns blank SHA' do
+        expect(subject.oldrev).to eq Gitlab::Git::BLANK_SHA
+      end
+    end
+  end
+
+  describe '#newrev' do
+    context 'when valid newrev is provided' do
+      it 'returns newrev' do
+        expect(subject.newrev).to eq newrev
+      end
+    end
+
+    context 'when a nil valud is provided' do
+      let(:newrev) { nil }
+
+      it 'returns blank SHA' do
+        expect(subject.newrev).to eq Gitlab::Git::BLANK_SHA
       end
     end
   end
