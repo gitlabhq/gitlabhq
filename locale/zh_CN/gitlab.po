@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-10-01 16:30\n"
+"PO-Revision-Date: 2018-10-02 09:30\n"
 
 msgid " Status"
 msgstr "状态"
@@ -150,22 +150,6 @@ msgstr "%{text}可用"
 
 msgid "%{title} changes"
 msgstr "%{title}更改"
-
-msgid "%{type} detected 1 fixed vulnerability"
-msgid_plural "%{type} detected %{vulnerabilityCount} fixed vulnerabilities"
-msgstr[0] "%{type}检测到 %{vulnerabilityCount} 个已修复的漏洞"
-
-msgid "%{type} detected 1 new vulnerability"
-msgid_plural "%{type} detected %{vulnerabilityCount} new vulnerabilities"
-msgstr[0] "%{type}检测到 %{vulnerabilityCount} 个新漏洞"
-
-msgid "%{type} detected 1 vulnerability"
-msgid_plural "%{type} detected %{vulnerabilityCount} vulnerabilities"
-msgstr[0] "%{type}检测到%{vulnerabilityCount}个漏洞"
-
-msgid "%{type} detected 1 vulnerability for the source branch only"
-msgid_plural "%{type} detected %{vulnerabilityCount} vulnerabilities for the source branch only"
-msgstr[0] "%{type} 检测到源分支的 %{vulnerabilityCount} 个漏洞"
 
 msgid "%{unstaged} unstaged and %{staged} staged changes"
 msgstr "%{unstaged}个未暂存的更改及%{staged}个已暂存的更改"
@@ -6637,13 +6621,6 @@ msgstr "安全"
 msgid "Security Dashboard"
 msgstr "安全仪表盘"
 
-msgid "Security scanning detected %d vulnerability for the source branch only"
-msgid_plural "Security scanning detected %d vulnerabilities for the source branch only"
-msgstr[0] "检测到源分支的  %d 个漏洞"
-
-msgid "Security scanning detected no vulnerabilities for the source branch only"
-msgstr "安全扫描仅检测到源分支没有漏洞"
-
 msgid "SecurityDashboard| The security dashboard displays the latest security report. Use it to find and fix vulnerabilities."
 msgstr "安全仪表板显示最新的安全报告。用它来查找和修复漏洞。"
 
@@ -8559,14 +8536,6 @@ msgstr "前"
 msgid "among other things"
 msgstr "及其他功能"
 
-msgid "and %d fixed vulnerability"
-msgid_plural "and %d fixed vulnerabilities"
-msgstr[0] "和 %d 个已修复漏洞"
-
-msgid "and 1 fixed vulnerability"
-msgid_plural "and %d fixed vulnerabilities"
-msgstr[0] "及%d个已修复的漏洞"
-
 msgid "assign yourself"
 msgstr "分配给自己"
 
@@ -8594,20 +8563,51 @@ msgstr "ciReport|%{namespace} 受 %{vulnerability} 影响。"
 msgid "ciReport|%{remainingPackagesCount} more"
 msgstr "还有%{remainingPackagesCount} 个"
 
-msgid "ciReport|%{reportName} is loading"
-msgstr "%{reportName} 加载中"
+msgid "ciReport|%{reportType} %{status} detected %{fixedCount} fixed vulnerability"
+msgid_plural "ciReport|%{reportType} %{status} detected %{fixedCount} fixed vulnerabilities"
+msgstr[0] ""
 
-msgid "ciReport|%{reportName} resulted in error while loading results"
-msgstr "加载%{reportName} 时出错"
+msgid "ciReport|%{reportType} %{status} detected %{newCount} new vulnerability"
+msgid_plural "ciReport|%{reportType} %{status} detected %{newCount} new vulnerabilities"
+msgstr[0] ""
 
-msgid "ciReport|%{type} detected no new security vulnerabilities"
-msgstr "%{type} 未发现新的安全漏洞"
+msgid "ciReport|%{reportType} %{status} detected %{newCount} new, and %{fixedCount} fixed vulnerabilities"
+msgstr ""
 
-msgid "ciReport|%{type} detected no security vulnerabilities"
-msgstr "%{type} 未发现安全漏洞"
+msgid "ciReport|%{reportType} %{status} detected %{newCount} vulnerability for the source branch only"
+msgid_plural "ciReport|%{reportType} %{status} detected %{newCount} vulnerabilities for the source branch only"
+msgstr[0] ""
 
-msgid "ciReport|%{type} detected no vulnerabilities"
-msgstr "%{type} 未发现安全漏洞"
+msgid "ciReport|%{reportType} %{status} detected no new vulnerabilities"
+msgstr ""
+
+msgid "ciReport|%{reportType} %{status} detected no vulnerabilities"
+msgstr ""
+
+msgid "ciReport|%{reportType} %{status} detected no vulnerabilities for the source branch only"
+msgstr ""
+
+msgid "ciReport|%{reportType} detected %{vulnerabilityCount} vulnerability"
+msgid_plural "ciReport|%{reportType} detected %{vulnerabilityCount} vulnerabilities"
+msgstr[0] ""
+
+msgid "ciReport|%{reportType} detected no vulnerabilities"
+msgstr ""
+
+msgid "ciReport|%{reportType} is loading"
+msgstr ""
+
+msgid "ciReport|%{reportType}: Loading resulted in an error"
+msgstr ""
+
+msgid "ciReport|(errors when loading results)"
+msgstr ""
+
+msgid "ciReport|(is loading)"
+msgstr ""
+
+msgid "ciReport|(is loading, errors when loading results)"
+msgstr ""
 
 msgid "ciReport|Class"
 msgstr "类"
@@ -8618,38 +8618,29 @@ msgstr "代码质量"
 msgid "ciReport|Confidence"
 msgstr "置信水平"
 
+msgid "ciReport|Container scanning"
+msgstr ""
+
 msgid "ciReport|Container scanning detected"
 msgstr "容器安全扫描检测到"
 
 msgid "ciReport|Container scanning detects known vulnerabilities in your docker images."
 msgstr "容器扫描可以检测Docker镜像中中已知的安全漏洞。"
 
-msgid "ciReport|Container scanning is loading"
-msgstr "容器安全扫描加载中"
-
-msgid "ciReport|Container scanning resulted in error while loading results"
-msgstr "加载容器扫描结果时出错"
+msgid "ciReport|DAST"
+msgstr ""
 
 msgid "ciReport|DAST detected"
 msgstr "DAST检测到"
 
-msgid "ciReport|DAST is loading"
-msgstr "DAST加载中"
-
-msgid "ciReport|DAST resulted in error while loading results"
-msgstr "加载DAST结果时出错"
-
 msgid "ciReport|Dependency Scanning detects known vulnerabilities in your source code's dependencies."
 msgstr "依赖项扫描可以检测源代码依赖项中已知的漏洞。"
 
+msgid "ciReport|Dependency scanning"
+msgstr ""
+
 msgid "ciReport|Dependency scanning detected"
 msgstr "依赖关系扫描检测到"
-
-msgid "ciReport|Dependency scanning is loading"
-msgstr "依赖项扫描加载中"
-
-msgid "ciReport|Dependency scanning resulted in error while loading results"
-msgstr "加载依赖项扫描结果时出错"
 
 msgid "ciReport|Description"
 msgstr "说明"
@@ -8719,23 +8710,17 @@ msgstr "性能指标"
 msgid "ciReport|Revert dismissal"
 msgstr "取消忽略"
 
+msgid "ciReport|SAST"
+msgstr ""
+
 msgid "ciReport|SAST detected"
 msgstr "SAST检测到"
-
-msgid "ciReport|SAST is loading"
-msgstr "SAST加载中"
-
-msgid "ciReport|SAST resulted in error while loading results"
-msgstr "加载SAST结果时出错"
 
 msgid "ciReport|Security scanning"
 msgstr "安全扫描"
 
 msgid "ciReport|Security scanning failed loading any results"
 msgstr "安全扫描无法加载任何结果"
-
-msgid "ciReport|Security scanning is loading"
-msgstr "安全扫描加载中"
 
 msgid "ciReport|Severity"
 msgstr "严重性"
@@ -8807,17 +8792,6 @@ msgstr[0] "天"
 
 msgid "deploy token"
 msgstr "部署令牌"
-
-msgid "detected %d fixed vulnerability"
-msgid_plural "detected %d fixed vulnerabilities"
-msgstr[0] "检测到%d个安全漏洞已修复"
-
-msgid "detected %d new vulnerability"
-msgid_plural "detected %d new vulnerabilities"
-msgstr[0] "检测到%d个新的安全漏洞"
-
-msgid "detected no vulnerabilities"
-msgstr "未检测到安全漏洞"
 
 msgid "disabled"
 msgstr "已禁用"
