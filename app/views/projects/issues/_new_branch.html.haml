@@ -15,7 +15,7 @@
         %span.text
           Checking branch availability…
 
-    #js-vue-discussion-filter{ data: { default_filter: current_user && current_user.notes_filter_for(@issue) } }
+    #js-vue-discussion-filter{ data: { default_filter: current_user&.notes_filter_for(@issue) } }
 
     .btn-group.available.hidden
       %button.btn.js-create-merge-request.btn-success.btn-inverted{ type: 'button', data: { action: data_action } }
