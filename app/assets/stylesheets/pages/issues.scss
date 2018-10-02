@@ -205,6 +205,10 @@ ul.related-merge-requests > li {
 
   .btn-group:not(.hidden) {
     display: flex;
+
+    @include media-breakpoint-down(md) {
+      margin-top: $gl-padding-8;
+    }
   }
 
   .js-create-merge-request {

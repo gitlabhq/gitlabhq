@@ -30,8 +30,8 @@ export default {
       'discussionTabCounter',
     ]),
     currentFilter() {
-      const selectedValue = this.currentValue ? this.currentValue : this.filters[0].value;
-      return this.filters.find(filter => filter.value === selectedValue);
+      if (!this.currentValue) return this.filters[0];
+      return this.filters.find(filter => filter.value === this.currentValue);
     },
   },
   methods: {
@@ -52,7 +52,7 @@ export default {
 <template>
   <div
     v-if="discussionTabCounter > 0"
-    class="prepend-top-10 append-bottom-10 append-right-4 d-inline-flex">
+    class="prepend-top-10 append-right-4 d-inline-block">
     <button
       v-dropdown
       id="discussion-filter-dropdown"
@@ -60,14 +60,11 @@ export default {
       data-toggle="dropdown"
       aria-expanded="false"
     >
-      <span class="append-right-4">{{ currentFilter.title }}</span>
-      <icon
-        :size="12"
-        name="angle-down"
-      />
+      {{ currentFilter.title }}
+      <icon name="chevron-down" />
     </button>
     <div
-      class="dropdown-menu dropdown-menu-selectable"
+      class="dropdown-menu dropdown-menu-selectable dropdown-menu-right"
       aria-labelledby="discussion-filter-dropdown">
       <div class="dropdown-content">
         <ul>

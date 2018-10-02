@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { __ } from '~/locale';
-import discussionFilter from './components/discussion_filter.vue';
+import DiscussionFilter from './components/discussion_filter.vue';
 
 export default (store) => {
   const discussionFilterEl = document.getElementById('js-vue-discussion-filter');
@@ -25,7 +25,7 @@ export default (store) => {
       el: '#js-vue-discussion-filter',
       name: 'DiscussionFilter',
       components: {
-        discussionFilter,
+        DiscussionFilter,
       },
       store,
       render(createElement) {
