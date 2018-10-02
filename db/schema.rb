@@ -1943,18 +1943,18 @@ ActiveRecord::Schema.define(version: 20180926140319) do
     t.string "nonce", null: false
   end
 
-  create_table "operations_feature_flags", force: :cascade do |t|
+  create_table "operations_feature_flags", id: :bigserial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
+    t.boolean "active", null: false
     t.string "name", null: false
     t.text "description"
-    t.boolean "active", null: false
   end
 
   add_index "operations_feature_flags", ["project_id", "name"], name: "index_operations_feature_flags_on_project_id_and_name", unique: true, using: :btree
 
-  create_table "operations_feature_flags_clients", force: :cascade do |t|
+  create_table "operations_feature_flags_clients", id: :bigserial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "token", null: false
   end
