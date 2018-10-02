@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: uk\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-10-01 21:33\n"
+"PO-Revision-Date: 2018-10-02 09:31\n"
 
 msgid " Status"
 msgstr " Статус"
@@ -207,34 +207,6 @@ msgstr "%{text} доступний"
 
 msgid "%{title} changes"
 msgstr "%{title} зміни"
-
-msgid "%{type} detected 1 fixed vulnerability"
-msgid_plural "%{type} detected %{vulnerabilityCount} fixed vulnerabilities"
-msgstr[0] "%{type} виявило 1 виправлену вразливість"
-msgstr[1] "%{type} виявило %{vulnerabilityCount} виправлені вразливості"
-msgstr[2] "%{type} виявило %{vulnerabilityCount} виправлених вразливостей"
-msgstr[3] "%{type} виявило %{vulnerabilityCount} виправлених вразливостей"
-
-msgid "%{type} detected 1 new vulnerability"
-msgid_plural "%{type} detected %{vulnerabilityCount} new vulnerabilities"
-msgstr[0] "%{type} виявило 1 нову вразливість"
-msgstr[1] "%{type} виявило %{vulnerabilityCount} нові вразливості"
-msgstr[2] "%{type} виявило %{vulnerabilityCount} нових вразливостей"
-msgstr[3] "%{type} виявило %{vulnerabilityCount} нових вразливостей"
-
-msgid "%{type} detected 1 vulnerability"
-msgid_plural "%{type} detected %{vulnerabilityCount} vulnerabilities"
-msgstr[0] "%{type} виявило 1 вразливість"
-msgstr[1] "%{type} виявило %{vulnerabilityCount} вразливостей"
-msgstr[2] "%{type} виявило %{vulnerabilityCount} вразливостей"
-msgstr[3] "%{type} виявило %{vulnerabilityCount} вразливостей"
-
-msgid "%{type} detected 1 vulnerability for the source branch only"
-msgid_plural "%{type} detected %{vulnerabilityCount} vulnerabilities for the source branch only"
-msgstr[0] "%{type} виявило 1 вразливість тільки для гілки-джерела"
-msgstr[1] "%{type} виявило %{vulnerabilityCount} вразливості тільки для гілки-джерела"
-msgstr[2] "%{type} виявило %{vulnerabilityCount} вразливостей тільки для гілки-джерела"
-msgstr[3] "%{type} виявило %{vulnerabilityCount} вразливостей тільки для гілки-джерела"
 
 msgid "%{unstaged} unstaged and %{staged} staged changes"
 msgstr "%{unstaged} неіндексованих та %{staged} проіндексованих змін"
@@ -6775,16 +6747,6 @@ msgstr "Безпека"
 msgid "Security Dashboard"
 msgstr "Панель безпеки"
 
-msgid "Security scanning detected %d vulnerability for the source branch only"
-msgid_plural "Security scanning detected %d vulnerabilities for the source branch only"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-
-msgid "Security scanning detected no vulnerabilities for the source branch only"
-msgstr ""
-
 msgid "SecurityDashboard| The security dashboard displays the latest security report. Use it to find and fix vulnerabilities."
 msgstr ""
 
@@ -8712,20 +8674,6 @@ msgstr "тому"
 msgid "among other things"
 msgstr "тощо"
 
-msgid "and %d fixed vulnerability"
-msgid_plural "and %d fixed vulnerabilities"
-msgstr[0] "і %d виправлену вразливість"
-msgstr[1] "і %d виправлені вразливості"
-msgstr[2] "і %d виправлених вразливостей"
-msgstr[3] "і %d виправлених вразливостей"
-
-msgid "and 1 fixed vulnerability"
-msgid_plural "and %d fixed vulnerabilities"
-msgstr[0] "та 1 виправлена вразливість"
-msgstr[1] "і %d виправлених вразливостей"
-msgstr[2] "і %d виправлених вразливостей"
-msgstr[3] "і %d виправлених вразливостей"
-
 msgid "assign yourself"
 msgstr "призначити себе"
 
@@ -8753,20 +8701,63 @@ msgstr "%{vulnerability} впливає на %{namespace}."
 msgid "ciReport|%{remainingPackagesCount} more"
 msgstr "%{remainingPackagesCount} більше"
 
-msgid "ciReport|%{reportName} is loading"
-msgstr "%{reportName} завантажується"
+msgid "ciReport|%{reportType} %{status} detected %{fixedCount} fixed vulnerability"
+msgid_plural "ciReport|%{reportType} %{status} detected %{fixedCount} fixed vulnerabilities"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
-msgid "ciReport|%{reportName} resulted in error while loading results"
-msgstr "%{reportName} видав помилку при завантаженні результатів"
+msgid "ciReport|%{reportType} %{status} detected %{newCount} new vulnerability"
+msgid_plural "ciReport|%{reportType} %{status} detected %{newCount} new vulnerabilities"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
-msgid "ciReport|%{type} detected no new security vulnerabilities"
-msgstr "%{type} не виявило нових вразливостей"
+msgid "ciReport|%{reportType} %{status} detected %{newCount} new, and %{fixedCount} fixed vulnerabilities"
+msgstr ""
 
-msgid "ciReport|%{type} detected no security vulnerabilities"
-msgstr "%{type} не виявило вразливостей"
+msgid "ciReport|%{reportType} %{status} detected %{newCount} vulnerability for the source branch only"
+msgid_plural "ciReport|%{reportType} %{status} detected %{newCount} vulnerabilities for the source branch only"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
-msgid "ciReport|%{type} detected no vulnerabilities"
-msgstr "%{type} не виявив вразливостей"
+msgid "ciReport|%{reportType} %{status} detected no new vulnerabilities"
+msgstr ""
+
+msgid "ciReport|%{reportType} %{status} detected no vulnerabilities"
+msgstr ""
+
+msgid "ciReport|%{reportType} %{status} detected no vulnerabilities for the source branch only"
+msgstr ""
+
+msgid "ciReport|%{reportType} detected %{vulnerabilityCount} vulnerability"
+msgid_plural "ciReport|%{reportType} detected %{vulnerabilityCount} vulnerabilities"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+msgid "ciReport|%{reportType} detected no vulnerabilities"
+msgstr ""
+
+msgid "ciReport|%{reportType} is loading"
+msgstr ""
+
+msgid "ciReport|%{reportType}: Loading resulted in an error"
+msgstr ""
+
+msgid "ciReport|(errors when loading results)"
+msgstr ""
+
+msgid "ciReport|(is loading)"
+msgstr ""
+
+msgid "ciReport|(is loading, errors when loading results)"
+msgstr ""
 
 msgid "ciReport|Class"
 msgstr "Клас"
@@ -8777,38 +8768,29 @@ msgstr "Якість коду"
 msgid "ciReport|Confidence"
 msgstr "Впевненість"
 
+msgid "ciReport|Container scanning"
+msgstr ""
+
 msgid "ciReport|Container scanning detected"
 msgstr "Сканування контейнерів виявило"
 
 msgid "ciReport|Container scanning detects known vulnerabilities in your docker images."
 msgstr "Сканування контейнерів виявляє відомі вразливості у ваших Docker образах."
 
-msgid "ciReport|Container scanning is loading"
-msgstr "Сканування контейнерів завантажується"
-
-msgid "ciReport|Container scanning resulted in error while loading results"
-msgstr "Сканування контейнерів видало помилку при завантаженні результатів"
+msgid "ciReport|DAST"
+msgstr ""
 
 msgid "ciReport|DAST detected"
 msgstr "DAST виявив"
 
-msgid "ciReport|DAST is loading"
-msgstr "DAST завантажується"
-
-msgid "ciReport|DAST resulted in error while loading results"
-msgstr "DAST видав помилку при завантаженні результатів"
-
 msgid "ciReport|Dependency Scanning detects known vulnerabilities in your source code's dependencies."
 msgstr "Сканування залежностей виявляє відомі вразливості у залежностях вашого коду."
 
+msgid "ciReport|Dependency scanning"
+msgstr ""
+
 msgid "ciReport|Dependency scanning detected"
 msgstr "Сканування залежностей виявило"
-
-msgid "ciReport|Dependency scanning is loading"
-msgstr "Сканування залежностей завантажується"
-
-msgid "ciReport|Dependency scanning resulted in error while loading results"
-msgstr "Сканування залежностей видало помилку при завантаженні результатів"
 
 msgid "ciReport|Description"
 msgstr "Опис"
@@ -8884,23 +8866,17 @@ msgstr "Показники продуктивності"
 msgid "ciReport|Revert dismissal"
 msgstr "Відмінити відхилення"
 
+msgid "ciReport|SAST"
+msgstr ""
+
 msgid "ciReport|SAST detected"
 msgstr "SAST виявив"
-
-msgid "ciReport|SAST is loading"
-msgstr "SAST завантажується"
-
-msgid "ciReport|SAST resulted in error while loading results"
-msgstr "SAST видав помилку при завантаженні результатів"
 
 msgid "ciReport|Security scanning"
 msgstr "Перевірка безпеки"
 
 msgid "ciReport|Security scanning failed loading any results"
 msgstr "Помилка при завантаженні результатів перевірки безпеки"
-
-msgid "ciReport|Security scanning is loading"
-msgstr "Сканування безпеки завантажується"
 
 msgid "ciReport|Severity"
 msgstr "Серйозність"
@@ -8978,23 +8954,6 @@ msgstr[3] "днів"
 
 msgid "deploy token"
 msgstr "токен для розгортання"
-
-msgid "detected %d fixed vulnerability"
-msgid_plural "detected %d fixed vulnerabilities"
-msgstr[0] "виявлено %d виправлену вразливість"
-msgstr[1] "виявлено %d виправлених вразливостей"
-msgstr[2] "виявлено %d виправлених вразливостей"
-msgstr[3] "виявлено %d виправлених вразливостей"
-
-msgid "detected %d new vulnerability"
-msgid_plural "detected %d new vulnerabilities"
-msgstr[0] "виявлено %d нову вразливість"
-msgstr[1] "виявлено %d нових вразливостей"
-msgstr[2] "виявлено %d нових вразливостей"
-msgstr[3] "виявлено %d нових вразливостей"
-
-msgid "detected no vulnerabilities"
-msgstr "не виявило вразливостей"
 
 msgid "disabled"
 msgstr "вимкнено"
