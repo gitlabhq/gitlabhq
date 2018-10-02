@@ -327,6 +327,10 @@ describe Ci::Build do
   describe '#enqueue_scheduled' do
     subject { build.enqueue_scheduled }
 
+    before do
+      stub_feature_flags(ci_enable_scheduled_build: true)
+    end
+
     context 'when build is scheduled and the right time has not come yet' do
       let(:build) { create(:ci_build, :scheduled, pipeline: pipeline) }
 
