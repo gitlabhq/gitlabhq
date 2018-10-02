@@ -387,6 +387,8 @@ except master.
 > `refs` and `kubernetes` policies introduced in GitLab 10.0
 >
 > `variables` policy introduced in 10.7
+>
+> `changes` policy introduced in 11.4
 
 CAUTION: **Warning:**
 This an _alpha_ feature, and it it subject to change at any time without
@@ -398,9 +400,14 @@ policy configuration.
 GitLab now supports both, simple and complex strategies, so it is possible to
 use an array and a hash configuration scheme.
 
-Three keys are now available: `refs`, `kubernetes` and `variables`.
+Four keys are now available: `refs`, `kubernetes` and `variables` and `changes`.
+
+### `refs` and `kubernetes`
+
 Refs strategy equals to simplified only/except configuration, whereas
 kubernetes strategy accepts only `active` keyword.
+
+### `variables`
 
 `variables` keyword is used to define variables expressions. In other words
 you can use predefined variables / project / group or
@@ -444,6 +451,34 @@ end-to-end:
 ```
 
 Learn more about variables expressions on [a separate page][variables-expressions].
+
+### `changes`
+
+Using `changes` keyword with `only` or `except` makes it possible to define if
+a job should be created, based on files modified by a git push event.
+
+```yaml
+docker build:
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  only:
+    changes:
+      - Dockerfile
+      - docker/scripts/*
+```
+
+In the scenario above, if you are pushing multiple commits to GitLab, to an
+exising branch, GitLab is going to create and trigger `docker build` if one of
+the commits contains changes to the `Dockerfile` file or any of the files
+inside `docker/scripts/` directory.
+
+CAUTION: **Warning:**
+If you are pushing a **new** branch or a tag to GitLab, only/changes is going
+to always evaluate to truth and GitLab will create a job. This feature is not
+connected with merge requests yet, GitLab is creating pipelines before an user
+creates a merge requests and specifies a target branch. Without a target branch
+it is not possible to know what the common ancestor is in case of pushing a new
+branch, thus we always create a job in that case. This feature works best for
+stable branches like `master`.
 
 ## `tags`
 
