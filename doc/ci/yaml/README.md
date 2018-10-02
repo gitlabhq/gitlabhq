@@ -467,18 +467,19 @@ docker build:
 ```
 
 In the scenario above, if you are pushing multiple commits to GitLab, to an
-exising branch, GitLab is going to create and trigger `docker build` if one of
-the commits contains changes to the `Dockerfile` file or any of the files
-inside `docker/scripts/` directory.
+exising branch, GitLab is going to create and trigger `docker build` job,
+provided that one of the commits contains changes to the `Dockerfile` file or
+changes to any of the files inside `docker/scripts/` directory.
 
 CAUTION: **Warning:**
-If you are pushing a **new** branch or a tag to GitLab, only/changes is going
-to always evaluate to truth and GitLab will create a job. This feature is not
-connected with merge requests yet, GitLab is creating pipelines before an user
-creates a merge requests and specifies a target branch. Without a target branch
-it is not possible to know what the common ancestor is in case of pushing a new
-branch, thus we always create a job in that case. This feature works best for
-stable branches like `master`.
+If you are pushing a **new** branch or a new tag to GitLab, only/changes is
+going to always evaluate to truth and GitLab will create a job. This feature is
+not combined with merge requests yet, and because GitLab is creating pipelines
+before an user can create a merge request we don't know a target branch at
+this point. Without a target branchit is not possible to know what the common
+ancestor is, thus we always create a job in that case. This feature works best for
+stable branches like `master` because in that case GitLab uses previous commit,
+that is present in a branch, to compare against a newly pushed latest SHA.
 
 ## `tags`
 
