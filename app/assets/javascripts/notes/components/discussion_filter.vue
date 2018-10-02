@@ -1,15 +1,12 @@
 <script>
+import $ from 'jquery';
 import Icon from '~/vue_shared/components/icon.vue';
 import { mapGetters } from 'vuex';
-import dropdown from '~/vue_shared/directives/dropdown';
 import eventHub from '../event_hub';
 
 export default {
   components: {
     Icon,
-  },
-  directives: {
-    dropdown,
   },
   props: {
     filters: {
@@ -39,6 +36,9 @@ export default {
       const { value } = e.target;
       const newValue = parseInt(value, 10);
 
+      // close dropdown
+      $('#discussion-filter-dropdown').dropdown('toggle');
+
       if (newValue === this.currentValue) return;
 
       e.stopImmediatePropagation();
@@ -54,7 +54,6 @@ export default {
     v-if="discussionTabCounter > 0"
     class="prepend-top-10 append-right-4 d-inline-block">
     <button
-      v-dropdown
       id="discussion-filter-dropdown"
       class="dropdown-toggle btn btn-default"
       data-toggle="dropdown"
