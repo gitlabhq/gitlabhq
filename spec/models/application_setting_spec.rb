@@ -592,4 +592,19 @@ describe ApplicationSetting do
       it { is_expected.to eq(result) }
     end
   end
+
+  context 'diff limit settings' do
+    describe '#diff_max_patch_bytes' do
+      context 'validations' do
+        it { is_expected.to validate_presence_of(:diff_max_patch_bytes) }
+
+        it do
+          is_expected.to validate_numericality_of(:diff_max_patch_bytes)
+          .only_integer
+          .is_greater_than_or_equal_to(Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES)
+          .is_less_than_or_equal_to(Gitlab::Git::Diff::MAX_PATCH_BYTES_UPPER_BOUND)
+        end
+      end
+    end
+  end
 end
