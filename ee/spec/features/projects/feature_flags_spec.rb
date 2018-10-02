@@ -14,6 +14,7 @@ describe 'Feature Flags', :js do
   let(:project) {create(:project, namespace: user.namespace)}
 
   before do
+    stub_licensed_features(feature_flags: true)
     sign_in(user)
   end
 
@@ -47,7 +48,7 @@ describe 'Feature Flags', :js do
         it 'displays an error message' do
           add_feature_flag(name, description, false)
 
-          expect(current_path).to eq project_feature_flags_path(project)
+          expect(current_path).to eq project_feature_flag_path(project)
           expect(page).to have_selector '.alert-danger', text: error_message
         end
       end
@@ -78,7 +79,7 @@ describe 'Feature Flags', :js do
         it 'displays an error message' do
           edit_feature_flag('feature-flag-to-edit', name, description, false)
 
-          expect(current_path).to eq project_feature_flags_path(project)
+          expect(current_path).to eq project_feature_flag_path(project)
           expect(page).to have_selector '.alert-danger', text: error_message
         end
       end

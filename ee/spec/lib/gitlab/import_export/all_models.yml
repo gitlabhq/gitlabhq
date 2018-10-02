@@ -57,7 +57,7 @@ project:
 - vulnerability_identifiers
 - vulnerability_scanners
 - operations_feature_flags
-- operations_feature_flags_instance
+- operations_feature_flags_client
 - prometheus_alerts
 - prometheus_alert_events
 - software_license_policies

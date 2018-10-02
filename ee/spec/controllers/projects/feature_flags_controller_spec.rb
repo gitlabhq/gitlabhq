@@ -67,7 +67,7 @@ describe Projects::FeatureFlagsController do
 
     it 'renders the form' do
       subject
-      
+
       expect(response).to be_ok
       expect(response).to render_template('new')
       expect(response).to render_template('_form')
@@ -151,4 +151,3 @@ describe Projects::FeatureFlagsController do
     { namespace_id: project.namespace, project_id: project }
   end
 end
-

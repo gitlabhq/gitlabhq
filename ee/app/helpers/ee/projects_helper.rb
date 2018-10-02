@@ -31,7 +31,7 @@ module EE
 
       nav_tabs
     end
-    
+
     override :tab_ability_map
     def tab_ability_map
       tab_ability_map = super

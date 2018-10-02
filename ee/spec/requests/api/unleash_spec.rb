@@ -88,7 +88,7 @@ describe API::Unleash do
 
       it 'matches json schema' do
         subject
-        
+
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('unleash/unleash', dir: 'ee')
       end
