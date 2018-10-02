@@ -3,8 +3,13 @@ require 'spec_helper'
 describe API::Unleash do
   set(:project) { create(:project) }
   let(:project_id) { project.id }
+  let(:feature_enabled) { true }
   let(:params) { }
   let(:headers) { }
+
+  before do
+    stub_licensed_features(feature_flags: feature_enabled)
+  end
 
   shared_examples 'authenticated request' do
     context 'when using instanceid' do
@@ -15,6 +20,16 @@ describe API::Unleash do
         subject
 
         expect(response).to have_gitlab_http_status(200)
+      end
+
+      context 'when feature is not available' do
+        let(:feature_enabled) { false }
+
+        it 'responds with forbidden' do
+          subject
+
+          expect(response).to have_gitlab_http_status(403)
+        end
       end
     end
 

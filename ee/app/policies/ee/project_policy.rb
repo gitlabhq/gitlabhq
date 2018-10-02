@@ -65,6 +65,11 @@ module EE
         @subject.feature_available?(:license_management)
       end
 
+      with_scope :subject
+      condition(:feature_flags_disabled) do
+        !@subject.feature_available?(:feature_flags)
+      end
+
       rule { admin }.enable :change_repository_storage
 
       rule { support_bot }.enable :guest_access
@@ -120,6 +125,10 @@ module EE
 
       rule { packages_disabled }.policy do
         prevent(*create_read_update_admin_destroy(:package))
+      end
+
+      rule { feature_flags_disabled }.policy do
+        prevent(*create_read_update_admin_destroy(:feature_flag))
       end
 
       rule { can?(:maintainer_access) }.policy do

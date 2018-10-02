@@ -5,11 +5,13 @@ describe Projects::FeatureFlagsController do
 
   set(:user) { create(:user) }
   set(:project) { create(:project) }
+  let(:feature_enabled) { true }
 
   before do
     project.add_developer(user)
 
     sign_in(user)
+    stub_licensed_features(feature_flags: feature_enabled)
   end
 
   describe 'GET index' do
@@ -42,6 +44,18 @@ describe Projects::FeatureFlagsController do
         expect(response).to render_template('_table')
         expect(response).to render_template('_configure_feature_flags_button')
         expect(response).to render_template('_new_feature_flag_button')
+      end
+    end
+
+    context 'when feature is not available' do
+      let(:feature_enabled) { false }
+
+      before do
+        subject
+      end
+
+      it 'shows not found' do
+        expect(subject).to have_gitlab_http_status(404)
       end
     end
   end
