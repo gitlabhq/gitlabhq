@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-10-02 09:30\n"
+"PO-Revision-Date: 2018-10-02 11:46\n"
 
 msgid " Status"
 msgstr "状态"
@@ -5183,7 +5183,7 @@ msgstr "仓库导入后，可以通过 SSH 拉取镜像。了解更多 %{ssh_lin
 
 msgid "One more item"
 msgid_plural "%d more items"
-msgstr[0] "更多项目"
+msgstr[0] ""
 
 msgid "One or more of your Bitbucket projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
 msgstr "您的一个或多个Bitbucket项目无法直接导入GitLab，因为它们使用Subversion或Mercurial进行版本控制，而不是Git。"
