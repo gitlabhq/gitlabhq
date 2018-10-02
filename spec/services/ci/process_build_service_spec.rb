@@ -204,6 +204,20 @@ describe Ci::ProcessBuildService, '#execute' do
       allow(Ci::BuildScheduleWorker).to receive(:perform_at) { }
     end
 
-    it_behaves_like 'Scheduling properly', %w[success skipped]
+    context 'when ci_enable_scheduled_build is enabled' do
+      before do
+        stub_feature_flags(ci_enable_scheduled_build: true)
+      end
+
+      it_behaves_like 'Scheduling properly', %w[success skipped]
+    end
+
+    context 'when ci_enable_scheduled_build is enabled' do
+      before do
+        stub_feature_flags(ci_enable_scheduled_build: false)
+      end
+
+      it_behaves_like 'Actionizing properly', %w[success skipped]
+    end
   end
 end
