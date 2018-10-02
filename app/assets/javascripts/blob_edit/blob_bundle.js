@@ -15,8 +15,9 @@ export default () => {
     const assetsPath = editBlobForm.data('assetsPrefix');
     const blobLanguage = editBlobForm.data('blobLanguage');
     const currentAction = $('.js-file-title').data('currentAction');
+    const projectId = editBlobForm.data('project-id');
 
-    new EditBlob(`${urlRoot}${assetsPath}`, blobLanguage, currentAction);
+    new EditBlob(`${urlRoot}${assetsPath}`, blobLanguage, currentAction, projectId);
     new NewCommitForm(editBlobForm);
   }
 

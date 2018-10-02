@@ -1,5 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
+import Api from '~/api';
+
 import $ from 'jquery';
 import Flash from '../flash';
 import FileTemplateTypeSelector from './template_selectors/type_selector';
@@ -9,9 +11,10 @@ import GitignoreSelector from './template_selectors/gitignore_selector';
 import LicenseSelector from './template_selectors/license_selector';
 
 export default class FileTemplateMediator {
-  constructor({ editor, currentAction }) {
+  constructor({ editor, currentAction, projectId }) {
     this.editor = editor;
     this.currentAction = currentAction;
+    this.projectId = projectId;
 
     this.initTemplateSelectors();
     this.initTemplateTypeSelector();
@@ -126,7 +129,7 @@ export default class FileTemplateMediator {
     selector.renderLoading();
     // in case undo menu is already already there
     this.destroyUndoMenu();
-    this.fetchFileTemplate(selector.config.endpoint, query, data)
+    this.fetchFileTemplate(selector.config.type, query, data)
       .then((file) => {
         this.showUndoMenu();
         this.setEditorContent(file);
@@ -149,15 +152,15 @@ export default class FileTemplateMediator {
     });
   }
 
-  fetchFileTemplate(apiCall, query, data) {
+  fetchFileTemplate(type, query, data) {
     return new Promise((resolve) => {
       const resolveFile = file => resolve(file);
 
       if (!data) {
-        apiCall(query, resolveFile);
-      } else {
-        apiCall(query, data, resolveFile);
+        data = {};
       }
+
+      Api.projectTemplate(this.projectId, type, query, data, resolveFile);
     });
   }
 

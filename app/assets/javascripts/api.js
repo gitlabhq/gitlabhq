@@ -22,6 +22,8 @@ const Api = {
   ldapGroupsPath: '/api/:version/ldap/:provider/groups.json',
   dockerfilePath: '/api/:version/templates/dockerfiles/:key',
   issuableTemplatePath: '/:namespace_path/:project_path/templates/:type/:key',
+  projectTemplatePath: '/api/:version/projects/:id/templates/:type/:key',
+  projectTemplatesPath: '/api/:version/projects/:id/templates/:type',
   usersPath: '/api/:version/users.json',
   userStatusPath: '/api/:version/user/status',
   commitPath: '/api/:version/projects/:id/repository/commits',
@@ -221,6 +223,23 @@ const Api = {
   dockerfileYml(key, callback) {
     const url = Api.buildUrl(Api.dockerfilePath).replace(':key', key);
     return axios.get(url).then(({ data }) => callback(data));
+  },
+
+  projectTemplate(id, type, key, options, callback) {
+    const url = Api.buildUrl(this.projectTemplatePath)
+      .replace(':id', encodeURIComponent(id))
+      .replace(':type', type)
+      .replace(':key', encodeURIComponent(key));
+
+    return axios.get(url, { params: options }).then(({ data }) => callback(data));
+  },
+
+  projectTemplates(id, type, params = {}, callback) {
+    const url = Api.buildUrl(this.projectTemplatesPath)
+      .replace(':id', encodeURIComponent(id))
+      .replace(':type', type);
+
+    return axios.get(url, { params }).then(({ data }) => callback(data));
   },
 
   issueTemplate(namespacePath, projectPath, key, type, callback) {

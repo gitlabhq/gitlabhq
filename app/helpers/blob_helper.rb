@@ -191,11 +191,12 @@ module BlobHelper
     @dockerfile_names ||= template_dropdown_names(TemplateFinder.build(:dockerfiles, project).execute)
   end
 
-  def blob_editor_paths
+  def blob_editor_paths(project = @project)
     {
       'relative-url-root' => Rails.application.config.relative_url_root,
       'assets-prefix' => Gitlab::Application.config.assets.prefix,
-      'blob-language' => @blob && @blob.language.try(:ace_mode)
+      'blob-language' => @blob && @blob.language.try(:ace_mode),
+      'project-id' => project.id
     }
   end
 

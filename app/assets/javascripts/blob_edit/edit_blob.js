@@ -7,11 +7,11 @@ import { __ } from '~/locale';
 import TemplateSelectorMediator from '../blob/file_template_mediator';
 
 export default class EditBlob {
-  constructor(assetsPath, aceMode, currentAction) {
+  constructor(assetsPath, aceMode, currentAction, projectId) {
     this.configureAceEditor(aceMode, assetsPath);
     this.initModePanesAndLinks();
     this.initSoftWrap();
-    this.initFileSelectors(currentAction);
+    this.initFileSelectors(currentAction, projectId);
   }
 
   configureAceEditor(aceMode, assetsPath) {
@@ -30,10 +30,11 @@ export default class EditBlob {
     }
   }
 
-  initFileSelectors(currentAction) {
+  initFileSelectors(currentAction, projectId) {
     this.fileTemplateMediator = new TemplateSelectorMediator({
       currentAction,
       editor: this.editor,
+      projectId
     });
   }
 

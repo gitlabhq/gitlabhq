@@ -28,7 +28,7 @@ export const fetchTemplateTypes = ({ dispatch, state }, page = 1) => {
 
   dispatch('requestTemplateTypes');
 
-  return Api.templates(state.selectedTemplateType.key, { page })
+  return Api.projectTemplates(state.currentProjectId, state.selectedTemplateType.key, { page })
     .then(({ data, headers }) => {
       const nextPage = parseInt(normalizeHeaders(headers)['X-NEXT-PAGE'], 10);
 
@@ -79,7 +79,7 @@ export const fetchTemplate = ({ dispatch, state }, template) => {
     return dispatch('setFileTemplate', template);
   }
 
-  return Api.templates(`${state.selectedTemplateType.key}/${template.key || template.name}`)
+  return Api.projectTemplate('1', state.selectedTemplateType.key, template.key || template.name)
     .then(({ data }) => {
       dispatch('setFileTemplate', data);
     })
