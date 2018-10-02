@@ -825,6 +825,57 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#branch_updated?' do
+    context 'when pipeline has before SHA' do
+      before do
+        pipeline.update_column(:before_sha, 'a1b2c3d4')
+      end
+
+      it 'runs on a branch update push' do
+        expect(pipeline.before_sha).not_to be Gitlab::Git::BLANK_SHA
+        expect(pipeline.branch_updated?).to be true
+      end
+    end
+
+    context 'when pipeline does not have before SHA' do
+      before do
+        pipeline.update_column(:before_sha, Gitlab::Git::BLANK_SHA)
+      end
+
+      it 'does not run on a branch updating push' do
+        expect(pipeline.branch_updated?).to be false
+      end
+    end
+  end
+
+  describe '#modified_paths' do
+    context 'when old and new revisions are set' do
+      let(:project) { create(:project, :repository) }
+
+      before do
+        pipeline.update(before_sha: '1234abcd', sha: '2345bcde')
+      end
+
+      it 'fetches stats for changes between commits' do
+        expect(project.repository)
+          .to receive(:diff_stats).with('1234abcd', '2345bcde')
+          .and_call_original
+
+        pipeline.modified_paths
+      end
+    end
+
+    context 'when either old or new revision is missing' do
+      before do
+        pipeline.update_column(:before_sha, Gitlab::Git::BLANK_SHA)
+      end
+
+      it 'raises an error' do
+        expect { pipeline.modified_paths }.to raise_error(ArgumentError)
+      end
+    end
+  end
+
   describe '#has_kubernetes_active?' do
     context 'when kubernetes is active' do
       shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
