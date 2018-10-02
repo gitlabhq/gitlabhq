@@ -109,7 +109,7 @@ module API
         if result[:status] == :success
           commit_detail = user_project.repository.commit(result[:result])
 
-          UsageCounters.first_or_create.increment_counters(:web_ide_commits) if find_user_from_warden
+          Gitlab::WebIdeCommitsCounter.increment if find_user_from_warden
 
           present commit_detail, with: Entities::CommitDetail
         else
