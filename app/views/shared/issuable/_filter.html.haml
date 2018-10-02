@@ -24,7 +24,7 @@
 
         - unless @no_filters_set
           .float-right
-            = render 'shared/sort_dropdown'
+            = render 'shared/issuable/sort_dropdown'
 
   - has_labels = @labels && @labels.any?
   .row-content-block.second-block.filtered-labels{ class: ("hidden" unless has_labels) }

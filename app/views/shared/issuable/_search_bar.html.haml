@@ -127,4 +127,4 @@
                 #js-add-issues-btn.prepend-left-10{ data: { can_admin_list: can?(current_user, :admin_list, @project) } }
             #js-toggle-focus-btn
           - elsif type != :boards_modal
-            = render 'shared/sort_dropdown'
+            = render 'shared/issuable/sort_dropdown'
