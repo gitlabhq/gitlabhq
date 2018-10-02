@@ -24,24 +24,38 @@ describe Projects::Settings::SlacksController do
         .to receive(:new).with(project, user, anything).and_return(service)
     end
 
-    it 'calls service and redirects with no alerts if result is successful' do
-      stub_service(status: :success)
+    context 'when valid CSRF token is provided' do
+      before do
+        expect(controller).to receive(:check_oauth_state).and_return(true)
+      end
 
-      get :slack_auth, namespace_id: project.namespace, project_id: project
+      it 'calls service and redirects with no alerts if result is successful' do
+        stub_service(status: :success)
 
-      expect(response).to have_gitlab_http_status(302)
-      expect(response).to redirect_to(redirect_url(project))
-      expect(flash[:alert]).to be_nil
+        get :slack_auth, namespace_id: project.namespace, project_id: project
+
+        expect(response).to have_gitlab_http_status(302)
+        expect(response).to redirect_to(redirect_url(project))
+        expect(flash[:alert]).to be_nil
+      end
+
+      it 'calls service and redirects with the alert if there is error' do
+        stub_service(status: :error, message: 'error')
+
+        get :slack_auth, namespace_id: project.namespace, project_id: project
+
+        expect(response).to have_gitlab_http_status(302)
+        expect(response).to redirect_to(redirect_url(project))
+        expect(flash[:alert]).to eq('error')
+      end
     end
 
-    it 'calls service and redirects with the alert if there is error' do
-      stub_service(status: :error, message: 'error')
+    context 'when no CSRF token is provided' do
+      it 'returns 403' do
+        get :slack_auth, namespace_id: project.namespace, project_id: project
 
-      get :slack_auth, namespace_id: project.namespace, project_id: project
-
-      expect(response).to have_gitlab_http_status(302)
-      expect(response).to redirect_to(redirect_url(project))
-      expect(flash[:alert]).to eq('error')
+        expect(response).to have_gitlab_http_status(403)
+      end
     end
   end
 end
