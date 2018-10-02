@@ -31,9 +31,11 @@ module Subscribable
   end
 
   def subscribers(project)
-    subscriptions_available(project)
-      .where(subscribed: true)
-      .map(&:user)
+    relation = subscriptions_available(project)
+                 .where(subscribed: true)
+                 .select(:user_id)
+
+    User.where(id: relation)
   end
 
   def toggle_subscription(user, project = nil)
