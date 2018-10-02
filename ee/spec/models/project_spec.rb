@@ -1768,10 +1768,10 @@ describe Project do
     end
   end
 
-  describe '#feature_flag_access_token' do
+  describe '#feature_flags_client_token' do
     let(:project) { create(:project) }
 
-    subject { project.feature_flag_access_token }
+    subject { project.feature_flags_client_token }
 
     context 'when there is no access token' do
       it "creates a new one" do

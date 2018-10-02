@@ -436,12 +436,16 @@ module EE
 
       class UnleashFeatures < Grape::Entity
         expose :version
-        expose :operations_feature_flags, as: :features, with: UnleashFeature
+        expose :features, with: UnleashFeature
 
         private
 
         def version
           1
+        end
+
+        def features
+          object.operations_feature_flags.ordered
         end
       end
     end

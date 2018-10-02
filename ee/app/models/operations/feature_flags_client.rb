@@ -12,5 +12,12 @@ module Operations
     add_authentication_token_field :token
 
     before_validation :ensure_token!
+
+    def self.find_for_project_and_token(project, token)
+      return unless project
+      return unless token
+
+      find_by(token: token, project: project)
+    end
   end
 end

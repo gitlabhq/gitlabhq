@@ -10,7 +10,7 @@ module API
         end
         route_param :project_id do
           before do
-            authenticate_by_unleash_access_token!
+            authenticate_by_unleash_instanceid!
           end
 
           get 'features' do
@@ -36,19 +36,12 @@ module API
       end
 
       def unleash_instanceid
-        params[:instanceid] || env[:HTTP_UNLEASH_INSTANCEID]
+        params[:instanceid] || env['HTTP_UNLEASH_INSTANCEID']
       end
 
-      def unleash_access_token
-        return unless unleash_instanceid
-        return unless project
-
-        @unleash_access_token ||= Operations::FeatureFlagsAccessToken.find_by(
-          token: unleash_instanceid, project: project)
-      end
-
-      def authenticate_by_unleash_access_token!
-        unauthorized! unless unleash_access_token
+      def authenticate_by_unleash_instanceid!
+        unauthorized! unless Operations::FeatureFlagsClient
+          .find_for_project_and_token(project, unleash_instanceid)
       end
     end
   end
