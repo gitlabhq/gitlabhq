@@ -667,8 +667,8 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
 
     def post_unschedule
       post :unschedule, namespace_id: project.namespace,
-                  project_id: project,
-                  id: job.id
+                        project_id: project,
+                        id: job.id
     end
   end
 
