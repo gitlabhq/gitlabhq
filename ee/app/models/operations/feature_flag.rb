@@ -14,5 +14,7 @@ module Operations
       }
     validates :name, uniqueness: { scope: :project_id }
     validates :description, allow_blank: true, length: 0..255
+
+    scope :ordered, -> { order(:name) }
   end
 end

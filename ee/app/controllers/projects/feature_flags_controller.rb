@@ -1,15 +1,15 @@
 class Projects::FeatureFlagsController < Projects::ApplicationController
   respond_to :html
 
-  before_action :authorize_read_feature_flags!
-  before_action :authorize_update_feature_flags!, only: [:edit, :update]
-  before_action :authorize_admin_feature_flags!, only: [:destroy]
+  before_action :authorize_read_feature_flag!
+  before_action :authorize_update_feature_flag!, only: [:edit, :update]
+  before_action :authorize_destroy_feature_flag!, only: [:destroy]
 
   before_action :feature_flag, only: [:edit, :update, :destroy]
 
   def index
     @feature_flags = project.operations_feature_flags
-      .order(:name)
+      .ordered
       .page(params[:page]).per(30)
   end
 

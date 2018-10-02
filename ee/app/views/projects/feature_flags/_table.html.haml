@@ -24,16 +24,18 @@
 
       .table-section.section-40.table-button-footer{ role: 'gridcell' }
         .table-action-buttons.btn-group
-          = link_to edit_project_feature_flag_path(@project, feature_flag),
-              class: 'btn btn-default has-tooltip',
-              type: 'button',
-              title: _('Edit') do
-            = sprite_icon('pencil', size: 16)
+          - if can?(current_user, :update_feature_flag, @project)
+            = link_to edit_project_feature_flag_path(@project, feature_flag),
+                class: 'btn btn-default has-tooltip',
+                type: 'button',
+                title: _('Edit') do
+              = sprite_icon('pencil', size: 16)
 
-          %button.btn.btn-danger.has-tooltip{ type: 'button',
-              data: { toggle: 'modal',
-                target: "#delete-feature-flag-modal-#{feature_flag.id}" },
-              title: _('Delete') }
-            = sprite_icon('remove', size: 16)
+          - if can?(current_user, :destroy_feature_flag, @project)
+            %button.btn.btn-danger.has-tooltip{ type: 'button',
+                data: { toggle: 'modal',
+                  target: "#delete-feature-flag-modal-#{feature_flag.id}" },
+                title: _('Delete') }
+              = sprite_icon('remove', size: 16)
 
 = paginate @feature_flags, theme: "gitlab"

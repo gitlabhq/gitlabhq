@@ -1,25 +1,26 @@
-.modal{ id: "delete-feature-flag-modal-#{feature_flag.id}",
-  tabindex: -1,
-  role: 'dialog' }
-  .modal-dialog{ role: 'document' }
-    .modal-content
-      .modal-header
-        %h5.modal-title.d-flex.mw-100
-          - truncated_feature_flag_name = capture do
-            %span.text-truncate.prepend-left-4.append-right-4= feature_flag.name
-          = s_('FeatureFlags|Delete %{feature_flag_name}?').html_safe % { feature_flag_name: truncated_feature_flag_name }
-        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: _('Close') } }
-          %span{ "aria-hidden": true } &times;
-      .modal-body
-        %p
-          - monospace_feature_flag_name = capture do
-            %span.text-monospace= feature_flag.name
-          = s_('FeatureFlags|Feature flag %{feature_flag_name} will be removed. Are you sure?').html_safe % { feature_flag_name: monospace_feature_flag_name }
-      .modal-footer
-        %button{ type: 'button', data: { dismiss: 'modal' }, class: 'btn btn-default' } Cancel
+- if can?(current_user, :destroy_feature_flag, @project)
+  .modal{ id: "delete-feature-flag-modal-#{feature_flag.id}",
+    tabindex: -1,
+    role: 'dialog' }
+    .modal-dialog{ role: 'document' }
+      .modal-content
+        .modal-header
+          %h5.modal-title.d-flex.mw-100
+            - truncated_feature_flag_name = capture do
+              %span.text-truncate.prepend-left-4.append-right-4= feature_flag.name
+            = s_('FeatureFlags|Delete %{feature_flag_name}?').html_safe % { feature_flag_name: truncated_feature_flag_name }
+          %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: _('Close') } }
+            %span{ "aria-hidden": true } &times;
+        .modal-body
+          %p
+            - monospace_feature_flag_name = capture do
+              %span.text-monospace= feature_flag.name
+            = s_('FeatureFlags|Feature flag %{feature_flag_name} will be removed. Are you sure?').html_safe % { feature_flag_name: monospace_feature_flag_name }
+        .modal-footer
+          %button{ type: 'button', data: { dismiss: 'modal' }, class: 'btn btn-default' } Cancel
 
-        = button_to 'Delete',
-          project_feature_flag_path(@project, feature_flag),
-          title: 'Delete',
-          method: :delete,
-          class: 'btn btn-remove'
+          = button_to 'Delete',
+            project_feature_flag_path(@project, feature_flag),
+            title: 'Delete',
+            method: :delete,
+            class: 'btn btn-remove'
