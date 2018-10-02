@@ -15,6 +15,10 @@ import keymap from './keymap.json';
 
 languages.register({ id: 'vue', extensions: ['vue'], mimeTypes: ['text/html'] });
 
+function standardizeColor(color) {
+  return color ? color.replace(/^#/, '') : color;
+}
+
 function setupMonacoTheme() {
   monacoEditor.defineTheme(gitlabTheme.themeName, {
     ...gitlabTheme.monacoTheme,
@@ -23,8 +27,8 @@ function setupMonacoTheme() {
         acc.concat(
           (typeof token.scope === 'string' ? token.scope.split(',') : token.scope).map(s => ({
             token: s.trim(),
-            foreground: token.settings.foreground,
-            background: token.settings.background,
+            foreground: standardizeColor(token.settings.foreground),
+            background: standardizeColor(token.settings.background),
             fontStyle: token.settings.fontStyle,
           })),
         ),
