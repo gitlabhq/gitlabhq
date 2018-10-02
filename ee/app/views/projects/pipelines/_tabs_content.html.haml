@@ -6,6 +6,7 @@
 - dast_endpoint = pipeline.expose_dast_data? ? dast_artifact_url(pipeline) : nil
 - sast_container_endpoint = pipeline.expose_sast_container_data? ? sast_container_artifact_url(pipeline) : pipeline.expose_container_scanning_data? ? container_scanning_artifact_url(pipeline) : nil
 - blob_path = project_blob_path(project, pipeline.sha)
+- license_management_settings_path = can?(current_user, :admin_software_license_policy, project) ? license_management_settings_path(project) : nil
 
 - if pipeline.expose_security_dashboard?
   #js-tab-security.build-security.tab-pane
@@ -28,4 +29,5 @@
   #js-tab-licenses.tab-pane
     #js-licenses-app{ data: { license_head_path: pipeline.expose_license_management_data? ? license_management_artifact_url(pipeline) : nil,
     api_url: license_management_api_url(project),
+    license_management_settings_path: license_management_settings_path,
     can_manage_licenses: can?(current_user, :admin_software_license_policy, project).to_s } }

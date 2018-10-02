@@ -108,6 +108,14 @@ module EE
         expose :can_manage_licenses do |merge_request|
           can?(current_user, :admin_software_license_policy, merge_request)
         end
+
+        expose :license_management_settings_path, if: -> (mr, _) {can?(current_user, :admin_software_license_policy, mr.target_project)} do |merge_request|
+          license_management_settings_path(merge_request.target_project)
+        end
+
+        expose :license_management_full_report_path, if: -> (mr, _) { mr.head_pipeline } do |merge_request|
+          licenses_project_pipeline_path(merge_request.target_project, merge_request.head_pipeline)
+        end
       end
 
       # expose_sast_container_data? is deprecated and replaced with expose_container_scanning_data? (#5778)

@@ -102,22 +102,46 @@ describe MergeRequestWidgetEntity do
     expect(subject.as_json[:dependency_scanning]).to include(:base_path)
   end
 
-  it 'has license_management data' do
-    build = create(:ci_build, name: 'license_management', pipeline: pipeline)
+  describe '#license_management' do
+    before do
+      build = create(:ci_build, name: 'license_management', pipeline: pipeline)
 
-    allow(merge_request).to receive_messages(
-      expose_license_management_data?: true,
-      expose_security_dashboard?: false,
-      base_has_license_management_data?: true,
-      base_license_management_artifact: build,
-      head_license_management_artifact: build
-    )
+      allow(merge_request).to receive_messages(
+        expose_license_management_data?: true,
+        expose_security_dashboard?: false,
+        base_has_license_management_data?: true,
+        base_license_management_artifact: build,
+        head_license_management_artifact: build,
+        head_pipeline: pipeline,
+        target_project: project
+      )
+    end
 
-    expect(subject.as_json).to include(:license_management)
-    expect(subject.as_json[:license_management]).to include(:head_path)
-    expect(subject.as_json[:license_management]).to include(:base_path)
-    expect(subject.as_json[:license_management]).to include(:managed_licenses_path)
-    expect(subject.as_json[:license_management]).to include(:can_manage_licenses)
+    it 'should not be included, if license management features are off' do
+      allow(merge_request).to receive_messages(expose_license_management_data?: false)
+
+      expect(subject.as_json).not_to include(:license_management)
+    end
+
+    it 'should be included, if license manage management features are on' do
+      expect(subject.as_json).to include(:license_management)
+      expect(subject.as_json[:license_management]).to include(:head_path)
+      expect(subject.as_json[:license_management]).to include(:base_path)
+      expect(subject.as_json[:license_management]).to include(:managed_licenses_path)
+      expect(subject.as_json[:license_management]).to include(:can_manage_licenses)
+      expect(subject.as_json[:license_management]).to include(:license_management_full_report_path)
+    end
+
+    it '#license_management_settings_path should not be included for developers' do
+      expect(subject.as_json[:license_management]).not_to include(:license_management_settings_path)
+    end
+
+    it '#license_management_settings_path should be included for maintainers' do
+      stub_licensed_features(license_management: true)
+      project.add_maintainer(user)
+
+      expect(subject.as_json[:license_management]).to include(:license_management_settings_path)
+    end
   end
 
   # methods for old artifact are deprecated and replaced with ones for the new name (#5779)

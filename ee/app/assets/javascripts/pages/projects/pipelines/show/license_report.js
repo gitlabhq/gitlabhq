@@ -10,7 +10,12 @@ export default () => {
   const licensesTab = document.getElementById('js-licenses-app');
 
   if (licensesTab) {
-    const { licenseHeadPath, canManageLicenses, apiUrl } = licensesTab.dataset;
+    const {
+      licenseHeadPath,
+      canManageLicenses,
+      apiUrl,
+      licenseManagementSettingsPath,
+    } = licensesTab.dataset;
 
     // eslint-disable-next-line no-new
     new Vue({
@@ -22,13 +27,14 @@ export default () => {
         return createElement('license-report-app', {
           props: {
             apiUrl,
+            licenseManagementSettingsPath,
             headPath: licenseHeadPath,
             canManageLicenses: convertPermissionToBoolean(canManageLicenses),
             alwaysOpen: true,
             reportSectionClass: 'split-report-section',
           },
           on: {
-            updateBadgeCount: (count) => {
+            updateBadgeCount: count => {
               updateBadgeCount('.js-licenses-counter', count);
             },
           },

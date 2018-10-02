@@ -8745,6 +8745,9 @@ msgstr ""
 msgid "ciReport|Loading %{reportName} report"
 msgstr ""
 
+msgid "ciReport|Manage licenses"
+msgstr ""
+
 msgid "ciReport|Method"
 msgstr ""
 
