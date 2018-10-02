@@ -13,6 +13,7 @@ module RepositoryLanguagesHelper
     content_tag :div, nil,
       class: "progress-bar has-tooltip",
       style: "width: #{lang.share}%; background-color:#{lang.color}",
-      title: lang.name
+      :data => { :html => true},
+      title: "<span class=\"repository-language-bar-tooltip-language\">#{lang.name}</span>&nbsp;<span class=\"repository-language-bar-tooltip-share\">#{lang.share.round(1)}%</span>"
   end
 end
