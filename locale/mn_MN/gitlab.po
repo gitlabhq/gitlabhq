@@ -3,17 +3,17 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
-"Language-Team: Catalan\n"
-"Language: ca_ES\n"
+"Language-Team: Mongolian\n"
+"Language: mn_MN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: gitlab-ee\n"
-"X-Crowdin-Language: ca\n"
+"X-Crowdin-Language: mn\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-10-02 11:52\n"
+"PO-Revision-Date: 2018-10-02 09:28\n"
 
 msgid " Status"
 msgstr ""
@@ -68,13 +68,13 @@ msgstr[1] ""
 
 msgid "%d layer"
 msgid_plural "%d layers"
-msgstr[0] "%d capa"
-msgstr[1] "%d capes"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "%d merge request"
 msgid_plural "%d merge requests"
-msgstr[0] "%d petició de fusió"
-msgstr[1] "%d peticions de fusió"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "%d metric"
 msgid_plural "%d metrics"
@@ -161,8 +161,8 @@ msgstr[1] ""
 
 msgid "%{text} %{files}"
 msgid_plural "%{text} %{files} files"
-msgstr[0] "%{text} %{files}"
-msgstr[1] "%{text} %{files} fitxers"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "%{text} is available"
 msgstr ""
@@ -213,8 +213,8 @@ msgstr[1] ""
 
 msgid "1 group"
 msgid_plural "%d groups"
-msgstr[0] "1 grup"
-msgstr[1] "%d grups"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "1 merged merge request"
 msgid_plural "%d merged merge requests"
@@ -238,19 +238,19 @@ msgstr[1] ""
 
 msgid "1 role"
 msgid_plural "%d roles"
-msgstr[0] "1 rol"
-msgstr[1] "%d rols"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "1 user"
 msgid_plural "%d users"
-msgstr[0] "1 usuari"
-msgstr[1] "%d usuaris"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "1st contribution!"
 msgstr ""
 
 msgid "2FA enabled"
-msgstr "2FA activat"
+msgstr ""
 
 msgid "403|Please contact your GitLab administrator to get the permission."
 msgstr ""
@@ -262,7 +262,7 @@ msgid "404|Make sure the address is correct and the page hasn't moved."
 msgstr ""
 
 msgid "404|Page Not Found"
-msgstr "404|No s'ha trobat la pàgina"
+msgstr ""
 
 msgid "404|Please contact your GitLab administrator if you think this is a mistake."
 msgstr ""
@@ -322,10 +322,10 @@ msgid "A user with write access to the source branch selected this option"
 msgstr ""
 
 msgid "About GitLab"
-msgstr "Quant al GitLab"
+msgstr ""
 
 msgid "About GitLab CE"
-msgstr "Quant al GitLab CE"
+msgstr ""
 
 msgid "About auto deploy"
 msgstr ""
@@ -337,7 +337,7 @@ msgid "Abuse Reports"
 msgstr ""
 
 msgid "Abuse reports"
-msgstr "Informes d'abús"
+msgstr ""
 
 msgid "Accept terms"
 msgstr ""
@@ -364,22 +364,22 @@ msgid "Access your runner token, customize your pipeline configuration, and view
 msgstr ""
 
 msgid "Account"
-msgstr "Compte"
+msgstr ""
 
 msgid "Account and limit"
-msgstr "Compte i límit"
+msgstr ""
 
 msgid "Active"
-msgstr "Actiu"
+msgstr ""
 
 msgid "Active Sessions"
-msgstr "Sessions actives"
+msgstr ""
 
 msgid "Activity"
-msgstr "Activitat"
+msgstr ""
 
 msgid "Add"
-msgstr "Afegeix"
+msgstr ""
 
 msgid "Add Changelog"
 msgstr ""
@@ -406,34 +406,34 @@ msgid "Add new application"
 msgstr ""
 
 msgid "Add new directory"
-msgstr "Afegeix un directori nou"
+msgstr ""
 
 msgid "Add reaction"
-msgstr "Afegeix una reacció"
+msgstr ""
 
 msgid "Add todo"
 msgstr ""
 
 msgid "Add user(s) to the group:"
-msgstr "Afegeix usuaris al grup:"
+msgstr ""
 
 msgid "Add users to group"
-msgstr "Afegeix usuaris al grup"
+msgstr ""
 
 msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission"
 msgstr ""
 
 msgid "Additional text"
-msgstr "Text addicional"
+msgstr ""
 
 msgid "Admin Area"
-msgstr "Àrea d'administració"
+msgstr ""
 
 msgid "Admin Overview"
-msgstr "Informació general d'administració"
+msgstr ""
 
 msgid "Admin area"
-msgstr "Àrea d'administració"
+msgstr ""
 
 msgid "AdminArea| You are about to permanently delete the user %{username}. Issues, merge requests, and groups linked to them will be transferred to a system-wide \"Ghost-user\". To avoid data loss, consider using the %{strong_start}block user%{strong_end} feature instead. Once you %{strong_start}Delete user%{strong_end}, it cannot be undone or recovered."
 msgstr ""
@@ -496,10 +496,10 @@ msgid "AdminUsers|To confirm, type %{username}"
 msgstr ""
 
 msgid "Advanced"
-msgstr "Avançat"
+msgstr ""
 
 msgid "Advanced settings"
-msgstr "Configuració avançada"
+msgstr ""
 
 msgid "All"
 msgstr ""
@@ -511,7 +511,7 @@ msgid "All features are enabled for blank projects, from templates, or when impo
 msgstr ""
 
 msgid "All users"
-msgstr "Tots els usuaris"
+msgstr ""
 
 msgid "Allow commits from members who can merge to the target branch."
 msgstr ""
@@ -685,37 +685,37 @@ msgid "An error occurred. Please try again."
 msgstr ""
 
 msgid "Anonymous"
-msgstr "Anònim"
+msgstr ""
 
 msgid "Anti-spam verification"
 msgstr ""
 
 msgid "Any"
-msgstr "Qualsevol"
+msgstr ""
 
 msgid "Any Label"
-msgstr "Qualsevol etiqueta"
+msgstr ""
 
 msgid "Appearance"
-msgstr "Aparença"
+msgstr ""
 
 msgid "Application"
-msgstr "Aplicació"
+msgstr ""
 
 msgid "Application Id"
 msgstr ""
 
 msgid "Application: %{name}"
-msgstr "Aplicació: %{name}"
+msgstr ""
 
 msgid "Applications"
-msgstr "Aplicacions"
+msgstr ""
 
 msgid "Apr"
-msgstr "abr"
+msgstr ""
 
 msgid "April"
-msgstr "abril"
+msgstr ""
 
 msgid "Archived project! Repository and other project resources are read-only"
 msgstr ""
@@ -748,7 +748,7 @@ msgid "Are you sure you want to unlock %{path_lock_path}?"
 msgstr ""
 
 msgid "Are you sure?"
-msgstr "N'esteu segur?"
+msgstr ""
 
 msgid "Artifact ID"
 msgstr ""
@@ -781,7 +781,7 @@ msgid "Assigned Issues"
 msgstr ""
 
 msgid "Assigned Merge Requests"
-msgstr "Peticions de fusió assignades"
+msgstr ""
 
 msgid "Assigned to :name"
 msgstr ""
@@ -811,7 +811,7 @@ msgid "Aug"
 msgstr ""
 
 msgid "August"
-msgstr "agost"
+msgstr ""
 
 msgid "Authentication Log"
 msgstr ""
@@ -823,7 +823,7 @@ msgid "Authentication method"
 msgstr ""
 
 msgid "Author"
-msgstr "Autor"
+msgstr ""
 
 msgid "Authorization code:"
 msgstr ""
@@ -913,7 +913,7 @@ msgid "Average per day: %{average}"
 msgstr ""
 
 msgid "Background Color"
-msgstr "Color de fons"
+msgstr ""
 
 msgid "Background Jobs"
 msgstr ""
