@@ -52,7 +52,7 @@ export default {
 <template>
   <div
     v-if="discussionTabCounter > 0"
-    class="prepend-top-10 append-right-4 d-inline-block">
+    class="prepend-top-10 d-inline-block">
     <button
       id="discussion-filter-dropdown"
       class="dropdown-toggle btn btn-default"

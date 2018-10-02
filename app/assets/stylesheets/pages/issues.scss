@@ -205,9 +205,11 @@ ul.related-merge-requests > li {
 
   .btn-group:not(.hidden) {
     display: flex;
+    margin-left: $gl-padding;
 
     @include media-breakpoint-down(md) {
       margin-top: $gl-padding-8;
+      margin-left: 0;
     }
   }
 
