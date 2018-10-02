@@ -52,7 +52,7 @@ export default {
 <template>
   <div
     v-if="discussionTabCounter > 0"
-    class="line-resolve-all-container prepend-top-10 append-bottom-10 d-inline-flex">
+    class="prepend-top-10 append-bottom-10 append-right-4 d-inline-flex">
     <button
       v-dropdown
       id="discussion-filter-dropdown"
@@ -60,8 +60,8 @@ export default {
       data-toggle="dropdown"
       aria-expanded="false"
     >
-      {{ currentFilter.title }} &nbsp;
-      <Icon
+      <span class="append-right-4">{{ currentFilter.title }}</span>
+      <icon
         :size="12"
         name="angle-down"
       />
