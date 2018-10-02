@@ -81,14 +81,22 @@ describe 'Admin::Hooks' do
       it 'from hooks list page' do
         visit admin_hooks_path
 
-        expect { accept_confirm { find(:link, 'Remove').send_keys(:return) } }.to change(SystemHook, :count).by(-1)
+        expect do
+          accept_confirm { find(:link, 'Remove').send_keys(:return) }
+
+          wait_for_requests
+        end.to change(SystemHook, :count).by(-1)
       end
 
       it 'from hook edit page' do
         visit admin_hooks_path
         click_link 'Edit'
 
-        expect { accept_confirm { find(:link, 'Remove').send_keys(:return) } }.to change(SystemHook, :count).by(-1)
+        expect do
+          accept_confirm { find(:link, 'Remove').send_keys(:return) }
+
+          wait_for_requests
+        end.to change(SystemHook, :count).by(-1)
       end
     end
   end

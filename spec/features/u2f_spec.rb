@@ -75,7 +75,13 @@ describe 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
         first_u2f_device = register_u2f_device
         second_u2f_device = register_u2f_device(name: 'My other device')
 
-        accept_confirm { click_on "Delete", match: :first }
+        accept_confirm do
+          within('table.u2f-registrations') do
+            find('tr', text: first_u2f_device.name).click_link('Delete')
+          end
+        end
+
+        wait_for_requests
 
         expect(page).to have_content('Successfully deleted')
         expect(page.body).not_to match(first_u2f_device.name)
@@ -263,6 +269,8 @@ describe 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
         visit profile_two_factor_auth_path
         expect do
           accept_confirm { click_on "Disable" }
+
+          wait_for_requests
         end.to change { U2fRegistration.count }.by(-1)
       end
     end

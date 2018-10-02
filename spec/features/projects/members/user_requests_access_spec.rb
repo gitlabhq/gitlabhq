@@ -62,6 +62,8 @@ describe 'Projects > Members > User requests access', :js do
 
     accept_confirm { click_link 'Withdraw Access Request' }
 
+    wait_for_requests
+
     expect(project.requesters.exists?(user_id: user)).to be_falsey
     expect(page).to have_content 'Your access request to the project has been withdrawn.'
   end

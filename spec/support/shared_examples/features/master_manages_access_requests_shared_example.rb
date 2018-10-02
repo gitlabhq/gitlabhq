@@ -1,10 +1,11 @@
 RSpec.shared_examples 'Maintainer manages access requests' do
-  let(:user) { create(:user) }
   let(:maintainer) { create(:user) }
+  let(:user) { create(:user) }
 
   before do
     entity.request_access(user)
     entity.respond_to?(:add_owner) ? entity.add_owner(maintainer) : entity.add_maintainer(maintainer)
+
     sign_in(maintainer)
   end
 
@@ -19,7 +20,7 @@ RSpec.shared_examples 'Maintainer manages access requests' do
 
     expect_visible_access_request(entity, user)
 
-    accept_confirm { click_on 'Grant access' }
+    click_on 'Grant access'
 
     expect_no_visible_access_request(entity, user)
 
@@ -43,9 +44,13 @@ RSpec.shared_examples 'Maintainer manages access requests' do
     expect(entity.requesters.exists?(user_id: user)).to be_truthy
     expect(page).to have_content "Users requesting access to #{entity.name} 1"
     expect(page).to have_content user.name
+
+    WaitForRequests.wait_for_requests
   end
 
   def expect_no_visible_access_request(entity, user)
+    WaitForRequests.wait_for_requests
+
     expect(entity.requesters.exists?(user_id: user)).to be_falsy
     expect(page).not_to have_content "Users requesting access to #{entity.name}"
   end
