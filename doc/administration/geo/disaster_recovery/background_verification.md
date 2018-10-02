@@ -41,7 +41,7 @@ sudo -u git -H bin/rails console RAILS_ENV=production
 **To check if automatic background verification is enabled:**
 
 ```ruby
-Feature.enabled?('geo_repository_verification')
+Gitlab::Geo.repository_verification_enabled?
 ```
 
 **To disable automatic background verification:**
@@ -55,11 +55,6 @@ Feature.disable('geo_repository_verification')
 ```ruby
 Feature.enable('geo_repository_verification')
 ```
-
-NOTE: **Note:**
-Until [issue #5699][ee-5699] is completed, we need to reset the cache for this
-feature flag on each **secondary**, to do this run
-`sudo gitlab-rails runner 'Rails.cache.expire('flipper/v1/feature/geo_repository_verification', 0)'`.
 
 # Repository verification
 
