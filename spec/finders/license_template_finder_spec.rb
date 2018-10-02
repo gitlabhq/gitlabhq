@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe LicenseTemplateFinder do
   describe '#execute' do
-    subject(:result) { described_class.new(params).execute }
+    subject(:result) { described_class.new(nil, params).execute }
 
     let(:categories) { categorised_licenses.keys }
     let(:categorised_licenses) { result.group_by(&:category) }
@@ -31,7 +31,7 @@ describe LicenseTemplateFinder do
       it 'returns all licenses known by the Licensee gem' do
         from_licensee = Licensee::License.all.map { |l| l.key }
 
-        expect(result.map(&:id)).to match_array(from_licensee)
+        expect(result.map(&:key)).to match_array(from_licensee)
       end
 
       it 'correctly copies all attributes' do
