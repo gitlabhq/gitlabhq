@@ -98,6 +98,7 @@ module API
         optional :start_branch, type: String, desc: 'Name of the branch to start the new commit from'
         optional :author_email, type: String, desc: 'Author email for commit'
         optional :author_name, type: String, desc: 'Author name for commit'
+        optional :force, type: Boolean, default: false, desc: 'When `true` overwrite the target branch with a new branch starting from the `start_branch`'
       end
       post ':id/repository/commits' do
         authorize_push_to_branch!(params[:branch])

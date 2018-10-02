@@ -11,6 +11,7 @@ module Commits
       @start_project = params[:start_project] || @project
       @start_branch = params[:start_branch]
       @branch_name = params[:branch_name]
+      @force = params[:force] || false
     end
 
     def execute
@@ -60,13 +61,13 @@ module Commits
     end
 
     def validate_branch_existance!
-      if !project.empty_repo? && different_branch? && repository.branch_exists?(@branch_name)
+      if !project.empty_repo? && different_branch? && repository.branch_exists?(@branch_name) && @force == false
         raise_error("A branch called '#{@branch_name}' already exists. Switch to that branch in order to make changes")
       end
     end
 
     def validate_new_branch_name!
-      result = ValidateNewBranchService.new(project, current_user).execute(@branch_name)
+      result = ValidateNewBranchService.new(project, current_user).execute(@branch_name, @force)
 
       if result[:status] == :error
         raise_error("Something went wrong when we tried to create '#{@branch_name}' for you: #{result[:message]}")
