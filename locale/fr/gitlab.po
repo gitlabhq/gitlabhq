@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-10-02 09:29\n"
+"PO-Revision-Date: 2018-10-02 11:46\n"
 
 msgid " Status"
 msgstr " Statut"
@@ -8729,7 +8729,7 @@ msgstr[1] "Le gestionnaire de licences a détecté %d licences pour la seule br
 
 msgid "ciReport|License management detected %d new license"
 msgid_plural "ciReport|License management detected %d new licenses"
-msgstr[0] "Le gestionnaire de licences a détecté une nouvelle licence"
+msgstr[0] "Le gestionnaire de licences a détecté %d nouvelle licence"
 msgstr[1] "Le gestionnaire de licences a détecté %d nouvelles licences"
 
 msgid "ciReport|License management detected no licenses for the source branch only"
