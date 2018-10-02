@@ -1,7 +1,17 @@
+# frozen_string_literal: true
+
 module QA
   module Runtime
     module Env
       extend self
+
+      def debug?
+        enabled?(ENV['QA_DEBUG'], default: false)
+      end
+
+      def log_destination
+        ENV['QA_LOG_PATH'] || STDOUT
+      end
 
       # set to 'false' to have Chrome run visibly instead of headless
       def chrome_headless?

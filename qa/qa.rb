@@ -317,6 +317,16 @@ module QA
       end
     end
   end
+
+  # Classes that provide support to other parts of the framework.
+  #
+  module Support
+    autoload :Logger, 'qa/support/logger'
+
+    module Page
+      autoload :Logging, 'qa/support/page/logging'
+    end
+  end
 end
 
 QA::Runtime::Release.extend_autoloads!
