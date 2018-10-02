@@ -142,6 +142,7 @@ module API
     mount ::API::Projects
     mount ::API::ProjectSnapshots
     mount ::API::ProjectSnippets
+    mount ::API::ProjectTemplates
     mount ::API::ProtectedBranches
     mount ::API::ProtectedTags
     mount ::API::Repositories
