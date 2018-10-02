@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::FeatureFlagsController do
-  include Rails.application.routes.url_helpers
+  include Gitlab::Routing
 
   set(:user) { create(:user) }
   set(:project) { create(:project) }

@@ -33,7 +33,7 @@
             = label_tag :instance_id, s_('FeatureFlags|Instance ID'), class: 'label-bold'
             .input-group
               = text_field_tag :instance_id,
-                unleash_api_instanceid(@project),
+                unleash_api_instance_id(@project),
                 readonly: true,
                 class: "form-control js-select-on-focus"
               %span.input-group-append

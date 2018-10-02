@@ -9,8 +9,8 @@ describe FeatureFlagsHelper do
     it { is_expected.to end_with("/api/v4/feature_flags/unleash/#{project.id}") }
   end
 
-  context '#unleash_api_instanceid' do
-    subject { helper.unleash_api_instanceid(project) }
+  context '#unleash_api_instance_id' do
+    subject { helper.unleash_api_instance_id(project) }
 
     it { is_expected.not_to be_empty }
   end

@@ -12,9 +12,9 @@ describe API::Unleash do
   end
 
   shared_examples 'authenticated request' do
-    context 'when using instanceid' do
+    context 'when using instance id' do
       let(:client) { create(:operations_feature_flags_client, project: project) }
-      let(:params) { { instanceid: client.token } }
+      let(:params) { { instance_id: client.token } }
 
       it 'responds with OK' do
         subject
@@ -44,8 +44,8 @@ describe API::Unleash do
       end
     end
 
-    context 'when using bogus instanceid' do
-      let(:params) { { instanceid: 'token' } }
+    context 'when using bogus instance id' do
+      let(:params) { { instance_id: 'token' } }
 
       it 'responds with unauthorized' do
         subject
@@ -56,7 +56,7 @@ describe API::Unleash do
 
     context 'when using not existing project' do
       let(:project_id) { -5000 }
-      let(:params) { { instanceid: 'token' } }
+      let(:params) { { instance_id: 'token' } }
 
       it 'responds with unauthorized' do
         subject

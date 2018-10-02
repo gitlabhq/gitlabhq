@@ -1959,7 +1959,7 @@ ActiveRecord::Schema.define(version: 20180926140319) do
     t.string "token", null: false
   end
 
-  add_index "operations_feature_flags_clients", ["token"], name: "index_operations_feature_flags_clients_on_token", unique: true, using: :btree
+  add_index "operations_feature_flags_clients", ["project_id", "token"], name: "index_operations_feature_flags_clients_on_project_id_and_token", unique: true, using: :btree
 
   create_table "packages_maven_metadata", id: :bigserial, force: :cascade do |t|
     t.integer "package_id", limit: 8, null: false

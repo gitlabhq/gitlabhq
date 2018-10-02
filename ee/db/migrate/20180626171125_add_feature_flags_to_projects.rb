@@ -23,7 +23,7 @@ class AddFeatureFlagsToProjects < ActiveRecord::Migration
       t.integer :project_id, null: false
       t.string :token, null: false
 
-      t.index :token, unique: true
+      t.index [:project_id, :token], unique: true
 
       t.foreign_key :projects, column: :project_id, on_delete: :cascade
     end
