@@ -25,17 +25,19 @@ module Gitlab
             include Entry::Validatable
             include Entry::Attributable
 
-            attributes :refs, :kubernetes, :variables
+            ALLOWED_KEYS = %i[refs kubernetes variables changes]
+            attributes :refs, :kubernetes, :variables, :changes
 
             validations do
               validates :config, presence: true
-              validates :config, allowed_keys: %i[refs kubernetes variables]
+              validates :config, allowed_keys: ALLOWED_KEYS
               validate :variables_expressions_syntax
 
               with_options allow_nil: true do
                 validates :refs, array_of_strings_or_regexps: true
                 validates :kubernetes, allowed_values: %w[active]
                 validates :variables, array_of_strings: true
+                validates :changes, array_of_strings: true
               end
 
               def variables_expressions_syntax
