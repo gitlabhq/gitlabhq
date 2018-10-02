@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-10-01 16:27\n"
+"PO-Revision-Date: 2018-10-02 01:49\n"
 
 msgid " Status"
 msgstr " ステータス"
@@ -6507,7 +6507,7 @@ msgid "SAML Single Sign On Settings"
 msgstr "SAML シングル サインオンの設定"
 
 msgid "SAST"
-msgstr ""
+msgstr "SAST"
 
 msgid "SHA1 fingerprint of the SAML token signing certificate. Get this from your identity provider, where it can also be called \"Thumbprint\"."
 msgstr "SAML トークンの SHA1 フィンガープリントで証明書に署名します。これはサムプリントと呼ばれアイデンティティプロバイダーから取得できます。"
