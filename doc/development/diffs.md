@@ -2,12 +2,9 @@
 
 Currently we rely on different sources to present diffs, these include:
 
-- Rugged gem
 - Gitaly service
 - Database (through `merge_request_diff_files`)
 - Redis (cached highlighted diffs)
-
-We're constantly moving Rugged calls to Gitaly and the progress can be followed through [Gitaly repo](https://gitlab.com/gitlab-org/gitaly).
 
 ## Architecture overview
 

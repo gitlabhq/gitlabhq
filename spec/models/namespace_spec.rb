@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Namespace do
   include ProjectForksHelper
+  include GitHelpers
 
   let!(:namespace) { create(:namespace) }
   let(:gitlab_shell) { Gitlab::Shell.new }
@@ -339,9 +340,7 @@ describe Namespace do
     end
 
     def project_rugged(project)
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        project.repository.rugged
-      end
+      rugged_repo(project.repository)
     end
   end
 

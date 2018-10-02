@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::Checks::ChangeAccess do
+  include GitHelpers
+
   describe '#exec' do
     let(:user) { create(:user) }
     let(:project) { create(:project, :repository) }
@@ -424,9 +426,7 @@ describe Gitlab::Checks::ChangeAccess do
         #
         # That means only the merge commit should be validated.
         let(:newrev) do
-          rugged = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            project.repository.raw_repository.rugged
-          end
+          rugged = rugged_repo(project.repository)
           base = oldrev
           to_merge = '2d1096e3a0ecf1d2baf6dee036cc80775d4940ba'
 

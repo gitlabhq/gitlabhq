@@ -264,9 +264,9 @@ describe 'GitLab Markdown', :aggregate_failures do
       @project_wiki = @feat.project_wiki
       @project_wiki_page = @feat.project_wiki_page
 
-      file = Gollum::File.new(@project_wiki.wiki)
-      expect(file).to receive(:path).and_return('images/example.jpg')
-      expect(@project_wiki).to receive(:find_file).with('images/example.jpg').and_return(file)
+      path = 'images/example.jpg'
+      gitaly_wiki_file = Gitlab::GitalyClient::WikiFile.new(path: path)
+      expect(@project_wiki).to receive(:find_file).with(path).and_return(Gitlab::Git::WikiFile.new(gitaly_wiki_file))
       allow(@project_wiki).to receive(:wiki_base_path) { '/namespace1/gitlabhq/wikis' }
 
       @html = markdown(@feat.raw_markdown, { pipeline: :wiki, project_wiki: @project_wiki, page_slug: @project_wiki_page.slug })
