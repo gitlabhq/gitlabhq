@@ -153,7 +153,7 @@ describe('Markdown field component', () => {
         const textarea = vm.$el.querySelector('textarea');
 
         textarea.setSelectionRange(0, 0);
-        vm.$el.querySelectorAll('.js-md')[4].click();
+        vm.$el.querySelectorAll('.js-md')[5].click();
 
         Vue.nextTick(() => {
           expect(
@@ -168,7 +168,7 @@ describe('Markdown field component', () => {
         const textarea = vm.$el.querySelector('textarea');
 
         textarea.setSelectionRange(0, 50);
-        vm.$el.querySelectorAll('.js-md')[4].click();
+        vm.$el.querySelectorAll('.js-md')[5].click();
 
         Vue.nextTick(() => {
           expect(
