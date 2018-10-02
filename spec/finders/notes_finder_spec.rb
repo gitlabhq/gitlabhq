@@ -99,28 +99,6 @@ describe NotesFinder do
         note2
       end
 
-      context 'when user has notes filter set' do
-        it 'filters system notes on merge requests' do
-          note = create(:note_on_merge_request, project: project, system: true)
-          params = { target_type: 'merge_request', target_id: note.noteable.id }
-          user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], note.noteable)
-
-          notes = described_class.new(project, user, params).execute
-
-          expect(notes).not_to include(note)
-        end
-
-        it 'filters system notes on issues' do
-          note = create(:note_on_issue, project: project, system: true)
-          params = { target_type: 'issue', target_id: note.noteable.id }
-          user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], note.noteable)
-
-          notes = described_class.new(project, user, params).execute
-
-          expect(notes).not_to include(note)
-        end
-      end
-
       it 'finds all notes' do
         notes = described_class.new(project, user, params).execute
         expect(notes.size).to eq(2)
