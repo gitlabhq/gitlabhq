@@ -330,7 +330,7 @@ describe Gitlab::Ci::Status::Build::Factory do
     it 'matches correct extended statuses' do
       expect(factory.extended_statuses)
         .to eq [Gitlab::Ci::Status::Build::Scheduled,
-                Gitlab::Ci::Status::Build::Play,
+                Gitlab::Ci::Status::Build::Unschedule,
                 Gitlab::Ci::Status::Build::Action]
     end
 
@@ -344,9 +344,9 @@ describe Gitlab::Ci::Status::Build::Factory do
       expect(status.icon).to eq 'status_scheduled'
       expect(status.favicon).to eq 'favicon_status_scheduled'
       expect(status.illustration).to include(:image, :size, :title, :content)
-      expect(status.label).to include 'manual play action'
+      expect(status.label).to include 'unschedule action'
       expect(status).to have_details
-      expect(status.action_path).to include 'play'
+      expect(status.action_path).to include 'unschedule'
     end
 
     context 'when user has ability to play action' do

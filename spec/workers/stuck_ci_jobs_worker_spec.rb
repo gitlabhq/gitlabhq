@@ -143,7 +143,7 @@ describe StuckCiJobsWorker do
 
         expect(Ci::Build.scheduled.count).to eq(0)
         expect(job).to be_failed
-        expect(job).to be_schedule_expired
+        expect(job).to be_stale_schedule
       end
     end
 

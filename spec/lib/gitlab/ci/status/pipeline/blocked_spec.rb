@@ -15,7 +15,7 @@ describe Gitlab::Ci::Status::Pipeline::Blocked do
 
   describe '#label' do
     it 'overrides status label' do
-      expect(subject.label).to eq 'waiting for manual action or delayed job'
+      expect(subject.label).to eq 'waiting for manual action'
     end
   end
 

@@ -23,10 +23,15 @@ describe Gitlab::Ci::Status::Pipeline::Factory do
           expect(factory.core_status).to be_a expected_status
         end
 
-        if HasStatus::BLOCKED_STATUS.include?(simple_status)
+        if simple_status == 'manual'
           it 'matches a correct extended statuses' do
             expect(factory.extended_statuses)
               .to eq [Gitlab::Ci::Status::Pipeline::Blocked]
+          end
+        elsif simple_status == 'scheduled'
+          it 'matches a correct extended statuses' do
+            expect(factory.extended_statuses)
+              .to eq [Gitlab::Ci::Status::Pipeline::Scheduled]
           end
         else
           it 'does not match extended statuses' do
