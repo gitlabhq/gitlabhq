@@ -69,5 +69,9 @@ module EE
     def license_management_api_url(project)
       api_v4_projects_managed_licenses_path(id: project.id)
     end
+
+    def license_management_settings_path(project)
+      project_settings_ci_cd_path(project, anchor: 'js-license-management')
+    end
   end
 end

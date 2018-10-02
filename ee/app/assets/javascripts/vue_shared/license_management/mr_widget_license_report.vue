@@ -30,7 +30,12 @@ export default {
       required: false,
       default: null,
     },
-    pipelinePath: {
+    fullReportPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    licenseManagementSettingsPath: {
       type: String,
       required: false,
       default: null,
@@ -64,8 +69,8 @@ export default {
     licenseReportStatus() {
       return this.checkReportStatus(this.isLoading, this.loadLicenseReportError);
     },
-    licensesTab() {
-      return this.pipelinePath ? `${this.pipelinePath}/licenses` : null;
+    showActionButtons() {
+      return this.licenseManagementSettingsPath !== null || this.fullReportPath !== null;
     },
   },
   watch: {
@@ -107,15 +112,25 @@ export default {
       class="license-report-widget mr-report"
     >
       <div
-        v-if="licensesTab"
+        v-if="showActionButtons"
         slot="actionButtons"
+        class="append-right-default"
       >
         <a
-          :href="licensesTab"
-          target="_blank"
-          class="btn btn-default btn-sm float-right"
+          v-if="licenseManagementSettingsPath"
+          :class="{'append-right-8': fullReportPath}"
+          :href="licenseManagementSettingsPath"
+          class="btn btn-default btn-sm js-manage-licenses"
         >
-          <span>{{ s__("ciReport|View full report") }}</span>
+          {{ s__("ciReport|Manage licenses") }}
+        </a>
+        <a
+          v-if="fullReportPath"
+          :href="fullReportPath"
+          target="_blank"
+          class="btn btn-default btn-sm js-full-report"
+        >
+          {{ s__("ciReport|View full report") }}
           <icon
             :size="16"
             name="external-link"

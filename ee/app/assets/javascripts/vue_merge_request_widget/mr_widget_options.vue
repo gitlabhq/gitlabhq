@@ -261,6 +261,8 @@ export default {
       :api-url="mr.licenseManagement.managed_licenses_path"
       :pipeline-path="mr.pipeline.path"
       :can-manage-licenses="mr.licenseManagement.can_manage_licenses"
+      :full-report-path="mr.licenseManagement.license_management_full_report_path"
+      :license-management-settings-path="mr.licenseManagement.license_management_settings_path"
       :base-path="mr.licenseManagement.base_path"
       :head-path="mr.licenseManagement.head_path"
       report-section-class="mr-widget-border-top"
