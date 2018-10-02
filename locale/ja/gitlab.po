@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-10-02 01:49\n"
+"PO-Revision-Date: 2018-10-02 02:02\n"
 
 msgid " Status"
 msgstr " ステータス"
@@ -2019,7 +2019,7 @@ msgid "Commits per day of month"
 msgstr ""
 
 msgid "Commits per weekday"
-msgstr ""
+msgstr "週ごとのコミット数"
 
 msgid "Commits|An error occurred while fetching merge requests data."
 msgstr "マージリクエストデータの取得中にエラーが発生しました。"
@@ -2073,7 +2073,7 @@ msgid "Confidential"
 msgstr "非公開"
 
 msgid "Confidentiality"
-msgstr ""
+msgstr "機密性"
 
 msgid "Configure Gitaly timeouts."
 msgstr "Gitaly のタイムアウトを設定します。"
@@ -2749,7 +2749,7 @@ msgid "Edit application"
 msgstr "アプリケーションの編集"
 
 msgid "Edit files in the editor and commit changes here"
-msgstr ""
+msgstr "エディターでファイルを編集し、ここで変更をコミットします"
 
 msgid "Edit group: %{group_name}"
 msgstr "グループを編集：%{group_name}"
@@ -2911,7 +2911,7 @@ msgid "Environments|Re-deploy to environment"
 msgstr ""
 
 msgid "Environments|Read more about environments"
-msgstr ""
+msgstr "環境の詳細について読む"
 
 msgid "Environments|Rollback environment"
 msgstr ""
@@ -4134,7 +4134,7 @@ msgid "Interested parties can even contribute by pushing commits if they want to
 msgstr ""
 
 msgid "Internal - The group and any internal projects can be viewed by any logged in user."
-msgstr ""
+msgstr "内部 - グループおよび内部プロジェクトは、ログインしているすべてのユーザーが見ることができます。"
 
 msgid "Internal - The project can be accessed by any logged in user."
 msgstr ""
@@ -7521,7 +7521,7 @@ msgid "This issue is confidential"
 msgstr ""
 
 msgid "This issue is confidential and locked."
-msgstr ""
+msgstr "この課題は非公開でロックされています"
 
 msgid "This issue is locked."
 msgstr "この課題はロックされています。"
