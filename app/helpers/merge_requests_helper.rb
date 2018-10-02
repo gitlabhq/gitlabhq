@@ -82,7 +82,11 @@ module MergeRequestsHelper
   end
 
   def merge_request_button_visibility(merge_request, closed)
-    return 'hidden' if merge_request.closed? == closed || (merge_request.merged? == closed && !merge_request.closed?) || merge_request.closed_without_fork?
+    return 'hidden' if merge_request_button_hidden?(merge_request, closed)
+  end
+
+  def merge_request_button_hidden?(merge_request, closed)
+    merge_request.closed? == closed || (merge_request.merged? == closed && !merge_request.closed?) || merge_request.closed_without_fork?
   end
 
   def merge_request_version_path(project, merge_request, merge_request_diff, start_sha = nil)

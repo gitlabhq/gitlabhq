@@ -2640,7 +2640,14 @@ msgstr ""
 msgid "Details"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Detect host keys"
+=======
+msgid "Diff content limits"
+msgstr ""
+
+msgid "Diff limits"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Diffs|No file name available"
@@ -4595,10 +4602,38 @@ msgstr ""
 msgid "Markdown enabled"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Maven Metadata"
 msgstr ""
 
 msgid "Maven package"
+=======
+msgid "MarkdownToolbar|Add a bullet list"
+msgstr ""
+
+msgid "MarkdownToolbar|Add a link"
+msgstr ""
+
+msgid "MarkdownToolbar|Add a numbered list"
+msgstr ""
+
+msgid "MarkdownToolbar|Add a task list"
+msgstr ""
+
+msgid "MarkdownToolbar|Add bold text"
+msgstr ""
+
+msgid "MarkdownToolbar|Add italic text"
+msgstr ""
+
+msgid "MarkdownToolbar|Go full screen"
+msgstr ""
+
+msgid "MarkdownToolbar|Insert a quote"
+msgstr ""
+
+msgid "MarkdownToolbar|Insert code"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Max access level"

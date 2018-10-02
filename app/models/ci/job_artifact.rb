@@ -17,6 +17,7 @@ module Ci
       metadata: nil,
       trace: nil,
       junit: 'junit.xml',
+      codequality: 'codequality.json',
       sast: 'gl-sast-report.json',
       dependency_scanning: 'gl-dependency-scanning-report.json',
       container_scanning: 'gl-container-scanning-report.json',
@@ -28,6 +29,7 @@ module Ci
       metadata: :gzip,
       trace: :raw,
       junit: :gzip,
+      codequality: :gzip,
       sast: :gzip,
       dependency_scanning: :gzip,
       container_scanning: :gzip,
@@ -76,7 +78,8 @@ module Ci
       sast: 5, ## EE-specific
       dependency_scanning: 6, ## EE-specific
       container_scanning: 7, ## EE-specific
-      dast: 8 ## EE-specific
+      dast: 8, ## EE-specific
+      codequality: 9 ## EE-specific
     }
 
     enum file_format: {

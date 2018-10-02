@@ -31,10 +31,16 @@ function blockTagText(text, textArea, blockTag, selected) {
   }
 }
 
-function moveCursor(textArea, tag, wrapped, removedLastNewLine) {
+function moveCursor({ textArea, tag, wrapped, removedLastNewLine, select }) {
   var pos;
   if (!textArea.setSelectionRange) {
     return;
+  }
+  if (select && select.length > 0) {
+    // calculate the part of the text to be selected
+    const startPosition = textArea.selectionStart - (tag.length - tag.indexOf(select));
+    const endPosition = startPosition + select.length;
+    return textArea.setSelectionRange(startPosition, endPosition);
   }
   if (textArea.selectionStart === textArea.selectionEnd) {
     if (wrapped) {
@@ -51,7 +57,7 @@ function moveCursor(textArea, tag, wrapped, removedLastNewLine) {
   }
 }
 
-export function insertMarkdownText(textArea, text, tag, blockTag, selected, wrap) {
+export function insertMarkdownText({ textArea, text, tag, blockTag, selected, wrap, select }) {
   var textToInsert, inserted, selectedSplit, startChar, removedLastNewLine, removedFirstNewLine, currentLineEmpty, lastNewLine;
   removedLastNewLine = false;
   removedFirstNewLine = false;
@@ -82,11 +88,16 @@ export function insertMarkdownText(textArea, text, tag, blockTag, selected, wrap
 
   startChar = !wrap && !currentLineEmpty && textArea.selectionStart > 0 ? '\n' : '';
 
+  const textPlaceholder = '{text}';
+
   if (selectedSplit.length > 1 && (!wrap || (blockTag != null && blockTag !== ''))) {
     if (blockTag != null && blockTag !== '') {
       textToInsert = blockTagText(text, textArea, blockTag, selected);
     } else {
       textToInsert = selectedSplit.map(function(val) {
+        if (tag.indexOf(textPlaceholder) > -1) {
+          return tag.replace(textPlaceholder, val);
+        }
         if (val.indexOf(tag) === 0) {
           return "" + (val.replace(tag, ''));
         } else {
@@ -94,6 +105,8 @@ export function insertMarkdownText(textArea, text, tag, blockTag, selected, wrap
         }
       }).join('\n');
     }
+  } else if (tag.indexOf(textPlaceholder) > -1) {
+    textToInsert = tag.replace(textPlaceholder, selected);
   } else {
     textToInsert = "" + startChar + tag + selected + (wrap ? tag : ' ');
   }
@@ -107,17 +120,17 @@ export function insertMarkdownText(textArea, text, tag, blockTag, selected, wrap
   }
 
   insertText(textArea, textToInsert);
-  return moveCursor(textArea, tag, wrap, removedLastNewLine);
+  return moveCursor({ textArea, tag: tag.replace(textPlaceholder, selected), wrap, removedLastNewLine, select });
 }
 
-function updateText(textArea, tag, blockTag, wrap) {
+function updateText({ textArea, tag, blockTag, wrap, select }) {
   var $textArea, selected, text;
   $textArea = $(textArea);
   textArea = $textArea.get(0);
   text = $textArea.val();
   selected = selectedText(text, textArea);
   $textArea.focus();
-  return insertMarkdownText(textArea, text, tag, blockTag, selected, wrap);
+  return insertMarkdownText({ textArea, text, tag, blockTag, selected, wrap, select });
 }
 
 function replaceRange(s, start, end, substitute) {
@@ -127,7 +140,12 @@ function replaceRange(s, start, end, substitute) {
 export function addMarkdownListeners(form) {
   return $('.js-md', form).off('click').on('click', function() {
     const $this = $(this);
-    return updateText($this.closest('.md-area').find('textarea'), $this.data('mdTag'), $this.data('mdBlock'), !$this.data('mdPrepend'));
+    return updateText({
+      textArea: $this.closest('.md-area').find('textarea'),
+      tag: $this.data('mdTag'),
+      blockTag: $this.data('mdBlock'),
+      wrap: !$this.data('mdPrepend'),
+      select: $this.data('mdSelect') });
   });
 }
 

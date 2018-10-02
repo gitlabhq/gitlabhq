@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20180924070647) do
+=======
+ActiveRecord::Schema.define(version: 20180924141949) do
+>>>>>>> upstream/master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -217,6 +221,7 @@ ActiveRecord::Schema.define(version: 20180924070647) do
     t.integer "custom_project_templates_group_id"
     t.integer "usage_stats_set_by_user_id"
     t.integer "receive_max_input_size"
+    t.integer "diff_max_patch_bytes", default: 102400, null: false
   end
 
   create_table "approvals", force: :cascade do |t|

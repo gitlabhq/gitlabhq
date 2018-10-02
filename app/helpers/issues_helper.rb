@@ -66,7 +66,11 @@ module IssuesHelper
   end
 
   def issue_button_visibility(issue, closed)
-    return 'hidden' if issue.closed? == closed
+    return 'hidden' if issue_button_hidden?(issue, closed)
+  end
+
+  def issue_button_hidden?(issue, closed)
+    issue.closed? == closed || (!closed && issue.discussion_locked)
   end
 
   def confidential_icon(issue)

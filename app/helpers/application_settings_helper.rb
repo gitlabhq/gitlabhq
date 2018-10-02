@@ -255,7 +255,8 @@ module ApplicationSettingsHelper
       :user_default_internal_regex,
       :user_oauth_applications,
       :version_check_enabled,
-      :web_ide_clientside_preview_enabled
+      :web_ide_clientside_preview_enabled,
+      :diff_max_patch_bytes
     ]
   end
 
