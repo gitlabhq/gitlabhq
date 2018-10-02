@@ -716,6 +716,15 @@ describe API::Runners do
 
         expect(response).to have_gitlab_http_status(400)
       end
+
+      it 'filters runners by tag' do
+        runner = create(:ci_runner, :project, projects: [project], tag_list: %w(tag1 tag2))
+
+        get api("/projects/#{project.id}/runners", user), tag_list: ['tag1']
+
+        expect(json_response.count).to eq 1
+        expect(json_response[0]['id']).to eq runner.id
+      end
     end
 
     context 'authorized user without maintainer privileges' do

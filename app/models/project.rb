@@ -2090,6 +2090,10 @@ class Project < ActiveRecord::Base
     auto_cancel_pending_pipelines == 'enabled'
   end
 
+  def ci_yaml_file_path
+    ci_config_path.presence || '.gitlab-ci.yml'
+  end
+
   private
 
   # rubocop: disable CodeReuse/ServiceClass

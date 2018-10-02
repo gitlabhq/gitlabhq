@@ -104,13 +104,25 @@ describe API::CommitStatuses do
       end
     end
 
-    context "guest user" do
+    context 'guest user' do
       before do
         get api(get_url, guest)
       end
 
-      it "does not return project commits" do
-        expect(response).to have_gitlab_http_status(403)
+      context 'when project has public builds enabled' do
+        let(:project) { create(:project, :repository, public_builds: true) }
+
+        it 'does not return project commits' do
+          expect(response).to have_gitlab_http_status(200)
+        end
+      end
+
+      context 'when project has public builds disabled' do
+        let(:project) { create(:project, :repository, public_builds: false) }
+
+        it 'does not return project commits' do
+          expect(response).to have_gitlab_http_status(403)
+        end
       end
     end
 

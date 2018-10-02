@@ -350,11 +350,14 @@ class ProjectPolicy < BasePolicy
     enable :read_issue
   end
 
-  rule { public_builds }.policy do
+  rule { public_builds & can?(:public_access) }.policy do
     enable :read_build
+    enable :read_commit_status
   end
 
   rule { public_builds & can?(:guest_access) }.policy do
+    enable :read_build
+    enable :read_commit_status
     enable :read_pipeline
     enable :read_pipeline_schedule
   end

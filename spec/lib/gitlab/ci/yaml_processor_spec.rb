@@ -1404,6 +1404,65 @@ module Gitlab
           it { is_expected.to be_nil }
         end
       end
+
+      describe '#builds_with_tag' do
+        let(:config) do
+          <<~EOT
+          job1:
+            script:
+              - whatever
+            tags:
+              - custom_tag
+
+          job2:
+            script:
+              - whatever
+            tags:
+              - custom_tag
+
+          job3:
+            script:
+              - whatever
+          EOT
+        end
+
+        subject { described_class.new(config).builds_with_tag('custom_tag') }
+
+        it 'returns builds with the selected tag' do
+          result = subject
+
+          expect(result.count).to eq 2
+          expect(result[0][:name]).to eq 'job1'
+          expect(result[1][:name]).to eq 'job2'
+        end
+
+        context 'with job templates' do
+          let(:config) do
+            <<~EOT
+            .template: &JOBTMPL
+              stage: build
+              script: execute-script-for-job
+              tags: [custom_tag]
+
+            job1: *JOBTMPL
+
+            job2: *JOBTMPL
+
+            job3:
+              script:
+                - whatever
+            EOT
+          end
+
+          it 'returns builds with the selected tag' do
+            result = subject
+
+            expect(result.count).to eq 2
+            expect(result[0][:name]).to eq 'job1'
+            expect(result[1][:name]).to eq 'job2'
+          end
+        end
+      end
     end
   end
 end

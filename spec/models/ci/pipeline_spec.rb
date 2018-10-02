@@ -1128,28 +1128,6 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
-  describe '#ci_yaml_file_path' do
-    subject { pipeline.ci_yaml_file_path }
-
-    it 'returns the path from project' do
-      allow(pipeline.project).to receive(:ci_config_path) { 'custom/path' }
-
-      is_expected.to eq('custom/path')
-    end
-
-    it 'returns default when custom path is nil' do
-      allow(pipeline.project).to receive(:ci_config_path) { nil }
-
-      is_expected.to eq('.gitlab-ci.yml')
-    end
-
-    it 'returns default when custom path is empty' do
-      allow(pipeline.project).to receive(:ci_config_path) { '' }
-
-      is_expected.to eq('.gitlab-ci.yml')
-    end
-  end
-
   describe '#set_config_source' do
     context 'when pipelines does not contain needed data and auto devops is disabled' do
       before do

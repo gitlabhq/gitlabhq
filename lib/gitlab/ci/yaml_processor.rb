@@ -84,6 +84,10 @@ module Gitlab
         end
       end
 
+      def builds_with_tag(tag_name)
+        builds.select { |data| data[:tag_list].include?(tag_name) }
+      end
+
       private
 
       def initial_parsing

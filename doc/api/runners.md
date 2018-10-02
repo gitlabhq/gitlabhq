@@ -356,6 +356,7 @@ GET /projects/:id/runners?status=active
 | `scope`   | string         | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
 | `type`    | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
 | `status`  | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
+| `tag_list` | array | no | The list of tags of the runners to show |
 
 ```
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/9/runners"

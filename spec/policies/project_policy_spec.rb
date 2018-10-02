@@ -269,7 +269,7 @@ describe ProjectPolicy do
     context 'abilities for non-public projects' do
       let(:project) { create(:project, namespace: owner.namespace) }
       let(:reporter_public_build_permissions) do
-        reporter_permissions - [:read_build, :read_pipeline]
+        reporter_permissions - [:read_build, :read_pipeline, :read_commit_status]
       end
 
       it do
@@ -288,7 +288,7 @@ describe ProjectPolicy do
       context 'public builds enabled' do
         it do
           expect_allowed(*guest_permissions)
-          expect_allowed(:read_build, :read_pipeline)
+          expect_allowed(:read_build, :read_pipeline, :read_commit_status)
         end
       end
 
@@ -299,7 +299,7 @@ describe ProjectPolicy do
 
         it do
           expect_allowed(*guest_permissions)
-          expect_disallowed(:read_build, :read_pipeline)
+          expect_disallowed(:read_build, :read_pipeline, :read_commit_status)
         end
       end
 

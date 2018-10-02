@@ -44,6 +44,7 @@ module Ci
 
     delegate :id, to: :project, prefix: true
     delegate :full_path, to: :project, prefix: true
+    delegate :ci_yaml_file_path, to: :project
 
     validates :sha, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
@@ -57,6 +58,10 @@ module Ci
 
     after_create :keep_around_commits, unless: :importing?
 
+    def self.source_enum_values
+      {}
+    end
+
     enum_with_nil source: {
       unknown: nil,
       push: 1,
@@ -65,7 +70,7 @@ module Ci
       schedule: 4,
       api: 5,
       external: 6
-    }
+    }.merge(source_enum_values)
 
     enum_with_nil config_source: {
       unknown_source: nil,
@@ -242,7 +247,7 @@ module Ci
     end
 
     def self.internal_sources
-      sources.reject { |source| source == "external" }.values
+      sources.except(:external).values
     end
 
     def stages_count
@@ -473,14 +478,6 @@ module Ci
       rescue
         self.yaml_errors = 'Undefined error'
         nil
-      end
-    end
-
-    def ci_yaml_file_path
-      if project.ci_config_path.blank?
-        '.gitlab-ci.yml'
-      else
-        project.ci_config_path
       end
     end
 
