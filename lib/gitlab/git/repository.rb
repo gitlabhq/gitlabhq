@@ -9,14 +9,6 @@ module Gitlab
       include Gitlab::EncodingHelper
       include Gitlab::Utils::StrongMemoize
 
-      ALLOWED_OBJECT_DIRECTORIES_VARIABLES = %w[
-        GIT_OBJECT_DIRECTORY
-        GIT_ALTERNATE_OBJECT_DIRECTORIES
-      ].freeze
-      ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES = %w[
-        GIT_OBJECT_DIRECTORY_RELATIVE
-        GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE
-      ].freeze
       SEARCH_CONTEXT_LINES = 3
       REV_LIST_COMMIT_LIMIT = 2_000
       # In https://gitlab.com/gitlab-org/gitaly/merge_requests/698
@@ -102,15 +94,6 @@ module Gitlab
         raise NoRepository.new(e.message)
       rescue GRPC::Unknown => e
         raise Gitlab::Git::CommandError.new(e.message)
-      end
-
-      # This method will be removed when Gitaly reaches v1.1.
-      def rugged
-        circuit_breaker.perform do
-          Rugged::Repository.new(path, alternates: alternate_object_directories)
-        end
-      rescue Rugged::RepositoryError, Rugged::OSError
-        raise NoRepository.new('no repository for such path')
       end
 
       def circuit_breaker
@@ -638,20 +621,6 @@ module Gitlab
         end
       end
 
-      AUTOCRLF_VALUES = {
-        "true" => true,
-        "false" => false,
-        "input" => :input
-      }.freeze
-
-      def autocrlf
-        AUTOCRLF_VALUES[rugged.config['core.autocrlf']]
-      end
-
-      def autocrlf=(value)
-        rugged.config['core.autocrlf'] = AUTOCRLF_VALUES.invert[value]
-      end
-
       # Returns result like "git ls-files" , recursive and full file path
       #
       # Ex.
@@ -1022,14 +991,6 @@ module Gitlab
         found_module = GitmodulesParser.new(gitmodules.data).parse[path]
 
         found_module && found_module['url']
-      end
-
-      def alternate_object_directories
-        relative_object_directories.map { |d| File.join(path, d) }
-      end
-
-      def relative_object_directories
-        Gitlab::Git::HookEnv.all(gl_repository).values_at(*ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES).flatten.compact
       end
 
       # Returns true if the given ref name exists
