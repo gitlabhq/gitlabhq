@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-10-02 02:02\n"
+"PO-Revision-Date: 2018-10-02 02:49\n"
 
 msgid " Status"
 msgstr " ステータス"
@@ -2989,7 +2989,7 @@ msgid "Error fetching network graph."
 msgstr "ネットワークグラフの取得中にエラーが発生しました。"
 
 msgid "Error fetching refs"
-msgstr ""
+msgstr "参照の取得中にエラーが発生"
 
 msgid "Error fetching usage ping data."
 msgstr "Ping データ取得中にエラーが発生しました。"
@@ -4125,7 +4125,7 @@ msgid "Instance does not support multiple Kubernetes clusters"
 msgstr ""
 
 msgid "Integrations"
-msgstr ""
+msgstr "インテグレーション"
 
 msgid "Integrations Settings"
 msgstr ""
@@ -4164,7 +4164,7 @@ msgid "Issue events"
 msgstr "課題イベント"
 
 msgid "IssueBoards|Board"
-msgstr ""
+msgstr "ボード"
 
 msgid "IssueBoards|Boards"
 msgstr ""
@@ -4263,7 +4263,7 @@ msgid "Kubernetes cluster creation time exceeds timeout; %{timeout}"
 msgstr ""
 
 msgid "Kubernetes cluster integration was not removed."
-msgstr ""
+msgstr "Kubernetes クラスターの統合は削除されませんでした。"
 
 msgid "Kubernetes cluster integration was successfully removed."
 msgstr ""
@@ -4275,7 +4275,7 @@ msgid "Kubernetes configured"
 msgstr "Kubernetes 構成済み"
 
 msgid "Kubernetes service integration has been deprecated. %{deprecated_message_content} your Kubernetes clusters using the new <a href=\"%{url}\"/>Kubernetes Clusters</a> page"
-msgstr ""
+msgstr "Kubernetes サービスの統合は廃止されました。%{deprecated_message_content} 新しい<a href=\"%{url}\"/>Kubernetes クラスター</a> のページを使用してください"
 
 msgid "LFS"
 msgstr "LFS"
@@ -4311,7 +4311,7 @@ msgid "Labels can be applied to %{features}. Group labels are available for any 
 msgstr "ラベルを%{features} に適用できます。グループラベルはグループ内のすべてのプロジェクトで使用できます。"
 
 msgid "Labels can be applied to issues and merge requests to categorize them."
-msgstr ""
+msgstr "ラベルを使用して、課題やマージリクエストを分類できます。"
 
 msgid "Labels can be applied to issues and merge requests."
 msgstr "ラベルは課題とマージリクエストに適用できます。"
@@ -4369,7 +4369,7 @@ msgid "Learn more about Kubernetes"
 msgstr ""
 
 msgid "Learn more about protected branches"
-msgstr ""
+msgstr "保護されたブランチについての詳細"
 
 msgid "Learn more in the"
 msgstr "詳しく見る："
@@ -5305,7 +5305,7 @@ msgid "Pagination|Last »"
 msgstr "最後 »"
 
 msgid "Pagination|Next"
-msgstr ""
+msgstr "次ページ"
 
 msgid "Pagination|Prev"
 msgstr ""
@@ -6028,13 +6028,13 @@ msgid "PrometheusService|Manual configuration"
 msgstr "手動構成"
 
 msgid "PrometheusService|Metrics"
-msgstr ""
+msgstr "メトリクス一覧"
 
 msgid "PrometheusService|Missing environment variable"
 msgstr "未設定の環境変数"
 
 msgid "PrometheusService|More information"
-msgstr ""
+msgstr "詳細情報"
 
 msgid "PrometheusService|New metric"
 msgstr "新規メトリクス"
@@ -6064,7 +6064,7 @@ msgid "Promote"
 msgstr "昇格"
 
 msgid "Promote these project milestones into a group milestone."
-msgstr ""
+msgstr "これらのプロジェクトマイルストーンをグループマイルストーンに昇格する"
 
 msgid "Promote to Group Milestone"
 msgstr "グループマイルストーンに昇格"
@@ -6142,7 +6142,7 @@ msgid "Pseudonymizer data collection"
 msgstr ""
 
 msgid "Public - The group and any public projects can be viewed without any authentication."
-msgstr ""
+msgstr "公開- グループおよび公開プロジェクトは認証無しで閲覧することができます"
 
 msgid "Public - The project can be accessed without any authentication."
 msgstr "公開 - プロジェクトは認証無しにアクセスできます"
@@ -6166,7 +6166,7 @@ msgid "Push project from command line"
 msgstr "コマンドラインからプロジェクトをプッシュ"
 
 msgid "Push to create a project"
-msgstr ""
+msgstr "プッシュしてプロジェクトを作成する"
 
 msgid "PushRule|Committer restriction"
 msgstr "コミッター制限"
@@ -6181,7 +6181,7 @@ msgid "Quarters"
 msgstr ""
 
 msgid "Quick actions can be used in the issues description and comment boxes."
-msgstr ""
+msgstr "クイックアクションは課題の説明とコメント欄で使用できます。"
 
 msgid "Read more"
 msgstr "続きを読む"
@@ -6347,7 +6347,7 @@ msgid "Repository has no locks."
 msgstr "リポジトリはロックされていません。"
 
 msgid "Repository maintenance"
-msgstr ""
+msgstr "リポジトリの保守"
 
 msgid "Repository mirror"
 msgstr "リポジトリミラー"
@@ -6404,7 +6404,7 @@ msgid "Resume"
 msgstr "再開"
 
 msgid "Retry"
-msgstr ""
+msgstr "再試行"
 
 msgid "Retry this job"
 msgstr "ジョブを再試行してください"
@@ -6432,7 +6432,7 @@ msgid "Review the process for configuring service providers in your identity pro
 msgstr ""
 
 msgid "Reviewing"
-msgstr ""
+msgstr "レビュー中"
 
 msgid "Reviewing (merge request !%{mergeRequestId})"
 msgstr ""
@@ -6627,7 +6627,7 @@ msgid "Seconds before reseting failure information"
 msgstr "失敗情報をリセットするまでの秒数"
 
 msgid "Seconds to wait for a storage access attempt"
-msgstr ""
+msgstr "ストレージアクセスを再試行するまでの秒数"
 
 msgid "Secret:"
 msgstr ""
@@ -6733,7 +6733,7 @@ msgid "Service URL"
 msgstr "サービス URL"
 
 msgid "Session expiration, projects limit and attachment size."
-msgstr ""
+msgstr "セッションの有効期限、プロジェクトの上限、添付ファイルのサイズ"
 
 msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr "%{protocol} プロコトル経由でプル、プッシュするためにアカウントのパスワードを設定。"
@@ -8402,7 +8402,7 @@ msgid "You can also create a project from the command line."
 msgstr "コマンドラインからプロジェクトを作成することもできます。"
 
 msgid "You can also star a label to make it a priority label."
-msgstr ""
+msgstr "ラベルにスターを付けて優先ラベルにすることもできます。"
 
 msgid "You can also test your .gitlab-ci.yml in the %{linkStart}Lint%{linkEnd}"
 msgstr "%{linkStart}Lint%{linkEnd}で .gitlab-ci.yml をテストすることもできます"
@@ -8447,7 +8447,7 @@ msgid "You don't have any authorized applications"
 msgstr ""
 
 msgid "You have no permissions"
-msgstr ""
+msgstr "権限がありません"
 
 msgid "You have reached your project limit"
 msgstr "プロジェクト数の上限に達しています"
@@ -8919,10 +8919,10 @@ msgid "mrWidget|Checking ability to merge automatically"
 msgstr ""
 
 msgid "mrWidget|Cherry-pick"
-msgstr ""
+msgstr "チェリーピック"
 
 msgid "mrWidget|Cherry-pick this merge request in a new merge request"
-msgstr ""
+msgstr "このマージリクエストをチェリーピックして、新しいマージリクエストを作成する"
 
 msgid "mrWidget|Closed"
 msgstr ""
@@ -8943,7 +8943,7 @@ msgid "mrWidget|Did not close"
 msgstr ""
 
 msgid "mrWidget|Email patches"
-msgstr ""
+msgstr "メールパッチ"
 
 msgid "mrWidget|Failed to load deployment statistics"
 msgstr "デプロイ統計のロードに失敗しました"
@@ -8967,10 +8967,10 @@ msgid "mrWidget|Merge"
 msgstr "マージ"
 
 msgid "mrWidget|Merge failed."
-msgstr ""
+msgstr "マージに失敗しました。"
 
 msgid "mrWidget|Merge locally"
-msgstr ""
+msgstr "ローカルでマージ"
 
 msgid "mrWidget|Merge request approved"
 msgstr ""
@@ -9047,7 +9047,7 @@ msgid "mrWidget|The changes were merged into"
 msgstr ""
 
 msgid "mrWidget|The changes were not merged into"
-msgstr ""
+msgstr "この変更は次のブランチにマージされませんでした"
 
 msgid "mrWidget|The changes will be merged into"
 msgstr "この変更は次のブランチにマージされます"
@@ -9092,7 +9092,7 @@ msgid "mrWidget|You are not allowed to edit this project directly. Please fork t
 msgstr ""
 
 msgid "mrWidget|You can merge this merge request manually using the"
-msgstr ""
+msgstr "このマージリクエストを手動でマージできます"
 
 msgid "mrWidget|You can remove source branch now"
 msgstr ""
