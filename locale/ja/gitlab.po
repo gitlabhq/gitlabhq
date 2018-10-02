@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-10-02 02:49\n"
+"PO-Revision-Date: 2018-10-02 03:02\n"
 
 msgid " Status"
 msgstr " ステータス"
@@ -4122,7 +4122,7 @@ msgid "Instance Statistics visibility"
 msgstr ""
 
 msgid "Instance does not support multiple Kubernetes clusters"
-msgstr ""
+msgstr "インスタンスはマルチ Kubernetes クラスターをサポートしていません"
 
 msgid "Integrations"
 msgstr "インテグレーション"
@@ -4131,7 +4131,7 @@ msgid "Integrations Settings"
 msgstr ""
 
 msgid "Interested parties can even contribute by pushing commits if they want to."
-msgstr ""
+msgstr "貢献をしたい関係者は、コミットをプッシュすることで貢献することもできます。"
 
 msgid "Internal - The group and any internal projects can be viewed by any logged in user."
 msgstr "内部 - グループおよび内部プロジェクトは、ログインしているすべてのユーザーが見ることができます。"
@@ -5082,7 +5082,7 @@ msgid "Not available for protected branches"
 msgstr "保護されたブランチでは利用できません"
 
 msgid "Not confidential"
-msgstr ""
+msgstr "機密ではない"
 
 msgid "Not enough data"
 msgstr "データ不足"
@@ -5275,7 +5275,7 @@ msgid "Other information"
 msgstr "その他の情報"
 
 msgid "Otherwise it is recommended you start with one of the options below."
-msgstr ""
+msgstr "そうでない場合は、次のいずれかのオプションで開始することを推奨します。"
 
 msgid "Outbound requests"
 msgstr ""
@@ -5308,13 +5308,13 @@ msgid "Pagination|Next"
 msgstr "次ページ"
 
 msgid "Pagination|Prev"
-msgstr ""
+msgstr "前ページ"
 
 msgid "Pagination|« First"
 msgstr "« 最初"
 
 msgid "Part of merge request changes"
-msgstr ""
+msgstr "マージリクエストでの変更箇所"
 
 msgid "Password"
 msgstr "パスワード"
@@ -5326,7 +5326,7 @@ msgid "Path:"
 msgstr "パス："
 
 msgid "Pause"
-msgstr ""
+msgstr "停止"
 
 msgid "Paused Runners don't accept new jobs"
 msgstr ""
@@ -5449,13 +5449,13 @@ msgid "Pipelines|Continuous Integration can help catch bugs by running your test
 msgstr ""
 
 msgid "Pipelines|Get started with Pipelines"
-msgstr ""
+msgstr "パイプラインの利用を開始する"
 
 msgid "Pipelines|Loading Pipelines"
 msgstr "パイプラインを読み込み中"
 
 msgid "Pipelines|Project cache successfully reset."
-msgstr ""
+msgstr "プロジェクトのキャッシュを正常にリセットしました。"
 
 msgid "Pipelines|Run Pipeline"
 msgstr "パイプライン実行"
@@ -5464,16 +5464,16 @@ msgid "Pipelines|Something went wrong while cleaning runners cache."
 msgstr ""
 
 msgid "Pipelines|There are currently no %{scope} pipelines."
-msgstr ""
+msgstr "%{scope} パイプラインは現在ありません。"
 
 msgid "Pipelines|There are currently no pipelines."
-msgstr ""
+msgstr "パイプラインは現在ありません。"
 
 msgid "Pipelines|There was an error fetching the pipelines. Try again in a few moments or contact your support team."
 msgstr ""
 
 msgid "Pipelines|This project is not currently set up to run pipelines."
-msgstr ""
+msgstr "このプロジェクトは現在パイプラインを実行するように設定されていません。"
 
 msgid "Pipeline|Create for"
 msgstr "実行対象"
@@ -5551,7 +5551,7 @@ msgid "Please wait while we connect to your repository. Refresh at will."
 msgstr "リポジトリに接続できるまで、しばらくお待ちください。完了すると、画面が自動的に更新されます。"
 
 msgid "Please wait while we import the repository for you. Refresh at will."
-msgstr ""
+msgstr "リポジトリをインポートしているので、しばらくお待ちください。完了すると、画面が自動的に更新されます。"
 
 msgid "Preferences"
 msgstr "基本設定"
@@ -5584,7 +5584,7 @@ msgid "Prioritized label"
 msgstr "優先ラベル"
 
 msgid "Private - Project access must be granted explicitly to each user."
-msgstr ""
+msgstr "プライベート - 各ユーザーにプロジェクトのアクセス権限を明示的に許可する必要があります。"
 
 msgid "Private - The group and its projects can only be viewed by members."
 msgstr "プライベート - グループとプロジェクトはメンバーのみが閲覧できます。"
@@ -5608,7 +5608,7 @@ msgid "Profiles|%{author_name} made a private contribution"
 msgstr ""
 
 msgid "Profiles|Account scheduled for removal."
-msgstr ""
+msgstr "削除予定のアカウントです。"
 
 msgid "Profiles|Add key"
 msgstr "キーを追加"
@@ -5758,7 +5758,7 @@ msgid "Profiles|You don't have access to delete this user."
 msgstr "このユーザーを削除する権限がありません"
 
 msgid "Profiles|You must transfer ownership or delete these groups before you can delete your account."
-msgstr ""
+msgstr "アカウントを削除する前にこれらのグループを削除、または所有権を譲渡してください。"
 
 msgid "Profiles|Your account is currently an owner in these groups:"
 msgstr "このアカウントは現在これらのグループのオーナーです:"
@@ -5944,7 +5944,7 @@ msgid "ProjectsDropdown|Search your projects"
 msgstr "プロジェクトを検索"
 
 msgid "ProjectsDropdown|Something went wrong on our end."
-msgstr ""
+msgstr "問題が発生しました。"
 
 msgid "ProjectsDropdown|Sorry, no projects matched your search"
 msgstr "検索条件に一致したプロジェクトはありませんでした"
@@ -6049,7 +6049,7 @@ msgid "PrometheusService|These metrics will only be monitored after your first d
 msgstr ""
 
 msgid "PrometheusService|Time-series monitoring service"
-msgstr ""
+msgstr "時系列監視サービス"
 
 msgid "PrometheusService|To enable manual configuration, uninstall Prometheus from your clusters"
 msgstr ""
@@ -6417,7 +6417,7 @@ msgstr ""
 
 msgid "Reveal value"
 msgid_plural "Reveal values"
-msgstr[0] ""
+msgstr[0] "値を表示する"
 
 msgid "Revert this commit"
 msgstr "このコミットをリバート"
@@ -6664,7 +6664,7 @@ msgid "Select a group to invite"
 msgstr ""
 
 msgid "Select a namespace to fork the project"
-msgstr ""
+msgstr "プロジェクトをフォークする名前空間を選択してください"
 
 msgid "Select a timezone"
 msgstr "タイムゾーンを選択"
@@ -6977,10 +6977,10 @@ msgid "SortOptions|Milestone"
 msgstr "マイルストーン順"
 
 msgid "SortOptions|Milestone due later"
-msgstr ""
+msgstr "マイルストーン期限の遅い順"
 
 msgid "SortOptions|Milestone due soon"
-msgstr ""
+msgstr "マイルストーン期限の近い順"
 
 msgid "SortOptions|More weight"
 msgstr "ウエイトが大きい順"
@@ -7191,7 +7191,7 @@ msgid "TagsPage|Browse commits"
 msgstr ""
 
 msgid "TagsPage|Browse files"
-msgstr ""
+msgstr "ファイルを表示"
 
 msgid "TagsPage|Can't find HEAD commit for this tag"
 msgstr "このタグの HEAD コミットが見つかりません"
@@ -7242,7 +7242,7 @@ msgid "TagsPage|Tags"
 msgstr "タグ一覧"
 
 msgid "TagsPage|Tags give the ability to mark specific points in history as being important"
-msgstr ""
+msgstr "タグは、履歴の特定の位置を重要なものとしてマークする機能を提供します"
 
 msgid "TagsPage|This tag has no release notes."
 msgstr "このタグにはリリースノートがありません。"
@@ -7254,7 +7254,7 @@ msgid "TagsPage|Write your release notes or drag files here…"
 msgstr ""
 
 msgid "TagsPage|protected"
-msgstr ""
+msgstr "保護"
 
 msgid "Target Branch"
 msgstr "ターゲットブランチ"
@@ -7518,7 +7518,7 @@ msgid "This is the author's first Merge Request to this project."
 msgstr ""
 
 msgid "This issue is confidential"
-msgstr ""
+msgstr "この課題は非公開設定です"
 
 msgid "This issue is confidential and locked."
 msgstr "この課題は非公開でロックされています"
@@ -7527,7 +7527,7 @@ msgid "This issue is locked."
 msgstr "この課題はロックされています。"
 
 msgid "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
-msgstr ""
+msgstr "このジョブはプロセスをトリガーにするユーザーに依存します。多くの場合、本番環境へコードをデプロイするために使用されます。"
 
 msgid "This job depends on upstream jobs that need to succeed in order for this job to be triggered"
 msgstr ""
@@ -7647,7 +7647,7 @@ msgid "Time spent"
 msgstr "経過時間"
 
 msgid "Time tracking"
-msgstr ""
+msgstr "タイムトラッキング"
 
 msgid "Time until first merge request"
 msgstr "最初のマージリクエストまでの時間"
@@ -7668,7 +7668,7 @@ msgid "Timeago|%s days remaining"
 msgstr "残り %s日間"
 
 msgid "Timeago|%s hours ago"
-msgstr ""
+msgstr "%s 時間前"
 
 msgid "Timeago|%s hours remaining"
 msgstr "残り %s時間"
@@ -7841,7 +7841,7 @@ msgid "To help improve GitLab, we would like to periodically collect usage infor
 msgstr ""
 
 msgid "To import GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
-msgstr ""
+msgstr "GitHub リポジトリをインポートするために %{personal_access_token_link} を使用できます。個人用アクセストークンを作成する際は、 <code>repo</code> スコープを選択する必要があります。これによりインポートできる公開・非公開リポジトリの一覧を表示することができます。"
 
 msgid "To import GitHub repositories, you first need to authorize GitLab to access the list of your GitHub repositories:"
 msgstr ""
@@ -8075,7 +8075,7 @@ msgid "Use Service Desk to connect with your users (e.g. to offer customer suppo
 msgstr "サービスデスクを使用して、GitLab 内のメールでユーザと接続（例：顧客サポート）"
 
 msgid "Use group milestones to manage issues from multiple projects in the same milestone."
-msgstr ""
+msgstr "グループマイルストーンを使用して、同じマイルストーン内の複数のプロジェクトの課題を管理します。"
 
 msgid "Use one line per URI"
 msgstr ""
@@ -8111,7 +8111,7 @@ msgid "Variables"
 msgstr "変数"
 
 msgid "Variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. You can use variables for passwords, secret keys, or whatever you want."
-msgstr ""
+msgstr "変数は Runner を介して環境に適用されます。また、保護されたブランチやタグだけに変数へのアクセスを制限し、変数を保護することができます。これにより、パスワード、秘密鍵などを格納するために変数を使用できます。"
 
 msgid "Various container registry settings."
 msgstr "各種コンテナレジストリの設定。"
@@ -8495,7 +8495,7 @@ msgid "You won't be able to pull or push project code via SSH until you %{add_ss
 msgstr ""
 
 msgid "You won't be able to pull or push project code via SSH until you add an SSH key to your profile"
-msgstr ""
+msgstr "SSH 鍵をプロフィールに追加しない限り、SSH 経由でプロジェクトのコードをプルしたりプッシュすることができません。"
 
 msgid "You'll need to use different branch names to get a valid comparison."
 msgstr "有効な比較を行うためには、異なるブランチ名を使用する必要があります。"
@@ -8534,7 +8534,7 @@ msgid "Your authorized applications"
 msgstr ""
 
 msgid "Your changes can be committed to %{branch_name} because a merge request is open."
-msgstr ""
+msgstr "マージリクエストが開いているため、変更は %{branch_name} にコミットできます。"
 
 msgid "Your changes have been committed. Commit %{commitId} %{commitStats}"
 msgstr ""
@@ -8558,7 +8558,7 @@ msgid "ago"
 msgstr "前"
 
 msgid "among other things"
-msgstr ""
+msgstr "その他のもの"
 
 msgid "and %d fixed vulnerability"
 msgid_plural "and %d fixed vulnerabilities"
