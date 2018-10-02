@@ -153,7 +153,7 @@ const bindEvents = () => {
     $projectMirror.attr('disabled', !$projectMirror.attr('disabled'));
   });
 
-  $projectName.keyup(() => {
+  $projectName.on('keyup change', () => {
     onProjectNameChange($projectName, $projectPath);
     hasUserDefinedProjectPath = $projectPath.val().trim().length > 0;
   });
