@@ -250,7 +250,7 @@ const pollSuccessCallBack = (resp, commit, state, getters, dispatch) => {
         if (discussion) {
           commit(types.ADD_NEW_REPLY_TO_DISCUSSION, note);
         } else if (note.type === constants.DIFF_NOTE) {
-          dispatch('fetchDiscussions', state.notesData.discussionsPath);
+          dispatch('fetchDiscussions', { path: state.notesData.discussionsPath });
         } else {
           commit(types.ADD_NEW_NOTE, note);
         }
