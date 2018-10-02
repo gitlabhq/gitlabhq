@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Boards < Grape::API
     include BoardsResponses

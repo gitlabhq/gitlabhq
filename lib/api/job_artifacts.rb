@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class JobArtifacts < Grape::API
     before { authenticate_non_get! }
