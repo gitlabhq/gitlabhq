@@ -1,4 +1,4 @@
-.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?) }
+.nav-sidebar.qa-admin-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?) }
   .nav-sidebar-inner-scroll
     .context-header
       = link_to admin_root_path, title: _('Admin Overview') do
@@ -197,10 +197,10 @@
         = link_to admin_application_settings_path do
           .nav-icon-container
             = sprite_icon('settings')
-          %span.nav-item-name
+          %span.nav-item-name.qa-admin-settings-item
             = _('Settings')
 
-        %ul.sidebar-sub-level-items
+        %ul.sidebar-sub-level-items.qa-admin-sidebar-submenu
           = nav_link(controller: :application_settings, html_options: { class: "fly-out-top-item" } ) do
             = link_to admin_application_settings_path do
               %strong.fly-out-top-item-name
@@ -215,7 +215,7 @@
                 %span
                   = _('Integrations')
             = nav_link(path: 'application_settings#repository') do
-              = link_to repository_admin_application_settings_path, title: _('Repository') do
+              = link_to repository_admin_application_settings_path, title: _('Repository'), class: 'qa-admin-settings-repository-item' do
                 %span
                   = _('Repository')
             - if template_exists?('admin/application_settings/templates')
