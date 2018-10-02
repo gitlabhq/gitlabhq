@@ -72,10 +72,7 @@ stages:
 
 .use-pg: &use-pg
   services:
-    # As of Jan 2018, we don't have a strong reason to upgrade to 9.6 for CI yet,
-    # so using the least common denominator ensures backwards compatibility
-    # (as many users are still using 9.2).
-    - postgres:9.2
+    - postgres:9.6
     - redis:alpine
 
 .use-mysql: &use-mysql
@@ -579,10 +576,10 @@ setup-test-env:
       - vendor/gitaly-ruby
 
 danger-review:
+  <<: *pull-cache
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:danger
   stage: test
   allow_failure: true
-  cache: {}
   dependencies: []
   before_script: []
   only:
@@ -596,6 +593,8 @@ danger-review:
       - $CI_COMMIT_REF_NAME =~ /.*-stable(-ee)?-prepare-.*/
   script:
     - git version
+    - node --version
+    - yarn install --frozen-lockfile --cache-folder .yarn-cache
     - danger --fail-on-errors=true
 
 # EE jobs
