@@ -102,6 +102,14 @@ describe IssuesFinder do
         end
       end
 
+      context 'filtering by no assignee' do
+        let(:params) { { assignee_id: 0 } }
+
+        it 'returns issues not assign to any assignee' do
+          expect(issues).to contain_exactly(issue4)
+        end
+      end
+
       context 'filtering by group_id' do
         let(:params) { { group_id: group.id } }
 
