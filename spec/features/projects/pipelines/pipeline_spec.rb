@@ -87,7 +87,9 @@ describe 'Pipeline', :js do
         it 'should be possible to cancel the running build' do
           find('#ci-badge-deploy .ci-action-icon-container').click
 
-          expect(page).not_to have_content('Cancel running')
+          page.within('#ci-badge-deploy') do
+            expect(page).to have_css('.js-icon-retry')
+          end
         end
       end
 
