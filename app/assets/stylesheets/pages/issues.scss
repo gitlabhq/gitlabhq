@@ -207,10 +207,14 @@ ul.related-merge-requests > li {
     display: flex;
     margin-left: $gl-padding;
 
-    @include media-breakpoint-down(md) {
+    @media (max-width: 880px) {
       margin-top: $gl-padding-8;
       margin-left: 0;
     }
+  }
+
+  .discussion-filter-container {
+    vertical-align: middle;
   }
 
   .js-create-merge-request {
