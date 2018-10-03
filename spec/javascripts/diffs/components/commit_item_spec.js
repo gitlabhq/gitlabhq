@@ -10,6 +10,7 @@ const TEST_AUTHOR_NAME = 'test';
 const TEST_AUTHOR_EMAIL = 'test+test@gitlab.com';
 const TEST_AUTHOR_GRAVATAR = `${TEST_HOST}/avatar/test?s=36`;
 const TEST_SIGNATURE_HTML = '<a>Legit commit</a>';
+const TEST_PIPELINE_STATUS_PATH = `${TEST_HOST}/pipeline/status`;
 
 const getTitleElement = vm => vm.$el.querySelector('.commit-row-message.item-title');
 const getDescElement = vm => vm.$el.querySelector('pre.commit-row-description');
@@ -141,6 +142,22 @@ describe('diffs/components/commit_widget', () => {
       const actionsElement = getCommitActionsElement(vm);
 
       expect(actionsElement).toContainHtml(TEST_SIGNATURE_HTML);
+    });
+  });
+
+  describe('with pipeline status', () => {
+    beforeEach(done => {
+      vm.commit.pipelineStatusPath = TEST_PIPELINE_STATUS_PATH;
+
+      vm.$nextTick()
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('renders pipeline status', () => {
+      const actionsElement = getCommitActionsElement(vm);
+
+      expect(actionsElement).toContainElement('.ci-status-link');
     });
   });
 });

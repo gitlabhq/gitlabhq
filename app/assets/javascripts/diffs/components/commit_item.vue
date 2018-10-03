@@ -5,6 +5,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CIIcon from '~/vue_shared/components/ci_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
 
 /**
  * CommitItem
@@ -29,6 +30,7 @@ export default {
     ClipboardButton,
     CIIcon,
     TimeAgoTooltip,
+    CommitPipelineStatus,
   },
   props: {
     commit: {
@@ -106,6 +108,10 @@ export default {
           v-if="commit.signatureHtml"
           v-html="commit.signatureHtml"
         ></div>
+        <commit-pipeline-status
+          v-if="commit.pipelineStatusPath"
+          :endpoint="commit.pipelineStatusPath"
+        />
         <div class="commit-sha-group">
           <div
             class="label label-monospace"

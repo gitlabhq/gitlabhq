@@ -66,7 +66,7 @@ describe CommitEntity do
 
   context 'when type is "full"' do
     let(:entity) do
-      described_class.new(commit, request: request, type: :full)
+      described_class.new(commit, request: request, type: :full, pipeline_ref: project.default_branch, pipeline_project: project)
     end
 
     it 'exposes extra properties' do
@@ -82,6 +82,16 @@ describe CommitEntity do
       it 'exposes "signature_html"' do
         expect(request.render).to receive(:call)
         expect(subject.fetch(:signature_html)).to be SIGNATURE_HTML
+      end
+    end
+
+    context 'when commit has pipeline' do
+      before do
+        create(:ci_pipeline, project: project, sha: commit.id)
+      end
+
+      it 'exposes "pipeline_status_path"' do
+        expect(subject.fetch(:pipeline_status_path)).not_to be_nil
       end
     end
   end
