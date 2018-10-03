@@ -66,7 +66,7 @@ describe('Empty State', () => {
         ...props,
         content,
         action: {
-          link: 'runner',
+          path: 'runner',
           title: 'Check runner',
           method: 'post',
         },

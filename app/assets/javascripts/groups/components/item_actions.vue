@@ -46,8 +46,8 @@ export default {
 <template>
   <div class="controls">
     <a
-      v-tooltip
       v-if="group.canEdit"
+      v-tooltip
       :href="group.editPath"
       :title="editBtnTitle"
       :aria-label="editBtnTitle"
@@ -57,8 +57,8 @@ export default {
       <icon name="settings"/>
     </a>
     <a
-      v-tooltip
       v-if="group.canLeave"
+      v-tooltip
       :href="group.leavePath"
       :title="leaveBtnTitle"
       :aria-label="leaveBtnTitle"

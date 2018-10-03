@@ -1,5 +1,10 @@
 <script>
+  import { Link } from '@gitlab-org/gitlab-ui';
+
   export default {
+    components: {
+      'gl-link': Link,
+    },
     props: {
       markdownDocsPath: {
         type: String,
@@ -28,30 +33,30 @@
   <div class="comment-toolbar clearfix">
     <div class="toolbar-text">
       <template v-if="!hasQuickActionsDocsPath && markdownDocsPath">
-        <a
+        <gl-link
           :href="markdownDocsPath"
           target="_blank"
           tabindex="-1"
         >
           Markdown is supported
-        </a>
+        </gl-link>
       </template>
       <template v-if="hasQuickActionsDocsPath && markdownDocsPath">
-        <a
+        <gl-link
           :href="markdownDocsPath"
           target="_blank"
           tabindex="-1"
         >
           Markdown
-        </a>
+        </gl-link>
         and
-        <a
+        <gl-link
           :href="quickActionsDocsPath"
           target="_blank"
           tabindex="-1"
         >
           quick actions
-        </a>
+        </gl-link>
         are supported
       </template>
     </div>

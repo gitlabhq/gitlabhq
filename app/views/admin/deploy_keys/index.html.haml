@@ -3,7 +3,7 @@
 %h3.page-title.deploy-keys-title
   Public deploy keys (#{@deploy_keys.count})
   .float-right
-    = link_to 'New deploy key', new_admin_deploy_key_path, class: 'btn btn-new btn-sm btn-inverted'
+    = link_to 'New deploy key', new_admin_deploy_key_path, class: 'btn btn-success btn-sm btn-inverted'
 
 - if @deploy_keys.any?
   .table-holder.deploy-keys-list

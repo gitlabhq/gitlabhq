@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe Repository do
   include RepoHelpers
+  include GitHelpers
+
   TestBlob = Struct.new(:path)
 
   let(:project) { create(:project, :repository) }
@@ -137,9 +139,7 @@ describe Repository do
           options = { message: 'test tag message\n',
                       tagger: { name: 'John Smith', email: 'john@gmail.com' } }
 
-          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            repository.rugged.tags.create(annotated_tag_name, 'a48e4fc218069f68ef2e769dd8dfea3991362175', options)
-          end
+          rugged_repo(repository).tags.create(annotated_tag_name, 'a48e4fc218069f68ef2e769dd8dfea3991362175', options)
 
           double_first = double(committed_date: Time.now - 1.second)
           double_last = double(committed_date: Time.now)
@@ -151,9 +151,7 @@ describe Repository do
         it { is_expected.to eq(['v1.1.0', 'v1.0.0', annotated_tag_name]) }
 
         after do
-          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            repository.rugged.tags.delete(annotated_tag_name)
-          end
+          rugged_repo(repository).tags.delete(annotated_tag_name)
         end
       end
     end
@@ -185,6 +183,57 @@ describe Repository do
       it 'returns false' do
         expect(repository.ref_exists?('refs/heads/invalid:master')).to be false
       end
+    end
+  end
+
+  describe '#list_last_commits_for_tree' do
+    let(:path_to_commit) do
+      {
+        "encoding" => "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+        "files" => "570e7b2abdd848b95f2f578043fc23bd6f6fd24d",
+        ".gitignore" => "c1acaa58bbcbc3eafe538cb8274ba387047b69f8",
+        ".gitmodules" => "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9",
+        "CHANGELOG" => "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+        "CONTRIBUTING.md" => "6d394385cf567f80a8fd85055db1ab4c5295806f",
+        "Gemfile.zip" => "ae73cb07c9eeaf35924a10f713b364d32b2dd34f",
+        "LICENSE" => "1a0b36b3cdad1d2ee32457c102a8c0b7056fa863",
+        "MAINTENANCE.md" => "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+        "PROCESS.md" => "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+        "README.md" => "1a0b36b3cdad1d2ee32457c102a8c0b7056fa863",
+        "VERSION" => "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+        "gitlab-shell" => "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9",
+        "six" => "cfe32cf61b73a0d5e9f13e774abde7ff789b1660"
+      }
+    end
+
+    subject { repository.list_last_commits_for_tree(sample_commit.id, '.').id }
+
+    it 'returns the last commits for every entry in the current path' do
+      result = repository.list_last_commits_for_tree(sample_commit.id, '.')
+
+      result.each do |key, value|
+        result[key] = value.id
+      end
+
+      expect(result).to include(path_to_commit)
+    end
+
+    it 'returns the last commits for every entry in the current path starting from the offset' do
+      result = repository.list_last_commits_for_tree(sample_commit.id, '.', offset: path_to_commit.size - 1)
+
+      expect(result.size).to eq(1)
+    end
+
+    it 'returns a limited number of last commits for every entry in the current path starting from the offset' do
+      result = repository.list_last_commits_for_tree(sample_commit.id, '.', limit: 1)
+
+      expect(result.size).to eq(1)
+    end
+
+    it 'returns an empty hash when offset is out of bounds' do
+      result = repository.list_last_commits_for_tree(sample_commit.id, '.', offset: path_to_commit.size)
+
+      expect(result.size).to eq(0)
     end
   end
 
@@ -1044,6 +1093,47 @@ describe Repository do
         expect_to_raise_storage_error { broken_repository.exists? }
       end
     end
+
+    context 'asymmetric caching', :use_clean_rails_memory_store_caching, :request_store do
+      let(:cache) { repository.send(:cache) }
+      let(:request_store_cache) { repository.send(:request_store_cache) }
+
+      context 'when it returns true' do
+        before do
+          expect(repository.raw_repository).to receive(:exists?).once.and_return(true)
+        end
+
+        it 'caches the output in RequestStore' do
+          expect do
+            repository.exists?
+          end.to change { request_store_cache.read(:exists?) }.from(nil).to(true)
+        end
+
+        it 'caches the output in RepositoryCache' do
+          expect do
+            repository.exists?
+          end.to change { cache.read(:exists?) }.from(nil).to(true)
+        end
+      end
+
+      context 'when it returns false' do
+        before do
+          expect(repository.raw_repository).to receive(:exists?).once.and_return(false)
+        end
+
+        it 'caches the output in RequestStore' do
+          expect do
+            repository.exists?
+          end.to change { request_store_cache.read(:exists?) }.from(nil).to(false)
+        end
+
+        it 'does NOT cache the output in RepositoryCache' do
+          expect do
+            repository.exists?
+          end.not_to change { cache.read(:exists?) }.from(nil)
+        end
+      end
+    end
   end
 
   describe '#has_visible_content?' do
@@ -1586,10 +1676,7 @@ describe Repository do
     it 'returns the number of branches' do
       expect(repository.branch_count).to be_an(Integer)
 
-      # NOTE: Until rugged goes away, make sure rugged and gitaly are in sync
-      rugged_count = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        repository.raw_repository.rugged.branches.count
-      end
+      rugged_count = rugged_repo(repository).branches.count
 
       expect(repository.branch_count).to eq(rugged_count)
     end
@@ -1599,10 +1686,7 @@ describe Repository do
     it 'returns the number of tags' do
       expect(repository.tag_count).to be_an(Integer)
 
-      # NOTE: Until rugged goes away, make sure rugged and gitaly are in sync
-      rugged_count = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        repository.raw_repository.rugged.tags.count
-      end
+      rugged_count = rugged_repo(repository).tags.count
 
       expect(repository.tag_count).to eq(rugged_count)
     end
@@ -1716,9 +1800,16 @@ describe Repository do
 
   describe '#expire_exists_cache' do
     let(:cache) { repository.send(:cache) }
+    let(:request_store_cache) { repository.send(:request_store_cache) }
 
     it 'expires the cache' do
       expect(cache).to receive(:expire).with(:exists?)
+
+      repository.expire_exists_cache
+    end
+
+    it 'expires the request store cache', :request_store do
+      expect(request_store_cache).to receive(:expire).with(:exists?)
 
       repository.expire_exists_cache
     end
@@ -1892,7 +1983,7 @@ describe Repository do
         match[1].to_sym if match
       end.compact
 
-      expect(methods).to match_array(Repository::CACHED_METHODS + Repository::MEMOIZED_CACHED_METHODS)
+      expect(Repository::CACHED_METHODS + Repository::MEMOIZED_CACHED_METHODS).to include(*methods)
     end
   end
 
@@ -2085,9 +2176,7 @@ describe Repository do
   end
 
   def create_remote_branch(remote_name, branch_name, target)
-    rugged = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      repository.rugged
-    end
+    rugged = rugged_repo(repository)
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
   end
 

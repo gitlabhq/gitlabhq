@@ -27,7 +27,6 @@ import {
   receiveStagesSuccess,
   receiveStagesError,
   requestJobsForStage,
-  setSelectedStage,
   fetchJobsForStage,
   receiveJobsForStageSuccess,
   receiveJobsForStageError,
@@ -236,7 +235,8 @@ describe('Job State actions', () => {
             },
             {
               payload: {
-                html: 'I, [2018-08-17T22:57:45.707325 #1841]  INFO -- :', complete: true,
+                html: 'I, [2018-08-17T22:57:45.707325 #1841]  INFO -- :',
+                complete: true,
               },
               type: 'receiveTraceSuccess',
             },
@@ -421,7 +421,9 @@ describe('Job State actions', () => {
     let mock;
 
     beforeEach(() => {
-      mockedState.stagesEndpoint = `${TEST_HOST}/endpoint.json`;
+      mockedState.job.pipeline = {
+        path: `${TEST_HOST}/endpoint.json/stages`,
+      };
       mock = new MockAdapter(axios);
     });
 
@@ -430,8 +432,10 @@ describe('Job State actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestStages and receiveStagesSuccess ', done => {
-        mock.onGet(`${TEST_HOST}/endpoint.json`).replyOnce(200, [{ id: 121212, name: 'build' }]);
+      it('dispatches requestStages and receiveStagesSuccess, fetchJobsForStage ', done => {
+        mock
+          .onGet(`${TEST_HOST}/endpoint.json/stages`)
+          .replyOnce(200, { details: { stages: [{ id: 121212, name: 'build' }] } });
 
         testAction(
           fetchStages,
@@ -445,6 +449,10 @@ describe('Job State actions', () => {
             {
               payload: [{ id: 121212, name: 'build' }],
               type: 'receiveStagesSuccess',
+            },
+            {
+              payload: { id: 121212, name: 'build' },
+              type: 'fetchJobsForStage',
             },
           ],
           done,
@@ -516,24 +524,10 @@ describe('Job State actions', () => {
     });
   });
 
-  describe('setSelectedStage', () => {
-    it('should commit SET_SELECTED_STAGE mutation ', done => {
-      testAction(
-        setSelectedStage,
-        { name: 'build' },
-        mockedState,
-        [{ type: types.SET_SELECTED_STAGE, payload: { name: 'build' } }],
-        [],
-        done,
-      );
-    });
-  });
-
   describe('fetchJobsForStage', () => {
     let mock;
 
     beforeEach(() => {
-      mockedState.stageJobsEndpoint = `${TEST_HOST}/endpoint.json`;
       mock = new MockAdapter(axios);
     });
 
@@ -542,19 +536,17 @@ describe('Job State actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches setSelectedStage, requestJobsForStage and receiveJobsForStageSuccess ', done => {
-        mock.onGet(`${TEST_HOST}/endpoint.json`).replyOnce(200, [{ id: 121212, name: 'build' }]);
+      it('dispatches requestJobsForStage and receiveJobsForStageSuccess ', done => {
+        mock
+          .onGet(`${TEST_HOST}/jobs.json`)
+          .replyOnce(200, { latest_statuses: [{ id: 121212, name: 'build' }], retried: [] });
 
         testAction(
           fetchJobsForStage,
-          null,
+          { dropdown_path: `${TEST_HOST}/jobs.json` },
           mockedState,
           [],
           [
-            {
-              type: 'setSelectedStage',
-              payload: null,
-            },
             {
               type: 'requestJobsForStage',
             },
@@ -570,20 +562,16 @@ describe('Job State actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(`${TEST_HOST}/endpoint.json`).reply(500);
+        mock.onGet(`${TEST_HOST}/jobs.json`).reply(500);
       });
 
-      it('dispatches setSelectedStage, requestJobsForStage and receiveJobsForStageError', done => {
+      it('dispatches requestJobsForStage and receiveJobsForStageError', done => {
         testAction(
           fetchJobsForStage,
-          null,
+          { dropdown_path: `${TEST_HOST}/jobs.json` },
           mockedState,
           [],
           [
-            {
-              payload: null,
-              type: 'setSelectedStage',
-            },
             {
               type: 'requestJobsForStage',
             },

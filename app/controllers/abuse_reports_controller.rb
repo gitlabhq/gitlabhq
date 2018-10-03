@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AbuseReportsController < ApplicationController
   before_action :set_user, only: [:new]
 

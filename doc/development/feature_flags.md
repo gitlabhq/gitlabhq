@@ -65,13 +65,18 @@ In the rare case that you need the feature flag to be on automatically, use
 Feature.enabled?(:feature_flag, project, default_enabled: true)
 ```
 
+For more information about rolling out changes using feature flags, refer to the
+[Rolling out changes using feature flags](rolling_out_changes_using_feature_flags.md)
+guide.
+
 ### Specs
 
 In the test environment `Feature.enabled?` is stubbed to always respond to `true`,
 so we make sure behavior under feature flag doesn't go untested in some non-specific
 contexts.
 
-If you need to test the feature flag in a different state, you need to stub it with:
+Whenever a feature flag is present, make sure to test _both_ states of the
+feature flag. You can stub a feature flag as follows:
 
 ```ruby
 stub_feature_flags(my_feature_flag: false)

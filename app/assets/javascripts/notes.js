@@ -16,7 +16,7 @@ import 'vendor/jquery.atwho';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import Vue from 'vue';
 import syntaxHighlight from '~/syntax_highlight';
-import SkeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
+import { SkeletonLoading } from '@gitlab-org/gitlab-ui';
 import axios from './lib/utils/axios_utils';
 import { getLocationHash } from './lib/utils/url_utility';
 import Flash from './flash';
@@ -1293,10 +1293,10 @@ export default class Notes {
     new Vue({
       el,
       components: {
-        SkeletonLoadingContainer,
+        SkeletonLoading,
       },
       render(createElement) {
-        return createElement('skeleton-loading-container');
+        return createElement('skeleton-loading');
       },
     });
   }

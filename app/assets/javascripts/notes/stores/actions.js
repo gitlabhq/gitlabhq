@@ -44,23 +44,11 @@ export const fetchDiscussions = ({ commit }, { path, filter }) =>
       commit(types.SET_INITIAL_DISCUSSIONS, discussions);
     });
 
-export const refetchDiscussionById = ({ commit, state }, { path, discussionId }) =>
-  new Promise(resolve => {
-    service
-      .fetchDiscussions(path)
-      .then(res => res.json())
-      .then(discussions => {
-        const selectedDiscussion = discussions.find(discussion => discussion.id === discussionId);
-        if (selectedDiscussion) {
-          commit(types.UPDATE_DISCUSSION, selectedDiscussion);
-          // We need to refetch as it is now the transformed one in state
-          const discussion = utils.findNoteObjectById(state.discussions, discussionId);
+export const updateDiscussion = ({ commit, state }, discussion) => {
+  commit(types.UPDATE_DISCUSSION, discussion);
 
-          resolve(discussion);
-        }
-      })
-      .catch(() => {});
-  });
+  return utils.findNoteObjectById(state.discussions, discussion.id);
+};
 
 export const deleteNote = ({ commit, dispatch }, note) =>
   service.deleteNote(note.path).then(() => {

@@ -25,7 +25,6 @@ describe SiteStatistic do
 
       it 'increases the attribute counter' do
         expect { described_class.track('repositories_count') }.to change { statistics.reload.repositories_count }.by(1)
-        expect { described_class.track('wikis_count') }.to change { statistics.reload.wikis_count }.by(1)
       end
 
       it 'doesnt increase the attribute counter when an exception happens during transaction' do
@@ -56,7 +55,6 @@ describe SiteStatistic do
 
       it 'decreases the attribute counter' do
         expect { described_class.untrack('repositories_count') }.to change { statistics.reload.repositories_count }.by(-1)
-        expect { described_class.untrack('wikis_count') }.to change { statistics.reload.wikis_count }.by(-1)
       end
 
       it 'doesnt decrease the attribute counter when an exception happens during transaction' do

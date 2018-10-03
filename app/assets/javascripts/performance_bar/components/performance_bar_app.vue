@@ -42,7 +42,7 @@ export default {
       keys: ['feature', 'request'],
     },
   ],
-  simpleMetrics: ['redis', 'sidekiq'],
+  simpleMetrics: ['redis'],
   data() {
     return { currentRequestId: '' };
   },
@@ -130,8 +130,8 @@ export default {
       </div>
       <simple-metric
         v-for="metric in $options.simpleMetrics"
-        :current-request="currentRequest"
         :key="metric"
+        :current-request="currentRequest"
         :metric="metric"
       />
       <div

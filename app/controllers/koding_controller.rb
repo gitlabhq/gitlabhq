@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class KodingController < ApplicationController
   before_action :check_integration!
   layout 'koding'

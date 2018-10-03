@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe RepositoryRemoveRemoteWorker do
   include ExclusiveLeaseHelpers
+  include GitHelpers
 
   describe '#perform' do
     let!(:project) { create(:project, :repository) }
@@ -50,9 +51,7 @@ describe RepositoryRemoveRemoteWorker do
   end
 
   def create_remote_branch(remote_name, branch_name, target)
-    rugged = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      project.repository.rugged
-    end
+    rugged = rugged_repo(project.repository)
 
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
   end

@@ -5,7 +5,7 @@
     %legend
       Navigation bar:
   .form-group.row
-    = f.label :header_logo, 'Header logo', class: 'col-sm-2 col-form-label'
+    = f.label :header_logo, 'Header logo', class: 'col-sm-2 col-form-label pt-0'
     .col-sm-10
       - if @appearance.header_logo?
         = image_tag @appearance.header_logo_url, class: 'appearance-light-logo-preview'
@@ -22,7 +22,7 @@
     %legend
       Favicon:
   .form-group.row
-    = f.label :favicon, 'Favicon', class: 'col-sm-2 col-form-label'
+    = f.label :favicon, 'Favicon', class: 'col-sm-2 col-form-label pt-0'
     .col-sm-10
       - if @appearance.favicon?
         = image_tag @appearance.favicon_url, class: 'appearance-light-logo-preview'
@@ -51,7 +51,7 @@
       .hint
         Description parsed with #{link_to "GitLab Flavored Markdown", help_page_path('user/markdown'), target: '_blank'}.
   .form-group.row
-    = f.label :logo, class: 'col-sm-2 col-form-label'
+    = f.label :logo, class: 'col-sm-2 col-form-label pt-0'
     .col-sm-10
       - if @appearance.logo?
         = image_tag @appearance.logo_url, class: 'appearance-logo-preview'
@@ -75,7 +75,7 @@
         Guidelines parsed with #{link_to "GitLab Flavored Markdown", help_page_path('user/markdown'), target: '_blank'}.
 
   .form-actions
-    = f.submit 'Save', class: 'btn btn-save append-right-10'
+    = f.submit 'Save', class: 'btn btn-success append-right-10'
     - if @appearance.persisted?
       Preview last save:
       = link_to 'Sign-in page', preview_sign_in_admin_appearances_path, class: 'btn', target: '_blank', rel: 'noopener noreferrer'

@@ -230,6 +230,14 @@ describe Projects::NotesController do
       expect(response).to have_gitlab_http_status(200)
     end
 
+    it 'returns discussion JSON when the return_discussion param is set' do
+      post :create, request_params.merge(format: :json, return_discussion: 'true')
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response).to have_key 'discussion'
+      expect(json_response['discussion']['notes'][0]['note']).to eq(request_params[:note][:note])
+    end
+
     context 'when merge_request_diff_head_sha present' do
       before do
         service_params = {

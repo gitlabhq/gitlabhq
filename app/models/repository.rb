@@ -24,7 +24,6 @@ class Repository
 
   delegate :ref_name_for_sha, to: :raw_repository
   delegate :bundle_to_disk, to: :raw_repository
-  delegate :find_remote_root_ref, to: :raw_repository
 
   CreateTreeError = Class.new(StandardError)
 
@@ -511,7 +510,7 @@ class Repository
 
     raw_repository.exists?
   end
-  cache_method :exists?
+  cache_method_asymmetrically :exists?
 
   # We don't need to cache the output of this method because both exists? and
   # has_visible_content? are already memoized and cached. There's no guarantee
@@ -613,7 +612,7 @@ class Repository
 
     Licensee::License.new(license_key)
   end
-  cache_method :license, memoize_only: true
+  memoize_method :license
 
   def gitignore
     file_on_head(:gitignore)
@@ -666,6 +665,14 @@ class Repository
       blob_at(last_commit.sha, path)
     else
       nil
+    end
+  end
+
+  def list_last_commits_for_tree(sha, path, offset: 0, limit: 25)
+    commits = raw_repository.list_last_commits_for_tree(sha, path, offset: offset, limit: limit)
+
+    commits.each do |path, commit|
+      commits[path] = ::Commit.new(commit, @project)
     end
   end
 
@@ -1028,6 +1035,10 @@ class Repository
 
   def cache
     @cache ||= Gitlab::RepositoryCache.new(self)
+  end
+
+  def request_store_cache
+    @request_store_cache ||= Gitlab::RepositoryCache.new(self, backend: Gitlab::SafeRequestStore)
   end
 
   def tags_sorted_by_committed_date

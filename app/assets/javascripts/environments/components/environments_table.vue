@@ -83,10 +83,10 @@ export default {
       :model="model">
       <div
         is="environment-item"
+        :key="`environment-item-${i}`"
         :model="model"
         :can-create-deployment="canCreateDeployment"
         :can-read-environment="canReadEnvironment"
-        :key="`environment-item-${i}`"
       />
 
       <template
@@ -102,10 +102,10 @@ export default {
           <div
             is="environment-item"
             v-for="(children, index) in model.children"
+            :key="`env-item-${i}-${index}`"
             :model="children"
             :can-create-deployment="canCreateDeployment"
             :can-read-environment="canReadEnvironment"
-            :key="`env-item-${i}-${index}`"
           />
 
           <div :key="`sub-div-${i}`">

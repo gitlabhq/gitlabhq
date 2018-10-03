@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'gon'
 require 'fogbugz'
 
@@ -10,6 +12,7 @@ class ApplicationController < ActionController::Base
   include WorkhorseHelper
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
+  include InvalidUTF8ErrorHandler
 
   before_action :authenticate_sessionless_user!
   before_action :authenticate_user!
@@ -104,6 +107,15 @@ class ApplicationController < ActionController::Base
     # This works because Rack uses these options every time a request is handled:
     # https://github.com/rack/rack/blob/fdcd03a3c5a1c51d1f96fc97f9dfa1a9deac0c77/lib/rack/session/abstract/id.rb#L342
     request.env['rack.session.options'][:expire_after] = Settings.gitlab['unauthenticated_session_expire_delay']
+  end
+
+  def render(*args)
+    super.tap do
+      # Set a header for custom error pages to prevent them from being intercepted by gitlab-workhorse
+      if response.content_type == 'text/html' && (400..599).cover?(response.status)
+        response.headers['X-GitLab-Custom-Error'] = '1'
+      end
+    end
   end
 
   protected
@@ -270,9 +282,10 @@ class ApplicationController < ActionController::Base
   end
 
   def event_filter
-    # Split using comma to maintain backward compatibility Ex/ "filter1,filter2"
-    filters = cookies['event_filter'].split(',')[0] if cookies['event_filter'].present?
-    @event_filter ||= EventFilter.new(filters)
+    @event_filter ||=
+      EventFilter.new(params[:event_filter].presence || cookies[:event_filter]).tap do |new_event_filter|
+        cookies[:event_filter] = new_event_filter.filter
+      end
   end
 
   # JSON for infinite scroll via Pager object

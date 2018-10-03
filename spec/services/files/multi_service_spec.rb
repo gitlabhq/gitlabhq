@@ -11,6 +11,7 @@ describe Files::MultiService do
   let(:new_file_path) { 'files/ruby/popen.rb' }
   let(:file_content) { 'New content' }
   let(:action) { 'update' }
+  let(:commit_message) { 'Update File' }
 
   let!(:original_commit_id) do
     Gitlab::Git::Commit.last_for_path(project.repository, branch_name, original_file_path).sha
@@ -30,7 +31,7 @@ describe Files::MultiService do
 
   let(:commit_params) do
     {
-      commit_message: "Update File",
+      commit_message: commit_message,
       branch_name: branch_name,
       start_branch: branch_name,
       actions: actions
@@ -80,6 +81,39 @@ describe Files::MultiService do
           results = subject.execute
 
           expect(results[:status]).to eq(:success)
+        end
+      end
+    end
+
+    describe 'changing execute_filemode of a file' do
+      let(:commit_message) { 'Chmod +x file' }
+      let(:file_path) { original_file_path }
+      let(:default_action) do
+        {
+          action: 'chmod',
+          file_path: file_path,
+          execute_filemode: true
+        }
+      end
+
+      it 'accepts the commit' do
+        results = subject.execute
+
+        expect(results[:status]).to eq(:success)
+      end
+
+      it 'updates the execute_filemode of the file' do
+        expect { subject.execute }.to change { repository.blob_at_branch(branch_name, file_path).mode }.from('100644').to('100755')
+      end
+
+      context "when the file doesn't exists" do
+        let(:file_path) { 'files/wrong_path.rb' }
+
+        it 'rejects the commit' do
+          results = subject.execute
+
+          expect(results[:status]).to eq(:error)
+          expect(results[:message]).to eq("A file with this name doesn't exist")
         end
       end
     end

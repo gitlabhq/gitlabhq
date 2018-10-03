@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::TagsController < Projects::ApplicationController
   include SortingHelper
 

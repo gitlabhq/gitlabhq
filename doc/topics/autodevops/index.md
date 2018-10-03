@@ -71,11 +71,6 @@ For an overview on the creation of Auto DevOps, read the blog post [From 2/3 of 
 
 ## Requirements
 
-TIP: **Tip:**
-For self-hosted installations, the easiest way to make use of Auto DevOps is to
-install GitLab inside a Kubernetes cluster using the [GitLab Omnibus Helm Chart]
-which automatically installs and configures everything you need!
-
 To make full use of Auto DevOps, you will need:
 
 1. **GitLab Runner** (needed for all stages) - Your Runner needs to be
@@ -101,10 +96,6 @@ To make full use of Auto DevOps, you will need:
        Kubernetes cluster using the
        [`nginx-ingress`](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress)
        Helm chart.
-    1. **Wildcard TLS termination** - You can deploy the
-       [`kube-lego`](https://github.com/kubernetes/charts/tree/master/stable/kube-lego)
-       Helm chart to your Kubernetes cluster to automatically issue certificates
-       for your domains using Let's Encrypt.
 1. **Prometheus** (needed for Auto Monitoring) - To enable Auto Monitoring, you
    will need Prometheus installed somewhere (inside or outside your cluster) and
    configured to scrape your Kubernetes cluster. To get response metrics
@@ -148,18 +139,13 @@ Auto DevOps base domain to `1.2.3.4.nip.io`.
 Once set up, all requests will hit the load balancer, which in turn will route
 them to the Kubernetes pods that run your application(s).
 
-NOTE: **Note:**
-If GitLab is installed using the [GitLab Omnibus Helm Chart], there are two
-options: provide a static IP, or have one assigned. For more information see the
-relevant docs on the [network prerequisites](../../install/kubernetes/gitlab_omnibus.md#networking-prerequisites).
-
 ## Using multiple Kubernetes clusters **[PREMIUM]**
 
 When using Auto DevOps, you may want to deploy different environments to
 different Kubernetes clusters. This is possible due to the 1:1 connection that
 [exists between them](../../user/project/clusters/index.md#multiple-kubernetes-clusters).
 
-In the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Auto-DevOps.gitlab-ci.yml)
+In the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
 (used behind the scenes by Auto DevOps), there are currently 3 defined environment names that you need to know:
 
 - `review/` (every environment starting with `review/`)
@@ -454,6 +440,30 @@ no longer be valid as soon as the deployment job finishes. This means that
 Kubernetes can run the application, but in case it should be restarted or
 executed somewhere else, it cannot be accessed again.
 
+> [Introduced][ce-21955] in GitLab 11.4
+
+Database initialization and migrations for PostgreSQL can be configured to run
+within the application pod by setting the project variables `DB_INITIALIZE` and
+`DB_MIGRATE` respectively.
+
+If present, `DB_INITIALIZE` will be run as a shell command within an application pod as a helm
+post-install hook. Note that this means that if any deploy succeeds,
+`DB_INITIALIZE` will not be processed thereafter.
+
+If present, `DB_MIGRATE` will be run as a shell command within an application pod as
+a helm pre-upgrade hook.
+
+For example, in a Rails application:
+
+* `DB_INITIALIZE` can be set to `cd /app && RAILS_ENV=production
+  bin/setup`
+* `DB_MIGRATE` can be set to `cd /app && RAILS_ENV=production bin/update`
+
+NOTE: **Note:**
+The `/app` path is the directory of your project inside the docker image
+as [configured by
+Herokuish](https://github.com/gliderlabs/herokuish#paths)
+
 > [Introduced][ce-19507] in GitLab 11.0.
 
 For internal and private projects a [GitLab Deploy Token](../../user/project/deploy_tokens/index.md###gitlab-deploy-token)
@@ -482,10 +492,7 @@ The metrics include:
 - **Response Metrics:** latency, throughput, error rate
 - **System Metrics:** CPU utilization, memory utilization
 
-If GitLab has been deployed using the [GitLab Omnibus Helm Chart], no
-configuration is required.
-
-If you have installed GitLab using a different method, you need to:
+In order to make use of monitoring you need to:
 
 1. [Deploy Prometheus](../../user/project/integrations/prometheus.md#configuring-your-own-prometheus-server-within-kubernetes) into your Kubernetes cluster
 1. If you would like response metrics, ensure you are running at least version
@@ -598,6 +605,8 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `BUILDPACK_URL`              | The buildpack's full URL. It can point to either Git repositories or a tarball URL. For Git repositories, it is possible to point to a specific `ref`, for example `https://github.com/heroku/heroku-buildpack-ruby.git#v142` |
 | `SAST_CONFIDENCE_LEVEL`      | The minimum confidence level of security issues you want to be reported; `1` for Low, `2` for Medium, `3` for High; defaults to `3`.|
 | `DEP_SCAN_DISABLE_REMOTE_CHECKS` | Whether remote Dependency Scanning checks are disabled; defaults to `"false"`. Set to `"true"` to disable checks that send data to GitLab central servers. [Read more about remote checks](https://gitlab.com/gitlab-org/security-products/dependency-scanning#remote-checks).|
+| `DB_INITIALIZE`              | From GitLab 11.4, this variable can be used to specify the command to run to initialize the application's PostgreSQL database. It runs inside the application pod. |
+| `DB_MIGRATE`                 | From GitLab 11.4, this variable can be used to specify the command to run to migrate the application's PostgreSQL database. It runs inside the application pod. |
 | `STAGING_ENABLED`            | From GitLab 10.8, this variable can be used to define a [deploy policy for staging and production environments](#deploy-policy-for-staging-and-production-environments). |
 | `CANARY_ENABLED`             | From GitLab 11.0, this variable can be used to define a [deploy policy for canary environments](#deploy-policy-for-canary-environments). |
 | `INCREMENTAL_ROLLOUT_ENABLED`| From GitLab 10.8, this variable can be used to enable an [incremental rollout](#incremental-rollout-to-production) of your application for the production environment. |
@@ -849,7 +858,7 @@ curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https:/
 [review-app]: ../../ci/review_apps/index.md
 [container-registry]: ../../user/project/container_registry.md
 [postgresql]: https://www.postgresql.org/
-[Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Auto-DevOps.gitlab-ci.yml
-[GitLab Omnibus Helm Chart]: ../../install/kubernetes/gitlab_omnibus.md
+[Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml
 [ee]: https://about.gitlab.com/pricing/
+[ce-21955]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21955
 [ce-19507]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19507

@@ -92,7 +92,7 @@ export default {
         :diff-file-hash="diffFileHash"
         :line="line.left"
         :note-target-line="line.left"
-        position="left"
+        line-position="left"
       />
     </td>
     <td class="notes_line new"></td>
@@ -111,7 +111,7 @@ export default {
         :diff-file-hash="diffFileHash"
         :line="line.right"
         :note-target-line="line.right"
-        position="right"
+        line-position="right"
       />
     </td>
   </tr>

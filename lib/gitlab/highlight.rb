@@ -1,5 +1,8 @@
 module Gitlab
   class Highlight
+    TIMEOUT_BACKGROUND = 30.seconds
+    TIMEOUT_FOREGROUND = 3.seconds
+
     def self.highlight(blob_name, blob_content, repository: nil, plain: false)
       new(blob_name, blob_content, repository: repository)
         .highlight(blob_content, continue: false, plain: plain)
@@ -51,9 +54,18 @@ module Gitlab
     end
 
     def highlight_rich(text, continue: true)
-      @formatter.format(lexer.lex(text, continue: continue), tag: lexer.tag).html_safe
+      tag = lexer.tag
+      tokens = lexer.lex(text, continue: continue)
+      Timeout.timeout(timeout_time) { @formatter.format(tokens, tag: tag).html_safe }
+    rescue Timeout::Error => e
+      Gitlab::Sentry.track_exception(e)
+      highlight_plain(text)
     rescue
       highlight_plain(text)
+    end
+
+    def timeout_time
+      Sidekiq.server? ? TIMEOUT_BACKGROUND : TIMEOUT_FOREGROUND
     end
 
     def link_dependencies(text, highlighted_text)

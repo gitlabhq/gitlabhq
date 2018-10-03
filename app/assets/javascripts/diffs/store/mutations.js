@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { sortTree } from '~/ide/stores/utils';
 import {
   findDiffFile,
   addLineReferences,
@@ -7,6 +8,7 @@ import {
   addContextLines,
   prepareDiffData,
   isDiscussionApplicableToLine,
+  generateTreeList,
 } from './utils';
 import * as types from './mutation_types';
 
@@ -23,9 +25,12 @@ export default {
   [types.SET_DIFF_DATA](state, data) {
     const diffData = convertObjectPropsToCamelCase(data, { deep: true });
     prepareDiffData(diffData);
+    const { tree, treeEntries } = generateTreeList(diffData.diffFiles);
 
     Object.assign(state, {
       ...diffData,
+      tree: sortTree(tree),
+      treeEntries,
     });
   },
 
@@ -90,16 +95,18 @@ export default {
     const firstDiscussion = discussions[0];
     const isDiffDiscussion = firstDiscussion.diff_discussion;
     const hasLineCode = firstDiscussion.line_code;
-    const isResolvable = firstDiscussion.resolvable;
     const diffPosition = diffPositionByLineCode[firstDiscussion.line_code];
 
     if (
       selectedFile &&
       isDiffDiscussion &&
       hasLineCode &&
-      isResolvable &&
       diffPosition &&
-      isDiscussionApplicableToLine(firstDiscussion, diffPosition)
+      isDiscussionApplicableToLine({
+        discussion: firstDiscussion,
+        diffPosition,
+        latestDiff: state.latestDiff,
+      })
     ) {
       const targetLine = selectedFile.parallelDiffLines.find(
         line =>
@@ -160,5 +167,14 @@ export default {
         }
       }
     }
+  },
+  [types.TOGGLE_FOLDER_OPEN](state, path) {
+    state.treeEntries[path].opened = !state.treeEntries[path].opened;
+  },
+  [types.TOGGLE_SHOW_TREE_LIST](state) {
+    state.showTreeList = !state.showTreeList;
+  },
+  [types.UPDATE_CURRENT_DIFF_FILE_ID](state, fileId) {
+    state.currentDiffFileId = fileId;
   },
 };

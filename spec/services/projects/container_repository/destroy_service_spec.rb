@@ -33,6 +33,7 @@ describe Projects::ContainerRepository::DestroyService do
       end
 
       it 'deletes the repository' do
+        expect(repository).to receive(:delete_tags!).and_call_original
         expect { described_class.new(project, user).execute(repository) }.to change { ContainerRepository.all.count }.by(-1)
       end
     end

@@ -8,7 +8,7 @@ describe Gitlab::Ci::External::File::Local do
 
   describe '#valid?' do
     context 'when is a valid local path' do
-      let(:location) { '/vendor/gitlab-ci-yml/existent-file.yml' }
+      let(:location) { '/lib/gitlab/ci/templates/existent-file.yml' }
 
       before do
         allow_any_instance_of(described_class).to receive(:fetch_local_content).and_return("image: 'ruby2:2'")
@@ -20,7 +20,7 @@ describe Gitlab::Ci::External::File::Local do
     end
 
     context 'when is not a valid local path' do
-      let(:location) { '/vendor/gitlab-ci-yml/non-existent-file.yml' }
+      let(:location) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
 
       it 'should return false' do
         expect(local_file.valid?).to be_falsy
@@ -48,7 +48,7 @@ describe Gitlab::Ci::External::File::Local do
             - bundle install --jobs $(nproc)  "${FLAGS[@]}"
         HEREDOC
       end
-      let(:location) { '/vendor/gitlab-ci-yml/existent-file.yml' }
+      let(:location) { '/lib/gitlab/ci/templates/existent-file.yml' }
 
       before do
         allow_any_instance_of(described_class).to receive(:fetch_local_content).and_return(local_file_content)
@@ -60,7 +60,7 @@ describe Gitlab::Ci::External::File::Local do
     end
 
     context 'with an invalid file' do
-      let(:location) { '/vendor/gitlab-ci-yml/non-existent-file.yml' }
+      let(:location) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
 
       it 'should be nil' do
         expect(local_file.content).to be_nil
@@ -69,7 +69,7 @@ describe Gitlab::Ci::External::File::Local do
   end
 
   describe '#error_message' do
-    let(:location) { '/vendor/gitlab-ci-yml/non-existent-file.yml' }
+    let(:location) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
 
     it 'should return an error message' do
       expect(local_file.error_message).to eq("Local file '#{location}' is not valid.")

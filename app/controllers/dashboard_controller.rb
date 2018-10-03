@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DashboardController < Dashboard::ApplicationController
   include IssuesAction
   include MergeRequestsAction
@@ -38,7 +40,7 @@ class DashboardController < Dashboard::ApplicationController
       end
 
     @events = EventCollection
-      .new(projects, offset: params[:offset].to_i, filter: @event_filter)
+      .new(projects, offset: params[:offset].to_i, filter: event_filter)
       .to_a
 
     Events::RenderService.new(current_user).execute(@events)

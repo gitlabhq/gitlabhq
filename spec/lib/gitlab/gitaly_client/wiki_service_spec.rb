@@ -39,6 +39,10 @@ describe Gitlab::GitalyClient::WikiService do
       expect(wiki_page.title).to eq('My Page')
       expect(wiki_page.raw_data).to eq('ab')
       expect(wiki_page_version.format).to eq('markdown')
+
+      expect(wiki_page.title).to be_utf8
+      expect(wiki_page.path).to be_utf8
+      expect(wiki_page.name).to be_utf8
     end
   end
 

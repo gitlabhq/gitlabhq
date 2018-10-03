@@ -29,5 +29,21 @@ module Gitlab
     def read(key)
       backend.read(cache_key(key))
     end
+
+    def write(key, value)
+      backend.write(cache_key(key), value)
+    end
+
+    def fetch_without_caching_false(key, &block)
+      value = read(key)
+      return value if value
+
+      value = yield
+
+      # Don't cache false values
+      write(key, value) if value
+
+      value
+    end
   end
 end

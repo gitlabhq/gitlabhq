@@ -240,11 +240,15 @@ describe('Filtered Search Visual Tokens', () => {
     beforeEach(() => {
       setFixtures(`
         <div class="test-area">
-        ${subject.createVisualTokenElementHTML()}
+        ${subject.createVisualTokenElementHTML('custom-token')}
         </div>
       `);
 
       tokenElement = document.querySelector('.test-area').firstElementChild;
+    });
+
+    it('should add class name to token element', () => {
+      expect(document.querySelector('.test-area .custom-token')).toBeDefined();
     });
 
     it('contains name div', () => {
@@ -280,7 +284,7 @@ describe('Filtered Search Visual Tokens', () => {
 
   describe('addVisualTokenElement', () => {
     it('renders search visual tokens', () => {
-      subject.addVisualTokenElement('search term', null, true);
+      subject.addVisualTokenElement('search term', null, { isSearchTerm: true });
       const token = tokensContainer.querySelector('.js-visual-token');
 
       expect(token.classList.contains('filtered-search-term')).toEqual(true);

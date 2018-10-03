@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RendersMemberAccess
   def prepare_groups_for_rendering(groups)
     preload_max_member_access_for_collection(Group, groups)

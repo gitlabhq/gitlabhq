@@ -37,7 +37,7 @@ Continue to look over remaining portions of the [University Overview](../README.
 Get your development machine ready to familiarize yourself with the codebase, the components, and to be prepared to reproduce issues that our users encounter
 
 - Install the [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit)
-  - [Setup OpenLDAP as part of this](https://gitlab.com/gitlab-org/gitlab-development-kit#openldap)
+  - [Set up OpenLDAP as part of this](https://gitlab.com/gitlab-org/gitlab-development-kit#openldap)
 
 #### Become comfortable with the Installation processes that we support
 

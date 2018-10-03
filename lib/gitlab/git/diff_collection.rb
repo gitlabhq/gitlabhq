@@ -19,7 +19,7 @@ module Gitlab
         limits[:safe_max_files] = [limits[:max_files], DEFAULT_LIMITS[:max_files]].min
         limits[:safe_max_lines] = [limits[:max_lines], DEFAULT_LIMITS[:max_lines]].min
         limits[:safe_max_bytes] = limits[:safe_max_files] * 5.kilobytes # Average 5 KB per file
-        limits[:max_patch_bytes] = Gitlab::Git::Diff::SIZE_LIMIT
+        limits[:max_patch_bytes] = Gitlab::Git::Diff.patch_hard_limit_bytes
 
         OpenStruct.new(limits)
       end

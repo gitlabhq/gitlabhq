@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::TransferService do
+  include GitHelpers
+
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:user) { create(:user) }
   let(:group) { create(:group) }
@@ -291,8 +293,6 @@ describe Projects::TransferService do
   end
 
   def rugged_config
-    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      project.repository.rugged.config
-    end
+    rugged_repo(project.repository).config
   end
 end

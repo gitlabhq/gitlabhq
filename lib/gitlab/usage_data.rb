@@ -10,6 +10,7 @@ module Gitlab
                           .merge(features_usage_data)
                           .merge(components_usage_data)
                           .merge(cycle_analytics_usage_data)
+                          .merge(usage_counters)
       end
 
       def to_json(force_refresh: false)
@@ -103,6 +104,12 @@ module Gitlab
           omniauth_enabled: Gitlab::Auth.omniauth_enabled?,
           reply_by_email_enabled: Gitlab::IncomingEmail.enabled?,
           signup_enabled: Gitlab::CurrentSettings.allow_signup?
+        }
+      end
+
+      def usage_counters
+        {
+          web_ide_commits: Gitlab::WebIdeCommitsCounter.total_count
         }
       end
 

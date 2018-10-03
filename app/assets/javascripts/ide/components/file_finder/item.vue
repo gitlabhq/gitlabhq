@@ -1,7 +1,7 @@
 <script>
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import FileIcon from '../../../vue_shared/components/file_icon.vue';
-import ChangedFileIcon from '../changed_file_icon.vue';
+import ChangedFileIcon from '../../../vue_shared/components/changed_file_icon.vue';
 
 const MAX_PATH_LENGTH = 60;
 
@@ -78,10 +78,10 @@ export default {
         class="diff-changed-file-name"
       >
         <span
-          v-for="(char, index) in file.name.split('')"
-          :key="index + char"
+          v-for="(char, charIndex) in file.name.split('')"
+          :key="charIndex + char"
           :class="{
-            highlighted: nameSearchTextOccurences.indexOf(index) >= 0,
+            highlighted: nameSearchTextOccurences.indexOf(charIndex) >= 0,
           }"
           v-text="char"
         >
@@ -91,10 +91,10 @@ export default {
         class="diff-changed-file-path prepend-top-5"
       >
         <span
-          v-for="(char, index) in pathWithEllipsis.split('')"
-          :key="index + char"
+          v-for="(char, charIndex) in pathWithEllipsis.split('')"
+          :key="charIndex + char"
           :class="{
-            highlighted: pathSearchTextOccurences.indexOf(index) >= 0,
+            highlighted: pathSearchTextOccurences.indexOf(charIndex) >= 0,
           }"
           v-text="char"
         >

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::ApplicationController < ApplicationController
   include CookiesHelper
   include RoutableActions

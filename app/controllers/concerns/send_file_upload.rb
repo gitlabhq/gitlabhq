@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SendFileUpload
   def send_upload(file_upload, send_params: {}, redirect_params: {}, attachment: nil, disposition: 'attachment')
     if attachment

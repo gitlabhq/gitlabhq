@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::AppearancesController < Admin::ApplicationController
   before_action :set_appearance, except: :create
 

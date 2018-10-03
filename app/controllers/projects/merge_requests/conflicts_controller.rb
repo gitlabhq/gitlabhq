@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::ApplicationController
   include IssuableActions
 

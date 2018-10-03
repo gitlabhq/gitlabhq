@@ -19,5 +19,5 @@
       = render 'shared/notes/hints'
     .error-alert
     .prepend-top-default
-      = f.submit 'Save changes', class: 'btn btn-save'
+      = f.submit 'Save changes', class: 'btn btn-success'
       = link_to "Cancel", project_tag_path(@project, @tag.name), class: "btn btn-default btn-cancel"

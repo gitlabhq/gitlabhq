@@ -24,7 +24,10 @@ describe Ci::RetryBuildService do
        artifacts_file artifacts_metadata artifacts_size created_at
        updated_at started_at finished_at queued_at erased_by
        erased_at auto_canceled_by job_artifacts job_artifacts_archive
-       job_artifacts_metadata job_artifacts_trace job_artifacts_junit].freeze
+       job_artifacts_metadata job_artifacts_trace job_artifacts_junit
+       job_artifacts_sast job_artifacts_dependency_scanning
+       job_artifacts_container_scanning job_artifacts_dast
+       job_artifacts_codequality].freeze
 
   IGNORE_ACCESSORS =
     %i[type lock_version target_url base_tags trace_sections
@@ -38,9 +41,8 @@ describe Ci::RetryBuildService do
     let(:another_pipeline) { create(:ci_empty_pipeline, project: project) }
 
     let(:build) do
-      create(:ci_build, :failed, :artifacts, :test_reports, :expired, :erased,
-             :queued, :coverage, :tags, :allowed_to_fail, :on_tag,
-             :triggered, :trace_artifact, :teardown_environment,
+      create(:ci_build, :failed, :expired, :erased, :queued, :coverage, :tags,
+             :allowed_to_fail, :on_tag, :triggered, :teardown_environment,
              description: 'my-job', stage: 'test', stage_id: stage.id,
              pipeline: pipeline, auto_canceled_by: another_pipeline)
     end
@@ -50,6 +52,15 @@ describe Ci::RetryBuildService do
       # can reset one of the fields when assigning another. We plan to deprecate
       # and remove legacy `stage` column in the future.
       build.update(stage: 'test', stage_id: stage.id)
+
+      # Make sure we have one instance for every possible job_artifact_X
+      # associations to check they are correctly rejected on build duplication.
+      Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS.each do |file_type, file_format|
+        create(:ci_job_artifact, file_format,
+               file_type: file_type, job: build, expire_at: build.artifacts_expire_at)
+      end
+
+      build.reload
     end
 
     describe 'clone accessors' do

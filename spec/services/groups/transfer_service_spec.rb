@@ -22,7 +22,7 @@ describe Groups::TransferService, :postgresql do
       end
     end
 
-    context "when there's an exception on Gitlab shell directories" do
+    context "when there's an exception on GitLab shell directories" do
       let(:new_parent_group) { create(:group, :public) }
 
       before do

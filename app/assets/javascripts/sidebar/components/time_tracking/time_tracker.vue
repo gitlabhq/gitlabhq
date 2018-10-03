@@ -19,20 +19,20 @@ export default {
     TimeTrackingHelpState,
   },
   props: {
-    time_estimate: {
+    timeEstimate: {
       type: Number,
       required: true,
     },
-    time_spent: {
+    timeSpent: {
       type: Number,
       required: true,
     },
-    human_time_estimate: {
+    humanTimeEstimate: {
       type: String,
       required: false,
       default: '',
     },
-    human_time_spent: {
+    humanTimeSpent: {
       type: String,
       required: false,
       default: '',
@@ -48,18 +48,6 @@ export default {
     };
   },
   computed: {
-    timeSpent() {
-      return this.time_spent;
-    },
-    timeEstimate() {
-      return this.time_estimate;
-    },
-    timeEstimateHumanReadable() {
-      return this.human_time_estimate;
-    },
-    timeSpentHumanReadable() {
-      return this.human_time_spent;
-    },
     hasTimeSpent() {
       return !!this.timeSpent;
     },
@@ -90,10 +78,12 @@ export default {
       this.showHelp = show;
     },
     update(data) {
-      this.time_estimate = data.time_estimate;
-      this.time_spent = data.time_spent;
-      this.human_time_estimate = data.human_time_estimate;
-      this.human_time_spent = data.human_time_spent;
+      const { timeEstimate, timeSpent, humanTimeEstimate, humanTimeSpent } = data;
+
+      this.timeEstimate = timeEstimate;
+      this.timeSpent = timeSpent;
+      this.humanTimeEstimate = humanTimeEstimate;
+      this.humanTimeSpent = humanTimeSpent;
     },
   },
 };
@@ -110,8 +100,8 @@ export default {
       :show-help-state="showHelpState"
       :show-spent-only-state="showSpentOnlyState"
       :show-estimate-only-state="showEstimateOnlyState"
-      :time-spent-human-readable="timeSpentHumanReadable"
-      :time-estimate-human-readable="timeEstimateHumanReadable"
+      :time-spent-human-readable="humanTimeSpent"
+      :time-estimate-human-readable="humanTimeEstimate"
     />
     <div class="title hide-collapsed">
       {{ __('Time tracking') }}
@@ -141,11 +131,11 @@ export default {
     <div class="time-tracking-content hide-collapsed">
       <time-tracking-estimate-only-pane
         v-if="showEstimateOnlyState"
-        :time-estimate-human-readable="timeEstimateHumanReadable"
+        :time-estimate-human-readable="humanTimeEstimate"
       />
       <time-tracking-spent-only-pane
         v-if="showSpentOnlyState"
-        :time-spent-human-readable="timeSpentHumanReadable"
+        :time-spent-human-readable="humanTimeSpent"
       />
       <time-tracking-no-tracking-pane
         v-if="showNoTimeTrackingState"
@@ -154,8 +144,8 @@ export default {
         v-if="showComparisonState"
         :time-estimate="timeEstimate"
         :time-spent="timeSpent"
-        :time-spent-human-readable="timeSpentHumanReadable"
-        :time-estimate-human-readable="timeEstimateHumanReadable"
+        :time-spent-human-readable="humanTimeSpent"
+        :time-estimate-human-readable="humanTimeEstimate"
       />
       <transition name="help-state-toggle">
         <time-tracking-help-state

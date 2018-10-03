@@ -1,12 +1,9 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import createFlash from '~/flash';
 import { s__ } from '~/locale';
 import noteForm from '../../notes/components/note_form.vue';
-import { getNoteFormData } from '../store/utils';
 import autosave from '../../notes/mixins/autosave';
 import { DIFF_NOTE_TYPE } from '../constants';
-import { reduceDiscussionsToLineCodes } from '../../notes/stores/utils';
 
 export default {
   components: {
@@ -22,7 +19,7 @@ export default {
       type: Object,
       required: true,
     },
-    position: {
+    linePosition: {
       type: String,
       required: false,
       default: '',
@@ -39,6 +36,16 @@ export default {
     }),
     ...mapGetters('diffs', ['getDiffFileByHash']),
     ...mapGetters(['isLoggedIn', 'noteableType', 'getNoteableData', 'getNotesDataByProp']),
+    formData() {
+      return {
+        noteableData: this.noteableData,
+        noteableType: this.noteableType,
+        noteTargetLine: this.noteTargetLine,
+        diffViewType: this.diffViewType,
+        diffFile: this.getDiffFileByHash(this.diffFileHash),
+        linePosition: this.linePosition,
+      };
+    },
   },
   mounted() {
     if (this.isLoggedIn) {
@@ -53,8 +60,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('diffs', ['cancelCommentForm', 'assignDiscussionsToDiff']),
-    ...mapActions(['saveNote', 'refetchDiscussionById']),
+    ...mapActions('diffs', ['cancelCommentForm', 'assignDiscussionsToDiff', 'saveDiffDiscussion']),
     handleCancelCommentForm(shouldConfirm, isDirty) {
       if (shouldConfirm && isDirty) {
         const msg = s__('Notes|Are you sure you want to cancel creating this comment?');
@@ -73,35 +79,9 @@ export default {
       });
     },
     handleSaveNote(note) {
-      const selectedDiffFile = this.getDiffFileByHash(this.diffFileHash);
-      const postData = getNoteFormData({
-        note,
-        noteableData: this.noteableData,
-        noteableType: this.noteableType,
-        noteTargetLine: this.noteTargetLine,
-        diffViewType: this.diffViewType,
-        diffFile: selectedDiffFile,
-        linePosition: this.position,
-      });
-
-      this.saveNote(postData)
-        .then(result => {
-          const endpoint = this.getNotesDataByProp('discussionsPath');
-
-          this.refetchDiscussionById({ path: endpoint, discussionId: result.discussion_id })
-            .then(selectedDiscussion => {
-              const lineCodeDiscussions = reduceDiscussionsToLineCodes([selectedDiscussion]);
-              this.assignDiscussionsToDiff(lineCodeDiscussions);
-
-              this.handleCancelCommentForm();
-            })
-            .catch(() => {
-              createFlash(s__('MergeRequests|Updating discussions failed'));
-            });
-        })
-        .catch(() => {
-          createFlash(s__('MergeRequests|Saving the comment failed'));
-        });
+      return this.saveDiffDiscussion({ note, formData: this.formData }).then(() =>
+        this.handleCancelCommentForm(),
+      );
     },
   },
 };

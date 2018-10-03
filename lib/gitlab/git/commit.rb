@@ -53,9 +53,6 @@ module Gitlab
           # Already a commit?
           return commit_id if commit_id.is_a?(Gitlab::Git::Commit)
 
-          # A rugged reference?
-          commit_id = Gitlab::Git::Ref.dereference_object(commit_id)
-
           # Some weird thing?
           return nil unless commit_id.is_a?(String)
 
@@ -127,8 +124,6 @@ module Gitlab
         #        :topo, or any combination of them (in an array). Commit ordering types
         #        are documented here:
         #        http://www.rubydoc.info/github/libgit2/rugged/Rugged#SORT_NONE-constant)
-        #
-        # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/326
         def find_all(repo, options = {})
           repo.wrapped_gitaly_errors do
             Gitlab::GitalyClient::CommitService.new(repo).find_all_commits(options)
@@ -328,7 +323,6 @@ module Gitlab
         entry = @repository.gitaly_commit_client.tree_entry(id, path, 1)
         return unless entry
 
-        # To be compatible with the rugged format
         entry = entry.to_h
         entry.delete(:data)
         entry[:name] = File.basename(path)
@@ -346,8 +340,8 @@ module Gitlab
           subject: message_split[0] ? message_split[0].chomp.b : "",
           body: raw_commit.message.b,
           parent_ids: raw_commit.parent_ids,
-          author: gitaly_commit_author_from_rugged(raw_commit.author),
-          committer: gitaly_commit_author_from_rugged(raw_commit.committer)
+          author: gitaly_commit_author_from_raw(raw_commit.author),
+          committer: gitaly_commit_author_from_raw(raw_commit.committer)
         )
       end
 
@@ -381,7 +375,7 @@ module Gitlab
         SERIALIZE_KEYS
       end
 
-      def gitaly_commit_author_from_rugged(author_or_committer)
+      def gitaly_commit_author_from_raw(author_or_committer)
         Gitaly::CommitAuthor.new(
           name: author_or_committer[:name].b,
           email: author_or_committer[:email].b,

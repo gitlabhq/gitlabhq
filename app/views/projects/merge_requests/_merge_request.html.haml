@@ -1,10 +1,10 @@
 %li{ id: dom_id(merge_request), class: mr_css_classes(merge_request), data: { labels: merge_request.label_ids, id: merge_request.id } }
   - if @can_bulk_update
     .issue-check.hidden
-      = check_box_tag dom_id(merge_request, "selected"), nil, false, 'data-id' => merge_request.id, class: "selected_issue"
+      = check_box_tag dom_id(merge_request, "selected"), nil, false, 'data-id' => merge_request.id, class: "selected-issuable"
 
-  .issue-info-container
-    .issue-main-info
+  .issuable-info-container
+    .issuable-main-info
       .merge-request-title.title
         %span.merge-request-title-text
           = link_to merge_request.title, merge_request_path(merge_request)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::ProtectedRefsController < Projects::ApplicationController
   include RepositorySettingsRedirect
 

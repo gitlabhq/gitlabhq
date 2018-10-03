@@ -19,6 +19,11 @@ msgstr ""
 msgid " Status"
 msgstr ""
 
+msgid "%d addition"
+msgid_plural "%d additions"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d changed file"
 msgid_plural "%d changed files"
 msgstr[0] ""
@@ -31,6 +36,11 @@ msgstr[1] ""
 
 msgid "%d commit behind"
 msgid_plural "%d commits behind"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d deleted"
+msgid_plural "%d deletions"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -105,6 +115,9 @@ msgid "%{firstLabel} +%{labelCount} more"
 msgstr ""
 
 msgid "%{group_docs_link_start}Groups%{group_docs_link_end} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects."
+msgstr ""
+
+msgid "%{issuableType} will be removed! Are you sure?"
 msgstr ""
 
 msgid "%{loadingIcon} Started"
@@ -250,7 +263,7 @@ msgstr ""
 msgid "<strong>Removes</strong> source branch"
 msgstr ""
 
-msgid "A 'Runner' is a process which runs a job. You can setup as many Runners as you need."
+msgid "A 'Runner' is a process which runs a job. You can set up as many Runners as you need."
 msgstr ""
 
 msgid "A collection of graphs regarding Continuous Integration"
@@ -353,6 +366,9 @@ msgid "Add user(s) to the group:"
 msgstr ""
 
 msgid "Add users to group"
+msgstr ""
+
+msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission"
 msgstr ""
 
 msgid "Admin Area"
@@ -592,7 +608,7 @@ msgstr ""
 msgid "Application"
 msgstr ""
 
-msgid "Application Id"
+msgid "Application ID"
 msgstr ""
 
 msgid "Application: %{name}"
@@ -637,7 +653,7 @@ msgstr ""
 msgid "Artifacts"
 msgstr ""
 
-msgid "Ask your group maintainer to setup a group Runner."
+msgid "Ask your group maintainer to set up a group Runner."
 msgstr ""
 
 msgid "Assign custom color like #FF0000"
@@ -782,9 +798,6 @@ msgid "Background Jobs"
 msgstr ""
 
 msgid "Background color"
-msgstr ""
-
-msgid "Background jobs"
 msgstr ""
 
 msgid "Badges"
@@ -1050,6 +1063,9 @@ msgstr ""
 msgid "CI / CD Settings"
 msgstr ""
 
+msgid "CI/CD"
+msgstr ""
+
 msgid "CI/CD configuration"
 msgstr ""
 
@@ -1093,9 +1109,6 @@ msgid "CICD|instance enabled"
 msgstr ""
 
 msgid "Callback URL"
-msgstr ""
-
-msgid "Callback url"
 msgstr ""
 
 msgid "Can't find HEAD commit for this branch"
@@ -1278,6 +1291,9 @@ msgstr ""
 msgid "CircuitBreakerApiLink|circuitbreaker api"
 msgstr ""
 
+msgid "Clear search"
+msgstr ""
+
 msgid "Clear search input"
 msgstr ""
 
@@ -1351,6 +1367,9 @@ msgid "ClusterIntegration|CA Certificate"
 msgstr ""
 
 msgid "ClusterIntegration|Certificate Authority bundle (PEM format)"
+msgstr ""
+
+msgid "ClusterIntegration|Choose which applications to install on your Kubernetes cluster. Helm Tiller is required to install any of the following applications."
 msgstr ""
 
 msgid "ClusterIntegration|Choose which of your environments will use this cluster."
@@ -1441,9 +1460,6 @@ msgid "ClusterIntegration|Ingress gives you a way to route requests to services 
 msgstr ""
 
 msgid "ClusterIntegration|Install"
-msgstr ""
-
-msgid "ClusterIntegration|Install applications on your Kubernetes cluster. Read more about %{helpLink}"
 msgstr ""
 
 msgid "ClusterIntegration|Installed"
@@ -1653,6 +1669,9 @@ msgstr ""
 msgid "ClusterIntegration|With a Kubernetes cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
 msgstr ""
 
+msgid "ClusterIntegration|You must first install Helm Tiller before installing the applications below"
+msgstr ""
+
 msgid "ClusterIntegration|Your account must have %{link_to_kubernetes_engine}"
 msgstr ""
 
@@ -1669,9 +1688,6 @@ msgid "ClusterIntegration|documentation"
 msgstr ""
 
 msgid "ClusterIntegration|help page"
-msgstr ""
-
-msgid "ClusterIntegration|installing applications"
 msgstr ""
 
 msgid "ClusterIntegration|meets the requirements"
@@ -1730,6 +1746,9 @@ msgid "CommitBoxTitle|Commit"
 msgstr ""
 
 msgid "CommitMessage|Add %{file_name}"
+msgstr ""
+
+msgid "CommitWidget|authored"
 msgstr ""
 
 msgid "Commits"
@@ -1802,9 +1821,6 @@ msgid "Confidentiality"
 msgstr ""
 
 msgid "Configure Gitaly timeouts."
-msgstr ""
-
-msgid "Configure Sidekiq job throttling."
 msgstr ""
 
 msgid "Configure automatic git checks and housekeeping on repositories."
@@ -1924,6 +1940,9 @@ msgstr ""
 msgid "Copy HTTPS clone URL"
 msgstr ""
 
+msgid "Copy ID to clipboard"
+msgstr ""
+
 msgid "Copy SSH clone URL"
 msgstr ""
 
@@ -1943,6 +1962,9 @@ msgid "Copy file path to clipboard"
 msgstr ""
 
 msgid "Copy reference to clipboard"
+msgstr ""
+
+msgid "Copy secret to clipboard"
 msgstr ""
 
 msgid "Copy to clipboard"
@@ -2286,6 +2308,12 @@ msgstr ""
 msgid "Details"
 msgstr ""
 
+msgid "Diff content limits"
+msgstr ""
+
+msgid "Diff limits"
+msgstr ""
+
 msgid "Diffs|No file name available"
 msgstr ""
 
@@ -2551,6 +2579,9 @@ msgid "Environments|Updated"
 msgstr ""
 
 msgid "Environments|You don't have any environments right now."
+msgstr ""
+
+msgid "Epic"
 msgstr ""
 
 msgid "Error"
@@ -2839,6 +2870,9 @@ msgid "General pipelines"
 msgstr ""
 
 msgid "Generate a default set of labels"
+msgstr ""
+
+msgid "Geo"
 msgstr ""
 
 msgid "Git"
@@ -3293,6 +3327,9 @@ msgstr ""
 msgid "Invite"
 msgstr ""
 
+msgid "Issue"
+msgstr ""
+
 msgid "Issue Boards"
 msgstr ""
 
@@ -3321,9 +3358,6 @@ msgid "Job has been erased"
 msgstr ""
 
 msgid "Jobs"
-msgstr ""
-
-msgid "Job|Are you sure you want to erase this job?"
 msgstr ""
 
 msgid "Job|Browse"
@@ -3362,7 +3396,7 @@ msgstr ""
 msgid "Job|The artifacts were removed"
 msgstr ""
 
-msgid "Job|The artifacts will be removed"
+msgid "Job|The artifacts will be removed in"
 msgstr ""
 
 msgid "Job|This job is stuck, because the project doesn't have any runners online assigned to it."
@@ -3633,6 +3667,33 @@ msgstr ""
 msgid "Markdown enabled"
 msgstr ""
 
+msgid "MarkdownToolbar|Add a bullet list"
+msgstr ""
+
+msgid "MarkdownToolbar|Add a link"
+msgstr ""
+
+msgid "MarkdownToolbar|Add a numbered list"
+msgstr ""
+
+msgid "MarkdownToolbar|Add a task list"
+msgstr ""
+
+msgid "MarkdownToolbar|Add bold text"
+msgstr ""
+
+msgid "MarkdownToolbar|Add italic text"
+msgstr ""
+
+msgid "MarkdownToolbar|Go full screen"
+msgstr ""
+
+msgid "MarkdownToolbar|Insert a quote"
+msgstr ""
+
+msgid "MarkdownToolbar|Insert code"
+msgstr ""
+
 msgid "Max access level"
 msgstr ""
 
@@ -3681,9 +3742,6 @@ msgstr ""
 msgid "MergeRequests|Toggle comments for this file"
 msgstr ""
 
-msgid "MergeRequests|Updating discussions failed"
-msgstr ""
-
 msgid "MergeRequests|View file @ %{commitId}"
 msgstr ""
 
@@ -3691,6 +3749,12 @@ msgid "MergeRequests|View replaced file @ %{commitId}"
 msgstr ""
 
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
+msgstr ""
+
+msgid "MergeRequest|Filter files"
+msgstr ""
+
+msgid "MergeRequest|No files found"
 msgstr ""
 
 msgid "Merged"
@@ -3706,6 +3770,9 @@ msgid "Metrics - Influx"
 msgstr ""
 
 msgid "Metrics - Prometheus"
+msgstr ""
+
+msgid "Metrics and profiling"
 msgstr ""
 
 msgid "Metrics|Check out the CI/CD documentation on deploying to an environment"
@@ -3948,9 +4015,6 @@ msgid "No estimate or time spent"
 msgstr ""
 
 msgid "No file chosen"
-msgstr ""
-
-msgid "No files found"
 msgstr ""
 
 msgid "No files found."
@@ -4244,9 +4308,6 @@ msgid "Personal Access Token"
 msgstr ""
 
 msgid "Pipeline"
-msgstr ""
-
-msgid "Pipeline %{pipelineLinkStart} #%{pipelineId} %{pipelineLinkEnd} from %{pipelineLinkRefStart} %{pipelineRef} %{pipelineLinkRefEnd}"
 msgstr ""
 
 msgid "Pipeline Health"
@@ -4995,6 +5056,9 @@ msgstr ""
 msgid "Reply to this email directly or %{view_it_on_gitlab}."
 msgstr ""
 
+msgid "Reporting"
+msgstr ""
+
 msgid "Reports|%{failedString} and %{resolvedString}"
 msgstr ""
 
@@ -5270,7 +5334,7 @@ msgstr ""
 msgid "Seconds to wait for a storage access attempt"
 msgstr ""
 
-msgid "Secret:"
+msgid "Secret"
 msgstr ""
 
 msgid "Select"
@@ -5363,6 +5427,12 @@ msgstr ""
 msgid "Set up Koding"
 msgstr ""
 
+msgid "Set up a %{type} Runner manually"
+msgstr ""
+
+msgid "Set up a specific Runner automatically"
+msgstr ""
+
 msgid "Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically."
 msgstr ""
 
@@ -5370,12 +5440,6 @@ msgid "SetPasswordToCloneLink|set a password"
 msgstr ""
 
 msgid "Settings"
-msgstr ""
-
-msgid "Setup a %{type} Runner manually"
-msgstr ""
-
-msgid "Setup a specific Runner automatically"
 msgstr ""
 
 msgid "Share"
@@ -5540,6 +5604,9 @@ msgid "SortOptions|Milestone due soon"
 msgstr ""
 
 msgid "SortOptions|Most popular"
+msgstr ""
+
+msgid "SortOptions|Most stars"
 msgstr ""
 
 msgid "SortOptions|Name"
@@ -5802,6 +5869,9 @@ msgstr ""
 msgid "Template"
 msgstr ""
 
+msgid "Templates"
+msgstr ""
+
 msgid "Terms of Service Agreement and Privacy Policy"
 msgstr ""
 
@@ -6042,7 +6112,7 @@ msgstr ""
 msgid "This job is an out-of-date deployment to %{environmentLink}. View the most recent deployment %{deploymentLink}."
 msgstr ""
 
-msgid "This job is creating a deployment to %{environmentLink} and will overwrite the last %{deploymentLink}."
+msgid "This job is creating a deployment to %{environmentLink} and will overwrite the %{deploymentLink}."
 msgstr ""
 
 msgid "This job is creating a deployment to %{environmentLink}."
@@ -6340,7 +6410,13 @@ msgstr ""
 msgid "Toggle Sidebar"
 msgstr ""
 
+msgid "Toggle commit description"
+msgstr ""
+
 msgid "Toggle discussion"
+msgstr ""
+
+msgid "Toggle file browser"
 msgstr ""
 
 msgid "Toggle navigation"
@@ -6805,7 +6881,7 @@ msgstr ""
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
 msgstr ""
 
-msgid "You can setup jobs to only use Runners with specific tags. Separate tags with commas."
+msgid "You can set up jobs to only use Runners with specific tags. Separate tags with commas."
 msgstr ""
 
 msgid "You cannot write to this read-only GitLab instance."
@@ -6966,6 +7042,9 @@ msgstr ""
 msgid "for this project"
 msgstr ""
 
+msgid "from"
+msgstr ""
+
 msgid "here"
 msgstr ""
 
@@ -6979,6 +7058,9 @@ msgid "importing"
 msgstr ""
 
 msgid "issue boards"
+msgstr ""
+
+msgid "latest deployment"
 msgstr ""
 
 msgid "latest version"

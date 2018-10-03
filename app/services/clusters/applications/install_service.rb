@@ -12,10 +12,10 @@ module Clusters
 
           ClusterWaitForAppInstallationWorker.perform_in(
             ClusterWaitForAppInstallationWorker::INTERVAL, app.name, app.id)
-        rescue Kubeclient::HttpError => ke
-          app.make_errored!("Kubernetes error: #{ke.message}")
-        rescue StandardError => e
-          app.make_errored!("Can't start installation process. #{e.message}")
+        rescue Kubeclient::HttpError
+          app.make_errored!("Kubernetes error.")
+        rescue StandardError
+          app.make_errored!("Can't start installation process.")
         end
       end
     end

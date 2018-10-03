@@ -12,6 +12,13 @@ describe('Jobs Store Mutations', () => {
     stateCopy = state();
   });
 
+  describe('SET_JOB_ENDPOINT', () => {
+    it('should set jobEndpoint', () => {
+      mutations[types.SET_JOB_ENDPOINT](stateCopy, 'job/21312321.json');
+      expect(stateCopy.jobEndpoint).toEqual('job/21312321.json');
+    });
+  });
+
   describe('REQUEST_STATUS_FAVICON', () => {
     it('should set fetchingStatusFavicon to true', () => {
       mutations[types.REQUEST_STATUS_FAVICON](stateCopy);

@@ -57,6 +57,14 @@ You can turn this off in the webhook settings in your GitLab projects.
 
 ![SSL Verification](img/webhooks_ssl.png)
 
+## Branch filtering
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/20338) in GitLab 11.3.
+
+Push events can be filtered by branch using a branch name or wildcard pattern
+to limit which push events are sent to your webhook endpoint. By default the
+field is blank causing all push events to be sent to your webhook endpoint.
+
 ## Events
 
 Below are described the supported events.
@@ -935,7 +943,13 @@ X-Gitlab-Event: Pipeline Hook
       ],
       "created_at": "2016-08-12 15:23:28 UTC",
       "finished_at": "2016-08-12 15:26:29 UTC",
-      "duration": 63
+      "duration": 63,
+      "variables": [
+        {
+          "key": "NESTOR_PROD_ENVIRONMENT",
+          "value": "us-west-1"
+        }
+      ]
    },
    "user":{
       "name": "Administrator",
@@ -1162,7 +1176,7 @@ You can trigger the webhook manually. Sample data from the project will be used.
 
 ## Troubleshoot webhooks
 
-Gitlab stores each perform of the webhook.
+GitLab stores each perform of the webhook.
 You can find records for last 2 days in "Recent Deliveries" section on the edit page of each webhook.
 
 ![Recent deliveries](img/webhook_logs.png)

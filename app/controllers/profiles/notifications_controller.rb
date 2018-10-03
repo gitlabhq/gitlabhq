@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Profiles::NotificationsController < Profiles::ApplicationController
   # rubocop: disable CodeReuse/ActiveRecord
   def show

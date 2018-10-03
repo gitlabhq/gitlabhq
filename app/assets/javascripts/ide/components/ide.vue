@@ -1,4 +1,5 @@
 <script>
+import Vue from 'vue';
 import Mousetrap from 'mousetrap';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { __ } from '~/locale';
@@ -22,9 +23,15 @@ export default {
     IdeStatusBar,
     RepoEditor,
     FindFile,
-    RightPane,
     ErrorMessage,
     CommitEditorHeader,
+  },
+  props: {
+    rightPaneComponent: {
+      type: Vue.Component,
+      required: false,
+      default: () => RightPane,
+    },
   },
   computed: {
     ...mapState([
@@ -143,7 +150,8 @@ export default {
           </div>
         </template>
       </div>
-      <right-pane
+      <component
+        :is="rightPaneComponent"
         v-if="currentProjectId"
       />
     </div>

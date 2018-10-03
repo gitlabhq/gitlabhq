@@ -134,6 +134,7 @@ module Gitlab
     config.assets.precompile << "notify.css"
     config.assets.precompile << "mailers/*.css"
     config.assets.precompile << "page_bundles/ide.css"
+    config.assets.precompile << "page_bundles/xterm.css"
     config.assets.precompile << "performance_bar.css"
     config.assets.precompile << "lib/ace.js"
     config.assets.precompile << "test.css"
@@ -204,7 +205,7 @@ module Gitlab
     ENV['GITLAB_PATH_OUTSIDE_HOOK'] = ENV['PATH']
     ENV['GIT_TERMINAL_PROMPT'] = '0'
 
-    # Gitlab Read-only middleware support
+    # GitLab Read-only middleware support
     config.middleware.insert_after ActionDispatch::Flash, ::Gitlab::Middleware::ReadOnly
 
     config.generators do |g|

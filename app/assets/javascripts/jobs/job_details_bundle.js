@@ -1,34 +1,39 @@
+import _ from 'underscore';
+import { mapState, mapActions } from 'vuex';
 import Vue from 'vue';
-import JobMediator from './job_details_mediator';
-import jobHeader from './components/header.vue';
-import detailsBlock from './components/sidebar_details_block.vue';
+import Job from '../job';
+import JobApp from './components/job_app.vue';
+import Sidebar from './components/sidebar.vue';
+import createStore from './store';
 
 export default () => {
   const { dataset } = document.getElementById('js-job-details-vue');
-  const mediator = new JobMediator({ endpoint: dataset.endpoint });
 
-  mediator.fetchJob();
+  // eslint-disable-next-line no-new
+  new Job();
+
+  const store = createStore();
+  store.dispatch('setJobEndpoint', dataset.endpoint);
+
+  store.dispatch('fetchJob');
 
   // Header
   // eslint-disable-next-line no-new
   new Vue({
     el: '#js-build-header-vue',
     components: {
-      jobHeader,
+      JobApp,
     },
-    data() {
-      return {
-        mediator,
-      };
-    },
-    mounted() {
-      this.mediator.initBuildClass();
+    store,
+    computed: {
+      ...mapState(['job', 'isLoading']),
     },
     render(createElement) {
-      return createElement('job-header', {
+      return createElement('job-app', {
         props: {
-          isLoading: this.mediator.state.isLoading,
-          job: this.mediator.store.state.job,
+          isLoading: this.isLoading,
+          job: this.job,
+          runnerHelpUrl: dataset.runnerHelpUrl,
         },
       });
     },
@@ -41,18 +46,25 @@ export default () => {
   new Vue({
     el: detailsBlockElement,
     components: {
-      detailsBlock,
+      Sidebar,
     },
-    data() {
-      return {
-        mediator,
-      };
+    computed: {
+      ...mapState(['job']),
     },
+    watch: {
+      job(newVal, oldVal) {
+        if (_.isEmpty(oldVal) && !_.isEmpty(newVal.pipeline)) {
+          this.fetchStages();
+        }
+      },
+    },
+    methods: {
+      ...mapActions(['fetchStages']),
+    },
+    store,
     render(createElement) {
-      return createElement('details-block', {
+      return createElement('sidebar', {
         props: {
-          isLoading: this.mediator.state.isLoading,
-          job: this.mediator.store.state.job,
           runnerHelpUrl: dataset.runnerHelpUrl,
           terminalPath: detailsBlockDataset.terminalPath,
         },

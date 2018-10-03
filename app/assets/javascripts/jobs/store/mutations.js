@@ -1,6 +1,9 @@
 import * as types from './mutation_types';
 
 export default {
+  [types.SET_JOB_ENDPOINT](state, endpoint) {
+    state.jobEndpoint = endpoint;
+  },
   [types.REQUEST_STATUS_FAVICON](state) {
     state.fetchingStatusFavicon = true;
   },

@@ -16,6 +16,9 @@
         = _('Add new application')
       = render 'form', application: @application
       %hr
+    - else
+      .bs-callout.bs-callout-disabled
+        = _('Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission')
     - if user_oauth_applications?
       .oauth-applications
         %h5

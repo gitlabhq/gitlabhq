@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Settings < Grape::API
     before { authenticated_as_admin! }
@@ -116,11 +118,6 @@ module API
       optional :shared_runners_enabled, type: Boolean, desc: 'Enable shared runners for new projects'
       given shared_runners_enabled: ->(val) { val } do
         requires :shared_runners_text, type: String, desc: 'Shared runners text '
-      end
-      optional :sidekiq_throttling_enabled, type: Boolean, desc: 'Enable Sidekiq Job Throttling'
-      given sidekiq_throttling_enabled: ->(val) { val } do
-        requires :sidekiq_throttling_factor, type: Float, desc: 'The factor by which the queues should be throttled. A value between 0.0 and 1.0, exclusive.'
-        requires :sidekiq_throttling_queues, type: Array[String], desc: 'Choose which queues you wish to throttle'
       end
       optional :sign_in_text, type: String, desc: 'The sign in text of the GitLab application'
       optional :signin_enabled, type: Boolean, desc: 'Flag indicating if password authentication is enabled for the web interface' # support legacy names, can be removed in v5

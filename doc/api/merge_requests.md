@@ -47,6 +47,7 @@ Parameters:
 | `source_branch`     | string   | no       | Return merge requests with the given source branch                                                                     |
 | `target_branch`     | string   | no       | Return merge requests with the given target branch                                                                     |
 | `search`            | string   | no       | Search merge requests against their `title` and `description`                                                          |
+| `wip`            | string   | no       | Filter merge requests against their `wip` status. `yes` to return *only* WIP merge requests, `no` to return *non* WIP merge requests                                                        |
 
 ```json
 [
@@ -436,6 +437,11 @@ Parameters:
     "username" : "root",
     "id" : 1,
     "name" : "Administrator"
+  },
+  "diff_refs": {
+    "base_sha": "1111111111111111111111111111111111111111",
+    "head_sha": "2222222222222222222222222222222222222222",
+    "start_sha": "3333333333333333333333333333333333333333"
   },
   "diverged_commits_count": 2
 }

@@ -72,10 +72,12 @@ For a first-time step-by-step guide to the contribution process, please see
 
 Looking for something to work on? Look for issues in the [Backlog (Accepting merge requests) milestone](#i-want-to-contribute).
 
-GitLab comes into two flavors, GitLab Community Edition (CE) our free and open
+GitLab comes in two flavors, GitLab Community Edition (CE) our free and open
 source edition, and GitLab Enterprise Edition (EE) which is our commercial
 edition. Throughout this guide you will see references to CE and EE for
 abbreviation.
+
+To get an overview of GitLab community membership including those that would be reviewing or merging your contributions, please visit [the community roles page](doc/development/contributing/community_roles.md).
 
 If you want to know how the GitLab [core team]
 operates please see [the GitLab contributing process](PROCESS.md).

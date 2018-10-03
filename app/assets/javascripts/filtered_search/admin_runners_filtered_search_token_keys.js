@@ -5,8 +5,15 @@ const tokenKeys = [{
   type: 'string',
   param: 'status',
   symbol: '',
-  icon: 'signal',
+  icon: 'messages',
   tag: 'status',
+}, {
+  key: 'type',
+  type: 'string',
+  param: 'type',
+  symbol: '',
+  icon: 'cube',
+  tag: 'type',
 }];
 
 const AdminRunnersFilteredSearchTokenKeys = new FilteredSearchTokenKeys(tokenKeys);

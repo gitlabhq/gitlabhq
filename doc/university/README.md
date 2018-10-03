@@ -11,7 +11,7 @@ and [Blog Articles](https://about.gitlab.com/blog/).
 
 Would you like to contribute to GitLab University? Then please take a look at our contribution [process](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/PROCESS.md) for more information.
 
-## Gitlab University Curriculum
+## GitLab University Curriculum
 
 The curriculum is composed of GitLab videos, screencasts, presentations, projects and external GitLab content hosted on other services and has been organized into the following sections.
 

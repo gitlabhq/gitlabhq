@@ -191,6 +191,7 @@ export default {
         if (note.placeholderType === SYSTEM_NOTE) {
           return placeholderSystemNote;
         }
+
         return placeholderNote;
       }
 
@@ -201,7 +202,7 @@ export default {
       return noteableNote;
     },
     componentData(note) {
-      return note.isPlaceholderNote ? this.discussion.notes[0] : note;
+      return note.isPlaceholderNote ? note.notes[0] : note;
     },
     toggleDiscussionHandler() {
       this.toggleDiscussion({ discussionId: this.discussion.id });
@@ -348,10 +349,10 @@ Please check your network connection and try again.`;
               <div class="discussion-notes">
                 <ul class="notes">
                   <component
-                    v-for="note in discussion.notes"
                     :is="componentName(note)"
-                    :note="componentData(note)"
+                    v-for="note in discussion.notes"
                     :key="note.id"
+                    :note="componentData(note)"
                     @handleDeleteNote="deleteNoteHandler"
                   />
                 </ul>

@@ -27,7 +27,7 @@ export const getQuickActionText = note => {
 
 export const reduceDiscussionsToLineCodes = selectedDiscussions =>
   selectedDiscussions.reduce((acc, note) => {
-    if (note.diff_discussion && note.line_code && note.resolvable) {
+    if (note.diff_discussion && note.line_code) {
       // For context about line notes: there might be multiple notes with the same line code
       const items = acc[note.line_code] || [];
       items.push(note);
