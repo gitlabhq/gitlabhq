@@ -1,5 +1,6 @@
 module IssuableActions
   extend ActiveSupport::Concern
+  include Gitlab::Utils::StrongMemoize
 
   included do
     before_action :labels, only: [:show, :new, :edit]
@@ -107,6 +108,11 @@ module IssuableActions
 
     discussions = Discussion.build_collection(notes, issuable)
 
+    # We need to invalidate the cache for polling notes otherwise it will
+    # ignore the filter.
+    # The ideal would be to invalidate the cache for each user.
+    issuable.expire_note_etag_cache if notes_filter_updated?
+
     render json: discussion_serializer.represent(discussions, context: self)
   end
   # rubocop: enable CodeReuse/ActiveRecord
@@ -114,16 +120,22 @@ module IssuableActions
   private
 
   def notes_filter
-    notes_filter_param = params[:notes_filter]
+    strong_memoize(:notes_filter) do
+      notes_filter_param = params[:notes_filter]
 
-    # GitLab Geo does not expect database UPDATE or INSERT statements to happen
-    # on GET requests.
-    # This is just a fail-safe in case notes_filter is sent via GET request in GitLab Geo.
-    if Gitlab::Database.read_only?
-      notes_filter_param || current_user&.notes_filter_for(issuable)
-    else
+      # GitLab Geo does not expect database UPDATE or INSERT statements to happen
+      # on GET requests.
+      # This is just a fail-safe in case notes_filter is sent via GET request in GitLab Geo.
+      if Gitlab::Database.read_only?
+        return notes_filter_param || current_user&.notes_filter_for(issuable)
+      end
+
       current_user&.set_notes_filter(notes_filter_param, issuable) || notes_filter_param
     end
+  end
+
+  def notes_filter_updated?
+    current_user&.user_preference&.previous_changes&.any?
   end
 
   def discussion_serializer
