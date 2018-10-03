@@ -79,9 +79,6 @@ export default {
     avatarSizeClass() {
       return `s${this.size}`;
     },
-    showImage() {
-      return this.imgSrc !== 'no-avatar';
-    },
   },
 };
 </script>

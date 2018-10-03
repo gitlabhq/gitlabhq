@@ -86,7 +86,6 @@ export default {
     :href="linkHref"
     class="user-avatar-link">
     <user-avatar-image
-      v-if="imgSrc"
       :img-src="imgSrc"
       :img-alt="imgAlt"
       :css-classes="imgCssClasses"
