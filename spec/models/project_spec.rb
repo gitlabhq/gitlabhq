@@ -4037,6 +4037,20 @@ describe Project do
         expect(result).to be_empty
       end
     end
+
+    describe "#find_or_initialize_service" do
+      subject { build(:project) }
+
+      it 'avoids N+1 database queries' do
+        allow(Service).to receive(:available_services_names).and_return(%w(prometheus pushover))
+
+        control_count = ActiveRecord::QueryRecorder.new { project.find_or_initialize_service('prometheus') }.count
+
+        allow(Service).to receive(:available_services_names).and_call_original
+
+        expect { project.find_or_initialize_service('prometheus') }.not_to exceed_query_limit(control_count)
+      end
+    end
   end
 
   def rugged_config
