@@ -45,8 +45,8 @@ export function parseSeconds(seconds, { daysPerWeek = 5, hoursPerDay = 8 } = {})
 export function stringifyTime(timeObject, full = false) {
   const reducedTime = _.reduce(timeObject, (memo, unitValue, unitName) => {
     const isNonZero = !!unitValue;
-    let finalUnitValue = (isNonZero && unitValue > 1) ? unitName : unitName.replace(/s$/, '');
-    finalUnitValue = full ? ` ${finalUnitValue}` : unitName.charAt(0);
+    const formatedUnitValue = (isNonZero && unitValue > 1) ? unitName : unitName.replace(/s$/, '');
+    const finalUnitValue = full ? ` ${formatedUnitValue}` : unitName.charAt(0);
 
     return isNonZero ? `${memo} ${unitValue}${finalUnitValue}` : memo;
   }, '').trim();
