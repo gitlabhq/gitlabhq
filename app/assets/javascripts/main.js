@@ -32,6 +32,7 @@ import initSearchAutocomplete from './search_autocomplete';
 import GlFieldErrors from './gl_field_errors';
 
 // Register a service worker if our browser allows it
+/*
 if (navigator.serviceWorker) {
   navigator.serviceWorker.register(
     '/serviceWorker.js', {
@@ -39,6 +40,7 @@ if (navigator.serviceWorker) {
     },
   );
 }
+*/
 
 // expose jQuery as global (TODO: remove these)
 window.jQuery = jQuery;
