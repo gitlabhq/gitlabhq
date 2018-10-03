@@ -110,6 +110,9 @@ module API
 
         if result[:status] == :success
           commit_detail = user_project.repository.commit(result[:result])
+
+          Gitlab::WebIdeCommitsCounter.increment if find_user_from_warden
+
           present commit_detail, with: Entities::CommitDetail
         else
           render_api_error!(result[:message], 400)
