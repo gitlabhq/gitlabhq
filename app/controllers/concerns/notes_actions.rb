@@ -213,6 +213,13 @@ module NotesActions
     request.headers['X-Last-Fetched-At']
   end
 
+  def notes_filter
+    return if current_user.nil? || params[:target_type].nil?
+
+    filter_field_name = "#{params[:target_type]}_notes_filter"
+    current_user.user_preference[filter_field_name]
+  end
+
   def notes_finder
     @notes_finder ||= NotesFinder.new(project, current_user, finder_params)
   end
