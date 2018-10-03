@@ -3,7 +3,7 @@
 > [Introduced][ce-30469] in GitLab 9.3.
 
 Conversational Development Index (ConvDev) gives you an overview of your entire
-instance's adption of [Concurrent DevOps](https://about.gitlab.com/concurrent-devops/) from planing to monitoring, while 
+instance's adoption of [Concurrent DevOps](https://about.gitlab.com/concurrent-devops/) from planning to monitoring, while 
 being able to manage and secure your across the entire lifecycle. It looks at your usage in the
 past 30 days, averaged over the number of active users in that time period. It also
 provides a lead score per feature, which is calculated based on GitLab's analysis
