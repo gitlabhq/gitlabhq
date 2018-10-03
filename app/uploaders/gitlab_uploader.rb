@@ -63,6 +63,12 @@ class GitlabUploader < CarrierWave::Uploader::Base
     super || file&.filename
   end
 
+  def relative_path
+    return path if pathname.relative?
+
+    pathname.relative_path_from(Pathname.new(root))
+  end
+
   def model_valid?
     !!model
   end
@@ -114,5 +120,9 @@ class GitlabUploader < CarrierWave::Uploader::Base
     # because calling CarrierWave.clean_cache_files! will remove any files in
     # the cache directory.
     File.join(work_dir, cache_id, version_name.to_s, for_file)
+  end
+
+  def pathname
+    @pathname ||= Pathname.new(path)
   end
 end
