@@ -116,7 +116,7 @@ class LabelsFinder < UnionFinder
   end
 
   def project?
-    params[:project_id].present?
+    params[:project].present? || params[:project_id].present?
   end
 
   def projects?
@@ -139,7 +139,7 @@ class LabelsFinder < UnionFinder
     return @project if defined?(@project)
 
     if project?
-      @project = Project.find(params[:project_id])
+      @project = params[:project] || Project.find(params[:project_id])
       @project = nil unless authorized_to_read_labels?(@project)
     else
       @project = nil
