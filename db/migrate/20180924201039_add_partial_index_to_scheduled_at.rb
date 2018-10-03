@@ -4,12 +4,12 @@ class AddPartialIndexToScheduledAt < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
-  INDEX_NAME = 'partial_index_ci_builds_on_id_with_scheduled_jobs'.freeze
+  INDEX_NAME = 'partial_index_ci_builds_on_scheduled_at_with_scheduled_jobs'.freeze
 
   disable_ddl_transaction!
 
   def up
-    add_concurrent_index(:ci_builds, :id, where: "scheduled_at IS NOT NULL", name: INDEX_NAME)
+    add_concurrent_index(:ci_builds, [:scheduled_at, :id], where: "scheduled_at IS NOT NULL", name: INDEX_NAME)
   end
 
   def down

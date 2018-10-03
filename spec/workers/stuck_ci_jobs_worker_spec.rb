@@ -127,7 +127,7 @@ describe StuckCiJobsWorker do
     end
   end
 
-  describe 'drop_stale_scheduled_builds' do
+  describe 'drop stale scheduled builds' do
     let(:status) { 'scheduled' }
     let(:updated_at) { }
 

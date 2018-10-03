@@ -10,17 +10,16 @@ class StuckCiJobsWorker
   BUILD_PENDING_OUTDATED_TIMEOUT = 1.day
   BUILD_SCHEDULED_OUTDATED_TIMEOUT = 1.hour
   BUILD_PENDING_STUCK_TIMEOUT = 1.hour
-  BUILD_SCHEDULED_OUTDATED_BATCH_SIZE = 100
 
   def perform
     return unless try_obtain_lease
 
     Rails.logger.info "#{self.class}: Cleaning stuck builds"
 
-    drop :running, BUILD_RUNNING_OUTDATED_TIMEOUT
-    drop :pending, BUILD_PENDING_OUTDATED_TIMEOUT
-    drop_stuck :pending, BUILD_PENDING_STUCK_TIMEOUT
-    drop_stale_scheduled_builds
+    drop :running, BUILD_RUNNING_OUTDATED_TIMEOUT, 'ci_builds.updated_at < ?', :stuck_or_timeout_failure
+    drop :pending, BUILD_PENDING_OUTDATED_TIMEOUT, 'ci_builds.updated_at < ?', :stuck_or_timeout_failure
+    drop :scheduled, BUILD_SCHEDULED_OUTDATED_TIMEOUT, 'scheduled_at IS NOT NULL AND scheduled_at < ?', :stale_schedule
+    drop_stuck :pending, BUILD_PENDING_STUCK_TIMEOUT, 'ci_builds.updated_at < ?', :stuck_or_timeout_failure
 
     remove_lease
   end
@@ -35,25 +34,25 @@ class StuckCiJobsWorker
     Gitlab::ExclusiveLease.cancel(EXCLUSIVE_LEASE_KEY, @uuid)
   end
 
-  def drop(status, timeout)
-    search(status, timeout) do |build|
-      drop_build :outdated, build, status, timeout, :stuck_or_timeout_failure
+  def drop(status, timeout, condition, reason)
+    search(status, timeout, condition) do |build|
+      drop_build :outdated, build, status, timeout, reason
     end
   end
 
-  def drop_stuck(status, timeout)
-    search(status, timeout) do |build|
+  def drop_stuck(status, timeout, condition, reason)
+    search(status, timeout, condition) do |build|
       break unless build.stuck?
 
-      drop_build :stuck, build, status, timeout, :stuck_or_timeout_failure
+      drop_build :stuck, build, status, timeout, reason
     end
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def search(status, timeout)
+  def search(status, timeout, condition)
     loop do
       jobs = Ci::Build.where(status: status)
-        .where('ci_builds.updated_at < ?', timeout.ago)
+        .where(condition, timeout.ago)
         .includes(:tags, :runner, project: :namespace)
         .limit(100)
         .to_a
@@ -61,21 +60,6 @@ class StuckCiJobsWorker
 
       jobs.each do |job|
         yield(job)
-      end
-    end
-  end
-
-  def drop_stale_scheduled_builds
-    # `ci_builds` table has a partial index on `id` with `scheduled_at <> NULL` condition.
-    # Therefore this query's first step uses Index Search, and the following expensive
-    # filter `scheduled_at < ?` will only perform on a small subset (max: 100 rows)
-    Ci::Build.include(EachBatch)
-      .where('scheduled_at IS NOT NULL')
-      .each_batch(of: BUILD_SCHEDULED_OUTDATED_BATCH_SIZE) do |relation|
-      relation
-        .where('scheduled_at < ?', BUILD_SCHEDULED_OUTDATED_TIMEOUT.ago)
-        .find_each(batch_size: BUILD_SCHEDULED_OUTDATED_BATCH_SIZE) do |build|
-        drop_build(:outdated, build, :scheduled, BUILD_SCHEDULED_OUTDATED_TIMEOUT, :stale_schedule)
       end
     end
   end
