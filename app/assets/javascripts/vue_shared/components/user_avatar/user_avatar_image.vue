@@ -88,7 +88,6 @@ export default {
 
 <template>
   <img
-    v-if="showImage"
     v-tooltip
     :class="{
       lazy: lazy,
