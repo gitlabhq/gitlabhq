@@ -291,4 +291,31 @@ describe('Diffs Module Getters', () => {
       expect(getters.getDiffFileByHash(localState)('123')).toBeUndefined();
     });
   });
+
+  describe('allBlobs', () => {
+    it('returns an array of blobs', () => {
+      localState.treeEntries = {
+        file: {
+          type: 'blob',
+        },
+        tree: {
+          type: 'tree',
+        },
+      };
+
+      expect(getters.allBlobs(localState)).toEqual([
+        {
+          type: 'blob',
+        },
+      ]);
+    });
+  });
+
+  describe('diffFilesLength', () => {
+    it('returns length of diff files', () => {
+      localState.diffFiles.push('test', 'test 2');
+
+      expect(getters.diffFilesLength(localState)).toBe(2);
+    });
+  });
 });

@@ -19,6 +19,11 @@ msgstr ""
 msgid " Status"
 msgstr ""
 
+msgid "%d addition"
+msgid_plural "%d additions"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d changed file"
 msgid_plural "%d changed files"
 msgstr[0] ""
@@ -31,6 +36,11 @@ msgstr[1] ""
 
 msgid "%d commit behind"
 msgid_plural "%d commits behind"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d deleted"
+msgid_plural "%d deletions"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1279,6 +1289,9 @@ msgid "CiVariable|Validation failed"
 msgstr ""
 
 msgid "CircuitBreakerApiLink|circuitbreaker api"
+msgstr ""
+
+msgid "Clear search"
 msgstr ""
 
 msgid "Clear search input"
@@ -3738,6 +3751,12 @@ msgstr ""
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
 msgstr ""
 
+msgid "MergeRequest|Filter files"
+msgstr ""
+
+msgid "MergeRequest|No files found"
+msgstr ""
+
 msgid "Merged"
 msgstr ""
 
@@ -3996,9 +4015,6 @@ msgid "No estimate or time spent"
 msgstr ""
 
 msgid "No file chosen"
-msgstr ""
-
-msgid "No files found"
 msgstr ""
 
 msgid "No files found."
@@ -6395,6 +6411,9 @@ msgid "Toggle commit description"
 msgstr ""
 
 msgid "Toggle discussion"
+msgstr ""
+
+msgid "Toggle file browser"
 msgstr ""
 
 msgid "Toggle navigation"

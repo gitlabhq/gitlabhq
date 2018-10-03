@@ -29,3 +29,5 @@ export const LENGTH_OF_AVATAR_TOOLTIP = 17;
 
 export const LINES_TO_BE_RENDERED_DIRECTLY = 100;
 export const MAX_LINES_TO_BE_RENDERED = 2000;
+
+export const MR_TREE_SHOW_KEY = 'mr_tree_show';

@@ -22,6 +22,9 @@ import actions, {
   expandAllFiles,
   toggleFileDiscussions,
   saveDiffDiscussion,
+  toggleTreeOpen,
+  scrollToFile,
+  toggleShowTreeList,
 } from '~/diffs/store/actions';
 import * as types from '~/diffs/store/mutation_types';
 import { reduceDiscussionsToLineCodes } from '~/notes/stores/utils';
@@ -606,6 +609,90 @@ describe('DiffsStoreActions', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+  });
+
+  describe('toggleTreeOpen', () => {
+    it('commits TOGGLE_FOLDER_OPEN', done => {
+      testAction(
+        toggleTreeOpen,
+        'path',
+        {},
+        [{ type: types.TOGGLE_FOLDER_OPEN, payload: 'path' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('scrollToFile', () => {
+    let commit;
+
+    beforeEach(() => {
+      commit = jasmine.createSpy();
+      jasmine.clock().install();
+    });
+
+    afterEach(() => {
+      jasmine.clock().uninstall();
+    });
+
+    it('updates location hash', () => {
+      const state = {
+        treeEntries: {
+          path: {
+            fileHash: 'test',
+          },
+        },
+      };
+
+      scrollToFile({ state, commit }, 'path');
+
+      expect(document.location.hash).toBe('#test');
+    });
+
+    it('commits UPDATE_CURRENT_DIFF_FILE_ID', () => {
+      const state = {
+        treeEntries: {
+          path: {
+            fileHash: 'test',
+          },
+        },
+      };
+
+      scrollToFile({ state, commit }, 'path');
+
+      expect(commit).toHaveBeenCalledWith(types.UPDATE_CURRENT_DIFF_FILE_ID, 'test');
+    });
+
+    it('resets currentDiffId after timeout', () => {
+      const state = {
+        treeEntries: {
+          path: {
+            fileHash: 'test',
+          },
+        },
+      };
+
+      scrollToFile({ state, commit }, 'path');
+
+      jasmine.clock().tick(1000);
+
+      expect(commit.calls.argsFor(1)).toEqual([types.UPDATE_CURRENT_DIFF_FILE_ID, '']);
+    });
+  });
+
+  describe('toggleShowTreeList', () => {
+    it('commits toggle', done => {
+      testAction(toggleShowTreeList, null, {}, [{ type: types.TOGGLE_SHOW_TREE_LIST }], [], done);
+    });
+
+    it('updates localStorage', () => {
+      spyOn(localStorage, 'setItem');
+
+      toggleShowTreeList({ commit() {}, state: { showTreeList: true } });
+
+      expect(localStorage.setItem).toHaveBeenCalledWith('mr_tree_show', true);
     });
   });
 });

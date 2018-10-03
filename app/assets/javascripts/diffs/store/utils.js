@@ -267,3 +267,49 @@ export function isDiscussionApplicableToLine({ discussion, diffPosition, latestD
 
   return latestDiff && discussion.active && lineCode === discussion.line_code;
 }
+
+export const generateTreeList = files =>
+  files.reduce(
+    (acc, file) => {
+      const { fileHash, addedLines, removedLines, newFile, deletedFile, newPath } = file;
+      const split = newPath.split('/');
+
+      split.forEach((name, i) => {
+        const parent = acc.treeEntries[split.slice(0, i).join('/')];
+        const path = `${parent ? `${parent.path}/` : ''}${name}`;
+
+        if (!acc.treeEntries[path]) {
+          const type = path === newPath ? 'blob' : 'tree';
+          acc.treeEntries[path] = {
+            key: path,
+            path,
+            name,
+            type,
+            tree: [],
+          };
+
+          const entry = acc.treeEntries[path];
+
+          if (type === 'blob') {
+            Object.assign(entry, {
+              changed: true,
+              tempFile: newFile,
+              deleted: deletedFile,
+              fileHash,
+              addedLines,
+              removedLines,
+            });
+          } else {
+            Object.assign(entry, {
+              opened: true,
+            });
+          }
+
+          (parent ? parent.tree : acc.tree).push(entry);
+        }
+      });
+
+      return acc;
+    },
+    { treeEntries: {}, tree: [] },
+  );
