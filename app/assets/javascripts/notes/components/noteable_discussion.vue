@@ -191,6 +191,7 @@ export default {
         if (note.placeholderType === SYSTEM_NOTE) {
           return placeholderSystemNote;
         }
+
         return placeholderNote;
       }
 
@@ -201,7 +202,7 @@ export default {
       return noteableNote;
     },
     componentData(note) {
-      return note.isPlaceholderNote ? this.discussion.notes[0] : note;
+      return note.isPlaceholderNote ? note.notes[0] : note;
     },
     toggleDiscussionHandler() {
       this.toggleDiscussion({ discussionId: this.discussion.id });
