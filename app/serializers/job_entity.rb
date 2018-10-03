@@ -24,8 +24,12 @@ class JobEntity < Grape::Entity
     path_to(:play_namespace_project_job, build)
   end
 
+  expose :unschedule_path, if: -> (*) { scheduled? } do |build|
+    path_to(:unschedule_namespace_project_job, build)
+  end
+
   expose :playable?, as: :playable
-  expose :scheduled_at
+  expose :scheduled_at, if: -> (*) { scheduled? }
   expose :created_at
   expose :updated_at
   expose :detailed_status, as: :status, with: DetailedStatusEntity
@@ -46,6 +50,10 @@ class JobEntity < Grape::Entity
 
   def playable?
     build.playable? && can?(request.current_user, :update_build, build)
+  end
+
+  def scheduled?
+    build.scheduled?
   end
 
   def detailed_status
