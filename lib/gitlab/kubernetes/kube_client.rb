@@ -19,6 +19,8 @@ module Gitlab
         'apis/extensions'
       ].freeze
 
+      LATEST_EXTENSIONS_VERSION = 'v1beta1'
+
       # Core API methods delegates to the core api group client
       delegate :get_pods,
         :get_secrets,
@@ -55,48 +57,39 @@ module Gitlab
         :watch_pod_log,
         to: :core_client
 
-      def initialize(api_prefix, api_groups = ['api'], api_version = 'v1', **kubeclient_options)
-        raise ArgumentError unless check_api_groups_supported?(api_groups)
+      attr_reader :api_prefix, :kubeclient_options, :default_api_version
 
+      def initialize(api_prefix, default_api_version = 'v1', **kubeclient_options)
         @api_prefix = api_prefix
-        @api_groups = api_groups
-        @api_version = api_version
         @kubeclient_options = kubeclient_options
+        @default_api_version = default_api_version
+
+        @hashed_clients = {}
       end
 
-      def discover!
-        clients.each(&:discover)
+      def core_client(api_version: default_api_version)
+        build_kubeclient('api', api_version)
       end
 
-      def clients
-        hashed_clients.values
+      def rbac_client(api_version: default_api_version)
+        build_kubeclient('apis/rbac.authorization.k8s.io', api_version)
       end
 
-      def core_client
-        hashed_clients['api']
-      end
-
-      def rbac_client
-        hashed_clients['apis/rbac.authorization.k8s.io']
-      end
-
-      def extensions_client
-        hashed_clients['apis/extensions']
-      end
-
-      def hashed_clients
-        strong_memoize(:hashed_clients) do
-          @api_groups.map do |api_group|
-            api_url = join_api_url(@api_prefix, api_group)
-            [api_group, ::Kubeclient::Client.new(api_url, @api_version, **@kubeclient_options)]
-          end.to_h
-        end
+      def extensions_client(api_version: LATEST_EXTENSIONS_VERSION)
+        build_kubeclient('apis/extensions', api_version)
       end
 
       private
 
-      def check_api_groups_supported?(api_groups)
-        api_groups.all? {|api_group| SUPPORTED_API_GROUPS.include?(api_group) }
+      def build_kubeclient(api_group, api_version)
+        raise ArgumentError, "Unknown api group #{api_group}" unless SUPPORTED_API_GROUPS.include?(api_group)
+
+        key = api_group_with_version(api_group, api_version)
+        @hashed_clients[key] ||= ::Kubeclient::Client.new(join_api_url(api_prefix, api_group), api_version, **kubeclient_options)
+      end
+
+      def api_group_with_version(api_group, api_version)
+        api_group + '/' + api_version
       end
 
       def join_api_url(api_prefix, api_path)
