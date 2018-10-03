@@ -3,7 +3,7 @@ import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
 import { pluralize } from '~/lib/utils/text_utility';
 import { __, sprintf } from '~/locale';
-import { getCommitIconMap } from '../utils';
+import { getCommitIconMap } from '~/ide/utils';
 
 export default {
   components: {
@@ -32,6 +32,11 @@ export default {
       required: false,
       default: false,
     },
+    size: {
+      type: Number,
+      required: false,
+      default: 12,
+    },
   },
   computed: {
     changedIcon() {
@@ -42,7 +47,7 @@ export default {
       return `${getCommitIconMap(this.file).icon}${suffix}`;
     },
     changedIconClass() {
-      return `ide-${this.changedIcon} float-left`;
+      return `${this.changedIcon} float-left d-block`;
     },
     tooltipTitle() {
       if (!this.showTooltip) return undefined;
@@ -78,13 +83,30 @@ export default {
     :title="tooltipTitle"
     data-container="body"
     data-placement="right"
-    class="ide-file-changed-icon"
+    class="file-changed-icon ml-auto"
   >
     <icon
       v-if="showIcon"
       :name="changedIcon"
-      :size="12"
+      :size="size"
       :css-classes="changedIconClass"
     />
   </span>
 </template>
+
+<style>
+.file-addition,
+.file-addition-solid {
+  color: #1aaa55;
+}
+
+.file-modified,
+.file-modified-solid {
+  color: #fc9403;
+}
+
+.file-deletion,
+.file-deletion-solid {
+  color: #db3b21;
+}
+</style>

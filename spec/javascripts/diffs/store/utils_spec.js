@@ -421,4 +421,113 @@ describe('DiffsStoreUtils', () => {
       ).toBe(false);
     });
   });
+
+  describe('generateTreeList', () => {
+    let files;
+
+    beforeAll(() => {
+      files = [
+        {
+          newPath: 'app/index.js',
+          deletedFile: false,
+          newFile: false,
+          removedLines: 10,
+          addedLines: 0,
+          fileHash: 'test',
+        },
+        {
+          newPath: 'app/test/index.js',
+          deletedFile: false,
+          newFile: true,
+          removedLines: 0,
+          addedLines: 0,
+          fileHash: 'test',
+        },
+        {
+          newPath: 'package.json',
+          deletedFile: true,
+          newFile: false,
+          removedLines: 0,
+          addedLines: 0,
+          fileHash: 'test',
+        },
+      ];
+    });
+
+    it('creates a tree of files', () => {
+      const { tree } = utils.generateTreeList(files);
+
+      expect(tree).toEqual([
+        {
+          key: 'app',
+          path: 'app',
+          name: 'app',
+          type: 'tree',
+          tree: [
+            {
+              addedLines: 0,
+              changed: true,
+              deleted: false,
+              fileHash: 'test',
+              key: 'app/index.js',
+              name: 'index.js',
+              path: 'app/index.js',
+              removedLines: 10,
+              tempFile: false,
+              type: 'blob',
+              tree: [],
+            },
+            {
+              key: 'app/test',
+              path: 'app/test',
+              name: 'test',
+              type: 'tree',
+              opened: true,
+              tree: [
+                {
+                  addedLines: 0,
+                  changed: true,
+                  deleted: false,
+                  fileHash: 'test',
+                  key: 'app/test/index.js',
+                  name: 'index.js',
+                  path: 'app/test/index.js',
+                  removedLines: 0,
+                  tempFile: true,
+                  type: 'blob',
+                  tree: [],
+                },
+              ],
+            },
+          ],
+          opened: true,
+        },
+        {
+          key: 'package.json',
+          path: 'package.json',
+          name: 'package.json',
+          type: 'blob',
+          changed: true,
+          tempFile: false,
+          deleted: true,
+          fileHash: 'test',
+          addedLines: 0,
+          removedLines: 0,
+          tree: [],
+        },
+      ]);
+    });
+
+    it('creates flat list of blobs & folders', () => {
+      const { treeEntries } = utils.generateTreeList(files);
+
+      expect(Object.keys(treeEntries)).toEqual([
+        'app',
+        'app/index.js',
+        'app/test',
+        'app/test/index.js',
+        'package.json',
+      ]);
+    });
+  });
 });

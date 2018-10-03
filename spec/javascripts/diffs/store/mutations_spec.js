@@ -1,3 +1,4 @@
+import createState from '~/diffs/store/modules/diff_state';
 import mutations from '~/diffs/store/mutations';
 import * as types from '~/diffs/store/mutation_types';
 import { INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
@@ -354,6 +355,46 @@ describe('DiffsStoreMutations', () => {
       });
       expect(state.diffFiles[0].parallelDiffLines[0].left.discussions.length).toEqual(0);
       expect(state.diffFiles[0].highlightedDiffLines[0].discussions.length).toEqual(0);
+    });
+  });
+
+  describe('TOGGLE_FOLDER_OPEN', () => {
+    it('toggles entry opened prop', () => {
+      const state = {
+        treeEntries: {
+          path: {
+            opened: false,
+          },
+        },
+      };
+
+      mutations[types.TOGGLE_FOLDER_OPEN](state, 'path');
+
+      expect(state.treeEntries.path.opened).toBe(true);
+    });
+  });
+
+  describe('TOGGLE_SHOW_TREE_LIST', () => {
+    it('toggles showTreeList', () => {
+      const state = createState();
+
+      mutations[types.TOGGLE_SHOW_TREE_LIST](state);
+
+      expect(state.showTreeList).toBe(false, 'Failed to toggle showTreeList to false');
+
+      mutations[types.TOGGLE_SHOW_TREE_LIST](state);
+
+      expect(state.showTreeList).toBe(true, 'Failed to toggle showTreeList to true');
+    });
+  });
+
+  describe('UPDATE_CURRENT_DIFF_FILE_ID', () => {
+    it('updates currentDiffFileId', () => {
+      const state = createState();
+
+      mutations[types.UPDATE_CURRENT_DIFF_FILE_ID](state, 'somefileid');
+
+      expect(state.currentDiffFileId).toBe('somefileid');
     });
   });
 });
