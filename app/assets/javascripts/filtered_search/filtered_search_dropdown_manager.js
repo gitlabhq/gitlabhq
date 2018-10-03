@@ -91,6 +91,11 @@ export default class FilteredSearchDropdownManager {
         gl: DropdownEmoji,
         element: this.container.querySelector('#js-dropdown-my-reaction'),
       },
+      wip: {
+        reference: null,
+        gl: DropdownNonUser,
+        element: this.container.querySelector('#js-dropdown-wip'),
+      },
       status: {
         reference: null,
         gl: NullDropdown,
@@ -136,10 +141,16 @@ export default class FilteredSearchDropdownManager {
     return endpoint;
   }
 
-  static addWordToInput(tokenName, tokenValue = '', clicked = false) {
+  static addWordToInput(tokenName, tokenValue = '', clicked = false, options = {}) {
+    const {
+      uppercaseTokenName = false,
+      capitalizeTokenValue = false,
+    } = options;
     const input = FilteredSearchContainer.container.querySelector('.filtered-search');
-
-    FilteredSearchVisualTokens.addFilterVisualToken(tokenName, tokenValue);
+    FilteredSearchVisualTokens.addFilterVisualToken(tokenName, tokenValue, {
+      uppercaseTokenName,
+      capitalizeTokenValue,
+    });
     input.value = '';
 
     if (clicked) {
