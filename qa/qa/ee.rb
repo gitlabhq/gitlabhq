@@ -13,12 +13,21 @@ module QA
         autoload :Projects, 'qa/ee/page/dashboard/projects'
       end
 
+      module Group
+        autoload :SamlSSOSignIn, 'qa/ee/page/group/saml_sso_sign_in'
+
+        module Settings
+          autoload :SamlSSO, 'qa/ee/page/group/settings/saml_sso'
+        end
+      end
+
       module Main
         autoload :Banner, 'qa/ee/page/main/banner'
       end
 
       module Menu
         autoload :Admin, 'qa/ee/page/menu/admin'
+        autoload :Side, 'qa/ee/page/menu/side'
       end
 
       module Admin
@@ -60,6 +69,9 @@ module QA
     module Scenario
       module Test
         autoload :Geo, 'qa/ee/scenario/test/geo'
+        module Integration
+          autoload :GroupSAML, 'qa/ee/scenario/test/integration/group_saml'
+        end
       end
     end
   end
