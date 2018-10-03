@@ -15,12 +15,7 @@ const Api = {
   mergeRequestChangesPath: '/api/:version/projects/:id/merge_requests/:mrid/changes',
   mergeRequestVersionsPath: '/api/:version/projects/:id/merge_requests/:mrid/versions',
   groupLabelsPath: '/groups/:namespace_path/-/labels',
-  templatesPath: '/api/:version/templates/:key',
-  licensePath: '/api/:version/templates/licenses/:key',
-  gitignorePath: '/api/:version/templates/gitignores/:key',
-  gitlabCiYmlPath: '/api/:version/templates/gitlab_ci_ymls/:key',
   ldapGroupsPath: '/api/:version/ldap/:provider/groups.json',
-  dockerfilePath: '/api/:version/templates/dockerfiles/:key',
   issuableTemplatePath: '/:namespace_path/:project_path/templates/:type/:key',
   projectTemplatePath: '/api/:version/projects/:id/templates/:type/:key',
   projectTemplatesPath: '/api/:version/projects/:id/templates/:type',
@@ -200,31 +195,6 @@ const Api = {
     return axios.get(url);
   },
 
-  // Return text for a specific license
-  licenseText(key, data, callback) {
-    const url = Api.buildUrl(Api.licensePath).replace(':key', key);
-    return axios
-      .get(url, {
-        params: data,
-      })
-      .then(res => callback(res.data));
-  },
-
-  gitignoreText(key, callback) {
-    const url = Api.buildUrl(Api.gitignorePath).replace(':key', key);
-    return axios.get(url).then(({ data }) => callback(data));
-  },
-
-  gitlabCiYml(key, callback) {
-    const url = Api.buildUrl(Api.gitlabCiYmlPath).replace(':key', key);
-    return axios.get(url).then(({ data }) => callback(data));
-  },
-
-  dockerfileYml(key, callback) {
-    const url = Api.buildUrl(Api.dockerfilePath).replace(':key', key);
-    return axios.get(url).then(({ data }) => callback(data));
-  },
-
   projectTemplate(id, type, key, options, callback) {
     const url = Api.buildUrl(this.projectTemplatePath)
       .replace(':id', encodeURIComponent(id))
@@ -303,12 +273,6 @@ const Api = {
       emoji,
       message,
     });
-  },
-
-  templates(key, params = {}) {
-    const url = Api.buildUrl(this.templatesPath).replace(':key', key);
-
-    return axios.get(url, { params });
   },
 
   approverUsers(search, options, callback = $.noop) {
