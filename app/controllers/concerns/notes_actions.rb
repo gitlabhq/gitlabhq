@@ -84,10 +84,6 @@ module NotesActions
 
   private
 
-  def notes_filter
-    current_user&.notes_filter_for(noteable)
-  end
-
   def note_html(note)
     render_to_string(
       "shared/notes/_note",
