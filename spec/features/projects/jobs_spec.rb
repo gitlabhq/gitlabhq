@@ -134,23 +134,25 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         expect(page).to have_content pipeline.commit.title
       end
 
-      it 'shows active job' do
+      it 'shows active job', :js do
         visit project_job_path(project, job)
 
+        wait_for_requests
         expect(page).to have_selector('.build-job.active')
       end
     end
 
-    context 'sidebar' do
+    context 'sidebar', :js do
       let(:job) { create(:ci_build, :success, :trace_live, pipeline: pipeline, name: '<img src=x onerror=alert(document.domain)>') }
 
       before do
         visit project_job_path(project, job)
+        wait_for_requests
       end
 
       it 'renders escaped tooltip name' do
         page.within('aside.right-sidebar') do
-          expect(find('.active.build-job a')['data-title']).to eq('<img src="x"> - passed')
+          expect(find('.active.build-job a')['data-original-title']).to eq('&lt;img src=x onerror=alert(document.domain)&gt; - passed')
         end
       end
     end
