@@ -55,6 +55,7 @@ export default {
       maxRender: 3,
       maxCounter: 99,
       assigneesImgSize: 24,
+      confidentialTooltipLabel: __('Confidential'),
     };
   },
   computed: {
@@ -190,7 +191,7 @@ export default {
           v-if="issue.confidential"
           v-tooltip
           name="eye-slash"
-          title="Confidential"
+          :title="confidentialTooltipLabel"
           class="confidential-icon append-right-4"
         /><a
           :href="issue.path"
