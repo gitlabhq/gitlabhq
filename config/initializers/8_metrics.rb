@@ -3,7 +3,6 @@
 # that we can stub it for testing, as it is only called when metrics are
 # enabled.
 #
-# rubocop:disable Metrics/AbcSize
 def instrument_classes(instrumentation)
   instrumentation.instrument_instance_methods(Gitlab::Shell)
 
@@ -118,7 +117,6 @@ def instrument_classes(instrumentation)
   # Needed for https://gitlab.com/gitlab-org/gitlab-ce/issues/30224#note_32306159
   instrumentation.instrument_instance_method(MergeRequestDiff, :load_commits)
 end
-# rubocop:enable Metrics/AbcSize
 
 # With prometheus enabled by default this breaks all specs
 # that stubs methods using `any_instance_of` for the models reloaded here.

@@ -1,9 +1,12 @@
 #!/usr/bin/env ruby
 
 ALLOWED = [
+<<<<<<< HEAD
   # https://gitlab.com/gitlab-org/gitaly/issues/760
   'lib/elasticsearch/git/repository.rb',
 
+=======
+>>>>>>> upstream/master
   # Needed to handle repositories that are not in any storage
   'lib/gitlab/bare_repository_import/repository.rb',
 

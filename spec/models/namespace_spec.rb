@@ -363,6 +363,7 @@ describe Namespace do
 
     def project_rugged(project)
       rugged_repo(project.repository)
+<<<<<<< HEAD
     end
   end
 
@@ -375,6 +376,8 @@ describe Namespace do
 
     it 'returns the correct size limit' do
       expect(namespace.actual_size_limit).to eq(50)
+=======
+>>>>>>> upstream/master
     end
   end
 
