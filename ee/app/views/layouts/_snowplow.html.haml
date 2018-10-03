@@ -14,7 +14,8 @@
     post: true,
     contexts: {
         webPage: true,
-    }
+    },
+    stateStorageStrategy: "localStorage"
   });
 
   window.snowplow('enableActivityTracking', 30, 30);
