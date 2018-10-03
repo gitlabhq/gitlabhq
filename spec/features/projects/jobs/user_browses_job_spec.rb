@@ -38,9 +38,10 @@ describe 'User browses a job', :js do
     let!(:build) { create(:ci_build, :failed, :trace_artifact, pipeline: pipeline) }
 
     it 'displays the failure reason' do
+      wait_for_all_requests
       within('.builds-container') do
         build_link = first('.build-job > a')
-        expect(build_link['data-title']).to eq('test - failed - (unknown failure)')
+        expect(build_link['data-original-title']).to eq('test - failed - (unknown failure)')
       end
     end
   end
@@ -49,9 +50,10 @@ describe 'User browses a job', :js do
     let!(:build) { create(:ci_build, :failed, :retried, :trace_artifact, pipeline: pipeline) }
 
     it 'displays the failure reason and retried label' do
+      wait_for_all_requests
       within('.builds-container') do
         build_link = first('.build-job > a')
-        expect(build_link['data-title']).to eq('test - failed - (unknown failure) (retried)')
+        expect(build_link['data-original-title']).to eq('test - failed - (unknown failure) (retried)')
       end
     end
   end

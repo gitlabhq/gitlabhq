@@ -4310,9 +4310,6 @@ msgstr ""
 msgid "Pipeline"
 msgstr ""
 
-msgid "Pipeline %{pipelineLinkStart} #%{pipelineId} %{pipelineLinkEnd} from %{pipelineLinkRefStart} %{pipelineRef} %{pipelineLinkRefEnd}"
-msgstr ""
-
 msgid "Pipeline Health"
 msgstr ""
 
@@ -7037,6 +7034,9 @@ msgid "estimateCommand|%{slash_command} will update the estimated time with the 
 msgstr ""
 
 msgid "for this project"
+msgstr ""
+
+msgid "from"
 msgstr ""
 
 msgid "here"
