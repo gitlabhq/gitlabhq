@@ -197,7 +197,7 @@ use the CI features.
 
 ## Internet requirements
 
-The following features require internet access or require it under specific conditions.
+The following features require internet connectivity or require it under certain conditions.
 
 | Feature | Internet required | Notes |
 | --- | --- | --- |
