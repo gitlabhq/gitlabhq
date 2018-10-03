@@ -598,7 +598,7 @@ msgstr ""
 msgid "Application"
 msgstr ""
 
-msgid "Application Id"
+msgid "Application ID"
 msgstr ""
 
 msgid "Application: %{name}"
@@ -1099,9 +1099,6 @@ msgid "CICD|instance enabled"
 msgstr ""
 
 msgid "Callback URL"
-msgstr ""
-
-msgid "Callback url"
 msgstr ""
 
 msgid "Can't find HEAD commit for this branch"
@@ -1930,6 +1927,9 @@ msgstr ""
 msgid "Copy HTTPS clone URL"
 msgstr ""
 
+msgid "Copy ID to clipboard"
+msgstr ""
+
 msgid "Copy SSH clone URL"
 msgstr ""
 
@@ -1949,6 +1949,9 @@ msgid "Copy file path to clipboard"
 msgstr ""
 
 msgid "Copy reference to clipboard"
+msgstr ""
+
+msgid "Copy secret to clipboard"
 msgstr ""
 
 msgid "Copy to clipboard"
@@ -5318,7 +5321,7 @@ msgstr ""
 msgid "Seconds to wait for a storage access attempt"
 msgstr ""
 
-msgid "Secret:"
+msgid "Secret"
 msgstr ""
 
 msgid "Select"
