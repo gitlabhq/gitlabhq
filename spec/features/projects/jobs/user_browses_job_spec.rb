@@ -16,7 +16,9 @@ describe 'User browses a job', :js do
     visit(project_job_path(project, build))
   end
 
-  it 'erases the job log' do
+  it 'erases the job log', :js do
+    wait_for_requests
+
     expect(page).to have_content("Job ##{build.id}")
     expect(page).to have_css('#build-trace')
 
@@ -29,9 +31,7 @@ describe 'User browses a job', :js do
     expect(build.artifacts_file.exists?).to be_falsy
     expect(build.artifacts_metadata.exists?).to be_falsy
 
-    page.within('.erased') do
-      expect(page).to have_content('Job has been erased')
-    end
+    expect(page).to have_content('Job has been erased')
   end
 
   context 'with a failed job' do

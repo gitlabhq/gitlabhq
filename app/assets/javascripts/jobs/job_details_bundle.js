@@ -2,7 +2,7 @@ import _ from 'underscore';
 import { mapState, mapActions } from 'vuex';
 import Vue from 'vue';
 import Job from '../job';
-import JobHeader from './components/header.vue';
+import JobApp from './components/job_app.vue';
 import Sidebar from './components/sidebar.vue';
 import createStore from './store';
 
@@ -22,17 +22,18 @@ export default () => {
   new Vue({
     el: '#js-build-header-vue',
     components: {
-      JobHeader,
+      JobApp,
     },
     store,
     computed: {
       ...mapState(['job', 'isLoading']),
     },
     render(createElement) {
-      return createElement('job-header', {
+      return createElement('job-app', {
         props: {
           isLoading: this.isLoading,
           job: this.job,
+          runnerHelpUrl: dataset.runnerHelpUrl,
         },
       });
     },
