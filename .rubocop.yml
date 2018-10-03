@@ -75,6 +75,8 @@ Naming/FileName:
     - EE
     - JSON
     - LDAP
+    - SAML
+    - SSO
     - IO
     - HMAC
     - QA
