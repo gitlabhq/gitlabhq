@@ -3463,9 +3463,6 @@ msgstr ""
 msgid "Last commit"
 msgstr ""
 
-msgid "Last contact"
-msgstr ""
-
 msgid "Last edited %{date}"
 msgstr ""
 
@@ -6349,9 +6346,6 @@ msgstr ""
 msgid "Twitter"
 msgstr ""
 
-msgid "Type"
-msgstr ""
-
 msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
@@ -6488,9 +6482,6 @@ msgid "Various settings that affect GitLab performance."
 msgstr ""
 
 msgid "Verified"
-msgstr ""
-
-msgid "Version"
 msgstr ""
 
 msgid "View file @ "
@@ -7134,9 +7125,6 @@ msgid "mrWidget|into"
 msgstr ""
 
 msgid "mrWidget|to be merged automatically when the pipeline succeeds"
-msgstr ""
-
-msgid "n/a"
 msgstr ""
 
 msgid "new merge request"
