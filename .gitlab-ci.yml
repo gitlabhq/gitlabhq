@@ -1157,7 +1157,10 @@ stop_review:
   dependencies: []
   before_script: []
   script:
-    - source ./scripts/review_apps/review-apps.sh
+    - export SCRIPT_NAME="review-apps.sh"
+    - wget "${CI_PROJECT_URL}/raw/${CI_COMMIT_SHA}/scripts/review_apps/${SCRIPT_NAME}"
+    - chmod 755 "${SCRIPT_NAME}"
+    - source "${SCRIPT_NAME}"
     - delete
     - cleanup
   when: manual
