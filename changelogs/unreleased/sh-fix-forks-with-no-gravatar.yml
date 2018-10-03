@@ -1,5 +1,0 @@
----
-title: Fix Error 500 when forking projects with Gravatar disabled
-merge_request:
-author:
-type: fixed
