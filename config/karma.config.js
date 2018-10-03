@@ -22,6 +22,13 @@ webpackConfig.optimization.splitChunks = false;
 // use quicker sourcemap option
 webpackConfig.devtool = 'cheap-inline-source-map';
 
+// set BABEL_ENV to indicate when we're running code coverage
+webpackConfig.plugins.push(
+  new webpack.DefinePlugin({
+    'process.env.BABEL_ENV': JSON.stringify(process.env.BABEL_ENV || process.env.NODE_ENV || null),
+  })
+);
+
 const specFilters = argumentsParser
   .option(
     '-f, --filter-spec [filter]',
@@ -84,7 +91,7 @@ module.exports = function(config) {
     basePath: ROOT_PATH,
     browsers: ['ChromeHeadlessCustom'],
     client: {
-      color: !process.env.CI
+      color: !process.env.CI,
     },
     customLaunchers: {
       ChromeHeadlessCustom: {
