@@ -1073,10 +1073,7 @@ DEPENDENCIES
   github-markup (~> 1.7.0)
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab-gollum-lib (~> 4.2)
-<<<<<<< HEAD
   gitlab-license (~> 1.0)
-=======
->>>>>>> upstream/master
   gitlab-markup (~> 1.6.4)
   gitlab-styles (~> 2.4)
   gitlab_omniauth-ldap (~> 2.0.4)
