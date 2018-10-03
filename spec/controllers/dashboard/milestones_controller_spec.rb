@@ -45,6 +45,8 @@ describe Dashboard::MilestonesController do
   end
 
   describe "#index" do
+    render_views
+
     it 'returns group and project milestones to which the user belongs' do
       get :index, format: :json
 
@@ -52,6 +54,13 @@ describe Dashboard::MilestonesController do
       expect(json_response.size).to eq(2)
       expect(json_response.map { |i| i["first_milestone"]["id"] }).to match_array([group_milestone.id, project_milestone.id])
       expect(json_response.map { |i| i["group_name"] }.compact).to match_array(group.name)
+    end
+
+    it 'should contain group and project milestones to which the user belongs to' do
+      get :index
+
+      expect(response.body).to include("Open\n<span class=\"badge badge-pill\">3</span>")
+      expect(response.body).to include("Closed\n<span class=\"badge badge-pill\">0</span>")
     end
   end
 end
