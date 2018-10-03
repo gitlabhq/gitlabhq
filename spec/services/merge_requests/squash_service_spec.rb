@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe MergeRequests::SquashService do
+  include GitHelpers
+
   let(:service) { described_class.new(project, user, {}) }
   let(:user) { project.owner }
   let(:project) { create(:project, :repository) }
@@ -63,9 +65,7 @@ describe MergeRequests::SquashService do
       end
 
       it 'has the same diff as the merge request, but a different SHA' do
-        rugged = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          project.repository.rugged
-        end
+        rugged = rugged_repo(project.repository)
         mr_diff = rugged.diff(merge_request.diff_base_sha, merge_request.diff_head_sha)
         squash_diff = rugged.diff(merge_request.diff_start_sha, squash_sha)
 

@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe Repository do
   include RepoHelpers
+  include GitHelpers
+
   TestBlob = Struct.new(:path)
 
   let(:project) { create(:project, :repository) }
@@ -137,9 +139,7 @@ describe Repository do
           options = { message: 'test tag message\n',
                       tagger: { name: 'John Smith', email: 'john@gmail.com' } }
 
-          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            repository.rugged.tags.create(annotated_tag_name, 'a48e4fc218069f68ef2e769dd8dfea3991362175', options)
-          end
+          rugged_repo(repository).tags.create(annotated_tag_name, 'a48e4fc218069f68ef2e769dd8dfea3991362175', options)
 
           double_first = double(committed_date: Time.now - 1.second)
           double_last = double(committed_date: Time.now)
@@ -151,9 +151,7 @@ describe Repository do
         it { is_expected.to eq(['v1.1.0', 'v1.0.0', annotated_tag_name]) }
 
         after do
-          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            repository.rugged.tags.delete(annotated_tag_name)
-          end
+          rugged_repo(repository).tags.delete(annotated_tag_name)
         end
       end
     end
@@ -1678,10 +1676,7 @@ describe Repository do
     it 'returns the number of branches' do
       expect(repository.branch_count).to be_an(Integer)
 
-      # NOTE: Until rugged goes away, make sure rugged and gitaly are in sync
-      rugged_count = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        repository.raw_repository.rugged.branches.count
-      end
+      rugged_count = rugged_repo(repository).branches.count
 
       expect(repository.branch_count).to eq(rugged_count)
     end
@@ -1691,10 +1686,7 @@ describe Repository do
     it 'returns the number of tags' do
       expect(repository.tag_count).to be_an(Integer)
 
-      # NOTE: Until rugged goes away, make sure rugged and gitaly are in sync
-      rugged_count = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        repository.raw_repository.rugged.tags.count
-      end
+      rugged_count = rugged_repo(repository).tags.count
 
       expect(repository.tag_count).to eq(rugged_count)
     end
@@ -2184,9 +2176,7 @@ describe Repository do
   end
 
   def create_remote_branch(remote_name, branch_name, target)
-    rugged = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      repository.rugged
-    end
+    rugged = rugged_repo(repository)
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
   end
 

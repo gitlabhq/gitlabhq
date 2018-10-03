@@ -445,7 +445,6 @@ Style/Dir:
 # Cop supports --auto-correct.
 Style/EachWithObject:
   Exclude:
-    - 'config/initializers/gollum.rb'
     - 'lib/expand_variables.rb'
     - 'lib/gitlab/ci/ansi2html.rb'
     - 'lib/gitlab/ee_compat_check.rb'
