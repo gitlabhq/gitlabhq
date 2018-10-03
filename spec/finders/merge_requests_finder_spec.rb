@@ -16,12 +16,18 @@ describe MergeRequestsFinder do
     p
   end
   let(:project4) { create(:project, :public, group: subgroup) }
+  let(:project5) { create(:project, :public, group: subgroup) }
+  let(:project6) { create(:project, :public, group: subgroup) }
 
   let!(:merge_request1) { create(:merge_request, :simple, author: user, source_project: project2, target_project: project1) }
   let!(:merge_request2) { create(:merge_request, :conflict, author: user, source_project: project2, target_project: project1, state: 'closed') }
-  let!(:merge_request3) { create(:merge_request, :simple, author: user, source_project: project2, target_project: project2, state: 'locked') }
-  let!(:merge_request4) { create(:merge_request, :simple, author: user, source_project: project3, target_project: project3) }
-  let!(:merge_request5) { create(:merge_request, :simple, author: user, source_project: project4, target_project: project4) }
+  let!(:merge_request3) { create(:merge_request, :simple, author: user, source_project: project2, target_project: project2, state: 'locked', title: 'thing WIP thing') }
+  let!(:merge_request4) { create(:merge_request, :simple, author: user, source_project: project3, target_project: project3, title: 'WIP thing') }
+  let!(:merge_request5) { create(:merge_request, :simple, author: user, source_project: project4, target_project: project4, title: '[WIP]') }
+  let!(:merge_request6) { create(:merge_request, :simple, author: user, source_project: project5, target_project: project5, title: 'WIP: thing') }
+  let!(:merge_request7) { create(:merge_request, :simple, author: user, source_project: project6, target_project: project6, title: 'wip thing') }
+  let!(:merge_request8) { create(:merge_request, :simple, author: user, source_project: project1, target_project: project1, title: '[wip] thing') }
+  let!(:merge_request9) { create(:merge_request, :simple, author: user, source_project: project1, target_project: project2, title: 'wip: thing') }
 
   before do
     project1.add_maintainer(user)
@@ -29,19 +35,21 @@ describe MergeRequestsFinder do
     project3.add_developer(user)
     project2.add_developer(user2)
     project4.add_developer(user)
+    project5.add_developer(user)
+    project6.add_developer(user)
   end
 
   describe "#execute" do
     it 'filters by scope' do
       params = { scope: 'authored', state: 'opened' }
       merge_requests = described_class.new(user, params).execute
-      expect(merge_requests.size).to eq(3)
+      expect(merge_requests.size).to eq(7)
     end
 
     it 'filters by project' do
       params = { project_id: project1.id, scope: 'authored', state: 'opened' }
       merge_requests = described_class.new(user, params).execute
-      expect(merge_requests.size).to eq(1)
+      expect(merge_requests.size).to eq(2)
     end
 
     it 'filters by group' do
@@ -49,7 +57,7 @@ describe MergeRequestsFinder do
 
       merge_requests = described_class.new(user, params).execute
 
-      expect(merge_requests.size).to eq(2)
+      expect(merge_requests.size).to eq(3)
     end
 
     it 'filters by group including subgroups', :nested_groups do
@@ -57,13 +65,13 @@ describe MergeRequestsFinder do
 
       merge_requests = described_class.new(user, params).execute
 
-      expect(merge_requests.size).to eq(3)
+      expect(merge_requests.size).to eq(6)
     end
 
     it 'filters by non_archived' do
       params = { non_archived: true }
       merge_requests = described_class.new(user, params).execute
-      expect(merge_requests.size).to eq(4)
+      expect(merge_requests.size).to eq(8)
     end
 
     it 'filters by iid' do
@@ -96,6 +104,36 @@ describe MergeRequestsFinder do
       merge_requests = described_class.new(user, params).execute
 
       expect(merge_requests).to contain_exactly(merge_request3)
+    end
+
+    it 'filters by wip' do
+      params = { wip: 'yes' }
+
+      merge_requests = described_class.new(user, params).execute
+
+      expect(merge_requests).to contain_exactly(merge_request4, merge_request5, merge_request6, merge_request7, merge_request8, merge_request9)
+    end
+
+    it 'filters by not wip' do
+      params = { wip: 'no' }
+
+      merge_requests = described_class.new(user, params).execute
+
+      expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request3)
+    end
+
+    it 'returns all items if no valid wip param exists' do
+      params = { wip: '' }
+
+      merge_requests = described_class.new(user, params).execute
+
+      expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request3, merge_request4, merge_request5, merge_request6, merge_request7, merge_request8, merge_request9)
+    end
+
+    it 'adds wip to scalar params' do
+      scalar_params = described_class.scalar_params
+
+      expect(scalar_params).to include(:wip, :assignee_id)
     end
 
     context 'filtering by group milestone' do
@@ -207,7 +245,7 @@ describe MergeRequestsFinder do
     it 'returns the number of rows for the default state' do
       finder = described_class.new(user)
 
-      expect(finder.row_count).to eq(3)
+      expect(finder.row_count).to eq(7)
     end
 
     it 'returns the number of rows for a given state' do
