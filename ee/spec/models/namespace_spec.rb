@@ -218,6 +218,22 @@ describe Namespace do
         is_expected.to be_falsy
       end
     end
+
+    context 'when feature is disabled by a feature flag' do
+      it 'returns false' do
+        stub_feature_flags(feature => false)
+
+        is_expected.to eq(false)
+      end
+    end
+
+    context 'when feature is enabled by a feature flag' do
+      it 'returns true' do
+        stub_feature_flags(feature => true)
+
+        is_expected.to eq(true)
+      end
+    end
   end
 
   describe '#max_active_pipelines' do

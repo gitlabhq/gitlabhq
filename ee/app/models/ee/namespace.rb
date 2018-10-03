@@ -72,6 +72,9 @@ module EE
     # for a given Namespace plan. This method should consider ancestor groups
     # being licensed.
     def feature_available?(feature)
+      # This feature might not be behind a feature flag at all, so default to true
+      return false unless ::Feature.enabled?(feature, default_enabled: true)
+
       available_features = strong_memoize(:feature_available) do
         Hash.new do |h, feature|
           h[feature] = load_feature_available(feature)
