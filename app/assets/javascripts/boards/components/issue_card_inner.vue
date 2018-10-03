@@ -132,7 +132,6 @@ export default {
       if (!this.updateFilters) return;
       const labelTitle = encodeURIComponent(label.title);
       const filter = `label_name[]=${labelTitle}`;
-      $(e.currentTarget).tooltip('hide');
 
       this.applyFilter(filter);
     },
@@ -141,7 +140,6 @@ export default {
 
       const issueWeight = encodeURIComponent(weight);
       const filter = `weight=${issueWeight}`;
-      $(e.currentTarget).tooltip('hide');
 
       this.applyFilter(filter);
     },
