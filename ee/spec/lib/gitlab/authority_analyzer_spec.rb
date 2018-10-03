@@ -19,27 +19,15 @@ describe Gitlab::AuthorityAnalyzer do
       ]
     end
 
-    let(:approvers) { described_class.new(merge_request, author).calculate(number_of_approvers) }
+    let(:approvers) { described_class.new(merge_request, author).calculate }
 
     before do
       merge_request.compare = double(:compare, raw_diffs: files)
       allow(merge_request.target_project.repository).to receive(:commits).and_return(commits)
     end
 
-    context 'when there are fewer contributors than requested' do
-      let(:number_of_approvers) { 5 }
-
-      it 'returns the full number of users' do
-        expect(approvers.length).to eq(2)
-      end
-    end
-
-    context 'when there are more contributors than requested' do
-      let(:number_of_approvers) { 1 }
-
-      it 'returns only the top n contributors' do
-        expect(approvers).to contain_exactly(user_a)
-      end
+    it 'returns contributors in order, without skip_user' do
+      expect(approvers).to contain_exactly(user_a, user_b)
     end
   end
 end

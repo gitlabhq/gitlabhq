@@ -7,7 +7,7 @@ module Gitlab
 
     def self.for_blob(blob)
       if blob.project.feature_available?(:code_owners)
-        Loader.new(blob.project, blob.commit_id, blob.path).users
+        Loader.new(blob.project, blob.commit_id, blob.path).members
       else
         User.none # rubocop: disable CodeReuse/ActiveRecord
       end

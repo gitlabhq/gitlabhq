@@ -5,8 +5,6 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   include DiffHelper
   include RendersCommits
 
-  prepend ::EE::Projects::MergeRequests::CreationsController
-
   skip_before_action :merge_request
   before_action :whitelist_query_limiting, only: [:create]
   before_action :authorize_create_merge_request_from!

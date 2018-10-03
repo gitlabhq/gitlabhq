@@ -3,17 +3,30 @@
 module Gitlab
   module CodeOwners
     class Loader
-      def initialize(project, ref, path)
-        @project, @ref, @path = project, ref, path
+      def initialize(project, ref, paths)
+        @project, @ref, @paths = project, ref, Array(paths)
       end
 
-      def users
-        return User.none if code_owners_file.empty? # rubocop: disable CodeReuse/ActiveRecord
+      def members
+        @_members ||= @project.members_among(raw_users)
+      end
 
-        owners = code_owners_file.owners_for_path(@path)
-        extracted_users = Gitlab::UserExtractor.new(owners).users
+      def non_members
+        @_non_members ||= raw_users.where_not_in(@project.authorized_users)
+      end
 
-        @project.authorized_users.merge(extracted_users)
+      def raw_users
+        return User.none if empty_code_owners? # rubocop: disable CodeReuse/ActiveRecord
+
+        @_raw_users ||= begin
+          owner_lines = @paths.map { |path| code_owners_file.owners_for_path(path) }
+
+          Gitlab::UserExtractor.new(owner_lines).users
+        end
+      end
+
+      def empty_code_owners?
+        code_owners_file.empty?
       end
 
       private

@@ -11,7 +11,7 @@ module Gitlab
     USERNAME_REGEXP = User.reference_pattern
 
     def initialize(text)
-      @text = text
+      @text = text.is_a?(Array) ? text.join(' ') : text
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

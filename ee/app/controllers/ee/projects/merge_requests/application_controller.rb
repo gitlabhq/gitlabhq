@@ -6,17 +6,6 @@ module EE
 
         private
 
-        # rubocop: disable CodeReuse/ActiveRecord
-        def set_suggested_approvers
-          if merge_request.requires_approve?
-            @suggested_approvers = ::Gitlab::AuthorityAnalyzer.new( # rubocop:disable Gitlab/ModuleWithInstanceVariables
-              merge_request,
-              merge_request.author || current_user
-            ).calculate(merge_request.approvals_required)
-          end
-        end
-        # rubocop: enable CodeReuse/ActiveRecord
-
         def merge_request_params
           clamp_approvals_before_merge(super)
         end
