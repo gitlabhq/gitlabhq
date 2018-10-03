@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 11.3.2 (2018-10-03)
+
+### Fixed (1 change)
+
+- Geo: repository shard verification job should have unique lease keys per shard name. !7474
+
+
 ## 11.3.1 (2018-09-26)
 
 ### Security (2 changes)
