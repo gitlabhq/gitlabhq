@@ -13,7 +13,6 @@ class PipelineSerializer < BaseSerializer
         :cancelable_statuses,
         :trigger_requests,
         :manual_actions,
-        :scheduled_actions,
         :artifacts,
         {
           pending_builds: :project,

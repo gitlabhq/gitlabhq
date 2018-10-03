@@ -6,7 +6,9 @@ describe('Date time utils', () => {
       const date = new Date();
       date.setFullYear(date.getFullYear() - 1);
 
-      expect(datetimeUtility.timeFor(date)).toBe('Past due');
+      expect(
+        datetimeUtility.timeFor(date),
+      ).toBe('Past due');
     });
 
     it('returns remaining time when in the future', () => {
@@ -17,7 +19,9 @@ describe('Date time utils', () => {
       // short of a full year, timeFor will return '11 months remaining'
       date.setDate(date.getDate() + 1);
 
-      expect(datetimeUtility.timeFor(date)).toBe('1 year remaining');
+      expect(
+        datetimeUtility.timeFor(date),
+      ).toBe('1 year remaining');
     });
   });
 
@@ -161,23 +165,6 @@ describe('getTimeframeWindowFrom', () => {
       expect(timeframeItem.getFullYear() === mockTimeframe[index].getFullYear()).toBe(true);
       expect(timeframeItem.getMonth() === mockTimeframe[index].getMonth()).toBe(true);
       expect(timeframeItem.getDate() === mockTimeframe[index].getDate()).toBeTruthy();
-    });
-  });
-});
-
-describe('formatTime', () => {
-  const expectedTimestamps = [
-    [0, '00:00:00'],
-    [1000, '00:00:01'],
-    [42000, '00:00:42'],
-    [121000, '00:02:01'],
-    [10921000, '03:02:01'],
-    [108000000, '30:00:00'],
-  ];
-
-  expectedTimestamps.forEach(([milliseconds, expectedTimestamp]) => {
-    it(`formats ${milliseconds}ms as ${expectedTimestamp}`, () => {
-      expect(datetimeUtility.formatTime(milliseconds)).toBe(expectedTimestamp);
     });
   });
 });

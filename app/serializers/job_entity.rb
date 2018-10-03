@@ -25,7 +25,6 @@ class JobEntity < Grape::Entity
   end
 
   expose :playable?, as: :playable
-  expose :scheduled_at
   expose :created_at
   expose :updated_at
   expose :detailed_status, as: :status, with: DetailedStatusEntity

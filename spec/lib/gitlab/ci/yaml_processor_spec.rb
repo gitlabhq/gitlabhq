@@ -121,21 +121,6 @@ module Gitlab
             end
           end
         end
-
-        describe 'delayed job entry' do
-          context 'when delayed is defined' do
-            let(:config) do
-              YAML.dump(rspec: { script: 'rollout 10%',
-                                 when: 'delayed',
-                                 start_in: '1 day' })
-            end
-
-            it 'has the attributes' do
-              expect(subject[:when]).to eq 'delayed'
-              expect(subject[:options][:start_in]).to eq '1 day'
-            end
-          end
-        end
       end
 
       describe '#stages_attributes' do
@@ -1275,7 +1260,7 @@ module Gitlab
           config = YAML.dump({ rspec: { script: "test", when: 1 } })
           expect do
             Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec when should be on_success, on_failure, always, manual or delayed")
+          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec when should be on_success, on_failure, always or manual")
         end
 
         it "returns errors if job artifacts:name is not an a string" do

@@ -1,6 +1,4 @@
 <script>
-import { s__, sprintf } from '~/locale';
-import { formatTime } from '~/lib/utils/datetime_utility';
 import eventHub from '../event_hub';
 import icon from '../../vue_shared/components/icon.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
@@ -24,17 +22,10 @@ export default {
     };
   },
   methods: {
-    onClickAction(action) {
-      const confirmationMessage = sprintf(s__("DelayedJobs|Are you sure you want to run %{jobName} immediately? This job will run automatically after it's timer finishes."), { jobName: action.name });
-      // https://gitlab.com/gitlab-org/gitlab-ce/issues/52099
-      // eslint-disable-next-line no-alert
-      if (!window.confirm(confirmationMessage)) {
-        return;
-      }
-
+    onClickAction(endpoint) {
       this.isLoading = true;
 
-      eventHub.$emit('postAction', action.path);
+      eventHub.$emit('postAction', endpoint);
     },
 
     isActionDisabled(action) {
@@ -43,11 +34,6 @@ export default {
       }
 
       return !action.playable;
-    },
-
-    remainingTime(action) {
-      const remainingMilliseconds = new Date(action.scheduled_at).getTime() - Date.now();
-      return formatTime(remainingMilliseconds);
     },
   },
 };
@@ -77,24 +63,17 @@ export default {
 
     <ul class="dropdown-menu dropdown-menu-right">
       <li
-        v-for="action in actions"
-        :key="action.path"
+        v-for="(action, i) in actions"
+        :key="i"
       >
         <button
           :class="{ disabled: isActionDisabled(action) }"
           :disabled="isActionDisabled(action)"
           type="button"
           class="js-pipeline-action-link no-btn btn"
-          @click="onClickAction(action)"
+          @click="onClickAction(action.path)"
         >
           {{ action.name }}
-          <span
-            v-if="action.scheduled_at"
-            class="pull-right"
-          >
-            <icon name="clock" />
-            {{ remainingTime(action) }}
-          </span>
         </button>
       </li>
     </ul>

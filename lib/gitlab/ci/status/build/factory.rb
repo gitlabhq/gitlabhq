@@ -5,7 +5,6 @@ module Gitlab
         class Factory < Status::Factory
           def self.extended_statuses
             [[Status::Build::Erased,
-              Status::Build::Scheduled,
               Status::Build::Manual,
               Status::Build::Canceled,
               Status::Build::Created,
@@ -15,7 +14,6 @@ module Gitlab
               Status::Build::Retryable],
              [Status::Build::Failed],
              [Status::Build::FailedAllowed,
-              Status::Build::Unschedule,
               Status::Build::Play,
               Status::Build::Stop],
              [Status::Build::Action],

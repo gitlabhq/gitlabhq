@@ -300,7 +300,6 @@ CommitStatus:
 - retried
 - protected
 - failure_reason
-- scheduled_at
 Ci::Variable:
 - id
 - project_id
