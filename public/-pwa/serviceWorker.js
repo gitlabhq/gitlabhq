@@ -4,7 +4,7 @@ self.addEventListener('install', event => { // eslint-disable-line no-restricted
   event.waitUntil(
     caches.open('gl-offline')
       .then(cache => cache.addAll([
-        '/offline.html',
+        '/-pwa/offline.html',
       ])),
   );
 });
