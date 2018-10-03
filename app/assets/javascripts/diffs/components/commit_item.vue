@@ -102,6 +102,10 @@ export default {
         ></pre>
       </div>
       <div class="commit-actions flex-row d-none d-sm-flex">
+        <div
+          v-if="commit.signatureHtml"
+          v-html="commit.signatureHtml"
+        ></div>
         <div class="commit-sha-group">
           <div
             class="label label-monospace"

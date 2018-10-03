@@ -25,4 +25,14 @@ class CommitEntity < API::Entities::Commit
   expose :title_html, if: { type: :full } do |commit|
     markdown_field(commit, :title)
   end
+
+  expose :signature_html, if: { type: :full } do |commit|
+    render('projects/commit/_signature', signature: commit.signature) if commit.has_signature?
+  end
+
+  def render(*args)
+    return unless request.respond_to?(:render) && request.render.respond_to?(:call)
+
+    request.render.call(*args)
+  end
 end
