@@ -66,7 +66,14 @@ class Projects::NotesController < Projects::ApplicationController
   alias_method :awardable, :note
 
   def finder_params
-    params.merge(last_fetched_at: last_fetched_at)
+    params.merge(last_fetched_at: last_fetched_at, notes_filter: notes_filter)
+  end
+
+  def notes_filter
+    return if current_user.nil? || params[:target_type].nil?
+
+    filter_field_name = "#{params[:target_type]}_notes_filter"
+    current_user.user_preference[filter_field_name]
   end
 
   def authorize_admin_note!

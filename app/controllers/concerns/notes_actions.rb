@@ -17,7 +17,6 @@ module NotesActions
 
     notes = notes_finder
               .execute
-              .with_notes_filter(notes_filter)
               .inc_relations_for_view
 
     notes =

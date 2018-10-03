@@ -52,7 +52,7 @@ describe Projects::NotesController do
       let!(:comment) { create(:note, noteable: issue, project: project) }
       let!(:system_note) { create(:note, noteable: issue, project: project, system: true) }
 
-      it 'filters system notes' do
+      it 'filters system notes by comments' do
         user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], issue)
 
         get :index, request_params.merge(use_notes_filter: true)
@@ -61,7 +61,7 @@ describe Projects::NotesController do
         expect(notes_json.first[:id].to_i).to eq(comment.id)
       end
 
-      it 'filters system notes' do
+      it 'returns all notes' do
         user.set_notes_filter(UserPreference::NOTES_FILTERS[:all_notes], issue)
 
         get :index, request_params.merge(use_notes_filter: true)
