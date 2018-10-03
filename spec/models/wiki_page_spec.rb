@@ -77,7 +77,7 @@ describe WikiPage do
   end
 
   describe "#initialize" do
-    context "when initialized with an existing gollum page" do
+    context "when initialized with an existing page" do
       before do
         create_page("test page", "test content")
         @page = wiki.wiki.page(title: "test page")

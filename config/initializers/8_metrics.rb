@@ -48,16 +48,6 @@ def instrument_classes(instrumentation)
   instrumentation.instrument_methods(Premailer::Adapter::Nokogiri)
   instrumentation.instrument_instance_methods(Premailer::Adapter::Nokogiri)
 
-  [
-    :Blame, :Branch, :BranchCollection, :Blob, :Commit, :Diff, :Repository,
-    :Tag, :TagCollection, :Tree
-  ].each do |name|
-    const = Rugged.const_get(name)
-
-    instrumentation.instrument_methods(const)
-    instrumentation.instrument_instance_methods(const)
-  end
-
   instrumentation.instrument_methods(Banzai::Renderer)
   instrumentation.instrument_methods(Banzai::Querying)
 

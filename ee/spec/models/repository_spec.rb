@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Repository do
   include RepoHelpers
   include ::EE::GeoHelpers
+  include GitHelpers
 
   TestBlob = Struct.new(:path)
 
@@ -13,9 +14,7 @@ describe Repository do
   let(:repository) { project.repository }
 
   def create_remote_branch(remote_name, branch_name, target)
-    rugged = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      repository.rugged
-    end
+    rugged = rugged_repo(repository)
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
   end
 
@@ -40,11 +39,7 @@ describe Repository do
   end
 
   describe '#with_config' do
-    let(:rugged) do
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        repository.rugged
-      end
-    end
+    let(:rugged) { rugged_repo(repository) }
     let(:entries) do
       {
         'test.foo1' => 'hello',
