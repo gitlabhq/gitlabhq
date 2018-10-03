@@ -102,7 +102,7 @@ module Clusters
       end
 
       def kubeclient
-        @kubeclient ||= build_kube_client!(api_groups: ['api', 'apis/rbac.authorization.k8s.io'])
+        @kubeclient ||= build_kube_client!
       end
 
       private
@@ -122,7 +122,7 @@ module Clusters
         slug.gsub(/[^-a-z0-9]/, '-').gsub(/^-+/, '')
       end
 
-      def build_kube_client!(api_groups: ['api'], api_version: 'v1')
+      def build_kube_client!(api_version: 'v1')
         raise "Incomplete settings" unless api_url && actual_namespace
 
         unless (username && password) || token
@@ -131,7 +131,6 @@ module Clusters
 
         Gitlab::Kubernetes::KubeClient.new(
           api_url,
-          api_groups,
           api_version,
           auth_options: kubeclient_auth_options,
           ssl_options: kubeclient_ssl_options,
