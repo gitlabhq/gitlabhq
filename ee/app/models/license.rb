@@ -76,7 +76,6 @@ class License < ActiveRecord::Base
     cluster_health
     dast
     epics
-    ide
     chatops
     pod_logs
     pseudonymizer
