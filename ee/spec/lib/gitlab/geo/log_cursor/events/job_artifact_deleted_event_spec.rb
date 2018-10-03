@@ -10,7 +10,7 @@ describe Gitlab::Geo::LogCursor::Events::JobArtifactDeletedEvent, :postgresql, :
   subject { described_class.new(job_artifact_deleted_event, Time.now, logger) }
 
   around do |example|
-    Sidekiq::Testing.fake! { example.run }
+    Sidekiq::Testing.inline! { example.run }
   end
 
   describe '#process' do
@@ -32,11 +32,14 @@ describe Gitlab::Geo::LogCursor::Events::JobArtifactDeletedEvent, :postgresql, :
 
         context 'when the delete fails' do
           before do
-            expect(File).to receive(:delete).with(job_artifact.file.path).and_raise("Cannot delete")
+            allow(File).to receive(:unlink).and_call_original
+            allow(File).to receive(:unlink).with(job_artifact.file.path).and_raise(SystemCallError, "Cannot delete")
           end
 
           it 'does not remove the tracking database entry' do
-            expect { subject.process }.not_to change(Geo::JobArtifactRegistry, :count)
+            expect do
+              expect { subject.process }.to raise_error(SystemCallError)
+            end.not_to change(Geo::JobArtifactRegistry, :count)
           end
         end
       end

@@ -18,7 +18,7 @@ describe Geo::HashedStorageAttachmentsEventStore do
     TestEnv.clean_test_path
   end
 
-  describe '#create' do
+  describe '#create!' do
     it_behaves_like 'a Geo event store', Geo::HashedStorageAttachmentsEvent
 
     context 'when running on a primary node' do

@@ -10,7 +10,7 @@ describe Geo::ResetChecksumEventStore do
 
   subject { described_class.new(project) }
 
-  describe '#create' do
+  describe '#create!' do
     it_behaves_like 'a Geo event store', Geo::ResetChecksumEvent
 
     context 'when running on a primary node' do

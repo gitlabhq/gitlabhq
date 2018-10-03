@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Geo
   class FileRegistryRemovalService < FileService
     include ::Gitlab::Utils::StrongMemoize
@@ -25,7 +27,7 @@ module Geo
 
         log_info('Local file & registry removed')
       end
-    rescue SystemCallError
+    rescue SystemCallError => e
       log_error('Could not remove file', e.message)
       raise
     end
@@ -35,7 +37,7 @@ module Geo
     # rubocop: disable CodeReuse/ActiveRecord
     def file_registry
       strong_memoize(:file_registry) do
-        if object_type.to_sym == :job_artifact
+        if job_artifact?
           ::Geo::JobArtifactRegistry.find_by(artifact_id: object_db_id)
         else
           ::Geo::FileRegistry.find_by(file_type: object_type, file_id: object_db_id)
@@ -59,16 +61,15 @@ module Geo
       end
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def file_uploader
       strong_memoize(:file_uploader) do
-        case object_type.to_s
-        when 'lfs'
-          LfsObject.find_by!(id: object_db_id).file
-        when 'job_artifact'
-          Ci::JobArtifact.find_by!(id: object_db_id).file
+        case object_type
+        when :lfs
+          LfsObject.find(object_db_id).file
+        when :job_artifact
+          Ci::JobArtifact.find(object_db_id).file
         when *Geo::FileService::DEFAULT_OBJECT_TYPES
-          Upload.find_by!(id: object_db_id).build_uploader
+          Upload.find(object_db_id).build_uploader
         else
           raise NameError, "Unrecognized type: #{object_type}"
         end
@@ -76,11 +77,6 @@ module Geo
     rescue NameError, ActiveRecord::RecordNotFound => err
       log_error('Could not build uploader', err.message)
       raise
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
-
-    def upload?
-      Geo::FileService::DEFAULT_OBJECT_TYPES.include?(object_type.to_s)
     end
 
     def lease_key

@@ -129,7 +129,7 @@ describe Geo::FileRegistryRemovalService do
       end
     end
 
-    context 'with file' do # TODO
+    context 'with file' do
       let!(:upload) { create(:user, :with_avatar).avatar.upload }
       let!(:file_registry) { create(:geo_file_registry, :avatar, file_id: upload.id) }
       let!(:file_path) { upload.build_uploader.file.path }

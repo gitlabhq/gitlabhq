@@ -10,13 +10,6 @@ module Geo
       @job_artifact = job_artifact
     end
 
-    override :create!
-    def create!
-      return unless job_artifact.local_store?
-
-      super
-    end
-
     private
 
     def build_event
@@ -26,14 +19,8 @@ module Geo
       )
     end
 
-    def local_store_path
-      Pathname.new(JobArtifactUploader.root)
-    end
-
     def relative_file_path
-      return unless job_artifact.file.present?
-
-      Pathname.new(job_artifact.file.path).relative_path_from(local_store_path)
+      job_artifact.file.relative_path if job_artifact.file.present?
     end
 
     # This is called by ProjectLogHelpers to build json log with context info

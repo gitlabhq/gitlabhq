@@ -10,7 +10,7 @@ describe Gitlab::Geo::LogCursor::Events::LfsObjectDeletedEvent, :postgresql, :cl
   subject { described_class.new(lfs_object_deleted_event, Time.now, logger) }
 
   around do |example|
-    Sidekiq::Testing.fake! { example.run }
+    Sidekiq::Testing.inline! { example.run }
   end
 
   describe '#process' do
@@ -24,10 +24,8 @@ describe Gitlab::Geo::LogCursor::Events::LfsObjectDeletedEvent, :postgresql, :cl
       expect { subject.process }.to change(Geo::FileRegistry.lfs_objects, :count).by(-1)
     end
 
-    it 'schedules a Geo::FileRemovalWorker job' do
-      file_path = File.join(LfsObjectUploader.root, lfs_object_deleted_event.file_path)
-
-      expect(::Geo::FileRemovalWorker).to receive(:perform_async).with(file_path)
+    it 'schedules a Geo::FileRegistryRemovalWorker job' do
+      expect(::Geo::FileRegistryRemovalWorker).to receive(:perform_async).with(:lfs, lfs_object_deleted_event.lfs_object_id)
 
       subject.process
     end
