@@ -634,7 +634,7 @@ module Ci
     end
 
     def modified_paths
-      strong_memoize(:changes) do
+      strong_memoize(:modified_paths) do
         push_details.modified_paths
       end
     end

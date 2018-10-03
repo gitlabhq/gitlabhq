@@ -476,7 +476,7 @@ If you are pushing a **new** branch or a new tag to GitLab, only/changes is
 going to always evaluate to truth and GitLab will create a job. This feature is
 not combined with merge requests yet, and because GitLab is creating pipelines
 before an user can create a merge request we don't know a target branch at
-this point. Without a target branchit is not possible to know what the common
+this point. Without a target branch it is not possible to know what the common
 ancestor is, thus we always create a job in that case. This feature works best for
 stable branches like `master` because in that case GitLab uses previous commit,
 that is present in a branch, to compare against a newly pushed latest SHA.
