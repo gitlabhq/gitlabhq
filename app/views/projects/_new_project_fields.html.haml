@@ -1,13 +1,14 @@
 - visibility_level = params.dig(:project, :visibility_level) || default_project_visibility
 - ci_cd_only = local_assigns.fetch(:ci_cd_only, false)
 - hide_init_with_readme = local_assigns.fetch(:hide_init_with_readme, false)
+- track_label = local_assigns.fetch(:track_label, 'blank_project')
 
 .row{ id: project_name_id }
   = f.hidden_field :ci_cd_only, value: ci_cd_only
   .form-group.project-name.col-sm-12
     = f.label :name, class: 'label-bold' do
       %span= _("Project name")
-    = f.text_field :name, placeholder: "My awesome project", class: "form-control input-lg", autofocus: true
+    = f.text_field :name, placeholder: "My awesome project", class: "form-control input-lg", autofocus: true, data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "project_name", track_value: "" }
   .form-group.project-path.col-sm-6
     = f.label :namespace_id, class: 'label-bold' do
       %span= s_("Project URL")
@@ -22,7 +23,7 @@
                                       display_path: true,
                                       extra_group: namespace_id),
                    {},
-                   { class: 'select2 js-select-namespace qa-project-namespace-select', tabindex: 1})
+                   { class: 'select2 js-select-namespace qa-project-namespace-select', tabindex: 1, data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "project_path", track_value: "" }})
 
       - else
         .input-group-prepend.static-namespace.has-tooltip{ title: user_url(current_user.username) + '/' }
@@ -42,7 +43,7 @@
   = f.label :description, class: 'label-bold' do
     Project description
     %span (optional)
-  = f.text_area :description, placeholder: 'Description format',  class: "form-control", rows: 3, maxlength: 250
+  = f.text_area :description, placeholder: 'Description format',  class: "form-control", rows: 3, maxlength: 250, data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "project_description", track_value: "" }
 
 = f.label :visibility_level, class: 'label-bold' do
   Visibility Level
@@ -53,12 +54,12 @@
   .form-group.row.initialize-with-readme-setting
     %div{ :class => "col-sm-12" }
       .form-check
-        = check_box_tag 'project[initialize_with_readme]', '1', false, class: 'form-check-input'
+        = check_box_tag 'project[initialize_with_readme]', '1', false, class: 'form-check-input', data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "init_with_readme" }
         = label_tag 'project[initialize_with_readme]', class: 'form-check-label' do
           .option-title
             %strong Initialize repository with a README
           .option-description
             Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository.
 
-= f.submit 'Create project', class: "btn btn-success project-submit", tabindex: 4
-= link_to 'Cancel', dashboard_projects_path, class: 'btn btn-cancel'
+= f.submit 'Create project', class: "btn btn-success project-submit", tabindex: 4, data: { track_label: "#{track_label}", track_event: "click_button", track_property: "create_project", track_value: "" }
+= link_to 'Cancel', dashboard_projects_path, class: 'btn btn-cancel', data: { track_label: "#{track_label}", track_event: "click_button", track_property: "cancel" }
