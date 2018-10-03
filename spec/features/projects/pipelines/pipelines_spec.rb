@@ -232,6 +232,43 @@ describe 'Pipelines', :js do
         end
       end
 
+      context 'with delayed job' do
+        let!(:delayed_job) do
+          create(:ci_build, :scheduled,
+            pipeline: pipeline,
+            name: 'delayed job',
+            stage: 'test',
+            commands: 'test')
+        end
+
+        before do
+          visit_project_pipelines
+        end
+
+        it 'has a dropdown with play button' do
+          expect(page).to have_selector('.dropdown-new.btn.btn-default .icon-play')
+        end
+
+        it 'has link to the scheduled action' do
+          find('.js-pipeline-dropdown-manual-actions').click
+
+          expect(page).to have_button('delayed job')
+        end
+
+        context 'when scheduled action was played' do
+          before do
+            accept_confirm do
+              find('.js-pipeline-dropdown-manual-actions').click
+              click_button('delayed job')
+            end
+          end
+
+          it 'enqueues scheduled action job' do
+            expect(page).to have_selector('.js-pipeline-dropdown-manual-actions:disabled')
+          end
+        end
+      end
+
       context 'for generic statuses' do
         context 'when running' do
           let!(:running) do
