@@ -54,7 +54,7 @@ export default {
       limitBeforeCounter: 2,
       maxRender: 3,
       maxCounter: 99,
-      assigneesImgSize: 24,
+      assigneeImgSize: 24,
       confidentialTooltipLabel: __('Confidential'),
     };
   },
@@ -250,7 +250,7 @@ export default {
           :img-alt="avatarUrlTitle(assignee)"
           :img-src="assignee.avatar"
           :tooltip-text="assigneeUrlTitle(assignee)"
-          :img-size="assigneesImgSize"
+          :img-size="assigneeImgSize"
           class="js-no-trigger"
           tooltip-placement="bottom"
         />
