@@ -5,7 +5,7 @@
     .modal-dialog{ role: 'document' }
       .modal-content
         .modal-header
-          %h5.modal-title.d-flex.mw-100
+          %h4.modal-title.d-flex.mw-100
             - truncated_feature_flag_name = capture do
               %span.text-truncate.prepend-left-4.append-right-4= feature_flag.name
             = s_('FeatureFlags|Delete %{feature_flag_name}?').html_safe % { feature_flag_name: truncated_feature_flag_name }
