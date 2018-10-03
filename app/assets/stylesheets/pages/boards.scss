@@ -295,11 +295,10 @@
     }
 
     @include media-breakpoint-down(lg) {
-      font-size: 11px;
+      font-size: $gl-font-size-xs;
       padding-left: $gl-padding-4;
       padding-right: $gl-padding-4;
       font-weight: 600;
-
     }
   }
 
@@ -347,7 +346,7 @@
     height: $gl-padding-24;
     border-radius: $gl-padding-24;
     background-color: $gl-text-color-tertiary;
-    font-size: 11px;
+    font-size: $gl-font-size-xs;
     cursor: help;
     font-weight: 600;
     margin-left: -1 * $gl-padding-4;
@@ -394,13 +393,13 @@
 }
 
 .board-card-number {
-  font-size: $label-font-size;
+  font-size: $gl-font-size-xs;
   color: $gl-text-color-secondary;
   display: flex;
   overflow: hidden;
 
-  @include media-breakpoint-down(md) {
-    font-size: 11px;
+  @include media-breakpoint-up(md) {
+    font-size: $label-font-size;
   }
 }
 
@@ -418,11 +417,6 @@
     margin-top: 5px;
     margin-right: 6px;
   }
-}
-
-.board-card-number {
-  font-size: 12px;
-  color: $gl-text-color-secondary;
 }
 
 .issue-boards-search {
