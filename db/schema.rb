@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180926140319) do
+ActiveRecord::Schema.define(version: 20180930171532) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -2979,7 +2979,6 @@ ActiveRecord::Schema.define(version: 20180926140319) do
     t.datetime_with_timezone "updated_at", null: false
     t.integer "occurrence_id", limit: 8, null: false
     t.integer "identifier_id", limit: 8, null: false
-    t.boolean "primary", default: false, null: false
   end
 
   add_index "vulnerability_occurrence_identifiers", ["identifier_id"], name: "index_vulnerability_occurrence_identifiers_on_identifier_id", using: :btree
@@ -2994,10 +2993,10 @@ ActiveRecord::Schema.define(version: 20180926140319) do
     t.integer "pipeline_id", null: false
     t.integer "project_id", null: false
     t.integer "scanner_id", limit: 8, null: false
-    t.binary "first_seen_in_commit_sha", null: false
     t.binary "project_fingerprint", null: false
     t.binary "location_fingerprint", null: false
     t.binary "primary_identifier_fingerprint", null: false
+    t.string "uuid", limit: 36, null: false
     t.string "ref", null: false
     t.string "name", null: false
     t.string "metadata_version", null: false
@@ -3005,8 +3004,9 @@ ActiveRecord::Schema.define(version: 20180926140319) do
   end
 
   add_index "vulnerability_occurrences", ["pipeline_id"], name: "index_vulnerability_occurrences_on_pipeline_id", using: :btree
-  add_index "vulnerability_occurrences", ["project_id", "ref", "scanner_id", "primary_identifier_fingerprint", "location_fingerprint"], name: "index_vulnerability_occurrences_on_unique_keys", unique: true, using: :btree
+  add_index "vulnerability_occurrences", ["project_id", "ref", "primary_identifier_fingerprint", "location_fingerprint", "pipeline_id", "scanner_id"], name: "index_vulnerability_occurrences_on_unique_keys", unique: true, using: :btree
   add_index "vulnerability_occurrences", ["scanner_id"], name: "index_vulnerability_occurrences_on_scanner_id", using: :btree
+  add_index "vulnerability_occurrences", ["uuid"], name: "index_vulnerability_occurrences_on_uuid", unique: true, using: :btree
 
   create_table "vulnerability_scanners", id: :bigserial, force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false

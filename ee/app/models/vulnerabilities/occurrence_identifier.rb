@@ -10,6 +10,5 @@ module Vulnerabilities
     validates :occurrence, presence: true
     validates :identifier, presence: true
     validates :identifier_id, uniqueness: { scope: [:occurrence_id] }
-    validates :occurrence_id, uniqueness: true, if: :primary
   end
 end
