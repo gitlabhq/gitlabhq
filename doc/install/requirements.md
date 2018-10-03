@@ -195,6 +195,17 @@ use the CI features.
 
 [security reasons]: https://gitlab.com/gitlab-org/gitlab-runner/blob/master/docs/security/index.md
 
+## Internet requirements
+
+The following features require internet access or require it under specific conditions.
+
+| Feature | Internet required | Notes |
+| --- | --- | --- |
+| Auto DevOps | Yes | |
+| Code Quality | Yes | |
+| Security Features | Conidtional | ... |
+| Geo | Conditional | Internet typically required unless all nodes are running on the same network. |
+
 ## Supported web browsers
 
 We support the current and the previous major release of Firefox, Chrome/Chromium, Safari and Microsoft browsers (Microsoft Edge and Internet Explorer 11).
