@@ -203,7 +203,7 @@ The following features require internet connectivity or require it under certain
 | --- | --- | --- |
 | Auto DevOps | Yes | |
 | Code Quality | Yes | |
-| Security Features | Conidtional | ... |
+| Security Features | Conditional | ... |
 | Geo | Conditional | Internet typically required unless all nodes are running on the same network. |
 
 ## Supported web browsers
