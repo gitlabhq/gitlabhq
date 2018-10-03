@@ -22,12 +22,14 @@ export default {
     },
   },
   computed: {
+    ...mapState('rightPane', {
+      rightPaneIsOpen: 'isOpen',
+    }),
     ...mapState([
       'rightPanelCollapsed',
       'viewer',
       'panelResizing',
       'currentActivityView',
-      'rightPane',
     ]),
     ...mapGetters([
       'currentMergeRequest',
@@ -99,7 +101,7 @@ export default {
         this.editor.updateDimensions();
       }
     },
-    rightPane() {
+    rightPaneIsOpen() {
       this.editor.updateDimensions();
     },
   },

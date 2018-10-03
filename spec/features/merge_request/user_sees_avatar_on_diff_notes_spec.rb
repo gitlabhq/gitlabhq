@@ -81,6 +81,8 @@ describe 'Merge request > User sees avatars on diff notes', :js do
         visit diffs_project_merge_request_path(project, merge_request, view: view)
 
         wait_for_requests
+
+        find('.js-toggle-tree-list').click
       end
 
       it 'shows note avatar' do

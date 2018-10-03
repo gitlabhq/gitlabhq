@@ -6,7 +6,7 @@ import { visitUrl } from './lib/utils/url_utility';
 import bp from './breakpoints';
 import { numberToHumanSize } from './lib/utils/number_utils';
 import { setCiStatusFavicon } from './lib/utils/common_utils';
-import { isScrolledToBottom, scrollDown } from './lib/utils/scroll_utils';
+import { isScrolledToBottom, scrollDown, scrollUp } from './lib/utils/scroll_utils';
 import LogOutputBehaviours from './lib/utils/logoutput_behaviours';
 
 export default class Job extends LogOutputBehaviours {
@@ -24,7 +24,6 @@ export default class Job extends LogOutputBehaviours {
     this.$document = $(document);
     this.$window = $(window);
     this.logBytes = 0;
-    this.updateDropdown = this.updateDropdown.bind(this);
 
     this.$buildTrace = $('#build-trace');
     this.$buildRefreshAnimation = $('.js-build-refresh');
@@ -35,17 +34,11 @@ export default class Job extends LogOutputBehaviours {
     clearTimeout(this.timeout);
 
     this.initSidebar();
-    this.populateJobs(this.buildStage);
-    this.updateStageDropdownText(this.buildStage);
     this.sidebarOnResize();
 
     this.$document
       .off('click', '.js-sidebar-build-toggle')
       .on('click', '.js-sidebar-build-toggle', this.sidebarOnClick.bind(this));
-
-    this.$document
-      .off('click', '.stage-item')
-      .on('click', '.stage-item', this.updateDropdown);
 
     this.scrollThrottled = _.throttle(this.toggleScroll.bind(this), 100);
 
@@ -80,7 +73,7 @@ export default class Job extends LogOutputBehaviours {
   }
 
   scrollToTop() {
-    $(document).scrollTop(0);
+    scrollUp();
     this.hasBeenScrolled = true;
     this.toggleScroll();
   }
@@ -194,20 +187,4 @@ export default class Job extends LogOutputBehaviours {
     if (this.shouldHideSidebarForViewport()) this.toggleSidebar();
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  populateJobs(stage) {
-    $('.build-job').hide();
-    $(`.build-job[data-stage="${stage}"]`).show();
-  }
-  // eslint-disable-next-line class-methods-use-this
-  updateStageDropdownText(stage) {
-    $('.stage-selection').text(stage);
-  }
-
-  updateDropdown(e) {
-    e.preventDefault();
-    const stage = e.currentTarget.text;
-    this.updateStageDropdownText(stage);
-    this.populateJobs(stage);
-  }
 }

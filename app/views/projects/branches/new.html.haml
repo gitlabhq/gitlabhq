@@ -26,7 +26,7 @@
         = render 'shared/ref_dropdown', dropdown_class: 'wide'
       .form-text.text-muted Existing branch name, tag, or commit SHA
   .form-actions
-    = button_tag 'Create branch', class: 'btn btn-create', tabindex: 3
+    = button_tag 'Create branch', class: 'btn btn-success', tabindex: 3
     = link_to 'Cancel', project_branches_path(@project), class: 'btn btn-cancel'
 -# haml-lint:disable InlineJavaScript
 %script#availableRefs{ type: "application/json" }= @project.repository.ref_names.to_json.html_safe

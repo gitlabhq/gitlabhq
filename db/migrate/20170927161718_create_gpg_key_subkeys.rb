@@ -1,4 +1,6 @@
 class CreateGpgKeySubkeys < ActiveRecord::Migration
+  include Gitlab::Database::MigrationHelpers
+
   DOWNTIME = false
 
   def up
@@ -8,8 +10,8 @@ class CreateGpgKeySubkeys < ActiveRecord::Migration
       t.binary :keyid
       t.binary :fingerprint
 
-      t.index :keyid, unique: true, length: Gitlab::Database.mysql? ? 20 : nil
-      t.index :fingerprint, unique: true, length: Gitlab::Database.mysql? ? 20 : nil
+      t.index :keyid, unique: true, length: mysql_compatible_index_length
+      t.index :fingerprint, unique: true, length: mysql_compatible_index_length
     end
 
     add_reference :gpg_signatures, :gpg_key_subkey, index: true, foreign_key: { on_delete: :nullify }

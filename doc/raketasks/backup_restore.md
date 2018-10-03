@@ -523,7 +523,7 @@ more of the following options:
 
 - `BACKUP=timestamp_of_backup` - Required if more than one backup exists.
   Read what the [backup timestamp is about](#backup-timestamp).
-- `force=yes` - Does not ask if the authorized_keys file should get regenerated and assumes 'yes' for warning that database tables will be removed.
+- `force=yes` - Does not ask if the authorized_keys file should get regenerated and assumes 'yes' for warning that database tables will be removed, enabling the "Write to authorized_keys file" setting, and updating LDAP providers.
 
 If you are restoring into directories that are mountpoints you will need to make
 sure these directories are empty before attempting a restore. Otherwise GitLab
@@ -591,10 +591,11 @@ This procedure assumes that:
 
 First make sure your backup tar file is in the backup directory described in the
 `gitlab.rb` configuration `gitlab_rails['backup_path']`. The default is
-`/var/opt/gitlab/backups`.
+`/var/opt/gitlab/backups`. It needs to be owned by the `git` user.
 
 ```shell
 sudo cp 11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar /var/opt/gitlab/backups/
+sudo chown git.git /var/opt/gitlab/backups/11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar
 ```
 
 Stop the processes that are connected to the database.  Leave the rest of GitLab

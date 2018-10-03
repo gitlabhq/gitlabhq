@@ -17,7 +17,6 @@ describe Projects::UpdateRemoteMirrorService do
 
     it "ensures the remote exists" do
       stub_fetch_remote(project, remote_name: remote_name)
-      stub_find_remote_root_ref(project, remote_name: remote_name)
 
       expect(remote_mirror).to receive(:ensure_remote!)
 
@@ -25,8 +24,6 @@ describe Projects::UpdateRemoteMirrorService do
     end
 
     it "fetches the remote repository" do
-      stub_find_remote_root_ref(project, remote_name: remote_name)
-
       expect(project.repository)
         .to receive(:fetch_remote)
         .with(remote_mirror.remote_name, no_tags: true)
@@ -34,26 +31,8 @@ describe Projects::UpdateRemoteMirrorService do
       service.execute(remote_mirror)
     end
 
-    it "updates the default branch when HEAD has changed" do
-      stub_fetch_remote(project, remote_name: remote_name)
-      stub_find_remote_root_ref(project, remote_name: remote_name, ref: "existing-branch")
-
-      expect { service.execute(remote_mirror) }
-        .to change { project.default_branch }
-        .from("master")
-        .to("existing-branch")
-    end
-
-    it "does not update the default branch when HEAD does not change" do
-      stub_fetch_remote(project, remote_name: remote_name)
-      stub_find_remote_root_ref(project, remote_name: remote_name, ref: "master")
-
-      expect { service.execute(remote_mirror) }.not_to change { project.default_branch }
-    end
-
     it "returns success when updated succeeds" do
       stub_fetch_remote(project, remote_name: remote_name)
-      stub_find_remote_root_ref(project, remote_name: remote_name)
 
       result = service.execute(remote_mirror)
 
@@ -63,7 +42,6 @@ describe Projects::UpdateRemoteMirrorService do
     context 'when syncing all branches' do
       it "push all the branches the first time" do
         stub_fetch_remote(project, remote_name: remote_name)
-        stub_find_remote_root_ref(project, remote_name: remote_name)
 
         expect(remote_mirror).to receive(:update_repository).with({})
 
@@ -74,7 +52,6 @@ describe Projects::UpdateRemoteMirrorService do
     context 'when only syncing protected branches' do
       it "sync updated protected branches" do
         stub_fetch_remote(project, remote_name: remote_name)
-        stub_find_remote_root_ref(project, remote_name: remote_name)
         protected_branch = create_protected_branch(project)
         remote_mirror.only_protected_branches = true
 
@@ -90,13 +67,6 @@ describe Projects::UpdateRemoteMirrorService do
         create(:protected_branch, project: project, name: branch_name)
       end
     end
-  end
-
-  def stub_find_remote_root_ref(project, ref: 'master', remote_name:)
-    allow(project.repository)
-      .to receive(:find_remote_root_ref)
-      .with(remote_name)
-      .and_return(ref)
   end
 
   def stub_fetch_remote(project, remote_name:)

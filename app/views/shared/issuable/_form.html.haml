@@ -1,6 +1,7 @@
 - form = local_assigns.fetch(:f)
 - commits = local_assigns[:commits]
 - project = @target_project || @project
+- presenter = local_assigns.fetch(:presenter, nil)
 
 = form_errors(issuable)
 
@@ -29,7 +30,7 @@
 
 = render 'shared/issuable/form/metadata', issuable: issuable, form: form
 
-= render_if_exists 'shared/issuable/approvals', issuable: issuable, form: form
+= render_if_exists 'shared/issuable/approvals', issuable: issuable, presenter: presenter, form: form
 
 = render 'shared/issuable/form/branch_chooser', issuable: issuable, form: form
 
@@ -69,9 +70,9 @@
 
   %span.append-right-10
     - if issuable.new_record?
-      = form.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'btn btn-create qa-issuable-create-button'
+      = form.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'btn btn-success qa-issuable-create-button'
     - else
-      = form.submit 'Save changes', class: 'btn btn-save'
+      = form.submit 'Save changes', class: 'btn btn-success'
 
   - if !issuable.persisted? && !issuable.project.empty_repo? && (guide_url = issuable.project.present.contribution_guide_path)
     .inline.prepend-top-10

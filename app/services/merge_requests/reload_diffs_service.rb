@@ -31,7 +31,7 @@ module MergeRequests
     def clear_cache(new_diff)
       # Executing the iteration we cache highlighted diffs for each diff file of
       # MergeRequestDiff.
-      new_diff.diffs_collection.write_cache
+      cacheable_collection(new_diff).write_cache
 
       # Remove cache for all diffs on this MR. Do not use the association on the
       # model, as that will interfere with other actions happening when
@@ -39,9 +39,15 @@ module MergeRequests
       MergeRequestDiff.where(merge_request: merge_request).each do |merge_request_diff|
         next if merge_request_diff == new_diff
 
-        merge_request_diff.diffs_collection.clear_cache
+        cacheable_collection(merge_request_diff).clear_cache
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def cacheable_collection(diff)
+      # There are scenarios where we don't need to request Diff Stats.
+      # Mainly when clearing / writing diff caches.
+      diff.diffs(include_stats: false)
+    end
   end
 end

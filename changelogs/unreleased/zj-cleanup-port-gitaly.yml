@@ -1,5 +1,0 @@
----
-title: Administrative cleanup rake tasks now leverage Gitaly
-merge_request: 21588
-author:
-type: changed

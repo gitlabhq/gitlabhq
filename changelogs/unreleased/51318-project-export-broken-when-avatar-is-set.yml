@@ -1,5 +1,0 @@
----
-title: Fix broken exports when they include a projet avatar
-merge_request: 21649
-author:
-type: fixed

@@ -7,8 +7,7 @@
   GitLab
   Community Edition
   - if user_signed_in?
-    %span= Gitlab::VERSION
-    %small= link_to Gitlab.revision, Gitlab::COM_URL + namespace_project_commits_path('gitlab-org', 'gitlab-ce', Gitlab.revision)
+    %span= link_to_version
     = version_status_badge
   %hr
 

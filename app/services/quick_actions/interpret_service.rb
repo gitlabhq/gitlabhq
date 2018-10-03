@@ -126,18 +126,16 @@ module QuickActions
     parse_params do |assignee_param|
       extract_users(assignee_param)
     end
-    # rubocop: disable CodeReuse/ActiveRecord
     command :assign do |users|
       next if users.empty?
 
-      @updates[:assignee_ids] =
-        if issuable.allows_multiple_assignees?
-          issuable.assignees.pluck(:id) + users.map(&:id)
-        else
-          [users.first.id]
-        end
+      if issuable.allows_multiple_assignees?
+        @updates[:assignee_ids] ||= issuable.assignees.map(&:id)
+        @updates[:assignee_ids] += users.map(&:id)
+      else
+        @updates[:assignee_ids] = [users.first.id]
+      end
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     desc do
       if issuable.allows_multiple_assignees?
@@ -164,16 +162,14 @@ module QuickActions
       # When multiple users are assigned, all will be unassigned if multiple assignees are no longer allowed
       extract_users(unassign_param) if issuable.allows_multiple_assignees?
     end
-    # rubocop: disable CodeReuse/ActiveRecord
     command :unassign do |users = nil|
-      @updates[:assignee_ids] =
-        if users&.any?
-          issuable.assignees.pluck(:id) - users.map(&:id)
-        else
-          []
-        end
+      if issuable.allows_multiple_assignees? && users&.any?
+        @updates[:assignee_ids] ||= issuable.assignees.map(&:id)
+        @updates[:assignee_ids] -= users.map(&:id)
+      else
+        @updates[:assignee_ids] = []
+      end
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     desc 'Set milestone'
     explanation do |milestone|
@@ -290,8 +286,7 @@ module QuickActions
     end
     params '#issue | !merge_request'
     condition do
-      issuable.persisted? &&
-        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+      current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
     end
     parse_params do |issuable_param|
       extract_references(issuable_param, :issue).first ||

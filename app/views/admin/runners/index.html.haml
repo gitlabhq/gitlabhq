@@ -4,7 +4,7 @@
 %div{ class: container_class }
   .bs-callout
     %p
-      = (_"A 'Runner' is a process which runs a job. You can setup as many Runners as you need.")
+      = (_"A 'Runner' is a process which runs a job. You can set up as many Runners as you need.")
       %br
       = _('Runners can be placed on separate users, servers, even on your local machine.')
       %br
@@ -69,7 +69,7 @@
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { action: 'submit' } }
                   = button_tag class: %w[btn btn-link] do
-                    = icon('search')
+                    = sprite_icon('search')
                     %span
                       = _('Press Enter or click to search')
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
@@ -77,17 +77,27 @@
                   = button_tag class: %w[btn btn-link] do
                     -# Encapsulate static class name `{{icon}}` inside #{} to bypass
                     -# haml lint's ClassAttributeWithStaticValue
-                    %i.fa{ class: "#{'{{icon}}'}" }
+                    %svg
+                      %use{ 'xlink:href': "#{'{{icon}}'}" }
                     %span.js-filter-hint
                       {{hint}}
                     %span.js-filter-tag.dropdown-light-content
                       {{tag}}
+
             #js-dropdown-admin-runner-status.filtered-search-input-dropdown-menu.dropdown-menu
               %ul{ data: { dropdown: true } }
                 - Ci::Runner::AVAILABLE_STATUSES.each do |status|
                   %li.filter-dropdown-item{ data: { value: status } }
                     = button_tag class: %w[btn btn-link] do
                       = status.titleize
+
+            #js-dropdown-admin-runner-type.filtered-search-input-dropdown-menu.dropdown-menu
+              %ul{ data: { dropdown: true } }
+                - Ci::Runner::AVAILABLE_TYPES.each do |runner_type|
+                  %li.filter-dropdown-item{ data: { value: runner_type } }
+                    = button_tag class: %w[btn btn-link] do
+                      = runner_type.titleize
+
           = button_tag class: %w[clear-search hidden] do
             = icon('times')
         .filter-dropdown-container
@@ -97,8 +107,16 @@
     .runners-content.content-list
       .table-holder
         .gl-responsive-table-row.table-row-header{ role: 'row' }
-          - [_('Type'), _('Runner token'), _('Description'), _('Version'), _('IP Address'), _('Projects'), _('Jobs'), _('Tags'), _('Last contact')].each do |label|
-            .table-section.section-10{ role: 'rowheader' }= label
+          .table-section.section-10{ role: 'rowheader' }= _('Type')
+          .table-section.section-10{ role: 'rowheader' }= _('Runner token')
+          .table-section.section-15{ role: 'rowheader' }= _('Description')
+          .table-section.section-15{ role: 'rowheader' }= _('Version')
+          .table-section.section-10{ role: 'rowheader' }= _('IP Address')
+          .table-section.section-5{ role: 'rowheader' }= _('Projects')
+          .table-section.section-5{ role: 'rowheader' }= _('Jobs')
+          .table-section.section-10{ role: 'rowheader' }= _('Tags')
+          .table-section.section-10{ role: 'rowheader' }= _('Last contact')
+          .table-section.section-10{ role: 'rowheader' }
 
         - @runners.each do |runner|
           = render 'admin/runners/runner', runner: runner

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class ProtectedBranches < Grape::API
     include PaginationParams
@@ -44,10 +46,10 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the protected branch'
         optional :push_access_level, type: Integer,
-                                     values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS,
+                                     values: ProtectedBranch::PushAccessLevel.allowed_access_levels,
                                      desc: 'Access levels allowed to push (defaults: `40`, maintainer access level)'
         optional :merge_access_level, type: Integer,
-                                      values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS,
+                                      values: ProtectedBranch::MergeAccessLevel.allowed_access_levels,
                                       desc: 'Access levels allowed to merge (defaults: `40`, maintainer access level)'
       end
       # rubocop: disable CodeReuse/ActiveRecord

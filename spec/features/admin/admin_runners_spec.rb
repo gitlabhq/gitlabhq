@@ -19,7 +19,7 @@ describe "Admin Runners" do
         create(:ci_build, pipeline: pipeline, runner_id: runner.id)
         visit admin_runners_path
 
-        expect(page).to have_text "Setup a shared Runner manually"
+        expect(page).to have_text "Set up a shared Runner manually"
         expect(page).to have_text "Runners currently online: 1"
       end
 
@@ -73,24 +73,72 @@ describe "Admin Runners" do
 
           expect(page).to have_text 'No runners found'
         end
+
+        it 'shows correct runner when status is selected and search term is entered' do
+          create(:ci_runner, description: 'runner-a-1', active: true)
+          create(:ci_runner, description: 'runner-a-2', active: false)
+          create(:ci_runner, description: 'runner-b-1', active: true)
+
+          visit admin_runners_path
+
+          input_filtered_search_keys('status:active')
+          expect(page).to have_content 'runner-a-1'
+          expect(page).to have_content 'runner-b-1'
+          expect(page).not_to have_content 'runner-a-2'
+
+          input_filtered_search_keys('status:active runner-a')
+          expect(page).to have_content 'runner-a-1'
+          expect(page).not_to have_content 'runner-b-1'
+          expect(page).not_to have_content 'runner-a-2'
+        end
       end
 
-      it 'shows correct runner when status is selected and search term is entered', :js do
-        create(:ci_runner, description: 'runner-a-1', active: true)
-        create(:ci_runner, description: 'runner-a-2', active: false)
-        create(:ci_runner, description: 'runner-b-1', active: true)
+      describe 'filter by type', :js do
+        it 'shows correct runner when type matches' do
+          create :ci_runner, :project, description: 'runner-project'
+          create :ci_runner, :group, description: 'runner-group'
 
-        visit admin_runners_path
+          visit admin_runners_path
 
-        input_filtered_search_keys('status:active')
-        expect(page).to have_content 'runner-a-1'
-        expect(page).to have_content 'runner-b-1'
-        expect(page).not_to have_content 'runner-a-2'
+          expect(page).to have_content 'runner-project'
+          expect(page).to have_content 'runner-group'
 
-        input_filtered_search_keys('status:active runner-a')
-        expect(page).to have_content 'runner-a-1'
-        expect(page).not_to have_content 'runner-b-1'
-        expect(page).not_to have_content 'runner-a-2'
+          input_filtered_search_keys('type:project_type')
+          expect(page).to have_content 'runner-project'
+          expect(page).not_to have_content 'runner-group'
+        end
+
+        it 'shows no runner when type does not match' do
+          create :ci_runner, :project, description: 'runner-project'
+          create :ci_runner, :group, description: 'runner-group'
+
+          visit admin_runners_path
+
+          input_filtered_search_keys('type:instance_type')
+
+          expect(page).not_to have_content 'runner-project'
+          expect(page).not_to have_content 'runner-group'
+
+          expect(page).to have_text 'No runners found'
+        end
+
+        it 'shows correct runner when type is selected and search term is entered' do
+          create :ci_runner, :project, description: 'runner-a-1'
+          create :ci_runner, :instance, description: 'runner-a-2'
+          create :ci_runner, :project, description: 'runner-b-1'
+
+          visit admin_runners_path
+
+          input_filtered_search_keys('type:project_type')
+          expect(page).to have_content 'runner-a-1'
+          expect(page).to have_content 'runner-b-1'
+          expect(page).not_to have_content 'runner-a-2'
+
+          input_filtered_search_keys('type:project_type runner-a')
+          expect(page).to have_content 'runner-a-1'
+          expect(page).not_to have_content 'runner-b-1'
+          expect(page).not_to have_content 'runner-a-2'
+        end
       end
 
       it 'sorts by last contact date', :js do
@@ -125,7 +173,7 @@ describe "Admin Runners" do
       end
 
       it 'has all necessary texts including no runner message' do
-        expect(page).to have_text "Setup a shared Runner manually"
+        expect(page).to have_text "Set up a shared Runner manually"
         expect(page).to have_text "Runners currently online: 0"
         expect(page).to have_text 'No runners found'
       end

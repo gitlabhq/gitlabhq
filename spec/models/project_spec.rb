@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Project do
   include ProjectForksHelper
+  include GitHelpers
 
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
@@ -1070,6 +1071,18 @@ describe Project do
     subject { project.builds_enabled }
 
     it { expect(project.builds_enabled?).to be_truthy }
+  end
+
+  describe '.sort_by_attribute' do
+    it 'reorders the input relation by start count desc' do
+      project1 = create(:project, star_count: 2)
+      project2 = create(:project, star_count: 1)
+      project3 = create(:project)
+
+      projects = described_class.sort_by_attribute(:stars_desc)
+
+      expect(projects).to eq([project1, project2, project3])
+    end
   end
 
   describe '.with_shared_runners' do
@@ -3229,17 +3242,17 @@ describe Project do
         expect(repository).to receive(:gitlab_ci_yml) { nil }
       end
 
-      it "CI is not available" do
-        expect(project).not_to have_ci
+      it "CI is available" do
+        expect(project).to have_ci
       end
 
-      context 'when auto devops is enabled' do
+      context 'when auto devops is disabled' do
         before do
-          stub_application_setting(auto_devops_enabled: true)
+          stub_application_setting(auto_devops_enabled: false)
         end
 
-        it "CI is available" do
-          expect(project).to have_ci
+        it "CI is not available" do
+          expect(project).not_to have_ci
         end
       end
     end
@@ -3983,43 +3996,50 @@ describe Project do
     end
   end
 
-  describe '#update_root_ref' do
-    let(:project) { create(:project, :repository) }
+  context '#members_among' do
+    let(:users) { create_list(:user, 3) }
+    set(:group) { create(:group) }
+    set(:project) { create(:project, namespace: group) }
 
-    it 'updates the default branch when HEAD has changed' do
-      stub_find_remote_root_ref(project, ref: 'feature')
-
-      expect { project.update_root_ref('origin') }
-        .to change { project.default_branch }
-        .from('master')
-        .to('feature')
+    before do
+      project.add_guest(users.first)
+      project.group.add_maintainer(users.last)
     end
 
-    it 'does not update the default branch when HEAD does not change' do
-      stub_find_remote_root_ref(project, ref: 'master')
+    context 'when users is an Array' do
+      it 'returns project members among the users' do
+        expect(project.members_among(users)).to eq([users.first, users.last])
+      end
 
-      expect { project.update_root_ref('origin') }
-        .not_to change { project.default_branch }
+      it 'maintains input order' do
+        expect(project.members_among(users.reverse)).to eq([users.last, users.first])
+      end
+
+      it 'returns empty array if users is empty' do
+        result = project.members_among([])
+
+        expect(result).to be_empty
+      end
     end
 
-    it 'does not update the default branch when HEAD does not exist' do
-      stub_find_remote_root_ref(project, ref: 'foo')
+    context 'when users is a relation' do
+      it 'returns project members among the users' do
+        result = project.members_among(User.where(id: users.map(&:id)))
 
-      expect { project.update_root_ref('origin') }
-        .not_to change { project.default_branch }
-    end
+        expect(result).to be_a(ActiveRecord::Relation)
+        expect(result).to eq([users.first, users.last])
+      end
 
-    def stub_find_remote_root_ref(project, ref:)
-      allow(project.repository)
-        .to receive(:find_remote_root_ref)
-        .with('origin')
-        .and_return(ref)
+      it 'returns empty relation if users is empty' do
+        result = project.members_among(User.none)
+
+        expect(result).to be_a(ActiveRecord::Relation)
+        expect(result).to be_empty
+      end
     end
   end
 
   def rugged_config
-    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      project.repository.rugged.config
-    end
+    rugged_repo(project.repository).config
   end
 end

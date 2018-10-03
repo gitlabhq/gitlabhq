@@ -68,9 +68,9 @@ export default {
         class="stage-column-list">
         <stage-column-component
           v-for="(stage, index) in graph"
+          :key="stage.name"
           :title="capitalizeStageName(stage.name)"
           :jobs="stage.groups"
-          :key="stage.name"
           :stage-connector-class="stageConnectorClass(index, stage)"
           :is-first-column="isFirstColumn(index)"
           @refreshPipelineGraph="refreshPipelineGraph"

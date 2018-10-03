@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Dashboard::ProjectsController < Dashboard::ApplicationController
   include ParamsBackwardCompatibility
   include RendersMemberAccess

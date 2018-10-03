@@ -1,4 +1,5 @@
 <script>
+import { mapActions } from 'vuex';
 import $ from 'jquery';
 import DiffTableCell from './diff_table_cell.vue';
 import {
@@ -64,7 +65,11 @@ export default {
     this.oldLineType = OLD_LINE_TYPE;
     this.parallelDiffViewType = PARALLEL_DIFF_VIEW_TYPE;
   },
+  mounted() {
+    this.scrollToLineIfNeededParallel(this.line);
+  },
   methods: {
+    ...mapActions('diffs', ['scrollToLineIfNeededParallel']),
     handleMouseMove(e) {
       const isHover = e.type === 'mouseover';
       const hoveringCell = e.target.closest('td');

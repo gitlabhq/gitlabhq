@@ -106,6 +106,12 @@
           icon="code"
         />
         <toolbar-button
+          tag="[{text}](url)"
+          tag-select="url"
+          button-title="Add a link"
+          icon="link"
+        />
+        <toolbar-button
           :prepend="true"
           tag="* "
           button-title="Add a bullet list"

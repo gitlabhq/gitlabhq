@@ -72,8 +72,8 @@ export default {
           @click="onItemActivated(item.text)">
           <span>
             <span
-              v-for="(token, index) in item.tokens"
-              :key="`dropdown-token-${index}`"
+              v-for="(token, tokenIndex) in item.tokens"
+              :key="`dropdown-token-${tokenIndex}`"
               class="filtered-search-history-dropdown-token"
             >
               <span class="name">{{ token.prefix }}</span>

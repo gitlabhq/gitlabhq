@@ -1,12 +1,14 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
+import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
 
 export default {
   name: 'FileRow',
   components: {
     FileIcon,
     Icon,
+    ChangedFileIcon,
   },
   props: {
     file: {
@@ -21,6 +23,16 @@ export default {
       type: Object,
       required: false,
       default: null,
+    },
+    hideExtraOnTree: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    showChangedIcon: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -65,6 +77,9 @@ export default {
     toggleTreeOpen(path) {
       this.$emit('toggleTreeOpen', path);
     },
+    clickedFile(path) {
+      this.$emit('clickFile', path);
+    },
     clickFile() {
       // Manual Action if a tree is selected/opened
       if (this.isTree && this.hasUrlAtCurrentRoute()) {
@@ -72,6 +87,8 @@ export default {
       }
 
       if (this.$router) this.$router.push(`/project${this.file.url}`);
+
+      if (this.isBlob) this.clickedFile(this.file.path);
     },
     scrollIntoView(isInit = false) {
       const block = isInit && this.isTree ? 'center' : 'nearest';
@@ -126,17 +143,24 @@ export default {
           class="file-row-name str-truncated"
         >
           <file-icon
+            v-if="!showChangedIcon || file.type === 'tree'"
             :file-name="file.name"
             :loading="file.loading"
             :folder="isTree"
             :opened="file.opened"
             :size="16"
           />
+          <changed-file-icon
+            v-else
+            :file="file"
+            :size="16"
+            class="append-right-5"
+          />
           {{ file.name }}
         </span>
         <component
-          v-if="extraComponent"
           :is="extraComponent"
+          v-if="extraComponent && !(hideExtraOnTree && file.type === 'tree')"
           :file="file"
           :mouse-over="mouseOver"
         />
@@ -148,8 +172,11 @@ export default {
         :key="childFile.key"
         :file="childFile"
         :level="level + 1"
+        :hide-extra-on-tree="hideExtraOnTree"
         :extra-component="extraComponent"
+        :show-changed-icon="showChangedIcon"
         @toggleTreeOpen="toggleTreeOpen"
+        @clickFile="clickedFile"
       />
     </template>
   </div>

@@ -9,7 +9,7 @@ module Boards
     private
 
     def can_create_board?
-      parent.boards.size == 0
+      parent.boards.empty?
     end
 
     def create_board!

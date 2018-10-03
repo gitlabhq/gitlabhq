@@ -58,8 +58,8 @@ export default {
         </td>
         <template v-for="(track, trackIndex) in series.tracksLegend">
           <track-line
-            :track="track"
-            :key="`track-line-${trackIndex}`"/>
+            :key="`track-line-${trackIndex}`"
+            :track="track"/>
           <td :key="`track-info-${trackIndex}`">
             <track-info
               :track="track"

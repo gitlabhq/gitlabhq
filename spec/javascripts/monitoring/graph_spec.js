@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import Graph from '~/monitoring/components/graph.vue';
 import MonitoringMixins from '~/monitoring/mixins/monitoring_mixins';
-import eventHub from '~/monitoring/event_hub';
 import {
   deploymentData,
   convertDatesMultipleSeries,
@@ -66,23 +65,6 @@ describe('Graph', () => {
       expect(typeof component.outerViewBox).toEqual('string');
       expect(viewBoxArray[2]).toEqual(component.graphWidth.toString());
       expect(viewBoxArray[3]).toEqual((component.graphHeight - 50).toString());
-    });
-  });
-
-  it('sends an event to the eventhub when it has finished resizing', done => {
-    const component = createComponent({
-      graphData: convertedMetrics[1],
-      updateAspectRatio: false,
-      deploymentData,
-      tagsPath,
-      projectPath,
-    });
-    spyOn(eventHub, '$emit');
-
-    component.updateAspectRatio = true;
-    Vue.nextTick(() => {
-      expect(eventHub.$emit).toHaveBeenCalled();
-      done();
     });
   });
 

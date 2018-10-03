@@ -2,7 +2,7 @@
 
 .form-group.row.visibility-level-setting
   - if with_label
-    = f.label :visibility_level, class: 'col-form-label col-sm-2' do
+    = f.label :visibility_level, class: 'col-form-label col-sm-2 pt-0' do
       Visibility Level
       = link_to icon('question-circle'), help_page_path("public_access/public_access")
   %div{ :class => (with_label ? "col-sm-10" : "col-sm-12") }

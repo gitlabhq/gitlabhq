@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::ClustersController < Projects::ApplicationController
   before_action :cluster, except: [:index, :new, :create_gcp, :create_user]
   before_action :authorize_read_cluster!

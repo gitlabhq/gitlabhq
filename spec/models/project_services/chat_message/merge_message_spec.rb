@@ -27,6 +27,23 @@ describe ChatMessage::MergeMessage do
     }
   end
 
+  # Integration point in EE
+  context 'when state is overridden' do
+    it 'respects the overridden state' do
+      allow(subject).to receive(:state_or_action_text) { 'devoured' }
+
+      aggregate_failures do
+        expect(subject.summary).not_to include('opened')
+        expect(subject.summary).to include('devoured')
+
+        activity_title = subject.activity[:title]
+
+        expect(activity_title).not_to include('opened')
+        expect(activity_title).to include('devoured')
+      end
+    end
+  end
+
   context 'without markdown' do
     let(:color) { '#345' }
 

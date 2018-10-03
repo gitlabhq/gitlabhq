@@ -1,7 +1,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
-import SkeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
+import { SkeletonLoading } from '@gitlab-org/gitlab-ui';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import NavDropdown from './nav_dropdown.vue';
 import FileRowExtra from './file_row_extra.vue';
@@ -9,7 +9,7 @@ import FileRowExtra from './file_row_extra.vue';
 export default {
   components: {
     Icon,
-    SkeletonLoadingContainer,
+    SkeletonLoading,
     NavDropdown,
     FileRow,
   },
@@ -51,7 +51,7 @@ export default {
         :key="n"
         class="multi-file-loading-container"
       >
-        <skeleton-loading-container />
+        <skeleton-loading />
       </div>
     </template>
     <template v-else>

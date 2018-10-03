@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Backup
   class Manager
     ARCHIVES_TO_BACKUP = %w[uploads builds artifacts pages lfs registry].freeze

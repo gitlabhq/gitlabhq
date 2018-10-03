@@ -193,7 +193,7 @@ are listed in the descriptions of the relevant settings.
 | `metrics_port`                           | integer          | required by: `metrics_enabled`       | The UDP port to use for connecting to InfluxDB. |
 | `metrics_sample_interval`                | integer          | required by: `metrics_enabled`       | The sampling interval in seconds. |
 | `metrics_timeout`                        | integer          | required by: `metrics_enabled`       | The amount of seconds after which InfluxDB will time out. |
-| `mirror_available`                       | boolean          | no                                   | Allow mirrors to be setup for projects. If disabled, only admins will be able to setup mirrors in projects. |
+| `mirror_available`                       | boolean          | no                                   | Allow mirrors to be set up for projects. If disabled, only admins will be able to set up mirrors in projects. |
 | `pages_domain_verification_enabled`      | boolean          | no                                   | Require users to prove ownership of custom domains. Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled. |
 | `password_authentication_enabled_for_git` | boolean         | no                                   | Enable authentication for Git over HTTP(S) via a GitLab account password. Default is `true`. |
 | `password_authentication_enabled_for_web` | boolean         | no                                   | Enable authentication for the web interface via a GitLab account password. Default is `true`. |
@@ -219,9 +219,6 @@ are listed in the descriptions of the relevant settings.
 | `session_expire_delay`                   | integer          | no                                   | Session duration in minutes. GitLab restart is required to apply changes |
 | `shared_runners_enabled`                 | boolean          | no                                   | (**If enabled, requires:** `shared_runners_text`) Enable shared runners for new projects. |
 | `shared_runners_text`                    | string           | required by: `shared_runners_enabled` | Shared runners text. |
-| `sidekiq_throttling_enabled`             | boolean          | no                                   | (**If enabled, requires:** `sidekiq_throttling_factor` and `sidekiq_throttling_queues`) Enable Sidekiq Job Throttling. |
-| `sidekiq_throttling_factor`              | decimal          | required by: `sidekiq_throttling_enabled` | The factor by which the queues should be throttled. A value between `0.0` and `1.0`, exclusive. |
-| `sidekiq_throttling_queues`              | array of strings | required by: `sidekiq_throttling_enabled` | Choose which queues you wish to throttle. |
 | `sign_in_text`                           | string           | no                                   | Text on the login page. |
 | `signin_enabled`                         | string           | no                                   | (Deprecated: Use `password_authentication_enabled_for_web` instead) Flag indicating if password authentication is enabled for the web interface. |
 | `signup_enabled`                         | boolean          | no                                   | Enable registration. Default is `true`. |

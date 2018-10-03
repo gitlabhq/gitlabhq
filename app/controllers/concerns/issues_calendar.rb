@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module IssuesCalendar
   extend ActiveSupport::Concern
 

@@ -19,9 +19,9 @@
 
   .form-actions
     - if @milestone.new_record?
-      = f.submit 'Create milestone', class: "btn-create btn"
+      = f.submit 'Create milestone', class: "btn-success btn"
       = link_to "Cancel", group_milestones_path(@group), class: "btn btn-cancel"
     - else
-      = f.submit 'Update milestone', class: "btn-create btn"
+      = f.submit 'Update milestone', class: "btn-success btn"
       = link_to "Cancel", group_milestone_path(@group, @milestone), class: "btn btn-cancel"
 

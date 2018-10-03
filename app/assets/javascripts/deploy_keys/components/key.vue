@@ -145,8 +145,8 @@ export default {
             <icon :name="firstProject.can_push ? 'lock-open' : 'lock'"/>
           </a>
           <a
-            v-tooltip
             v-if="isExpandable"
+            v-tooltip
             :title="restProjectsTooltip"
             class="label deploy-project-label"
             @click="toggleExpanded"
@@ -154,10 +154,10 @@ export default {
             <span>{{ restProjectsLabel }}</span>
           </a>
           <a
-            v-tooltip
             v-for="deployKeysProject in restProjects"
             v-else-if="isExpanded"
             :key="deployKeysProject.project.full_path"
+            v-tooltip
             :href="deployKeysProject.project.full_path"
             :title="projectTooltipTitle(deployKeysProject)"
             class="label deploy-project-label"
@@ -198,8 +198,8 @@ export default {
           {{ __('Enable') }}
         </action-btn>
         <a
-          v-tooltip
           v-if="deployKey.can_edit"
+          v-tooltip
           :href="editDeployKeyPath"
           :title="__('Edit')"
           class="btn btn-default text-secondary"
@@ -208,8 +208,8 @@ export default {
           <icon name="pencil"/>
         </a>
         <action-btn
-          v-tooltip
           v-if="isRemovable"
+          v-tooltip
           :deploy-key="deployKey"
           :title="__('Remove')"
           btn-css-class="btn-danger"
@@ -219,8 +219,8 @@ export default {
           <icon name="remove"/>
         </action-btn>
         <action-btn
-          v-tooltip
           v-else-if="isEnabled"
+          v-tooltip
           :deploy-key="deployKey"
           :title="__('Disable')"
           btn-css-class="btn-warning"

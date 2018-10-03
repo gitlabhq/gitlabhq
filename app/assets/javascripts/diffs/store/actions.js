@@ -1,14 +1,18 @@
 import Vue from 'vue';
 import axios from '~/lib/utils/axios_utils';
 import Cookies from 'js-cookie';
+import createFlash from '~/flash';
+import { s__ } from '~/locale';
 import { handleLocationHash, historyPushState } from '~/lib/utils/common_utils';
-import { mergeUrlParams } from '~/lib/utils/url_utility';
-import { getDiffPositionByLineCode } from './utils';
+import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
+import { reduceDiscussionsToLineCodes } from '../../notes/stores/utils';
+import { getDiffPositionByLineCode, getNoteFormData } from './utils';
 import * as types from './mutation_types';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
   INLINE_DIFF_VIEW_TYPE,
   DIFF_VIEW_COOKIE_NAME,
+  MR_TREE_SHOW_KEY,
 } from '../constants';
 
 export const setBaseConfig = ({ commit }, options) => {
@@ -120,6 +124,25 @@ export const loadMoreLines = ({ commit }, options) => {
   });
 };
 
+export const scrollToLineIfNeededInline = (_, line) => {
+  const hash = getLocationHash();
+
+  if (hash && line.lineCode === hash) {
+    handleLocationHash();
+  }
+};
+
+export const scrollToLineIfNeededParallel = (_, line) => {
+  const hash = getLocationHash();
+
+  if (
+    hash &&
+    ((line.left && line.left.lineCode === hash) || (line.right && line.right.lineCode === hash))
+  ) {
+    handleLocationHash();
+  }
+};
+
 export const loadCollapsedDiff = ({ commit }, file) =>
   axios.get(file.loadCollapsedDiffUrl).then(res => {
     commit(types.ADD_COLLAPSED_DIFFS, {
@@ -157,6 +180,38 @@ export const toggleFileDiscussions = ({ getters, dispatch }, diff) => {
       dispatch('expandDiscussion', data, { root: true });
     }
   });
+};
+
+export const saveDiffDiscussion = ({ dispatch }, { note, formData }) => {
+  const postData = getNoteFormData({
+    note,
+    ...formData,
+  });
+
+  return dispatch('saveNote', postData, { root: true })
+    .then(result => dispatch('updateDiscussion', result.discussion, { root: true }))
+    .then(discussion =>
+      dispatch('assignDiscussionsToDiff', reduceDiscussionsToLineCodes([discussion])),
+    )
+    .catch(() => createFlash(s__('MergeRequests|Saving the comment failed')));
+};
+
+export const toggleTreeOpen = ({ commit }, path) => {
+  commit(types.TOGGLE_FOLDER_OPEN, path);
+};
+
+export const scrollToFile = ({ state, commit }, path) => {
+  const { fileHash } = state.treeEntries[path];
+  document.location.hash = fileHash;
+
+  commit(types.UPDATE_CURRENT_DIFF_FILE_ID, fileHash);
+
+  setTimeout(() => commit(types.UPDATE_CURRENT_DIFF_FILE_ID, ''), 1000);
+};
+
+export const toggleShowTreeList = ({ commit, state }) => {
+  commit(types.TOGGLE_SHOW_TREE_LIST);
+  localStorage.setItem(MR_TREE_SHOW_KEY, state.showTreeList);
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

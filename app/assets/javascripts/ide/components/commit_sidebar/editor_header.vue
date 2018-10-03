@@ -3,7 +3,7 @@ import $ from 'jquery';
 import { mapActions } from 'vuex';
 import { __ } from '~/locale';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
-import ChangedFileIcon from '../changed_file_icon.vue';
+import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
 
 export default {
   components: {
@@ -52,6 +52,7 @@ export default {
     </strong>
     <changed-file-icon
       :file="activeFile"
+      class="ml-0"
     />
     <div class="ml-auto">
       <button

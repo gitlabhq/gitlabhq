@@ -18,12 +18,14 @@
 
 */
 
+import { Link } from '@gitlab-org/gitlab-ui';
 import userAvatarImage from './user_avatar_image.vue';
 import tooltip from '../../directives/tooltip';
 
 export default {
   name: 'UserAvatarLink',
   components: {
+    'gl-link': Link,
     userAvatarImage,
   },
   directives: {
@@ -83,7 +85,7 @@ export default {
 </script>
 
 <template>
-  <a
+  <gl-link
     :href="linkHref"
     class="user-avatar-link">
     <user-avatar-image
@@ -94,10 +96,10 @@ export default {
       :tooltip-text="avatarTooltipText"
       :tooltip-placement="tooltipPlacement"
     /><span
-      v-tooltip
       v-if="shouldShowUsername"
+      v-tooltip
       :title="tooltipText"
       :tooltip-placement="tooltipPlacement"
     >{{ username }}</span>
-  </a>
+  </gl-link>
 </template>

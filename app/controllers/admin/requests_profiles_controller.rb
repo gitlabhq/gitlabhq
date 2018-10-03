@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::RequestsProfilesController < Admin::ApplicationController
   def index
     @profile_token = Gitlab::RequestProfiler.profile_token

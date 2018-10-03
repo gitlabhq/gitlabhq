@@ -9,6 +9,7 @@ describe 'Pipelines', :js do
     before do
       sign_in(user)
       project.add_developer(user)
+      project.update!(auto_devops_attributes: { enabled: false })
     end
 
     describe 'GET /:project/pipelines' do
@@ -641,6 +642,7 @@ describe 'Pipelines', :js do
 
   context 'when user is not logged in' do
     before do
+      project.update!(auto_devops_attributes: { enabled: false })
       visit project_pipelines_path(project)
     end
 

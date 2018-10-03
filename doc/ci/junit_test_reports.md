@@ -140,6 +140,27 @@ java:
         - target/failsafe-reports/TEST-*.xml
 ```
 
+### C/C++ example
+
+There are a few tools that can produce JUnit reports in C/C++.
+
+#### GoogleTest
+
+In the following example, `gtest` is used to generate the test reports.
+If there are multiple gtest executables created for different architectures (`x86`, `x64` or `arm`), 
+you will be required to run each test providing a unique filename. The results
+will then be aggregated together.
+
+```yaml
+cpp:
+  stage: test
+  script:
+  - gtest.exe --gtest_output="xml:report.xml"
+  artifacts:
+    reports:
+      junit: report.xml
+```
+
 ## Limitations
 
 Currently, the following tools might not work because their XML formats are unsupported in GitLab.

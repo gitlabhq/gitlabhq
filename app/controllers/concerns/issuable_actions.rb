@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module IssuableActions
   extend ActiveSupport::Concern
   include Gitlab::Utils::StrongMemoize

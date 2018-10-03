@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::ArtifactsController < Projects::ApplicationController
   include ExtractsPath
   include RendersBlob
@@ -12,6 +14,8 @@ class Projects::ArtifactsController < Projects::ApplicationController
   before_action :entry, only: [:file]
 
   def download
+    return render_404 unless artifacts_file
+
     send_upload(artifacts_file, attachment: artifacts_file.filename)
   end
 
@@ -98,7 +102,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def artifacts_file
-    @artifacts_file ||= build.artifacts_file
+    @artifacts_file ||= build.artifacts_file_for_type(params[:file_type] || :archive)
   end
 
   def entry

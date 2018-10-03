@@ -114,8 +114,8 @@
           :date-readable="mr.metrics.readableMergedAt"
         />
         <a
-          v-tooltip
           v-if="mr.canRevertInCurrentMR"
+          v-tooltip
           :title="revertTitle"
           class="btn btn-close btn-sm"
           href="#modal-revert-commit"
@@ -125,8 +125,8 @@
           {{ revertLabel }}
         </a>
         <a
-          v-tooltip
           v-else-if="mr.revertInForkPath"
+          v-tooltip
           :href="mr.revertInForkPath"
           :title="revertTitle"
           class="btn btn-close btn-sm"
@@ -135,8 +135,8 @@
           {{ revertLabel }}
         </a>
         <a
-          v-tooltip
           v-if="mr.canCherryPickInCurrentMR"
+          v-tooltip
           :title="cherryPickTitle"
           class="btn btn-default btn-sm"
           href="#modal-cherry-pick-commit"
@@ -146,8 +146,8 @@
           {{ cherryPickLabel }}
         </a>
         <a
-          v-tooltip
           v-else-if="mr.cherryPickInForkPath"
+          v-tooltip
           :href="mr.cherryPickInForkPath"
           :title="cherryPickTitle"
           class="btn btn-default btn-sm"

@@ -81,7 +81,7 @@ module Network
       skip = 0
       while offset == -1
         tmp_commits = find_commits(skip)
-        if tmp_commits.size > 0
+        if tmp_commits.present?
           index = tmp_commits.index do |c|
             c.id == @commit.id
           end
@@ -218,7 +218,7 @@ module Network
     def get_space_base(leaves)
       space_base = 1
       parents = leaves.last.parents(@map)
-      if parents.size > 0
+      if parents.present?
         if parents.first.space > 0
           space_base = parents.first.space
         end

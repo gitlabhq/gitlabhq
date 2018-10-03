@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::IssuesController < Projects::ApplicationController
   include RendersNotes
   include ToggleSubscriptionAction

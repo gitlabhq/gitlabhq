@@ -1,4 +1,4 @@
-# Searches and reads files present on each Gitlab project repository
+# Searches and reads files present on each GitLab project repository
 module Gitlab
   module Template
     module Finders

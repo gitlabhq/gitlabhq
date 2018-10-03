@@ -3,6 +3,8 @@ require 'fileutils'
 require 'spec_helper'
 
 describe GitGarbageCollectWorker do
+  include GitHelpers
+
   let(:project) { create(:project, :repository) }
   let(:shell) { Gitlab::Shell.new }
   let!(:lease_uuid) { SecureRandom.uuid }
@@ -197,9 +199,7 @@ describe GitGarbageCollectWorker do
 
   # Create a new commit on a random new branch
   def create_objects(project)
-    rugged = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      project.repository.rugged
-    end
+    rugged = rugged_repo(project.repository)
     old_commit = rugged.branches.first.target
     new_commit_sha = Rugged::Commit.create(
       rugged,

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::ApplicationsController < Admin::ApplicationController
   include OauthApplications
 

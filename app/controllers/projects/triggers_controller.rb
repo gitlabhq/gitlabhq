@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::TriggersController < Projects::ApplicationController
   before_action :authorize_admin_build!
   before_action :authorize_manage_trigger!, except: [:index, :create]

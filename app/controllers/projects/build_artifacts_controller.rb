@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::BuildArtifactsController < Projects::ApplicationController
   include ExtractsPath
   include RendersBlob

@@ -1,16 +1,9 @@
 <script>
   export default {
     props: {
-      shortToken: {
-        type: String,
-        required: false,
-        default: null,
-      },
-
-      variables: {
+      trigger: {
         type: Object,
-        required: false,
-        default: () => ({}),
+        required: true,
       },
     },
     data() {
@@ -20,7 +13,7 @@
     },
     computed: {
       hasVariables() {
-        return Object.keys(this.variables).length > 0;
+        return this.trigger.variables && this.trigger.variables.length > 0;
       },
     },
     methods: {
@@ -38,17 +31,18 @@
     </h4>
 
     <p
-      v-if="shortToken"
+      v-if="trigger.short_token"
       class="js-short-token"
     >
       <span class="build-light-text">
         {{ __('Token') }}
       </span>
-      {{ shortToken }}
+      {{ trigger.short_token }}
     </p>
 
     <p v-if="hasVariables">
       <button
+        v-if="!areVariablesVisible"
         type="button"
         class="btn btn-default group js-reveal-variables"
         @click="revealVariables"
@@ -63,20 +57,20 @@
       class="js-build-variables trigger-build-variables"
     >
       <template
-        v-for="(value, key) in variables"
+        v-for="variable in trigger.variables"
       >
         <dt
-          :key="`${key}-variable`"
+          :key="`${variable.key}-variable`"
           class="js-build-variable trigger-build-variable"
         >
-          {{ key }}
+          {{ variable.key }}
         </dt>
 
         <dd
-          :key="`${key}-value`"
+          :key="`${variable.key}-value`"
           class="js-build-value trigger-build-value"
         >
-          {{ value }}
+          {{ variable.value }}
         </dd>
       </template>
     </dl>

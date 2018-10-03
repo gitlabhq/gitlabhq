@@ -1,0 +1,5 @@
+---
+title: Fix broken styling when issue board is collapsed
+merge_request: 21868
+author: Andrea Leone
+type: fixed

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QA
   module Page
     module Dashboard
@@ -14,9 +16,7 @@ module QA
         end
 
         def has_group?(name)
-          filter_by_name(name)
-
-          page.has_link?(name)
+          has_filtered_group?(name)
         end
 
         def go_to_group(name)
