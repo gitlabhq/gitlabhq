@@ -166,18 +166,16 @@ export default {
             :title="diffFile.oldPath"
             class="file-title-name"
             data-container="body"
-          >
-            {{ diffFile.oldPath }}
-          </strong>
+            v-html="diffFile.oldPathHtml"
+          ></strong>
           →
           <strong
             v-tooltip
             :title="diffFile.newPath"
             class="file-title-name"
             data-container="body"
-          >
-            {{ diffFile.newPath }}
-          </strong>
+            v-html="diffFile.newPathHtml"
+          ></strong>
         </span>
 
         <strong
