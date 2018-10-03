@@ -209,6 +209,155 @@ describe Ci::Build do
     end
   end
 
+  describe '#schedulable?' do
+    subject { build.schedulable? }
+
+    context 'when build is schedulable' do
+      let(:build) { create(:ci_build, :created, :schedulable, project: project) }
+
+      it { expect(subject).to be_truthy }
+
+      context 'when feature flag is diabled' do
+        before do
+          stub_feature_flags(ci_enable_scheduled_build: false)
+        end
+
+        it { expect(subject).to be_falsy }
+      end
+    end
+
+    context 'when build is not schedulable' do
+      let(:build) { create(:ci_build, :created, project: project) }
+
+      it { expect(subject).to be_falsy }
+    end
+  end
+
+  describe '#schedule' do
+    subject { build.schedule }
+
+    before do
+      project.add_developer(user)
+    end
+
+    let(:build) { create(:ci_build, :created, :schedulable, user: user, project: project) }
+
+    it 'transits to scheduled' do
+      allow(Ci::BuildScheduleWorker).to receive(:perform_at)
+
+      subject
+
+      expect(build).to be_scheduled
+    end
+
+    it 'updates scheduled_at column' do
+      allow(Ci::BuildScheduleWorker).to receive(:perform_at)
+
+      subject
+
+      expect(build.scheduled_at).not_to be_nil
+    end
+
+    it 'schedules BuildScheduleWorker at the right time' do
+      Timecop.freeze do
+        expect(Ci::BuildScheduleWorker)
+          .to receive(:perform_at).with(1.minute.since, build.id)
+
+        subject
+      end
+    end
+  end
+
+  describe '#unschedule' do
+    subject { build.unschedule }
+
+    context 'when build is scheduled' do
+      let(:build) { create(:ci_build, :scheduled, pipeline: pipeline) }
+
+      it 'cleans scheduled_at column' do
+        subject
+
+        expect(build.scheduled_at).to be_nil
+      end
+
+      it 'transits to manual' do
+        subject
+
+        expect(build).to be_manual
+      end
+    end
+
+    context 'when build is not scheduled' do
+      let(:build) { create(:ci_build, :created, pipeline: pipeline) }
+
+      it 'does not transit status' do
+        subject
+
+        expect(build).to be_created
+      end
+    end
+  end
+
+  describe '#options_scheduled_at' do
+    subject { build.options_scheduled_at }
+
+    let(:build) { build_stubbed(:ci_build, options: option) }
+
+    context 'when start_in is 1 day' do
+      let(:option) { { start_in: '1 day' } }
+
+      it 'returns date after 1 day' do
+        Timecop.freeze do
+          is_expected.to eq(1.day.since)
+        end
+      end
+    end
+
+    context 'when start_in is 1 week' do
+      let(:option) { { start_in: '1 week' } }
+
+      it 'returns date after 1 week' do
+        Timecop.freeze do
+          is_expected.to eq(1.week.since)
+        end
+      end
+    end
+  end
+
+  describe '#enqueue_scheduled' do
+    subject { build.enqueue_scheduled }
+
+    before do
+      stub_feature_flags(ci_enable_scheduled_build: true)
+    end
+
+    context 'when build is scheduled and the right time has not come yet' do
+      let(:build) { create(:ci_build, :scheduled, pipeline: pipeline) }
+
+      it 'does not transits the status' do
+        subject
+
+        expect(build).to be_scheduled
+      end
+    end
+
+    context 'when build is scheduled and the right time has already come' do
+      let(:build) { create(:ci_build, :expired_scheduled, pipeline: pipeline) }
+
+      it 'cleans scheduled_at column' do
+        subject
+
+        expect(build.scheduled_at).to be_nil
+      end
+
+      it 'transits to pending' do
+        subject
+
+        expect(build).to be_pending
+      end
+    end
+  end
+
   describe '#any_runners_online?' do
     subject { build.any_runners_online? }
 
@@ -1193,6 +1342,12 @@ describe Ci::Build do
         it { is_expected.to be_truthy }
       end
 
+      context 'when is set to delayed' do
+        let(:value) { 'delayed' }
+
+        it { is_expected.to be_truthy }
+      end
+
       context 'when set to something else' do
         let(:value) { 'something else' }
 
@@ -1474,6 +1629,12 @@ describe Ci::Build do
 
         it { is_expected.to be_playable }
       end
+    end
+
+    context 'when build is scheduled' do
+      subject { build_stubbed(:ci_build, :scheduled) }
+
+      it { is_expected.to be_playable }
     end
 
     context 'when build is not a manual action' do

@@ -35,6 +35,10 @@ module Ci
       "#{subject.name} - #{detailed_status.status_tooltip}"
     end
 
+    def execute_in
+      scheduled? && scheduled_at && [0, scheduled_at - Time.now].max
+    end
+
     private
 
     def tooltip_for_badge

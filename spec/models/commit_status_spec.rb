@@ -129,6 +129,20 @@ describe CommitStatus do
     end
   end
 
+  describe '#cancel' do
+    subject { job.cancel }
+
+    context 'when status is scheduled' do
+      let(:job) { build(:commit_status, :scheduled) }
+
+      it 'updates the status' do
+        subject
+
+        expect(job).to be_canceled
+      end
+    end
+  end
+
   describe '#auto_canceled?' do
     subject { commit_status.auto_canceled? }
 
@@ -561,6 +575,12 @@ describe CommitStatus do
 
     context 'when initial state is :manual' do
       let(:commit_status) { create(:commit_status, :manual) }
+
+      it_behaves_like 'commit status enqueued'
+    end
+
+    context 'when initial state is :scheduled' do
+      let(:commit_status) { create(:commit_status, :scheduled) }
 
       it_behaves_like 'commit status enqueued'
     end

@@ -360,6 +360,10 @@
   i {
     color: $gl-text-color-secondary;
   }
+
+  svg {
+    fill: $gl-text-color-secondary;
+  }
 }
 
 .clone-dropdown-btn a {

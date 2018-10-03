@@ -117,6 +117,7 @@ pipelines:
 - retryable_builds
 - cancelable_statuses
 - manual_actions
+- scheduled_actions
 - artifacts
 - pipeline_schedule
 - merge_requests

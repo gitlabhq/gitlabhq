@@ -92,7 +92,8 @@ module Ci
     scope :with_artifacts_not_expired, ->() { with_artifacts_archive.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
     scope :with_expired_artifacts, ->() { with_artifacts_archive.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
-    scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
+    scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + %i[manual]) }
+    scope :scheduled_actions, ->() { where(when: :delayed, status: COMPLETED_STATUSES + %i[scheduled]) }
     scope :ref_protected, -> { where(protected: true) }
     scope :with_live_trace, -> { where('EXISTS (?)', Ci::BuildTraceChunk.where('ci_builds.id = ci_build_trace_chunks.build_id').select(1)) }
 
@@ -157,6 +158,34 @@ module Ci
     state_machine :status do
       event :actionize do
         transition created: :manual
+      end
+
+      event :schedule do
+        transition created: :scheduled
+      end
+
+      event :unschedule do
+        transition scheduled: :manual
+      end
+
+      event :enqueue_scheduled do
+        transition scheduled: :pending, if: ->(build) do
+          build.scheduled_at && build.scheduled_at < Time.now
+        end
+      end
+
+      before_transition scheduled: any do |build|
+        build.scheduled_at = nil
+      end
+
+      before_transition created: :scheduled do |build|
+        build.scheduled_at = build.options_scheduled_at
+      end
+
+      after_transition created: :scheduled do |build|
+        build.run_after_commit do
+          Ci::BuildScheduleWorker.perform_at(build.scheduled_at, build.id)
+        end
       end
 
       after_transition any => [:pending] do |build|
@@ -226,11 +255,20 @@ module Ci
     end
 
     def playable?
-      action? && (manual? || retryable?)
+      action? && (manual? || scheduled? || retryable?)
+    end
+
+    def schedulable?
+      Feature.enabled?('ci_enable_scheduled_build') &&
+        self.when == 'delayed' && options[:start_in].present?
+    end
+
+    def options_scheduled_at
+      ChronicDuration.parse(options[:start_in])&.seconds&.from_now
     end
 
     def action?
-      self.when == 'manual'
+      %w[manual delayed].include?(self.when)
     end
 
     # rubocop: disable CodeReuse/ServiceClass
