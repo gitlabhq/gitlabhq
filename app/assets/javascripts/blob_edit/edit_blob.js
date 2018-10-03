@@ -34,7 +34,7 @@ export default class EditBlob {
     this.fileTemplateMediator = new TemplateSelectorMediator({
       currentAction,
       editor: this.editor,
-      projectId
+      projectId,
     });
   }
 
@@ -61,14 +61,15 @@ export default class EditBlob {
 
     if (paneId === '#preview') {
       this.$toggleButton.hide();
-      axios.post(currentLink.data('previewUrl'), {
-        content: this.editor.getValue(),
-      })
-      .then(({ data }) => {
-        currentPane.empty().append(data);
-        currentPane.renderGFM();
-      })
-      .catch(() => createFlash(__('An error occurred previewing the blob')));
+      axios
+        .post(currentLink.data('previewUrl'), {
+          content: this.editor.getValue(),
+        })
+        .then(({ data }) => {
+          currentPane.empty().append(data);
+          currentPane.renderGFM();
+        })
+        .catch(() => createFlash(__('An error occurred previewing the blob')));
     }
 
     this.$toggleButton.show();

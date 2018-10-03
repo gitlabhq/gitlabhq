@@ -1,5 +1,3 @@
-/* eslint-disable class-methods-use-this */
-
 import Api from '~/api';
 
 import $ from 'jquery';
@@ -36,15 +34,14 @@ export default class FileTemplateMediator {
   initTemplateTypeSelector() {
     this.typeSelector = new FileTemplateTypeSelector({
       mediator: this,
-      dropdownData: this.templateSelectors
-        .map((templateSelector) => {
-          const cfg = templateSelector.config;
+      dropdownData: this.templateSelectors.map(templateSelector => {
+        const cfg = templateSelector.config;
 
-          return {
-            name: cfg.name,
-            key: cfg.key,
-          };
-        }),
+        return {
+          name: cfg.name,
+          key: cfg.key,
+        };
+      }),
     });
   }
 
@@ -92,7 +89,7 @@ export default class FileTemplateMediator {
   }
 
   listenForPreviewMode() {
-    this.$navLinks.on('click', 'a', (e) => {
+    this.$navLinks.on('click', 'a', e => {
       const urlPieces = e.target.href.split('#');
       const hash = urlPieces[1];
       if (hash === 'preview') {
@@ -108,7 +105,7 @@ export default class FileTemplateMediator {
       e.preventDefault();
     }
 
-    this.templateSelectors.forEach((selector) => {
+    this.templateSelectors.forEach(selector => {
       if (selector.config.key === item.key) {
         selector.show();
       } else {
@@ -130,7 +127,7 @@ export default class FileTemplateMediator {
     // in case undo menu is already already there
     this.destroyUndoMenu();
     this.fetchFileTemplate(selector.config.type, query, data)
-      .then((file) => {
+      .then(file => {
         this.showUndoMenu();
         this.setEditorContent(file);
         this.setFilename(selector.config.name);
@@ -141,7 +138,7 @@ export default class FileTemplateMediator {
 
   displayMatchedTemplateSelector() {
     const currentInput = this.getFilename();
-    this.templateSelectors.forEach((selector) => {
+    this.templateSelectors.forEach(selector => {
       const match = selector.config.pattern.test(currentInput);
 
       if (match) {
@@ -152,13 +149,9 @@ export default class FileTemplateMediator {
     });
   }
 
-  fetchFileTemplate(type, query, data) {
-    return new Promise((resolve) => {
+  fetchFileTemplate(type, query, data = {}) {
+    return new Promise(resolve => {
       const resolveFile = file => resolve(file);
-
-      if (!data) {
-        data = {};
-      }
 
       Api.projectTemplate(this.projectId, type, query, data, resolveFile);
     });

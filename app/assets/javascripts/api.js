@@ -231,7 +231,11 @@ const Api = {
       .replace(':type', type)
       .replace(':key', encodeURIComponent(key));
 
-    return axios.get(url, { params: options }).then(({ data }) => callback(data));
+    return axios.get(url, { params: options }).then(res => {
+      if (callback) callback(res.data);
+
+      return res;
+    });
   },
 
   projectTemplates(id, type, params = {}, callback) {
@@ -239,7 +243,11 @@ const Api = {
       .replace(':id', encodeURIComponent(id))
       .replace(':type', type);
 
-    return axios.get(url, { params }).then(({ data }) => callback(data));
+    return axios.get(url, { params }).then(res => {
+      if (callback) callback(res.data);
+
+      return res;
+    });
   },
 
   issueTemplate(namespacePath, projectPath, key, type, callback) {
