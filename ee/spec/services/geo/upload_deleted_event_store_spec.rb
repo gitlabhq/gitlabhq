@@ -11,18 +11,14 @@ describe Geo::UploadDeletedEventStore do
 
   subject { described_class.new(upload) }
 
-  describe '#create' do
-    it_behaves_like 'a Geo event store', Geo::UploadDeletedEvent
+  describe '#create!' do
+    it_behaves_like 'a Geo event store', Geo::UploadDeletedEvent do
+      let(:file_subject) { upload }
+    end
 
     context 'when running on a primary node' do
       before do
         stub_primary_node
-      end
-
-      it 'does not create an event when the upload does not use local storage' do
-        allow(upload).to receive(:local?).and_return(false)
-
-        expect { subject.create! }.not_to change(Geo::UploadDeletedEvent, :count)
       end
 
       it 'tracks upload attributes' do

@@ -137,6 +137,8 @@ module ObjectStorage
     included do |base|
       base.include(ObjectStorage)
 
+      include ::EE::ObjectStorage::Concern
+
       after :migrate, :delete_migrated_file
     end
 

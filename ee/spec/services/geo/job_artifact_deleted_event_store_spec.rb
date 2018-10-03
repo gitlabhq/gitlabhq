@@ -11,21 +11,17 @@ describe Geo::JobArtifactDeletedEventStore do
 
   subject { described_class.new(job_artifact) }
 
-  describe '#create' do
-    it_behaves_like 'a Geo event store', Geo::JobArtifactDeletedEvent
+  describe '#create!' do
+    it_behaves_like 'a Geo event store', Geo::JobArtifactDeletedEvent do
+      let(:file_subject) { job_artifact }
+    end
 
     context 'when running on a primary node' do
       before do
         stub_primary_node
       end
 
-      it 'does not create an event when LFS object is not on a local store' do
-        allow(job_artifact).to receive(:local_store?).and_return(false)
-
-        expect { subject.create! }.not_to change(Geo::JobArtifactDeletedEvent, :count)
-      end
-
-      it 'tracks LFS object attributes' do
+      it 'tracks artifact attributes' do
         subject.create!
 
         expect(Geo::JobArtifactDeletedEvent.last).to have_attributes(

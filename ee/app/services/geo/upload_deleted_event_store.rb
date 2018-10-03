@@ -10,13 +10,6 @@ module Geo
       @upload = upload
     end
 
-    override :create!
-    def create!
-      return unless upload.local?
-
-      super
-    end
-
     private
 
     def build_event

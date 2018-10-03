@@ -16,7 +16,7 @@ describe Geo::RepositoryDeletedEventStore do
 
   subject { described_class.new(project, repo_path: repo_path, wiki_path: wiki_path) }
 
-  describe '#create' do
+  describe '#create!' do
     it_behaves_like 'a Geo event store', Geo::RepositoryDeletedEvent
 
     context 'when running on a primary node' do

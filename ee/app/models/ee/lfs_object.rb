@@ -7,15 +7,13 @@ module EE
     extend ActiveSupport::Concern
 
     prepended do
-      after_destroy :log_geo_event
+      after_destroy :log_geo_deleted_event
 
       scope :geo_syncable, -> { with_files_stored_locally }
       scope :with_files_stored_remotely, -> { where(file_store: LfsObjectUploader::Store::REMOTE) }
     end
 
-    private
-
-    def log_geo_event
+    def log_geo_deleted_event
       ::Geo::LfsObjectDeletedEventStore.new(self).create!
     end
   end

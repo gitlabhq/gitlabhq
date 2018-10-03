@@ -10,7 +10,7 @@ describe Gitlab::Geo::LogCursor::Events::UploadDeletedEvent, :postgresql, :clean
   subject { described_class.new(upload_deleted_event, Time.now, logger) }
 
   around do |example|
-    Sidekiq::Testing.fake! { example.run }
+    Sidekiq::Testing.inline! { example.run }
   end
 
   describe '#process' do

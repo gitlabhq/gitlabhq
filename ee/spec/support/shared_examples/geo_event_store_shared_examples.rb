@@ -25,5 +25,17 @@ shared_examples_for 'a Geo event store' do |event_class|
     it 'creates an event' do
       expect { subject.create! }.to change(event_class, :count).by(1)
     end
+
+    context 'when file subject is not on local store' do
+      before do
+        skip 'No file subject defined, skipping' unless defined?(file_subject)
+
+        allow(file_subject).to receive(:local?).and_return(false)
+      end
+
+      it 'creates an event' do
+        expect { subject.create! }.to change(event_class, :count).by(1)
+      end
+    end
   end
 end

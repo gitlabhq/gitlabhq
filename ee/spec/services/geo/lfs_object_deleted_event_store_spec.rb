@@ -11,18 +11,14 @@ describe Geo::LfsObjectDeletedEventStore do
 
   subject { described_class.new(lfs_object) }
 
-  describe '#create' do
-    it_behaves_like 'a Geo event store', Geo::LfsObjectDeletedEvent
+  describe '#create!' do
+    it_behaves_like 'a Geo event store', Geo::LfsObjectDeletedEvent do
+      let(:file_subject) { lfs_object }
+    end
 
     context 'when running on a primary node' do
       before do
         stub_primary_node
-      end
-
-      it 'does not create an event when LFS object is not on a local store' do
-        allow(lfs_object).to receive(:local_store?).and_return(false)
-
-        expect { subject.create! }.not_to change(Geo::LfsObjectDeletedEvent, :count)
       end
 
       it 'tracks LFS object attributes' do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Geo
   class FileService
     include ExclusiveLeaseGuard
@@ -5,8 +7,8 @@ module Geo
 
     attr_reader :object_type, :object_db_id
 
-    DEFAULT_OBJECT_TYPES = %w[attachment avatar file import_export namespace_file personal_file favicon].freeze
-    DEFAULT_SERVICE_TYPE = 'file'.freeze
+    DEFAULT_OBJECT_TYPES = %i[attachment avatar file import_export namespace_file personal_file favicon].freeze
+    DEFAULT_SERVICE_TYPE = :file
 
     def initialize(object_type, object_db_id)
       @object_type = object_type.to_sym
@@ -19,9 +21,17 @@ module Geo
 
     private
 
+    def upload?
+      DEFAULT_OBJECT_TYPES.include?(object_type)
+    end
+
+    def job_artifact?
+      object_type == :job_artifact
+    end
+
     def service_klass_name
       klass_name =
-        if DEFAULT_OBJECT_TYPES.include?(object_type.to_s)
+        if upload?
           DEFAULT_SERVICE_TYPE
         else
           object_type
@@ -33,7 +43,7 @@ module Geo
     def base_log_data(message)
       {
         class: self.class.name,
-        object_type: object_type.to_s,
+        object_type: object_type,
         object_db_id: object_db_id,
         message: message
       }

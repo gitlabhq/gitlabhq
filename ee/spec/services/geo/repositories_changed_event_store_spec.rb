@@ -9,7 +9,7 @@ describe Geo::RepositoriesChangedEventStore do
 
   subject { described_class.new(geo_node) }
 
-  describe '#create' do
+  describe '#create!' do
     it_behaves_like 'a Geo event store', Geo::RepositoriesChangedEvent
   end
 end

@@ -10,13 +10,6 @@ module Geo
       @lfs_object = lfs_object
     end
 
-    override :create!
-    def create!
-      return unless lfs_object.local_store?
-
-      super
-    end
-
     private
 
     def build_event
@@ -27,14 +20,8 @@ module Geo
       )
     end
 
-    def local_store_path
-      Pathname.new(LfsObjectUploader.root)
-    end
-
     def relative_file_path
-      return unless lfs_object.file.present?
-
-      Pathname.new(lfs_object.file.path).relative_path_from(local_store_path)
+      lfs_object.file.relative_path if lfs_object.file.present?
     end
 
     # This is called by ProjectLogHelpers to build json log with context info

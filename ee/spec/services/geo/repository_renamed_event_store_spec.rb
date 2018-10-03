@@ -13,7 +13,7 @@ describe Geo::RepositoryRenamedEventStore do
 
   subject { described_class.new(project, old_path: old_path, old_path_with_namespace: old_path_with_namespace) }
 
-  describe '#create' do
+  describe '#create!' do
     it_behaves_like 'a Geo event store', Geo::RepositoryRenamedEvent
 
     context 'when running on a primary node' do

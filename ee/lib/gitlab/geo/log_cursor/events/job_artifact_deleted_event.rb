@@ -6,42 +6,20 @@ module Gitlab
           include BaseEvent
 
           def process
-            return unless file_registry_job_artifacts.any? # avoid race condition
-
-            # delete synchronously to ensure consistency
-            if File.file?(file_path) && !delete_file(file_path)
-              return # do not delete file from registry if deletion failed
-            end
-
-            log_event
-            file_registry_job_artifacts.delete_all
+            # Must always schedule, regardless of shard health
+            job_id = ::Geo::FileRegistryRemovalWorker.perform_async(:job_artifact, event.job_artifact_id)
+            log_event(job_id)
           end
 
           private
 
-          # rubocop: disable CodeReuse/ActiveRecord
-          def file_registry_job_artifacts
-            @file_registry_job_artifacts ||= ::Geo::JobArtifactRegistry.where(artifact_id: event.job_artifact_id)
-          end
-          # rubocop: enable CodeReuse/ActiveRecord
-
-          def file_path
-            @file_path ||= File.join(::JobArtifactUploader.root, event.file_path)
-          end
-
-          def log_event
+          def log_event(job_id)
             logger.event_info(
               created_at,
-              'Deleted job artifact',
+              'Delete job artifact scheduled',
               file_id: event.job_artifact_id,
-              file_path: file_path)
-          end
-
-          def delete_file(path)
-            File.delete(path)
-          rescue => ex
-            logger.error("Failed to remove file", exception: ex.class.name, details: ex.message, filename: path)
-            false
+              file_path: event.file_path,
+              job_id: job_id)
           end
         end
       end

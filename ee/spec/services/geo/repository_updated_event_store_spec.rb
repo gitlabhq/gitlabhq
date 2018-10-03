@@ -20,7 +20,7 @@ describe Geo::RepositoryUpdatedEventStore do
 
   subject { described_class.new(project, refs: refs, changes: changes) }
 
-  describe '#create' do
+  describe '#create!' do
     it_behaves_like 'a Geo event store', Geo::RepositoryUpdatedEvent
 
     context 'when running on a primary node' do
