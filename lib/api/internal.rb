@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   # Internal access API
   class Internal < Grape::API

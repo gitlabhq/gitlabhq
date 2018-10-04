@@ -81,14 +81,14 @@
 // Middle dot divider between each element in a list of items.
 .middle-dot-divider {
   &::after {
-    content: "\00B7"; // Middle Dot
+    content: '\00B7'; // Middle Dot
     padding: 0 6px;
     font-weight: $gl-font-weight-bold;
   }
 
   &:last-child {
     &::after {
-      content: "";
+      content: '';
       padding: 0;
     }
   }
@@ -191,7 +191,6 @@
     @include media-breakpoint-down(xs) {
       width: auto;
     }
-
   }
 
   .profile-crop-image-container {
@@ -214,7 +213,6 @@
     border: 1px solid $border-color;
   }
 }
-
 
 .user-profile {
   .cover-controls a {
@@ -418,7 +416,7 @@ table.u2f-registrations {
     }
 
     &.unverified {
-      @include status-color($gray-dark, color("gray"), $common-gray-dark);
+      @include status-color($gray-dark, color('gray'), $common-gray-dark);
     }
   }
 }
@@ -431,7 +429,7 @@ table.u2f-registrations {
   }
 
   .emoji-menu-toggle-button {
-    @extend .note-action-button;
+    @include emoji-menu-toggle-button;
 
     .no-emoji-placeholder {
       position: relative;

@@ -159,12 +159,12 @@ FactoryBot.define do
     end
 
     trait :erased do
-      erased_at Time.now
+      erased_at { Time.now }
       erased_by factory: :user
     end
 
     trait :queued do
-      queued_at Time.now
+      queued_at { Time.now }
       runner factory: :ci_runner
     end
 
@@ -194,7 +194,7 @@ FactoryBot.define do
     end
 
     trait :expired do
-      artifacts_expire_at 1.minute.ago
+      artifacts_expire_at { 1.minute.ago }
     end
 
     trait :with_commit do

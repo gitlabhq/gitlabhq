@@ -2,12 +2,9 @@
 
 Currently we rely on different sources to present diffs, these include:
 
-- Rugged gem
 - Gitaly service
 - Database (through `merge_request_diff_files`)
 - Redis (cached highlighted diffs)
-
-We're constantly moving Rugged calls to Gitaly and the progress can be followed through [Gitaly repo](https://gitlab.com/gitlab-org/gitaly).
 
 ## Architecture overview
 
@@ -19,8 +16,9 @@ we fetch the comparison information using `Gitlab::Git::Compare`, which fetches 
 The diffs fetching process _limits_ single file diff sizes and the overall size of the whole diff through a series of constant values. Raw diff files are
 then persisted on `merge_request_diff_files` table.
 
-Even though diffs higher than 10kb are collapsed (`Gitlab::Git::Diff::COLLAPSE_LIMIT`), we still keep them on Postgres. However, diff files over _safety limits_
-(see the [Diff limits section](#diff-limits)) are _not_ persisted.
+Even though diffs larger than 10% of the value of `ApplicationSettings#diff_max_patch_bytes` are collapsed,
+we still keep them on Postgres. However, diff files larger than defined _safety limits_ 
+(see the [Diff limits section](#diff-limits)) are _not_ persisted in the database.
 
 In order to present diffs information on the Merge Request diffs page, we:
 
@@ -102,23 +100,20 @@ Gitaly will only return the safe amount of data to be persisted on `merge_reques
 
 Limits that act onto each diff file of a collection. Files number, lines number and files size are considered.
 
-```ruby
-Gitlab::Git::Diff::COLLAPSE_LIMIT = 10.kilobytes
-```
+#### Expandable patches (collapsed)
 
-File diff will be collapsed (but be expandable) if it is larger than 10 kilobytes.
+Diff patches are collapsed when surpassing 10% of the value set in `ApplicationSettings#diff_max_patch_bytes`.
+That is, it's equivalent to 10kb if the maximum allowed value is 100kb.
+The diff will still be persisted and expandable if the patch size doesn't
+surpass `ApplicationSettings#diff_max_patch_bytes`.
 
 *Note:* Although this nomenclature (Collapsing) is also used on Gitaly, this limit is only used on GitLab (hardcoded - not sent to Gitaly).
 Gitaly will only return `Diff.Collapsed` (RPC) when surpassing collection limits.
 
-```ruby
-Gitlab::Git::Diff::SIZE_LIMIT = 100.kilobytes
-```
+#### Not expandable patches (too large)
 
-File diff will not be rendered if it's larger than 100 kilobytes.
-
-*Note:* This limit is currently hardcoded and applied on Gitaly and the RPC returns `Diff.TooLarge` when this limit is surpassed.
-Although we're still also applying it on GitLab, we should remove the redundancy from GitLab once we're confident with the Gitaly integration.
+The patch not be rendered if it's larger than `ApplicationSettings#diff_max_patch_bytes`.
+Users will see a `This source diff could not be displayed because it is too large` message.
 
 ```ruby
 Commit::DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines] = 5000

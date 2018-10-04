@@ -22,14 +22,27 @@ FactoryBot.define do
       status 3
     end
 
+    trait :updating do
+      status 4
+    end
+
+    trait :updated do
+      status 5
+    end
+
     trait :errored do
       status(-1)
       status_reason 'something went wrong'
     end
 
+    trait :update_errored do
+      status(6)
+      status_reason 'something went wrong'
+    end
+
     trait :timeouted do
       installing
-      updated_at ClusterWaitForAppInstallationWorker::TIMEOUT.ago
+      updated_at { ClusterWaitForAppInstallationWorker::TIMEOUT.ago }
     end
 
     factory :clusters_applications_ingress, class: Clusters::Applications::Ingress do

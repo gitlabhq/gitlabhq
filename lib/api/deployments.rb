@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   # Deployments RESTful API endpoints
   class Deployments < Grape::API

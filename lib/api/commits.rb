@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'mime/types'
 
 module API
@@ -96,6 +98,7 @@ module API
         optional :start_branch, type: String, desc: 'Name of the branch to start the new commit from'
         optional :author_email, type: String, desc: 'Author email for commit'
         optional :author_name, type: String, desc: 'Author name for commit'
+        optional :stats, type: Boolean, default: true, desc: 'Include commit stats'
       end
       post ':id/repository/commits' do
         authorize_push_to_branch!(params[:branch])
@@ -108,7 +111,10 @@ module API
 
         if result[:status] == :success
           commit_detail = user_project.repository.commit(result[:result])
-          present commit_detail, with: Entities::CommitDetail
+
+          Gitlab::WebIdeCommitsCounter.increment if find_user_from_warden
+
+          present commit_detail, with: Entities::CommitDetail, stats: params[:stats]
         else
           render_api_error!(result[:message], 400)
         end

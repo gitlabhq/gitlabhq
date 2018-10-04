@@ -943,7 +943,13 @@ X-Gitlab-Event: Pipeline Hook
       ],
       "created_at": "2016-08-12 15:23:28 UTC",
       "finished_at": "2016-08-12 15:26:29 UTC",
-      "duration": 63
+      "duration": 63,
+      "variables": [
+        {
+          "key": "NESTOR_PROD_ENVIRONMENT",
+          "value": "us-west-1"
+        }
+      ]
    },
    "user":{
       "name": "Administrator",

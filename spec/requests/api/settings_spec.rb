@@ -66,7 +66,8 @@ describe API::Settings, 'Settings' do
           enforce_terms: true,
           terms: 'Hello world!',
           performance_bar_allowed_group_path: group.full_path,
-          instance_statistics_visibility_private: true
+          instance_statistics_visibility_private: true,
+          diff_max_patch_bytes: 150_000
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['default_projects_limit']).to eq(3)
@@ -92,6 +93,7 @@ describe API::Settings, 'Settings' do
         expect(json_response['terms']).to eq('Hello world!')
         expect(json_response['performance_bar_allowed_group_id']).to eq(group.id)
         expect(json_response['instance_statistics_visibility_private']).to be(true)
+        expect(json_response['diff_max_patch_bytes']).to eq(150_000)
       end
     end
 

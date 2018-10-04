@@ -236,8 +236,11 @@ module QA
 
     module Admin
       module Settings
-        autoload :RepositoryStorage, 'qa/page/admin/settings/repository_storage'
-        autoload :Main, 'qa/page/admin/settings/main'
+        autoload :Repository, 'qa/page/admin/settings/repository'
+
+        module Component
+          autoload :RepositoryStorage, 'qa/page/admin/settings/component/repository_storage'
+        end
       end
     end
 

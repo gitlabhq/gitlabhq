@@ -147,7 +147,7 @@ const bindEvents = () => {
 
   $projectImportUrl.keyup(() => deriveProjectPathFromUrl($projectImportUrl));
 
-  $projectName.keyup(() => {
+  $projectName.on('keyup change', () => {
     onProjectNameChange($projectName, $projectPath);
     hasUserDefinedProjectPath = $projectPath.val().trim().length > 0;
   });

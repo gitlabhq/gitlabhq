@@ -2,32 +2,25 @@
 - page_title "Labels"
 - can_admin_label = can?(current_user, :admin_label, @project)
 - search = params[:search]
+- subscribed = params[:subscribed]
+- labels_or_filters = @labels.exists? || @prioritized_labels.exists? || search.present? || subscribed.present?
 
 - if can_admin_label
   - content_for(:header_content) do
     .nav-controls
       = link_to _('New label'), new_project_label_path(@project), class: "btn btn-success"
 
-- if @labels.exists? || @prioritized_labels.exists? || search.present?
+- if labels_or_filters
   #promote-label-modal
   %div{ class: container_class }
-    .top-area.adjust
-      .nav-text
-        = _('Labels can be applied to issues and merge requests.')
-
-      .nav-controls
-        = form_tag project_labels_path(@project), method: :get do
-          .input-group
-            = search_field_tag :search, params[:search], { placeholder: _('Filter'), id: 'label-search', class: 'form-control search-text-input input-short', spellcheck: false }
-            %span.input-group-append
-              %button.btn.btn-default{ type: "submit", "aria-label" => _('Submit search') }
-                = icon("search")
-        = render 'shared/labels/sort_dropdown'
+    = render 'shared/labels/nav'
 
     .labels-container.prepend-top-10
       - if can_admin_label
         - if search.blank?
           %p.text-muted
+            = _('Labels can be applied to issues and merge requests.')
+            %br
             = _('Star a label to make it a priority label. Order the prioritized labels to change their relative priority, by dragging.')
         -# Only show it in the first page
         - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
@@ -59,7 +52,9 @@
           - else
             .nothing-here-block
               = _('No labels with such name or description')
-
+      - elsif subscribed.present?
+        .nothing-here-block
+          = _('You do not have any subscriptions yet')
 
 - else
   = render 'shared/empty_states/labels'

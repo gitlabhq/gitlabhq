@@ -64,55 +64,19 @@ EOT
       end
     end
 
-    context 'using a Rugged::Patch' do
-      context 'with a small diff' do
-        let(:diff) { described_class.new(gitaly_diff) }
-
-        it 'initializes the diff' do
-          expect(diff.to_hash).to eq(@raw_diff_hash)
-        end
-
-        it 'does not prune the diff' do
-          expect(diff).not_to be_too_large
-        end
-      end
-
-      context 'using a diff that is too large' do
-        it 'prunes the diff' do
-          gitaly_diff.too_large = true
-          diff = described_class.new(gitaly_diff)
-
-          expect(diff.diff).to be_empty
-          expect(diff).to be_too_large
-        end
-      end
-
-      context 'using a collapsable diff that is too large' do
-        it 'prunes the diff as a large diff instead of as a collapsed diff' do
-          gitaly_diff.too_large = true
-          diff = described_class.new(gitaly_diff, expanded: false)
-
-          expect(diff.diff).to be_empty
-          expect(diff).to be_too_large
-          expect(diff).not_to be_collapsed
-        end
-      end
-    end
-
     context 'using a GitalyClient::Diff' do
-      let(:diff) do
-        described_class.new(
-          Gitlab::GitalyClient::Diff.new(
-            to_path: ".gitmodules",
-            from_path: ".gitmodules",
-            old_mode: 0100644,
-            new_mode: 0100644,
-            from_id: '357406f3075a57708d0163752905cc1576fceacc',
-            to_id: '8e5177d718c561d36efde08bad36b43687ee6bf0',
-            patch: raw_patch
-          )
+      let(:gitaly_diff) do
+        Gitlab::GitalyClient::Diff.new(
+          to_path: ".gitmodules",
+          from_path: ".gitmodules",
+          old_mode: 0100644,
+          new_mode: 0100644,
+          from_id: '357406f3075a57708d0163752905cc1576fceacc',
+          to_id: '8e5177d718c561d36efde08bad36b43687ee6bf0',
+          patch: raw_patch
         )
       end
+      let(:diff) { described_class.new(gitaly_diff) }
 
       context 'with a small diff' do
         let(:raw_patch) { @raw_diff_hash[:diff] }
@@ -132,6 +96,19 @@ EOT
         it 'prunes the diff' do
           expect(diff.diff).to be_empty
           expect(diff).to be_too_large
+        end
+      end
+
+      context 'using a collapsable diff that is too large' do
+        let(:raw_patch) { 'a' * 204800 }
+
+        it 'prunes the diff as a large diff instead of as a collapsed diff' do
+          gitaly_diff.too_large = true
+          diff = described_class.new(gitaly_diff, expanded: false)
+
+          expect(diff.diff).to be_empty
+          expect(diff).to be_too_large
+          expect(diff).not_to be_collapsed
         end
       end
 

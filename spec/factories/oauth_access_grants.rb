@@ -3,7 +3,7 @@ FactoryBot.define do
     resource_owner_id { create(:user).id }
     application
     token { Doorkeeper::OAuth::Helpers::UniqueToken.generate }
-    expires_in 2.hours
+    expires_in { 2.hours }
 
     redirect_uri { application.redirect_uri }
     scopes { application.scopes }

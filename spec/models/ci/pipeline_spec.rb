@@ -2019,4 +2019,34 @@ describe Ci::Pipeline, :mailer do
       end
     end
   end
+
+  describe '#default_branch?' do
+    let(:default_branch) { 'master'}
+
+    subject { pipeline.default_branch? }
+
+    before do
+      allow(project).to receive(:default_branch).and_return(default_branch)
+    end
+
+    context 'when pipeline ref is the default branch of the project' do
+      let(:pipeline) do
+        build(:ci_empty_pipeline, status: :created, project: project, ref: default_branch)
+      end
+
+      it "returns true" do
+        expect(subject).to be_truthy
+      end
+    end
+
+    context 'when pipeline ref is not the default branch of the project' do
+      let(:pipeline) do
+        build(:ci_empty_pipeline, status: :created, project: project, ref: 'another_branch')
+      end
+
+      it "returns false" do
+        expect(subject).to be_falsey
+      end
+    end
+  end
 end

@@ -49,7 +49,7 @@ variables:
   POSTGRES_DB: $CI_ENVIRONMENT_SLUG
 
   KUBERNETES_VERSION: 1.8.6
-  HELM_VERSION: 2.10.0
+  HELM_VERSION: 2.11.0
 
   DOCKER_DRIVER: overlay2
 
@@ -162,7 +162,10 @@ sast:
   artifacts:
     paths: [gl-sast-report.json]
   only:
-    - branches
+    refs:
+      - branches
+    variables:
+      - $GITLAB_FEATURES =~ /\bsast\b/
   except:
     variables:
       - $SAST_DISABLED
@@ -179,7 +182,10 @@ dependency_scanning:
   artifacts:
     paths: [gl-dependency-scanning-report.json]
   only:
-    - branches
+    refs:
+      - branches
+    variables:
+      - $GITLAB_FEATURES =~ /\bdependency_scanning\b/
   except:
     variables:
       - $DEPENDENCY_SCANNING_DISABLED
@@ -196,7 +202,10 @@ container_scanning:
   artifacts:
     paths: [gl-container-scanning-report.json]
   only:
-    - branches
+    refs:
+      - branches
+    variables:
+      - $GITLAB_FEATURES =~ /\bsast_container\b/
   except:
     variables:
       - $CONTAINER_SCANNING_DISABLED
@@ -215,6 +224,8 @@ dast:
     refs:
       - branches
     kubernetes: active
+    variables:
+      - $GITLAB_FEATURES =~ /\bdast\b/
   except:
     refs:
       - master
@@ -228,7 +239,7 @@ review:
     - install_dependencies
     - download_chart
     - ensure_namespace
-    - install_tiller
+    - initialize_tiller
     - create_secret
     - deploy
     - persist_environment_url
@@ -254,6 +265,7 @@ stop_review:
     GIT_STRATEGY: none
   script:
     - install_dependencies
+    - initialize_tiller
     - delete
   environment:
     name: review/$CI_COMMIT_REF_NAME
@@ -288,7 +300,7 @@ staging:
     - install_dependencies
     - download_chart
     - ensure_namespace
-    - install_tiller
+    - initialize_tiller
     - create_secret
     - deploy
   environment:
@@ -312,7 +324,7 @@ canary:
     - install_dependencies
     - download_chart
     - ensure_namespace
-    - install_tiller
+    - initialize_tiller
     - create_secret
     - deploy canary
   environment:
@@ -333,7 +345,7 @@ canary:
     - install_dependencies
     - download_chart
     - ensure_namespace
-    - install_tiller
+    - initialize_tiller
     - create_secret
     - deploy
     - delete canary
@@ -381,7 +393,7 @@ production_manual:
     - install_dependencies
     - download_chart
     - ensure_namespace
-    - install_tiller
+    - initialize_tiller
     - create_secret
     - deploy rollout $ROLLOUT_PERCENTAGE
     - scale stable $((100-ROLLOUT_PERCENTAGE))
@@ -586,26 +598,59 @@ rollout 100%:
       secret_name=''
     fi
 
-    helm upgrade --install \
-      --wait \
-      --set service.enabled="$service_enabled" \
-      --set releaseOverride="$CI_ENVIRONMENT_SLUG" \
-      --set image.repository="$CI_APPLICATION_REPOSITORY" \
-      --set image.tag="$CI_APPLICATION_TAG" \
-      --set image.pullPolicy=IfNotPresent \
-      --set image.secrets[0].name="$secret_name" \
-      --set application.track="$track" \
-      --set application.database_url="$DATABASE_URL" \
-      --set service.url="$CI_ENVIRONMENT_URL" \
-      --set replicaCount="$replicas" \
-      --set postgresql.enabled="$postgres_enabled" \
-      --set postgresql.nameOverride="postgres" \
-      --set postgresql.postgresUser="$POSTGRES_USER" \
-      --set postgresql.postgresPassword="$POSTGRES_PASSWORD" \
-      --set postgresql.postgresDatabase="$POSTGRES_DB" \
-      --namespace="$KUBE_NAMESPACE" \
-      "$name" \
-      chart/
+    if [[ -n "$DB_INITIALIZE" && -z "$(helm ls -q "^$name$")" ]]; then
+      helm upgrade --install \
+        --wait \
+        --set service.enabled="$service_enabled" \
+        --set releaseOverride="$CI_ENVIRONMENT_SLUG" \
+        --set image.repository="$CI_APPLICATION_REPOSITORY" \
+        --set image.tag="$CI_APPLICATION_TAG" \
+        --set image.pullPolicy=IfNotPresent \
+        --set image.secrets[0].name="$secret_name" \
+        --set application.track="$track" \
+        --set application.database_url="$DATABASE_URL" \
+        --set service.url="$CI_ENVIRONMENT_URL" \
+        --set replicaCount="$replicas" \
+        --set postgresql.enabled="$postgres_enabled" \
+        --set postgresql.nameOverride="postgres" \
+        --set postgresql.postgresUser="$POSTGRES_USER" \
+        --set postgresql.postgresPassword="$POSTGRES_PASSWORD" \
+        --set postgresql.postgresDatabase="$POSTGRES_DB" \
+        --set application.initializeCommand="$DB_INITIALIZE" \
+        --namespace="$KUBE_NAMESPACE" \
+        "$name" \
+        chart/
+
+      helm upgrade --reuse-values \
+        --wait \
+        --set application.initializeCommand="" \
+        --set application.migrateCommand="$DB_MIGRATE" \
+        --namespace="$KUBE_NAMESPACE" \
+        "$name" \
+        chart/
+    else
+      helm upgrade --install \
+        --wait \
+        --set service.enabled="$service_enabled" \
+        --set releaseOverride="$CI_ENVIRONMENT_SLUG" \
+        --set image.repository="$CI_APPLICATION_REPOSITORY" \
+        --set image.tag="$CI_APPLICATION_TAG" \
+        --set image.pullPolicy=IfNotPresent \
+        --set image.secrets[0].name="$secret_name" \
+        --set application.track="$track" \
+        --set application.database_url="$DATABASE_URL" \
+        --set service.url="$CI_ENVIRONMENT_URL" \
+        --set replicaCount="$replicas" \
+        --set postgresql.enabled="$postgres_enabled" \
+        --set postgresql.nameOverride="postgres" \
+        --set postgresql.postgresUser="$POSTGRES_USER" \
+        --set postgresql.postgresPassword="$POSTGRES_PASSWORD" \
+        --set postgresql.postgresDatabase="$POSTGRES_DB" \
+        --set application.migrateCommand="$DB_MIGRATE" \
+        --namespace="$KUBE_NAMESPACE" \
+        "$name" \
+        chart/
+    fi
 
     kubectl rollout status -n "$KUBE_NAMESPACE" -w "deployment/$name"
   }
@@ -640,7 +685,12 @@ rollout 100%:
 
     curl "https://kubernetes-helm.storage.googleapis.com/helm-v${HELM_VERSION}-linux-amd64.tar.gz" | tar zx
     mv linux-amd64/helm /usr/bin/
+    mv linux-amd64/tiller /usr/bin/
     helm version --client
+    tiller -version
+
+    helm init --client-only
+    helm plugin install https://github.com/adamreese/helm-local
 
     curl -L -o /usr/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBERNETES_VERSION}/bin/linux/amd64/kubectl"
     chmod +x /usr/bin/kubectl
@@ -747,10 +797,13 @@ rollout 100%:
     echo ""
   }
 
-  function install_tiller() {
+  function initialize_tiller() {
     echo "Checking Tiller..."
-    helm init --upgrade
-    kubectl rollout status -n "$TILLER_NAMESPACE" -w "deployment/tiller-deploy"
+
+    helm local start
+    helm local status
+    export HELM_HOST=":44134"
+
     if ! helm version --debug; then
       echo "Failed to init Tiller."
       return 1

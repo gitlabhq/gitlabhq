@@ -1278,6 +1278,19 @@ describe Ci::Build do
     end
   end
 
+  describe '#artifacts_file_for_type' do
+    let(:build) { create(:ci_build, :artifacts) }
+    let(:file_type) { :archive }
+
+    subject { build.artifacts_file_for_type(file_type) }
+
+    it 'queries artifacts for type' do
+      expect(build).to receive_message_chain(:job_artifacts, :find_by).with(file_type: Ci::JobArtifact.file_types[file_type])
+
+      subject
+    end
+  end
+
   describe '#merge_request' do
     def create_mr(build, pipeline, factory: :merge_request, created_at: Time.now)
       create(factory, source_project: pipeline.project,

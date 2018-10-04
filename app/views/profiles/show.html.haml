@@ -109,10 +109,11 @@
       = f.text_area :bio, rows: 4, maxlength: 250, help: s_("Profiles|Tell us about yourself in fewer than 250 characters.")
       %hr
       %h5= ("Private profile")
-      - private_profile_label = capture do
-        = s_("Profiles|Don't display activity-related personal information on your profiles")
+      .checkbox-icon-inline-wrapper
+        - private_profile_label = capture do
+          = s_("Profiles|Don't display activity-related personal information on your profiles")
+        = f.check_box :private_profile, label: private_profile_label
         = link_to icon('question-circle'), help_page_path('user/profile/index.md', anchor: 'private-profile')
-      = f.check_box :private_profile, label: private_profile_label
       %h5= s_("Profiles|Private contributions")
       = f.check_box :include_private_contributions, label: 'Include private contributions on my profile'
       .help-block
