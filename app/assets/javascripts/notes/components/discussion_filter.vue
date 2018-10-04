@@ -2,7 +2,6 @@
 import $ from 'jquery';
 import Icon from '~/vue_shared/components/icon.vue';
 import { mapGetters, mapActions } from 'vuex';
-import eventHub from '../event_hub';
 
 export default {
   components: {
@@ -44,7 +43,7 @@ export default {
 
       if (filter === this.currentValue) return;
       this.currentValue = filter;
-      this.filterDiscussion({ path: this.getNotesDataByProp('discussionsPath'), filter});
+      this.filterDiscussion({ path: this.getNotesDataByProp('discussionsPath'), filter });
     },
   },
 };
@@ -55,8 +54,8 @@ export default {
     v-if="discussionTabCounter > 0"
     class="discussion-filter-container d-inline-block">
     <button
-      ref="dropdownToggle"
       id="discussion-filter-dropdown"
+      ref="dropdownToggle"
       class="btn btn-default"
       data-toggle="dropdown"
       aria-expanded="false"
@@ -75,8 +74,8 @@ export default {
           >
             <button
               :class="{ 'is-active': filter.value === currentFilter.value }"
-              @click="selectFilter(filter.value)"
               type="button"
+              @click="selectFilter(filter.value)"
             >
               {{ filter.title }}
             </button>

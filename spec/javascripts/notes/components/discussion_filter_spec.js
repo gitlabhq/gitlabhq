@@ -9,7 +9,6 @@ describe('DiscussionFilter component', () => {
   let store;
 
   beforeEach(() => {
-
     store = createStore();
 
     const discussions = [{
