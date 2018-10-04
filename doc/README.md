@@ -14,7 +14,7 @@ To understand what features you have access to, check the [GitLab subscriptions]
 
 **Shortcuts to GitLab's most visited docs:**
 
-| General documentation | GitLab CI/CD docs |
+| General documentation | [GitLab CI/CD docs](ci/README.md) |
 | :----- | :----- |
 | [User documentation](user/index.md) | [GitLab CI/CD quick start guide](ci/quick_start/README.md) |
 | [Administrator documentation](administration/index.md) | [GitLab CI/CD examples](ci/examples/README.md) |

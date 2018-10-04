@@ -3,9 +3,9 @@ comments: false
 description: "Learn how to use GitLab CI/CD, the GitLab built-in Continuous Integration, Continuous Deployment, and Continuous Delivery toolset to build, test, and deploy your application."
 ---
 
-# GitLab Continuous Integration (GitLab CI/CD)
+# GitLab Continuous Integration and Continuous Deployment (GitLab CI/CD)
 
-![Pipeline graph](img/cicd_pipeline_infograph.png)
+!["GitLab CI/CD"](img/ci-cd-test-deploy-illustration_2x.png)
 
 The benefits of Continuous Integration are huge when automation plays an
 integral part of your workflow. GitLab comes with built-in Continuous
@@ -13,6 +13,24 @@ Integration, Continuous Deployment, and Continuous Delivery support
 to build, test, and deploy your application.
 
 Here's some info we've gathered to get you started.
+
+## Architecture
+
+**GitLab CI/CD** is a part of GitLab, a web application with an API
+that stores its state in a database. It manages projects/builds and provides a nice user interface,
+besides all the features of GitLab.
+
+To perform the actual build, you need to install **GitLab Runner** which
+is written in Go, it can be deployed separately and works with GitLab CI/CD through an API.
+It can run on any platform for which you can build Go binaries,
+including Linux, OSX, Windows, FreeBSD and Docker.
+It can test any programming language including .Net, Java, Python, C, PHP and others.
+
+In order to run tests, you need at least one GitLab instance and one GitLab Runner.
+
+<div class="center image-noshadow">
+<img alt="Architecture" src="img/ci-cd-architecture_2x.png">
+</div>
 
 ## Getting started
 
@@ -137,7 +155,9 @@ your whole GitLab instance as well as in each project.
 
 ## Rated \#1 in the Forrester CI Wave
 
-![GitLab CI/CD Forrester review](img/forrester-ci-wave-graphic.svg)
+<div class="middle width-60 display-block image-noshadow">
+<img alt="GitLab CI/CD Forester review" src="img/forrester-ci-wave-graphic.svg">
+</div>
 
 > "GitLab supports development teams with a well-documented installation and
 > configuration processes, an easy-to-follow UI, and a flexible per-seat pricing
@@ -157,7 +177,6 @@ your whole GitLab instance as well as in each project.
 - **Continuous Delivery (CD)**: Multiple stages, manual deploys, environments, and variables
 - **Open source**: CI/CD is included with both the open source GitLab Community Edition and the proprietary GitLab Enterprise Edition
 
-!["GitLab CI/CD"](img/ci-cd-test-deploy-illustration_2x.png)
 
 ## Features
 
@@ -185,25 +204,13 @@ your whole GitLab instance as well as in each project.
 
 ## Fully integrated with GitLab
 
+<div class="right flex-column">
 - Quick project setup:
 Add projects with a single click, all hooks are set up automatically via the GitLab API.
 - Merge request integration:
 See the status of each build within the Merge Request in GitLab.
+</div>
 
-!["Integrated GitLab CI/CD"](img/ci-cd-integrated_2x.png)
-
-## Architecture
-
-**GitLab CI/CD** is a part of GitLab, a web application with an API
-that stores its state in a database. It manages projects/builds and provides a nice user interface,
-besides all the features of GitLab.
-
-To perform the actual build, you need to install **GitLab Runner** which
-is written in Go, it can be deployed separately and works with GitLab CI/CD through an API.
-It can run on any platform for which you can build Go binaries,
-including Linux, OSX, Windows, FreeBSD and Docker.
-It can test any programming language including .Net, Java, Python, C, PHP and others.
-
-In order to run tests, you need at least one GitLab instance and one GitLab Runner.
-
-![Architecture](img/ci-cd-architecture_2x.png)
+<div class="left half-width flex-column">
+<img src="img/ci-cd-integrated_2x.png" alt="Integrated GitLab CI/CD">
+</div>
