@@ -1,9 +1,9 @@
 # GitLab quick actions
 
-Quick actions are textual shortcuts for common actions on issues, epics, merge requests, 
+Quick actions are textual shortcuts for common actions on issues, epics, merge requests,
 and commits that are usually done by clicking buttons or dropdowns in GitLab's UI.
 You can enter these commands while creating a new issue or merge request, or
-in comments of issues, epics, merge requests, and commits. Each command should be 
+in comments of issues, epics, merge requests, and commits. Each command should be
 on a separate line in order to be properly detected and executed. Once executed,
 the commands are removed from the text body and not visible to anyone else.
 
@@ -42,7 +42,7 @@ discussions, and descriptions:
 | `/remove_due_date`         | Remove due date                | ✓     |               |
 | `/weight 0,1,2, ...`       | Set weight **[STARTER]**       | ✓     |               |
 | `/clear_weight`            | Clears weight **[STARTER]**    | ✓     |               |
-| `/epic <group&epic &#124; Epic URL>` | Add to epic **[ULTIMATE]** | ✓ |             |
+| `/epic <&epic &#124; group&epic &#124; Epic URL>` | Add to epic **[ULTIMATE]** | ✓ |             |
 | `/remove_epic`             | Removes from epic **[ULTIMATE]** | ✓   |               |
 | `/confidential`            | Make confidential              | ✓     |               |
 | `/duplicate #issue`        | Mark this issue as a duplicate of another issue | ✓    |
@@ -68,7 +68,7 @@ The following quick actions are applicable for epics threads and description:
 |:---------------------------|:----------------------------------------|
 | `/tableflip <Comment>`     | Append the comment with `(╯°□°)╯︵ ┻━┻` |
 | `/shrug <Comment>`         | Append the comment with `¯\＿(ツ)＿/¯`  |
-| `/todo`                    | Add a todo                              | 
+| `/todo`                    | Add a todo                              |
 | `/done`                    | Mark todo as done                       |
 | `/subscribe`               | Subscribe                               |
 | `/unsubscribe`             | Unsubscribe                             |

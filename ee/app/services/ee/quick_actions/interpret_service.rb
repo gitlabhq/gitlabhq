@@ -55,7 +55,7 @@ module EE
           issuable.project.group&.feature_available?(:epics) &&
           current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
       end
-      params '<group&epic | Epic URL>'
+      params '<&epic | group&epic | Epic URL>'
       command :epic do |epic_param|
         @updates[:epic] = extract_epic(epic_param)
       end
