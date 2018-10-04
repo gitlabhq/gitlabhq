@@ -55,7 +55,7 @@ describe Projects::NotesController do
       it 'filters system notes by comments' do
         user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], issue)
 
-        get :index, request_params.merge(use_notes_filter: true)
+        get :index, request_params
 
         expect(notes_json.count).to eq(1)
         expect(notes_json.first[:id].to_i).to eq(comment.id)
@@ -64,9 +64,17 @@ describe Projects::NotesController do
       it 'returns all notes' do
         user.set_notes_filter(UserPreference::NOTES_FILTERS[:all_notes], issue)
 
-        get :index, request_params.merge(use_notes_filter: true)
+        get :index, request_params
 
         expect(notes_json.map { |note| note[:id].to_i }).to contain_exactly(comment.id, system_note.id)
+      end
+
+      it 'does not merge label event notes' do
+        user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], issue)
+
+        expect(ResourceEvents::MergeIntoNotesService).not_to receive(:new)
+
+        get :index, request_params
       end
     end
 

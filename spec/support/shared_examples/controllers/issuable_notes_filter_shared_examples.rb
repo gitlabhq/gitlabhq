@@ -41,4 +41,14 @@ shared_examples 'issuable notes filter' do
 
     expect(JSON.parse(response.body).count).to eq(1)
   end
+
+  context 'when filter is set to "only_comments"' do
+    it 'does not merge label event notes' do
+      user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], issuable)
+
+      expect(ResourceEvents::MergeIntoNotesService).not_to receive(:new)
+
+      get :discussions, namespace_id: project.namespace, project_id: project, id: issuable.iid
+    end
+  end
 end
