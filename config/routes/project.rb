@@ -430,12 +430,11 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
         collection do
           post :bulk_update
-<<<<<<< HEAD
-          post :export_csv
 
-          get :service_desk ## EE-specific
-=======
->>>>>>> upstream/master
+          ## EE-specific START
+          post :export_csv
+          get :service_desk
+          ## EE-specific END
         end
 
         resources :issue_links, only: [:index, :create, :destroy], as: 'links', path: 'links'
