@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180924141949) do
+ActiveRecord::Schema.define(version: 20180926140319) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -2273,6 +2273,18 @@ ActiveRecord::Schema.define(version: 20180924141949) do
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
 
+  create_table "prometheus_alert_events", id: :bigserial, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "prometheus_alert_id", null: false
+    t.datetime_with_timezone "started_at", null: false
+    t.datetime_with_timezone "ended_at"
+    t.integer "status", limit: 2
+    t.string "payload_key"
+  end
+
+  add_index "prometheus_alert_events", ["project_id", "status"], name: "index_prometheus_alert_events_on_project_id_and_status", using: :btree
+  add_index "prometheus_alert_events", ["prometheus_alert_id", "payload_key"], name: "index_prometheus_alert_event_scoped_payload_key", unique: true, using: :btree
+
   create_table "prometheus_alerts", force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -3241,6 +3253,8 @@ ActiveRecord::Schema.define(version: 20180924141949) do
   add_foreign_key "project_mirror_data", "projects", name: "fk_d1aad367d7", on_delete: :cascade
   add_foreign_key "project_repository_states", "projects", on_delete: :cascade
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
+  add_foreign_key "prometheus_alert_events", "projects", on_delete: :cascade
+  add_foreign_key "prometheus_alert_events", "prometheus_alerts", on_delete: :cascade
   add_foreign_key "prometheus_alerts", "environments", on_delete: :cascade
   add_foreign_key "prometheus_alerts", "projects", on_delete: :cascade
   add_foreign_key "prometheus_alerts", "prometheus_metrics", on_delete: :cascade
