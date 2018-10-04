@@ -1792,7 +1792,6 @@ ActiveRecord::Schema.define(version: 20180925200829) do
   end
 
   add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
-  add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
   add_index "redirect_routes", ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
 
   create_table "releases", force: :cascade do |t|
@@ -2130,8 +2129,6 @@ ActiveRecord::Schema.define(version: 20180925200829) do
     t.datetime_with_timezone "updated_at", null: false
   end
 
-  add_index "user_preferences", ["issue_notes_filter"], name: "index_user_preferences_on_issue_notes_filter", using: :btree
-  add_index "user_preferences", ["merge_request_notes_filter"], name: "index_user_preferences_on_merge_request_notes_filter", using: :btree
   add_index "user_preferences", ["user_id"], name: "index_user_preferences_on_user_id", unique: true, using: :btree
 
   create_table "user_statuses", primary_key: "user_id", force: :cascade do |t|
