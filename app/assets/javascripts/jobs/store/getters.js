@@ -38,13 +38,10 @@ export const hasEnvironment = state => !_.isEmpty(state.job.deployment_status);
 export const isJobStuck = state =>
   state.job.status.group === 'pending' && state.job.runners && state.job.runners.available === false;
 
-<<<<<<< HEAD
 // ee-only start
 export const shouldRenderSharedRunnerLimitWarning = state =>
   state.job.runner && state.job.runner.quota && state.job.ruuner.quota.used;
 // ee-only end
 
-=======
->>>>>>> upstream/master
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};
