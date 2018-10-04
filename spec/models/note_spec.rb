@@ -231,33 +231,60 @@ describe Note do
     let(:ext_proj)  { create(:project, :public) }
     let(:ext_issue) { create(:issue, project: ext_proj) }
 
-    let(:note) do
-      create :note,
-        noteable: ext_issue, project: ext_proj,
-        note: "mentioned in issue #{private_issue.to_reference(ext_proj)}",
-        system: true
+    shared_examples "checks references" do
+      it "returns true" do
+        expect(note.cross_reference_not_visible_for?(ext_issue.author)).to be_truthy
+      end
+
+      it "returns false" do
+        expect(note.cross_reference_not_visible_for?(private_user)).to be_falsy
+      end
+
+      it "returns false if user visible reference count set" do
+        note.user_visible_reference_count = 1
+        note.total_reference_count = 1
+
+        expect(note).not_to receive(:reference_mentionables)
+        expect(note.cross_reference_not_visible_for?(ext_issue.author)).to be_falsy
+      end
+
+      it "returns true if ref count is 0" do
+        note.user_visible_reference_count = 0
+
+        expect(note).not_to receive(:reference_mentionables)
+        expect(note.cross_reference_not_visible_for?(ext_issue.author)).to be_truthy
+      end
     end
 
-    it "returns true" do
-      expect(note.cross_reference_not_visible_for?(ext_issue.author)).to be_truthy
+    context "when there is one reference in note" do
+      let(:note) do
+        create :note,
+          noteable: ext_issue, project: ext_proj,
+          note: "mentioned in issue #{private_issue.to_reference(ext_proj)}",
+          system: true
+      end
+
+      it_behaves_like "checks references"
     end
 
-    it "returns false" do
-      expect(note.cross_reference_not_visible_for?(private_user)).to be_falsy
-    end
+    context "when there are two references in note" do
+      let(:note) do
+        create :note,
+          noteable: ext_issue, project: ext_proj,
+          note: "mentioned in issue #{private_issue.to_reference(ext_proj)} and " \
+                "public issue #{ext_issue.to_reference(ext_proj)}",
+          system: true
+      end
 
-    it "returns false if user visible reference count set" do
-      note.user_visible_reference_count = 1
+      it_behaves_like "checks references"
 
-      expect(note).not_to receive(:reference_mentionables)
-      expect(note.cross_reference_not_visible_for?(ext_issue.author)).to be_falsy
-    end
+      it "returns true if user visible reference count set and there is a private reference" do
+        note.user_visible_reference_count = 1
+        note.total_reference_count = 2
 
-    it "returns true if ref count is 0" do
-      note.user_visible_reference_count = 0
-
-      expect(note).not_to receive(:reference_mentionables)
-      expect(note.cross_reference_not_visible_for?(ext_issue.author)).to be_truthy
+        expect(note).not_to receive(:reference_mentionables)
+        expect(note.cross_reference_not_visible_for?(ext_issue.author)).to be_truthy
+      end
     end
   end
 
@@ -269,7 +296,7 @@ describe Note do
     end
 
     context 'when the note might contain cross references' do
-      SystemNoteMetadata::TYPES_WITH_CROSS_REFERENCES.each do |type|
+      SystemNoteMetadata.new.cross_reference_types.each do |type|
         let(:note) { create(:note, :system) }
         let!(:metadata) { create(:system_note_metadata, note: note, action: type) }
 

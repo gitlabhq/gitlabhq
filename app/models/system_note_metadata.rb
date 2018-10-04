@@ -7,6 +7,7 @@ class SystemNoteMetadata < ActiveRecord::Base
   TYPES_WITH_CROSS_REFERENCES = %w[
     commit cross_reference
     close duplicate
+    moved
   ].freeze
 
   ICON_TYPES = %w[
@@ -23,5 +24,9 @@ class SystemNoteMetadata < ActiveRecord::Base
 
   def icon_types
     ICON_TYPES
+  end
+
+  def cross_reference_types
+    TYPES_WITH_CROSS_REFERENCES
   end
 end
