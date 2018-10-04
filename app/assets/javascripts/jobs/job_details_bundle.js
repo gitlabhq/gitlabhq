@@ -3,11 +3,7 @@ import { mapState, mapActions } from 'vuex';
 import Vue from 'vue';
 import Job from '../job';
 import JobApp from './components/job_app.vue';
-<<<<<<< HEAD
-import DetailsBlock from './components/sidebar_details_block.vue';
-=======
 import Sidebar from './components/sidebar.vue';
->>>>>>> upstream/master
 import createStore from './store';
 
 export default () => {
