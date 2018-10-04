@@ -49,6 +49,12 @@ module Gitlab
               unless validate_duration(value)
                 record.errors.add(attribute, 'should be a duration')
               end
+
+              if options[:limit]
+                unless validate_duration_limit(value, options[:limit])
+                  record.errors.add(attribute, 'should not exceed the limit')
+                end
+              end
             end
           end
 
