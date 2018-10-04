@@ -1,7 +1,7 @@
 <script>
 import $ from 'jquery';
 import Icon from '~/vue_shared/components/icon.vue';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import eventHub from '../event_hub';
 
 export default {
@@ -25,6 +25,7 @@ export default {
   computed: {
     ...mapGetters([
       'discussionTabCounter',
+      'getNotesDataByProp',
     ]),
     currentFilter() {
       if (!this.currentValue) return this.filters[0];
@@ -32,18 +33,18 @@ export default {
     },
   },
   methods: {
-    handleClick(e) {
-      const { value } = e.target;
-      const newValue = parseInt(value, 10);
+    ...mapActions({
+      filterDiscussion: 'filterDiscussion',
+    }),
+    selectFilter(value) {
+      const filter = parseInt(value, 10);
 
       // close dropdown
-      $('#discussion-filter-dropdown').dropdown('toggle');
+      $(this.$refs.dropdownToggle).dropdown('toggle');
 
-      if (newValue === this.currentValue) return;
-
-      e.stopImmediatePropagation();
-      this.currentValue = newValue;
-      eventHub.$emit('notes.filter', this.currentValue);
+      if (filter === this.currentValue) return;
+      this.currentValue = filter;
+      this.filterDiscussion({ path: this.getNotesDataByProp('discussionsPath'), filter});
     },
   },
 };
@@ -52,10 +53,11 @@ export default {
 <template>
   <div
     v-if="discussionTabCounter > 0"
-    class="prepend-top-10 d-inline-block">
+    class="discussion-filter-container d-inline-block">
     <button
+      ref="dropdownToggle"
       id="discussion-filter-dropdown"
-      class="dropdown-toggle btn btn-default"
+      class="btn btn-default"
       data-toggle="dropdown"
       aria-expanded="false"
     >
@@ -73,8 +75,7 @@ export default {
           >
             <button
               :class="{ 'is-active': filter.value === currentFilter.value }"
-              :value="filter.value"
-              @click="handleClick"
+              @click="selectFilter(filter.value)"
             >
               {{ filter.title }}
             </button>

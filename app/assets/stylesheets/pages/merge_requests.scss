@@ -825,6 +825,14 @@
   @include media-breakpoint-down(xs) {
     flex-direction: column-reverse;
   }
+
+  .discussion-filter-container {
+    margin-top: $gl-padding-8;
+
+    @include media-breakpoint-up(md) {
+      padding-left: $gl-padding;
+    }
+  }
 }
 
 .limit-container-width:not(.container-limited) {

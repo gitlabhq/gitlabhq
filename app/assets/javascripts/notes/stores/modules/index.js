@@ -11,6 +11,7 @@ export default () => ({
     // View layer
     isToggleStateButtonLoading: false,
     isNotesFetched: false,
+    isLoading: true,
 
     // holds endpoints and permissions provided through haml
     notesData: {

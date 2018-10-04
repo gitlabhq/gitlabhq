@@ -11,6 +11,8 @@ export const getNotesData = state => state.notesData;
 
 export const isNotesFetched = state => state.isNotesFetched;
 
+export const isLoading = state => state.isLoading;
+
 export const getNotesDataByProp = state => prop => state.notesData[prop];
 
 export const getNoteableData = state => state.noteableData;

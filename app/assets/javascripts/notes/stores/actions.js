@@ -332,5 +332,24 @@ export const updateMergeRequestWidget = () => {
   mrWidgetEventHub.$emit('mr.discussion.updated');
 };
 
+export const setLoadingState = ({ commit }, data) => {
+  commit(types.SET_NOTES_LOADING_STATE, data);
+};
+
+export const filterDiscussion = ({ dispatch }, { path, filter }) => {
+  dispatch('setLoadingState', true);
+  dispatch('fetchDiscussions', { path, filter })
+    .then(() => {
+      dispatch('setLoadingState', false);
+      dispatch('setNotesFetchedState', true);
+      mrWidgetEventHub.$emit('fetchedNotesData');
+    })
+    .catch(() => {
+      dispatch('setLoadingState', false);
+      dispatch('setNotesFetchedState', true);
+      Flash('Something went wrong while fetching comments. Please try again.');
+    });
+};
+
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};
