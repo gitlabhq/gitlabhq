@@ -295,6 +295,7 @@ gem 'peek-mysql2', '~> 1.1.0', group: :mysql
 gem 'peek-pg', '~> 1.3.0', group: :postgres
 gem 'peek-rblineprof', '~> 0.2.0'
 gem 'peek-redis', '~> 1.2.0'
+gem 'gitlab-sidekiq-fetcher', require: 'sidekiq-reliable-fetch'
 
 # Metrics
 group :metrics do
