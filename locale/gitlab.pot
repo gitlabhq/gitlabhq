@@ -3345,6 +3345,9 @@ msgstr ""
 msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable."
 msgstr ""
 
+msgid "Issues, merge requests, pushes and comments."
+msgstr ""
+
 msgid "Jan"
 msgstr ""
 
@@ -3707,6 +3710,9 @@ msgid "May"
 msgstr ""
 
 msgid "Median"
+msgstr ""
+
+msgid "Member since %{date}"
 msgstr ""
 
 msgid "Members"
@@ -5753,6 +5759,9 @@ msgstr ""
 msgid "Subscribe at project level"
 msgstr ""
 
+msgid "Summary of issues, merge requests, push events, and comments (Timezone: %{utcFormatted})"
+msgstr ""
+
 msgid "Switch branch/tag"
 msgstr ""
 
@@ -6579,6 +6588,51 @@ msgid "User and IP Rate Limits"
 msgstr ""
 
 msgid "User map"
+msgstr ""
+
+msgid "UserProfile|Activity"
+msgstr ""
+
+msgid "UserProfile|Already reported for abuse"
+msgstr ""
+
+msgid "UserProfile|Contributed projects"
+msgstr ""
+
+msgid "UserProfile|Edit profile"
+msgstr ""
+
+msgid "UserProfile|Groups"
+msgstr ""
+
+msgid "UserProfile|Most Recent Activity"
+msgstr ""
+
+msgid "UserProfile|Overview"
+msgstr ""
+
+msgid "UserProfile|Personal projects"
+msgstr ""
+
+msgid "UserProfile|Recent contributions"
+msgstr ""
+
+msgid "UserProfile|Report abuse"
+msgstr ""
+
+msgid "UserProfile|Snippets"
+msgstr ""
+
+msgid "UserProfile|Subscribe"
+msgstr ""
+
+msgid "UserProfile|This user has a private profile"
+msgstr ""
+
+msgid "UserProfile|View all"
+msgstr ""
+
+msgid "UserProfile|View user in admin area"
 msgstr ""
 
 msgid "Users"
