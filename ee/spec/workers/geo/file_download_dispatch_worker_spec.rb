@@ -47,17 +47,15 @@ describe Geo::FileDownloadDispatchWorker, :geo do
     end
 
     context 'with attachments (Upload records)' do
-      it 'performs Geo::FileDownloadWorker for unsynced attachments' do
-        upload = create(:upload)
+      let(:upload) { create(:upload) }
 
+      it 'performs Geo::FileDownloadWorker for unsynced attachments' do
         expect(Geo::FileDownloadWorker).to receive(:perform_async).with('avatar', upload.id)
 
         subject.perform
       end
 
       it 'performs Geo::FileDownloadWorker for failed-sync attachments' do
-        upload = create(:upload)
-
         create(:geo_file_registry, :avatar, file_id: upload.id, bytes: 0, success: false)
 
         expect(Geo::FileDownloadWorker).to receive(:perform_async)
@@ -67,8 +65,6 @@ describe Geo::FileDownloadDispatchWorker, :geo do
       end
 
       it 'does not perform Geo::FileDownloadWorker for synced attachments' do
-        upload = create(:upload)
-
         create(:geo_file_registry, :avatar, file_id: upload.id, bytes: 1234, success: true)
 
         expect(Geo::FileDownloadWorker).not_to receive(:perform_async)
@@ -77,8 +73,6 @@ describe Geo::FileDownloadDispatchWorker, :geo do
       end
 
       it 'does not perform Geo::FileDownloadWorker for synced attachments even with 0 bytes downloaded' do
-        upload = create(:upload)
-
         create(:geo_file_registry, :avatar, file_id: upload.id, bytes: 0, success: true)
 
         expect(Geo::FileDownloadWorker).not_to receive(:perform_async)
@@ -308,6 +302,26 @@ describe Geo::FileDownloadDispatchWorker, :geo do
 
           subject.perform
         end
+      end
+    end
+
+    context 'backoff time' do
+      let(:cache_key) { "#{described_class.name.underscore}:skip" }
+
+      it 'sets the back off time when there are no pending items' do
+        expect(Rails.cache).to receive(:write).with(cache_key, true, expires_in: 300.seconds).once
+
+        subject.perform
+      end
+
+      it 'does not perform Geo::FileDownloadWorker when the backoff time is set' do
+        create(:lfs_object, :with_file)
+
+        expect(Rails.cache).to receive(:read).with(cache_key).and_return(true)
+
+        expect(Geo::FileDownloadWorker).not_to receive(:perform_async)
+
+        subject.perform
       end
     end
 

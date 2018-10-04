@@ -147,6 +147,30 @@ describe Geo::MigratedLocalFilesCleanUpWorker, :geo do
         worker.perform
       end
     end
+
+    context 'backoff time' do
+      let(:cache_key) { "#{described_class.name.underscore}:skip" }
+
+      before do
+        stub_uploads_object_storage(AvatarUploader)
+      end
+
+      it 'sets the back off time when there are no pending items' do
+        expect(Rails.cache).to receive(:write).with(cache_key, true, expires_in: 300.seconds).once
+
+        subject.perform
+      end
+
+      it 'does not perform Geo::FileRegistryRemovalWorker when the backoff time is set' do
+        create(:geo_file_registry, :avatar)
+
+        expect(Rails.cache).to receive(:read).with(cache_key).and_return(true)
+
+        expect(Geo::FileRegistryRemovalWorker).not_to receive(:perform_async)
+
+        subject.perform
+      end
+    end
   end
 
   # Disable transactions via :delete method because a foreign table

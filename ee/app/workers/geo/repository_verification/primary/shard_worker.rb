@@ -21,6 +21,10 @@ module Geo
 
         private
 
+        def skip_cache_key
+          "#{self.class.name.underscore}:shard:#{shard_name}:skip"
+        end
+
         def worker_metadata
           { shard: shard_name }
         end
