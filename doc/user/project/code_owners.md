@@ -1,4 +1,4 @@
-# Code owners
+# Code Owners **[STARTER]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6916)
 in [GitLab Starter](https://about.gitlab.com/pricing/) 11.3.
@@ -21,7 +21,7 @@ When a file matches multiple entries in the `CODEOWNERS` file,
 the users from all entries are displayed on the blob page of
 the given file.
 
-## The syntax of a code owners file
+## The syntax of Code Owners files
 
 Files can be specified using the same kind of patterns you would use
 in the `.gitignore` file followed by the `@username` or email of one
