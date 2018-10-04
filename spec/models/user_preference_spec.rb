@@ -22,7 +22,7 @@ describe UserPreference do
     end
 
     context 'when notes_filter parameter is invalid' do
-      it 'returns the user notes filter' do
+      it 'returns the current notes filter' do
         user_preference.set_notes_filter(only_comments, issuable)
 
         expect(user_preference.set_notes_filter(9999, issuable)).to eq(only_comments)

@@ -21,7 +21,7 @@ class UserPreference < ActiveRecord::Base
 
   def set_notes_filter(filter_id, issuable)
     # No need to update the column if the value is already set.
-    if filter_id && filter_id.to_i != notes_filter_for(issuable)
+    if filter_id && NOTES_FILTERS.values.include?(filter_id)
       field = notes_filter_field_for(issuable)
       self[field] = filter_id
 
