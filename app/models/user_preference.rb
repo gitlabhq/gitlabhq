@@ -13,8 +13,8 @@ class UserPreference < ActiveRecord::Base
   class << self
     def notes_filters
       {
-        _('Notes|Show all activity') => NOTES_FILTERS[:all_notes],
-        _('Notes|Show comments only') => NOTES_FILTERS[:only_comments]
+        s_('Notes|Show all activity') => NOTES_FILTERS[:all_notes],
+        s_('Notes|Show comments only') => NOTES_FILTERS[:only_comments]
       }
     end
   end
