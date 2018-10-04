@@ -811,10 +811,10 @@ ul.notes {
     width: $gl-col-padding;
     height: $gl-col-padding;
   }
-  
+
   .dropdown-menu {
     margin-bottom: $gl-padding-4;
-    
+
     @include media-breakpoint-down(sm) {
       margin-left: $btn-side-margin;
     }
