@@ -20,5 +20,13 @@ describe UserPreference do
 
       expect(user_preference.reload.issue_notes_filter).to eq(only_comments)
     end
+
+    context 'when notes_filter parameter is invalid' do
+      it 'returns the user notes filter' do
+        user_preference.set_notes_filter(only_comments, issuable)
+
+        expect(user_preference.set_notes_filter(9999, issuable)).to eq(only_comments)
+      end
+    end
   end
 end

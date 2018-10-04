@@ -22,15 +22,22 @@ class UserPreference < ActiveRecord::Base
     notes_filter_for(issuable)
   end
 
-  # Returns the current discussion filter for a given issuable type.
-  def notes_filter_for(issuable)
-    self[notes_filter_field_for(issuable)]
+  # Returns the current discussion filter for a given issuable
+  # or issuable type.
+  def notes_filter_for(resource)
+    self[notes_filter_field_for(resource)]
   end
 
   private
 
-  def notes_filter_field_for(issuable)
-    issuable_klass = issuable.model_name.param_key
-    "#{issuable_klass}_notes_filter"
+  def notes_filter_field_for(resource)
+    field_key =
+      if resource.is_a?(Issuable)
+        resource.model_name.param_key
+      else
+        resource
+      end
+
+    "#{field_key}_notes_filter"
   end
 end
