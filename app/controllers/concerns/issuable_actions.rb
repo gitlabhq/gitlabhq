@@ -117,7 +117,7 @@ module IssuableActions
 
   def notes_filter
     strong_memoize(:notes_filter) do
-      notes_filter_param = params[:notes_filter]
+      notes_filter_param = params[:notes_filter]&.to_i
 
       # GitLab Geo does not expect database UPDATE or INSERT statements to happen
       # on GET requests.
