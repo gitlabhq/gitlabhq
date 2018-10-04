@@ -1,5 +1,6 @@
 <script>
 import $ from 'jquery';
+import { Button } from '@gitlab-org/gitlab-ui';
 import eventHub from '../eventhub';
 import ProjectSelect from './project_select.vue';
 import ListIssue from '../models/issue';
@@ -10,6 +11,7 @@ export default {
   name: 'BoardNewIssue',
   components: {
     ProjectSelect,
+    'gl-button': Button,
   },
   props: {
     groupId: {
@@ -126,21 +128,23 @@ export default {
           :group-id="groupId"
         />
         <div class="clearfix prepend-top-10">
-          <button
+          <gl-button
             ref="submit-button"
             :disabled="disabled"
-            class="btn btn-success float-left"
+            class="float-left"
+            variant="success"
             type="submit"
           >
             Submit issue
-          </button>
-          <button
-            class="btn btn-default float-right"
+          </gl-button>
+          <gl-button
+            class="float-right"
             type="button"
+            variant="default"
             @click="cancel"
           >
             Cancel
-          </button>
+          </gl-button>
         </div>
       </form>
     </div>

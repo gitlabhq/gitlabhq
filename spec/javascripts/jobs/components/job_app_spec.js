@@ -182,6 +182,7 @@ describe('Job App ', () => {
       expect(vm.$el.querySelector('.js-job-stuck')).toBeNull();
     });
   });
+<<<<<<< HEAD
 
   // ee-only start
   describe('runners limit - ee', () => {
@@ -215,4 +216,6 @@ describe('Job App ', () => {
   });
 
   // ee-only end
+=======
+>>>>>>> upstream/master
 });

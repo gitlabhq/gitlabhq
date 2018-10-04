@@ -61,5 +61,9 @@
           .option-description
             Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository.
 
+<<<<<<< HEAD
 = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4, data: { track_label: "#{track_label}", track_event: "click_button", track_property: "create_project", track_value: "" }
+=======
+= f.submit 'Create project', class: "btn btn-success project-submit", tabindex: 4, data: { track_label: "#{track_label}", track_event: "click_button", track_property: "create_project", track_value: "" }
+>>>>>>> upstream/master
 = link_to 'Cancel', dashboard_projects_path, class: 'btn btn-cancel', data: { track_label: "#{track_label}", track_event: "click_button", track_property: "cancel" }

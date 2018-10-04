@@ -430,9 +430,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
         collection do
           post :bulk_update
+<<<<<<< HEAD
           post :export_csv
 
           get :service_desk ## EE-specific
+=======
+>>>>>>> upstream/master
         end
 
         resources :issue_links, only: [:index, :create, :destroy], as: 'links', path: 'links'
@@ -516,6 +519,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         get :members, to: redirect("%{namespace_id}/%{project_id}/project_members")
         resource :ci_cd, only: [:show, :update], controller: 'ci_cd' do
           post :reset_cache
+          put :reset_registration_token
         end
         resource :integrations, only: [:show]
 

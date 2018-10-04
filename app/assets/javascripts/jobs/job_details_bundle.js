@@ -1,8 +1,13 @@
-import { mapState } from 'vuex';
+import _ from 'underscore';
+import { mapState, mapActions } from 'vuex';
 import Vue from 'vue';
 import Job from '../job';
 import JobApp from './components/job_app.vue';
+<<<<<<< HEAD
 import DetailsBlock from './components/sidebar_details_block.vue';
+=======
+import Sidebar from './components/sidebar.vue';
+>>>>>>> upstream/master
 import createStore from './store';
 
 export default () => {
@@ -13,6 +18,7 @@ export default () => {
 
   const store = createStore();
   store.dispatch('setJobEndpoint', dataset.endpoint);
+
   store.dispatch('fetchJob');
 
   // Header
@@ -44,17 +50,25 @@ export default () => {
   new Vue({
     el: detailsBlockElement,
     components: {
-      DetailsBlock,
+      Sidebar,
+    },
+    computed: {
+      ...mapState(['job']),
+    },
+    watch: {
+      job(newVal, oldVal) {
+        if (_.isEmpty(oldVal) && !_.isEmpty(newVal.pipeline)) {
+          this.fetchStages();
+        }
+      },
+    },
+    methods: {
+      ...mapActions(['fetchStages']),
     },
     store,
-    computed: {
-      ...mapState(['job', 'isLoading']),
-    },
     render(createElement) {
-      return createElement('details-block', {
+      return createElement('sidebar', {
         props: {
-          isLoading: this.isLoading,
-          job: this.job,
           runnerHelpUrl: dataset.runnerHelpUrl,
           terminalPath: detailsBlockDataset.terminalPath,
         },

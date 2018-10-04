@@ -98,6 +98,7 @@ module API
         optional :start_branch, type: String, desc: 'Name of the branch to start the new commit from'
         optional :author_email, type: String, desc: 'Author email for commit'
         optional :author_name, type: String, desc: 'Author name for commit'
+        optional :stats, type: Boolean, default: true, desc: 'Include commit stats'
       end
       post ':id/repository/commits' do
         authorize_push_to_branch!(params[:branch])
@@ -113,7 +114,11 @@ module API
 
           Gitlab::WebIdeCommitsCounter.increment if find_user_from_warden
 
+<<<<<<< HEAD
           present commit_detail, with: Entities::CommitDetail
+=======
+          present commit_detail, with: Entities::CommitDetail, stats: params[:stats]
+>>>>>>> upstream/master
         else
           render_api_error!(result[:message], 400)
         end

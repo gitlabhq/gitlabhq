@@ -19,6 +19,7 @@ msgstr ""
 msgid " Status"
 msgstr ""
 
+<<<<<<< HEAD
 msgid " and"
 msgstr ""
 
@@ -29,6 +30,10 @@ msgstr[1] ""
 
 msgid " improved on %d point"
 msgid_plural " improved on %d points"
+=======
+msgid "%d addition"
+msgid_plural "%d additions"
+>>>>>>> upstream/master
 msgstr[0] ""
 msgstr[1] ""
 
@@ -44,6 +49,11 @@ msgstr[1] ""
 
 msgid "%d commit behind"
 msgid_plural "%d commits behind"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d deleted"
+msgid_plural "%d deletions"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -359,9 +369,6 @@ msgid "Access to '%{classification_label}' not allowed"
 msgstr ""
 
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
-msgstr ""
-
-msgid "Access your runner token, customize your pipeline configuration, and view your pipeline status and coverage report."
 msgstr ""
 
 msgid "Account"
@@ -1524,7 +1531,11 @@ msgstr ""
 msgid "CircuitBreakerApiLink|circuitbreaker api"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "ClassificationLabelUnavailable|is unavailable: %{reason}"
+=======
+msgid "Clear search"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Clear search input"
@@ -2410,6 +2421,9 @@ msgstr ""
 msgid "Customize how Google Code email addresses and usernames are imported into GitLab. In the next step, you'll be able to select the projects you want to import."
 msgstr ""
 
+msgid "Customize your pipeline configuration, view your pipeline status and coverage report."
+msgstr ""
+
 msgid "Cycle Analytics"
 msgstr ""
 
@@ -3157,6 +3171,9 @@ msgid "Failed to change the owner"
 msgstr ""
 
 msgid "Failed to check related branches."
+msgstr ""
+
+msgid "Failed to load emoji list."
 msgstr ""
 
 msgid "Failed to remove issue from board, please try again."
@@ -4204,9 +4221,12 @@ msgstr ""
 msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Issues closed"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Issues, merge requests, pushes and comments."
 msgstr ""
 
@@ -4709,6 +4729,12 @@ msgstr ""
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
 msgstr ""
 
+msgid "MergeRequest|Filter files"
+msgstr ""
+
+msgid "MergeRequest|No files found"
+msgstr ""
+
 msgid "Merged"
 msgstr ""
 
@@ -5071,9 +5097,6 @@ msgstr ""
 msgid "No file chosen"
 msgstr ""
 
-msgid "No files found"
-msgstr ""
-
 msgid "No files found."
 msgstr ""
 
@@ -5419,9 +5442,6 @@ msgid "Personal Access Token"
 msgstr ""
 
 msgid "Pipeline"
-msgstr ""
-
-msgid "Pipeline %{pipelineLinkStart} #%{pipelineId} %{pipelineLinkEnd} from %{pipelineLinkRefStart} %{pipelineRef} %{pipelineLinkRefEnd}"
 msgstr ""
 
 msgid "Pipeline Health"
@@ -6835,6 +6855,30 @@ msgstr ""
 msgid "SetPasswordToCloneLink|set a password"
 msgstr ""
 
+msgid "SetStatusModal|Add status emoji"
+msgstr ""
+
+msgid "SetStatusModal|Clear status"
+msgstr ""
+
+msgid "SetStatusModal|Edit status"
+msgstr ""
+
+msgid "SetStatusModal|Remove status"
+msgstr ""
+
+msgid "SetStatusModal|Set a status"
+msgstr ""
+
+msgid "SetStatusModal|Set status"
+msgstr ""
+
+msgid "SetStatusModal|Sorry, we weren't able to set your status. Please try again later."
+msgstr ""
+
+msgid "SetStatusModal|What's your status?"
+msgstr ""
+
 msgid "Settings"
 msgstr ""
 
@@ -7442,12 +7486,15 @@ msgstr ""
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "The roadmap shows the progress of your epics along a timeline"
 msgstr ""
 
 msgid "The secure token used by the Runner to checkout the project"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
 msgstr ""
 
@@ -7956,6 +8003,9 @@ msgstr ""
 msgid "Toggle discussion"
 msgstr ""
 
+msgid "Toggle file browser"
+msgstr ""
+
 msgid "Toggle navigation"
 msgstr ""
 
@@ -8170,6 +8220,51 @@ msgid "User and IP Rate Limits"
 msgstr ""
 
 msgid "User map"
+msgstr ""
+
+msgid "UserProfile|Activity"
+msgstr ""
+
+msgid "UserProfile|Already reported for abuse"
+msgstr ""
+
+msgid "UserProfile|Contributed projects"
+msgstr ""
+
+msgid "UserProfile|Edit profile"
+msgstr ""
+
+msgid "UserProfile|Groups"
+msgstr ""
+
+msgid "UserProfile|Most Recent Activity"
+msgstr ""
+
+msgid "UserProfile|Overview"
+msgstr ""
+
+msgid "UserProfile|Personal projects"
+msgstr ""
+
+msgid "UserProfile|Recent contributions"
+msgstr ""
+
+msgid "UserProfile|Report abuse"
+msgstr ""
+
+msgid "UserProfile|Snippets"
+msgstr ""
+
+msgid "UserProfile|Subscribe"
+msgstr ""
+
+msgid "UserProfile|This user has a private profile"
+msgstr ""
+
+msgid "UserProfile|View all"
+msgstr ""
+
+msgid "UserProfile|View user in admin area"
 msgstr ""
 
 msgid "UserProfile|Activity"
@@ -8533,9 +8628,6 @@ msgid "You can only add files when you are on a branch"
 msgstr ""
 
 msgid "You can only edit files when you are on a branch"
-msgstr ""
-
-msgid "You can reset runners registration token by pressing a button below."
 msgstr ""
 
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
@@ -8954,6 +9046,9 @@ msgid "estimateCommand|%{slash_command} will update the estimated time with the 
 msgstr ""
 
 msgid "for this project"
+msgstr ""
+
+msgid "from"
 msgstr ""
 
 msgid "here"

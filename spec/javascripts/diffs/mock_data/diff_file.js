@@ -33,7 +33,7 @@ export default {
   contentSha: 'c48ee0d1bf3b30453f5b32250ce03134beaa6d13',
   storedExternally: null,
   externalStorage: null,
-  oldPathHtml: ['CHANGELOG', 'CHANGELOG'],
+  oldPathHtml: 'CHANGELOG',
   newPathHtml: 'CHANGELOG',
   editPath: '/gitlab-org/gitlab-test/edit/spooky-stuff/CHANGELOG',
   viewPath: '/gitlab-org/gitlab-test/blob/spooky-stuff/CHANGELOG',

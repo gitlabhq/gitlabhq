@@ -135,35 +135,10 @@ authorization is [experimental](#role-based-access-control-rbac).
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21401) in GitLab 11.4.
 
 CAUTION: **Warning:**
-The RBAC authorization is experimental. To enable it you need access to the
-server where GitLab is installed.
+The RBAC authorization is experimental.
 
-The support for RBAC-enabled clusters is hidden behind a feature flag. Once
-the feature flag is enabled, GitLab will create the necessary service accounts
+Once RBAC is enabled for a cluster, GitLab will create the necessary service accounts
 and privileges in order to install and run [GitLab managed applications](#installing-applications).
-
-To enable the feature flag:
-
-1. SSH into the server where GitLab is installed.
-1. Enter the Rails console:
-
-    **For Omnibus GitLab**
-
-    ```sh
-    sudo gitlab-rails console
-    ```
-
-    **For installations from source**
-
-    ```sh
-    sudo -u git -H bundle exec rails console
-    ```
-
-1. Enable the RBAC authorization:
-
-    ```ruby
-    Feature.enable('rbac_clusters')
-    ```
 
 If you are creating a [new GKE cluster via
 GitLab](#adding-and-creating-a-new-gke-cluster-via-gitlab), you will be

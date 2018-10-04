@@ -9,6 +9,7 @@
 %div{ class: container_class }
   .build-page.js-build-page
     #js-build-header-vue
+<<<<<<< HEAD
     - if @build.stuck?
       - unless @build.any_runners_online?
         .bs-callout.bs-callout-warning.js-build-stuck
@@ -59,6 +60,8 @@
             Job has been erased by #{link_to(@build.erased_by_name, user_path(@build.erased_by))} #{time_ago_with_tooltip(@build.erased_at)}
           - else
             Job has been erased #{time_ago_with_tooltip(@build.erased_at)}
+=======
+>>>>>>> upstream/master
 
     - if @build.running? || @build.has_trace?
       .build-trace-container.prepend-top-default
@@ -95,7 +98,7 @@
     - else
       = render "empty_states"
 
-  = render "sidebar", builds: @builds
+  #js-details-block-vue{ data: { terminal_path: can?(current_user, :create_build_terminal, @build) && @build.has_terminal? ? terminal_project_job_path(@project, @build) : nil } }
 
 .js-build-options{ data: javascript_build_options }
 

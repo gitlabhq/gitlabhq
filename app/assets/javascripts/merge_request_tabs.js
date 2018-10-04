@@ -194,9 +194,7 @@ export default class MergeRequestTabs {
         if (bp.getBreakpointSize() !== 'lg') {
           this.shrinkView();
         }
-        if (this.diffViewType() === 'parallel') {
-          this.expandViewContainer();
-        }
+        this.expandViewContainer();
         this.destroyPipelinesView();
         this.commitsTab.classList.remove('active');
       } else if (action === 'pipelines') {
@@ -355,7 +353,7 @@ export default class MergeRequestTabs {
         localTimeAgo($('.js-timeago', 'div#diffs'));
         syntaxHighlight($('#diffs .js-syntax-highlight'));
 
-        if (this.diffViewType() === 'parallel' && this.isDiffAction(this.currentAction)) {
+        if (this.isDiffAction(this.currentAction)) {
           this.expandViewContainer();
         }
         this.diffsLoaded = true;
@@ -408,19 +406,23 @@ export default class MergeRequestTabs {
   }
 
   diffViewType() {
-    return $('.inline-parallel-buttons a.active').data('viewType');
+    return $('.inline-parallel-buttons button.active').data('viewType');
   }
 
   isDiffAction(action) {
     return action === 'diffs' || action === 'new/diffs';
   }
 
-  expandViewContainer() {
+  expandViewContainer(removeLimited = true) {
     const $wrapper = $('.content-wrapper .container-fluid').not('.breadcrumbs');
     if (this.fixedLayoutPref === null) {
       this.fixedLayoutPref = $wrapper.hasClass('container-limited');
     }
-    $wrapper.removeClass('container-limited');
+    if (this.diffViewType() === 'parallel' || removeLimited) {
+      $wrapper.removeClass('container-limited');
+    } else {
+      $wrapper.addClass('container-limited');
+    }
   }
 
   resetViewContainer() {
