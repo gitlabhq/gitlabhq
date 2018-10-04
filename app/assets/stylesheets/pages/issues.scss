@@ -205,16 +205,12 @@ ul.related-merge-requests > li {
 
   .btn-group:not(.hidden) {
     display: flex;
-    margin-left: $gl-padding;
+    margin-left: $gl-padding-8;
 
     @media (max-width: 880px) {
       margin-top: $gl-padding-8;
       margin-left: 0;
     }
-  }
-
-  .discussion-filter-container {
-    vertical-align: middle;
   }
 
   .js-create-merge-request {
