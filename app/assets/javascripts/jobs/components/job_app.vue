@@ -2,12 +2,9 @@
   import { mapGetters, mapState } from 'vuex';
   import CiHeader from '~/vue_shared/components/header_ci_component.vue';
   import Callout from '~/vue_shared/components/callout.vue';
-<<<<<<< HEAD
   // ee-only start
   import SharedRunner from 'ee/jobs/components/shared_runner_limit_block.vue';
   // ee-only end
-=======
->>>>>>> upstream/master
   import EnvironmentsBlock from './environments_block.vue';
   import ErasedBlock from './erased_block.vue';
   import StuckBlock from './stuck_block.vue';
@@ -20,10 +17,7 @@
       EnvironmentsBlock,
       ErasedBlock,
       StuckBlock,
-<<<<<<< HEAD
       SharedRunner,
-=======
->>>>>>> upstream/master
     },
     props: {
       runnerHelpUrl: {
@@ -41,10 +35,7 @@
         'jobHasStarted',
         'hasEnvironment',
         'isJobStuck',
-<<<<<<< HEAD
         'shouldRenderSharedRunnerLimitWarning',
-=======
->>>>>>> upstream/master
       ]),
     },
   };
@@ -89,7 +80,6 @@
         :runners-path="runnerHelpUrl"
       />
 
-<<<<<<< HEAD
       <shared-runner
         v-if="shouldRenderSharedRunnerLimitWarning"
         class="js-shared-runner-limit"
@@ -98,8 +88,6 @@
         :runners-path="runnerHelpUrl"
       />
 
-=======
->>>>>>> upstream/master
       <environments-block
         v-if="hasEnvironment"
         :deployment-status="job.deployment_status"
