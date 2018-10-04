@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import createStore from '~/notes/stores';
 import DiscussionFilter from '~/notes/components/discussion_filter.vue';
-import eventHub from '~/notes/event_hub';
 import { mountComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import { discussionFiltersMock, discussionMock } from '../mock_data';
 
@@ -10,7 +9,6 @@ describe('DiscussionFilter component', () => {
   let store;
 
   beforeEach(() => {
-    setFixtures('<div id="js-vue-discussion-filter"></div>');
 
     store = createStore();
 
@@ -28,7 +26,7 @@ describe('DiscussionFilter component', () => {
     });
 
     vm = mountComponentWithStore(Component, {
-      el: '#js-vue-discussion-filter',
+      el: null,
       store,
       props: {
         filters: discussionFiltersMock,
@@ -51,11 +49,8 @@ describe('DiscussionFilter component', () => {
 
   it('updates to the selected item', () => {
     const filterItem = vm.$el.querySelector('.dropdown-menu li:last-child button');
-
-    spyOn(eventHub, '$emit');
     filterItem.click();
 
-    expect(eventHub.$emit).toHaveBeenCalledWith('notes.filter', vm.currentValue);
     expect(vm.currentFilter.title).toEqual(filterItem.textContent.trim());
   });
 
@@ -70,12 +65,12 @@ describe('DiscussionFilter component', () => {
       .catch(done.fail);
   });
 
-  it('only updates when selected changes', () => {
+  it('only updates when selected filter changes', () => {
     const filterItem = vm.$el.querySelector('.dropdown-menu li:first-child button');
 
-    spyOn(eventHub, '$emit');
+    spyOn(vm, 'filterDiscussion');
     filterItem.click();
 
-    expect(eventHub.$emit).not.toHaveBeenCalled();
+    expect(vm.filterDiscussion).not.toHaveBeenCalled();
   });
 });
