@@ -24,7 +24,7 @@ class DiscussionEntity < Grape::Entity
 
   expose :resolved?, as: :resolved
   expose :resolved_by_push?, as: :resolved_by_push
-  expose :resolved_by
+  expose :resolved_by, using: NoteUserEntity
   expose :resolved_at
   expose :resolve_path, if: -> (d, _) { d.resolvable? } do |discussion|
     resolve_project_merge_request_discussion_path(discussion.project, discussion.noteable, discussion.id)
