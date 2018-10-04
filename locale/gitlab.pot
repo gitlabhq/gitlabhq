@@ -5460,13 +5460,7 @@ msgstr ""
 msgid "Sherlock Transactions"
 msgstr ""
 
-msgid "Show all activity"
-msgstr ""
-
 msgid "Show command"
-msgstr ""
-
-msgid "Show comments only"
 msgstr ""
 
 msgid "Show complete raw log"
