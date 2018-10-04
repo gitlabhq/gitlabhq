@@ -6,7 +6,7 @@ FactoryBot.define do
     project
     pipeline factory: :ci_pipeline
     ref 'master'
-    first_seen_in_commit_sha '52d084cede3db8fafcd6b8ae382ddf1970da3b7f'
+    uuid 'a7342ca9-494e-457f-88e7-e65e145cc392'
     project_fingerprint '4e5b6966dd100170b4b1ad599c7058cce91b57b4'
     primary_identifier_fingerprint '4e5b6966dd100170b4b1ad599c7058cce91b57b4'
     location_fingerprint '4e5b6966dd100170b4b1ad599c7058cce91b57b4'
