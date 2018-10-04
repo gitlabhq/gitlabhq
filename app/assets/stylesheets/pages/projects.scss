@@ -830,6 +830,14 @@
   }
 }
 
+.repository-language-bar-tooltip-language {
+  font-weight: $gl-font-weight-bold;
+}
+
+.repository-language-bar-tooltip-share {
+  color: $theme-gray-400;
+}
+
 pre.light-well {
   border-color: $well-light-border;
 }
