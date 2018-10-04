@@ -9,6 +9,7 @@ describe Ci::Pipeline do
   end
 
   it { is_expected.to have_one(:chat_data) }
+  it { is_expected.to have_many(:job_artifacts).through(:builds) }
 
   describe '.failure_reasons' do
     it 'contains failure reasons about exceeded limits' do
@@ -18,13 +19,6 @@ describe Ci::Pipeline do
   end
 
   PIPELINE_ARTIFACTS_METHODS = [
-    # codeclimate_artifact is deprecated and replaced with code_quality_artifact  (#5779)
-    { method: :codeclimate_artifact, options: [Ci::Build::CODECLIMATE_FILE, 'codeclimate'] },
-    { method: :codeclimate_artifact, options: [Ci::Build::CODECLIMATE_FILE, 'codequality'] },
-    { method: :codeclimate_artifact, options: [Ci::Build::CODECLIMATE_FILE, 'code_quality'] },
-    { method: :code_quality_artifact, options: [Ci::Build::CODE_QUALITY_FILE, 'codeclimate'] },
-    { method: :code_quality_artifact, options: [Ci::Build::CODE_QUALITY_FILE, 'codequality'] },
-    { method: :code_quality_artifact, options: [Ci::Build::CODE_QUALITY_FILE, 'code_quality'] },
     { method: :performance_artifact, options: [Ci::Build::PERFORMANCE_FILE, 'performance'] },
     { method: :sast_artifact, options: [Ci::Build::SAST_FILE, 'sast'] },
     { method: :dependency_scanning_artifact, options: [Ci::Build::DEPENDENCY_SCANNING_FILE, 'dependency_scanning'] },
@@ -70,7 +64,7 @@ describe Ci::Pipeline do
     end
   end
 
-  %w(sast dependency_scanning dast performance sast_container container_scanning codeclimate code_quality).each do |type|
+  %w(sast dependency_scanning dast performance sast_container container_scanning).each do |type|
     method = "has_#{type}_data?"
 
     describe "##{method}" do
@@ -84,7 +78,7 @@ describe Ci::Pipeline do
     end
   end
 
-  %w(sast dependency_scanning dast performance sast_container container_scanning codeclimate code_quality).each do |type|
+  %w(sast dependency_scanning dast performance sast_container container_scanning).each do |type|
     method = "expose_#{type}_data?"
 
     describe "##{method}" do
@@ -172,6 +166,44 @@ describe Ci::Pipeline do
     end
   end
 
+  describe '#artifact_for_file_type' do
+    let(:file_type) { :codequality }
+    let!(:build) { create(:ci_build, pipeline: pipeline) }
+    let!(:artifact) { create(:ci_job_artifact, :codequality, job: build) }
+    subject { pipeline.artifact_for_file_type(file_type) }
+
+    it 'returns the artifact' do
+      expect(subject).to eq(artifact)
+    end
+  end
+
+  describe '#legacy_report_artifact_for_file_type' do
+    let(:file_type) { :codequality }
+    let(:build_name) { ::EE::Ci::Pipeline::LEGACY_REPORT_FORMATS[file_type][:names].first }
+    let(:artifact_path) { ::EE::Ci::Pipeline::LEGACY_REPORT_FORMATS[file_type][:files].first }
+
+    let!(:build) do
+      create(
+        :ci_build,
+        :success,
+        :artifacts,
+        name: build_name,
+        pipeline: pipeline,
+        options: {
+          artifacts: {
+            paths: [artifact_path]
+          }
+        }
+      )
+    end
+
+    subject { pipeline.legacy_report_artifact_for_file_type(:codequality) }
+
+    it 'returns the artifact' do
+      expect(subject).to eq(OpenStruct.new(build: build, path: artifact_path))
+    end
+  end
+
   context 'performance' do
     def create_build(job_name, filename)
       create(
@@ -188,10 +220,10 @@ describe Ci::Pipeline do
     end
 
     it 'does not perform extra queries when calling pipeline artifacts methods after the first' do
-      create_build('codeclimate', 'codeclimate.json')
+      create_build('sast', Ci::Build::SAST_FILE)
       create_build('dependency_scanning', 'gl-dependency-scanning-report.json')
 
-      pipeline.code_quality_artifact
+      pipeline.sast_artifact
 
       expect { pipeline.dependency_scanning_artifact }.not_to exceed_query_limit(0)
     end

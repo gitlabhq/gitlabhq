@@ -7,9 +7,6 @@ module EE
     module Build
       extend ActiveSupport::Concern
 
-      # CODECLIMATE_FILE is deprecated and replaced with CODE_QUALITY_FILE (#5779)
-      CODECLIMATE_FILE = 'codeclimate.json'.freeze
-      CODE_QUALITY_FILE = 'gl-code-quality-report.json'.freeze
       DEPENDENCY_SCANNING_FILE = 'gl-dependency-scanning-report.json'.freeze
       LICENSE_MANAGEMENT_FILE = 'gl-license-management-report.json'.freeze
       SAST_FILE = 'gl-sast-report.json'.freeze
@@ -32,17 +29,6 @@ module EE
         return unless running?
 
         ::Gitlab::Database::LoadBalancing::Sticking.stick(:build, id)
-      end
-
-      # has_codeclimate_json? is deprecated and replaced with has_code_quality_json? (#5779)
-      def has_codeclimate_json?
-        name_in?(%w[codeclimate codequality code_quality]) &&
-          has_artifact?(CODECLIMATE_FILE)
-      end
-
-      def has_code_quality_json?
-        name_in?(%w[codeclimate codequality code_quality]) &&
-          has_artifact?(CODE_QUALITY_FILE)
       end
 
       def has_performance_json?
@@ -87,12 +73,12 @@ module EE
         # See https://gitlab.com/gitlab-org/gitlab-ce/issues/46652
       end
 
-      private
-
       def has_artifact?(name)
         options.dig(:artifacts, :paths)&.include?(name) &&
           artifacts_metadata?
       end
+
+      private
 
       def name_in?(names)
         name.in?(Array(names))

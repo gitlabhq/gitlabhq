@@ -11,18 +11,39 @@ module EE
       prepended do
         has_one :chat_data, class_name: 'Ci::PipelineChatData'
 
+        has_many :job_artifacts, through: :builds
+
         scope :with_security_reports, -> {
           joins(:artifacts).where(ci_builds: { name: %w[sast dependency_scanning sast:container container_scanning dast] })
         }
+
+        # Deprecated, to be removed in 12.0
+        # A hash of Ci::JobArtifact file_types
+        # With mapping to the legacy job names,
+        # that has to contain given files
+        LEGACY_REPORT_FORMATS = {
+          codequality: {
+            names: %w(codeclimate codequality code_quality),
+            files: %w(codeclimate.json gl-code-quality-report.json)
+          }
+        }.freeze
       end
 
-      # codeclimate_artifact is deprecated and replaced with code_quality_artifact (#5779)
-      def codeclimate_artifact
-        @codeclimate_artifact ||= artifacts_with_files.find(&:has_codeclimate_json?)
+      def artifact_for_file_type(file_type)
+        job_artifacts.where(file_type: ::Ci::JobArtifact.file_types[file_type]).last
       end
 
-      def code_quality_artifact
-        @code_quality_artifact ||= artifacts_with_files.find(&:has_code_quality_json?)
+      def legacy_report_artifact_for_file_type(file_type)
+        legacy_names = LEGACY_REPORT_FORMATS[file_type]
+        return unless legacy_names
+
+        builds.success.latest.where(name: legacy_names[:names]).each do |build|
+          legacy_names[:files].each do |file_name|
+            next unless build.has_artifact?(file_name)
+
+            return OpenStruct.new(build: build, path: file_name)
+          end
+        end.last
       end
 
       def performance_artifact
@@ -83,15 +104,6 @@ module EE
         performance_artifact&.success?
       end
 
-      # has_codeclimate_data? is deprecated and replaced with has_code_quality_data? (#5779)
-      def has_codeclimate_data?
-        codeclimate_artifact&.success?
-      end
-
-      def has_code_quality_data?
-        code_quality_artifact&.success?
-      end
-
       def expose_sast_data?
         project.feature_available?(:sast) &&
           has_sast_data?
@@ -134,15 +146,6 @@ module EE
           expose_dast_data? ||
           expose_sast_container_data? ||
           expose_container_scanning_data?
-      end
-
-      # expose_codeclimate_data? is deprecated and replaced with expose_code_quality_data? (#5779)
-      def expose_codeclimate_data?
-        has_codeclimate_data?
-      end
-
-      def expose_code_quality_data?
-        has_code_quality_data?
       end
 
       private

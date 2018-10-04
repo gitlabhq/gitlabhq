@@ -16,33 +16,13 @@ module EE
         end
       end
 
-      # expose_codeclimate_data? is deprecated and replaced with expose_code_quality_data?
-      expose :codeclimate, if: -> (mr, _) { mr.expose_codeclimate_data? } do
-        expose :head_path, if: -> (mr, _) { can?(current_user, :read_build, mr.head_codeclimate_artifact) } do |merge_request|
-          raw_project_build_artifacts_url(merge_request.source_project,
-                                          merge_request.head_codeclimate_artifact,
-                                          path: Ci::Build::CODECLIMATE_FILE)
+      expose :codeclimate, if: -> (mr, _) { mr.head_pipeline&.present&.downloadable_url_for_report_type(:codequality) } do
+        expose :head_path do |merge_request|
+          merge_request.head_pipeline.present.downloadable_url_for_report_type(:codequality)
         end
 
-        expose :base_path, if: -> (mr, _) { can?(current_user, :read_build, mr.base_codeclimate_artifact) } do |merge_request|
-          raw_project_build_artifacts_url(merge_request.target_project,
-                                          merge_request.base_codeclimate_artifact,
-                                          path: Ci::Build::CODECLIMATE_FILE)
-        end
-      end
-
-      # We still expose it as `codeclimate` to keep compatibility with Frontend
-      expose :codeclimate, if: -> (mr, _) { mr.expose_code_quality_data? } do
-        expose :head_path, if: -> (mr, _) { can?(current_user, :read_build, mr.head_code_quality_artifact) } do |merge_request|
-          raw_project_build_artifacts_url(merge_request.source_project,
-                                          merge_request.head_code_quality_artifact,
-                                          path: Ci::Build::CODE_QUALITY_FILE)
-        end
-
-        expose :base_path, if: -> (mr, _) { can?(current_user, :read_build, mr.base_code_quality_artifact) } do |merge_request|
-          raw_project_build_artifacts_url(merge_request.target_project,
-                                          merge_request.base_code_quality_artifact,
-                                          path: Ci::Build::CODE_QUALITY_FILE)
+        expose :base_path do |merge_request|
+          merge_request.base_pipeline.present.downloadable_url_for_report_type(:codequality)
         end
       end
 
