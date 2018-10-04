@@ -21,6 +21,6 @@ class RunPipelineScheduleWorker
     Ci::CreatePipelineService.new(schedule.project,
                                   user,
                                   ref: schedule.ref)
-      .execute(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: schedule)
+      .execute(:source_schedule, ignore_skip_ci: true, save_on_errors: false, schedule: schedule)
   end
 end

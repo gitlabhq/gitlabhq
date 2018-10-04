@@ -63,7 +63,7 @@ module Ci
       push: 1,
       web: 2,
       trigger: 3,
-      schedule: 4,
+      source_schedule: 4,
       api: 5,
       external: 6
     }

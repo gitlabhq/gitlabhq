@@ -30,7 +30,7 @@ describe RunPipelineScheduleWorker do
 
       it 'calls the Service' do
         expect(Ci::CreatePipelineService).to receive(:new).with(project, user, ref: pipeline_schedule.ref).and_return(create_pipeline_service)
-        expect(create_pipeline_service).to receive(:execute).with(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: pipeline_schedule)
+        expect(create_pipeline_service).to receive(:execute).with(:source_schedule, ignore_skip_ci: true, save_on_errors: false, schedule: pipeline_schedule)
 
         worker.perform(pipeline_schedule.id, user.id)
       end

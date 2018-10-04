@@ -12,7 +12,7 @@ class PipelineScheduleWorker
         pipeline = Ci::CreatePipelineService.new(schedule.project,
                                                  schedule.owner,
                                                  ref: schedule.ref)
-          .execute(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: schedule)
+          .execute(:source_schedule, ignore_skip_ci: true, save_on_errors: false, schedule: schedule)
 
         schedule.deactivate! unless pipeline.persisted?
       rescue => e
