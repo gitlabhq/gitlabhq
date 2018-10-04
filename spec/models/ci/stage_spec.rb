@@ -200,8 +200,8 @@ describe Ci::Stage, :models do
     end
   end
 
-  describe '#schedule' do
-    subject { stage.schedule }
+  describe '#delay' do
+    subject { stage.delay }
 
     let(:stage) { create(:ci_stage_entity, status: :created) }
 
