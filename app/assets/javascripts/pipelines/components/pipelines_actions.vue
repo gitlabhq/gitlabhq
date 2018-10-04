@@ -27,7 +27,7 @@ export default {
     onClickAction(action) {
       if (action.scheduled_at) {
         const confirmationMessage = sprintf(s__("DelayedJobs|Are you sure you want to run %{jobName} immediately? This job will run automatically after it's timer finishes."), { jobName: action.name });
-        // https://gitlab.com/gitlab-org/gitlab-ce/issues/52099
+        // https://gitlab.com/gitlab-org/gitlab-ce/issues/52156
         // eslint-disable-next-line no-alert
         if (!window.confirm(confirmationMessage)) {
           return;
