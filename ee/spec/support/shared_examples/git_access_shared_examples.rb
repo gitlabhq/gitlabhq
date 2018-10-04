@@ -31,6 +31,7 @@ shared_examples 'a read-only GitLab instance' do
         {
           'action' => 'geo_proxy_to_primary',
           'data' => {
+            'info_message' => "You're pushing to a Geo secondary.\nWe'll help you by proxying this request to the primary: #{primary_repo_ssh_url}",
             'api_endpoints' => %w{/api/v4/geo/proxy_git_push_ssh/info_refs /api/v4/geo/proxy_git_push_ssh/push},
             'primary_repo' => primary_repo_url
           }
