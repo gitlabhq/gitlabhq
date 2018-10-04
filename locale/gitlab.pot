@@ -5786,6 +5786,9 @@ msgstr ""
 msgid "Subscribe at project level"
 msgstr ""
 
+msgid "Subscribed"
+msgstr ""
+
 msgid "Summary of issues, merge requests, push events, and comments (Timezone: %{utcFormatted})"
 msgstr ""
 
@@ -6954,6 +6957,9 @@ msgid "You can set up jobs to only use Runners with specific tags. Separate tags
 msgstr ""
 
 msgid "You cannot write to this read-only GitLab instance."
+msgstr ""
+
+msgid "You do not have any subscriptions yet"
 msgstr ""
 
 msgid "You don't have any applications"
