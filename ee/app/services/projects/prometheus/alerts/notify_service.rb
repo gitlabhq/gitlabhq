@@ -9,6 +9,8 @@ module Projects
 
           notification_service.async.prometheus_alerts_fired(project, firings) if firings.any?
 
+          persist_events(project, current_user, params)
+
           true
         end
 
@@ -19,11 +21,19 @@ module Projects
         end
 
         def alerts_by_status(status)
-          params['alerts'].select { |alert| alert['status'] == status }
+          alerts.select { |alert| alert['status'] == status }
+        end
+
+        def alerts
+          params['alerts']
         end
 
         def valid?
           params['version'] == '4'
+        end
+
+        def persist_events(project, current_user, params)
+          CreateEventsService.new(project, current_user, params).execute
         end
       end
     end

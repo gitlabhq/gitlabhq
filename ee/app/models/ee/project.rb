@@ -48,6 +48,7 @@ module EE
       has_many :source_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :project_id
 
       has_many :prometheus_alerts, inverse_of: :project
+      has_many :prometheus_alert_events, inverse_of: :project
 
       scope :with_shared_runners_limit_enabled, -> { with_shared_runners.non_public_only }
 

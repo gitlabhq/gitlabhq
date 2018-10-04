@@ -11,17 +11,26 @@ describe Projects::Prometheus::Alerts::NotifyService do
     let(:alert_firing) { create(:prometheus_alert, project: project) }
     let(:alert_resolved) { create(:prometheus_alert, project: project) }
     let(:notification_service) { spy }
+    let(:create_events_service) { spy }
     let(:payload) { payload_for(firing: [alert_firing], resolved: [alert_resolved]) }
     let(:payload_alert_firing) { payload['alerts'].first }
 
     before do
       allow(NotificationService).to receive(:new).and_return(notification_service)
+      allow(Projects::Prometheus::Alerts::CreateEventsService)
+        .to receive(:new).and_return(create_events_service)
     end
 
     it 'sends a notification for firing alerts only' do
       expect(notification_service)
         .to receive_message_chain(:async, :prometheus_alerts_fired)
         .with(project, [payload_alert_firing])
+
+      expect(service.execute).to eq(true)
+    end
+
+    it 'persists events' do
+      expect(create_events_service).to receive(:execute)
 
       expect(service.execute).to eq(true)
     end
