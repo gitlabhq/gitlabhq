@@ -170,7 +170,7 @@ keys must be manually replicated to the secondary node.
 
 ### Step 3. Add the secondary GitLab node
 
-1. Visit the **primary** node's **Admin Area ➔ Geo Nodes**
+1. Visit the **primary** node's **Admin Area > Geo**
    (`/admin/geo_nodes`) in your browser.
 1. Add the secondary node by providing its full URL. **Do NOT** check the box
    'This is a primary node'.
@@ -215,7 +215,7 @@ infrastructure issue [gitlab-com/infrastructure#2821].
 Using hashed storage significantly improves Geo replication - project and group
 renames no longer require synchronization between nodes.
 
-1. Visit the **primary** node's **Admin Area ➔ Settings**
+1. Visit the **primary** node's **Admin Area > Settings**
    (`/admin/application_settings`) in your browser
 1. In the `Repository Storages` section, check `Create new projects using hashed storage paths`:
 
@@ -234,7 +234,7 @@ on the secondary.
 ### Step 6. Enable Git access over HTTP/HTTPS
 
 Geo synchronizes repositories over HTTP/HTTPS, and therefore requires this clone
-method to be enabled. Navigate to **Admin Area ➔ Settings**
+method to be enabled. Navigate to **Admin Area > Settings**
 (`/admin/application_settings`) on the primary node, and set
 `Enabled Git access protocols` to `Both SSH and HTTP(S)` or `Only HTTP(S)`.
 
@@ -243,7 +243,7 @@ method to be enabled. Navigate to **Admin Area ➔ Settings**
 Congratulations! Your secondary geo node is now configured!
 
 You can login to the secondary node with the same credentials you used on the
-primary. Visit the secondary node's **Admin Area ➔ Geo Nodes**
+primary. Visit the secondary node's **Admin Area > Geo**
 (`/admin/geo_nodes`) in your browser to check if it's correctly identified as a
 secondary Geo node and if Geo is enabled.
 
@@ -259,7 +259,7 @@ If your installation isn't working properly, check the
 The two most obvious issues that can become apparent in the dashboard are:
 
 1. Database replication not working well
-1. Instance to instance notification not working. In that case, it can be
+2. Instance to instance notification not working. In that case, it can be
    something of the following:
      - You are using a custom certificate or custom CA (see the
        [troubleshooting document])

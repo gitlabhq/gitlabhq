@@ -3,7 +3,7 @@
 For more information about setting up GitLab Geo, read the
 [Geo documentation](../../gitlab-geo/README.md).
 
-When you're done, you can navigate to **Admin area ➔ Geo nodes** (`/admin/geo_nodes`).
+When you're done, you can navigate to **Admin area > Geo** (`/admin/geo_nodes`).
 
 ## Common settings
 

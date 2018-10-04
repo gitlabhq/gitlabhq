@@ -7,13 +7,13 @@ module QA
             page.module_eval do
               view 'app/views/layouts/nav/sidebar/_admin.html.haml' do
                 element :license, "_('License')"
-                element :geo_node, "_('Geo Nodes')"
+                element :geo_node, "_('Geo')"
               end
             end
           end
 
           def go_to_geo_nodes
-            click_link 'Geo Nodes'
+            click_link 'Geo'
           end
 
           def go_to_license

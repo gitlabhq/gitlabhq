@@ -175,13 +175,13 @@
           .nav-icon-container
             = sprite_icon('location-dot')
           %span.nav-item-name
-            #{ _('Geo Nodes') }
+            #{ _('Geo') }
         - if Gitlab::Geo.secondary?
           %ul.sidebar-sub-level-items
             = nav_link(controller: 'admin/geo/nodes', html_options: { class: "fly-out-top-item" } ) do
               = link_to admin_geo_nodes_path do
                 %strong.fly-out-top-item-name
-                  #{ _('Geo Nodes') }
+                  #{ _('Geo') }
             %li.divider.fly-out-top-item
             = nav_link(path: 'admin/geo/nodes#index') do
               = link_to admin_geo_nodes_path, title: 'Nodes' do
