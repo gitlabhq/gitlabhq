@@ -5598,20 +5598,20 @@ moment@2.x, moment@^2.18.1:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.19.2.tgz#8a7f774c95a64550b4c7ebd496683908f9419dbe"
   integrity sha512-Rf6jiHPEfxp9+dlzxPTmRHbvoFXsh2L/U8hOupUMpnuecHQmI6cF6lUbJl3QqKPko1u6ujO+FxtcajLVfLpAtA==
 
-monaco-editor-textmate@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/monaco-editor-textmate/-/monaco-editor-textmate-2.0.0.tgz#f24ace7e37b6169d910b329e20d1ae2b244ba55e"
-  integrity sha512-TyV6IpBzxBZPMChrcukcHxcF5UMK2kC5BA5R89xdpoQFhVkHRF1UvM3+Z6WcxPT06BYJoFxEU9C6pzGZ2FyfGA==
+monaco-editor-textmate@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/monaco-editor-textmate/-/monaco-editor-textmate-2.0.1.tgz#f33b4ddd89e0e47d6e364c7e1772bb7ea0c99c9f"
+  integrity sha512-0xFYTKtn5bSIVheegKpsqiPN/sxEX2ddGf876hSSFiOt/YIKIDt6ULFDmJGVIz4Mog3XqCY3++dFUgVqamjScg==
 
-monaco-editor-webpack-plugin@~1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/monaco-editor-webpack-plugin/-/monaco-editor-webpack-plugin-1.1.0.tgz#017fd2edb916ce9411f690e2e3d4f931509ea474"
-  integrity sha512-SI/WzVOhFERlp/FKkDNt29ueUDy9CpdSsg1vyhK1tJNMKhGGp313Xjq23zYTETlqVhKPXy+Lau8E0ED0BpKYtQ==
+monaco-editor-webpack-plugin@^1.5.4:
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/monaco-editor-webpack-plugin/-/monaco-editor-webpack-plugin-1.5.4.tgz#6781a130e3e1379bb8f4cd190132f4af6dcd2c16"
+  integrity sha512-9YmWYQdZoAoZ1RLy/uvoDbCcb0EKy5O2qoMQn+UIVQxk+VTCXfJDgANczDIWko+UOzg0MY0P+sA8bl4XI14RJg==
 
-monaco-editor@^0.12.0:
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.12.0.tgz#cd8621017526b57746245104d764bbf52ad42283"
-  integrity sha512-mScjXSKwH5LCmx6JCABkVpMnRHhi86IJwEmEXkH5O61dDXadWBdWQdC8N+NLmKT17/ugZYITCajUAWNRyKKZ9g==
+monaco-editor@^0.14.3:
+  version "0.14.3"
+  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.14.3.tgz#7cc4a4096a3821f52fea9b10489b527ef3034e22"
+  integrity sha512-RhaO4xXmWn/p0WrkEOXe4PoZj6xOcvDYjoAh0e1kGUrQnP1IOpc0m86Ceuaa2CLEMDINqKijBSmqhvBQnsPLHQ==
 
 monaco-textmate-languages@^1.1.0:
   version "1.1.0"
