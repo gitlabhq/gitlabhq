@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module QA
   module Page
-    module Menu
-      class Side < Page::Base
+    module Project
+      class Menu < Page::Base
         view 'app/views/layouts/nav/sidebar/_project.html.haml' do
           element :settings_item
           element :settings_link, 'link_to edit_project_path'

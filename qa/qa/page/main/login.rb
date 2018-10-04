@@ -37,13 +37,13 @@ module QA
           # we are already logged-in so we check both cases here.
           wait(max: 500) do
             has_css?('.login-page') ||
-              Page::Menu::Main.act { has_personal_area?(wait: 0) }
+              Page::Main::Menu.act { has_personal_area?(wait: 0) }
           end
         end
 
         def sign_in_using_credentials(user = nil)
           # Don't try to log-in if we're already logged-in
-          return if Page::Menu::Main.act { has_personal_area?(wait: 0) }
+          return if Page::Main::Menu.act { has_personal_area?(wait: 0) }
 
           using_wait_time 0 do
             set_initial_password_if_present
@@ -57,7 +57,7 @@ module QA
             end
           end
 
-          Page::Menu::Main.act { has_personal_area? }
+          Page::Main::Menu.act { has_personal_area? }
         end
 
         def sign_in_using_admin_credentials
@@ -72,7 +72,7 @@ module QA
             sign_in_using_gitlab_credentials(admin)
           end
 
-          Page::Menu::Main.act { has_personal_area? }
+          Page::Main::Menu.act { has_personal_area? }
         end
 
         def self.path

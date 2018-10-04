@@ -17,7 +17,7 @@ module QA
       it 'user creates an issue' do
         create_issue
 
-        Page::Menu::Side.act { click_issues }
+        Page::Project::Menu.act { click_issues }
 
         expect(page).to have_content(issue_title)
       end

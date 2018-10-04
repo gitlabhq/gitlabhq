@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module QA
   module Page
-    module Menu
-      class Main < Page::Base
+    module Main
+      class Menu < Page::Base
         view 'app/views/layouts/header/_current_user_dropdown.html.haml' do
           element :user_sign_out_link, 'link_to _("Sign out")'
           element :settings_link, 'link_to s_("CurrentUser|Settings")'

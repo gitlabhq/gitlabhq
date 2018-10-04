@@ -10,7 +10,7 @@ module QA
 
         Factory::Resource::Sandbox.fabricate!
 
-        EE::Page::Menu::Side.act { go_to_saml_sso_group_settings }
+        EE::Page::Group::Menu.act { go_to_saml_sso_group_settings }
 
         EE::Page::Group::Settings::SamlSSO.act do
           set_id_provider_sso_url("https://#{QA::Runtime::Env.simple_saml_hostname || 'localhost'}:8443/simplesaml/saml2/idp/SSOService.php")
@@ -25,7 +25,7 @@ module QA
 
         expect(page).to have_content("SAML for #{Runtime::Env.sandbox_name} was added to your connected accounts")
 
-        EE::Page::Menu::Side.act { go_to_saml_sso_group_settings }
+        EE::Page::Group::Menu.act { go_to_saml_sso_group_settings }
 
         EE::Page::Group::Settings::SamlSSO.act { click_user_login_url_link }
 

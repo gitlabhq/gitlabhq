@@ -14,6 +14,7 @@ module QA
       end
 
       module Group
+        autoload :Menu, 'qa/ee/page/group/menu'
         autoload :SamlSSOSignIn, 'qa/ee/page/group/saml_sso_sign_in'
 
         module Settings
@@ -25,12 +26,8 @@ module QA
         autoload :Banner, 'qa/ee/page/main/banner'
       end
 
-      module Menu
-        autoload :Admin, 'qa/ee/page/menu/admin'
-        autoload :Side, 'qa/ee/page/menu/side'
-      end
-
       module Admin
+        autoload :Menu, 'qa/ee/page/admin/menu'
         autoload :License, 'qa/ee/page/admin/license'
 
         module Geo

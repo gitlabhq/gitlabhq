@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module QA
   module EE
     module Page
-      module Menu
-        module Admin
+      module Admin
+        module Menu
           def self.prepended(page)
             page.module_eval do
               view 'app/views/layouts/nav/sidebar/_admin.html.haml' do

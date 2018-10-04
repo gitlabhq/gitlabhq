@@ -34,7 +34,7 @@ module QA
 
             expect(page).to have_content 'You are on a secondary, read-only Geo node'
 
-            Page::Menu::Main.perform do |menu|
+            Page::Main::Menu.perform do |menu|
               menu.go_to_projects
             end
 
@@ -44,7 +44,7 @@ module QA
               dashboard.go_to_project(project.name)
             end
 
-            Page::Menu::Side.act { click_issues }
+            Page::Project::Menu.act { click_issues }
 
             Page::Project::Issue::Index.perform do |index|
               index.wait_for_issue_replication(issue)
