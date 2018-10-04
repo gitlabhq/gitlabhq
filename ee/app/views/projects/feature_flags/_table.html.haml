@@ -1,0 +1,41 @@
+.table-holder.border-top
+  .gl-responsive-table-row.table-row-header{ role: 'row' }
+    .table-section.section-10{ role: 'columnheader' }= s_('FeatureFlags|Status')
+    .table-section.section-50{ role: 'columnheader' }= s_('FeatureFlags|Feature flag')
+  - @feature_flags.each do |feature_flag|
+    = render 'delete_feature_flag_modal', { feature_flag: feature_flag }
+
+    .gl-responsive-table-row{ role: 'row' }
+      .table-section.section-10{ role: 'gridcell' }
+        .table-mobile-header{ role: "rowheader" }= s_('FeatureFlags|Status')
+        .table-mobile-content
+          - if feature_flag.active?
+            %span.badge.badge-success
+              = s_('FeatureFlags|Active')
+          - else
+            %span.badge.badge-danger
+              = s_('FeatureFlags|Inactive')
+
+      .table-section.section-50{ role: 'gridcell' }
+        .table-mobile-header{ role: "rowheader" }= s_('FeatureFlags|Feature Flag')
+        .table-mobile-content.d-flex.flex-column
+          .text-monospace.text-truncate= feature_flag.name
+          .text-secondary.text-truncate= feature_flag.description
+
+      .table-section.section-40.table-button-footer{ role: 'gridcell' }
+        .table-action-buttons.btn-group
+          - if can?(current_user, :update_feature_flag, @project)
+            = link_to edit_project_feature_flag_path(@project, feature_flag),
+                class: 'btn btn-default has-tooltip',
+                type: 'button',
+                title: _('Edit') do
+              = sprite_icon('pencil', size: 16)
+
+          - if can?(current_user, :destroy_feature_flag, @project)
+            %button.btn.btn-danger.has-tooltip{ type: 'button',
+                data: { toggle: 'modal',
+                  target: "#delete-feature-flag-modal-#{feature_flag.id}" },
+                title: _('Delete') }
+              = sprite_icon('remove', size: 16)
+
+= paginate @feature_flags, theme: "gitlab"

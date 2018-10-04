@@ -1,0 +1,20 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "features": {
+      "items": {
+        "$ref": "unleash_feature.json"
+      },
+      "minItems": 0,
+      "type": "array"
+    },
+    "version": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "version",
+    "features"
+  ],
+  "type": "object"
+}

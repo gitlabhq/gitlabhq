@@ -50,6 +50,9 @@ module EE
       has_many :prometheus_alerts, inverse_of: :project
       has_many :prometheus_alert_events, inverse_of: :project
 
+      has_many :operations_feature_flags, class_name: 'Operations::FeatureFlag'
+      has_one :operations_feature_flags_client, class_name: 'Operations::FeatureFlagsClient'
+
       scope :with_shared_runners_limit_enabled, -> { with_shared_runners.non_public_only }
 
       scope :mirror, -> { where(mirror: true) }
@@ -557,6 +560,11 @@ module EE
     def update_root_ref(remote_name)
       root_ref = repository.find_remote_root_ref(remote_name)
       change_head(root_ref) if root_ref.present? && root_ref != default_branch
+    end
+
+    def feature_flags_client_token
+      instance = operations_feature_flags_client || create_operations_feature_flags_client!
+      instance.token
     end
 
     private

@@ -1,0 +1,10 @@
+- @breadcrumb_link = new_project_feature_flag_path(@project)
+- add_to_breadcrumbs "Feature Flags", project_feature_flags_path(@project)
+- breadcrumb_title s_('FeatureFlags|New')
+- page_title s_('FeatureFlags|New Feature Flag')
+%h3.page-title
+  = s_('FeatureFlags|New Feature Flag')
+%hr.clearfix
+%div
+  = form_for [@project, @feature_flag], url: project_feature_flags_path(@project), html: { class: 'fieldset-form' } do |f|
+    = render 'form', { f: f }

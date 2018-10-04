@@ -67,6 +67,7 @@ class License < ActiveRecord::Base
     custom_project_templates
     packages
     code_owner_as_approver_suggestion
+    feature_flags
   ].freeze
 
   EEU_FEATURES = EEP_FEATURES + %i[
