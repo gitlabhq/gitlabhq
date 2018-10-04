@@ -76,6 +76,7 @@ export default {
             <button
               :class="{ 'is-active': filter.value === currentFilter.value }"
               @click="selectFilter(filter.value)"
+              type="button"
             >
               {{ filter.title }}
             </button>
