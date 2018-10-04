@@ -11,7 +11,6 @@ module QA
         product :id do
           true # We don't retrieve the Group ID when using the Browser UI
         end
-
         product :path
 
         def initialize

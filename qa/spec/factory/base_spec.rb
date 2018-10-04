@@ -8,7 +8,13 @@ describe QA::Factory::Base do
   let(:product_location) { 'http://product_location' }
 
   shared_context 'fabrication context' do
-    subject { Class.new(described_class) }
+    subject do
+      Class.new(described_class) do
+        def self.name
+          'MyFactory'
+        end
+      end
+    end
 
     before do
       allow(subject).to receive(:current_url).and_return(product_location)
@@ -21,12 +27,10 @@ describe QA::Factory::Base do
     let(:fabrication_method_used) { actual_fabrication_method || fabrication_method_called }
 
     it 'yields factory before calling factory method' do
-      allow(subject).to receive(:new).and_return(factory)
-
       expect(factory).to receive(:something!).ordered
       expect(factory).to receive(fabrication_method_used).ordered.and_return(product_location)
 
-      subject.public_send(fabrication_method_called) do |factory|
+      subject.public_send(fabrication_method_called, factory: factory) do |factory|
         factory.something!
       end
     end
@@ -35,9 +39,8 @@ describe QA::Factory::Base do
       stub_env('VERBOSE', 'false')
       expect(factory).to receive(fabrication_method_used).and_return(product_location)
 
-      expect { subject.public_send(fabrication_method_called, 'something') }
-        .not_to output(/Resource #{factory.class.name} built via/)
-        .to_stdout
+      expect { subject.public_send(fabrication_method_called, 'something', factory: factory) }
+        .not_to output.to_stdout
     end
   end
 
@@ -71,7 +74,7 @@ describe QA::Factory::Base do
     it 'instantiates the factory, calls factory method returns fabrication product' do
       expect(factory).to receive(:fabricate_via_api!).and_return(product_location)
 
-      result = subject.fabricate_via_api!
+      result = subject.fabricate_via_api!(factory: factory, parents: [])
 
       expect(result).to eq(product)
     end
@@ -80,8 +83,8 @@ describe QA::Factory::Base do
       stub_env('VERBOSE', 'true')
       expect(factory).to receive(:fabricate_via_api!).and_return(product_location)
 
-      expect { subject.fabricate_via_api! }
-        .to output(/Resource #{factory.class.name} built via api/)
+      expect { subject.fabricate_via_api!(factory: factory, parents: []) }
+        .to output(/==> Built a MyFactory via api with args \[\] in [\d\w\.\-]+/)
         .to_stdout
     end
   end
@@ -92,13 +95,13 @@ describe QA::Factory::Base do
     it_behaves_like 'fabrication method', :fabricate_via_browser_ui!, :fabricate!
 
     it 'instantiates the factory and calls factory method' do
-      subject.fabricate_via_browser_ui!('something')
+      subject.fabricate_via_browser_ui!('something', factory: factory, parents: [])
 
       expect(factory).to have_received(:fabricate!).with('something')
     end
 
     it 'returns fabrication product' do
-      result = subject.fabricate_via_browser_ui!('something')
+      result = subject.fabricate_via_browser_ui!('something', factory: factory, parents: [])
 
       expect(result).to eq(product)
     end
@@ -106,8 +109,8 @@ describe QA::Factory::Base do
     it 'logs the factory and build method when VERBOSE=true' do
       stub_env('VERBOSE', 'true')
 
-      expect { subject.fabricate_via_browser_ui!('something') }
-        .to output(/Resource #{factory.class.name} built via browser_ui/)
+      expect { subject.fabricate_via_browser_ui!('something', factory: factory, parents: []) }
+        .to output(/==> Built a MyFactory via browser_ui with args \["something"\] in [\d\w\.\-]+/)
         .to_stdout
     end
   end

@@ -23,19 +23,23 @@ module QA
       alias_method :api_post_path, :api_get_path
       alias_method :api_post_body, :api_get_path
 
+      def api_support?
+        api_get_path && api_post_path && api_post_body && true
+      rescue NotImplementedError
+        false
+      end
+
       def fabricate_via_api!
         resource_web_url(api_post)
+      end
+
+      def init_api_client!
+        api_client && true
       end
 
       private
 
       attr_writer :api_resource, :api_response
-
-      def api_support?
-        api_get_path && api_post_path && api_post_body
-      rescue NotImplementedError
-        false
-      end
 
       def resource_web_url(resource)
         resource.fetch(:web_url) do
@@ -67,7 +71,13 @@ module QA
       end
 
       def api_client
-        @api_client ||= Runtime::API::Client.new(:gitlab, is_new_session: !current_url.start_with?('http'))
+        @api_client ||= begin
+          Runtime::API::Client.new(:gitlab, is_new_session: !current_url.start_with?('http')).tap do |client|
+            # Eager-load the API client so that the personal token creation isn't
+            # taken in account in the actual resource creation.
+            client.personal_access_token unless Runtime::Env.personal_access_token
+          end
+        end
       end
 
       def parse_body(response)

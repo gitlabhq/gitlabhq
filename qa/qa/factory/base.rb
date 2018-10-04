@@ -18,44 +18,65 @@ module QA
       end
 
       def self.fabricate!(*args, &prepare_block)
+        args << { factory: new }
+
         fabricate_via_api!(*args, &prepare_block)
       rescue NotImplementedError
         fabricate_via_browser_ui!(*args, &prepare_block)
       end
 
       def self.fabricate_via_browser_ui!(*args, &prepare_block)
-        do_fabricate!(prepare_block) do |factory|
-          log_fabrication(:browser_ui, factory) { factory.fabricate!(*args) }
+        options = args.extract_options!
+        factory = options.fetch(:factory) { new }
+        parents = options.fetch(:parents) { [] }
+
+        do_fabricate!(factory: factory, prepare_block: prepare_block, parents: parents) do
+          log_fabrication(:browser_ui, factory, parents, args) { factory.fabricate!(*args) }
 
           current_url
         end
       end
 
       def self.fabricate_via_api!(*args, &prepare_block)
-        do_fabricate!(prepare_block) do |factory|
-          log_fabrication(:api, factory) { factory.fabricate_via_api! }
+        options = args.extract_options!
+        factory = options.fetch(:factory) { new }
+        parents = options.fetch(:parents) { [] }
+
+        do_fabricate!(factory: factory, prepare_block: prepare_block, parents: parents) do
+          raise NotImplementedError unless factory.api_support?
+
+          factory.init_api_client!
+          log_fabrication(:api, factory, parents, args) { factory.fabricate_via_api! }
         end
       end
 
-      def self.do_fabricate!(prepare_block)
-        factory = new
+      def self.do_fabricate!(factory:, prepare_block:, parents: [])
         prepare_block.call(factory) if prepare_block
 
         dependencies.each do |signature|
-          Factory::Dependency.new(factory, signature).build!
+          Factory::Dependency.new(factory, signature).build!(parents: parents + [self])
         end
 
-        resource_web_url = yield(factory)
+        resource_web_url = yield
 
         Factory::Product.populate!(factory, resource_web_url)
       end
       private_class_method :do_fabricate!
 
-      def self.log_fabrication(method, factory)
+      def self.log_fabrication(method, factory, parents, args)
+        return yield unless Runtime::Env.verbose?
+
         start = Time.now
+        prefix = "==#{'=' * parents.size}>"
+        msg = [prefix]
+        msg << "Built a #{name}"
+        msg << "as a dependency of #{parents.last}" if parents.any?
+        msg << "via #{method} with args #{args}"
 
         yield.tap do
-          puts "Resource #{factory.class.name} built via #{method} in #{Time.now - start} seconds" if Runtime::Env.verbose?
+          msg << "in #{Time.now - start} seconds"
+          puts msg.join(' ')
+          puts if parents.empty?
         end
       end
       private_class_method :log_fabrication

@@ -34,6 +34,16 @@ describe QA::Factory::ApiFabricator do
   subject { factory.tap { |f| f.include(described_class) }.new }
 
   describe '#fabricate_via_api!' do
+    let(:api_client) { spy('Runtime::API::Client') }
+    let(:api_client_instance) { double('API Client') }
+
+    before do
+      stub_const('QA::Runtime::API::Client', api_client)
+
+      allow(api_client).to receive(:new).and_return(api_client_instance)
+      allow(api_client_instance).to receive(:personal_access_token).and_return('foo')
+    end
+
     context 'when factory does not support fabrication via the API' do
       let(:factory) { factory_without_api_support }
 
@@ -44,22 +54,18 @@ describe QA::Factory::ApiFabricator do
 
     context 'when factory supports fabrication via the API' do
       let(:factory) { factory_with_api_support }
-      let(:api_client) { spy('Runtime::API::Client') }
-      let(:api_client_instance) { double('API Client') }
       let(:api_request) { spy('Runtime::API::Request') }
       let(:resource_web_url) { 'http://example.org/api/v4/foo' }
       let(:resource) { { id: 1, name: 'John Doe', web_url: resource_web_url } }
       let(:raw_post) { double('Raw POST response', code: 201, body: resource.to_json) }
 
       before do
-        stub_const('QA::Runtime::API::Client', api_client)
         stub_const('QA::Runtime::API::Request', api_request)
 
-        allow(api_client).to receive(:new).and_return(api_client_instance)
         allow(api_request).to receive(:new).and_return(double(url: resource_web_url))
       end
 
-      context 'when the resource does not exist' do
+      context 'when creating a resource' do
         before do
           allow(subject).to receive(:post).with(resource_web_url, subject.api_post_body).and_return(raw_post)
         end
