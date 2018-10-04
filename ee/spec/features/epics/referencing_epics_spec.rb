@@ -6,55 +6,75 @@ describe 'Referencing Epics', :js do
   let(:epic) { create(:epic, group: group) }
   let(:project) { create(:project, :public) }
 
-  let(:reference) { epic.to_reference(full: true) }
+  let(:full_reference) { epic.to_reference(full: true) }
 
   context 'reference on an issue' do
-    let(:issue) { create(:issue, project: project, description: "Check #{reference}") }
-
     before do
       stub_licensed_features(epics: true)
 
       sign_in(user)
     end
 
-    context 'when non group member displays the issue' do
-      context 'when referenced epic is in a public group' do
-        it 'displays link to the reference' do
-          visit project_issue_path(project, issue)
+    context 'when referencing epics from the direct parent' do
+      let(:epic2) { create(:epic, group: group) }
+      let(:short_reference) { epic2.to_reference }
+      let(:text) { "Check #{full_reference} #{short_reference}" }
+      let(:child_project) { create(:project, :public, group: group) }
+      let(:issue) { create(:issue, project: child_project, description: text) }
 
-          page.within('.issuable-details .description') do
-            expect(page).to have_link(reference, href: group_epic_path(group, epic))
-          end
-        end
-      end
+      it 'displays link to the reference' do
+        visit project_issue_path(child_project, issue)
 
-      context 'when referenced epic is in a private group' do
-        before do
-          group.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
-        end
-
-        it 'does not display link to the reference' do
-          visit project_issue_path(project, issue)
-
-          page.within('.issuable-details .description') do
-            expect(page).not_to have_link
-          end
+        page.within('.issuable-details .description') do
+          expect(page).to have_link(epic.to_reference, href: group_epic_path(group, epic))
+          expect(page).to have_link(short_reference, href: group_epic_path(group, epic2))
         end
       end
     end
 
-    context 'when a group member displays the issue' do
-      context 'when referenced epic is in a private group' do
-        before do
-          group.add_developer(user)
-          group.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+    context 'when referencing an epic from another group' do
+      let(:text) { "Check #{full_reference}" }
+      let(:issue) { create(:issue, project: project, description: text) }
+
+      context 'when non group member displays the issue' do
+        context 'when referenced epic is in a public group' do
+          it 'displays link to the reference' do
+            visit project_issue_path(project, issue)
+
+            page.within('.issuable-details .description') do
+              expect(page).to have_link(full_reference, href: group_epic_path(group, epic))
+            end
+          end
         end
 
-        it 'displays link to the reference' do
-          visit project_issue_path(project, issue)
+        context 'when referenced epic is in a private group' do
+          before do
+            group.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+          end
 
-          page.within('.issuable-details .description') do
-            expect(page).to have_link(reference, href: group_epic_path(group, epic))
+          it 'does not display link to the reference' do
+            visit project_issue_path(project, issue)
+
+            page.within('.issuable-details .description') do
+              expect(page).not_to have_link
+            end
+          end
+        end
+      end
+
+      context 'when a group member displays the issue' do
+        context 'when referenced epic is in a private group' do
+          before do
+            group.add_developer(user)
+            group.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+          end
+
+          it 'displays link to the reference' do
+            visit project_issue_path(project, issue)
+
+            page.within('.issuable-details .description') do
+              expect(page).to have_link(full_reference, href: group_epic_path(group, epic))
+            end
           end
         end
       end

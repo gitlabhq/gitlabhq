@@ -1,0 +1,58 @@
+- if can?(current_user, :admin_feature_flag, @project)
+  #configure-feature-flags-modal.modal{ tabindex: -1,
+    role: 'dialog' }
+    .modal-dialog{ role: 'document' }
+      .modal-content
+        .modal-header
+          %h4.modal-title
+            = s_('FeatureFlags|Configure feature flags')
+          %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: _('Close') } }
+            %span{ "aria-hidden": true } &times;
+        .modal-body
+          %p
+            - client_libraries_url = help_page_path("user/project/operations/feature_flags", anchor: "client-libraries")
+            = s_('FeatureFlags|Install a %{docs_link_start}compatible client library%{docs_link_end} and specify the API URL, application name, and instance ID during the configuration setup.').html_safe % { docs_link_start: %Q{<a href="#{client_libraries_url}">}.html_safe,
+              docs_link_end: '</a>'.html_safe }
+            = link_to s_('FeatureFlags|More information'), help_page_path("user/project/operations/feature_flags")
+
+          .form-group
+            = label_tag :api_url, s_('FeatureFlags|API URL'), class: 'label-bold'
+            .input-group
+              = text_field_tag :api_url,
+                unleash_api_url(@project),
+                readonly: true,
+                class: "form-control js-select-on-focus"
+              %span.input-group-append
+                = clipboard_button(target: '#api_url',
+                  title: _("Copy URL to clipboard"),
+                  placement: "left",
+                  container: '#configure-feature-flags-modal',
+                  class: "input-group-text btn btn-default")
+
+          .form-group
+            = label_tag :instance_id, s_('FeatureFlags|Instance ID'), class: 'label-bold'
+            .input-group
+              = text_field_tag :instance_id,
+                unleash_api_instance_id(@project),
+                readonly: true,
+                class: "form-control js-select-on-focus"
+              %span.input-group-append
+                = clipboard_button(target: '#instance_id',
+                  title: _("Copy ID to clipboard"),
+                  placement: "left",
+                  container: '#configure-feature-flags-modal',
+                  class: "input-group-text btn btn-default")
+
+          .form-group
+            = label_tag :application_name, s_('FeatureFlags|Application name'), class: 'label-bold'
+            .input-group
+              = text_field_tag :application_name,
+                "production",
+                readonly: true,
+                class: "form-control js-select-on-focus"
+              %span.input-group-append
+                = clipboard_button(target: '#application_name',
+                  title: _("Copy name to clipboard"),
+                  placement: "left",
+                  container: '#configure-feature-flags-modal',
+                  class: "input-group-text btn btn-default")

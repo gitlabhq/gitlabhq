@@ -13,6 +13,10 @@ class Groups::AutocompleteSourcesController < Groups::ApplicationController
     render json: @autocomplete_service.epics
   end
 
+  def commands
+    render json: @autocomplete_service.commands(target)
+  end
+
   private
 
   def load_autocomplete_service

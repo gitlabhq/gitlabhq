@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180926140319) do
+ActiveRecord::Schema.define(version: 20180930171532) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1943,6 +1943,24 @@ ActiveRecord::Schema.define(version: 20180926140319) do
     t.string "nonce", null: false
   end
 
+  create_table "operations_feature_flags", id: :bigserial, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.boolean "active", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.string "name", null: false
+    t.text "description"
+  end
+
+  add_index "operations_feature_flags", ["project_id", "name"], name: "index_operations_feature_flags_on_project_id_and_name", unique: true, using: :btree
+
+  create_table "operations_feature_flags_clients", id: :bigserial, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.string "token", null: false
+  end
+
+  add_index "operations_feature_flags_clients", ["project_id", "token"], name: "index_operations_feature_flags_clients_on_project_id_and_token", unique: true, using: :btree
+
   create_table "packages_maven_metadata", id: :bigserial, force: :cascade do |t|
     t.integer "package_id", limit: 8, null: false
     t.datetime_with_timezone "created_at", null: false
@@ -2979,7 +2997,6 @@ ActiveRecord::Schema.define(version: 20180926140319) do
     t.datetime_with_timezone "updated_at", null: false
     t.integer "occurrence_id", limit: 8, null: false
     t.integer "identifier_id", limit: 8, null: false
-    t.boolean "primary", default: false, null: false
   end
 
   add_index "vulnerability_occurrence_identifiers", ["identifier_id"], name: "index_vulnerability_occurrence_identifiers_on_identifier_id", using: :btree
@@ -2994,10 +3011,10 @@ ActiveRecord::Schema.define(version: 20180926140319) do
     t.integer "pipeline_id", null: false
     t.integer "project_id", null: false
     t.integer "scanner_id", limit: 8, null: false
-    t.binary "first_seen_in_commit_sha", null: false
     t.binary "project_fingerprint", null: false
     t.binary "location_fingerprint", null: false
     t.binary "primary_identifier_fingerprint", null: false
+    t.string "uuid", limit: 36, null: false
     t.string "ref", null: false
     t.string "name", null: false
     t.string "metadata_version", null: false
@@ -3005,8 +3022,9 @@ ActiveRecord::Schema.define(version: 20180926140319) do
   end
 
   add_index "vulnerability_occurrences", ["pipeline_id"], name: "index_vulnerability_occurrences_on_pipeline_id", using: :btree
-  add_index "vulnerability_occurrences", ["project_id", "ref", "scanner_id", "primary_identifier_fingerprint", "location_fingerprint"], name: "index_vulnerability_occurrences_on_unique_keys", unique: true, using: :btree
+  add_index "vulnerability_occurrences", ["project_id", "ref", "primary_identifier_fingerprint", "location_fingerprint", "pipeline_id", "scanner_id"], name: "index_vulnerability_occurrences_on_unique_keys", unique: true, using: :btree
   add_index "vulnerability_occurrences", ["scanner_id"], name: "index_vulnerability_occurrences_on_scanner_id", using: :btree
+  add_index "vulnerability_occurrences", ["uuid"], name: "index_vulnerability_occurrences_on_uuid", unique: true, using: :btree
 
   create_table "vulnerability_scanners", id: :bigserial, force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
@@ -3233,6 +3251,8 @@ ActiveRecord::Schema.define(version: 20180926140319) do
   add_foreign_key "notes", "projects", name: "fk_99e097b079", on_delete: :cascade
   add_foreign_key "notification_settings", "users", name: "fk_0c95e91db7", on_delete: :cascade
   add_foreign_key "oauth_openid_requests", "oauth_access_grants", column: "access_grant_id", name: "fk_oauth_openid_requests_oauth_access_grants_access_grant_id"
+  add_foreign_key "operations_feature_flags", "projects", on_delete: :cascade
+  add_foreign_key "operations_feature_flags_clients", "projects", on_delete: :cascade
   add_foreign_key "packages_maven_metadata", "packages_packages", column: "package_id", name: "fk_be88aed360", on_delete: :cascade
   add_foreign_key "packages_package_files", "packages_packages", column: "package_id", name: "fk_86f0f182f8", on_delete: :cascade
   add_foreign_key "packages_packages", "projects", on_delete: :cascade

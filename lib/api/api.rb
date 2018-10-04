@@ -167,6 +167,7 @@ module API
     mount ::EE::API::Boards
     mount ::EE::API::GroupBoards
 
+    mount ::API::Unleash
     mount ::API::EpicIssues
     mount ::API::Epics
     mount ::API::Geo

@@ -641,6 +641,7 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
+<<<<<<< HEAD
 "@babel/types@^7.1.2":
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.1.2.tgz#183e7952cf6691628afdc2e2b90d03240bac80c0"
@@ -654,6 +655,15 @@
   version "1.29.0"
   resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.29.0.tgz#03b65b513f9099bbda6ecf94d673a2952f8c6c70"
   integrity sha512-sCl6nP3ph36+8P3nrw9VanAR648rgOUEBlEoLPHkhKm79xB1dUkXGBtI0uaSJVgbJx40M1/Ts8HSdMv+PF3EIg==
+=======
+"@gitlab-org/gitlab-svgs@^1.29.0":
+  version "1.30.0"
+  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.30.0.tgz#72dca2fb67bafb3c975a322dc6406aaa29aed86c"
+
+"@gitlab-org/gitlab-svgs@^1.30.0":
+  version "1.31.0"
+  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.31.0.tgz#495b074669f93af40e34f9978ce887773dea470a"
+>>>>>>> origin/master
 
 "@gitlab-org/gitlab-ui@^1.8.0":
   version "1.8.0"
