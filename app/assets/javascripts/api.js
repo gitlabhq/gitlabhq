@@ -22,6 +22,7 @@ const Api = {
   dockerfilePath: '/api/:version/templates/dockerfiles/:key',
   issuableTemplatePath: '/:namespace_path/:project_path/templates/:type/:key',
   usersPath: '/api/:version/users.json',
+  userStatusPath: '/api/:version/user/status',
   commitPath: '/api/:version/projects/:id/repository/commits',
   commitPipelinesPath: '/:project_id/commit/:sha/pipelines',
   branchSinglePath: '/api/:version/projects/:id/repository/branches/:branch',
@@ -263,6 +264,15 @@ const Api = {
     return axios.post(url, {
       ref,
       branch,
+    });
+  },
+
+  postUserStatus({ emoji, message }) {
+    const url = Api.buildUrl(this.userStatusPath);
+
+    return axios.put(url, {
+      emoji,
+      message,
     });
   },
 
