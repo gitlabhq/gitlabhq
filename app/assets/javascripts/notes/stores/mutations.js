@@ -100,7 +100,10 @@ export default {
 
     discussionsData.forEach(discussion => {
       if (discussion.diff_file) {
-        Object.assign(discussion, { fileHash: discussion.diff_file.file_hash });
+        Object.assign(discussion, {
+          fileHash: discussion.diff_file.file_hash,
+          truncated_diff_lines: discussion.truncated_diff_lines || [],
+        });
       }
 
       // To support legacy notes, should be very rare case.

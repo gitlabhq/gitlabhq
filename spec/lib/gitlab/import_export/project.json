@@ -6143,7 +6143,7 @@
       "id": 36,
       "project_id": 5,
       "ref": "master",
-      "sha": "be93687618e4b132087f430a4d8fc3a609c9b77c",
+      "sha": "sha-notes",
       "before_sha": null,
       "push_data": null,
       "created_at": "2016-03-22T15:20:35.755Z",
@@ -6154,6 +6154,7 @@
       "status": "failed",
       "started_at": null,
       "finished_at": null,
+      "user_id": 9999,
       "duration": null,
       "notes": [
         {
@@ -6353,6 +6354,7 @@
     },
     {
       "id": 38,
+      "iid": 1,
       "project_id": 5,
       "ref": "master",
       "sha": "5f923865dde3436854e9ceb9cdb7815618d4e849",
