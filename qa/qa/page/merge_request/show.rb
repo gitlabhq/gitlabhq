@@ -24,7 +24,7 @@ module QA
         end
 
         view 'app/views/shared/issuable/_sidebar.html.haml' do
-          element :labels_block, ".issuable-show-labels"
+          element :labels_block
         end
 
         def fast_forward_possible?
@@ -69,7 +69,7 @@ module QA
         end
 
         def has_label?(label)
-          page.within('.issuable-show-labels') do
+          page.within(element_selector_css(:labels_block)) do
             element = find('span', text: label)
             !element.nil?
           end
