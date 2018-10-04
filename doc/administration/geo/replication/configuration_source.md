@@ -24,7 +24,7 @@ NOTE: **Notes:**
 - **Do not** setup any custom authentication in the secondary nodes, this will be
   handled by the primary node.
 - **Do not** add anything in the secondaries Geo nodes admin area
-  (**Admin Area ➔ Geo Nodes**). This is handled solely by the primary node.
+  (**Admin Area > Geo**). This is handled solely by the primary node.
 
 ### Step 1. Manually replicate secret GitLab values
 
@@ -90,7 +90,7 @@ Read [Manually replicate primary SSH host keys][configuration-replicate-ssh]
 
 ### Step 3. Add the secondary GitLab node
 
-1. Visit the **primary** node's **Admin Area ➔ Geo Nodes**
+1. Navigate to the **primary** node's **Admin Area > Geo**
    (`/admin/geo_nodes`) in your browser.
 1. Add the secondary node by providing its full URL. **Do NOT** check the box
    'This is a primary node'.
@@ -148,7 +148,7 @@ update-ca-certificates
 ### Step 6. Enable Git access over HTTP/HTTPS
 
 Geo synchronizes repositories over HTTP/HTTPS, and therefore requires this clone
-method to be enabled. Navigate to **Admin Area ➔ Settings**
+method to be enabled. Navigate to **Admin Area > Settings**
 (`/admin/application_settings`) on the primary node, and set
 `Enabled Git access protocols` to `Both SSH and HTTP(S)` or `Only HTTP(S)`.
 
