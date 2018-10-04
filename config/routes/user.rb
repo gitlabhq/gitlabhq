@@ -62,6 +62,7 @@ scope(constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }) d
     get :snippets
     get :exists
     get :pipelines_quota
+    get :activity
     get '/', to: redirect('%{username}'), as: nil
 
     ## EE-specific
