@@ -50,12 +50,11 @@ export default {
   },
   data() {
     return {
-      isLoading: true,
       currentFilter: null,
     };
   },
   computed: {
-    ...mapGetters(['isNotesFetched', 'discussions', 'getNotesDataByProp', 'discussionCount']),
+    ...mapGetters(['isNotesFetched', 'discussions', 'getNotesDataByProp', 'discussionCount', 'isLoading']),
     noteableType() {
       return this.noteableData.noteableType;
     },
@@ -84,12 +83,6 @@ export default {
     this.setUserData(this.userData);
     this.setTargetNoteHash(getLocationHash());
     eventHub.$once('fetchNotesData', this.fetchNotes);
-    eventHub.$on('notes.filter', (filter) => {
-      if (this.currentFilter !== filter) {
-        this.isLoading = true;
-        this.fetchNotes(filter);
-      }
-    });
   },
   mounted() {
     if (this.shouldShow) {
@@ -109,6 +102,7 @@ export default {
   },
   methods: {
     ...mapActions({
+      setLoadingState: 'setLoadingState',
       fetchDiscussions: 'fetchDiscussions',
       poll: 'poll',
       actionToggleAward: 'toggleAward',
@@ -145,14 +139,14 @@ export default {
           this.initPolling();
         })
         .then(() => {
-          this.isLoading = false;
+          this.setLoadingState(false);
           this.setNotesFetchedState(true);
           eventHub.$emit('fetchedNotesData');
         })
         .then(() => this.$nextTick())
         .then(() => this.checkLocationHash())
         .catch(() => {
-          this.isLoading = false;
+          this.setLoadingState(false);
           this.setNotesFetchedState(true);
           Flash('Something went wrong while fetching comments. Please try again.');
         });

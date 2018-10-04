@@ -1,7 +1,7 @@
 <script>
 import $ from 'jquery';
 import Icon from '~/vue_shared/components/icon.vue';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import eventHub from '../event_hub';
 
 export default {
@@ -25,6 +25,7 @@ export default {
   computed: {
     ...mapGetters([
       'discussionTabCounter',
+      'getNotesDataByProp',
     ]),
     currentFilter() {
       if (!this.currentValue) return this.filters[0];
@@ -32,15 +33,18 @@ export default {
     },
   },
   methods: {
+    ...mapActions({
+      filterDiscussion: 'filterDiscussion',
+    }),
     selectFilter(value) {
-      const newValue = parseInt(value, 10);
+      const filter = parseInt(value, 10);
 
       // close dropdown
       $('#discussion-filter-dropdown').dropdown('toggle');
 
-      if (newValue === this.currentValue) return;
-      this.currentValue = newValue;
-      eventHub.$emit('notes.filter', this.currentValue);
+      if (filter === this.currentValue) return;
+      this.currentValue = filter;
+      this.filterDiscussion({ path: this.getNotesDataByProp('discussionsPath'), filter});
     },
   },
 };
