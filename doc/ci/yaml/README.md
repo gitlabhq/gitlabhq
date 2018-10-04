@@ -388,7 +388,7 @@ except master.
 >
 > `variables` policy introduced in 10.7
 >
-> `changes` policy introduced in 11.4
+> `changes` policy [introduced in 11.4][changes-policy-issue]
 
 CAUTION: **Warning:**
 This an _alpha_ feature, and it it subject to change at any time without
@@ -455,7 +455,9 @@ Learn more about variables expressions on [a separate page][variables-expression
 ### `changes`
 
 Using `changes` keyword with `only` or `except` makes it possible to define if
-a job should be created, based on files modified by a git push event.
+a job should be created based on files modified by a git push event.
+
+For example:
 
 ```yaml
 docker build:
@@ -466,20 +468,29 @@ docker build:
       - docker/scripts/*
 ```
 
-In the scenario above, if you are pushing multiple commits to GitLab, to an
-exising branch, GitLab is going to create and trigger `docker build` job,
-provided that one of the commits contains changes to the `Dockerfile` file or
-changes to any of the files inside `docker/scripts/` directory.
+In the scenario above, if you are pushing multiple commits to GitLab to an
+existing branch, GitLab creates and triggers `docker build` job, provided that
+one of the commits contains changes to either:
+
+- The `Dockerfile` file.
+- Any of the files inside `docker/scripts/` directory.
 
 CAUTION: **Warning:**
-If you are pushing a **new** branch or a new tag to GitLab, only/changes is
-going to always evaluate to truth and GitLab will create a job. This feature is
-not combined with merge requests yet, and because GitLab is creating pipelines
+There are some caveats when using this feature with new branches and tags. See
+the section below.
+
+#### Using `changes` with new branches and tags
+
+If you are pushing a **new** branch or a **new** tag to GitLab, the policy
+always evaluates to truth and GitLab will create a job. This feature is not
+connected with merge requests yet, and because GitLab is creating pipelines
 before an user can create a merge request we don't know a target branch at
-this point. Without a target branch it is not possible to know what the common
-ancestor is, thus we always create a job in that case. This feature works best for
-stable branches like `master` because in that case GitLab uses previous commit,
-that is present in a branch, to compare against a newly pushed latest SHA.
+this point.
+
+Without a target branch, it is not possible to know what the common ancestor is,
+thus we always create a job in that case. This feature works best for stable
+branches like `master` because in that case GitLab uses the previous commit
+that is present in a branch to compare against the latest SHA that was pushed.
 
 ## `tags`
 
@@ -1976,3 +1987,4 @@ CI with various languages.
 [ce-12909]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12909
 [schedules]: ../../user/project/pipelines/schedules.md
 [variables-expressions]: ../variables/README.md#variables-expressions
+[changes-policy-issue]: https://gitlab.com/gitlab-org/gitlab-ce/issues/19232
