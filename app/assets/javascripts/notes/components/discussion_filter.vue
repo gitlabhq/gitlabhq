@@ -40,7 +40,7 @@ export default {
       const filter = parseInt(value, 10);
 
       // close dropdown
-      $('#discussion-filter-dropdown').dropdown('toggle');
+      $(this.$refs.dropdownToggle).dropdown('toggle');
 
       if (filter === this.currentValue) return;
       this.currentValue = filter;
@@ -55,6 +55,7 @@ export default {
     v-if="discussionTabCounter > 0"
     class="discussion-filter-container d-inline-block">
     <button
+      ref="dropdownToggle"
       id="discussion-filter-dropdown"
       class="btn btn-default"
       data-toggle="dropdown"
