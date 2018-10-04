@@ -83,8 +83,8 @@
       <shared-runner
         v-if="shouldRenderSharedRunnerLimitWarning"
         class="js-shared-runner-limit"
-        :quota-used="job.runner.quota.used"
-        :quota-limit="job.runner.quota.limit"
+        :quota-used="job.runners.quota.used"
+        :quota-limit="job.runners.quota.limit"
         :runners-path="runnerHelpUrl"
       />
 
