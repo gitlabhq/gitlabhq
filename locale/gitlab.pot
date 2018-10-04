@@ -19,7 +19,6 @@ msgstr ""
 msgid " Status"
 msgstr ""
 
-<<<<<<< HEAD
 msgid " and"
 msgstr ""
 
@@ -30,10 +29,11 @@ msgstr[1] ""
 
 msgid " improved on %d point"
 msgid_plural " improved on %d points"
-=======
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d addition"
 msgid_plural "%d additions"
->>>>>>> upstream/master
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1531,11 +1531,10 @@ msgstr ""
 msgid "CircuitBreakerApiLink|circuitbreaker api"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "ClassificationLabelUnavailable|is unavailable: %{reason}"
-=======
+msgstr ""
+
 msgid "Clear search"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Clear search input"
@@ -4221,12 +4220,9 @@ msgstr ""
 msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Issues closed"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Issues, merge requests, pushes and comments."
 msgstr ""
 
@@ -7486,15 +7482,9 @@ msgstr ""
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "The roadmap shows the progress of your epics along a timeline"
 msgstr ""
 
-msgid "The secure token used by the Runner to checkout the project"
-msgstr ""
-
-=======
->>>>>>> upstream/master
 msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
 msgstr ""
 
@@ -8220,51 +8210,6 @@ msgid "User and IP Rate Limits"
 msgstr ""
 
 msgid "User map"
-msgstr ""
-
-msgid "UserProfile|Activity"
-msgstr ""
-
-msgid "UserProfile|Already reported for abuse"
-msgstr ""
-
-msgid "UserProfile|Contributed projects"
-msgstr ""
-
-msgid "UserProfile|Edit profile"
-msgstr ""
-
-msgid "UserProfile|Groups"
-msgstr ""
-
-msgid "UserProfile|Most Recent Activity"
-msgstr ""
-
-msgid "UserProfile|Overview"
-msgstr ""
-
-msgid "UserProfile|Personal projects"
-msgstr ""
-
-msgid "UserProfile|Recent contributions"
-msgstr ""
-
-msgid "UserProfile|Report abuse"
-msgstr ""
-
-msgid "UserProfile|Snippets"
-msgstr ""
-
-msgid "UserProfile|Subscribe"
-msgstr ""
-
-msgid "UserProfile|This user has a private profile"
-msgstr ""
-
-msgid "UserProfile|View all"
-msgstr ""
-
-msgid "UserProfile|View user in admin area"
 msgstr ""
 
 msgid "UserProfile|Activity"
