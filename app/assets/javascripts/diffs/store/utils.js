@@ -230,7 +230,17 @@ export function getDiffPositionByLineCode(diffFiles) {
         const { lineCode, oldLine, newLine } = line;
 
         if (lineCode) {
-          acc[lineCode] = { baseSha, headSha, startSha, newPath, oldPath, oldLine, newLine };
+          acc[lineCode] = {
+            baseSha,
+            headSha,
+            startSha,
+            newPath,
+            oldPath,
+            oldLine,
+            newLine,
+            lineCode,
+            positionType: 'text',
+          };
         }
       });
     }
@@ -245,5 +255,12 @@ export function isDiscussionApplicableToLine(discussion, diffPosition) {
   const originalRefs = convertObjectPropsToCamelCase(discussion.original_position.formatter);
   const refs = convertObjectPropsToCamelCase(discussion.position.formatter);
 
-  return _.isEqual(refs, diffPosition) || _.isEqual(originalRefs, diffPosition);
+  if (discussion.original_position && discussion.position) {
+    const originalRefs = convertObjectPropsToCamelCase(discussion.original_position);
+    const refs = convertObjectPropsToCamelCase(discussion.position);
+
+    return _.isEqual(refs, diffPositionCopy) || _.isEqual(originalRefs, diffPositionCopy);
+  }
+
+  return latestDiff && discussion.active && lineCode === discussion.line_code;
 }
