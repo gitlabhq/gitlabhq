@@ -60,7 +60,14 @@ export default {
   },
   computed: {
     actions() {
-      return [...this.pipeline.details.manual_actions, ...this.pipeline.details.scheduled_actions];
+      if (!this.pipeline || !this.pipeline.details) {
+        return [];
+      }
+      const { details: pipelineDetails } = this.pipeline;
+      return [
+        ...(pipelineDetails.manual_actions || []),
+        ...(pipelineDetails.scheduled_actions || []),
+      ];
     },
     /**
      * If provided, returns the commit tag.
