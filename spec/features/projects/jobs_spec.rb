@@ -542,7 +542,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         visit project_job_path(project, job)
       end
 
-      it 'shows manual action empty state' do
+      it 'shows manual action empty state', :js do
         expect(page).to have_content(job.detailed_status(user).illustration[:title])
         expect(page).to have_content('This job requires a manual action')
         expect(page).to have_content('This job depends on a user to trigger its process. Often they are used to deploy code to production environments')
@@ -566,14 +566,14 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         visit project_job_path(project, job)
       end
 
-      it 'shows empty state' do
+      it 'shows empty state', :js do
         expect(page).to have_content(job.detailed_status(user).illustration[:title])
         expect(page).to have_content('This job has not been triggered yet')
         expect(page).to have_content('This job depends on upstream jobs that need to succeed in order for this job to be triggered')
       end
     end
 
-    context 'Pending job' do
+    context 'Pending job', :js do
       let(:job) { create(:ci_build, :pending, pipeline: pipeline) }
 
       before do
@@ -600,7 +600,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         end
       end
 
-      context 'without log' do
+      context 'without log', :js do
         let(:job) { create(:ci_build, :canceled, pipeline: pipeline) }
 
         before do
@@ -615,7 +615,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
-    context 'Skipped job' do
+    context 'Skipped job', :js do
       let(:job) { create(:ci_build, :skipped, pipeline: pipeline) }
 
       before do
@@ -629,7 +629,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
-    context 'when job is failed but has no trace' do
+    context 'when job is failed but has no trace', :js do
       let(:job) { create(:ci_build, :failed, pipeline: pipeline) }
 
       it 'renders empty state' do

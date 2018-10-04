@@ -67,7 +67,7 @@ describe('Empty State', () => {
         content,
         action: {
           path: 'runner',
-          title: 'Check runner',
+          button_title: 'Check runner',
           method: 'post',
         },
       });
