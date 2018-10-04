@@ -428,7 +428,10 @@ export default class FilteredSearchManager {
     if (isLastVisualTokenValid) {
       tokens.forEach((t) => {
         input.value = input.value.replace(`${t.key}:${t.symbol}${t.value}`, '');
-        FilteredSearchVisualTokens.addFilterVisualToken(t.key, `${t.symbol}${t.value}`);
+        FilteredSearchVisualTokens.addFilterVisualToken(t.key, `${t.symbol}${t.value}`, {
+          uppercaseTokenName: this.filteredSearchTokenKeys.shouldUppercaseTokenName(t.key),
+          capitalizeTokenValue: this.filteredSearchTokenKeys.shouldCapitalizeTokenValue(t.key),
+        });
       });
 
       const fragments = searchToken.split(':');
@@ -444,7 +447,10 @@ export default class FilteredSearchManager {
           FilteredSearchVisualTokens.addSearchVisualToken(searchTerms);
         }
 
-        FilteredSearchVisualTokens.addFilterVisualToken(tokenKey);
+        FilteredSearchVisualTokens.addFilterVisualToken(tokenKey, null, {
+          uppercaseTokenName: this.filteredSearchTokenKeys.shouldUppercaseTokenName(tokenKey),
+          capitalizeTokenValue: this.filteredSearchTokenKeys.shouldCapitalizeTokenValue(tokenKey),
+        });
         input.value = input.value.replace(`${tokenKey}:`, '');
       }
     } else {
@@ -452,7 +458,10 @@ export default class FilteredSearchManager {
       const valueCompletedRegex = /([~%@]{0,1}".+")|([~%@]{0,1}'.+')|^((?![~%@]')(?![~%@]")(?!')(?!")).*/g;
 
       if (searchToken.match(valueCompletedRegex) && input.value[input.value.length - 1] === ' ') {
-        FilteredSearchVisualTokens.addFilterVisualToken(searchToken);
+        const tokenKey = FilteredSearchVisualTokens.getLastTokenPartial();
+        FilteredSearchVisualTokens.addFilterVisualToken(searchToken, null, {
+          capitalizeTokenValue: this.filteredSearchTokenKeys.shouldCapitalizeTokenValue(tokenKey),
+        });
 
         // Trim the last space as seen in the if statement above
         input.value = input.value.replace(searchToken, '').trim();
@@ -503,7 +512,7 @@ export default class FilteredSearchManager {
         FilteredSearchVisualTokens.addFilterVisualToken(
           condition.tokenKey,
           condition.value,
-          canEdit,
+          { canEdit },
         );
       } else {
         // Sanitize value since URL converts spaces into +
@@ -529,10 +538,15 @@ export default class FilteredSearchManager {
 
           hasFilteredSearch = true;
           const canEdit = this.canEdit && this.canEdit(sanitizedKey, sanitizedValue);
+          const { uppercaseTokenName, capitalizeTokenValue } = match;
           FilteredSearchVisualTokens.addFilterVisualToken(
             sanitizedKey,
             `${symbol}${quotationsToUse}${sanitizedValue}${quotationsToUse}`,
-            canEdit,
+            {
+              canEdit,
+              uppercaseTokenName,
+              capitalizeTokenValue,
+            },
           );
         } else if (!match && keyParam === 'assignee_id') {
           const id = parseInt(value, 10);
@@ -540,7 +554,7 @@ export default class FilteredSearchManager {
             hasFilteredSearch = true;
             const tokenName = 'assignee';
             const canEdit = this.canEdit && this.canEdit(tokenName);
-            FilteredSearchVisualTokens.addFilterVisualToken(tokenName, `@${usernameParams[id]}`, canEdit);
+            FilteredSearchVisualTokens.addFilterVisualToken(tokenName, `@${usernameParams[id]}`, { canEdit });
           }
         } else if (!match && keyParam === 'author_id') {
           const id = parseInt(value, 10);
@@ -548,7 +562,7 @@ export default class FilteredSearchManager {
             hasFilteredSearch = true;
             const tokenName = 'author';
             const canEdit = this.canEdit && this.canEdit(tokenName);
-            FilteredSearchVisualTokens.addFilterVisualToken(tokenName, `@${usernameParams[id]}`, canEdit);
+            FilteredSearchVisualTokens.addFilterVisualToken(tokenName, `@${usernameParams[id]}`, { canEdit });
           }
         } else if (!match && keyParam === 'search') {
           hasFilteredSearch = true;
@@ -584,15 +598,17 @@ export default class FilteredSearchManager {
 
     this.saveCurrentSearchQuery();
 
-    const { tokens, searchToken }
-      = this.tokenizer.processTokens(searchQuery, this.filteredSearchTokenKeys.getKeys());
+    const tokenKeys = this.filteredSearchTokenKeys.getKeys();
+    const { tokens, searchToken } = this.tokenizer.processTokens(searchQuery, tokenKeys);
     const currentState = state || getParameterByName('state') || 'opened';
     paths.push(`state=${currentState}`);
 
     tokens.forEach((token) => {
       const condition = this.filteredSearchTokenKeys
         .searchByConditionKeyValue(token.key, token.value.toLowerCase());
-      const { param } = this.filteredSearchTokenKeys.searchByKey(token.key) || {};
+      const tokenConfig = this.filteredSearchTokenKeys.searchByKey(token.key) || {};
+      const { param } = tokenConfig;
+
       // Replace hyphen with underscore to use as request parameter
       // e.g. 'my-reaction' => 'my_reaction'
       const underscoredKey = token.key.replace('-', '_');
@@ -603,6 +619,10 @@ export default class FilteredSearchManager {
         tokenPath = condition.url;
       } else {
         let tokenValue = token.value;
+
+        if (tokenConfig.lowercaseValueOnSubmit) {
+          tokenValue = tokenValue.toLowerCase();
+        }
 
         if ((tokenValue[0] === '\'' && tokenValue[tokenValue.length - 1] === '\'') ||
           (tokenValue[0] === '"' && tokenValue[tokenValue.length - 1] === '"')) {

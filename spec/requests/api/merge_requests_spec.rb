@@ -81,6 +81,35 @@ describe API::MergeRequests do
       let(:user2) { create(:user) }
 
       it 'returns an array of all merge requests except unauthorized ones' do
+        get api('/merge_requests', user), scope: :all
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |mr| mr['id'] })
+          .to contain_exactly(merge_request.id, merge_request_closed.id, merge_request_merged.id, merge_request_locked.id, merge_request2.id)
+      end
+
+      it "returns an array of no merge_requests when wip=yes" do
+        get api("/merge_requests", user), wip: 'yes'
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(0)
+      end
+
+      it "returns an array of no merge_requests when wip=no" do
+        get api("/merge_requests", user), wip: 'no'
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |mr| mr['id'] })
+            .to contain_exactly(merge_request.id, merge_request_closed.id, merge_request_merged.id, merge_request_locked.id, merge_request2.id)
+      end
+
+      it 'does not return unauthorized merge requests' do
         private_project = create(:project, :private)
         merge_request3 = create(:merge_request, :simple, source_project: private_project, target_project: private_project, source_branch: 'other-branch')
 
@@ -242,6 +271,15 @@ describe API::MergeRequests do
       get api("/projects/#{project.id}/merge_requests")
 
       expect(response).to have_gitlab_http_status(404)
+    end
+
+    it "returns an array of no merge_requests when wip=yes" do
+      get api("/projects/#{project.id}/merge_requests", user), wip: 'yes'
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(0)
     end
 
     it 'returns merge_request by "iids" array' do
