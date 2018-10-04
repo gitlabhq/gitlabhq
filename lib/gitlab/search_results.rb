@@ -3,8 +3,9 @@ module Gitlab
     class FoundBlob
       include EncodingHelper
       include Presentable
+      include BlobLanguageFromGitAttributes
 
-      attr_reader :id, :filename, :basename, :ref, :startline, :data, :project_id
+      attr_reader :id, :filename, :basename, :ref, :startline, :data, :project
 
       def initialize(opts = {})
         @id = opts.fetch(:id, nil)
@@ -14,17 +15,15 @@ module Gitlab
         @startline = opts.fetch(:startline, nil)
         @data = encode_utf8(opts.fetch(:data, nil))
         @per_page = opts.fetch(:per_page, 20)
-        @project_id = opts.fetch(:project_id, nil)
+        @project = opts.fetch(:project, nil)
       end
 
       def path
         filename
       end
 
-      # Since search results often contain many items,
-      # not triggering lookup can avoid n+1 queries.
-      def language_from_gitattributes
-        nil
+      def project_id
+        @project&.id
       end
 
       def present

@@ -79,7 +79,7 @@ module Gitlab
         ref: ref,
         startline: startline,
         data: data,
-        project_id: project ? project.id : nil
+        project: project
       )
     end
 
