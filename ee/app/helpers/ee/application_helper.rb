@@ -70,7 +70,8 @@ module EE
       {
         members: members_group_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
         labels: labels_group_autocomplete_sources_path(object),
-        epics: epics_group_autocomplete_sources_path(object)
+        epics: epics_group_autocomplete_sources_path(object),
+        commands: commands_group_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id])
       }
     end
 

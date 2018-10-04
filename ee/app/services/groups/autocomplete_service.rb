@@ -16,5 +16,11 @@ module Groups
     def labels_as_hash(target)
       super(target, group_id: group.id, only_group_labels: true)
     end
+
+    def commands(noteable)
+      return [] unless noteable
+
+      QuickActions::InterpretService.new(nil, current_user).available_commands(noteable)
+    end
   end
 end
