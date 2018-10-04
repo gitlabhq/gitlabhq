@@ -25,12 +25,7 @@
             = render 'bitbucket_import_modal'
       - if bitbucket_server_import_enabled?
         %div
-<<<<<<< HEAD
           = link_to status_import_bitbucket_server_path, class: "btn import_bitbucket", data: { track_label: "#{track_label}", track_event: "click_button", track_property: "bitbucket_server" } do
-=======
-          = link_to status_import_bitbucket_server_path, class: "btn import_bitbucket",
-          data: { track_label: "#{track_label}", track_event: "click_button", track_property: "bitbucket_server" } do
->>>>>>> upstream/master
             = icon('bitbucket-square', text: 'Bitbucket Server')
         %div
       - if gitlab_import_enabled?
@@ -59,11 +54,7 @@
 
       - if git_import_enabled?
         %div
-<<<<<<< HEAD
           %button.btn.js-toggle-button.js-import-git-toggle-button{ type: "button", data: { toggle_open_class: 'active', track_label: "#{track_label}" , track_event: "click_button", track_property: "repo_url" } }
-=======
-          %button.btn.js-toggle-button.js-import-git-toggle-button{ type: "button", data: { toggle_open_class: 'active', data: { toggle_open_class: 'active', track_label: "#{track_label}" , track_event: "click_button", track_property: "repo_url" } } }
->>>>>>> upstream/master
             = icon('git', text: 'Repo by URL')
 
       - if manifest_import_enabled?
