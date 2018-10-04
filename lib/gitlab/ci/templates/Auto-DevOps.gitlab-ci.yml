@@ -625,7 +625,7 @@ rollout 100%:
     fi
 
     if [[ -n "$DB_INITIALIZE" && -z "$(helm ls -q "^$name$")" ]]; then
-      helm upgrade --install \
+      initialize_logs helm upgrade --install \
         --wait \
         --set service.enabled="$service_enabled" \
         --set releaseOverride="$CI_ENVIRONMENT_SLUG" \
@@ -647,7 +647,7 @@ rollout 100%:
         "$name" \
         chart/
 
-      helm upgrade --reuse-values \
+      migrate_logs helm upgrade --reuse-values \
         --wait \
         --set application.initializeCommand="" \
         --set application.migrateCommand="$DB_MIGRATE" \
@@ -655,7 +655,7 @@ rollout 100%:
         "$name" \
         chart/
     else
-      helm upgrade --install \
+      migrate_logs helm upgrade --install \
         --wait \
         --set service.enabled="$service_enabled" \
         --set releaseOverride="$CI_ENVIRONMENT_SLUG" \
@@ -679,6 +679,24 @@ rollout 100%:
     fi
 
     kubectl rollout status -n "$KUBE_NAMESPACE" -w "deployment/$name"
+  }
+
+  function initialize_logs() {
+    if "$@"; then
+      if [[ -n "$DB_INITIALIZE" ]]; then kubectl logs -n "$KUBE_NAMESPACE" -l "job-name=$CI_ENVIRONMENT_SLUG-db-initialize"; fi
+    else
+      if [[ -n "$DB_INITIALIZE" ]]; then kubectl logs -n "$KUBE_NAMESPACE" -l "job-name=$CI_ENVIRONMENT_SLUG-db-initialize"; fi
+      exit 1
+    fi
+  }
+
+  function migrate_logs() {
+    if "$@"; then
+      if [[ -n "$DB_MIGRATE" ]]; then kubectl logs -n "$KUBE_NAMESPACE" -l "job-name=$CI_ENVIRONMENT_SLUG-db-migrate"; fi
+    else
+      if [[ -n "$DB_MIGRATE" ]]; then kubectl logs -n "$KUBE_NAMESPACE" -l "job-name=$CI_ENVIRONMENT_SLUG-db-migrate"; fi
+      exit 1
+    fi
   }
 
   function scale() {
