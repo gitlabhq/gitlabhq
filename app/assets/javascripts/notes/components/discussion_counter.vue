@@ -58,7 +58,7 @@ export default {
 <template>
   <div
     v-if="discussionCount > 0"
-    class="line-resolve-all-container prepend-top-10">
+    class="line-resolve-all-container prepend-top-8">
     <div>
       <div
         :class="{ 'has-next-btn': hasNextButton }"

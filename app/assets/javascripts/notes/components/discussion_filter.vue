@@ -32,16 +32,13 @@ export default {
     },
   },
   methods: {
-    handleClick(e) {
-      const { value } = e.target;
+    selectFilter(value) {
       const newValue = parseInt(value, 10);
 
       // close dropdown
       $('#discussion-filter-dropdown').dropdown('toggle');
 
       if (newValue === this.currentValue) return;
-
-      e.stopImmediatePropagation();
       this.currentValue = newValue;
       eventHub.$emit('notes.filter', this.currentValue);
     },
@@ -55,12 +52,12 @@ export default {
     class="discussion-filter-container d-inline-block">
     <button
       id="discussion-filter-dropdown"
-      class="dropdown-toggle btn btn-default"
+      class="btn btn-default"
       data-toggle="dropdown"
       aria-expanded="false"
     >
       {{ currentFilter.title }}
-      <icon name="chevron-down" />
+      <icon size=15 name="chevron-down" />
     </button>
     <div
       class="dropdown-menu dropdown-menu-selectable dropdown-menu-right"
@@ -73,8 +70,7 @@ export default {
           >
             <button
               :class="{ 'is-active': filter.value === currentFilter.value }"
-              :value="filter.value"
-              @click="handleClick"
+              @click="selectFilter(filter.value)"
             >
               {{ filter.title }}
             </button>

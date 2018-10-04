@@ -816,7 +816,7 @@
   }
 
   .discussion-filter-container {
-    margin-top: $btn-side-margin;
+    margin-top: $gl-padding-8;
 
     @include media-breakpoint-up(md) {
       padding-left: $gl-padding;
