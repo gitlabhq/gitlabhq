@@ -27,7 +27,7 @@ module QA
 
         imported_project # import the project
 
-        Page::Menu::Main.act { go_to_projects }
+        Page::Main::Menu.act { go_to_projects }
         Page::Dashboard::Projects.perform do |dashboard|
           dashboard.go_to_project(imported_project.name)
         end
@@ -48,7 +48,7 @@ module QA
       end
 
       def verify_issues_import
-        Page::Menu::Side.act { click_issues }
+        Page::Project::Menu.act { click_issues }
         expect(page).to have_content('This is a sample issue')
 
         click_link 'This is a sample issue'
@@ -66,7 +66,7 @@ module QA
       end
 
       def verify_merge_requests_import
-        Page::Menu::Side.act { click_merge_requests }
+        Page::Project::Menu.act { click_merge_requests }
         expect(page).to have_content('Improve README.md')
 
         click_link 'Improve README.md'
@@ -101,7 +101,7 @@ module QA
       end
 
       def verify_wiki_import
-        Page::Menu::Side.act { click_wiki }
+        Page::Project::Menu.act { click_wiki }
 
         expect(page).to have_content('Welcome to the test-project wiki!')
       end

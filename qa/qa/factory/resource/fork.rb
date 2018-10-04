@@ -32,7 +32,7 @@ module QA
             puts "Visited project page"
             Capybara::Screenshot.screenshot_and_save_page
 
-            return if Page::Menu::Main.act { has_personal_area?(wait: 0) }
+            return if Page::Main::Menu.act { has_personal_area?(wait: 0) }
 
             puts "Not signed in. Attempting to sign in again."
             Capybara::Screenshot.screenshot_and_save_page
