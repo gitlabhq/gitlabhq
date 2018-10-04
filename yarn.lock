@@ -184,12 +184,16 @@
   version "1.30.0"
   resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.30.0.tgz#72dca2fb67bafb3c975a322dc6406aaa29aed86c"
 
+"@gitlab-org/gitlab-svgs@^1.30.0":
+  version "1.31.0"
+  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.31.0.tgz#495b074669f93af40e34f9978ce887773dea470a"
+
 "@gitlab-org/gitlab-ui@^1.7.1":
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-ui/-/gitlab-ui-1.7.1.tgz#e9cce86cb7e34311405e705c1de674276b453f17"
   integrity sha512-X12W39lFnWmfmYcHBokrauKvp6VLW9u0rFdgBXWlnrRL2hBShnyeBsBXKLMGUGnofMtgYv3iYO/rFW9IB79lFg==
   dependencies:
-    "@gitlab-org/gitlab-svgs" "^1.30.0"
+    "@gitlab-org/gitlab-svgs" "^1.23.0"
     bootstrap-vue "^2.0.0-rc.11"
     vue "^2.5.16"
 
