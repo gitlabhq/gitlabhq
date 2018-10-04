@@ -80,7 +80,7 @@ FactoryBot.define do
 
     trait :merge_when_pipeline_succeeds do
       merge_when_pipeline_succeeds true
-      merge_user author
+      merge_user { author }
     end
 
     trait :remove_source_branch do
