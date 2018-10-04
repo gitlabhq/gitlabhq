@@ -22,7 +22,7 @@ export default (store) => {
     ];
 
     return new Vue({
-      el: '#js-vue-discussion-filter',
+      el: discussionFilterEl,
       name: 'DiscussionFilter',
       components: {
         DiscussionFilter,
