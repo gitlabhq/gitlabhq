@@ -19,11 +19,11 @@ describe Groups::AutocompleteService do
     let!(:label1) { create(:group_label, group: group) }
     let!(:label2) { create(:group_label, group: group) }
     let!(:sub_group_label) { create(:group_label, group: sub_group) }
-    let!(:parent_group_label) { create(:group_label, group: group.parent) }
+    let!(:parent_group_label) { create(:group_label, group: group.parent, group_id: group.id) }
 
     it 'returns labels from own group and ancestor groups' do
       service = described_class.new(group, user)
-      results = service.labels_as_hash
+      results = service.labels_as_hash(nil)
       expected_labels = [label1, label2, parent_group_label]
 
       expect_labels_to_equal(results, expected_labels)
