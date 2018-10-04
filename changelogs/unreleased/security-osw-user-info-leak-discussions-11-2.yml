@@ -1,0 +1,5 @@
+---
+title: Filter user sensitive data from discussions JSON
+merge_request: 2538
+author:
+type: security
