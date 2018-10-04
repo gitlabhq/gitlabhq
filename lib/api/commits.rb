@@ -114,11 +114,7 @@ module API
 
           Gitlab::WebIdeCommitsCounter.increment if find_user_from_warden
 
-<<<<<<< HEAD
-          present commit_detail, with: Entities::CommitDetail
-=======
           present commit_detail, with: Entities::CommitDetail, stats: params[:stats]
->>>>>>> upstream/master
         else
           render_api_error!(result[:message], 400)
         end
