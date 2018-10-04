@@ -69,7 +69,7 @@ The easiest way to check if a method has been instrumented is to check its
 source location. For example:
 
 ```ruby
-method = Rugged::TagCollection.instance_method(:[])
+method = Banzai::Renderer.method(:render)
 
 method.source_location
 ```
@@ -82,7 +82,7 @@ method (along with its source location), this is easier than running the above
 Ruby code. In case of the above snippet you'd run the following:
 
 ```
-$ Rugged::TagCollection#[]
+$ Banzai::Renderer.render
 ```
 
 This will print out something along the lines of:

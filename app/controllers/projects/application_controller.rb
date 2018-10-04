@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 class Projects::ApplicationController < ApplicationController
+  include CookiesHelper
   include RoutableActions
   include ChecksCollaboration
 
@@ -25,7 +28,7 @@ class Projects::ApplicationController < ApplicationController
     params[:namespace_id] = project.namespace.to_param
     params[:project_id] = project.to_param
 
-    url_for(params)
+    url_for(safe_params)
   end
 
   def repository
@@ -61,7 +64,7 @@ class Projects::ApplicationController < ApplicationController
   def require_non_empty_project
     # Be sure to return status code 303 to avoid a double DELETE:
     # http://api.rubyonrails.org/classes/ActionController/Redirecting.html
-    redirect_to project_path(@project), status: 303 if @project.empty_repo?
+    redirect_to project_path(@project), status: :see_other if @project.empty_repo?
   end
 
   def require_branch_head
@@ -74,7 +77,7 @@ class Projects::ApplicationController < ApplicationController
   end
 
   def apply_diff_view_cookie!
-    cookies.permanent[:diff_view] = params.delete(:view) if params[:view].present?
+    set_secure_cookie(:diff_view, params.delete(:view), permanent: true) if params[:view].present?
   end
 
   def require_pages_enabled!

@@ -12,6 +12,10 @@ module Gitlab
                :head_sha,
                :old_line,
                :new_line,
+               :width,
+               :height,
+               :x,
+               :y,
                :position_type, to: :formatter
 
       # A position can belong to a text line or to an image coordinate
@@ -97,19 +101,19 @@ module Gitlab
         return @diff_file if defined?(@diff_file)
 
         @diff_file = begin
-          if RequestStore.active?
-            key = {
-              project_id: repository.project.id,
-              start_sha: start_sha,
-              head_sha: head_sha,
-              path: file_path
-            }
+          key = {
+            project_id: repository.project.id,
+            start_sha: start_sha,
+            head_sha: head_sha,
+            path: file_path
+          }
 
-            RequestStore.fetch(key) { find_diff_file(repository) }
-          else
-            find_diff_file(repository)
-          end
+          Gitlab::SafeRequestStore.fetch(key) { find_diff_file(repository) }
         end
+      end
+
+      def diff_options
+        { paths: paths, expanded: true, include_stats: false }
       end
 
       def diff_line(repository)
@@ -126,7 +130,7 @@ module Gitlab
         return unless diff_refs.complete?
         return unless comparison = diff_refs.compare_in(repository.project)
 
-        comparison.diffs(paths: paths, expanded: true).diff_files.first
+        comparison.diffs(diff_options).diff_files.first
       end
 
       def get_formatter_class(type)

@@ -51,6 +51,43 @@ describe SendFileUpload do
       end
     end
 
+    context 'with attachment' do
+      let(:send_attachment) { controller.send_upload(uploader, attachment: 'test.js') }
+
+      it 'sends a file with content-type of text/plain' do
+        expected_params = {
+          content_type: 'text/plain',
+          filename: 'test.js',
+          disposition: 'attachment'
+        }
+        expect(controller).to receive(:send_file).with(uploader.path, expected_params)
+
+        send_attachment
+      end
+
+      context 'with a proxied file in object storage' do
+        before do
+          stub_uploads_object_storage(uploader: uploader_class)
+          uploader.object_store = ObjectStorage::Store::REMOTE
+          uploader.store!(temp_file)
+          allow(Gitlab.config.uploads.object_store).to receive(:proxy_download) { true }
+        end
+
+        it 'sends a file with a custom type' do
+          headers = double
+          expected_headers = %r(response-content-disposition=attachment%3Bfilename%3D%22test.js%22&response-content-type=application/javascript)
+          expect(Gitlab::Workhorse).to receive(:send_url).with(expected_headers).and_call_original
+          expect(headers).to receive(:store).with(Gitlab::Workhorse::SEND_DATA_HEADER, /^send-url:/)
+
+          expect(controller).not_to receive(:send_file)
+          expect(controller).to receive(:headers) { headers }
+          expect(controller).to receive(:head).with(:ok)
+
+          send_attachment
+        end
+      end
+    end
+
     context 'when remote file is used' do
       before do
         stub_uploads_object_storage(uploader: uploader_class)
@@ -65,7 +102,12 @@ describe SendFileUpload do
 
         it 'sends a file' do
           headers = double
+          expect(Gitlab::Workhorse).not_to receive(:send_url).with(/response-content-disposition/)
+          expect(Gitlab::Workhorse).not_to receive(:send_url).with(/response-content-type/)
+          expect(Gitlab::Workhorse).to receive(:send_url).and_call_original
+
           expect(headers).to receive(:store).with(Gitlab::Workhorse::SEND_DATA_HEADER, /^send-url:/)
+          expect(controller).not_to receive(:send_file)
           expect(controller).to receive(:headers) { headers }
           expect(controller).to receive(:head).with(:ok)
 

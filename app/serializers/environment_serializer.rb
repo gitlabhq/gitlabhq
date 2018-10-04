@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EnvironmentSerializer < BaseSerializer
   include WithPagination
 
@@ -27,6 +29,7 @@ class EnvironmentSerializer < BaseSerializer
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def itemize(resource)
     items = resource.order('folder ASC')
       .group('COALESCE(environment_type, name)')
@@ -44,4 +47,5 @@ class EnvironmentSerializer < BaseSerializer
       Item.new(item.folder, item.size, environments[item.last_id])
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

@@ -56,7 +56,7 @@ shared_examples 'a GitHub-ish import controller: GET status' do
   end
 
   it "assigns variables" do
-    project = create(:project, import_type: provider, creator_id: user.id)
+    project = create(:project, import_type: provider, namespace: user.namespace)
     stub_client(repos: [repo, org_repo], orgs: [org], org_repos: [org_repo])
 
     get :status
@@ -69,7 +69,7 @@ shared_examples 'a GitHub-ish import controller: GET status' do
   end
 
   it "does not show already added project" do
-    project = create(:project, import_type: provider, creator_id: user.id, import_source: 'asd/vim')
+    project = create(:project, import_type: provider, namespace: user.namespace, import_source: 'asd/vim')
     stub_client(repos: [repo], orgs: [])
 
     get :status
@@ -118,14 +118,19 @@ shared_examples 'a GitHub-ish import controller: POST create' do
     expect(response).to have_gitlab_http_status(200)
   end
 
-  it 'returns 422 response when the project could not be imported' do
+  it 'returns 422 response with the base error when the project could not be imported' do
+    project = build(:project)
+    project.errors.add(:name, 'is invalid')
+    project.errors.add(:path, 'is old')
+
     allow(Gitlab::LegacyGithubImport::ProjectCreator)
       .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider)
-        .and_return(double(execute: build(:project)))
+        .and_return(double(execute: project))
 
     post :create, format: :json
 
     expect(response).to have_gitlab_http_status(422)
+    expect(json_response['errors']).to eq('Name is invalid, Path is old')
   end
 
   context "when the repository owner is the provider user" do
@@ -257,11 +262,12 @@ shared_examples 'a GitHub-ish import controller: POST create' do
     end
 
     context 'user has chosen an existing nested namespace and name for the project', :postgresql do
-      let(:parent_namespace) { create(:group, name: 'foo', owner: user) }
+      let(:parent_namespace) { create(:group, name: 'foo') }
       let(:nested_namespace) { create(:group, name: 'bar', parent: parent_namespace) }
       let(:test_name) { 'test_name' }
 
       before do
+        parent_namespace.add_owner(user)
         nested_namespace.add_owner(user)
       end
 
@@ -307,7 +313,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
 
     context 'user has chosen existent and non-existent nested namespaces and name for the project', :postgresql do
       let(:test_name) { 'test_name' }
-      let!(:parent_namespace) { create(:group, name: 'foo', owner: user) }
+      let!(:parent_namespace) { create(:group, name: 'foo') }
 
       before do
         parent_namespace.add_owner(user)

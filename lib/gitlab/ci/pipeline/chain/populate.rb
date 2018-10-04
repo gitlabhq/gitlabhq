@@ -8,20 +8,19 @@ module Gitlab
           PopulateError = Class.new(StandardError)
 
           def perform!
+            # Allocate next IID. This operation must be outside of transactions of pipeline creations.
+            pipeline.ensure_project_iid!
+
             ##
             # Populate pipeline with block argument of CreatePipelineService#execute.
             #
             @command.seeds_block&.call(pipeline)
 
             ##
-            # Populate pipeline with all stages and builds from pipeline seeds.
+            # Populate pipeline with all stages, and stages with builds.
             #
             pipeline.stage_seeds.each do |stage|
               pipeline.stages << stage.to_resource
-
-              stage.seeds.each do |build|
-                pipeline.builds << build.to_resource
-              end
             end
 
             if pipeline.stages.none?

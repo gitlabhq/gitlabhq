@@ -1,12 +1,12 @@
+# frozen_string_literal: true
+
 class Admin::RunnerProjectsController < Admin::ApplicationController
   before_action :project, only: [:create]
 
   def create
     @runner = Ci::Runner.find(params[:runner_project][:runner_id])
 
-    runner_project = @runner.assign_to(@project, current_user)
-
-    if runner_project.persisted?
+    if @runner.assign_to(@project, current_user)
       redirect_to admin_runner_path(@runner)
     else
       redirect_to admin_runner_path(@runner), alert: 'Failed adding runner to project'
@@ -18,7 +18,7 @@ class Admin::RunnerProjectsController < Admin::ApplicationController
     runner = rp.runner
     rp.destroy
 
-    redirect_to admin_runner_path(runner), status: 302
+    redirect_to admin_runner_path(runner), status: :found
   end
 
   private

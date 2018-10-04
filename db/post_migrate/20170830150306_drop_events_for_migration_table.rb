@@ -18,7 +18,6 @@ class DropEventsForMigrationTable < ActiveRecord::Migration
     end
   end
 
-  # rubocop: disable Migration/Datetime
   def down
     create_table :events_for_migration do |t|
       t.string :target_type, index: true

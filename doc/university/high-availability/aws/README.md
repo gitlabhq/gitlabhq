@@ -2,6 +2,8 @@
 comments: false
 ---
 
+> **Note**: We **do not** recommend using the AWS Elastic File System (EFS), as it can result
+in [significantly degraded performance](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/administration/high_availability/nfs.md#aws-elastic-file-system).
 
 # High Availability on AWS
 
@@ -28,7 +30,7 @@ we'll be using to configure our cloud infrastructure.
 
 ### Reference Architecture
 
-![Reference Architecture](img/reference-arch.png)
+![Reference Architecture](img/reference-arch2.png)
 
 ***
 
@@ -284,7 +286,7 @@ to make the EFS integration easier to manage.
     gitlab_rails['redis_port'] = 6379
 
 Finally run reconfigure, you might find it useful to run a check and
-a service status to make sure everything has been setup correctly.
+a service status to make sure everything has been set up correctly.
 
     sudo gitlab-ctl reconfigure  
     sudo gitlab-rake gitlab:check  
@@ -354,11 +356,11 @@ add the following script to the User Data section:
     - mount -a -t nfs
     - sudo gitlab-ctl reconfigure
 
-On the security group section we can chosse our existing
+On the security group section we can choose our existing
 `gitlab-ec2-security-group` group which has already been tested.
 
 After this is launched we are able to start creating our Auto Scaling
-Group. Start by giving it a name and assinging it our VPC and private
+Group. Start by giving it a name and assigning it our VPC and private
 subnets. We also want to always start with two instances and if you
 scroll down to Advanced Details we can choose to receive traffic from ELBs.
 Lets enable that option and select our ELB. We also want to use the ELB's
@@ -393,5 +395,5 @@ some redundancy options but it might also imply Geographic replication.
 There is a lot of ground yet to cover so have a read through these other
 resources and feel free to open an issue to request additional material.
 
- * [GitLab High Availability](http://docs.gitlab.com/ce/administration/high_availability/README.html#sts=High Availability)
- * [GitLab Geo](http://docs.gitlab.com/ee/gitlab-geo/README.html)  
+* [GitLab High Availability](http://docs.gitlab.com/ce/administration/high_availability/README.html#sts=High%20Availability)
+* [GitLab Geo](http://docs.gitlab.com/ee/gitlab-geo/README.html)  

@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 class DroneCiService < CiService
   include ReactiveService
 
   prop_accessor :drone_url, :token
   boolean_accessor :enable_ssl_verification
 
-  validates :drone_url, presence: true, url: true, if: :activated?
+  validates :drone_url, presence: true, public_url: true, if: :activated?
   validates :token, presence: true, if: :activated?
 
   after_save :compose_service_hook, if: :activated?
@@ -115,6 +117,6 @@ class DroneCiService < CiService
 
   def merge_request_valid?(data)
     data[:object_attributes][:state] == 'opened' &&
-      data[:object_attributes][:merge_status] == 'unchecked'
+      MergeRequest.state_machines[:merge_status].check_state?(data[:object_attributes][:merge_status])
   end
 end

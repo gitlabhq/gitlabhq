@@ -2,6 +2,7 @@
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
 import MockAdapter from 'axios-mock-adapter';
+import { faviconDataUrl, overlayDataUrl, faviconWithOverlayDataUrl } from './mock_data';
 
 describe('common_utils', () => {
   describe('parseUrl', () => {
@@ -28,24 +29,46 @@ describe('common_utils', () => {
     });
   });
 
-  describe('getUrlParamsArray', () => {
-    it('should return params array', () => {
-      expect(commonUtils.getUrlParamsArray() instanceof Array).toBe(true);
-    });
-
-    it('should remove the question mark from the search params', () => {
-      const paramsArray = commonUtils.getUrlParamsArray();
-      expect(paramsArray[0][0] !== '?').toBe(true);
+  describe('urlParamsToArray', () => {
+    it('returns empty array for empty querystring', () => {
+      expect(commonUtils.urlParamsToArray('')).toEqual([]);
     });
 
     it('should decode params', () => {
-      history.pushState('', '', '?label_name%5B%5D=test');
-
       expect(
-        commonUtils.getUrlParamsArray()[0],
+        commonUtils.urlParamsToArray('?label_name%5B%5D=test')[0],
       ).toBe('label_name[]=test');
+    });
 
-      history.pushState('', '', '?');
+    it('should remove the question mark from the search params', () => {
+      const paramsArray = commonUtils.urlParamsToArray('?test=thing');
+      expect(paramsArray[0][0] !== '?').toBe(true);
+    });
+  });
+
+  describe('urlParamsToObject', () => {
+    it('parses path for label with trailing +', () => {
+      expect(
+        commonUtils.urlParamsToObject('label_name[]=label%2B', {}),
+      ).toEqual({
+        label_name: ['label+'],
+      });
+    });
+
+    it('parses path for milestone with trailing +', () => {
+      expect(
+        commonUtils.urlParamsToObject('milestone_title=A%2B', {}),
+      ).toEqual({
+        milestone_title: 'A+',
+      });
+    });
+
+    it('parses path for search terms with spaces', () => {
+      expect(
+        commonUtils.urlParamsToObject('search=two+words', {}),
+      ).toEqual({
+        search: 'two words',
+      });
     });
   });
 
@@ -395,12 +418,14 @@ describe('common_utils', () => {
       const favicon = document.createElement('link');
       favicon.setAttribute('id', 'favicon');
       favicon.setAttribute('href', 'default/favicon');
+      favicon.setAttribute('data-default-href', 'default/favicon');
       document.body.appendChild(favicon);
     });
 
     afterEach(() => {
       document.body.removeChild(document.getElementById('favicon'));
     });
+
     it('should set page favicon to provided favicon', () => {
       const faviconPath = '//custom_favicon';
       commonUtils.setFavicon(faviconPath);
@@ -413,7 +438,7 @@ describe('common_utils', () => {
     beforeEach(() => {
       const favicon = document.createElement('link');
       favicon.setAttribute('id', 'favicon');
-      favicon.setAttribute('href', 'default/favicon');
+      favicon.setAttribute('data-original-href', 'default/favicon');
       document.body.appendChild(favicon);
     });
 
@@ -421,9 +446,40 @@ describe('common_utils', () => {
       document.body.removeChild(document.getElementById('favicon'));
     });
 
-    it('should reset page favicon to tanuki', () => {
+    it('should reset page favicon to the default icon', () => {
+      const favicon = document.getElementById('favicon');
+      favicon.setAttribute('href', 'new/favicon');
       commonUtils.resetFavicon();
       expect(document.getElementById('favicon').getAttribute('href')).toEqual('default/favicon');
+    });
+  });
+
+  describe('createOverlayIcon', () => {
+    it('should return the favicon with the overlay', (done) => {
+      commonUtils.createOverlayIcon(faviconDataUrl, overlayDataUrl).then((url) => {
+        expect(url).toEqual(faviconWithOverlayDataUrl);
+        done();
+      });
+    });
+  });
+
+  describe('setFaviconOverlay', () => {
+    beforeEach(() => {
+      const favicon = document.createElement('link');
+      favicon.setAttribute('id', 'favicon');
+      favicon.setAttribute('data-original-href', faviconDataUrl);
+      document.body.appendChild(favicon);
+    });
+
+    afterEach(() => {
+      document.body.removeChild(document.getElementById('favicon'));
+    });
+
+    it('should set page favicon to provided favicon overlay', (done) => {
+      commonUtils.setFaviconOverlay(overlayDataUrl).then(() => {
+        expect(document.getElementById('favicon').getAttribute('href')).toEqual(faviconWithOverlayDataUrl);
+        done();
+      });
     });
   });
 
@@ -434,6 +490,8 @@ describe('common_utils', () => {
     beforeEach(() => {
       const favicon = document.createElement('link');
       favicon.setAttribute('id', 'favicon');
+      favicon.setAttribute('href', 'null');
+      favicon.setAttribute('data-original-href', faviconDataUrl);
       document.body.appendChild(favicon);
       mock = new MockAdapter(axios);
     });
@@ -444,30 +502,25 @@ describe('common_utils', () => {
     });
 
     it('should reset favicon in case of error', (done) => {
-      mock.onGet(BUILD_URL).networkError();
+      mock.onGet(BUILD_URL).replyOnce(500);
 
       commonUtils.setCiStatusFavicon(BUILD_URL)
-        .then(() => {
+        .catch(() => {
           const favicon = document.getElementById('favicon');
-          expect(favicon.getAttribute('href')).toEqual('null');
+          expect(favicon.getAttribute('href')).toEqual(faviconDataUrl);
           done();
-        })
-        // Error is already caught in catch() block of setCiStatusFavicon,
-        // It won't throw another error for us to catch
-        .catch(done.fail);
+        });
     });
 
     it('should set page favicon to CI status favicon based on provided status', (done) => {
-      const FAVICON_PATH = '//icon_status_success';
-
       mock.onGet(BUILD_URL).reply(200, {
-        favicon: FAVICON_PATH,
+        favicon: overlayDataUrl,
       });
 
       commonUtils.setCiStatusFavicon(BUILD_URL)
         .then(() => {
           const favicon = document.getElementById('favicon');
-          expect(favicon.getAttribute('href')).toEqual(FAVICON_PATH);
+          expect(favicon.getAttribute('href')).toEqual(faviconWithOverlayDataUrl);
           done();
         })
         .catch(done.fail);
@@ -522,6 +575,95 @@ describe('common_utils', () => {
       expect(Object.keys(commonUtils.convertObjectPropsToCamelCase(null)).length).toBe(0);
       expect(Object.keys(commonUtils.convertObjectPropsToCamelCase()).length).toBe(0);
       expect(Object.keys(commonUtils.convertObjectPropsToCamelCase({})).length).toBe(0);
+    });
+
+    it('does not deep-convert by default', () => {
+      const obj = {
+        snake_key: {
+          child_snake_key: 'value',
+        },
+      };
+
+      expect(
+        commonUtils.convertObjectPropsToCamelCase(obj),
+      ).toEqual({
+        snakeKey: {
+          child_snake_key: 'value',
+        },
+      });
+    });
+
+    describe('deep: true', () => {
+      it('converts object with child objects', () => {
+        const obj = {
+          snake_key: {
+            child_snake_key: 'value',
+          },
+        };
+
+        expect(
+          commonUtils.convertObjectPropsToCamelCase(obj, { deep: true }),
+        ).toEqual({
+          snakeKey: {
+            childSnakeKey: 'value',
+          },
+        });
+      });
+
+      it('converts array with child objects', () => {
+        const arr = [
+          {
+            child_snake_key: 'value',
+          },
+        ];
+
+        expect(
+          commonUtils.convertObjectPropsToCamelCase(arr, { deep: true }),
+        ).toEqual([
+          {
+            childSnakeKey: 'value',
+          },
+        ]);
+      });
+
+      it('converts array with child arrays', () => {
+        const arr = [
+          [
+            {
+              child_snake_key: 'value',
+            },
+          ],
+        ];
+
+        expect(
+          commonUtils.convertObjectPropsToCamelCase(arr, { deep: true }),
+        ).toEqual([
+          [
+            {
+              childSnakeKey: 'value',
+            },
+          ],
+        ]);
+      });
+    });
+  });
+
+  describe('roundOffFloat', () => {
+    it('Rounds off decimal places of a float number with provided precision', () => {
+      expect(commonUtils.roundOffFloat(3.141592, 3)).toBe(3.142);
+    });
+
+    it('Rounds off a float number to a whole number when provided precision is zero', () => {
+      expect(commonUtils.roundOffFloat(3.141592, 0)).toBe(3);
+      expect(commonUtils.roundOffFloat(3.5, 0)).toBe(4);
+    });
+
+    it('Rounds off float number to nearest 0, 10, 100, 1000 and so on when provided precision is below 0', () => {
+      expect(commonUtils.roundOffFloat(34567.14159, -1)).toBe(34570);
+      expect(commonUtils.roundOffFloat(34567.14159, -2)).toBe(34600);
+      expect(commonUtils.roundOffFloat(34567.14159, -3)).toBe(35000);
+      expect(commonUtils.roundOffFloat(34567.14159, -4)).toBe(30000);
+      expect(commonUtils.roundOffFloat(34567.14159, -5)).toBe(0);
     });
   });
 });

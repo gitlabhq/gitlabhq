@@ -1,6 +1,16 @@
 require 'rails_helper'
 
 describe ImportHelper do
+  describe '#sanitize_project_name' do
+    it 'removes whitespace' do
+      expect(helper.sanitize_project_name('my test repo')).to eq('my-test-repo')
+    end
+
+    it 'removes disallowed characters' do
+      expect(helper.sanitize_project_name('Test&me$over*h_ere')).to eq('Test-me-over-h_ere')
+    end
+  end
+
   describe '#import_project_target' do
     let(:user) { create(:user) }
 

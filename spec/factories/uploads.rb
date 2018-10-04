@@ -28,6 +28,13 @@ FactoryBot.define do
       secret SecureRandom.hex
     end
 
+    trait :with_file do
+      after(:create) do |upload|
+        FileUtils.mkdir_p(File.dirname(upload.absolute_path))
+        FileUtils.touch(upload.absolute_path)
+      end
+    end
+
     trait :object_storage do
       store ObjectStorage::Store::REMOTE
     end
@@ -36,6 +43,13 @@ FactoryBot.define do
       model { build(:group) }
       path { File.join(secret, filename) }
       uploader "NamespaceFileUploader"
+      secret SecureRandom.hex
+    end
+
+    trait :favicon_upload do
+      model { build(:appearance) }
+      path { File.join(secret, filename) }
+      uploader "FaviconUploader"
       secret SecureRandom.hex
     end
 

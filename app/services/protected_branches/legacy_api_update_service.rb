@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # The branches#protect API still uses the `developers_can_push` and `developers_can_merge`
 # flags for backward compatibility, and so performs translation between that format and the
 # internal data model (separate access levels). The translation code is non-trivial, and so
@@ -17,14 +19,14 @@ module ProtectedBranches
         when true
           params[:push_access_levels_attributes] = [{ access_level: Gitlab::Access::DEVELOPER }]
         when false
-          params[:push_access_levels_attributes] = [{ access_level: Gitlab::Access::MASTER }]
+          params[:push_access_levels_attributes] = [{ access_level: Gitlab::Access::MAINTAINER }]
         end
 
         case @developers_can_merge
         when true
           params[:merge_access_levels_attributes] = [{ access_level: Gitlab::Access::DEVELOPER }]
         when false
-          params[:merge_access_levels_attributes] = [{ access_level: Gitlab::Access::MASTER }]
+          params[:merge_access_levels_attributes] = [{ access_level: Gitlab::Access::MAINTAINER }]
         end
 
         service = ProtectedBranches::UpdateService.new(@project, @current_user, @params)
@@ -36,11 +38,11 @@ module ProtectedBranches
 
     def delete_redundant_access_levels
       unless @developers_can_merge.nil?
-        @protected_branch.merge_access_levels.destroy_all
+        @protected_branch.merge_access_levels.destroy_all # rubocop: disable DestroyAll
       end
 
       unless @developers_can_push.nil?
-        @protected_branch.push_access_levels.destroy_all
+        @protected_branch.push_access_levels.destroy_all # rubocop: disable DestroyAll
       end
     end
   end

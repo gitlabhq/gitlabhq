@@ -1,6 +1,4 @@
 # frozen_string_literal: true
-# rubocop:disable Metrics/LineLength
-# rubocop:disable Style/Documentation
 
 module ObjectStorage
   class MigrateUploadsWorker
@@ -8,85 +6,6 @@ module ObjectStorage
     include ObjectStorageQueue
 
     SanityCheckError = Class.new(StandardError)
-
-    class Upload < ActiveRecord::Base
-      # Upper limit for foreground checksum processing
-      CHECKSUM_THRESHOLD = 100.megabytes
-
-      belongs_to :model, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
-
-      validates :size, presence: true
-      validates :path, presence: true
-      validates :model, presence: true
-      validates :uploader, presence: true
-
-      before_save  :calculate_checksum!, if: :foreground_checksummable?
-      after_commit :schedule_checksum,   if: :checksummable?
-
-      scope :stored_locally, -> { where(store: [nil, ObjectStorage::Store::LOCAL]) }
-      scope :stored_remotely, -> { where(store: ObjectStorage::Store::REMOTE) }
-
-      def self.hexdigest(path)
-        Digest::SHA256.file(path).hexdigest
-      end
-
-      def absolute_path
-        raise ObjectStorage::RemoteStoreError, "Remote object has no absolute path." unless local?
-        return path unless relative_path?
-
-        uploader_class.absolute_path(self)
-      end
-
-      def calculate_checksum!
-        self.checksum = nil
-        return unless checksummable?
-
-        self.checksum = self.class.hexdigest(absolute_path)
-      end
-
-      def build_uploader(mounted_as = nil)
-        uploader_class.new(model, mounted_as).tap do |uploader|
-          uploader.upload = self
-          uploader.retrieve_from_store!(identifier)
-        end
-      end
-
-      def exist?
-        File.exist?(absolute_path)
-      end
-
-      def local?
-        return true if store.nil?
-
-        store == ObjectStorage::Store::LOCAL
-      end
-
-      private
-
-      def checksummable?
-        checksum.nil? && local? && exist?
-      end
-
-      def foreground_checksummable?
-        checksummable? && size <= CHECKSUM_THRESHOLD
-      end
-
-      def schedule_checksum
-        UploadChecksumWorker.perform_async(id)
-      end
-
-      def relative_path?
-        !path.start_with?('/')
-      end
-
-      def identifier
-        File.basename(path)
-      end
-
-      def uploader_class
-        Object.const_get(uploader)
-      end
-    end
 
     class MigrationResult
       attr_reader :upload
@@ -138,11 +57,13 @@ module ObjectStorage
 
     include Report
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def self.enqueue!(uploads, model_class, mounted_as, to_store)
       sanity_check!(uploads, model_class, mounted_as)
 
       perform_async(uploads.ids, model_class.to_s, mounted_as, to_store)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # We need to be sure all the uploads are for the same uploader and model type
     # and that the mount point exists if provided.
@@ -159,6 +80,7 @@ module ObjectStorage
       raise(SanityCheckError, "Mount point #{mounted_as} not found in #{model_class}.") unless model_has_mount
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def perform(*args)
       args_check!(args)
 
@@ -178,6 +100,7 @@ module ObjectStorage
       # do not retry: the job is insane
       Rails.logger.warn "#{self.class}: Sanity check error (#{e.message})"
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def sanity_check!(uploads)
       self.class.sanity_check!(uploads, @model_class, @mounted_as)

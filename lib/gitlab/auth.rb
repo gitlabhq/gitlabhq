@@ -14,6 +14,10 @@ module Gitlab
     DEFAULT_SCOPES = [:api].freeze
 
     class << self
+      def omniauth_enabled?
+        Gitlab.config.omniauth.enabled
+      end
+
       def find_for_git_client(login, password, project:, ip:)
         raise "Must provide an IP for rate limiting" if ip.nil?
 
@@ -51,7 +55,7 @@ module Gitlab
         Gitlab::Auth::UniqueIpsLimiter.limit_user! do
           user = User.by_login(login)
 
-          return if user && !user.active?
+          break if user && !user.active?
 
           authenticators = []
 
@@ -132,6 +136,7 @@ module Gitlab
         Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities)
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def oauth_access_token_check(login, password)
         if login == "oauth2" && password.present?
           token = Doorkeeper::AccessToken.by_token(password)
@@ -142,7 +147,9 @@ module Gitlab
           end
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def personal_access_token_check(password)
         return unless password.present?
 
@@ -152,6 +159,7 @@ module Gitlab
           Gitlab::Auth::Result.new(token.user, nil, :personal_access_token, abilities_for_scopes(token.scopes))
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def valid_oauth_token?(token)
         token && token.accessible? && valid_scoped_token?(token, [:api])
@@ -173,6 +181,7 @@ module Gitlab
         end.uniq
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def deploy_token_check(login, password)
         return unless password.present?
 
@@ -188,6 +197,7 @@ module Gitlab
           Gitlab::Auth::Result.new(token, token.project, :deploy_token, scopes)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def lfs_token_check(login, password, project)
         deploy_key_matches = login.match(/\Alfs\+deploy-key-(\d+)\z/)
@@ -221,7 +231,7 @@ module Gitlab
         return unless login == 'gitlab-ci-token'
         return unless password
 
-        build = ::Ci::Build.running.find_by_token(password)
+        build = find_build_by_token(password)
         return unless build
         return unless build.project.builds_enabled?
 
@@ -281,6 +291,12 @@ module Gitlab
         return [] unless Gitlab.config.registry.enabled
 
         REGISTRY_SCOPES
+      end
+
+      private
+
+      def find_build_by_token(token)
+        ::Ci::Build.running.find_by_token(token)
       end
     end
   end

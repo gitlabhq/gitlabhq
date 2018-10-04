@@ -1,13 +1,13 @@
 import $ from 'jquery';
 import { sprintf, __ } from '~/locale';
 import flash from '~/flash';
-import { stripHtml } from '~/lib/utils/text_utility';
 import * as rootTypes from '../../mutation_types';
 import { createCommitPayload, createNewMergeRequestUrl } from '../../utils';
 import router from '../../../ide_router';
 import service from '../../../services';
 import * as types from './mutation_types';
 import * as consts from './constants';
+import { activityBarViews } from '../../../constants';
 import eventHub from '../../../eventhub';
 
 export const updateCommitMessage = ({ commit }, message) => {
@@ -30,9 +30,9 @@ export const setLastCommitMessage = ({ rootState, commit }, data) => {
   const currentProject = rootState.projects[rootState.currentProjectId];
   const commitStats = data.stats
     ? sprintf(__('with %{additions} additions, %{deletions} deletions.'), {
-        additions: data.stats.additions, // eslint-disable-line indent
-        deletions: data.stats.deletions, // eslint-disable-line indent
-      }) // eslint-disable-line indent
+        additions: data.stats.additions, // eslint-disable-line indent-legacy
+        deletions: data.stats.deletions, // eslint-disable-line indent-legacy
+      }) // eslint-disable-line indent-legacy
     : '';
   const commitMsg = sprintf(
     __('Your changes have been committed. Commit %{commitId} %{commitStats}'),
@@ -48,35 +48,7 @@ export const setLastCommitMessage = ({ rootState, commit }, data) => {
   commit(rootTypes.SET_LAST_COMMIT_MSG, commitMsg, { root: true });
 };
 
-export const checkCommitStatus = ({ rootState }) =>
-  service
-    .getBranchData(rootState.currentProjectId, rootState.currentBranchId)
-    .then(({ data }) => {
-      const { id } = data.commit;
-      const selectedBranch =
-        rootState.projects[rootState.currentProjectId].branches[rootState.currentBranchId];
-
-      if (selectedBranch.workingReference !== id) {
-        return true;
-      }
-
-      return false;
-    })
-    .catch(() =>
-      flash(
-        __('Error checking branch data. Please try again.'),
-        'alert',
-        document,
-        null,
-        false,
-        true,
-      ),
-    );
-
-export const updateFilesAfterCommit = (
-  { commit, dispatch, state, rootState, rootGetters },
-  { data, branch },
-) => {
+export const updateFilesAfterCommit = ({ commit, dispatch, rootState }, { data }) => {
   const selectedProject = rootState.projects[rootState.currentProjectId];
   const lastCommit = {
     commit_path: `${selectedProject.web_url}/commit/${data.id}`,
@@ -98,23 +70,14 @@ export const updateFilesAfterCommit = (
     { root: true },
   );
 
-  rootState.changedFiles.forEach(entry => {
+  rootState.stagedFiles.forEach(file => {
+    const changedFile = rootState.changedFiles.find(f => f.path === file.path);
+
     commit(
-      rootTypes.SET_LAST_COMMIT_DATA,
+      rootTypes.UPDATE_FILE_AFTER_COMMIT,
       {
-        entry,
+        file,
         lastCommit,
-      },
-      { root: true },
-    );
-
-    eventHub.$emit(`editor.update.model.content.${entry.path}`, entry.content);
-
-    commit(
-      rootTypes.SET_FILE_RAW_DATA,
-      {
-        file: entry,
-        raw: entry.content,
       },
       { root: true },
     );
@@ -122,42 +85,41 @@ export const updateFilesAfterCommit = (
     commit(
       rootTypes.TOGGLE_FILE_CHANGED,
       {
-        file: entry,
+        file,
         changed: false,
       },
       { root: true },
     );
+
+    dispatch('updateTempFlagForEntry', { file, tempFile: false }, { root: true });
+
+    eventHub.$emit(`editor.update.model.content.${file.key}`, {
+      content: file.content,
+      changed: !!changedFile,
+    });
   });
-
-  commit(rootTypes.REMOVE_ALL_CHANGES_FILES, null, { root: true });
-
-  if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH) {
-    router.push(
-      `/project/${rootState.currentProjectId}/blob/${branch}/${rootGetters.activeFile.path}`,
-    );
-  }
 };
 
-export const commitChanges = ({ commit, state, getters, dispatch, rootState }) => {
+export const commitChanges = ({ commit, state, getters, dispatch, rootState, rootGetters }) => {
   const newBranch = state.commitAction !== consts.COMMIT_TO_CURRENT_BRANCH;
-  const payload = createCommitPayload(getters.branchName, newBranch, state, rootState);
-  const getCommitStatus = newBranch ? Promise.resolve(false) : dispatch('checkCommitStatus');
+  const stageFilesPromise = rootState.stagedFiles.length
+    ? Promise.resolve()
+    : dispatch('stageAllChanges', null, { root: true });
 
   commit(types.UPDATE_LOADING, true);
 
-  return getCommitStatus
-    .then(
-      branchChanged =>
-        new Promise(resolve => {
-          if (branchChanged) {
-            // show the modal with a Bootstrap call
-            $('#ide-create-branch-modal').modal('show');
-          } else {
-            resolve();
-          }
-        }),
-    )
-    .then(() => service.commit(rootState.currentProjectId, payload))
+  return stageFilesPromise
+    .then(() => {
+      const payload = createCommitPayload({
+        branch: getters.branchName,
+        newBranch,
+        getters,
+        state,
+        rootState,
+      });
+
+      return service.commit(rootState.currentProjectId, payload);
+    })
     .then(({ data }) => {
       commit(types.UPDATE_LOADING, false);
 
@@ -184,17 +146,77 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState }) =
               { root: true },
             );
           }
+
+          commit(rootTypes.CLEAR_STAGED_CHANGES, null, { root: true });
+
+          setTimeout(() => {
+            commit(rootTypes.SET_LAST_COMMIT_MSG, '', { root: true });
+          }, 5000);
         })
-        .then(() => dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH));
+        .then(() => {
+          if (rootGetters.lastOpenedFile) {
+            dispatch(
+              'openPendingTab',
+              {
+                file: rootGetters.lastOpenedFile,
+              },
+              { root: true },
+            )
+              .then(changeViewer => {
+                if (changeViewer) {
+                  dispatch('updateViewer', 'diff', { root: true });
+                }
+              })
+              .catch(e => {
+                throw e;
+              });
+          } else {
+            dispatch('updateActivityBarView', activityBarViews.edit, { root: true });
+            dispatch('updateViewer', 'editor', { root: true });
+
+            if (rootGetters.activeFile) {
+              router.push(
+                `/project/${rootState.currentProjectId}/blob/${getters.branchName}/-/${
+                  rootGetters.activeFile.path
+                }`,
+              );
+            }
+          }
+        })
+        .then(() => dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH))
+        .then(() =>
+          dispatch(
+            'refreshLastCommitData',
+            {
+              projectId: rootState.currentProjectId,
+              branchId: rootState.currentBranchId,
+            },
+            { root: true },
+          ),
+        );
     })
     .catch(err => {
-      let errMsg = __('Error committing changes. Please try again.');
-      if (err.response.data && err.response.data.message) {
-        errMsg += ` (${stripHtml(err.response.data.message)})`;
+      if (err.response.status === 400) {
+        $('#ide-create-branch-modal').modal('show');
+      } else {
+        dispatch(
+          'setErrorMessage',
+          {
+            text: __('An error accured whilst committing your changes.'),
+            action: () =>
+              dispatch('commitChanges').then(() =>
+                dispatch('setErrorMessage', null, { root: true }),
+              ),
+            actionText: __('Please try again'),
+          },
+          { root: true },
+        );
+        window.dispatchEvent(new Event('resize'));
       }
-      flash(errMsg, 'alert', document, null, false, true);
-      window.dispatchEvent(new Event('resize'));
 
       commit(types.UPDATE_LOADING, false);
     });
 };
+
+// prevent babel-plugin-rewire from generating an invalid default during karma tests
+export default () => {};

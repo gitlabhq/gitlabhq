@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AccessRequestsFinder
   attr_accessor :source
 

@@ -182,6 +182,14 @@ describe Gitlab::QuickActions::Extractor do
       expect(msg).to eq "hello\nworld"
     end
 
+    it 'extracts command case insensitive' do
+      msg = %(hello\n/PoWer @user.name %9.10 ~"bar baz.2"\nworld)
+      msg, commands = extractor.extract_commands(msg)
+
+      expect(commands).to eq [['power', '@user.name %9.10 ~"bar baz.2"']]
+      expect(msg).to eq "hello\nworld"
+    end
+
     it 'does not extract noop commands' do
       msg = %(hello\nworld\n/reopen\n/noop_command)
       msg, commands = extractor.extract_commands(msg)
@@ -200,6 +208,14 @@ describe Gitlab::QuickActions::Extractor do
 
     it 'extracts and performs substitution commands' do
       msg = %(hello\nworld\n/reopen\n/shrug this is great?)
+      msg, commands = extractor.extract_commands(msg)
+
+      expect(commands).to eq [['reopen'], ['shrug', 'this is great?']]
+      expect(msg).to eq "hello\nworld\nthis is great? SHRUG"
+    end
+
+    it 'extracts and performs substitution commands case insensitive' do
+      msg = %(hello\nworld\n/reOpen\n/sHRuG this is great?)
       msg, commands = extractor.extract_commands(msg)
 
       expect(commands).to eq [['reopen'], ['shrug', 'this is great?']]

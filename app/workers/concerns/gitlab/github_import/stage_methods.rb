@@ -20,11 +20,13 @@ module Gitlab
         self.class.perform_in(client.rate_limit_resets_in, project.id)
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def find_project(id)
         # If the project has been marked as failed we want to bail out
         # automatically.
         Project.import_started.find_by(id: id)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

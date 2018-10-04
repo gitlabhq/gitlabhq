@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Oauth::AuthorizedApplicationsController < Doorkeeper::AuthorizedApplicationsController
   include PageLayoutHelper
 

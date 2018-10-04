@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ResolvableNote
   extend ActiveSupport::Concern
 
@@ -18,7 +20,7 @@ module ResolvableNote
     scope :unresolved, -> { resolvable.where(resolved_at: nil) }
   end
 
-  module ClassMethods
+  class_methods do
     # This method must be kept in sync with `#resolve!`
     def resolve!(current_user)
       unresolved.update_all(resolved_at: Time.now, resolved_by_id: current_user.id)
@@ -32,7 +34,7 @@ module ResolvableNote
 
   # Keep this method in sync with the `potentially_resolvable` scope
   def potentially_resolvable?
-    RESOLVABLE_TYPES.include?(self.class.name) && noteable.supports_resolvable_notes?
+    RESOLVABLE_TYPES.include?(self.class.name) && noteable&.supports_resolvable_notes?
   end
 
   # Keep this method in sync with the `resolvable` scope

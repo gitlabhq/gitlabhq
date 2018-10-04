@@ -26,60 +26,10 @@ describe('RepoTabs', () => {
       const tabs = [...vm.$el.querySelectorAll('.multi-file-tab')];
 
       expect(tabs.length).toEqual(2);
-      expect(tabs[0].classList.contains('active')).toEqual(true);
-      expect(tabs[1].classList.contains('active')).toEqual(false);
+      expect(tabs[0].parentNode.classList.contains('active')).toEqual(true);
+      expect(tabs[1].parentNode.classList.contains('active')).toEqual(false);
 
       done();
-    });
-  });
-
-  describe('updated', () => {
-    it('sets showShadow as true when scroll width is larger than width', done => {
-      const el = document.createElement('div');
-      el.innerHTML = '<div id="test-app"></div>';
-      document.body.appendChild(el);
-
-      const style = document.createElement('style');
-      style.innerText = `
-        .multi-file-tabs {
-          width: 100px;
-        }
-
-        .multi-file-tabs .list-unstyled {
-          display: flex;
-          overflow-x: auto;
-        }
-      `;
-      document.head.appendChild(style);
-
-      vm = createComponent(
-        RepoTabs,
-        {
-          files: [],
-          viewer: 'editor',
-          hasChanges: false,
-          activeFile: file('activeFile'),
-          hasMergeRequest: false,
-        },
-        '#test-app',
-      );
-
-      vm
-        .$nextTick()
-        .then(() => {
-          expect(vm.showShadow).toEqual(false);
-
-          vm.files = openedFiles;
-        })
-        .then(vm.$nextTick)
-        .then(() => {
-          expect(vm.showShadow).toEqual(true);
-
-          style.remove();
-          el.remove();
-        })
-        .then(done)
-        .catch(done.fail);
     });
   });
 });

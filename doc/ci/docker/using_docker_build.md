@@ -134,22 +134,33 @@ In order to do that, follow the steps:
     ```yaml
     image: docker:stable
 
-    # When using dind, it's wise to use the overlayfs driver for
-    # improved performance.
     variables:
+      # When using dind service we need to instruct docker, to talk with the
+      # daemon started inside of the service. The daemon is available with
+      # a network connection instead of the default /var/run/docker.sock socket.
+      #
+      # The 'docker' hostname is the alias of the service container as described at
+      # https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#accessing-the-services
+      #
+      # Note that if you're using Kubernetes executor, the variable should be set to
+      # tcp://localhost:2375 because of how Kubernetes executor connects services
+      # to the job container
+      DOCKER_HOST: tcp://docker:2375/
+      # When using dind, it's wise to use the overlayfs driver for
+      # improved performance.
       DOCKER_DRIVER: overlay2
 
     services:
-    - docker:dind
+      - docker:dind
 
     before_script:
-    - docker info
+      - docker info
 
     build:
       stage: build
       script:
-      - docker build -t my-docker-image .
-      - docker run my-docker-image /script/to/run/tests
+        - docker build -t my-docker-image .
+        - docker run my-docker-image /script/to/run/tests
     ```
 
 Docker-in-Docker works well, and is the recommended configuration, but it is
@@ -235,13 +246,13 @@ In order to do that, follow the steps:
     image: docker:stable
 
     before_script:
-    - docker info
+      - docker info
 
     build:
       stage: build
       script:
-      - docker build -t my-docker-image .
-      - docker run my-docker-image /script/to/run/tests
+        - docker build -t my-docker-image .
+        - docker run my-docker-image /script/to/run/tests
     ```
 
 While the above method avoids using Docker in privileged mode, you should be
@@ -293,6 +304,7 @@ services:
 
 variables:
   CONTAINER_IMAGE: registry.gitlab.com/$CI_PROJECT_PATH
+  DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
 
 before_script:
@@ -302,8 +314,8 @@ build:
   stage: build
   script:
     - docker pull $CONTAINER_IMAGE:latest || true
-    - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:$CI_BUILD_REF --tag $CONTAINER_IMAGE:latest .
-    - docker push $CONTAINER_IMAGE:$CI_BUILD_REF
+    - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE:latest .
+    - docker push $CONTAINER_IMAGE:$CI_COMMIT_SHA
     - docker push $CONTAINER_IMAGE:latest
 ```
 
@@ -369,17 +381,18 @@ environment = ["DOCKER_DRIVER=overlay2"]
 If you're running multiple Runners you will have to modify all configuration files.
 
 > **Notes:**
-- More information about the Runner configuration is available in the [Runner documentation](https://docs.gitlab.com/runner/configuration/).
-- For more information about using OverlayFS with Docker, you can read
-  [Use the OverlayFS storage driver](https://docs.docker.com/engine/userguide/storagedriver/overlayfs-driver/).
+>
+> - More information about the Runner configuration is available in the [Runner documentation](https://docs.gitlab.com/runner/configuration/).
+> - For more information about using OverlayFS with Docker, you can read
+>   [Use the OverlayFS storage driver](https://docs.docker.com/engine/userguide/storagedriver/overlayfs-driver/).
 
 ## Using the GitLab Container Registry
 
 > **Notes:**
-- This feature requires GitLab 8.8 and GitLab Runner 1.2.
-- Starting from GitLab 8.12, if you have [2FA] enabled in your account, you need
-  to pass a [personal access token][pat] instead of your password in order to
-  login to GitLab's Container Registry.
+> - This feature requires GitLab 8.8 and GitLab Runner 1.2.
+> - Starting from GitLab 8.12, if you have [2FA] enabled in your account, you need
+>   to pass a [personal access token][pat] instead of your password in order to
+>   login to GitLab's Container Registry.
 
 Once you've built a Docker image, you can push it up to the built-in
 [GitLab Container Registry](../../user/project/container_registry.md). For example,
@@ -390,7 +403,10 @@ could look like:
  build:
    image: docker:stable
    services:
-   - docker:dind
+     - docker:dind
+   variables:
+     DOCKER_HOST: tcp://docker:2375
+     DOCKER_DRIVER: overlay2
    stage: build
    script:
      - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.example.com
@@ -410,7 +426,9 @@ services:
   - docker:dind
 
 variables:
-  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
 
 before_script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
@@ -423,8 +441,10 @@ build:
 ```
 
 Here, `$CI_REGISTRY_IMAGE` would be resolved to the address of the registry tied
-to this project, and `$CI_COMMIT_REF_NAME` would be resolved to the branch or
-tag name for this particular job. We also declare our own variable, `$IMAGE_TAG`,
+to this project. Since `$CI_COMMIT_REF_NAME` resolves to the branch or tag name,
+and your branch-name can contain forward slashes (e.g., feature/my-feature), it is
+safer to use `$CI_COMMIT_REF_SLUG` as the image tag. This is due to that image tags
+cannot contain forward slashes. We also declare our own variable, `$IMAGE_TAG`,
 combining the two to save us some typing in the `script` section.
 
 Here's a more elaborate example that splits up the tasks into 4 pipeline stages,
@@ -436,16 +456,18 @@ an application-specific deploy script:
 ```yaml
 image: docker:stable
 services:
-- docker:dind
+  - docker:dind
 
 stages:
-- build
-- test
-- release
-- deploy
+  - build
+  - test
+  - release
+  - deploy
 
 variables:
-  CONTAINER_TEST_IMAGE: registry.example.com/my-group/my-project/my-image:$CI_COMMIT_REF_NAME
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+  CONTAINER_TEST_IMAGE: registry.example.com/my-group/my-project/my-image:$CI_COMMIT_REF_SLUG
   CONTAINER_RELEASE_IMAGE: registry.example.com/my-group/my-project/my-image:latest
 
 before_script:

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Notes
   class RenderService < BaseRenderer
     # Renders a collection of Note instances.

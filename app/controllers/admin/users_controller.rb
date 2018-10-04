@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::UsersController < Admin::ApplicationController
   before_action :user, except: [:index, :new, :create]
 
@@ -163,7 +165,7 @@ class Admin::UsersController < Admin::ApplicationController
         format.json { head :ok }
       else
         format.html { redirect_back_or_admin_user(alert: 'There was an error removing the e-mail.') }
-        format.json { render json: 'There was an error removing the e-mail.', status: 400 }
+        format.json { render json: 'There was an error removing the e-mail.', status: :bad_request }
       end
     end
   end
@@ -174,9 +176,11 @@ class Admin::UsersController < Admin::ApplicationController
     user == current_user
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def user
     @user ||= User.find_by!(username: params[:id])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def redirect_back_or_admin_user(options = {})
     redirect_back_or_default(default: default_route, options: options)
@@ -187,10 +191,10 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(user_params_ce)
+    params.require(:user).permit(allowed_user_params)
   end
 
-  def user_params_ce
+  def allowed_user_params
     [
       :access_level,
       :avatar,

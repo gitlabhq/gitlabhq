@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AutoDevopsHelper
   def show_auto_devops_callout?(project)
     Feature.get(:auto_devops_banner_disabled).off? &&
@@ -23,6 +25,17 @@ module AutoDevopsHelper
       _('Auto Review Apps and Auto Deploy need a domain name to work correctly.')
     end
   end
+
+  # rubocop: disable CodeReuse/ActiveRecord
+  def cluster_ingress_ip(project)
+    project
+      .cluster_ingresses
+      .where("external_ip is not null")
+      .limit(1)
+      .pluck(:external_ip)
+      .first
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 

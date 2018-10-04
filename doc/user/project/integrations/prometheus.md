@@ -8,7 +8,7 @@ within the GitLab interface.
 
 ![Environment Dashboard](img/prometheus_dashboard.png)
 
-There are two ways to setup Prometheus integration, depending on where your apps are running:
+There are two ways to set up Prometheus integration, depending on where your apps are running:
 * For deployments on Kubernetes, GitLab can automatically [deploy and manage Prometheus](#managed-prometheus-on-kubernetes)
 * For other deployment targets, simply [specify the Prometheus server](#manual-configuration-of-prometheus).
 
@@ -30,7 +30,7 @@ GitLab can seamlessly deploy and manage Prometheus on a [connected Kubernetes cl
 
 Once you have a connected Kubernetes cluster with Helm installed, deploying a managed Prometheus is as easy as a single click.
 
-1. Go to the `CI/CD > Kubernetes` page, to view your connected clusters
+1. Go to the `Operations > Kubernetes` page, to view your connected clusters
 1. Select the cluster you would like to deploy Prometheus to
 1. Click the **Install** button to deploy Prometheus to the cluster
 

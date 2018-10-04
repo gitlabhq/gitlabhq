@@ -11,8 +11,8 @@
 <template>
   <div class="mr-widget-body media">
     <status-icon
-      status="loading"
       :show-disabled-button="true"
+      status="loading"
     />
     <div class="media-body space-children">
       <span class="bold">

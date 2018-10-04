@@ -1,5 +1,0 @@
----
-title: Automatically cleanup stale worktrees and lock files upon a push
-merge_request:
-author:
-type: fixed

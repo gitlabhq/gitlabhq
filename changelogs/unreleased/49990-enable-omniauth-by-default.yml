@@ -1,0 +1,5 @@
+---
+title: Enable omniauth by default
+merge_request: 21700
+author:
+type: changed

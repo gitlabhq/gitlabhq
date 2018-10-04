@@ -1,7 +1,20 @@
-import * as urlUtils from '~/lib/utils/url_utility';
+import actions, {
+  stageAllChanges,
+  unstageAllChanges,
+  toggleFileFinder,
+  setCurrentBranchId,
+  setEmptyStateSvgs,
+  updateActivityBarView,
+  updateTempFlagForEntry,
+  setErrorMessage,
+  deleteEntry,
+  renameEntry,
+} from '~/ide/stores/actions';
 import store from '~/ide/stores';
+import * as types from '~/ide/stores/mutation_types';
 import router from '~/ide/ide_router';
 import { resetStore, file } from '../helpers';
+import testAction from '../../helpers/vuex_action_helper';
 
 describe('Multi-file store actions', () => {
   beforeEach(() => {
@@ -14,12 +27,12 @@ describe('Multi-file store actions', () => {
 
   describe('redirectToUrl', () => {
     it('calls visitUrl', done => {
-      spyOn(urlUtils, 'visitUrl');
+      const visitUrl = spyOnDependency(actions, 'visitUrl');
 
       store
         .dispatch('redirectToUrl', 'test')
         .then(() => {
-          expect(urlUtils.visitUrl).toHaveBeenCalledWith('test');
+          expect(visitUrl).toHaveBeenCalledWith('test');
 
           done();
         })
@@ -191,9 +204,7 @@ describe('Multi-file store actions', () => {
           })
           .then(f => {
             expect(f.tempFile).toBeTruthy();
-            expect(store.state.trees['abcproject/mybranch'].tree.length).toBe(
-              1,
-            );
+            expect(store.state.trees['abcproject/mybranch'].tree.length).toBe(1);
 
             done();
           })
@@ -292,6 +303,61 @@ describe('Multi-file store actions', () => {
     });
   });
 
+  describe('stageAllChanges', () => {
+    it('adds all files from changedFiles to stagedFiles', done => {
+      const openFile = { ...file(), path: 'test' };
+
+      store.state.openFiles.push(openFile);
+      store.state.stagedFiles.push(openFile);
+      store.state.changedFiles.push(openFile, file('new'));
+
+      testAction(
+        stageAllChanges,
+        null,
+        store.state,
+        [
+          { type: types.SET_LAST_COMMIT_MSG, payload: '' },
+          { type: types.STAGE_CHANGE, payload: store.state.changedFiles[0].path },
+          { type: types.STAGE_CHANGE, payload: store.state.changedFiles[1].path },
+        ],
+        [
+          {
+            type: 'openPendingTab',
+            payload: { file: openFile, keyPrefix: 'staged' },
+          },
+        ],
+        done,
+      );
+    });
+  });
+
+  describe('unstageAllChanges', () => {
+    it('removes all files from stagedFiles after unstaging', done => {
+      const openFile = { ...file(), path: 'test' };
+
+      store.state.openFiles.push(openFile);
+      store.state.changedFiles.push(openFile);
+      store.state.stagedFiles.push(openFile, file('new'));
+
+      testAction(
+        unstageAllChanges,
+        null,
+        store.state,
+        [
+          { type: types.UNSTAGE_CHANGE, payload: store.state.stagedFiles[0].path },
+          { type: types.UNSTAGE_CHANGE, payload: store.state.stagedFiles[1].path },
+        ],
+        [
+          {
+            type: 'openPendingTab',
+            payload: { file: openFile, keyPrefix: 'unstaged' },
+          },
+        ],
+        done,
+      );
+    });
+  });
+
   describe('updateViewer', () => {
     it('updates viewer state', done => {
       store
@@ -301,6 +367,183 @@ describe('Multi-file store actions', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+  });
+
+  describe('updateActivityBarView', () => {
+    it('commits UPDATE_ACTIVITY_BAR_VIEW', done => {
+      testAction(
+        updateActivityBarView,
+        'test',
+        {},
+        [{ type: 'UPDATE_ACTIVITY_BAR_VIEW', payload: 'test' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('setEmptyStateSvgs', () => {
+    it('commits setEmptyStateSvgs', done => {
+      testAction(
+        setEmptyStateSvgs,
+        'svg',
+        {},
+        [{ type: 'SET_EMPTY_STATE_SVGS', payload: 'svg' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('updateTempFlagForEntry', () => {
+    it('commits UPDATE_TEMP_FLAG', done => {
+      const f = {
+        ...file(),
+        path: 'test',
+        tempFile: true,
+      };
+      store.state.entries[f.path] = f;
+
+      testAction(
+        updateTempFlagForEntry,
+        { file: f, tempFile: false },
+        store.state,
+        [{ type: 'UPDATE_TEMP_FLAG', payload: { path: f.path, tempFile: false } }],
+        [],
+        done,
+      );
+    });
+
+    it('commits UPDATE_TEMP_FLAG and dispatches for parent', done => {
+      const parent = {
+        ...file(),
+        path: 'testing',
+      };
+      const f = {
+        ...file(),
+        path: 'test',
+        parentPath: 'testing',
+      };
+      store.state.entries[parent.path] = parent;
+      store.state.entries[f.path] = f;
+
+      testAction(
+        updateTempFlagForEntry,
+        { file: f, tempFile: false },
+        store.state,
+        [{ type: 'UPDATE_TEMP_FLAG', payload: { path: f.path, tempFile: false } }],
+        [{ type: 'updateTempFlagForEntry', payload: { file: parent, tempFile: false } }],
+        done,
+      );
+    });
+  });
+
+  describe('setCurrentBranchId', () => {
+    it('commits setCurrentBranchId', done => {
+      testAction(
+        setCurrentBranchId,
+        'branchId',
+        {},
+        [{ type: 'SET_CURRENT_BRANCH', payload: 'branchId' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('toggleFileFinder', () => {
+    it('commits TOGGLE_FILE_FINDER', done => {
+      testAction(
+        toggleFileFinder,
+        true,
+        null,
+        [{ type: 'TOGGLE_FILE_FINDER', payload: true }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('setErrorMessage', () => {
+    it('commis error messsage', done => {
+      testAction(
+        setErrorMessage,
+        'error',
+        null,
+        [{ type: types.SET_ERROR_MESSAGE, payload: 'error' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('deleteEntry', () => {
+    it('commits entry deletion', done => {
+      store.state.entries.path = 'testing';
+
+      testAction(
+        deleteEntry,
+        'path',
+        store.state,
+        [{ type: types.DELETE_ENTRY, payload: 'path' }],
+        [{ type: 'burstUnusedSeal' }],
+        done,
+      );
+    });
+  });
+
+  describe('renameEntry', () => {
+    it('renames entry', done => {
+      store.state.entries.test = {
+        tree: [],
+      };
+
+      testAction(
+        renameEntry,
+        { path: 'test', name: 'new-name' },
+        store.state,
+        [
+          {
+            type: types.RENAME_ENTRY,
+            payload: { path: 'test', name: 'new-name', entryPath: null },
+          },
+        ],
+        [{ type: 'deleteEntry', payload: 'test' }],
+        done,
+      );
+    });
+
+    it('renames all entries in tree', done => {
+      store.state.entries.test = {
+        type: 'tree',
+        tree: [
+          {
+            path: 'tree-1',
+          },
+          {
+            path: 'tree-2',
+          },
+        ],
+      };
+
+      testAction(
+        renameEntry,
+        { path: 'test', name: 'new-name' },
+        store.state,
+        [
+          {
+            type: types.RENAME_ENTRY,
+            payload: { path: 'test', name: 'new-name', entryPath: null },
+          },
+        ],
+        [
+          { type: 'renameEntry', payload: { path: 'test', name: 'new-name', entryPath: 'tree-1' } },
+          { type: 'renameEntry', payload: { path: 'test', name: 'new-name', entryPath: 'tree-2' } },
+          { type: 'deleteEntry', payload: 'test' },
+        ],
+        done,
+      );
     });
   });
 });

@@ -1,21 +1,27 @@
 require 'rails_helper'
 
-feature 'Resolving all open discussions in a merge request from an issue', :js do
+describe 'Resolving all open discussions in a merge request from an issue', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }
   let!(:discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
 
+  def resolve_all_discussions_link_selector
+    text = "Resolve all discussions in new issue"
+    url = new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)
+    %Q{a[data-original-title="#{text}"][href="#{url}"]}
+  end
+
   describe 'as a user with access to the project' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in user
       visit project_merge_request_path(project, merge_request)
     end
 
     it 'shows a button to resolve all discussions by creating a new issue' do
-      within('#resolve-count-app') do
-        expect(page).to have_link "Resolve all discussions in new issue", href: new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)
+      within('.line-resolve-all-container') do
+        expect(page).to have_selector resolve_all_discussions_link_selector
       end
     end
 
@@ -25,13 +31,13 @@ feature 'Resolving all open discussions in a merge request from an issue', :js d
       end
 
       it 'hides the link for creating a new issue' do
-        expect(page).not_to have_link "Resolve all discussions in new issue", href: new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)
+        expect(page).not_to have_selector resolve_all_discussions_link_selector
       end
     end
 
     context 'creating an issue for discussions' do
       before do
-        click_link "Resolve all discussions in new issue", href: new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)
+        find(resolve_all_discussions_link_selector).click
       end
 
       it_behaves_like 'creating an issue for a discussion'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Dashboard::ProjectsController < Dashboard::ApplicationController
   include ParamsBackwardCompatibility
   include RendersMemberAccess
@@ -7,7 +9,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   skip_cross_project_access_check :index, :starred
 
   def index
-    @projects = load_projects(params.merge(non_public: true)).page(params[:page])
+    @projects = load_projects(params.merge(non_public: true))
 
     respond_to do |format|
       format.html
@@ -23,9 +25,10 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def starred
     @projects = load_projects(params.merge(starred: true))
-      .includes(:forked_from_project, :tags).page(params[:page])
+      .includes(:forked_from_project, :tags)
 
     @groups = []
 
@@ -38,6 +41,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
       end
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 
@@ -46,14 +50,17 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     @sort = params[:sort]
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def load_projects(finder_params)
     projects = ProjectsFinder
                 .new(params: finder_params, current_user: current_user)
                 .execute
                 .includes(:route, :creator, namespace: [:route, :owner])
+                .page(finder_params[:page])
 
     prepare_projects_for_rendering(projects)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def load_events
     projects = load_projects(params.merge(non_public: true))

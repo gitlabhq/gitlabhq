@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # ColorValidator
 #
 # Custom validator for web color codes. It requires the leading hash symbol and

@@ -9,7 +9,7 @@ describe Projects::ServicesController do
 
   before do
     sign_in(user)
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe '#test' do
@@ -102,7 +102,7 @@ describe Projects::ServicesController do
 
         expect(response.status).to eq(200)
         expect(JSON.parse(response.body))
-          .to eq('error' => true, 'message' => 'Test failed.', 'service_response' => 'Bad test')
+          .to eq('error' => true, 'message' => 'Test failed.', 'service_response' => 'Bad test', 'test_failed' => true)
       end
     end
   end

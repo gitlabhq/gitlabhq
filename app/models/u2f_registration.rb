@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Registration information for U2F (universal 2nd factor) devices, like Yubikeys
 
 class U2fRegistration < ActiveRecord::Base

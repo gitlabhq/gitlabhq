@@ -11,7 +11,7 @@ You can leave a comment in the following places:
 - commit diffs
 
 The comment area supports [Markdown] and [quick actions]. One can edit their
-own comment at any time, and anyone with [Master access level][permissions] or
+own comment at any time, and anyone with [Maintainer access level][permissions] or
 higher can also edit a comment made by someone else.
 
 You could also reply to the notification email in order to reply to a comment,
@@ -23,9 +23,9 @@ in the form of a resolvable or threaded discussion.
 
 ## Resolvable discussions
 
->**Notes:**
-- The main feature was [introduced][ce-5022] in GitLab 8.11.
-- Resolvable discussions can be added only to merge request diffs.
+> **Notes:**
+> - The main feature was [introduced][ce-5022] in GitLab 8.11.
+> - Resolvable discussions can be added only to merge request diffs.
 
 Discussion resolution helps keep track of progress during planning or code review.
 Resolving comments prevents you from forgetting to address feedback and lets you
@@ -253,7 +253,7 @@ to newer issues or merge requests.
 - The people participating in the discussion are trolling, abusive, or otherwise
 being unproductive.
 
-In these cases, a user with Master permissions or higher in the project can lock (and unlock)
+In these cases, a user with Maintainer permissions or higher in the project can lock (and unlock)
 an issue or a merge request, using the "Lock" section in the sidebar:
 
 | Unlock | Lock |
@@ -270,6 +270,8 @@ edit existing comments. Non-team members are restricted from adding or editing c
 | Team member | Non-team member |
 | :-----------: | :----------: |
 | ![Comment form member](img/lock_form_member.png) | ![Comment form non-member](img/lock_form_non_member.png) |
+
+Additionally locked issues can not be reopened.
 
 [ce-5022]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5022
 [ce-7125]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7125

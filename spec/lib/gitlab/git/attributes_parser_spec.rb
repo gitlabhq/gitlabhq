@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Git::AttributesParser, seed_helper: true do
+describe Gitlab::Git::AttributesParser, :seed_helper do
   let(:attributes_path) { File.join(SEED_STORAGE_PATH, 'with-git-attributes.git', 'info', 'attributes') }
   let(:data) { File.read(attributes_path) }
 

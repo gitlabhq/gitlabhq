@@ -4,7 +4,6 @@ import { mapActions, mapState } from 'vuex';
 import createFlash from '~/flash';
 import { s__, sprintf } from '~/locale';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import createEmptyBadge from '../empty_badge';
 import Badge from './badge.vue';
 
@@ -15,13 +14,17 @@ export default {
   components: {
     Badge,
     LoadingButton,
-    LoadingIcon,
   },
   props: {
     isEditing: {
       type: Boolean,
       required: true,
     },
+  },
+  data() {
+    return {
+      wasValidated: false,
+    };
   },
   computed: {
     ...mapState([
@@ -38,16 +41,6 @@ export default {
       }
 
       return this.badgeInAddForm;
-    },
-    canSubmit() {
-      return (
-        this.badge !== null &&
-        this.badge.imageUrl &&
-        this.badge.imageUrl.trim() !== '' &&
-        this.badge.linkUrl &&
-        this.badge.linkUrl.trim() !== '' &&
-        !this.isSaving
-      );
     },
     helpText() {
       const placeholders = ['project_path', 'project_id', 'default_branch', 'commit_sha']
@@ -93,11 +86,18 @@ export default {
         });
       },
     },
-    submitButtonLabel() {
-      if (this.isEditing) {
-        return s__('Badges|Save changes');
-      }
-      return s__('Badges|Add badge');
+    badgeImageUrlExample() {
+      const exampleUrl =
+        'https://example.gitlab.com/%{project_path}/badges/%{default_branch}/badge.svg';
+      return sprintf(s__('Badges|e.g. %{exampleUrl}'), {
+        exampleUrl,
+      });
+    },
+    badgeLinkUrlExample() {
+      const exampleUrl = 'https://example.gitlab.com/%{project_path}';
+      return sprintf(s__('Badges|e.g. %{exampleUrl}'), {
+        exampleUrl,
+      });
     },
   },
   methods: {
@@ -109,7 +109,9 @@ export default {
       this.stopEditing();
     },
     onSubmit() {
-      if (!this.canSubmit) {
+      const form = this.$el;
+      if (!form.checkValidity()) {
+        this.wasValidated = true;
         return Promise.resolve();
       }
 
@@ -117,6 +119,7 @@ export default {
         return this.saveBadge()
           .then(() => {
             createFlash(s__('Badges|The badge was saved.'), 'notice');
+            this.wasValidated = false;
           })
           .catch(error => {
             createFlash(
@@ -129,6 +132,7 @@ export default {
       return this.addBadge()
         .then(() => {
           createFlash(s__('Badges|A new badge was added.'), 'notice');
+          this.wasValidated = false;
         })
         .catch(error => {
           createFlash(
@@ -138,59 +142,70 @@ export default {
         });
     },
   },
-  badgeImageUrlPlaceholder:
-    'https://example.gitlab.com/%{project_path}/badges/%{default_branch}/<badge>.svg',
-  badgeLinkUrlPlaceholder: 'https://example.gitlab.com/%{project_path}',
 };
 </script>
 
 <template>
   <form
-    class="prepend-top-default append-bottom-default"
+    :class="{ 'was-validated': wasValidated }"
+    class="prepend-top-default append-bottom-default needs-validation"
+    novalidate
     @submit.prevent.stop="onSubmit"
   >
     <div class="form-group">
-      <label for="badge-link-url">{{ s__('Badges|Link') }}</label>
+      <label
+        for="badge-link-url"
+        class="label-bold"
+      >{{ s__('Badges|Link') }}</label>
+      <p v-html="helpText"></p>
       <input
         id="badge-link-url"
-        type="text"
-        class="form-control"
         v-model="linkUrl"
-        :placeholder="$options.badgeLinkUrlPlaceholder"
+        type="URL"
+        class="form-control"
+        required
         @input="debouncedPreview"
       />
-      <span
-        class="help-block"
-        v-html="helpText"
-      ></span>
+      <div class="invalid-feedback">
+        {{ s__('Badges|Please fill in a valid URL') }}
+      </div>
+      <span class="form-text text-muted">
+        {{ badgeLinkUrlExample }}
+      </span>
     </div>
 
     <div class="form-group">
-      <label for="badge-image-url">{{ s__('Badges|Badge image URL') }}</label>
+      <label
+        for="badge-image-url"
+        class="label-bold"
+      >{{ s__('Badges|Badge image URL') }}</label>
+      <p v-html="helpText"></p>
       <input
         id="badge-image-url"
-        type="text"
-        class="form-control"
         v-model="imageUrl"
-        :placeholder="$options.badgeImageUrlPlaceholder"
+        type="URL"
+        class="form-control"
+        required
         @input="debouncedPreview"
       />
-      <span
-        class="help-block"
-        v-html="helpText"
-      ></span>
+      <div class="invalid-feedback">
+        {{ s__('Badges|Please fill in a valid URL') }}
+      </div>
+      <span class="form-text text-muted">
+        {{ badgeImageUrlExample }}
+      </span>
     </div>
 
     <div class="form-group">
       <label for="badge-preview">{{ s__('Badges|Badge image preview') }}</label>
       <badge
-        id="badge-preview"
         v-show="renderedBadge && !isRendering"
+        id="badge-preview"
         :image-url="renderedImageUrl"
         :link-url="renderedLinkUrl"
       />
       <p v-show="isRendering">
-        <loading-icon
+        <gl-loading-icon
           :inline="true"
         />
       </p>
@@ -200,20 +215,32 @@ export default {
       >{{ s__('Badges|No image to preview') }}</p>
     </div>
 
-    <div class="row-content-block">
+    <div
+      v-if="isEditing"
+      class="row-content-block"
+    >
       <loading-button
+        :loading="isSaving"
+        :label="s__('Badges|Save changes')"
         type="submit"
         container-class="btn btn-success"
-        :disabled="!canSubmit"
-        :loading="isSaving"
-        :label="submitButtonLabel"
       />
       <button
         class="btn btn-cancel"
         type="button"
-        v-if="isEditing"
         @click="onCancel"
       >{{ __('Cancel') }}</button>
+    </div>
+    <div
+      v-else
+      class="form-group"
+    >
+      <loading-button
+        :loading="isSaving"
+        :label="s__('Badges|Add badge')"
+        type="submit"
+        container-class="btn btn-success"
+      />
     </div>
   </form>
 </template>

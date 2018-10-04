@@ -76,10 +76,10 @@
 <template>
   <div class="content-list pipelines">
 
-    <loading-icon
-      :label="s__('Pipelines|Loading Pipelines')"
-      size="3"
+    <gl-loading-icon
       v-if="isLoading"
+      :label="s__('Pipelines|Loading Pipelines')"
+      :size="3"
       class="prepend-top-20"
     />
 
@@ -91,8 +91,8 @@
     />
 
     <div
-      class="table-holder"
       v-else-if="shouldRenderTable"
+      class="table-holder"
     >
       <pipelines-table-component
         :pipelines="state.pipelines"

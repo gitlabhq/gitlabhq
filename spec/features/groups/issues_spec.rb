@@ -1,10 +1,11 @@
 require 'spec_helper'
 
-feature 'Group issues page' do
+describe 'Group issues page' do
   include FilteredSearchHelpers
 
   let(:group) { create(:group) }
   let(:project) { create(:project, :public, group: group)}
+  let(:project_with_issues_disabled) { create(:project, :issues_disabled, group: group) }
   let(:path) { issues_group_path(group) }
 
   context 'with shared examples' do
@@ -16,17 +17,21 @@ feature 'Group issues page' do
       let(:access_level) { ProjectFeature::ENABLED }
 
       context 'when signed in' do
-        let(:user) { user_in_group }
+        let(:user) do
+          user_in_group.ensure_feed_token
+          user_in_group.save!
+          user_in_group
+        end
 
-        it_behaves_like "it has an RSS button with current_user's RSS token"
-        it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token"
+        it_behaves_like "it has an RSS button with current_user's feed token"
+        it_behaves_like "an autodiscoverable RSS feed with current_user's feed token"
       end
 
       context 'when signed out' do
         let(:user) { nil }
 
-        it_behaves_like "it has an RSS button without an RSS token"
-        it_behaves_like "an autodiscoverable RSS feed without an RSS token"
+        it_behaves_like "it has an RSS button without a feed token"
+        it_behaves_like "an autodiscoverable RSS feed without a feed token"
       end
     end
 
@@ -47,6 +52,7 @@ feature 'Group issues page' do
   context 'issues list', :nested_groups do
     let(:subgroup) { create(:group, parent: group) }
     let(:subgroup_project) { create(:project, :public, group: subgroup)}
+    let(:user_in_group) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
     let!(:issue) { create(:issue, project: project, title: 'root group issue') }
     let!(:subgroup_issue) { create(:issue, project: subgroup_project, title: 'subgroup issue') }
 
@@ -62,13 +68,34 @@ feature 'Group issues page' do
 
     context 'when project is archived' do
       before do
-        project.archive!
+        ::Projects::UpdateService.new(project, user_in_group, archived: true).execute
       end
 
       it 'does not render issue' do
         visit path
 
         expect(page).not_to have_content issue.title[0..80]
+      end
+    end
+  end
+
+  context 'projects with issues disabled' do
+    describe 'issue dropdown' do
+      let(:user_in_group) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
+
+      before do
+        [project, project_with_issues_disabled].each { |project| project.add_maintainer(user_in_group) }
+        sign_in(user_in_group)
+        visit issues_group_path(group)
+      end
+
+      it 'shows projects only with issues feature enabled', :js do
+        find('.new-project-item-link').click
+
+        page.within('.select2-results') do
+          expect(page).to have_content(project.full_name)
+          expect(page).not_to have_content(project_with_issues_disabled.full_name)
+        end
       end
     end
   end

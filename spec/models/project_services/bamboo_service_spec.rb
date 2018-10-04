@@ -120,6 +120,14 @@ describe BambooService, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '#execute' do
+    it 'runs update and build action' do
+      stub_update_and_build_request
+
+      subject.execute(Gitlab::DataBuilder::Push::SAMPLE_DATA)
+    end
+  end
+
   describe '#build_page' do
     it 'returns the contents of the reactive cache' do
       stub_reactive_cache(service, { build_page: 'foo' }, 'sha', 'ref')
@@ -216,10 +224,20 @@ describe BambooService, :use_clean_rails_memory_store_caching do
     end
   end
 
-  def stub_request(status: 200, body: nil)
-    bamboo_full_url = 'http://gitlab.com/bamboo/rest/api/latest/result?label=123&os_authType=basic'
+  def stub_update_and_build_request(status: 200, body: nil)
+    bamboo_full_url = 'http://gitlab.com/bamboo/updateAndBuild.action?buildKey=foo&os_authType=basic'
 
-    WebMock.stub_request(:get, bamboo_full_url).to_return(
+    stub_bamboo_request(bamboo_full_url, status, body)
+  end
+
+  def stub_request(status: 200, body: nil)
+    bamboo_full_url = 'http://gitlab.com/bamboo/rest/api/latest/result/byChangeset/123?os_authType=basic'
+
+    stub_bamboo_request(bamboo_full_url, status, body)
+  end
+
+  def stub_bamboo_request(url, status, body)
+    WebMock.stub_request(:get, url).to_return(
       status: status,
       headers: { 'Content-Type' => 'application/json' },
       body: body

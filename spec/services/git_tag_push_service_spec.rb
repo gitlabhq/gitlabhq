@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe GitTagPushService do
   include RepoHelpers
+  include GitHelpers
 
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
@@ -118,7 +119,7 @@ describe GitTagPushService do
 
       before do
         # Create the lightweight tag
-        project.repository.raw_repository.rugged.tags.create(tag_name, newrev)
+        rugged_repo(project.repository).tags.create(tag_name, newrev)
 
         # Clear tag list cache
         project.repository.expire_tags_cache

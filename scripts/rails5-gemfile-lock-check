@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+echo -e "=> Checking if Gemfile.rails5.lock is up-to-date...\\n"
+
+cp Gemfile.rails5.lock Gemfile.rails5.lock.orig
+BUNDLE_GEMFILE=Gemfile.rails5 bundle install "$BUNDLE_INSTALL_FLAGS"
+diff -u Gemfile.rails5.lock.orig Gemfile.rails5.lock >/dev/null 2>&1
+
+if [ $? == 1 ]
+then
+  diff -u Gemfile.rails5.lock.orig Gemfile.rails5.lock
+
+  echo -e "\\n✖ ERROR: Gemfile.rails5.lock is not up-to-date!
+         Please run 'BUNDLE_GEMFILE=Gemfile.rails5 bundle install'\\n" >&2
+  exit 1
+fi
+
+echo "✔ Gemfile.rails5.lock is up-to-date"
+exit 0

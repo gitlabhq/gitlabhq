@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module IssuablesHelper
   include GitlabRoutingHelper
 
@@ -7,6 +9,32 @@ module IssuablesHelper
 
   def sidebar_gutter_collapsed_class
     "right-sidebar-#{sidebar_gutter_collapsed? ? 'collapsed' : 'expanded'}"
+  end
+
+  def sidebar_gutter_tooltip_text
+    sidebar_gutter_collapsed? ? _('Expand sidebar') : _('Collapse sidebar')
+  end
+
+  def sidebar_assignee_tooltip_label(issuable)
+    if issuable.assignee
+      issuable.assignee.name
+    else
+      issuable.allows_multiple_assignees? ? _('Assignee(s)') : _('Assignee')
+    end
+  end
+
+  def sidebar_due_date_tooltip_label(issuable)
+    if issuable.due_date
+      "#{_('Due date')}<br />#{due_date_remaining_days(issuable)}"
+    else
+      _('Due date')
+    end
+  end
+
+  def due_date_remaining_days(issuable)
+    remaining_days_in_words = remaining_days_in_words(issuable)
+
+    "#{issuable.due_date.to_s(:medium)} (#{remaining_days_in_words})"
   end
 
   def multi_label_name(current_labels, default_label)
@@ -79,6 +107,7 @@ module IssuablesHelper
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def user_dropdown_label(user_id, default_label)
     return default_label if user_id.nil?
     return "Unassigned" if user_id == "0"
@@ -91,7 +120,9 @@ module IssuablesHelper
       default_label
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def project_dropdown_label(project_id, default_label)
     return default_label if project_id.nil?
     return "Any project" if project_id == "0"
@@ -104,6 +135,22 @@ module IssuablesHelper
       default_label
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
+
+  # rubocop: disable CodeReuse/ActiveRecord
+  def group_dropdown_label(group_id, default_label)
+    return default_label if group_id.nil?
+    return "Any group" if group_id == "0"
+
+    group = ::Group.find_by(id: group_id)
+
+    if group
+      group.full_name
+    else
+      default_label
+    end
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def milestone_dropdown_label(milestone_title, default_label = "Milestone")
     title =
@@ -128,35 +175,47 @@ module IssuablesHelper
   end
 
   def issuable_meta(issuable, project, text)
-    output = ""
+    output = []
     output << "Opened #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
+
     output << content_tag(:strong) do
-      author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "hidden-xs", tooltip: true)
-      author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "hidden-sm hidden-md hidden-lg")
+      author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "d-none d-sm-inline", tooltip: true)
+      author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "d-block d-sm-none")
+
+      if status = user_status(issuable.author)
+        author_output << "#{status}".html_safe
+      end
+
+      author_output
     end
 
-    output << "&ensp;".html_safe
     output << content_tag(:span, (issuable_first_contribution_icon if issuable.first_contribution?), class: 'has-tooltip', title: _('1st contribution!'))
 
-    output << content_tag(:span, (issuable.task_status if issuable.tasks?), id: "task_status", class: "hidden-xs hidden-sm")
-    output << content_tag(:span, (issuable.task_status_short if issuable.tasks?), id: "task_status_short", class: "hidden-md hidden-lg")
+    output << content_tag(:span, (issuable.task_status if issuable.tasks?), id: "task_status", class: "d-none d-sm-none d-md-inline-block prepend-left-8")
+    output << content_tag(:span, (issuable.task_status_short if issuable.tasks?), id: "task_status_short", class: "d-md-none")
 
-    output.html_safe
+    output.join.html_safe
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def issuable_todo(issuable)
     if current_user
       current_user.todos.find_by(target: issuable, state: :pending)
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def issuable_labels_tooltip(labels, limit: 5)
     first, last = labels.partition.with_index { |_, i| i < limit  }
 
-    label_names = first.collect(&:name)
-    label_names << "and #{last.size} more" unless last.empty?
+    if labels && labels.any?
+      label_names = first.collect(&:name)
+      label_names << "and #{last.size} more" unless last.empty?
 
-    label_names.join(', ')
+      label_names.join(', ')
+    else
+      _("Labels")
+    end
   end
 
   def issuables_state_counter_text(issuable_type, state, display_count)
@@ -169,7 +228,7 @@ module IssuablesHelper
 
     if display_count
       count = issuables_count_for_state(issuable_type, state)
-      html << " " << content_tag(:span, number_with_delimiter(count), class: 'badge')
+      html << " " << content_tag(:span, number_with_delimiter(count), class: 'badge badge-pill')
     end
 
     html.html_safe
@@ -206,6 +265,7 @@ module IssuablesHelper
       issuableRef: issuable.to_reference,
       markdownPreviewPath: preview_markdown_path(parent),
       markdownDocsPath: help_page_path('user/markdown'),
+      markdownVersion: issuable.cached_markdown_version,
       issuableTemplates: issuable_templates(issuable),
       initialTitleHtml: markdown_field(issuable, :title),
       initialTitleText: issuable.title,
@@ -268,11 +328,15 @@ module IssuablesHelper
   end
 
   def issuable_button_visibility(issuable, closed)
+    return 'hidden' if issuable_button_hidden?(issuable, closed)
+  end
+
+  def issuable_button_hidden?(issuable, closed)
     case issuable
     when Issue
-      issue_button_visibility(issuable, closed)
+      issue_button_hidden?(issuable, closed)
     when MergeRequest
-      merge_request_button_visibility(issuable, closed)
+      merge_request_button_hidden?(issuable, closed)
     end
   end
 
@@ -322,7 +386,7 @@ module IssuablesHelper
   def issuable_todo_button_data(issuable, todo, is_collapsed)
     {
       todo_text: "Add todo",
-      mark_text: "Mark done",
+      mark_text: "Mark todo as done",
       todo_icon: (is_collapsed ? icon('plus-square') : nil),
       mark_icon: (is_collapsed ? icon('check-square', class: 'todo-undone') : nil),
       issuable_id: issuable.id,
@@ -330,7 +394,8 @@ module IssuablesHelper
       url: project_todos_path(@project),
       delete_path: (dashboard_todo_path(todo) if todo),
       placement: (is_collapsed ? 'left' : nil),
-      container: (is_collapsed ? 'body' : nil)
+      container: (is_collapsed ? 'body' : nil),
+      boundary: 'viewport'
     }
   end
 

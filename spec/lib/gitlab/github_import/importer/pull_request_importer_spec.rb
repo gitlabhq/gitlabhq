@@ -40,13 +40,19 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
 
   describe '#execute' do
     it 'imports the pull request' do
+      mr = double(:merge_request, id: 10)
+
       expect(importer)
         .to receive(:create_merge_request)
-        .and_return(10)
+        .and_return([mr, false])
+
+      expect(importer)
+        .to receive(:insert_git_data)
+        .with(mr, false)
 
       expect_any_instance_of(Gitlab::GithubImport::IssuableFinder)
         .to receive(:cache_database_id)
-        .with(10)
+        .with(mr.id)
 
       importer.execute
     end
@@ -74,7 +80,7 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
       end
 
       it 'imports the pull request with the pull request author as the merge request author' do
-        expect(Gitlab::GithubImport)
+        expect(importer)
           .to receive(:insert_and_return_id)
           .with(
             {
@@ -99,18 +105,21 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
         importer.create_merge_request
       end
 
-      it 'returns the ID of the created merge request' do
-        id = importer.create_merge_request
+      it 'returns the created merge request' do
+        mr, exists = importer.create_merge_request
 
-        expect(id).to be_a_kind_of(Numeric)
+        expect(mr).to be_instance_of(MergeRequest)
+        expect(exists).to eq(false)
       end
 
-      it 'creates the merge request diffs' do
+      it 'triggers internal_id functionality to track greatest iids' do
+        mr = build_stubbed(:merge_request, source_project: project, target_project: project)
+        allow(importer).to receive(:insert_and_return_id).and_return(mr.id)
+        allow(project.merge_requests).to receive(:find).with(mr.id).and_return(mr)
+
+        expect(mr).to receive(:ensure_target_project_iid!)
+
         importer.create_merge_request
-
-        mr = project.merge_requests.take
-
-        expect(mr.merge_request_diffs.exists?).to eq(true)
       end
     end
 
@@ -126,7 +135,7 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
           .with(pull_request)
           .and_return(user.id)
 
-        expect(Gitlab::GithubImport)
+        expect(importer)
           .to receive(:insert_and_return_id)
           .with(
             {
@@ -172,7 +181,7 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
           .to receive(:source_branch)
           .and_return('master')
 
-        expect(Gitlab::GithubImport)
+        expect(importer)
           .to receive(:insert_and_return_id)
           .with(
             {
@@ -210,11 +219,83 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
           .with(pull_request)
           .and_return(user.id)
 
-        expect(Gitlab::GithubImport)
+        expect(importer)
           .to receive(:insert_and_return_id)
           .and_raise(ActiveRecord::InvalidForeignKey, 'invalid foreign key')
 
         expect { importer.create_merge_request }.not_to raise_error
+      end
+    end
+
+    context 'when the merge request already exists' do
+      before do
+        allow(importer.user_finder)
+          .to receive(:author_id_for)
+          .with(pull_request)
+          .and_return([user.id, true])
+
+        allow(importer.user_finder)
+          .to receive(:assignee_id_for)
+          .with(pull_request)
+          .and_return(user.id)
+      end
+
+      it 'returns the existing merge request' do
+        mr1, exists1 = importer.create_merge_request
+        mr2, exists2 = importer.create_merge_request
+
+        expect(mr2).to eq(mr1)
+        expect(exists1).to eq(false)
+        expect(exists2).to eq(true)
+      end
+    end
+  end
+
+  describe '#insert_git_data' do
+    before do
+      allow(importer.milestone_finder)
+        .to receive(:id_for)
+        .with(pull_request)
+        .and_return(milestone.id)
+
+      allow(importer.user_finder)
+        .to receive(:author_id_for)
+        .with(pull_request)
+        .and_return([user.id, true])
+
+      allow(importer.user_finder)
+        .to receive(:assignee_id_for)
+        .with(pull_request)
+        .and_return(user.id)
+    end
+
+    it 'creates the merge request diffs' do
+      mr, exists = importer.create_merge_request
+
+      importer.insert_git_data(mr, exists)
+
+      expect(mr.merge_request_diffs.exists?).to eq(true)
+    end
+
+    it 'creates the merge request diff commits' do
+      mr, exists = importer.create_merge_request
+
+      importer.insert_git_data(mr, exists)
+
+      diff = mr.merge_request_diffs.take
+
+      expect(diff.merge_request_diff_commits.exists?).to eq(true)
+    end
+
+    context 'when the merge request exists' do
+      it 'creates the merge request diffs if they do not yet exist' do
+        mr, _ = importer.create_merge_request
+
+        mr.merge_request_diffs.delete_all
+
+        importer.insert_git_data(mr, true)
+
+        expect(mr.merge_request_diffs.exists?).to eq(true)
       end
     end
   end

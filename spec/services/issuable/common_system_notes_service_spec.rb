@@ -5,34 +5,6 @@ describe Issuable::CommonSystemNotesService do
   let(:project) { create(:project) }
   let(:issuable) { create(:issue) }
 
-  shared_examples 'system note creation' do |update_params, note_text|
-    subject { described_class.new(project, user).execute(issuable, [])}
-
-    before do
-      issuable.assign_attributes(update_params)
-      issuable.save
-    end
-
-    it 'creates 1 system note with the correct content' do
-      expect { subject }.to change { Note.count }.from(0).to(1)
-
-      note = Note.last
-      expect(note.note).to match(note_text)
-      expect(note.noteable_type).to eq(issuable.class.name)
-    end
-  end
-
-  shared_examples 'WIP notes creation' do |wip_action|
-    subject { described_class.new(project, user).execute(issuable, []) }
-
-    it 'creates WIP toggle and title change notes' do
-      expect { subject }.to change { Note.count }.from(0).to(2)
-
-      expect(Note.first.note).to match("#{wip_action} as a **Work In Progress**")
-      expect(Note.second.note).to match('changed title')
-    end
-  end
-
   describe '#execute' do
     it_behaves_like 'system note creation', { title: 'New title' }, 'changed title'
     it_behaves_like 'system note creation', { description: 'New description' }, 'changed the description'
@@ -40,12 +12,21 @@ describe Issuable::CommonSystemNotesService do
     it_behaves_like 'system note creation', { time_estimate: 5 }, 'changed time estimate'
 
     context 'when new label is added' do
+      let(:label) { create(:label, project: project) }
+
       before do
-        label = create(:label, project: project)
         issuable.labels << label
+        issuable.save
       end
 
-      it_behaves_like 'system note creation', {}, /added ~\w+ label/
+      it 'creates a resource label event' do
+        described_class.new(project, user).execute(issuable, [])
+        event = issuable.reload.resource_label_events.last
+
+        expect(event).not_to be_nil
+        expect(event.label_id).to eq label.id
+        expect(event.user_id).to eq user.id
+      end
     end
 
     context 'when new milestone is assigned' do

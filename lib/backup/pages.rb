@@ -1,8 +1,14 @@
+# frozen_string_literal: true
+
 require 'backup/files'
 
 module Backup
   class Pages < Files
-    def initialize
+    attr_reader :progress
+
+    def initialize(progress)
+      @progress = progress
+
       super('pages', Gitlab.config.pages.path)
     end
   end

@@ -779,4 +779,12 @@ describe Gitlab::Auth::OAuth::User do
       end
     end
   end
+
+  describe '#bypass_two_factor?' do
+    subject { oauth_user.bypass_two_factor? }
+
+    it 'returns always false' do
+      is_expected.to be_falsey
+    end
+  end
 end

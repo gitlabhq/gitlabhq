@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-feature 'RavenJS' do
-  let(:raven_path) { '/raven.bundle.js' }
+describe 'RavenJS' do
+  let(:raven_path) { '/raven.chunk.js' }
 
   it 'should not load raven if sentry is disabled' do
     visit new_user_session_path

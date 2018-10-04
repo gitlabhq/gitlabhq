@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import ShaMismatch from '~/vue_merge_request_widget/components/states/sha_mismatch.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import removeBreakLine from 'spec/helpers/vue_component_helper';
+import { removeBreakLine } from 'spec/helpers/vue_component_helper';
 
 describe('ShaMismatch', () => {
   let vm;

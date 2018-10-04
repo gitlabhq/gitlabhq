@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SubmitUsagePingService
   URL = 'https://version.gitlab.com/usage_data'.freeze
 
@@ -13,6 +15,7 @@ class SubmitUsagePingService
 
   def execute
     return false unless Gitlab::CurrentSettings.usage_ping_enabled?
+    return false if User.single_user&.requires_usage_stats_consent?
 
     response = Gitlab::HTTP.post(
       URL,

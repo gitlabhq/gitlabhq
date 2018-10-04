@@ -13,7 +13,7 @@ This guide talks about how to read and use these system log files.
 
 This file lives in `/var/log/gitlab/gitlab-rails/production_json.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/production_json.log` for
-installations from source. (When Gitlab is running in an environment
+installations from source. (When GitLab is running in an environment
 other than production, the corresponding logfile is shown here.)
 
 It contains a structured log for Rails controller requests received from
@@ -42,7 +42,7 @@ In addition, the log contains the IP address from which the request originated
 
 This file lives in `/var/log/gitlab/gitlab-rails/production.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/production.log` for
-installations from source. (When Gitlab is running in an environment
+installations from source. (When GitLab is running in an environment
 other than production, the corresponding logfile is shown here.)
 
 It contains information about all performed requests. You can see the
@@ -113,6 +113,19 @@ October 07, 2014 11:25: User "Claudie Hodkiewicz" (nasir_stehr@olson.co.uk)  was
 October 07, 2014 11:25: Project "project133" was removed
 ```
 
+## `integrations_json.log`
+
+This file lives in `/var/log/gitlab/gitlab-rails/integrations_json.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/integrations_json.log` for
+installations from source.
+
+It contains information about [integrations](../user/project/integrations/project_services.md) activities such as JIRA, Asana and Irker services. It uses JSON format like the example below:  
+
+``` json
+{"severity":"ERROR","time":"2018-09-06T14:56:20.439Z","service_class":"JiraService","project_id":8,"project_path":"h5bp/html5-boilerplate","message":"Error sending message","client_url":"http://jira.gitlap.com:8080","error":"execution expired"}
+{"severity":"INFO","time":"2018-09-06T17:15:16.365Z","service_class":"JiraService","project_id":3,"project_path":"namespace2/project2","message":"Successfully posted","client_url":"http://jira.example.net"}
+```
+
 ## `githost.log`
 
 This file lives in `/var/log/gitlab/gitlab-rails/githost.log` for
@@ -174,7 +187,7 @@ This file lives in `/var/log/gitlab/gitlab-shell/gitlab-shell.log` for
 Omnibus GitLab packages or in `/home/git/gitlab-shell/gitlab-shell.log` for
 installations from source.
 
-GitLab shell is used by Gitlab for executing Git commands and provide
+GitLab shell is used by GitLab for executing Git commands and provide
 SSH access to Git repositories. For example:
 
 ```
@@ -218,6 +231,15 @@ Omnibus GitLab packages or in `/home/git/gitlab/log/repocheck.log` for
 installations from source.
 
 It logs information whenever a [repository check is run][repocheck] on a project.
+
+## `importer.log`
+
+Introduced in GitLab 11.3. This file lives in `/var/log/gitlab/gitlab-rails/importer.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/importer.log` for
+installations from source.
+
+Currently it logs the progress of project imports from the Bitbucket Server
+importer. Future importers may use this file.
 
 ## Reconfigure Logs
 

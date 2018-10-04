@@ -1,5 +1,5 @@
 import ClustersStore from '~/clusters/stores/clusters_store';
-import { APPLICATION_INSTALLING } from '~/clusters/constants';
+import { APPLICATION_STATUS } from '~/clusters/constants';
 import { CLUSTERS_MOCK_DATA } from '../services/mock_data';
 
 describe('Clusters Store', () => {
@@ -35,7 +35,7 @@ describe('Clusters Store', () => {
     it('should store new request status', () => {
       expect(store.state.applications.helm.requestStatus).toEqual(null);
 
-      const newStatus = APPLICATION_INSTALLING;
+      const newStatus = APPLICATION_STATUS.INSTALLING;
       store.updateAppProperty('helm', 'requestStatus', newStatus);
 
       expect(store.state.applications.helm.requestStatus).toEqual(newStatus);
@@ -91,8 +91,26 @@ describe('Clusters Store', () => {
             requestStatus: null,
             requestReason: null,
           },
+          jupyter: {
+            title: 'JupyterHub',
+            status: mockResponseData.applications[4].status,
+            statusReason: mockResponseData.applications[4].status_reason,
+            requestStatus: null,
+            requestReason: null,
+            hostname: '',
+          },
         },
       });
+    });
+
+    it('sets default hostname for jupyter when ingress has a ip address', () => {
+      const mockResponseData = CLUSTERS_MOCK_DATA.GET['/gitlab-org/gitlab-shell/clusters/2/status.json'].data;
+
+      store.updateStateFromServer(mockResponseData);
+
+      expect(
+        store.state.applications.jupyter.hostname,
+      ).toEqual(`jupyter.${store.state.applications.ingress.externalIp}.nip.io`);
     });
   });
 });

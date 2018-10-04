@@ -55,12 +55,18 @@ export default class FilteredSearchVisualTokens {
     }
   }
 
-  static createVisualTokenElementHTML(canEdit = true) {
+  static createVisualTokenElementHTML(options = {}) {
+    const {
+      canEdit = true,
+      uppercaseTokenName = false,
+      capitalizeTokenValue = false,
+    } = options;
+
     return `
       <div class="${canEdit ? 'selectable' : 'hidden'}" role="button">
-        <div class="name"></div>
+        <div class="${uppercaseTokenName ? 'text-uppercase' : ''} name"></div>
         <div class="value-container">
-          <div class="value"></div>
+          <div class="${capitalizeTokenValue ? 'text-capitalize' : ''} value"></div>
           <div class="remove-token" role="button">
             <i class="fa fa-close"></i>
           </div>
@@ -101,7 +107,7 @@ export default class FilteredSearchVisualTokens {
 
   static updateLabelTokenColor(tokenValueContainer, tokenValue) {
     const filteredSearchInput = FilteredSearchContainer.container.querySelector('.filtered-search');
-    const baseEndpoint = filteredSearchInput.dataset.baseEndpoint;
+    const { baseEndpoint } = filteredSearchInput.dataset;
     const labelsEndpoint = FilteredSearchVisualTokens.getEndpointWithQueryParams(
       `${baseEndpoint}/labels.json`,
       filteredSearchInput.dataset.endpointQueryParams,
@@ -182,16 +188,26 @@ export default class FilteredSearchVisualTokens {
     }
   }
 
-  static addVisualTokenElement(name, value, isSearchTerm, canEdit) {
+  static addVisualTokenElement(name, value, options = {}) {
+    const {
+      isSearchTerm = false,
+      canEdit,
+      uppercaseTokenName,
+      capitalizeTokenValue,
+    } = options;
     const li = document.createElement('li');
     li.classList.add('js-visual-token');
     li.classList.add(isSearchTerm ? 'filtered-search-term' : 'filtered-search-token');
 
     if (value) {
-      li.innerHTML = FilteredSearchVisualTokens.createVisualTokenElementHTML(canEdit);
+      li.innerHTML = FilteredSearchVisualTokens.createVisualTokenElementHTML({
+        canEdit,
+        uppercaseTokenName,
+        capitalizeTokenValue,
+      });
       FilteredSearchVisualTokens.renderVisualTokenValue(li, name, value);
     } else {
-      li.innerHTML = '<div class="name"></div>';
+      li.innerHTML = `<div class="${uppercaseTokenName ? 'text-uppercase' : ''} name"></div>`;
     }
     li.querySelector('.name').innerText = name;
 
@@ -212,20 +228,32 @@ export default class FilteredSearchVisualTokens {
     }
   }
 
-  static addFilterVisualToken(tokenName, tokenValue, canEdit) {
+  static addFilterVisualToken(tokenName, tokenValue, {
+    canEdit,
+    uppercaseTokenName = false,
+    capitalizeTokenValue = false,
+  } = {}) {
     const { lastVisualToken, isLastVisualTokenValid }
       = FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
-    const addVisualTokenElement = FilteredSearchVisualTokens.addVisualTokenElement;
+    const { addVisualTokenElement } = FilteredSearchVisualTokens;
 
     if (isLastVisualTokenValid) {
-      addVisualTokenElement(tokenName, tokenValue, false, canEdit);
+      addVisualTokenElement(tokenName, tokenValue, {
+        canEdit,
+        uppercaseTokenName,
+        capitalizeTokenValue,
+      });
     } else {
       const previousTokenName = lastVisualToken.querySelector('.name').innerText;
       const tokensContainer = FilteredSearchContainer.container.querySelector('.tokens-container');
       tokensContainer.removeChild(lastVisualToken);
 
       const value = tokenValue || tokenName;
-      addVisualTokenElement(previousTokenName, value, false, canEdit);
+      addVisualTokenElement(previousTokenName, value, {
+        canEdit,
+        uppercaseTokenName,
+        capitalizeTokenValue,
+      });
     }
   }
 
@@ -235,7 +263,9 @@ export default class FilteredSearchVisualTokens {
     if (lastVisualToken && lastVisualToken.classList.contains('filtered-search-term')) {
       lastVisualToken.querySelector('.name').innerText += ` ${searchTerm}`;
     } else {
-      FilteredSearchVisualTokens.addVisualTokenElement(searchTerm, null, true);
+      FilteredSearchVisualTokens.addVisualTokenElement(searchTerm, null, {
+        isSearchTerm: true,
+      });
     }
   }
 
@@ -306,7 +336,9 @@ export default class FilteredSearchVisualTokens {
     let value;
 
     if (token.classList.contains('filtered-search-token')) {
-      FilteredSearchVisualTokens.addFilterVisualToken(nameElement.innerText);
+      FilteredSearchVisualTokens.addFilterVisualToken(nameElement.innerText, null, {
+        uppercaseTokenName: nameElement.classList.contains('text-uppercase'),
+      });
 
       const valueContainerElement = token.querySelector('.value-container');
       value = valueContainerElement.dataset.originalValue;

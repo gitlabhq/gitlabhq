@@ -12,7 +12,7 @@ Badges support placeholders that will be replaced in real time in both the link 
 - **%{default_branch}**: will be replaced by the project default branch.
 - **%{commit_sha}**: will be replaced by the last project's commit sha.
 
-Because these enpoints aren't inside a project's context, the information used to replace the placeholders will be
+Because these endpoints aren't inside a project's context, the information used to replace the placeholders will be
 from the first group's project by creation date. If the group hasn't got any project the original URL with the placeholders will be returned.
 
 ## List all badges of a group

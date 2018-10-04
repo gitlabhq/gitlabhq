@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PagesDomain < ActiveRecord::Base
   VERIFICATION_KEY = 'gitlab-pages-verification-code'.freeze
   VERIFICATION_THRESHOLD = 3.days.freeze
@@ -19,7 +21,7 @@ class PagesDomain < ActiveRecord::Base
   attr_encrypted :key,
     mode: :per_attribute_iv_and_salt,
     insecure_mode: true,
-    key: Gitlab::Application.secrets.db_key_base,
+    key: Settings.attr_encrypted_db_key_base,
     algorithm: 'aes-256-cbc'
 
   after_initialize :set_verification_code
@@ -138,9 +140,11 @@ class PagesDomain < ActiveRecord::Base
     self.verification_code = SecureRandom.hex(16)
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def update_daemon
     ::Projects::UpdatePagesConfigurationService.new(project).execute
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def pages_config_changed?
     project_id_changed? ||

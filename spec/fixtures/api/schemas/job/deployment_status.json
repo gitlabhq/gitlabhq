@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "required": [
+    "status",
+    "icon",
+    "environment"
+  ],
+  "properties": {
+    "status": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "last",
+            "creating",
+            "failed",
+            "out_of_date"
+          ]
+        },
+        { "type": "null" }
+      ]
+    },
+    "icon": { "type": "string" },
+    "environment": { "$ref": "../environment.json" }
+  },
+  "additionalProperties": false
+}

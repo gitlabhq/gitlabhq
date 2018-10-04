@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::DeployKeysController < Projects::ApplicationController
   include RepositorySettingsRedirect
   respond_to :html
@@ -10,7 +12,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
 
   def index
     respond_to do |format|
-      format.html { redirect_to_repository_settings(@project) }
+      format.html { redirect_to_repository_settings(@project, anchor: 'js-deploy-keys-settings') }
       format.json do
         render json: Projects::Settings::DeployKeysPresenter.new(@project, current_user: current_user).as_json
       end
@@ -18,7 +20,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def new
-    redirect_to_repository_settings(@project)
+    redirect_to_repository_settings(@project, anchor: 'js-deploy-keys-settings')
   end
 
   def create
@@ -28,16 +30,16 @@ class Projects::DeployKeysController < Projects::ApplicationController
       flash[:alert] = @key.errors.full_messages.join(', ').html_safe
     end
 
-    redirect_to_repository_settings(@project)
+    redirect_to_repository_settings(@project, anchor: 'js-deploy-keys-settings')
   end
 
   def edit
   end
 
   def update
-    if deploy_key.update_attributes(update_params)
+    if deploy_key.update(update_params)
       flash[:notice] = 'Deploy key was successfully updated.'
-      redirect_to_repository_settings(@project)
+      redirect_to_repository_settings(@project, anchor: 'js-deploy-keys-settings')
     else
       render 'edit'
     end
@@ -47,11 +49,12 @@ class Projects::DeployKeysController < Projects::ApplicationController
     Projects::EnableDeployKeyService.new(@project, current_user, params).execute
 
     respond_to do |format|
-      format.html { redirect_to_repository_settings(@project) }
+      format.html { redirect_to_repository_settings(@project, anchor: 'js-deploy-keys-settings') }
       format.json { head :ok }
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def disable
     deploy_key_project = @project.deploy_keys_projects.find_by(deploy_key_id: params[:id])
     return render_404 unless deploy_key_project
@@ -59,10 +62,11 @@ class Projects::DeployKeysController < Projects::ApplicationController
     deploy_key_project.destroy!
 
     respond_to do |format|
-      format.html { redirect_to_repository_settings(@project) }
+      format.html { redirect_to_repository_settings(@project, anchor: 'js-deploy-keys-settings') }
       format.json { head :ok }
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   protected
 

@@ -40,6 +40,10 @@
 *.synctex.gz(busy)
 *.pdfsync
 
+## Build tool directories for auxiliary files
+# latexrun
+latex.out/
+
 ## Auxiliary and intermediate files from other packages:
 # algorithms
 *.alg
@@ -184,6 +188,9 @@ sympy-plots-for-*.tex/
 *.pytxcode
 pythontex-files-*/
 
+# tcolorbox
+*.listing
+
 # thmtools
 *.loe
 
@@ -197,6 +204,9 @@ pythontex-files-*/
 
 # easy-todo
 *.lod
+
+# xmpincl
+*.xmpi
 
 # xindy
 *.xdy
@@ -218,6 +228,9 @@ TSWLatexianTemp*
 
 # Texpad
 .texpadtmp
+
+# LyX
+*.lyx~
 
 # Kile
 *.backup

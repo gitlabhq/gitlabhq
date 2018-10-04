@@ -17,6 +17,6 @@ export default {
   },
 
   unbind(el) {
-    $(el).popover('destroy');
+    $(el).popover('dispose');
   },
 };

@@ -1,4 +1,8 @@
-# Administrator documentation
+---
+description: 'Learn how to install, configure, update, and maintain your GitLab instance.'
+---
+
+# Administrator documentation **[CORE ONLY]**
 
 Learn how to administer your GitLab instance (Community Edition and
 Enterprise Edition).
@@ -7,7 +11,7 @@ Regular users don't have access to GitLab administration tools and settings.
 GitLab has two product distributions: the open source
 [GitLab Community Edition (CE)](https://gitlab.com/gitlab-org/gitlab-ce),
 and the open core [GitLab Enterprise Edition (EE)](https://gitlab.com/gitlab-org/gitlab-ee),
-available through [different subscriptions](https://about.gitlab.com/products/).
+available through [different subscriptions](https://about.gitlab.com/pricing/).
 
 You can [install GitLab CE or GitLab EE](https://about.gitlab.com/installation/ce-or-ee/),
 but the features you'll have access to depend on the subscription you choose
@@ -40,10 +44,15 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 [source installations](../install/installation.md#installation-from-source).
 - [Environment variables](environment_variables.md): Supported environment variables that can be used to override their defaults values in order to configure GitLab.
 - [Plugins](plugins.md): With custom plugins, GitLab administrators can introduce custom integrations without modifying GitLab's source code.
+- [Enforcing Terms of Service](../user/admin_area/settings/terms.md)
+- [Third party offers](../user/admin_area/settings/third_party_offers.md)
+- [Compliance](compliance.md): A collection of features from across the application that you may configure to help ensure that your GitLab instance and DevOps workflow meet compliance standards.
+- [Diff limits](../user/admin_area/diff_limits.md): Configure the diff rendering size limits of branch comparison pages.
 
 #### Customizing GitLab's appearance
 
 - [Header logo](../customization/branded_page_and_email_header.md): Change the logo on all pages and email headers.
+- [Favicon](../customization/favicon.md): Change the default favicon to your own logo.
 - [Branded login page](../customization/branded_login_page.md): Customize the login page with your own logo, title, and description.
 - [Welcome message](../customization/welcome_message.md): Add a custom welcome message to the sign-in page.
 - ["New Project" page](../customization/new_project_page.md): Customize the text to be displayed on the page that opens whenever your users create a new project.
@@ -52,7 +61,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 - [Raketasks](../raketasks/README.md): Perform various tasks for maintenance, backups, automatic webhooks setup, etc.
   - [Backup and restore](../raketasks/backup_restore.md): Backup and restore your GitLab instance.
-- [Operations](operations/index.md): Keeping GitLab up and running (clean up Redis sessions, moving repositories, Sidekiq Job throttling, Sidekiq MemoryKiller, Unicorn).
+- [Operations](operations/index.md): Keeping GitLab up and running (clean up Redis sessions, moving repositories, Sidekiq MemoryKiller, Unicorn).
 - [Restart GitLab](restart_gitlab.md): Learn how to restart GitLab and its components.
 
 #### Updating GitLab
@@ -86,7 +95,6 @@ created in snippets, wikis, and repos.
   - [Postfix for incoming email](reply_by_email_postfix_setup.md): Set up a
   basic Postfix mail server with IMAP authentication on Ubuntu for incoming
   emails.
-- [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
 
 [reply by email]: reply_by_email.md
 [issues by email]: ../user/project/issues/create_new_issue.md#new-issue-via-email
@@ -99,6 +107,7 @@ created in snippets, wikis, and repos.
 - [Gitaly](gitaly/index.md): Configuring Gitaly, GitLab's Git repository storage service.
 - [Default labels](../user/admin_area/labels.html): Create labels that will be automatically added to every new project.
 - [Restrict the use of public or internal projects](../public_access/public_access.md#restricting-the-use-of-public-or-internal-projects): Restrict the use of visibility levels for users when they create a project or a snippet.
+- [Custom project templates](https://docs.gitlab.com/ee/user/admin_area/custom_project_templates.html): Configure a set of projects to be used as custom templates when creating a new project. **[PREMIUM ONLY]**
 
 ### Repository settings
 
@@ -127,16 +136,15 @@ created in snippets, wikis, and repos.
 
 - [Monitoring GitLab](monitoring/index.md):
   - [Monitoring uptime](../user/admin_area/monitoring/health_check.md): Check the server status using the health check endpoint.
-    - [IP whitelist](monitoring/ip_whitelist.md): Monitor endpoints that provide health check information when probed.
-    - [Monitoring GitHub imports](monitoring/github_imports.md): GitLab's GitHub Importer displays Prometheus metrics to monitor the health and progress of the importer.
-- [Conversational Development (ConvDev) Index](../user/admin_area/monitoring/convdev.md): Provides an overview of your entire instance's feature usage.
+  - [IP whitelist](monitoring/ip_whitelist.md): Monitor endpoints that provide health check information when probed.
+  - [Monitoring GitHub imports](monitoring/github_imports.md): GitLab's GitHub Importer displays Prometheus metrics to monitor the health and progress of the importer.
 
 ### Performance Monitoring
 
 - [GitLab Performance Monitoring](monitoring/performance/index.md):
   - [Enable Performance Monitoring](monitoring/performance/gitlab_configuration.md): Enable GitLab Performance Monitoring.
   - [GitLab performance monitoring with InfluxDB](monitoring/performance/influxdb_configuration.md): Configure GitLab and InfluxDB for measuring performance metrics.
-    - [InfluxDB Schema](monitoring/performance/influxdb_schema.md): Measurements stored in InfluxDB.
+  - [InfluxDB Schema](monitoring/performance/influxdb_schema.md): Measurements stored in InfluxDB.
   - [GitLab performance monitoring with Prometheus](monitoring/prometheus/index.md): Configure GitLab and Prometheus for measuring performance metrics.
   - [GitLab performance monitoring with Grafana](monitoring/performance/grafana_configuration.md): Configure GitLab to visualize time series metrics through graphs and dashboards.
   - [Request Profiling](monitoring/performance/request_profiling.md): Get a detailed profile on slow requests.

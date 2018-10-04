@@ -16,8 +16,7 @@ module QA
 
           Page::Project::Settings::CICD.perform do |setting|
             setting.expand_secret_variables do |page|
-              page.fill_variable_key(key)
-              page.fill_variable_value(value)
+              page.fill_variable(key, value)
 
               page.save_variables
             end

@@ -122,11 +122,11 @@ POST /projects/:id/pages/domains
 | `key`         | file/string    | no       | The certificate key in PEM format.       |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form="domain=ssl.domain.example" --form="certificate=@/path/to/cert.pem" --form="key=@/path/to/key.pem" https://gitlab.example.com/api/v4/projects/5/pages/domains
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "domain=ssl.domain.example" --form "certificate=@/path/to/cert.pem" --form "key=@/path/to/key.pem" https://gitlab.example.com/api/v4/projects/5/pages/domains
 ```
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form="domain=ssl.domain.example" --form="certificate=$CERT_PEM" --form="key=$KEY_PEM" https://gitlab.example.com/api/v4/projects/5/pages/domains
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "domain=ssl.domain.example" --form "certificate=$CERT_PEM" --form "key=$KEY_PEM" https://gitlab.example.com/api/v4/projects/5/pages/domains
 ```
 
 ```json
@@ -158,11 +158,11 @@ PUT /projects/:id/pages/domains/:domain
 | `key`         | file/string    | no       | The certificate key in PEM format.       |
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form="certificate=@/path/to/cert.pem" --form="key=@/path/to/key.pem" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "certificate=@/path/to/cert.pem" --form "key=@/path/to/key.pem" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
 ```
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form="certificate=$CERT_PEM" --form="key=$KEY_PEM" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "certificate=$CERT_PEM" --form "key=$KEY_PEM" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
 ```
 
 ```json

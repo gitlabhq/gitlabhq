@@ -1,4 +1,5 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, consistent-return, no-new, prefer-arrow-callback, no-return-assign, one-var, one-var-declaration-per-line, object-shorthand, no-else-return, newline-per-chained-call, no-shadow, vars-on-top, prefer-template, max-len */
+/* eslint-disable func-names, no-var, no-return-assign, one-var,
+ one-var-declaration-per-line, object-shorthand, vars-on-top */
 
 import $ from 'jquery';
 import Cookies from 'js-cookie';
@@ -12,40 +13,59 @@ export default class Project {
   constructor() {
     const $cloneOptions = $('ul.clone-options-dropdown');
     const $projectCloneField = $('#project_clone');
-    const $cloneBtnText = $('a.clone-dropdown-btn span');
+    const $cloneBtnLabel = $('.js-git-clone-holder .js-clone-dropdown-label');
 
-    const selectedCloneOption = $cloneBtnText.text().trim();
+    const selectedCloneOption = $cloneBtnLabel.text().trim();
     if (selectedCloneOption.length > 0) {
       $(`a:contains('${selectedCloneOption}')`, $cloneOptions).addClass('is-active');
     }
 
-    $('a', $cloneOptions).on('click', (e) => {
+    $('a', $cloneOptions).on('click', e => {
+      e.preventDefault();
       const $this = $(e.currentTarget);
       const url = $this.attr('href');
-      const activeText = $this.find('.dropdown-menu-inner-title').text();
+      const cloneType = $this.data('cloneType');
 
-      e.preventDefault();
+      $('.is-active', $cloneOptions).removeClass('is-active');
+      $(`a[data-clone-type="${cloneType}"]`).each(function() {
+        const $el = $(this);
+        const activeText = $el.find('.dropdown-menu-inner-title').text();
+        const $container = $el.closest('.project-clone-holder');
+        const $label = $container.find('.js-clone-dropdown-label');
 
-      $('.is-active', $cloneOptions).not($this).removeClass('is-active');
-      $this.toggleClass('is-active');
+        $el.toggleClass('is-active');
+        $label.text(activeText);
+      });
+
       $projectCloneField.val(url);
-      $cloneBtnText.text(activeText);
-
-      return $('.clone').text(url);
+      $('.js-git-empty .js-clone').text(url);
     });
     // Ref switcher
     Project.initRefSwitcher();
     $('.project-refs-select').on('change', function() {
-      return $(this).parents('form').submit();
+      return $(this)
+        .parents('form')
+        .submit();
     });
     $('.hide-no-ssh-message').on('click', function(e) {
       Cookies.set('hide_no_ssh_message', 'false');
-      $(this).parents('.no-ssh-key-message').remove();
+      $(this)
+        .parents('.no-ssh-key-message')
+        .remove();
       return e.preventDefault();
     });
     $('.hide-no-password-message').on('click', function(e) {
       Cookies.set('hide_no_password_message', 'false');
-      $(this).parents('.no-password-message').remove();
+      $(this)
+        .parents('.no-password-message')
+        .remove();
+      return e.preventDefault();
+    });
+    $('.hide-auto-devops-implicitly-enabled-banner').on('click', function(e) {
+      const projectId = $(this).data('project-id');
+      const cookieKey = `hide_auto_devops_implicitly_enabled_banner_${projectId}`;
+      Cookies.set(cookieKey, 'false');
+      $(this).parents('.auto-devops-implicitly-enabled-banner').remove();
       return e.preventDefault();
     });
     Project.projectSelectDropdown();
@@ -57,7 +77,7 @@ export default class Project {
   }
 
   static changeProject(url) {
-    return window.location = url;
+    return (window.location = url);
   }
 
   static initRefSwitcher() {
@@ -72,14 +92,15 @@ export default class Project {
       selected = $dropdown.data('selected');
       return $dropdown.glDropdown({
         data(term, callback) {
-          axios.get($dropdown.data('refsUrl'), {
-            params: {
-              ref: $dropdown.data('ref'),
-              search: term,
-            },
-          })
-          .then(({ data }) => callback(data))
-          .catch(() => flash(__('An error occurred while getting projects')));
+          axios
+            .get($dropdown.data('refsUrl'), {
+              params: {
+                ref: $dropdown.data('ref'),
+                search: term,
+              },
+            })
+            .then(({ data }) => callback(data))
+            .catch(() => flash(__('An error occurred while getting projects')));
         },
         selectable: true,
         filterable: true,

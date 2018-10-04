@@ -1,6 +1,6 @@
 - @hide_top_links = true
-- page_title    "Groups"
-- header_title  "Groups", dashboard_groups_path
+- page_title    _("Groups")
+- header_title  _("Groups"), dashboard_groups_path
 
 - if current_user
   = render 'dashboard/groups_head'
@@ -9,15 +9,15 @@
   = render 'nav'
 
 - if cookies[:explore_groups_landing_dismissed] != 'true'
-  .explore-groups.landing.content-block.js-explore-groups-landing.hidden
-    %button.dismiss-button{ type: 'button', 'aria-label' => 'Dismiss' }= icon('times')
+  .explore-groups.landing.content-block.js-explore-groups-landing.hide
+    %button.dismiss-button{ type: 'button', 'aria-label' => _('Dismiss') }= icon('times')
     .svg-container
       = custom_icon('icon_explore_groups_splash')
     .inner-content
-      %p Below you will find all the groups that are public.
-      %p You can easily contribute to them by requesting to join these groups.
+      %p= _("Below you will find all the groups that are public.")
+      %p= _("You can easily contribute to them by requesting to join these groups.")
 
 - if params[:filter].blank? && @groups.empty?
-  .nothing-here-block No public groups
+  .nothing-here-block= _("No public groups")
 - else
   = render 'groups'

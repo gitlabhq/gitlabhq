@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StuckCiJobsWorker
   include ApplicationWorker
   include CronjobQueue
@@ -38,12 +40,13 @@ class StuckCiJobsWorker
 
   def drop_stuck(status, timeout)
     search(status, timeout) do |build|
-      return unless build.stuck?
+      break unless build.stuck?
 
       drop_build :stuck, build, status, timeout
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def search(status, timeout)
     loop do
       jobs = Ci::Build.where(status: status)
@@ -58,6 +61,7 @@ class StuckCiJobsWorker
       end
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def drop_build(type, build, status, timeout)
     Rails.logger.info "#{self.class}: Dropping #{type} build #{build.id} for runner #{build.runner_id} (status: #{status}, timeout: #{timeout})"

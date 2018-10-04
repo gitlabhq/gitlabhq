@@ -24,7 +24,7 @@ module Gitlab
           # ignore highlighting for "match" lines
           next diff_line if diff_line.meta?
 
-          rich_line = highlight_line(diff_line) || diff_line.text
+          rich_line = highlight_line(diff_line) || ERB::Util.html_escape(diff_line.text)
 
           if line_inline_diffs = inline_diffs[i]
             begin
@@ -33,14 +33,11 @@ module Gitlab
             # match the blob, which is a bug. But we shouldn't fail to render
             # completely in that case, even though we want to report the error.
             rescue RangeError => e
-              if Gitlab::Sentry.enabled?
-                Gitlab::Sentry.context
-                Raven.capture_exception(e)
-              end
+              Gitlab::Sentry.track_exception(e, issue_url: 'https://gitlab.com/gitlab-org/gitlab-ce/issues/45441')
             end
           end
 
-          diff_line.text = rich_line
+          diff_line.rich_text = rich_line
 
           diff_line
         end

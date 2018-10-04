@@ -2,10 +2,9 @@
 
 Since GitLab 9.0, API V4 is the preferred version to be used.
 
-API V3 will be unsupported from GitLab 9.5, to be released on August
-22, 2017. It will be removed in GitLab 9.5 or later. In the meantime, we advise
-you to make any necessary changes to applications that use V3. The V3 API
-documentation is still
+API V3 was unsupported from GitLab 9.5, released on August
+22, 2017. API v3 was removed in [GitLab 11.0](https://gitlab.com/gitlab-org/gitlab-ce/issues/36819).
+The V3 API documentation is still
 [available](https://gitlab.com/gitlab-org/gitlab-ce/blob/8-16-stable/doc/api/README.md).
 
 Below are the changes made between V3 and V4.
@@ -77,8 +76,8 @@ Below are the changes made between V3 and V4.
 - Simplify project payload exposed on Environment endpoints [!9675](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9675)
 - API uses merge request `IID`s (internal ID, as in the web UI) rather than `ID`s. This affects the merge requests, award emoji, todos, and time tracking APIs. [!9530](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9530)
 - API uses issue `IID`s (internal ID, as in the web UI) rather than `ID`s. This affects the issues, award emoji, todos, and time tracking APIs. [!9530](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9530)
-- Change initial page from `0` to `1` on `GET /projects/:id/repository/commits` (like on the rest of the API) [!9679] (https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9679)
-- Return correct `Link` header data for `GET /projects/:id/repository/commits` [!9679] (https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9679)
+- Change initial page from `0` to `1` on `GET /projects/:id/repository/commits` (like on the rest of the API) [!9679](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9679)
+- Return correct `Link` header data for `GET /projects/:id/repository/commits` [!9679](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9679)
 - Update endpoints for repository files [!9637](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9637)
   - Moved `GET /projects/:id/repository/files?file_path=:file_path` to `GET /projects/:id/repository/files/:file_path` (`:file_path` should be URL-encoded)
   - `GET /projects/:id/repository/blobs/:sha` now returns JSON attributes for the blob identified by `:sha`, instead of finding the commit identified by `:sha` and returning the raw content of the blob in that commit identified by the required `?filepath=:filepath`

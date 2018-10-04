@@ -3,15 +3,16 @@ module Gitlab
     module Pipeline
       module Expression
         class Statement
-          StatementError = Class.new(StandardError)
+          StatementError = Class.new(Expression::ExpressionError)
 
           GRAMMAR = [
+            %w[variable],
             %w[variable equals string],
             %w[variable equals variable],
             %w[variable equals null],
             %w[string equals variable],
             %w[null equals variable],
-            %w[variable]
+            %w[variable matches pattern]
           ].freeze
 
           def initialize(statement, variables = {})
@@ -35,11 +36,13 @@ module Gitlab
 
           def truthful?
             evaluate.present?
+          rescue Expression::ExpressionError
+            false
           end
 
           def valid?
             parse_tree.is_a?(Lexeme::Base)
-          rescue StatementError
+          rescue Expression::ExpressionError
             false
           end
         end

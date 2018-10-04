@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 class ExpirePipelineCacheWorker
   include ApplicationWorker
   include PipelineQueue
 
   queue_namespace :pipeline_cache
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform(pipeline_id)
     pipeline = Ci::Pipeline.find_by(id: pipeline_id)
     return unless pipeline
@@ -21,6 +24,7 @@ class ExpirePipelineCacheWorker
 
     Gitlab::Cache::Ci::ProjectPipelineStatus.update_for_pipeline(pipeline)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 

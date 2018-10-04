@@ -27,6 +27,11 @@
         required: false,
         default: '',
       },
+      tagSelect: {
+        type: String,
+        required: false,
+        default: '',
+      },
       prepend: {
         type: Boolean,
         required: false,
@@ -39,15 +44,16 @@
 <template>
   <button
     v-tooltip
-    type="button"
-    class="toolbar-btn js-md"
-    tabindex="-1"
-    data-container="body"
     :data-md-tag="tag"
+    :data-md-select="tagSelect"
     :data-md-block="tagBlock"
     :data-md-prepend="prepend"
     :title="buttonTitle"
     :aria-label="buttonTitle"
+    type="button"
+    class="toolbar-btn js-md"
+    tabindex="-1"
+    data-container="body"
   >
     <icon
       :name="icon"

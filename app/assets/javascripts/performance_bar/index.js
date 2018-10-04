@@ -1,14 +1,12 @@
-import 'vendor/peek.performance_bar';
-
 import Vue from 'vue';
-import performanceBarApp from './components/performance_bar_app.vue';
+import PerformanceBarService from './services/performance_bar_service';
 import PerformanceBarStore from './stores/performance_bar_store';
 
 export default ({ container }) =>
   new Vue({
     el: container,
     components: {
-      performanceBarApp,
+      performanceBarApp: () => import('./components/performance_bar_app.vue'),
     },
     data() {
       const performanceBarData = document.querySelector(this.$options.el)
@@ -22,6 +20,35 @@ export default ({ container }) =>
         peekUrl: performanceBarData.peekUrl,
         profileUrl: performanceBarData.profileUrl,
       };
+    },
+    mounted() {
+      this.interceptor = PerformanceBarService.registerInterceptor(
+        this.peekUrl,
+        this.loadRequestDetails,
+      );
+
+      this.loadRequestDetails(this.requestId, window.location.href);
+    },
+    beforeDestroy() {
+      PerformanceBarService.removeInterceptor(this.interceptor);
+    },
+    methods: {
+      loadRequestDetails(requestId, requestUrl) {
+        if (!this.store.canTrackRequest(requestUrl)) {
+          return;
+        }
+
+        this.store.addRequest(requestId, requestUrl);
+
+        PerformanceBarService.fetchRequestDetails(this.peekUrl, requestId)
+          .then(res => {
+            this.store.addRequestDetails(requestId, res.data.data);
+          })
+          .catch(() =>
+            // eslint-disable-next-line no-console
+            console.warn(`Error getting performance bar results for ${requestId}`),
+          );
+      },
     },
     render(createElement) {
       return createElement('performance-bar-app', {

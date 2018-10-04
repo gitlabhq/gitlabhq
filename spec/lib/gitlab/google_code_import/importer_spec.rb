@@ -15,7 +15,7 @@ describe Gitlab::GoogleCodeImport::Importer do
   subject { described_class.new(project) }
 
   before do
-    project.add_master(project.creator)
+    project.add_maintainer(project.creator)
     project.create_import_data(data: import_data)
   end
 

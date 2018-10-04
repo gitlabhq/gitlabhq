@@ -1,14 +1,18 @@
 <script>
-import Flash from '../../../flash';
+import { __ } from '~/locale';
+import Flash from '~/flash';
+import tooltip from '~/vue_shared/directives/tooltip';
+import Icon from '~/vue_shared/components/icon.vue';
+import eventHub from '~/sidebar/event_hub';
 import editForm from './edit_form.vue';
-import Icon from '../../../vue_shared/components/icon.vue';
-import { __ } from '../../../locale';
-import eventHub from '../../event_hub';
 
 export default {
   components: {
     editForm,
     Icon,
+  },
+  directives: {
+    tooltip,
   },
   props: {
     isConfidential: {
@@ -33,6 +37,9 @@ export default {
     confidentialityIcon() {
       return this.isConfidential ? 'eye-slash' : 'eye';
     },
+    tooltipLabel() {
+      return this.isConfidential ? __('Confidential') : __('Not confidential');
+    },
   },
   created() {
     eventHub.$on('closeConfidentialityForm', this.toggleForm);
@@ -47,7 +54,7 @@ export default {
     updateConfidentialAttribute(confidential) {
       this.service
         .update('issue', { confidential })
-        .then(() => location.reload())
+        .then(() => window.location.reload())
         .catch(() => {
           Flash(
             __(
@@ -63,7 +70,12 @@ export default {
 <template>
   <div class="block issuable-sidebar-item confidentiality">
     <div
+      v-tooltip
+      :title="tooltipLabel"
       class="sidebar-collapsed-icon"
+      data-container="body"
+      data-placement="left"
+      data-boundary="viewport"
       @click="toggleForm"
     >
       <icon
@@ -75,7 +87,7 @@ export default {
       {{ __('Confidentiality') }}
       <a
         v-if="isEditable"
-        class="pull-right confidential-edit"
+        class="float-right confidential-edit"
         href="#"
         @click.prevent="toggleForm"
       >
@@ -92,8 +104,8 @@ export default {
         v-if="!isConfidential"
         class="no-value sidebar-item-value">
         <icon
-          name="eye"
           :size="16"
+          name="eye"
           aria-hidden="true"
           class="sidebar-item-icon inline"
         />
@@ -103,8 +115,8 @@ export default {
         v-else
         class="value sidebar-item-value hide-collapsed">
         <icon
-          name="eye-slash"
           :size="16"
+          name="eye-slash"
           aria-hidden="true"
           class="sidebar-item-icon inline is-active"
         />

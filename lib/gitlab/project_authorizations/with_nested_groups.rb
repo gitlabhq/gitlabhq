@@ -24,7 +24,7 @@ module Gitlab
           user.projects.select_for_project_authorization,
 
           # The personal projects of the user.
-          user.personal_projects.select_as_master_for_project_authorization,
+          user.personal_projects.select_as_maintainer_for_project_authorization,
 
           # Projects that belong directly to any of the groups the user has
           # access to.
@@ -49,13 +49,11 @@ module Gitlab
             .where('p_ns.share_with_group_lock IS FALSE')
         ]
 
-        union = Gitlab::SQL::Union.new(relations)
-
         ProjectAuthorization
           .unscoped
           .with
           .recursive(cte.to_arel)
-          .select_from_union(union)
+          .select_from_union(relations)
       end
 
       private

@@ -1,25 +1,24 @@
-- page_title "Google Code import"
-- header_title "Projects", root_path
+- page_title _("Google Code import")
+- header_title _("Projects"), root_path
 %h3.page-title
   %i.fa.fa-google
-  Import projects from Google Code
+  = _('Import projects from Google Code')
 
 - if @repos.any?
   %p.light
-    Select projects you want to import.
+    = _('Select projects you want to import.')
   %p.light
-    Optionally, you can
-    = link_to "customize", new_user_map_import_google_code_path
-    how Google Code email addresses and usernames are imported into GitLab.
+    - link_to_customize = link_to(_("customize"), new_user_map_import_google_code_path)
+    = _("Optionally, you can %{link_to_customize} how Google Code email addresses and usernames are imported into GitLab.").html_safe % { link_to_customize: link_to_customize }
   %hr
   %p
   - if @incompatible_repos.any?
     = button_tag class: "btn btn-import btn-success js-import-all" do
-      Import all compatible projects
+      = _("Import all compatible projects")
       = icon("spinner spin", class: "loading-icon")
   - else
     = button_tag class: "btn btn-import btn-success js-import-all" do
-      Import all projects
+      = _("Import all projects")
       = icon("spinner spin", class: "loading-icon")
 
 .table-responsive
@@ -29,9 +28,9 @@
     %colgroup.import-jobs-status-col
     %thead
       %tr
-        %th From Google Code
-        %th To GitLab
-        %th Status
+        %th= _("From Google Code")
+        %th= _("To GitLab")
+        %th= _("Status")
     %tbody
       - @already_added_projects.each do |project|
         %tr{ id: "project_#{project.id}", class: "#{project_status_css_class(project.import_status)}" }
@@ -43,10 +42,10 @@
             - if project.import_status == 'finished'
               %span
                 %i.fa.fa-check
-                done
+                = _("done")
             - elsif project.import_status == 'started'
               %i.fa.fa-spinner.fa-spin
-              started
+              = _("started")
             - else
               = project.human_import_status_name
 
@@ -58,7 +57,7 @@
             #{current_user.username}/#{repo.name}
           %td.import-actions.job-status
             = button_tag class: "btn btn-import js-add-to-import" do
-              Import
+              = _("Import")
               = icon("spinner spin", class: "loading-icon")
       - @incompatible_repos.each do |repo|
         %tr{ id: "repo_#{repo.id}" }
@@ -66,15 +65,12 @@
             = link_to repo.name, "https://code.google.com/p/#{repo.name}", target: "_blank", rel: 'noopener noreferrer'
           %td.import-target
           %td.import-actions-job-status
-            = label_tag "Incompatible Project", nil, class: "label label-danger"
+            = label_tag _("Incompatible Project"), nil, class: "label badge-danger"
 
 - if @incompatible_repos.any?
   %p
-    One or more of your Google Code projects cannot be imported into GitLab
-    directly because they use Subversion or Mercurial for version control,
-    rather than Git. Please convert them to Git on Google Code, and go
-    through the
-    = link_to "import flow", new_import_google_code_path
-    again.
+    = _("One or more of your Google Code projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git.")
+    - link_to_import_flow = link_to(_("import flow"), new_import_google_code_path)
+    = _("Please convert them to Git on Google Code, and go through the %{link_to_import_flow} again.").html_safe % { link_to_import_flow: link_to_import_flow }
 
 .js-importer-status{ data: { jobs_import_path: "#{jobs_import_google_code_path}", import_path: "#{import_google_code_path}" } }

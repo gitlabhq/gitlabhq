@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'carrierwave/orm/activerecord'
 
 class Group < Namespace
@@ -9,12 +11,15 @@ class Group < Namespace
   include SelectForProjectAuthorization
   include LoadedInGroupList
   include GroupDescendant
+  include TokenAuthenticatable
+  include WithUploads
+  include Gitlab::Utils::StrongMemoize
 
   has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   alias_method :members, :group_members
-  has_many :users, -> { auto_include(false) }, through: :group_members
+  has_many :users, through: :group_members
   has_many :owners,
-    -> { where(members: { access_level: Gitlab::Access::OWNER }).auto_include(false) },
+    -> { where(members: { access_level: Gitlab::Access::OWNER }) },
     through: :group_members,
     source: :user
 
@@ -23,16 +28,20 @@ class Group < Namespace
 
   has_many :milestones
   has_many :project_group_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :shared_projects, -> { auto_include(false) }, through: :project_group_links, source: :project
+  has_many :shared_projects, through: :project_group_links, source: :project
+
+  # Overridden on another method
+  # Left here just to be dependent: :destroy
   has_many :notification_settings, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
+
   has_many :labels, class_name: 'GroupLabel'
   has_many :variables, class_name: 'Ci::GroupVariable'
   has_many :custom_attributes, class_name: 'GroupCustomAttribute'
 
-  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-
   has_many :boards
   has_many :badges, class_name: 'GroupBadge'
+
+  has_many :todos
 
   accepts_nested_attributes_for :variables, allow_destroy: true
 
@@ -42,6 +51,8 @@ class Group < Namespace
   validates :variables, variable_duplicates: true
 
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
+
+  add_authentication_token_field :runners_token
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
@@ -71,8 +82,17 @@ class Group < Namespace
       User.reference_pattern
     end
 
-    def visible_to_user(user)
-      where(id: user.authorized_groups.select(:id).reorder(nil))
+    # WARNING: This method should never be used on its own
+    # please do make sure the number of rows you are filtering is small
+    # enough for this query
+    def public_or_visible_to_user(user)
+      return public_to_user unless user
+
+      public_for_user = public_to_user_arel(user)
+      visible_for_user = visible_to_user_arel(user)
+      public_or_visible = public_for_user.or(visible_for_user)
+
+      where(public_or_visible)
     end
 
     def select_for_project_authorization
@@ -84,6 +104,32 @@ class Group < Namespace
         super
       end
     end
+
+    private
+
+    def public_to_user_arel(user)
+      self.arel_table[:visibility_level]
+        .in(Gitlab::VisibilityLevel.levels_for_user(user))
+    end
+
+    def visible_to_user_arel(user)
+      groups_table = self.arel_table
+      authorized_groups = user.authorized_groups.as('authorized')
+
+      groups_table.project(1)
+        .from(authorized_groups)
+        .where(authorized_groups[:id].eq(groups_table[:id]))
+        .exists
+    end
+  end
+
+  # Overrides notification_settings has_many association
+  # This allows to apply notification settings from parent groups
+  # to child groups and projects.
+  def notification_settings
+    source_type = self.class.base_class.name
+
+    NotificationSetting.where(source_type: source_type, source_id: self_and_ancestors_ids)
   end
 
   def to_reference(_from = nil, full: nil)
@@ -125,6 +171,10 @@ class Group < Namespace
     self[:lfs_enabled]
   end
 
+  def owned_by?(user)
+    owners.include?(user)
+  end
+
   def add_users(users, access_level, current_user: nil, expires_at: nil)
     GroupMember.add_users(
       self,
@@ -135,13 +185,14 @@ class Group < Namespace
     )
   end
 
-  def add_user(user, access_level, current_user: nil, expires_at: nil)
+  def add_user(user, access_level, current_user: nil, expires_at: nil, ldap: false)
     GroupMember.add_user(
       self,
       user,
       access_level,
       current_user: current_user,
-      expires_at: expires_at
+      expires_at: expires_at,
+      ldap: ldap
     )
   end
 
@@ -157,9 +208,12 @@ class Group < Namespace
     add_user(user, :developer, current_user: current_user)
   end
 
-  def add_master(user, current_user = nil)
-    add_user(user, :master, current_user: current_user)
+  def add_maintainer(user, current_user = nil)
+    add_user(user, :maintainer, current_user: current_user)
   end
+
+  # @deprecated
+  alias_method :add_master, :add_maintainer
 
   def add_owner(user, current_user = nil)
     add_user(user, :owner, current_user: current_user)
@@ -177,16 +231,23 @@ class Group < Namespace
     members_with_parents.owners.where(user_id: user).any?
   end
 
-  def has_master?(user)
+  def has_maintainer?(user)
     return false unless user
 
-    members_with_parents.masters.where(user_id: user).any?
+    members_with_parents.maintainers.where(user_id: user).any?
   end
+
+  # @deprecated
+  alias_method :has_master?, :has_maintainer?
 
   # Check if user is a last owner of the group.
   # Parent owners are ignored for nested groups.
   def last_owner?(user)
     owners.include?(user) && owners.size == 1
+  end
+
+  def ldap_synced?
+    false
   end
 
   def post_create_hook
@@ -201,17 +262,27 @@ class Group < Namespace
     system_hook_service.execute_hooks_for(self, :destroy)
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def system_hook_service
     SystemHooksService.new
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
+  # rubocop: disable CodeReuse/ServiceClass
   def refresh_members_authorized_projects(blocking: true)
     UserProjectAccessChangedService.new(user_ids_for_project_authorizations)
       .execute(blocking: blocking)
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def user_ids_for_project_authorizations
     members_with_parents.pluck(:user_id)
+  end
+
+  def self_and_ancestors_ids
+    strong_memoize(:self_and_ancestors_ids) do
+      self_and_ancestors.pluck(:id)
+    end
   end
 
   def members_with_parents
@@ -234,6 +305,13 @@ class Group < Namespace
       .where(source_id: self_and_descendants.reorder(nil).select(:id))
   end
 
+  # Returns all members that are part of the group, it's subgroups, and ancestor groups
+  def direct_and_indirect_members
+    GroupMember
+      .active_without_invites_and_requests
+      .where(source_id: self_and_hierarchy.reorder(nil).select(:id))
+  end
+
   def users_with_parents
     User
       .where(id: members_with_parents.select(:user_id))
@@ -244,6 +322,28 @@ class Group < Namespace
     User
       .where(id: members_with_descendants.select(:user_id))
       .reorder(nil)
+  end
+
+  # Returns all users that are members of the group because:
+  # 1. They belong to the group
+  # 2. They belong to a project that belongs to the group
+  # 3. They belong to a sub-group or project in such sub-group
+  # 4. They belong to an ancestor group
+  def direct_and_indirect_users
+    User.from_union([
+      User
+        .where(id: direct_and_indirect_members.select(:user_id))
+        .reorder(nil),
+      project_users_with_descendants
+    ])
+  end
+
+  # Returns all users that are members of projects
+  # belonging to the current group or sub-groups
+  def project_users_with_descendants
+    User
+      .joins(projects: :group)
+      .where(namespaces: { id: self_and_descendants.select(:id) })
   end
 
   def max_member_access_for_user(user)
@@ -288,6 +388,13 @@ class Group < Namespace
 
   def refresh_project_authorizations
     refresh_members_authorized_projects(blocking: false)
+  end
+
+  # each existing group needs to have a `runners_token`.
+  # we do this on read since migrating all existing groups is not a feasible
+  # solution.
+  def runners_token
+    ensure_runners_token!
   end
 
   private

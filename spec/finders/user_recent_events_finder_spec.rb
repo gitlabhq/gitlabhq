@@ -1,31 +1,37 @@
 require 'spec_helper'
 
 describe UserRecentEventsFinder do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
-  let(:project_owner) { project.creator }
-  let!(:event) { create(:event, project: project, author: project_owner) }
+  let(:current_user)     { create(:user) }
+  let(:project_owner)    { create(:user) }
+  let(:private_project)  { create(:project, :private, creator: project_owner) }
+  let(:internal_project) { create(:project, :internal, creator: project_owner) }
+  let(:public_project)   { create(:project, :public, creator: project_owner) }
+  let!(:private_event)   { create(:event, project: private_project, author: project_owner) }
+  let!(:internal_event)  { create(:event, project: internal_project, author: project_owner) }
+  let!(:public_event)    { create(:event, project: public_project, author: project_owner) }
 
-  subject(:finder) { described_class.new(user, project_owner) }
+  subject(:finder) { described_class.new(current_user, project_owner) }
 
   describe '#execute' do
-    it 'does not include the event when a user does not have access to the project' do
-      expect(finder.execute).to be_empty
+    context 'when profile is public' do
+      it 'returns all the events' do
+        expect(finder.execute).to include(private_event, internal_event, public_event)
+      end
     end
 
-    context 'when the user has access to a project' do
-      before do
-        project.add_developer(user)
-      end
+    context 'when profile is private' do
+      it 'returns no event' do
+        allow(Ability).to receive(:allowed?).and_call_original
+        allow(Ability).to receive(:allowed?).with(current_user, :read_user_profile, project_owner).and_return(false)
 
-      it 'includes the event' do
-        expect(finder.execute).to include(event)
-      end
-
-      it 'does not include the event if the user cannot read cross project' do
-        expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
         expect(finder.execute).to be_empty
       end
+    end
+
+    it 'does not include the events if the user cannot read cross project' do
+      expect(Ability).to receive(:allowed?).and_call_original
+      expect(Ability).to receive(:allowed?).with(current_user, :read_cross_project) { false }
+      expect(finder.execute).to be_empty
     end
   end
 end

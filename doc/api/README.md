@@ -3,6 +3,8 @@
 Automate GitLab via a simple and powerful API. All definitions can be found
 under [`/lib/api`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/api).
 
+The main GitLab API is a [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API. Therefore, documentation in this section assumes knowledge of REST concepts.
+
 ## Resources
 
 Documentation for various API resources can be found separately in the
@@ -13,6 +15,7 @@ following locations:
 - [Broadcast Messages](broadcast_messages.md)
 - [Project-level Variables](project_level_variables.md)
 - [Group-level Variables](group_level_variables.md)
+- [Code Snippets](snippets.md)
 - [Commits](commits.md)
 - [Custom Attributes](custom_attributes.md)
 - [Deployments](deployments.md)
@@ -32,12 +35,14 @@ following locations:
 - [Jobs](jobs.md)
 - [Keys](keys.md)
 - [Labels](labels.md)
+- [Markdown](markdown.md)
 - [Merge Requests](merge_requests.md)
 - [Project milestones](milestones.md)
 - [Group milestones](group_milestones.md)
 - [Namespaces](namespaces.md)
 - [Notes](notes.md) (comments)
 - [Discussions](discussions.md) (threaded comments)
+- [Resource Label Events](resource_label_events.md)
 - [Notification settings](notification_settings.md)
 - [Open source license templates](templates/licenses.md)
 - [Pages Domains](pages_domains.md)
@@ -51,6 +56,7 @@ following locations:
 - [Project Members](members.md)
 - [Project Snippets](project_snippets.md)
 - [Protected Branches](protected_branches.md)
+- [Protected Tags](protected_tags.md)
 - [Repositories](repositories.md)
 - [Repository Files](repository_files.md)
 - [Runners](runners.md)
@@ -74,8 +80,8 @@ Going forward, we will start on moving to
 controller-specific endpoints. GraphQL has a number of benefits:
 
 1. We avoid having to maintain two different APIs.
-2. Callers of the API can request only what they need.
-3. It is versioned by default.
+1. Callers of the API can request only what they need.
+1. It is versioned by default.
 
 It will co-exist with the current v4 REST API. If we have a v5 API, this should
 be a compatibility layer on top of GraphQL.
@@ -84,6 +90,28 @@ Although there were some patenting and licensing concerns with GraphQL, these
 have been resolved to our satisfaction by the relicensing of the reference
 implementations under MIT, and the use of the OWF license for the GraphQL
 specification.
+
+## Compatibility Guidelines
+
+The HTTP API is versioned using a single number, the current one being 4. This
+number symbolises the same as the major version number as described by
+[SemVer](https://semver.org/). This mean that backward incompatible changes
+will require this version number to change. However, the minor version is
+not explicit. This allows for a stable API endpoint, but also means new
+features can be added to the API in the same version number.
+
+New features and bug fixes are released in tandem with a new GitLab, and apart
+from incidental patch and security releases, are released on the 22nd each
+month. Backward incompatible changes (e.g. endpoints removal, parameters
+removal etc.), as well as removal of entire API versions are done in tandem
+with a major point release of GitLab itself. All deprecations and changes
+between two versions should be listed in the documentation. For the changes
+between v3 and v4; please read the [v3 to v4 documentation](v3_to_v4.md)
+
+### Current status
+
+Currently only API version v4 is available. Version v3 was removed in
+[GitLab 11.0](https://gitlab.com/gitlab-org/gitlab-ce/issues/36819).
 
 ## Basic usage
 
@@ -114,8 +142,9 @@ There are three ways to authenticate with the GitLab API:
 1. [Session cookie](#session-cookie)
 
 For admins who want to authenticate with the API as a specific user, or who want to build applications or scripts that do so, two options are available:
+
 1. [Impersonation tokens](#impersonation-tokens)
-2. [Sudo](#sudo)
+1. [Sudo](#sudo)
 
 If authentication information is invalid or omitted, an error message will be
 returned with status code `401`:
@@ -194,7 +223,8 @@ Impersonation tokens are used exactly like regular personal access tokens, and c
 
 ### Sudo
 
-> Needs admin permissions.
+NOTE: **Note:**
+Only available to [administrators](../user/permissions.md).
 
 All API requests support performing an API call as if you were another user,
 provided you are authenticated as an administrator with an OAuth or Personal Access Token that has the `sudo` scope.
@@ -269,7 +299,7 @@ The following table gives an overview of how the API functions generally behave.
 | `GET`   | Access one or more resources and return the result as JSON. |
 | `POST`  | Return `201 Created` if the resource is successfully created and return the newly created resource as JSON. |
 | `GET` / `PUT` | Return `200 OK` if the resource is accessed or modified successfully. The (modified) result is returned as JSON. |
-| `DELETE` | Returns `204 No Content` if the resuource was deleted successfully. |
+| `DELETE` | Returns `204 No Content` if the resource was deleted successfully. |
 
 The following table shows the possible return codes for API requests.
 
@@ -364,7 +394,7 @@ For example, `/` is represented by `%2F`:
 GET /api/v4/projects/diaspora%2Fdiaspora
 ```
 
-## Branches & tags name encoding
+## Branches and tags name encoding
 
 If your branch or tag contains a `/`, make sure the branch/tag name is
 URL-encoded.
@@ -375,30 +405,68 @@ For example, `/` is represented by `%2F`:
 GET /api/v4/projects/1/branches/my%2Fbranch/commits
 ```
 
+## Encoding API parameters of `array` and `hash` types
+
+We can call the API with `array` and `hash` types parameters as shown below:
+
+### `array`
+
+`import_sources` is a parameter of type `array`:
+
+```bash
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" \
+-d "import_sources[]=github" \
+-d "import_sources[]=bitbucket" \
+"https://gitlab.example.com/api/v4/some_endpoint
+```
+
+### `hash`
+
+`override_params` is a parameter of type `hash`:
+
+```bash
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" \
+--form "namespace=email" \
+--form "path=impapi" \
+--form "file=@/path/to/somefile.txt"
+--form "override_params[visibility]=private" \
+--form "override_params[some_other_param]=some_value" \
+https://gitlab.example.com/api/v4/projects/import
+```
+
+### Array of hashes
+
+`variables` is a parameter of type `array` containing hash key/value pairs `[{ 'key' => 'UPLOAD_TO_S3', 'value' => 'true' }]`:
+
+```bash
+curl --globoff --request POST --header "PRIVATE-TOKEN: ********************" \
+"https://gitlab.example.com/api/v4/projects/169/pipeline?ref=master&variables[][key]=VAR1&variables[][value]=hello&variables[][key]=VAR2&variables[][value]=world"
+
+curl --request POST --header "PRIVATE-TOKEN: ********************" \
+--header "Content-Type: application/json" \
+--data '{ "ref": "master", "variables": [ {"key": "VAR1", "value": "hello"}, {"key": "VAR2", "value": "world"} ] }' \
+"https://gitlab.example.com/api/v4/projects/169/pipeline"
+```
+
 ## `id` vs `iid`
 
-When you work with the API, you may notice two similar fields in API entities:
-`id` and `iid`. The main difference between them is scope.
+ Some resources have two similarly-named fields. For example, [issues](issues.md), [merge requests](merge_requests.md), and [project milestones](merge_requests.md). The fields are:
 
-For example, an issue might have `id: 46` and `iid: 5`.
+- `id`: ID that is unique across all projects.
+- `iid`: additional, internal ID that is unique in the scope of a single project.
 
-| Parameter | Description |
-| --------- | ----------- |
-| `id`  | Is unique across all issues and is used for any API call |
-| `iid` | Is unique only in scope of a single project. When you browse issues or merge requests with the Web UI, you see the `iid` |
+NOTE: **Note:**
+The `iid` is displayed in the web UI.
 
-That means that if you want to get an issue via the API you should use the `id`:
+If a resource has the `iid` field and the `id` field, the `iid` field is usually used instead of `id` to fetch the resource.
 
-```
-GET /projects/42/issues/:id
-```
+For example, suppose a project with `id: 42` has an issue with `id: 46` and `iid: 5`. In this case:
 
-On the other hand, if you want to create a link to a web page you should use
-the `iid`:
+- A valid API call to retrieve the issue is  `GET /projects/42/issues/5`
+- An invalid API call to retrieve the issue is `GET /projects/42/issues/46`.
 
-```
-GET /projects/42/issues/:iid
-```
+NOTE: **Note:**
+Not all resources with the `iid` field are fetched by `iid`. For guidance on which field to use, see the documentation for the specific resource.
 
 ## Data validation and error reporting
 

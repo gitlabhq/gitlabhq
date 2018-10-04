@@ -11,7 +11,7 @@ describe Banzai::ObjectRenderer do
     )
   end
 
-  let(:object) { Note.new(note: 'hello', note_html: '<p dir="auto">hello</p>', cached_markdown_version: CacheMarkdownField::CACHE_VERSION) }
+  let(:object) { Note.new(note: 'hello', note_html: '<p dir="auto">hello</p>', cached_markdown_version: CacheMarkdownField::CACHE_COMMONMARK_VERSION) }
 
   describe '#render' do
     context 'with cache' do

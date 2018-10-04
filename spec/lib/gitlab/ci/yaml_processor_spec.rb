@@ -2,18 +2,8 @@ require 'spec_helper'
 
 module Gitlab
   module Ci
-    describe YamlProcessor, :lib do
+    describe YamlProcessor do
       subject { described_class.new(config) }
-
-      describe 'our current .gitlab-ci.yml' do
-        let(:config) { File.read("#{Rails.root}/.gitlab-ci.yml") }
-
-        it 'is valid' do
-          error_message = described_class.validation_message(config)
-
-          expect(error_message).to be_nil
-        end
-      end
 
       describe '#build_attributes' do
         subject { described_class.new(config).build_attributes(:rspec) }
@@ -568,6 +558,58 @@ module Gitlab
           it 'returns empty array' do
             expect(subject).to be_an_instance_of(Array)
             expect(subject).to be_empty
+          end
+        end
+      end
+
+      context 'when using `extends`' do
+        let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config) }
+
+        subject { config_processor.builds.first }
+
+        context 'when using simple `extends`' do
+          let(:config) do
+            <<~YAML
+              .template:
+                script: test
+
+              rspec:
+                extends: .template
+                image: ruby:alpine
+            YAML
+          end
+
+          it 'correctly extends rspec job' do
+            expect(config_processor.builds).to be_one
+            expect(subject.dig(:commands)).to eq 'test'
+            expect(subject.dig(:options, :image, :name)).to eq 'ruby:alpine'
+          end
+        end
+
+        context 'when using recursive `extends`' do
+          let(:config) do
+            <<~YAML
+              rspec:
+                extends: .test
+                script: rspec
+                when: always
+
+              .template:
+                before_script:
+                  - bundle install
+
+              .test:
+                extends: .template
+                script: test
+                image: image:test
+            YAML
+          end
+
+          it 'correctly extends rspec job' do
+            expect(config_processor.builds).to be_one
+            expect(subject.dig(:commands)).to eq "bundle install\nrspec"
+            expect(subject.dig(:options, :image, :name)).to eq 'image:test'
+            expect(subject.dig(:when)).to eq 'always'
           end
         end
       end
@@ -1319,17 +1361,13 @@ module Gitlab
             .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
                             'jobs:rspec:only variables invalid expression syntax')
         end
-      end
 
-      describe "Validate configuration templates" do
-        templates = Dir.glob("#{Rails.root.join('vendor/gitlab-ci-yml')}/**/*.gitlab-ci.yml")
+        it 'returns errors if extended hash configuration is invalid' do
+          config = YAML.dump({ rspec: { extends: 'something', script: 'test' } })
 
-        templates.each do |file|
-          it "does not return errors for #{file}" do
-            file = File.read(file)
-
-            expect { Gitlab::Ci::YamlProcessor.new(file) }.not_to raise_error
-          end
+          expect { Gitlab::Ci::YamlProcessor.new(config) }
+            .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
+                            'rspec: unknown key in `extends`')
         end
       end
 

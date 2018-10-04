@@ -62,21 +62,20 @@ module Gitlab
           end
 
           def move_repositories(namespace, old_full_path, new_full_path)
-            repo_paths_for_namespace(namespace).each do |repository_storage_path|
+            repo_shards_for_namespace(namespace).each do |repository_storage|
               # Ensure old directory exists before moving it
-              gitlab_shell.add_namespace(repository_storage_path, old_full_path)
+              gitlab_shell.add_namespace(repository_storage, old_full_path)
 
-              unless gitlab_shell.mv_namespace(repository_storage_path, old_full_path, new_full_path)
-                message = "Exception moving path #{repository_storage_path} \
-                           from #{old_full_path} to #{new_full_path}"
+              unless gitlab_shell.mv_namespace(repository_storage, old_full_path, new_full_path)
+                message = "Exception moving on shard #{repository_storage} from #{old_full_path} to #{new_full_path}"
                 Rails.logger.error message
               end
             end
           end
 
-          def repo_paths_for_namespace(namespace)
+          def repo_shards_for_namespace(namespace)
             projects_for_namespace(namespace).distinct.select(:repository_storage)
-              .map(&:repository_storage_path)
+              .map(&:repository_storage)
           end
 
           def projects_for_namespace(namespace)

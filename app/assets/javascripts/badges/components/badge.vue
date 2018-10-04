@@ -1,13 +1,11 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import Tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
   name: 'Badge',
   components: {
     Icon,
-    LoadingIcon,
     Tooltip,
   },
   directives: {
@@ -72,15 +70,15 @@ export default {
       rel="noopener noreferrer"
     >
       <img
-        class="project-badge"
         :src="imageUrlWithRetries"
+        class="project-badge"
+        aria-hidden="true"
         @load="onLoad"
         @error="onError"
-        aria-hidden="true"
       />
     </a>
 
-    <loading-icon
+    <gl-loading-icon
       v-show="isLoading"
       :inline="true"
     />
@@ -89,16 +87,16 @@ export default {
       v-show="hasError"
       class="btn-group"
     >
-      <div class="btn btn-default btn-xs disabled">
+      <div class="btn btn-default btn-sm disabled">
         <icon
-          class="prepend-left-8 append-right-8"
-          name="doc_image"
           :size="16"
+          class="prepend-left-8 append-right-8"
+          name="doc-image"
           aria-hidden="true"
         />
       </div>
       <div
-        class="btn btn-default btn-xs disabled"
+        class="btn btn-default btn-sm disabled"
       >
         <span class="prepend-left-8 append-right-8">{{ s__('Badges|No badge image') }}</span>
       </div>
@@ -106,15 +104,15 @@ export default {
 
     <button
       v-show="hasError"
-      class="btn btn-transparent btn-xs text-primary"
-      type="button"
       v-tooltip
       :title="s__('Badges|Reload badge image')"
+      class="btn btn-transparent btn-sm text-primary"
+      type="button"
       @click="reloadImage"
     >
       <icon
-        name="retry"
         :size="16"
+        name="retry"
       />
     </button>
   </div>

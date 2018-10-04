@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import { addSelectOnFocusBehaviour } from '../lib/utils/common_utils';
+import { slugifyWithHyphens } from '../lib/utils/text_utility';
 
 let hasUserDefinedProjectPath = false;
 
@@ -29,17 +30,23 @@ const deriveProjectPathFromUrl = ($projectImportUrl) => {
   }
 };
 
+const onProjectNameChange = ($projectNameInput, $projectPathInput) => {
+  const slug = slugifyWithHyphens($projectNameInput.val());
+  $projectPathInput.val(slug);
+};
+
 const bindEvents = () => {
   const $newProjectForm = $('#new_project');
   const $projectImportUrl = $('#project_import_url');
-  const $projectPath = $('#project_path');
+  const $projectPath = $('.tab-pane.active #project_path');
   const $useTemplateBtn = $('.template-button > input');
   const $projectFieldsForm = $('.project-fields-form');
   const $selectedTemplateText = $('.selected-template');
   const $changeTemplateBtn = $('.change-template');
-  const $selectedIcon = $('.selected-icon svg');
-  const $templateProjectNameInput = $('#template-project-name #project_path');
+  const $selectedIcon = $('.selected-icon');
   const $pushNewProjectTipTrigger = $('.push-new-project-tip');
+  const $projectTemplateButtons = $('.project-templates-buttons');
+  const $projectName = $('.tab-pane.active #project_name');
 
   if ($newProjectForm.length !== 1) {
     return;
@@ -56,7 +63,8 @@ const bindEvents = () => {
 
   $('.btn_import_gitlab_project').on('click', () => {
     const importHref = $('a.btn_import_gitlab_project').attr('href');
-    $('.btn_import_gitlab_project').attr('href', `${importHref}?namespace_id=${$('#project_namespace_id').val()}&path=${$projectPath.val()}`);
+    $('.btn_import_gitlab_project')
+      .attr('href', `${importHref}?namespace_id=${$('#project_namespace_id').val()}&name=${$projectName.val()}&path=${$projectPath.val()}`);
   });
 
   if ($pushNewProjectTipTrigger) {
@@ -66,8 +74,8 @@ const bindEvents = () => {
       .on('click', (e) => { e.preventDefault(); })
       .popover({
         title: $pushNewProjectTipTrigger.data('title'),
-        placement: 'auto bottom',
-        html: 'true',
+        placement: 'bottom',
+        html: true,
         content: $('.push-new-project-tip-template').html(),
       })
       .on('shown.bs.popover', () => {
@@ -88,35 +96,43 @@ const bindEvents = () => {
   }
 
   function chooseTemplate() {
-    $('.template-option').hide();
+    $projectTemplateButtons.addClass('hidden');
     $projectFieldsForm.addClass('selected');
-    $selectedIcon.removeClass('active');
+    $selectedIcon.empty();
     const value = $(this).val();
     const templates = {
       rails: {
         text: 'Ruby on Rails',
-        icon: '.selected-icon .icon-rails',
+        icon: '.template-option svg.icon-rails',
       },
       express: {
         text: 'NodeJS Express',
-        icon: '.selected-icon .icon-node-express',
+        icon: '.template-option svg.icon-node-express',
       },
       spring: {
         text: 'Spring',
-        icon: '.selected-icon .icon-java-spring',
+        icon: '.template-option svg.icon-java-spring',
       },
     };
 
     const selectedTemplate = templates[value];
     $selectedTemplateText.text(selectedTemplate.text);
-    $(selectedTemplate.icon).addClass('active');
-    $templateProjectNameInput.focus();
+    $(selectedTemplate.icon).clone().addClass('d-block').appendTo($selectedIcon);
+
+    const $activeTabProjectName = $('.tab-pane.active #project_name');
+    const $activeTabProjectPath = $('.tab-pane.active #project_path');
+    $activeTabProjectName.focus();
+    $activeTabProjectName
+      .keyup(() => {
+        onProjectNameChange($activeTabProjectName, $activeTabProjectPath);
+        hasUserDefinedProjectPath = $activeTabProjectPath.val().trim().length > 0;
+      });
   }
 
   $useTemplateBtn.on('change', chooseTemplate);
 
   $changeTemplateBtn.on('click', () => {
-    $('.template-option').show();
+    $projectTemplateButtons.removeClass('hidden');
     $projectFieldsForm.removeClass('selected');
     $useTemplateBtn.prop('checked', false);
   });
@@ -130,9 +146,15 @@ const bindEvents = () => {
   });
 
   $projectImportUrl.keyup(() => deriveProjectPathFromUrl($projectImportUrl));
+
+  $projectName.on('keyup change', () => {
+    onProjectNameChange($projectName, $projectPath);
+    hasUserDefinedProjectPath = $projectPath.val().trim().length > 0;
+  });
 };
 
 export default {
   bindEvents,
   deriveProjectPathFromUrl,
+  onProjectNameChange,
 };

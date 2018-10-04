@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Tooltips on .timeago dates', :js do
+describe 'Tooltips on .timeago dates', :js do
   let(:user)            { create(:user) }
   let(:project)         { create(:project, name: 'test', namespace: user.namespace) }
   let(:created_date)    { Date.yesterday.to_time }
@@ -8,7 +8,7 @@ feature 'Tooltips on .timeago dates', :js do
 
   context 'on the activity tab' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
 
       Event.create( project: project, author_id: user.id, action: Event::JOINED,
                     updated_at: created_date, created_at: created_date)
@@ -27,7 +27,7 @@ feature 'Tooltips on .timeago dates', :js do
 
   context 'on the snippets tab' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       create(:snippet, author: user, updated_at: created_date, created_at: created_date)
 
       sign_in user

@@ -87,13 +87,13 @@ _The artifacts are stored by default in
 
 ### Using object storage
 
->**Notes:**
-- [Introduced][ee-1762] in [GitLab Premium][eep] 9.4.
-- Since version 9.5, artifacts are [browsable], when object storage is enabled. 
-  9.4 lacks this feature.
-> Available in [GitLab Premium](https://about.gitlab.com/products/) and
-[GitLab.com Silver](https://about.gitlab.com/gitlab-com/).
-> Since version 10.6, available in [GitLab CE](https://about.gitlab.com/products/)
+> **Notes:**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1762) in
+>   [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
+> - Since version 9.5, artifacts are [browsable](../user/project/pipelines/job_artifacts.md#browsing-artifacts),
+>   when object storage is enabled. 9.4 lacks this feature.
+> - Since version 10.6, available in [GitLab Core](https://about.gitlab.com/pricing/)
+> - Since version 11.0, we support `direct_upload` to S3.
 
 If you don't want to use the local disk where GitLab is installed to store the
 artifacts, you can use an object storage like AWS S3 instead.
@@ -107,8 +107,8 @@ For source installations the following settings are nested under `artifacts:` an
 | Setting | Description | Default |
 |---------|-------------|---------|
 | `enabled` | Enable/disable object storage | `false` |
-| `remote_directory` | The bucket name where Artfacts will be stored| |
-| `direct_upload` | Set to true to enable direct upload of Artifacts without the need of local shared storage. Option may be removed once we decide to support only single storage for all files. Currently only `Google` provider is supported | `false` |
+| `remote_directory` | The bucket name where Artifacts will be stored| |
+| `direct_upload` | Set to true to enable direct upload of Artifacts without the need of local shared storage. Option may be removed once we decide to support only single storage for all files. | `false` |
 | `background_upload` | Set to false to disable automatic upload. Option may be removed once upload is direct to S3 | `true` |
 | `proxy_download` | Set to true to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data | `false` |
 | `connection` | Various connection options described below | |
@@ -122,10 +122,12 @@ The connection settings match those provided by [Fog](https://github.com/fog), a
 | `provider` | Always `AWS` for compatible hosts | AWS |
 | `aws_access_key_id` | AWS credentials, or compatible | |
 | `aws_secret_access_key` | AWS credentials, or compatible | |
+| `aws_signature_version` | AWS signature version to use. 2 or 4 are valid options. Digital Ocean Spaces and other providers may need 2. | 4 |
 | `region` | AWS region | us-east-1 |
 | `host` | S3 compatible host for when not using AWS, e.g. `localhost` or `storage.example.com` | s3.amazonaws.com |
 | `endpoint` | Can be used when configuring an S3 compatible service such as [Minio](https://www.minio.io), by entering a URL such as `http://127.0.0.1:9000` | (optional) |
 | `path_style` | Set to true to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Leave as false for AWS S3 | false |
+| `use_iam_profile` | Set to true to use IAM profile instead of access keys | false
 
 **In Omnibus installations:**
 
@@ -148,7 +150,7 @@ _The artifacts are stored by default in
     ```
 
     NOTE: For GitLab 9.4+, if you are using AWS IAM profiles, be sure to omit the
-    AWS access key and secret acces key/value pairs. For example:
+    AWS access key and secret access key/value pairs. For example:
 
     ```ruby
     gitlab_rails['artifacts_object_store_connection'] = {
@@ -161,15 +163,15 @@ _The artifacts are stored by default in
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 1. Migrate any existing local artifacts to the object storage:
 
-      ```bash
-      gitlab-rake gitlab:artifacts:migrate
-      ```
+    ```bash
+    gitlab-rake gitlab:artifacts:migrate
+    ```
 
-      Currently this has to be executed manually and it will allow you to
-      migrate the existing artifacts to the object storage, but all new
-      artifacts will still be stored on the local disk. In the future
-      you will be given an option to define a default storage artifacts for all
-      new files.
+    Currently this has to be executed manually and it will allow you to
+    migrate the existing artifacts to the object storage, but all new
+    artifacts will still be stored on the local disk. In the future
+    you will be given an option to define a default storage artifacts for all
+    new files.
 
 ---
 
@@ -189,7 +191,7 @@ _The artifacts are stored by default in
         remote_directory: "artifacts" # The bucket name
         connection:
           provider: AWS # Only AWS supported at the moment
-          aws_access_key_id: AWS_ACESS_KEY_ID
+          aws_access_key_id: AWS_ACCESS_KEY_ID
           aws_secret_access_key: AWS_SECRET_ACCESS_KEY
           region: eu-central-1
     ```
@@ -197,15 +199,15 @@ _The artifacts are stored by default in
 1. Save the file and [restart GitLab][] for the changes to take effect.
 1. Migrate any existing local artifacts to the object storage:
 
-      ```bash
-      sudo -u git -H bundle exec rake gitlab:artifacts:migrate RAILS_ENV=production
-      ```
+    ```bash
+    sudo -u git -H bundle exec rake gitlab:artifacts:migrate RAILS_ENV=production
+    ```
 
-      Currently this has to be executed manually and it will allow you to
-      migrate the existing artifacts to the object storage, but all new
-      artifacts will still be stored on the local disk. In the future
-      you will be given an option to define a default storage artifacts for all
-      new files.
+    Currently this has to be executed manually and it will allow you to
+    migrate the existing artifacts to the object storage, but all new
+    artifacts will still be stored on the local disk. In the future
+    you will be given an option to define a default storage artifacts for all
+    new files.
 
 ## Expiring artifacts
 
@@ -265,6 +267,7 @@ you can flip the feature flag from a Rails console.
     ```ruby
     Feature.enable('ci_disable_validates_dependencies')
     ```
+
 ---
 
 **In installations from source:**

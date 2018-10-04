@@ -62,13 +62,16 @@ describe Gitlab::ContributionsCalendar do
       expect(calendar.activity_dates).to eq(last_week => 2, today => 1)
     end
 
-    it "only shows private events to authorized users" do
-      create_event(private_project, today)
-      create_event(feature_project, today)
+    context "when the user has opted-in for private contributions" do
+      it "shows private and public events to all users" do
+        user.update_column(:include_private_contributions, true)
+        create_event(private_project, today)
+        create_event(public_project, today)
 
-      expect(calendar.activity_dates[today]).to eq(0)
-      expect(calendar(user).activity_dates[today]).to eq(0)
-      expect(calendar(contributor).activity_dates[today]).to eq(2)
+        expect(calendar.activity_dates[today]).to eq(1)
+        expect(calendar(user).activity_dates[today]).to eq(1)
+        expect(calendar(contributor).activity_dates[today]).to eq(2)
+      end
     end
 
     it "counts the diff notes on merge request" do
@@ -128,7 +131,7 @@ describe Gitlab::ContributionsCalendar do
       e3 = create_event(feature_project, today)
       create_event(public_project, last_week)
 
-      expect(calendar.events_by_date(today)).to contain_exactly(e1)
+      expect(calendar.events_by_date(today)).to contain_exactly(e1, e3)
       expect(calendar(contributor).events_by_date(today)).to contain_exactly(e1, e2, e3)
     end
 

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-feature 'Search Snippets' do
-  scenario 'User searches for snippets by title' do
+describe 'Search Snippets' do
+  it 'User searches for snippets by title' do
     public_snippet = create(:personal_snippet, :public, title: 'Beginning and Middle')
     private_snippet = create(:personal_snippet, :private, title: 'Middle and End')
 
@@ -19,7 +19,7 @@ feature 'Search Snippets' do
     expect(page).to have_link(private_snippet.title)
   end
 
-  scenario 'User searches for snippet contents' do
+  it 'User searches for snippet contents' do
     create(:personal_snippet,
            :public,
            title: 'Many lined snippet',

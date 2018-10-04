@@ -55,6 +55,16 @@ describe('Multi-file store tree mutations', () => {
       expect(tree.tree[1].name).toBe('submodule');
       expect(tree.tree[2].name).toBe('blob');
     });
+
+    it('keeps loading state', () => {
+      mutations.CREATE_TREE(localState, { treePath: 'project/master' });
+      mutations.SET_DIRECTORY_DATA(localState, {
+        data,
+        treePath: 'project/master',
+      });
+
+      expect(localState.trees['project/master'].loading).toBe(true);
+    });
   });
 
   describe('REMOVE_ALL_CHANGES_FILES', () => {

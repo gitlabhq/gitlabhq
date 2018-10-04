@@ -1,4 +1,4 @@
-- page_title "Edit", @group.name, "Groups"
-%h3.page-title Edit group: #{@group.name}
+- page_title _("Edit"), @group.name, _("Groups")
+%h3.page-title= _('Edit group: %{group_name}') % { group_name: @group.name }
 %hr
 = render 'form', visibility_level: @group.visibility_level

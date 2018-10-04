@@ -1,18 +1,12 @@
-/* global monaco */
 import eventHub from '~/ide/eventhub';
-import monacoLoader from '~/ide/monaco_loader';
 import ModelManager from '~/ide/lib/common/model_manager';
 import { file } from '../../helpers';
 
 describe('Multi-file editor library model manager', () => {
   let instance;
 
-  beforeEach(done => {
-    monacoLoader(['vs/editor/editor.main'], () => {
-      instance = new ModelManager(monaco);
-
-      done();
-    });
+  beforeEach(() => {
+    instance = new ModelManager();
   });
 
   afterEach(() => {

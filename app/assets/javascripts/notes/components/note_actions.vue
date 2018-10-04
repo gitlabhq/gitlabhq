@@ -7,7 +7,6 @@ import editSvg from 'icons/_icon_pencil.svg';
 import resolveDiscussionSvg from 'icons/_icon_resolve_discussion.svg';
 import resolvedDiscussionSvg from 'icons/_icon_status_success_solid.svg';
 import ellipsisSvg from 'icons/_ellipsis_v.svg';
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
@@ -15,17 +14,19 @@ export default {
   directives: {
     tooltip,
   },
-  components: {
-    loadingIcon,
-  },
   props: {
     authorId: {
       type: Number,
       required: true,
     },
     noteId: {
-      type: Number,
+      type: String,
       required: true,
+    },
+    noteUrl: {
+      type: String,
+      required: false,
+      default: '',
     },
     accessLevel: {
       type: String,
@@ -47,6 +48,11 @@ export default {
     canDelete: {
       type: Boolean,
       required: true,
+    },
+    canResolve: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     resolvable: {
       type: Boolean,
@@ -125,16 +131,16 @@ export default {
       {{ accessLevel }}
     </span>
     <div
-      v-if="resolvable"
+      v-if="canResolve"
       class="note-actions-item">
       <button
         v-tooltip
-        @click="onResolve"
         :class="{ 'is-disabled': !resolvable, 'is-active': isResolved }"
         :title="resolveButtonTitle"
         :aria-label="resolveButtonTitle"
         type="button"
-        class="line-resolve-btn note-action-button">
+        class="line-resolve-btn note-action-button"
+        @click="onResolve">
         <template v-if="!isResolving">
           <div
             v-if="isResolved"
@@ -143,9 +149,9 @@ export default {
             v-else
             v-html="resolveDiscussionSvg"></div>
         </template>
-        <loading-icon
+        <gl-loading-icon
           v-else
-          :inline="true"
+          inline
         />
       </button>
     </div>
@@ -162,18 +168,18 @@ export default {
         href="#"
         title="Add reaction"
       >
-        <loading-icon :inline="true" />
+        <gl-loading-icon inline/>
         <span
-          v-html="emojiSmiling"
-          class="link-highlight award-control-icon-neutral">
+          class="link-highlight award-control-icon-neutral"
+          v-html="emojiSmiling">
         </span>
         <span
-          v-html="emojiSmiley"
-          class="link-highlight award-control-icon-positive">
+          class="link-highlight award-control-icon-positive"
+          v-html="emojiSmiley">
         </span>
         <span
-          v-html="emojiSmile"
-          class="link-highlight award-control-icon-super-positive">
+          class="link-highlight award-control-icon-super-positive"
+          v-html="emojiSmile">
         </span>
       </a>
     </div>
@@ -181,16 +187,16 @@ export default {
       v-if="canEdit"
       class="note-actions-item">
       <button
-        @click="onEdit"
         v-tooltip
         type="button"
         title="Edit comment"
         class="note-action-button js-note-edit btn btn-transparent"
         data-container="body"
-        data-placement="bottom">
+        data-placement="bottom"
+        @click="onEdit">
         <span
-          v-html="editSvg"
-          class="link-highlight">
+          class="link-highlight"
+          v-html="editSvg">
         </span>
       </button>
     </div>
@@ -216,11 +222,20 @@ export default {
             Report as abuse
           </a>
         </li>
+        <li v-if="noteUrl">
+          <button
+            :data-clipboard-text="noteUrl"
+            type="button"
+            class="btn-default btn-transparent js-btn-copy-note-link"
+          >
+            Copy link
+          </button>
+        </li>
         <li v-if="canEdit">
           <button
-            @click.prevent="onDelete"
             class="btn btn-transparent js-note-delete js-note-delete"
-            type="button">
+            type="button"
+            @click.prevent="onDelete">
             <span class="text-danger">
               Delete comment
             </span>

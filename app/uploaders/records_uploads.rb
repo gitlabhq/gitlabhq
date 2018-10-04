@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RecordsUploads
   module Concern
     extend ActiveSupport::Concern
@@ -16,17 +18,19 @@ module RecordsUploads
     # `Tempfile` object the callback gets.
     #
     # Called `after :store`
+    # rubocop: disable CodeReuse/ActiveRecord
     def record_upload(_tempfile = nil)
       return unless model
       return unless file && file.exists?
 
       Upload.transaction do
         uploads.where(path: upload_path).delete_all
-        upload.destroy! if upload
+        upload.delete if upload
 
         self.upload = build_upload.tap(&:save!)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def upload_path
       File.join(store_dir, filename.to_s)
@@ -34,9 +38,11 @@ module RecordsUploads
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def uploads
       Upload.order(id: :desc).where(uploader: self.class.to_s)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def build_upload
       Upload.new(
@@ -51,11 +57,13 @@ module RecordsUploads
     # Before removing an attachment, destroy any Upload records at the same path
     #
     # Called `before :remove`
+    # rubocop: disable CodeReuse/ActiveRecord
     def destroy_upload(*args)
       return unless file && file.exists?
 
       self.upload = nil
       uploads.where(path: upload_path).delete_all
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

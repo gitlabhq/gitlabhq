@@ -17,7 +17,6 @@ module Gitlab
       deploy_key_upload: 'This deploy key does not have write access to this project.',
       no_repo: 'A repository for this project does not exist yet.',
       project_not_found: 'The project you were looking for could not be found.',
-      account_blocked: 'Your account has been blocked.',
       command_not_allowed: "The command you're trying to execute is not allowed.",
       upload_pack_disabled_over_http: 'Pulling over HTTP is not allowed.',
       receive_pack_disabled_over_http: 'Pushing over HTTP is not allowed.',
@@ -29,7 +28,7 @@ module Gitlab
     PUSH_COMMANDS = %w{ git-receive-pack }.freeze
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
 
-    attr_reader :actor, :project, :protocol, :authentication_abilities, :namespace_path, :project_path, :redirected_path, :auth_result_type
+    attr_reader :actor, :project, :protocol, :authentication_abilities, :namespace_path, :project_path, :redirected_path, :auth_result_type, :changes
 
     def initialize(actor, project, protocol, authentication_abilities:, namespace_path: nil, project_path: nil, redirected_path: nil, auth_result_type: nil)
       @actor    = actor
@@ -43,12 +42,18 @@ module Gitlab
     end
 
     def check(cmd, changes)
+      @changes = changes
+
       check_protocol!
       check_valid_actor!
       check_active_user!
       check_authentication_abilities!(cmd)
       check_command_disabled!(cmd)
       check_command_existence!(cmd)
+
+      custom_action = check_custom_action(cmd)
+      return custom_action if custom_action
+
       check_db_accessibility!(cmd)
 
       ensure_project_on_push!(cmd, changes)
@@ -61,10 +66,10 @@ module Gitlab
       when *DOWNLOAD_COMMANDS
         check_download_access!
       when *PUSH_COMMANDS
-        check_push_access!(changes)
+        check_push_access!
       end
 
-      true
+      ::Gitlab::GitAccessResult::Success.new
     end
 
     def guest_can_download_code?
@@ -91,6 +96,10 @@ module Gitlab
 
     private
 
+    def check_custom_action(cmd)
+      nil
+    end
+
     def check_valid_actor!
       return unless actor.is_a?(Key)
 
@@ -108,8 +117,11 @@ module Gitlab
     end
 
     def check_active_user!
-      if user && !user_access.allowed?
-        raise UnauthorizedError, ERROR_MESSAGES[:account_blocked]
+      return unless user
+
+      unless user_access.allowed?
+        message = Gitlab::Auth::UserAccessDeniedReason.new(user).rejection_message
+        raise UnauthorizedError, message
       end
     end
 
@@ -218,7 +230,7 @@ module Gitlab
       end
     end
 
-    def check_push_access!(changes)
+    def check_push_access!
       if project.repository_read_only?
         raise UnauthorizedError, ERROR_MESSAGES[:read_only]
       end
@@ -235,16 +247,14 @@ module Gitlab
 
       return if changes.blank? # Allow access this is needed for EE.
 
-      check_change_access!(changes)
+      check_change_access!
     end
 
-    def check_change_access!(changes)
+    def check_change_access!
       # If there are worktrees with a HEAD pointing to a non-existent object,
       # calls to `git rev-list --all` will fail in git 2.15+. This should also
       # clear stale lock files.
       project.repository.clean_stale_repository_files
-
-      changes_list = Gitlab::ChangesList.new(changes)
 
       # Iterate over all changes to find if user allowed all of them to be applied
       changes_list.each.with_index do |change, index|
@@ -321,6 +331,10 @@ module Gitlab
 
     protected
 
+    def changes_list
+      @changes_list ||= Gitlab::ChangesList.new(changes)
+    end
+
     def user
       return @user if defined?(@user)
 
@@ -340,6 +354,8 @@ module Gitlab
     def user_access
       @user_access ||= if ci?
                          CiAccess.new
+                       elsif user && request_from_ci_build?
+                         BuildAccess.new(user, project: project)
                        else
                          UserAccess.new(user, project: project)
                        end

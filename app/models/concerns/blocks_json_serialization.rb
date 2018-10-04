@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Overrides `as_json` and `to_json` to raise an exception when called in order
 # to prevent accidentally exposing attributes
 #

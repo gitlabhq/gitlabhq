@@ -1,6 +1,5 @@
 <script>
 import ActionComponent from './action_component.vue';
-import DropdownActionComponent from './dropdown_action_component.vue';
 import JobNameComponent from './job_name_component.vue';
 import tooltip from '../../../vue_shared/directives/tooltip';
 
@@ -13,7 +12,7 @@ import tooltip from '../../../vue_shared/directives/tooltip';
  *   "id": 4256,
  *   "name": "test",
  *   "status": {
- *     "icon": "icon_status_success",
+ *     "icon": "status_success",
  *     "text": "passed",
  *     "label": "passed",
  *     "group": "success",
@@ -32,10 +31,8 @@ import tooltip from '../../../vue_shared/directives/tooltip';
 export default {
   components: {
     ActionComponent,
-    DropdownActionComponent,
     JobNameComponent,
   },
-
   directives: {
     tooltip,
   },
@@ -44,26 +41,17 @@ export default {
       type: Object,
       required: true,
     },
-
     cssClassJobName: {
       type: String,
       required: false,
       default: '',
     },
-
-    isDropdown: {
-      type: Boolean,
+    dropdownLength: {
+      type: Number,
       required: false,
-      default: false,
-    },
-
-    actionDisabled: {
-      type: String,
-      required: false,
-      default: null,
+      default: Infinity,
     },
   },
-
   computed: {
     status() {
       return this.job && this.job.status ? this.job.status : {};
@@ -81,10 +69,14 @@ export default {
       }
 
       if (this.status.tooltip) {
-        textBuilder.push(`${this.job.status.tooltip}`);
+        textBuilder.push(this.job.status.tooltip);
       }
 
       return textBuilder.join(' ');
+    },
+
+    tooltipBoundary() {
+      return this.dropdownLength < 5 ? 'viewport' : null;
     },
 
     /**
@@ -96,18 +88,23 @@ export default {
       return this.job.status && this.job.status.action && this.job.status.action.path;
     },
   },
+  methods: {
+    pipelineActionRequestComplete() {
+      this.$emit('pipelineActionRequestComplete');
+    },
+  },
 };
 </script>
 <template>
   <div class="ci-job-component">
     <a
-      v-tooltip
       v-if="status.has_details"
+      v-tooltip
       :href="status.details_path"
       :title="tooltipText"
       :class="cssClassJobName"
+      :data-boundary="tooltipBoundary"
       data-container="body"
-      data-html="true"
       class="js-pipeline-graph-job-link"
     >
 
@@ -120,10 +117,9 @@ export default {
     <div
       v-else
       v-tooltip
-      class="js-job-component-tooltip"
       :title="tooltipText"
       :class="cssClassJobName"
-      data-html="true"
+      class="js-job-component-tooltip non-details-job-component"
       data-container="body"
     >
 
@@ -134,19 +130,11 @@ export default {
     </div>
 
     <action-component
-      v-if="hasAction && !isDropdown"
+      v-if="hasAction"
       :tooltip-text="status.action.title"
       :link="status.action.path"
       :action-icon="status.action.icon"
-      :button-disabled="actionDisabled"
-    />
-
-    <dropdown-action-component
-      v-if="hasAction && isDropdown"
-      :tooltip-text="status.action.title"
-      :link="status.action.path"
-      :action-icon="status.action.icon"
-      :action-method="status.action.method"
+      @pipelineActionRequestComplete="pipelineActionRequestComplete"
     />
   </div>
 </template>

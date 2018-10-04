@@ -18,13 +18,13 @@ export default class Milestone {
     return $('a[data-toggle="tab"]').on('show.bs.tab', (e) => {
       const $target = $(e.target);
 
-      location.hash = $target.attr('href');
+      window.location.hash = $target.attr('href');
       this.loadTab($target);
     });
   }
   // eslint-disable-next-line class-methods-use-this
   loadInitialTab() {
-    const $target = $(`.js-milestone-tabs a[href="${location.hash}"]`);
+    const $target = $(`.js-milestone-tabs a[href="${window.location.hash}"]`);
 
     if ($target.length) {
       $target.tab('show');

@@ -1,7 +1,15 @@
 worker_processes 2
 timeout 60
 
+preload_app true
+check_client_connection false
+
 before_fork do |server, worker|
+  # the following is highly recommended for Rails + "preload_app true"
+  # as there's no need for the master process to hold a connection
+  defined?(ActiveRecord::Base) and
+    ActiveRecord::Base.connection.disconnect!
+
   if /darwin/ =~ RUBY_PLATFORM
     require 'fiddle'
 
@@ -13,3 +21,12 @@ before_fork do |server, worker|
   end
 end
 
+after_fork do |server, worker|
+  # Unicorn clears out signals before it forks, so rbtrace won't work
+  # unless it is enabled after the fork.
+  require 'rbtrace' if ENV['ENABLE_RBTRACE']
+
+  # the following is *required* for Rails + "preload_app true",
+  defined?(ActiveRecord::Base) and
+    ActiveRecord::Base.establish_connection
+end

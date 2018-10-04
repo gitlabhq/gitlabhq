@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LabelsHelper
   extend self
   include ActionView::Helpers::TagHelper
@@ -81,7 +83,7 @@ module LabelsHelper
 
     # Intentionally not using content_tag here so that this method can be called
     # by LabelReferenceFilter
-    span = %(<span class="label color-label #{"has-tooltip" if tooltip}" ) +
+    span = %(<span class="badge color-label #{"has-tooltip" if tooltip}" ) +
       %(style="background-color: #{label.color}; color: #{text_color}" ) +
       %(title="#{escape_once(label.description)}" data-container="body">) +
       %(#{escape_once(label.name)}#{label_suffix}</span>)
@@ -209,6 +211,14 @@ module LabelsHelper
     else
       _('View labels')
     end
+  end
+
+  def label_status_tooltip(label, status)
+    type = label.is_a?(ProjectLabel) ? 'project' : 'group'
+    level = status.unsubscribed? ? type : status.sub('-level', '')
+    action = status.unsubscribed? ? 'Subscribe' : 'Unsubscribe'
+
+    "#{action} at #{level} level"
   end
 
   # Required for Banzai::Filter::LabelReferenceFilter

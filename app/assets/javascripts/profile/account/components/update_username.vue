@@ -86,33 +86,37 @@ Please update your Git repository remotes as soon as possible.`),
     <div class="form-group">
       <label :for="$options.inputId">{{ s__('Profiles|Path') }}</label>
       <div class="input-group">
-        <div class="input-group-addon">{{ rootUrl }}</div>
+        <div class="input-group-prepend">
+          <div class="input-group-text">
+            {{ rootUrl }}
+          </div>
+        </div>
         <input
           :id="$options.inputId"
-          class="form-control"
-          required="required"
           v-model="newUsername"
           :disabled="isRequestPending"
+          class="form-control"
+          required="required"
         />
       </div>
-      <p class="help-block">
+      <p class="form-text text-muted">
         {{ path }}
       </p>
     </div>
     <button
       :data-target="`#${$options.modalId}`"
+      :disabled="isRequestPending || newUsername === username"
       class="btn btn-warning"
       type="button"
       data-toggle="modal"
-      :disabled="isRequestPending || newUsername === username"
     >
       {{ $options.buttonText }}
     </button>
     <gl-modal
       :id="$options.modalId"
       :header-title-text="s__('Profiles|Change username') + '?'"
-      footer-primary-button-variant="warning"
       :footer-primary-button-text="$options.buttonText"
+      footer-primary-button-variant="warning"
       @submit="onConfirm"
     >
       <span v-html="modalText"></span>

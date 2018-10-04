@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TodosHelper
   def todos_pending_count
     @todos_pending_count ||= current_user.todos_pending_count
@@ -43,7 +45,7 @@ module TodosHelper
       project_commit_path(todo.project,
                                     todo.target, anchor: anchor)
     else
-      path = [todo.project.namespace.becomes(Namespace), todo.project, todo.target]
+      path = [todo.parent, todo.target]
 
       path.unshift(:pipelines) if todo.build_failed?
 
@@ -94,9 +96,7 @@ module TodosHelper
       end
     end
 
-    path = request.path
-    path << "?#{options.to_param}"
-    path
+    "#{request.path}?#{options.to_param}"
   end
 
   def todo_actions_options
@@ -152,10 +152,11 @@ module TodosHelper
         ''
       end
 
-    html = "&middot; ".html_safe
-    html << content_tag(:span, class: css_class) do
+    content = content_tag(:span, class: css_class) do
       "Due #{is_due_today ? "today" : todo.target.due_date.to_s(:medium)}"
     end
+
+    "&middot; #{content}".html_safe
   end
 
   private
@@ -166,5 +167,13 @@ module TodosHelper
 
   def show_todo_state?(todo)
     (todo.target.is_a?(MergeRequest) || todo.target.is_a?(Issue)) && %w(closed merged).include?(todo.target.state)
+  end
+
+  def todo_group_options
+    groups = current_user.authorized_groups.map do |group|
+      { id: group.id, text: group.full_name }
+    end
+
+    groups.unshift({ id: '', text: 'Any Group' }).to_json
   end
 end

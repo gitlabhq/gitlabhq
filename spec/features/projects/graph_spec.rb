@@ -3,16 +3,17 @@ require 'spec_helper'
 describe 'Project Graph', :js do
   let(:user) { create :user }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
+  let(:branch_name) { 'master' }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
 
     sign_in(user)
   end
 
   shared_examples 'page should have commits graphs' do
     it 'renders commits' do
-      expect(page).to have_content('Commit statistics for master')
+      expect(page).to have_content("Commit statistics for #{branch_name}")
       expect(page).to have_content('Commits per day of month')
     end
   end
@@ -55,6 +56,23 @@ describe 'Project Graph', :js do
 
     it_behaves_like 'page should have commits graphs'
     it_behaves_like 'page should have languages graphs'
+  end
+
+  context 'chart graph with HTML escaped branch name' do
+    let(:branch_name) { '<h1>evil</h1>' }
+
+    before do
+      project.repository.create_branch(branch_name, 'master')
+
+      visit charts_project_graph_path(project, branch_name)
+    end
+
+    it_behaves_like 'page should have commits graphs'
+
+    it 'HTML escapes branch name' do
+      expect(page.body).to include("Commit statistics for <strong>#{ERB::Util.html_escape(branch_name)}</strong>")
+      expect(page.body).not_to include(branch_name)
+    end
   end
 
   context 'when CI enabled' do

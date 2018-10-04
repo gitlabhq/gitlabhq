@@ -17,12 +17,12 @@ export default {
 <template>
   <div
     v-if="showPanels"
-    class="panel panel-default prometheus-panel"
+    class="card prometheus-panel"
   >
-    <div class="panel-heading">
+    <div class="card-header">
       <h4>{{ name }}</h4>
     </div>
-    <div class="panel-body prometheus-graph-group">
+    <div class="card-body prometheus-graph-group">
       <slot></slot>
     </div>
   </div>

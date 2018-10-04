@@ -1,5 +1,0 @@
----
-title: Remove N+1 query for Noteable association.
-merge_request: 17956
-author:
-type: performance

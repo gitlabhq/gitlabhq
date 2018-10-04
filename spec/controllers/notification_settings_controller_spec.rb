@@ -21,10 +21,11 @@ describe NotificationSettingsController do
     end
 
     context 'when authorized' do
+      let(:notification_setting) { user.notification_settings_for(source) }
       let(:custom_events) do
         events = {}
 
-        NotificationSetting::EMAIL_EVENTS.each do |event|
+        NotificationSetting.email_events(source).each do |event|
           events[event.to_s] = true
         end
 
@@ -36,7 +37,7 @@ describe NotificationSettingsController do
       end
 
       context 'for projects' do
-        let(:notification_setting) { user.notification_settings_for(project) }
+        let(:source) { project }
 
         it 'creates notification setting' do
           post :create,
@@ -67,7 +68,7 @@ describe NotificationSettingsController do
       end
 
       context 'for groups' do
-        let(:notification_setting) { user.notification_settings_for(group) }
+        let(:source) { group }
 
         it 'creates notification setting' do
           post :create,
@@ -145,7 +146,7 @@ describe NotificationSettingsController do
         let(:custom_events) do
           events = {}
 
-          NotificationSetting::EMAIL_EVENTS.each do |event|
+          notification_setting.email_events.each do |event|
             events[event] = "true"
           end
         end

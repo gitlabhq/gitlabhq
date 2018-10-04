@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Import::GithubController < Import::BaseController
   before_action :verify_import_enabled
   before_action :provider_auth, only: [:status, :jobs, :create]
@@ -22,17 +24,18 @@ class Import::GithubController < Import::BaseController
     redirect_to status_import_url
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def status
     @repos = client.repos
-    @already_added_projects = current_user.created_projects.where(import_type: provider)
+    @already_added_projects = find_already_added_projects(provider)
     already_added_projects_names = @already_added_projects.pluck(:import_source)
 
     @repos.reject! { |repo| already_added_projects_names.include? repo.full_name }
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def jobs
-    jobs = current_user.created_projects.where(import_type: provider).to_json(only: [:id, :import_status])
-    render json: jobs
+    render json: find_jobs(provider)
   end
 
   def create
@@ -49,7 +52,7 @@ class Import::GithubController < Import::BaseController
       if project.persisted?
         render json: ProjectSerializer.new.represent(project)
       else
-        render json: { errors: project.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: project_save_error(project) }, status: :unprocessable_entity
       end
     else
       render json: { errors: 'This namespace has already been taken! Please choose another one.' }, status: :unprocessable_entity
@@ -105,9 +108,11 @@ class Import::GithubController < Import::BaseController
     :github
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def logged_in_with_provider?
     current_user.identities.exists?(provider: provider)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def provider_auth
     if session[access_token_key].blank?

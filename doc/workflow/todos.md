@@ -14,7 +14,7 @@ in a simple dashboard.
 
 ---
 
-You can quickly access the Todos dashboard using the bell icon next to the
+You can quickly access the Todos dashboard using the checkmark icon next to the
 search bar in the upper right corner. The number in blue is the number of Todos
 you still have open if the count is < 100, else it's 99+. The exact number
 will still be shown in the body of the _To do_ tab.
@@ -31,6 +31,9 @@ A Todo appears in your Todos dashboard when:
 - you are `@mentioned` in a comment on a commit,
 - a job in the CI pipeline running for your merge request failed, but this
   job is not allowed to fail.
+- an open merge request becomes unmergeable due to conflict, and you are either:
+  - the author, or
+  - have set it to automatically merge once pipeline succeeds.
 
 ### Directly addressed Todos
 
@@ -92,9 +95,9 @@ corresponding **Done** button, and it will disappear from your Todo list.
 ![A Todo in the Todos dashboard](img/todo_list_item.png)
 
 A Todo can also be marked as done from the issue or merge request sidebar using
-the "Mark done" button.
+the "Mark todo as done" button.
 
-![Mark Done from the issuable sidebar](img/todos_mark_done_sidebar.png)
+![Mark todo as done from the issuable sidebar](img/todos_mark_done_sidebar.png)
 
 You can mark all your Todos as done at once by clicking on the **Mark all as
 done** button.
@@ -106,6 +109,7 @@ There are four kinds of filters you can use on your Todos dashboard.
 | Filter  | Description |
 | ------- | ----------- |
 | Project | Filter by project |
+| Group   | Filter by group |
 | Author  | Filter by the author that triggered the Todo |
 | Type    | Filter by issue or merge request |
 | Action  | Filter by the action that triggered the Todo |

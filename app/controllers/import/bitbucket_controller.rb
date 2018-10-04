@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Import::BitbucketController < Import::BaseController
   before_action :verify_bitbucket_import_enabled
   before_action :bitbucket_auth, except: :callback
@@ -16,22 +18,22 @@ class Import::BitbucketController < Import::BaseController
     redirect_to status_import_bitbucket_url
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def status
     bitbucket_client = Bitbucket::Client.new(credentials)
     repos = bitbucket_client.repos
 
     @repos, @incompatible_repos = repos.partition { |repo| repo.valid? }
 
-    @already_added_projects = current_user.created_projects.where(import_type: 'bitbucket')
+    @already_added_projects = find_already_added_projects('bitbucket')
     already_added_projects_names = @already_added_projects.pluck(:import_source)
 
     @repos.to_a.reject! { |repo| already_added_projects_names.include?(repo.full_name) }
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def jobs
-    render json: current_user.created_projects
-                             .where(import_type: 'bitbucket')
-                             .to_json(only: [:id, :import_status])
+    render json: find_jobs('bitbucket')
   end
 
   def create
@@ -57,7 +59,7 @@ class Import::BitbucketController < Import::BaseController
       if project.persisted?
         render json: ProjectSerializer.new.represent(project)
       else
-        render json: { errors: project.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: project_save_error(project) }, status: :unprocessable_entity
       end
     else
       render json: { errors: 'This namespace has already been taken! Please choose another one.' }, status: :unprocessable_entity

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class WebHookService
   class InternalErrorResponse
     attr_reader :body, :headers, :code
@@ -41,7 +43,7 @@ class WebHookService
       http_status: response.code,
       message: response.to_s
     }
-  rescue SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout => e
+  rescue SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout, Gitlab::HTTP::BlockedUrlError => e
     log_execution(
       trigger: hook_name,
       url: hook.url,
@@ -82,7 +84,7 @@ class WebHookService
     post_url = hook.url.gsub("#{parsed_url.userinfo}@", '')
     basic_auth = {
       username: CGI.unescape(parsed_url.user),
-      password: CGI.unescape(parsed_url.password)
+      password: CGI.unescape(parsed_url.password.presence || '')
     }
     make_request(post_url, basic_auth)
   end

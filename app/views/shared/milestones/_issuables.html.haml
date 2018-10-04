@@ -1,9 +1,9 @@
 - show_counter = local_assigns.fetch(:show_counter, false)
 - primary = local_assigns.fetch(:primary, false)
-- panel_class = primary ? 'panel-primary' : 'panel-default'
+- panel_class = primary ? 'bg-primary text-white' : ''
 
-.panel{ class: panel_class }
-  .panel-heading
+.card
+  .card-header{ class: panel_class }
     .title
       = title
     - if show_counter
@@ -11,7 +11,7 @@
         = number_with_delimiter(issuables.length)
 
   - class_prefix = dom_class(issuables).pluralize
-  %ul{ class: "well-list milestone-#{class_prefix}-list", id: "#{class_prefix}-list-#{id}" }
+  %ul{ class: "content-list milestone-#{class_prefix}-list", id: "#{class_prefix}-list-#{id}" }
     = render partial: 'shared/milestones/issuable',
              collection: issuables,
              as: :issuable,

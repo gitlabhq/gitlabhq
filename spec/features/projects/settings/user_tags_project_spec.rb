@@ -9,15 +9,13 @@ describe 'Projects > Settings > User tags a project' do
     visit edit_project_path(project)
   end
 
-  context 'when a project is archived' do
-    it 'unarchives a project' do
-      fill_in 'Tags', with: 'tag1, tag2'
+  it 'sets project tags' do
+    fill_in 'Tags', with: 'tag1, tag2'
 
-      page.within '.general-settings' do
-        click_button 'Save changes'
-      end
-
-      expect(find_field('Tags').value).to eq 'tag1, tag2'
+    page.within '.general-settings' do
+      click_button 'Save changes'
     end
+
+    expect(find_field('Tags').value).to eq 'tag1, tag2'
   end
 end

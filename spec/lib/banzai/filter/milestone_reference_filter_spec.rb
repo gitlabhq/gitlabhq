@@ -3,7 +3,8 @@ require 'spec_helper'
 describe Banzai::Filter::MilestoneReferenceFilter do
   include FilterSpecHelper
 
-  let(:group) { create(:group, :public) }
+  let(:parent_group) { create(:group, :public) }
+  let(:group) { create(:group, :public, parent: parent_group) }
   let(:project) { create(:project, :public, group: group) }
 
   it 'requires project context' do
@@ -339,6 +340,13 @@ describe Banzai::Filter::MilestoneReferenceFilter do
       doc = reference_filter("See #{project_reference}#{reference}")
 
       expect(doc.css('a')).to be_empty
+    end
+
+    it 'supports parent group references', :nested_groups do
+      milestone.update!(group: parent_group)
+
+      doc = reference_filter("See #{reference}")
+      expect(doc.css('a').first.text).to eq(milestone.name)
     end
   end
 

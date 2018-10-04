@@ -1,0 +1,9 @@
+- if show_auto_devops_implicitly_enabled_banner?(project)
+  .auto-devops-implicitly-enabled-banner.alert.alert-warning
+    - more_information_link = link_to _('More information'), 'https://docs.gitlab.com/ee/topics/autodevops/', class: 'alert-link'
+    - auto_devops_message = s_("AutoDevOps|The Auto DevOps pipeline has been enabled and will be used if no alternative CI configuration file is found. %{more_information_link}") % { more_information_link: more_information_link }
+    = auto_devops_message.html_safe
+    .alert-link-group
+      = link_to _('Settings'), project_settings_ci_cd_path(project), class: 'alert-link'
+      |
+      = link_to _('Dismiss'), '#', class: 'hide-auto-devops-implicitly-enabled-banner alert-link', data: { project_id: project.id }

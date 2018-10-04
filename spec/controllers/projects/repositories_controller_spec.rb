@@ -40,6 +40,30 @@ describe Projects::RepositoriesController do
         expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-archive:")
       end
 
+      it 'handles legacy queries with the ref specified as ref in params' do
+        get :archive, namespace_id: project.namespace, project_id: project, ref: 'feature', format: 'zip'
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(assigns(:ref)).to eq('feature')
+        expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-archive:")
+      end
+
+      it 'handles legacy queries with the ref specified as id in params' do
+        get :archive, namespace_id: project.namespace, project_id: project, id: 'feature', format: 'zip'
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(assigns(:ref)).to eq('feature')
+        expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-archive:")
+      end
+
+      it 'prioritizes the id param over the ref param when both are specified' do
+        get :archive, namespace_id: project.namespace, project_id: project, id: 'feature', ref: 'feature_conflict', format: 'zip'
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(assigns(:ref)).to eq('feature')
+        expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-archive:")
+      end
+
       context "when the service raises an error" do
         before do
           allow(Gitlab::Workhorse).to receive(:send_git_archive).and_raise("Archive failed")

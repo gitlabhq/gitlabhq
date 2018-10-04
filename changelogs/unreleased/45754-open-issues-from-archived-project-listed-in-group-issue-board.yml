@@ -1,0 +1,5 @@
+---
+title: No longer show open issues from archived projects in group issue board
+merge_request: 21721
+author:
+type: fixed

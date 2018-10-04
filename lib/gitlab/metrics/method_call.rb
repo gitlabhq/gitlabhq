@@ -1,5 +1,3 @@
-# rubocop:disable Style/ClassVars
-
 module Gitlab
   module Metrics
     # Class for tracking timing information about method calls

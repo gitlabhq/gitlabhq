@@ -1,5 +1,0 @@
----
-title: Allow HTTP(s) when git request is made by GitLab CI
-merge_request: 18021
-author:
-type: changed

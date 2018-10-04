@@ -51,6 +51,7 @@ export const noteableDataMock = {
   time_estimate: 0,
   title: '14',
   total_time_spent: 0,
+  noteable_note_url: '/group/project/merge_requests/1#note_1',
   updated_at: '2017-08-04T09:53:01.226Z',
   updated_by_id: 1,
   web_url: '/gitlab-org/gitlab-ce/issues/26',
@@ -65,7 +66,7 @@ export const individualNote = {
   individual_note: true,
   notes: [
     {
-      id: 1390,
+      id: '1390',
       attachment: {
         url: null,
         filename: null,
@@ -99,6 +100,8 @@ export const individualNote = {
         { name: 'art', user: { id: 1, name: 'Root', username: 'root' } },
       ],
       toggle_award_path: '/gitlab-org/gitlab-ce/notes/1390/toggle_award_emoji',
+      noteable_note_url: '/group/project/merge_requests/1#note_1',
+      note_url: '/group/project/merge_requests/1#note_1',
       report_abuse_path:
         '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F26%23note_1390&user_id=1',
       path: '/gitlab-org/gitlab-ce/notes/1390',
@@ -108,7 +111,7 @@ export const individualNote = {
 };
 
 export const note = {
-  id: 546,
+  id: '546',
   attachment: {
     url: null,
     filename: null,
@@ -157,9 +160,12 @@ export const note = {
     },
   ],
   toggle_award_path: '/gitlab-org/gitlab-ce/notes/546/toggle_award_emoji',
+  note_url: '/group/project/merge_requests/1#note_1',
+  noteable_note_url: '/group/project/merge_requests/1#note_1',
   report_abuse_path:
     '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F7%23note_546&user_id=1',
   path: '/gitlab-org/gitlab-ce/notes/546',
+  cached_markdown_version: 11,
 };
 
 export const discussionMock = {
@@ -168,7 +174,7 @@ export const discussionMock = {
   expanded: true,
   notes: [
     {
-      id: 1395,
+      id: '1395',
       attachment: {
         url: null,
         filename: null,
@@ -198,13 +204,14 @@ export const discussionMock = {
       discussion_id: '9e3bd2f71a01de45fd166e6719eb380ad9f270b1',
       emoji_awardable: true,
       award_emoji: [],
+      noteable_note_url: '/group/project/merge_requests/1#note_1',
       toggle_award_path: '/gitlab-org/gitlab-ce/notes/1395/toggle_award_emoji',
       report_abuse_path:
         '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F26%23note_1395&user_id=1',
       path: '/gitlab-org/gitlab-ce/notes/1395',
     },
     {
-      id: 1396,
+      id: '1396',
       attachment: {
         url: null,
         filename: null,
@@ -244,12 +251,13 @@ export const discussionMock = {
       emoji_awardable: true,
       award_emoji: [],
       toggle_award_path: '/gitlab-org/gitlab-ce/notes/1396/toggle_award_emoji',
+      noteable_note_url: '/group/project/merge_requests/1#note_1',
       report_abuse_path:
         '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F26%23note_1396&user_id=1',
       path: '/gitlab-org/gitlab-ce/notes/1396',
     },
     {
-      id: 1437,
+      id: '1437',
       attachment: {
         url: null,
         filename: null,
@@ -288,6 +296,7 @@ export const discussionMock = {
       discussion_id: '9e3bd2f71a01de45fd166e6719eb380ad9f270b1',
       emoji_awardable: true,
       award_emoji: [],
+      noteable_note_url: '/group/project/merge_requests/1#note_1',
       toggle_award_path: '/gitlab-org/gitlab-ce/notes/1437/toggle_award_emoji',
       report_abuse_path:
         '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F26%23note_1437&user_id=1',
@@ -295,10 +304,11 @@ export const discussionMock = {
     },
   ],
   individual_note: false,
+  resolvable: true,
 };
 
 export const loggedOutnoteableData = {
-  id: 98,
+  id: '98',
   iid: 26,
   author_id: 1,
   description: '',
@@ -335,10 +345,84 @@ export const loggedOutnoteableData = {
     can_create_note: false,
     can_update: false,
   },
+  noteable_note_url: '/group/project/merge_requests/1#note_1',
   create_note_path: '/gitlab-org/gitlab-ce/notes?target_id=98&target_type=issue',
   preview_note_path:
     '/gitlab-org/gitlab-ce/preview_markdown?quick_actions_target_id=98&quick_actions_target_type=Issue',
 };
+
+export const collapseNotesMock = [
+  {
+    expanded: true,
+    id: '0fb4e0e3f9276e55ff32eb4195add694aece4edd',
+    individual_note: true,
+    notes: [
+      {
+        id: '1390',
+        attachment: null,
+        author: {
+          id: 1,
+          name: 'Root',
+          username: 'root',
+          state: 'active',
+          avatar_url: 'test',
+          path: '/root',
+        },
+        created_at: '2018-02-26T18:07:41.071Z',
+        updated_at: '2018-02-26T18:07:41.071Z',
+        system: true,
+        system_note_icon_name: 'pencil',
+        noteable_id: 98,
+        noteable_type: 'Issue',
+        type: null,
+        human_access: 'Owner',
+        note: 'changed the description',
+        note_html: '<p dir="auto">changed the description</p>',
+        current_user: { can_edit: false },
+        discussion_id: 'b97fb7bda470a65b3e009377a9032edec0a4dd05',
+        emoji_awardable: false,
+        path: '/h5bp/html5-boilerplate/notes/1057',
+        report_abuse_path:
+          '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fh5bp%2Fhtml5-boilerplate%2Fissues%2F10%23note_1057&user_id=1',
+      },
+    ],
+  },
+  {
+    expanded: true,
+    id: 'ffde43f25984ad7f2b4275135e0e2846875336c0',
+    individual_note: true,
+    notes: [
+      {
+        id: '1391',
+        attachment: null,
+        author: {
+          id: 1,
+          name: 'Root',
+          username: 'root',
+          state: 'active',
+          avatar_url: 'test',
+          path: '/root',
+        },
+        created_at: '2018-02-26T18:13:24.071Z',
+        updated_at: '2018-02-26T18:13:24.071Z',
+        system: true,
+        system_note_icon_name: 'pencil',
+        noteable_id: 99,
+        noteable_type: 'Issue',
+        type: null,
+        human_access: 'Owner',
+        note: 'changed the description',
+        note_html: '<p dir="auto">changed the description</p>',
+        current_user: { can_edit: false },
+        discussion_id: '3eb958b4d81dec207ec3537a2f3bd8b9f271bb34',
+        emoji_awardable: false,
+        path: '/h5bp/html5-boilerplate/notes/1057',
+        report_abuse_path:
+          '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fh5bp%2Fhtml5-boilerplate%2Fissues%2F10%23note_1057&user_id=1',
+      },
+    ],
+  },
+];
 
 export const INDIVIDUAL_NOTE_RESPONSE_MAP = {
   GET: {
@@ -349,7 +433,7 @@ export const INDIVIDUAL_NOTE_RESPONSE_MAP = {
         expanded: true,
         notes: [
           {
-            id: 1390,
+            id: '1390',
             attachment: {
               url: null,
               filename: null,
@@ -396,6 +480,7 @@ export const INDIVIDUAL_NOTE_RESPONSE_MAP = {
                 },
               },
             ],
+            noteable_note_url: '/group/project/merge_requests/1#note_1',
             toggle_award_path: '/gitlab-org/gitlab-ce/notes/1390/toggle_award_emoji',
             report_abuse_path:
               '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F26%23note_1390\u0026user_id=1',
@@ -410,7 +495,7 @@ export const INDIVIDUAL_NOTE_RESPONSE_MAP = {
         expanded: true,
         notes: [
           {
-            id: 1391,
+            id: '1391',
             attachment: {
               url: null,
               filename: null,
@@ -440,6 +525,7 @@ export const INDIVIDUAL_NOTE_RESPONSE_MAP = {
             discussion_id: '70d5c92a4039a36c70100c6691c18c27e4b0a790',
             emoji_awardable: true,
             award_emoji: [],
+            noteable_note_url: '/group/project/merge_requests/1#note_1',
             toggle_award_path: '/gitlab-org/gitlab-ce/notes/1391/toggle_award_emoji',
             report_abuse_path:
               '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F26%23note_1391\u0026user_id=1',
@@ -458,7 +544,7 @@ export const INDIVIDUAL_NOTE_RESPONSE_MAP = {
     '/gitlab-org/gitlab-ce/notes/1471': {
       commands_changes: null,
       valid: true,
-      id: 1471,
+      id: '1471',
       attachment: null,
       author: {
         id: 1,
@@ -494,6 +580,7 @@ export const INDIVIDUAL_NOTE_RESPONSE_MAP = {
       discussion_id: 'a3ed36e29b1957efb3b68c53e2d7a2b24b1df052',
       emoji_awardable: true,
       award_emoji: [],
+      noteable_note_url: '/group/project/merge_requests/1#note_1',
       toggle_award_path: '/gitlab-org/gitlab-ce/notes/1471/toggle_award_emoji',
       report_abuse_path:
         '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F29%23note_1471\u0026user_id=1',
@@ -513,7 +600,7 @@ export const DISCUSSION_NOTE_RESPONSE_MAP = {
         expanded: true,
         notes: [
           {
-            id: 1471,
+            id: '1471',
             attachment: {
               url: null,
               filename: null,
@@ -545,6 +632,7 @@ export const DISCUSSION_NOTE_RESPONSE_MAP = {
             emoji_awardable: true,
             award_emoji: [],
             toggle_award_path: '/gitlab-org/gitlab-ce/notes/1471/toggle_award_emoji',
+            noteable_note_url: '/group/project/merge_requests/1#note_1',
             report_abuse_path:
               '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F29%23note_1471\u0026user_id=1',
             path: '/gitlab-org/gitlab-ce/notes/1471',
@@ -575,3 +663,592 @@ export function discussionNoteInterceptor(request, next) {
     }),
   );
 }
+
+export const notesWithDescriptionChanges = [
+  {
+    id: '39b271c2033e9ed43d8edb393702f65f7a830459',
+    reply_id: '39b271c2033e9ed43d8edb393702f65f7a830459',
+    expanded: true,
+    notes: [
+      {
+        id: '901',
+        type: null,
+        attachment: null,
+        author: {
+          id: 1,
+          name: 'Administrator',
+          username: 'root',
+          state: 'active',
+          avatar_url:
+            'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+          path: '/root',
+        },
+        created_at: '2018-05-29T12:05:36.117Z',
+        updated_at: '2018-05-29T12:05:36.117Z',
+        system: false,
+        noteable_id: 182,
+        noteable_type: 'Issue',
+        resolvable: false,
+        noteable_iid: 12,
+        note:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        note_html:
+          '<p dir="auto">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>',
+        current_user: { can_edit: true, can_award_emoji: true },
+        resolved: false,
+        resolved_by: null,
+        discussion_id: '39b271c2033e9ed43d8edb393702f65f7a830459',
+        emoji_awardable: true,
+        award_emoji: [],
+        report_abuse_path:
+          '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-shell%2Fissues%2F12%23note_901&user_id=1',
+        human_access: 'Owner',
+        toggle_award_path: '/gitlab-org/gitlab-shell/notes/901/toggle_award_emoji',
+        path: '/gitlab-org/gitlab-shell/notes/901',
+      },
+    ],
+    individual_note: true,
+    resolvable: false,
+    resolved: false,
+    diff_discussion: false,
+  },
+  {
+    id: '4852335d7dc40b9ceb8fde1a2bb9c1b67e4c7795',
+    reply_id: '4852335d7dc40b9ceb8fde1a2bb9c1b67e4c7795',
+    expanded: true,
+    notes: [
+      {
+        id: '902',
+        type: null,
+        attachment: null,
+        author: {
+          id: 1,
+          name: 'Administrator',
+          username: 'root',
+          state: 'active',
+          avatar_url:
+            'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+          path: '/root',
+        },
+        created_at: '2018-05-29T12:05:58.694Z',
+        updated_at: '2018-05-29T12:05:58.694Z',
+        system: false,
+        noteable_id: 182,
+        noteable_type: 'Issue',
+        resolvable: false,
+        noteable_iid: 12,
+        note:
+          'Varius vel pharetra vel turpis nunc eget lorem. Ipsum dolor sit amet consectetur adipiscing.',
+        note_html:
+          '<p dir="auto">Varius vel pharetra vel turpis nunc eget lorem. Ipsum dolor sit amet consectetur adipiscing.</p>',
+        current_user: { can_edit: true, can_award_emoji: true },
+        resolved: false,
+        resolved_by: null,
+        discussion_id: '4852335d7dc40b9ceb8fde1a2bb9c1b67e4c7795',
+        emoji_awardable: true,
+        award_emoji: [],
+        report_abuse_path:
+          '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-shell%2Fissues%2F12%23note_902&user_id=1',
+        human_access: 'Owner',
+        toggle_award_path: '/gitlab-org/gitlab-shell/notes/902/toggle_award_emoji',
+        path: '/gitlab-org/gitlab-shell/notes/902',
+      },
+    ],
+    individual_note: true,
+    resolvable: false,
+    resolved: false,
+    diff_discussion: false,
+  },
+  {
+    id: '7f1feda384083eb31763366e6392399fde6f3f31',
+    reply_id: '7f1feda384083eb31763366e6392399fde6f3f31',
+    expanded: true,
+    notes: [
+      {
+        id: '903',
+        type: null,
+        attachment: null,
+        author: {
+          id: 1,
+          name: 'Administrator',
+          username: 'root',
+          state: 'active',
+          avatar_url:
+            'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+          path: '/root',
+        },
+        created_at: '2018-05-29T12:06:05.772Z',
+        updated_at: '2018-05-29T12:06:05.772Z',
+        system: true,
+        noteable_id: 182,
+        noteable_type: 'Issue',
+        resolvable: false,
+        noteable_iid: 12,
+        note: 'changed the description',
+        note_html: '<p dir="auto">changed the description</p>',
+        current_user: { can_edit: false, can_award_emoji: true },
+        resolved: false,
+        resolved_by: null,
+        system_note_icon_name: 'pencil-square',
+        discussion_id: '7f1feda384083eb31763366e6392399fde6f3f31',
+        emoji_awardable: false,
+        report_abuse_path:
+          '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-shell%2Fissues%2F12%23note_903&user_id=1',
+        human_access: 'Owner',
+        path: '/gitlab-org/gitlab-shell/notes/903',
+      },
+    ],
+    individual_note: true,
+    resolvable: false,
+    resolved: false,
+    diff_discussion: false,
+  },
+  {
+    id: '091865fe3ae20f0045234a3d103e3b15e73405b5',
+    reply_id: '091865fe3ae20f0045234a3d103e3b15e73405b5',
+    expanded: true,
+    notes: [
+      {
+        id: '904',
+        type: null,
+        attachment: null,
+        author: {
+          id: 1,
+          name: 'Administrator',
+          username: 'root',
+          state: 'active',
+          avatar_url:
+            'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+          path: '/root',
+        },
+        created_at: '2018-05-29T12:06:16.112Z',
+        updated_at: '2018-05-29T12:06:16.112Z',
+        system: false,
+        noteable_id: 182,
+        noteable_type: 'Issue',
+        resolvable: false,
+        noteable_iid: 12,
+        note: 'Ullamcorper eget nulla facilisi etiam',
+        note_html: '<p dir="auto">Ullamcorper eget nulla facilisi etiam</p>',
+        current_user: { can_edit: true, can_award_emoji: true },
+        resolved: false,
+        resolved_by: null,
+        discussion_id: '091865fe3ae20f0045234a3d103e3b15e73405b5',
+        emoji_awardable: true,
+        award_emoji: [],
+        report_abuse_path:
+          '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-shell%2Fissues%2F12%23note_904&user_id=1',
+        human_access: 'Owner',
+        toggle_award_path: '/gitlab-org/gitlab-shell/notes/904/toggle_award_emoji',
+        path: '/gitlab-org/gitlab-shell/notes/904',
+      },
+    ],
+    individual_note: true,
+    resolvable: false,
+    resolved: false,
+    diff_discussion: false,
+  },
+  {
+    id: 'a21cf2e804acc3c60d07e37d75e395f5a9a4d044',
+    reply_id: 'a21cf2e804acc3c60d07e37d75e395f5a9a4d044',
+    expanded: true,
+    notes: [
+      {
+        id: '905',
+        type: null,
+        attachment: null,
+        author: {
+          id: 1,
+          name: 'Administrator',
+          username: 'root',
+          state: 'active',
+          avatar_url:
+            'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+          path: '/root',
+        },
+        created_at: '2018-05-29T12:06:28.851Z',
+        updated_at: '2018-05-29T12:06:28.851Z',
+        system: true,
+        noteable_id: 182,
+        noteable_type: 'Issue',
+        resolvable: false,
+        noteable_iid: 12,
+        note: 'changed the description',
+        note_html: '<p dir="auto">changed the description</p>',
+        current_user: { can_edit: false, can_award_emoji: true },
+        resolved: false,
+        resolved_by: null,
+        system_note_icon_name: 'pencil-square',
+        discussion_id: 'a21cf2e804acc3c60d07e37d75e395f5a9a4d044',
+        emoji_awardable: false,
+        report_abuse_path:
+          '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-shell%2Fissues%2F12%23note_905&user_id=1',
+        human_access: 'Owner',
+        path: '/gitlab-org/gitlab-shell/notes/905',
+      },
+    ],
+    individual_note: true,
+    resolvable: false,
+    resolved: false,
+    diff_discussion: false,
+  },
+  {
+    id: '70411b08cdfc01f24187a06d77daa33464cb2620',
+    reply_id: '70411b08cdfc01f24187a06d77daa33464cb2620',
+    expanded: true,
+    notes: [
+      {
+        id: '906',
+        type: null,
+        attachment: null,
+        author: {
+          id: 1,
+          name: 'Administrator',
+          username: 'root',
+          state: 'active',
+          avatar_url:
+            'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+          path: '/root',
+        },
+        created_at: '2018-05-29T12:20:02.925Z',
+        updated_at: '2018-05-29T12:20:02.925Z',
+        system: true,
+        noteable_id: 182,
+        noteable_type: 'Issue',
+        resolvable: false,
+        noteable_iid: 12,
+        note: 'changed the description',
+        note_html: '<p dir="auto">changed the description</p>',
+        current_user: { can_edit: false, can_award_emoji: true },
+        resolved: false,
+        resolved_by: null,
+        system_note_icon_name: 'pencil-square',
+        discussion_id: '70411b08cdfc01f24187a06d77daa33464cb2620',
+        emoji_awardable: false,
+        report_abuse_path:
+          '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-shell%2Fissues%2F12%23note_906&user_id=1',
+        human_access: 'Owner',
+        path: '/gitlab-org/gitlab-shell/notes/906',
+      },
+    ],
+    individual_note: true,
+    resolvable: false,
+    resolved: false,
+    diff_discussion: false,
+  },
+];
+
+export const collapsedSystemNotes = [
+  {
+    id: '39b271c2033e9ed43d8edb393702f65f7a830459',
+    reply_id: '39b271c2033e9ed43d8edb393702f65f7a830459',
+    expanded: true,
+    notes: [
+      {
+        id: '901',
+        type: null,
+        attachment: null,
+        author: {
+          id: 1,
+          name: 'Administrator',
+          username: 'root',
+          state: 'active',
+          avatar_url:
+            'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+          path: '/root',
+        },
+        created_at: '2018-05-29T12:05:36.117Z',
+        updated_at: '2018-05-29T12:05:36.117Z',
+        system: false,
+        noteable_id: 182,
+        noteable_type: 'Issue',
+        resolvable: false,
+        noteable_iid: 12,
+        note:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        note_html:
+          '<p dir="auto">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>',
+        current_user: { can_edit: true, can_award_emoji: true },
+        resolved: false,
+        resolved_by: null,
+        discussion_id: '39b271c2033e9ed43d8edb393702f65f7a830459',
+        emoji_awardable: true,
+        award_emoji: [],
+        report_abuse_path:
+          '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-shell%2Fissues%2F12%23note_901&user_id=1',
+        human_access: 'Owner',
+        toggle_award_path: '/gitlab-org/gitlab-shell/notes/901/toggle_award_emoji',
+        path: '/gitlab-org/gitlab-shell/notes/901',
+      },
+    ],
+    individual_note: true,
+    resolvable: false,
+    resolved: false,
+    diff_discussion: false,
+  },
+  {
+    id: '4852335d7dc40b9ceb8fde1a2bb9c1b67e4c7795',
+    reply_id: '4852335d7dc40b9ceb8fde1a2bb9c1b67e4c7795',
+    expanded: true,
+    notes: [
+      {
+        id: '902',
+        type: null,
+        attachment: null,
+        author: {
+          id: 1,
+          name: 'Administrator',
+          username: 'root',
+          state: 'active',
+          avatar_url:
+            'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+          path: '/root',
+        },
+        created_at: '2018-05-29T12:05:58.694Z',
+        updated_at: '2018-05-29T12:05:58.694Z',
+        system: false,
+        noteable_id: 182,
+        noteable_type: 'Issue',
+        resolvable: false,
+        noteable_iid: 12,
+        note:
+          'Varius vel pharetra vel turpis nunc eget lorem. Ipsum dolor sit amet consectetur adipiscing.',
+        note_html:
+          '<p dir="auto">Varius vel pharetra vel turpis nunc eget lorem. Ipsum dolor sit amet consectetur adipiscing.</p>',
+        current_user: { can_edit: true, can_award_emoji: true },
+        resolved: false,
+        resolved_by: null,
+        discussion_id: '4852335d7dc40b9ceb8fde1a2bb9c1b67e4c7795',
+        emoji_awardable: true,
+        award_emoji: [],
+        report_abuse_path:
+          '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-shell%2Fissues%2F12%23note_902&user_id=1',
+        human_access: 'Owner',
+        toggle_award_path: '/gitlab-org/gitlab-shell/notes/902/toggle_award_emoji',
+        path: '/gitlab-org/gitlab-shell/notes/902',
+      },
+    ],
+    individual_note: true,
+    resolvable: false,
+    resolved: false,
+    diff_discussion: false,
+  },
+  {
+    id: '091865fe3ae20f0045234a3d103e3b15e73405b5',
+    reply_id: '091865fe3ae20f0045234a3d103e3b15e73405b5',
+    expanded: true,
+    notes: [
+      {
+        id: '904',
+        type: null,
+        attachment: null,
+        author: {
+          id: 1,
+          name: 'Administrator',
+          username: 'root',
+          state: 'active',
+          avatar_url:
+            'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+          path: '/root',
+        },
+        created_at: '2018-05-29T12:06:16.112Z',
+        updated_at: '2018-05-29T12:06:16.112Z',
+        system: false,
+        noteable_id: 182,
+        noteable_type: 'Issue',
+        resolvable: false,
+        noteable_iid: 12,
+        note: 'Ullamcorper eget nulla facilisi etiam',
+        note_html: '<p dir="auto">Ullamcorper eget nulla facilisi etiam</p>',
+        current_user: { can_edit: true, can_award_emoji: true },
+        resolved: false,
+        resolved_by: null,
+        discussion_id: '091865fe3ae20f0045234a3d103e3b15e73405b5',
+        emoji_awardable: true,
+        award_emoji: [],
+        report_abuse_path:
+          '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-shell%2Fissues%2F12%23note_904&user_id=1',
+        human_access: 'Owner',
+        toggle_award_path: '/gitlab-org/gitlab-shell/notes/904/toggle_award_emoji',
+        path: '/gitlab-org/gitlab-shell/notes/904',
+      },
+    ],
+    individual_note: true,
+    resolvable: false,
+    resolved: false,
+    diff_discussion: false,
+  },
+  {
+    id: 'a21cf2e804acc3c60d07e37d75e395f5a9a4d044',
+    reply_id: 'a21cf2e804acc3c60d07e37d75e395f5a9a4d044',
+    expanded: true,
+    notes: [
+      {
+        id: '905',
+        type: null,
+        attachment: null,
+        author: {
+          id: 1,
+          name: 'Administrator',
+          username: 'root',
+          state: 'active',
+          avatar_url:
+            'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+          path: '/root',
+        },
+        created_at: '2018-05-29T12:06:28.851Z',
+        updated_at: '2018-05-29T12:06:28.851Z',
+        system: true,
+        noteable_id: 182,
+        noteable_type: 'Issue',
+        resolvable: false,
+        noteable_iid: 12,
+        note: 'changed the description',
+        note_html: ' <p dir="auto">changed the description 2 times within 1 minute </p>',
+        current_user: { can_edit: false, can_award_emoji: true },
+        resolved: false,
+        resolved_by: null,
+        system_note_icon_name: 'pencil-square',
+        discussion_id: 'a21cf2e804acc3c60d07e37d75e395f5a9a4d044',
+        emoji_awardable: false,
+        report_abuse_path:
+          '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-shell%2Fissues%2F12%23note_905&user_id=1',
+        human_access: 'Owner',
+        path: '/gitlab-org/gitlab-shell/notes/905',
+        times_updated: 2,
+      },
+    ],
+    individual_note: true,
+    resolvable: false,
+    resolved: false,
+    diff_discussion: false,
+  },
+  {
+    id: '70411b08cdfc01f24187a06d77daa33464cb2620',
+    reply_id: '70411b08cdfc01f24187a06d77daa33464cb2620',
+    expanded: true,
+    notes: [
+      {
+        id: '906',
+        type: null,
+        attachment: null,
+        author: {
+          id: 1,
+          name: 'Administrator',
+          username: 'root',
+          state: 'active',
+          avatar_url:
+            'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+          path: '/root',
+        },
+        created_at: '2018-05-29T12:20:02.925Z',
+        updated_at: '2018-05-29T12:20:02.925Z',
+        system: true,
+        noteable_id: 182,
+        noteable_type: 'Issue',
+        resolvable: false,
+        noteable_iid: 12,
+        note: 'changed the description',
+        note_html: '<p dir="auto">changed the description</p>',
+        current_user: { can_edit: false, can_award_emoji: true },
+        resolved: false,
+        resolved_by: null,
+        system_note_icon_name: 'pencil-square',
+        discussion_id: '70411b08cdfc01f24187a06d77daa33464cb2620',
+        emoji_awardable: false,
+        report_abuse_path:
+          '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-shell%2Fissues%2F12%23note_906&user_id=1',
+        human_access: 'Owner',
+        path: '/gitlab-org/gitlab-shell/notes/906',
+      },
+    ],
+    individual_note: true,
+    resolvable: false,
+    resolved: false,
+    diff_discussion: false,
+  },
+];
+
+export const discussion1 = {
+  id: 'abc1',
+  resolvable: true,
+  resolved: false,
+  diff_file: {
+    file_path: 'about.md',
+  },
+  position: {
+    formatter: {
+      new_line: 50,
+      old_line: null,
+    },
+  },
+  notes: [
+    {
+      created_at: '2018-07-04T16:25:41.749Z',
+    },
+  ],
+};
+
+export const resolvedDiscussion1 = {
+  id: 'abc1',
+  resolvable: true,
+  resolved: true,
+  diff_file: {
+    file_path: 'about.md',
+  },
+  position: {
+    formatter: {
+      new_line: 50,
+      old_line: null,
+    },
+  },
+  notes: [
+    {
+      created_at: '2018-07-04T16:25:41.749Z',
+    },
+  ],
+};
+
+export const discussion2 = {
+  id: 'abc2',
+  resolvable: true,
+  resolved: false,
+  diff_file: {
+    file_path: 'README.md',
+  },
+  position: {
+    formatter: {
+      new_line: null,
+      old_line: 20,
+    },
+  },
+  notes: [
+    {
+      created_at: '2018-07-04T12:05:41.749Z',
+    },
+  ],
+};
+
+export const discussion3 = {
+  id: 'abc3',
+  resolvable: true,
+  resolved: false,
+  diff_file: {
+    file_path: 'README.md',
+  },
+  position: {
+    formatter: {
+      new_line: 21,
+      old_line: null,
+    },
+  },
+  notes: [
+    {
+      created_at: '2018-07-05T17:25:41.749Z',
+    },
+  ],
+};
+
+export const unresolvableDiscussion = {
+  resolvable: false,
+};

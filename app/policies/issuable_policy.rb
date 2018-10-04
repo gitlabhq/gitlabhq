@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IssuablePolicy < BasePolicy
   delegate { @subject.project }
 
@@ -12,6 +14,7 @@ class IssuablePolicy < BasePolicy
   rule { assignee_or_author }.policy do
     enable :read_issue
     enable :update_issue
+    enable :reopen_issue
     enable :read_merge_request
     enable :update_merge_request
   end

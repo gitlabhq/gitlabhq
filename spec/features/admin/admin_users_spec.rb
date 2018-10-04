@@ -68,10 +68,12 @@ describe "Admin::Users" do
   end
 
   describe "GET /admin/users/new" do
+    let(:user_username) { 'bang' }
+
     before do
       visit new_admin_user_path
       fill_in "user_name", with: "Big Bang"
-      fill_in "user_username", with: "bang"
+      fill_in "user_username", with: user_username
       fill_in "user_email", with: "bigbang@mail.com"
     end
 
@@ -112,6 +114,63 @@ describe "Admin::Users" do
       expect(email.text_part.body).to have_content(user.email)
       expect(email.text_part.body).to have_content('password')
     end
+
+    context 'username contains spaces' do
+      let(:user_username) { 'Bing bang' }
+
+      it "doesn't create the user and shows an error message" do
+        expect { click_button "Create user" }.to change {User.count}.by(0)
+
+        expect(page).to have_content('The form contains the following error')
+        expect(page).to have_content('Username can contain only letters, digits')
+      end
+    end
+
+    context 'with new users set to external enabled' do
+      context 'with regex to match internal user email address set', :js do
+        before do
+          stub_application_setting(user_default_external: true)
+          stub_application_setting(user_default_internal_regex: '.internal@')
+
+          visit new_admin_user_path
+        end
+
+        def expects_external_to_be_checked
+          expect(find('#user_external')).to be_checked
+        end
+
+        def expects_external_to_be_unchecked
+          expect(find('#user_external')).not_to be_checked
+        end
+
+        def expects_warning_to_be_hidden
+          expect(find('#warning_external_automatically_set', visible: :all)[:class]).to include 'hidden'
+        end
+
+        def expects_warning_to_be_shown
+          expect(find('#warning_external_automatically_set')[:class]).not_to include 'hidden'
+        end
+
+        it 'automatically unchecks external for matching email' do
+          expects_external_to_be_checked
+          expects_warning_to_be_hidden
+
+          fill_in 'user_email', with: 'test.internal@domain.ch'
+
+          expects_external_to_be_unchecked
+          expects_warning_to_be_shown
+
+          fill_in 'user_email', with: 'test@domain.ch'
+
+          expects_external_to_be_checked
+          expects_warning_to_be_hidden
+
+          uncheck 'user_external'
+
+          expects_warning_to_be_hidden
+        end
+      end
+    end
   end
 
   describe "GET /admin/users/:id" do
@@ -121,6 +180,7 @@ describe "Admin::Users" do
 
       expect(page).to have_content(user.email)
       expect(page).to have_content(user.name)
+      expect(page).to have_content(user.id)
       expect(page).to have_link('Block user', href: block_admin_user_path(user))
       expect(page).to have_button('Delete user')
       expect(page).to have_button('Delete user and contributions')
@@ -283,14 +343,14 @@ describe "Admin::Users" do
     end
 
     it "lists group projects" do
-      within(:css, '.append-bottom-default + .panel') do
+      within(:css, '.append-bottom-default + .card') do
         expect(page).to have_content 'Group projects'
-        expect(page).to have_link group.name, admin_group_path(group)
+        expect(page).to have_link group.name, href: admin_group_path(group)
       end
     end
 
     it 'allows navigation to the group details' do
-      within(:css, '.append-bottom-default + .panel') do
+      within(:css, '.append-bottom-default + .card') do
         click_link group.name
       end
       within(:css, 'h3.page-title') do
@@ -300,7 +360,7 @@ describe "Admin::Users" do
     end
 
     it 'shows the group access level' do
-      within(:css, '.append-bottom-default + .panel') do
+      within(:css, '.append-bottom-default + .card') do
         expect(page).to have_content 'Developer'
       end
     end
@@ -312,6 +372,40 @@ describe "Admin::Users" do
       wait_for_requests
 
       expect(page).not_to have_selector('.group_member')
+    end
+  end
+
+  describe 'show breadcrumbs' do
+    it do
+      visit admin_user_path(user)
+
+      check_breadcrumb(user.name)
+
+      visit projects_admin_user_path(user)
+
+      check_breadcrumb(user.name)
+
+      visit keys_admin_user_path(user)
+
+      check_breadcrumb(user.name)
+
+      visit admin_user_impersonation_tokens_path(user)
+
+      check_breadcrumb(user.name)
+
+      visit admin_user_identities_path(user)
+
+      check_breadcrumb(user.name)
+
+      visit new_admin_user_identity_path(user)
+
+      check_breadcrumb("New Identity")
+
+      visit admin_user_identities_path(user)
+
+      find('.table').find(:link, 'Edit').click
+
+      check_breadcrumb("Edit Identity")
     end
   end
 
@@ -408,5 +502,9 @@ describe "Admin::Users" do
       expect(page).to have_content(user.name)
       expect(page).not_to have_content('twitter')
     end
+  end
+
+  def check_breadcrumb(content)
+    expect(find('.breadcrumbs-sub-title')).to have_content(content)
   end
 end

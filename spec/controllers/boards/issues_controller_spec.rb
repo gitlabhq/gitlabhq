@@ -13,12 +13,12 @@ describe Boards::IssuesController do
   let!(:list2) { create(:list, board: board, label: development, position: 1) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     project.add_guest(guest)
   end
 
-  describe 'GET index' do
-    let(:johndoe) { create(:user, avatar: fixture_file_upload(File.join(Rails.root, 'spec/fixtures/dk.png'))) }
+  describe 'GET index', :request_store do
+    let(:johndoe) { create(:user, avatar: fixture_file_upload(File.join('spec/fixtures/dk.png'))) }
 
     context 'with invalid board id' do
       it 'returns a not found 404 response' do
@@ -42,7 +42,7 @@ describe Boards::IssuesController do
           parsed_response = JSON.parse(response.body)
 
           expect(response).to match_response_schema('issues')
-          expect(parsed_response.length).to eq 2
+          expect(parsed_response['issues'].length).to eq 2
           expect(development.issues.map(&:relative_position)).not_to include(nil)
         end
 
@@ -80,7 +80,7 @@ describe Boards::IssuesController do
         parsed_response = JSON.parse(response.body)
 
         expect(response).to match_response_schema('issues')
-        expect(parsed_response.length).to eq 2
+        expect(parsed_response['issues'].length).to eq 2
       end
     end
 

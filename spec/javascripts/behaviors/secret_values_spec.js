@@ -9,7 +9,7 @@ function generateValueMarkup(
     <div class="${placeholderClass}">
       ***
     </div>
-    <div class="hide ${valueClass}">
+    <div class="hidden ${valueClass}">
       ${secret}
     </div>
   `;

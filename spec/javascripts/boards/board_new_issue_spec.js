@@ -1,4 +1,3 @@
-/* global BoardService */
 /* global List */
 
 import Vue from 'vue';
@@ -70,7 +69,6 @@ describe('Issue boards new issue form', () => {
         vm.$el.querySelector('.btn-success').click();
 
         expect(vm.submit.calls.count()).toBe(1);
-        expect(vm.$refs['submit-button']).toBe(vm.$el.querySelector('.btn-success'));
       })
       .then(done)
       .catch(done.fail);

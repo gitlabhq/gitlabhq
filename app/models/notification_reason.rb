@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Holds reasons for a notification to have been sent as well as a priority list to select which reason to use
 # above the rest
 class NotificationReason

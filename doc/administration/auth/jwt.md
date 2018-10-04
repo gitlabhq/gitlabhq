@@ -50,7 +50,7 @@ JWT will provide you with a secret key for you to use.
                 required_claims: ["name", "email"],
                 info_map: { name: "name", email: "email" },
                 auth_url: 'https://example.com/',
-                valid_within: nil,
+                valid_within: null,
               }
       }
     ```

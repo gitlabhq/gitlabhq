@@ -1,9 +1,13 @@
+# frozen_string_literal: true
+
 module API
   class Files < Grape::API
     FILE_ENDPOINT_REQUIREMENTS = API::PROJECT_ENDPOINT_REQUIREMENTS.merge(file_path: API::NO_SLASH_URL_PART_REGEX)
 
     # Prevents returning plain/text responses for files with .txt extension
     after_validation { content_type "application/json" }
+
+    helpers ::API::Helpers::HeadersHelpers
 
     helpers do
       def commit_params(attrs)
@@ -40,10 +44,24 @@ module API
         }
       end
 
+      def blob_data
+        {
+          file_name: @blob.name,
+          file_path: @blob.path,
+          size: @blob.size,
+          encoding: "base64",
+          content_sha256: Digest::SHA256.hexdigest(@blob.data),
+          ref: params[:ref],
+          blob_id: @blob.id,
+          commit_id: @commit.id,
+          last_commit_id: @repo.last_commit_id_for_path(@commit.sha, params[:file_path])
+        }
+      end
+
       params :simple_file_params do
         requires :file_path, type: String, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
-        requires :branch, type: String, desc: 'Name of the branch to commit into. To create a new branch, also provide `start_branch`.'
-        requires :commit_message, type: String, desc: 'Commit message'
+        requires :branch, type: String, desc: 'Name of the branch to commit into. To create a new branch, also provide `start_branch`.', allow_blank: false
+        requires :commit_message, type: String, allow_blank: false, desc: 'Commit message'
         optional :start_branch, type: String, desc: 'Name of the branch to start the new commit from'
         optional :author_email, type: String, desc: 'The email of the author'
         optional :author_name, type: String, desc: 'The name of the author'
@@ -61,36 +79,54 @@ module API
       requires :id, type: String, desc: 'The project ID'
     end
     resource :projects, requirements: FILE_ENDPOINT_REQUIREMENTS do
+      desc 'Get raw file metadata from repository'
+      params do
+        requires :file_path, type: String, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
+        requires :ref, type: String, desc: 'The name of branch, tag or commit', allow_blank: false
+      end
+      head ":id/repository/files/:file_path/raw", requirements: FILE_ENDPOINT_REQUIREMENTS do
+        assign_file_vars!
+
+        set_http_headers(blob_data)
+      end
+
       desc 'Get raw file contents from the repository'
       params do
         requires :file_path, type: String, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
-        requires :ref, type: String, desc: 'The name of branch, tag commit'
+        requires :ref, type: String, desc: 'The name of branch, tag commit', allow_blank: false
       end
       get ":id/repository/files/:file_path/raw", requirements: FILE_ENDPOINT_REQUIREMENTS do
         assign_file_vars!
 
+        set_http_headers(blob_data)
+
         send_git_blob @repo, @blob
+      end
+
+      desc 'Get file metadata from repository'
+      params do
+        requires :file_path, type: String, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
+        requires :ref, type: String, desc: 'The name of branch, tag or commit', allow_blank: false
+      end
+      head ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS do
+        assign_file_vars!
+
+        set_http_headers(blob_data)
       end
 
       desc 'Get a file from the repository'
       params do
         requires :file_path, type: String, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
-        requires :ref, type: String, desc: 'The name of branch, tag or commit'
+        requires :ref, type: String, desc: 'The name of branch, tag or commit', allow_blank: false
       end
       get ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS do
         assign_file_vars!
 
-        {
-          file_name: @blob.name,
-          file_path: @blob.path,
-          size: @blob.size,
-          encoding: "base64",
-          content: Base64.strict_encode64(@blob.data),
-          ref: params[:ref],
-          blob_id: @blob.id,
-          commit_id: @commit.id,
-          last_commit_id: @repo.last_commit_id_for_path(@commit.sha, params[:file_path])
-        }
+        data = blob_data
+
+        set_http_headers(data)
+
+        data.merge(content: Base64.strict_encode64(@blob.data))
       end
 
       desc 'Create new file in repository'

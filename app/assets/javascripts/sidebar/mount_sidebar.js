@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import Vue from 'vue';
-import SidebarTimeTracking from './components/time_tracking/sidebar_time_tracking';
+import SidebarTimeTracking from './components/time_tracking/sidebar_time_tracking.vue';
 import SidebarAssignees from './components/assignees/sidebar_assignees.vue';
 import ConfidentialIssueSidebar from './components/confidential/confidential_issue_sidebar.vue';
 import SidebarMoveIssue from './lib/sidebar_move_issue';
@@ -27,6 +27,7 @@ function mountAssigneesComponent(mediator) {
         mediator,
         field: el.dataset.field,
         signedIn: el.hasAttribute('data-signed-in'),
+        issuableType: gl.utils.isInIssuePage() ? 'issue' : 'merge_request',
       },
     }),
   });
@@ -74,7 +75,6 @@ function mountLockComponent(mediator) {
 function mountParticipantsComponent(mediator) {
   const el = document.querySelector('.js-sidebar-participants-entry-point');
 
-  // eslint-disable-next-line no-new
   if (!el) return;
 
   // eslint-disable-next-line no-new

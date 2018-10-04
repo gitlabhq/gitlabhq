@@ -12,10 +12,6 @@ FactoryBot.define do
       user.notification_email = user.email
     end
 
-    before(:create) do |user|
-      user.ensure_rss_token
-    end
-
     trait :admin do
       admin true
     end
@@ -60,6 +56,14 @@ FactoryBot.define do
 
     trait :readme do
       project_view :readme
+    end
+
+    trait :commit_email do
+      after(:create) do |user, evaluator|
+        additional = create(:email, :confirmed, user: user, email: "commit-#{user.email}")
+
+        user.update!(commit_email: additional.email)
+      end
     end
 
     factory :omniauth_user do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'fog/aws'
 require 'carrierwave/storage/fog'
 
@@ -10,8 +12,18 @@ module ObjectStorage
   UnknownStoreError = Class.new(StandardError)
   ObjectStorageUnavailable = Class.new(StandardError)
 
-  DIRECT_UPLOAD_TIMEOUT = 4.hours
-  TMP_UPLOAD_PATH = 'tmp/upload'.freeze
+  class ExclusiveLeaseTaken < StandardError
+    def initialize(lease_key)
+      @lease_key = lease_key
+    end
+
+    def message
+      *lease_key_group, _ = *@lease_key.split(":")
+      "Exclusive lease for #{lease_key_group.join(':')} is already taken."
+    end
+  end
+
+  TMP_UPLOAD_PATH = 'tmp/uploads'.freeze
 
   module Store
     LOCAL = 1
@@ -23,18 +35,18 @@ module ObjectStorage
     module RecordsUploads
       extend ActiveSupport::Concern
 
-      def prepended(base)
+      prepended do |base|
         raise "#{base} must include ObjectStorage::Concern to use extensions." unless base < Concern
 
-        base.include(RecordsUploads::Concern)
+        base.include(::RecordsUploads::Concern)
       end
 
       def retrieve_from_store!(identifier)
-        paths = store_dirs.map { |store, path| File.join(path, identifier) }
+        paths = upload_paths(identifier)
 
         unless current_upload_satisfies?(paths, model)
           # the upload we already have isn't right, find the correct one
-          self.upload = uploads.find_by(model: model, path: paths)
+          self.upload = model&.retrieve_upload(identifier, paths)
         end
 
         super
@@ -47,7 +59,7 @@ module ObjectStorage
       end
 
       def upload=(upload)
-        return unless upload
+        return if upload.nil?
 
         self.object_store = upload.store
         super
@@ -61,6 +73,15 @@ module ObjectStorage
                                                 upload.class.to_s,
                                                 mounted_as,
                                                 upload.id)
+      end
+
+      def exclusive_lease_key
+        # For FileUploaders, model may have many uploaders. In that case
+        # we want to use exclusive key per upload, not per model to allow
+        # parallel migration
+        key_object = upload || model
+
+        "object_storage_migrate:#{key_object.class}:#{key_object.id}"
       end
 
       private
@@ -103,6 +124,7 @@ module ObjectStorage
     end
 
     included do
+      include AfterCommitQueue
       after_save on: [:create, :update] do
         background_upload(changed_mounts)
       end
@@ -155,9 +177,9 @@ module ObjectStorage
         model_class.uploader_options.dig(mount_point, :mount_on) || mount_point
       end
 
-      def workhorse_authorize
+      def workhorse_authorize(has_length:, maximum_size: nil)
         {
-          RemoteObject: workhorse_remote_upload_options,
+          RemoteObject: workhorse_remote_upload_options(has_length: has_length, maximum_size: maximum_size),
           TempPath: workhorse_local_upload_path
         }.compact
       end
@@ -166,30 +188,16 @@ module ObjectStorage
         File.join(self.root, TMP_UPLOAD_PATH)
       end
 
-      def workhorse_remote_upload_options
+      def workhorse_remote_upload_options(has_length:, maximum_size: nil)
         return unless self.object_store_enabled?
         return unless self.direct_upload_enabled?
 
         id = [CarrierWave.generate_cache_id, SecureRandom.hex].join('-')
         upload_path = File.join(TMP_UPLOAD_PATH, id)
-        connection = ::Fog::Storage.new(self.object_store_credentials)
-        expire_at = Time.now + DIRECT_UPLOAD_TIMEOUT
-        options = { 'Content-Type' => 'application/octet-stream' }
+        direct_upload = ObjectStorage::DirectUpload.new(self.object_store_credentials, remote_store_path, upload_path,
+          has_length: has_length, maximum_size: maximum_size)
 
-        {
-          ID: id,
-          GetURL: connection.get_object_url(remote_store_path, upload_path, expire_at),
-          DeleteURL: connection.delete_object_url(remote_store_path, upload_path, expire_at),
-          StoreURL: connection.put_object_url(remote_store_path, upload_path, expire_at, options)
-        }
-      end
-
-      def default_object_store
-        if self.object_store_enabled? && self.direct_upload_enabled?
-          Store::REMOTE
-        else
-          Store::LOCAL
-        end
+        direct_upload.to_hash.merge(ID: id)
       end
     end
 
@@ -211,12 +219,13 @@ module ObjectStorage
     end
 
     def object_store
-      @object_store ||= model.try(store_serialization_column) || self.class.default_object_store
+      # We use Store::LOCAL as null value indicates the local storage
+      @object_store ||= model.try(store_serialization_column) || Store::LOCAL
     end
 
     # rubocop:disable Gitlab/ModuleWithInstanceVariables
     def object_store=(value)
-      @object_store = value || self.class.default_object_store
+      @object_store = value || Store::LOCAL
       @storage = storage_for(object_store)
     end
     # rubocop:enable Gitlab/ModuleWithInstanceVariables
@@ -274,7 +283,7 @@ module ObjectStorage
     end
 
     def delete_migrated_file(migrated_file)
-      migrated_file.delete if exists?
+      migrated_file.delete
     end
 
     def exists?
@@ -292,6 +301,13 @@ module ObjectStorage
       }
     end
 
+    # Returns all the possible paths for an upload.
+    # the `upload.path` is a lookup parameter, and it may change
+    # depending on the `store` param.
+    def upload_paths(identifier)
+      store_dirs.map { |store, path| File.join(path, identifier) }
+    end
+
     def cache!(new_file = sanitized_file)
       # We intercept ::UploadedFile which might be stored on remote storage
       # We use that for "accelerated" uploads, where we store result on remote storage
@@ -300,6 +316,19 @@ module ObjectStorage
       end
 
       super
+    end
+
+    def store!(new_file = nil)
+      # when direct upload is enabled, always store on remote storage
+      if self.class.object_store_enabled? && self.class.direct_upload_enabled?
+        self.object_store = Store::REMOTE
+      end
+
+      super
+    end
+
+    def exclusive_lease_key
+      "object_storage_migrate:#{model.class}:#{model.id}"
     end
 
     private
@@ -368,17 +397,14 @@ module ObjectStorage
       end
     end
 
-    def exclusive_lease_key
-      "object_storage_migrate:#{model.class}:#{model.id}"
-    end
-
     def with_exclusive_lease
-      uuid = Gitlab::ExclusiveLease.new(exclusive_lease_key, timeout: 1.hour.to_i).try_obtain
-      raise 'exclusive lease already taken' unless uuid
+      lease_key = exclusive_lease_key
+      uuid = Gitlab::ExclusiveLease.new(lease_key, timeout: 1.hour.to_i).try_obtain
+      raise ExclusiveLeaseTaken.new(lease_key) unless uuid
 
       yield uuid
     ensure
-      Gitlab::ExclusiveLease.cancel(exclusive_lease_key, uuid)
+      Gitlab::ExclusiveLease.cancel(lease_key, uuid)
     end
 
     #

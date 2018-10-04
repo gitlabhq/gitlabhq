@@ -1,8 +1,8 @@
 require 'json'
 require 'time'
 
-require_relative 'config'
-require_relative 'flaky_examples_collection'
+require_dependency 'rspec_flaky/config'
+require_dependency 'rspec_flaky/flaky_examples_collection'
 
 module RspecFlaky
   # This class is responsible for loading/saving JSON reports, and pruning

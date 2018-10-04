@@ -3,6 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import contentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { GREEN_BOX_IMAGE_URL } from 'spec/test_constants';
 
 describe('ContentViewer', () => {
   let vm;
@@ -41,12 +42,12 @@ describe('ContentViewer', () => {
 
   it('renders image preview', done => {
     createComponent({
-      path: 'test.jpg',
+      path: GREEN_BOX_IMAGE_URL,
       fileSize: 1024,
     });
 
     setTimeout(() => {
-      expect(vm.$el.querySelector('.image_file img').getAttribute('src')).toBe('test.jpg');
+      expect(vm.$el.querySelector('.image_file img').getAttribute('src')).toBe(GREEN_BOX_IMAGE_URL);
 
       done();
     });
@@ -59,9 +60,8 @@ describe('ContentViewer', () => {
     });
 
     setTimeout(() => {
-      expect(vm.$el.querySelector('.file-info').textContent.trim()).toContain(
-        'test.abc (1.00 KiB)',
-      );
+      expect(vm.$el.querySelector('.file-info').textContent.trim()).toContain('test.abc');
+      expect(vm.$el.querySelector('.file-info').textContent.trim()).toContain('(1.00 KiB)');
       expect(vm.$el.querySelector('.btn.btn-default').textContent.trim()).toContain('Download');
 
       done();

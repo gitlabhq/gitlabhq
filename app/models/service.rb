@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 # To add new service you should build a class inherited from Service
 # and implement a set of methods
 class Service < ActiveRecord::Base
   include Sortable
   include Importable
+  include ProjectServicesLoggable
 
   serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
@@ -206,10 +209,11 @@ class Service < ActiveRecord::Base
     args.each do |arg|
       class_eval %{
         def #{arg}?
+          # '!!' is used because nil or empty string is converted to nil
           if Gitlab.rails5?
-            !ActiveModel::Type::Boolean::FALSE_VALUES.include?(#{arg})
+            !!ActiveRecord::Type::Boolean.new.cast(#{arg})
           else
-            ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES.include?(#{arg})
+            !!ActiveRecord::Type::Boolean.new.type_cast_from_database(#{arg})
           end
         end
       }
@@ -253,7 +257,7 @@ class Service < ActiveRecord::Base
       emails_on_push
       external_wiki
       flowdock
-      gemnasium
+      hangouts_chat
       hipchat
       irker
       jira
@@ -281,9 +285,9 @@ class Service < ActiveRecord::Base
 
   def self.build_from_template(project_id, template)
     service = template.dup
-    service.active = false unless service.valid?
     service.template = false
     service.project_id = project_id
+    service.active = false if service.active? && !service.valid?
     service
   end
 

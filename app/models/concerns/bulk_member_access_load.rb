@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Returns and caches in thread max member access for a resource
 #
 module BulkMemberAccessLoad
@@ -14,9 +16,9 @@ module BulkMemberAccessLoad
       key = max_member_access_for_resource_key(resource_klass, memoization_index)
       access = {}
 
-      if RequestStore.active?
-        RequestStore.store[key] ||= {}
-        access = RequestStore.store[key]
+      if Gitlab::SafeRequestStore.active?
+        Gitlab::SafeRequestStore[key] ||= {}
+        access = Gitlab::SafeRequestStore[key]
       end
 
       # Look up only the IDs we need

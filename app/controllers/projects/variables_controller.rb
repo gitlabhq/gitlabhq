@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::VariablesController < Projects::ApplicationController
   before_action :authorize_admin_build!
 
@@ -12,7 +14,7 @@ class Projects::VariablesController < Projects::ApplicationController
   def update
     if @project.update(variables_params)
       respond_to do |format|
-        format.json { return render_variables }
+        format.json { render_variables }
       end
     else
       respond_to do |format|

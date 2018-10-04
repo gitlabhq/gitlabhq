@@ -1,10 +1,22 @@
+# frozen_string_literal: true
+
 module Ci
   class PipelinePresenter < Gitlab::View::Presenter::Delegated
+    include Gitlab::Utils::StrongMemoize
+
     FAILURE_REASONS = {
       config_error: 'CI/CD YAML configuration error!'
     }.freeze
 
     presents :pipeline
+
+    def failed_builds
+      return [] unless can?(current_user, :read_build, pipeline)
+
+      strong_memoize(:failed_builds) do
+        pipeline.builds.latest.failed
+      end
+    end
 
     def failure_reason
       return unless pipeline.failure_reason?

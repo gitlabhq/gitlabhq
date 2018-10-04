@@ -26,7 +26,7 @@ describe IssuesFinder do
     let(:issues) { described_class.new(search_user, params.reverse_merge(scope: scope, state: 'opened')).execute }
 
     before(:context) do
-      project1.add_master(user)
+      project1.add_maintainer(user)
       project2.add_developer(user)
       project2.add_developer(user2)
       project3.add_developer(user)
@@ -53,6 +53,14 @@ describe IssuesFinder do
 
         it 'returns issues assigned to that user' do
           expect(issues).to contain_exactly(issue1, issue2)
+        end
+      end
+
+      context 'filtering by no assignee' do
+        let(:params) { { assignee_id: 0 } }
+
+        it 'returns issues not assign to any assignee' do
+          expect(issues).to contain_exactly(issue4)
         end
       end
 
@@ -372,7 +380,7 @@ describe IssuesFinder do
     end
 
     context 'personal scope' do
-      let(:scope) { 'assigned-to-me' }
+      let(:scope) { 'assigned_to_me' }
 
       it 'returns issue assigned to the user' do
         expect(issues).to contain_exactly(issue1, issue2)

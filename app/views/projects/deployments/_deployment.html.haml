@@ -1,14 +1,14 @@
 .gl-responsive-table-row.deployment{ role: 'row' }
   .table-section.section-10{ role: 'gridcell' }
-    .table-mobile-header{ role: 'rowheader' } ID
+    .table-mobile-header{ role: 'rowheader' }= _("ID")
     %strong.table-mobile-content ##{deployment.iid}
 
   .table-section.section-30{ role: 'gridcell' }
-    .table-mobile-header{ role: 'rowheader' } Commit
+    .table-mobile-header{ role: 'rowheader' }= _("Commit")
     = render 'projects/deployments/commit', deployment: deployment
 
   .table-section.section-25.build-column{ role: 'gridcell' }
-    .table-mobile-header{ role: 'rowheader' } Job
+    .table-mobile-header{ role: 'rowheader' }= _("Job")
     - if deployment.deployable
       .table-mobile-content
         .flex-truncate-parent
@@ -21,7 +21,7 @@
             = user_avatar(user: deployment.user, size: 20)
 
   .table-section.section-15{ role: 'gridcell' }
-    .table-mobile-header{ role: 'rowheader' } Created
+    .table-mobile-header{ role: 'rowheader' }= _("Created")
     %span.table-mobile-content= time_ago_with_tooltip(deployment.created_at)
 
   .table-section.section-20.table-button-footer{ role: 'gridcell' }

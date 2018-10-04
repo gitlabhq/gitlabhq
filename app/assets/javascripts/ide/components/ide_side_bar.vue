@@ -1,51 +1,80 @@
 <script>
-  import { mapState, mapGetters } from 'vuex';
-  import icon from '~/vue_shared/components/icon.vue';
-  import panelResizer from '~/vue_shared/components/panel_resizer.vue';
-  import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
-  import projectTree from './ide_project_tree.vue';
-  import ResizablePanel from './resizable_panel.vue';
+import { mapState, mapGetters } from 'vuex';
+import { SkeletonLoading } from '@gitlab-org/gitlab-ui';
+import IdeTree from './ide_tree.vue';
+import ResizablePanel from './resizable_panel.vue';
+import ActivityBar from './activity_bar.vue';
+import CommitSection from './repo_commit_section.vue';
+import CommitForm from './commit_sidebar/form.vue';
+import IdeReview from './ide_review.vue';
+import SuccessMessage from './commit_sidebar/success_message.vue';
+import IdeProjectHeader from './ide_project_header.vue';
+import { activityBarViews } from '../constants';
 
-  export default {
-    components: {
-      projectTree,
-      icon,
-      panelResizer,
-      skeletonLoadingContainer,
-      ResizablePanel,
+export default {
+  components: {
+    SkeletonLoading,
+    ResizablePanel,
+    ActivityBar,
+    CommitSection,
+    IdeTree,
+    CommitForm,
+    IdeReview,
+    SuccessMessage,
+    IdeProjectHeader,
+  },
+  computed: {
+    ...mapState([
+      'loading',
+      'currentActivityView',
+      'changedFiles',
+      'stagedFiles',
+      'lastCommitMsg',
+    ]),
+    ...mapGetters(['currentProject', 'someUncommitedChanges']),
+    showSuccessMessage() {
+      return (
+        this.currentActivityView === activityBarViews.edit &&
+        (this.lastCommitMsg && !this.someUncommitedChanges)
+      );
     },
-    computed: {
-      ...mapState([
-        'loading',
-      ]),
-      ...mapGetters([
-        'projectsWithTrees',
-      ]),
-    },
-  };
+  },
+};
 </script>
 
 <template>
   <resizable-panel
     :collapsible="false"
-    :initial-width="290"
+    :initial-width="340"
     side="left"
+    class="flex-column"
   >
-    <div class="multi-file-commit-panel-inner">
-      <template v-if="loading">
+    <template v-if="loading">
+      <div class="multi-file-commit-panel-inner">
         <div
-          class="multi-file-loading-container"
           v-for="n in 3"
           :key="n"
+          class="multi-file-loading-container"
         >
-          <skeleton-loading-container />
+          <skeleton-loading />
         </div>
-      </template>
-      <project-tree
-        v-for="project in projectsWithTrees"
-        :key="project.id"
-        :project="project"
+      </div>
+    </template>
+    <template v-else>
+      <ide-project-header
+        :project="currentProject"
       />
-    </div>
+      <div class="ide-context-body d-flex flex-fill">
+        <activity-bar />
+        <div class="multi-file-commit-panel-inner">
+          <div class="multi-file-commit-panel-inner-content">
+            <component
+              :is="currentActivityView"
+            />
+          </div>
+          <commit-form />
+        </div>
+      </div>
+    </template>
   </resizable-panel>
 </template>

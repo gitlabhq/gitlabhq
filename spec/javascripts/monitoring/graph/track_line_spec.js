@@ -39,14 +39,14 @@ describe('TrackLine component', () => {
       const svgEl = vm.$el.querySelector('svg');
       const lineEl = vm.$el.querySelector('svg line');
 
-      expect(svgEl.getAttribute('width')).toEqual('15');
-      expect(svgEl.getAttribute('height')).toEqual('6');
+      expect(svgEl.getAttribute('width')).toEqual('16');
+      expect(svgEl.getAttribute('height')).toEqual('8');
 
       expect(lineEl.getAttribute('stroke-width')).toEqual('4');
       expect(lineEl.getAttribute('x1')).toEqual('0');
-      expect(lineEl.getAttribute('x2')).toEqual('15');
-      expect(lineEl.getAttribute('y1')).toEqual('2');
-      expect(lineEl.getAttribute('y2')).toEqual('2');
+      expect(lineEl.getAttribute('x2')).toEqual('16');
+      expect(lineEl.getAttribute('y1')).toEqual('4');
+      expect(lineEl.getAttribute('y2')).toEqual('4');
     });
   });
 });

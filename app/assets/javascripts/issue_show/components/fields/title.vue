@@ -21,11 +21,11 @@
     </label>
     <input
       id="issuable-title"
+      v-model="formState.title"
       class="form-control"
       type="text"
       placeholder="Title"
       aria-label="Title"
-      v-model="formState.title"
       @keydown.meta.enter="updateIssuable"
       @keydown.ctrl.enter="updateIssuable" />
   </fieldset>

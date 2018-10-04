@@ -1,82 +1,80 @@
 <script>
-  import { mapActions, mapState, mapGetters } from 'vuex';
-  import tooltip from '~/vue_shared/directives/tooltip';
+import { mapActions, mapState, mapGetters } from 'vuex';
+import tooltip from '~/vue_shared/directives/tooltip';
 
-  export default {
-    directives: {
-      tooltip,
+export default {
+  directives: {
+    tooltip,
+  },
+  props: {
+    value: {
+      type: String,
+      required: true,
     },
-    props: {
-      value: {
-        type: String,
-        required: true,
-      },
-      label: {
-        type: String,
-        required: false,
-        default: null,
-      },
-      checked: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      showInput: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      helpText: {
-        type: String,
-        required: false,
-        default: null,
-      },
+    label: {
+      type: String,
+      required: false,
+      default: null,
     },
-    computed: {
-      ...mapState('commit', [
-        'commitAction',
-      ]),
-      ...mapGetters('commit', [
-        'newBranchName',
-      ]),
+    checked: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
-    methods: {
-      ...mapActions('commit', [
-        'updateCommitAction',
-        'updateBranchName',
-      ]),
+    showInput: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
-  };
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    title: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+  computed: {
+    ...mapState('commit', ['commitAction']),
+    ...mapGetters('commit', ['newBranchName']),
+    tooltipTitle() {
+      return this.disabled ? this.title : '';
+    },
+  },
+  methods: {
+    ...mapActions('commit', ['updateCommitAction', 'updateBranchName']),
+  },
+};
 </script>
 
 <template>
   <fieldset>
-    <label>
+    <label
+      v-tooltip
+      :title="tooltipTitle"
+      :class="{
+        'is-disabled': disabled
+      }"
+    >
       <input
+        :value="value"
+        :checked="commitAction === value"
+        :disabled="disabled"
         type="radio"
         name="commit-action"
-        :value="value"
         @change="updateCommitAction($event.target.value)"
-        :checked="checked"
-        v-once
       />
       <span class="prepend-left-10">
-        <template v-if="label">
-          {{ label }}
-        </template>
-        <slot v-else></slot>
         <span
-          v-if="helpText"
-          v-tooltip
-          class="help-block inline"
-          :title="helpText"
+          v-if="label"
+          class="ide-radio-label"
         >
-          <i
-            class="fa fa-question-circle"
-            aria-hidden="true"
-          >
-          </i>
+          {{ label }}
         </span>
+        <slot v-else></slot>
       </span>
     </label>
     <div
@@ -84,9 +82,9 @@
       class="ide-commit-new-branch"
     >
       <input
-        type="text"
-        class="form-control"
         :placeholder="newBranchName"
+        type="text"
+        class="form-control monospace"
         @input="updateBranchName($event.target.value)"
       />
     </div>

@@ -1,5 +1,8 @@
 # Deleting a User Account
 
+NOTE: **Note:**
+Deleting a user will delete all projects in that user namespace.
+
 - As a user, you can delete your own account by navigating to **Settings** > **Account** and selecting **Delete account**
 - As an admin, you can delete a user account by navigating to the **Admin Area**, selecting the **Users** tab, selecting a user, and clicking on **Delete user**
 

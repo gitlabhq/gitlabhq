@@ -11,7 +11,7 @@ Ideally, the GitLab Runner should not be installed on the same machine as GitLab
 Read the [requirements documentation](../../install/requirements.md#gitlab-runner)
 for more information.
 
-## Shared vs specific Runners
+## Shared, specific and group Runners
 
 After [installing the Runner][install], you can either register it as shared or
 specific. You can only register a shared Runner if you have admin access to
@@ -29,9 +29,12 @@ are:
 - **Specific Runners** are useful for jobs that have special requirements or for
   projects with a specific demand. If a job has certain requirements, you can set
   up the specific Runner with this in mind, while not having to do this for all
-  Runners. For example, if you want to deploy a certain project, you can setup
+  Runners. For example, if you want to deploy a certain project, you can set up
   a specific Runner to have the right credentials for this. The [usage of tags](#using-tags)
   may be useful in this case. Specific Runners process jobs using a [FIFO] queue.
+- **Group Runners** are useful when you have multiple projects under one group
+  and would like all projects to have access to a set of Runners. Group Runners
+  process jobs using a [FIFO] queue.
 
 A Runner that is specific only runs for the specified project(s). A shared Runner
 can run jobs for every project that has enabled the option **Allow shared Runners**
@@ -66,7 +69,7 @@ Runners to disabled.
 
 ## Registering a specific Runner
 
-Registering a specific can be done in two ways:
+Registering a specific Runner can be done in two ways:
 
 1. Creating a Runner with the project registration token
 1. Converting a shared Runner into a specific Runner (one-way, admin only)
@@ -75,6 +78,14 @@ Registering a specific can be done in two ways:
 
 To create a specific Runner without having admin rights to the GitLab instance,
 visit the project you want to make the Runner work for in GitLab:
+
+1. Go to **Settings > CI/CD** to obtain the token
+1. [Register the Runner][register]
+
+## Registering a group Runner
+
+Creating a group Runner requires Maintainer permissions for the group. To create a
+group Runner visit the group you want to make the Runner work for in GitLab:
 
 1. Go to **Settings > CI/CD** to obtain the token
 1. [Register the Runner][register]
@@ -109,9 +120,9 @@ To lock/unlock a Runner:
 
 ## Assigning a Runner to another project
 
-If you are Master on a project where a specific Runner is assigned to, and the
+If you are Maintainer on a project where a specific Runner is assigned to, and the
 Runner is not [locked only to that project](#locking-a-specific-runner-from-being-enabled-for-other-projects),
-you can enable the Runner also on any other project where you have Master permissions.
+you can enable the Runner also on any other project where you have Maintainer permissions.
 
 To enable/disable a Runner in your project:
 
@@ -121,7 +132,7 @@ To enable/disable a Runner in your project:
 
 > **Note**:
 Consider that if you don't lock your specific Runner to a specific project, any
-user with Master role in you project can assign your runner to another arbitrary
+user with Maintainer role in you project can assign your Runner to another arbitrary
 project without requiring your authorization, so use it with caution.
 
 An admin can enable/disable a specific Runner for projects:
@@ -133,9 +144,8 @@ An admin can enable/disable a specific Runner for projects:
 
 ## Protected Runners
 
->
-[Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13194)
-in GitLab 10.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13194)
+> in GitLab 10.0.
 
 You can protect Runners from revealing sensitive information.
 Whenever a Runner is protected, the Runner picks only jobs created on
@@ -212,7 +222,7 @@ should keep in mind.
 
 ### Using tags
 
-You must setup a Runner to be able to run all the different types of jobs
+You must set up a Runner to be able to run all the different types of jobs
 that it may encounter on the projects it's shared over. This would be
 problematic for large amounts of projects, if it wasn't for tags.
 
@@ -288,7 +298,7 @@ and using more secure [Runner Executors](https://docs.gitlab.com/runner/executor
 ### Forks
 
 Whenever a project is forked, it copies the settings of the jobs that relate
-to it. This means that if you have shared Runners setup for a project and
+to it. This means that if you have shared Runners set up for a project and
 someone forks that project, the shared Runners will also serve jobs of this
 project.
 
@@ -297,6 +307,28 @@ project.
 Mentioned briefly earlier, but the following things of Runners can be exploited.
 We're always looking for contributions that can mitigate these
 [Security Considerations](https://docs.gitlab.com/runner/security/).
+
+### Resetting the registration token for a Project
+
+If you think that registration token for a Project was revealed, you should
+reset them. It's recommended because such token can be used to register another
+Runner to thi Project. It may be next used to obtain the values of secret
+variables or clone the project code, that normally may be unavailable for the
+attacker.
+
+To reset the token:
+
+1. Go to **Settings > CI/CD** for a specified Project
+1. Expand the **General pipelines settings** section
+1. Find the **Runner token** form field and click the **Reveal value** button
+1. Delete the value and save the form
+1. After the page is refreshed, expand the **Runners settings** section
+    and check the registration token - it should be changed
+
+From now on the old token is not valid anymore and will not allow to register
+a new Runner to the project. If you are using any tools to provision and
+register new Runners, you should now update the token that is used to the
+new value.
 
 ## Determining the IP address of a Runner
 

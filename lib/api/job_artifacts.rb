@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class JobArtifacts < Grape::API
     before { authenticate_non_get! }
@@ -21,6 +23,7 @@ module API
         requires :job,      type: String, desc: 'The name for the job'
       end
       route_setting :authentication, job_token_allowed: true
+      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/jobs/artifacts/:ref_name/download',
         requirements: { ref_name: /.+/ } do
         authorize_download_artifacts!
@@ -30,6 +33,7 @@ module API
 
         present_carrierwave_file!(latest_build.artifacts_file)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Download the artifacts archive from a job' do
         detail 'This feature was introduced in GitLab 8.5'
@@ -77,7 +81,7 @@ module API
 
         build = find_build!(params[:job_id])
         authorize!(:update_build, build)
-        return not_found!(build) unless build.artifacts?
+        break not_found!(build) unless build.artifacts?
 
         build.keep_artifacts!
 

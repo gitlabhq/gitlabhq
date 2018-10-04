@@ -47,16 +47,36 @@ describe Banzai::Filter::CommitTrailersFilter do
       )
     end
 
-    it 'non GitLab users and replaces them with mailto links' do
-      _, message_html = build_commit_message(
-        trailer: trailer,
-        name: FFaker::Name.name,
-        email: email
-      )
+    context 'non GitLab users' do
+      shared_examples 'mailto links' do
+        it 'replaces them with mailto links' do
+          _, message_html = build_commit_message(
+            trailer: trailer,
+            name: FFaker::Name.name,
+            email: email
+          )
 
-      doc = filter(message_html)
+          doc = filter(message_html)
 
-      expect_to_have_mailto_link(doc, email: email, trailer: trailer)
+          expect_to_have_mailto_link_with_avatar(doc, email: email, trailer: trailer)
+        end
+      end
+
+      context 'when Gravatar is disabled' do
+        before do
+          stub_application_setting(gravatar_enabled: false)
+        end
+
+        it_behaves_like 'mailto links'
+      end
+
+      context 'when Gravatar is enabled' do
+        before do
+          stub_application_setting(gravatar_enabled: true)
+        end
+
+        it_behaves_like 'mailto links'
+      end
     end
 
     it 'multiple trailers in the same message' do
@@ -69,7 +89,7 @@ describe Banzai::Filter::CommitTrailersFilter do
       doc = filter(message)
 
       expect_to_have_user_link_with_avatar(doc, user: user, trailer: trailer)
-      expect_to_have_mailto_link(doc, email: email, trailer: different_trailer)
+      expect_to_have_mailto_link_with_avatar(doc, email: email, trailer: different_trailer)
     end
 
     context 'special names' do
@@ -90,7 +110,7 @@ describe Banzai::Filter::CommitTrailersFilter do
 
           doc = filter(message_html)
 
-          expect_to_have_mailto_link(doc, email: email, trailer: trailer)
+          expect_to_have_mailto_link_with_avatar(doc, email: email, trailer: trailer)
           expect(doc.text).to match Regexp.escape(message)
         end
       end

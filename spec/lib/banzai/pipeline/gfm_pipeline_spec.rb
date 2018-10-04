@@ -87,4 +87,22 @@ describe Banzai::Pipeline::GfmPipeline do
       end
     end
   end
+
+  describe 'markdown link or image urls having spaces' do
+    let(:project) { create(:project, :public) }
+
+    it 'rewrites links with spaces in url' do
+      markdown = "[Link to Page](page slug)"
+      output = described_class.to_html(markdown, project: project)
+
+      expect(output).to include("href=\"page%20slug\"")
+    end
+
+    it 'rewrites images with spaces in url' do
+      markdown = "![My Image](test image.png)"
+      output = described_class.to_html(markdown, project: project)
+
+      expect(output).to include("src=\"test%20image.png\"")
+    end
+  end
 end

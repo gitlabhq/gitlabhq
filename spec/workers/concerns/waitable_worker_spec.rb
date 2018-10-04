@@ -7,9 +7,7 @@ describe WaitableWorker do
         'Gitlab::Foo::Bar::DummyWorker'
       end
 
-      class << self
-        cattr_accessor(:counter) { 0 }
-      end
+      cattr_accessor(:counter) { 0 }
 
       include ApplicationWorker
       prepend WaitableWorker
@@ -20,8 +18,8 @@ describe WaitableWorker do
       def self.bulk_perform_inline(args_list)
       end
 
-      def perform(i = 0)
-        self.class.counter += i
+      def perform(count = 0)
+        self.class.counter += count
       end
     end
   end

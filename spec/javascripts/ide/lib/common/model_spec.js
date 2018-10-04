@@ -1,23 +1,17 @@
-/* global monaco */
 import eventHub from '~/ide/eventhub';
-import monacoLoader from '~/ide/monaco_loader';
 import Model from '~/ide/lib/common/model';
 import { file } from '../../helpers';
 
 describe('Multi-file editor library model', () => {
   let model;
 
-  beforeEach(done => {
+  beforeEach(() => {
     spyOn(eventHub, '$on').and.callThrough();
 
-    monacoLoader(['vs/editor/editor.main'], () => {
-      const f = file('path');
-      f.mrChange = { diff: 'ABC' };
-      f.baseRaw = 'test';
-      model = new Model(monaco, f);
-
-      done();
-    });
+    const f = file('path');
+    f.mrChange = { diff: 'ABC' };
+    f.baseRaw = 'test';
+    model = new Model(f);
   });
 
   afterEach(() => {
@@ -28,6 +22,23 @@ describe('Multi-file editor library model', () => {
     expect(model.originalModel).not.toBeNull();
     expect(model.model).not.toBeNull();
     expect(model.baseModel).not.toBeNull();
+
+    expect(model.originalModel.uri.path).toBe('original/path--path');
+    expect(model.model.uri.path).toBe('path--path');
+    expect(model.baseModel.uri.path).toBe('target/path--path');
+  });
+
+  it('creates model with head file to compare against', () => {
+    const f = file('path');
+    model.dispose();
+
+    model = new Model(f, {
+      ...f,
+      content: '123 testing',
+    });
+
+    expect(model.head).not.toBeNull();
+    expect(model.getOriginalModel().getValue()).toBe('123 testing');
   });
 
   it('adds eventHub listener', () => {
@@ -70,13 +81,6 @@ describe('Multi-file editor library model', () => {
   });
 
   describe('onChange', () => {
-    it('caches event by path', () => {
-      model.onChange(() => {});
-
-      expect(model.events.size).toBe(1);
-      expect(model.events.keys().next().value).toBe(model.file.key);
-    });
-
     it('calls callback on change', done => {
       const spy = jasmine.createSpy();
       model.onChange(spy);
@@ -118,6 +122,16 @@ describe('Multi-file editor library model', () => {
         `editor.update.model.dispose.${model.file.key}`,
         jasmine.anything(),
       );
+    });
+
+    it('calls onDispose callback', () => {
+      const disposeSpy = jasmine.createSpy();
+
+      model.onDispose(disposeSpy);
+
+      model.dispose();
+
+      expect(disposeSpy).toHaveBeenCalled();
     });
   });
 });

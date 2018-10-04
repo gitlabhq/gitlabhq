@@ -13,11 +13,18 @@ module Spec
       module Features
         module NotesHelpers
           def add_note(text)
-            Sidekiq::Testing.fake! do
+            perform_enqueued_jobs do
               page.within(".js-main-target-form") do
                 fill_in("note[note]", with: text)
                 find(".js-comment-submit-button").click
               end
+            end
+          end
+
+          def preview_note(text)
+            page.within('.js-main-target-form') do
+              fill_in('note[note]', with: text)
+              click_on('Preview')
             end
           end
         end

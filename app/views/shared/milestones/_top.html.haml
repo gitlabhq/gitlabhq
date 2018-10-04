@@ -5,7 +5,7 @@
 - is_dynamic_milestone = milestone.legacy_group_milestone? || milestone.dashboard_milestone?
 
 .detail-page-header
-  %a.btn.btn-default.btn-grouped.pull-right.visible-xs-block.js-sidebar-toggle{ href: "#" }
+  %a.btn.btn-default.btn-grouped.float-right.d-block.d-sm-none.js-sidebar-toggle{ href: "#" }
     = icon('angle-double-left')
 
   .status-box{ class: "status-box-#{milestone.closed? ? 'closed' : 'open'}" }
@@ -22,8 +22,8 @@
       &nbsp;&middot;
       = milestone_date_range(milestone)
   - if group
-    .pull-right
-      - if can?(current_user, :admin_milestones, group)
+    .float-right
+      - if can?(current_user, :admin_milestone, group)
         - if milestone.group_milestone?
           = link_to edit_group_milestone_path(group, milestone), class: "btn btn btn-grouped" do
             Edit
@@ -31,6 +31,9 @@
           = link_to 'Close Milestone', group_milestone_route(milestone, {state_event: :close }), method: :put, class: "btn btn-grouped btn-close"
         - else
           = link_to 'Reopen Milestone', group_milestone_route(milestone, {state_event: :activate }), method: :put, class: "btn btn-grouped btn-reopen"
+
+        - unless is_dynamic_milestone
+          = render 'shared/milestones/delete_button'
 
 = render 'shared/milestones/deprecation_message' if is_dynamic_milestone
 
@@ -47,6 +50,8 @@
   .alert.alert-success.prepend-top-default
     - close_msg = group ? 'You may close the milestone now.' : 'Navigate to the project to close the milestone.'
     %span All issues for this milestone are closed. #{close_msg}
+
+= render_if_exists 'shared/milestones/burndown', milestone: @milestone, project: @project
 
 - if is_dynamic_milestone
   .table-holder

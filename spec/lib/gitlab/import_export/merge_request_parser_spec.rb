@@ -19,7 +19,9 @@ describe Gitlab::ImportExport::MergeRequestParser do
   end
 
   after do
-    FileUtils.rm_rf(project.repository.path_to_repo)
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      FileUtils.rm_rf(project.repository.path_to_repo)
+    end
   end
 
   it 'has a source branch' do

@@ -2,11 +2,17 @@ module Banzai
   module Pipeline
     class PostProcessPipeline < BasePipeline
       def self.filters
-        FilterArray[
+        @filters ||= FilterArray[
+          *internal_link_filters,
+          Filter::AbsoluteLinkFilter
+        ]
+      end
+
+      def self.internal_link_filters
+        [
           Filter::RedactorFilter,
           Filter::RelativeLinkFilter,
-          Filter::IssuableStateFilter,
-          Filter::AbsoluteLinkFilter
+          Filter::IssuableStateFilter
         ]
       end
 

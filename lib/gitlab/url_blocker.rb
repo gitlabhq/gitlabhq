@@ -5,7 +5,7 @@ module Gitlab
     BlockedUrlError = Class.new(StandardError)
 
     class << self
-      def validate!(url, allow_localhost: false, allow_local_network: true, valid_ports: [])
+      def validate!(url, allow_localhost: false, allow_local_network: true, enforce_user: false, ports: [], protocols: [])
         return true if url.nil?
 
         begin
@@ -18,8 +18,9 @@ module Gitlab
         return true if internal?(uri)
 
         port = uri.port || uri.default_port
-        validate_port!(port, valid_ports) if valid_ports.any?
-        validate_user!(uri.user)
+        validate_protocol!(uri.scheme, protocols)
+        validate_port!(port, ports) if ports.any?
+        validate_user!(uri.user) if enforce_user
         validate_hostname!(uri.hostname)
 
         begin
@@ -30,6 +31,7 @@ module Gitlab
 
         validate_localhost!(addrs_info) unless allow_localhost
         validate_local_network!(addrs_info) unless allow_local_network
+        validate_link_local!(addrs_info) unless allow_local_network
 
         true
       end
@@ -44,13 +46,19 @@ module Gitlab
 
       private
 
-      def validate_port!(port, valid_ports)
+      def validate_port!(port, ports)
         return if port.blank?
         # Only ports under 1024 are restricted
         return if port >= 1024
-        return if valid_ports.include?(port)
+        return if ports.include?(port)
 
-        raise BlockedUrlError, "Only allowed ports are #{valid_ports.join(', ')}, and any over 1024"
+        raise BlockedUrlError, "Only allowed ports are #{ports.join(', ')}, and any over 1024"
+      end
+
+      def validate_protocol!(protocol, protocols)
+        if protocol.blank? || (protocols.any? && !protocols.include?(protocol))
+          raise BlockedUrlError, "Only allowed protocols are #{protocols.join(', ')}"
+        end
       end
 
       def validate_user!(value)
@@ -80,6 +88,13 @@ module Gitlab
         return unless addrs_info.any? { |addr| addr.ipv4_private? || addr.ipv6_sitelocal? }
 
         raise BlockedUrlError, "Requests to the local network are not allowed"
+      end
+
+      def validate_link_local!(addrs_info)
+        netmask = IPAddr.new('169.254.0.0/16')
+        return unless addrs_info.any? { |addr| addr.ipv6_linklocal? || netmask.include?(addr.ip_address) }
+
+        raise BlockedUrlError, "Requests to the link local network are not allowed"
       end
 
       def internal?(uri)

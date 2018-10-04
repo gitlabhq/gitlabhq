@@ -1,5 +1,0 @@
----
-title: Remove support for legacy tar.gz pages artifacts
-merge_request: 18090
-author:
-type: deprecated

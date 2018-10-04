@@ -20,8 +20,9 @@ module Gitlab
         DiffViewer::Image
       ].sort_by { |v| v.binary? ? 0 : 1 }.freeze
 
-      def initialize(diff, repository:, diff_refs: nil, fallback_diff_refs: nil)
+      def initialize(diff, repository:, diff_refs: nil, fallback_diff_refs: nil, stats: nil)
         @diff = diff
+        @stats = stats
         @repository = repository
         @diff_refs = diff_refs
         @fallback_diff_refs = fallback_diff_refs
@@ -76,6 +77,16 @@ module Gitlab
         line_code(line) if line
       end
 
+      # Returns the raw diff content up to the given line index
+      def diff_hunk(diff_line)
+        diff_line_index = diff_line.index
+        # @@ (match) header is not kept if it's found in the top of the file,
+        # therefore we should keep an extra line on this scenario.
+        diff_line_index += 1 unless diff_lines.first.match?
+
+        diff_lines.select { |line| line.index <= diff_line_index }.map(&:text).join("\n")
+      end
+
       def old_sha
         diff_refs&.base_sha
       end
@@ -120,11 +131,13 @@ module Gitlab
 
       # Array of Gitlab::Diff::Line objects
       def diff_lines
-        @diff_lines ||= Gitlab::Diff::Parser.new.parse(raw_diff.each_line).to_a
+        @diff_lines ||=
+          Gitlab::Diff::Parser.new.parse(raw_diff.each_line, diff_file: self).to_a
       end
 
       def highlighted_diff_lines
-        @highlighted_diff_lines ||= Gitlab::Diff::Highlight.new(self, repository: self.repository).highlight
+        @highlighted_diff_lines ||=
+          Gitlab::Diff::Highlight.new(self, repository: self.repository).highlight
       end
 
       # Array[<Hash>] with right/left keys that contains Gitlab::Diff::Line objects which text is hightlighted
@@ -153,11 +166,11 @@ module Gitlab
       end
 
       def added_lines
-        diff_lines.count(&:added?)
+        @stats&.additions || diff_lines.count(&:added?)
       end
 
       def removed_lines
-        diff_lines.count(&:removed?)
+        @stats&.deletions || diff_lines.count(&:removed?)
       end
 
       def file_identifier
@@ -199,13 +212,17 @@ module Gitlab
         old_blob && new_blob && old_blob.binary? != new_blob.binary?
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def size
         valid_blobs.map(&:size).sum
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def raw_size
         valid_blobs.map(&:raw_size).sum
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def raw_binary?
         try_blobs(:raw_binary?)
@@ -229,7 +246,33 @@ module Gitlab
         simple_viewer.is_a?(DiffViewer::Text) && (ignore_errors || simple_viewer.render_error.nil?)
       end
 
+      # This adds the bottom match line to the array if needed. It contains
+      # the data to load more context lines.
+      def diff_lines_for_serializer
+        lines = highlighted_diff_lines
+
+        return if lines.empty?
+        return if blob.nil?
+
+        last_line = lines.last
+
+        if last_line.new_pos < total_blob_lines(blob) && !deleted_file?
+          match_line = Gitlab::Diff::Line.new("", 'match', nil, last_line.old_pos, last_line.new_pos)
+          lines.push(match_line)
+        end
+
+        lines
+      end
+
       private
+
+      def total_blob_lines(blob)
+        @total_lines ||= begin
+          line_count = blob.lines.size
+          line_count -= 1 if line_count > 0 && blob.lines.last.blank?
+          line_count
+        end
+      end
 
       # We can't use Object#try because Blob doesn't inherit from Object, but
       # from BasicObject (via SimpleDelegator).

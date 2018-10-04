@@ -12,40 +12,46 @@
       Add email address
     = form_for 'email', url: profile_emails_path do |f|
       .form-group
-        = f.label :email, class: 'label-light'
+        = f.label :email, class: 'label-bold'
         = f.text_field :email, class: 'form-control'
       .prepend-top-default
-        = f.submit 'Add email address', class: 'btn btn-create'
+        = f.submit 'Add email address', class: 'btn btn-success'
     %hr
     %h4.prepend-top-0
       Linked emails (#{@emails.count + 1})
     .account-well.append-bottom-default
       %ul
         %li
-          Your Primary Email will be used for avatar detection and web based operations, such as edits and merges.
+          Your Primary Email will be used for avatar detection.
+        %li
+          Your Commit Email will be used for web based operations, such as edits and merges.
         %li
           Your Notification Email will be used for account notifications.
         %li
           Your Public Email will be displayed on your public profile.
         %li
           All email addresses will be used to identify your commits.
-    %ul.well-list
+    %ul.content-list
       %li
         = render partial: 'shared/email_with_badge', locals: { email: @primary_email, verified: current_user.confirmed? }
-        %span.pull-right
-          %span.label.label-success Primary email
+        %span.float-right
+          %span.badge.badge-success Primary email
+          - if @primary_email === current_user.commit_email
+            %span.badge.badge-info Commit email
           - if @primary_email === current_user.public_email
-            %span.label.label-info Public email
+            %span.badge.badge-info Public email
           - if @primary_email === current_user.notification_email
-            %span.label.label-info Notification email
+            %span.badge.badge-info Notification email
       - @emails.each do |email|
         %li
           = render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
-          %span.pull-right
+          %span.float-right
+            - if email.email === current_user.commit_email
+              %span.badge.badge-info Commit email
             - if email.email === current_user.public_email
-              %span.label.label-info Public email
+              %span.badge.badge-info Public email
             - if email.email === current_user.notification_email
-              %span.label.label-info Notification email
+              %span.badge.badge-info Notification email
             - unless email.confirmed?
               - confirm_title = "#{email.confirmation_sent_at ? 'Resend' : 'Send'} confirmation email"
               = link_to confirm_title, resend_confirmation_instructions_profile_email_path(email), method: :put, class: 'btn btn-sm btn-warning prepend-left-10'

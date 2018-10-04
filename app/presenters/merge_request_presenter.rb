@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   include ActionView::Helpers::UrlHelper
   include GitlabRoutingHelper
@@ -140,6 +142,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def assign_to_closing_issues_link
+    # rubocop: disable CodeReuse/ServiceClass
     issues = MergeRequests::AssignIssuesService.new(project,
                                                     current_user,
                                                     merge_request: merge_request,
@@ -150,6 +153,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
       pluralize_this_issue = issues.count > 1 ? "these issues" : "this issue"
       link_to "Assign yourself to #{pluralize_this_issue}", path, method: :post
     end
+    # rubocop: enable CodeReuse/ServiceClass
   end
 
   def can_revert_on_current_merge_request?
@@ -168,6 +172,29 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
       .can_push_to_branch?(source_branch)
   end
 
+  def can_remove_source_branch?
+    source_branch_exists? && merge_request.can_remove_source_branch?(current_user)
+  end
+
+  def mergeable_discussions_state
+    # This avoids calling MergeRequest#mergeable_discussions_state without
+    # considering the state of the MR first. If a MR isn't mergeable, we can
+    # safely short-circuit it.
+    if merge_request.mergeable_state?(skip_ci_check: true, skip_discussions_check: true)
+      merge_request.mergeable_discussions_state?
+    else
+      false
+    end
+  end
+
+  def web_url
+    Gitlab::UrlBuilder.build(merge_request)
+  end
+
+  def subscribed?
+    merge_request.subscribed?(current_user, merge_request.target_project)
+  end
+
   private
 
   def cached_can_be_reverted?
@@ -177,11 +204,13 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def conflicts
+    # rubocop: disable CodeReuse/ServiceClass
     @conflicts ||= MergeRequests::Conflicts::ListService.new(merge_request)
+    # rubocop: enable CodeReuse/ServiceClass
   end
 
   def closing_issues
-    @closing_issues ||= closes_issues(current_user)
+    @closing_issues ||= visible_closing_issues_for(current_user)
   end
 
   def pipeline

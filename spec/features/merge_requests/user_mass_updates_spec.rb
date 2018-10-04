@@ -6,7 +6,7 @@ describe 'Merge requests > User mass updates', :js do
   let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 
@@ -47,7 +47,7 @@ describe 'Merge requests > User mass updates', :js do
         change_assignee(user.name)
 
         page.within('.merge-request .controls') do
-          expect(find('.author_link')["title"]).to have_content(user.name)
+          expect(find('.author-link')["title"]).to have_content(user.name)
         end
       end
     end
@@ -62,7 +62,7 @@ describe 'Merge requests > User mass updates', :js do
       it 'removes assignee from the merge request' do
         change_assignee('Unassigned')
 
-        expect(find('.merge-request .controls')).not_to have_css('.author_link')
+        expect(find('.merge-request .controls')).not_to have_css('.author-link')
       end
     end
   end

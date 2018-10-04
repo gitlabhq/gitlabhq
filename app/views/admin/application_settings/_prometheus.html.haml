@@ -1,4 +1,4 @@
-= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+= form_for @application_setting, url: admin_application_settings_path(anchor: 'js-prometheus-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
@@ -12,17 +12,16 @@
       to take effect.
       = link_to icon('question-circle'), help_page_path('administration/monitoring/prometheus/index')
     .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          = f.label :prometheus_metrics_enabled do
-            = f.check_box :prometheus_metrics_enabled
-            Enable Prometheus Metrics
-          - unless Gitlab::Metrics.metrics_folder_present?
-            .help-block
-              %strong.cred WARNING:
-              Environment variable
-              %code prometheus_multiproc_dir
-              does not exist or is not pointing to a valid directory.
-              = link_to icon('question-circle'), help_page_path('administration/monitoring/prometheus/gitlab_metrics', anchor: 'metrics-shared-directory')
+      .form-check
+        = f.check_box :prometheus_metrics_enabled, class: 'form-check-input'
+        = f.label :prometheus_metrics_enabled, class: 'form-check-label' do
+          Enable Prometheus Metrics
+        - unless Gitlab::Metrics.metrics_folder_present?
+          .form-text.text-muted
+            %strong.cred WARNING:
+            Environment variable
+            %code prometheus_multiproc_dir
+            does not exist or is not pointing to a valid directory.
+            = link_to icon('question-circle'), help_page_path('administration/monitoring/prometheus/gitlab_metrics', anchor: 'metrics-shared-directory')
 
   = f.submit 'Save changes', class: "btn btn-success"

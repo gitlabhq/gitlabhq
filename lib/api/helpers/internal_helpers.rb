@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   module Helpers
     module InternalHelpers
@@ -87,12 +89,6 @@ module API
         else
           project.repository
         end
-      end
-
-      # Return the repository full path so that gitlab-shell has it when
-      # handling ssh commands
-      def repository_path
-        repository.path_to_repo
       end
 
       # Return the Gitaly Address if it is enabled

@@ -4,11 +4,12 @@ describe Files::UpdateService do
   subject { described_class.new(project, user, commit_params) }
 
   let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :commit_email) }
   let(:file_path) { 'files/ruby/popen.rb' }
   let(:new_contents) { 'New Content' }
   let(:branch_name) { project.default_branch }
   let(:last_commit_sha) { nil }
+  let(:commit) { project.repository.commit }
 
   let(:commit_params) do
     {
@@ -24,7 +25,7 @@ describe Files::UpdateService do
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe "#execute" do
@@ -54,6 +55,14 @@ describe Files::UpdateService do
 
         expect(results.data).to eq(new_contents)
       end
+
+      it 'uses the commit email' do
+        subject.execute
+
+        expect(user.commit_email).not_to eq(user.email)
+        expect(commit.author_email).to eq(user.commit_email)
+        expect(commit.committer_email).to eq(user.commit_email)
+      end
     end
 
     context "when the last_commit_sha is not supplied" do
@@ -69,18 +78,6 @@ describe Files::UpdateService do
         results = project.repository.blob_at_branch(project.default_branch, file_path)
 
         expect(results.data).to eq(new_contents)
-      end
-    end
-
-    context 'with gitaly disabled', :skip_gitaly_mock do
-      context 'when target branch is different than source branch' do
-        let(:branch_name) { "#{project.default_branch}-new" }
-
-        it 'fires hooks only once' do
-          expect(Gitlab::Git::HooksService).to receive(:new).once.and_call_original
-
-          subject.execute
-        end
       end
     end
   end

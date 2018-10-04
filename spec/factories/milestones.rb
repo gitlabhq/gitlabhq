@@ -18,6 +18,11 @@ FactoryBot.define do
       state "closed"
     end
 
+    trait :with_dates do
+      start_date { Date.new(2000, 1, 1) }
+      due_date { Date.new(2000, 1, 30) }
+    end
+
     after(:build, :stub) do |milestone, evaluator|
       if evaluator.group
         milestone.group = evaluator.group
@@ -29,7 +34,7 @@ FactoryBot.define do
         milestone.project_id = evaluator.project_id
       elsif evaluator.parent
         id = evaluator.parent.id
-        evaluator.parent.is_a?(Group) ? board.group_id = id : evaluator.project_id = id
+        evaluator.parent.is_a?(Group) ? evaluator.group_id = id : evaluator.project_id = id
       else
         milestone.project = create(:project)
       end

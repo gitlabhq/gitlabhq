@@ -7,7 +7,7 @@ describe Gitlab::BackgroundMigration::MovePersonalSnippetFiles do
   let(:snippet) do
     snippet = create(:personal_snippet)
     create_upload_for_snippet(snippet)
-    snippet.update_attributes!(description: markdown_linking_file(snippet))
+    snippet.update!(description: markdown_linking_file(snippet))
     snippet
   end
 

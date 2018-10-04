@@ -165,6 +165,7 @@ MergeRequest:
 - approvals_before_merge
 - rebase_commit_sha
 - time_estimate
+- squash
 - last_edited_at
 - last_edited_by_id
 - head_pipeline_id
@@ -204,6 +205,19 @@ MergeRequestDiffFile:
 - b_mode
 - too_large
 - binary
+MergeRequest::Metrics:
+- id
+- created_at
+- updated_at
+- merge_request_id
+- pipeline_id
+- latest_closed_by_id
+- latest_closed_at
+- merged_by_id
+- merged_at
+- latest_build_started_at
+- latest_build_finished_at
+- first_deployed_to_production_at
 Ci::Pipeline:
 - id
 - project_id
@@ -228,10 +242,12 @@ Ci::Pipeline:
 - config_source
 - failure_reason
 - protected
+- iid
 Ci::Stage:
 - id
 - name
 - status
+- position
 - lock_version
 - project_id
 - pipeline_id
@@ -400,6 +416,7 @@ ProjectHook:
 - type
 - service_id
 - push_events
+- push_events_branch_filter
 - issues_events
 - merge_requests_events
 - tag_push_events
@@ -524,6 +541,7 @@ ProjectAutoDevops:
 - id
 - enabled
 - domain
+- deploy_strategy
 - project_id
 - created_at
 - updated_at
@@ -537,12 +555,19 @@ ProjectCustomAttribute:
 - project_id
 - key
 - value
-LfsFileLock:
+PrometheusMetric:
 - id
-- path
-- user_id
-- project_id
 - created_at
+- updated_at
+- project_id
+- y_label
+- unit
+- legend
+- title
+- query
+- group
+- common
+- identifier
 Badge:
 - id
 - link_url
@@ -552,3 +577,13 @@ Badge:
 - created_at
 - updated_at
 - type
+ProjectCiCdSetting:
+- group_runners_enabled
+ResourceLabelEvent:
+- id
+- action
+- issue_id
+- merge_request_id
+- label_id
+- user_id
+- created_at

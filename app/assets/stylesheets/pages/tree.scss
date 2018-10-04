@@ -7,7 +7,7 @@
       color: $gl-text-color-secondary;
     }
 
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       display: flex;
 
       .tree-ref-container {
@@ -41,15 +41,10 @@
           position: relative;
         }
       }
-
-      .add-to-tree-dropdown {
-        position: absolute;
-        left: 18px;
-      }
     }
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     .repo-breadcrumb {
       margin-top: 10px;
       position: relative;
@@ -114,29 +109,11 @@
         line-height: 21px;
       }
 
-      .last-commit {
-        @include str-truncated(506px);
-
-        .fa-angle-right {
-          margin-left: 5px;
-        }
-
-        @media (min-width: $screen-md-min) and (max-width: $screen-md-max) {
-          @include str-truncated(450px);
-        }
-
-      }
-
-      .commit-history-link-spacer {
-        margin: 0 10px;
-        color: $white-normal;
-      }
-
       &:hover:not(.tree-truncated-warning) {
         td {
-          background-color: $row-hover;
-          border-top: 1px solid $row-hover-border;
-          border-bottom: 1px solid $row-hover-border;
+          background-color: $blue-50;
+          border-top: 1px solid $blue-200;
+          border-bottom: 1px solid $blue-200;
           cursor: pointer;
         }
       }
@@ -252,7 +229,7 @@
 
 .upload-link {
   font-weight: $gl-font-weight-normal;
-  color: $md-link-color;
+  color: $blue-600;
 }
 
 .repo-charts {

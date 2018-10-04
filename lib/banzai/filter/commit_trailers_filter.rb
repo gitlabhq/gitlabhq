@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module Filter
     # HTML filter that replaces users' names and emails in commit trailers
@@ -13,7 +15,6 @@ module Banzai
     # * https://git.wiki.kernel.org/index.php/CommitMessageConventions
     class CommitTrailersFilter < HTML::Pipeline::Filter
       include ActionView::Helpers::TagHelper
-      include ApplicationHelper
       include AvatarsHelper
 
       TRAILER_REGEXP = /(?<label>[[:alpha:]-]+-by:)/i.freeze

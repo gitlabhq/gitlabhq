@@ -18,6 +18,7 @@ export default {
   human_total_time_spent: null,
   in_progress_merge_commit_sha: null,
   merge_commit_sha: '53027d060246c8f47e4a9310fb332aa52f221775',
+  short_merge_commit_sha: '53027d06',
   merge_error: null,
   merge_params: {
     force_remove_source_branch: null,
@@ -28,8 +29,10 @@ export default {
   source_branch: 'daaaa',
   source_branch_link: 'daaaa',
   source_project_id: 19,
+  source_project_full_path: '/group1/project1',
   target_branch: 'master',
   target_project_id: 19,
+  target_project_full_path: '/group2/project2',
   metrics: {
     merged_by: {
       name: 'Administrator',
@@ -73,7 +76,7 @@ export default {
     path: '/root/acets-app/pipelines/172',
     details: {
       status: {
-        icon: 'icon_status_success',
+        icon: 'status_success',
         favicon: 'favicon_status_success',
         text: 'passed',
         label: 'passed',
@@ -88,7 +91,7 @@ export default {
           name: 'build',
           title: 'build: failed',
           status: {
-            icon: 'icon_status_failed',
+            icon: 'status_failed',
             favicon: 'favicon_status_failed',
             text: 'failed',
             label: 'failed',
@@ -103,7 +106,7 @@ export default {
           name: 'review',
           title: 'review: skipped',
           status: {
-            icon: 'icon_status_skipped',
+            icon: 'status_skipped',
             favicon: 'favicon_status_skipped',
             text: 'skipped',
             label: 'skipped',
@@ -215,4 +218,5 @@ export default {
   diverged_commits_count: 0,
   only_allow_merge_if_pipeline_succeeds: false,
   commit_change_content_path: '/root/acets-app/merge_requests/22/commit_change_content',
+  merge_commit_path: 'http://localhost:3000/root/acets-app/commit/53027d060246c8f47e4a9310fb332aa52f221775',
 };

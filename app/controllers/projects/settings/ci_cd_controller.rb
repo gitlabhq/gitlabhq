@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   module Settings
     class CiCdController < Projects::ApplicationController
@@ -41,7 +43,7 @@ module Projects
           :runners_token, :builds_enabled, :build_allow_git_fetch,
           :build_timeout_human_readable, :build_coverage_regex, :public_builds,
           :auto_cancel_pending_pipelines, :ci_config_path,
-          auto_devops_attributes: [:id, :domain, :enabled]
+          auto_devops_attributes: [:id, :domain, :enabled, :deploy_strategy]
         )
       end
 
@@ -67,10 +69,18 @@ module Projects
 
       def define_runners_variables
         @project_runners = @project.runners.ordered
-        @assignable_runners = current_user.ci_authorized_runners
-          .assignable_for(project).ordered.page(params[:page]).per(20)
-        @shared_runners = ::Ci::Runner.shared.active
+
+        @assignable_runners = current_user
+          .ci_owned_runners
+          .assignable_for(project)
+          .ordered
+          .page(params[:page]).per(20)
+
+        @shared_runners = ::Ci::Runner.instance_type.active
+
         @shared_runners_count = @shared_runners.count(:all)
+
+        @group_runners = ::Ci::Runner.belonging_to_parent_group_of_project(@project.id)
       end
 
       def define_secret_variables

@@ -91,6 +91,12 @@ describe Banzai::Filter::GollumTagsFilter do
       expect(doc.at_css('a').text).to eq 'link-text'
       expect(doc.at_css('a')['href']).to eq expected_path
     end
+
+    it "inside back ticks will be exempt from linkification" do
+      doc = filter('<code>[[link-in-backticks]]</code>', project_wiki: project_wiki)
+
+      expect(doc.at_css('code').text).to eq '[[link-in-backticks]]'
+    end
   end
 
   context 'table of contents' do

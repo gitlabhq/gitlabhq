@@ -1,0 +1,23 @@
+= form_tag upload_import_manifest_path, multipart: true do
+  .form-group
+    = label_tag :group_id, nil, class: 'label-bold' do
+      = _('Group')
+    .input-group
+      .input-group-prepend.has-tooltip{ title: root_url }
+        .input-group-text
+          = root_url
+      = select_tag :group_id, namespaces_options(nil, display_path: true, groups_only: true), { class: 'select2 js-select-namespace' }
+    .form-text.text-muted
+      = _('Choose the top-level group for your repository imports.')
+
+  .form-group
+    = label_tag :manifest, class: 'label-bold' do
+      = _('Manifest')
+    = file_field_tag :manifest, class: 'form-control-file', required: true
+    .form-text.text-muted
+      = _('Import multiple repositories by uploading a manifest file.')
+      = link_to icon('question-circle'), help_page_path('user/project/import/manifest')
+
+  .append-bottom-10
+    = submit_tag _('List available repositories'), class: 'btn btn-success'
+    = link_to _('Cancel'), new_project_path, class: 'btn btn-cancel'

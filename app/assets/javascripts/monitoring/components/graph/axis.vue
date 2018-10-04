@@ -92,48 +92,48 @@ export default {
 <template>
   <g class="axis-label-container">
     <line
+      :y1="yPosition"
+      :x2="graphWidth + 20"
+      :y2="yPosition"
       class="label-x-axis-line"
       stroke="#000000"
       stroke-width="1"
       x1="10"
-      :y1="yPosition"
-      :x2="graphWidth + 20"
-      :y2="yPosition"
     />
     <line
+      :x2="10"
+      :y2="yPosition"
       class="label-y-axis-line"
       stroke="#000000"
       stroke-width="1"
       x1="10"
       y1="0"
-      :x2="10"
-      :y2="yPosition"
     />
     <rect
-      class="rect-axis-text"
       :transform="rectTransform"
       :width="yLabelWidth"
       :height="yLabelHeight"
+      class="rect-axis-text"
     />
     <text
+      ref="ylabel"
+      :transform="textTransform"
       class="label-axis-text y-label-text"
       text-anchor="middle"
-      :transform="textTransform"
-      ref="ylabel"
     >
       {{ yAxisLabelSentenceCase }}
     </text>
     <rect
-      class="rect-axis-text"
       :x="xPosition + 60"
       :y="graphHeight - 80"
+      class="rect-axis-text"
       width="35"
       height="50"
     />
     <text
-      class="label-axis-text x-label-text"
       :x="xPosition + 60"
       :y="yPosition"
+      class="label-axis-text x-label-text"
       dy=".35em"
     >
       {{ timeString }}

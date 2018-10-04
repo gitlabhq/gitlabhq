@@ -41,12 +41,22 @@ FactoryBot.define do
       state :merged
     end
 
+    trait :merged_target do
+      source_branch "merged-target"
+      target_branch "improve/awesome"
+    end
+
     trait :closed do
       state :closed
     end
 
     trait :opened do
       state :opened
+    end
+
+    trait :invalid do
+      source_branch "feature_one"
+      target_branch "feature_two"
     end
 
     trait :locked do
@@ -79,6 +89,18 @@ FactoryBot.define do
       end
     end
 
+    trait :with_test_reports do
+      after(:build) do |merge_request|
+        merge_request.head_pipeline = build(
+          :ci_pipeline,
+          :success,
+          :with_test_reports,
+          project: merge_request.source_project,
+          ref: merge_request.source_branch,
+          sha: merge_request.diff_head_sha)
+      end
+    end
+
     after(:build) do |merge_request|
       target_project = merge_request.target_project
       source_project = merge_request.source_project
@@ -90,9 +112,14 @@ FactoryBot.define do
       end
     end
 
+    after(:create) do |merge_request, evaluator|
+      merge_request.cache_merge_request_closes_issues!
+    end
+
     factory :merged_merge_request, traits: [:merged]
     factory :closed_merge_request, traits: [:closed]
     factory :reopened_merge_request, traits: [:opened]
+    factory :invalid_merge_request, traits: [:invalid]
     factory :merge_request_with_diffs, traits: [:with_diffs]
     factory :merge_request_with_diff_notes do
       after(:create) do |mr|
@@ -106,7 +133,7 @@ FactoryBot.define do
       end
 
       after(:create) do |merge_request, evaluator|
-        merge_request.update_attributes(labels: evaluator.labels)
+        merge_request.update(labels: evaluator.labels)
       end
     end
   end

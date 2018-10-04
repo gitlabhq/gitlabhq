@@ -1,15 +1,22 @@
 <script>
+import { __, sprintf } from '~/locale';
 import Flash from '~/flash';
+import tooltip from '~/vue_shared/directives/tooltip';
+import issuableMixin from '~/vue_shared/mixins/issuable';
+import Icon from '~/vue_shared/components/icon.vue';
+import eventHub from '~/sidebar/event_hub';
 import editForm from './edit_form.vue';
-import issuableMixin from '../../../vue_shared/mixins/issuable';
-import Icon from '../../../vue_shared/components/icon.vue';
-import eventHub from '../../event_hub';
 
 export default {
   components: {
     editForm,
     Icon,
   },
+
+  directives: {
+    tooltip,
+  },
+
   mixins: [issuableMixin],
 
   props: {
@@ -44,6 +51,10 @@ export default {
     isLockDialogOpen() {
       return this.mediator.store.isLockDialogOpen;
     },
+
+    tooltipLabel() {
+      return this.isLocked ? __('Locked') : __('Unlocked');
+    },
   },
 
   created() {
@@ -65,14 +76,12 @@ export default {
         .update(this.issuableType, {
           discussion_locked: locked,
         })
-        .then(() => location.reload())
+        .then(() => window.location.reload())
         .catch(() =>
           Flash(
-            this.__(
-              `Something went wrong trying to change the locked state of this ${
-                this.issuableDisplayName
-              }`,
-            ),
+            sprintf(__('Something went wrong trying to change the locked state of this %{issuableDisplayName}'), {
+              issuableDisplayName: this.issuableDisplayName,
+            }),
           ),
         );
     },
@@ -83,7 +92,12 @@ export default {
 <template>
   <div class="block issuable-sidebar-item lock">
     <div
+      v-tooltip
+      :title="tooltipLabel"
       class="sidebar-collapsed-icon"
+      data-container="body"
+      data-placement="left"
+      data-boundary="viewport"
       @click="toggleForm"
     >
       <icon
@@ -97,7 +111,7 @@ export default {
       {{ sprintf(__('Lock %{issuableDisplayName}'), { issuableDisplayName: issuableDisplayName }) }}
       <button
         v-if="isEditable"
-        class="pull-right lock-edit"
+        class="float-right lock-edit"
         type="button"
         @click.prevent="toggleForm"
       >
@@ -118,8 +132,8 @@ export default {
         class="value sidebar-item-value"
       >
         <icon
-          name="lock"
           :size="16"
+          name="lock"
           aria-hidden="true"
           class="sidebar-item-icon inline is-active"
         />
@@ -131,8 +145,8 @@ export default {
         class="no-value sidebar-item-value hide-collapsed"
       >
         <icon
-          name="lock-open"
           :size="16"
+          name="lock-open"
           aria-hidden="true"
           class="sidebar-item-icon inline"
         />

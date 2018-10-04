@@ -10,11 +10,11 @@
   }
 
   .issue_created_ago,
-  .author_link {
+  .author-link {
     white-space: nowrap;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     display: block;
   }
 }
@@ -23,9 +23,10 @@
   position: relative;
   line-height: 35px;
   display: flex;
-  flex-grow: 1;
+  flex: 1 1;
+  min-width: 0;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     padding-left: 0;
     padding-right: 0;
   }
@@ -36,7 +37,7 @@
   flex-shrink: 0;
   flex: 0 0 auto;
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     width: 100%;
     margin-top: 10px;
 

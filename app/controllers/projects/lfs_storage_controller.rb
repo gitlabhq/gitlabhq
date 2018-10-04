@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::LfsStorageController < Projects::GitHttpClientController
   include LfsRequest
   include WorkhorseRequest
@@ -18,7 +20,7 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
   def upload_authorize
     set_workhorse_internal_api_content_type
 
-    authorized = LfsObjectUploader.workhorse_authorize
+    authorized = LfsObjectUploader.workhorse_authorize(has_length: true)
     authorized.merge!(LfsOid: oid, LfsSize: size)
 
     render json: authorized
@@ -28,7 +30,7 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
     if store_file!(oid, size)
       head 200
     else
-      render plain: 'Unprocessable entity', status: 422
+      render plain: 'Unprocessable entity', status: :unprocessable_entity
     end
   rescue ActiveRecord::RecordInvalid
     render_lfs_forbidden
@@ -56,6 +58,7 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
     params[:size].to_i
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def store_file!(oid, size)
     object = LfsObject.find_by(oid: oid, size: size)
     unless object&.file&.exists?
@@ -66,6 +69,7 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
 
     link_to_project!(object)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def create_file!(oid, size)
     uploaded_file = UploadedFile.from_params(
@@ -75,10 +79,11 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
     LfsObject.create!(oid: oid, size: size, file: uploaded_file)
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def link_to_project!(object)
     if object && !object.projects.exists?(storage_project.id)
-      object.projects << storage_project
-      object.save!
+      object.lfs_objects_projects.create!(project: storage_project)
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

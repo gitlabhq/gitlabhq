@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# rubocop:disable Rails/ActiveRecordAliases
 class WikiPage
   PageChangedError = Class.new(StandardError)
   PageRenameError = Class.new(StandardError)
@@ -48,18 +51,18 @@ class WikiPage
   validates :title, presence: true
   validates :content, presence: true
 
-  # The Gitlab ProjectWiki instance.
+  # The GitLab ProjectWiki instance.
   attr_reader :wiki
 
   # The raw Gitlab::Git::WikiPage instance.
   attr_reader :page
 
   # The attributes Hash used for storing and validating
-  # new Page values before writing to the Gollum repository.
+  # new Page values before writing to the raw repository.
   attr_accessor :attributes
 
   def hook_attrs
-    attributes
+    Gitlab::HookData::WikiPageBuilder.new(self).build
   end
 
   def initialize(wiki, page = nil, persisted = false)
@@ -108,10 +111,7 @@ class WikiPage
 
   # The processed/formatted content of this page.
   def formatted_content
-    # Assuming @page exists, nil formatted_data means we didn't load it
-    # before hand (i.e. page was fetched by Gitaly), so we fetch it separately.
-    # If the page was fetched by Gollum, formatted_data would've been a String.
-    @attributes[:formatted_content] ||= @page&.formatted_data || @wiki.page_formatted_data(@page)
+    @attributes[:formatted_content] ||= @wiki.page_formatted_data(@page)
   end
 
   # The markup format for the page.
@@ -124,7 +124,7 @@ class WikiPage
     version.try(:message)
   end
 
-  # The Gitlab Commit instance for this page.
+  # The GitLab Commit instance for this page.
   def version
     return nil unless persisted?
 
@@ -265,6 +265,15 @@ class WikiPage
     title.present? && self.class.unhyphenize(@page.url_path) != title
   end
 
+  # Updates the current @attributes hash by merging a hash of params
+  def update_attributes(attrs)
+    attrs[:title] = process_title(attrs[:title]) if attrs[:title].present?
+
+    attrs.slice!(:content, :format, :message, :title)
+
+    @attributes.merge!(attrs)
+  end
+
   private
 
   # Process and format the title based on the user input.
@@ -288,15 +297,6 @@ class WikiPage
     components = title.split(File::SEPARATOR).map(&:squish)
 
     File.join(components)
-  end
-
-  # Updates the current @attributes hash by merging a hash of params
-  def update_attributes(attrs)
-    attrs[:title] = process_title(attrs[:title]) if attrs[:title].present?
-
-    attrs.slice!(:content, :format, :message, :title)
-
-    @attributes.merge!(attrs)
   end
 
   def set_attributes

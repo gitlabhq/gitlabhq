@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   # notification_settings API
   class NotificationSettings < Grape::API
@@ -23,7 +25,7 @@ module API
       params do
         optional :level, type: String, desc: 'The global notification level'
         optional :notification_email, type: String, desc: 'The email address to send notifications'
-        NotificationSetting::EMAIL_EVENTS.each do |event|
+        NotificationSetting.email_events.each do |event|
           optional event, type: Boolean, desc: 'Enable/disable this notification'
         end
       end
@@ -50,7 +52,9 @@ module API
       end
     end
 
-    %w[group project].each do |source_type|
+    [Group, Project].each do |source_class|
+      source_type = source_class.name.underscore
+
       params do
         requires :id, type: String, desc: "The #{source_type} ID"
       end
@@ -73,7 +77,7 @@ module API
         end
         params do
           optional :level, type: String, desc: "The #{source_type} notification level"
-          NotificationSetting::EMAIL_EVENTS.each do |event|
+          NotificationSetting.email_events(source_class).each do |event|
             optional event, type: Boolean, desc: 'Enable/disable this notification'
           end
         end

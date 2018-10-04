@@ -115,8 +115,8 @@ from within the `qa` directory.
 
 ## Where to ask for help?
 
-If you need more information, ask for help on `#qa` channel on Slack (GitLab
-Team only).
+If you need more information, ask for help on `#quality` channel on Slack
+(internal, GitLab Team only).
 
 If you are not a Team Member, and you still need help to contribute, please
 open an issue in GitLab QA issue tracker.

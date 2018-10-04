@@ -21,7 +21,7 @@ describe 'User browse group projects page' do
           visit projects_group_path(group)
 
           expect(page).to have_link project.name
-          expect(page).to have_xpath("//span[@class='label label-warning']", text: 'archived')
+          expect(page).to have_xpath("//span[@class='badge badge-warning']", text: 'archived')
         end
       end
     end

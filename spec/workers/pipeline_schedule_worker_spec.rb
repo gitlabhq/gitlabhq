@@ -18,7 +18,7 @@ describe PipelineScheduleWorker do
 
   context 'when the schedule is runnable by the user' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'when there is a scheduled pipeline within next_run_at' do

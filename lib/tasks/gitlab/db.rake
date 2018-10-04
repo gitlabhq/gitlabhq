@@ -46,9 +46,13 @@ namespace :gitlab do
 
     desc 'Configures the database by running migrate, or by loading the schema and seeding if needed'
     task configure: :environment do
-      if ActiveRecord::Base.connection.tables.any?
+      # Check if we have existing db tables
+      # The schema_migrations table will still exist if drop_tables was called
+      if ActiveRecord::Base.connection.tables.count > 1
         Rake::Task['db:migrate'].invoke
       else
+        # Add post-migrate paths to ensure we mark all migrations as up
+        Gitlab::Database.add_post_migrate_path_to_rails(force: true)
         Rake::Task['db:schema:load'].invoke
         Rake::Task['db:seed_fu'].invoke
       end

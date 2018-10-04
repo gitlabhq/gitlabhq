@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PersonalFileUploader < FileUploader
   # Re-Override
   def self.root

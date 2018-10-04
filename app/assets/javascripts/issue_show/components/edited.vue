@@ -37,16 +37,16 @@
     Edited
     <time-ago-tooltip
       v-if="updatedAt"
-      tooltip-placement="bottom"
       :time="updatedAt"
+      tooltip-placement="bottom"
     />
     <span
       v-if="hasUpdatedBy"
     >
       by
       <a
-        class="author_link"
         :href="updatedByPath"
+        class="author-link"
       >
         <span>{{ updatedByName }}</span>
       </a>

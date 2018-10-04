@@ -35,6 +35,16 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe 'modules' do
+    it_behaves_like 'AtomicInternalId', validate_presence: false do
+      let(:internal_id_attribute) { :iid }
+      let(:instance) { build(:ci_pipeline) }
+      let(:scope) { :project }
+      let(:scope_attrs) { { project: instance.project } }
+      let(:usage) { :ci_pipelines }
+    end
+  end
+
   describe '#source' do
     context 'when creating new pipeline' do
       let(:pipeline) do
@@ -167,13 +177,40 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#persisted_variables' do
+    context 'when pipeline is not persisted yet' do
+      subject { build(:ci_pipeline).persisted_variables }
+
+      it 'does not contain some variables' do
+        keys = subject.map { |variable| variable[:key] }
+
+        expect(keys).not_to include 'CI_PIPELINE_ID'
+      end
+    end
+
+    context 'when pipeline is persisted' do
+      subject { build_stubbed(:ci_pipeline).persisted_variables }
+
+      it 'does contains persisted variables' do
+        keys = subject.map { |variable| variable[:key] }
+
+        expect(keys).to eq %w[CI_PIPELINE_ID CI_PIPELINE_URL]
+      end
+    end
+  end
+
   describe '#predefined_variables' do
     subject { pipeline.predefined_variables }
 
     it 'includes all predefined variables in a valid order' do
       keys = subject.map { |variable| variable[:key] }
 
-      expect(keys).to eq %w[CI_PIPELINE_ID CI_CONFIG_PATH CI_PIPELINE_SOURCE]
+      expect(keys).to eq %w[CI_PIPELINE_IID
+                            CI_CONFIG_PATH
+                            CI_PIPELINE_SOURCE
+                            CI_COMMIT_MESSAGE
+                            CI_COMMIT_TITLE
+                            CI_COMMIT_DESCRIPTION]
     end
   end
 
@@ -500,6 +537,87 @@ describe Ci::Pipeline, :mailer do
         end
       end
     end
+
+    describe '#stages' do
+      before do
+        create(:ci_stage_entity, project: project,
+                                 pipeline: pipeline,
+                                 name: 'build')
+      end
+
+      it 'returns persisted stages' do
+        expect(pipeline.stages).not_to be_empty
+        expect(pipeline.stages).to all(be_persisted)
+      end
+    end
+
+    describe '#ordered_stages' do
+      before do
+        create(:ci_stage_entity, project: project,
+                                 pipeline: pipeline,
+                                 position: 4,
+                                 name: 'deploy')
+
+        create(:ci_build, project: project,
+                          pipeline: pipeline,
+                          stage: 'test',
+                          stage_idx: 3,
+                          name: 'test')
+
+        create(:ci_build, project: project,
+                          pipeline: pipeline,
+                          stage: 'build',
+                          stage_idx: 2,
+                          name: 'build')
+
+        create(:ci_stage_entity, project: project,
+                                 pipeline: pipeline,
+                                 position: 1,
+                                 name: 'sanity')
+
+        create(:ci_stage_entity, project: project,
+                                 pipeline: pipeline,
+                                 position: 5,
+                                 name: 'cleanup')
+      end
+
+      subject { pipeline.ordered_stages }
+
+      context 'when using legacy stages' do
+        before do
+          stub_feature_flags(ci_pipeline_persisted_stages: false)
+        end
+
+        it 'returns legacy stages in valid order' do
+          expect(subject.map(&:name)).to eq %w[build test]
+        end
+      end
+
+      context 'when using persisted stages' do
+        before do
+          stub_feature_flags(ci_pipeline_persisted_stages: true)
+        end
+
+        context 'when pipelines is not complete' do
+          it 'still returns legacy stages' do
+            expect(subject).to all(be_a Ci::LegacyStage)
+            expect(subject.map(&:name)).to eq %w[build test]
+          end
+        end
+
+        context 'when pipeline is complete' do
+          before do
+            pipeline.succeed!
+          end
+
+          it 'returns stages in valid order' do
+            expect(subject).to all(be_a Ci::Stage)
+            expect(subject.map(&:name))
+              .to eq %w[sanity build test deploy cleanup]
+          end
+        end
+      end
+    end
   end
 
   describe 'state machine' do
@@ -774,6 +892,33 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#number_of_warnings' do
+    it 'returns the number of warnings' do
+      create(:ci_build, :allowed_to_fail, :failed, pipeline: pipeline, name: 'rubocop')
+
+      expect(pipeline.number_of_warnings).to eq(1)
+    end
+
+    it 'supports eager loading of the number of warnings' do
+      pipeline2 = create(:ci_empty_pipeline, status: :created, project: project)
+
+      create(:ci_build, :allowed_to_fail, :failed, pipeline: pipeline, name: 'rubocop')
+      create(:ci_build, :allowed_to_fail, :failed, pipeline: pipeline2, name: 'rubocop')
+
+      pipelines = project.pipelines.to_a
+
+      pipelines.each(&:number_of_warnings)
+
+      # To run the queries we need to actually use the lazy objects, which we do
+      # by just sending "to_i" to them.
+      amount = ActiveRecord::QueryRecorder
+        .new { pipelines.each { |p| p.number_of_warnings.to_i } }
+        .count
+
+      expect(amount).to eq(1)
+    end
+  end
+
   shared_context 'with some outdated pipelines' do
     before do
       create_pipeline(:canceled, 'ref', 'A', project)
@@ -1006,7 +1151,11 @@ describe Ci::Pipeline, :mailer do
   end
 
   describe '#set_config_source' do
-    context 'when pipelines does not contain needed data' do
+    context 'when pipelines does not contain needed data and auto devops is disabled' do
+      before do
+        stub_application_setting(auto_devops_enabled: false)
+      end
+
       it 'defines source to be unknown' do
         pipeline.set_config_source
 
@@ -1051,7 +1200,6 @@ describe Ci::Pipeline, :mailer do
 
         context 'auto devops enabled' do
           before do
-            stub_application_setting(auto_devops_enabled: true)
             allow(project).to receive(:ci_config_path) { 'custom' }
           end
 
@@ -1113,6 +1261,43 @@ describe Ci::Pipeline, :mailer do
       it 'finds the implied config' do
         expect(pipeline.ci_yaml_file).to eq(implied_yml)
         expect(pipeline.yaml_errors).to be_nil
+      end
+    end
+  end
+
+  describe '#update_status' do
+    context 'when pipeline is empty' do
+      it 'updates does not change pipeline status' do
+        expect(pipeline.statuses.latest.status).to be_nil
+
+        expect { pipeline.update_status }
+          .to change { pipeline.reload.status }.to 'skipped'
+      end
+    end
+
+    context 'when updating status to pending' do
+      before do
+        allow(pipeline)
+          .to receive_message_chain(:statuses, :latest, :status)
+          .and_return(:running)
+      end
+
+      it 'updates pipeline status to running' do
+        expect { pipeline.update_status }
+          .to change { pipeline.reload.status }.to 'running'
+      end
+    end
+
+    context 'when statuses status was not recognized' do
+      before do
+        allow(pipeline)
+          .to receive(:latest_builds_status)
+          .and_return(:unknown)
+      end
+
+      it 'raises an exception' do
+        expect { pipeline.update_status }
+          .to raise_error(HasStatus::UnknownStatusError)
       end
     end
   end
@@ -1536,7 +1721,7 @@ describe Ci::Pipeline, :mailer do
 
     context 'when pipeline is not stuck' do
       before do
-        create(:ci_runner, :shared, :online)
+        create(:ci_runner, :instance, :online)
       end
 
       it 'is not stuck' do
@@ -1561,7 +1746,7 @@ describe Ci::Pipeline, :mailer do
         create(:ci_pipeline, config: { rspec: { script: 'rake test' } })
       end
 
-      it 'does not containyaml errors' do
+      it 'does not contain yaml errors' do
         expect(pipeline).not_to have_yaml_errors
       end
     end
@@ -1669,6 +1854,85 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#has_test_reports?' do
+    subject { pipeline.has_test_reports? }
+
+    context 'when pipeline has builds with test reports' do
+      before do
+        create(:ci_build, :test_reports, pipeline: pipeline, project: project)
+      end
+
+      context 'when pipeline status is running' do
+        let(:pipeline) { create(:ci_pipeline, :running, project: project) }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when pipeline status is success' do
+        let(:pipeline) { create(:ci_pipeline, :success, project: project) }
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when pipeline does not have builds with test reports' do
+      before do
+        create(:ci_build, :artifacts, pipeline: pipeline, project: project)
+      end
+
+      let(:pipeline) { create(:ci_pipeline, :success, project: project) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when retried build has test reports' do
+      before do
+        create(:ci_build, :retried, :test_reports, pipeline: pipeline, project: project)
+      end
+
+      let(:pipeline) { create(:ci_pipeline, :success, project: project) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#test_reports' do
+    subject { pipeline.test_reports }
+
+    context 'when pipeline has multiple builds with test reports' do
+      let!(:build_rspec) { create(:ci_build, :success, name: 'rspec', pipeline: pipeline, project: project) }
+      let!(:build_java) { create(:ci_build, :success, name: 'java', pipeline: pipeline, project: project) }
+
+      before do
+        create(:ci_job_artifact, :junit, job: build_rspec, project: project)
+        create(:ci_job_artifact, :junit_with_ant, job: build_java, project: project)
+      end
+
+      it 'returns test reports with collected data' do
+        expect(subject.total_count).to be(7)
+        expect(subject.success_count).to be(5)
+        expect(subject.failed_count).to be(2)
+      end
+
+      context 'when builds are retried' do
+        let!(:build_rspec) { create(:ci_build, :retried, :success, name: 'rspec', pipeline: pipeline, project: project) }
+        let!(:build_java) { create(:ci_build, :retried, :success, name: 'java', pipeline: pipeline, project: project) }
+
+        it 'does not take retried builds into account' do
+          expect(subject.total_count).to be(0)
+          expect(subject.success_count).to be(0)
+          expect(subject.failed_count).to be(0)
+        end
+      end
+    end
+
+    context 'when pipeline does not have any builds with test reports' do
+      it 'returns empty test reports' do
+        expect(subject.total_count).to be(0)
+      end
+    end
+  end
+
   describe '#total_size' do
     let!(:build_job1) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
     let!(:build_job2) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
@@ -1678,6 +1942,30 @@ describe Ci::Pipeline, :mailer do
 
     it 'returns all jobs (including failed and retried)' do
       expect(pipeline.total_size).to eq(5)
+    end
+  end
+
+  describe '#status' do
+    context 'when transitioning to failed' do
+      context 'when pipeline has autodevops as source' do
+        let(:pipeline) { create(:ci_pipeline, :running, :auto_devops_source) }
+
+        it 'calls autodevops disable service' do
+          expect(AutoDevops::DisableWorker).to receive(:perform_async).with(pipeline.id)
+
+          pipeline.drop
+        end
+      end
+
+      context 'when pipeline has other source' do
+        let(:pipeline) { create(:ci_pipeline, :running, :repository_source) }
+
+        it 'does not call auto devops disable service' do
+          expect(AutoDevops::DisableWorker).not_to receive(:perform_async)
+
+          pipeline.drop
+        end
+      end
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::RepositoriesController < Projects::ApplicationController
   include ExtractsPath
 
@@ -24,15 +26,16 @@ class Projects::RepositoriesController < Projects::ApplicationController
     send_git_archive @repository, ref: @ref, format: params[:format], append_sha: append_sha
   rescue => ex
     logger.error("#{self.class.name}: #{ex}")
-    return git_not_found!
+    git_not_found!
   end
 
   def assign_archive_vars
-    @id = params[:id]
-
-    return unless @id
-
-    @ref, @filename = extract_ref(@id)
+    if params[:id]
+      @ref, @filename = extract_ref(params[:id])
+    else
+      @ref = params[:ref]
+      @filename = nil
+    end
   rescue InvalidPathError
     render_404
   end

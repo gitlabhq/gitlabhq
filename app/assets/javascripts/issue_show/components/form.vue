@@ -25,6 +25,10 @@
         required: false,
         default: () => [],
       },
+      issuableType: {
+        type: String,
+        required: true,
+      },
       markdownPreviewPath: {
         type: String,
         required: true,
@@ -32,6 +36,11 @@
       markdownDocsPath: {
         type: String,
         required: true,
+      },
+      markdownVersion: {
+        type: Number,
+        required: false,
+        default: 0,
       },
       projectPath: {
         type: String,
@@ -69,8 +78,8 @@
   <form>
     <div class="row">
       <div
-        class="col-sm-4 col-lg-3"
-        v-if="hasIssuableTemplates">
+        v-if="hasIssuableTemplates"
+        class="col-sm-4 col-lg-3">
         <description-template
           :form-state="formState"
           :issuable-templates="issuableTemplates"
@@ -81,7 +90,7 @@
       <div
         :class="{
           'col-sm-8 col-lg-9': hasIssuableTemplates,
-          'col-xs-12': !hasIssuableTemplates,
+          'col-12': !hasIssuableTemplates,
         }"
       >
         <title-field
@@ -94,6 +103,7 @@
       :form-state="formState"
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"
+      :markdown-version="markdownVersion"
       :can-attach-file="canAttachFile"
       :enable-autocomplete="enableAutocomplete"
     />
@@ -101,6 +111,7 @@
       :form-state="formState"
       :can-destroy="canDestroy"
       :show-delete-button="showDeleteButton"
+      :issuable-type="issuableType"
     />
   </form>
 </template>

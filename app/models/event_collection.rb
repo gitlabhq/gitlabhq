@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A collection of events to display in an event list.
 #
 # An EventCollection is meant to be used for displaying events to a user (e.g.

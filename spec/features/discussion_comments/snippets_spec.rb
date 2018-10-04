@@ -6,7 +6,7 @@ describe 'Discussion Comments Snippet', :js do
   let(:snippet) { create(:project_snippet, :private, project: project, author: user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     visit project_snippet_path(project, snippet)

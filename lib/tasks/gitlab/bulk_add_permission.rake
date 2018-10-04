@@ -1,6 +1,6 @@
 namespace :gitlab do
   namespace :import do
-    desc "GitLab | Add all users to all projects (admin users are added as masters)"
+    desc "GitLab | Add all users to all projects (admin users are added as maintainers)"
     task all_users_to_all_projects: :environment  do |t, args|
       user_ids = User.where(admin: false).pluck(:id)
       admin_ids = User.where(admin: true).pluck(:id)
@@ -10,7 +10,7 @@ namespace :gitlab do
       ProjectMember.add_users_to_projects(project_ids, user_ids, ProjectMember::DEVELOPER)
 
       puts "Importing #{admin_ids.size} admins into #{project_ids.size} projects"
-      ProjectMember.add_users_to_projects(project_ids, admin_ids, ProjectMember::MASTER)
+      ProjectMember.add_users_to_projects(project_ids, admin_ids, ProjectMember::MAINTAINER)
     end
 
     desc "GitLab | Add a specific user to all projects (as a developer)"

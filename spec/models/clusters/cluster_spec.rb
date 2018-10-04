@@ -13,6 +13,10 @@ describe Clusters::Cluster do
   it { is_expected.to delegate_method(:status_reason).to(:provider) }
   it { is_expected.to delegate_method(:status_name).to(:provider) }
   it { is_expected.to delegate_method(:on_creation?).to(:provider) }
+  it { is_expected.to delegate_method(:active?).to(:platform_kubernetes).with_prefix }
+  it { is_expected.to delegate_method(:rbac?).to(:platform_kubernetes).with_prefix }
+  it { is_expected.to delegate_method(:installed?).to(:application_helm).with_prefix }
+  it { is_expected.to delegate_method(:installed?).to(:application_ingress).with_prefix }
   it { is_expected.to respond_to :project }
 
   describe '.enabled' do
@@ -234,9 +238,10 @@ describe Clusters::Cluster do
       let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
       let!(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
       let!(:runner) { create(:clusters_applications_runner, cluster: cluster) }
+      let!(:jupyter) { create(:clusters_applications_jupyter, cluster: cluster) }
 
       it 'returns a list of created applications' do
-        is_expected.to contain_exactly(helm, ingress, prometheus, runner)
+        is_expected.to contain_exactly(helm, ingress, prometheus, runner, jupyter)
       end
     end
   end

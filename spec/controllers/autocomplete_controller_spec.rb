@@ -228,12 +228,12 @@ describe AutocompleteController do
 
     before do
       sign_in(user)
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'authorized projects' do
       before do
-        authorized_project.add_master(user)
+        authorized_project.add_maintainer(user)
       end
 
       describe 'GET #projects with project ID' do
@@ -253,8 +253,8 @@ describe AutocompleteController do
 
     context 'authorized projects and search' do
       before do
-        authorized_project.add_master(user)
-        authorized_search_project.add_master(user)
+        authorized_project.add_maintainer(user)
+        authorized_search_project.add_maintainer(user)
       end
 
       describe 'GET #projects with project ID and search' do
@@ -274,14 +274,11 @@ describe AutocompleteController do
 
     context 'authorized projects apply limit' do
       before do
-        authorized_project2 = create(:project)
-        authorized_project3 = create(:project)
+        allow(Kaminari.config).to receive(:default_per_page).and_return(2)
 
-        authorized_project.add_master(user)
-        authorized_project2.add_master(user)
-        authorized_project3.add_master(user)
-
-        stub_const 'MoveToProjectFinder::PAGE_SIZE', 2
+        create_list(:project, 2) do |project|
+          project.add_maintainer(user)
+        end
       end
 
       describe 'GET #projects with project ID' do
@@ -291,7 +288,7 @@ describe AutocompleteController do
 
         it 'returns projects' do
           expect(json_response).to be_kind_of(Array)
-          expect(json_response.size).to eq 2 # Of a total of 3
+          expect(json_response.size).to eq(Kaminari.config.default_per_page)
         end
       end
     end
@@ -301,9 +298,9 @@ describe AutocompleteController do
         authorized_project2 = create(:project)
         authorized_project3 = create(:project)
 
-        authorized_project.add_master(user)
-        authorized_project2.add_master(user)
-        authorized_project3.add_master(user)
+        authorized_project.add_maintainer(user)
+        authorized_project2.add_maintainer(user)
+        authorized_project3.add_maintainer(user)
       end
 
       describe 'GET #projects with project ID and offset_id' do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Issuable concern
 #
 # Contains common functionality shared between Issues and MergeRequests
@@ -47,8 +49,8 @@ module Issuable
       end
     end
 
-    has_many :label_links, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-    has_many :labels, -> { auto_include(false) }, through: :label_links
+    has_many :label_links, as: :target, dependent: :destroy, inverse_of: :target # rubocop:disable Cop/ActiveRecordDependent
+    has_many :labels, through: :label_links
     has_many :todos, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
     has_one :metrics
@@ -97,8 +99,6 @@ module Issuable
 
     strip_attributes :title
 
-    after_save :ensure_metrics, unless: :imported?
-
     # We want to use optimistic lock for cases when only title or description are involved
     # http://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html
     def locking_enabled?
@@ -114,7 +114,7 @@ module Issuable
     end
   end
 
-  module ClassMethods
+  class_methods do
     # Searches for records with a matching title.
     #
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
@@ -152,7 +152,7 @@ module Issuable
         end
 
       # Break ties with the ID column for pagination
-      sorted.order(id: :desc)
+      sorted.with_order_id_desc
     end
 
     def order_due_date_and_labels_priority(excluded_labels: [])
@@ -239,6 +239,12 @@ module Issuable
 
   def open?
     opened?
+  end
+
+  def overdue?
+    return false unless respond_to?(:due_date)
+
+    due_date.try(:past?) || false
   end
 
   def user_notes_count

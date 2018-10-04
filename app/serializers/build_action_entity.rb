@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BuildActionEntity < Grape::Entity
   include RequestAwareEntity
 

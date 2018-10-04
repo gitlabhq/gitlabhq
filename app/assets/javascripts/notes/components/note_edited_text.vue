@@ -11,14 +11,20 @@ export default {
       type: String,
       required: true,
     },
+    actionDetailText: {
+      type: String,
+      required: false,
+      default: '',
+    },
     editedAt: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     editedBy: {
       type: Object,
       required: false,
-      default: () => ({}),
+      default: null,
     },
     className: {
       type: String,
@@ -32,17 +38,18 @@ export default {
 <template>
   <div :class="className">
     {{ actionText }}
-    <time-ago-tooltip
-      :time="editedAt"
-      tooltip-placement="bottom"
-    />
     <template v-if="editedBy">
       by
       <a
         :href="editedBy.path"
-        class="js-vue-author author_link">
+        class="js-vue-author author-link">
         {{ editedBy.name }}
       </a>
     </template>
+    {{ actionDetailText }}
+    <time-ago-tooltip
+      :time="editedAt"
+      tooltip-placement="bottom"
+    />
   </div>
 </template>

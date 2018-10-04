@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BaseSerializer
   attr_reader :params
 

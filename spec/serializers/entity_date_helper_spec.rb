@@ -32,6 +32,7 @@ describe EntityDateHelper do
   end
 
   it 'converts 86560 seconds' do
+    Rails.logger.debug date_helper_class.inspect
     expect(date_helper_class.distance_of_time_as_hash(86560)).to eq(days: 1, mins: 2, seconds: 40)
   end
 
@@ -41,5 +42,59 @@ describe EntityDateHelper do
 
   it 'converts 986760 seconds' do
     expect(date_helper_class.distance_of_time_as_hash(986760)).to eq(days: 11, hours: 10, mins: 6)
+  end
+
+  describe '#remaining_days_in_words' do
+    around do |example|
+      Timecop.freeze(Time.utc(2017, 3, 17)) { example.run }
+    end
+
+    context 'when less than 31 days remaining' do
+      let(:milestone_remaining) { date_helper_class.remaining_days_in_words(build_stubbed(:milestone, due_date: 12.days.from_now.utc)) }
+
+      it 'returns days remaining' do
+        expect(milestone_remaining).to eq("<strong>12</strong> days remaining")
+      end
+    end
+
+    context 'when less than 1 year and more than 30 days remaining' do
+      let(:milestone_remaining) { date_helper_class.remaining_days_in_words(build_stubbed(:milestone, due_date: 2.months.from_now.utc)) }
+
+      it 'returns months remaining' do
+        expect(milestone_remaining).to eq("<strong>2</strong> months remaining")
+      end
+    end
+
+    context 'when more than 1 year remaining' do
+      let(:milestone_remaining) { date_helper_class.remaining_days_in_words(build_stubbed(:milestone, due_date: (1.year.from_now + 2.days).utc)) }
+
+      it 'returns years remaining' do
+        expect(milestone_remaining).to eq("<strong>1</strong> year remaining")
+      end
+    end
+
+    context 'when milestone is expired' do
+      let(:milestone_remaining) { date_helper_class.remaining_days_in_words(build_stubbed(:milestone, due_date: 2.days.ago.utc)) }
+
+      it 'returns "Past due"' do
+        expect(milestone_remaining).to eq("<strong>Past due</strong>")
+      end
+    end
+
+    context 'when milestone has start_date in the future' do
+      let(:milestone_remaining) { date_helper_class.remaining_days_in_words(build_stubbed(:milestone, start_date: 2.days.from_now.utc)) }
+
+      it 'returns "Upcoming"' do
+        expect(milestone_remaining).to eq("<strong>Upcoming</strong>")
+      end
+    end
+
+    context 'when milestone has start_date in the past' do
+      let(:milestone_remaining) { date_helper_class.remaining_days_in_words(build_stubbed(:milestone, start_date: 2.days.ago.utc)) }
+
+      it 'returns days elapsed' do
+        expect(milestone_remaining).to eq("<strong>2</strong> days elapsed")
+      end
+    end
   end
 end

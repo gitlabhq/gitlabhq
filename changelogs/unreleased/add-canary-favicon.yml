@@ -1,5 +1,0 @@
----
-title: Add yellow favicon when `CANARY=true` to differientate canary environment
-merge_request: 12477
-author:
-type: changed

@@ -1,12 +1,8 @@
-/* global monaco */
-import monacoLoader from '~/ide/monaco_loader';
-import editor from '~/ide/lib/editor';
+import { Range } from 'monaco-editor';
+import Editor from '~/ide/lib/editor';
 import ModelManager from '~/ide/lib/common/model_manager';
 import DecorationsController from '~/ide/lib/decorations/controller';
-import DirtyDiffController, {
-  getDiffChangeType,
-  getDecorator,
-} from '~/ide/lib/diff/controller';
+import DirtyDiffController, { getDiffChangeType, getDecorator } from '~/ide/lib/diff/controller';
 import { computeDiff } from '~/ide/lib/diff/diff';
 import { file } from '../../helpers';
 
@@ -17,20 +13,16 @@ describe('Multi-file editor library dirty diff controller', () => {
   let decorationsController;
   let model;
 
-  beforeEach(done => {
-    monacoLoader(['vs/editor/editor.main'], () => {
-      editorInstance = editor.create(monaco);
-      editorInstance.createInstance(document.createElement('div'));
+  beforeEach(() => {
+    editorInstance = Editor.create();
+    editorInstance.createInstance(document.createElement('div'));
 
-      modelManager = new ModelManager(monaco);
-      decorationsController = new DecorationsController(editorInstance);
+    modelManager = new ModelManager();
+    decorationsController = new DecorationsController(editorInstance);
 
-      model = modelManager.addModel(file('path'));
+    model = modelManager.addModel(file('path'));
 
-      controller = new DirtyDiffController(modelManager, decorationsController);
-
-      done();
-    });
+    controller = new DirtyDiffController(modelManager, decorationsController);
   });
 
   afterEach(() => {
@@ -71,7 +63,7 @@ describe('Multi-file editor library dirty diff controller', () => {
           [type]: true,
         };
 
-        const range = getDecorator(change).range;
+        const { range } = getDecorator(change);
 
         expect(range.startLineNumber).toBe(1);
         expect(range.endLineNumber).toBe(2);
@@ -90,6 +82,14 @@ describe('Multi-file editor library dirty diff controller', () => {
       expect(model.onChange).toHaveBeenCalled();
     });
 
+    it('adds dispose event callback', () => {
+      spyOn(model, 'onDispose');
+
+      controller.attachModel(model);
+
+      expect(model.onDispose).toHaveBeenCalled();
+    });
+
     it('calls throttledComputeDiff on change', () => {
       spyOn(controller, 'throttledComputeDiff');
 
@@ -98,6 +98,12 @@ describe('Multi-file editor library dirty diff controller', () => {
       model.getModel().setValue('123');
 
       expect(controller.throttledComputeDiff).toHaveBeenCalled();
+    });
+
+    it('caches model', () => {
+      controller.attachModel(model);
+
+      expect(controller.models.has(model.url)).toBe(true);
     });
   });
 
@@ -116,14 +122,22 @@ describe('Multi-file editor library dirty diff controller', () => {
   });
 
   describe('reDecorate', () => {
-    it('calls decorations controller decorate', () => {
-      spyOn(controller.decorationsController, 'decorate');
+    it('calls computeDiff when no decorations are cached', () => {
+      spyOn(controller, 'computeDiff');
 
       controller.reDecorate(model);
 
-      expect(controller.decorationsController.decorate).toHaveBeenCalledWith(
-        model,
-      );
+      expect(controller.computeDiff).toHaveBeenCalledWith(model);
+    });
+
+    it('calls decorate when decorations are cached', () => {
+      spyOn(controller.decorationsController, 'decorate');
+
+      controller.decorationsController.decorations.set(model.url, 'test');
+
+      controller.reDecorate(model);
+
+      expect(controller.decorationsController.decorate).toHaveBeenCalledWith(model);
     });
   });
 
@@ -133,16 +147,15 @@ describe('Multi-file editor library dirty diff controller', () => {
 
       controller.decorate({ data: { changes: [], path: model.path } });
 
-      expect(
-        controller.decorationsController.addDecorations,
-      ).toHaveBeenCalledWith(model, 'dirtyDiff', jasmine.anything());
+      expect(controller.decorationsController.addDecorations).toHaveBeenCalledWith(
+        model,
+        'dirtyDiff',
+        jasmine.anything(),
+      );
     });
 
     it('adds decorations into editor', () => {
-      const spy = spyOn(
-        controller.decorationsController.editor.instance,
-        'deltaDecorations',
-      );
+      const spy = spyOn(controller.decorationsController.editor.instance, 'deltaDecorations');
 
       controller.decorate({
         data: { changes: computeDiff('123', '1234'), path: model.path },
@@ -152,7 +165,7 @@ describe('Multi-file editor library dirty diff controller', () => {
         [],
         [
           {
-            range: new monaco.Range(1, 1, 1, 1),
+            range: new Range(1, 1, 1, 1),
             options: {
               isWholeLine: true,
               linesDecorationsClassName: 'dirty-diff dirty-diff-modified',
@@ -181,16 +194,22 @@ describe('Multi-file editor library dirty diff controller', () => {
     });
 
     it('removes worker event listener', () => {
-      spyOn(
-        controller.dirtyDiffWorker,
-        'removeEventListener',
-      ).and.callThrough();
+      spyOn(controller.dirtyDiffWorker, 'removeEventListener').and.callThrough();
 
       controller.dispose();
 
-      expect(
-        controller.dirtyDiffWorker.removeEventListener,
-      ).toHaveBeenCalledWith('message', jasmine.anything());
+      expect(controller.dirtyDiffWorker.removeEventListener).toHaveBeenCalledWith(
+        'message',
+        jasmine.anything(),
+      );
+    });
+
+    it('clears cached models', () => {
+      controller.attachModel(model);
+
+      model.dispose();
+
+      expect(controller.models.size).toBe(0);
     });
   });
 });

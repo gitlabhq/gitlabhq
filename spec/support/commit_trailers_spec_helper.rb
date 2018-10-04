@@ -8,7 +8,7 @@ module CommitTrailersSpecHelper
     expect(wrapper.attribute('data-user').value).to eq user.id.to_s
   end
 
-  def expect_to_have_mailto_link(doc, email:, trailer:)
+  def expect_to_have_mailto_link_with_avatar(doc, email:, trailer:)
     wrapper = find_user_wrapper(doc, trailer)
 
     expect_to_have_links_with_url_and_avatar(wrapper, "mailto:#{CGI.escape_html(email)}", email)

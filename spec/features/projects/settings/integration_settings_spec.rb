@@ -21,8 +21,8 @@ describe 'Projects > Settings > Integration settings' do
     end
   end
 
-  context 'for master' do
-    let(:role) { :master }
+  context 'for maintainer' do
+    let(:role) { :maintainer }
 
     context 'Webhooks' do
       let(:hook) { create(:project_hook, :all_events_enabled, enable_ssl_verification: true, project: project) }
@@ -51,6 +51,7 @@ describe 'Projects > Settings > Integration settings' do
 
         fill_in 'hook_url', with: url
         check 'Tag push events'
+        fill_in 'hook_push_events_branch_filter', with: 'master'
         check 'Enable SSL verification'
         check 'Job events'
 

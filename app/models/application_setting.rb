@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 class ApplicationSetting < ActiveRecord::Base
+  include CacheableAttributes
   include CacheMarkdownField
   include TokenAuthenticatable
 
   add_authentication_token_field :runners_registration_token
   add_authentication_token_field :health_check_access_token
 
-  CACHE_KEY = 'application_setting.last'.freeze
   DOMAIN_LIST_SEPARATOR = %r{\s*[,;]\s*     # comma or semicolon, optionally surrounded by whitespace
                             |               # or
                             \s              # any whitespace character
@@ -24,7 +26,6 @@ class ApplicationSetting < ActiveRecord::Base
   serialize :domain_whitelist, Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :domain_blacklist, Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :repository_storages # rubocop:disable Cop/ActiveRecordSerialize
-  serialize :sidekiq_throttling_queues, Array # rubocop:disable Cop/ActiveRecordSerialize
 
   cache_markdown_field :sign_in_text
   cache_markdown_field :help_page_text
@@ -129,15 +130,6 @@ class ApplicationSetting < ActiveRecord::Base
             presence: { message: 'Domain blacklist cannot be empty if Blacklist is enabled.' },
             if: :domain_blacklist_enabled?
 
-  validates :sidekiq_throttling_factor,
-            numericality: { greater_than: 0, less_than: 1 },
-            presence: { message: 'Throttling factor cannot be empty if Sidekiq Throttling is enabled.' },
-            if: :sidekiq_throttling_enabled?
-
-  validates :sidekiq_throttling_queues,
-            presence: { message: 'Queues to throttle cannot be empty if Sidekiq Throttling is enabled.' },
-            if: :sidekiq_throttling_enabled?
-
   validates :housekeeping_incremental_repack_period,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
@@ -190,6 +182,14 @@ class ApplicationSetting < ActiveRecord::Base
             numericality: { less_than_or_equal_to: :gitaly_timeout_default },
             if: :gitaly_timeout_default
 
+  validates :diff_max_patch_bytes,
+            presence: true,
+            numericality: { only_integer: true,
+                            greater_than_or_equal_to: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
+                            less_than_or_equal_to: Gitlab::Git::Diff::MAX_PATCH_BYTES_UPPER_BOUND }
+
+  validates :user_default_internal_regex, js_regex: true, allow_nil: true
+
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end
@@ -212,79 +212,44 @@ class ApplicationSetting < ActiveRecord::Base
     end
   end
 
-  validates_each :disabled_oauth_sign_in_sources do |record, attr, value|
-    value&.each do |source|
-      unless Devise.omniauth_providers.include?(source.to_sym)
-        record.errors.add(attr, "'#{source}' is not an OAuth sign-in source")
-      end
-    end
-  end
+  validate :terms_exist, if: :enforce_terms?
 
   before_validation :ensure_uuid!
+  before_validation :strip_sentry_values
 
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
 
   after_commit do
-    Rails.cache.write(CACHE_KEY, self)
+    reset_memoized_terms
   end
-
-  def self.current
-    ensure_cache_setup
-
-    Rails.cache.fetch(CACHE_KEY) do
-      ApplicationSetting.last.tap do |settings|
-        # do not cache nils
-        raise 'missing settings' unless settings
-      end
-    end
-  rescue
-    # Fall back to an uncached value if there are any problems (e.g. redis down)
-    ApplicationSetting.last
-  end
-
-  def self.expire
-    Rails.cache.delete(CACHE_KEY)
-  rescue
-    # Gracefully handle when Redis is not available. For example,
-    # omnibus may fail here during gitlab:assets:compile.
-  end
-
-  def self.cached
-    value = Rails.cache.read(CACHE_KEY)
-    ensure_cache_setup if value.present?
-    value
-  end
-
-  def self.ensure_cache_setup
-    # This is a workaround for a Rails bug that causes attribute methods not
-    # to be loaded when read from cache: https://github.com/rails/rails/issues/27348
-    ApplicationSetting.define_attribute_methods
-  end
+  after_commit :expire_performance_bar_allowed_user_ids_cache, if: -> { previous_changes.key?('performance_bar_allowed_group_id') }
 
   def self.defaults
     {
       after_sign_up_text: nil,
       akismet_enabled: false,
+      allow_local_requests_from_hooks_and_services: false,
       authorized_keys_enabled: true, # TODO default to false if the instance is configured to use AuthorizedKeysCommand
       container_registry_token_expire_delay: 5,
       default_artifacts_expire_in: '30 days',
       default_branch_protection: Settings.gitlab['default_branch_protection'],
+      default_group_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       default_projects_limit: Settings.gitlab['default_projects_limit'],
       default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
-      default_group_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       disabled_oauth_sign_in_sources: [],
       domain_whitelist: Settings.gitlab['domain_whitelist'],
       dsa_key_restriction: 0,
       ecdsa_key_restriction: 0,
       ed25519_key_restriction: 0,
+      gitaly_timeout_default: 55,
+      gitaly_timeout_fast: 10,
+      gitaly_timeout_medium: 30,
       gravatar_enabled: Settings.gravatar['enabled'],
-      help_page_text: nil,
       help_page_hide_commercial_content: false,
-      unique_ips_limit_per_user: 10,
-      unique_ips_limit_time_window: 3600,
-      unique_ips_limit_enabled: false,
+      help_page_text: nil,
+      hide_third_party_offers: false,
       housekeeping_bitmaps_enabled: true,
       housekeeping_enabled: true,
       housekeeping_full_repack_period: 50,
@@ -295,12 +260,14 @@ class ApplicationSetting < ActiveRecord::Base
       koding_url: nil,
       max_artifacts_size: Settings.artifacts['max_size'],
       max_attachment_size: Settings.gitlab['max_attachment_size'],
-      password_authentication_enabled_for_web: Settings.gitlab['signin_enabled'],
+      mirror_available: true,
       password_authentication_enabled_for_git: true,
+      password_authentication_enabled_for_web: Settings.gitlab['signin_enabled'],
       performance_bar_allowed_group_id: nil,
       rsa_key_restriction: 0,
       plantuml_enabled: false,
       plantuml_url: nil,
+      polling_interval_multiplier: 1,
       project_export_enabled: true,
       recaptcha_enabled: false,
       repository_checks_enabled: true,
@@ -311,27 +278,29 @@ class ApplicationSetting < ActiveRecord::Base
       send_user_confirmation_email: false,
       shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
       shared_runners_text: nil,
-      sidekiq_throttling_enabled: false,
       sign_in_text: nil,
       signup_enabled: Settings.gitlab['signup_enabled'],
       terminal_max_session_time: 0,
-      throttle_unauthenticated_enabled: false,
-      throttle_unauthenticated_requests_per_period: 3600,
-      throttle_unauthenticated_period_in_seconds: 3600,
-      throttle_authenticated_web_enabled: false,
-      throttle_authenticated_web_requests_per_period: 7200,
-      throttle_authenticated_web_period_in_seconds: 3600,
       throttle_authenticated_api_enabled: false,
-      throttle_authenticated_api_requests_per_period: 7200,
       throttle_authenticated_api_period_in_seconds: 3600,
+      throttle_authenticated_api_requests_per_period: 7200,
+      throttle_authenticated_web_enabled: false,
+      throttle_authenticated_web_period_in_seconds: 3600,
+      throttle_authenticated_web_requests_per_period: 7200,
+      throttle_unauthenticated_enabled: false,
+      throttle_unauthenticated_period_in_seconds: 3600,
+      throttle_unauthenticated_requests_per_period: 3600,
       two_factor_grace_period: 48,
-      user_default_external: false,
-      polling_interval_multiplier: 1,
+      unique_ips_limit_enabled: false,
+      unique_ips_limit_per_user: 10,
+      unique_ips_limit_time_window: 3600,
       usage_ping_enabled: Settings.gitlab['usage_ping_enabled'],
-      gitaly_timeout_fast: 10,
-      gitaly_timeout_medium: 30,
-      gitaly_timeout_default: 55,
-      allow_local_requests_from_hooks_and_services: false
+      instance_statistics_visibility_private: false,
+      user_default_external: false,
+      user_default_internal_regex: nil,
+      user_show_add_ssh_key_message: true,
+      usage_stats_set_by_user_id: nil,
+      diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES
     }
   end
 
@@ -355,8 +324,9 @@ class ApplicationSetting < ActiveRecord::Base
     ::Gitlab::Database.cached_column_exists?(:application_settings, :help_page_support_url)
   end
 
-  def sidekiq_throttling_column_exists?
-    ::Gitlab::Database.cached_column_exists?(:application_settings, :sidekiq_throttling_enabled)
+  def disabled_oauth_sign_in_sources=(sources)
+    sources = (sources || []).map(&:to_s) & Devise.omniauth_providers.map(&:to_s)
+    super(sources)
   end
 
   def domain_whitelist_raw
@@ -389,17 +359,6 @@ class ApplicationSetting < ActiveRecord::Base
     Array(read_attribute(:repository_storages))
   end
 
-  # DEPRECATED
-  # repository_storage is still required in the API. Remove in 9.0
-  # Still used in API v3
-  def repository_storage
-    repository_storages.first
-  end
-
-  def repository_storage=(value)
-    self.repository_storages = [value]
-  end
-
   def default_project_visibility=(level)
     super(Gitlab::VisibilityLevel.level_value(level))
   end
@@ -416,29 +375,9 @@ class ApplicationSetting < ActiveRecord::Base
     super(levels.map { |level| Gitlab::VisibilityLevel.level_value(level) })
   end
 
-  def performance_bar_allowed_group_id=(group_full_path)
-    group_full_path = nil if group_full_path.blank?
-
-    if group_full_path.nil?
-      if group_full_path != performance_bar_allowed_group_id
-        super(group_full_path)
-        Gitlab::PerformanceBar.expire_allowed_user_ids_cache
-      end
-
-      return
-    end
-
-    group = Group.find_by_full_path(group_full_path)
-
-    if group
-      if group.id != performance_bar_allowed_group_id
-        super(group.id)
-        Gitlab::PerformanceBar.expire_allowed_user_ids_cache
-      end
-    else
-      super(nil)
-      Gitlab::PerformanceBar.expire_allowed_user_ids_cache
-    end
+  def strip_sentry_values
+    sentry_dsn.strip! if sentry_dsn.present?
+    clientside_sentry_dsn.strip! if clientside_sentry_dsn.present?
   end
 
   def performance_bar_allowed_group
@@ -448,15 +387,6 @@ class ApplicationSetting < ActiveRecord::Base
   # Return true if the Performance Bar is enabled for a given group
   def performance_bar_enabled
     performance_bar_allowed_group_id.present?
-  end
-
-  # - If `enable` is true, we early return since the actual attribute that holds
-  #   the enabling/disabling is `performance_bar_allowed_group_id`
-  # - If `enable` is false, we set `performance_bar_allowed_group_id` to `nil`
-  def performance_bar_enabled=(enable)
-    return if Gitlab::Utils.to_boolean(enable)
-
-    self.performance_bar_allowed_group_id = nil
   end
 
   # Choose one of the available repository storage options. Currently all have
@@ -471,12 +401,6 @@ class ApplicationSetting < ActiveRecord::Base
 
   def health_check_access_token
     ensure_health_check_access_token!
-  end
-
-  def sidekiq_throttling_enabled?
-    return false unless sidekiq_throttling_column_exists?
-
-    sidekiq_throttling_enabled
   end
 
   def usage_ping_can_be_configured?
@@ -507,6 +431,24 @@ class ApplicationSetting < ActiveRecord::Base
     password_authentication_enabled_for_web? || password_authentication_enabled_for_git?
   end
 
+  def user_default_internal_regex_enabled?
+    user_default_external? && user_default_internal_regex.present?
+  end
+
+  def user_default_internal_regex_instance
+    Regexp.new(user_default_internal_regex, Regexp::IGNORECASE)
+  end
+
+  delegate :terms, to: :latest_terms, allow_nil: true
+  def latest_terms
+    @latest_terms ||= Term.latest
+  end
+
+  def reset_memoized_terms
+    @latest_terms = nil
+    latest_terms
+  end
+
   private
 
   def ensure_uuid!
@@ -519,5 +461,15 @@ class ApplicationSetting < ActiveRecord::Base
     invalid = repository_storages - Gitlab.config.repositories.storages.keys
     errors.add(:repository_storages, "can't include: #{invalid.join(", ")}") unless
       invalid.empty?
+  end
+
+  def terms_exist
+    return unless enforce_terms?
+
+    errors.add(:terms, "You need to set terms to be enforced") unless terms.present?
+  end
+
+  def expire_performance_bar_allowed_user_ids_cache
+    Gitlab::PerformanceBar.expire_allowed_user_ids_cache
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RedirectRoute < ActiveRecord::Base
   belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 

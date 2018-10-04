@@ -7,10 +7,7 @@ import { __, sprintf } from '~/locale';
 import Flash from '../../flash';
 import Autosave from '../../autosave';
 import TaskList from '../../task_list';
-import {
-  capitalizeFirstCharacter,
-  convertToCamelCase,
-} from '../../lib/utils/text_utility';
+import { capitalizeFirstCharacter, convertToCamelCase, splitCamelCase } from '../../lib/utils/text_utility';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
 import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
@@ -37,6 +34,11 @@ export default {
       type: String,
       required: true,
     },
+    markdownVersion: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -56,21 +58,23 @@ export default {
     ]),
     ...mapState(['isToggleStateButtonLoading']),
     noteableDisplayName() {
-      return this.noteableType.replace(/_/g, ' ');
+      return splitCamelCase(this.noteableType).toLowerCase();
     },
     isLoggedIn() {
       return this.getUserData.id;
     },
     commentButtonTitle() {
-      return this.noteType === constants.COMMENT
-        ? 'Comment'
-        : 'Start discussion';
+      return this.noteType === constants.COMMENT ? 'Comment' : 'Start discussion';
+    },
+    startDiscussionDescription() {
+      let text = 'Discuss a specific suggestion or question';
+      if (this.getNoteableData.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE) {
+        text += ' that needs to be resolved';
+      }
+      return `${text}.`;
     },
     isOpen() {
-      return (
-        this.openState === constants.OPENED ||
-        this.openState === constants.REOPENED
-      );
+      return this.openState === constants.OPENED || this.openState === constants.REOPENED;
     },
     canCreateNote() {
       return this.getNoteableData.current_user.can_create_note;
@@ -99,10 +103,6 @@ export default {
         'js-note-target-reopen': !this.isOpen,
       };
     },
-    supportQuickActions() {
-      // Disable quick actions support for Epics
-      return this.noteableType !== constants.EPIC_NOTEABLE_TYPE;
-    },
     markdownDocsPath() {
       return this.getNotesData.markdownDocsPath;
     },
@@ -121,6 +121,9 @@ export default {
     endpoint() {
       return this.getNoteableData.create_note_path;
     },
+    issuableTypeTitle() {
+      return this.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE ? 'merge request' : 'issue';
+    },
   },
   watch: {
     note(newNote) {
@@ -133,9 +136,7 @@ export default {
   mounted() {
     // jQuery is needed here because it is a custom event being dispatched with jQuery.
     $(document).on('issuable:change', (e, isClosed) => {
-      this.toggleIssueLocalState(
-        isClosed ? constants.CLOSED : constants.REOPENED,
-      );
+      this.toggleIssueLocalState(isClosed ? constants.CLOSED : constants.REOPENED);
     });
 
     this.initAutoSave();
@@ -172,6 +173,7 @@ export default {
               noteable_id: this.getNoteableData.id,
               note: this.note,
             },
+            merge_request_diff_head_sha: this.getNoteableData.diff_head_sha,
           },
         };
 
@@ -231,9 +233,7 @@ Please check your network connection and try again.`;
             this.toggleStateButtonLoading(false);
             Flash(
               sprintf(
-                __(
-                  'Something went wrong while closing the %{issuable}. Please try again later',
-                ),
+                __('Something went wrong while closing the %{issuable}. Please try again later'),
                 { issuable: this.noteableDisplayName },
               ),
             );
@@ -246,9 +246,7 @@ Please check your network connection and try again.`;
             this.toggleStateButtonLoading(false);
             Flash(
               sprintf(
-                __(
-                  'Something went wrong while reopening the %{issuable}. Please try again later',
-                ),
+                __('Something went wrong while reopening the %{issuable}. Please try again later'),
                 { issuable: this.noteableDisplayName },
               ),
             );
@@ -285,9 +283,7 @@ Please check your network connection and try again.`;
     },
     initAutoSave() {
       if (this.isLoggedIn) {
-        const noteableType = capitalizeFirstCharacter(
-          convertToCamelCase(this.noteableType),
-        );
+        const noteableType = capitalizeFirstCharacter(convertToCamelCase(this.noteableType));
 
         this.autosave = new Autosave($(this.$refs.textarea), [
           'Note',
@@ -316,8 +312,8 @@ Please check your network connection and try again.`;
   <div>
     <note-signed-out-widget v-if="!isLoggedIn" />
     <discussion-locked-widget
-      issuable-type="issue"
-      v-else-if="isLocked(getNoteableData) && !canCreateNote"
+      v-else-if="!canCreateNote"
+      :issuable-type="issuableTypeTitle"
     />
     <ul
       v-else-if="canCreateNote"
@@ -325,7 +321,7 @@ Please check your network connection and try again.`;
       <li class="timeline-entry">
         <div class="timeline-entry-inner">
           <div class="flash-container error-alert timeline-content"></div>
-          <div class="timeline-icon hidden-xs hidden-sm">
+          <div class="timeline-icon d-none d-sm-none d-md-block">
             <user-avatar-link
               v-if="author"
               :link-href="author.path"
@@ -349,23 +345,24 @@ Please check your network connection and try again.`;
               />
 
               <markdown-field
+                ref="markdownField"
                 :markdown-preview-path="markdownPreviewPath"
                 :markdown-docs-path="markdownDocsPath"
                 :quick-actions-docs-path="quickActionsDocsPath"
-                :add-spacing-classes="false"
-                ref="markdownField">
+                :markdown-version="markdownVersion"
+                :add-spacing-classes="false">
                 <textarea
                   id="note-body"
-                  name="note[note]"
-                  class="note-textarea js-vue-comment-form
-js-gfm-input js-autosize markdown-area js-vue-textarea"
-                  :data-supports-quick-actions="supportQuickActions"
-                  aria-label="Description"
-                  v-model="note"
                   ref="textarea"
                   slot="textarea"
+                  v-model="note"
                   :disabled="isSubmitting"
-                  placeholder="Write a comment or drag your files here..."
+                  name="note[note]"
+                  class="note-textarea js-vue-comment-form js-note-text
+js-gfm-input js-autosize markdown-area js-vue-textarea"
+                  data-supports-quick-actions="true"
+                  aria-label="Description"
+                  placeholder="Write a comment or drag your files here…"
                   @keydown.up="editCurrentUserLastNote()"
                   @keydown.meta.enter="handleSave()"
                   @keydown.ctrl.enter="handleSave()">
@@ -373,13 +370,13 @@ js-gfm-input js-autosize markdown-area js-vue-textarea"
               </markdown-field>
               <div class="note-form-actions">
                 <div
-                  class="pull-left btn-group
+                  class="float-left btn-group
 append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown">
                   <button
-                    @click.prevent="handleSave()"
                     :disabled="isSubmitButtonDisabled"
-                    class="btn btn-create comment-btn js-comment-button js-comment-submit-button"
-                    type="submit">
+                    class="btn btn-success comment-btn js-comment-button js-comment-submit-button"
+                    type="submit"
+                    @click.prevent="handleSave()">
                     {{ __(commentButtonTitle) }}
                   </button>
                   <button
@@ -387,6 +384,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                     name="button"
                     type="button"
                     class="btn comment-btn note-type-toggle js-note-new-discussion dropdown-toggle"
+                    data-display="static"
                     data-toggle="dropdown"
                     aria-label="Open comment type dropdown">
                     <i
@@ -426,7 +424,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                         <div class="description">
                           <strong>Start discussion</strong>
                           <p>
-                            Discuss a specific suggestion or question.
+                            {{ startDiscussionDescription }}
                           </p>
                         </div>
                       </button>
@@ -437,20 +435,20 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                 <loading-button
                   v-if="canUpdateIssue"
                   :loading="isToggleStateButtonLoading"
-                  @click="handleSave(true)"
                   :container-class="[
                     actionButtonClassNames,
                     'btn btn-comment btn-comment-and-close js-action-button'
                   ]"
                   :disabled="isToggleStateButtonLoading || isSubmitting"
                   :label="issueActionButtonTitle"
+                  @click="handleSave(true)"
                 />
 
                 <button
-                  type="button"
                   v-if="note.length"
-                  @click="discard"
-                  class="btn btn-cancel js-note-discard">
+                  type="button"
+                  class="btn btn-cancel js-note-discard"
+                  @click="discard">
                   Discard draft
                 </button>
               </div>

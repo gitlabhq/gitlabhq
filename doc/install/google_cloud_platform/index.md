@@ -1,8 +1,12 @@
+---
+description: 'Learn how to install a GitLab instance on Google Cloud Platform.'
+---
+
 # Installing GitLab on Google Cloud Platform
 
 ![GCP landing page](img/gcp_landing.png)
 
-Gettung started with GitLab on a [Google Cloud Platform (GCP)][gcp] instance is quick and easy.
+Getting started with GitLab on a [Google Cloud Platform (GCP)][gcp] instance is quick and easy.
 
 ## Prerequisites
 

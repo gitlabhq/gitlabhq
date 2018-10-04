@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class MergeRequests < Grape::API
     include PaginationParams
@@ -9,12 +11,6 @@ module API
     # EE::API::MergeRequests would override the following helpers
     helpers do
       params :optional_params_ee do
-      end
-
-      params :merge_params_ee do
-      end
-
-      def update_merge_request_ee(merge_request)
       end
     end
 
@@ -29,26 +25,29 @@ module API
         target_branch
         title
         discussion_locked
+        squash
       ]
     end
 
     helpers do
+      # rubocop: disable CodeReuse/ActiveRecord
       def find_merge_requests(args = {})
         args = declared_params.merge(args)
-
         args[:milestone_title] = args.delete(:milestone)
         args[:label_name] = args.delete(:labels)
+        args[:scope] = args[:scope].underscore if args[:scope]
 
         merge_requests = MergeRequestsFinder.new(current_user, args).execute
                            .reorder(args[:order_by] => args[:sort])
         merge_requests = paginate(merge_requests)
-                           .preload(:target_project)
+                           .preload(:source_project, :target_project)
 
         return merge_requests if args[:view] == 'simple'
 
         merge_requests
           .preload(:notes, :author, :assignee, :milestone, :latest_merge_request_diff, :labels, :timelogs)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def merge_request_pipelines_with_access
         authorize! :read_pipeline, user_project
@@ -63,9 +62,21 @@ module API
         end
       end
 
+      def serializer_options_for(merge_requests)
+        options = { with: Entities::MergeRequestBasic, current_user: current_user }
+
+        if params[:view] == 'simple'
+          options[:with] = Entities::MergeRequestSimple
+        else
+          options[:issuable_metadata] = issuable_meta_data(merge_requests, 'MergeRequest')
+        end
+
+        options
+      end
+
       params :merge_requests_params do
-        optional :state, type: String, values: %w[opened closed merged all], default: 'all',
-                         desc: 'Return opened, closed, merged, or all merge requests'
+        optional :state, type: String, values: %w[opened closed locked merged all], default: 'all',
+                         desc: 'Return opened, closed, locked, merged, or all merge requests'
         optional :order_by, type: String, values: %w[created_at updated_at], default: 'created_at',
                             desc: 'Return merge requests ordered by `created_at` or `updated_at` fields.'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
@@ -79,12 +90,13 @@ module API
         optional :view, type: String, values: %w[simple], desc: 'If simple, returns the `iid`, URL, title, description, and basic state of merge request'
         optional :author_id, type: Integer, desc: 'Return merge requests which are authored by the user with the given ID'
         optional :assignee_id, type: Integer, desc: 'Return merge requests which are assigned to the user with the given ID'
-        optional :scope, type: String, values: %w[created-by-me assigned-to-me all],
-                         desc: 'Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`'
+        optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all],
+                         desc: 'Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`'
         optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
         optional :source_branch, type: String, desc: 'Return merge requests with the given source branch'
         optional :target_branch, type: String, desc: 'Return merge requests with the given target branch'
         optional :search, type: String, desc: 'Search merge requests for text present in the title or description'
+        optional :wip, type: String, values: %w[yes no], desc: 'Search merge requests for WIP in the title'
         use :pagination
       end
     end
@@ -95,23 +107,33 @@ module API
       end
       params do
         use :merge_requests_params
-        optional :scope, type: String, values: %w[created-by-me assigned-to-me all], default: 'created-by-me',
-                         desc: 'Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`'
+        optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all], default: 'created_by_me',
+                         desc: 'Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`'
       end
       get do
         authenticate! unless params[:scope] == 'all'
         merge_requests = find_merge_requests
 
-        options = { with: Entities::MergeRequestBasic,
-                    current_user: current_user }
+        present merge_requests, serializer_options_for(merge_requests)
+      end
+    end
 
-        if params[:view] == 'simple'
-          options[:with] = Entities::MergeRequestSimple
-        else
-          options[:issuable_metadata] = issuable_meta_data(merge_requests, 'MergeRequest')
-        end
+    params do
+      requires :id, type: String, desc: 'The ID of a group'
+    end
+    resource :groups, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+      desc 'Get a list of group merge requests' do
+        success Entities::MergeRequestBasic
+      end
+      params do
+        use :merge_requests_params
+      end
+      get ":id/merge_requests" do
+        group = find_group!(params[:id])
 
-        present merge_requests, options
+        merge_requests = find_merge_requests(group_id: group.id, include_subgroups: true)
+
+        present merge_requests, serializer_options_for(merge_requests)
       end
     end
 
@@ -144,7 +166,9 @@ module API
           optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign the merge request'
           optional :labels, type: String, desc: 'Comma-separated list of label names'
           optional :remove_source_branch, type: Boolean, desc: 'Remove source branch when merging'
-          optional :allow_maintainer_to_push, type: Boolean, desc: 'Whether a maintainer of the target project can push to the source project'
+          optional :allow_collaboration, type: Boolean, desc: 'Allow commits from members who can merge to the target branch'
+          optional :allow_maintainer_to_push, type: Boolean, as: :allow_collaboration, desc: '[deprecated] See allow_collaboration'
+          optional :squash, type: Grape::API::Boolean, desc: 'When true, the commits will be squashed into a single commit on merge'
 
           use :optional_params_ee
         end
@@ -162,15 +186,8 @@ module API
 
         merge_requests = find_merge_requests(project_id: user_project.id)
 
-        options = { with: Entities::MergeRequestBasic,
-                    current_user: current_user,
-                    project: user_project }
-
-        if params[:view] == 'simple'
-          options[:with] = Entities::MergeRequestSimple
-        else
-          options[:issuable_metadata] = issuable_meta_data(merge_requests, 'MergeRequest')
-        end
+        options = serializer_options_for(merge_requests)
+        options[:project] = user_project
 
         present merge_requests, options
       end
@@ -219,6 +236,8 @@ module API
 
       params do
         requires :merge_request_iid, type: Integer, desc: 'The IID of a merge request'
+        optional :render_html, type: Boolean, desc: 'Returns the description and title rendered HTML'
+        optional :include_diverged_commits_count, type: Boolean, desc: 'Returns the commits count behind the target branch'
       end
       desc 'Get a single merge request' do
         success Entities::MergeRequest
@@ -226,7 +245,7 @@ module API
       get ':id/merge_requests/:merge_request_iid' do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
-        present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
+        present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project, render_html: params[:render_html], include_diverged_commits_count: params[:include_diverged_commits_count]
       end
 
       desc 'Get the participants of a merge request' do
@@ -307,8 +326,7 @@ module API
         optional :merge_when_pipeline_succeeds, type: Boolean,
                                                 desc: 'When true, this merge request will be merged when the pipeline succeeds'
         optional :sha, type: String, desc: 'When present, must have the HEAD SHA of the source branch'
-
-        use :merge_params_ee
+        optional :squash, type: Grape::API::Boolean, desc: 'When true, the commits will be squashed into a single commit on merge'
       end
       put ':id/merge_requests/:merge_request_iid/merge' do
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42317')
@@ -326,7 +344,7 @@ module API
 
         check_sha_param!(params, merge_request)
 
-        update_merge_request_ee(merge_request)
+        merge_request.update(squash: params[:squash]) if params[:squash]
 
         merge_params = {
           commit_message: params[:merge_commit_message],
@@ -367,7 +385,7 @@ module API
       end
       get ':id/merge_requests/:merge_request_iid/closes_issues' do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
-        issues = ::Kaminari.paginate_array(merge_request.closes_issues(current_user))
+        issues = ::Kaminari.paginate_array(merge_request.visible_closing_issues_for(current_user))
         issues = paginate(issues)
 
         external_issues, internal_issues = issues.partition { |issue| issue.is_a?(ExternalIssue) }

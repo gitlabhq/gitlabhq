@@ -6,7 +6,6 @@ import Visibility from 'visibilityjs';
 import Poll from '../../lib/utils/poll';
 import {
   getParameterByName,
-  parseQueryStringIntoObject,
 } from '../../lib/utils/common_utils';
 import { s__ } from '../../locale';
 import Flash from '../../flash';
@@ -14,7 +13,6 @@ import eventHub from '../event_hub';
 
 import EnvironmentsStore from '../stores/environments_store';
 import EnvironmentsService from '../services/environments_service';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import tablePagination from '../../vue_shared/components/table_pagination.vue';
 import environmentTable from '../components/environments_table.vue';
 import tabs from '../../vue_shared/components/navigation_tabs.vue';
@@ -25,7 +23,6 @@ export default {
   components: {
     environmentTable,
     container,
-    loadingIcon,
     tabs,
     tablePagination,
   },
@@ -41,22 +38,20 @@ export default {
       scope: getParameterByName('scope') || 'available',
       page: getParameterByName('page') || '1',
       requestData: {},
+      environmentInStopModal: {},
     };
   },
 
   methods: {
     saveData(resp) {
-      const headers = resp.headers;
-      return resp.json().then((response) => {
-        this.isLoading = false;
+      this.isLoading = false;
 
-        if (_.isEqual(parseQueryStringIntoObject(resp.url.split('?')[1]), this.requestData)) {
-          this.store.storeAvailableCount(response.available_count);
-          this.store.storeStoppedCount(response.stopped_count);
-          this.store.storeEnvironments(response.environments);
-          this.store.setPagination(headers);
-        }
-      });
+      if (_.isEqual(resp.config.params, this.requestData)) {
+        this.store.storeAvailableCount(resp.data.available_count);
+        this.store.storeStoppedCount(resp.data.stopped_count);
+        this.store.storeEnvironments(resp.data.environments);
+        this.store.setPagination(resp.headers);
+      }
     },
 
     /**
@@ -70,7 +65,7 @@ export default {
     updateContent(parameters) {
       this.updateInternalState(parameters);
       // fetch new data
-      return this.service.get(this.requestData)
+      return this.service.fetchEnvironments(this.requestData)
         .then(response => this.successCallback(response))
         .then(() => {
           // restart polling
@@ -89,7 +84,7 @@ export default {
       Flash(s__('Environments|An error occurred while fetching the environments.'));
     },
 
-    postAction(endpoint) {
+    postAction({ endpoint, errorMessage }) {
       if (!this.isMakingRequest) {
         this.isLoading = true;
 
@@ -97,7 +92,7 @@ export default {
           .then(() => this.fetchEnvironments())
           .catch(() => {
             this.isLoading = false;
-            Flash(s__('Environments|An error occurred while making the request.'));
+            Flash(errorMessage || s__('Environments|An error occurred while making the request.'));
           });
       }
     },
@@ -105,11 +100,20 @@ export default {
     fetchEnvironments() {
       this.isLoading = true;
 
-      return this.service.get(this.requestData)
+      return this.service.fetchEnvironments(this.requestData)
         .then(this.successCallback)
         .catch(this.errorCallback);
     },
 
+    updateStopModal(environment) {
+      this.environmentInStopModal = environment;
+    },
+
+    stopEnvironment(environment) {
+      const endpoint = environment.stop_path;
+      const errorMessage = s__('Environments|An error occurred while stopping the environment, please try again');
+      this.postAction({ endpoint, errorMessage });
+    },
   },
 
   computed: {
@@ -141,7 +145,7 @@ export default {
 
     this.poll = new Poll({
       resource: this.service,
-      method: 'get',
+      method: 'fetchEnvironments',
       data: this.requestData,
       successCallback: this.successCallback,
       errorCallback: this.errorCallback,
@@ -166,9 +170,13 @@ export default {
     });
 
     eventHub.$on('postAction', this.postAction);
+    eventHub.$on('requestStopEnvironment', this.updateStopModal);
+    eventHub.$on('stopEnvironment', this.stopEnvironment);
   },
 
-  beforeDestroyed() {
-    eventHub.$off('postAction');
+  beforeDestroy() {
+    eventHub.$off('postAction', this.postAction);
+    eventHub.$off('requestStopEnvironment', this.updateStopModal);
+    eventHub.$off('stopEnvironment', this.stopEnvironment);
   },
 };

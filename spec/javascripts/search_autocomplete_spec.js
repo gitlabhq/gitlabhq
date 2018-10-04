@@ -1,10 +1,9 @@
-/* eslint-disable space-before-function-paren, max-len, no-var, one-var, one-var-declaration-per-line, no-unused-expressions, consistent-return, no-param-reassign, default-case, no-return-assign, comma-dangle, object-shorthand, prefer-template, quotes, new-parens, vars-on-top, new-cap, max-len */
+/* eslint-disable max-len, no-var, one-var, one-var-declaration-per-line, no-unused-expressions, consistent-return, no-param-reassign, default-case, no-return-assign, object-shorthand, prefer-template, vars-on-top, max-len */
 
 import $ from 'jquery';
 import '~/gl_dropdown';
-import SearchAutocomplete from '~/search_autocomplete';
+import initSearchAutocomplete from '~/search_autocomplete';
 import '~/lib/utils/common_utils';
-import * as urlUtils from '~/lib/utils/url_utility';
 
 describe('Search autocomplete dropdown', () => {
   var assertLinks,
@@ -129,14 +128,11 @@ describe('Search autocomplete dropdown', () => {
   beforeEach(function() {
     loadFixtures('static/search_autocomplete.html.raw');
 
-    // Prevent turbolinks from triggering within gl_dropdown
-    spyOn(urlUtils, 'visitUrl').and.returnValue(true);
-
     window.gon = {};
     window.gon.current_user_id = userId;
     window.gon.current_username = userName;
 
-    return (widget = new SearchAutocomplete());
+    return (widget = initSearchAutocomplete());
   });
 
   afterEach(function() {

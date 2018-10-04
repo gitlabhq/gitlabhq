@@ -62,6 +62,7 @@ FactoryBot.define do
     end
 
     trait :pending do
+      queued_at 'Di 29. Okt 09:50:59 CET 2013'
       status 'pending'
     end
 
@@ -186,6 +187,12 @@ FactoryBot.define do
       end
     end
 
+    trait :test_reports do
+      after(:build) do |build|
+        build.job_artifacts << create(:ci_job_artifact, :junit, job: build)
+      end
+    end
+
     trait :expired do
       artifacts_expire_at 1.minute.ago
     end
@@ -241,6 +248,17 @@ FactoryBot.define do
     trait :script_failure do
       failed
       failure_reason 1
+    end
+
+    trait :api_failure do
+      failed
+      failure_reason 2
+    end
+
+    trait :with_runner_session do
+      after(:build) do |build|
+        build.build_runner_session(url: 'ws://localhost')
+      end
     end
   end
 end

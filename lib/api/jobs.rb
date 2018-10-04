@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Jobs < Grape::API
     include PaginationParams
@@ -34,13 +36,15 @@ module API
         use :optional_scope
         use :pagination
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/jobs' do
         builds = user_project.builds.order('id DESC')
         builds = filter_builds(builds, params[:scope])
 
-        builds = builds.preload(:user, :job_artifacts_archive, :runner, pipeline: :project)
+        builds = builds.preload(:user, :job_artifacts_archive, :job_artifacts, :runner, pipeline: :project)
         present paginate(builds), with: Entities::Job
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Get pipeline jobs' do
         success Entities::Job
@@ -50,13 +54,16 @@ module API
         use :optional_scope
         use :pagination
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/pipelines/:pipeline_id/jobs' do
         pipeline = user_project.pipelines.find(params[:pipeline_id])
         builds = pipeline.builds
         builds = filter_builds(builds, params[:scope])
+        builds = builds.preload(:job_artifacts_archive, :job_artifacts, project: [:namespace])
 
         present paginate(builds), with: Entities::Job
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Get a specific job of a project' do
         success Entities::Job
@@ -120,7 +127,7 @@ module API
 
         build = find_build!(params[:job_id])
         authorize!(:update_build, build)
-        return forbidden!('Job is not retryable') unless build.retryable?
+        break forbidden!('Job is not retryable') unless build.retryable?
 
         build = Ci::Build.retry(build, current_user)
 
@@ -138,7 +145,7 @@ module API
 
         build = find_build!(params[:job_id])
         authorize!(:erase_build, build)
-        return forbidden!('Job is not erasable!') unless build.erasable?
+        break forbidden!('Job is not erasable!') unless build.erasable?
 
         build.erase(erased_by: current_user)
         present build, with: Entities::Job
@@ -167,6 +174,7 @@ module API
     end
 
     helpers do
+      # rubocop: disable CodeReuse/ActiveRecord
       def filter_builds(builds, scope)
         return builds if scope.nil? || scope.empty?
 
@@ -177,6 +185,7 @@ module API
 
         builds.where(status: available_statuses && scope)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

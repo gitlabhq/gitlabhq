@@ -25,7 +25,7 @@ module Gitlab
             body = @formatter.author_line(issue["author"]["name"])
             body += issue["description"]
 
-            comments = client.issue_comments(project_identifier, issue["id"])
+            comments = client.issue_comments(project_identifier, issue["iid"])
 
             if comments.any?
               body += @formatter.comments_header
@@ -52,10 +52,12 @@ module Gitlab
 
       private
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def gitlab_user_id(project, gitlab_id)
         user = User.joins(:identities).find_by("identities.extern_uid = ? AND identities.provider = 'gitlab'", gitlab_id.to_s)
         (user && user.id) || project.creator_id
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

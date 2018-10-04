@@ -1,4 +1,5 @@
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'rspec-parameterized'
 
 describe Gitlab::Ci::Pipeline::Expression::Statement do
   subject do
@@ -36,7 +37,7 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
         '== "123"',      # invalid left side
         '"some string"', # only string provided
         '$VAR ==',       # invalid right side
-        '12345',         # unknown syntax
+        'null',          # missing lexemes
         ''               # empty statement
       ]
 
@@ -44,7 +45,7 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
         context "when expression grammar is #{syntax.inspect}" do
           let(:text) { syntax }
 
-          it 'aises a statement error exception' do
+          it 'raises a statement error exception' do
             expect { subject.parse_tree }
               .to raise_error described_class::StatementError
           end
@@ -82,48 +83,66 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
   end
 
   describe '#evaluate' do
-    statements = [
-      ['$PRESENT_VARIABLE == "my variable"', true],
-      ["$PRESENT_VARIABLE == 'my variable'", true],
-      ['"my variable" == $PRESENT_VARIABLE', true],
-      ['$PRESENT_VARIABLE == null', false],
-      ['$EMPTY_VARIABLE == null', false],
-      ['"" == $EMPTY_VARIABLE', true],
-      ['$EMPTY_VARIABLE', ''],
-      ['$UNDEFINED_VARIABLE == null', true],
-      ['null == $UNDEFINED_VARIABLE', true],
-      ['$PRESENT_VARIABLE', 'my variable'],
-      ['$UNDEFINED_VARIABLE', nil]
-    ]
+    using RSpec::Parameterized::TableSyntax
 
-    statements.each do |expression, value|
-      context "when using expression `#{expression}`" do
-        let(:text) { expression }
+    where(:expression, :value) do
+      '$PRESENT_VARIABLE == "my variable"' | true
+      '"my variable" == $PRESENT_VARIABLE' | true
+      '$PRESENT_VARIABLE == null'          | false
+      '$EMPTY_VARIABLE == null'            | false
+      '"" == $EMPTY_VARIABLE'              | true
+      '$EMPTY_VARIABLE'                    | ''
+      '$UNDEFINED_VARIABLE == null'        | true
+      'null == $UNDEFINED_VARIABLE'        | true
+      '$PRESENT_VARIABLE'                  | 'my variable'
+      '$UNDEFINED_VARIABLE'                | nil
+      "$PRESENT_VARIABLE =~ /var.*e$/"     | true
+      "$PRESENT_VARIABLE =~ /^var.*/"      | false
+      "$EMPTY_VARIABLE =~ /var.*/"         | false
+      "$UNDEFINED_VARIABLE =~ /var.*/"     | false
+      "$PRESENT_VARIABLE =~ /VAR.*/i"      | true
+    end
 
-        it "evaluates to `#{value.inspect}`" do
-          expect(subject.evaluate).to eq value
-        end
+    with_them do
+      let(:text) { expression }
+
+      it "evaluates to `#{params[:value].inspect}`" do
+        expect(subject.evaluate).to eq value
       end
     end
   end
 
   describe '#truthful?' do
-    statements = [
-      ['$PRESENT_VARIABLE == "my variable"', true],
-      ["$PRESENT_VARIABLE == 'no match'", false],
-      ['$UNDEFINED_VARIABLE == null', true],
-      ['$PRESENT_VARIABLE', true],
-      ['$UNDEFINED_VARIABLE', false],
-      ['$EMPTY_VARIABLE', false]
-    ]
+    using RSpec::Parameterized::TableSyntax
 
-    statements.each do |expression, value|
-      context "when using expression `#{expression}`" do
-        let(:text) { expression }
+    where(:expression, :value) do
+      '$PRESENT_VARIABLE == "my variable"' | true
+      "$PRESENT_VARIABLE == 'no match'"    | false
+      '$UNDEFINED_VARIABLE == null'        | true
+      '$PRESENT_VARIABLE'                  | true
+      '$UNDEFINED_VARIABLE'                | false
+      '$EMPTY_VARIABLE'                    | false
+      '$INVALID = 1'                       | false
+      "$PRESENT_VARIABLE =~ /var.*/"       | true
+      "$UNDEFINED_VARIABLE =~ /var.*/"     | false
+    end
 
-        it "returns `#{value.inspect}`" do
-          expect(subject.truthful?).to eq value
-        end
+    with_them do
+      let(:text) { expression }
+
+      it "returns `#{params[:value].inspect}`" do
+        expect(subject.truthful?).to eq value
+      end
+    end
+
+    context 'when evaluating expression raises an error' do
+      let(:text) { '$PRESENT_VARIABLE' }
+
+      it 'returns false' do
+        allow(subject).to receive(:evaluate)
+          .and_raise(described_class::StatementError)
+
+        expect(subject.truthful?).to be_falsey
       end
     end
   end

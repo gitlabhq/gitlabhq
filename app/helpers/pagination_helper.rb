@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PaginationHelper
   def paginate_collection(collection, remote: nil)
     if collection.is_a?(Kaminari::PaginatableWithoutCount)

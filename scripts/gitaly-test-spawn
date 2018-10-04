@@ -1,9 +1,23 @@
 #!/usr/bin/env ruby
 
-gitaly_dir = 'tmp/tests/gitaly'
-env = { 'HOME' => File.expand_path('tmp/tests'),
-        'GEM_PATH' => Gem.path.join(':') }
-args = %W[#{gitaly_dir}/gitaly #{gitaly_dir}/config.toml]
+# This script is used both in CI and in local development 'rspec' runs.
 
-# Print the PID of the spawned process
-puts spawn(env, *args, [:out, :err] => 'log/gitaly-test.log')
+require_relative 'gitaly_test'
+
+class GitalyTestSpawn
+  include GitalyTest
+
+  def run
+    check_gitaly_config!
+
+    # # Uncomment line below to see all gitaly logs merged into CI trace
+    # spawn('sleep 1; tail -f log/gitaly-test.log')
+
+    pid = start_gitaly
+
+    # In local development this pid file is used by rspec.
+    IO.write(File.expand_path('../tmp/tests/gitaly.pid', __dir__), pid)
+  end
+end
+
+GitalyTestSpawn.new.run

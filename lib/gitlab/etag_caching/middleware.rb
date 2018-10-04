@@ -50,7 +50,7 @@ module Gitlab
 
         status_code = Gitlab::PollingInterval.polling_enabled? ? 304 : 429
 
-        [status_code, { 'ETag' => etag }, []]
+        [status_code, { 'ETag' => etag, 'X-Gitlab-From-Cache' => 'true' }, []]
       end
 
       def track_cache_miss(if_none_match, cached_value_present, route)

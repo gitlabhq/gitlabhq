@@ -28,7 +28,7 @@ records should use stubs/doubles as much as possible.
 | `app/uploaders/` | `spec/uploaders/` | RSpec | |
 | `app/views/` | `spec/views/` | RSpec | |
 | `app/workers/` | `spec/workers/` | RSpec | |
-| `app/assets/javascripts/` | `spec/javascripts/` | Karma | More details in the [Frontent Testing guide](frontend_testing.md) section. |
+| `app/assets/javascripts/` | `spec/javascripts/` | Karma | More details in the [Frontend Testing guide](frontend_testing.md) section. |
 
 ## Integration tests
 
@@ -81,7 +81,6 @@ possible).
 | Tests path | Testing engine | Notes |
 | ---------- | -------------- | ----- |
 | `spec/features/` | [Capybara] + [RSpec] | If your spec has the `:js` metadata, the browser driver will be [Poltergeist], otherwise it's using [RackTest]. |
-| `features/` | Spinach | Spinach tests are deprecated, [you shouldn't add new Spinach tests](#spinach-feature-tests). |
 
 ### Consider **not** writing a system test!
 
@@ -121,6 +120,14 @@ running feature tests (i.e. using Capybara) against it.
 The actual test scenarios and steps are [part of GitLab Rails] so that they're
 always in-sync with the codebase.
 
+### Smoke tests
+
+Smoke tests are quick tests that may be run at any time (especially after the pre-deployment migrations).
+
+Much like feature tests - these tests run against the UI and ensure that basic functionality is working.
+
+> See [Smoke Tests](smoke.md) for more information.
+
 Read a separate document about [end-to-end tests](end_to_end_tests.md) to
 learn more.
 
@@ -146,7 +153,7 @@ trade-off:
 - Unit tests are usually cheap, and you should consider them like the basement
   of your house: you need them to be confident that your code is behaving
   correctly. However if you run only unit tests without integration / system
-  tests, you might [miss] the [big] [picture]!
+  tests, you might [miss] the [big] / [picture] !
 - Integration tests are a bit more expensive, but don't abuse them. A system test
   is often better than an integration test that is stubbing a lot of internals.
 - System tests are expensive (compared to unit tests), even more if they require

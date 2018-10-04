@@ -1,0 +1,7 @@
+.file-content.code.js-syntax-highlight
+  .line-numbers
+    - if blob.data.present?
+      - blob.data.each_line.each_with_index do |_, index|
+        %span.diff-line-num= index + 1
+  .blob-content{ data: { blob_id: blob.id } }
+    = highlight(blob.path, blob.data, repository: nil, plain: blob.no_highlighting?)

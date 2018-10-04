@@ -29,7 +29,7 @@ eslint-report.html
 /app/assets/javascripts/locale/**/app.js
 /backups/*
 /config/aws.yml
-/config/database.yml
+/config/database*.yml
 /config/gitlab.yml
 /config/gitlab_ci.yml
 /config/initializers/rack_attack.rb
@@ -64,11 +64,18 @@ eslint-report.html
 /tags
 /tmp/*
 /vendor/bundle/*
+/vendor/gitaly-ruby
 /builds*
 /shared/*
 /.gitlab_workhorse_secret
 /webpack-report/
+/knapsack/
+/rspec_flaky/
 /locale/**/LC_MESSAGES
 /locale/**/*.time_stamp
 /.rspec
 /plugins/*
+/.gitlab_pages_secret
+package-lock.json
+/junit_rspec.xml
+/junit_karma.xml

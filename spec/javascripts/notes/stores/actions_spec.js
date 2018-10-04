@@ -2,7 +2,8 @@ import Vue from 'vue';
 import _ from 'underscore';
 import { headersInterceptor } from 'spec/helpers/vue_resource_helper';
 import * as actions from '~/notes/stores/actions';
-import store from '~/notes/stores';
+import createStore from '~/notes/stores';
+import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
 import testAction from '../../helpers/vuex_action_helper';
 import { resetStore } from '../helpers';
 import {
@@ -14,6 +15,12 @@ import {
 } from '../mock_data';
 
 describe('Actions Notes Store', () => {
+  let store;
+
+  beforeEach(() => {
+    store = createStore();
+  });
+
   afterEach(() => {
     resetStore(store);
   });
@@ -76,7 +83,7 @@ describe('Actions Notes Store', () => {
         actions.setInitialNotes,
         [individualNote],
         { notes: [] },
-        [{ type: 'SET_INITIAL_NOTES', payload: [individualNote] }],
+        [{ type: 'SET_INITIAL_DISCUSSIONS', payload: [individualNote] }],
         [],
         done,
       );
@@ -103,6 +110,32 @@ describe('Actions Notes Store', () => {
         { discussionId: discussionMock.id },
         { notes: [discussionMock] },
         [{ type: 'TOGGLE_DISCUSSION', payload: { discussionId: discussionMock.id } }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('expandDiscussion', () => {
+    it('should expand discussion', done => {
+      testAction(
+        actions.expandDiscussion,
+        { discussionId: discussionMock.id },
+        { notes: [discussionMock] },
+        [{ type: 'EXPAND_DISCUSSION', payload: { discussionId: discussionMock.id } }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('collapseDiscussion', () => {
+    it('should commit collapse discussion', done => {
+      testAction(
+        actions.collapseDiscussion,
+        { discussionId: discussionMock.id },
+        { notes: [discussionMock] },
+        [{ type: 'COLLAPSE_DISCUSSION', payload: { discussionId: discussionMock.id } }],
         [],
         done,
       );
@@ -194,7 +227,14 @@ describe('Actions Notes Store', () => {
     });
 
     it('sets issue state as reopened', done => {
-      testAction(actions.toggleIssueLocalState, 'reopened', {}, [{ type: 'REOPEN_ISSUE' }], [], done);
+      testAction(
+        actions.toggleIssueLocalState,
+        'reopened',
+        {},
+        [{ type: 'REOPEN_ISSUE' }],
+        [],
+        done,
+      );
     });
   });
 
@@ -239,13 +279,7 @@ describe('Actions Notes Store', () => {
         .dispatch('poll')
         .then(() => new Promise(resolve => requestAnimationFrame(resolve)))
         .then(() => {
-          expect(Vue.http.get).toHaveBeenCalledWith(jasmine.anything(), {
-            url: jasmine.anything(),
-            method: 'get',
-            headers: {
-              'X-Last-Fetched-At': undefined,
-            },
-          });
+          expect(Vue.http.get).toHaveBeenCalled();
           expect(store.state.lastFetchedAt).toBe('123456');
 
           jasmine.clock().tick(1500);
@@ -269,6 +303,210 @@ describe('Actions Notes Store', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+  });
+
+  describe('setNotesFetchedState', () => {
+    it('should set notes fetched state', done => {
+      testAction(
+        actions.setNotesFetchedState,
+        true,
+        {},
+        [{ type: 'SET_NOTES_FETCHED_STATE', payload: true }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('deleteNote', () => {
+    const interceptor = (request, next) => {
+      next(
+        request.respondWith(JSON.stringify({}), {
+          status: 200,
+        }),
+      );
+    };
+
+    beforeEach(() => {
+      Vue.http.interceptors.push(interceptor);
+    });
+
+    afterEach(() => {
+      Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+    });
+
+    it('commits DELETE_NOTE and dispatches updateMergeRequestWidget', done => {
+      const note = { path: `${gl.TEST_HOST}`, id: 1 };
+
+      testAction(
+        actions.deleteNote,
+        note,
+        store.state,
+        [
+          {
+            type: 'DELETE_NOTE',
+            payload: note,
+          },
+        ],
+        [
+          {
+            type: 'updateMergeRequestWidget',
+          },
+        ],
+        done,
+      );
+    });
+  });
+
+  describe('createNewNote', () => {
+    describe('success', () => {
+      const res = {
+        id: 1,
+        valid: true,
+      };
+      const interceptor = (request, next) => {
+        next(
+          request.respondWith(JSON.stringify(res), {
+            status: 200,
+          }),
+        );
+      };
+
+      beforeEach(() => {
+        Vue.http.interceptors.push(interceptor);
+      });
+
+      afterEach(() => {
+        Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+      });
+
+      it('commits ADD_NEW_NOTE and dispatches updateMergeRequestWidget', done => {
+        testAction(
+          actions.createNewNote,
+          { endpoint: `${gl.TEST_HOST}`, data: {} },
+          store.state,
+          [
+            {
+              type: 'ADD_NEW_NOTE',
+              payload: res,
+            },
+          ],
+          [
+            {
+              type: 'updateMergeRequestWidget',
+            },
+          ],
+          done,
+        );
+      });
+    });
+
+    describe('error', () => {
+      const res = {
+        errors: ['error'],
+      };
+      const interceptor = (request, next) => {
+        next(
+          request.respondWith(JSON.stringify(res), {
+            status: 200,
+          }),
+        );
+      };
+
+      beforeEach(() => {
+        Vue.http.interceptors.push(interceptor);
+      });
+
+      afterEach(() => {
+        Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+      });
+
+      it('does not commit ADD_NEW_NOTE or dispatch updateMergeRequestWidget', done => {
+        testAction(
+          actions.createNewNote,
+          { endpoint: `${gl.TEST_HOST}`, data: {} },
+          store.state,
+          [],
+          [],
+          done,
+        );
+      });
+    });
+  });
+
+  describe('toggleResolveNote', () => {
+    const res = {
+      resolved: true,
+    };
+    const interceptor = (request, next) => {
+      next(
+        request.respondWith(JSON.stringify(res), {
+          status: 200,
+        }),
+      );
+    };
+
+    beforeEach(() => {
+      Vue.http.interceptors.push(interceptor);
+    });
+
+    afterEach(() => {
+      Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+    });
+
+    describe('as note', () => {
+      it('commits UPDATE_NOTE and dispatches updateMergeRequestWidget', done => {
+        testAction(
+          actions.toggleResolveNote,
+          { endpoint: `${gl.TEST_HOST}`, isResolved: true, discussion: false },
+          store.state,
+          [
+            {
+              type: 'UPDATE_NOTE',
+              payload: res,
+            },
+          ],
+          [
+            {
+              type: 'updateMergeRequestWidget',
+            },
+          ],
+          done,
+        );
+      });
+    });
+
+    describe('as discussion', () => {
+      it('commits UPDATE_DISCUSSION and dispatches updateMergeRequestWidget', done => {
+        testAction(
+          actions.toggleResolveNote,
+          { endpoint: `${gl.TEST_HOST}`, isResolved: true, discussion: true },
+          store.state,
+          [
+            {
+              type: 'UPDATE_DISCUSSION',
+              payload: res,
+            },
+          ],
+          [
+            {
+              type: 'updateMergeRequestWidget',
+            },
+          ],
+          done,
+        );
+      });
+    });
+  });
+
+  describe('updateMergeRequestWidget', () => {
+    it('calls mrWidget checkStatus', () => {
+      spyOn(mrWidgetEventHub, '$emit');
+
+      actions.updateMergeRequestWidget();
+
+      expect(mrWidgetEventHub.$emit).toHaveBeenCalledWith('mr.discussion.updated');
     });
   });
 });

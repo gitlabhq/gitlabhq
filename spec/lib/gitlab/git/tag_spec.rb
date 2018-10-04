@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Gitlab::Git::Tag, seed_helper: true do
+describe Gitlab::Git::Tag, :seed_helper do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
 
   shared_examples 'Gitlab::Git::Repository#tags' do
@@ -31,5 +31,57 @@ describe Gitlab::Git::Tag, seed_helper: true do
 
   context 'when Gitaly tags feature is disabled', :skip_gitaly_mock do
     it_behaves_like 'Gitlab::Git::Repository#tags'
+  end
+
+  describe '.get_message' do
+    let(:tag_ids) { %w[f4e6814c3e4e7a0de82a9e7cd20c626cc963a2f8 8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b] }
+
+    subject do
+      tag_ids.map { |id| described_class.get_message(repository, id) }
+    end
+
+    shared_examples 'getting tag messages' do
+      it 'gets tag messages' do
+        expect(subject[0]).to eq("Release\n")
+        expect(subject[1]).to eq("Version 1.1.0\n")
+      end
+    end
+
+    context 'when Gitaly tag_messages feature is enabled' do
+      it_behaves_like 'getting tag messages'
+
+      it 'gets messages in one batch', :request_store do
+        expect { subject.map(&:itself) }.to change { Gitlab::GitalyClient.get_request_count }.by(1)
+      end
+    end
+
+    context 'when Gitaly tag_messages feature is disabled', :disable_gitaly do
+      it_behaves_like 'getting tag messages'
+    end
+  end
+
+  describe 'tag into from Gitaly tag' do
+    context 'message_size != message.size' do
+      let(:gitaly_tag) { build(:gitaly_tag, message: ''.b, message_size: message_size) }
+      let(:tag) { described_class.new(repository, gitaly_tag) }
+
+      context 'message_size less than threshold' do
+        let(:message_size) { 123 }
+
+        it 'fetches tag message seperately' do
+          expect(described_class).to receive(:get_message).with(repository, gitaly_tag.id)
+
+          tag.message
+        end
+      end
+
+      context 'message_size greater than threshold' do
+        let(:message_size) { described_class::MAX_TAG_MESSAGE_DISPLAY_SIZE + 1 }
+
+        it 'returns a notice about message size' do
+          expect(tag.message).to eq("--tag message is too big")
+        end
+      end
+    end
   end
 end

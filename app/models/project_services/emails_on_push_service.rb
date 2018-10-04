@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EmailsOnPushService < Service
   boolean_accessor :send_from_committer_email
   boolean_accessor :disable_diffs

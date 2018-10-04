@@ -17,7 +17,7 @@ describe Gitlab::Ci::Pipeline::Chain::Create do
 
   context 'when pipeline is ready to be saved' do
     before do
-      pipeline.stages.build(name: 'test', project: project)
+      pipeline.stages.build(name: 'test', position: 0, project: project)
 
       step.perform!
     end

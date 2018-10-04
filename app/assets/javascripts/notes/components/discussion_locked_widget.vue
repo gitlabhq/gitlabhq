@@ -14,8 +14,8 @@ export default {
   <div class="disabled-comment text-center">
     <span class="issuable-note-warning inline">
       <icon
-        name="lock"
         :size="16"
+        name="lock"
         class="icon"
       />
       <span>

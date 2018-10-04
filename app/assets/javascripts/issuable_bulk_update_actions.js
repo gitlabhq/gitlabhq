@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, quotes, consistent-return, func-names, array-callback-return, space-before-function-paren, prefer-arrow-callback, max-len, no-unused-expressions, no-sequences, no-underscore-dangle, no-unused-vars, no-param-reassign */
+/* eslint-disable comma-dangle, quotes, consistent-return, func-names, array-callback-return, prefer-arrow-callback, max-len, no-unused-vars */
 
 import $ from 'jquery';
 import _ from 'underscore';
@@ -36,7 +36,7 @@ export default {
   },
 
   getSelectedIssues() {
-    return this.issues.has('.selected_issue:checked');
+    return this.issues.has('.selected-issuable:checked');
   },
 
   getLabelsFromSelection() {
@@ -110,7 +110,7 @@ export default {
   getOriginalCommonIds() {
     const labelIds = [];
 
-    this.getElement('.selected_issue:checked').each((i, el) => {
+    this.getElement('.selected-issuable:checked').each((i, el) => {
       labelIds.push(this.getElement(`#${this.prefixId}${el.dataset.id}`).data('labels'));
     });
     return _.intersection.apply(this, labelIds);
@@ -119,7 +119,7 @@ export default {
   // From issuable's initial bulk selection
   getOriginalMarkedIds() {
     const labelIds = [];
-    this.getElement('.selected_issue:checked').each((i, el) => {
+    this.getElement('.selected-issuable:checked').each((i, el) => {
       labelIds.push(this.getElement(`#${this.prefixId}${el.dataset.id}`).data('labels'));
     });
     return _.intersection.apply(this, labelIds);
@@ -132,7 +132,7 @@ export default {
     let issuableLabels = [];
 
     // Collect unique label IDs for all checked issues
-    this.getElement('.selected_issue:checked').each((i, el) => {
+    this.getElement('.selected-issuable:checked').each((i, el) => {
       issuableLabels = this.getElement(`#${this.prefixId}${el.dataset.id}`).data('labels');
       issuableLabels.forEach((labelId) => {
         // Store unique IDs

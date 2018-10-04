@@ -1,5 +1,5 @@
 - expanded = Rails.env.test?
-%section.settings.no-animate{ class: ('expanded' if expanded) }
+%section.qa-deploy-keys-settings.settings.no-animate#js-deploy-keys-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
       Deploy Keys
@@ -12,4 +12,4 @@
       Create a new deploy key for this project
     = render @deploy_keys.form_partial_path
     %hr
-    #js-deploy-keys{ data: { endpoint: project_deploy_keys_path(@project) } }
+    #js-deploy-keys{ data: { endpoint: project_deploy_keys_path(@project), project_id: @project.id } }

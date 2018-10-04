@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Merge request > User resolves outdated diff discussions', :js do
+describe 'Merge request > User resolves outdated diff discussions', :js do
   let(:project) { create(:project, :repository, :public) }
 
   let(:merge_request) do
@@ -63,7 +63,7 @@ feature 'Merge request > User resolves outdated diff discussions', :js do
 
     it 'shows that as automatically resolved' do
       within(".discussion[data-discussion-id='#{outdated_discussion.id}']") do
-        expect(page).to have_css('.discussion-body', visible: false)
+        expect(page).not_to have_css('.discussion-body')
         expect(page).to have_content('Automatically resolved')
       end
     end

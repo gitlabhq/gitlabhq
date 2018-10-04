@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Snippet < ActiveRecord::Base
   include Gitlab::VisibilityLevel
   include CacheMarkdownField
@@ -10,6 +12,7 @@ class Snippet < ActiveRecord::Base
   include Spammable
   include Editable
   include Gitlab::SQL::Pattern
+  include FromUnion
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description
@@ -49,6 +52,7 @@ class Snippet < ActiveRecord::Base
   scope :are_public, -> { where(visibility_level: Snippet::PUBLIC) }
   scope :public_and_internal, -> { where(visibility_level: [Snippet::PUBLIC, Snippet::INTERNAL]) }
   scope :fresh,   -> { order("created_at DESC") }
+  scope :inc_relations_for_view, -> { includes(author: :status) }
 
   participant :author
   participant :notes_with_associations

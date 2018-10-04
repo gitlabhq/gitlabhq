@@ -1,6 +1,9 @@
+.modal-xl {
+  max-width: 98%;
+}
+
 .modal-header {
   background-color: $modal-body-bg;
-  padding: #{3 * $grid-size} #{2 * $grid-size};
 
   .page-title,
   .modal-title {
@@ -13,6 +16,17 @@
       font-size: $gl-font-size;
       padding: $gl-vert-padding $label-padding-modal;
       vertical-align: middle;
+    }
+  }
+
+  // leave enough space for the close icon
+  .modal-title {
+    &.mw-100,
+    &.w-100 {
+      // after upgrading to Bootstrap 4.2 we can use $modal-header-padding-x here
+      // https://github.com/twbs/bootstrap/pull/26976
+      margin-right: -2rem;
+      padding-right: 2rem;
     }
   }
 
@@ -46,7 +60,7 @@
     margin-left: $grid-size;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     flex-direction: column;
 
     .btn + .btn {
@@ -55,8 +69,8 @@
     }
   }
 
-  @media (min-width: $screen-sm-min) {
-    .btn:first-of-type {
+  @include media-breakpoint-up(sm) {
+    .btn:nth-child(1) {
       margin-left: auto;
     }
   }
@@ -74,17 +88,10 @@ body.modal-open {
   }
 }
 
-@media (min-width: $screen-lg-min) {
-  .modal-full {
-    width: 98%;
-  }
-}
-
 .modal {
   background-color: $black-transparent;
-  z-index: 2100;
 
-  @media (min-width: $screen-md-min) {
+  @include media-breakpoint-up(md) {
     .modal-dialog {
       margin: 30px auto;
     }

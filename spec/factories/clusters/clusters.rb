@@ -4,8 +4,8 @@ FactoryBot.define do
     name 'test-cluster'
 
     trait :project do
-      after(:create) do |cluster, evaluator|
-        cluster.projects << create(:project)
+      before(:create) do |cluster, evaluator|
+        cluster.projects << create(:project, :repository)
       end
     end
 
@@ -35,6 +35,10 @@ FactoryBot.define do
 
     trait :production_environment do
       sequence(:environment_scope) { |n| "production#{n}/*" }
+    end
+
+    trait :with_installed_helm do
+      application_helm factory: %i(clusters_applications_helm installed)
     end
   end
 end

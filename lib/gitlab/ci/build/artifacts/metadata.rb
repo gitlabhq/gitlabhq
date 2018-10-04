@@ -7,14 +7,15 @@ module Gitlab
       module Artifacts
         class Metadata
           ParserError = Class.new(StandardError)
+          InvalidStreamError = Class.new(StandardError)
 
           VERSION_PATTERN = /^[\w\s]+(\d+\.\d+\.\d+)/
           INVALID_PATH_PATTERN = %r{(^\.?\.?/)|(/\.?\.?/)}
 
-          attr_reader :file, :path, :full_version
+          attr_reader :stream, :path, :full_version
 
-          def initialize(file, path, **opts)
-            @file, @path, @opts = file, path, opts
+          def initialize(stream, path, **opts)
+            @stream, @path, @opts = stream, path, opts
             @full_version = read_version
           end
 
@@ -103,7 +104,17 @@ module Gitlab
           end
 
           def gzip(&block)
-            Zlib::GzipReader.open(@file, &block)
+            raise InvalidStreamError, "Invalid stream" unless @stream
+
+            # restart gzip reading
+            @stream.seek(0)
+
+            gz = Zlib::GzipReader.new(@stream)
+            yield(gz)
+          rescue Zlib::Error => e
+            raise InvalidStreamError, e.message
+          ensure
+            gz&.finish
           end
         end
       end

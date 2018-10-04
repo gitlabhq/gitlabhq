@@ -502,6 +502,13 @@ describe 'Copy as GFM', :js do
               1. Numbered lists
         GFM
 
+        # list item followed by an HR
+        <<-GFM.strip_heredoc,
+          - list item
+
+          -----
+        GFM
+
         '# Heading',
         '## Heading',
         '### Heading',
@@ -514,8 +521,6 @@ describe 'Copy as GFM', :js do
         '_Italics_',
 
         '~~Strikethrough~~',
-
-        '2^2',
 
         '-----',
 

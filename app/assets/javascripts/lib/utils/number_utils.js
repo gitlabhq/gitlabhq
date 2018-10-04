@@ -12,8 +12,8 @@ export function formatRelevantDigits(number) {
   let digitsLeft = '';
   let relevantDigits = 0;
   let formattedNumber = '';
-  if (!isNaN(Number(number))) {
-    digitsLeft = number.toString().split('.')[0];
+  if (!Number.isNaN(Number(number))) {
+    [digitsLeft] = number.toString().split('.');
     switch (digitsLeft.length) {
       case 1:
         relevantDigits = 3;

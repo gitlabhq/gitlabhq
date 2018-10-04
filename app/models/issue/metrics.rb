@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Issue::Metrics < ActiveRecord::Base
   belongs_to :issue
 

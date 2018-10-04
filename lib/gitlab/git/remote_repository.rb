@@ -12,7 +12,7 @@ module Gitlab
     # class.
     #
     class RemoteRepository
-      attr_reader :path, :relative_path, :gitaly_repository
+      attr_reader :relative_path, :gitaly_repository
 
       def initialize(repository)
         @relative_path = repository.relative_path
@@ -21,7 +21,6 @@ module Gitlab
         # These instance variables will not be available in gitaly-ruby, where
         # we have no disk access to this repository.
         @repository = repository
-        @path = repository.path
       end
 
       def empty?
@@ -67,6 +66,10 @@ module Gitlab
         env['GITALY_TOKEN'] = gitaly_token if gitaly_token.present?
 
         env
+      end
+
+      def path
+        @repository.path
       end
 
       private

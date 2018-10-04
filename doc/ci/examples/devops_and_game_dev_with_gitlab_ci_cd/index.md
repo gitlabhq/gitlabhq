@@ -406,7 +406,7 @@ and further delves into the principles of GitLab CI/CD than discussed in this ar
 
 We need to be able to deploy to AWS with our AWS account credentials, but we certainly
 don't want to put secrets into source code. Luckily GitLab provides a solution for this
-with [Secret Variables](../../../ci/variables/README.md). This can get complicated
+with [Variables](../../../ci/variables/README.md). This can get complicated
 due to [IAM](https://aws.amazon.com/iam/) management. As a best practice, you shouldn't
 use root security credentials. Proper IAM credential management is beyond the scope of this
 article, but AWS will remind you that using root credentials is unadvised and against their
@@ -428,7 +428,7 @@ fully understand [IAM Best Practices in AWS](http://docs.aws.amazon.com/IAM/late
 To deploy our build artifacts, we need to install the [AWS CLI](https://aws.amazon.com/cli/) on
 the Shared Runner. The Shared Runner also needs to be able to authenticate with your AWS
 account to deploy the artifacts. By convention, AWS CLI will look for `AWS_ACCESS_KEY_ID`
-and `AWS_SECRET_ACCESS_KEY`. GitLab's CI gives us a way to pass the secret variables we
+and `AWS_SECRET_ACCESS_KEY`. GitLab's CI gives us a way to pass the variables we
 set up in the prior section using the `variables` portion of the `deploy` job. At the end,
 we add directives to ensure deployment `only` happens on pushes to `master`. This way, every
 single branch still runs through CI, and only merging (or committing directly) to master will
@@ -509,7 +509,7 @@ and unit tests, all running and deployed at every push to master - with shocking
 Errors can be easily debugged through GitLab's build logs, and within minutes of a successful commit,
 you can see the changes live on your game.
 
-Setting up Continous Integration and Continuous Deployment from the start with Dark Nova enables
+Setting up Continuous Integration and Continuous Deployment from the start with Dark Nova enables
 rapid but stable development. We can easily test changes in a separate [environment](../../../ci/environments.md#introduction-to-environments-and-deployments),
 or multiple environments if needed. Balancing and updating a multiplayer game can be ongoing
 and tedious, but having faith in a stable deployment with GitLab CI/CD allows
@@ -520,7 +520,7 @@ a lot of breathing room in quickly getting changes to players.
 Here are some ideas to further investigate that can speed up or improve your pipeline:
 
 - [Yarn](https://yarnpkg.com) instead of npm
-- Setup a custom [Docker](../../../ci/docker/using_docker_images.md#define-image-and-services-from-gitlab-ci-yml) image that can preload dependencies and tools (like AWS CLI)
+- Set up a custom [Docker](../../../ci/docker/using_docker_images.md#define-image-and-services-from-gitlab-ci-yml) image that can preload dependencies and tools (like AWS CLI)
 - Forward a [custom domain](http://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html) to your game's S3 static website
 - Combine jobs if you find it unnecessary for a small project
 - Avoid the queues and set up your own [custom GitLab CI/CD runner](https://about.gitlab.com/2016/03/01/gitlab-runner-with-docker/)

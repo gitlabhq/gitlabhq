@@ -1,10 +1,10 @@
 require 'json'
 
-require_relative 'config'
-require_relative 'example'
-require_relative 'flaky_example'
-require_relative 'flaky_examples_collection'
-require_relative 'report'
+require_dependency 'rspec_flaky/config'
+require_dependency 'rspec_flaky/example'
+require_dependency 'rspec_flaky/flaky_example'
+require_dependency 'rspec_flaky/flaky_examples_collection'
+require_dependency 'rspec_flaky/report'
 
 module RspecFlaky
   class Listener

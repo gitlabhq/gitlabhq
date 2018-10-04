@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectPolicy < BasePolicy
   extend ClassMethods
 
@@ -45,8 +47,8 @@ class ProjectPolicy < BasePolicy
   desc "User has developer access"
   condition(:developer) { team_access_level >= Gitlab::Access::DEVELOPER }
 
-  desc "User has master access"
-  condition(:master) { team_access_level >= Gitlab::Access::MASTER }
+  desc "User has maintainer access"
+  condition(:maintainer) { team_access_level >= Gitlab::Access::MAINTAINER }
 
   desc "Project is public"
   condition(:public_project, scope: :subject, score: 0) { project.public? }
@@ -76,8 +78,13 @@ class ProjectPolicy < BasePolicy
   condition(:request_access_enabled, scope: :subject, score: 0) { project.request_access_enabled }
 
   desc "Has merge requests allowing pushes to user"
-  condition(:has_merge_requests_allowing_pushes, scope: :subject) do
+  condition(:has_merge_requests_allowing_pushes) do
     project.merge_requests_allowing_push_to_user(user).any?
+  end
+
+  with_scope :global
+  condition(:mirror_available, score: 0) do
+    ::Gitlab::CurrentSettings.current_application_settings.mirror_available
   end
 
   # We aren't checking `:read_issue` or `:read_merge_request` in this case
@@ -118,14 +125,14 @@ class ProjectPolicy < BasePolicy
   rule { guest }.enable :guest_access
   rule { reporter }.enable :reporter_access
   rule { developer }.enable :developer_access
-  rule { master }.enable :master_access
+  rule { maintainer }.enable :maintainer_access
   rule { owner | admin }.enable :owner_access
 
   rule { can?(:owner_access) }.policy do
     enable :guest_access
     enable :reporter_access
     enable :developer_access
-    enable :master_access
+    enable :maintainer_access
 
     enable :change_namespace
     enable :change_visibility_level
@@ -136,6 +143,10 @@ class ProjectPolicy < BasePolicy
     enable :destroy_merge_request
     enable :destroy_issue
     enable :remove_pages
+
+    enable :set_issue_iid
+    enable :set_issue_created_at
+    enable :set_note_created_at
   end
 
   rule { can?(:guest_access) }.policy do
@@ -169,6 +180,7 @@ class ProjectPolicy < BasePolicy
     enable :fork_project
     enable :create_project_snippet
     enable :update_issue
+    enable :reopen_issue
     enable :admin_issue
     enable :admin_label
     enable :admin_list
@@ -223,7 +235,7 @@ class ProjectPolicy < BasePolicy
     enable :create_deployment
   end
 
-  rule { can?(:master_access) }.policy do
+  rule { can?(:maintainer_access) }.policy do
     enable :push_to_delete_protected_branch
     enable :update_project_snippet
     enable :update_environment
@@ -244,7 +256,10 @@ class ProjectPolicy < BasePolicy
     enable :update_pages
     enable :read_cluster
     enable :create_cluster
+    enable :create_environment_terminal
   end
+
+  rule { (mirror_available & can?(:admin_project)) | admin }.enable :admin_remote_mirror
 
   rule { archived }.policy do
     prevent :push_code
@@ -290,6 +305,7 @@ class ProjectPolicy < BasePolicy
     prevent(*create_read_update_admin_destroy(:build))
     prevent(*create_read_update_admin_destroy(:pipeline_schedule))
     prevent(*create_read_update_admin_destroy(:environment))
+    prevent(*create_read_update_admin_destroy(:cluster))
     prevent(*create_read_update_admin_destroy(:deployment))
   end
 
@@ -347,9 +363,7 @@ class ProjectPolicy < BasePolicy
   # to run pipelines for the branches they have access to.
   rule { can?(:public_access) & has_merge_requests_allowing_pushes }.policy do
     enable :create_build
-    enable :update_build
     enable :create_pipeline
-    enable :update_pipeline
   end
 
   rule do
@@ -384,6 +398,7 @@ class ProjectPolicy < BasePolicy
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def project_group_member?
     return false if @user.nil?
 
@@ -393,6 +408,7 @@ class ProjectPolicy < BasePolicy
         project.group.requesters.exists?(user_id: @user.id)
       )
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def team_access_level
     return -1 if @user.nil?

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TimeHelper
   def time_interval_in_words(interval_in_seconds)
     interval_in_seconds = interval_in_seconds.to_i
@@ -5,9 +7,13 @@ module TimeHelper
     seconds = interval_in_seconds - minutes * 60
 
     if minutes >= 1
-      "#{pluralize(minutes, "minute")} #{pluralize(seconds, "second")}"
+      if seconds % 60 == 0
+        pluralize(minutes, "minute")
+      else
+        [pluralize(minutes, "minute"), pluralize(seconds, "second")].to_sentence
+      end
     else
-      "#{pluralize(seconds, "second")}"
+      pluralize(seconds, "second")
     end
   end
 

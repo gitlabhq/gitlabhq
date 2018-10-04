@@ -1,5 +1,0 @@
----
-title: Move TimeTrackingCollapsedState vue component
-merge_request: 17399
-author: George Tsiolis
-type: performance

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A note on merge request or commit diffs, using the legacy implementation.
 #
 # All new diff notes are of the type `DiffNote`, but any diff notes created
@@ -18,11 +20,7 @@ class LegacyDiffNote < Note
   end
 
   def project_repository
-    if RequestStore.active?
-      RequestStore.fetch("project:#{project_id}:repository") { self.project.repository }
-    else
-      self.project.repository
-    end
+    Gitlab::SafeRequestStore.fetch("project:#{project_id}:repository") { self.project.repository }
   end
 
   def diff_file_hash

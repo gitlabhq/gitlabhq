@@ -40,10 +40,22 @@ describe ButtonHelper do
       end
 
       context 'when user has no personal access tokens' do
-        it 'has a personal access token text on the dropdown description ' do
+        it 'has a personal access token text on the dropdown description' do
           description = element.search('.dropdown-menu-inner-content').first
 
           expect(description.inner_text).to eq 'Create a personal access token on your account to pull or push via HTTP.'
+        end
+      end
+
+      context 'when user has personal access tokens' do
+        before do
+          create(:personal_access_token, user: user)
+        end
+
+        it 'does not have a personal access token text on the dropdown description' do
+          description = element.search('.dropdown-menu-inner-content').first
+
+          expect(description).to be_nil
         end
       end
     end
@@ -76,6 +88,18 @@ describe ButtonHelper do
         description = element.search('.dropdown-menu-inner-content').first
 
         expect(description.inner_text).to eq "You won't be able to pull or push project code via SSH until you add an SSH key to your profile"
+      end
+    end
+
+    context 'without an ssh key on the user and user_show_add_ssh_key_message unset' do
+      before do
+        stub_application_setting(user_show_add_ssh_key_message: false)
+      end
+
+      it 'there is no warning on the dropdown description' do
+        description = element.search('.dropdown-menu-inner-content').first
+
+        expect(description).to be_nil
       end
     end
 
@@ -121,6 +145,8 @@ describe ButtonHelper do
   end
 
   describe 'clipboard_button' do
+    include IconsHelper
+
     let(:user) { create(:user) }
     let(:project) { build_stubbed(:project) }
 
@@ -145,7 +171,7 @@ describe ButtonHelper do
           expect(element.attr('data-clipboard-text')).to eq(nil)
           expect(element.inner_text).to eq("")
 
-          expect(element).to have_selector('.fa.fa-clipboard')
+          expect(element.to_html).to include sprite_icon('duplicate')
         end
       end
 
@@ -178,7 +204,7 @@ describe ButtonHelper do
 
     context 'with `hide_button_icon` attribute provided' do
       it 'shows copy to clipboard button without tooltip support' do
-        expect(element(hide_button_icon: true)).not_to have_selector('.fa.fa-clipboard')
+        expect(element(hide_button_icon: true).to_html).not_to include sprite_icon('duplicate')
       end
     end
   end

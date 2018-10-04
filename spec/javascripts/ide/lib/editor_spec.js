@@ -1,6 +1,5 @@
-/* global monaco */
-import monacoLoader from '~/ide/monaco_loader';
-import editor from '~/ide/lib/editor';
+import { editor as monacoEditor } from 'monaco-editor';
+import Editor from '~/ide/lib/editor';
 import { file } from '../helpers';
 
 describe('Multi-file editor library', () => {
@@ -8,18 +7,14 @@ describe('Multi-file editor library', () => {
   let el;
   let holder;
 
-  beforeEach(done => {
+  beforeEach(() => {
     el = document.createElement('div');
     holder = document.createElement('div');
     el.appendChild(holder);
 
     document.body.appendChild(el);
 
-    monacoLoader(['vs/editor/editor.main'], () => {
-      instance = editor.create(monaco);
-
-      done();
-    });
+    instance = Editor.create();
   });
 
   afterEach(() => {
@@ -29,20 +24,20 @@ describe('Multi-file editor library', () => {
   });
 
   it('creates instance of editor', () => {
-    expect(editor.editorInstance).not.toBeNull();
+    expect(Editor.editorInstance).not.toBeNull();
   });
 
   it('creates instance returns cached instance', () => {
-    expect(editor.create(monaco)).toEqual(instance);
+    expect(Editor.create()).toEqual(instance);
   });
 
   describe('createInstance', () => {
     it('creates editor instance', () => {
-      spyOn(instance.monaco.editor, 'create').and.callThrough();
+      spyOn(monacoEditor, 'create').and.callThrough();
 
       instance.createInstance(holder);
 
-      expect(instance.monaco.editor.create).toHaveBeenCalled();
+      expect(monacoEditor.create).toHaveBeenCalled();
     });
 
     it('creates dirty diff controller', () => {
@@ -60,11 +55,11 @@ describe('Multi-file editor library', () => {
 
   describe('createDiffInstance', () => {
     it('creates editor instance', () => {
-      spyOn(instance.monaco.editor, 'createDiffEditor').and.callThrough();
+      spyOn(monacoEditor, 'createDiffEditor').and.callThrough();
 
       instance.createDiffInstance(holder);
 
-      expect(instance.monaco.editor.createDiffEditor).toHaveBeenCalledWith(holder, {
+      expect(monacoEditor.createDiffEditor).toHaveBeenCalledWith(holder, {
         model: null,
         contextmenu: true,
         minimap: {
@@ -74,10 +69,10 @@ describe('Multi-file editor library', () => {
         scrollBeyondLastLine: false,
         quickSuggestions: false,
         occurrencesHighlight: false,
-        renderLineHighlight: 'none',
-        hideCursorInOverviewRuler: true,
         wordWrap: 'on',
         renderSideBySide: true,
+        renderLineHighlight: 'all',
+        hideCursorInOverviewRuler: false,
       });
     });
   });
@@ -88,7 +83,7 @@ describe('Multi-file editor library', () => {
 
       instance.createModel('FILE');
 
-      expect(instance.modelManager.addModel).toHaveBeenCalledWith('FILE');
+      expect(instance.modelManager.addModel).toHaveBeenCalledWith('FILE', null);
     });
   });
 
@@ -266,6 +261,25 @@ describe('Multi-file editor library', () => {
       instance.createInstance(holder);
 
       expect(instance.isDiffEditorType).toBe(false);
+    });
+  });
+
+  it('sets quickSuggestions to false when language is markdown', () => {
+    instance.createInstance(holder);
+
+    spyOn(instance.instance, 'updateOptions').and.callThrough();
+
+    const model = instance.createModel({
+      ...file(),
+      key: 'index.md',
+      path: 'index.md',
+    });
+
+    instance.attachModel(model);
+
+    expect(instance.instance.updateOptions).toHaveBeenCalledWith({
+      readOnly: false,
+      quickSuggestions: false,
     });
   });
 });

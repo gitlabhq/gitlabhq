@@ -19,6 +19,9 @@ project_tree:
     - milestone:
       - events:
         - :push_event_payload
+    - resource_label_events:
+      - label:
+          :priorities
     - :issue_assignees
   - snippets:
     - :award_emoji
@@ -27,9 +30,8 @@ project_tree:
   - :releases
   - project_members:
     - :user
-  - lfs_file_locks:
-    - :user
   - merge_requests:
+    - :metrics
     - notes:
       - :author
       - events:
@@ -46,6 +48,9 @@ project_tree:
     - milestone:
       - events:
         - :push_event_payload
+    - resource_label_events:
+      - label:
+          :priorities
   - pipelines:
     - notes:
       - :author
@@ -65,7 +70,9 @@ project_tree:
     - :create_access_levels
   - :project_feature
   - :custom_attributes
+  - :prometheus_metrics
   - :project_badges
+  - :ci_cd_settings
 
 # Only include the following attributes for the models specified.
 included_attributes:
@@ -75,6 +82,8 @@ included_attributes:
     - :username
   author:
     - :name
+  ci_cd_settings:
+    - :group_runners_enabled
 
 # Do not include the following attributes for the models specified.
 excluded_attributes:
@@ -97,15 +106,18 @@ excluded_attributes:
     - :import_jid
     - :created_at
     - :updated_at
-    - :import_jid
-    - :import_jid
     - :id
     - :star_count
     - :last_activity_at
     - :last_repository_updated_at
     - :last_repository_check_at
     - :storage_version
+    - :remote_mirror_available_overridden
     - :description_html
+    - :repository_languages
+  prometheus_metrics:
+    - :common
+    - :identifier
   snippets:
     - :expired_at
   merge_request_diff:
@@ -131,6 +143,16 @@ excluded_attributes:
     - :event_id
   project_badges:
     - :group_id
+  resource_label_events:
+    - :reference
+    - :reference_html
+    - :epic_id
+  hooks:
+    - :token
+    - :encrypted_token
+    - :encrypted_token_iv
+    - :encrypted_url
+    - :encrypted_url_iv
 
 methods:
   labels:

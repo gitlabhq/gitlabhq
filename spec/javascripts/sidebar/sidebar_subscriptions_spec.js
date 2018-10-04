@@ -3,7 +3,6 @@ import sidebarSubscriptions from '~/sidebar/components/subscriptions/sidebar_sub
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import SidebarService from '~/sidebar/services/sidebar_service';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
-import eventHub from '~/sidebar/event_hub';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import Mock from './mock_data';
 
@@ -13,7 +12,7 @@ describe('Sidebar Subscriptions', function () {
 
   beforeEach(() => {
     SidebarSubscriptions = Vue.extend(sidebarSubscriptions);
-    // Setup the stores, services, etc
+    // Set up the stores, services, etc
     // eslint-disable-next-line no-new
     new SidebarMediator(Mock.mediator);
   });
@@ -32,7 +31,7 @@ describe('Sidebar Subscriptions', function () {
       mediator,
     });
 
-    eventHub.$emit('toggleSubscription');
+    vm.onToggleSubscription();
 
     expect(mediator.toggleSubscription).toHaveBeenCalled();
   });

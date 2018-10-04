@@ -1,7 +1,6 @@
 <script>
   import { s__ } from '../../locale';
   import icon from './icon.vue';
-  import loadingIcon from './loading_icon.vue';
 
   const ICON_ON = 'status_success_borderless';
   const ICON_OFF = 'status_failed_borderless';
@@ -11,7 +10,6 @@
   export default {
     components: {
       icon,
-      loadingIcon,
     },
 
     model: {
@@ -63,26 +61,26 @@
   <label class="toggle-wrapper">
     <input
       v-if="name"
-      type="hidden"
       :name="name"
       :value="value"
+      type="hidden"
     />
     <button
-      type="button"
-      class="project-feature-toggle"
       :aria-label="ariaLabel"
       :class="{
         'is-checked': value,
         'is-disabled': disabledInput,
         'is-loading': isLoading
       }"
+      type="button"
+      class="project-feature-toggle"
       @click="toggleFeature"
     >
-      <loadingIcon class="loading-icon" />
+      <gl-loading-icon class="loading-icon" />
       <span class="toggle-icon">
         <icon
-          css-classes="toggle-icon-svg"
-          :name="toggleIcon"/>
+          :name="toggleIcon"
+          css-classes="toggle-icon-svg"/>
       </span>
     </button>
   </label>

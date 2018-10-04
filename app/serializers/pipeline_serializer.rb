@@ -1,30 +1,40 @@
+# frozen_string_literal: true
+
 class PipelineSerializer < BaseSerializer
   include WithPagination
-
-  InvalidResourceError = Class.new(StandardError)
-
   entity PipelineDetailsEntity
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def represent(resource, opts = {})
     if resource.is_a?(ActiveRecord::Relation)
-
       resource = resource.preload([
+        :stages,
         :retryable_builds,
         :cancelable_statuses,
         :trigger_requests,
-        :project,
         :manual_actions,
         :artifacts,
-        { pending_builds: :project }
+        {
+          pending_builds: :project,
+          project: [:route, { namespace: :route }],
+          artifacts: {
+            project: [:route, { namespace: :route }]
+          }
+        }
       ])
     end
 
     if paginated?
-      super(@paginator.paginate(resource), opts)
-    else
-      super(resource, opts)
+      resource = paginator.paginate(resource)
     end
+
+    if opts.delete(:preload)
+      resource = Gitlab::Ci::Pipeline::Preloader.preload!(resource)
+    end
+
+    super(resource, opts)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def represent_status(resource)
     return {} unless resource.present?
@@ -36,7 +46,7 @@ class PipelineSerializer < BaseSerializer
   def represent_stages(resource)
     return {} unless resource.present?
 
-    data = represent(resource, { only: [{ details: [:stages] }] })
+    data = represent(resource, { only: [{ details: [:stages] }], preload: true })
     data.dig(:details, :stages) || []
   end
 end

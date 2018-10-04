@@ -42,12 +42,12 @@ describe Clusters::Applications::InstallService do
         service.execute
 
         expect(application).to be_errored
-        expect(application.status_reason).to match(/kubernetes error:/i)
+        expect(application.status_reason).to match('Kubernetes error.')
       end
     end
 
     context 'when application cannot be persisted' do
-      let(:application) { build(:clusters_applications_helm, :scheduled) }
+      let(:application) { create(:clusters_applications_helm, :scheduled) }
 
       it 'make the application errored' do
         expect(application).to receive(:make_installing!).once.and_raise(ActiveRecord::RecordInvalid)

@@ -1,21 +1,17 @@
 require 'spec_helper'
 
 describe Gitlab::Checks::ForcePush do
-  let(:project) { create(:project, :repository) }
-  let(:repository) { project.repository.raw }
+  set(:project) { create(:project, :repository) }
 
-  context "exit code checking", :skip_gitaly_mock do
-    it "does not raise a runtime error if the `popen` call to git returns a zero exit code" do
-      allow(repository).to receive(:popen).and_return(['normal output', 0])
+  describe '.force_push?' do
+    it 'returns false if the repo is empty' do
+      allow(project).to receive(:empty_repo?).and_return(true)
 
-      expect { described_class.force_push?(project, 'oldrev', 'newrev') }.not_to raise_error
+      expect(described_class.force_push?(project, 'HEAD', 'HEAD~')).to be(false)
     end
 
-    it "raises a GitError error if the `popen` call to git returns a non-zero exit code" do
-      allow(repository).to receive(:popen).and_return(['error', 1])
-
-      expect { described_class.force_push?(project, 'oldrev', 'newrev') }
-        .to raise_error(Gitlab::Git::Repository::GitError)
+    it 'checks if old rev is an anchestor' do
+      expect(described_class.force_push?(project, 'HEAD', 'HEAD~')).to be(true)
     end
   end
 end

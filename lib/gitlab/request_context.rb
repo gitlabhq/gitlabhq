@@ -2,7 +2,7 @@ module Gitlab
   class RequestContext
     class << self
       def client_ip
-        RequestStore[:client_ip]
+        Gitlab::SafeRequestStore[:client_ip]
       end
     end
 
@@ -13,7 +13,7 @@ module Gitlab
     def call(env)
       req = Rack::Request.new(env)
 
-      RequestStore[:client_ip] = req.ip
+      Gitlab::SafeRequestStore[:client_ip] = req.ip
 
       @app.call(env)
     end

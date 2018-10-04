@@ -45,6 +45,11 @@ In the case of Issues/MR/Notes Markdown attachments, there is a different approa
 instead of basing the path into a mutable variable `:project_path_with_namespace`, it's possible to use the
 hash of the project ID instead, if project migrates to the new approach (introduced in 10.2).
 
+> Note: We provide an [all-in-one rake task] to migrate all uploads to object
+> storage in one go. If a new Uploader class or model type is introduced, make
+> sure you add a rake task invocation corresponding to it to the [category
+> list].
+
 ### Path segments
 
 Files are stored at multiple locations and use different path schemes. 
@@ -84,7 +89,7 @@ The `RecordsUploads::Concern` concern will create an `Upload` entry for every fi
 By including the `ObjectStorage::Concern` in the `GitlabUploader` derived class, you may enable the object storage for this uploader. To enable the object storage
 in your uploader, you need to either 1) include `RecordsUpload::Concern` and prepend `ObjectStorage::Extension::RecordsUploads` or 2) mount the uploader and create a new field named `<mount>_store`.
 
-The `CarrierWave::Uploader#store_dir` is overriden to
+The `CarrierWave::Uploader#store_dir` is overridden to
 
  - `GitlabUploader.base_dir` + `GitlabUploader.dynamic_segment` when the store is LOCAL
  - `GitlabUploader.dynamic_segment` when the store is REMOTE (the bucket name is used to namespace)
@@ -137,3 +142,5 @@ end
 
 [CarrierWave]: https://github.com/carrierwaveuploader/carrierwave
 [Hashed Storage]: ../administration/repository_storage_types.md
+[all-in-one rake task]: ../administration/raketasks/uploads/migrate.md
+[category list]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/tasks/gitlab/uploads/migrate.rake

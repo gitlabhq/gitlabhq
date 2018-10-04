@@ -1,13 +1,9 @@
 module Gitlab
   module HookData
-    class IssuableBuilder
+    class IssuableBuilder < BaseBuilder
       CHANGES_KEYS = %i[previous current].freeze
 
-      attr_accessor :issuable
-
-      def initialize(issuable)
-        @issuable = issuable
-      end
+      alias_method :issuable, :object
 
       def build(user: nil, changes: {})
         hook_data = {
@@ -32,7 +28,7 @@ module Gitlab
       end
 
       def safe_keys
-        issuable_builder::SAFE_HOOK_ATTRIBUTES + issuable_builder::SAFE_HOOK_RELATIONS
+        issuable_builder.safe_hook_attributes + issuable_builder::SAFE_HOOK_RELATIONS
       end
 
       private

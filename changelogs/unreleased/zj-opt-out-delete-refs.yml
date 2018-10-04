@@ -1,5 +1,0 @@
----
-title: Bulk deleting refs is handled by Gitaly by default
-merge_request:
-author:
-type: performance

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Worker for processing individiual commit messages pushed to a repository.
 #
 # Jobs for this worker are scheduled for every commit that is being pushed. As a
@@ -12,6 +14,7 @@ class ProcessCommitWorker
   # commit_hash - Hash containing commit details to use for constructing a
   #               Commit object without having to use the Git repository.
   # default - The data was pushed to the default branch.
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform(project_id, user_id, commit_hash, default = false)
     project = Project.find_by(id: project_id)
 
@@ -28,6 +31,7 @@ class ProcessCommitWorker
     process_commit_message(project, commit, user, author, default)
     update_issue_metrics(commit, author)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def process_commit_message(project, commit, user, author, default = false)
     # Ignore closing references from GitLab-generated commit messages.
@@ -48,6 +52,7 @@ class ProcessCommitWorker
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def update_issue_metrics(commit, author)
     mentioned_issues = commit.all_references(author).issues
 
@@ -56,6 +61,7 @@ class ProcessCommitWorker
     Issue::Metrics.where(issue_id: mentioned_issues.map(&:id), first_mentioned_in_commit_at: nil)
       .update_all(first_mentioned_in_commit_at: commit.committed_date)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def build_commit(project, hash)
     date_suffix = '_date'
@@ -77,9 +83,10 @@ class ProcessCommitWorker
   # Avoid reprocessing commits that already exist in the upstream
   # when project is forked. This will also prevent duplicated system notes.
   def commit_exists_in_upstream?(project, commit_hash)
-    return false unless project.forked?
+    upstream_project = project.fork_source
 
-    upstream_project = project.forked_from_project
+    return false unless upstream_project
+
     commit_id = commit_hash.with_indifferent_access[:id]
     upstream_project.commit(commit_id).present?
   end

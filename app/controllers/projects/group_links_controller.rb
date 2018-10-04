@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::GroupLinksController < Projects::ApplicationController
   layout 'project_settings'
   before_action :authorize_admin_project!
@@ -24,7 +26,7 @@ class Projects::GroupLinksController < Projects::ApplicationController
   def update
     @group_link = @project.project_group_links.find(params[:id])
 
-    @group_link.update_attributes(group_link_params)
+    @group_link.update(group_link_params)
   end
 
   def destroy
@@ -34,7 +36,7 @@ class Projects::GroupLinksController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to project_project_members_path(project), status: 302
+        redirect_to project_project_members_path(project), status: :found
       end
       format.js { head :ok }
     end

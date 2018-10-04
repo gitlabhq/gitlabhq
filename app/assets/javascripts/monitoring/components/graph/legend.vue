@@ -31,8 +31,8 @@ export default {
     <table class="prometheus-table">
       <tr
         v-for="(series, index) in timeSeries"
-        :key="index"
         v-if="series.shouldRenderLegend"
+        :key="index"
         :class="isStable(series)"
       >
         <td>
@@ -40,11 +40,11 @@ export default {
         </td>
         <track-line :track="series" />
         <td
-          class="legend-metric-title"
-          v-if="timeSeries.length > 1">
+          v-if="timeSeries.length > 1"
+          class="legend-metric-title">
           <track-info
-            :track="series"
-            v-if="series.metricTag" />
+            v-if="series.metricTag"
+            :track="series" />
           <track-info
             v-else
             :track="series">
@@ -58,12 +58,12 @@ export default {
         </td>
         <template v-for="(track, trackIndex) in series.tracksLegend">
           <track-line
-            :track="track"
-            :key="`track-line-${trackIndex}`"/>
+            :key="`track-line-${trackIndex}`"
+            :track="track"/>
           <td :key="`track-info-${trackIndex}`">
             <track-info
-              class="legend-metric-title"
-              :track="track" />
+              :track="track"
+              class="legend-metric-title" />
           </td>
         </template>
       </tr>

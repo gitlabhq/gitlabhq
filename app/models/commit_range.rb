@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # CommitRange makes it easier to work with commit ranges
 #
 # Examples:

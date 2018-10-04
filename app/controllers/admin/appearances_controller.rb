@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::AppearancesController < Admin::ApplicationController
   before_action :set_appearance, except: :create
 
@@ -41,6 +43,13 @@ class Admin::AppearancesController < Admin::ApplicationController
     redirect_to admin_appearances_path, notice: 'Header logo was succesfully removed.'
   end
 
+  def favicon
+    @appearance.remove_favicon!
+    @appearance.save
+
+    redirect_to admin_appearances_path, notice: 'Favicon was succesfully removed.'
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
@@ -61,6 +70,8 @@ class Admin::AppearancesController < Admin::ApplicationController
       logo_cache
       header_logo
       header_logo_cache
+      favicon
+      favicon_cache
       new_project_guidelines
       updated_by
     ]

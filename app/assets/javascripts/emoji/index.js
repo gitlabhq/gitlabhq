@@ -34,7 +34,7 @@ export function getEmojiCategoryMap() {
       symbols: [],
       flags: [],
     };
-    Object.keys(emojiMap).forEach((name) => {
+    Object.keys(emojiMap).forEach(name => {
       const emoji = emojiMap[name];
       if (emojiCategoryMap[emoji.category]) {
         emojiCategoryMap[emoji.category].push(name);
@@ -79,7 +79,9 @@ export function glEmojiTag(inputName, options) {
     classList.push(fallbackSpriteClass);
   }
   const classAttribute = classList.length > 0 ? `class="${classList.join(' ')}"` : '';
-  const fallbackSpriteAttribute = opts.sprite ? `data-fallback-sprite-class="${fallbackSpriteClass}"` : '';
+  const fallbackSpriteAttribute = opts.sprite
+    ? `data-fallback-sprite-class="${fallbackSpriteClass}"`
+    : '';
   let contents = emojiInfo.moji;
   if (opts.forceFallback && !opts.sprite) {
     contents = emojiImageTag(name, fallbackImageSrc);

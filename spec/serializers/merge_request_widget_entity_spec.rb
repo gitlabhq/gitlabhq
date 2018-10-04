@@ -11,6 +11,21 @@ describe MergeRequestWidgetEntity do
     described_class.new(resource, request: request).as_json
   end
 
+  describe 'source_project_full_path' do
+    it 'includes the full path of the source project' do
+      expect(subject[:source_project_full_path]).to be_present
+    end
+
+    context 'when the source project is missing' do
+      it 'returns `nil` for the source project' do
+        resource.allow_broken = true
+        resource.update!(source_project: nil)
+
+        expect(subject[:source_project_full_path]).to be_nil
+      end
+    end
+  end
+
   describe 'pipeline' do
     let(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.source_branch, sha: resource.source_branch_sha, head_pipeline_of: resource) }
 

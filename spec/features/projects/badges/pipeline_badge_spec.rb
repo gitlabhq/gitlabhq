@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Pipeline Badge' do
+describe 'Pipeline Badge' do
   set(:project) { create(:project, :repository, :public) }
   let(:ref) { project.default_branch }
 

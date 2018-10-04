@@ -2,7 +2,7 @@ import _ from 'underscore';
 import { scaleLinear, scaleTime } from 'd3-scale';
 import { line, area, curveLinear } from 'd3-shape';
 import { extent, max, sum } from 'd3-array';
-import { timeMinute } from 'd3-time';
+import { timeMinute, timeSecond } from 'd3-time';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
 const d3 = {
@@ -14,6 +14,7 @@ const d3 = {
   extent,
   max,
   timeMinute,
+  timeSecond,
   sum,
 };
 
@@ -41,15 +42,33 @@ function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom
     } else {
       const unusedColors = _.difference(defaultColorOrder, usedColors);
       if (unusedColors.length > 0) {
-        pick = unusedColors[0];
+        [pick] = unusedColors;
       } else {
         usedColors = [];
-        pick = defaultColorOrder[0];
+        [pick] = defaultColorOrder;
       }
     }
     usedColors.push(pick);
     return defaultColorPalette[pick];
   }
+
+  function findByDate(series, time) {
+    const val = series.find(v => Math.abs(d3.timeSecond.count(time, v.time)) < 60);
+    if (val) {
+      return val.value;
+    }
+    return NaN;
+  }
+
+  // The timeseries data may have gaps in it
+  // but we need a regularly-spaced set of time/value pairs
+  // this gives us a complete range of one minute intervals
+  // offset the same amount as the original data
+  const [minX, maxX] = xDom;
+  const offset = d3.timeMinute(minX) - Number(minX);
+  const datesWithoutGaps = d3.timeSecond.every(60)
+    .range(d3.timeMinute.offset(minX, -1), maxX)
+    .map(d => d - offset);
 
   query.result.forEach((timeSeries, timeSeriesNumber) => {
     let metricTag = '';
@@ -73,7 +92,7 @@ function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom
     timeSeriesScaleX.ticks(d3.timeMinute, 60);
     timeSeriesScaleY.domain(yDom);
 
-    const defined = d => !isNaN(d.value) && d.value != null;
+    const defined = d => !Number.isNaN(d.value) && d.value != null;
 
     const lineFunction = d3
       .line()
@@ -119,10 +138,16 @@ function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom
       });
     }
 
+    const values = datesWithoutGaps.map(time => ({
+      time,
+      value: findByDate(timeSeries.values, time),
+    }));
+
     timeSeriesParsed.push({
-      linePath: lineFunction(timeSeries.values),
-      areaPath: areaFunction(timeSeries.values),
+      linePath: lineFunction(values),
+      areaPath: areaFunction(values),
       timeSeriesScaleX,
+      timeSeriesScaleY,
       values: timeSeries.values,
       max: maximumValue,
       average: accum / timeSeries.values.length,

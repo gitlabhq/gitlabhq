@@ -2,8 +2,9 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %a.close{ href: "#", "data-dismiss" => "modal" } ×
-        %h3 Import projects from GitLab.com
+        %h3.modal-title Import projects from GitLab.com
+        %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
+          %span{ "aria-hidden": true } &times;
       .modal-body
         To enable importing projects from GitLab.com,
         - if current_user.admin?

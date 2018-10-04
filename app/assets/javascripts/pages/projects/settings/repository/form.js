@@ -13,7 +13,7 @@ export default () => {
   new ProtectedTagEditList();
   initDeployKeys();
   initSettingsPanels();
-  new ProtectedBranchCreate(); // eslint-disable-line no-new
-  new ProtectedBranchEditList(); // eslint-disable-line no-new
+  new ProtectedBranchCreate();
+  new ProtectedBranchEditList();
   new DueDateSelectors();
 };

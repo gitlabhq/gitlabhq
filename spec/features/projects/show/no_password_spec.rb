@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'No Password Alert' do
+describe 'No Password Alert' do
   let(:project) { create(:project, :repository, namespace: user.namespace) }
 
   context 'with internal auth enabled' do

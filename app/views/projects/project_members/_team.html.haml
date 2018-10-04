@@ -1,17 +1,18 @@
 - project = local_assigns.fetch(:project)
 - members = local_assigns.fetch(:members)
 
-.panel.panel-default
-  .panel-heading.flex-project-members-panel
+.card
+  .card-header.flex-project-members-panel
     %span.flex-project-title
       Members of
       %strong= project.name
-    %span.badge= members.total_count
+    %span.badge.badge-pill= members.total_count
     = form_tag project_project_members_path(project), method: :get, class: 'form-inline member-search-form flex-project-members-form'  do
       .form-group
-        = search_field_tag :search, params[:search], { placeholder: 'Find existing members by name', class: 'form-control', spellcheck: false }
-        %button.member-search-btn{ type: "submit", "aria-label" => "Submit search" }
-          = icon("search")
+        .position-relative
+          = search_field_tag :search, params[:search], { placeholder: 'Find existing members by name', class: 'form-control', spellcheck: false }
+          %button.member-search-btn{ type: "submit", "aria-label" => "Submit search" }
+            = icon("search")
         = render 'shared/members/sort_dropdown'
   %ul.content-list.members-list
     = render partial: 'shared/members/member', collection: members, as: :member

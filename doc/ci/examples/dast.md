@@ -42,9 +42,9 @@ dast:
   allow_failure: true
   script:
     - mkdir /zap/wrk/
-    - /zap/zap-baseline.py -J gl-dast-report.json -t $website \
-        --auth-url $login_url \
-        --auth-username "john.doe@example.com" \
+    - /zap/zap-baseline.py -J gl-dast-report.json -t $website
+        --auth-url $login_url
+        --auth-username "john.doe@example.com"
         --auth-password "john-doe-password" || true
     - cp /zap/wrk/gl-dast-report.json .
   artifacts:
@@ -60,4 +60,4 @@ so, the CI job must be named `dast` and the artifact path must be
 `gl-dast-report.json`.
 [Learn more about DAST results shown in merge requests](https://docs.gitlab.com/ee/user/project/merge_requests/dast.html).
 
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/

@@ -1,6 +1,5 @@
 <script>
 import { mapState } from 'vuex';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import BadgeListRow from './badge_list_row.vue';
 import { GROUP_BADGE } from '../constants';
 
@@ -8,7 +7,6 @@ export default {
   name: 'BadgeList',
   components: {
     BadgeListRow,
-    LoadingIcon,
   },
   computed: {
     ...mapState(['badges', 'isLoading', 'kind']),
@@ -23,29 +21,29 @@ export default {
 </script>
 
 <template>
-  <div class="panel panel-default">
-    <div class="panel-heading">
+  <div class="card">
+    <div class="card-header">
       {{ s__('Badges|Your badges') }}
       <span
         v-show="!isLoading"
-        class="badge"
+        class="badge badge-pill"
       >{{ badges.length }}</span>
     </div>
-    <loading-icon
+    <gl-loading-icon
       v-show="isLoading"
-      class="panel-body"
-      size="2"
+      :size="2"
+      class="card-body"
     />
     <div
       v-if="hasNoBadges"
-      class="panel-body"
+      class="card-body"
     >
       <span v-if="isGroupBadge">{{ s__('Badges|This group has no badges') }}</span>
       <span v-else>{{ s__('Badges|This project has no badges') }}</span>
     </div>
     <div
       v-else
-      class="panel-body"
+      class="card-body"
     >
       <badge-list-row
         v-for="badge in badges"

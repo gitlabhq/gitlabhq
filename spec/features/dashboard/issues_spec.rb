@@ -12,7 +12,7 @@ RSpec.describe 'Dashboard Issues' do
   let!(:other_issue) { create :issue, project: project }
 
   before do
-    [project, project_with_issues_disabled].each { |project| project.add_master(current_user) }
+    [project, project_with_issues_disabled].each { |project| project.add_maintainer(current_user) }
     sign_in(current_user)
     visit issues_dashboard_path(assignee_id: current_user.id)
   end
@@ -56,8 +56,8 @@ RSpec.describe 'Dashboard Issues' do
       expect(page).to have_current_path(issues_dashboard_url(assignee_id: current_user.id, state: 'closed'), url: true)
     end
 
-    it_behaves_like "it has an RSS button with current_user's RSS token"
-    it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token"
+    it_behaves_like "it has an RSS button with current_user's feed token"
+    it_behaves_like "an autodiscoverable RSS feed with current_user's feed token"
   end
 
   describe 'new issue dropdown' do

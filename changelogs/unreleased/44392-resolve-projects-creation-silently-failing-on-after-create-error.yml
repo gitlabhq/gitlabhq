@@ -1,5 +1,0 @@
----
-title: Project creation will now raise an error if a service template is invalid
-merge_request: 18013
-author:
-type: fixed

@@ -11,6 +11,7 @@ module Gitlab
       lib/gitlab/etag_caching/
       lib/gitlab/metrics/
       lib/gitlab/middleware/
+      ee/lib/gitlab/middleware/
       lib/gitlab/performance_bar/
       lib/gitlab/request_profiler/
       lib/gitlab/profiler.rb
@@ -33,6 +34,7 @@ module Gitlab
     #
     # - private_token: instead of providing a user instance, the token can be
     #   given as a string. Takes precedence over the user option.
+    # rubocop: disable CodeReuse/ActiveRecord
     def self.profile(url, logger: nil, post_data: nil, user: nil, private_token: nil)
       app = ActionDispatch::Integration::Session.new(Rails.application)
       verb = :get
@@ -75,6 +77,7 @@ module Gitlab
 
       result
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def self.create_custom_logger(logger, private_token: nil)
       return unless logger
@@ -98,17 +101,19 @@ module Gitlab
 
             super
 
-            backtrace = Rails.backtrace_cleaner.clean(caller)
-
-            backtrace.each do |caller_line|
-              next if caller_line.match(Regexp.union(IGNORE_BACKTRACES))
-
+            Gitlab::Profiler.clean_backtrace(caller).each do |caller_line|
               stripped_caller_line = caller_line.sub("#{Rails.root}/", '')
 
               super("  ↳ #{stripped_caller_line}")
             end
           end
         end
+      end
+    end
+
+    def self.clean_backtrace(backtrace)
+      Array(Rails.backtrace_cleaner.clean(backtrace)).reject do |line|
+        line.match(Regexp.union(IGNORE_BACKTRACES))
       end
     end
 
@@ -132,6 +137,7 @@ module Gitlab
       result
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def self.log_load_times_by_model(logger)
       return unless logger.respond_to?(:load_times_by_model)
 
@@ -142,6 +148,13 @@ module Gitlab
       summarised_load_times.sort_by(&:last).reverse.each do |(model, query_count, time)|
         logger.info("#{model} total (#{query_count}): #{time.round(2)}ms")
       end
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    def self.print_by_total_time(result, options = {})
+      default_options = { sort_method: :total_time }
+
+      Gitlab::Profiler::TotalTimeFlatPrinter.new(result).print(STDOUT, default_options.merge(options))
     end
   end
 end

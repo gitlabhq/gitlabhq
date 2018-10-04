@@ -46,7 +46,9 @@ describe Backup::Files do
       end
 
       it 'calls tar command with unlink' do
-        expect(subject).to receive(:run_pipeline!).with([%w(gzip -cd), %w(tar --unlink-first --recursive-unlink -C /var/gitlab-registry -xf -)], any_args)
+        expect(subject).to receive(:tar).and_return('blabla-tar')
+
+        expect(subject).to receive(:run_pipeline!).with([%w(gzip -cd), %w(blabla-tar --unlink-first --recursive-unlink -C /var/gitlab-registry -xf -)], any_args)
         subject.restore
       end
     end
@@ -60,6 +62,20 @@ describe Backup::Files do
       it 'shows error message' do
         expect(subject).to receive(:access_denied_error).with("/var/gitlab-registry")
         subject.restore
+      end
+    end
+
+    describe 'folders that are a mountpoint' do
+      before do
+        allow(FileUtils).to receive(:mv).and_raise(Errno::EBUSY)
+        allow(subject).to receive(:run_pipeline!).and_return(true)
+      end
+
+      it 'shows error message' do
+        expect(subject).to receive(:resource_busy_error).with("/var/gitlab-registry")
+                             .and_call_original
+
+        expect { subject.restore }.to raise_error(/is a mountpoint/)
       end
     end
   end

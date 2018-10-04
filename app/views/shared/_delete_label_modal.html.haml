@@ -2,8 +2,9 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %button.close{ data: {dismiss: 'modal' } } &times;
         %h3.page-title Delete #{render_colored_label(label, tooltip: false)} ?
+        %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
+          %span{ "aria-hidden": true } &times;
 
       .modal-body
         %p

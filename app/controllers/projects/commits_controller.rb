@@ -1,15 +1,23 @@
+# frozen_string_literal: true
+
 require "base64"
 
 class Projects::CommitsController < Projects::ApplicationController
   include ExtractsPath
   include RendersCommits
 
-  before_action :whitelist_query_limiting
+  before_action :whitelist_query_limiting, except: :commits_root
   before_action :require_non_empty_project
-  before_action :assign_ref_vars
+  before_action :assign_ref_vars, except: :commits_root
   before_action :authorize_download_code!
-  before_action :set_commits
+  before_action :set_commits, except: :commits_root
+  before_action :set_request_format, only: :show
 
+  def commits_root
+    redirect_to project_commits_path(@project, @project.default_branch)
+  end
+
+  # rubocop: disable CodeReuse/ActiveRecord
   def show
     @merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened
       .find_by(source_project: @project, source_branch: @ref, target_branch: @repository.root_ref)
@@ -27,6 +35,7 @@ class Projects::CommitsController < Projects::ApplicationController
       end
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def signatures
     respond_to do |format|
@@ -58,7 +67,20 @@ class Projects::CommitsController < Projects::ApplicationController
       end
 
     @commits = @commits.with_pipeline_status
-    @commits = prepare_commits_for_rendering(@commits)
+    @commits = set_commits_for_rendering(@commits)
+  end
+
+  # Rails 5 sets request.format from the extension.
+  # Explicitly set to :html.
+  def set_request_format
+    request.format = :html if set_request_format?
+  end
+
+  # Rails 5 sets request.format from extension.
+  # In this case if the ref ends with `.atom`, it's expected to be the html response,
+  # not the atom one. So explicitly set request.format as :html to act like rails4.
+  def set_request_format?
+    request.format.to_s == "text/html" || @commits.ref.ends_with?("atom")
   end
 
   def whitelist_query_limiting

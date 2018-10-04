@@ -3,18 +3,20 @@ require 'spec_helper'
 describe 'User updates wiki page' do
   shared_examples 'wiki page user update' do
     let(:user) { create(:user) }
+
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
     end
 
     context 'when wiki is empty' do
       before do
         visit(project_wikis_path(project))
+        click_link "Create your first page"
       end
 
       context 'in a user namespace' do
-        let(:project) { create(:project, namespace: user.namespace) }
+        let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
 
         it 'redirects back to the home edit page' do
           page.within(:css, '.wiki-form .form-actions') do
@@ -54,6 +56,8 @@ describe 'User updates wiki page' do
 
           expect(page).to have_content('Updated Wiki Content')
         end
+
+        it_behaves_like 'wiki file attachments'
       end
     end
 
@@ -63,14 +67,14 @@ describe 'User updates wiki page' do
 
       before do
         visit(project_wikis_path(project))
+
+        click_link('Edit')
       end
 
       context 'in a user namespace' do
-        let(:project) { create(:project, namespace: user.namespace) }
+        let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
 
         it 'updates a page' do
-          click_link('Edit')
-
           # Commit message field should have correct value.
           expect(page).to have_field('wiki[message]', with: 'Update home')
 
@@ -83,8 +87,6 @@ describe 'User updates wiki page' do
         end
 
         it 'shows a validation error message' do
-          click_link('Edit')
-
           fill_in(:wiki_content, with: '')
           click_button('Save changes')
 
@@ -95,18 +97,14 @@ describe 'User updates wiki page' do
           expect(find('textarea#wiki_content').value).to eq('')
         end
 
-        it 'shows the autocompletion dropdown', :js do
-          click_link('Edit')
-
+        it 'shows the emoji autocompletion dropdown', :js do
           find('#wiki_content').native.send_keys('')
-          fill_in(:wiki_content, with: '@')
+          fill_in(:wiki_content, with: ':')
 
           expect(page).to have_selector('.atwho-view')
         end
 
         it 'shows the error message' do
-          click_link('Edit')
-
           wiki_page.update(content: 'Update')
 
           click_button('Save changes')
@@ -115,30 +113,27 @@ describe 'User updates wiki page' do
         end
 
         it 'updates a page' do
-          click_on('Edit')
           fill_in('Content', with: 'Updated Wiki Content')
           click_on('Save changes')
 
           expect(page).to have_content('Updated Wiki Content')
         end
 
-        it 'cancels edititng of a page' do
-          click_on('Edit')
-
+        it 'cancels editing of a page' do
           page.within(:css, '.wiki-form .form-actions') do
             click_on('Cancel')
           end
 
           expect(current_path).to eq(project_wiki_path(project, wiki_page))
         end
+
+        it_behaves_like 'wiki file attachments'
       end
 
       context 'in a group namespace' do
-        let(:project) { create(:project, namespace: create(:group, :public)) }
+        let(:project) { create(:project, :wiki_repo, namespace: create(:group, :public)) }
 
         it 'updates a page' do
-          click_link('Edit')
-
           # Commit message field should have correct value.
           expect(page).to have_field('wiki[message]', with: 'Update home')
 
@@ -150,11 +145,13 @@ describe 'User updates wiki page' do
           expect(page).to have_content("Last edited by #{user.name}")
           expect(page).to have_content('My awesome wiki!')
         end
+
+        it_behaves_like 'wiki file attachments'
       end
     end
 
     context 'when the page is in a subdir' do
-      let!(:project) { create(:project, namespace: user.namespace) }
+      let!(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
       let(:project_wiki) { create(:project_wiki, project: project, user: project.creator) }
       let(:page_name) { 'page_name' }
       let(:page_dir) { "foo/bar/#{page_name}" }
@@ -221,6 +218,8 @@ describe 'User updates wiki page' do
 
         expect(current_path).to eq(project_wiki_path(project, "foo1/bar1/#{page_name}"))
       end
+
+      it_behaves_like 'wiki file attachments'
     end
   end
 

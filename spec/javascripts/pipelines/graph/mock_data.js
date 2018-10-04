@@ -13,14 +13,14 @@ export default {
   path: '/root/ci-mock/pipelines/123',
   details: {
     status: {
-      icon: 'icon_status_success',
+      icon: 'status_success',
       text: 'passed',
       label: 'passed',
       group: 'success',
       has_details: true,
       details_path: '/root/ci-mock/pipelines/123',
       favicon:
-        '/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico',
+        '/assets/ci_favicons/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.png',
     },
     duration: 9,
     finished_at: '2017-04-19T14:30:27.542Z',
@@ -33,14 +33,14 @@ export default {
             name: 'test',
             size: 1,
             status: {
-              icon: 'icon_status_success',
+              icon: 'status_success',
               text: 'passed',
               label: 'passed',
               group: 'success',
               has_details: true,
               details_path: '/root/ci-mock/builds/4153',
               favicon:
-                '/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico',
+                '/assets/ci_favicons/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.png',
               action: {
                 icon: 'retry',
                 title: 'Retry',
@@ -58,14 +58,14 @@ export default {
                 created_at: '2017-04-13T09:25:18.959Z',
                 updated_at: '2017-04-13T09:25:23.118Z',
                 status: {
-                  icon: 'icon_status_success',
+                  icon: 'status_success',
                   text: 'passed',
                   label: 'passed',
                   group: 'success',
                   has_details: true,
                   details_path: '/root/ci-mock/builds/4153',
                   favicon:
-                    '/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico',
+                    '/assets/ci_favicons/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.png',
                   action: {
                     icon: 'retry',
                     title: 'Retry',
@@ -78,34 +78,34 @@ export default {
           },
         ],
         status: {
-          icon: 'icon_status_success',
+          icon: 'status_success',
           text: 'passed',
           label: 'passed',
           group: 'success',
           has_details: true,
           details_path: '/root/ci-mock/pipelines/123#test',
           favicon:
-            '/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico',
+            '/assets/ci_favicons/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.png',
         },
         path: '/root/ci-mock/pipelines/123#test',
         dropdown_path: '/root/ci-mock/pipelines/123/stage.json?stage=test',
       },
       {
-        name: 'deploy',
+        name: 'deploy <img src=x onerror=alert(document.domain)>',
         title: 'deploy: passed',
         groups: [
           {
             name: 'deploy to production',
             size: 1,
             status: {
-              icon: 'icon_status_success',
+              icon: 'status_success',
               text: 'passed',
               label: 'passed',
               group: 'success',
               has_details: true,
               details_path: '/root/ci-mock/builds/4166',
               favicon:
-                '/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico',
+                '/assets/ci_favicons/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.png',
               action: {
                 icon: 'retry',
                 title: 'Retry',
@@ -123,14 +123,14 @@ export default {
                 created_at: '2017-04-19T14:29:46.463Z',
                 updated_at: '2017-04-19T14:30:27.498Z',
                 status: {
-                  icon: 'icon_status_success',
+                  icon: 'status_success',
                   text: 'passed',
                   label: 'passed',
                   group: 'success',
                   has_details: true,
                   details_path: '/root/ci-mock/builds/4166',
                   favicon:
-                    '/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico',
+                    '/assets/ci_favicons/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.png',
                   action: {
                     icon: 'retry',
                     title: 'Retry',
@@ -145,14 +145,14 @@ export default {
             name: 'deploy to staging',
             size: 1,
             status: {
-              icon: 'icon_status_success',
+              icon: 'status_success',
               text: 'passed',
               label: 'passed',
               group: 'success',
               has_details: true,
               details_path: '/root/ci-mock/builds/4159',
               favicon:
-                '/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico',
+                '/assets/ci_favicons/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.png',
               action: {
                 icon: 'retry',
                 title: 'Retry',
@@ -170,14 +170,14 @@ export default {
                 created_at: '2017-04-18T16:32:08.420Z',
                 updated_at: '2017-04-18T16:32:12.631Z',
                 status: {
-                  icon: 'icon_status_success',
+                  icon: 'status_success',
                   text: 'passed',
                   label: 'passed',
                   group: 'success',
                   has_details: true,
                   details_path: '/root/ci-mock/builds/4159',
                   favicon:
-                    '/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico',
+                    '/assets/ci_favicons/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.png',
                   action: {
                     icon: 'retry',
                     title: 'Retry',
@@ -190,14 +190,14 @@ export default {
           },
         ],
         status: {
-          icon: 'icon_status_success',
+          icon: 'status_success',
           text: 'passed',
           label: 'passed',
           group: 'success',
           has_details: true,
           details_path: '/root/ci-mock/pipelines/123#deploy',
           favicon:
-            '/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico',
+            '/assets/ci_favicons/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.png',
         },
         path: '/root/ci-mock/pipelines/123#deploy',
         dropdown_path: '/root/ci-mock/pipelines/123/stage.json?stage=deploy',

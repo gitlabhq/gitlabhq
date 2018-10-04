@@ -9,6 +9,8 @@ const getStagedFiles = require('./frontend_script_utils').getStagedFiles;
 const mode = process.argv[2] || 'check';
 const shouldSave = mode === 'save' || mode === 'save-all';
 const allFiles = mode === 'check-all' || mode === 'save-all';
+let dirPath = process.argv[3] || '';
+if (dirPath && dirPath.charAt(dirPath.length - 1) !== '/') dirPath += '/';
 
 const config = {
   patterns: ['**/*.js', '**/*.vue', '**/*.scss'],
@@ -39,14 +41,15 @@ prettierIgnore.add(
 
 const availableExtensions = Object.keys(config.parsers);
 
-console.log(`Loading ${allFiles ? 'All' : 'Staged'} Files ...`);
+console.log(`Loading ${allFiles ? 'All' : 'Selected'} Files ...`);
 
-const stagedFiles = allFiles ? null : getStagedFiles(availableExtensions.map(ext => `*.${ext}`));
+const stagedFiles =
+  allFiles || dirPath ? null : getStagedFiles(availableExtensions.map(ext => `*.${ext}`));
 
 if (stagedFiles) {
   if (!stagedFiles.length || (stagedFiles.length === 1 && !stagedFiles[0])) {
     console.log('No matching staged files.');
-    return;
+    process.exit(1);
   }
   console.log(`Matching staged Files : ${stagedFiles.length}`);
 }
@@ -60,6 +63,13 @@ if (allFiles) {
   const patterns = config.patterns;
   const globPattern = patterns.length > 1 ? `{${patterns.join(',')}}` : `${patterns.join(',')}`;
   files = glob.sync(globPattern, { ignore }).filter(f => allFiles || stagedFiles.includes(f));
+} else if (dirPath) {
+  const ignore = config.ignore;
+  const patterns = config.patterns.map(item => {
+    return dirPath + item;
+  });
+  const globPattern = patterns.length > 1 ? `{${patterns.join(',')}}` : `${patterns.join(',')}`;
+  files = glob.sync(globPattern, { ignore });
 } else {
   files = stagedFiles.filter(f => availableExtensions.includes(f.split('.').pop()));
 }
@@ -68,17 +78,16 @@ files = prettierIgnore.filter(files);
 
 if (!files.length) {
   console.log('No Files found to process with Prettier');
-  return;
+  process.exit(1);
 }
 
 console.log(`${shouldSave ? 'Updating' : 'Checking'} ${files.length} file(s)`);
 
-prettier
-  .resolveConfig('.')
-  .then(options => {
-    console.log('Found options : ', options);
-    files.forEach(file => {
-      try {
+files.forEach(file => {
+  try {
+    prettier
+      .resolveConfig(file)
+      .then(options => {
         const fileExtension = file.split('.').pop();
         Object.assign(options, {
           parser: config.parsers[fileExtension],
@@ -101,17 +110,17 @@ prettier
           }
           console.log(`Prettify Manually : ${file}`);
         }
-      } catch (error) {
-        didError = true;
-        console.log(`\n\nError with ${file}: ${error.message}`);
-      }
-    });
+      })
+      .catch(e => {
+        console.log(`Error on loading the Config File: ${e.message}`);
+        process.exit(1);
+      });
+  } catch (error) {
+    didError = true;
+    console.log(`\n\nError with ${file}: ${error.message}`);
+  }
+});
 
-    if (didWarn || didError) {
-      process.exit(1);
-    }
-  })
-  .catch(e => {
-    console.log(`Error on loading the Config File: ${e.message}`);
-    process.exit(1);
-  });
+if (didWarn || didError) {
+  process.exit(1);
+}

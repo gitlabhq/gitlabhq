@@ -19,7 +19,7 @@ GitHub will generate an application ID and secret key for you to use.
     - Application name: This can be anything. Consider something like `<Organization>'s GitLab` or `<Your Name>'s GitLab` or something else descriptive.
     - Homepage URL: The URL to your GitLab installation. 'https://gitlab.company.com'
     - Application description: Fill this in if you wish.
-    - Authorization callback URL is 'http(s)://${YOUR_DOMAIN}'. Please make sure the port is included if your Gitlab instance is not configured on default port.
+    - Authorization callback URL is 'http(s)://${YOUR_DOMAIN}'. Please make sure the port is included if your GitLab instance is not configured on default port.
 1.  Select "Register application".
 
 1.  You should now see a Client ID and Client Secret near the top right of the page (see screenshot).
@@ -69,7 +69,7 @@ GitHub will generate an application ID and secret key for you to use.
           "name" => "github",
           "app_id" => "YOUR_APP_ID",
           "app_secret" => "YOUR_APP_SECRET",
-          "url" => "https://github.com/",
+          "url" => "https://github.example.com/",
           "args" => { "scope" => "user:email" }
         }
       ]
@@ -110,7 +110,7 @@ On the sign in page there should now be a GitHub icon below the regular sign in 
 Click the icon to begin the authentication process. GitHub will ask the user to sign in and authorize the GitLab application.
 If everything goes well the user will be returned to GitLab and will be signed in.
 
-### GitHub Enterprise with Self-Signed Certificate
+## GitHub Enterprise with self-signed Certificate
 
 If you are attempting to import projects from GitHub Enterprise with a self-signed
 certificate and the imports are failing, you will need to disable SSL verification.
@@ -125,7 +125,7 @@ For omnibus package:
       "name" => "github",
       "app_id" => "YOUR_APP_ID",
       "app_secret" => "YOUR_APP_SECRET",
-      "url" => "https://github.com/",
+      "url" => "https://github.example.com/",
       "verify_ssl" => false,
       "args" => { "scope" => "user:email" }
     }
@@ -154,7 +154,7 @@ You will also need to disable Git SSL verification on the server hosting GitLab.
 $ git config --global http.sslVerify false
 ```
 
-For the changes to take effect, [reconfigure Gitlab] if you installed
+For the changes to take effect, [reconfigure GitLab] if you installed
 via Omnibus, or [restart GitLab] if you installed from source.
 
 [reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure

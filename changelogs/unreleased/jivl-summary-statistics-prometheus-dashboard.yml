@@ -1,5 +1,0 @@
----
-title: Add average and maximum summary statistics to the prometheus dashboard
-merge_request: 17921
-author:
-type: changed

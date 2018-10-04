@@ -92,6 +92,30 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     end
   end
 
+  describe '#kubeclient' do
+    subject { kubernetes.kubeclient }
+
+    let(:kubernetes) { build(:cluster_platform_kubernetes, :configured, namespace: 'a-namespace') }
+
+    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::KubeClient) }
+  end
+
+  describe '#rbac?' do
+    subject { kubernetes.rbac? }
+
+    let(:kubernetes) { build(:cluster_platform_kubernetes, :configured) }
+
+    context 'when authorization type is rbac' do
+      let(:kubernetes) { build(:cluster_platform_kubernetes, :rbac_enabled, :configured) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when authorization type is nil' do
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#actual_namespace' do
     subject { kubernetes.actual_namespace }
 
@@ -239,17 +263,19 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
       it { is_expected.to be_nil }
     end
 
-    context 'when kubernetes responds with valid pods' do
+    context 'when kubernetes responds with valid pods and deployments' do
       before do
         stub_kubeclient_pods
+        stub_kubeclient_deployments
       end
 
-      it { is_expected.to eq(pods: [kube_pod]) }
+      it { is_expected.to include(pods: [kube_pod]) }
     end
 
     context 'when kubernetes responds with 500s' do
       before do
         stub_kubeclient_pods(status: 500)
+        stub_kubeclient_deployments(status: 500)
       end
 
       it { expect { subject }.to raise_error(Kubeclient::HttpError) }
@@ -258,9 +284,10 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     context 'when kubernetes responds with 404s' do
       before do
         stub_kubeclient_pods(status: 404)
+        stub_kubeclient_deployments(status: 404)
       end
 
-      it { is_expected.to eq(pods: []) }
+      it { is_expected.to include(pods: []) }
     end
   end
 end

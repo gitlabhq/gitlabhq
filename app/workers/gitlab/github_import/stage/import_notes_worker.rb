@@ -18,7 +18,7 @@ module Gitlab
           AdvanceStageWorker.perform_async(
             project.id,
             { waiter.key => waiter.jobs_remaining },
-            :finish
+            :lfs_objects
           )
         end
       end

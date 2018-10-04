@@ -61,11 +61,12 @@ git commit -am "Added Debian iso"     # commit the file meta data
 git push origin master                # sync the git repo and large file to the GitLab server
 ```
 
->**Note**: Make sure that `.gitattributes` is tracked by git. Otherwise Git
- LFS will not be working properly for people cloning the project.
- ```bash
- git add .gitattributes
- ```
+> **Note**: Make sure that `.gitattributes` is tracked by git. Otherwise Git
+> LFS will not be working properly for people cloning the project.
+>
+> ```bash
+> git add .gitattributes
+> ```
 
 Cloning the repository works the same as before. Git automatically detects the
 LFS-tracked files and clones them via HTTP. If you performed the git clone
@@ -77,10 +78,10 @@ git clone git@gitlab.example.com:group/project.git
 ```
 
 If you already cloned the repository and you want to get the latest LFS object
-that are on the remote repository, eg. from branch `master`:
+that are on the remote repository, eg. for a branch from origin:
 
 ```bash
-git lfs fetch master
+git lfs fetch origin master
 ```
 
 ## File Locking
@@ -144,7 +145,7 @@ git lfs unlock --id=123
 ```
 
 If for some reason you need to unlock a file that was not locked by you,
-you can use the `--force` flag as long as you have a `master` access on
+you can use the `--force` flag as long as you have a `maintainer` access on
 the project:
 
 ```bash
@@ -243,4 +244,12 @@ GitLab checks files to detect LFS pointers on push. If LFS pointers are detected
 
 Verify that LFS in installed locally and consider a manual push with `git lfs push --all`.
 
-If you are storing LFS files outside of GitLab you can disable LFS on the project by settting `lfs_enabled: false` with the [projects api](../../api/projects.md#edit-project).
+If you are storing LFS files outside of GitLab you can disable LFS on the project by setting `lfs_enabled: false` with the [projects api](../../api/projects.md#edit-project).
+
+### Hosting LFS objects externally
+
+It is possible to host LFS objects externally by setting a custom LFS url with `git config -f .lfsconfig lfs.url https://example.com/<project>.git/info/lfs`.
+
+Because GitLab verifies the existence of objects referenced by LFS pointers, push will fail when LFS is enabled for the project.
+
+LFS can be disabled from the [Project settings](../../user/project/settings/index.md).

@@ -11,11 +11,15 @@ Get a list of specific runners available to the user.
 ```
 GET /runners
 GET /runners?scope=active
+GET /runners?type=project_type
+GET /runners?status=active
 ```
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `scope`   | string  | no       | The scope of specific runners to show, one of: `active`, `paused`, `online`; showing all runners if none provided |
+| `scope`   | string  | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
+| `type`    | string  | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
+| `status`  | string  | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
 
 ```
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/runners"
@@ -30,6 +34,7 @@ Example response:
         "description": "test-1-20150125",
         "id": 6,
         "is_shared": false,
+        "ip_address": "127.0.0.1",
         "name": null,
         "online": true,
         "status": "online"
@@ -38,6 +43,7 @@ Example response:
         "active": true,
         "description": "test-2-20150125",
         "id": 8,
+        "ip_address": "127.0.0.1",
         "is_shared": false,
         "name": null,
         "online": false,
@@ -54,11 +60,15 @@ is restricted to users with `admin` privileges.
 ```
 GET /runners/all
 GET /runners/all?scope=online
+GET /runners/all?type=project_type
+GET /runners/all?status=active
 ```
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `scope`   | string  | no       | The scope of runners to show, one of: `specific`, `shared`, `active`, `paused`, `online`; showing all runners if none provided |
+| `scope`   | string  | no       | Deprecated: Use `type` or `status` instead. The scope of runners to show, one of: `specific`, `shared`, `active`, `paused`, `online`, `offline`; showing all runners if none provided |
+| `type`    | string  | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
+| `status`  | string  | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
 
 ```
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/runners/all"
@@ -72,6 +82,7 @@ Example response:
         "active": true,
         "description": "shared-runner-1",
         "id": 1,
+        "ip_address": "127.0.0.1",
         "is_shared": true,
         "name": null,
         "online": true,
@@ -81,6 +92,7 @@ Example response:
         "active": true,
         "description": "shared-runner-2",
         "id": 3,
+        "ip_address": "127.0.0.1",
         "is_shared": true,
         "name": null,
         "online": false
@@ -90,6 +102,7 @@ Example response:
         "active": true,
         "description": "test-1-20150125",
         "id": 6,
+        "ip_address": "127.0.0.1",
         "is_shared": false,
         "name": null,
         "online": true
@@ -99,6 +112,7 @@ Example response:
         "active": true,
         "description": "test-2-20150125",
         "id": 8,
+        "ip_address": "127.0.0.1",
         "is_shared": false,
         "name": null,
         "online": false,
@@ -131,6 +145,7 @@ Example response:
     "architecture": null,
     "description": "test-1-20150125",
     "id": 6,
+    "ip_address": "127.0.0.1",
     "is_shared": false,
     "contacted_at": "2016-01-25T16:39:48.066Z",
     "name": null,
@@ -189,6 +204,7 @@ Example response:
     "architecture": null,
     "description": "test-1-20150125-test",
     "id": 6,
+    "ip_address": "127.0.0.1",
     "is_shared": false,
     "contacted_at": "2016-01-25T16:39:48.066Z",
     "name": null,
@@ -257,6 +273,7 @@ Example response:
 [
     {
         "id": 2,
+        "ip_address": "127.0.0.1",
         "status": "running",
         "stage": "test",
         "name": "test",
@@ -277,6 +294,7 @@ Example response:
             "created_at": "2017-11-16T18:38:46.000Z",
             "bio": null,
             "location": null,
+            "public_email": "",
             "skype": "",
             "linkedin": "",
             "twitter": "",
@@ -327,11 +345,17 @@ usage is enabled in the project's settings.
 
 ```
 GET /projects/:id/runners
+GET /projects/:id/runners?scope=active
+GET /projects/:id/runners?type=project_type
+GET /projects/:id/runners?status=active
 ```
 
-| Attribute | Type    | Required | Description         |
-|-----------|---------|----------|---------------------|
+| Attribute | Type           | Required | Description         |
+|-----------|----------------|----------|---------------------|
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `scope`   | string         | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
+| `type`    | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
+| `status`  | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
 
 ```
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/9/runners"
@@ -345,6 +369,7 @@ Example response:
         "active": true,
         "description": "test-2-20150125",
         "id": 8,
+        "ip_address": "127.0.0.1",
         "is_shared": false,
         "name": null,
         "online": false,
@@ -354,6 +379,7 @@ Example response:
         "active": true,
         "description": "development_runner",
         "id": 5,
+        "ip_address": "127.0.0.1",
         "is_shared": true,
         "name": null,
         "online": true
@@ -386,6 +412,7 @@ Example response:
     "active": true,
     "description": "test-2016-02-01",
     "id": 9,
+    "ip_address": "127.0.0.1",
     "is_shared": false,
     "name": null,
     "online": true,
@@ -411,3 +438,86 @@ DELETE /projects/:id/runners/:runner_id
 ```
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/9/runners/9"
 ```
+
+## Register a new Runner
+
+Register a new Runner for the instance.
+
+```
+POST /runners
+```
+
+| Attribute   | Type    | Required | Description         |
+|-------------|---------|----------|---------------------|
+| `token`     | string  | yes      | Registration token ([Read how to obtain a token](../ci/runners/README.md)) |
+| `description`| string | no       | Runner's description|
+| `info`       | hash   | no       | Runner's metadata   |
+| `active`     | boolean| no       | Whether the Runner is active   |
+| `locked`     | boolean| no       | Whether the Runner should be locked for current project |
+| `run_untagged` | boolean | no | Whether the Runner should handle untagged jobs |
+| `tag_list` | Array[String] | no | List of Runner's tags |
+| `maximum_timeout` | integer | no | Maximum timeout set when this Runner will handle the job |
+
+```
+curl --request POST "https://gitlab.example.com/api/v4/runners" --form "token=ipzXrMhuyyJPifUt6ANz" --form "description=test-1-20150125-test" --form "tag_list=ruby,mysql,tag1,tag2"
+```
+
+Response:
+
+| Status    | Description                     |
+|-----------|---------------------------------|
+| 201       | Runner was created              |
+
+Example response:
+
+```json
+{
+    "id": "12345",
+    "token": "6337ff461c94fd3fa32ba3b1ff4125"
+}
+```
+
+## Delete a registered Runner
+
+Deletes a registed Runner.
+
+```
+DELETE /runners
+```
+
+| Attribute   | Type    | Required | Description         |
+|-------------|---------|----------|---------------------|
+| `token`     | string  | yes      | Runner's authentication token  |
+
+```
+curl --request DELETE "https://gitlab.example.com/api/v4/runners" --form "token=ebb6fc00521627750c8bb750f2490e"
+```
+
+Response:
+
+| Status    | Description                     |
+|-----------|---------------------------------|
+| 204       | Runner was deleted              |
+
+## Verify authentication for a registered Runner
+
+Validates authentication credentials for a registered Runner.
+
+```
+POST /runners/verify
+```
+
+| Attribute   | Type    | Required | Description         |
+|-------------|---------|----------|---------------------|
+| `token`     | string  | yes      | Runner's authentication token  |
+
+```
+curl --request POST "https://gitlab.example.com/api/v4/runners/verify" --form "token=ebb6fc00521627750c8bb750f2490e"
+```
+
+Response:
+
+| Status    | Description                     |
+|-----------|---------------------------------|
+| 200       | Credentials are valid           |
+| 403       | Credentials are invalid         |

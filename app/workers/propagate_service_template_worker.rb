@@ -1,14 +1,18 @@
+# frozen_string_literal: true
+
 # Worker for updating any project specific caches.
 class PropagateServiceTemplateWorker
   include ApplicationWorker
 
   LEASE_TIMEOUT = 4.hours.to_i
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform(template_id)
     return unless try_obtain_lease_for(template_id)
 
     Projects::PropagateServiceTemplate.propagate(Service.find_by(id: template_id))
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 

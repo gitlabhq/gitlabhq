@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class Pipeline < ActiveRecord::Base
     extend Gitlab::Ci::Model
@@ -7,13 +9,19 @@ module Ci
     include Presentable
     include Gitlab::OptimisticLocking
     include Gitlab::Utils::StrongMemoize
+    include AtomicInternalId
+    include EnumWithNil
 
     belongs_to :project, inverse_of: :pipelines
     belongs_to :user
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
     belongs_to :pipeline_schedule, class_name: 'Ci::PipelineSchedule'
 
-    has_many :stages
+    has_internal_id :iid, scope: :project, presence: false, init: ->(s) do
+      s&.project&.pipelines&.maximum(:iid) || s&.project&.pipelines&.count
+    end
+
+    has_many :stages, -> { order(position: :asc) }, inverse_of: :pipeline
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :builds, foreign_key: :commit_id, inverse_of: :pipeline
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id # rubocop:disable Cop/ActiveRecordDependent
@@ -32,18 +40,24 @@ module Ci
     has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
     has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
 
+    accepts_nested_attributes_for :variables, reject_if: :persisted?
+
     delegate :id, to: :project, prefix: true
     delegate :full_path, to: :project, prefix: true
 
-    validates :source, exclusion: { in: %w(unknown), unless: :importing? }, on: :create
     validates :sha, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
     validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
 
+    # Replace validator below with
+    # `validates :source, presence: { unless: :importing? }, on: :create`
+    # when removing Gitlab.rails5? code.
+    validate :valid_source, unless: :importing?, on: :create
+
     after_create :keep_around_commits, unless: :importing?
 
-    enum source: {
+    enum_with_nil source: {
       unknown: nil,
       push: 1,
       web: 2,
@@ -53,7 +67,7 @@ module Ci
       external: 6
     }
 
-    enum config_source: {
+    enum_with_nil config_source: {
       unknown_source: nil,
       repository_source: 1,
       auto_devops_source: 2
@@ -146,6 +160,12 @@ module Ci
         pipeline.run_after_commit do
           PipelineNotificationWorker.perform_async(pipeline.id)
         end
+      end
+
+      after_transition any => [:failed] do |pipeline|
+        next unless pipeline.auto_devops_source?
+
+        pipeline.run_after_commit { AutoDevops::DisableWorker.perform_async(pipeline.id) }
       end
     end
 
@@ -243,6 +263,20 @@ module Ci
       stage unless stage.statuses_count.zero?
     end
 
+    ##
+    # TODO We do not completely switch to persisted stages because of
+    # race conditions with setting statuses gitlab-ce#23257.
+    #
+    def ordered_stages
+      return legacy_stages unless complete?
+
+      if Feature.enabled?('ci_pipeline_persisted_stages')
+        stages
+      else
+        legacy_stages
+      end
+    end
+
     def legacy_stages
       # TODO, this needs refactoring, see gitlab-ce#26481.
 
@@ -269,19 +303,39 @@ module Ci
     end
 
     def git_author_name
-      commit.try(:author_name)
+      strong_memoize(:git_author_name) do
+        commit.try(:author_name)
+      end
     end
 
     def git_author_email
-      commit.try(:author_email)
+      strong_memoize(:git_author_email) do
+        commit.try(:author_email)
+      end
     end
 
     def git_commit_message
-      commit.try(:message)
+      strong_memoize(:git_commit_message) do
+        commit.try(:message)
+      end
     end
 
     def git_commit_title
-      commit.try(:title)
+      strong_memoize(:git_commit_title) do
+        commit.try(:title)
+      end
+    end
+
+    def git_commit_full_title
+      strong_memoize(:git_commit_full_title) do
+        commit.try(:full_title)
+      end
+    end
+
+    def git_commit_description
+      strong_memoize(:git_commit_description) do
+        commit.try(:description)
+      end
     end
 
     def short_sha
@@ -333,10 +387,12 @@ module Ci
       end
     end
 
+    # rubocop: disable CodeReuse/ServiceClass
     def retry_failed(current_user)
       Ci::RetryPipelineService.new(project, current_user)
         .execute(self)
     end
+    # rubocop: enable CodeReuse/ServiceClass
 
     def mark_as_processable_after_stage(stage_idx)
       builds.skipped.after_stage(stage_idx).find_each(&:process)
@@ -380,7 +436,18 @@ module Ci
     end
 
     def has_warnings?
-      builds.latest.failed_but_allowed.any?
+      number_of_warnings.positive?
+    end
+
+    def number_of_warnings
+      BatchLoader.for(id).batch(default_value: 0) do |pipeline_ids, loader|
+        ::Ci::Build.where(commit_id: pipeline_ids)
+          .latest
+          .failed_but_allowed
+          .group(:commit_id)
+          .count
+          .each { |id, amount| loader.call(id, amount) }
+      end
     end
 
     def set_config_source
@@ -399,7 +466,7 @@ module Ci
       return @config_processor if defined?(@config_processor)
 
       @config_processor ||= begin
-        Gitlab::Ci::YamlProcessor.new(ci_yaml_file)
+        ::Gitlab::Ci::YamlProcessor.new(ci_yaml_file, { project: project, sha: sha })
       rescue Gitlab::Ci::YamlProcessor::ValidationError => e
         self.yaml_errors = e.message
         nil
@@ -460,13 +527,16 @@ module Ci
       project.notes.for_commit_id(sha)
     end
 
+    # rubocop: disable CodeReuse/ServiceClass
     def process!
       Ci::ProcessPipelineService.new(project, user).execute(self)
     end
+    # rubocop: enable CodeReuse/ServiceClass
 
     def update_status
       retry_optimistic_lock(self) do
-        case latest_builds_status
+        case latest_builds_status.to_s
+        when 'created' then nil
         when 'pending' then enqueue
         when 'running' then run
         when 'success' then succeed
@@ -474,6 +544,9 @@ module Ci
         when 'canceled' then cancel
         when 'skipped' then skip
         when 'manual' then block
+        else
+          raise HasStatus::UnknownStatusError,
+                "Unknown status `#{latest_builds_status}`"
         end
       end
     end
@@ -486,11 +559,23 @@ module Ci
       strong_memoize(:legacy_trigger) { trigger_requests.first }
     end
 
+    def persisted_variables
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        break variables unless persisted?
+
+        variables.append(key: 'CI_PIPELINE_ID', value: id.to_s)
+        variables.append(key: 'CI_PIPELINE_URL', value: Gitlab::Routing.url_helpers.project_pipeline_url(project, self))
+      end
+    end
+
     def predefined_variables
       Gitlab::Ci::Variables::Collection.new
-        .append(key: 'CI_PIPELINE_ID', value: id.to_s)
+        .append(key: 'CI_PIPELINE_IID', value: iid.to_s)
         .append(key: 'CI_CONFIG_PATH', value: ci_yaml_file_path)
         .append(key: 'CI_PIPELINE_SOURCE', value: source.to_s)
+        .append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message.to_s)
+        .append(key: 'CI_COMMIT_TITLE', value: git_commit_full_title.to_s)
+        .append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description.to_s)
     end
 
     def queued_duration
@@ -530,6 +615,18 @@ module Ci
       @latest_builds_with_artifacts ||= builds.latest.with_artifacts_archive.to_a
     end
 
+    def has_test_reports?
+      complete? && builds.latest.with_test_reports.any?
+    end
+
+    def test_reports
+      Gitlab::Ci::Reports::TestReports.new.tap do |test_reports|
+        builds.latest.with_test_reports.each do |build|
+          build.collect_test_reports!(test_reports)
+        end
+      end
+    end
+
     private
 
     def ci_yaml_from_repo
@@ -562,8 +659,13 @@ module Ci
     def keep_around_commits
       return unless project
 
-      project.repository.keep_around(self.sha)
-      project.repository.keep_around(self.before_sha)
+      project.repository.keep_around(self.sha, self.before_sha)
+    end
+
+    def valid_source
+      if source.nil? || source == "unknown"
+        errors.add(:source, "invalid source")
+      end
     end
   end
 end

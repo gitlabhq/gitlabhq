@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ResolvableDiscussion
   extend ActiveSupport::Concern
   include ::Gitlab::Utils::StrongMemoize
@@ -102,7 +104,7 @@ module ResolvableDiscussion
     yield(notes_relation)
 
     # Set the notes array to the updated notes
-    @notes = notes_relation.fresh.auto_include(false).to_a # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    @notes = notes_relation.fresh.to_a # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
     self.class.memoized_values.each do |name|
       clear_memoization(name)

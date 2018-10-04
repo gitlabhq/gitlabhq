@@ -72,8 +72,8 @@ export default {
         :key="index"
       >
         <span
-          class="label-color"
-          :style="{ backgroundColor: label.color }">
+          :style="{ backgroundColor: label.color }"
+          class="label-color">
         </span>
         {{ label.title }}
       </li>
@@ -83,7 +83,7 @@ export default {
       right on the way to making the most of your board.
     </p>
     <button
-      class="btn btn-create btn-inverted btn-block"
+      class="btn btn-success btn-inverted btn-block"
       type="button"
       @click.stop="addDefaultLists">
       Add default lists

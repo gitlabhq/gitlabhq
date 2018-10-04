@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, no-underscore-dangle, one-var, one-var-declaration-per-line, consistent-return, dot-notation, quote-props, comma-dangle, object-shorthand, max-len, prefer-arrow-callback */
+/* eslint-disable func-names, no-var, wrap-iife, quotes, no-underscore-dangle, one-var, one-var-declaration-per-line, consistent-return, comma-dangle, max-len, prefer-arrow-callback */
 
 import $ from 'jquery';
 import { __ } from '~/locale';
@@ -49,6 +49,7 @@ MergeRequest.prototype.initTabs = function() {
   if (window.mrTabs) {
     window.mrTabs.unbindEvents();
   }
+
   window.mrTabs = new MergeRequestTabs(this.opts);
 };
 

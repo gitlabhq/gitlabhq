@@ -1,5 +1,0 @@
----
-title: Reduce complexity of issuable finder query.
-merge_request: 18219
-author:
-type: performance

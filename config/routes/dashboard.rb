@@ -1,4 +1,5 @@
 resource :dashboard, controller: 'dashboard', only: [] do
+  get :issues, action: :issues_calendar, constraints: lambda { |req| req.format == :ics }
   get :issues
   get :merge_requests
   get :activity

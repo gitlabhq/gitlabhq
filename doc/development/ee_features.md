@@ -5,7 +5,7 @@
 - **Write documentation.**: Add documentation to the `doc/` directory. Describe
   the feature and include screenshots, if applicable.
 - **Submit a MR to the `www-gitlab-com` project.**: Add the new feature to the
-  [EE features list][ee-features-list].
+  [EE features list](https://about.gitlab.com/features/).
 
 ## Act as CE when unlicensed
 
@@ -52,6 +52,9 @@ stub_licensed_features(variable_environment_scope: true)
 ```
 
 EE-specific comments should not be backported to CE.
+
+**Note:** This is only meant as a workaround, we should follow up and
+resolve this soon.
 
 ### Detection of EE-only files
 
@@ -105,11 +108,14 @@ is applied not only to models. Here's a list of other examples:
 - `ee/app/services/foo/create_service.rb`
 - `ee/app/validators/foo_attr_validator.rb`
 - `ee/app/workers/foo_worker.rb`
+- `ee/app/views/foo.html.haml`
+- `ee/app/views/foo/_bar.html.haml`
 
 This works because for every path that are present in CE's eager-load/auto-load
 paths, we add the same `ee/`-prepended path in [`config/application.rb`].
+This also applies to views.
 
-[`config/application.rb`]: https://gitlab.com/gitlab-org/gitlab-ee/blob/d278b76d6600a0e27d8019a0be27971ba23ab640/config/application.rb#L41-51
+[`config/application.rb`]: https://gitlab.com/gitlab-org/gitlab-ee/blob/925d3d4ebc7a2c72964ce97623ae41b8af12538d/config/application.rb#L42-52
 
 ### EE features based on CE features
 
@@ -160,47 +166,53 @@ There are a few gotchas with it:
   to make it call the other method we want to extend, like a [template method
   pattern](https://en.wikipedia.org/wiki/Template_method_pattern).
   For example, given this base:
-  ``` ruby
-    class Base
-      def execute
-        return unless enabled?
 
-        # ...
-        # ...
+    ```ruby
+      class Base
+        def execute
+          return unless enabled?
+  
+          # ...
+          # ...
+        end
       end
-    end
-  ```
-  Instead of just overriding `Base#execute`, we should update it and extract
-  the behaviour into another method:
-  ``` ruby
-    class Base
-      def execute
-        return unless enabled?
+    ```
 
-        do_something
+    Instead of just overriding `Base#execute`, we should update it and extract
+    the behaviour into another method:
+
+    ```ruby
+      class Base
+        def execute
+          return unless enabled?
+  
+          do_something
+        end
+  
+        private
+  
+        def do_something
+          # ...
+          # ...
+        end
       end
+    ```
 
-      private
+    Then we're free to override that `do_something` without worrying about the
+    guards:
 
-      def do_something
-        # ...
-        # ...
+    ```ruby
+      module EE::Base
+        extend ::Gitlab::Utils::Override
+  
+        override :do_something
+        def do_something
+          # Follow the above pattern to call super and extend it
+        end
       end
-    end
-  ```
-  Then we're free to override that `do_something` without worrying about the
-  guards:
-  ``` ruby
-    module EE::Base
-      extend ::Gitlab::Utils::Override
-
-      override :do_something
-      def do_something
-        # Follow the above pattern to call super and extend it
-      end
-    end
-  ```
-  This would require updating CE first, or make sure this is back ported to CE.
+    ```
+  
+    This would require updating CE first, or make sure this is back ported to CE.
 
 When prepending, place them in the `ee/` specific sub-directory, and
 wrap class or module in `module EE` to avoid naming conflicts.
@@ -252,6 +264,31 @@ end
 
 [`extend ::Gitlab::Utils::Override`]: utilities.md#override
 
+##### Overriding CE class methods
+
+The same applies to class methods, except we want to use
+`ActiveSupport::Concern` and put `extend ::Gitlab::Utils::Override`
+within the block of `class_methods`. Here's an example:
+
+```ruby
+module EE
+  module Groups
+    module GroupMembersController
+      extend ActiveSupport::Concern
+
+      class_methods do
+        extend ::Gitlab::Utils::Override
+
+        override :admin_not_required_endpoints
+        def admin_not_required_endpoints
+          super.concat(%i[update override])
+        end
+      end
+    end
+  end
+end
+```
+
 #### Use self-descriptive wrapper methods
 
 When it's not possible/logical to modify the implementation of a
@@ -279,7 +316,7 @@ end
 ```
 
 In `lib/gitlab/visibility_level.rb` this method is used to return the
-allowed visibilty levels:
+allowed visibility levels:
 
 ```ruby
 def levels_for_user(user = nil)
@@ -359,8 +396,62 @@ Blocks of code that are EE-specific should be moved to partials. This
 avoids conflicts with big chunks of HAML code that that are not fun to
 resolve when you add the indentation to the equation.
 
-EE-specific views should be placed in `ee/app/views/ee/`, using extra
+EE-specific views should be placed in `ee/app/views/`, using extra
 sub-directories if appropriate.
+
+#### Using `render_if_exists`
+
+Instead of using regular `render`, we should use `render_if_exists`, which
+will not render anything if it cannot find the specific partial. We use this
+so that we could put `render_if_exists` in CE, keeping code the same between
+CE and EE.
+
+The advantages of this:
+
+- Minimal code difference between CE and EE.
+- Very clear hints about where we're extending EE views while reading CE codes.
+
+The disadvantage of this:
+
+- Slightly more work while developing EE features, because now we need to
+  port `render_if_exists` to CE.
+- If we have typos in the partial name, it would be silently ignored.
+
+#### Using `render_ce`
+
+For `render` and `render_if_exists`, they search for the EE partial first,
+and then CE partial. They would only render a particular partial, not all
+partials with the same name. We could take the advantage of this, so that
+the same partial path (e.g. `shared/issuable/form/default_templates`) could
+be referring to the CE partial in CE (i.e.
+`app/views/shared/issuable/form/_default_templates.html.haml`), while EE
+partial in EE (i.e.
+`ee/app/views/shared/issuable/form/_default_templates.html.haml`). This way,
+we could show different things between CE and EE.
+
+However sometimes we would also want to reuse the CE partial in EE partial
+because we might just want to add something to the existing CE partial. We
+could workaround this by adding another partial with a different name, but it
+would be tedious to do so.
+
+In this case, we could as well just use `render_ce` which would ignore any EE
+partials. One example would be
+`ee/app/views/shared/issuable/form/_default_templates.html.haml`:
+
+``` haml
+- if @project.feature_available?(:issuable_default_templates)
+  = render_ce 'shared/issuable/form/default_templates'
+- elsif show_promotions?
+  = render 'shared/promotions/promote_issue_templates'
+```
+
+In the above example, we can't use
+`render 'shared/issuable/form/default_templates'` because it would find the
+same EE partial, causing infinite recursion. Instead, we could use `render_ce`
+so it ignores any partials in `ee/` and then it would render the CE partial
+(i.e. `app/views/shared/issuable/form/_default_templates.html.haml`)
+for the same path (i.e. `shared/issuable/form/default_templates`). This way
+we could easily wrap around the CE partial.
 
 ### Code in `lib/`
 
@@ -384,7 +475,7 @@ Put the EE module files following
 
 For EE API routes, we put them in a `prepended` block:
 
-``` ruby
+```ruby
 module EE
   module API
     module MergeRequests
@@ -418,7 +509,7 @@ interface first here.
 For example, suppose we have a few more optional params for EE, given this CE
 API code:
 
-``` ruby
+```ruby
 module API
   class MergeRequests < Grape::API
     # EE::API::MergeRequests would override the following helpers
@@ -440,7 +531,7 @@ end
 
 And then we could override it in EE module:
 
-``` ruby
+```ruby
 module EE
   module API
     module MergeRequests
@@ -467,7 +558,7 @@ To make it easy for an EE module to override the CE helpers, we need to define
 those helpers we want to extend first. Try to do that immediately after the
 class definition to make it easy and clear:
 
-``` ruby
+```ruby
 module API
   class JobArtifacts < Grape::API
     # EE::API::JobArtifacts would override the following helpers
@@ -484,7 +575,7 @@ end
 
 And then we can follow regular object-oriented practices to override it:
 
-``` ruby
+```ruby
 module EE
   module API
     module JobArtifacts
@@ -511,7 +602,7 @@ therefore can't be simply overridden. We need to extract them into a standalone
 method, or introduce some "hooks" where we could inject behavior in the CE
 route. Something like this:
 
-``` ruby
+```ruby
 module API
   class MergeRequests < Grape::API
     helpers do
@@ -538,7 +629,7 @@ end
 Note that `update_merge_request_ee` doesn't do anything in CE, but
 then we could override it in EE:
 
-``` ruby
+```ruby
 module EE
   module API
     module MergeRequests
@@ -577,7 +668,7 @@ For example, in one place we need to pass an extra argument to
 `at_least_one_of` so that the API could consider an EE-only argument as the
 least argument. This is not quite beautiful but it's working:
 
-``` ruby
+```ruby
 module API
   class MergeRequests < Grape::API
     def self.update_params_at_least_one_of
@@ -598,13 +689,16 @@ end
 
 And then we could easily extend that argument in the EE class method:
 
-``` ruby
+```ruby
 module EE
   module API
     module MergeRequests
       extend ActiveSupport::Concern
 
       class_methods do
+        extend ::Gitlab::Utils::Override
+
+        override :update_params_at_least_one_of
         def update_params_at_least_one_of
           super.push(*%i[
             squash

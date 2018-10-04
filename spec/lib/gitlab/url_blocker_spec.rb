@@ -1,8 +1,9 @@
+# coding: utf-8
 require 'spec_helper'
 
 describe Gitlab::UrlBlocker do
   describe '#blocked_url?' do
-    let(:valid_ports) { Project::VALID_IMPORT_PORTS }
+    let(:ports) { Project::VALID_IMPORT_PORTS }
 
     it 'allows imports from configured web host and port' do
       import_url = "http://#{Gitlab.config.gitlab.host}:#{Gitlab.config.gitlab.port}/t.git"
@@ -19,7 +20,13 @@ describe Gitlab::UrlBlocker do
     end
 
     it 'returns true for bad port' do
-      expect(described_class.blocked_url?('https://gitlab.com:25/foo/foo.git', valid_ports: valid_ports)).to be true
+      expect(described_class.blocked_url?('https://gitlab.com:25/foo/foo.git', ports: ports)).to be true
+    end
+
+    it 'returns true for bad protocol' do
+      expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git', protocols: ['https'])).to be false
+      expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git')).to be false
+      expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git', protocols: ['http'])).to be true
     end
 
     it 'returns true for alternative version of 127.0.0.1 (0177.1)' do
@@ -52,20 +59,6 @@ describe Gitlab::UrlBlocker do
       end
     end
 
-    it 'returns true for a non-alphanumeric username' do
-      stub_resolv
-
-      aggregate_failures do
-        expect(described_class).to be_blocked_url('ssh://-oProxyCommand=whoami@example.com/a')
-
-        # The leading character here is a Unicode "soft hyphen"
-        expect(described_class).to be_blocked_url('ssh://­oProxyCommand=whoami@example.com/a')
-
-        # Unicode alphanumerics are allowed
-        expect(described_class).not_to be_blocked_url('ssh://ğitlab@example.com/a')
-      end
-    end
-
     it 'returns true for invalid URL' do
       expect(described_class.blocked_url?('http://:8080')).to be true
     end
@@ -90,6 +83,17 @@ describe Gitlab::UrlBlocker do
             expect(described_class).not_to be_blocked_url("http://#{ip}")
           end
         end
+
+        it 'allows IPv4 link-local endpoints' do
+          expect(described_class).not_to be_blocked_url('http://169.254.169.254')
+          expect(described_class).not_to be_blocked_url('http://169.254.168.100')
+        end
+
+        # This is blocked due to the hostname check: https://gitlab.com/gitlab-org/gitlab-ce/issues/50227
+        it 'blocks IPv6 link-local endpoints' do
+          expect(described_class).to be_blocked_url('http://[::ffff:169.254.169.254]')
+          expect(described_class).to be_blocked_url('http://[::ffff:169.254.168.100]')
+        end
       end
 
       context 'false' do
@@ -104,14 +108,57 @@ describe Gitlab::UrlBlocker do
             expect(described_class).to be_blocked_url("http://#{ip}", allow_local_network: false)
           end
         end
+
+        it 'blocks IPv4 link-local endpoints' do
+          expect(described_class).to be_blocked_url('http://169.254.169.254', allow_local_network: false)
+          expect(described_class).to be_blocked_url('http://169.254.168.100', allow_local_network: false)
+        end
+
+        it 'blocks IPv6 link-local endpoints' do
+          expect(described_class).to be_blocked_url('http://[::ffff:169.254.169.254]', allow_local_network: false)
+          expect(described_class).to be_blocked_url('http://[::ffff:169.254.168.100]', allow_local_network: false)
+          expect(described_class).to be_blocked_url('http://[FE80::C800:EFF:FE74:8]', allow_local_network: false)
+        end
       end
 
       def stub_domain_resolv(domain, ip)
-        allow(Addrinfo).to receive(:getaddrinfo).with(domain, any_args).and_return([double(ip_address: ip, ipv4_private?: true)])
+        allow(Addrinfo).to receive(:getaddrinfo).with(domain, any_args).and_return([double(ip_address: ip, ipv4_private?: true, ipv6_link_local?: false)])
       end
 
       def unstub_domain_resolv
         allow(Addrinfo).to receive(:getaddrinfo).and_call_original
+      end
+    end
+
+    context 'when enforce_user is' do
+      before do
+        stub_resolv
+      end
+
+      context 'false (default)' do
+        it 'does not block urls with a non-alphanumeric username' do
+          expect(described_class).not_to be_blocked_url('ssh://-oProxyCommand=whoami@example.com/a')
+
+          # The leading character here is a Unicode "soft hyphen"
+          expect(described_class).not_to be_blocked_url('ssh://­oProxyCommand=whoami@example.com/a')
+
+          # Unicode alphanumerics are allowed
+          expect(described_class).not_to be_blocked_url('ssh://ğitlab@example.com/a')
+        end
+      end
+
+      context 'true' do
+        it 'blocks urls with a non-alphanumeric username' do
+          aggregate_failures do
+            expect(described_class).to be_blocked_url('ssh://-oProxyCommand=whoami@example.com/a', enforce_user: true)
+
+            # The leading character here is a Unicode "soft hyphen"
+            expect(described_class).to be_blocked_url('ssh://­oProxyCommand=whoami@example.com/a', enforce_user: true)
+
+            # Unicode alphanumerics are allowed
+            expect(described_class).not_to be_blocked_url('ssh://ğitlab@example.com/a', enforce_user: true)
+          end
+        end
       end
     end
   end

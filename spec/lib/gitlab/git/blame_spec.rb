@@ -1,13 +1,13 @@
 # coding: utf-8
 require "spec_helper"
 
-describe Gitlab::Git::Blame, seed_helper: true do
+describe Gitlab::Git::Blame, :seed_helper do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
   let(:blame) do
     Gitlab::Git::Blame.new(repository, SeedRepo::Commit::ID, "CONTRIBUTING.md")
   end
 
-  shared_examples 'blaming a file' do
+  describe 'blaming a file' do
     context "each count" do
       it do
         data = []
@@ -67,13 +67,5 @@ describe Gitlab::Git::Blame, seed_helper: true do
         expect(data.first[:line]).to be_utf8
       end
     end
-  end
-
-  context 'when Gitaly blame feature is enabled' do
-    it_behaves_like 'blaming a file'
-  end
-
-  context 'when Gitaly blame feature is disabled', :skip_gitaly_mock do
-    it_behaves_like 'blaming a file'
   end
 end

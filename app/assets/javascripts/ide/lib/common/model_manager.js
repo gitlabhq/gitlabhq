@@ -3,8 +3,7 @@ import Disposable from './disposable';
 import Model from './model';
 
 export default class ModelManager {
-  constructor(monaco) {
-    this.monaco = monaco;
+  constructor() {
     this.disposable = new Disposable();
     this.models = new Map();
   }
@@ -17,12 +16,12 @@ export default class ModelManager {
     return this.models.get(key);
   }
 
-  addModel(file) {
+  addModel(file, head = null) {
     if (this.hasCachedModel(file.key)) {
       return this.getModel(file.key);
     }
 
-    const model = new Model(this.monaco, file);
+    const model = new Model(file, head);
     this.models.set(model.path, model);
     this.disposable.add(model);
 

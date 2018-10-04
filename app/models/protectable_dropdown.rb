@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProtectableDropdown
   REF_TYPES = %i[branches tags].freeze
 

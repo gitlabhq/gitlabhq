@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Dashboard Issues filtering', :js do
+describe 'Dashboard Issues filtering', :js do
   include Spec::Support::Helpers::Features::SortingHelpers
 
   let(:user)      { create(:user) }
@@ -11,7 +11,7 @@ feature 'Dashboard Issues filtering', :js do
   let!(:issue2) { create(:issue, project: project, author: user, assignees: [user], milestone: milestone) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     visit_issues
@@ -47,15 +47,15 @@ feature 'Dashboard Issues filtering', :js do
     it 'updates atom feed link' do
       visit_issues(milestone_title: '', assignee_id: user.id)
 
-      link = find('.nav-controls a[title="Subscribe"]')
+      link = find('.nav-controls a[title="Subscribe to RSS feed"]')
       params = CGI.parse(URI.parse(link[:href]).query)
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
       auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
 
-      expect(params).to include('rss_token' => [user.rss_token])
+      expect(params).to include('feed_token' => [user.feed_token])
       expect(params).to include('milestone_title' => [''])
       expect(params).to include('assignee_id' => [user.id.to_s])
-      expect(auto_discovery_params).to include('rss_token' => [user.rss_token])
+      expect(auto_discovery_params).to include('feed_token' => [user.feed_token])
       expect(auto_discovery_params).to include('milestone_title' => [''])
       expect(auto_discovery_params).to include('assignee_id' => [user.id.to_s])
     end

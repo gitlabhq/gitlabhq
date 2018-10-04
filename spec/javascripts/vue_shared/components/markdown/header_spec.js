@@ -18,7 +18,7 @@ describe('Markdown field header component', () => {
   });
 
   it('renders markdown buttons', () => {
-    expect(vm.$el.querySelectorAll('.js-md').length).toBe(7);
+    expect(vm.$el.querySelectorAll('.js-md').length).toBe(8);
   });
 
   it('renders `write` link as active when previewMarkdown is false', () => {
@@ -51,7 +51,7 @@ describe('Markdown field header component', () => {
     spyOn(vm, '$emit');
 
     $(document).triggerHandler('markdown-preview:show', [
-      $('<form><textarea class="markdown-area"></textarea></textarea></form>'),
+      $('<form><div class="js-vue-markdown-field"><textarea class="markdown-area"></textarea></div></form>'),
     ]);
 
     expect(vm.$emit).not.toHaveBeenCalled();

@@ -1,4 +1,5 @@
-%h3 Specific Runners
+%h3
+  = _('Specific Runners')
 
 = render partial: 'ci/runner/how_to_setup_specific_runner',
          locals: { registration_token: @project.runners_token }
@@ -12,4 +13,4 @@
   %h4.underlined-title Available specific runners
   %ul.bordered-list.available-specific-runners
     = render partial: 'projects/runners/runner', collection: @assignable_runners, as: :runner
-  = paginate @assignable_runners, theme: "gitlab"
+  = paginate @assignable_runners, theme: "gitlab", :params => { :anchor => '#js-runners-settings' }

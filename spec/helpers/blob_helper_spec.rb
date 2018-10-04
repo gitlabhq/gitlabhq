@@ -65,9 +65,9 @@ describe BlobHelper do
 
   describe "#sanitize_svg_data" do
     let(:input_svg_path) { File.join(Rails.root, 'spec', 'fixtures', 'unsanitized.svg') }
-    let(:data) { open(input_svg_path).read }
+    let(:data) { File.read(input_svg_path) }
     let(:expected_svg_path) { File.join(Rails.root, 'spec', 'fixtures', 'sanitized.svg') }
-    let(:expected) { open(expected_svg_path).read }
+    let(:expected) { File.read(expected_svg_path) }
 
     it 'retains essential elements' do
       expect(sanitize_svg_data(data)).to eq(expected)
@@ -240,6 +240,37 @@ describe BlobHelper do
           expect(helper.blob_render_error_options(viewer)).to include(/download it/)
         end
       end
+    end
+  end
+
+  describe '#ide_edit_path' do
+    let(:project) { create(:project) }
+
+    around do |example|
+      old_script_name = Rails.application.routes.default_url_options[:script_name]
+      begin
+        example.run
+      ensure
+        Rails.application.routes.default_url_options[:script_name] = old_script_name
+      end
+    end
+
+    it 'returns full IDE path' do
+      Rails.application.routes.default_url_options[:script_name] = nil
+
+      expect(helper.ide_edit_path(project, "master", "")).to eq("/-/ide/project/#{project.namespace.path}/#{project.path}/edit/master")
+    end
+
+    it 'returns full IDE path with second -' do
+      Rails.application.routes.default_url_options[:script_name] = nil
+
+      expect(helper.ide_edit_path(project, "testing/slashes", "readme.md")).to eq("/-/ide/project/#{project.namespace.path}/#{project.path}/edit/testing/slashes/-/readme.md")
+    end
+
+    it 'returns IDE path without relative_url_root' do
+      Rails.application.routes.default_url_options[:script_name] = "/gitlab"
+
+      expect(helper.ide_edit_path(project, "master", "")).to eq("/gitlab/-/ide/project/#{project.namespace.path}/#{project.path}/edit/master")
     end
   end
 end

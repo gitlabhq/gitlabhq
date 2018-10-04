@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectFeature < ActiveRecord::Base
   # == Project features permissions
   #

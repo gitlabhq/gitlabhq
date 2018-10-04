@@ -8,7 +8,7 @@ describe Keys::LastUsedService do
 
       Timecop.freeze(time) { described_class.new(key).execute }
 
-      expect(key.last_used_at).to eq(time)
+      expect(key.reload.last_used_at).to be_like_time(time)
     end
 
     it 'does not update the key when it has been used recently' do
@@ -17,7 +17,7 @@ describe Keys::LastUsedService do
 
       described_class.new(key).execute
 
-      expect(key.last_used_at).to eq(time)
+      expect(key.last_used_at).to be_like_time(time)
     end
 
     it 'does not update the updated_at field' do

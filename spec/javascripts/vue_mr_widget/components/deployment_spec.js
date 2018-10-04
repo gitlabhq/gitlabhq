@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import * as urlUtils from '~/lib/utils/url_utility';
 import deploymentComponent from '~/vue_merge_request_widget/components/deployment.vue';
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 import { getTimeago } from '~/lib/utils/datetime_utility';
@@ -117,13 +116,13 @@ describe('Deployment component', () => {
       it('should show a confirm dialog and call service.stopEnvironment when confirmed', (done) => {
         spyOn(window, 'confirm').and.returnValue(true);
         spyOn(MRWidgetService, 'stopEnvironment').and.returnValue(returnPromise(true));
-        spyOn(urlUtils, 'visitUrl').and.returnValue(true);
+        const visitUrl = spyOnDependency(deploymentComponent, 'visitUrl').and.returnValue(true);
         vm = mockStopEnvironment();
 
         expect(window.confirm).toHaveBeenCalled();
         expect(MRWidgetService.stopEnvironment).toHaveBeenCalledWith(deploymentMockData.stop_url);
         setTimeout(() => {
-          expect(urlUtils.visitUrl).toHaveBeenCalledWith(url);
+          expect(visitUrl).toHaveBeenCalledWith(url);
           done();
         }, 333);
       });
@@ -154,7 +153,7 @@ describe('Deployment component', () => {
 
     it('renders external URL', () => {
       expect(el.querySelector('.js-deploy-url').getAttribute('href')).toEqual(deploymentMockData.external_url);
-      expect(el.querySelector('.js-deploy-url').innerText).toContain(deploymentMockData.external_url_formatted);
+      expect(el.querySelector('.js-deploy-url').innerText).toContain('View app');
     });
 
     it('renders stop button', () => {

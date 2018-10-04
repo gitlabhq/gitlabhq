@@ -59,6 +59,12 @@ parallelization, monitoring.
 
 ---
 
+## [Review apps](review_apps.md)
+
+How review apps are set up for GitLab CE/EE and how to use them.
+
+---
+
 ## [Testing Rake tasks](testing_rake_tasks.md)
 
 Everything you should know about how to test Rake tasks.
@@ -69,21 +75,6 @@ Everything you should know about how to test Rake tasks.
 
 Everything you should know about how to run end-to-end tests using
 [GitLab QA][gitlab-qa] testing framework.
-
----
-
-## Spinach (feature) tests
-
-GitLab [moved from Cucumber to Spinach](https://github.com/gitlabhq/gitlabhq/pull/1426)
-for its feature/integration tests in September 2012.
-
-As of March 2016, we are [trying to avoid adding new Spinach
-tests](https://gitlab.com/gitlab-org/gitlab-ce/issues/14121) going forward,
-opting for [RSpec feature](#features-integration) specs.
-
-Adding new Spinach scenarios is acceptable _only if_ the new scenario requires
-no more than one new `step` definition. If more than that is required, the
-test should be re-implemented using RSpec instead.
 
 ---
 

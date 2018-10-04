@@ -7,7 +7,7 @@ describe API::Environments do
   let!(:environment)  { create(:environment, project: project) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe 'GET /projects/:id/environments' do
@@ -15,12 +15,12 @@ describe API::Environments do
       it 'returns project environments' do
         project_data_keys = %w(
           id description default_branch tag_list
-          ssh_url_to_repo http_url_to_repo web_url
+          ssh_url_to_repo http_url_to_repo web_url readme_url
           name name_with_namespace
           path path_with_namespace
           star_count forks_count
           created_at last_activity_at
-          avatar_url
+          avatar_url namespace
         )
 
         get api("/projects/#{project.id}/environments", user)
@@ -126,7 +126,7 @@ describe API::Environments do
   end
 
   describe 'DELETE /projects/:id/environments/:environment_id' do
-    context 'as a master' do
+    context 'as a maintainer' do
       it 'returns a 200 for an existing environment' do
         delete api("/projects/#{project.id}/environments/#{environment.id}", user)
 
@@ -155,7 +155,7 @@ describe API::Environments do
   end
 
   describe 'POST /projects/:id/environments/:environment_id/stop' do
-    context 'as a master' do
+    context 'as a maintainer' do
       context 'with a stoppable environment' do
         before do
           environment.update(state: :available)

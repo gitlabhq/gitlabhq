@@ -1,14 +1,18 @@
+# frozen_string_literal: true
+
 class DeployToken < ActiveRecord::Base
   include Expirable
   include TokenAuthenticatable
+  include PolicyActor
   add_authentication_token_field :token
 
   AVAILABLE_SCOPES = %i(read_repository read_registry).freeze
+  GITLAB_DEPLOY_TOKEN_NAME = 'gitlab-deploy-token'.freeze
 
   default_value_for(:expires_at) { Forever.date }
 
   has_many :project_deploy_tokens, inverse_of: :deploy_token
-  has_many :projects, -> { auto_include(false) }, through: :project_deploy_tokens
+  has_many :projects, through: :project_deploy_tokens
 
   validate :ensure_at_least_one_scope
   before_save :ensure_token
@@ -17,12 +21,16 @@ class DeployToken < ActiveRecord::Base
 
   scope :active, -> { where("revoked = false AND expires_at >= NOW()") }
 
+  def self.gitlab_deploy_token
+    active.find_by(name: GITLAB_DEPLOY_TOKEN_NAME)
+  end
+
   def revoke!
     update!(revoked: true)
   end
 
   def active?
-    !revoked
+    !revoked && !expired?
   end
 
   def scopes
@@ -54,6 +62,12 @@ class DeployToken < ActiveRecord::Base
   end
 
   private
+
+  def expired?
+    return false unless expires_at
+
+    expires_at < Date.today
+  end
 
   def ensure_at_least_one_scope
     errors.add(:base, "Scopes can't be blank") unless read_repository || read_registry

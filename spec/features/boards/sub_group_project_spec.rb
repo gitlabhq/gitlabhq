@@ -11,7 +11,7 @@ describe 'Sub-group project issue boards', :js do
   let!(:issue) { create(:labeled_issue, project: project, labels: [label]) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
 
     sign_in(user)
 
@@ -20,7 +20,7 @@ describe 'Sub-group project issue boards', :js do
   end
 
   it 'creates new label from sidebar' do
-    find('.card').click
+    find('.board-card').click
 
     page.within '.labels' do
       click_link 'Edit'

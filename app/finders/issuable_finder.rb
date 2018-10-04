@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # IssuableFinder
 #
 # Used to filter Issues and MergeRequests collections by set of params
@@ -6,8 +8,8 @@
 #   klass - actual class like Issue or MergeRequest
 #   current_user - which user use
 #   params:
-#     scope: 'created-by-me' or 'assigned-to-me' or 'all'
-#     state: 'opened' or 'closed' or 'all'
+#     scope: 'created_by_me' or 'assigned_to_me' or 'all'
+#     state: 'opened' or 'closed' or 'locked' or 'all'
 #     group_id: integer
 #     project_id: integer
 #     milestone_title: string
@@ -23,6 +25,7 @@
 #     created_before: datetime
 #     updated_after: datetime
 #     updated_before: datetime
+#     use_cte_for_search: boolean
 #
 class IssuableFinder
   prepend FinderWithCrossProjectAccess
@@ -54,6 +57,7 @@ class IssuableFinder
       sort
       state
       include_subgroups
+      use_cte_for_search
     ]
   end
 
@@ -74,19 +78,21 @@ class IssuableFinder
     items = init_collection
     items = filter_items(items)
 
-    # Filtering by project HAS TO be the last because we use the project IDs yielded by the issuable query thus far
-    items = by_project(items)
+    # This has to be last as we may use a CTE as an optimization fence by
+    # passing the use_cte_for_search param
+    # https://www.postgresql.org/docs/current/static/queries-with.html
+    items = by_search(items)
 
     sort(items)
   end
 
   def filter_items(items)
+    items = by_project(items)
     items = by_scope(items)
     items = by_created_at(items)
     items = by_updated_at(items)
     items = by_state(items)
     items = by_group(items)
-    items = by_search(items)
     items = by_assignee(items)
     items = by_author(items)
     items = by_non_archived(items)
@@ -105,9 +111,9 @@ class IssuableFinder
   # (even if that query is slower than any of the individual state queries) and
   # grouping and counting within that query.
   #
+  # rubocop: disable CodeReuse/ActiveRecord
   def count_by_state
     count_params = params.merge(state: nil, sort: nil)
-    labels_count = label_names.any? ? label_names.count : 1
     finder = self.class.new(current_user, count_params)
     counts = Hash.new(0)
 
@@ -116,14 +122,20 @@ class IssuableFinder
     # per issuable, so we have to count those in Ruby - which is bad, but still
     # better than performing multiple queries.
     #
+    # This does not apply when we are using a CTE for the search, as the labels
+    # GROUP BY is inside the subquery in that case, so we set labels_count to 1.
+    labels_count = label_names.any? ? label_names.count : 1
+    labels_count = 1 if use_cte_for_search?
+
     finder.execute.reorder(nil).group(:state).count.each do |key, value|
-      counts[Array(key).last.to_sym] += value / labels_count
+      counts[count_key(key)] += value / labels_count
     end
 
     counts[:all] = counts.values.sum
 
-    counts
+    counts.with_indifferent_access
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def group
     return @group if defined?(@group)
@@ -149,6 +161,7 @@ class IssuableFinder
     @project = project
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def projects(items = nil)
     return @projects = project if project?
 
@@ -157,16 +170,14 @@ class IssuableFinder
         current_user.authorized_projects
       elsif group
         finder_options = { include_subgroups: params[:include_subgroups], only_owned: true }
-        GroupProjectsFinder.new(group: group, current_user: current_user, options: finder_options).execute
+        GroupProjectsFinder.new(group: group, current_user: current_user, options: finder_options).execute # rubocop: disable CodeReuse/Finder
       else
-        opts = { current_user: current_user }
-        opts[:project_ids_relation] = item_project_ids(items) if items
-
-        ProjectsFinder.new(opts).execute
+        ProjectsFinder.new(current_user: current_user).execute # rubocop: disable CodeReuse/Finder
       end
 
     @projects = projects.with_feature_available_for_user(klass, current_user).reorder(nil)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def search
     params[:search].presence
@@ -180,6 +191,7 @@ class IssuableFinder
     milestones? && params[:milestone_title] == Milestone::None.title
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def milestones
     return @milestones if defined?(@milestones)
 
@@ -195,11 +207,12 @@ class IssuableFinder
         search_params =
           { title: params[:milestone_title], project_ids: project_id, group_ids: group_id }
 
-        MilestonesFinder.new(search_params).execute
+        MilestonesFinder.new(search_params).execute # rubocop: disable CodeReuse/Finder
       else
         Milestone.none
       end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def labels?
     params[:label_name].present?
@@ -209,30 +222,33 @@ class IssuableFinder
     labels? && params[:label_name].include?(Label::None.title)
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def labels
     return @labels if defined?(@labels)
 
     @labels =
       if labels? && !filter_by_no_label?
-        LabelsFinder.new(current_user, project_ids: projects, title: label_names).execute(skip_authorization: true)
+        LabelsFinder.new(current_user, project_ids: projects, title: label_names).execute(skip_authorization: true) # rubocop: disable CodeReuse/Finder
       else
         Label.none
       end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def assignee_id?
-    params[:assignee_id].present? && params[:assignee_id] != NONE
+    params[:assignee_id].present? && params[:assignee_id].to_s != NONE
   end
 
   def assignee_username?
-    params[:assignee_username].present? && params[:assignee_username] != NONE
+    params[:assignee_username].present? && params[:assignee_username].to_s != NONE
   end
 
   def no_assignee?
     # Assignee_id takes precedence over assignee_username
-    params[:assignee_id] == NONE || params[:assignee_username] == NONE
+    params[:assignee_id].to_s == NONE || params[:assignee_username].to_s == NONE
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def assignee
     return @assignee if defined?(@assignee)
 
@@ -245,6 +261,7 @@ class IssuableFinder
         nil
       end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def author_id?
     params[:author_id].present? && params[:author_id] != NONE
@@ -259,6 +276,7 @@ class IssuableFinder
     params[:author_id] == NONE || params[:author_username] == NONE
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def author
     return @author if defined?(@author)
 
@@ -271,6 +289,7 @@ class IssuableFinder
         nil
       end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 
@@ -278,18 +297,24 @@ class IssuableFinder
     klass.all
   end
 
+  def count_key(value)
+    Array(value).last.to_sym
+  end
+
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_scope(items)
     return items.none if current_user_related? && !current_user
 
     case params[:scope]
-    when 'created-by-me', 'authored'
+    when 'created_by_me', 'authored'
       items.where(author_id: current_user.id)
-    when 'assigned-to-me'
+    when 'assigned_to_me'
       items.assigned_to(current_user)
     else
       items
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def by_updated_at(items)
     items = items.updated_after(params[:updated_after]) if params[:updated_after].present?
@@ -298,6 +323,7 @@ class IssuableFinder
     items
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_state(items)
     case params[:state].to_s
     when 'closed'
@@ -306,16 +332,20 @@ class IssuableFinder
       items.respond_to?(:merged) ? items.merged : items.closed
     when 'opened'
       items.opened
+    when 'locked'
+      items.where(state: 'locked')
     else
       items
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def by_group(items)
     # Selection by group is already covered by `by_project` and `projects`
     items
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_project(items)
     items =
       if project?
@@ -328,21 +358,45 @@ class IssuableFinder
 
     items
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
-  def by_search(items)
-    search ? items.full_search(search) : items
+  def use_cte_for_search?
+    return false unless search
+    return false unless Gitlab::Database.postgresql?
+
+    params[:use_cte_for_search]
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
+  def by_search(items)
+    return items unless search
+
+    if use_cte_for_search?
+      cte = Gitlab::SQL::RecursiveCTE.new(klass.table_name)
+      cte << items
+
+      items = klass.with(cte.to_arel).from(klass.table_name)
+    end
+
+    items.full_search(search)
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
+
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_iids(items)
     params[:iids].present? ? items.where(iid: params[:iids]) : items
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def sort(items)
     # Ensure we always have an explicit sort order (instead of inheriting
     # multiple orders when combining ActiveRecord::Relation objects).
     params[:sort] ? items.sort_by_attribute(params[:sort], excluded_labels: label_names) : items.reorder(id: :desc)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_assignee(items)
     if assignee
       items = items.where(assignee_id: assignee.id)
@@ -354,7 +408,9 @@ class IssuableFinder
 
     items
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_author(items)
     if author
       items = items.where(author_id: author.id)
@@ -366,6 +422,7 @@ class IssuableFinder
 
     items
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def filter_by_upcoming_milestone?
     params[:milestone_title] == Milestone::Upcoming.name
@@ -375,6 +432,7 @@ class IssuableFinder
     params[:milestone_title] == Milestone::Started.name
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_milestone(items)
     if milestones?
       if filter_by_no_milestone?
@@ -391,6 +449,7 @@ class IssuableFinder
 
     items
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def by_label(items)
     return items unless labels?
@@ -426,6 +485,7 @@ class IssuableFinder
   end
 
   def current_user_related?
-    params[:scope] == 'created-by-me' || params[:scope] == 'authored' || params[:scope] == 'assigned-to-me'
+    scope = params[:scope]
+    scope == 'created_by_me' || scope == 'authored' || scope == 'assigned_to_me'
   end
 end

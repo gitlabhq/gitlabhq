@@ -1,5 +1,6 @@
 <script>
 import $ from 'jquery';
+import { Button } from '@gitlab-org/gitlab-ui';
 import eventHub from '../eventhub';
 import ProjectSelect from './project_select.vue';
 import ListIssue from '../models/issue';
@@ -10,6 +11,7 @@ export default {
   name: 'BoardNewIssue',
   components: {
     ProjectSelect,
+    'gl-button': Button,
   },
   props: {
     groupId: {
@@ -49,11 +51,12 @@ export default {
       this.error = false;
 
       const labels = this.list.label ? [this.list.label] : [];
+      const assignees = this.list.assignee ? [this.list.assignee] : [];
       const issue = new ListIssue({
         title: this.title,
         labels,
         subscribed: true,
-        assignees: [],
+        assignees,
         project_id: this.selectedProject.id,
       });
 
@@ -92,53 +95,55 @@ export default {
 
 <template>
   <div class="board-new-issue-form">
-    <div class="card">
+    <div class="board-card">
       <form @submit="submit($event)">
         <div
-          class="flash-container"
           v-if="error"
+          class="flash-container"
         >
           <div class="flash-alert">
             An error occurred. Please try again.
           </div>
         </div>
         <label
-          class="label-light"
           :for="list.id + '-title'"
+          class="label-bold"
         >
           Title
         </label>
         <input
+          :id="list.id + '-title'"
+          ref="input"
+          v-model="title"
           class="form-control"
           type="text"
-          v-model="title"
-          ref="input"
+          name="issue_title"
           autocomplete="off"
-          :id="list.id + '-title'"
         />
         <project-select
           v-if="groupId"
           :group-id="groupId"
         />
         <div class="clearfix prepend-top-10">
-          <button
-            class="btn btn-success pull-left"
-            type="submit"
-            :disabled="disabled"
+          <gl-button
             ref="submit-button"
+            :disabled="disabled"
+            class="float-left"
+            variant="success"
+            type="submit"
           >
             Submit issue
-          </button>
-          <button
-            class="btn btn-default pull-right"
+          </gl-button>
+          <gl-button
+            class="float-right"
             type="button"
+            variant="default"
             @click="cancel"
           >
             Cancel
-          </button>
+          </gl-button>
         </div>
       </form>
     </div>
   </div>
 </template>
-

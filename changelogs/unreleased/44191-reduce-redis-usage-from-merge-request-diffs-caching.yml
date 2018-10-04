@@ -1,5 +1,0 @@
----
-title: Stop caching highlighted diffs in Redis unnecessarily
-merge_request: 17746
-author:
-type: performance

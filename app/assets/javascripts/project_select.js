@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-var, comma-dangle, object-shorthand, one-var, one-var-declaration-per-line, no-else-return, quotes, max-len */
+/* eslint-disable func-names, wrap-iife, no-var, comma-dangle, object-shorthand, one-var, one-var-declaration-per-line, no-else-return, quotes, max-len */
 
 import $ from 'jquery';
 import Api from './api';
@@ -14,6 +14,7 @@ export default function projectSelect() {
     this.orderBy = $(select).data('orderBy') || 'id';
     this.withIssuesEnabled = $(select).data('withIssuesEnabled');
     this.withMergeRequestsEnabled = $(select).data('withMergeRequestsEnabled');
+    this.allowClear = $(select).data('allowClear') || false;
 
     placeholder = "Search for project";
     if (this.includeGroups) {
@@ -47,7 +48,10 @@ export default function projectSelect() {
             projectsCallback = finalCallback;
           }
           if (_this.groupId) {
-            return Api.groupProjects(_this.groupId, query.term, projectsCallback);
+            return Api.groupProjects(_this.groupId, query.term, {
+              with_issues_enabled: _this.withIssuesEnabled,
+              with_merge_requests_enabled: _this.withMergeRequestsEnabled,
+            }, projectsCallback);
           } else {
             return Api.projects(query.term, {
               order_by: _this.orderBy,
@@ -68,6 +72,13 @@ export default function projectSelect() {
       text: function (project) {
         return project.name_with_namespace || project.name;
       },
+
+      initSelection: function(el, callback) {
+        return Api.project(el.val()).then(({ data }) => callback(data));
+      },
+
+      allowClear: this.allowClear,
+
       dropdownCssClass: "ajax-project-dropdown"
     });
     if (simpleFilter) return select;

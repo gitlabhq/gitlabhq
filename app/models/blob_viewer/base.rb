@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BlobViewer
   class Base
     PARTIAL_PATH_PREFIX = 'projects/blob/viewers'.freeze

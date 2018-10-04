@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Guest
   class << self
     def can?(action, subject = :global)

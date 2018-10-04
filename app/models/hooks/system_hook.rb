@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SystemHook < WebHook
   include TriggerableHooks
 
@@ -11,4 +13,9 @@ class SystemHook < WebHook
   default_value_for :push_events, false
   default_value_for :repository_update_events, true
   default_value_for :merge_requests_events, false
+
+  # Allow urls pointing localhost and the local network
+  def allow_local_requests?
+    true
+  end
 end

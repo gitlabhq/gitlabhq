@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, new-parens, no-return-assign, new-cap, vars-on-top, max-len */
+/* eslint-disable no-var, one-var, one-var-declaration-per-line, no-return-assign, vars-on-top, jasmine/no-unsafe-spy, max-len */
 
 import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
@@ -8,8 +8,6 @@ import Sidebar from '~/right_sidebar';
 
 (function() {
   var $aside, $icon, $labelsIcon, $page, $toggle, assertSidebarState;
-
-  this.sidebar = null;
 
   $aside = null;
 
@@ -43,7 +41,7 @@ import Sidebar from '~/right_sidebar';
       beforeEach(function() {
         loadFixtures(fixtureName);
         mock = new MockAdapter(axios);
-        this.sidebar = new Sidebar();
+        new Sidebar(); // eslint-disable-line no-new
         $aside = $('.right-sidebar');
         $page = $('.layout-page');
         $icon = $aside.find('i');

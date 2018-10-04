@@ -1,5 +1,0 @@
----
-title: Ensure internal users (ghost, support bot) get assigned a namespace
-merge_request:
-author:
-type: fixed

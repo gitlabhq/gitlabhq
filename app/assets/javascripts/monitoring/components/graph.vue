@@ -32,10 +32,6 @@ export default {
       type: Object,
       required: true,
     },
-    updateAspectRatio: {
-      type: Boolean,
-      required: true,
-    },
     deploymentData: {
       type: Array,
       required: true,
@@ -81,13 +77,13 @@ export default {
         time: new Date(),
         value: 0,
       },
-      currentDataIndex: 0,
       currentXCoordinate: 0,
-      currentFlagPosition: 0,
+      currentCoordinates: {},
       showFlag: false,
       showFlagContent: false,
       timeSeries: [],
       realPixelRatio: 1,
+      seriesUnderMouse: [],
     };
   },
   computed: {
@@ -110,15 +106,6 @@ export default {
     },
   },
   watch: {
-    updateAspectRatio() {
-      if (this.updateAspectRatio) {
-        this.graphHeight = 450;
-        this.graphWidth = 600;
-        this.measurements = measurements.large;
-        this.draw();
-        eventHub.$emit('toggleAspectRatio');
-      }
-    },
     hoverData() {
       this.positionFlag();
     },
@@ -127,6 +114,9 @@ export default {
     this.draw();
   },
   methods: {
+    showDot(path) {
+      return this.showFlagContent && this.seriesUnderMouse.includes(path);
+    },
     draw() {
       const breakpointSize = bp.getBreakpointSize();
       const query = this.graphData.queries[0];
@@ -155,8 +145,25 @@ export default {
       point.x = e.clientX;
       point.y = e.clientY;
       point = point.matrixTransform(this.$refs.graphData.getScreenCTM().inverse());
-      point.x = point.x += 7;
-      const firstTimeSeries = this.timeSeries[0];
+      point.x += 7;
+
+      this.seriesUnderMouse = this.timeSeries.filter((series) => {
+        const mouseX = series.timeSeriesScaleX.invert(point.x);
+        let minDistance = Infinity;
+
+        const closestTickMark = Object.keys(this.allXAxisValues).reduce((closest, x) => {
+          const distance = Math.abs(Number(new Date(x)) - Number(mouseX));
+          if (distance < minDistance) {
+            minDistance = distance;
+            return x;
+          }
+          return closest;
+        });
+
+        return series.values.find(v => v.time.toString() === closestTickMark);
+      });
+
+      const firstTimeSeries = this.seriesUnderMouse[0];
       const timeValueOverlay = firstTimeSeries.timeSeriesScaleX.invert(point.x);
       const overlayIndex = bisectDate(firstTimeSeries.values, timeValueOverlay, 1);
       const d0 = firstTimeSeries.values[overlayIndex - 1];
@@ -190,6 +197,17 @@ export default {
       const allValues = this.timeSeries.reduce((all, { values }) => all.concat(values), []);
       axisXScale.domain(d3.extent(allValues, d => d.time));
       axisYScale.domain([0, d3.max(allValues.map(d => d.value))]);
+
+      this.allXAxisValues = this.timeSeries.reduce((obj, series) => {
+        const seriesKeys = {};
+        series.values.forEach(v => {
+          seriesKeys[v.time] = true;
+        });
+        return {
+          ...obj,
+          ...seriesKeys,
+        };
+      }, {});
 
       const xAxis = d3
         .axisBottom()
@@ -233,20 +251,25 @@ export default {
     @mouseover="showFlagContent = true"
     @mouseleave="showFlagContent = false"
   >
-    <h5 class="text-center graph-title">
-      {{ graphData.title }}
-    </h5>
+    <div class="prometheus-graph-header">
+      <h5 class="prometheus-graph-title">
+        {{ graphData.title }}
+      </h5>
+      <div class="prometheus-graph-widgets">
+        <slot></slot>
+      </div>
+    </div>
     <div
-      class="prometheus-svg-container"
       :style="paddingBottomRootSvg"
+      class="prometheus-svg-container"
     >
       <svg
-        :viewBox="outerViewBox"
         ref="baseSvg"
+        :viewBox="outerViewBox"
       >
         <g
-          class="x-axis"
           :transform="axisTransform"
+          class="x-axis"
         />
         <g
           class="y-axis"
@@ -261,9 +284,9 @@ export default {
           :unit-of-display="unitOfDisplay"
         />
         <svg
-          class="graph-data"
-          :viewBox="innerViewBox"
           ref="graphData"
+          :viewBox="innerViewBox"
+          class="graph-data"
         >
           <graph-path
             v-for="(path, index) in timeSeries"
@@ -273,6 +296,8 @@ export default {
             :line-style="path.lineStyle"
             :line-color="path.lineColor"
             :area-color="path.areaColor"
+            :current-coordinates="currentCoordinates[path.metricTag]"
+            :show-dot="showDot(path)"
           />
           <graph-deployment
             :deployment-data="reducedDeploymentData"
@@ -280,11 +305,11 @@ export default {
             :graph-height-offset="graphHeightOffset"
           />
           <rect
-            class="prometheus-graph-overlay"
+            ref="graphOverlay"
             :width="(graphWidth - 70)"
             :height="(graphHeight - 100)"
+            class="prometheus-graph-overlay"
             transform="translate(-5, 20)"
-            ref="graphOverlay"
             @mousemove="handleMouseOverGraph($event)"
           />
         </svg>
@@ -296,11 +321,11 @@ export default {
         :graph-height="graphHeight"
         :graph-height-offset="graphHeightOffset"
         :show-flag-content="showFlagContent"
-        :time-series="timeSeries"
+        :time-series="seriesUnderMouse"
         :unit-of-display="unitOfDisplay"
-        :current-data-index="currentDataIndex"
         :legend-title="legendTitle"
         :deployment-flag-data="deploymentFlagData"
+        :current-coordinates="currentCoordinates"
       />
     </div>
     <graph-legend

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Milestoneish
   def closed_items_count(user)
     memoize_per_user(user, :closed_items_count) do
@@ -102,13 +104,13 @@ module Milestoneish
     Gitlab::TimeTrackingFormatter.output(total_issue_time_estimate)
   end
 
-  private
-
   def count_issues_by_state(user)
     memoize_per_user(user, :count_issues_by_state) do
       issues_visible_to_user(user).reorder(nil).group(:state).count
     end
   end
+
+  private
 
   def memoize_per_user(user, method_name)
     memoized_users[method_name][user&.id] ||= yield

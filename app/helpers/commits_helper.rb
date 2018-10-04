@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CommitsHelper
   # Returns a link to the commit author. If the author has a matching user and
   # is a member of the current @project it will link to the team member page.
@@ -27,7 +29,7 @@ module CommitsHelper
     return unless @project && @ref
 
     # Add the root project link and the arrow icon
-    crumbs = content_tag(:li) do
+    crumbs = content_tag(:li, class: 'breadcrumb-item') do
       link_to(
         @project.path,
         project_commits_path(@project, @ref)
@@ -38,7 +40,7 @@ module CommitsHelper
       parts = @path.split('/')
 
       parts.each_with_index do |part, i|
-        crumbs << content_tag(:li) do
+        crumbs << content_tag(:li, class: 'breadcrumb-item') do
           # The text is just the individual part, but the link needs all the parts before it
           link_to(
             part,
@@ -62,8 +64,8 @@ module CommitsHelper
 
   # Returns a link formatted as a commit branch link
   def commit_branch_link(url, text)
-    link_to(url, class: 'label label-gray ref-name branch-link') do
-      sprite_icon('fork', size: 16, css_class: 'fork-svg') + "#{text}"
+    link_to(url, class: 'badge badge-gray ref-name branch-link') do
+      sprite_icon('branch', size: 12, css_class: 'fork-svg') + "#{text}"
     end
   end
 
@@ -76,8 +78,8 @@ module CommitsHelper
 
   # Returns a link formatted as a commit tag link
   def commit_tag_link(url, text)
-    link_to(url, class: 'label label-gray ref-name') do
-      icon('tag', class: 'append-right-5') + "#{text}"
+    link_to(url, class: 'badge badge-gray ref-name') do
+      sprite_icon('tag', size: 12, css_class: 'append-right-5 vertical-align-middle') + "#{text}"
     end
   end
 
@@ -145,15 +147,14 @@ module CommitsHelper
         person_name
       end
 
-    options = {
-      class: "commit-#{options[:source]}-link has-tooltip",
-      title: source_email
+    link_options = {
+      class: "commit-#{options[:source]}-link"
     }
 
     if user.nil?
-      mail_to(source_email, text, options)
+      mail_to(source_email, text, link_options)
     else
-      link_to(text, user_path(user), options)
+      link_to(text, user_path(user), link_options)
     end
   end
 
@@ -209,17 +210,6 @@ module CommitsHelper
 
   def clean(string)
     Sanitize.clean(string, remove_contents: true)
-  end
-
-  def limited_commits(commits)
-    if commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
-      [
-        commits.first(MergeRequestDiff::COMMITS_SAFE_SIZE),
-        commits.size - MergeRequestDiff::COMMITS_SAFE_SIZE
-      ]
-    else
-      [commits, 0]
-    end
   end
 
   def commit_path(project, commit, merge_request: nil)

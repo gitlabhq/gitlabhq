@@ -1,8 +1,4 @@
-import {
-  APPLICATION_INSTALLABLE,
-  APPLICATION_INSTALLING,
-  APPLICATION_ERROR,
-} from '~/clusters/constants';
+import { APPLICATION_STATUS } from '~/clusters/constants';
 
 const CLUSTERS_MOCK_DATA = {
   GET: {
@@ -12,21 +8,54 @@ const CLUSTERS_MOCK_DATA = {
         status_reason: 'Failed to request to CloudPlatform.',
         applications: [{
           name: 'helm',
-          status: APPLICATION_INSTALLABLE,
+          status: APPLICATION_STATUS.INSTALLABLE,
           status_reason: null,
         }, {
           name: 'ingress',
-          status: APPLICATION_ERROR,
+          status: APPLICATION_STATUS.ERROR,
           status_reason: 'Cannot connect',
           external_ip: null,
         }, {
           name: 'runner',
-          status: APPLICATION_INSTALLING,
+          status: APPLICATION_STATUS.INSTALLING,
           status_reason: null,
         },
         {
           name: 'prometheus',
-          status: APPLICATION_ERROR,
+          status: APPLICATION_STATUS.ERROR,
+          status_reason: 'Cannot connect',
+        }, {
+          name: 'jupyter',
+          status: APPLICATION_STATUS.INSTALLING,
+          status_reason: 'Cannot connect',
+        }],
+      },
+    },
+    '/gitlab-org/gitlab-shell/clusters/2/status.json': {
+      data: {
+        status: 'errored',
+        status_reason: 'Failed to request to CloudPlatform.',
+        applications: [{
+          name: 'helm',
+          status: APPLICATION_STATUS.INSTALLED,
+          status_reason: null,
+        }, {
+          name: 'ingress',
+          status: APPLICATION_STATUS.INSTALLED,
+          status_reason: 'Cannot connect',
+          external_ip: '1.1.1.1',
+        }, {
+          name: 'runner',
+          status: APPLICATION_STATUS.INSTALLING,
+          status_reason: null,
+        },
+        {
+          name: 'prometheus',
+          status: APPLICATION_STATUS.ERROR,
+          status_reason: 'Cannot connect',
+        }, {
+          name: 'jupyter',
+          status: APPLICATION_STATUS.INSTALLABLE,
           status_reason: 'Cannot connect',
         }],
       },
@@ -37,6 +66,7 @@ const CLUSTERS_MOCK_DATA = {
     '/gitlab-org/gitlab-shell/clusters/1/applications/ingress': { },
     '/gitlab-org/gitlab-shell/clusters/1/applications/runner': { },
     '/gitlab-org/gitlab-shell/clusters/1/applications/prometheus': { },
+    '/gitlab-org/gitlab-shell/clusters/1/applications/jupyter': { },
   },
 };
 

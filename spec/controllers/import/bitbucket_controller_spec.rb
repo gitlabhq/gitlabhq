@@ -223,11 +223,12 @@ describe Import::BitbucketController do
     end
 
     context 'user has chosen an existing nested namespace and name for the project', :postgresql do
-      let(:parent_namespace) { create(:group, name: 'foo', owner: user) }
+      let(:parent_namespace) { create(:group, name: 'foo') }
       let(:nested_namespace) { create(:group, name: 'bar', parent: parent_namespace) }
       let(:test_name) { 'test_name' }
 
       before do
+        parent_namespace.add_owner(user)
         nested_namespace.add_owner(user)
       end
 
@@ -273,7 +274,7 @@ describe Import::BitbucketController do
 
     context 'user has chosen existent and non-existent nested namespaces and name for the project', :postgresql do
       let(:test_name) { 'test_name' }
-      let!(:parent_namespace) { create(:group, name: 'foo', owner: user) }
+      let!(:parent_namespace) { create(:group, name: 'foo') }
 
       before do
         parent_namespace.add_owner(user)

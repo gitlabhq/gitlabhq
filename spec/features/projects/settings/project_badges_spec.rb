@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project Badges' do
+describe 'Project Badges' do
   include WaitForRequests
 
   let(:user) { create(:user) }
@@ -12,17 +12,17 @@ feature 'Project Badges' do
   let!(:group_badge) { create(:group_badge, group: group) }
 
   before do
-    group.add_master(user)
+    group.add_maintainer(user)
     sign_in(user)
 
-    visit(project_settings_badges_path(project))
+    visit(edit_project_path(project))
   end
 
   it 'shows a list of badges', :js do
     page.within '.badge-settings' do
       wait_for_requests
 
-      rows = all('.panel-body > div')
+      rows = all('.card-body > div')
       expect(rows.length).to eq 2
       expect(rows[0]).to have_content group_badge.link_url
       expect(rows[1]).to have_content project_badge.link_url
@@ -49,7 +49,7 @@ feature 'Project Badges' do
         click_button 'Add badge'
         wait_for_requests
 
-        within '.panel-body' do
+        within '.card-body' do
           expect(find('a')[:href]).to eq badge_link_url
           expect(find('a img')[:src]).to eq badge_image_url
         end
@@ -61,7 +61,7 @@ feature 'Project Badges' do
     it 'form is shown when clicking edit button in list' do
       page.within '.badge-settings' do
         wait_for_requests
-        rows = all('.panel-body > div')
+        rows = all('.card-body > div')
         expect(rows.length).to eq 2
         rows[1].find('[aria-label="Edit"]').click
 
@@ -75,7 +75,7 @@ feature 'Project Badges' do
     it 'updates a badge when submitting the edit form' do
       page.within '.badge-settings' do
         wait_for_requests
-        rows = all('.panel-body > div')
+        rows = all('.card-body > div')
         expect(rows.length).to eq 2
         rows[1].find('[aria-label="Edit"]').click
         within 'form' do
@@ -86,7 +86,7 @@ feature 'Project Badges' do
           wait_for_requests
         end
 
-        rows = all('.panel-body > div')
+        rows = all('.card-body > div')
         expect(rows.length).to eq 2
         expect(rows[1]).to have_content badge_link_url
       end
@@ -100,7 +100,7 @@ feature 'Project Badges' do
 
     it 'shows a modal when deleting a badge' do
       wait_for_requests
-      rows = all('.panel-body > div')
+      rows = all('.card-body > div')
       expect(rows.length).to eq 2
 
       click_delete_button(rows[1])
@@ -110,14 +110,14 @@ feature 'Project Badges' do
 
     it 'deletes a badge when confirming the modal' do
       wait_for_requests
-      rows = all('.panel-body > div')
+      rows = all('.card-body > div')
       expect(rows.length).to eq 2
       click_delete_button(rows[1])
 
       find('.modal .btn-danger').click
       wait_for_requests
 
-      rows = all('.panel-body > div')
+      rows = all('.card-body > div')
       expect(rows.length).to eq 1
       expect(rows[0]).to have_content group_badge.link_url
     end

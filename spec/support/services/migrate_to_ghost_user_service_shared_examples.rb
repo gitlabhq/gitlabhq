@@ -86,7 +86,7 @@ shared_examples "migrating a deleted user's associated records to the ghost user
       end
 
       it "blocks the user before #{record_class_name} migration begins" do
-        expect(service).to receive("migrate_#{record_class_name.parameterize('_')}s".to_sym) do
+        expect(service).to receive("migrate_#{record_class_name.parameterize('_').pluralize}".to_sym) do
           expect(user.reload).to be_blocked
         end
 

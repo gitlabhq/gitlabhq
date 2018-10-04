@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-feature 'Multi-file editor new directory', :js do
+describe 'Multi-file editor new directory', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     visit project_tree_path(project, :master)
@@ -22,9 +22,7 @@ feature 'Multi-file editor new directory', :js do
   end
 
   it 'creates directory in current directory' do
-    find('.add-to-tree').click
-
-    click_link('New directory')
+    all('.ide-tree-actions button').last.click
 
     page.within('.modal') do
       find('.form-control').set('folder name')
@@ -32,9 +30,7 @@ feature 'Multi-file editor new directory', :js do
       click_button('Create directory')
     end
 
-    find('.add-to-tree').click
-
-    click_link('New file')
+    first('.ide-tree-actions button').click
 
     page.within('.modal-dialog') do
       find('.form-control').set('file name')
@@ -44,9 +40,16 @@ feature 'Multi-file editor new directory', :js do
 
     wait_for_requests
 
+    find('.js-ide-commit-mode').click
+
+    find('.multi-file-commit-list-item').hover
+    click_button 'Stage'
+
     fill_in('commit-message', with: 'commit message ide')
 
     click_button('Commit')
+
+    find('.js-ide-edit-mode').click
 
     expect(page).to have_content('folder name')
   end

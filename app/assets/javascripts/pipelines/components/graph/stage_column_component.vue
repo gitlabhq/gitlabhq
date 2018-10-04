@@ -1,4 +1,5 @@
 <script>
+import _ from 'underscore';
 import JobComponent from './job_component.vue';
 import DropdownJobComponent from './dropdown_job_component.vue';
 
@@ -29,11 +30,6 @@ export default {
       required: false,
       default: '',
     },
-    actionDisabled: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
 
   methods: {
@@ -42,19 +38,23 @@ export default {
     },
 
     jobId(job) {
-      return `ci-badge-${job.name}`;
+      return `ci-badge-${_.escape(job.name)}`;
     },
 
     buildConnnectorClass(index) {
       return index === 0 && !this.isFirstColumn ? 'left-connector' : '';
+    },
+
+    pipelineActionRequestComplete() {
+      this.$emit('refreshPipelineGraph');
     },
   },
 };
 </script>
 <template>
   <li
-    class="stage-column"
-    :class="stageConnectorClass">
+    :class="stageConnectorClass"
+    class="stage-column">
     <div class="stage-name">
       {{ title }}
     </div>
@@ -62,10 +62,10 @@ export default {
       <ul>
         <li
           v-for="(job, index) in jobs"
-          :key="job.id"
-          class="build"
-          :class="buildConnnectorClass(index)"
           :id="jobId(job)"
+          :key="job.id"
+          :class="buildConnnectorClass(index)"
+          class="build"
         >
 
           <div class="curve"></div>
@@ -74,12 +74,13 @@ export default {
             v-if="job.size === 1"
             :job="job"
             css-class-job-name="build-content"
-            :action-disabled="actionDisabled"
+            @pipelineActionRequestComplete="pipelineActionRequestComplete"
           />
 
           <dropdown-job-component
             v-if="job.size > 1"
             :job="job"
+            @pipelineActionRequestComplete="pipelineActionRequestComplete"
           />
 
         </li>

@@ -14,7 +14,7 @@ bundle exec rake gitlab:import:user_to_projects[username@domain.tld] RAILS_ENV=p
 
 Notes:
 
-- admin users are added as masters
+- admin users are added as maintainers
 
 ```bash
 # omnibus-gitlab

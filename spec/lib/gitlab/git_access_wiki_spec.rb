@@ -52,7 +52,9 @@ describe Gitlab::GitAccessWiki do
       context 'when the wiki repository does not exist' do
         it 'returns not found' do
           wiki_repo = project.wiki.repository
-          FileUtils.rm_rf(wiki_repo.path)
+          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            FileUtils.rm_rf(wiki_repo.path)
+          end
 
           # Sanity check for rm_rf
           expect(wiki_repo.exists?).to eq(false)

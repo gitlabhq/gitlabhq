@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "addressable/uri"
 
 class BuildkiteService < CiService
@@ -8,7 +10,7 @@ class BuildkiteService < CiService
   prop_accessor :project_url, :token
   boolean_accessor :enable_ssl_verification
 
-  validates :project_url, presence: true, url: true, if: :activated?
+  validates :project_url, presence: true, public_url: true, if: :activated?
   validates :token, presence: true, if: :activated?
 
   after_save :compose_service_hook, if: :activated?

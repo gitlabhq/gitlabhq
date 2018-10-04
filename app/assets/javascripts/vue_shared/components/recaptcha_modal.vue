@@ -66,10 +66,10 @@
 
 <template>
   <deprecated-modal
-    kind="warning"
-    class="recaptcha-modal js-recaptcha-modal"
     :hide-footer="true"
     :title="__('Please solve the reCAPTCHA')"
+    kind="warning"
+    class="recaptcha-modal js-recaptcha-modal"
     @cancel="close"
   >
     <div slot="body">

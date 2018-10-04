@@ -15,6 +15,8 @@ describe Projects::UpdateService do
     context 'when changing visibility level' do
       context 'when visibility_level is INTERNAL' do
         it 'updates the project to internal' do
+          expect(TodosDestroyer::ProjectPrivateWorker).not_to receive(:perform_in)
+
           result = update_project(project, user, visibility_level: Gitlab::VisibilityLevel::INTERNAL)
 
           expect(result).to eq({ status: :success })
@@ -24,9 +26,27 @@ describe Projects::UpdateService do
 
       context 'when visibility_level is PUBLIC' do
         it 'updates the project to public' do
+          expect(TodosDestroyer::ProjectPrivateWorker).not_to receive(:perform_in)
+
           result = update_project(project, user, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+
           expect(result).to eq({ status: :success })
           expect(project).to be_public
+        end
+      end
+
+      context 'when visibility_level is PRIVATE' do
+        before do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+        end
+
+        it 'updates the project to private' do
+          expect(TodosDestroyer::ProjectPrivateWorker).to receive(:perform_in).with(1.hour, project.id)
+
+          result = update_project(project, user, visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+
+          expect(result).to eq({ status: :success })
+          expect(project).to be_private
         end
       end
 
@@ -38,6 +58,7 @@ describe Projects::UpdateService do
         context 'when visibility_level is INTERNAL' do
           it 'updates the project to internal' do
             result = update_project(project, user, visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+
             expect(result).to eq({ status: :success })
             expect(project).to be_internal
           end
@@ -54,6 +75,7 @@ describe Projects::UpdateService do
           context 'when updated by an admin' do
             it 'updates the project to public' do
               result = update_project(project, admin, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+
               expect(result).to eq({ status: :success })
               expect(project).to be_public
             end
@@ -125,7 +147,7 @@ describe Projects::UpdateService do
 
     context 'when we update project but not enabling a wiki' do
       it 'does not try to create an empty wiki' do
-        FileUtils.rm_rf(project.wiki.repository.path)
+        Gitlab::Shell.new.rm_directory(project.repository_storage, project.wiki.path)
 
         result = update_project(project, user, { name: 'test1' })
 
@@ -146,7 +168,7 @@ describe Projects::UpdateService do
     context 'when enabling a wiki' do
       it 'creates a wiki' do
         project.project_feature.update(wiki_access_level: ProjectFeature::DISABLED)
-        FileUtils.rm_rf(project.wiki.repository.path)
+        Gitlab::Shell.new.rm_directory(project.repository_storage, project.wiki.path)
 
         result = update_project(project, user, project_feature_attributes: { wiki_access_level: ProjectFeature::ENABLED })
 
@@ -163,6 +185,20 @@ describe Projects::UpdateService do
         expect(Gitlab::Metrics).to receive(:counter)
 
         update_project(project, user, project_feature_attributes: { wiki_access_level: ProjectFeature::ENABLED })
+      end
+    end
+
+    context 'when changing feature visibility to private' do
+      it 'updates the visibility correctly' do
+        expect(TodosDestroyer::PrivateFeaturesWorker)
+          .to receive(:perform_in).with(1.hour, project.id)
+
+        result = update_project(project, user, project_feature_attributes:
+                                 { issues_access_level: ProjectFeature::PRIVATE }
+                               )
+
+        expect(result).to eq({ status: :success })
+        expect(project.project_feature.issues_access_level).to be(ProjectFeature::PRIVATE)
       end
     end
 
@@ -200,7 +236,7 @@ describe Projects::UpdateService do
         end
 
         after do
-          gitlab_shell.remove_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+          gitlab_shell.remove_repository(repository_storage, "#{user.namespace.full_path}/existing")
         end
 
         it 'does not allow renaming when new path matches existing repository on disk' do
@@ -211,6 +247,48 @@ describe Projects::UpdateService do
           expect(project).not_to be_valid
           expect(project.errors.messages).to have_key(:base)
           expect(project.errors.messages[:base]).to include('There is already a repository with that name on disk')
+        end
+
+        it 'renames the project without upgrading it' do
+          result = update_project(project, admin, path: 'new-path')
+
+          expect(result).not_to include(status: :error)
+          expect(project).to be_valid
+          expect(project.errors).to be_empty
+          expect(project.disk_path).to include('new-path')
+          expect(project.reload.hashed_storage?(:repository)).to be_falsey
+        end
+
+        context 'when hashed storage is enabled' do
+          before do
+            stub_application_setting(hashed_storage_enabled: true)
+            stub_feature_flags(skip_hashed_storage_upgrade: false)
+          end
+
+          it 'migrates project to a hashed storage instead of renaming the repo to another legacy name' do
+            result = update_project(project, admin, path: 'new-path')
+
+            expect(result).not_to include(status: :error)
+            expect(project).to be_valid
+            expect(project.errors).to be_empty
+            expect(project.reload.hashed_storage?(:repository)).to be_truthy
+          end
+
+          context 'when skip_hashed_storage_upgrade feature flag is enabled' do
+            before do
+              stub_feature_flags(skip_hashed_storage_upgrade: true)
+            end
+
+            it 'renames the project without upgrading it' do
+              result = update_project(project, admin, path: 'new-path')
+
+              expect(result).not_to include(status: :error)
+              expect(project).to be_valid
+              expect(project.errors).to be_empty
+              expect(project.disk_path).to include('new-path')
+              expect(project.reload.hashed_storage?(:repository)).to be_falsey
+            end
+          end
         end
       end
 
@@ -272,6 +350,10 @@ describe Projects::UpdateService do
         allow(project.repository).to receive(:gitlab_ci_yml).and_return("script: ['test']")
       end
 
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when auto devops is nil' do
       it { is_expected.to eq(false) }
     end
 

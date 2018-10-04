@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GitTagPushService < BaseService
   attr_accessor :push_data
 
@@ -7,12 +9,12 @@ class GitTagPushService < BaseService
 
     @push_data = build_push_data
 
-    EventCreateService.new.push(project, current_user, @push_data)
-    Ci::CreatePipelineService.new(project, current_user, @push_data).execute(:push)
+    EventCreateService.new.push(project, current_user, push_data)
+    Ci::CreatePipelineService.new(project, current_user, push_data).execute(:push)
 
-    SystemHooksService.new.execute_hooks(build_system_push_data.dup, :tag_push_hooks)
-    project.execute_hooks(@push_data.dup, :tag_push_hooks)
-    project.execute_services(@push_data.dup, :tag_push_hooks)
+    SystemHooksService.new.execute_hooks(build_system_push_data, :tag_push_hooks)
+    project.execute_hooks(push_data.dup, :tag_push_hooks)
+    project.execute_services(push_data.dup, :tag_push_hooks)
 
     ProjectCacheWorker.perform_async(project.id, [], [:commit_count, :repository_size])
 

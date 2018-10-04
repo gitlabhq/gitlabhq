@@ -4,7 +4,11 @@ describe Projects::ForksController do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
   let(:forked_project) { Projects::ForkService.new(project, user).execute }
-  let(:group) { create(:group, owner: forked_project.creator) }
+  let(:group) { create(:group) }
+
+  before do
+    group.add_owner(user)
+  end
 
   describe 'GET index' do
     def get_forks
@@ -27,7 +31,7 @@ describe Projects::ForksController do
 
     context 'when fork is private' do
       before do
-        forked_project.update_attributes(visibility_level: Project::PRIVATE, group: group)
+        forked_project.update(visibility_level: Project::PRIVATE, group: group)
       end
 
       it 'is not be visible for non logged in users' do

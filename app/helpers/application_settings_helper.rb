@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ApplicationSettingsHelper
   extend self
 
@@ -36,7 +38,7 @@ module ApplicationSettingsHelper
 
   # Return a group of checkboxes that use Bootstrap's button plugin for a
   # toggle button effect.
-  def restricted_level_checkboxes(help_block_id, checkbox_name)
+  def restricted_level_checkboxes(help_block_id, checkbox_name, options = {})
     Gitlab::VisibilityLevel.values.map do |level|
       checked = restricted_visibility_levels(true).include?(level)
       css_class = checked ? 'active' : ''
@@ -46,6 +48,7 @@ module ApplicationSettingsHelper
         check_box_tag(checkbox_name, level, checked,
                       autocomplete: 'off',
                       'aria-describedby' => help_block_id,
+                      'class' => options[:class],
                       id: tag_name) + visibility_level_icon(level) + visibility_level_label(level)
       end
     end
@@ -53,7 +56,7 @@ module ApplicationSettingsHelper
 
   # Return a group of checkboxes that use Bootstrap's button plugin for a
   # toggle button effect.
-  def import_sources_checkboxes(help_block_id)
+  def import_sources_checkboxes(help_block_id, options = {})
     Gitlab::ImportSources.options.map do |name, source|
       checked = Gitlab::CurrentSettings.import_sources.include?(source)
       css_class = checked ? 'active' : ''
@@ -63,6 +66,7 @@ module ApplicationSettingsHelper
         check_box_tag(checkbox_name, source, checked,
                       autocomplete: 'off',
                       'aria-describedby' => help_block_id,
+                      'class' => options[:class],
                       id: name.tr(' ', '_')) + name
       end
     end
@@ -71,12 +75,12 @@ module ApplicationSettingsHelper
   def oauth_providers_checkboxes
     button_based_providers.map do |source|
       disabled = Gitlab::CurrentSettings.disabled_oauth_sign_in_sources.include?(source.to_s)
-      css_class = 'btn'
-      css_class << ' active' unless disabled
+      css_class = ['btn']
+      css_class << 'active' unless disabled
       checkbox_name = 'application_setting[enabled_oauth_sign_in_sources][]'
       name = Gitlab::Auth::OAuth::Provider.label_for(source)
 
-      label_tag(checkbox_name, class: css_class) do
+      label_tag(checkbox_name, class: css_class.join(' ')) do
         check_box_tag(checkbox_name, source, !disabled,
                       autocomplete: 'off',
                       id: name.tr(' ', '_')) + name
@@ -102,10 +106,6 @@ module ApplicationSettingsHelper
     end
 
     options_for_select(options, selected)
-  end
-
-  def sidekiq_queue_options_for_select
-    options_for_select(Sidekiq::Queue.all.map(&:name), @application_setting.sidekiq_throttling_queues)
   end
 
   def circuitbreaker_failure_count_help_text
@@ -146,6 +146,7 @@ module ApplicationSettingsHelper
       :after_sign_up_text,
       :akismet_api_key,
       :akismet_enabled,
+      :allow_local_requests_from_hooks_and_services,
       :authorized_keys_enabled,
       :auto_devops_enabled,
       :auto_devops_domain,
@@ -172,6 +173,7 @@ module ApplicationSettingsHelper
       :ed25519_key_restriction,
       :email_author_in_body,
       :enabled_git_access_protocol,
+      :enforce_terms,
       :gitaly_timeout_default,
       :gitaly_timeout_medium,
       :gitaly_timeout_fast,
@@ -180,6 +182,7 @@ module ApplicationSettingsHelper
       :help_page_hide_commercial_content,
       :help_page_support_url,
       :help_page_text,
+      :hide_third_party_offers,
       :home_page_url,
       :housekeeping_bitmaps_enabled,
       :housekeeping_enabled,
@@ -201,10 +204,11 @@ module ApplicationSettingsHelper
       :metrics_port,
       :metrics_sample_interval,
       :metrics_timeout,
+      :mirror_available,
       :pages_domain_verification_enabled,
       :password_authentication_enabled_for_web,
       :password_authentication_enabled_for_git,
-      :performance_bar_allowed_group_id,
+      :performance_bar_allowed_group_path,
       :performance_bar_enabled,
       :plantuml_enabled,
       :plantuml_url,
@@ -214,6 +218,7 @@ module ApplicationSettingsHelper
       :recaptcha_enabled,
       :recaptcha_private_key,
       :recaptcha_site_key,
+      :receive_max_input_size,
       :repository_checks_enabled,
       :repository_storages,
       :require_two_factor_authentication,
@@ -225,30 +230,36 @@ module ApplicationSettingsHelper
       :session_expire_delay,
       :shared_runners_enabled,
       :shared_runners_text,
-      :sidekiq_throttling_enabled,
-      :sidekiq_throttling_factor,
-      :sidekiq_throttling_queues,
       :sign_in_text,
       :signup_enabled,
       :terminal_max_session_time,
-      :throttle_unauthenticated_enabled,
-      :throttle_unauthenticated_requests_per_period,
-      :throttle_unauthenticated_period_in_seconds,
-      :throttle_authenticated_web_enabled,
-      :throttle_authenticated_web_requests_per_period,
-      :throttle_authenticated_web_period_in_seconds,
+      :terms,
       :throttle_authenticated_api_enabled,
-      :throttle_authenticated_api_requests_per_period,
       :throttle_authenticated_api_period_in_seconds,
+      :throttle_authenticated_api_requests_per_period,
+      :throttle_authenticated_web_enabled,
+      :throttle_authenticated_web_period_in_seconds,
+      :throttle_authenticated_web_requests_per_period,
+      :throttle_unauthenticated_enabled,
+      :throttle_unauthenticated_period_in_seconds,
+      :throttle_unauthenticated_requests_per_period,
       :two_factor_grace_period,
       :unique_ips_limit_enabled,
       :unique_ips_limit_per_user,
       :unique_ips_limit_time_window,
       :usage_ping_enabled,
+      :instance_statistics_visibility_private,
       :user_default_external,
+      :user_show_add_ssh_key_message,
+      :user_default_internal_regex,
       :user_oauth_applications,
       :version_check_enabled,
-      :allow_local_requests_from_hooks_and_services
+      :web_ide_clientside_preview_enabled,
+      :diff_max_patch_bytes
     ]
+  end
+
+  def expanded_by_default?
+    Rails.env.test?
   end
 end

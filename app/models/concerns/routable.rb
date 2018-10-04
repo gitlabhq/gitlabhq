@@ -1,10 +1,14 @@
+# frozen_string_literal: true
+
 # Store object full path in separate table for easy lookup and uniq validation
 # Object must have name and path db fields and respond to parent and parent_changed? methods.
 module Routable
   extend ActiveSupport::Concern
 
   included do
-    has_one :route, as: :source, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+    # Remove `inverse_of: source` when upgraded to rails 5.2
+    # See https://github.com/rails/rails/pull/28808
+    has_one :route, as: :source, autosave: true, dependent: :destroy, inverse_of: :source # rubocop:disable Cop/ActiveRecordDependent
     has_many :redirect_routes, as: :source, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
     validates :route, presence: true
@@ -88,32 +92,15 @@ module Routable
   end
 
   def full_name
-    if route && route.name.present?
-      @full_name ||= route.name # rubocop:disable Gitlab/ModuleWithInstanceVariables
-    else
-      update_route if persisted?
-
-      build_full_name
-    end
+    route&.name || build_full_name
   end
 
-  # Every time `project.namespace.becomes(Namespace)` is called for polymorphic_path,
-  # a new instance is instantiated, and we end up duplicating the same query to retrieve
-  # the route. Caching this per request ensures that even if we have multiple instances,
-  # we will not have to duplicate work, avoiding N+1 queries in some cases.
   def full_path
-    return uncached_full_path unless RequestStore.active?
-
-    RequestStore[full_path_key] ||= uncached_full_path
+    route&.path || build_full_path
   end
 
   def full_path_components
     full_path.split('/')
-  end
-
-  def expires_full_path_cache
-    RequestStore.delete(full_path_key) if RequestStore.active?
-    @full_path = nil # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
   def build_full_path
@@ -124,21 +111,16 @@ module Routable
     end
   end
 
+  # Group would override this to check from association
+  def owned_by?(user)
+    owner == user
+  end
+
   private
 
   def set_path_errors
     route_path_errors = self.errors.delete(:"route.path")
     self.errors[:path].concat(route_path_errors) if route_path_errors
-  end
-
-  def uncached_full_path
-    if route && route.path.present?
-      @full_path ||= route.path # rubocop:disable Gitlab/ModuleWithInstanceVariables
-    else
-      update_route if persisted?
-
-      build_full_path
-    end
   end
 
   def full_name_changed?
@@ -149,10 +131,6 @@ module Routable
     path_changed? || parent_changed?
   end
 
-  def full_path_key
-    @full_path_key ||= "routable/full_path/#{self.class.name}/#{self.id}"
-  end
-
   def build_full_name
     if parent && name
       parent.human_name + ' / ' + name
@@ -161,18 +139,9 @@ module Routable
     end
   end
 
-  def update_route
-    return if Gitlab::Database.read_only?
-
-    prepare_route
-    route.save
-  end
-
   def prepare_route
     route || build_route(source: self)
     route.path = build_full_path
     route.name = build_full_name
-    @full_path = nil # rubocop:disable Gitlab/ModuleWithInstanceVariables
-    @full_name = nil # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 end

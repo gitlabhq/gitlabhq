@@ -1,56 +1,47 @@
 <script>
-  import eventHub from '../eventhub';
-  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+import eventHub from '../eventhub';
 
-  export default {
-    components: {
-      loadingIcon,
+export default {
+  props: {
+    deployKey: {
+      type: Object,
+      required: true,
     },
-    props: {
-      deployKey: {
-        type: Object,
-        required: true,
-      },
-      type: {
-        type: String,
-        required: true,
-      },
-      btnCssClass: {
-        type: String,
-        required: false,
-        default: 'btn-default',
-      },
+    type: {
+      type: String,
+      required: true,
     },
-    data() {
-      return {
-        isLoading: false,
-      };
+    btnCssClass: {
+      type: String,
+      required: false,
+      default: 'btn-default',
     },
-    computed: {
-      text() {
-        return `${this.type.charAt(0).toUpperCase()}${this.type.slice(1)}`;
-      },
-    },
-    methods: {
-      doAction() {
-        this.isLoading = true;
+  },
+  data() {
+    return {
+      isLoading: false,
+    };
+  },
+  methods: {
+    doAction() {
+      this.isLoading = true;
 
-        eventHub.$emit(`${this.type}.key`, this.deployKey, () => {
-          this.isLoading = false;
-        });
-      },
+      eventHub.$emit(`${this.type}.key`, this.deployKey, () => {
+        this.isLoading = false;
+      });
     },
-  };
+  },
+};
 </script>
 
 <template>
   <button
-    class="btn btn-sm prepend-left-10"
     :class="[{ disabled: isLoading }, btnCssClass]"
     :disabled="isLoading"
+    class="btn"
     @click="doAction">
-    {{ text }}
-    <loading-icon
+    <slot></slot>
+    <gl-loading-icon
       v-if="isLoading"
       :inline="true"
     />

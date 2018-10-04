@@ -41,7 +41,12 @@ module ActiveRecord
     # Abstract representation of an index definition on a table. Instances of
     # this type are typically created and returned by methods in database
     # adapters. e.g. ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter#indexes
-    class IndexDefinition < Struct.new(:table, :name, :unique, :columns, :lengths, :orders, :where, :type, :using, :opclasses) #:nodoc:
+    attrs = [:table, :name, :unique, :columns, :lengths, :orders, :where, :type, :using, :opclasses]
+
+    # In Rails 5 the second last attribute is newly `:comment`
+    attrs.insert(-2, :comment) if Gitlab.rails5?
+
+    class IndexDefinition < Struct.new(*attrs) #:nodoc:
     end
   end
 end
@@ -107,8 +112,15 @@ module ActiveRecord
 
           result.map do |row|
             index_name = row[0]
-            unique = row[1] == 't'
+            unique = if Gitlab.rails5?
+                       row[1]
+                     else
+                       row[1] == 't'
+                     end
             indkey = row[2].split(" ")
+            if Gitlab.rails5?
+              indkey = indkey.map(&:to_i)
+            end
             inddef = row[3]
             oid = row[4]
 
@@ -132,7 +144,10 @@ module ActiveRecord
                                  [column, opclass] if opclass
                                end.compact]
 
-              IndexDefinition.new(table_name, index_name, unique, column_names, [], orders, where, nil, using, opclasses)
+              index_attrs = [table_name, index_name, unique, column_names, [], orders, where, nil, using, opclasses]
+              index_attrs.insert(-2, nil) if Gitlab.rails5? # include index comment for Rails 5
+
+              IndexDefinition.new(*index_attrs)
             end
           end.compact
         end
@@ -160,29 +175,42 @@ module ActiveRecord
       def indexes(table, stream)
         if (indexes = @connection.indexes(table)).any?
           add_index_statements = indexes.map do |index|
-            statement_parts = [
-              "add_index #{remove_prefix_and_suffix(index.table).inspect}",
-              index.columns.inspect,
-              "name: #{index.name.inspect}",
-            ]
-            statement_parts << 'unique: true' if index.unique
-
-            index_lengths = (index.lengths || []).compact
-            statement_parts << "length: #{Hash[index.columns.zip(index.lengths)].inspect}" if index_lengths.any?
-
-            index_orders = index.orders || {}
-            statement_parts << "order: #{index.orders.inspect}" if index_orders.any?
-            statement_parts << "where: #{index.where.inspect}" if index.where
-            statement_parts << "using: #{index.using.inspect}" if index.using
-            statement_parts << "type: #{index.type.inspect}" if index.type
-            statement_parts << "opclasses: #{index.opclasses}" if index.opclasses.present?
-
-            "  #{statement_parts.join(', ')}"
+            table_name = remove_prefix_and_suffix(index.table).inspect
+            "  add_index #{([table_name]+index_parts(index)).join(', ')}"
           end
 
           stream.puts add_index_statements.sort.join("\n")
           stream.puts
         end
+      end
+
+      def indexes_in_create(table, stream)
+        if (indexes = @connection.indexes(table)).any?
+          index_statements = indexes.map do |index|
+            "    t.index #{index_parts(index).join(', ')}"
+          end
+          stream.puts index_statements.sort.join("\n")
+        end
+      end
+
+      def index_parts(index)
+        index_parts = [
+          index.columns.inspect,
+          "name: #{index.name.inspect}",
+        ]
+        index_parts << "unique: true" if index.unique
+        index_parts << "length: { #{format_options(index.lengths)} }" if index.lengths.present?
+        index_parts << "order: { #{format_options(index.orders)} }" if index.orders.present?
+        index_parts << "where: #{index.where.inspect}" if index.where
+        index_parts << "using: #{index.using.inspect}" if index.using
+        index_parts << "type: #{index.type.inspect}" if index.type
+        index_parts << "opclasses: #{index.opclasses.inspect}" if index.opclasses.present?
+        index_parts << "comment: #{index.comment.inspect}" if Gitlab.rails5? && index.comment
+        index_parts
+      end
+
+      def format_options(options)
+        options.map { |key, value| "#{key}: #{value.inspect}" }.join(", ")
       end
   end
 end

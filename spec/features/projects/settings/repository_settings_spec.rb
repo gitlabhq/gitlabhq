@@ -20,8 +20,8 @@ describe 'Projects > Settings > Repository settings' do
     end
   end
 
-  context 'for master' do
-    let(:role) { :master }
+  context 'for maintainer' do
+    let(:role) { :maintainer }
 
     context 'Deploy Keys', :js do
       let(:private_deploy_key) { create(:deploy_key, title: 'private_deploy_key', public: false) }
@@ -54,7 +54,7 @@ describe 'Projects > Settings > Repository settings' do
         project.deploy_keys << private_deploy_key
         visit project_settings_repository_path(project)
 
-        find('li', text: private_deploy_key.title).click_link('Edit')
+        find('.deploy-key', text: private_deploy_key.title).find('.ic-pencil').click()
 
         fill_in 'deploy_key_title', with: 'updated_deploy_key'
         check 'deploy_key_deploy_keys_projects_attributes_0_can_push'
@@ -71,10 +71,14 @@ describe 'Projects > Settings > Repository settings' do
 
         visit project_settings_repository_path(project)
 
-        find('li', text: private_deploy_key.title).click_link('Edit')
+        find('.js-deployKeys-tab-available_project_keys').click()
+
+        find('.deploy-key', text: private_deploy_key.title).find('.ic-pencil').click()
 
         fill_in 'deploy_key_title', with: 'updated_deploy_key'
         click_button 'Save changes'
+
+        find('.js-deployKeys-tab-available_project_keys').click()
 
         expect(page).to have_content('updated_deploy_key')
       end
@@ -83,7 +87,7 @@ describe 'Projects > Settings > Repository settings' do
         project.deploy_keys << private_deploy_key
         visit project_settings_repository_path(project)
 
-        accept_confirm { find('li', text: private_deploy_key.title).click_button('Remove') }
+        accept_confirm { find('.deploy-key', text: private_deploy_key.title).find('.ic-remove').click() }
 
         expect(page).not_to have_content(private_deploy_key.title)
       end
@@ -97,7 +101,7 @@ describe 'Projects > Settings > Repository settings' do
         visit project_settings_repository_path(project)
       end
 
-      scenario 'view deploy tokens' do
+      it 'view deploy tokens' do
         within('.deploy-tokens') do
           expect(page).to have_content(deploy_token.name)
           expect(page).to have_content('read_repository')
@@ -105,7 +109,7 @@ describe 'Projects > Settings > Repository settings' do
         end
       end
 
-      scenario 'add a new deploy token' do
+      it 'add a new deploy token' do
         fill_in 'deploy_token_name', with: 'new_deploy_key'
         fill_in 'deploy_token_expires_at', with: (Date.today + 1.month).to_s
         check 'deploy_token_read_repository'
@@ -113,6 +117,20 @@ describe 'Projects > Settings > Repository settings' do
         click_button 'Create deploy token'
 
         expect(page).to have_content('Your new project deploy token has been created')
+      end
+    end
+
+    context 'remote mirror settings' do
+      let(:user2) { create(:user) }
+
+      before do
+        project.add_maintainer(user2)
+
+        visit project_settings_repository_path(project)
+      end
+
+      it 'shows push mirror settings', :js do
+        expect(page).to have_selector('#mirror_direction')
       end
     end
   end

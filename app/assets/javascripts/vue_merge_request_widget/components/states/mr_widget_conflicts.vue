@@ -20,8 +20,8 @@
 <template>
   <div class="mr-widget-body media">
     <status-icon
-      status="warning"
       :show-disabled-button="true"
+      status="warning"
     />
 
     <div class="media-body space-children">
@@ -43,13 +43,13 @@ To merge this request, first rebase locally.`) }}
         <a
           v-if="mr.canMerge && mr.conflictResolutionPath"
           :href="mr.conflictResolutionPath"
-          class="js-resolve-conflicts-button btn btn-default btn-xs"
+          class="js-resolve-conflicts-button btn btn-default btn-sm"
         >
           {{ s__("mrWidget|Resolve conflicts") }}
         </a>
         <button
           v-if="mr.canMerge"
-          class="js-merge-locally-button btn btn-default btn-xs"
+          class="js-merge-locally-button btn btn-default btn-sm"
           data-toggle="modal"
           data-target="#modal_merge_info"
         >

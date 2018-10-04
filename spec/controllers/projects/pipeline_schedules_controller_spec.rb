@@ -121,7 +121,7 @@ describe Projects::PipelineSchedulesController do
 
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_allowed_for(:developer).of(project) }
       it { expect { go }.to be_denied_for(:reporter).of(project) }
       it { expect { go }.to be_denied_for(:guest).of(project) }
@@ -274,7 +274,7 @@ describe Projects::PipelineSchedulesController do
 
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_allowed_for(:developer).of(project).own(pipeline_schedule) }
       it { expect { go }.to be_denied_for(:reporter).of(project) }
       it { expect { go }.to be_denied_for(:guest).of(project) }
@@ -292,27 +292,37 @@ describe Projects::PipelineSchedulesController do
 
         it { expect { go }.to be_allowed_for(developer_1) }
         it { expect { go }.to be_denied_for(:developer).of(project) }
-        it { expect { go }.to be_allowed_for(:master).of(project) }
+        it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       end
 
-      context 'when a master created a pipeline schedule' do
-        let(:master_1) { create(:user) }
-        let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: master_1) }
+      context 'when a maintainer created a pipeline schedule' do
+        let(:maintainer_1) { create(:user) }
+        let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: maintainer_1) }
 
         before do
-          project.add_master(master_1)
+          project.add_maintainer(maintainer_1)
         end
 
-        it { expect { go }.to be_allowed_for(master_1) }
-        it { expect { go }.to be_allowed_for(:master).of(project) }
+        it { expect { go }.to be_allowed_for(maintainer_1) }
+        it { expect { go }.to be_allowed_for(:maintainer).of(project) }
         it { expect { go }.to be_denied_for(:developer).of(project) }
       end
     end
 
     def go
-      put :update, namespace_id: project.namespace.to_param,
-                   project_id: project, id: pipeline_schedule,
-                   schedule: schedule
+      if Gitlab.rails5?
+        put :update, params: { namespace_id: project.namespace.to_param,
+                               project_id: project,
+                               id: pipeline_schedule,
+                               schedule: schedule },
+                     as: :html
+
+      else
+        put :update, namespace_id: project.namespace.to_param,
+                     project_id: project,
+                     id: pipeline_schedule,
+                     schedule: schedule
+      end
     end
   end
 
@@ -321,7 +331,7 @@ describe Projects::PipelineSchedulesController do
       let(:user) { create(:user) }
 
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         sign_in(user)
       end
 
@@ -336,7 +346,7 @@ describe Projects::PipelineSchedulesController do
     describe 'security' do
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_allowed_for(:developer).of(project).own(pipeline_schedule) }
       it { expect { go }.to be_denied_for(:reporter).of(project) }
       it { expect { go }.to be_denied_for(:guest).of(project) }
@@ -354,7 +364,7 @@ describe Projects::PipelineSchedulesController do
     describe 'security' do
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_allowed_for(:developer).of(project).own(pipeline_schedule) }
       it { expect { go }.to be_denied_for(:reporter).of(project) }
       it { expect { go }.to be_denied_for(:guest).of(project) }
@@ -443,9 +453,9 @@ describe Projects::PipelineSchedulesController do
       end
     end
 
-    context 'when a master makes the request' do
+    context 'when a maintainer makes the request' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         sign_in(user)
       end
 

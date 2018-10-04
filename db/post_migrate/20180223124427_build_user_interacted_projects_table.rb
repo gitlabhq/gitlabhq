@@ -43,8 +43,6 @@ class BuildUserInteractedProjectsTable < ActiveRecord::Migration
     end
   end
 
-  private
-
   class PostgresStrategy < ActiveRecord::Migration
     include Gitlab::Database::MigrationHelpers
 
@@ -79,6 +77,7 @@ class BuildUserInteractedProjectsTable < ActiveRecord::Migration
     end
 
     private
+
     def insert_missing_records
       iteration = 0
       records = 0

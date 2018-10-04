@@ -107,8 +107,8 @@ export default {
     <div class="state-button">
       <a
         v-if="currentState.buttonPath"
-        class="btn btn-success"
         :href="currentState.buttonPath"
+        class="btn btn-success"
       >
         {{ currentState.buttonText }}
       </a>
@@ -116,8 +116,8 @@ export default {
     <div class="state-button">
       <a
         v-if="currentState.secondaryButtonPath"
-        class="btn"
         :href="currentState.secondaryButtonPath"
+        class="btn"
       >
         {{ currentState.secondaryButtonText }}
       </a>

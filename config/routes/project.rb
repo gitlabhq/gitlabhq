@@ -109,6 +109,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           post :assign_related_issues
           get :discussions, format: :json
           post :rebase
+          get :test_reports
 
           scope constraints: { format: nil }, action: :show do
             get :commits, defaults: { tab: 'commits' }
@@ -144,7 +145,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      controller 'merge_requests/creations', path: 'merge_requests' do
+      scope path: 'merge_requests', controller: 'merge_requests/creations' do
         post '', action: :create, as: nil
 
         scope path: 'new', as: :new_merge_request do
@@ -161,7 +162,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
 
           get :diff_for_path
-          get :update_branches
           get :branch_from
           get :branch_to
         end
@@ -175,6 +175,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      resource :mirror, only: [:show, :update] do
+        member do
+          post :update_now
+        end
+      end
+
       resources :pipelines, only: [:index, :new, :create, :show] do
         collection do
           resource :pipelines_settings, path: 'settings', only: [:show, :update]
@@ -183,6 +189,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         member do
           get :stage
+          get :stage_ajax
           post :cancel
           post :retry
           get :builds
@@ -200,14 +207,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       resources :clusters, except: [:edit, :create] do
         collection do
-          scope :providers do
-            get '/user/new', to: 'clusters/user#new'
-            post '/user', to: 'clusters/user#create'
-
-            get '/gcp/new', to: 'clusters/gcp#new'
-            get '/gcp/login', to: 'clusters/gcp#login'
-            post '/gcp', to: 'clusters/gcp#create'
-          end
+          post :create_gcp
+          post :create_user
         end
 
         member do
@@ -229,6 +230,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
 
         collection do
+          get :metrics, action: :metrics_redirect
           get :folder, path: 'folders/*id', constraints: { format: /(html|json)/ }
         end
 
@@ -278,6 +280,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             post :erase
             get :trace, defaults: { format: 'json' }
             get :raw
+            get :terminal
+            get '/terminal.ws/authorize', to: 'jobs#terminal_websocket_authorize', constraints: { format: nil }
           end
 
           resource :artifacts, only: [] do
@@ -298,12 +302,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do
         member do
-          get :test
+          post :test
         end
 
         resources :hook_logs, only: [:show] do
           member do
-            get :retry
+            post :retry
           end
         end
       end
@@ -347,6 +351,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      get :issues, to: 'issues#calendar', constraints: lambda { |req| req.format == :ics }
       resources :issues, concerns: :awardable, constraints: { id: /\d+/ } do
         member do
           post :toggle_subscription
@@ -399,6 +404,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       resources :uploads, only: [:create] do
         collection do
           get ":secret/:filename", action: :show, as: :show, constraints: { filename: %r{[^/]+} }
+          post :authorize
         end
       end
 
@@ -410,6 +416,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         collection do
           post :toggle_shared_runners
+          post :toggle_group_runners
         end
       end
 
@@ -435,7 +442,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resource :repository, only: [:show], controller: :repository do
           post :create_deploy_token, path: 'deploy_token/create'
         end
-        resources :badges, only: [:index]
       end
 
       # Since both wiki and repository routing contains wildcard characters

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class ProjectMilestones < Grape::API
     include PaginationParams
@@ -64,7 +66,8 @@ module API
       delete ":id/milestones/:milestone_id" do
         authorize! :admin_milestone, user_project
 
-        user_project.milestones.find(params[:milestone_id]).destroy
+        milestone = user_project.milestones.find(params[:milestone_id])
+        Milestones::DestroyService.new(user_project, current_user).execute(milestone)
 
         status(204)
       end

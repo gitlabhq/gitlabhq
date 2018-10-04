@@ -3,14 +3,14 @@ import jobComponent from '~/pipelines/components/graph/job_component.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('pipeline graph job component', () => {
-  let JobComponent;
+  const JobComponent = Vue.extend(jobComponent);
   let component;
 
   const mockJob = {
     id: 4256,
     name: 'test',
     status: {
-      icon: 'icon_status_success',
+      icon: 'status_success',
       text: 'passed',
       label: 'passed',
       tooltip: 'passed',
@@ -25,10 +25,6 @@ describe('pipeline graph job component', () => {
       },
     },
   };
-
-  beforeEach(() => {
-    JobComponent = Vue.extend(jobComponent);
-  });
 
   afterEach(() => {
     component.$destroy();
@@ -65,7 +61,7 @@ describe('pipeline graph job component', () => {
           id: 4257,
           name: 'test',
           status: {
-            icon: 'icon_status_success',
+            icon: 'status_success',
             text: 'passed',
             label: 'passed',
             group: 'success',
@@ -93,17 +89,6 @@ describe('pipeline graph job component', () => {
     });
   });
 
-  describe('dropdown', () => {
-    it('should render the dropdown action icon', () => {
-      component = mountComponent(JobComponent, {
-        job: mockJob,
-        isDropdown: true,
-      });
-
-      expect(component.$el.querySelector('a.ci-action-icon-wrapper')).toBeDefined();
-    });
-  });
-
   it('should render provided class name', () => {
     component = mountComponent(JobComponent, {
       job: mockJob,
@@ -122,7 +107,7 @@ describe('pipeline graph job component', () => {
           id: 4258,
           name: 'test',
           status: {
-            icon: 'icon_status_success',
+            icon: 'status_success',
           },
         },
       });
@@ -136,7 +121,7 @@ describe('pipeline graph job component', () => {
           id: 4259,
           name: 'test',
           status: {
-            icon: 'icon_status_success',
+            icon: 'status_success',
             label: 'success',
             tooltip: 'success',
           },
@@ -144,6 +129,36 @@ describe('pipeline graph job component', () => {
       });
 
       expect(component.$el.querySelector('.js-job-component-tooltip').getAttribute('data-original-title')).toEqual('test - success');
+    });
+  });
+
+  describe('tooltip placement', () => {
+    const tooltipBoundary = 'a[data-boundary="viewport"]';
+
+    it('does not set tooltip boundary by default', () => {
+      component = mountComponent(JobComponent, {
+        job: mockJob,
+      });
+
+      expect(component.$el.querySelector(tooltipBoundary)).toBeNull();
+    });
+
+    it('sets tooltip boundary to viewport for small dropdowns', () => {
+      component = mountComponent(JobComponent, {
+        job: mockJob,
+        dropdownLength: 1,
+      });
+
+      expect(component.$el.querySelector(tooltipBoundary)).not.toBeNull();
+    });
+
+    it('does not set tooltip boundary for large lists', () => {
+      component = mountComponent(JobComponent, {
+        job: mockJob,
+        dropdownLength: 7,
+      });
+
+      expect(component.$el.querySelector(tooltipBoundary)).toBeNull();
     });
   });
 });

@@ -31,6 +31,7 @@ module Gitlab
       deploy.html
       explore
       favicon.ico
+      favicon.png
       files
       groups
       health_check
@@ -39,6 +40,7 @@ module Gitlab
       invites
       jwt
       koding
+      login
       notification_settings
       oauth
       profile

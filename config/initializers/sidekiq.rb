@@ -1,3 +1,9 @@
+require 'sidekiq/web'
+
+# Disable the Sidekiq Rack session since GitLab already has its own session store.
+# CSRF protection still works (https://github.com/mperham/sidekiq/commit/315504e766c4fd88a29b7772169060afc4c40329).
+Sidekiq::Web.set :sessions, false
+
 # Custom Queues configuration
 queues_config_hash = Gitlab::Redis::Queues.params
 queues_config_hash[:namespace] = Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE
@@ -8,6 +14,8 @@ Sidekiq.default_worker_options = { retry: 3 }
 enable_json_logs = Gitlab.config.sidekiq.log_format == 'json'
 
 Sidekiq.configure_server do |config|
+  require 'rbtrace' if ENV['ENABLE_RBTRACE']
+
   config.redis = queues_config_hash
 
   config.server_middleware do |chain|
@@ -46,8 +54,6 @@ Sidekiq.configure_server do |config|
     end
   end
   Sidekiq::Cron::Job.load_from_hash! cron_jobs
-
-  Gitlab::SidekiqThrottler.execute!
 
   Gitlab::SidekiqVersioning.install!
 

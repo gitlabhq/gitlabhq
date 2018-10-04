@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 class DeployKey < Key
   include IgnorableColumn
 
   has_many :deploy_keys_projects, inverse_of: :deploy_key, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :projects, -> { auto_include(false) }, through: :deploy_keys_projects
+  has_many :projects, through: :deploy_keys_projects
 
   scope :in_projects, ->(projects) { joins(:deploy_keys_projects).where('deploy_keys_projects.project_id in (?)', projects) }
   scope :are_public,  -> { where(public: true) }
@@ -16,7 +18,7 @@ class DeployKey < Key
   end
 
   def orphaned?
-    self.deploy_keys_projects.length == 0
+    self.deploy_keys_projects.empty?
   end
 
   def almost_orphaned?

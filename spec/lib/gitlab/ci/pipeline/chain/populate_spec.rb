@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Pipeline::Chain::Populate do
-  set(:project) { create(:project) }
+  set(:project) { create(:project, :repository) }
   set(:user) { create(:user) }
 
   let(:pipeline) do
@@ -35,17 +35,16 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
     it 'populates pipeline with stages' do
       expect(pipeline.stages).to be_one
       expect(pipeline.stages.first).not_to be_persisted
-    end
-
-    it 'populates pipeline with builds' do
-      expect(pipeline.builds).to be_one
-      expect(pipeline.builds.first).not_to be_persisted
       expect(pipeline.stages.first.builds).to be_one
       expect(pipeline.stages.first.builds.first).not_to be_persisted
     end
 
     it 'correctly assigns user' do
       expect(pipeline.builds).to all(have_attributes(user: user))
+    end
+
+    it 'has pipeline iid' do
+      expect(pipeline.iid).to be > 0
     end
   end
 
@@ -73,6 +72,10 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
       expect(pipeline.errors.to_a)
         .to include 'No stages / jobs for this pipeline.'
     end
+
+    it 'wastes pipeline iid' do
+      expect(InternalId.ci_pipelines.where(project_id: project.id).last.last_value).to be > 0
+    end
   end
 
   context 'when pipeline has validation errors' do
@@ -91,6 +94,10 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
     it 'appends validation error' do
       expect(pipeline.errors.to_a)
         .to include 'Failed to build the pipeline!'
+    end
+
+    it 'wastes pipeline iid' do
+      expect(InternalId.ci_pipelines.where(project_id: project.id).last.last_value).to be > 0
     end
   end
 
@@ -116,6 +123,12 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
         expect(pipeline.variables.first.key).to eq 'VAR'
         expect(pipeline.variables.first.value).to eq '123'
       end
+
+      it 'has pipeline iid' do
+        step.perform!
+
+        expect(pipeline.iid).to be > 0
+      end
     end
 
     context 'when seeds block tries to persist some resources' do
@@ -125,6 +138,12 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
 
       it 'raises exception' do
         expect { step.perform! }.to raise_error(ActiveRecord::RecordNotSaved)
+      end
+
+      it 'wastes pipeline iid' do
+        expect { step.perform! }.to raise_error
+
+        expect(InternalId.ci_pipelines.where(project_id: project.id).last.last_value).to be > 0
       end
     end
   end
@@ -137,22 +156,39 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
     end
   end
 
-  context 'when using only/except build policies' do
-    let(:config) do
-      { rspec: { script: 'rspec', stage: 'test', only: ['master'] },
-        prod: { script: 'cap prod', stage: 'deploy', only: ['tags'] } }
+  context 'when variables policy is specified' do
+    shared_examples_for 'a correct pipeline' do
+      it 'populates pipeline according to used policies' do
+        step.perform!
+
+        expect(pipeline.stages.size).to eq 1
+        expect(pipeline.stages.first.builds.size).to eq 1
+        expect(pipeline.stages.first.builds.first.name).to eq 'rspec'
+      end
     end
 
-    let(:pipeline) do
-      build(:ci_pipeline, ref: 'master', config: config)
-    end
+    context 'when using only/except build policies' do
+      let(:config) do
+        { rspec: { script: 'rspec', stage: 'test', only: ['master'] },
+          prod: { script: 'cap prod', stage: 'deploy', only: ['tags'] } }
+      end
 
-    it 'populates pipeline according to used policies' do
-      step.perform!
+      let(:pipeline) do
+        build(:ci_pipeline, ref: 'master', project: project, config: config)
+      end
 
-      expect(pipeline.stages.size).to eq 1
-      expect(pipeline.builds.size).to eq 1
-      expect(pipeline.builds.first.name).to eq 'rspec'
+      it_behaves_like 'a correct pipeline'
+
+      context 'when variables expression is specified' do
+        context 'when pipeline iid is the subject' do
+          let(:config) do
+            { rspec: { script: 'rspec', only: { variables: ["$CI_PIPELINE_IID == '1'"] } },
+              prod: { script: 'cap prod', only: { variables: ["$CI_PIPELINE_IID == '1000'"] } } }
+          end
+
+          it_behaves_like 'a correct pipeline'
+        end
+      end
     end
   end
 end

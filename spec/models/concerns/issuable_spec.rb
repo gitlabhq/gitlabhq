@@ -12,6 +12,7 @@ describe Issuable do
     it { is_expected.to belong_to(:author) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
+    it { is_expected.to have_many(:labels) }
 
     context 'Notes' do
       let!(:note) { create(:note, noteable: issue, project: issue.project) }
@@ -266,6 +267,19 @@ describe Issuable do
     end
   end
 
+  describe '#time_estimate=' do
+    it 'coerces the value below Gitlab::Database::MAX_INT_VALUE' do
+      expect { issue.time_estimate = 100 }.to change { issue.time_estimate }.to(100)
+      expect { issue.time_estimate = Gitlab::Database::MAX_INT_VALUE + 100 }.to change { issue.time_estimate }.to(Gitlab::Database::MAX_INT_VALUE)
+    end
+
+    it 'skips coercion for not Integer values' do
+      expect { issue.time_estimate = nil }.to change { issue.time_estimate }.to(nil)
+      expect { issue.time_estimate = 'invalid time' }.not_to raise_error
+      expect { issue.time_estimate = 22.33 }.not_to raise_error
+    end
+  end
+
   describe '#to_hook_data' do
     let(:builder) { double }
 
@@ -495,6 +509,14 @@ describe Issuable do
 
         expect(issue.total_time_spent).to eq(1800)
       end
+
+      it 'updates issues updated_at' do
+        issue
+
+        Timecop.travel(1.minute.from_now) do
+          expect { spend_time(1800) }.to change { issue.updated_at }
+        end
+      end
     end
 
     context 'substracting time' do
@@ -510,9 +532,13 @@ describe Issuable do
 
       context 'when time to substract exceeds the total time spent' do
         it 'raise a validation error' do
-          expect do
-            spend_time(-3600)
-          end.to raise_error(ActiveRecord::RecordInvalid)
+          Timecop.travel(1.minute.from_now) do
+            expect do
+              expect do
+                spend_time(-3600)
+              end.to raise_error(ActiveRecord::RecordInvalid)
+            end.not_to change { issue.updated_at }
+          end
         end
       end
     end
@@ -523,7 +549,7 @@ describe Issuable do
     let(:project) { create(:project, namespace: group) }
     let(:other_project) { create(:project) }
     let(:owner) { create(:owner) }
-    let(:master) { create(:user) }
+    let(:maintainer) { create(:user) }
     let(:reporter) { create(:user) }
     let(:guest) { create(:user) }
 
@@ -532,7 +558,7 @@ describe Issuable do
 
     before do
       group.add_owner(owner)
-      project.add_master(master)
+      project.add_maintainer(maintainer)
       project.add_reporter(reporter)
       project.add_guest(guest)
       project.add_guest(contributor)
@@ -544,8 +570,8 @@ describe Issuable do
     let(:merged_mr_other_project) { create(:merge_request, :merged, author: first_time_contributor, target_project: other_project, source_project: other_project) }
 
     context "for merge requests" do
-      it "is false for MASTER" do
-        mr = create(:merge_request, author: master, target_project: project, source_project: project)
+      it "is false for MAINTAINER" do
+        mr = create(:merge_request, author: maintainer, target_project: project, source_project: project)
 
         expect(mr).not_to be_first_contribution
       end

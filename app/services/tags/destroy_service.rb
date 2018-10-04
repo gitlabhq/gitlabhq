@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module Tags
   class DestroyService < BaseService
+    # rubocop: disable CodeReuse/ActiveRecord
     def execute(tag_name)
       repository = project.repository
       tag = repository.find_tag(tag_name)
@@ -21,9 +24,10 @@ module Tags
       else
         error('Failed to remove tag')
       end
-    rescue Gitlab::Git::HooksService::PreReceiveError => ex
+    rescue Gitlab::Git::PreReceiveError => ex
       error(ex.message)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def error(message, return_code = 400)
       super(message).merge(return_code: return_code)

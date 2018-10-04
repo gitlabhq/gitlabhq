@@ -4,12 +4,14 @@ import projectNew from '~/projects/project_new';
 describe('New Project', () => {
   let $projectImportUrl;
   let $projectPath;
+  let $projectName;
 
   beforeEach(() => {
     setFixtures(`
       <div class='toggle-import-form'>
         <div class='import-url-data'>
           <input id="project_import_url" />
+          <input id="project_name" />
           <input id="project_path" />
         </div>
       </div>
@@ -17,6 +19,7 @@ describe('New Project', () => {
 
     $projectImportUrl = $('#project_import_url');
     $projectPath = $('#project_path');
+    $projectName = $('#project_name');
   });
 
   describe('deriveProjectPathFromUrl', () => {
@@ -127,6 +130,33 @@ describe('New Project', () => {
 
         expect($projectPath.val()).toEqual('gitlab-ce');
       });
+    });
+  });
+
+  describe('deriveSlugFromProjectName', () => {
+    beforeEach(() => {
+      projectNew.bindEvents();
+      $projectName.val('').keyup();
+    });
+
+    it('converts project name to lower case and dash-limited slug', () => {
+      const dummyProjectName = 'My Awesome Project';
+
+      $projectName.val(dummyProjectName);
+
+      projectNew.onProjectNameChange($projectName, $projectPath);
+
+      expect($projectPath.val()).toEqual('my-awesome-project');
+    });
+
+    it('does not add additional dashes in the slug if the project name already contains dashes', () => {
+      const dummyProjectName = 'My-Dash-Delimited Awesome Project';
+
+      $projectName.val(dummyProjectName);
+
+      projectNew.onProjectNameChange($projectName, $projectPath);
+
+      expect($projectPath.val()).toEqual('my-dash-delimited-awesome-project');
     });
   });
 });

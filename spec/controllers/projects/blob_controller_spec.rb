@@ -55,6 +55,25 @@ describe Projects::BlobController do
           expect(json_response).to have_key 'raw_path'
         end
       end
+
+      context "with viewer=none" do
+        let(:id) { 'master/README.md' }
+
+        before do
+          get(:show,
+              namespace_id: project.namespace,
+              project_id: project,
+              id: id,
+              format: :json,
+              viewer: 'none')
+        end
+
+        it do
+          expect(response).to be_ok
+          expect(json_response).not_to have_key 'html'
+          expect(json_response).to have_key 'raw_path'
+        end
+      end
     end
 
     context 'with tree path' do
@@ -89,7 +108,7 @@ describe Projects::BlobController do
     end
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
 
       sign_in(user)
     end
@@ -103,10 +122,64 @@ describe Projects::BlobController do
     end
 
     context 'when essential params are present' do
-      it 'renders the diff content' do
-        do_get(since: 1, to: 5, offset: 10)
+      context 'when rendering for commit' do
+        it 'renders the diff content' do
+          do_get(since: 1, to: 5, offset: 10)
 
-        expect(response.body).to be_present
+          expect(response.body).to be_present
+        end
+      end
+
+      context 'when rendering for merge request' do
+        it 'renders diff context lines Gitlab::Diff::Line array' do
+          do_get(since: 1, to: 5, offset: 10, from_merge_request: true)
+
+          lines = JSON.parse(response.body)
+
+          expect(lines.first).to have_key('type')
+          expect(lines.first).to have_key('rich_text')
+          expect(lines.first).to have_key('rich_text')
+        end
+
+        context 'when rendering match lines' do
+          it 'adds top match line when "since" is less than 1' do
+            do_get(since: 5, to: 10, offset: 10, from_merge_request: true)
+
+            match_line = JSON.parse(response.body).first
+
+            expect(match_line['type']).to eq('match')
+            expect(match_line['meta_data']).to have_key('old_pos')
+            expect(match_line['meta_data']).to have_key('new_pos')
+          end
+
+          it 'does not add top match line when when "since" is equal 1' do
+            do_get(since: 1, to: 10, offset: 10, from_merge_request: true)
+
+            match_line = JSON.parse(response.body).first
+
+            expect(match_line['type']).to eq('context')
+          end
+
+          it 'adds bottom match line when "t"o is less than blob size' do
+            do_get(since: 1, to: 5, offset: 10, from_merge_request: true, bottom: true)
+
+            match_line = JSON.parse(response.body).last
+
+            expect(match_line['type']).to eq('match')
+            expect(match_line['meta_data']).to have_key('old_pos')
+            expect(match_line['meta_data']).to have_key('new_pos')
+          end
+
+          it 'does not add bottom match line when "to" is less than blob size' do
+            commit_id = project.repository.commit('master').id
+            blob = project.repository.blob_at(commit_id, 'CHANGELOG')
+            do_get(since: 1, to: blob.lines.count, offset: 10, from_merge_request: true, bottom: true)
+
+            match_line = JSON.parse(response.body).last
+
+            expect(match_line['type']).to eq('context')
+          end
+        end
       end
     end
   end
@@ -157,12 +230,12 @@ describe Projects::BlobController do
       end
     end
 
-    context 'as master' do
-      let(:master) { create(:user) }
+    context 'as maintainer' do
+      let(:maintainer) { create(:user) }
 
       before do
-        project.add_master(master)
-        sign_in(master)
+        project.add_maintainer(maintainer)
+        sign_in(maintainer)
         get :edit, default_params
       end
 
@@ -190,7 +263,7 @@ describe Projects::BlobController do
     end
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
 
       sign_in(user)
     end

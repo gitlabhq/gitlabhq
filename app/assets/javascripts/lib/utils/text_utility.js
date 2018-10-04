@@ -49,6 +49,16 @@ export const dasherize = str => str.replace(/[_\s]+/g, '-');
 export const slugify = str => str.trim().toLowerCase();
 
 /**
+ * Replaces whitespaces with hyphens and converts to lower case
+ * @param {String} str
+ * @returns {String}
+ */
+export const slugifyWithHyphens = str => {
+  const regex = new RegExp(/\s+/, 'g');
+  return str.toLowerCase().replace(regex, '-');
+};
+
+/**
  * Truncates given text
  *
  * @param {String} string
@@ -56,6 +66,14 @@ export const slugify = str => str.trim().toLowerCase();
  * @returns {String}
  */
 export const truncate = (string, maxLength) => `${string.substr(0, maxLength - 3)}...`;
+
+/**
+ * Truncate SHA to 8 characters
+ *
+ * @param {String} sha
+ * @returns {String}
+ */
+export const truncateSha = sha => sha.substr(0, 8);
 
 /**
  * Capitalizes first character
@@ -68,13 +86,31 @@ export function capitalizeFirstCharacter(text) {
 }
 
 /**
+ * Returns the first character capitalized
+ *
+ * If falsey, returns empty string.
+ *
+ * @param {String} text
+ * @return {String}
+ */
+export function getFirstCharacterCapitalized(text) {
+  return text
+    ? text.charAt(0).toUpperCase()
+    : '';
+}
+
+/**
  * Replaces all html tags from a string with the given replacement.
  *
  * @param {String} string
  * @param {*} replace
  * @returns {String}
  */
-export const stripHtml = (string, replace = '') => string.replace(/<[^>]*>/g, replace);
+export const stripHtml = (string, replace = '') => {
+  if (!string) return string;
+
+  return string.replace(/<[^>]*>/g, replace);
+};
 
 /**
  * Converts snake_case string to camelCase
@@ -94,3 +130,16 @@ export const convertToSentenceCase = string => {
 
   return splitWord.join(' ');
 };
+
+/**
+ * Splits camelCase or PascalCase words
+ * e.g. HelloWorld => Hello World
+ *
+ * @param {*} string
+*/
+export const splitCamelCase = string => (
+  string
+  .replace(/([A-Z]+)([A-Z][a-z])/g, ' $1 $2')
+  .replace(/([a-z\d])([A-Z])/g, '$1 $2')
+  .trim()
+);

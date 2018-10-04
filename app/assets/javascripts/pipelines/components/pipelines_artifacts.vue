@@ -1,21 +1,21 @@
 <script>
-  import tooltip from '../../vue_shared/directives/tooltip';
-  import icon from '../../vue_shared/components/icon.vue';
+import tooltip from '../../vue_shared/directives/tooltip';
+import icon from '../../vue_shared/components/icon.vue';
 
-  export default {
-    directives: {
-      tooltip,
+export default {
+  directives: {
+    tooltip,
+  },
+  components: {
+    icon,
+  },
+  props: {
+    artifacts: {
+      type: Array,
+      required: true,
     },
-    components: {
-      icon,
-    },
-    props: {
-      artifacts: {
-        type: Array,
-        required: true,
-      },
-    },
-  };
+  },
+};
 </script>
 <template>
   <div
@@ -37,14 +37,14 @@
       >
       </i>
     </button>
-    <ul class="dropdown-menu dropdown-menu-align-right">
+    <ul class="dropdown-menu dropdown-menu-right">
       <li
         v-for="(artifact, i) in artifacts"
         :key="i">
         <a
+          :href="artifact.path"
           rel="nofollow"
           download
-          :href="artifact.path"
         >
           Download {{ artifact.name }} artifacts
         </a>

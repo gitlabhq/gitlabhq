@@ -1,21 +1,17 @@
-/* eslint-disable import/first */
 /* global $ */
 
 import jQuery from 'jquery';
 import Cookies from 'js-cookie';
-import svg4everybody from 'svg4everybody';
 
-// expose common libraries as globals (TODO: remove these)
-window.jQuery = jQuery;
-window.$ = jQuery;
+// bootstrap webpack, common libs, polyfills, and behaviors
+import './webpack';
+import './commons';
+import './behaviors';
 
 // lib/utils
 import { handleLocationHash, addSelectOnFocusBehaviour } from './lib/utils/common_utils';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import { getLocationHash, visitUrl } from './lib/utils/url_utility';
-
-// behaviors
-import './behaviors/';
 
 // everything else
 import loadAwardsHandler from './awards_handler';
@@ -28,11 +24,16 @@ import initLayoutNav from './layout_nav';
 import './feature_highlight/feature_highlight_options';
 import LazyLoader from './lazy_loader';
 import initLogoAnimation from './logo';
-import './milestone_select';
-import './projects_dropdown';
+import './frequent_items';
 import initBreadcrumbs from './breadcrumb';
+import initUsagePingConsent from './usage_ping_consent';
+import initPerformanceBar from './performance_bar';
+import initSearchAutocomplete from './search_autocomplete';
+import GlFieldErrors from './gl_field_errors';
 
-import initDispatcher from './dispatcher';
+// expose jQuery as global (TODO: remove these)
+window.jQuery = jQuery;
+window.$ = jQuery;
 
 // inject test utilities if necessary
 if (process.env.NODE_ENV !== 'production' && gon && gon.test_env) {
@@ -40,22 +41,24 @@ if (process.env.NODE_ENV !== 'production' && gon && gon.test_env) {
   import(/* webpackMode: "eager" */ './test_utils/');
 }
 
-svg4everybody();
-
 document.addEventListener('beforeunload', () => {
   // Unbind scroll events
   $(document).off('scroll');
   // Close any open tooltips
-  $('.has-tooltip, [data-toggle="tooltip"]').tooltip('destroy');
+  $('.has-tooltip, [data-toggle="tooltip"]').tooltip('dispose');
   // Close any open popover
-  $('[data-toggle="popover"]').popover('destroy');
+  $('[data-toggle="popover"]').popover('dispose');
 });
 
 window.addEventListener('hashchange', handleLocationHash);
-window.addEventListener('load', function onLoad() {
-  window.removeEventListener('load', onLoad, false);
-  handleLocationHash();
-}, false);
+window.addEventListener(
+  'load',
+  function onLoad() {
+    window.removeEventListener('load', onLoad, false);
+    handleLocationHash();
+  },
+  false,
+);
 
 gl.lazyLoader = new LazyLoader({
   scrollContainer: window,
@@ -74,6 +77,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initImporterStatus();
   initTodoToggle();
   initLogoAnimation();
+  initUsagePingConsent();
+
+  if (document.querySelector('.search')) initSearchAutocomplete();
+  if (document.querySelector('#js-peek')) initPerformanceBar({ container: '#js-peek' });
 
   // Set the default path for all cookies to GitLab's root directory
   Cookies.defaults.path = gon.relative_url_root || '/';
@@ -89,9 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (bootstrapBreakpoint === 'xs') {
     const $rightSidebar = $('aside.right-sidebar, .layout-page');
 
-    $rightSidebar
-      .removeClass('right-sidebar-expanded')
-      .addClass('right-sidebar-collapsed');
+    $rightSidebar.removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
   }
 
   // prevent default action for disabled buttons
@@ -108,7 +113,8 @@ document.addEventListener('DOMContentLoaded', () => {
   addSelectOnFocusBehaviour('.js-select-on-focus');
 
   $('.remove-row').on('ajax:success', function removeRowAjaxSuccessCallback() {
-    $(this).tooltip('destroy')
+    $(this)
+      .tooltip('dispose')
       .closest('li')
       .fadeOut();
   });
@@ -118,7 +124,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   $('.js-remove-tr').on('ajax:success', function removeTRAjaxSuccessCallback() {
-    $(this).closest('tr').fadeOut();
+    $(this)
+      .closest('tr')
+      .fadeOut();
   });
 
   // Initialize select2 selects
@@ -136,9 +144,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Initialize tooltips
-  $.fn.tooltip.Constructor.DEFAULTS.trigger = 'hover';
   $body.tooltip({
     selector: '.has-tooltip, [data-toggle="tooltip"]',
+    trigger: 'hover',
+    boundary: 'viewport',
     placement(tip, el) {
       return $(el).data('placement') || 'bottom';
     },
@@ -155,7 +164,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Form submitter
   $('.trigger-submit').on('change', function triggerSubmitCallback() {
-    $(this).parents('form').submit();
+    $(this)
+      .parents('form')
+      .submit();
   });
 
   localTimeAgo($('abbr.timeago, .js-timeago'), true);
@@ -189,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
     $container.remove();
   });
 
-  $('.navbar-toggle').on('click', () => {
+  $('.navbar-toggler').on('click', () => {
     $('.header-content').toggleClass('menu-expanded');
     gl.lazyLoader.loadCheck();
   });
@@ -204,9 +215,15 @@ document.addEventListener('DOMContentLoaded', () => {
     $this.toggleClass('active');
 
     if ($this.hasClass('active')) {
-      notesHolders.show().find('.hide, .content').show();
+      notesHolders
+        .show()
+        .find('.hide, .content')
+        .show();
     } else {
-      notesHolders.hide().find('.content').hide();
+      notesHolders
+        .hide()
+        .find('.content')
+        .hide();
     }
 
     $(document).trigger('toggle.comments');
@@ -247,10 +264,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const flashContainer = document.querySelector('.flash-container');
 
   if (flashContainer && flashContainer.children.length) {
-    flashContainer.querySelectorAll('.flash-alert, .flash-notice, .flash-success').forEach((flashEl) => {
-      removeFlashClickListener(flashEl);
-    });
+    flashContainer
+      .querySelectorAll('.flash-alert, .flash-notice, .flash-success')
+      .forEach(flashEl => {
+        removeFlashClickListener(flashEl);
+      });
   }
 
-  initDispatcher();
+  // initialize field errors
+  $('.gl-show-field-errors').each((i, form) => new GlFieldErrors(form));
 });

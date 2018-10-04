@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MergeRequests
   class BaseService < ::IssuableBaseService
     def create_note(merge_request, state = merge_request.state)
@@ -38,8 +40,8 @@ module MergeRequests
     def filter_params(merge_request)
       super
 
-      unless merge_request.can_allow_maintainer_to_push?(current_user)
-        params.delete(:allow_maintainer_to_push)
+      unless merge_request.can_allow_collaboration?(current_user)
+        params.delete(:allow_collaboration)
       end
     end
 
@@ -53,6 +55,7 @@ module MergeRequests
     end
 
     # Returns all origin and fork merge requests from `@project` satisfying passed arguments.
+    # rubocop: disable CodeReuse/ActiveRecord
     def merge_requests_for(source_branch, mr_states: [:opened])
       MergeRequest
         .with_state(mr_states)
@@ -60,6 +63,7 @@ module MergeRequests
         .preload(:source_project) # we don't need a #includes since we're just preloading for the #select
         .select(&:source_project)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def pipeline_merge_requests(pipeline)
       merge_requests_for(pipeline.ref).each do |merge_request|

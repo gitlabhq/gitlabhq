@@ -1,4 +1,4 @@
-require 'uri'
+# frozen_string_literal: true
 
 module Banzai
   module Filter
@@ -11,8 +11,12 @@ module Banzai
       def call
         return doc unless project_wiki?
 
-        doc.search('a:not(.gfm)').each do |el|
-          process_link_attr el.attribute('href')
+        doc.search('a:not(.gfm)').each { |el| process_link_attr(el.attribute('href')) }
+        doc.search('video').each { |el| process_link_attr(el.attribute('src')) }
+        doc.search('img').each do |el|
+          attr = el.attribute('data-src') || el.attribute('src')
+
+          process_link_attr(attr)
         end
 
         doc

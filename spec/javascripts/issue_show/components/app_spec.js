@@ -2,7 +2,6 @@ import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import '~/behaviors/markdown/render_gfm';
-import * as urlUtils from '~/lib/utils/url_utility';
 import issuableApp from '~/issue_show/components/app.vue';
 import eventHub from '~/issue_show/event_hub';
 import setTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
@@ -65,38 +64,34 @@ describe('Issuable output', () => {
   it('should render a title/description/edited and update title/description/edited on update', done => {
     let editedText;
     Vue.nextTick()
-      .then(() => {
-        editedText = vm.$el.querySelector('.edited-text');
-      })
-      .then(() => {
-        expect(document.querySelector('title').innerText).toContain('this is a title (#1)');
-        expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>this is a title</p>');
-        expect(vm.$el.querySelector('.wiki').innerHTML).toContain('<p>this is a description!</p>');
-        expect(vm.$el.querySelector('.js-task-list-field').value).toContain(
-          'this is a description',
-        );
-        expect(formatText(editedText.innerText)).toMatch(/Edited[\s\S]+?by Some User/);
-        expect(editedText.querySelector('.author_link').href).toMatch(/\/some_user$/);
-        expect(editedText.querySelector('time')).toBeTruthy();
-      })
-      .then(() => {
-        vm.poll.makeRequest();
-      })
-      .then(() => new Promise(resolve => setTimeout(resolve)))
-      .then(() => {
-        expect(document.querySelector('title').innerText).toContain('2 (#1)');
-        expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>2</p>');
-        expect(vm.$el.querySelector('.wiki').innerHTML).toContain('<p>42</p>');
-        expect(vm.$el.querySelector('.js-task-list-field').value).toContain('42');
-        expect(vm.$el.querySelector('.edited-text')).toBeTruthy();
-        expect(formatText(vm.$el.querySelector('.edited-text').innerText)).toMatch(
-          /Edited[\s\S]+?by Other User/,
-        );
-        expect(editedText.querySelector('.author_link').href).toMatch(/\/other_user$/);
-        expect(editedText.querySelector('time')).toBeTruthy();
-      })
-      .then(done)
-      .catch(done.fail);
+    .then(() => {
+      editedText = vm.$el.querySelector('.edited-text');
+    })
+    .then(() => {
+      expect(document.querySelector('title').innerText).toContain('this is a title (#1)');
+      expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>this is a title</p>');
+      expect(vm.$el.querySelector('.wiki').innerHTML).toContain('<p>this is a description!</p>');
+      expect(vm.$el.querySelector('.js-task-list-field').value).toContain('this is a description');
+      expect(formatText(editedText.innerText)).toMatch(/Edited[\s\S]+?by Some User/);
+      expect(editedText.querySelector('.author-link').href).toMatch(/\/some_user$/);
+      expect(editedText.querySelector('time')).toBeTruthy();
+    })
+    .then(() => {
+      vm.poll.makeRequest();
+    })
+    .then(() => new Promise(resolve => setTimeout(resolve)))
+    .then(() => {
+      expect(document.querySelector('title').innerText).toContain('2 (#1)');
+      expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>2</p>');
+      expect(vm.$el.querySelector('.wiki').innerHTML).toContain('<p>42</p>');
+      expect(vm.$el.querySelector('.js-task-list-field').value).toContain('42');
+      expect(vm.$el.querySelector('.edited-text')).toBeTruthy();
+      expect(formatText(vm.$el.querySelector('.edited-text').innerText)).toMatch(/Edited[\s\S]+?by Other User/);
+      expect(editedText.querySelector('.author-link').href).toMatch(/\/other_user$/);
+      expect(editedText.querySelector('time')).toBeTruthy();
+    })
+    .then(done)
+    .catch(done.fail);
   });
 
   it('shows actions if permissions are correct', done => {
@@ -137,20 +132,16 @@ describe('Issuable output', () => {
   describe('updateIssuable', () => {
     it('fetches new data after update', done => {
       spyOn(vm.service, 'getData').and.callThrough();
-      spyOn(vm.service, 'updateIssuable').and.callFake(
-        () =>
-          new Promise(resolve => {
-            resolve({
-              data: {
-                confidential: false,
-                web_url: location.pathname,
-              },
-            });
-          }),
-      );
+      spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
+        resolve({
+          data: {
+            confidential: false,
+            web_url: window.location.pathname,
+          },
+        });
+      }));
 
-      vm
-        .updateIssuable()
+      vm.updateIssuable()
         .then(() => {
           expect(vm.service.getData).toHaveBeenCalled();
         })
@@ -181,48 +172,40 @@ describe('Issuable output', () => {
         .catch(done.fail);
     });
 
-    it('does not redirect if issue has not moved', done => {
-      spyOn(urlUtils, 'visitUrl');
-      spyOn(vm.service, 'updateIssuable').and.callFake(
-        () =>
-          new Promise(resolve => {
-            resolve({
-              data: {
-                web_url: location.pathname,
-                confidential: vm.isConfidential,
-              },
-            });
-          }),
-      );
+    it('does not redirect if issue has not moved', (done) => {
+      const visitUrl = spyOnDependency(issuableApp, 'visitUrl');
+      spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
+        resolve({
+          data: {
+            web_url: window.location.pathname,
+            confidential: vm.isConfidential,
+          },
+        });
+      }));
 
       vm.updateIssuable();
 
       setTimeout(() => {
-        expect(urlUtils.visitUrl).not.toHaveBeenCalled();
-
+        expect(visitUrl).not.toHaveBeenCalled();
         done();
       });
     });
 
-    it('redirects if returned web_url has changed', done => {
-      spyOn(urlUtils, 'visitUrl');
-      spyOn(vm.service, 'updateIssuable').and.callFake(
-        () =>
-          new Promise(resolve => {
-            resolve({
-              data: {
-                web_url: '/testing-issue-move',
-                confidential: vm.isConfidential,
-              },
-            });
-          }),
-      );
+    it('redirects if returned web_url has changed', (done) => {
+      const visitUrl = spyOnDependency(issuableApp, 'visitUrl');
+      spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
+        resolve({
+          data: {
+            web_url: '/testing-issue-move',
+            confidential: vm.isConfidential,
+          },
+        });
+      }));
 
       vm.updateIssuable();
 
       setTimeout(() => {
-        expect(urlUtils.visitUrl).toHaveBeenCalledWith('/testing-issue-move');
-
+        expect(visitUrl).toHaveBeenCalledWith('/testing-issue-move');
         done();
       });
     });
@@ -390,30 +373,26 @@ describe('Issuable output', () => {
   });
 
   describe('deleteIssuable', () => {
-    it('changes URL when deleted', done => {
-      spyOn(urlUtils, 'visitUrl');
-      spyOn(vm.service, 'deleteIssuable').and.callFake(
-        () =>
-          new Promise(resolve => {
-            resolve({
-              data: {
-                web_url: '/test',
-              },
-            });
-          }),
-      );
+    it('changes URL when deleted', (done) => {
+      const visitUrl = spyOnDependency(issuableApp, 'visitUrl');
+      spyOn(vm.service, 'deleteIssuable').and.callFake(() => new Promise((resolve) => {
+        resolve({
+          data: {
+            web_url: '/test',
+          },
+        });
+      }));
 
       vm.deleteIssuable();
 
       setTimeout(() => {
-        expect(urlUtils.visitUrl).toHaveBeenCalledWith('/test');
-
+        expect(visitUrl).toHaveBeenCalledWith('/test');
         done();
       });
     });
 
-    it('stops polling when deleting', done => {
-      spyOn(urlUtils, 'visitUrl');
+    it('stops polling when deleting', (done) => {
+      spyOnDependency(issuableApp, 'visitUrl');
       spyOn(vm.poll, 'stop').and.callThrough();
       spyOn(vm.service, 'deleteIssuable').and.callFake(
         () =>
@@ -429,8 +408,9 @@ describe('Issuable output', () => {
       vm.deleteIssuable();
 
       setTimeout(() => {
-        expect(vm.poll.stop).toHaveBeenCalledWith();
-
+        expect(
+          vm.poll.stop,
+        ).toHaveBeenCalledWith();
         done();
       });
     });

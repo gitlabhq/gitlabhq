@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectPolicy
   module ClassMethods
     def create_read_update_admin_destroy(name)

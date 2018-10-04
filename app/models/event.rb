@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 class Event < ActiveRecord::Base
   include Sortable
   include IgnorableColumn
+  include FromUnion
   default_scope { reorder(nil) }
 
   CREATED   = 1
@@ -40,6 +43,7 @@ class Event < ActiveRecord::Base
   ).freeze
 
   RESET_PROJECT_ACTIVITY_INTERVAL = 1.hour
+  REPOSITORY_UPDATED_AT_INTERVAL = 5.minutes
 
   delegate :name, :email, :public_email, :username, to: :author, prefix: true, allow_nil: true
   delegate :title, to: :issue, prefix: true, allow_nil: true
@@ -144,21 +148,31 @@ class Event < ActiveRecord::Base
     end
   end
 
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
   def visible_to_user?(user = nil)
     if push? || commit_note?
       Ability.allowed?(user, :download_code, project)
     elsif membership_changed?
-      true
+      Ability.allowed?(user, :read_project, project)
     elsif created_project?
-      true
+      Ability.allowed?(user, :read_project, project)
     elsif issue? || issue_note?
       Ability.allowed?(user, :read_issue, note? ? note_target : target)
     elsif merge_request? || merge_request_note?
       Ability.allowed?(user, :read_merge_request, note? ? note_target : target)
+    elsif personal_snippet_note?
+      Ability.allowed?(user, :read_personal_snippet, note_target)
+    elsif project_snippet_note?
+      Ability.allowed?(user, :read_project_snippet, note_target)
+    elsif milestone?
+      Ability.allowed?(user, :read_milestone, project)
     else
-      milestone?
+      false # No other event types are visible
     end
   end
+  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/CyclomaticComplexity
 
   def project_name
     if project
@@ -300,6 +314,10 @@ class Event < ActiveRecord::Base
     note? && target && target.for_snippet?
   end
 
+  def personal_snippet_note?
+    note? && target && target.for_personal_snippet?
+  end
+
   def note_target
     target.noteable
   end
@@ -391,6 +409,7 @@ class Event < ActiveRecord::Base
 
   def set_last_repository_updated_at
     Project.unscoped.where(id: project_id)
+      .where("last_repository_updated_at < ? OR last_repository_updated_at IS NULL", REPOSITORY_UPDATED_AT_INTERVAL.ago)
       .update_all(last_repository_updated_at: created_at)
   end
 

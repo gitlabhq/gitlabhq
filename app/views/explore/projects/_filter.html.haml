@@ -1,17 +1,17 @@
 - if current_user
   .dropdown
-    %button.dropdown-toggle{ href: '#', "data-toggle" => "dropdown" }
+    %button.dropdown-toggle{ href: '#', "data-toggle" => "dropdown", 'data-display' => 'static' }
       = icon('globe')
-      %span.light Visibility:
+      %span.light= _("Visibility:")
       - if params[:visibility_level].present?
         = visibility_level_label(params[:visibility_level].to_i)
       - else
-        Any
+        = _('Any')
       = icon('chevron-down')
-    %ul.dropdown-menu.dropdown-menu-align-right
+    %ul.dropdown-menu.dropdown-menu-right
       %li
         = link_to filter_projects_path(visibility_level: nil) do
-          Any
+          = _('Any')
       - Gitlab::VisibilityLevel.values.each do |level|
         %li{ class: active_when(level.to_s == params[:visibility_level]) || 'light' }
           = link_to filter_projects_path(visibility_level: level) do

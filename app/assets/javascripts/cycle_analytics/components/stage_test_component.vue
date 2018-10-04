@@ -64,8 +64,8 @@
               #{{ build.id }}
             </a>
             <icon
-              name="fork"
               :size="16"
+              name="fork"
             />
             <a
               :href="build.branch.url"

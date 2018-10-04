@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::CreateService, '#execute' do
+  include GitHelpers
+
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:user) { create :user }
   let(:opts) do
@@ -23,7 +25,7 @@ describe Projects::CreateService, '#execute' do
 
       expect(project).to be_valid
       expect(project.owner).to eq(user)
-      expect(project.team.masters).to include(user)
+      expect(project.team.maintainers).to include(user)
       expect(project.namespace).to eq(user.namespace)
     end
   end
@@ -47,7 +49,7 @@ describe Projects::CreateService, '#execute' do
 
       expect(project).to be_persisted
       expect(project.owner).to eq(user)
-      expect(project.team.masters).to contain_exactly(user)
+      expect(project.team.maintainers).to contain_exactly(user)
       expect(project.namespace).to eq(user.namespace)
     end
   end
@@ -114,6 +116,17 @@ describe Projects::CreateService, '#execute' do
     end
   end
 
+  context 'import data' do
+    it 'stores import data and URL' do
+      import_data = { data: { 'test' => 'some data' } }
+      project = create_project(user, { name: 'test', import_url: 'http://import-url', import_data: import_data })
+
+      expect(project.import_data).to be_persisted
+      expect(project.import_data.data).to eq(import_data[:data])
+      expect(project.import_url).to eq('http://import-url')
+    end
+  end
+
   context 'builds_enabled global setting' do
     let(:project) { create_project(user, opts) }
 
@@ -171,7 +184,6 @@ describe Projects::CreateService, '#execute' do
 
     context 'when another repository already exists on disk' do
       let(:repository_storage) { 'default' }
-      let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
 
       let(:opts) do
         {
@@ -186,7 +198,7 @@ describe Projects::CreateService, '#execute' do
         end
 
         after do
-          gitlab_shell.remove_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+          gitlab_shell.remove_repository(repository_storage, "#{user.namespace.full_path}/existing")
         end
 
         it 'does not allow to create a project when path matches existing repository on disk' do
@@ -222,7 +234,7 @@ describe Projects::CreateService, '#execute' do
         end
 
         after do
-          gitlab_shell.remove_repository(repository_storage_path, hashed_path)
+          gitlab_shell.remove_repository(repository_storage, hashed_path)
         end
 
         it 'does not allow to create a project when path matches existing repository on disk' do
@@ -234,6 +246,18 @@ describe Projects::CreateService, '#execute' do
           expect(project.errors.messages[:base].first).to match('There is already a repository with that name on disk')
         end
       end
+    end
+  end
+
+  context 'when readme initialization is requested' do
+    it 'creates README.md' do
+      opts[:initialize_with_readme] = '1'
+
+      project = create_project(user, opts)
+
+      expect(project.repository.commit_count).to be(1)
+      expect(project.repository.readme.name).to eql('README.md')
+      expect(project.repository.readme.data).to include('# GitLab')
     end
   end
 
@@ -273,8 +297,9 @@ describe Projects::CreateService, '#execute' do
 
   it 'writes project full path to .git/config' do
     project = create_project(user, opts)
+    rugged = rugged_repo(project.repository)
 
-    expect(project.repository.rugged.config['gitlab.fullpath']).to eq project.full_path
+    expect(rugged.config['gitlab.fullpath']).to eq project.full_path
   end
 
   def create_project(user, opts)

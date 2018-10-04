@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_dependency 'declarative_policy'
 
 class Ability
@@ -7,6 +9,14 @@ class Ability
     def users_that_can_read_project(users, project)
       DeclarativePolicy.subject_scope do
         users.select { |u| allowed?(u, :read_project, project) }
+      end
+    end
+
+    # Given a list of users and a group this method returns the users that can
+    # read the given group.
+    def users_that_can_read_group(users, group)
+      DeclarativePolicy.subject_scope do
+        users.select { |u| allowed?(u, :read_group, group) }
       end
     end
 
@@ -64,7 +74,7 @@ class Ability
     end
 
     def policy_for(user, subject = :global)
-      cache = RequestStore.active? ? RequestStore : {}
+      cache = Gitlab::SafeRequestStore.active? ? Gitlab::SafeRequestStore : {}
       DeclarativePolicy.policy_for(user, subject, cache: cache)
     end
 

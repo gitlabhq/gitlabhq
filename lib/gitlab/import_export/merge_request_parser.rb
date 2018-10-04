@@ -25,8 +25,13 @@ module Gitlab
         @project.repository.create_branch(@merge_request.target_branch, @merge_request.target_branch_sha)
       end
 
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1295
       def fetch_ref
-        @project.repository.fetch_ref(@project.repository, source_ref: @diff_head_sha, target_ref: @merge_request.source_branch)
+        target_ref = Gitlab::Git::BRANCH_REF_PREFIX + @merge_request.source_branch
+
+        unless @project.repository.fetch_source_branch!(@project.repository, @diff_head_sha, target_ref)
+          Rails.logger.warn("Import/Export warning: Failed to create #{target_ref} for MR: #{@merge_request.iid}")
+        end
       end
 
       def branch_exists?(branch_name)

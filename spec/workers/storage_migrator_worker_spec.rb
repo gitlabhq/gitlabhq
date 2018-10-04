@@ -2,29 +2,24 @@ require 'spec_helper'
 
 describe StorageMigratorWorker do
   subject(:worker) { described_class.new }
-  let(:projects) { create_list(:project, 2, :legacy_storage) }
+  let(:projects) { create_list(:project, 2, :legacy_storage, :empty_repo) }
+  let(:ids) { projects.map(&:id) }
 
   describe '#perform' do
-    let(:ids) { projects.map(&:id) }
+    it 'delegates to MigratorService' do
+      expect_any_instance_of(Gitlab::HashedStorage::Migrator).to receive(:bulk_migrate).with(5, 10)
 
-    it 'enqueue jobs to ProjectMigrateHashedStorageWorker' do
-      expect(ProjectMigrateHashedStorageWorker).to receive(:perform_async).twice
-
-      worker.perform(ids.min, ids.max)
+      worker.perform(5, 10)
     end
 
-    it 'sets projects as read only' do
-      allow(ProjectMigrateHashedStorageWorker).to receive(:perform_async).twice
-      worker.perform(ids.min, ids.max)
+    it 'migrates projects in the specified range' do
+      perform_enqueued_jobs do
+        worker.perform(ids.min, ids.max)
+      end
 
       projects.each do |project|
-        expect(project.reload.repository_read_only?).to be_truthy
+        expect(project.reload.hashed_storage?(:attachments)).to be_truthy
       end
-    end
-
-    it 'rescues and log exceptions' do
-      allow_any_instance_of(Project).to receive(:migrate_to_hashed_storage!).and_raise(StandardError)
-      expect { worker.perform(ids.min, ids.max) }.not_to raise_error
     end
   end
 end

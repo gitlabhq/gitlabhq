@@ -1,6 +1,7 @@
 import Vue from 'vue';
+import { createStore } from '~/ide/stores';
 import modal from '~/ide/components/new_dropdown/modal.vue';
-import createComponent from 'spec/helpers/vue_mount_component_helper';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 
 describe('new file modal component', () => {
   const Component = Vue.extend(modal);
@@ -13,47 +14,40 @@ describe('new file modal component', () => {
   ['tree', 'blob'].forEach(type => {
     describe(type, () => {
       beforeEach(() => {
-        vm = createComponent(Component, {
+        const store = createStore();
+        store.state.entryModal = {
           type,
-          branchId: 'master',
           path: '',
-        });
+        };
 
-        vm.entryName = 'testing';
+        vm = createComponentWithStore(Component, store).$mount();
+
+        vm.name = 'testing';
       });
 
       it(`sets modal title as ${type}`, () => {
         const title = type === 'tree' ? 'directory' : 'file';
 
-        expect(vm.$el.querySelector('.modal-title').textContent.trim()).toBe(
-          `Create new ${title}`,
-        );
+        expect(vm.$el.querySelector('.modal-title').textContent.trim()).toBe(`Create new ${title}`);
       });
 
       it(`sets button label as ${type}`, () => {
         const title = type === 'tree' ? 'directory' : 'file';
 
-        expect(vm.$el.querySelector('.btn-success').textContent.trim()).toBe(
-          `Create ${title}`,
-        );
+        expect(vm.$el.querySelector('.btn-success').textContent.trim()).toBe(`Create ${title}`);
       });
 
       it(`sets form label as ${type}`, () => {
-        const title = type === 'tree' ? 'Directory' : 'File';
-
-        expect(vm.$el.querySelector('.label-light').textContent.trim()).toBe(
-          `${title} name`,
-        );
+        expect(vm.$el.querySelector('.label-bold').textContent.trim()).toBe('Name');
       });
 
       describe('createEntryInStore', () => {
         it('$emits create', () => {
-          spyOn(vm, '$emit');
+          spyOn(vm, 'createTempEntry');
 
-          vm.createEntryInStore();
+          vm.submitForm();
 
-          expect(vm.$emit).toHaveBeenCalledWith('create', {
-            branchId: 'master',
+          expect(vm.createTempEntry).toHaveBeenCalledWith({
             name: 'testing',
             type,
           });
@@ -62,21 +56,46 @@ describe('new file modal component', () => {
     });
   });
 
-  it('focuses field on mount', () => {
-    document.body.innerHTML += '<div class="js-test"></div>';
-
-    vm = createComponent(
-      Component,
-      {
-        type: 'tree',
-        branchId: 'master',
+  describe('rename entry', () => {
+    beforeEach(() => {
+      const store = createStore();
+      store.state.entryModal = {
+        type: 'rename',
         path: '',
-      },
-      '.js-test',
-    );
+        entry: {
+          name: 'test',
+          type: 'blob',
+        },
+      };
 
-    expect(document.activeElement).toBe(vm.$refs.fieldName);
+      vm = createComponentWithStore(Component, store).$mount();
+    });
 
-    vm.$el.remove();
+    ['tree', 'blob'].forEach(type => {
+      it(`renders title and button for renaming ${type}`, done => {
+        const text = type === 'tree' ? 'folder' : 'file';
+
+        vm.$store.state.entryModal.entry.type = type;
+
+        vm.$nextTick(() => {
+          expect(vm.$el.querySelector('.modal-title').textContent.trim()).toBe(`Rename ${text}`);
+          expect(vm.$el.querySelector('.btn-success').textContent.trim()).toBe(`Rename ${text}`);
+
+          done();
+        });
+      });
+    });
+
+    describe('entryName', () => {
+      it('returns entries name', () => {
+        expect(vm.entryName).toBe('test');
+      });
+
+      it('updated name', () => {
+        vm.name = 'index.js';
+
+        expect(vm.entryName).toBe('index.js');
+      });
+    });
   });
 });

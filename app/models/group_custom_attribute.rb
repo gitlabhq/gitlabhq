@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GroupCustomAttribute < ActiveRecord::Base
   belongs_to :group
 

@@ -76,26 +76,22 @@ shared_examples "migrates" do |to_store:, from_store: nil|
   end
 
   context 'when migrate! is occupied by another process' do
-    let(:exclusive_lease_key) { "object_storage_migrate:#{subject.model.class}:#{subject.model.id}" }
+    include ExclusiveLeaseHelpers
 
     before do
-      @uuid = Gitlab::ExclusiveLease.new(exclusive_lease_key, timeout: 1.hour.to_i).try_obtain
+      stub_exclusive_lease_taken(subject.exclusive_lease_key, timeout: 1.hour.to_i)
     end
 
     it 'does not execute migrate!' do
       expect(subject).not_to receive(:unsafe_migrate!)
 
-      expect { migrate(to) }.to raise_error('exclusive lease already taken')
+      expect { migrate(to) }.to raise_error(ObjectStorage::ExclusiveLeaseTaken)
     end
 
     it 'does not execute use_file' do
       expect(subject).not_to receive(:unsafe_use_file)
 
-      expect { subject.use_file }.to raise_error('exclusive lease already taken')
-    end
-
-    after do
-      Gitlab::ExclusiveLease.cancel(exclusive_lease_key, @uuid)
+      expect { subject.use_file }.to raise_error(ObjectStorage::ExclusiveLeaseTaken)
     end
   end
 

@@ -1,13 +1,17 @@
 import $ from 'jquery';
 import _ from 'underscore';
+import { polyfillSticky } from './lib/utils/sticky';
 import axios from './lib/utils/axios_utils';
 import { visitUrl } from './lib/utils/url_utility';
 import bp from './breakpoints';
 import { numberToHumanSize } from './lib/utils/number_utils';
 import { setCiStatusFavicon } from './lib/utils/common_utils';
+import { isScrolledToBottom, scrollDown, scrollUp } from './lib/utils/scroll_utils';
+import LogOutputBehaviours from './lib/utils/logoutput_behaviours';
 
-export default class Job {
+export default class Job extends LogOutputBehaviours {
   constructor(options) {
+    super();
     this.timeout = null;
     this.state = null;
     this.fetchingStatusFavicon = false;
@@ -20,7 +24,6 @@ export default class Job {
     this.$document = $(document);
     this.$window = $(window);
     this.logBytes = 0;
-    this.updateDropdown = this.updateDropdown.bind(this);
 
     this.$buildTrace = $('#build-trace');
     this.$buildRefreshAnimation = $('.js-build-refresh');
@@ -28,42 +31,23 @@ export default class Job {
     this.$buildTraceOutput = $('.js-build-output');
     this.$topBar = $('.js-top-bar');
 
-    // Scroll controllers
-    this.$scrollTopBtn = $('.js-scroll-up');
-    this.$scrollBottomBtn = $('.js-scroll-down');
-
     clearTimeout(this.timeout);
 
     this.initSidebar();
-    this.populateJobs(this.buildStage);
-    this.updateStageDropdownText(this.buildStage);
     this.sidebarOnResize();
 
     this.$document
       .off('click', '.js-sidebar-build-toggle')
       .on('click', '.js-sidebar-build-toggle', this.sidebarOnClick.bind(this));
 
-    this.$document
-      .off('click', '.stage-item')
-      .on('click', '.stage-item', this.updateDropdown);
-
-    // add event listeners to the scroll buttons
-    this.$scrollTopBtn
-      .off('click')
-      .on('click', this.scrollToTop.bind(this));
-
-    this.$scrollBottomBtn
-      .off('click')
-      .on('click', this.scrollToBottom.bind(this));
-
     this.scrollThrottled = _.throttle(this.toggleScroll.bind(this), 100);
 
     this.$window
       .off('scroll')
       .on('scroll', () => {
-        if (!this.isScrolledToBottom()) {
+        if (!isScrolledToBottom()) {
           this.toggleScrollAnimation(false);
-        } else if (this.isScrolledToBottom() && !this.isLogComplete) {
+        } else if (isScrolledToBottom() && !this.isLogComplete) {
           this.toggleScrollAnimation(true);
         }
         this.scrollThrottled();
@@ -79,90 +63,19 @@ export default class Job {
   }
 
   initAffixTopArea() {
-    /**
-      If the browser does not support position sticky, it returns the position as static.
-      If the browser does support sticky, then we allow the browser to handle it, if not
-      then we default back to Bootstraps affix
-    **/
-    if (this.$topBar.css('position') !== 'static') return;
-
-    const offsetTop = this.$buildTrace.offset().top;
-
-    this.$topBar.affix({
-      offset: {
-        top: offsetTop,
-      },
-    });
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  canScroll() {
-    return $(document).height() > $(window).height();
-  }
-
-  toggleScroll() {
-    const $document = $(document);
-    const currentPosition = $document.scrollTop();
-    const scrollHeight = $document.height();
-
-    const windowHeight = $(window).height();
-    if (this.canScroll()) {
-      if (currentPosition > 0 &&
-        (scrollHeight - currentPosition !== windowHeight)) {
-      // User is in the middle of the log
-
-        this.toggleDisableButton(this.$scrollTopBtn, false);
-        this.toggleDisableButton(this.$scrollBottomBtn, false);
-      } else if (currentPosition === 0) {
-        // User is at Top of  Log
-
-        this.toggleDisableButton(this.$scrollTopBtn, true);
-        this.toggleDisableButton(this.$scrollBottomBtn, false);
-      } else if (this.isScrolledToBottom()) {
-        // User is at the bottom of the build log.
-
-        this.toggleDisableButton(this.$scrollTopBtn, false);
-        this.toggleDisableButton(this.$scrollBottomBtn, true);
-      }
-    } else {
-      this.toggleDisableButton(this.$scrollTopBtn, true);
-      this.toggleDisableButton(this.$scrollBottomBtn, true);
-    }
-  }
-  // eslint-disable-next-line class-methods-use-this
-  isScrolledToBottom() {
-    const $document = $(document);
-
-    const currentPosition = $document.scrollTop();
-    const scrollHeight = $document.height();
-
-    const windowHeight = $(window).height();
-
-    return scrollHeight - currentPosition === windowHeight;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  scrollDown() {
-    const $document = $(document);
-    $document.scrollTop($document.height());
+    polyfillSticky(this.$topBar);
   }
 
   scrollToBottom() {
-    this.scrollDown();
+    scrollDown();
     this.hasBeenScrolled = true;
     this.toggleScroll();
   }
 
   scrollToTop() {
-    $(document).scrollTop(0);
+    scrollUp();
     this.hasBeenScrolled = true;
     this.toggleScroll();
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  toggleDisableButton($button, disable) {
-    if (disable && $button.prop('disabled')) return;
-    $button.prop('disabled', disable);
   }
 
   toggleScrollAnimation(toggle) {
@@ -196,7 +109,7 @@ export default class Job {
           this.state = log.state;
         }
 
-        this.isScrollInBottom = this.isScrolledToBottom();
+        this.isScrollInBottom = isScrolledToBottom();
 
         if (log.append) {
           this.$buildTraceOutput.append(log.html);
@@ -236,7 +149,7 @@ export default class Job {
       })
       .then(() => {
         if (this.isScrollInBottom) {
-          this.scrollDown();
+          scrollDown();
         }
       })
       .then(() => this.toggleScroll());
@@ -244,7 +157,7 @@ export default class Job {
   // eslint-disable-next-line class-methods-use-this
   shouldHideSidebarForViewport() {
     const bootstrapBreakpoint = bp.getBreakpointSize();
-    return bootstrapBreakpoint === 'xs' || bootstrapBreakpoint === 'sm';
+    return bootstrapBreakpoint === 'xs';
   }
 
   toggleSidebar(shouldHide) {
@@ -274,20 +187,4 @@ export default class Job {
     if (this.shouldHideSidebarForViewport()) this.toggleSidebar();
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  populateJobs(stage) {
-    $('.build-job').hide();
-    $(`.build-job[data-stage="${stage}"]`).show();
-  }
-  // eslint-disable-next-line class-methods-use-this
-  updateStageDropdownText(stage) {
-    $('.stage-selection').text(stage);
-  }
-
-  updateDropdown(e) {
-    e.preventDefault();
-    const stage = e.currentTarget.text;
-    this.updateStageDropdownText(stage);
-    this.populateJobs(stage);
-  }
 }

@@ -10,7 +10,7 @@ class AutoWidthDropdownSelect {
   }
 
   init() {
-    const dropdownClass = this.dropdownClass;
+    const { dropdownClass } = this;
     this.$selectElement.select2({
       dropdownCssClass: dropdownClass,
       ...AutoWidthDropdownSelect.selectOptions(this.dropdownClass),

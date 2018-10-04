@@ -3,23 +3,10 @@ require 'spec_helper'
 describe GroupsHelper do
   include ApplicationHelper
 
-  describe 'group_icon' do
-    avatar_file_path = File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
-
-    it 'returns an url for the avatar' do
-      group = create(:group)
-      group.avatar = fixture_file_upload(avatar_file_path)
-      group.save!
-
-      expect(helper.group_icon(group).to_s)
-        .to eq "<img data-src=\"#{group.avatar.url}\" class=\" lazy\" src=\"#{LazyImageTagHelper.placeholder_image}\" />"
-    end
-  end
-
   describe 'group_icon_url' do
-    avatar_file_path = File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
-
     it 'returns an url for the avatar' do
+      avatar_file_path = File.join('spec', 'fixtures', 'banana_sample.gif')
+
       group = create(:group)
       group.avatar = fixture_file_upload(avatar_file_path)
       group.save!
@@ -206,8 +193,9 @@ describe GroupsHelper do
     let(:group) { create(:group, :public) }
     let(:user) { create(:user) }
     before do
+      group.add_owner(user)
       allow(helper).to receive(:current_user) { user }
-      allow(helper).to receive(:can?) { true }
+      allow(helper).to receive(:can?) { |*args| Ability.allowed?(*args) }
       helper.instance_variable_set(:@group, group)
     end
 
@@ -231,7 +219,10 @@ describe GroupsHelper do
       cross_project_features = [:activity, :issues, :labels, :milestones,
                                 :merge_requests]
 
-      expect(helper).to receive(:can?).with(user, :read_cross_project) { false }
+      allow(Ability).to receive(:allowed?).and_call_original
+      cross_project_features.each do |feature|
+        expect(Ability).to receive(:allowed?).with(user, "read_group_#{feature}".to_sym, group) { false }
+      end
 
       expect(helper.group_sidebar_links).not_to include(*cross_project_features)
     end

@@ -9,6 +9,7 @@ Uncomment and customize if you want to change the default time zone of GitLab ap
 
 To see all available time zones, run `bundle exec rake time:zones:all`.
 
+With Omnibus installations, run `gitlab-rake time:zones:all`.
 
 ## Changing time zone in omnibus installations
 

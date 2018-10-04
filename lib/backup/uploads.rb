@@ -1,8 +1,14 @@
+# frozen_string_literal: true
+
 require 'backup/files'
 
 module Backup
   class Uploads < Files
-    def initialize
+    attr_reader :progress
+
+    def initialize(progress)
+      @progress = progress
+
       super('uploads', Rails.root.join('public/uploads'))
     end
   end

@@ -130,6 +130,20 @@ module Gitlab
             end
           end
 
+          class ArrayOfStringsOrStringValidator < RegexpValidator
+            def validate_each(record, attribute, value)
+              unless validate_array_of_strings_or_string(value)
+                record.errors.add(attribute, 'should be an array of strings or a string')
+              end
+            end
+
+            private
+
+            def validate_array_of_strings_or_string(values)
+              validate_array_of_strings(values) || validate_string(values)
+            end
+          end
+
           class TypeValidator < ActiveModel::EachValidator
             def validate_each(record, attribute, value)
               type = options[:with]

@@ -75,19 +75,19 @@ module Gitlab
           @beginning_of_section_regex ||= /section_/.freeze
         end
 
-        def find_next_marker(s)
+        def find_next_marker(scanner)
           beginning_of_section_len = 8
-          maybe_marker = s.exist?(beginning_of_section_regex)
+          maybe_marker = scanner.exist?(beginning_of_section_regex)
 
           if maybe_marker.nil?
-            s.terminate
+            scanner.terminate
           else
             # repositioning at the beginning of the match
-            s.pos += maybe_marker - beginning_of_section_len
+            scanner.pos += maybe_marker - beginning_of_section_len
             if block_given?
-              good_marker = yield(s)
+              good_marker = yield(scanner)
               # if not a good marker: Consuming the matched beginning_of_section_regex
-              s.pos += beginning_of_section_len unless good_marker
+              scanner.pos += beginning_of_section_len unless good_marker
             end
           end
         end

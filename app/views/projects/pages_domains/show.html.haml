@@ -12,7 +12,7 @@
         This domain is not verified. You will need to verify ownership before access is enabled.
 
 %h3.page-title.with-button
-  = link_to 'Edit', edit_project_pages_domain_path(@project, @domain), class: 'btn btn-success pull-right'
+  = link_to 'Edit', edit_project_pages_domain_path(@project, @domain), class: 'btn btn-success float-right'
   Pages Domain
 
 .table-holder
@@ -30,9 +30,9 @@
       %td
         .input-group
           = text_field_tag :domain_dns, dns_record , class: "monospace js-select-on-focus form-control", readonly: true
-          .input-group-btn
-            = clipboard_button(target: '#domain_dns', class: 'btn-default hidden-xs')
-        %p.help-block
+          .input-group-append
+            = clipboard_button(target: '#domain_dns', class: 'btn-default input-group-text d-none d-sm-block')
+        %p.form-text.text-muted
           To access this domain create a new DNS record
 
     - if verification_enabled
@@ -43,16 +43,16 @@
         %td
           = form_tag verify_project_pages_domain_path(@project, @domain) do
             .status-badge
-              - text, status = @domain.unverified? ? [_('Unverified'), 'label-danger'] : [_('Verified'), 'label-success']
-              .label{ class: status }
+              - text, status = @domain.unverified? ? [_('Unverified'), 'badge-danger'] : [_('Verified'), 'badge-success']
+              .badge{ class: status }
                 = text
               %button.btn.has-tooltip{ type: "submit", data: { container: 'body' }, title: _("Retry verification") }
                 = sprite_icon('redo')
           .input-group
             = text_field_tag :domain_verification, verification_record, class: "monospace js-select-on-focus form-control", readonly: true
-            .input-group-btn
-              = clipboard_button(target: '#domain_verification', class: 'btn-default hidden-xs')
-          %p.help-block
+            .input-group-append
+              = clipboard_button(target: '#domain_verification', class: 'btn-default d-none d-sm-block')
+          %p.form-text.text-muted
             - help_link = help_page_path('user/project/pages/getting_started_part_three.md', anchor: 'dns-txt-record')
             To #{link_to 'verify ownership', help_link} of your domain,
             add the above key to a TXT record within to your DNS configuration.

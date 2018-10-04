@@ -54,7 +54,7 @@ module ExtractsPath
 
       valid_refs = ref_names.select { |v| id.start_with?("#{v}/") }
 
-      if valid_refs.length == 0
+      if valid_refs.empty?
         # No exact ref match, so just try our best
         pair = id.match(%r{([^/]+)(.*)}).captures
       else
@@ -139,6 +139,11 @@ module ExtractsPath
 
   def lfs_blob_ids
     blob_ids = tree.blobs.map(&:id)
+
+    # When current endpoint is a Blob then `tree.blobs` will be empty, it means we need to analyze
+    # the current Blob in order to determine if it's a LFS object
+    blob_ids = Array.wrap(@repo.blob_at(@commit.id, @path)&.id) if blob_ids.empty? # rubocop:disable Gitlab/ModuleWithInstanceVariables
+
     @lfs_blob_ids = Gitlab::Git::Blob.batch_lfs_pointers(@project.repository, blob_ids).map(&:id) # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 

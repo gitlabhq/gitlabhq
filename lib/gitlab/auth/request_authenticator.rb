@@ -16,7 +16,7 @@ module Gitlab
       end
 
       def find_sessionless_user
-        find_user_from_access_token || find_user_from_rss_token
+        find_user_from_access_token || find_user_from_feed_token
       rescue Gitlab::Auth::AuthenticationError
         nil
       end

@@ -10,7 +10,7 @@ import eventHub from './event_hub';
 Vue.use(Translate);
 
 export default () => {
-  const dataset = document.querySelector('.js-pipeline-details-vue').dataset;
+  const { dataset } = document.querySelector('.js-pipeline-details-vue');
 
   const mediator = new PipelinesMediator({ endpoint: dataset.endpoint });
 
@@ -25,28 +25,15 @@ export default () => {
     data() {
       return {
         mediator,
-        actionDisabled: null,
       };
     },
-    created() {
-      eventHub.$on('graphAction', this.postAction);
-    },
-    beforeDestroy() {
-      eventHub.$off('graphAction', this.postAction);
-    },
     methods: {
-      postAction(action) {
-        this.actionDisabled = action;
-
-        this.mediator.service.postAction(action)
-          .then(() => {
-            this.mediator.refreshPipeline();
-            this.actionDisabled = null;
-          })
-          .catch(() => {
-            this.actionDisabled = null;
-            Flash(__('An error occurred while making the request.'));
-          });
+      requestRefreshPipelineGraph() {
+        // When an action is clicked
+        // (wether in the dropdown or in the main nodes, we refresh the big graph)
+        this.mediator
+          .refreshPipeline()
+          .catch(() => Flash(__('An error occurred while making the request.')));
       },
     },
     render(createElement) {
@@ -54,7 +41,9 @@ export default () => {
         props: {
           isLoading: this.mediator.state.isLoading,
           pipeline: this.mediator.store.state.pipeline,
-          actionDisabled: this.actionDisabled,
+        },
+        on: {
+          refreshPipelineGraph: this.requestRefreshPipelineGraph,
         },
       });
     },
@@ -79,7 +68,8 @@ export default () => {
     },
     methods: {
       postAction(action) {
-        this.mediator.service.postAction(action.path)
+        this.mediator.service
+          .postAction(action.path)
           .then(() => this.mediator.refreshPipeline())
           .catch(() => Flash(__('An error occurred while making the request.')));
       },

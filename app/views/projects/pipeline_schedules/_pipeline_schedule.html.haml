@@ -25,7 +25,7 @@
         = link_to user_path(pipeline_schedule.owner) do
           = pipeline_schedule.owner&.name
     %td
-      .pull-right.btn-group
+      .float-right.btn-group
         - if can?(current_user, :play_pipeline_schedule, pipeline_schedule)
           = link_to play_pipeline_schedule_path(pipeline_schedule), method: :post, title: s_('Play'), class: 'btn' do
             = icon('play')

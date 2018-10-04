@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Labels Hierarchy', :js, :nested_groups do
+describe 'Labels Hierarchy', :js, :nested_groups do
   include FilteredSearchHelpers
 
   let!(:user) { create(:user) }
@@ -34,7 +34,7 @@ feature 'Labels Hierarchy', :js, :nested_groups do
 
         wait_for_requests
 
-        expect(page).to have_selector('span.label', text: label.title)
+        expect(page).to have_selector('.badge', text: label.title)
       end
     end
 
@@ -45,7 +45,7 @@ feature 'Labels Hierarchy', :js, :nested_groups do
 
       wait_for_requests
 
-      expect(page).not_to have_selector('span.label', text: child_group_label.title)
+      expect(page).not_to have_selector('.badge', text: child_group_label.title)
     end
   end
 
@@ -57,7 +57,7 @@ feature 'Labels Hierarchy', :js, :nested_groups do
         wait_for_requests
 
         if board
-          expect(page).to have_selector('.card-title') do |card|
+          expect(page).to have_selector('.board-card-title') do |card|
             expect(card).to have_selector('a', text: labeled_issue.title)
           end
         else
@@ -96,11 +96,11 @@ feature 'Labels Hierarchy', :js, :nested_groups do
         wait_for_requests
 
         if board
-          expect(page).to have_selector('.card-title') do |card|
+          expect(page).to have_selector('.board-card-title') do |card|
             expect(card).to have_selector('a', text: labeled_issue.title)
           end
 
-          expect(page).to have_selector('.card-title') do |card|
+          expect(page).to have_selector('.board-card-title') do |card|
             expect(card).to have_selector('a', text: labeled_issue_2.title)
           end
         else
@@ -118,11 +118,11 @@ feature 'Labels Hierarchy', :js, :nested_groups do
       select_label_on_dropdown(group_label_3.title)
 
       if board
-        expect(page).to have_selector('.card-title') do |card|
+        expect(page).to have_selector('.board-card-title') do |card|
           expect(card).not_to have_selector('a', text: labeled_issue_2.title)
         end
 
-        expect(page).to have_selector('.card-title') do |card|
+        expect(page).to have_selector('.board-card-title') do |card|
           expect(card).to have_selector('a', text: labeled_issue_3.title)
         end
       else
@@ -156,12 +156,12 @@ feature 'Labels Hierarchy', :js, :nested_groups do
       find('a.label-item', text: parent_group_label.title).click
       find('a.label-item', text: project_label_1.title).click
 
-      find('.btn-create').click
+      find('.btn-success').click
 
       expect(page.find('.issue-details h2.title')).to have_content('new created issue')
-      expect(page).to have_selector('span.label', text: grandparent_group_label.title)
-      expect(page).to have_selector('span.label', text: parent_group_label.title)
-      expect(page).to have_selector('span.label', text: project_label_1.title)
+      expect(page).to have_selector('span.badge', text: grandparent_group_label.title)
+      expect(page).to have_selector('span.badge', text: parent_group_label.title)
+      expect(page).to have_selector('span.badge', text: project_label_1.title)
     end
   end
 
@@ -170,6 +170,8 @@ feature 'Labels Hierarchy', :js, :nested_groups do
 
     context 'on issue sidebar' do
       before do
+        project_1.add_developer(user)
+
         visit project_issue_path(project_1, issue)
       end
 
@@ -180,11 +182,13 @@ feature 'Labels Hierarchy', :js, :nested_groups do
       let(:board)   { create(:board, project: project_1) }
 
       before do
+        project_1.add_developer(user)
+
         visit project_board_path(project_1, board)
 
         wait_for_requests
 
-        find('.card').click
+        find('.board-card').click
       end
 
       it_behaves_like 'assigning labels from sidebar'
@@ -194,11 +198,13 @@ feature 'Labels Hierarchy', :js, :nested_groups do
       let(:board)   { create(:board, group: parent) }
 
       before do
+        parent.add_developer(user)
+
         visit group_board_path(parent, board)
 
         wait_for_requests
 
-        find('.card').click
+        find('.board-card').click
       end
 
       it_behaves_like 'assigning labels from sidebar'
@@ -211,6 +217,8 @@ feature 'Labels Hierarchy', :js, :nested_groups do
 
     context 'on project issuable list' do
       before do
+        project_1.add_developer(user)
+
         visit project_issues_path(project_1)
       end
 
@@ -237,6 +245,8 @@ feature 'Labels Hierarchy', :js, :nested_groups do
       let(:board) { create(:board, project: project_1) }
 
       before do
+        project_1.add_developer(user)
+
         visit project_board_path(project_1, board)
       end
 
@@ -247,6 +257,8 @@ feature 'Labels Hierarchy', :js, :nested_groups do
       let(:board) { create(:board, group: parent) }
 
       before do
+        parent.add_developer(user)
+
         visit group_board_path(parent, board)
       end
 
@@ -259,6 +271,7 @@ feature 'Labels Hierarchy', :js, :nested_groups do
       let(:board) { create(:board, project: project_1) }
 
       before do
+        project_1.add_developer(user)
         visit project_board_path(project_1, board)
         find('.js-new-board-list').click
         wait_for_requests
@@ -281,6 +294,7 @@ feature 'Labels Hierarchy', :js, :nested_groups do
       let(:board) { create(:board, group: parent) }
 
       before do
+        parent.add_developer(user)
         visit group_board_path(parent, board)
         find('.js-new-board-list').click
         wait_for_requests

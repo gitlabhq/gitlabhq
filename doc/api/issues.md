@@ -37,9 +37,9 @@ GET /issues?my_reaction_emoji=star
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                                       |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels                         |
-| `milestone`         | string           | no         | The milestone title                                                                                                                                 |
-| `scope`             | string           | no         | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`. Defaults to `created-by-me` _([Introduced][ce-13004] in GitLab 9.5)_ |
-| `author_id`         | integer          | no         | Return issues created by the given user `id`. Combine with `scope=all` or `scope=assigned-to-me`. _([Introduced][ce-13004] in GitLab 9.5)_          |
+| `milestone`         | string           | no         | The milestone title. `No+Milestone` lists all issues with no milestone                                                                                                                                |
+| `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`. Defaults to `created_by_me`<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13004] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
+| `author_id`         | integer          | no         | Return issues created by the given user `id`. Combine with `scope=all` or `scope=assigned_to_me`. _([Introduced][ce-13004] in GitLab 9.5)_          |
 | `assignee_id`       | integer          | no         | Return issues assigned to the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                                              |
 | `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_                                      |
 | `iids[]`            | Array[integer]   | no         | Return only the issues having the given `iid`                                                                                                       |
@@ -151,8 +151,8 @@ GET /groups/:id/issues?my_reaction_emoji=star
 | `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                 |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels   |
 | `iids[]`            | Array[integer]   | no         | Return only the issues having the given `iid`                                                                                 |
-| `milestone`         | string           | no         | The milestone title                                                                                                           |
-| `scope`             | string           | no         | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all` _([Introduced][ce-13004] in GitLab 9.5)_        |
+| `milestone`         | string           | no         | The milestone title. `No+Milestone` lists all issues with no milestone                                                                                                           |
+| `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13004] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
 | `author_id`         | integer          | no         | Return issues created by the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                         |
 | `assignee_id`       | integer          | no         | Return issues assigned to the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                        |
 | `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_                |
@@ -265,8 +265,8 @@ GET /projects/:id/issues?my_reaction_emoji=star
 | `iids[]`            | Array[integer]   | no         | Return only the milestone having the given `iid`                                                                              |
 | `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                 |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels   |
-| `milestone`         | string           | no         | The milestone title                                                                                                           |
-| `scope`             | string           | no         | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all` _([Introduced][ce-13004] in GitLab 9.5)_        |
+| `milestone`         | string           | no         | The milestone title. `No+Milestone` lists all issues with no milestone                                                                                                           |
+| `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13004] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
 | `author_id`         | integer          | no         | Return issues created by the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                         |
 | `assignee_id`       | integer          | no         | Return issues assigned to the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                        |
 | `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_                |
@@ -463,13 +463,14 @@ POST /projects/:id/issues
 | Attribute                                 | Type           | Required | Description  |
 |-------------------------------------------|----------------|----------|--------------|
 | `id`                                      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `iid`                                     | integer/string | no       | The internal ID of the project's issue (requires admin or project owner rights) |
 | `title`                                   | string  | yes      | The title of an issue |
 | `description`                             | string  | no       | The description of an issue  |
 | `confidential`                            | boolean | no       | Set an issue to be confidential. Default is `false`.  |
 | `assignee_ids`                            | Array[integer] | no       | The ID of the users to assign issue |
-| `milestone_id`                            | integer | no       | The ID of a milestone to assign issue  |
+| `milestone_id`                            | integer | no       | The global ID of a milestone to assign issue  |
 | `labels`                                  | string  | no       | Comma-separated label names for an issue  |
-| `created_at`                              | string  | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
+| `created_at`                              | string  | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project/group owner rights) |
 | `due_date`                                | string  | no       | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11` |
 | `merge_request_to_resolve_discussions_of` | integer | no       | The IID of a merge request in which to resolve all issues. This will fill the issue with a default description and mark all discussions as resolved. When passing a description or title, these values will take precedence over the default values.|
 | `discussion_to_resolve`                   | string  | no       | The ID of a discussion to resolve. This will fill in the issue with a default description and mark the discussion as resolved. Use in combination with `merge_request_to_resolve_discussions_of`. |
@@ -548,7 +549,7 @@ PUT /projects/:id/issues/:issue_iid
 | `description`  | string  | no       | The description of an issue                                                                                |
 | `confidential` | boolean | no       | Updates an issue to be confidential                                                                        |
 | `assignee_ids`  | Array[integer] | no  | The ID of the user(s) to assign the issue to. Set to `0` or provide an empty value to unassign all assignees.  |
-| `milestone_id` | integer | no       | The ID of a milestone to assign the issue to. Set to `0` or provide an empty value to unassign a milestone.|
+| `milestone_id` | integer | no       | The global ID of a milestone to assign the issue to. Set to `0` or provide an empty value to unassign a milestone.|
 | `labels`       | string  | no       | Comma-separated label names for an issue. Set to an empty string to unassign all labels.                   |
 | `state_event`  | string  | no       | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it                      |
 | `updated_at`   | string  | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
@@ -1254,3 +1255,4 @@ Example response:
 [ce-13004]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13004
 [ce-14016]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14016
 [ce-17042]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17042
+[ce-18935]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18935

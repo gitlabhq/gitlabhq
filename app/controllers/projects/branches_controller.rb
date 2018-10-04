@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::BranchesController < Projects::ApplicationController
   include ActionView::Helpers::SanitizeHelper
   include SortingHelper
@@ -31,7 +33,10 @@ class Projects::BranchesController < Projects::ApplicationController
           end
         end
 
-        render
+        # https://gitlab.com/gitlab-org/gitlab-ce/issues/48097
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          render
+        end
       end
       format.json do
         branches = BranchesFinder.new(@repository, params).execute
@@ -45,6 +50,7 @@ class Projects::BranchesController < Projects::ApplicationController
     @branches = @repository.recent_branches
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def create
     branch_name = sanitize(strip_tags(params[:branch_name]))
     branch_name = Addressable::URI.unescape(branch_name)
@@ -85,6 +91,7 @@ class Projects::BranchesController < Projects::ApplicationController
       end
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def destroy
     @branch_name = Addressable::URI.unescape(params[:id])
@@ -95,7 +102,7 @@ class Projects::BranchesController < Projects::ApplicationController
         flash_type = result[:status] == :error ? :alert : :notice
         flash[flash_type] = result[:message]
 
-        redirect_to project_branches_path(@project), status: 303
+        redirect_to project_branches_path(@project), status: :see_other
       end
 
       format.js { render nothing: true, status: result[:return_code] }

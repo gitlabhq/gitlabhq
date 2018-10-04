@@ -1,7 +1,7 @@
 # coding: utf-8
 require "spec_helper"
 
-describe Gitlab::Git::Repository, seed_helper: true do
+describe Gitlab::Git::Repository, :seed_helper do
   include Gitlab::EncodingHelper
   using RSpec::Parameterized::TableSyntax
 
@@ -19,7 +19,10 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  let(:mutable_repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
+  let(:repository_path) { File.join(TestEnv.repos_path, repository.relative_path) }
+  let(:repository_rugged) { Rugged::Repository.new(repository_path) }
   let(:storage_path) { TestEnv.repos_path }
   let(:user) { build(:user) }
 
@@ -71,23 +74,11 @@ describe Gitlab::Git::Repository, seed_helper: true do
   describe "Respond to" do
     subject { repository }
 
-    it { is_expected.to respond_to(:rugged) }
     it { is_expected.to respond_to(:root_ref) }
     it { is_expected.to respond_to(:tags) }
   end
 
   describe '#root_ref' do
-    context 'with gitaly disabled' do
-      before do
-        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(false)
-      end
-
-      it 'calls #discover_default_branch' do
-        expect(repository).to receive(:discover_default_branch)
-        repository.root_ref
-      end
-    end
-
     it 'returns UTF-8' do
       expect(repository.root_ref).to be_utf8
     end
@@ -99,88 +90,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :default_branch_name do
       subject { repository.root_ref }
-    end
-  end
-
-  describe "#rugged" do
-    describe 'when storage is broken', :broken_storage  do
-      it 'raises a storage exception when storage is not available' do
-        broken_repo = described_class.new('broken', 'a/path.git', '')
-
-        expect { broken_repo.rugged }.to raise_error(Gitlab::Git::Storage::Inaccessible)
-      end
-    end
-
-    it 'raises a no repository exception when there is no repo' do
-      broken_repo = described_class.new('default', 'a/path.git', '')
-
-      expect { broken_repo.rugged }.to raise_error(Gitlab::Git::Repository::NoRepository)
-    end
-
-    describe 'alternates keyword argument' do
-      context 'with no Git env stored' do
-        before do
-          allow(Gitlab::Git::HookEnv).to receive(:all).and_return({})
-        end
-
-        it "is passed an empty array" do
-          expect(Rugged::Repository).to receive(:new).with(repository.path, alternates: [])
-
-          repository.rugged
-        end
-      end
-
-      context 'with absolute and relative Git object dir envvars stored' do
-        before do
-          allow(Gitlab::Git::HookEnv).to receive(:all).and_return({
-            'GIT_OBJECT_DIRECTORY_RELATIVE' => './objects/foo',
-            'GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE' => ['./objects/bar', './objects/baz'],
-            'GIT_OBJECT_DIRECTORY' => 'ignored',
-            'GIT_ALTERNATE_OBJECT_DIRECTORIES' => %w[ignored ignored],
-            'GIT_OTHER' => 'another_env'
-          })
-        end
-
-        it "is passed the relative object dir envvars after being converted to absolute ones" do
-          alternates = %w[foo bar baz].map { |d| File.join(repository.path, './objects', d) }
-          expect(Rugged::Repository).to receive(:new).with(repository.path, alternates: alternates)
-
-          repository.rugged
-        end
-      end
-    end
-  end
-
-  describe "#discover_default_branch" do
-    let(:master) { 'master' }
-    let(:feature) { 'feature' }
-    let(:feature2) { 'feature2' }
-
-    it "returns 'master' when master exists" do
-      expect(repository).to receive(:branch_names).at_least(:once).and_return([feature, master])
-      expect(repository.discover_default_branch).to eq('master')
-    end
-
-    it "returns non-master when master exists but default branch is set to something else" do
-      File.write(File.join(repository.path, 'HEAD'), 'ref: refs/heads/feature')
-      expect(repository).to receive(:branch_names).at_least(:once).and_return([feature, master])
-      expect(repository.discover_default_branch).to eq('feature')
-      File.write(File.join(repository.path, 'HEAD'), 'ref: refs/heads/master')
-    end
-
-    it "returns a non-master branch when only one exists" do
-      expect(repository).to receive(:branch_names).at_least(:once).and_return([feature])
-      expect(repository.discover_default_branch).to eq('feature')
-    end
-
-    it "returns a non-master branch when more than one exists and master does not" do
-      expect(repository).to receive(:branch_names).at_least(:once).and_return([feature, feature2])
-      expect(repository.discover_default_branch).to eq('feature')
-    end
-
-    it "returns nil when no branch exists" do
-      expect(repository).to receive(:branch_names).at_least(:once).and_return([])
-      expect(repository.discover_default_branch).to be_nil
     end
   end
 
@@ -234,59 +143,68 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :tag_names
   end
 
-  shared_examples 'archive check' do |extenstion|
-    it { expect(metadata['ArchivePath']).to match(%r{tmp/gitlab-git-test.git/gitlab-git-test-master-#{SeedRepo::LastCommit::ID}}) }
-    it { expect(metadata['ArchivePath']).to end_with extenstion }
-  end
+  describe '#archive_metadata' do
+    let(:storage_path) { '/tmp' }
+    let(:cache_key) { File.join(repository.gl_repository, SeedRepo::LastCommit::ID) }
 
-  describe '#archive_prefix' do
-    let(:project_name) { 'project-name'}
+    let(:append_sha) { true }
+    let(:ref) { 'master' }
+    let(:format) { nil }
 
-    before do
-      expect(repository).to receive(:name).once.and_return(project_name)
+    let(:expected_extension) { 'tar.gz' }
+    let(:expected_filename) { "#{expected_prefix}.#{expected_extension}" }
+    let(:expected_path) { File.join(storage_path, cache_key, expected_filename) }
+    let(:expected_prefix) { "gitlab-git-test-#{ref}-#{SeedRepo::LastCommit::ID}" }
+
+    subject(:metadata) { repository.archive_metadata(ref, storage_path, 'gitlab-git-test', format, append_sha: append_sha) }
+
+    it 'sets CommitId to the commit SHA' do
+      expect(metadata['CommitId']).to eq(SeedRepo::LastCommit::ID)
     end
 
-    it 'returns parameterised string for a ref containing slashes' do
-      prefix = repository.archive_prefix('test/branch', 'SHA', append_sha: nil)
-
-      expect(prefix).to eq("#{project_name}-test-branch-SHA")
+    it 'sets ArchivePrefix to the expected prefix' do
+      expect(metadata['ArchivePrefix']).to eq(expected_prefix)
     end
 
-    it 'returns correct string for a ref containing dots' do
-      prefix = repository.archive_prefix('test.branch', 'SHA', append_sha: nil)
+    it 'sets ArchivePath to the expected globally-unique path' do
+      # This is really important from a security perspective. Think carefully
+      # before changing it: https://gitlab.com/gitlab-org/gitlab-ce/issues/45689
+      expect(expected_path).to include(File.join(repository.gl_repository, SeedRepo::LastCommit::ID))
 
-      expect(prefix).to eq("#{project_name}-test.branch-SHA")
+      expect(metadata['ArchivePath']).to eq(expected_path)
     end
 
-    it 'returns string with sha when append_sha is false' do
-      prefix = repository.archive_prefix('test.branch', 'SHA', append_sha: false)
+    context 'append_sha varies archive path and filename' do
+      where(:append_sha, :ref, :expected_prefix) do
+        sha = SeedRepo::LastCommit::ID
 
-      expect(prefix).to eq("#{project_name}-test.branch")
+        true  | 'master' | "gitlab-git-test-master-#{sha}"
+        true  | sha      | "gitlab-git-test-#{sha}-#{sha}"
+        false | 'master' | "gitlab-git-test-master"
+        false | sha      | "gitlab-git-test-#{sha}"
+        nil   | 'master' | "gitlab-git-test-master-#{sha}"
+        nil   | sha      | "gitlab-git-test-#{sha}"
+      end
+
+      with_them do
+        it { expect(metadata['ArchivePrefix']).to eq(expected_prefix) }
+        it { expect(metadata['ArchivePath']).to eq(expected_path) }
+      end
     end
-  end
 
-  describe '#archive' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp', append_sha: true) }
+    context 'format varies archive path and filename' do
+      where(:format, :expected_extension) do
+        nil      | 'tar.gz'
+        'madeup' | 'tar.gz'
+        'tbz2'   | 'tar.bz2'
+        'zip'    | 'zip'
+      end
 
-    it_should_behave_like 'archive check', '.tar.gz'
-  end
-
-  describe '#archive_zip' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp', 'zip', append_sha: true) }
-
-    it_should_behave_like 'archive check', '.zip'
-  end
-
-  describe '#archive_bz2' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp', 'tbz2', append_sha: true) }
-
-    it_should_behave_like 'archive check', '.tar.bz2'
-  end
-
-  describe '#archive_fallback' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp', 'madeup', append_sha: true) }
-
-    it_should_behave_like 'archive check', '.tar.gz'
+      with_them do
+        it { expect(metadata['ArchivePrefix']).to eq(expected_prefix) }
+        it { expect(metadata['ArchivePath']).to eq(expected_path) }
+      end
+    end
   end
 
   describe '#size' do
@@ -317,7 +235,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#submodule_url_for' do
-    let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
     let(:ref) { 'master' }
 
     def submodule_url(path)
@@ -354,108 +271,22 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  context '#submodules' do
-    let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
-
-    context 'where repo has submodules' do
-      let(:submodules) { repository.send(:submodules, 'master') }
-      let(:submodule) { submodules.first }
-
-      it { expect(submodules).to be_kind_of Hash }
-      it { expect(submodules.empty?).to be_falsey }
-
-      it 'should have valid data' do
-        expect(submodule).to eq([
-          "six", {
-            "id" => "409f37c4f05865e4fb208c771485f211a22c4c2d",
-            "name" => "six",
-            "url" => "git://github.com/randx/six.git"
-          }
-        ])
-      end
-
-      it 'should handle nested submodules correctly' do
-        nested = submodules['nested/six']
-        expect(nested['name']).to eq('nested/six')
-        expect(nested['url']).to eq('git://github.com/randx/six.git')
-        expect(nested['id']).to eq('24fb71c79fcabc63dfd8832b12ee3bf2bf06b196')
-      end
-
-      it 'should handle deeply nested submodules correctly' do
-        nested = submodules['deeper/nested/six']
-        expect(nested['name']).to eq('deeper/nested/six')
-        expect(nested['url']).to eq('git://github.com/randx/six.git')
-        expect(nested['id']).to eq('24fb71c79fcabc63dfd8832b12ee3bf2bf06b196')
-      end
-
-      it 'should not have an entry for an invalid submodule' do
-        expect(submodules).not_to have_key('invalid/path')
-      end
-
-      it 'should not have an entry for an uncommited submodule dir' do
-        submodules = repository.send(:submodules, 'fix-existing-submodule-dir')
-        expect(submodules).not_to have_key('submodule-existing-dir')
-      end
-
-      it 'should handle tags correctly' do
-        submodules = repository.send(:submodules, 'v1.2.1')
-
-        expect(submodules.first).to eq([
-          "six", {
-            "id" => "409f37c4f05865e4fb208c771485f211a22c4c2d",
-            "name" => "six",
-            "url" => "git://github.com/randx/six.git"
-          }
-        ])
-      end
-
-      it 'should not break on invalid syntax' do
-        allow(repository).to receive(:blob_content).and_return(<<-GITMODULES.strip_heredoc)
-          [submodule "six"]
-          path = six
-          url = git://github.com/randx/six.git
-
-          [submodule]
-          foo = bar
-        GITMODULES
-
-        expect(submodules).to have_key('six')
-      end
-    end
-
-    context 'where repo doesn\'t have submodules' do
-      let(:submodules) { repository.send(:submodules, '6d39438') }
-      it 'should return an empty hash' do
-        expect(submodules).to be_empty
-      end
-    end
-  end
-
   describe '#commit_count' do
-    shared_examples 'simple commit counting' do
-      it { expect(repository.commit_count("master")).to eq(25) }
-      it { expect(repository.commit_count("feature")).to eq(9) }
-      it { expect(repository.commit_count("does-not-exist")).to eq(0) }
-    end
+    it { expect(repository.commit_count("master")).to eq(25) }
+    it { expect(repository.commit_count("feature")).to eq(9) }
+    it { expect(repository.commit_count("does-not-exist")).to eq(0) }
 
-    context 'when Gitaly commit_count feature is enabled' do
-      it_behaves_like 'simple commit counting'
-      it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::CommitService, :commit_count do
-        subject { repository.commit_count('master') }
-      end
-    end
-
-    context 'when Gitaly commit_count feature is disabled', :skip_gitaly_mock  do
-      it_behaves_like 'simple commit counting'
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::CommitService, :commit_count do
+      subject { repository.commit_count('master') }
     end
   end
 
   describe '#has_local_branches?' do
-    shared_examples 'check for local branches' do
+    context 'check for local branches' do
       it { expect(repository.has_local_branches?).to eq(true) }
 
       context 'mutable' do
-        let(:repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
+        let(:repository) { mutable_repository }
 
         after do
           ensure_seeds
@@ -465,158 +296,125 @@ describe Gitlab::Git::Repository, seed_helper: true do
           # Sanity check
           expect(repository.has_local_branches?).to eq(true)
 
-          FileUtils.rm_rf(File.join(repository.path, 'packed-refs'))
-          heads_dir = File.join(repository.path, 'refs/heads')
+          FileUtils.rm_rf(File.join(repository_path, 'packed-refs'))
+          heads_dir = File.join(repository_path, 'refs/heads')
           FileUtils.rm_rf(heads_dir)
           FileUtils.mkdir_p(heads_dir)
 
+          repository.expire_has_local_branches_cache
           expect(repository.has_local_branches?).to eq(false)
         end
       end
-    end
 
-    context 'with gitaly' do
-      it_behaves_like 'check for local branches'
-    end
+      context 'memoizes the value' do
+        it 'returns true' do
+          expect(repository).to receive(:uncached_has_local_branches?).once.and_call_original
 
-    context 'without gitaly', :skip_gitaly_mock do
-      it_behaves_like 'check for local branches'
+          2.times do
+            expect(repository.has_local_branches?).to eq(true)
+          end
+        end
+      end
     end
   end
 
   describe "#delete_branch" do
-    shared_examples "deleting a branch" do
-      let(:repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
+    let(:repository) { mutable_repository }
 
-      after do
-        ensure_seeds
-      end
-
-      it "removes the branch from the repo" do
-        branch_name = "to-be-deleted-soon"
-
-        repository.create_branch(branch_name)
-        expect(repository.rugged.branches[branch_name]).not_to be_nil
-
-        repository.delete_branch(branch_name)
-        expect(repository.rugged.branches[branch_name]).to be_nil
-      end
-
-      context "when branch does not exist" do
-        it "raises a DeleteBranchError exception" do
-          expect { repository.delete_branch("this-branch-does-not-exist") }.to raise_error(Gitlab::Git::Repository::DeleteBranchError)
-        end
-      end
+    after do
+      ensure_seeds
     end
 
-    context "when Gitaly delete_branch is enabled" do
-      it_behaves_like "deleting a branch"
+    it "removes the branch from the repo" do
+      branch_name = "to-be-deleted-soon"
+
+      repository.create_branch(branch_name)
+      expect(repository_rugged.branches[branch_name]).not_to be_nil
+
+      repository.delete_branch(branch_name)
+      expect(repository_rugged.branches[branch_name]).to be_nil
     end
 
-    context "when Gitaly delete_branch is disabled", :skip_gitaly_mock do
-      it_behaves_like "deleting a branch"
+    context "when branch does not exist" do
+      it "raises a DeleteBranchError exception" do
+        expect { repository.delete_branch("this-branch-does-not-exist") }.to raise_error(Gitlab::Git::Repository::DeleteBranchError)
+      end
     end
   end
 
   describe "#create_branch" do
-    shared_examples 'creating a branch' do
-      let(:repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
+    let(:repository) { mutable_repository }
 
-      after do
-        ensure_seeds
-      end
-
-      it "should create a new branch" do
-        expect(repository.create_branch('new_branch', 'master')).not_to be_nil
-      end
-
-      it "should create a new branch with the right name" do
-        expect(repository.create_branch('another_branch', 'master').name).to eq('another_branch')
-      end
-
-      it "should fail if we create an existing branch" do
-        repository.create_branch('duplicated_branch', 'master')
-        expect {repository.create_branch('duplicated_branch', 'master')}.to raise_error("Branch duplicated_branch already exists")
-      end
-
-      it "should fail if we create a branch from a non existing ref" do
-        expect {repository.create_branch('branch_based_in_wrong_ref', 'master_2_the_revenge')}.to raise_error("Invalid reference master_2_the_revenge")
-      end
+    after do
+      ensure_seeds
     end
 
-    context 'when Gitaly create_branch feature is enabled' do
-      it_behaves_like 'creating a branch'
+    it "should create a new branch" do
+      expect(repository.create_branch('new_branch', 'master')).not_to be_nil
     end
 
-    context 'when Gitaly create_branch feature is disabled', :skip_gitaly_mock do
-      it_behaves_like 'creating a branch'
+    it "should create a new branch with the right name" do
+      expect(repository.create_branch('another_branch', 'master').name).to eq('another_branch')
+    end
+
+    it "should fail if we create an existing branch" do
+      repository.create_branch('duplicated_branch', 'master')
+      expect {repository.create_branch('duplicated_branch', 'master')}.to raise_error("Branch duplicated_branch already exists")
+    end
+
+    it "should fail if we create a branch from a non existing ref" do
+      expect {repository.create_branch('branch_based_in_wrong_ref', 'master_2_the_revenge')}.to raise_error("Invalid reference master_2_the_revenge")
     end
   end
 
   describe '#delete_refs' do
-    shared_examples 'deleting refs' do
-      let(:repo) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
+    let(:repository) { mutable_repository }
 
-      after do
-        ensure_seeds
-      end
+    after do
+      ensure_seeds
+    end
 
-      it 'deletes the ref' do
-        repo.delete_refs('refs/heads/feature')
+    it 'deletes the ref' do
+      repository.delete_refs('refs/heads/feature')
 
-        expect(repo.rugged.references['refs/heads/feature']).to be_nil
-      end
+      expect(repository_rugged.references['refs/heads/feature']).to be_nil
+    end
 
-      it 'deletes all refs' do
-        refs = %w[refs/heads/wip refs/tags/v1.1.0]
-        repo.delete_refs(*refs)
+    it 'deletes all refs' do
+      refs = %w[refs/heads/wip refs/tags/v1.1.0]
+      repository.delete_refs(*refs)
 
-        refs.each do |ref|
-          expect(repo.rugged.references[ref]).to be_nil
-        end
-      end
-
-      it 'raises an error if it failed' do
-        expect { repo.delete_refs('refs\heads\fix') }.to raise_error(Gitlab::Git::Repository::GitError)
+      refs.each do |ref|
+        expect(repository_rugged.references[ref]).to be_nil
       end
     end
 
-    context 'when Gitaly delete_refs feature is enabled' do
-      it_behaves_like 'deleting refs'
+    it 'does not fail when deleting an empty list of refs' do
+      expect { repository.delete_refs(*[]) }.not_to raise_error
     end
 
-    context 'when Gitaly delete_refs feature is disabled', :disable_gitaly do
-      it_behaves_like 'deleting refs'
+    it 'raises an error if it failed' do
+      expect { repository.delete_refs('refs\heads\fix') }.to raise_error(Gitlab::Git::Repository::GitError)
     end
   end
 
   describe '#branch_names_contains_sha' do
-    shared_examples 'returning the right branches' do
-      let(:head_id) { repository.rugged.head.target.oid }
-      let(:new_branch) { head_id }
-      let(:utf8_branch) { 'branch-é' }
+    let(:head_id) { repository_rugged.head.target.oid }
+    let(:new_branch) { head_id }
+    let(:utf8_branch) { 'branch-é' }
 
-      before do
-        repository.create_branch(new_branch, 'master')
-        repository.create_branch(utf8_branch, 'master')
-      end
-
-      after do
-        repository.delete_branch(new_branch)
-        repository.delete_branch(utf8_branch)
-      end
-
-      it 'displays that branch' do
-        expect(repository.branch_names_contains_sha(head_id)).to include('master', new_branch, utf8_branch)
-      end
+    before do
+      repository.create_branch(new_branch, 'master')
+      repository.create_branch(utf8_branch, 'master')
     end
 
-    context 'when Gitaly is enabled' do
-      it_behaves_like 'returning the right branches'
+    after do
+      repository.delete_branch(new_branch)
+      repository.delete_branch(utf8_branch)
     end
 
-    context 'when Gitaly is disabled', :disable_gitaly do
-      it_behaves_like 'returning the right branches'
+    it 'displays that branch' do
+      expect(repository.branch_names_contains_sha(head_id)).to include('master', new_branch, utf8_branch)
     end
   end
 
@@ -634,38 +432,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe "#remove_remote" do
-    before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-      @repo.remove_remote("expendable")
-    end
-
-    it "should remove the remote" do
-      expect(@repo.rugged.remotes).not_to include("expendable")
-    end
-
-    after(:all) do
-      ensure_seeds
-    end
-  end
-
-  describe "#remote_update" do
-    before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-      @repo.remote_update("expendable", url: TEST_NORMAL_REPO_PATH)
-    end
-
-    it "should add the remote" do
-      expect(@repo.rugged.remotes["expendable"].url).to(
-        eq(TEST_NORMAL_REPO_PATH)
-      )
-    end
-
-    after(:all) do
-      ensure_seeds
-    end
-  end
-
   describe '#fetch_repository_as_mirror' do
     let(:new_repository) do
       Gitlab::Git::Repository.new('default', 'my_project.git', '')
@@ -678,95 +444,91 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     after do
-      Gitlab::Shell.new.remove_repository(storage_path, 'my_project')
+      Gitlab::Shell.new.remove_repository('default', 'my_project')
     end
 
-    shared_examples 'repository mirror fecthing' do
-      it 'fetches a repository as a mirror remote' do
+    it 'fetches a repository as a mirror remote' do
+      subject
+
+      expect(refs(new_repository_path)).to eq(refs(repository_path))
+    end
+
+    context 'with keep-around refs' do
+      let(:sha) { SeedRepo::Commit::ID }
+      let(:keep_around_ref) { "refs/keep-around/#{sha}" }
+      let(:tmp_ref) { "refs/tmp/#{SecureRandom.hex}" }
+
+      before do
+        repository_rugged.references.create(keep_around_ref, sha, force: true)
+        repository_rugged.references.create(tmp_ref, sha, force: true)
+      end
+
+      it 'includes the temporary and keep-around refs' do
         subject
 
-        expect(refs(new_repository.path)).to eq(refs(repository.path))
-      end
-
-      context 'with keep-around refs' do
-        let(:sha) { SeedRepo::Commit::ID }
-        let(:keep_around_ref) { "refs/keep-around/#{sha}" }
-        let(:tmp_ref) { "refs/tmp/#{SecureRandom.hex}" }
-
-        before do
-          repository.rugged.references.create(keep_around_ref, sha, force: true)
-          repository.rugged.references.create(tmp_ref, sha, force: true)
-        end
-
-        it 'includes the temporary and keep-around refs' do
-          subject
-
-          expect(refs(new_repository.path)).to include(keep_around_ref)
-          expect(refs(new_repository.path)).to include(tmp_ref)
-        end
+        expect(refs(new_repository_path)).to include(keep_around_ref)
+        expect(refs(new_repository_path)).to include(tmp_ref)
       end
     end
 
-    context 'with gitaly enabled' do
-      it_behaves_like 'repository mirror fecthing'
-    end
-
-    context 'with gitaly enabled', :skip_gitaly_mock do
-      it_behaves_like 'repository mirror fecthing'
+    def new_repository_path
+      File.join(TestEnv.repos_path, new_repository.relative_path)
     end
   end
 
-  describe '#remote_tags' do
-    let(:remote_name) { 'upstream' }
-    let(:target_commit_id) { SeedRepo::Commit::ID }
-    let(:tag_name) { 'v0.0.1' }
-    let(:tag_message) { 'My tag' }
-    let(:remote_repository) do
-      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
+  describe '#find_remote_root_ref' do
+    it 'gets the remote root ref from GitalyClient' do
+      expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
+        .to receive(:find_remote_root_ref).and_call_original
+
+      expect(repository.find_remote_root_ref('origin')).to eq 'master'
     end
 
-    subject { repository.remote_tags(remote_name) }
-
-    before do
-      repository.add_remote(remote_name, remote_repository.path)
-      remote_repository.add_tag(tag_name, user: user, target: target_commit_id)
+    it 'returns UTF-8' do
+      expect(repository.find_remote_root_ref('origin')).to be_utf8
     end
 
-    after do
-      ensure_seeds
+    it 'returns nil when remote name is nil' do
+      expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
+        .not_to receive(:find_remote_root_ref)
+
+      expect(repository.find_remote_root_ref(nil)).to be_nil
     end
 
-    it 'gets the remote tags' do
-      expect(subject.first).to be_an_instance_of(Gitlab::Git::Tag)
-      expect(subject.first.name).to eq(tag_name)
-      expect(subject.first.dereferenced_target.id).to eq(target_commit_id)
+    it 'returns nil when remote name is empty' do
+      expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
+        .not_to receive(:find_remote_root_ref)
+
+      expect(repository.find_remote_root_ref('')).to be_nil
+    end
+
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RemoteService, :find_remote_root_ref do
+      subject { repository.find_remote_root_ref('origin') }
     end
   end
 
   describe "#log" do
     shared_examples 'repository log' do
       let(:commit_with_old_name) do
-        Gitlab::Git::Commit.decorate(repository, @commit_with_old_name_id)
+        Gitlab::Git::Commit.find(repository, @commit_with_old_name_id)
       end
       let(:commit_with_new_name) do
-        Gitlab::Git::Commit.decorate(repository, @commit_with_new_name_id)
+        Gitlab::Git::Commit.find(repository, @commit_with_new_name_id)
       end
       let(:rename_commit) do
-        Gitlab::Git::Commit.decorate(repository, @rename_commit_id)
+        Gitlab::Git::Commit.find(repository, @rename_commit_id)
       end
 
-      before(:context) do
+      before do
         # Add new commits so that there's a renamed file in the commit history
-        repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
-        @commit_with_old_name_id = new_commit_edit_old_file(repo)
-        @rename_commit_id = new_commit_move_file(repo)
-        @commit_with_new_name_id = new_commit_edit_new_file(repo)
+        @commit_with_old_name_id = new_commit_edit_old_file(repository_rugged).oid
+        @rename_commit_id = new_commit_move_file(repository_rugged).oid
+        @commit_with_new_name_id = new_commit_edit_new_file(repository_rugged).oid
       end
 
-      after(:context) do
+      after do
         # Erase our commits so other tests get the original repo
-        repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
-        repo.references.update("refs/heads/master", SeedRepo::LastCommit::ID)
+        repository_rugged.references.update("refs/heads/master", SeedRepo::LastCommit::ID)
       end
 
       context "where 'follow' == true" do
@@ -961,8 +723,10 @@ describe Gitlab::Git::Repository, seed_helper: true do
         let(:options) { { ref: 'master', path: ['PROCESS.md', 'README.md'] } }
 
         def commit_files(commit)
-          commit.rugged_diff_from_parent.deltas.flat_map do |delta|
-            [delta.old_file[:path], delta.new_file[:path]].uniq.compact
+          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            commit.deltas.flat_map do |delta|
+              [delta.old_path, delta.new_path].uniq.compact
+            end
           end
         end
 
@@ -997,43 +761,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'when Gitaly find_commits feature is enabled' do
       it_behaves_like 'repository log'
-    end
-
-    context 'when Gitaly find_commits feature is disabled', :disable_gitaly do
-      it_behaves_like 'repository log'
-    end
-  end
-
-  describe "#rugged_commits_between" do
-    context 'two SHAs' do
-      let(:first_sha) { 'b0e52af38d7ea43cf41d8a6f2471351ac036d6c9' }
-      let(:second_sha) { '0e50ec4d3c7ce42ab74dda1d422cb2cbffe1e326' }
-
-      it 'returns the number of commits between' do
-        expect(repository.rugged_commits_between(first_sha, second_sha).count).to eq(3)
-      end
-    end
-
-    context 'SHA and master branch' do
-      let(:sha) { 'b0e52af38d7ea43cf41d8a6f2471351ac036d6c9' }
-      let(:branch) { 'master' }
-
-      it 'returns the number of commits between a sha and a branch' do
-        expect(repository.rugged_commits_between(sha, branch).count).to eq(5)
-      end
-
-      it 'returns the number of commits between a branch and a sha' do
-        expect(repository.rugged_commits_between(branch, sha).count).to eq(0) # sha is before branch
-      end
-    end
-
-    context 'two branches' do
-      let(:first_branch) { 'feature' }
-      let(:second_branch) { 'master' }
-
-      it 'returns the number of commits between' do
-        expect(repository.rugged_commits_between(first_branch, second_branch).count).to eq(17)
-      end
     end
   end
 
@@ -1082,30 +809,20 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#merge_base' do
-    shared_examples '#merge_base' do
-      where(:from, :to, :result) do
-        '570e7b2abdd848b95f2f578043fc23bd6f6fd24d' | '40f4a7a617393735a95a0bb67b08385bc1e7c66d' | '570e7b2abdd848b95f2f578043fc23bd6f6fd24d'
-        '40f4a7a617393735a95a0bb67b08385bc1e7c66d' | '570e7b2abdd848b95f2f578043fc23bd6f6fd24d' | '570e7b2abdd848b95f2f578043fc23bd6f6fd24d'
-        '40f4a7a617393735a95a0bb67b08385bc1e7c66d' | 'foobar' | nil
-        'foobar' | '40f4a7a617393735a95a0bb67b08385bc1e7c66d' | nil
-      end
-
-      with_them do
-        it { expect(repository.merge_base(from, to)).to eq(result) }
-      end
+    where(:from, :to, :result) do
+      '570e7b2abdd848b95f2f578043fc23bd6f6fd24d' | '40f4a7a617393735a95a0bb67b08385bc1e7c66d' | '570e7b2abdd848b95f2f578043fc23bd6f6fd24d'
+      '40f4a7a617393735a95a0bb67b08385bc1e7c66d' | '570e7b2abdd848b95f2f578043fc23bd6f6fd24d' | '570e7b2abdd848b95f2f578043fc23bd6f6fd24d'
+      '40f4a7a617393735a95a0bb67b08385bc1e7c66d' | 'foobar' | nil
+      'foobar' | '40f4a7a617393735a95a0bb67b08385bc1e7c66d' | nil
     end
 
-    context 'with gitaly' do
-      it_behaves_like '#merge_base'
-    end
-
-    context 'without gitaly', :skip_gitaly_mock do
-      it_behaves_like '#merge_base'
+    with_them do
+      it { expect(repository.merge_base(from, to)).to eq(result) }
     end
   end
 
   describe '#count_commits' do
-    shared_examples 'extended commit counting' do
+    describe 'extended commit counting' do
       context 'with after timestamp' do
         it 'returns the number of commits after timestamp' do
           options = { ref: 'master', after: Time.iso8601('2013-03-03T20:15:01+00:00') }
@@ -1190,95 +907,20 @@ describe Gitlab::Git::Repository, seed_helper: true do
         end
       end
     end
-
-    context 'when Gitaly count_commits feature is enabled' do
-      it_behaves_like 'extended commit counting'
-    end
-
-    context 'when Gitaly count_commits feature is disabled', :disable_gitaly do
-      it_behaves_like 'extended commit counting'
-    end
-  end
-
-  describe '#autocrlf' do
-    before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-      @repo.rugged.config['core.autocrlf'] = true
-    end
-
-    it 'return the value of the autocrlf option' do
-      expect(@repo.autocrlf).to be(true)
-    end
-
-    after(:all) do
-      @repo.rugged.config.delete('core.autocrlf')
-    end
-  end
-
-  describe '#autocrlf=' do
-    before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-      @repo.rugged.config['core.autocrlf'] = false
-    end
-
-    it 'should set the autocrlf option to the provided option' do
-      @repo.autocrlf = :input
-
-      File.open(File.join(SEED_STORAGE_PATH, TEST_MUTABLE_REPO_PATH, 'config')) do |config_file|
-        expect(config_file.read).to match('autocrlf = input')
-      end
-    end
-
-    after(:all) do
-      @repo.rugged.config.delete('core.autocrlf')
-    end
   end
 
   describe '#find_branch' do
-    shared_examples 'finding a branch' do
-      it 'should return a Branch for master' do
-        branch = repository.find_branch('master')
+    it 'should return a Branch for master' do
+      branch = repository.find_branch('master')
 
-        expect(branch).to be_a_kind_of(Gitlab::Git::Branch)
-        expect(branch.name).to eq('master')
-      end
-
-      it 'should handle non-existent branch' do
-        branch = repository.find_branch('this-is-garbage')
-
-        expect(branch).to eq(nil)
-      end
+      expect(branch).to be_a_kind_of(Gitlab::Git::Branch)
+      expect(branch.name).to eq('master')
     end
 
-    context 'when Gitaly find_branch feature is enabled' do
-      it_behaves_like 'finding a branch'
-    end
+    it 'should handle non-existent branch' do
+      branch = repository.find_branch('this-is-garbage')
 
-    context 'when Gitaly find_branch feature is disabled', :skip_gitaly_mock do
-      it_behaves_like 'finding a branch'
-
-      context 'force_reload is true' do
-        it 'should reload Rugged::Repository' do
-          expect(Rugged::Repository).to receive(:new).twice.and_call_original
-
-          repository.find_branch('master')
-          branch = repository.find_branch('master', force_reload: true)
-
-          expect(branch).to be_a_kind_of(Gitlab::Git::Branch)
-          expect(branch.name).to eq('master')
-        end
-      end
-
-      context 'force_reload is false' do
-        it 'should not reload Rugged::Repository' do
-          expect(Rugged::Repository).to receive(:new).once.and_call_original
-
-          branch = repository.find_branch('master', force_reload: false)
-
-          expect(branch).to be_a_kind_of(Gitlab::Git::Branch)
-          expect(branch.name).to eq('master')
-        end
-      end
+      expect(branch).to eq(nil)
     end
   end
 
@@ -1308,12 +950,10 @@ describe Gitlab::Git::Repository, seed_helper: true do
     subject { repository.branches }
 
     context 'with local and remote branches' do
-      let(:repository) do
-        Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-      end
+      let(:repository) { mutable_repository }
 
       before do
-        create_remote_branch(repository, 'joe', 'remote_branch', 'master')
+        create_remote_branch('joe', 'remote_branch', 'master')
         repository.create_branch('local_branch', 'master')
       end
 
@@ -1327,39 +967,19 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
     end
 
-    # With Gitaly enabled, Gitaly just doesn't return deleted branches.
-    context 'with deleted branch with Gitaly disabled' do
-      before do
-        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(false)
-      end
-
-      it 'returns no results' do
-        ref = double()
-        allow(ref).to receive(:name) { 'bad-branch' }
-        allow(ref).to receive(:target) { raise Rugged::ReferenceError }
-        branches = double()
-        allow(branches).to receive(:each) { [ref].each }
-        allow(repository.rugged).to receive(:branches) { branches }
-
-        expect(subject).to be_empty
-      end
-    end
-
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :branches
   end
 
   describe '#branch_count' do
     it 'returns the number of branches' do
-      expect(repository.branch_count).to eq(10)
+      expect(repository.branch_count).to eq(11)
     end
 
     context 'with local and remote branches' do
-      let(:repository) do
-        Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-      end
+      let(:repository) { mutable_repository }
 
       before do
-        create_remote_branch(repository, 'joe', 'remote_branch', 'master')
+        create_remote_branch('joe', 'remote_branch', 'master')
         repository.create_branch('local_branch', 'master')
       end
 
@@ -1384,57 +1004,81 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#merged_branch_names' do
-    shared_examples 'finding merged branch names' do
-      context 'when branch names are passed' do
-        it 'only returns the names we are asking' do
-          names = repository.merged_branch_names(%w[merge-test])
+    context 'when branch names are passed' do
+      it 'only returns the names we are asking' do
+        names = repository.merged_branch_names(%w[merge-test])
 
-          expect(names).to contain_exactly('merge-test')
-        end
-
-        it 'does not return unmerged branch names' do
-          names = repository.merged_branch_names(%w[feature])
-
-          expect(names).to be_empty
-        end
+        expect(names).to contain_exactly('merge-test')
       end
 
-      context 'when no root ref is available' do
-        it 'returns empty list' do
-          project = create(:project, :empty_repo)
+      it 'does not return unmerged branch names' do
+        names = repository.merged_branch_names(%w[feature])
 
-          names = project.repository.merged_branch_names(%w[feature])
-
-          expect(names).to be_empty
-        end
-      end
-
-      context 'when no branch names are specified' do
-        before do
-          repository.create_branch('identical', 'master')
-        end
-
-        after do
-          ensure_seeds
-        end
-
-        it 'returns all merged branch names except for identical one' do
-          names = repository.merged_branch_names
-
-          expect(names).to include('merge-test')
-          expect(names).to include('fix-mode')
-          expect(names).not_to include('feature')
-          expect(names).not_to include('identical')
-        end
+        expect(names).to be_empty
       end
     end
 
-    context 'when Gitaly merged_branch_names feature is enabled' do
-      it_behaves_like 'finding merged branch names'
+    context 'when no root ref is available' do
+      it 'returns empty list' do
+        project = create(:project, :empty_repo)
+
+        names = project.repository.merged_branch_names(%w[feature])
+
+        expect(names).to be_empty
+      end
     end
 
-    context 'when Gitaly merged_branch_names feature is disabled', :disable_gitaly do
-      it_behaves_like 'finding merged branch names'
+    context 'when no branch names are specified' do
+      before do
+        repository.create_branch('identical', 'master')
+      end
+
+      after do
+        ensure_seeds
+      end
+
+      it 'returns all merged branch names except for identical one' do
+        names = repository.merged_branch_names
+
+        expect(names).to include('merge-test')
+        expect(names).to include('fix-mode')
+        expect(names).not_to include('feature')
+        expect(names).not_to include('identical')
+      end
+    end
+  end
+
+  describe '#diff_stats' do
+    let(:left_commit_id) { 'feature' }
+    let(:right_commit_id) { 'master' }
+
+    it 'returns a DiffStatsCollection' do
+      collection = repository.diff_stats(left_commit_id, right_commit_id)
+
+      expect(collection).to be_a(Gitlab::Git::DiffStatsCollection)
+      expect(collection).to be_a(Enumerable)
+    end
+
+    it 'yields Gitaly::DiffStats objects' do
+      collection = repository.diff_stats(left_commit_id, right_commit_id)
+
+      expect(collection.to_a).to all(be_a(Gitaly::DiffStats))
+    end
+
+    it 'returns no Gitaly::DiffStats when SHAs are invalid' do
+      collection = repository.diff_stats('foo', 'bar')
+
+      expect(collection).to be_a(Gitlab::Git::DiffStatsCollection)
+      expect(collection).to be_a(Enumerable)
+      expect(collection.to_a).to be_empty
+    end
+
+    it 'returns no Gitaly::DiffStats when there is a nil SHA' do
+      collection = repository.diff_stats(nil, 'master')
+
+      expect(collection).to be_a(Gitlab::Git::DiffStatsCollection)
+      expect(collection).to be_a(Enumerable)
+      expect(collection.to_a).to be_empty
     end
   end
 
@@ -1469,208 +1113,150 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe "#copy_gitattributes" do
-    shared_examples 'applying git attributes' do
-      let(:attributes_path) { File.join(SEED_STORAGE_PATH, TEST_REPO_PATH, 'info/attributes') }
+    let(:attributes_path) { File.join(SEED_STORAGE_PATH, TEST_REPO_PATH, 'info/attributes') }
+
+    after do
+      FileUtils.rm_rf(attributes_path) if Dir.exist?(attributes_path)
+    end
+
+    it "raises an error with invalid ref" do
+      expect { repository.copy_gitattributes("invalid") }.to raise_error(Gitlab::Git::Repository::InvalidRef)
+    end
+
+    context 'when forcing encoding issues' do
+      let(:branch_name) { "ʕ•ᴥ•ʔ" }
+
+      before do
+        repository.create_branch(branch_name, "master")
+      end
 
       after do
-        FileUtils.rm_rf(attributes_path) if Dir.exist?(attributes_path)
+        repository.rm_branch(branch_name, user: build(:admin))
       end
 
-      it "raises an error with invalid ref" do
-        expect { repository.copy_gitattributes("invalid") }.to raise_error(Gitlab::Git::Repository::InvalidRef)
-      end
+      it "doesn't raise with a valid unicode ref" do
+        expect { repository.copy_gitattributes(branch_name) }.not_to raise_error
 
-      context 'when forcing encoding issues' do
-        let(:branch_name) { "ʕ•ᴥ•ʔ" }
-
-        before do
-          repository.create_branch(branch_name, "master")
-        end
-
-        after do
-          repository.rm_branch(branch_name, user: build(:admin))
-        end
-
-        it "doesn't raise with a valid unicode ref" do
-          expect { repository.copy_gitattributes(branch_name) }.not_to raise_error
-
-          repository
-        end
-      end
-
-      context "with no .gitattrbutes" do
-        before do
-          repository.copy_gitattributes("master")
-        end
-
-        it "does not have an info/attributes" do
-          expect(File.exist?(attributes_path)).to be_falsey
-        end
-      end
-
-      context "with .gitattrbutes" do
-        before do
-          repository.copy_gitattributes("gitattributes")
-        end
-
-        it "has an info/attributes" do
-          expect(File.exist?(attributes_path)).to be_truthy
-        end
-
-        it "has the same content in info/attributes as .gitattributes" do
-          contents = File.open(attributes_path, "rb") { |f| f.read }
-          expect(contents).to eq("*.md binary\n")
-        end
-      end
-
-      context "with updated .gitattrbutes" do
-        before do
-          repository.copy_gitattributes("gitattributes")
-          repository.copy_gitattributes("gitattributes-updated")
-        end
-
-        it "has an info/attributes" do
-          expect(File.exist?(attributes_path)).to be_truthy
-        end
-
-        it "has the updated content in info/attributes" do
-          contents = File.read(attributes_path)
-          expect(contents).to eq("*.txt binary\n")
-        end
-      end
-
-      context "with no .gitattrbutes in HEAD but with previous info/attributes" do
-        before do
-          repository.copy_gitattributes("gitattributes")
-          repository.copy_gitattributes("master")
-        end
-
-        it "does not have an info/attributes" do
-          expect(File.exist?(attributes_path)).to be_falsey
-        end
+        repository
       end
     end
 
-    context 'when gitaly is enabled' do
-      it_behaves_like 'applying git attributes'
+    context "with no .gitattrbutes" do
+      before do
+        repository.copy_gitattributes("master")
+      end
+
+      it "does not have an info/attributes" do
+        expect(File.exist?(attributes_path)).to be_falsey
+      end
     end
 
-    context 'when gitaly is disabled', :disable_gitaly do
-      it_behaves_like 'applying git attributes'
+    context "with .gitattrbutes" do
+      before do
+        repository.copy_gitattributes("gitattributes")
+      end
+
+      it "has an info/attributes" do
+        expect(File.exist?(attributes_path)).to be_truthy
+      end
+
+      it "has the same content in info/attributes as .gitattributes" do
+        contents = File.open(attributes_path, "rb") { |f| f.read }
+        expect(contents).to eq("*.md binary\n")
+      end
+    end
+
+    context "with updated .gitattrbutes" do
+      before do
+        repository.copy_gitattributes("gitattributes")
+        repository.copy_gitattributes("gitattributes-updated")
+      end
+
+      it "has an info/attributes" do
+        expect(File.exist?(attributes_path)).to be_truthy
+      end
+
+      it "has the updated content in info/attributes" do
+        contents = File.read(attributes_path)
+        expect(contents).to eq("*.txt binary\n")
+      end
+    end
+
+    context "with no .gitattrbutes in HEAD but with previous info/attributes" do
+      before do
+        repository.copy_gitattributes("gitattributes")
+        repository.copy_gitattributes("master")
+      end
+
+      it "does not have an info/attributes" do
+        expect(File.exist?(attributes_path)).to be_falsey
+      end
     end
   end
 
   describe '#ref_exists?' do
-    shared_examples 'checks the existence of refs' do
-      it 'returns true for an existing tag' do
-        expect(repository.ref_exists?('refs/heads/master')).to eq(true)
-      end
-
-      it 'returns false for a non-existing tag' do
-        expect(repository.ref_exists?('refs/tags/THIS_TAG_DOES_NOT_EXIST')).to eq(false)
-      end
-
-      it 'raises an ArgumentError for an empty string' do
-        expect { repository.ref_exists?('') }.to raise_error(ArgumentError)
-      end
-
-      it 'raises an ArgumentError for an invalid ref' do
-        expect { repository.ref_exists?('INVALID') }.to raise_error(ArgumentError)
-      end
+    it 'returns true for an existing tag' do
+      expect(repository.ref_exists?('refs/heads/master')).to eq(true)
     end
 
-    context 'when Gitaly ref_exists feature is enabled' do
-      it_behaves_like 'checks the existence of refs'
+    it 'returns false for a non-existing tag' do
+      expect(repository.ref_exists?('refs/tags/THIS_TAG_DOES_NOT_EXIST')).to eq(false)
     end
 
-    context 'when Gitaly ref_exists feature is disabled', :skip_gitaly_mock do
-      it_behaves_like 'checks the existence of refs'
+    it 'raises an ArgumentError for an empty string' do
+      expect { repository.ref_exists?('') }.to raise_error(ArgumentError)
+    end
+
+    it 'raises an ArgumentError for an invalid ref' do
+      expect { repository.ref_exists?('INVALID') }.to raise_error(ArgumentError)
     end
   end
 
   describe '#tag_exists?' do
-    shared_examples 'checks the existence of tags' do
-      it 'returns true for an existing tag' do
-        tag = repository.tag_names.first
+    it 'returns true for an existing tag' do
+      tag = repository.tag_names.first
 
-        expect(repository.tag_exists?(tag)).to eq(true)
-      end
-
-      it 'returns false for a non-existing tag' do
-        expect(repository.tag_exists?('v9000')).to eq(false)
-      end
+      expect(repository.tag_exists?(tag)).to eq(true)
     end
 
-    context 'when Gitaly ref_exists_tags feature is enabled' do
-      it_behaves_like 'checks the existence of tags'
-    end
-
-    context 'when Gitaly ref_exists_tags feature is disabled', :skip_gitaly_mock do
-      it_behaves_like 'checks the existence of tags'
+    it 'returns false for a non-existing tag' do
+      expect(repository.tag_exists?('v9000')).to eq(false)
     end
   end
 
   describe '#branch_exists?' do
-    shared_examples 'checks the existence of branches' do
-      it 'returns true for an existing branch' do
-        expect(repository.branch_exists?('master')).to eq(true)
-      end
-
-      it 'returns false for a non-existing branch' do
-        expect(repository.branch_exists?('kittens')).to eq(false)
-      end
-
-      it 'returns false when using an invalid branch name' do
-        expect(repository.branch_exists?('.bla')).to eq(false)
-      end
+    it 'returns true for an existing branch' do
+      expect(repository.branch_exists?('master')).to eq(true)
     end
 
-    context 'when Gitaly ref_exists_branches feature is enabled' do
-      it_behaves_like 'checks the existence of branches'
+    it 'returns false for a non-existing branch' do
+      expect(repository.branch_exists?('kittens')).to eq(false)
     end
 
-    context 'when Gitaly ref_exists_branches feature is disabled', :skip_gitaly_mock do
-      it_behaves_like 'checks the existence of branches'
-    end
-  end
-
-  describe '#batch_existence' do
-    let(:refs) { ['deadbeef', SeedRepo::RubyBlob::ID, '909e6157199'] }
-
-    it 'returns existing refs back' do
-      result = repository.batch_existence(refs)
-
-      expect(result).to eq([SeedRepo::RubyBlob::ID])
-    end
-
-    context 'existing: true' do
-      it 'inverts meaning and returns non-existing refs' do
-        result = repository.batch_existence(refs, existing: false)
-
-        expect(result).to eq(%w(deadbeef 909e6157199))
-      end
+    it 'returns false when using an invalid branch name' do
+      expect(repository.branch_exists?('.bla')).to eq(false)
     end
   end
 
   describe '#local_branches' do
-    before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
+    let(:repository) { mutable_repository }
+
+    before do
+      create_remote_branch('joe', 'remote_branch', 'master')
+      repository.create_branch('local_branch', 'master')
     end
 
-    after(:all) do
+    after do
       ensure_seeds
     end
 
     it 'returns the local branches' do
-      create_remote_branch(@repo, 'joe', 'remote_branch', 'master')
-      @repo.create_branch('local_branch', 'master')
-
-      expect(@repo.local_branches.any? { |branch| branch.name == 'remote_branch' }).to eq(false)
-      expect(@repo.local_branches.any? { |branch| branch.name == 'local_branch' }).to eq(true)
+      expect(repository.local_branches.any? { |branch| branch.name == 'remote_branch' }).to eq(false)
+      expect(repository.local_branches.any? { |branch| branch.name == 'local_branch' }).to eq(true)
     end
 
     it 'returns a Branch with UTF-8 fields' do
-      branches = @repo.local_branches.to_a
+      branches = repository.local_branches.to_a
       expect(branches.size).to be > 0
       branches.each do |branch|
         expect(branch.name).to be_utf8
@@ -1681,209 +1267,127 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it 'gets the branches from GitalyClient' do
       expect_any_instance_of(Gitlab::GitalyClient::RefService).to receive(:local_branches)
         .and_return([])
-      @repo.local_branches
+      repository.local_branches
     end
 
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :local_branches do
-      subject { @repo.local_branches }
+      subject { repository.local_branches }
     end
   end
 
   describe '#languages' do
-    shared_examples 'languages' do
-      it 'returns exactly the expected results' do
-        languages = repository.languages('4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6')
-        expected_languages = [
-          { value: 66.63, label: "Ruby", color: "#701516", highlight: "#701516" },
-          { value: 22.96, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
-          { value: 7.9, label: "HTML", color: "#e34c26", highlight: "#e34c26" },
-          { value: 2.51, label: "CoffeeScript", color: "#244776", highlight: "#244776" }
-        ]
+    it 'returns exactly the expected results' do
+      languages = repository.languages('4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6')
+      expected_languages = [
+        { value: 66.63, label: "Ruby", color: "#701516", highlight: "#701516" },
+        { value: 22.96, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
+        { value: 7.9, label: "HTML", color: "#e34c26", highlight: "#e34c26" },
+        { value: 2.51, label: "CoffeeScript", color: "#244776", highlight: "#244776" }
+      ]
 
-        expect(languages.size).to eq(expected_languages.size)
+      expect(languages.size).to eq(expected_languages.size)
 
-        expected_languages.size.times do |i|
-          a = expected_languages[i]
-          b = languages[i]
+      expected_languages.size.times do |i|
+        a = expected_languages[i]
+        b = languages[i]
 
-          expect(a.keys.sort).to eq(b.keys.sort)
-          expect(a[:value]).to be_within(0.1).of(b[:value])
+        expect(a.keys.sort).to eq(b.keys.sort)
+        expect(a[:value]).to be_within(0.1).of(b[:value])
 
-          non_float_keys = a.keys - [:value]
-          expect(a.values_at(*non_float_keys)).to eq(b.values_at(*non_float_keys))
-        end
-      end
-
-      it "uses the repository's HEAD when no ref is passed" do
-        lang = repository.languages.first
-
-        expect(lang[:label]).to eq('Ruby')
+        non_float_keys = a.keys - [:value]
+        expect(a.values_at(*non_float_keys)).to eq(b.values_at(*non_float_keys))
       end
     end
 
-    it_behaves_like 'languages'
+    it "uses the repository's HEAD when no ref is passed" do
+      lang = repository.languages.first
 
-    context 'with rugged', :skip_gitaly_mock do
-      it_behaves_like 'languages'
+      expect(lang[:label]).to eq('Ruby')
     end
   end
 
   describe '#license_short_name' do
-    shared_examples 'acquiring the Licensee license key' do
-      subject { repository.license_short_name }
+    subject { repository.license_short_name }
 
-      context 'when no license file can be found' do
-        let(:project) { create(:project, :repository) }
-        let(:repository) { project.repository.raw_repository }
+    context 'when no license file can be found' do
+      let(:project) { create(:project, :repository) }
+      let(:repository) { project.repository.raw_repository }
 
-        before do
-          project.repository.delete_file(project.owner, 'LICENSE', message: 'remove license', branch_name: 'master')
-        end
-
-        it { is_expected.to be_nil }
+      before do
+        project.repository.delete_file(project.owner, 'LICENSE', message: 'remove license', branch_name: 'master')
       end
 
-      context 'when an mit license is found' do
-        it { is_expected.to eq('mit') }
-      end
+      it { is_expected.to be_nil }
     end
 
-    context 'when gitaly is enabled' do
-      it_behaves_like 'acquiring the Licensee license key'
-    end
-
-    context 'when gitaly is disabled', :disable_gitaly do
-      it_behaves_like 'acquiring the Licensee license key'
-    end
-  end
-
-  describe '#with_repo_branch_commit' do
-    context 'when comparing with the same repository' do
-      let(:start_repository) { repository }
-
-      context 'when the branch exists' do
-        let(:start_branch_name) { 'master' }
-
-        it 'yields the commit' do
-          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
-            .to yield_with_args(an_instance_of(Gitlab::Git::Commit))
-        end
-      end
-
-      context 'when the branch does not exist' do
-        let(:start_branch_name) { 'definitely-not-master' }
-
-        it 'yields nil' do
-          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
-            .to yield_with_args(nil)
-        end
-      end
-    end
-
-    context 'when comparing with another repository' do
-      let(:start_repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
-
-      context 'when the branch exists' do
-        let(:start_branch_name) { 'master' }
-
-        it 'yields the commit' do
-          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
-            .to yield_with_args(an_instance_of(Gitlab::Git::Commit))
-        end
-      end
-
-      context 'when the branch does not exist' do
-        let(:start_branch_name) { 'definitely-not-master' }
-
-        it 'yields nil' do
-          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
-            .to yield_with_args(nil)
-        end
-      end
+    context 'when an mit license is found' do
+      it { is_expected.to eq('mit') }
     end
   end
 
   describe '#fetch_source_branch!' do
-    shared_examples '#fetch_source_branch!' do
-      let(:local_ref) { 'refs/merge-requests/1/head' }
-      let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
-      let(:source_repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
+    let(:local_ref) { 'refs/merge-requests/1/head' }
+    let(:source_repository) { mutable_repository }
 
-      after do
-        ensure_seeds
-      end
+    after do
+      ensure_seeds
+    end
 
-      context 'when the branch exists' do
-        context 'when the commit does not exist locally' do
-          let(:source_branch) { 'new-branch-for-fetch-source-branch' }
-          let(:source_rugged) { source_repository.rugged }
-          let(:new_oid) { new_commit_edit_old_file(source_rugged).oid }
+    context 'when the branch exists' do
+      context 'when the commit does not exist locally' do
+        let(:source_branch) { 'new-branch-for-fetch-source-branch' }
+        let(:source_path) { File.join(TestEnv.repos_path, source_repository.relative_path) }
+        let(:source_rugged) { Rugged::Repository.new(source_path) }
+        let(:new_oid) { new_commit_edit_old_file(source_rugged).oid }
 
-          before do
-            source_rugged.branches.create(source_branch, new_oid)
-          end
-
-          it 'writes the ref' do
-            expect(repository.fetch_source_branch!(source_repository, source_branch, local_ref)).to eq(true)
-            expect(repository.commit(local_ref).sha).to eq(new_oid)
-          end
+        before do
+          source_rugged.branches.create(source_branch, new_oid)
         end
 
-        context 'when the commit exists locally' do
-          let(:source_branch) { 'master' }
-          let(:expected_oid) { SeedRepo::LastCommit::ID }
-
-          it 'writes the ref' do
-            # Sanity check: the commit should already exist
-            expect(repository.commit(expected_oid)).not_to be_nil
-
-            expect(repository.fetch_source_branch!(source_repository, source_branch, local_ref)).to eq(true)
-            expect(repository.commit(local_ref).sha).to eq(expected_oid)
-          end
+        it 'writes the ref' do
+          expect(repository.fetch_source_branch!(source_repository, source_branch, local_ref)).to eq(true)
+          expect(repository.commit(local_ref).sha).to eq(new_oid)
         end
       end
 
-      context 'when the branch does not exist' do
-        let(:source_branch) { 'definitely-not-master' }
+      context 'when the commit exists locally' do
+        let(:source_branch) { 'master' }
+        let(:expected_oid) { SeedRepo::LastCommit::ID }
 
-        it 'does not write the ref' do
-          expect(repository.fetch_source_branch!(source_repository, source_branch, local_ref)).to eq(false)
-          expect(repository.commit(local_ref)).to be_nil
+        it 'writes the ref' do
+          # Sanity check: the commit should already exist
+          expect(repository.commit(expected_oid)).not_to be_nil
+
+          expect(repository.fetch_source_branch!(source_repository, source_branch, local_ref)).to eq(true)
+          expect(repository.commit(local_ref).sha).to eq(expected_oid)
         end
       end
     end
 
-    it_behaves_like '#fetch_source_branch!'
+    context 'when the branch does not exist' do
+      let(:source_branch) { 'definitely-not-master' }
 
-    context 'without gitaly', :skip_gitaly_mock do
-      it_behaves_like '#fetch_source_branch!'
+      it 'does not write the ref' do
+        expect(repository.fetch_source_branch!(source_repository, source_branch, local_ref)).to eq(false)
+        expect(repository.commit(local_ref)).to be_nil
+      end
     end
   end
 
   describe '#rm_branch' do
-    shared_examples "user deleting a branch" do
-      let(:project) { create(:project, :repository) }
-      let(:repository) { project.repository.raw }
-      let(:branch_name) { "to-be-deleted-soon" }
+    let(:project) { create(:project, :repository) }
+    let(:repository) { project.repository.raw }
+    let(:branch_name) { "to-be-deleted-soon" }
 
-      before do
-        project.add_developer(user)
-        repository.create_branch(branch_name)
-      end
-
-      it "removes the branch from the repo" do
-        repository.rm_branch(branch_name, user: user)
-
-        expect(repository.rugged.branches[branch_name]).to be_nil
-      end
+    before do
+      project.add_developer(user)
+      repository.create_branch(branch_name)
     end
 
-    context "when Gitaly user_delete_branch is enabled" do
-      it_behaves_like "user deleting a branch"
-    end
+    it "removes the branch from the repo" do
+      repository.rm_branch(branch_name, user: user)
 
-    context "when Gitaly user_delete_branch is disabled", :skip_gitaly_mock do
-      it_behaves_like "user deleting a branch"
+      expect(repository_rugged.branches[branch_name]).to be_nil
     end
   end
 
@@ -1906,46 +1410,92 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe '#write_config' do
     before do
-      repository.rugged.config["gitlab.fullpath"] = repository.path
+      repository_rugged.config["gitlab.fullpath"] = repository_path
     end
 
-    shared_examples 'writing repo config' do
-      context 'is given a path' do
-        it 'writes it to disk' do
-          repository.write_config(full_path: "not-the/real-path.git")
+    context 'is given a path' do
+      it 'writes it to disk' do
+        repository.write_config(full_path: "not-the/real-path.git")
 
-          config = File.read(File.join(repository.path, "config"))
+        config = File.read(File.join(repository_path, "config"))
 
-          expect(config).to include("[gitlab]")
-          expect(config).to include("fullpath = not-the/real-path.git")
-        end
-      end
-
-      context 'it is given an empty path' do
-        it 'does not write it to disk' do
-          repository.write_config(full_path: "")
-
-          config = File.read(File.join(repository.path, "config"))
-
-          expect(config).to include("[gitlab]")
-          expect(config).to include("fullpath = #{repository.path}")
-        end
+        expect(config).to include("[gitlab]")
+        expect(config).to include("fullpath = not-the/real-path.git")
       end
     end
 
-    context "when gitaly_write_config is enabled" do
-      it_behaves_like "writing repo config"
+    context 'it is given an empty path' do
+      it 'does not write it to disk' do
+        repository.write_config(full_path: "")
+
+        config = File.read(File.join(repository_path, "config"))
+
+        expect(config).to include("[gitlab]")
+        expect(config).to include("fullpath = #{repository_path}")
+      end
     end
 
-    context "when gitaly_write_config is disabled", :disable_gitaly do
-      it_behaves_like "writing repo config"
+    context 'repository does not exist' do
+      it 'raises NoRepository and does not call Gitaly WriteConfig' do
+        repository = Gitlab::Git::Repository.new('default', 'does/not/exist.git', '')
+
+        expect(repository.gitaly_repository_client).not_to receive(:write_config)
+
+        expect do
+          repository.write_config(full_path: 'foo/bar.git')
+        end.to raise_error(Gitlab::Git::Repository::NoRepository)
+      end
+    end
+  end
+
+  describe '#set_config' do
+    let(:repository) { mutable_repository }
+    let(:entries) do
+      {
+        'test.foo1' => 'bla bla',
+        'test.foo2' => 1234,
+        'test.foo3' => true
+      }
+    end
+
+    it 'can set config settings' do
+      expect(repository.set_config(entries)).to be_nil
+
+      expect(repository_rugged.config['test.foo1']).to eq('bla bla')
+      expect(repository_rugged.config['test.foo2']).to eq('1234')
+      expect(repository_rugged.config['test.foo3']).to eq('true')
+    end
+
+    after do
+      entries.keys.each { |k| repository_rugged.config.delete(k) }
+    end
+  end
+
+  describe '#delete_config' do
+    let(:repository) { mutable_repository }
+    let(:entries) do
+      {
+        'test.foo1' => 'bla bla',
+        'test.foo2' => 1234,
+        'test.foo3' => true
+      }
+    end
+
+    it 'can delete config settings' do
+      entries.each do |key, value|
+        repository_rugged.config[key] = value
+      end
+
+      expect(repository.delete_config(*%w[does.not.exist test.foo1 test.foo2])).to be_nil
+
+      config_keys = repository_rugged.config.each_key.to_a
+      expect(config_keys).not_to include('test.foo1')
+      expect(config_keys).not_to include('test.foo2')
     end
   end
 
   describe '#merge' do
-    let(:repository) do
-      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-    end
+    let(:repository) { mutable_repository }
     let(:source_sha) { '913c66a37b4a45b9769037c55c2d238bd0942d2e' }
     let(:target_branch) { 'test-merge-target-branch' }
 
@@ -1957,46 +1507,34 @@ describe Gitlab::Git::Repository, seed_helper: true do
       ensure_seeds
     end
 
-    shared_examples '#merge' do
-      it 'can perform a merge' do
-        merge_commit_id = nil
-        result = repository.merge(user, source_sha, target_branch, 'Test merge') do |commit_id|
-          merge_commit_id = commit_id
-        end
-
-        expect(result.newrev).to eq(merge_commit_id)
-        expect(result.repo_created).to eq(false)
-        expect(result.branch_created).to eq(false)
+    it 'can perform a merge' do
+      merge_commit_id = nil
+      result = repository.merge(user, source_sha, target_branch, 'Test merge') do |commit_id|
+        merge_commit_id = commit_id
       end
 
-      it 'returns nil if there was a concurrent branch update' do
-        concurrent_update_id = '33f3729a45c02fc67d00adb1b8bca394b0e761d9'
-        result = repository.merge(user, source_sha, target_branch, 'Test merge') do
-          # This ref update should make the merge fail
-          repository.write_ref(Gitlab::Git::BRANCH_REF_PREFIX + target_branch, concurrent_update_id)
-        end
+      expect(result.newrev).to eq(merge_commit_id)
+      expect(result.repo_created).to eq(false)
+      expect(result.branch_created).to eq(false)
+    end
 
-        # This 'nil' signals that the merge was not applied
-        expect(result).to be_nil
-
-        # Our concurrent ref update should not have been undone
-        expect(repository.find_branch(target_branch).target).to eq(concurrent_update_id)
+    it 'returns nil if there was a concurrent branch update' do
+      concurrent_update_id = '33f3729a45c02fc67d00adb1b8bca394b0e761d9'
+      result = repository.merge(user, source_sha, target_branch, 'Test merge') do
+        # This ref update should make the merge fail
+        repository.write_ref(Gitlab::Git::BRANCH_REF_PREFIX + target_branch, concurrent_update_id)
       end
-    end
 
-    context 'with gitaly' do
-      it_behaves_like '#merge'
-    end
+      # This 'nil' signals that the merge was not applied
+      expect(result).to be_nil
 
-    context 'without gitaly', :skip_gitaly_mock do
-      it_behaves_like '#merge'
+      # Our concurrent ref update should not have been undone
+      expect(repository.find_branch(target_branch).target).to eq(concurrent_update_id)
     end
   end
 
   describe '#ff_merge' do
-    let(:repository) do
-      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-    end
+    let(:repository) { mutable_repository }
     let(:branch_head) { '6d394385cf567f80a8fd85055db1ab4c5295806f' }
     let(:source_sha) { 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660' }
     let(:target_branch) { 'test-ff-target-branch' }
@@ -2047,27 +1585,19 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
     end
 
-    context 'with gitaly' do
-      it "calls Gitaly's OperationService" do
-        expect_any_instance_of(Gitlab::GitalyClient::OperationService)
-          .to receive(:user_ff_branch).with(user, source_sha, target_branch)
-          .and_return(nil)
+    it "calls Gitaly's OperationService" do
+      expect_any_instance_of(Gitlab::GitalyClient::OperationService)
+        .to receive(:user_ff_branch).with(user, source_sha, target_branch)
+        .and_return(nil)
 
-        subject
-      end
-
-      it_behaves_like '#ff_merge'
+      subject
     end
 
-    context 'without gitaly', :skip_gitaly_mock do
-      it_behaves_like '#ff_merge'
-    end
+    it_behaves_like '#ff_merge'
   end
 
   describe '#delete_all_refs_except' do
-    let(:repository) do
-      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-    end
+    let(:repository) { mutable_repository }
 
     before do
       repository.write_ref("refs/delete/a", "0b4bc9a49b562e85de7cc9e834518ea6828729b9")
@@ -2091,409 +1621,263 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe 'remotes' do
-    let(:repository) do
-      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-    end
+    let(:repository) { mutable_repository }
     let(:remote_name) { 'my-remote' }
+    let(:url) { 'http://my-repo.git' }
 
     after do
       ensure_seeds
     end
 
     describe '#add_remote' do
-      let(:url) { 'http://my-repo.git' }
       let(:mirror_refmap) { '+refs/*:refs/*' }
 
-      it 'creates a new remote via Gitaly' do
-        expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
-          .to receive(:add_remote).with(remote_name, url, mirror_refmap)
+      it 'added the remote' do
+        begin
+          repository_rugged.remotes.delete(remote_name)
+        rescue Rugged::ConfigError
+        end
 
         repository.add_remote(remote_name, url, mirror_refmap: mirror_refmap)
-      end
 
-      context 'with Gitaly disabled', :skip_gitaly_mock do
-        it 'creates a new remote via Rugged' do
-          expect_any_instance_of(Rugged::RemoteCollection).to receive(:create)
-            .with(remote_name, url)
-          expect_any_instance_of(Rugged::Config).to receive(:[]=)
-          .with("remote.#{remote_name}.mirror", true)
-          expect_any_instance_of(Rugged::Config).to receive(:[]=)
-          .with("remote.#{remote_name}.prune", true)
-          expect_any_instance_of(Rugged::Config).to receive(:[]=)
-            .with("remote.#{remote_name}.fetch", mirror_refmap)
-
-          repository.add_remote(remote_name, url, mirror_refmap: mirror_refmap)
-        end
+        expect(repository_rugged.remotes[remote_name]).not_to be_nil
+        expect(repository_rugged.config["remote.#{remote_name}.mirror"]).to eq('true')
+        expect(repository_rugged.config["remote.#{remote_name}.prune"]).to eq('true')
+        expect(repository_rugged.config["remote.#{remote_name}.fetch"]).to eq(mirror_refmap)
       end
     end
 
     describe '#remove_remote' do
-      it 'removes the remote via Gitaly' do
-        expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
-          .to receive(:remove_remote).with(remote_name)
+      it 'removes the remote' do
+        repository_rugged.remotes.create(remote_name, url)
 
         repository.remove_remote(remote_name)
-      end
 
-      context 'with Gitaly disabled', :skip_gitaly_mock do
-        it 'removes the remote via Rugged' do
-          expect_any_instance_of(Rugged::RemoteCollection).to receive(:delete)
-            .with(remote_name)
-
-          repository.remove_remote(remote_name)
-        end
+        expect(repository_rugged.remotes[remote_name]).to be_nil
       end
     end
-  end
-
-  describe '#gitlab_projects' do
-    subject { repository.gitlab_projects }
-
-    it { expect(subject.shard_path).to eq(storage_path) }
-    it { expect(subject.repository_relative_path).to eq(repository.relative_path) }
   end
 
   describe '#bundle_to_disk' do
-    shared_examples 'bundling to disk' do
-      let(:save_path) { File.join(Dir.tmpdir, "repo-#{SecureRandom.hex}.bundle") }
+    let(:save_path) { File.join(Dir.tmpdir, "repo-#{SecureRandom.hex}.bundle") }
 
-      after do
-        FileUtils.rm_rf(save_path)
-      end
-
-      it 'saves a bundle to disk' do
-        repository.bundle_to_disk(save_path)
-
-        success = system(
-          *%W(#{Gitlab.config.git.bin_path} -C #{repository.path} bundle verify #{save_path}),
-          [:out, :err] => '/dev/null'
-        )
-        expect(success).to be true
-      end
+    after do
+      FileUtils.rm_rf(save_path)
     end
 
-    context 'when Gitaly bundle_to_disk feature is enabled' do
-      it_behaves_like 'bundling to disk'
-    end
+    it 'saves a bundle to disk' do
+      repository.bundle_to_disk(save_path)
 
-    context 'when Gitaly bundle_to_disk feature is disabled', :disable_gitaly do
-      it_behaves_like 'bundling to disk'
+      success = system(
+        *%W(#{Gitlab.config.git.bin_path} -C #{repository_path} bundle verify #{save_path}),
+        [:out, :err] => '/dev/null'
+      )
+      expect(success).to be true
     end
   end
 
   describe '#create_from_bundle' do
-    shared_examples 'creating repo from bundle' do
-      let(:bundle_path) { File.join(Dir.tmpdir, "repo-#{SecureRandom.hex}.bundle") }
-      let(:project) { create(:project) }
-      let(:imported_repo) { project.repository.raw }
+    let(:bundle_path) { File.join(Dir.tmpdir, "repo-#{SecureRandom.hex}.bundle") }
+    let(:project) { create(:project) }
+    let(:imported_repo) { project.repository.raw }
 
-      before do
-        expect(repository.bundle_to_disk(bundle_path)).to be true
-      end
-
-      after do
-        FileUtils.rm_rf(bundle_path)
-      end
-
-      it 'creates a repo from a bundle file' do
-        expect(imported_repo).not_to exist
-
-        result = imported_repo.create_from_bundle(bundle_path)
-
-        expect(result).to be true
-        expect(imported_repo).to exist
-        expect { imported_repo.fsck }.not_to raise_exception
-      end
-
-      it 'creates a symlink to the global hooks dir' do
-        imported_repo.create_from_bundle(bundle_path)
-        hooks_path = File.join(imported_repo.path, 'hooks')
-
-        expect(File.readlink(hooks_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
-      end
+    before do
+      expect(repository.bundle_to_disk(bundle_path)).to be_truthy
     end
 
-    context 'when Gitaly create_repo_from_bundle feature is enabled' do
-      it_behaves_like 'creating repo from bundle'
+    after do
+      FileUtils.rm_rf(bundle_path)
     end
 
-    context 'when Gitaly create_repo_from_bundle feature is disabled', :disable_gitaly do
-      it_behaves_like 'creating repo from bundle'
+    it 'creates a repo from a bundle file' do
+      expect(imported_repo).not_to exist
+
+      result = imported_repo.create_from_bundle(bundle_path)
+
+      expect(result).to be_truthy
+      expect(imported_repo).to exist
+      expect { imported_repo.fsck }.not_to raise_exception
+    end
+
+    it 'creates a symlink to the global hooks dir' do
+      imported_repo.create_from_bundle(bundle_path)
+      hooks_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access { File.join(imported_repo.path, 'hooks') }
+
+      expect(File.readlink(hooks_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
     end
   end
 
   describe '#checksum' do
-    shared_examples 'calculating checksum' do
-      it 'calculates the checksum for non-empty repo' do
-        expect(repository.checksum).to eq '54f21be4c32c02f6788d72207fa03ad3bce725e4'
-      end
-
-      it 'returns 0000000000000000000000000000000000000000 for an empty repo' do
-        FileUtils.rm_rf(File.join(storage_path, 'empty-repo.git'))
-
-        system(git_env, *%W(#{Gitlab.config.git.bin_path} init --bare empty-repo.git),
-               chdir: storage_path,
-               out:   '/dev/null',
-               err:   '/dev/null')
-
-        empty_repo = described_class.new('default', 'empty-repo.git', '')
-
-        expect(empty_repo.checksum).to eq '0000000000000000000000000000000000000000'
-      end
-
-      it 'raises a no repository exception when there is no repo' do
-        broken_repo = described_class.new('default', 'a/path.git', '')
-
-        expect { broken_repo.checksum }.to raise_error(Gitlab::Git::Repository::NoRepository)
-      end
+    it 'calculates the checksum for non-empty repo' do
+      expect(repository.checksum).to eq '51d0a9662681f93e1fee547a6b7ba2bcaf716059'
     end
 
-    context 'when calculate_checksum Gitaly feature is enabled' do
-      it_behaves_like 'calculating checksum'
+    it 'returns 0000000000000000000000000000000000000000 for an empty repo' do
+      FileUtils.rm_rf(File.join(storage_path, 'empty-repo.git'))
+
+      system(git_env, *%W(#{Gitlab.config.git.bin_path} init --bare empty-repo.git),
+             chdir: storage_path,
+             out:   '/dev/null',
+             err:   '/dev/null')
+
+      empty_repo = described_class.new('default', 'empty-repo.git', '')
+
+      expect(empty_repo.checksum).to eq '0000000000000000000000000000000000000000'
     end
 
-    context 'when calculate_checksum Gitaly feature is disabled', :disable_gitaly do
-      it_behaves_like 'calculating checksum'
+    it 'raises Gitlab::Git::Repository::InvalidRepository error for non-valid git repo' do
+      FileUtils.rm_rf(File.join(storage_path, 'non-valid.git'))
 
-      describe 'when storage is broken', :broken_storage  do
-        it 'raises a storage exception when storage is not available' do
-          broken_repo = described_class.new('broken', 'a/path.git', '')
+      system(git_env, *%W(#{Gitlab.config.git.bin_path} clone --bare #{TEST_REPO_PATH} non-valid.git),
+             chdir: SEED_STORAGE_PATH,
+             out: '/dev/null',
+             err: '/dev/null')
 
-          expect { broken_repo.rugged }.to raise_error(Gitlab::Git::Storage::Inaccessible)
-        end
-      end
+      File.truncate(File.join(storage_path, 'non-valid.git/HEAD'), 0)
 
-      it "raises a Gitlab::Git::Repository::Failure error if the `popen` call to git returns a non-zero exit code" do
-        allow(repository).to receive(:popen).and_return(['output', nil])
+      non_valid = described_class.new('default', 'non-valid.git', '')
 
-        expect { repository.checksum }.to raise_error Gitlab::Git::Repository::ChecksumError
-      end
+      expect { non_valid.checksum }.to raise_error(Gitlab::Git::Repository::InvalidRepository)
+    end
+
+    it 'raises Gitlab::Git::Repository::NoRepository error when there is no repo' do
+      broken_repo = described_class.new('default', 'a/path.git', '')
+
+      expect { broken_repo.checksum }.to raise_error(Gitlab::Git::Repository::NoRepository)
     end
   end
 
-  context 'gitlab_projects commands' do
-    let(:gitlab_projects) { repository.gitlab_projects }
-    let(:timeout) { Gitlab.config.gitlab_shell.git_timeout }
+  describe '#clean_stale_repository_files' do
+    let(:worktree_path) { File.join(repository_path, 'worktrees', 'delete-me') }
 
-    describe '#push_remote_branches' do
-      subject do
-        repository.push_remote_branches('downstream-remote', ['master'])
-      end
+    it 'cleans up the files' do
+      create_worktree = %W[git -C #{repository_path} worktree add --detach #{worktree_path} master]
+      raise 'preparation failed' unless system(*create_worktree, err: '/dev/null')
 
-      it 'executes the command' do
-        expect(gitlab_projects).to receive(:push_branches)
-          .with('downstream-remote', timeout, true, ['master'])
-          .and_return(true)
+      FileUtils.touch(worktree_path, mtime: Time.now - 8.hours)
+      # git rev-list --all will fail in git 2.16 if HEAD is pointing to a non-existent object,
+      # but the HEAD must be 40 characters long or git will ignore it.
+      File.write(File.join(worktree_path, 'HEAD'), Gitlab::Git::BLANK_SHA)
 
-        is_expected.to be_truthy
-      end
+      # git 2.16 fails with "fatal: bad object HEAD"
+      expect(rev_list_all).to be false
 
-      it 'raises an error if the command fails' do
-        allow(gitlab_projects).to receive(:output) { 'error' }
-        expect(gitlab_projects).to receive(:push_branches)
-          .with('downstream-remote', timeout, true, ['master'])
-          .and_return(false)
+      repository.clean_stale_repository_files
 
-        expect { subject }.to raise_error(Gitlab::Git::CommandError, 'error')
-      end
+      expect(rev_list_all).to be true
+      expect(File.exist?(worktree_path)).to be_falsey
     end
 
-    describe '#delete_remote_branches' do
-      subject do
-        repository.delete_remote_branches('downstream-remote', ['master'])
-      end
-
-      it 'executes the command' do
-        expect(gitlab_projects).to receive(:delete_remote_branches)
-          .with('downstream-remote', ['master'])
-          .and_return(true)
-
-        is_expected.to be_truthy
-      end
-
-      it 'raises an error if the command fails' do
-        allow(gitlab_projects).to receive(:output) { 'error' }
-        expect(gitlab_projects).to receive(:delete_remote_branches)
-          .with('downstream-remote', ['master'])
-          .and_return(false)
-
-        expect { subject }.to raise_error(Gitlab::Git::CommandError, 'error')
-      end
+    def rev_list_all
+      system(*%W[git -C #{repository_path} rev-list --all], out: '/dev/null', err: '/dev/null')
     end
 
-    describe '#delete_remote_branches' do
-      subject do
-        repository.delete_remote_branches('downstream-remote', ['master'])
-      end
+    it 'increments a counter upon an error' do
+      expect(repository.gitaly_repository_client).to receive(:cleanup).and_raise(Gitlab::Git::CommandError)
 
-      it 'executes the command' do
-        expect(gitlab_projects).to receive(:delete_remote_branches)
-          .with('downstream-remote', ['master'])
-          .and_return(true)
+      counter = double(:counter)
 
-        is_expected.to be_truthy
-      end
+      expect(counter).to receive(:increment)
+      expect(Gitlab::Metrics).to receive(:counter).with(:failed_repository_cleanup_total,
+                                                        'Number of failed repository cleanup events').and_return(counter)
 
-      it 'raises an error if the command fails' do
-        allow(gitlab_projects).to receive(:output) { 'error' }
-        expect(gitlab_projects).to receive(:delete_remote_branches)
-          .with('downstream-remote', ['master'])
-          .and_return(false)
+      repository.clean_stale_repository_files
+    end
+  end
 
-        expect { subject }.to raise_error(Gitlab::Git::CommandError, 'error')
-      end
+  describe '#squash' do
+    let(:squash_id) { '1' }
+    let(:branch_name) { 'fix' }
+    let(:start_sha) { '4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6' }
+    let(:end_sha) { '12d65c8dd2b2676fa3ac47d955accc085a37a9c1' }
+
+    subject do
+      opts = {
+        branch: branch_name,
+        start_sha: start_sha,
+        end_sha: end_sha,
+        author: user,
+        message: 'Squash commit message'
+      }
+
+      repository.squash(user, squash_id, opts)
     end
 
-    describe '#clean_stale_repository_files' do
-      let(:worktree_path) { File.join(repository.path, 'worktrees', 'delete-me') }
+    # Should be ported to gitaly-ruby rspec suite https://gitlab.com/gitlab-org/gitaly/issues/1234
+    skip 'sparse checkout' do
+      let(:expected_files) { %w(files files/js files/js/application.js) }
 
-      it 'cleans up the files' do
-        repository.with_worktree(worktree_path, 'master', env: ENV) do
-          FileUtils.touch(worktree_path, mtime: Time.now - 8.hours)
-          # git rev-list --all will fail in git 2.16 if HEAD is pointing to a non-existent object,
-          # but the HEAD must be 40 characters long or git will ignore it.
-          File.write(File.join(worktree_path, 'HEAD'), Gitlab::Git::BLANK_SHA)
+      it 'checks out only the files in the diff' do
+        allow(repository).to receive(:with_worktree).and_wrap_original do |m, *args|
+          m.call(*args) do
+            worktree_path = args[0]
+            files_pattern = File.join(worktree_path, '**', '*')
+            expected = expected_files.map do |path|
+              File.expand_path(path, worktree_path)
+            end
 
-          # git 2.16 fails with "fatal: bad object HEAD"
-          expect { repository.rev_list(including: :all) }.to raise_error(Gitlab::Git::Repository::GitError)
-
-          repository.clean_stale_repository_files
-
-          expect { repository.rev_list(including: :all) }.not_to raise_error
-          expect(File.exist?(worktree_path)).to be_falsey
+            expect(Dir[files_pattern]).to eq(expected)
+          end
         end
+
+        subject
       end
 
-      it 'increments a counter upon an error' do
-        expect(repository.gitaly_repository_client).to receive(:cleanup).and_raise(Gitlab::Git::CommandError)
+      context 'when the diff contains a rename' do
+        let(:end_sha) { new_commit_move_file(repository_rugged).oid }
 
-        counter = double(:counter)
+        after do
+          # Erase our commits so other tests get the original repo
+          repository_rugged.references.update('refs/heads/master', SeedRepo::LastCommit::ID)
+        end
 
-        expect(counter).to receive(:increment)
-        expect(Gitlab::Metrics).to receive(:counter).with(:failed_repository_cleanup_total,
-                                                          'Number of failed repository cleanup events').and_return(counter)
-
-        repository.clean_stale_repository_files
-      end
-    end
-
-    describe '#delete_remote_branches' do
-      subject do
-        repository.delete_remote_branches('downstream-remote', ['master'])
-      end
-
-      it 'executes the command' do
-        expect(gitlab_projects).to receive(:delete_remote_branches)
-          .with('downstream-remote', ['master'])
-          .and_return(true)
-
-        is_expected.to be_truthy
-      end
-
-      it 'raises an error if the command fails' do
-        allow(gitlab_projects).to receive(:output) { 'error' }
-        expect(gitlab_projects).to receive(:delete_remote_branches)
-          .with('downstream-remote', ['master'])
-          .and_return(false)
-
-        expect { subject }.to raise_error(Gitlab::Git::CommandError, 'error')
-      end
-    end
-
-    describe '#squash' do
-      let(:squash_id) { '1' }
-      let(:branch_name) { 'fix' }
-      let(:start_sha) { '4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6' }
-      let(:end_sha) { '12d65c8dd2b2676fa3ac47d955accc085a37a9c1' }
-
-      subject do
-        opts = {
-          branch: branch_name,
-          start_sha: start_sha,
-          end_sha: end_sha,
-          author: user,
-          message: 'Squash commit message'
-        }
-
-        repository.squash(user, squash_id, opts)
-      end
-
-      context 'sparse checkout', :skip_gitaly_mock do
-        let(:expected_files) { %w(files files/js files/js/application.js) }
-
-        it 'checks out only the files in the diff' do
+        it 'does not include the renamed file in the sparse checkout' do
           allow(repository).to receive(:with_worktree).and_wrap_original do |m, *args|
             m.call(*args) do
               worktree_path = args[0]
               files_pattern = File.join(worktree_path, '**', '*')
-              expected = expected_files.map do |path|
-                File.expand_path(path, worktree_path)
-              end
 
-              expect(Dir[files_pattern]).to eq(expected)
+              expect(Dir[files_pattern]).not_to include('CHANGELOG')
+              expect(Dir[files_pattern]).not_to include('encoding/CHANGELOG')
             end
           end
 
           subject
         end
-
-        context 'when the diff contains a rename' do
-          let(:repo) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged }
-          let(:end_sha) { new_commit_move_file(repo).oid }
-
-          after do
-            # Erase our commits so other tests get the original repo
-            repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
-            repo.references.update('refs/heads/master', SeedRepo::LastCommit::ID)
-          end
-
-          it 'does not include the renamed file in the sparse checkout' do
-            allow(repository).to receive(:with_worktree).and_wrap_original do |m, *args|
-              m.call(*args) do
-                worktree_path = args[0]
-                files_pattern = File.join(worktree_path, '**', '*')
-
-                expect(Dir[files_pattern]).not_to include('CHANGELOG')
-                expect(Dir[files_pattern]).not_to include('encoding/CHANGELOG')
-              end
-            end
-
-            subject
-          end
-        end
       end
+    end
 
-      context 'with an ASCII-8BIT diff', :skip_gitaly_mock do
-        let(:diff) { "diff --git a/README.md b/README.md\nindex faaf198..43c5edf 100644\n--- a/README.md\n+++ b/README.md\n@@ -1,4 +1,4 @@\n-testme\n+✓ testme\n ======\n \n Sample repo for testing gitlab features\n" }
+    # Should be ported to gitaly-ruby rspec suite https://gitlab.com/gitlab-org/gitaly/issues/1234
+    skip 'with an ASCII-8BIT diff' do
+      let(:diff) { "diff --git a/README.md b/README.md\nindex faaf198..43c5edf 100644\n--- a/README.md\n+++ b/README.md\n@@ -1,4 +1,4 @@\n-testme\n+✓ testme\n ======\n \n Sample repo for testing gitlab features\n" }
 
-        it 'applies a ASCII-8BIT diff' do
-          allow(repository).to receive(:run_git!).and_call_original
-          allow(repository).to receive(:run_git!).with(%W(diff --binary #{start_sha}...#{end_sha})).and_return(diff.force_encoding('ASCII-8BIT'))
+      it 'applies a ASCII-8BIT diff' do
+        allow(repository).to receive(:run_git!).and_call_original
+        allow(repository).to receive(:run_git!).with(%W(diff --binary #{start_sha}...#{end_sha})).and_return(diff.force_encoding('ASCII-8BIT'))
 
-          expect(subject).to match(/\h{40}/)
-        end
+        expect(subject).to match(/\h{40}/)
       end
+    end
 
-      context 'with trailing whitespace in an invalid patch', :skip_gitaly_mock do
-        let(:diff) { "diff --git a/README.md b/README.md\nindex faaf198..43c5edf 100644\n--- a/README.md\n+++ b/README.md\n@@ -1,4 +1,4 @@\n-testme\n+   \n ======   \n \n Sample repo for testing gitlab features\n" }
+    # Should be ported to gitaly-ruby rspec suite https://gitlab.com/gitlab-org/gitaly/issues/1234
+    skip 'with trailing whitespace in an invalid patch' do
+      let(:diff) { "diff --git a/README.md b/README.md\nindex faaf198..43c5edf 100644\n--- a/README.md\n+++ b/README.md\n@@ -1,4 +1,4 @@\n-testme\n+   \n ======   \n \n Sample repo for testing gitlab features\n" }
 
-        it 'does not include whitespace warnings in the error' do
-          allow(repository).to receive(:run_git!).and_call_original
-          allow(repository).to receive(:run_git!).with(%W(diff --binary #{start_sha}...#{end_sha})).and_return(diff.force_encoding('ASCII-8BIT'))
+      it 'does not include whitespace warnings in the error' do
+        allow(repository).to receive(:run_git!).and_call_original
+        allow(repository).to receive(:run_git!).with(%W(diff --binary #{start_sha}...#{end_sha})).and_return(diff.force_encoding('ASCII-8BIT'))
 
-          expect { subject }.to raise_error do |error|
-            expect(error).to be_a(described_class::GitError)
-            expect(error.message).not_to include('trailing whitespace')
-          end
+        expect { subject }.to raise_error do |error|
+          expect(error).to be_a(described_class::GitError)
+          expect(error.message).not_to include('trailing whitespace')
         end
       end
     end
   end
 
-  def create_remote_branch(repository, remote_name, branch_name, source_branch_name)
+  def create_remote_branch(remote_name, branch_name, source_branch_name)
     source_branch = repository.branches.find { |branch| branch.name == source_branch_name }
-    rugged = repository.rugged
-    rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", source_branch.dereferenced_target.sha)
+    repository_rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", source_branch.dereferenced_target.sha)
   end
 
   # Build the options hash that's passed to Rugged::Commit#create

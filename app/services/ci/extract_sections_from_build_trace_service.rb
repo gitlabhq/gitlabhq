@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class ExtractSectionsFromBuildTraceService < BaseService
     def execute(build)
@@ -9,11 +11,13 @@ module Ci
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_or_create_name(name)
       project.build_trace_section_names.find_or_create_by!(name: name)
     rescue ActiveRecord::RecordInvalid
       project.build_trace_section_names.find_by!(name: name)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def extract_sections(build)
       build.trace.extract_sections.map do |attr|

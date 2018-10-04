@@ -47,9 +47,9 @@ export function removeParamQueryString(url, param) {
   return urlVariables.filter(variable => variable.indexOf(param) === -1).join('&');
 }
 
-export function removeParams(params) {
+export function removeParams(params, source = window.location.href) {
   const url = document.createElement('a');
-  url.href = window.location.href;
+  url.href = source;
 
   params.forEach(param => {
     url.search = removeParamQueryString(url.search, param);
@@ -85,9 +85,9 @@ export function redirectTo(url) {
 }
 
 export function webIDEUrl(route = undefined) {
-  let returnUrl = `${gon.relative_url_root}/-/ide/`;
+  let returnUrl = `${gon.relative_url_root || ''}/-/ide/`;
   if (route) {
-    returnUrl += `project${route}`;
+    returnUrl += `project${route.replace(new RegExp(`^${gon.relative_url_root || ''}`), '')}`;
   }
   return returnUrl;
 }

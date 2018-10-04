@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PasswordsController < Devise::PasswordsController
   skip_before_action :require_no_authentication, only: [:edit, :update]
 
@@ -5,6 +7,7 @@ class PasswordsController < Devise::PasswordsController
   before_action :check_password_authentication_available, only: [:create]
   before_action :throttle_reset,      only: [:create]
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def edit
     super
     reset_password_token = Devise.token_generator.digest(
@@ -24,6 +27,7 @@ class PasswordsController < Devise::PasswordsController
       end
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def update
     super do |resource|

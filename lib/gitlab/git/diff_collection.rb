@@ -11,7 +11,7 @@ module Gitlab
 
       delegate :max_files, :max_lines, :max_bytes, :safe_max_files, :safe_max_lines, :safe_max_bytes, to: :limits
 
-      def self.collection_limits(options = {})
+      def self.limits(options = {})
         limits = {}
         limits[:max_files] = options.fetch(:max_files, DEFAULT_LIMITS[:max_files])
         limits[:max_lines] = options.fetch(:max_lines, DEFAULT_LIMITS[:max_lines])
@@ -19,13 +19,14 @@ module Gitlab
         limits[:safe_max_files] = [limits[:max_files], DEFAULT_LIMITS[:max_files]].min
         limits[:safe_max_lines] = [limits[:max_lines], DEFAULT_LIMITS[:max_lines]].min
         limits[:safe_max_bytes] = limits[:safe_max_files] * 5.kilobytes # Average 5 KB per file
+        limits[:max_patch_bytes] = Gitlab::Git::Diff.patch_hard_limit_bytes
 
         OpenStruct.new(limits)
       end
 
       def initialize(iterator, options = {})
         @iterator = iterator
-        @limits = self.class.collection_limits(options)
+        @limits = self.class.limits(options)
         @enforce_limits = !!options.fetch(:limits, true)
         @expanded = !!options.fetch(:expanded, true)
 
@@ -42,12 +43,10 @@ module Gitlab
         return if @overflow
         return if @iterator.nil?
 
-        Gitlab::GitalyClient.migrate(:commit_raw_diffs) do |is_enabled|
-          if is_enabled && @iterator.is_a?(Gitlab::GitalyClient::DiffStitcher)
-            each_gitaly_patch(&block)
-          else
-            each_rugged_patch(&block)
-          end
+        if @iterator.is_a?(Gitlab::GitalyClient::DiffStitcher)
+          each_gitaly_patch(&block)
+        else
+          each_serialized_patch(&block)
         end
 
         @populated = true
@@ -118,7 +117,7 @@ module Gitlab
         end
       end
 
-      def each_rugged_patch
+      def each_serialized_patch
         i = @array.length
 
         @iterator.each do |raw|

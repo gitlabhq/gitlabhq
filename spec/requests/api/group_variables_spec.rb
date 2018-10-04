@@ -9,7 +9,7 @@ describe API::GroupVariables do
 
     context 'authorized user with proper permissions' do
       before do
-        group.add_master(user)
+        group.add_maintainer(user)
       end
 
       it 'returns group variables' do
@@ -42,7 +42,7 @@ describe API::GroupVariables do
 
     context 'authorized user with proper permissions' do
       before do
-        group.add_master(user)
+        group.add_maintainer(user)
       end
 
       it 'returns group variable details' do
@@ -82,7 +82,7 @@ describe API::GroupVariables do
       let!(:variable) { create(:ci_group_variable, group: group) }
 
       before do
-        group.add_master(user)
+        group.add_maintainer(user)
       end
 
       it 'creates variable' do
@@ -138,7 +138,7 @@ describe API::GroupVariables do
 
     context 'authorized user with proper permissions' do
       before do
-        group.add_master(user)
+        group.add_maintainer(user)
       end
 
       it 'updates variable data' do
@@ -184,7 +184,7 @@ describe API::GroupVariables do
 
     context 'authorized user with proper permissions' do
       before do
-        group.add_master(user)
+        group.add_maintainer(user)
       end
 
       it 'deletes variable' do

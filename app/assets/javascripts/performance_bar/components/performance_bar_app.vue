@@ -1,20 +1,15 @@
 <script>
 import $ from 'jquery';
 
-import PerformanceBarService from '../services/performance_bar_service';
 import detailedMetric from './detailed_metric.vue';
 import requestSelector from './request_selector.vue';
 import simpleMetric from './simple_metric.vue';
-import upstreamPerformanceBar from './upstream_performance_bar.vue';
-
-import Flash from '../../flash';
 
 export default {
   components: {
     detailedMetric,
     requestSelector,
     simpleMetric,
-    upstreamPerformanceBar,
   },
   props: {
     store: {
@@ -47,7 +42,7 @@ export default {
       keys: ['feature', 'request'],
     },
   ],
-  simpleMetrics: ['redis', 'sidekiq'],
+  simpleMetrics: ['redis'],
   data() {
     return { currentRequestId: '' };
   },
@@ -71,37 +66,13 @@ export default {
     },
   },
   mounted() {
-    this.interceptor = PerformanceBarService.registerInterceptor(
-      this.peekUrl,
-      this.loadRequestDetails,
-    );
-
-    this.loadRequestDetails(this.requestId, window.location.href);
     this.currentRequest = this.requestId;
 
     if (this.lineProfileModal.length) {
       this.lineProfileModal.modal('toggle');
     }
   },
-  beforeDestroy() {
-    PerformanceBarService.removeInterceptor(this.interceptor);
-  },
   methods: {
-    loadRequestDetails(requestId, requestUrl) {
-      if (!this.store.canTrackRequest(requestUrl)) {
-        return;
-      }
-
-      this.store.addRequest(requestId, requestUrl);
-
-      PerformanceBarService.fetchRequestDetails(this.peekUrl, requestId)
-        .then(res => {
-          this.store.addRequestDetails(requestId, res.data.data);
-        })
-        .catch(() =>
-          Flash(`Error getting performance bar results for ${requestId}`),
-        );
-    },
     changeCurrentRequest(newRequestId) {
       this.currentRequest = newRequestId;
     },
@@ -115,7 +86,7 @@ export default {
   >
     <div
       v-if="currentRequest"
-      class="container-fluid container-limited"
+      class="d-flex container-fluid container-limited"
     >
       <div
         id="peek-view-host"
@@ -128,9 +99,6 @@ export default {
           {{ currentRequest.details.host.hostname }}
         </span>
       </div>
-      <upstream-performance-bar
-        v-if="initialRequest && currentRequest.details"
-      />
       <detailed-metric
         v-for="metric in $options.detailedMetrics"
         :key="metric.metric"
@@ -162,8 +130,8 @@ export default {
       </div>
       <simple-metric
         v-for="metric in $options.simpleMetrics"
-        :current-request="currentRequest"
         :key="metric"
+        :current-request="currentRequest"
         :metric="metric"
       />
       <div
@@ -184,6 +152,7 @@ export default {
         v-if="currentRequest"
         :current-request="currentRequest"
         :requests="requests"
+        class="ml-auto"
         @change-current-request="changeCurrentRequest"
       />
     </div>

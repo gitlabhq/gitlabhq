@@ -5,10 +5,48 @@ describe TodosFinder do
     let(:user) { create(:user) }
     let(:group) { create(:group) }
     let(:project) { create(:project, namespace: group) }
+    let(:issue) { create(:issue, project: project) }
+    let(:merge_request) { create(:merge_request, source_project: project) }
     let(:finder) { described_class }
 
     before do
       group.add_developer(user)
+    end
+
+    describe '#execute' do
+      context 'filtering' do
+        let!(:todo1) { create(:todo, user: user, project: project, target: issue) }
+        let!(:todo2) { create(:todo, user: user, group: group, target: merge_request) }
+
+        it 'returns correct todos when filtered by a project' do
+          todos = finder.new(user, { project_id: project.id }).execute
+
+          expect(todos).to match_array([todo1])
+        end
+
+        it 'returns correct todos when filtered by a group' do
+          todos = finder.new(user, { group_id: group.id }).execute
+
+          expect(todos).to match_array([todo1, todo2])
+        end
+
+        it 'returns correct todos when filtered by a type' do
+          todos = finder.new(user, { type: 'Issue' }).execute
+
+          expect(todos).to match_array([todo1])
+        end
+
+        context 'with subgroups', :nested_groups do
+          let(:subgroup) { create(:group, parent: group) }
+          let!(:todo3) { create(:todo, user: user, group: subgroup, target: issue) }
+
+          it 'returns todos from subgroups when filtered by a group' do
+            todos = finder.new(user, { group_id: group.id }).execute
+
+            expect(todos).to match_array([todo1, todo2, todo3])
+          end
+        end
+      end
     end
 
     describe '#sort' do

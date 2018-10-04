@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Artifact file', :js do
+describe 'Artifact file', :js do
   let(:project) { create(:project, :public) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
   let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }

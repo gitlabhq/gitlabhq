@@ -9,7 +9,7 @@ At a minimum, requiring the Rake helper will redirect `stdout`, include the
 runtime task helpers, and include the `RakeHelpers` Spec support module.
 
 The `RakeHelpers` module exposes a `run_rake_task(<task>)` method to make
-executing tasks simple. See `spec/support/rake_helpers.rb` for all available
+executing tasks simple. See `spec/support/helpers/rake_helpers.rb` for all available
 methods.
 
 Example:

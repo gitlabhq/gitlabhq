@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Issue markdown toolbar', :js do
+describe 'Issue markdown toolbar', :js do
   let(:project) { create(:project, :public) }
   let(:issue)   { create(:issue, project: project) }
   let(:user)    { create(:user) }

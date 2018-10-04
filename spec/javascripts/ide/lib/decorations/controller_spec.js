@@ -1,6 +1,4 @@
-/* global monaco */
-import monacoLoader from '~/ide/monaco_loader';
-import editor from '~/ide/lib/editor';
+import Editor from '~/ide/lib/editor';
 import DecorationsController from '~/ide/lib/decorations/controller';
 import Model from '~/ide/lib/common/model';
 import { file } from '../../helpers';
@@ -10,16 +8,12 @@ describe('Multi-file editor library decorations controller', () => {
   let controller;
   let model;
 
-  beforeEach(done => {
-    monacoLoader(['vs/editor/editor.main'], () => {
-      editorInstance = editor.create(monaco);
-      editorInstance.createInstance(document.createElement('div'));
+  beforeEach(() => {
+    editorInstance = Editor.create();
+    editorInstance.createInstance(document.createElement('div'));
 
-      controller = new DecorationsController(editorInstance);
-      model = new Model(monaco, file('path'));
-
-      done();
-    });
+    controller = new DecorationsController(editorInstance);
+    model = new Model(file('path'));
   });
 
   afterEach(() => {
@@ -114,6 +108,35 @@ describe('Multi-file editor library decorations controller', () => {
 
       controller.dispose();
 
+      expect(controller.editorDecorations.size).toBe(0);
+    });
+  });
+
+  describe('hasDecorations', () => {
+    it('returns true when decorations are cached', () => {
+      controller.addDecorations(model, 'key', [{ decoration: 'decorationValue' }]);
+
+      expect(controller.hasDecorations(model)).toBe(true);
+    });
+
+    it('returns false when no model decorations exist', () => {
+      expect(controller.hasDecorations(model)).toBe(false);
+    });
+  });
+
+  describe('removeDecorations', () => {
+    beforeEach(() => {
+      controller.addDecorations(model, 'key', [{ decoration: 'decorationValue' }]);
+      controller.decorate(model);
+    });
+
+    it('removes cached decorations', () => {
+      expect(controller.decorations.size).not.toBe(0);
+      expect(controller.editorDecorations.size).not.toBe(0);
+
+      controller.removeDecorations(model);
+
+      expect(controller.decorations.size).toBe(0);
       expect(controller.editorDecorations.size).toBe(0);
     });
   });

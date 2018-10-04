@@ -1,10 +1,17 @@
-.commit-description {
-  background: none;
+%commit-description-base {
+  padding: $gl-padding-8 0 $gl-padding-8 $gl-padding-8;
+  margin-top: $gl-padding-8;
   border: 0;
-  padding: 0;
-  margin-top: 10px;
+  border-radius: unset;
+  background: none;
   word-break: normal;
-  white-space: pre-wrap;
+  overflow-x: auto;
+  border-left: 3px solid $white-dark;
+  color: $gl-text-color-secondary;
+}
+
+.commit-description {
+  @extend %commit-description-base;
 }
 
 .js-details-expand {
@@ -21,14 +28,10 @@
     margin: 0;
     color: $gl-text-color;
   }
-
-  .commit-description {
-    margin-top: 15px;
-  }
 }
 
 .commit-hash-full {
-  @media (max-width: $screen-sm-max) {
+  @include media-breakpoint-down(sm) {
     width: 80px;
     white-space: nowrap;
     overflow: hidden;
@@ -70,7 +73,7 @@
 }
 
 .branch-info .commit-icon {
-  margin-right: 3px;
+  margin-right: 8px;
 
   svg {
     top: 3px;
@@ -84,7 +87,7 @@
 .commit-message-container {
   background-color: $body-bg;
   position: relative;
-  font-family: $monospace_font;
+  font-family: $monospace-font;
   $left: 12px;
   overflow: hidden; // See https://gitlab.com/gitlab-org/gitlab-ce/issues/13987
   .max-width-marker {
@@ -140,10 +143,10 @@
 }
 
 .text-expander {
-  display: inline-block;
+  display: inline-flex;
   background: $white-light;
   color: $gl-text-color-secondary;
-  padding: 0 4px;
+  padding: 1px $gl-padding-4;
   cursor: pointer;
   border: 1px solid $border-gray-dark;
   border-radius: $border-radius-default;
@@ -178,21 +181,28 @@
 .commit-detail {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: start;
   flex-grow: 1;
+  min-width: 0;
 
-  .merge-request-branches & {
-    flex-direction: column;
+  .project_namespace {
+    color: $gl-text-color-secondary;
   }
 }
 
 .commit-content {
   padding-right: 10px;
   white-space: normal;
+  overflow: hidden;
+
+  .commit-title {
+    display: flex;
+    align-items: center;
+  }
 }
 
 .commit-actions {
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     .fa-spinner {
       font-size: 12px;
     }
@@ -202,13 +212,18 @@
     display: inline-flex;
   }
 
+  .ci-status-icon svg {
+    vertical-align: text-bottom;
+  }
+
   > .ci-status-link,
   > .btn,
   > .commit-sha-group {
-    margin-left: $gl-padding-8;
+    margin-left: $gl-padding;
   }
 }
 
+.clipboard-group,
 .commit-sha-group {
   display: inline-flex;
 
@@ -235,10 +250,6 @@
     fill: $gl-text-color-secondary;
   }
 
-  .fa-clipboard {
-    color: $gl-text-color-secondary;
-  }
-
   :first-child {
     border-bottom-left-radius: $border-radius-default;
     border-top-left-radius: $border-radius-default;
@@ -258,34 +269,25 @@
 .generic_commit_status {
   a,
   button {
-    color: $gl-text-color;
     vertical-align: baseline;
   }
 
-  a.autodevops-badge {
-    color: $white-light;
-  }
+  a {
+    color: $gl-text-color;
 
-  a.autodevops-link {
-    color: $gl-link-color;
+    &.autodevops-badge {
+      color: $white-light;
+    }
+
+    &.autodevops-link {
+      color: $blue-600;
+    }
   }
 
   .commit-row-description {
-    font-size: 14px;
-    padding: 10px 15px;
-    margin: 10px 0;
-    background: $gray-light;
+    @extend %commit-description-base;
     display: none;
-    white-space: pre-wrap;
-    word-break: normal;
-
-    pre {
-      border: 0;
-      background: inherit;
-      padding: 0;
-      margin: 0;
-      white-space: pre-wrap;
-    }
+    flex: 1;
 
     a {
       color: $gl-text-color;
@@ -320,7 +322,7 @@
   }
 
   .commit-sha {
-    color: $gl-link-color;
+    color: $blue-600;
   }
 
   .commit-row-message {
@@ -340,8 +342,12 @@
   }
 
   &.invalid {
-    @include status-color($gray-dark, $gray, $gray-darkest);
+    @include status-color($gray-dark, color("gray"), $gray-darkest);
     border-color: $gray-darkest;
+
+    &:not(span):hover {
+      color: color("gray");
+    }
   }
 }
 

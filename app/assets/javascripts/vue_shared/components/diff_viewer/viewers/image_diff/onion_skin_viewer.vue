@@ -1,0 +1,160 @@
+<script>
+import { pixeliseValue } from '../../../lib/utils/dom_utils';
+import ImageViewer from '../../../content_viewer/viewers/image_viewer.vue';
+
+export default {
+  components: {
+    ImageViewer,
+  },
+  props: {
+    newPath: {
+      type: String,
+      required: true,
+    },
+    oldPath: {
+      type: String,
+      required: true,
+    },
+    projectPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+  data() {
+    return {
+      onionMaxWidth: undefined,
+      onionMaxHeight: undefined,
+      onionOldImgInfo: null,
+      onionNewImgInfo: null,
+      onionDraggerPos: 0,
+      onionOpacity: 1,
+      dragging: false,
+    };
+  },
+  computed: {
+    onionMaxPixelWidth() {
+      return pixeliseValue(this.onionMaxWidth);
+    },
+    onionMaxPixelHeight() {
+      return pixeliseValue(this.onionMaxHeight);
+    },
+    onionDraggerPixelPos() {
+      return pixeliseValue(this.onionDraggerPos);
+    },
+  },
+  beforeDestroy() {
+    document.body.removeEventListener('mouseup', this.stopDrag);
+    this.$refs.dragger.removeEventListener('mousedown', this.startDrag);
+  },
+  methods: {
+    dragMove(e) {
+      if (!this.dragging) return;
+      const left = e.pageX - this.$refs.dragTrack.getBoundingClientRect().left;
+      const dragTrackWidth =
+        this.$refs.dragTrack.clientWidth - this.$refs.dragger.clientWidth || 100;
+
+      let leftValue = left;
+      if (leftValue < 0) leftValue = 0;
+      if (leftValue > dragTrackWidth) leftValue = dragTrackWidth;
+
+      this.onionOpacity = left / dragTrackWidth;
+      this.onionDraggerPos = leftValue;
+    },
+    startDrag() {
+      this.dragging = true;
+      document.body.style.userSelect = 'none';
+      document.body.addEventListener('mousemove', this.dragMove);
+    },
+    stopDrag() {
+      this.dragging = false;
+      document.body.style.userSelect = '';
+      document.body.removeEventListener('mousemove', this.dragMove);
+    },
+    prepareOnionSkin() {
+      if (this.onionOldImgInfo && this.onionNewImgInfo) {
+        this.onionMaxWidth = Math.max(
+          this.onionOldImgInfo.renderedWidth,
+          this.onionNewImgInfo.renderedWidth,
+        );
+        this.onionMaxHeight = Math.max(
+          this.onionOldImgInfo.renderedHeight,
+          this.onionNewImgInfo.renderedHeight,
+        );
+
+        this.onionOpacity = 1;
+        this.onionDraggerPos =
+          this.$refs.dragTrack.clientWidth - this.$refs.dragger.clientWidth || 100;
+
+        document.body.addEventListener('mouseup', this.stopDrag);
+      }
+    },
+    onionNewImgLoaded(imgInfo) {
+      this.onionNewImgInfo = imgInfo;
+      this.prepareOnionSkin();
+    },
+    onionOldImgLoaded(imgInfo) {
+      this.onionOldImgInfo = imgInfo;
+      this.prepareOnionSkin();
+    },
+  },
+};
+</script>
+
+<template>
+  <div class="onion-skin view">
+    <div
+      :style="{
+        'width': onionMaxPixelWidth,
+        'height': onionMaxPixelHeight,
+        'user-select': dragging === true ? 'none' : '',
+      }"
+      class="onion-skin-frame">
+      <div
+        :style="{
+          'width': onionMaxPixelWidth,
+          'height': onionMaxPixelHeight,
+        }"
+        class="frame deleted">
+        <image-viewer
+          key="onionOldImg"
+          :render-info="false"
+          :path="oldPath"
+          :project-path="projectPath"
+          @imgLoaded="onionOldImgLoaded"
+        />
+      </div>
+      <div
+        ref="addedFrame"
+        :style="{
+          'opacity': onionOpacity,
+          'width': onionMaxPixelWidth,
+          'height': onionMaxPixelHeight,
+        }"
+        class="added frame">
+        <image-viewer
+          key="onionNewImg"
+          :render-info="false"
+          :path="newPath"
+          :project-path="projectPath"
+          @imgLoaded="onionNewImgLoaded"
+        />
+      </div>
+      <div class="controls">
+        <div class="transparent"></div>
+        <div
+          ref="dragTrack"
+          class="drag-track"
+          @mousedown="startDrag"
+          @mouseup="stopDrag">
+          <div
+            ref="dragger"
+            :style="{ 'left': onionDraggerPixelPos }"
+            class="dragger">
+          </div>
+        </div>
+        <div class="opaque"></div>
+      </div>
+    </div>
+  </div>
+</template>

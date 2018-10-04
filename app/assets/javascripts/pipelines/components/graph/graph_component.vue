@@ -1,13 +1,11 @@
 <script>
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
+import _ from 'underscore';
 import StageColumnComponent from './stage_column_component.vue';
 
 export default {
   components: {
     StageColumnComponent,
-    LoadingIcon,
   },
-
   props: {
     isLoading: {
       type: Boolean,
@@ -16,11 +14,6 @@ export default {
     pipeline: {
       type: Object,
       required: true,
-    },
-    actionDisabled: {
-      type: String,
-      required: false,
-      default: null,
     },
   },
 
@@ -32,7 +25,8 @@ export default {
 
   methods: {
     capitalizeStageName(name) {
-      return name.charAt(0).toUpperCase() + name.slice(1);
+      const escapedName = _.escape(name);
+      return escapedName.charAt(0).toUpperCase() + escapedName.slice(1);
     },
 
     isFirstColumn(index) {
@@ -52,6 +46,10 @@ export default {
 
       return className;
     },
+
+    refreshPipelineGraph() {
+      this.$emit('refreshPipelineGraph');
+    },
   },
 };
 </script>
@@ -59,9 +57,9 @@ export default {
   <div class="build-content middle-block js-pipeline-graph">
     <div class="pipeline-visualization pipeline-graph pipeline-tab-content">
       <div class="text-center">
-        <loading-icon
+        <gl-loading-icon
           v-if="isLoading"
-          size="3"
+          :size="3"
         />
       </div>
 
@@ -70,12 +68,12 @@ export default {
         class="stage-column-list">
         <stage-column-component
           v-for="(stage, index) in graph"
+          :key="stage.name"
           :title="capitalizeStageName(stage.name)"
           :jobs="stage.groups"
-          :key="stage.name"
           :stage-connector-class="stageConnectorClass(index, stage)"
           :is-first-column="isFirstColumn(index)"
-          :action-disabled="actionDisabled"
+          @refreshPipelineGraph="refreshPipelineGraph"
         />
       </ul>
     </div>

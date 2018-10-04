@@ -9,9 +9,9 @@ describe API::Helpers::RelatedResourcesHelpers do
     let(:path) { '/api/v4/awesome_endpoint' }
     subject(:url) { helpers.expose_url(path) }
 
-    def stub_default_url_options(protocol: 'http', host: 'example.com', port: nil)
+    def stub_default_url_options(protocol: 'http', host: 'example.com', port: nil, script_name: '')
       expect(Gitlab::Application.routes).to receive(:default_url_options)
-        .and_return(protocol: protocol, host: host, port: port)
+        .and_return(protocol: protocol, host: host, port: port, script_name: script_name)
     end
 
     it 'respects the protocol if it is HTTP' do
@@ -36,6 +36,18 @@ describe API::Helpers::RelatedResourcesHelpers do
       stub_default_url_options(port: 8080)
 
       is_expected.to start_with('http://example.com:8080/')
+    end
+
+    it 'includes the relative_url before the path if it is set' do
+      stub_default_url_options(script_name: '/gitlab')
+
+      is_expected.to start_with('http://example.com/gitlab/api/v4')
+    end
+
+    it 'includes the path after the host' do
+      stub_default_url_options
+
+      is_expected.to start_with('http://example.com/api/v4')
     end
   end
 end

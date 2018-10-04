@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import BlobFileDropzone from '~/blob/blob_file_dropzone';
 
-describe('BlobFileDropzone', () => {
+describe('BlobFileDropzone', function () {
   preloadFixtures('blob/show.html.raw');
 
   beforeEach(() => {

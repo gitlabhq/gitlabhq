@@ -47,12 +47,12 @@ export default {
       type: String,
       required: true,
     },
-    currentDataIndex: {
-      type: Number,
-      required: true,
-    },
     legendTitle: {
       type: String,
+      required: true,
+    },
+    currentCoordinates: {
+      type: Object,
       required: true,
     },
   },
@@ -90,12 +90,14 @@ export default {
     },
   },
   methods: {
-    seriesMetricValue(series) {
+    seriesMetricValue(seriesIndex, series) {
+      const indexFromCoordinates = this.currentCoordinates[series.metricTag]
+      ? this.currentCoordinates[series.metricTag].currentDataIndex : 0;
       const index = this.deploymentFlagData
         ? this.deploymentFlagData.seriesIndex
-        : this.currentDataIndex;
+        : indexFromCoordinates;
       const value = series.values[index] && series.values[index].value;
-      if (isNaN(value)) {
+      if (Number.isNaN(value)) {
         return '-';
       }
       return `${formatRelevantDigits(value)}${this.unitOfDisplay}`;
@@ -115,20 +117,21 @@ export default {
 
 <template>
   <div
-    class="prometheus-graph-cursor"
     :style="cursorStyle"
+    class="prometheus-graph-cursor"
   >
     <div
       v-if="showFlagContent"
-      class="prometheus-graph-flag popover"
       :class="flagOrientation"
+      class="prometheus-graph-flag popover"
     >
+      <div class="arrow-shadow"></div>
       <div class="arrow"></div>
       <div class="popover-title">
         <h5 v-if="deploymentFlagData">
           Deployed
         </h5>
-        {{ formatDate }} at
+        {{ formatDate }}
         <strong>{{ formatTime }}</strong>
       </div>
       <div
@@ -137,8 +140,8 @@ export default {
       >
         <div>
           <icon
-            name="commit"
             :size="12"
+            name="commit"
           />
           <a :href="deploymentFlagData.commitUrl">
             {{ deploymentFlagData.sha.slice(0, 8) }}
@@ -148,8 +151,8 @@ export default {
           v-if="deploymentFlagData.tag"
         >
           <icon
-            name="label"
             :size="12"
+            name="label"
           />
           <a :href="deploymentFlagData.tagUrl">
             {{ deploymentFlagData.ref }}
@@ -163,9 +166,11 @@ export default {
             :key="index"
           >
             <track-line :track="series"/>
-            <td>{{ series.track }} {{ seriesMetricLabel(index, series) }}</td>
             <td>
-              <strong>{{ seriesMetricValue(series) }}</strong>
+              {{ series.track }} {{ seriesMetricLabel(index, series) }}
+            </td>
+            <td>
+              <strong>{{ seriesMetricValue(index, series) }}</strong>
             </td>
           </tr>
         </table>

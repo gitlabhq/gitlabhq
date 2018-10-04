@@ -5,6 +5,8 @@ module QA
     module Shellout
       CommandError = Class.new(StandardError)
 
+      module_function
+
       ##
       # TODO, make it possible to use generic QA framework classes
       # as a library - gitlab-org/gitlab-qa#94
@@ -12,7 +14,7 @@ module QA
       def shell(command)
         puts "Executing `#{command}`"
 
-        Open3.popen2e(command) do |_in, out, wait|
+        Open3.popen2e(*command) do |_in, out, wait|
           out.each { |line| puts line }
 
           if wait.value.exited? && wait.value.exitstatus.nonzero?

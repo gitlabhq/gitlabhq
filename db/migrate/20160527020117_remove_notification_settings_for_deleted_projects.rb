@@ -1,4 +1,3 @@
-# rubocop:disable all
 class RemoveNotificationSettingsForDeletedProjects < ActiveRecord::Migration
   def up
     execute <<-SQL

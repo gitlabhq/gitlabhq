@@ -3,10 +3,6 @@ require 'spec_helper'
 describe Gitlab::Metrics::Samplers::InfluxSampler do
   let(:sampler) { described_class.new(5) }
 
-  after do
-    Allocations.stop if Gitlab::Metrics.mri?
-  end
-
   describe '#start' do
     it 'runs once and gathers a sample at a given interval' do
       expect(sampler).to receive(:sleep).with(a_kind_of(Numeric)).twice

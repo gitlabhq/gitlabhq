@@ -17,7 +17,7 @@ describe 'User activates Jira', :js do
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     visit project_settings_integrations_path(project)

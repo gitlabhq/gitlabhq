@@ -22,7 +22,7 @@ The `merge_request` value is a reference to a merge request that adds this
 entry, and the `author` key is used to give attribution to community
 contributors. **Both are optional**.
 The `type` field maps the category of the change,
-valid options are: added, fixed, changed, deprecated, removed, security, other. **Type field is mandatory**.
+valid options are: added, fixed, changed, deprecated, removed, security, performance, other. **Type field is mandatory**.
 
 Community contributors and core team members are encouraged to add their name to
 the `author` field. GitLab team members **should not**.
@@ -45,6 +45,8 @@ the `author` field. GitLab team members **should not**.
   a changelog entry regardless of these guidelines if the contributor wants one.
   Example: "Fixed a typo on the search results page. (Jane Smith)"
 - Performance improvements **should** have a changelog entry.
+- Any change that introduces a database migration **must** have a
+  changelog entry.
 
 ## Writing good changelog entries
 
@@ -108,7 +110,8 @@ At this point the script would ask you to select the category of the change (map
 4. New deprecation
 5. Feature removal
 6. Security fix
-7. Other
+7. Performance improvement
+8. Other
 ```
 
 The entry filename is based on the name of the current Git branch. If you run
