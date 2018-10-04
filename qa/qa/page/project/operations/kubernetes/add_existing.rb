@@ -10,6 +10,7 @@ module QA
               element :ca_certificate, 'text_area :ca_cert'
               element :token, 'text_field :token'
               element :add_cluster_button, "submit s_('ClusterIntegration|Add Kubernetes cluster')"
+              element :rbac_checkbox, "label :authorization_type, s_('ClusterIntegration|RBAC-enabled cluster (experimental)')"
             end
 
             def set_cluster_name(name)
@@ -30,6 +31,10 @@ module QA
 
             def add_cluster!
               click_on 'Add Kubernetes cluster'
+            end
+
+            def check_rbac!
+              check 'RBAC-enabled cluster (experimental)'
             end
           end
         end
