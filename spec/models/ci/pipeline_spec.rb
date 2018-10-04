@@ -75,8 +75,8 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
-  describe '#schedule' do
-    subject { pipeline.schedule }
+  describe '#delay' do
+    subject { pipeline.delay }
 
     let(:pipeline) { build(:ci_pipeline, status: :created) }
 
