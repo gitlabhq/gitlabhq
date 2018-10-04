@@ -44,10 +44,8 @@ describe 'User Cluster', :js do
 
       it_behaves_like 'valid cluster user form'
 
-      context 'rbac_clusters feature flag is enabled' do
+      context 'RBAC is enabled for the cluster' do
         before do
-          stub_feature_flags(rbac_clusters: true)
-
           check 'cluster_platform_kubernetes_attributes_authorization_type'
         end
 
