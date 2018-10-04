@@ -84,7 +84,7 @@ describe 'Pipeline', :js do
           end
         end
 
-        it 'should be possible to cancel the running build' do
+        it 'cancels the running build and shows retry button' do
           find('#ci-badge-deploy .ci-action-icon-container').click
 
           page.within('#ci-badge-deploy') do
@@ -112,8 +112,8 @@ describe 'Pipeline', :js do
         end
       end
 
-      context 'when pipeline has scheduled builds' do
-        it 'shows the scheduled icon and a unschedule action for the scheduled build' do
+      context 'when pipeline has a delayed job' do
+        it 'shows the scheduled icon and an unschedule action for the delayed job' do
           page.within('#ci-badge-delayed-job') do
             expect(page).to have_selector('.js-ci-status-icon-scheduled')
             expect(page).to have_content('delayed-job')
@@ -124,10 +124,12 @@ describe 'Pipeline', :js do
           end
         end
 
-        it 'should be possible to unschedule the scheduled job' do
+        it 'unschedules the delayed job and shows play button as a manual job' do
           find('#ci-badge-delayed-job .ci-action-icon-container').click
 
-          expect(page).not_to have_content('Unschedule job')
+          page.within('#ci-badge-delayed-job') do
+            expect(page).to have_css('.js-icon-play')
+          end
         end
       end
 
@@ -341,14 +343,16 @@ describe 'Pipeline', :js do
       it { expect(build_manual.reload).to be_pending }
     end
 
-    context 'unscheduling scheduled job' do
+    context 'when user unschedules a delayed job' do
       before do
         within '.pipeline-holder' do
           click_link('Unschedule')
         end
       end
 
-      it { expect(build_scheduled.reload).to be_manual }
+      it 'unschedules the delayed job and shows play button as a manual job' do
+        expect(page).to have_content('Trigger this manual action')
+      end
     end
 
     context 'failed jobs' do

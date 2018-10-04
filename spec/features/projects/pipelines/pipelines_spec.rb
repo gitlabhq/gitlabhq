@@ -232,7 +232,7 @@ describe 'Pipelines', :js do
         end
       end
 
-      context 'with delayed job' do
+      context 'when there is a delayed job' do
         let!(:delayed_job) do
           create(:ci_build, :scheduled,
             pipeline: pipeline,
@@ -245,26 +245,25 @@ describe 'Pipelines', :js do
           visit_project_pipelines
         end
 
-        it 'has a dropdown with play button' do
+        it 'has a dropdown for actionable jobs' do
           expect(page).to have_selector('.dropdown-new.btn.btn-default .icon-play')
         end
 
-        it 'has link to the scheduled action' do
+        it "has link to the delayed job's action" do
           find('.js-pipeline-dropdown-manual-actions').click
 
           expect(page).to have_button('delayed job')
         end
 
-        context 'when scheduled action was played' do
+        context 'when user played a delayed job immediately' do
           before do
-            accept_confirm do
-              find('.js-pipeline-dropdown-manual-actions').click
-              click_button('delayed job')
-            end
+            find('.js-pipeline-dropdown-manual-actions').click
+            page.accept_confirm { click_button('delayed job') }
+            wait_for_requests
           end
 
-          it 'enqueues scheduled action job' do
-            expect(page).to have_selector('.js-pipeline-dropdown-manual-actions:disabled')
+          it 'enqueues the delayed job', :js do
+            expect(delayed_job.reload).to be_pending
           end
         end
       end

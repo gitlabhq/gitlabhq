@@ -574,7 +574,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         expect(page).to have_link('Unschedule job')
       end
 
-      it 'unschedule delayed job and shows manual action', :js do
+      it 'unschedules delayed job and shows manual action', :js do
         click_link 'Unschedule job'
 
         wait_for_requests
