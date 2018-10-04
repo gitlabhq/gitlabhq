@@ -7,10 +7,11 @@ class AddFeatureFlagsToProjects < ActiveRecord::Migration
   def change
     create_table :operations_feature_flags, id: :bigserial do |t|
       t.integer :project_id, null: false
+      t.boolean :active, null: false
+
       t.datetime_with_timezone :created_at, null: false
       t.datetime_with_timezone :updated_at, null: false
 
-      t.boolean :active, null: false
       t.string :name, null: false
       t.text :description
 

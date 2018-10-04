@@ -1945,9 +1945,9 @@ ActiveRecord::Schema.define(version: 20180926140319) do
 
   create_table "operations_feature_flags", id: :bigserial, force: :cascade do |t|
     t.integer "project_id", null: false
+    t.boolean "active", null: false
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
-    t.boolean "active", null: false
     t.string "name", null: false
     t.text "description"
   end
