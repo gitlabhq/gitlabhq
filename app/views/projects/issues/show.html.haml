@@ -82,6 +82,7 @@
       .col-sm-6.js-noteable-awards
         = render 'award_emoji/awards_block', awardable: @issue, inline: true
       .col-sm-6.new-branch-col
+        #js-vue-discussion-filter{ data: { default_filter: current_user&.notes_filter_for(@issue), notes_filters: UserPreference.notes_filters.to_json } }
         = render 'new_branch' unless @issue.confidential?
 
   %section.issuable-discussion
