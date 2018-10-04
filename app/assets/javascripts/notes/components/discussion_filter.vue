@@ -57,7 +57,7 @@ export default {
       aria-expanded="false"
     >
       {{ currentFilter.title }}
-      <icon size=15 name="chevron-down" />
+      <icon name="chevron-down" />
     </button>
     <div
       class="dropdown-menu dropdown-menu-selectable dropdown-menu-right"
