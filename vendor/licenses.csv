@@ -438,7 +438,6 @@ github-linguist,5.3.3,MIT
 github-markup,1.7.0,MIT
 gitlab-flowdock-git-hook,1.0.1,MIT
 gitlab-gollum-lib,4.2.7.5,MIT
-gitlab-gollum-rugged_adapter,0.4.4.1,MIT
 gitlab-grit,2.8.2,MIT
 gitlab-markup,1.6.4,MIT
 gitlab_omniauth-ldap,2.0.4,MIT

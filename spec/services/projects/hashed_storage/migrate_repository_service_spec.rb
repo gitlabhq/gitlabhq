@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::HashedStorage::MigrateRepositoryService do
+  include GitHelpers
+
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:project) { create(:project, :legacy_storage, :repository, :wiki_repo) }
   let(:legacy_storage) { Storage::LegacyProject.new(project) }
@@ -38,9 +40,7 @@ describe Projects::HashedStorage::MigrateRepositoryService do
       it 'writes project full path to .git/config' do
         service.execute
 
-        rugged_config = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          project.repository.rugged.config['gitlab.fullpath']
-        end
+        rugged_config = rugged_repo(project.repository).config['gitlab.fullpath']
 
         expect(rugged_config).to eq project.full_path
       end

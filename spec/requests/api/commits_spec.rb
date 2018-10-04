@@ -278,6 +278,12 @@ describe API::Commits do
         }
       end
 
+      it 'does not increment the usage counters using access token authentication' do
+        expect(::Gitlab::WebIdeCommitsCounter).not_to receive(:increment)
+
+        post api(url, user), valid_c_params
+      end
+
       it 'a new file in project repo' do
         post api(url, user), valid_c_params
 

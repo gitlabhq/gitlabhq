@@ -19,6 +19,11 @@ msgstr ""
 msgid " Status"
 msgstr ""
 
+msgid "%d addition"
+msgid_plural "%d additions"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d changed file"
 msgid_plural "%d changed files"
 msgstr[0] ""
@@ -31,6 +36,11 @@ msgstr[1] ""
 
 msgid "%d commit behind"
 msgid_plural "%d commits behind"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d deleted"
+msgid_plural "%d deletions"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -598,7 +608,7 @@ msgstr ""
 msgid "Application"
 msgstr ""
 
-msgid "Application Id"
+msgid "Application ID"
 msgstr ""
 
 msgid "Application: %{name}"
@@ -1101,9 +1111,6 @@ msgstr ""
 msgid "Callback URL"
 msgstr ""
 
-msgid "Callback url"
-msgstr ""
-
 msgid "Can't find HEAD commit for this branch"
 msgstr ""
 
@@ -1291,6 +1298,9 @@ msgid "CiVariable|Validation failed"
 msgstr ""
 
 msgid "CircuitBreakerApiLink|circuitbreaker api"
+msgstr ""
+
+msgid "Clear search"
 msgstr ""
 
 msgid "Clear search input"
@@ -1939,6 +1949,9 @@ msgstr ""
 msgid "Copy HTTPS clone URL"
 msgstr ""
 
+msgid "Copy ID to clipboard"
+msgstr ""
+
 msgid "Copy SSH clone URL"
 msgstr ""
 
@@ -1958,6 +1971,9 @@ msgid "Copy file path to clipboard"
 msgstr ""
 
 msgid "Copy reference to clipboard"
+msgstr ""
+
+msgid "Copy secret to clipboard"
 msgstr ""
 
 msgid "Copy to clipboard"
@@ -3759,6 +3775,12 @@ msgstr ""
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
 msgstr ""
 
+msgid "MergeRequest|Filter files"
+msgstr ""
+
+msgid "MergeRequest|No files found"
+msgstr ""
+
 msgid "Merged"
 msgstr ""
 
@@ -4017,9 +4039,6 @@ msgid "No estimate or time spent"
 msgstr ""
 
 msgid "No file chosen"
-msgstr ""
-
-msgid "No files found"
 msgstr ""
 
 msgid "No files found."
@@ -4313,9 +4332,6 @@ msgid "Personal Access Token"
 msgstr ""
 
 msgid "Pipeline"
-msgstr ""
-
-msgid "Pipeline %{pipelineLinkStart} #%{pipelineId} %{pipelineLinkEnd} from %{pipelineLinkRefStart} %{pipelineRef} %{pipelineLinkRefEnd}"
 msgstr ""
 
 msgid "Pipeline Health"
@@ -5342,7 +5358,7 @@ msgstr ""
 msgid "Seconds to wait for a storage access attempt"
 msgstr ""
 
-msgid "Secret:"
+msgid "Secret"
 msgstr ""
 
 msgid "Select"
@@ -6117,7 +6133,7 @@ msgstr ""
 msgid "This job is an out-of-date deployment to %{environmentLink}. View the most recent deployment %{deploymentLink}."
 msgstr ""
 
-msgid "This job is creating a deployment to %{environmentLink} and will overwrite the last %{deploymentLink}."
+msgid "This job is creating a deployment to %{environmentLink} and will overwrite the %{deploymentLink}."
 msgstr ""
 
 msgid "This job is creating a deployment to %{environmentLink}."
@@ -6422,6 +6438,9 @@ msgid "Toggle commit description"
 msgstr ""
 
 msgid "Toggle discussion"
+msgstr ""
+
+msgid "Toggle file browser"
 msgstr ""
 
 msgid "Toggle navigation"
@@ -7050,6 +7069,9 @@ msgstr ""
 msgid "for this project"
 msgstr ""
 
+msgid "from"
+msgstr ""
+
 msgid "here"
 msgstr ""
 
@@ -7063,6 +7085,9 @@ msgid "importing"
 msgstr ""
 
 msgid "issue boards"
+msgstr ""
+
+msgid "latest deployment"
 msgstr ""
 
 msgid "latest version"

@@ -5,19 +5,16 @@ import mountComponent from '../../helpers/vue_mount_component_helper';
 describe('Environments block', () => {
   const Component = Vue.extend(component);
   let vm;
-  const icon = {
+  const status = {
     group: 'success',
     icon: 'status_success',
     label: 'passed',
     text: 'passed',
     tooltip: 'passed',
   };
-  const deployment = {
-    path: 'deployment',
-    name: 'deployment name',
-  };
+
   const environment = {
-    path: '/environment',
+    environment_path: '/environment',
     name: 'environment',
   };
 
@@ -25,15 +22,14 @@ describe('Environments block', () => {
     vm.$destroy();
   });
 
-  describe('with latest deployment', () => {
+  describe('with last deployment', () => {
     it('renders info for most recent deployment', () => {
       vm = mountComponent(Component, {
         deploymentStatus: {
-          status: 'latest',
-          icon,
-          deployment,
+          status: 'last',
           environment,
         },
+        iconStatus: status,
       });
 
       expect(vm.$el.textContent.trim()).toEqual(
@@ -48,17 +44,17 @@ describe('Environments block', () => {
         vm = mountComponent(Component, {
           deploymentStatus: {
             status: 'out_of_date',
-            icon,
-            deployment,
             environment: Object.assign({}, environment, {
-              last_deployment: { name: 'deployment', path: 'last_deployment' },
+              last_deployment: { iid: 'deployment', deployable: { build_path: 'bar' } },
             }),
           },
+          iconStatus: status,
         });
 
         expect(vm.$el.textContent.trim()).toEqual(
-          'This job is an out-of-date deployment to environment. View the most recent deployment deployment.',
+          'This job is an out-of-date deployment to environment. View the most recent deployment #deployment.',
         );
+        expect(vm.$el.querySelector('.js-job-deployment-link').getAttribute('href')).toEqual('bar');
       });
     });
 
@@ -67,10 +63,9 @@ describe('Environments block', () => {
         vm = mountComponent(Component, {
           deploymentStatus: {
             status: 'out_of_date',
-            icon,
-            deployment: null,
             environment,
           },
+          iconStatus: status,
         });
 
         expect(vm.$el.textContent.trim()).toEqual(
@@ -85,10 +80,9 @@ describe('Environments block', () => {
       vm = mountComponent(Component, {
         deploymentStatus: {
           status: 'failed',
-          icon,
-          deployment: null,
           environment,
         },
+        iconStatus: status,
       });
 
       expect(vm.$el.textContent.trim()).toEqual(
@@ -99,21 +93,24 @@ describe('Environments block', () => {
 
   describe('creating deployment', () => {
     describe('with last deployment', () => {
-      it('renders info about creating deployment and overriding lastest deployment', () => {
+      it('renders info about creating deployment and overriding latest deployment', () => {
         vm = mountComponent(Component, {
           deploymentStatus: {
             status: 'creating',
-            icon,
-            deployment,
             environment: Object.assign({}, environment, {
-              last_deployment: { name: 'deployment', path: 'last_deployment' },
+              last_deployment: {
+                iid: 'deployment',
+                deployable: { build_path: 'foo' },
+              },
             }),
           },
+          iconStatus: status,
         });
 
         expect(vm.$el.textContent.trim()).toEqual(
-          'This job is creating a deployment to environment and will overwrite the last deployment.',
+          'This job is creating a deployment to environment and will overwrite the latest deployment.',
         );
+        expect(vm.$el.querySelector('.js-job-deployment-link').getAttribute('href')).toEqual('foo');
       });
     });
 
@@ -122,15 +119,27 @@ describe('Environments block', () => {
         vm = mountComponent(Component, {
           deploymentStatus: {
             status: 'creating',
-            icon,
-            deployment: null,
             environment,
           },
+          iconStatus: status,
         });
 
         expect(vm.$el.textContent.trim()).toEqual(
           'This job is creating a deployment to environment.',
         );
+      });
+    });
+
+    describe('without environment', () => {
+      it('does not render environment link', () => {
+        vm = mountComponent(Component, {
+          deploymentStatus: {
+            status: 'creating',
+            environment: null,
+          },
+          iconStatus: status,
+        });
+        expect(vm.$el.querySelector('.js-environment-link')).toBeNull();
       });
     });
   });
