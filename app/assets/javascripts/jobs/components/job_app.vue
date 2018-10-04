@@ -5,6 +5,7 @@
   // ee-only start
   import SharedRunner from 'ee/jobs/components/shared_runner_limit_block.vue';
   // ee-only end
+  import EmptyState from './empty_state.vue';
   import EnvironmentsBlock from './environments_block.vue';
   import ErasedBlock from './erased_block.vue';
   import StuckBlock from './stuck_block.vue';
@@ -14,6 +15,7 @@
     components: {
       CiHeader,
       Callout,
+      EmptyState,
       EnvironmentsBlock,
       ErasedBlock,
       StuckBlock,
@@ -36,6 +38,8 @@
         'hasEnvironment',
         'isJobStuck',
         'shouldRenderSharedRunnerLimitWarning',
+        'hasTrace',
+        'emptyStateIllustration',
       ]),
     },
   };
@@ -90,12 +94,14 @@
 
       <environments-block
         v-if="hasEnvironment"
+        class="js-job-environment"
         :deployment-status="job.deployment_status"
         :icon-status="job.status"
       />
 
       <erased-block
         v-if="job.erased"
+        class="js-job-erased"
         :user="job.erased_by"
         :erased-at="job.erased_at"
       />
@@ -104,6 +110,15 @@
       <!-- EO job log -->
 
       <!--empty state -->
+      <empty-state
+        v-if="!hasTrace"
+        class="js-job-empty-state"
+        :illustration-path="emptyStateIllustration.image"
+        :illustration-size-class="emptyStateIllustration.size"
+        :title="emptyStateIllustration.title"
+        :content="emptyStateIllustration.content"
+        :action="job.status.action"
+      />
       <!-- EO empty state -->
 
       <!-- EO Body Section -->

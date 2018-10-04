@@ -10,7 +10,12 @@ class DetailedStatusEntity < Grape::Entity
 
   expose :illustration do |status|
     begin
-      status.illustration
+      illustration = {
+          image: ActionController::Base.helpers.image_path(status.illustration[:image])
+      }
+      illustration = status.illustration.merge(illustration)
+
+      illustration
     rescue NotImplementedError
       # ignored
     end
@@ -25,5 +30,6 @@ class DetailedStatusEntity < Grape::Entity
     expose :action_title, as: :title
     expose :action_path, as: :path
     expose :action_method, as: :method
+    expose :action_button_title, as: :button_title
   end
 end
