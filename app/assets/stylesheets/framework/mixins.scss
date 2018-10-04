@@ -20,20 +20,24 @@
   display: inline-block;
   overflow-x: auto;
   border: 0;
-  border-color: $gray-100;
+  border-color: $gl-gray-100;
 
   @supports (width: fit-content) {
     display: block;
     width: fit-content;
   }
 
+  tbody {
+    background-color: $white-light;
+  }
+
   tr {
     th {
-      border-bottom: solid 2px $gray-100;
+      border-bottom: solid 2px $gl-gray-100;
     }
 
     td {
-      border-color: $gray-100;
+      border-color: $gl-gray-100;
     }
   }
 }
