@@ -8,10 +8,25 @@ describe('Artifacts block', () => {
 
   beforeEach(() => {
     vm = mountComponent(Component, {
-      pipelineId: 28029444,
-      pipelinePath: 'pipeline/28029444',
-      pipelineRef: '50101-truncated-job-information',
-      pipelineRefPath: 'commits/50101-truncated-job-information',
+      pipeline: {
+        id: 28029444,
+        details: {
+          status: {
+            details_path: '/gitlab-org/gitlab-ce/pipelines/28029444',
+            group: 'success',
+            has_details: true,
+            icon: 'status_success',
+            label: 'passed',
+            text: 'passed',
+            tooltip: 'passed',
+          },
+        },
+        path: 'pipeline/28029444',
+      },
+      ref: {
+        path: 'commits/50101-truncated-job-information',
+        name: '50101-truncated-job-information',
+      },
       stages: [
         {
           name: 'build',
@@ -20,15 +35,6 @@ describe('Artifacts block', () => {
           name: 'test',
         },
       ],
-      pipelineStatus: {
-        details_path: '/gitlab-org/gitlab-ce/pipelines/28029444',
-        group: 'success',
-        has_details: true,
-        icon: 'status_success',
-        label: 'passed',
-        text: 'passed',
-        tooltip: 'passed',
-      },
     });
   });
 

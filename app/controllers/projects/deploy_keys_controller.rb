@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::DeployKeysController < Projects::ApplicationController
   include RepositorySettingsRedirect
   respond_to :html

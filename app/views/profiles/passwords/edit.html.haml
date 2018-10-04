@@ -29,6 +29,6 @@
         = f.label :password_confirmation, class: 'label-bold'
         = f.password_field :password_confirmation, required: true, class: 'form-control'
       .prepend-top-default.append-bottom-default
-        = f.submit 'Save password', class: "btn btn-create append-right-10"
+        = f.submit 'Save password', class: "btn btn-success append-right-10"
         - unless @user.password_automatically_set?
           = link_to "I forgot my password", reset_profile_password_path, method: :put, class: "account-btn-link"

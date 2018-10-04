@@ -176,9 +176,7 @@ describe Ci::Build do
       it 'does not execute a query for selecting job artifact one by one' do
         recorded = ActiveRecord::QueryRecorder.new do
           subject.each do |build|
-            Ci::JobArtifact::TEST_REPORT_FILE_TYPES.each do |file_type|
-              build.public_send("job_artifacts_#{file_type}").file.exists?
-            end
+            build.job_artifacts.map { |a| a.file.exists? }
           end
         end
 
@@ -550,41 +548,19 @@ describe Ci::Build do
     end
   end
 
-  describe '#has_test_reports?' do
-    subject { build.has_test_reports? }
+  describe '#has_job_artifacts?' do
+    subject { build.has_job_artifacts? }
 
-    context 'when build has a test report' do
-      let(:build) { create(:ci_build, :test_reports) }
+    context 'when build has a job artifact' do
+      let(:build) { create(:ci_build, :artifacts) }
 
       it { is_expected.to be_truthy }
     end
 
-    context 'when build does not have test reports' do
-      let(:build) { create(:ci_build, :artifacts) }
+    context 'when build does not have job artifacts' do
+      let(:build) { create(:ci_build, :legacy_artifacts) }
 
       it { is_expected.to be_falsy }
-    end
-  end
-
-  describe '#erase_test_reports!' do
-    subject { build.erase_test_reports! }
-
-    context 'when build has a test report' do
-      let!(:build) { create(:ci_build, :test_reports) }
-
-      it 'removes a test report' do
-        subject
-
-        expect(build.has_test_reports?).to be_falsy
-      end
-    end
-
-    context 'when build does not have test reports' do
-      let!(:build) { create(:ci_build, :artifacts) }
-
-      it 'does not erase anything' do
-        expect { subject }.not_to change { Ci::JobArtifact.count }
-      end
     end
   end
 
@@ -850,8 +826,8 @@ describe Ci::Build do
         expect(build.artifacts_metadata.exists?).to be_falsy
       end
 
-      it 'removes test reports' do
-        expect(build.job_artifacts.test_reports.count).to eq(0)
+      it 'removes all job_artifacts' do
+        expect(build.job_artifacts.count).to eq(0)
       end
 
       it 'erases build trace in trace file' do
@@ -1018,6 +994,32 @@ describe Ci::Build do
             end
           end
         end
+      end
+    end
+  end
+
+  describe '#erase_erasable_artifacts!' do
+    let!(:build) { create(:ci_build, :success) }
+
+    subject { build.erase_erasable_artifacts! }
+
+    before do
+      Ci::JobArtifact.file_types.keys.each do |file_type|
+        create(:ci_job_artifact, job: build, file_type: file_type, file_format: Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[file_type.to_sym])
+      end
+    end
+
+    it "erases erasable artifacts" do
+      subject
+
+      expect(build.job_artifacts.erasable).to be_empty
+    end
+
+    it "keeps non erasable artifacts" do
+      subject
+
+      Ci::JobArtifact::NON_ERASABLE_FILE_TYPES.each do |file_type|
+        expect(build.send("job_artifacts_#{file_type}")).not_to be_nil
       end
     end
   end
@@ -1273,6 +1275,19 @@ describe Ci::Build do
 
         expect(artifact.reload.expire_at).to be_nil
       end
+    end
+  end
+
+  describe '#artifacts_file_for_type' do
+    let(:build) { create(:ci_build, :artifacts) }
+    let(:file_type) { :archive }
+
+    subject { build.artifacts_file_for_type(file_type) }
+
+    it 'queries artifacts for type' do
+      expect(build).to receive_message_chain(:job_artifacts, :find_by).with(file_type: Ci::JobArtifact.file_types[file_type])
+
+      subject
     end
   end
 
@@ -2844,14 +2859,8 @@ describe Ci::Build do
         end
 
         it 'raises an error' do
-          expect { subject }.to raise_error(Gitlab::Ci::Parsers::Junit::JunitParserError)
+          expect { subject }.to raise_error(Gitlab::Ci::Parsers::Test::Junit::JunitParserError)
         end
-      end
-    end
-
-    context 'when build does not have test reports' do
-      it 'raises an error' do
-        expect { subject }.to raise_error(NoMethodError)
       end
     end
   end

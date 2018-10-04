@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == EnforcesTwoFactorAuthentication
 #
 # Controller concern to enforce two-factor authentication requirements

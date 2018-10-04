@@ -25,7 +25,10 @@ describe('Dashboard', () => {
   };
 
   beforeEach(() => {
-    setFixtures('<div class="prometheus-graphs"></div>');
+    setFixtures(`
+      <div class="prometheus-graphs"></div>
+      <div class="nav-sidebar"></div> 
+    `);
     DashboardComponent = Vue.extend(Dashboard);
   });
 
@@ -125,6 +128,43 @@ describe('Dashboard', () => {
         );
         done();
       });
+    });
+  });
+
+  describe('when the window resizes', () => {
+    let mock;
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+      mock.onGet(mockApiEndpoint).reply(200, metricsGroupsAPIResponse);
+      jasmine.clock().install();
+    });
+
+    afterEach(() => {
+      mock.restore();
+      jasmine.clock().uninstall();
+    });
+
+    it('rerenders the dashboard when the sidebar is resized', done => {
+      const component = new DashboardComponent({
+        el: document.querySelector('.prometheus-graphs'),
+        propsData: { ...propsData, hasMetrics: true, showPanels: false },
+      });
+
+      expect(component.forceRedraw).toEqual(0);
+
+      const navSidebarEl = document.querySelector('.nav-sidebar');
+      navSidebarEl.classList.add('nav-sidebar-collapsed');
+
+      Vue.nextTick()
+        .then(() => {
+          jasmine.clock().tick(1000);
+          return Vue.nextTick();
+        })
+        .then(() => {
+          expect(component.forceRedraw).toEqual(component.elWidth);
+          done();
+        })
+        .catch(done.fail);
     });
   });
 });

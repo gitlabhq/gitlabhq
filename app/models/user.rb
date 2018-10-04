@@ -677,10 +677,12 @@ class User < ActiveRecord::Base
 
   # Returns the groups a user has access to, either through a membership or a project authorization
   def authorized_groups
-    Group.from_union([
-      groups,
-      authorized_projects.joins(:namespace).select('namespaces.*')
-    ])
+    Group.unscoped do
+      Group.from_union([
+        groups,
+        authorized_projects.joins(:namespace).select('namespaces.*')
+      ])
+    end
   end
 
   # Returns the groups a user is a member of, either directly or through a parent group

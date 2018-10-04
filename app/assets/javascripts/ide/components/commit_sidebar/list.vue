@@ -113,8 +113,8 @@ export default {
         </strong>
         <div class="d-flex ml-auto">
           <button
-            v-tooltip
             ref="actionBtn"
+            v-tooltip
             :title="actionBtnText"
             :aria-label="actionBtnText"
             :disabled="!filesLength"
@@ -135,8 +135,8 @@ export default {
             />
           </button>
           <button
-            v-tooltip
             v-if="!stagedList"
+            v-tooltip
             :title="__('Discard all changes')"
             :aria-label="__('Discard all changes')"
             :disabled="!filesLength"

@@ -37,7 +37,10 @@ module QA
         product(:password) { |factory| factory.password }
 
         def fabricate!
-          Page::Menu::Main.perform { |main| main.sign_out }
+          # Don't try to log-out if we're not logged-in
+          if Page::Menu::Main.act { has_personal_area?(wait: 0) }
+            Page::Menu::Main.perform { |main| main.sign_out }
+          end
 
           if credentials_given?
             Page::Main::Login.perform do |login|

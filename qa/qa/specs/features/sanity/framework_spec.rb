@@ -6,9 +6,7 @@ module QA
       it 'succeeds' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
 
-        Page::Main::Login.perform do |main_login|
-          expect(main_login.sign_in_tab?).to be(true)
-        end
+        expect(page).to have_text('Open source software to collaborate on code')
       end
     end
 

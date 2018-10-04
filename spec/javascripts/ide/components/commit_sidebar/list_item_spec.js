@@ -33,10 +33,6 @@ describe('Multi-file editor commit sidebar list item', () => {
     expect(vm.$el.querySelector('.multi-file-commit-list-path').textContent).toContain(f.path);
   });
 
-  it('renders actionn button', () => {
-    expect(vm.$el.querySelector('.multi-file-discard-btn')).not.toBeNull();
-  });
-
   it('opens a closed file in the editor when clicking the file path', done => {
     spyOn(vm, 'openPendingTab').and.callThrough();
     spyOn(router, 'push');

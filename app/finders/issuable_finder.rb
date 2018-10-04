@@ -128,7 +128,7 @@ class IssuableFinder
     labels_count = 1 if use_cte_for_search?
 
     finder.execute.reorder(nil).group(:state).count.each do |key, value|
-      counts[Array(key).last.to_sym] += value / labels_count
+      counts[count_key(key)] += value / labels_count
     end
 
     counts[:all] = counts.values.sum
@@ -236,16 +236,16 @@ class IssuableFinder
   # rubocop: enable CodeReuse/ActiveRecord
 
   def assignee_id?
-    params[:assignee_id].present? && params[:assignee_id] != NONE
+    params[:assignee_id].present? && params[:assignee_id].to_s != NONE
   end
 
   def assignee_username?
-    params[:assignee_username].present? && params[:assignee_username] != NONE
+    params[:assignee_username].present? && params[:assignee_username].to_s != NONE
   end
 
   def no_assignee?
     # Assignee_id takes precedence over assignee_username
-    params[:assignee_id] == NONE || params[:assignee_username] == NONE
+    params[:assignee_id].to_s == NONE || params[:assignee_username].to_s == NONE
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -295,6 +295,10 @@ class IssuableFinder
 
   def init_collection
     klass.all
+  end
+
+  def count_key(value)
+    Array(value).last.to_sym
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

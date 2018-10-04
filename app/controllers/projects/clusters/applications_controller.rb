@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::Clusters::ApplicationsController < Projects::ApplicationController
   before_action :cluster
   before_action :application_class, only: [:create]

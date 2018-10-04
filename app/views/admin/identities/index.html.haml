@@ -3,7 +3,7 @@
 - page_title _("Identities"), @user.name, _("Users")
 = render 'admin/users/head'
 
-= link_to _('New identity'), new_admin_user_identity_path, class: 'float-right btn btn-new'
+= link_to _('New identity'), new_admin_user_identity_path, class: 'float-right btn btn-success'
 - if @identities.present?
   .table-holder
     %table.table

@@ -328,23 +328,6 @@
     }
   }
 
-  .build-dropdown {
-    margin: $gl-padding 0;
-    padding: 0;
-
-    .dropdown-menu-toggle {
-      margin-top: #{$gl-padding / 2};
-    }
-
-    svg {
-      position: relative;
-      top: 3px;
-      margin-right: 3px;
-      width: 14px;
-      height: 14px;
-    }
-  }
-
   .builds-container {
     background-color: $white-light;
     border-top: 1px solid $border-color;
@@ -381,15 +364,11 @@
         position: absolute;
         left: 15px;
         top: 20px;
-        display: none;
+        display: block;
       }
 
       &.active {
         font-weight: $gl-font-weight-bold;
-
-        .icon-arrow-right {
-          display: block;
-        }
       }
 
       &.retried {

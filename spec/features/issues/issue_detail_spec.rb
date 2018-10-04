@@ -18,6 +18,23 @@ describe 'Issue Detail', :js do
     end
   end
 
+  context 'when issue description has xss snippet' do
+    before do
+      issue.update!(description: '![xss" onload=alert(1);//](a)')
+      sign_in(user)
+      visit project_issue_path(project, issue)
+      wait_for_requests
+    end
+
+    it 'should encode the description to prevent xss issues' do
+      page.within('.issuable-details .detail-page-description') do
+        expect(page).to have_selector('img', count: 1)
+        expect(find('img')['onerror']).to be_nil
+        expect(find('img')['src']).to end_with('/a')
+      end
+    end
+  end
+
   context 'when edited by a user who is later deleted' do
     before do
       sign_in(user)

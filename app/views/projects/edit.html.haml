@@ -40,14 +40,14 @@
 
         .form-group
           = f.label :tag_list, "Tags", class: 'label-bold'
-          = f.text_field :tag_list, value: @project.tag_list.sort.join(', '), maxlength: 2000, class: "form-control"
+          = f.text_field :tag_list, value: @project.tag_list.join(', '), maxlength: 2000, class: "form-control"
           %p.form-text.text-muted Separate tags with commas.
         %fieldset.features
           %h5.prepend-top-0= _("Project avatar")
           .form-group
             - if @project.avatar?
               .avatar-container.s160.append-bottom-15
-                = project_icon(@project.full_path, alt: '', class: 'avatar project-avatar s160', width: 160, height: 160)
+                = project_icon(@project, alt: '', class: 'avatar project-avatar s160', width: 160, height: 160)
             - if @project.avatar_in_git
               %p.light
                 = _("Project avatar in repository: %{link}").html_safe % { link: @project.avatar_in_git }
@@ -59,7 +59,7 @@
             - if @project.avatar?
               %hr
               = link_to _('Remove avatar'), project_avatar_path(@project), data: { confirm: _("Avatar will be removed. Are you sure?") }, method: :delete, class: "btn btn-danger btn-inverted"
-        = f.submit 'Save changes', class: "btn btn-success js-btn-save-general-project-settings"
+        = f.submit 'Save changes', class: "btn btn-success js-btn-success-general-project-settings"
 
   %section.settings.sharing-permissions.no-animate#js-shared-permissions{ class: ('expanded' if expanded) }
     .settings-header
@@ -75,7 +75,7 @@
         -# haml-lint:disable InlineJavaScript
         %script.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data_json(@project)
         .js-project-permissions-form
-        = f.submit 'Save changes', class: "btn btn-save"
+        = f.submit 'Save changes', class: "btn btn-success"
 
   = render_if_exists 'projects/issues_settings'
 
@@ -93,7 +93,7 @@
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "merge-request-settings-form" }, authenticity_token: true do |f|
         %input{ name: 'update_section', type: 'hidden', value: 'js-merge-request-settings' }
         = render 'projects/merge_request_settings', form: f
-        = f.submit 'Save changes', class: "btn btn-save qa-save-merge-request-changes"
+        = f.submit 'Save changes', class: "btn btn-success qa-save-merge-request-changes"
 
   = render_if_exists 'projects/service_desk_settings'
 

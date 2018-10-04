@@ -7,13 +7,21 @@ module ApplicationHelper
   # See https://docs.gitlab.com/ee/development/ee_features.html#code-in-app-views
   # rubocop: disable CodeReuse/ActiveRecord
   def render_if_exists(partial, locals = {})
-    render(partial, locals) if lookup_context.exists?(partial, [], true)
+    render(partial, locals) if partial_exists?(partial)
+  end
+
+  def partial_exists?(partial)
+    lookup_context.exists?(partial, [], true)
+  end
+
+  def template_exists?(template)
+    lookup_context.exists?(template, [], false)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
   # Check if a particular controller is the current one
   #
-  # args - One or more controller names to check
+  # args - One or more controller names to check (using path notation when inside namespaces)
   #
   # Examples
   #
@@ -21,6 +29,11 @@ module ApplicationHelper
   #   current_controller?(:tree)           # => true
   #   current_controller?(:commits)        # => false
   #   current_controller?(:commits, :tree) # => true
+  #
+  #   # On Admin::ApplicationController
+  #   current_controller?(:application)         # => true
+  #   current_controller?('admin/application')  # => true
+  #   current_controller?('gitlab/application') # => false
   def current_controller?(*args)
     args.any? do |v|
       v.to_s.downcase == controller.controller_name || v.to_s.downcase == controller.controller_path

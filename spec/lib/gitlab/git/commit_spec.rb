@@ -1,19 +1,17 @@
 require "spec_helper"
 
 describe Gitlab::Git::Commit, :seed_helper do
+  include GitHelpers
+
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
-  let(:commit) { described_class.find(repository, SeedRepo::Commit::ID) }
-  let(:rugged_commit) do
-    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      repository.rugged.lookup(SeedRepo::Commit::ID)
-    end
+  let(:rugged_repo) do
+    Rugged::Repository.new(File.join(TestEnv.repos_path, TEST_REPO_PATH))
   end
+  let(:commit) { described_class.find(repository, SeedRepo::Commit::ID) }
+  let(:rugged_commit) { rugged_repo.lookup(SeedRepo::Commit::ID) }
+
   describe "Commit info" do
     before do
-      repo = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
-      end
-
       @committer = {
         email: 'mike@smith.com',
         name: "Mike Smith",
@@ -26,12 +24,12 @@ describe Gitlab::Git::Commit, :seed_helper do
         time: Time.now
       }
 
-      @parents = [repo.head.target]
+      @parents = [rugged_repo.head.target]
       @gitlab_parents = @parents.map { |c| described_class.find(repository, c.oid) }
       @tree = @parents.first.tree
 
       sha = Rugged::Commit.create(
-        repo,
+        rugged_repo,
         author: @author,
         committer: @committer,
         tree: @tree,
@@ -40,7 +38,7 @@ describe Gitlab::Git::Commit, :seed_helper do
         update_ref: "HEAD"
       )
 
-      @raw_commit = repo.lookup(sha)
+      @raw_commit = rugged_repo.lookup(sha)
       @commit = described_class.find(repository, sha)
     end
 
@@ -61,10 +59,7 @@ describe Gitlab::Git::Commit, :seed_helper do
 
     after do
       # Erase the new commit so other tests get the original repo
-      repo = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
-      end
-      repo.references.update("refs/heads/master", SeedRepo::LastCommit::ID)
+      rugged_repo.references.update("refs/heads/master", SeedRepo::LastCommit::ID)
     end
   end
 
@@ -120,9 +115,7 @@ describe Gitlab::Git::Commit, :seed_helper do
     describe '.find' do
       it "should return first head commit if without params" do
         expect(described_class.last(repository).id).to eq(
-          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            repository.rugged.head.target.oid
-          end
+          rugged_repo.head.target.oid
         )
       end
 

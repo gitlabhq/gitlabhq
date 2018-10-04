@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   # Environments RESTfull API endpoints
   class Environments < Grape::API

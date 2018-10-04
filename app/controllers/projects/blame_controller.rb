@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Controller for viewing a file's blame
 class Projects::BlameController < Projects::ApplicationController
   include ExtractsPath

@@ -460,7 +460,7 @@
     display: -webkit-flex;
     display: flex;
 
-    .issue-info-container {
+    .issuable-info-container {
       -webkit-flex: 1;
       flex: 1;
     }
@@ -723,6 +723,17 @@
     align-items: center;
     padding: 16px;
     z-index: 199;
+    white-space: nowrap;
+
+    .dropdown-menu-toggle {
+      width: auto;
+      max-width: 170px;
+
+      svg {
+        top: 10px;
+        right: 8px;
+      }
+    }
   }
 
   .content-block {

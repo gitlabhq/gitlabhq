@@ -208,5 +208,9 @@ module ActiveRecord
         index_parts << "comment: #{index.comment.inspect}" if Gitlab.rails5? && index.comment
         index_parts
       end
+
+      def format_options(options)
+        options.map { |key, value| "#{key}: #{value.inspect}" }.join(", ")
+      end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::PagesDomainsController < Projects::ApplicationController
   layout 'project_settings'
 

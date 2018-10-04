@@ -3,7 +3,7 @@
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/50144) in GitLab 11.3.
 
 Interactive web terminals give the user access to a terminal in GitLab for
-running one-of commands for their CI pipeline.
+running one-off commands for their CI pipeline.
 
 NOTE: **Note:**
 This is not available for the shared Runners on GitLab.com.
@@ -17,7 +17,7 @@ Two things need to be configured for the interactive web terminal to work:
 
 - The Runner needs to have [`[session_server]` configured
   properly][session-server]
-- Web terminals need to be
+- If you are using a reverse proxy with your GitLab instance, web terminals need to be
   [enabled](../../administration/integration/terminal.md#enabling-and-disabling-terminal-support)
 
 ## Debugging a running job

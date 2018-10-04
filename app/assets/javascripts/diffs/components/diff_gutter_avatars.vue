@@ -87,8 +87,8 @@ export default {
         @click.native="toggleDiscussions"
       />
       <span
-        v-gl-tooltip
         v-if="moreText"
+        v-gl-tooltip
         :title="moreText"
         class="diff-comments-more-count js-diff-comment-avatar js-diff-comment-plus"
         data-container="body"

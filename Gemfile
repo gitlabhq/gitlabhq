@@ -80,16 +80,14 @@ gem 'gitlab_omniauth-ldap', '~> 2.0.4', require: 'omniauth-ldap'
 gem 'net-ldap'
 
 # Git Wiki
-# Required manually in config/initializers/gollum.rb to control load order
+# Only used to compute wiki page slugs
 gem 'gitlab-gollum-lib', '~> 4.2', require: false
-
-gem 'gitlab-gollum-rugged_adapter', '~> 0.4.4', require: false
 
 # Language detection
 gem 'github-linguist', '~> 5.3.3', require: 'linguist'
 
 # API
-gem 'grape', '~> 1.0'
+gem 'grape', '~> 1.1'
 gem 'grape-entity', '~> 0.7.1'
 gem 'rack-cors', '~> 1.0.0', require: 'rack/cors'
 
@@ -111,9 +109,6 @@ gem 'hamlit', '~> 2.8.8'
 # config/initializers/carrierwave_patch.rb can be removed once that change is released.
 gem 'carrierwave', '= 1.2.3'
 gem 'mini_magick'
-
-# Drag and Drop UI
-gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for backups
 gem 'fog-aws', '~> 2.0.1'
@@ -137,6 +132,7 @@ gem 'seed-fu', '~> 2.3.7'
 gem 'html-pipeline', '~> 2.8'
 gem 'deckar01-task_list', '2.0.0'
 gem 'gitlab-markup', '~> 1.6.4'
+gem 'github-markup', '~> 1.7.0', require: 'github/markup'
 gem 'redcarpet', '~> 3.4'
 gem 'commonmarker', '~> 0.17'
 gem 'RedCloth', '~> 4.3.2'
@@ -173,7 +169,6 @@ gem 'acts-as-taggable-on', '~> 5.0'
 gem 'sidekiq', '~> 5.2.1'
 gem 'sidekiq-cron', '~> 0.6.0'
 gem 'redis-namespace', '~> 1.6.0'
-gem 'sidekiq-limit_fetch', '~> 3.4', require: false
 
 # Cron Parser
 gem 'rufus-scheduler', '~> 3.4'
@@ -424,7 +419,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.117.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.118.1', require: 'gitaly'
 gem 'grpc', '~> 1.11.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed

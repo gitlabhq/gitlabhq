@@ -1,5 +1,5 @@
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import _ from 'underscore';
 import { __, sprintf } from '~/locale';
 import createFlash from '~/flash';
@@ -28,6 +28,7 @@ export default {
     };
   },
   computed: {
+    ...mapState('diffs', ['currentDiffFileId']),
     ...mapGetters(['isNotesFetched', 'discussionsStructuredByLineCode']),
     isCollapsed() {
       return this.file.collapsed || false;
@@ -101,6 +102,9 @@ export default {
 <template>
   <div
     :id="file.fileHash"
+    :class="{
+      'is-active': currentDiffFileId === file.fileHash
+    }"
     class="diff-file file-holder"
   >
     <diff-file-header
@@ -168,3 +172,20 @@ export default {
     </div>
   </div>
 </template>
+
+<style>
+@keyframes shadow-fade {
+  from {
+    box-shadow: 0 0 4px #919191;
+  }
+
+  to {
+    box-shadow: 0 0 0 #dfdfdf;
+  }
+}
+
+.diff-file.is-active {
+  box-shadow: 0 0 0 #dfdfdf;
+  animation: shadow-fade 1.2s 0.1s 1;
+}
+</style>

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RendersNotes
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def prepare_notes_for_rendering(notes, noteable = nil)

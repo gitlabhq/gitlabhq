@@ -111,7 +111,7 @@ describe 'Merge request > User posts notes', :js do
       it 'allows using markdown buttons after saving a note and then trying to edit it again' do
         page.within('.current-note-edit-form') do
           fill_in 'note[note]', with: 'This is the new content'
-          find('.btn-save').click
+          find('.btn-success').click
         end
 
         find('.note').hover
@@ -129,7 +129,7 @@ describe 'Merge request > User posts notes', :js do
       it 'appends the edited at time to the note' do
         page.within('.current-note-edit-form') do
           fill_in 'note[note]', with: 'Some new content'
-          find('.btn-save').click
+          find('.btn-success').click
         end
 
         page.within("#note_#{note.id}") do

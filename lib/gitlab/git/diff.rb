@@ -19,13 +19,17 @@ module Gitlab
 
       alias_method :expanded?, :expanded
 
+      # The default maximum content size to display a diff patch.
+      #
+      # If this value ever changes, make sure to create a migration to update
+      # current records, and default of `ApplicationSettings#diff_max_patch_bytes`.
+      DEFAULT_MAX_PATCH_BYTES = 100.kilobytes
+
+      # This is a limitation applied on the source (Gitaly), therefore we don't allow
+      # persisting limits over that.
+      MAX_PATCH_BYTES_UPPER_BOUND = 500.kilobytes
+
       SERIALIZE_KEYS = %i(diff new_path old_path a_mode b_mode new_file renamed_file deleted_file too_large).freeze
-
-      # The maximum size of a diff to display.
-      SIZE_LIMIT = 100.kilobytes
-
-      # The maximum size before a diff is collapsed.
-      COLLAPSE_LIMIT = 10.kilobytes
 
       class << self
         def between(repo, head, base, options = {}, *paths)
@@ -105,6 +109,26 @@ module Gitlab
         def binary_message(old_path, new_path)
           "Binary files #{old_path} and #{new_path} differ\n"
         end
+
+        # Returns the limit of bytes a single diff file can reach before it
+        # appears as 'collapsed' for end-users.
+        # By convention, it's 10% of the persisted `diff_max_patch_bytes`.
+        #
+        # Example: If we have 100k for the `diff_max_patch_bytes`, it will be 10k by
+        # default.
+        #
+        # Patches surpassing this limit should still be persisted in the database.
+        def patch_safe_limit_bytes
+          patch_hard_limit_bytes / 10
+        end
+
+        # Returns the limit for a single diff file (patch).
+        #
+        # Patches surpassing this limit shouldn't be persisted in the database
+        # and will be presented as 'too large' for end-users.
+        def patch_hard_limit_bytes
+          Gitlab::CurrentSettings.diff_max_patch_bytes
+        end
       end
 
       def initialize(raw_diff, expanded: true)
@@ -150,7 +174,7 @@ module Gitlab
 
       def too_large?
         if @too_large.nil?
-          @too_large = @diff.bytesize >= SIZE_LIMIT
+          @too_large = @diff.bytesize >= self.class.patch_hard_limit_bytes
         else
           @too_large
         end
@@ -168,7 +192,7 @@ module Gitlab
       def collapsed?
         return @collapsed if defined?(@collapsed)
 
-        @collapsed = !expanded && @diff.bytesize >= COLLAPSE_LIMIT
+        @collapsed = !expanded && @diff.bytesize >= self.class.patch_safe_limit_bytes
       end
 
       def collapse!
@@ -218,30 +242,6 @@ module Gitlab
         elsif collapsed?
           collapse!
         end
-      end
-
-      # If the patch surpasses any of the diff limits it calls the appropiate
-      # prune method and returns true. Otherwise returns false.
-      def prune_large_patch(patch)
-        size = 0
-
-        patch.each_hunk do |hunk|
-          hunk.each_line do |line|
-            size += line.content.bytesize
-
-            if size >= SIZE_LIMIT
-              too_large!
-              return true # rubocop:disable Cop/AvoidReturnFromBlocks
-            end
-          end
-        end
-
-        if !expanded && size >= COLLAPSE_LIMIT
-          collapse!
-          return true
-        end
-
-        false
       end
     end
   end

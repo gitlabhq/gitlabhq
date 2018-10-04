@@ -12,7 +12,6 @@ module Projects
       begin
         remote_mirror.ensure_remote!
         repository.fetch_remote(remote_mirror.remote_name, no_tags: true)
-        project.update_root_ref(remote_mirror.remote_name)
 
         opts = {}
         if remote_mirror.only_protected_branches?

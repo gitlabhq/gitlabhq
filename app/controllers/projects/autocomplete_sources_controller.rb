@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::AutocompleteSourcesController < Projects::ApplicationController
   before_action :load_autocomplete_service, except: [:members]
 

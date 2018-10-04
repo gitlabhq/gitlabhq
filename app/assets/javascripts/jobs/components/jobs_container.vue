@@ -1,4 +1,5 @@
 <script>
+  import _ from 'underscore';
   import CiIcon from '~/vue_shared/components/ci_icon.vue';
   import Icon from '~/vue_shared/components/icon.vue';
   import tooltip from '~/vue_shared/directives/tooltip';
@@ -16,26 +17,39 @@
         type: Array,
         required: true,
       },
+      jobId: {
+        type: Number,
+        required: true,
+      },
+    },
+    methods: {
+      isJobActive(currentJobId) {
+        return this.jobId === currentJobId;
+      },
+      tooltipText(job) {
+        return `${_.escape(job.name)} - ${job.status.tooltip}`;
+      },
     },
   };
 </script>
 <template>
-  <div class="builds-container">
+  <div class="js-jobs-container builds-container">
     <div
+      v-for="job in jobs"
+      :key="job.id"
       class="build-job"
+      :class="{ retried: job.retried, active: isJobActive(job.id) }"
     >
       <a
         v-tooltip
-        v-for="job in jobs"
-        :key="job.id"
-        :href="job.path"
-        :title="job.tooltip"
-        :class="{ active: job.active, retried: job.retried }"
+        :href="job.status.details_path"
+        :title="tooltipText(job)"
+        data-container="body"
       >
         <icon
-          v-if="job.active"
+          v-if="isJobActive(job.id)"
           name="arrow-right"
-          class="js-arrow-right"
+          class="js-arrow-right icon-arrow-right"
         />
 
         <ci-icon :status="job.status" />

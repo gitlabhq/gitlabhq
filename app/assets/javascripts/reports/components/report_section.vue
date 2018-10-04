@@ -139,7 +139,7 @@ export default {
   <section class="media-section">
     <div class="media">
       <status-icon :status="statusIconName" />
-      <div class="media-body space-children d-flex flex-align-self-center">
+      <div class="media-body d-flex flex-align-self-center">
         <span class="js-code-text code-text">
           {{ headerText }}
 

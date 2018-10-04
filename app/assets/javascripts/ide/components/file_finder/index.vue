@@ -174,8 +174,8 @@ export default {
       <div class="dropdown-input">
         <input
           ref="searchInput"
-          :placeholder="__('Search files')"
           v-model="searchText"
+          :placeholder="__('Search files')"
           type="search"
           class="dropdown-input-field"
           autocomplete="off"

@@ -20,11 +20,5 @@ describe UserPreference do
 
       expect(user_preference.reload.issue_notes_filter).to eq(only_comments)
     end
-
-    it 'expires notes polling etag cache' do
-      expect(issuable).to receive(:expire_note_etag_cache)
-
-      user_preference.set_notes_filter(only_comments, issuable)
-    end
   end
 end

@@ -35,11 +35,15 @@ module Gitlab
         request_headers = env_http_headers(env)
         status, headers, body = @app.call(env)
 
+        full_body = ''
+        body.each { |b| full_body << b }
+
         request = OpenStruct.new(
           url: url,
           status_code: status,
           request_headers: request_headers,
-          response_headers: headers
+          response_headers: headers,
+          body: full_body
         )
         log_request request
 

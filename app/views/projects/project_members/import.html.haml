@@ -11,5 +11,5 @@
     .col-sm-10= select_tag(:source_project_id, options_from_collection_for_select(@projects, :id, :name_with_namespace), prompt: "Select project", class: "select2 lg", required: true)
 
   .form-actions
-    = button_tag 'Import project members', class: "btn btn-create"
+    = button_tag 'Import project members', class: "btn btn-success"
     = link_to "Cancel", project_project_members_path(@project), class: "btn btn-cancel"

@@ -389,9 +389,8 @@
   .btn {
     text-overflow: ellipsis;
 
-    .fa {
-      width: 15px;
-      line-height: $line-height-base;
+    svg {
+      margin-right: $gl-padding-8;
     }
 
     .dropdown-label-box {

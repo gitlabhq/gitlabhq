@@ -10,7 +10,7 @@
   .row
     .form-group.project-name.col-sm-12
       = label_tag :name, _('Project name'), class: 'label-bold'
-      = text_field_tag :name, @name, placeholder: "My awesome project", class: "js-project-name form-control input-lg", autofocus: true, required: true
+      = text_field_tag :name, @name, placeholder: "My awesome project", class: "js-project-name form-control input-lg", autofocus: true
     .form-group.col-12.col-sm-6
       = label_tag :namespace_id, _('Project URL'), class: 'label-bold'
       .form-group
@@ -41,5 +41,5 @@
         = file_field_tag :file, class: ''
   .row
     .form-actions.col-sm-12
-      = submit_tag _('Import project'), class: 'btn btn-create'
+      = submit_tag _('Import project'), class: 'btn btn-success'
       = link_to _('Cancel'), new_project_path, class: 'btn btn-cancel'

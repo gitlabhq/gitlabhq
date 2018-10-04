@@ -110,7 +110,7 @@ module Gitlab
           repository: @gitaly_repo,
           page_path: encode_binary(page_path),
           page: options[:page] || 1,
-          per_page: options[:per_page] || Gollum::Page.per_page
+          per_page: options[:per_page] || Gitlab::Git::Wiki::DEFAULT_PAGINATION
         )
 
         stream = GitalyClient.call(@repository.storage, :wiki_service, :wiki_get_page_versions, request, timeout: GitalyClient.medium_timeout)

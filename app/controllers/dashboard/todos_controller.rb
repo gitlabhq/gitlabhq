@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Dashboard::TodosController < Dashboard::ApplicationController
   include ActionView::Helpers::NumberHelper
 

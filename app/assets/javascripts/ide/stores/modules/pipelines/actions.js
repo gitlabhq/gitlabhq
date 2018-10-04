@@ -113,7 +113,7 @@ export const toggleStageCollapsed = ({ commit }, stageId) =>
 
 export const setDetailJob = ({ commit, dispatch }, job) => {
   commit(types.SET_DETAIL_JOB, job);
-  dispatch('setRightPane', job ? rightSidebarViews.jobsDetail : rightSidebarViews.pipelines, {
+  dispatch('rightPane/open', job ? rightSidebarViews.jobsDetail : rightSidebarViews.pipelines, {
     root: true,
   });
 };

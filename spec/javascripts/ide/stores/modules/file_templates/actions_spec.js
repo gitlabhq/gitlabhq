@@ -69,11 +69,17 @@ describe('IDE file templates actions', () => {
 
   describe('fetchTemplateTypes', () => {
     describe('success', () => {
+      let nextPage;
+
       beforeEach(() => {
-        mock.onGet(/api\/(.*)\/templates\/licenses/).replyOnce(200, [
-          {
-            name: 'MIT',
-          },
+        mock.onGet(/api\/(.*)\/templates\/licenses/).replyOnce(() => [
+          200,
+          [
+            {
+              name: 'MIT',
+            },
+          ],
+          { 'X-NEXT-PAGE': nextPage },
         ]);
       });
 
@@ -111,6 +117,38 @@ describe('IDE file templates actions', () => {
                   name: 'MIT',
                 },
               ],
+            },
+          ],
+          done,
+        );
+      });
+
+      it('dispatches actions for next page', done => {
+        nextPage = '2';
+        state.selectedTemplateType = {
+          key: 'licenses',
+        };
+
+        testAction(
+          actions.fetchTemplateTypes,
+          null,
+          state,
+          [],
+          [
+            {
+              type: 'requestTemplateTypes',
+            },
+            {
+              type: 'receiveTemplateTypesSuccess',
+              payload: [
+                {
+                  name: 'MIT',
+                },
+              ],
+            },
+            {
+              type: 'fetchTemplateTypes',
+              payload: 2,
             },
           ],
           done,

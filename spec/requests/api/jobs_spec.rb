@@ -721,7 +721,7 @@ describe API::Jobs do
         expect(job.trace.exist?).to be_falsy
         expect(job.artifacts_file.exists?).to be_falsy
         expect(job.artifacts_metadata.exists?).to be_falsy
-        expect(job.has_test_reports?).to be_falsy
+        expect(job.has_job_artifacts?).to be_falsy
       end
 
       it 'updates job' do

@@ -67,29 +67,29 @@ export default {
     </span>
     <div class="label-container">
       <span
-        v-tooltip
         v-if="pipeline.flags.latest"
+        v-tooltip
         class="js-pipeline-url-latest badge badge-success"
         title="Latest pipeline for this branch">
         latest
       </span>
       <span
-        v-tooltip
         v-if="pipeline.flags.yaml_errors"
+        v-tooltip
         :title="pipeline.yaml_errors"
         class="js-pipeline-url-yaml badge badge-danger">
         yaml invalid
       </span>
       <span
-        v-tooltip
         v-if="pipeline.flags.failure_reason"
+        v-tooltip
         :title="pipeline.failure_reason"
         class="js-pipeline-url-failure badge badge-danger">
         error
       </span>
       <a
-        v-popover="popoverOptions"
         v-if="pipeline.flags.auto_devops"
+        v-popover="popoverOptions"
         tabindex="0"
         class="js-pipeline-url-autodevops badge badge-info autodevops-badge"
         role="button">

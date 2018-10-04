@@ -245,7 +245,7 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
         220 gitlab.example.com ESMTP Postfix (Ubuntu)
         ```
 
-        If you get a `Connection refused` error instead, make sure your firewall is setup to allow inbound traffic on port 25.
+        If you get a `Connection refused` error instead, make sure your firewall is set up to allow inbound traffic on port 25.
 
     1. Send the `incoming` user a dummy email to test SMTP, by entering the following into the SMTP prompt:
 

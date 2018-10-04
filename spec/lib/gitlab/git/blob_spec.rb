@@ -4,6 +4,9 @@ require "spec_helper"
 
 describe Gitlab::Git::Blob, :seed_helper do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
+  let(:rugged) do
+    Rugged::Repository.new(File.join(TestEnv.repos_path, TEST_REPO_PATH))
+  end
 
   describe 'initialize' do
     let(:blob) { Gitlab::Git::Blob.new(name: 'test') }
@@ -139,9 +142,7 @@ describe Gitlab::Git::Blob, :seed_helper do
       it 'limits the size of a large file' do
         blob_size = Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE + 1
         buffer = Array.new(blob_size, 0)
-        rugged_blob = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          Rugged::Blob.from_buffer(repository.rugged, buffer.join(''))
-        end
+        rugged_blob = Rugged::Blob.from_buffer(rugged, buffer.join(''))
         blob = Gitlab::Git::Blob.raw(repository, rugged_blob)
 
         expect(blob.size).to eq(blob_size)
@@ -156,9 +157,7 @@ describe Gitlab::Git::Blob, :seed_helper do
 
     context 'when sha references a tree' do
       it 'returns nil' do
-        tree = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          repository.rugged.rev_parse('master^{tree}')
-        end
+        tree = rugged.rev_parse('master^{tree}')
 
         blob = Gitlab::Git::Blob.raw(repository, tree.oid)
 
@@ -262,11 +261,7 @@ describe Gitlab::Git::Blob, :seed_helper do
   end
 
   describe '.batch_lfs_pointers' do
-    let(:tree_object) do
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        repository.rugged.rev_parse('master^{tree}')
-      end
-    end
+    let(:tree_object) { rugged.rev_parse('master^{tree}') }
 
     let(:non_lfs_blob) do
       Gitlab::Git::Blob.find(

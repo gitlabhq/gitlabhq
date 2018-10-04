@@ -155,9 +155,9 @@ export default {
 <template>
   <div class="dropdown">
     <button
-      v-tooltip
       id="stageDropdown"
       ref="dropdown"
+      v-tooltip
       :class="triggerButtonClass"
       :title="stage.title"
       class="mini-pipeline-graph-dropdown-toggle js-builds-dropdown-button"

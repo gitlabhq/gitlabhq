@@ -1,6 +1,6 @@
 import CommitsList from '~/commits';
 import GpgBadges from '~/gpg_badges';
-import ShortcutsNavigation from '~/shortcuts_navigation';
+import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 
 document.addEventListener('DOMContentLoaded', () => {
   new CommitsList(document.querySelector('.js-project-commits-show').dataset.commitsLimit); // eslint-disable-line no-new

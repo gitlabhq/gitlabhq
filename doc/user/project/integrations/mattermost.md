@@ -38,7 +38,7 @@ At the end, fill in your Mattermost details:
 
 | Field | Description |
 | ----- | ----------- |
-| **Webhook**  | The incoming webhook URL which you have to setup on Mattermost, it will be something like: http://mattermost.example/hooks/5xo… |
+| **Webhook**  | The incoming webhook URL which you have to set up on Mattermost, it will be something like: http://mattermost.example/hooks/5xo… |
 | **Username** | Optional username which can be on messages sent to Mattermost. Fill this in if you want to change the username of the bot. |
 | **Notify only broken pipelines** | If you choose to enable the **Pipeline** event and you want to be only notified about failed pipelines. |
 

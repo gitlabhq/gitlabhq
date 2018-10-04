@@ -188,7 +188,7 @@ used for time of the job. The configuration of this feature is covered in
 
 ## `before_script` and `after_script`
 
-> Introduced in GitLab 8.7 and requires Gitlab Runner v1.2
+> Introduced in GitLab 8.7 and requires GitLab Runner v1.2
 
 `before_script` is used to define the command that should be run before all
 jobs, including deploy jobs, but after the restoration of [artifacts](#artifacts).
@@ -492,6 +492,7 @@ osx job:
 
 `allow_failure` is used when you want to allow a job to fail without impacting
 the rest of the CI suite. Failed jobs don't contribute to the commit status.
+The default value is `false`.
 
 When enabled and the job fails, the pipeline will be successful/green for all
 intents and purposes, but a "CI build passed with warnings" message  will be

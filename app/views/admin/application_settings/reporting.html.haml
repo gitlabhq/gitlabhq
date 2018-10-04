@@ -1,0 +1,36 @@
+- breadcrumb_title _("Reporting")
+- page_title _("Reporting")
+- @content_class = "limit-container-width" unless fluid_layout
+
+%section.settings.as-spam.no-animate#js-spam-settings{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4
+      = _('Spam and Anti-bot Protection')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p
+      = _('Enable reCAPTCHA or Akismet and set IP limits.')
+  .settings-content
+    = render 'spam'
+
+%section.settings.as-abuse.no-animate#js-abuse-settings{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4
+      = _('Abuse reports')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p
+      = _('Set notification email for abuse reports.')
+  .settings-content
+    = render 'abuse'
+
+%section.settings.as-logging.no-animate#js-logging-settings{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4
+      = _('Error Reporting and Logging')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p
+      = _('Enable Sentry for error reporting and logging.')
+  .settings-content
+    = render 'logging'

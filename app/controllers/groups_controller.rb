@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GroupsController < Groups::ApplicationController
   include API::Helpers::RelatedResourcesHelpers
   include IssuesAction

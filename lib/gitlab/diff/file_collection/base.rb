@@ -2,23 +2,27 @@ module Gitlab
   module Diff
     module FileCollection
       class Base
+        include Gitlab::Utils::StrongMemoize
+
         attr_reader :project, :diff_options, :diff_refs, :fallback_diff_refs, :diffable
 
         delegate :count, :size, :real_size, to: :diff_files
 
         def self.default_options
-          ::Commit.max_diff_options.merge(ignore_whitespace_change: false, expanded: false)
+          ::Commit.max_diff_options.merge(ignore_whitespace_change: false, expanded: false, include_stats: true)
         end
 
         def initialize(diffable, project:, diff_options: nil, diff_refs: nil, fallback_diff_refs: nil)
           diff_options = self.class.default_options.merge(diff_options || {})
 
           @diffable = diffable
+          @include_stats = diff_options.delete(:include_stats)
           @diffs = diffable.raw_diffs(diff_options)
           @project = project
           @diff_options = diff_options
           @diff_refs = diff_refs
           @fallback_diff_refs = fallback_diff_refs
+          @repository = project.repository
         end
 
         def diff_files
@@ -43,10 +47,27 @@ module Gitlab
 
         private
 
+        def diff_stats_collection
+          strong_memoize(:diff_stats) do
+            # There are scenarios where we don't need to request Diff Stats,
+            # when caching for instance.
+            next unless @include_stats
+            next unless diff_refs
+
+            @repository.diff_stats(diff_refs.base_sha, diff_refs.head_sha)
+          end
+        end
+
         def decorate_diff!(diff)
           return diff if diff.is_a?(File)
 
-          Gitlab::Diff::File.new(diff, repository: project.repository, diff_refs: diff_refs, fallback_diff_refs: fallback_diff_refs)
+          stats = diff_stats_collection&.find_by_path(diff.new_path)
+
+          Gitlab::Diff::File.new(diff,
+                                 repository: project.repository,
+                                 diff_refs: diff_refs,
+                                 fallback_diff_refs: fallback_diff_refs,
+                                 stats: stats)
         end
       end
     end

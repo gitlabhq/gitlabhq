@@ -52,7 +52,7 @@ describe Projects::NotesController do
       let!(:comment) { create(:note, noteable: issue, project: project) }
       let!(:system_note) { create(:note, noteable: issue, project: project, system: true) }
 
-      it 'filters system notes' do
+      it 'filters system notes by comments' do
         user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], issue)
 
         get :index, request_params.merge(use_notes_filter: true)
@@ -61,7 +61,7 @@ describe Projects::NotesController do
         expect(notes_json.first[:id].to_i).to eq(comment.id)
       end
 
-      it 'filters system notes' do
+      it 'returns all notes' do
         user.set_notes_filter(UserPreference::NOTES_FILTERS[:all_notes], issue)
 
         get :index, request_params.merge(use_notes_filter: true)
@@ -228,6 +228,14 @@ describe Projects::NotesController do
       post :create, request_params.merge(format: :json)
 
       expect(response).to have_gitlab_http_status(200)
+    end
+
+    it 'returns discussion JSON when the return_discussion param is set' do
+      post :create, request_params.merge(format: :json, return_discussion: 'true')
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response).to have_key 'discussion'
+      expect(json_response['discussion']['notes'][0]['note']).to eq(request_params[:note][:note])
     end
 
     context 'when merge_request_diff_head_sha present' do

@@ -315,29 +315,29 @@ describe('IDE pipelines actions', () => {
         'job',
         mockedState,
         [{ type: types.SET_DETAIL_JOB, payload: 'job' }],
-        [{ type: 'setRightPane', payload: 'jobs-detail' }],
+        [{ type: 'rightPane/open', payload: rightSidebarViews.jobsDetail }],
         done,
       );
     });
 
-    it('dispatches setRightPane as pipeline when job is null', done => {
+    it('dispatches rightPane/open as pipeline when job is null', done => {
       testAction(
         setDetailJob,
         null,
         mockedState,
         [{ type: types.SET_DETAIL_JOB, payload: null }],
-        [{ type: 'setRightPane', payload: rightSidebarViews.pipelines }],
+        [{ type: 'rightPane/open', payload: rightSidebarViews.pipelines }],
         done,
       );
     });
 
-    it('dispatches setRightPane as job', done => {
+    it('dispatches rightPane/open as job', done => {
       testAction(
         setDetailJob,
         'job',
         mockedState,
         [{ type: types.SET_DETAIL_JOB, payload: 'job' }],
-        [{ type: 'setRightPane', payload: rightSidebarViews.jobsDetail }],
+        [{ type: 'rightPane/open', payload: rightSidebarViews.jobsDetail }],
         done,
       );
     });

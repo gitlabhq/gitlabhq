@@ -1,0 +1,5 @@
+---
+title: Encrypt webhook tokens and URLs in the database
+merge_request: 21645
+author:
+type: security
