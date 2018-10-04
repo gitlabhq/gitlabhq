@@ -109,7 +109,7 @@ module Ci
         transition any - [:manual] => :manual
       end
 
-      event :schedule do
+      event :delay do
         transition any - [:scheduled] => :scheduled
       end
 
@@ -549,7 +549,7 @@ module Ci
         when 'canceled' then cancel
         when 'skipped' then skip
         when 'manual' then block
-        when 'scheduled' then schedule
+        when 'scheduled' then delay
         else
           raise HasStatus::UnknownStatusError,
                 "Unknown status `#{latest_builds_status}`"
