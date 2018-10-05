@@ -348,7 +348,7 @@
     background-color: $gl-text-color-tertiary;
     font-size: $gl-font-size-xs;
     cursor: help;
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
     margin-left: -1 * $gl-padding-4;
     border: 0;
     padding: 0 $gl-padding-4;
@@ -698,6 +698,6 @@
   display: inline-block;
 }
 
-.board-issue-path[aria-describedby*="tooltip"] {
+.board-issue-path.js-show-tooltip {
   cursor: help;
 }
