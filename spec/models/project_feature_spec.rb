@@ -17,7 +17,7 @@ describe ProjectFeature do
   end
 
   describe '#feature_available?' do
-    let(:features) { %w(issues wiki builds merge_requests snippets repository) }
+    let(:features) { %w(issues wiki builds merge_requests snippets repository pages) }
 
     context 'when features are disabled' do
       it "returns false" do
@@ -107,6 +107,19 @@ describe ProjectFeature do
       features.each do |feature|
         field = "#{feature}_access_level".to_sym
         project_feature.update_attribute(field, ProjectFeature::ENABLED)
+        expect(project_feature.valid?).to be_falsy
+      end
+    end
+  end
+
+  context 'public features' do
+    it "does not allow public for other than pages" do
+      features = %w(issues wiki builds merge_requests snippets repository)
+      project_feature = project.project_feature
+
+      features.each do |feature|
+        field = "#{feature}_access_level".to_sym
+        project_feature.update_attribute(field, ProjectFeature::PUBLIC)
         expect(project_feature.valid?).to be_falsy
       end
     end

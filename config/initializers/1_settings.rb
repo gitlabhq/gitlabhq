@@ -200,6 +200,7 @@ Settings.registry['path']            = Settings.absolute(Settings.registry['path
 #
 Settings['pages'] ||= Settingslogic.new({})
 Settings.pages['enabled']           = false if Settings.pages['enabled'].nil?
+Settings.pages['access_control']    = false if Settings.pages['access_control'].nil?
 Settings.pages['path']              = Settings.absolute(Settings.pages['path'] || File.join(Settings.shared['path'], "pages"))
 Settings.pages['https']             = false if Settings.pages['https'].nil?
 Settings.pages['host']              ||= "example.com"
