@@ -95,7 +95,7 @@ GET /projects/:id/templates/:type/:key
 | `project`  | string | no       | The project name to use when expanding placeholders in the template. Only affects licenses |
 | `fullname` | string | no       | The full name of the copyright holder to use when expanding placeholders in the template. Only affects licenses |
 
-Example response (dockerfile):
+Example response (Dockerfile):
 
 
 ```json

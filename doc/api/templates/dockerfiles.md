@@ -1,8 +1,8 @@
 # Dockerfiles API
 
-## List dockerfile templates
+## List Dockerfile templates
 
-Get all dockerfile templates.
+Get all Dockerfile templates.
 
 ```
 GET /templates/dockerfiles
@@ -87,9 +87,9 @@ Example response:
 ]
 ```
 
-## Single dockerfile template
+## Single Dockerfile template
 
-Get a single dockerfile template.
+Get a single Dockerfile template.
 
 ```
 GET /templates/dockerfiles/:key
@@ -97,7 +97,7 @@ GET /templates/dockerfiles/:key
 
 | Attribute  | Type   | Required | Description |
 | ---------- | ------ | -------- | ----------- |
-| `key`      | string | yes      | The key of the dockerfile template |
+| `key`      | string | yes      | The key of the Dockerfile template |
 
 ```bash
 curl https://gitlab.example.com/api/v4/templates/dockerfiles/Binary
