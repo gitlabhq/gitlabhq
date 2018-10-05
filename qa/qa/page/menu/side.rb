@@ -40,6 +40,14 @@ module QA
           end
         end
 
+        def click_operations_environments
+          hover_operations do
+            within_submenu do
+              click_link('Environments')
+            end
+          end
+        end
+
         def click_operations_kubernetes
           hover_operations do
             within_submenu do
