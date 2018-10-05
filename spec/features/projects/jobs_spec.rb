@@ -567,7 +567,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         visit project_job_path(project, job)
       end
 
-      it 'shows delayed job' do
+      it 'shows delayed job', :js do
         expect(page).to have_content(job.detailed_status(user).illustration[:title])
         expect(page).to have_content('This is a scheduled to run in')
         expect(page).to have_content("This job will automatically run after it's timer finishes.")
