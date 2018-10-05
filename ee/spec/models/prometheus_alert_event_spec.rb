@@ -13,7 +13,7 @@ describe PrometheusAlertEvent do
   describe 'validations' do
     it { is_expected.to be_valid }
 
-    it { is_expected.to validate_presence_of(:prometheus_alert) }
+    it { is_expected.to validate_presence_of(:prometheus_alert).with_message(Gitlab.rails5? ? :required : :blank ) }
     it { is_expected.to validate_uniqueness_of(:payload_key).scoped_to(:prometheus_alert_id) }
     it { is_expected.to validate_presence_of(:started_at) }
 
