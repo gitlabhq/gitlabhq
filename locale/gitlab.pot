@@ -1459,7 +1459,13 @@ msgstr ""
 msgid "CiStatusLabel|pending"
 msgstr ""
 
+msgid "CiStatusLabel|scheduled"
+msgstr ""
+
 msgid "CiStatusLabel|skipped"
+msgstr ""
+
+msgid "CiStatusLabel|waiting for delayed job"
 msgstr ""
 
 msgid "CiStatusLabel|waiting for manual action"
@@ -1484,6 +1490,9 @@ msgid "CiStatusText|passed"
 msgstr ""
 
 msgid "CiStatusText|pending"
+msgstr ""
+
+msgid "CiStatusText|scheduled"
 msgstr ""
 
 msgid "CiStatusText|skipped"
@@ -2493,6 +2502,21 @@ msgid "Default: Map a FogBugz account ID to a full name"
 msgstr ""
 
 msgid "Define a custom pattern with cron syntax"
+msgstr ""
+
+msgid "DelayedJobs|Are you sure you want to run %{jobName} immediately? This job will run automatically after it's timer finishes."
+msgstr ""
+
+msgid "DelayedJobs|Are you sure you want to run %{job_name} immediately? This job will run automatically after it's timer finishes."
+msgstr ""
+
+msgid "DelayedJobs|Start now"
+msgstr ""
+
+msgid "DelayedJobs|Unschedule"
+msgstr ""
+
+msgid "DelayedJobs|scheduled"
 msgstr ""
 
 msgid "Delete"
@@ -7725,6 +7749,9 @@ msgstr ""
 msgid "This is a confidential issue."
 msgstr ""
 
+msgid "This is a scheduled to run in "
+msgstr ""
+
 msgid "This is the author's first Merge Request to this project."
 msgstr ""
 
@@ -7783,6 +7810,9 @@ msgid "This job is the most recent deployment to %{link}."
 msgstr ""
 
 msgid "This job requires a manual action"
+msgstr ""
+
+msgid "This job will automatically run after it's timer finishes. Often they are used for incremental roll-out deploys to production environments. When unscheduled it converts into a manual action."
 msgstr ""
 
 msgid "This means you can not push code until you create an empty repository or import existing one."
@@ -8198,6 +8228,9 @@ msgid "Unlocked"
 msgstr ""
 
 msgid "Unresolve discussion"
+msgstr ""
+
+msgid "Unschedule job"
 msgstr ""
 
 msgid "Unstage"

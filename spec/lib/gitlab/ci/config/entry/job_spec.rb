@@ -39,6 +39,14 @@ describe Gitlab::Ci::Config::Entry::Job do
           expect(entry.errors).to include "job name can't be blank"
         end
       end
+
+      context 'when delayed job' do
+        context 'when start_in is specified' do
+          let(:config) { { script: 'echo', when: 'delayed', start_in: '1 day' } }
+
+          it { expect(entry).to be_valid }
+        end
+      end
     end
 
     context 'when entry value is not correct' do
@@ -127,6 +135,52 @@ describe Gitlab::Ci::Config::Entry::Job do
             expect(entry).not_to be_valid
             expect(entry.errors).to include 'job retry must be less than or equal to 2'
           end
+        end
+      end
+
+      context 'when delayed job' do
+        context 'when start_in is specified' do
+          let(:config) { { script: 'echo', when: 'delayed', start_in: '1 day' } }
+
+          it 'returns error about invalid type' do
+            expect(entry).to be_valid
+          end
+        end
+
+        context 'when start_in is empty' do
+          let(:config) { { when: 'delayed', start_in: nil } }
+
+          it 'returns error about invalid type' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include 'job start in should be a duration'
+          end
+        end
+
+        context 'when start_in is not formatted as a duration' do
+          let(:config) { { when: 'delayed', start_in: 'test' } }
+
+          it 'returns error about invalid type' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include 'job start in should be a duration'
+          end
+        end
+
+        context 'when start_in is longer than one day' do
+          let(:config) { { when: 'delayed', start_in: '2 days' } }
+
+          it 'returns error about exceeding the limit' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include 'job start in should not exceed the limit'
+          end
+        end
+      end
+
+      context 'when start_in specified without delayed specification' do
+        let(:config) { { start_in: '1 day' } }
+
+        it 'returns error about invalid type' do
+          expect(entry).not_to be_valid
+          expect(entry.errors).to include 'job start in must be blank'
         end
       end
     end
@@ -234,6 +288,24 @@ describe Gitlab::Ci::Config::Entry::Job do
 
       it 'is not a manual action' do
         expect(entry).not_to be_manual_action
+      end
+    end
+  end
+
+  describe '#delayed?' do
+    context 'when job is a delayed' do
+      let(:config) { { script: 'deploy', when: 'delayed' } }
+
+      it 'is a delayed' do
+        expect(entry).to be_delayed
+      end
+    end
+
+    context 'when job is not a delayed' do
+      let(:config) { { script: 'deploy' } }
+
+      it 'is not a delayed' do
+        expect(entry).not_to be_delayed
       end
     end
   end
