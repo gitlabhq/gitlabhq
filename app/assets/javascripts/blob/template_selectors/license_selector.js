@@ -1,5 +1,3 @@
-import Api from '../../api';
-
 import FileTemplateSelector from '../file_template_selector';
 
 export default class BlobLicenseSelector extends FileTemplateSelector {
@@ -9,7 +7,7 @@ export default class BlobLicenseSelector extends FileTemplateSelector {
       key: 'license',
       name: 'LICENSE',
       pattern: /^(.+\/)?(licen[sc]e|copying)($|\.)/i,
-      endpoint: Api.licenseText,
+      type: 'licenses',
       dropdown: '.js-license-selector',
       wrapper: '.js-license-selector-wrap',
     };
