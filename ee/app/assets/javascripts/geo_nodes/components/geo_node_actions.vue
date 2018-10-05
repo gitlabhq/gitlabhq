@@ -2,11 +2,19 @@
   import { __, s__ } from '~/locale';
   import eventHub from '../event_hub';
   import { NODE_ACTIONS } from '../constants';
+  import Icon from '~/vue_shared/components/icon.vue';
 
   export default {
+    components: {
+      Icon,
+    },
     props: {
       node: {
         type: Object,
+        required: true,
+      },
+      nodeActionsAllowed: {
+        type: Boolean,
         required: true,
       },
       nodeEditAllowed: {
@@ -24,6 +32,9 @@
       },
       nodeToggleLabel() {
         return this.node.enabled ? __('Disable') : __('Enable');
+      },
+      isSecondaryNode() {
+        return !this.node.primary;
       },
     },
     methods: {
@@ -54,52 +65,69 @@
 <template>
   <div class="geo-node-actions">
     <div
-      v-if="nodeMissingOauth"
-      class="node-action-container"
-    >
-      <button
-        type="button"
-        class="btn btn-default btn-sm btn-node-action"
-        @click="onRepairNode"
-      >
-        {{ s__('Repair authentication') }}
-      </button>
-    </div>
-    <div
-      v-if="isToggleAllowed"
-      class="node-action-container"
-    >
-      <button
-        :class="{
-          'btn-warning': node.enabled,
-          'btn-success': !node.enabled
-        }"
-        type="button"
-        class="btn btn-sm btn-node-action"
-        @click="onToggleNode"
-      >
-        {{ nodeToggleLabel }}
-      </button>
-    </div>
-    <div
-      v-if="nodeEditAllowed"
+      v-if="isSecondaryNode"
       class="node-action-container"
     >
       <a
-        :href="node.editPath"
+        :href="node.geoProjectsUrl"
         class="btn btn-sm btn-node-action"
+        target="_blank"
       >
-        {{ __('Edit') }}
+        <icon
+          name="external-link"
+        />
+        {{ __('Open projects') }}
       </a>
     </div>
-    <div class="node-action-container">
-      <button
-        type="button"
-        class="btn btn-sm btn-node-action btn-danger"
-        @click="onRemoveNode"
+    <template v-if="nodeActionsAllowed">
+      <div
+        v-if="nodeMissingOauth"
+        class="node-action-container"
       >
-        {{ __('Remove') }}
-      </button>
-    </div>
+        <button
+          type="button"
+          class="btn btn-default btn-sm btn-node-action"
+          @click="onRepairNode"
+        >
+          {{ s__('Repair authentication') }}
+        </button>
+      </div>
+      <div
+        v-if="isToggleAllowed"
+        class="node-action-container"
+      >
+        <button
+          :class="{
+            'btn-warning': node.enabled,
+            'btn-success': !node.enabled
+          }"
+          type="button"
+          class="btn btn-sm btn-node-action"
+          @click="onToggleNode"
+        >
+          {{ nodeToggleLabel }}
+        </button>
+      </div>
+      <div
+        v-if="nodeEditAllowed"
+        class="node-action-container"
+      >
+        <a
+          :href="node.editPath"
+          class="btn btn-sm btn-node-action"
+        >
+          {{ __('Edit') }}
+        </a>
+      </div>
+      <div class="node-action-container">
+        <button
+          type="button"
+          class="btn btn-sm btn-node-action btn-danger"
+          @click="onRemoveNode"
+        >
+          {{ __('Remove') }}
+        </button>
+      </div>
+    </template>
   </div>
 </template>

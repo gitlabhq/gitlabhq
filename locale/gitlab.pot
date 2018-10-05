@@ -5446,6 +5446,9 @@ msgstr ""
 msgid "Open in Xcode"
 msgstr ""
 
+msgid "Open projects"
+msgstr ""
+
 msgid "Open sidebar"
 msgstr ""
 

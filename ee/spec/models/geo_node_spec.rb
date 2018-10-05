@@ -328,6 +328,18 @@ describe GeoNode, type: :model do
     end
   end
 
+  describe '#geo_projects_url' do
+    it 'returns the Geo Projects url for the specific node' do
+      expected_url = 'https://localhost:3000/gitlab/admin/geo/projects'
+
+      expect(new_node.geo_projects_url).to eq(expected_url)
+    end
+
+    it 'returns nil when node is a primary one' do
+      expect(primary_node.geo_projects_url).to be_nil
+    end
+  end
+
   describe '#missing_oauth_application?' do
     context 'on a primary node' do
       it 'returns false' do

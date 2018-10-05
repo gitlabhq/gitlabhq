@@ -153,6 +153,12 @@ class GeoNode < ActiveRecord::Base
     Gitlab::Routing.url_helpers.oauth_geo_logout_url(url_helper_args.merge(state: state))
   end
 
+  def geo_projects_url
+    return unless self.secondary?
+
+    Gitlab::Routing.url_helpers.admin_geo_projects_url(url_helper_args)
+  end
+
   def missing_oauth_application?
     self.primary? ? false : !oauth_application.present?
   end
