@@ -388,7 +388,7 @@ except master.
 >
 > `variables` policy introduced in 10.7
 >
-> `changes` policy [introduced in 11.4][changes-policy-issue]
+> `changes` policy [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/19232) in 11.4
 
 CAUTION: **Warning:**
 This an _alpha_ feature, and it it subject to change at any time without
@@ -482,7 +482,7 @@ the section below.
 #### Using `changes` with new branches and tags
 
 If you are pushing a **new** branch or a **new** tag to GitLab, the policy
-always evaluates to truth and GitLab will create a job. This feature is not
+always evaluates to true and GitLab will create a job. This feature is not
 connected with merge requests yet, and because GitLab is creating pipelines
 before an user can create a merge request we don't know a target branch at
 this point.
@@ -1987,4 +1987,3 @@ CI with various languages.
 [ce-12909]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12909
 [schedules]: ../../user/project/pipelines/schedules.md
 [variables-expressions]: ../variables/README.md#variables-expressions
-[changes-policy-issue]: https://gitlab.com/gitlab-org/gitlab-ce/issues/19232
