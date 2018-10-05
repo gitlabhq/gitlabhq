@@ -2,11 +2,12 @@
 import $ from 'jquery';
 import { sprintf, __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import IssueSummaryItems from './issue_summary_items.vue';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import eventHub from '../eventhub';
 import tooltip from '../../vue_shared/directives/tooltip';
-import issuePathTooltip from '../directives/issue_path_tooltip';
+
 
 const Store = gl.issueBoards.BoardsStore;
 
@@ -15,10 +16,10 @@ export default {
     Icon,
     UserAvatarLink,
     IssueSummaryItems,
+    TooltipOnTruncate,
   },
   directives: {
-    tooltip,
-    issuePathTooltip
+    tooltip
   },
   props: {
     issue: {
@@ -224,17 +225,12 @@ export default {
           v-if="issue.referencePath"
           class="board-card-number append-right-8 append-bottom-8"
         >
-          <span
+          <tooltip-on-truncate
             v-if="issueReferencePath"
-            v-tooltip
-            v-issue-path-tooltip
             :title="issueReferencePath"
+            placement="bottom"
             class="board-issue-path block-truncated bold"
-            data-container="body"
-            data-placement="bottom"
-          >
-            {{ issueReferencePath }}
-          </span>#{{ issue.iid }}
+          >{{ issueReferencePath }}</tooltip-on-truncate>#{{ issue.iid }}
         </span>
         <issue-summary-items
           :issue="issue"
