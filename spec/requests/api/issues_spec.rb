@@ -56,6 +56,7 @@ describe API::Issues do
   let!(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
 
   let(:no_milestone_title) { URI.escape(Milestone::None.title) }
+  let(:any_milestone_title) { URI.escape(Milestone::Any.title) }
 
   before(:all) do
     project.add_reporter(user)
@@ -813,6 +814,15 @@ describe API::Issues do
 
       expect_paginated_array_response(size: 1)
       expect(json_response.first['id']).to eq(confidential_issue.id)
+    end
+
+    it 'returns an array of issues with any milestone' do
+      get api("#{base_url}/issues?milestone=#{any_milestone_title}", user)
+
+      response_ids = json_response.map { |issue| issue['id'] }
+
+      expect_paginated_array_response(size: 2)
+      expect(response_ids).to contain_exactly(closed_issue.id, issue.id)
     end
 
     it 'sorts by created_at descending by default' do

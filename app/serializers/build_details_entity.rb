@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 class BuildDetailsEntity < JobEntity
+<<<<<<< HEAD
   prepend ::EE::BuildDetailEntity
 
+=======
+>>>>>>> upstream/master
   expose :coverage, :erased_at, :duration
   expose :tag_list, as: :tags
   expose :has_trace?, as: :has_trace

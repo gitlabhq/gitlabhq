@@ -48,11 +48,14 @@ export const emptyStateIllustration = state =>
 export const isJobStuck = state =>
   state.job.status.group === 'pending' &&
   (!_.isEmpty(state.job.runners) && state.job.runners.available === false);
+<<<<<<< HEAD
 
 // ee-only start
 export const shouldRenderSharedRunnerLimitWarning = state =>
   state.job.runners && state.job.runners.quota && state.job.runners.quota.used;
 // ee-only end
+=======
+>>>>>>> upstream/master
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

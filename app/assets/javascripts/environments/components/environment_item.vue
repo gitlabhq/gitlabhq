@@ -469,7 +469,9 @@ export default {
     class="gl-responsive-table-row"
     role="row">
     <div
-      class="table-section section-wrap section-15"
+      v-tooltip
+      :title="model.name"
+      class="table-section section-wrap section-15 text-truncate"
       role="gridcell"
     >
       <div
@@ -500,9 +502,7 @@ export default {
         v-if="!model.isFolder"
         class="environment-name table-mobile-content">
         <a
-          v-tooltip
           :href="environmentPath"
-          :title="model.name"
         >
           {{ model.name }}
         </a>

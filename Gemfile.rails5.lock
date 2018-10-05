@@ -329,6 +329,8 @@ GEM
       posix-spawn (~> 0.3)
     gitlab-license (1.0.0)
     gitlab-markup (1.6.4)
+    gitlab-sidekiq-fetcher (0.3.0)
+      sidekiq (~> 5)
     gitlab-styles (2.4.1)
       rubocop (~> 0.54.0)
       rubocop-gitlab-security (~> 0.1.0)
@@ -1075,6 +1077,7 @@ DEPENDENCIES
   gitlab-gollum-lib (~> 4.2)
   gitlab-license (~> 1.0)
   gitlab-markup (~> 1.6.4)
+  gitlab-sidekiq-fetcher
   gitlab-styles (~> 2.4)
   gitlab_omniauth-ldap (~> 2.0.4)
   gon (~> 6.2)

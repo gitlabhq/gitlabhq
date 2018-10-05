@@ -117,8 +117,12 @@ Parameters:
       "human_time_estimate": null,
       "human_total_time_spent": null
     },
+<<<<<<< HEAD
     "squash": false,
     "approvals_before_merge": null
+=======
+    "squash": false
+>>>>>>> upstream/master
   }
 ]
 ```
@@ -241,8 +245,12 @@ Parameters:
       "human_time_estimate": null,
       "human_total_time_spent": null
     },
+<<<<<<< HEAD
     "squash": false,
     "approvals_before_merge": null
+=======
+    "squash": false
+>>>>>>> upstream/master
   }
 ]
 ```
@@ -353,8 +361,12 @@ Parameters:
       "human_time_estimate": null,
       "human_total_time_spent": null
     },
+<<<<<<< HEAD
     "squash": false,
     "approvals_before_merge": null
+=======
+    "squash": false
+>>>>>>> upstream/master
   }
 ]
 ```
@@ -797,8 +809,12 @@ order for it to take effect:
     "head_sha": "2be7ddb704c7b6b83732fdd5b9f09d5a397b5f8f",
     "start_sha": "c380d3acebd181f13629a25d2e2acca46ffe1e00"
   },
+<<<<<<< HEAD
   "diverged_commits_count": 2,
   "approvals_before_merge": null
+=======
+  "diverged_commits_count": 2
+>>>>>>> upstream/master
 }
 ```
 
@@ -925,8 +941,12 @@ Must include at least one non-required attribute from above.
     "head_sha": "2be7ddb704c7b6b83732fdd5b9f09d5a397b5f8f",
     "start_sha": "c380d3acebd181f13629a25d2e2acca46ffe1e00"
   },
+<<<<<<< HEAD
   "diverged_commits_count": 2,
   "approvals_before_merge": null
+=======
+  "diverged_commits_count": 2
+>>>>>>> upstream/master
 }
 ```
 
@@ -1069,8 +1089,12 @@ Parameters:
     "head_sha": "2be7ddb704c7b6b83732fdd5b9f09d5a397b5f8f",
     "start_sha": "c380d3acebd181f13629a25d2e2acca46ffe1e00"
   },
+<<<<<<< HEAD
   "diverged_commits_count": 2,
   "approvals_before_merge": null
+=======
+  "diverged_commits_count": 2
+>>>>>>> upstream/master
 }
 ```
 
@@ -1185,8 +1209,12 @@ Parameters:
     "head_sha": "2be7ddb704c7b6b83732fdd5b9f09d5a397b5f8f",
     "start_sha": "c380d3acebd181f13629a25d2e2acca46ffe1e00"
   },
+<<<<<<< HEAD
   "diverged_commits_count": 2,
   "approvals_before_merge": null
+=======
+  "diverged_commits_count": 2
+>>>>>>> upstream/master
 }
 ```
 
@@ -1385,8 +1413,12 @@ Example response:
     "head_sha": "2be7ddb704c7b6b83732fdd5b9f09d5a397b5f8f",
     "start_sha": "c380d3acebd181f13629a25d2e2acca46ffe1e00"
   },
+<<<<<<< HEAD
   "diverged_commits_count": 2,
   "approvals_before_merge": null
+=======
+  "diverged_commits_count": 2
+>>>>>>> upstream/master
 }
 ```
 
@@ -1507,8 +1539,12 @@ Example response:
     "head_sha": "2be7ddb704c7b6b83732fdd5b9f09d5a397b5f8f",
     "start_sha": "c380d3acebd181f13629a25d2e2acca46ffe1e00"
   },
+<<<<<<< HEAD
   "diverged_commits_count": 2,
   "approvals_before_merge": null
+=======
+  "diverged_commits_count": 2
+>>>>>>> upstream/master
 }
 ```
 

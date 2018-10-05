@@ -2,9 +2,12 @@
   import { mapGetters, mapState } from 'vuex';
   import CiHeader from '~/vue_shared/components/header_ci_component.vue';
   import Callout from '~/vue_shared/components/callout.vue';
+<<<<<<< HEAD
   // ee-only start
   import SharedRunner from 'ee/jobs/components/shared_runner_limit_block.vue';
   // ee-only end
+=======
+>>>>>>> upstream/master
   import EmptyState from './empty_state.vue';
   import EnvironmentsBlock from './environments_block.vue';
   import ErasedBlock from './erased_block.vue';
@@ -37,7 +40,10 @@
         'jobHasStarted',
         'hasEnvironment',
         'isJobStuck',
+<<<<<<< HEAD
         'shouldRenderSharedRunnerLimitWarning',
+=======
+>>>>>>> upstream/master
         'hasTrace',
         'emptyStateIllustration',
       ]),

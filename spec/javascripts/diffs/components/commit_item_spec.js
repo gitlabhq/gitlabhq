@@ -9,6 +9,8 @@ import getDiffWithCommit from '../mock_data/diff_with_commit';
 const TEST_AUTHOR_NAME = 'test';
 const TEST_AUTHOR_EMAIL = 'test+test@gitlab.com';
 const TEST_AUTHOR_GRAVATAR = `${TEST_HOST}/avatar/test?s=36`;
+const TEST_SIGNATURE_HTML = '<a>Legit commit</a>';
+const TEST_PIPELINE_STATUS_PATH = `${TEST_HOST}/pipeline/status`;
 
 const getTitleElement = vm => vm.$el.querySelector('.commit-row-message.item-title');
 const getDescElement = vm => vm.$el.querySelector('pre.commit-row-description');
@@ -16,6 +18,7 @@ const getDescExpandElement = vm => vm.$el.querySelector('.commit-content .text-e
 const getShaElement = vm => vm.$el.querySelector('.commit-sha-group');
 const getAvatarElement = vm => vm.$el.querySelector('.user-avatar-link');
 const getCommitterElement = vm => vm.$el.querySelector('.commiter');
+const getCommitActionsElement = vm => vm.$el.querySelector('.commit-actions');
 
 describe('diffs/components/commit_widget', () => {
   const Component = Vue.extend(CommitItem);
@@ -123,6 +126,38 @@ describe('diffs/components/commit_widget', () => {
 
       expect(nameElement).toHaveAttr('href', `mailto:${TEST_AUTHOR_EMAIL}`);
       expect(nameElement).toHaveText(TEST_AUTHOR_NAME);
+    });
+  });
+
+  describe('with signature', () => {
+    beforeEach(done => {
+      vm.commit.signatureHtml = TEST_SIGNATURE_HTML;
+
+      vm.$nextTick()
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('renders signature html', () => {
+      const actionsElement = getCommitActionsElement(vm);
+
+      expect(actionsElement).toContainHtml(TEST_SIGNATURE_HTML);
+    });
+  });
+
+  describe('with pipeline status', () => {
+    beforeEach(done => {
+      vm.commit.pipelineStatusPath = TEST_PIPELINE_STATUS_PATH;
+
+      vm.$nextTick()
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('renders pipeline status', () => {
+      const actionsElement = getCommitActionsElement(vm);
+
+      expect(actionsElement).toContainElement('.ci-status-link');
     });
   });
 });

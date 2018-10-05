@@ -391,7 +391,11 @@ class ProjectPolicy < BasePolicy
     greedy_load_subject ||= !@user.persisted?
 
     if greedy_load_subject
-      project.team.members.include?(user)
+      # We want to load all the members with one query. Calling #include? on
+      # project.team.members will perform a separate query for each user, unless
+      # project.team.members was loaded before somewhere else. Calling #to_a
+      # ensures it's always loaded before checking for membership.
+      project.team.members.to_a.include?(user)
     else
       # otherwise we just make a specific query for
       # this particular user.
