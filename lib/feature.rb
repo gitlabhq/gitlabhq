@@ -72,7 +72,11 @@ class Feature
     end
 
     def flipper
-      @flipper ||= (Gitlab::SafeRequestStore[:flipper] ||= build_flipper_instance)
+      if Gitlab::SafeRequestStore.active?
+        Gitlab::SafeRequestStore[:flipper] ||= build_flipper_instance
+      else
+        @flipper ||= build_flipper_instance
+      end
     end
 
     def build_flipper_instance
