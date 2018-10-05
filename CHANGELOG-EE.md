@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 11.3.4 (2018-10-05)
+
+### Security (1 change)
+
+- Properly filter private references from system notes.
+
+
 ## 11.3.3 (2018-10-04)
 
 - No changes.
