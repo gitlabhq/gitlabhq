@@ -29,6 +29,10 @@ module Projects
       QuickActions::InterpretService.new(project, current_user).available_commands(noteable)
     end
 
+    def snippets
+      SnippetsFinder.new(current_user, project: project).execute.select([:id, :title])
+    end
+
     def labels_as_hash(target)
       super(target, project_id: project.id, include_ancestor_groups: true)
     end

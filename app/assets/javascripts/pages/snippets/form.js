@@ -11,6 +11,7 @@ export default () => {
     epics: false,
     milestones: false,
     labels: false,
+    snippets: false,
   });
   new ZenMode(); // eslint-disable-line no-new
 };

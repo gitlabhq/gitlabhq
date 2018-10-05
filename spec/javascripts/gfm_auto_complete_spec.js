@@ -103,7 +103,7 @@ describe('GfmAutoComplete', function () {
       gfmAutoCompleteCallbacks.matcher.call(context, flag, subtext)
     );
 
-    const flagsUseDefaultMatcher = ['@', '#', '!', '~', '%'];
+    const flagsUseDefaultMatcher = ['@', '#', '!', '~', '%', '$'];
     const otherFlags = ['/', ':'];
     const flags = flagsUseDefaultMatcher.concat(otherFlags);
 
