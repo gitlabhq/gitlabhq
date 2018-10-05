@@ -24,7 +24,7 @@ describe TemplateFinder do
     end
 
     with_them do
-      subject(:result) { described_class.new(type, params).execute }
+      subject(:result) { described_class.new(type, nil, params).execute }
 
       context 'specifying name' do
         let(:params) { { name: custom_name } }

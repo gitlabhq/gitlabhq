@@ -20,13 +20,14 @@ following locations:
 - [Custom Attributes](custom_attributes.md)
 - [Deployments](deployments.md)
 - [Deploy Keys](deploy_keys.md)
+- [Dockerfile templates](templates/dockerfiles.md)
 - [Environments](environments.md)
 - [Epics](epics.md) **[ULTIMATE]**
 - [Epic Issues](epic_issues.md) **[ULTIMATE]**
 - [Events](events.md)
 - [Feature flags](features.md)
 - [Geo Nodes](geo_nodes.md) **[PREMIUM]**
-- [Gitignores templates](templates/gitignores.md)
+- [Gitignore templates](templates/gitignores.md)
 - [GitLab CI Config templates](templates/gitlab_ci_ymls.md)
 - [Groups](groups.md)
 - [Group Access Requests](access_requests.md)
@@ -62,6 +63,7 @@ following locations:
 - [Project import/export](project_import_export.md)
 - [Project Members](members.md)
 - [Project Snippets](project_snippets.md)
+- [Project Templates](project_templates.md)
 - [Protected Branches](protected_branches.md)
 - [Protected Tags](protected_tags.md)
 - [Repositories](repositories.md)

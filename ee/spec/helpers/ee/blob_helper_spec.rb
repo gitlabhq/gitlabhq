@@ -20,10 +20,10 @@ describe BlobHelper do
       expect(Gitlab::Template::CustomLicenseTemplate)
         .to receive(:all)
         .with(project)
-        .and_return([OpenStruct.new(name: "name")])
+        .and_return([OpenStruct.new(key: 'name', name: 'Name')])
 
       expect(categories).to contain_exactly(:Popular, :Other, :Custom)
-      expect(custom).to contain_exactly({ name: "name", id: "name" })
+      expect(custom).to contain_exactly({ id: 'name', name: 'Name' })
       expect(popular).to be_present
       expect(other).to be_present
     end

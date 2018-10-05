@@ -54,6 +54,6 @@ describe LicenseTemplate do
   end
 
   def build_template(content)
-    described_class.new(id: 'foo', name: 'foo', category: :Other, content: content)
+    described_class.new(key: 'foo', name: 'foo', category: :Other, content: content)
   end
 end
