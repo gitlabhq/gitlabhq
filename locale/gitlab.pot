@@ -8674,12 +8674,9 @@ msgstr ""
 msgid "You do not have any subscriptions yet"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "You do not have the correct permissions to override the settings from the LDAP group sync."
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "You don't have any applications"
 msgstr ""
 
