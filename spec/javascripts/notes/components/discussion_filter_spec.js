@@ -19,11 +19,7 @@ describe('DiscussionFilter component', () => {
     const Component = Vue.extend(DiscussionFilter);
     const defaultValue = discussionFiltersMock[0].value;
 
-    store.replaceState({
-      ...store.state,
-      discussions,
-    });
-
+    store.state.discussions = discussions;
     vm = mountComponentWithStore(Component, {
       el: null,
       store,

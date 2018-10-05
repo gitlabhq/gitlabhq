@@ -11,6 +11,7 @@ import loadAwardsHandler from '../../awards_handler';
 import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
 import { isInViewport, scrollToElement } from '../../lib/utils/common_utils';
 import mrWidgetEventHub from '../../vue_merge_request_widget/event_hub';
+import { __ } from '~/locale';
 
 let eTagPoll;
 
@@ -347,7 +348,7 @@ export const filterDiscussion = ({ dispatch }, { path, filter }) => {
     .catch(() => {
       dispatch('setLoadingState', false);
       dispatch('setNotesFetchedState', true);
-      Flash('Something went wrong while fetching comments. Please try again.');
+      Flash(__('Something went wrong while fetching comments. Please try again.'));
     });
 };
 

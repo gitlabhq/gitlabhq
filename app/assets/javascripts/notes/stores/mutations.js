@@ -217,7 +217,7 @@ export default {
   },
 
   [types.SET_NOTES_LOADING_STATE](state, value) {
-    Object.assign(state, { isLoading: value });
+    state.isLoading = value;
   },
 
   [types.SET_DISCUSSION_DIFF_LINES](state, { discussionId, diffLines }) {
