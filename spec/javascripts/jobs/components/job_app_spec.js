@@ -184,7 +184,6 @@ describe('Job App ', () => {
     });
   });
 
-<<<<<<< HEAD
   // ee-only start
   describe('runners limit - ee', () => {
     describe('with used quota', () => {
@@ -218,8 +217,6 @@ describe('Job App ', () => {
 
   // ee-only end
 
-=======
->>>>>>> upstream/master
   describe('environments block', () => {
     it('renders environment block when job has environment', () => {
       store.dispatch(
