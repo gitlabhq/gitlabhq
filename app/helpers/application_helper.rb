@@ -179,6 +179,7 @@ module ApplicationHelper
       milestone_title: params[:milestone_title],
       assignee_username: params[:assignee_username],
       author_username: params[:author_username],
+      my_reaction_emoji: params[:my_reaction_emoji],
       search: params[:search],
       label_name: params[:label_name]
     }
