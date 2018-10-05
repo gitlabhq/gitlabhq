@@ -1,6 +1,8 @@
 - add_to_breadcrumbs "Projects", admin_projects_path
 - breadcrumb_title @project.full_name
 - page_title @project.full_name, "Projects"
+- @content_class = "admin-projects"
+
 %h3.page-title
   Project: #{@project.full_name}
   = link_to edit_project_path(@project), class: "btn btn-nr float-right" do
