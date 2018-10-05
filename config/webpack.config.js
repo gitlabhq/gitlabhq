@@ -106,6 +106,7 @@ module.exports = {
         loader: 'babel-loader',
         options: {
           cacheDirectory: path.join(CACHE_PATH, 'babel-loader'),
+          babelrc: true,
         },
       },
       {
