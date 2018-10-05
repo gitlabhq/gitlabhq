@@ -55,6 +55,9 @@ class ProjectFeature < ActiveRecord::Base
   default_value_for :repository_access_level,     value: ENABLED, allows_nil: false
 
   def feature_available?(feature, user)
+    # This feature might not be behind a feature flag at all, so default to true
+    return false unless ::Feature.enabled?(feature, user, default_enabled: true)
+
     get_permission(user, access_level(feature))
   end
 
