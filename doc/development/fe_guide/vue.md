@@ -127,22 +127,29 @@ for best practices while writing your Vue components and templates.
 
 ## Testing Vue Components
 
-Each Vue component has a unique output. This output is always present in the render function.
+Although we can test each method of a Vue component individually, our goal must be to test the rendered output.
+What a component renders represents the state at all times, and we should be able to change method & computed prop internals without causing tests to fail.
 
-Although we can test each method of a Vue component individually, our goal must be to test the output
-of the render/template function, which represents the state at all times.
+For testing Vue components, we use [Vue Test Utils][vue-test-utils]. To mock network requests, use [axios mock adapter](axios.md#mock-axios-response-on-tests). For general Vue unit testing notes, see the [Vue Test Docs][vue-test].
 
-Make use of the [axios mock adapter](axios.md#mock-axios-response-on-tests) to mock data returned.
 
-Here's how we would test the Todo App above:
+### Mounting Components
+
+Vue Test Utils provides the `mount` method, which returns a [Wrapper][vue-test-utils-wrapper].
+
+For complex components, using `shallowMount` stubs child components. This means tests
+can run faster, and we aren't testing with DOM structure of children.
+
+Here's how we could test an example Todo App:
 
 ```javascript
 import Vue from 'vue';
+import { mount } from '@vue/test-utils';
 import axios from '~/lib/utils/axios_utils';
 import MockAdapter from 'axios-mock-adapter';
 
 describe('Todos App', () => {
-  let vm;
+  let wrapper;
   let mock;
 
   beforeEach(() => {
@@ -152,18 +159,16 @@ describe('Todos App', () => {
     const Component = Vue.extend(component);
 
     // Mount the Component
-    vm = new Component().$mount();
+    wrapper = mount(Component);
   });
 
   afterEach(() => {
     // Reset the mock adapter
     mock.restore();
-    // Destroy the mounted component
-    vm.$destroy();
   });
 
   it('should render the loading state while the request is being made', () => {
-    expect(vm.$el.querySelector('i.fa-spin')).toBeDefined();
+    expect(wrapper.find('i.fa-spin').exists()).toBe(true);
   });
 
   it('should render todos returned by the endpoint', done => {
@@ -176,9 +181,9 @@ describe('Todos App', () => {
     ]);
 
     Vue.nextTick(() => {
-      const items = vm.$el.querySelectorAll('.js-todo-list div')
+      const items = wrapper.findAll('.js-todo-list div')
       expect(items.length).toBe(1);
-      expect(items[0].textContent).toContain('This is the text');
+      expect(items[0].text()).toContain('This is the text');
       done();
     });
   });
@@ -193,36 +198,20 @@ describe('Todos App', () => {
       return [201, {}];
     });
 
-    vm.$el.querySelector('.js-add-todo').click();
+    wrapper.find('.js-add-todo').trigger('click');
 
     // Add a new interceptor to mock the add Todo request
     Vue.nextTick(() => {
-      expect(vm.$el.querySelectorAll('.js-todo-list div').length).toBe(2);
+      expect(wrapper.findAll('.js-todo-list div').length).toBe(2);
       done();
     });
   });
 });
 ```
 
-### `mountComponent` helper
-There is a helper in `spec/javascripts/helpers/vue_mount_component_helper.js` that allows you to mount a component with the given props:
-
-```javascript
-import Vue from 'vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper'
-import component from 'component.vue'
-
-const Component = Vue.extend(component);
-const data = {prop: 'foo'};
-const vm = mountComponent(Component, data);
-```
-
-### Test the component's output
-The main return value of a Vue component is the rendered output. In order to test the component we
-need to test the rendered output. [Vue][vue-test] guide's to unit test show us exactly that:
-
-
 [vue-docs]: http://vuejs.org/guide/index.html
+[vue-test-utils]: https://vue-test-utils.vuejs.org/
+[vue-test-utils-wrapper]: https://vue-test-utils.vuejs.org/api/wrapper
 [issue-boards]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/assets/javascripts/boards
 [environments-table]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/assets/javascripts/environments
 [page_specific_javascript]: https://docs.gitlab.com/ce/development/frontend.html#page-specific-javascript
