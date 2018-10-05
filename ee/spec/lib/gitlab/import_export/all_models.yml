@@ -9,6 +9,7 @@ merge_requests:
 - approvers
 - approver_groups
 - approved_by_users
+- draft_notes
 pipelines:
 - source_pipeline
 - sourced_pipelines

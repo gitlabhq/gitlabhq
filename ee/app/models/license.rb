@@ -68,6 +68,7 @@ class License < ActiveRecord::Base
     packages
     code_owner_as_approver_suggestion
     feature_flags
+    batch_comments
   ].freeze
 
   EEU_FEATURES = EEP_FEATURES + %i[

@@ -906,6 +906,21 @@ ActiveRecord::Schema.define(version: 20181001172651) do
   add_index "deployments", ["environment_id", "iid", "project_id"], name: "index_deployments_on_environment_id_and_iid_and_project_id", using: :btree
   add_index "deployments", ["project_id", "iid"], name: "index_deployments_on_project_id_and_iid", unique: true, using: :btree
 
+  create_table "draft_notes", id: :bigserial, force: :cascade do |t|
+    t.integer "merge_request_id", null: false
+    t.integer "author_id", null: false
+    t.boolean "resolve_discussion", default: false, null: false
+    t.string "discussion_id"
+    t.text "note", null: false
+    t.text "position"
+    t.text "original_position"
+    t.text "change_position"
+  end
+
+  add_index "draft_notes", ["author_id"], name: "index_draft_notes_on_author_id", using: :btree
+  add_index "draft_notes", ["discussion_id"], name: "index_draft_notes_on_discussion_id", using: :btree
+  add_index "draft_notes", ["merge_request_id"], name: "index_draft_notes_on_merge_request_id", using: :btree
+
   create_table "emails", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "email", null: false
@@ -3160,6 +3175,8 @@ ActiveRecord::Schema.define(version: 20181001172651) do
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade
+  add_foreign_key "draft_notes", "merge_requests", on_delete: :cascade
+  add_foreign_key "draft_notes", "users", column: "author_id", on_delete: :cascade
   add_foreign_key "environments", "projects", name: "fk_d1c8c1da6a", on_delete: :cascade
   add_foreign_key "epic_issues", "epics", on_delete: :cascade
   add_foreign_key "epic_issues", "issues", on_delete: :cascade
