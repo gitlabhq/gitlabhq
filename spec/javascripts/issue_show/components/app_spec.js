@@ -281,27 +281,6 @@ describe('Issuable output', () => {
     });
   });
 
-  it('shows when a conflict has been detected', done => {
-    spyOn(window, 'Flash').and.callThrough();
-    spyOn(vm.service, 'updateIssuable').and.callFake(
-      () =>
-        new Promise((resolve, reject) => {
-          reject({ response: { status: 409, data: { errors: 'there was a conflict' } } });
-        }),
-    );
-
-    vm.updateIssuable();
-
-    setTimeout(() => {
-      expect(vm.$el.querySelector('form')).toBe(null);
-      expect(document.querySelector('.flash-container').innerText).toContain(
-        'there was a conflict',
-      );
-
-      done();
-    });
-  });
-
   it('shows error if issue description changed while editing', done => {
     const errorMessage = 'Someone else has edited the issue';
     spyOn(window, 'Flash');
