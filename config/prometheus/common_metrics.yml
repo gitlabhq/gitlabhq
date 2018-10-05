@@ -68,7 +68,7 @@
     weight: 1
     queries:
     - id: response_metrics_nginx_ingress_16_latency_pod_average
-      query_range: 'avg(nginx_ingress_controller_ingress_upstream_latency_seconds{quantile="0.5", namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"} * 1000)'
+      query_range: 'sum(rate(nginx_ingress_controller_ingress_upstream_latency_seconds_sum{namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"}[2m])) / sum(rate(nginx_ingress_controller_ingress_upstream_latency_seconds_count{namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"}[2m])) * 1000'
       label: Pod average
       unit: ms
   - title: "HTTP Error Rate"
