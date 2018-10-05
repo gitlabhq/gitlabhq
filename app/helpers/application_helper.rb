@@ -177,8 +177,8 @@ module ApplicationHelper
       state: params[:state],
       scope: params[:scope],
       milestone_title: params[:milestone_title],
-      assignee_id: params[:assignee_id],
-      author_id: params[:author_id],
+      assignee_username: params[:assignee_username],
+      author_username: params[:author_username],
       search: params[:search],
       label_name: params[:label_name]
     }
