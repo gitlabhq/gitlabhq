@@ -276,6 +276,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           member do
             get :status
             post :cancel
+            post :unschedule
             post :retry
             post :play
             post :erase
