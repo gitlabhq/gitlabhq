@@ -266,7 +266,7 @@ module EE
       if ProjectFeature::FEATURES.include?(feature)
         super
       else
-        licensed_feature_available?(feature)
+        licensed_feature_available?(feature, user)
       end
     end
 
@@ -578,7 +578,10 @@ module EE
       import_state.set_next_execution_to_now
     end
 
-    def licensed_feature_available?(feature)
+    def licensed_feature_available?(feature, user = nil)
+      # This feature might not be behind a feature flag at all, so default to true
+      return false unless ::Feature.enabled?(feature, user, default_enabled: true)
+
       available_features = strong_memoize(:licensed_feature_available) do
         Hash.new do |h, feature|
           h[feature] = load_licensed_feature_available(feature)
