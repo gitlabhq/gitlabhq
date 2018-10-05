@@ -123,7 +123,7 @@ export default {
       return `${this.rootPath}${assignee.username}`;
     },
     assigneeUrlTitle(assignee) {
-      return `<span class="bold">Assignee</span><br/>${assignee.name} <span class="text-white-50">@${
+      return `<span class="bold">Assignee</span><br/>${_.escape(assignee.name)} <span class="text-white-50">@${
         assignee.username
       }</span>`;
     },
