@@ -133,8 +133,9 @@ describe 'project routing' do
   # labels_namespace_project_autocomplete_sources_path         GET /:project_id/autocomplete_sources/labels(.:format)         projects/autocomplete_sources#labels
   # milestones_namespace_project_autocomplete_sources_path     GET /:project_id/autocomplete_sources/milestones(.:format)     projects/autocomplete_sources#milestones
   # commands_namespace_project_autocomplete_sources_path       GET /:project_id/autocomplete_sources/commands(.:format)       projects/autocomplete_sources#commands
+  # snippets_namespace_project_autocomplete_sources_path       GET /:project_id/autocomplete_sources/snippets(.:format)       projects/autocomplete_sources#snippets
   describe Projects::AutocompleteSourcesController, 'routing' do
-    [:members, :issues, :merge_requests, :labels, :milestones, :commands].each do |action|
+    [:members, :issues, :merge_requests, :labels, :milestones, :commands, :snippets].each do |action|
       it "to ##{action}" do
         expect(get("/gitlab/gitlabhq/autocomplete_sources/#{action}")).to route_to("projects/autocomplete_sources##{action}", namespace_id: 'gitlab', project_id: 'gitlabhq')
       end

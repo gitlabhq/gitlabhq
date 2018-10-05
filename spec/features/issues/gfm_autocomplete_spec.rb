@@ -5,6 +5,7 @@ describe 'GFM autocomplete', :js do
   let(:project) { create(:project) }
   let(:label) { create(:label, project: project, title: 'special+') }
   let(:issue)   { create(:issue, project: project) }
+  let!(:project_snippet) { create(:project_snippet, project: project, title: 'code snippet') }
 
   before do
     project.add_maintainer(user)
@@ -298,6 +299,16 @@ describe 'GFM autocomplete', :js do
         type(note, '/unlabel ~')
         expect_labels(shown: [backend, bug, feature_proposal])
       end
+    end
+  end
+
+  it 'shows project snippets' do
+    page.within '.timeline-content-form' do
+      find('#note-body').native.send_keys('$')
+    end
+
+    page.within '.atwho-container' do
+      expect(page).to have_content(project_snippet.title)
     end
   end
 
