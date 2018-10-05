@@ -559,6 +559,34 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
+    context 'Delayed job' do
+      let(:job) { create(:ci_build, :scheduled, pipeline: pipeline) }
+
+      before do
+        project.add_developer(user)
+        visit project_job_path(project, job)
+      end
+
+      it 'shows delayed job', :js do
+        time_diff = [0, job.scheduled_at - Time.now].max
+
+        expect(page).to have_content(job.detailed_status(user).illustration[:title])
+        expect(page).to have_content('This is a scheduled to run in')
+        expect(page).to have_content("This job will automatically run after it's timer finishes.")
+        expect(page).to have_content(Time.at(time_diff).utc.strftime("%H:%M:%S"))
+        expect(page).to have_link('Unschedule job')
+      end
+
+      it 'unschedules delayed job and shows manual action', :js do
+        click_link 'Unschedule job'
+
+        wait_for_requests
+        expect(page).to have_content('This job requires a manual action')
+        expect(page).to have_content('This job depends on a user to trigger its process. Often they are used to deploy code to production environments')
+        expect(page).to have_link('Trigger this manual action')
+      end
+    end
+
     context 'Non triggered job' do
       let(:job) { create(:ci_build, :created, pipeline: pipeline) }
 

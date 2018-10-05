@@ -15,6 +15,7 @@ class PipelineSerializer < BaseSerializer
         { triggered_by_pipeline: [:project, :user] },
         { triggered_pipelines: [:project, :user] },
         :manual_actions,
+        :scheduled_actions,
         :artifacts,
         {
           pending_builds: :project,

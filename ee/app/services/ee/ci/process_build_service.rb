@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 module EE
   module Ci
-    module EnqueueBuildService
+    module ProcessBuildService
       extend ::Gitlab::Utils::Override
 
-      override :execute
-      def execute(build)
+      override :enqueue
+      def enqueue(build)
         unless allowed_to_deploy?(build)
           return build.drop!(:protected_environment_failure)
         end

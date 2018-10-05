@@ -1,14 +1,15 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Ci::EnqueueBuildService, '#execute' do
+describe Ci::ProcessBuildService, '#execute' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:environment) { create(:environment, project: project, name: 'production') }
   let(:protected_environment) { create(:protected_environment, name: environment.name, project: project) }
-  let(:ci_build) { create(:ci_build, :created, environment: environment.name, user: user) }
+  let(:ci_build) { create(:ci_build, :created, environment: environment.name, user: user, when: :on_success) }
+  let(:current_status) { 'success' }
 
-  subject { described_class.new(project, user).execute(ci_build) }
+  subject { described_class.new(project, user).execute(ci_build, current_status) }
 
   before do
     allow(License).to receive(:feature_available?).and_call_original
