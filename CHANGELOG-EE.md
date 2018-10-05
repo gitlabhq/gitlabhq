@@ -102,6 +102,13 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Remove differences between CE and EE settings panel component.
 
 
+## 11.2.5 (2018-10-05)
+
+### Security (1 change)
+
+- Properly filter private references from system notes.
+
+
 ## 11.2.4 (2018-09-26)
 
 ### Security (2 changes)
