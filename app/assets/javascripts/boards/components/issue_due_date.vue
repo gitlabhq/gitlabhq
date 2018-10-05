@@ -52,8 +52,8 @@ export default {
       return getDayDifference(today, this.issueDueDate);
     },
     cssClass() {
-      if (this.timeDifference < 0) return 'text-danger';
-      return null;
+      if (this.timeDifference >= 0) return;
+      return 'text-danger';
     },
     isDueInCurrentYear() {
       const today = new Date();
