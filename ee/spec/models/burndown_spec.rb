@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Burndown do
   set(:user) { create(:user) }
-
   let(:start_date) { "2017-03-01" }
   let(:due_date) { "2017-03-03" }
 
@@ -82,6 +81,23 @@ describe Burndown do
         expect(burndown).not_to be_accurate
       end
     end
+
+    context 'when issues are created at the middle of the milestone' do
+      let(:creation_date) { "2017-03-02" }
+
+      it 'accounts for counts in issues created at the middle of the milestone' do
+        project = try(:group_project) || try(:project)
+
+        create(:issue, milestone: milestone, project: project, created_at: creation_date, weight: 2)
+        create(:issue, milestone: milestone, project: project, created_at: creation_date, weight: 3)
+
+        expect(subject).to eq([
+          ['2017-03-01', 3, 6],
+          ['2017-03-02', 6, 13],
+          ['2017-03-03', 4, 9]
+        ].to_json)
+      end
+    end
   end
 
   describe 'project milestone burndown' do
@@ -93,7 +109,8 @@ describe Burndown do
           milestone: milestone,
           weight: 2,
           project_id: project.id,
-          author: user
+          author: user,
+          created_at: milestone.start_date
         }
       end
       let(:scope) { project }
@@ -116,7 +133,8 @@ describe Burndown do
             milestone: milestone,
             weight: 2,
             project_id: nested_group_project.id,
-            author: user
+            author: user,
+            created_at: milestone.start_date
           }
         end
         let(:scope) { group }
@@ -131,7 +149,8 @@ describe Burndown do
             milestone: milestone,
             weight: 2,
             project_id: group_project.id,
-            author: user
+            author: user,
+            created_at: milestone.start_date
           }
         end
         let(:scope) { group }
