@@ -16,12 +16,17 @@ describe PruneOldEventsWorker do
 
     it 'leaves fresh events' do
       subject.perform
-      expect(not_expired_event.reload).to be_present
+      expect(not_expired_1_day_event.reload).to be_present
     end
 
-    it 'leaves events from exactly 12 months ago' do
+    it 'leaves events from 13 months ago' do
       subject.perform
-      expect(exactly_12_months_event).to be_present
+      expect(not_expired_13_month_event.reload).to be_present
+    end
+
+    it 'leaves events from 2 years ago' do
+      subject.perform
+      expect(not_expired_2_years_event).to be_present
     end
   end
 end
