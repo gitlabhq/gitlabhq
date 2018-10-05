@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180924141949) do
+ActiveRecord::Schema.define(version: 20181005110927) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1120,6 +1120,7 @@ ActiveRecord::Schema.define(version: 20180924141949) do
     t.integer "file_store"
   end
 
+  add_index "lfs_objects", ["file_store"], name: "index_lfs_objects_on_file_store", using: :btree
   add_index "lfs_objects", ["oid"], name: "index_lfs_objects_on_oid", unique: true, using: :btree
 
   create_table "lfs_objects_projects", force: :cascade do |t|
