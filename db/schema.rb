@@ -2155,6 +2155,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
 
   add_index "uploads", ["checksum"], name: "index_uploads_on_checksum", using: :btree
   add_index "uploads", ["model_id", "model_type"], name: "index_uploads_on_model_id_and_model_type", using: :btree
+  add_index "uploads", ["store"], name: "index_uploads_on_store", using: :btree
   add_index "uploads", ["uploader", "path"], name: "index_uploads_on_uploader_and_path", using: :btree
 
   create_table "user_agent_details", force: :cascade do |t|
