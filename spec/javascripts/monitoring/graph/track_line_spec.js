@@ -5,7 +5,7 @@ import createTimeSeries from '~/monitoring/utils/multiple_time_series';
 import { singleRowMetricsMultipleSeries, convertDatesMultipleSeries } from '../mock_data';
 
 const convertedMetrics = convertDatesMultipleSeries(singleRowMetricsMultipleSeries);
-const timeSeries = createTimeSeries(convertedMetrics[0].queries, 500, 300, 120);
+const { timeSeries } = createTimeSeries(convertedMetrics[0].queries, 500, 300, 120);
 
 describe('TrackLine component', () => {
   let vm;
