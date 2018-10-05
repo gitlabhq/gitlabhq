@@ -183,23 +183,23 @@ module BlobHelper
   end
   private :template_dropdown_names
 
-  def licenses_for_select(project = @project)
+  def licenses_for_select(project)
     @licenses_for_select ||= template_dropdown_names(TemplateFinder.build(:licenses, project).execute)
   end
 
-  def gitignore_names(project = @project)
+  def gitignore_names(project)
     @gitignore_names ||= template_dropdown_names(TemplateFinder.build(:gitignores, project).execute)
   end
 
-  def gitlab_ci_ymls(project = @project)
+  def gitlab_ci_ymls(project)
     @gitlab_ci_ymls ||= template_dropdown_names(TemplateFinder.build(:gitlab_ci_ymls, project).execute)
   end
 
-  def dockerfile_names(project = @project)
+  def dockerfile_names(project)
     @dockerfile_names ||= template_dropdown_names(TemplateFinder.build(:dockerfiles, project).execute)
   end
 
-  def blob_editor_paths(project = @project)
+  def blob_editor_paths(project)
     {
       'relative-url-root' => Rails.application.config.relative_url_root,
       'assets-prefix' => Gitlab::Application.config.assets.prefix,
