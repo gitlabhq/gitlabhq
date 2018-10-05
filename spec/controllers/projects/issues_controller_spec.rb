@@ -638,7 +638,7 @@ describe Projects::IssuesController do
           id: id
       end
 
-      it 'avoids (most) N+1s loading labels' do
+      it 'avoids (most) N+1s loading labels', :request_store do
         label = create(:label, project: project).to_reference
         labels = create_list(:label, 10, project: project).map(&:to_reference)
         issue = create(:issue, project: project, description: 'Test issue')
