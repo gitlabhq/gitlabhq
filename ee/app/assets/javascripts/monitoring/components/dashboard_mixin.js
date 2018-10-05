@@ -1,8 +1,10 @@
 import AlertWidget from './alert_widget.vue';
+import ThresholdLines from './threshold_lines.vue';
 
 export default {
   components: {
     AlertWidget,
+    ThresholdLines,
   },
   props: {
     alertsEndpoint: {
@@ -10,6 +12,11 @@ export default {
       required: false,
       default: null,
     },
+  },
+  data() {
+    return {
+      alertData: {},
+    };
   },
   methods: {
     getGraphLabel(graphData) {
@@ -19,6 +26,9 @@ export default {
     getQueryAlerts(graphData) {
       if (!graphData.queries) return [];
       return graphData.queries.map(query => query.alert_path).filter(Boolean);
+    },
+    setAlerts(metricId, alertData) {
+      this.$set(this.alertData, metricId, alertData);
     },
   },
 };
