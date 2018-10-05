@@ -269,7 +269,7 @@ describe 'Pipelines', :js do
           it "shows 00:00:00 as the remaining time" do
             find('.js-pipeline-dropdown-manual-actions').click
 
-            expect(page).to have_content(Time.at(time_diff).utc.strftime("00:00:00"))
+            expect(page).to have_content("00:00:00")
           end
         end
 
