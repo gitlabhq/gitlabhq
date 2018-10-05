@@ -1167,6 +1167,7 @@ ActiveRecord::Schema.define(version: 20181017001059) do
     t.integer "file_store"
   end
 
+  add_index "lfs_objects", ["file_store"], name: "index_lfs_objects_on_file_store", using: :btree
   add_index "lfs_objects", ["oid"], name: "index_lfs_objects_on_oid", unique: true, using: :btree
 
   create_table "lfs_objects_projects", force: :cascade do |t|
