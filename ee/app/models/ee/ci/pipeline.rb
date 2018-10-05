@@ -43,7 +43,10 @@ module EE
 
             return OpenStruct.new(build: build, path: file_name)
           end
-        end.last
+        end
+
+        # In case there is no artifact return nil
+        nil
       end
 
       def performance_artifact

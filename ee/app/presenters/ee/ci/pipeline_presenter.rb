@@ -8,10 +8,10 @@ module EE
 
       def downloadable_url_for_report_type(file_type)
         if (job_artifact = artifact_for_file_type(file_type)) &&
-            can?(current_user, :read_build, job_artifact.build)
+            can?(current_user, :read_build, job_artifact.job)
           return download_project_build_artifacts_url(
             job_artifact.project,
-            job_artifact.build,
+            job_artifact.job,
             file_type: file_type)
         end
 

@@ -170,6 +170,7 @@ describe Ci::Pipeline do
     let(:file_type) { :codequality }
     let!(:build) { create(:ci_build, pipeline: pipeline) }
     let!(:artifact) { create(:ci_job_artifact, :codequality, job: build) }
+
     subject { pipeline.artifact_for_file_type(file_type) }
 
     it 'returns the artifact' do

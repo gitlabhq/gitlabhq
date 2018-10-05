@@ -26,14 +26,31 @@ describe MergeRequestWidgetEntity do
     expect(subject.as_json[:blob_path]).to include(:head_path)
   end
 
-  it 'has codeclimate data' do
-    allow(merge_request).to receive_messages(
-      base_pipeline: pipeline,
-      head_pipeline: pipeline
-    )
-    allow_any_instance_of(EE::Ci::PipelinePresenter).to receive(:downloadable_url_for_report_type).and_return("dummy/url")
+  describe 'codeclimate' do
+    before do
+      allow(merge_request).to receive_messages(
+        base_pipeline: pipeline,
+        head_pipeline: pipeline
+      )
+      allow_any_instance_of(Ci::PipelinePresenter).to receive(:current_user).and_return(user)
+    end
 
-    expect(subject.as_json).to include(:codeclimate)
+    context 'with codeclimate data' do
+      before do
+        job = create(:ci_build, pipeline: pipeline)
+        create(:ci_job_artifact, :codequality, job: job)
+      end
+
+      it 'has codeclimate data entry' do
+        expect(subject.as_json).to include(:codeclimate)
+      end
+    end
+
+    context 'without codeclimate data' do
+      it 'does not have codeclimate data entry' do
+        expect(subject.as_json).not_to include(:codeclimate)
+      end
+    end
   end
 
   it 'sets approvals_before_merge to 0 if nil' do
