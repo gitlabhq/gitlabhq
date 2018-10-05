@@ -120,10 +120,6 @@ export default {
             :css-classes="iconClass"
           />
         </div>
-        <component
-          :is="actionComponent"
-          :path="file.path"
-        />
       </div>
     </div>
   </div>

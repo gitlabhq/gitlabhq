@@ -24,6 +24,17 @@
   .settings-content
     = render 'account_and_limit'
 
+%section.settings.as-diff-limits.no-animate#js-merge-request-settings{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4
+      = _('Diff limits')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p
+      = _('Diff content limits')
+  .settings-content
+    = render 'diff_limits'
+
 %section.settings.as-signup.no-animate#js-signup-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4
@@ -46,7 +57,7 @@
   .settings-content
     = render 'signin'
 
-%section.qa-terms-settings.settings.as-terms.no-animate#js-terms-settings{ class: ('expanded' if expanded_by_default?) }
+%section.settings.as-terms.no-animate#js-terms-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4
       = _('Terms of Service and Privacy Policy')

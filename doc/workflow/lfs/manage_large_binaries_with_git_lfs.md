@@ -78,10 +78,10 @@ git clone git@gitlab.example.com:group/project.git
 ```
 
 If you already cloned the repository and you want to get the latest LFS object
-that are on the remote repository, eg. from branch `master`:
+that are on the remote repository, eg. for a branch from origin:
 
 ```bash
-git lfs fetch master
+git lfs fetch origin master
 ```
 
 ## File Locking

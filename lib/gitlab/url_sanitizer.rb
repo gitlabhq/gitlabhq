@@ -3,7 +3,7 @@ module Gitlab
     ALLOWED_SCHEMES = %w[http https ssh git].freeze
 
     def self.sanitize(content)
-      regexp = URI::Parser.new.make_regexp(ALLOWED_SCHEMES)
+      regexp = URI::DEFAULT_PARSER.make_regexp(ALLOWED_SCHEMES)
 
       content.gsub(regexp) { |url| new(url).masked_url }
     rescue Addressable::URI::InvalidURIError

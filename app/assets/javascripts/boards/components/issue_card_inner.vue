@@ -199,7 +199,8 @@ export default {
         /><a
           :href="issue.path"
           :title="issue.title"
-          class="js-no-trigger">{{ issue.title }}</a>
+          class="js-no-trigger"
+          @mousemove.stop>{{ issue.title }}</a>
       </h4>
     </div>
     <div

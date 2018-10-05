@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Import::GitlabProjectsController < Import::BaseController
   before_action :whitelist_query_limiting, only: [:create]
   before_action :verify_gitlab_project_import_enabled

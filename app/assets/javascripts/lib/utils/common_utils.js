@@ -88,6 +88,7 @@ export const handleLocationHash = () => {
   const fixedDiffStats = document.querySelector('.js-diff-files-changed');
   const fixedNav = document.querySelector('.navbar-gitlab');
   const performanceBar = document.querySelector('#js-peek');
+  const topPadding = 8;
 
   let adjustment = 0;
   if (fixedNav) adjustment -= fixedNav.offsetHeight;
@@ -106,6 +107,10 @@ export const handleLocationHash = () => {
 
   if (performanceBar) {
     adjustment -= performanceBar.offsetHeight;
+  }
+
+  if (isInMRPage()) {
+    adjustment -= topPadding;
   }
 
   window.scrollBy(0, adjustment);
@@ -381,8 +386,11 @@ export const objectToQueryString = (params = {}) =>
     .map(param => `${param}=${params[param]}`)
     .join('&');
 
-export const buildUrlWithCurrentLocation = param =>
-  (param ? `${window.location.pathname}${param}` : window.location.pathname);
+export const buildUrlWithCurrentLocation = param => {
+  if (param) return `${window.location.pathname}${param}`;
+
+  return window.location.pathname;
+};
 
 /**
  * Based on the current location and the string parameters provided
@@ -614,6 +622,17 @@ export const roundOffFloat = (number, precision = 0) => {
   // eslint-disable-next-line no-restricted-properties
   const multiplier = Math.pow(10, precision);
   return Math.round(number * multiplier) / multiplier;
+};
+
+/**
+ * Represents navigation type constants of the Performance Navigation API.
+ * Detailed explanation see https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigation.
+ */
+export const NavigationType = {
+  TYPE_NAVIGATE: 0,
+  TYPE_RELOAD: 1,
+  TYPE_BACK_FORWARD: 2,
+  TYPE_RESERVED: 255,
 };
 
 window.gl = window.gl || {};

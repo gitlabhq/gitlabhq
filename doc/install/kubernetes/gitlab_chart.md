@@ -93,7 +93,7 @@ You can access the GitLab instance by visiting the domain name beginning with
 above, the URL would be `https://gitlab.example.com`.
 
 If you manually created the secret for initial root password, you
-can use that to sign in as `root` user. If not, Gitlab automatically
+can use that to sign in as `root` user. If not, GitLab automatically
 created a random password for `root` user. This can be extracted by the
 following command (replace `<name>` by name of the release - which is `gitlab`
 if you used the command above):

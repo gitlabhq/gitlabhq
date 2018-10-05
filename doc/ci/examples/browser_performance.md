@@ -110,4 +110,4 @@ performance:
       - sitespeed-results/
 ```
 
-A complete example can be found in our [Auto DevOps CI YML](https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Auto-DevOps.gitlab-ci.yml).
+A complete example can be found in our [Auto DevOps CI YML](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml).

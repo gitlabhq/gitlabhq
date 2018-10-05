@@ -1,64 +1,56 @@
 <script>
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+  import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
-export default {
-  components: {
-    ClipboardButton,
-  },
-  props: {
-    pipelineShortSha: {
-      type: String,
-      required: true,
+  export default {
+    components: {
+      ClipboardButton,
     },
-    pipelineShaPath: {
-      type: String,
-      required: true,
+    props: {
+      commit: {
+        type: Object,
+        required: true,
+      },
+      mergeRequest: {
+        type: Object,
+        required: false,
+        default: null,
+      },
+      isLastBlock: {
+        type: Boolean,
+        required: true,
+      },
     },
-    mergeRequestReference: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    mergeRequestPath: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    gitCommitTitlte: {
-      type: String,
-      required: true,
-    },
-  },
-};
+  };
 </script>
 <template>
-  <div class="block">
+  <div
+    :class="{
+      'block-last': isLastBlock,
+      block: !isLastBlock
+  }">
     <p>
       {{ __('Commit') }}
 
       <a
-        :href="pipelineShaPath"
+        :href="commit.commit_path"
         class="js-commit-sha commit-sha link-commit"
-      >
-        {{ pipelineShortSha }}
-      </a>
+      >{{ commit.short_id }}</a>
 
       <clipboard-button
-        :text="pipelineShortSha"
+        :text="commit.short_id"
         :title="__('Copy commit SHA to clipboard')"
+        css-class="btn btn-clipboard btn-transparent"
       />
 
       <a
-        v-if="mergeRequestPath && mergeRequestReference"
-        :href="mergeRequestPath"
+        v-if="mergeRequest"
+        :href="mergeRequest.path"
         class="js-link-commit link-commit"
-      >
-        {{ mergeRequestReference }}
-      </a>
+      >!{{ mergeRequest.iid }}</a>
     </p>
 
     <p class="build-light-text append-bottom-0">
-      {{ gitCommitTitlte }}
+      {{ commit.title }}
     </p>
   </div>
 </template>

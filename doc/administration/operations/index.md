@@ -9,8 +9,6 @@ GitLab 7.3 we recommend cleaning up stale sessions to compact the Redis
 database after you upgrade to GitLab 7.3.
 - [Moving repositories](moving_repositories.md): Moving all repositories managed
 by GitLab to another file system or another server.
-- [Sidekiq job throttling](sidekiq_job_throttling.md): Throttle Sidekiq queues
-that to prioritize important jobs.
 - [Sidekiq MemoryKiller](sidekiq_memory_killer.md): Configure Sidekiq MemoryKiller
 to restart Sidekiq.
 - [Unicorn](unicorn.md): Understand Unicorn and unicorn-worker-killer.

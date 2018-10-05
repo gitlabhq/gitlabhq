@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::LabelsController < Projects::ApplicationController
   include ToggleSubscriptionAction
 
@@ -138,12 +140,7 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def flash_notice_for(label, group)
-    notice = ''.html_safe
-    notice << label.title
-    notice << ' promoted to '
-    notice << view_context.link_to('<u>group label</u>'.html_safe, group_labels_path(group))
-    notice << '.'
-    notice
+    ''.html_safe + "#{label.title} promoted to " + view_context.link_to('<u>group label</u>'.html_safe, group_labels_path(group)) + '.'
   end
 
   protected
@@ -166,6 +163,7 @@ class Projects::LabelsController < Projects::ApplicationController
                        project_id: @project.id,
                        include_ancestor_groups: params[:include_ancestor_groups],
                        search: params[:search],
+                       subscribed: params[:subscribed],
                        sort: sort).execute
   end
 

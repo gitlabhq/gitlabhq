@@ -126,18 +126,16 @@ module QuickActions
     parse_params do |assignee_param|
       extract_users(assignee_param)
     end
-    # rubocop: disable CodeReuse/ActiveRecord
     command :assign do |users|
       next if users.empty?
 
-      @updates[:assignee_ids] =
-        if issuable.allows_multiple_assignees?
-          issuable.assignees.pluck(:id) + users.map(&:id)
-        else
-          [users.first.id]
-        end
+      if issuable.allows_multiple_assignees?
+        @updates[:assignee_ids] ||= issuable.assignees.map(&:id)
+        @updates[:assignee_ids] += users.map(&:id)
+      else
+        @updates[:assignee_ids] = [users.first.id]
+      end
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     desc do
       if issuable.allows_multiple_assignees?
@@ -164,16 +162,14 @@ module QuickActions
       # When multiple users are assigned, all will be unassigned if multiple assignees are no longer allowed
       extract_users(unassign_param) if issuable.allows_multiple_assignees?
     end
-    # rubocop: disable CodeReuse/ActiveRecord
     command :unassign do |users = nil|
-      @updates[:assignee_ids] =
-        if users&.any?
-          issuable.assignees.pluck(:id) - users.map(&:id)
-        else
-          []
-        end
+      if issuable.allows_multiple_assignees? && users&.any?
+        @updates[:assignee_ids] ||= issuable.assignees.map(&:id)
+        @updates[:assignee_ids] -= users.map(&:id)
+      else
+        @updates[:assignee_ids] = []
+      end
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     desc 'Set milestone'
     explanation do |milestone|
@@ -214,9 +210,14 @@ module QuickActions
     end
     params '~label1 ~"label 2"'
     condition do
-      available_labels = LabelsFinder.new(current_user, project_id: project.id, include_ancestor_groups: true).execute
+      if project
+        available_labels = LabelsFinder
+          .new(current_user, project_id: project.id, include_ancestor_groups: true)
+          .execute
+      end
 
-      current_user.can?(:"admin_#{issuable.to_ability_name}", project) &&
+      project &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", project) &&
         available_labels.any?
     end
     command :label do |labels_param|
@@ -290,7 +291,7 @@ module QuickActions
     end
     params '#issue | !merge_request'
     condition do
-      issuable.persisted? &&
+      [MergeRequest, Issue].include?(issuable.class) &&
         current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
     end
     parse_params do |issuable_param|
@@ -448,7 +449,8 @@ module QuickActions
     end
     params '<time(1h30m | -1h30m)> <date(YYYY-MM-DD)>'
     condition do
-      current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
+      issuable.is_a?(TimeTrackable) &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
     end
     parse_params do |raw_time_date|
       Gitlab::QuickActions::SpendTimeAndDateSeparator.new(raw_time_date).execute
@@ -498,7 +500,7 @@ module QuickActions
     desc "Lock the discussion"
     explanation "Locks the discussion"
     condition do
-      issuable.is_a?(Issuable) &&
+      [MergeRequest, Issue].include?(issuable.class) &&
         issuable.persisted? &&
         !issuable.discussion_locked? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
@@ -510,7 +512,7 @@ module QuickActions
     desc "Unlock the discussion"
     explanation "Unlocks the discussion"
     condition do
-      issuable.is_a?(Issuable) &&
+      [MergeRequest, Issue].include?(issuable.class) &&
         issuable.persisted? &&
         issuable.discussion_locked? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)

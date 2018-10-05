@@ -2,6 +2,36 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.3.3 (2018-10-04)
+
+- No changes.
+
+## 11.3.2 (2018-10-03)
+
+### Fixed (4 changes)
+
+- Fix NULL pipeline import problem and pipeline user mapping issue. !21875
+- Fix migration to avoid an exception during upgrade. !22055
+- Fixes admin runners table not wrapping content.
+- Fix Error 500 when forking projects with Gravatar disabled.
+
+### Other (1 change)
+
+- Removes the 'required' attribute from the 'project name' field. !21770
+
+
+## 11.3.1 (2018-09-26)
+
+### Security (6 changes)
+
+- Redact confidential events in the API.
+- Set timeout for syntax highlighting.
+- Sanitize JSON data properly to fix XSS on Issue details page.
+- Fix stored XSS in merge requests from imported repository.
+- Fix xss vulnerability sourced from package.json.
+- Block loopback addresses in UrlBlocker.
+
+
 ## 11.3.0 (2018-09-22)
 
 ### Security (5 changes, 1 of them is from the community)
@@ -247,6 +277,18 @@ entry.
 - Creates vue component for commit block in job log page.
 - Creates vue components for stage dropdowns and job list container for job log view.
 - Creates Vue component for artifacts block on job page.
+
+
+## 11.2.4 (2018-09-26)
+
+### Security (6 changes)
+
+- Redact confidential events in the API.
+- Set timeout for syntax highlighting.
+- Sanitize JSON data properly to fix XSS on Issue details page.
+- Fix stored XSS in merge requests from imported repository.
+- Fix xss vulnerability sourced from package.json.
+- Block loopback addresses in UrlBlocker.
 
 
 ## 11.2.3 (2018-08-28)
@@ -514,6 +556,18 @@ entry.
 - Increases title column on modal for reports.
 - Disables toggle comments button if diff has no discussions.
 - Moves help_popover component to a common location.
+
+
+## 11.1.7 (2018-09-26)
+
+### Security (6 changes)
+
+- Redact confidential events in the API.
+- Set timeout for syntax highlighting.
+- Sanitize JSON data properly to fix XSS on Issue details page.
+- Fix stored XSS in merge requests from imported repository.
+- Fix xss vulnerability sourced from package.json.
+- Block loopback addresses in UrlBlocker.
 
 
 ## 11.1.6 (2018-08-28)

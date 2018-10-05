@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180907015926) do
+ActiveRecord::Schema.define(version: 20180924141949) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -119,9 +119,6 @@ ActiveRecord::Schema.define(version: 20180907015926) do
     t.integer "housekeeping_incremental_repack_period", default: 10, null: false
     t.integer "housekeeping_full_repack_period", default: 50, null: false
     t.integer "housekeeping_gc_period", default: 200, null: false
-    t.boolean "sidekiq_throttling_enabled", default: false
-    t.string "sidekiq_throttling_queues"
-    t.decimal "sidekiq_throttling_factor"
     t.boolean "html_emails_enabled", default: true
     t.string "plantuml_url"
     t.boolean "plantuml_enabled"
@@ -174,6 +171,7 @@ ActiveRecord::Schema.define(version: 20180907015926) do
     t.boolean "user_show_add_ssh_key_message", default: true, null: false
     t.integer "usage_stats_set_by_user_id"
     t.integer "receive_max_input_size"
+    t.integer "diff_max_patch_bytes", default: 102400, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -478,6 +476,7 @@ ActiveRecord::Schema.define(version: 20180907015926) do
   add_index "ci_pipelines", ["project_id", "iid"], name: "index_ci_pipelines_on_project_id_and_iid", unique: true, where: "(iid IS NOT NULL)", using: :btree
   add_index "ci_pipelines", ["project_id", "ref", "status", "id"], name: "index_ci_pipelines_on_project_id_and_ref_and_status_and_id", using: :btree
   add_index "ci_pipelines", ["project_id", "sha"], name: "index_ci_pipelines_on_project_id_and_sha", using: :btree
+  add_index "ci_pipelines", ["project_id", "source"], name: "index_ci_pipelines_on_project_id_and_source", using: :btree
   add_index "ci_pipelines", ["project_id", "status", "config_source"], name: "index_ci_pipelines_on_project_id_and_status_and_config_source", using: :btree
   add_index "ci_pipelines", ["project_id"], name: "index_ci_pipelines_on_project_id", using: :btree
   add_index "ci_pipelines", ["status"], name: "index_ci_pipelines_on_status", using: :btree
@@ -1911,7 +1910,6 @@ ActiveRecord::Schema.define(version: 20180907015926) do
 
   create_table "site_statistics", force: :cascade do |t|
     t.integer "repositories_count", default: 0, null: false
-    t.integer "wikis_count", default: 0, null: false
   end
 
   create_table "snippets", force: :cascade do |t|
@@ -2275,6 +2273,10 @@ ActiveRecord::Schema.define(version: 20180907015926) do
     t.boolean "job_events", default: false, null: false
     t.boolean "confidential_note_events"
     t.text "push_events_branch_filter"
+    t.string "encrypted_token"
+    t.string "encrypted_token_iv"
+    t.string "encrypted_url"
+    t.string "encrypted_url_iv"
   end
 
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree

@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Project do
   include ProjectForksHelper
+  include GitHelpers
 
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
@@ -3995,9 +3996,50 @@ describe Project do
     end
   end
 
-  def rugged_config
-    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      project.repository.rugged.config
+  context '#members_among' do
+    let(:users) { create_list(:user, 3) }
+    set(:group) { create(:group) }
+    set(:project) { create(:project, namespace: group) }
+
+    before do
+      project.add_guest(users.first)
+      project.group.add_maintainer(users.last)
     end
+
+    context 'when users is an Array' do
+      it 'returns project members among the users' do
+        expect(project.members_among(users)).to eq([users.first, users.last])
+      end
+
+      it 'maintains input order' do
+        expect(project.members_among(users.reverse)).to eq([users.last, users.first])
+      end
+
+      it 'returns empty array if users is empty' do
+        result = project.members_among([])
+
+        expect(result).to be_empty
+      end
+    end
+
+    context 'when users is a relation' do
+      it 'returns project members among the users' do
+        result = project.members_among(User.where(id: users.map(&:id)))
+
+        expect(result).to be_a(ActiveRecord::Relation)
+        expect(result).to eq([users.first, users.last])
+      end
+
+      it 'returns empty relation if users is empty' do
+        result = project.members_among(User.none)
+
+        expect(result).to be_a(ActiveRecord::Relation)
+        expect(result).to be_empty
+      end
+    end
+  end
+
+  def rugged_config
+    rugged_repo(project.repository).config
   end
 end

@@ -225,7 +225,6 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to match_schema('job/job_details')
           expect(json_response['deployment_status']["status"]).to eq 'creating'
-          expect(json_response['deployment_status']["icon"]).to eq 'passed'
           expect(json_response['deployment_status']["environment"]).not_to be_nil
         end
       end
@@ -335,6 +334,22 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
             expect(response).to match_response_schema('job/job_details')
             expect(json_response['runners']['settings_path']).to match(/runners/)
           end
+        end
+      end
+
+      context 'when no trace is available' do
+        it 'has_trace is false' do
+          expect(response).to match_response_schema('job/job_details')
+          expect(json_response['has_trace']).to be false
+        end
+      end
+
+      context 'when job has trace' do
+        let(:job) { create(:ci_build, :running, :trace_live, pipeline: pipeline) }
+
+        it "has_trace is true" do
+          expect(response).to match_response_schema('job/job_details')
+          expect(json_response['has_trace']).to be true
         end
       end
     end

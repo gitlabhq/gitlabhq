@@ -22,7 +22,7 @@
     <input
       id="issuable-title"
       v-model="formState.title"
-      class="form-control"
+      class="form-control qa-title-input"
       type="text"
       placeholder="Title"
       aria-label="Title"

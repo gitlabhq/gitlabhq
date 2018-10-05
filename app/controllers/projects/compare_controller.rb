@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'addressable/uri'
 
 class Projects::CompareController < Projects::ApplicationController

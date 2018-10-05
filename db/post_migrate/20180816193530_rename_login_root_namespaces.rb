@@ -5,6 +5,8 @@ class RenameLoginRootNamespaces < ActiveRecord::Migration
 
   DOWNTIME = false
 
+  disable_ddl_transaction!
+
   # We're taking over the /login namespace as part of a fix for the Jira integration
   def up
     disable_statement_timeout do

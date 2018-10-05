@@ -21,6 +21,7 @@ describe('Edit Actions components', () => {
       propsData: {
         canDestroy: true,
         formState: store.formState,
+        issuableType: 'issue',
       },
     }).$mount();
 

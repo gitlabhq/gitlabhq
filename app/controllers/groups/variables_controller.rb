@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Groups
   class VariablesController < Groups::ApplicationController
     before_action :authorize_admin_build!

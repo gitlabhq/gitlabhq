@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Controller for viewing a repository's file structure
 class Projects::TreeController < Projects::ApplicationController
   include ExtractsPath

@@ -86,7 +86,7 @@ class Project < ActiveRecord::Base
   after_create :create_project_feature, unless: :project_feature
 
   after_create -> { SiteStatistic.track(STATISTICS_ATTRIBUTE) }
-  before_destroy :untrack_site_statistics
+  before_destroy -> { SiteStatistic.untrack(STATISTICS_ATTRIBUTE) }
 
   after_create :create_ci_cd_settings,
     unless: :ci_cd_settings,
@@ -111,7 +111,7 @@ class Project < ActiveRecord::Base
   after_create :ensure_storage_path_exists
   after_save :ensure_storage_path_exists, if: :namespace_id_changed?
 
-  acts_as_taggable
+  acts_as_ordered_taggable
 
   attr_accessor :old_path_with_namespace
   attr_accessor :template_name
@@ -1365,6 +1365,18 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # Filters `users` to return only authorized users of the project
+  def members_among(users)
+    if users.is_a?(ActiveRecord::Relation) && !users.loaded?
+      authorized_users.merge(users)
+    else
+      return [] if users.empty?
+
+      user_ids = authorized_users.where(users: { id: users.map(&:id) }).pluck(:id)
+      users.select { |user| user_ids.include?(user.id) }
+    end
+  end
+
   def default_branch
     @default_branch ||= repository.root_ref if repository.exists?
   end
@@ -2110,11 +2122,6 @@ class Project < ActiveRecord::Base
     Gitlab::PagesTransfer.new.rename_project(path_before, self.path, namespace.full_path)
   end
 
-  def untrack_site_statistics
-    SiteStatistic.untrack(STATISTICS_ATTRIBUTE)
-    self.project_feature.untrack_statistics_for_deletion!
-  end
-
   # rubocop: disable CodeReuse/ServiceClass
   def execute_rename_repository_hooks!(full_path_before)
     # When we import a project overwriting the original project, there
@@ -2266,11 +2273,7 @@ class Project < ActiveRecord::Base
       end
     end
 
-    if RequestStore.active?
-      RequestStore.fetch("project-#{id}:branch-#{branch_name}:user-#{user.id}:branch_allows_collaboration") do
-        check_access.call
-      end
-    else
+    Gitlab::SafeRequestStore.fetch("project-#{id}:branch-#{branch_name}:user-#{user.id}:branch_allows_collaboration") do
       check_access.call
     end
   end

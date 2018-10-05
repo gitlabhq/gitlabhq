@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Groups::LabelsController < Groups::ApplicationController
   include ToggleSubscriptionAction
 
@@ -10,7 +12,8 @@ class Groups::LabelsController < Groups::ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @labels = GroupLabelsFinder.new(@group, params.merge(sort: sort)).execute
+        @labels = GroupLabelsFinder
+          .new(current_user, @group, params.merge(sort: sort)).execute
       end
       format.json do
         render json: LabelSerializer.new.represent_appearance(available_labels)

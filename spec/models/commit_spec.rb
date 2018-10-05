@@ -65,7 +65,7 @@ describe Commit do
 
       key = "Commit:author:#{commit.author_email.downcase}"
 
-      expect(RequestStore.store[key]).to eq(user)
+      expect(Gitlab::SafeRequestStore[key]).to eq(user)
       expect(commit.author).to eq(user)
     end
 
@@ -270,11 +270,11 @@ eos
     let(:issue) { create :issue, project: project }
     let(:other_project) { create(:project, :public) }
     let(:other_issue) { create :issue, project: other_project }
-    let(:commiter) { create :user }
+    let(:committer) { create :user }
 
     before do
-      project.add_developer(commiter)
-      other_project.add_developer(commiter)
+      project.add_developer(committer)
+      other_project.add_developer(committer)
     end
 
     it 'detects issues that this commit is marked as closing' do
@@ -282,7 +282,7 @@ eos
 
       allow(commit).to receive_messages(
         safe_message: "Fixes ##{issue.iid} and #{ext_ref}",
-        committer_email: commiter.email
+        committer_email: committer.email
       )
 
       expect(commit.closes_issues).to include(issue)

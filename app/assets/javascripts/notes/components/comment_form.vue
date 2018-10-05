@@ -7,7 +7,11 @@ import { __, sprintf } from '~/locale';
 import Flash from '../../flash';
 import Autosave from '../../autosave';
 import TaskList from '../../task_list';
-import { capitalizeFirstCharacter, convertToCamelCase, splitCamelCase } from '../../lib/utils/text_utility';
+import {
+  capitalizeFirstCharacter,
+  convertToCamelCase,
+  splitCamelCase,
+} from '../../lib/utils/text_utility';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
 import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
@@ -122,7 +126,9 @@ export default {
       return this.getNoteableData.create_note_path;
     },
     issuableTypeTitle() {
-      return this.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE ? 'merge request' : 'issue';
+      return this.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE
+        ? 'merge request'
+        : 'issue';
     },
   },
   watch: {
@@ -359,7 +365,7 @@ Please check your network connection and try again.`;
                   :disabled="isSubmitting"
                   name="note[note]"
                   class="note-textarea js-vue-comment-form js-note-text
-js-gfm-input js-autosize markdown-area js-vue-textarea"
+js-gfm-input js-autosize markdown-area js-vue-textarea qa-comment-input"
                   data-supports-quick-actions="true"
                   aria-label="Description"
                   placeholder="Write a comment or drag your files here…"
@@ -374,7 +380,8 @@ js-gfm-input js-autosize markdown-area js-vue-textarea"
 append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown">
                   <button
                     :disabled="isSubmitButtonDisabled"
-                    class="btn btn-success comment-btn js-comment-button js-comment-submit-button"
+                    class="btn btn-create comment-btn js-comment-button js-comment-submit-button
+                    qa-comment-button"
                     type="submit"
                     @click.prevent="handleSave()">
                     {{ __(commentButtonTitle) }}

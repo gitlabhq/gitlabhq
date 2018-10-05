@@ -331,11 +331,12 @@ describe CacheMarkdownField do
     end
 
     context 'with a project' do
-      let(:thing) { thing_subclass(:project).new(foo: markdown, foo_html: html, project: :project_value) }
+      let(:project) { create(:project, group: create(:group)) }
+      let(:thing) { thing_subclass(:project).new(foo: markdown, foo_html: html, project: project) }
 
       it 'sets the project in the context' do
         is_expected.to have_key(:project)
-        expect(context[:project]).to eq(:project_value)
+        expect(context[:project]).to eq(project)
       end
 
       it 'invalidates the cache when project changes' do

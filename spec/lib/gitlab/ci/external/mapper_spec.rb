@@ -17,7 +17,7 @@ describe Gitlab::Ci::External::Mapper do
       context 'when the string is a local file' do
         let(:values) do
           {
-            include: '/vendor/gitlab-ci-yml/non-existent-file.yml',
+            include: '/lib/gitlab/ci/templates/non-existent-file.yml',
             image: 'ruby:2.2'
           }
         end
@@ -61,7 +61,7 @@ describe Gitlab::Ci::External::Mapper do
           include:
           [
             remote_url,
-            '/vendor/gitlab-ci-yml/template.yml'
+            '/lib/gitlab/ci/templates/template.yml'
           ],
           image: 'ruby:2.2'
         }

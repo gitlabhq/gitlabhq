@@ -33,6 +33,14 @@ shared_examples "builds correct paths" do |**patterns|
     it_behaves_like "matches the method pattern", :upload_path
   end
 
+  describe "#relative_path" do
+    it 'is relative' do
+      skip 'Path not set, skipping.' unless subject.path
+
+      expect(Pathname.new(subject.relative_path)).to be_relative
+    end
+  end
+
   describe ".absolute_path" do
     it_behaves_like "matches the method pattern", :absolute_path do
       let(:target) { subject.class }

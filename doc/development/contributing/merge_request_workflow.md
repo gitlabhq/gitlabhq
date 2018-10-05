@@ -1,15 +1,4 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [Merge requests](#merge-requests)
-  - [Merge request guidelines](#merge-request-guidelines)
-  - [Contribution acceptance criteria](#contribution-acceptance-criteria)
-- [Definition of done](#definition-of-done)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-## Merge requests
+# Merge requests
 
 We welcome merge requests with fixes and improvements to GitLab code, tests,
 and/or documentation. The issues that are specifically suitable for
@@ -36,7 +25,7 @@ some potentially easy issues.
 To start with GitLab development download the [GitLab Development Kit][gdk] and
 see the [Development section](../README.md) for some guidelines.
 
-### Merge request guidelines
+## Merge request guidelines
 
 If you can, please submit a merge request with the fix or improvements
 including tests. If you don't know how to fix the issue but can write a test
@@ -114,7 +103,7 @@ Please ensure that your merge request meets the contribution acceptance criteria
 When having your code reviewed and when reviewing merge requests please take the
 [code review guidelines](../code_review.md) into account.
 
-### Contribution acceptance criteria
+## Contribution acceptance criteria
 
 1. The change is as small as possible
 1. Include proper tests and make all tests pass (unless it contains a test

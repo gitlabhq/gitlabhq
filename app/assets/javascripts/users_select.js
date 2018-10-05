@@ -592,7 +592,7 @@ function UsersSelect(currentUser, els, options = {}) {
             if (showEmailUser && data.results.length === 0 && query.term.match(/^[^@]+@[^@]+$/)) {
               var trimmed = query.term.trim();
               emailUser = {
-                name: "Invite \"" + query.term + "\" by email",
+                name: "Invite \"" + trimmed + "\" by email",
                 username: trimmed,
                 id: trimmed,
                 invite: true

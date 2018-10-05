@@ -46,6 +46,7 @@ describe Gitlab::UsageData do
         git
         database
         avg_cycle_analytics
+        web_ide_commits
       ))
     end
 

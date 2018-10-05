@@ -16,7 +16,7 @@ RSpec.describe 'admin manage applications' do
     check :doorkeeper_application_trusted
     click_on 'Submit'
     expect(page).to have_content('Application: test')
-    expect(page).to have_content('Application Id')
+    expect(page).to have_content('Application ID')
     expect(page).to have_content('Secret')
     expect(page).to have_content('Trusted Y')
 
@@ -28,7 +28,7 @@ RSpec.describe 'admin manage applications' do
 
     click_on 'Submit'
     expect(page).to have_content('test_changed')
-    expect(page).to have_content('Application Id')
+    expect(page).to have_content('Application ID')
     expect(page).to have_content('Secret')
     expect(page).to have_content('Trusted N')
 

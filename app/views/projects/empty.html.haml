@@ -9,7 +9,7 @@
 .project-empty-note-panel
   %div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
     .prepend-top-20
-    %h4
+    %h4.append-bottom-20
       = _('The repository for this project is empty')
 
     - if @project.can_current_user_push_code?

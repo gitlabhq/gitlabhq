@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::NetworkController < Projects::ApplicationController
   include ExtractsPath
   include ApplicationHelper

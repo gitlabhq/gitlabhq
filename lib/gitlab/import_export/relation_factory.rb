@@ -86,13 +86,14 @@ module Gitlab
         case @relation_name
         when :merge_request_diff_files       then setup_diff
         when :notes                          then setup_note
-        when 'Ci::Pipeline'                  then setup_pipeline
         end
 
         update_user_references
         update_project_references
         update_group_references
         remove_duplicate_assignees
+
+        setup_pipeline if @relation_name == 'Ci::Pipeline'
 
         reset_tokens!
         remove_encrypted_attributes!

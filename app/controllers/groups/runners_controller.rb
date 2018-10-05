@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Groups::RunnersController < Groups::ApplicationController
   # Proper policies should be implemented per
   # https://gitlab.com/gitlab-org/gitlab-ce/issues/45894

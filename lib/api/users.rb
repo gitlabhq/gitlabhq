@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Users < Grape::API
     include PaginationParams
@@ -42,12 +44,12 @@ module API
           optional :provider, type: String, desc: 'The external provider'
           optional :bio, type: String, desc: 'The biography of the user'
           optional :location, type: String, desc: 'The location of the user'
+          optional :public_email, type: String, desc: 'The public email of the user'
           optional :admin, type: Boolean, desc: 'Flag indicating the user is an administrator'
           optional :can_create_group, type: Boolean, desc: 'Flag indicating the user can create groups'
           optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
           optional :avatar, type: File, desc: 'Avatar image for user'
           optional :private_profile, type: Boolean, desc: 'Flag indicating the user has a private profile'
-          optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Limit by minimum access level of authenticated user'
           all_or_none_of :extern_uid, :provider
         end
 
@@ -254,7 +256,7 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Get the SSH keys of a specified user. Available only for admins.' do
+      desc 'Get the SSH keys of a specified user.' do
         success Entities::SSHKey
       end
       params do
@@ -263,10 +265,8 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/keys' do
-        authenticated_as_admin!
-
         user = User.find_by(id: params[:id])
-        not_found!('User') unless user
+        not_found!('User') unless user && can?(current_user, :read_user, user)
 
         present paginate(user.keys), with: Entities::SSHKey
       end

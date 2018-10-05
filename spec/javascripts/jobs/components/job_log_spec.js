@@ -15,7 +15,7 @@ describe('Job Log', () => {
   it('renders provided trace', () => {
     vm = mountComponent(Component, {
       trace,
-      isReceivingBuildTrace: true,
+      isComplete: true,
     });
 
     expect(vm.$el.querySelector('code').textContent).toContain('Running with gitlab-runner 11.1.0 (081978aa)');
@@ -25,7 +25,7 @@ describe('Job Log', () => {
     it('renders animation', () => {
       vm = mountComponent(Component, {
         trace,
-        isReceivingBuildTrace: true,
+        isComplete: true,
       });
 
       expect(vm.$el.querySelector('.js-log-animation')).not.toBeNull();
@@ -36,7 +36,7 @@ describe('Job Log', () => {
     it('does not render animation', () => {
       vm = mountComponent(Component, {
         trace,
-        isReceivingBuildTrace: false,
+        isComplete: false,
       });
 
       expect(vm.$el.querySelector('.js-log-animation')).toBeNull();

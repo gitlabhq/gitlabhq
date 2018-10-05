@@ -24,8 +24,8 @@ module Gitlab
       cannot_push_to_read_only: "You can't push code to a read-only GitLab instance."
     }.freeze
 
-    DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }.freeze
-    PUSH_COMMANDS = %w{ git-receive-pack }.freeze
+    DOWNLOAD_COMMANDS = %w{git-upload-pack git-upload-archive}.freeze
+    PUSH_COMMANDS = %w{git-receive-pack}.freeze
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
 
     attr_reader :actor, :project, :protocol, :authentication_abilities, :namespace_path, :project_path, :redirected_path, :auth_result_type, :changes

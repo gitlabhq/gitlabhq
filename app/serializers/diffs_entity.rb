@@ -15,8 +15,13 @@ class DiffsEntity < Grape::Entity
     merge_request&.target_branch
   end
 
-  expose :commit do |diffs|
-    options[:commit]
+  expose :commit do |diffs, options|
+    CommitEntity.represent options[:commit], options.merge(
+      type: :full,
+      commit_url_params: { merge_request_iid: merge_request&.iid },
+      pipeline_ref: merge_request&.source_branch,
+      pipeline_project: merge_request&.source_project
+    )
   end
 
   expose :merge_request_diff, using: MergeRequestDiffEntity do |diffs|

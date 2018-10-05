@@ -132,5 +132,3 @@ your whole GitLab instance as well as in each project.
 - [New CI job permissions model](../user/project/new_ci_build_permissions_model.md)
   Read about what changed in GitLab 8.12 and how that affects your jobs.
   There's a new way to access your Git submodules and LFS objects in jobs.
-
-[gitlab-ci-templates]: https://gitlab.com/gitlab-org/gitlab-ci-yml

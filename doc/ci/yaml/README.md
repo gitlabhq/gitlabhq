@@ -188,7 +188,7 @@ used for time of the job. The configuration of this feature is covered in
 
 ## `before_script` and `after_script`
 
-> Introduced in GitLab 8.7 and requires Gitlab Runner v1.2
+> Introduced in GitLab 8.7 and requires GitLab Runner v1.2
 
 `before_script` is used to define the command that should be run before all
 jobs, including deploy jobs, but after the restoration of [artifacts](#artifacts).
@@ -387,6 +387,8 @@ except master.
 > `refs` and `kubernetes` policies introduced in GitLab 10.0
 >
 > `variables` policy introduced in 10.7
+>
+> `changes` policy [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/19232) in 11.4
 
 CAUTION: **Warning:**
 This an _alpha_ feature, and it it subject to change at any time without
@@ -398,9 +400,14 @@ policy configuration.
 GitLab now supports both, simple and complex strategies, so it is possible to
 use an array and a hash configuration scheme.
 
-Three keys are now available: `refs`, `kubernetes` and `variables`.
+Four keys are now available: `refs`, `kubernetes` and `variables` and `changes`.
+
+### `refs` and `kubernetes`
+
 Refs strategy equals to simplified only/except configuration, whereas
 kubernetes strategy accepts only `active` keyword.
+
+### `variables`
 
 `variables` keyword is used to define variables expressions. In other words
 you can use predefined variables / project / group or
@@ -444,6 +451,46 @@ end-to-end:
 ```
 
 Learn more about variables expressions on [a separate page][variables-expressions].
+
+### `changes`
+
+Using `changes` keyword with `only` or `except` makes it possible to define if
+a job should be created based on files modified by a git push event.
+
+For example:
+
+```yaml
+docker build:
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  only:
+    changes:
+      - Dockerfile
+      - docker/scripts/*
+```
+
+In the scenario above, if you are pushing multiple commits to GitLab to an
+existing branch, GitLab creates and triggers `docker build` job, provided that
+one of the commits contains changes to either:
+
+- The `Dockerfile` file.
+- Any of the files inside `docker/scripts/` directory.
+
+CAUTION: **Warning:**
+There are some caveats when using this feature with new branches and tags. See
+the section below.
+
+#### Using `changes` with new branches and tags
+
+If you are pushing a **new** branch or a **new** tag to GitLab, the policy
+always evaluates to true and GitLab will create a job. This feature is not
+connected with merge requests yet, and because GitLab is creating pipelines
+before an user can create a merge request we don't know a target branch at
+this point.
+
+Without a target branch, it is not possible to know what the common ancestor is,
+thus we always create a job in that case. This feature works best for stable
+branches like `master` because in that case GitLab uses the previous commit
+that is present in a branch to compare against the latest SHA that was pushed.
 
 ## `tags`
 
@@ -492,6 +539,7 @@ osx job:
 
 `allow_failure` is used when you want to allow a job to fail without impacting
 the rest of the CI suite. Failed jobs don't contribute to the commit status.
+The default value is `false`.
 
 When enabled and the job fails, the pipeline will be successful/green for all
 intents and purposes, but a "CI build passed with warnings" message  will be

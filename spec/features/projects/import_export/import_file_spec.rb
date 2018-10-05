@@ -21,8 +21,9 @@ describe 'Import/Export - project import integration test', :js do
   context 'when selecting the namespace' do
     let(:user) { create(:admin) }
     let!(:namespace) { user.namespace }
-    let(:project_name) { 'Test Project Name' + SecureRandom.hex }
-    let(:project_path) { 'test-project-path' + SecureRandom.hex }
+    let(:randomHex) { SecureRandom.hex }
+    let(:project_name) { 'Test Project Name' + randomHex }
+    let(:project_path) { 'test-project-name' + randomHex }
 
     context 'prefilled the path' do
       it 'user imports an exported project successfully' do
@@ -30,7 +31,6 @@ describe 'Import/Export - project import integration test', :js do
 
         select2(namespace.id, from: '#project_namespace_id')
         fill_in :project_name, with: project_name, visible: true
-        fill_in :project_path, with: project_path, visible: true
         click_import_project_tab
         click_link 'GitLab export'
 
@@ -79,7 +79,6 @@ describe 'Import/Export - project import integration test', :js do
 
     select2(user.namespace.id, from: '#project_namespace_id')
     fill_in :project_name, with: project.name, visible: true
-    fill_in :project_path, with: project.path, visible: true
     click_import_project_tab
     click_link 'GitLab export'
     attach_file('file', file)

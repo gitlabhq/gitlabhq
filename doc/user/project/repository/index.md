@@ -158,7 +158,9 @@ Find it under your project's **Repository > Graph**.
 ## Repository Languages
 
 For the default branch of each repository, GitLab will determine what programming languages
-were used and display this on the projects pages.
+were used and display this on the projects pages. If this information is missing, it will
+be added after updating the default branch on the project. This process can take up to 5
+minutes.
 
 ![Repository Languages bar](img/repository_languages.png)
 

@@ -19,7 +19,7 @@ module QA
           fill_in :new_user_password, with: user.password
           click_button 'Register'
 
-          Page::Menu::Main.act { has_personal_area? }
+          Page::Menu::Main.act { assert_has_personal_area }
         end
       end
     end

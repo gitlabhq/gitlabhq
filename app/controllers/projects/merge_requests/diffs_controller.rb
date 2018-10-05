@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::MergeRequests::DiffsController < Projects::MergeRequests::ApplicationController
   include DiffForPath
   include DiffHelper
@@ -23,7 +25,13 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
     @diffs.write_cache
 
-    render json: DiffsSerializer.new(current_user: current_user).represent(@diffs, additional_attributes)
+    request = {
+      current_user: current_user,
+      project: @merge_request.project,
+      render: ->(partial, locals) { view_to_html_string(partial, locals) }
+    }
+
+    render json: DiffsSerializer.new(request).represent(@diffs, additional_attributes)
   end
 
   def define_diff_vars

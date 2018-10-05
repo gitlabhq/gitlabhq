@@ -114,6 +114,8 @@ export default {
   },
   beforeDestroy() {
     eventHub.$off('mr.discussion.updated', this.checkStatus);
+    this.pollingInterval.destroy();
+    this.deploymentsInterval.destroy();
   },
   methods: {
     createService(store) {

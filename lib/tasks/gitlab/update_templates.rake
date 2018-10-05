@@ -100,10 +100,6 @@ namespace :gitlab do
       /(\.{1,2}|LICENSE|Global|\.gitignore)\z/
     ),
     Template.new(
-      "https://gitlab.com/gitlab-org/gitlab-ci-yml.git",
-      /(\.{1,2}|LICENSE|CONTRIBUTING.md|Pages|autodeploy|\.gitlab-ci.yml)\z/
-    ),
-    Template.new(
       "https://gitlab.com/gitlab-org/Dockerfile.git",
       /(\.{1,2}|LICENSE|CONTRIBUTING.md|\.Dockerfile)\z/
     )

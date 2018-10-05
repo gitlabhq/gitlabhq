@@ -29,8 +29,14 @@ class UsersController < ApplicationController
 
       format.json do
         load_events
-        pager_json("events/_events", @events.count)
+        pager_json("events/_events", @events.count, events: @events)
       end
+    end
+  end
+
+  def activity
+    respond_to do |format|
+      format.html { render 'show' }
     end
   end
 
@@ -53,9 +59,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.html { render 'show' }
       format.json do
-        render json: {
-          html: view_to_html_string("shared/projects/_list", projects: @projects)
-        }
+        pager_json("shared/projects/_list", @projects.count, projects: @projects)
       end
     end
   end
@@ -125,6 +129,7 @@ class UsersController < ApplicationController
     @projects =
       PersonalProjectsFinder.new(user).execute(current_user)
       .page(params[:page])
+      .per(params[:limit])
 
     prepare_projects_for_rendering(@projects)
   end
