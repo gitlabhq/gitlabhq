@@ -33,6 +33,11 @@
   color: $brand-danger;
 }
 
+.text-danger-muted,
+.text-danger-muted:hover {
+  color: $red-300;
+}
+
 .text-warning,
 .text-warning:hover {
   color: $brand-warning;
@@ -41,11 +46,6 @@
 .text-info,
 .text-info:hover {
   color: $brand-info;
-}
-
-.text-danger-muted,
-.text-danger-muted:hover {
-  color: $red-300;
 }
 
 .hint { font-style: italic; color: $gl-gray-400; }
