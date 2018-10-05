@@ -347,6 +347,14 @@ describe Project do
                 it 'returns true' do
                   is_expected.to eq(true)
                 end
+
+                context 'when feature is disabled by a feature flag' do
+                  it 'returns false' do
+                    stub_feature_flags(feature => false)
+
+                    is_expected.to eq(false)
+                  end
+                end
               end
 
               context 'not allowed by Plan License but project and namespace are public' do
