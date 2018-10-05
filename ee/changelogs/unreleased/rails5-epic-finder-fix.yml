@@ -1,0 +1,6 @@
+---
+title: 'Rails5: Fix epics finder count_key method In Rails5, the state enum value
+  is passed instead of the database integer.'
+merge_request: 7822
+author: Jasper Maes
+type: other
