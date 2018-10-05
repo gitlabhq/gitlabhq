@@ -1,5 +1,0 @@
----
-title: Markdown API no longer displays confidential title references unless authorized
-merge_request:
-author:
-type: security

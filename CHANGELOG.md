@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.1.8 (2018-10-05)
+
+### Security (3 changes)
+
+- Filter user sensitive data from discussions JSON. !2539
+- Properly filter private references from system notes.
+- Markdown API no longer displays confidential title references unless authorized.
+
+
 ## 11.1.7 (2018-09-26)
 
 ### Security (6 changes)
