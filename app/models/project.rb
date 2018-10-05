@@ -55,8 +55,8 @@ class Project < ActiveRecord::Base
   cache_markdown_field :description, pipeline: :description
 
   delegate :feature_available?, :builds_enabled?, :wiki_enabled?,
-           :merge_requests_enabled?, :issues_enabled?, to: :project_feature,
-                                                       allow_nil: true
+           :merge_requests_enabled?, :issues_enabled?, :pages_enabled?, :public_pages?,
+           to: :project_feature, allow_nil: true
 
   delegate :base_dir, :disk_path, :ensure_storage_path_exists, to: :storage
 
@@ -356,7 +356,7 @@ class Project < ActiveRecord::Base
   # "enabled" here means "not disabled". It includes private features!
   scope :with_feature_enabled, ->(feature) {
     access_level_attribute = ProjectFeature.access_level_attribute(feature)
-    with_project_feature.where(project_features: { access_level_attribute => [nil, ProjectFeature::PRIVATE, ProjectFeature::ENABLED] })
+    with_project_feature.where(project_features: { access_level_attribute => [nil, ProjectFeature::PRIVATE, ProjectFeature::ENABLED, ProjectFeature::PUBLIC] })
   }
 
   # Picks a feature where the level is exactly that given.
@@ -418,15 +418,15 @@ class Project < ActiveRecord::Base
     end
   end
 
-  # project features may be "disabled", "internal" or "enabled". If "internal",
+  # project features may be "disabled", "internal", "enabled" or "public". If "internal",
   # they are only available to team members. This scope returns projects where
-  # the feature is either enabled, or internal with permission for the user.
+  # the feature is either public, enabled, or internal with permission for the user.
   #
   # This method uses an optimised version of `with_feature_access_level` for
   # logged in users to more efficiently get private projects with the given
   # feature.
   def self.with_feature_available_for_user(feature, user)
-    visible = [nil, ProjectFeature::ENABLED]
+    visible = [nil, ProjectFeature::ENABLED, ProjectFeature::PUBLIC]
 
     if user&.admin?
       with_feature_enabled(feature)

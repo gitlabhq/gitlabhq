@@ -256,7 +256,7 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Get the SSH keys of a specified user. Available only for admins.' do
+      desc 'Get the SSH keys of a specified user.' do
         success Entities::SSHKey
       end
       params do
@@ -265,10 +265,8 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/keys' do
-        authenticated_as_admin!
-
         user = User.find_by(id: params[:id])
-        not_found!('User') unless user
+        not_found!('User') unless user && can?(current_user, :read_user, user)
 
         present paginate(user.keys), with: Entities::SSHKey
       end

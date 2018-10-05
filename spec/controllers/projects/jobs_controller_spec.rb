@@ -225,7 +225,6 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to match_schema('job/job_details')
           expect(json_response['deployment_status']["status"]).to eq 'creating'
-          expect(json_response['deployment_status']["icon"]).to eq 'passed'
           expect(json_response['deployment_status']["environment"]).not_to be_nil
         end
       end

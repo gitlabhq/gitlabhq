@@ -5,6 +5,8 @@ module QA
     module Project
       module Issue
         class Show < Page::Base
+          include Page::Component::Issuable::Common
+
           view 'app/views/projects/issues/show.html.haml' do
             element :issue_details, '.issue-details'
             element :title, '.title'

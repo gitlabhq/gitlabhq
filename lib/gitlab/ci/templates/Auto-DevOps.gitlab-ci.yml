@@ -689,9 +689,6 @@ rollout 100%:
     helm version --client
     tiller -version
 
-    helm init --client-only
-    helm plugin install https://github.com/adamreese/helm-local
-
     curl -L -o /usr/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBERNETES_VERSION}/bin/linux/amd64/kubectl"
     chmod +x /usr/bin/kubectl
     kubectl version --client
@@ -800,9 +797,9 @@ rollout 100%:
   function initialize_tiller() {
     echo "Checking Tiller..."
 
-    helm local start
-    helm local status
     export HELM_HOST=":44134"
+    tiller -listen ${HELM_HOST} -alsologtostderr > /dev/null 2>&1 &
+    echo "Tiller is listening on ${HELM_HOST}"
 
     if ! helm version --debug; then
       echo "Failed to init Tiller."

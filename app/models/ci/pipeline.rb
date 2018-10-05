@@ -633,6 +633,18 @@ module Ci
       end
     end
 
+    def branch_updated?
+      strong_memoize(:branch_updated) do
+        push_details.branch_updated?
+      end
+    end
+
+    def modified_paths
+      strong_memoize(:modified_paths) do
+        push_details.modified_paths
+      end
+    end
+
     def default_branch?
       ref == project.default_branch
     end
@@ -658,6 +670,22 @@ module Ci
 
     def pipeline_data
       Gitlab::DataBuilder::Pipeline.build(self)
+    end
+
+    def push_details
+      strong_memoize(:push_details) do
+        Gitlab::Git::Push.new(project, before_sha, sha, push_ref)
+      end
+    end
+
+    def push_ref
+      if branch?
+        Gitlab::Git::BRANCH_REF_PREFIX + ref.to_s
+      elsif tag?
+        Gitlab::Git::TAG_REF_PREFIX + ref.to_s
+      else
+        raise ArgumentError, 'Invalid pipeline type!'
+      end
     end
 
     def latest_builds_status

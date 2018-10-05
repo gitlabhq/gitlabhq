@@ -72,7 +72,11 @@ module Projects
         system_hook_service.execute_hooks_for(project, :update)
       end
 
-      update_pages_config if changing_pages_https_only?
+      update_pages_config if changing_pages_related_config?
+    end
+
+    def changing_pages_related_config?
+      changing_pages_https_only? || changing_pages_access_level?
     end
 
     def update_failed!
@@ -100,6 +104,10 @@ module Projects
       return false if project.wiki_enabled?
 
       params.dig(:project_feature_attributes, :wiki_access_level).to_i > ProjectFeature::DISABLED
+    end
+
+    def changing_pages_access_level?
+      params.dig(:project_feature_attributes, :pages_access_level)
     end
 
     def ensure_wiki_exists

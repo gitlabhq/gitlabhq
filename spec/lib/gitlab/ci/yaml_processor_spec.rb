@@ -1369,12 +1369,20 @@ module Gitlab
           end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec dependencies should be an array of strings")
         end
 
-        it 'returns errors if pipeline variables expression is invalid' do
+        it 'returns errors if pipeline variables expression policy is invalid' do
           config = YAML.dump({ rspec: { script: 'test', only: { variables: ['== null'] } } })
 
           expect { Gitlab::Ci::YamlProcessor.new(config) }
             .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
                             'jobs:rspec:only variables invalid expression syntax')
+        end
+
+        it 'returns errors if pipeline changes policy is invalid' do
+          config = YAML.dump({ rspec: { script: 'test', only: { changes: [1] } } })
+
+          expect { Gitlab::Ci::YamlProcessor.new(config) }
+            .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
+                            'jobs:rspec:only changes should be an array of strings')
         end
 
         it 'returns errors if extended hash configuration is invalid' do
