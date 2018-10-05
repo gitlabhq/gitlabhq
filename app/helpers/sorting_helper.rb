@@ -149,7 +149,7 @@ module SortingHelper
       reverse_url = page_filter_path(sort: reverse_sort)
     else
       reverse_url = '#'
-      link_class << ' disabled'
+      link_class += ' disabled'
     end
 
     link_to(reverse_url, type: 'button', class: link_class) do
