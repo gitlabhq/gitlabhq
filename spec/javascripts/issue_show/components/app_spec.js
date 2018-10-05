@@ -18,9 +18,8 @@ describe('Issuable output', () => {
   let realtimeRequestCount = 0;
   let vm;
 
-  document.body.innerHTML = '<div class="flash-container"></div><span id="task_status"></span>';
-
   beforeEach(done => {
+    setFixtures('<div class="flash-container"></div><span id="task_status"></span>');
     spyOn(eventHub, '$emit');
 
     const IssuableDescriptionComponent = Vue.extend(issuableApp);
@@ -154,7 +153,7 @@ describe('Issuable output', () => {
       spyOn(vm.service, 'updateIssuable').and.callFake(() =>
         Promise.resolve({
           data: {
-            web_url: location.pathname,
+            web_url: window.location.pathname,
             confidential: vm.isConfidential,
           },
         }),
@@ -245,7 +244,7 @@ describe('Issuable output', () => {
 
     describe('error when updating', () => {
       beforeEach(() => {
-        spyOn(window, 'Flash').and.callThrough();
+        spyOn(window, 'Flash').and.stub();
         spyOn(vm.service, 'updateIssuable').and.callFake(
           () =>
             new Promise((resolve, reject) => {
@@ -284,16 +283,16 @@ describe('Issuable output', () => {
   it('shows error if issue description changed while editing', done => {
     const errorMessage = 'Someone else has edited the issue';
     spyOn(window, 'Flash');
-    spyOn(vm.service, 'updateIssuable').and.callFake(() =>
-      Promise.reject({
-        response: {
-          status: 409,
-          data: {
-            errors: errorMessage,
-          },
+    spyOn(vm.service, 'updateIssuable').and.callFake(() => {
+      const error = new Error('Someone edited issue at same time');
+      error.response = {
+        status: 409,
+        data: {
+          errors: errorMessage,
         },
-      }),
-    );
+      };
+      return Promise.reject(error);
+    });
 
     vm
       .updateIssuable()
