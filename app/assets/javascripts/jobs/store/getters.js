@@ -51,7 +51,7 @@ export const isJobStuck = state =>
 
 // ee-only start
 export const shouldRenderSharedRunnerLimitWarning = state =>
-  state.job.runner && state.job.runner.quota && state.job.ruuner.quota.used;
+  state.job.runners && state.job.runners.quota && state.job.runners.quota.used;
 // ee-only end
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

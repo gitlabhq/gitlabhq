@@ -326,7 +326,7 @@ describe SystemNoteService do
     end
 
     it "posts the 'merge when pipeline succeeds' system note" do
-      expect(subject.note).to eq  "canceled the automatic merge"
+      expect(subject.note).to eq "canceled the automatic merge"
     end
   end
 

@@ -38,7 +38,9 @@ discussions, and descriptions:
 | `/remove_estimate`       | Remove time estimate             | ✓     | ✓             |
 | <code>/spend &lt;time(1h 30m &#124; -1h 5m)&gt; &lt;date(YYYY-MM-DD)&gt;</code> | Add or subtract spent time; optionally, specify the date that time was spent on | ✓     | ✓             |
 | `/remove_time_spent`       | Remove time spent              | ✓     | ✓             |
-| <code>/due &lt;in 2 days &#124; this Friday &#124; December 31st&gt;</code>| Set due date | ✓ |
+| `/lock`                    | Lock the discussion            | ✓     | ✓             |
+| `/unlock`                  | Unlock the discussion          | ✓     | ✓             |
+| <code>/due &lt;in 2 days &#124; this Friday &#124; December 31st&gt;</code>| Set due date | ✓ | |
 | `/remove_due_date`         | Remove due date                | ✓     |               |
 | `/weight 0,1,2, ...`       | Set weight **[STARTER]**       | ✓     |               |
 | `/clear_weight`            | Clears weight **[STARTER]**    | ✓     |               |

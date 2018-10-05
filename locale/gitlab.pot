@@ -32,6 +32,11 @@ msgid_plural " improved on %d points"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d addition"
+msgid_plural "%d additions"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d changed file"
 msgid_plural "%d changed files"
 msgstr[0] ""
@@ -44,6 +49,11 @@ msgstr[1] ""
 
 msgid "%d commit behind"
 msgid_plural "%d commits behind"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d deleted"
+msgid_plural "%d deletions"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1522,6 +1532,9 @@ msgid "CircuitBreakerApiLink|circuitbreaker api"
 msgstr ""
 
 msgid "ClassificationLabelUnavailable|is unavailable: %{reason}"
+msgstr ""
+
+msgid "Clear search"
 msgstr ""
 
 msgid "Clear search input"
@@ -3165,6 +3178,9 @@ msgstr ""
 msgid "Failed to check related branches."
 msgstr ""
 
+msgid "Failed to load emoji list."
+msgstr ""
+
 msgid "Failed to remove issue from board, please try again."
 msgstr ""
 
@@ -4790,6 +4806,12 @@ msgstr ""
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
 msgstr ""
 
+msgid "MergeRequest|Filter files"
+msgstr ""
+
+msgid "MergeRequest|No files found"
+msgstr ""
+
 msgid "Merged"
 msgstr ""
 
@@ -5152,9 +5174,6 @@ msgstr ""
 msgid "No file chosen"
 msgstr ""
 
-msgid "No files found"
-msgstr ""
-
 msgid "No files found."
 msgstr ""
 
@@ -5500,9 +5519,6 @@ msgid "Personal Access Token"
 msgstr ""
 
 msgid "Pipeline"
-msgstr ""
-
-msgid "Pipeline %{pipelineLinkStart} #%{pipelineId} %{pipelineLinkEnd} from %{pipelineLinkRefStart} %{pipelineRef} %{pipelineLinkRefEnd}"
 msgstr ""
 
 msgid "Pipeline Health"
@@ -6916,6 +6932,30 @@ msgstr ""
 msgid "SetPasswordToCloneLink|set a password"
 msgstr ""
 
+msgid "SetStatusModal|Add status emoji"
+msgstr ""
+
+msgid "SetStatusModal|Clear status"
+msgstr ""
+
+msgid "SetStatusModal|Edit status"
+msgstr ""
+
+msgid "SetStatusModal|Remove status"
+msgstr ""
+
+msgid "SetStatusModal|Set a status"
+msgstr ""
+
+msgid "SetStatusModal|Set status"
+msgstr ""
+
+msgid "SetStatusModal|Sorry, we weren't able to set your status. Please try again later."
+msgstr ""
+
+msgid "SetStatusModal|What's your status?"
+msgstr ""
+
 msgid "Settings"
 msgstr ""
 
@@ -8037,6 +8077,9 @@ msgstr ""
 msgid "Toggle discussion"
 msgstr ""
 
+msgid "Toggle file browser"
+msgstr ""
+
 msgid "Toggle navigation"
 msgstr ""
 
@@ -9035,6 +9078,9 @@ msgid "estimateCommand|%{slash_command} will update the estimated time with the 
 msgstr ""
 
 msgid "for this project"
+msgstr ""
+
+msgid "from"
 msgstr ""
 
 msgid "here"

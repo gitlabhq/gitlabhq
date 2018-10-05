@@ -62,7 +62,9 @@ export const fetchJob = ({ state, dispatch }) => {
   });
 };
 
-export const receiveJobSuccess = ({ commit }, data) => commit(types.RECEIVE_JOB_SUCCESS, data);
+export const receiveJobSuccess = ({ commit }, data) => {
+  commit(types.RECEIVE_JOB_SUCCESS, data);
+};
 export const receiveJobError = ({ commit }) => {
   commit(types.RECEIVE_JOB_ERROR);
   flash(__('An error occurred while fetching the job.'));
@@ -137,8 +139,11 @@ export const fetchStages = ({ state, dispatch }) => {
   dispatch('requestStages');
 
   axios
-    .get(state.stagesEndpoint)
-    .then(({ data }) => dispatch('receiveStagesSuccess', data))
+    .get(state.job.pipeline.path)
+    .then(({ data }) => {
+      dispatch('receiveStagesSuccess', data.details.stages);
+      dispatch('fetchJobsForStage', data.details.stages[0]);
+    })
     .catch(() => dispatch('receiveStagesError'));
 };
 export const receiveStagesSuccess = ({ commit }, data) =>
@@ -152,16 +157,23 @@ export const receiveStagesError = ({ commit }) => {
  * Jobs list on sidebar - depend on stages dropdown
  */
 export const requestJobsForStage = ({ commit }) => commit(types.REQUEST_JOBS_FOR_STAGE);
-export const setSelectedStage = ({ commit }, stage) => commit(types.SET_SELECTED_STAGE, stage);
 
 // On stage click, set selected stage + fetch job
-export const fetchJobsForStage = ({ state, dispatch }, stage) => {
-  dispatch('setSelectedStage', stage);
+export const fetchJobsForStage = ({ dispatch }, stage) => {
   dispatch('requestJobsForStage');
 
   axios
-    .get(state.stageJobsEndpoint)
-    .then(({ data }) => dispatch('receiveJobsForStageSuccess', data))
+    .get(stage.dropdown_path, {
+      params: {
+        retried: 1,
+      },
+    })
+    .then(({ data }) => {
+      const retriedJobs = data.retried.map(job => Object.assign({}, job, { retried: true }));
+      const jobs = data.latest_statuses.concat(retriedJobs);
+
+      dispatch('receiveJobsForStageSuccess', jobs);
+    })
     .catch(() => dispatch('receiveJobsForStageError'));
 };
 export const receiveJobsForStageSuccess = ({ commit }, data) =>

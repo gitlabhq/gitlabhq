@@ -56,7 +56,7 @@ describe('Commit block', () => {
         props.mergeRequest.path,
       );
       expect(vm.$el.querySelector('.js-link-commit').textContent.trim()).toEqual(
-        props.mergeRequest.iid,
+        `!${props.mergeRequest.iid}`,
       );
     });
   });

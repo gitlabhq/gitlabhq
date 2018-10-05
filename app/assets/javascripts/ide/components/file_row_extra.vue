@@ -3,8 +3,8 @@ import { mapGetters } from 'vuex';
 import { n__, __, sprintf } from '~/locale';
 import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
+import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
 import NewDropdown from './new_dropdown/index.vue';
-import ChangedFileIcon from './changed_file_icon.vue';
 import MrFileIcon from './mr_file_icon.vue';
 
 export default {

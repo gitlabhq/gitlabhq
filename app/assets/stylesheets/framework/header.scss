@@ -529,9 +529,10 @@
 }
 
 .header-user {
-  .dropdown-menu {
+  &.show .dropdown-menu {
     width: auto;
     min-width: unset;
+    max-height: 323px;
     margin-top: 4px;
     color: $gl-text-color;
     left: auto;
@@ -541,6 +542,18 @@
 
       .user-name {
         display: block;
+      }
+
+      .user-status-emoji {
+        margin-right: 0;
+        display: block;
+        vertical-align: text-top;
+        max-width: 148px;
+        font-size: 12px;
+
+        gl-emoji {
+          font-size: $gl-font-size;
+        }
       }
     }
 
@@ -571,5 +584,26 @@
     img {
       height: 36px;
     }
+  }
+}
+
+.set-user-status-modal {
+  .modal-body {
+    min-height: unset;
+  }
+
+  .input-lg {
+    max-width: unset;
+  }
+
+  .no-emoji-placeholder,
+  .clear-user-status {
+    svg {
+      fill: $gl-text-color-secondary;
+    }
+  }
+
+  .emoji-menu-toggle-button {
+    @include emoji-menu-toggle-button;
   }
 }

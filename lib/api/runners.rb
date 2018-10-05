@@ -113,7 +113,7 @@ module API
         optional :status, type: String, desc: 'Status of the job', values: Ci::Build::AVAILABLE_STATUSES
         use :pagination
       end
-      get  ':id/jobs' do
+      get ':id/jobs' do
         runner = get_runner(params[:id])
         authenticate_list_runners_jobs!(runner)
 

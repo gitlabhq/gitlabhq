@@ -41,6 +41,28 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         end
       end
 
+      context 'with shared runner quota exceeded' do
+        let(:group) { create(:group, :with_used_build_minutes_limit) }
+        let(:project) { create(:project, :repository, namespace: group, shared_runners_enabled: true) }
+        let(:runner) { create(:ci_runner, :instance, description: 'Shared runner') }
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+        let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline, runner: runner) }
+
+        before do
+          project.add_developer(user)
+          sign_in(user)
+
+          get_show(id: job.id, format: :json)
+        end
+
+        it 'exposes quota information' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('job/job_details', dir: 'ee')
+          expect(json_response['runners']['quota']['used']).to eq 1000
+          expect(json_response['runners']['quota']['limit']).to eq 500
+        end
+      end
+
       context 'when shared runner has no quota' do
         let(:project) { create(:project, :private, shared_runners_enabled: true) }
         let(:merge_request) { create(:merge_request, source_project: project) }

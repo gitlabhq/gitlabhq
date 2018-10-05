@@ -434,9 +434,11 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
         collection do
           post :bulk_update
-          post :export_csv
 
-          get :service_desk ## EE-specific
+          ## EE-specific START
+          post :export_csv
+          get :service_desk
+          ## EE-specific END
         end
 
         resources :issue_links, only: [:index, :create, :destroy], as: 'links', path: 'links'

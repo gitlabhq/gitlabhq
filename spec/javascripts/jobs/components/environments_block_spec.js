@@ -22,7 +22,7 @@ describe('Environments block', () => {
     vm.$destroy();
   });
 
-  describe('with latest deployment', () => {
+  describe('with last deployment', () => {
     it('renders info for most recent deployment', () => {
       vm = mountComponent(Component, {
         deploymentStatus: {

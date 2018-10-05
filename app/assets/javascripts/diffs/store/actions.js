@@ -12,6 +12,7 @@ import {
   PARALLEL_DIFF_VIEW_TYPE,
   INLINE_DIFF_VIEW_TYPE,
   DIFF_VIEW_COOKIE_NAME,
+  MR_TREE_SHOW_KEY,
 } from '../constants';
 
 export const setBaseConfig = ({ commit }, options) => {
@@ -193,6 +194,24 @@ export const saveDiffDiscussion = ({ dispatch }, { note, formData }) => {
       dispatch('assignDiscussionsToDiff', reduceDiscussionsToLineCodes([discussion])),
     )
     .catch(() => createFlash(s__('MergeRequests|Saving the comment failed')));
+};
+
+export const toggleTreeOpen = ({ commit }, path) => {
+  commit(types.TOGGLE_FOLDER_OPEN, path);
+};
+
+export const scrollToFile = ({ state, commit }, path) => {
+  const { fileHash } = state.treeEntries[path];
+  document.location.hash = fileHash;
+
+  commit(types.UPDATE_CURRENT_DIFF_FILE_ID, fileHash);
+
+  setTimeout(() => commit(types.UPDATE_CURRENT_DIFF_FILE_ID, ''), 1000);
+};
+
+export const toggleShowTreeList = ({ commit, state }) => {
+  commit(types.TOGGLE_SHOW_TREE_LIST);
+  localStorage.setItem(MR_TREE_SHOW_KEY, state.showTreeList);
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

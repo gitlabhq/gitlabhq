@@ -13,7 +13,7 @@ class AddForeignKeyPipelineSchedulesAndPipelines < ActiveRecord::Migration
         'SET NULL'
       end
 
-    add_concurrent_foreign_key  :ci_pipelines, :ci_pipeline_schedules,
+    add_concurrent_foreign_key :ci_pipelines, :ci_pipeline_schedules,
       column: :pipeline_schedule_id, on_delete: on_delete
   end
 

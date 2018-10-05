@@ -5,22 +5,22 @@ import { __ } from '~/locale';
 import createFlash from '~/flash';
 import eventHub from '../../notes/event_hub';
 import CompareVersions from './compare_versions.vue';
-import ChangedFiles from './changed_files.vue';
 import DiffFile from './diff_file.vue';
 import NoChanges from './no_changes.vue';
 import HiddenFilesWarning from './hidden_files_warning.vue';
 import CommitWidget from './commit_widget.vue';
+import TreeList from './tree_list.vue';
 
 export default {
   name: 'DiffsApp',
   components: {
     Icon,
     CompareVersions,
-    ChangedFiles,
     DiffFile,
     NoChanges,
     HiddenFilesWarning,
     CommitWidget,
+    TreeList,
   },
   props: {
     endpoint: {
@@ -58,6 +58,7 @@ export default {
       plainDiffPath: state => state.diffs.plainDiffPath,
       emailPatchPath: state => state.diffs.emailPatchPath,
     }),
+    ...mapState('diffs', ['showTreeList']),
     ...mapGetters('diffs', ['isParallelView']),
     ...mapGetters(['isNotesFetched', 'discussionsStructuredByLineCode']),
     targetBranch() {
@@ -88,6 +89,9 @@ export default {
     canCurrentUserFork() {
       return this.currentUser.canFork === true && this.currentUser.canCreateMergeRequest;
     },
+    showCompareVersions() {
+      return this.mergeRequestDiffs && this.mergeRequestDiff;
+    },
   },
   watch: {
     diffViewType() {
@@ -102,6 +106,8 @@ export default {
 
       this.adjustView();
     },
+    isLoading: 'adjustView',
+    showTreeList: 'adjustView',
   },
   mounted() {
     this.setBaseConfig({ endpoint: this.endpoint, projectPath: this.projectPath });
@@ -152,10 +158,11 @@ export default {
       }
     },
     adjustView() {
-      if (this.shouldShow && this.isParallelView) {
-        window.mrTabs.expandViewContainer();
-      } else {
-        window.mrTabs.resetViewContainer();
+      if (this.shouldShow) {
+        this.$nextTick(() => {
+          window.mrTabs.resetViewContainer();
+          window.mrTabs.expandViewContainer(this.showTreeList);
+        });
       }
     },
   },
@@ -177,7 +184,7 @@ export default {
       class="diffs tab-pane"
     >
       <compare-versions
-        v-if="!commit && mergeRequestDiffs.length > 1"
+        v-if="showCompareVersions"
         :merge-request-diffs="mergeRequestDiffs"
         :merge-request-diff="mergeRequestDiff"
         :start-version="startVersion"
@@ -215,22 +222,26 @@ export default {
         :commit="commit"
       />
 
-      <changed-files
-        :diff-files="diffFiles"
-      />
-
-      <div
-        v-if="diffFiles.length > 0"
-        class="files"
-      >
-        <diff-file
-          v-for="file in diffFiles"
-          :key="file.newPath"
-          :file="file"
-          :can-current-user-fork="canCurrentUserFork"
-        />
+      <div class="files d-flex prepend-top-default">
+        <div
+          v-show="showTreeList"
+          class="diff-tree-list"
+        >
+          <tree-list />
+        </div>
+        <div
+          v-if="diffFiles.length > 0"
+          class="diff-files-holder"
+        >
+          <diff-file
+            v-for="file in diffFiles"
+            :key="file.newPath"
+            :file="file"
+            :can-current-user-fork="canCurrentUserFork"
+          />
+        </div>
+        <no-changes v-else />
       </div>
-      <no-changes v-else />
     </div>
   </div>
 </template>

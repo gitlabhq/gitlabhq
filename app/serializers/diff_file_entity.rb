@@ -84,7 +84,7 @@ class DiffFileEntity < Grape::Entity
   end
 
   expose :old_path_html do |diff_file|
-    old_path = mark_inline_diffs(diff_file.old_path, diff_file.new_path)
+    old_path, _ = mark_inline_diffs(diff_file.old_path, diff_file.new_path)
     old_path
   end
 
