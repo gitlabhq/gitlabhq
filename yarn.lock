@@ -617,9 +617,9 @@
     to-fast-properties "^2.0.0"
 
 "@gitlab-org/gitlab-svgs@^1.23.0", "@gitlab-org/gitlab-svgs@^1.29.0":
-  version "1.30.0"
-  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.30.0.tgz#72dca2fb67bafb3c975a322dc6406aaa29aed86c"
-  integrity sha512-Spx4GQg2TWB7VtaohgnGHmOPiF/eiXGg3n8NxpEqTR0k+dqlDs9BQHRI9H/koW9goVFrQfHEZpLz4sUkGCuAfQ==
+  version "1.31.0"
+  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.31.0.tgz#495b074669f93af40e34f9978ce887773dea470a"
+  integrity sha512-tJbf99XX/ddFkXCXxQr9a0GJD9rPVoW3qMbU14dkxwG4WBmPEoVg+e7sLvm9OWTD1uUqiVW3qWKp++SGhhcRlw==
 
 "@gitlab-org/gitlab-ui@^1.8.0":
   version "1.8.0"
