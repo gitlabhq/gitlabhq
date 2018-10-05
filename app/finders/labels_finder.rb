@@ -17,6 +17,7 @@ class LabelsFinder < UnionFinder
     @skip_authorization = skip_authorization
     items = find_union(label_ids, Label) || Label.none
     items = with_title(items)
+    items = by_subscription(items)
     items = by_search(items)
     sort(items)
   end
@@ -82,6 +83,18 @@ class LabelsFinder < UnionFinder
     return labels unless search?
 
     labels.search(params[:search])
+  end
+
+  def by_subscription(labels)
+    labels.optionally_subscribed_by(subscriber_id)
+  end
+
+  def subscriber_id
+    current_user&.id if subscribed?
+  end
+
+  def subscribed?
+    params[:subscribed] == 'true'
   end
 
   # Gets redacted array of group ids

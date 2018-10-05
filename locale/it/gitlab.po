@@ -360,7 +360,7 @@ msgstr ""
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
 msgstr "L'accesso agli storages è stato temporaneamente disabilitato per consentire il mount di ripristino. Resetta le info d'archiviazione dopo che l'issue è stato risolto per consentire nuovamente l'accesso."
 
-msgid "Access your runner token, customize your pipeline configuration, and view your pipeline status and coverage report."
+msgid "Customize your pipeline configuration, view your pipeline status and coverage report."
 msgstr ""
 
 msgid "Account"

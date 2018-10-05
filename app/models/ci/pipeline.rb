@@ -633,6 +633,10 @@ module Ci
       end
     end
 
+    def default_branch?
+      ref == project.default_branch
+    end
+
     private
 
     def ci_yaml_from_repo

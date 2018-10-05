@@ -330,7 +330,7 @@ msgstr ""
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
 msgstr "오동작중인 저장공간에 대한 접근이 복구 작업을 위해 마운트할 수 있도록 임시로 허용되었습니다. 문제가 해결된 후 다시 접근을 허용할 수 있게 저장공간 정보를 리셋 해주세요."
 
-msgid "Access your runner token, customize your pipeline configuration, and view your pipeline status and coverage report."
+msgid "Customize your pipeline configuration, view your pipeline status and coverage report."
 msgstr ""
 
 msgid "Account"
