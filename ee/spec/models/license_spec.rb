@@ -569,6 +569,26 @@ describe License do
           end
         end
       end
+
+      context 'when feature is disabled by a feature flag' do
+        it 'returns false' do
+          feature = license.features.first
+          stub_feature_flags(feature => false)
+
+          expect(license.features).not_to receive(:include?)
+
+          expect(license.feature_available?(feature)).to eq(false)
+        end
+      end
+
+      context 'when feature is enabled by a feature flag' do
+        it 'returns true' do
+          feature = license.features.first
+          stub_feature_flags(feature => true)
+
+          expect(license.feature_available?(feature)).to eq(true)
+        end
+      end
     end
 
     def build_license_with_add_ons(add_ons, plan: nil)
