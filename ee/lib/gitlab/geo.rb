@@ -111,10 +111,10 @@ module Gitlab
     end
 
     def self.repository_verification_enabled?
-      feature = Feature.get('geo_repository_verification')
+      feature = ::Feature.get('geo_repository_verification')
 
       # If the feature has been set, always evaluate
-      if Feature.persisted?(feature)
+      if ::Feature.persisted?(feature)
         return feature.enabled?
       else
         true

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180930171532) do
+ActiveRecord::Schema.define(version: 20181001172651) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1076,6 +1076,10 @@ ActiveRecord::Schema.define(version: 20180930171532) do
 
   add_index "gcp_clusters", ["project_id"], name: "index_gcp_clusters_on_project_id", unique: true, using: :btree
 
+  create_table "geo_cache_invalidation_events", id: :bigserial, force: :cascade do |t|
+    t.string "key", null: false
+  end
+
   create_table "geo_event_log", id: :bigserial, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "repository_updated_event_id", limit: 8
@@ -1089,8 +1093,10 @@ ActiveRecord::Schema.define(version: 20180930171532) do
     t.integer "job_artifact_deleted_event_id", limit: 8
     t.integer "upload_deleted_event_id", limit: 8
     t.integer "reset_checksum_event_id", limit: 8
+    t.integer "cache_invalidation_event_id", limit: 8
   end
 
+  add_index "geo_event_log", ["cache_invalidation_event_id"], name: "index_geo_event_log_on_cache_invalidation_event_id", using: :btree
   add_index "geo_event_log", ["repositories_changed_event_id"], name: "index_geo_event_log_on_repositories_changed_event_id", using: :btree
   add_index "geo_event_log", ["repository_created_event_id"], name: "index_geo_event_log_on_repository_created_event_id", using: :btree
   add_index "geo_event_log", ["repository_deleted_event_id"], name: "index_geo_event_log_on_repository_deleted_event_id", using: :btree
@@ -3171,6 +3177,7 @@ ActiveRecord::Schema.define(version: 20180930171532) do
   add_foreign_key "gcp_clusters", "projects", on_delete: :cascade
   add_foreign_key "gcp_clusters", "services", on_delete: :nullify
   add_foreign_key "gcp_clusters", "users", on_delete: :nullify
+  add_foreign_key "geo_event_log", "geo_cache_invalidation_events", column: "cache_invalidation_event_id", name: "fk_42c3b54bed", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_hashed_storage_migrated_events", column: "hashed_storage_migrated_event_id", name: "fk_27548c6db3", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_job_artifact_deleted_events", column: "job_artifact_deleted_event_id", name: "fk_176d3fbb5d", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_lfs_object_deleted_events", column: "lfs_object_deleted_event_id", name: "fk_d5af95fcd9", on_delete: :cascade

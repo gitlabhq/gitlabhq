@@ -49,7 +49,7 @@ module EE
       def all_namespaces
         namespaces = ::Namespace.reorder(nil).where('namespaces.id = projects.namespace_id')
 
-        if Feature.enabled?(:shared_runner_minutes_on_root_namespace)
+        if ::Feature.enabled?(:shared_runner_minutes_on_root_namespace)
           namespaces = ::Gitlab::GroupHierarchy.new(namespaces).roots
         end
 
