@@ -1,5 +1,6 @@
 <script>
 import $ from 'jquery';
+import _ from 'underscore';
 import { sprintf, __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
@@ -98,12 +99,6 @@ export default {
       return project && referencePath.includes(project.path) ? referencePath.split('#')[0] : null;
     },
   },
-  updated() {
-    this.toggleIssuePathTooltip();
-  },
-  mounted() {
-    this.toggleIssuePathTooltip();
-  },
   methods: {
     isIndexLessThanlimit(index) {
       return index < this.limitBeforeCounter;
@@ -170,19 +165,7 @@ export default {
         backgroundColor: label.color,
         color: label.textColor,
       };
-    },
-    toggleIssuePathTooltip() {
-      const issuePathEl = this.$el.querySelector('.board-issue-path');
-
-      if (!issuePathEl) return;
-
-      // If the element has an ellipsis enable tooltips
-      if (issuePathEl.offsetWidth < issuePathEl.scrollWidth) {
-        $(issuePathEl).tooltip('enable');
-      } else {
-        $(issuePathEl).tooltip('disable');
-      }
-    },
+    }
   },
 };
 </script>
