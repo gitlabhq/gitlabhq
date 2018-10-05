@@ -14,6 +14,6 @@
             = link_to(resync_admin_geo_project_path(project_registry), method: :post, class: 'btn btn-default-primary btn-sm') do
               = s_('Geo|Resync')
 
-    = render partial: 'registry_pending', locals: { project_registry: project_registry }
+    = render partial: "registry_#{project_registry.synchronization_state}", locals: { project_registry: project_registry }
 
 = paginate @registries, theme: 'gitlab'

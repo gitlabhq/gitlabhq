@@ -9,6 +9,9 @@
       - opts = params[:sync_status].present? ? {} : { page: admin_geo_projects_path }
       = nav_link(opts) do
         = link_to admin_geo_projects_path do
+          = s_('Geo|All')
+      = nav_link(html_options: { class: active_when(params[:sync_status] == 'synced') }) do
+        = link_to admin_geo_projects_path(sync_status: 'synced') do
           = s_('Geo|Synced')
       = nav_link(html_options: { class: active_when(params[:sync_status] == 'pending') }) do
         = link_to admin_geo_projects_path(sync_status: 'pending') do
@@ -27,5 +30,7 @@
     = render(partial: 'failed')
   - when 'pending'
     = render(partial: 'pending')
-  - else
+  - when 'synced'
     = render(partial: 'synced')
+  - else
+    = render(partial: 'all')

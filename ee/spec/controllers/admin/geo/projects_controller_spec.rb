@@ -24,13 +24,18 @@ describe Admin::Geo::ProjectsController, :geo do
     it_behaves_like 'license required'
 
     context 'with a valid license' do
+      render_views
+
       before do
         allow(Gitlab::Geo).to receive(:license_allows?).and_return(true)
       end
 
-      it 'renders synced template when no extra get params is specified' do
-        expect(subject).to have_gitlab_http_status(200)
-        expect(subject).to render_template(:index, partial: :synced)
+      context 'without sync_status specified' do
+        it 'renders all template when no extra get params is specified' do
+          expect(subject).to have_gitlab_http_status(200)
+          expect(subject).to render_template(:index)
+          expect(subject).to render_template(partial: 'admin/geo/projects/_all')
+        end
       end
 
       context 'with sync_status=pending' do
@@ -38,7 +43,8 @@ describe Admin::Geo::ProjectsController, :geo do
 
         it 'renders pending template' do
           expect(subject).to have_gitlab_http_status(200)
-          expect(subject).to render_template(:index, partial: :pending)
+          expect(subject).to render_template(:index)
+          expect(subject).to render_template(partial: 'admin/geo/projects/_pending')
         end
       end
 
@@ -47,7 +53,8 @@ describe Admin::Geo::ProjectsController, :geo do
 
         it 'renders failed template' do
           expect(subject).to have_gitlab_http_status(200)
-          expect(subject).to render_template(:index, partial: :failed)
+          expect(subject).to render_template(:index)
+          expect(subject).to render_template(partial: 'admin/geo/projects/_failed')
         end
       end
 
@@ -56,7 +63,18 @@ describe Admin::Geo::ProjectsController, :geo do
 
         it 'renders failed template' do
           expect(subject).to have_gitlab_http_status(200)
-          expect(subject).to render_template(:index, partial: :never)
+          expect(subject).to render_template(:index)
+          expect(subject).to render_template(partial: 'admin/geo/projects/_never')
+        end
+      end
+
+      context 'with sync_status=synced' do
+        subject { get :index, sync_status: 'synced' }
+
+        it 'renders synced template' do
+          expect(subject).to have_gitlab_http_status(200)
+          expect(subject).to render_template(:index)
+          expect(subject).to render_template(partial: 'admin/geo/projects/_synced')
         end
       end
     end
@@ -105,7 +123,7 @@ describe Admin::Geo::ProjectsController, :geo do
       it 'flags registry for recheck' do
         expect(subject).to redirect_to(admin_geo_projects_path)
         expect(flash[:notice]).to include('is scheduled for re-check')
-        expect(synced_registry.reload.verification_pending?).to be_truthy
+        expect(synced_registry.reload.pending_verification?).to be_truthy
       end
     end
   end

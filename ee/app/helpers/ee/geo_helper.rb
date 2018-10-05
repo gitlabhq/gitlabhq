@@ -1,5 +1,14 @@
+# frozen_string_literal: true
+
 module EE
   module GeoHelper
+    STATUS_ICON_NAMES_BY_STATE = {
+        synced: 'check',
+        pending: 'clock-o',
+        failed: 'exclamation-triangle',
+        never: 'circle-o'
+    }.freeze
+
     def node_vue_list_properties
       version, revision =
         if ::Gitlab::Geo.primary?
@@ -73,6 +82,49 @@ module EE
               class: "btn btn-sm btn-#{btn_class}",
               title: title,
               data: data
+    end
+
+    def project_registry_status(project_registry)
+      status_type = case project_registry.synchronization_state
+                    when :failed then
+                      'status-type-failure'
+                    when :synced then
+                      'status-type-success'
+                    end
+
+      content_tag(:div, class: "project-status-content #{status_type}") do
+        icon = project_registry_status_icon(project_registry)
+        text = project_registry_status_text(project_registry)
+
+        [icon, text].join(' ').html_safe
+      end
+    end
+
+    def project_registry_status_icon(project_registry)
+      icon(STATUS_ICON_NAMES_BY_STATE.fetch(project_registry.synchronization_state, 'exclamation-triangle'))
+    end
+
+    def project_registry_status_text(project_registry)
+      case project_registry.synchronization_state
+      when :never
+        s_('Geo|Not synced yet')
+      when :failed
+        s_('Geo|Failed')
+      when :pending
+        if project_registry.pending_synchronization?
+          s_('Geo|Pending synchronization')
+        elsif project_registry.pending_verification?
+          s_('Geo|Pending verification')
+        else
+          # should never reach this state, unless we introduce new behavior
+          s_('Geo|Unknown state')
+        end
+      when :synced
+        s_('Geo|In sync')
+      else
+        # should never reach this state, unless we introduce new behavior
+        s_('Geo|Unknown state')
+      end
     end
   end
 end
