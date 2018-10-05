@@ -4,11 +4,11 @@ describe PruneOldEventsWorker do
   describe '#perform' do
     let(:user) { create(:user) }
 
-    let!(:expired_event) { create(:event, :closed, author: user, created_at: 13.months.ago) }
+    let!(:expired_event) { create(:event, :closed, author: user, created_at: 25.months.ago) }
     let!(:not_expired_event) { create(:event, :closed, author: user,  created_at: 1.day.ago) }
-    let!(:exactly_12_months_event) { create(:event, :closed, author: user, created_at: 12.months.ago) }
+    let!(:exactly_2_years_event) { create(:event, :closed, author: user, created_at: 2.years.ago) }
 
-    it 'prunes events older than 12 months' do
+    it 'prunes events older than 2 years' do
       expect { subject.perform }.to change { Event.count }.by(-1)
       expect(Event.find_by(id: expired_event.id)).to be_nil
     end
