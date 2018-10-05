@@ -54,6 +54,7 @@ export default class GeoNodesStore {
       basePath: rawNode._links.self,
       repairPath: rawNode._links.repair,
       editPath: rawNode.web_edit_url,
+      geoProjectsUrl: rawNode.web_geo_projects_url,
       statusPath: rawNode._links.status,
     };
   }
