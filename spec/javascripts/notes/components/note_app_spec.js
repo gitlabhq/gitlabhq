@@ -3,7 +3,6 @@ import _ from 'underscore';
 import Vue from 'vue';
 import notesApp from '~/notes/components/notes_app.vue';
 import service from '~/notes/services/notes_service';
-import eventHub from '~/notes/event_hub';
 import createStore from '~/notes/stores';
 import '~/behaviors/markdown/render_gfm';
 import { mountComponentWithStore } from 'spec/helpers';
@@ -125,22 +124,6 @@ describe('note_app', () => {
       expect(vm.$el.querySelector('.js-note-new-discussion').getAttribute('disabled')).toEqual(
         'disabled',
       );
-    });
-
-    it('should update when a filter is applied', () => {
-      spyOn(vm, 'fetchNotes');
-      eventHub.$emit('notes.filter', 0);
-
-      expect(vm.isLoading).toBe(true);
-      expect(vm.fetchNotes).toHaveBeenCalledWith(0);
-    });
-
-    it('should not update if filter did not change ', () => {
-      spyOn(vm, 'fetchNotes');
-      vm.currentFilter = 0;
-      eventHub.$emit('notes.filter', 0);
-
-      expect(vm.fetchNotes).not.toHaveBeenCalled();
     });
   });
 

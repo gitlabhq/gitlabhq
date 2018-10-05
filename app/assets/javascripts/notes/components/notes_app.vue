@@ -133,8 +133,8 @@ export default {
     getComponentData(discussion) {
       return discussion.individual_note ? { note: discussion.notes[0] } : { discussion };
     },
-    fetchNotes(filter) {
-      return this.fetchDiscussions({ path: this.getNotesDataByProp('discussionsPath'), filter })
+    fetchNotes() {
+      return this.fetchDiscussions({ path: this.getNotesDataByProp('discussionsPath') })
         .then(() => {
           this.initPolling();
         })
