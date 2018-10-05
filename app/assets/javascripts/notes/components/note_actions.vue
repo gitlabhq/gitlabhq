@@ -219,7 +219,7 @@ export default {
       <ul class="dropdown-menu more-actions-dropdown dropdown-open-left">
         <li v-if="canReportAsAbuse">
           <a :href="reportAbusePath">
-            Report as abuse
+            Report abuse to GitLab
           </a>
         </li>
         <li v-if="noteUrl">

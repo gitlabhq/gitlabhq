@@ -55,7 +55,7 @@ describe('issue_note_actions component', () => {
         expect(vm.$el.querySelector('.js-note-edit')).toBeDefined();
       });
 
-      it('should be possible to report as abuse', () => {
+      it('should be possible to report abuse to GitLab', () => {
         expect(vm.$el.querySelector(`a[href="${props.reportAbusePath}"]`)).toBeDefined();
       });
 
