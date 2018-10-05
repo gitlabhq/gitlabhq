@@ -1,0 +1,5 @@
+---
+title: Use Reliable Sidekiq fetch
+merge_request: 21715
+author:
+type: fixed

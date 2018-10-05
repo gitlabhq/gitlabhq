@@ -428,6 +428,10 @@ class IssuableFinder
     params[:milestone_title] == Milestone::Upcoming.name
   end
 
+  def filter_by_any_milestone?
+    params[:milestone_title] == Milestone::Any.title
+  end
+
   def filter_by_started_milestone?
     params[:milestone_title] == Milestone::Started.name
   end
@@ -437,6 +441,8 @@ class IssuableFinder
     if milestones?
       if filter_by_no_milestone?
         items = items.left_joins_milestones.where(milestone_id: [-1, nil])
+      elsif filter_by_any_milestone?
+        items = items.any_milestone
       elsif filter_by_upcoming_milestone?
         upcoming_ids = Milestone.upcoming_ids_by_projects(projects(items))
         items = items.left_joins_milestones.where(milestone_id: upcoming_ids)
