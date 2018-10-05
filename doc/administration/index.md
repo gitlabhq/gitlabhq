@@ -51,12 +51,13 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 [source installations](../install/installation.md#installation-from-source).
 - [Environment variables](environment_variables.md): Supported environment variables that can be used to override their defaults values in order to configure GitLab.
 - [Plugins](plugins.md): With custom plugins, GitLab administrators can introduce custom integrations without modifying GitLab's source code.
-- [Elasticsearch](../integration/elasticsearch.md): Enable Elasticsearch to empower GitLab's Advanced Global Search. Useful when you deal with a huge amount of data. **[STARTER ONLY]**
-- [External Classification Policy Authorization](../user/admin_area/settings/external_authorization.md) **[PREMIUM ONLY]**
 - [Enforcing Terms of Service](../user/admin_area/settings/terms.md)
 - [Third party offers](../user/admin_area/settings/third_party_offers.md)
 - [Compliance](compliance.md): A collection of features from across the application that you may configure to help ensure that your GitLab instance and DevOps workflow meet compliance standards.
 - [Diff limits](../user/admin_area/diff_limits.md): Configure the diff rendering size limits of branch comparison pages.
+- [Elasticsearch](../integration/elasticsearch.md): Enable Elasticsearch to empower GitLab's Advanced Global Search. Useful when you deal with a huge amount of data. **[STARTER ONLY]**
+- [External Classification Policy Authorization](../user/admin_area/settings/external_authorization.md) **[PREMIUM ONLY]**
+- [Upload a license](../user/admin_area/license.md): Upload a license to unlock features that are in paid tiers of GitLab. **[STARTER ONLY]**
 
 #### Customizing GitLab's appearance
 
