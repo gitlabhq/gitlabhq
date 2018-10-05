@@ -3,6 +3,9 @@
 - header_title  "Groups", dashboard_groups_path
 = render 'dashboard/groups_head'
 
+= content_for :above_breadcrumbs_content do
+  = render_if_exists "shared/gold_trial_callout"
+
 - if params[:filter].blank? && @groups.empty?
   = render 'shared/groups/empty_state'
 - else

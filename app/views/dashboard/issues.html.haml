@@ -4,6 +4,9 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{current_user.name} issues")
 
+= content_for :above_breadcrumbs_content do
+  = render_if_exists "shared/gold_trial_callout"
+
 .top-area
   = render 'shared/issuable/nav', type: :issues, display_count: !@no_filters_set
   .nav-controls
