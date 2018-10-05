@@ -209,7 +209,6 @@ ul.related-merge-requests > li {
 
     @media (max-width: 880px) {
       margin-top: $gl-padding-8;
-      margin-left: 0;
     }
   }
 
@@ -257,7 +256,6 @@ ul.related-merge-requests > li {
 
     .new-branch-col {
       padding-top: 0;
-      text-align: right;
       align-self: center;
     }
 
@@ -266,5 +264,11 @@ ul.related-merge-requests > li {
         display: inline-flex;
       }
     }
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  .new-branch-col {
+    text-align: right;
   }
 }
