@@ -13,6 +13,11 @@ describe('AlertWidget', () => {
     currentAlerts: ['my/alert.json'],
   };
 
+  const mockSetAlerts = (_, data) => {
+    /* eslint-disable-next-line no-underscore-dangle */
+    Vue.set(vm._props, 'alertData', data);
+  };
+
   beforeAll(() => {
     AlertWidgetComponent = Vue.extend(AlertWidget);
   });
@@ -69,7 +74,11 @@ describe('AlertWidget', () => {
     spyOn(AlertsService.prototype, 'readAlert').and.returnValue(
       Promise.resolve({ operator: '>', threshold: 42 }),
     );
-    vm = mountComponent(AlertWidgetComponent, props, '#alert-widget');
+    const propsWithAlertData = {
+      ...props,
+      alertData: { 'my/alert.json': { operator: '>', threshold: 42 } },
+    };
+    vm = mountComponent(AlertWidgetComponent, propsWithAlertData, '#alert-widget');
 
     setTimeout(() =>
       vm.$nextTick(() => {
@@ -140,6 +149,8 @@ describe('AlertWidget', () => {
     );
 
     vm = mountComponent(AlertWidgetComponent, { ...props, currentAlerts: [] });
+    vm.$on('setAlerts', mockSetAlerts);
+
     vm.$refs.widgetForm.$emit('create', alertParams);
 
     expect(AlertsService.prototype.createAlert).toHaveBeenCalledWith(alertParams);
@@ -161,6 +172,8 @@ describe('AlertWidget', () => {
     spyOn(AlertsService.prototype, 'updateAlert').and.returnValue(Promise.resolve());
 
     vm = mountComponent(AlertWidgetComponent, { ...props, currentAlerts: [alertPath] });
+    vm.$on('setAlerts', mockSetAlerts);
+
     vm.$refs.widgetForm.$emit('update', {
       ...alertParams,
       alert: alertPath,
@@ -191,6 +204,8 @@ describe('AlertWidget', () => {
     spyOn(AlertsService.prototype, 'deleteAlert').and.returnValue(Promise.resolve());
 
     vm = mountComponent(AlertWidgetComponent, { ...props, currentAlerts: [alertPath] });
+    vm.$on('setAlerts', mockSetAlerts);
+
     vm.$refs.widgetForm.$emit('delete', { alert: alertPath });
 
     expect(AlertsService.prototype.deleteAlert).toHaveBeenCalledWith(alertPath);
