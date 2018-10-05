@@ -3,7 +3,8 @@
   "additionalProperties": false,
   "required": [
     "name",
-    "enabled"
+    "enabled",
+    "strategies"
   ],
   "properties": {
     "name": {
@@ -14,6 +15,13 @@
     },
     "description": {
       "type": "string"
+    },
+    "strategies": {
+      "items": {
+        "$ref": "unleash_strategy.json"
+      },
+      "minItems": 1,
+      "type": "array"
     }
   }
 }
