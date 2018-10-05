@@ -41,6 +41,8 @@ The following table depicts the various user permission levels in a project.
 | See a job log                         | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | Download and browse job artifacts     | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | View wiki pages                       | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
+| View license management reports **[ULTIMATE]** | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
+| View Security reports **[ULTIMATE]**  | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | Pull project code                     | [^1]    | ✓          | ✓           | ✓        | ✓      |
 | Download project                      | [^1]    | ✓          | ✓           | ✓        | ✓      |
 | Assign issues                         |         | ✓          | ✓           | ✓        | ✓      |
@@ -56,6 +58,7 @@ The following table depicts the various user permission levels in a project.
 | See a list of merge requests          |         | ✓          | ✓           | ✓        | ✓      |
 | Manage related issues **[STARTER]**   |         | ✓          | ✓           | ✓        | ✓      |
 | Lock issue discussions                |         | ✓          | ✓           | ✓        | ✓      |
+| Create issue from vulnerability **[ULTIMATE]** |         | ✓          | ✓           | ✓        | ✓      |
 | Lock merge request discussions        |         |            | ✓           | ✓        | ✓      |
 | Create new environments               |         |            | ✓           | ✓        | ✓      |
 | Stop environments                     |         |            | ✓           | ✓        | ✓      |
@@ -72,6 +75,9 @@ The following table depicts the various user permission levels in a project.
 | Update a container registry           |         |            | ✓           | ✓        | ✓      |
 | Remove a container registry image     |         |            | ✓           | ✓        | ✓      |
 | Create/edit/delete project milestones |         |            | ✓           | ✓        | ✓      |
+| View approved/blacklisted licenses **[ULTIMATE]** |         |            | ✓           | ✓        | ✓      |
+| Use security dashboard **[ULTIMATE]** |         |            | ✓           | ✓        | ✓      |
+| Dismiss vulnerability **[ULTIMATE]**  |         |            | ✓           | ✓        | ✓      |
 | Use environment terminals             |         |            |             | ✓        | ✓      |
 | Add new team members                  |         |            |             | ✓        | ✓      |
 | Push to protected branches            |         |            |             | ✓        | ✓      |
@@ -89,6 +95,7 @@ The following table depicts the various user permission levels in a project.
 | Manage GitLab Pages domains and certificates |         |            |             | ✓        | ✓      |
 | Remove GitLab Pages                   |         |            |             |          | ✓      |
 | Manage clusters                       |         |            |             | ✓        | ✓      |
+| Manage license policy **[ULTIMATE]**  |         |            |             | ✓        | ✓      |
 | Edit comments (posted by any user)    |         |            |             | ✓        | ✓      |
 | Switch visibility level               |         |            |             |          | ✓      |
 | Transfer project to another namespace |         |            |             |          | ✓      |
