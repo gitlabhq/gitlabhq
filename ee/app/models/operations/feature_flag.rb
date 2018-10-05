@@ -16,5 +16,11 @@ module Operations
     validates :description, allow_blank: true, length: 0..255
 
     scope :ordered, -> { order(:name) }
+
+    def strategies
+      [
+        { name: 'default' }
+      ]
+    end
   end
 end
