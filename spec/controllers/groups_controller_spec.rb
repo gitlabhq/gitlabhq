@@ -226,6 +226,11 @@ describe GroupsController do
     end
 
     context 'searching' do
+      # Remove as part of https://gitlab.com/gitlab-org/gitlab-ce/issues/52271
+      before do
+        stub_feature_flags(use_cte_for_group_issues_search: false)
+      end
+
       it 'works with popularity sort' do
         get :issues, id: group.to_param, search: 'foo', sort: 'popularity'
 
