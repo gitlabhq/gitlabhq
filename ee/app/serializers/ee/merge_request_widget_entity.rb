@@ -16,13 +16,13 @@ module EE
         end
       end
 
-      expose :codeclimate, if: -> (mr, _) { head_pipeline_downloadable_url_for_report_type(mr, :codequality) } do
+      expose :codeclimate, if: -> (mr, _) { head_pipeline_downloadable_url_for_report_type(:codequality) } do
         expose :head_path do |merge_request|
-          head_pipeline_downloadable_url_for_report_type(merge_request, :codequality)
+          head_pipeline_downloadable_url_for_report_type(:codequality)
         end
 
         expose :base_path do |merge_request|
-          base_pipeline_downloadable_url_for_report_type(merge_request, :codequality)
+          base_pipeline_downloadable_url_for_report_type(:codequality)
         end
       end
 
@@ -170,12 +170,12 @@ module EE
 
     private
 
-    def head_pipeline_downloadable_url_for_report_type(merge_request, file_type)
-      merge_request.head_pipeline&.present&.downloadable_url_for_report_type(file_type)
+    def head_pipeline_downloadable_url_for_report_type(file_type)
+      object.head_pipeline&.present(current_user: current_user)&.downloadable_url_for_report_type(file_type)
     end
 
-    def base_pipeline_downloadable_url_for_report_type(merge_request, file_type)
-      merge_request.base_pipeline&.present&.downloadable_url_for_report_type(file_type)
+    def base_pipeline_downloadable_url_for_report_type(file_type)
+      object.base_pipeline&.present(current_user: current_user)&.downloadable_url_for_report_type(file_type)
     end
   end
 end

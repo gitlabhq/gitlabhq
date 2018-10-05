@@ -12,7 +12,7 @@ describe MergeRequestWidgetEntity do
   end
 
   subject do
-    described_class.new(merge_request, request: request)
+    described_class.new(merge_request, current_user: user, request: request)
   end
 
   it 'has blob path data' do
@@ -32,7 +32,6 @@ describe MergeRequestWidgetEntity do
         base_pipeline: pipeline,
         head_pipeline: pipeline
       )
-      allow_any_instance_of(Ci::PipelinePresenter).to receive(:current_user).and_return(user)
     end
 
     context 'with codeclimate data' do
