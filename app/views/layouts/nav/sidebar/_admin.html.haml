@@ -134,7 +134,7 @@
               %span.badge.badge-pill.count.merge_counter.js-merge-counter.fly-out-badge= number_with_delimiter(AbuseReport.count(:all))
 
       = nav_link(controller: :licenses) do
-        = link_to admin_license_path do
+        = link_to admin_license_path, class: "qa-link-license-menu" do
           .nav-icon-container
             = sprite_icon('license')
           %span.nav-item-name
@@ -171,7 +171,7 @@
                 #{ _('Push Rules') }
 
       = nav_link(controller: %w(admin/geo/nodes admin/geo/projects)) do
-        = link_to admin_geo_nodes_path do
+        = link_to admin_geo_nodes_path, class: "qa-link-geo-menu" do
           .nav-icon-container
             = sprite_icon('location-dot')
           %span.nav-item-name
