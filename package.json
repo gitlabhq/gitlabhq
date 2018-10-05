@@ -111,6 +111,7 @@
     "xterm": "^3.5.0"
   },
   "devDependencies": {
+    "@vue/test-utils": "^1.0.0-beta.25",
     "axios-mock-adapter": "^1.15.0",
     "babel-eslint": "^9.0.0",
     "babel-plugin-istanbul": "^5.1.0",
