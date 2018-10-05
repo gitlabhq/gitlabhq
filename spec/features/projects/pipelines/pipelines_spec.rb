@@ -252,7 +252,25 @@ describe 'Pipelines', :js do
         it "has link to the delayed job's action" do
           find('.js-pipeline-dropdown-manual-actions').click
 
+          time_diff = [0, delayed_job.scheduled_at - Time.now].max
           expect(page).to have_button('delayed job')
+          expect(page).to have_content(Time.at(time_diff).utc.strftime("%H:%M:%S"))
+        end
+
+        context 'when delayed job is expired already' do
+          let!(:delayed_job) do
+            create(:ci_build, :expired_scheduled,
+              pipeline: pipeline,
+              name: 'delayed job',
+              stage: 'test',
+              commands: 'test')
+          end
+
+          it "shows 00:00:00 as the remaining time" do
+            find('.js-pipeline-dropdown-manual-actions').click
+
+            expect(page).to have_content(Time.at(time_diff).utc.strftime("00:00:00"))
+          end
         end
 
         context 'when user played a delayed job immediately' do
