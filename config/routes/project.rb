@@ -32,6 +32,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get 'labels'
           get 'milestones'
           get 'commands'
+          get 'snippets'
         end
       end
 

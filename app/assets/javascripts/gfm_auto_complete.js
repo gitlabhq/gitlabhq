@@ -19,6 +19,7 @@ export const defaultAutocompleteConfig = {
   epics: true,
   milestones: true,
   labels: true,
+  snippets: true,
 };
 
 class GfmAutoComplete {
@@ -54,6 +55,7 @@ class GfmAutoComplete {
     if (this.enableMap.milestones) this.setupMilestones($input);
     if (this.enableMap.mergeRequests) this.setupMergeRequests($input);
     if (this.enableMap.labels) this.setupLabels($input);
+    if (this.enableMap.snippets) this.setupSnippets($input);
 
     // EE-specific
     if (this.enableMap.epics) setupAutoCompleteEpics($input, this.getDefaultCallbacks());
@@ -367,6 +369,39 @@ class GfmAutoComplete {
     });
   }
 
+  setupSnippets($input) {
+    $input.atwho({
+      at: '$',
+      alias: 'snippets',
+      searchKey: 'search',
+      displayTpl(value) {
+        let tmpl = GfmAutoComplete.Loading.template;
+        if (value.title != null) {
+          tmpl = GfmAutoComplete.Issues.template;
+        }
+        return tmpl;
+      },
+      data: GfmAutoComplete.defaultLoadingData,
+      // eslint-disable-next-line no-template-curly-in-string
+      insertTpl: '${atwho-at}${id}',
+      callbacks: {
+        ...this.getDefaultCallbacks(),
+        beforeSave(snippets) {
+          return $.map(snippets, (m) => {
+            if (m.title == null) {
+              return m;
+            }
+            return {
+              id: m.id,
+              title: sanitize(m.title),
+              search: `${m.id} ${m.title}`,
+            };
+          });
+        },
+      },
+    });
+  }
+
   getDefaultCallbacks() {
     const fetchData = this.fetchData.bind(this);
 
@@ -477,7 +512,7 @@ class GfmAutoComplete {
     // The below is taken from At.js source
     // Tweaked to commands to start without a space only if char before is a non-word character
     // https://github.com/ichord/At.js
-    const atSymbolsWithBar = Object.keys(controllers).join('|');
+    const atSymbolsWithBar = Object.keys(controllers).join('|').replace(/[$]/, '\\$&');
     const atSymbolsWithoutBar = Object.keys(controllers).join('');
     const targetSubtext = subtext.split(GfmAutoComplete.regexSubtext).pop();
     const resultantFlag = flag.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
@@ -504,6 +539,7 @@ GfmAutoComplete.atTypeMap = {
   '~': 'labels',
   '%': 'milestones',
   '/': 'commands',
+  $: 'snippets',
 };
 
 // Emoji
@@ -526,7 +562,7 @@ GfmAutoComplete.Labels = {
   // eslint-disable-next-line no-template-curly-in-string
   template: '<li><span class="dropdown-label-box" style="background: ${color}"></span> ${title}</li>',
 };
-// Issues and MergeRequests
+// Issues, MergeRequests and Snippets
 GfmAutoComplete.Issues = {
   // eslint-disable-next-line no-template-curly-in-string
   template: '<li><small>${id}</small> ${title}</li>',
