@@ -257,6 +257,9 @@ module QA
       autoload :Dropzone, 'qa/page/component/dropzone'
       autoload :GroupsFilter, 'qa/page/component/groups_filter'
       autoload :Select2, 'qa/page/component/select2'
+      module Issuable
+        autoload :Common, 'qa/page/component/issuable/common'
+      end
     end
   end
 
