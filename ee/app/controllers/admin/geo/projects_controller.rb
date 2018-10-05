@@ -16,8 +16,10 @@ class Admin::Geo::ProjectsController < Admin::ApplicationController
                     finder.failed_projects.page(params[:page])
                   when 'pending'
                     finder.pending_projects.page(params[:page])
-                  else
+                  when 'synced'
                     finder.synced_projects.page(params[:page])
+                  else
+                    finder.all_projects.page(params[:page])
                   end
   end
 

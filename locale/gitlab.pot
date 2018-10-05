@@ -3643,13 +3643,13 @@ msgstr ""
 msgid "Geo|%{name} is scheduled for re-sync"
 msgstr ""
 
+msgid "Geo|All"
+msgstr ""
+
 msgid "Geo|All projects"
 msgstr ""
 
 msgid "Geo|Could not remove tracking entry for an existing project."
-msgstr ""
-
-msgid "Geo|Error message"
 msgstr ""
 
 msgid "Geo|Failed"
@@ -3679,7 +3679,7 @@ msgstr ""
 msgid "Geo|Next sync scheduled at"
 msgstr ""
 
-msgid "Geo|No errors"
+msgid "Geo|Not synced yet"
 msgstr ""
 
 msgid "Geo|Pending"
