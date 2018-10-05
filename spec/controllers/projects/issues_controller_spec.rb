@@ -637,6 +637,18 @@ describe Projects::IssuesController do
           project_id: project,
           id: id
       end
+
+      it 'avoids (most) N+1s loading labels' do
+        label = create(:label, project: project).to_reference
+        labels = create_list(:label, 10, project: project).map(&:to_reference)
+        issue = create(:issue, project: project, description: 'Test issue')
+
+        control_count = ActiveRecord::QueryRecorder.new { issue.update(description: [issue.description, label].join(' ')) }.count
+
+        # Follow-up to get rid of this `2 * label.count` requirement: https://gitlab.com/gitlab-org/gitlab-ce/issues/52230
+        expect { issue.update(description: [issue.description, labels].join(' ')) }
+          .not_to exceed_query_limit(control_count + 2 * labels.count)
+      end
     end
 
     describe 'GET #realtime_changes' do
