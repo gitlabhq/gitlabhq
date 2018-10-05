@@ -47,11 +47,22 @@ describe('Pipelines Actions dropdown', () => {
       playable: true,
       scheduled_at: '2063-04-05T00:42:00Z',
     };
-    const findDropdownItem = () => vm.$el.querySelector('.dropdown-menu li button');
+    const expiredJobAction = {
+      name: 'expired action',
+      path: `${TEST_HOST}/expired/job/action`,
+      playable: true,
+      scheduled_at: '2018-10-05T08:23:00Z',
+    };
+    const findDropdownItem = action => {
+      const buttons = vm.$el.querySelectorAll('.dropdown-menu li button');
+      return Array.prototype.find.call(buttons, element =>
+        element.innerText.trim().startsWith(action.name),
+      );
+    };
 
     beforeEach(() => {
       spyOn(Date, 'now').and.callFake(() => new Date('2063-04-04T00:42:00Z').getTime());
-      vm = mountComponent(Component, { actions: [scheduledJobAction] });
+      vm = mountComponent(Component, { actions: [scheduledJobAction, expiredJobAction] });
     });
 
     it('emits postAction event after confirming', () => {
@@ -59,7 +70,7 @@ describe('Pipelines Actions dropdown', () => {
       eventHub.$on('postAction', emitSpy);
       spyOn(window, 'confirm').and.callFake(() => true);
 
-      findDropdownItem().click();
+      findDropdownItem(scheduledJobAction).click();
 
       expect(window.confirm).toHaveBeenCalled();
       expect(emitSpy).toHaveBeenCalledWith(scheduledJobAction.path);
@@ -70,14 +81,18 @@ describe('Pipelines Actions dropdown', () => {
       eventHub.$on('postAction', emitSpy);
       spyOn(window, 'confirm').and.callFake(() => false);
 
-      findDropdownItem().click();
+      findDropdownItem(scheduledJobAction).click();
 
       expect(window.confirm).toHaveBeenCalled();
       expect(emitSpy).not.toHaveBeenCalled();
     });
 
     it('displays the remaining time in the dropdown', () => {
-      expect(findDropdownItem()).toContainText('24:00:00');
+      expect(findDropdownItem(scheduledJobAction)).toContainText('24:00:00');
+    });
+
+    it('displays 00:00:00 for expired jobs in the dropdown', () => {
+      expect(findDropdownItem(expiredJobAction)).toContainText('00:00:00');
     });
   });
 });

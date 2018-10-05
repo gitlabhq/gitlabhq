@@ -26,7 +26,12 @@ export default {
   methods: {
     onClickAction(action) {
       if (action.scheduled_at) {
-        const confirmationMessage = sprintf(s__("DelayedJobs|Are you sure you want to run %{jobName} immediately? This job will run automatically after it's timer finishes."), { jobName: action.name });
+        const confirmationMessage = sprintf(
+          s__(
+            "DelayedJobs|Are you sure you want to run %{jobName} immediately? This job will run automatically after it's timer finishes.",
+          ),
+          { jobName: action.name },
+        );
         // https://gitlab.com/gitlab-org/gitlab-ce/issues/52156
         // eslint-disable-next-line no-alert
         if (!window.confirm(confirmationMessage)) {
@@ -49,7 +54,7 @@ export default {
 
     remainingTime(action) {
       const remainingMilliseconds = new Date(action.scheduled_at).getTime() - Date.now();
-      return formatTime(remainingMilliseconds);
+      return formatTime(Math.max(0, remainingMilliseconds));
     },
   },
 };
