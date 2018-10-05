@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.3.4 (2018-10-05)
+
+### Security (3 changes)
+
+- Filter user sensitive data from discussions JSON. !2537
+- Properly filter private references from system notes.
+- Markdown API no longer displays confidential title references unless authorized.
+
+
 ## 11.3.3 (2018-10-04)
 
 - No changes.
@@ -277,6 +286,15 @@ entry.
 - Creates vue component for commit block in job log page.
 - Creates vue components for stage dropdowns and job list container for job log view.
 - Creates Vue component for artifacts block on job page.
+
+
+## 11.2.5 (2018-10-05)
+
+### Security (3 changes)
+
+- Filter user sensitive data from discussions JSON. !2538
+- Properly filter private references from system notes.
+- Markdown API no longer displays confidential title references unless authorized.
 
 
 ## 11.2.4 (2018-09-26)
