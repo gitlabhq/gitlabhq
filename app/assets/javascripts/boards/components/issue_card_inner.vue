@@ -3,10 +3,11 @@ import $ from 'jquery';
 import { sprintf, __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
-import IssueSummaryItems from './issue_summary_items.vue';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import eventHub from '../eventhub';
 import tooltip from '../../vue_shared/directives/tooltip';
+import IssueDueDate from './issue_due_date.vue';
+import IssueTimeEstimate from './issue_time_estimate.vue';
 
 
 const Store = gl.issueBoards.BoardsStore;
@@ -15,8 +16,9 @@ export default {
   components: {
     Icon,
     UserAvatarLink,
-    IssueSummaryItems,
     TooltipOnTruncate,
+    IssueDueDate,
+    IssueTimeEstimate,
   },
   directives: {
     tooltip
@@ -232,10 +234,16 @@ export default {
             class="board-issue-path block-truncated bold"
           >{{ issueReferencePath }}</tooltip-on-truncate>#{{ issue.iid }}
         </span>
-        <issue-summary-items
-          :issue="issue"
-          @filterweight="filterByWeight(issue.weight, $event)"
-        />
+        <span class="append-bottom-8 board-info-items">
+          <issue-due-date
+            v-if="issue.dueDate"
+            :date="issue.dueDate"
+          />
+          <issue-time-estimate
+            v-if="issue.timeEstimate"
+            :estimate="issue.timeEstimate" 
+          />
+        </span>
       </div>
       <div class="board-card-assignee">
         <user-avatar-link
