@@ -69,6 +69,8 @@ pattern (`*~`).
 The hooks of the same type are executed in order and execution stops on the
 first script exiting with a non-zero value.
 
+> **Note:** In the above examples, `<hook_name>.d` would need to be either `pre-receive.d`, `post-receive.d`, or `update.d` to work properly. Any other names would be ignored. 
+
 ## Custom error messages
 
 > [Introduced][5073] in GitLab 8.10.
