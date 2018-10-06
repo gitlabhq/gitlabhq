@@ -9,7 +9,9 @@
       = render 'layouts/header/read_only_banner'
       = yield :flash_message
       = render "shared/ping_consent"
-      - unless @hide_breadcrumbs
+      - if @hide_breadcrumbs
+        .offset-content
+      - else
         = render "layouts/nav/breadcrumbs"
       = render "layouts/flash"
     %div{ class: "#{(container_class unless @no_container)} #{@content_class}" }

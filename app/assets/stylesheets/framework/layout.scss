@@ -161,3 +161,8 @@ body {
     }
   }
 }
+// We need this to keep consistent behavior between pages with breadcrumbs without.
+// Because .breadcrumbs has display:flex and we have content with top margin relying on it.
+.offset-content {
+  display: flex;
+}
