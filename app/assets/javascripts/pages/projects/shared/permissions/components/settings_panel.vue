@@ -57,9 +57,6 @@
         required: false,
         default: '',
       },
-<<<<<<< HEAD
-      packagesHelpPath: {
-=======
       pagesAvailable: {
         type: Boolean,
         required: false,
@@ -71,7 +68,11 @@
         default: false,
       },
       pagesHelpPath: {
->>>>>>> upstream/master
+        type: String,
+        required: false,
+        default: '',
+      },
+      packagesHelpPath: {
         type: String,
         required: false,
         default: '',
