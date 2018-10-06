@@ -25,7 +25,7 @@ export const getReversePosition = linePosition => {
   return LINE_POSITION_RIGHT;
 };
 
-export function getNoteFormData(params) {
+export function getFormData(params) {
   const {
     note,
     noteableType,
@@ -70,9 +70,15 @@ export function getNoteFormData(params) {
     },
   };
 
+  return postData;
+}
+
+export function getNoteFormData(params) {
+  const data = getFormData(params);
+
   return {
-    endpoint: noteableData.create_note_path,
-    data: postData,
+    endpoint: params.noteableData.create_note_path,
+    data,
   };
 }
 

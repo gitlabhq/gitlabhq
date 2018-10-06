@@ -178,7 +178,7 @@ module NotesHelper
       notesPath: notes_url,
       totalNotes: issuable.discussions.length,
       lastFetchedAt: Time.now.to_i
-    }.to_json
+    }
   end
 
   def discussion_resolved_intro(discussion)
