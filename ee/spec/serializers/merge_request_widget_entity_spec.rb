@@ -12,7 +12,7 @@ describe MergeRequestWidgetEntity do
   end
 
   subject do
-    described_class.new(merge_request, request: request)
+    described_class.new(merge_request, current_user: user, request: request)
   end
 
   it 'has blob path data' do
@@ -26,31 +26,30 @@ describe MergeRequestWidgetEntity do
     expect(subject.as_json[:blob_path]).to include(:head_path)
   end
 
-  # methods for old artifact are deprecated and replaced with ones for the new name (#5779)
-  it 'has codeclimate data (with old artifact name codeclimate,json)' do
-    build = create(:ci_build, name: 'job')
+  describe 'codeclimate' do
+    before do
+      allow(merge_request).to receive_messages(
+        base_pipeline: pipeline,
+        head_pipeline: pipeline
+      )
+    end
 
-    allow(merge_request).to receive_messages(
-      expose_codeclimate_data?: true,
-      expose_security_dashboard?: false,
-      base_codeclimate_artifact: build,
-      head_codeclimate_artifact: build
-    )
+    context 'with codeclimate data' do
+      before do
+        job = create(:ci_build, pipeline: pipeline)
+        create(:ci_job_artifact, :codequality, job: job)
+      end
 
-    expect(subject.as_json).to include(:codeclimate)
-  end
+      it 'has codeclimate data entry' do
+        expect(subject.as_json).to include(:codeclimate)
+      end
+    end
 
-  it 'has codeclimate data (with new artifact name gl-code-quality-report.json)' do
-    build = create(:ci_build, name: 'job')
-
-    allow(merge_request).to receive_messages(
-      expose_code_quality_data?: true,
-      expose_security_dashboard?: false,
-      base_code_quality_artifact: build,
-      head_code_quality_artifact: build
-    )
-
-    expect(subject.as_json).to include(:codeclimate)
+    context 'without codeclimate data' do
+      it 'does not have codeclimate data entry' do
+        expect(subject.as_json).not_to include(:codeclimate)
+      end
+    end
   end
 
   it 'sets approvals_before_merge to 0 if nil' do
