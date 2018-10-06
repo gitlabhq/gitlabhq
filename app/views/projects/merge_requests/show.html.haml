@@ -60,7 +60,7 @@
           %section.col-md-12
             %script.js-notes-data{ type: "application/json" }= initial_notes_data(true).to_json.html_safe
             .issuable-discussion.js-vue-notes-event
-              #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request),
+              #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request).to_json,
                 noteable_data: serialize_issuable(@merge_request),
                 noteable_type: 'MergeRequest',
                 target_type: 'merge_request',

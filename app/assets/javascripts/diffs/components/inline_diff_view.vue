@@ -1,5 +1,6 @@
 <script>
 import { mapGetters, mapState } from 'vuex';
+import InlineDraftCommentRow from 'ee/batch_comments/components/inline_draft_comment_row.vue';
 import inlineDiffTableRow from './inline_diff_table_row.vue';
 import inlineDiffCommentRow from './inline_diff_comment_row.vue';
 
@@ -7,6 +8,7 @@ export default {
   components: {
     inlineDiffCommentRow,
     inlineDiffTableRow,
+    InlineDraftCommentRow,
   },
   props: {
     diffFile: {
@@ -20,6 +22,7 @@ export default {
   },
   computed: {
     ...mapGetters('diffs', ['commitId', 'shouldRenderInlineCommentRow']),
+    ...mapGetters('batchComments', ['shouldRenderDraftRow', 'draftForLine']),
     ...mapState({
       diffLineCommentForms: state => state.diffs.diffLineCommentForms,
     }),
@@ -55,6 +58,11 @@ export default {
           :diff-file-hash="diffFile.fileHash"
           :line="line"
           :line-index="index"
+        />
+        <inline-draft-comment-row
+          v-if="shouldRenderDraftRow(diffFile.fileHash, line)"
+          :key="`draft_${index}`"
+          :draft="draftForLine(diffFile.fileHash, line)"
         />
       </template>
     </tbody>

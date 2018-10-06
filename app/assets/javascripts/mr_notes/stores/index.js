@@ -2,14 +2,19 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import notesModule from '~/notes/stores/modules';
 import diffsModule from '~/diffs/store/modules';
+import batchCommentsModule from 'ee/batch_comments/stores/modules/batch_comments';
 import mrPageModule from './modules';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
-  modules: {
-    page: mrPageModule,
-    notes: notesModule(),
-    diffs: diffsModule(),
-  },
-});
+export const createStore = () =>
+  new Vuex.Store({
+    modules: {
+      page: mrPageModule,
+      notes: notesModule(),
+      diffs: diffsModule(),
+      batchComments: batchCommentsModule(),
+    },
+  });
+
+export default createStore();

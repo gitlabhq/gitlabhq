@@ -1,5 +1,8 @@
 = render_ce "projects/merge_requests/show"
 
+- if batch_comments_enabled?
+  #js-review-bar
+
 -# haml-lint:disable InlineJavaScript
 :javascript
   // Append static, server-generated data not included in merge request entity (EE-Only)
