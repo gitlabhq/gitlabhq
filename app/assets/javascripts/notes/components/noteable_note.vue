@@ -116,12 +116,9 @@ export default {
         noteText,
         callback: () => this.updateSuccess(),
       });
-<<<<<<< HEAD
 
       if (this.note.isDraft) return;
 
-=======
->>>>>>> upstream/master
       const data = {
         endpoint: this.note.path,
         note: {
