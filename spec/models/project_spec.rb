@@ -4352,7 +4352,6 @@ describe Project do
         expect(result).to be_empty
       end
     end
-
   end
 
   describe "#find_or_initialize_services" do
