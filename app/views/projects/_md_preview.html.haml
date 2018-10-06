@@ -26,6 +26,8 @@
         = markdown_toolbar_button({ icon: "list-bulleted", data: { "md-tag" => "* ", "md-prepend" => true }, title: s_("MarkdownToolbar|Add a bullet list") })
         = markdown_toolbar_button({ icon: "list-numbered", data: { "md-tag" => "1. ", "md-prepend" => true }, title: s_("MarkdownToolbar|Add a numbered list") })
         = markdown_toolbar_button({ icon: "task-done", data: { "md-tag" => "* [ ] ", "md-prepend" => true }, title: s_("MarkdownToolbar|Add a task list") })
+        = markdown_toolbar_button({ icon: "table", data: { "md-tag" => "| header 1 | header 2 |\n| -------- | -------- |\n| cell 1   | cell 2   |\n| cell 3   | cell 4   |", "md-prepend" => true }, title: s_("MarkdownToolbar|Add a table") })
+        = markdown_toolbar_button({ icon: "table", data: { "md-tag" => "| header | header |\n| ------ | ------ |\n| cell | cell |\n| cell | cell |", "md-prepend" => true }, title: _('Add a table') })
         %button.toolbar-btn.toolbar-fullscreen-btn.js-zen-enter.has-tooltip{ type: "button", tabindex: -1, "aria-label": "Go full screen", title: s_("MarkdownToolbar|Go full screen"), data: { container: "body" } }
           = sprite_icon("screen-full")
 

@@ -344,6 +344,9 @@ msgstr ""
 msgid "Add Readme"
 msgstr ""
 
+msgid "Add a table"
+msgstr ""
+
 msgid "Add license"
 msgstr ""
 
@@ -3707,6 +3710,9 @@ msgid "MarkdownToolbar|Add a link"
 msgstr ""
 
 msgid "MarkdownToolbar|Add a numbered list"
+msgstr ""
+
+msgid "MarkdownToolbar|Add a table"
 msgstr ""
 
 msgid "MarkdownToolbar|Add a task list"
