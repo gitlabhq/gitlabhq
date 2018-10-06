@@ -185,8 +185,16 @@ ul.related-merge-requests > li {
 }
 
 .new-branch-col {
-  padding-top: 10px;
+  // padding-top: 10px;
   font-size: 0;
+
+  .discussion-filter-container {
+    margin-right: $gl-padding-8;
+
+    @include media-breakpoint-down(md) {
+      margin-top: $gl-padding-8;
+    }
+  }
 }
 
 .create-mr-dropdown-wrap {
@@ -206,9 +214,8 @@ ul.related-merge-requests > li {
 
   .btn-group:not(.hidden) {
     display: flex;
-    margin-left: $gl-padding-8;
 
-    @media (max-width: 880px) {
+    @include media-breakpoint-down(md) {
       margin-top: $gl-padding-8;
     }
   }
