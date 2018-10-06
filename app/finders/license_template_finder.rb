@@ -13,8 +13,11 @@
 class LicenseTemplateFinder
   include Gitlab::Utils::StrongMemoize
 
+<<<<<<< HEAD
   prepend ::EE::LicenseTemplateFinder
 
+=======
+>>>>>>> upstream/master
   attr_reader :project, :params
 
   def initialize(project, params = {})

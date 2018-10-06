@@ -1297,6 +1297,9 @@ msgstr ""
 msgid "CICD|Continuous deployment to production"
 msgstr ""
 
+msgid "CICD|Continuous deployment to production using timed incremental rollout"
+msgstr ""
+
 msgid "CICD|Default to Auto DevOps pipeline"
 msgstr ""
 

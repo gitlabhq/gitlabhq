@@ -177,6 +177,7 @@ class Issue < ActiveRecord::Base
     "#{project.to_reference(from, full: full)}#{reference}"
   end
 
+<<<<<<< HEAD
   def related_issues(current_user, preload: nil)
     related_issues = Issue
                        .select(['issues.*', 'issue_links.id AS issue_link_id'])
@@ -194,6 +195,8 @@ class Issue < ActiveRecord::Base
     )
   end
 
+=======
+>>>>>>> upstream/master
   def suggested_branch_name
     return to_branch_name unless project.repository.branch_exists?(to_branch_name)
 

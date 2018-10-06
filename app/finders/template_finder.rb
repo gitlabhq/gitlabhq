@@ -3,8 +3,11 @@
 class TemplateFinder
   include Gitlab::Utils::StrongMemoize
 
+<<<<<<< HEAD
   prepend ::EE::TemplateFinder
 
+=======
+>>>>>>> upstream/master
   VENDORED_TEMPLATES = HashWithIndifferentAccess.new(
     dockerfiles: ::Gitlab::Template::DockerfileTemplate,
     gitignores: ::Gitlab::Template::GitignoreTemplate,

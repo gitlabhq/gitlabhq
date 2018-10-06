@@ -234,8 +234,8 @@ describe GroupsController do
   end
 
   describe 'GET #issues' do
-    let(:issue_1) { create(:issue, project: project) }
-    let(:issue_2) { create(:issue, project: project) }
+    let(:issue_1) { create(:issue, project: project, title: 'foo') }
+    let(:issue_2) { create(:issue, project: project, title: 'bar') }
 
     before do
       create_list(:award_emoji, 3, awardable: issue_2)
@@ -254,6 +254,31 @@ describe GroupsController do
       it 'sorts least popular issues' do
         get :issues, id: group.to_param, sort: 'downvotes_desc'
         expect(assigns(:issues)).to eq [issue_2, issue_1]
+      end
+    end
+
+    context 'searching' do
+      # Remove as part of https://gitlab.com/gitlab-org/gitlab-ce/issues/52271
+      before do
+        stub_feature_flags(use_cte_for_group_issues_search: false)
+      end
+
+      it 'works with popularity sort' do
+        get :issues, id: group.to_param, search: 'foo', sort: 'popularity'
+
+        expect(assigns(:issues)).to eq([issue_1])
+      end
+
+      it 'works with priority sort' do
+        get :issues, id: group.to_param, search: 'foo', sort: 'priority'
+
+        expect(assigns(:issues)).to eq([issue_1])
+      end
+
+      it 'works with label priority sort' do
+        get :issues, id: group.to_param, search: 'foo', sort: 'label_priority'
+
+        expect(assigns(:issues)).to eq([issue_1])
       end
     end
   end

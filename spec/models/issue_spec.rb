@@ -268,6 +268,7 @@ describe Issue do
     end
   end
 
+<<<<<<< HEAD
   describe '#related_issues' do
     let(:user) { create(:user) }
     let(:authorized_project) { create(:project) }
@@ -305,6 +306,8 @@ describe Issue do
     end
   end
 
+=======
+>>>>>>> upstream/master
   describe '#suggested_branch_name' do
     let(:repository) { double }
 

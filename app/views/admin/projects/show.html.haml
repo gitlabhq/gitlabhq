@@ -114,6 +114,8 @@
               = visibility_level_icon(@project.visibility_level)
               = visibility_level_label(@project.visibility_level)
 
+    = render_if_exists 'admin/projects/geo_status_widget', locals: { project: @project }
+
     .card
       .card-header
         Transfer project
