@@ -65,7 +65,7 @@ export default {
       return this.issue.assignees.length - this.limitBeforeCounter;
     },
     assigneeCounterTooltip() {
-      const { numberOverLimit, maxCounter} = this;
+      const { numberOverLimit, maxCounter } = this;
       const count = numberOverLimit > maxCounter ? maxCounter : numberOverLimit;
       return sprintf(__('%{count} more assignees'), { count });
     },
