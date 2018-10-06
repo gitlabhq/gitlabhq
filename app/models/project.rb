@@ -1103,9 +1103,7 @@ class Project < ActiveRecord::Base
       find_or_initialize_service(service_name)
     end
 
-    available_services.reject do |service|
-      disabled_services.include?(service.to_param)
-    end
+    available_services.compact
   end
 
   def disabled_services
@@ -1113,6 +1111,8 @@ class Project < ActiveRecord::Base
   end
 
   def find_or_initialize_service(name)
+    return if disabled_services.include?(name)
+
     service = find_service(services, name)
     return service if service
 
