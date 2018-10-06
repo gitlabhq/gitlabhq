@@ -2,11 +2,8 @@
 
 module Ci
   class ProcessBuildService < BaseService
-<<<<<<< HEAD
     prepend EE::Ci::ProcessBuildService
 
-=======
->>>>>>> upstream/master
     def execute(build, current_status)
       if valid_statuses_for_when(build.when).include?(current_status)
         if build.schedulable?
