@@ -5,7 +5,7 @@ module Gitlab
     class Push
       include Gitlab::Utils::StrongMemoize
 
-      attr_reader :oldrev, :newrev
+      attr_reader :ref, :oldrev, :newrev
 
       def initialize(project, oldrev, newrev, ref)
         @project = project
