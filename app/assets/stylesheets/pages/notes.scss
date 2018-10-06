@@ -343,6 +343,10 @@ ul.notes {
 
         &.parallel {
           border-width: 1px;
+
+          &.new {
+            border-right-width: 0;
+          }
         }
 
         .discussion-notes {
@@ -738,7 +742,7 @@ ul.notes {
         padding-top: 0;
 
         .discussion-wrapper {
-          border-color: transparent;
+          border: 0;
         }
       }
     }

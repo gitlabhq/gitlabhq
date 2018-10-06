@@ -127,7 +127,6 @@ export default {
       'startRenderDiffsQueue',
       'assignDiscussionsToDiff',
     ]),
-
     fetchData() {
       this.fetchDiffFiles()
         .then(() => {

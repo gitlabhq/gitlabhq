@@ -1,0 +1,13 @@
+$drafts-count-size: 1.6;
+
+.drafts-count-component {
+  font-size: $label-font-size;
+  display: inline-block;
+  min-width: $drafts-count-size * 1em;
+  height: $drafts-count-size * 1em;
+  line-height: $drafts-count-size;
+  background: $black-transparent;
+  border-radius: 50%;
+  margin-left: 0.5em;
+  padding: 0 $gl-padding-4;
+}

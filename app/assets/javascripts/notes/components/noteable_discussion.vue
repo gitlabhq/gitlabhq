@@ -6,6 +6,8 @@ import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import systemNote from '~/vue_shared/components/notes/system_note.vue';
 import { s__ } from '~/locale';
+import batchCommentsDiffLineNoteFormMixin from 'ee/batch_comments/mixins/diff_line_note_form';
+import DraftNote from 'ee/batch_comments/components/draft_note.vue';
 import Flash from '../../flash';
 import { SYSTEM_NOTE } from '../constants';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -36,11 +38,18 @@ export default {
     placeholderNote,
     placeholderSystemNote,
     systemNote,
+    DraftNote,
   },
   directives: {
     tooltip,
   },
-  mixins: [autosave, noteable, resolvable, discussionNavigation],
+  mixins: [
+    autosave,
+    noteable,
+    resolvable,
+    discussionNavigation,
+    batchCommentsDiffLineNoteFormMixin,
+  ],
   props: {
     discussion: {
       type: Object,
@@ -71,6 +80,7 @@ export default {
     return {
       isReplying: false,
       isResolving: false,
+      isUnresolving: false,
       resolveAsThread: true,
     };
   },
@@ -356,7 +366,13 @@ Please check your network connection and try again.`;
                     @handleDeleteNote="deleteNoteHandler"
                   />
                 </ul>
+                <draft-note
+                  v-if="showDraft(discussion.reply_id)"
+                  :key="`draft_${discussion.id}`"
+                  :draft="draftForDiscussion(discussion.reply_id)"
+                />
                 <div
+                  v-else
                   :class="{ 'is-replying': isReplying }"
                   class="discussion-reply-holder"
                 >
@@ -433,6 +449,7 @@ Please check your network connection and try again.`;
                     :discussion="discussion"
                     :is-editing="false"
                     save-button-title="Comment"
+                    @handleFormUpdateAddToReview="addReplyToReview"
                     @handleFormUpdate="saveReply"
                     @cancelForm="cancelReplyForm"
                   />

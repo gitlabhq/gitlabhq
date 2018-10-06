@@ -407,6 +407,9 @@ msgstr ""
 msgid "Add additional text to appear in all email communications. %{character_limit} character limit"
 msgstr ""
 
+msgid "Add comment now"
+msgstr ""
+
 msgid "Add license"
 msgstr ""
 
@@ -417,6 +420,9 @@ msgid "Add new directory"
 msgstr ""
 
 msgid "Add reaction"
+msgstr ""
+
+msgid "Add to review"
 msgstr ""
 
 msgid "Add todo"
@@ -593,6 +599,12 @@ msgstr ""
 msgid "An error occured whilst loading the pipelines jobs."
 msgstr ""
 
+msgid "An error occurred adding a draft to the discussion."
+msgstr ""
+
+msgid "An error occurred adding a new draft."
+msgstr ""
+
 msgid "An error occurred previewing the blob"
 msgstr ""
 
@@ -605,6 +617,9 @@ msgstr ""
 msgid "An error occurred while adding approver"
 msgstr ""
 
+msgid "An error occurred while deleting the comment"
+msgstr ""
+
 msgid "An error occurred while detecting host keys"
 msgstr ""
 
@@ -615,6 +630,9 @@ msgid "An error occurred while dismissing the feature highlight. Refresh the pag
 msgstr ""
 
 msgid "An error occurred while fetching markdown preview"
+msgstr ""
+
+msgid "An error occurred while fetching pending comments"
 msgstr ""
 
 msgid "An error occurred while fetching sidebar data"
@@ -684,6 +702,9 @@ msgid "An error occurred while subscribing to notifications."
 msgstr ""
 
 msgid "An error occurred while unsubscribing to notifications."
+msgstr ""
+
+msgid "An error occurred while updating the comment"
 msgstr ""
 
 msgid "An error occurred while validating username"
@@ -1005,6 +1026,15 @@ msgid "Badges|Your badges"
 msgstr ""
 
 msgid "Badges|e.g. %{exampleUrl}"
+msgstr ""
+
+msgid "BatchComments|Delete all pending comments"
+msgstr ""
+
+msgid "BatchComments|Discard review?"
+msgstr ""
+
+msgid "BatchComments|You're about to discard your review which will delete all of your pending comments. The deleted comments %{strong_start}cannot%{strong_end} be restored."
 msgstr ""
 
 msgid "Begin with the selected commit"
@@ -2732,6 +2762,9 @@ msgid "Discard changes to %{path}?"
 msgstr ""
 
 msgid "Discard draft"
+msgstr ""
+
+msgid "Discard review"
 msgstr ""
 
 msgid "Discover GitLab Geo."
@@ -4834,6 +4867,21 @@ msgid "Merge requests"
 msgstr ""
 
 msgid "Merge requests are a place to propose changes you've made to a project and discuss those changes with others"
+msgstr ""
+
+msgid "MergeRequests|An error occurred while saving the draft comment."
+msgstr ""
+
+msgid "MergeRequests|Discussion stays resolved."
+msgstr ""
+
+msgid "MergeRequests|Discussion stays unresolved."
+msgstr ""
+
+msgid "MergeRequests|Discussion will be resolved."
+msgstr ""
+
+msgid "MergeRequests|Discussion will be unresolved."
 msgstr ""
 
 msgid "MergeRequests|Resolve this discussion in a new issue"
@@ -7333,6 +7381,9 @@ msgstr ""
 msgid "Start a %{new_merge_request} with these changes"
 msgstr ""
 
+msgid "Start a review"
+msgstr ""
+
 msgid "Start date"
 msgstr ""
 
@@ -7373,6 +7424,9 @@ msgid "Subgroups and projects"
 msgstr ""
 
 msgid "Submit as spam"
+msgstr ""
+
+msgid "Submit review"
 msgstr ""
 
 msgid "Submit search"
@@ -9130,6 +9184,11 @@ msgstr ""
 
 msgid "done"
 msgstr ""
+
+msgid "draft"
+msgid_plural "drafts"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "enabled"
 msgstr ""
