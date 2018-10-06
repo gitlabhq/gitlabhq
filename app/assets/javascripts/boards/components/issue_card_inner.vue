@@ -1,5 +1,4 @@
 <script>
-import $ from 'jquery';
 import _ from 'underscore';
 import { sprintf, __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -9,7 +8,6 @@ import eventHub from '../eventhub';
 import tooltip from '../../vue_shared/directives/tooltip';
 import IssueDueDate from './issue_due_date.vue';
 import IssueTimeEstimate from './issue_time_estimate.vue';
-
 
 const Store = gl.issueBoards.BoardsStore;
 
@@ -22,7 +20,7 @@ export default {
     IssueTimeEstimate,
   },
   directives: {
-    tooltip
+    tooltip,
   },
   props: {
     issue: {
@@ -67,7 +65,7 @@ export default {
       return this.issue.assignees.length - this.limitBeforeCounter;
     },
     assigneeCounterTooltip() {
-      const { numberOverLimit,  maxCounter} = this;
+      const { numberOverLimit, maxCounter} = this;
       const count = numberOverLimit > maxCounter ? maxCounter : numberOverLimit;
       return sprintf(__('%{count} more assignees'), { count });
     },
@@ -129,14 +127,14 @@ export default {
       if (!label.id) return false;
       return true;
     },
-    filterByLabel(label, e) {
+    filterByLabel(label) {
       if (!this.updateFilters) return;
       const labelTitle = encodeURIComponent(label.title);
       const filter = `label_name[]=${labelTitle}`;
 
       this.applyFilter(filter);
     },
-    filterByWeight(weight, e) {
+    filterByWeight(weight) {
       if (!this.updateFilters) return;
 
       const issueWeight = encodeURIComponent(weight);
@@ -165,7 +163,7 @@ export default {
         backgroundColor: label.color,
         color: label.textColor,
       };
-    }
+    },
   },
 };
 </script>
@@ -200,7 +198,7 @@ export default {
         class="badge color-label append-right-4 prepend-top-4"
         type="button"
         data-container="body"
-        @click="filterByLabel(label, $event)"
+        @click="filterByLabel(label)"
       >
         {{ label.title }}
       </button>
@@ -225,7 +223,7 @@ export default {
           />
           <issue-time-estimate
             v-if="issue.timeEstimate"
-            :estimate="issue.timeEstimate" 
+            :estimate="issue.timeEstimate"
           />
         </span>
       </div>

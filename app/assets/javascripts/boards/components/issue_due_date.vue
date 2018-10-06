@@ -52,7 +52,7 @@ export default {
       return getDayDifference(today, this.issueDueDate);
     },
     cssClass() {
-      if (this.timeDifference >= 0) return;
+      if (this.timeDifference >= 0) return '';
       return 'text-danger';
     },
     isDueInCurrentYear() {
