@@ -58,7 +58,7 @@ describe PrometheusAlertEvent do
 
           expect(result).to eq(true)
           expect(subject).to be_firing
-          expect(subject.started_at).to eq(started_at)
+          expect(subject.started_at).to be_like_time(started_at)
         end
       end
 
@@ -84,7 +84,7 @@ describe PrometheusAlertEvent do
 
           expect(result).to eq(true)
           expect(subject).to be_resolved
-          expect(subject.ended_at).to eq(ended_at)
+          expect(subject.ended_at).to be_like_time(ended_at)
           expect(subject.payload_key).to be_nil
         end
       end
