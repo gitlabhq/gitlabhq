@@ -404,14 +404,13 @@ msgstr ""
 msgid "Add Readme"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Add additional text to appear in all email communications. %{character_limit} character limit"
 msgstr ""
 
 msgid "Add comment now"
-=======
+msgstr ""
+
 msgid "Add a table"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Add license"
