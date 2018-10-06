@@ -21,11 +21,6 @@
             = time_ago_with_tooltip(project_registry.last_repository_synced_at, placement: 'bottom')
           - else
             = s_('Geo|Waiting for scheduler')
-      .col-sm.project-status-container
-        .project-status-title.text-muted
-          = s_('Geo|Retry count')
-        .project-status-content
-          = project_registry.repository_retry_count.nil? ? 0 : project_registry.repository_retry_count
 
 .project-card-errors
   .card-header.bg-transparent.border-bottom-0.border-top
@@ -41,14 +36,21 @@
       'aria-labelledby' => "project-#{project_registry.project_id}-header" }
     .card-body
       .container.project-container
-        %ul.unstyled-list.errors-list
-          - if project_registry.last_repository_sync_failure
-            %li.p-0.d-flex
-              = sprite_icon('warning', size: 18, css_class: 'error-icon')
-              %span.error-text.prepend-left-5
-                = s_('Geo|Synchronization failed - %{error}') % { error: project_registry.last_repository_sync_failure }
-          - if project_registry.last_repository_verification_failure
-            %li.p-0.d-flex
-              = sprite_icon('warning', size: 18, css_class: 'error-icon')
-              %span.error-text.prepend-left-5
-                = s_('Geo|Verification failed - %{error}') % { error: project_registry.last_repository_verification_failure }
+        .row
+          .col-sm-8.project-status-container
+            %ul.unstyled-list.errors-list
+              - if project_registry.last_repository_sync_failure
+                %li.p-0.d-flex
+                  = sprite_icon('warning', size: 18, css_class: 'error-icon')
+                  %span.error-text.prepend-left-5
+                    = s_('Geo|Synchronization failed - %{error}') % { error: project_registry.last_repository_sync_failure }
+              - if project_registry.last_repository_verification_failure
+                %li.p-0.d-flex
+                  = sprite_icon('warning', size: 18, css_class: 'error-icon')
+                  %span.error-text.prepend-left-5
+                    = s_('Geo|Verification failed - %{error}') % { error: project_registry.last_repository_verification_failure }
+          .col-sm-4.project-status-container
+            .project-status-title.text-muted
+              = s_('Geo|Retry count')
+            .project-status-content
+              = project_registry.repository_retry_count.nil? ? 0 : project_registry.repository_retry_count

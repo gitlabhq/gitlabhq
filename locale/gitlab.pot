@@ -3658,6 +3658,9 @@ msgstr ""
 msgid "Geo|File sync capacity"
 msgstr ""
 
+msgid "Geo|Geo Status"
+msgstr ""
+
 msgid "Geo|Groups to synchronize"
 msgstr ""
 
@@ -3716,9 +3719,6 @@ msgid "Geo|Resync"
 msgstr ""
 
 msgid "Geo|Retry count"
-msgstr ""
-
-msgid "Geo|Retry counts"
 msgstr ""
 
 msgid "Geo|Select groups to replicate."

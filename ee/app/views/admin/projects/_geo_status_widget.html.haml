@@ -1,0 +1,10 @@
+- if Gitlab::Geo.secondary? && @project.project_registry
+  .card
+    .card-header
+      = s_('Geo|Geo Status')
+      .float-right
+        = link_to(recheck_admin_geo_project_path(@project.project_registry), method: :post, class: 'btn btn-default btn-sm mr-2') do
+          = s_('Geo|Recheck')
+        = link_to(resync_admin_geo_project_path(@project.project_registry), method: :post, class: 'btn btn-default-primary btn-sm') do
+          = s_('Geo|Resync')
+    = render partial: "admin/geo/projects/registry_#{@project.project_registry.synchronization_state}", locals: { project_registry: @project.project_registry }
