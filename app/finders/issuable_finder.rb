@@ -363,6 +363,7 @@ class IssuableFinder
   def use_cte_for_search?
     return false unless search
     return false unless Gitlab::Database.postgresql?
+    return false unless Feature.enabled?(:use_cte_for_group_issues_search, default_enabled: true)
 
     params[:use_cte_for_search]
   end

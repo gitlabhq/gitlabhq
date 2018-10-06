@@ -116,6 +116,7 @@ which visibility level you select on project settings.
 - Disabled: disabled for everyone
 - Only team members: only team members will see even if your project is public or internal
 - Everyone with access: everyone can see depending on your project visibility level
+- Everyone: enabled for everyone (only available for GitLab Pages)
 
 ### Protected branches
 
@@ -248,6 +249,7 @@ which visibility level you select on project settings.
 - Disabled: disabled for everyone
 - Only team members: only team members will see even if your project is public or internal
 - Everyone with access: everyone can see depending on your project visibility level
+- Everyone: enabled for everyone (only available for GitLab Pages)
 
 ## GitLab CI/CD permissions
 

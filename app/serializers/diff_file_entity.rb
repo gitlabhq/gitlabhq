@@ -116,6 +116,10 @@ class DiffFileEntity < Grape::Entity
     project_blob_path(project, tree_join(diff_file.content_sha, diff_file.new_path))
   end
 
+  expose :viewer, using: DiffViewerEntity do |diff_file|
+    diff_file.rich_viewer || diff_file.simple_viewer
+  end
+
   expose :replaced_view_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
     image_diff = diff_file.rich_viewer && diff_file.rich_viewer.partial_name == 'image'
     image_replaced = diff_file.old_content_sha && diff_file.old_content_sha != diff_file.content_sha

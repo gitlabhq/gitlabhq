@@ -16,3 +16,5 @@ db/ @abrandl @NikolayS
 /ee/lib/gitlab/code_owners/ @reprazent
 /ee/lib/ee/gitlab/auth/ldap/ @dblessing @mkozono
 /lib/gitlab/auth/ldap/ @dblessing @mkozono
+/lib/gitlab/ci/templates/ @nolith @zj
+/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml @DylanGriffith @mayra-cabrera @tkuah

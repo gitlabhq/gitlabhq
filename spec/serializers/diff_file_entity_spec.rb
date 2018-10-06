@@ -26,6 +26,11 @@ describe DiffFileEntity do
       )
     end
 
+    it 'includes viewer' do
+      expect(subject[:viewer].with_indifferent_access)
+          .to match_schema('entities/diff_viewer')
+    end
+
     # Converted diff files from GitHub import does not contain blob file
     # and content sha.
     context 'when diff file does not have a blob and content sha' do

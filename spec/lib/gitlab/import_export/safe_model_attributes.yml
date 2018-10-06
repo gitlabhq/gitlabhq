@@ -509,6 +509,7 @@ ProjectFeature:
 - snippets_access_level
 - builds_access_level
 - repository_access_level
+- pages_access_level
 - created_at
 - updated_at
 ProtectedBranch::MergeAccessLevel:

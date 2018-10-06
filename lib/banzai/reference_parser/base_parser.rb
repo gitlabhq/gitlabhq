@@ -215,7 +215,7 @@ module Banzai
       #
       def projects_for_nodes(nodes)
         @projects_for_nodes ||=
-          grouped_objects_for_nodes(nodes, Project, 'data-project')
+          grouped_objects_for_nodes(nodes, Project.includes(:project_feature), 'data-project')
       end
 
       def can?(user, permission, subject = :global)
