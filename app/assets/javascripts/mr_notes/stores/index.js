@@ -13,7 +13,10 @@ export const createStore = () =>
       page: mrPageModule,
       notes: notesModule(),
       diffs: diffsModule(),
+<<<<<<< HEAD
       batchComments: batchCommentsModule(),
+=======
+>>>>>>> upstream/master
     },
   });
 

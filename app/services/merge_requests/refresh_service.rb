@@ -2,12 +2,19 @@
 
 module MergeRequests
   class RefreshService < MergeRequests::BaseService
+<<<<<<< HEAD
     prepend EE::MergeRequests::RefreshService
 
     def execute(oldrev, newrev, ref)
       push = Gitlab::Git::Push.new(@project, oldrev, newrev, ref)
       return true unless push.branch_push?
 
+=======
+    def execute(oldrev, newrev, ref)
+      push = Gitlab::Git::Push.new(@project, oldrev, newrev, ref)
+      return true unless push.branch_push?
+
+>>>>>>> upstream/master
       refresh_merge_requests!(push)
     end
 

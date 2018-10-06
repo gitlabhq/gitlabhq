@@ -404,10 +404,14 @@ msgstr ""
 msgid "Add Readme"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Add additional text to appear in all email communications. %{character_limit} character limit"
 msgstr ""
 
 msgid "Add comment now"
+=======
+msgid "Add a table"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Add license"
@@ -4795,6 +4799,9 @@ msgid "MarkdownToolbar|Add a link"
 msgstr ""
 
 msgid "MarkdownToolbar|Add a numbered list"
+msgstr ""
+
+msgid "MarkdownToolbar|Add a table"
 msgstr ""
 
 msgid "MarkdownToolbar|Add a task list"
