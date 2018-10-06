@@ -22,6 +22,7 @@ module Importers
       business: _('Business metrics (Custom)'),
       response: _('Response metrics (Custom)'),
       system: _('System metrics (Custom)'),
+      nginx_ingress_vts: _('Response metrics (NGINX Ingress VTS)'),
       nginx_ingress: _('Response metrics (NGINX Ingress)'),
       ha_proxy: _('Response metrics (HA Proxy)'),
       aws_elb: _('Response metrics (AWS ELB)'),

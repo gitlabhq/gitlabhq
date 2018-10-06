@@ -1,7 +1,7 @@
-- group: Response metrics (NGINX Ingress)
+  # NGINX Ingress metrics for pre-0.16.0 versions
+- group: Response metrics (NGINX Ingress VTS)
   priority: 10
   metrics:
-  # NGINX Ingress metrics for pre-0.16.0 versions
   - title: "Throughput"
     y_label: "Requests / Sec"
     required_metrics:
@@ -41,7 +41,10 @@
       query_range: 'sum(rate(nginx_upstream_responses_total{status_code="5xx", upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m])) / sum(rate(nginx_upstream_responses_total{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m])) * 100'
       label: 5xx Errors
       unit: "%"
-  # NGINX Ingress metrics for post-0.16.0 versions
+# NGINX Ingress metrics for post-0.16.0 versions
+- group: Response metrics (NGINX Ingress)
+  priority: 10
+  metrics:
   - title: "Throughput"
     y_label: "Requests / Sec"
     required_metrics:
@@ -53,7 +56,7 @@
       unit: req / sec
       label: Status Code
       series:
-        - label: status_code
+        - label: status
           when:
             - value: 200
               color: green
@@ -64,7 +67,7 @@
   - title: "Latency"
     y_label: "Latency (ms)"
     required_metrics:
-      - nginx_ingress_controller_ingress_upstream_latency_seconds
+      - nginx_ingress_controller_ingress_upstream_latency_seconds_sum
     weight: 1
     queries:
     - id: response_metrics_nginx_ingress_16_latency_pod_average
@@ -78,7 +81,7 @@
     weight: 1
     queries:
     - id: response_metrics_nginx_ingress_16_http_error_rate
-      query_range: 'sum(rate(nginx_ingress_controller_requests{status="500",namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"}[2m])) / sum(rate(nginx_ingress_controller_requests{namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"}[2m])) * 100'
+      query_range: 'sum(rate(nginx_ingress_controller_requests{status=~"5.*",namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"}[2m])) / sum(rate(nginx_ingress_controller_requests{namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"}[2m])) * 100'
       label: 5xx Errors
       unit: "%"
 - group: Response metrics (HA Proxy)
