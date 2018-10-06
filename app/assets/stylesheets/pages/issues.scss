@@ -185,7 +185,6 @@ ul.related-merge-requests > li {
 }
 
 .new-branch-col {
-  // padding-top: 10px;
   font-size: 0;
 
   .discussion-filter-container {
@@ -278,5 +277,14 @@ ul.related-merge-requests > li {
 @include media-breakpoint-up(lg) {
   .new-branch-col {
     text-align: right;
+  }
+}
+
+@include media-breakpoint-up(md) {
+  .issue-details .emoji-block-sticky {
+    top: $header-height;
+    z-index: 200;
+    position: sticky;
+    background-color: $white-light;
   }
 }
