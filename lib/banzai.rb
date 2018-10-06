@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   # if you need to render markdown, then you probably need to post_process as well,
   # such as removing references that the current user doesn't have

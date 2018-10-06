@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module ColorParser
     ALPHA = /0(?:\.\d+)?|\.\d+|1(?:\.0+)?/ # 0.0..1.0
