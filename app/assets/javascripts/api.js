@@ -15,10 +15,7 @@ const Api = {
   mergeRequestChangesPath: '/api/:version/projects/:id/merge_requests/:mrid/changes',
   mergeRequestVersionsPath: '/api/:version/projects/:id/merge_requests/:mrid/versions',
   groupLabelsPath: '/groups/:namespace_path/-/labels',
-<<<<<<< HEAD
   ldapGroupsPath: '/api/:version/ldap/:provider/groups.json',
-=======
->>>>>>> upstream/master
   issuableTemplatePath: '/:namespace_path/:project_path/templates/:type/:key',
   projectTemplatePath: '/api/:version/projects/:id/templates/:type/:key',
   projectTemplatesPath: '/api/:version/projects/:id/templates/:type',
@@ -278,7 +275,6 @@ const Api = {
     });
   },
 
-<<<<<<< HEAD
   approverUsers(search, options, callback = $.noop) {
     const url = Api.buildUrl('/autocomplete/users.json');
     return axios
@@ -315,8 +311,6 @@ const Api = {
       });
   },
 
-=======
->>>>>>> upstream/master
   buildUrl(url) {
     let urlRoot = '';
     if (gon.relative_url_root != null) {
