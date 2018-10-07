@@ -89,8 +89,9 @@ end
 The `view` DSL method declares the filename of the view where an
 `element` is implmented.
 
-It is possible to use `element` DSL method without value, with a String value
-or with a Regexp.
+The `element` DSL method in turn declares an element and defines a value
+to match to the actual view code. It is possible to use `element` with value,
+with a String value or with a Regexp.
 
 ```ruby
 view 'app/views/my/view.html.haml' do
