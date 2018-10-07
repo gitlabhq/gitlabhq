@@ -11,7 +11,7 @@ module Gitlab
           include Validatable
           include Attributable
 
-          ALLOWED_KEYS = %i[junit codequality sast dependency_scanning container_scanning dast].freeze
+          ALLOWED_KEYS = %i[junit codequality sast dependency_scanning container_scanning dast performance license_management].freeze
 
           attributes ALLOWED_KEYS
 
@@ -26,6 +26,8 @@ module Gitlab
               validates :dependency_scanning, array_of_strings_or_string: true
               validates :container_scanning, array_of_strings_or_string: true
               validates :dast, array_of_strings_or_string: true
+              validates :performance, array_of_strings_or_string: true
+              validates :license_management, array_of_strings_or_string: true
             end
           end
 
