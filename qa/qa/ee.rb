@@ -56,6 +56,14 @@ module QA
       module MergeRequest
         autoload :Show, 'qa/ee/page/merge_request/show'
       end
+
+      module Group
+        module Epic
+          autoload :Index, 'qa/ee/page/group/epic/index'
+          autoload :Show, 'qa/ee/page/group/epic/show'
+          autoload :Edit, 'qa/ee/page/group/epic/edit'
+        end
+      end
     end
 
     module Factory
@@ -63,6 +71,10 @@ module QA
 
       module Geo
         autoload :Node, 'qa/ee/factory/geo/node'
+      end
+
+      module Resource
+        autoload :Epic, 'qa/ee/factory/resource/epic'
       end
     end
 

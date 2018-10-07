@@ -80,14 +80,14 @@ describe('epicHeader', () => {
     });
 
     describe('actionButtonClass', () => {
-      it('returns classes `btn btn-grouped js-btn-epic-action` & `btn-close` when `isEpicOpen` prop is true', () => {
+      it('returns classes `btn btn-grouped js-btn-epic-action qa-close-reopen-epic-button` & `btn-close` when `isEpicOpen` prop is true', () => {
         vm.isEpicOpen = true;
-        expect(vm.actionButtonClass).toContain('btn btn-grouped js-btn-epic-action btn-close');
+        expect(vm.actionButtonClass).toContain('btn btn-grouped js-btn-epic-action qa-close-reopen-epic-button btn-close');
       });
 
-      it('returns classes `btn btn-grouped js-btn-epic-action` & `btn-open` when `isEpicOpen` prop is false', () => {
+      it('returns classes `btn btn-grouped js-btn-epic-action qa-close-reopen-epic-button` & `btn-open` when `isEpicOpen` prop is false', () => {
         vm.isEpicOpen = false;
-        expect(vm.actionButtonClass).toContain('btn btn-grouped js-btn-epic-action btn-open');
+        expect(vm.actionButtonClass).toContain('btn btn-grouped js-btn-epic-action qa-close-reopen-epic-button btn-open');
       });
     });
 
