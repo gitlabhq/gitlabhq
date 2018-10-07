@@ -1,4 +1,4 @@
-class ImportCommonMetricsNginxVTS < ActiveRecord::Migration
+class ImportCommonMetricsNginxVts < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   require Rails.root.join('db/importers/common_metrics_importer.rb')
