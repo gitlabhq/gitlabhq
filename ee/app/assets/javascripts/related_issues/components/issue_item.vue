@@ -54,7 +54,8 @@ export default {
       v-tooltip
       :disabled="removeDisabled"
       type="button"
-      class="btn btn-default js-issue-item-remove-button flex-align-self-center flex-right"
+      class="btn btn-default js-issue-item-remove-button flex-align-self-center flex-right
+      qa-remove-issue-button"
       title="Remove"
       aria-label="Remove"
       @click="onRemoveRequest"

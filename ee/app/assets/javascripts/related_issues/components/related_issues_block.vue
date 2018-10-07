@@ -179,7 +179,7 @@ fa fa-question-circle"
               ref="issueCountBadgeAddButton"
               type="button"
               class="js-issue-count-badge-add-button
-issue-count-badge-add-button btn btn-sm btn-default"
+issue-count-badge-add-button btn btn-sm btn-default qa-add-issues-button"
               aria-label="Add an issue"
               data-placement="top"
               @click="toggleAddRelatedIssuesForm"

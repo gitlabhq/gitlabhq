@@ -3,6 +3,8 @@ require 'capybara/dsl'
 module QA
   module Factory
     class Product
+      attr_reader :location
+
       include Capybara::DSL
 
       Attribute = Struct.new(:name, :block)
