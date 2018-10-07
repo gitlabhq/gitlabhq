@@ -17,6 +17,7 @@
 
 module WithUploads
   extend ActiveSupport::Concern
+  include FastDestroyAll::Helpers
 
   # Currently there is no simple way how to select only not-mounted
   # uploads, it should be all FileUploaders so we select them by
@@ -25,18 +26,9 @@ module WithUploads
 
   included do
     has_many :uploads, as: :model
+    has_many :file_uploads, -> { where(uploader: FILE_UPLOADERS) }, class_name: 'Upload', as: :model, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
-    before_destroy :destroy_file_uploads
-  end
-
-  # mounted uploads are deleted in carrierwave's after_commit hook,
-  # but FileUploaders which are not mounted must be deleted explicitly and
-  # it can not be done in after_commit because FileUploader requires loads
-  # associated model on destroy (which is already deleted in after_commit)
-  def destroy_file_uploads
-    self.uploads.where(uploader: FILE_UPLOADERS).find_each do |upload|
-      upload.destroy
-    end
+    use_fast_destroy :file_uploads
   end
 
   def retrieve_upload(_identifier, paths)

@@ -25,6 +25,25 @@ class Upload < ActiveRecord::Base
     Digest::SHA256.file(path).hexdigest
   end
 
+  class << self
+    ##
+    # FastDestroyAll concerns
+    def begin_fast_destroy
+      {
+        Uploads::Local => Uploads::Local.new.keys(with_files_stored_locally),
+        Uploads::Fog => Uploads::Fog.new.keys(with_files_stored_remotely)
+      }
+    end
+
+    ##
+    # FastDestroyAll concerns
+    def finalize_fast_destroy(keys)
+      keys.each do |store_class, paths|
+        store_class.new.delete_keys_async(paths)
+      end
+    end
+  end
+
   def absolute_path
     raise ObjectStorage::RemoteStoreError, "Remote object has no absolute path." unless local?
     return path unless relative_path?

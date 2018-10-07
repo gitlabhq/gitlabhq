@@ -70,6 +70,7 @@ module FastDestroyAll
 
   module Helpers
     extend ActiveSupport::Concern
+    include AfterCommitQueue
 
     class_methods do
       ##
