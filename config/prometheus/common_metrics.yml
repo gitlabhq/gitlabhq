@@ -52,17 +52,19 @@
     weight: 1
     queries:
     - id: response_metrics_nginx_ingress_16_throughput_status_code
-      query_range: 'sum(rate(nginx_ingress_controller_requests{namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"}[2m])) by (status_code)'
+      query_range: 'sum(label_replace(label_replace(label_replace(label_replace(rate(nginx_ingress_controller_requests{namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"}[2m]), "status_code", "5xx", "status", "5.*"), "status_code", "4xx", "status", "4.*"), "status_code", "3xx", "status", "3.*"), "status_code", "2xx", "status", "2.*")) by (status_code)'
       unit: req / sec
       label: Status Code
       series:
-        - label: status
+        - label: status_code
           when:
-            - value: 200
+            - value: 2xx
               color: green
-            - value: 400
+            - value: 3xx
+              color: blue
+            - value: 4xx
               color: orange
-            - value: 500
+            - value: 5xx
               color: red
   - title: "Latency"
     y_label: "Latency (ms)"
