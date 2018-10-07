@@ -404,6 +404,9 @@ msgstr ""
 msgid "Add Readme"
 msgstr ""
 
+msgid "Add a table"
+msgstr ""
+
 msgid "Add additional text to appear in all email communications. %{character_limit} character limit"
 msgstr ""
 
@@ -4795,6 +4798,9 @@ msgid "MarkdownToolbar|Add a link"
 msgstr ""
 
 msgid "MarkdownToolbar|Add a numbered list"
+msgstr ""
+
+msgid "MarkdownToolbar|Add a table"
 msgstr ""
 
 msgid "MarkdownToolbar|Add a task list"
