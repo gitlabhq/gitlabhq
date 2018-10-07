@@ -123,7 +123,7 @@ export function insertMarkdownText({ textArea, text, tag, blockTag, selected, wr
   return moveCursor({ textArea, tag: tag.replace(textPlaceholder, selected), wrap, removedLastNewLine, select });
 }
 
-function updateText({ textArea, tag, blockTag, wrap, select }) {
+export function updateMarkdownText({ textArea, tag, blockTag, wrap, select }) {
   var $textArea, selected, text;
   $textArea = $(textArea);
   textArea = $textArea.get(0);
@@ -140,7 +140,7 @@ function replaceRange(s, start, end, substitute) {
 export function addMarkdownListeners(form) {
   return $('.js-md', form).off('click').on('click', function() {
     const $this = $(this);
-    return updateText({
+    return updateMarkdownText({
       textArea: $this.closest('.md-area').find('textarea'),
       tag: $this.data('mdTag'),
       blockTag: $this.data('mdBlock'),

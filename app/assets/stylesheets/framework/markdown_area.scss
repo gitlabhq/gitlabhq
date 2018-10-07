@@ -274,3 +274,15 @@
     text-overflow: ellipsis;
   }
 }
+
+.md-rich-editor {
+  .editor {
+    &.editable p.is-empty:first-child::before {
+    	content: 'Write a comment here…';
+    	float: left;
+    	color: #aaa;
+    	pointer-events: none;
+    	height: 0;
+    }
+  }
+}

@@ -59,11 +59,6 @@ const gfmRules = {
       return text;
     },
   },
-  ImageLazyLoadFilter: {
-    'img'(el, text) {
-      return `![${el.getAttribute('alt')}](${el.getAttribute('src')})`;
-    },
-  },
   VideoLinkFilter: {
     '.video-container'(el) {
       const videoEl = el.querySelector('video');
@@ -335,6 +330,12 @@ export class CopyAsGFM {
 
     clipboardData.setData('text/plain', el.textContent);
     clipboardData.setData('text/x-gfm', this.nodeToGFM(el));
+
+    const div = document.createElement("div");
+    div.appendChild(el);
+    const html = div.innerHTML;
+
+    clipboardData.setData('text/html', html);
   }
 
   static pasteGFM(e) {

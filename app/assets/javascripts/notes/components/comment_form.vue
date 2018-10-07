@@ -268,7 +268,7 @@ Please check your network connection and try again.`;
       if (shouldClear) {
         this.note = '';
         this.resizeTextarea();
-        this.$refs.markdownField.previewMarkdown = false;
+        this.$refs.markdownField.mode = 'markdown'
       }
 
       this.autosave.reset();
