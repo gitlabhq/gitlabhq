@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module ReferenceParser
     # Returns the reference parser class for the given type

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   # Class for removing Markdown references a certain user is not allowed to
   # view.

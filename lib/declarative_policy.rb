@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_dependency 'declarative_policy/cache'
 require_dependency 'declarative_policy/condition'
 require_dependency 'declarative_policy/delegate_dsl'

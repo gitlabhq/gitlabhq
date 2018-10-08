@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   # Extract references to issuables from multiple documents
 

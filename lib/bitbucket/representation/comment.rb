@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Bitbucket
   module Representation
     class Comment < Representation::Base

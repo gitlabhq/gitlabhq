@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DeclarativePolicy
   # A Condition is the data structure that is created by the
   # `condition` declaration on DeclarativePolicy::Base. It is

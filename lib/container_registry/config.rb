@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ContainerRegistry
   class Config
     attr_reader :tag, :blob, :data
