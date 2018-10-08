@@ -386,6 +386,13 @@ class Project < ActiveRecord::Base
                                             only_integer: true,
                                             message: 'needs to be beetween 10 minutes and 1 month' }
 
+  # Returns a project, if it is not about to be removed.
+  #
+  # id - The ID of the project to retrieve.
+  def self.find_without_deleted(id)
+    without_deleted.find_by_id(id)
+  end
+
   # Paginates a collection using a `WHERE id < ?` condition.
   #
   # before - A project ID to use for filtering out projects with an equal or
@@ -450,6 +457,7 @@ class Project < ActiveRecord::Base
 
   scope :joins_import_state, -> { joins("LEFT JOIN project_mirror_data import_state ON import_state.project_id = projects.id") }
   scope :import_started, -> { joins_import_state.where("import_state.status = 'started' OR projects.import_status = 'started'") }
+  scope :for_group, -> (group) { where(group: group) }
 
   class << self
     # Searches for a list of projects based on the query given in `query`.
