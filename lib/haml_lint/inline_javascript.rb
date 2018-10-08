@@ -1,4 +1,7 @@
-unless Rails.env.production? # rubocop:disable Naming/FileName
+# rubocop:disable Naming/FileName
+# frozen_string_literal: true
+
+unless Rails.env.production?
   require 'haml_lint/haml_visitor'
   require 'haml_lint/linter'
   require 'haml_lint/linter_registry'
