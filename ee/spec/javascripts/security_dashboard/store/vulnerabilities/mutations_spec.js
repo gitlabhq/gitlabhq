@@ -3,43 +3,96 @@ import * as types from 'ee/security_dashboard/store/modules/vulnerabilities/muta
 import mutations from 'ee/security_dashboard/store/modules/vulnerabilities/mutations';
 
 describe('vulnerabilities module mutations', () => {
-  describe('SET_PAGINATION', () => {
-    it('should apply the payload to `pageInfo` in the state', () => {
+  describe('REQUEST_VULNERABILITIES', () => {
+    it('should set `isLoadingVulnerabilities` to `true`', () => {
       const state = initialState;
-      const payload = { page: 2 };
 
-      mutations[types.SET_PAGINATION](state, payload);
+      mutations[types.REQUEST_VULNERABILITIES](state);
 
-      expect(state.pageInfo).toEqual(payload);
+      expect(state.isLoadingVulnerabilities).toBeTruthy();
     });
   });
 
-  describe('SET_VULNERABILITIES', () => {
-    it('should apply the payload to `pageInfo` in the state', () => {
-      const state = initialState;
-      const payload = [1, 2, 3, 4, 5];
+  describe('RECEIVE_VULNERABILITIES_SUCCESS', () => {
+    let payload;
+    let state;
 
-      mutations[types.SET_VULNERABILITIES](state, payload);
+    beforeEach(() => {
+      payload = {
+        vulnerabilities: [1, 2, 3, 4, 5],
+        pageInfo: { a: 1, b: 2, c: 3 },
+      };
+      state = initialState;
+      mutations[types.RECEIVE_VULNERABILITIES_SUCCESS](state, payload);
+    });
 
-      expect(state.vulnerabilities).toEqual(payload);
+    it('should set `isLoadingVulnerabilities` to `false`', () => {
+      expect(state.isLoadingVulnerabilities).toBeFalsy();
+    });
+
+    it('should set `errorLoadingData` to `false`', () => {
+      expect(state.errorLoadingData).toBeFalsy();
+    });
+
+    it('should set `pageInfo`', () => {
+      expect(state.pageInfo).toBe(payload.pageInfo);
+    });
+
+    it('should set `vulnerabilities`', () => {
+      expect(state.vulnerabilities).toBe(payload.vulnerabilities);
     });
   });
 
-  describe('SET_LOADING', () => {
-    it('should set loading to true', () => {
+  describe('RECEIVE_VULNERABILITIES_ERROR', () => {
+    it('should set `isLoadingVulnerabilities` to `false`', () => {
       const state = initialState;
 
-      mutations[types.SET_LOADING](state, true);
+      mutations[types.RECEIVE_VULNERABILITIES_ERROR](state);
 
-      expect(state.isLoading).toBeTruthy();
+      expect(state.isLoadingVulnerabilities).toBeFalsy();
+    });
+  });
+
+  describe('REQUEST_VULNERABILITIES_COUNT', () => {
+    it('should set `isLoadingVulnerabilitiesCount` to `true`', () => {
+      const state = initialState;
+
+      mutations[types.REQUEST_VULNERABILITIES_COUNT](state);
+
+      expect(state.isLoadingVulnerabilitiesCount).toBeTruthy();
+    });
+  });
+
+  describe('RECEIVE_VULNERABILITIES_COUNT_SUCCESS', () => {
+    let payload;
+    let state;
+
+    beforeEach(() => {
+      payload = { a: 1, b: 2, c: 3 };
+      state = initialState;
+      mutations[types.RECEIVE_VULNERABILITIES_COUNT_SUCCESS](state, payload);
     });
 
-    it('should not modify loading values are the same', () => {
+    it('should set `isLoadingVulnerabilitiesCount` to `false`', () => {
+      expect(state.isLoadingVulnerabilitiesCount).toBeFalsy();
+    });
+
+    it('should set `errorLoadingData` to `false`', () => {
+      expect(state.errorLoadingData).toBeFalsy();
+    });
+
+    it('should set `vulnerabilitiesCount`', () => {
+      expect(state.vulnerabilitiesCount).toBe(payload);
+    });
+  });
+
+  describe('RECEIVE_VULNERABILITIES_COUNT_ERROR', () => {
+    it('should set `isLoadingVulnerabilitiesCount` to `false`', () => {
       const state = initialState;
 
-      mutations[types.SET_LOADING](state, false);
+      mutations[types.RECEIVE_VULNERABILITIES_COUNT_ERROR](state);
 
-      expect(state.isLoading).toBeFalsy();
+      expect(state.isLoadingVulnerabilitiesCount).toBeFalsy();
     });
   });
 });

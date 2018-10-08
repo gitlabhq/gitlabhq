@@ -4,117 +4,73 @@ import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('Security Dashboard Table Row', () => {
   let vm;
-  let vulnerability;
+  let props;
   const Component = Vue.extend(component);
 
   afterEach(() => {
     vm.$destroy();
   });
 
-  describe('severity', () => {
-    it('should pass high severity down to the component', () => {
-      vulnerability = { severity: 'high' };
-
-      vm = mountComponent(Component, { vulnerability });
-
-      expect(vm.severity).toBe(vulnerability.severity);
-    });
-
-    it('should compute a `–` when no severity is passed', () => {
-      vulnerability = {};
-
-      vm = mountComponent(Component, { vulnerability });
-
-      expect(vm.severity).toBe('–');
-    });
-  });
-
-  describe('description', () => {
-    it('should pass high confidence down to the component', () => {
-      vulnerability = { description: 'high' };
-
-      vm = mountComponent(Component, { vulnerability });
-
-      expect(vm.description).toBe(vulnerability.description);
-    });
-  });
-
-  describe('project namespace', () => {
-    it('should get the project namespace from the vulnerability', () => {
-      vulnerability = {
-        project: { name_with_namespace: 'project name' },
-      };
-
-      vm = mountComponent(Component, { vulnerability });
-
-      expect(vm.projectNamespace).toBe(vulnerability.project.name_with_namespace);
-    });
-
-    it('should return null when no namespace is set', () => {
-      vulnerability = { project: {} };
-
-      vm = mountComponent(Component, { vulnerability });
-
-      expect(vm.projectNamespace).toBeNull();
-    });
-
-    it('should return null when no project is set', () => {
-      vulnerability = {};
-
-      vm = mountComponent(Component, { vulnerability });
-
-      expect(vm.projectNamespace).toBeNull();
-    });
-  });
-
-  describe('confidence', () => {
-    it('should pass high confidence down to the component', () => {
-      vulnerability = { confidence: 'high' };
-
-      vm = mountComponent(Component, { vulnerability });
-
-      expect(vm.confidence).toBe(vulnerability.confidence);
-    });
-
-    it('should compute a `–` when no confidence is passed', () => {
-      vulnerability = {};
-
-      vm = mountComponent(Component, { vulnerability });
-
-      expect(vm.confidence).toBe('–');
-    });
-  });
-
-  describe('rendered output', () => {
+  describe('when loading', () => {
     beforeEach(() => {
-      vulnerability = {
+      props = { isLoading: true };
+      vm = mountComponent(Component, props);
+    });
+
+    it('should display the skeleton loader', () => {
+      expect(vm.$el.querySelector('.js-skeleton-loader')).not.toBeNull();
+    });
+
+    it('should render a ` ` for severity', () => {
+      expect(vm.severity).toEqual(' ');
+      expect(vm.$el.querySelectorAll('.table-mobile-content')[0].textContent).toContain(' ');
+    });
+
+    it('should render a `–` for confidence', () => {
+      expect(vm.confidence).toEqual('–');
+      expect(vm.$el.querySelectorAll('.table-mobile-content')[2].textContent).toContain('–');
+    });
+  });
+
+  describe('when loaded', () => {
+    beforeEach(() => {
+      const vulnerability = {
+        severity: 'high',
+        description: 'Test vulnerability',
+        confidence: 'medium',
         project: { name_with_namespace: 'project name' },
-        confidence: 'high',
-        description: 'this is a description',
-        severity: 'low',
       };
 
-      vm = mountComponent(Component, { vulnerability });
+      props = { vulnerability };
+      vm = mountComponent(Component, props);
+    });
+
+    it('should not display the skeleton loader', () => {
+      expect(vm.$el.querySelector('.js-skeleton-loader')).not.toExist();
     });
 
     it('should render the severity', () => {
-      expect(vm.$el.querySelectorAll('.table-mobile-content')[0].textContent)
-        .toContain(vulnerability.severity);
+      expect(vm.$el.querySelectorAll('.table-mobile-content')[0].textContent).toContain(
+        props.vulnerability.severity,
+      );
     });
 
     it('should render the description', () => {
-      expect(vm.$el.querySelectorAll('.table-mobile-content')[1].textContent)
-        .toContain(vulnerability.description);
+      expect(vm.$el.querySelectorAll('.table-mobile-content')[1].textContent).toContain(
+        props.vulnerability.description,
+      );
     });
 
     it('should render the project namespace', () => {
-      expect(vm.$el.querySelectorAll('.table-mobile-content')[1].textContent)
-        .toContain(vulnerability.project.name_with_namespace);
+      expect(vm.$el.querySelectorAll('.table-mobile-content')[1].textContent).toContain(
+        props.vulnerability.project.name_with_namespace,
+      );
     });
 
     it('should render the confidence', () => {
-      expect(vm.$el.querySelectorAll('.table-mobile-content')[2].textContent)
-        .toContain(vulnerability.confidence);
+      expect(vm.$el.querySelectorAll('.table-mobile-content')[2].textContent).toContain(
+        props.vulnerability.confidence,
+      );
     });
   });
 });

@@ -1,5 +1,4 @@
 <script>
-
 export default {
   name: 'SeverityBadge',
   props: {
@@ -10,7 +9,7 @@ export default {
   },
   computed: {
     className() {
-      return `severity-badge severity-badge-${this.severity}`;
+      return `severity-badge-${this.severity}`;
     },
   },
 };
@@ -18,6 +17,7 @@ export default {
 
 <template>
   <div
+    class="severity-badge"
     :class="className"
   >{{ severity }}</div>
 </template>
@@ -25,13 +25,13 @@ export default {
 <style>
 .severity-badge {
   background-color: #f2f2f2;
-  border-radius: .3em;
+  border-radius: 0.3em;
   color: #505050;
   display: inline-block;
-  font-size: .9em;
+  font-size: 0.9em;
   font-weight: bold;
   line-height: 1em;
-  padding: .6em .4em .4em;
+  padding: 0.6em 0.4em 0.4em;
   text-transform: uppercase;
 }
 
@@ -56,4 +56,3 @@ export default {
   color: #707070;
 }
 </style>
-
