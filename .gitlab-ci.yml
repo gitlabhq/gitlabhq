@@ -1110,9 +1110,8 @@ no_ee_check:
   only:
     - //@gitlab-org/gitlab-ce
 
-# GitLab EE Review apps
+# GitLab Review apps
 review:
-  <<: *dedicated-no-docs-pull-cache-job
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
   stage: test
   allow_failure: true
@@ -1134,6 +1133,7 @@ review:
     - ensure_namespace
     - install_tiller
     - create_secret
+    - install_external_dns
     - deploy
   environment:
     name: review/$CI_COMMIT_REF_NAME
@@ -1141,6 +1141,7 @@ review:
     on_stop: stop_review
   only:
     refs:
+      - branches@gitlab-org/gitlab-ce
       - branches@gitlab-org/gitlab-ee
     kubernetes: active
   except:
@@ -1151,7 +1152,7 @@ review:
 stop_review:
   <<: *single-script-job
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
-  stage: post-cleanup
+  stage: test
   allow_failure: true
   cache: {}
   dependencies: []
@@ -1167,6 +1168,7 @@ stop_review:
     action: stop
   only:
     refs:
+      - branches@gitlab-org/gitlab-ce
       - branches@gitlab-org/gitlab-ee
     kubernetes: active
   except:
@@ -1188,6 +1190,7 @@ automated_review_cleanup:
     - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
   only:
     refs:
+      - schedules@gitlab-org/gitlab-ce
       - schedules@gitlab-org/gitlab-ee
   except:
     - tags
