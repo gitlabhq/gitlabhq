@@ -34,6 +34,11 @@ export default {
       required: false,
       default: false,
     },
+    displayTextKey: {
+      type: String,
+      required: false,
+      default: 'name',
+    },
   },
   data() {
     return {
@@ -156,7 +161,7 @@ export default {
             :size="16"
             class="append-right-5"
           />
-          {{ file.name }}
+          {{ file[displayTextKey] }}
         </span>
         <component
           :is="extraComponent"
@@ -175,6 +180,7 @@ export default {
         :hide-extra-on-tree="hideExtraOnTree"
         :extra-component="extraComponent"
         :show-changed-icon="showChangedIcon"
+        :display-text-key="displayTextKey"
         @toggleTreeOpen="toggleTreeOpen"
         @clickFile="clickedFile"
       />

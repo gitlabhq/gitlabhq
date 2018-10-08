@@ -445,6 +445,14 @@ describe('DiffsStoreUtils', () => {
           fileHash: 'test',
         },
         {
+          newPath: 'app/test/filepathneedstruncating.js',
+          deletedFile: false,
+          newFile: true,
+          removedLines: 0,
+          addedLines: 0,
+          fileHash: 'test',
+        },
+        {
           newPath: 'package.json',
           deletedFile: true,
           newFile: false,
@@ -462,6 +470,7 @@ describe('DiffsStoreUtils', () => {
         {
           key: 'app',
           path: 'app',
+          truncatedPath: 'app',
           name: 'app',
           type: 'tree',
           tree: [
@@ -473,6 +482,7 @@ describe('DiffsStoreUtils', () => {
               key: 'app/index.js',
               name: 'index.js',
               path: 'app/index.js',
+              truncatedPath: 'app/index.js',
               removedLines: 10,
               tempFile: false,
               type: 'blob',
@@ -481,6 +491,7 @@ describe('DiffsStoreUtils', () => {
             {
               key: 'app/test',
               path: 'app/test',
+              truncatedPath: 'app/test',
               name: 'test',
               type: 'tree',
               opened: true,
@@ -493,6 +504,21 @@ describe('DiffsStoreUtils', () => {
                   key: 'app/test/index.js',
                   name: 'index.js',
                   path: 'app/test/index.js',
+                  truncatedPath: 'app/test/index.js',
+                  removedLines: 0,
+                  tempFile: true,
+                  type: 'blob',
+                  tree: [],
+                },
+                {
+                  addedLines: 0,
+                  changed: true,
+                  deleted: false,
+                  fileHash: 'test',
+                  key: 'app/test/filepathneedstruncating.js',
+                  name: 'filepathneedstruncating.js',
+                  path: 'app/test/filepathneedstruncating.js',
+                  truncatedPath: '...est/filepathneedstruncating.js',
                   removedLines: 0,
                   tempFile: true,
                   type: 'blob',
@@ -506,6 +532,7 @@ describe('DiffsStoreUtils', () => {
         {
           key: 'package.json',
           path: 'package.json',
+          truncatedPath: 'package.json',
           name: 'package.json',
           type: 'blob',
           changed: true,
@@ -527,6 +554,7 @@ describe('DiffsStoreUtils', () => {
         'app/index.js',
         'app/test',
         'app/test/index.js',
+        'app/test/filepathneedstruncating.js',
         'package.json',
       ]);
     });
