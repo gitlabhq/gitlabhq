@@ -998,7 +998,7 @@ stop_review:
 automated_review_cleanup:
   <<: *dedicated-no-docs-pull-cache-job
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
-  stage: post-cleanup
+  stage: build
   allow_failure: true
   cache: {}
   dependencies: []
