@@ -13,7 +13,7 @@
       = pluralize @pipeline.total_size, "job"
       - if @pipeline.ref
         from
-        - if @project.repository.branch_exists?(@pipeline.ref)
+        - if @pipeline.ref_exists?
           = link_to @pipeline.ref, project_ref_path(@project, @pipeline.ref), class: "ref-name"
         - else
           %span.ref-name

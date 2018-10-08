@@ -244,7 +244,7 @@ describe 'Pipeline', :js do
 
     context 'with deleted branch' do
       before do
-        DeleteBranchService.new(@project, @user).execute(pipeline.ref)
+        allow(pipeline).to receive(:ref_exists?).and_return(false)
       end
 
       it 'does not render link to the pipeline ref' do

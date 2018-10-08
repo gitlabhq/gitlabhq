@@ -268,6 +268,10 @@ module Ci
       stage unless stage.statuses_count.zero?
     end
 
+    def ref_exists?
+      project.repository.ref_exists?(self.ref)
+    end
+
     ##
     # TODO We do not completely switch to persisted stages because of
     # race conditions with setting statuses gitlab-ce#23257.
