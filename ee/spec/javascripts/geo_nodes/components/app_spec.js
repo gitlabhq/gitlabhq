@@ -156,9 +156,9 @@ describe('AppComponent', () => {
           .catch(done.fail);
       });
 
-      it('emits `nodeDetailsLoaded` event with fake nodeDetails object on 500 failure', done => {
+      it('emits `nodeDetailsLoaded` event with fake nodeDetails object when a network error occurs', done => {
         spyOn(eventHub, '$emit');
-        mock.onGet(mockNode.statusPath).reply(500, {});
+        mock.onGet(mockNode.statusPath).networkError();
         spyOn(vm.service, 'getGeoNodeDetails').and.callThrough();
 
         vm
@@ -168,26 +168,25 @@ describe('AppComponent', () => {
             const nodeDetails = vm.store.state.nodeDetails['1'];
             expect(nodeDetails).toBeDefined();
             expect(nodeDetails.syncStatusUnavailable).toBe(true);
-            expect(nodeDetails.health).toBe('Request failed with status code 500');
+            expect(nodeDetails.health).toBe('Network Error');
           })
           .then(done)
           .catch(done.fail);
       });
 
-      it('emits `nodeDetailsLoadFailed` event on failure when there is no response', done => {
+      it('emits `nodeDetailsLoaded` event with fake nodeDetails object when a timeout occurs', done => {
         spyOn(eventHub, '$emit');
-        mock.onGet(mockNode.statusPath).reply(500, null);
+        mock.onGet(mockNode.statusPath).timeout();
         spyOn(vm.service, 'getGeoNodeDetails').and.callThrough();
 
         vm
           .fetchNodeDetails(mockNode)
           .then(() => {
-            expect(eventHub.$emit).toHaveBeenCalledWith(
-              'nodeDetailsLoadFailed',
-              mockNode.id,
-              jasmine.any(Object),
-            );
-            done();
+            expect(eventHub.$emit).toHaveBeenCalledWith('nodeDetailsLoaded', jasmine.any(Object));
+            const nodeDetails = vm.store.state.nodeDetails['1'];
+            expect(nodeDetails).toBeDefined();
+            expect(nodeDetails.syncStatusUnavailable).toBe(true);
+            expect(nodeDetails.health).toBe('timeout of 0ms exceeded');
           })
           .then(done)
           .catch(done.fail);

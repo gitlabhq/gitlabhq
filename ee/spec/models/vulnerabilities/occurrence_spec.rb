@@ -20,7 +20,7 @@ describe Vulnerabilities::Occurrence do
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:pipeline) }
     it { is_expected.to validate_presence_of(:ref) }
-    it { is_expected.to validate_presence_of(:first_seen_in_commit_sha) }
+    it { is_expected.to validate_presence_of(:uuid) }
     it { is_expected.to validate_presence_of(:project_fingerprint) }
     it { is_expected.to validate_presence_of(:primary_identifier_fingerprint) }
     it { is_expected.to validate_presence_of(:location_fingerprint) }
@@ -32,13 +32,11 @@ describe Vulnerabilities::Occurrence do
     it { is_expected.to validate_inclusion_of(:severity).in_array(described_class::LEVELS.keys) }
     it { is_expected.to validate_presence_of(:confidence) }
     it { is_expected.to validate_inclusion_of(:confidence).in_array(described_class::LEVELS.keys) }
-    # Uniqueness validation doesn't work with binary columns. See TODO in class file
-    # it { is_expected.to validate_uniqueness_of(:ref).scoped_to(:primary_identifier_fingerprint, :location_fingerprint, :scanner_id, :ref, :project_id) }
   end
 
   context 'database uniqueness' do
     let(:occurrence) { create(:vulnerabilities_occurrence) }
-    let(:new_occurrence) { occurrence.dup }
+    let(:new_occurrence) { occurrence.dup.tap { |o| o.uuid = SecureRandom.uuid } }
 
     it "when all index attributes are identical" do
       expect { new_occurrence.save! }.to raise_error(ActiveRecord::RecordNotUnique)
@@ -52,6 +50,7 @@ describe Vulnerabilities::Occurrence do
         :primary_identifier_fingerprint | -> { '005b6966dd100170b4b1ad599c7058cce91b57b4' }
         :ref | -> { 'another_ref' }
         :scanner | -> { create(:vulnerabilities_scanner) }
+        :pipeline | -> { create(:ci_pipeline) }
         :project | -> { create(:project) }
       end
 

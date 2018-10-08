@@ -89,11 +89,9 @@ module Projects
         PrometheusAlertSerializer.new(project: project, current_user: current_user)
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def alert
-        @alert ||= project.prometheus_alerts.find_by(prometheus_metric_id: params[:id]) || render_404
+        @alert ||= project.prometheus_alerts.for_metric(params[:id]).first || render_404
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       def application
         @application ||= alert.environment.cluster_prometheus_adapter

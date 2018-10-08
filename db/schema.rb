@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180920043317) do
+ActiveRecord::Schema.define(version: 20181002172433) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -217,6 +217,7 @@ ActiveRecord::Schema.define(version: 20180920043317) do
     t.integer "custom_project_templates_group_id"
     t.integer "usage_stats_set_by_user_id"
     t.integer "receive_max_input_size"
+    t.integer "diff_max_patch_bytes", default: 102400, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -428,6 +429,7 @@ ActiveRecord::Schema.define(version: 20180920043317) do
     t.integer "artifacts_metadata_store"
     t.boolean "protected"
     t.integer "failure_reason"
+    t.datetime_with_timezone "scheduled_at"
   end
 
   add_index "ci_builds", ["artifacts_expire_at"], name: "index_ci_builds_on_artifacts_expire_at", where: "(artifacts_file <> ''::text)", using: :btree
@@ -441,6 +443,7 @@ ActiveRecord::Schema.define(version: 20180920043317) do
   add_index "ci_builds", ["project_id", "id"], name: "index_ci_builds_on_project_id_and_id", using: :btree
   add_index "ci_builds", ["protected"], name: "index_ci_builds_on_protected", using: :btree
   add_index "ci_builds", ["runner_id"], name: "index_ci_builds_on_runner_id", using: :btree
+  add_index "ci_builds", ["scheduled_at"], name: "partial_index_ci_builds_on_scheduled_at_with_scheduled_jobs", where: "((scheduled_at IS NOT NULL) AND ((type)::text = 'Ci::Build'::text) AND ((status)::text = 'scheduled'::text))", using: :btree
   add_index "ci_builds", ["stage_id", "stage_idx"], name: "tmp_build_stage_position_index", where: "(stage_idx IS NOT NULL)", using: :btree
   add_index "ci_builds", ["stage_id"], name: "index_ci_builds_on_stage_id", using: :btree
   add_index "ci_builds", ["status", "type", "runner_id"], name: "index_ci_builds_on_status_and_type_and_runner_id", using: :btree
@@ -903,6 +906,21 @@ ActiveRecord::Schema.define(version: 20180920043317) do
   add_index "deployments", ["environment_id", "iid", "project_id"], name: "index_deployments_on_environment_id_and_iid_and_project_id", using: :btree
   add_index "deployments", ["project_id", "iid"], name: "index_deployments_on_project_id_and_iid", unique: true, using: :btree
 
+  create_table "draft_notes", id: :bigserial, force: :cascade do |t|
+    t.integer "merge_request_id", null: false
+    t.integer "author_id", null: false
+    t.boolean "resolve_discussion", default: false, null: false
+    t.string "discussion_id"
+    t.text "note", null: false
+    t.text "position"
+    t.text "original_position"
+    t.text "change_position"
+  end
+
+  add_index "draft_notes", ["author_id"], name: "index_draft_notes_on_author_id", using: :btree
+  add_index "draft_notes", ["discussion_id"], name: "index_draft_notes_on_discussion_id", using: :btree
+  add_index "draft_notes", ["merge_request_id"], name: "index_draft_notes_on_merge_request_id", using: :btree
+
   create_table "emails", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "email", null: false
@@ -1075,6 +1093,10 @@ ActiveRecord::Schema.define(version: 20180920043317) do
 
   add_index "gcp_clusters", ["project_id"], name: "index_gcp_clusters_on_project_id", unique: true, using: :btree
 
+  create_table "geo_cache_invalidation_events", id: :bigserial, force: :cascade do |t|
+    t.string "key", null: false
+  end
+
   create_table "geo_event_log", id: :bigserial, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "repository_updated_event_id", limit: 8
@@ -1088,8 +1110,10 @@ ActiveRecord::Schema.define(version: 20180920043317) do
     t.integer "job_artifact_deleted_event_id", limit: 8
     t.integer "upload_deleted_event_id", limit: 8
     t.integer "reset_checksum_event_id", limit: 8
+    t.integer "cache_invalidation_event_id", limit: 8
   end
 
+  add_index "geo_event_log", ["cache_invalidation_event_id"], name: "index_geo_event_log_on_cache_invalidation_event_id", using: :btree
   add_index "geo_event_log", ["repositories_changed_event_id"], name: "index_geo_event_log_on_repositories_changed_event_id", using: :btree
   add_index "geo_event_log", ["repository_created_event_id"], name: "index_geo_event_log_on_repository_created_event_id", using: :btree
   add_index "geo_event_log", ["repository_deleted_event_id"], name: "index_geo_event_log_on_repository_deleted_event_id", using: :btree
@@ -1942,6 +1966,24 @@ ActiveRecord::Schema.define(version: 20180920043317) do
     t.string "nonce", null: false
   end
 
+  create_table "operations_feature_flags", id: :bigserial, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.boolean "active", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.string "name", null: false
+    t.text "description"
+  end
+
+  add_index "operations_feature_flags", ["project_id", "name"], name: "index_operations_feature_flags_on_project_id_and_name", unique: true, using: :btree
+
+  create_table "operations_feature_flags_clients", id: :bigserial, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.string "token", null: false
+  end
+
+  add_index "operations_feature_flags_clients", ["project_id", "token"], name: "index_operations_feature_flags_clients_on_project_id_and_token", unique: true, using: :btree
+
   create_table "packages_maven_metadata", id: :bigserial, force: :cascade do |t|
     t.integer "package_id", limit: 8, null: false
     t.datetime_with_timezone "created_at", null: false
@@ -2099,6 +2141,7 @@ ActiveRecord::Schema.define(version: 20180920043317) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "repository_access_level", default: 20, null: false
+    t.integer "pages_access_level", default: 20, null: false
   end
 
   add_index "project_features", ["project_id"], name: "index_project_features_on_project_id", unique: true, using: :btree
@@ -2271,6 +2314,18 @@ ActiveRecord::Schema.define(version: 20180920043317) do
   add_index "projects", ["runners_token"], name: "index_projects_on_runners_token", using: :btree
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
+
+  create_table "prometheus_alert_events", id: :bigserial, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "prometheus_alert_id", null: false
+    t.datetime_with_timezone "started_at", null: false
+    t.datetime_with_timezone "ended_at"
+    t.integer "status", limit: 2
+    t.string "payload_key"
+  end
+
+  add_index "prometheus_alert_events", ["project_id", "status"], name: "index_prometheus_alert_events_on_project_id_and_status", using: :btree
+  add_index "prometheus_alert_events", ["prometheus_alert_id", "payload_key"], name: "index_prometheus_alert_event_scoped_payload_key", unique: true, using: :btree
 
   create_table "prometheus_alerts", force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
@@ -2966,7 +3021,6 @@ ActiveRecord::Schema.define(version: 20180920043317) do
     t.datetime_with_timezone "updated_at", null: false
     t.integer "occurrence_id", limit: 8, null: false
     t.integer "identifier_id", limit: 8, null: false
-    t.boolean "primary", default: false, null: false
   end
 
   add_index "vulnerability_occurrence_identifiers", ["identifier_id"], name: "index_vulnerability_occurrence_identifiers_on_identifier_id", using: :btree
@@ -2981,10 +3035,10 @@ ActiveRecord::Schema.define(version: 20180920043317) do
     t.integer "pipeline_id", null: false
     t.integer "project_id", null: false
     t.integer "scanner_id", limit: 8, null: false
-    t.binary "first_seen_in_commit_sha", null: false
     t.binary "project_fingerprint", null: false
     t.binary "location_fingerprint", null: false
     t.binary "primary_identifier_fingerprint", null: false
+    t.string "uuid", limit: 36, null: false
     t.string "ref", null: false
     t.string "name", null: false
     t.string "metadata_version", null: false
@@ -2992,8 +3046,9 @@ ActiveRecord::Schema.define(version: 20180920043317) do
   end
 
   add_index "vulnerability_occurrences", ["pipeline_id"], name: "index_vulnerability_occurrences_on_pipeline_id", using: :btree
-  add_index "vulnerability_occurrences", ["project_id", "ref", "scanner_id", "primary_identifier_fingerprint", "location_fingerprint"], name: "index_vulnerability_occurrences_on_unique_keys", unique: true, using: :btree
+  add_index "vulnerability_occurrences", ["project_id", "ref", "primary_identifier_fingerprint", "location_fingerprint", "pipeline_id", "scanner_id"], name: "index_vulnerability_occurrences_on_unique_keys", unique: true, using: :btree
   add_index "vulnerability_occurrences", ["scanner_id"], name: "index_vulnerability_occurrences_on_scanner_id", using: :btree
+  add_index "vulnerability_occurrences", ["uuid"], name: "index_vulnerability_occurrences_on_uuid", unique: true, using: :btree
 
   create_table "vulnerability_scanners", id: :bigserial, force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
@@ -3121,6 +3176,8 @@ ActiveRecord::Schema.define(version: 20180920043317) do
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade
+  add_foreign_key "draft_notes", "merge_requests", on_delete: :cascade
+  add_foreign_key "draft_notes", "users", column: "author_id", on_delete: :cascade
   add_foreign_key "environments", "projects", name: "fk_d1c8c1da6a", on_delete: :cascade
   add_foreign_key "epic_issues", "epics", on_delete: :cascade
   add_foreign_key "epic_issues", "issues", on_delete: :cascade
@@ -3140,6 +3197,7 @@ ActiveRecord::Schema.define(version: 20180920043317) do
   add_foreign_key "gcp_clusters", "projects", on_delete: :cascade
   add_foreign_key "gcp_clusters", "services", on_delete: :nullify
   add_foreign_key "gcp_clusters", "users", on_delete: :nullify
+  add_foreign_key "geo_event_log", "geo_cache_invalidation_events", column: "cache_invalidation_event_id", name: "fk_42c3b54bed", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_hashed_storage_migrated_events", column: "hashed_storage_migrated_event_id", name: "fk_27548c6db3", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_job_artifact_deleted_events", column: "job_artifact_deleted_event_id", name: "fk_176d3fbb5d", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_lfs_object_deleted_events", column: "lfs_object_deleted_event_id", name: "fk_d5af95fcd9", on_delete: :cascade
@@ -3220,6 +3278,8 @@ ActiveRecord::Schema.define(version: 20180920043317) do
   add_foreign_key "notes", "projects", name: "fk_99e097b079", on_delete: :cascade
   add_foreign_key "notification_settings", "users", name: "fk_0c95e91db7", on_delete: :cascade
   add_foreign_key "oauth_openid_requests", "oauth_access_grants", column: "access_grant_id", name: "fk_oauth_openid_requests_oauth_access_grants_access_grant_id"
+  add_foreign_key "operations_feature_flags", "projects", on_delete: :cascade
+  add_foreign_key "operations_feature_flags_clients", "projects", on_delete: :cascade
   add_foreign_key "packages_maven_metadata", "packages_packages", column: "package_id", name: "fk_be88aed360", on_delete: :cascade
   add_foreign_key "packages_package_files", "packages_packages", column: "package_id", name: "fk_86f0f182f8", on_delete: :cascade
   add_foreign_key "packages_packages", "projects", on_delete: :cascade
@@ -3240,6 +3300,8 @@ ActiveRecord::Schema.define(version: 20180920043317) do
   add_foreign_key "project_mirror_data", "projects", name: "fk_d1aad367d7", on_delete: :cascade
   add_foreign_key "project_repository_states", "projects", on_delete: :cascade
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
+  add_foreign_key "prometheus_alert_events", "projects", on_delete: :cascade
+  add_foreign_key "prometheus_alert_events", "prometheus_alerts", on_delete: :cascade
   add_foreign_key "prometheus_alerts", "environments", on_delete: :cascade
   add_foreign_key "prometheus_alerts", "projects", on_delete: :cascade
   add_foreign_key "prometheus_alerts", "prometheus_metrics", on_delete: :cascade

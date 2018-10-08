@@ -225,7 +225,6 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to match_schema('job/job_details')
           expect(json_response['deployment_status']["status"]).to eq 'creating'
-          expect(json_response['deployment_status']["icon"]).to eq 'passed'
           expect(json_response['deployment_status']["environment"]).not_to be_nil
         end
       end
@@ -629,6 +628,46 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       post :cancel, namespace_id: project.namespace,
                     project_id: project,
                     id: job.id
+    end
+  end
+
+  describe 'POST unschedule' do
+    before do
+      project.add_developer(user)
+
+      create(:protected_branch, :developers_can_merge,
+             name: 'master', project: project)
+
+      sign_in(user)
+
+      post_unschedule
+    end
+
+    context 'when job is scheduled' do
+      let(:job) { create(:ci_build, :scheduled, pipeline: pipeline) }
+
+      it 'redirects to the unscheduled job page' do
+        expect(response).to have_gitlab_http_status(:found)
+        expect(response).to redirect_to(namespace_project_job_path(id: job.id))
+      end
+
+      it 'transits to manual' do
+        expect(job.reload).to be_manual
+      end
+    end
+
+    context 'when job is not scheduled' do
+      let(:job) { create(:ci_build, pipeline: pipeline) }
+
+      it 'renders unprocessable_entity' do
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      end
+    end
+
+    def post_unschedule
+      post :unschedule, namespace_id: project.namespace,
+                        project_id: project,
+                        id: job.id
     end
   end
 

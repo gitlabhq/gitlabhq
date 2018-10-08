@@ -212,6 +212,8 @@ describe('Card security reports app', () => {
           // Renders DAST result
           expect(vm.$el.textContent).toContain('DAST detected 2 vulnerabilities');
 
+          expect(vm.$el.textContent).not.toContain('for the source branch only');
+
           done();
         }, 0);
       });
@@ -245,14 +247,10 @@ describe('Card security reports app', () => {
         setTimeout(() => {
           expect(vm.$el.querySelector('.fa-spinner')).toBeNull();
 
-          expect(vm.$el.textContent).toContain('SAST resulted in error while loading results');
-          expect(vm.$el.textContent).toContain(
-            'Dependency scanning resulted in error while loading results',
-          );
-          expect(vm.$el.textContent).toContain(
-            'Container scanning resulted in error while loading results',
-          );
-          expect(vm.$el.textContent).toContain('DAST resulted in error while loading results');
+          expect(vm.$el.textContent).toContain('SAST: Loading resulted in an error');
+          expect(vm.$el.textContent).toContain('Dependency scanning: Loading resulted in an error');
+          expect(vm.$el.textContent).toContain('Container scanning: Loading resulted in an error');
+          expect(vm.$el.textContent).toContain('DAST: Loading resulted in an error');
           done();
         }, 0);
       });

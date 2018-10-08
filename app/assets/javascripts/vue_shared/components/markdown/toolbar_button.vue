@@ -27,6 +27,11 @@
         required: false,
         default: '',
       },
+      tagSelect: {
+        type: String,
+        required: false,
+        default: '',
+      },
       prepend: {
         type: Boolean,
         required: false,
@@ -40,6 +45,7 @@
   <button
     v-tooltip
     :data-md-tag="tag"
+    :data-md-select="tagSelect"
     :data-md-block="tagBlock"
     :data-md-prepend="prepend"
     :title="buttonTitle"

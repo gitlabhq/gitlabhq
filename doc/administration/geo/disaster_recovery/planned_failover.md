@@ -101,7 +101,7 @@ The maintenance window won't end until Geo replication and verification is
 completely finished. To keep the window as short as possible, you should
 ensure these processes are close to 100% as possible during active use.
 
-Visit the **Admin Area ➔ Geo nodes** dashboard on the **secondary** node to
+Navigate to the **Admin Area > Geo** dashboard on the **secondary** node to
 review status. Replicated objects (shown in green) should be close to 100%,
 and there should be no failures (shown in red). If a large proportion of
 objects aren't yet replicated (shown in grey), consider giving the node more
@@ -126,8 +126,8 @@ This [content was moved to another location][background-verification].
 
 ### Notify users of scheduled maintenance
 
-On the **primary**, navigate to **Admin Area ➔ Messages**, add a broadcast
-message. You can check under **Admin Area ➔ Geo Nodes** to estimate how long it
+On the **primary** node, navigate to **Admin Area > Messages**, add a broadcast
+message. You can check under **Admin Area > Geo** to estimate how long it
 will take to finish syncing. An example message would be:
 
 > A scheduled maintenance will take place at XX:XX UTC. We expect it to take
@@ -136,7 +136,7 @@ will take to finish syncing. An example message would be:
 ## Prevent updates to the **primary**
 
 Until a [read-only mode][ce-19739] is implemented, updates must be prevented
-from happening manually. Note that your **secondary** still needs read-only
+from happening manually. Note that your **secondary** node still needs read-only
 access to the primary for the duration of the maintenance window.
 
 1. At the scheduled time, using your cloud provider or your node's firewall, block
@@ -174,7 +174,7 @@ access to the primary for the duration of the maintenance window.
    connection.
 
 1. Disable non-Geo periodic background jobs on the primary node by navigating
-   to **Admin Area ➔ Monitoring ➔ Background Jobs ➔ Cron** , pressing `Disable All`,
+   to **Admin Area > Monitoring > Background Jobs > Cron** , pressing `Disable All`,
    and then pressing `Enable` for the `geo_sidekiq_cron_config_worker` cron job.
    This job will re-enable several other cron jobs that are essential for planned
    failover to complete successfully.
@@ -183,20 +183,20 @@ access to the primary for the duration of the maintenance window.
 
 1. If you are manually replicating any data not managed by Geo, trigger the
    final replication process now.
-1. On the **primary**, navigate to **Admin Area ➔ Monitoring ➔ Background Jobs ➔ Queues**
+1. On the **primary** node, navigate to **Admin Area > Monitoring > Background Jobs > Queues**
    and wait for all queues except those with `geo` in the name to drop to 0.
    These queues contain work that has been submitted by your users; failing over
    before it is completed will cause the work to be lost!
-1. On the **primary**, navigate to **Admin Area ➔ Geo Nodes** and wait for the
-   following conditions to be true of the **secondary** you are failing over to:
+1. On the **primary** node, navigate to **Admin Area > Geo** and wait for the
+   following conditions to be true of the **secondary** node you are failing over to:
     * All replication meters to each 100% replicated, 0% failures
     * All verification meters reach 100% verified, 0% failures
     * Database replication lag is 0ms
     * The Geo log cursor is up to date (0 events behind)
 
-1. On the **secondary**, navigate to **Admin Area > Monitoring ➔ Background Jobs ➔ Queues**
+1. On the **secondary** node, navigate to **Admin Area > Monitoring > Background Jobs > Queues**
    and wait for all the `geo` queues to drop to 0 queued and 0 running jobs.
-1. On the **secondary**, use [these instructions][foreground-verification]
+1. On the **secondary** node, use [these instructions][foreground-verification]
    to verify the integrity of CI artifacts, LFS objects and uploads in file
    storage.
 

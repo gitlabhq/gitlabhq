@@ -2,54 +2,114 @@ import _ from 'underscore';
 
 export const placeholderImage =
   'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
-const SCROLL_THRESHOLD = 300;
+const SCROLL_THRESHOLD = 500;
 
 export default class LazyLoader {
   constructor(options = {}) {
+    this.intersectionObserver = null;
     this.lazyImages = [];
     this.observerNode = options.observerNode || '#content-body';
 
-    const throttledScrollCheck = _.throttle(() => this.scrollCheck(), 300);
-    const debouncedElementsInView = _.debounce(() => this.checkElementsInView(), 300);
-
-    window.addEventListener('scroll', throttledScrollCheck);
-    window.addEventListener('resize', debouncedElementsInView);
-
     const scrollContainer = options.scrollContainer || window;
-    scrollContainer.addEventListener('load', () => this.loadCheck());
+    scrollContainer.addEventListener('load', () => this.register());
   }
+
+  static supportsIntersectionObserver() {
+    return 'IntersectionObserver' in window;
+  }
+
   searchLazyImages() {
-    const that = this;
     requestIdleCallback(
       () => {
-        that.lazyImages = [].slice.call(document.querySelectorAll('.lazy'));
+        const lazyImages = [].slice.call(document.querySelectorAll('.lazy'));
 
-        if (that.lazyImages.length) {
-          that.checkElementsInView();
+        if (LazyLoader.supportsIntersectionObserver()) {
+          if (this.intersectionObserver) {
+            lazyImages.forEach(img => this.intersectionObserver.observe(img));
+          }
+        } else if (lazyImages.length) {
+          this.lazyImages = lazyImages;
+          this.checkElementsInView();
         }
       },
       { timeout: 500 },
     );
   }
+
   startContentObserver() {
     const contentNode = document.querySelector(this.observerNode) || document.querySelector('body');
-
     if (contentNode) {
-      const observer = new MutationObserver(() => this.searchLazyImages());
+      this.mutationObserver = new MutationObserver(() => this.searchLazyImages());
 
-      observer.observe(contentNode, {
+      this.mutationObserver.observe(contentNode, {
         childList: true,
         subtree: true,
       });
     }
   }
-  loadCheck() {
-    this.searchLazyImages();
-    this.startContentObserver();
+
+  stopContentObserver() {
+    if (this.mutationObserver) {
+      this.mutationObserver.takeRecords();
+      this.mutationObserver.disconnect();
+      this.mutationObserver = null;
+    }
   }
+
+  unregister() {
+    this.stopContentObserver();
+    if (this.intersectionObserver) {
+      this.intersectionObserver.takeRecords();
+      this.intersectionObserver.disconnect();
+      this.intersectionObserver = null;
+    }
+    if (this.throttledScrollCheck) {
+      window.removeEventListener('scroll', this.throttledScrollCheck);
+    }
+    if (this.debouncedElementsInView) {
+      window.removeEventListener('resize', this.debouncedElementsInView);
+    }
+  }
+
+  register() {
+    if (LazyLoader.supportsIntersectionObserver()) {
+      this.startIntersectionObserver();
+    } else {
+      this.startLegacyObserver();
+    }
+    this.startContentObserver();
+    this.searchLazyImages();
+  }
+
+  startIntersectionObserver = () => {
+    this.throttledElementsInView = _.throttle(() => this.checkElementsInView(), 300);
+    this.intersectionObserver = new IntersectionObserver(this.onIntersection, {
+      rootMargin: `${SCROLL_THRESHOLD}px 0px`,
+      thresholds: 0.1,
+    });
+  };
+
+  onIntersection = entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        this.intersectionObserver.unobserve(entry.target);
+        this.lazyImages.push(entry.target);
+      }
+    });
+    this.throttledElementsInView();
+  };
+
+  startLegacyObserver() {
+    this.throttledScrollCheck = _.throttle(() => this.scrollCheck(), 300);
+    this.debouncedElementsInView = _.debounce(() => this.checkElementsInView(), 300);
+    window.addEventListener('scroll', this.throttledScrollCheck);
+    window.addEventListener('resize', this.debouncedElementsInView);
+  }
+
   scrollCheck() {
     requestAnimationFrame(() => this.checkElementsInView());
   }
+
   checkElementsInView() {
     const scrollTop = window.pageYOffset;
     const visHeight = scrollTop + window.innerHeight + SCROLL_THRESHOLD;
@@ -61,18 +121,29 @@ export default class LazyLoader {
         const imgTop = scrollTop + imgBoundRect.top;
         const imgBound = imgTop + imgBoundRect.height;
 
-        if (scrollTop < imgBound && visHeight > imgTop) {
+        if (scrollTop <= imgBound && visHeight >= imgTop) {
           requestAnimationFrame(() => {
             LazyLoader.loadImage(selectedImage);
           });
           return false;
         }
 
+        /*
+        If we are scrolling fast, the img we watched intersecting could have left the view port.
+        So we are going watch for new intersections.
+        */
+        if (LazyLoader.supportsIntersectionObserver()) {
+          if (this.intersectionObserver) {
+            this.intersectionObserver.observe(selectedImage);
+          }
+          return false;
+        }
         return true;
       }
       return false;
     });
   }
+
   static loadImage(img) {
     if (img.getAttribute('data-src')) {
       let imgUrl = img.getAttribute('data-src');

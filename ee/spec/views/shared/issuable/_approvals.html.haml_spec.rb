@@ -5,6 +5,7 @@ describe 'shared/issuable/_approvals.html.haml' do
   let(:project) { build(:project) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:presenter) { merge_request.present(current_user: user) }
+  let(:approver_presenter) { double(any?: false, show_code_owner_tips?: true) }
   let(:form) { double('form') }
 
   before do
@@ -13,8 +14,8 @@ describe 'shared/issuable/_approvals.html.haml' do
     allow(form).to receive(:label)
     allow(form).to receive(:number_field)
     allow(merge_request).to receive(:requires_approve?).and_return(true)
+    allow(MergeRequestApproverPresenter).to receive(:new).and_return(approver_presenter)
     assign(:project, project)
-    assign(:suggested_approvers, [])
   end
 
   context 'has no approvers' do

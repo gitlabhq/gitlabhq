@@ -74,6 +74,9 @@ export const allDiscussions = (state, getters) => {
   return Object.values(resolved).concat(unresolved);
 };
 
+export const isDiscussionResolved = (state, getters) => discussionId =>
+  getters.resolvedDiscussionsById[discussionId] !== undefined;
+
 export const allResolvableDiscussions = (state, getters) =>
   getters.allDiscussions.filter(d => !d.individual_note && d.resolvable);
 
@@ -126,8 +129,8 @@ export const unresolvedDiscussionsIdsByDiff = (state, getters) =>
       const filenameComparison = a.diff_file.file_path.localeCompare(b.diff_file.file_path);
 
       // Get the line numbers, to compare within the same file
-      const aLines = [a.position.formatter.new_line, a.position.formatter.old_line];
-      const bLines = [b.position.formatter.new_line, b.position.formatter.old_line];
+      const aLines = [a.position.new_line, a.position.old_line];
+      const bLines = [b.position.new_line, b.position.old_line];
 
       return filenameComparison < 0 ||
         (filenameComparison === 0 &&

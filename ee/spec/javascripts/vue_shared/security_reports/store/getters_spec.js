@@ -16,7 +16,7 @@ import {
 } from 'ee/vue_shared/security_reports/store/getters';
 
 describe('Security reports getters', () => {
-  function removeBreakLine (data) {
+  function removeBreakLine(data) {
     return data.replace(/\r?\n|\r/g, '').replace(/\s\s+/g, ' ');
   }
 
@@ -27,16 +27,18 @@ describe('Security reports getters', () => {
         newState.sast.paths.head = 'foo';
         newState.sast.paths.base = 'bar';
 
-        expect(groupedSastText(newState)).toEqual('SAST detected no security vulnerabilities');
+        expect(groupedSastText(newState)).toEqual('SAST detected no vulnerabilities');
       });
     });
 
     describe('with only `all` issues', () => {
       it('returns no new issues text', () => {
         const newState = state();
+        newState.sast.paths.head = 'foo';
+        newState.sast.paths.base = 'bar';
         newState.sast.allIssues = [{}];
 
-        expect(groupedSastText(newState)).toEqual('SAST detected no new security vulnerabilities');
+        expect(groupedSastText(newState)).toEqual('SAST detected no new vulnerabilities');
       });
     });
 
@@ -73,7 +75,7 @@ describe('Security reports getters', () => {
           newState.sast.resolvedIssues = [{}];
 
           expect(removeBreakLine(groupedSastText(newState))).toEqual(
-            'SAST detected 1 new vulnerability and 1 fixed vulnerability',
+            'SAST detected 1 new, and 1 fixed vulnerabilities',
           );
         });
       });
@@ -94,7 +96,7 @@ describe('Security reports getters', () => {
           const newState = state();
           newState.sast.hasError = true;
 
-          expect(groupedSastText(newState)).toEqual('SAST resulted in error while loading results');
+          expect(groupedSastText(newState)).toEqual('SAST: Loading resulted in an error');
         });
       });
 
@@ -117,7 +119,7 @@ describe('Security reports getters', () => {
         newState.sastContainer.paths.base = 'foo';
 
         expect(groupedSastContainerText(newState)).toEqual(
-          'Container scanning detected no security vulnerabilities',
+          'Container scanning detected no vulnerabilities',
         );
       });
     });
@@ -157,7 +159,7 @@ describe('Security reports getters', () => {
           newState.sastContainer.resolvedIssues = [{}];
 
           expect(removeBreakLine(groupedSastContainerText(newState))).toEqual(
-            'Container scanning detected 1 new vulnerability and 1 fixed vulnerability',
+            'Container scanning detected 1 new, and 1 fixed vulnerabilities',
           );
         });
       });
@@ -184,7 +186,7 @@ describe('Security reports getters', () => {
         newState.dast.paths.head = 'foo';
         newState.dast.paths.base = 'foo';
 
-        expect(groupedDastText(newState)).toEqual('DAST detected no security vulnerabilities');
+        expect(groupedDastText(newState)).toEqual('DAST detected no vulnerabilities');
       });
     });
 
@@ -221,7 +223,7 @@ describe('Security reports getters', () => {
           newState.dast.resolvedIssues = [{}];
 
           expect(removeBreakLine(groupedDastText(newState))).toEqual(
-            'DAST detected 1 new vulnerability and 1 fixed vulnerability',
+            'DAST detected 1 new, and 1 fixed vulnerabilities',
           );
         });
       });
@@ -246,7 +248,7 @@ describe('Security reports getters', () => {
         newState.dependencyScanning.paths.base = 'foo';
 
         expect(groupedDependencyText(newState)).toEqual(
-          'Dependency scanning detected no security vulnerabilities',
+          'Dependency scanning detected no vulnerabilities',
         );
       });
     });
@@ -285,7 +287,7 @@ describe('Security reports getters', () => {
           newState.dependencyScanning.resolvedIssues = [{}];
 
           expect(removeBreakLine(groupedDependencyText(newState))).toEqual(
-            'Dependency scanning detected 1 new vulnerability and 1 fixed vulnerability',
+            'Dependency scanning detected 1 new, and 1 fixed vulnerabilities',
           );
         });
       });
@@ -323,9 +325,7 @@ describe('Security reports getters', () => {
           noBaseInAllReports: true,
           areReportsLoading: false,
         }),
-      ).toEqual(
-        'Security scanning detected no vulnerabilities for the source branch only',
-      );
+      ).toEqual('Security scanning detected no vulnerabilities for the source branch only');
     });
 
     it('returns is loading text', () => {
@@ -343,6 +343,7 @@ describe('Security reports getters', () => {
       newState.summaryCounts = {
         added: 2,
         fixed: 4,
+        existing: 5,
       };
 
       expect(
@@ -351,7 +352,7 @@ describe('Security reports getters', () => {
           noBaseInAllReports: false,
           areReportsLoading: false,
         }),
-      ).toContain('Security scanning detected 2 new vulnerabilities and 4 fixed vulnerabilities');
+      ).toEqual('Security scanning detected 2 new, and 4 fixed vulnerabilities');
     });
 
     it('returns added text', () => {
@@ -359,6 +360,7 @@ describe('Security reports getters', () => {
       newState.summaryCounts = {
         added: 2,
         fixed: 0,
+        existing: 5,
       };
 
       expect(
@@ -367,7 +369,7 @@ describe('Security reports getters', () => {
           noBaseInAllReports: false,
           areReportsLoading: false,
         }),
-      ).toContain('Security scanning detected 2 new vulnerabilities');
+      ).toEqual('Security scanning detected 2 new vulnerabilities');
     });
 
     it('returns fixed text', () => {
@@ -375,6 +377,7 @@ describe('Security reports getters', () => {
       newState.summaryCounts = {
         added: 0,
         fixed: 4,
+        existing: 5,
       };
 
       expect(
@@ -383,7 +386,7 @@ describe('Security reports getters', () => {
           noBaseInAllReports: false,
           areReportsLoading: false,
         }),
-      ).toContain('Security scanning detected 4 fixed vulnerabilities');
+      ).toEqual('Security scanning detected 4 fixed vulnerabilities');
     });
 
     it('returns added and fixed while loading text', () => {
@@ -391,6 +394,7 @@ describe('Security reports getters', () => {
       newState.summaryCounts = {
         added: 2,
         fixed: 4,
+        existing: 5,
       };
 
       expect(
@@ -399,9 +403,41 @@ describe('Security reports getters', () => {
           noBaseInAllReports: false,
           areReportsLoading: true,
         }),
-      ).toContain(
-        'Security scanning (is loading) detected 2 new vulnerabilities and 4 fixed vulnerabilities',
-      );
+      ).toEqual('Security scanning (is loading) detected 2 new, and 4 fixed vulnerabilities');
+    });
+
+    it('returns no new text if there are existing ones', () => {
+      const newState = state();
+      newState.summaryCounts = {
+        added: 0,
+        fixed: 0,
+        existing: 5,
+      };
+
+      expect(
+        groupedSummaryText(newState, {
+          allReportsHaveError: false,
+          noBaseInAllReports: false,
+          areReportsLoading: false,
+        }),
+      ).toEqual('Security scanning detected no new vulnerabilities');
+    });
+
+    it('returns no text if there are existing ones', () => {
+      const newState = state();
+      newState.summaryCounts = {
+        added: 0,
+        fixed: 0,
+        existing: 0,
+      };
+
+      expect(
+        groupedSummaryText(newState, {
+          allReportsHaveError: false,
+          noBaseInAllReports: false,
+          areReportsLoading: false,
+        }),
+      ).toEqual('Security scanning detected no vulnerabilities');
     });
   });
 

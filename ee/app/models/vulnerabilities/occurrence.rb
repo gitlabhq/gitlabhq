@@ -18,7 +18,6 @@ module Vulnerabilities
       critical: 7
     }.with_indifferent_access.freeze
 
-    sha_attribute :first_seen_in_commit_sha
     sha_attribute :project_fingerprint
     sha_attribute :primary_identifier_fingerprint
     sha_attribute :location_fingerprint
@@ -40,15 +39,15 @@ module Vulnerabilities
     validates :scanner, presence: true
     validates :project, presence: true
     validates :pipeline, presence: true
+    validates :uuid, presence: true
     validates :ref, presence: true
 
-    validates :first_seen_in_commit_sha, presence: true
     validates :project_fingerprint, presence: true
     validates :primary_identifier_fingerprint, presence: true
     validates :location_fingerprint, presence: true
     # Uniqueness validation doesn't work with binary columns, so save this useless query. It is enforce by DB constraint anyway.
     # TODO: find out why it fails
-    # validates :location_fingerprint, presence: true, uniqueness: { scope: [:primary_identifier_fingerprint, :scanner_id, :ref, :project_id] }
+    # validates :location_fingerprint, presence: true, uniqueness: { scope: [:primary_identifier_fingerprint, :scanner_id, :ref, :pipeline_id, :project_id] }
     validates :name, presence: true
     validates :report_type, presence: true
     validates :severity, presence: true, inclusion: { in: LEVELS.keys }

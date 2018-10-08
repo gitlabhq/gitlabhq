@@ -1,0 +1,5 @@
+---
+title: 'Geo: Add a backoff time to few Geo workers to save resources'
+merge_request: 7470
+author:
+type: added

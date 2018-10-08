@@ -2,6 +2,7 @@ require 'spec_helper'
 
 RSpec.describe Geo::EventLog, type: :model do
   describe 'relationships' do
+    it { is_expected.to belong_to(:cache_invalidation_event).class_name('Geo::CacheInvalidationEvent').with_foreign_key('cache_invalidation_event_id') }
     it { is_expected.to belong_to(:repositories_changed_event).class_name('Geo::RepositoriesChangedEvent').with_foreign_key('repositories_changed_event_id') }
     it { is_expected.to belong_to(:repository_created_event).class_name('Geo::RepositoryCreatedEvent').with_foreign_key('repository_created_event_id') }
     it { is_expected.to belong_to(:repository_deleted_event).class_name('Geo::RepositoryDeletedEvent').with_foreign_key('repository_deleted_event_id') }
@@ -102,6 +103,13 @@ RSpec.describe Geo::EventLog, type: :model do
       subject.reset_checksum_event = reset_checksum_event
 
       expect(subject.event).to eq reset_checksum_event
+    end
+
+    it 'returns cache_invalidation_event when set' do
+      cache_invalidation_event = build(:geo_cache_invalidation_event)
+      subject.cache_invalidation_event = cache_invalidation_event
+
+      expect(subject.event).to eq cache_invalidation_event
     end
   end
 

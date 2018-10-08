@@ -13,12 +13,21 @@ module QA
         autoload :Projects, 'qa/ee/page/dashboard/projects'
       end
 
+      module Group
+        autoload :SamlSSOSignIn, 'qa/ee/page/group/saml_sso_sign_in'
+
+        module Settings
+          autoload :SamlSSO, 'qa/ee/page/group/settings/saml_sso'
+        end
+      end
+
       module Main
         autoload :Banner, 'qa/ee/page/main/banner'
       end
 
       module Menu
         autoload :Admin, 'qa/ee/page/menu/admin'
+        autoload :Side, 'qa/ee/page/menu/side'
       end
 
       module Admin
@@ -47,6 +56,14 @@ module QA
       module MergeRequest
         autoload :Show, 'qa/ee/page/merge_request/show'
       end
+
+      module Group
+        module Epic
+          autoload :Index, 'qa/ee/page/group/epic/index'
+          autoload :Show, 'qa/ee/page/group/epic/show'
+          autoload :Edit, 'qa/ee/page/group/epic/edit'
+        end
+      end
     end
 
     module Factory
@@ -55,11 +72,18 @@ module QA
       module Geo
         autoload :Node, 'qa/ee/factory/geo/node'
       end
+
+      module Resource
+        autoload :Epic, 'qa/ee/factory/resource/epic'
+      end
     end
 
     module Scenario
       module Test
         autoload :Geo, 'qa/ee/scenario/test/geo'
+        module Integration
+          autoload :GroupSAML, 'qa/ee/scenario/test/integration/group_saml'
+        end
       end
     end
   end

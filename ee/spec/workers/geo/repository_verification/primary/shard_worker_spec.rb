@@ -134,6 +134,27 @@ describe Geo::RepositoryVerification::Primary::ShardWorker, :postgresql, :clean_
       Sidekiq::Testing.inline! { subject.perform(shard_name) }
     end
 
+    context 'backoff time' do
+      let(:cache_key) { "#{described_class.name.underscore}:shard:#{shard_name}:skip" }
+
+      it 'sets the back off time when there are no pending items' do
+        expect(Rails.cache).to receive(:write).with(cache_key, true, expires_in: 300.seconds).once
+
+        subject.perform(shard_name)
+      end
+
+      it 'does not perform Geo::RepositoryVerification::Primary::SingleWorker when the backoff time is set' do
+        repository_outdated = create(:project)
+        create(:repository_state, :repository_outdated, project: repository_outdated)
+
+        expect(Rails.cache).to receive(:read).with(cache_key).and_return(true)
+
+        expect(Geo::RepositoryVerification::Primary::SingleWorker).not_to receive(:perform_async)
+
+        subject.perform(shard_name)
+      end
+    end
+
     # test that jobs are always moving forward and we're not querying the same things
     # over and over
     describe 'resource loading' do

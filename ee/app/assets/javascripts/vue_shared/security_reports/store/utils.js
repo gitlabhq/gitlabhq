@@ -252,75 +252,62 @@ export const filterByKey = (firstArray = [], secondArray = [], key = '') =>
 export const getUnapprovedVulnerabilities = (issues = [], unapproved = []) =>
   issues.filter(item => unapproved.find(el => el === item.vulnerability));
 
-export const textBuilder = (
-  type = '',
+export const groupedTextBuilder = (
+  reportType = '',
   paths = {},
   newIssues = 0,
   resolvedIssues = 0,
   allIssues = 0,
+  status = '',
 ) => {
-  // with no new or fixed but with vulnerabilities
-  if (newIssues === 0 && resolvedIssues === 0 && allIssues) {
-    return sprintf(s__('ciReport|%{type} detected no new security vulnerabilities'), { type });
-  }
+  let baseString = '';
 
   if (!paths.base) {
     if (newIssues > 0) {
-      return sprintf(
-        n__(
-          '%{type} detected 1 vulnerability for the source branch only',
-          '%{type} detected %{vulnerabilityCount} vulnerabilities for the source branch only',
-          newIssues,
-        ),
-        { type, vulnerabilityCount: newIssues },
+      baseString = n__(
+        'ciReport|%{reportType} %{status} detected %{newCount} vulnerability for the source branch only',
+        'ciReport|%{reportType} %{status} detected %{newCount} vulnerabilities for the source branch only',
+        newIssues,
+      );
+    } else {
+      baseString = s__(
+        'ciReport|%{reportType} %{status} detected no vulnerabilities for the source branch only',
       );
     }
-
-    return sprintf('%{type} detected no vulnerabilities for the source branch only', { type });
   } else if (paths.base && paths.head) {
-    // With no issues
-    if (newIssues === 0 && resolvedIssues === 0 && allIssues === 0) {
-      return sprintf(s__('ciReport|%{type} detected no security vulnerabilities'), { type });
-    }
-
-    // with only new issues
-    if (newIssues > 0 && resolvedIssues === 0) {
-      return sprintf(
-        n__(
-          '%{type} detected 1 new vulnerability',
-          '%{type} detected %{vulnerabilityCount} new vulnerabilities',
-          newIssues,
-        ),
-        { type, vulnerabilityCount: newIssues },
-      );
-    }
-
-    // with new and fixed issues
     if (newIssues > 0 && resolvedIssues > 0) {
-      return `${sprintf(
-        n__(
-          '%{type} detected 1 new vulnerability',
-          '%{type} detected %{vulnerabilityCount} new vulnerabilities',
-          newIssues,
-        ),
-        { type, vulnerabilityCount: newIssues },
-      )}
-      ${n__('and 1 fixed vulnerability', 'and %d fixed vulnerabilities', resolvedIssues)}`;
-    }
-
-    // with only fixed issues
-    if (newIssues === 0 && resolvedIssues > 0) {
-      return sprintf(
-        n__(
-          '%{type} detected 1 fixed vulnerability',
-          '%{type} detected %{vulnerabilityCount} fixed vulnerabilities',
-          resolvedIssues,
-        ),
-        { type, vulnerabilityCount: resolvedIssues },
+      baseString = s__(
+        'ciReport|%{reportType} %{status} detected %{newCount} new, and %{fixedCount} fixed vulnerabilities',
       );
+    } else if (newIssues > 0 && resolvedIssues === 0) {
+      baseString = n__(
+        'ciReport|%{reportType} %{status} detected %{newCount} new vulnerability',
+        'ciReport|%{reportType} %{status} detected %{newCount} new vulnerabilities',
+        newIssues,
+      );
+    } else if (newIssues === 0 && resolvedIssues > 0) {
+      baseString = n__(
+        'ciReport|%{reportType} %{status} detected %{fixedCount} fixed vulnerability',
+        'ciReport|%{reportType} %{status} detected %{fixedCount} fixed vulnerabilities',
+        resolvedIssues,
+      );
+    } else if (allIssues > 0) {
+      baseString = s__('ciReport|%{reportType} %{status} detected no new vulnerabilities');
+    } else {
+      baseString = s__('ciReport|%{reportType} %{status} detected no vulnerabilities');
     }
   }
-  return '';
+
+  if (!status) {
+    baseString = baseString.replace('%{status}', '').replace('  ', ' ');
+  }
+
+  return sprintf(baseString, {
+    status,
+    reportType,
+    newCount: newIssues,
+    fixedCount: resolvedIssues,
+  });
 };
 
 export const statusIcon = (loading = false, failed = false, newIssues = 0, neutralIssues = 0) => {

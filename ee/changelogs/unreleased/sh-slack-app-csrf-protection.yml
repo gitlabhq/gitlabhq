@@ -1,0 +1,5 @@
+---
+title: Protect against CSRF attacks when adding Slack app
+merge_request:
+author:
+type: security

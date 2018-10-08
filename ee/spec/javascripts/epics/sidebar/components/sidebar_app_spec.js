@@ -76,6 +76,12 @@ describe('epicSidebar', () => {
     Cookies.set('collapsed_gutter', originalCookieState);
   });
 
+  it('should initialize service with correct endpoints', () => {
+    expect(vm.service.endpoint.length > 0).toBe(true);
+    expect(vm.service.subscriptionEndpoint.length > 0).toBe(true);
+    expect(vm.service.todoPath.length > 0).toBe(true);
+  });
+
   it('should render right-sidebar-expanded class when not collapsed', () => {
     expect(vm.$el.classList.contains('right-sidebar-expanded')).toEqual(true);
   });

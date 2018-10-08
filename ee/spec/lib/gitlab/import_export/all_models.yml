@@ -9,12 +9,14 @@ merge_requests:
 - approvers
 - approver_groups
 - approved_by_users
+- draft_notes
 pipelines:
 - source_pipeline
 - sourced_pipelines
 - triggered_by_pipeline
 - triggered_pipelines
 - chat_data
+- job_artifacts
 protected_branches:
 - unprotect_access_levels
 protected_environments:
@@ -56,7 +58,10 @@ project:
 - vulnerability_feedback
 - vulnerability_identifiers
 - vulnerability_scanners
+- operations_feature_flags
+- operations_feature_flags_client
 - prometheus_alerts
+- prometheus_alert_events
 - software_license_policies
 - project_registry
 - packages
@@ -64,6 +69,9 @@ prometheus_metrics:
 - project
 - prometheus_alerts
 prometheus_alerts:
+- project
+- prometheus_alert_events
+prometheus_alert_events:
 - project
 epic_issues:
 - issue

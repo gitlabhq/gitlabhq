@@ -61,7 +61,7 @@
 <template>
   <div class="dropdown new-epic-dropdown">
     <button
-      class="btn btn-success"
+      class="btn btn-success qa-new-epic-button"
       type="button"
       data-toggle="dropdown"
       @click="focusInput"
@@ -77,13 +77,13 @@
         v-model="title"
         :placeholder="s__('Title')"
         type="text"
-        class="form-control"
+        class="form-control qa-epic-title"
       />
       <loading-button
         :disabled="isCreatingDisabled"
         :loading="creating"
         :label="buttonLabel"
-        container-class="btn btn-success btn-inverted prepend-top-10"
+        container-class="btn btn-success btn-inverted prepend-top-10 qa-create-epic-button"
         @click.stop="createEpic"
       />
     </div>

@@ -167,7 +167,7 @@ export default {
       savingTodoAction: false,
       service: new SidebarService({
         endpoint: this.endpoint,
-        subscriptionEndpoint: this.subscriptionEndpoint,
+        subscriptionEndpoint: this.toggleSubscriptionPath,
         todoPath: this.todoPath,
       }),
       epicContext: {

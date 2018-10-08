@@ -51,12 +51,6 @@ module EE
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      def define_edit_vars
-        super
-
-        set_suggested_approvers
-      end
-
       def render_approvals_json
         respond_to do |format|
           format.json do

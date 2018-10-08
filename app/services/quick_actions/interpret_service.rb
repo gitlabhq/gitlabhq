@@ -211,9 +211,14 @@ module QuickActions
     end
     params '~label1 ~"label 2"'
     condition do
-      available_labels = LabelsFinder.new(current_user, project_id: project.id, include_ancestor_groups: true).execute
+      if project
+        available_labels = LabelsFinder
+          .new(current_user, project_id: project.id, include_ancestor_groups: true)
+          .execute
+      end
 
-      current_user.can?(:"admin_#{issuable.to_ability_name}", project) &&
+      project &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", project) &&
         available_labels.any?
     end
     command :label do |labels_param|
@@ -287,7 +292,8 @@ module QuickActions
     end
     params '#issue | !merge_request'
     condition do
-      current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+      [MergeRequest, Issue].include?(issuable.class) &&
+        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
     end
     parse_params do |issuable_param|
       extract_references(issuable_param, :issue).first ||
@@ -444,7 +450,8 @@ module QuickActions
     end
     params '<time(1h30m | -1h30m)> <date(YYYY-MM-DD)>'
     condition do
-      current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
+      issuable.is_a?(TimeTrackable) &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
     end
     parse_params do |raw_time_date|
       Gitlab::QuickActions::SpendTimeAndDateSeparator.new(raw_time_date).execute
@@ -494,7 +501,7 @@ module QuickActions
     desc "Lock the discussion"
     explanation "Locks the discussion"
     condition do
-      issuable.is_a?(Issuable) &&
+      [MergeRequest, Issue].include?(issuable.class) &&
         issuable.persisted? &&
         !issuable.discussion_locked? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
@@ -506,7 +513,7 @@ module QuickActions
     desc "Unlock the discussion"
     explanation "Unlocks the discussion"
     condition do
-      issuable.is_a?(Issuable) &&
+      [MergeRequest, Issue].include?(issuable.class) &&
         issuable.persisted? &&
         issuable.discussion_locked? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)

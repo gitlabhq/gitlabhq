@@ -48,6 +48,10 @@ module EE
       has_many :source_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :project_id
 
       has_many :prometheus_alerts, inverse_of: :project
+      has_many :prometheus_alert_events, inverse_of: :project
+
+      has_many :operations_feature_flags, class_name: 'Operations::FeatureFlag'
+      has_one :operations_feature_flags_client, class_name: 'Operations::FeatureFlagsClient'
 
       scope :with_shared_runners_limit_enabled, -> { with_shared_runners.non_public_only }
 
@@ -124,7 +128,7 @@ module EE
     end
 
     def shared_runners_limit_namespace
-      if Feature.enabled?(:shared_runner_minutes_on_root_namespace)
+      if ::Feature.enabled?(:shared_runner_minutes_on_root_namespace)
         root_namespace
       else
         namespace
@@ -262,7 +266,7 @@ module EE
       if ProjectFeature::FEATURES.include?(feature)
         super
       else
-        licensed_feature_available?(feature)
+        licensed_feature_available?(feature, user)
       end
     end
 
@@ -558,6 +562,11 @@ module EE
       change_head(root_ref) if root_ref.present? && root_ref != default_branch
     end
 
+    def feature_flags_client_token
+      instance = operations_feature_flags_client || create_operations_feature_flags_client!
+      instance.token
+    end
+
     private
 
     def set_override_pull_mirror_available
@@ -569,7 +578,10 @@ module EE
       import_state.set_next_execution_to_now
     end
 
-    def licensed_feature_available?(feature)
+    def licensed_feature_available?(feature, user = nil)
+      # This feature might not be behind a feature flag at all, so default to true
+      return false unless ::Feature.enabled?(feature, user, default_enabled: true)
+
       available_features = strong_memoize(:licensed_feature_available) do
         Hash.new do |h, feature|
           h[feature] = load_licensed_feature_available(feature)

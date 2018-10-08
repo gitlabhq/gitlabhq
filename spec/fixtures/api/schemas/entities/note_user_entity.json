@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "state",
+    "avatar_url",
+    "path",
+    "name",
+    "username"
+  ],
+  "properties": {
+    "id": { "type": "integer" },
+    "state": { "type": "string" },
+    "avatar_url": { "type": "string" },
+    "path": { "type": "string" },
+    "name": { "type": "string" },
+    "username": { "type": "string" },
+    "status_tooltip_html": { "$ref": "../types/nullable_string.json" }
+  },
+  "additionalProperties": false
+}

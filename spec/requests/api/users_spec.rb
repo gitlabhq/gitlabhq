@@ -818,35 +818,25 @@ describe API::Users do
   end
 
   describe 'GET /user/:id/keys' do
-    before do
-      admin
+    it 'returns 404 for non-existing user' do
+      user_id = not_existing_user_id
+
+      get api("/users/#{user_id}/keys")
+
+      expect(response).to have_gitlab_http_status(404)
+      expect(json_response['message']).to eq('404 User Not Found')
     end
 
-    context 'when unauthenticated' do
-      it 'returns authentication error' do
-        get api("/users/#{user.id}/keys")
-        expect(response).to have_gitlab_http_status(401)
-      end
-    end
+    it 'returns array of ssh keys' do
+      user.keys << key
+      user.save
 
-    context 'when authenticated' do
-      it 'returns 404 for non-existing user' do
-        get api('/users/999999/keys', admin)
-        expect(response).to have_gitlab_http_status(404)
-        expect(json_response['message']).to eq('404 User Not Found')
-      end
+      get api("/users/#{user.id}/keys")
 
-      it 'returns array of ssh keys' do
-        user.keys << key
-        user.save
-
-        get api("/users/#{user.id}/keys", admin)
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response.first['title']).to eq(key.title)
-      end
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.first['title']).to eq(key.title)
     end
   end
 

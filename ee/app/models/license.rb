@@ -66,6 +66,9 @@ class License < ActiveRecord::Base
     system_header_footer
     custom_project_templates
     packages
+    code_owner_as_approver_suggestion
+    feature_flags
+    batch_comments
   ].freeze
 
   EEU_FEATURES = EEP_FEATURES + %i[
@@ -76,7 +79,6 @@ class License < ActiveRecord::Base
     cluster_health
     dast
     epics
-    ide
     chatops
     pod_logs
     pseudonymizer
@@ -291,6 +293,9 @@ class License < ActiveRecord::Base
 
   def feature_available?(feature)
     return false if trial? && expired?
+
+    # This feature might not be behind a feature flag at all, so default to true
+    return false unless ::Feature.enabled?(feature, default_enabled: true)
 
     features.include?(feature)
   end

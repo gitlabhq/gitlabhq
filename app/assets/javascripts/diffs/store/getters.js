@@ -110,5 +110,9 @@ export const shouldRenderInlineCommentRow = state => line => {
 export const getDiffFileByHash = state => fileHash =>
   state.diffFiles.find(file => file.fileHash === fileHash);
 
+export const allBlobs = state => Object.values(state.treeEntries).filter(f => f.type === 'blob');
+
+export const diffFilesLength = state => state.diffFiles.length;
+
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

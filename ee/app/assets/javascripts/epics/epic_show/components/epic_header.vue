@@ -54,7 +54,7 @@
         return this.isEpicOpen ? __('Open') : __('Closed');
       },
       actionButtonClass() {
-        return `btn btn-grouped js-btn-epic-action ${this.isEpicOpen ? 'btn-close' : 'btn-open'}`;
+        return `btn btn-grouped js-btn-epic-action qa-close-reopen-epic-button ${this.isEpicOpen ? 'btn-close' : 'btn-open'}`;
       },
       actionButtonText() {
         return this.isEpicOpen ? __('Close epic') : __('Reopen epic');

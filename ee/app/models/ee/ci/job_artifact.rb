@@ -7,15 +7,13 @@ module EE
     extend ActiveSupport::Concern
 
     prepended do
-      after_destroy :log_geo_event
+      after_destroy :log_geo_deleted_event
 
       scope :not_expired, -> { where('expire_at IS NULL OR expire_at > ?', Time.current) }
       scope :geo_syncable, -> { with_files_stored_locally.not_expired }
     end
 
-    private
-
-    def log_geo_event
+    def log_geo_deleted_event
       ::Geo::JobArtifactDeletedEventStore.new(self).create!
     end
   end

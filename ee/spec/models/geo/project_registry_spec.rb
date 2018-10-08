@@ -821,19 +821,35 @@ describe Geo::ProjectRegistry do
     end
   end
 
-  describe 'verification_pending?' do
+  describe 'pending_verification?' do
     it 'returns true when either wiki or repository verification is pending' do
       repo_registry = create(:geo_project_registry, :repository_verification_outdated)
       wiki_registry = create(:geo_project_registry, :wiki_verification_failed)
 
-      expect(repo_registry.verification_pending?).to be_truthy
-      expect(wiki_registry.verification_pending?).to be_truthy
+      expect(repo_registry.pending_verification?).to be_truthy
+      expect(wiki_registry.pending_verification?).to be_truthy
     end
 
     it 'returns false when both wiki and repository verification is present' do
       registry = create(:geo_project_registry, :repository_verified, :wiki_verified)
 
-      expect(registry.verification_pending?).to be_falsey
+      expect(registry.pending_verification?).to be_falsey
+    end
+  end
+
+  describe 'pending_synchronization?' do
+    it 'returns true when either wiki or repository synchronization is pending' do
+      repo_registry = create(:geo_project_registry)
+      wiki_registry = create(:geo_project_registry)
+
+      expect(repo_registry.pending_synchronization?).to be_truthy
+      expect(wiki_registry.pending_synchronization?).to be_truthy
+    end
+
+    it 'returns false when both wiki and repository synchronization is present' do
+      registry = create(:geo_project_registry, :synced)
+
+      expect(registry.pending_synchronization?).to be_falsey
     end
   end
 
@@ -891,6 +907,32 @@ describe Geo::ProjectRegistry do
       registry = create(:geo_project_registry, :sync_failed, repository_retry_count: 2)
 
       expect(registry.candidate_for_redownload?).to be_truthy
+    end
+  end
+
+  describe '#synchronization_state' do
+    it 'returns :never when no attempt to sync has ever been done' do
+      registry = create(:geo_project_registry)
+
+      expect(registry.synchronization_state).to eq(:never)
+    end
+
+    it 'returns :failed when there is an existing error logged' do
+      registry = create(:geo_project_registry, :sync_failed)
+
+      expect(registry.synchronization_state).to eq(:failed)
+    end
+
+    it 'returns :pending when there is an existing error logged' do
+      registry = create(:geo_project_registry, :synced, :repository_dirty)
+
+      expect(registry.synchronization_state).to eq(:pending)
+    end
+
+    it 'returns :synced when its fully synced and there is no pending action or existing error' do
+      registry = create(:geo_project_registry, :synced, :repository_verified)
+
+      expect(registry.synchronization_state).to eq(:synced)
     end
   end
 end

@@ -10,7 +10,6 @@ describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cach
   let!(:secondary) { create(:geo_node) }
 
   let(:shard_name) { Gitlab.config.repositories.storages.keys.first }
-  let(:cache_key) { "#{described_class.name.underscore}:shard:#{shard_name}:skip" }
 
   before do
     stub_current_geo_node(secondary)
@@ -239,21 +238,25 @@ describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cach
       end
     end
 
-    it 'sets the back off time when there no pending items' do
-      create(:geo_project_registry, :synced, project: unsynced_project_in_restricted_group)
-      create(:geo_project_registry, :synced, project: unsynced_project)
+    context 'backoff time' do
+      let(:cache_key) { "#{described_class.name.underscore}:shard:#{shard_name}:skip" }
 
-      expect(Rails.cache).to receive(:write).with(cache_key, true, expires_in: 18000).once
+      it 'sets the back off time when there are no pending items' do
+        create(:geo_project_registry, :synced, project: unsynced_project_in_restricted_group)
+        create(:geo_project_registry, :synced, project: unsynced_project)
 
-      subject.perform(shard_name)
-    end
+        expect(Rails.cache).to receive(:write).with(cache_key, true, expires_in: 300.seconds).once
 
-    it 'does not perform Geo::ProjectSyncWorker when the backoff time is set' do
-      expect(Rails.cache).to receive(:read).with(cache_key).and_return(true)
+        subject.perform(shard_name)
+      end
 
-      expect(Geo::ProjectSyncWorker).not_to receive(:perform_async)
+      it 'does not perform Geo::ProjectSyncWorker when the backoff time is set' do
+        expect(Rails.cache).to receive(:read).with(cache_key).and_return(true)
 
-      subject.perform(shard_name)
+        expect(Geo::ProjectSyncWorker).not_to receive(:perform_async)
+
+        subject.perform(shard_name)
+      end
     end
   end
 

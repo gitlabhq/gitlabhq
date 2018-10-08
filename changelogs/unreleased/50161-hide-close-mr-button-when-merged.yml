@@ -1,0 +1,5 @@
+---
+title: Hides Close Merge request btn on merged Merge request
+merge_request: 21840
+author: Jacopo Beschi @jacopo-beschi
+type: fixed

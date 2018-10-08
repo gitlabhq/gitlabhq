@@ -1,4 +1,4 @@
-.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?) }
+.nav-sidebar.qa-admin-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?) }
   .nav-sidebar-inner-scroll
     .context-header
       = link_to admin_root_path, title: _('Admin Overview') do
@@ -134,7 +134,7 @@
               %span.badge.badge-pill.count.merge_counter.js-merge-counter.fly-out-badge= number_with_delimiter(AbuseReport.count(:all))
 
       = nav_link(controller: :licenses) do
-        = link_to admin_license_path do
+        = link_to admin_license_path, class: "qa-link-license-menu" do
           .nav-icon-container
             = sprite_icon('license')
           %span.nav-item-name
@@ -171,17 +171,17 @@
                 #{ _('Push Rules') }
 
       = nav_link(controller: %w(admin/geo/nodes admin/geo/projects)) do
-        = link_to admin_geo_nodes_path do
+        = link_to admin_geo_nodes_path, class: "qa-link-geo-menu" do
           .nav-icon-container
             = sprite_icon('location-dot')
           %span.nav-item-name
-            #{ _('Geo Nodes') }
+            #{ _('Geo') }
         - if Gitlab::Geo.secondary?
           %ul.sidebar-sub-level-items
             = nav_link(controller: 'admin/geo/nodes', html_options: { class: "fly-out-top-item" } ) do
               = link_to admin_geo_nodes_path do
                 %strong.fly-out-top-item-name
-                  #{ _('Geo Nodes') }
+                  #{ _('Geo') }
             %li.divider.fly-out-top-item
             = nav_link(path: 'admin/geo/nodes#index') do
               = link_to admin_geo_nodes_path, title: 'Nodes' do
@@ -244,10 +244,10 @@
         = link_to admin_application_settings_path do
           .nav-icon-container
             = sprite_icon('settings')
-          %span.nav-item-name
+          %span.nav-item-name.qa-admin-settings-item
             = _('Settings')
 
-        %ul.sidebar-sub-level-items
+        %ul.sidebar-sub-level-items.qa-admin-sidebar-submenu
           = nav_link(controller: :application_settings, html_options: { class: "fly-out-top-item" } ) do
             = link_to admin_application_settings_path do
               %strong.fly-out-top-item-name
@@ -262,7 +262,7 @@
                 %span
                   = _('Integrations')
             = nav_link(path: 'application_settings#repository') do
-              = link_to repository_admin_application_settings_path, title: _('Repository') do
+              = link_to repository_admin_application_settings_path, title: _('Repository'), class: 'qa-admin-settings-repository-item' do
                 %span
                   = _('Repository')
             - if template_exists?('admin/application_settings/templates')

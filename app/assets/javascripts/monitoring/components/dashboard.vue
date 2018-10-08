@@ -252,12 +252,26 @@ export default {
         :small-graph="forceSmallGraph"
       >
         <!-- EE content -->
+        <template
+          slot="additionalSvgContent"
+          scope="{ graphDrawData }"
+        >
+          <threshold-lines
+            v-for="(alert, alertName) in alertData[graphData.id]"
+            :key="alertName"
+            :operator="alert.operator"
+            :threshold="alert.threshold"
+            :graph-draw-data="graphDrawData"
+          />
+        </template>
         <alert-widget
           v-if="alertsEndpoint && graphData.id"
           :alerts-endpoint="alertsEndpoint"
           :label="getGraphLabel(graphData)"
           :current-alerts="getQueryAlerts(graphData)"
           :custom-metric-id="graphData.id"
+          :alert-data="alertData[graphData.id]"
+          @setAlerts="setAlerts"
         />
       </graph>
     </graph-group>

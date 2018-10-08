@@ -1,5 +1,6 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
+import ParallelDraftCommentRow from 'ee/batch_comments/components/parallel_draft_comment_row.vue';
 import parallelDiffTableRow from './parallel_diff_table_row.vue';
 import parallelDiffCommentRow from './parallel_diff_comment_row.vue';
 
@@ -7,6 +8,7 @@ export default {
   components: {
     parallelDiffTableRow,
     parallelDiffCommentRow,
+    ParallelDraftCommentRow,
   },
   props: {
     diffFile: {
@@ -20,6 +22,7 @@ export default {
   },
   computed: {
     ...mapGetters('diffs', ['commitId', 'shouldRenderParallelCommentRow']),
+    ...mapGetters('batchComments', ['shouldRenderParallelDraftRow', 'draftForLine']),
     ...mapState({
       diffLineCommentForms: state => state.diffs.diffLineCommentForms,
     }),
@@ -57,6 +60,12 @@ export default {
             :line="line"
             :diff-file-hash="diffFile.fileHash"
             :line-index="index"
+          />
+          <parallel-draft-comment-row
+            v-if="shouldRenderParallelDraftRow(diffFile.fileHash, line)"
+            :key="`drafts-${index}`"
+            :line="line"
+            :diff-file-content-sha="diffFile.fileHash"
           />
         </template>
       </tbody>

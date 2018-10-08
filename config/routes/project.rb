@@ -32,6 +32,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get 'labels'
           get 'milestones'
           get 'commands'
+          get 'snippets'
         end
       end
 
@@ -156,6 +157,17 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         ## EE-specific
         resources :approvers, only: :destroy
         resources :approver_groups, only: :destroy
+        ## EE-specific
+
+        ## EE-specific
+        scope module: :merge_requests do
+          resources :drafts, only: [:index, :update, :create, :destroy] do
+            collection do
+              post :publish
+              delete :discard
+            end
+          end
+        end
         ## EE-specific
 
         resources :discussions, only: [:show], constraints: { id: /\h{40}/ } do
@@ -330,6 +342,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           member do
             get :status
             post :cancel
+            post :unschedule
             post :retry
             post :play
             post :erase
@@ -351,6 +364,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         namespace :ci do
           resource :lint, only: [:show, :create]
         end
+
+        ## EE-specific
+        resources :feature_flags
+        ## EE-specific
       end
 
       draw :legacy_builds
@@ -430,9 +447,11 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
         collection do
           post :bulk_update
-          post :export_csv
 
-          get :service_desk ## EE-specific
+          ## EE-specific START
+          post :export_csv
+          get :service_desk
+          ## EE-specific END
         end
 
         resources :issue_links, only: [:index, :create, :destroy], as: 'links', path: 'links'
@@ -516,6 +535,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         get :members, to: redirect("%{namespace_id}/%{project_id}/project_members")
         resource :ci_cd, only: [:show, :update], controller: 'ci_cd' do
           post :reset_cache
+          put :reset_registration_token
         end
         resource :integrations, only: [:show]
 

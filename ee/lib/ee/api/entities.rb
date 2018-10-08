@@ -263,6 +263,10 @@ module EE
           ::Gitlab::Routing.url_helpers.edit_admin_geo_node_url(geo_node)
         end
 
+        expose :web_geo_projects_url, if: ->(geo_node, _) { geo_node.secondary? } do |geo_node|
+          geo_node.geo_projects_url
+        end
+
         expose :_links do
           expose :self do |geo_node|
             expose_url api_v4_geo_nodes_path(id: geo_node.id)
@@ -425,6 +429,28 @@ module EE
 
         def missing_oauth_application
           object.geo_node.missing_oauth_application?
+        end
+      end
+
+      class UnleashFeature < Grape::Entity
+        expose :name
+        expose :description, unless: ->(feature) { feature.description.nil? }
+        expose :active, as: :enabled
+        expose :strategies
+      end
+
+      class UnleashFeatures < Grape::Entity
+        expose :version
+        expose :features, with: UnleashFeature
+
+        private
+
+        def version
+          1
+        end
+
+        def features
+          object.operations_feature_flags.ordered
         end
       end
     end

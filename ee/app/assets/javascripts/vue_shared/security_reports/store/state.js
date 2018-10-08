@@ -4,6 +4,7 @@ export default () => ({
   summaryCounts: {
     added: 0,
     fixed: 0,
+    existing: 0,
   },
 
   blobPath: {

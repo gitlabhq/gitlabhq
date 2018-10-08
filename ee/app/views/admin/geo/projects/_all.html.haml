@@ -1,0 +1,19 @@
+- @registries.each do |project_registry|
+  .card.project-card.prepend-top-15
+    .card-header{ id: "project-#{project_registry.project_id}-header" }
+      .d-flex
+        - if project_registry.project.nil?
+          = render partial: 'removed', locals: { project_registry: project_registry }
+        - else
+          %strong.header-text-primary.flex-fill
+            = link_to project_registry.project.full_name, admin_namespace_project_path(project_registry.project.namespace, project_registry.project)
+          - unless project_registry.pending_verification?
+            = link_to(recheck_admin_geo_project_path(project_registry), method: :post, class: 'btn btn-default btn-sm mr-2') do
+              = s_('Geo|Recheck')
+          - unless project_registry.resync_repository?
+            = link_to(resync_admin_geo_project_path(project_registry), method: :post, class: 'btn btn-default-primary btn-sm') do
+              = s_('Geo|Resync')
+
+    = render partial: "registry_#{project_registry.synchronization_state}", locals: { project_registry: project_registry }
+
+= paginate @registries, theme: 'gitlab'

@@ -236,53 +236,71 @@ describe 'Promotions', :js do
   end
 
   describe 'for epics in issues sidebar', :js do
-    before do
-      allow(License).to receive(:current).and_return(nil)
-      stub_application_setting(check_namespace_plan: false)
+    shared_examples 'Epics promotion' do
+      it 'should appear on the page' do
+        visit project_issue_path(project, issue)
+        wait_for_requests
 
-      project.add_maintainer(user)
-      sign_in(user)
+        click_epic_link
+
+        expect(find('.promotion-issue-sidebar-message')).to have_content 'Epics let you manage your portfolio of projects more efficiently'
+      end
+
+      it 'should be removed after dismissal' do
+        visit project_issue_path(project, issue)
+        wait_for_requests
+
+        click_epic_link
+        find('.js-epics-sidebar-callout .js-close-callout').click
+
+        expect(page).not_to have_selector('.promotion-issue-sidebar-message')
+      end
+
+      it 'should not appear on page after dismissal and reload' do
+        visit project_issue_path(project, issue)
+        wait_for_requests
+
+        click_epic_link
+        find('.js-epics-sidebar-callout .js-close-callout').click
+        visit project_issue_path(project, issue)
+
+        expect(page).not_to have_selector('.promotion-issue-sidebar-message')
+      end
+
+      it 'should close dialog when clicking on X, but not dismiss it' do
+        visit project_issue_path(project, issue)
+        wait_for_requests
+
+        click_epic_link
+        find('.js-epics-sidebar-callout .dropdown-menu-close').click
+
+        expect(page).to have_selector('.js-epics-sidebar-callout')
+        expect(page).to have_selector('.promotion-issue-sidebar-message', visible: false)
+      end
     end
 
-    it 'should appear on the page' do
-      visit project_issue_path(project, issue)
-      wait_for_requests
+    context 'gitlab.com' do
+      before do
+        stub_application_setting(check_namespace_plan: true)
+        allow(Gitlab).to receive(:com?) { true }
 
-      find('.js-epics-sidebar-callout .btn-link').click
+        project.add_maintainer(user)
+        sign_in(user)
+      end
 
-      expect(find('.promotion-issue-sidebar-message')).to have_content 'Epics let you manage your portfolio of projects more efficiently'
+      it_behaves_like 'Epics promotion'
     end
 
-    it 'should be removed after dismissal' do
-      visit project_issue_path(project, issue)
-      wait_for_requests
+    context 'self hosted' do
+      before do
+        allow(License).to receive(:current).and_return(nil)
+        stub_application_setting(check_namespace_plan: false)
 
-      find('.js-epics-sidebar-callout .btn-link').click
-      find('.js-epics-sidebar-callout .js-close-callout').click
+        project.add_maintainer(user)
+        sign_in(user)
+      end
 
-      expect(page).not_to have_selector('.js-epics-sidebar-callout')
-    end
-
-    it 'should not appear on page after dismissal and reload' do
-      visit project_issue_path(project, issue)
-      wait_for_requests
-
-      find('.js-epics-sidebar-callout .btn-link').click
-      find('.js-epics-sidebar-callout .js-close-callout').click
-      visit project_issue_path(project, issue)
-
-      expect(page).not_to have_selector('.js-epics-sidebar-callout')
-    end
-
-    it 'should close dialog when clicking on X, but not dismiss it' do
-      visit project_issue_path(project, issue)
-      wait_for_requests
-
-      find('.js-epics-sidebar-callout .btn-link').click
-      find('.js-epics-sidebar-callout .dropdown-menu-close').click
-
-      expect(page).to have_selector('.js-epics-sidebar-callout')
-      expect(page).to have_selector('.promotion-issue-sidebar-message', visible: false)
+      it_behaves_like 'Epics promotion'
     end
   end
 
@@ -438,5 +456,9 @@ describe 'Promotions', :js do
 
       expect(page).not_to have_selector('#promote_advanced_search')
     end
+  end
+
+  def click_epic_link
+    find('.js-epics-sidebar-callout .btn-link').click
   end
 end

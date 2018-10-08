@@ -7,7 +7,7 @@
   GitLab
   Enterprise Edition
   - if user_signed_in?
-    %span= link_to Gitlab::VERSION, Gitlab::COM_URL + namespace_project_tag_path('gitlab-org', 'gitlab-ee', "v#{Gitlab::VERSION}")
+    %span= link_to_version
     = version_status_badge
   %hr
 

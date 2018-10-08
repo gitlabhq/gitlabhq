@@ -7,7 +7,6 @@ class MergeRequest < ActiveRecord::Base
   include Noteable
   include Referable
   include Presentable
-  include Elastic::MergeRequestsSearch
   include IgnorableColumn
   include TimeTrackable
   include ManualInverseAssociation
@@ -266,7 +265,7 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  WIP_REGEX = /\A\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i.freeze
+  WIP_REGEX = /\A*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i.freeze
 
   def self.work_in_progress?(title)
     !!(title =~ WIP_REGEX)

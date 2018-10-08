@@ -72,6 +72,9 @@ module EE
     # for a given Namespace plan. This method should consider ancestor groups
     # being licensed.
     def feature_available?(feature)
+      # This feature might not be behind a feature flag at all, so default to true
+      return false unless ::Feature.enabled?(feature, default_enabled: true)
+
       available_features = strong_memoize(:feature_available) do
         Hash.new do |h, feature|
           h[feature] = load_feature_available(feature)
@@ -116,7 +119,7 @@ module EE
 
     def shared_runner_minutes_supported?
       if has_parent?
-        !Feature.enabled?(:shared_runner_minutes_on_root_namespace)
+        !::Feature.enabled?(:shared_runner_minutes_on_root_namespace)
       else
         true
       end
@@ -139,7 +142,7 @@ module EE
     end
 
     def shared_runners_enabled?
-      if Feature.enabled?(:shared_runner_minutes_on_root_namespace)
+      if ::Feature.enabled?(:shared_runner_minutes_on_root_namespace)
         all_projects.with_shared_runners.any?
       else
         projects.with_shared_runners.any?

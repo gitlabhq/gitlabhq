@@ -84,6 +84,7 @@ export default {
 
       state.summaryCounts.added += newIssues.length;
       state.summaryCounts.fixed += resolvedIssues.length;
+      state.summaryCounts.existing += allIssues.length;
     } else if (reports.head && !reports.base) {
       const newIssues = parseSastIssues(reports.head, reports.enrichData, state.blobPath.head);
 
@@ -179,8 +180,8 @@ export default {
       Vue.set(state.dast, 'newIssues', newIssues);
       Vue.set(state.dast, 'resolvedIssues', resolvedIssues);
       Vue.set(state.dast, 'isLoading', false);
-      state.summaryCounts.added += newIssues.length;
 
+      state.summaryCounts.added += newIssues.length;
       state.summaryCounts.fixed += resolvedIssues.length;
     } else if (reports.head && reports.head.site && !reports.base) {
       const newIssues = parseDastIssues(reports.head.site.alerts, reports.enrichData);
@@ -245,6 +246,7 @@ export default {
 
       state.summaryCounts.added += newIssues.length;
       state.summaryCounts.fixed += resolvedIssues.length;
+      state.summaryCounts.existing += allIssues.length;
     }
 
     if (reports.head && !reports.base) {

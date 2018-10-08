@@ -1,0 +1,15 @@
+- page_title _('Feature Flags')
+
+= render 'configure_feature_flags_modal'
+
+- if @feature_flags.empty?
+  = render 'empty_state'
+- else
+  %h3.page-title.with-button
+    = _('Feature Flags')
+
+    .pull-right
+      = render 'configure_feature_flags_button'
+      = render 'new_feature_flag_button'
+
+  = render 'table'

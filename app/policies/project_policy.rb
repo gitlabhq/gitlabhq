@@ -111,6 +111,7 @@ class ProjectPolicy < BasePolicy
     snippets
     wiki
     builds
+    pages
   ]
 
   features.each do |f|
@@ -168,6 +169,7 @@ class ProjectPolicy < BasePolicy
     enable :upload_file
     enable :read_cycle_analytics
     enable :award_emoji
+    enable :read_pages_content
   end
 
   # These abilities are not allowed to admins that are not members of the project,
@@ -287,6 +289,8 @@ class ProjectPolicy < BasePolicy
     prevent(*create_read_update_admin_destroy(:merge_request))
   end
 
+  rule { pages_disabled }.prevent :read_pages_content
+
   rule { issues_disabled & merge_requests_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:label))
     prevent(*create_read_update_admin_destroy(:milestone))
@@ -346,6 +350,7 @@ class ProjectPolicy < BasePolicy
     enable :download_code
     enable :download_wiki_code
     enable :read_cycle_analytics
+    enable :read_pages_content
 
     # NOTE: may be overridden by IssuePolicy
     enable :read_issue
@@ -391,7 +396,11 @@ class ProjectPolicy < BasePolicy
     greedy_load_subject ||= !@user.persisted?
 
     if greedy_load_subject
-      project.team.members.include?(user)
+      # We want to load all the members with one query. Calling #include? on
+      # project.team.members will perform a separate query for each user, unless
+      # project.team.members was loaded before somewhere else. Calling #to_a
+      # ensures it's always loaded before checking for membership.
+      project.team.members.to_a.include?(user)
     else
       # otherwise we just make a specific query for
       # this particular user.

@@ -3,7 +3,8 @@ module Geo
     include Geo::Model
     include ::EachBatch
 
-    EVENT_CLASSES = %w[Geo::RepositoryCreatedEvent
+    EVENT_CLASSES = %w[Geo::CacheInvalidationEvent
+                       Geo::RepositoryCreatedEvent
                        Geo::RepositoryUpdatedEvent
                        Geo::RepositoryDeletedEvent
                        Geo::RepositoryRenamedEvent
@@ -14,6 +15,10 @@ module Geo
                        Geo::LfsObjectDeletedEvent
                        Geo::JobArtifactDeletedEvent
                        Geo::UploadDeletedEvent].freeze
+
+    belongs_to :cache_invalidation_event,
+      class_name: 'Geo::CacheInvalidationEvent',
+      foreign_key: :cache_invalidation_event_id
 
     belongs_to :repository_created_event,
       class_name: 'Geo::RepositoryCreatedEvent',
@@ -82,7 +87,8 @@ module Geo
         lfs_object_deleted_event ||
         job_artifact_deleted_event ||
         upload_deleted_event ||
-        reset_checksum_event
+        reset_checksum_event ||
+        cache_invalidation_event
     end
 
     def project_id

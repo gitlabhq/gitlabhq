@@ -65,8 +65,8 @@
       />
     </div>
     <geo-node-actions
-      v-if="nodeActionsAllowed"
       :node="node"
+      :node-actions-allowed="nodeActionsAllowed"
       :node-edit-allowed="nodeEditAllowed"
       :node-missing-oauth="nodeDetails.missingOAuthApplication"
     />

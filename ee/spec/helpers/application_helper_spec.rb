@@ -15,7 +15,7 @@ describe ApplicationHelper do
       let(:noteable_type) { Epic }
 
       it 'returns paths for autocomplete_sources_controller' do
-        expect_autocomplete_data_sources(object, noteable_type, [:members, :labels, :epics])
+        expect_autocomplete_data_sources(object, noteable_type, [:members, :labels, :epics, :commands])
       end
     end
 
@@ -24,7 +24,7 @@ describe ApplicationHelper do
       let(:noteable_type) { Issue }
 
       it 'returns paths for autocomplete_sources_controller' do
-        expect_autocomplete_data_sources(object, noteable_type, [:members, :issues, :mergeRequests, :labels, :milestones, :commands])
+        expect_autocomplete_data_sources(object, noteable_type, [:members, :issues, :mergeRequests, :labels, :milestones, :commands, :snippets])
       end
     end
   end

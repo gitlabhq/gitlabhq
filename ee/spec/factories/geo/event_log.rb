@@ -39,6 +39,10 @@ FactoryBot.define do
     trait :reset_checksum_event do
       reset_checksum_event factory: :geo_reset_checksum_event
     end
+
+    trait :cache_invalidation_event do
+      cache_invalidation_event factory: :geo_cache_invalidation_event
+    end
   end
 
   factory :geo_repository_created_event, class: Geo::RepositoryCreatedEvent do
@@ -145,5 +149,9 @@ FactoryBot.define do
 
   factory :geo_reset_checksum_event, class: Geo::ResetChecksumEvent do
     project
+  end
+
+  factory :geo_cache_invalidation_event, class: Geo::CacheInvalidationEvent do
+    sequence(:key) { |n| "cache-key-#{n}" }
   end
 end

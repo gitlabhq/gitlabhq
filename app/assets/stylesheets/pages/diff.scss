@@ -571,8 +571,6 @@
 }
 
 .files {
-  margin-top: 1px;
-
   .diff-file:last-child {
     margin-bottom: 0;
   }
@@ -986,4 +984,65 @@
 
 .discussion-body .image .frame {
   position: relative;
+}
+
+.diff-tree-list {
+  width: 320px;
+}
+
+.diff-files-holder {
+  flex: 1;
+  min-width: 0;
+}
+
+.compare-versions-container {
+  min-width: 0;
+}
+
+.tree-list-holder {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 100px;
+  max-height: calc(100vh - 100px);
+  padding-right: $gl-padding;
+
+  .file-row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .with-performance-bar & {
+    top: 135px;
+  }
+}
+
+.tree-list-scroll {
+  max-height: 100%;
+  padding-top: $grid-size;
+  padding-bottom: $grid-size;
+  border-top: 1px solid $border-color;
+  border-bottom: 1px solid $border-color;
+  overflow-y: scroll;
+  overflow-x: auto;
+}
+
+.tree-list-search .form-control {
+  padding-left: 30px;
+}
+
+.tree-list-icon {
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+
+  &,
+  svg {
+    fill: $gl-text-color-tertiary;
+  }
+}
+
+.tree-list-clear-icon {
+  right: 10px;
+  left: auto;
+  line-height: 0;
 }

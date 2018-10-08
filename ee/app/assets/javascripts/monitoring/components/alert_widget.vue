@@ -28,6 +28,11 @@ export default {
       require: false,
       default: null,
     },
+    alertData: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -36,7 +41,6 @@ export default {
       isLoading: false,
       isOpen: false,
       alerts: this.currentAlerts,
-      alertData: {},
     };
   },
   computed: {
@@ -59,7 +63,7 @@ export default {
         : s__('PrometheusAlerts|Add alert');
     },
     hasAlerts() {
-      return this.alerts.length > 0;
+      return Object.keys(this.alertData).length > 0;
     },
     firstAlert() {
       return this.hasAlerts ? this.alerts[0] : undefined;
@@ -95,7 +99,12 @@ export default {
         this.alerts.map(alertPath =>
           this.service
             .readAlert(alertPath)
-            .then(alertData => this.$set(this.alertData, alertPath, alertData)),
+            .then(alertData => {
+              this.$emit('setAlerts', this.customMetricId, {
+                ...this.alertData,
+                [alertPath]: alertData,
+              });
+            }),
         ),
       )
         .then(() => {
@@ -125,7 +134,10 @@ export default {
         .then(response => {
           const alertPath = response.alert_path;
           this.alerts.unshift(alertPath);
-          this.$set(this.alertData, alertPath, newAlert);
+          this.$emit('setAlerts', this.customMetricId, {
+            ...this.alertData,
+            [alertPath]: newAlert,
+          });
           this.isLoading = false;
           this.handleDropdownClose();
         })
@@ -140,7 +152,10 @@ export default {
       this.service
         .updateAlert(alert, updatedAlert)
         .then(() => {
-          this.$set(this.alertData, alert, updatedAlert);
+          this.$emit('setAlerts', this.customMetricId, {
+            ...this.alertData,
+            [alert]: updatedAlert,
+          });
           this.isLoading = false;
           this.handleDropdownClose();
         })
@@ -154,7 +169,8 @@ export default {
       this.service
         .deleteAlert(alert)
         .then(() => {
-          this.$delete(this.alertData, alert);
+          const { [alert]: _, ...otherItems } = this.alertData;
+          this.$emit('setAlerts', this.customMetricId, otherItems);
           this.alerts = this.alerts.filter(alertPath => alert !== alertPath);
           this.isLoading = false;
           this.handleDropdownClose();

@@ -96,7 +96,8 @@ module Ci
     scope :with_artifacts_not_expired, ->() { with_artifacts_archive.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
     scope :with_expired_artifacts, ->() { with_artifacts_archive.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
-    scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
+    scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + %i[manual]) }
+    scope :scheduled_actions, ->() { where(when: :delayed, status: COMPLETED_STATUSES + %i[scheduled]) }
     scope :ref_protected, -> { where(protected: true) }
     scope :with_live_trace, -> { where('EXISTS (?)', Ci::BuildTraceChunk.where('ci_builds.id = ci_build_trace_chunks.build_id').select(1)) }
 
@@ -161,6 +162,34 @@ module Ci
     state_machine :status do
       event :actionize do
         transition created: :manual
+      end
+
+      event :schedule do
+        transition created: :scheduled
+      end
+
+      event :unschedule do
+        transition scheduled: :manual
+      end
+
+      event :enqueue_scheduled do
+        transition scheduled: :pending, if: ->(build) do
+          build.scheduled_at && build.scheduled_at < Time.now
+        end
+      end
+
+      before_transition scheduled: any do |build|
+        build.scheduled_at = nil
+      end
+
+      before_transition created: :scheduled do |build|
+        build.scheduled_at = build.options_scheduled_at
+      end
+
+      after_transition created: :scheduled do |build|
+        build.run_after_commit do
+          Ci::BuildScheduleWorker.perform_at(build.scheduled_at, build.id)
+        end
       end
 
       after_transition any => [:pending] do |build|
@@ -230,11 +259,20 @@ module Ci
     end
 
     def playable?
-      action? && (manual? || retryable?)
+      action? && (manual? || scheduled? || retryable?)
+    end
+
+    def schedulable?
+      Feature.enabled?('ci_enable_scheduled_build', default_enabled: true) &&
+        self.when == 'delayed' && options[:start_in].present?
+    end
+
+    def options_scheduled_at
+      ChronicDuration.parse(options[:start_in])&.seconds&.from_now
     end
 
     def action?
-      self.when == 'manual'
+      %w[manual delayed].include?(self.when)
     end
 
     # rubocop: disable CodeReuse/ServiceClass
@@ -526,6 +564,13 @@ module Ci
       self.job_artifacts.update_all(expire_at: nil)
     end
 
+    def artifacts_file_for_type(type)
+      file = job_artifacts.find_by(file_type: Ci::JobArtifact.file_types[type])&.file
+      # TODO: to be removed once legacy artifacts is removed
+      file ||= legacy_artifacts_file if type == :archive
+      file
+    end
+
     def coverage_regex
       super || project.try(:build_coverage_regex)
     end
@@ -747,6 +792,9 @@ module Ci
         variables.append(key: 'GITLAB_FEATURES', value: project.licensed_features.join(','))
         variables.append(key: 'CI_SERVER_NAME', value: 'GitLab')
         variables.append(key: 'CI_SERVER_VERSION', value: Gitlab::VERSION)
+        variables.append(key: 'CI_SERVER_VERSION_MAJOR', value: gitlab_version_info.major.to_s)
+        variables.append(key: 'CI_SERVER_VERSION_MINOR', value: gitlab_version_info.minor.to_s)
+        variables.append(key: 'CI_SERVER_VERSION_PATCH', value: gitlab_version_info.patch.to_s)
         variables.append(key: 'CI_SERVER_REVISION', value: Gitlab.revision)
         variables.append(key: 'CI_JOB_NAME', value: name)
         variables.append(key: 'CI_JOB_STAGE', value: stage)
@@ -759,6 +807,10 @@ module Ci
         variables.append(key: "CI_JOB_MANUAL", value: 'true') if action?
         variables.concat(legacy_variables)
       end
+    end
+
+    def gitlab_version_info
+      @gitlab_version_info ||= Gitlab::VersionInfo.parse(Gitlab::VERSION)
     end
 
     def legacy_variables

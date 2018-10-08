@@ -1249,6 +1249,7 @@ module API
     end
 
     class TemplatesList < Grape::Entity
+      expose :key
       expose :name
     end
 

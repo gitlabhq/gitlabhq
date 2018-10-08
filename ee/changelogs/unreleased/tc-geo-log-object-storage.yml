@@ -1,0 +1,5 @@
+---
+title: Use Geo log to remove files when migrated to object storage
+merge_request: 5966
+author:
+type: added

@@ -278,6 +278,12 @@ describe API::Commits do
         }
       end
 
+      it 'does not increment the usage counters using access token authentication' do
+        expect(::Gitlab::WebIdeCommitsCounter).not_to receive(:increment)
+
+        post api(url, user), valid_c_params
+      end
+
       it 'a new file in project repo' do
         post api(url, user), valid_c_params
 
@@ -294,14 +300,6 @@ describe API::Commits do
         expect(json_response['title']).to eq(message)
         expect(json_response['committer_name']).to eq(user.name)
         expect(json_response['committer_email']).to eq(user.email)
-      end
-
-      it 'does not call the metrics using access token authentication' do
-        stub_licensed_features(ide: true)
-
-        post api(url, user), valid_c_params
-
-        expect_any_instance_of(::Gitlab::Metrics::MultiFileEditor).not_to receive(:record)
       end
 
       it 'returns a 400 bad request if file exists' do
@@ -572,6 +570,20 @@ describe API::Commits do
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq(message)
+      end
+
+      it 'includes the commit stats' do
+        post api(url, user), valid_mo_params
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response).to include 'stats'
+      end
+
+      it "doesn't include the commit stats when stats is false" do
+        post api(url, user), valid_mo_params.merge(stats: false)
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response).not_to include 'stats'
       end
 
       it 'return a 400 bad request if there are any issues' do

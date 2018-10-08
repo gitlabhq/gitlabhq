@@ -1,0 +1,118 @@
+.draft-note-component {
+  padding: $gl-padding-8 $gl_padding;
+  margin: 0;
+  background: $orange-50;
+
+  .note-actions {
+    margin-top: -26px;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  .drafts-count-component {
+    @include transition(background-color);
+    background: rgba($green-500, 0.2);
+  }
+
+  button:focus,
+  button:hover {
+    .drafts-count-component {
+      background: $black-transparent;
+    }
+  }
+
+  &.is-resolving-discussion {
+    .draft-note-resolution svg {
+      color: $green-600;
+    }
+  }
+
+  &.is-unresolving-discussion {
+    .draft-note-resolution svg {
+      color: $gray-darkest;
+    }
+  }
+
+  .referenced-commands.draft-note-commands {
+    background: $orange-100;
+    font-size: $label-font-size;
+    margin-top: $gl-padding;
+    margin-left: 40px + $gl-padding;
+  }
+
+  .timeline-entry {
+    padding-left: 40px;
+    background-color: transparent;
+  }
+}
+
+button[disabled] {
+  &,
+  &:focus,
+  &:hover {
+    .drafts-count-component {
+      background: $gl-gray-100;
+    }
+  }
+}
+
+.draft-note-header {
+  padding: $gl-padding-8 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .draft-note-resolution {
+    padding: $gl-padding-4 $gl-padding;
+    line-height: 1;
+    font-size: $label-font-size;
+    color: $theme-gray-700;
+    flex-grow: 1;
+
+    svg {
+      vertical-align: text-bottom;
+      display: inline-block;
+    }
+  }
+}
+
+.draft-pending-label {
+  background: $orange-600;
+  color: $white-light;
+  vertical-align: text-top;
+}
+
+.draft-note-actions {
+  padding: $gl-padding 56px $gl-padding-8;
+}
+
+.discussion-body,
+.diff-file {
+  .notes .note {
+    &.draft-note {
+      border-bottom: 0;
+
+      .timeline-entry-inner {
+        padding-top: 0;
+        padding-bottom: 0;
+        padding-right: 0;
+      }
+    }
+  }
+
+  .notes_holder {
+    .notes_content {
+      &.parallel ul.draft-notes > li {
+        padding-left: 40px;
+      }
+
+      .notes {
+        &.draft-notes {
+          background-color: transparent;
+        }
+      }
+    }
+  }
+}

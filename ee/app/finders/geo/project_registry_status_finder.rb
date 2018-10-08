@@ -7,6 +7,12 @@ module Geo
   # synchronization, as we are concerned in filtering for displaying rather then
   # filtering for processing.
   class ProjectRegistryStatusFinder < RegistryFinder
+    # Returns all project registry
+    #
+    def all_projects
+      Geo::ProjectRegistry.with_routes
+    end
+
     # Returns any project registry which project is fully synced
     #
     # We consider fully synced any project without pending actions
@@ -21,7 +27,7 @@ module Geo
         no_repository_resync
           .and(no_repository_sync_failure)
           .and(repository_verified)
-      ).includes(project: :route).includes(project: { namespace: :route })
+      ).with_routes
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -43,7 +49,7 @@ module Geo
           .and(flagged_for_resync
             .or(repository_pending_verification
               .and(repository_without_verification_failure_before)))
-      ).includes(project: :route).includes(project: { namespace: :route })
+      ).with_routes
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -60,7 +66,7 @@ module Geo
         repository_sync_failed
           .or(repository_verification_failed)
           .or(repository_checksum_mismatch)
-      ).includes(project: :route).includes(project: { namespace: :route })
+      ).with_routes
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -70,9 +76,7 @@ module Geo
     # for performance reasons.
     # rubocop: disable CodeReuse/ActiveRecord
     def never_synced_projects
-      Geo::ProjectRegistry.where(last_repository_successful_sync_at: nil)
-        .includes(project: :route)
-        .includes(project: { namespace: :route })
+      Geo::ProjectRegistry.where(last_repository_successful_sync_at: nil).with_routes
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

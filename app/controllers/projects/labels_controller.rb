@@ -163,6 +163,7 @@ class Projects::LabelsController < Projects::ApplicationController
                        project_id: @project.id,
                        include_ancestor_groups: params[:include_ancestor_groups],
                        search: params[:search],
+                       subscribed: params[:subscribed],
                        sort: sort).execute
   end
 

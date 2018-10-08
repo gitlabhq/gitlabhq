@@ -116,15 +116,6 @@ describe Ci::Build do
   end
 
   build_artifacts_methods = {
-    # has_codeclimate_json? is deprecated and replaced with code_quality_artifact (#5779)
-    has_codeclimate_json?: {
-      filename: Ci::Build::CODECLIMATE_FILE,
-      job_names: %w[codeclimate codequality code_quality]
-    },
-    has_code_quality_json?: {
-      filename: Ci::Build::CODE_QUALITY_FILE,
-      job_names: %w[codeclimate codequality code_quality]
-    },
     has_performance_json?: {
       filename: Ci::Build::PERFORMANCE_FILE,
       job_names: %w[performance deploy]

@@ -131,7 +131,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def related_branches
-    @related_branches = @issue.related_branches(current_user)
+    @related_branches = Issues::RelatedBranchesService.new(project, current_user).execute(issue)
 
     respond_to do |format|
       format.json do

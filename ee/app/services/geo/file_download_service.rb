@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Geo
   # This class is responsible for:
   #   * Finding the appropriate Downloader class for a FileRegistry record
@@ -50,7 +52,7 @@ module Geo
     # rubocop: disable CodeReuse/ActiveRecord
     def update_registry(bytes_downloaded, mark_as_synced:, missing_on_primary: false)
       registry =
-        if object_type.to_sym == :job_artifact
+        if job_artifact?
           Geo::JobArtifactRegistry.find_or_initialize_by(artifact_id: object_db_id)
         else
           Geo::FileRegistry.find_or_initialize_by(

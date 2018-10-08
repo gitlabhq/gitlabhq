@@ -2,6 +2,8 @@ require 'flipper/adapters/active_record'
 require 'flipper/adapters/active_support_cache_store'
 
 class Feature
+  prepend EE::Feature
+
   # Classes to override flipper table names
   class FlipperFeature < Flipper::Adapters::ActiveRecord::Feature
     # Using `self.table_name` won't work. ActiveRecord bug?
@@ -72,7 +74,11 @@ class Feature
     end
 
     def flipper
-      @flipper ||= (Gitlab::SafeRequestStore[:flipper] ||= build_flipper_instance)
+      if Gitlab::SafeRequestStore.active?
+        Gitlab::SafeRequestStore[:flipper] ||= build_flipper_instance
+      else
+        @flipper ||= build_flipper_instance
+      end
     end
 
     def build_flipper_instance

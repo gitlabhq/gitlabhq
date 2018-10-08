@@ -1,13 +1,12 @@
 module EE
   module TemplateFinder
-    include ::Gitlab::Utils::StrongMemoize
     extend ::Gitlab::Utils::Override
 
-    CUSTOM_TEMPLATES = {
+    CUSTOM_TEMPLATES = HashWithIndifferentAccess.new(
       dockerfiles: ::Gitlab::Template::CustomDockerfileTemplate,
       gitignores: ::Gitlab::Template::CustomGitignoreTemplate,
       gitlab_ci_ymls: ::Gitlab::Template::CustomGitlabCiYmlTemplate
-    }.freeze
+    ).freeze
 
     attr_reader :custom_templates
     private :custom_templates

@@ -585,3 +585,17 @@
       and are therefore exempt.
     :versions: []
     :when: 2018-08-30 12:06:35.668181000 Z
+- - :approve
+  - caniuse-lite
+  - :who: Mike Greiling
+    :why: CC-BY-4.0 license. Tool only used during build process, code is not present
+      in compiled/distributed product so attribution not needed.
+    :versions: []
+    :when: 2018-10-02 19:23:11.221660000 Z
+- - :approve
+  - node-releases
+  - :who: Mike Greiling
+    :why: CC-BY-4.0 license. Tool only used during build process, code is not present
+      in compiled/distributed product so attribution not needed.
+    :versions: []
+    :when: 2018-10-02 19:23:54.840151000 Z

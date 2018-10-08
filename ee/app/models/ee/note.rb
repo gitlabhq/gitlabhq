@@ -4,7 +4,7 @@ module EE
     extend ::Gitlab::Utils::Override
 
     prepended do
-      include ObjectStorage::BackgroundMove
+      include ::ObjectStorage::BackgroundMove
     end
 
     def for_epic?

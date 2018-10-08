@@ -30,10 +30,6 @@ shared_examples 'update invalid issuable' do |klass|
 
       expect(response).to render_template(:edit)
       expect(assigns[:conflict]).to be_truthy
-
-      if klass == MergeRequest && issuable.requires_approve?
-        expect(assigns[:suggested_approvers]).to be_an(Array)
-      end
     end
 
     it 'renders json error message when format is json' do

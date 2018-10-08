@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::GitAccessWiki do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :wiki_repo) }
   let(:changes) { ['6f6d7e7ed 570e7b2ab refs/heads/master'] }
   let(:authentication_abilities) { %i[read_project download_code push_code] }
   let(:redirected_path) { nil }
@@ -17,7 +17,8 @@ describe Gitlab::GitAccessWiki do
       allow(Gitlab::Database).to receive(:read_only?) { true }
     end
 
-    let(:primary_repo_url) { "https://localhost:3000/gitlab/#{project.full_path}.wiki.git" }
+    let(:primary_repo_url) { geo_primary_http_url_to_repo(project.wiki) }
+    let(:primary_repo_ssh_url) { geo_primary_ssh_url_to_repo(project.wiki) }
 
     it_behaves_like 'a read-only GitLab instance'
   end

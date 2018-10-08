@@ -1,31 +1,34 @@
 # frozen_string_literal: true
 
 class TemplateFinder
+  include Gitlab::Utils::StrongMemoize
+
   prepend ::EE::TemplateFinder
 
-  VENDORED_TEMPLATES = {
+  VENDORED_TEMPLATES = HashWithIndifferentAccess.new(
     dockerfiles: ::Gitlab::Template::DockerfileTemplate,
     gitignores: ::Gitlab::Template::GitignoreTemplate,
     gitlab_ci_ymls: ::Gitlab::Template::GitlabCiYmlTemplate
-  }.freeze
+  ).freeze
 
   class << self
-    def build(type, params = {})
-      if type == :licenses
-        LicenseTemplateFinder.new(params) # rubocop: disable CodeReuse/Finder
+    def build(type, project, params = {})
+      if type.to_s == 'licenses'
+        LicenseTemplateFinder.new(project, params) # rubocop: disable CodeReuse/Finder
       else
-        new(type, params)
+        new(type, project, params)
       end
     end
   end
 
-  attr_reader :type, :params
+  attr_reader :type, :project, :params
 
   attr_reader :vendored_templates
   private :vendored_templates
 
-  def initialize(type, params = {})
+  def initialize(type, project, params = {})
     @type = type
+    @project = project
     @params = params
 
     @vendored_templates = VENDORED_TEMPLATES.fetch(type)

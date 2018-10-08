@@ -347,6 +347,14 @@ describe Project do
                 it 'returns true' do
                   is_expected.to eq(true)
                 end
+
+                context 'when feature is disabled by a feature flag' do
+                  it 'returns false' do
+                    stub_feature_flags(feature => false)
+
+                    is_expected.to eq(false)
+                  end
+                end
               end
 
               context 'not allowed by Plan License but project and namespace are public' do
@@ -1765,6 +1773,26 @@ describe Project do
         .to receive(:find_remote_root_ref)
         .with('origin')
         .and_return(ref)
+    end
+  end
+
+  describe '#feature_flags_client_token' do
+    let(:project) { create(:project) }
+
+    subject { project.feature_flags_client_token }
+
+    context 'when there is no access token' do
+      it "creates a new one" do
+        is_expected.not_to be_empty
+      end
+    end
+
+    context 'when there is access token' do
+      let!(:instance) { create(:operations_feature_flags_client, project: project, token: 'token') }
+
+      it "provides an existing one" do
+        is_expected.to eq('token')
+      end
     end
   end
 end

@@ -41,7 +41,7 @@ sudo -u git -H bin/rails console RAILS_ENV=production
 **To check if automatic background verification is enabled:**
 
 ```ruby
-Feature.enabled?('geo_repository_verification')
+Gitlab::Geo.repository_verification_enabled?
 ```
 
 **To disable automatic background verification:**
@@ -56,21 +56,16 @@ Feature.disable('geo_repository_verification')
 Feature.enable('geo_repository_verification')
 ```
 
-NOTE: **Note:**
-Until [issue #5699][ee-5699] is completed, we need to reset the cache for this
-feature flag on each **secondary**, to do this run
-`sudo gitlab-rails runner 'Rails.cache.expire('flipper/v1/feature/geo_repository_verification', 0)'`.
-
 # Repository verification
 
-Visit the **Admin Area ➔ Geo nodes** dashboard on the **primary** and expand
+Navigate to the **Admin Area > Geo** dashboard on the **primary** node and expand
 the **Verification information** tab for that node to view automatic checksumming
 status for repositories and wikis. Successes are shown in green, pending work
 in grey, and failures in red.
 
 ![Verification status](img/verification-status-primary.png)
 
-Visit the **Admin Area ➔ Geo nodes** dashboard on the **secondary** and expand
+Navigate to the **Admin Area > Geo** dashboard on the **secondary** node and expand
 the **Verification information** tab for that node to view automatic verifcation
 status for repositories and wikis. As with checksumming, successes are shown in
 green, pending work in grey, and failures in red.
@@ -131,11 +126,7 @@ on both nodes, and comparing the output between them.
 Data in object storage is **not verified**, as the object store is responsible
 for ensuring the integrity of the data.
 
-[disaster-recovery]: index.md
 [feature-flag]: background_verification.md#enabling-or-disabling-the-automatic-background-verification
 [reset-verification]: background_verification.md#reset-verification-for-projects-where-verification-has-failed
 [foreground-verification]: ../../raketasks/check.md
 [ee-5064]: https://gitlab.com/gitlab-org/gitlab-ee/issues/5064
-[ee-5699]: https://gitlab.com/gitlab-org/gitlab-ee/issues/5699
-[ee-5195]: https://gitlab.com/gitlab-org/gitlab-ee/issues/5195
-[ee-5196]: https://gitlab.com/gitlab-org/gitlab-ee/issues/5196

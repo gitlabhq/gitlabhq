@@ -60,7 +60,7 @@ describe 'Environment' do
         context 'with manual action' do
           let(:action) do
             create(:ci_build, :manual, pipeline: pipeline,
-                                       name: 'deploy to production')
+                                       name: 'deploy to production', environment: environment.name)
           end
 
           context 'when user has ability to trigger deployment' do
@@ -73,11 +73,15 @@ describe 'Environment' do
               expect(page).to have_link(action.name.humanize)
             end
 
-            it 'does allow to play manual action' do
+            it 'does allow to play manual action', :js do
               expect(action).to be_manual
+
+              find('button.dropdown').click
 
               expect { click_link(action.name.humanize) }
                 .not_to change { Ci::Pipeline.count }
+
+              wait_for_all_requests
 
               expect(page).to have_content(action.name)
               expect(action.reload).to be_pending
@@ -165,10 +169,10 @@ describe 'Environment' do
                          name: action.ref, project: project)
                 end
 
-                it 'allows to stop environment' do
+                it 'allows to stop environment', :js do
                   click_button('Stop')
                   click_button('Stop environment') # confirm modal
-
+                  wait_for_all_requests
                   expect(page).to have_content('close_app')
                 end
               end

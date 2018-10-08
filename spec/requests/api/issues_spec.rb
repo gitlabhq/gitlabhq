@@ -56,6 +56,7 @@ describe API::Issues do
   let!(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
 
   let(:no_milestone_title) { URI.escape(Milestone::None.title) }
+  let(:any_milestone_title) { URI.escape(Milestone::Any.title) }
 
   before(:all) do
     project.add_reporter(user)
@@ -167,6 +168,15 @@ describe API::Issues do
         issue2 = create(:issue, author: user2, assignees: [user2], project: project)
 
         get api('/issues', user), author_id: user2.id, assignee_id: user2.id, scope: 'all'
+
+        expect_paginated_array_response(size: 1)
+        expect(first_issue['id']).to eq(issue2.id)
+      end
+
+      it 'returns issues with no assignee' do
+        issue2 = create(:issue, author: user2, project: project)
+
+        get api('/issues', user), assignee_id: 0, scope: 'all'
 
         expect_paginated_array_response(size: 1)
         expect(first_issue['id']).to eq(issue2.id)
@@ -804,6 +814,15 @@ describe API::Issues do
 
       expect_paginated_array_response(size: 1)
       expect(json_response.first['id']).to eq(confidential_issue.id)
+    end
+
+    it 'returns an array of issues with any milestone' do
+      get api("#{base_url}/issues?milestone=#{any_milestone_title}", user)
+
+      response_ids = json_response.map { |issue| issue['id'] }
+
+      expect_paginated_array_response(size: 2)
+      expect(response_ids).to contain_exactly(closed_issue.id, issue.id)
     end
 
     it 'sorts by created_at descending by default' do

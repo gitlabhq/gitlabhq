@@ -17,538 +17,84 @@ Example response:
 ```json
 [
   {
-    "name": "AppEngine"
-  },
-  {
-    "name": "Laravel"
-  },
-  {
-    "name": "Elisp"
-  },
-  {
-    "name": "SketchUp"
-  },
-  {
-    "name": "Ada"
-  },
-  {
-    "name": "Ruby"
-  },
-  {
-    "name": "Kohana"
-  },
-  {
-    "name": "Nanoc"
-  },
-  {
-    "name": "Erlang"
-  },
-  {
-    "name": "OCaml"
-  },
-  {
-    "name": "Lithium"
-  },
-  {
-    "name": "Fortran"
-  },
-  {
-    "name": "Scala"
-  },
-  {
-    "name": "Node"
-  },
-  {
-    "name": "Fancy"
-  },
-  {
-    "name": "Perl"
-  },
-  {
-    "name": "Zephir"
-  },
-  {
-    "name": "WordPress"
-  },
-  {
-    "name": "Symfony"
-  },
-  {
-    "name": "FuelPHP"
-  },
-  {
-    "name": "DM"
-  },
-  {
-    "name": "Sdcc"
-  },
-  {
-    "name": "Rust"
-  },
-  {
-    "name": "C"
-  },
-  {
-    "name": "Umbraco"
-  },
-  {
+    "key": "Actionscript",
     "name": "Actionscript"
   },
   {
-    "name": "Android"
+    "key": "Ada",
+    "name": "Ada"
   },
   {
-    "name": "Grails"
-  },
-  {
-    "name": "Composer"
-  },
-  {
-    "name": "ExpressionEngine"
-  },
-  {
-    "name": "Gcov"
-  },
-  {
-    "name": "Qt"
-  },
-  {
-    "name": "Phalcon"
-  },
-  {
-    "name": "ArchLinuxPackages"
-  },
-  {
-    "name": "TeX"
-  },
-  {
-    "name": "SCons"
-  },
-  {
-    "name": "Lilypond"
-  },
-  {
-    "name": "CommonLisp"
-  },
-  {
-    "name": "Rails"
-  },
-  {
-    "name": "Mercury"
-  },
-  {
-    "name": "Magento"
-  },
-  {
-    "name": "ChefCookbook"
-  },
-  {
-    "name": "GitBook"
-  },
-  {
-    "name": "C++"
-  },
-  {
-    "name": "Eagle"
-  },
-  {
-    "name": "Go"
-  },
-  {
-    "name": "OpenCart"
-  },
-  {
-    "name": "Scheme"
-  },
-  {
-    "name": "Typo3"
-  },
-  {
-    "name": "SeamGen"
-  },
-  {
-    "name": "Swift"
-  },
-  {
-    "name": "Elm"
-  },
-  {
-    "name": "Unity"
-  },
-  {
+    "key": "Agda",
     "name": "Agda"
   },
   {
-    "name": "CUDA"
+    "key": "Android",
+    "name": "Android"
   },
   {
-    "name": "VVVV"
+    "key": "AppEngine",
+    "name": "AppEngine"
   },
   {
-    "name": "Finale"
-  },
-  {
-    "name": "LemonStand"
-  },
-  {
-    "name": "Textpattern"
-  },
-  {
-    "name": "Julia"
-  },
-  {
-    "name": "Packer"
-  },
-  {
-    "name": "Scrivener"
-  },
-  {
-    "name": "Dart"
-  },
-  {
-    "name": "Plone"
-  },
-  {
-    "name": "Jekyll"
-  },
-  {
-    "name": "Xojo"
-  },
-  {
-    "name": "LabVIEW"
-  },
-  {
-    "name": "Autotools"
-  },
-  {
-    "name": "KiCad"
-  },
-  {
-    "name": "Prestashop"
-  },
-  {
-    "name": "ROS"
-  },
-  {
-    "name": "Smalltalk"
-  },
-  {
-    "name": "GWT"
-  },
-  {
-    "name": "OracleForms"
-  },
-  {
-    "name": "SugarCRM"
-  },
-  {
-    "name": "Nim"
-  },
-  {
-    "name": "SymphonyCMS"
-  },
-  {
-    "name": "Maven"
-  },
-  {
-    "name": "CFWheels"
-  },
-  {
-    "name": "Python"
-  },
-  {
-    "name": "ZendFramework"
-  },
-  {
-    "name": "CakePHP"
-  },
-  {
-    "name": "Concrete5"
-  },
-  {
-    "name": "PlayFramework"
-  },
-  {
-    "name": "Terraform"
-  },
-  {
-    "name": "Elixir"
-  },
-  {
-    "name": "CMake"
-  },
-  {
-    "name": "Joomla"
-  },
-  {
-    "name": "Coq"
-  },
-  {
-    "name": "Delphi"
-  },
-  {
-    "name": "Haskell"
-  },
-  {
-    "name": "Yii"
-  },
-  {
-    "name": "Java"
-  },
-  {
-    "name": "UnrealEngine"
-  },
-  {
+    "key": "AppceleratorTitanium",
     "name": "AppceleratorTitanium"
   },
   {
-    "name": "CraftCMS"
+    "key": "ArchLinuxPackages",
+    "name": "ArchLinuxPackages"
   },
   {
-    "name": "ForceDotCom"
+    "key": "Autotools",
+    "name": "Autotools"
   },
   {
-    "name": "ExtJs"
+    "key": "C",
+    "name": "C"
   },
   {
-    "name": "MetaProgrammingSystem"
+    "key": "C++",
+    "name": "C++"
   },
   {
-    "name": "D"
+    "key": "CFWheels",
+    "name": "CFWheels"
   },
   {
-    "name": "Objective-C"
+    "key": "CMake",
+    "name": "CMake"
   },
   {
-    "name": "RhodesRhomobile"
+    "key": "CUDA",
+    "name": "CUDA"
   },
   {
-    "name": "R"
+    "key": "CakePHP",
+    "name": "CakePHP"
   },
   {
-    "name": "EPiServer"
+    "key": "ChefCookbook",
+    "name": "ChefCookbook"
   },
   {
-    "name": "Yeoman"
-  },
-  {
-    "name": "VisualStudio"
-  },
-  {
-    "name": "Processing"
-  },
-  {
-    "name": "Leiningen"
-  },
-  {
-    "name": "Stella"
-  },
-  {
-    "name": "Opa"
-  },
-  {
-    "name": "Drupal"
-  },
-  {
-    "name": "TurboGears2"
-  },
-  {
-    "name": "Idris"
-  },
-  {
-    "name": "Jboss"
-  },
-  {
-    "name": "CodeIgniter"
-  },
-  {
-    "name": "Qooxdoo"
-  },
-  {
-    "name": "Waf"
-  },
-  {
-    "name": "Sass"
-  },
-  {
-    "name": "Lua"
-  },
-  {
+    "key": "Clojure",
     "name": "Clojure"
   },
   {
-    "name": "IGORPro"
+    "key": "CodeIgniter",
+    "name": "CodeIgniter"
   },
   {
-    "name": "Gradle"
+    "key": "CommonLisp",
+    "name": "CommonLisp"
   },
   {
-    "name": "Archives"
+    "key": "Composer",
+    "name": "Composer"
   },
   {
-    "name": "SynopsysVCS"
-  },
-  {
-    "name": "Ninja"
-  },
-  {
-    "name": "Tags"
-  },
-  {
-    "name": "OSX"
-  },
-  {
-    "name": "Dreamweaver"
-  },
-  {
-    "name": "CodeKit"
-  },
-  {
-    "name": "NotepadPP"
-  },
-  {
-    "name": "VisualStudioCode"
-  },
-  {
-    "name": "Mercurial"
-  },
-  {
-    "name": "BricxCC"
-  },
-  {
-    "name": "DartEditor"
-  },
-  {
-    "name": "Eclipse"
-  },
-  {
-    "name": "Cloud9"
-  },
-  {
-    "name": "TortoiseGit"
-  },
-  {
-    "name": "NetBeans"
-  },
-  {
-    "name": "GPG"
-  },
-  {
-    "name": "Espresso"
-  },
-  {
-    "name": "Redcar"
-  },
-  {
-    "name": "Xcode"
-  },
-  {
-    "name": "Matlab"
-  },
-  {
-    "name": "LyX"
-  },
-  {
-    "name": "SlickEdit"
-  },
-  {
-    "name": "Dropbox"
-  },
-  {
-    "name": "CVS"
-  },
-  {
-    "name": "Calabash"
-  },
-  {
-    "name": "JDeveloper"
-  },
-  {
-    "name": "Vagrant"
-  },
-  {
-    "name": "IPythonNotebook"
-  },
-  {
-    "name": "TextMate"
-  },
-  {
-    "name": "Ensime"
-  },
-  {
-    "name": "WebMethods"
-  },
-  {
-    "name": "VirtualEnv"
-  },
-  {
-    "name": "Emacs"
-  },
-  {
-    "name": "Momentics"
-  },
-  {
-    "name": "JetBrains"
-  },
-  {
-    "name": "SublimeText"
-  },
-  {
-    "name": "Kate"
-  },
-  {
-    "name": "ModelSim"
-  },
-  {
-    "name": "Redis"
-  },
-  {
-    "name": "KDevelop4"
-  },
-  {
-    "name": "Bazaar"
-  },
-  {
-    "name": "Linux"
-  },
-  {
-    "name": "Windows"
-  },
-  {
-    "name": "XilinxISE"
-  },
-  {
-    "name": "Lazarus"
-  },
-  {
-    "name": "EiffelStudio"
-  },
-  {
-    "name": "Anjuta"
-  },
-  {
-    "name": "Vim"
-  },
-  {
-    "name": "Otto"
-  },
-  {
-    "name": "MicrosoftOffice"
-  },
-  {
-    "name": "LibreOffice"
-  },
-  {
-    "name": "SBT"
-  },
-  {
-    "name": "MonoDevelop"
-  },
-  {
-    "name": "SVN"
-  },
-  {
-    "name": "FlexBuilder"
+    "key": "Concrete5",
+    "name": "Concrete5"
   }
 ]
 ```

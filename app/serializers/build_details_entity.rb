@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 class BuildDetailsEntity < JobEntity
-  include EnvironmentHelper
-  include RequestAwareEntity
-  include CiStatusHelper
-
   prepend ::EE::BuildDetailEntity
 
   expose :coverage, :erased_at, :duration
@@ -16,10 +12,6 @@ class BuildDetailsEntity < JobEntity
 
   expose :deployment_status, if: -> (*) { build.has_environment? } do
     expose :deployment_status, as: :status
-
-    expose :icon do |build|
-      ci_label_for_status(build.status)
-    end
 
     expose :persisted_environment, as: :environment, with: EnvironmentEntity
   end

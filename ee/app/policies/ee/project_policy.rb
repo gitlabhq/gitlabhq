@@ -8,6 +8,7 @@ module EE
       approvers
       vulnerability_feedback
       license_management
+      feature_flag
     ].freeze
 
     prepended do
@@ -65,6 +66,11 @@ module EE
         @subject.feature_available?(:license_management)
       end
 
+      with_scope :subject
+      condition(:feature_flags_disabled) do
+        !@subject.feature_available?(:feature_flags)
+      end
+
       rule { admin }.enable :change_repository_storage
 
       rule { support_bot }.enable :guest_access
@@ -99,6 +105,11 @@ module EE
         enable :admin_board
         enable :admin_vulnerability_feedback
         enable :create_package
+        enable :read_feature_flag
+        enable :create_feature_flag
+        enable :update_feature_flag
+        enable :destroy_feature_flag
+        enable :admin_feature_flag
       end
 
       rule { can?(:public_access) }.enable :read_package
@@ -115,6 +126,10 @@ module EE
 
       rule { packages_disabled }.policy do
         prevent(*create_read_update_admin_destroy(:package))
+      end
+
+      rule { feature_flags_disabled }.policy do
+        prevent(*create_read_update_admin_destroy(:feature_flag))
       end
 
       rule { can?(:maintainer_access) }.policy do

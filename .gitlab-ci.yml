@@ -72,10 +72,7 @@ stages:
 
 .use-pg: &use-pg
   services:
-    # As of Jan 2018, we don't have a strong reason to upgrade to 9.6 for CI yet,
-    # so using the least common denominator ensures backwards compatibility
-    # (as many users are still using 9.2).
-    - postgres:9.2
+    - postgres:9.6
     - redis:alpine
 
 .use-mysql: &use-mysql
@@ -172,7 +169,7 @@ stages:
     - export SCRIPT_NAME="${SCRIPT_NAME:-$CI_JOB_NAME}"
     - apk add --update openssl
     - wget $CI_PROJECT_URL/raw/$CI_COMMIT_SHA/scripts/$SCRIPT_NAME
-    - chmod 755 $SCRIPT_NAME
+    - chmod 755 $(basename $SCRIPT_NAME)
 
 .rake-exec: &rake-exec
   <<: *dedicated-no-docs-no-db-pull-cache-job
@@ -579,10 +576,10 @@ setup-test-env:
       - vendor/gitaly-ruby
 
 danger-review:
+  <<: *pull-cache
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:danger
   stage: test
   allow_failure: true
-  cache: {}
   dependencies: []
   before_script: []
   only:
@@ -596,6 +593,8 @@ danger-review:
       - $CI_COMMIT_REF_NAME =~ /.*-stable(-ee)?-prepare-.*/
   script:
     - git version
+    - node --version
+    - yarn install --frozen-lockfile --cache-folder .yarn-cache
     - danger --fail-on-errors=true
 
 # EE jobs
@@ -770,7 +769,7 @@ static-analysis:
 docs lint:
   <<: *dedicated-runner
   <<: *except-qa
-  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-docs-lint"
   stage: test
   variables:
     SETUP_DB: "false"
@@ -780,8 +779,8 @@ docs lint:
   script:
     - scripts/lint-doc.sh
     - scripts/lint-changelog-yaml
-    - mv doc/ /nanoc/content/
-    - cd /nanoc
+    - mv doc/ /tmp/gitlab-docs/content/
+    - cd /tmp/gitlab-docs
     # Build HTML from Markdown
     - bundle exec nanoc
     # Check the internal links
@@ -1156,9 +1155,10 @@ stop_review:
   allow_failure: true
   cache: {}
   dependencies: []
-  before_script: []
+  variables:
+    SCRIPT_NAME: "review_apps/review-apps.sh"
   script:
-    - source ./scripts/review_apps/review-apps.sh
+    - source $(basename "${SCRIPT_NAME}")
     - delete
     - cleanup
   when: manual

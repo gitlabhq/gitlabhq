@@ -5,9 +5,9 @@ module EE
 
       private
 
-      override :do_execute
-      def do_execute(oldrev, newrev, ref)
-        super && reset_approvals_for_merge_requests(ref, newrev)
+      override :refresh_merge_requests!
+      def refresh_merge_requests!(push)
+        super && reset_approvals_for_merge_requests(push.ref, push.newrev)
       end
 
       # Note: Closed merge requests also need approvals reset.

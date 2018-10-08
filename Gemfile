@@ -83,10 +83,8 @@ gem 'gitlab_omniauth-ldap', '~> 2.0.4', require: 'omniauth-ldap'
 gem 'net-ldap'
 
 # Git Wiki
-# Required manually in config/initializers/gollum.rb to control load order
+# Only used to compute wiki page slugs
 gem 'gitlab-gollum-lib', '~> 4.2', require: false
-
-gem 'gitlab-gollum-rugged_adapter', '~> 0.4.4', require: false
 
 # Language detection
 gem 'github-linguist', '~> 5.3.3', require: 'linguist'
@@ -144,6 +142,7 @@ gem 'faraday_middleware-aws-signers-v4'
 gem 'html-pipeline', '~> 2.8'
 gem 'deckar01-task_list', '2.0.0'
 gem 'gitlab-markup', '~> 1.6.4'
+gem 'github-markup', '~> 1.7.0', require: 'github/markup'
 gem 'redcarpet', '~> 3.4'
 gem 'commonmarker', '~> 0.17'
 gem 'RedCloth', '~> 4.3.2'
@@ -308,6 +307,7 @@ gem 'peek-mysql2', '~> 1.1.0', group: :mysql
 gem 'peek-pg', '~> 1.3.0', group: :postgres
 gem 'peek-rblineprof', '~> 0.2.0'
 gem 'peek-redis', '~> 1.2.0'
+gem 'gitlab-sidekiq-fetcher', require: 'sidekiq-reliable-fetch'
 
 # Metrics
 group :metrics do

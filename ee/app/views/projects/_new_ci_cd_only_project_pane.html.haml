@@ -1,4 +1,5 @@
 - return unless ci_cd_projects_available?
+- track_label = local_assigns.fetch(:track_label, 'cicd_for_external_repo')
 
 .tab-pane.js-toggle-container{ id: 'ci-cd-project-pane', class: active_when(active_tab == 'ci_cd_only'), role: 'tabpanel' }
   = form_for @project, html: { class: 'new_project' } do |f|
@@ -18,14 +19,14 @@
           .import-buttons
             %div
               - if github_import_enabled?
-                = link_to new_import_github_path(ci_cd_only: true), class: 'btn js-import-github' do
+                = link_to new_import_github_path(ci_cd_only: true), class: 'btn js-import-github', data: { track_label: "#{track_label}", track_property: 'github', track_event: "click_button" } do
                   = icon('github', text: 'GitHub')
             %div
               - if git_import_enabled?
-                %button.btn.js-toggle-button.js-import-git-toggle-button{ type: "button", data: { toggle_open_class: 'active' } }
+                %button.btn.js-toggle-button.js-import-git-toggle-button{ type: "button", data: { toggle_open_class: 'active', track_label: "#{track_label}", track_property: 'repo_url', track_event: "click_button" } }
                   = icon('git', text: _('Repo by URL'))
       .col-lg-12
         .js-toggle-content.toggle-import-form{ class: ('hide' if active_tab != 'ci_cd_only') }
           %hr
             = render "shared/import_form", f: f, ci_cd_only: true
-            = render 'new_project_fields', f: f, project_name_id: "import-url-name", ci_cd_only: true, hide_init_with_readme: true
+            = render 'new_project_fields', f: f, project_name_id: "import-url-name", ci_cd_only: true, hide_init_with_readme: true, track_label: track_label

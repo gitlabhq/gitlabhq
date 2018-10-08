@@ -33,6 +33,7 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
   scope :verification_failed_wikis, -> { where.not(last_wiki_verification_failure: nil) }
   scope :repository_checksum_mismatch, -> { where(repository_checksum_mismatch: true) }
   scope :wiki_checksum_mismatch, -> { where(wiki_checksum_mismatch: true) }
+  scope :with_routes, -> { includes(project: :route).includes(project: { namespace: :route }) }
 
   def self.failed
     repository_sync_failed = arel_table[:repository_retry_count].gt(0)
@@ -201,13 +202,17 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     self.wiki_verification_checksum_sha.nil?
   end
 
-  # Returns wheter verification is pending for either wiki or repository
+  # Returns whether verification is pending for either wiki or repository
   #
   # This will check for missing verification checksum sha for both wiki and repository
   #
   # @return [Boolean] whether verification is pending for either wiki or repository
-  def verification_pending?
+  def pending_verification?
     repository_verification_pending? || wiki_verification_pending?
+  end
+
+  def pending_synchronization?
+    resync_repository? || resync_wiki?
   end
 
   def syncs_since_gc
@@ -274,7 +279,41 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     self.repository_retry_count && self.repository_retry_count > 1
   end
 
+  # Returns a synchronization state based on existing attribute values
+  #
+  # It takes into account things like if a successful replication has been done
+  # if there are pending actions or existing errors
+  #
+  # @return [Symbol] :never, :failed:, :pending or :synced
+  def synchronization_state
+    return :never if has_never_attempted_any_operation?
+    return :failed if has_failed_operation?
+    return :pending if has_pending_operation?
+
+    :synced
+  end
+
   private
+
+  # Whether any operation has ever been attempted
+  #
+  # This is intended to determine if it's a brand new registry that has never tried to sync before
+  def has_never_attempted_any_operation?
+    last_repository_successful_sync_at.nil? && last_repository_synced_at.nil?
+  end
+
+  # Whether there is a pending synchronization or verification
+  #
+  # This check is intended to be used as part of the #synchronization_state
+  # It does omit previous checks as they are intended to be done in sequence.
+  def has_pending_operation?
+    resync_repository || repository_verification_checksum_sha.nil?
+  end
+
+  # Whether a synchronization or verification failed
+  def has_failed_operation?
+    repository_retry_count || last_repository_verification_failure || repository_checksum_mismatch
+  end
 
   def fetches_since_gc_redis_key
     "projects/#{project_id}/fetches_since_gc"

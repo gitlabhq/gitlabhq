@@ -290,7 +290,8 @@ describe API::Geo do
 
   describe '/geo/proxy_git_push_ssh' do
     let(:secret_token) { Gitlab::Shell.secret_token }
-    let(:data) { { primary_repo: 'http://localhost:3001/testuser/repo.git', gl_id: 'key-1', gl_username: 'testuser' } }
+    let(:primary_repo) { 'http://localhost:3001/testuser/repo.git' }
+    let(:data) { { primary_repo: primary_repo, gl_id: 'key-1', gl_username: 'testuser' } }
 
     before do
       stub_current_geo_node(secondary_node)
@@ -335,10 +336,17 @@ describe API::Geo do
         end
 
         context 'with a valid secret token' do
-          let(:http_response) { double(Net::HTTPResponse, code: 200, body: 'something here') }
+          let(:http_response) { double(Net::HTTPOK, code: 200, body: 'something here') }
+          let(:api_response) { Gitlab::Geo::GitPushSSHProxy::APIResponse.from_http_response(http_response, primary_repo) }
+
+          before do
+            # Mocking a real Net::HTTPSuccess is very difficult as it's not
+            # easy to instantiate the class due to the way it sets the body
+            expect(http_response).to receive(:is_a?).with(Net::HTTPSuccess).and_return(true)
+          end
 
           it 'responds with 200' do
-            expect(git_push_ssh_proxy).to receive(:info_refs).and_return(http_response)
+            expect(git_push_ssh_proxy).to receive(:info_refs).and_return(api_response)
 
             post api('/geo/proxy_git_push_ssh/info_refs'), { secret_token: secret_token, data: data }
 
@@ -360,8 +368,7 @@ describe API::Geo do
       end
 
       context 'with all required params' do
-        let(:text) { 'output text' }
-        let(:output) { Base64.encode64(text) }
+        let(:output) { Base64.encode64('info_refs content') }
         let(:git_push_ssh_proxy) { double(Gitlab::Geo::GitPushSSHProxy) }
 
         before do
@@ -389,10 +396,17 @@ describe API::Geo do
         end
 
         context 'with a valid secret token' do
-          let(:http_response) { double(Net::HTTPResponse, code: 201, body: 'something here') }
+          let(:http_response) { double(Net::HTTPCreated, code: 201, body: 'something here', class: Net::HTTPCreated) }
+          let(:api_response) { Gitlab::Geo::GitPushSSHProxy::APIResponse.from_http_response(http_response, primary_repo) }
+
+          before do
+            # Mocking a real Net::HTTPSuccess is very difficult as it's not
+            # easy to instantiate the class due to the way it sets the body
+            expect(http_response).to receive(:is_a?).with(Net::HTTPSuccess).and_return(true)
+          end
 
           it 'responds with 201' do
-            expect(git_push_ssh_proxy).to receive(:push).with(text).and_return(http_response)
+            expect(git_push_ssh_proxy).to receive(:push).with(output).and_return(api_response)
 
             post api('/geo/proxy_git_push_ssh/push'), { secret_token: secret_token, data: data, output: output }
 

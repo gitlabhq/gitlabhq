@@ -18,7 +18,8 @@ describe Gitlab::GitAccess do
       allow(Gitlab::Database).to receive(:read_only?) { true }
     end
 
-    let(:primary_repo_url) { "https://localhost:3000/gitlab/#{project.full_path}.git" }
+    let(:primary_repo_url) { geo_primary_http_url_to_repo(project) }
+    let(:primary_repo_ssh_url) { geo_primary_ssh_url_to_repo(project) }
 
     it_behaves_like 'a read-only GitLab instance'
   end

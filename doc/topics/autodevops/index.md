@@ -239,14 +239,19 @@ project's **Settings > CI/CD > Auto DevOps**.
 
 The available options are:
 
-- **Continuous deployment to production** - enables [Auto Deploy](#auto-deploy)
-  by setting the [`STAGING_ENABLED`](#deploy-policy-for-staging-and-production-environments) and
-  [`INCREMENTAL_ROLLOUT_ENABLED`](#incremental-rollout-to-production) variables
-  to false.
-- **Automatic deployment to staging, manual deployment to production** - sets the
+- **Continuous deployment to production**: Enables [Auto Deploy](#auto-deploy)
+  with `master` branch directly deployed to production.
+- **Continuous deployment to production using timed incremental rollout**: Sets the
+  [`INCREMENTAL_ROLLOUT_MODE`](#timed-incremental-rollout-to-production) variable
+  to `timed`, and production deployment will be executed with a 5 minute delay between
+  each increment in rollout.
+- **Automatic deployment to staging, manual deployment to production**: Sets the
   [`STAGING_ENABLED`](#deploy-policy-for-staging-and-production-environments) and
-  [`INCREMENTAL_ROLLOUT_ENABLED`](#incremental-rollout-to-production) variables
-  to true, and the user is responsible for manually deploying to staging and production.
+  [`INCREMENTAL_ROLLOUT_MODE`](#incremental-rollout-to-production) variables
+  to `1` and `manual`. This means:
+
+  - `master` branch is directly deployed to staging.
+  - Manual actions are provided for incremental rollout to production.
 
 ## Stages of Auto DevOps
 
@@ -440,6 +445,30 @@ no longer be valid as soon as the deployment job finishes. This means that
 Kubernetes can run the application, but in case it should be restarted or
 executed somewhere else, it cannot be accessed again.
 
+> [Introduced][ce-21955] in GitLab 11.4
+
+Database initialization and migrations for PostgreSQL can be configured to run
+within the application pod by setting the project variables `DB_INITIALIZE` and
+`DB_MIGRATE` respectively.
+
+If present, `DB_INITIALIZE` will be run as a shell command within an application pod as a helm
+post-install hook. Note that this means that if any deploy succeeds,
+`DB_INITIALIZE` will not be processed thereafter.
+
+If present, `DB_MIGRATE` will be run as a shell command within an application pod as
+a helm pre-upgrade hook.
+
+For example, in a Rails application:
+
+* `DB_INITIALIZE` can be set to `cd /app && RAILS_ENV=production
+  bin/setup`
+* `DB_MIGRATE` can be set to `cd /app && RAILS_ENV=production bin/update`
+
+NOTE: **Note:**
+The `/app` path is the directory of your project inside the docker image
+as [configured by
+Herokuish](https://github.com/gliderlabs/herokuish#paths)
+
 > [Introduced][ce-19507] in GitLab 11.0.
 
 For internal and private projects a [GitLab Deploy Token](../../user/project/deploy_tokens/index.md###gitlab-deploy-token)
@@ -581,9 +610,11 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `BUILDPACK_URL`              | The buildpack's full URL. It can point to either Git repositories or a tarball URL. For Git repositories, it is possible to point to a specific `ref`, for example `https://github.com/heroku/heroku-buildpack-ruby.git#v142` |
 | `SAST_CONFIDENCE_LEVEL`      | The minimum confidence level of security issues you want to be reported; `1` for Low, `2` for Medium, `3` for High; defaults to `3`.|
 | `DEP_SCAN_DISABLE_REMOTE_CHECKS` | Whether remote Dependency Scanning checks are disabled; defaults to `"false"`. Set to `"true"` to disable checks that send data to GitLab central servers. [Read more about remote checks](https://gitlab.com/gitlab-org/security-products/dependency-scanning#remote-checks).|
+| `DB_INITIALIZE`              | From GitLab 11.4, this variable can be used to specify the command to run to initialize the application's PostgreSQL database. It runs inside the application pod. |
+| `DB_MIGRATE`                 | From GitLab 11.4, this variable can be used to specify the command to run to migrate the application's PostgreSQL database. It runs inside the application pod. |
 | `STAGING_ENABLED`            | From GitLab 10.8, this variable can be used to define a [deploy policy for staging and production environments](#deploy-policy-for-staging-and-production-environments). |
 | `CANARY_ENABLED`             | From GitLab 11.0, this variable can be used to define a [deploy policy for canary environments](#deploy-policy-for-canary-environments). |
-| `INCREMENTAL_ROLLOUT_ENABLED`| From GitLab 10.8, this variable can be used to enable an [incremental rollout](#incremental-rollout-to-production) of your application for the production environment. |
+| `INCREMENTAL_ROLLOUT_MODE`| From GitLab 11.4, this variable, if present, can be used to enable an [incremental rollout](#incremental-rollout-to-production) of your application for the production environment.<br/>Set to: <ul><li>`manual`, for manual deployment jobs.</li><li>`timed`, for automatic rollout deployments with a 5 minute delay each one.</li></ul> |
 | `TEST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `test` job. If the variable is present, the job will not be created. |
 | `CODE_QUALITY_DISABLED`       | From GitLab 11.0, this variable can be used to disable the `codequality` job. If the variable is present, the job will not be created. |
 | `SAST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `sast` job. If the variable is present, the job will not be created. |
@@ -704,9 +735,8 @@ to use an incremental rollout to replace just a few pods with the latest code.
 This will allow you to first check how the app is behaving, and later manually
 increasing the rollout up to 100%.
 
-If `INCREMENTAL_ROLLOUT_ENABLED` is defined in your project (e.g., set
-`INCREMENTAL_ROLLOUT_ENABLED` to `1` as a secret variable), then instead of the
-standard `production` job, 4 different
+If `INCREMENTAL_ROLLOUT_MODE` is set to `manual` in your project, then instead
+of the standard `production` job, 4 different
 [manual jobs](../../ci/pipelines.md#manual-actions-from-the-pipeline-graph)
 will be created:
 
@@ -730,21 +760,45 @@ environment page.
 Below, you can see how the pipeline will look if the rollout or staging
 variables are defined.
 
-- **Without `INCREMENTAL_ROLLOUT_ENABLED` and without `STAGING_ENABLED`**
+Without `INCREMENTAL_ROLLOUT_MODE` and without `STAGING_ENABLED`:
 
-    ![Staging and rollout disabled](img/rollout_staging_disabled.png)
+![Staging and rollout disabled](img/rollout_staging_disabled.png)
 
-- **Without `INCREMENTAL_ROLLOUT_ENABLED` and with `STAGING_ENABLED`**
+Without `INCREMENTAL_ROLLOUT_MODE` and with `STAGING_ENABLED`:
 
-    ![Staging enabled](img/staging_enabled.png)
+![Staging enabled](img/staging_enabled.png)
 
-- **With `INCREMENTAL_ROLLOUT_ENABLED` and without `STAGING_ENABLED`**
+With `INCREMENTAL_ROLLOUT_MODE` set to `manual` and without `STAGING_ENABLED`:
 
-    ![Rollout enabled](img/rollout_enabled.png)
+![Rollout enabled](img/rollout_enabled.png)
 
-- **With `INCREMENTAL_ROLLOUT_ENABLED` and with `STAGING_ENABLED`**
+With `INCREMENTAL_ROLLOUT_MODE` set to `manual` and with `STAGING_ENABLED`
 
-    ![Rollout and staging enabled](img/rollout_staging_enabled.png)
+![Rollout and staging enabled](img/rollout_staging_enabled.png)
+
+CAUTION: **Caution:**
+Before GitLab 11.4 this feature was enabled by the presence of the
+`INCREMENTAL_ROLLOUT_ENABLED` environment variable.
+This configuration is deprecated and will be removed in the future.
+
+#### Timed incremental rollout to production **[PREMIUM]**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/7545) in GitLab 11.4.
+
+TIP: **Tip:**
+You can also set this inside your [project's settings](#deployment-strategy).
+
+This configuration based on
+[incremental rollout to production](#incremental-rollout-to-production).
+
+Everything behaves the same way, except:
+
+- It's enabled by setting the `INCREMENTAL_ROLLOUT_MODE` variable to `timed`.
+- Instead of the standard `production` job, the following jobs with a 5 minute delay between each are created:
+    1. `timed rollout 10%`
+    1. `timed rollout 25%`
+    1. `timed rollout 50%`
+    1. `timed rollout 100%`
 
 ## Currently supported languages
 
@@ -834,4 +888,5 @@ curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https:/
 [postgresql]: https://www.postgresql.org/
 [Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml
 [ee]: https://about.gitlab.com/pricing/
+[ce-21955]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21955
 [ce-19507]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19507

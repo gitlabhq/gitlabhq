@@ -110,6 +110,13 @@ class Projects::JobsController < Projects::ApplicationController
     redirect_to build_path(@build)
   end
 
+  def unschedule
+    return respond_422 unless @build.scheduled?
+
+    @build.unschedule!
+    redirect_to build_path(@build)
+  end
+
   def status
     render json: BuildSerializer
       .new(project: @project, current_user: @current_user)

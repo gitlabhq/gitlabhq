@@ -1,8 +1,8 @@
 <script>
+  import _ from 'underscore';
   import CiIcon from '~/vue_shared/components/ci_icon.vue';
   import Icon from '~/vue_shared/components/icon.vue';
-
-  import { sprintf, __ } from '~/locale';
+  import { __ } from '~/locale';
 
   export default {
     components: {
@@ -10,28 +10,12 @@
       Icon,
     },
     props: {
-      pipelineId: {
-        type: Number,
-        required: true,
-      },
-      pipelinePath: {
-        type: String,
-        required: true,
-      },
-      pipelineRef: {
-        type: String,
-        required: true,
-      },
-      pipelineRefPath: {
-        type: String,
+      pipeline: {
+        type: Object,
         required: true,
       },
       stages: {
         type: Array,
-        required: true,
-      },
-      pipelineStatus: {
-        type: Object,
         required: true,
       },
     },
@@ -41,57 +25,73 @@
       };
     },
     computed: {
-      pipelineLink() {
-        return sprintf(__('Pipeline %{pipelineLinkStart} #%{pipelineId} %{pipelineLinkEnd} from %{pipelineLinkRefStart} %{pipelineRef} %{pipelineLinkRefEnd}'), {
-          pipelineLinkStart: `<a href=${this.pipelinePath} class="js-pipeline-path link-commit">`,
-          pipelineId: this.pipelineId,
-          pipelineLinkEnd: '</a>',
-          pipelineLinkRefStart: `<a href=${this.pipelineRefPath} class="link-commit ref-name">`,
-          pipelineRef: this.pipelineRef,
-          pipelineLinkRefEnd: '</a>',
-        }, false);
+      hasRef() {
+        return !_.isEmpty(this.pipeline.ref);
+      },
+    },
+    watch: {
+      // When the component is initially mounted it may start with an empty stages array.
+      // Once the prop is updated, we set the first stage as the selected one
+      stages(newVal) {
+        if (newVal.length) {
+          this.selectedStage = newVal[0].name;
+        }
       },
     },
     methods: {
       onStageClick(stage) {
-        // todo: consider moving into store
-        this.selectedStage = stage.name;
-
-        // update dropdown with jobs
-        // jobs container is a new component.
         this.$emit('requestSidebarStageDropdown', stage);
+        this.selectedStage = stage.name;
       },
     },
   };
 </script>
 <template>
-  <div class="block-last">
-    <ci-icon :status="pipelineStatus" />
+  <div class="block-last dropdown">
+    <ci-icon
+      :status="pipeline.details.status"
+      class="vertical-align-middle"
+    />
 
-    <p v-html="pipelineLink"></p>
-
-    <div class="dropdown">
-      <button
-        type="button"
-        data-toggle="dropdown"
+    {{ __('Pipeline') }}
+    <a
+      :href="pipeline.path"
+      class="js-pipeline-path link-commit"
+    >
+      #{{ pipeline.id }}
+    </a>
+    <template v-if="hasRef">
+      {{ __('from') }}
+      <a
+        :href="pipeline.ref.path"
+        class="link-commit ref-name"
       >
-        {{ selectedStage }}
-        <icon name="chevron-down" />
-      </button>
-      <ul class="dropdown-menu">
-        <li
-          v-for="(stage, index) in stages"
-          :key="index"
+        {{ pipeline.ref.name }}
+      </a>
+    </template>
+
+    <button
+      type="button"
+      data-toggle="dropdown"
+      class="js-selected-stage dropdown-menu-toggle prepend-top-8"
+    >
+      {{ selectedStage }}
+      <i class="fa fa-chevron-down" ></i>
+    </button>
+
+    <ul class="dropdown-menu">
+      <li
+        v-for="stage in stages"
+        :key="stage.name"
+      >
+        <button
+          type="button"
+          class="js-stage-item stage-item"
+          @click="onStageClick(stage)"
         >
-          <button
-            type="button"
-            class="stage-item"
-            @click="onStageClick(stage)"
-          >
-            {{ stage.name }}
-          </button>
-        </li>
-      </ul>
-    </div>
+          {{ stage.name }}
+        </button>
+      </li>
+    </ul>
   </div>
 </template>

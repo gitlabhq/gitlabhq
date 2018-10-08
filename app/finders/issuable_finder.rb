@@ -236,16 +236,16 @@ class IssuableFinder
   # rubocop: enable CodeReuse/ActiveRecord
 
   def assignee_id?
-    params[:assignee_id].present? && params[:assignee_id] != NONE
+    params[:assignee_id].present? && params[:assignee_id].to_s != NONE
   end
 
   def assignee_username?
-    params[:assignee_username].present? && params[:assignee_username] != NONE
+    params[:assignee_username].present? && params[:assignee_username].to_s != NONE
   end
 
   def no_assignee?
     # Assignee_id takes precedence over assignee_username
-    params[:assignee_id] == NONE || params[:assignee_username] == NONE
+    params[:assignee_id].to_s == NONE || params[:assignee_username].to_s == NONE
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -363,6 +363,7 @@ class IssuableFinder
   def use_cte_for_search?
     return false unless search
     return false unless Gitlab::Database.postgresql?
+    return false unless Feature.enabled?(:use_cte_for_group_issues_search, default_enabled: true)
 
     params[:use_cte_for_search]
   end
@@ -428,6 +429,10 @@ class IssuableFinder
     params[:milestone_title] == Milestone::Upcoming.name
   end
 
+  def filter_by_any_milestone?
+    params[:milestone_title] == Milestone::Any.title
+  end
+
   def filter_by_started_milestone?
     params[:milestone_title] == Milestone::Started.name
   end
@@ -437,6 +442,8 @@ class IssuableFinder
     if milestones?
       if filter_by_no_milestone?
         items = items.left_joins_milestones.where(milestone_id: [-1, nil])
+      elsif filter_by_any_milestone?
+        items = items.any_milestone
       elsif filter_by_upcoming_milestone?
         upcoming_ids = Milestone.upcoming_ids_by_projects(projects(items))
         items = items.left_joins_milestones.where(milestone_id: upcoming_ids)

@@ -456,6 +456,7 @@ module ProjectsHelper
       buildsAccessLevel: feature.builds_access_level,
       wikiAccessLevel: feature.wiki_access_level,
       snippetsAccessLevel: feature.snippets_access_level,
+      pagesAccessLevel: feature.pages_access_level,
       containerRegistryEnabled: !!project.container_registry_enabled,
       lfsEnabled: !!project.lfs_enabled
     }
@@ -470,7 +471,10 @@ module ProjectsHelper
       registryAvailable: Gitlab.config.registry.enabled,
       registryHelpPath: help_page_path('user/project/container_registry'),
       lfsAvailable: Gitlab.config.lfs.enabled,
-      lfsHelpPath: help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
+      lfsHelpPath: help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs'),
+      pagesAvailable: Gitlab.config.pages.enabled,
+      pagesAccessControlEnabled: Gitlab.config.pages.access_control,
+      pagesHelpPath: help_page_path('user/project/pages/index.md')
     }
   end
 

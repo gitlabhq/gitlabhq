@@ -76,7 +76,13 @@
         = form.number_field :approvals_before_merge, class: 'form-control', value: issuable.approvals_required, readonly: !can_update_approvers
 
     - if can_update_approvers
+      - approver_presenter = MergeRequestApproverPresenter.new(issuable, skip_user: current_user)
       .form-text.text-muted.suggested-approvers
-        - if @suggested_approvers&.any?
+        - if approver_presenter.any?
           Suggested approvers:
-          = raw @suggested_approvers.map { |approver| link_to sanitize(approver.name), "#", id: dom_id(approver) }.join(", ")
+          = approver_presenter.render
+      - if approver_presenter.show_code_owner_tips?
+        .form-text.text-muted
+          Tip: add a
+          = link_to 'CODEOWNERS', help_page_path('user/project/code_owners'), target: '_blank', tabindex: -1
+          to suggest approvers based on file paths and file types.

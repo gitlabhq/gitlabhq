@@ -7,10 +7,14 @@ import editSvg from 'icons/_icon_pencil.svg';
 import resolveDiscussionSvg from 'icons/_icon_resolve_discussion.svg';
 import resolvedDiscussionSvg from 'icons/_icon_status_success_solid.svg';
 import ellipsisSvg from 'icons/_ellipsis_v.svg';
+import Icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
   name: 'NoteActions',
+  components: {
+    Icon,
+  },
   directives: {
     tooltip,
   },
@@ -20,7 +24,7 @@ export default {
       required: true,
     },
     noteId: {
-      type: String,
+      type: [String, Number],
       required: true,
     },
     noteUrl: {
@@ -35,7 +39,8 @@ export default {
     },
     reportAbusePath: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     canEdit: {
       type: Boolean,
@@ -83,6 +88,9 @@ export default {
     ...mapGetters(['getUserDataByProp']),
     shouldShowActionsDropdown() {
       return this.currentUserId && (this.canEdit || this.canReportAsAbuse);
+    },
+    showDeleteAction() {
+      return this.canDelete && !this.canReportAsAbuse && !this.noteUrl;
     },
     isAuthoredByCurrentUser() {
       return this.authorId === this.currentUserId;
@@ -201,7 +209,26 @@ export default {
       </button>
     </div>
     <div
-      v-if="shouldShowActionsDropdown"
+      v-if="showDeleteAction"
+      class="note-actions-item"
+    >
+      <button
+        v-tooltip
+        type="button"
+        title="Delete comment"
+        class="note-action-button js-note-delete btn btn-transparent"
+        data-container="body"
+        data-placement="bottom"
+        @click="onDelete"
+      >
+        <icon
+          name="remove"
+          class="link-highlight"
+        />
+      </button>
+    </div>
+    <div
+      v-else-if="shouldShowActionsDropdown"
       class="dropdown more-actions note-actions-item">
       <button
         v-tooltip
