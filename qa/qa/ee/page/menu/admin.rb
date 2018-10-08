@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QA
   module EE
     module Page
@@ -6,18 +8,18 @@ module QA
           def self.prepended(page)
             page.module_eval do
               view 'app/views/layouts/nav/sidebar/_admin.html.haml' do
-                element :license, "_('License')"
-                element :geo_node, "_('Geo')"
+                element :link_license_menu
+                element :link_geo_menu
               end
             end
           end
 
           def go_to_geo_nodes
-            click_link 'Geo'
+            click_element :link_geo_menu
           end
 
           def go_to_license
-            click_link 'License'
+            click_element :link_license_menu
           end
         end
       end
