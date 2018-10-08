@@ -63,33 +63,54 @@ module Gitlab
         @api_prefix = api_prefix
         @kubeclient_options = kubeclient_options
         @default_api_version = default_api_version
-
-        @hashed_clients = {}
       end
 
       def core_client(api_version: default_api_version)
-        build_kubeclient('api', api_version)
+        core_clients[api_version]
       end
 
       def rbac_client(api_version: default_api_version)
-        build_kubeclient('apis/rbac.authorization.k8s.io', api_version)
+        rbac_clients[api_version]
       end
 
       def extensions_client(api_version: LATEST_EXTENSIONS_VERSION)
-        build_kubeclient('apis/extensions', api_version)
+        extensions_clients[api_version]
       end
 
       private
 
+      def core_clients
+        strong_memoize(:core_clients) do
+          Hash.new do |hash, api_version|
+            hash[api_version] = build_kubeclient('api', api_version)
+          end
+        end
+      end
+
+      def rbac_clients
+        strong_memoize(:rbac_clients) do
+          Hash.new do |hash, api_version|
+            hash[api_version] = build_kubeclient('apis/rbac.authorization.k8s.io', api_version)
+          end
+        end
+      end
+
+      def extensions_clients
+        strong_memoize(:extensions_clients) do
+          Hash.new do |hash, api_version|
+            hash[api_version] = build_kubeclient('apis/extensions', api_version)
+          end
+        end
+      end
+
       def build_kubeclient(api_group, api_version)
         raise ArgumentError, "Unknown api group #{api_group}" unless SUPPORTED_API_GROUPS.include?(api_group)
 
-        key = api_group_with_version(api_group, api_version)
-        @hashed_clients[key] ||= ::Kubeclient::Client.new(join_api_url(api_prefix, api_group), api_version, **kubeclient_options)
-      end
-
-      def api_group_with_version(api_group, api_version)
-        api_group + '/' + api_version
+        ::Kubeclient::Client.new(
+          join_api_url(api_prefix, api_group),
+          api_version,
+          **kubeclient_options
+        )
       end
 
       def join_api_url(api_prefix, api_path)
