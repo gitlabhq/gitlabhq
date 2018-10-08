@@ -21,8 +21,10 @@
     "@babel/core": "^7.1.2",
     "@babel/plugin-proposal-class-properties": "^7.1.0",
     "@babel/plugin-proposal-json-strings": "^7.0.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.0.0",
     "@babel/plugin-syntax-dynamic-import": "^7.0.0",
     "@babel/plugin-syntax-import-meta": "^7.0.0",
+    "@babel/plugin-syntax-optional-chaining": "^7.0.0",
     "@babel/preset-env": "^7.1.0",
     "@gitlab-org/gitlab-svgs": "^1.29.0",
     "@gitlab-org/gitlab-ui": "^1.8.0",
@@ -111,7 +113,6 @@
     "xterm": "^3.5.0"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-optional-chaining": "^7.0.0",
     "axios-mock-adapter": "^1.15.0",
     "babel-eslint": "^9.0.0",
     "babel-plugin-istanbul": "^5.1.0",
