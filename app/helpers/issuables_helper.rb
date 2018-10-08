@@ -327,11 +327,15 @@ module IssuablesHelper
   end
 
   def issuable_button_visibility(issuable, closed)
+    return 'hidden' if issuable_button_hidden?(issuable, closed)
+  end
+
+  def issuable_button_hidden?(issuable, closed)
     case issuable
     when Issue
-      issue_button_visibility(issuable, closed)
+      issue_button_hidden?(issuable, closed)
     when MergeRequest
-      merge_request_button_visibility(issuable, closed)
+      merge_request_button_hidden?(issuable, closed)
     end
   end
 

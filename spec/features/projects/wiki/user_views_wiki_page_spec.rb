@@ -83,12 +83,13 @@ describe 'User views a wiki page' do
       end
 
       it 'shows a file stored in a page' do
-        gollum_file_double = double('Gollum::File',
-                                    mime_type: 'image/jpeg',
-                                    name: 'images/image.jpg',
-                                    path: 'images/image.jpg',
-                                    raw_data: '')
-        wiki_file = Gitlab::Git::WikiFile.new(gollum_file_double)
+        raw_file = Gitlab::GitalyClient::WikiFile.new(
+          mime_type: 'image/jpeg',
+          name: 'images/image.jpg',
+          path: 'images/image.jpg',
+          raw_data: ''
+        )
+        wiki_file = Gitlab::Git::WikiFile.new(raw_file)
 
         allow(wiki_file).to receive(:mime_type).and_return('image/jpeg')
         allow_any_instance_of(ProjectWiki).to receive(:find_file).with('image.jpg', nil).and_return(wiki_file)

@@ -32,6 +32,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get 'labels'
           get 'milestones'
           get 'commands'
+          get 'snippets'
         end
       end
 
@@ -275,6 +276,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           member do
             get :status
             post :cancel
+            post :unschedule
             post :retry
             post :play
             post :erase
@@ -365,7 +367,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :discussions, format: :json
         end
         collection do
-          post  :bulk_update
+          post :bulk_update
         end
       end
 
@@ -437,6 +439,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         get :members, to: redirect("%{namespace_id}/%{project_id}/project_members")
         resource :ci_cd, only: [:show, :update], controller: 'ci_cd' do
           post :reset_cache
+          put :reset_registration_token
         end
         resource :integrations, only: [:show]
         resource :repository, only: [:show], controller: :repository do

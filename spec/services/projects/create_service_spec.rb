@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::CreateService, '#execute' do
+  include GitHelpers
+
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:user) { create :user }
   let(:opts) do
@@ -295,9 +297,7 @@ describe Projects::CreateService, '#execute' do
 
   it 'writes project full path to .git/config' do
     project = create_project(user, opts)
-    rugged = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      project.repository.rugged
-    end
+    rugged = rugged_repo(project.repository)
 
     expect(rugged.config['gitlab.fullpath']).to eq project.full_path
   end

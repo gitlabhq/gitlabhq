@@ -25,7 +25,7 @@ export const getReversePosition = linePosition => {
   return LINE_POSITION_RIGHT;
 };
 
-export function getNoteFormData(params) {
+export function getFormData(params) {
   const {
     note,
     noteableType,
@@ -70,9 +70,15 @@ export function getNoteFormData(params) {
     },
   };
 
+  return postData;
+}
+
+export function getNoteFormData(params) {
+  const data = getFormData(params);
+
   return {
-    endpoint: noteableData.create_note_path,
-    data: postData,
+    endpoint: params.noteableData.create_note_path,
+    data,
   };
 }
 
@@ -244,6 +250,7 @@ export function getDiffPositionByLineCode(diffFiles) {
             oldLine,
             newLine,
             lineCode,
+            positionType: 'text',
           };
         }
       });
@@ -259,11 +266,57 @@ export function isDiscussionApplicableToLine({ discussion, diffPosition, latestD
   const { lineCode, ...diffPositionCopy } = diffPosition;
 
   if (discussion.original_position && discussion.position) {
-    const originalRefs = convertObjectPropsToCamelCase(discussion.original_position.formatter);
-    const refs = convertObjectPropsToCamelCase(discussion.position.formatter);
+    const originalRefs = convertObjectPropsToCamelCase(discussion.original_position);
+    const refs = convertObjectPropsToCamelCase(discussion.position);
 
     return _.isEqual(refs, diffPositionCopy) || _.isEqual(originalRefs, diffPositionCopy);
   }
 
   return latestDiff && discussion.active && lineCode === discussion.line_code;
 }
+
+export const generateTreeList = files =>
+  files.reduce(
+    (acc, file) => {
+      const { fileHash, addedLines, removedLines, newFile, deletedFile, newPath } = file;
+      const split = newPath.split('/');
+
+      split.forEach((name, i) => {
+        const parent = acc.treeEntries[split.slice(0, i).join('/')];
+        const path = `${parent ? `${parent.path}/` : ''}${name}`;
+
+        if (!acc.treeEntries[path]) {
+          const type = path === newPath ? 'blob' : 'tree';
+          acc.treeEntries[path] = {
+            key: path,
+            path,
+            name,
+            type,
+            tree: [],
+          };
+
+          const entry = acc.treeEntries[path];
+
+          if (type === 'blob') {
+            Object.assign(entry, {
+              changed: true,
+              tempFile: newFile,
+              deleted: deletedFile,
+              fileHash,
+              addedLines,
+              removedLines,
+            });
+          } else {
+            Object.assign(entry, {
+              opened: true,
+            });
+          }
+
+          (parent ? parent.tree : acc.tree).push(entry);
+        }
+      });
+
+      return acc;
+    },
+    { treeEntries: {}, tree: [] },
+  );

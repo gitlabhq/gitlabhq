@@ -1,0 +1,5 @@
+---
+title: Fix timeout when running the RemoveRestrictedTodos background migration
+merge_request: 21893
+author:
+type: fixed

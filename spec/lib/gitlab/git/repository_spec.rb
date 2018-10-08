@@ -19,7 +19,10 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  let(:mutable_repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
+  let(:repository_path) { File.join(TestEnv.repos_path, repository.relative_path) }
+  let(:repository_rugged) { Rugged::Repository.new(repository_path) }
   let(:storage_path) { TestEnv.repos_path }
   let(:user) { build(:user) }
 
@@ -71,7 +74,6 @@ describe Gitlab::Git::Repository, :seed_helper do
   describe "Respond to" do
     subject { repository }
 
-    it { is_expected.to respond_to(:rugged) }
     it { is_expected.to respond_to(:root_ref) }
     it { is_expected.to respond_to(:tags) }
   end
@@ -88,57 +90,6 @@ describe Gitlab::Git::Repository, :seed_helper do
 
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :default_branch_name do
       subject { repository.root_ref }
-    end
-  end
-
-  describe "#rugged" do
-    describe 'when storage is broken', :broken_storage  do
-      it 'raises a storage exception when storage is not available' do
-        broken_repo = described_class.new('broken', 'a/path.git', '')
-
-        expect { broken_repo.rugged }.to raise_error(Gitlab::Git::Storage::Inaccessible)
-      end
-    end
-
-    it 'raises a no repository exception when there is no repo' do
-      broken_repo = described_class.new('default', 'a/path.git', '')
-
-      expect do
-        Gitlab::GitalyClient::StorageSettings.allow_disk_access { broken_repo.rugged }
-      end.to raise_error(Gitlab::Git::Repository::NoRepository)
-    end
-
-    describe 'alternates keyword argument' do
-      context 'with no Git env stored' do
-        before do
-          allow(Gitlab::Git::HookEnv).to receive(:all).and_return({})
-        end
-
-        it "is passed an empty array" do
-          expect(Rugged::Repository).to receive(:new).with(repository_path, alternates: [])
-
-          repository_rugged
-        end
-      end
-
-      context 'with absolute and relative Git object dir envvars stored' do
-        before do
-          allow(Gitlab::Git::HookEnv).to receive(:all).and_return({
-            'GIT_OBJECT_DIRECTORY_RELATIVE' => './objects/foo',
-            'GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE' => ['./objects/bar', './objects/baz'],
-            'GIT_OBJECT_DIRECTORY' => 'ignored',
-            'GIT_ALTERNATE_OBJECT_DIRECTORIES' => %w[ignored ignored],
-            'GIT_OTHER' => 'another_env'
-          })
-        end
-
-        it "is passed the relative object dir envvars after being converted to absolute ones" do
-          alternates = %w[foo bar baz].map { |d| File.join(repository_path, './objects', d) }
-          expect(Rugged::Repository).to receive(:new).with(repository_path, alternates: alternates)
-
-          repository_rugged
-        end
-      end
     end
   end
 
@@ -284,7 +235,6 @@ describe Gitlab::Git::Repository, :seed_helper do
   end
 
   describe '#submodule_url_for' do
-    let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
     let(:ref) { 'master' }
 
     def submodule_url(path)
@@ -336,7 +286,7 @@ describe Gitlab::Git::Repository, :seed_helper do
       it { expect(repository.has_local_branches?).to eq(true) }
 
       context 'mutable' do
-        let(:repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
+        let(:repository) { mutable_repository }
 
         after do
           ensure_seeds
@@ -369,7 +319,7 @@ describe Gitlab::Git::Repository, :seed_helper do
   end
 
   describe "#delete_branch" do
-    let(:repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
+    let(:repository) { mutable_repository }
 
     after do
       ensure_seeds
@@ -393,7 +343,7 @@ describe Gitlab::Git::Repository, :seed_helper do
   end
 
   describe "#create_branch" do
-    let(:repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
+    let(:repository) { mutable_repository }
 
     after do
       ensure_seeds
@@ -418,39 +368,33 @@ describe Gitlab::Git::Repository, :seed_helper do
   end
 
   describe '#delete_refs' do
-    let(:repo) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
-
-    def repo_rugged
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        repo.rugged
-      end
-    end
+    let(:repository) { mutable_repository }
 
     after do
       ensure_seeds
     end
 
     it 'deletes the ref' do
-      repo.delete_refs('refs/heads/feature')
+      repository.delete_refs('refs/heads/feature')
 
-      expect(repo_rugged.references['refs/heads/feature']).to be_nil
+      expect(repository_rugged.references['refs/heads/feature']).to be_nil
     end
 
     it 'deletes all refs' do
       refs = %w[refs/heads/wip refs/tags/v1.1.0]
-      repo.delete_refs(*refs)
+      repository.delete_refs(*refs)
 
       refs.each do |ref|
-        expect(repo_rugged.references[ref]).to be_nil
+        expect(repository_rugged.references[ref]).to be_nil
       end
     end
 
     it 'does not fail when deleting an empty list of refs' do
-      expect { repo.delete_refs(*[]) }.not_to raise_error
+      expect { repository.delete_refs(*[]) }.not_to raise_error
     end
 
     it 'raises an error if it failed' do
-      expect { repo.delete_refs('refs\heads\fix') }.to raise_error(Gitlab::Git::Repository::GitError)
+      expect { repository.delete_refs('refs\heads\fix') }.to raise_error(Gitlab::Git::Repository::GitError)
     end
   end
 
@@ -528,9 +472,7 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
 
     def new_repository_path
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        new_repository.path
-      end
+      File.join(TestEnv.repos_path, new_repository.relative_path)
     end
   end
 
@@ -577,18 +519,16 @@ describe Gitlab::Git::Repository, :seed_helper do
         Gitlab::Git::Commit.find(repository, @rename_commit_id)
       end
 
-      before(:context) do
+      before do
         # Add new commits so that there's a renamed file in the commit history
-        repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
-        @commit_with_old_name_id = new_commit_edit_old_file(repo).oid
-        @rename_commit_id = new_commit_move_file(repo).oid
-        @commit_with_new_name_id = new_commit_edit_new_file(repo).oid
+        @commit_with_old_name_id = new_commit_edit_old_file(repository_rugged).oid
+        @rename_commit_id = new_commit_move_file(repository_rugged).oid
+        @commit_with_new_name_id = new_commit_edit_new_file(repository_rugged).oid
       end
 
-      after(:context) do
+      after do
         # Erase our commits so other tests get the original repo
-        repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
-        repo.references.update("refs/heads/master", SeedRepo::LastCommit::ID)
+        repository_rugged.references.update("refs/heads/master", SeedRepo::LastCommit::ID)
       end
 
       context "where 'follow' == true" do
@@ -1010,12 +950,10 @@ describe Gitlab::Git::Repository, :seed_helper do
     subject { repository.branches }
 
     context 'with local and remote branches' do
-      let(:repository) do
-        Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-      end
+      let(:repository) { mutable_repository }
 
       before do
-        create_remote_branch(repository, 'joe', 'remote_branch', 'master')
+        create_remote_branch('joe', 'remote_branch', 'master')
         repository.create_branch('local_branch', 'master')
       end
 
@@ -1038,12 +976,10 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
 
     context 'with local and remote branches' do
-      let(:repository) do
-        Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-      end
+      let(:repository) { mutable_repository }
 
       before do
-        create_remote_branch(repository, 'joe', 'remote_branch', 'master')
+        create_remote_branch('joe', 'remote_branch', 'master')
         repository.create_branch('local_branch', 'master')
       end
 
@@ -1303,24 +1239,24 @@ describe Gitlab::Git::Repository, :seed_helper do
   end
 
   describe '#local_branches' do
-    before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
+    let(:repository) { mutable_repository }
+
+    before do
+      create_remote_branch('joe', 'remote_branch', 'master')
+      repository.create_branch('local_branch', 'master')
     end
 
-    after(:all) do
+    after do
       ensure_seeds
     end
 
     it 'returns the local branches' do
-      create_remote_branch(@repo, 'joe', 'remote_branch', 'master')
-      @repo.create_branch('local_branch', 'master')
-
-      expect(@repo.local_branches.any? { |branch| branch.name == 'remote_branch' }).to eq(false)
-      expect(@repo.local_branches.any? { |branch| branch.name == 'local_branch' }).to eq(true)
+      expect(repository.local_branches.any? { |branch| branch.name == 'remote_branch' }).to eq(false)
+      expect(repository.local_branches.any? { |branch| branch.name == 'local_branch' }).to eq(true)
     end
 
     it 'returns a Branch with UTF-8 fields' do
-      branches = @repo.local_branches.to_a
+      branches = repository.local_branches.to_a
       expect(branches.size).to be > 0
       branches.each do |branch|
         expect(branch.name).to be_utf8
@@ -1331,11 +1267,11 @@ describe Gitlab::Git::Repository, :seed_helper do
     it 'gets the branches from GitalyClient' do
       expect_any_instance_of(Gitlab::GitalyClient::RefService).to receive(:local_branches)
         .and_return([])
-      @repo.local_branches
+      repository.local_branches
     end
 
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :local_branches do
-      subject { @repo.local_branches }
+      subject { repository.local_branches }
     end
   end
 
@@ -1391,8 +1327,7 @@ describe Gitlab::Git::Repository, :seed_helper do
 
   describe '#fetch_source_branch!' do
     let(:local_ref) { 'refs/merge-requests/1/head' }
-    let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
-    let(:source_repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
+    let(:source_repository) { mutable_repository }
 
     after do
       ensure_seeds
@@ -1401,7 +1336,8 @@ describe Gitlab::Git::Repository, :seed_helper do
     context 'when the branch exists' do
       context 'when the commit does not exist locally' do
         let(:source_branch) { 'new-branch-for-fetch-source-branch' }
-        let(:source_rugged) { Gitlab::GitalyClient::StorageSettings.allow_disk_access { source_repository.rugged } }
+        let(:source_path) { File.join(TestEnv.repos_path, source_repository.relative_path) }
+        let(:source_rugged) { Rugged::Repository.new(source_path) }
         let(:new_oid) { new_commit_edit_old_file(source_rugged).oid }
 
         before do
@@ -1513,8 +1449,7 @@ describe Gitlab::Git::Repository, :seed_helper do
   end
 
   describe '#set_config' do
-    let(:repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
-    let(:rugged) { repository_rugged }
+    let(:repository) { mutable_repository }
     let(:entries) do
       {
         'test.foo1' => 'bla bla',
@@ -1526,19 +1461,18 @@ describe Gitlab::Git::Repository, :seed_helper do
     it 'can set config settings' do
       expect(repository.set_config(entries)).to be_nil
 
-      expect(rugged.config['test.foo1']).to eq('bla bla')
-      expect(rugged.config['test.foo2']).to eq('1234')
-      expect(rugged.config['test.foo3']).to eq('true')
+      expect(repository_rugged.config['test.foo1']).to eq('bla bla')
+      expect(repository_rugged.config['test.foo2']).to eq('1234')
+      expect(repository_rugged.config['test.foo3']).to eq('true')
     end
 
     after do
-      entries.keys.each { |k| rugged.config.delete(k) }
+      entries.keys.each { |k| repository_rugged.config.delete(k) }
     end
   end
 
   describe '#delete_config' do
-    let(:repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
-    let(:rugged) { repository_rugged }
+    let(:repository) { mutable_repository }
     let(:entries) do
       {
         'test.foo1' => 'bla bla',
@@ -1549,21 +1483,19 @@ describe Gitlab::Git::Repository, :seed_helper do
 
     it 'can delete config settings' do
       entries.each do |key, value|
-        rugged.config[key] = value
+        repository_rugged.config[key] = value
       end
 
       expect(repository.delete_config(*%w[does.not.exist test.foo1 test.foo2])).to be_nil
 
-      config_keys = rugged.config.each_key.to_a
+      config_keys = repository_rugged.config.each_key.to_a
       expect(config_keys).not_to include('test.foo1')
       expect(config_keys).not_to include('test.foo2')
     end
   end
 
   describe '#merge' do
-    let(:repository) do
-      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-    end
+    let(:repository) { mutable_repository }
     let(:source_sha) { '913c66a37b4a45b9769037c55c2d238bd0942d2e' }
     let(:target_branch) { 'test-merge-target-branch' }
 
@@ -1602,9 +1534,7 @@ describe Gitlab::Git::Repository, :seed_helper do
   end
 
   describe '#ff_merge' do
-    let(:repository) do
-      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-    end
+    let(:repository) { mutable_repository }
     let(:branch_head) { '6d394385cf567f80a8fd85055db1ab4c5295806f' }
     let(:source_sha) { 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660' }
     let(:target_branch) { 'test-ff-target-branch' }
@@ -1667,9 +1597,7 @@ describe Gitlab::Git::Repository, :seed_helper do
   end
 
   describe '#delete_all_refs_except' do
-    let(:repository) do
-      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-    end
+    let(:repository) { mutable_repository }
 
     before do
       repository.write_ref("refs/delete/a", "0b4bc9a49b562e85de7cc9e834518ea6828729b9")
@@ -1693,12 +1621,7 @@ describe Gitlab::Git::Repository, :seed_helper do
   end
 
   describe 'remotes' do
-    let(:repository) do
-      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-    end
-    let(:rugged) do
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access { repository.rugged }
-    end
+    let(:repository) { mutable_repository }
     let(:remote_name) { 'my-remote' }
     let(:url) { 'http://my-repo.git' }
 
@@ -1711,26 +1634,26 @@ describe Gitlab::Git::Repository, :seed_helper do
 
       it 'added the remote' do
         begin
-          rugged.remotes.delete(remote_name)
+          repository_rugged.remotes.delete(remote_name)
         rescue Rugged::ConfigError
         end
 
         repository.add_remote(remote_name, url, mirror_refmap: mirror_refmap)
 
-        expect(rugged.remotes[remote_name]).not_to be_nil
-        expect(rugged.config["remote.#{remote_name}.mirror"]).to eq('true')
-        expect(rugged.config["remote.#{remote_name}.prune"]).to eq('true')
-        expect(rugged.config["remote.#{remote_name}.fetch"]).to eq(mirror_refmap)
+        expect(repository_rugged.remotes[remote_name]).not_to be_nil
+        expect(repository_rugged.config["remote.#{remote_name}.mirror"]).to eq('true')
+        expect(repository_rugged.config["remote.#{remote_name}.prune"]).to eq('true')
+        expect(repository_rugged.config["remote.#{remote_name}.fetch"]).to eq(mirror_refmap)
       end
     end
 
     describe '#remove_remote' do
       it 'removes the remote' do
-        rugged.remotes.create(remote_name, url)
+        repository_rugged.remotes.create(remote_name, url)
 
         repository.remove_remote(remote_name)
 
-        expect(rugged.remotes[remote_name]).to be_nil
+        expect(repository_rugged.remotes[remote_name]).to be_nil
       end
     end
   end
@@ -1901,13 +1824,11 @@ describe Gitlab::Git::Repository, :seed_helper do
       end
 
       context 'when the diff contains a rename' do
-        let(:repo) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged }
-        let(:end_sha) { new_commit_move_file(repo).oid }
+        let(:end_sha) { new_commit_move_file(repository_rugged).oid }
 
         after do
           # Erase our commits so other tests get the original repo
-          repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
-          repo.references.update('refs/heads/master', SeedRepo::LastCommit::ID)
+          repository_rugged.references.update('refs/heads/master', SeedRepo::LastCommit::ID)
         end
 
         it 'does not include the renamed file in the sparse checkout' do
@@ -1954,10 +1875,9 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
-  def create_remote_branch(repository, remote_name, branch_name, source_branch_name)
+  def create_remote_branch(remote_name, branch_name, source_branch_name)
     source_branch = repository.branches.find { |branch| branch.name == source_branch_name }
-    rugged = repository_rugged
-    rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", source_branch.dereferenced_target.sha)
+    repository_rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", source_branch.dereferenced_target.sha)
   end
 
   # Build the options hash that's passed to Rugged::Commit#create
@@ -2033,18 +1953,6 @@ describe Gitlab::Git::Repository, :seed_helper do
   def refs(dir)
     IO.popen(%W[git -C #{dir} for-each-ref], &:read).split("\n").map do |line|
       line.split("\t").last
-    end
-  end
-
-  def repository_rugged
-    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      repository.rugged
-    end
-  end
-
-  def repository_path
-    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      repository.path
     end
   end
 end

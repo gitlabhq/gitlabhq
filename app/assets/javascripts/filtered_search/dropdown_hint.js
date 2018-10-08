@@ -51,7 +51,11 @@ export default class DropdownHint extends FilteredSearchDropdown {
             FilteredSearchVisualTokens.addSearchVisualToken(searchTerms.join(' '));
           }
 
-          FilteredSearchDropdownManager.addWordToInput(token.replace(':', ''), '', false, this.container);
+          const key = token.replace(':', '');
+          const { uppercaseTokenName } = this.tokenKeys.searchByKey(key);
+          FilteredSearchDropdownManager.addWordToInput(key, '', false, {
+            uppercaseTokenName,
+          });
         }
         this.dismissDropdown();
         this.dispatchInputEvent();

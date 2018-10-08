@@ -115,6 +115,13 @@ Please be aware that your status is publicly visible even if your [profile is pr
 
 To set your current status:
 
+1. Open the user menu in the top-right corner of the navigation bar.
+1. Hit **Set status**, or **Edit status** if you have already set a status.
+1. Set the emoji and/or status message to your liking.
+1. Hit **Set status**. Alternatively, you can also hit **Remove status** to remove your user status entirely.
+
+or
+
 1. Navigate to your personal [profile settings](#profile-settings).
 1. In the text field below `Your status`, enter your status message.
 1. Select an emoji from the dropdown if you like.

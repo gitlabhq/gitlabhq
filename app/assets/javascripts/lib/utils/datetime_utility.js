@@ -370,3 +370,24 @@ window.gl.utils = {
   getTimeago,
   localTimeAgo,
 };
+
+/**
+ * Formats milliseconds as timestamp (e.g. 01:02:03).
+ * This takes durations longer than a day into account (e.g. two days would be 48:00:00).
+ *
+ * @param milliseconds
+ * @returns {string}
+ */
+export const formatTime = milliseconds => {
+  const remainingSeconds = Math.floor(milliseconds / 1000) % 60;
+  const remainingMinutes = Math.floor(milliseconds / 1000 / 60) % 60;
+  const remainingHours = Math.floor(milliseconds / 1000 / 60 / 60);
+  let formattedTime = '';
+  if (remainingHours < 10) formattedTime += '0';
+  formattedTime += `${remainingHours}:`;
+  if (remainingMinutes < 10) formattedTime += '0';
+  formattedTime += `${remainingMinutes}:`;
+  if (remainingSeconds < 10) formattedTime += '0';
+  formattedTime += remainingSeconds;
+  return formattedTime;
+};

@@ -31,7 +31,7 @@ class UserRecentEventsFinder
     recent_events(params[:offset] || 0)
       .joins(:project)
       .with_associations
-      .limit_recent(LIMIT, params[:offset])
+      .limit_recent(params[:limit].presence || LIMIT, params[:offset])
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

@@ -8,6 +8,7 @@ export const metricsGroupsAPIResponse = {
       priority: 1,
       metrics: [
         {
+          id: 5,
           title: 'Memory usage',
           weight: 1,
           queries: [

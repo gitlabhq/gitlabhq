@@ -34,7 +34,7 @@ describe Ci::JobArtifact do
   describe '.erasable' do
     subject { described_class.erasable }
 
-    context 'when there is am erasable artifact' do
+    context 'when there is an erasable artifact' do
       let!(:artifact) { create(:ci_job_artifact, :junit) }
 
       it { is_expected.to eq([artifact]) }

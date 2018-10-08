@@ -41,6 +41,10 @@ FactoryBot.define do
       status 'manual'
     end
 
+    trait :scheduled do
+      status 'scheduled'
+    end
+
     after(:build) do |build, evaluator|
       build.project = build.pipeline.project
     end

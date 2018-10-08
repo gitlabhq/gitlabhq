@@ -135,6 +135,10 @@ class Namespace < ActiveRecord::Base
     all_projects.any?(&:has_container_registry_tags?)
   end
 
+  def first_project_with_container_registry_tags
+    all_projects.find(&:has_container_registry_tags?)
+  end
+
   def send_update_instructions
     projects.each do |project|
       project.send_move_instructions("#{full_path_was}/#{project.path}")

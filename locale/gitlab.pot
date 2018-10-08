@@ -19,6 +19,11 @@ msgstr ""
 msgid " Status"
 msgstr ""
 
+msgid "%d addition"
+msgid_plural "%d additions"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d changed file"
 msgid_plural "%d changed files"
 msgstr[0] ""
@@ -31,6 +36,11 @@ msgstr[1] ""
 
 msgid "%d commit behind"
 msgid_plural "%d commits behind"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d deleted"
+msgid_plural "%d deletions"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -307,9 +317,6 @@ msgstr ""
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
 msgstr ""
 
-msgid "Access your runner token, customize your pipeline configuration, and view your pipeline status and coverage report."
-msgstr ""
-
 msgid "Account"
 msgstr ""
 
@@ -335,6 +342,9 @@ msgid "Add Kubernetes cluster"
 msgstr ""
 
 msgid "Add Readme"
+msgstr ""
+
+msgid "Add a table"
 msgstr ""
 
 msgid "Add license"
@@ -598,7 +608,7 @@ msgstr ""
 msgid "Application"
 msgstr ""
 
-msgid "Application Id"
+msgid "Application ID"
 msgstr ""
 
 msgid "Application: %{name}"
@@ -1074,6 +1084,9 @@ msgstr ""
 msgid "CICD|Continuous deployment to production"
 msgstr ""
 
+msgid "CICD|Continuous deployment to production using timed incremental rollout"
+msgstr ""
+
 msgid "CICD|Default to Auto DevOps pipeline"
 msgstr ""
 
@@ -1099,9 +1112,6 @@ msgid "CICD|instance enabled"
 msgstr ""
 
 msgid "Callback URL"
-msgstr ""
-
-msgid "Callback url"
 msgstr ""
 
 msgid "Can't find HEAD commit for this branch"
@@ -1221,7 +1231,13 @@ msgstr ""
 msgid "CiStatusLabel|pending"
 msgstr ""
 
+msgid "CiStatusLabel|scheduled"
+msgstr ""
+
 msgid "CiStatusLabel|skipped"
+msgstr ""
+
+msgid "CiStatusLabel|waiting for delayed job"
 msgstr ""
 
 msgid "CiStatusLabel|waiting for manual action"
@@ -1246,6 +1262,9 @@ msgid "CiStatusText|passed"
 msgstr ""
 
 msgid "CiStatusText|pending"
+msgstr ""
+
+msgid "CiStatusText|scheduled"
 msgstr ""
 
 msgid "CiStatusText|skipped"
@@ -1282,6 +1301,9 @@ msgid "CiVariable|Validation failed"
 msgstr ""
 
 msgid "CircuitBreakerApiLink|circuitbreaker api"
+msgstr ""
+
+msgid "Clear search"
 msgstr ""
 
 msgid "Clear search input"
@@ -1930,6 +1952,9 @@ msgstr ""
 msgid "Copy HTTPS clone URL"
 msgstr ""
 
+msgid "Copy ID to clipboard"
+msgstr ""
+
 msgid "Copy SSH clone URL"
 msgstr ""
 
@@ -1949,6 +1974,9 @@ msgid "Copy file path to clipboard"
 msgstr ""
 
 msgid "Copy reference to clipboard"
+msgstr ""
+
+msgid "Copy secret to clipboard"
 msgstr ""
 
 msgid "Copy to clipboard"
@@ -2074,6 +2102,9 @@ msgstr ""
 msgid "Customize how Google Code email addresses and usernames are imported into GitLab. In the next step, you'll be able to select the projects you want to import."
 msgstr ""
 
+msgid "Customize your pipeline configuration, view your pipeline status and coverage report."
+msgstr ""
+
 msgid "Cycle Analytics"
 msgstr ""
 
@@ -2132,6 +2163,21 @@ msgid "Default: Map a FogBugz account ID to a full name"
 msgstr ""
 
 msgid "Define a custom pattern with cron syntax"
+msgstr ""
+
+msgid "DelayedJobs|Are you sure you want to run %{jobName} immediately? This job will run automatically after it's timer finishes."
+msgstr ""
+
+msgid "DelayedJobs|Are you sure you want to run %{job_name} immediately? This job will run automatically after it's timer finishes."
+msgstr ""
+
+msgid "DelayedJobs|Start now"
+msgstr ""
+
+msgid "DelayedJobs|Unschedule"
+msgstr ""
+
+msgid "DelayedJobs|scheduled"
 msgstr ""
 
 msgid "Delete"
@@ -2290,6 +2336,12 @@ msgid "Destroy"
 msgstr ""
 
 msgid "Details"
+msgstr ""
+
+msgid "Diff content limits"
+msgstr ""
+
+msgid "Diff limits"
 msgstr ""
 
 msgid "Diffs|No file name available"
@@ -2698,6 +2750,9 @@ msgid "Failed to change the owner"
 msgstr ""
 
 msgid "Failed to check related branches."
+msgstr ""
+
+msgid "Failed to load emoji list."
 msgstr ""
 
 msgid "Failed to remove issue from board, please try again."
@@ -3323,6 +3378,9 @@ msgstr ""
 msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable."
 msgstr ""
 
+msgid "Issues, merge requests, pushes and comments."
+msgstr ""
+
 msgid "Jan"
 msgstr ""
 
@@ -3645,6 +3703,36 @@ msgstr ""
 msgid "Markdown enabled"
 msgstr ""
 
+msgid "MarkdownToolbar|Add a bullet list"
+msgstr ""
+
+msgid "MarkdownToolbar|Add a link"
+msgstr ""
+
+msgid "MarkdownToolbar|Add a numbered list"
+msgstr ""
+
+msgid "MarkdownToolbar|Add a table"
+msgstr ""
+
+msgid "MarkdownToolbar|Add a task list"
+msgstr ""
+
+msgid "MarkdownToolbar|Add bold text"
+msgstr ""
+
+msgid "MarkdownToolbar|Add italic text"
+msgstr ""
+
+msgid "MarkdownToolbar|Go full screen"
+msgstr ""
+
+msgid "MarkdownToolbar|Insert a quote"
+msgstr ""
+
+msgid "MarkdownToolbar|Insert code"
+msgstr ""
+
 msgid "Max access level"
 msgstr ""
 
@@ -3658,6 +3746,9 @@ msgid "May"
 msgstr ""
 
 msgid "Median"
+msgstr ""
+
+msgid "Member since %{date}"
 msgstr ""
 
 msgid "Members"
@@ -3700,6 +3791,12 @@ msgid "MergeRequests|View replaced file @ %{commitId}"
 msgstr ""
 
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
+msgstr ""
+
+msgid "MergeRequest|Filter files"
+msgstr ""
+
+msgid "MergeRequest|No files found"
 msgstr ""
 
 msgid "Merged"
@@ -3960,9 +4057,6 @@ msgid "No estimate or time spent"
 msgstr ""
 
 msgid "No file chosen"
-msgstr ""
-
-msgid "No files found"
 msgstr ""
 
 msgid "No files found."
@@ -4256,9 +4350,6 @@ msgid "Personal Access Token"
 msgstr ""
 
 msgid "Pipeline"
-msgstr ""
-
-msgid "Pipeline %{pipelineLinkStart} #%{pipelineId} %{pipelineLinkEnd} from %{pipelineLinkRefStart} %{pipelineRef} %{pipelineLinkRefEnd}"
 msgstr ""
 
 msgid "Pipeline Health"
@@ -5285,7 +5376,7 @@ msgstr ""
 msgid "Seconds to wait for a storage access attempt"
 msgstr ""
 
-msgid "Secret:"
+msgid "Secret"
 msgstr ""
 
 msgid "Select"
@@ -5388,6 +5479,30 @@ msgid "Set up your project to automatically push and/or pull changes to/from ano
 msgstr ""
 
 msgid "SetPasswordToCloneLink|set a password"
+msgstr ""
+
+msgid "SetStatusModal|Add status emoji"
+msgstr ""
+
+msgid "SetStatusModal|Clear status"
+msgstr ""
+
+msgid "SetStatusModal|Edit status"
+msgstr ""
+
+msgid "SetStatusModal|Remove status"
+msgstr ""
+
+msgid "SetStatusModal|Set a status"
+msgstr ""
+
+msgid "SetStatusModal|Set status"
+msgstr ""
+
+msgid "SetStatusModal|Sorry, we weren't able to set your status. Please try again later."
+msgstr ""
+
+msgid "SetStatusModal|What's your status?"
 msgstr ""
 
 msgid "Settings"
@@ -5704,6 +5819,12 @@ msgstr ""
 msgid "Subscribe at project level"
 msgstr ""
 
+msgid "Subscribed"
+msgstr ""
+
+msgid "Summary of issues, merge requests, push events, and comments (Timezone: %{utcFormatted})"
+msgstr ""
+
 msgid "Switch branch/tag"
 msgstr ""
 
@@ -5901,9 +6022,6 @@ msgstr ""
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
 msgstr ""
 
-msgid "The secure token used by the Runner to checkout the project"
-msgstr ""
-
 msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
 msgstr ""
 
@@ -6018,6 +6136,9 @@ msgstr ""
 msgid "This is a confidential issue."
 msgstr ""
 
+msgid "This is a scheduled to run in "
+msgstr ""
+
 msgid "This is the author's first Merge Request to this project."
 msgstr ""
 
@@ -6057,7 +6178,7 @@ msgstr ""
 msgid "This job is an out-of-date deployment to %{environmentLink}. View the most recent deployment %{deploymentLink}."
 msgstr ""
 
-msgid "This job is creating a deployment to %{environmentLink} and will overwrite the last %{deploymentLink}."
+msgid "This job is creating a deployment to %{environmentLink} and will overwrite the %{deploymentLink}."
 msgstr ""
 
 msgid "This job is creating a deployment to %{environmentLink}."
@@ -6076,6 +6197,9 @@ msgid "This job is the most recent deployment to %{link}."
 msgstr ""
 
 msgid "This job requires a manual action"
+msgstr ""
+
+msgid "This job will automatically run after it's timer finishes. Often they are used for incremental roll-out deploys to production environments. When unscheduled it converts into a manual action."
 msgstr ""
 
 msgid "This means you can not push code until you create an empty repository or import existing one."
@@ -6361,6 +6485,9 @@ msgstr ""
 msgid "Toggle discussion"
 msgstr ""
 
+msgid "Toggle file browser"
+msgstr ""
+
 msgid "Toggle navigation"
 msgstr ""
 
@@ -6428,6 +6555,9 @@ msgid "Unlocked"
 msgstr ""
 
 msgid "Unresolve discussion"
+msgstr ""
+
+msgid "Unschedule job"
 msgstr ""
 
 msgid "Unstage"
@@ -6527,6 +6657,51 @@ msgid "User and IP Rate Limits"
 msgstr ""
 
 msgid "User map"
+msgstr ""
+
+msgid "UserProfile|Activity"
+msgstr ""
+
+msgid "UserProfile|Already reported for abuse"
+msgstr ""
+
+msgid "UserProfile|Contributed projects"
+msgstr ""
+
+msgid "UserProfile|Edit profile"
+msgstr ""
+
+msgid "UserProfile|Groups"
+msgstr ""
+
+msgid "UserProfile|Most Recent Activity"
+msgstr ""
+
+msgid "UserProfile|Overview"
+msgstr ""
+
+msgid "UserProfile|Personal projects"
+msgstr ""
+
+msgid "UserProfile|Recent contributions"
+msgstr ""
+
+msgid "UserProfile|Report abuse"
+msgstr ""
+
+msgid "UserProfile|Snippets"
+msgstr ""
+
+msgid "UserProfile|Subscribe"
+msgstr ""
+
+msgid "UserProfile|This user has a private profile"
+msgstr ""
+
+msgid "UserProfile|View all"
+msgstr ""
+
+msgid "UserProfile|View user in admin area"
 msgstr ""
 
 msgid "Users"
@@ -6817,9 +6992,6 @@ msgstr ""
 msgid "You can only edit files when you are on a branch"
 msgstr ""
 
-msgid "You can reset runners registration token by pressing a button below."
-msgstr ""
-
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
 msgstr ""
 
@@ -6827,6 +6999,9 @@ msgid "You can set up jobs to only use Runners with specific tags. Separate tags
 msgstr ""
 
 msgid "You cannot write to this read-only GitLab instance."
+msgstr ""
+
+msgid "You do not have any subscriptions yet"
 msgstr ""
 
 msgid "You don't have any applications"
@@ -6984,6 +7159,9 @@ msgstr ""
 msgid "for this project"
 msgstr ""
 
+msgid "from"
+msgstr ""
+
 msgid "here"
 msgstr ""
 
@@ -6997,6 +7175,9 @@ msgid "importing"
 msgstr ""
 
 msgid "issue boards"
+msgstr ""
+
+msgid "latest deployment"
 msgstr ""
 
 msgid "latest version"

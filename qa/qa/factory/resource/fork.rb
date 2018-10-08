@@ -37,7 +37,7 @@ module QA
             puts "Not signed in. Attempting to sign in again."
             Capybara::Screenshot.screenshot_and_save_page
 
-            Page::Menu::Main.act { sign_out }
+            Runtime::Browser.visit(:gitlab, Page::Main::Login)
 
             Page::Main::Login.perform do |login|
               login.sign_in_using_credentials(user)

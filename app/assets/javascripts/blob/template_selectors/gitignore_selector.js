@@ -1,5 +1,3 @@
-import Api from '../../api';
-
 import FileTemplateSelector from '../file_template_selector';
 
 export default class BlobGitignoreSelector extends FileTemplateSelector {
@@ -9,7 +7,7 @@ export default class BlobGitignoreSelector extends FileTemplateSelector {
       key: 'gitignore',
       name: '.gitignore',
       pattern: /(.gitignore)/,
-      endpoint: Api.gitignoreText,
+      type: 'gitignores',
       dropdown: '.js-gitignore-selector',
       wrapper: '.js-gitignore-selector-wrap',
     };

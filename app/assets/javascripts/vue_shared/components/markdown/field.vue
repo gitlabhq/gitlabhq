@@ -76,6 +76,7 @@
         epics: this.enableAutocomplete,
         milestones: this.enableAutocomplete,
         labels: this.enableAutocomplete,
+        snippets: this.enableAutocomplete,
       });
     },
     beforeDestroy() {

@@ -10,7 +10,8 @@ module Gitlab
             stuck_or_timeout_failure: 'stuck or timeout failure',
             runner_system_failure: 'runner system failure',
             missing_dependency_failure: 'missing dependency failure',
-            runner_unsupported: 'unsupported runner'
+            runner_unsupported: 'unsupported runner',
+            stale_schedule: 'stale schedule'
           }.freeze
 
           private_constant :REASONS

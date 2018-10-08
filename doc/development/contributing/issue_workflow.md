@@ -60,7 +60,7 @@ people.
 
 The current team labels are:
 
-- ~Configuration
+- ~Configure
 - ~"CI/CD"
 - ~Create
 - ~Distribution

@@ -46,7 +46,7 @@
         v-if="mergeRequest"
         :href="mergeRequest.path"
         class="js-link-commit link-commit"
-      >{{ mergeRequest.iid }}</a>
+      >!{{ mergeRequest.iid }}</a>
     </p>
 
     <p class="build-light-text append-bottom-0">

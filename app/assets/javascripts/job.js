@@ -24,7 +24,6 @@ export default class Job extends LogOutputBehaviours {
     this.$document = $(document);
     this.$window = $(window);
     this.logBytes = 0;
-    this.updateDropdown = this.updateDropdown.bind(this);
 
     this.$buildTrace = $('#build-trace');
     this.$buildRefreshAnimation = $('.js-build-refresh');
@@ -35,17 +34,11 @@ export default class Job extends LogOutputBehaviours {
     clearTimeout(this.timeout);
 
     this.initSidebar();
-    this.populateJobs(this.buildStage);
-    this.updateStageDropdownText(this.buildStage);
     this.sidebarOnResize();
 
     this.$document
       .off('click', '.js-sidebar-build-toggle')
       .on('click', '.js-sidebar-build-toggle', this.sidebarOnClick.bind(this));
-
-    this.$document
-      .off('click', '.stage-item')
-      .on('click', '.stage-item', this.updateDropdown);
 
     this.scrollThrottled = _.throttle(this.toggleScroll.bind(this), 100);
 
@@ -194,20 +187,4 @@ export default class Job extends LogOutputBehaviours {
     if (this.shouldHideSidebarForViewport()) this.toggleSidebar();
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  populateJobs(stage) {
-    $('.build-job').hide();
-    $(`.build-job[data-stage="${stage}"]`).show();
-  }
-  // eslint-disable-next-line class-methods-use-this
-  updateStageDropdownText(stage) {
-    $('.stage-selection').text(stage);
-  }
-
-  updateDropdown(e) {
-    e.preventDefault();
-    const stage = e.currentTarget.text;
-    this.updateStageDropdownText(stage);
-    this.populateJobs(stage);
-  }
 }
