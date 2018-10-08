@@ -120,7 +120,16 @@ export default {
   },
   componentNames,
   computed: {
-    ...mapState(['sast', 'sastContainer', 'dast', 'dependencyScanning', 'summaryCounts']),
+    ...mapState([
+      'sast',
+      'sastContainer',
+      'dast',
+      'dependencyScanning',
+      'summaryCounts',
+      'modal',
+      'canCreateIssuePermission',
+      'canCreateFeedbackPermission',
+    ]),
     ...mapGetters([
       'groupedSastText',
       'groupedSummaryText',
@@ -207,6 +216,9 @@ export default {
       'setPipelineId',
       'setCanCreateIssuePermission',
       'setCanCreateFeedbackPermission',
+      'dismissIssue',
+      'revertDismissIssue',
+      'createNewIssue',
     ]),
   },
 };
@@ -311,7 +323,15 @@ export default {
         />
       </template>
 
-      <issue-modal />
+      <issue-modal
+        :modal="modal"
+        :vulnerability-feedback-help-path="vulnerabilityFeedbackHelpPath"
+        :can-create-issue-permission="canCreateIssuePermission"
+        :can-create-feedback-permission="canCreateFeedbackPermission"
+        @createNewIssue="createNewIssue"
+        @dismissIssue="dismissIssue"
+        @revertDismissIssue="revertDismissIssue"
+      />
     </div>
   </report-section>
 </template>

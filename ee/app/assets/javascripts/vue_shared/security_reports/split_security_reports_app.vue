@@ -92,7 +92,15 @@ export default {
   },
   componentNames,
   computed: {
-    ...mapState(['sast', 'dependencyScanning', 'sastContainer', 'dast']),
+    ...mapState([
+      'sast',
+      'dependencyScanning',
+      'sastContainer',
+      'dast',
+      'modal',
+      'canCreateIssuePermission',
+      'canCreateFeedbackPermission',
+    ]),
 
     sastText() {
       return this.summaryTextBuilder(messages.SAST, this.sast.newIssues.length);
@@ -188,6 +196,9 @@ export default {
       'setPipelineId',
       'setCanCreateIssuePermission',
       'setCanCreateFeedbackPermission',
+      'dismissIssue',
+      'revertDismissIssue',
+      'createNewIssue',
     ]),
     summaryTextBuilder(reportType, issuesCount = 0) {
       if (issuesCount === 0) {
@@ -265,6 +276,14 @@ export default {
       class="js-dast-widget split-report-section"
     />
 
-    <issue-modal />
+    <issue-modal
+      :modal="modal"
+      :vulnerability-feedback-help-path="vulnerabilityFeedbackHelpPath"
+      :can-create-issue-permission="canCreateIssuePermission"
+      :can-create-feedback-permission="canCreateFeedbackPermission"
+      @createNewIssue="createNewIssue"
+      @dismissIssue="dismissIssue"
+      @revertDismissIssue="revertDismissIssue"
+    />
   </div>
 </template>
