@@ -74,6 +74,9 @@ export const allDiscussions = (state, getters) => {
   return Object.values(resolved).concat(unresolved);
 };
 
+export const isDiscussionResolved = (state, getters) => discussionId =>
+  getters.resolvedDiscussionsById[discussionId] !== undefined;
+
 export const allResolvableDiscussions = (state, getters) =>
   getters.allDiscussions.filter(d => !d.individual_note && d.resolvable);
 

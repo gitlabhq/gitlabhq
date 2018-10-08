@@ -125,6 +125,14 @@ describe IssuesFinder do
         end
       end
 
+      context 'filtering by any milestone' do
+        let(:params) { { milestone_title: Milestone::Any.title } }
+
+        it 'returns issues with any assigned milestone' do
+          expect(issues).to contain_exactly(issue1)
+        end
+      end
+
       context 'filtering by upcoming milestone' do
         let(:params) { { milestone_title: Milestone::Upcoming.name } }
 

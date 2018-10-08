@@ -8,13 +8,12 @@ import diffFileMockData from '../mock_data/diff_file';
 describe('DiffContent', () => {
   const Component = Vue.extend(DiffContentComponent);
   let vm;
-  const getDiffFileMock = () => Object.assign({}, diffFileMockData);
 
   beforeEach(() => {
     vm = mountComponentWithStore(Component, {
       store,
       props: {
-        diffFile: getDiffFileMock(),
+        diffFile: JSON.parse(JSON.stringify(diffFileMockData)),
       },
     });
   });
@@ -43,7 +42,7 @@ describe('DiffContent', () => {
 
   describe('Non-Text diffs', () => {
     beforeEach(() => {
-      vm.diffFile.text = false;
+      vm.diffFile.viewer.name = 'image';
     });
 
     describe('image diff', () => {

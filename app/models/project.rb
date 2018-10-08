@@ -55,8 +55,8 @@ class Project < ActiveRecord::Base
   cache_markdown_field :description, pipeline: :description
 
   delegate :feature_available?, :builds_enabled?, :wiki_enabled?,
-           :merge_requests_enabled?, :issues_enabled?, to: :project_feature,
-                                                       allow_nil: true
+           :merge_requests_enabled?, :issues_enabled?, :pages_enabled?, :public_pages?,
+           to: :project_feature, allow_nil: true
 
   delegate :base_dir, :disk_path, :ensure_storage_path_exists, to: :storage
 
@@ -356,7 +356,7 @@ class Project < ActiveRecord::Base
   # "enabled" here means "not disabled". It includes private features!
   scope :with_feature_enabled, ->(feature) {
     access_level_attribute = ProjectFeature.access_level_attribute(feature)
-    with_project_feature.where(project_features: { access_level_attribute => [nil, ProjectFeature::PRIVATE, ProjectFeature::ENABLED] })
+    with_project_feature.where(project_features: { access_level_attribute => [nil, ProjectFeature::PRIVATE, ProjectFeature::ENABLED, ProjectFeature::PUBLIC] })
   }
 
   # Picks a feature where the level is exactly that given.
@@ -418,15 +418,15 @@ class Project < ActiveRecord::Base
     end
   end
 
-  # project features may be "disabled", "internal" or "enabled". If "internal",
+  # project features may be "disabled", "internal", "enabled" or "public". If "internal",
   # they are only available to team members. This scope returns projects where
-  # the feature is either enabled, or internal with permission for the user.
+  # the feature is either public, enabled, or internal with permission for the user.
   #
   # This method uses an optimised version of `with_feature_access_level` for
   # logged in users to more efficiently get private projects with the given
   # feature.
   def self.with_feature_available_for_user(feature, user)
-    visible = [nil, ProjectFeature::ENABLED]
+    visible = [nil, ProjectFeature::ENABLED, ProjectFeature::PUBLIC]
 
     if user&.admin?
       with_feature_enabled(feature)
@@ -1082,31 +1082,13 @@ class Project < ActiveRecord::Base
   end
 
   def find_or_initialize_services(exceptions: [])
-    services_templates = Service.where(template: true)
-
     available_services_names = Service.available_services_names - exceptions
 
     available_services = available_services_names.map do |service_name|
-      service = find_service(services, service_name)
-
-      if service
-        service
-      else
-        # We should check if template for the service exists
-        template = find_service(services_templates, service_name)
-
-        if template.nil?
-          # If no template, we should create an instance. Ex `build_gitlab_ci_service`
-          public_send("build_#{service_name}_service") # rubocop:disable GitlabSecurity/PublicSend
-        else
-          Service.build_from_template(id, template)
-        end
-      end
+      find_or_initialize_service(service_name)
     end
 
-    available_services.reject do |service|
-      disabled_services.include?(service.to_param)
-    end
+    available_services.compact
   end
 
   def disabled_services
@@ -1114,7 +1096,20 @@ class Project < ActiveRecord::Base
   end
 
   def find_or_initialize_service(name)
-    find_or_initialize_services.find { |service| service.to_param == name }
+    return if disabled_services.include?(name)
+
+    service = find_service(services, name)
+    return service if service
+
+    # We should check if template for the service exists
+    template = find_service(services_templates, name)
+
+    if template
+      Service.build_from_template(id, template)
+    else
+      # If no template, we should create an instance. Ex `build_gitlab_ci_service`
+      public_send("build_#{name}_service") # rubocop:disable GitlabSecurity/PublicSend
+    end
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -2276,5 +2271,9 @@ class Project < ActiveRecord::Base
     Gitlab::SafeRequestStore.fetch("project-#{id}:branch-#{branch_name}:user-#{user.id}:branch_allows_collaboration") do
       check_access.call
     end
+  end
+
+  def services_templates
+    @services_templates ||= Service.where(template: true)
   end
 end

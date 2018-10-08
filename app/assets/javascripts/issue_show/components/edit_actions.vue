@@ -66,7 +66,7 @@
     <button
       :class="{ disabled: formState.updateLoading || !isSubmitEnabled }"
       :disabled="formState.updateLoading || !isSubmitEnabled"
-      class="btn btn-success float-left"
+      class="btn btn-success float-left qa-save-button"
       type="submit"
       @click.prevent="updateIssuable">
       Save changes
@@ -86,7 +86,7 @@
       v-if="shouldShowDeleteButton"
       :class="{ disabled: deleteLoading }"
       :disabled="deleteLoading"
-      class="btn btn-danger float-right append-right-default"
+      class="btn btn-danger float-right append-right-default qa-delete-button"
       type="button"
       @click="deleteIssuable">
       Delete

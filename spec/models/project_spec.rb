@@ -4039,6 +4039,40 @@ describe Project do
     end
   end
 
+  describe "#find_or_initialize_services" do
+    subject { build(:project) }
+
+    it 'returns only enabled services' do
+      allow(Service).to receive(:available_services_names).and_return(%w(prometheus pushover))
+      allow(subject).to receive(:disabled_services).and_return(%w(prometheus))
+
+      services = subject.find_or_initialize_services
+
+      expect(services.count).to eq 1
+      expect(services).to include(PushoverService)
+    end
+  end
+
+  describe "#find_or_initialize_service" do
+    subject { build(:project) }
+
+    it 'avoids N+1 database queries' do
+      allow(Service).to receive(:available_services_names).and_return(%w(prometheus pushover))
+
+      control_count = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_service('prometheus') }.count
+
+      allow(Service).to receive(:available_services_names).and_call_original
+
+      expect { subject.find_or_initialize_service('prometheus') }.not_to exceed_query_limit(control_count)
+    end
+
+    it 'returns nil if service is disabled' do
+      allow(subject).to receive(:disabled_services).and_return(%w(prometheus))
+
+      expect(subject.find_or_initialize_service('prometheus')).to be_nil
+    end
+  end
+
   def rugged_config
     rugged_repo(project.repository).config
   end

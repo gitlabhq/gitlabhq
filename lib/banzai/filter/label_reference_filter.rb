@@ -48,7 +48,7 @@ module Banzai
                      include_ancestor_groups: true,
                      only_group_labels: true }
                  else
-                   { project_id: parent.id,
+                   { project: parent,
                      include_ancestor_groups: true }
                  end
 

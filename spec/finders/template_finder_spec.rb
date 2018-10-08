@@ -4,6 +4,8 @@ describe TemplateFinder do
   using RSpec::Parameterized::TableSyntax
 
   describe '#build' do
+    let(:project) { build_stubbed(:project) }
+
     where(:type, :expected_class) do
       :dockerfiles    | described_class
       :gitignores     | described_class
@@ -12,9 +14,10 @@ describe TemplateFinder do
     end
 
     with_them do
-      subject { described_class.build(type) }
+      subject(:finder) { described_class.build(type, project) }
 
       it { is_expected.to be_a(expected_class) }
+      it { expect(finder.project).to eq(project) }
     end
   end
 
@@ -27,19 +30,19 @@ describe TemplateFinder do
 
     with_them do
       it 'returns all vendored templates when no name is specified' do
-        result = described_class.new(type).execute
+        result = described_class.new(type, nil).execute
 
         expect(result).to include(have_attributes(name: vendored_name))
       end
 
       it 'returns only the specified vendored template when a name is specified' do
-        result = described_class.new(type, name: vendored_name).execute
+        result = described_class.new(type, nil, name: vendored_name).execute
 
         expect(result).to have_attributes(name: vendored_name)
       end
 
       it 'returns nil when an unknown name is specified' do
-        result = described_class.new(type, name: 'unknown').execute
+        result = described_class.new(type, nil, name: 'unknown').execute
 
         expect(result).to be_nil
       end

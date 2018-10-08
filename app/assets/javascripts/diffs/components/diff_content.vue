@@ -28,7 +28,7 @@ export default {
       return diffModes[diffModeKey] || diffModes.replaced;
     },
     isTextFile() {
-      return this.diffFile.text;
+      return this.diffFile.viewer.name === 'text';
     },
   },
 };

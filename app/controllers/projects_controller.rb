@@ -366,6 +366,7 @@ class ProjectsController < Projects::ApplicationController
         repository_access_level
         snippets_access_level
         wiki_access_level
+        pages_access_level
       ]
     ]
   end

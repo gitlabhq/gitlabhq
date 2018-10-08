@@ -17,8 +17,8 @@ There are two places defined variables can be used. On the:
 
 | Definition                           | Can be expanded?  | Expansion place | Description  |
 |--------------------------------------|-------------------|-----------------|--------------|
-| `environment:url`                    | yes               | GitLab           | The variable expansion is made by GitLab's [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism).<ul><li>**Supported:** all variables defined for a job (project/group variables, variables from `.gitlab-ci.yml`, variables from triggers, variables from pipeline schedules)</li><li>**Not suported:** variables defined in Runner's `config.toml` and variables created in job's `script`</li></ul> |
-| `environment:name`                   | yes               | GitLab           | Similar to `environment:url`, but the variables expansion **doesn't support**: <ul><li>variables that are based on the environment's name (`CI_ENVIRONMENT_NAME`, `CI_ENVIRONMENT_SLUG`)</li><li>any other variables related to environment (currently only `CI_ENVIRONMENT_URL`)</li><li>[persisted variables](#persisted-variables)</li></ul> |
+| `environment:url`                    | yes               | GitLab           | The variable expansion is made by GitLab's [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism).<ul><li>Supported: all variables defined for a job (project/group variables, variables from `.gitlab-ci.yml`, variables from triggers, variables from pipeline schedules)</li><li>Not suported: variables defined in Runner's `config.toml` and variables created in job's `script`</li></ul> |
+| `environment:name`                   | yes               | GitLab           | Similar to `environment:url`, but the variables expansion doesn't support: <ul><li>variables that are based on the environment's name (`CI_ENVIRONMENT_NAME`, `CI_ENVIRONMENT_SLUG`)</li><li>any other variables related to environment (currently only `CI_ENVIRONMENT_URL`)</li><li>[persisted variables](#persisted-variables)</li></ul> |
 | `variables` | yes               | Runner          | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
 | `image`          | yes               | Runner          | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
 | `services:[]` | yes           | Runner          | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
@@ -26,7 +26,7 @@ There are two places defined variables can be used. On the:
 | `cache:key` | yes               | Runner          | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
 | `artifacts:name`                     | yes               | Runner          | The variable expansion is made by GitLab Runner's shell environment  |
 | `script`, `before_script`, `after_script` | yes | Script execution shell | The variable expansion is made by the [execution shell environment](#execution-shell-environment) |
-| `only:variables:[]`, `except:variables:[]`    | no                | n/a             | The variable must be in the form of `$variable`.<br/>**Not supported:**<ul><li>variables that are based on the environment's name (`CI_ENVIRONMENT_NAME`, `CI_ENVIRONMENT_SLUG`)</li><li>any other variables related to environment (currently only `CI_ENVIRONMENT_URL`)</li><li>[persisted variables](#persisted-variables)</li></ul> |
+| `only:variables:[]`, `except:variables:[]`    | no                | n/a             | The variable must be in the form of `$variable`.<br/>Not supported:<ul><li>variables that are based on the environment's name (`CI_ENVIRONMENT_NAME`, `CI_ENVIRONMENT_SLUG`)</li><li>any other variables related to environment (currently only `CI_ENVIRONMENT_URL`)</li><li>[persisted variables](#persisted-variables)</li></ul> |
 
 ### `config.toml` file
 
@@ -55,9 +55,9 @@ since the expansion is done in GitLab before any Runner will get the job.
 
 ### GitLab Runner internal variable expansion mechanism
 
-- **Supported:** project/group variables, `.gitlab-ci.yml` variables, `config.toml` variables, and
+- Supported: project/group variables, `.gitlab-ci.yml` variables, `config.toml` variables, and
   variables from triggers, pipeline schedules, and manual pipelines.
-- **Not supported:** variables defined inside of scripts (e.g., `export MY_VARIABLE="test"`).
+- Not supported: variables defined inside of scripts (e.g., `export MY_VARIABLE="test"`).
 
 The Runner uses Go's `os.Expand()` method for variable expansion. It means that it will handle
 only variables defined as `$variable` and `${variable}`. What's also important, is that
@@ -73,7 +73,7 @@ by bash/sh (leaving empty strings or some values depending whether the variables
 defined or not), but will not work with Windows' cmd/PowerShell, since these shells
 are using a different variables syntax.
 
-**Supported:**
+Supported:
 
 - The `script` may use all available variables that are default for the shell (e.g., `$PATH` which
   should be present in all bash/sh shells) and all variables defined by GitLab CI/CD (project/group variables,
@@ -106,7 +106,9 @@ The following variables are known as "persisted":
 
 They are:
 
-- **Supported** for all definitions as [described in the table](#gitlab-ci-yml-file) where the "Expansion place" is "Runner".
-- **Not supported:**
-  - By the definitions [described in the table](#gitlab-ci-yml-file) where the "Expansion place" is "GitLab".
+- Supported for definitions where the ["Expansion place"](#gitlab-ci-yml-file) is:
+  - Runner.
+  - Script execution shell.
+- Not supported:
+  - For definitions where the ["Expansion place"](#gitlab-ci-yml-file) is GitLab.
   - In the `only` and `except` [variables expressions](README.md#variables-expressions).

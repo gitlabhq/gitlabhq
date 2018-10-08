@@ -17,8 +17,13 @@ describe('Markdown field header component', () => {
     Vue.nextTick(done);
   });
 
-  it('renders markdown buttons', () => {
-    expect(vm.$el.querySelectorAll('.js-md').length).toBe(8);
+  it('renders markdown header buttons', () => {
+    const buttons = ['Add bold text', 'Add italic text', 'Insert a quote', 'Insert code', 'Add a link', 'Add a bullet list', 'Add a numbered list', 'Add a task list', 'Add a table', 'Go full screen'];
+    const elements = vm.$el.querySelectorAll('.toolbar-btn');
+
+    elements.forEach((buttonEl, index) => {
+      expect(buttonEl.getAttribute('data-original-title')).toBe(buttons[index]);
+    });
   });
 
   it('renders `write` link as active when previewMarkdown is false', () => {
@@ -68,5 +73,9 @@ describe('Markdown field header component', () => {
 
       done();
     });
+  });
+
+  it('renders markdown table template', () => {
+    expect(vm.mdTable).toEqual('| header | header |\n| ------ | ------ |\n| cell | cell |\n| cell | cell |');
   });
 });

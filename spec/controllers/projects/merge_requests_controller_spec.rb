@@ -763,24 +763,34 @@ describe Projects::MergeRequestsController do
 
   describe 'GET ci_environments_status' do
     context 'the environment is from a forked project' do
-      let!(:forked)       { fork_project(project, user, repository: true) }
-      let!(:environment)  { create(:environment, project: forked) }
-      let!(:deployment)   { create(:deployment, environment: environment, sha: forked.commit.id, ref: 'master') }
-      let(:admin)         { create(:admin) }
+      let!(:forked)      { fork_project(project, user, repository: true) }
+      let!(:environment) { create(:environment, project: forked) }
+      let!(:deployment)  { create(:deployment, environment: environment, sha: forked.commit.id, ref: 'master') }
+      let(:admin)        { create(:admin) }
 
       let(:merge_request) do
         create(:merge_request, source_project: forked, target_project: project)
       end
 
-      before do
+      it 'links to the environment on that project' do
+        get_ci_environments_status
+
+        expect(json_response.first['url']).to match /#{forked.full_path}/
+      end
+
+      # we're trying to reduce the overall number of queries for this method.
+      # set a hard limit for now. https://gitlab.com/gitlab-org/gitlab-ce/issues/52287
+      it 'keeps queries in check' do
+        control_count = ActiveRecord::QueryRecorder.new { get_ci_environments_status }.count
+
+        expect(control_count).to be <= 137
+      end
+
+      def get_ci_environments_status
         get :ci_environments_status,
           namespace_id: merge_request.project.namespace.to_param,
           project_id: merge_request.project,
           id: merge_request.iid, format: 'json'
-      end
-
-      it 'links to the environment on that project' do
-        expect(json_response.first['url']).to match /#{forked.full_path}/
       end
     end
   end

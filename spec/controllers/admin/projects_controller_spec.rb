@@ -42,4 +42,15 @@ describe Admin::ProjectsController do
       expect { get :index }.not_to exceed_query_limit(control_count)
     end
   end
+
+  describe 'GET /projects/:id' do
+    render_views
+
+    it 'renders show page' do
+      get :show, namespace_id: project.namespace.path, id: project.path
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response.body).to match(project.name)
+    end
+  end
 end
