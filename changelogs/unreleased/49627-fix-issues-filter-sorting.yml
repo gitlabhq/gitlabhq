@@ -1,0 +1,5 @@
+---
+title: Fix issue where filtering was cleared after sorting the issues list.
+merge_request: 22140
+author:
+type: fixed
