@@ -99,16 +99,6 @@ describe('GeoNodeItemComponent', () => {
       });
     });
 
-    describe('handleNodeDetailsFailure', () => {
-      it('initializes props for Node details failure', () => {
-        const err = 'Something went wrong';
-        vm.handleNodeDetailsFailure(1, { message: err });
-        expect(vm.isNodeDetailsLoading).toBeFalsy();
-        expect(vm.isNodeDetailsFailed).toBeTruthy();
-        expect(vm.errorMessage).toBe(err);
-      });
-    });
-
     describe('handleMounted', () => {
       it('emits `pollNodeDetails` event and passes node ID', () => {
         spyOn(eventHub, '$emit');
@@ -125,7 +115,6 @@ describe('GeoNodeItemComponent', () => {
 
       const vmX = createComponent();
       expect(eventHub.$on).toHaveBeenCalledWith('nodeDetailsLoaded', jasmine.any(Function));
-      expect(eventHub.$on).toHaveBeenCalledWith('nodeDetailsLoadFailed', jasmine.any(Function));
       vmX.$destroy();
     });
   });
@@ -137,7 +126,6 @@ describe('GeoNodeItemComponent', () => {
       const vmX = createComponent();
       vmX.$destroy();
       expect(eventHub.$off).toHaveBeenCalledWith('nodeDetailsLoaded', jasmine.any(Function));
-      expect(eventHub.$off).toHaveBeenCalledWith('nodeDetailsLoadFailed', jasmine.any(Function));
     });
   });
 
