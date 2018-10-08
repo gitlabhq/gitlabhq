@@ -3,6 +3,11 @@
 You can view information and options set for each of the mounted NFS file
 systems by running `nfsstat -m` and `cat /etc/fstab`.
 
+NOTE: **Note:** Filesystem performance has a big impact on overall GitLab
+performance, especially for actions that read or write to Git repositories. See
+[Filesystem Performance Benchmarking](../operations/filesystem_benchmarking.md)
+for steps to test filesystem performance.
+
 ## NFS Server features
 
 ### Required features
