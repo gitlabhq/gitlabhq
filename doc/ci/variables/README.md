@@ -197,7 +197,7 @@ Likewise, group-level variables can be added by going to your group's
 **Settings > CI/CD**, then finding the section called **Variables**.
 Any variables of [subgroups] will be inherited recursively.
 
-![Variables](img/secret_variables.png)
+![Variables](img/variables.png)
 
 Once you set them, they will be available for all subsequent pipelines. You can also
 [protect your variables](#protected-variables).
