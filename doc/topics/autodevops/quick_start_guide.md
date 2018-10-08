@@ -15,7 +15,7 @@ need to ensure your own [Runners are configured](../../ci/runners/README.md) and
 
 Before creating and connecting your Kubernetes cluster to your GitLab project,
 you need a Google Cloud Platform account. If you don't already have one,
-sign up at https://console.cloud.google.com. You'll need to either sign in with an existing
+sign up at <https://console.cloud.google.com>. You'll need to either sign in with an existing
 Google account (for example, one that you use to access Gmail, Drive, etc.) or create a new one.
 
 1. Follow the steps as outlined in the ["Before you begin" section of the Kubernetes Engine docs](https://cloud.google.com/kubernetes-engine/docs/quickstart#before-you-begin)
@@ -205,7 +205,7 @@ applications. In the rightmost column for the production environment, you can ma
   application is running.
 
 Right below, there is the
-[Deploy Board](https://docs.gitlab.com/ee/user/project/deploy_boards.md).
+[Deploy Board](https://docs.gitlab.com/ee/user/project/deploy_boards.html).
 The squares represent pods in your Kubernetes cluster that are associated with
 the given environment. Hovering above each square you can see the state of a
 deployment and clicking a square will take you to the pod's logs page.
@@ -264,8 +264,8 @@ Let's fix that:
    to stage the changes.
 1. Write a commit message and click **Commit**.
 
-Now, if you go back to the merge request you should not only see the test passing,
-but also the application deployed as a [review app](index.md#auto-review-apps). You
+Now, if you go back to the merge request you should not only see the test passing, but
+also the application deployed as a [review app](index.md#auto-review-apps). You
 can visit it by following the URL in the merge request. The changes that we
 previously made should be there.
 
