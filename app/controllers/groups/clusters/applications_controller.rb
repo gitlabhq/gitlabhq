@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Groups::Clusters::ApplicationsController < Groups::ApplicationController
   before_action :cluster
   before_action :application_class, only: [:create]
