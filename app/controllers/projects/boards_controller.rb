@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::BoardsController < Projects::ApplicationController
   include BoardsResponses
   include IssuableCollections

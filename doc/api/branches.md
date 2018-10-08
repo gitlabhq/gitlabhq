@@ -27,6 +27,7 @@ Example response:
     "name": "master",
     "merged": false,
     "protected": true,
+    "default": true,
     "developers_can_push": false,
     "developers_can_merge": false,
     "can_push": true,
@@ -75,6 +76,7 @@ Example response:
   "name": "master",
   "merged": false,
   "protected": true,
+  "default": true,
   "developers_can_push": false,
   "developers_can_merge": false,
   "can_push": true,
@@ -141,6 +143,7 @@ Example response:
   "name": "master",
   "merged": false,
   "protected": true,
+  "default": true,
   "developers_can_push": true,
   "developers_can_merge": true,
   "can_push": true
@@ -190,6 +193,7 @@ Example response:
   "name": "master",
   "merged": false,
   "protected": false,
+  "default": true,
   "developers_can_push": false,
   "developers_can_merge": false,
   "can_push": true
@@ -234,6 +238,7 @@ Example response:
   "name": "newbranch",
   "merged": false,
   "protected": false,
+  "default": false,
   "developers_can_push": false,
   "developers_can_merge": false,
   "can_push": true

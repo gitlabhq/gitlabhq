@@ -52,6 +52,21 @@
         required: false,
         default: '',
       },
+      pagesAvailable: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+      pagesAccessControlEnabled: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+      pagesHelpPath: {
+        type: String,
+        required: false,
+        default: '',
+      },
     },
 
     data() {
@@ -64,6 +79,7 @@
         buildsAccessLevel: 20,
         wikiAccessLevel: 20,
         snippetsAccessLevel: 20,
+        pagesAccessLevel: 20,
         containerRegistryEnabled: true,
         lfsEnabled: true,
         requestAccessEnabled: true,
@@ -90,6 +106,13 @@
         );
       },
 
+      pagesFeatureAccessLevelOptions() {
+        if (this.visibilityLevel !== visibilityOptions.PUBLIC) {
+          return this.featureAccessLevelOptions.concat([[30, 'Everyone']]);
+        }
+        return this.featureAccessLevelOptions;
+      },
+
       repositoryEnabled() {
         return this.repositoryAccessLevel > 0;
       },
@@ -109,6 +132,10 @@
           this.buildsAccessLevel = Math.min(10, this.buildsAccessLevel);
           this.wikiAccessLevel = Math.min(10, this.wikiAccessLevel);
           this.snippetsAccessLevel = Math.min(10, this.snippetsAccessLevel);
+          if (this.pagesAccessLevel === 20) {
+            // When from Internal->Private narrow access for only members
+            this.pagesAccessLevel = 10;
+          }
           this.highlightChanges();
         } else if (oldValue === visibilityOptions.PRIVATE) {
           // if changing away from private, make enabled features more permissive
@@ -118,6 +145,7 @@
           if (this.buildsAccessLevel > 0) this.buildsAccessLevel = 20;
           if (this.wikiAccessLevel > 0) this.wikiAccessLevel = 20;
           if (this.snippetsAccessLevel > 0) this.snippetsAccessLevel = 20;
+          if (this.pagesAccessLevel === 10) this.pagesAccessLevel = 20;
           this.highlightChanges();
         }
       },
@@ -240,8 +268,8 @@
         help-text="Lightweight issue tracking system for this project"
       >
         <project-feature-setting
-          :options="featureAccessLevelOptions"
           v-model="issuesAccessLevel"
+          :options="featureAccessLevelOptions"
           name="project[project_feature_attributes][issues_access_level]"
         />
       </project-setting-row>
@@ -250,8 +278,8 @@
         help-text="View and edit files in this project"
       >
         <project-feature-setting
-          :options="featureAccessLevelOptions"
           v-model="repositoryAccessLevel"
+          :options="featureAccessLevelOptions"
           name="project[project_feature_attributes][repository_access_level]"
         />
       </project-setting-row>
@@ -261,8 +289,8 @@
           help-text="Submit changes to be merged upstream"
         >
           <project-feature-setting
-            :options="repoFeatureAccessLevelOptions"
             v-model="mergeRequestsAccessLevel"
+            :options="repoFeatureAccessLevelOptions"
             :disabled-input="!repositoryEnabled"
             name="project[project_feature_attributes][merge_requests_access_level]"
           />
@@ -272,8 +300,8 @@
           help-text="Build, test, and deploy your changes"
         >
           <project-feature-setting
-            :options="repoFeatureAccessLevelOptions"
             v-model="buildsAccessLevel"
+            :options="repoFeatureAccessLevelOptions"
             :disabled-input="!repositoryEnabled"
             name="project[project_feature_attributes][builds_access_level]"
           />
@@ -308,8 +336,8 @@
         help-text="Pages for project documentation"
       >
         <project-feature-setting
-          :options="featureAccessLevelOptions"
           v-model="wikiAccessLevel"
+          :options="featureAccessLevelOptions"
           name="project[project_feature_attributes][wiki_access_level]"
         />
       </project-setting-row>
@@ -318,9 +346,21 @@
         help-text="Share code pastes with others out of Git repository"
       >
         <project-feature-setting
-          :options="featureAccessLevelOptions"
           v-model="snippetsAccessLevel"
+          :options="featureAccessLevelOptions"
           name="project[project_feature_attributes][snippets_access_level]"
+        />
+      </project-setting-row>
+      <project-setting-row
+        v-if="pagesAvailable && pagesAccessControlEnabled"
+        :help-path="pagesHelpPath"
+        label="Pages"
+        help-text="Static website for the project."
+      >
+        <project-feature-setting
+          v-model="pagesAccessLevel"
+          :options="pagesFeatureAccessLevelOptions"
+          name="project[project_feature_attributes][pages_access_level]"
         />
       </project-setting-row>
     </div>

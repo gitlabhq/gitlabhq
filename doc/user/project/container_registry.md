@@ -1,16 +1,16 @@
 # GitLab Container Registry
 
->**Notes:**
+> **Notes:**
 > [Introduced][ce-4040] in GitLab 8.8.
-- Docker Registry manifest `v1` support was added in GitLab 8.9 to support Docker
-  versions earlier than 1.10.
-- This document is about the user guide. To learn how to enable GitLab Container
-  Registry across your GitLab instance, visit the
-  [administrator documentation](../../administration/container_registry.md).
-- Starting from GitLab 8.12, if you have 2FA enabled in your account, you need
-  to pass a [personal access token][pat] instead of your password in order to
-  login to GitLab's Container Registry.
-- Multiple level image names support was added in GitLab 9.1
+> - Docker Registry manifest `v1` support was added in GitLab 8.9 to support Docker
+>   versions earlier than 1.10.
+> - This document is about the user guide. To learn how to enable GitLab Container
+>   Registry across your GitLab instance, visit the
+>   [administrator documentation](../../administration/container_registry.md).
+> - Starting from GitLab 8.12, if you have 2FA enabled in your account, you need
+>   to pass a [personal access token][pat] instead of your password in order to
+>   login to GitLab's Container Registry.
+> - Multiple level image names support was added in GitLab 9.1
 
 With the Docker Container Registry integrated into GitLab, every project can
 have its own space to store its Docker images.
@@ -27,7 +27,7 @@ to enable it.
 1. First, ask your system administrator to enable GitLab Container Registry
    following the [administration documentation](../../administration/container_registry.md).
    If you are using GitLab.com, this is enabled by default so you can start using
-   the Registry immediately. Currently there is a soft (10GB) size restriction for 
+   the Registry immediately. Currently there is a soft (10GB) size restriction for
    registry on GitLab.com, as part of the [repository size limit](repository/index.html#repository-size).
 1. Go to your [project's General settings](settings/index.md#sharing-and-permissions)
    and enable the **Container Registry** feature on your project. For new
@@ -40,12 +40,12 @@ to enable it.
 
 ## Build and push images
 
->**Notes:**
-- Moving or renaming existing container registry repositories is not supported
-once you have pushed images because the images are signed, and the
-signature includes the repository name.
-- To move or rename a repository with a container registry you will have to
-delete all existing images.
+> **Notes:**
+> - Moving or renaming existing container registry repositories is not supported
+>   once you have pushed images because the images are signed, and the
+>   signature includes the repository name.
+> - To move or rename a repository with a container registry you will have to
+>   delete all existing images.
 
 
 If you visit the **Registry** link under your project's menu, you can see the
@@ -216,7 +216,7 @@ needs to trust the mitmproxy SSL certificates for this to work.
 
 The following installation instructions assume you are running Ubuntu:
 
-1. Install mitmproxy (see http://docs.mitmproxy.org/en/stable/install.html)
+1. [Install mitmproxy](https://docs.mitmproxy.org/stable/overview-installation/).
 1. Run `mitmproxy --port 9000` to generate its certificates.
    Enter <kbd>CTRL</kbd>-<kbd>C</kbd> to quit.
 1. Install the certificate from `~/.mitmproxy` to your system:
@@ -245,7 +245,7 @@ This will run mitmproxy on port `9000`. In another window, run:
 curl --proxy http://localhost:9000 https://httpbin.org/status/200
 ```
 
-If everything is setup correctly, you will see information on the mitmproxy window and
+If everything is set up correctly, you will see information on the mitmproxy window and
 no errors from the curl commands.
 
 #### Running the Docker daemon with a proxy

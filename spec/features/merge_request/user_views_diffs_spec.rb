@@ -10,6 +10,8 @@ describe 'User views diffs', :js do
     visit(diffs_project_merge_request_path(project, merge_request))
 
     wait_for_requests
+
+    find('.js-toggle-tree-list').click
   end
 
   shared_examples 'unfold diffs' do

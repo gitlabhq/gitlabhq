@@ -18,26 +18,12 @@ describe Gitlab::ImportExport::Saver do
     FileUtils.rm_rf(export_path)
   end
 
-  context 'local archive' do
-    it 'saves the repo to disk' do
-      stub_feature_flags(import_export_object_storage: false)
+  it 'saves the repo using object storage' do
+    stub_uploads_object_storage(ImportExportUploader)
 
-      subject.save
+    subject.save
 
-      expect(shared.errors).to be_empty
-      expect(Dir.empty?(shared.archive_path)).to be false
-    end
-  end
-
-  context 'object storage' do
-    it 'saves the repo using object storage' do
-      stub_feature_flags(import_export_object_storage: true)
-      stub_uploads_object_storage(ImportExportUploader)
-
-      subject.save
-
-      expect(ImportExportUpload.find_by(project: project).export_file.url)
-        .to match(%r[\/uploads\/-\/system\/import_export_upload\/export_file.*])
-    end
+    expect(ImportExportUpload.find_by(project: project).export_file.url)
+      .to match(%r[\/uploads\/-\/system\/import_export_upload\/export_file.*])
   end
 end

@@ -305,6 +305,36 @@ describe ApplicationSetting do
     end
   end
 
+  describe 'setting Sentry DSNs' do
+    context 'server DSN' do
+      it 'strips leading and trailing whitespace' do
+        subject.update(sentry_dsn: ' http://test ')
+
+        expect(subject.sentry_dsn).to eq('http://test')
+      end
+
+      it 'handles nil values' do
+        subject.update(sentry_dsn: nil)
+
+        expect(subject.sentry_dsn).to be_nil
+      end
+    end
+
+    context 'client-side DSN' do
+      it 'strips leading and trailing whitespace' do
+        subject.update(clientside_sentry_dsn: ' http://test ')
+
+        expect(subject.clientside_sentry_dsn).to eq('http://test')
+      end
+
+      it 'handles nil values' do
+        subject.update(clientside_sentry_dsn: nil)
+
+        expect(subject.clientside_sentry_dsn).to be_nil
+      end
+    end
+  end
+
   describe '#disabled_oauth_sign_in_sources=' do
     before do
       allow(Devise).to receive(:omniauth_providers).and_return([:github])
@@ -560,6 +590,21 @@ describe ApplicationSetting do
       subject { setting.user_default_internal_regex_enabled? }
 
       it { is_expected.to eq(result) }
+    end
+  end
+
+  context 'diff limit settings' do
+    describe '#diff_max_patch_bytes' do
+      context 'validations' do
+        it { is_expected.to validate_presence_of(:diff_max_patch_bytes) }
+
+        it do
+          is_expected.to validate_numericality_of(:diff_max_patch_bytes)
+          .only_integer
+          .is_greater_than_or_equal_to(Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES)
+          .is_less_than_or_equal_to(Gitlab::Git::Diff::MAX_PATCH_BYTES_UPPER_BOUND)
+        end
+      end
     end
   end
 end

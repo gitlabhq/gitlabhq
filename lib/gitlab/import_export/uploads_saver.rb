@@ -1,8 +1,6 @@
 module Gitlab
   module ImportExport
     class UploadsSaver
-      include Gitlab::ImportExport::CommandLineUtil
-
       def initialize(project:, shared:)
         @project = project
         @shared = shared

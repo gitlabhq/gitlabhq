@@ -6,8 +6,14 @@ module Gitlab
         include Gitlab::Metrics::Methods
         attach_to :active_record
 
+        IGNORABLE_SQL = %w{BEGIN COMMIT}.freeze
+
         def sql(event)
           return unless current_transaction
+
+          payload = event.payload
+
+          return if payload[:name] == 'SCHEMA' || IGNORABLE_SQL.include?(payload[:sql])
 
           self.class.gitlab_sql_duration_seconds.observe(current_transaction.labels, event.duration / 1000.0)
 

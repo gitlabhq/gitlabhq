@@ -57,25 +57,6 @@ describe('Job', () => {
         expect(job.buildStage).toBe('test');
         expect(job.state).toBe('');
       });
-
-      it('only shows the jobs matching the current stage', () => {
-        expect($('.build-job[data-stage="build"]').is(':visible')).toBe(false);
-        expect($('.build-job[data-stage="test"]').is(':visible')).toBe(true);
-        expect($('.build-job[data-stage="deploy"]').is(':visible')).toBe(false);
-      });
-
-      it('selects the current stage in the build dropdown menu', () => {
-        expect($('.stage-selection').text()).toBe('test');
-      });
-
-      it('updates the jobs when the build dropdown changes', () => {
-        $('.stage-item:contains("build")').click();
-
-        expect($('.stage-selection').text()).toBe('build');
-        expect($('.build-job[data-stage="build"]').is(':visible')).toBe(true);
-        expect($('.build-job[data-stage="test"]').is(':visible')).toBe(false);
-        expect($('.build-job[data-stage="deploy"]').is(':visible')).toBe(false);
-      });
     });
 
     describe('running build', () => {

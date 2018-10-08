@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LabelsHelper
   extend self
   include ActionView::Helpers::TagHelper
@@ -129,20 +131,26 @@ module LabelsHelper
     end
   end
 
-  def labels_filter_path(only_group_labels = false, include_ancestor_groups: true, include_descendant_groups: false)
-    project = @target_project || @project
-
+  def labels_filter_path_with_defaults(only_group_labels: false, include_ancestor_groups: true, include_descendant_groups: false)
     options = {}
     options[:include_ancestor_groups] = include_ancestor_groups if include_ancestor_groups
     options[:include_descendant_groups] = include_descendant_groups if include_descendant_groups
+    options[:only_group_labels] = only_group_labels if only_group_labels && @group
+    options[:format] = :json
+
+    labels_filter_path(options)
+  end
+
+  def labels_filter_path(options = {})
+    project = @target_project || @project
+    format = options.delete(:format) || :html
 
     if project
-      project_labels_path(project, :json, options)
+      project_labels_path(project, format, options)
     elsif @group
-      options[:only_group_labels] = only_group_labels if only_group_labels
-      group_labels_path(@group, :json, options)
+      group_labels_path(@group, format, options)
     else
-      dashboard_labels_path(:json)
+      dashboard_labels_path(format, options)
     end
   end
 

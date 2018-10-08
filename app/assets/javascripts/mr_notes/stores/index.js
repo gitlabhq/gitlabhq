@@ -6,10 +6,13 @@ import mrPageModule from './modules';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
-  modules: {
-    page: mrPageModule,
-    notes: notesModule,
-    diffs: diffsModule,
-  },
-});
+export const createStore = () =>
+  new Vuex.Store({
+    modules: {
+      page: mrPageModule,
+      notes: notesModule(),
+      diffs: diffsModule(),
+    },
+  });
+
+export default createStore();

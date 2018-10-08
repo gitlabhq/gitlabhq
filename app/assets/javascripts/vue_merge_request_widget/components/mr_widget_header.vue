@@ -4,6 +4,7 @@ import { n__, s__, sprintf } from '~/locale';
 import { mergeUrlParams, webIDEUrl } from '~/lib/utils/url_utility';
 import Icon from '~/vue_shared/components/icon.vue';
 import clipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import tooltip from '~/vue_shared/directives/tooltip';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 
 export default {
@@ -12,6 +13,9 @@ export default {
     Icon,
     clipboardButton,
     TooltipOnTruncate,
+  },
+  directives: {
+    tooltip,
   },
   props: {
     mr: {
@@ -24,11 +28,17 @@ export default {
       return this.mr.divergedCommitsCount > 0;
     },
     commitsBehindText() {
-      return sprintf(s__('mrWidget|The source branch is %{commitsBehindLinkStart}%{commitsBehind}%{commitsBehindLinkEnd} the target branch'), {
-        commitsBehindLinkStart: `<a href="${_.escape(this.mr.targetBranchPath)}">`,
-        commitsBehind: n__('%d commit behind', '%d commits behind', this.mr.divergedCommitsCount),
-        commitsBehindLinkEnd: '</a>',
-      }, false);
+      return sprintf(
+        s__(
+          'mrWidget|The source branch is %{commitsBehindLinkStart}%{commitsBehind}%{commitsBehindLinkEnd} the target branch',
+        ),
+        {
+          commitsBehindLinkStart: `<a href="${_.escape(this.mr.targetBranchPath)}">`,
+          commitsBehind: n__('%d commit behind', '%d commits behind', this.mr.divergedCommitsCount),
+          commitsBehindLinkEnd: '</a>',
+        },
+        false,
+      );
     },
     branchNameClipboardData() {
       // This supports code in app/assets/javascripts/copy_to_clipboard.js that
@@ -40,10 +50,26 @@ export default {
       });
     },
     webIdePath() {
-      return mergeUrlParams({
-        target_project: this.mr.sourceProjectFullPath !== this.mr.targetProjectFullPath ?
-          this.mr.targetProjectFullPath : '',
-      }, webIDEUrl(`/${this.mr.sourceProjectFullPath}/merge_requests/${this.mr.iid}`));
+      if (this.mr.canPushToSourceBranch) {
+        return mergeUrlParams(
+          {
+            target_project:
+              this.mr.sourceProjectFullPath !== this.mr.targetProjectFullPath
+                ? this.mr.targetProjectFullPath
+                : '',
+          },
+          webIDEUrl(`/${this.mr.sourceProjectFullPath}/merge_requests/${this.mr.iid}`),
+        );
+      }
+
+      return null;
+    },
+    ideButtonTitle() {
+      return !this.mr.canPushToSourceBranch
+        ? s__(
+            'mrWidget|You are not allowed to edit this project directly. Please fork to make changes.',
+          )
+        : '';
     },
   },
 };
@@ -91,12 +117,18 @@ export default {
 
       <div
         v-if="mr.isOpen"
-        class="branch-actions"
+        class="branch-actions d-flex"
       >
         <a
           v-if="!mr.sourceBranchRemoved"
+          v-tooltip
           :href="webIdePath"
-          class="btn btn-default inline js-web-ide d-none d-md-inline-block"
+          :title="ideButtonTitle"
+          :class="{ disabled: !mr.canPushToSourceBranch }"
+          class="btn btn-default js-web-ide d-none d-md-inline-block append-right-8"
+          data-placement="bottom"
+          tabindex="0"
+          role="button"
         >
           {{ s__("mrWidget|Open in Web IDE") }}
         </a>
@@ -104,15 +136,15 @@ export default {
           :disabled="mr.sourceBranchRemoved"
           data-target="#modal_merge_info"
           data-toggle="modal"
-          class="btn btn-default inline js-check-out-branch"
+          class="btn btn-default js-check-out-branch append-right-default"
           type="button"
         >
           {{ s__("mrWidget|Check out branch") }}
         </button>
-        <span class="dropdown prepend-left-10">
+        <span class="dropdown">
           <button
             type="button"
-            class="btn inline dropdown-toggle"
+            class="btn dropdown-toggle"
             data-toggle="dropdown"
             aria-label="Download as"
             aria-haspopup="true"

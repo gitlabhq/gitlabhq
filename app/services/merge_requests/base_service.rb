@@ -55,13 +55,15 @@ module MergeRequests
     end
 
     # Returns all origin and fork merge requests from `@project` satisfying passed arguments.
+    # rubocop: disable CodeReuse/ActiveRecord
     def merge_requests_for(source_branch, mr_states: [:opened])
-      MergeRequest
+      @project.source_of_merge_requests
         .with_state(mr_states)
-        .where(source_branch: source_branch, source_project_id: @project.id)
-        .preload(:source_project) # we don't need a #includes since we're just preloading for the #select
+        .where(source_branch: source_branch)
+        .preload(:source_project) # we don't need #includes since we're just preloading for the #select
         .select(&:source_project)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def pipeline_merge_requests(pipeline)
       merge_requests_for(pipeline.ref).each do |merge_request|

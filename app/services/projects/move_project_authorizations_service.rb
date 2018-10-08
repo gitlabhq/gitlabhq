@@ -33,10 +33,12 @@ module Projects
     end
 
     # Look for authorizations in source_project that are not in the target project
+    # rubocop: disable CodeReuse/ActiveRecord
     def non_existent_authorization
       source_project.project_authorizations
                     .select(:user_id)
                     .where.not(user: @project.authorized_users)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

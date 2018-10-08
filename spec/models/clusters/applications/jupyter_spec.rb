@@ -51,8 +51,17 @@ describe Clusters::Applications::Jupyter do
       expect(subject.name).to eq('jupyter')
       expect(subject.chart).to eq('jupyter/jupyterhub')
       expect(subject.version).to eq('v0.6')
+      expect(subject).not_to be_rbac
       expect(subject.repository).to eq('https://jupyterhub.github.io/helm-chart/')
       expect(subject.files).to eq(jupyter.files)
+    end
+
+    context 'on a rbac enabled cluster' do
+      before do
+        jupyter.cluster.platform_kubernetes.rbac!
+      end
+
+      it { is_expected.to be_rbac }
     end
 
     context 'application failed to install previously' do
@@ -99,8 +108,15 @@ describe Clusters::Applications::Jupyter do
       expect(values).to include('rbac')
       expect(values).to include('proxy')
       expect(values).to include('auth')
+      expect(values).to include('singleuser')
       expect(values).to match(/clientId: '?#{application.oauth_application.uid}/)
       expect(values).to match(/callbackUrl: '?#{application.callback_url}/)
+    end
+
+    context 'when cluster belongs to a project' do
+      it 'sets GitLab project id' do
+        expect(values).to match(/GITLAB_CLUSTER_ID: '?#{application.cluster.id}/)
+      end
     end
   end
 end

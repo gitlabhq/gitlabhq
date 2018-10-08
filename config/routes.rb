@@ -31,7 +31,7 @@ Rails.application.routes.draw do
   # Having a non-existent controller here does not affect the scope in any way since all possible routes
   # get a 404 proc returned. It is written in this way to minimize merge conflicts with EE
   scope path: '/login/oauth', controller: 'oauth/jira/authorizations', as: :oauth_jira do
-    match ':action', via: [:get, :post], to: proc { [404, {}, ['']] }
+    match '*all', via: [:get, :post], to: proc { [404, {}, ['']] }
   end
 
   use_doorkeeper_openid_connect

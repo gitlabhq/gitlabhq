@@ -9,11 +9,13 @@ export default {
   props: {
     author: {
       type: Object,
-      required: true,
+      required: false,
+      default: () => ({}),
     },
     createdAt: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     actionText: {
       type: String,
@@ -21,8 +23,9 @@ export default {
       default: '',
     },
     noteId: {
-      type: Number,
-      required: true,
+      type: [String, Number],
+      required: false,
+      default: null,
     },
     includeToggle: {
       type: Boolean,
@@ -72,7 +75,10 @@ export default {
         {{ __('Toggle discussion') }}
       </button>
     </div>
-    <a :href="author.path">
+    <a
+      v-if="Object.keys(author).length"
+      :href="author.path"
+    >
       <span class="note-header-author-name">{{ author.name }}</span>
       <span
         v-if="author.status_tooltip_html"
@@ -81,6 +87,9 @@ export default {
         @{{ author.username }}
       </span>
     </a>
+    <span v-else>
+      {{ __('A deleted user') }}
+    </span>
     <span class="note-headline-light">
       <span class="note-headline-meta">
         <template v-if="actionText">
@@ -89,18 +98,22 @@ export default {
         <span class="system-note-message">
           <slot></slot>
         </span>
-        <span class="system-note-separator">
-          &middot;
-        </span>
-        <a
-          :href="noteTimestampLink"
-          class="note-timestamp system-note-separator"
-          @click="updateTargetNoteHash">
-          <time-ago-tooltip
-            :time="createdAt"
-            tooltip-placement="bottom"
-          />
-        </a>
+        <template
+          v-if="createdAt"
+        >
+          <span class="system-note-separator">
+            &middot;
+          </span>
+          <a
+            :href="noteTimestampLink"
+            class="note-timestamp system-note-separator"
+            @click="updateTargetNoteHash">
+            <time-ago-tooltip
+              :time="createdAt"
+              tooltip-placement="bottom"
+            />
+          </a>
+        </template>
         <i
           class="fa fa-spinner fa-spin editing-spinner"
           aria-label="Comment is being updated"

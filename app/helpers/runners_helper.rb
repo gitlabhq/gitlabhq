@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RunnersHelper
   def runner_status_icon(runner)
     status = runner.status

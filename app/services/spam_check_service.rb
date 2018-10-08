@@ -22,6 +22,7 @@ module SpamCheckService
   # a dirty instance, which means it should be already assigned with the new
   # attribute values.
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  # rubocop: disable CodeReuse/ActiveRecord
   def spam_check(spammable, user)
     spam_service = SpamService.new(spammable, @request)
 
@@ -29,5 +30,6 @@ module SpamCheckService
       user.spam_logs.find_by(id: @spam_log_id)&.update!(recaptcha_verified: true)
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 end

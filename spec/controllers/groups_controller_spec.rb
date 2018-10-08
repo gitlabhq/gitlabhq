@@ -38,14 +38,6 @@ describe GroupsController do
       project
     end
 
-    context 'as html' do
-      it 'assigns whether or not a group has children' do
-        get :show, id: group.to_param
-
-        expect(assigns(:has_children)).to be_truthy
-      end
-    end
-
     context 'as atom' do
       it 'assigns events for all the projects in the group' do
         create(:event, project: project)
@@ -54,6 +46,16 @@ describe GroupsController do
 
         expect(assigns(:events)).not_to be_empty
       end
+    end
+  end
+
+  describe 'GET edit' do
+    it 'sets the badge API endpoint' do
+      sign_in(owner)
+
+      get :edit, id: group.to_param
+
+      expect(assigns(:badge_api_endpoint)).not_to be_nil
     end
   end
 
@@ -200,8 +202,8 @@ describe GroupsController do
   end
 
   describe 'GET #issues' do
-    let(:issue_1) { create(:issue, project: project) }
-    let(:issue_2) { create(:issue, project: project) }
+    let(:issue_1) { create(:issue, project: project, title: 'foo') }
+    let(:issue_2) { create(:issue, project: project, title: 'bar') }
 
     before do
       create_list(:award_emoji, 3, awardable: issue_2)
@@ -220,6 +222,31 @@ describe GroupsController do
       it 'sorts least popular issues' do
         get :issues, id: group.to_param, sort: 'downvotes_desc'
         expect(assigns(:issues)).to eq [issue_2, issue_1]
+      end
+    end
+
+    context 'searching' do
+      # Remove as part of https://gitlab.com/gitlab-org/gitlab-ce/issues/52271
+      before do
+        stub_feature_flags(use_cte_for_group_issues_search: false)
+      end
+
+      it 'works with popularity sort' do
+        get :issues, id: group.to_param, search: 'foo', sort: 'popularity'
+
+        expect(assigns(:issues)).to eq([issue_1])
+      end
+
+      it 'works with priority sort' do
+        get :issues, id: group.to_param, search: 'foo', sort: 'priority'
+
+        expect(assigns(:issues)).to eq([issue_1])
+      end
+
+      it 'works with label priority sort' do
+        get :issues, id: group.to_param, search: 'foo', sort: 'label_priority'
+
+        expect(assigns(:issues)).to eq([issue_1])
       end
     end
   end

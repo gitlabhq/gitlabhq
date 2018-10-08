@@ -1,5 +1,5 @@
-- sum_added_lines = diff_files.sum(&:added_lines)
-- sum_removed_lines = diff_files.sum(&:removed_lines)
+- sum_added_lines = diff_files.sum(&:added_lines) # rubocop: disable CodeReuse/ActiveRecord
+- sum_removed_lines = diff_files.sum(&:removed_lines) # rubocop: disable CodeReuse/ActiveRecord
 .commit-stat-summary.dropdown
   Showing
   %button.diff-stats-summary-toggler.js-diff-stats-dropdown{ type: "button", data: { toggle: "dropdown", display: "static" } }<

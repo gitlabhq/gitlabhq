@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Settings < Grape::API
     before { authenticated_as_admin! }
@@ -102,7 +104,7 @@ module API
       end
       optional :repository_checks_enabled, type: Boolean, desc: "GitLab will periodically run 'git fsck' in all project and wiki repositories to look for silent disk corruption issues."
       optional :repository_storages, type: Array[String], desc: 'Storage paths for new projects'
-      optional :require_two_factor_authentication, type: Boolean, desc: 'Require all users to setup Two-factor authentication'
+      optional :require_two_factor_authentication, type: Boolean, desc: 'Require all users to set up Two-factor authentication'
       given require_two_factor_authentication: ->(val) { val } do
         requires :two_factor_grace_period, type: Integer, desc: 'Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication'
       end
@@ -116,11 +118,6 @@ module API
       optional :shared_runners_enabled, type: Boolean, desc: 'Enable shared runners for new projects'
       given shared_runners_enabled: ->(val) { val } do
         requires :shared_runners_text, type: String, desc: 'Shared runners text '
-      end
-      optional :sidekiq_throttling_enabled, type: Boolean, desc: 'Enable Sidekiq Job Throttling'
-      given sidekiq_throttling_enabled: ->(val) { val } do
-        requires :sidekiq_throttling_factor, type: Float, desc: 'The factor by which the queues should be throttled. A value between 0.0 and 1.0, exclusive.'
-        requires :sidekiq_throttling_queues, type: Array[String], desc: 'Choose which queues you wish to throttle'
       end
       optional :sign_in_text, type: String, desc: 'The sign in text of the GitLab application'
       optional :signin_enabled, type: Boolean, desc: 'Flag indicating if password authentication is enabled for the web interface' # support legacy names, can be removed in v5

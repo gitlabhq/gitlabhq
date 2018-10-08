@@ -3,13 +3,13 @@ import { mapState, mapActions } from 'vuex';
 import imageDiffHelper from '~/image_diff/helpers/index';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
-import SkeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
+import { SkeletonLoading } from '@gitlab-org/gitlab-ui';
 import { trimFirstCharOfLineContent } from '~/diffs/store/utils';
 
 export default {
   components: {
     DiffFileHeader,
-    SkeletonLoadingContainer,
+    SkeletonLoading,
   },
   props: {
     discussion: {
@@ -142,16 +142,15 @@ export default {
             class="line_content js-success-lazy-load"
           >
             <span></span>
-            <skeleton-loading-container />
+            <skeleton-loading />
             <span></span>
           </td>
         </tr>
         <tr class="notes_holder">
           <td
-            class="notes_line"
-            colspan="2"
-          ></td>
-          <td class="notes_content">
+            class="notes_content"
+            colspan="3"
+          >
             <slot></slot>
           </td>
         </tr>

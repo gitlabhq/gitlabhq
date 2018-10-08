@@ -10,8 +10,8 @@ import systemNote from '../../vue_shared/components/notes/system_note.vue';
 import commentForm from './comment_form.vue';
 import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
 import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import skeletonLoadingContainer from '../../vue_shared/components/notes/skeleton_note.vue';
+import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
 
 export default {
   name: 'NotesApp',
@@ -20,7 +20,6 @@ export default {
     noteableDiscussion,
     systemNote,
     commentForm,
-    loadingIcon,
     placeholderNote,
     placeholderSystemNote,
   },
@@ -98,6 +97,9 @@ export default {
       });
     }
   },
+  updated() {
+    this.$nextTick(() => highlightCurrentUser(this.$el.querySelectorAll('.gfm-project_member')));
+  },
   methods: {
     ...mapActions({
       fetchDiscussions: 'fetchDiscussions',
@@ -138,6 +140,7 @@ export default {
         .then(() => {
           this.isLoading = false;
           this.setNotesFetchedState(true);
+          eventHub.$emit('fetchedNotesData');
         })
         .then(() => this.$nextTick())
         .then(() => this.checkLocationHash())
@@ -188,10 +191,10 @@ export default {
       class="notes main-notes-list timeline"
     >
       <component
-        v-for="discussion in allDiscussions"
         :is="getComponentName(discussion)"
-        v-bind="getComponentData(discussion)"
+        v-for="discussion in allDiscussions"
         :key="discussion.id"
+        v-bind="getComponentData(discussion)"
       />
     </ul>
 

@@ -148,6 +148,24 @@ module Gitlab
         GitalyClient.call(@repository.storage, :commit_service, :count_commits, request, timeout: GitalyClient.medium_timeout).count
       end
 
+      def list_last_commits_for_tree(revision, path, offset: 0, limit: 25)
+        request = Gitaly::ListLastCommitsForTreeRequest.new(
+          repository: @gitaly_repo,
+          revision: encode_binary(revision),
+          path: encode_binary(path.to_s),
+          offset: offset,
+          limit: limit
+        )
+
+        response = GitalyClient.call(@repository.storage, :commit_service, :list_last_commits_for_tree, request, timeout: GitalyClient.medium_timeout)
+
+        response.each_with_object({}) do |gitaly_response, hsh|
+          gitaly_response.commits.each do |commit_for_tree|
+            hsh[commit_for_tree.path] = Gitlab::Git::Commit.new(@repository, commit_for_tree.commit)
+          end
+        end
+      end
+
       def last_commit_for_path(revision, path)
         request = Gitaly::LastCommitForPathRequest.new(
           repository: @gitaly_repo,
@@ -170,6 +188,17 @@ module Gitlab
 
         response = GitalyClient.call(@repository.storage, :commit_service, :commits_between, request, timeout: GitalyClient.medium_timeout)
         consume_commits_response(response)
+      end
+
+      def diff_stats(left_commit_sha, right_commit_sha)
+        request = Gitaly::DiffStatsRequest.new(
+          repository: @gitaly_repo,
+          left_commit_id: left_commit_sha,
+          right_commit_id: right_commit_sha
+        )
+
+        response = GitalyClient.call(@repository.storage, :diff_service, :diff_stats, request, timeout: GitalyClient.medium_timeout)
+        response.flat_map(&:stats)
       end
 
       def find_all_commits(opts = {})
@@ -229,27 +258,29 @@ module Gitlab
       end
 
       def find_commit(revision)
-        if RequestStore.active?
-          # We don't use RequeStstore.fetch(key) { ... } directly because `revision`
-          # can be a branch name, so we can't use it as a key as it could point
-          # to another commit later on (happens a lot in tests).
+        if Gitlab::SafeRequestStore.active?
+          # We don't use Gitlab::SafeRequestStore.fetch(key) { ... } directly
+          # because `revision` can be a branch name, so we can't use it as a key
+          # as it could point to another commit later on (happens a lot in
+          # tests).
           key = {
             storage: @gitaly_repo.storage_name,
             relative_path: @gitaly_repo.relative_path,
             commit_id: revision
           }
-          return RequestStore[key] if RequestStore.exist?(key)
+          return Gitlab::SafeRequestStore[key] if Gitlab::SafeRequestStore.exist?(key)
 
           commit = call_find_commit(revision)
           return unless commit
 
           key[:commit_id] = commit.id
-          RequestStore[key] = commit
+          Gitlab::SafeRequestStore[key] = commit
         else
           call_find_commit(revision)
         end
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def patch(revision)
         request = Gitaly::CommitPatchRequest.new(
           repository: @gitaly_repo,
@@ -259,6 +290,7 @@ module Gitlab
 
         response.sum(&:data)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def commit_stats(revision)
         request = Gitaly::CommitStatsRequest.new(
@@ -369,7 +401,7 @@ module Gitlab
         request_params[:ignore_whitespace_change] = options.fetch(:ignore_whitespace_change, false)
         request_params[:enforce_limits] = options.fetch(:limits, true)
         request_params[:collapse_diffs] = !options.fetch(:expanded, true)
-        request_params.merge!(Gitlab::Git::DiffCollection.collection_limits(options).to_h)
+        request_params.merge!(Gitlab::Git::DiffCollection.limits(options).to_h)
 
         request = Gitaly::CommitDiffRequest.new(request_params)
         response = GitalyClient.call(@repository.storage, :diff_service, :commit_diff, request, timeout: GitalyClient.medium_timeout)

@@ -11,9 +11,11 @@ module Gitlab
 
       private
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def all_relation
         Upload.all.preload(:model)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def local?(upload)
         upload.local?

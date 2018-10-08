@@ -109,7 +109,7 @@
             - selected_labels.each do |label|
               = hidden_field_tag "#{issuable.to_ability_name}[label_names][]", label.id, id: nil
             .dropdown
-              %button.dropdown-menu-toggle.js-label-select.js-multiselect.js-label-sidebar-dropdown{ type: "button", data: {toggle: "dropdown", default_label: "Labels", field_name: "#{issuable.to_ability_name}[label_names][]", ability_name: issuable.to_ability_name, show_no: "true", show_any: "true", namespace_path: @project.try(:namespace).try(:full_path), project_path: @project.try(:path), issue_update: issuable_json_path(issuable), labels: (labels_filter_path(false) if @project), display: 'static' } }
+              %button.dropdown-menu-toggle.js-label-select.js-multiselect.js-label-sidebar-dropdown{ type: "button", data: {toggle: "dropdown", default_label: "Labels", field_name: "#{issuable.to_ability_name}[label_names][]", ability_name: issuable.to_ability_name, show_no: "true", show_any: "true", namespace_path: @project.try(:namespace).try(:full_path), project_path: @project.try(:path), issue_update: issuable_json_path(issuable), labels: (labels_filter_path_with_defaults if @project), display: 'static' } }
                 %span.dropdown-toggle-text{ class: ("is-default" if selected_labels.empty?) }
                   = multi_label_name(selected_labels, "Labels")
                 = icon('chevron-down', 'aria-hidden': 'true')
@@ -159,7 +159,7 @@
               = dropdown_content
               = dropdown_loading
               = dropdown_footer add_content_class: true do
-                %button.btn.btn-new.sidebar-move-issue-confirmation-button.js-move-issue-confirmation-button{ disabled: true }
+                %button.btn.btn-success.sidebar-move-issue-confirmation-button.js-move-issue-confirmation-button{ disabled: true }
                   = _('Move')
                   = icon('spinner spin', class: 'sidebar-move-issue-confirmation-loading-icon')
 

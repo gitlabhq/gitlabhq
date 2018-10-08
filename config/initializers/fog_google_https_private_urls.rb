@@ -9,7 +9,7 @@ module Fog
         module MonkeyPatch
           def url(expires, options = {})
             requires :key
-            collection.get_https_url(key, expires)
+            collection.get_https_url(key, expires, options)
           end
         end
 

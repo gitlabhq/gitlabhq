@@ -15,7 +15,7 @@ describe 'Project Badges' do
     group.add_maintainer(user)
     sign_in(user)
 
-    visit(project_settings_badges_path(project))
+    visit(edit_project_path(project))
   end
 
   it 'shows a list of badges', :js do

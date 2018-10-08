@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SentryHelper
   def sentry_enabled?
     Gitlab::Sentry.enabled?

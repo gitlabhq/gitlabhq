@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe RemoteMirror do
+  include GitHelpers
+
   describe 'URL validation' do
     context 'with a valid URL' do
       it 'should be valid' do
@@ -74,9 +76,7 @@ describe RemoteMirror do
 
         mirror.update_attribute(:url, 'http://foo:baz@test.com')
 
-        config = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          repo.raw_repository.rugged.config
-        end
+        config = rugged_repo(repo).config
         expect(config["remote.#{mirror.remote_name}.url"]).to eq('http://foo:baz@test.com')
       end
 

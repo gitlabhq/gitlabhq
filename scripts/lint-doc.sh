@@ -5,7 +5,7 @@ cd "$(dirname "$0")/.."
 # Use long options (e.g. --header instead of -H) for curl examples in documentation.
 echo '=> Checking for cURL short options...'
 grep --extended-regexp --recursive --color=auto 'curl (.+ )?-[^- ].*' doc/ >/dev/null 2>&1
-if [ $? == 0 ]
+if [ $? -eq 0 ]
 then
   echo '✖ ERROR: Short options for curl should not be used in documentation!
          Use long options (e.g., --header instead of -H):' >&2

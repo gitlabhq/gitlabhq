@@ -25,7 +25,7 @@
             show_no: "true",
             show_any: "true",
             project_id: @project&.try(:id),
-            labels: labels_filter_path(false),
+            labels: labels_filter_path_with_defaults,
             namespace_path: @namespace_path,
             project_path: @project.try(:path) } }
           %span.dropdown-toggle-text

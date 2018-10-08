@@ -40,9 +40,9 @@ In order to deploy GitLab on Kubernetes, the following are required:
 
 1. `helm` and `kubectl` [installed on your computer](preparation/tools_installation.md).
 1. A Kubernetes cluster, version 1.8 or higher. 6vCPU and 16GB of RAM is recommended.
-  - [Google GKE](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-container-cluster)
-  - [Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
-  - [Microsoft AKS](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough-portal)
+   - [Google GKE](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-container-cluster)
+   - [Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
+   - [Microsoft AKS](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough-portal)
 1. A [wildcard DNS entry and external IP address](preparation/networking.md)
 1. [Authenticate and connect](preparation/connect.md) to the cluster
 1. Configure and initialize [Helm Tiller](preparation/tiller.md).
@@ -52,7 +52,7 @@ In order to deploy GitLab on Kubernetes, the following are required:
 To deploy GitLab, the following three parameters are required:
 
 - `global.hosts.domain`: the [base domain](preparation/networking.md) of the
-  wildcard host entry. For example, `exampe.com` if the wild card entry is
+  wildcard host entry. For example, `example.com` if the wild card entry is
   `*.example.com`.
 - `global.hosts.externalIP`: the [external IP](preparation/networking.md) which
   the wildcard DNS resolves to.
@@ -93,7 +93,7 @@ You can access the GitLab instance by visiting the domain name beginning with
 above, the URL would be `https://gitlab.example.com`.
 
 If you manually created the secret for initial root password, you
-can use that to sign in as `root` user. If not, Gitlab automatically
+can use that to sign in as `root` user. If not, GitLab automatically
 created a random password for `root` user. This can be extracted by the
 following command (replace `<name>` by name of the release - which is `gitlab`
 if you used the command above):
@@ -123,6 +123,8 @@ To deploy the Community Edition, include these options in your `helm install` co
 --set gitlab.migrations.image.repository=registry.gitlab.com/gitlab-org/build/cng/gitlab-rails-ce
 --set gitlab.sidekiq.image.repository=registry.gitlab.com/gitlab-org/build/cng/gitlab-sidekiq-ce
 --set gitlab.unicorn.image.repository=registry.gitlab.com/gitlab-org/build/cng/gitlab-unicorn-ce
+--set gitlab.unicorn.workhorse.image=registry.gitlab.com/gitlab-org/build/cng/gitlab-workhorse-ce
+--set gitlab.task-runner.image.repository=registry.gitlab.com/gitlab-org/build/cng/gitlab-task-runner-ce
 ```
 
 ## Updating GitLab using the Helm Chart
@@ -131,6 +133,7 @@ Once your GitLab Chart is installed, configuration changes and chart updates
 should be done using `helm upgrade`:
 
 ```sh
+helm repo update
 helm upgrade --reuse-values gitlab gitlab/gitlab
 ```
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Controller for a specific Commit
 #
 # Not to be confused with CommitsController, plural.
@@ -38,6 +40,7 @@ class Projects::CommitController < Projects::ApplicationController
     render_diff_for_path(@commit.diffs(diff_options))
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def pipelines
     @pipelines = @commit.pipelines.order(id: :desc)
     @pipelines = @pipelines.where(ref: params[:ref]) if params[:ref]
@@ -58,6 +61,7 @@ class Projects::CommitController < Projects::ApplicationController
       end
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def merge_requests
     @merge_requests = @commit.merge_requests.map do |mr|
@@ -144,6 +148,7 @@ class Projects::CommitController < Projects::ApplicationController
     @environment = EnvironmentsFinder.new(@project, current_user, commit: @commit).execute.last
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def define_note_vars
     @noteable = @commit
     @note = @project.build_commit_note(commit)
@@ -176,6 +181,7 @@ class Projects::CommitController < Projects::ApplicationController
     @notes = (@grouped_diff_discussions.values.flatten + @discussions).flat_map(&:notes)
     @notes = prepare_notes_for_rendering(@notes, @commit)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def assign_change_commit_vars
     @start_branch = params[:start_branch]

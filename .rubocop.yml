@@ -35,6 +35,25 @@ Style/MutableConstant:
 Style/SafeNavigation:
   Enabled: false
 
+# Frozen String Literal
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  Exclude:
+    - 'config.ru'
+    - 'Dangerfile'
+    - 'Gemfile'
+    - 'Rakefile'
+    - 'app/views/**/*'
+    - 'config/**/*'
+    - 'danger/**/*'
+    - 'db/**/*'
+    - 'ee/**/*'
+    - 'lib/**/*'
+    - 'qa/**/*'
+    - 'rubocop/**/*'
+    - 'scripts/**/*'
+    - 'spec/**/*'
+
 Naming/FileName:
   ExpectMatchingDefinition: true
   Exclude:
@@ -111,7 +130,7 @@ Naming/FileName:
     - XSRF
     - XSS
 
-# Gitlab ###################################################################
+# GitLab ###################################################################
 
 Gitlab/ModuleWithInstanceVariables:
   Enable: true

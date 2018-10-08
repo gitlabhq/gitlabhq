@@ -7,6 +7,7 @@ import DropdownHint from './dropdown_hint';
 import DropdownEmoji from './dropdown_emoji';
 import DropdownNonUser from './dropdown_non_user';
 import DropdownUser from './dropdown_user';
+import NullDropdown from './null_dropdown';
 import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
 
 export default class FilteredSearchDropdownManager {
@@ -90,6 +91,21 @@ export default class FilteredSearchDropdownManager {
         gl: DropdownEmoji,
         element: this.container.querySelector('#js-dropdown-my-reaction'),
       },
+      wip: {
+        reference: null,
+        gl: DropdownNonUser,
+        element: this.container.querySelector('#js-dropdown-wip'),
+      },
+      status: {
+        reference: null,
+        gl: NullDropdown,
+        element: this.container.querySelector('#js-dropdown-admin-runner-status'),
+      },
+      type: {
+        reference: null,
+        gl: NullDropdown,
+        element: this.container.querySelector('#js-dropdown-admin-runner-type'),
+      },
     };
 
     supportedTokens.forEach((type) => {
@@ -125,10 +141,16 @@ export default class FilteredSearchDropdownManager {
     return endpoint;
   }
 
-  static addWordToInput(tokenName, tokenValue = '', clicked = false) {
+  static addWordToInput(tokenName, tokenValue = '', clicked = false, options = {}) {
+    const {
+      uppercaseTokenName = false,
+      capitalizeTokenValue = false,
+    } = options;
     const input = FilteredSearchContainer.container.querySelector('.filtered-search');
-
-    FilteredSearchVisualTokens.addFilterVisualToken(tokenName, tokenValue);
+    FilteredSearchVisualTokens.addFilterVisualToken(tokenName, tokenValue, {
+      uppercaseTokenName,
+      capitalizeTokenValue,
+    });
     input.value = '';
 
     if (clicked) {

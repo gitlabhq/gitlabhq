@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ApplicationSettingsHelper
   extend self
 
@@ -73,12 +75,12 @@ module ApplicationSettingsHelper
   def oauth_providers_checkboxes
     button_based_providers.map do |source|
       disabled = Gitlab::CurrentSettings.disabled_oauth_sign_in_sources.include?(source.to_s)
-      css_class = 'btn'
-      css_class << ' active' unless disabled
+      css_class = ['btn']
+      css_class << 'active' unless disabled
       checkbox_name = 'application_setting[enabled_oauth_sign_in_sources][]'
       name = Gitlab::Auth::OAuth::Provider.label_for(source)
 
-      label_tag(checkbox_name, class: css_class) do
+      label_tag(checkbox_name, class: css_class.join(' ')) do
         check_box_tag(checkbox_name, source, !disabled,
                       autocomplete: 'off',
                       id: name.tr(' ', '_')) + name
@@ -104,10 +106,6 @@ module ApplicationSettingsHelper
     end
 
     options_for_select(options, selected)
-  end
-
-  def sidekiq_queue_options_for_select
-    options_for_select(Sidekiq::Queue.all.map(&:name), @application_setting.sidekiq_throttling_queues)
   end
 
   def circuitbreaker_failure_count_help_text
@@ -220,6 +218,7 @@ module ApplicationSettingsHelper
       :recaptcha_enabled,
       :recaptcha_private_key,
       :recaptcha_site_key,
+      :receive_max_input_size,
       :repository_checks_enabled,
       :repository_storages,
       :require_two_factor_authentication,
@@ -231,9 +230,6 @@ module ApplicationSettingsHelper
       :session_expire_delay,
       :shared_runners_enabled,
       :shared_runners_text,
-      :sidekiq_throttling_enabled,
-      :sidekiq_throttling_factor,
-      :sidekiq_throttling_queues,
       :sign_in_text,
       :signup_enabled,
       :terminal_max_session_time,
@@ -258,7 +254,12 @@ module ApplicationSettingsHelper
       :user_default_internal_regex,
       :user_oauth_applications,
       :version_check_enabled,
-      :web_ide_clientside_preview_enabled
+      :web_ide_clientside_preview_enabled,
+      :diff_max_patch_bytes
     ]
+  end
+
+  def expanded_by_default?
+    Rails.env.test?
   end
 end

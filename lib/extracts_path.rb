@@ -54,7 +54,7 @@ module ExtractsPath
 
       valid_refs = ref_names.select { |v| id.start_with?("#{v}/") }
 
-      if valid_refs.length == 0
+      if valid_refs.empty?
         # No exact ref match, so just try our best
         pair = id.match(%r{([^/]+)(.*)}).captures
       else

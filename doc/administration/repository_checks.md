@@ -18,7 +18,8 @@ repositories and wiki repositories in order to detect data corruption.
 A project will be checked no more than once per month. If any projects
 fail their repository checks all GitLab administrators will receive an email
 notification of the situation. This notification is sent out once a week,
-by default, midnight at the start of Sunday.
+by default, midnight at the start of Sunday. Repositories with known check
+failures can be found at `/admin/projects?last_repository_check_failed=1`.
 
 ## Disabling periodic checks
 

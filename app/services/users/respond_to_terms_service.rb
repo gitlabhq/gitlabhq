@@ -6,6 +6,7 @@ module Users
       @user, @term = user, term
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def execute(accepted:)
       agreement = @user.term_agreements.find_or_initialize_by(term: @term)
       agreement.accepted = accepted
@@ -16,6 +17,7 @@ module Users
 
       agreement
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     private
 

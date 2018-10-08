@@ -18,7 +18,7 @@ module Gitlab
 
           Rails.logger.info("Saved project export #{archive_file}")
 
-          save_on_object_storage if use_object_storage?
+          save_upload
         else
           @shared.error(Gitlab::ImportExport::Error.new(error_message))
           false
@@ -27,10 +27,8 @@ module Gitlab
         @shared.error(e)
         false
       ensure
-        if use_object_storage?
-          remove_archive
-          remove_export_path
-        end
+        remove_archive
+        remove_export_path
       end
 
       private
@@ -51,7 +49,7 @@ module Gitlab
         @archive_file ||= File.join(@shared.archive_path, Gitlab::ImportExport.export_filename(project: @project))
       end
 
-      def save_on_object_storage
+      def save_upload
         upload = ImportExportUpload.find_or_initialize_by(project: @project)
 
         File.open(archive_file) { |file| upload.export_file = file }
@@ -59,12 +57,8 @@ module Gitlab
         upload.save!
       end
 
-      def use_object_storage?
-        Gitlab::ImportExport.object_storage?
-      end
-
       def error_message
-        "Unable to save #{archive_file} into #{@shared.export_path}. Object storage enabled: #{use_object_storage?}"
+        "Unable to save #{archive_file} into #{@shared.export_path}."
       end
     end
   end

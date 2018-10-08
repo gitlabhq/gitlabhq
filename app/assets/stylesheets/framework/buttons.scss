@@ -147,22 +147,21 @@
   }
 
   &.btn-success,
-  &.btn-new,
-  &.btn-create,
-  &.btn-save {
+  &.btn-register {
     @include btn-green;
   }
 
   &.btn-inverted {
-    &.btn-success,
-    &.btn-new,
-    &.btn-create,
-    &.btn-save {
+    &.btn-success {
       @include btn-outline($white-light, $green-600, $green-500, $green-500, $white-light, $green-600, $green-600, $green-700);
     }
 
     &.btn-remove {
       @include btn-outline($white-light, $red-500, $red-500, $red-500, $white-light, $red-600, $red-600, $red-700);
+    }
+
+    &.btn-warning {
+      @include btn-outline($white-light, $orange-500, $orange-500, $orange-500, $white-light, $orange-600, $orange-600, $orange-700);
     }
 
     &.btn-primary,
@@ -172,8 +171,7 @@
   }
 
   &.btn-info,
-  &.btn-primary,
-  &.btn-register {
+  &.btn-primary {
     @include btn-blue;
   }
 
@@ -248,7 +246,7 @@
 .btn-terminal {
   svg {
     height: 14px;
-    width: 18px;
+    width: $default-icon-size;
   }
 }
 
@@ -362,10 +360,14 @@
   i {
     color: $gl-text-color-secondary;
   }
+
+  svg {
+    fill: $gl-text-color-secondary;
+  }
 }
 
 .clone-dropdown-btn a {
-  color: $dropdown-link-color;
+  color: $gl-gray-700;
 
   &:hover {
     text-decoration: none;

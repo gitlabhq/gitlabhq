@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_dependency 'declarative_policy'
 
 module API
@@ -198,6 +200,7 @@ module API
         use :optional_project_params
         use :create_params
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       post "user/:user_id" do
         authenticated_as_admin!
         user = User.find_by(id: params.delete(:user_id))
@@ -214,6 +217,7 @@ module API
           render_validation_error!(project)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     params do
@@ -281,6 +285,12 @@ module API
         forks = ForkProjectsFinder.new(user_project, params: project_finder_params, current_user: current_user).execute
 
         present_projects forks
+      end
+
+      desc 'Check pages access of this project'
+      get ':id/pages_access' do
+        authorize! :read_pages_content, user_project unless user_project.public_pages?
+        status 200
       end
 
       desc 'Update an existing project' do
@@ -444,6 +454,7 @@ module API
       params do
         requires :group_id, type: Integer, desc: 'The ID of the group'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       delete ":id/share/:group_id" do
         authorize! :admin_project, user_project
 
@@ -452,6 +463,7 @@ module API
 
         destroy_conditionally!(link)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Upload a file'
       params do

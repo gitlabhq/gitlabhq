@@ -6,12 +6,14 @@ import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import { activityBarViews, viewerTypes } from '../constants';
 import Editor from '../lib/editor';
 import ExternalLink from './external_link.vue';
+import FileTemplatesBar from './file_templates/bar.vue';
 
 export default {
   components: {
     ContentViewer,
     DiffViewer,
     ExternalLink,
+    FileTemplatesBar,
   },
   props: {
     file: {
@@ -20,12 +22,14 @@ export default {
     },
   },
   computed: {
+    ...mapState('rightPane', {
+      rightPaneIsOpen: 'isOpen',
+    }),
     ...mapState([
       'rightPanelCollapsed',
       'viewer',
       'panelResizing',
       'currentActivityView',
-      'rightPane',
     ]),
     ...mapGetters([
       'currentMergeRequest',
@@ -34,6 +38,7 @@ export default {
       'isCommitModeActive',
       'isReviewModeActive',
     ]),
+    ...mapGetters('fileTemplates', ['showFileTemplatesBar']),
     shouldHideEditor() {
       return this.file && this.file.binary && !this.file.content;
     },
@@ -96,7 +101,7 @@ export default {
         this.editor.updateDimensions();
       }
     },
-    rightPane() {
+    rightPaneIsOpen() {
       this.editor.updateDimensions();
     },
   },
@@ -216,7 +221,7 @@ export default {
     id="ide"
     class="blob-viewer-container blob-editor-container"
   >
-    <div class="ide-mode-tabs clearfix" >
+    <div class="ide-mode-tabs clearfix">
       <ul
         v-if="!shouldHideEditor && isEditModeActive"
         class="nav-links float-left"
@@ -249,6 +254,9 @@ export default {
         :file="file"
       />
     </div>
+    <file-templates-bar
+      v-if="showFileTemplatesBar(file.name)"
+    />
     <div
       v-show="!shouldHideEditor && file.viewMode ==='editor'"
       ref="editor"

@@ -15,6 +15,7 @@ module Gitlab
       Gitlab::CurrentSettings.performance_bar_allowed_group_id
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def self.allowed_user_ids
       Rails.cache.fetch(ALLOWED_USER_IDS_KEY, expires_in: EXPIRY_TIME) do
         group = Group.find_by_id(allowed_group_id)
@@ -26,6 +27,7 @@ module Gitlab
         end
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def self.expire_allowed_user_ids_cache
       Rails.cache.delete(ALLOWED_USER_IDS_KEY)

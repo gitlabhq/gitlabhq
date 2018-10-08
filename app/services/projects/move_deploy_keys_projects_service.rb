@@ -20,11 +20,13 @@ module Projects
         .update_all(project_id: @project.id)
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def non_existent_deploy_keys_projects
       source_project.deploy_keys_projects
                     .joins(:deploy_key)
                     .where.not(keys: { fingerprint: @project.deploy_keys.select(:fingerprint) })
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def remove_remaining_deploy_keys_projects
       source_project.deploy_keys_projects.destroy_all # rubocop: disable DestroyAll

@@ -37,6 +37,7 @@ From there, you can:
 [use GitLab as an OAuth provider](../../integration/oauth_provider.md#introduction-to-oauth)
 - Manage [personal access tokens](personal_access_tokens.md) to access your account via API and authorized applications
 - Add and delete emails linked to your account
+- Choose which email to use for notifications, web-based commits, and display on your public profile
 - Manage [SSH keys](../../ssh/README.md#ssh) to access your account via SSH
 - Manage your [preferences](preferences.md#syntax-highlighting-theme)
 to customize your own GitLab experience
@@ -91,6 +92,18 @@ To enable private profile:
 NOTE: **Note:**
 You and GitLab admins can see your the abovementioned information on your profile even if it is private.
 
+## Private contributions
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/14078) in GitLab 11.3.
+
+Enabling private contributions will include contributions to private projects, in the user contribution calendar graph and user recent activity. 
+
+To enable private contributions:
+
+1. Navigate to your personal [profile settings](#profile-settings).
+2. Check the "Private contributions" option.
+3. Hit **Update profile settings**.
+
 ## Current status
 
 > Introduced in GitLab 11.2.
@@ -101,6 +114,13 @@ Other users can then take your status into consideration when responding to your
 Please be aware that your status is publicly visible even if your [profile is private](#private-profile).
 
 To set your current status:
+
+1. Open the user menu in the top-right corner of the navigation bar.
+1. Hit **Set status**, or **Edit status** if you have already set a status.
+1. Set the emoji and/or status message to your liking.
+1. Hit **Set status**. Alternatively, you can also hit **Remove status** to remove your user status entirely.
+
+or
 
 1. Navigate to your personal [profile settings](#profile-settings).
 1. In the text field below `Your status`, enter your status message.

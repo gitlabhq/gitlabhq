@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DeployTokensHelper
   def expand_deploy_tokens_section?(deploy_token)
     deploy_token.persisted? ||

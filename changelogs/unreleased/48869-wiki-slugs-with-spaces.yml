@@ -1,5 +1,0 @@
----
-title: Allow spaces in wiki markdown links when using CommonMark
-merge_request: 20417
-author:
-type: fixed

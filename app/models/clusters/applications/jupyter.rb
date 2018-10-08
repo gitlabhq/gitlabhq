@@ -40,6 +40,7 @@ module Clusters
         Gitlab::Kubernetes::Helm::InstallCommand.new(
           name: name,
           version: VERSION,
+          rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,
           files: files,
           repository: repository
@@ -71,6 +72,11 @@ module Clusters
               "clientId" => oauth_application.uid,
               "clientSecret" => oauth_application.secret,
               "callbackUrl" => callback_url
+            }
+          },
+          "singleuser" => {
+            "extraEnv" => {
+              "GITLAB_CLUSTER_ID" => cluster.id
             }
           }
         }

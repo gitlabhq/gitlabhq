@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::BranchesController < Projects::ApplicationController
   include ActionView::Helpers::SanitizeHelper
   include SortingHelper
@@ -48,6 +50,7 @@ class Projects::BranchesController < Projects::ApplicationController
     @branches = @repository.recent_branches
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def create
     branch_name = sanitize(strip_tags(params[:branch_name]))
     branch_name = Addressable::URI.unescape(branch_name)
@@ -88,6 +91,7 @@ class Projects::BranchesController < Projects::ApplicationController
       end
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def destroy
     @branch_name = Addressable::URI.unescape(params[:id])

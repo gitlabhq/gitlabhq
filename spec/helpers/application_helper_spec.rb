@@ -3,48 +3,66 @@ require 'spec_helper'
 
 describe ApplicationHelper do
   describe 'current_controller?' do
-    it 'returns true when controller matches argument' do
+    before do
       stub_controller_name('foo')
+    end
 
-      expect(helper.current_controller?(:foo)).to eq true
+    it 'returns true when controller matches argument' do
+      expect(helper.current_controller?(:foo)).to be_truthy
     end
 
     it 'returns false when controller does not match argument' do
-      stub_controller_name('foo')
-
-      expect(helper.current_controller?(:bar)).to eq false
+      expect(helper.current_controller?(:bar)).to be_falsey
     end
 
     it 'takes any number of arguments' do
-      stub_controller_name('foo')
+      expect(helper.current_controller?(:baz, :bar)).to be_falsey
+      expect(helper.current_controller?(:baz, :bar, :foo)).to be_truthy
+    end
 
-      expect(helper.current_controller?(:baz, :bar)).to eq false
-      expect(helper.current_controller?(:baz, :bar, :foo)).to eq true
+    context 'when namespaced' do
+      before do
+        stub_controller_path('bar/foo')
+      end
+
+      it 'returns true when controller matches argument' do
+        expect(helper.current_controller?(:foo)).to be_truthy
+      end
+
+      it 'returns true when controller and namespace matches argument in path notation' do
+        expect(helper.current_controller?('bar/foo')).to be_truthy
+      end
+
+      it 'returns false when namespace doesnt match' do
+        expect(helper.current_controller?('foo/foo')).to be_falsey
+      end
     end
 
     def stub_controller_name(value)
       allow(helper.controller).to receive(:controller_name).and_return(value)
     end
+
+    def stub_controller_path(value)
+      allow(helper.controller).to receive(:controller_path).and_return(value)
+    end
   end
 
   describe 'current_action?' do
-    it 'returns true when action matches' do
+    before do
       stub_action_name('foo')
+    end
 
-      expect(helper.current_action?(:foo)).to eq true
+    it 'returns true when action matches' do
+      expect(helper.current_action?(:foo)).to be_truthy
     end
 
     it 'returns false when action does not match' do
-      stub_action_name('foo')
-
-      expect(helper.current_action?(:bar)).to eq false
+      expect(helper.current_action?(:bar)).to be_falsey
     end
 
     it 'takes any number of arguments' do
-      stub_action_name('foo')
-
-      expect(helper.current_action?(:baz, :bar)).to eq false
-      expect(helper.current_action?(:baz, :bar, :foo)).to eq true
+      expect(helper.current_action?(:baz, :bar)).to be_falsey
+      expect(helper.current_action?(:baz, :bar, :foo)).to be_truthy
     end
 
     def stub_action_name(value)
@@ -100,8 +118,7 @@ describe ApplicationHelper do
     end
 
     it 'accepts a custom html_class' do
-      expect(element(html_class: 'custom_class').attr('class'))
-        .to eq 'js-timeago custom_class'
+      expect(element(html_class: 'custom_class').attr('class')).to eq 'js-timeago custom_class'
     end
 
     it 'accepts a custom tooltip placement' do
@@ -114,6 +131,7 @@ describe ApplicationHelper do
 
     it 'add class for the short format' do
       timeago_element = element(short_format: 'short')
+
       expect(timeago_element.attr('class')).to eq 'js-short-timeago'
       expect(timeago_element.next_element).to eq nil
     end
@@ -128,11 +146,9 @@ describe ApplicationHelper do
     context 'when alternate support url is specified' do
       let(:alternate_url) { 'http://company.example.com/getting-help' }
 
-      before do
-        stub_application_setting(help_page_support_url: alternate_url)
-      end
-
       it 'returns the alternate support url' do
+        stub_application_setting(help_page_support_url: alternate_url)
+
         expect(helper.support_url).to eq(alternate_url)
       end
     end
@@ -155,9 +171,10 @@ describe ApplicationHelper do
   describe '#autocomplete_data_sources' do
     let(:project) { create(:project) }
     let(:noteable_type) { Issue }
+
     it 'returns paths for autocomplete_sources_controller' do
       sources = helper.autocomplete_data_sources(project, noteable_type)
-      expect(sources.keys).to match_array([:members, :issues, :mergeRequests, :labels, :milestones, :commands])
+      expect(sources.keys).to match_array([:members, :issues, :mergeRequests, :labels, :milestones, :commands, :snippets])
       sources.keys.each do |key|
         expect(sources[key]).not_to be_nil
       end

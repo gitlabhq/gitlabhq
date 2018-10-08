@@ -176,9 +176,7 @@ describe Ci::Build do
       it 'does not execute a query for selecting job artifact one by one' do
         recorded = ActiveRecord::QueryRecorder.new do
           subject.each do |build|
-            Ci::JobArtifact::TEST_REPORT_FILE_TYPES.each do |file_type|
-              build.public_send("job_artifacts_#{file_type}").file.exists?
-            end
+            build.job_artifacts.map { |a| a.file.exists? }
           end
         end
 
@@ -207,6 +205,155 @@ describe Ci::Build do
       it 'does not change build status' do
         expect(build.actionize).to be false
         expect(build.reload).to be_pending
+      end
+    end
+  end
+
+  describe '#schedulable?' do
+    subject { build.schedulable? }
+
+    context 'when build is schedulable' do
+      let(:build) { create(:ci_build, :created, :schedulable, project: project) }
+
+      it { expect(subject).to be_truthy }
+
+      context 'when feature flag is diabled' do
+        before do
+          stub_feature_flags(ci_enable_scheduled_build: false)
+        end
+
+        it { expect(subject).to be_falsy }
+      end
+    end
+
+    context 'when build is not schedulable' do
+      let(:build) { create(:ci_build, :created, project: project) }
+
+      it { expect(subject).to be_falsy }
+    end
+  end
+
+  describe '#schedule' do
+    subject { build.schedule }
+
+    before do
+      project.add_developer(user)
+    end
+
+    let(:build) { create(:ci_build, :created, :schedulable, user: user, project: project) }
+
+    it 'transits to scheduled' do
+      allow(Ci::BuildScheduleWorker).to receive(:perform_at)
+
+      subject
+
+      expect(build).to be_scheduled
+    end
+
+    it 'updates scheduled_at column' do
+      allow(Ci::BuildScheduleWorker).to receive(:perform_at)
+
+      subject
+
+      expect(build.scheduled_at).not_to be_nil
+    end
+
+    it 'schedules BuildScheduleWorker at the right time' do
+      Timecop.freeze do
+        expect(Ci::BuildScheduleWorker)
+          .to receive(:perform_at).with(1.minute.since, build.id)
+
+        subject
+      end
+    end
+  end
+
+  describe '#unschedule' do
+    subject { build.unschedule }
+
+    context 'when build is scheduled' do
+      let(:build) { create(:ci_build, :scheduled, pipeline: pipeline) }
+
+      it 'cleans scheduled_at column' do
+        subject
+
+        expect(build.scheduled_at).to be_nil
+      end
+
+      it 'transits to manual' do
+        subject
+
+        expect(build).to be_manual
+      end
+    end
+
+    context 'when build is not scheduled' do
+      let(:build) { create(:ci_build, :created, pipeline: pipeline) }
+
+      it 'does not transit status' do
+        subject
+
+        expect(build).to be_created
+      end
+    end
+  end
+
+  describe '#options_scheduled_at' do
+    subject { build.options_scheduled_at }
+
+    let(:build) { build_stubbed(:ci_build, options: option) }
+
+    context 'when start_in is 1 day' do
+      let(:option) { { start_in: '1 day' } }
+
+      it 'returns date after 1 day' do
+        Timecop.freeze do
+          is_expected.to eq(1.day.since)
+        end
+      end
+    end
+
+    context 'when start_in is 1 week' do
+      let(:option) { { start_in: '1 week' } }
+
+      it 'returns date after 1 week' do
+        Timecop.freeze do
+          is_expected.to eq(1.week.since)
+        end
+      end
+    end
+  end
+
+  describe '#enqueue_scheduled' do
+    subject { build.enqueue_scheduled }
+
+    before do
+      stub_feature_flags(ci_enable_scheduled_build: true)
+    end
+
+    context 'when build is scheduled and the right time has not come yet' do
+      let(:build) { create(:ci_build, :scheduled, pipeline: pipeline) }
+
+      it 'does not transits the status' do
+        subject
+
+        expect(build).to be_scheduled
+      end
+    end
+
+    context 'when build is scheduled and the right time has already come' do
+      let(:build) { create(:ci_build, :expired_scheduled, pipeline: pipeline) }
+
+      it 'cleans scheduled_at column' do
+        subject
+
+        expect(build.scheduled_at).to be_nil
+      end
+
+      it 'transits to pending' do
+        subject
+
+        expect(build).to be_pending
       end
     end
   end
@@ -550,41 +697,19 @@ describe Ci::Build do
     end
   end
 
-  describe '#has_test_reports?' do
-    subject { build.has_test_reports? }
+  describe '#has_job_artifacts?' do
+    subject { build.has_job_artifacts? }
 
-    context 'when build has a test report' do
-      let(:build) { create(:ci_build, :test_reports) }
+    context 'when build has a job artifact' do
+      let(:build) { create(:ci_build, :artifacts) }
 
       it { is_expected.to be_truthy }
     end
 
-    context 'when build does not have test reports' do
-      let(:build) { create(:ci_build, :artifacts) }
+    context 'when build does not have job artifacts' do
+      let(:build) { create(:ci_build, :legacy_artifacts) }
 
       it { is_expected.to be_falsy }
-    end
-  end
-
-  describe '#erase_test_reports!' do
-    subject { build.erase_test_reports! }
-
-    context 'when build has a test report' do
-      let!(:build) { create(:ci_build, :test_reports) }
-
-      it 'removes a test report' do
-        subject
-
-        expect(build.has_test_reports?).to be_falsy
-      end
-    end
-
-    context 'when build does not have test reports' do
-      let!(:build) { create(:ci_build, :artifacts) }
-
-      it 'does not erase anything' do
-        expect { subject }.not_to change { Ci::JobArtifact.count }
-      end
     end
   end
 
@@ -850,8 +975,8 @@ describe Ci::Build do
         expect(build.artifacts_metadata.exists?).to be_falsy
       end
 
-      it 'removes test reports' do
-        expect(build.job_artifacts.test_reports.count).to eq(0)
+      it 'removes all job_artifacts' do
+        expect(build.job_artifacts.count).to eq(0)
       end
 
       it 'erases build trace in trace file' do
@@ -1018,6 +1143,32 @@ describe Ci::Build do
             end
           end
         end
+      end
+    end
+  end
+
+  describe '#erase_erasable_artifacts!' do
+    let!(:build) { create(:ci_build, :success) }
+
+    subject { build.erase_erasable_artifacts! }
+
+    before do
+      Ci::JobArtifact.file_types.keys.each do |file_type|
+        create(:ci_job_artifact, job: build, file_type: file_type, file_format: Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[file_type.to_sym])
+      end
+    end
+
+    it "erases erasable artifacts" do
+      subject
+
+      expect(build.job_artifacts.erasable).to be_empty
+    end
+
+    it "keeps non erasable artifacts" do
+      subject
+
+      Ci::JobArtifact::NON_ERASABLE_FILE_TYPES.each do |file_type|
+        expect(build.send("job_artifacts_#{file_type}")).not_to be_nil
       end
     end
   end
@@ -1191,6 +1342,12 @@ describe Ci::Build do
         it { is_expected.to be_truthy }
       end
 
+      context 'when is set to delayed' do
+        let(:value) { 'delayed' }
+
+        it { is_expected.to be_truthy }
+      end
+
       context 'when set to something else' do
         let(:value) { 'something else' }
 
@@ -1273,6 +1430,19 @@ describe Ci::Build do
 
         expect(artifact.reload.expire_at).to be_nil
       end
+    end
+  end
+
+  describe '#artifacts_file_for_type' do
+    let(:build) { create(:ci_build, :artifacts) }
+    let(:file_type) { :archive }
+
+    subject { build.artifacts_file_for_type(file_type) }
+
+    it 'queries artifacts for type' do
+      expect(build).to receive_message_chain(:job_artifacts, :find_by).with(file_type: Ci::JobArtifact.file_types[file_type])
+
+      subject
     end
   end
 
@@ -1459,6 +1629,12 @@ describe Ci::Build do
 
         it { is_expected.to be_playable }
       end
+    end
+
+    context 'when build is scheduled' do
+      subject { build_stubbed(:ci_build, :scheduled) }
+
+      it { is_expected.to be_playable }
     end
 
     context 'when build is not a manual action' do
@@ -1676,6 +1852,7 @@ describe Ci::Build do
 
   describe '#variables' do
     let(:container_registry_enabled) { false }
+    let(:gitlab_version_info) { Gitlab::VersionInfo.parse(Gitlab::VERSION) }
     let(:predefined_variables) do
       [
         { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
@@ -1693,6 +1870,9 @@ describe Ci::Build do
         { key: 'GITLAB_FEATURES', value: project.licensed_features.join(','), public: true },
         { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
         { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
+        { key: 'CI_SERVER_VERSION_MAJOR', value: gitlab_version_info.major.to_s, public: true },
+        { key: 'CI_SERVER_VERSION_MINOR', value: gitlab_version_info.minor.to_s, public: true },
+        { key: 'CI_SERVER_VERSION_PATCH', value: gitlab_version_info.patch.to_s, public: true },
         { key: 'CI_SERVER_REVISION', value: Gitlab.revision, public: true },
         { key: 'CI_JOB_NAME', value: 'test', public: true },
         { key: 'CI_JOB_STAGE', value: 'test', public: true },
@@ -2844,14 +3024,8 @@ describe Ci::Build do
         end
 
         it 'raises an error' do
-          expect { subject }.to raise_error(Gitlab::Ci::Parsers::Junit::JunitParserError)
+          expect { subject }.to raise_error(Gitlab::Ci::Parsers::Test::Junit::JunitParserError)
         end
-      end
-    end
-
-    context 'when build does not have test reports' do
-      it 'raises an error' do
-        expect { subject }.to raise_error(NoMethodError)
       end
     end
   end
@@ -2979,6 +3153,48 @@ describe Ci::Build do
 
         it { is_expected.to be_falsey }
       end
+    end
+  end
+
+  describe '#deployment_status' do
+    context 'when build is a last deployment' do
+      let(:build) { create(:ci_build, :success, environment: 'production') }
+      let(:environment) { create(:environment, name: 'production', project: build.project) }
+      let!(:deployment) { create(:deployment, environment: environment, project: environment.project, deployable: build) }
+
+      it { expect(build.deployment_status).to eq(:last) }
+    end
+
+    context 'when there is a newer build with deployment' do
+      let(:build) { create(:ci_build, :success, environment: 'production') }
+      let(:environment) { create(:environment, name: 'production', project: build.project) }
+      let!(:deployment) { create(:deployment, environment: environment, project: environment.project, deployable: build) }
+      let!(:last_deployment) { create(:deployment, environment: environment, project: environment.project) }
+
+      it { expect(build.deployment_status).to eq(:out_of_date) }
+    end
+
+    context 'when build with deployment has failed' do
+      let(:build) { create(:ci_build, :failed, environment: 'production') }
+      let(:environment) { create(:environment, name: 'production', project: build.project) }
+      let!(:deployment) { create(:deployment, environment: environment, project: environment.project, deployable: build) }
+
+      it { expect(build.deployment_status).to eq(:failed) }
+    end
+
+    context 'when build with deployment is running' do
+      let(:build) { create(:ci_build, environment: 'production') }
+      let(:environment) { create(:environment, name: 'production', project: build.project) }
+      let!(:deployment) { create(:deployment, environment: environment, project: environment.project, deployable: build) }
+
+      it { expect(build.deployment_status).to eq(:creating) }
+    end
+
+    context 'when build is successful but deployment is not ready yet' do
+      let(:build) { create(:ci_build, :success, environment: 'production') }
+      let(:environment) { create(:environment, name: 'production', project: build.project) }
+
+      it { expect(build.deployment_status).to eq(:creating) }
     end
   end
 end

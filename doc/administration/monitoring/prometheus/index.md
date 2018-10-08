@@ -1,13 +1,13 @@
 # GitLab Prometheus
 
->**Notes:**
-- Prometheus and the various exporters listed in this page are bundled in the
-  Omnibus GitLab package. Check each exporter's documentation for the timeline
-  they got added. For installations from source you will have to install them
-  yourself. Over subsequent releases additional GitLab metrics will be captured.
-- Prometheus services are on by default with GitLab 9.0.
-- Prometheus and its exporters do not authenticate users, and will be available
-  to anyone who can access them.
+> **Notes:**
+> - Prometheus and the various exporters listed in this page are bundled in the
+>   Omnibus GitLab package. Check each exporter's documentation for the timeline
+>   they got added. For installations from source you will have to install them
+>   yourself. Over subsequent releases additional GitLab metrics will be captured.
+> - Prometheus services are on by default with GitLab 9.0.
+> - Prometheus and its exporters do not authenticate users, and will be available
+>  to anyone who can access them.
 
 [Prometheus] is a powerful time-series monitoring service, providing a flexible
 platform for monitoring GitLab and other software products.
@@ -97,17 +97,17 @@ For a more fully featured dashboard, Grafana can be used and has
 
 Sample Prometheus queries:
 
-- **% Memory used:** `(1 - ((node_memory_MemFree + node_memory_Cached) / node_memory_MemTotal)) * 100`
-- **% CPU load:** `1 - rate(node_cpu{mode="idle"}[5m])`
-- **Data transmitted:** `irate(node_network_transmit_bytes[5m])`
-- **Data received:** `irate(node_network_receive_bytes[5m])`
+- **% Memory available:** `((node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) or ((node_memory_MemFree_bytes + node_memory_Buffers_bytes + node_memory_Cached_bytes) / node_memory_MemTotal_bytes)) * 100`
+- **% CPU utilization:** `1 - avg without (mode,cpu) (rate(node_cpu_seconds_total{mode="idle"}[5m]))`
+- **Data transmitted:** `rate(node_network_transmit_bytes_total{device!="lo"}[5m])`
+- **Data received:** `rate(node_network_receive_bytes_total{device!="lo"}[5m])`
 
 ## Configuring Prometheus to monitor Kubernetes
 
 > Introduced in GitLab 9.0.
 > Pod monitoring introduced in GitLab 9.4.
 
-If your GitLab server is running within Kubernetes, Prometheus will collect metrics from the Nodes and [annotated Pods](https://prometheus.io/docs/operating/configuration/#<kubernetes_sd_config>) in the cluster, including performance data on each container. This is particularly helpful if your CI/CD environments run in the same cluster, as you can use the [Prometheus project integration][] to monitor them.
+If your GitLab server is running within Kubernetes, Prometheus will collect metrics from the Nodes and [annotated Pods](https://prometheus.io/docs/operating/configuration/#kubernetes_sd_config) in the cluster, including performance data on each container. This is particularly helpful if your CI/CD environments run in the same cluster, as you can use the [Prometheus project integration][] to monitor them.
 
 To disable the monitoring of Kubernetes:
 

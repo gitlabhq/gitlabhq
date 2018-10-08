@@ -5,8 +5,10 @@ module Storage
     extend ActiveSupport::Concern
 
     def move_dir
-      if any_project_has_container_registry_tags?
-        raise Gitlab::UpdatePathError.new('Namespace cannot be moved, because at least one project has tags in container registry')
+      proj_with_tags = first_project_with_container_registry_tags
+
+      if proj_with_tags
+        raise Gitlab::UpdatePathError.new("Namespace #{name} (#{id}) cannot be moved because at least one project (e.g. #{proj_with_tags.name} (#{proj_with_tags.id})) has tags in container registry")
       end
 
       parent_was = if parent_changed? && parent_id_was.present?
@@ -24,8 +26,6 @@ module Storage
         Gitlab::UploadsTransfer.new.rename_namespace(full_path_was, full_path)
         Gitlab::PagesTransfer.new.rename_namespace(full_path_was, full_path)
       end
-
-      remove_exports!
 
       # If repositories moved successfully we need to
       # send update instructions to users.
@@ -101,8 +101,6 @@ module Storage
           end
         end
       end
-
-      remove_exports!
     end
 
     def remove_legacy_exports!

@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe Repository do
   include RepoHelpers
+  include GitHelpers
+
   TestBlob = Struct.new(:path)
 
   let(:project) { create(:project, :repository) }
@@ -137,9 +139,7 @@ describe Repository do
           options = { message: 'test tag message\n',
                       tagger: { name: 'John Smith', email: 'john@gmail.com' } }
 
-          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            repository.rugged.tags.create(annotated_tag_name, 'a48e4fc218069f68ef2e769dd8dfea3991362175', options)
-          end
+          rugged_repo(repository).tags.create(annotated_tag_name, 'a48e4fc218069f68ef2e769dd8dfea3991362175', options)
 
           double_first = double(committed_date: Time.now - 1.second)
           double_last = double(committed_date: Time.now)
@@ -151,9 +151,7 @@ describe Repository do
         it { is_expected.to eq(['v1.1.0', 'v1.0.0', annotated_tag_name]) }
 
         after do
-          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            repository.rugged.tags.delete(annotated_tag_name)
-          end
+          rugged_repo(repository).tags.delete(annotated_tag_name)
         end
       end
     end
@@ -185,6 +183,57 @@ describe Repository do
       it 'returns false' do
         expect(repository.ref_exists?('refs/heads/invalid:master')).to be false
       end
+    end
+  end
+
+  describe '#list_last_commits_for_tree' do
+    let(:path_to_commit) do
+      {
+        "encoding" => "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+        "files" => "570e7b2abdd848b95f2f578043fc23bd6f6fd24d",
+        ".gitignore" => "c1acaa58bbcbc3eafe538cb8274ba387047b69f8",
+        ".gitmodules" => "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9",
+        "CHANGELOG" => "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+        "CONTRIBUTING.md" => "6d394385cf567f80a8fd85055db1ab4c5295806f",
+        "Gemfile.zip" => "ae73cb07c9eeaf35924a10f713b364d32b2dd34f",
+        "LICENSE" => "1a0b36b3cdad1d2ee32457c102a8c0b7056fa863",
+        "MAINTENANCE.md" => "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+        "PROCESS.md" => "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+        "README.md" => "1a0b36b3cdad1d2ee32457c102a8c0b7056fa863",
+        "VERSION" => "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+        "gitlab-shell" => "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9",
+        "six" => "cfe32cf61b73a0d5e9f13e774abde7ff789b1660"
+      }
+    end
+
+    subject { repository.list_last_commits_for_tree(sample_commit.id, '.').id }
+
+    it 'returns the last commits for every entry in the current path' do
+      result = repository.list_last_commits_for_tree(sample_commit.id, '.')
+
+      result.each do |key, value|
+        result[key] = value.id
+      end
+
+      expect(result).to include(path_to_commit)
+    end
+
+    it 'returns the last commits for every entry in the current path starting from the offset' do
+      result = repository.list_last_commits_for_tree(sample_commit.id, '.', offset: path_to_commit.size - 1)
+
+      expect(result.size).to eq(1)
+    end
+
+    it 'returns a limited number of last commits for every entry in the current path starting from the offset' do
+      result = repository.list_last_commits_for_tree(sample_commit.id, '.', limit: 1)
+
+      expect(result.size).to eq(1)
+    end
+
+    it 'returns an empty hash when offset is out of bounds' do
+      result = repository.list_last_commits_for_tree(sample_commit.id, '.', offset: path_to_commit.size)
+
+      expect(result.size).to eq(0)
     end
   end
 
@@ -1028,194 +1077,6 @@ describe Repository do
     end
   end
 
-  describe '#update_branch_with_hooks' do
-    let(:old_rev) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' } # git rev-parse feature
-    let(:new_rev) { 'a74ae73c1ccde9b974a70e82b901588071dc142a' } # commit whose parent is old_rev
-    let(:updating_ref) { 'refs/heads/feature' }
-    let(:target_project) { project }
-    let(:target_repository) { target_project.repository }
-
-    around do |example|
-      # TODO Gitlab::Git::OperationService will be moved to gitaly-ruby and disappear from this repo
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        example.run
-      end
-    end
-
-    context 'when pre hooks were successful' do
-      before do
-        service = Gitlab::Git::HooksService.new
-        expect(Gitlab::Git::HooksService).to receive(:new).and_return(service)
-        expect(service).to receive(:execute)
-          .with(git_user, target_repository.raw_repository, old_rev, new_rev, updating_ref)
-          .and_yield(service).and_return(true)
-      end
-
-      it 'runs without errors' do
-        expect do
-          Gitlab::Git::OperationService.new(git_user, repository.raw_repository).with_branch('feature') do
-            new_rev
-          end
-        end.not_to raise_error
-      end
-
-      it 'ensures the autocrlf Git option is set to :input' do
-        service = Gitlab::Git::OperationService.new(git_user, repository.raw_repository)
-
-        expect(service).to receive(:update_autocrlf_option)
-
-        service.with_branch('feature') { new_rev }
-      end
-
-      context "when the branch wasn't empty" do
-        it 'updates the head' do
-          expect(repository.find_branch('feature').dereferenced_target.id).to eq(old_rev)
-
-          Gitlab::Git::OperationService.new(git_user, repository.raw_repository).with_branch('feature') do
-            new_rev
-          end
-
-          expect(repository.find_branch('feature').dereferenced_target.id).to eq(new_rev)
-        end
-      end
-
-      context 'when target project does not have the commit' do
-        let(:target_project) { create(:project, :empty_repo) }
-        let(:old_rev) { Gitlab::Git::BLANK_SHA }
-        let(:new_rev) { project.commit('feature').sha }
-        let(:updating_ref) { 'refs/heads/master' }
-
-        it 'fetch_ref and create the branch' do
-          expect(target_project.repository.raw_repository).to receive(:fetch_ref)
-            .and_call_original
-
-          Gitlab::Git::OperationService.new(git_user, target_repository.raw_repository)
-            .with_branch(
-              'master',
-              start_repository: project.repository.raw_repository,
-              start_branch_name: 'feature') { new_rev }
-
-          expect(target_repository.branch_names).to contain_exactly('master')
-        end
-      end
-
-      context 'when target project already has the commit' do
-        let(:target_project) { create(:project, :repository) }
-
-        it 'does not fetch_ref and just pass the commit' do
-          expect(target_repository).not_to receive(:fetch_ref)
-
-          Gitlab::Git::OperationService.new(git_user, target_repository.raw_repository)
-            .with_branch('feature', start_repository: project.repository.raw_repository) { new_rev }
-        end
-      end
-    end
-
-    context 'when temporary ref failed to be created from other project' do
-      let(:target_project) { create(:project, :empty_repo) }
-
-      before do
-        expect(target_project.repository.raw_repository).to receive(:run_git)
-      end
-
-      it 'raises Rugged::ReferenceError' do
-        expect do
-          Gitlab::Git::OperationService.new(git_user, target_project.repository.raw_repository)
-            .with_branch('feature',
-                         start_repository: project.repository.raw_repository,
-                         &:itself)
-        end.to raise_error(Gitlab::Git::CommandError)
-      end
-    end
-
-    context 'when the update adds more than one commit' do
-      let(:old_rev) { '33f3729a45c02fc67d00adb1b8bca394b0e761d9' }
-
-      it 'runs without errors' do
-        # old_rev is an ancestor of new_rev
-        expect(repository.merge_base(old_rev, new_rev)).to eq(old_rev)
-
-        # old_rev is not a direct ancestor (parent) of new_rev
-        expect(repository.rugged.lookup(new_rev).parent_ids).not_to include(old_rev)
-
-        branch = 'feature-ff-target'
-        repository.add_branch(user, branch, old_rev)
-
-        expect do
-          Gitlab::Git::OperationService.new(git_user, repository.raw_repository).with_branch(branch) do
-            new_rev
-          end
-        end.not_to raise_error
-      end
-    end
-
-    context 'when the update would remove commits from the target branch' do
-      let(:branch) { 'master' }
-      let(:old_rev) { repository.find_branch(branch).dereferenced_target.sha }
-
-      it 'raises an exception' do
-        # The 'master' branch is NOT an ancestor of new_rev.
-        expect(repository.merge_base(old_rev, new_rev)).not_to eq(old_rev)
-
-        # Updating 'master' to new_rev would lose the commits on 'master' that
-        # are not contained in new_rev. This should not be allowed.
-        expect do
-          Gitlab::Git::OperationService.new(git_user, repository.raw_repository).with_branch(branch) do
-            new_rev
-          end
-        end.to raise_error(Gitlab::Git::CommitError)
-      end
-    end
-
-    context 'when pre hooks failed' do
-      it 'gets an error' do
-        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
-
-        expect do
-          Gitlab::Git::OperationService.new(git_user, repository.raw_repository).with_branch('feature') do
-            new_rev
-          end
-        end.to raise_error(Gitlab::Git::PreReceiveError)
-      end
-    end
-
-    context 'when target branch is different from source branch' do
-      before do
-        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, ''])
-      end
-
-      subject do
-        Gitlab::Git::OperationService.new(git_user, repository.raw_repository).with_branch('new-feature') do
-          new_rev
-        end
-      end
-
-      it 'returns branch_created as true' do
-        expect(subject).not_to be_repo_created
-        expect(subject).to     be_branch_created
-      end
-    end
-
-    context 'when repository is empty' do
-      before do
-        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, ''])
-      end
-
-      it 'expires creation and branch cache' do
-        empty_repository = create(:project, :empty_repo).repository
-
-        expect(empty_repository).to receive(:expire_exists_cache)
-        expect(empty_repository).to receive(:expire_root_ref_cache)
-        expect(empty_repository).to receive(:expire_emptiness_caches)
-        expect(empty_repository).to receive(:expire_branches_cache)
-
-        empty_repository.create_file(user, 'CHANGELOG', 'Changelog!',
-                                     message: 'Updates file content',
-                                     branch_name: 'master')
-      end
-    end
-  end
-
   describe '#exists?' do
     it 'returns true when a repository exists' do
       expect(repository.exists?).to be(true)
@@ -1230,6 +1091,47 @@ describe Repository do
     context 'with broken storage', :broken_storage do
       it 'should raise a storage error' do
         expect_to_raise_storage_error { broken_repository.exists? }
+      end
+    end
+
+    context 'asymmetric caching', :use_clean_rails_memory_store_caching, :request_store do
+      let(:cache) { repository.send(:cache) }
+      let(:request_store_cache) { repository.send(:request_store_cache) }
+
+      context 'when it returns true' do
+        before do
+          expect(repository.raw_repository).to receive(:exists?).once.and_return(true)
+        end
+
+        it 'caches the output in RequestStore' do
+          expect do
+            repository.exists?
+          end.to change { request_store_cache.read(:exists?) }.from(nil).to(true)
+        end
+
+        it 'caches the output in RepositoryCache' do
+          expect do
+            repository.exists?
+          end.to change { cache.read(:exists?) }.from(nil).to(true)
+        end
+      end
+
+      context 'when it returns false' do
+        before do
+          expect(repository.raw_repository).to receive(:exists?).once.and_return(false)
+        end
+
+        it 'caches the output in RequestStore' do
+          expect do
+            repository.exists?
+          end.to change { request_store_cache.read(:exists?) }.from(nil).to(false)
+        end
+
+        it 'does NOT cache the output in RepositoryCache' do
+          expect do
+            repository.exists?
+          end.not_to change { cache.read(:exists?) }.from(nil)
+        end
       end
     end
   end
@@ -1295,40 +1197,6 @@ describe Repository do
 
       expect(fresh_repository.raw_repository).not_to receive(:branch_names)
       expect(fresh_repository.branch_names).to eq(fake_branch_names)
-    end
-  end
-
-  describe '#update_autocrlf_option' do
-    around do |example|
-      # TODO Gitlab::Git::OperationService will be moved to gitaly-ruby and disappear from this repo
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        example.run
-      end
-    end
-
-    describe 'when autocrlf is not already set to :input' do
-      before do
-        repository.raw_repository.autocrlf = true
-      end
-
-      it 'sets autocrlf to :input' do
-        Gitlab::Git::OperationService.new(nil, repository.raw_repository).send(:update_autocrlf_option)
-
-        expect(repository.raw_repository.autocrlf).to eq(:input)
-      end
-    end
-
-    describe 'when autocrlf is already set to :input' do
-      before do
-        repository.raw_repository.autocrlf = :input
-      end
-
-      it 'does nothing' do
-        expect(repository.raw_repository).not_to receive(:autocrlf=)
-          .with(:input)
-
-        Gitlab::Git::OperationService.new(nil, repository.raw_repository).send(:update_autocrlf_option)
-      end
     end
   end
 
@@ -1808,10 +1676,7 @@ describe Repository do
     it 'returns the number of branches' do
       expect(repository.branch_count).to be_an(Integer)
 
-      # NOTE: Until rugged goes away, make sure rugged and gitaly are in sync
-      rugged_count = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        repository.raw_repository.rugged.branches.count
-      end
+      rugged_count = rugged_repo(repository).branches.count
 
       expect(repository.branch_count).to eq(rugged_count)
     end
@@ -1821,10 +1686,7 @@ describe Repository do
     it 'returns the number of tags' do
       expect(repository.tag_count).to be_an(Integer)
 
-      # NOTE: Until rugged goes away, make sure rugged and gitaly are in sync
-      rugged_count = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        repository.raw_repository.rugged.tags.count
-      end
+      rugged_count = rugged_repo(repository).tags.count
 
       expect(repository.tag_count).to eq(rugged_count)
     end
@@ -1938,9 +1800,16 @@ describe Repository do
 
   describe '#expire_exists_cache' do
     let(:cache) { repository.send(:cache) }
+    let(:request_store_cache) { repository.send(:request_store_cache) }
 
     it 'expires the cache' do
       expect(cache).to receive(:expire).with(:exists?)
+
+      repository.expire_exists_cache
+    end
+
+    it 'expires the request store cache', :request_store do
+      expect(request_store_cache).to receive(:expire).with(:exists?)
 
       repository.expire_exists_cache
     end
@@ -2022,27 +1891,6 @@ describe Repository do
 
         expect(repository.kept_around?(another_sample_commit.id)).to be_truthy
       end
-    end
-  end
-
-  describe '#update_ref' do
-    around do |example|
-      # TODO Gitlab::Git::OperationService will be moved to gitaly-ruby and disappear from this repo
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        example.run
-      end
-    end
-
-    it 'can create a ref' do
-      Gitlab::Git::OperationService.new(nil, repository.raw_repository).send(:update_ref, 'refs/heads/foobar', 'refs/heads/master', Gitlab::Git::BLANK_SHA)
-
-      expect(repository.find_branch('foobar')).not_to be_nil
-    end
-
-    it 'raises CommitError when the ref update fails' do
-      expect do
-        Gitlab::Git::OperationService.new(nil, repository.raw_repository).send(:update_ref, 'refs/heads/master', 'refs/heads/master', Gitlab::Git::BLANK_SHA)
-      end.to raise_error(Gitlab::Git::CommitError)
     end
   end
 
@@ -2135,7 +1983,7 @@ describe Repository do
         match[1].to_sym if match
       end.compact
 
-      expect(methods).to match_array(Repository::CACHED_METHODS + Repository::MEMOIZED_CACHED_METHODS)
+      expect(Repository::CACHED_METHODS + Repository::MEMOIZED_CACHED_METHODS).to include(*methods)
     end
   end
 
@@ -2328,9 +2176,7 @@ describe Repository do
   end
 
   def create_remote_branch(remote_name, branch_name, target)
-    rugged = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      repository.rugged
-    end
+    rugged = rugged_repo(repository)
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
   end
 

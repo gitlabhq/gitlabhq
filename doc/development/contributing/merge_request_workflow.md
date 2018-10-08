@@ -1,15 +1,4 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [Merge requests](#merge-requests)
-  - [Merge request guidelines](#merge-request-guidelines)
-  - [Contribution acceptance criteria](#contribution-acceptance-criteria)
-- [Definition of done](#definition-of-done)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-## Merge requests
+# Merge requests
 
 We welcome merge requests with fixes and improvements to GitLab code, tests,
 and/or documentation. The issues that are specifically suitable for
@@ -36,7 +25,7 @@ some potentially easy issues.
 To start with GitLab development download the [GitLab Development Kit][gdk] and
 see the [Development section](../README.md) for some guidelines.
 
-### Merge request guidelines
+## Merge request guidelines
 
 If you can, please submit a merge request with the fix or improvements
 including tests. If you don't know how to fix the issue but can write a test
@@ -55,30 +44,30 @@ request is as follows:
   organized commits by [squashing them][git-squash]
 1. Push the commit(s) to your fork
 1. Submit a merge request (MR) to the `master` branch
-  1. Your merge request needs at least 1 approval but feel free to require more.
-    For instance if you're touching backend and frontend code, it's a good idea
-    to require 2 approvals: 1 from a backend maintainer and 1 from a frontend
-    maintainer
-  1. You don't have to select any approvers, but you can if you really want
-    specific people to approve your merge request
+   1. Your merge request needs at least 1 approval but feel free to require more.
+      For instance if you're touching backend and frontend code, it's a good idea
+      to require 2 approvals: 1 from a backend maintainer and 1 from a frontend
+      maintainer
+   1. You don't have to select any approvers, but you can if you really want
+      specific people to approve your merge request
 1. The MR title should describe the change you want to make
 1. The MR description should give a motive for your change and the method you
    used to achieve it.
-  1. If you are contributing code, fill in the template already provided in the
-     "Description" field.
-  1. If you are contributing documentation, choose `Documentation` from the
-     "Choose a template" menu and fill in the template.
-  1. Mention the issue(s) your merge request solves, using the `Solves #XXX` or
-    `Closes #XXX` syntax to auto-close the issue(s) once the merge request will
-    be merged.
+   1. If you are contributing code, fill in the template already provided in the
+      "Description" field.
+   1. If you are contributing documentation, choose `Documentation` from the
+      "Choose a template" menu and fill in the template.
+   1. Mention the issue(s) your merge request solves, using the `Solves #XXX` or
+      `Closes #XXX` syntax to auto-close the issue(s) once the merge request will
+      be merged.
 1. If you're allowed to, set a relevant milestone and labels
 1. If the MR changes the UI it should include *Before* and *After* screenshots
 1. If the MR changes CSS classes please include the list of affected pages,
    `grep css-class ./app -R`
 1. Be prepared to answer questions and incorporate feedback even if requests
    for this arrive weeks or months after your MR submission
-  1. If a discussion has been addressed, select the "Resolve discussion" button
-    beneath it to mark it resolved.
+   1. If a discussion has been addressed, select the "Resolve discussion" button
+      beneath it to mark it resolved.
 1. If your MR touches code that executes shell commands, reads or opens files or
    handles paths to files on disk, make sure it adheres to the
    [shell command guidelines](../shell_commands.md)
@@ -114,7 +103,7 @@ Please ensure that your merge request meets the contribution acceptance criteria
 When having your code reviewed and when reviewing merge requests please take the
 [code review guidelines](../code_review.md) into account.
 
-### Contribution acceptance criteria
+## Contribution acceptance criteria
 
 1. The change is as small as possible
 1. Include proper tests and make all tests pass (unless it contains a test
@@ -138,7 +127,7 @@ When having your code reviewed and when reviewing merge requests please take the
    making and testing future changes
 1. Changes do not adversely degrade performance.
    - Avoid repeated polling of endpoints that require a significant amount of overhead
-   - Check for N+1 queries via the SQL log or [`QueryRecorder`](https://docs.gitlab.com/ce/development/mer ge_request_performance_guidelines.html)
+   - Check for N+1 queries via the SQL log or [`QueryRecorder`](https://docs.gitlab.com/ce/development/merge_request_performance_guidelines.html)
    - Avoid repeated access of filesystem
 1. If you need polling to support real-time features, please use
    [polling with ETag caching][polling-etag].

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::ClustersController < Projects::ApplicationController
   before_action :cluster, except: [:index, :new, :create_gcp, :create_user]
   before_action :authorize_read_cluster!
@@ -141,7 +143,8 @@ class Projects::ClustersController < Projects::ApplicationController
         :gcp_project_id,
         :zone,
         :num_nodes,
-        :machine_type
+        :machine_type,
+        :legacy_abac
       ]).merge(
         provider_type: :gcp,
         platform_type: :kubernetes
@@ -157,7 +160,8 @@ class Projects::ClustersController < Projects::ApplicationController
         :namespace,
         :api_url,
         :token,
-        :ca_cert
+        :ca_cert,
+        :authorization_type
       ]).merge(
         provider_type: :user,
         platform_type: :kubernetes

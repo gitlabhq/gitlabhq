@@ -8,22 +8,31 @@ module Banzai
     #
     # Based on Banzai::Filter::AutolinkFilter
     #
-    # CommonMark does not allow spaces in the url portion of a link.
-    # For example, `[example](page slug)` is not valid.  However,
+    # CommonMark does not allow spaces in the url portion of a link/url.
+    # For example, `[example](page slug)` is not valid.
+    # Neither is `![example](test image.jpg)`. However, particularly
     # in our wikis, we support (via RedCarpet) this type of link, allowing
     # wiki pages to be easily linked by their title.  This filter adds that functionality.
-    # The intent is for this to only be used in Wikis - in general, we want
-    # to adhere to CommonMark's spec.
+    #
+    # This is a small extension to the CommonMark spec.  If they start allowing
+    # spaces in urls, we could then remove this filter.
     #
     class SpacedLinkFilter < HTML::Pipeline::Filter
       include ActionView::Helpers::TagHelper
 
       # Pattern to match a standard markdown link
       #
-      # Rubular: http://rubular.com/r/z9EAHxYmKI
-      LINK_PATTERN = /\[([^\]]+)\]\(([^)"]+)(?: \"([^\"]+)\")?\)/
+      # Rubular: http://rubular.com/r/2EXEQ49rg5
+      LINK_OR_IMAGE_PATTERN = %r{
+        (?<preview_operator>!)?
+        \[(?<text>.+?)\]
+        \(
+          (?<new_link>.+?)
+          (?<title>\ ".+?")?
+        \)
+      }x
 
-      # Text matching LINK_PATTERN inside these elements will not be linked
+      # Text matching LINK_OR_IMAGE_PATTERN inside these elements will not be linked
       IGNORE_PARENTS = %w(a code kbd pre script style).to_set
 
       # The XPath query to use for finding text nodes to parse.
@@ -38,7 +47,7 @@ module Banzai
         doc.xpath(TEXT_QUERY).each do |node|
           content = node.to_html
 
-          next unless content.match(LINK_PATTERN)
+          next unless content.match(LINK_OR_IMAGE_PATTERN)
 
           html = spaced_link_filter(content)
 
@@ -53,24 +62,36 @@ module Banzai
       private
 
       def spaced_link_match(link)
-        match = LINK_PATTERN.match(link)
-        return link unless match && match[1] && match[2]
+        match = LINK_OR_IMAGE_PATTERN.match(link)
+        return link unless match
 
         # escape the spaces in the url so that it's a valid markdown link,
         # then run it through the markdown processor again, let it do its magic
-        text     = match[1]
-        new_link = match[2].gsub(' ', '%20')
-        title    = match[3] ? " \"#{match[3]}\"" : ''
-        html     = Banzai::Filter::MarkdownFilter.call("[#{text}](#{new_link}#{title})", context)
+        html = Banzai::Filter::MarkdownFilter.call(transform_markdown(match), context)
 
         # link is wrapped in a <p>, so strip that off
         html.sub('<p>', '').chomp('</p>')
       end
 
       def spaced_link_filter(text)
-        Gitlab::StringRegexMarker.new(CGI.unescapeHTML(text), text.html_safe).mark(LINK_PATTERN) do |link, left:, right:|
+        Gitlab::StringRegexMarker.new(CGI.unescapeHTML(text), text.html_safe).mark(LINK_OR_IMAGE_PATTERN) do |link, left:, right:|
           spaced_link_match(link)
         end
+      end
+
+      def transform_markdown(match)
+        preview_operator, text, new_link, title = process_match(match)
+
+        "#{preview_operator}[#{text}](#{new_link}#{title})"
+      end
+
+      def process_match(match)
+        [
+          match[:preview_operator],
+          match[:text],
+          match[:new_link].gsub(' ', '%20'),
+          match[:title]
+        ]
       end
     end
   end

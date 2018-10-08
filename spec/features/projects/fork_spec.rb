@@ -53,6 +53,18 @@ describe 'Project fork' do
     expect(current_path).to have_content(/#{user.namespace.name}/i)
   end
 
+  it 'shows avatars when Gravatar is disabled' do
+    stub_application_setting(gravatar_enabled: false)
+
+    visit project_path(project)
+
+    click_link 'Fork'
+
+    page.within('.fork-thumbnail-container') do
+      expect(page).to have_css('div.identicon')
+    end
+  end
+
   it 'shows the forked project on the list' do
     visit project_path(project)
 

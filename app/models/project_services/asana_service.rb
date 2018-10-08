@@ -65,7 +65,7 @@ http://app.asana.com/-/account_api'
     # check the branch restriction is poplulated and branch is not included
     branch = Gitlab::Git.ref_name(data[:ref])
     branch_restriction = restrict_to_branch.to_s
-    if branch_restriction.length > 0 && branch_restriction.index(branch).nil?
+    if branch_restriction.present? && branch_restriction.index(branch).nil?
       return
     end
 
@@ -101,7 +101,7 @@ http://app.asana.com/-/account_api'
           task.update(completed: true)
         end
       rescue => e
-        Rails.logger.error(e.message)
+        log_error(e.message)
         next
       end
     end

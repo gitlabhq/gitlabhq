@@ -1,0 +1,5 @@
+---
+title: Fixes performance bar looking for a key in a undefined prop
+merge_request:
+author:
+type: fixed

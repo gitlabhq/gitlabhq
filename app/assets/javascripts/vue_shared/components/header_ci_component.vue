@@ -1,6 +1,5 @@
 <script>
 import CiIconBadge from './ci_badge_link.vue';
-import LoadingIcon from './loading_icon.vue';
 import TimeagoTooltip from './time_ago_tooltip.vue';
 import tooltip from '../directives/tooltip';
 import UserAvatarImage from './user_avatar/user_avatar_image.vue';
@@ -15,7 +14,6 @@ import UserAvatarImage from './user_avatar/user_avatar_image.vue';
 export default {
   components: {
     CiIconBadge,
-    LoadingIcon,
     TimeagoTooltip,
     UserAvatarImage,
   },
@@ -128,18 +126,18 @@ export default {
       >
         <a
           v-if="action.type === 'link'"
+          :key="i"
           :href="action.path"
           :class="action.cssClass"
-          :key="i"
         >
           {{ action.label }}
         </a>
 
         <a
           v-else-if="action.type === 'ujs-link'"
+          :key="i"
           :href="action.path"
           :class="action.cssClass"
-          :key="i"
           data-method="post"
           rel="nofollow"
         >
@@ -148,9 +146,9 @@ export default {
 
         <button
           v-else-if="action.type === 'button'"
+          :key="i"
           :disabled="action.isLoading"
           :class="action.cssClass"
-          :key="i"
           type="button"
           @click="onClickAction(action)"
         >

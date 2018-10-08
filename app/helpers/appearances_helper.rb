@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AppearancesHelper
   def brand_title
     current_appearance&.title.presence || 'GitLab Community Edition'

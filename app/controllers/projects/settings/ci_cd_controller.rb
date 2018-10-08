@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   module Settings
     class CiCdController < Projects::ApplicationController
@@ -32,6 +34,13 @@ module Projects
             format.json { head :bad_request }
           end
         end
+      end
+
+      def reset_registration_token
+        @project.reset_runners_token!
+
+        flash[:notice] = 'New runners registration token has been generated!'
+        redirect_to namespace_project_settings_ci_cd_path
       end
 
       private

@@ -9,6 +9,7 @@ class PagesWorker
     send(action, *arg) # rubocop:disable GitlabSecurity/PublicSend
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def deploy(build_id)
     build = Ci::Build.find_by(id: build_id)
     result = Projects::UpdatePagesService.new(build.project, build).execute
@@ -18,6 +19,7 @@ class PagesWorker
 
     result
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def remove(namespace_path, project_path)
     full_path = File.join(Settings.pages.path, namespace_path, project_path)

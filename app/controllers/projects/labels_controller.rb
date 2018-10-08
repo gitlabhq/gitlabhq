@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::LabelsController < Projects::ApplicationController
   include ToggleSubscriptionAction
 
@@ -90,6 +92,7 @@ class Projects::LabelsController < Projects::ApplicationController
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def set_priorities
     Label.transaction do
       available_labels_ids = @available_labels.where(id: params[:label_ids]).pluck(:id)
@@ -105,6 +108,7 @@ class Projects::LabelsController < Projects::ApplicationController
       format.json { render json: { message: 'success' } }
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def promote
     promote_service = Labels::PromoteService.new(@project, @current_user)
@@ -136,12 +140,7 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def flash_notice_for(label, group)
-    notice = ''.html_safe
-    notice << label.title
-    notice << ' promoted to '
-    notice << view_context.link_to('<u>group label</u>'.html_safe, group_labels_path(group))
-    notice << '.'
-    notice
+    ''.html_safe + "#{label.title} promoted to " + view_context.link_to('<u>group label</u>'.html_safe, group_labels_path(group)) + '.'
   end
 
   protected
@@ -163,7 +162,13 @@ class Projects::LabelsController < Projects::ApplicationController
       LabelsFinder.new(current_user,
                        project_id: @project.id,
                        include_ancestor_groups: params[:include_ancestor_groups],
-                       search: params[:search]).execute
+                       search: params[:search],
+                       subscribed: params[:subscribed],
+                       sort: sort).execute
+  end
+
+  def sort
+    @sort ||= params[:sort] || 'name_asc'
   end
 
   def authorize_admin_labels!

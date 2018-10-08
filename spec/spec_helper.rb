@@ -34,6 +34,11 @@ Rainbow.enabled = false
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
 # Requires helpers, and shared contexts/examples first since they're used in other support files
+
+# Load these first since they may be required by other helpers
+require Rails.root.join("spec/support/helpers/git_helpers.rb")
+
+# Then the rest
 Dir[Rails.root.join("spec/support/helpers/*.rb")].each { |f| require f }
 Dir[Rails.root.join("spec/support/shared_contexts/*.rb")].each { |f| require f }
 Dir[Rails.root.join("spec/support/shared_examples/*.rb")].each { |f| require f }
@@ -42,6 +47,7 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 RSpec.configure do |config|
   config.use_transactional_fixtures = false
   config.use_instantiated_fixtures  = false
+  config.fixture_path = Rails.root
 
   config.verbose_retry = true
   config.display_try_failure_messages = true
@@ -132,6 +138,10 @@ RSpec.configure do |config|
 
   config.after(:example) do
     Fog.unmock! if Fog.mock?
+  end
+
+  config.after(:example) do
+    Gitlab::CurrentSettings.clear_in_memory_application_settings!
   end
 
   config.before(:example, :mailer) do

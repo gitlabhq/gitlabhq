@@ -22,6 +22,7 @@ class Commit
   attr_accessor :project, :author
   attr_accessor :redacted_description_html
   attr_accessor :redacted_title_html
+  attr_accessor :redacted_full_title_html
   attr_reader :gpg_commit
 
   DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines]
@@ -318,7 +319,11 @@ class Commit
   def status(ref = nil)
     return @statuses[ref] if @statuses.key?(ref)
 
-    @statuses[ref] = project.pipelines.latest_status_per_commit(id, ref)[id]
+    @statuses[ref] = status_for_project(ref, project)
+  end
+
+  def status_for_project(ref, pipeline_project)
+    pipeline_project.pipelines.latest_status_per_commit(id, ref)[id]
   end
 
   def set_status_for_ref(ref, status)

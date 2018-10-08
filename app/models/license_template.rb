@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LicenseTemplate
   PROJECT_TEMPLATE_REGEX =
     %r{[\<\{\[]
@@ -10,12 +12,10 @@ class LicenseTemplate
       (fullname|name\sof\s(author|copyright\sowner))
     [\>\}\]]}xi.freeze
 
-  attr_reader :id, :name, :category, :nickname, :url, :meta
+  attr_reader :key, :name, :category, :nickname, :url, :meta
 
-  alias_method :key, :id
-
-  def initialize(id:, name:, category:, content:, nickname: nil, url: nil, meta: {})
-    @id = id
+  def initialize(key:, name:, category:, content:, nickname: nil, url: nil, meta: {})
+    @key = key
     @name = name
     @category = category
     @content = content

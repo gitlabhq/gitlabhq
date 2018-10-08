@@ -6,13 +6,13 @@
   .row.prepend-top-default
     .col-lg-4
       %h4.prepend-top-0
-        Register Two-Factor Authentication App
+        Register Two-Factor Authenticator
       %p
-        Use an app on your mobile device to enable two-factor authentication (2FA).
+        Use an one time password authenticator on your mobile device or computer to enable two-factor authentication (2FA).
     .col-lg-8
       - if current_user.two_factor_otp_enabled?
         %p
-          You've already enabled two-factor authentication using mobile authenticator applications. In order to register a different device, you must first disable two-factor authentication.
+          You've already enabled two-factor authentication using one time password authenticators. In order to register a different device, you must first disable two-factor authentication.
         %p
           If you lose your recovery codes you can generate new ones, invalidating all previous codes.
         %div

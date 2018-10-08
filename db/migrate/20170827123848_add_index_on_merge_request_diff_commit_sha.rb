@@ -8,7 +8,7 @@ class AddIndexOnMergeRequestDiffCommitSha < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_concurrent_index :merge_request_diff_commits, :sha, length: Gitlab::Database.mysql? ? 20 : nil
+    add_concurrent_index :merge_request_diff_commits, :sha, length: mysql_compatible_index_length
   end
 
   def down

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::MergeRequests::CreationsController < Projects::MergeRequests::ApplicationController
   include DiffForPath
   include DiffHelper
@@ -104,11 +106,16 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     @commits = set_commits_for_rendering(@merge_request.commits)
     @commit = @merge_request.diff_head_commit
 
+    # FIXME: We have to assign a presenter to another instance variable
+    # due to class_name checks being made with issuable classes
+    @mr_presenter = @merge_request.present(current_user: current_user)
+
     @labels = LabelsFinder.new(current_user, project_id: @project.id).execute
 
     set_pipeline_variables
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def selected_target_project
     if @project.id.to_s == params[:target_project_id] || !@project.forked?
       @project
@@ -119,6 +126,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
       @project.forked_from_project
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def whitelist_query_limiting
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42384')

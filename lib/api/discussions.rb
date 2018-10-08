@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Discussions < Grape::API
     include PaginationParams
@@ -23,6 +25,7 @@ module API
           requires :noteable_id, types: [Integer, String], desc: 'The ID of the noteable'
           use :pagination
         end
+        # rubocop: disable CodeReuse/ActiveRecord
         get ":id/#{noteables_path}/:noteable_id/discussions" do
           noteable = find_noteable(parent_type, noteables_str, params[:noteable_id])
 
@@ -36,6 +39,7 @@ module API
 
           present paginate(discussions), with: Entities::Discussion
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         desc "Get a single #{noteable_type.to_s.downcase} discussion" do
           success Entities::Discussion
@@ -219,6 +223,7 @@ module API
     end
 
     helpers do
+      # rubocop: disable CodeReuse/ActiveRecord
       def readable_discussion_notes(noteable, discussion_id)
         notes = noteable.notes
           .where(discussion_id: discussion_id)
@@ -228,6 +233,7 @@ module API
 
         notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

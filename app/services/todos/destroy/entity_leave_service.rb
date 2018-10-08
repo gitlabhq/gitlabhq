@@ -7,6 +7,7 @@ module Todos
 
       attr_reader :user, :entity
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def initialize(user_id, entity_id, entity_type)
         unless %w(Group Project).include?(entity_type)
           raise ArgumentError.new("#{entity_type} is not an entity user can leave")
@@ -15,6 +16,7 @@ module Todos
         @user = User.find_by(id: user_id)
         @entity = entity_type.constantize.find_by(id: entity_id)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def execute
         return unless entity && user
@@ -40,21 +42,28 @@ module Todos
         end
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def remove_confidential_issue_todos
         Todo.where(
           target_id: confidential_issues.select(:id), target_type: Issue, user_id: user.id
         ).delete_all
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def remove_project_todos
         Todo.where(project_id: non_authorized_projects, user_id: user.id).delete_all
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def remove_group_todos
         Todo.where(group_id: non_authorized_groups, user_id: user.id).delete_all
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       override :project_ids
+      # rubocop: disable CodeReuse/ActiveRecord
       def project_ids
         condition = case entity
                     when Project
@@ -65,22 +74,29 @@ module Todos
 
         Project.where(condition).select(:id)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def non_authorized_projects
         project_ids.where('id NOT IN (?)', user.authorized_projects.select(:id))
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def non_authorized_groups
         return [] unless entity.is_a?(Namespace)
 
         entity.self_and_descendants.select(:id)
           .where('id NOT IN (?)', GroupsFinder.new(user).execute.select(:id))
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def non_member_groups
         entity.self_and_descendants.select(:id)
           .where('id NOT IN (?)', user.membership_groups.select(:id))
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def user_has_reporter_access?
         return unless entity.is_a?(Namespace)
@@ -88,6 +104,7 @@ module Todos
         entity.member?(User.find(user.id), Gitlab::Access::REPORTER)
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def confidential_issues
         assigned_ids = IssueAssignee.select(:issue_id).where(user_id: user.id)
         authorized_reporter_projects = user
@@ -98,6 +115,7 @@ module Todos
           .where('author_id != ?', user.id)
           .where('id NOT IN (?)', assigned_ids)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

@@ -51,6 +51,7 @@ describe 'Projects > Settings > Integration settings' do
 
         fill_in 'hook_url', with: url
         check 'Tag push events'
+        fill_in 'hook_push_events_branch_filter', with: 'master'
         check 'Enable SSL verification'
         check 'Job events'
 

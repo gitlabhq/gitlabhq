@@ -7,16 +7,41 @@ After [configuring the object storage](../../uploads.md#using-object-storage) fo
 >**Note:**
 All of the processing will be done in a background worker and requires **no downtime**.
 
-This tasks uses 3 parameters to find uploads to migrate.
+### All-in-one rake task
+
+GitLab provides a wrapper rake task that migrates all uploaded files - avatars,
+logos, attachments, favicon, etc. - to object storage in one go. Under the hood,
+it invokes individual rake tasks to migrate files falling under each of this
+category one by one. The specifications of these individual rake tasks are
+described in the next section.
+
+**Omnibus Installation**
+
+```bash
+gitlab-rake "gitlab:uploads:migrate:all"
+```
+
+**Source Installation**
+
+```bash
+sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:uploads:migrate:all
+```
+
+### Individual rake tasks
 
 >**Note:**
-These parameters are mainly internal to GitLab's structure, you may want to refer to the task list instead below.
+If you already ran the rake task mentioned above, no need to run these individual rake tasks as that has been done automatically.
+
+The rake task uses 3 parameters to find uploads to migrate.
 
 Parameter | Type | Description
 --------- | ---- | -----------
 `uploader_class` | string | Type of the uploader to migrate from
 `model_class` | string | Type of the model to migrate from
 `mount_point` | string/symbol | Name of the model's column on which the uploader is mounted on.
+
+>**Note:**
+These parameters are mainly internal to GitLab's structure, you may want to refer to the task list instead below.
 
 This task also accepts some environment variables which you can use to override
 certain values:
@@ -25,7 +50,7 @@ Variable | Type | Description
 -------- | ---- | -----------
 `BATCH`   | integer  | Specifies the size of the batch. Defaults to 200.
 
-** Omnibus Installation**
+**Omnibus Installation**
 
 ```bash
 # gitlab-rake gitlab:uploads:migrate[uploader_class, model_class, mount_point]
@@ -39,6 +64,9 @@ gitlab-rake "gitlab:uploads:migrate[AvatarUploader, User, :avatar]"
 gitlab-rake "gitlab:uploads:migrate[AttachmentUploader, Note, :attachment]"
 gitlab-rake "gitlab:uploads:migrate[AttachmentUploader, Appearance, :logo]"
 gitlab-rake "gitlab:uploads:migrate[AttachmentUploader, Appearance, :header_logo]"
+
+# Favicon
+gitlab-rake "gitlab:uploads:migrate[FaviconUploader, Appearance, :favicon]"
 
 # Markdown
 gitlab-rake "gitlab:uploads:migrate[FileUploader, Project]"
@@ -64,6 +92,9 @@ sudo -u git -H bundle exec rake "gitlab:uploads:migrate[AvatarUploader, User, :a
 sudo -u git -H bundle exec rake "gitlab:uploads:migrate[AttachmentUploader, Note, :attachment]"
 sudo -u git -H bundle exec rake "gitlab:uploads:migrate[AttachmentUploader, Appearance, :logo]"
 sudo -u git -H bundle exec rake "gitlab:uploads:migrate[AttachmentUploader, Appearance, :header_logo]"
+
+# Favicon
+sudo -u git -H bundle exec rake "gitlab:uploads:migrate[FaviconUploader, Appearance, :favicon]"
 
 # Markdown
 sudo -u git -H bundle exec rake "gitlab:uploads:migrate[FileUploader, Project]"

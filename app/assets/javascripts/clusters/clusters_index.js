@@ -1,14 +1,15 @@
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import setupToggleButtons from '~/toggle_buttons';
-import gcpSignupOffer from '~/clusters/components/gcp_signup_offer';
+import PersistentUserCallout from '../persistent_user_callout';
 
 import ClustersService from './services/clusters_service';
 
 export default () => {
   const clusterList = document.querySelector('.js-clusters-list');
 
-  gcpSignupOffer();
+  const callout = document.querySelector('.gcp-signup-offer');
+  if (callout) new PersistentUserCallout(callout); // eslint-disable-line no-new
 
   // The empty state won't have a clusterList
   if (clusterList) {

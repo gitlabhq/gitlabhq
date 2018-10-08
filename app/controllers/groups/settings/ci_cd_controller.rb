@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Groups
   module Settings
     class CiCdController < Groups::ApplicationController
@@ -6,6 +8,13 @@ module Groups
 
       def show
         define_secret_variables
+      end
+
+      def reset_registration_token
+        @group.reset_runners_token!
+
+        flash[:notice] = 'New runners registration token has been generated!'
+        redirect_to group_settings_ci_cd_path
       end
 
       private

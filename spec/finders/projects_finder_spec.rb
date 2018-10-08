@@ -174,6 +174,13 @@ describe ProjectsFinder do
       end
     end
 
+    describe 'filter by without_deleted' do
+      let(:params) { { without_deleted: true } }
+      let!(:pending_delete_project) { create(:project, :public, pending_delete: true) }
+
+      it { is_expected.to match_array([public_project, internal_project]) }
+    end
+
     describe 'sorting' do
       let(:params) { { sort: 'name_asc' } }
 

@@ -10,24 +10,6 @@
 Capybara/CurrentPathExpectation:
   Enabled: false
 
-# Offense count: 23
-FactoryBot/DynamicAttributeDefinedStatically:
-  Exclude:
-    - 'spec/factories/broadcast_messages.rb'
-    - 'spec/factories/ci/builds.rb'
-    - 'spec/factories/ci/runners.rb'
-    - 'spec/factories/clusters/applications/helm.rb'
-    - 'spec/factories/clusters/platforms/kubernetes.rb'
-    - 'spec/factories/emails.rb'
-    - 'spec/factories/gpg_keys.rb'
-    - 'spec/factories/group_members.rb'
-    - 'spec/factories/merge_requests.rb'
-    - 'spec/factories/notes.rb'
-    - 'spec/factories/oauth_access_grants.rb'
-    - 'spec/factories/project_members.rb'
-    - 'spec/factories/todos.rb'
-    - 'spec/factories/uploads.rb'
-
 # Offense count: 167
 # Cop supports --auto-correct.
 Layout/EmptyLinesAroundArguments:
@@ -53,35 +35,12 @@ Layout/IndentArray:
 Layout/IndentHash:
   Enabled: false
 
-# Offense count: 11
-# Cop supports --auto-correct.
-# Configuration parameters: AllowForAlignment.
-Layout/SpaceBeforeFirstArg:
-  Exclude:
-    - 'config/routes/project.rb'
-    - 'db/migrate/20170506185517_add_foreign_key_pipeline_schedules_and_pipelines.rb'
-    - 'features/steps/project/source/browse_files.rb'
-    - 'features/steps/project/source/markdown_render.rb'
-    - 'lib/api/runners.rb'
-    - 'spec/features/search/user_uses_search_filters_spec.rb'
-    - 'spec/routing/project_routing_spec.rb'
-    - 'spec/services/system_note_service_spec.rb'
-
 # Offense count: 93
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: require_no_space, require_space
 Layout/SpaceInLambdaLiteral:
   Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBrackets.
-# SupportedStyles: space, no_space, compact
-# SupportedStylesForEmptyBrackets: space, no_space
-Layout/SpaceInsideArrayLiteralBrackets:
-  Exclude:
-    - 'spec/lib/gitlab/import_export/relation_factory_spec.rb'
 
 # Offense count: 327
 # Cop supports --auto-correct.
@@ -95,14 +54,6 @@ Layout/SpaceInsideBlockBraces:
 # Cop supports --auto-correct.
 Layout/SpaceInsideParens:
   Enabled: false
-
-# Offense count: 14
-# Cop supports --auto-correct.
-Layout/SpaceInsidePercentLiteralDelimiters:
-  Exclude:
-    - 'lib/gitlab/git_access.rb'
-    - 'lib/gitlab/health_checks/fs_shards_check.rb'
-    - 'spec/lib/gitlab/health_checks/fs_shards_check_spec.rb'
 
 # Offense count: 26
 Lint/DuplicateMethods:
@@ -135,30 +86,10 @@ Lint/InterpolationCheck:
 Lint/MissingCopEnableDirective:
   Enabled: false
 
-# Offense count: 2
-Lint/NestedPercentLiteral:
-  Exclude:
-    - 'lib/gitlab/git/repository.rb'
-    - 'spec/support/shared_examples/email_format_shared_examples.rb'
-
 # Offense count: 1
 Lint/ReturnInVoidContext:
   Exclude:
     - 'app/models/project.rb'
-
-# Offense count: 1
-# Configuration parameters: IgnoreImplicitReferences.
-Lint/ShadowedArgument:
-  Exclude:
-    - 'lib/gitlab/database/sha_attribute.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-Lint/UnneededRequireStatement:
-  Exclude:
-    - 'db/post_migrate/20161221153951_rename_reserved_project_names.rb'
-    - 'db/post_migrate/20170313133418_rename_more_reserved_project_names.rb'
-    - 'lib/declarative_policy.rb'
 
 # Offense count: 9
 Lint/UriEscapeUnescape:
@@ -199,16 +130,6 @@ Naming/HeredocDelimiterCase:
 Naming/HeredocDelimiterNaming:
   Enabled: false
 
-# Offense count: 1
-Performance/UnfreezeString:
-  Exclude:
-    - 'features/steps/project/commits/commits.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Performance/UriDefaultParser:
-  Exclude:
-    - 'lib/gitlab/url_sanitizer.rb'
 
 # Offense count: 3821
 # Configuration parameters: Prefixes.
@@ -445,7 +366,6 @@ Style/Dir:
 # Cop supports --auto-correct.
 Style/EachWithObject:
   Exclude:
-    - 'config/initializers/gollum.rb'
     - 'lib/expand_variables.rb'
     - 'lib/gitlab/ci/ansi2html.rb'
     - 'lib/gitlab/ee_compat_check.rb'
@@ -807,20 +727,6 @@ Style/UnlessElse:
 # Cop supports --auto-correct.
 Style/UnneededInterpolation:
   Enabled: false
-
-# Offense count: 11
-# Cop supports --auto-correct.
-Style/ZeroLengthPredicate:
-  Exclude:
-    - 'app/models/deploy_key.rb'
-    - 'app/models/network/commit.rb'
-    - 'app/models/network/graph.rb'
-    - 'app/models/project_services/asana_service.rb'
-    - 'app/services/boards/create_service.rb'
-    - 'app/services/merge_requests/conflicts/list_service.rb'
-    - 'lib/declarative_policy/dsl.rb'
-    - 'lib/extracts_path.rb'
-    - 'lib/gitlab/git/repository.rb'
 
 # Offense count: 22840
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.

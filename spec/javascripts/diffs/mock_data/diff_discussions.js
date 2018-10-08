@@ -2,21 +2,19 @@ export default {
   id: '6b232e05bea388c6b043ccc243ba505faac04ea8',
   reply_id: '6b232e05bea388c6b043ccc243ba505faac04ea8',
   position: {
-    formatter: {
-      old_line: null,
-      new_line: 2,
-      old_path: 'CHANGELOG',
-      new_path: 'CHANGELOG',
-      base_sha: 'e63f41fe459e62e1228fcef60d7189127aeba95a',
-      start_sha: 'd9eaefe5a676b820c57ff18cf5b68316025f7962',
-      head_sha: 'c48ee0d1bf3b30453f5b32250ce03134beaa6d13',
-    },
+    old_line: null,
+    new_line: 2,
+    old_path: 'CHANGELOG',
+    new_path: 'CHANGELOG',
+    base_sha: 'e63f41fe459e62e1228fcef60d7189127aeba95a',
+    start_sha: 'd9eaefe5a676b820c57ff18cf5b68316025f7962',
+    head_sha: 'c48ee0d1bf3b30453f5b32250ce03134beaa6d13',
   },
   line_code: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_2',
   expanded: true,
   notes: [
     {
-      id: 1749,
+      id: '1749',
       type: 'DiffNote',
       attachment: null,
       author: {
@@ -68,7 +66,7 @@ export default {
         '/gitlab-org/gitlab-test/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
     },
     {
-      id: 1753,
+      id: '1753',
       type: 'DiffNote',
       attachment: null,
       author: {
@@ -120,7 +118,7 @@ export default {
         '/gitlab-org/gitlab-test/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
     },
     {
-      id: 1754,
+      id: '1754',
       type: 'DiffNote',
       attachment: null,
       author: {
@@ -162,7 +160,7 @@ export default {
         '/gitlab-org/gitlab-test/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
     },
     {
-      id: 1755,
+      id: '1755',
       type: 'DiffNote',
       attachment: null,
       author: {
@@ -204,7 +202,7 @@ export default {
         '/gitlab-org/gitlab-test/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
     },
     {
-      id: 1756,
+      id: '1756',
       type: 'DiffNote',
       attachment: null,
       author: {

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'mime/types'
 
 module API
@@ -9,14 +11,6 @@ module API
     before { authorize! :download_code, user_project }
 
     helpers do
-      def find_branch!(branch_name)
-        begin
-          user_project.repository.find_branch(branch_name) || not_found!('Branch')
-        rescue Gitlab::Git::CommandError
-          render_api_error!('The branch refname is invalid', 400)
-        end
-      end
-
       params :filter_params do
         optional :search, type: String, desc: 'Return list of branches matching the search criteria'
         optional :sort, type: String, desc: 'Return list of branches sorted by the given field'
@@ -77,10 +71,11 @@ module API
         success Entities::Branch
       end
       params do
-        requires :branch, type: String, desc: 'The name of the branch'
+        requires :branch, type: String, desc: 'The name of the branch', allow_blank: false
         optional :developers_can_push, type: Boolean, desc: 'Flag if developers can push to that branch'
         optional :developers_can_merge, type: Boolean, desc: 'Flag if developers can merge to that branch'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       put ':id/repository/branches/:branch/protect', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         authorize_admin_project
 
@@ -108,14 +103,16 @@ module API
           render_api_error!(protected_branch.errors.full_messages, 422)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       # Note: This API will be deprecated in favor of the protected branches API.
       desc 'Unprotect a single branch' do
         success Entities::Branch
       end
       params do
-        requires :branch, type: String, desc: 'The name of the branch'
+        requires :branch, type: String, desc: 'The name of the branch', allow_blank: false
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       put ':id/repository/branches/:branch/unprotect', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         authorize_admin_project
 
@@ -125,13 +122,14 @@ module API
 
         present branch, with: Entities::Branch, current_user: current_user, project: user_project
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Create branch' do
         success Entities::Branch
       end
       params do
-        requires :branch, type: String, desc: 'The name of the branch'
-        requires :ref, type: String, desc: 'Create branch from commit sha or existing branch'
+        requires :branch, type: String, desc: 'The name of the branch', allow_blank: false
+        requires :ref, type: String, desc: 'Create branch from commit sha or existing branch', allow_blank: false
       end
       post ':id/repository/branches' do
         authorize_push_project
@@ -151,7 +149,7 @@ module API
 
       desc 'Delete a branch'
       params do
-        requires :branch, type: String, desc: 'The name of the branch'
+        requires :branch, type: String, desc: 'The name of the branch', allow_blank: false
       end
       delete ':id/repository/branches/:branch', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         authorize_push_project

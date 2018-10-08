@@ -8,6 +8,7 @@ describe ContributedProjectsFinder do
 
   let!(:public_project) { create(:project, :public) }
   let!(:private_project) { create(:project, :private) }
+  let!(:internal_project) { create(:project, :internal) }
 
   before do
     private_project.add_maintainer(source_user)
@@ -16,17 +17,18 @@ describe ContributedProjectsFinder do
 
     create(:push_event, project: public_project, author: source_user)
     create(:push_event, project: private_project, author: source_user)
+    create(:push_event, project: internal_project, author: source_user)
   end
 
-  describe 'without a current user' do
+  describe 'activity without a current user' do
     subject { finder.execute }
 
-    it { is_expected.to eq([public_project]) }
+    it { is_expected.to match_array([public_project]) }
   end
 
-  describe 'with a current user' do
+  describe 'activity with a current user' do
     subject { finder.execute(current_user) }
 
-    it { is_expected.to eq([private_project, public_project]) }
+    it { is_expected.to match_array([private_project, internal_project, public_project]) }
   end
 end

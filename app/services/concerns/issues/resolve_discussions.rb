@@ -13,12 +13,14 @@ module Issues
     end
     # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def merge_request_to_resolve_discussions_of
       strong_memoize(:merge_request_to_resolve_discussions_of) do
         MergeRequestsFinder.new(current_user, project_id: project.id)
           .find_by(iid: merge_request_to_resolve_discussions_of_iid)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def discussions_to_resolve
       return [] unless merge_request_to_resolve_discussions_of

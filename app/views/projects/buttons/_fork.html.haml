@@ -1,17 +1,17 @@
 - unless @project.empty_repo?
   - if current_user && can?(current_user, :fork_project, @project)
-    - if current_user.already_forked?(@project) && current_user.manageable_namespaces.size < 2
-      = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: _('Go to your fork'), class: 'btn has-tooltip' do
-        = custom_icon('icon_fork')
-        %span= s_('GoToYourFork|Fork')
-    - else
-      - can_create_fork = current_user.can?(:create_fork)
-      = link_to new_project_fork_path(@project),
-          class: "btn btn-default #{'has-tooltip disabled' unless can_create_fork}",
-          title: (_('You have reached your project limit') unless can_create_fork) do
-        = custom_icon('icon_fork')
-        %span= s_('CreateNewFork|Fork')
-    .count-with-arrow
-      %span.arrow
-      = link_to project_forks_path(@project), title: n_('Fork', 'Forks', @project.forks_count), class: 'count' do
-        = @project.forks_count
+    .count-badge.d-inline-flex.align-item-stretch.append-right-8
+      %span.fork-count.count-badge-count.d-flex.align-items-center
+        = link_to project_forks_path(@project), title: n_(s_('ProjectOverview|Fork'), s_('ProjectOverview|Forks'), @project.forks_count), class: 'count' do
+          = @project.forks_count
+      - if current_user.already_forked?(@project) && current_user.manageable_namespaces.size < 2
+        = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: s_('ProjectOverview|Go to your fork'), class: 'btn btn-default has-tooltip count-badge-button d-flex align-items-center fork-btn' do
+          = sprite_icon('fork', { css_class: 'icon' })
+          %span= s_('ProjectOverview|Fork')
+      - else
+        - can_create_fork = current_user.can?(:create_fork)
+        = link_to new_project_fork_path(@project),
+            class: "btn btn-default has-tooltip count-badge-button d-flex align-items-center fork-btn #{'has-tooltip disabled' unless can_create_fork}",
+            title: (s_('ProjectOverview|You have reached your project limit') unless can_create_fork) do
+          = sprite_icon('fork', { css_class: 'icon' })
+          %span= s_('ProjectOverview|Fork')

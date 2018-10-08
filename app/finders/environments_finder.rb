@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EnvironmentsFinder
   attr_reader :project, :current_user, :params
 
@@ -5,6 +7,7 @@ class EnvironmentsFinder
     @project, @current_user, @params = project, current_user, params
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def execute
     deployments = project.deployments
     deployments =
@@ -42,6 +45,7 @@ class EnvironmentsFinder
 
     environments
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 

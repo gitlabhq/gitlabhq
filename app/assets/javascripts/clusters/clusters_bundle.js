@@ -1,16 +1,12 @@
 import Visibility from 'visibilityjs';
 import Vue from 'vue';
+import PersistentUserCallout from '../persistent_user_callout';
 import { s__, sprintf } from '../locale';
 import Flash from '../flash';
 import Poll from '../lib/utils/poll';
 import initSettingsPanels from '../settings_panels';
 import eventHub from './event_hub';
-import {
-  APPLICATION_STATUS,
-  REQUEST_LOADING,
-  REQUEST_SUCCESS,
-  REQUEST_FAILURE,
-} from './constants';
+import { APPLICATION_STATUS, REQUEST_LOADING, REQUEST_SUCCESS, REQUEST_FAILURE } from './constants';
 import ClustersService from './services/clusters_service';
 import ClustersStore from './stores/clusters_store';
 import applications from './components/applications.vue';
@@ -66,6 +62,7 @@ export default class Clusters {
     this.showTokenButton = document.querySelector('.js-show-cluster-token');
     this.tokenField = document.querySelector('.js-cluster-token');
 
+    Clusters.initDismissableCallout();
     initSettingsPanels();
     setupToggleButtons(document.querySelector('.js-cluster-enable-toggle-area'));
     this.initApplications();
@@ -108,6 +105,12 @@ export default class Clusters {
     });
   }
 
+  static initDismissableCallout() {
+    const callout = document.querySelector('.js-cluster-security-warning');
+
+    if (callout) new PersistentUserCallout(callout); // eslint-disable-line no-new
+  }
+
   addListeners() {
     if (this.showTokenButton) this.showTokenButton.addEventListener('click', this.showToken);
     eventHub.$on('installApplication', this.installApplication);
@@ -129,7 +132,8 @@ export default class Clusters {
     if (!Visibility.hidden()) {
       this.poll.makeRequest();
     } else {
-      this.service.fetchData()
+      this.service
+        .fetchData()
         .then(data => this.handleSuccess(data))
         .catch(() => Clusters.handleError());
     }
@@ -177,15 +181,21 @@ export default class Clusters {
 
   checkForNewInstalls(prevApplicationMap, newApplicationMap) {
     const appTitles = Object.keys(newApplicationMap)
-      .filter(appId => newApplicationMap[appId].status === APPLICATION_STATUS.INSTALLED &&
-        prevApplicationMap[appId].status !== APPLICATION_STATUS.INSTALLED &&
-        prevApplicationMap[appId].status !== null)
+      .filter(
+        appId =>
+          newApplicationMap[appId].status === APPLICATION_STATUS.INSTALLED &&
+          prevApplicationMap[appId].status !== APPLICATION_STATUS.INSTALLED &&
+          prevApplicationMap[appId].status !== null,
+      )
       .map(appId => newApplicationMap[appId].title);
 
     if (appTitles.length > 0) {
-      const text = sprintf(s__('ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster'), {
-        appList: appTitles.join(', '),
-      });
+      const text = sprintf(
+        s__('ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster'),
+        {
+          appList: appTitles.join(', '),
+        },
+      );
       Flash(text, 'notice', this.successApplicationContainer);
     }
   }
@@ -218,13 +228,18 @@ export default class Clusters {
     this.store.updateAppProperty(appId, 'requestStatus', REQUEST_LOADING);
     this.store.updateAppProperty(appId, 'requestReason', null);
 
-    this.service.installApplication(appId, data.params)
+    this.service
+      .installApplication(appId, data.params)
       .then(() => {
         this.store.updateAppProperty(appId, 'requestStatus', REQUEST_SUCCESS);
       })
       .catch(() => {
         this.store.updateAppProperty(appId, 'requestStatus', REQUEST_FAILURE);
-        this.store.updateAppProperty(appId, 'requestReason', s__('ClusterIntegration|Request to begin installing failed'));
+        this.store.updateAppProperty(
+          appId,
+          'requestReason',
+          s__('ClusterIntegration|Request to begin installing failed'),
+        );
       });
   }
 

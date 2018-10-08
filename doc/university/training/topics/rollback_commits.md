@@ -9,26 +9,30 @@ comments: false
 ## Undo Commits
 
 * Undo last commit putting everything back into the staging area.
-```
-git reset --soft HEAD^
-```
+
+    ```
+    git reset --soft HEAD^
+    ```
 
 * Add files and change message with:
-```
-git commit --amend -m "New Message"
-```
+
+    ```
+    git commit --amend -m "New Message"
+    ```
 
 ----------
 
 * Undo last and remove changes
-```
-git reset --hard HEAD^
-```
+
+    ```
+    git reset --hard HEAD^
+    ```
 
 * Same as last one but for two commits back
-```
-git reset --hard HEAD^^
-```
+
+    ```
+    git reset --hard HEAD^^
+    ```
 
 ** Don't reset after pushing **
 

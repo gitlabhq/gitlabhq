@@ -16,15 +16,25 @@ and is flexible enough to fit your needs.
 
 ### Requirements
 
-If you're using GitLab with the Omnibus package, you're all set. If you
-installed GitLab from source, make sure the following packages are installed:
-
 * rsync
+
+If you're using GitLab with the Omnibus package, you're all set. If you
+installed GitLab from source, make sure you have rsync installed.
 
 If you're using Ubuntu, you could run:
 
 ```
 sudo apt-get install -y rsync
+```
+
+* tar
+
+Backup and restore tasks use `tar` under the hood to create and extract
+archives. Ensure you have version 1.30 or above of `tar` available in your
+system. To check the version, run:
+
+```
+tar --version
 ```
 
 ### Backup timestamp
@@ -124,7 +134,7 @@ To use the `copy` strategy instead of the default streaming strategy, specify
 
 ### Excluding specific directories from the backup
 
-You can choose what should be backed up by adding the environment variable `SKIP`.
+You can choose what should be exempt from the backup up by adding the environment variable `SKIP`.
 The available options are:
 
 - `db` (database)
@@ -137,6 +147,9 @@ The available options are:
 - `pages` (Pages content)
 
 Use a comma to specify several options at the same time:
+
+All wikis will be backed up as part of the `repositories` group. Non-existent wikis
+will be skipped during a backup.
 
 ```
 # use this command if you've installed GitLab with the Omnibus package
@@ -510,7 +523,7 @@ more of the following options:
 
 - `BACKUP=timestamp_of_backup` - Required if more than one backup exists.
   Read what the [backup timestamp is about](#backup-timestamp).
-- `force=yes` - Does not ask if the authorized_keys file should get regenerated and assumes 'yes' for warning that database tables will be removed.
+- `force=yes` - Does not ask if the authorized_keys file should get regenerated and assumes 'yes' for warning that database tables will be removed, enabling the "Write to authorized_keys file" setting, and updating LDAP providers.
 
 If you are restoring into directories that are mountpoints you will need to make
 sure these directories are empty before attempting a restore. Otherwise GitLab
@@ -578,10 +591,11 @@ This procedure assumes that:
 
 First make sure your backup tar file is in the backup directory described in the
 `gitlab.rb` configuration `gitlab_rails['backup_path']`. The default is
-`/var/opt/gitlab/backups`.
+`/var/opt/gitlab/backups`. It needs to be owned by the `git` user.
 
 ```shell
 sudo cp 11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar /var/opt/gitlab/backups/
+sudo chown git.git /var/opt/gitlab/backups/11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar
 ```
 
 Stop the processes that are connected to the database.  Leave the rest of GitLab

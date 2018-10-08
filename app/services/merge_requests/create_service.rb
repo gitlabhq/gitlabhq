@@ -49,6 +49,7 @@ module MergeRequests
       merge_request.update(head_pipeline_id: pipeline.id) if pipeline
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def head_pipeline_for(merge_request)
       return unless merge_request.source_project
 
@@ -59,6 +60,7 @@ module MergeRequests
 
       pipelines.order(id: :desc).first
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def set_projects!
       # @project is used to determine whether the user can set the merge request's

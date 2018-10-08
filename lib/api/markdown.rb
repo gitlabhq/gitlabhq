@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Markdown < Grape::API
     params do
@@ -10,7 +12,8 @@ module API
         detail "This feature was introduced in GitLab 11.0."
       end
       post do
-        context = { only_path: false }
+        context = { only_path: false, current_user: current_user }
+        context[:pipeline] = params[:gfm] ? :full : :plain_markdown
 
         if params[:project]
           project = Project.find_by_full_path(params[:project])
@@ -22,9 +25,7 @@ module API
           context[:skip_project_check] = true
         end
 
-        context[:pipeline] = params[:gfm] ? :full : :plain_markdown
-
-        { html: Banzai.render(params[:text], context) }
+        { html: Banzai.render_and_post_process(params[:text], context) }
       end
     end
   end

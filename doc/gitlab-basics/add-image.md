@@ -5,7 +5,7 @@ in Windows, or...), put the image file into the GitLab project. You can find the
 project as a regular folder in your files.
 
 Go to your [shell](command-line-commands.md), and move into the folder of your
-Gitlab project. This usually means running the following command until you get
+GitLab project. This usually means running the following command until you get
 to the desired destination:
 
 ```

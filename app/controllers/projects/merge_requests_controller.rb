@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationController
   include ToggleSubscriptionAction
   include IssuableActions
@@ -205,7 +207,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     environments =
       begin
         @merge_request.environments_for(current_user).map do |environment|
-          project = environment.project
+          project    = environment.project
           deployment = environment.first_deployment_for(@merge_request.diff_head_sha)
 
           stop_url =
@@ -215,7 +217,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
           metrics_url =
             if can?(current_user, :read_environment, environment) && environment.has_metrics?
-              metrics_project_environment_deployment_path(environment.project, environment, deployment)
+              metrics_project_environment_deployment_path(project, environment, deployment)
             end
 
           metrics_monitoring_url =
@@ -330,6 +332,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @source_project = @merge_request.source_project
     @target_project = @merge_request.target_project
     @target_branches = @merge_request.target_project.repository.branch_names
+    @noteable = @merge_request
+
+    # FIXME: We have to assign a presenter to another instance variable
+    # due to class_name checks being made with issuable classes
+    @mr_presenter = @merge_request.present(current_user: current_user)
   end
 
   def finder_type

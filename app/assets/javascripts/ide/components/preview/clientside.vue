@@ -3,14 +3,12 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import _ from 'underscore';
 import { Manager } from 'smooshpack';
 import { listen } from 'codesandbox-api';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import Navigator from './navigator.vue';
 import { packageJsonPath } from '../../constants';
 import { createPathWithExt } from '../../utils';
 
 export default {
   components: {
-    LoadingIcon,
     Navigator,
   },
   data() {
@@ -177,9 +175,9 @@ export default {
         {{ s__('IDE|Get started with Live Preview') }}
       </a>
     </div>
-    <loading-icon
+    <gl-loading-icon
       v-else
-      size="2"
+      :size="2"
       class="align-self-center mt-auto mb-auto"
     />
   </div>

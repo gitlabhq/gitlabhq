@@ -1,5 +1,5 @@
 <script>
-/* eslint-disable vue/require-default-prop, vue/require-prop-types */
+/* eslint-disable vue/require-default-prop */
 import Identicon from '../../vue_shared/components/identicon.vue';
 
 export default {

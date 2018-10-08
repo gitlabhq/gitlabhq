@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'gon'
 require 'fogbugz'
 
@@ -10,6 +12,7 @@ class ApplicationController < ActionController::Base
   include WorkhorseHelper
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
+  include InvalidUTF8ErrorHandler
 
   before_action :authenticate_sessionless_user!
   before_action :authenticate_user!
@@ -22,6 +25,7 @@ class ApplicationController < ActionController::Base
   before_action :add_gon_variables, unless: [:peek_request?, :json_request?]
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
+  before_action :set_usage_stats_consent_flag
 
   around_action :set_locale
 
@@ -105,11 +109,21 @@ class ApplicationController < ActionController::Base
     request.env['rack.session.options'][:expire_after] = Settings.gitlab['unauthenticated_session_expire_delay']
   end
 
+  def render(*args)
+    super.tap do
+      # Set a header for custom error pages to prevent them from being intercepted by gitlab-workhorse
+      if response.content_type == 'text/html' && (400..599).cover?(response.status)
+        response.headers['X-GitLab-Custom-Error'] = '1'
+      end
+    end
+  end
+
   protected
 
   def append_info_to_payload(payload)
     super
 
+    payload[:ua] = request.env["HTTP_USER_AGENT"]
     payload[:remote_ip] = request.remote_ip
 
     logged_user = auth_user
@@ -268,9 +282,10 @@ class ApplicationController < ActionController::Base
   end
 
   def event_filter
-    # Split using comma to maintain backward compatibility Ex/ "filter1,filter2"
-    filters = cookies['event_filter'].split(',')[0] if cookies['event_filter'].present?
-    @event_filter ||= EventFilter.new(filters)
+    @event_filter ||=
+      EventFilter.new(params[:event_filter].presence || cookies[:event_filter]).tap do |new_event_filter|
+        cookies[:event_filter] = new_event_filter.filter
+      end
   end
 
   # JSON for infinite scroll via Pager object
@@ -432,5 +447,30 @@ class ApplicationController < ActionController::Base
     return false unless Gitlab::CurrentSettings.current_application_settings.enforce_terms
 
     !(peek_request? || devise_controller?)
+  end
+
+  def set_usage_stats_consent_flag
+    return unless current_user
+    return if sessionless_user?
+    return if session.has_key?(:ask_for_usage_stats_consent)
+
+    session[:ask_for_usage_stats_consent] = current_user.requires_usage_stats_consent?
+
+    if session[:ask_for_usage_stats_consent]
+      disable_usage_stats
+    end
+  end
+
+  def disable_usage_stats
+    application_setting_params = {
+      usage_ping_enabled: false,
+      version_check_enabled: false,
+      skip_usage_stats_user: true
+    }
+    settings = Gitlab::CurrentSettings.current_application_settings
+
+    ApplicationSettings::UpdateService
+      .new(settings, current_user, application_setting_params)
+      .execute
   end
 end

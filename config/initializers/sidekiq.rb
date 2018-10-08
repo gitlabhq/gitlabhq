@@ -1,3 +1,9 @@
+require 'sidekiq/web'
+
+# Disable the Sidekiq Rack session since GitLab already has its own session store.
+# CSRF protection still works (https://github.com/mperham/sidekiq/commit/315504e766c4fd88a29b7772169060afc4c40329).
+Sidekiq::Web.set :sessions, false
+
 # Custom Queues configuration
 queues_config_hash = Gitlab::Redis::Queues.params
 queues_config_hash[:namespace] = Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE
@@ -34,6 +40,10 @@ Sidekiq.configure_server do |config|
     ActiveRecord::Base.clear_all_connections!
   end
 
+  if Feature.enabled?(:gitlab_sidekiq_reliable_fetcher)
+    Sidekiq::ReliableFetcher.setup_reliable_fetch!(config)
+  end
+
   # Sidekiq-cron: load recurring jobs from gitlab.yml
   # UGLY Hack to get nested hash from settingslogic
   cron_jobs = JSON.parse(Gitlab.config.cron_jobs.to_json)
@@ -49,14 +59,12 @@ Sidekiq.configure_server do |config|
   end
   Sidekiq::Cron::Job.load_from_hash! cron_jobs
 
-  Gitlab::SidekiqThrottler.execute!
-
   Gitlab::SidekiqVersioning.install!
 
-  config = Gitlab::Database.config ||
+  db_config = Gitlab::Database.config ||
     Rails.application.config.database_configuration[Rails.env]
-  config['pool'] = Sidekiq.options[:concurrency]
-  ActiveRecord::Base.establish_connection(config)
+  db_config['pool'] = Sidekiq.options[:concurrency]
+  ActiveRecord::Base.establish_connection(db_config)
   Rails.logger.debug("Connection Pool size for Sidekiq Server is now: #{ActiveRecord::Base.connection.pool.instance_variable_get('@size')}")
 
   # Avoid autoload issue such as 'Mail::Parsers::AddressStruct'

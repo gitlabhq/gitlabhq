@@ -7,7 +7,7 @@ module QA
         # including staging and on-premises installation.
         #
         class Mattermost < Test::Instance::All
-          tags :core, :mattermost
+          tags :mattermost
 
           def perform(address, mattermost, *rspec_options)
             Runtime::Scenario.define(:mattermost_address, mattermost)

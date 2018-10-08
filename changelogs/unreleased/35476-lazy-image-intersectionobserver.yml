@@ -1,0 +1,6 @@
+---
+title: Improve lazy image loading performance by using IntersectionObserver where
+  available
+merge_request: 21565
+author:
+type: performance

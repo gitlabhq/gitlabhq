@@ -6,11 +6,10 @@ import diffFileMockData from '../mock_data/diff_file';
 
 describe('DiffFile', () => {
   let vm;
-  const getDiffFileMock = () => Object.assign({}, diffFileMockData);
 
   beforeEach(() => {
     vm = createComponentWithStore(Vue.extend(DiffFileComponent), store, {
-      file: getDiffFileMock(),
+      file: JSON.parse(JSON.stringify(diffFileMockData)),
       canCurrentUserFork: false,
     }).$mount();
   });
@@ -18,7 +17,7 @@ describe('DiffFile', () => {
   describe('template', () => {
     it('should render component with file header, file content components', () => {
       const el = vm.$el;
-      const { fileHash, filePath } = diffFileMockData;
+      const { fileHash, filePath } = vm.file;
 
       expect(el.id).toEqual(fileHash);
       expect(el.classList.contains('diff-file')).toEqual(true);
@@ -51,6 +50,20 @@ describe('DiffFile', () => {
       });
 
       it('should have collapsed text and link', done => {
+        vm.file.renderIt = true;
+        vm.file.collapsed = false;
+        vm.file.highlightedDiffLines = null;
+
+        vm.$nextTick(() => {
+          expect(vm.$el.innerText).toContain('This diff is collapsed');
+          expect(vm.$el.querySelectorAll('.js-click-to-expand').length).toEqual(1);
+
+          done();
+        });
+      });
+
+      it('should have collapsed text and link even before rendered', done => {
+        vm.file.renderIt = false;
         vm.file.collapsed = true;
 
         vm.$nextTick(() => {

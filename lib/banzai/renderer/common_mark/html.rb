@@ -4,15 +4,11 @@ module Banzai
       class HTML < CommonMarker::HtmlRenderer
         def code_block(node)
           block do
-            code      = node.string_content
-            lang      = node.fence_info
-            lang_attr = lang.present? ? %Q{ lang="#{lang}"} : ''
-            result    =
-              "<pre>" \
-                "<code#{lang_attr}>#{ERB::Util.html_escape(code)}</code>" \
-              "</pre>"
-
-            out(result)
+            out("<pre#{sourcepos(node)}><code")
+            out(' lang="', node.fence_info, '"') if node.fence_info.present?
+            out('>')
+            out(escape_html(node.string_content))
+            out('</code></pre>')
           end
         end
       end

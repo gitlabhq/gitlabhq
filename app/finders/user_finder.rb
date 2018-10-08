@@ -14,9 +14,11 @@ class UserFinder
   end
 
   # Tries to find a User, returning nil if none could be found.
+  # rubocop: disable CodeReuse/ActiveRecord
   def execute
     User.find_by(id: params[:id])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   # Tries to find a User, raising a `ActiveRecord::RecordNotFound` if it could
   # not be found.

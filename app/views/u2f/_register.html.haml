@@ -8,13 +8,13 @@
   - if current_user.two_factor_otp_enabled?
     .row.append-bottom-10
       .col-md-4
-        %button#js-setup-u2f-device.btn.btn-info.btn-block Setup new U2F device
+        %button#js-setup-u2f-device.btn.btn-info.btn-block Set up new U2F device
       .col-md-8
         %p Your U2F device needs to be set up. Plug it in (if not already) and click the button on the left.
   - else
     .row.append-bottom-10
       .col-md-4
-        %button#js-setup-u2f-device.btn.btn-info.btn-block{ disabled: true } Setup new U2F device
+        %button#js-setup-u2f-device.btn.btn-info.btn-block{ disabled: true } Set up new U2F device
       .col-md-8
         %p.text-warning You need to register a two-factor authentication app before you can set up a U2F device.
 

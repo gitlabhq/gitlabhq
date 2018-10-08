@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::TagsController < Projects::ApplicationController
   include SortingHelper
 
@@ -7,6 +9,7 @@ class Projects::TagsController < Projects::ApplicationController
   before_action :authorize_push_code!, only: [:new, :create]
   before_action :authorize_admin_project!, only: [:destroy]
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def index
     params[:sort] = params[:sort].presence || sort_value_recently_updated
 
@@ -17,8 +20,15 @@ class Projects::TagsController < Projects::ApplicationController
     tag_names = @tags.map(&:name)
     @tags_pipelines = @project.pipelines.latest_successful_for_refs(tag_names)
     @releases = project.releases.where(tag: tag_names)
-  end
 
+    respond_to do |format|
+      format.html
+      format.atom { render layout: 'xml.atom' }
+    end
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
+
+  # rubocop: disable CodeReuse/ActiveRecord
   def show
     @tag = @repository.find_tag(params[:id])
 
@@ -27,6 +37,7 @@ class Projects::TagsController < Projects::ApplicationController
     @release = @project.releases.find_or_initialize_by(tag: @tag.name)
     @commit = @repository.commit(@tag.dereferenced_target)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def create
     result = Tags::CreateService.new(@project, current_user)

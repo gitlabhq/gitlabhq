@@ -11,11 +11,13 @@ module Gitlab
         extend ::Gitlab::Utils::Override
 
         class << self
+          # rubocop: disable CodeReuse/ActiveRecord
           def find_by_uid_and_provider(uid, provider)
             identity = ::Identity.with_extern_uid(provider, uid).take
 
             identity && identity.user
           end
+          # rubocop: enable CodeReuse/ActiveRecord
         end
 
         def save

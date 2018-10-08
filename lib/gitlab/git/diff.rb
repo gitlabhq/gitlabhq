@@ -1,6 +1,3 @@
-# Gitaly note: JV: needs RPC for Gitlab::Git::Diff.between.
-
-# Gitlab::Git::Diff is a wrapper around native Rugged::Diff object
 module Gitlab
   module Git
     class Diff
@@ -22,13 +19,17 @@ module Gitlab
 
       alias_method :expanded?, :expanded
 
+      # The default maximum content size to display a diff patch.
+      #
+      # If this value ever changes, make sure to create a migration to update
+      # current records, and default of `ApplicationSettings#diff_max_patch_bytes`.
+      DEFAULT_MAX_PATCH_BYTES = 100.kilobytes
+
+      # This is a limitation applied on the source (Gitaly), therefore we don't allow
+      # persisting limits over that.
+      MAX_PATCH_BYTES_UPPER_BOUND = 500.kilobytes
+
       SERIALIZE_KEYS = %i(diff new_path old_path a_mode b_mode new_file renamed_file deleted_file too_large).freeze
-
-      # The maximum size of a diff to display.
-      SIZE_LIMIT = 100.kilobytes
-
-      # The maximum size before a diff is collapsed.
-      COLLAPSE_LIMIT = 10.kilobytes
 
       class << self
         def between(repo, head, base, options = {}, *paths)
@@ -52,20 +53,31 @@ module Gitlab
           repo.diff(common_commit, head, actual_options, *paths)
         end
 
-        # Return a copy of the +options+ hash containing only keys that can be
-        # passed to Rugged.  Allowed options are:
+        # Return a copy of the +options+ hash containing only recognized keys.
+        # Allowed options are:
         #
         #  :ignore_whitespace_change ::
         #    If true, changes in amount of whitespace will be ignored.
         #
-        #  :disable_pathspec_match ::
-        #    If true, the given +*paths+ will be applied as exact matches,
-        #    instead of as fnmatch patterns.
+        #  :max_files ::
+        #    Limit how many files will patches be allowed for before collapsing
         #
+        #  :max_lines ::
+        #    Limit how many patch lines (across all files) will be allowed for
+        #    before collapsing
+        #
+        #  :limits ::
+        #    A hash with additional limits to check before collapsing patches.
+        #    Allowed keys are: `max_bytes`, `safe_max_files`, `safe_max_lines`
+        #    and `safe_max_bytes`
+        #
+        #  :expanded ::
+        #    If true, patch raw data will not be included in the diff after
+        #    `max_files`, `max_lines` or any of the limits in `limits` are
+        #    exceeded
         def filter_diff_options(options, default_options = {})
-          allowed_options = [:ignore_whitespace_change,
-                             :disable_pathspec_match, :paths,
-                             :max_files, :max_lines, :limits, :expanded]
+          allowed_options = [:ignore_whitespace_change, :max_files, :max_lines,
+                             :limits, :expanded]
 
           if default_options
             actual_defaults = default_options.dup
@@ -93,9 +105,29 @@ module Gitlab
         #
         # "Binary files a/file/path and b/file/path differ\n"
         # This is used when we detect that a diff is binary
-        # using CharlockHolmes when Rugged treats it as text.
+        # using CharlockHolmes.
         def binary_message(old_path, new_path)
           "Binary files #{old_path} and #{new_path} differ\n"
+        end
+
+        # Returns the limit of bytes a single diff file can reach before it
+        # appears as 'collapsed' for end-users.
+        # By convention, it's 10% of the persisted `diff_max_patch_bytes`.
+        #
+        # Example: If we have 100k for the `diff_max_patch_bytes`, it will be 10k by
+        # default.
+        #
+        # Patches surpassing this limit should still be persisted in the database.
+        def patch_safe_limit_bytes
+          patch_hard_limit_bytes / 10
+        end
+
+        # Returns the limit for a single diff file (patch).
+        #
+        # Patches surpassing this limit shouldn't be persisted in the database
+        # and will be presented as 'too large' for end-users.
+        def patch_hard_limit_bytes
+          Gitlab::CurrentSettings.diff_max_patch_bytes
         end
       end
 
@@ -106,8 +138,6 @@ module Gitlab
         when Hash
           init_from_hash(raw_diff)
           prune_diff_if_eligible
-        when Rugged::Patch, Rugged::Diff::Delta
-          init_from_rugged(raw_diff)
         when Gitlab::GitalyClient::Diff
           init_from_gitaly(raw_diff)
           prune_diff_if_eligible
@@ -144,7 +174,7 @@ module Gitlab
 
       def too_large?
         if @too_large.nil?
-          @too_large = @diff.bytesize >= SIZE_LIMIT
+          @too_large = @diff.bytesize >= self.class.patch_hard_limit_bytes
         else
           @too_large
         end
@@ -162,7 +192,7 @@ module Gitlab
       def collapsed?
         return @collapsed if defined?(@collapsed)
 
-        @collapsed = !expanded && @diff.bytesize >= COLLAPSE_LIMIT
+        @collapsed = !expanded && @diff.bytesize >= self.class.patch_safe_limit_bytes
       end
 
       def collapse!
@@ -183,31 +213,6 @@ module Gitlab
       end
 
       private
-
-      def init_from_rugged(rugged)
-        if rugged.is_a?(Rugged::Patch)
-          init_from_rugged_patch(rugged)
-          d = rugged.delta
-        else
-          d = rugged
-        end
-
-        @new_path = encode!(d.new_file[:path])
-        @old_path = encode!(d.old_file[:path])
-        @a_mode = d.old_file[:mode].to_s(8)
-        @b_mode = d.new_file[:mode].to_s(8)
-        @new_file = d.added?
-        @renamed_file = d.renamed?
-        @deleted_file = d.deleted?
-      end
-
-      def init_from_rugged_patch(patch)
-        # Don't bother initializing diffs that are too large. If a diff is
-        # binary we're not going to display anything so we skip the size check.
-        return if !patch.delta.binary? && prune_large_patch(patch)
-
-        @diff = encode!(strip_diff_headers(patch.to_s))
-      end
 
       def init_from_hash(hash)
         raw_diff = hash.symbolize_keys
@@ -236,47 +241,6 @@ module Gitlab
           too_large!
         elsif collapsed?
           collapse!
-        end
-      end
-
-      # If the patch surpasses any of the diff limits it calls the appropiate
-      # prune method and returns true. Otherwise returns false.
-      def prune_large_patch(patch)
-        size = 0
-
-        patch.each_hunk do |hunk|
-          hunk.each_line do |line|
-            size += line.content.bytesize
-
-            if size >= SIZE_LIMIT
-              too_large!
-              return true # rubocop:disable Cop/AvoidReturnFromBlocks
-            end
-          end
-        end
-
-        if !expanded && size >= COLLAPSE_LIMIT
-          collapse!
-          return true
-        end
-
-        false
-      end
-
-      # Strip out the information at the beginning of the patch's text to match
-      # Grit's output
-      def strip_diff_headers(diff_text)
-        # Delete everything up to the first line that starts with '---' or
-        # 'Binary'
-        diff_text.sub!(/\A.*?^(---|Binary)/m, '\1')
-
-        if diff_text.start_with?('---', 'Binary')
-          diff_text
-        else
-          # If the diff_text did not contain a line starting with '---' or
-          # 'Binary', return the empty string. No idea why; we are just
-          # preserving behavior from before the refactor.
-          ''
         end
       end
     end

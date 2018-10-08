@@ -11,6 +11,7 @@ class DetectRepositoryLanguagesWorker
 
   attr_reader :project
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform(project_id, user_id)
     @project = Project.find_by(id: project_id)
     user = User.find_by(id: user_id)
@@ -20,6 +21,7 @@ class DetectRepositoryLanguagesWorker
       ::Projects::DetectRepositoryLanguagesService.new(project, user).execute
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 

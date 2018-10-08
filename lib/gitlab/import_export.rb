@@ -40,10 +40,6 @@ module Gitlab
       "#{basename[0..FILENAME_LIMIT]}_export.tar.gz"
     end
 
-    def object_storage?
-      Feature.enabled?(:import_export_object_storage)
-    end
-
     def version
       VERSION
     end

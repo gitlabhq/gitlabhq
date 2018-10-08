@@ -21,17 +21,17 @@
           for local tests
 
   = content_tag :div, class: 'form-group row' do
-    = f.label :trusted, class: 'col-sm-2 col-form-label'
+    = f.label :trusted, class: 'col-sm-2 col-form-label pt-0'
     .col-sm-10
       = f.check_box :trusted
       %span.form-text.text-muted
         Trusted applications are automatically authorized on GitLab OAuth flow.
 
   .form-group.row
-    = f.label :scopes, class: 'col-sm-2 col-form-label'
+    = f.label :scopes, class: 'col-sm-2 col-form-label pt-0'
     .col-sm-10
       = render 'shared/tokens/scopes_form', prefix: 'doorkeeper_application', token: application, scopes: @scopes
 
   .form-actions
-    = f.submit 'Submit', class: "btn btn-save wide"
+    = f.submit 'Submit', class: "btn btn-success wide"
     = link_to "Cancel", admin_applications_path, class: "btn btn-cancel"

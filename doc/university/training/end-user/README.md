@@ -80,7 +80,7 @@ git config --global user.name "Your Name"
 git config --global user.email you@example.com
 ```    
 
-- If you don't use the global flag you can setup a different author for
+- If you don't use the global flag you can set up a different author for
   each project
 - Check settings with:
 

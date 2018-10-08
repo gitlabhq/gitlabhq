@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable GitlabSecurity/PublicSend
 
 module API
@@ -17,6 +19,7 @@ module API
           .non_request
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def find_all_members_for_project(project)
         shared_group_ids = project.project_group_links.pluck(:group_id)
         project_group_ids = project.group&.self_and_ancestors&.pluck(:id)
@@ -28,13 +31,16 @@ module API
           .where(project_authorizations: { project_id: project.id })
           .where(source_id: source_ids)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def find_all_members_for_group(group)
         source_ids = group.self_and_ancestors.pluck(:id)
         Member.includes(:user)
           .where(source_id: source_ids)
           .where(source_type: 'Namespace')
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

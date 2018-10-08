@@ -785,35 +785,25 @@ describe API::Users do
   end
 
   describe 'GET /user/:id/keys' do
-    before do
-      admin
+    it 'returns 404 for non-existing user' do
+      user_id = not_existing_user_id
+
+      get api("/users/#{user_id}/keys")
+
+      expect(response).to have_gitlab_http_status(404)
+      expect(json_response['message']).to eq('404 User Not Found')
     end
 
-    context 'when unauthenticated' do
-      it 'returns authentication error' do
-        get api("/users/#{user.id}/keys")
-        expect(response).to have_gitlab_http_status(401)
-      end
-    end
+    it 'returns array of ssh keys' do
+      user.keys << key
+      user.save
 
-    context 'when authenticated' do
-      it 'returns 404 for non-existing user' do
-        get api('/users/999999/keys', admin)
-        expect(response).to have_gitlab_http_status(404)
-        expect(json_response['message']).to eq('404 User Not Found')
-      end
+      get api("/users/#{user.id}/keys")
 
-      it 'returns array of ssh keys' do
-        user.keys << key
-        user.save
-
-        get api("/users/#{user.id}/keys", admin)
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response.first['title']).to eq(key.title)
-      end
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.first['title']).to eq(key.title)
     end
   end
 
@@ -1031,17 +1021,32 @@ describe API::Users do
       expect(json_response['error']).to eq('email is missing')
     end
 
-    it "creates email" do
+    it "creates unverified email" do
       email_attrs = attributes_for :email
       expect do
         post api("/users/#{user.id}/emails", admin), email_attrs
       end.to change { user.emails.count }.by(1)
+
+      email = Email.find_by(user_id: user.id, email: email_attrs[:email])
+      expect(email).not_to be_confirmed
     end
 
     it "returns a 400 for invalid ID" do
       post api("/users/999999/emails", admin)
 
       expect(response).to have_gitlab_http_status(400)
+    end
+
+    it "creates verified email" do
+      email_attrs = attributes_for :email
+      email_attrs[:skip_confirmation] = true
+
+      post api("/users/#{user.id}/emails", admin), email_attrs
+
+      expect(response).to have_gitlab_http_status(201)
+
+      email = Email.find_by(user_id: user.id, email: email_attrs[:email])
+      expect(email).to be_confirmed
     end
   end
 

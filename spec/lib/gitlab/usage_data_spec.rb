@@ -46,6 +46,7 @@ describe Gitlab::UsageData do
         git
         database
         avg_cycle_analytics
+        web_ide_commits
       ))
     end
 
@@ -164,6 +165,22 @@ describe Gitlab::UsageData do
       expect(subject[:installation_type]).to eq(Gitlab::INSTALLATION_TYPE)
       expect(subject[:active_user_count]).to eq(User.active.count)
       expect(subject[:recorded_at]).to be_a(Time)
+    end
+  end
+
+  describe '#count' do
+    let(:relation) { double(:relation) }
+
+    it 'returns the count when counting succeeds' do
+      allow(relation).to receive(:count).and_return(1)
+
+      expect(described_class.count(relation)).to eq(1)
+    end
+
+    it 'returns the fallback value when counting fails' do
+      allow(relation).to receive(:count).and_raise(ActiveRecord::StatementInvalid.new(''))
+
+      expect(described_class.count(relation, fallback: 15)).to eq(15)
     end
   end
 end

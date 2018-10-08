@@ -52,7 +52,8 @@ module TestEnv
     'add_images_and_changes'             => '010d106',
     'update-gitlab-shell-v-6-0-1'        => '2f61d70',
     'update-gitlab-shell-v-6-0-3'        => 'de78448',
-    '2-mb-file'                          => 'bf12d25'
+    '2-mb-file'                          => 'bf12d25',
+    'with-codeowners'                    => '219560e'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
@@ -84,7 +85,7 @@ module TestEnv
 
     clean_test_path
 
-    # Setup GitLab shell for test instance
+    # Set up GitLab shell for test instance
     setup_gitlab_shell
 
     setup_gitaly
@@ -104,10 +105,6 @@ module TestEnv
   def enable_mailer
     allow_any_instance_of(NotificationService).to receive(:mailer)
       .and_call_original
-  end
-
-  def disable_pre_receive
-    allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
   end
 
   # Clean /tmp/tests
@@ -370,7 +367,7 @@ module TestEnv
     FileUtils.rm_rf(install_dir)
     exit 1
   ensure
-    puts "    #{component} setup in #{Time.now - start} seconds...\n"
+    puts "    #{component} set up in #{Time.now - start} seconds...\n"
   end
 
   def ensure_component_dir_name_is_correct!(component, path)

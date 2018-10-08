@@ -74,14 +74,31 @@ star, smile, etc.). Some good tips about code reviews can be found in our
 
 ## Feature freeze on the 7th for the release on the 22nd
 
-After 7th at 23:59 (Pacific Time Zone) of each month, RC1 of the upcoming release (to be shipped on the 22nd) is created and deployed to GitLab.com and the stable branch for this release is frozen, which means master is no longer merged into it.
-Merge requests may still be merged into master during this period,
-but they will go into the _next_ release, unless they are manually cherry-picked into the stable branch.
+After 7th at 23:59 (Pacific Time Zone) of each month, RC1 of the upcoming
+release (to be shipped on the 22nd) is created and deployed to GitLab.com and
+the stable branch for this release is frozen, which means master is no longer
+merged into it.  Merge requests may still be merged into master during this
+period, but they will go into the _next_ release, unless they are manually
+cherry-picked into the stable branch.
 
-By freezing the stable branches 2 weeks prior to a release, we reduce the risk of a last minute merge request potentially breaking things.
+By freezing the stable branches 2 weeks prior to a release, we reduce the risk
+of a last minute merge request potentially breaking things.
 
-Any release candidate that gets created after this date can become a final release,
-hence the name release candidate.
+Any release candidate that gets created after this date can become a final
+release, hence the name release candidate.
+
+### Feature flags
+
+Merge requests that make changes hidden behind a feature flag, or remove an
+existing feature flag because a feature is deemed stable, may be merged (and
+picked into the stable branches) up to the 19th of the month. Such merge
+requests should have the ~"feature flag" label assigned, and don't require a
+corresponding exception request to be created.
+
+While rare, release managers may decide to reject picking a change into a stable
+branch, even when feature flags are used. This might be necessary if the changes
+are deemed problematic, too invasive, or there simply isn't enough time to
+properly test how the changes behave on GitLab.com.
 
 ### Between the 1st and the 7th
 
@@ -223,36 +240,36 @@ Check [this guide](https://gitlab.com/gitlab-org/release/docs/blob/master/genera
 
 A ~bug is a defect, error, failure which causes the system to behave incorrectly or prevents it from fulfilling the product requirements.
 
-The level of impact of a ~bug can vary from blocking a whole functionality 
-or a feature usability bug. A bug should always be linked to a severity level. 
+The level of impact of a ~bug can vary from blocking a whole functionality
+or a feature usability bug. A bug should always be linked to a severity level.
 Refer to our [severity levels](../CONTRIBUTING.md#severity-labels)
 
-Whether the bug is also a regression or not, the triage process should start as soon as possible. 
+Whether the bug is also a regression or not, the triage process should start as soon as possible.
 Ensure that the Engineering Manager and/or the Product Manager for the relative area is involved to prioritize the work as needed.
 
 ### Regressions
 
 A ~regression implies that a previously **verified working functionality** no longer works.
 Regressions are a subset of bugs. We use the ~regression label to imply that the defect caused the functionality to regress.
-The label tells us that something worked before and it needs extra attention from Engineering and Product Managers to schedule/reschedule. 
+The label tells us that something worked before and it needs extra attention from Engineering and Product Managers to schedule/reschedule.
 
-The regression label does not apply to ~bugs for new features for which functionality was **never verified as working**. 
-These, by definition, are not regressions. 
+The regression label does not apply to ~bugs for new features for which functionality was **never verified as working**.
+These, by definition, are not regressions.
 
 A regression should always have the `regression:xx.x` label on it to designate when it was introduced.
 
-Regressions should be considered high priority issues that should be solved as soon as possible, especially if they have severe impact on users. 
+Regressions should be considered high priority issues that should be solved as soon as possible, especially if they have severe impact on users.
 
 ### Managing bugs
 
-**Prioritization:** We give higher priority to regressions on features that worked in the last recent monthly release and the current release candidates. 
-The two scenarios below can [bypass the exception request in the release process](https://gitlab.com/gitlab-org/release/docs/blob/master/general/exception-request/process.md#after-the-7th), where the affected regression version matches the current monthly release version. 
+**Prioritization:** We give higher priority to regressions on features that worked in the last recent monthly release and the current release candidates.
+The two scenarios below can [bypass the exception request in the release process](https://gitlab.com/gitlab-org/release/docs/blob/master/general/exception-request/process.md#after-the-7th), where the affected regression version matches the current monthly release version.
 * A regression which worked in the **Last monthly release**
    * **Example:** In 11.0 we released a new `feature X` that is verified as working. Then in release 11.1 the feature no longer works, this is regression for 11.1. The issue should have the `regression:11.1` label.
    * *Note:* When we say `the last recent monthly release`, this can refer to either the version currently running on GitLab.com, or the most recent version available in the package repositories.
 * A regression which worked in the **Current release candidates**
    * **Example:** In 11.1-RC3 we shipped a new feature which has been verified as working. Then in 11.1-RC5 the feature no longer works, this is regression for 11.1. The issue should have the `regression:11.1` label.
-   * *Note:* Because GitLab.com runs release candidates of new releases, a regression can be reported in a release before its 'official' release date on the 22nd of the month. 
+   * *Note:* Because GitLab.com runs release candidates of new releases, a regression can be reported in a release before its 'official' release date on the 22nd of the month.
 
 When a bug is found:
 1. Create an issue describing the problem in the most detailed way possible.
@@ -264,11 +281,11 @@ When a bug is found:
 The counterpart Product Manager is included to weigh-in on prioritization as needed.
 1. If the ~bug is **NOT** a regression:
    1. The Engineering Manager decides which milestone the bug will be fixed. The appropriate milestone is applied.
-1. If the bug is a ~regression: 
+1. If the bug is a ~regression:
    1. Determine the release that the regression affects and add the corresponding `regression:xx.x` label.
       1. If the affected release version can't be determined, add the generic ~regression label for the time being.
-   1. If the affected version `xx.x` in `regression:xx.x` is the **current release**, it's recommended to schedule the fix for the current milestone. 
-      1. This falls under regressions which worked in the last release and the current RCs. More detailed explanations in the **Prioritization** section above. 
+   1. If the affected version `xx.x` in `regression:xx.x` is the **current release**, it's recommended to schedule the fix for the current milestone.
+      1. This falls under regressions which worked in the last release and the current RCs. More detailed explanations in the **Prioritization** section above.
    1. If the affected version `xx.x` in `regression:xx.x` is older than the **current release**
       1. If the regression is an ~S1 severity, it's recommended to schedule the fix for the current milestone. We would like to fix the highest severity regression as soon as we can.
       1. If the regression is an ~S2, ~S3 or ~S4 severity, the regression may be scheduled for later milestones at the discretion of the Engineering Manager and Product Manager.

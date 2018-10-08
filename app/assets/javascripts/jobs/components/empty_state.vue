@@ -25,9 +25,9 @@
         validator(value) {
           return (
             value === null ||
-            (Object.prototype.hasOwnProperty.call(value, 'link') &&
+            (Object.prototype.hasOwnProperty.call(value, 'path') &&
               Object.prototype.hasOwnProperty.call(value, 'method') &&
-              Object.prototype.hasOwnProperty.call(value, 'title'))
+              Object.prototype.hasOwnProperty.call(value, 'button_title'))
           );
         },
       },
@@ -63,11 +63,11 @@
           class="text-center"
         >
           <a
-            :href="action.link"
+            :href="action.path"
             :data-method="action.method"
             class="js-job-empty-state-action btn btn-primary"
           >
-            {{ action.title }}
+            {{ action.button_title }}
           </a>
         </div>
       </div>

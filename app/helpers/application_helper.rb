@@ -1,15 +1,27 @@
+# frozen_string_literal: true
+
 require 'digest/md5'
 require 'uri'
 
 module ApplicationHelper
   # See https://docs.gitlab.com/ee/development/ee_features.html#code-in-app-views
+  # rubocop: disable CodeReuse/ActiveRecord
   def render_if_exists(partial, locals = {})
-    render(partial, locals) if lookup_context.exists?(partial, [], true)
+    render(partial, locals) if partial_exists?(partial)
   end
+
+  def partial_exists?(partial)
+    lookup_context.exists?(partial, [], true)
+  end
+
+  def template_exists?(template)
+    lookup_context.exists?(template, [], false)
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   # Check if a particular controller is the current one
   #
-  # args - One or more controller names to check
+  # args - One or more controller names to check (using path notation when inside namespaces)
   #
   # Examples
   #
@@ -17,6 +29,11 @@ module ApplicationHelper
   #   current_controller?(:tree)           # => true
   #   current_controller?(:commits)        # => false
   #   current_controller?(:commits, :tree) # => true
+  #
+  #   # On Admin::ApplicationController
+  #   current_controller?(:application)         # => true
+  #   current_controller?('admin/application')  # => true
+  #   current_controller?('gitlab/application') # => false
   def current_controller?(*args)
     args.any? do |v|
       v.to_s.downcase == controller.controller_name || v.to_s.downcase == controller.controller_path
@@ -49,6 +66,7 @@ module ApplicationHelper
 
   # Define whenever show last push event
   # with suggestion to create MR
+  # rubocop: disable CodeReuse/ActiveRecord
   def show_last_push_widget?(event)
     # Skip if event is not about added or modified non-master branch
     return false unless event && event.last_push_to_non_root? && !event.rm_ref?
@@ -66,6 +84,7 @@ module ApplicationHelper
 
     true
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def hexdigest(string)
     Digest::SHA1.hexdigest string
@@ -106,11 +125,11 @@ module ApplicationHelper
   #
   # Returns an HTML-safe String
   def time_ago_with_tooltip(time, placement: 'top', html_class: '', short_format: false)
-    css_classes = short_format ? 'js-short-timeago' : 'js-timeago'
-    css_classes << " #{html_class}" unless html_class.blank?
+    css_classes = [short_format ? 'js-short-timeago' : 'js-timeago']
+    css_classes << html_class unless html_class.blank?
 
     element = content_tag :time, l(time, format: "%b %d, %Y"),
-      class: css_classes,
+      class: css_classes.join(' '),
       title: l(time.to_time.in_time_zone, format: :timeago_tooltip),
       datetime: time.to_time.getutc.iso8601,
       data: {
@@ -273,7 +292,8 @@ module ApplicationHelper
       mergeRequests: merge_requests_project_autocomplete_sources_path(object),
       labels: labels_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
       milestones: milestones_project_autocomplete_sources_path(object),
-      commands: commands_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id])
+      commands: commands_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
+      snippets: snippets_project_autocomplete_sources_path(object)
     }
   end
 end

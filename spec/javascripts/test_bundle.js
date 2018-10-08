@@ -41,8 +41,8 @@ jasmine.getJSONFixtures().fixturesPath = FIXTURES_PATH;
 beforeAll(() => {
   jasmine.addMatchers(
     jasmineDiff(jasmine, {
-      colors: true,
-      inline: true,
+      colors: window.__karma__.config.color,
+      inline: window.__karma__.config.color,
     }),
   );
   jasmine.addMatchers(customMatchers);
