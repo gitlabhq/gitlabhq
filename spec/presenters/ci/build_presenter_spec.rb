@@ -227,7 +227,7 @@ describe Ci::BuildPresenter do
 
         it 'returns execution time' do
           Timecop.freeze do
-            is_expected.to eq(60.0)
+            is_expected.to be_like_time(60.0)
           end
         end
       end
