@@ -322,6 +322,10 @@ Here are some common pitfalls and how to overcome them:
 
     Make sure you indexed all the database data [as stated above](#adding-gitlab-data-to-the-elasticsearch-index).
 
+- **I indexed all the repositories but then switched elastic search servers and now I can't find anything**
+
+    You will need to re-run all the rake tasks to re-index the database, repositories, and wikis.
+
 - **"Can't specify parent if no parent field has been configured"**
 
     If you enabled Elasticsearch before GitLab 8.12 and have not rebuilt indexes you will get
