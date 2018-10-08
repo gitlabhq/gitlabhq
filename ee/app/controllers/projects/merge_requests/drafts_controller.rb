@@ -107,8 +107,7 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
   end
 
   def draft_notes_available?
-    @project.feature_available?(:batch_comments) &&
-      ::Feature.enabled?(:batch_comments, current_user, default_enabled: false)
+    @project.feature_available?(:batch_comments, current_user)
   end
 
   def authorize_admin_draft!
