@@ -1,0 +1,5 @@
+---
+title: 'Rails 5: fix mysql milliseconds problem in prometheus alert event spec'
+merge_request: 7828
+author: Jasper Maes
+type: other
