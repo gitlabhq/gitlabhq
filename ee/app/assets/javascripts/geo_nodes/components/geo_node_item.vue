@@ -46,14 +46,12 @@ export default {
   },
   created() {
     eventHub.$on('nodeDetailsLoaded', this.handleNodeDetails);
-    eventHub.$on('nodeDetailsLoadFailed', this.handleNodeDetailsFailure);
   },
   mounted() {
     this.handleMounted();
   },
   beforeDestroy() {
     eventHub.$off('nodeDetailsLoaded', this.handleNodeDetails);
-    eventHub.$off('nodeDetailsLoadFailed', this.handleNodeDetailsFailure);
   },
   methods: {
     handleNodeDetails(nodeDetails) {
@@ -63,13 +61,6 @@ export default {
         this.errorMessage = '';
         this.nodeDetails = nodeDetails;
         this.nodeHealthStatus = nodeDetails.health;
-      }
-    },
-    handleNodeDetailsFailure(nodeId, err) {
-      if (this.node.id === nodeId) {
-        this.isNodeDetailsLoading = false;
-        this.isNodeDetailsFailed = true;
-        this.errorMessage = err.message;
       }
     },
     handleMounted() {
