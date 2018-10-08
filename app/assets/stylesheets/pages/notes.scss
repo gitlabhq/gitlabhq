@@ -666,7 +666,6 @@ ul.notes {
 .line-resolve-all-container {
   @include notes-media('min', map-get($grid-breakpoints, sm)) {
     margin-right: 0;
-    padding-left: $gl-padding-8;
   }
 
   > div {
