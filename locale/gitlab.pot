@@ -5817,6 +5817,12 @@ msgstr ""
 msgid "Switch branch/tag"
 msgstr ""
 
+msgid "Switch to file list"
+msgstr ""
+
+msgid "Switch to tree list"
+msgstr ""
+
 msgid "System Hooks"
 msgstr ""
 

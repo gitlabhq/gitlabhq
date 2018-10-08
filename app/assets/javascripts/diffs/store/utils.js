@@ -275,6 +275,18 @@ export function isDiscussionApplicableToLine({ discussion, diffPosition, latestD
   return latestDiff && discussion.active && lineCode === discussion.line_code;
 }
 
+export const truncatedName = path => {
+  const maxLength = 30;
+
+  if (path.length > maxLength) {
+    const start = path.length - maxLength;
+    const end = start + maxLength;
+    return `...${path.slice(start, end)}`;
+  }
+
+  return path;
+};
+
 export const generateTreeList = files =>
   files.reduce(
     (acc, file) => {
@@ -290,6 +302,7 @@ export const generateTreeList = files =>
           acc.treeEntries[path] = {
             key: path,
             path,
+            truncatedPath: truncatedName(path),
             name,
             type,
             tree: [],
