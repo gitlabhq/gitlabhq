@@ -50,6 +50,9 @@ Hooks can be also placed in `hooks/<hook_name>.d` (global) or
 `custom_hooks/<hook_name>.d` (per project) directories supporting chained
 execution of the hooks.
 
+NOTE: **Note:** `<hook_name>.d` would need to be either `pre-receive.d`,
+`post-receive.d`, or `update.d` to work properly. Any other names will be ignored. 
+
 To look in a different directory for the global custom hooks (those in
 `hooks/<hook_name.d>`), set `custom_hooks_dir` in gitlab-shell config. For
 Omnibus installations, this can be set in `gitlab.rb`; and in source
@@ -68,8 +71,6 @@ pattern (`*~`).
 
 The hooks of the same type are executed in order and execution stops on the
 first script exiting with a non-zero value.
-
-> **Note:** In the above examples, `<hook_name>.d` would need to be either `pre-receive.d`, `post-receive.d`, or `update.d` to work properly. Any other names would be ignored. 
 
 ## Custom error messages
 
