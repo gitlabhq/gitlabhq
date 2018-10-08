@@ -279,12 +279,3 @@ ul.related-merge-requests > li {
     text-align: right;
   }
 }
-
-@include media-breakpoint-up(md) {
-  .issue-details .emoji-block-sticky {
-    top: $header-height;
-    z-index: 200;
-    position: sticky;
-    background-color: $white-light;
-  }
-}
