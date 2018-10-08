@@ -37,38 +37,4 @@ class WebHook < ActiveRecord::Base
   def allow_local_requests?
     false
   end
-
-  # In 11.4, the web_hooks table has both `token` and `encrypted_token` fields.
-  # Ensure that the encrypted version always takes precedence if present.
-  alias_method :attr_encrypted_token, :token
-  def token
-    attr_encrypted_token.presence || read_attribute(:token)
-  end
-
-  # In 11.4, the web_hooks table has both `token` and `encrypted_token` fields.
-  # Pending a background migration to encrypt all fields, we should just clear
-  # the unencrypted value whenever the new value is set.
-  alias_method :'attr_encrypted_token=', :'token='
-  def token=(value)
-    self.attr_encrypted_token = value
-
-    write_attribute(:token, nil)
-  end
-
-  # In 11.4, the web_hooks table has both `url` and `encrypted_url` fields.
-  # Ensure that the encrypted version always takes precedence if present.
-  alias_method :attr_encrypted_url, :url
-  def url
-    attr_encrypted_url.presence || read_attribute(:url)
-  end
-
-  # In 11.4, the web_hooks table has both `url` and `encrypted_url` fields.
-  # Pending a background migration to encrypt all fields, we should just clear
-  # the unencrypted value whenever the new value is set.
-  alias_method :'attr_encrypted_url=', :'url='
-  def url=(value)
-    self.attr_encrypted_url = value
-
-    write_attribute(:url, nil)
-  end
 end
