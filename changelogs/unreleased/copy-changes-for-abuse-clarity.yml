@@ -1,0 +1,5 @@
+---
+title: Increased retained event data by extending events pruner timeframe to 2 years
+merge_request: 22145
+author:
+type: changed
