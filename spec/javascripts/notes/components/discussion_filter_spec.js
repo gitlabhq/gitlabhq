@@ -49,17 +49,6 @@ describe('DiscussionFilter component', () => {
     expect(vm.currentFilter.title).toEqual(filterItem.textContent.trim());
   });
 
-  it('only renders when at least one discussion is present', (done) => {
-    store.state.discussions = [];
-
-    Vue.nextTick()
-      .then(() => {
-        expect(vm.$el.childElementCount).toBeFalsy();
-      })
-      .then(done)
-      .catch(done.fail);
-  });
-
   it('only updates when selected filter changes', () => {
     const filterItem = vm.$el.querySelector('.dropdown-menu li:first-child button');
 
