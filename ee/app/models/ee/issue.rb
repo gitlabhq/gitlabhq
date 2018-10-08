@@ -70,6 +70,22 @@ module EE
       project&.feature_available?(:issue_weights)
     end
 
+    def related_issues(current_user, preload: nil)
+      related_issues = ::Issue
+                           .select(['issues.*', 'issue_links.id AS issue_link_id'])
+                           .joins("INNER JOIN issue_links ON
+                                 (issue_links.source_id = issues.id AND issue_links.target_id = #{id})
+                                 OR
+                                 (issue_links.target_id = issues.id AND issue_links.source_id = #{id})")
+                           .preload(preload)
+                           .reorder('issue_link_id')
+
+      cross_project_filter = -> (issues) { issues.where(project: project) }
+      Ability.issues_readable_by_user(related_issues,
+                                      current_user,
+                                      filters: { read_cross_project: cross_project_filter })
+    end
+
     class_methods do
       # override
       def sort_by_attribute(method, excluded_labels: [])
