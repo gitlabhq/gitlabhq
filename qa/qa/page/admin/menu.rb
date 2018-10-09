@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module QA
   module Page
-    module Menu
-      class Admin < Page::Base
+    module Admin
+      class Menu < Page::Base
         view 'app/views/layouts/nav/sidebar/_admin.html.haml' do
           element :admin_sidebar
           element :admin_sidebar_submenu

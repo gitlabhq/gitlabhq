@@ -28,8 +28,8 @@ module QA
         expect(page).to have_content('README.md')
         expect(page).to have_content('Test Use SSH Key')
 
-        Page::Menu::Main.act { go_to_profile_settings }
-        Page::Menu::Profile.act { click_ssh_keys }
+        Page::Main::Menu.act { go_to_profile_settings }
+        Page::Profile::Menu.act { click_ssh_keys }
 
         Page::Profile::SSHKeys.perform do |ssh_keys|
           ssh_keys.remove_key(key_title)
