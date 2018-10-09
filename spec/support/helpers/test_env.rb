@@ -31,6 +31,8 @@ module TestEnv
     'symlink-expand-diff'                => '81e6355',
     'expand-collapse-files'              => '025db92',
     'expand-collapse-lines'              => '238e82d',
+    'pages-deploy'                       => '7897d5b',
+    'pages-deploy-target'                => '7975be0',
     'video'                              => '8879059',
     'add-balsamiq-file'                  => 'b89b56d',
     'crlf-diff'                          => '5938907',
