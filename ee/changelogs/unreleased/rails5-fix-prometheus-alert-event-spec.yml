@@ -1,0 +1,5 @@
+---
+title: 'Rails 5: fix presence message validation for prometheus_alert'
+merge_request: 7823
+author: Jasper Maes
+type: other
