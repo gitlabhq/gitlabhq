@@ -9,6 +9,7 @@ describe('common_utils', () => {
     it('returns an anchor tag with url', () => {
       expect(commonUtils.parseUrl('/some/absolute/url').pathname).toContain('some/absolute/url');
     });
+
     it('url is escaped', () => {
       // IE11 will return a relative pathname while other browsers will return a full pathname.
       // parseUrl uses an anchor element for parsing an url. With relative urls, the anchor

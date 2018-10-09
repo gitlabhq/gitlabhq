@@ -9,6 +9,7 @@ import '~/commons/bootstrap';
       beforeEach(function() {
         return setFixtures('<input type="text" />');
       });
+
       it('adds the disabled attribute', function() {
         var $input;
         $input = $('input').first();
@@ -26,6 +27,7 @@ import '~/commons/bootstrap';
       beforeEach(function() {
         return setFixtures('<input type="text" disabled="disabled" class="disabled" />');
       });
+
       it('removes the disabled attribute', function() {
         var $input;
         $input = $('input').first();
