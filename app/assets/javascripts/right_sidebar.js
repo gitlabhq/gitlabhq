@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, no-unused-vars, consistent-return, one-var, one-var-declaration-per-line, quotes, prefer-template, no-else-return, no-param-reassign, max-len */
+/* eslint-disable func-names, no-var, no-unused-vars, consistent-return, one-var, prefer-template, no-else-return, no-param-reassign */
 
 import $ from 'jquery';
 import _ from 'underscore';

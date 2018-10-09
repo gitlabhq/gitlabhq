@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, quotes, consistent-return, func-names, array-callback-return, prefer-arrow-callback, max-len, no-unused-vars */
+/* eslint-disable consistent-return, func-names, array-callback-return, prefer-arrow-callback, no-unused-vars */
 
 import $ from 'jquery';
 import _ from 'underscore';

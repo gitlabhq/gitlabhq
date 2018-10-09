@@ -1,4 +1,4 @@
-/* eslint-disable no-var, one-var, one-var-declaration-per-line, no-unused-vars, consistent-return, quotes, max-len */
+/* eslint-disable no-var, one-var, no-unused-vars, consistent-return */
 
 import $ from 'jquery';
 import axios from './lib/utils/axios_utils';

@@ -1,4 +1,4 @@
-/* eslint-disable no-var, quotes, prefer-template, no-else-return, dot-notation, no-return-assign, comma-dangle, no-new, one-var, one-var-declaration-per-line, no-underscore-dangle, max-len */
+/* eslint-disable no-var, prefer-template, no-else-return, dot-notation, no-return-assign, no-new, one-var, no-underscore-dangle */
 
 import $ from 'jquery';
 import LineHighlighter from '~/line_highlighter';

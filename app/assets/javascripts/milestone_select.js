@@ -1,4 +1,4 @@
-/* eslint-disable max-len, one-var, one-var-declaration-per-line, no-unused-vars, object-shorthand, no-else-return, no-self-compare, consistent-return, no-param-reassign, no-shadow */
+/* eslint-disable one-var, no-unused-vars, object-shorthand, no-else-return, no-self-compare, consistent-return, no-param-reassign, no-shadow */
 /* global Issuable */
 /* global ListMilestone */
 
