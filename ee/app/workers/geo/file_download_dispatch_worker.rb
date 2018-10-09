@@ -4,6 +4,16 @@ module Geo
 
     private
 
+    # Cannot utilise backoff because there are no events currently being
+    # generated for uploads, LFS objects or CI job artifacts so we need to rely
+    # upon expensive DB queries to be executed in order to determine if there's
+    # work to do.
+    #
+    # Overrides Geo::Scheduler::SchedulerWorker#should_apply_backoff?
+    def should_apply_backoff?
+      false
+    end
+
     def max_capacity
       current_node.files_max_capacity
     end

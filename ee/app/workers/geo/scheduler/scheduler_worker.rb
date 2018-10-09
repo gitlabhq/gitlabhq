@@ -109,6 +109,10 @@ module Geo
         (Time.now.utc - start_time) >= run_time
       end
 
+      def should_apply_backoff?
+        pending_resources.empty?
+      end
+
       # rubocop: disable CodeReuse/ActiveRecord
       def take_batch(*arrays, batch_size: db_retrieve_batch_size)
         interleave(*arrays).uniq.compact.take(batch_size)
@@ -165,7 +169,7 @@ module Geo
       def update_pending_resources
         if reload_queue?
           @pending_resources = load_pending_resources
-          set_backoff_time! if @pending_resources.empty?
+          set_backoff_time! if should_apply_backoff?
         end
       end
 
