@@ -129,6 +129,8 @@ describe 'User edit profile' do
         click_button 'js-clear-user-status-button'
         submit_settings
 
+        wait_for_requests
+
         visit user_path(user)
         expect(page).not_to have_selector '.cover-status'
       end
