@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module QA
   module Page
-    module Menu
-      class Admin < Page::Base
-        prepend EE::Page::Menu::Admin
+    module Admin
+      class Menu < Page::Base
+        prepend EE::Page::Admin::Menu
 
         view 'app/views/layouts/nav/sidebar/_admin.html.haml' do
           element :admin_sidebar

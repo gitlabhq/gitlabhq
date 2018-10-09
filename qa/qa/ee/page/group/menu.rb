@@ -3,8 +3,8 @@
 module QA
   module EE
     module Page
-      module Menu
-        class Side < ::QA::Page::Base
+      module Group
+        class Menu < ::QA::Page::Base
           view 'ee/app/views/groups/ee/_settings_nav.html.haml' do
             element :group_saml_sso_link
           end

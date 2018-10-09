@@ -27,8 +27,8 @@ module QA
         end
 
         def fabricate!
-          Page::Menu::Main.act { go_to_profile_settings }
-          Page::Menu::Profile.act { click_ssh_keys }
+          Page::Main::Menu.act { go_to_profile_settings }
+          Page::Profile::Menu.act { click_ssh_keys }
 
           Page::Profile::SSHKeys.perform do |page|
             page.add_key(public_key, title)
