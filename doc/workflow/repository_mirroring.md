@@ -53,7 +53,7 @@ To configure mirror pulling for an existing project:
 
 ![Repository mirroring pull settings screen - lower part](img/repository_mirroring_pull_settings_lower.png)
 
-Because GitLab is now set to pull changes from the upstream repository, you should not to push commits directly to the repository on GitLab. Instead, any commits should be pushed to the upstream repository. Changes pushed to the upstream repository will be pulled into the GitLab repository, either:
+Because GitLab is now set to pull changes from the upstream repository, you should not push commits directly to the repository on GitLab. Instead, any commits should be pushed to the upstream repository. Changes pushed to the upstream repository will be pulled into the GitLab repository, either:
 
 - Automatically within a certain period of time.
 - When a [forced update](#forcing-an-update) is initiated.
@@ -73,18 +73,18 @@ For more information, see [Start the pull mirroring process for a Project](https
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/4559) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.6.
 
-You can choose to always update your local branch with the remote version, even if your local version has diverged from the remote.
+You can choose to always update your local branches with remote version versions, even if they have diverged from the remote.
 
 CAUTION: **Caution:**
-Enabling this option will result in loss of local changes.
+For mirrored branches, enabling this option results in the loss of local changes.
 
 To use this option, check the **Overwrite diverged branches** box when creating a repository mirror.
 
-### Pull only protected branches **[STARTER]**
+### Only mirror protected branches **[STARTER]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3326) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.3.
 
-You can choose to only pull the protected branches from your remote repository to GitLab.
+You can choose to pull mirror only the protected branches from your remote repository to GitLab. Non-protected branches are not mirrored and can diverge.
 
 To use this option, check the **Only mirror protected branches** box when creating a repository mirror.
 
@@ -92,7 +92,7 @@ To use this option, check the **Only mirror protected branches** box when creati
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3117) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.2.
 
-Once a mirror gets retried 14 times in a row, it will get marked as hard failed. This will become visible in either the:
+Once the mirroring process is unsuccessfully retried 14 times in a row, it will get marked as hard failed. This will become visible in either the:
 
 - Project's main dashboard.
 - Pull mirror settings page.
@@ -131,7 +131,7 @@ Entering the URL adds two buttons to the page:
 If you click the:
 
 - **Detect host keys** button, GitLab will fetch the host keys from the server and display the fingerprints.
-- **Input host keys manually** button, a field is displayed where you can past in host keys.
+- **Input host keys manually** button, a field is displayed where you can paste in host keys.
 
 When pulling changes from the source repository, GitLab will now check that at least one of the stored host keys matches before connecting. This can prevent malicious code from being injected into your mirror, or your password being stolen.
 
@@ -154,7 +154,7 @@ Once you activate the pull mirroring feature, the mirror will be inserted into a
 
 If the mirror updates successfully, it will be enqueued once again with a small backoff period.
 
-If the mirror fails (for example, a branch diverged from upstream), the project's backoff period will be penalized each time it fails, up to a maximum amount of time.
+If the mirror fails (for example, a branch diverged from upstream), the project's backoff period is increased each time it fails, up to a maximum amount of time.
 
 ## Pushing to a remote repository **[CORE]**
 
@@ -176,7 +176,7 @@ When push mirroring is enabled, only push commits directly to the mirrored repos
 - Commits are pushed to GitLab.
 - A [forced update](#forcing-an-update) is initiated.
 
-Pushes into GitLab are automatically pushed to the remote mirror at least:
+Changes pushed to files in the repository are automatically pushed to the remote mirror at least:
 
 - Once every five minutes after they are received.
 - Once every minute if **Only mirror protected branches** is enabled.
