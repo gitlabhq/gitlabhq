@@ -31,7 +31,7 @@ module QA
               expect(banner).to have_secondary_read_only_banner
             end
 
-            Page::Menu::Main.perform do |menu|
+            Page::Main::Menu.perform do |menu|
               menu.go_to_projects
             end
 

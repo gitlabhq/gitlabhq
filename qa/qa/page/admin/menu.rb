@@ -2,15 +2,10 @@
 
 module QA
   module Page
-<<<<<<< HEAD:qa/qa/page/menu/admin.rb
-    module Menu
-      class Admin < Page::Base
-        prepend EE::Page::Menu::Admin
-
-=======
     module Admin
       class Menu < Page::Base
->>>>>>> 12a11229dd440da1880858cbeb93fa33094474f3:qa/qa/page/admin/menu.rb
+        prepend EE::Page::Admin::Menu
+
         view 'app/views/layouts/nav/sidebar/_admin.html.haml' do
           element :admin_sidebar
           element :admin_sidebar_submenu

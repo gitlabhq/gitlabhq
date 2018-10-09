@@ -24,13 +24,13 @@ module QA
           end
 
           # rename the project
-          Page::Menu::Main.act { go_to_projects }
+          Page::Main::Menu.act { go_to_projects }
 
           Page::Dashboard::Projects.perform do |dashboard|
             dashboard.go_to_project(geo_project_name)
           end
 
-          Page::Menu::Side.act { go_to_settings }
+          Page::Project::Menu.act { go_to_settings }
 
           geo_project_renamed = "geo-after-rename-#{SecureRandom.hex(8)}"
           Page::Project::Settings::Main.perform do |settings|
@@ -49,7 +49,7 @@ module QA
               expect(banner).to have_secondary_read_only_banner
             end
 
-            Page::Menu::Main.perform do |menu|
+            Page::Main::Menu.perform do |menu|
               menu.go_to_projects
             end
 
