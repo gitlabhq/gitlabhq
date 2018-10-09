@@ -1,4 +1,4 @@
-/* eslint-disable  class-methods-use-this, no-underscore-dangle, no-param-reassign, no-unused-vars, func-names, max-len */
+/* eslint-disable  class-methods-use-this, no-underscore-dangle, no-param-reassign, no-unused-vars, func-names */
 
 import $ from 'jquery';
 import Sortable from 'sortablejs';

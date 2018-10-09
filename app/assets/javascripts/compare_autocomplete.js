@@ -1,4 +1,4 @@
-/* eslint-disable func-names, one-var, no-var, one-var-declaration-per-line, object-shorthand, no-else-return, max-len */
+/* eslint-disable func-names, one-var, no-var, object-shorthand, no-else-return */
 
 import $ from 'jquery';
 import { __ } from './locale';

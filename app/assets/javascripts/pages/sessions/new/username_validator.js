@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, consistent-return, class-methods-use-this */
+/* eslint-disable consistent-return, class-methods-use-this */
 
 import $ from 'jquery';
 import _ from 'underscore';
