@@ -50,8 +50,16 @@ export const isJobStuck = state =>
   (!_.isEmpty(state.job.runners) && state.job.runners.available === false);
 
 // ee-only start
+/**
+ * Shared runners limit is only rendered when
+ * used quota is bigger or equal than the limit
+ *
+ * @returns {Boolean}
+ */
 export const shouldRenderSharedRunnerLimitWarning = state =>
-  state.job.runners && state.job.runners.quota && state.job.runners.quota.used;
+  !_.isEmpty(state.job.runners) &&
+  !_.isEmpty(state.job.runners.quota) &&
+  state.job.runners.quota.used >= state.job.runners.quota.limit;
 // ee-only end
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

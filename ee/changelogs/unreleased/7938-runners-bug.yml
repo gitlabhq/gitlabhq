@@ -1,0 +1,5 @@
+---
+title: Fixes warning for used minutes in runner showing when user still has minutes
+merge_request: 7843
+author:
+type: fixed
