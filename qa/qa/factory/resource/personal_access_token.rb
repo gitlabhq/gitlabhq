@@ -12,8 +12,8 @@ module QA
         end
 
         def fabricate!
-          Page::Menu::Main.act { go_to_profile_settings }
-          Page::Menu::Profile.act { click_access_tokens }
+          Page::Main::Menu.act { go_to_profile_settings }
+          Page::Profile::Menu.act { click_access_tokens }
 
           Page::Profile::PersonalAccessTokens.perform do |page|
             page.fill_token_name(name || 'api-test-token')

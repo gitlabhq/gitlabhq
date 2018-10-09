@@ -28,7 +28,7 @@ module QA
           resource.image = 'gitlab/gitlab-runner:ubuntu'
         end
 
-        Page::Menu::Main.act { sign_out }
+        Page::Main::Menu.act { sign_out }
       end
 
       after(:all) do
@@ -90,7 +90,7 @@ module QA
           sha1sum = Digest::SHA1.hexdigest(gitlab_ci)
 
           Page::Project::Show.act { wait_for_push }
-          Page::Menu::Side.act { click_ci_cd_pipelines }
+          Page::Project::Menu.act { click_ci_cd_pipelines }
           Page::Project::Pipeline::Index.act { go_to_latest_pipeline }
           Page::Project::Pipeline::Show.act { go_to_first_job }
 

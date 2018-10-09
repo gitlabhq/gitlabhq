@@ -16,7 +16,7 @@ module QA
         def fabricate!
           @project.visit!
 
-          Page::Menu::Side.act { click_operations_kubernetes }
+          Page::Project::Menu.act { click_operations_kubernetes }
 
           Page::Project::Operations::Kubernetes::Index.perform do |page|
             page.add_kubernetes_cluster

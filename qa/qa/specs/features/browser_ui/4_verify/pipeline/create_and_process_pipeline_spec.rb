@@ -64,7 +64,7 @@ module QA
 
         expect(page).to have_content('Add .gitlab-ci.yml')
 
-        Page::Menu::Side.act { click_ci_cd_pipelines }
+        Page::Project::Menu.act { click_ci_cd_pipelines }
 
         expect(page).to have_content('All 1')
         expect(page).to have_content('Add .gitlab-ci.yml')

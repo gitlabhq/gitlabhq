@@ -51,13 +51,13 @@ module QA
             end
 
             project.visit!
-            Page::Menu::Side.act { click_ci_cd_settings }
+            Page::Project::Menu.act { click_ci_cd_settings }
             Page::Project::Settings::CICD.perform do |p|
               p.enable_auto_devops_with_domain("#{kubernetes_cluster.ingress_ip}.nip.io")
             end
 
             project.visit!
-            Page::Menu::Side.act { click_ci_cd_pipelines }
+            Page::Project::Menu.act { click_ci_cd_pipelines }
             Page::Project::Pipeline::Index.act { go_to_latest_pipeline }
 
             Page::Project::Pipeline::Show.perform do |pipeline|
