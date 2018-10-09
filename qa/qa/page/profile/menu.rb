@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module QA
   module Page
-    module Menu
-      class Profile < Page::Base
+    module Profile
+      class Menu < Page::Base
         view 'app/views/layouts/nav/sidebar/_profile.html.haml' do
           element :access_token_link, 'link_to profile_personal_access_tokens_path'
           element :access_token_title, 'Access Tokens'

@@ -120,19 +120,13 @@ module QA
 
     module Main
       autoload :Login, 'qa/page/main/login'
+      autoload :Menu, 'qa/page/main/menu'
       autoload :OAuth, 'qa/page/main/oauth'
       autoload :SignUp, 'qa/page/main/sign_up'
     end
 
     module Settings
       autoload :Common, 'qa/page/settings/common'
-    end
-
-    module Menu
-      autoload :Main, 'qa/page/menu/main'
-      autoload :Side, 'qa/page/menu/side'
-      autoload :Admin, 'qa/page/menu/admin'
-      autoload :Profile, 'qa/page/menu/profile'
     end
 
     module Dashboard
@@ -158,6 +152,7 @@ module QA
       autoload :New, 'qa/page/project/new'
       autoload :Show, 'qa/page/project/show'
       autoload :Activity, 'qa/page/project/activity'
+      autoload :Menu, 'qa/page/project/menu'
 
       module Import
         autoload :Github, 'qa/page/project/import/github'
@@ -217,6 +212,7 @@ module QA
     end
 
     module Profile
+      autoload :Menu, 'qa/page/profile/menu'
       autoload :PersonalAccessTokens, 'qa/page/profile/personal_access_tokens'
       autoload :SSHKeys, 'qa/page/profile/ssh_keys'
     end
@@ -235,6 +231,8 @@ module QA
     end
 
     module Admin
+      autoload :Menu, 'qa/page/admin/menu'
+
       module Settings
         autoload :Repository, 'qa/page/admin/settings/repository'
 

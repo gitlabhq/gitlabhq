@@ -13,7 +13,7 @@ module QA
           push.commit_message = 'Add README.md'
         end
 
-        Page::Menu::Side.act { go_to_activity }
+        Page::Project::Menu.act { go_to_activity }
 
         Page::Project::Activity.act { go_to_push_events }
 
