@@ -47,7 +47,7 @@ export default {
       required: true,
     },
     cancelingPipeline: {
-      type: String,
+      type: Number,
       required: false,
       default: null,
     },
