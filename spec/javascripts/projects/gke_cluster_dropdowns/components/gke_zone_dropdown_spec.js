@@ -81,8 +81,8 @@ describe('GkeZoneDropdown', () => {
         return vm.$nextTick().then(() => {
           expect(vm.$el.querySelector('input').value).toBe(selectedZoneMock);
           done();
-        });
-      });
+        }).catch(done.fail);
+      }).catch(done.fail);
     });
   });
 });
