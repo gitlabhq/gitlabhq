@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'gitlab'
 
@@ -6,38 +7,27 @@ require 'gitlab'
 # Configure credentials to be used with gitlab gem
 #
 Gitlab.configure do |config|
-  config.endpoint      = 'https://gitlab.com/api/v4'
-  config.private_token = ENV['GITLAB_QA_ACCESS_TOKEN'] # gitlab-qa bot access token
+  config.endpoint = 'https://gitlab.com/api/v4'
 end
 
 module Trigger
-  TOKEN = ENV['BUILD_TRIGGER_TOKEN']
-
   def self.ee?
     ENV['CI_PROJECT_NAME'] == 'gitlab-ee' || File.exist?('CHANGELOG-EE.md')
   end
 
   class Base
-    def initialize(api_token)
-      Gitlab.private_token = api_token
-    end
-
     def invoke!(post_comment: false)
       pipeline = Gitlab.run_trigger(
         downstream_project_path,
-        Trigger::TOKEN,
+        trigger_token,
         ref,
         variables)
 
-      puts "Triggered #{pipeline.web_url}"
+      puts "Triggered downstream pipeline: #{pipeline.web_url}\n"
       puts "Waiting for downstream pipeline status"
 
-      begin
-        Trigger::CommitComment.post!(downstream_project_path, pipeline) if post_comment
-      rescue Gitlab::Error::Error => error
-        puts "Ignoring the following error: #{error}"
-      end
-      Trigger::Pipeline.new(downstream_project_path, pipeline.id)
+      Trigger::CommitComment.post!(pipeline, access_token) if post_comment
+      Trigger::Pipeline.new(downstream_project_path, pipeline.id, access_token)
     end
 
     private
@@ -49,6 +39,16 @@ module Trigger
 
     # Must be overriden
     def ref
+      raise NotImplementedError
+    end
+
+    # Must be overriden
+    def trigger_token
+      raise NotImplementedError
+    end
+
+    # Must be overriden
+    def access_token
       raise NotImplementedError
     end
 
@@ -68,7 +68,10 @@ module Trigger
 
     def base_variables
       {
-        'TRIGGERED_USER' => ENV['GITLAB_USER_NAME'],
+        'TOP_UPSTREAM_TRIGGER_PROJECT' => ENV['TOP_UPSTREAM_TRIGGER_PROJECT'] || ENV['CI_PROJECT_PATH'],
+        'UPSTREAM_TRIGGER_PROJECT' => ENV['CI_PROJECT_PATH'],
+        'UPSTREAM_TRIGGER_SOURCE' => ENV['TRIGGER_SOURCE'],
+        'TRIGGERED_USER' => ENV['TRIGGERED_USER'] || ENV['GITLAB_USER_NAME'],
         'TRIGGER_SOURCE' => ENV['CI_JOB_URL']
       }
     end
@@ -85,11 +88,19 @@ module Trigger
     private
 
     def downstream_project_path
-      'gitlab-org/omnibus-gitlab'.freeze
+      'gitlab-org/omnibus-gitlab'
     end
 
     def ref
       ENV['OMNIBUS_BRANCH'] || 'master'
+    end
+
+    def trigger_token
+      ENV['BUILD_TRIGGER_TOKEN']
+    end
+
+    def access_token
+      ENV['GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN']
     end
 
     def extra_variables
@@ -110,6 +121,14 @@ module Trigger
 
     def ref
       ENV['CNG_BRANCH'] || 'master'
+    end
+
+    def trigger_token
+      ENV['BUILD_TRIGGER_TOKEN']
+    end
+
+    def access_token
+      ENV['GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN']
     end
 
     def extra_variables
@@ -134,11 +153,16 @@ module Trigger
   end
 
   class CommitComment
-    def self.post!(downstream_project_path, downstream_pipeline)
+    def self.post!(downstream_pipeline, access_token)
+      Gitlab.private_token = access_token
+
       Gitlab.create_commit_comment(
         ENV['CI_PROJECT_PATH'],
         ENV['CI_COMMIT_SHA'],
         "The [`#{ENV['CI_JOB_NAME']}`](#{ENV['CI_JOB_URL']}) job from pipeline #{ENV['CI_PIPELINE_URL']} triggered #{downstream_pipeline.web_url} downstream.")
+
+    rescue Gitlab::Error::Error => error
+      puts "Ignoring the following error: #{error}"
     end
   end
 
@@ -146,15 +170,16 @@ module Trigger
     INTERVAL = 60 # seconds
     MAX_DURATION = 3600 * 3 # 3 hours
 
-    attr_reader :project, :id
+    attr_reader :project, :id, :api_token
 
-    def initialize(project, id)
+    def initialize(project, id, api_token)
       @project = project
       @id = id
+      @api_token = api_token
       @start = Time.now.to_i
 
       # gitlab-bot's token "GitLab multi-project pipeline polling"
-      Gitlab.private_token = ENV['GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN']
+      Gitlab.private_token = api_token
     end
 
     def wait!
@@ -197,9 +222,9 @@ end
 
 case ARGV[0]
 when 'omnibus'
-  Trigger::Omnibus.new(ENV['GITLAB_QA_ACCESS_TOKEN']).invoke!(post_comment: true).wait!
+  Trigger::Omnibus.new.invoke!(post_comment: true).wait!
 when 'cng'
-  Trigger::CNG.new(ENV['GITLAB_QA_ACCESS_TOKEN']).invoke!.wait!
+  Trigger::CNG.new.invoke!.wait!
 else
   puts "Please provide a valid option:
   omnibus - Triggers a pipeline that builds the omnibus-gitlab package
