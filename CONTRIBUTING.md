@@ -92,7 +92,7 @@ Please report suspected security vulnerabilities in private to
 Please do **NOT** create publicly viewable issues for suspected security
 vulnerabilities.
 
-## Code of conduct
+## Code of Conduct
 
 ### Our Pledge
 

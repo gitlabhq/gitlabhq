@@ -25,6 +25,7 @@ module QA
           gcloud container clusters
           create #{cluster_name}
           #{auth_options}
+          --enable-basic-auth
           --zone #{Runtime::Env.gcloud_zone}
           && gcloud container clusters
           get-credentials
@@ -33,6 +34,15 @@ module QA
         CMD
 
         @api_url = `kubectl config view --minify -o jsonpath='{.clusters[].cluster.server}'`
+
+        @admin_user = "#{cluster_name}-admin"
+        master_auth = JSON.parse(`gcloud container clusters describe #{cluster_name} --zone #{Runtime::Env.gcloud_zone} --format 'json(masterAuth.username, masterAuth.password)'`)
+        shell <<~CMD.tr("\n", ' ')
+          kubectl config set-credentials #{@admin_user}
+          --username #{master_auth['masterAuth']['username']}
+          --password #{master_auth['masterAuth']['password']}
+        CMD
+
         if rbac
           create_service_account
 
@@ -64,7 +74,7 @@ module QA
 
       def create_service_account
         shell('kubectl create -f -', stdin_data: service_account)
-        shell('kubectl create -f -', stdin_data: service_account_role_binding)
+        shell("kubectl --user #{@admin_user} create -f -", stdin_data: service_account_role_binding)
       end
 
       def service_account
