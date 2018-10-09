@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'Profile > Personal Access Tokens', :js do
+  include Select2Helper
+
   let(:user) { create(:user) }
 
   def active_personal_access_tokens
@@ -28,6 +30,15 @@ describe 'Profile > Personal Access Tokens', :js do
 
   describe "token creation" do
     it "allows creation of a personal access token" do
+      other_projects = [
+        create(:project, :public, creator_id: user.id, namespace: user.namespace),
+        create(:project, :public, creator_id: user.id, namespace: user.namespace)
+      ]
+      restricted_projects = [
+        create(:project, :public, creator_id: user.id, namespace: user.namespace),
+        create(:project, :public, creator_id: user.id, namespace: user.namespace)
+      ]
+
       name = 'My PAT'
 
       visit profile_personal_access_tokens_path
@@ -42,11 +53,18 @@ describe 'Profile > Personal Access Tokens', :js do
       check "api"
       check "read_user"
 
+      # Projects
+      restricted_project_ids = restricted_projects.map { |x| x.id }
+      select2(restricted_project_ids, { from: '#personal_access_token_project_ids', multiple: true })
+
+      wait_for_requests
       click_on "Create personal access token"
       expect(active_personal_access_tokens).to have_text(name)
       expect(active_personal_access_tokens).to have_text('In')
       expect(active_personal_access_tokens).to have_text('api')
       expect(active_personal_access_tokens).to have_text('read_user')
+      restricted_projects.each { |x| expect(active_personal_access_tokens).to have_text(x.name) }
+      other_projects.each { |x| expect(active_personal_access_tokens).not_to have_text(x.name) }
     end
 
     context "when creation fails" do

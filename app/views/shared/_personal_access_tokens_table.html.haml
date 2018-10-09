@@ -15,6 +15,7 @@
           %th Created
           %th Expires
           %th Scopes
+          %th Projects
           - if impersonation
             %th Token
           %th
@@ -22,7 +23,7 @@
         - active_tokens.each do |token|
           %tr
             %td= token.name
-            %td= token.created_at.to_date.to_s(:medium)
+            %td.text-nowrap= token.created_at.to_date.to_s(:medium)
             %td
               - if token.expires?
                 %span{ class: ('text-warning' if token.expires_soon?) }
@@ -30,6 +31,7 @@
               - else
                 %span.token-never-expires-label Never
             %td= token.scopes.present? ? token.scopes.join(", ") : "<no scopes selected>"
+            %td= token.projects.present? ? token.projects.map{|x| x.name}.join(', ') : '<All>'
             - if impersonation
               %td.token-token-container
                 = text_field_tag 'impersonation-token-token', token.token, readonly: true, class: "form-control"
