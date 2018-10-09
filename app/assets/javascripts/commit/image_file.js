@@ -1,4 +1,4 @@
-/* eslint-disable func-names, wrap-iife, no-var, prefer-arrow-callback, no-else-return, consistent-return, prefer-template, quotes, one-var, one-var-declaration-per-line, no-unused-vars, no-return-assign, comma-dangle, quote-props, no-unused-expressions, no-sequences, max-len */
+/* eslint-disable func-names, no-var, prefer-arrow-callback, no-else-return, consistent-return, prefer-template, one-var, no-unused-vars, no-return-assign, no-unused-expressions, no-sequences */
 
 import $ from 'jquery';
 

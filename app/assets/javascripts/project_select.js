@@ -1,4 +1,4 @@
-/* eslint-disable func-names, wrap-iife, no-var, comma-dangle, object-shorthand, one-var, one-var-declaration-per-line, no-else-return, quotes, max-len */
+/* eslint-disable func-names, no-var, object-shorthand, one-var, no-else-return */
 
 import $ from 'jquery';
 import Api from './api';

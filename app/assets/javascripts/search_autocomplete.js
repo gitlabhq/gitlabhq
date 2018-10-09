@@ -1,4 +1,4 @@
-/* eslint-disable no-return-assign, one-var, no-var, one-var-declaration-per-line, no-unused-vars, consistent-return, object-shorthand, prefer-template, class-methods-use-this, no-lonely-if, vars-on-top, max-len */
+/* eslint-disable no-return-assign, one-var, no-var, no-unused-vars, consistent-return, object-shorthand, prefer-template, class-methods-use-this, no-lonely-if, vars-on-top */
 
 import $ from 'jquery';
 import { escape, throttle } from 'underscore';

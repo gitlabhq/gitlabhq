@@ -1,4 +1,4 @@
-/* eslint-disable func-names, wrap-iife, no-var, quotes, quote-props, prefer-template, comma-dangle, max-len */
+/* eslint-disable func-names, no-var, prefer-template */
 
 import $ from 'jquery';
 import BranchGraph from '../../../network/branch_graph';

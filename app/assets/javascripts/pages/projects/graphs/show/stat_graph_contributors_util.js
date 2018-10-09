@@ -1,4 +1,4 @@
-/* eslint-disable func-names, object-shorthand, no-var, one-var, camelcase, one-var-declaration-per-line, comma-dangle, no-param-reassign, no-return-assign, quotes, prefer-arrow-callback, wrap-iife, consistent-return, no-unused-vars, max-len, no-cond-assign, no-else-return, max-len */
+/* eslint-disable func-names, object-shorthand, no-var, one-var, camelcase, no-param-reassign, no-return-assign, prefer-arrow-callback, consistent-return, no-unused-vars, no-cond-assign, no-else-return */
 import _ from 'underscore';
 
 export default {

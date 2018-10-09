@@ -1,4 +1,4 @@
-/* eslint-disable no-useless-return, max-len */
+/* eslint-disable no-useless-return */
 
 import $ from 'jquery';
 import Api from '../api';

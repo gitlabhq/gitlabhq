@@ -1,4 +1,4 @@
-/* eslint-disable no-var, one-var, one-var-declaration-per-line, no-unused-expressions, no-unused-vars, prefer-template, max-len */
+/* eslint-disable no-var, one-var, no-unused-expressions, no-unused-vars, prefer-template */
 
 import $ from 'jquery';
 import Cookies from 'js-cookie';
