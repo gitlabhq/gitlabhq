@@ -253,7 +253,7 @@ image: python:latest
 # Change pip's cache directory to be inside the project directory since we can
 # only cache local items.
 variables:
-    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache"
+    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
 # Pip's cache doesn't store the python packages
 # https://pip.pypa.io/en/stable/reference/pip_install/#caching
@@ -262,7 +262,7 @@ variables:
 # them in a virtualenv and cache it as well.
 cache:
   paths:
-    - .cache/
+    - .cache/pip
     - venv/
 
 before_script:
