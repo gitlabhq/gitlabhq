@@ -5,7 +5,7 @@
   - create_link = link_to s_('WikiEmpty|Create your first page'), create_path, class: 'btn btn-success', title: s_('WikiEmpty|Create your first page')
 
   = render layout: layout_path, locals: { image_path: 'illustrations/wiki_login_empty.svg' } do
-    %h4
+    %h4.text-left
       = s_('WikiEmpty|The wiki lets you write documentation for your project')
     %p.text-left
       = s_("WikiEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, its principles, how to use it, and so on.")
