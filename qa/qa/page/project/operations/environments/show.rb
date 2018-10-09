@@ -7,11 +7,11 @@ module QA
         module Environments
           class Show < Page::Base
             view 'app/views/projects/environments/_external_url.html.haml' do
-              element :view_deployment, %q{title: s_('Environments|Open live environment')}
+              element :view_deployment
             end
 
             def view_deployment(&block)
-              new_window = window_opened_by { click_on('Open live environment') }
+              new_window = window_opened_by { click_element(:view_deployment) }
 
               within_window(new_window, &block) if block
             end
