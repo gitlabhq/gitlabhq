@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ContainerRegistry
   class Registry
     attr_reader :uri, :client, :path

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module Querying
     module_function

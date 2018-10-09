@@ -59,6 +59,7 @@ supported.
 
 ![Bottom of a project issues page](img/new_issue_from_email.png)
 
+<<<<<<< HEAD
 ## New issue via Service Desk **[PREMIUM]**
 
 Enable [Service Desk](../service_desk.md) to your project and offer email support.
@@ -79,6 +80,8 @@ create issues for the same project.
 
 ![Create issue from group-level issue tracker](img/create_issue_from_group_level_issue_tracker.png)
 
+=======
+>>>>>>> upstream/master
 ## New issue via URL with prefilled fields
 
 You can link directly to the new issue page for a given project, with prefilled
@@ -96,6 +99,9 @@ Follow these examples to form your new issue URL with prefilled fields.
 and a pre-entered description, the URL would be `https://gitlab.com/gitlab-org/gitlab-ce/issues/new?issue[title]=Validate%20new%20concept&issue[description]=Research%20idea`
 - For a new issue in the GitLab Community Edition project with a pre-entered title
 and a pre-entered description template, the URL would be `https://gitlab.com/gitlab-org/gitlab-ce/issues/new?issue[title]=Validate%20new%20concept&issuable_template=Research%20proposal`
+<<<<<<< HEAD
 
 [Markdown]: ../../markdown.md
 [quick actions]: ../quick_actions.md
+=======
+>>>>>>> upstream/master

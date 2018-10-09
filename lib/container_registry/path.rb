@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ContainerRegistry
   ##
   # Class responsible for extracting project and repository name from

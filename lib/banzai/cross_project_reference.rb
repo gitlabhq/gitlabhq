@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   # Common methods for ReferenceFilters that support an optional cross-project
   # reference.
