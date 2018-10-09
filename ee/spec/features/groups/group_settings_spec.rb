@@ -48,8 +48,8 @@ describe 'Edit group settings' do
     end
   end
 
-  context 'with webhook feature enabled' do
-    it 'shows the menu item' do
+  context 'with webhook feature disabled' do
+    it 'does not show the menu item' do
       stub_licensed_features(group_webhooks: false)
 
       visit edit_group_path(group)
