@@ -70,7 +70,7 @@ export default {
       :aria-label="title"
       :disabled="isLoading"
       type="button"
-      class="dropdown btn btn-default dropdown-new js-dropdown-play-icon-container"
+      class="dropdown btn btn-default dropdown-new js-environment-actions-dropdown"
       data-container="body"
       data-toggle="dropdown"
     >
