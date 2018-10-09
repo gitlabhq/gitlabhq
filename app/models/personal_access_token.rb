@@ -21,6 +21,7 @@ class PersonalAccessToken < ActiveRecord::Base
   scope :with_impersonation, -> { where(impersonation: true) }
   scope :without_impersonation, -> { where(impersonation: false) }
 
+  validates :name, presence: true
   validates :scopes, presence: true
   validate :validate_scopes
 

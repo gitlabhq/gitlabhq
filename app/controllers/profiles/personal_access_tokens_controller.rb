@@ -37,7 +37,9 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
   end
 
   def personal_access_token_params
-    params.require(:personal_access_token).permit(:name, :expires_at, scopes: [], project_ids: [])
+    params.require(:personal_access_token)
+      .tap { |x| x[:project_ids] = ::Gitlab::Utils.ensure_array_from_string(x[:project_ids] || []) }
+      .permit(:name, :expires_at, scopes: [], project_ids: [])
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -45,7 +47,7 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
     @scopes = Gitlab::Auth.available_scopes(current_user)
 
     @inactive_personal_access_tokens = finder(state: 'inactive').execute
-    @active_personal_access_tokens = finder(state: 'active').execute.order(:expires_at)
+    @active_personal_access_tokens = finder(state: 'active').execute.includes(:projects).order(:expires_at)
 
     @new_personal_access_token = PersonalAccessToken.redis_getdel(current_user.id)
   end
