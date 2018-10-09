@@ -2,52 +2,84 @@
 
 module Ci
   class CreatePipelineService < BaseService
+    include Gitlab::Utils::StrongMemoize
+
     attr_reader :pipeline
 
-    SEQUENCE = [Gitlab::Ci::Pipeline::Chain::Build,
-                Gitlab::Ci::Pipeline::Chain::Validate::Abilities,
-                Gitlab::Ci::Pipeline::Chain::Validate::Repository,
-                Gitlab::Ci::Pipeline::Chain::Validate::Config,
-                Gitlab::Ci::Pipeline::Chain::Skip,
-                Gitlab::Ci::Pipeline::Chain::Populate,
-                Gitlab::Ci::Pipeline::Chain::Create].freeze
-
-    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, &block)
+    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, &seeds_block)
       @pipeline = Ci::Pipeline.new
 
-      command = Gitlab::Ci::Pipeline::Chain::Command.new(
+      @pipeline.assign_attributes(
         source: source,
-        origin_ref: params[:ref],
-        checkout_sha: params[:checkout_sha],
-        after_sha: params[:after],
-        before_sha: params[:before],
-        trigger_request: trigger_request,
-        schedule: schedule,
-        ignore_skip_ci: ignore_skip_ci,
-        save_incompleted: save_on_errors,
-        seeds_block: block,
-        variables_attributes: params[:variables_attributes],
         project: project,
-        current_user: current_user)
+        ref: ref,
+        sha: sha,
+        before_sha: before_sha,
+        tag: tag_exists?,
+        trigger_requests: Array(trigger_request),
+        user: current_user,
+        pipeline_schedule: schedule,
+        protected: protected_ref?,
+        variables_attributes: Array(params[:variables_attributes])
+      )
 
-      sequence = Gitlab::Ci::Pipeline::Chain::Sequence
-        .new(pipeline, command, SEQUENCE)
+      @pipeline.set_config_source
 
-      sequence.build! do |pipeline, sequence|
+      complete_block = -> () do
         schedule_head_pipeline_update
-
-        if sequence.complete?
-          cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
-          pipeline_created_counter.increment(source: source)
-
-          pipeline.process!
-        end
+        cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
+        pipeline_created_counter.increment(source: source)
       end
+
+      PopulatePipelineService.new(project, current_user).execute(pipeline, seeds_block, complete_block,
+        save_on_errors: save_on_errors)
 
       pipeline
     end
 
     private
+
+    def branch_exists?
+      strong_memoize(:is_branch) do
+        project.repository.branch_exists?(ref)
+      end
+    end
+
+    def tag_exists?
+      strong_memoize(:is_tag) do
+        project.repository.tag_exists?(ref)
+      end
+    end
+
+    def ref
+      strong_memoize(:ref) do
+        Gitlab::Git.ref_name(params[:ref])
+      end
+    end
+
+    def sha
+      strong_memoize(:sha) do
+        project.commit(origin_sha || origin_ref).try(:id)
+      end
+    end
+
+    def origin_sha
+      params[:checkout_sha] || params[:after_sha]
+    end
+
+    def origin_ref
+      params[:ref]
+    end
+
+    def before_sha
+      params[:before_sha] || params[:checkout_sha] || Gitlab::Git::BLANK_SHA
+    end
+
+    def protected_ref?
+      strong_memoize(:protected_ref) do
+        project.protected_for?(ref)
+      end
+    end
 
     def commit
       @commit ||= project.commit(origin_sha || origin_ref)
