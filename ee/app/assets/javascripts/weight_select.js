@@ -1,4 +1,4 @@
-/* eslint-disable prefer-arrow-callback, max-len, one-var, no-var, one-var-declaration-per-line, object-shorthand, comma-dangle, no-shadow, quotes, no-unused-vars, no-else-return, func-names */
+/* eslint-disable prefer-arrow-callback, one-var, no-var, object-shorthand, no-shadow, no-unused-vars, no-else-return, func-names */
 
 import $ from 'jquery';
 

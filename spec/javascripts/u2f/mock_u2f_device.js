@@ -1,4 +1,4 @@
-/* eslint-disable wrap-iife, no-unused-expressions, no-return-assign, no-param-reassign */
+/* eslint-disable no-unused-expressions, no-return-assign, no-param-reassign */
 
 export default class MockU2FDevice {
   constructor() {

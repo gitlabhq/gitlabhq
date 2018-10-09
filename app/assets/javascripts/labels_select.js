@@ -1,4 +1,4 @@
-/* eslint-disable no-useless-return, func-names, no-var, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, no-unused-vars, one-var-declaration-per-line, prefer-template, no-new, consistent-return, object-shorthand, comma-dangle, no-shadow, no-param-reassign, brace-style, vars-on-top, quotes, no-lonely-if, no-else-return, dot-notation, no-empty */
+/* eslint-disable no-useless-return, func-names, no-var, no-underscore-dangle, prefer-arrow-callback, one-var, no-unused-vars, prefer-template, no-new, consistent-return, object-shorthand, no-shadow, no-param-reassign, vars-on-top, no-lonely-if, no-else-return, dot-notation, no-empty */
 /* global Issuable */
 /* global ListLabel */
 

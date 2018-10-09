@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars, comma-dangle */
+/* eslint-disable no-unused-vars */
 /* global ListLabel */
 /* global ListMilestone */
 /* global ListAssignee */

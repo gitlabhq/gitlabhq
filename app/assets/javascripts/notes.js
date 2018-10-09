@@ -1,5 +1,5 @@
-/* eslint-disable no-restricted-properties, func-names, no-var, wrap-iife, camelcase,
-no-unused-expressions, max-len, one-var, one-var-declaration-per-line, default-case,
+/* eslint-disable no-restricted-properties, func-names, no-var, camelcase,
+no-unused-expressions, one-var, default-case,
 prefer-template, consistent-return, no-alert, no-return-assign,
 no-param-reassign, prefer-arrow-callback, no-else-return, vars-on-top,
 no-unused-vars, no-shadow, no-useless-escape, class-methods-use-this */

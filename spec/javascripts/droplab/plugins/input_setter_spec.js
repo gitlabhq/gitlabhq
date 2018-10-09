@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import InputSetter from '~/droplab/plugins/input_setter';
 
 describe('InputSetter', function () {

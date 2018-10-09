@@ -1,5 +1,3 @@
-/* eslint-disable comma-dangle */
-
 import Sortable from 'sortablejs';
 import Vue from 'vue';
 import { n__ } from '~/locale';

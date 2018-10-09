@@ -1,4 +1,3 @@
-/* eslint-disable comma-dangle */
 /* global ListIssue */
 
 import Vue from 'vue';

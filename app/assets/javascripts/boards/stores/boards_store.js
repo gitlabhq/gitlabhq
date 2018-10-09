@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, no-shadow */
+/* eslint-disable no-shadow */
 /* global List */
 
 import $ from 'jquery';

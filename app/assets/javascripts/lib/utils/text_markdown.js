@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, no-param-reassign, quotes, one-var, one-var-declaration-per-line, operator-assignment, no-else-return, prefer-template, prefer-arrow-callback, max-len, consistent-return, no-unused-vars, max-len */
+/* eslint-disable func-names, no-var, no-param-reassign, one-var, operator-assignment, no-else-return, prefer-template, prefer-arrow-callback, consistent-return, no-unused-vars */
 import $ from 'jquery';
 import { insertText } from '~/lib/utils/common_utils';
 

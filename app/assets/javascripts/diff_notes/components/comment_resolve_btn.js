@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, object-shorthand, func-names, no-else-return, quotes, no-lonely-if, max-len */
+/* eslint-disable object-shorthand, func-names, no-else-return, no-lonely-if */
 /* global CommentsStore */
 
 import $ from 'jquery';
