@@ -5,11 +5,15 @@ module QA
 
       # set to 'false' to have Chrome run visibly instead of headless
       def chrome_headless?
-        (ENV['CHROME_HEADLESS'] =~ /^(false|no|0)$/i) != 0
+        enabled?(ENV['CHROME_HEADLESS'])
       end
 
       def running_in_ci?
         ENV['CI'] || ENV['CI_SERVER']
+      end
+
+      def signup_disabled?
+        enabled?(ENV['SIGNUP_DISABLED'], default: false)
       end
 
       # specifies token that can be used for the api
@@ -82,6 +86,14 @@ module QA
         return unless github_access_token.empty?
 
         raise ArgumentError, "Please provide GITHUB_ACCESS_TOKEN"
+      end
+
+      private
+
+      def enabled?(value, default: true)
+        return default if value.nil?
+
+        (value =~ /^(false|no|0)$/i) != 0
       end
     end
   end

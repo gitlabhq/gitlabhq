@@ -16,13 +16,13 @@ module QA
     end
   end
 
-  context :manage do
+  context :manage, :skip_signup_disabled do
     describe 'standard' do
       it_behaves_like 'registration and login'
     end
   end
 
-  context :manage, :orchestrated, :ldap do
+  context :manage, :orchestrated, :ldap, :skip_signup_disabled do
     describe 'while LDAP is enabled' do
       it_behaves_like 'registration and login'
     end
