@@ -722,6 +722,31 @@ gitlab:assets:compile:
       - webpack-report/
       - public/assets/
 
+assets_container:
+  <<: *dedicated-no-docs-and-no-qa-pull-cache-job
+  image: docker:stable
+  stage: post-test
+  before_script: []
+  services:
+    - docker:stable-dind
+  dependencies:
+    - gitlab:assets:compile
+  variables:
+    SETUP_DB: "false"
+    DOCKER_DRIVER: overlay2
+    DOCKER_HOST: tcp://docker:2375
+    REGISTRY: registry.gitlab.com
+    ASSETS_IMAGE: ${REGISTRY}/build/CNG/rails-assets
+  script:
+    - mkdir -p assets_container.build/public
+    - cp -r public/assets assets_container.build/public/
+    - cp Dockerfile.assets assets_container.build/
+    - docker build -t ${ASSETS_IMAGE}:${CI_COMMIT_REF_NAME} -f assets_container.build/Dockerfile.assets assets_container.build/
+    - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${REGISTRY}
+    # - docker push ${ASSETS_IMAGE}:${CI_COMMIT_REF_NAME}
+  tags:
+    - docker
+
 karma:
   <<: *dedicated-no-docs-and-no-qa-pull-cache-job
   <<: *use-pg

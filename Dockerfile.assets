@@ -1,0 +1,4 @@
+# Simple container to store assets for later use
+FROM scratch
+COPY public/assets/ /srv/gitlab/public/assets/
+CMD /bin/true
