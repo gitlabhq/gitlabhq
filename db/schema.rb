@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181002172433) do
+ActiveRecord::Schema.define(version: 20181008145359) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -3079,7 +3079,6 @@ ActiveRecord::Schema.define(version: 20181002172433) do
   add_index "web_hook_logs", ["web_hook_id"], name: "index_web_hook_logs_on_web_hook_id", using: :btree
 
   create_table "web_hooks", force: :cascade do |t|
-    t.string "url", limit: 2000
     t.integer "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -3093,7 +3092,6 @@ ActiveRecord::Schema.define(version: 20181002172433) do
     t.boolean "note_events", default: false, null: false
     t.boolean "enable_ssl_verification", default: true
     t.boolean "wiki_page_events", default: false, null: false
-    t.string "token"
     t.boolean "pipeline_events", default: false, null: false
     t.boolean "confidential_issues_events", default: false, null: false
     t.boolean "repository_update_events", default: false, null: false
