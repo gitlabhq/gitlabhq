@@ -48,10 +48,10 @@ function create_secret() {
 }
 
 function deployExists() {
-    local namespace="${1}"
-    local deploy="${2}"
-    helm status --tiller-namespace "${namespace}" "${deploy}" >/dev/null 2>&1
-    return $?
+  local namespace="${1}"
+  local deploy="${2}"
+  helm status --tiller-namespace "${namespace}" "${deploy}" >/dev/null 2>&1
+  return $?
 }
 
 function previousDeployFailed() {
