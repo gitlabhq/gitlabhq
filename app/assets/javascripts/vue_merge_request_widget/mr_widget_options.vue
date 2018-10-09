@@ -270,6 +270,7 @@ export default {
     />
     <grouped-test-reports-app
       v-if="mr.testResultsPath"
+      class="js-reports-container"
       :endpoint="mr.testResultsPath"
     />
     <div class="mr-section-container">
