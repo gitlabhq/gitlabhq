@@ -1364,12 +1364,6 @@ module API
       expose :submitted, as: :akismet_submitted
     end
 
-    class RepositoryStorageHealth < Grape::Entity
-      expose :storage_name
-      expose :failing_on_hosts
-      expose :total_failures
-    end
-
     class CustomAttribute < Grape::Entity
       expose :key
       expose :value

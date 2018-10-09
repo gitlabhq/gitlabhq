@@ -108,37 +108,6 @@ module ApplicationSettingsHelper
     options_for_select(options, selected)
   end
 
-  def circuitbreaker_failure_count_help_text
-    health_link = link_to(s_('AdminHealthPageLink|health page'), admin_health_check_path)
-    api_link = link_to(s_('CircuitBreakerApiLink|circuitbreaker api'), help_page_path("api/repository_storage_health"))
-    message = _("The number of failures of after which GitLab will completely "\
-                "prevent access to the storage. The number of failures can be "\
-                "reset in the admin interface: %{link_to_health_page} or using "\
-                "the %{api_documentation_link}.")
-    message = message % { link_to_health_page: health_link, api_documentation_link: api_link }
-
-    message.html_safe
-  end
-
-  def circuitbreaker_access_retries_help_text
-    _('The number of attempts GitLab will make to access a storage.')
-  end
-
-  def circuitbreaker_failure_reset_time_help_text
-    _("The time in seconds GitLab will keep failure information. When no "\
-      "failures occur during this time, information about the mount is reset.")
-  end
-
-  def circuitbreaker_storage_timeout_help_text
-    _("The time in seconds GitLab will try to access storage. After this time a "\
-      "timeout error will be raised.")
-  end
-
-  def circuitbreaker_check_interval_help_text
-    _("The time in seconds between storage checks. When a previous check did "\
-      "complete yet, GitLab will skip a check.")
-  end
-
   def visible_attributes
     [
       :admin_notification_email,
@@ -150,11 +119,6 @@ module ApplicationSettingsHelper
       :authorized_keys_enabled,
       :auto_devops_enabled,
       :auto_devops_domain,
-      :circuitbreaker_access_retries,
-      :circuitbreaker_check_interval,
-      :circuitbreaker_failure_count_threshold,
-      :circuitbreaker_failure_reset_time,
-      :circuitbreaker_storage_timeout,
       :clientside_sentry_dsn,
       :clientside_sentry_enabled,
       :container_registry_token_expire_delay,

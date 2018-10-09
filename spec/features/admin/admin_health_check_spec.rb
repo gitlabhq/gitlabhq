@@ -2,10 +2,11 @@ require 'spec_helper'
 
 describe "Admin Health Check", :feature do
   include StubENV
+  set(:admin) { create(:admin) }
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-    sign_in(create(:admin))
+    sign_in(admin)
   end
 
   describe '#show' do
@@ -54,29 +55,6 @@ describe "Admin Health Check", :feature do
     it 'shows unhealthy status' do
       expect(page).to have_content('Current Status: Unhealthy')
       expect(page).to have_content('The server is on fire')
-    end
-  end
-
-  context 'with repository storage failures', :broken_storage do
-    before do
-      visit admin_health_check_path
-    end
-
-    it 'shows storage failure information' do
-      hostname = Gitlab::Environment.hostname
-      maximum_failures = Gitlab::CurrentSettings.current_application_settings
-                           .circuitbreaker_failure_count_threshold
-      number_of_failures = maximum_failures + 1
-
-      expect(page).to have_content("broken: #{number_of_failures} failed storage access attempts:")
-      expect(page).to have_content("#{hostname}: #{number_of_failures} of #{maximum_failures} failures.")
-    end
-
-    it 'allows resetting storage failures' do
-      click_button 'Reset git storage health information'
-
-      expect(page).to have_content('Git storage health information has been reset')
-      expect(page).not_to have_content('failed storage access attempt')
     end
   end
 end
