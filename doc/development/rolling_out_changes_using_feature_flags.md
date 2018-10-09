@@ -151,3 +151,27 @@ most cases this will translate to a feature (with a feature flag) being shipped
 in RC1, followed by the feature flag being removed in RC2. This in turn means
 the feature will be stable by the time we publish a stable package around the
 22nd of the month.
+
+## Undefined feature flags default to "on"
+
+By default, the [`Project#feature_available?`][project-fa],
+[`Namespace#feature_available?`][namespace-fa] (EE), and
+[`License.feature_available?`][license-fa] (EE) methods will check if the
+specified feature is behind a feature flag. Unless the feature is explicitly
+disabled or limited to a percentage of users, the feature flag check will
+default to `true`.
+
+As an example, if you were to ship the backend half of a feature behind a flag,
+you'd want to explicitly disable that flag until the frontend half is also ready
+to be shipped. You can do this via ChatOps:
+
+```
+/chatops run feature set some_feature 0
+```
+
+Note that you can do this at any time, even before the merge request using the
+flag has been merged!
+
+[project-fa]: https://gitlab.com/gitlab-org/gitlab-ee/blob/4cc1c62918aa4c31750cb21dfb1a6c3492d71080/app/models/project_feature.rb#L63-68
+[namespace-fa]: https://gitlab.com/gitlab-org/gitlab-ee/blob/4cc1c62918aa4c31750cb21dfb1a6c3492d71080/ee/app/models/ee/namespace.rb#L71-85
+[license-fa]: https://gitlab.com/gitlab-org/gitlab-ee/blob/4cc1c62918aa4c31750cb21dfb1a6c3492d71080/ee/app/models/license.rb#L293-300
