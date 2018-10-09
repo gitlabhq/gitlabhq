@@ -9,6 +9,7 @@ module QA
           element :link_pipelines
           element :pipelines_settings_link, "title: _('CI / CD')"
           element :operations_kubernetes_link, "title: _('Kubernetes')"
+          element :operations_environments_link
           element :issues_link, /link_to.*shortcuts-issues/
           element :issues_link_text, "Issues"
           element :merge_requests_link, /link_to.*shortcuts-merge_requests/
@@ -36,6 +37,14 @@ module QA
           hover_settings do
             within_submenu do
               click_link('CI / CD')
+            end
+          end
+        end
+
+        def click_operations_environments
+          hover_operations do
+            within_submenu do
+              click_element(:operations_environments_link)
             end
           end
         end
