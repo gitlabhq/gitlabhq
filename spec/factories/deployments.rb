@@ -16,5 +16,10 @@ FactoryBot.define do
         allow(deployment.project.repository).to receive(:create_ref)
       end
     end
+
+    trait :review_app do
+      sha { TestEnv::BRANCH_SHA['pages-deploy'] }
+      ref 'pages-deploy'
+    end
   end
 end
