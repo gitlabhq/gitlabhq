@@ -18,6 +18,9 @@ module Select2Helper
 
     first(selector, visible: false)
 
+    # Clean value for JS use
+    value = value.is_a?(Array) ? clean_array_js_string(value) : clean_js_string(value)
+
     if options[:multiple]
       execute_script("$('#{selector}').select2('val', ['#{value}']).trigger('change');")
     else
@@ -31,5 +34,15 @@ module Select2Helper
 
   def scroll_select2_to_bottom(selector)
     evaluate_script "$('#{selector}').scrollTop($('#{selector}')[0].scrollHeight); $('#{selector}');"
+  end
+
+  protected
+
+  def clean_js_string(value)
+    value.to_s.gsub("'", "\\'")
+  end
+
+  def clean_array_js_string(value)
+    value.map { |x| clean_js_string(x) }.join("','")
   end
 end
