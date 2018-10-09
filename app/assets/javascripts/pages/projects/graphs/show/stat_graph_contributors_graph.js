@@ -1,4 +1,4 @@
-/* eslint-disable func-names, max-len, no-restricted-syntax, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, wrap-iife, comma-dangle, no-return-assign, prefer-arrow-callback, quotes, prefer-template, newline-per-chained-call, no-else-return, no-shadow */
+/* eslint-disable func-names, no-restricted-syntax, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, no-return-assign, prefer-arrow-callback, prefer-template, no-else-return, no-shadow */
 
 import $ from 'jquery';
 import _ from 'underscore';

@@ -42,7 +42,7 @@ describe 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
       it 'allows registering a new device with a name' do
         visit profile_account_path
         manage_two_factor_authentication
-        expect(page).to have_content("You've already enabled two-factor authentication using mobile")
+        expect(page).to have_content("You've already enabled two-factor authentication using one time password authenticators")
 
         u2f_device = register_u2f_device
 
@@ -70,7 +70,7 @@ describe 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
       it 'allows deleting a device' do
         visit profile_account_path
         manage_two_factor_authentication
-        expect(page).to have_content("You've already enabled two-factor authentication using mobile")
+        expect(page).to have_content("You've already enabled two-factor authentication using one time password authenticators")
 
         first_u2f_device = register_u2f_device
         second_u2f_device = register_u2f_device(name: 'My other device')

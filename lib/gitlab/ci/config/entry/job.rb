@@ -36,7 +36,7 @@ module Gitlab
               validates :extends, type: String
             end
 
-            validates :start_in, duration: true, if: :delayed?
+            validates :start_in, duration: { limit: '1 day' }, if: :delayed?
             validates :start_in, absence: true, unless: :delayed?
           end
 

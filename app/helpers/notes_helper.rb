@@ -142,7 +142,7 @@ module NotesHelper
   def initial_notes_data(autocomplete)
     {
       notesUrl: notes_url,
-      notesIds: @notes.map(&:id),
+      notesIds: @noteable.notes.pluck(:id), # rubocop: disable CodeReuse/ActiveRecord
       now: Time.now.to_i,
       diffView: diff_view,
       enableGFM: {
@@ -178,7 +178,7 @@ module NotesHelper
       notesPath: notes_url,
       totalNotes: issuable.discussions.length,
       lastFetchedAt: Time.now.to_i
-    }.to_json
+    }
   end
 
   def discussion_resolved_intro(discussion)

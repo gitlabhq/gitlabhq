@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, object-shorthand, no-param-reassign, camelcase, no-nested-ternary, no-continue, max-len */
+/* eslint-disable object-shorthand, no-param-reassign, camelcase, no-nested-ternary, no-continue */
 
 import $ from 'jquery';
 import Vue from 'vue';

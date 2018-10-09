@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DeclarativePolicy
   class Base
     # A map of ability => list of rules together with :enable

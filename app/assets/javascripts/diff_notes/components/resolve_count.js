@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, object-shorthand, func-names */
+/* eslint-disable object-shorthand, func-names */
 /* global CommentsStore */
 
 import Vue from 'vue';

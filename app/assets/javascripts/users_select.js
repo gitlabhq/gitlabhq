@@ -1,4 +1,4 @@
-/* eslint-disable func-names, one-var, no-var, prefer-rest-params, quotes, max-len, one-var-declaration-per-line, vars-on-top, prefer-arrow-callback, consistent-return, comma-dangle, object-shorthand, no-shadow, no-unused-vars, no-else-return, no-self-compare, prefer-template, no-unused-expressions, yoda, prefer-spread, no-void, camelcase, no-param-reassign */
+/* eslint-disable func-names, one-var, no-var, prefer-rest-params, vars-on-top, prefer-arrow-callback, consistent-return, object-shorthand, no-shadow, no-unused-vars, no-else-return, no-self-compare, prefer-template, no-unused-expressions, yoda, prefer-spread, no-void, camelcase, no-param-reassign */
 /* global Issuable */
 /* global emitSidebarEvent */
 
@@ -592,7 +592,7 @@ function UsersSelect(currentUser, els, options = {}) {
             if (showEmailUser && data.results.length === 0 && query.term.match(/^[^@]+@[^@]+$/)) {
               var trimmed = query.term.trim();
               emailUser = {
-                name: "Invite \"" + query.term + "\" by email",
+                name: "Invite \"" + trimmed + "\" by email",
                 username: trimmed,
                 id: trimmed,
                 invite: true

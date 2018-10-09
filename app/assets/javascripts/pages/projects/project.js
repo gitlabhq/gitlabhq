@@ -1,5 +1,4 @@
-/* eslint-disable func-names, no-var, no-return-assign, one-var,
- one-var-declaration-per-line, object-shorthand, vars-on-top */
+/* eslint-disable func-names, no-var, no-return-assign, one-var, object-shorthand, vars-on-top */
 
 import $ from 'jquery';
 import Cookies from 'js-cookie';

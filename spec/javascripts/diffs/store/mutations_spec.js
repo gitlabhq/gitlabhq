@@ -194,24 +194,16 @@ describe('DiffsStoreMutations', () => {
           line_code: 'ABC_1',
           diff_discussion: true,
           resolvable: true,
-          original_position: {
-            formatter: diffPosition,
-          },
-          position: {
-            formatter: diffPosition,
-          },
+          original_position: diffPosition,
+          position: diffPosition,
         },
         {
           id: 2,
           line_code: 'ABC_1',
           diff_discussion: true,
           resolvable: true,
-          original_position: {
-            formatter: diffPosition,
-          },
-          position: {
-            formatter: diffPosition,
-          },
+          original_position: diffPosition,
+          position: diffPosition,
         },
       ];
 

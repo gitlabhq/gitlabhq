@@ -158,8 +158,13 @@ describe('Pipelines Table Row', () => {
   });
 
   describe('actions column', () => {
+    const scheduledJobAction = {
+      name: 'some scheduled job',
+    };
+
     beforeEach(() => {
       const withActions = Object.assign({}, pipeline);
+      withActions.details.scheduled_actions = [scheduledJobAction];
       withActions.flags.cancelable = true;
       withActions.flags.retryable = true;
       withActions.cancel_path = '/cancel';
@@ -171,6 +176,8 @@ describe('Pipelines Table Row', () => {
     it('should render the provided actions', () => {
       expect(component.$el.querySelector('.js-pipelines-retry-button')).not.toBeNull();
       expect(component.$el.querySelector('.js-pipelines-cancel-button')).not.toBeNull();
+      const dropdownMenu = component.$el.querySelectorAll('.dropdown-menu');
+      expect(dropdownMenu).toContainText(scheduledJobAction.name);
     });
 
     it('emits `retryPipeline` event when retry button is clicked and toggles loading', () => {

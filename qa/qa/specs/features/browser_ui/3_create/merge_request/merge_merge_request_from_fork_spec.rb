@@ -11,7 +11,7 @@ module QA
           merge_request.fork_branch = 'feature-branch'
         end
 
-        Page::Menu::Main.perform { |main| main.sign_out }
+        Page::Main::Menu.perform { |main| main.sign_out }
         Page::Main::Login.perform { |login| login.sign_in_using_credentials }
 
         merge_request.visit!

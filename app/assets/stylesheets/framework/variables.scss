@@ -314,7 +314,8 @@ $diff-jagged-border-gradient-color: darken($white-normal, 8%);
 $monospace-font: 'Menlo', 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas', 'Ubuntu Mono',
   'Courier New', 'andale mono', 'lucida console', monospace;
 $regular-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
-  'Helvetica Neue', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  'Helvetica Neue', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+  'Noto Color Emoji';
 
 /*
 * Dropdowns
@@ -633,6 +634,5 @@ $border-color-settings: #e1e1e1;
 Modals
 */
 $modal-body-height: 134px;
-
 
 $priority-label-empty-state-width: 114px;

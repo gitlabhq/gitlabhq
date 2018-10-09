@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FileSizeValidator < ActiveModel::EachValidator
   MESSAGES = { is: :wrong_size, minimum: :size_too_small, maximum: :size_too_big }.freeze
   CHECKS   = { is: :==, minimum: :>=, maximum: :<= }.freeze

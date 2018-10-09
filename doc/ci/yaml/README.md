@@ -102,10 +102,13 @@ rspec:
       - $RSPEC
 ```
 
-In the example above, the `rspec` job is going to inherit from the `.tests`
-template job. GitLab will perform a reverse deep merge, which means that it will
-merge the `rspec` contents into `.tests` recursively, and this is going to result in
-the following `rspec` job:
+In the example above, the `rspec` job inherits from the `.tests` template job. 
+GitLab will perform a reverse deep merge based on the keys. GitLab will:
+
+- Merge the `rspec` contents into `.tests` recursively.
+- Not merge the values of the keys.
+
+This results in the following `rspec` job:
 
 ```yaml
 rspec:
@@ -117,6 +120,11 @@ rspec:
     variables:
       - $RSPEC
 ```
+
+NOTE: **Note:**
+Note that `script: rake test` has been overwritten by `script: rake rspec`.
+
+If you do want to include the `rake test`, have a look at [before_script-and-after_script](#before_script-and-after_script).
 
 `.tests` in this example is a [hidden key](#hidden-keys-jobs), but it's
 possible to inherit from regular jobs as well.
@@ -387,6 +395,8 @@ except master.
 > `refs` and `kubernetes` policies introduced in GitLab 10.0
 >
 > `variables` policy introduced in 10.7
+>
+> `changes` policy [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/19232) in 11.4
 
 CAUTION: **Warning:**
 This an _alpha_ feature, and it it subject to change at any time without
@@ -398,9 +408,14 @@ policy configuration.
 GitLab now supports both, simple and complex strategies, so it is possible to
 use an array and a hash configuration scheme.
 
-Three keys are now available: `refs`, `kubernetes` and `variables`.
+Four keys are now available: `refs`, `kubernetes` and `variables` and `changes`.
+
+### `refs` and `kubernetes`
+
 Refs strategy equals to simplified only/except configuration, whereas
 kubernetes strategy accepts only `active` keyword.
+
+### `variables`
 
 `variables` keyword is used to define variables expressions. In other words
 you can use predefined variables / project / group or
@@ -444,6 +459,46 @@ end-to-end:
 ```
 
 Learn more about variables expressions on [a separate page][variables-expressions].
+
+### `changes`
+
+Using `changes` keyword with `only` or `except` makes it possible to define if
+a job should be created based on files modified by a git push event.
+
+For example:
+
+```yaml
+docker build:
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  only:
+    changes:
+      - Dockerfile
+      - docker/scripts/*
+```
+
+In the scenario above, if you are pushing multiple commits to GitLab to an
+existing branch, GitLab creates and triggers `docker build` job, provided that
+one of the commits contains changes to either:
+
+- The `Dockerfile` file.
+- Any of the files inside `docker/scripts/` directory.
+
+CAUTION: **Warning:**
+There are some caveats when using this feature with new branches and tags. See
+the section below.
+
+#### Using `changes` with new branches and tags
+
+If you are pushing a **new** branch or a **new** tag to GitLab, the policy
+always evaluates to true and GitLab will create a job. This feature is not
+connected with merge requests yet, and because GitLab is creating pipelines
+before an user can create a merge request we don't know a target branch at
+this point.
+
+Without a target branch, it is not possible to know what the common ancestor is,
+thus we always create a job in that case. This feature works best for stable
+branches like `master` because in that case GitLab uses the previous commit
+that is present in a branch to compare against the latest SHA that was pushed.
 
 ## `tags`
 

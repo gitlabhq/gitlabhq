@@ -23,6 +23,9 @@ export default {
   aMode: '100644',
   bMode: '100644',
   text: true,
+  viewer: {
+    name: 'text',
+  },
   addedLines: 2,
   removedLines: 0,
   diffRefs: {

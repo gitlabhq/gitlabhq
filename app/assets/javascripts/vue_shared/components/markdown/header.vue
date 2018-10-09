@@ -18,6 +18,16 @@
         required: true,
       },
     },
+    computed: {
+      mdTable() {
+        return [
+          '| header | header |',
+          '| ------ | ------ |',
+          '| cell | cell |',
+          '| cell | cell |',
+        ].join('\n');
+      },
+    },
     mounted() {
       $(document).on('markdown-preview:show.vue', this.previewMarkdownTab);
       $(document).on('markdown-preview:hide.vue', this.writeMarkdownTab);
@@ -128,6 +138,12 @@
           tag="* [ ] "
           button-title="Add a task list"
           icon="task-done"
+        />
+        <toolbar-button
+          :tag="mdTable"
+          :prepend="true"
+          :button-title="__('Add a table')"
+          icon="table"
         />
         <button
           v-tooltip

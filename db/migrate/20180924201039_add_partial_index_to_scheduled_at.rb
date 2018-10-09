@@ -9,7 +9,7 @@ class AddPartialIndexToScheduledAt < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_concurrent_index(:ci_builds, [:scheduled_at, :id], where: "scheduled_at IS NOT NULL", name: INDEX_NAME)
+    add_concurrent_index(:ci_builds, :scheduled_at, where: "scheduled_at IS NOT NULL AND type = 'Ci::Build' AND status = 'scheduled'", name: INDEX_NAME)
   end
 
   def down

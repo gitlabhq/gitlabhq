@@ -25,7 +25,7 @@ export const getReversePosition = linePosition => {
   return LINE_POSITION_RIGHT;
 };
 
-export function getNoteFormData(params) {
+export function getFormData(params) {
   const {
     note,
     noteableType,
@@ -70,9 +70,15 @@ export function getNoteFormData(params) {
     },
   };
 
+  return postData;
+}
+
+export function getNoteFormData(params) {
+  const data = getFormData(params);
+
   return {
-    endpoint: noteableData.create_note_path,
-    data: postData,
+    endpoint: params.noteableData.create_note_path,
+    data,
   };
 }
 
@@ -244,6 +250,7 @@ export function getDiffPositionByLineCode(diffFiles) {
             oldLine,
             newLine,
             lineCode,
+            positionType: 'text',
           };
         }
       });
@@ -259,8 +266,8 @@ export function isDiscussionApplicableToLine({ discussion, diffPosition, latestD
   const { lineCode, ...diffPositionCopy } = diffPosition;
 
   if (discussion.original_position && discussion.position) {
-    const originalRefs = convertObjectPropsToCamelCase(discussion.original_position.formatter);
-    const refs = convertObjectPropsToCamelCase(discussion.position.formatter);
+    const originalRefs = convertObjectPropsToCamelCase(discussion.original_position);
+    const refs = convertObjectPropsToCamelCase(discussion.position);
 
     return _.isEqual(refs, diffPositionCopy) || _.isEqual(originalRefs, diffPositionCopy);
   }

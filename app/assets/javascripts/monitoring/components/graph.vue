@@ -82,6 +82,7 @@ export default {
       showFlag: false,
       showFlagContent: false,
       timeSeries: [],
+      graphDrawData: {},
       realPixelRatio: 1,
       seriesUnderMouse: [],
     };
@@ -180,12 +181,12 @@ export default {
       });
     },
     renderAxesPaths() {
-      this.timeSeries = createTimeSeries(
+      ({ timeSeries: this.timeSeries, graphDrawData: this.graphDrawData } = createTimeSeries(
         this.graphData.queries,
         this.graphWidth,
         this.graphHeight,
         this.graphHeightOffset,
-      );
+      ));
 
       if (_.findWhere(this.timeSeries, { renderCanary: true })) {
         this.timeSeries = this.timeSeries.map(series => ({ ...series, renderCanary: true }));
@@ -288,6 +289,10 @@ export default {
           :viewBox="innerViewBox"
           class="graph-data"
         >
+          <slot
+            name="additionalSvgContent"
+            :graphDrawData="graphDrawData"
+          />
           <graph-path
             v-for="(path, index) in timeSeries"
             :key="index"

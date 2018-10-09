@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   # Class for removing Markdown references a certain user is not allowed to
   # view.
@@ -37,7 +39,13 @@ module Banzai
 
       all_document_nodes.each do |entry|
         nodes_for_document = entry[:nodes]
-        doc_data = { document: entry[:document], visible_reference_count: nodes_for_document.count }
+
+        doc_data = {
+          document:                entry[:document],
+          total_reference_count:   nodes_for_document.count,
+          visible_reference_count: nodes_for_document.count
+        }
+
         metadata << doc_data
 
         nodes_for_document.each do |node|

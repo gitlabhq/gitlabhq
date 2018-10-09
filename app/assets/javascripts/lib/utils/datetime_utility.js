@@ -373,6 +373,7 @@ window.gl.utils = {
 
 /**
  * Formats milliseconds as timestamp (e.g. 01:02:03).
+ * This takes durations longer than a day into account (e.g. two days would be 48:00:00).
  *
  * @param milliseconds
  * @returns {string}

@@ -572,6 +572,20 @@ describe API::Commits do
         expect(json_response['title']).to eq(message)
       end
 
+      it 'includes the commit stats' do
+        post api(url, user), valid_mo_params
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response).to include 'stats'
+      end
+
+      it "doesn't include the commit stats when stats is false" do
+        post api(url, user), valid_mo_params.merge(stats: false)
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response).not_to include 'stats'
+      end
+
       it 'return a 400 bad request if there are any issues' do
         post api(url, user), invalid_mo_params
 

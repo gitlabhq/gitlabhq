@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, wrap-iife, quotes, consistent-return, one-var, one-var-declaration-per-line, no-cond-assign, max-len, prefer-template, no-unused-vars, no-return-assign */
+/* eslint-disable func-names, no-var, consistent-return, one-var, no-cond-assign, prefer-template, no-unused-vars, no-return-assign */
 
 import $ from 'jquery';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';

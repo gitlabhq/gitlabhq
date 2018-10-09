@@ -243,6 +243,7 @@ module Backup
         backup_created_at: Time.now,
         gitlab_version: Gitlab::VERSION,
         tar_version: tar_version,
+        installation_type: Gitlab::INSTALLATION_TYPE,
         skipped: ENV["SKIP"]
       }
     end

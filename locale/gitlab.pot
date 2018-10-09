@@ -317,9 +317,6 @@ msgstr ""
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
 msgstr ""
 
-msgid "Access your runner token, customize your pipeline configuration, and view your pipeline status and coverage report."
-msgstr ""
-
 msgid "Account"
 msgstr ""
 
@@ -345,6 +342,9 @@ msgid "Add Kubernetes cluster"
 msgstr ""
 
 msgid "Add Readme"
+msgstr ""
+
+msgid "Add a table"
 msgstr ""
 
 msgid "Add license"
@@ -1082,6 +1082,9 @@ msgid "CICD|Automatic deployment to staging, manual deployment to production"
 msgstr ""
 
 msgid "CICD|Continuous deployment to production"
+msgstr ""
+
+msgid "CICD|Continuous deployment to production using timed incremental rollout"
 msgstr ""
 
 msgid "CICD|Default to Auto DevOps pipeline"
@@ -2099,6 +2102,9 @@ msgstr ""
 msgid "Customize how Google Code email addresses and usernames are imported into GitLab. In the next step, you'll be able to select the projects you want to import."
 msgstr ""
 
+msgid "Customize your pipeline configuration, view your pipeline status and coverage report."
+msgstr ""
+
 msgid "Cycle Analytics"
 msgstr ""
 
@@ -2746,6 +2752,9 @@ msgstr ""
 msgid "Failed to check related branches."
 msgstr ""
 
+msgid "Failed to load emoji list."
+msgstr ""
+
 msgid "Failed to remove issue from board, please try again."
 msgstr ""
 
@@ -3369,6 +3378,9 @@ msgstr ""
 msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable."
 msgstr ""
 
+msgid "Issues, merge requests, pushes and comments."
+msgstr ""
+
 msgid "Jan"
 msgstr ""
 
@@ -3700,6 +3712,9 @@ msgstr ""
 msgid "MarkdownToolbar|Add a numbered list"
 msgstr ""
 
+msgid "MarkdownToolbar|Add a table"
+msgstr ""
+
 msgid "MarkdownToolbar|Add a task list"
 msgstr ""
 
@@ -3731,6 +3746,9 @@ msgid "May"
 msgstr ""
 
 msgid "Median"
+msgstr ""
+
+msgid "Member since %{date}"
 msgstr ""
 
 msgid "Members"
@@ -5463,6 +5481,30 @@ msgstr ""
 msgid "SetPasswordToCloneLink|set a password"
 msgstr ""
 
+msgid "SetStatusModal|Add status emoji"
+msgstr ""
+
+msgid "SetStatusModal|Clear status"
+msgstr ""
+
+msgid "SetStatusModal|Edit status"
+msgstr ""
+
+msgid "SetStatusModal|Remove status"
+msgstr ""
+
+msgid "SetStatusModal|Set a status"
+msgstr ""
+
+msgid "SetStatusModal|Set status"
+msgstr ""
+
+msgid "SetStatusModal|Sorry, we weren't able to set your status. Please try again later."
+msgstr ""
+
+msgid "SetStatusModal|What's your status?"
+msgstr ""
+
 msgid "Settings"
 msgstr ""
 
@@ -5777,6 +5819,12 @@ msgstr ""
 msgid "Subscribe at project level"
 msgstr ""
 
+msgid "Subscribed"
+msgstr ""
+
+msgid "Summary of issues, merge requests, push events, and comments (Timezone: %{utcFormatted})"
+msgstr ""
+
 msgid "Switch branch/tag"
 msgstr ""
 
@@ -5972,9 +6020,6 @@ msgid "The repository must be accessible over <code>http://</code>, <code>https:
 msgstr ""
 
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
-msgstr ""
-
-msgid "The secure token used by the Runner to checkout the project"
 msgstr ""
 
 msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
@@ -6614,6 +6659,51 @@ msgstr ""
 msgid "User map"
 msgstr ""
 
+msgid "UserProfile|Activity"
+msgstr ""
+
+msgid "UserProfile|Already reported for abuse"
+msgstr ""
+
+msgid "UserProfile|Contributed projects"
+msgstr ""
+
+msgid "UserProfile|Edit profile"
+msgstr ""
+
+msgid "UserProfile|Groups"
+msgstr ""
+
+msgid "UserProfile|Most Recent Activity"
+msgstr ""
+
+msgid "UserProfile|Overview"
+msgstr ""
+
+msgid "UserProfile|Personal projects"
+msgstr ""
+
+msgid "UserProfile|Recent contributions"
+msgstr ""
+
+msgid "UserProfile|Report abuse"
+msgstr ""
+
+msgid "UserProfile|Snippets"
+msgstr ""
+
+msgid "UserProfile|Subscribe"
+msgstr ""
+
+msgid "UserProfile|This user has a private profile"
+msgstr ""
+
+msgid "UserProfile|View all"
+msgstr ""
+
+msgid "UserProfile|View user in admin area"
+msgstr ""
+
 msgid "Users"
 msgstr ""
 
@@ -6902,9 +6992,6 @@ msgstr ""
 msgid "You can only edit files when you are on a branch"
 msgstr ""
 
-msgid "You can reset runners registration token by pressing a button below."
-msgstr ""
-
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
 msgstr ""
 
@@ -6912,6 +6999,9 @@ msgid "You can set up jobs to only use Runners with specific tags. Separate tags
 msgstr ""
 
 msgid "You cannot write to this read-only GitLab instance."
+msgstr ""
+
+msgid "You do not have any subscriptions yet"
 msgstr ""
 
 msgid "You don't have any applications"

@@ -34,6 +34,11 @@ Rainbow.enabled = false
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
 # Requires helpers, and shared contexts/examples first since they're used in other support files
+
+# Load these first since they may be required by other helpers
+require Rails.root.join("spec/support/helpers/git_helpers.rb")
+
+# Then the rest
 Dir[Rails.root.join("spec/support/helpers/*.rb")].each { |f| require f }
 Dir[Rails.root.join("spec/support/shared_contexts/*.rb")].each { |f| require f }
 Dir[Rails.root.join("spec/support/shared_examples/*.rb")].each { |f| require f }

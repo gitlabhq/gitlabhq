@@ -420,7 +420,7 @@ msgstr "Доступ до \"%{classification_label}\" заборонено"
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
 msgstr "Доступ до сховищ, що вийшли з ладу, тимчасово прибраний задля відновлення монтування. Після вирішення проблеми обнуліть інформацію сховища для відновлення доступу."
 
-msgid "Access your runner token, customize your pipeline configuration, and view your pipeline status and coverage report."
+msgid "Customize your pipeline configuration, view your pipeline status and coverage report."
 msgstr "Отримайте доступ до Gitlab Runner токену, налаштуйте конфігурацію конвеєра та перегляньте його статус, а також звіт про покриття."
 
 msgid "Account"

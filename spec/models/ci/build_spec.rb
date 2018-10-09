@@ -261,7 +261,7 @@ describe Ci::Build do
     it 'schedules BuildScheduleWorker at the right time' do
       Timecop.freeze do
         expect(Ci::BuildScheduleWorker)
-          .to receive(:perform_at).with(1.minute.since, build.id)
+          .to receive(:perform_at).with(be_like_time(1.minute.since), build.id)
 
         subject
       end
@@ -1852,6 +1852,7 @@ describe Ci::Build do
 
   describe '#variables' do
     let(:container_registry_enabled) { false }
+    let(:gitlab_version_info) { Gitlab::VersionInfo.parse(Gitlab::VERSION) }
     let(:predefined_variables) do
       [
         { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
@@ -1869,6 +1870,9 @@ describe Ci::Build do
         { key: 'GITLAB_FEATURES', value: project.licensed_features.join(','), public: true },
         { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
         { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
+        { key: 'CI_SERVER_VERSION_MAJOR', value: gitlab_version_info.major.to_s, public: true },
+        { key: 'CI_SERVER_VERSION_MINOR', value: gitlab_version_info.minor.to_s, public: true },
+        { key: 'CI_SERVER_VERSION_PATCH', value: gitlab_version_info.patch.to_s, public: true },
         { key: 'CI_SERVER_REVISION', value: Gitlab.revision, public: true },
         { key: 'CI_JOB_NAME', value: 'test', public: true },
         { key: 'CI_JOB_STAGE', value: 'test', public: true },

@@ -47,7 +47,7 @@ export default {
       required: true,
     },
     cancelingPipeline: {
-      type: String,
+      type: Number,
       required: false,
       default: null,
     },
@@ -63,10 +63,10 @@ export default {
       if (!this.pipeline || !this.pipeline.details) {
         return [];
       }
-      const { details: pipelineDetails } = this.pipeline;
+      const { details } = this.pipeline;
       return [
-        ...(pipelineDetails.manual_actions || []),
-        ...(pipelineDetails.scheduled_actions || []),
+        ...(details.manual_actions || []),
+        ...(details.scheduled_actions || []),
       ];
     },
     /**

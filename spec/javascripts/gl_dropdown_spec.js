@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, no-param-reassign */
+/* eslint-disable no-param-reassign */
 
 import $ from 'jquery';
 import GLDropdown from '~/gl_dropdown';

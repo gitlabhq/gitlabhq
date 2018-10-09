@@ -10,19 +10,19 @@ module QA
       # TODO, since `Signed in successfully` message was removed
       # this is the only way to tell if user is signed in correctly.
       #
-      Page::Menu::Main.perform do |menu|
+      Page::Main::Menu.perform do |menu|
         expect(menu).to have_personal_area
       end
     end
   end
 
-  context :manage do
+  context :manage, :skip_signup_disabled do
     describe 'standard' do
       it_behaves_like 'registration and login'
     end
   end
 
-  context :manage, :orchestrated, :ldap do
+  context :manage, :orchestrated, :ldap, :skip_signup_disabled do
     describe 'while LDAP is enabled' do
       it_behaves_like 'registration and login'
     end

@@ -360,7 +360,7 @@ msgstr "Accès à « %{classification_label} » non autorisé"
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
 msgstr "L’accès aux stockages défaillants a été temporairement désactivé pour permettre la récupération du montage. Réinitialisez les informations de stockage quand le problème sera résolu pour permettre à nouveau l’accès."
 
-msgid "Access your runner token, customize your pipeline configuration, and view your pipeline status and coverage report."
+msgid "Customize your pipeline configuration, view your pipeline status and coverage report."
 msgstr "Accédez à votre jeton d’exécuteur, personnalisez la configuration de votre pipeline et affichez l’état de votre pipeline et le rapport de couverture."
 
 msgid "Account"

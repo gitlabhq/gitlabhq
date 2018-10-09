@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Provides an ActiveRecord-like interface to a model whose data is not persisted to a database.
 module StaticModel
   extend ActiveSupport::Concern

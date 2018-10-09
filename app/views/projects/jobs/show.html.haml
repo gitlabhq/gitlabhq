@@ -42,8 +42,6 @@
                 = custom_icon('scroll_down')
 
         = render 'shared/builds/build_output'
-    - else
-      = render "empty_states"
 
   #js-details-block-vue{ data: { terminal_path: can?(current_user, :create_build_terminal, @build) && @build.has_terminal? ? terminal_project_job_path(@project, @build) : nil } }
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "base64"
 
 # This class is used to build image URL to

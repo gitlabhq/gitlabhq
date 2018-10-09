@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.3.3 (2018-10-04)
+
+- No changes.
+
 ## 11.3.2 (2018-10-03)
 
 ### Fixed (4 changes)
@@ -273,6 +277,15 @@ entry.
 - Creates vue component for commit block in job log page.
 - Creates vue components for stage dropdowns and job list container for job log view.
 - Creates Vue component for artifacts block on job page.
+
+
+## 11.2.5 (2018-10-05)
+
+### Security (3 changes)
+
+- Filter user sensitive data from discussions JSON. !2538
+- Properly filter private references from system notes.
+- Markdown API no longer displays confidential title references unless authorized.
 
 
 ## 11.2.4 (2018-09-26)
@@ -552,6 +565,15 @@ entry.
 - Increases title column on modal for reports.
 - Disables toggle comments button if diff has no discussions.
 - Moves help_popover component to a common location.
+
+
+## 11.1.8 (2018-10-05)
+
+### Security (3 changes)
+
+- Filter user sensitive data from discussions JSON. !2539
+- Properly filter private references from system notes.
+- Markdown API no longer displays confidential title references unless authorized.
 
 
 ## 11.1.7 (2018-09-26)

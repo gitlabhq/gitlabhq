@@ -58,3 +58,21 @@ body becomes the issue description. [Markdown] and [quick actions] are
 supported.
 
 ![Bottom of a project issues page](img/new_issue_from_email.png)
+
+## New issue via URL with prefilled fields
+
+You can link directly to the new issue page for a given project, with prefilled
+field values using query string parameters in a URL. This is useful for embedding 
+a URL in an external HTML page, and also certain scenarios where you want the user to 
+create an issue with certain fields prefilled.
+
+The title, description, and description template fields can be prefilled using 
+this method. The description and description template fields cannot be pre-entered
+in the same URL (since a description template just populates the description field).
+
+Follow these examples to form your new issue URL with prefilled fields.
+
+- For a new issue in the GitLab Community Edition project with a pre-entered title
+and a pre-entered description, the URL would be `https://gitlab.com/gitlab-org/gitlab-ce/issues/new?issue[title]=Validate%20new%20concept&issue[description]=Research%20idea`
+- For a new issue in the GitLab Community Edition project with a pre-entered title
+and a pre-entered description template, the URL would be `https://gitlab.com/gitlab-org/gitlab-ce/issues/new?issue[title]=Validate%20new%20concept&issuable_template=Research%20proposal`
