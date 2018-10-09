@@ -39,5 +39,4 @@ rules:
   jasmine/new-line-before-expect: off
   jasmine/new-line-between-declarations: off
   jasmine/no-promise-without-done-fail: off
-  jasmine/prefer-jasmine-matcher: off
   jasmine/prefer-toHaveBeenCalledWith: off
