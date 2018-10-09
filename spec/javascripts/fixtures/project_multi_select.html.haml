@@ -1,0 +1,6 @@
+%form
+  .form-group
+    = label_tag 'project_ids', 'Projects', class: 'label-light'
+    .input-icon-wrapper
+      = hidden_field_tag 'project_ids', '', { class: 'js-project-multi-select project-multi-select' }
+      = sprite_icon('angle-down', css_class: 'input-icon-right caret-down')
