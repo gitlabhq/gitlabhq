@@ -786,6 +786,41 @@ describe Projects::MergeRequestsController do
         expect(control_count).to be <= 137
       end
 
+      context 'when it changes files the environment' do
+        before do
+          allow_any_instance_of(Project).to receive(:route_map_for).and_return(:stubbed)
+          allow_any_instance_of(Project).to receive(:public_path_for_source_path) do |_, path, _|
+            "my_blog/#{path}"
+          end
+
+          allow_any_instance_of(Environment).to receive(:external_url_for) do |env, path|
+            "#{env.external_url}/#{path}"
+          end
+        end
+
+        it 'links to the changed pages' do
+          get_ci_environments_status
+
+          expect(json_response.first).to include('changes')
+          expect(json_response.first['changes'].first).to include(
+            "path" => a_string_starting_with('my_blog/'),
+            "external_url" => a_string_starting_with(environment.external_url)
+          )
+        end
+
+        context 'when :ci_environments_status_changes feature flag is disabled' do
+          before do
+            stub_feature_flags(ci_environments_status_changes: false)
+          end
+
+          it 'has no changes' do
+            get_ci_environments_status
+
+            expect(json_response.first).not_to include('changes')
+          end
+        end
+      end
+
       def get_ci_environments_status
         get :ci_environments_status,
           namespace_id: merge_request.project.namespace.to_param,

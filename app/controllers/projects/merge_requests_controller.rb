@@ -225,6 +225,17 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
               environment_metrics_path(environment)
             end
 
+          changes =
+            if Feature.enabled?(:ci_environments_status_changes, project)
+              if can?(current_user, :read_environment, environment)
+                @merge_request.environment_changes(environment)
+              else
+                []
+              end
+            else
+              nil
+            end
+
           {
             id: environment.id,
             name: environment.name,
@@ -236,7 +247,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
             external_url_formatted: environment.formatted_external_url,
             deployed_at: deployment.try(:created_at),
             deployed_at_formatted: deployment.try(:formatted_deployment_time)
-          }
+          }.tap do |env|
+            env[:changes] = changes if Feature.enabled?(:ci_environments_status_changes, project)
+          end
         end.compact
       end
 

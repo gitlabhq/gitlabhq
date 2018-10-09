@@ -962,6 +962,24 @@ class MergeRequest < ActiveRecord::Base
     @environments[current_user]
   end
 
+  PAGE_EXTENSIONS = /(^$|^\.(s?html?|php|asp|cgi|pl)$)/i.freeze
+
+  def environment_changes(environment)
+    return [] if source_project.route_map_for(diff_head_sha).nil?
+
+    merge_request_diff.merge_request_diff_files.where(deleted_file: false).map do |file|
+      public_path = source_project.public_path_for_source_path(file.new_path, diff_head_sha)
+      next if public_path.nil?
+
+      next unless File.extname(public_path) =~ PAGE_EXTENSIONS
+
+      {
+        path: public_path,
+        external_url: environment.external_url_for(file.new_path, diff_head_sha)
+      }
+    end.compact
+  end
+
   def state_human_name
     if merged?
       "Merged"
