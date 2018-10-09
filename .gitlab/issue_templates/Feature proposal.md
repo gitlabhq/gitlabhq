@@ -1,6 +1,6 @@
 ### Problem to solve
 
-(The problem that would be solved)
+[The problem that would be solved]
 
 ### Further details
 
