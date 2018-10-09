@@ -41,6 +41,7 @@ describe('MRWidgetHeader', () => {
             statusPath: 'abc',
           },
         });
+
         expect(vm.shouldShowCommitsBehindText).toEqual(false);
       });
     });
@@ -165,6 +166,7 @@ describe('MRWidgetHeader', () => {
         vm = mountComponent(Component, { mr });
 
         const link = vm.$el.querySelector('.js-web-ide');
+
         expect(link.classList.contains('disabled')).toBe(true);
         expect(link.getAttribute('href')).toBeNull();
       });

@@ -63,23 +63,27 @@ describe('MRWidgetMerged', () => {
     describe('shouldShowRemoveSourceBranch', () => {
       it('returns true when sourceBranchRemoved is false', () => {
         vm.mr.sourceBranchRemoved = false;
+
         expect(vm.shouldShowRemoveSourceBranch).toEqual(true);
       });
 
       it('returns false wehn sourceBranchRemoved is true', () => {
         vm.mr.sourceBranchRemoved = true;
+
         expect(vm.shouldShowRemoveSourceBranch).toEqual(false);
       });
 
       it('returns false when canRemoveSourceBranch is false', () => {
         vm.mr.sourceBranchRemoved = false;
         vm.mr.canRemoveSourceBranch = false;
+
         expect(vm.shouldShowRemoveSourceBranch).toEqual(false);
       });
 
       it('returns false when is making request', () => {
         vm.mr.canRemoveSourceBranch = true;
         vm.isMakingRequest = true;
+
         expect(vm.shouldShowRemoveSourceBranch).toEqual(false);
       });
 
@@ -87,6 +91,7 @@ describe('MRWidgetMerged', () => {
         vm.mr.isRemovingSourceBranch = true;
         vm.mr.canRemoveSourceBranch = true;
         vm.isMakingRequest = true;
+
         expect(vm.shouldShowRemoveSourceBranch).toEqual(false);
       });
     });
@@ -94,17 +99,21 @@ describe('MRWidgetMerged', () => {
     describe('shouldShowSourceBranchRemoving', () => {
       it('should correct value when fields changed', () => {
         vm.mr.sourceBranchRemoved = false;
+
         expect(vm.shouldShowSourceBranchRemoving).toEqual(false);
 
         vm.mr.sourceBranchRemoved = true;
+
         expect(vm.shouldShowRemoveSourceBranch).toEqual(false);
 
         vm.mr.sourceBranchRemoved = false;
         vm.isMakingRequest = true;
+
         expect(vm.shouldShowSourceBranchRemoving).toEqual(true);
 
         vm.isMakingRequest = false;
         vm.mr.isRemovingSourceBranch = true;
+
         expect(vm.shouldShowSourceBranchRemoving).toEqual(true);
       });
     });
@@ -124,6 +133,7 @@ describe('MRWidgetMerged', () => {
         vm.removeSourceBranch();
         setTimeout(() => {
           const args = eventHub.$emit.calls.argsFor(0);
+
           expect(vm.isMakingRequest).toEqual(true);
           expect(args[0]).toEqual('MRWidgetUpdateRequested');
           expect(args[1]).not.toThrow();

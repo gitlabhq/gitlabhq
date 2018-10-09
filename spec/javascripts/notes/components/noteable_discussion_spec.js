@@ -144,6 +144,7 @@ describe('noteable_discussion component', () => {
       };
 
       const note = vm.componentData(data);
+
       expect(note).toEqual(data.notes[0]);
     });
 
@@ -155,6 +156,7 @@ describe('noteable_discussion component', () => {
       };
 
       const note = vm.componentData(data);
+
       expect(note).toEqual(data);
     });
   });

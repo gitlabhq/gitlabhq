@@ -74,6 +74,7 @@ import '~/lib/utils/common_utils';
         return lazyAssert(done, function() {
           var $emojiMenu;
           $emojiMenu = $('.emoji-menu');
+
           expect($emojiMenu.length).toBe(1);
           expect($emojiMenu.hasClass('is-visible')).toBe(true);
           expect($emojiMenu.find('.js-emoji-menu-search').length).toBe(1);
@@ -85,7 +86,8 @@ import '~/lib/utils/common_utils';
         $('.js-add-award.note-action-button').click();
         return lazyAssert(done, function() {
           var $emojiMenu = $('.emoji-menu');
-          return expect($emojiMenu.length).toBe(1);
+
+          expect($emojiMenu.length).toBe(1);
         });
       });
 
@@ -97,6 +99,7 @@ import '~/lib/utils/common_utils';
           var $emojiMenu;
           $emojiMenu = $('.emoji-menu');
           $('body').click();
+
           expect($emojiMenu.length).toBe(1);
           expect($emojiMenu.hasClass('is-visible')).toBe(false);
           return expect($('.js-awards-block.current').length).toBe(0);
@@ -111,6 +114,7 @@ import '~/lib/utils/common_utils';
           var $emojiMenu;
           $emojiMenu = $('.emoji-menu');
           $('.emoji-search').click();
+
           expect($emojiMenu.length).toBe(1);
           expect($emojiMenu.hasClass('is-visible')).toBe(true);
           return expect($('.js-awards-block.current').length).toBe(1);
@@ -124,6 +128,7 @@ import '~/lib/utils/common_utils';
         $votesBlock = $('.js-awards-block').eq(0);
         awardsHandler.addAwardToEmojiBar($votesBlock, 'heart', false);
         $emojiButton = $votesBlock.find('[data-name=heart]');
+
         expect($emojiButton.length).toBe(1);
         expect($emojiButton.next('.js-counter').text()).toBe('1');
         return expect($votesBlock.hasClass('hidden')).toBe(false);
@@ -135,7 +140,8 @@ import '~/lib/utils/common_utils';
         awardsHandler.addAwardToEmojiBar($votesBlock, 'heart', false);
         awardsHandler.addAwardToEmojiBar($votesBlock, 'heart', false);
         $emojiButton = $votesBlock.find('[data-name=heart]');
-        return expect($emojiButton.length).toBe(0);
+
+        expect($emojiButton.length).toBe(0);
       });
       return it('should decrement the emoji counter', function() {
         var $emojiButton, $votesBlock;
@@ -144,6 +150,7 @@ import '~/lib/utils/common_utils';
         $emojiButton = $votesBlock.find('[data-name=heart]');
         $emojiButton.next('.js-counter').text(5);
         awardsHandler.addAwardToEmojiBar($votesBlock, 'heart', false);
+
         expect($emojiButton.length).toBe(1);
         return expect($emojiButton.next('.js-counter').text()).toBe('4');
       });
@@ -156,7 +163,8 @@ import '~/lib/utils/common_utils';
         $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
         $thumbsUpEmoji.attr('data-title', 'sam');
         awardsHandler.userAuthored($thumbsUpEmoji);
-        return expect($thumbsUpEmoji.data('originalTitle')).toBe(
+
+        expect($thumbsUpEmoji.data('originalTitle')).toBe(
           'You cannot vote on your own issue, MR and note',
         );
       });
@@ -170,13 +178,15 @@ import '~/lib/utils/common_utils';
         awardsHandler.userAuthored($thumbsUpEmoji);
         jasmine.clock().tick(2801);
         jasmine.clock().uninstall();
-        return expect($thumbsUpEmoji.data('originalTitle')).toBe('sam');
+
+        expect($thumbsUpEmoji.data('originalTitle')).toBe('sam');
       });
     });
 
     describe('::getAwardUrl', function() {
       return it('returns the url for request', function() {
-        return expect(awardsHandler.getAwardUrl()).toBe(
+
+        expect(awardsHandler.getAwardUrl()).toBe(
           'http://test.host/snippets/1/toggle_award_emoji',
         );
       });
@@ -190,11 +200,13 @@ import '~/lib/utils/common_utils';
         $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
         $thumbsDownEmoji = $votesBlock.find('[data-name=thumbsdown]').parent();
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
+
         expect($thumbsUpEmoji.hasClass('active')).toBe(true);
         expect($thumbsDownEmoji.hasClass('active')).toBe(false);
         $thumbsUpEmoji.tooltip();
         $thumbsDownEmoji.tooltip();
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsdown', true);
+
         expect($thumbsUpEmoji.hasClass('active')).toBe(false);
         return expect($thumbsDownEmoji.hasClass('active')).toBe(true);
       });
@@ -206,9 +218,11 @@ import '~/lib/utils/common_utils';
         awardUrl = awardsHandler.getAwardUrl();
         $votesBlock = $('.js-awards-block').eq(0);
         awardsHandler.addAward($votesBlock, awardUrl, 'fire', false);
+
         expect($votesBlock.find('[data-name=fire]').length).toBe(1);
         awardsHandler.removeEmoji($votesBlock.find('[data-name=fire]').closest('button'));
-        return expect($votesBlock.find('[data-name=fire]').length).toBe(0);
+
+        expect($votesBlock.find('[data-name=fire]').length).toBe(0);
       });
     });
 
@@ -221,7 +235,8 @@ import '~/lib/utils/common_utils';
         $thumbsUpEmoji.attr('data-title', 'sam, jerry, max, and andy');
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
         $thumbsUpEmoji.tooltip();
-        return expect($thumbsUpEmoji.data('originalTitle')).toBe('You, sam, jerry, max, and andy');
+
+        expect($thumbsUpEmoji.data('originalTitle')).toBe('You, sam, jerry, max, and andy');
       });
       return it('handles the special case where "You" is not cleanly comma seperated', function() {
         var $thumbsUpEmoji, $votesBlock, awardUrl;
@@ -231,7 +246,8 @@ import '~/lib/utils/common_utils';
         $thumbsUpEmoji.attr('data-title', 'sam');
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
         $thumbsUpEmoji.tooltip();
-        return expect($thumbsUpEmoji.data('originalTitle')).toBe('You and sam');
+
+        expect($thumbsUpEmoji.data('originalTitle')).toBe('You and sam');
       });
     });
 
@@ -245,7 +261,8 @@ import '~/lib/utils/common_utils';
         $thumbsUpEmoji.addClass('active');
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
         $thumbsUpEmoji.tooltip();
-        return expect($thumbsUpEmoji.data('originalTitle')).toBe('sam, jerry, max, and andy');
+
+        expect($thumbsUpEmoji.data('originalTitle')).toBe('sam, jerry, max, and andy');
       });
       return it('handles the special case where "You" is not cleanly comma seperated', function() {
         var $thumbsUpEmoji, $votesBlock, awardUrl;
@@ -256,7 +273,8 @@ import '~/lib/utils/common_utils';
         $thumbsUpEmoji.addClass('active');
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
         $thumbsUpEmoji.tooltip();
-        return expect($thumbsUpEmoji.data('originalTitle')).toBe('sam');
+
+        expect($thumbsUpEmoji.data('originalTitle')).toBe('sam');
       });
     });
 
@@ -267,6 +285,7 @@ import '~/lib/utils/common_utils';
             expect($('[data-name=angel]').is(':visible')).toBe(true);
             expect($('[data-name=anger]').is(':visible')).toBe(true);
             awardsHandler.searchEmojis('ali');
+
             expect($('[data-name=angel]').is(':visible')).toBe(false);
             expect($('[data-name=anger]').is(':visible')).toBe(false);
             expect($('[data-name=alien]').is(':visible')).toBe(true);
@@ -282,10 +301,12 @@ import '~/lib/utils/common_utils';
         return openAndWaitForEmojiMenu()
           .then(() => {
             awardsHandler.searchEmojis('ali');
+
             expect($('[data-name=angel]').is(':visible')).toBe(false);
             expect($('[data-name=anger]').is(':visible')).toBe(false);
             expect($('[data-name=alien]').is(':visible')).toBe(true);
             awardsHandler.searchEmojis('');
+
             expect($('[data-name=angel]').is(':visible')).toBe(true);
             expect($('[data-name=anger]').is(':visible')).toBe(true);
             expect($('[data-name=alien]').is(':visible')).toBe(true);
@@ -309,6 +330,7 @@ import '~/lib/utils/common_utils';
           expect($emoji.length).toBe(1);
           expect($block.find(emojiSelector).length).toBe(0);
           $emoji.click();
+
           expect($menu.hasClass('.is-visible')).toBe(false);
           expect($block.find(emojiSelector).length).toBe(1);
         });
@@ -332,6 +354,7 @@ import '~/lib/utils/common_utils';
               `.emoji-menu-list:not(.frequent-emojis) ${emojiSelector}`,
             );
             $emoji.click();
+
             expect($block.find(emojiSelector).length).toBe(0);
           })
           .then(done)

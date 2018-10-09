@@ -47,6 +47,7 @@ describe('Issue model', () => {
       color: 'blue',
       description: 'bugs!'
     });
+
     expect(issue.labels.length).toBe(2);
   });
 
@@ -63,12 +64,14 @@ describe('Issue model', () => {
 
   it('finds label', () => {
     const label = issue.findLabel(issue.labels[0]);
+
     expect(label).toBeDefined();
   });
 
   it('removes label', () => {
     const label = issue.findLabel(issue.labels[0]);
     issue.removeLabel(label);
+
     expect(issue.labels.length).toBe(0);
   });
 
@@ -79,9 +82,11 @@ describe('Issue model', () => {
       color: 'blue',
       description: 'bugs!'
     });
+
     expect(issue.labels.length).toBe(2);
 
     issue.removeLabels([issue.labels[0], issue.labels[1]]);
+
     expect(issue.labels.length).toBe(0);
   });
 
@@ -98,17 +103,20 @@ describe('Issue model', () => {
 
   it('finds assignee', () => {
     const assignee = issue.findAssignee(issue.assignees[0]);
+
     expect(assignee).toBeDefined();
   });
 
   it('removes assignee', () => {
     const assignee = issue.findAssignee(issue.assignees[0]);
     issue.removeAssignee(assignee);
+
     expect(issue.assignees.length).toBe(0);
   });
 
   it('removes all assignees', () => {
     issue.removeAllAssignees();
+
     expect(issue.assignees.length).toBe(0);
   });
 
@@ -131,6 +139,7 @@ describe('Issue model', () => {
 
   it('updates data', () => {
     issue.updateData({ subscribed: true });
+
     expect(issue.subscribed).toBe(true);
   });
 

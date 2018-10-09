@@ -85,10 +85,12 @@ describe('IDE shared/TokenedInput', () => {
     vm.value = '';
 
     vm.onBackspace();
+
     expect(vm.$emit).not.toHaveBeenCalled();
     expect(vm.backspaceCount).toEqual(1);
 
     vm.onBackspace();
+
     expect(vm.$emit).toHaveBeenCalledWith('removeToken', TEST_TOKENS[TEST_TOKENS.length - 1]);
     expect(vm.backspaceCount).toEqual(0);
   });

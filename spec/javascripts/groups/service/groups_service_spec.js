@@ -24,9 +24,11 @@ describe('GroupsService', () => {
       };
 
       service.getGroups(55, 2, 'git', 'created_asc', true);
+
       expect(service.groups.get).toHaveBeenCalledWith({ parent_id: 55 });
 
       service.getGroups(null, 2, 'git', 'created_asc', true);
+
       expect(service.groups.get).toHaveBeenCalledWith(queryParams);
     });
   });
@@ -36,6 +38,7 @@ describe('GroupsService', () => {
       spyOn(Vue.http, 'delete').and.stub();
 
       service.leaveGroup(mockParentGroupItem.leavePath);
+
       expect(Vue.http.delete).toHaveBeenCalledWith(mockParentGroupItem.leavePath);
     });
   });

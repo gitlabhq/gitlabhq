@@ -56,6 +56,7 @@ describe('Empty State', () => {
       vm = mountComponent(Component, {
         ...props,
       });
+
       expect(vm.$el.querySelector('.js-job-empty-state-content')).toBeNull();
     });
   });
@@ -84,6 +85,7 @@ describe('Empty State', () => {
         ...props,
         content,
       });
+
       expect(vm.$el.querySelector('.js-job-empty-state-action')).toBeNull();
     });
   });

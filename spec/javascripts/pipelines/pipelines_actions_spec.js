@@ -31,11 +31,13 @@ describe('Pipelines Actions dropdown', () => {
 
     it('renders a dropdown with the provided actions', () => {
       const dropdownItems = vm.$el.querySelectorAll('.dropdown-menu li');
+
       expect(dropdownItems.length).toEqual(actions.length);
     });
 
     it("renders a disabled action when it's not playable", () => {
       const dropdownItem = vm.$el.querySelector('.dropdown-menu li:last-child button');
+
       expect(dropdownItem).toBeDisabled();
     });
   });

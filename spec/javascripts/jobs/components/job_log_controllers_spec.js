@@ -199,6 +199,7 @@ describe('Job log controllers', () => {
             isScrollingDown: false,
             isTraceSizeVisible: true,
           });
+
           expect(vm.$el.querySelector('.js-scroll-bottom').className).not.toContain('animate');
         });
       });

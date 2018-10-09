@@ -14,13 +14,15 @@ import '~/commons/bootstrap';
         var $input;
         $input = $('input').first();
         $input.disable();
-        return expect($input).toHaveAttr('disabled', 'disabled');
+
+        expect($input).toHaveAttr('disabled', 'disabled');
       });
       return it('adds the disabled class', function() {
         var $input;
         $input = $('input').first();
         $input.disable();
-        return expect($input).toHaveClass('disabled');
+
+        expect($input).toHaveClass('disabled');
       });
     });
     return describe('enable', function() {
@@ -32,13 +34,15 @@ import '~/commons/bootstrap';
         var $input;
         $input = $('input').first();
         $input.enable();
-        return expect($input).not.toHaveAttr('disabled');
+
+        expect($input).not.toHaveAttr('disabled');
       });
       return it('removes the disabled class', function() {
         var $input;
         $input = $('input').first();
         $input.enable();
-        return expect($input).not.toHaveClass('disabled');
+
+        expect($input).not.toHaveClass('disabled');
       });
     });
   });

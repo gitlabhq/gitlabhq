@@ -46,6 +46,7 @@ describe('mrWidgetOptions', () => {
 
       it('should return conflicts component', () => {
         vm.mr.state = 'conflicts';
+
         expect(vm.componentName).toEqual('mr-widget-conflicts');
       });
     });
@@ -57,6 +58,7 @@ describe('mrWidgetOptions', () => {
 
       it('should return true for a state which requires help widget', () => {
         vm.mr.state = 'conflicts';
+
         expect(vm.shouldRenderMergeHelp).toBeTruthy();
       });
     });
@@ -82,6 +84,7 @@ describe('mrWidgetOptions', () => {
 
       it('should return true if there is relatedLinks in MR', () => {
         Vue.set(vm.mr, 'relatedLinks', {});
+
         expect(vm.shouldRenderRelatedLinks).toBeTruthy();
       });
     });
@@ -223,18 +226,23 @@ describe('mrWidgetOptions', () => {
         vm.bindEventHubListeners();
 
         eventHub.$emit('SetBranchRemoveFlag', ['flag']);
+
         expect(vm.mr.isRemovingSourceBranch).toEqual('flag');
 
         eventHub.$emit('FailedToMerge');
+
         expect(vm.mr.state).toEqual('failedToMerge');
 
         eventHub.$emit('UpdateWidgetData', mockData);
+
         expect(vm.mr.setData).toHaveBeenCalledWith(mockData);
 
         eventHub.$emit('EnablePolling');
+
         expect(vm.resumePolling).toHaveBeenCalled();
 
         eventHub.$emit('DisablePolling');
+
         expect(vm.stopPolling).toHaveBeenCalled();
 
         const listenersWithServiceRequest = {
@@ -253,9 +261,11 @@ describe('mrWidgetOptions', () => {
         });
 
         listenersWithServiceRequest.MRWidgetUpdateRequested();
+
         expect(vm.checkStatus).toHaveBeenCalled();
 
         listenersWithServiceRequest.FetchActionsContent();
+
         expect(vm.fetchActionsContent).toHaveBeenCalled();
       });
     });
@@ -352,6 +362,7 @@ describe('mrWidgetOptions', () => {
         spyOn(vm.pollingInterval, 'resume');
 
         vm.resumePolling();
+
         expect(vm.pollingInterval.resume).toHaveBeenCalled();
       });
     });
@@ -361,6 +372,7 @@ describe('mrWidgetOptions', () => {
         spyOn(vm.pollingInterval, 'stopTimer');
 
         vm.stopPolling();
+
         expect(vm.pollingInterval.stopTimer).toHaveBeenCalled();
       });
     });

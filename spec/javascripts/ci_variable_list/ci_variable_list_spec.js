@@ -41,6 +41,7 @@ describe('VariableList', () => {
 
         // Check for the correct default in the new row
         const $keyInput = $wrapper.find('.js-row:last-child').find('.js-ci-variable-input-key');
+
         expect($keyInput.val()).toBe('');
       });
 
@@ -54,6 +55,7 @@ describe('VariableList', () => {
 
         // Check for the correct default in the new row
         const $valueInput = $wrapper.find('.js-row:last-child').find('.js-ci-variable-input-key');
+
         expect($valueInput.val()).toBe('');
       });
 
@@ -129,6 +131,7 @@ describe('VariableList', () => {
 
           // Check for the correct default in the new row
           const $protectedInput = $wrapper.find('.js-row:last-child').find('.js-ci-variable-input-protected');
+
           expect($protectedInput.val()).toBe('false');
         })
         .then(done)
@@ -166,6 +169,7 @@ describe('VariableList', () => {
 
     it('should enable all remove buttons', () => {
       variableList.toggleEnableRow(false);
+
       expect($wrapper.find('.js-row-remove-button[disabled]').length).toBe(3);
 
       variableList.toggleEnableRow(true);
@@ -175,6 +179,7 @@ describe('VariableList', () => {
 
     it('should enable all key inputs', () => {
       variableList.toggleEnableRow(false);
+
       expect($wrapper.find('.js-ci-variable-input-key[disabled]').length).toBe(3);
 
       variableList.toggleEnableRow(true);

@@ -54,6 +54,7 @@ describe('Pipelines Table', () => {
           viewType: 'root',
         },
       }).$mount();
+
       expect(component.$el.querySelectorAll('.commit.gl-responsive-table-row').length).toEqual(0);
     });
   });

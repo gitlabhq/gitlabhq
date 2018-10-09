@@ -15,6 +15,7 @@ describe('Jobs Store Mutations', () => {
   describe('SET_JOB_ENDPOINT', () => {
     it('should set jobEndpoint', () => {
       mutations[types.SET_JOB_ENDPOINT](stateCopy, 'job/21312321.json');
+
       expect(stateCopy.jobEndpoint).toEqual('job/21312321.json');
     });
   });
@@ -22,6 +23,7 @@ describe('Jobs Store Mutations', () => {
   describe('REQUEST_STATUS_FAVICON', () => {
     it('should set fetchingStatusFavicon to true', () => {
       mutations[types.REQUEST_STATUS_FAVICON](stateCopy);
+
       expect(stateCopy.fetchingStatusFavicon).toEqual(true);
     });
   });
@@ -29,6 +31,7 @@ describe('Jobs Store Mutations', () => {
   describe('RECEIVE_STATUS_FAVICON_SUCCESS', () => {
     it('should set fetchingStatusFavicon to false', () => {
       mutations[types.RECEIVE_STATUS_FAVICON_SUCCESS](stateCopy);
+
       expect(stateCopy.fetchingStatusFavicon).toEqual(false);
     });
   });
@@ -36,6 +39,7 @@ describe('Jobs Store Mutations', () => {
   describe('RECEIVE_STATUS_FAVICON_ERROR', () => {
     it('should set fetchingStatusFavicon to false', () => {
       mutations[types.RECEIVE_STATUS_FAVICON_ERROR](stateCopy);
+
       expect(stateCopy.fetchingStatusFavicon).toEqual(false);
     });
   });
@@ -48,6 +52,7 @@ describe('Jobs Store Mutations', () => {
         mutations[types.RECEIVE_TRACE_SUCCESS](stateCopy, {
           state: stateLog,
         });
+
         expect(stateCopy.traceState).toEqual(stateLog);
       });
     });
@@ -77,6 +82,7 @@ describe('Jobs Store Mutations', () => {
         size: 511846,
         complete: true,
       });
+
       expect(stateCopy.trace).toEqual(html);
       expect(stateCopy.traceSize).toEqual(511846);
       expect(stateCopy.isTraceComplete).toEqual(true);
@@ -86,6 +92,7 @@ describe('Jobs Store Mutations', () => {
   describe('STOP_POLLING_TRACE', () => {
     it('sets isTraceComplete to true', () => {
       mutations[types.STOP_POLLING_TRACE](stateCopy);
+
       expect(stateCopy.isTraceComplete).toEqual(true);
     });
   });
@@ -93,6 +100,7 @@ describe('Jobs Store Mutations', () => {
   describe('RECEIVE_TRACE_ERROR', () => {
     it('resets trace state and sets error to true', () => {
       mutations[types.RECEIVE_TRACE_ERROR](stateCopy);
+
       expect(stateCopy.isLoadingTrace).toEqual(false);
       expect(stateCopy.isTraceComplete).toEqual(true);
       expect(stateCopy.hasTraceError).toEqual(true);
@@ -110,29 +118,35 @@ describe('Jobs Store Mutations', () => {
   describe('RECEIVE_JOB_SUCCESS', () => {
     it('sets is loading to false', () => {
       mutations[types.RECEIVE_JOB_SUCCESS](stateCopy, { id: 1312321 });
+
       expect(stateCopy.isLoading).toEqual(false);
     });
 
     it('sets hasError to false', () => {
       mutations[types.RECEIVE_JOB_SUCCESS](stateCopy, { id: 1312321 });
+
       expect(stateCopy.hasError).toEqual(false);
     });
 
     it('sets job data', () => {
       mutations[types.RECEIVE_JOB_SUCCESS](stateCopy, { id: 1312321 });
+
       expect(stateCopy.job).toEqual({ id: 1312321 });
     });
 
     it('sets selectedStage when the selectedStage is More', () => {
       expect(stateCopy.selectedStage).toEqual('More');
       mutations[types.RECEIVE_JOB_SUCCESS](stateCopy, { id: 1312321, stage: 'deploy' });
+
       expect(stateCopy.selectedStage).toEqual('deploy');
     });
 
     it('does not set selectedStage when the selectedStage is not More', () => {
       stateCopy.selectedStage = 'notify'
+
       expect(stateCopy.selectedStage).toEqual('notify');
       mutations[types.RECEIVE_JOB_SUCCESS](stateCopy, { id: 1312321, stage: 'deploy' });
+
       expect(stateCopy.selectedStage).toEqual('notify');
     });
   });
@@ -178,6 +192,7 @@ describe('Jobs Store Mutations', () => {
   describe('REQUEST_STAGES', () => {
     it('sets isLoadingStages to true', () => {
       mutations[types.REQUEST_STAGES](stateCopy);
+
       expect(stateCopy.isLoadingStages).toEqual(true);
     });
   });
@@ -213,11 +228,13 @@ describe('Jobs Store Mutations', () => {
   describe('REQUEST_JOBS_FOR_STAGE', () => {
     it('sets isLoadingStages to true', () => {
       mutations[types.REQUEST_JOBS_FOR_STAGE](stateCopy, { name: 'deploy' });
+
       expect(stateCopy.isLoadingJobs).toEqual(true);
     });
 
     it('sets selectedStage', () => {
       mutations[types.REQUEST_JOBS_FOR_STAGE](stateCopy, { name: 'deploy' });
+
       expect(stateCopy.selectedStage).toEqual('deploy');
     })
   });

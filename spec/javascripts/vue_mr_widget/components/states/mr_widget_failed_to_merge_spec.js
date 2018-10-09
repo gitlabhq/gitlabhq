@@ -43,6 +43,7 @@ describe('MRWidgetFailedToMerge', () => {
         expect(vm.timerText).toEqual('Refreshing in 10 seconds to show the updated status...');
 
         vm.timer = 1;
+
         expect(vm.timerText).toEqual('Refreshing in a second to show the updated status...');
       });
     });
@@ -73,6 +74,7 @@ describe('MRWidgetFailedToMerge', () => {
         expect(vm.isRefreshing).toEqual(false);
 
         vm.refresh();
+
         expect(vm.isRefreshing).toEqual(true);
         expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
         expect(eventHub.$emit).toHaveBeenCalledWith('EnablePolling');

@@ -54,6 +54,7 @@ describe('sticky', () => {
       expect(
         el.classList.remove,
       ).toHaveBeenCalledWith('is-stuck');
+
       expect(
         el.classList.contains('is-stuck'),
       ).toBeFalsy();

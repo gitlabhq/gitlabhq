@@ -85,6 +85,7 @@ describe('Interval Pattern Input Component', function () {
 
     it('prop initialCronInterval is set', function () {
       const defaultInitialCronInterval = '';
+
       expect(this.intervalPatternComponent.initialCronInterval).toBe(defaultInitialCronInterval);
     });
 
@@ -148,6 +149,7 @@ describe('Interval Pattern Input Component', function () {
 
       Vue.nextTick(() => {
         const intervalWithSpaceAppended = `${cronIntervalPresets.everyMonth} `;
+
         expect(this.intervalPatternComponent.cronInterval).toBe(intervalWithSpaceAppended);
         expect(this.intervalPatternComponent.$el.querySelector('.cron-interval-input').value).toBe(intervalWithSpaceAppended);
         done();

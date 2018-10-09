@@ -66,6 +66,7 @@ describe('SmartInterval', function () {
       waitForPromises()
         .then(() => {
           const currentInterval = smartInterval.getCurrentInterval();
+
           expect(currentInterval).toBe(smartInterval.cfg.maxInterval);
         })
         .then(done)
@@ -82,6 +83,7 @@ describe('SmartInterval', function () {
       waitForPromises()
         .then(() => {
           const oneInterval = smartInterval.cfg.startingInterval * DEFAULT_INCREMENT_FACTOR;
+
           expect(smartInterval.getCurrentInterval()).toEqual(oneInterval);
         })
         .then(done)
@@ -126,6 +128,7 @@ describe('SmartInterval', function () {
       waitForPromises()
         .then(() => {
           const { intervalId } = interval.state;
+
           expect(intervalId).toBeTruthy();
         })
         .then(done)
@@ -212,6 +215,7 @@ describe('SmartInterval', function () {
       waitForPromises()
         .then(() => {
           $(document).triggerHandler('beforeunload');
+
           expect(interval.state.intervalId).toBeUndefined();
           expect(interval.getCurrentInterval()).toBe(interval.cfg.startingInterval);
         })
@@ -221,6 +225,7 @@ describe('SmartInterval', function () {
 
     it('should execute callback before first interval', function () {
       const interval = createDefaultSmartInterval({ immediateExecution: true });
+
       expect(interval.cfg.immediateExecution).toBeFalsy();
     });
   });

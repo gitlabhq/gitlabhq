@@ -16,20 +16,23 @@ describe('U2FRegister', function () {
 
   it('allows registering a U2F device', () => {
     const setupButton = this.container.find('#js-setup-u2f-device');
+
     expect(setupButton.text()).toBe('Set up new U2F device');
     setupButton.trigger('click');
     const inProgressMessage = this.container.children('p');
+
     expect(inProgressMessage.text()).toContain('Trying to communicate with your device');
     this.u2fDevice.respondToRegisterRequest({
       deviceData: 'this is data from the device',
     });
     const registeredMessage = this.container.find('p');
     const deviceResponse = this.container.find('#js-device-response');
+
     expect(registeredMessage.text()).toContain('Your device was successfully set up!');
-    return expect(deviceResponse.val()).toBe('{"deviceData":"this is data from the device"}');
+    expect(deviceResponse.val()).toBe('{"deviceData":"this is data from the device"}');
   });
 
-  return describe('errors', () => {
+  describe('errors', () => {
     it('doesn\'t allow the same device to be registered twice (for the same user', () => {
       const setupButton = this.container.find('#js-setup-u2f-device');
       setupButton.trigger('click');
@@ -37,7 +40,8 @@ describe('U2FRegister', function () {
         errorCode: 4,
       });
       const errorMessage = this.container.find('p');
-      return expect(errorMessage.text()).toContain('already been registered with us');
+
+      expect(errorMessage.text()).toContain('already been registered with us');
     });
 
     it('displays an error message for other errors', () => {
@@ -47,10 +51,11 @@ describe('U2FRegister', function () {
         errorCode: 'error!',
       });
       const errorMessage = this.container.find('p');
-      return expect(errorMessage.text()).toContain('There was a problem communicating with your device');
+
+      expect(errorMessage.text()).toContain('There was a problem communicating with your device');
     });
 
-    return it('allows retrying registration after an error', () => {
+    it('allows retrying registration after an error', () => {
       let setupButton = this.container.find('#js-setup-u2f-device');
       setupButton.trigger('click');
       this.u2fDevice.respondToRegisterRequest({
@@ -64,7 +69,8 @@ describe('U2FRegister', function () {
         deviceData: 'this is data from the device',
       });
       const registeredMessage = this.container.find('p');
-      return expect(registeredMessage.text()).toContain('Your device was successfully set up!');
+
+      expect(registeredMessage.text()).toContain('Your device was successfully set up!');
     });
   });
 });

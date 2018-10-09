@@ -30,11 +30,13 @@ describe('collapsedGroupedDatePicker', () => {
 
     it('should emit when sidebar is toggled', () => {
       vm.$el.querySelector('.gutter-toggle').click();
+
       expect(vm.toggleSidebar).toHaveBeenCalled();
     });
 
     it('should emit when collapsed-calendar-icon is clicked', () => {
       vm.$el.querySelector('.sidebar-collapsed-icon').click();
+
       expect(vm.toggleSidebar).toHaveBeenCalled();
     });
   });
@@ -48,6 +50,7 @@ describe('collapsedGroupedDatePicker', () => {
 
     it('should render both collapsed-calendar-icon', () => {
       const icons = vm.$el.querySelectorAll('.sidebar-collapsed-icon');
+
       expect(icons.length).toEqual(2);
       expect(icons[0].innerText.trim()).toEqual('Jul 17 2016');
       expect(icons[1].innerText.trim()).toEqual('Jul 17 2017');
@@ -62,6 +65,7 @@ describe('collapsedGroupedDatePicker', () => {
 
     it('should render minDate in collapsed-calendar-icon', () => {
       const icons = vm.$el.querySelectorAll('.sidebar-collapsed-icon');
+
       expect(icons.length).toEqual(1);
       expect(icons[0].innerText.trim()).toEqual('From Jul 17 2016');
     });
@@ -75,6 +79,7 @@ describe('collapsedGroupedDatePicker', () => {
 
     it('should render maxDate in collapsed-calendar-icon', () => {
       const icons = vm.$el.querySelectorAll('.sidebar-collapsed-icon');
+
       expect(icons.length).toEqual(1);
       expect(icons[0].innerText.trim()).toEqual('Until Jul 17 2017');
     });
@@ -83,6 +88,7 @@ describe('collapsedGroupedDatePicker', () => {
   describe('no dates', () => {
     it('should render None', () => {
       const icons = vm.$el.querySelectorAll('.sidebar-collapsed-icon');
+
       expect(icons.length).toEqual(1);
       expect(icons[0].innerText.trim()).toEqual('None');
     });

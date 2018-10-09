@@ -107,6 +107,7 @@ describe('Dashboard', () => {
 
       setTimeout(() => {
         const dropdownMenuEnvironments = component.$el.querySelectorAll('.dropdown-menu ul li a');
+
         expect(dropdownMenuEnvironments.length).toEqual(component.store.environmentsData.length);
         done();
       });
@@ -124,6 +125,7 @@ describe('Dashboard', () => {
         const dropdownIsActiveElement = component.$el.querySelectorAll(
           '.dropdown-menu ul li a.is-active',
         );
+
         expect(dropdownIsActiveElement.length).toEqual(1);
         expect(dropdownIsActiveElement[0].textContent.trim()).toEqual(
           component.currentEnvironmentName,

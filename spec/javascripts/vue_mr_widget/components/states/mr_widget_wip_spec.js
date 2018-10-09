@@ -33,6 +33,7 @@ describe('Wip', () => {
   describe('data', () => {
     it('should have default data', () => {
       const vm = createComponent();
+
       expect(vm.isMakingRequest).toBeFalsy();
     });
   });

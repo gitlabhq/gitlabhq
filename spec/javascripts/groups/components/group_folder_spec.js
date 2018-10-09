@@ -59,6 +59,7 @@ describe('GroupFolderComponent', () => {
 
       const newVm = createComponent(mockGroups, parentGroup);
       newVm.$mount();
+
       expect(newVm.$el.querySelector('li.group-row a.has-more-items')).toBeDefined();
       newVm.$destroy();
     });

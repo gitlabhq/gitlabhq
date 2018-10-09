@@ -88,6 +88,7 @@ describe('Issuable Time Tracker', () => {
           Vue.nextTick(() => {
             expect(vm.showComparisonState).toBe(true);
             const $comparisonPane = vm.$el.querySelector('.time-tracking-comparison-pane');
+
             expect($comparisonPane).toBeVisible();
             done();
           });

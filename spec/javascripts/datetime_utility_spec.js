@@ -24,36 +24,43 @@ describe('Date time utils', () => {
   describe('get day name', () => {
     it('should return Sunday', () => {
       const day = datetimeUtility.getDayName(new Date('07/17/2016'));
+
       expect(day).toBe('Sunday');
     });
 
     it('should return Monday', () => {
       const day = datetimeUtility.getDayName(new Date('07/18/2016'));
+
       expect(day).toBe('Monday');
     });
 
     it('should return Tuesday', () => {
       const day = datetimeUtility.getDayName(new Date('07/19/2016'));
+
       expect(day).toBe('Tuesday');
     });
 
     it('should return Wednesday', () => {
       const day = datetimeUtility.getDayName(new Date('07/20/2016'));
+
       expect(day).toBe('Wednesday');
     });
 
     it('should return Thursday', () => {
       const day = datetimeUtility.getDayName(new Date('07/21/2016'));
+
       expect(day).toBe('Thursday');
     });
 
     it('should return Friday', () => {
       const day = datetimeUtility.getDayName(new Date('07/22/2016'));
+
       expect(day).toBe('Friday');
     });
 
     it('should return Saturday', () => {
       const day = datetimeUtility.getDayName(new Date('07/23/2016'));
+
       expect(day).toBe('Saturday');
     });
   });
@@ -63,6 +70,7 @@ describe('Date time utils', () => {
       const firstDay = new Date('07/01/2016');
       const secondDay = new Date('07/08/2016');
       const difference = datetimeUtility.getDayDifference(firstDay, secondDay);
+
       expect(difference).toBe(7);
     });
 
@@ -70,6 +78,7 @@ describe('Date time utils', () => {
       const firstDay = new Date('07/01/2016');
       const secondDay = new Date('08/01/2016');
       const difference = datetimeUtility.getDayDifference(firstDay, secondDay);
+
       expect(difference).toBe(31);
     });
 
@@ -77,6 +86,7 @@ describe('Date time utils', () => {
       const firstDay = new Date('07/02/2015');
       const secondDay = new Date('07/01/2016');
       const difference = datetimeUtility.getDayDifference(firstDay, secondDay);
+
       expect(difference).toBe(365);
     });
   });
@@ -156,6 +166,7 @@ describe('getTimeframeWindowFrom', () => {
       new Date(2018, 4, 31),
     ];
     const timeframe = datetimeUtility.getTimeframeWindowFrom(startDate, 5);
+
     expect(timeframe.length).toBe(5);
     timeframe.forEach((timeframeItem, index) => {
       expect(timeframeItem.getFullYear()).toBe(mockTimeframe[index].getFullYear());

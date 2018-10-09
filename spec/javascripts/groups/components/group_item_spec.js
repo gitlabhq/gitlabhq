@@ -57,11 +57,13 @@ describe('GroupItemComponent', () => {
 
         group.childrenCount = 5;
         newVm = createComponent(group);
+
         expect(newVm.hasChildren).toBeTruthy();
         newVm.$destroy();
 
         group.childrenCount = 0;
         newVm = createComponent(group);
+
         expect(newVm.hasChildren).toBeFalsy();
         newVm.$destroy();
       });
@@ -74,11 +76,13 @@ describe('GroupItemComponent', () => {
 
         group.avatarUrl = null;
         newVm = createComponent(group);
+
         expect(newVm.hasAvatar).toBeFalsy();
         newVm.$destroy();
 
         group.avatarUrl = '/uploads/group_avatar.png';
         newVm = createComponent(group);
+
         expect(newVm.hasAvatar).toBeTruthy();
         newVm.$destroy();
       });
@@ -91,11 +95,13 @@ describe('GroupItemComponent', () => {
 
         group.type = 'group';
         newVm = createComponent(group);
+
         expect(newVm.isGroup).toBeTruthy();
         newVm.$destroy();
 
         group.type = 'project';
         newVm = createComponent(group);
+
         expect(newVm.isGroup).toBeFalsy();
         newVm.$destroy();
       });
@@ -127,6 +133,7 @@ describe('GroupItemComponent', () => {
         spyOn(eventHub, '$emit');
 
         vm.onClickRowGroup(event);
+
         expect(eventHub.$emit).toHaveBeenCalledWith('toggleChildren', vm.group);
       });
 

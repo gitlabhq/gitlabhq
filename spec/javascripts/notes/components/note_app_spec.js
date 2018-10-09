@@ -223,6 +223,7 @@ describe('note_app', () => {
 
     it('should render markdown docs url', () => {
       const { markdownDocsPath } = mockData.notesDataMock;
+
       expect(vm.$el.querySelector(`a[href="${markdownDocsPath}"]`).textContent.trim()).toEqual(
         'Markdown',
       );
@@ -230,6 +231,7 @@ describe('note_app', () => {
 
     it('should render quick action docs url', () => {
       const { quickActionsDocsPath } = mockData.notesDataMock;
+
       expect(vm.$el.querySelector(`a[href="${quickActionsDocsPath}"]`).textContent.trim()).toEqual(
         'quick actions',
       );

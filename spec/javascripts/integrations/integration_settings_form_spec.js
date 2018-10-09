@@ -68,6 +68,7 @@ describe('IntegrationSettingsForm', () => {
       integrationSettingsForm.canTestService = true;
 
       integrationSettingsForm.toggleSubmitBtnLabel(true);
+
       expect(integrationSettingsForm.$submitBtnLabel.text()).toEqual('Test settings and save changes');
     });
 
@@ -75,14 +76,17 @@ describe('IntegrationSettingsForm', () => {
       integrationSettingsForm.canTestService = false;
 
       integrationSettingsForm.toggleSubmitBtnLabel(false);
+
       expect(integrationSettingsForm.$submitBtnLabel.text()).toEqual('Save changes');
 
       integrationSettingsForm.toggleSubmitBtnLabel(true);
+
       expect(integrationSettingsForm.$submitBtnLabel.text()).toEqual('Save changes');
 
       integrationSettingsForm.canTestService = true;
 
       integrationSettingsForm.toggleSubmitBtnLabel(false);
+
       expect(integrationSettingsForm.$submitBtnLabel.text()).toEqual('Save changes');
     });
   });
@@ -149,6 +153,7 @@ describe('IntegrationSettingsForm', () => {
       integrationSettingsForm.testSettings(formData)
         .then(() => {
           const $flashContainer = $('.flash-container');
+
           expect($flashContainer.find('.flash-text').text().trim()).toEqual('Test failed. some error');
           expect($flashContainer.find('.flash-action')).toBeDefined();
           expect($flashContainer.find('.flash-action').text().trim()).toEqual('Save anyway');
@@ -170,6 +175,7 @@ describe('IntegrationSettingsForm', () => {
       integrationSettingsForm.testSettings(formData)
         .then(() => {
           const $flashContainer = $('.flash-container');
+
           expect($flashContainer.find('.flash-text').text().trim()).toEqual('Validations failed. some error');
           expect($flashContainer.find('.flash-action')).toBeDefined();
           expect($flashContainer.find('.flash-action').text().trim()).toEqual('');
@@ -208,6 +214,7 @@ describe('IntegrationSettingsForm', () => {
       integrationSettingsForm.testSettings(formData)
         .then(() => {
           const $flashAction = $('.flash-container .flash-action');
+
           expect($flashAction).toBeDefined();
 
           $flashAction.get(0).click();

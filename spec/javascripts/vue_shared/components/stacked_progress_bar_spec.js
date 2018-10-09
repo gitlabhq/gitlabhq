@@ -72,6 +72,7 @@ describe('StackedProgressBarComponent', () => {
 
     it('renders empty state when count is unavailable', () => {
       const vmX = createComponent({ totalCount: 0, successCount: 0, failureCount: 0 });
+
       expect(vmX.$el.querySelectorAll('.status-unavailable').length).not.toBe(0);
       vmX.$destroy();
     });

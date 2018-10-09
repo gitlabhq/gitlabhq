@@ -63,6 +63,7 @@ describe('feature highlight', () => {
 
     it('setup show.bs.popover', () => {
       $(selector).trigger('show.bs.popover');
+
       expect(window.addEventListener).toHaveBeenCalledWith('scroll', jasmine.any(Function), { once: true });
     });
 
@@ -73,6 +74,7 @@ describe('feature highlight', () => {
     it('displays popover', () => {
       expect(document.querySelector(selector).getAttribute('aria-describedby')).toBeFalsy();
       $(selector).trigger('mouseenter');
+
       expect(document.querySelector(selector).getAttribute('aria-describedby')).toBeTruthy();
     });
 

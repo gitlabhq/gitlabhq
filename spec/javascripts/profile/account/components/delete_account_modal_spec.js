@@ -53,6 +53,7 @@ describe('DeleteAccountModal component', () => {
           expect(vm.enteredPassword).toBe(input.value);
           expect(submitButton).toHaveAttr('disabled', 'disabled');
           submitButton.click();
+
           expect(form.submit).not.toHaveBeenCalled();
         })
         .then(done)
@@ -70,6 +71,7 @@ describe('DeleteAccountModal component', () => {
           expect(vm.enteredPassword).toBe(input.value);
           expect(submitButton).not.toHaveAttr('disabled', 'disabled');
           submitButton.click();
+
           expect(form.submit).toHaveBeenCalled();
         })
         .then(done)
@@ -103,6 +105,7 @@ describe('DeleteAccountModal component', () => {
           expect(vm.enteredUsername).toBe(input.value);
           expect(submitButton).toHaveAttr('disabled', 'disabled');
           submitButton.click();
+
           expect(form.submit).not.toHaveBeenCalled();
         })
         .then(done)
@@ -120,6 +123,7 @@ describe('DeleteAccountModal component', () => {
           expect(vm.enteredUsername).toBe(input.value);
           expect(submitButton).not.toHaveAttr('disabled', 'disabled');
           submitButton.click();
+
           expect(form.submit).toHaveBeenCalled();
         })
         .then(done)

@@ -61,6 +61,7 @@ describe('Mini Pipeline Graph Dropdown', () => {
       new MiniPipelineGraph({ container: '.js-builds-dropdown-tests' }).bindEvents();
 
       document.querySelector('.js-builds-dropdown-button').click();
+
       expect(ajaxSpy.calls.allArgs()[0][0]).toEqual('foobar');
     });
 

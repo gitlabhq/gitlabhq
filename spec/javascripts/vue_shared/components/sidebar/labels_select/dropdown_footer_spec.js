@@ -36,6 +36,7 @@ describe('DropdownFooterComponent', () => {
   describe('template', () => {
     it('renders link element with `Create new label` when `createLabelTitle` prop is not provided', () => {
       const createLabelEl = vm.$el.querySelector('.dropdown-footer-list .dropdown-toggle-page');
+
       expect(createLabelEl).not.toBeNull();
       expect(createLabelEl.innerText.trim()).toBe('Create new label');
     });
@@ -43,12 +44,14 @@ describe('DropdownFooterComponent', () => {
     it('renders link element with value of `createLabelTitle` prop', () => {
       const vmWithCreateLabelTitle = createComponent(mockConfig.labelsWebUrl, createLabelTitle);
       const createLabelEl = vmWithCreateLabelTitle.$el.querySelector('.dropdown-footer-list .dropdown-toggle-page');
+
       expect(createLabelEl.innerText.trim()).toBe(createLabelTitle);
       vmWithCreateLabelTitle.$destroy();
     });
 
     it('renders link element with `Manage labels` when `manageLabelsTitle` prop is not provided', () => {
       const manageLabelsEl = vm.$el.querySelector('.dropdown-footer-list .dropdown-external-link');
+
       expect(manageLabelsEl).not.toBeNull();
       expect(manageLabelsEl.getAttribute('href')).toBe(vm.labelsWebUrl);
       expect(manageLabelsEl.innerText.trim()).toBe('Manage labels');
@@ -61,6 +64,7 @@ describe('DropdownFooterComponent', () => {
         manageLabelsTitle,
       );
       const manageLabelsEl = vmWithManageLabelsTitle.$el.querySelector('.dropdown-footer-list .dropdown-external-link');
+
       expect(manageLabelsEl.innerText.trim()).toBe(manageLabelsTitle);
       vmWithManageLabelsTitle.$destroy();
     });

@@ -258,6 +258,7 @@ describe('Issuable output', () => {
           expect(
             eventHub.$emit,
           ).toHaveBeenCalledWith('close.form');
+
           expect(
             window.Flash,
           ).toHaveBeenCalledWith('Error updating issue');
@@ -276,6 +277,7 @@ describe('Issuable output', () => {
             expect(
               eventHub.$emit,
             ).toHaveBeenCalledWith('close.form');
+
             expect(
               window.Flash,
             ).toHaveBeenCalledWith('Error updating merge request');
@@ -383,6 +385,7 @@ describe('Issuable output', () => {
         expect(
           eventHub.$emit,
         ).toHaveBeenCalledWith('close.form');
+
         expect(
           window.Flash,
         ).toHaveBeenCalledWith('Error deleting issue');
@@ -422,6 +425,7 @@ describe('Issuable output', () => {
 
     it('should render if showInlineEditButton', () => {
       vm.showInlineEditButton = true;
+
       expect(vm.$el.querySelector('.title-container .note-action-button')).toBeDefined();
     });
   });

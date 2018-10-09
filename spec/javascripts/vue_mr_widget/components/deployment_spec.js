@@ -39,6 +39,7 @@ describe('Deployment component', () => {
     describe('deployTimeago', () => {
       it('return formatted date', () => {
         const readable = getTimeago().format(deploymentMockData.deployed_at);
+
         expect(vm.deployTimeago).toEqual(readable);
       });
     });

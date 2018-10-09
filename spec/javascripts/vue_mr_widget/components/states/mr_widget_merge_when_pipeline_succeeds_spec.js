@@ -42,22 +42,27 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
 
       it('should return false when user id is not the same with who set the MWPS', () => {
         vm.mr.mergeUserId = 2;
+
         expect(vm.canRemoveSourceBranch).toBeFalsy();
 
         vm.mr.currentUserId = 2;
+
         expect(vm.canRemoveSourceBranch).toBeTruthy();
 
         vm.mr.currentUserId = 3;
+
         expect(vm.canRemoveSourceBranch).toBeFalsy();
       });
 
       it('should return false when shouldRemoveSourceBranch set to false', () => {
         vm.mr.shouldRemoveSourceBranch = true;
+
         expect(vm.canRemoveSourceBranch).toBeFalsy();
       });
 
       it('should return false if user is not able to remove the source branch', () => {
         vm.mr.canRemoveSourceBranch = false;
+
         expect(vm.canRemoveSourceBranch).toBeFalsy();
       });
     });
@@ -133,6 +138,7 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
 
       Vue.nextTick(() => {
         const normalizedText = vm.$el.innerText.replace(/\s+/g, ' ');
+
         expect(normalizedText).toContain('The source branch will be removed');
         expect(normalizedText).not.toContain('The source branch will not be removed');
         done();

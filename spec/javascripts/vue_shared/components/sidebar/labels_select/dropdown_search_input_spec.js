@@ -24,6 +24,7 @@ describe('DropdownSearchInputComponent', () => {
   describe('template', () => {
     it('renders input element with type `search`', () => {
       const inputEl = vm.$el.querySelector('input.dropdown-input-field');
+
       expect(inputEl).not.toBeNull();
       expect(inputEl.getAttribute('type')).toBe('search');
     });

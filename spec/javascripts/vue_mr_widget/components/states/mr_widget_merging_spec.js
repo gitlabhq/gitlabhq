@@ -27,6 +27,7 @@ describe('MRWidgetMerging', () => {
     expect(
       vm.$el.querySelector('.mr-info-list').textContent.trim().replace(/\s\s+/g, ' ').replace(/[\r\n]+/g, ' '),
     ).toEqual('The changes will be merged into branch');
+
     expect(
       vm.$el.querySelector('a').getAttribute('href'),
     ).toEqual('/branch-path');

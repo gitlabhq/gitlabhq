@@ -37,7 +37,8 @@ import IssuablesHelper from '~/helpers/issuables_helper';
         $('input[type=checkbox]')
           .attr('checked', true)[0]
           .dispatchEvent(changeEvent);
-        return expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
+
+        expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
       });
 
       it('submits an ajax request on tasklist:changed', done => {

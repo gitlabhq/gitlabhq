@@ -40,6 +40,7 @@ describe('Merge request widget rebase component', () => {
 
     it('it should render rebase button and warning message', () => {
       const text = vm.$el.querySelector('.rebase-state-find-class-convention span').textContent.trim();
+
       expect(text).toContain('Fast-forward merge is not possible.');
       expect(text).toContain('Rebase the source branch onto the target branch or merge target');
       expect(text).toContain('branch into source branch to allow this merge request to be merged.');

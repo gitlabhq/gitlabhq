@@ -119,6 +119,7 @@ describe('popover', () => {
       spyOn($.fn, 'init').and.callFake(selector => (selector === '.popover:hover' ? fakeJquery : $.fn));
       spyOn(togglePopover, 'call');
       mouseleave();
+
       expect(togglePopover.call).toHaveBeenCalledWith(jasmine.any(Object), false);
     });
 
@@ -130,6 +131,7 @@ describe('popover', () => {
       spyOn($.fn, 'init').and.callFake(selector => (selector === '.popover:hover' ? fakeJquery : $.fn));
       spyOn(togglePopover, 'call');
       mouseleave();
+
       expect(togglePopover.call).not.toHaveBeenCalledWith(false);
     });
   });
@@ -140,6 +142,7 @@ describe('popover', () => {
     it('shows popover', () => {
       spyOn(togglePopover, 'call').and.returnValue(false);
       mouseenter.call(context);
+
       expect(togglePopover.call).toHaveBeenCalledWith(jasmine.any(Object), true);
     });
 
@@ -156,6 +159,7 @@ describe('popover', () => {
       spyOn(togglePopover, 'call').and.returnValue(false);
       const spy = spyOn($.fn, 'on').and.callFake(() => {});
       mouseenter.call(context);
+
       expect(spy).not.toHaveBeenCalled();
     });
   });

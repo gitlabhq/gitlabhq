@@ -70,8 +70,10 @@ describe('glDropdown', function describeDropdown() {
 
   it('should open on click', () => {
     initDropDown.call(this, false);
+
     expect(this.dropdownContainerElement).not.toHaveClass('show');
     this.dropdownButtonElement.click();
+
     expect(this.dropdownContainerElement).toHaveClass('show');
   });
 
@@ -141,9 +143,12 @@ describe('glDropdown', function describeDropdown() {
         navigateWithKeys('enter', null, () => {
           expect(this.dropdownContainerElement).not.toHaveClass('show');
           const link = $(`${ITEM_SELECTOR}:eq(${randomIndex}) a`, this.$dropdownMenuElement);
+
           expect(link).toHaveClass('is-active');
           const linkedLocation = link.attr('href');
-          if (linkedLocation && linkedLocation !== '#') expect(visitUrl).toHaveBeenCalledWith(linkedLocation);
+          if (linkedLocation && linkedLocation !== '#') {
+              expect(visitUrl).toHaveBeenCalledWith(linkedLocation);
+          }
         });
       });
     });
@@ -155,6 +160,7 @@ describe('glDropdown', function describeDropdown() {
         which: ARROW_KEYS.ESC,
         keyCode: ARROW_KEYS.ESC
       });
+
       expect(this.dropdownContainerElement).not.toHaveClass('show');
     });
   });
@@ -170,17 +176,20 @@ describe('glDropdown', function describeDropdown() {
 
       expect(dropdownMenu.className.indexOf('is-loading')).not.toBe(-1);
       remoteCallback();
+
       expect(dropdownMenu.className.indexOf('is-loading')).toBe(-1);
     });
 
     it('should not focus search input while remote task is not complete', () => {
       expect($(document.activeElement)).not.toEqual($(SEARCH_INPUT_SELECTOR));
       remoteCallback();
+
       expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
     });
 
     it('should focus search input after remote task is complete', () => {
       remoteCallback();
+
       expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
     });
 
@@ -193,6 +202,7 @@ describe('glDropdown', function describeDropdown() {
       });
       this.dropdownButtonElement.click();
       this.dropdownContainerElement.trigger('transitionend');
+
       expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
     });
   });
@@ -202,6 +212,7 @@ describe('glDropdown', function describeDropdown() {
       initDropDown.call(this, false, true);
       this.dropdownButtonElement.click();
       this.dropdownContainerElement.trigger('transitionend');
+
       expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
     });
   });
@@ -213,11 +224,13 @@ describe('glDropdown', function describeDropdown() {
       .trigger('focus')
       .val('g')
       .trigger('input');
+
     expect($searchInput.val()).toEqual('g');
     this.dropdownButtonElement.trigger('hidden.bs.dropdown');
     $searchInput
       .trigger('blur')
       .trigger('focus');
+
     expect($searchInput.val()).toEqual('g');
   });
 
@@ -240,6 +253,7 @@ describe('glDropdown', function describeDropdown() {
         const html = dropdown.renderItem(dummyData, null, null);
 
         const link = html.querySelector('a');
+
         expect(link).toHaveClass('is-active');
       });
 
@@ -251,6 +265,7 @@ describe('glDropdown', function describeDropdown() {
         const html = dropdown.renderItem(dummyData, null, null);
 
         const link = html.querySelector('a');
+
         expect(link).not.toHaveClass('is-active');
       });
     });
@@ -271,10 +286,12 @@ describe('glDropdown', function describeDropdown() {
     // select item the first time
     this.dropdownButtonElement.click();
     $item.click();
+
     expect($item).toHaveClass('is-active');
     // select item the second time
     this.dropdownButtonElement.click();
     $item.click();
+
     expect($item).toHaveClass('is-active');
 
     expect($('.dropdown-toggle-text')).toHaveText(this.projectsData[0].id.toString());

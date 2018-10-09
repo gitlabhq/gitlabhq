@@ -63,6 +63,7 @@ describe('File Icon component', () => {
     });
 
     const { classList } = vm.$el.querySelector('i');
+
     expect(classList.contains('fa')).toEqual(true);
     expect(classList.contains('fa-spin')).toEqual(true);
     expect(classList.contains('fa-spinner')).toEqual(true);
@@ -79,6 +80,7 @@ describe('File Icon component', () => {
     const { classList } = vm.$el.firstChild;
     const containsSizeClass = classList.contains('s120');
     const containsCustomClass = classList.contains('extraclasses');
+
     expect(containsSizeClass).toBe(true);
     expect(containsCustomClass).toBe(true);
   });

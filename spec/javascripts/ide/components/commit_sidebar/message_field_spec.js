@@ -76,6 +76,7 @@ describe('IDE commit message field', () => {
             expect(vm.$el.querySelector('.highlights span').textContent).toContain(
               'text less than 50 chars',
             );
+
             expect(vm.$el.querySelector('mark').style.display).toBe('none');
           })
           .then(done)
@@ -92,6 +93,7 @@ describe('IDE commit message field', () => {
             expect(vm.$el.querySelector('.highlights span').textContent).toContain(
               'text less than 50 chars that should not highlighte',
             );
+
             expect(vm.$el.querySelector('mark').style.display).not.toBe('none');
             expect(vm.$el.querySelector('mark').textContent).toBe(
               'd. text more than 50 should be highlighted',

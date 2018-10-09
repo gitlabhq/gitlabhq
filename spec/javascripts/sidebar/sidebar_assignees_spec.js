@@ -39,6 +39,7 @@ describe('sidebar assignees', () => {
 
   it('calls the mediator when saves the assignees', () => {
     vm.saveAssignees();
+
     expect(mediator.saveAssignees).toHaveBeenCalled();
   });
 
@@ -51,6 +52,7 @@ describe('sidebar assignees', () => {
 
   it('hides assignees until fetched', (done) => {
     const currentAssignee = sidebarAssigneesEl.querySelector('.value');
+
     expect(currentAssignee).toBe(null);
 
     vm.store.isFetching.assignees = false;

@@ -24,6 +24,7 @@ describe('datePicker', () => {
     vm.$on('hidePicker', hidePicker);
 
     vm.$el.querySelector('.dropdown-menu-toggle').click();
+
     expect(hidePicker).toHaveBeenCalled();
   });
 });

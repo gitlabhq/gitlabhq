@@ -14,6 +14,7 @@ describe('feature highlight helper', () => {
   describe('getSelector', () => {
     it('returns js-feature-highlight selector', () => {
       const highlightId = 'highlightId';
+
       expect(getSelector(highlightId)).toEqual(`.js-feature-highlight[data-highlight=${highlightId}]`);
     });
   });

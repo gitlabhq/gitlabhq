@@ -56,6 +56,7 @@ describe('navigation tabs component', () => {
   it('should trigger onTabClick', () => {
     spyOn(vm, '$emit');
     vm.$el.querySelector('.js-pipelines-tab-pending').click();
+
     expect(vm.$emit).toHaveBeenCalledWith('onChangeTab', 'pending');
   });
 });

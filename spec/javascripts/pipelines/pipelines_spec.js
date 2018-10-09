@@ -371,18 +371,23 @@ describe('Pipelines', () => {
           expect(
             vm.$el.querySelector('.js-pipelines-tab-pending').textContent.trim(),
           ).toContain('Pending');
+
           expect(
             vm.$el.querySelector('.js-pipelines-tab-all').textContent.trim(),
           ).toContain('All');
+
           expect(
             vm.$el.querySelector('.js-pipelines-tab-running').textContent.trim(),
           ).toContain('Running');
+
           expect(
             vm.$el.querySelector('.js-pipelines-tab-finished').textContent.trim(),
           ).toContain('Finished');
+
           expect(
             vm.$el.querySelector('.js-pipelines-tab-branches').textContent.trim(),
           ).toContain('Branches');
+
           expect(
             vm.$el.querySelector('.js-pipelines-tab-tags').textContent.trim(),
           ).toContain('Tags');
@@ -415,6 +420,7 @@ describe('Pipelines', () => {
 
             vm.$nextTick(() => {
               vm.$el.querySelector('.js-next-button a').click();
+
               expect(vm.updateContent).toHaveBeenCalledWith({ scope: 'all', page: '2' });
 
               done();

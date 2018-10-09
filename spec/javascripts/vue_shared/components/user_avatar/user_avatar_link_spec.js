@@ -59,6 +59,7 @@ describe('User Avatar Link Component', function () {
 
     it('should only render image tag in link', function () {
       const childElements = this.userAvatarLink.$el.childNodes;
+
       expect(childElements[0].tagName).toBe('IMG');
 
       // Vue will render the hidden component as <!---->

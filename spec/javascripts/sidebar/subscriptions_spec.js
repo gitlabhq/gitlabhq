@@ -47,6 +47,7 @@ describe('Subscriptions', function () {
     spyOn(vm, '$emit');
 
     vm.toggleSubscription();
+
     expect(eventHub.$emit).toHaveBeenCalledWith('toggleSubscription', jasmine.any(Object));
     expect(vm.$emit).toHaveBeenCalledWith('toggleSubscription', jasmine.any(Object));
   });
@@ -56,6 +57,7 @@ describe('Subscriptions', function () {
     spyOn(vm, '$emit');
 
     vm.onClickCollapsedIcon();
+
     expect(vm.$emit).toHaveBeenCalledWith('toggleSidebar');
   });
 });
