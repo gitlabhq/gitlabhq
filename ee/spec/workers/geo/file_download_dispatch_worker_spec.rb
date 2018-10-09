@@ -308,18 +308,8 @@ describe Geo::FileDownloadDispatchWorker, :geo do
     context 'backoff time' do
       let(:cache_key) { "#{described_class.name.underscore}:skip" }
 
-      it 'sets the back off time when there are no pending items' do
-        expect(Rails.cache).to receive(:write).with(cache_key, true, expires_in: 300.seconds).once
-
-        subject.perform
-      end
-
-      it 'does not perform Geo::FileDownloadWorker when the backoff time is set' do
-        create(:lfs_object, :with_file)
-
-        expect(Rails.cache).to receive(:read).with(cache_key).and_return(true)
-
-        expect(Geo::FileDownloadWorker).not_to receive(:perform_async)
+      it 'does not set the back off time when there are no pending items' do
+        expect(Rails.cache).not_to receive(:write).with(cache_key, true, expires_in: 300.seconds)
 
         subject.perform
       end
