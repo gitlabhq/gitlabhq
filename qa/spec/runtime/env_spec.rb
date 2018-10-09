@@ -1,37 +1,45 @@
 describe QA::Runtime::Env do
   include Support::StubENV
 
-  describe '.chrome_headless?' do
+  shared_examples 'boolean method' do |method, env_key, default|
     context 'when there is an env variable set' do
       it 'returns false when falsey values specified' do
-        stub_env('CHROME_HEADLESS', 'false')
-        expect(described_class.chrome_headless?).to be_falsey
+        stub_env(env_key, 'false')
+        expect(described_class.public_send(method)).to be_falsey
 
-        stub_env('CHROME_HEADLESS', 'no')
-        expect(described_class.chrome_headless?).to be_falsey
+        stub_env(env_key, 'no')
+        expect(described_class.public_send(method)).to be_falsey
 
-        stub_env('CHROME_HEADLESS', '0')
-        expect(described_class.chrome_headless?).to be_falsey
+        stub_env(env_key, '0')
+        expect(described_class.public_send(method)).to be_falsey
       end
 
       it 'returns true when anything else specified' do
-        stub_env('CHROME_HEADLESS', 'true')
-        expect(described_class.chrome_headless?).to be_truthy
+        stub_env(env_key, 'true')
+        expect(described_class.public_send(method)).to be_truthy
 
-        stub_env('CHROME_HEADLESS', '1')
-        expect(described_class.chrome_headless?).to be_truthy
+        stub_env(env_key, '1')
+        expect(described_class.public_send(method)).to be_truthy
 
-        stub_env('CHROME_HEADLESS', 'anything')
-        expect(described_class.chrome_headless?).to be_truthy
+        stub_env(env_key, 'anything')
+        expect(described_class.public_send(method)).to be_truthy
       end
     end
 
     context 'when there is no env variable set' do
-      it 'returns the default, true' do
-        stub_env('CHROME_HEADLESS', nil)
-        expect(described_class.chrome_headless?).to be_truthy
+      it "returns the default, #{default}" do
+        stub_env(env_key, nil)
+        expect(described_class.public_send(method)).to be(default)
       end
     end
+  end
+
+  describe '.signup_disabled?' do
+    it_behaves_like 'boolean method', :signup_disabled?, 'SIGNUP_DISABLED', false
+  end
+
+  describe '.chrome_headless?' do
+    it_behaves_like 'boolean method', :chrome_headless?, 'CHROME_HEADLESS', true
   end
 
   describe '.running_in_ci?' do

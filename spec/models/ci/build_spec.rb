@@ -262,7 +262,7 @@ describe Ci::Build do
     it 'schedules BuildScheduleWorker at the right time' do
       Timecop.freeze do
         expect(Ci::BuildScheduleWorker)
-          .to receive(:perform_at).with(1.minute.since, build.id)
+          .to receive(:perform_at).with(be_like_time(1.minute.since), build.id)
 
         subject
       end

@@ -23,7 +23,7 @@ This page gathers all the resources for the topic **Authentication** within GitL
   - [How to Configure LDAP with GitLab CE](../../administration/auth/how_to_configure_ldap_gitlab_ce/index.md)
   - [How to Configure LDAP with GitLab EE](../../administration/auth/how_to_configure_ldap_gitlab_ee/index.md)
   - [Feature Highlight: LDAP Integration](https://about.gitlab.com/2014/07/10/feature-highlight-ldap-sync/)
-  - [Debugging LDAP](https://about.gitlab.com/handbook/support/workflows/ldap/debugging_ldap.html)
+  - [Debugging LDAP](https://about.gitlab.com/handbook/support/workflows/support-engineering/ldap/debugging_ldap.html)
 - **Integrations:**
   - [OmniAuth](../../integration/omniauth.md)
   - [Authentiq OmniAuth Provider](../../administration/auth/authentiq.md#authentiq-omniauth-provider)
@@ -42,7 +42,7 @@ This page gathers all the resources for the topic **Authentication** within GitL
 
 ## Third-party resources
 
-- [Kanboard Plugin GitLab Authentication](https://kanboard.net/plugin/gitlab-auth)
+- [Kanboard Plugin GitLab Authentication](https://github.com/kanboard/plugin-gitlab-auth)
 - [Jenkins GitLab OAuth Plugin](https://wiki.jenkins-ci.org/display/JENKINS/GitLab+OAuth+Plugin)
 - [Set up Gitlab CE with Active Directory authentication](https://www.caseylabs.com/setup-gitlab-ce-with-active-directory-authentication/)
 - [How to customize GitLab to support OpenID authentication](http://eric.van-der-vlist.com/blog/2013/11/23/how-to-customize-gitlab-to-support-openid-authentication/)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   # Class for rendering multiple objects (e.g. Note instances) in a single pass,
   # using +render_field+ to benefit from caching in the database. Rendering and

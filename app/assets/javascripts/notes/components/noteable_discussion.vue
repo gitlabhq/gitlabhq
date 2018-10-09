@@ -395,7 +395,7 @@ Please check your network connection and try again.`;
                         role="group">
                         <button
                           type="button"
-                          class="btn btn-default mr-2"
+                          class="btn btn-default"
                           @click="resolveHandler()"
                         >
                           <i

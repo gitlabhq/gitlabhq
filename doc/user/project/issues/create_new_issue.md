@@ -82,11 +82,11 @@ create issues for the same project.
 ## New issue via URL with prefilled fields
 
 You can link directly to the new issue page for a given project, with prefilled
-field values using query string parameters in a URL. This is useful for embedding 
-a URL in an external HTML page, and also certain scenarios where you want the user to 
+field values using query string parameters in a URL. This is useful for embedding
+a URL in an external HTML page, and also certain scenarios where you want the user to
 create an issue with certain fields prefilled.
 
-The title, description, and description template fields can be prefilled using 
+The title, description, and description template fields can be prefilled using
 this method. The description and description template fields cannot be pre-entered
 in the same URL (since a description template just populates the description field).
 

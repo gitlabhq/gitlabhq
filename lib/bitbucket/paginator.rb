@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Bitbucket
   class Paginator
     PAGE_LENGTH = 50 # The minimum length is 10 and the maximum is 100.

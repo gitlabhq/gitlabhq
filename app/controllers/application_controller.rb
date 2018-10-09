@@ -67,7 +67,6 @@ class ApplicationController < ActionController::Base
   end
 
   rescue_from Gitlab::Git::Storage::Inaccessible, GRPC::Unavailable, Gitlab::Git::CommandError do |exception|
-    Raven.capture_exception(exception) if sentry_enabled?
     log_exception(exception)
 
     headers['Retry-After'] = exception.retry_after if exception.respond_to?(:retry_after)

@@ -1,0 +1,5 @@
+---
+title: Redirect to the pipeline builds page when a build is canceled
+merge_request:
+author: Eva Kadlecova
+type: fixed

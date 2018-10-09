@@ -47,12 +47,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         @noteable = @merge_request
         @commits_count = @merge_request.commits_count
 
-        # TODO cleanup- Fatih Simon Create an issue to remove these after the refactoring
-        # we no longer render notes here. I see it will require a small frontend refactoring,
-        # since we gather some data from this collection.
-        @discussions = @merge_request.discussions
-        @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes), @noteable)
-
         labels
 
         set_pipeline_variables

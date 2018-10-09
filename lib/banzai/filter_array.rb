@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   class FilterArray < Array
     # Insert a value immediately after another value

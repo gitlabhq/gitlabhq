@@ -102,10 +102,13 @@ rspec:
       - $RSPEC
 ```
 
-In the example above, the `rspec` job is going to inherit from the `.tests`
-template job. GitLab will perform a reverse deep merge, which means that it will
-merge the `rspec` contents into `.tests` recursively, and this is going to result in
-the following `rspec` job:
+In the example above, the `rspec` job inherits from the `.tests` template job. 
+GitLab will perform a reverse deep merge based on the keys. GitLab will:
+
+- Merge the `rspec` contents into `.tests` recursively.
+- Not merge the values of the keys.
+
+This results in the following `rspec` job:
 
 ```yaml
 rspec:
@@ -117,6 +120,11 @@ rspec:
     variables:
       - $RSPEC
 ```
+
+NOTE: **Note:**
+Note that `script: rake test` has been overwritten by `script: rake rspec`.
+
+If you do want to include the `rake test`, have a look at [before_script-and-after_script](#before_script-and-after_script).
 
 `.tests` in this example is a [hidden key](#hidden-keys-jobs), but it's
 possible to inherit from regular jobs as well.

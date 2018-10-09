@@ -17,7 +17,7 @@ describe Gitlab::Ci::Status::Build::Scheduled do
       let(:build) { create(:ci_build, scheduled_at: 1.minute.since, project: project) }
 
       it 'shows execute_in of the scheduled job' do
-        Timecop.freeze do
+        Timecop.freeze(Time.now.change(usec: 0)) do
           expect(subject.status_tooltip).to include('00:01:00')
         end
       end
