@@ -65,6 +65,16 @@ module QA
               expect(pipeline).to have_build('test', status: :success, wait: 600)
               expect(pipeline).to have_build('production', status: :success, wait: 1200)
             end
+
+            Page::Menu::Side.act { click_operations_environments }
+            Page::Project::Operations::Environments::Index.perform do |index|
+              index.go_to_environment('production')
+            end
+            Page::Project::Operations::Environments::Show.perform do |show|
+              show.view_deployment do
+                expect(page).to have_content('Hello World!')
+              end
+            end
           end
         end
       end
