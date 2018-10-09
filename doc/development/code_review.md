@@ -4,31 +4,25 @@
 
 There are a few rules to get your merge request accepted:
 
-1. Your merge request should only be **merged by a [maintainer][team]**.
-   1. If your merge request includes only backend changes [^1], it must be
+1. Your merge request can only be **merged by a [maintainer][team]**.
+   1. If your merge request includes backend changes [^1], it must be
       **approved by a [backend maintainer][projects]**.
-   1. If your merge request includes only frontend changes [^1], it must be
+   1. If your merge request includes frontend changes [^1], it must be
       **approved by a [frontend maintainer][projects]**.
-   1. If your merge request includes UX changes [^1], it must
-      be **approved by a [UX team member][team]**.
+   1. If your merge request includes UX changes [^1], it must be
+      **approved by a [UX team member][team]**.
    1. If your merge request includes adding a new JavaScript library [^1], it must be
       **approved by a [frontend lead][team]**.
    1. If your merge request includes adding a new UI/UX paradigm [^1], it must be
       **approved by a [UX lead][team]**.
-   1. If your merge request includes frontend and backend changes [^1], it must
-      be **approved by a [frontend and a backend maintainer][projects]**.
-   1. If your merge request includes UX and frontend changes [^1], it must
-      be **approved by a [UX team member and a frontend maintainer][team]**.
-   1. If your merge request includes UX, frontend and backend changes [^1], it must
-      be **approved by a [UX team member, a frontend and a backend maintainer][team]**.
-   1. If your merge request includes a new dependency or a filesystem change, it must
-      be *approved by a [Distribution team member][team]*. See how to work with the [Distribution team for more details.](https://about.gitlab.com/handbook/engineering/dev-backend/distribution/)
-1. To lower the amount of merge requests maintainers need to review, you can
+   1. If your merge request includes a new dependency or a filesystem change, it must be
+      **approved by a [Distribution team member][team]**. See how to work with the [Distribution team](https://about.gitlab.com/handbook/engineering/dev-backend/distribution/) for more details.
+   1. If more than one of the items above apply to your merge request, it must be
+      **approved by all listed people**. The last of the people to approve can then merge it.
+1. To lower the amount of merge requests maintainers need to review, you are encouraged
    ask or assign any [reviewers][projects] for a first review.
    1. If you need some guidance (e.g. it's your first merge request), feel free
       to ask one of the [Merge request coaches][team].
-   1. It is recommended that you assign a maintainer that is from a different team than your own.
-      This ensures that all code across GitLab is consistent and can be easily understood by all contributors.
       
 1. Keep in mind that maintainers are also going to perform a final code review.
    The ideal scenario is that the reviewer has already addressed any concerns
@@ -36,6 +30,49 @@ There are a few rules to get your merge request accepted:
    merge, but be prepared for further review comments.
 
 For more guidance, see [CONTRIBUTING.md](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md).
+
+### The role of the maintainer
+
+Maintainers are responsible for the overall health, quality, and consistency of
+the GitLab codebase, across domains and product areas. Consequently, their reviews
+will focus primarily on things like overall architecture, code organization, 
+separation of concerns, tests, DRYness, consistency, readability, etc.
+
+Their job is explicitly _not_ to review the solution itself. By the time a merge 
+request makes it to a maintainer, they should be able to assume that it actually 
+solves the problem it was meant to solve, that it does so in the most appropriate
+way, that it satisfies all requirements, and that there are no remaining bugs, 
+logical problems, or uncovered edge cases. 
+
+The responsibility to find the best solution and implement it lies with the
+merge request author, and they should be confident of the chosen solution, 
+implementation, and everything else that makes up the merge request, before 
+they ask a maintainer for final review, approval, and merge.
+
+To reach this level of confidence, an author is expected to involve other people
+in the investigation and implementation processes as appropriate. They may want
+to reach out to domain experts to discuss different solutions or get an 
+implementation reviewed, to product managers and UX designers to clear up 
+confusion or verify that the end result matches what they had in mind, or to 
+database specialists to get input on the data model or specific queries.
+
+They are also strongly encouraged to get their code reviewed by any other developer
+as soon as there is any code to review, to get a second opinion on the chosen 
+solution and implementation and an extra pair of eyes looking for bugs,
+logic problems, or uncovered edge cases, and to ease the job of the maintainer.
+
+Of course, a maintainer will also make note of any issues with the solution or
+implementation they may find, but in general will assume that the author is the
+expert on the issue at hand, and that they made their choices with good reason.
+
+Since a maintainer's job does not depend on their domain-specific knowledge beyond
+knowledge of the overall GitLab codebase, they can review merge requests from any 
+team and in any product area.
+
+Authors are recommended to assign merge requests to maintainers from other teams
+than their own, to ensure that all code across GitLab is consistent and can be
+easily understood by all contributors, from both inside and outside the company,
+without requiring team-specific expertise.
 
 ## Best practices
 
