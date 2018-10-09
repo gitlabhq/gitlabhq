@@ -283,10 +283,6 @@
     vertical-align: top;
   }
 
-  .notification-dropdown .dropdown-menu {
-    @extend .dropdown-menu-right;
-  }
-
   .download-button {
     @include media-breakpoint-down(md) {
       margin-left: 0;
