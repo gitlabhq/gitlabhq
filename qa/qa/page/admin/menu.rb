@@ -4,11 +4,8 @@ module QA
   module Page
     module Admin
       class Menu < Page::Base
-<<<<<<< HEAD:qa/qa/page/admin/menu.rb
         prepend EE::Page::Admin::Menu
 
-=======
->>>>>>> upstream/master:qa/qa/page/admin/menu.rb
         view 'app/views/layouts/nav/sidebar/_admin.html.haml' do
           element :admin_sidebar
           element :admin_sidebar_submenu
