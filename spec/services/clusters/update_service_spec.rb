@@ -38,7 +38,7 @@ describe Clusters::UpdateService do
 
         before do
           allow(ClusterPlatformConfigureWorker).to receive(:perform_async)
-          stub_kubeclient_get_namespace('custom-namespace')
+          stub_kubeclient_get_namespace('https://kubernetes.example.com', namespace: 'my-namespace')
         end
 
         it 'updates namespace' do

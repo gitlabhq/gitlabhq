@@ -396,7 +396,7 @@ describe Projects::ClustersController do
 =======
     before do
       allow(ClusterPlatformConfigureWorker).to receive(:perform_async)
-      stub_kubeclient_get_namespace('my-namespace')
+      stub_kubeclient_get_namespace('https://kubernetes.example.com', namespace: 'my-namespace')
     end
 
     context 'when cluster is provided by GCP' do

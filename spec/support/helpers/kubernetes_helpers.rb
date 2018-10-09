@@ -97,7 +97,8 @@ module KubernetesHelpers
         { "name" => "deployments", "namespaced" => true, "kind" => "Deployment" },
         { "name" => "secrets", "namespaced" => true, "kind" => "Secret" },
         { "name" => "serviceaccounts", "namespaced" => true, "kind" => "ServiceAccount" },
-        { "name" => "services", "namespaced" => true, "kind" => "Service" }
+        { "name" => "services", "namespaced" => true, "kind" => "Service" },
+        { "name" => "namespaces", "namespaced" => true, "kind" => "Namespace" }
       ]
     }
   end

@@ -90,6 +90,29 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
         it { expect(kubernetes.save).to be_falsey }
       end
     end
+
+    describe '#prevent_reserved_namespaces' do
+
+      subject { build(:cluster_platform_kubernetes, namespace: namespace) }
+
+      context 'when no namespace is manually assigned' do
+        let(:namespace) { nil }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'when no reserved namespace is assigned' do
+        let(:namespace) { 'my-namespace' }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'when reserved namespace is assigned' do
+        let(:namespace) { 'gitlab-managed-apps' }
+
+        it { is_expected.to_not be_valid }
+      end
+    end
   end
 
   describe '#kubeclient' do
@@ -123,16 +146,6 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     let(:project) { cluster.project }
     let(:kubernetes) { create(:cluster_platform_kubernetes, :configured, namespace: namespace) }
 
-    context 'namespace is persisted' do
-      let(:namespace) { 'namespace-123' }
-
-      before do
-        project.cluster_project.update!(namespace: 'hello-namespace')
-      end
-
-      it { is_expected.to eq('hello-namespace') }
-    end
-
     context 'when namespace is present' do
       let(:namespace) { 'namespace-123' }
 
@@ -142,7 +155,19 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     context 'when namespace is not present' do
       let(:namespace) { nil }
 
-      it { is_expected.to eq("#{project.path}-#{project.id}") }
+      context 'when kubernetes namespace is present' do
+        let(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, cluster_project: kubernetes.cluster_project) }
+
+        before do
+          kubernetes_namespace
+        end
+
+        it { is_expected.to eq(kubernetes_namespace.namespace) }
+      end
+
+      context 'when kubernetes namespace is not present' do
+        it { is_expected.to eq("#{project.path}-#{project.id}") }
+      end
     end
   end
 

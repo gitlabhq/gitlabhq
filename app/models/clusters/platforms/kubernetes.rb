@@ -11,6 +11,8 @@ module Clusters
       self.table_name = 'cluster_platforms_kubernetes'
       self.reactive_cache_key = ->(kubernetes) { [kubernetes.class.model_name.singular, kubernetes.id] }
 
+      RESERVED_NAMESPACES = %w(gitlab-managed-apps).freeze
+
       belongs_to :cluster, inverse_of: :platform_kubernetes, class_name: 'Clusters::Cluster'
 
       attr_encrypted :password,
@@ -38,6 +40,7 @@ module Clusters
       validates :token, presence: true
 
       validate :prevent_modification, on: :update
+      validate :prevent_reserved_namespaces
 
       after_save :clear_reactive_cache!
       after_update :update_kubernetes_namespace
@@ -59,12 +62,6 @@ module Clusters
       }
 
       def actual_namespace
-        cluster_project&.namespace || fallback_actual_namespace
-      end
-
-      # DEPRECATED
-      # To remove after migration of data to cluster_projects
-      def fallback_actual_namespace
         if namespace.present?
           namespace
         else
@@ -125,8 +122,12 @@ module Clusters
           ca_pem: ca_pem)
       end
 
-      # DEPRECATED
       def default_namespace
+        cluster_project&.kubernetes_namespace&.namespace.presence || fallback_default_namespace
+      end
+
+      # DEPRECATED
+      def fallback_default_namespace
         return unless project
 
         slug = "#{project.path}-#{project.id}".downcase
@@ -197,6 +198,14 @@ module Clusters
         end
 
         true
+      end
+
+      def prevent_reserved_namespaces
+        return if namespace.blank?
+
+        if RESERVED_NAMESPACES.include?(namespace)
+          errors.add(:namespace, 'Cannot used a GitLab reserved namespace')
+        end 
       end
 
       def update_kubernetes_namespace

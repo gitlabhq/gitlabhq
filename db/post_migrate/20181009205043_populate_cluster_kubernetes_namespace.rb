@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-class PopulateClusterProjectNamespace < ActiveRecord::Migration
+class PopulateClusterKubernetesNamespace < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
-  # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
   disable_ddl_transaction!
@@ -13,10 +12,16 @@ class PopulateClusterProjectNamespace < ActiveRecord::Migration
     self.table_name = 'cluster_projects'
   end
 
+  class ClusterKubernetesNamespace < ActiveRecord::Base
+    self.table_name = 'clusters_kubernetes_namespaces'
+  end
+
   def up
-    ClusterProject.where(namespace: nil).tap do |relation|
+    cluster_project_with_no_namespace = ClusterProject.where.not(id: ClusterKubernetesNamespace.select(:id))
+
+    cluster_project_with_no_namespace.tap do |relation|
       queue_background_migration_jobs_by_range_at_intervals(relation,
-                                                            'PopulateClusterProjectNamespace',
+                                                            'PopulateClusterKubernetesNamespace',
                                                             5.minutes,
                                                             batch_size: 500)
     end

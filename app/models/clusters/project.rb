@@ -6,20 +6,14 @@ module Clusters
 
     belongs_to :cluster, class_name: 'Clusters::Cluster'
     belongs_to :project, class_name: '::Project'
+    
+    has_many :kubernetes_namespaces, class_name: 'Clusters::KubernetesNamespace', foreign_key: :cluster_project_id
 
-    attr_encrypted :encrypted_service_account_token,
-        mode: :per_attribute_iv,
-        key: Settings.attr_encrypted_db_key_base_truncated,
-        algorithm: 'aes-256-cbc'
+    def last_kubernetes_namespace
+      return @last_kubernetes_namespace if defined?(@last_kubernetes_namespace)
 
-    def default_namespace
-      slug.gsub(/[^-a-z0-9]/, '-').gsub(/^-+/, '')
+      @first_kubernetes_namespace = kubernetes_namespaces.last
     end
-
-    private
-
-    def slug
-      "#{project.path}-#{project.id}".downcase
-    end
+    alias_method :kubernetes_namespace, :last_kubernetes_namespace
   end
 end
