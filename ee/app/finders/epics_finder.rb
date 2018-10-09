@@ -38,7 +38,11 @@ class EpicsFinder < IssuableFinder
   private
 
   def count_key(value)
-    Epic.states.invert[Array(value).last].to_sym
+    if Gitlab.rails5?
+      Array(value).last.to_sym
+    else
+      Epic.states.invert[Array(value).last].to_sym
+    end
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
