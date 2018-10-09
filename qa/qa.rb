@@ -201,6 +201,11 @@ module QA
       end
 
       module Operations
+        module Environments
+          autoload :Index, 'qa/page/project/operations/environments/index'
+          autoload :Show, 'qa/page/project/operations/environments/show'
+        end
+
         module Kubernetes
           autoload :Index, 'qa/page/project/operations/kubernetes/index'
           autoload :Add, 'qa/page/project/operations/kubernetes/add'
