@@ -9,7 +9,7 @@ module Ci
     NotSupportedAdapterError = Class.new(StandardError)
 
     TEST_REPORT_FILE_TYPES = %w[junit].freeze
-    NON_ERASABLE_FILE_TYPES = %w[trace].freeze
+    NON_ERASABLE_FILE_TYPES = %w[trace gitlab_ci_yaml].freeze
     DEFAULT_FILE_NAMES = {
       archive: nil,
       metadata: nil,
@@ -19,7 +19,8 @@ module Ci
       sast: 'gl-sast-report.json',
       dependency_scanning: 'gl-dependency-scanning-report.json',
       container_scanning: 'gl-container-scanning-report.json',
-      dast: 'gl-dast-report.json'
+      dast: 'gl-dast-report.json',
+      gitlab_ci_yaml: 'gitlab-ci.yml'
     }.freeze
 
     TYPE_AND_FORMAT_PAIRS = {
@@ -31,7 +32,8 @@ module Ci
       sast: :gzip,
       dependency_scanning: :gzip,
       container_scanning: :gzip,
-      dast: :gzip
+      dast: :gzip,
+      gitlab_ci_yaml: :gzip
     }.freeze
 
     belongs_to :project
@@ -76,7 +78,8 @@ module Ci
       dependency_scanning: 6, ## EE-specific
       container_scanning: 7, ## EE-specific
       dast: 8, ## EE-specific
-      codequality: 9 ## EE-specific
+      codequality: 9, ## EE-specific
+      gitlab_ci_yaml: 10
     }
 
     enum file_format: {

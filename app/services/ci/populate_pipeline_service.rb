@@ -26,7 +26,7 @@ module Ci
 
       sequence.build! do |pipeline, sequence|
         if sequence.complete?
-          complete_block.call
+          complete_block.call if complete_block
           pipeline.process!
         end
       end

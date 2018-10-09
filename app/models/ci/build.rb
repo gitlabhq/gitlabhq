@@ -184,6 +184,18 @@ module Ci
         end
       end
 
+      after_transition any => [:success] do |build|
+        if build.bootstrap? && build.job_artifacts_gitlab_ci_yaml
+          # very hacky way to inject ci_yaml_file!
+          build.job_artifacts_gitlab_ci_yaml.each_blob do |blob|
+            build.pipeline.instance_variable_set(:@ci_yaml_file, blob)
+          end
+          
+          Ci::PopulatePipelineService.new(build.project, build.user).execute(
+            build.pipeline, nil, nil, save_on_errors: true)
+        end
+      end
+
       before_transition any => [:failed] do |build|
         next unless build.project
         next if build.retries_max.zero?
@@ -831,6 +843,10 @@ module Ci
 
     def project_destroyed?
       project.pending_delete?
+    end
+
+    def bootstrap?
+      self.name = 'bootstrap'
     end
   end
 end
