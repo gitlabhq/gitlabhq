@@ -59,13 +59,27 @@ describe PipelineScheduleWorker do
   end
 
   context 'when the schedule is not runnable by the user' do
-    it 'deactivates the schedule' do
+    it 'does not deactivate the schedule' do
       subject
 
-      expect(pipeline_schedule.reload.active).to be_falsy
+      expect(pipeline_schedule.reload.active).to be_truthy
     end
 
-    it 'does not schedule a pipeline' do
+    it 'increments Prometheus counter' do
+      expect(Gitlab::Metrics)
+        .to receive(:counter)
+        .with(:pipeline_schedule_creation_failed_total, "Counter of failed attempts of pipeline schedule creation")
+        .and_call_original
+
+      expect(Rails.logger)
+        .to receive(:error)
+        .with(a_string_matching("Failed to create a scheduled pipeline"))
+        .and_call_original
+
+      subject
+    end
+
+    it 'does not create a pipeline' do
       expect { subject }.not_to change { project.pipelines.count }
     end
   end
