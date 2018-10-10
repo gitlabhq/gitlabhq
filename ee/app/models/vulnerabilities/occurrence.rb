@@ -3,6 +3,7 @@
 module Vulnerabilities
   class Occurrence < ActiveRecord::Base
     include ShaAttribute
+    include ::Gitlab::Utils::StrongMemoize
 
     self.table_name = "vulnerability_occurrences"
 
@@ -29,12 +30,14 @@ module Vulnerabilities
     has_many :occurrence_identifiers, class_name: 'Vulnerabilities::OccurrenceIdentifier'
     has_many :identifiers, through: :occurrence_identifiers, class_name: 'Vulnerabilities::Identifier'
 
-    enum report_type: {
+    REPORT_TYPES = {
       sast: 0,
       dependency_scanning: 1,
       container_scanning: 2,
       dast: 3
-    }
+    }.with_indifferent_access.freeze
+
+    enum report_type: REPORT_TYPES
 
     validates :scanner, presence: true
     validates :project, presence: true
@@ -56,6 +59,45 @@ module Vulnerabilities
     validates :metadata_version, presence: true
     validates :raw_metadata, presence: true
 
+    scope :ordered, -> { order("severity desc", :id) }
+    scope :counted_by_report_and_severity, -> { group(:report_type, :severity).count }
+
+    def feedback(feedback_type:)
+      params = {
+        project_id: project_id,
+        category: report_type,
+        project_fingerprint: project_fingerprint,
+        feedback_type: feedback_type
+      }
+
+      BatchLoader.for(params).batch do |items, loader|
+        project_ids = items.group_by { |i| i[:project_id] }
+        categories = items.group_by { |i| i[:category] }
+        fingerprints = items.group_by { |i| i[:project_fingerprint] }
+
+        VulnerabilityFeedback.where(
+          project_id: project_ids.keys,
+          category: categories.keys,
+          project_fingerprint: fingerprints.keys).find_each do |feedback|
+          loaded_params = {
+            project_id: feedback.project_id,
+            category: feedback.category,
+            project_fingerprint: feedback.project_fingerprint,
+            feedback_type: feedback.feedback_type
+          }
+          loader.call(loaded_params, feedback)
+        end
+      end
+    end
+
+    def dismissal_feedback
+      feedback(feedback_type: 'dismissal')
+    end
+
+    def issue_feedback
+      feedback(feedback_type: 'issue')
+    end
+
     # Override getter and setter for :severity as we can't use enum (it conflicts with :confidence)
     # To be replaced with enum using _prefix when migrating to rails 5
     def severity
@@ -74,6 +116,32 @@ module Vulnerabilities
 
     def confidence=(confidence)
       write_attribute(:confidence, LEVELS[confidence])
+    end
+
+    def metadata
+      strong_memoize(:metadata) do
+        begin
+          JSON.parse(raw_metadata)
+        rescue JSON::ParserError
+          {}
+        end
+      end
+    end
+
+    def description
+      metadata.dig('description')
+    end
+
+    def solution
+      metadata.dig('solution')
+    end
+
+    def location
+      metadata.fetch('location', {})
+    end
+
+    def links
+      metadata.fetch('links', [])
     end
   end
 end

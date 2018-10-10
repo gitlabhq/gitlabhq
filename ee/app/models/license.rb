@@ -72,6 +72,7 @@ class License < ActiveRecord::Base
   ].freeze
 
   EEU_FEATURES = EEP_FEATURES + %i[
+    security_dashboard
     dependency_scanning
     license_management
     sast

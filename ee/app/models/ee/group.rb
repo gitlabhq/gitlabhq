@@ -68,6 +68,10 @@ module EE
       end
     end
 
+    def all_vulnerabilities
+      Vulnerabilities::Occurrence.where(project: all_projects)
+    end
+
     def human_ldap_access
       ::Gitlab::Access.options_with_owner.key(ldap_access)
     end

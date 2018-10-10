@@ -25,6 +25,10 @@ module EE
           .allow_group_owners_to_manage_ldap
       end
 
+      condition(:security_dashboard_feature_disabled) do
+        !@subject.feature_available?(:security_dashboard)
+      end
+
       rule { reporter }.policy do
         enable :admin_list
         enable :admin_board
@@ -65,6 +69,14 @@ module EE
 
       rule { project_creation_level_enabled & developer & developer_maintainer_access }.enable :create_projects
       rule { project_creation_level_enabled & create_projects_disabled }.prevent :create_projects
+
+      rule { developer }.policy do
+        enable :read_group_security_dashboard
+      end
+
+      rule { security_dashboard_feature_disabled }.policy do
+        prevent :read_group_security_dashboard
+      end
     end
   end
 end

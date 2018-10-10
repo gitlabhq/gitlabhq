@@ -1526,29 +1526,6 @@ describe Project do
     end
   end
 
-  describe '#security_reports_feature_available?' do
-    security_features = %i[sast dependency_scanning sast_container dast]
-
-    let(:project) { create(:project) }
-
-    security_features.each do |feature|
-      it "returns true when at least #{feature} is enabled" do
-        allow(project).to receive(:feature_available?) { false }
-        allow(project).to receive(:feature_available?).with(feature) { true }
-
-        expect(project.security_reports_feature_available?).to eq(true)
-      end
-    end
-
-    it "returns false when all security features are disabled" do
-      security_features.each do |feature|
-        allow(project).to receive(:feature_available?).with(feature) { false }
-      end
-
-      expect(project.security_reports_feature_available?).to eq(false)
-    end
-  end
-
   describe '#latest_pipeline_with_security_reports' do
     let(:project) { create(:project) }
     let(:pipeline_1) { create(:ci_pipeline_without_jobs, project: project) }

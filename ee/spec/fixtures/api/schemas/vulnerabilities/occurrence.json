@@ -1,0 +1,79 @@
+{
+  "type" : "object",
+  "required" : [
+    "name",
+    "project_fingerprint",
+    "confidence",
+    "severity",
+    "report_type",
+    "scanner",
+    "project"
+  ],
+  "properties" : {
+    "name" : { "type": "string" },
+    "project_fingerprint": { "type": "string" },
+    "vulnerability_feedback_url": { "type": "string" },
+    "confidence" : {
+      "type": "string",
+      "enum": ["undefined", "ignore", "unknown", "experimental", "low", "medium", "high", "critical"]
+    },
+    "severity" : {
+      "type": "string",
+      "enum": ["undefined", "ignore", "unknown", "experimental", "low", "medium", "high", "critical"]
+    },
+    "report_type": {
+      "type": "string",
+      "enum": ["sast", "dependency_scanning", "container_scanning", "dast"]
+    },
+    "scanner" : {
+      "external_id" : { "type": "string" },
+      "name" : { "type": "string" }
+    },
+    "project" : {
+      "required" : [
+        "id",
+        "name",
+        "full_path",
+        "full_name"
+      ],
+      "id" : { "type": "integer" },
+      "name" : { "type": "string" },
+      "full_path" : { "type": "string" },
+      "full_name" : { "type": "string" }
+    },
+    "issue_feedback" : { "oneOf": [
+      { "type": "null" },
+      { "$ref": "../vulnerability_feedback.json" }
+    ]},
+    "dismissal_feedback" : { "oneOf": [
+      { "type": "null" },
+      { "$ref": "../vulnerability_feedback.json" }
+    ]},
+    "description": { "type": "string" },
+    "solution": { "type": "string" },
+    "location" : {
+      "class" : { "type": "string" },
+      "method" : { "type": "string" },
+      "file" : { "type": "string" },
+      "start_line" : { "type": "integer" },
+      "end_line" : { "type": "integer" }
+    },
+    "links" : {
+      "type": "array",
+      "items": {
+        "name": { "type": ["string", "null"] },
+        "url": { "type": ["string", "null"] }
+      }
+    },
+    "identifiers" : {
+      "type": "array",
+      "items": {
+        "primary" : { "type": ["boolean"] },
+        "name": { "type": ["string"] },
+        "url": { "type": ["string", "null"] },
+        "external_id": { "type": ["string"] },
+        "external_type": { "type": ["string"] }
+      }
+    }
+  }
+}
