@@ -12,7 +12,7 @@ module QA
           def fabricate!
             group.visit!
 
-            QA::Page::Menu::Side.act { click_epics }
+            QA::Page::Project::Menu.act { click_epics }
 
             Page::Group::Epic::Index.perform do |page|
               page.click_new_epic
