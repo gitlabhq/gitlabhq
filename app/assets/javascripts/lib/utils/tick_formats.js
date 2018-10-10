@@ -26,7 +26,7 @@ initDateFormats();
 
   see also https://github.com/d3/d3-3.x-api-reference/blob/master/SVG-Axes.md#tickFormat
   */
-export const dateTickFormat = (date) => {
+export const dateTickFormat = date => {
   if (date.getDate() !== 1) {
     return dateTimeFormats.dayFormat.format(date);
   }

@@ -1,5 +1,6 @@
 export default {
-  small: { // Covers both xs and sm screen sizes
+  small: {
+    // Covers both xs and sm screen sizes
     margin: {
       top: 40,
       right: 40,
@@ -18,7 +19,8 @@ export default {
     },
     axisLabelLineOffset: -20,
   },
-  large: { // This covers both md and lg screen sizes
+  large: {
+    // This covers both md and lg screen sizes
     margin: {
       top: 80,
       right: 80,

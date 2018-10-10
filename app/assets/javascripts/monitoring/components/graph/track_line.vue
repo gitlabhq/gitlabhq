@@ -33,4 +33,3 @@ export default {
     </svg>
   </td>
 </template>
-
