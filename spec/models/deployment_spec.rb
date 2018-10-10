@@ -12,6 +12,7 @@ describe Deployment do
   it { is_expected.to delegate_method(:commit).to(:project) }
   it { is_expected.to delegate_method(:commit_title).to(:commit).as(:try) }
   it { is_expected.to delegate_method(:manual_actions).to(:deployable).as(:try) }
+  it { is_expected.to delegate_method(:scheduled_actions).to(:deployable).as(:try) }
 
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to validate_presence_of(:sha) }
