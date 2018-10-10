@@ -38,8 +38,8 @@ module QA
 
         def fabricate!
           # Don't try to log-out if we're not logged-in
-          if Page::Menu::Main.act { has_personal_area?(wait: 0) }
-            Page::Menu::Main.perform { |main| main.sign_out }
+          if Page::Main::Menu.act { has_personal_area?(wait: 0) }
+            Page::Main::Menu.perform { |main| main.sign_out }
           end
 
           if credentials_given?

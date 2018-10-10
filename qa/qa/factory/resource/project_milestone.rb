@@ -17,7 +17,7 @@ module QA
         def fabricate!
           project.visit!
 
-          Page::Menu::Side.act do
+          Page::Project::Menu.act do
             click_issues
             click_milestones
           end

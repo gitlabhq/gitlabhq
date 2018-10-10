@@ -8,7 +8,7 @@ module QA
         # TODO, since `Signed in successfully` message was removed
         # this is the only way to tell if user is signed in correctly.
         #
-        Page::Menu::Main.perform do |menu|
+        Page::Main::Menu.perform do |menu|
           expect(menu).to have_personal_area
         end
       end
