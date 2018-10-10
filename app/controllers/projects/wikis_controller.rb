@@ -2,6 +2,7 @@
 
 class Projects::WikisController < Projects::ApplicationController
   include PreviewMarkdown
+  include PreviewOrgmode
   include Gitlab::Utils::StrongMemoize
 
   before_action :authorize_read_wiki!
