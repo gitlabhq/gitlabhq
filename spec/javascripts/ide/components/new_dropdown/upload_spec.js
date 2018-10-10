@@ -44,7 +44,6 @@ describe('new dropdown upload', () => {
     });
 
     it('calls readAsBinaryString for all files', () => {
-
       const file = {
         type: 'text/html',
       };
@@ -72,6 +71,5 @@ describe('new dropdown upload', () => {
         content: target.result,
       });
     });
-
   });
 });
