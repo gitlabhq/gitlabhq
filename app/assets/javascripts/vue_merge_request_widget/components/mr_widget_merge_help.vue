@@ -1,24 +1,26 @@
 <script>
-  import { sprintf, s__ } from '~/locale';
+import { sprintf, s__ } from '~/locale';
 
-  export default {
-    name: 'MRWidgetMergeHelp',
-    props: {
-      missingBranch: {
-        type: String,
-        required: false,
-        default: '',
-      },
+export default {
+  name: 'MRWidgetMergeHelp',
+  props: {
+    missingBranch: {
+      type: String,
+      required: false,
+      default: '',
     },
-    computed: {
-      missingBranchInfo() {
-        return sprintf(
-          s__('mrWidget|If the %{branch} branch exists in your local repository, you can merge this merge request manually using the'),
-          { branch: this.missingBranch },
-        );
-      },
+  },
+  computed: {
+    missingBranchInfo() {
+      return sprintf(
+        s__(
+          'mrWidget|If the %{branch} branch exists in your local repository, you can merge this merge request manually using the',
+        ),
+        { branch: this.missingBranch },
+      );
     },
-  };
+  },
+};
 </script>
 <template>
   <section class="mr-widget-help">
