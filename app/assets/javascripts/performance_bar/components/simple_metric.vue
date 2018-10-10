@@ -1,29 +1,29 @@
 <script>
-  export default {
-    props: {
-      currentRequest: {
-        type: Object,
-        required: true,
-      },
-      metric: {
-        type: String,
-        required: true,
-      },
+export default {
+  props: {
+    currentRequest: {
+      type: Object,
+      required: true,
     },
-    computed: {
-      duration() {
-        return (
-          this.currentRequest.details[this.metric] &&
-          this.currentRequest.details[this.metric].duration
-        );
-      },
-      calls() {
-        return (
-          this.currentRequest.details[this.metric] && this.currentRequest.details[this.metric].calls
-        );
-      },
+    metric: {
+      type: String,
+      required: true,
     },
-  };
+  },
+  computed: {
+    duration() {
+      return (
+        this.currentRequest.details[this.metric] &&
+        this.currentRequest.details[this.metric].duration
+      );
+    },
+    calls() {
+      return (
+        this.currentRequest.details[this.metric] && this.currentRequest.details[this.metric].calls
+      );
+    },
+  },
+};
 </script>
 <template>
   <div
