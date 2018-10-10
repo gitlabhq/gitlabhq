@@ -210,7 +210,7 @@ For other punctuation rules, please refer to the
 - Use inline link markdown markup `[Text](https://example.com)`.
   It's easier to read, review, and maintain. **Do not** use `[Text][identifier]`.
 - To link to internal documentation, use relative links, not full URLs. Use `../` to
-  navigate tp high-level directories, and always add the file name `file.md` at the
+  navigate to high-level directories, and always add the file name `file.md` at the
   end of the link with the `.md` extension, not `.html`.
   Example: instead of `[text](../../merge_requests/)`, use
   `[text](../../merge_requests/index.md)` or, `[text](../../ci/README.md)`, or,
@@ -386,8 +386,32 @@ Which renders to:
 
 ## Specific sections and terms
 
-To mention and/or reference specific terms in GitLab, please follow the styles
-below.
+To maintain consistency through GitLab documentation, the following guides documentation authors
+on agreed styles and usage of terms.
+
+### Describing UI elements
+
+The following are styles to follow when describing UI elements on a screen:
+
+- For elements with a visible label, use that label in bold with matching case. For example, `the **Cancel** button`.
+- For elements with a tooltip or hover label, use that label in bold with matching case. For example, `the **Add status emoji** button`.
+
+### Verbs for UI elements
+
+The following are verbs that should be used in preference to alternatives.
+
+| Use      | Used for                        | Do not use                 |
+|:---------|:--------------------------------|:---------------------------|
+| "click"  | buttons, links, menu items      | "hit", "press", "select"   |
+| "check"  | checkboxes                      | "enable", "click", "press" |
+| "select" | dropdowns                       | "pick"                     |
+| "expand" | expandable sections             | "open"                     |
+
+### Other Verbs
+
+| Use      | Used for                        | Do not use                 |
+|:---------|:--------------------------------|:---------------------------|
+| "go"     | making a browser go to location | "navigate", "open"         |
 
 ### GitLab versions and tiers
 
@@ -459,6 +483,10 @@ Introduced by [!244](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/24
 the special markup `**[STARTER]**` will generate a `span` element to trigger the
 badges and tooltips (`<span class="badge-trigger starter">`). When the keyword
 "only" is added, the corresponding GitLab.com badge will not be displayed.
+
+## Specific sections
+
+Certain styles should be applied to specific sections. Styles for specific sections are outlined below.
 
 ### GitLab Restart
 
