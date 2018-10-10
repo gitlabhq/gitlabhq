@@ -190,30 +190,6 @@ describe ApplicationController do
     end
   end
 
-  describe 'rescue from Gitlab::Git::Storage::Inaccessible' do
-    controller(described_class) do
-      def index
-        raise Gitlab::Git::Storage::Inaccessible.new('broken', 100)
-      end
-    end
-
-    it 'renders a 503 when storage is not available' do
-      sign_in(create(:user))
-
-      get :index
-
-      expect(response.status).to eq(503)
-    end
-
-    it 'renders includes a Retry-After header' do
-      sign_in(create(:user))
-
-      get :index
-
-      expect(response.headers['Retry-After']).to eq(100)
-    end
-  end
-
   describe 'response format' do
     controller(described_class) do
       def index

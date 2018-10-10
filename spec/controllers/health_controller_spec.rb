@@ -14,48 +14,6 @@ describe HealthController do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
   end
 
-  describe '#storage_check' do
-    before do
-      allow(Gitlab::RequestContext).to receive(:client_ip).and_return(whitelisted_ip)
-    end
-
-    subject { post :storage_check }
-
-    it 'checks all the configured storages' do
-      expect(Gitlab::Git::Storage::Checker).to receive(:check_all).and_call_original
-
-      subject
-    end
-
-    it 'returns the check interval' do
-      stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'true')
-      stub_application_setting(circuitbreaker_check_interval: 10)
-
-      subject
-
-      expect(json_response['check_interval']).to eq(10)
-    end
-
-    context 'with failing storages', :broken_storage do
-      before do
-        stub_storage_settings(
-          broken: { path: 'tmp/tests/non-existent-repositories' }
-        )
-      end
-
-      it 'includes the failure information' do
-        subject
-
-        expected_results = [
-          { 'storage' => 'broken', 'success' => false },
-          { 'storage' => 'default', 'success' => true }
-        ]
-
-        expect(json_response['results']).to eq(expected_results)
-      end
-    end
-  end
-
   describe '#readiness' do
     shared_context 'endpoint responding with readiness data' do
       let(:request_params) { {} }

@@ -66,7 +66,7 @@ class ApplicationController < ActionController::Base
     head :forbidden, retry_after: Gitlab::Auth::UniqueIpsLimiter.config.unique_ips_limit_time_window
   end
 
-  rescue_from Gitlab::Git::Storage::Inaccessible, GRPC::Unavailable, Gitlab::Git::CommandError do |exception|
+  rescue_from GRPC::Unavailable, Gitlab::Git::CommandError do |exception|
     log_exception(exception)
 
     headers['Retry-After'] = exception.retry_after if exception.respond_to?(:retry_after)

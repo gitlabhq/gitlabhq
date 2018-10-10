@@ -132,22 +132,11 @@ msgstr ""
 msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
 msgstr ""
 
-msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
-msgstr ""
-
-msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will not retry automatically. Reset storage information when the problem is resolved."
-msgstr ""
-
 msgid "%{openOrClose} %{noteable}"
 msgstr ""
 
 msgid "%{percent}%% complete"
 msgstr ""
-
-msgid "%{storage_name}: failed storage access attempt on host:"
-msgid_plural "%{storage_name}: %{failed_attempts} failed storage access attempts:"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "%{text} %{files}"
 msgid_plural "%{text} %{files} files"
@@ -314,9 +303,6 @@ msgstr ""
 msgid "Access expiration date"
 msgstr ""
 
-msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
-msgstr ""
-
 msgid "Account"
 msgstr ""
 
@@ -399,9 +385,6 @@ msgid "AdminArea|Stopping jobs failed"
 msgstr ""
 
 msgid "AdminArea|You’re about to stop all jobs.This will halt all current jobs that are running."
-msgstr ""
-
-msgid "AdminHealthPageLink|health page"
 msgstr ""
 
 msgid "AdminProjects| You’re about to permanently delete the project %{projectName}, its repository, and all related resources including issues, merge requests, etc..  Once you confirm and press %{strong_start}Delete project%{strong_end}, it cannot be undone or recovered."
@@ -1162,9 +1145,6 @@ msgstr ""
 msgid "Chat"
 msgstr ""
 
-msgid "Check interval"
-msgstr ""
-
 msgid "Checking %{text} availability…"
 msgstr ""
 
@@ -1298,9 +1278,6 @@ msgid "CiVariable|Toggle protected"
 msgstr ""
 
 msgid "CiVariable|Validation failed"
-msgstr ""
-
-msgid "CircuitBreakerApiLink|circuitbreaker api"
 msgstr ""
 
 msgid "Clear search"
@@ -1844,7 +1821,7 @@ msgstr ""
 msgid "Configure push mirrors."
 msgstr ""
 
-msgid "Configure storage path and circuit breaker settings."
+msgid "Configure storage path settings."
 msgstr ""
 
 msgid "Configure the way a user creates a new account."
@@ -2917,9 +2894,6 @@ msgstr ""
 msgid "Git revision"
 msgstr ""
 
-msgid "Git storage health information has been reset"
-msgstr ""
-
 msgid "Git strategy for pipelines"
 msgstr ""
 
@@ -3736,9 +3710,6 @@ msgstr ""
 msgid "Max access level"
 msgstr ""
 
-msgid "Maximum git storage failures"
-msgstr ""
-
 msgid "Maximum job timeout"
 msgstr ""
 
@@ -4204,9 +4175,6 @@ msgid "Nov"
 msgstr ""
 
 msgid "November"
-msgstr ""
-
-msgid "Number of access attempts"
 msgstr ""
 
 msgid "Oct"
@@ -5155,9 +5123,6 @@ msgstr ""
 msgid "Require all users to accept Terms of Service and Privacy Policy when they access GitLab."
 msgstr ""
 
-msgid "Reset git storage health information"
-msgstr ""
-
 msgid "Reset health check access token"
 msgstr ""
 
@@ -5368,12 +5333,6 @@ msgid "SearchAutocomplete|in this group"
 msgstr ""
 
 msgid "SearchAutocomplete|in this project"
-msgstr ""
-
-msgid "Seconds before reseting failure information"
-msgstr ""
-
-msgid "Seconds to wait for a storage access attempt"
 msgstr ""
 
 msgid "Secret"
@@ -5980,12 +5939,6 @@ msgstr ""
 msgid "The maximum file size allowed is 200KB."
 msgstr ""
 
-msgid "The number of attempts GitLab will make to access a storage."
-msgstr ""
-
-msgid "The number of failures of after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
-msgstr ""
-
 msgid "The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>"
 msgstr ""
 
@@ -6031,15 +5984,6 @@ msgstr ""
 msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
 msgstr ""
 
-msgid "The time in seconds GitLab will keep failure information. When no failures occur during this time, information about the mount is reset."
-msgstr ""
-
-msgid "The time in seconds GitLab will try to access storage. After this time a timeout error will be raised."
-msgstr ""
-
-msgid "The time in seconds between storage checks. When a previous check did complete yet, GitLab will skip a check."
-msgstr ""
-
 msgid "The time taken by each data entry gathered by that stage."
 msgstr ""
 
@@ -6077,9 +6021,6 @@ msgid "There are no staged changes"
 msgstr ""
 
 msgid "There are no unstaged changes"
-msgstr ""
-
-msgid "There are problems accessing Git storage: "
 msgstr ""
 
 msgid "There was an error loading users activity calendar."
