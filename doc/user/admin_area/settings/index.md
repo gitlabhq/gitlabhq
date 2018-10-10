@@ -13,6 +13,7 @@ include:
 - [Third party offers](third_party_offers.md)
 - [Usage statistics](usage_statistics.md)
 - [Visibility and access controls](visibility_and_access_controls.md)
+- [Custom templates repository](instance_template_repository.md)
 
 ## GitLab.com admin area settings
 
