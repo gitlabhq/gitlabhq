@@ -736,7 +736,7 @@ assets_container:
     DOCKER_DRIVER: overlay2
     DOCKER_HOST: tcp://docker:2375
     REGISTRY: registry.gitlab.com
-    ASSETS_IMAGE: ${REGISTRY}/build/CNG/rails-assets
+    ASSETS_IMAGE: ${REGISTRY}/build/cng/rails-assets
   script:
     - mkdir -p assets_container.build/public
     - cp -r public/assets assets_container.build/public/
