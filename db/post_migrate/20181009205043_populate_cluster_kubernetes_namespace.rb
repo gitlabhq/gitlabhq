@@ -4,26 +4,27 @@ class PopulateClusterKubernetesNamespace < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
+  MIGRATION = 'PopulateClusterKubernetesNamespace'.freeze
 
   disable_ddl_transaction!
 
   class ClusterProject < ActiveRecord::Base
-    include EachBatch
     self.table_name = 'cluster_projects'
-  end
+    include EachBatch
 
-  class ClusterKubernetesNamespace < ActiveRecord::Base
-    self.table_name = 'clusters_kubernetes_namespaces'
+    BATCH_SIZE = 500
+
+    def self.params_for_background_migration
+      yield all, MIGRATION, 5.minutes, BATCH_SIZE
+    end
   end
 
   def up
-    cluster_project_with_no_namespace = ClusterProject.where.not(id: ClusterKubernetesNamespace.select(:id))
-
-    cluster_project_with_no_namespace.tap do |relation|
+    ClusterProject.params_for_background_migration do |relation, class_name, delay_interval, batch_size|
       queue_background_migration_jobs_by_range_at_intervals(relation,
-                                                            'PopulateClusterKubernetesNamespace',
-                                                            5.minutes,
-                                                            batch_size: 500)
+                                                            class_name,
+                                                            delay_interval,
+                                                            batch_size: batch_size)
     end
   end
 

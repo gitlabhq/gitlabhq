@@ -8,14 +8,22 @@ module Clusters
     has_one :cluster, through: :cluster_project
     has_one :project, through: :cluster_project
 
-    validates :namespace, presence: true
-    before_validation :set_cluster_namespace_and_service_account
-    before_validation :ensure_namespace_uniqueness
+    delegate :platform_kubernetes, to: :cluster, allow_nil: true
+    delegate :rbac?, to: :platform_kubernetes, prefix: true, allow_nil: true
 
-    attr_encrypted :encrypted_service_account_token,
+    validates :namespace, presence: true
+    validates :namespace, uniqueness: { scope: :cluster_project_id }
+
+    before_validation :set_cluster_namespace_and_service_account
+
+    attr_encrypted :service_account_token,
         mode: :per_attribute_iv,
         key: Settings.attr_encrypted_db_key_base_truncated,
         algorithm: 'aes-256-cbc'
+
+    def token_name
+      "#{namespace}-token"
+    end
 
     private
 
@@ -25,19 +33,15 @@ module Clusters
     end
 
     def build_kubernetes_namespace
-      gcp_kubernetes_namespace.presence || default_namespace
+      platform_kubernetes_namespace.presence || default_namespace
     end
 
     def build_service_account_name
-      if cluster.platform_kubernetes_rbac?
-        "#{default_service_account_name}-#{namespace}"
-      else
-        default_service_account_name
-      end
+      "#{namespace}-service-account"
     end
 
-    def gcp_kubernetes_namespace
-      @gcp_kubernetes_namespace ||= cluster&.platform_kubernetes&.namespace
+    def platform_kubernetes_namespace
+      @platform_kubernetes_namespace ||= platform_kubernetes&.namespace
     end
 
     def default_namespace
@@ -46,18 +50,6 @@ module Clusters
 
     def project_slug
       "#{project.path}-#{project.id}".downcase
-    end
-
-    def default_service_account_name
-      Clusters::Gcp::Kubernetes::SERVICE_ACCOUNT_NAME
-    end
-
-    def ensure_namespace_uniqueness
-      errors.add(:namespace, "Kubernetes namespace #{namespace} already exists on cluster") if kubernetes_namespace_exists?
-    end
-
-    def kubernetes_namespace_exists?
-      cluster_project.kubernetes_namespaces.where(namespace: namespace).exists?
     end
   end
 end

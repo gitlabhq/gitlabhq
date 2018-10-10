@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+#
 # rubocop:disable Style/Documentation
 
 module Gitlab
@@ -15,17 +16,17 @@ module Gitlab
           belongs_to :project
           belongs_to :cluster
 
+          def self.with_no_kubernetes_namespace
+            where.not(id: Migratable::ClusterKubernetesNamespace.select(:cluster_project_id))
+          end
+
           def default_namespace
             slug = "#{project.path}-#{project.id}".downcase
             slug.gsub(/[^-a-z0-9]/, '-').gsub(/^-+/, '')
           end
 
           def default_service_account
-            if cluster.rbac?
-              "gitlab-#{default_namespace}"
-            else
-              "gitlab"
-            end
+            "#{default_namespace}-service-account"
           end
         end
 
@@ -59,7 +60,7 @@ module Gitlab
 
         cluster_project_collection(start_id, stop_id).each do |cluster_project|
           attributes = {
-            cluster_project_id: cluster_project.id, 
+            cluster_project_id: cluster_project.id,
             namespace: cluster_project.default_namespace,
             service_account_name: cluster_project.default_service_account
           }
@@ -73,9 +74,8 @@ module Gitlab
       private
 
       def cluster_project_collection(start_id, stop_id)
-        Migratable::ClusterProject.where(id: (start_id..stop_id))
+        Migratable::ClusterProject.where(id: (start_id..stop_id)).with_no_kubernetes_namespace
       end
     end
   end
 end
-

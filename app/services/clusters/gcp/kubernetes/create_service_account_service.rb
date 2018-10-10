@@ -4,32 +4,57 @@ module Clusters
   module Gcp
     module Kubernetes
       class CreateServiceAccountService
-        attr_reader :kubeclient, :rbac
+        attr_reader :kubeclient, :name, :namespace, :rbac
 
-        def initialize(kubeclient, rbac:)
+        def initialize(kubeclient, name:, namespace:, rbac:)
           @kubeclient = kubeclient
+          @name = name
+          @namespace = namespace
           @rbac = rbac
         end
 
         def execute
+          ensure_namespace_exists
+
           kubeclient.create_service_account(service_account_resource)
           kubeclient.create_secret(service_account_token_resource)
-          kubeclient.create_cluster_role_binding(cluster_role_binding_resource) if rbac
+
+          create_cluster_or_role_binding if rbac
         end
 
         private
 
+        def ensure_namespace_exists
+          Gitlab::Kubernetes::Namespace.new(namespace, kubeclient).ensure_exists!
+        end
+
         def service_account_resource
-          Gitlab::Kubernetes::ServiceAccount.new(service_account_name, service_account_namespace).generate
+          Gitlab::Kubernetes::ServiceAccount.new(name, namespace).generate
         end
 
         def service_account_token_resource
           Gitlab::Kubernetes::ServiceAccountToken.new(
-            SERVICE_ACCOUNT_TOKEN_NAME, service_account_name, service_account_namespace).generate
+            token_name, name, namespace).generate
+        end
+
+        def token_name
+          if default_namespace?
+            SERVICE_ACCOUNT_TOKEN_NAME
+          else
+            "#{namespace}-token"
+          end
+        end
+
+        def create_cluster_or_role_binding
+          if default_namespace?
+            kubeclient.create_cluster_role_binding(cluster_role_binding_resource)
+          else
+            kubeclient.create_role_binding(role_binding_resource)
+          end
         end
 
         def cluster_role_binding_resource
-          subjects = [{ kind: 'ServiceAccount', name: service_account_name, namespace: service_account_namespace }]
+          subjects = [{ kind: 'ServiceAccount', name: name, namespace: namespace }]
 
           Gitlab::Kubernetes::ClusterRoleBinding.new(
             CLUSTER_ROLE_BINDING_NAME,
@@ -38,12 +63,16 @@ module Clusters
           ).generate
         end
 
-        def service_account_name
-          SERVICE_ACCOUNT_NAME
+        def role_binding_resource
+          Gitlab::Kubernetes::RoleBinding.new(
+            role_name: 'edit',
+            namespace: namespace,
+            service_account_name: name
+          ).generate
         end
 
-        def service_account_namespace
-          SERVICE_ACCOUNT_NAMESPACE
+        def default_namespace?
+          namespace == SERVICE_ACCOUNT_NAMESPACE
         end
       end
     end

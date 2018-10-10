@@ -308,6 +308,11 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
+      before do
+        allow(ClusterPlatformConfigureWorker).to receive(:perform_async)
+        stub_kubeclient_get_namespace('https://kubernetes.example.com', namespace: 'my-namespace')
+      end
+
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }
@@ -345,10 +350,6 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
-      before do
-        allow(ClusterProvisionWorker).to receive(:perform_async)
-      end
-
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }
@@ -391,23 +392,7 @@ describe Projects::ClustersController do
   end
 
   describe 'PUT update' do
-<<<<<<< HEAD
     let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
-=======
-    before do
-      allow(ClusterPlatformConfigureWorker).to receive(:perform_async)
-      stub_kubeclient_get_namespace('https://kubernetes.example.com', namespace: 'my-namespace')
-    end
-
-    context 'when cluster is provided by GCP' do
-      let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
-      let(:user) { create(:user) }
-
-      before do
-        project.add_maintainer(user)
-        sign_in(user)
-      end
->>>>>>> Extract actual_namespace logic to service
 
     let(:params) do
       {
@@ -427,6 +412,12 @@ describe Projects::ClustersController do
                                 id: cluster,
                                 format: format
                                )
+    end
+
+    before do
+      allow(ClusterPlatformConfigureWorker).to receive(:perform_async)
+
+      stub_kubeclient_get_namespace('https://kubernetes.example.com', namespace: 'my-namespace')
     end
 
     context 'when cluster is provided by GCP' do

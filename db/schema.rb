@@ -696,10 +696,12 @@ ActiveRecord::Schema.define(version: 20181013005024) do
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
     t.text "encrypted_service_account_token"
+    t.string "encrypted_service_account_token_iv"
     t.string "namespace", null: false
     t.string "service_account_name"
   end
 
+  add_index "clusters_kubernetes_namespaces", ["cluster_project_id", "namespace"], name: "kubernetes_namespaces_cluster_project_and_namespace", unique: true, using: :btree
   add_index "clusters_kubernetes_namespaces", ["cluster_project_id"], name: "index_clusters_kubernetes_namespaces_on_cluster_project_id", using: :btree
 
   create_table "container_repositories", force: :cascade do |t|

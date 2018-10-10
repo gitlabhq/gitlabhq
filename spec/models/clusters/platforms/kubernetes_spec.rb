@@ -91,8 +91,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
       end
     end
 
-    describe '#prevent_reserved_namespaces' do
-
+    describe 'when using reserved namespaces' do
       subject { build(:cluster_platform_kubernetes, namespace: namespace) }
 
       context 'when no namespace is manually assigned' do
@@ -110,7 +109,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
       context 'when reserved namespace is assigned' do
         let(:namespace) { 'gitlab-managed-apps' }
 
-        it { is_expected.to_not be_valid }
+        it { is_expected.not_to be_valid }
       end
     end
   end

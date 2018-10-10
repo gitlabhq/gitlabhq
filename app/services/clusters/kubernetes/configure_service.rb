@@ -5,30 +5,51 @@ module Clusters
     class ConfigureService
       include Gitlab::Utils::StrongMemoize
 
-      attr_reader :platform
+      attr_reader :platform, :cluster
 
-      def initialize(platform)
-        @platform = platform
+      def initialize(cluster)
+        @cluster = cluster
+        @platform = cluster.platform
       end
 
       def execute
-        return unless platform.cluster_project
+        return unless cluster_project
 
-        cluster_kubernetes_namespace.ensure_exists!
-
-        # To do: Create service account
+        create_kubernetes_namespace!
+        create_services_accounts!
+        configure_kubernetes_token
       end
 
       private
 
-      def cluster_kubernetes_namespace
-        strong_memoize(:cluster_kubernetes_namespace) do
-          Gitlab::Kubernetes::Namespace.new(namespace_name, platform.kubeclient)
+      def create_kubernetes_namespace!
+        cluster_project.kubernetes_namespaces.create!
+      end
+
+      def create_services_accounts!
+        Clusters::Gcp::ServicesAccountService.new(platform.kubeclient, cluster).execute
+      end
+
+      def configure_kubernetes_token
+        service_token_account = fetch_kubernetes_token(kubernetes_namespace.token_name, kubernetes_namespace.namespace)
+
+        kubernetes_namespace.update_attribute(:service_account_token, service_token_account)
+      end
+
+      def fetch_kubernetes_token(name, namespace)
+        Clusters::Gcp::Kubernetes::FetchKubernetesTokenService.new(platform.kubeclient, name, namespace).execute
+      end
+
+      def kubernetes_namespace
+        strong_memoize(:kubernetes_namespace) do
+          cluster.kubernetes_namespace
         end
       end
 
-      def namespace_name
-        platform.cluster_project.kubernetes_namespace.namespace
+      def cluster_project
+        strong_memoize(:cluster_project) do
+          cluster.cluster_project
+        end
       end
     end
   end

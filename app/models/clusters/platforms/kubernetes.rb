@@ -35,12 +35,13 @@ module Clusters
           message: Gitlab::Regex.kubernetes_namespace_regex_message
         }
 
+      validates :namespace, exclusion: { in: RESERVED_NAMESPACES }
+
       # We expect to be `active?` only when enabled and cluster is created (the api_url is assigned)
       validates :api_url, url: true, presence: true
       validates :token, presence: true
 
       validate :prevent_modification, on: :update
-      validate :prevent_reserved_namespaces
 
       after_save :clear_reactive_cache!
       after_update :update_kubernetes_namespace
@@ -50,8 +51,7 @@ module Clusters
       delegate :project, to: :cluster, allow_nil: true
       delegate :enabled?, to: :cluster, allow_nil: true
       delegate :managed?, to: :cluster, allow_nil: true
-
-      delegate :cluster_project, to: :project, allow_nil: true
+      delegate :cluster_project, to: :cluster
 
       alias_method :active?, :enabled?
 
@@ -198,14 +198,6 @@ module Clusters
         end
 
         true
-      end
-
-      def prevent_reserved_namespaces
-        return if namespace.blank?
-
-        if RESERVED_NAMESPACES.include?(namespace)
-          errors.add(:namespace, 'Cannot used a GitLab reserved namespace')
-        end 
       end
 
       def update_kubernetes_namespace

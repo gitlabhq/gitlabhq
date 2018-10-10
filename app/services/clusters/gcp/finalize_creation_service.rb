@@ -3,18 +3,21 @@
 module Clusters
   module Gcp
     class FinalizeCreationService
+      include Gitlab::Utils::StrongMemoize
+
       attr_reader :provider
 
       def execute(provider)
         @provider = provider
 
         configure_provider
-        create_gitlab_service_account!
         configure_kubernetes
+        create_kubernetes_namespace!
+        create_gitlab_service_account!
+        configure_kubernetes_tokens
 
         cluster.save!
 
-        ClusterPlatformConfigureWorker.perform_async(cluster.id)
       rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
         provider.make_errored!("Failed to request to CloudPlatform; #{e.message}")
       rescue Kubeclient::HttpError => e
@@ -26,7 +29,7 @@ module Clusters
       private
 
       def create_gitlab_service_account!
-        Clusters::Gcp::Kubernetes::CreateServiceAccountService.new(kube_client, rbac: create_rbac_cluster?).execute
+        Clusters::Gcp::ServicesAccountService.new(kube_client, cluster).execute
       end
 
       def configure_provider
@@ -41,12 +44,23 @@ module Clusters
           ca_cert: Base64.decode64(gke_cluster.master_auth.cluster_ca_certificate),
           username: gke_cluster.master_auth.username,
           password: gke_cluster.master_auth.password,
-          authorization_type: authorization_type,
-          token: request_kubernetes_token)
+          authorization_type: authorization_type
+        )
       end
 
-      def request_kubernetes_token
-        Clusters::Gcp::Kubernetes::FetchKubernetesTokenService.new(kube_client).execute
+      def create_kubernetes_namespace!
+        cluster.cluster_project.kubernetes_namespaces.create!
+      end
+
+      def configure_kubernetes_tokens
+        cluster.platform_kubernetes.token = fetch_kubernetes_token(Clusters::Gcp::Kubernetes::SERVICE_ACCOUNT_TOKEN_NAME, Clusters::Gcp::Kubernetes::SERVICE_ACCOUNT_NAMESPACE)
+
+        service_account_token = fetch_kubernetes_token(kubernetes_namespace.token_name, kubernetes_namespace.namespace)
+        kubernetes_namespace.update_attribute(:service_account_token, service_account_token)
+      end
+
+      def fetch_kubernetes_token(name, namespace)
+        Clusters::Gcp::Kubernetes::FetchKubernetesTokenService.new(kube_client, name, namespace).execute
       end
 
       def authorization_type
@@ -100,6 +114,12 @@ module Clusters
 
       def cluster
         @cluster ||= provider.cluster
+      end
+
+      def kubernetes_namespace
+        strong_memoize(:kubernetes_namespace) do
+          cluster.kubernetes_namespace
+        end
       end
     end
   end
