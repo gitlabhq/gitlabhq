@@ -24,6 +24,8 @@ module Clusters
           end
 
           application.save!
+
+          Clusters::Applications::ScheduleInstallationService.new(application).execute
         end
       end
 

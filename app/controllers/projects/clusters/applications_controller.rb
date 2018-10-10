@@ -6,11 +6,9 @@ class Projects::Clusters::ApplicationsController < Projects::ApplicationControll
   before_action :authorize_create_cluster!, only: [:create]
 
   def create
-    application = Clusters::Applications::CreateService
+    Clusters::Applications::CreateService
       .new(@cluster, current_user, create_cluster_application_params)
       .execute(request)
-
-    Clusters::Applications::ScheduleInstallationService.new(project, current_user).execute(application)
 
     head :no_content
   rescue Clusters::Applications::CreateService::InvalidApplicationError
