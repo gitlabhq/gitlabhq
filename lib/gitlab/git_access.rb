@@ -7,6 +7,7 @@ module Gitlab
     UnauthorizedError = Class.new(StandardError)
     NotFoundError = Class.new(StandardError)
     ProjectCreationError = Class.new(StandardError)
+    TimeoutError = Class.new(StandardError)
     ProjectMovedError = Class.new(NotFoundError)
 
     ERROR_MESSAGES = {
@@ -28,7 +29,10 @@ module Gitlab
     PUSH_COMMANDS = %w{git-receive-pack}.freeze
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
 
-    attr_reader :actor, :project, :protocol, :authentication_abilities, :namespace_path, :project_path, :redirected_path, :auth_result_type, :changes
+    INTERNAL_TIMEOUT = 55.seconds.freeze
+
+    attr_reader :actor, :project, :protocol, :authentication_abilities, :namespace_path, :project_path, :redirected_path, :auth_result_type, :changes, :start_time
+    attr_accessor :trace
 
     def initialize(actor, project, protocol, authentication_abilities:, namespace_path: nil, project_path: nil, redirected_path: nil, auth_result_type: nil)
       @actor    = actor
@@ -39,9 +43,11 @@ module Gitlab
       @project_path = project_path
       @redirected_path = redirected_path
       @auth_result_type = auth_result_type
+      @trace = []
     end
 
     def check(cmd, changes)
+      @start_time = Time.now
       @changes = changes
 
       check_protocol!
@@ -259,22 +265,35 @@ module Gitlab
       # Iterate over all changes to find if user allowed all of them to be applied
       changes_list.each.with_index do |change, index|
         first_change = index == 0
+        time_left = Time.now - start_time
+
+        # If the access check is taking more than 55 seconds we do not want to continue
+        # and instead want to return the debugging result of the checks already made
+        if time_left >= INTERNAL_TIMEOUT
+          raise TimeoutError, trace.join("\n")
+        end
 
         # If user does not have access to make at least one change, cancel all
         # push by allowing the exception to bubble up
-        check_single_change_access(change, skip_lfs_integrity_check: !first_change)
+        check_single_change_access(change, start_time, skip_lfs_integrity_check: !first_change)
       end
+    rescue Gitlab::Git::CommandError => e
+      raise e, e.message + trace.join("\n")
     end
 
-    def check_single_change_access(change, skip_lfs_integrity_check: false)
-      Checks::ChangeAccess.new(
+    def check_single_change_access(change, start_time, skip_lfs_integrity_check: false)
+      change_access = Checks::ChangeAccess.new(
         change,
+        start_time: start_time,
         user_access: user_access,
         project: project,
         skip_authorization: deploy_key?,
         skip_lfs_integrity_check: skip_lfs_integrity_check,
         protocol: protocol
-      ).exec
+      )
+
+      change_access.exec
+      trace += change_access.check_log
     end
 
     def deploy_key

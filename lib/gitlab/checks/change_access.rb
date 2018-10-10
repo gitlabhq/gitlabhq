@@ -16,10 +16,22 @@ module Gitlab
         lfs_objects_missing: 'LFS objects are missing. Ensure LFS is properly set up or try a manual "git lfs push --all".'
       }.freeze
 
-      attr_reader :user_access, :project, :skip_authorization, :skip_lfs_integrity_check, :protocol, :oldrev, :newrev, :ref, :branch_name, :tag_name
+      LOG_MESSAGES = {
+        push_checks: "Checking push ability...",
+        branch_checks: "Checking branch abilities...",
+        tag_checks: "Checking tag abilities...",
+        lfs_objects_exist_check: "Checking LFS object abilities...",
+        commits_check: "Checking commits abilities..."
+      }.freeze
+
+      attr_reader :user_access, :project, :skip_authorization,
+        :skip_lfs_integrity_check, :protocol, :oldrev,
+        :newrev, :ref, :branch_name,
+        :tag_name
+      attr_accessor :check_log
 
       def initialize(
-        change, user_access:, project:, skip_authorization: false,
+        change, start_time:, user_access:, project:, skip_authorization: false,
         skip_lfs_integrity_check: false, protocol:
       )
         @oldrev, @newrev, @ref = change.values_at(:oldrev, :newrev, :ref)
@@ -30,16 +42,23 @@ module Gitlab
         @skip_authorization = skip_authorization
         @skip_lfs_integrity_check = skip_lfs_integrity_check
         @protocol = protocol
+        @check_log = ["Running checks for branch: #{@branch_name}"]
       end
 
       def exec(skip_commits_check: false)
         return true if skip_authorization
 
-        push_checks
-        branch_checks
-        tag_checks
-        lfs_objects_exist_check unless skip_lfs_integrity_check
-        commits_check unless skip_commits_check
+        log_timed(:push_checks) { push_checks }
+        log_timed(:branch_checks) { branch_checks }
+        log_timed(:tag_checks) { tag_checks }
+
+        unless skip_lfs_integrity_check
+          log_timed(:lfs_objects_exist_check) { lfs_objects_exist_check }
+        end
+
+        unless skip_commits_check
+          log_timed(:commits_check) { commits_check }
+        end
 
         true
       end
@@ -210,6 +229,18 @@ module Gitlab
       def can_push?
         user_access.can_do_action?(:push_code) ||
           user_access.can_push_to_branch?(branch_name)
+      end
+
+      def log_timed(method_name)
+        start = Time.now
+
+        yield
+
+        check_log << LOG_MESSAGES[method_name] + "(#{to_ms(Time.now - start)}ms)"
+      end
+
+      def to_ms(elapsed)
+        (elapsed.to_f * 1000).round(2)
       end
     end
   end
