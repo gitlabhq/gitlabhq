@@ -87,7 +87,7 @@ Mount `/gitlab-nfs` then use the following Omnibus
 configuration to move each data location to a subdirectory:
 
 ```ruby
-git_data_dirs({"default" => "/gitlab-nfs/gitlab-data/git-data"})
+git_data_dirs({"default" => { "path" => "/gitlab-nfs/gitlab-data/git-data"} })
 user['home'] = '/gitlab-nfs/gitlab-data/home'
 gitlab_rails['uploads_directory'] = '/gitlab-nfs/gitlab-data/uploads'
 gitlab_rails['shared_path'] = '/gitlab-nfs/gitlab-data/shared'
@@ -133,7 +133,7 @@ following are the 5 locations need to be shared:
 
 | Location | Description | Default configuration |
 | -------- | ----------- | --------------------- |
-| `/var/opt/gitlab/git-data` | Git repository data. This will account for a large portion of your data | `git_data_dirs({"default" => "/var/opt/gitlab/git-data"})`
+| `/var/opt/gitlab/git-data` | Git repository data. This will account for a large portion of your data | `git_data_dirs({"default" => { "path" => "/var/opt/gitlab/git-data"} })`
 | `/var/opt/gitlab/.ssh` | SSH `authorized_keys` file and keys used to import repositories from some other Git services | `user['home'] = '/var/opt/gitlab/'`
 | `/var/opt/gitlab/gitlab-rails/uploads` | User uploaded attachments | `gitlab_rails['uploads_directory'] = '/var/opt/gitlab/gitlab-rails/uploads'`
 | `/var/opt/gitlab/gitlab-rails/shared` | Build artifacts, GitLab Pages, LFS objects, temp files, etc. If you're using LFS this may also account for a large portion of your data | `gitlab_rails['shared_path'] = '/var/opt/gitlab/gitlab-rails/shared'`
