@@ -110,12 +110,12 @@ export default {
           ref="fieldName"
           v-model="entryName"
           type="text"
-          class="form-control"
+          class="form-control qa-full-file-path"
           placeholder="/dir/file_name"
         />
         <ul
           v-if="isCreatingNew"
-          class="prepend-top-default list-inline"
+          class="prepend-top-default list-inline qa-template-list"
         >
           <li
             v-for="(template, index) in templateTypes"

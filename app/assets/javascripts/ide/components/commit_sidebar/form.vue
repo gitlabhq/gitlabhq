@@ -117,7 +117,7 @@ export default {
         <button
           :disabled="!hasChanges"
           type="button"
-          class="btn btn-primary btn-sm btn-block"
+          class="btn btn-primary btn-sm btn-block qa-begin-commit-button"
           @click="toggleIsSmall"
         >
           {{ __('Commit…') }}
@@ -147,7 +147,7 @@ export default {
           <loading-button
             :loading="submitCommitLoading"
             :label="commitButtonText"
-            container-class="btn btn-success btn-sm float-left"
+            container-class="btn btn-success btn-sm float-left qa-commit-button"
             @click="commitChanges"
           />
           <button
