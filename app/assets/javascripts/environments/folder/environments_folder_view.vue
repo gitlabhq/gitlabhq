@@ -1,46 +1,43 @@
 <script>
-  import environmentsMixin from '../mixins/environments_mixin';
-  import CIPaginationMixin from '../../vue_shared/mixins/ci_pagination_api_mixin';
-  import StopEnvironmentModal from '../components/stop_environment_modal.vue';
+import environmentsMixin from '../mixins/environments_mixin';
+import CIPaginationMixin from '../../vue_shared/mixins/ci_pagination_api_mixin';
+import StopEnvironmentModal from '../components/stop_environment_modal.vue';
 
-  export default {
-    components: {
-      StopEnvironmentModal,
-    },
+export default {
+  components: {
+    StopEnvironmentModal,
+  },
 
-    mixins: [
-      environmentsMixin,
-      CIPaginationMixin,
-    ],
+  mixins: [environmentsMixin, CIPaginationMixin],
 
-    props: {
-      endpoint: {
-        type: String,
-        required: true,
-      },
-      folderName: {
-        type: String,
-        required: true,
-      },
-      cssContainerClass: {
-        type: String,
-        required: true,
-      },
-      canCreateDeployment: {
-        type: Boolean,
-        required: true,
-      },
-      canReadEnvironment: {
-        type: Boolean,
-        required: true,
-      },
+  props: {
+    endpoint: {
+      type: String,
+      required: true,
     },
-    methods: {
-      successCallback(resp) {
-        this.saveData(resp);
-      },
+    folderName: {
+      type: String,
+      required: true,
     },
-  };
+    cssContainerClass: {
+      type: String,
+      required: true,
+    },
+    canCreateDeployment: {
+      type: Boolean,
+      required: true,
+    },
+    canReadEnvironment: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  methods: {
+    successCallback(resp) {
+      this.saveData(resp);
+    },
+  },
+};
 </script>
 <template>
   <div :class="cssContainerClass">

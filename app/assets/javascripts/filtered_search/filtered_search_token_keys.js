@@ -42,19 +42,21 @@ export default class FilteredSearchTokenKeys {
   }
 
   searchByKeyParam(keyParam) {
-    return this.tokenKeysWithAlternative.find((tokenKey) => {
-      let tokenKeyParam = tokenKey.key;
+    return (
+      this.tokenKeysWithAlternative.find(tokenKey => {
+        let tokenKeyParam = tokenKey.key;
 
-      // Replace hyphen with underscore to compare keyParam with tokenKeyParam
-      // e.g. 'my-reaction' => 'my_reaction'
-      tokenKeyParam = tokenKeyParam.replace('-', '_');
+        // Replace hyphen with underscore to compare keyParam with tokenKeyParam
+        // e.g. 'my-reaction' => 'my_reaction'
+        tokenKeyParam = tokenKeyParam.replace('-', '_');
 
-      if (tokenKey.param) {
-        tokenKeyParam += `_${tokenKey.param}`;
-      }
+        if (tokenKey.param) {
+          tokenKeyParam += `_${tokenKey.param}`;
+        }
 
-      return keyParam === tokenKeyParam;
-    }) || null;
+        return keyParam === tokenKeyParam;
+      }) || null
+    );
   }
 
   searchByConditionUrl(url) {
@@ -62,8 +64,10 @@ export default class FilteredSearchTokenKeys {
   }
 
   searchByConditionKeyValue(key, value) {
-    return this.conditions
-      .find(condition => condition.tokenKey === key && condition.value === value) || null;
+    return (
+      this.conditions.find(condition => condition.tokenKey === key && condition.value === value) ||
+      null
+    );
   }
 
   addExtraTokensForMergeRequests() {
