@@ -33,13 +33,13 @@ easy for you.
 
 ![First file for your project](img/web_editor_template_dropdown_first_file.png)
 
-When clicking on either `LICENSE` or `.gitignore`, a dropdown will be displayed
+When clicking on either `LICENSE` or `.gitignore`, etc., a dropdown will be displayed
 to provide you with a template which might be suitable for your project.
 
 ![MIT license selected](img/web_editor_template_dropdown_mit_license.png)
 
 The license, changelog, contribution guide, or `.gitlab-ci.yml` file could also
-be added through a button on the project page. In the example below the license
+be added through a button on the project page. In the example below, the license
 has already been created, which creates a link to the license itself.
 
 ![New file button](img/web_editor_template_dropdown_buttons.png)
