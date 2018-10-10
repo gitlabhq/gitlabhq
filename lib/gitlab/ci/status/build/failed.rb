@@ -12,7 +12,7 @@ module Gitlab
             missing_dependency_failure: 'missing dependency failure',
             runner_unsupported: 'unsupported runner',
             stale_schedule: 'stale schedule',
-            runner_execution_timeout: 'runner execution timeout',
+            runner_execution_timeout: 'runner execution timeout'
           }.freeze
 
           private_constant :REASONS
