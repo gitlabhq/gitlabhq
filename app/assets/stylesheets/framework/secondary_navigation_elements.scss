@@ -125,10 +125,14 @@
       position: relative;
 
       /* Medium devices (desktops, 992px and up) */
-      @include media-breakpoint-up(md) { width: 200px; }
+      @include media-breakpoint-up(md) {
+        width: 200px;
+      }
 
       /* Large devices (large desktops, 1200px and up) */
-      @include media-breakpoint-up(lg) { width: 250px; }
+      @include media-breakpoint-up(lg) {
+        width: 250px;
+      }
     }
 
     @include media-breakpoint-down(xs) {

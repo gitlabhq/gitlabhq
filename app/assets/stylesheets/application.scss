@@ -16,34 +16,34 @@
  * directory.
  */
 
-@import "../../../node_modules/pikaday/scss/pikaday";
-@import "../../../node_modules/dropzone/dist/basic.css";
+@import '../../../node_modules/pikaday/scss/pikaday';
+@import '../../../node_modules/dropzone/dist/basic.css';
 
 /*
  * GitLab UI framework
  */
-@import "framework";
+@import 'framework';
 
 /*
  * Font icons
  */
-@import "font-awesome";
+@import 'font-awesome';
 
 /*
  * Page specific styles (issues, projects etc):
  */
-@import "pages/**/*";
+@import 'pages/**/*';
 
 /*
  * Code highlight
  */
-@import "highlight/dark";
-@import "highlight/monokai";
-@import "highlight/solarized_dark";
-@import "highlight/solarized_light";
-@import "highlight/white";
+@import 'highlight/dark';
+@import 'highlight/monokai';
+@import 'highlight/solarized_dark';
+@import 'highlight/solarized_light';
+@import 'highlight/white';
 
 /*
  * Styles for JS behaviors.
  */
-@import "behaviors";
+@import 'behaviors';

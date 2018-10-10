@@ -33,7 +33,7 @@
     border-color: $gl-text-color;
 
     &:not(span):hover {
-      background-color: rgba($gl-text-color, .07);
+      background-color: rgba($gl-text-color, 0.07);
     }
   }
 
@@ -54,7 +54,7 @@
     border-color: $gl-text-color-secondary;
 
     &:not(span):hover {
-      background-color: rgba($gl-text-color-secondary, .07);
+      background-color: rgba($gl-text-color-secondary, 0.07);
     }
   }
 }

@@ -60,7 +60,7 @@
     max-width: 420px;
     float: left;
 
-    @media(max-width: map-get($grid-breakpoints, lg)-1) {
+    @media (max-width: map-get($grid-breakpoints, lg)-1) {
       width: 180px;
     }
   }
@@ -104,7 +104,6 @@
     }
   }
 }
-
 
 @include media-breakpoint-down(sm) {
   .file-editor {
@@ -150,7 +149,7 @@
   vertical-align: top;
   display: inline-block;
 
-  @media(max-width: map-get($grid-breakpoints, md)-1) {
+  @media (max-width: map-get($grid-breakpoints, md)-1) {
     display: block;
     margin: 19px 0 12px;
   }
@@ -163,7 +162,7 @@
   padding: 0 0 0 14px;
   border-left: 1px solid $border-color;
 
-  @media(max-width: map-get($grid-breakpoints, md)-1) {
+  @media (max-width: map-get($grid-breakpoints, md)-1) {
     display: block;
     width: 100%;
     margin: 5px 0;
@@ -178,7 +177,7 @@
   margin-top: 6px;
   line-height: 21px;
 
-  @media(max-width: map-get($grid-breakpoints, md)-1) {
+  @media (max-width: map-get($grid-breakpoints, md)-1) {
     display: block;
     margin: 5px 0;
   }
@@ -190,7 +189,7 @@
   vertical-align: top;
   margin: 5px 0 0 8px;
 
-  @media(max-width: map-get($grid-breakpoints, md)-1) {
+  @media (max-width: map-get($grid-breakpoints, md)-1) {
     display: block;
     width: 100%;
     margin: 0 0 16px;
@@ -206,7 +205,7 @@
     font-family: $regular_font;
     margin-top: -5px;
 
-    @media(max-width: map-get($grid-breakpoints, md)-1) {
+    @media (max-width: map-get($grid-breakpoints, md)-1) {
       display: block;
       width: 100%;
       margin: 5px 0;
@@ -220,13 +219,12 @@
       width: 250px;
       vertical-align: top;
 
-      @media(max-width: map-get($grid-breakpoints, md)-1) {
+      @media (max-width: map-get($grid-breakpoints, md)-1) {
         display: block;
         width: 100%;
         margin: 5px 0;
       }
     }
-
   }
 }
 
@@ -234,7 +232,7 @@
   display: inline-block;
   margin: 7px 0 0 10px;
 
-  @media(max-width: map-get($grid-breakpoints, md)-1) {
+  @media (max-width: map-get($grid-breakpoints, md)-1) {
     display: block;
     width: 100%;
     margin: 20px 0;

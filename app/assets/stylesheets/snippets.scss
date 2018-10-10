@@ -1,8 +1,8 @@
-@import "framework/variables";
+@import 'framework/variables';
 
 .gitlab-embed-snippets {
-  @import "highlight/embedded";
-  @import "framework/images";
+  @import 'highlight/embedded';
+  @import 'framework/images';
 
   $border-style: 1px solid $border-color;
 
@@ -22,9 +22,15 @@
     height: 16px;
     background-size: cover;
 
-    &.gl-snippet-icon-doc-code { background-position: 0 0;  }
-    &.gl-snippet-icon-doc-text {  background-position: 0 -16px; }
-    &.gl-snippet-icon-download {  background-position: 0 -32px; }
+    &.gl-snippet-icon-doc-code {
+      background-position: 0 0;
+    }
+    &.gl-snippet-icon-doc-text {
+      background-position: 0 -16px;
+    }
+    &.gl-snippet-icon-download {
+      background-position: 0 -32px;
+    }
   }
 
   .blob-viewer {

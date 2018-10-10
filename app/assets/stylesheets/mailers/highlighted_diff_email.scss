@@ -1,4 +1,4 @@
-@import "framework/variables";
+@import 'framework/variables';
 
 // This file is largely copied from `highlight/white.scss`, but modified to
 // avoid all descendant selectors (`table td`). This is because the CSS inlining
@@ -150,15 +150,40 @@ span.highlight_word {
   background-color: $highlighted-highlight-word !important;
 }
 
-.hll { background-color: $highlighted-hll-bg; }
-.c { color: $highlighted-c; font-style: italic; }
-.err { color: $highlighted-err; background-color: $highlighted-err-bg; }
-.k { font-weight: $gl-font-weight-bold; }
-.o { font-weight: $gl-font-weight-bold; }
-.cm { color: $highlighted-cm; font-style: italic; }
-.cp { color: $highlighted-cp; font-weight: $gl-font-weight-bold; }
-.c1 { color: $highlighted-c1; font-style: italic; }
-.cs { color: $highlighted-cs; font-weight: $gl-font-weight-bold; font-style: italic; }
+.hll {
+  background-color: $highlighted-hll-bg;
+}
+.c {
+  color: $highlighted-c;
+  font-style: italic;
+}
+.err {
+  color: $highlighted-err;
+  background-color: $highlighted-err-bg;
+}
+.k {
+  font-weight: $gl-font-weight-bold;
+}
+.o {
+  font-weight: $gl-font-weight-bold;
+}
+.cm {
+  color: $highlighted-cm;
+  font-style: italic;
+}
+.cp {
+  color: $highlighted-cp;
+  font-weight: $gl-font-weight-bold;
+}
+.c1 {
+  color: $highlighted-c1;
+  font-style: italic;
+}
+.cs {
+  color: $highlighted-cs;
+  font-weight: $gl-font-weight-bold;
+  font-style: italic;
+}
 
 .gd {
   color: $highlighted-gd;
@@ -170,9 +195,15 @@ span.highlight_word {
   }
 }
 
-.ge { font-style: italic; }
-.gr { color: $highlighted-gr; }
-.gh { color: $highlighted-gh; }
+.ge {
+  font-style: italic;
+}
+.gr {
+  color: $highlighted-gr;
+}
+.gh {
+  color: $highlighted-gh;
+}
 
 .gi {
   color: $highlighted-gi;
@@ -184,50 +215,150 @@ span.highlight_word {
   }
 }
 
-.go { color: $highlighted-go; }
-.gp { color: $highlighted-gp; }
-.gs { font-weight: $gl-font-weight-bold; }
-.gu { color: $highlighted-gu; font-weight: $gl-font-weight-bold; }
-.gt { color: $highlighted-gt; }
-.kc { font-weight: $gl-font-weight-bold; }
-.kd { font-weight: $gl-font-weight-bold; }
-.kn { font-weight: $gl-font-weight-bold; }
-.kp { font-weight: $gl-font-weight-bold; }
-.kr { font-weight: $gl-font-weight-bold; }
-.kt { color: $highlighted-kt; font-weight: $gl-font-weight-bold; }
-.m { color: $highlighted-m; }
-.s { color: $highlighted-s; }
-.n { color: $highlighted-n; }
-.na { color: $highlighted-na; }
-.nb { color: $highlighted-nb; }
-.nc { color: $highlighted-nc; font-weight: $gl-font-weight-bold; }
-.no { color: $highlighted-no; }
-.ni { color: $highlighted-ni; }
-.ne { color: $highlighted-ne; font-weight: $gl-font-weight-bold; }
-.nf { color: $highlighted-nf; font-weight: $gl-font-weight-bold; }
-.nn { color: $highlighted-nn; }
-.nt { color: $highlighted-nt; }
-.nv { color: $highlighted-nv; }
-.ow { font-weight: $gl-font-weight-bold; }
-.w { color: $highlighted-w; }
-.mf { color: $highlighted-mf; }
-.mh { color: $highlighted-mh; }
-.mi { color: $highlighted-mi; }
-.mo { color: $highlighted-mo; }
-.sb { color: $highlighted-sb; }
-.sc { color: $highlighted-sc; }
-.sd { color: $highlighted-sd; }
-.s2 { color: $highlighted-s2; }
-.se { color: $highlighted-se; }
-.sh { color: $highlighted-sh; }
-.si { color: $highlighted-si; }
-.sx { color: $highlighted-sx; }
-.sr { color: $highlighted-sr; }
-.s1 { color: $highlighted-s1; }
-.ss { color: $highlighted-ss; }
-.bp { color: $highlighted-bp; }
-.vc { color: $highlighted-vc; }
-.vg { color: $highlighted-vg; }
-.vi { color: $highlighted-vi; }
-.il { color: $highlighted-il; }
-.gc { color: $highlighted-gc; background-color: $highlighted-gc-bg; }
+.go {
+  color: $highlighted-go;
+}
+.gp {
+  color: $highlighted-gp;
+}
+.gs {
+  font-weight: $gl-font-weight-bold;
+}
+.gu {
+  color: $highlighted-gu;
+  font-weight: $gl-font-weight-bold;
+}
+.gt {
+  color: $highlighted-gt;
+}
+.kc {
+  font-weight: $gl-font-weight-bold;
+}
+.kd {
+  font-weight: $gl-font-weight-bold;
+}
+.kn {
+  font-weight: $gl-font-weight-bold;
+}
+.kp {
+  font-weight: $gl-font-weight-bold;
+}
+.kr {
+  font-weight: $gl-font-weight-bold;
+}
+.kt {
+  color: $highlighted-kt;
+  font-weight: $gl-font-weight-bold;
+}
+.m {
+  color: $highlighted-m;
+}
+.s {
+  color: $highlighted-s;
+}
+.n {
+  color: $highlighted-n;
+}
+.na {
+  color: $highlighted-na;
+}
+.nb {
+  color: $highlighted-nb;
+}
+.nc {
+  color: $highlighted-nc;
+  font-weight: $gl-font-weight-bold;
+}
+.no {
+  color: $highlighted-no;
+}
+.ni {
+  color: $highlighted-ni;
+}
+.ne {
+  color: $highlighted-ne;
+  font-weight: $gl-font-weight-bold;
+}
+.nf {
+  color: $highlighted-nf;
+  font-weight: $gl-font-weight-bold;
+}
+.nn {
+  color: $highlighted-nn;
+}
+.nt {
+  color: $highlighted-nt;
+}
+.nv {
+  color: $highlighted-nv;
+}
+.ow {
+  font-weight: $gl-font-weight-bold;
+}
+.w {
+  color: $highlighted-w;
+}
+.mf {
+  color: $highlighted-mf;
+}
+.mh {
+  color: $highlighted-mh;
+}
+.mi {
+  color: $highlighted-mi;
+}
+.mo {
+  color: $highlighted-mo;
+}
+.sb {
+  color: $highlighted-sb;
+}
+.sc {
+  color: $highlighted-sc;
+}
+.sd {
+  color: $highlighted-sd;
+}
+.s2 {
+  color: $highlighted-s2;
+}
+.se {
+  color: $highlighted-se;
+}
+.sh {
+  color: $highlighted-sh;
+}
+.si {
+  color: $highlighted-si;
+}
+.sx {
+  color: $highlighted-sx;
+}
+.sr {
+  color: $highlighted-sr;
+}
+.s1 {
+  color: $highlighted-s1;
+}
+.ss {
+  color: $highlighted-ss;
+}
+.bp {
+  color: $highlighted-bp;
+}
+.vc {
+  color: $highlighted-vc;
+}
+.vg {
+  color: $highlighted-vg;
+}
+.vi {
+  color: $highlighted-vi;
+}
+.il {
+  color: $highlighted-il;
+}
+.gc {
+  color: $highlighted-gc;
+  background-color: $highlighted-gc-bg;
+}

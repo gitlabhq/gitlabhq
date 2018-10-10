@@ -2,7 +2,7 @@
   color: $gl-text-color;
   word-wrap: break-word;
 
-  [dir="auto"] {
+  [dir='auto'] {
     text-align: initial;
   }
 
@@ -165,7 +165,6 @@
     overflow-x: auto;
     border-radius: 2px;
 
-
     &.plain-readme {
       background: none;
       border: 0;
@@ -226,8 +225,8 @@
     }
   }
 
-  a[href*="/uploads/"],
-  a[href*="storage.googleapis.com/google-code-attachments/"] {
+  a[href*='/uploads/'],
+  a[href*='storage.googleapis.com/google-code-attachments/'] {
     &::before {
       margin-right: 4px;
 
@@ -235,7 +234,7 @@
       font-size: inherit;
       text-rendering: auto;
       -webkit-font-smoothing: antialiased;
-      content: "\f0c6";
+      content: '\f0c6';
     }
 
     &:hover::before {
@@ -276,7 +275,6 @@
   }
 }
 
-
 /**
  * Headers
  *
@@ -298,7 +296,6 @@ body {
   &.with-button {
     line-height: 34px;
   }
-
 }
 
 .page-title-empty {
@@ -416,7 +413,6 @@ h4 {
   background: $line-added-dark;
 }
 
-
 /**
  * form text input i.e. search bar, comments, forms, etc.
  */
@@ -445,4 +441,6 @@ textarea {
   }
 }
 
-.lh-100 { line-height: 1; }
+.lh-100 {
+  line-height: 1;
+}

@@ -37,7 +37,16 @@
   @include btn-default;
 }
 
-@mixin btn-outline($background, $text, $border, $hover-background, $hover-text, $hover-border, $active-background, $active-border) {
+@mixin btn-outline(
+  $background,
+  $text,
+  $border,
+  $hover-background,
+  $hover-text,
+  $hover-border,
+  $active-background,
+  $active-border
+) {
   background-color: $background;
   color: $text;
   border-color: $border;
@@ -91,15 +100,39 @@
 }
 
 @mixin btn-green {
-  @include btn-color($green-500, $green-600, $green-600, $green-700, $green-700, $green-800, $white-light);
+  @include btn-color(
+    $green-500,
+    $green-600,
+    $green-600,
+    $green-700,
+    $green-700,
+    $green-800,
+    $white-light
+  );
 }
 
 @mixin btn-blue {
-  @include btn-color($blue-500, $blue-600, $blue-600, $blue-700, $blue-700, $blue-800, $white-light);
+  @include btn-color(
+    $blue-500,
+    $blue-600,
+    $blue-600,
+    $blue-700,
+    $blue-700,
+    $blue-800,
+    $white-light
+  );
 }
 
 @mixin btn-orange {
-  @include btn-color($orange-500, $orange-600, $orange-600, $orange-700, $orange-700, $orange-800, $white-light);
+  @include btn-color(
+    $orange-500,
+    $orange-600,
+    $orange-600,
+    $orange-700,
+    $orange-700,
+    $orange-800,
+    $white-light
+  );
 }
 
 @mixin btn-red {
@@ -107,7 +140,15 @@
 }
 
 @mixin btn-white {
-  @include btn-color($white-light, $border-color, $white-normal, $border-white-normal, $white-dark, $border-gray-dark, $gl-text-color);
+  @include btn-color(
+    $white-light,
+    $border-color,
+    $white-normal,
+    $border-white-normal,
+    $white-dark,
+    $border-gray-dark,
+    $gl-text-color
+  );
 }
 
 @mixin btn-with-margin {
@@ -153,20 +194,56 @@
 
   &.btn-inverted {
     &.btn-success {
-      @include btn-outline($white-light, $green-600, $green-500, $green-500, $white-light, $green-600, $green-600, $green-700);
+      @include btn-outline(
+        $white-light,
+        $green-600,
+        $green-500,
+        $green-500,
+        $white-light,
+        $green-600,
+        $green-600,
+        $green-700
+      );
     }
 
     &.btn-remove {
-      @include btn-outline($white-light, $red-500, $red-500, $red-500, $white-light, $red-600, $red-600, $red-700);
+      @include btn-outline(
+        $white-light,
+        $red-500,
+        $red-500,
+        $red-500,
+        $white-light,
+        $red-600,
+        $red-600,
+        $red-700
+      );
     }
 
     &.btn-warning {
-      @include btn-outline($white-light, $orange-500, $orange-500, $orange-500, $white-light, $orange-600, $orange-600, $orange-700);
+      @include btn-outline(
+        $white-light,
+        $orange-500,
+        $orange-500,
+        $orange-500,
+        $white-light,
+        $orange-600,
+        $orange-600,
+        $orange-700
+      );
     }
 
     &.btn-primary,
     &.btn-info {
-      @include btn-outline($white-light, $blue-500, $blue-500, $blue-500, $white-light, $blue-600, $blue-600, $blue-700);
+      @include btn-outline(
+        $white-light,
+        $blue-500,
+        $blue-500,
+        $blue-500,
+        $white-light,
+        $blue-600,
+        $blue-600,
+        $blue-700
+      );
     }
   }
 
@@ -181,11 +258,29 @@
 
   &.btn-close,
   &.btn-close-color {
-    @include btn-outline($white-light, $orange-600, $orange-500, $orange-500, $white-light, $orange-600, $orange-600, $orange-700);
+    @include btn-outline(
+      $white-light,
+      $orange-600,
+      $orange-500,
+      $orange-500,
+      $white-light,
+      $orange-600,
+      $orange-600,
+      $orange-700
+    );
   }
 
   &.btn-spam {
-    @include btn-outline($white-light, $red-500, $red-500, $red-500, $white-light, $red-600, $red-600, $red-700);
+    @include btn-outline(
+      $white-light,
+      $red-500,
+      $red-500,
+      $red-500,
+      $white-light,
+      $red-600,
+      $red-600,
+      $red-700
+    );
   }
 
   &.btn-danger,
@@ -388,7 +483,16 @@
 
 .btn-inverted {
   &-secondary {
-    @include btn-outline($white-light, $blue-500, $blue-500, $blue-500, $white-light, $blue-600, $blue-600, $blue-700);
+    @include btn-outline(
+      $white-light,
+      $blue-500,
+      $blue-500,
+      $blue-500,
+      $white-light,
+      $blue-600,
+      $blue-600,
+      $blue-700
+    );
   }
 }
 

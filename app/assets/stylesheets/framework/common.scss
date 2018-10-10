@@ -1,9 +1,19 @@
 /** COLORS **/
-.cgray { color: $gl-text-color; }
-.clgray { color: $common-gray-light; }
-.cred { color: $red-500; }
-.cgreen { color: $green-600; }
-.cdark { color: $common-gray-dark; }
+.cgray {
+  color: $gl-text-color;
+}
+.clgray {
+  color: $common-gray-light;
+}
+.cred {
+  color: $red-500;
+}
+.cgreen {
+  color: $green-600;
+}
+.cdark {
+  color: $common-gray-dark;
+}
 
 .text-plain,
 .text-plain:hover {
@@ -43,8 +53,13 @@
   color: $brand-info;
 }
 
-.hint { font-style: italic; color: $gl-gray-400; }
-.light { color: $gl-text-color; }
+.hint {
+  font-style: italic;
+  color: $gl-gray-400;
+}
+.light {
+  color: $gl-text-color;
+}
 
 .slead {
   color: $gl-text-color;
@@ -104,7 +119,9 @@ hr {
   }
 }
 
-.item-title { font-weight: $gl-font-weight-bold; }
+.item-title {
+  font-weight: $gl-font-weight-bold;
+}
 
 .author-link {
   color: $blue-600;
@@ -146,7 +163,9 @@ p.time {
 
 // Fix issue with notes & lists creating a bunch of bottom borders.
 li.note {
-  img { max-width: 100%; }
+  img {
+    max-width: 100%;
+  }
   .note-title {
     li {
       border-bottom: 0 !important;
@@ -255,7 +274,6 @@ img.emoji {
   .dz-upload {
     background: $green-500 !important;
   }
-
 }
 
 .dz-message {
@@ -317,7 +335,7 @@ img.emoji {
 
 .disabled-content {
   pointer-events: none;
-  opacity: .5;
+  opacity: 0.5;
 }
 
 .break-word {
@@ -335,37 +353,105 @@ img.emoji {
 }
 
 /** COMMON CLASSES **/
-.prepend-top-0 { margin-top: 0; }
-.prepend-top-2 { margin-top: 2px; }
-.prepend-top-5 { margin-top: 5px; }
-.prepend-top-8 { margin-top: $grid-size; }
-.prepend-top-10 { margin-top: 10px; }
-.prepend-top-15 { margin-top: 15px; }
-.prepend-top-default { margin-top: $gl-padding !important; }
-.prepend-top-16 { margin-top: 16px; }
-.prepend-top-20 { margin-top: 20px; }
-.prepend-left-4 { margin-left: 4px; }
-.prepend-left-5 { margin-left: 5px; }
-.prepend-left-8 { margin-left: 8px; }
-.prepend-left-10 { margin-left: 10px; }
-.prepend-left-default { margin-left: $gl-padding; }
-.prepend-left-20 { margin-left: 20px; }
-.append-right-4 { margin-right: 4px; }
-.append-right-5 { margin-right: 5px; }
-.append-right-8 { margin-right: 8px; }
-.append-right-10 { margin-right: 10px; }
-.append-right-default { margin-right: $gl-padding; }
-.append-right-20 { margin-right: 20px; }
-.append-bottom-0 { margin-bottom: 0; }
-.append-bottom-5 { margin-bottom: 5px; }
-.append-bottom-8 { margin-bottom: $grid-size; }
-.append-bottom-10 { margin-bottom: 10px; }
-.append-bottom-15 { margin-bottom: 15px; }
-.append-bottom-20 { margin-bottom: 20px; }
-.append-bottom-default { margin-bottom: $gl-padding; }
-.inline { display: inline-block; }
-.center { text-align: center; }
-.vertical-align-middle { vertical-align: middle; }
-.flex-align-self-center { align-self: center; }
-.flex-grow { flex-grow: 1; }
-.flex-no-shrink { flex-shrink: 0; }
+.prepend-top-0 {
+  margin-top: 0;
+}
+.prepend-top-2 {
+  margin-top: 2px;
+}
+.prepend-top-5 {
+  margin-top: 5px;
+}
+.prepend-top-8 {
+  margin-top: $grid-size;
+}
+.prepend-top-10 {
+  margin-top: 10px;
+}
+.prepend-top-15 {
+  margin-top: 15px;
+}
+.prepend-top-default {
+  margin-top: $gl-padding !important;
+}
+.prepend-top-16 {
+  margin-top: 16px;
+}
+.prepend-top-20 {
+  margin-top: 20px;
+}
+.prepend-left-4 {
+  margin-left: 4px;
+}
+.prepend-left-5 {
+  margin-left: 5px;
+}
+.prepend-left-8 {
+  margin-left: 8px;
+}
+.prepend-left-10 {
+  margin-left: 10px;
+}
+.prepend-left-default {
+  margin-left: $gl-padding;
+}
+.prepend-left-20 {
+  margin-left: 20px;
+}
+.append-right-4 {
+  margin-right: 4px;
+}
+.append-right-5 {
+  margin-right: 5px;
+}
+.append-right-8 {
+  margin-right: 8px;
+}
+.append-right-10 {
+  margin-right: 10px;
+}
+.append-right-default {
+  margin-right: $gl-padding;
+}
+.append-right-20 {
+  margin-right: 20px;
+}
+.append-bottom-0 {
+  margin-bottom: 0;
+}
+.append-bottom-5 {
+  margin-bottom: 5px;
+}
+.append-bottom-8 {
+  margin-bottom: $grid-size;
+}
+.append-bottom-10 {
+  margin-bottom: 10px;
+}
+.append-bottom-15 {
+  margin-bottom: 15px;
+}
+.append-bottom-20 {
+  margin-bottom: 20px;
+}
+.append-bottom-default {
+  margin-bottom: $gl-padding;
+}
+.inline {
+  display: inline-block;
+}
+.center {
+  text-align: center;
+}
+.vertical-align-middle {
+  vertical-align: middle;
+}
+.flex-align-self-center {
+  align-self: center;
+}
+.flex-grow {
+  flex-grow: 1;
+}
+.flex-no-shrink {
+  flex-shrink: 0;
+}

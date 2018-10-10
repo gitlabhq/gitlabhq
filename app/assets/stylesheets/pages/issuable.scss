@@ -144,11 +144,9 @@
       color: $blue-800;
 
       .avatar {
-        border-color: rgba($gray-normal, .2);
+        border-color: rgba($gray-normal, 0.2);
       }
-
     }
-
   }
 
   .btn-link {
@@ -231,7 +229,7 @@
     }
 
     a.edit-link:not([href]):hover {
-      color: rgba($gray-normal, .2);
+      color: rgba($gray-normal, 0.2);
     }
 
     .lock-edit, // uses same style, different js behaviour
@@ -560,7 +558,6 @@
         @include dropdown-item-hover;
       }
     }
-
   }
 }
 
@@ -606,7 +603,6 @@
   flex-wrap: wrap;
   margin: -7px;
 }
-
 
 .user-list {
   display: flex;
@@ -720,7 +716,6 @@
 
 .issuable-list {
   li {
-
     .issue-box {
       display: -webkit-flex;
       display: flex;
@@ -789,7 +784,7 @@
       }
     }
 
-    @media(max-width: map-get($grid-breakpoints, lg)-1) {
+    @media (max-width: map-get($grid-breakpoints, lg)-1) {
       .task-status,
       .issuable-due-date,
       .project-ref-path {
@@ -816,9 +811,7 @@
   padding-bottom: 0;
   border-bottom: 0;
 
-
   .sidebar-collapsed-icon {
-
     > .stopwatch-svg {
       display: inline-block;
     }
@@ -876,11 +869,11 @@
   }
 
   .help-state-toggle-enter-active {
-    transition: all .8s ease;
+    transition: all 0.8s ease;
   }
 
   .help-state-toggle-leave-active {
-    transition: all .5s ease;
+    transition: all 0.5s ease;
   }
 
   .help-state-toggle-enter,

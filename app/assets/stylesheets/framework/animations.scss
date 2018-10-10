@@ -27,7 +27,7 @@
   &.flipOutY,
   &.bounceIn,
   &.bounceOut {
-    @include webkit-prefix(animation-duration, .75s);
+    @include webkit-prefix(animation-duration, 0.75s);
   }
 
   &.short {
@@ -54,7 +54,6 @@
 /*
 * General hover animations
 */
-
 
 // Sass multiple transitions mixin | https://gist.github.com/tobiasahlin/7a421fb9306a4f518aab
 // Usage:   @include transition(width, height 0.3s ease-in-out);
@@ -92,7 +91,7 @@
   animation: none !important;
 }
 
-@function unfoldTransition ($transition) {
+@function unfoldTransition($transition) {
   // Default values
   $property: all;
   $duration: $general-hover-transition-duration;
@@ -202,7 +201,7 @@ a {
     }
   }
 
-  [class^="skeleton-line-"] {
+  [class^='skeleton-line-'] {
     position: relative;
     background-color: $theme-gray-100;
     height: 10px;
@@ -230,11 +229,7 @@ a {
   }
 }
 
-$skeleton-line-widths: (
-  156px,
-  235px,
-  200px,
-);
+$skeleton-line-widths: (156px, 235px, 200px);
 
 @for $count from 1 through length($skeleton-line-widths) {
   .skeleton-line-#{$count} {

@@ -29,10 +29,10 @@ legend {
 }
 
 button,
-html [type="button"],
-[type="reset"],
-[type="submit"],
-[role="button"] {
+html [type='button'],
+[type='reset'],
+[type='submit'],
+[role='button'] {
   // Override bootstrap reboot
   -webkit-appearance: inherit;
   cursor: pointer;
@@ -73,7 +73,7 @@ h5,
   font-size: $gl-font-size;
 }
 
-input[type="file"] {
+input[type='file'] {
   // Bootstrap 4 file input height is taller by default
   // which makes them look ugly
   line-height: 1;
@@ -140,7 +140,9 @@ table {
   @include media-breakpoint-up($breakpoint) {
     $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
 
-    .d#{$infix}-table-header-group { display: table-header-group !important; }
+    .d#{$infix}-table-header-group {
+      display: table-header-group !important;
+    }
   }
 }
 
@@ -320,7 +322,7 @@ pre code {
   }
 }
 
-input[type=color].form-control {
+input[type='color'].form-control {
   height: $input-height;
 }
 

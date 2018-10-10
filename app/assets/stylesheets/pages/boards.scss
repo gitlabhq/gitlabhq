@@ -90,20 +90,14 @@
   }
 
   .with-performance-bar & {
-    height: calc(
-      100vh - #{$issue-board-list-difference-xs} - #{$performance-bar-height}
-    );
+    height: calc(100vh - #{$issue-board-list-difference-xs} - #{$performance-bar-height});
 
     @include media-breakpoint-only(sm) {
-      height: calc(
-        100vh - #{$issue-board-list-difference-sm} - #{$performance-bar-height}
-      );
+      height: calc(100vh - #{$issue-board-list-difference-sm} - #{$performance-bar-height});
     }
 
     @include media-breakpoint-up(md) {
-      height: calc(
-        100vh - #{$issue-board-list-difference-md} - #{$performance-bar-height}
-      );
+      height: calc(100vh - #{$issue-board-list-difference-md} - #{$performance-bar-height});
     }
   }
 }
@@ -475,8 +469,7 @@
 .right-sidebar.right-sidebar-expanded {
   &.boards-sidebar-slide-enter-active,
   &.boards-sidebar-slide-leave-active {
-    transition: width $sidebar-transition-duration,
-      padding $sidebar-transition-duration;
+    transition: width $sidebar-transition-duration, padding $sidebar-transition-duration;
   }
 
   &.boards-sidebar-slide-enter,

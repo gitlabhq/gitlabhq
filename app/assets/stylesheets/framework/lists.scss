@@ -15,7 +15,7 @@
     word-wrap: break-word;
 
     &::after {
-      content: " ";
+      content: ' ';
       display: table;
       clear: both;
     }
@@ -42,10 +42,11 @@
       &:hover {
         background: $orange-100;
       }
-
     }
 
-    &.smoke { background-color: $gray-light; }
+    &.smoke {
+      background-color: $gray-light;
+    }
 
     &:last-child {
       border-bottom: 0;
@@ -78,7 +79,6 @@
     }
   }
 }
-
 
 /** light list with border-bottom between li **/
 ul.bordered-list,
@@ -167,7 +167,7 @@ ul.content-list {
       }
 
       .no-comments {
-        opacity: .5;
+        opacity: 0.5;
       }
     }
 
@@ -282,8 +282,12 @@ ul.indent-list {
 
 // Specific styles for tree list
 @keyframes spin-avatar {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .namespace-title {

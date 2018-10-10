@@ -70,7 +70,7 @@
     animation: none;
   }
 
-  @media(max-width: map-get($grid-breakpoints, md)-1) {
+  @media (max-width: map-get($grid-breakpoints, md)-1) {
     padding-right: 20px;
   }
 

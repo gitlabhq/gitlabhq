@@ -127,7 +127,9 @@
     }
   }
 
-  &:last-child { border: 0; }
+  &:last-child {
+    border: 0;
+  }
 
   .event_commits {
     li {

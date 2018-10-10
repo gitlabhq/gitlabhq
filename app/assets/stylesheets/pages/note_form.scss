@@ -61,8 +61,7 @@
     padding: $gl-padding-top $gl-padding;
     border: 1px solid $border-color;
     border-radius: $border-radius-base;
-    transition: border-color ease-in-out 0.15s,
-                box-shadow ease-in-out 0.15s;
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 
     &.is-focused {
       @extend .form-control:focus;
@@ -75,8 +74,7 @@
 
     &.is-dropzone-hover {
       border-color: $green-500;
-      box-shadow: 0 0 2px $black-transparent,
-                  0 0 4px $green-500-focus;
+      box-shadow: 0 0 2px $black-transparent, 0 0 4px $green-500-focus;
 
       .comment-toolbar,
       .nav-links {
@@ -430,7 +428,7 @@
 .uploading-error-message {
   @include media-breakpoint-down(xs) {
     &::after {
-      content: "\a";
+      content: '\a';
       white-space: pre;
     }
   }

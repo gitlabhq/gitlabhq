@@ -192,66 +192,191 @@ $monokai-gi: #a6e22e;
     color: $monokai-k;
   }
 
-  .hll { background-color: $monokai-hll; }
-  .c { color: $monokai-c; } /* Comment */
-  .err { color: $monokai-err-color; background-color: $monokai-err-bg; } /* Error */
-  .k { color: $monokai-k; } /* Keyword */
-  .l { color: $monokai-l; } /* Literal */
-  .n { color: $monokai-n; } /* Name */
-  .o { color: $monokai-o; } /* Operator */
-  .p { color: $monokai-p; } /* Punctuation */
-  .cm { color: $monokai-cm; } /* Comment.Multiline */
-  .cp { color: $monokai-cp; } /* Comment.Preproc */
-  .c1 { color: $monokai-c1; } /* Comment.Single */
-  .cs { color: $monokai-cs; } /* Comment.Special */
-  .ge { font-style: italic; } /* Generic.Emph */
-  .gs { font-weight: $gl-font-weight-bold; } /* Generic.Strong */
-  .kc { color: $monokai-kc; } /* Keyword.Constant */
-  .kd { color: $monokai-kd; } /* Keyword.Declaration */
-  .kn { color: $monokai-kn; } /* Keyword.Namespace */
-  .kp { color: $monokai-kp; } /* Keyword.Pseudo */
-  .kr { color: $monokai-kr; } /* Keyword.Reserved */
-  .kt { color: $monokai-kt; } /* Keyword.Type */
-  .ld { color: $monokai-ld; } /* Literal.Date */
-  .m { color: $monokai-m; } /* Literal.Number */
-  .s { color: $monokai-s; } /* Literal.String */
-  .na { color: $monokai-na; } /* Name.Attribute */
-  .nb { color: $monokai-nb; } /* Name.Builtin */
-  .nc { color: $monokai-nc; } /* Name.Class */
-  .no { color: $monokai-no; } /* Name.Constant */
-  .nd { color: $monokai-nd; } /* Name.Decorator */
-  .ni { color: $monokai-ni; } /* Name.Entity */
-  .ne { color: $monokai-ne; } /* Name.Exception */
-  .nf { color: $monokai-nf; } /* Name.Function */
-  .nl { color: $monokai-nl; } /* Name.Label */
-  .nn { color: $monokai-nn; } /* Name.Namespace */
-  .nx { color: $monokai-nx; } /* Name.Other */
-  .py { color: $monokai-py; } /* Name.Property */
-  .nt { color: $monokai-nt; } /* Name.Tag */
-  .nv { color: $monokai-nv; } /* Name.Variable */
-  .ow { color: $monokai-ow; } /* Operator.Word */
-  .w { color: $monokai-w; } /* Text.Whitespace */
-  .mf { color: $monokai-mf; } /* Literal.Number.Float */
-  .mh { color: $monokai-mh; } /* Literal.Number.Hex */
-  .mi { color: $monokai-mi; } /* Literal.Number.Integer */
-  .mo { color: $monokai-mo; } /* Literal.Number.Oct */
-  .sb { color: $monokai-sb; } /* Literal.String.Backtick */
-  .sc { color: $monokai-sc; } /* Literal.String.Char */
-  .sd { color: $monokai-sd; } /* Literal.String.Doc */
-  .s2 { color: $monokai-s2; } /* Literal.String.Double */
-  .se { color: $monokai-se; } /* Literal.String.Escape */
-  .sh { color: $monokai-sh; } /* Literal.String.Heredoc */
-  .si { color: $monokai-si; } /* Literal.String.Interpol */
-  .sx { color: $monokai-sx; } /* Literal.String.Other */
-  .sr { color: $monokai-sr; } /* Literal.String.Regex */
-  .s1 { color: $monokai-s1; } /* Literal.String.Single */
-  .ss { color: $monokai-ss; } /* Literal.String.Symbol */
-  .bp { color: $monokai-bp; } /* Name.Builtin.Pseudo */
-  .vc { color: $monokai-vc; } /* Name.Variable.Class */
-  .vg { color: $monokai-vg; } /* Name.Variable.Global */
-  .vi { color: $monokai-vi; } /* Name.Variable.Instance */
-  .il { color: $monokai-il; } /* Literal.Number.Integer.Long */
-  .gu { color: $monokai-gu; } /* Generic.Subheading & Diff Unified/Comment? */
-  .gd { color: $monokai-gd; } /* Generic.Deleted & Diff Deleted */
-  .gi { color: $monokai-gi; } /* Generic.Inserted & Diff Inserted */
+  .hll {
+    background-color: $monokai-hll;
+  }
+  .c {
+    color: $monokai-c;
+  } /* Comment */
+  .err {
+    color: $monokai-err-color;
+    background-color: $monokai-err-bg;
+  } /* Error */
+  .k {
+    color: $monokai-k;
+  } /* Keyword */
+  .l {
+    color: $monokai-l;
+  } /* Literal */
+  .n {
+    color: $monokai-n;
+  } /* Name */
+  .o {
+    color: $monokai-o;
+  } /* Operator */
+  .p {
+    color: $monokai-p;
+  } /* Punctuation */
+  .cm {
+    color: $monokai-cm;
+  } /* Comment.Multiline */
+  .cp {
+    color: $monokai-cp;
+  } /* Comment.Preproc */
+  .c1 {
+    color: $monokai-c1;
+  } /* Comment.Single */
+  .cs {
+    color: $monokai-cs;
+  } /* Comment.Special */
+  .ge {
+    font-style: italic;
+  } /* Generic.Emph */
+  .gs {
+    font-weight: $gl-font-weight-bold;
+  } /* Generic.Strong */
+  .kc {
+    color: $monokai-kc;
+  } /* Keyword.Constant */
+  .kd {
+    color: $monokai-kd;
+  } /* Keyword.Declaration */
+  .kn {
+    color: $monokai-kn;
+  } /* Keyword.Namespace */
+  .kp {
+    color: $monokai-kp;
+  } /* Keyword.Pseudo */
+  .kr {
+    color: $monokai-kr;
+  } /* Keyword.Reserved */
+  .kt {
+    color: $monokai-kt;
+  } /* Keyword.Type */
+  .ld {
+    color: $monokai-ld;
+  } /* Literal.Date */
+  .m {
+    color: $monokai-m;
+  } /* Literal.Number */
+  .s {
+    color: $monokai-s;
+  } /* Literal.String */
+  .na {
+    color: $monokai-na;
+  } /* Name.Attribute */
+  .nb {
+    color: $monokai-nb;
+  } /* Name.Builtin */
+  .nc {
+    color: $monokai-nc;
+  } /* Name.Class */
+  .no {
+    color: $monokai-no;
+  } /* Name.Constant */
+  .nd {
+    color: $monokai-nd;
+  } /* Name.Decorator */
+  .ni {
+    color: $monokai-ni;
+  } /* Name.Entity */
+  .ne {
+    color: $monokai-ne;
+  } /* Name.Exception */
+  .nf {
+    color: $monokai-nf;
+  } /* Name.Function */
+  .nl {
+    color: $monokai-nl;
+  } /* Name.Label */
+  .nn {
+    color: $monokai-nn;
+  } /* Name.Namespace */
+  .nx {
+    color: $monokai-nx;
+  } /* Name.Other */
+  .py {
+    color: $monokai-py;
+  } /* Name.Property */
+  .nt {
+    color: $monokai-nt;
+  } /* Name.Tag */
+  .nv {
+    color: $monokai-nv;
+  } /* Name.Variable */
+  .ow {
+    color: $monokai-ow;
+  } /* Operator.Word */
+  .w {
+    color: $monokai-w;
+  } /* Text.Whitespace */
+  .mf {
+    color: $monokai-mf;
+  } /* Literal.Number.Float */
+  .mh {
+    color: $monokai-mh;
+  } /* Literal.Number.Hex */
+  .mi {
+    color: $monokai-mi;
+  } /* Literal.Number.Integer */
+  .mo {
+    color: $monokai-mo;
+  } /* Literal.Number.Oct */
+  .sb {
+    color: $monokai-sb;
+  } /* Literal.String.Backtick */
+  .sc {
+    color: $monokai-sc;
+  } /* Literal.String.Char */
+  .sd {
+    color: $monokai-sd;
+  } /* Literal.String.Doc */
+  .s2 {
+    color: $monokai-s2;
+  } /* Literal.String.Double */
+  .se {
+    color: $monokai-se;
+  } /* Literal.String.Escape */
+  .sh {
+    color: $monokai-sh;
+  } /* Literal.String.Heredoc */
+  .si {
+    color: $monokai-si;
+  } /* Literal.String.Interpol */
+  .sx {
+    color: $monokai-sx;
+  } /* Literal.String.Other */
+  .sr {
+    color: $monokai-sr;
+  } /* Literal.String.Regex */
+  .s1 {
+    color: $monokai-s1;
+  } /* Literal.String.Single */
+  .ss {
+    color: $monokai-ss;
+  } /* Literal.String.Symbol */
+  .bp {
+    color: $monokai-bp;
+  } /* Name.Builtin.Pseudo */
+  .vc {
+    color: $monokai-vc;
+  } /* Name.Variable.Class */
+  .vg {
+    color: $monokai-vg;
+  } /* Name.Variable.Global */
+  .vi {
+    color: $monokai-vi;
+  } /* Name.Variable.Instance */
+  .il {
+    color: $monokai-il;
+  } /* Literal.Number.Integer.Long */
+  .gu {
+    color: $monokai-gu;
+  } /* Generic.Subheading & Diff Unified/Comment? */
+  .gd {
+    color: $monokai-gd;
+  } /* Generic.Deleted & Diff Deleted */
+  .gi {
+    color: $monokai-gi;
+  } /* Generic.Inserted & Diff Inserted */
 }

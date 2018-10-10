@@ -209,7 +209,8 @@ label {
     border: 1px solid $green-600;
 
     &:focus {
-      box-shadow: 0 0 0 1px $green-600 inset, 0 1px 1px $gl-field-focus-shadow inset, 0 0 4px 0 $green-600;
+      box-shadow: 0 0 0 1px $green-600 inset, 0 1px 1px $gl-field-focus-shadow inset,
+        0 0 4px 0 $green-600;
       border: 0 none;
     }
   }
@@ -218,7 +219,8 @@ label {
     border: 1px solid $red-500;
 
     &:focus {
-      box-shadow: 0 0 0 1px $red-500 inset, 0 1px 1px $gl-field-focus-shadow inset, 0 0 4px 0 $gl-field-focus-shadow-error;
+      box-shadow: 0 0 0 1px $red-500 inset, 0 1px 1px $gl-field-focus-shadow inset,
+        0 0 4px 0 $gl-field-focus-shadow-error;
       border: 0 none;
     }
   }

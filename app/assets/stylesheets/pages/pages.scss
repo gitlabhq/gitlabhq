@@ -13,17 +13,14 @@
     .domain-name {
       flex-grow: 1;
     }
-
   }
 
   &.has-verification-status > li {
     padding-left: 3 * $gl-padding;
   }
-
 }
 
 .status-badge {
-
   display: inline-flex;
   margin-bottom: $gl-padding-8;
 
@@ -56,5 +53,4 @@
     border-bottom-right-radius: $border-radius-default;
     border-top-right-radius: $border-radius-default;
   }
-
 }

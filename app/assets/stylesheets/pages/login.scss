@@ -139,7 +139,7 @@
         // 3 LDAP servers configured (in addition to standard login) and they are not using especially long names for any
         // of them. If either condition is false, this will work as expected. If both are true, there may be a missing border
         // above one of the bottom row elements. If you know a better way, please implement it!
-        &:nth-child(n+5) {
+        &:nth-child(n + 5) {
           border-top: 1px solid $border-color;
         }
       }
@@ -189,7 +189,7 @@
     margin-top: 16px;
   }
 
-  input[type="submit"] {
+  input[type='submit'] {
     @extend .btn-block;
     margin-bottom: 0;
   }
