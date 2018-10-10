@@ -31,14 +31,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const chartData = data => ({
     labels: Object.keys(data),
-    datasets: [{
-      fillColor: 'rgba(220,220,220,0.5)',
-      strokeColor: 'rgba(220,220,220,1)',
-      barStrokeWidth: 1,
-      barValueSpacing: 1,
-      barDatasetSpacing: 1,
-      data: _.values(data),
-    }],
+    datasets: [
+      {
+        fillColor: 'rgba(220,220,220,0.5)',
+        strokeColor: 'rgba(220,220,220,1)',
+        barStrokeWidth: 1,
+        barValueSpacing: 1,
+        barDatasetSpacing: 1,
+        data: _.values(data),
+      },
+    ],
   });
 
   const hourData = chartData(projectChartData.hour);
@@ -51,7 +53,9 @@ document.addEventListener('DOMContentLoaded', () => {
   responsiveChart($('#month-chart'), monthData);
 
   const data = projectChartData.languages;
-  const ctx = $('#languages-chart').get(0).getContext('2d');
+  const ctx = $('#languages-chart')
+    .get(0)
+    .getContext('2d');
   const options = {
     scaleOverlay: true,
     responsive: true,

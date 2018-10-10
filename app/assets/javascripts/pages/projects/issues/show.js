@@ -5,7 +5,7 @@ import ZenMode from '~/zen_mode';
 import '~/notes/index';
 import initIssueableApp from '~/issue_show';
 
-export default function () {
+export default function() {
   initIssueableApp();
   new Issue(); // eslint-disable-line no-new
   new ShortcutsIssuable(); // eslint-disable-line no-new

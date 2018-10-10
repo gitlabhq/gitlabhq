@@ -8,8 +8,9 @@ export default function projectAvatar() {
 
   $('.js-project-avatar-input').bind('change', function onClickAvatarInput() {
     const form = $(this).closest('form');
-    // eslint-disable-next-line no-useless-escape
-    const filename = $(this).val().replace(/^.*[\\\/]/, '');
+    const filename = $(this)
+      .val()
+      .replace(/^.*[\\\/]/, ''); // eslint-disable-line no-useless-escape
     return form.find('.js-avatar-filename').text(filename);
   });
 }
