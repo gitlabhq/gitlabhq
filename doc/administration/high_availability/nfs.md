@@ -49,6 +49,20 @@ stored on a local volume.
 For more details on another person's experience with EFS, see
 [Amazon's Elastic File System: Burst Credits](https://rawkode.com/2017/04/16/amazons-elastic-file-system-burst-credits/)
 
+## PostgreSQL across NFS
+GitLab, additionally, strongly recommends against running your PostgreSQL database
+across NFS. Our support team will not be able to assist on performance issues related to
+this configuration.
+
+Additionally, this configuration is specifically warned against in the
+[Postgres Documentation](https://www.postgresql.org/docs/current/static/creating-cluster.html#CREATING-CLUSTER-NFS)
+
+> PostgreSQL does nothing special for NFS file systems, meaning it assumes NFS behaves exactly like 
+locally-connected drives. If the client or server NFS implementation does not provide standard file 
+system semantics, this can cause reliability problems. Specifically, delayed (asynchronous) writes 
+to the NFS server can cause data corruption problems.
+
+
 ## NFS Client mount options
 
 Below is an example of an NFS mount point defined in `/etc/fstab` we use on
