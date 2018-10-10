@@ -2,7 +2,6 @@ import * as types from './mutation_types';
 import { parseIntPagination, normalizeHeaders } from '../../lib/utils/common_utils';
 
 export default {
-
   [types.SET_MAIN_ENDPOINT](state, endpoint) {
     Object.assign(state, { endpoint });
   },

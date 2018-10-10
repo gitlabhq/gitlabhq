@@ -1,79 +1,72 @@
 <script>
-  import { mapActions, mapGetters, mapState } from 'vuex';
-  import { s__ } from '~/locale';
-  import { componentNames } from './issue_body';
-  import ReportSection from './report_section.vue';
-  import SummaryRow from './summary_row.vue';
-  import IssuesList from './issues_list.vue';
-  import Modal from './modal.vue';
-  import createStore from '../store';
-  import { summaryTextBuilder, reportTextBuilder, statusIcon } from '../store/utils';
+import { mapActions, mapGetters, mapState } from 'vuex';
+import { s__ } from '~/locale';
+import { componentNames } from './issue_body';
+import ReportSection from './report_section.vue';
+import SummaryRow from './summary_row.vue';
+import IssuesList from './issues_list.vue';
+import Modal from './modal.vue';
+import createStore from '../store';
+import { summaryTextBuilder, reportTextBuilder, statusIcon } from '../store/utils';
 
-  export default {
-    name: 'GroupedTestReportsApp',
-    store: createStore(),
-    components: {
-      ReportSection,
-      SummaryRow,
-      IssuesList,
-      Modal,
+export default {
+  name: 'GroupedTestReportsApp',
+  store: createStore(),
+  components: {
+    ReportSection,
+    SummaryRow,
+    IssuesList,
+    Modal,
+  },
+  props: {
+    endpoint: {
+      type: String,
+      required: true,
     },
-    props: {
-      endpoint: {
-        type: String,
-        required: true,
-      },
-    },
-    componentNames,
-    computed: {
-      ...mapState([
-        'reports',
-        'isLoading',
-        'hasError',
-        'summary',
-      ]),
-      ...mapState({
-        modalTitle: state => state.modal.title || '',
-        modalData: state => state.modal.data || {},
-      }),
-      ...mapGetters([
-        'summaryStatus',
-      ]),
-      groupedSummaryText() {
-        if (this.isLoading) {
-          return s__('Reports|Test summary results are being parsed');
-        }
+  },
+  componentNames,
+  computed: {
+    ...mapState(['reports', 'isLoading', 'hasError', 'summary']),
+    ...mapState({
+      modalTitle: state => state.modal.title || '',
+      modalData: state => state.modal.data || {},
+    }),
+    ...mapGetters(['summaryStatus']),
+    groupedSummaryText() {
+      if (this.isLoading) {
+        return s__('Reports|Test summary results are being parsed');
+      }
 
-        if (this.hasError) {
-          return s__('Reports|Test summary failed loading results');
-        }
+      if (this.hasError) {
+        return s__('Reports|Test summary failed loading results');
+      }
 
-        return summaryTextBuilder(s__('Reports|Test summary'), this.summary);
-      },
+      return summaryTextBuilder(s__('Reports|Test summary'), this.summary);
     },
-    created() {
-      this.setEndpoint(this.endpoint);
+  },
+  created() {
+    this.setEndpoint(this.endpoint);
 
-      this.fetchReports();
+    this.fetchReports();
+  },
+  methods: {
+    ...mapActions(['setEndpoint', 'fetchReports']),
+    reportText(report) {
+      const summary = report.summary || {};
+      return reportTextBuilder(report.name, summary);
     },
-    methods: {
-      ...mapActions(['setEndpoint', 'fetchReports']),
-      reportText(report) {
-        const summary = report.summary || {};
-        return reportTextBuilder(report.name, summary);
-      },
-      getReportIcon(report) {
-        return statusIcon(report.status);
-      },
-      shouldRenderIssuesList(report) {
-        return (
-          report.existing_failures.length > 0 ||
-          report.new_failures.length > 0 ||
-          report.resolved_failures.length > 0
-        );
-      },
+    getReportIcon(report) {
+      return statusIcon(report.status);
     },
-  };
+    shouldRenderIssuesList(report) {
+      return (
+        report.existing_failures.length > 0 ||
+        report.new_failures.length > 0 ||
+        report.resolved_failures.length > 0
+      );
+    },
+  },
+};
 </script>
 <template>
   <report-section
