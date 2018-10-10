@@ -3,11 +3,11 @@ module Gitlab
     module Status
       class Scheduled < Status::Core
         def text
-          s_('CiStatusText|scheduled')
+          s_('CiStatusText|delayed')
         end
 
         def label
-          s_('CiStatusLabel|scheduled')
+          s_('CiStatusLabel|delayed')
         end
 
         def icon
