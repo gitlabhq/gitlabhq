@@ -97,6 +97,7 @@ module QA
       module Integration
         autoload :Github, 'qa/scenario/test/integration/github'
         autoload :LDAP, 'qa/scenario/test/integration/ldap'
+        autoload :InstanceSAML, 'qa/scenario/test/integration/instance_saml'
         autoload :Kubernetes, 'qa/scenario/test/integration/kubernetes'
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
         autoload :ObjectStorage, 'qa/scenario/test/integration/object_storage'
@@ -299,6 +300,18 @@ module QA
   module Specs
     autoload :Config, 'qa/specs/config'
     autoload :Runner, 'qa/specs/runner'
+  end
+
+  ##
+  # Classes that describe the structure of vendor/third party application pages
+  #
+  module Vendor
+    module SAMLIdp
+      module Page
+        autoload :Base, 'qa/vendor/saml_idp/page/base'
+        autoload :Login, 'qa/vendor/saml_idp/page/login'
+      end
+    end
   end
 end
 
