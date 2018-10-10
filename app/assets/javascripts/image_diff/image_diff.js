@@ -60,8 +60,10 @@ export default class ImageDiff {
   }
 
   renderBadge(discussionEl, index) {
-    const imageBadge = imageDiffHelper
-      .generateBadgeFromDiscussionDOM(this.imageFrameEl, discussionEl);
+    const imageBadge = imageDiffHelper.generateBadgeFromDiscussionDOM(
+      this.imageFrameEl,
+      discussionEl,
+    );
 
     this.imageBadges.push(imageBadge);
 

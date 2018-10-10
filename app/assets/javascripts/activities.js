@@ -9,7 +9,7 @@ export default class Activities {
   constructor() {
     Pager.init(20, true, false, data => data, this.updateTooltips);
 
-    $('.event-filter-link').on('click', (e) => {
+    $('.event-filter-link').on('click', e => {
       e.preventDefault();
       this.toggleFilter(e.currentTarget);
       this.reloadActivities();

@@ -12,16 +12,16 @@ export default class BuildArtifacts {
   }
   // eslint-disable-next-line class-methods-use-this
   disablePropagation() {
-    $('.top-block').on('click', '.download', function (e) {
+    $('.top-block').on('click', '.download', function(e) {
       return e.stopPropagation();
     });
-    return $('.tree-holder').on('click', 'tr[data-link] a', function (e) {
+    return $('.tree-holder').on('click', 'tr[data-link] a', function(e) {
       return e.stopImmediatePropagation();
     });
   }
   // eslint-disable-next-line class-methods-use-this
   setupEntryClick() {
-    return $('.tree-holder').on('click', 'tr[data-link]', function () {
+    return $('.tree-holder').on('click', 'tr[data-link]', function() {
       visitUrl(this.dataset.link, convertPermissionToBoolean(this.dataset.externalLink));
     });
   }
@@ -37,11 +37,15 @@ export default class BuildArtifacts {
     // We want the tooltip to show if you hover anywhere on the row
     // But be placed below and in the middle of the file name
     $('.js-artifact-tree-row')
-      .on('mouseenter', (e) => {
-        $(e.currentTarget).find('.js-artifact-tree-tooltip').tooltip('show');
+      .on('mouseenter', e => {
+        $(e.currentTarget)
+          .find('.js-artifact-tree-tooltip')
+          .tooltip('show');
       })
-      .on('mouseleave', (e) => {
-        $(e.currentTarget).find('.js-artifact-tree-tooltip').tooltip('hide');
+      .on('mouseleave', e => {
+        $(e.currentTarget)
+          .find('.js-artifact-tree-tooltip')
+          .tooltip('hide');
       });
   }
 }
