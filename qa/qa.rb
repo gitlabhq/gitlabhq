@@ -16,6 +16,8 @@ module QA
     autoload :Browser, 'qa/runtime/browser'
     autoload :Env, 'qa/runtime/env'
     autoload :Address, 'qa/runtime/address'
+    autoload :Path, 'qa/runtime/path'
+    autoload :Fixtures, 'qa/runtime/fixtures'
 
     module API
       autoload :Client, 'qa/runtime/api/client'
@@ -214,6 +216,10 @@ module QA
         autoload :New, 'qa/page/project/wiki/new'
         autoload :Show, 'qa/page/project/wiki/show'
       end
+
+      module WebIDE
+        autoload :Edit, 'qa/page/project/web_ide/edit'
+      end
     end
 
     module Profile
@@ -260,6 +266,8 @@ module QA
       autoload :Dropzone, 'qa/page/component/dropzone'
       autoload :GroupsFilter, 'qa/page/component/groups_filter'
       autoload :Select2, 'qa/page/component/select2'
+      autoload :DropdownFilter, 'qa/page/component/dropdown_filter'
+
       module Issuable
         autoload :Common, 'qa/page/component/issuable/common'
       end

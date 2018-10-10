@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'capybara/dsl'
 
 module QA
@@ -6,6 +8,8 @@ module QA
       include Capybara::DSL
       include Scenario::Actable
       extend SingleForwardable
+
+      ElementNotFound = Class.new(RuntimeError)
 
       def_delegators :evaluator, :view, :views
 

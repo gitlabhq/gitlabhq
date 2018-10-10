@@ -45,7 +45,7 @@ export default {
         <new-entry-button
           :label="__('New file')"
           :show-label="false"
-          class="d-flex border-0 p-0 mr-3"
+          class="d-flex border-0 p-0 mr-3 qa-new-file"
           icon="doc-new"
           @click="openNewEntryModal({ type: 'blob' })"
         />

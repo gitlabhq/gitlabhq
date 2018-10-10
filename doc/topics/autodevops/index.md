@@ -7,6 +7,14 @@ applications.
 
 ## Overview
 
+NOTE: **Enabled by default:**
+Starting with GitLab 11.3, the Auto DevOps pipeline will be enabled by default for all
+projects. If it's not explicitly enabled for the project, Auto DevOps will be automatically
+disabled on the first pipeline failure. Your project will continue to use an alternative
+[CI/CD configuration file](../../ci/yaml/README.md) if one is found. A GitLab
+administrator can [change this setting](../../user/admin_area/settings/continuous_integration.html#auto-devops)
+in the admin area.
+
 With Auto DevOps, the software development process becomes easier to set up
 as every project can have a complete workflow from verification to monitoring
 without needing to configure anything. Just push your code and GitLab takes
@@ -214,21 +222,15 @@ manually triggered either by pushing a new commit to the repository or by visiti
 a new pipeline for your default branch, generally `master`.
 
 NOTE: **Note:**
-If you are a GitLab Administrator, you can enable Auto DevOps instance wide
-in **Admin Area > Settings > Continuous Integration and Deployment**. Doing that,
-all the projects that haven't explicitly set an option will have Auto DevOps
-enabled by default.
+If you are a GitLab Administrator, you can
+[enable/disable Auto DevOps instance-wide](../../user/admin_area/settings/continuous_integration.md#auto-devops),
+and all projects that haven't explicitly set an option will have Auto DevOps
+enabled/disabled by default.
 
 NOTE: **Note:**
 There is also a feature flag to enable Auto DevOps to a percentage of projects
 which can be enabled from the console with
 `Feature.get(:force_autodevops_on_by_default).enable_percentage_of_actors(10)`.
-
-NOTE: **Enabled by default:**
-Starting with GitLab 11.3, the Auto DevOps pipeline will be enabled by default for all
-projects. If it's not explicitly enabled for the project, Auto DevOps will be automatically
-disabled on the first pipeline failure. Your project will continue to use an alternative
-[CI/CD configuration file](../../ci/yaml/README.md) if one is found.
 
 ### Deployment strategy
 
