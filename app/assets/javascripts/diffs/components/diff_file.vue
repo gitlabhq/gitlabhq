@@ -46,10 +46,10 @@ export default {
     showExpandMessage() {
       return (
         this.isCollapsed ||
-        !this.file.highlightedDiffLines &&
-        !this.isLoadingCollapsedDiff &&
-        !this.file.tooLarge &&
-        this.file.text
+        (!this.file.highlightedDiffLines &&
+          !this.isLoadingCollapsedDiff &&
+          !this.file.tooLarge &&
+          this.file.text)
       );
     },
     showLoadingIcon() {

@@ -2,7 +2,7 @@ import utils from './utils';
 import { SELECTED_CLASS, IGNORE_CLASS } from './constants';
 
 class DropDown {
-  constructor(list, config = { }) {
+  constructor(list, config = {}) {
     this.currentIndex = 0;
     this.hidden = true;
     this.list = typeof list === 'string' ? document.querySelector(list) : list;
@@ -157,7 +157,7 @@ class DropDown {
   static setImagesSrc(template) {
     const images = [...template.querySelectorAll('img[data-src]')];
 
-    images.forEach((image) => {
+    images.forEach(image => {
       const img = image;
 
       img.src = img.getAttribute('data-src');
