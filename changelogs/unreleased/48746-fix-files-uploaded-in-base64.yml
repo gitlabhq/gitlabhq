@@ -1,0 +1,6 @@
+---
+title: Fix issue where files were base64 encoded after uploading non-text files from
+  the WebIDE.
+merge_request: 22252
+author:
+type: fixed
