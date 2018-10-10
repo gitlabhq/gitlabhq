@@ -338,8 +338,8 @@ stages:
   variables:
     SETUP_DB: "false"
   script:
-    - CE_HEAD=$(ruby -r./scripts/ee_specific_check/ee_specific_check -e'puts EESpecificCheck.fetch_remote_ce_branch')
-    - git checkout -f $CE_HEAD
+    - ruby -r./scripts/ee_specific_check/ee_specific_check -e'EESpecificCheck.fetch_remote_ce_branch'
+    - git checkout -f FETCH_HEAD
     - . scripts/utils.sh
     - . scripts/prepare_build.sh
     - date
@@ -468,7 +468,7 @@ retrieve-tests-metadata:
   retry: 0
   only:
     - branches
-    - //@gitlab-org/gitlab-ee
+    - branches@gitlab-org/gitlab-ee
   except:
     - master
     - /[\d-]+-stable(-ee)?/
