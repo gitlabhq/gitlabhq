@@ -18,7 +18,7 @@ module QA
           project.description = 'Add file templates via the Files view'
         end
 
-        Page::Menu::Main.act { sign_out }
+        Page::Main::Menu.act { sign_out }
       end
 
       templates = [

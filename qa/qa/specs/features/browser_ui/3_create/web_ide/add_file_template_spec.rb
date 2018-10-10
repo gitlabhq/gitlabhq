@@ -27,7 +27,7 @@ module QA
           page.commit_changes
         end
 
-        Page::Menu::Main.act { sign_out }
+        Page::Main::Menu.act { sign_out }
       end
 
       templates = [
