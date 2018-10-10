@@ -6,6 +6,7 @@
 import Vue from 'vue';
 import '~/vue_shared/models/label';
 import IssueProject from './project';
+import boardsStore from '../stores/boards_store';
 
 class ListIssue {
   constructor (obj, defaultAvatar) {
@@ -86,7 +87,7 @@ class ListIssue {
   }
 
   getLists () {
-    return gl.issueBoards.BoardsStore.state.lists.filter(list => list.findIssue(this.id));
+    return boardsStore.state.lists.filter(list => list.findIssue(this.id));
   }
 
   updateData(newData) {

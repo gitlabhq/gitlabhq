@@ -1,5 +1,6 @@
 import FilteredSearchContainer from '../filtered_search/container';
 import FilteredSearchManager from '../filtered_search/filtered_search_manager';
+import boardsStore from './stores/boards_store';
 
 export default class FilteredSearchBoards extends FilteredSearchManager {
   constructor(store, updateUrl = false, cantEdit = []) {
@@ -23,7 +24,7 @@ export default class FilteredSearchBoards extends FilteredSearchManager {
     this.store.path = path.substr(1);
 
     if (this.updateUrl) {
-      gl.issueBoards.BoardsStore.updateFiltersUrl();
+      boardsStore.updateFiltersUrl();
     }
   }
 
