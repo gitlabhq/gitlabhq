@@ -29,7 +29,7 @@ module Gitlab
 
           def execute_in
             remaining_seconds = [0, subject.scheduled_at - Time.now].max
-            duration_in_numbers(remaining_seconds, true)
+            duration_in_numbers(remaining_seconds)
           end
         end
       end

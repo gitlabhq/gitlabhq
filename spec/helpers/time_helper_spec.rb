@@ -22,34 +22,17 @@ describe TimeHelper do
   describe "#duration_in_numbers" do
     using RSpec::Parameterized::TableSyntax
 
-    context "without passing allow_overflow" do
-      where(:duration, :formatted_string) do
-        0                              | "00:00"
-        1.second                       | "00:01"
-        42.seconds                     | "00:42"
-        2.minutes + 1.second           | "02:01"
-        3.hours + 2.minutes + 1.second | "03:02:01"
-        30.hours                       | "06:00:00"
-      end
-
-      with_them do
-        it { expect(duration_in_numbers(duration)).to eq formatted_string }
-      end
+    where(:duration, :formatted_string) do
+      0                              | "00:00"
+      1.second                       | "00:01"
+      42.seconds                     | "00:42"
+      2.minutes + 1.second           | "02:01"
+      3.hours + 2.minutes + 1.second | "03:02:01"
+      30.hours                       | "30:00:00"
     end
 
-    context "with allow_overflow = true" do
-      where(:duration, :formatted_string) do
-        0                              | "00:00:00"
-        1.second                       | "00:00:01"
-        42.seconds                     | "00:00:42"
-        2.minutes + 1.second           | "00:02:01"
-        3.hours + 2.minutes + 1.second | "03:02:01"
-        30.hours                       | "30:00:00"
-      end
-
-      with_them do
-        it { expect(duration_in_numbers(duration, true)).to eq formatted_string }
-      end
+    with_them do
+      it { expect(duration_in_numbers(duration)).to eq formatted_string }
     end
   end
 end
