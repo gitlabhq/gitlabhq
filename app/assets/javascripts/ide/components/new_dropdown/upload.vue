@@ -25,33 +25,21 @@ export default {
     },
   },
   methods: {
-    createFile(target, file, isText) {
+    createFile(target, file) {
       const { name } = file;
-      let { result } = target;
-
-      if (!isText) {
-        // eslint-disable-next-line prefer-destructuring
-        result = result.split('base64,')[1];
-      }
+      const { result } = target;
 
       this.$emit('create', {
         name: `${this.path ? `${this.path}/` : ''}${name}`,
         type: 'blob',
         content: result,
-        base64: !isText,
       });
     },
     readFile(file) {
       const reader = new FileReader();
-      const isText = file.type.match(/text.*/) !== null;
 
-      reader.addEventListener('load', e => this.createFile(e.target, file, isText), { once: true });
-
-      if (isText) {
-        reader.readAsText(file);
-      } else {
-        reader.readAsDataURL(file);
-      }
+      reader.addEventListener('load', e => this.createFile(e.target, file), { once: true });
+      reader.readAsBinaryString(file);
     },
     openFile() {
       Array.from(this.$refs.fileUpload.files).forEach(file => this.readFile(file));
