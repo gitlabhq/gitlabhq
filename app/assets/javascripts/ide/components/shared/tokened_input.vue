@@ -30,9 +30,7 @@ export default {
   },
   computed: {
     placeholderText() {
-      return this.tokens.length
-        ? ''
-        : this.placeholder;
+      return this.tokens.length ? '' : this.placeholder;
     },
   },
   watch: {

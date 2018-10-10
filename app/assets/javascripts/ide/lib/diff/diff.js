@@ -11,14 +11,16 @@ export const computeDiff = (originalContent, newContent) => {
     if (findOnLine) {
       Object.assign(findOnLine, change, {
         modified: true,
-        endLineNumber: (lineNumber + change.count) - 1,
+        endLineNumber: lineNumber + change.count - 1,
       });
     } else if ('added' in change || 'removed' in change) {
-      acc.push(Object.assign({}, change, {
-        lineNumber,
-        modified: undefined,
-        endLineNumber: (lineNumber + change.count) - 1,
-      }));
+      acc.push(
+        Object.assign({}, change, {
+          lineNumber,
+          modified: undefined,
+          endLineNumber: lineNumber + change.count - 1,
+        }),
+      );
     }
 
     if (!change.removed) {

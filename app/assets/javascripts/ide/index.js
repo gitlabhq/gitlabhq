@@ -21,10 +21,7 @@ Vue.use(Translate);
 export function initIde(el, options = {}) {
   if (!el) return null;
 
-  const {
-    extraInitialData = () => ({}),
-    rootComponent = ide,
-  } = options;
+  const { extraInitialData = () => ({}), rootComponent = ide } = options;
 
   return new Vue({
     el,

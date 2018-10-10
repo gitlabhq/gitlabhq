@@ -25,10 +25,7 @@ export default {
       return `discard-file-${this.path}`;
     },
     modalTitle() {
-      return sprintf(
-        __('Discard changes to %{path}?'),
-        { path: this.path },
-      );
+      return sprintf(__('Discard changes to %{path}?'), { path: this.path });
     },
   },
   methods: {
