@@ -40,37 +40,24 @@ describe('new dropdown upload', () => {
 
   describe('readFile', () => {
     beforeEach(() => {
-      spyOn(FileReader.prototype, 'readAsText');
-      spyOn(FileReader.prototype, 'readAsDataURL');
+      spyOn(FileReader.prototype, 'readAsBinaryString');
     });
 
-    it('calls readAsText for text files', () => {
+    it('calls readAsBinaryString for all files', () => {
+
       const file = {
         type: 'text/html',
       };
 
       vm.readFile(file);
 
-      expect(FileReader.prototype.readAsText).toHaveBeenCalledWith(file);
-    });
-
-    it('calls readAsDataURL for non-text files', () => {
-      const file = {
-        type: 'images/png',
-      };
-
-      vm.readFile(file);
-
-      expect(FileReader.prototype.readAsDataURL).toHaveBeenCalledWith(file);
+      expect(FileReader.prototype.readAsBinaryString).toHaveBeenCalledWith(file);
     });
   });
 
   describe('createFile', () => {
     const target = {
       result: 'content',
-    };
-    const binaryTarget = {
-      result: 'base64,base64content',
     };
     const file = {
       name: 'file',
@@ -83,19 +70,8 @@ describe('new dropdown upload', () => {
         name: file.name,
         type: 'blob',
         content: target.result,
-        base64: false,
       });
     });
 
-    it('splits content on base64 if binary', () => {
-      vm.createFile(binaryTarget, file, false);
-
-      expect(vm.$emit).toHaveBeenCalledWith('create', {
-        name: file.name,
-        type: 'blob',
-        content: binaryTarget.result.split('base64,')[1],
-        base64: true,
-      });
-    });
   });
 });
