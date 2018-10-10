@@ -15,10 +15,10 @@ For help adhering to the guidelines, see [Linting](index.md#linting).
 ## Files
 
 - [Directory structure](index.md#location-and-naming-documents): place the docs
-in the correct location.
+  in the correct location.
 - [Documentation files](index.md#documentation-files): name the files accordingly.
 - [Markdown](../../user/markdown.md): use the GitLab Flavored Markdown in the
-documentation.
+  documentation.
 
 NOTE: **Note:**
 **Do not** use capital letters, spaces, or special chars in file names,
@@ -45,15 +45,15 @@ a test that will fail if it spots a new `README.md` file.
 - Capitalize "G" and "L" in GitLab.
 - Use sentence case for titles, headings, labels, menu items, and buttons.
 - Use title case when referring to [features](https://about.gitlab.com/features/) or
-[products](https://about.gitlab.com/pricing/) (e.g., GitLab Runner, Geo,
-Issue Boards, GitLab Core, Git, Prometheus, Kubernetes, etc), and methods or methodologies
-(e.g., Continuous Integration, Continuous Deployment, Scrum, Agile, etc). Note that
-some features are also objects (e.g. "Merge Requests" and "merge requests").
+  [products](https://about.gitlab.com/pricing/) (e.g., GitLab Runner, Geo,
+  Issue Boards, GitLab Core, Git, Prometheus, Kubernetes, etc), and methods or methodologies
+  (e.g., Continuous Integration, Continuous Deployment, Scrum, Agile, etc). Note that
+  some features are also objects (e.g. "Merge Requests" and "merge requests").
 
 ## Formatting
 
 - Use double asterisks (`**`) to mark a word or text in bold (`**bold**`).
-- Use undescore (`_`) for text in italics (`_italic_`).
+- Use underscore (`_`) for text in italics (`_italic_`).
 - Put an empty line between different markups. For example:
     ```md
     ## Header
@@ -112,7 +112,7 @@ For punctuation rules, please refer to the [GitLab UX guide](https://design.gitl
   document add: `[identifier]: https://example.com`, in which case, we do
   encourage you to also add an alternative text: `[identifier]: https://example.com "Alternative text"` that appears when hovering your mouse on a link.
 - To link to internal documentation, use relative links, not full URLs. Use `../` to
-  navigate tp high-level directories, and always add the file name `file.md` at the
+  navigate to high-level directories, and always add the file name `file.md` at the
   end of the link with the `.md` extension, not `.html`.
   Example: instead of `[text](../../merge_requests/)`, use
   `[text](../../merge_requests/index.md)` or, `[text](../../ci/README.md)`, or,
@@ -130,9 +130,9 @@ To indicate the steps of navigation through the UI:
 
 - Use the exact word as shown in the UI, including any capital letters as-is.
 - Use bold text for navigation items and the char `>` as separator
-(e.g., `Navigate to your project's **Settings > CI/CD**` ).
+  (e.g., `Navigate to your project's **Settings > CI/CD**` ).
 - If there are any expandable menus, make sure to mention that the user
-needs to expand the tab to find the settings you're referring to.
+  needs to expand the tab to find the settings you're referring to.
 
 ## Images
 
@@ -147,7 +147,7 @@ needs to expand the tab to find the settings you're referring to.
 - Compress all images with <https://tinypng.com/> or similar tool.
 - Compress gifs with <https://ezgif.com/optimize> or similar tool.
 - Images should be used (only when necessary) to _illustrate_ the description
-of a process, not to _replace_ it.
+  of a process, not to _replace_ it.
 - Max image size: 100KB (gifs included).
 - The GitLab docs do not support videos yet.
 
@@ -234,10 +234,34 @@ which renders in docs.gitlab.com to:
 
 If the text spans across multiple lines it's OK to split the line.
 
-## Specific sections and terms
+## Terms
 
-To mention and/or reference specific terms in GitLab, please follow the styles
-below.
+To maintain consistency through GitLab documentation, the following guides documentation authors
+on agreed styles and usage of terms.
+
+### Describing UI elements
+
+The following are styles to follow when describing UI elements on a screen:
+
+- For elements with a visible label, use that label in bold with matching case. For example, `the **Cancel** button`.
+- For elements with a tooltip or hover label, use that label in bold with matching case. For example, `the **Add status emoji** button`.
+
+### Verbs for UI elements
+
+The following are verbs that should be used in preference to alternatives.
+
+| Use      | Used for                        | Do not use                 |
+|:---------|:--------------------------------|:---------------------------|
+| "click"  | buttons, links, menu items      | "hit", "press", "select"   |
+| "check"  | checkboxes                      | "enable", "click", "press" |
+| "select" | dropdowns                       | "pick"                     |
+| "expand" | expandable sections             | "open"                     |
+
+### Other Verbs
+
+| Use      | Used for                        | Do not use                 |
+|:---------|:--------------------------------|:---------------------------|
+| "go"     | making a browser go to location | "navigate", "open"         |
 
 ### GitLab versions and tiers
 
@@ -295,8 +319,8 @@ keyword "only":
 - For GitLab Ultimate: `**[ULTIMATE ONLY]**`.
 - For GitLab Core: `**[CORE ONLY]**`.
 
-The tier should be ideally added to headers, so that the full badge will be displayed.
-But it can be also mentioned from paragraphs, list items, and table cells. For these cases,
+The tier should be ideally added to headers, so that the full badge will be displayed. But it can
+be also mentioned from paragraphs, list items, and table cells. For these cases,
 the tier mention will be represented by an orange question mark.
 E.g., `**[STARTER]**` renders **[STARTER]**, `**[STARTER ONLY]**` renders **[STARTER ONLY]**.
 
@@ -309,6 +333,10 @@ Introduced by [!244](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/24
 the special markup `**[STARTER]**` will generate a `span` element to trigger the
 badges and tooltips (`<span class="badge-trigger starter">`). When the keyword
 "only" is added, the corresponding GitLab.com badge will not be displayed.
+
+## Specific sections
+
+Certain styles should be applied to specific sections. Styles for specific sections are outlined below.
 
 ### GitLab Restart
 
