@@ -12,5 +12,5 @@
       - if can_create_wiki
         %p
           Add a homepage to your wiki that contains information about your project and GitLab will display it here instead of this message.
-        %p
-          = link_to "Create your first page", project_wiki_path(@project, :home)
+          %p
+            = link_to "Create your first page", project_wiki_path(@project, :home) + '?view=create', class: "btn btn-primary"
