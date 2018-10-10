@@ -55,7 +55,9 @@ module EE
       end
 
       with_scope :subject
-      condition(:security_reports_feature_available) { @subject.security_reports_feature_available? }
+      condition(:security_dashboard_feature_disabled) do
+        !@subject.feature_available?(:security_dashboard)
+      end
 
       condition(:prometheus_alerts_enabled) do
         @subject.feature_available?(:prometheus_alerts, @user)
@@ -114,7 +116,13 @@ module EE
 
       rule { can?(:public_access) }.enable :read_package
 
-      rule { can?(:developer_access) & security_reports_feature_available }.enable :read_project_security_dashboard
+      rule { can?(:developer_access) }.policy do
+        enable :read_project_security_dashboard
+      end
+
+      rule { security_dashboard_feature_disabled }.policy do
+        prevent :read_project_security_dashboard
+      end
 
       rule { can?(:read_project) }.enable :read_vulnerability_feedback
 

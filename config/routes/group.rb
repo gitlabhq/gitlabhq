@@ -78,6 +78,11 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     # EE-specific start
     namespace :security do
       resource :dashboard, only: [:show], controller: :dashboard
+      resources :vulnerabilities, only: [:index], controller: :vulnerabilities do
+        collection do
+          get :summary
+        end
+      end
     end
     # EE-specific end
 

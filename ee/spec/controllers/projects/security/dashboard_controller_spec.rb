@@ -34,10 +34,12 @@ describe Projects::Security::DashboardController do
       get :show, namespace_id: project.namespace, project_id: project
     end
 
-    context 'when security reports features are enabled' do
-      it 'returns the latest pipeline with security reports for project' do
-        stub_licensed_features(sast: true)
+    context 'when security dashboard feature is enabled' do
+      before do
+        stub_licensed_features(security_dashboard: true)
+      end
 
+      it 'returns the latest pipeline with security reports for project' do
         show_security_dashboard
 
         expect(response).to have_gitlab_http_status(200)
@@ -45,10 +47,12 @@ describe Projects::Security::DashboardController do
       end
     end
 
-    context 'when security reports features are disabled' do
-      it 'returns the latest pipeline with security reports for project' do
-        stub_licensed_features(sast: false, dependency_scanning: false, sast_container: false, dast: false)
+    context 'when security dashboard feature is disabled' do
+      before do
+        stub_licensed_features(security_dashboard: false)
+      end
 
+      it 'returns 404' do
         show_security_dashboard
 
         expect(response).to have_gitlab_http_status(404)
@@ -59,9 +63,11 @@ describe Projects::Security::DashboardController do
     context 'with unauthorized user for security dashboard' do
       let(:guest) { create(:user) }
 
-      it 'returns a not found 404 response' do
-        stub_licensed_features(sast: true)
+      before do
+        stub_licensed_features(security_dashboard: true)
+      end
 
+      it 'returns a not found 404 response' do
         group.add_guest(guest)
 
         show_security_dashboard guest

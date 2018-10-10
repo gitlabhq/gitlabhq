@@ -1,0 +1,14 @@
+{
+  "type" : "object",
+  "properties" : {
+    "undefined" : { "type": "integer" },
+    "ignore" : { "type": "integer" },
+    "unknown" : { "type": "integer" },
+    "experimental" : { "type": "integer" },
+    "low" : { "type": "integer" },
+    "medium" : { "type": "integer" },
+    "high" : { "type": "integer" },
+    "critical" : { "type": "integer" }
+  },
+  "additional_properties" : false
+}

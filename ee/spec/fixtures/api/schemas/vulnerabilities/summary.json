@@ -1,0 +1,16 @@
+{
+  "type" : "object",
+  "required" : [
+    "dast",
+    "sast",
+    "container_scanning",
+    "dependency_scanning"
+  ],
+  "properties" : {
+    "dast" : { "$ref": "summary_for_report_type.json" },
+    "sast" : { "$ref": "summary_for_report_type.json" },
+    "container_scanning" : { "$ref": "summary_for_report_type.json" },
+    "dependency_scanning" : { "$ref": "summary_for_report_type.json" }
+  },
+  "additional_properties" : false
+}
