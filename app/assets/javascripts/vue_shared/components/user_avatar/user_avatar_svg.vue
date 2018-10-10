@@ -1,5 +1,4 @@
 <script>
-
 /* This is a re-usable vue component for rendering a user avatar svg (typically
   for a blank state). It will receive styles comparable to the user avatar,
   but no image is loaded, it isn't wrapped in a link, and tooltips aren't supported.
@@ -42,4 +41,3 @@ export default {
     v-html="svg"
   />
 </template>
-

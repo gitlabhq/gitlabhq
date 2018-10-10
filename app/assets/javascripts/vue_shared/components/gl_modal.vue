@@ -41,10 +41,14 @@ export default {
     },
   },
   mounted() {
-    $(this.$el).on('shown.bs.modal', this.opened).on('hidden.bs.modal', this.closed);
+    $(this.$el)
+      .on('shown.bs.modal', this.opened)
+      .on('hidden.bs.modal', this.closed);
   },
   beforeDestroy() {
-    $(this.$el).off('shown.bs.modal', this.opened).off('hidden.bs.modal', this.closed);
+    $(this.$el)
+      .off('shown.bs.modal', this.opened)
+      .off('hidden.bs.modal', this.closed);
   },
   methods: {
     emitCancel(event) {
