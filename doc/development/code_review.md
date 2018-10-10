@@ -1,14 +1,31 @@
 # Code Review Guidelines
 
+This guide contains advice and best practices for performing code review, and
+having your code reviewed.
+
+All merge requests for GitLab CE and EE, whether written by a GitLab team member
+or a volunteer contributor, must go through a code review process to ensure the
+code is effective, understandable, and maintainable.
+
 ## Getting your merge request reviewed, approved, and merged
 
-There are a few rules to get your merge request accepted:
+You are strongly encouraged to get your code **reviewed** by a 
+[reviewer](https://about.gitlab.com/handbook/engineering/#reviewer) as soon as
+there is any code to review, to get a second opinion on the chosen solution and
+implementation, and an extra pair of eyes looking for bugs, logic problems, or
+uncovered edge cases. The reviewer can be from a different team, but it is often
+useful to pick someone who knows the domain well.
 
-1. Your merge request can only be **merged by a [maintainer][team]**.
+If you need some guidance (e.g. it's your first merge request), feel free to ask
+one of the [Merge request coaches][team].
+
+Depending on the areas your merge request touches, it must be **approved** by one
+or more [maintainers](https://about.gitlab.com/handbook/engineering/#maintainer):
+
    1. If your merge request includes backend changes [^1], it must be
-      **approved by a [backend maintainer][projects]**.
+      **approved by a [backend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce_maintainers_backend)**.
    1. If your merge request includes frontend changes [^1], it must be
-      **approved by a [frontend maintainer][projects]**.
+      **approved by a [frontend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce_maintainers_frontend)**.
    1. If your merge request includes UX changes [^1], it must be
       **approved by a [UX team member][team]**.
    1. If your merge request includes adding a new JavaScript library [^1], it must be
@@ -17,19 +34,14 @@ There are a few rules to get your merge request accepted:
       **approved by a [UX lead][team]**.
    1. If your merge request includes a new dependency or a filesystem change, it must be
       **approved by a [Distribution team member][team]**. See how to work with the [Distribution team](https://about.gitlab.com/handbook/engineering/dev-backend/distribution/) for more details.
-   1. If more than one of the items above apply to your merge request, it must be
-      **approved by all listed people**. The last of the people to approve can then merge it.
-1. To lower the amount of merge requests maintainers need to review, you are encouraged
-   ask or assign any [reviewers][projects] for a first review.
-   1. If you need some guidance (e.g. it's your first merge request), feel free
-      to ask one of the [Merge request coaches][team].
-      
-1. Keep in mind that maintainers are also going to perform a final code review.
-   The ideal scenario is that the reviewer has already addressed any concerns
-   the maintainer would have found, and the maintainer only has to perform the
-   merge, but be prepared for further review comments.
 
-For more guidance, see [CONTRIBUTING.md](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md).
+Getting your merge request **merged** also requires a maintainer. If it requires
+more than one approval, the last maintainer to review and approve it will also merge it.
+
+Keep in mind that maintainers are also going to perform a final code review.
+The ideal scenario is that the reviewer has already identified any concerns
+the maintainer would have found, and the maintainer only has to perform the
+merge, but be prepared for further review comments.
 
 ### The role of the maintainer
 
@@ -53,13 +65,9 @@ To reach this level of confidence, an author is expected to involve other people
 in the investigation and implementation processes as appropriate. They may want
 to reach out to domain experts to discuss different solutions or get an 
 implementation reviewed, to product managers and UX designers to clear up 
-confusion or verify that the end result matches what they had in mind, or to 
-database specialists to get input on the data model or specific queries.
-
-They are also strongly encouraged to get their code reviewed by any other developer
-as soon as there is any code to review, to get a second opinion on the chosen 
-solution and implementation and an extra pair of eyes looking for bugs,
-logic problems, or uncovered edge cases, and to ease the job of the maintainer.
+confusion or verify that the end result matches what they had in mind, to 
+database specialists to get input on the data model or specific queries,
+or to any other developer to get a code review.
 
 Of course, a maintainer will also make note of any issues with the solution or
 implementation they may find, but in general will assume that the author is the
@@ -75,18 +83,6 @@ easily understood by all contributors, from both inside and outside the company,
 without requiring team-specific expertise.
 
 ## Best practices
-
-This guide contains advice and best practices for performing code review, and
-having your code reviewed.
-
-All merge requests for GitLab CE and EE, whether written by a GitLab team member
-or a volunteer contributor, must go through a code review process to ensure the
-code is effective, understandable, and maintainable.
-
-Any developer can, and is encouraged to, perform code review on merge requests
-of colleagues and contributors. However, the final decision to accept a merge
-request is up to one the project's maintainers, denoted on the
-[engineering projects][projects].
 
 ### Everyone
 
