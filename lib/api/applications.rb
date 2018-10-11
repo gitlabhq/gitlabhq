@@ -24,6 +24,23 @@ module API
           render_validation_error! application
         end
       end
+
+      desc 'Get applications' do
+        success Entities::ApplicationWithSecret
+      end
+      get do
+        applications = Doorkeeper::Application.all
+        present applications, with: Entities::Application
+      end
+
+      # rubocop: disable CodeReuse/ActiveRecord
+      desc 'Delete an application'
+      delete ':id' do
+        Doorkeeper::Application.find_by(id: params[:id]).destroy
+
+        status 204
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

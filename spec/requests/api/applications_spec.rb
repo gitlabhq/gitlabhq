@@ -5,6 +5,7 @@ describe API::Applications, :api do
 
   let(:admin_user) { create(:user, admin: true) }
   let(:user) { create(:user, admin: false) }
+  let(:application) { create(:application, name: 'application_name', redirect_uri: 'http://application.url', scopes: '') }
 
   describe 'POST /applications' do
     context 'authenticated and authorized user' do
@@ -78,6 +79,43 @@ describe API::Applications, :api do
         expect do
           post api('/applications'), name: 'application_name', redirect_uri: 'http://application.url'
         end.not_to change { Doorkeeper::Application.count }
+
+        expect(response).to have_http_status 401
+      end
+    end
+  end
+
+  describe 'GET /applications' do
+    context 'authenticated and authorized user' do
+      it 'can list application' do
+        get api('/applications')
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to be_a(Array)
+      end
+    end
+
+    context 'non-authenticated user' do
+      it 'cannot list application' do
+        get api('/applications')
+
+        expect(response).to have_http_status 401
+      end
+    end
+  end
+
+  describe 'DELETE /applications/:id' do
+    context 'authenticated and authorized user' do
+      it 'can delete an application' do
+        delete api("/applications/#{application.id}")
+
+        expect(response).to have_gitlab_http_status(204)
+      end
+    end
+
+    context 'non-authenticated user' do
+      it 'cannot delete an application' do
+        delete api("/applications/#{application.id}")
 
         expect(response).to have_http_status 401
       end
