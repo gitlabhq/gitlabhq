@@ -74,6 +74,8 @@ common actions on issues or merge requests
      timeout (defines the maximum amount of time in minutes that a job is able run), custom path for `.gitlab-ci.yml`, test coverage parsing, pipeline's visibility, and much more
   - [GKE cluster integration](clusters/index.md): Connecting your GitLab project
     with Google Kubernetes Engine
+  - [Feature Flags](operations/feature_flags.md): Feature flags allow you to ship a project in
+    different flavors by dynamically toggling certain functionality **[PREMIUM]**
 - [GitLab Pages](pages/index.md): Build, test, and deploy your static
 website with GitLab Pages
 
