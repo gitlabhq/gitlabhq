@@ -41,10 +41,14 @@ export default {
     },
   },
   mounted() {
-    $(this.$el).on('shown.bs.modal', this.opened).on('hidden.bs.modal', this.closed);
+    $(this.$el)
+      .on('shown.bs.modal', this.opened)
+      .on('hidden.bs.modal', this.closed);
   },
   beforeDestroy() {
-    $(this.$el).off('shown.bs.modal', this.opened).off('hidden.bs.modal', this.closed);
+    $(this.$el)
+      .off('shown.bs.modal', this.opened)
+      .off('hidden.bs.modal', this.closed);
   },
   methods: {
     emitCancel(event) {
@@ -103,7 +107,7 @@ export default {
           <slot name="footer">
             <button
               type="button"
-              class="btn js-modal-cancel-action"
+              class="btn js-modal-cancel-action qa-modal-cancel-button"
               data-dismiss="modal"
               @click="emitCancel($event)"
             >
@@ -112,7 +116,7 @@ export default {
             <button
               :class="`btn-${footerPrimaryButtonVariant}`"
               type="button"
-              class="btn js-modal-primary-action"
+              class="btn js-modal-primary-action qa-modal-primary-button"
               data-dismiss="modal"
               @click="emitSubmit($event)"
             >

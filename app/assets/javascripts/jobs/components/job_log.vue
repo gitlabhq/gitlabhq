@@ -1,17 +1,17 @@
 <script>
-  export default {
-    name: 'JobLog',
-    props: {
-      trace: {
-        type: String,
-        required: true,
-      },
-      isComplete: {
-        type: Boolean,
-        required: true,
-      },
+export default {
+  name: 'JobLog',
+  props: {
+    trace: {
+      type: String,
+      required: true,
     },
-  };
+    isComplete: {
+      type: Boolean,
+      required: true,
+    },
+  },
+};
 </script>
 <template>
   <pre class="build-trace">

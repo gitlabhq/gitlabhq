@@ -2,8 +2,7 @@
   import Vue from 'vue';
   import Flash from '../../../flash';
   import { __ } from '../../../locale';
-
-  const Store = gl.issueBoards.BoardsStore;
+  import boardsStore from '../../stores/boards_store';
 
   export default Vue.extend({
     props: {
@@ -49,7 +48,7 @@
           list.removeIssue(issue);
         });
 
-        Store.detail.issue = {};
+        boardsStore.detail.issue = {};
       },
       /**
       * Build the default patch request.

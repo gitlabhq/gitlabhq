@@ -8,7 +8,7 @@ function notificationGranted(message, opts, onclick) {
     return notification.close();
   }, 8000);
 
-  return notification.onclick = onclick || notification.close;
+  return (notification.onclick = onclick || notification.close);
 }
 
 function notifyPermissions() {
@@ -21,7 +21,7 @@ function notifyMe(message, body, icon, onclick) {
   var opts;
   opts = {
     body: body,
-    icon: icon
+    icon: icon,
   };
   // Let's check if the browser supports notifications
   if (!('Notification' in window)) {

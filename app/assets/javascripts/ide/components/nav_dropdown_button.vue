@@ -13,9 +13,7 @@ export default {
   computed: {
     ...mapState(['currentBranchId', 'currentMergeRequestId']),
     mergeRequestLabel() {
-      return this.currentMergeRequestId
-        ? `!${this.currentMergeRequestId}`
-        : EMPTY_LABEL;
+      return this.currentMergeRequestId ? `!${this.currentMergeRequestId}` : EMPTY_LABEL;
     },
     branchLabel() {
       return this.currentBranchId || EMPTY_LABEL;

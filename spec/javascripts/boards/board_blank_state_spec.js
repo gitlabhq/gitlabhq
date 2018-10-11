@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import '~/boards/stores/boards_store';
+import boardsStore from '~/boards/stores/boards_store';
 import BoardBlankState from '~/boards/components/board_blank_state.vue';
 import { mockBoardService } from './mock_data';
 
@@ -10,7 +10,7 @@ describe('Boards blank state', () => {
   beforeEach((done) => {
     const Comp = Vue.extend(BoardBlankState);
 
-    gl.issueBoards.BoardsStore.create();
+    boardsStore.create();
     gl.boardService = mockBoardService();
 
     spyOn(gl.boardService, 'generateDefaultLists').and.callFake(() => new Promise((resolve, reject) => {
@@ -57,7 +57,7 @@ describe('Boards blank state', () => {
     vm.$el.querySelector('.btn-default').click();
 
     setTimeout(() => {
-      expect(gl.issueBoards.BoardsStore.welcomeIsHidden()).toBeTruthy();
+      expect(boardsStore.welcomeIsHidden()).toBeTruthy();
 
       done();
     });
@@ -67,9 +67,9 @@ describe('Boards blank state', () => {
     vm.$el.querySelector('.btn-success').click();
 
     setTimeout(() => {
-      expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(2);
-      expect(gl.issueBoards.BoardsStore.state.lists[0].title).toEqual('To Do');
-      expect(gl.issueBoards.BoardsStore.state.lists[1].title).toEqual('Doing');
+      expect(boardsStore.state.lists.length).toBe(2);
+      expect(boardsStore.state.lists[0].title).toEqual('To Do');
+      expect(boardsStore.state.lists[1].title).toEqual('Doing');
 
       done();
     });
@@ -81,8 +81,8 @@ describe('Boards blank state', () => {
     vm.$el.querySelector('.btn-success').click();
 
     setTimeout(() => {
-      expect(gl.issueBoards.BoardsStore.welcomeIsHidden()).toBeFalsy();
-      expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(1);
+      expect(boardsStore.welcomeIsHidden()).toBeFalsy();
+      expect(boardsStore.state.lists.length).toBe(1);
 
       done();
     });

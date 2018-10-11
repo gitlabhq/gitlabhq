@@ -148,7 +148,7 @@ export default {
       point = point.matrixTransform(this.$refs.graphData.getScreenCTM().inverse());
       point.x += 7;
 
-      this.seriesUnderMouse = this.timeSeries.filter((series) => {
+      this.seriesUnderMouse = this.timeSeries.filter(series => {
         const mouseX = series.timeSeriesScaleX.invert(point.x);
         let minDistance = Infinity;
 
@@ -221,21 +221,18 @@ export default {
         .scale(axisYScale)
         .ticks(measurements.yTicks);
 
-      d3
-        .select(this.$refs.baseSvg)
+      d3.select(this.$refs.baseSvg)
         .select('.x-axis')
         .call(xAxis);
 
       const width = this.graphWidth;
-      d3
-        .select(this.$refs.baseSvg)
+      d3.select(this.$refs.baseSvg)
         .select('.y-axis')
         .call(yAxis)
         .selectAll('.tick')
         .each(function createTickLines(d, i) {
           if (i > 0) {
-            d3
-              .select(this)
+            d3.select(this)
               .select('line')
               .attr('x2', width)
               .attr('class', 'axis-tick');

@@ -4,6 +4,7 @@ class ApplicationSetting < ActiveRecord::Base
   include CacheableAttributes
   include CacheMarkdownField
   include TokenAuthenticatable
+  include IgnorableColumn
 
   add_authentication_token_field :runners_registration_token
   add_authentication_token_field :health_check_access_token
@@ -26,6 +27,12 @@ class ApplicationSetting < ActiveRecord::Base
   serialize :domain_whitelist, Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :domain_blacklist, Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :repository_storages # rubocop:disable Cop/ActiveRecordSerialize
+
+  ignore_column :circuitbreaker_failure_count_threshold
+  ignore_column :circuitbreaker_failure_reset_time
+  ignore_column :circuitbreaker_storage_timeout
+  ignore_column :circuitbreaker_access_retries
+  ignore_column :circuitbreaker_check_interval
 
   cache_markdown_field :sign_in_text
   cache_markdown_field :help_page_text
@@ -149,17 +156,6 @@ class ApplicationSetting < ActiveRecord::Base
   validates :polling_interval_multiplier,
             presence: true,
             numericality: { greater_than_or_equal_to: 0 }
-
-  validates :circuitbreaker_failure_count_threshold,
-            :circuitbreaker_failure_reset_time,
-            :circuitbreaker_storage_timeout,
-            :circuitbreaker_check_interval,
-            presence: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-
-  validates :circuitbreaker_access_retries,
-            presence: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 1 }
 
   validates :gitaly_timeout_default,
             presence: true,

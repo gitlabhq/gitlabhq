@@ -6,7 +6,7 @@ import '~/vue_shared/models/assignee';
 import '~/boards/models/issue';
 import '~/boards/models/list';
 import '~/boards/services/board_service';
-import '~/boards/stores/boards_store';
+import boardsStore from '~/boards/stores/boards_store';
 import { mockBoardService } from './mock_data';
 
 describe('Issue model', () => {
@@ -14,7 +14,7 @@ describe('Issue model', () => {
 
   beforeEach(() => {
     gl.boardService = mockBoardService();
-    gl.issueBoards.BoardsStore.create();
+    boardsStore.create();
 
     issue = new ListIssue({
       title: 'Testing',

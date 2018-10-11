@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QA
   module Page
     module Project
@@ -31,16 +33,22 @@ module QA
           element :tree_holder, '.tree-holder'
         end
 
-        view 'app/presenters/project_presenter.rb' do
-          element :new_file_button, "_('New file'),"
+        view 'app/views/projects/buttons/_dropdown.html.haml' do
+          element :create_new_dropdown
+          element :new_file_option
+        end
+
+        view 'app/views/projects/tree/_tree_header.html.haml' do
+          element :web_ide_button
         end
 
         def project_name
           find('.qa-project-name').text
         end
 
-        def go_to_new_file!
-          click_on 'New file'
+        def create_new_file!
+          click_element :create_new_dropdown
+          click_element :new_file_option
         end
 
         def switch_to_branch(branch_name)
@@ -77,6 +85,10 @@ module QA
 
         def fork_project
           click_on 'Fork'
+        end
+
+        def open_web_ide!
+          click_element :web_ide_button
         end
       end
     end

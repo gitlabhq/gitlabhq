@@ -1,112 +1,112 @@
 <script>
-  import _ from 'underscore';
-  import { mapActions, mapState } from 'vuex';
-  import timeagoMixin from '~/vue_shared/mixins/timeago';
-  import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
-  import Icon from '~/vue_shared/components/icon.vue';
-  import DetailRow from './sidebar_detail_row.vue';
-  import ArtifactsBlock from './artifacts_block.vue';
-  import TriggerBlock from './trigger_block.vue';
-  import CommitBlock from './commit_block.vue';
-  import StagesDropdown from './stages_dropdown.vue';
-  import JobsContainer from './jobs_container.vue';
+import _ from 'underscore';
+import { mapActions, mapState } from 'vuex';
+import timeagoMixin from '~/vue_shared/mixins/timeago';
+import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
+import Icon from '~/vue_shared/components/icon.vue';
+import DetailRow from './sidebar_detail_row.vue';
+import ArtifactsBlock from './artifacts_block.vue';
+import TriggerBlock from './trigger_block.vue';
+import CommitBlock from './commit_block.vue';
+import StagesDropdown from './stages_dropdown.vue';
+import JobsContainer from './jobs_container.vue';
 
-  export default {
-    name: 'JobSidebar',
-    components: {
-      ArtifactsBlock,
-      CommitBlock,
-      DetailRow,
-      Icon,
-      TriggerBlock,
-      StagesDropdown,
-      JobsContainer,
+export default {
+  name: 'JobSidebar',
+  components: {
+    ArtifactsBlock,
+    CommitBlock,
+    DetailRow,
+    Icon,
+    TriggerBlock,
+    StagesDropdown,
+    JobsContainer,
+  },
+  mixins: [timeagoMixin],
+  props: {
+    runnerHelpUrl: {
+      type: String,
+      required: false,
+      default: '',
     },
-    mixins: [timeagoMixin],
-    props: {
-      runnerHelpUrl: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      terminalPath: {
-        type: String,
-        required: false,
-        default: null,
-      },
+    terminalPath: {
+      type: String,
+      required: false,
+      default: null,
     },
-    computed: {
-      ...mapState(['job', 'isLoading', 'stages', 'jobs']),
-      coverage() {
-        return `${this.job.coverage}%`;
-      },
-      duration() {
-        return timeIntervalInWords(this.job.duration);
-      },
-      queued() {
-        return timeIntervalInWords(this.job.queued);
-      },
-      runnerId() {
-        return `${this.job.runner.description} (#${this.job.runner.id})`;
-      },
-      retryButtonClass() {
-        let className =
-          'js-retry-button float-right btn btn-retry d-none d-md-block d-lg-block d-xl-block';
-        className +=
-          this.job.status && this.job.recoverable ? ' btn-primary' : ' btn-inverted-secondary';
-        return className;
-      },
-      hasTimeout() {
-        return this.job.metadata != null && this.job.metadata.timeout_human_readable !== null;
-      },
-      timeout() {
-        if (this.job.metadata == null) {
-          return '';
-        }
+  },
+  computed: {
+    ...mapState(['job', 'isLoading', 'stages', 'jobs']),
+    coverage() {
+      return `${this.job.coverage}%`;
+    },
+    duration() {
+      return timeIntervalInWords(this.job.duration);
+    },
+    queued() {
+      return timeIntervalInWords(this.job.queued);
+    },
+    runnerId() {
+      return `${this.job.runner.description} (#${this.job.runner.id})`;
+    },
+    retryButtonClass() {
+      let className =
+        'js-retry-button float-right btn btn-retry d-none d-md-block d-lg-block d-xl-block';
+      className +=
+        this.job.status && this.job.recoverable ? ' btn-primary' : ' btn-inverted-secondary';
+      return className;
+    },
+    hasTimeout() {
+      return this.job.metadata != null && this.job.metadata.timeout_human_readable !== null;
+    },
+    timeout() {
+      if (this.job.metadata == null) {
+        return '';
+      }
 
-        let t = this.job.metadata.timeout_human_readable;
-        if (this.job.metadata.timeout_source !== '') {
-          t += ` (from ${this.job.metadata.timeout_source})`;
-        }
+      let t = this.job.metadata.timeout_human_readable;
+      if (this.job.metadata.timeout_source !== '') {
+        t += ` (from ${this.job.metadata.timeout_source})`;
+      }
 
-        return t;
-      },
-      renderBlock() {
-        return (
-          this.job.merge_request ||
-          this.job.duration ||
-          this.job.finished_data ||
-          this.job.erased_at ||
-          this.job.queued ||
-          this.job.runner ||
-          this.job.coverage ||
-          this.job.tags.length ||
-          this.job.cancel_path
-        );
-      },
-      hasArtifact() {
-        return !_.isEmpty(this.job.artifact);
-      },
-      hasTriggers() {
-        return !_.isEmpty(this.job.trigger);
-      },
-      hasStages() {
-        return (
-          (this.job &&
-            this.job.pipeline &&
-            this.job.pipeline.stages &&
-            this.job.pipeline.stages.length > 0) ||
-          false
-        );
-      },
-      commit() {
-        return this.job.pipeline.commit || {};
-      },
+      return t;
     },
-    methods: {
-      ...mapActions(['fetchJobsForStage']),
+    renderBlock() {
+      return (
+        this.job.merge_request ||
+        this.job.duration ||
+        this.job.finished_data ||
+        this.job.erased_at ||
+        this.job.queued ||
+        this.job.runner ||
+        this.job.coverage ||
+        this.job.tags.length ||
+        this.job.cancel_path
+      );
     },
-  };
+    hasArtifact() {
+      return !_.isEmpty(this.job.artifact);
+    },
+    hasTriggers() {
+      return !_.isEmpty(this.job.trigger);
+    },
+    hasStages() {
+      return (
+        (this.job &&
+          this.job.pipeline &&
+          this.job.pipeline.stages &&
+          this.job.pipeline.stages.length > 0) ||
+        false
+      );
+    },
+    commit() {
+      return this.job.pipeline.commit || {};
+    },
+  },
+  methods: {
+    ...mapActions(['fetchJobsForStage']),
+  },
+};
 </script>
 <template>
   <aside

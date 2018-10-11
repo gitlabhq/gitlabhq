@@ -3,8 +3,7 @@
   import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
   import eventHub from '../eventhub';
   import tooltip from '../../vue_shared/directives/tooltip';
-
-  const Store = gl.issueBoards.BoardsStore;
+  import boardsStore from '../stores/boards_store';
 
   export default {
     components: {
@@ -110,7 +109,7 @@
       filterByLabel(label, e) {
         if (!this.updateFilters) return;
 
-        const filterPath = gl.issueBoards.BoardsStore.filter.path.split('&');
+        const filterPath = boardsStore.filter.path.split('&');
         const labelTitle = encodeURIComponent(label.title);
         const param = `label_name[]=${labelTitle}`;
         const labelIndex = filterPath.indexOf(param);
@@ -122,9 +121,9 @@
           filterPath.splice(labelIndex, 1);
         }
 
-        gl.issueBoards.BoardsStore.filter.path = filterPath.join('&');
+        boardsStore.filter.path = filterPath.join('&');
 
-        Store.updateFiltersUrl();
+        boardsStore.updateFiltersUrl();
 
         eventHub.$emit('updateTokens');
       },

@@ -1,38 +1,38 @@
 <script>
-  export default {
-    props: {
-      illustrationPath: {
-        type: String,
-        required: true,
-      },
-      illustrationSizeClass: {
-        type: String,
-        required: true,
-      },
-      title: {
-        type: String,
-        required: true,
-      },
-      content: {
-        type: String,
-        required: false,
-        default: null,
-      },
-      action: {
-        type: Object,
-        required: false,
-        default: null,
-        validator(value) {
-          return (
-            value === null ||
-            (Object.prototype.hasOwnProperty.call(value, 'path') &&
-              Object.prototype.hasOwnProperty.call(value, 'method') &&
-              Object.prototype.hasOwnProperty.call(value, 'button_title'))
-          );
-        },
+export default {
+  props: {
+    illustrationPath: {
+      type: String,
+      required: true,
+    },
+    illustrationSizeClass: {
+      type: String,
+      required: true,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+    content: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    action: {
+      type: Object,
+      required: false,
+      default: null,
+      validator(value) {
+        return (
+          value === null ||
+          (Object.prototype.hasOwnProperty.call(value, 'path') &&
+            Object.prototype.hasOwnProperty.call(value, 'method') &&
+            Object.prototype.hasOwnProperty.call(value, 'button_title'))
+        );
       },
     },
-  };
+  },
+};
 </script>
 <template>
   <div class="row empty-state">
