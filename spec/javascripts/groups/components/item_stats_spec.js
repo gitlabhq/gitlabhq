@@ -107,7 +107,7 @@ describe('ItemStatsComponent', () => {
       const visibilityIconEl = vm.$el.querySelector('.item-visibility');
       expect(visibilityIconEl).not.toBe(null);
       expect(visibilityIconEl.dataset.originalTitle).toBe(vm.visibilityTooltip);
-      expect(visibilityIconEl.querySelectorAll('svg').length > 0).toBeTruthy();
+      expect(visibilityIconEl.querySelectorAll('svg').length).toBeGreaterThan(0);
 
       vm.$destroy();
     });
@@ -120,10 +120,10 @@ describe('ItemStatsComponent', () => {
       const vm = createComponent(item);
 
       const projectStarIconEl = vm.$el.querySelector('.project-stars');
-      expect(projectStarIconEl).not.toBe(null);
-      expect(projectStarIconEl.querySelectorAll('svg').length > 0).toBeTruthy();
-      expect(projectStarIconEl.querySelectorAll('.stat-value').length > 0).toBeTruthy();
-      expect(vm.$el.querySelectorAll('.last-updated').length > 0).toBeTruthy();
+      expect(projectStarIconEl).not.toBeNull();
+      expect(projectStarIconEl.querySelectorAll('svg').length).toBeGreaterThan(0);
+      expect(projectStarIconEl.querySelectorAll('.stat-value').length).toBeGreaterThan(0);
+      expect(vm.$el.querySelectorAll('.last-updated').length).toBeGreaterThan(0);
 
       vm.$destroy();
     });

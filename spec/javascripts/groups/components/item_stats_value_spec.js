@@ -57,8 +57,8 @@ describe('ItemStatsValueComponent', () => {
 
     it('renders component element correctly', () => {
       expect(vm.$el.classList.contains('number-subgroups')).toBeTruthy();
-      expect(vm.$el.querySelectorAll('svg').length > 0).toBeTruthy();
-      expect(vm.$el.querySelectorAll('.stat-value').length > 0).toBeTruthy();
+      expect(vm.$el.querySelectorAll('svg').length).toBeGreaterThan(0);
+      expect(vm.$el.querySelectorAll('.stat-value').length).toBeGreaterThan(0);
     });
 
     it('renders element tooltip correctly', () => {

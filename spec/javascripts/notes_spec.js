@@ -538,7 +538,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         mockNotesPost();
 
         $('.js-comment-button').click();
-        expect($notesContainer.find('.note.being-posted').length > 0).toEqual(true);
+        expect($notesContainer.find('.note.being-posted').length).toBeGreaterThan(0);
       });
 
       it('should remove placeholder note when new comment is done posting', done => {
@@ -582,7 +582,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         $('.js-comment-button').click();
 
         setTimeout(() => {
-          expect($notesContainer.find(`#note_${note.id}`).length > 0).toEqual(true);
+          expect($notesContainer.find(`#note_${note.id}`).length).toBeGreaterThan(0);
 
           done();
         });
@@ -776,7 +776,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         $form.find('textarea.js-note-text').val(sampleComment);
         const { formData, formContent, formAction } = this.notes.getFormData($form);
 
-        expect(formData.indexOf(sampleComment) > -1).toBe(true);
+        expect(formData.indexOf(sampleComment)).toBeGreaterThan(-1);
         expect(formContent).toEqual(sampleComment);
         expect(formAction).toEqual($form.attr('action'));
       });

@@ -158,9 +158,9 @@ describe('getTimeframeWindowFrom', () => {
     const timeframe = datetimeUtility.getTimeframeWindowFrom(startDate, 5);
     expect(timeframe.length).toBe(5);
     timeframe.forEach((timeframeItem, index) => {
-      expect(timeframeItem.getFullYear() === mockTimeframe[index].getFullYear()).toBe(true);
-      expect(timeframeItem.getMonth() === mockTimeframe[index].getMonth()).toBe(true);
-      expect(timeframeItem.getDate() === mockTimeframe[index].getDate()).toBeTruthy();
+      expect(timeframeItem.getFullYear()).toBe(mockTimeframe[index].getFullYear());
+      expect(timeframeItem.getMonth()).toBe(mockTimeframe[index].getMonth());
+      expect(timeframeItem.getDate()).toBe(mockTimeframe[index].getDate());
     });
   });
 });

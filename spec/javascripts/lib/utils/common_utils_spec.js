@@ -43,7 +43,7 @@ describe('common_utils', () => {
 
     it('should remove the question mark from the search params', () => {
       const paramsArray = commonUtils.urlParamsToArray('?test=thing');
-      expect(paramsArray[0][0] !== '?').toBe(true);
+      expect(paramsArray[0][0]).not.toBe('?');
     });
   });
 

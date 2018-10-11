@@ -29,7 +29,7 @@ describe('ProjectsStore', () => {
       store.setGroups(mockGroups);
       expect(store.state.groups.length).toBe(mockGroups.length);
       expect(store.formatGroupItem).toHaveBeenCalledWith(jasmine.any(Object));
-      expect(Object.keys(store.state.groups[0]).indexOf('fullName') > -1).toBeTruthy();
+      expect(Object.keys(store.state.groups[0]).indexOf('fullName')).toBeGreaterThan(-1);
     });
   });
 
@@ -41,8 +41,8 @@ describe('ProjectsStore', () => {
       store.setSearchedGroups(mockSearchedGroups);
       expect(store.state.groups.length).toBe(mockSearchedGroups.length);
       expect(store.formatGroupItem).toHaveBeenCalledWith(jasmine.any(Object));
-      expect(Object.keys(store.state.groups[0]).indexOf('fullName') > -1).toBeTruthy();
-      expect(Object.keys(store.state.groups[0].children[0]).indexOf('fullName') > -1).toBeTruthy();
+      expect(Object.keys(store.state.groups[0]).indexOf('fullName')).toBeGreaterThan(-1);
+      expect(Object.keys(store.state.groups[0].children[0]).indexOf('fullName')).toBeGreaterThan(-1);
     });
   });
 
@@ -54,7 +54,7 @@ describe('ProjectsStore', () => {
       store.setGroupChildren(mockParentGroupItem, mockRawChildren);
       expect(store.formatGroupItem).toHaveBeenCalledWith(jasmine.any(Object));
       expect(mockParentGroupItem.children.length).toBe(1);
-      expect(Object.keys(mockParentGroupItem.children[0]).indexOf('fullName') > -1).toBeTruthy();
+      expect(Object.keys(mockParentGroupItem.children[0]).indexOf('fullName')).toBeGreaterThan(-1);
       expect(mockParentGroupItem.isOpen).toBeTruthy();
       expect(mockParentGroupItem.isChildrenLoading).toBeFalsy();
     });
@@ -81,14 +81,14 @@ describe('ProjectsStore', () => {
 
       store = new GroupsStore();
       updatedGroupItem = store.formatGroupItem(mockRawChildren[0]);
-      expect(Object.keys(updatedGroupItem).indexOf('fullName') > -1).toBeTruthy();
+      expect(Object.keys(updatedGroupItem).indexOf('fullName')).toBeGreaterThan(-1);
       expect(updatedGroupItem.childrenCount).toBe(mockRawChildren[0].children_count);
       expect(updatedGroupItem.isChildrenLoading).toBe(false);
       expect(updatedGroupItem.isBeingRemoved).toBe(false);
 
       store = new GroupsStore(true);
       updatedGroupItem = store.formatGroupItem(mockRawChildren[0]);
-      expect(Object.keys(updatedGroupItem).indexOf('fullName') > -1).toBeTruthy();
+      expect(Object.keys(updatedGroupItem).indexOf('fullName')).toBeGreaterThan(-1);
       expect(updatedGroupItem.childrenCount).toBe(mockRawChildren[0].subgroup_count);
     });
   });

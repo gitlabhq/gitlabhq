@@ -52,8 +52,8 @@ describe('MemoryGraph', () => {
       it('should show human readable median value based on provided median timestamp', () => {
         vm.deploymentTime = mockMedian;
         const formattedMedian = vm.getFormattedMedian;
-        expect(formattedMedian.indexOf('Deployed') > -1).toBeTruthy();
-        expect(formattedMedian.indexOf('ago') > -1).toBeTruthy();
+        expect(formattedMedian.indexOf('Deployed')).toBeGreaterThan(-1);
+        expect(formattedMedian.indexOf('ago')).toBeGreaterThan(-1);
       });
     });
   });
