@@ -2597,7 +2597,7 @@ msgstr ""
 msgid "Environments|Updated"
 msgstr ""
 
-msgid "Environments|You don't have any environments right now."
+msgid "Environments|You don't have any environments right now"
 msgstr ""
 
 msgid "Epic"
