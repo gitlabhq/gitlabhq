@@ -5,7 +5,7 @@ describe API::Applications, :api do
 
   let(:admin_user) { create(:user, admin: true) }
   let(:user) { create(:user, admin: false) }
-  let(:application) { create(:application, name: 'application_name', redirect_uri: 'http://application.url', scopes: '') }
+  let!(:application) { create(:application, name: 'application_name', redirect_uri: 'http://application.url', scopes: '') }
 
   describe 'POST /applications' do
     context 'authenticated and authorized user' do
@@ -107,7 +107,7 @@ describe API::Applications, :api do
       it 'cannot list application' do
         get api('/applications', user)
 
-        expect(response).to have_http_status 401
+        expect(response).to have_http_status 403
       end
     end
   end
