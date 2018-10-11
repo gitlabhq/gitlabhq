@@ -49,8 +49,11 @@ class Project < ActiveRecord::Base
     attachments: 2
   }.freeze
 
-  # Valids ports to import from
-  VALID_IMPORT_PORTS = [22, 80, 443].freeze
+  VALID_IMPORT_PORTS = [80, 443].freeze
+  VALID_IMPORT_PROTOCOLS = %w(http https git).freeze
+
+  VALID_MIRROR_PORTS = [22, 80, 443].freeze
+  VALID_MIRROR_PROTOCOLS = %w(http https ssh git).freeze
 
   cache_markdown_field :description, pipeline: :description
 
@@ -305,10 +308,10 @@ class Project < ActiveRecord::Base
 
   validates :namespace, presence: true
   validates :name, uniqueness: { scope: :namespace_id }
-  validates :import_url, url: { protocols: %w(http https ssh git),
+  validates :import_url, url: { protocols: ->(project) { project.persisted? ? VALID_MIRROR_PROTOCOLS : VALID_IMPORT_PROTOCOLS },
+                                ports: ->(project) { project.persisted? ? VALID_MIRROR_PORTS : VALID_IMPORT_PORTS },
                                 allow_localhost: false,
-                                enforce_user: true,
-                                ports: VALID_IMPORT_PORTS }, if: [:external_import?, :import_url_changed?]
+                                enforce_user: true }, if: [:external_import?, :import_url_changed?]
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :check_repository_path_availability, on: :update, if: ->(project) { project.renamed? }
