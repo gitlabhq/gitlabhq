@@ -1,5 +1,139 @@
 # Overview of Frontend Testing
 
+Tests relevant for frontend development can be found at two places:
+
+- `spec/javascripts/` which are run by Karma and contain
+  - [frontend unit tests](#frontend-unit-tests)
+  - [frontend component tests](#frontend-component-tests)
+  - [frontend integration tests](#frontend-integration-tests)
+- `spec/features/` which are run by RSpec and contain
+  - [feature tests](#feature-tests)
+
+In addition there were feature tests in `features/` run by Spinach in the past.
+These have been removed from our codebase in May 2018 ([#23036](https://gitlab.com/gitlab-org/gitlab-ce/issues/23036)).
+
+## Frontend unit tests
+
+Unit tests are on the lowest abstraction level and typically test functionality that is not directly perceivable by a user.
+
+### When to use unit tests
+
+- exported functions
+- exported classes
+- Vuex actions
+
+### When *not* to use unit tests
+
+- non-exported functions
+- non-exported classes
+- constants
+- Vue components
+
+### What to mock in unit tests
+
+- state of the class under test
+- other exported classes
+- single DOM elements if passed as parameters
+- all server requests
+- asynchronous background operations
+
+### What *not* to mock in unit tests
+
+- non-exported classes
+- methods of the class under test
+- utility functions (pure function or those that only modify parameters)
+- full HTML pages
+
+## Frontend component tests
+
+Component tests cover the state of a single component that is perceivable by a user depending on external signals such as user input, events fired from other components, or application state.
+
+### When to use component tests
+
+- Vue components
+
+### When *not* to use component tests
+
+- Vue applications
+- HAML templates
+
+### What to mock in component tests
+
+- DOM
+- properties of the component under test
+- component state
+- Vuex store
+- all server requests
+- asynchronous background operations
+- child components
+
+### What *not* to mock in component tests
+
+- methods or computed properties of the component under test
+- functions and classes independent from Vue
+
+## Frontend integration tests
+
+Integration tests cover the interaction between all components on a single page.
+Their abstraction level is comparable to how a user would interact with the UI.
+
+### When to use integration tests
+
+- page bundles (`index.js` files in `app/assets/javascripts/pages/`)
+- Vue applications outside of page bundles
+
+### What to mock in integration tests
+
+- HAML views (use fixtures instead)
+- all server requests
+- asynchronous background operations that are not perceivable on the page
+
+### What *not* to mock in integration tests
+
+- DOM
+- properties or state of components
+- Vuex stores
+
+## Feature tests
+
+In contrast to [frontend integration tests](#frontend-integration-tests), feature tests make requests against the real backend instead of using fixtures.
+This also implies that database queries are executed which makes this category significantly slower.
+
+### When to use feature tests
+
+- use cases that require a backend and cannot be tested using fixtures
+- behavior that is not part of a page bundle but defined globally
+
+### Relevant notes
+
+A `:js` flag is added to the test to make sure the full environment is loaded.
+
+```
+scenario 'successfully', :js do
+  sign_in(create(:admin))
+end
+```
+
+The steps of each test are written using capybara methods ([documentation](http://www.rubydoc.info/gems/capybara/2.15.1)).
+
+Bear in mind <abbr title="XMLHttpRequest">XHR</abbr> calls might require you to use `wait_for_requests` in between steps, like so:
+
+```rspec
+find('.form-control').native.send_keys(:enter)
+
+wait_for_requests
+
+expect(page).not_to have_selector('.card')
+```
+
+## Test helpers
+
+---
+
+> TODO: update the following sections
+
+---
+
 ## Types of tests in our codebase
 
 * **RSpec**
