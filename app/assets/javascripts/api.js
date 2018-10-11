@@ -5,6 +5,7 @@ import axios from './lib/utils/axios_utils';
 const Api = {
   groupsPath: '/api/:version/groups.json',
   groupPath: '/api/:version/groups/:id',
+  subgroupsPath: '/api/:version/groups/:id/subgroups',
   namespacesPath: '/api/:version/namespaces.json',
   groupProjectsPath: '/api/:version/groups/:id/projects.json',
   projectsPath: '/api/:version/projects.json',
