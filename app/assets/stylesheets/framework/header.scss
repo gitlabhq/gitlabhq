@@ -544,15 +544,21 @@
         display: block;
       }
 
-      .user-status-emoji {
+      .user-status {
         margin-right: 0;
         display: block;
         vertical-align: text-top;
         max-width: 148px;
-        font-size: 12px;
+        font-size: $user-status-font-size;
 
         gl-emoji {
-          font-size: $gl-font-size;
+          font-size: $user-status-font-size;
+        }
+
+        .user-status-emoji {
+          gl-emoji {
+            font-size: $gl-font-size;
+          }
         }
       }
     }
