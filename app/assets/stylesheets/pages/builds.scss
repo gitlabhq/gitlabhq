@@ -50,23 +50,9 @@
     position: relative;
   }
 
+
   .build-trace {
-    background: $black;
-    color: $gray-darkest;
-    white-space: pre;
-    overflow-x: auto;
-    font-size: 12px;
-    border-radius: 0;
-    border: 0;
-    padding: $grid-size;
-
-    .bash {
-      display: block;
-    }
-
-    &.build-trace-rounded {
-      border-radius: $border-radius-base;
-    }
+    @include build-trace();
   }
 
   .top-bar {
@@ -108,50 +94,7 @@
     }
 
     .controllers {
-      display: flex;
-      font-size: 15px;
-      justify-content: center;
-      align-items: center;
-
-      svg {
-        height: 15px;
-        display: block;
-        fill: $gl-text-color;
-      }
-
-      .controllers-buttons {
-        color: $gl-text-color;
-        margin: 0 $grid-size;
-
-        &:last-child {
-          margin-right: 0;
-        }
-      }
-
-      .btn-scroll.animate {
-        .first-triangle {
-          animation: blinking-scroll-button 1s ease infinite;
-          animation-delay: 0.3s;
-        }
-
-        .second-triangle {
-          animation: blinking-scroll-button 1s ease infinite;
-          animation-delay: 0.2s;
-        }
-
-        .third-triangle {
-          animation: blinking-scroll-button 1s ease infinite;
-        }
-
-        &:disabled {
-          opacity: 1;
-        }
-      }
-
-      .btn-scroll:disabled {
-        opacity: 0.35;
-        cursor: not-allowed;
-      }
+      @include build-controllers(15px, center, false, 0);
     }
   }
 
