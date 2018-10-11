@@ -63,7 +63,18 @@ module Projects
 
     # Update the default branch querying the remote to determine its HEAD
     def update_root_ref
+      # Fetch remote default branch doesn't work with SSH mirrors:
+      # https://gitlab.com/gitlab-org/gitaly/issues/1363
+      return if ssh_mirror?
+
       project.update_root_ref(::Repository::MIRROR_REMOTE)
+    end
+
+    def ssh_mirror?
+      uri = Addressable::URI.parse(project.import_url)
+      uri.scheme.present? && uri.scheme == 'ssh'
+    rescue Addressable::URI::InvalidURIError
+      false
     end
 
     def update_tags(&block)

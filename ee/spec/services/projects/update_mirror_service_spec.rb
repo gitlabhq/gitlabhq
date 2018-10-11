@@ -209,18 +209,30 @@ describe Projects::UpdateMirrorService do
       end
     end
 
-    it 'updates the default branch when HEAD has changed' do
-      stub_fetch_mirror(project)
-      stub_find_remote_root_ref(project, ref: 'new-branch')
+    context 'synchronize the default branch' do
+      it 'updates the default branch when HEAD has changed' do
+        stub_fetch_mirror(project)
+        stub_find_remote_root_ref(project, ref: 'new-branch')
 
-      expect { service.execute }.to change { project.default_branch }.from('master').to('new-branch')
-    end
+        expect { service.execute }.to change { project.default_branch }.from('master').to('new-branch')
+      end
 
-    it 'does not update the default branch when HEAD does not change' do
-      stub_fetch_mirror(project)
-      stub_find_remote_root_ref(project, ref: 'master')
+      it 'does not update the default branch when HEAD does not change' do
+        stub_fetch_mirror(project)
+        stub_find_remote_root_ref(project, ref: 'master')
 
-      expect { service.execute }.not_to change { project.default_branch }
+        expect { service.execute }.not_to change { project.default_branch }
+      end
+
+      it 'does not update the default branch with SSH mirrors' do
+        project.update(import_url: 'ssh://git@example.com/foo/bar.git')
+
+        expect(project.repository)
+          .not_to receive(:find_remote_root_ref)
+          .with('upstream')
+
+        service.execute
+      end
     end
 
     it "fails when the mirror user doesn't have access" do

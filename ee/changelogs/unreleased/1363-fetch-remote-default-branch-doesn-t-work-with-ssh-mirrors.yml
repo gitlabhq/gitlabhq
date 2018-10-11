@@ -1,0 +1,5 @@
+---
+title: Don't synchronize default branch when updating a SSH mirror
+merge_request: 7891
+author:
+type: fixed
