@@ -12,9 +12,11 @@ to cherry-pick the changes introduced by that merge request.
 
 ![Cherry-pick Merge Request](img/cherry_pick_changes_mr.png)
 
-After you click that button, a modal will appear where you can choose to
-cherry-pick the changes directly into the selected branch or you can opt to
-create a new merge request with the cherry-pick changes
+After you click that button, a modal will appear showing a [branch filter search box](../repository/branches/index.md#branch-filter-search-box)
+where you can choose to either:
+
+- Cherry-pick the changes directly into the selected branch.
+- Create a new merge request with the cherry-picked changes.
 
 ## Cherry-picking a Commit
 

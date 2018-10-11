@@ -85,12 +85,13 @@ You can live preview changes submitted to a new branch with
 With [GitLab Starter](https://about.gitlab.com/pricing/), you can also request
 [approval](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your managers.
 
-To create, delete, and [branches](branches/index.md) via GitLab's UI:
+To create, delete, and view [branches](branches/index.md) via GitLab's UI:
 
 - [Default branches](branches/index.md#default-branch)
 - [Create a branch](web_editor.md#create-a-new-branch)
 - [Protected branches](../protected_branches.md#protected-branches)
 - [Delete merged branches](branches/index.md#delete-merged-branches)
+- [Branch filter search box](branches/index.md#branch-filter-search-box)
 
 Alternatively, you can use the
 [command line](../../../gitlab-basics/start-using-git.md#create-a-branch).
@@ -169,7 +170,7 @@ vendored code, and most markup languages are excluded.
 
 ## Compare
 
-Select branches to compare and view the changes inline:
+Select branches to compare using the [branch filter search box](branches/index.md#branch-filter-search-box), then click the **Compare** button to view the changes inline:
 
 ![compare branches](img/compare_branches.png)
 
