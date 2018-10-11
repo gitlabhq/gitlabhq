@@ -468,7 +468,7 @@ describe API::Repositories do
 
   describe 'GET :id/repository/merge_base' do
     let(:refs) do
-      %w(304d257dcb821665ab5110318fc58a007bd104ed 0031876facac3f2b2702a0e53a26e89939a42209)
+      %w(304d257dcb821665ab5110318fc58a007bd104ed 0031876facac3f2b2702a0e53a26e89939a42209 570e7b2abdd848b95f2f578043fc23bd6f6fd24d)
     end
 
     subject(:request) do
@@ -534,7 +534,7 @@ describe API::Repositories do
         request
 
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message']).to eq('Provide exactly 2 refs')
+        expect(json_response['message']).to eq('Provide at least 2 refs')
       end
     end
   end

@@ -2386,4 +2386,15 @@ describe Repository do
       end
     end
   end
+
+  describe '#merge_base' do
+    set(:project) { create(:project, :repository) }
+    subject(:repository) { project.repository }
+
+    it 'only makes one gitaly call' do
+      expect(Gitlab::GitalyClient).to receive(:call).once.and_call_original
+
+      repository.merge_base('master', 'fix')
+    end
+  end
 end
