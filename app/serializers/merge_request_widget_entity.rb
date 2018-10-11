@@ -55,6 +55,7 @@ class MergeRequestWidgetEntity < IssuableEntity
 
   expose :merge_commit_message
   expose :actual_head_pipeline, with: PipelineDetailsEntity, as: :pipeline
+  expose :merge_pipeline, with: PipelineDetailsEntity
 
   # Booleans
   expose :merge_ongoing?, as: :merge_ongoing
