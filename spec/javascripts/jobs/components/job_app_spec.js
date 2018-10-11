@@ -41,7 +41,7 @@ describe('Job App ', () => {
   };
 
   const props = {
-    runnerHelpUrl: 'help/runners',
+    runnerSettingsUrl: 'settings/ci-cd/runners',
   };
 
   beforeEach(() => {
