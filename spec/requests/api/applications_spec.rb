@@ -95,6 +95,14 @@ describe API::Applications, :api do
       end
     end
 
+    context 'authorized user without authorization' do
+      it 'cannot list application' do
+        get api('/applications', user)
+
+        expect(response).to have_http_status 403
+      end
+    end
+
     context 'non-authenticated user' do
       it 'cannot list application' do
         get api('/applications', user)
@@ -109,15 +117,23 @@ describe API::Applications, :api do
       it 'can delete an application' do
         expect do
           delete api("/applications/#{application.id}", admin_user)
-        end.to change { Doorkeeper::Application.count }.by -1
-        
+        end.to change { Doorkeeper::Application.count }.by(-1)
+
         expect(response).to have_gitlab_http_status(204)
+      end
+    end
+
+    context 'authorized user without authorization' do
+      it 'cannot delete an application' do
+        delete api("/applications/#{application.id}", user)
+
+        expect(response).to have_http_status 403
       end
     end
 
     context 'non-authenticated user' do
       it 'cannot delete an application' do
-        delete api("/applications/#{application.id}", user)
+        delete api("/applications/#{application.id}")
 
         expect(response).to have_http_status 401
       end
