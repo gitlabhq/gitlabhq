@@ -5,7 +5,7 @@ describe API::Applications, :api do
 
   let(:admin_user) { create(:user, admin: true) }
   let(:user) { create(:user, admin: false) }
-  let!(:application) { create(:application, name: 'application_name', redirect_uri: 'http://application.url', scopes: '') }
+  let!(:application) { create(:application, name: 'another_application', redirect_uri: 'http://other_application.url', scopes: '') }
 
   describe 'POST /applications' do
     context 'authenticated and authorized user' do
