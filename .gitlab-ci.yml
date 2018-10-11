@@ -701,6 +701,8 @@ gitlab:setup-mysql:
 gitlab:assets:compile:
   <<: *dedicated-no-docs-and-no-qa-pull-cache-job
   dependencies: []
+  services:
+    - docker:stable-dind
   variables:
     NODE_ENV: "production"
     RAILS_ENV: "production"
@@ -709,41 +711,28 @@ gitlab:assets:compile:
     WEBPACK_REPORT: "true"
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584
+    DOCKER_DRIVER: overlay2
+    DOCKER_HOST: tcp://docker:2375
+    REGISTRY: registry.gitlab.com
+    ASSETS_IMAGE: ${REGISTRY}/build/cng/rails-assets
   script:
     - date
     - yarn install --frozen-lockfile --production --cache-folder .yarn-cache
     - date
     - free -m
     - bundle exec rake gitlab:assets:compile
-  artifacts:
-    name: webpack-report
-    expire_in: 31d
-    paths:
-      - webpack-report/
-      - public/assets/
-
-assets_container:
-  <<: *dedicated-no-docs-and-no-qa-pull-cache-job
-  image: docker:stable
-  stage: post-test
-  before_script: []
-  services:
-    - docker:stable-dind
-  dependencies:
-    - gitlab:assets:compile
-  variables:
-    SETUP_DB: "false"
-    DOCKER_DRIVER: overlay2
-    DOCKER_HOST: tcp://docker:2375
-    REGISTRY: registry.gitlab.com
-    ASSETS_IMAGE: ${REGISTRY}/build/cng/rails-assets
-  script:
     - mkdir -p assets_container.build/public
     - cp -r public/assets assets_container.build/public/
     - cp Dockerfile.assets assets_container.build/
     - docker build -t ${ASSETS_IMAGE}:${CI_COMMIT_REF_NAME} -f assets_container.build/Dockerfile.assets assets_container.build/
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${REGISTRY}
     # - docker push ${ASSETS_IMAGE}:${CI_COMMIT_REF_NAME}
+  artifacts:
+    name: webpack-report
+    expire_in: 31d
+    paths:
+      - webpack-report/
+      - public/assets/
   tags:
     - docker
 
