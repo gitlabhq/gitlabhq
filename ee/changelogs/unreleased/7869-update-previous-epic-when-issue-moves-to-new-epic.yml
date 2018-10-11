@@ -1,0 +1,5 @@
+---
+title: Fix epic milestone dates incorrect after issue is linked to another epic
+merge_request: 7809
+author:
+type: fixed

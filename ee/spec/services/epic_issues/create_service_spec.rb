@@ -22,7 +22,8 @@ describe EpicIssues::CreateService do
     shared_examples 'returns success' do
       let(:created_link) { EpicIssue.find_by!(issue_id: issue.id) }
 
-      it 'creates a new relationship' do
+      it 'creates a new relationship and updates epic' do
+        expect(epic).to receive(:update_start_and_due_dates)
         expect { subject }.to change(EpicIssue, :count).from(1).to(2)
 
         expect(created_link).to have_attributes(epic: epic)
@@ -141,7 +142,7 @@ describe EpicIssues::CreateService do
               # and we insert 5 issues instead of 1 which we do for control count
               expect { described_class.new(epic, user, params).execute }
                 .not_to exceed_query_limit(control_count)
-                .with_threshold(24)
+                .with_threshold(28)
             end
           end
 
@@ -228,6 +229,18 @@ describe EpicIssues::CreateService do
           expect { subject }.to change { Note.count }.from(0).to(3)
         end
 
+        it 'updates both old and new epic milestone dates' do
+          allow(EpicIssue).to receive(:find_or_initialize_by).with(issue: issue).and_wrap_original { |m, *args|
+            existing_epic_issue = m.call(*args)
+            expect(existing_epic_issue.epic).to receive(:update_start_and_due_dates)
+            existing_epic_issue
+          }
+
+          expect(another_epic).to receive(:update_start_and_due_dates)
+
+          subject
+        end
+
         it 'creates a note correctly for the original epic' do
           subject
 
@@ -267,14 +280,6 @@ describe EpicIssues::CreateService do
         end
 
         include_examples 'returns an error'
-      end
-
-      context 'refresh epic dates' do
-        it 'calls epic#update_start_and_due_dates' do
-          expect(epic).to receive(:update_start_and_due_dates)
-
-          assign_issue([valid_reference])
-        end
       end
     end
   end
