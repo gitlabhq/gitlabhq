@@ -1,12 +1,10 @@
 # Jobs artifacts administration
 
->**Notes:**
->- Introduced in GitLab 8.2 and GitLab Runner 0.7.0.
->- Starting with GitLab 8.4 and GitLab Runner 1.0, the artifacts archive format
-   changed to `ZIP`.
->- Starting with GitLab 8.17, builds are renamed to jobs.
->- This is the administration documentation. For the user guide see
-   [pipelines/job_artifacts](../user/project/pipelines/job_artifacts.md).
+> **Notes:**
+> - Introduced in GitLab 8.2 and GitLab Runner 0.7.0.
+> - Starting with GitLab 8.4 and GitLab Runner 1.0, the artifacts archive format changed to `ZIP`.
+> - Starting with GitLab 8.17, builds are renamed to jobs.
+> - This is the administration documentation. For the user guide see [pipelines/job_artifacts](../user/project/pipelines/job_artifacts.md).
 
 Artifacts is a list of files and directories which are attached to a job
 after it completes successfully. This feature is enabled by default in all
@@ -98,7 +96,7 @@ _The artifacts are stored by default in
 If you don't want to use the local disk where GitLab is installed to store the
 artifacts, you can use an object storage like AWS S3 instead.
 This configuration relies on valid AWS credentials to be configured already.
-Use an [Object storage option][os] like AWS S3 to store job artifacts.
+Use an object storage option like AWS S3 to store job artifacts.
 
 ### Object Storage Settings
 
@@ -315,4 +313,3 @@ memory and disk I/O.
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [restart gitlab]: restart_gitlab.md#installations-from-source "How to restart GitLab"
 [gitlab workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse "GitLab Workhorse repository"
-[os]: https://docs.gitlab.com/administration/job_artifacts.html#using-object-storage
