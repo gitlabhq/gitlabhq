@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Projects::ClustersController < Projects::ApplicationController
+  include GcpSession
+
   before_action :cluster, except: [:index, :new, :create_gcp, :create_user]
   before_action :authorize_read_cluster!
   before_action :generate_gcp_authorize_url, only: [:new]
@@ -11,7 +13,6 @@ class Projects::ClustersController < Projects::ApplicationController
   before_action :authorize_update_cluster!, only: [:update]
   before_action :authorize_admin_cluster!, only: [:destroy]
   before_action :update_applications_status, only: [:status]
-  helper_method :token_in_session
 
   STATUS_POLLING_INTERVAL = 10_000
 
@@ -169,13 +170,7 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def generate_gcp_authorize_url
-    state = generate_session_key_redirect(new_project_cluster_path(@project).to_s)
-
-    @authorize_url = GoogleApi::CloudPlatform::Client.new(
-      nil, callback_google_api_auth_url,
-      state: state).authorize_url
-  rescue GoogleApi::Auth::ConfigMissingError
-    # no-op
+    @authorize_url = gcp_authorize_url(new_project_cluster_path(@project))
   end
 
   def gcp_cluster
@@ -191,23 +186,7 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def validate_gcp_token
-    @valid_gcp_token = GoogleApi::CloudPlatform::Client.new(token_in_session, nil)
-      .validate_token(expires_at_in_session)
-  end
-
-  def token_in_session
-    session[GoogleApi::CloudPlatform::Client.session_key_for_token]
-  end
-
-  def expires_at_in_session
-    @expires_at_in_session ||=
-      session[GoogleApi::CloudPlatform::Client.session_key_for_expires_at]
-  end
-
-  def generate_session_key_redirect(uri)
-    GoogleApi::CloudPlatform::Client.new_session_key_for_redirect_uri do |key|
-      session[key] = uri
-    end
+    @valid_gcp_token = validated_gcp_token
   end
 
   def authorize_update_cluster!
