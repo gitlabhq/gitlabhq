@@ -48,7 +48,6 @@ export default {
     },
     classNameMap() {
       return {
-        [CONTEXT_LINE_CLASS_NAME]: this.isContextLine,
         [PARALLEL_DIFF_VIEW_TYPE]: true,
       };
     },
