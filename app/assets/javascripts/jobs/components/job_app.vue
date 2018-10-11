@@ -87,8 +87,8 @@
       />
 
       <erased-block
-        v-if="job.erased"
-        class="js-job-erased"
+        v-if="job.erased_at"
+        class="js-job-erased-block"
         :user="job.erased_by"
         :erased-at="job.erased_at"
       />

@@ -663,6 +663,19 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         expect(page).to have_content('This job does not have a trace.')
       end
     end
+
+    context 'with erased job', :js do
+      let(:job) { create(:ci_build, :erased, pipeline: pipeline) }
+
+      it'renders erased job warning' do
+        visit project_job_path(project, job)
+        wait_for_requests
+
+        page.within('.js-job-erased-block') do
+          expect(page).to have_content('Job has been erased')
+        end
+      end
+    end
   end
 
   describe "POST /:project/jobs/:id/cancel", :js do
