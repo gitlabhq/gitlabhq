@@ -70,15 +70,7 @@
   }
 
   .top-bar {
-    height: 35px;
-    min-height: 35px;
-    background: $gray-light;
-    border: 1px solid $border-color;
-    color: $gl-text-color;
-    position: sticky;
-    position: -webkit-sticky;
-    top: $header-height;
-    padding: $grid-size;
+    @include build-trace-top-bar(35px);
 
     &.affix {
       top: $header-height;
@@ -183,12 +175,8 @@
 }
 
 .with-performance-bar .build-page {
-  .top-bar {
+  .top-bar.affix {
     top: $header-height + $performance-bar-height;
-
-    &.affix {
-      top: $header-height + $performance-bar-height;
-    }
   }
 }
 
