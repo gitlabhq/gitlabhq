@@ -18,8 +18,6 @@ module QA
       end
 
       def self.fabricate!(*args, &prepare_block)
-        args << { factory: new }
-
         fabricate_via_api!(*args, &prepare_block)
       rescue NotImplementedError
         fabricate_via_browser_ui!(*args, &prepare_block)
@@ -45,7 +43,7 @@ module QA
         do_fabricate!(factory: factory, prepare_block: prepare_block, parents: parents) do
           raise NotImplementedError unless factory.api_support?
 
-          factory.init_api_client!
+          factory.eager_load_api_client!
           log_fabrication(:api, factory, parents, args) { factory.fabricate_via_api! }
         end
       end

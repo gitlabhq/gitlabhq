@@ -10,6 +10,9 @@ module QA
       include Airborne
       include Capybara::DSL
 
+      HTTP_STATUS_OK = 200
+      HTTP_STATUS_CREATED = 201
+
       ResourceNotFoundError = Class.new(RuntimeError)
       ResourceFabricationFailedError = Class.new(RuntimeError)
       ResourceURLMissingError = Class.new(RuntimeError)
@@ -33,8 +36,12 @@ module QA
         resource_web_url(api_post)
       end
 
-      def init_api_client!
-        api_client && true
+      def eager_load_api_client!
+        api_client.tap do |client|
+          # Eager-load the API client so that the personal token creation isn't
+          # taken in account in the actual resource creation timing.
+          client.personal_access_token
+        end
       end
 
       private
@@ -51,7 +58,7 @@ module QA
         url = Runtime::API::Request.new(api_client, api_get_path).url
         response = get(url)
 
-        unless response.code == 200
+        unless response.code == HTTP_STATUS_OK
           raise ResourceNotFoundError, "Resource at #{url} could not be found (#{response.code}): `#{response}`."
         end
 
@@ -63,7 +70,7 @@ module QA
           Runtime::API::Request.new(api_client, api_post_path).url,
           api_post_body)
 
-        unless response.code == 201
+        unless response.code == HTTP_STATUS_CREATED
           raise ResourceFabricationFailedError, "Fabrication of #{self.class.name} using the API failed (#{response.code}) with `#{response}`."
         end
 
@@ -72,11 +79,7 @@ module QA
 
       def api_client
         @api_client ||= begin
-          Runtime::API::Client.new(:gitlab, is_new_session: !current_url.start_with?('http')).tap do |client|
-            # Eager-load the API client so that the personal token creation isn't
-            # taken in account in the actual resource creation.
-            client.personal_access_token unless Runtime::Env.personal_access_token
-          end
+          Runtime::API::Client.new(:gitlab, is_new_session: !current_url.start_with?('http'))
         end
       end
 

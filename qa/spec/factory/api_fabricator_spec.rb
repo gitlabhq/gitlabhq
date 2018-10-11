@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe QA::Factory::ApiFabricator do
   let(:factory_without_api_support) do
     Class.new do
