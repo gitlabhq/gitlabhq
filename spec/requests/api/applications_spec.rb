@@ -88,7 +88,7 @@ describe API::Applications, :api do
   describe 'GET /applications' do
     context 'authenticated and authorized user' do
       it 'can list application' do
-        get api('/applications')
+        get api('/applications', admin_user)
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_a(Array)
@@ -97,7 +97,7 @@ describe API::Applications, :api do
 
     context 'non-authenticated user' do
       it 'cannot list application' do
-        get api('/applications')
+        get api('/applications', user)
 
         expect(response).to have_http_status 401
       end
@@ -107,15 +107,17 @@ describe API::Applications, :api do
   describe 'DELETE /applications/:id' do
     context 'authenticated and authorized user' do
       it 'can delete an application' do
-        delete api("/applications/#{application.id}")
-
+        expect do
+          delete api("/applications/#{application.id}", admin_user)
+        end.to change { Doorkeeper::Application.count }.by -1
+        
         expect(response).to have_gitlab_http_status(204)
       end
     end
 
     context 'non-authenticated user' do
       it 'cannot delete an application' do
-        delete api("/applications/#{application.id}")
+        delete api("/applications/#{application.id}", user)
 
         expect(response).to have_http_status 401
       end
