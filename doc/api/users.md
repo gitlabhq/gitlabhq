@@ -78,7 +78,7 @@ GET /users
     "username": "john_smith",
     "email": "john@example.com",
     "secondary_emails": [
-		  {"id": 1, "email": "john+1@example.com"}
+      {"id": 1, "email": "john+1@example.com"}
     ],
     "name": "John Smith",
     "state": "active",
