@@ -223,7 +223,6 @@ describe('Job App ', () => {
       store.dispatch(
         'receiveJobSuccess',
         Object.assign({}, job, {
-          erased: true,
           erased_by: {
             username: 'root',
             web_url: 'gitlab.com/root',
@@ -237,18 +236,18 @@ describe('Job App ', () => {
         store,
       });
 
-      expect(vm.$el.querySelector('.js-job-erased')).not.toBeNull();
+      expect(vm.$el.querySelector('.js-job-erased-block')).not.toBeNull();
     });
 
     it('does not render erased block when `erased` is false', () => {
-      store.dispatch('receiveJobSuccess', Object.assign({}, job, { erased: false }));
+      store.dispatch('receiveJobSuccess', Object.assign({}, job, { erased_at: null }));
 
       vm = mountComponentWithStore(Component, {
         props,
         store,
       });
 
-      expect(vm.$el.querySelector('.js-job-erased')).toBeNull();
+      expect(vm.$el.querySelector('.js-job-erased-block')).toBeNull();
     });
   });
 
