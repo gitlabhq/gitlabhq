@@ -48,6 +48,8 @@ module Issues
         notification_service.async.relabeled_issue(issue, added_labels, current_user)
       end
 
+      handle_milestone_change(issue)
+
       added_mentions = issue.mentioned_users - old_mentioned_users
 
       if added_mentions.present?
@@ -90,6 +92,16 @@ module Issues
     end
 
     private
+
+    def handle_milestone_change(issue)
+      if issue.previous_changes.include?('milestone_id')
+        if issue.milestone.nil?
+          notification_service.async.removed_milestone_issue(issue, current_user)
+        else
+          notification_service.async.changed_milestone_issue(issue, issue.milestone, current_user)
+        end
+      end
+    end
 
     # rubocop: disable CodeReuse/ActiveRecord
     def get_issue_if_allowed(id, board_group_id = nil)
