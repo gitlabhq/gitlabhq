@@ -14,6 +14,7 @@ describe Gitlab::Checks::ChangeAccess do
     subject(:change_access) do
       described_class.new(
         changes,
+        start_time: Time.now,
         project: project,
         user_access: user_access,
         protocol: protocol
@@ -27,6 +28,18 @@ describe Gitlab::Checks::ChangeAccess do
     context 'without failed checks' do
       it "doesn't raise an error" do
         expect { subject.exec }.not_to raise_error
+      end
+    end
+
+    context 'when time limit was reached' do
+      it 'raises a TimeoutError' do
+        access = described_class.new(changes,
+                                     start_time: Gitlab::GitAccess::INTERNAL_TIMEOUT.seconds.ago,
+                                     project: project,
+                                     user_access: user_access,
+                                     protocol: protocol)
+
+        expect { access.exec }.to raise_error(Gitlab::GitAccess::TimeoutError)
       end
     end
 

@@ -24,11 +24,11 @@ module Gitlab
         commits_check: "Checking commits abilities..."
       }.freeze
 
+      attr_accessor :check_log
       attr_reader :user_access, :project, :skip_authorization,
         :skip_lfs_integrity_check, :protocol, :oldrev,
         :newrev, :ref, :branch_name,
-        :tag_name
-      attr_accessor :check_log
+        :tag_name, :start_time
 
       def initialize(
         change, start_time:, user_access:, project:, skip_authorization: false,
@@ -42,7 +42,8 @@ module Gitlab
         @skip_authorization = skip_authorization
         @skip_lfs_integrity_check = skip_lfs_integrity_check
         @protocol = protocol
-        @check_log = ["Running checks for branch: #{@branch_name}"]
+        @start_time = start_time
+        @check_log = ["Running checks for branch: #{@branch_name || @tag_name}"]
       end
 
       def exec(skip_commits_check: false)
@@ -145,6 +146,8 @@ module Gitlab
         # n+1: https://gitlab.com/gitlab-org/gitlab-ee/issues/3593
         ::Gitlab::GitalyClient.allow_n_plus_1_calls do
           commits.each do |commit|
+            raise Gitlab::GitAccess::TimeoutError unless time_left > 0
+
             commit_check.validate(commit, validations_for_commit(commit))
           end
         end
@@ -211,7 +214,7 @@ module Gitlab
       end
 
       def lfs_objects_exist_check
-        lfs_check = Checks::LfsIntegrity.new(project, newrev)
+        lfs_check = Checks::LfsIntegrity.new(project, newrev, time_left)
 
         if lfs_check.objects_missing?
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:lfs_objects_missing]
@@ -231,11 +234,15 @@ module Gitlab
           user_access.can_push_to_branch?(branch_name)
       end
 
+      def time_left
+        (start_time + Gitlab::GitAccess::INTERNAL_TIMEOUT.seconds) - Time.now
+      end
+
       def log_timed(method_name)
+        raise Gitlab::GitAccess::TimeoutError unless time_left > 0
+
         start = Time.now
-
         yield
-
         check_log << LOG_MESSAGES[method_name] + "(#{to_ms(Time.now - start)}ms)"
       end
 
