@@ -1759,7 +1759,7 @@ class Project < ActiveRecord::Base
     return unless export_file_exists?
 
     import_export_upload.remove_export_file!
-    import_export_upload.save
+    import_export_upload.save unless import_export_upload.destroyed?
   end
 
   def export_file_exists?
