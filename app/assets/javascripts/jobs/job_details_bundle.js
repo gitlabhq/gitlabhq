@@ -33,7 +33,7 @@ export default () => {
         props: {
           isLoading: this.isLoading,
           job: this.job,
-          runnerHelpUrl: dataset.runnerHelpUrl,
+          runnerSettingsUrl: dataset.runnerSettingsUrl,
         },
       });
     },
