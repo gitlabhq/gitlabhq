@@ -4,6 +4,7 @@
   import { s__, __ } from '~/locale';
   import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
   import MrWidgetAuthorTime from '../../components/mr_widget_author_time.vue';
+  import MrWidgetPipeline from '../../components/mr_widget_pipeline.vue';
   import statusIcon from '../mr_widget_status_icon.vue';
   import eventHub from '../../event_hub';
 
@@ -14,6 +15,7 @@
     },
     components: {
       MrWidgetAuthorTime,
+      MrWidgetPipeline,
       statusIcon,
       ClipboardButton,
     },
@@ -199,6 +201,14 @@
           </span>
         </p>
       </section>
+      <mr-widget-pipeline
+        v-if="mr.hasCI"
+        :pipeline="mr.mergePipeline"
+        :ci-status="mr.ciStatus"
+        :has-ci="mr.hasCI"
+        :source-branch="mr.targetBranch"
+        :source-branch-link="mr.targetBranchLink"
+      />
     </div>
   </div>
 </template>
