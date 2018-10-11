@@ -9,6 +9,7 @@ module QA
           element :settings_link, 'link_to edit_project_path'
           element :repository_link, "title: _('Repository')"
           element :link_pipelines
+          element :link_members_settings
           element :pipelines_settings_link, "title: _('CI / CD')"
           element :operations_kubernetes_link, "title: _('Kubernetes')"
           element :operations_environments_link
@@ -47,6 +48,14 @@ module QA
           hover_operations do
             within_submenu do
               click_element(:operations_environments_link)
+            end
+          end
+        end
+
+        def click_members_settings
+          hover_settings do
+            within_submenu do
+              click_element :link_members_settings
             end
           end
         end
