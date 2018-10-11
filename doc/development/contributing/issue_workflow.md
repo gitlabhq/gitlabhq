@@ -20,7 +20,6 @@ If you come across an issue that has none of these, and you're allowed to set
 labels, you can _always_ add the team and type, and often also the subject.
 
 [milestones-page]: https://gitlab.com/gitlab-org/gitlab-ce/milestones
-[labels-page]: https://gitlab.com/gitlab-org/gitlab-ce/labels
 
 ## Type labels
 
@@ -208,6 +207,7 @@ project.
 [GitLab Triage]: https://gitlab.com/gitlab-org/gitlab-triage
 [scheduled pipeline]: https://gitlab.com/gitlab-org/quality/triage-ops/pipeline_schedules/10512/edit
 [quality/triage-ops]: https://gitlab.com/gitlab-org/quality/triage-ops
+[team]: https://about.gitlab.com/team/
 
 ## Feature proposals
 
@@ -234,6 +234,8 @@ need to ask one of the [core team] members to add the label, if you do not have 
 
 If you want to create something yourself, consider opening an issue first to
 discuss whether it is interesting to include this in GitLab.
+
+[fpl]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=feature+proposal
 
 ## Issue tracker guidelines
 
@@ -331,3 +333,7 @@ A recent example of this was the issue for
 ---
 
 [Return to Contributing documentation](index.md)
+
+[labels-page]: https://gitlab.com/gitlab-org/gitlab-ce/labels
+[ce-tracker]: https://gitlab.com/gitlab-org/gitlab-ce/issues
+[ee-tracker]: https://gitlab.com/gitlab-org/gitlab-ee/issues
