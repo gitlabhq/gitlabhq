@@ -1,3 +1,42 @@
+.empty-wiki {
+  margin: 16px auto;
+  overflow: hidden;
+  display: flex;
+  position: relative;
+  border: 1px solid #73afea;
+  border-radius: 4px;
+  background-color: #f6fafe;
+  padding: 0;
+}
+
+.empty-wiki .empty-wiki-content {
+  margin-top: 30px;
+  padding-left: 0;
+}
+
+.empty-wiki .btn {
+  margin-top: 23px;
+}
+
+.empty-wiki img {
+  max-width: 240px;
+}
+
+@media (max-width: 768px) {
+  .empty-wiki .empty-wiki-content {
+    margin-top: 0px;
+    padding: 0px 10px;
+  }
+
+  .empty-wiki .svg-content {
+    padding-bottom: 0px;
+  }
+
+  .empty-wiki .btn {
+    margin-top: 0px;
+  }
+}
+
 .new-wiki-page {
   .new-wiki-page-slug-tip {
     display: inline-block;
