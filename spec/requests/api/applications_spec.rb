@@ -105,9 +105,9 @@ describe API::Applications, :api do
 
     context 'non-authenticated user' do
       it 'cannot list application' do
-        get api('/applications', user)
+        get api('/applications')
 
-        expect(response).to have_http_status 403
+        expect(response).to have_http_status 401
       end
     end
   end
