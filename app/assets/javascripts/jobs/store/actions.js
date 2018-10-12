@@ -141,8 +141,10 @@ export const fetchStages = ({ state, dispatch }) => {
   axios
     .get(`${state.job.pipeline.path}.json`)
     .then(({ data }) => {
+      // Set selected stage
       dispatch('receiveStagesSuccess', data.details.stages);
-      dispatch('fetchJobsForStage', data.details.stages[0]);
+      const selectedStage = data.details.stages.find(stage => stage.name === state.selectedStage);
+      dispatch('fetchJobsForStage', selectedStage);
     })
     .catch(() => dispatch('receiveStagesError'));
 };
@@ -156,11 +158,12 @@ export const receiveStagesError = ({ commit }) => {
 /**
  * Jobs list on sidebar - depend on stages dropdown
  */
-export const requestJobsForStage = ({ commit }) => commit(types.REQUEST_JOBS_FOR_STAGE);
+export const requestJobsForStage = ({ commit }, stage) =>
+  commit(types.REQUEST_JOBS_FOR_STAGE, stage);
 
 // On stage click, set selected stage + fetch job
 export const fetchJobsForStage = ({ dispatch }, stage) => {
-  dispatch('requestJobsForStage');
+  dispatch('requestJobsForStage', stage);
 
   axios
     .get(stage.dropdown_path, {
