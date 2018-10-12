@@ -144,8 +144,12 @@ describe('DiffsStoreActions', () => {
         },
         fileHash: 'ABC',
         resolvable: true,
-        position: diffPosition,
-        original_position: diffPosition,
+        position: {
+          formatter: diffPosition,
+        },
+        original_position: {
+          formatter: diffPosition,
+        },
       };
 
       const discussions = reduceDiscussionsToLineCodes([singleDiscussion]);
@@ -169,8 +173,6 @@ describe('DiffsStoreActions', () => {
                   newPath: 'file1',
                   oldLine: 5,
                   oldPath: 'file2',
-                  lineCode: 'ABC_1_1',
-                  positionType: 'text',
                 },
               },
             },
