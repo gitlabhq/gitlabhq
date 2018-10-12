@@ -1,18 +1,31 @@
-/**
- * Notes
- */
+$system-note-icon-size: 32px;
+$system-note-svg-size: 16px;
+@mixin connectionLine($height, $top, $left) {
+  content: '';
+  border-left: 2px solid #dfdfdf;
+  position: absolute;
+  height: $height;
+  top: $top;
+  left: $left;
+}
 
-@-webkit-keyframes targe3-note {
-  from {
-    background: $note-targe3-outside;
-  }
+.issuable-discussion {
+  .notes.timeline > li {
+    &:not(.system-note) {
+      border: 1px solid $border-color;
+      border-radius: $border-radius-default;
+    }
 
-  50% {
-    background: $note-targe3-inside;
-  }
+    margin: $gl-padding 0;
 
-  to {
-    background: $note-targe3-outside;
+    &:not(:first-child)::after {
+      @include connectionLine(16px, -17px, 32px);
+    }
+
+    .notes_content {
+      border: none;
+      border-top: 1px solid $border-color;
+    }
   }
 }
 
@@ -22,14 +35,43 @@ ul.notes {
   margin: 0;
   padding: 0;
 
+  > li.note {
+    padding: $gl-padding;
+  }
+
+  > li.note-discussion {
+    padding: 0;
+
+    .card {
+      border: none;
+    }
+
+    .discussion-reply-holder {
+      border-radius: 0 0 $border-radius-default $border-radius-default;
+    }
+
+    li.note {
+      border-bottom: 1px solid $border-color;
+
+      &:first-child {
+        border-radius: $border-radius-default $border-radius-default 0 0;
+      }
+    }
+
+    .replies-toggle {
+      line-height: $gl-padding-32;
+      background: $gray-light;
+      padding-left: $gl-padding;
+      border-bottom: 1px solid $border-color;
+    }
+  }
+
   .note-created-ago,
   .note-updated-at {
     white-space: normal;
   }
 
   .discussion-body {
-    padding-top: 8px;
-
     .card {
       margin-bottom: 0;
     }
@@ -52,14 +94,9 @@ ul.notes {
     position: relative;
     border-bottom: 0;
 
-    @include notes-media('min', map-get($grid-breakpoints, sm)) {
-      padding-left: $note-icon-gutter-width;
-    }
-
-    .timeline-entry-inner {
-      padding: $gl-padding $gl-btn-padding;
-      border-bottom: 1px solid $white-normal;
-    }
+    // @include notes-media('min', map-get($grid-breakpoints, sm)) {
+    //   padding-left: $note-icon-gutter-width;
+    // }
 
     &:target,
     &.target {
@@ -75,19 +112,19 @@ ul.notes {
       }
     }
 
-    .timeline-icon {
-      @include notes-media('min', map-get($grid-breakpoints, sm)) {
-        margin-left: -$note-icon-gutter-width;
-      }
-    }
+    // .timeline-icon {
+    //   @include notes-media('min', map-get($grid-breakpoints, sm)) {
+    //     margin-left: -$note-icon-gutter-width;
+    //   }
+    // }
 
-    .timeline-content {
-      margin-left: $note-icon-gutter-width;
+    // .timeline-content {
+    //   margin-left: $note-icon-gutter-width;
 
-      @include notes-media('min', map-get($grid-breakpoints, sm)) {
-        margin-left: 0;
-      }
-    }
+    //   @include notes-media('min', map-get($grid-breakpoints, sm)) {
+    //     margin-left: 0;
+    //   }
+    // }
 
     &.being-posted {
       pointer-events: none;
@@ -101,12 +138,6 @@ ul.notes {
       .note-headline-light,
       .fa-spinner {
         margin-left: 3px;
-      }
-    }
-
-    &.note-discussion {
-      .timeline-entry-inner {
-        padding: $gl-padding 10px;
       }
     }
 
@@ -225,17 +256,33 @@ ul.notes {
 
     .timeline-icon {
       float: left;
+      display: flex;
+      align-items: center;
+      width: $system-note-icon-size;
+      height: $system-note-icon-size;
+      border: 1px solid $border-color;
+      border-radius: $system-note-icon-size;
+      margin: -6px $gl-padding 0 0;
 
-      @include notes-media('min', map-get($grid-breakpoints, sm)) {
-        margin-left: 0;
-        width: auto;
+      &::before {
+        @include connectionLine(11px, -17px, 16px);
       }
 
+      &::after {
+        @include connectionLine(12px, 26px, 17px);
+      }
+
+      // @include notes-media('min', map-get($grid-breakpoints, sm)) {
+      //   margin-left: 0;
+      //   width: auto;
+      // }
+
       svg {
-        width: 16px;
-        height: 16px;
+        width: $system-note-svg-size;
+        height: $system-note-svg-size;
         fill: $gray-darkest;
-        margin-top: 2px;
+        display: block;
+        margin: 0 auto;
       }
     }
 
@@ -302,9 +349,15 @@ ul.notes {
 .discussion-body .diff-file {
   .file-title {
     cursor: default;
+    line-height: 38px;
+    padding: 0 $gl-padding;
 
     &:hover {
       background-color: $gray-light;
+    }
+
+    .btn-clipboard {
+      top: 10px;
     }
   }
 
@@ -583,19 +636,6 @@ ul.notes {
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
-}
-
-.discussion-body,
-.diff-file {
-  .notes .note {
-    border-bottom: 1px solid $white-normal;
-
-    .timeline-entry-inner {
-      padding-left: $gl-padding;
-      padding-right: $gl-padding;
-      border-bottom: 0;
-    }
-  }
 }
 
 .disabled-comment {

@@ -31,12 +31,12 @@
   .file-title {
     position: relative;
     background-color: $gray-light;
+    border-top: 1px solid $border-color;
     border-bottom: 1px solid $border-color;
     margin: 0;
     text-align: left;
     padding: 10px $gl-padding;
     word-wrap: break-word;
-    border-radius: $border-radius-default $border-radius-default 0 0;
 
     &.file-title-clear {
       padding-left: 0;
@@ -331,7 +331,6 @@ span.idiff {
     border-bottom: 1px solid $border-color;
     padding: 5px $gl-padding;
     margin: 0;
-    border-radius: $border-radius-default $border-radius-default 0 0;
   }
 
   .file-header-content {

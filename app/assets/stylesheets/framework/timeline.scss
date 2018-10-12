@@ -1,7 +1,8 @@
 .timeline {
-  @include basic-list;
+  // @include basic-list;
   margin: 0;
   padding: 0;
+  list-style: none;
 
   &::before {
     @include notes-media('max', map-get($grid-breakpoints, sm)) {
@@ -26,9 +27,9 @@
 }
 
 .timeline-entry {
-  border-color: $white-normal;
+  // border-color: $white-normal;
   color: $gl-text-color;
-  border-bottom: 1px solid $border-white-light;
+  // border-bottom: 1px solid $border-white-light;
   background: $white-light;
 
   .timeline-entry-inner {

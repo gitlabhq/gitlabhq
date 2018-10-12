@@ -36,7 +36,6 @@ export default {
       >
         <noteable-discussion
           :discussion="discussion"
-          :render-header="false"
           :render-diff-file="false"
           :always-expanded="true"
           :discussions-by-diff-order="true"

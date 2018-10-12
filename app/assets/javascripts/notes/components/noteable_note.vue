@@ -190,6 +190,7 @@ export default {
             :author="author"
             :created-at="note.created_at"
             :note-id="note.id"
+            action-text="commented"
           />
           <note-actions
             :author-id="author.id"

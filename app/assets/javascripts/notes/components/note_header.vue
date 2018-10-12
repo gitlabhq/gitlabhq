@@ -92,9 +92,6 @@ export default {
     </span>
     <span class="note-headline-light">
       <span class="note-headline-meta">
-        <template v-if="actionText">
-          {{ actionText }}
-        </template>
         <span class="system-note-message">
           <slot></slot>
         </span>
@@ -102,7 +99,9 @@ export default {
           v-if="createdAt"
         >
           <span class="system-note-separator">
-            &middot;
+            <template v-if="actionText">
+              {{ actionText }}
+            </template>
           </span>
           <a
             :href="noteTimestampLink"

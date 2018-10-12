@@ -46,11 +46,6 @@ export default {
       type: Object,
       required: true,
     },
-    renderHeader: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
     renderDiffFile: {
       type: Boolean,
       required: false,
@@ -72,6 +67,7 @@ export default {
       isReplying: false,
       isResolving: false,
       resolveAsThread: true,
+      isRepliesCollapsed: false,
     };
   },
   computed: {
@@ -112,6 +108,15 @@ export default {
     newNotePath() {
       return this.getNoteableData.create_note_path;
     },
+    hasReplies() {
+      return this.discussion.notes.length > 1;
+    },
+    initialDiscussion() {
+      return this.discussion.notes.slice(0, 1)[0];
+    },
+    replies() {
+      return this.discussion.notes.slice(1);
+    },
     lastUpdatedBy() {
       const { notes } = this.discussion;
 
@@ -147,6 +152,12 @@ export default {
 
       return diffDiscussion && diffFile && this.renderDiffFile;
     },
+    shouldGroupReplies() {
+      return !this.shouldRenderDiffs && !this.transformedDiscussion.diffDiscussion;
+    },
+    shouldRenderHeader() {
+      return this.shouldRenderDiffs;
+    },
     wrapperComponent() {
       return this.shouldRenderDiffs ? diffWithNote : 'div';
     },
@@ -159,6 +170,9 @@ export default {
     },
     wrapperClass() {
       return this.isDiffDiscussion ? '' : 'card discussion-wrapper';
+    },
+    toggleRepliesText() {
+      return this.isRepliesCollapsed ? s__('Notes|Expand replies') : s__('Notes|Collapse replies');
     },
   },
   watch: {
@@ -206,6 +220,9 @@ export default {
     },
     toggleDiscussionHandler() {
       this.toggleDiscussion({ discussionId: this.discussion.id });
+    },
+    toggleReplies() {
+      this.isRepliesCollapsed = !this.isRepliesCollapsed;
     },
     showReplyForm() {
       this.isReplying = true;
@@ -278,7 +295,7 @@ Please check your network connection and try again.`;
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
         <user-avatar-link
-          v-if="author"
+          v-if="author && shouldRenderHeader"
           :link-href="author.path"
           :img-src="author.avatar_url"
           :img-alt="author.name"
@@ -291,7 +308,7 @@ Please check your network connection and try again.`;
           class="discussion js-discussion-container"
         >
           <div
-            v-if="renderHeader"
+            v-if="shouldRenderHeader"
             class="discussion-header"
           >
             <note-header
@@ -348,13 +365,37 @@ Please check your network connection and try again.`;
             >
               <div class="discussion-notes">
                 <ul class="notes">
-                  <component
-                    :is="componentName(note)"
-                    v-for="note in discussion.notes"
-                    :key="note.id"
-                    :note="componentData(note)"
-                    @handleDeleteNote="deleteNoteHandler"
-                  />
+                  <template v-if="shouldGroupReplies">
+                    <component
+                      :is="componentName(initialDiscussion)"
+                      :note="componentData(initialDiscussion)"
+                      @handleDeleteNote="deleteNoteHandler"
+                    />
+                    <li
+                      class="replies-toggle"
+                      @click="toggleReplies"
+                    >
+                      {{ toggleRepliesText }}
+                    </li>
+                    <template v-if="!isRepliesCollapsed">
+                      <component
+                        :is="componentName(note)"
+                        v-for="note in replies"
+                        :key="note.id"
+                        :note="componentData(note)"
+                        @handleDeleteNote="deleteNoteHandler"
+                      />
+                    </template>
+                  </template>
+                  <template v-else>
+                    <component
+                      :is="componentName(note)"
+                      v-for="note in discussion.notes"
+                      :key="note.id"
+                      :note="componentData(note)"
+                      @handleDeleteNote="deleteNoteHandler"
+                    />
+                  </template>
                 </ul>
                 <div
                   :class="{ 'is-replying': isReplying }"
