@@ -204,11 +204,17 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def ci_environments_status
+    sha = if ci_environments_status_on_merge_result?
+            @merge_request.merge_commit_sha
+          else
+            @merge_request.diff_head_sha
+          end
+
     environments =
       begin
-        @merge_request.environments_for(current_user).map do |environment|
+        @merge_request.environments_for(current_user, post_merge: ci_environments_status_on_merge_result?).map do |environment|
           project    = environment.project
-          deployment = environment.first_deployment_for(@merge_request.diff_head_sha)
+          deployment = environment.first_deployment_for(sha)
 
           stop_url =
             if can?(current_user, :stop_environment, environment)
@@ -272,6 +278,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     if !@merge_request.source_project && @merge_request.open?
       @merge_request.close
     end
+  end
+
+  def ci_environments_status_on_merge_result?
+    params[:target] == 'merge'
   end
 
   private

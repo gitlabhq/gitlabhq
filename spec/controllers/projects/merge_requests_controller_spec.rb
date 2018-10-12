@@ -778,6 +778,14 @@ describe Projects::MergeRequestsController do
         expect(json_response.first['url']).to match /#{forked.full_path}/
       end
 
+      context "when target is 'merge'" do
+        it 'returns nothing' do
+          get_ci_environments_status(target: 'merge')
+
+          expect(json_response).to be_empty
+        end
+      end
+
       # we're trying to reduce the overall number of queries for this method.
       # set a hard limit for now. https://gitlab.com/gitlab-org/gitlab-ce/issues/52287
       it 'keeps queries in check' do
@@ -786,11 +794,15 @@ describe Projects::MergeRequestsController do
         expect(control_count).to be <= 137
       end
 
-      def get_ci_environments_status
-        get :ci_environments_status,
+      def get_ci_environments_status(extra_params = {})
+        params = {
           namespace_id: merge_request.project.namespace.to_param,
           project_id: merge_request.project,
-          id: merge_request.iid, format: 'json'
+          id: merge_request.iid,
+          format: 'json'
+        }
+
+        get :ci_environments_status, params.merge(extra_params)
       end
     end
   end

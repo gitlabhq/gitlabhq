@@ -953,16 +953,17 @@ class MergeRequest < ActiveRecord::Base
     actual_head_pipeline&.success? || actual_head_pipeline&.skipped?
   end
 
-  def environments_for(current_user)
-    return [] unless diff_head_commit
+  def environments_for(current_user, post_merge: false)
+    commit = post_merge ? merge_commit : diff_head_commit
+    return [] unless commit
 
     @environments ||= Hash.new do |h, current_user|
       envs = EnvironmentsFinder.new(target_project, current_user,
-        ref: target_branch, commit: diff_head_commit, with_tags: true).execute
+        ref: target_branch, commit: commit, with_tags: true).execute
 
       if source_project
         envs.concat EnvironmentsFinder.new(source_project, current_user,
-          ref: source_branch, commit: diff_head_commit).execute
+          ref: source_branch, commit: commit).execute
       end
 
       h[current_user] = envs.uniq
