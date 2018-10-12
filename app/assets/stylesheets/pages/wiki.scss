@@ -9,30 +9,43 @@
   padding: 0px;
 }
 
-.empty-wiki .empty-wiki-content {
-  margin-top: 30px;
+.empty-wiki-content {
+  margin-top: 22px;
   padding-left: 0px;
 }
 
-.empty-wiki .empty-wiki-img {
+.empty-wiki-content h5 {
+  margin-top: 0px;
+  margin-bottom: 7px;
+  font-size: 20px;
+  line-height: 24px;
+}
+
+.empty-wiki-img {
   padding: 0px;
 }
 
 .empty-wiki .btn {
-  margin-top: 23px;
+  margin-top: 3px;
 }
 
 .empty-wiki img {
   max-width: 272px;
 }
 
+.empty-wiki .svg-content {
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
 @media (max-width: 768px) {
   .empty-wiki .empty-wiki-content {
     margin-top: 0px;
-    padding: 0px 10px;
+    padding: 0px 10px 15px;
   }
 
   .empty-wiki .svg-content {
+    padding-top: 7px;
     padding-bottom: 0px;
   }
 
