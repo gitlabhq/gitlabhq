@@ -108,16 +108,10 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     namespace = source_project_namespace
     branch = source_branch
 
-    if source_branch_exists?
-      namespace = link_to(namespace, project_path(source_project))
-      branch = link_to(branch, project_tree_path(source_project, source_branch))
-    end
+    namespace_link = source_branch_exists? ? link_to(namespace, project_path(source_project)) : ERB::Util.html_escape(namespace)
+    branch_link = source_branch_exists? ? link_to(branch, project_tree_path(source_project, source_branch)) : ERB::Util.html_escape(branch)
 
-    if for_fork?
-      namespace + ":" + branch
-    else
-      branch
-    end
+    for_fork? ? "#{namespace_link}:#{branch_link}" : branch_link
   end
 
   def closing_issues_links
