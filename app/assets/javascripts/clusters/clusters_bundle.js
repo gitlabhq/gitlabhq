@@ -1,6 +1,6 @@
 import Visibility from 'visibilityjs';
 import Vue from 'vue';
-import PersistentUserCallout from '../persistent_user_callout';
+import initDismissableCallout from '~/dismissable_callout';
 import { s__, sprintf } from '../locale';
 import Flash from '../flash';
 import Poll from '../lib/utils/poll';
@@ -62,7 +62,7 @@ export default class Clusters {
     this.showTokenButton = document.querySelector('.js-show-cluster-token');
     this.tokenField = document.querySelector('.js-cluster-token');
 
-    Clusters.initDismissableCallout();
+    initDismissableCallout('.js-cluster-security-warning');
     initSettingsPanels();
     setupToggleButtons(document.querySelector('.js-cluster-enable-toggle-area'));
     this.initApplications();
@@ -103,12 +103,6 @@ export default class Clusters {
         });
       },
     });
-  }
-
-  static initDismissableCallout() {
-    const callout = document.querySelector('.js-cluster-security-warning');
-
-    if (callout) new PersistentUserCallout(callout); // eslint-disable-line no-new
   }
 
   addListeners() {
