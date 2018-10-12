@@ -291,9 +291,8 @@ describe 'Environments page', :js do
         it "has link to the delayed job's action" do
           find('.js-environment-actions-dropdown').click
 
-          time_diff = [0, delayed_job.scheduled_at - Time.now].max
           expect(page).to have_button('Delayed job')
-          expect(page).to have_content(Time.at(time_diff).utc.strftime("%H:%M:%S"))
+          expect(page).to have_content(/\d{2}:\d{2}:\d{2}/)
         end
 
         context 'when delayed job is expired already' do
