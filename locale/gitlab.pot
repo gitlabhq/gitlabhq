@@ -4236,6 +4236,9 @@ msgstr ""
 msgid "Operations"
 msgstr ""
 
+msgid "Operations Dashboard"
+msgstr ""
+
 msgid "Optionally, you can %{link_to_customize} how FogBugz email addresses and usernames are imported into GitLab."
 msgstr ""
 

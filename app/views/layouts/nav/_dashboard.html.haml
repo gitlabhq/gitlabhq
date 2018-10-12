@@ -66,6 +66,7 @@
 
   - if Gitlab::Sherlock.enabled? || can?(current_user, :read_instance_statistics)
     %li.line-separator.d-none.d-sm-block
+  = render_if_exists 'dashboard/operations/nav_link'
   - if can?(current_user, :read_instance_statistics)
     = nav_link(controller: [:conversational_development_index, :cohorts]) do
       = link_to instance_statistics_root_path, title: _('Instance Statistics'), aria: { label: _('Instance Statistics') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
