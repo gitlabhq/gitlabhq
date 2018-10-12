@@ -66,7 +66,7 @@
   };
 </script>
 <template>
-  <div class="top-bar">
+  <div class="top-bar affix js-top-bar">
     <!-- truncate information -->
     <div class="js-truncated-info truncated-info d-none d-sm-block float-left">
       <template v-if="isTraceSizeVisible">

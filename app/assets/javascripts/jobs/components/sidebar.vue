@@ -142,7 +142,7 @@
 </script>
 <template>
   <aside
-    class="right-sidebar right-sidebar-expanded build-sidebar"
+    class="js-build-sidebar right-sidebar right-sidebar-expanded build-sidebar"
     data-offset-top="101"
     data-spy="affix"
   >
