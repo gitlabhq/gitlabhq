@@ -7,7 +7,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include RendersCommits
   include ToggleAwardEmoji
   include IssuableCollections
-  include MarkupHelper
 
   skip_before_action :merge_request, only: [:index, :bulk_update]
   before_action :whitelist_query_limiting, only: [:assign_related_issues, :update]
@@ -123,19 +122,21 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     respond_to do |format|
       format.html do
-        check_branch_conflict
-
-        if @merge_request.valid?
-          redirect_to([@merge_request.target_project.namespace.becomes(Namespace), @merge_request.target_project, @merge_request])
-        else
+        if @merge_request.errors.present?
           define_edit_vars
 
           render :edit
+        else
+          redirect_to project_merge_request_path(@merge_request.target_project, @merge_request)
         end
       end
 
       format.json do
-        render json: serializer.represent(@merge_request, serializer: 'basic')
+        if merge_request.errors.present?
+          render json: @merge_request.errors, status: :bad_request
+        else
+          render json: serializer.represent(@merge_request, serializer: 'basic')
+        end
       end
     end
   rescue ActiveRecord::StaleObjectError
@@ -256,12 +257,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def mark_merge_request_mergeable
     @merge_request.check_if_can_be_merged
-  end
-
-  def check_branch_conflict
-    if @merge_request.errors[:validate_branches]
-      flash[:alert] = markdown(@merge_request.errors[:validate_branches].to_sentence, pipeline: :single_line)
-    end
   end
 
   def merge!
