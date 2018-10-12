@@ -1046,3 +1046,19 @@
   left: auto;
   line-height: 0;
 }
+
+@media (max-width: map-get($grid-breakpoints, md)-1) {
+  .diffs .files {
+    @include fixed-width-container;
+    flex-direction: column;
+
+    .diff-tree-list {
+      width: 100%;
+    }
+
+    .tree-list-holder {
+      max-height: calc(50px + 50vh);
+      padding-right: 0;
+    }
+  }
+}
