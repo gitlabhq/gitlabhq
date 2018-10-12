@@ -161,9 +161,9 @@ describe('Sidebar details block', () => {
         vm = mountComponentWithStore(SidebarComponent, { store });
       });
 
-      it('renders first stage as selected', () => {
+      it('renders value provided as selectedStage as selected', () => {
         expect(vm.$el.querySelector('.js-selected-stage').textContent.trim()).toEqual(
-          stages[0].name,
+          vm.selectedStage,
         );
       });
     });

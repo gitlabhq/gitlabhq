@@ -1,0 +1,5 @@
+---
+title: Load correct stage in the stages dropdown
+merge_request: 22317
+author:
+type: fixed

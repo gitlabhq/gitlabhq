@@ -35,6 +35,7 @@
         default: null,
       },
     },
+<<<<<<< HEAD
     computed: {
       ...mapState(['job', 'isLoading', 'stages', 'jobs']),
       coverage() {
@@ -63,6 +64,37 @@
         if (this.job.metadata == null) {
           return '';
         }
+=======
+  },
+  computed: {
+    ...mapState(['job', 'isLoading', 'stages', 'jobs', 'selectedStage']),
+    coverage() {
+      return `${this.job.coverage}%`;
+    },
+    duration() {
+      return timeIntervalInWords(this.job.duration);
+    },
+    queued() {
+      return timeIntervalInWords(this.job.queued);
+    },
+    runnerId() {
+      return `${this.job.runner.description} (#${this.job.runner.id})`;
+    },
+    retryButtonClass() {
+      let className =
+        'js-retry-button float-right btn btn-retry d-none d-md-block d-lg-block d-xl-block';
+      className +=
+        this.job.status && this.job.recoverable ? ' btn-primary' : ' btn-inverted-secondary';
+      return className;
+    },
+    hasTimeout() {
+      return this.job.metadata != null && this.job.metadata.timeout_human_readable !== null;
+    },
+    timeout() {
+      if (this.job.metadata == null) {
+        return '';
+      }
+>>>>>>> 7e342757e28... Merge branch '52618-incorrect-stage-being-shown-in-side-bar-of-job-view-api' into 'master'
 
         let t = this.job.metadata.timeout_human_readable;
         if (this.job.metadata.timeout_source !== '') {
@@ -276,6 +308,7 @@
           <stages-dropdown
             :stages="stages"
             :pipeline="job.pipeline"
+            :selected-stage="selectedStage"
             @requestSidebarStageDropdown="fetchJobsForStage"
           />
 
