@@ -1,0 +1,5 @@
+---
+title: Use cached readme contents when available
+merge_request: 22325
+author:
+type: performance
