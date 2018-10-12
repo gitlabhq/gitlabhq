@@ -368,6 +368,8 @@ describe('DiffsStoreMutations', () => {
 
   describe('TOGGLE_SHOW_TREE_LIST', () => {
     it('toggles showTreeList', () => {
+      spyOn(localStorage, 'getItem').and.returnValue(null);
+
       const state = createState();
 
       mutations[types.TOGGLE_SHOW_TREE_LIST](state);
