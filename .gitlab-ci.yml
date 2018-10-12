@@ -715,7 +715,7 @@ gitlab:assets:compile:
     DOCKER_DRIVER: overlay2
     DOCKER_HOST: tcp://docker:2375
     REGISTRY: registry.gitlab.com
-    ASSETS_IMAGE: ${REGISTRY}/build/cng/rails-assets
+    ASSETS_IMAGE: ${REGISTRY}/build/cng/${CI_PROJECT_NAME}-rails-assets
   script:
     - date
     - yarn install --frozen-lockfile --production --cache-folder .yarn-cache
