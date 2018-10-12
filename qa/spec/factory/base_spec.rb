@@ -38,57 +38,7 @@ describe QA::Factory::Base do
     end
   end
 
-  describe '.dependency' do
-    let(:dependency) { spy('dependency') }
-
-    before do
-      stub_const('Some::MyDependency', dependency)
-    end
-
-    subject do
-      Class.new(described_class) do
-        dependency Some::MyDependency, as: :mydep do |factory|
-          factory.something!
-        end
-      end
-    end
-
-    it 'appends a new dependency and accessors' do
-      expect(subject.dependencies).to be_one
-    end
-
-    it 'defines dependency accessors' do
-      expect(subject.new).to respond_to :mydep, :mydep=
-    end
-
-    describe 'dependencies fabrication' do
-      let(:dependency) { double('dependency') }
-      let(:instance) { spy('instance') }
-
-      subject do
-        Class.new(described_class) do
-          dependency Some::MyDependency, as: :mydep
-        end
-      end
-
-      before do
-        stub_const('Some::MyDependency', dependency)
-
-        allow(subject).to receive(:new).and_return(instance)
-        allow(instance).to receive(:mydep).and_return(nil)
-        allow(QA::Factory::Product).to receive(:new)
-        allow(QA::Factory::Product).to receive(:populate!)
-      end
-
-      it 'builds all dependencies first' do
-        expect(dependency).to receive(:fabricate!).once
-
-        subject.fabricate!
-      end
-    end
-  end
-
-  describe '.product' do
+  describe '.attribute' do
     subject do
       Class.new(described_class) do
         def fabricate!
@@ -99,23 +49,22 @@ describe QA::Factory::Base do
         def self.find_page
         end
 
-        product :token do
-          find_page.do_something_on_page!
+        attribute :token do
+          self.class.find_page.do_something_on_page!
           'resulting value'
         end
       end
     end
 
-    it 'appends new product attribute' do
-      expect(subject.attributes).to be_one
-      expect(subject.attributes).to have_key(:token)
+    it 'appends new attribute name' do
+      expect(subject.attributes_names).to be_one
+      expect(subject.attributes_names).to include(:token)
     end
 
     describe 'populating fabrication product with data' do
       let(:page) { spy('page') }
 
       before do
-        allow(factory).to receive(:class).and_return(subject)
         allow(QA::Factory::Product).to receive(:new).and_return(product)
         allow(product).to receive(:page).and_return(page)
         allow(subject).to receive(:find_page).and_return(page)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'forwardable'
 
 module QA
@@ -5,8 +7,7 @@ module QA
     class Base
       extend SingleForwardable
 
-      def_delegators :evaluator, :dependency, :dependencies
-      def_delegators :evaluator, :product, :attributes
+      def_delegators :evaluator, :attribute
 
       def fabricate!(*_args)
         raise NotImplementedError
@@ -15,10 +16,6 @@ module QA
       def self.fabricate!(*args)
         new.tap do |factory|
           yield factory if block_given?
-
-          dependencies.each do |name, signature|
-            Factory::Dependency.new(name, factory, signature).build!
-          end
 
           factory.fabricate!(*args)
 
@@ -30,28 +27,33 @@ module QA
         @evaluator ||= Factory::Base::DSL.new(self)
       end
 
-      class DSL
-        attr_reader :dependencies, :attributes
+      def self.attributes_module
+        const_get(:Attributes)
+      rescue NameError
+        mod = const_set(:Attributes, Module.new)
 
+        include mod
+
+        mod
+      end
+
+      def self.attributes_names
+        attributes_module.instance_methods.grep_v(/=$/)
+      end
+
+      class DSL
         def initialize(base)
           @base = base
-          @dependencies = {}
-          @attributes = {}
         end
 
-        def dependency(factory, as:, &block)
-          as.tap do |name|
-            @base.class_eval { attr_accessor name }
+        def attribute(name, &block)
+          @base.attributes_module.module_eval do
+            attr_writer(name)
 
-            Dependency::Signature.new(factory, block).tap do |signature|
-              @dependencies.store(name, signature)
+            define_method(name) do
+              instance_variable_get("@#{name}") ||
+                instance_variable_set("@#{name}", instance_exec(&block))
             end
-          end
-        end
-
-        def product(attribute, &block)
-          Product::Attribute.new(attribute, block).tap do |signature|
-            @attributes.store(attribute, signature)
           end
         end
       end

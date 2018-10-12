@@ -5,22 +5,21 @@ module QA
     module Resource
       class Project < Factory::Base
         attr_writer :description
-        attr_reader :name
 
-        dependency Factory::Resource::Group, as: :group
-
-        product :name do |factory|
-          factory.name
+        attribute :group do
+          Factory::Resource::Group.fabricate!
         end
 
-        product :repository_ssh_location do
+        attribute :name
+
+        attribute :repository_ssh_location do
           Page::Project::Show.act do
             choose_repository_clone_ssh
             repository_location
           end
         end
 
-        product :repository_http_location do
+        attribute :repository_http_location do
           Page::Project::Show.act do
             choose_repository_clone_http
             repository_location

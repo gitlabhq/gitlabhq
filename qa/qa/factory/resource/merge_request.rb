@@ -12,31 +12,32 @@ module QA
                       :milestone,
                       :labels
 
-        product :project do |factory|
-          factory.project
+        attribute :source_branch
+
+        attribute :project do
+          Factory::Resource::Project.fabricate! do |resource|
+            resource.name = 'project-with-merge-request'
+          end
         end
 
-        product :source_branch do |factory|
-          factory.source_branch
+        attribute :target do
+          project.visit!
+
+          Factory::Repository::ProjectPush.fabricate! do |resource|
+            resource.project = project
+            resource.branch_name = 'master'
+            resource.remote_branch = target_branch
+          end
         end
 
-        dependency Factory::Resource::Project, as: :project do |project|
-          project.name = 'project-with-merge-request'
-        end
-
-        dependency Factory::Repository::ProjectPush, as: :target do |push, factory|
-          factory.project.visit!
-          push.project = factory.project
-          push.branch_name = 'master'
-          push.remote_branch = factory.target_branch
-        end
-
-        dependency Factory::Repository::ProjectPush, as: :source do |push, factory|
-          push.project = factory.project
-          push.branch_name = factory.target_branch
-          push.remote_branch = factory.source_branch
-          push.file_name = "added_file.txt"
-          push.file_content = "File Added"
+        attribute :source do
+          Factory::Repository::ProjectPush.fabricate! do |resource|
+            resource.project = project
+            resource.branch_name = target_branch
+            resource.remote_branch = source_branch
+            resource.file_name = "added_file.txt"
+            resource.file_content = "File Added"
+          end
         end
 
         def initialize
@@ -50,6 +51,8 @@ module QA
         end
 
         def fabricate!
+          target
+          source
           project.visit!
           Page::Project::Show.act { new_merge_request }
           Page::MergeRequest::New.perform do |page|

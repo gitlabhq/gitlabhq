@@ -5,8 +5,10 @@ module QA
         attr_accessor :project, :branch_name,
                       :allow_to_push, :allow_to_merge, :protected
 
-        dependency Factory::Resource::Project, as: :project do |project|
-          project.name = 'protected-branch-project'
+        attribute :project do
+          Factory::Resource::Project.fabricate! do |resource|
+            resource.name = 'protected-branch-project'
+          end
         end
 
         def initialize

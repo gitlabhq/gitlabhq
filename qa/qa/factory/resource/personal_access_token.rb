@@ -7,7 +7,7 @@ module QA
       class PersonalAccessToken < Factory::Base
         attr_accessor :name
 
-        product :access_token do
+        attribute :access_token do
           Page::Profile::PersonalAccessTokens.act { created_access_token }
         end
 

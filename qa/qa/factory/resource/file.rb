@@ -8,8 +8,10 @@ module QA
                       :content,
                       :commit_message
 
-        dependency Factory::Resource::Project, as: :project do |project|
-          project.name = 'project-with-new-file'
+        attribute :project do
+          Factory::Resource::Project.fabricate! do |resource|
+            resource.name = 'project-with-new-file'
+          end
         end
 
         def initialize

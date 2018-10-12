@@ -4,7 +4,9 @@ module QA
       class Group < Factory::Base
         attr_accessor :path, :description
 
-        dependency Factory::Resource::Sandbox, as: :sandbox
+        attribute :sandbox do
+          Factory::Resource::Sandbox.fabricate!
+        end
 
         def initialize
           @path = Runtime::Namespace.name

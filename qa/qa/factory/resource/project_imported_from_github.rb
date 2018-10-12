@@ -6,11 +6,11 @@ module QA
       class ProjectImportedFromGithub < Resource::Project
         attr_writer :personal_access_token, :github_repository_path
 
-        dependency Factory::Resource::Group, as: :group
-
-        product :name do |factory|
-          factory.name
+        attribute :group do
+          Factory::Resource::Group.fabricate!
         end
+
+        attribute :name
 
         def fabricate!
           group.visit!

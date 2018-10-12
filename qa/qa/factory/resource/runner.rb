@@ -6,9 +6,11 @@ module QA
       class Runner < Factory::Base
         attr_writer :name, :tags, :image
 
-        dependency Factory::Resource::Project, as: :project do |project|
-          project.name = 'project-with-ci-cd'
-          project.description = 'Project with CI/CD Pipelines'
+        attribute :project do
+          Factory::Resource::Project.fabricate! do |resource|
+            resource.name = 'project-with-ci-cd'
+            resource.description = 'Project with CI/CD Pipelines'
+          end
         end
 
         def name

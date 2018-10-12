@@ -2,16 +2,18 @@ module QA
   module Factory
     module Resource
       class Fork < Factory::Base
-        dependency Factory::Repository::ProjectPush, as: :push
-
-        dependency Factory::Resource::User, as: :user do |user|
-          if Runtime::Env.forker?
-            user.username = Runtime::Env.forker_username
-            user.password = Runtime::Env.forker_password
-          end
+        attribute :push do
+          Factory::Repository::ProjectPush.fabricate!
         end
 
-        product(:user) { |factory| factory.user }
+        attribute :user do
+          Factory::Resource::User.fabricate! do |resource|
+            if Runtime::Env.forker?
+              resource.username = Runtime::Env.forker_username
+              resource.password = Runtime::Env.forker_password
+            end
+          end
+        end
 
         def visit_project_with_retry
           # The user intermittently fails to stay signed in after visiting the
@@ -48,6 +50,9 @@ module QA
         end
 
         def fabricate!
+          push
+          user
+
           visit_project_with_retry
 
           Page::Project::Show.act { fork_project }

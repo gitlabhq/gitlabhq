@@ -4,9 +4,11 @@ module QA
       class SecretVariable < Factory::Base
         attr_accessor :key, :value
 
-        dependency Factory::Resource::Project, as: :project do |project|
-          project.name = 'project-with-secret-variables'
-          project.description = 'project for adding secret variable test'
+        attribute :project do
+          Factory::Resource::Project.fabricate! do |resource|
+            resource.name = 'project-with-secret-variables'
+            resource.description = 'project for adding secret variable test'
+          end
         end
 
         def fabricate!
