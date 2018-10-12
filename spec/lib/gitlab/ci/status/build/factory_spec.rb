@@ -339,7 +339,7 @@ describe Gitlab::Ci::Status::Build::Factory do
     end
 
     it 'fabricates status with correct details' do
-      expect(status.text).to eq 'scheduled'
+      expect(status.text).to eq 'delayed'
       expect(status.group).to eq 'scheduled'
       expect(status.icon).to eq 'status_scheduled'
       expect(status.favicon).to eq 'favicon_status_scheduled'

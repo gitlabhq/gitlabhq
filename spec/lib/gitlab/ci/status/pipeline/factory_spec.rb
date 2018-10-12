@@ -31,7 +31,7 @@ describe Gitlab::Ci::Status::Pipeline::Factory do
         elsif simple_status == 'scheduled'
           it 'matches a correct extended statuses' do
             expect(factory.extended_statuses)
-              .to eq [Gitlab::Ci::Status::Pipeline::Scheduled]
+              .to eq [Gitlab::Ci::Status::Pipeline::Delayed]
           end
         else
           it 'does not match extended statuses' do
