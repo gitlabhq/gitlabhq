@@ -95,7 +95,7 @@ end
 before_fork do |server, worker|
   # the following is highly recommended for Rails + "preload_app true"
   # as there's no need for the master process to hold a connection
-  defined?(ActiveRecord::Base) and
+  defined?(ActiveRecord::Base) &&
     ActiveRecord::Base.connection.disconnect!
 
   # The following is only recommended for memory/DB-constrained
@@ -133,7 +133,7 @@ after_fork do |server, worker|
   # server.listen(addr, :tries => -1, :delay => 5, :tcp_nopush => true)
 
   # the following is *required* for Rails + "preload_app true",
-  defined?(ActiveRecord::Base) and
+  defined?(ActiveRecord::Base) &&
     ActiveRecord::Base.establish_connection
 
   # reset prometheus client, this will cause any opened metrics files to be closed
