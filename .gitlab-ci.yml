@@ -727,7 +727,7 @@ gitlab:assets:compile:
     - cp Dockerfile.assets assets_container.build/
     - docker build -t ${ASSETS_IMAGE}:${CI_COMMIT_REF_NAME} -f assets_container.build/Dockerfile.assets assets_container.build/
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${REGISTRY}
-    # - docker push ${ASSETS_IMAGE}:${CI_COMMIT_REF_NAME}
+    - docker push ${ASSETS_IMAGE}:${CI_COMMIT_REF_NAME}
   artifacts:
     name: webpack-report
     expire_in: 31d
