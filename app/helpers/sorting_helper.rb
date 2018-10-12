@@ -154,11 +154,8 @@ module SortingHelper
 
     link_to(reverse_url, type: 'button', class: link_class) do
       icon_suffix =
-        if sort_value == sort_value_milestone
-          'lowest'
-        elsif sort_value == sort_value_due_date
-          'lowest'
-        elsif sort_value.ends_with?('_asc')
+        case sort_value
+        when sort_value_milestone, sort_value_due_date, /_asc\z/
           'lowest'
         else
           'highest'
