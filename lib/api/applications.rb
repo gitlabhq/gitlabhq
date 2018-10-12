@@ -29,7 +29,7 @@ module API
         success Entities::ApplicationWithSecret
       end
       get do
-        applications = Doorkeeper::Application.all
+        applications = Doorkeeper::Application.where("owner_id IS NULL")
         present applications, with: Entities::Application
       end
 
