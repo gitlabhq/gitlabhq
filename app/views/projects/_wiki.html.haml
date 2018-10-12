@@ -6,7 +6,7 @@
 - else
   - can_create_wiki = can?(current_user, :create_wiki, @project)
   .empty-wiki{ class: [('row-content-block row' if can_create_wiki), ('content-block' unless can_create_wiki)] }
-    .col-12.col-md-4
+    .col-12.col-md-4.empty-wiki-img
       .svg-content
         = image_tag 'illustrations/wiki_login_empty.svg'
     .col-12.col-md-8.empty-wiki-content.text-center.text-md-left

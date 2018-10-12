@@ -6,12 +6,16 @@
   border: 1px solid #73afea;
   border-radius: 4px;
   background-color: #f6fafe;
-  padding: 0;
+  padding: 0px;
 }
 
 .empty-wiki .empty-wiki-content {
   margin-top: 30px;
-  padding-left: 0;
+  padding-left: 0px;
+}
+
+.empty-wiki .empty-wiki-img {
+  padding: 0px;
 }
 
 .empty-wiki .btn {
@@ -19,7 +23,7 @@
 }
 
 .empty-wiki img {
-  max-width: 240px;
+  max-width: 272px;
 }
 
 @media (max-width: 768px) {
