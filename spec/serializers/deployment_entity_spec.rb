@@ -29,16 +29,16 @@ describe DeploymentEntity do
     let(:build) { create(:ci_build, :success, pipeline: pipeline) }
     let(:deployment) { create(:deployment, deployable: build) }
 
-    context 'when deployment has another action' do
-      let(:other_build) { create(:ci_build, :scheduled, pipeline: pipeline, name: 'other build') }
+    context 'when the same pipeline has a scheduled action' do
+      let(:other_build) { create(:ci_build, :schedulable, :success, pipeline: pipeline, name: 'other build') }
       let!(:other_deployment) { create(:deployment, deployable: other_build) }
 
-      it 'returns other actions' do
+      it 'returns other scheduled actions' do
         expect(subject[:scheduled_actions][0][:name]).to eq 'other build'
       end
     end
 
-    context 'when deployment does not have other actions' do
+    context 'when the same pipeline does not have a scheduled action' do
       it 'does not return other actions' do
         expect(subject[:scheduled_actions]).to be_empty
       end
