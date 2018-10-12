@@ -283,6 +283,13 @@
     vertical-align: top;
   }
 
+  .notification-dropdown .dropdown-menu {
+    @extend .dropdown-menu-right;
+    @include media-breakpoint-down(sm) {
+      left: 0;
+    }
+  }
+
   .download-button {
     @include media-breakpoint-down(md) {
       margin-left: 0;
