@@ -216,6 +216,19 @@ describe Projects::ClustersController do
             expect(project.clusters.first.provider_gcp).not_to be_legacy_abac
           end
         end
+
+        context 'when cluster fails to persist' do
+          before do
+            allow_any_instance_of(Clusters::Cluster).to receive(:persisted?).and_return(false)
+          end
+
+          it 'renders the new template' do
+            go
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to render_template(:new)
+          end
+        end
       end
 
       context 'when access token is expired' do
@@ -296,6 +309,19 @@ describe Projects::ClustersController do
 
           expect(project.clusters.first).to be_user
           expect(project.clusters.first).to be_kubernetes
+        end
+      end
+
+      context 'when cluster fails to persist' do
+        before do
+          allow_any_instance_of(Clusters::Cluster).to receive(:persisted?).and_return(false)
+        end
+
+        it 'renders the new template' do
+          go
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template(:new)
         end
       end
 
