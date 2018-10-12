@@ -36,7 +36,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['job', 'isLoading', 'stages', 'jobs']),
+    ...mapState(['job', 'isLoading', 'stages', 'jobs', 'selectedStage']),
     coverage() {
       return `${this.job.coverage}%`;
     },
@@ -276,6 +276,7 @@ export default {
           <stages-dropdown
             :stages="stages"
             :pipeline="job.pipeline"
+            :selected-stage="selectedStage"
             @requestSidebarStageDropdown="fetchJobsForStage"
           />
 

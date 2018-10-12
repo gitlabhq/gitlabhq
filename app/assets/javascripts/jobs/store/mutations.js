@@ -53,6 +53,16 @@ export default {
     state.isLoading = false;
     state.hasError = false;
     state.job = job;
+
+    /**
+     * We only update it on the first request
+     * The dropdown can be changed by the user
+     * after the first request,
+     * and we do not want to hijack that
+     */
+    if (state.selectedStage === 'More' && job.stage) {
+      state.selectedStage = job.stage;
+    }
   },
   [types.RECEIVE_JOB_ERROR](state) {
     state.isLoading = false;
@@ -81,8 +91,9 @@ export default {
     state.stages = [];
   },
 
-  [types.REQUEST_JOBS_FOR_STAGE](state) {
+  [types.REQUEST_JOBS_FOR_STAGE](state, stage) {
     state.isLoadingJobs = true;
+    state.selectedStage = stage.name;
   },
   [types.RECEIVE_JOBS_FOR_STAGE_SUCCESS](state, jobs) {
     state.isLoadingJobs = false;
