@@ -139,7 +139,7 @@ export const fetchStages = ({ state, dispatch }) => {
   dispatch('requestStages');
 
   axios
-    .get(state.job.pipeline.path)
+    .get(`${state.job.pipeline.path}.json`)
     .then(({ data }) => {
       dispatch('receiveStagesSuccess', data.details.stages);
       dispatch('fetchJobsForStage', data.details.stages[0]);

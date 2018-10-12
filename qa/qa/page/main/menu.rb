@@ -68,10 +68,6 @@ module QA
           end
         end
 
-        def assert_has_personal_area
-          raise "Failed to sign in" unless has_personal_area?
-        end
-
         private
 
         def within_top_menu

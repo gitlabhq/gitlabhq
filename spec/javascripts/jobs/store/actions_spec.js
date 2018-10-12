@@ -422,7 +422,7 @@ describe('Job State actions', () => {
 
     beforeEach(() => {
       mockedState.job.pipeline = {
-        path: `${TEST_HOST}/endpoint.json/stages`,
+        path: `${TEST_HOST}/endpoint`,
       };
       mock = new MockAdapter(axios);
     });
@@ -434,7 +434,7 @@ describe('Job State actions', () => {
     describe('success', () => {
       it('dispatches requestStages and receiveStagesSuccess, fetchJobsForStage ', done => {
         mock
-          .onGet(`${TEST_HOST}/endpoint.json/stages`)
+          .onGet(`${TEST_HOST}/endpoint.json`)
           .replyOnce(200, { details: { stages: [{ id: 121212, name: 'build' }] } });
 
         testAction(
