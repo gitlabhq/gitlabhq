@@ -55,6 +55,9 @@ module TestEnv
     'update-gitlab-shell-v-6-0-1'        => '2f61d70',
     'update-gitlab-shell-v-6-0-3'        => 'de78448',
     '2-mb-file'                          => 'bf12d25',
+    'before-create-delete-modify-move'   => '845009f',
+    'between-create-delete-modify-move'  => '3f5f443',
+    'after-create-delete-modify-move'    => 'ba3faa7',
     'with-codeowners'                    => '219560e'
   }.freeze
 
