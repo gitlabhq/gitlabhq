@@ -27,7 +27,7 @@ module API
 
       # rubocop: disable CodeReuse/ActiveRecord
       desc 'Get applications' do
-        success Entities::ApplicationWithSecret
+        success Entities::Application
       end
       get do
         applications = Doorkeeper::Application.where("owner_id IS NULL")
