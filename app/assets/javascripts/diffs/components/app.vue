@@ -1,11 +1,13 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
+import _ from 'underscore';
 import Icon from '~/vue_shared/components/icon.vue';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
 import eventHub from '../../notes/event_hub';
 import CompareVersions from './compare_versions.vue';
 import DiffFile from './diff_file.vue';
+import { shouldShowTree } from '../store/utils';
 import NoChanges from './no_changes.vue';
 import HiddenFilesWarning from './hidden_files_warning.vue';
 import CommitWidget from './commit_widget.vue';
@@ -109,6 +111,9 @@ export default {
     isLoading: 'adjustView',
     showTreeList: 'adjustView',
   },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.resizeThrottled, false);
+  },
   mounted() {
     this.setBaseConfig({ endpoint: this.endpoint, projectPath: this.projectPath });
 
@@ -119,6 +124,8 @@ export default {
   created() {
     this.adjustView();
     eventHub.$once('fetchedNotesData', this.setDiscussions);
+    this.resizeThrottled = _.debounce(this.resize, 100);
+    window.addEventListener('resize', this.resizeThrottled, false);
   },
   methods: {
     ...mapActions('diffs', [
@@ -126,6 +133,7 @@ export default {
       'fetchDiffFiles',
       'startRenderDiffsQueue',
       'assignDiscussionsToDiff',
+      'toggleShowTreeList',
     ]),
     fetchData() {
       this.fetchDiffFiles()
@@ -162,6 +170,11 @@ export default {
           window.mrTabs.resetViewContainer();
           window.mrTabs.expandViewContainer(this.showTreeList);
         });
+      }
+    },
+    resize() {
+      if (shouldShowTree() !== this.showTreeList) {
+        this.toggleShowTreeList({ dontSave: true });
       }
     },
   },

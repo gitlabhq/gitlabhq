@@ -1,0 +1,5 @@
+---
+title: Make MR file tree react to resizes while on default setting
+merge_request: 22319
+author:
+type: fixed

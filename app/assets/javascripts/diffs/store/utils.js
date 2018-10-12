@@ -1,5 +1,6 @@
 import _ from 'underscore';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import bp from '~/breakpoints';
 import {
   LINE_POSITION_LEFT,
   LINE_POSITION_RIGHT,
@@ -11,6 +12,7 @@ import {
   MATCH_LINE_TYPE,
   LINES_TO_BE_RENDERED_DIRECTLY,
   MAX_LINES_TO_BE_RENDERED,
+  MR_TREE_SHOW_KEY,
 } from '../constants';
 
 export function findDiffFile(files, hash) {
@@ -320,3 +322,9 @@ export const generateTreeList = files =>
     },
     { treeEntries: {}, tree: [] },
   );
+
+export const shouldShowTree = () => {
+  const storedTreeShow = localStorage.getItem(MR_TREE_SHOW_KEY);
+
+  return storedTreeShow === null ? bp.getBreakpointSize() !== 'xs' : storedTreeShow === 'true';
+};

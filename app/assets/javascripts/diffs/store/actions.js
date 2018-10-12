@@ -209,9 +209,14 @@ export const scrollToFile = ({ state, commit }, path) => {
   setTimeout(() => commit(types.UPDATE_CURRENT_DIFF_FILE_ID, ''), 1000);
 };
 
-export const toggleShowTreeList = ({ commit, state }) => {
+export const toggleShowTreeList = ({ commit, state }, options) => {
+  const shouldSave = !options || (options && options.dontSave !== true);
+
   commit(types.TOGGLE_SHOW_TREE_LIST);
-  localStorage.setItem(MR_TREE_SHOW_KEY, state.showTreeList);
+
+  if (shouldSave) {
+    localStorage.setItem(MR_TREE_SHOW_KEY, state.showTreeList);
+  }
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

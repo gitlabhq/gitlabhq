@@ -691,5 +691,13 @@ describe('DiffsStoreActions', () => {
 
       expect(localStorage.setItem).toHaveBeenCalledWith('mr_tree_show', true);
     });
+
+    it('does not update localStorage when dontSave option is set', () => {
+      spyOn(localStorage, 'setItem');
+
+      toggleShowTreeList({ commit() {}, state: { showTreeList: true } }, { dontSave: true });
+
+      expect(localStorage.setItem).not.toHaveBeenCalledWith('mr_tree_show', true);
+    });
   });
 });
