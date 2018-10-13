@@ -140,13 +140,6 @@ describe HelpController, "routing" do
   end
 end
 
-#                      koding GET    /koding(.:format)                      koding#index
-describe KodingController, "routing" do
-  it "to #index" do
-    expect(get("/koding")).to route_to('koding#index')
-  end
-end
-
 #             profile_account GET    /profile/account(.:format)             profile#account
 #             profile_history GET    /profile/history(.:format)             profile#history
 #            profile_password PUT    /profile/password(.:format)            profile#password_update

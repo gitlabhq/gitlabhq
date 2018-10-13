@@ -33,6 +33,8 @@ class ApplicationSetting < ActiveRecord::Base
   ignore_column :circuitbreaker_storage_timeout
   ignore_column :circuitbreaker_access_retries
   ignore_column :circuitbreaker_check_interval
+  ignore_column :koding_url
+  ignore_column :koding_enabled
 
   cache_markdown_field :sign_in_text
   cache_markdown_field :help_page_text
@@ -99,10 +101,6 @@ class ApplicationSetting < ActiveRecord::Base
             numericality: { greater_than_or_equal_to: 0 },
             presence: true,
             if: :unique_ips_limit_enabled
-
-  validates :koding_url,
-            presence: true,
-            if: :koding_enabled
 
   validates :plantuml_url,
             presence: true,
@@ -252,8 +250,6 @@ class ApplicationSetting < ActiveRecord::Base
       housekeeping_gc_period: 200,
       housekeeping_incremental_repack_period: 10,
       import_sources: Settings.gitlab['import_sources'],
-      koding_enabled: false,
-      koding_url: nil,
       max_artifacts_size: Settings.artifacts['max_size'],
       max_attachment_size: Settings.gitlab['max_attachment_size'],
       mirror_available: true,

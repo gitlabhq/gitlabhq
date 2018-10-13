@@ -4230,12 +4230,6 @@ msgstr "6月"
 msgid "June"
 msgstr "6月"
 
-msgid "Koding"
-msgstr "Koding"
-
-msgid "Koding Dashboard"
-msgstr ""
-
 msgid "Kubernetes"
 msgstr "Kubernetes"
 
@@ -6731,9 +6725,6 @@ msgstr ""
 
 msgid "Set up CI/CD"
 msgstr "CI/CD を設定"
-
-msgid "Set up Koding"
-msgstr "Koding を設定"
 
 msgid "Set up a %{type} Runner manually"
 msgstr ""

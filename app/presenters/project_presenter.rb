@@ -36,8 +36,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       contribution_guide_anchor_data,
       autodevops_anchor_data(show_auto_devops_callout: show_auto_devops_callout),
       kubernetes_cluster_anchor_data,
-      gitlab_ci_anchor_data,
-      koding_anchor_data
+      gitlab_ci_anchor_data
     ].compact.reject { |item| item.enabled }
   end
 
@@ -123,43 +122,6 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def add_readme_path
     add_special_file_path(file_name: 'README.md')
-  end
-
-  def add_koding_stack_path
-    project_new_blob_path(
-      project,
-      default_branch || 'master',
-      file_name:      '.koding.yml',
-      commit_message: "Add Koding stack script",
-      content: <<-CONTENT.strip_heredoc
-        provider:
-          aws:
-            access_key: '${var.aws_access_key}'
-            secret_key: '${var.aws_secret_key}'
-        resource:
-          aws_instance:
-            #{project.path}-vm:
-              instance_type: t2.nano
-              user_data: |-
-
-                # Created by GitLab UI for :>
-
-                echo _KD_NOTIFY_@Installing Base packages...@
-
-                apt-get update -y
-                apt-get install git -y
-
-                echo _KD_NOTIFY_@Cloning #{project.name}...@
-
-                export KODING_USER=${var.koding_user_username}
-                export REPO_URL=#{root_url}${var.koding_queryString_repo}.git
-                export BRANCH=${var.koding_queryString_branch}
-
-                sudo -i -u $KODING_USER git clone $REPO_URL -b $BRANCH
-
-                echo _KD_NOTIFY_@#{project.name} cloned.@
-      CONTENT
-    )
   end
 
   def license_short_name
@@ -310,14 +272,6 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
-  def koding_anchor_data
-    if current_user && can_current_user_push_code? && koding_enabled? && repository.koding_yml.blank?
-      AnchorData.new(false,
-                     _('Set up Koding'),
-                     add_koding_stack_path)
-    end
-  end
-
   def tags_to_show
     project.tag_list.take(MAX_TAGS_TO_SHOW) # rubocop: disable CodeReuse/ActiveRecord
   end
@@ -362,9 +316,5 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       commit_message: commit_message,
       branch_name:    branch_name
     )
-  end
-
-  def koding_enabled?
-    Gitlab::CurrentSettings.koding_enabled?
   end
 end

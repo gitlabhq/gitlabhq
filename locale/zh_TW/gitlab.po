@@ -4230,12 +4230,6 @@ msgstr "六月"
 msgid "June"
 msgstr "六月"
 
-msgid "Koding"
-msgstr "Koding"
-
-msgid "Koding Dashboard"
-msgstr "Koding 控制面板"
-
 msgid "Kubernetes"
 msgstr "Kubernetes"
 
@@ -6731,9 +6725,6 @@ msgstr "設定使用者登入的需求。啟用強制性的兩步驟驗證。"
 
 msgid "Set up CI/CD"
 msgstr "設定 CI/CD"
-
-msgid "Set up Koding"
-msgstr "設定 Koding"
 
 msgid "Set up a %{type} Runner manually"
 msgstr ""

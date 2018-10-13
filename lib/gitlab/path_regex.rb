@@ -39,7 +39,6 @@ module Gitlab
       import
       invites
       jwt
-      koding
       login
       notification_settings
       oauth

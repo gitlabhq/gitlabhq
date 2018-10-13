@@ -7,7 +7,6 @@ module ApplicationSettingsHelper
             :gravatar_enabled?,
             :password_authentication_enabled_for_web?,
             :akismet_enabled?,
-            :koding_enabled?,
             to: :'Gitlab::CurrentSettings.current_application_settings'
 
   def user_oauth_applications?
@@ -155,8 +154,6 @@ module ApplicationSettingsHelper
       :housekeeping_incremental_repack_period,
       :html_emails_enabled,
       :import_sources,
-      :koding_enabled,
-      :koding_url,
       :max_artifacts_size,
       :max_attachment_size,
       :max_pages_size,

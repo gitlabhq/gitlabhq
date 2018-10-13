@@ -4338,12 +4338,6 @@ msgstr "чер."
 msgid "June"
 msgstr "червень"
 
-msgid "Koding"
-msgstr "Koding"
-
-msgid "Koding Dashboard"
-msgstr "Панель керування Koding"
-
 msgid "Kubernetes"
 msgstr "Kubernetes"
 
@@ -6857,9 +6851,6 @@ msgstr "Встановіть вимоги для входу користувач
 
 msgid "Set up CI/CD"
 msgstr "Налаштування CI/CD"
-
-msgid "Set up Koding"
-msgstr "Налаштування Koding"
 
 msgid "Set up a %{type} Runner manually"
 msgstr ""

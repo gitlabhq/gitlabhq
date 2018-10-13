@@ -4266,12 +4266,6 @@ msgstr "Jun"
 msgid "June"
 msgstr "Junho"
 
-msgid "Koding"
-msgstr "Koding"
-
-msgid "Koding Dashboard"
-msgstr "Painel de controle do Koding"
-
 msgid "Kubernetes"
 msgstr "Kubernetes"
 
@@ -6773,9 +6767,6 @@ msgstr "Definir requisitos para um usuário entrar. Ative a autenticação obrig
 
 msgid "Set up CI/CD"
 msgstr "Configurar CI/CD"
-
-msgid "Set up Koding"
-msgstr "Configurar Koding"
 
 msgid "Set up a %{type} Runner manually"
 msgstr ""

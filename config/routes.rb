@@ -81,9 +81,6 @@ Rails.application.routes.draw do
     draw :instance_statistics
   end
 
-  # Koding route
-  get 'koding' => 'koding#index'
-
   draw :api
   draw :sidekiq
   draw :help

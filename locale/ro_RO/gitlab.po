@@ -4302,12 +4302,6 @@ msgstr ""
 msgid "June"
 msgstr ""
 
-msgid "Koding"
-msgstr ""
-
-msgid "Koding Dashboard"
-msgstr ""
-
 msgid "Kubernetes"
 msgstr ""
 
@@ -6814,9 +6808,6 @@ msgid "Set requirements for a user to sign-in. Enable mandatory two-factor authe
 msgstr ""
 
 msgid "Set up CI/CD"
-msgstr ""
-
-msgid "Set up Koding"
 msgstr ""
 
 msgid "Set up a %{type} Runner manually"

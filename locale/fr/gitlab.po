@@ -4266,12 +4266,6 @@ msgstr "juin"
 msgid "June"
 msgstr "juin"
 
-msgid "Koding"
-msgstr "Koding"
-
-msgid "Koding Dashboard"
-msgstr "Tableau de bord Koding"
-
 msgid "Kubernetes"
 msgstr "Kubernetes"
 
@@ -6773,9 +6767,6 @@ msgstr "Définissez les exigences pour la connexion d’un utilisateur. Activez 
 
 msgid "Set up CI/CD"
 msgstr "Configuration CI/CD"
-
-msgid "Set up Koding"
-msgstr "Configurer Koding"
 
 msgid "Set up a %{type} Runner manually"
 msgstr "Configurer manuellement un exécuteur %{type}"

@@ -4230,12 +4230,6 @@ msgstr "六"
 msgid "June"
 msgstr "六月"
 
-msgid "Koding"
-msgstr "Koding"
-
-msgid "Koding Dashboard"
-msgstr "Koding仪表板"
-
 msgid "Kubernetes"
 msgstr "Kubernetes"
 
@@ -6731,9 +6725,6 @@ msgstr "设定用户登录的条件。启用强制双重认证。"
 
 msgid "Set up CI/CD"
 msgstr "配置 CI/CD"
-
-msgid "Set up Koding"
-msgstr "设置 Koding"
 
 msgid "Set up a %{type} Runner manually"
 msgstr "手动设置%{type}Runner  "
