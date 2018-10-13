@@ -34,12 +34,11 @@ module Gitlab
       # rubocop:disable Metrics/AbcSize
       # rubocop: disable CodeReuse/ActiveRecord
       def system_usage_data
-        {
+        base_counts = {
           counts: {
             assignee_lists: count(List.assignee),
             boards: count(Board),
-            ci_builds: Gitlab::Database::Count.approximate_counts([::Ci::Build]),
-            ci_internal_pipelines: Gitlab::Database::Count.approximate_counts([::Ci::Pipeline.internal]),
+            ci_builds: Gitlab::Database::Count.approximate_counts([::Ci::Build]).values.first,
             ci_external_pipelines: count(::Ci::Pipeline.external),
             ci_pipeline_config_auto_devops: count(::Ci::Pipeline.auto_devops_source),
             ci_pipeline_config_repository: count(::Ci::Pipeline.repository_source),
@@ -81,8 +80,14 @@ module Gitlab
             todos: count(Todo),
             uploads: count(Upload),
             web_hooks: count(WebHook)
-          }.merge(services_usage)
+          }
         }
+
+        base_counts[:counts].merge!(services_usage)
+        # Use approx counts for builds and extrapolating internal pipelines to
+        # avoid statement timeouts
+        base_counts[:counts][:ci_internal_pipelines] = base_counts[:counts][:ci_builds] - base_counts[:counts][:ci_external_pipelines]
+        base_counts
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
