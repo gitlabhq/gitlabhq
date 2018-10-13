@@ -12,7 +12,9 @@ class ApplicationController < ActionController::Base
   include WorkhorseHelper
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
-  include InvalidUTF8ErrorHandler
+  # this can be removed after switching to rails 5
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/51908
+  include InvalidUTF8ErrorHandler unless Gitlab.rails5?
 
   before_action :authenticate_sessionless_user!
   before_action :authenticate_user!
