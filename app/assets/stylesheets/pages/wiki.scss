@@ -3,54 +3,53 @@
   overflow: hidden;
   display: flex;
   position: relative;
-  border: 1px solid #73afea;
+  border: 1px solid $blue-300;
   border-radius: 4px;
-  background-color: #f6fafe;
-  padding: 0px;
+  background-color: $blue-50;
+  padding: 0;
+
+  .btn {
+    margin-top: 3px;
+  }
+
+  img {
+    max-width: 272px;
+  }
+  .svg-content {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
 }
 
 .empty-wiki-content {
   margin-top: 22px;
-  padding-left: 0px;
-}
+  padding-left: 0;
 
-.empty-wiki-content h5 {
-  margin-top: 0px;
-  margin-bottom: 7px;
-  font-size: 20px;
-  line-height: 24px;
+  h5 {
+    margin-top: 0;
+    margin-bottom: 7px;
+    font-size: 20px;
+    line-height: 24px;
+  }
 }
 
 .empty-wiki-img {
-  padding: 0px;
-}
-
-.empty-wiki .btn {
-  margin-top: 3px;
-}
-
-.empty-wiki img {
-  max-width: 272px;
-}
-
-.empty-wiki .svg-content {
-  padding-top: 8px;
-  padding-bottom: 8px;
+  padding: 0;
 }
 
 @media (max-width: 768px) {
   .empty-wiki .empty-wiki-content {
-    margin-top: 0px;
-    padding: 0px 10px 15px;
+    margin-top: 0;
+    padding: 0 10px 15px;
   }
 
   .empty-wiki .svg-content {
     padding-top: 7px;
-    padding-bottom: 0px;
+    padding-bottom: 0;
   }
 
   .empty-wiki .btn {
-    margin-top: 0px;
+    margin-top: 0;
   }
 }
 
