@@ -27,7 +27,7 @@ dashboard tool like [Grafana].
 >**Note:**
 For installations from source you'll have to install and configure it yourself.
 
-Prometheus and it's exporters are on by default, starting with GitLab 9.0.
+Prometheus and its exporters are on by default, starting with GitLab 9.0.
 Prometheus will run as the `gitlab-prometheus` user and listen on
 `http://localhost:9090`. By default Prometheus is only accessible from the GitLab server itself.
 Each exporter will be automatically set up as a
