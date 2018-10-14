@@ -4,7 +4,10 @@ require 'spec_helper'
 
 describe Clusters::Cluster do
   it { is_expected.to belong_to(:user) }
+  it { is_expected.to have_many(:cluster_projects) }
   it { is_expected.to have_many(:projects) }
+  it { is_expected.to have_many(:cluster_groups) }
+  it { is_expected.to have_many(:groups) }
   it { is_expected.to have_one(:provider_gcp) }
   it { is_expected.to have_one(:platform_kubernetes) }
   it { is_expected.to have_one(:application_helm) }
