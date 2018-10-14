@@ -39,7 +39,7 @@ describe Gitlab::Checks::ChangeAccess do
                                      user_access: user_access,
                                      protocol: protocol)
 
-        expect { access.exec }.to raise_error(Gitlab::GitAccess::TimeoutError)
+        expect { access.exec }.to raise_error(described_class::TimeoutError)
       end
     end
 

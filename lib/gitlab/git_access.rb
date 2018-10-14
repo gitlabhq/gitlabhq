@@ -268,12 +268,6 @@ module Gitlab
         # If user does not have access to make at least one change, cancel all
         # push by allowing the exception to bubble up
         check_single_change_access(change, skip_lfs_integrity_check: !first_change)
-
-        time_left = Time.now - start_time
-
-        # If the access check is taking more than 50 seconds we do not want to continue
-        # and instead want to return the trace of the checks already made
-        raise TimeoutError, @trace.join("\n") if time_left >= INTERNAL_TIMEOUT
       end
     end
 
@@ -290,7 +284,7 @@ module Gitlab
 
       change_access.exec
       @trace += change_access.check_log
-    rescue TimeoutError, GRPC::DeadlineExceeded
+    rescue Checks::ChangeAccess::TimeoutError, GRPC::DeadlineExceeded
       @trace += change_access.check_log
       raise TimeoutError, @trace.join("\n")
     end

@@ -1,6 +1,8 @@
 module Gitlab
   module Checks
     class ChangeAccess
+      TimeoutError = Class.new(StandardError)
+
       ERROR_MESSAGES = {
         push_code: 'You are not allowed to push code to this project.',
         delete_default_branch: 'The default branch of a project cannot be deleted.',
@@ -146,7 +148,7 @@ module Gitlab
         # n+1: https://gitlab.com/gitlab-org/gitlab-ee/issues/3593
         ::Gitlab::GitalyClient.allow_n_plus_1_calls do
           commits.each do |commit|
-            raise Gitlab::GitAccess::TimeoutError unless time_left > 0
+            raise TimeoutError unless time_left > 0
 
             commit_check.validate(commit, validations_for_commit(commit))
           end
@@ -239,7 +241,7 @@ module Gitlab
       end
 
       def log_timed(method_name)
-        raise Gitlab::GitAccess::TimeoutError unless time_left > 0
+        raise TimeoutError unless time_left > 0
 
         start = Time.now
         yield
