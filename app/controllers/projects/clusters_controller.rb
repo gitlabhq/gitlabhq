@@ -5,8 +5,7 @@ class Projects::ClustersController < Projects::ApplicationController
 
   before_action :cluster, except: [:index, :new, :create_gcp, :create_user]
   before_action :authorize_read_cluster!
-  before_action :generate_gcp_authorize_url, only: [:new]
-  before_action :validate_gcp_token, only: [:new]
+  before_action :generate_redirect_after_google_authorize_url, only: [:new, :create_gcp, :create_user]
   before_action :gcp_cluster, only: [:new]
   before_action :user_cluster, only: [:new]
   before_action :authorize_create_cluster!, only: [:new]
@@ -80,8 +79,6 @@ class Projects::ClustersController < Projects::ApplicationController
     if @gcp_cluster.persisted?
       redirect_to project_cluster_path(project, @gcp_cluster)
     else
-      generate_gcp_authorize_url
-      validate_gcp_token
       user_cluster
 
       render :new, locals: { active_tab: 'gcp' }
@@ -96,8 +93,6 @@ class Projects::ClustersController < Projects::ApplicationController
     if @user_cluster.persisted?
       redirect_to project_cluster_path(project, @user_cluster)
     else
-      generate_gcp_authorize_url
-      validate_gcp_token
       gcp_cluster
 
       render :new, locals: { active_tab: 'user' }
@@ -169,8 +164,8 @@ class Projects::ClustersController < Projects::ApplicationController
       )
   end
 
-  def generate_gcp_authorize_url
-    @authorize_url = gcp_authorize_url(new_project_cluster_path(@project))
+  def generate_redirect_after_google_authorize_url
+    @redirect_after_authorize_url = new_project_cluster_path(@project)
   end
 
   def gcp_cluster
@@ -183,10 +178,6 @@ class Projects::ClustersController < Projects::ApplicationController
     @user_cluster = ::Clusters::Cluster.new.tap do |cluster|
       cluster.build_platform_kubernetes
     end
-  end
-
-  def validate_gcp_token
-    @valid_gcp_token = validated_gcp_token
   end
 
   def authorize_update_cluster!

@@ -83,58 +83,16 @@ describe Projects::ClustersController do
         sign_in(user)
       end
 
-      context 'when omniauth has been configured' do
-        let(:key) { 'secret-key' }
-        let(:session_key_for_redirect_uri) do
-          GoogleApi::CloudPlatform::Client.session_key_for_redirect_uri(key)
-        end
+      it 'has new object' do
+        go
 
-        before do
-          allow(SecureRandom).to receive(:hex).and_return(key)
-        end
-
-        it 'has authorize_url' do
-          go
-
-          expect(assigns(:authorize_url)).to include(key)
-          expect(session[session_key_for_redirect_uri]).to eq(new_project_cluster_path(project))
-        end
+        expect(assigns(:gcp_cluster)).to be_an_instance_of(Clusters::Cluster)
       end
 
-      context 'when omniauth has not configured' do
-        before do
-          stub_omniauth_setting(providers: [])
-        end
+      it 'sets the redirect url after google authorization' do
+        go
 
-        it 'does not have authorize_url' do
-          go
-
-          expect(assigns(:authorize_url)).to be_nil
-        end
-      end
-
-      context 'when access token is valid' do
-        before do
-          stub_google_api_validate_token
-        end
-
-        it 'has new object' do
-          go
-
-          expect(assigns(:gcp_cluster)).to be_an_instance_of(Clusters::Cluster)
-        end
-      end
-
-      context 'when access token is expired' do
-        before do
-          stub_google_api_expired_token
-        end
-
-        it { expect(@valid_gcp_token).to be_falsey }
-      end
-
-      context 'when access token is not stored in session' do
-        it { expect(@valid_gcp_token).to be_falsey }
+        expect(assigns(:redirect_after_authorize_url)).to eq new_project_cluster_path(project)
       end
     end
 
@@ -192,10 +150,6 @@ describe Projects::ClustersController do
       end
 
       context 'when access token is valid' do
-        before do
-          stub_google_api_validate_token
-        end
-
         it 'creates a new cluster' do
           expect(ClusterProvisionWorker).to receive(:perform_async)
           expect { go }.to change { Clusters::Cluster.count }
@@ -228,19 +182,13 @@ describe Projects::ClustersController do
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to render_template(:new)
           end
+
+          it 'sets the redirect url after google authorization' do
+            go
+
+            expect(assigns(:redirect_after_authorize_url)).to eq new_project_cluster_path(project)
+          end
         end
-      end
-
-      context 'when access token is expired' do
-        before do
-          stub_google_api_expired_token
-        end
-
-        it { expect(@valid_gcp_token).to be_falsey }
-      end
-
-      context 'when access token is not stored in session' do
-        it { expect(@valid_gcp_token).to be_falsey }
       end
     end
 
@@ -248,8 +196,7 @@ describe Projects::ClustersController do
       before do
         allow_any_instance_of(described_class)
         .to receive(:token_in_session).and_return('token')
-        allow_any_instance_of(described_class)
-        .to receive(:expires_at_in_session).and_return(1.hour.since.to_i.to_s)
+
         allow_any_instance_of(GoogleApi::CloudPlatform::Client)
           .to receive(:projects_zones_clusters_create) do
           OpenStruct.new(
@@ -322,6 +269,12 @@ describe Projects::ClustersController do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template(:new)
+        end
+
+        it 'sets the redirect url after google authorization' do
+          go
+
+          expect(assigns(:redirect_after_authorize_url)).to eq new_project_cluster_path(project)
         end
       end
 

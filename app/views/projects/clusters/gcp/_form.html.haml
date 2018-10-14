@@ -10,7 +10,7 @@
   - link_to_help_page = link_to(s_('ClusterIntegration|help page'), help_page_path('user/project/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
   = s_('ClusterIntegration|Read our %{link_to_help_page} on Kubernetes cluster integration.').html_safe % { link_to_help_page: link_to_help_page}
 
-%p= link_to('Select a different Google account', @authorize_url)
+%p= link_to('Select a different Google account', gcp_authorize_url(@redirect_after_authorize_url))
 
 = form_for @gcp_cluster, html: { class: 'js-gke-cluster-creation prepend-top-20', data: { token: token_in_session } }, url:  create_gcp_namespace_project_clusters_path(@project.namespace, @project), as: :cluster do |field|
   = form_errors(@gcp_cluster)
