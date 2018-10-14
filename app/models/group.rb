@@ -41,6 +41,9 @@ class Group < Namespace
   has_many :boards
   has_many :badges, class_name: 'GroupBadge'
 
+  has_one :cluster_group, class_name: 'Clusters::Group'
+  has_many :clusters, through: :cluster_group, class_name: 'Clusters::Cluster'
+
   has_many :todos
 
   accepts_nested_attributes_for :variables, allow_destroy: true
