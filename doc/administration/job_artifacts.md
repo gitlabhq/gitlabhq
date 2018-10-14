@@ -98,7 +98,7 @@ _The artifacts are stored by default in
 If you don't want to use the local disk where GitLab is installed to store the
 artifacts, you can use an object storage like AWS S3 instead.
 This configuration relies on valid AWS credentials to be configured already.
-Use an [Object storage option][os] like AWS S3 to store job artifacts.
+Use an object storage option like AWS S3 to store job artifacts.
 
 ### Object Storage Settings
 
@@ -315,4 +315,3 @@ memory and disk I/O.
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [restart gitlab]: restart_gitlab.md#installations-from-source "How to restart GitLab"
 [gitlab workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse "GitLab Workhorse repository"
-[os]: https://docs.gitlab.com/administration/job_artifacts.html#using-object-storage
