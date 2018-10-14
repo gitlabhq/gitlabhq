@@ -9,9 +9,9 @@ module Clusters
     end
 
     def execute(project:, access_token: nil)
-      raise ArgumentError.new(_('Instance does not support multiple Kubernetes clusters')) unless can_create_cluster?(project)
+      raise ArgumentError, _('Instance does not support multiple Kubernetes clusters') unless can_create_cluster?(project)
 
-      cluster_params = params.merge(user: current_user, projects: [project])
+      cluster_params = params.merge(user: current_user, cluster_type: :project_type, projects: [project])
       cluster_params[:provider_gcp_attributes].try do |provider|
         provider[:access_token] = access_token
       end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181016152238) do
+ActiveRecord::Schema.define(version: 20181017001059) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -599,6 +599,14 @@ ActiveRecord::Schema.define(version: 20181016152238) do
 
   add_index "ci_variables", ["project_id", "key", "environment_scope"], name: "index_ci_variables_on_project_id_and_key_and_environment_scope", unique: true, using: :btree
 
+  create_table "cluster_groups", force: :cascade do |t|
+    t.integer "cluster_id", null: false
+    t.integer "group_id", null: false
+  end
+
+  add_index "cluster_groups", ["cluster_id", "group_id"], name: "index_cluster_groups_on_cluster_id_and_group_id", unique: true, using: :btree
+  add_index "cluster_groups", ["group_id"], name: "index_cluster_groups_on_group_id", using: :btree
+
   create_table "cluster_platforms_kubernetes", force: :cascade do |t|
     t.integer "cluster_id", null: false
     t.datetime_with_timezone "created_at", null: false
@@ -654,6 +662,7 @@ ActiveRecord::Schema.define(version: 20181016152238) do
     t.boolean "enabled", default: true
     t.string "name", null: false
     t.string "environment_scope", default: "*", null: false
+    t.integer "cluster_type", limit: 2, default: 3, null: false
   end
 
   add_index "clusters", ["enabled"], name: "index_clusters_on_enabled", using: :btree
@@ -2372,6 +2381,8 @@ ActiveRecord::Schema.define(version: 20181016152238) do
   add_foreign_key "ci_triggers", "projects", name: "fk_e3e63f966e", on_delete: :cascade
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
   add_foreign_key "ci_variables", "projects", name: "fk_ada5eb64b3", on_delete: :cascade
+  add_foreign_key "cluster_groups", "clusters", on_delete: :cascade
+  add_foreign_key "cluster_groups", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "cluster_platforms_kubernetes", "clusters", on_delete: :cascade
   add_foreign_key "cluster_projects", "clusters", on_delete: :cascade
   add_foreign_key "cluster_projects", "projects", on_delete: :cascade
