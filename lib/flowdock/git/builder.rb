@@ -1,7 +1,4 @@
 # frozen_string_literal: true
-require 'cgi'
-require 'securerandom'
-
 module Flowdock
   class Git
     class Commit

@@ -1,6 +1,4 @@
 # frozen_string_literal: true
-require 'multi_json'
-require 'cgi'
 require 'flowdock'
 require 'flowdock/git/builder'
 
