@@ -2,9 +2,6 @@
 - page_title    _("Groups")
 - header_title  _("Groups"), dashboard_groups_path
 
-= content_for :above_breadcrumbs_content do
-  = render_if_exists "shared/gold_trial_callout"
-
 - if current_user
   = render 'dashboard/groups_head'
 - else
