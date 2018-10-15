@@ -53,10 +53,7 @@ export const slugify = str => str.trim().toLowerCase();
  * @param {String} str
  * @returns {String}
  */
-export const slugifyWithHyphens = str => {
-  const regex = new RegExp(/\s+/, 'g');
-  return str.toLowerCase().replace(regex, '-');
-};
+export const slugifyWithHyphens = str => str.toLowerCase().replace(/\s+/g, '-');
 
 /**
  * Truncates given text
