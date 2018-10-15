@@ -53,7 +53,7 @@
             = _("Archived projects")
 
     .nav-controls
-      = render "shared/groups/dropdown"
+      = render "shared/groups/dropdown", options_hash: subgroups_sort_options_hash
 
   .tab-content
     #subgroups_and_projects.tab-pane

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ObjectStorage
   #
   # The DirectUpload c;ass generates a set of presigned URLs

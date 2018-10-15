@@ -25,8 +25,10 @@ export default class Store {
   }
 
   stateShouldUpdate(data) {
-    return this.state.titleText !== data.title_text ||
-      this.state.descriptionText !== data.description_text;
+    return (
+      this.state.titleText !== data.title_text ||
+      this.state.descriptionText !== data.description_text
+    );
   }
 
   setFormState(state) {

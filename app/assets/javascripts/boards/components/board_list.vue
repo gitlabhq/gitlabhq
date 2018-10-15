@@ -3,8 +3,8 @@ import Sortable from 'sortablejs';
 import boardNewIssue from './board_new_issue.vue';
 import boardCard from './board_card.vue';
 import eventHub from '../eventhub';
-
-const Store = gl.issueBoards.BoardsStore;
+import boardsStore from '../stores/boards_store';
+import { getBoardSortableDefaultOptions, sortableStart } from '../mixins/sortable_default_options';
 
 export default {
   name: 'BoardList',
@@ -46,7 +46,7 @@ export default {
   data() {
     return {
       scrollOffset: 250,
-      filters: Store.state.filters,
+      filters: boardsStore.state.filters,
       showCount: false,
       showIssueForm: false,
     };
@@ -61,13 +61,14 @@ export default {
     },
     issues() {
       this.$nextTick(() => {
-        if (this.scrollHeight() <= this.listHeight() &&
-          this.list.issuesSize > this.list.issues.length) {
+        if (
+          this.scrollHeight() <= this.listHeight() &&
+          this.list.issuesSize > this.list.issues.length
+        ) {
           this.list.page += 1;
-          this.list.getIssues(false)
-            .catch(() => {
-              // TODO: handle request error
-            });
+          this.list.getIssues(false).catch(() => {
+            // TODO: handle request error
+          });
         }
 
         if (this.scrollHeight() > Math.ceil(this.listHeight())) {
@@ -83,7 +84,7 @@ export default {
     eventHub.$on(`scroll-board-list-${this.list.id}`, this.scrollToTop);
   },
   mounted() {
-    const options = gl.issueBoards.getBoardSortableDefaultOptions({
+    const options = getBoardSortableDefaultOptions({
       scroll: true,
       disabled: this.disabled,
       filter: '.board-list-count, .is-disabled',
@@ -108,7 +109,8 @@ export default {
           // So from there, we can get reference to actual container
           // and thus the container type to enable Copy or Move
           if (e.target) {
-            const containerEl = e.target.closest('.js-board-list') || e.target.querySelector('.js-board-list');
+            const containerEl =
+              e.target.closest('.js-board-list') || e.target.querySelector('.js-board-list');
             const toBoardType = containerEl.dataset.boardType;
             const cloneActions = {
               label: ['milestone', 'assignee'],
@@ -120,8 +122,9 @@ export default {
               const fromBoardType = this.list.type;
               // For each list we check if the destination list is
               // a the list were we should clone the issue
-              const shouldClone = Object.entries(cloneActions).some(entry => (
-                 fromBoardType === entry[0] && entry[1].includes(toBoardType)));
+              const shouldClone = Object.entries(cloneActions).some(
+                entry => fromBoardType === entry[0] && entry[1].includes(toBoardType),
+              );
 
               if (shouldClone) {
                 return 'clone';
@@ -133,28 +136,36 @@ export default {
         },
         revertClone: true,
       },
-      onStart: (e) => {
+      onStart: e => {
         const card = this.$refs.issue[e.oldIndex];
 
         card.showDetail = false;
-        Store.moving.list = card.list;
-        Store.moving.issue = Store.moving.list.findIssue(+e.item.dataset.issueId);
+        boardsStore.moving.list = card.list;
+        boardsStore.moving.issue = boardsStore.moving.list.findIssue(+e.item.dataset.issueId);
 
-        gl.issueBoards.onStart();
+        sortableStart();
       },
-      onAdd: (e) => {
-        gl.issueBoards.BoardsStore
-          .moveIssueToList(Store.moving.list, this.list, Store.moving.issue, e.newIndex);
+      onAdd: e => {
+        boardsStore.moveIssueToList(
+          boardsStore.moving.list,
+          this.list,
+          boardsStore.moving.issue,
+          e.newIndex,
+        );
 
         this.$nextTick(() => {
           e.item.remove();
         });
       },
-      onUpdate: (e) => {
-        const sortedArray = this.sortable.toArray()
-          .filter(id => id !== '-1');
-        gl.issueBoards.BoardsStore
-          .moveIssueInList(this.list, Store.moving.issue, e.oldIndex, e.newIndex, sortedArray);
+      onUpdate: e => {
+        const sortedArray = this.sortable.toArray().filter(id => id !== '-1');
+        boardsStore.moveIssueInList(
+          this.list,
+          boardsStore.moving.issue,
+          e.oldIndex,
+          e.newIndex,
+          sortedArray,
+        );
       },
       onMove(e) {
         return !e.related.classList.contains('board-list-count');
@@ -192,16 +203,14 @@ export default {
 
       if (getIssues) {
         this.list.loadingMore = true;
-        getIssues
-          .then(loadingDone)
-          .catch(loadingDone);
+        getIssues.then(loadingDone).catch(loadingDone);
       }
     },
     toggleForm() {
       this.showIssueForm = !this.showIssueForm;
     },
     onScroll() {
-      if (!this.list.loadingMore && (this.scrollTop() > this.scrollHeight() - this.scrollOffset)) {
+      if (!this.list.loadingMore && this.scrollTop() > this.scrollHeight() - this.scrollOffset) {
         this.loadNextPage();
       }
     },

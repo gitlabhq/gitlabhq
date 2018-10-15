@@ -32,6 +32,21 @@ module QA
         false
       end
 
+      def with_retry(max_attempts: 3, reload: false)
+        attempts = 0
+
+        while attempts < max_attempts
+          result = yield
+          return result if result
+
+          refresh if reload
+
+          attempts += 1
+        end
+
+        false
+      end
+
       def scroll_to(selector, text: nil)
         page.execute_script <<~JS
           var elements = Array.from(document.querySelectorAll('#{selector}'));

@@ -92,7 +92,8 @@ export default {
   methods: {
     seriesMetricValue(seriesIndex, series) {
       const indexFromCoordinates = this.currentCoordinates[series.metricTag]
-      ? this.currentCoordinates[series.metricTag].currentDataIndex : 0;
+        ? this.currentCoordinates[series.metricTag].currentDataIndex
+        : 0;
       const index = this.deploymentFlagData
         ? this.deploymentFlagData.seriesIndex
         : indexFromCoordinates;

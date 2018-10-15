@@ -4,8 +4,7 @@ import { Button } from '@gitlab-org/gitlab-ui';
 import eventHub from '../eventhub';
 import ProjectSelect from './project_select.vue';
 import ListIssue from '../models/issue';
-
-const Store = gl.issueBoards.BoardsStore;
+import boardsStore from '../stores/boards_store';
 
 export default {
   name: 'BoardNewIssue',
@@ -68,8 +67,8 @@ export default {
           // Need this because our jQuery very kindly disables buttons on ALL form submissions
           $(this.$refs.submitButton).enable();
 
-          Store.detail.issue = issue;
-          Store.detail.list = this.list;
+          boardsStore.detail.issue = issue;
+          boardsStore.detail.list = this.list;
         })
         .catch(() => {
           // Need this because our jQuery very kindly disables buttons on ALL form submissions

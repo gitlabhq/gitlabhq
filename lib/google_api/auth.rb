@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GoogleApi
   class Auth
     attr_reader :access_token, :redirect_uri, :state

@@ -30,7 +30,7 @@ describe Repository do
 
   def expect_to_raise_storage_error
     expect { yield }.to raise_error do |exception|
-      storage_exceptions = [Gitlab::Git::Storage::Inaccessible, Gitlab::Git::CommandError, GRPC::Unavailable]
+      storage_exceptions = [Gitlab::Git::CommandError, GRPC::Unavailable]
       known_exception = storage_exceptions.select { |e| exception.is_a?(e) }
 
       expect(known_exception).not_to be_nil

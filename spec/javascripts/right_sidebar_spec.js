@@ -60,10 +60,12 @@ import Sidebar from '~/right_sidebar';
         $toggle.click();
         assertSidebarState('expanded');
       });
+
       it('should float over the page and when sidebar icons clicked', function() {
         $labelsIcon.click();
         return assertSidebarState('expanded');
       });
+
       it('should collapse when the icon arrow clicked while it is floating on page', function() {
         $labelsIcon.click();
         assertSidebarState('expanded');

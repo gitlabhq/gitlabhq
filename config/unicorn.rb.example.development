@@ -7,7 +7,7 @@ check_client_connection false
 before_fork do |server, worker|
   # the following is highly recommended for Rails + "preload_app true"
   # as there's no need for the master process to hold a connection
-  defined?(ActiveRecord::Base) and
+  defined?(ActiveRecord::Base) &&
     ActiveRecord::Base.connection.disconnect!
 
   if /darwin/ =~ RUBY_PLATFORM
@@ -27,6 +27,6 @@ after_fork do |server, worker|
   require 'rbtrace' if ENV['ENABLE_RBTRACE']
 
   # the following is *required* for Rails + "preload_app true",
-  defined?(ActiveRecord::Base) and
+  defined?(ActiveRecord::Base) &&
     ActiveRecord::Base.establish_connection
 end

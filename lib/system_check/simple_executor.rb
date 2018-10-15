@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SystemCheck
   # Simple Executor is current default executor for GitLab
   # It is a simple port from display logic in the old check.rake

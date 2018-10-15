@@ -156,7 +156,7 @@ the feature you contribute through all of these steps.
 1. Performance/scalability implications have been considered, addressed, and tested
 1. [Documented][doc-guidelines] in the `/doc` directory
 1. [Changelog entry added][changelog], if necessary
-1. Reviewed and any concerns are addressed
+1. Reviewed by UX/FE/BE and any concerns are addressed
 1. Merged by a project maintainer
 1. Added to the release blog article, if relevant
 1. Added to [the website](https://gitlab.com/gitlab-com/www-gitlab-com/), if relevant

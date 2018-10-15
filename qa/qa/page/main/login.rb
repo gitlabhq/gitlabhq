@@ -31,6 +31,10 @@ module QA
           element :register_tab
         end
 
+        view 'app/views/devise/shared/_omniauth_box.html.haml' do
+          element :saml_login_button
+        end
+
         def initialize
           # The login page is usually the entry point for all the scenarios so
           # we need to wait for the instance to start. That said, in some cases
@@ -128,6 +132,11 @@ module QA
           fill_element :username_field, Runtime::User.ldap_username
           fill_element :password_field, Runtime::User.ldap_password
           click_element :sign_in_button
+        end
+
+        def sign_in_with_saml
+          set_initial_password_if_present
+          click_element :saml_login_button
         end
 
         def sign_in_using_gitlab_credentials(user)

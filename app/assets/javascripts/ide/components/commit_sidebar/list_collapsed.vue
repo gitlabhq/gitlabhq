@@ -38,14 +38,18 @@ export default {
       return this.modifiedFilesLength ? 'multi-file-modified' : '';
     },
     additionsTooltip() {
-      return sprintf(n__('1 %{type} addition', '%{count} %{type} additions', this.addedFilesLength), {
-        type: this.title.toLowerCase(),
-        count: this.addedFilesLength,
-      });
+      return sprintf(
+        n__('1 %{type} addition', '%{count} %{type} additions', this.addedFilesLength),
+        {
+          type: this.title.toLowerCase(),
+          count: this.addedFilesLength,
+        },
+      );
     },
     modifiedTooltip() {
       return sprintf(
-        n__('1 %{type} modification', '%{count} %{type} modifications', this.modifiedFilesLength), {
+        n__('1 %{type} modification', '%{count} %{type} modifications', this.modifiedFilesLength),
+        {
           type: this.title.toLowerCase(),
           count: this.modifiedFilesLength,
         },

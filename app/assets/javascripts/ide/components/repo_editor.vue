@@ -25,12 +25,7 @@ export default {
     ...mapState('rightPane', {
       rightPaneIsOpen: 'isOpen',
     }),
-    ...mapState([
-      'rightPanelCollapsed',
-      'viewer',
-      'panelResizing',
-      'currentActivityView',
-    ]),
+    ...mapState(['rightPanelCollapsed', 'viewer', 'panelResizing', 'currentActivityView']),
     ...mapGetters([
       'currentMergeRequest',
       'getStagedFile',

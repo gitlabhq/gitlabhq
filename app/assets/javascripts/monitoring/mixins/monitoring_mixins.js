@@ -6,7 +6,7 @@ const mixins = {
       if (!this.reducedDeploymentData) return false;
 
       let dataFound = false;
-      this.reducedDeploymentData = this.reducedDeploymentData.map((d) => {
+      this.reducedDeploymentData = this.reducedDeploymentData.map(d => {
         const deployment = d;
         if (d.xPos >= mouseXPos - 10 && d.xPos <= mouseXPos + 10 && !dataFound) {
           dataFound = d.xPos + 1;
@@ -61,7 +61,7 @@ const mixins = {
 
       this.currentCoordinates = {};
 
-      this.seriesUnderMouse.forEach((series) => {
+      this.seriesUnderMouse.forEach(series => {
         const currentDataIndex = bisectDate(series.values, this.hoverData.hoveredDate);
         const currentData = series.values[currentDataIndex];
         const currentX = Math.floor(series.timeSeriesScaleX(currentData.time));

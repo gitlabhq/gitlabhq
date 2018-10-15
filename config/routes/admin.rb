@@ -69,9 +69,7 @@ namespace :admin do
   end
 
   resource :logs, only: [:show]
-  resource :health_check, controller: 'health_check', only: [:show] do
-    post :reset_storage_health
-  end
+  resource :health_check, controller: 'health_check', only: [:show]
   resource :background_jobs, controller: 'background_jobs', only: [:show]
   resource :system_info, controller: 'system_info', only: [:show]
   resources :requests_profiles, only: [:index, :show], param: :name, constraints: { name: /.+\.html/ }

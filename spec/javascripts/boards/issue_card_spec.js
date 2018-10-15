@@ -8,7 +8,6 @@ import '~/vue_shared/models/label';
 import '~/vue_shared/models/assignee';
 import '~/boards/models/issue';
 import '~/boards/models/list';
-import '~/boards/stores/boards_store';
 import IssueCardInner from '~/boards/components/issue_card_inner.vue';
 import { listObj } from './mock_data';
 

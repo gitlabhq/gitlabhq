@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Class to parse and transform the info provided by omniauth
 #
 module Gitlab

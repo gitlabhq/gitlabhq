@@ -1,6 +1,7 @@
 <script>
 import { Link } from '@gitlab-org/gitlab-ui';
 import ModalStore from '../../stores/modal_store';
+import boardsStore from '../../stores/boards_store';
 
 export default {
   components: {
@@ -9,7 +10,7 @@ export default {
   data() {
     return {
       modal: ModalStore.store,
-      state: gl.issueBoards.BoardsStore.state,
+      state: boardsStore.state,
     };
   },
   computed: {

@@ -2,11 +2,12 @@ require 'spec_helper'
 
 describe API::Settings, 'Settings' do
   let(:user) { create(:user) }
-  let(:admin) { create(:admin) }
+  set(:admin) { create(:admin) }
 
   describe "GET /application/settings" do
     it "returns application settings" do
       get api("/application/settings", admin)
+
       expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Hash
       expect(json_response['default_projects_limit']).to eq(42)
@@ -23,7 +24,6 @@ describe API::Settings, 'Settings' do
       expect(json_response['dsa_key_restriction']).to eq(0)
       expect(json_response['ecdsa_key_restriction']).to eq(0)
       expect(json_response['ed25519_key_restriction']).to eq(0)
-      expect(json_response['circuitbreaker_failure_count_threshold']).not_to be_nil
       expect(json_response['performance_bar_allowed_group_id']).to be_nil
       expect(json_response['instance_statistics_visibility_private']).to be(false)
       expect(json_response).not_to have_key('performance_bar_allowed_group_path')
@@ -62,7 +62,6 @@ describe API::Settings, 'Settings' do
           dsa_key_restriction: 2048,
           ecdsa_key_restriction: 384,
           ed25519_key_restriction: 256,
-          circuitbreaker_check_interval: 2,
           enforce_terms: true,
           terms: 'Hello world!',
           performance_bar_allowed_group_path: group.full_path,
@@ -88,7 +87,6 @@ describe API::Settings, 'Settings' do
         expect(json_response['dsa_key_restriction']).to eq(2048)
         expect(json_response['ecdsa_key_restriction']).to eq(384)
         expect(json_response['ed25519_key_restriction']).to eq(256)
-        expect(json_response['circuitbreaker_check_interval']).to eq(2)
         expect(json_response['enforce_terms']).to be(true)
         expect(json_response['terms']).to eq('Hello world!')
         expect(json_response['performance_bar_allowed_group_id']).to eq(group.id)

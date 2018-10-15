@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SystemCheck
   # Base class for Checks. You must inherit from here
   # and implement the methods below when necessary

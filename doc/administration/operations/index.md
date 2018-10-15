@@ -16,3 +16,7 @@ to restart Sidekiq.
 indexed lookup to the GitLab database](fast_ssh_key_lookup.md), and/or
 by [doing away with user SSH keys stored on GitLab entirely in favor
 of SSH certificates](ssh_certificates.md).
+- [Filesystem Performance Benchmarking](filesystem_benchmarking.md): Filesystem
+performance can have a big impact on GitLab performance, especially for actions
+that read or write Git repositories. This information will help benchmark
+filesystem performance against known good and bad real-world systems.

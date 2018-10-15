@@ -137,7 +137,7 @@ describe('MemoryUsage', () => {
         } = vm;
 
         expect(hasMetrics).toBeTruthy();
-        expect(memoryMetrics.length > 0).toBeTruthy();
+        expect(memoryMetrics.length).toBeGreaterThan(0);
         expect(deploymentTime).toEqual(deployment_time);
         expect(memoryFrom).toEqual('9.13');
         expect(memoryTo).toEqual('4.28');

@@ -10,7 +10,7 @@ import eventHub from '~/boards/eventhub';
 import '~/vue_shared/models/label';
 import '~/vue_shared/models/assignee';
 import '~/boards/models/list';
-import '~/boards/stores/boards_store';
+import boardsStore from '~/boards/stores/boards_store';
 import boardCard from '~/boards/components/board_card.vue';
 import { listObj, boardsMockInterceptor, mockBoardService } from './mock_data';
 
@@ -23,8 +23,8 @@ describe('Board card', () => {
     mock.onAny().reply(boardsMockInterceptor);
 
     gl.boardService = mockBoardService();
-    gl.issueBoards.BoardsStore.create();
-    gl.issueBoards.BoardsStore.detail.issue = {};
+    boardsStore.create();
+    boardsStore.detail.issue = {};
 
     const BoardCardComp = Vue.extend(boardCard);
     const list = new List(listObj);
@@ -62,7 +62,7 @@ describe('Board card', () => {
   });
 
   it('returns true when detailIssue is equal to card issue', () => {
-    gl.issueBoards.BoardsStore.detail.issue = vm.issue;
+    boardsStore.detail.issue = vm.issue;
 
     expect(vm.issueDetailVisible).toBe(true);
   });
@@ -119,19 +119,19 @@ describe('Board card', () => {
     });
 
     it('does not set detail issue if showDetail is false', () => {
-      expect(gl.issueBoards.BoardsStore.detail.issue).toEqual({});
+      expect(boardsStore.detail.issue).toEqual({});
     });
 
     it('does not set detail issue if link is clicked', () => {
       triggerEvent('mouseup', vm.$el.querySelector('a'));
 
-      expect(gl.issueBoards.BoardsStore.detail.issue).toEqual({});
+      expect(boardsStore.detail.issue).toEqual({});
     });
 
     it('does not set detail issue if button is clicked', () => {
       triggerEvent('mouseup', vm.$el.querySelector('button'));
 
-      expect(gl.issueBoards.BoardsStore.detail.issue).toEqual({});
+      expect(boardsStore.detail.issue).toEqual({});
     });
 
     it('does not set detail issue if img is clicked', (done) => {
@@ -145,7 +145,7 @@ describe('Board card', () => {
       Vue.nextTick(() => {
         triggerEvent('mouseup', vm.$el.querySelector('img'));
 
-        expect(gl.issueBoards.BoardsStore.detail.issue).toEqual({});
+        expect(boardsStore.detail.issue).toEqual({});
 
         done();
       });
@@ -154,7 +154,7 @@ describe('Board card', () => {
     it('does not set detail issue if showDetail is false after mouseup', () => {
       triggerEvent('mouseup');
 
-      expect(gl.issueBoards.BoardsStore.detail.issue).toEqual({});
+      expect(boardsStore.detail.issue).toEqual({});
     });
 
     it('sets detail issue to card issue on mouse up', () => {
@@ -164,7 +164,7 @@ describe('Board card', () => {
       triggerEvent('mouseup');
 
       expect(eventHub.$emit).toHaveBeenCalledWith('newDetailIssue', vm.issue);
-      expect(gl.issueBoards.BoardsStore.detail.list).toEqual(vm.list);
+      expect(boardsStore.detail.list).toEqual(vm.list);
     });
 
     it('adds active class if detail issue is set', (done) => {
@@ -181,7 +181,7 @@ describe('Board card', () => {
     it('resets detail issue to empty if already set', () => {
       spyOn(eventHub, '$emit');
 
-      gl.issueBoards.BoardsStore.detail.issue = vm.issue;
+      boardsStore.detail.issue = vm.issue;
 
       triggerEvent('mousedown');
       triggerEvent('mouseup');
