@@ -97,6 +97,7 @@ module QA
       module Integration
         autoload :Github, 'qa/scenario/test/integration/github'
         autoload :LDAP, 'qa/scenario/test/integration/ldap'
+        autoload :InstanceSAML, 'qa/scenario/test/integration/instance_saml'
         autoload :Kubernetes, 'qa/scenario/test/integration/kubernetes'
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
         autoload :ObjectStorage, 'qa/scenario/test/integration/object_storage'
@@ -180,6 +181,7 @@ module QA
         autoload :SecretVariables, 'qa/page/project/settings/secret_variables'
         autoload :Runners, 'qa/page/project/settings/runners'
         autoload :MergeRequest, 'qa/page/project/settings/merge_request'
+        autoload :Members, 'qa/page/project/settings/members'
       end
 
       module Issue
@@ -267,6 +269,7 @@ module QA
       autoload :GroupsFilter, 'qa/page/component/groups_filter'
       autoload :Select2, 'qa/page/component/select2'
       autoload :DropdownFilter, 'qa/page/component/dropdown_filter'
+      autoload :UsersSelect, 'qa/page/component/users_select'
 
       module Issuable
         autoload :Common, 'qa/page/component/issuable/common'
@@ -299,6 +302,18 @@ module QA
   module Specs
     autoload :Config, 'qa/specs/config'
     autoload :Runner, 'qa/specs/runner'
+  end
+
+  ##
+  # Classes that describe the structure of vendor/third party application pages
+  #
+  module Vendor
+    module SAMLIdp
+      module Page
+        autoload :Base, 'qa/vendor/saml_idp/page/base'
+        autoload :Login, 'qa/vendor/saml_idp/page/login'
+      end
+    end
   end
 end
 

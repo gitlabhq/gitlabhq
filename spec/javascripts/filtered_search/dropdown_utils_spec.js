@@ -237,7 +237,7 @@ describe('Dropdown Utils', () => {
 
     it('should not linear-gradient more than 4 colors', () => {
       const gradient = DropdownUtils.duplicateLabelColor(['#FFFFFF', '#000000', '#333333', '#DDDDDD', '#EEEEEE']);
-      expect(gradient.indexOf('#EEEEEE') === -1).toEqual(true);
+      expect(gradient.indexOf('#EEEEEE')).toBe(-1);
     });
   });
 

@@ -422,8 +422,9 @@ describe('Job State actions', () => {
 
     beforeEach(() => {
       mockedState.job.pipeline = {
-        path: `${TEST_HOST}/endpoint.json/stages`,
+        path: `${TEST_HOST}/endpoint`,
       };
+      mockedState.selectedStage = 'deploy'
       mock = new MockAdapter(axios);
     });
 
@@ -434,8 +435,8 @@ describe('Job State actions', () => {
     describe('success', () => {
       it('dispatches requestStages and receiveStagesSuccess, fetchJobsForStage ', done => {
         mock
-          .onGet(`${TEST_HOST}/endpoint.json/stages`)
-          .replyOnce(200, { details: { stages: [{ id: 121212, name: 'build' }] } });
+          .onGet(`${TEST_HOST}/endpoint.json`)
+          .replyOnce(200, { details: { stages: [{ name: 'build' }, { name: 'deploy' }] } });
 
         testAction(
           fetchStages,
@@ -447,11 +448,11 @@ describe('Job State actions', () => {
               type: 'requestStages',
             },
             {
-              payload: [{ id: 121212, name: 'build' }],
+              payload: [{ name: 'build' }, { name: 'deploy' }],
               type: 'receiveStagesSuccess',
             },
             {
-              payload: { id: 121212, name: 'build' },
+              payload: { name: 'deploy' },
               type: 'fetchJobsForStage',
             },
           ],
@@ -515,9 +516,9 @@ describe('Job State actions', () => {
     it('should commit REQUEST_JOBS_FOR_STAGE mutation ', done => {
       testAction(
         requestJobsForStage,
-        null,
+        { name: 'deploy' },
         mockedState,
-        [{ type: types.REQUEST_JOBS_FOR_STAGE }],
+        [{ type: types.REQUEST_JOBS_FOR_STAGE, payload: { name: 'deploy' } }],
         [],
         done,
       );
@@ -549,6 +550,7 @@ describe('Job State actions', () => {
           [
             {
               type: 'requestJobsForStage',
+              payload: { dropdown_path: `${TEST_HOST}/jobs.json` },
             },
             {
               payload: [{ id: 121212, name: 'build' }],
@@ -574,6 +576,7 @@ describe('Job State actions', () => {
           [
             {
               type: 'requestJobsForStage',
+              payload: { dropdown_path: `${TEST_HOST}/jobs.json` },
             },
             {
               type: 'receiveJobsForStageError',

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Use for authentication only, in particular for Rack::Attack.
 # Does not perform authorization of scopes, etc.
 module Gitlab

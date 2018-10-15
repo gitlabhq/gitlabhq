@@ -415,7 +415,7 @@ Four keys are now available: `refs`, `kubernetes` and `variables` and `changes`.
 Refs strategy equals to simplified only/except configuration, whereas
 kubernetes strategy accepts only `active` keyword.
 
-### `variables`
+### `only:variables`
 
 `variables` keyword is used to define variables expressions. In other words
 you can use predefined variables / project / group or
@@ -460,7 +460,7 @@ end-to-end:
 
 Learn more about variables expressions on [a separate page][variables-expressions].
 
-### `changes`
+### `only:changes`
 
 Using `changes` keyword with `only` or `except` makes it possible to define if
 a job should be created based on files modified by a git push event.

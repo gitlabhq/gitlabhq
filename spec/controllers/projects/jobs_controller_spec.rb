@@ -352,6 +352,10 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           expect(json_response['has_trace']).to be true
         end
       end
+
+      it 'exposes the stage the job belongs to' do
+        expect(json_response['stage']).to eq('test')
+      end
     end
 
     context 'when requesting JSON job is triggered' do

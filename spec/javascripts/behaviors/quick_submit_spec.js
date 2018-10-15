@@ -58,12 +58,14 @@ describe('Quick Submit behavior', function () {
 
     expect(submitButton).toBeDisabled();
   });
+
   it('disables button of type submit', () => {
     const submitButton = $('.js-quick-submit input[type=submit]');
     this.textarea.trigger(keydownEvent());
 
     expect(submitButton).toBeDisabled();
   });
+
   it('only clicks one submit', () => {
     const existingSubmit = $('.js-quick-submit input[type=submit]');
     // Add an extra submit button

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mattermost
   class Command < Client
     def create(params)

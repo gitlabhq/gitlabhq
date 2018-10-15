@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This class is not backed by a table in the main database.
 # It loads the latest Pipeline for the HEAD of a repository, and caches that
 # in Redis.

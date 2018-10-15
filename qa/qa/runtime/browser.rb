@@ -51,6 +51,10 @@ module QA
             }
           )
 
+          if QA::Runtime::Env.accept_insecure_certs?
+            capabilities['acceptInsecureCerts'] = true
+          end
+
           options = Selenium::WebDriver::Chrome::Options.new
           options.add_argument("window-size=1240,1680")
 

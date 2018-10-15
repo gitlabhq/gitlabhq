@@ -53,7 +53,7 @@ describe('GroupsComponent', () => {
         expect(vm.$el.querySelector('.groups-list-tree-container')).toBeDefined();
         expect(vm.$el.querySelector('.group-list-tree')).toBeDefined();
         expect(vm.$el.querySelector('.gl-pagination')).toBeDefined();
-        expect(vm.$el.querySelectorAll('.has-no-search-results').length === 0).toBeTruthy();
+        expect(vm.$el.querySelectorAll('.has-no-search-results').length).toBe(0);
         done();
       });
     });

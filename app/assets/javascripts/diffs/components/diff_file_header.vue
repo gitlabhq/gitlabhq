@@ -20,6 +20,11 @@ export default {
     Tooltip,
   },
   props: {
+    discussionPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     diffFile: {
       type: Object,
       required: true,
@@ -65,8 +70,7 @@ export default {
       if (this.diffFile.submodule) {
         return this.diffFile.submoduleTreeUrl || this.diffFile.submoduleLink;
       }
-
-      return `#${this.diffFile.fileHash}`;
+      return this.discussionPath;
     },
     filePath() {
       if (this.diffFile.submodule) {
@@ -152,7 +156,7 @@ export default {
         v-once
         ref="titleWrapper"
         :href="titleLink"
-        class="append-right-4"
+        class="append-right-4 js-title-wrapper"
       >
         <file-icon
           :file-name="filePath"

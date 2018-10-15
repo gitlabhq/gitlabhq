@@ -321,7 +321,7 @@ The following sample `markdownlint` configuration modifies the available default
 }
 ```
 
-For [`markdownlint`](https://gitahub.com/DavidAnson/markdownlint/), this configuration must be
+For [`markdownlint`](https://github.com/DavidAnson/markdownlint/), this configuration must be
  placed in a [valid location](https://github.com/igorshubovych/markdownlint-cli#configuration). For
  example, `~/.markdownlintrc`.
 

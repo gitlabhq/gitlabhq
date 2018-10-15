@@ -205,10 +205,12 @@ describe("ContributorsStatGraphUtil", function () {
     it("returns true if date_range is null", function () {
       expect(ContributorsStatGraphUtil.in_range(date, null)).toEqual(true);
     });
+
     it("returns true if date is in range", function () {
       var date_range = [new Date("2013-01-01"), new Date("2013-12-12")];
       expect(ContributorsStatGraphUtil.in_range(date, date_range)).toEqual(true);
     });
+
     it("returns false if date is not in range", function () {
       var date_range = [new Date("1999-12-01"), new Date("2000-12-01")];
       expect(ContributorsStatGraphUtil.in_range(date, date_range)).toEqual(false);

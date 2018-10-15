@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module BareRepositoryImport
     class Repository
@@ -6,9 +8,12 @@ module Gitlab
       attr_reader :group_path, :project_name, :repo_path
 
       def initialize(root_path, repo_path)
+        unless root_path.ends_with?('/')
+          root_path = "#{root_path}/"
+        end
+
         @root_path = root_path
         @repo_path = repo_path
-        @root_path << '/' unless root_path.ends_with?('/')
 
         full_path =
           if hashed? && !wiki?

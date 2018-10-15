@@ -55,6 +55,7 @@ import '~/lib/utils/common_utils';
         });
       };
     });
+
     afterEach(function() {
       // restore original url root value
       gon.relative_url_root = urlRoot;
@@ -64,6 +65,7 @@ import '~/lib/utils/common_utils';
 
       awardsHandler.destroy();
     });
+
     describe('::showEmojiMenu', function() {
       it('should show emoji menu when Add emoji button clicked', function(done) {
         $('.js-add-award')
@@ -78,6 +80,7 @@ import '~/lib/utils/common_utils';
           return expect($('.js-awards-block.current').length).toBe(1);
         });
       });
+
       it('should also show emoji menu for the smiley icon in notes', function(done) {
         $('.js-add-award.note-action-button').click();
         return lazyAssert(done, function() {
@@ -85,6 +88,7 @@ import '~/lib/utils/common_utils';
           return expect($emojiMenu.length).toBe(1);
         });
       });
+
       it('should remove emoji menu when body is clicked', function(done) {
         $('.js-add-award')
           .eq(0)
@@ -98,6 +102,7 @@ import '~/lib/utils/common_utils';
           return expect($('.js-awards-block.current').length).toBe(0);
         });
       });
+
       it('should not remove emoji menu when search is clicked', function(done) {
         $('.js-add-award')
           .eq(0)
@@ -123,6 +128,7 @@ import '~/lib/utils/common_utils';
         expect($emojiButton.next('.js-counter').text()).toBe('1');
         return expect($votesBlock.hasClass('hidden')).toBe(false);
       });
+
       it('should remove the emoji when we click again', function() {
         var $emojiButton, $votesBlock;
         $votesBlock = $('.js-awards-block').eq(0);
@@ -142,6 +148,7 @@ import '~/lib/utils/common_utils';
         return expect($emojiButton.next('.js-counter').text()).toBe('4');
       });
     });
+
     describe('::userAuthored', function() {
       it('should update tooltip to user authored title', function() {
         var $thumbsUpEmoji, $votesBlock;
@@ -153,6 +160,7 @@ import '~/lib/utils/common_utils';
           'You cannot vote on your own issue, MR and note',
         );
       });
+
       it('should restore tooltip back to initial vote list', function() {
         var $thumbsUpEmoji, $votesBlock;
         jasmine.clock().install();
@@ -165,6 +173,7 @@ import '~/lib/utils/common_utils';
         return expect($thumbsUpEmoji.data('originalTitle')).toBe('sam');
       });
     });
+
     describe('::getAwardUrl', function() {
       return it('returns the url for request', function() {
         return expect(awardsHandler.getAwardUrl()).toBe(
@@ -172,6 +181,7 @@ import '~/lib/utils/common_utils';
         );
       });
     });
+
     describe('::addAward and ::checkMutuality', function() {
       return it('should handle :+1: and :-1: mutuality', function() {
         var $thumbsDownEmoji, $thumbsUpEmoji, $votesBlock, awardUrl;
@@ -189,6 +199,7 @@ import '~/lib/utils/common_utils';
         return expect($thumbsDownEmoji.hasClass('active')).toBe(true);
       });
     });
+
     describe('::removeEmoji', function() {
       return it('should remove emoji', function() {
         var $votesBlock, awardUrl;
@@ -200,6 +211,7 @@ import '~/lib/utils/common_utils';
         return expect($votesBlock.find('[data-name=fire]').length).toBe(0);
       });
     });
+
     describe('::addYouToUserList', function() {
       it('should prepend "You" to the award tooltip', function() {
         var $thumbsUpEmoji, $votesBlock, awardUrl;
@@ -222,6 +234,7 @@ import '~/lib/utils/common_utils';
         return expect($thumbsUpEmoji.data('originalTitle')).toBe('You and sam');
       });
     });
+
     describe('::removeYouToUserList', function() {
       it('removes "You" from the front of the tooltip', function() {
         var $thumbsUpEmoji, $votesBlock, awardUrl;
@@ -246,6 +259,7 @@ import '~/lib/utils/common_utils';
         return expect($thumbsUpEmoji.data('originalTitle')).toBe('sam');
       });
     });
+
     describe('::searchEmojis', () => {
       it('should filter the emoji', function(done) {
         return openAndWaitForEmojiMenu()
@@ -263,6 +277,7 @@ import '~/lib/utils/common_utils';
             done.fail(`Failed to open and build emoji menu: ${err.message}`);
           });
       });
+
       it('should clear the search when searching for nothing', function(done) {
         return openAndWaitForEmojiMenu()
           .then(() => {
@@ -305,6 +320,7 @@ import '~/lib/utils/common_utils';
             done.fail(`Failed to open and build emoji menu: ${err.message}`);
           });
       });
+
       it('should remove already selected emoji', function(done) {
         return openEmojiMenuAndAddEmoji()
           .then(() => {

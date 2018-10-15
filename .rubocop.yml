@@ -50,7 +50,8 @@ Style/FrozenStringLiteralComment:
     - 'danger/**/*'
     - 'db/**/*'
     - 'ee/**/*'
-    - 'lib/**/*'
+    - 'lib/gitlab/**/*'
+    - 'lib/tasks/**/*'
     - 'qa/**/*'
     - 'rubocop/**/*'
     - 'scripts/**/*'
@@ -84,6 +85,7 @@ Naming/FileName:
     - EE
     - JSON
     - LDAP
+    - SAML
     - IO
     - HMAC
     - QA
