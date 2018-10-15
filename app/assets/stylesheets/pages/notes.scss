@@ -818,7 +818,7 @@ ul.notes {
       margin-left: $btn-side-margin + $contextual-sidebar-collapsed-width;
     }
 
-    @include media-breakpoint-down(sm) {
+    @include media-breakpoint-down(xs) {
       margin-left: $btn-side-margin;
     }
   }
