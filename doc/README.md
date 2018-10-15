@@ -33,7 +33,7 @@ provides solutions for all the stages of the DevOps lifecycle:
 [plan](#plan), [create](#create), [verify](#verify), [package](#package),
 [release](#release), [configure](#configure), [monitor](#monitor).
 
-![DevOps Lifecycle](img/devops_lifecycle.png)
+<img class="image-noshadow" src="img/devops_lifecycle.png" alt="DevOps Lifecycle">
 
 ### Plan
 
