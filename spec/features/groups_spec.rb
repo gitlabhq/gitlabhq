@@ -140,10 +140,13 @@ describe 'Group' do
       visit path
     end
 
+    it_behaves_like 'dirty submit form', [{ form: '.js-general-settings-form', input: 'input[name="group[name]"]' },
+                                          { form: '.js-general-permissions-form', input: 'input[name="group[two_factor_grace_period]"]' }]
+
     it 'saves new settings' do
       page.within('.gs-general') do
         fill_in 'group_name', with: new_name
-        click_button 'Save group'
+        click_button 'Save changes'
       end
 
       expect(page).to have_content 'successfully updated'
