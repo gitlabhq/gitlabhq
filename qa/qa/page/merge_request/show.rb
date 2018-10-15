@@ -4,19 +4,19 @@ module QA
       class Show < Page::Base
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/ready_to_merge.vue' do
           element :merge_button
-          element :fast_forward_message, 'Fast-forward merge without a merge commit'
+          element :fast_forward_message, 'Fast-forward merge without a merge commit' # rubocop:disable QA/ElementWithPattern
           element :merge_moment_dropdown
           element :merge_when_pipeline_succeeds_option
           element :merge_immediately_option
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_merged.vue' do
-          element :merged_status, 'The changes were merged into'
+          element :merged_status, 'The changes were merged into' # rubocop:disable QA/ElementWithPattern
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_rebase.vue' do
           element :mr_rebase_button
-          element :no_fast_forward_message, 'Fast-forward merge is not possible'
+          element :no_fast_forward_message, 'Fast-forward merge is not possible' # rubocop:disable QA/ElementWithPattern
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/squash_before_merge.vue' do

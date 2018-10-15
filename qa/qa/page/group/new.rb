@@ -3,14 +3,14 @@ module QA
     module Group
       class New < Page::Base
         view 'app/views/shared/_group_form.html.haml' do
-          element :group_path_field, 'text_field :path'
-          element :group_name_field, 'text_field :name'
-          element :group_description_field, 'text_area :description'
+          element :group_path_field, 'text_field :path' # rubocop:disable QA/ElementWithPattern
+          element :group_name_field, 'text_field :name' # rubocop:disable QA/ElementWithPattern
+          element :group_description_field, 'text_area :description' # rubocop:disable QA/ElementWithPattern
         end
 
         view 'app/views/groups/new.html.haml' do
-          element :create_group_button, "submit 'Create group'"
-          element :visibility_radios, 'visibility_level:'
+          element :create_group_button, "submit 'Create group'" # rubocop:disable QA/ElementWithPattern
+          element :visibility_radios, 'visibility_level:' # rubocop:disable QA/ElementWithPattern
         end
 
         def set_path(path)
