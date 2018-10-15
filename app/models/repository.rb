@@ -881,10 +881,12 @@ class Repository
 
   delegate :merged_branch_names, to: :raw_repository
 
-  def merge_base(first_commit_id, second_commit_id)
-    first_commit_id = commit(first_commit_id).try(:id) || first_commit_id
-    second_commit_id = commit(second_commit_id).try(:id) || second_commit_id
-    raw_repository.merge_base(first_commit_id, second_commit_id)
+  def merge_base(*commits_or_ids)
+    commit_ids = commits_or_ids.map do |commit_or_id|
+      commit_or_id.is_a?(::Commit) ? commit_or_id.id : commit_or_id
+    end
+
+    raw_repository.merge_base(*commit_ids)
   end
 
   def ancestor?(ancestor_id, descendant_id)

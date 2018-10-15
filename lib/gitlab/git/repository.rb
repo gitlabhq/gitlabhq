@@ -382,9 +382,9 @@ module Gitlab
       end
 
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
-      def merge_base(from, to)
+      def merge_base(*commits)
         wrapped_gitaly_errors do
-          gitaly_repository_client.find_merge_base(from, to)
+          gitaly_repository_client.find_merge_base(*commits)
         end
       end
 
