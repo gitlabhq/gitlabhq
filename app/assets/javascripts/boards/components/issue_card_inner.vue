@@ -1,5 +1,6 @@
 <script>
   import $ from 'jquery';
+  import Icon from '~/vue_shared/components/icon.vue';
   import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
   import eventHub from '../eventhub';
   import tooltip from '../../vue_shared/directives/tooltip';
@@ -8,6 +9,7 @@
   export default {
     components: {
       UserAvatarLink,
+      Icon,
     },
     directives: {
       tooltip,
@@ -140,11 +142,11 @@
   <div>
     <div class="board-card-header">
       <h4 class="board-card-title">
-        <i
+        <icon
           v-if="issue.confidential"
-          class="fa fa-eye-slash confidential-icon"
-          aria-hidden="true"
-        ></i>
+          name="eye-slash"
+          class="confidential-icon"
+        />
         <a
           :href="issue.path"
           :title="issue.title"
