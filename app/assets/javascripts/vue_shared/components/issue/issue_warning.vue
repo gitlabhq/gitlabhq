@@ -37,7 +37,6 @@
       :name="warningIcon"
       :size="16"
       class="icon inline"
-      aria-hidden="true"
     />
 
     <span v-if="isLockedAndConfidential">

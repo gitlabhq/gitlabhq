@@ -158,12 +158,7 @@ describe('Environment', () => {
         component.$el.querySelector('.folder-name').click();
 
         Vue.nextTick(() => {
-          expect(
-            component.$el.querySelector('.folder-icon i.fa-caret-right').getAttribute('style'),
-          ).toContain('display: none');
-          expect(
-            component.$el.querySelector('.folder-icon i.fa-caret-down').getAttribute('style'),
-          ).not.toContain('display: none');
+          expect(component.$el.querySelector('.folder-icon.ic-chevron-right')).toBe(null);
           done();
         });
       }, 0);
@@ -179,12 +174,7 @@ describe('Environment', () => {
           component.$el.querySelector('.folder-name').click();
 
           Vue.nextTick(() => {
-            expect(
-              component.$el.querySelector('.folder-icon i.fa-caret-down').getAttribute('style'),
-            ).toContain('display: none');
-            expect(
-              component.$el.querySelector('.folder-icon i.fa-caret-right').getAttribute('style'),
-            ).not.toContain('display: none');
+            expect(component.$el.querySelector('.folder-icon.ic-chevron-down')).toBe(null);
             done();
           });
         });
