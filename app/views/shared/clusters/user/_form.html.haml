@@ -2,6 +2,8 @@
 
 - if @project
   - form_url = create_user_namespace_project_clusters_path(@project.namespace, @project)
+- elsif @group
+  - form_url = create_user_group_clusters_path(@group)
 
 = form_for user_cluster, url: form_url, as: :cluster do |field|
   = form_errors(user_cluster)

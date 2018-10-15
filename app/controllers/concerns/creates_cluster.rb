@@ -85,6 +85,8 @@ module CreatesCluster
     case cluster_parent
     when Project
       new_project_cluster_path(cluster_parent)
+    when Group
+      new_group_cluster_path(cluster_parent)
     else
       raise "Cannot generate redirect gcp_authorize_redirect_url"
     end
@@ -94,6 +96,8 @@ module CreatesCluster
     case cluster_parent
     when Project
       project_cluster_path(cluster_parent, cluster)
+    when Group
+      group_cluster_path(cluster_parent, cluster)
     else
       raise "Unknown cluster_parent type: #{cluster_parent}!"
     end
@@ -103,6 +107,8 @@ module CreatesCluster
     case cluster_parent
     when Project
       :project
+    when Group
+      :group
     else
       raise "Unknown cluster_parent type: #{cluster_parent}!"
     end

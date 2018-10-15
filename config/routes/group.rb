@@ -72,6 +72,13 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
         post :pause
       end
     end
+
+    resources :clusters, except: [:edit, :create] do
+      collection do
+        post :create_gcp
+        post :create_user
+      end
+    end
   end
 
   scope(path: '*id',

@@ -10,6 +10,8 @@
 
 - if @project
   - form_url = create_gcp_namespace_project_clusters_path(@project.namespace, @project)
+- elsif @group
+  - form_url = create_gcp_group_clusters_path(@group)
 
 %p
   - link_to_help_page = link_to(s_('ClusterIntegration|help page'), help_page_path('user/project/clusters/index'), target: '_blank', rel: 'noopener noreferrer')

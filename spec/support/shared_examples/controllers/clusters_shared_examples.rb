@@ -38,6 +38,8 @@ shared_examples 'new cluster action' do |parent_type:|
       google_redirect_url = case parent_type
                             when :project
                               new_project_cluster_path(assigns(:project))
+                            when :group
+                              new_group_cluster_path(assigns(:group))
                             end
 
       expect(session[session_key_for_redirect_uri]).to eq(google_redirect_url)
@@ -107,6 +109,8 @@ shared_examples 'create_gcp action' do |parent_type:|
       case parent_type
       when :project
         project.clusters.first
+      when :group
+        group.clusters.first
       end
     end
 
@@ -114,6 +118,8 @@ shared_examples 'create_gcp action' do |parent_type:|
       case parent_type
       when :project
         project_cluster_path(project, first_cluster)
+      when :group
+        group_cluster_path(group, first_cluster)
       end
     end
 
@@ -149,6 +155,8 @@ shared_examples 'create_user action' do |parent_type:|
     case parent_type
     when :project
       project.clusters.first
+    when :group
+      group.clusters.first
     end
   end
 
@@ -156,6 +164,8 @@ shared_examples 'create_user action' do |parent_type:|
     case parent_type
     when :project
       project_cluster_path(project, first_cluster)
+    when :group
+      group_cluster_path(group, first_cluster)
     end
   end
 

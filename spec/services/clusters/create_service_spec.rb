@@ -69,6 +69,22 @@ describe Clusters::CreateService do
       end
     end
 
+    context 'create cluster for group' do
+      let(:group) { create(:group) }
+
+      subject { service.execute(group: group, access_token: access_token) }
+
+      context 'when correct params' do
+        include_context 'valid cluster create params'
+
+        include_examples 'create cluster service success'
+
+        it 'associates group to the cluster' do
+          expect(subject.group).to eq(group)
+        end
+      end
+    end
+
     context 'create cluster for project' do
       let(:project) { create(:project) }
 
