@@ -1,4 +1,4 @@
-/* eslint-disable no-var, one-var, no-return-assign, vars-on-top, jasmine/no-unsafe-spy */
+/* eslint-disable no-var, one-var, no-return-assign, vars-on-top */
 
 import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
