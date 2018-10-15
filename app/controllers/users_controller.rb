@@ -56,10 +56,12 @@ class UsersController < ApplicationController
   def projects
     load_projects
 
+    skip_pagination = Gitlab::Utils.to_boolean(params[:skip_pagination])
+
     respond_to do |format|
       format.html { render 'show' }
       format.json do
-        pager_json("shared/projects/_list", @projects.count, projects: @projects)
+        pager_json("shared/projects/_list", @projects.count, projects: @projects, skip_pagination: skip_pagination)
       end
     end
   end
