@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # LDAP authorization model
 #
 # * Check if we are allowed access (not blocked)

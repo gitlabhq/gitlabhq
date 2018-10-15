@@ -1,4 +1,5 @@
 # -*- ruby encoding: utf-8 -*-
+# frozen_string_literal: true
 
 # Based on the `ruby-net-ldap` gem's `Net::LDAP::DN`
 #
