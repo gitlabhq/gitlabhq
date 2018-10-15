@@ -517,8 +517,8 @@ variables used for [two-factor authentication](../user/profile/account/two_facto
 > **Note:** 
 If you fail to restore this encryption key file along with the application data
 backup, users with two-factor authentication enabled and GitLab Runners will
-lose access to your GitLab server. In addition, accessing any projects with encrypted data
-will result in 500 errors. 
+lose access to your GitLab server. In addition, accessing any projects with encrypted data, such as
+CI secret variables, [ssh host keys for mirrored projects] or imported projects and deploy tokens will result in 500 errors. 
 
 Depending on your case, you might want to run the restore command with one or
 more of the following options:
@@ -715,3 +715,4 @@ For more information see similar questions on postgresql issue tracker[here](htt
 
 [reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart GitLab]: ../administration/restart_gitlab.md#installations-from-source
+[]: ../workflow/repository_mirroring.html#ssh-authentication
