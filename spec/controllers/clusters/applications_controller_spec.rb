@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
-describe Projects::Clusters::ApplicationsController do
+describe Clusters::ApplicationsController do
   include AccessMatchersForController
 
   def current_application

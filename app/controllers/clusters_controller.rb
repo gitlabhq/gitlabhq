@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-class Projects::ClustersController < Projects::ApplicationController
+class ClustersController < Clusters::BaseController
   before_action :cluster, except: [:index, :new, :create_gcp, :create_user]
-  before_action :authorize_read_cluster!
   before_action :generate_gcp_authorize_url, only: [:new]
   before_action :validate_gcp_token, only: [:new]
   before_action :gcp_cluster, only: [:new]
@@ -11,6 +10,9 @@ class Projects::ClustersController < Projects::ApplicationController
   before_action :authorize_update_cluster!, only: [:update]
   before_action :authorize_admin_cluster!, only: [:destroy]
   before_action :update_applications_status, only: [:status]
+
+  layout :determine_layout
+
   helper_method :token_in_session
 
   STATUS_POLLING_INTERVAL = 10_000
@@ -29,7 +31,7 @@ class Projects::ClustersController < Projects::ApplicationController
         Gitlab::PollingInterval.set_header(response, interval: STATUS_POLLING_INTERVAL)
 
         render json: ClusterSerializer
-          .new(project: @project, current_user: @current_user)
+          .new(project: project, current_user: @current_user)
           .represent_status(@cluster)
       end
     end
@@ -105,6 +107,12 @@ class Projects::ClustersController < Projects::ApplicationController
 
   private
 
+  def determine_layout
+    if project_type?
+      'project'
+    end
+  end
+
   def cluster
     @cluster ||= project.clusters.find(params[:id])
                                  .present(current_user: current_user)
@@ -169,7 +177,7 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def generate_gcp_authorize_url
-    state = generate_session_key_redirect(new_project_cluster_path(@project).to_s)
+    state = generate_session_key_redirect(new_project_cluster_path(project).to_s)
 
     @authorize_url = GoogleApi::CloudPlatform::Client.new(
       nil, callback_google_api_auth_url,

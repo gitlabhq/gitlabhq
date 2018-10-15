@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
-describe Projects::ClustersController do
+describe ClustersController do
   include AccessMatchersForController
   include GoogleApi::CloudPlatformHelpers
 
@@ -218,9 +220,9 @@ describe Projects::ClustersController do
     describe 'security' do
       before do
         allow_any_instance_of(described_class)
-        .to receive(:token_in_session).and_return('token')
+          .to receive(:token_in_session).and_return('token')
         allow_any_instance_of(described_class)
-        .to receive(:expires_at_in_session).and_return(1.hour.since.to_i.to_s)
+          .to receive(:expires_at_in_session).and_return(1.hour.since.to_i.to_s)
         allow_any_instance_of(GoogleApi::CloudPlatform::Client)
           .to receive(:projects_zones_clusters_create) do
           OpenStruct.new(
@@ -322,10 +324,11 @@ describe Projects::ClustersController do
     let(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
 
     def go
-      get :status, namespace_id: project.namespace,
-                   project_id: project,
-                   id: cluster,
-                   format: :json
+      get :status,
+        namespace_id: project.namespace,
+        project_id: project,
+        id: cluster,
+        format: :json
     end
 
     describe 'functionality' do
@@ -359,9 +362,10 @@ describe Projects::ClustersController do
     let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
     def go
-      get :show, namespace_id: project.namespace,
-                 project_id: project,
-                 id: cluster
+      get :show,
+        namespace_id: project.namespace,
+        project_id: project,
+        id: cluster
     end
 
     describe 'functionality' do
@@ -530,9 +534,10 @@ describe Projects::ClustersController do
     let!(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, projects: [project]) }
 
     def go
-      delete :destroy, namespace_id: project.namespace,
-                       project_id: project,
-                       id: cluster
+      delete :destroy,
+        namespace_id: project.namespace,
+        project_id: project,
+        id: cluster
     end
 
     describe 'functionality' do
@@ -589,6 +594,12 @@ describe Projects::ClustersController do
       it { expect { go }.to be_denied_for(:guest).of(project) }
       it { expect { go }.to be_denied_for(:user) }
       it { expect { go }.to be_denied_for(:external) }
+    end
+  end
+
+  context 'no project_id param' do
+    it 'does not respond to any action without project_id param' do
+      expect { get :index }.to raise_error(ActionController::UrlGenerationError)
     end
   end
 end

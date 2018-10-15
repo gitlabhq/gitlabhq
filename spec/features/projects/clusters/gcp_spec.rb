@@ -9,16 +9,16 @@ describe 'Gcp Cluster', :js do
   before do
     project.add_maintainer(user)
     gitlab_sign_in(user)
-    allow(Projects::ClustersController).to receive(:STATUS_POLLING_INTERVAL) { 100 }
+    allow(ClustersController).to receive(:STATUS_POLLING_INTERVAL) { 100 }
   end
 
   context 'when user has signed with Google' do
     let(:project_id) { 'test-project-1234' }
 
     before do
-      allow_any_instance_of(Projects::ClustersController)
+      allow_any_instance_of(ClustersController)
         .to receive(:token_in_session).and_return('token')
-      allow_any_instance_of(Projects::ClustersController)
+      allow_any_instance_of(ClustersController)
         .to receive(:expires_at_in_session).and_return(1.hour.since.to_i.to_s)
     end
 

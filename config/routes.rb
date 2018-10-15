@@ -84,6 +84,23 @@ Rails.application.routes.draw do
     draw :instance_statistics
   end
 
+  concern :clusterable do
+    resources :clusters, except: [:edit, :create], controller: '/clusters' do
+      collection do
+        post :create_gcp
+        post :create_user
+      end
+
+      member do
+        get :status, format: :json
+
+        scope :applications do
+          post '/:application', to: '/clusters/applications#create', as: :install_applications
+        end
+      end
+    end
+  end
+
   draw :api
   draw :sidekiq
   draw :help

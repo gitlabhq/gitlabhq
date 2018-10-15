@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-class Projects::Clusters::ApplicationsController < Projects::ApplicationController
+class Clusters::ApplicationsController < Clusters::BaseController
   before_action :cluster
-  before_action :authorize_read_cluster!
   before_action :authorize_create_cluster!, only: [:create]
 
   def create
