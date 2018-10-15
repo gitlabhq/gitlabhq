@@ -1,39 +1,36 @@
 # frozen_string_literal: true
-require "multi_json"
-require "cgi"
-require "flowdock"
-require "flowdock/git/builder"
+require 'multi_json'
+require 'cgi'
+require 'flowdock'
+require 'flowdock/git/builder'
 
 module Flowdock
   class Git
     TokenError = Class.new(StandardError)
 
+    DEFAULT_PERMANENT_REFS = [
+      Regexp.new('refs/heads/master')
+    ].freeze
+
     class << self
       def post(ref, from, to, options = {})
         Git.new(ref, from, to, options).post
       end
-
-      def background_post(ref, from, to, options = {})
-        Git.new(ref, from, to, options).background_post
-      end
     end
 
     def initialize(ref, from, to, options = {})
+      raise TokenError.new("Flowdock API token not found") unless options[:token]
+
       @ref = ref
       @from = from
       @to = to
       @options = options
-      @token = options[:token] || config["flowdock.token"] || raise(TokenError.new("Flowdock API token not found"))
-      @commit_url = options[:commit_url] || config["flowdock.commit-url-pattern"] || nil
-      @diff_url = options[:diff_url] || config["flowdock.diff-url-pattern"] || nil
-      @repo_url = options[:repo_url] || config["flowdock.repository-url"] || nil
-      @repo_name = options[:repo_name] || config["flowdock.repository-name"] || nil
-
-      refs = options[:permanent_refs] || config["flowdock.permanent-references"] || "refs/heads/master"
-      @permanent_refs = refs
-        .split(",")
-        .map(&:strip)
-        .map {|exp| Regexp.new(exp) }
+      @token = options[:token]
+      @commit_url = options[:commit_url]
+      @diff_url = options[:diff_url]
+      @repo_url = options[:repo_url]
+      @repo_name = options[:repo_name]
+      @permanent_refs = options.fetch(:permanent_refs, DEFAULT_PERMANENT_REFS)
     end
 
     # Send git push notification to Flowdock
@@ -43,29 +40,14 @@ module Flowdock
       end
     end
 
-    # Create and post notification in background process. Avoid blocking the push notification.
-    def background_post
-      pid = Process.fork
-      if pid.nil?
-        Grit::Git.with_timeout(600) do
-          post
-        end
-      else
-        Process.detach(pid) # Parent
-      end
-    end
-
     def repo
-      @repo ||= Grit::Repo.new(
-        @options[:repo] || Dir.pwd,
-        is_bare: @options[:is_bare] || false
-      )
+      @options[:repo]
     end
 
     private
 
     def messages
-      Git::Builder.new(repo: @repo,
+      Git::Builder.new(repo: repo,
                        ref: @ref,
                        before: @from,
                        after: @to,
@@ -81,18 +63,7 @@ module Flowdock
 
     # Flowdock tags attached to the push notification
     def tags
-      tags =
-        if @options[:tags]
-          @options[:tags]
-        else
-          config["flowdock.tags"].to_s.split(",").map(&:strip)
-        end
-
-      tags.map { |t| CGI.escape(t) }
-    end
-
-    def config
-      @config ||= Grit::Config.new(repo)
+      Array(@options[:tags]).map { |tag| CGI.escape(tag) }
     end
   end
 end

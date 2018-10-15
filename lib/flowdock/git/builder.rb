@@ -1,7 +1,6 @@
 # frozen_string_literal: true
-require "grit"
 require 'cgi'
-require "securerandom"
+require 'securerandom'
 
 module Flowdock
   class Git
@@ -93,12 +92,12 @@ module Flowdock
       def commits
         @repo.commits_between(@before, @after).map do |commit|
           {
-            url: if @opts[:commit_url] then @opts[:commit_url] % [commit.sha] end,
+            url: @opts[:commit_url] ? @opts[:commit_url] % [commit.sha] : nil,
             id: commit.sha,
             message: commit.message,
             author: {
-              name: commit.author.name,
-              email: commit.author.email
+              name: commit.author_name,
+              email: commit.author_email
             }
           }
         end
