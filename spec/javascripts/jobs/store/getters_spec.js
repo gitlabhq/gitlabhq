@@ -77,18 +77,18 @@ describe('Job Store Getters', () => {
     });
   });
 
-  describe('jobHasStarted', () => {
-    describe('when started equals false', () => {
+  describe('shouldRenderTriggeredLabel', () => {
+    describe('when started equals null', () => {
       it('returns false', () => {
-        localState.job.started = false;
-        expect(getters.jobHasStarted(localState)).toEqual(false);
+        localState.job.started = null;
+        expect(getters.shouldRenderTriggeredLabel(localState)).toEqual(false);
       });
     });
 
     describe('when started equals string', () => {
       it('returns true', () => {
         localState.job.started = '2018-08-31T16:20:49.023Z';
-        expect(getters.jobHasStarted(localState)).toEqual(true);
+        expect(getters.shouldRenderTriggeredLabel(localState)).toEqual(true);
       });
     });
   });

@@ -34,7 +34,7 @@
         'headerActions',
         'headerTime',
         'shouldRenderCalloutMessage',
-        'jobHasStarted',
+        'shouldRenderTriggeredLabel',
         'hasEnvironment',
         'isJobStuck',
         'shouldRenderSharedRunnerLimitWarning',
@@ -63,7 +63,7 @@
             :user="job.user"
             :actions="headerActions"
             :has-sidebar-button="true"
-            :should-render-triggered-label="jobHasStarted"
+            :should-render-triggered-label="shouldRenderTriggeredLabel"
             :item-name="__('Job')"
           />
         </div>

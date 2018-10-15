@@ -1,8 +1,6 @@
 // Limit MR description for side-by-side diff view
 .fixed-width-container {
-  max-width: $limited-layout-width - ($gl-padding * 2);
-  margin-left: auto;
-  margin-right: auto;
+  @include fixed-width-container;
 }
 
 .issuable-warning-icon {
