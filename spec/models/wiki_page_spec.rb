@@ -457,6 +457,12 @@ describe WikiPage do
   end
 
   describe '#historical?' do
+    let(:page) { wiki.find_page('Update') }
+    let(:old_version) { page.versions.last.id }
+    let(:old_page) { wiki.find_page('Update', old_version) }
+    let(:latest_version) { page.versions.first.id }
+    let(:latest_page) { wiki.find_page('Update', latest_version) }
+
     before do
       create_page('Update', 'content')
       @page = wiki.find_page('Update')
@@ -468,23 +474,27 @@ describe WikiPage do
     end
 
     it 'returns true when requesting an old version' do
-      old_version = @page.versions.last.id
-      old_page = wiki.find_page('Update', old_version)
-
-      expect(old_page.historical?).to eq true
+      expect(old_page.historical?).to be_truthy
     end
 
     it 'returns false when requesting latest version' do
-      latest_version = @page.versions.first.id
-      latest_page = wiki.find_page('Update', latest_version)
-
-      expect(latest_page.historical?).to eq false
+      expect(latest_page.historical?).to be_falsy
     end
 
     it 'returns false when version is nil' do
-      latest_page = wiki.find_page('Update', nil)
+      expect(latest_page.historical?).to be_falsy
+    end
 
-      expect(latest_page.historical?).to eq false
+    it 'returns false when the last version is nil' do
+      expect(old_page).to receive(:last_version) { nil }
+
+      expect(old_page.historical?).to be_falsy
+    end
+
+    it 'returns false when the version is nil' do
+      expect(old_page).to receive(:version) { nil }
+
+      expect(old_page.historical?).to be_falsy
     end
   end
 
