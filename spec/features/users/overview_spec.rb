@@ -104,8 +104,9 @@ describe 'Overview tab on a user profile', :js do
     end
 
     describe 'user has a personal project' do
-      let(:private_project) { create(:project, :private, namespace: user.namespace, creator: user) { |p| p.add_maintainer(user) } }
-      let!(:private_event)   { create(:event, project: private_project, author: user) }
+      before do
+        create(:project, :private, namespace: user.namespace, creator: user) { |p| p.add_maintainer(user) }
+      end
 
       include_context 'visit overview tab'
 
@@ -117,6 +118,32 @@ describe 'Overview tab on a user profile', :js do
 
       it 'shows a link to the project list' do
         expect(find('#js-overview .projects-block')).to have_selector('.js-view-all', visible: true)
+      end
+    end
+
+    describe 'user has more than ten personal projects' do
+      before do
+        create_list(:project, 11, :private, namespace: user.namespace, creator: user) do |project|
+          project.add_maintainer(user)
+        end
+      end
+
+      include_context 'visit overview tab'
+
+      it 'it shows max. ten entries in the list of projects' do
+        page.within('.projects-block') do
+          expect(page).to have_selector('.project-row', count: 10)
+        end
+      end
+
+      it 'shows a link to the project list' do
+        expect(find('#js-overview .projects-block')).to have_selector('.js-view-all', visible: true)
+      end
+
+      it 'does not show pagination' do
+        page.within('.projects-block') do
+          expect(page).not_to have_selector('.gl-pagination')
+        end
       end
     end
   end
