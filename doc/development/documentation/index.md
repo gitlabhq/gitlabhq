@@ -414,7 +414,7 @@ to EE only.
 
 NOTE: **Note:**
 To preview your changes to documentation locally, follow this
-[development guide](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/README.md#development).
+[development guide](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/README.md#development-when-contributing-to-gitlab-documentation) or [these instructions for GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/gitlab_docs.md).
 
 The live preview is currently enabled for the following projects:
 
