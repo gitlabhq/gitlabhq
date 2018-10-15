@@ -995,7 +995,7 @@ stop_review:
     - master
     - /(^docs[\/-].*|.*-docs$)/
 
-automated_review_cleanup:
+schedule:review_apps_cleanup:
   <<: *dedicated-no-docs-pull-cache-job
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
   stage: build
@@ -1008,10 +1008,15 @@ automated_review_cleanup:
     GIT_DEPTH: "1"
   script:
     - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
+  environment:
+    name: review/auto-cleanup
+    action: stop
   only:
     refs:
       - schedules@gitlab-org/gitlab-ce
       - schedules@gitlab-org/gitlab-ee
+    kubernetes: active
   except:
     - master
+    - tags
     - /(^docs[\/-].*|.*-docs$)/
