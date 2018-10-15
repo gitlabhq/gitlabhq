@@ -80,69 +80,7 @@ describe Projects::ClustersController do
       get :new, namespace_id: project.namespace, project_id: project
     end
 
-    describe 'functionality for new cluster' do
-      context 'when omniauth has been configured' do
-        let(:key) { 'secret-key' }
-        let(:session_key_for_redirect_uri) do
-          GoogleApi::CloudPlatform::Client.session_key_for_redirect_uri(key)
-        end
-
-        before do
-          allow(SecureRandom).to receive(:hex).and_return(key)
-        end
-
-        it 'has authorize_url' do
-          go
-
-          expect(assigns(:authorize_url)).to include(key)
-          expect(session[session_key_for_redirect_uri]).to eq(new_project_cluster_path(project))
-        end
-      end
-
-      context 'when omniauth has not configured' do
-        before do
-          stub_omniauth_setting(providers: [])
-        end
-
-        it 'does not have authorize_url' do
-          go
-
-          expect(assigns(:authorize_url)).to be_nil
-        end
-      end
-
-      context 'when access token is valid' do
-        before do
-          stub_google_api_validate_token
-        end
-
-        it 'has new object' do
-          go
-
-          expect(assigns(:gcp_cluster)).to be_an_instance_of(Clusters::Cluster)
-        end
-      end
-
-      context 'when access token is expired' do
-        before do
-          stub_google_api_expired_token
-        end
-
-        it { expect(@valid_gcp_token).to be_falsey }
-      end
-
-      context 'when access token is not stored in session' do
-        it { expect(@valid_gcp_token).to be_falsey }
-      end
-    end
-
-    describe 'functionality for existing cluster' do
-      it 'has new object' do
-        go
-
-        expect(assigns(:user_cluster)).to be_an_instance_of(Clusters::Cluster)
-      end
-    end
+    include_examples 'new cluster action', parent_type: :project
 
     describe 'security' do
       it { expect { go }.to be_allowed_for(:admin) }
@@ -175,44 +113,7 @@ describe Projects::ClustersController do
     end
 
     describe 'functionality' do
-      context 'when access token is valid' do
-        before do
-          stub_google_api_validate_token
-        end
-
-        it 'creates a new cluster' do
-          expect(ClusterProvisionWorker).to receive(:perform_async)
-          expect { go }.to change { Clusters::Cluster.count }
-            .and change { Clusters::Providers::Gcp.count }
-          expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
-          expect(project.clusters.first).to be_gcp
-          expect(project.clusters.first).to be_kubernetes
-          expect(project.clusters.first.provider_gcp).to be_legacy_abac
-        end
-
-        context 'when legacy_abac param is false' do
-          let(:legacy_abac_param) { 'false' }
-
-          it 'creates a new cluster with legacy_abac_disabled' do
-            expect(ClusterProvisionWorker).to receive(:perform_async)
-            expect { go }.to change { Clusters::Cluster.count }
-              .and change { Clusters::Providers::Gcp.count }
-            expect(project.clusters.first.provider_gcp).not_to be_legacy_abac
-          end
-        end
-      end
-
-      context 'when access token is expired' do
-        before do
-          stub_google_api_expired_token
-        end
-
-        it { expect(@valid_gcp_token).to be_falsey }
-      end
-
-      context 'when access token is not stored in session' do
-        it { expect(@valid_gcp_token).to be_falsey }
-      end
+      include_examples 'create_gcp action', parent_type: :project
     end
 
     describe 'security' do
@@ -262,48 +163,7 @@ describe Projects::ClustersController do
     end
 
     describe 'functionality' do
-      context 'when creates a cluster' do
-        it 'creates a new cluster' do
-          expect(ClusterProvisionWorker).to receive(:perform_async)
-
-          expect { go }.to change { Clusters::Cluster.count }
-            .and change { Clusters::Platforms::Kubernetes.count }
-
-          expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
-
-          expect(project.clusters.first).to be_user
-          expect(project.clusters.first).to be_kubernetes
-        end
-      end
-
-      context 'when creates a RBAC-enabled cluster' do
-        let(:params) do
-          {
-            cluster: {
-              name: 'new-cluster',
-              platform_kubernetes_attributes: {
-                api_url: 'http://my-url',
-                token: 'test',
-                namespace: 'aaa',
-                authorization_type: 'rbac'
-              }
-            }
-          }
-        end
-
-        it 'creates a new cluster' do
-          expect(ClusterProvisionWorker).to receive(:perform_async)
-
-          expect { go }.to change { Clusters::Cluster.count }
-            .and change { Clusters::Platforms::Kubernetes.count }
-
-          expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
-
-          expect(project.clusters.first).to be_user
-          expect(project.clusters.first).to be_kubernetes
-          expect(project.clusters.first).to be_platform_kubernetes_rbac
-        end
-      end
+      include_examples 'create_user action', parent_type: :project
     end
 
     describe 'security' do

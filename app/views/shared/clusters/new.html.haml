@@ -1,13 +1,17 @@
 - breadcrumb_title 'Kubernetes'
 - page_title _("Kubernetes Cluster")
 - active_tab = local_assigns.fetch(:active_tab, 'gcp')
+- gcp_cluster = local_assigns.fetch(:gcp_cluster)
+- user_cluster = local_assigns.fetch(:user_cluster)
+- authorize_url = local_assigns.fetch(:authorize_url)
+- valid_gcp_token = local_assigns.fetch(:valid_gcp_token)
 = javascript_include_tag 'https://apis.google.com/js/api.js'
 
 = render_gcp_signup_offer
 
 .row.prepend-top-default
   .col-md-3
-    = render 'sidebar'
+    = render 'shared/clusters/sidebar'
   .col-md-9.js-toggle-container
     %ul.nav-links.nav-tabs.gitlab-tabs.nav{ role: 'tablist' }
       %li.nav-item{ role: 'presentation' }
@@ -19,12 +23,12 @@
 
     .tab-content.gitlab-tab-content
       .tab-pane{ id: 'create-gcp-cluster-pane', class: active_when(active_tab == 'gcp'), role: 'tabpanel' }
-        = render 'projects/clusters/gcp/header'
-        - if @valid_gcp_token
-          = render 'projects/clusters/gcp/form'
-        - elsif @authorize_url
+        = render 'shared/clusters/gcp/header'
+        - if valid_gcp_token
+          = render partial: 'shared/clusters/gcp/form', locals: { gcp_cluster: gcp_cluster, authorize_url: authorize_url }
+        - elsif authorize_url
           .signin-with-google
-            = link_to(image_tag('auth_buttons/signin_with_google.png', width: '191px'), @authorize_url)
+            = link_to(image_tag('auth_buttons/signin_with_google.png', width: '191px'), authorize_url)
             = _('or')
             = link_to('create a new Google account', 'https://accounts.google.com/SignUpWithoutGmail?service=cloudconsole&continue=https%3A%2F%2Fconsole.cloud.google.com%2Ffreetrial%3Futm_campaign%3D2018_cpanel%26utm_source%3Dgitlab%26utm_medium%3Dreferral', target: '_blank', rel: 'noopener noreferrer')
         - else
@@ -32,5 +36,5 @@
           = s_('Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service.').html_safe % { link_to_documentation: link }
 
       .tab-pane{ id: 'add-user-cluster-pane', class: active_when(active_tab == 'user'), role: 'tabpanel' }
-        = render 'projects/clusters/user/header'
-        = render 'projects/clusters/user/form'
+        = render 'shared/clusters/user/header'
+        = render partial: 'shared/clusters/user/form', locals: { user_cluster: user_cluster }
