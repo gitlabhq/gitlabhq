@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe PrometheusService, :use_clean_rails_memory_store_caching do
@@ -83,13 +85,22 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
     end
   end
 
-  describe '#prometheus_installed?' do
+  describe '#prometheus_available?' do
     context 'clusters with installed prometheus' do
       let!(:cluster) { create(:cluster, projects: [project]) }
       let!(:prometheus) { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
 
       it 'returns true' do
-        expect(service.prometheus_installed?).to be(true)
+        expect(service.prometheus_available?).to be(true)
+      end
+    end
+
+    context 'clusters with updated prometheus' do
+      let!(:cluster) { create(:cluster, projects: [project]) }
+      let!(:prometheus) { create(:clusters_applications_prometheus, :updated, cluster: cluster) }
+
+      it 'returns true' do
+        expect(service.prometheus_available?).to be(true)
       end
     end
 
@@ -98,7 +109,7 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
       let!(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
 
       it 'returns false' do
-        expect(service.prometheus_installed?).to be(false)
+        expect(service.prometheus_available?).to be(false)
       end
     end
 
@@ -106,13 +117,13 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
       let(:cluster) { create(:cluster, projects: [project]) }
 
       it 'returns false' do
-        expect(service.prometheus_installed?).to be(false)
+        expect(service.prometheus_available?).to be(false)
       end
     end
 
     context 'no clusters' do
       it 'returns false' do
-        expect(service.prometheus_installed?).to be(false)
+        expect(service.prometheus_available?).to be(false)
       end
     end
   end
@@ -150,7 +161,7 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
 
     context 'with prometheus installed in the cluster' do
       before do
-        allow(service).to receive(:prometheus_installed?).and_return(true)
+        allow(service).to receive(:prometheus_available?).and_return(true)
       end
 
       context 'when service is inactive' do

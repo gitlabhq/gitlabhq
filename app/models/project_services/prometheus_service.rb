@@ -26,7 +26,7 @@ class PrometheusService < MonitoringService
   end
 
   def editable?
-    manual_configuration? || !prometheus_installed?
+    manual_configuration? || !prometheus_available?
   end
 
   def title
@@ -75,17 +75,17 @@ class PrometheusService < MonitoringService
     RestClient::Resource.new(api_url) if api_url && manual_configuration? && active?
   end
 
-  def prometheus_installed?
+  def prometheus_available?
     return false if template?
     return false unless project
 
-    project.clusters.enabled.any? { |cluster| cluster.application_prometheus&.installed? }
+    project.clusters.enabled.any? { |cluster| cluster.application_prometheus_available? }
   end
 
   private
 
   def synchronize_service_state
-    self.active = prometheus_installed? || manual_configuration?
+    self.active = prometheus_available? || manual_configuration?
 
     true
   end

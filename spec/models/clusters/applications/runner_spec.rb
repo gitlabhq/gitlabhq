@@ -4,7 +4,7 @@ describe Clusters::Applications::Runner do
   let(:ci_runner) { create(:ci_runner) }
 
   include_examples 'cluster application core specs', :clusters_applications_runner
-  include_examples 'cluster application status specs', :cluster_application_runner
+  include_examples 'cluster application status specs', :clusters_applications_runner
 
   it { is_expected.to belong_to(:runner) }
 

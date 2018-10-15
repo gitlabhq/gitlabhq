@@ -4,7 +4,7 @@ describe Clusters::Applications::Prometheus do
   include KubernetesHelpers
 
   include_examples 'cluster application core specs', :clusters_applications_prometheus
-  include_examples 'cluster application status specs', :cluster_application_prometheus
+  include_examples 'cluster application status specs', :clusters_applications_prometheus
 
   describe '.installed' do
     subject { described_class.installed }
