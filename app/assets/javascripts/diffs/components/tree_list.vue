@@ -35,7 +35,7 @@ export default {
         return 'name';
       }
 
-      return 'truncatedPath';
+      return 'path';
     },
   },
   methods: {
@@ -131,6 +131,7 @@ export default {
           :extra-component="$options.FileRowStats"
           :show-changed-icon="true"
           :display-text-key="rowDisplayTextKey"
+          :should-truncate-start="true"
           @toggleTreeOpen="toggleTreeOpen"
           @clickFile="scrollToFile"
         />

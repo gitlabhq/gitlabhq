@@ -39,10 +39,16 @@ export default {
       required: false,
       default: 'name',
     },
+    shouldTruncateStart: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       mouseOver: false,
+      truncateStart: 0,
     };
   },
   computed: {
@@ -65,6 +71,13 @@ export default {
         'is-open': this.file.opened,
       };
     },
+    outputText() {
+      const text = this.file[this.displayTextKey];
+
+      if (this.truncateStart === 0) return text;
+
+      return `...${text.substring(this.truncateStart, text.length)}`;
+    },
   },
   watch: {
     'file.active': function fileActiveWatch(active) {
@@ -76,6 +89,15 @@ export default {
   mounted() {
     if (this.hasPathAtCurrentRoute()) {
       this.scrollIntoView(true);
+    }
+
+    if (this.shouldTruncateStart) {
+      const { scrollWidth, offsetWidth } = this.$refs.textOutput;
+      const textOverflow = scrollWidth - offsetWidth;
+
+      if (textOverflow > 0) {
+        this.truncateStart = Math.ceil(textOverflow / 5) + 3;
+      }
     }
   },
   methods: {
@@ -144,6 +166,7 @@ export default {
         class="file-row-name-container"
       >
         <span
+          ref="textOutput"
           :style="levelIndentation"
           class="file-row-name str-truncated"
         >
@@ -161,7 +184,7 @@ export default {
             :size="16"
             class="append-right-5"
           />
-          {{ file[displayTextKey] }}
+          {{ outputText }}
         </span>
         <component
           :is="extraComponent"
@@ -181,6 +204,7 @@ export default {
         :extra-component="extraComponent"
         :show-changed-icon="showChangedIcon"
         :display-text-key="displayTextKey"
+        :should-truncate-start="shouldTruncateStart"
         @toggleTreeOpen="toggleTreeOpen"
         @clickFile="clickedFile"
       />
