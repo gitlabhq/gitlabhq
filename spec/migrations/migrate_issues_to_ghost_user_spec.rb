@@ -18,33 +18,33 @@ describe MigrateIssuesToGhostUser, :migration do
       let!(:ghost) { users.create(ghost: true, email: 'ghost@example.com') }
 
       it 'does not create a new user' do
-        expect { schema_migrate_up! }.not_to change { User.count }
+        expect { migrate! }.not_to change { User.count }
       end
 
       it 'migrates issues where author = nil to the ghost user' do
-        schema_migrate_up!
+        migrate!
 
         expect(issues.first.reload.author_id).to eq(ghost.id)
       end
 
       it 'does not change issues authored by an existing user' do
-        expect { schema_migrate_up! }.not_to change { issues.second.reload.author_id}
+        expect { migrate! }.not_to change { issues.second.reload.author_id}
       end
     end
 
     context 'when ghost user does not exist' do
       it 'creates a new user' do
-        expect { schema_migrate_up! }.to change { User.count }.by(1)
+        expect { migrate! }.to change { User.count }.by(1)
       end
 
       it 'migrates issues where author = nil to the ghost user' do
-        schema_migrate_up!
+        migrate!
 
         expect(issues.first.reload.author_id).to eq(User.ghost.id)
       end
 
       it 'does not change issues authored by an existing user' do
-        expect { schema_migrate_up! }.not_to change { issues.second.reload.author_id}
+        expect { migrate! }.not_to change { issues.second.reload.author_id}
       end
     end
   end
