@@ -65,6 +65,10 @@ class GroupPolicy < BasePolicy
     enable :create_projects
     enable :admin_pipeline
     enable :admin_build
+    enable :read_cluster
+    enable :create_cluster
+    enable :update_cluster
+    enable :admin_cluster
   end
 
   rule { owner }.policy do

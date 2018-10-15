@@ -258,6 +258,8 @@ class ProjectPolicy < BasePolicy
     enable :update_pages
     enable :read_cluster
     enable :create_cluster
+    enable :update_cluster
+    enable :admin_cluster
     enable :create_environment_terminal
   end
 
