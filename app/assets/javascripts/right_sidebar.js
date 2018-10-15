@@ -57,8 +57,6 @@ Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
     $allGutterToggleIcons.removeClass('fa-angle-double-left').addClass('fa-angle-double-right');
     $('aside.right-sidebar').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
     $('.layout-page').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
-
-    if (gl.lazyLoader) gl.lazyLoader.loadCheck();
   }
 
   $this.attr('data-original-title', tooltipLabel);
