@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require "grit"
 require 'cgi'
 require "securerandom"
@@ -31,7 +32,8 @@ module Flowdock
       private
 
       def encode(hash)
-        return hash unless "".respond_to? :encode
+        return hash unless "".respond_to?(:encode)
+
         encode_as_utf8(hash)
       end
 
@@ -46,8 +48,8 @@ module Flowdock
             encode_as_utf8(val)
           end
         elsif obj.is_a?(String) && obj.encoding != Encoding::UTF_8
-          if !obj.force_encoding("UTF-8").valid_encoding?
-            obj.force_encoding("ISO-8859-1").encode!(Encoding::UTF_8, :invalid => :replace, :undef => :replace)
+          unless obj.force_encoding("UTF-8").valid_encoding?
+            obj.force_encoding("ISO-8859-1").encode!(Encoding::UTF_8, invalid: :replace, undef: :replace)
           end
         end
       end
@@ -78,6 +80,8 @@ module Flowdock
 
     # Class used to build Git payload
     class Builder
+      include ::Gitlab::Utils::StrongMemoize
+
       def initialize(opts)
         @repo = opts[:repo]
         @ref = opts[:ref]
@@ -101,7 +105,7 @@ module Flowdock
       end
 
       def ref_name
-        @ref.to_s.sub(/\Arefs\/(heads|tags)\//, '')
+        @ref.to_s.sub(%r{\Arefs/(heads|tags)/}, '')
       end
 
       def to_hashes
@@ -120,20 +124,15 @@ module Flowdock
       end
 
       def permanent?
-        @permanent ||= @opts[:permanent_refs].select do |regex|
-          regex.match(@ref)
-        end.size > 0
+        strong_memoize(:permanent) do
+          @opts[:permanent_refs].any? { |regex| regex.match(@ref) }
+        end
       end
 
       def thread_title
-        action = if permanent?
-                   "updated"
-                 end
-        type = if @ref.match(%r(^refs/heads/))
-                 "branch"
-               else
-                 "tag"
-               end
+        action = "updated" if permanent?
+        type = @ref =~ %r(^refs/heads/) ? "branch" : "tag"
+
         [@opts[:repo_name], type, ref_name, action].compact.join(" ")
       end
 

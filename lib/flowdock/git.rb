@@ -1,4 +1,4 @@
-
+# frozen_string_literal: true
 require "multi_json"
 require "cgi"
 require "flowdock"
@@ -6,7 +6,7 @@ require "flowdock/git/builder"
 
 module Flowdock
   class Git
-    class TokenError < StandardError; end
+    TokenError = Class.new(StandardError)
 
     class << self
       def post(ref, from, to, options = {})
@@ -28,11 +28,12 @@ module Flowdock
       @diff_url = options[:diff_url] || config["flowdock.diff-url-pattern"] || nil
       @repo_url = options[:repo_url] || config["flowdock.repository-url"] || nil
       @repo_name = options[:repo_name] || config["flowdock.repository-name"] || nil
-      @permanent_refs = options[:permanent_refs] ||
-                        (config["flowdock.permanent-references"] || "refs/heads/master")
-                          .split(",")
-                          .map(&:strip)
-                          .map {|exp| Regexp.new(exp) }
+
+      refs = options[:permanent_refs] || config["flowdock.permanent-references"] || "refs/heads/master"
+      @permanent_refs = refs
+        .split(",")
+        .map(&:strip)
+        .map {|exp| Regexp.new(exp) }
     end
 
     # Send git push notification to Flowdock
@@ -80,13 +81,14 @@ module Flowdock
 
     # Flowdock tags attached to the push notification
     def tags
-      if @options[:tags]
-        @options[:tags]
-      else
-        config["flowdock.tags"].to_s.split(",").map(&:strip)
-      end.map do |t|
-        CGI.escape(t)
-      end
+      tags =
+        if @options[:tags]
+          @options[:tags]
+        else
+          config["flowdock.tags"].to_s.split(",").map(&:strip)
+        end
+
+      tags.map { |t| CGI.escape(t) }
     end
 
     def config
