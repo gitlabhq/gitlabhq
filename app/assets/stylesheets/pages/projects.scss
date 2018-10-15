@@ -285,6 +285,7 @@
 
   .notification-dropdown .dropdown-menu {
     @extend .dropdown-menu-right;
+
     @media(max-width: 700px) {
       left: 0;
     }
