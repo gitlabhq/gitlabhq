@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y wget unzip xvfb
 ##
 # Install some packages from backports
 #
-RUN apt-get -y -t stretch-backports install git
+RUN apt-get -y -t stretch-backports install git git-lfs
 
 ##
 # Install Docker
