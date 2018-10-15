@@ -1,22 +1,24 @@
 # Contribute to GitLab
 
-For a first-time step-by-step guide to the contribution process, see
+Thank you for your interest in contributing to GitLab. This guide details how
+to contribute to GitLab in a way that is easy for everyone.
+
+For a first-time step-by-step guide to the contribution process, please see
 ["Contributing to GitLab"](https://about.gitlab.com/contributing/).
 
-Thank you for your interest in contributing to GitLab. This guide details how
-to contribute to GitLab in a way that is efficient for everyone.
+Looking for something to work on? Look for issues in the [Backlog (Accepting merge requests) milestone](#i-want-to-contribute).
 
-Looking for something to work on? Look for issues with the label [Accepting Merge Requests](#i-want-to-contribute).
-
-GitLab comes into two flavors, GitLab Community Edition (CE) our free and open
+GitLab comes in two flavors, GitLab Community Edition (CE) our free and open
 source edition, and GitLab Enterprise Edition (EE) which is our commercial
 edition. Throughout this guide you will see references to CE and EE for
 abbreviation.
 
-If you have read this guide and want to know how the GitLab [core team]
+To get an overview of GitLab community membership including those that would be reviewing or merging your contributions, please visit [the community roles page](community_roles.md).
+
+If you want to know how the GitLab [core team]
 operates please see [the GitLab contributing process](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/PROCESS.md).
 
-- [GitLab Inc engineers should refer to the engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/)
+[GitLab Inc engineers should refer to the engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/)
 
 ## Security vulnerability disclosure
 
@@ -28,33 +30,77 @@ vulnerabilities.
 
 ## Code of conduct
 
-As contributors and maintainers of this project, we pledge to respect all
-people who contribute through reporting issues, posting feature requests,
-updating documentation, submitting pull requests or patches, and other
-activities.
+### Our Pledge
 
-We are committed to making participation in this project a harassment-free
-experience for everyone, regardless of level of experience, gender, gender
-identity and expression, sexual orientation, disability, personal appearance,
-body size, race, ethnicity, age, or religion.
+In the interest of fostering an open and welcoming environment, we as
+contributors and maintainers pledge to making participation in our project and
+our community a harassment-free experience for everyone, regardless of age, body
+size, disability, ethnicity, sex characteristics, gender identity and expression,
+level of experience, education, socio-economic status, nationality, personal
+appearance, race, religion, or sexual identity and orientation.
 
-Examples of unacceptable behavior by participants include the use of sexual
-language or imagery, derogatory comments or personal attacks, trolling, public
-or private harassment, insults, or other unprofessional conduct.
+### Our Standards
+
+Examples of behavior that contributes to creating a positive environment
+include:
+
+* Using welcoming and inclusive language
+* Being respectful of differing viewpoints and experiences
+* Gracefully accepting constructive criticism
+* Focusing on what is best for the community
+* Showing empathy towards other community members
+
+Examples of unacceptable behavior by participants include:
+
+* The use of sexualized language or imagery and unwelcome sexual attention or
+  advances
+* Trolling, insulting/derogatory comments, and personal or political attacks
+* Public or private harassment
+* Publishing others' private information, such as a physical or electronic
+  address, without explicit permission
+* Other conduct which could reasonably be considered inappropriate in a
+  professional setting
+
+### Our Responsibilities
+
+Project maintainers are responsible for clarifying the standards of acceptable
+behavior and are expected to take appropriate and fair corrective action in
+response to any instances of unacceptable behavior.
 
 Project maintainers have the right and responsibility to remove, edit, or
 reject comments, commits, code, wiki edits, issues, and other contributions
-that are not aligned to this Code of Conduct. Project maintainers who do not
-follow the Code of Conduct may be removed from the project team.
+that are not aligned to this Code of Conduct, or to ban temporarily or
+permanently any contributor for other behaviors that they deem inappropriate,
+threatening, offensive, or harmful.
 
-This code of conduct applies both within project spaces and in public spaces
-when an individual is representing the project or its community.
+### Scope
 
-Instances of abusive, harassing, or otherwise unacceptable behavior can be
-reported by emailing `contact@gitlab.com`.
+This Code of Conduct applies both within project spaces and in public spaces
+when an individual is representing the project or its community. Examples of
+representing a project or community include using an official project e-mail
+address, posting via an official social media account, or acting as an appointed
+representative at an online or offline event. Representation of a project may be
+further defined and clarified by project maintainers.
 
-This Code of Conduct is adapted from the [Contributor Covenant][contributor-covenant], version 1.1.0,
-available at [http://contributor-covenant.org/version/1/1/0/](http://contributor-covenant.org/version/1/1/0/).
+### Enforcement
+
+Instances of abusive, harassing, or otherwise unacceptable behavior may be
+reported by contacting the project team at conduct@gitlab.com. All
+complaints will be reviewed and investigated and will result in a response that
+is deemed necessary and appropriate to the circumstances. The project team is
+obligated to maintain confidentiality with regard to the reporter of an incident.
+Further details of specific enforcement policies may be posted separately.
+
+Project maintainers who do not follow or enforce the Code of Conduct in good
+faith may face temporary or permanent repercussions as determined by other
+members of the project's leadership.
+
+### Attribution
+
+This Code of Conduct is adapted from the [Contributor Covenant][homepage], version 1.4,
+available at https://www.contributor-covenant.org/version/1/4/code-of-conduct.html
+
+[homepage]: https://www.contributor-covenant.org
 
 ## Closing policy for issues and merge requests
 
@@ -87,8 +133,8 @@ the remaining issues on the GitHub issue tracker.
 
 ## I want to contribute!
 
-If you want to contribute to GitLab [issues with the label `Accepting Merge Requests` and small weight][accepting-mrs-weight]
-is a great place to start. Issues with a lower weight (1 or 2) are deemed
+If you want to contribute to GitLab, [issues in the `Backlog (Accepting merge requests)` milestone][accepting-mrs-weight]
+are a great place to start. Issues with a lower weight (1 or 2) are deemed
 suitable for beginners. These issues will be of reasonable size and challenge,
 for anyone to start contributing to GitLab. If you have any questions or need help visit [Getting Help](https://about.gitlab.com/getting-help/#discussion) to
 learn how to communicate with GitLab. If you're looking for a Gitter or Slack channel
@@ -117,93 +163,39 @@ When your code contains more than 500 changes, any major breaking changes, or an
 
 This [documentation](issue_workflow.md) outlines the current workflow labels.
 
-### Type labels
-
-This [documentation](issue_workflow.md) outlines the current type labels.
-
-### Subject labels
-
-This [documentation](issue_workflow.md) outlines the current subject labels.
-
-### Team labels
-
-This [documentation](issue_workflow.md) outlines the current team labels.
-
-### Milestone labels
-
-This [documentation](issue_workflow.md) outlines the current milestone labels.
-
-### Bug Priority labels
-
-This [documentation](issue_workflow.md) outlines the current bug priority  labels.
-
-### Bug Severity labels
-
-This [documentation](issue_workflow.md) outlines the current severity labels.
-
-#### Severity impact guidance
-
-This [documentation](issue_workflow.md) outlines the current severity impact guidance.
-
-### Label for community contributors
-
-This [documentation](issue_workflow.md) outlines the current policy regarding community contributor issues.
-
-## Implement design & UI elements
-
-This [documentation](design.md) outlines the current design and UI guidelines.
-
-## Issue tracker
-
-This [documentation](issue_workflow.md) outlines the issue tracker process.
-
-### Issue triaging
-
-This [documentation](issue_workflow.md) outlines the current issue triaging process.
-
-### Feature proposals
-
-This [documentation](issue_workflow.md) outlines the feature proposal process.
-
-### Issue tracker guidelines
-
-This [documentation](issue_workflow.md) outlines the issue tracker guidelines.
-
-### Issue weight
-
-This [documentation](issue_workflow.md) outlines the issue weight guidelines.
-
-### Regression issues
-
-This [documentation](issue_workflow.md) outlines the regression issue process.
-
-### Technical and UX debt
-
-This [documentation](issue_workflow.md) about technical and UX debt has been moved.
-
-### Stewardship
-
-This [documentation](issue_workflow.md) outlines the stewardship process.
+* [Type labels](issue_workflow.md#type-labels)
+* [Subject labels](issue_workflow.md#subject-labels)
+* [Team labels](issue_workflow.md#team-labels)
+* [Release Scoping labels](issue_workflow.md#release-scoping-labels)
+* [Priority labels](issue_workflow.md#priority-labels)
+* [Severity labels](issue_workflow.md#severity-labels)
+* [Label for community contributors](issue_workflow.md#label-for-community-contributors)
+* [Issue triaging](issue_workflow.md#issue-triaging)
+* [Feature proposals](issue_workflow.md#feature-proposals)
+* [Issue tracker guidelines](issue_workflow.md#issue-tracker-guidelines)
+* [Issue weight](issue_workflow.md#issue-weight)
+* [Regression issues](issue_workflow.md#regression-issues)
+* [Technical and UX debt](issue_workflow.md#technical-and-ux-debt)
+* [Stewardship](issue_workflow.md#stewardship)
 
 ## Merge requests
 
 This [documentation](merge_request_workflow.md) outlines the current merge request process.
 
-### Merge request guidelines
-
-This [documentation](merge_request_workflow.md) outlines the current merge request guidelines.
-
-### Contribution acceptance criteria
-
-This [documentation](merge_request_workflow.md) outlines the current acceptance criteria for contributions.
-
-## Definition of done
-
-This [documentation](merge_request_workflow.md) outlines the definition of done.
+* [Merge request guidelines](merge_request_workflow.md#merge-request-guidelines)
+* [Contribution acceptance criteria](merge_request_workflow.md#contribution-acceptance-criteria)
+* [Definition of done](merge_request_workflow.md#definition-of-done)
 
 ## Style guides
-This [documentation](design.md) outlines the current style guidelines.
+
+This [documentation](style_guides.md) outlines the current style guidelines.
 
 ---
 
 [Return to Development documentation](../README.md)
+
+[core team]: https://about.gitlab.com/core-team/
+[team]: https://about.gitlab.com/team/
+[getting-help]: https://about.gitlab.com/getting-help/
+[codetriage]: http://www.codetriage.com/gitlabhq/gitlabhq
+[accepting-mrs-weight]: https://gitlab.com/gitlab-org/gitlab-ce/issues?scope=all&utf8=✓&state=opened&assignee_id=0&milestone_title=Backlog%20&#40;Accepting%20merge%20requests&#41;

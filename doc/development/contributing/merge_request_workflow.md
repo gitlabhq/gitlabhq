@@ -2,9 +2,9 @@
 
 We welcome merge requests with fixes and improvements to GitLab code, tests,
 and/or documentation. The issues that are specifically suitable for
-community contributions are listed with the label
-[`Accepting Merge Requests` on our issue tracker for CE][accepting-mrs-ce]
-and [EE][accepting-mrs-ee], but you are free to contribute to any other issue
+community contributions are listed with the
+[`Backlog (Accepting merge requests)` milestone in the CE issue tracker][accepting-mrs-ce]
+and [EE issue tracker][accepting-mrs-ee], but you are free to contribute to any other issue
 you want.
 
 Please note that if an issue is marked for the current milestone either before
@@ -19,11 +19,16 @@ wireframes if the feature will also change the UI.
 Merge requests should be opened at [GitLab.com][gitlab-mr-tracker].
 
 If you are new to GitLab development (or web development in general), see the
-[I want to contribute!](#i-want-to-contribute) section to get you started with
+[I want to contribute!](index.md#i-want-to-contribute) section to get you started with
 some potentially easy issues.
 
 To start with GitLab development download the [GitLab Development Kit][gdk] and
-see the [Development section](../README.md) for some guidelines.
+see the [Development section](../../README.md) for some guidelines.
+
+[accepting-mrs-ce]: https://gitlab.com/gitlab-org/gitlab-ce/issues?milestone_title=Backlog%20&#40;Accepting%20merge%20requests&#41;
+[accepting-mrs-ee]: https://gitlab.com/gitlab-org/gitlab-ee/issues?milestone_title=Backlog%20&#40;Accepting%20merge%20requests&#41;
+[gitlab-mr-tracker]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests
+[gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit
 
 ## Merge request guidelines
 
@@ -103,6 +108,10 @@ Please ensure that your merge request meets the contribution acceptance criteria
 When having your code reviewed and when reviewing merge requests please take the
 [code review guidelines](../code_review.md) into account.
 
+[git-squash]: https://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits
+[closed-merge-requests]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed
+[team]: https://about.gitlab.com/team/
+
 ## Contribution acceptance criteria
 
 1. The change is as small as possible
@@ -133,7 +142,7 @@ When having your code reviewed and when reviewing merge requests please take the
    [polling with ETag caching][polling-etag].
 1. Changes after submitting the merge request should be in separate commits
    (no squashing).
-1. It conforms to the [style guides](#style-guides) and the following:
+1. It conforms to the [style guides](style_guides.md) and the following:
     - If your change touches a line that does not follow the style, modify the
       entire line to follow it. This prevents linting tools from generating warnings.
     - Don't touch neighbouring lines. As an exception, automatic mass
@@ -143,6 +152,9 @@ When having your code reviewed and when reviewing merge requests please take the
    See the instructions in that document for help if your MR fails the
    "license-finder" test with a "Dependencies that need approval" error.
 1. The merge request meets the [definition of done](#definition-of-done).
+
+[license-finder-doc]: ../licensing.md
+[polling-etag]: ../polling.md
 
 ## Definition of done
 
@@ -175,6 +187,12 @@ merge request:
 1. Test suite https://gitlab.com/gitlab-org/gitlab-ce/blob/master/scripts/prepare_build.sh
 1. Omnibus package creator https://gitlab.com/gitlab-org/omnibus-gitlab
 
+[definition-of-done]: http://guide.agilealliance.org/guide/definition-of-done.html
+[testing]: ../testing_guide/index.md
+
 ---
 
 [Return to Contributing documentation](index.md)
+
+[changelog]: ../changelog.md "Generate a changelog entry"
+[doc-guidelines]: ../documentation/index.md "Documentation guidelines"
