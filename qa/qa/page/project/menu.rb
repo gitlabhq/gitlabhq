@@ -6,26 +6,26 @@ module QA
       class Menu < Page::Base
         view 'app/views/layouts/nav/sidebar/_project.html.haml' do
           element :settings_item
-          element :settings_link, 'link_to edit_project_path'
-          element :repository_link, "title: _('Repository')"
+          element :settings_link, 'link_to edit_project_path' # rubocop:disable QA/ElementWithPattern
+          element :repository_link, "title: _('Repository')" # rubocop:disable QA/ElementWithPattern
           element :link_pipelines
           element :link_members_settings
-          element :pipelines_settings_link, "title: _('CI / CD')"
-          element :operations_kubernetes_link, "title: _('Kubernetes')"
+          element :pipelines_settings_link, "title: _('CI / CD')" # rubocop:disable QA/ElementWithPattern
+          element :operations_kubernetes_link, "title: _('Kubernetes')" # rubocop:disable QA/ElementWithPattern
           element :operations_environments_link
-          element :issues_link, /link_to.*shortcuts-issues/
-          element :issues_link_text, "Issues"
-          element :merge_requests_link, /link_to.*shortcuts-merge_requests/
-          element :merge_requests_link_text, "Merge Requests"
-          element :top_level_items, '.sidebar-top-level-items'
-          element :operations_section, "class: 'shortcuts-operations'"
-          element :activity_link, "title: _('Activity')"
-          element :wiki_link_text, "Wiki"
+          element :issues_link, /link_to.*shortcuts-issues/ # rubocop:disable QA/ElementWithPattern
+          element :issues_link_text, "Issues" # rubocop:disable QA/ElementWithPattern
+          element :merge_requests_link, /link_to.*shortcuts-merge_requests/ # rubocop:disable QA/ElementWithPattern
+          element :merge_requests_link_text, "Merge Requests" # rubocop:disable QA/ElementWithPattern
+          element :top_level_items, '.sidebar-top-level-items' # rubocop:disable QA/ElementWithPattern
+          element :operations_section, "class: 'shortcuts-operations'" # rubocop:disable QA/ElementWithPattern
+          element :activity_link, "title: _('Activity')" # rubocop:disable QA/ElementWithPattern
+          element :wiki_link_text, "Wiki" # rubocop:disable QA/ElementWithPattern
           element :milestones_link
         end
 
         view 'app/assets/javascripts/fly_out_nav.js' do
-          element :fly_out, "classList.add('fly-out-list')"
+          element :fly_out, "classList.add('fly-out-list')" # rubocop:disable QA/ElementWithPattern
         end
 
         def click_repository_settings

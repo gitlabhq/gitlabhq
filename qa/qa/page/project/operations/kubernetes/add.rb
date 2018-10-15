@@ -5,7 +5,7 @@ module QA
         module Kubernetes
           class Add < Page::Base
             view 'app/views/projects/clusters/new.html.haml' do
-              element :add_existing_cluster_button, "Add existing cluster"
+              element :add_existing_cluster_button, "Add existing cluster" # rubocop:disable QA/ElementWithPattern
             end
 
             def add_existing_cluster

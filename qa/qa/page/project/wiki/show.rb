@@ -8,7 +8,7 @@ module QA
           include Page::Component::ClonePanel
 
           view 'app/views/projects/wikis/pages.html.haml' do
-            element :clone_repository_link, 'Clone repository'
+            element :clone_repository_link, 'Clone repository' # rubocop:disable QA/ElementWithPattern
           end
 
           def go_to_clone_repository

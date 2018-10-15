@@ -5,7 +5,7 @@ module QA
         module CommitMessage
           def self.included(base)
             base.view 'app/views/shared/_commit_message_container.html.haml' do
-              element :commit_message, "text_area_tag 'commit_message'"
+              element :commit_message, "text_area_tag 'commit_message'" # rubocop:disable QA/ElementWithPattern
             end
           end
 
