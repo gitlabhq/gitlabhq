@@ -11,16 +11,11 @@ module Gitlab
           { user_id: user_id, username: username, name: name, email: email, message: message }
         end
       end
-      PageBlob = Struct.new(:name)
 
       # GollumSlug inlines just enough knowledge from Gollum::Page to generate a
       # slug, which is used when previewing pages that haven't been persisted
       class GollumSlug
         class << self
-          def format_to_ext(format)
-            format == :markdown ? 'md' : format.to_s
-          end
-
           def cname(name, char_white_sub = '-', char_other_sub = '-')
             if name.respond_to?(:gsub)
               name.gsub(/\s/, char_white_sub).gsub(/[<>+]/, char_other_sub)
@@ -29,18 +24,27 @@ module Gitlab
             end
           end
 
+          def format_to_ext(format)
+            format == :markdown ? "md" : format.to_s
+          end
+
+          def canonicalize_filename(filename)
+            ::File.basename(filename, ::File.extname(filename)).tr('-', ' ')
+          end
+
           def generate(title, format)
-            name = cname(title) + '.' + format_to_ext(format)
-            blob = PageBlob.new(name)
+            ext = format_to_ext(format.to_sym)
+            name = cname(title) + '.' + ext
+            canonical_name = canonicalize_filename(name)
 
             path =
-              if blob.name.include?('/')
-                blob.name.sub(%r{/[^/]+$}, '/')
+              if name.include?('/')
+                name.sub(%r{/[^/]+$}, '/')
               else
                 ''
               end
 
-            path + cname(name)
+            path + cname(canonical_name, '-', '-')
           end
         end
       end
