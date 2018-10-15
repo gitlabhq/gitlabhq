@@ -1,6 +1,7 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import FilteredSearchDropdown from '~/vue_shared/components/filtered_search_dropdown.vue';
 import timeagoMixin from '../../vue_shared/mixins/timeago';
 import tooltip from '../../vue_shared/directives/tooltip';
 import LoadingButton from '../../vue_shared/components/loading_button.vue';
@@ -18,6 +19,7 @@ export default {
     StatusIcon,
     Icon,
     TooltipOnTruncate,
+    FilteredSearchDropdown,
   },
   directives: {
     tooltip,
@@ -120,18 +122,45 @@ export default {
             />
           </div>
           <div>
-            <a
+            <filtered-search-dropdown
               v-if="hasExternalUrls"
-              :href="deployment.external_url"
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              class="deploy-link js-deploy-url btn btn-default btn-sm inline"
+              :items="deployment.changes"
+              :main-action-link="deployment.external_url"
             >
-              <span>
-                View app
-                <icon name="external-link" />
-              </span>
-            </a>
+              <template slot="mainAction" slot-scope="slotProps">
+                <a
+                  :href="deployment.external_url"
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                  class="deploy-link js-deploy-url inline"
+                  :class="slotProps.className"
+                >
+                  <span>
+                    {{ __('View app') }}
+                    <icon name="external-link" />
+                  </span>
+                </a>
+              </template>
+
+              <template slot="result" slot-scope="slotProps">
+                <a
+                  :href="slotProps.result.external_url"
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                  class="dropdown-item"
+                >
+
+                  <strong class="str-truncated append-bottom-0 d-block">
+                    {{ slotProps.result.path }}
+                  </strong>
+
+                  <p class="text-muted str-truncated append-bottom-0 d-block">
+                    {{ slotProps.result.external_url }}
+                  </p>
+                </a>
+              </template>
+            </filtered-search-dropdown>
+
             <loading-button
               v-if="deployment.stop_url"
               :loading="isStopping"

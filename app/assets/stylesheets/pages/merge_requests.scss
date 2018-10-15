@@ -908,6 +908,15 @@
   .btn svg {
     fill: $theme-gray-700;
   }
+
+  .dropdown-menu {
+    padding: $gl-padding-8;
+
+    .search-icon {
+      top: $gl-padding-top;
+      right: $gl-padding-top;
+    }
+  }
 }
 
 // Hack alert: we've rewritten `btn` class in a way that
