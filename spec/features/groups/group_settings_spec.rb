@@ -125,7 +125,7 @@ describe 'Edit group settings' do
 
   def save_group
     page.within('.gs-general') do
-      click_button 'Save group'
+      click_button 'Save changes'
     end
   end
 end
