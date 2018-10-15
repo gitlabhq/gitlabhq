@@ -49,8 +49,6 @@ Example response:
    "sign_in_text" : null,
    "container_registry_token_expire_delay": 5,
    "repository_storages": ["default"],
-   "koding_enabled": false,
-   "koding_url": null,
    "plantuml_enabled": false,
    "plantuml_url": null,
    "terminal_max_session_time": 0,
@@ -107,8 +105,6 @@ Example response:
   "after_sign_out_path": "",
   "container_registry_token_expire_delay": 5,
   "repository_storages": ["default"],
-  "koding_enabled": false,
-  "koding_url": null,
   "plantuml_enabled": false,
   "plantuml_url": null,
   "terminal_max_session_time": 0,
@@ -179,8 +175,6 @@ are listed in the descriptions of the relevant settings.
 | `html_emails_enabled`                    | boolean          | no                                   | Enable HTML emails. |
 | `instance_statistics_visibility_private` | boolean          | no                                   | When set to `true` Instance statistics will only be available to admins. |
 | `import_sources`                         | array of strings | no                                   | Sources to allow project import from, possible values: `github`, `bitbucket`, `gitlab`, `google_code`, `fogbugz`, `git`, and `gitlab_project`. |
-| `koding_enabled`                         | boolean          | no                                   | (If enabled, requires: `koding_url`) Enable Koding integration. Default is `false`. |
-| `koding_url`                             | string           | required by: `koding_enabled`        | The Koding instance URL for integration. |
 | `max_artifacts_size`                     | integer          | no                                   | Maximum artifacts size in MB |
 | `max_attachment_size`                    | integer          | no                                   | Limit attachment size in MB |
 | `max_pages_size`                         | integer          | no                                   | Maximum size of pages repositories in MB |

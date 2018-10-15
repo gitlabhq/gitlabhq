@@ -1567,7 +1567,6 @@ describe Repository do
         :license_blob,
         :license_key,
         :gitignore,
-        :koding_yml,
         :gitlab_ci_yml,
         :branch_names,
         :tag_names,
@@ -1917,19 +1916,6 @@ describe Repository do
 
       2.times do
         expect(repository.gitignore).to be_an_instance_of(Gitlab::Git::Tree)
-      end
-    end
-  end
-
-  describe '#koding_yml', :use_clean_rails_memory_store_caching do
-    it 'returns and caches the output' do
-      expect(repository).to receive(:file_on_head)
-        .with(:koding)
-        .and_return(Gitlab::Git::Tree.new(path: '.koding.yml'))
-        .once
-
-      2.times do
-        expect(repository.koding_yml).to be_an_instance_of(Gitlab::Git::Tree)
       end
     end
   end

@@ -13,8 +13,6 @@ describe API::Settings, 'Settings' do
       expect(json_response['default_projects_limit']).to eq(42)
       expect(json_response['password_authentication_enabled_for_web']).to be_truthy
       expect(json_response['repository_storages']).to eq(['default'])
-      expect(json_response['koding_enabled']).to be_falsey
-      expect(json_response['koding_url']).to be_nil
       expect(json_response['plantuml_enabled']).to be_falsey
       expect(json_response['plantuml_url']).to be_nil
       expect(json_response['default_project_visibility']).to be_a String
@@ -47,8 +45,6 @@ describe API::Settings, 'Settings' do
           default_projects_limit: 3,
           password_authentication_enabled_for_web: false,
           repository_storages: ['custom'],
-          koding_enabled: true,
-          koding_url: 'http://koding.example.com',
           plantuml_enabled: true,
           plantuml_url: 'http://plantuml.example.com',
           default_snippet_visibility: 'internal',
@@ -72,8 +68,6 @@ describe API::Settings, 'Settings' do
         expect(json_response['default_projects_limit']).to eq(3)
         expect(json_response['password_authentication_enabled_for_web']).to be_falsey
         expect(json_response['repository_storages']).to eq(['custom'])
-        expect(json_response['koding_enabled']).to be_truthy
-        expect(json_response['koding_url']).to eq('http://koding.example.com')
         expect(json_response['plantuml_enabled']).to be_truthy
         expect(json_response['plantuml_url']).to eq('http://plantuml.example.com')
         expect(json_response['default_snippet_visibility']).to eq('internal')
@@ -110,15 +104,6 @@ describe API::Settings, 'Settings' do
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['performance_bar_allowed_group_id']).to be_nil
-    end
-
-    context "missing koding_url value when koding_enabled is true" do
-      it "returns a blank parameter error message" do
-        put api("/application/settings", admin), koding_enabled: true
-
-        expect(response).to have_gitlab_http_status(400)
-        expect(json_response['error']).to eq('koding_url is missing')
-      end
     end
 
     context "missing plantuml_url value when plantuml_enabled is true" do
