@@ -247,35 +247,35 @@ export default {
       this.setFaviconHelper();
       // this.initDeploymentsPolling();
       this.mr.deployments = [
-                {
-                  id: 40,
-                  name: 'review/root-master-patch-91341',
-                  url: '/root/test-pages/environments/40',
-                  metrics_url: null,
-                  metrics_monitoring_url: '/root/test-pages/environments/40/metrics',
-                  stop_url: '/root/test-pages/environments/40/stop',
-                  external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh',
-                  external_url_formatted: 'root-master-patch-91341.volatile-watch.surge.sh',
-                  deployed_at: '2018-10-12T13:08:21.839Z',
-                  deployed_at_formatted: 'Oct 12, 2018 1:08pm',
-                  changes: [
-                    {
-                      path: 'index.html',
-                      external_url:
+        {
+          id: 40,
+          name: 'review/root-master-patch-91341',
+          url: '/root/test-pages/environments/40',
+          metrics_url: null,
+          metrics_monitoring_url: '/root/test-pages/environments/40/metrics',
+          stop_url: '/root/test-pages/environments/40/stop',
+          external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh',
+          external_url_formatted: 'root-master-patch-91341.volatile-watch.surge.sh',
+          deployed_at: '2018-10-12T13:08:21.839Z',
+          deployed_at_formatted: 'Oct 12, 2018 1:08pm',
+          changes: [
+            {
+              path: 'index.html',
+              external_url:
                         'http://root-master-patch-91341.volatile-watch.surge.sh/index.html',
-                    },
-                    {
-                      path: 'imgs/gallery.html',
-                      external_url:
+            },
+            {
+              path: 'imgs/gallery.html',
+              external_url:
                         'http://root-master-patch-91341.volatile-watch.surge.sh/imgs/gallery.html',
-                    },
-                    {
-                      path: 'about/',
-                      external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/about/',
-                    },
-                  ],
-                },
-              ];
+            },
+            {
+              path: 'about/',
+              external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/about/',
+            },
+          ],
+        },
+      ];
     },
   },
 };

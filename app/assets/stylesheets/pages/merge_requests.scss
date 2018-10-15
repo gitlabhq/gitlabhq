@@ -916,6 +916,10 @@
       top: $gl-padding-top;
       right: $gl-padding-top;
     }
+
+    .dropdown-item {
+      padding: $gl-padding-8;
+    }
   }
 }
 

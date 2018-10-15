@@ -24,11 +24,6 @@
           ),
         default: 'default',
       },
-      mainActionLink: {
-        type: String,
-        required: false,
-        default: null,
-      },
       items: {
         type: Array,
         required: true,
@@ -50,8 +45,10 @@
         return `btn btn-${this.color}`;
       },
     },
-    methods: {
-      onType() {},
+    watch: {
+      filter(newVal) {
+        this.filteredResults = this.items.filter((item) => item.path.includes(newVal));
+      },
     },
   };
 </script>
@@ -97,23 +94,11 @@
           name="result"
           :result="result"
         >
-          <li class="dropdown-item" :key="i">{{ result }}</li>
+          <li
+            :key="i"
+            class="dropdown-item">{{ result }}</li>
         </slot>
       </template>
     </div>
   </div>
 </template>
-
-<style>
-  .dropdown-menu {
-    padding: 8px;
-  };
-  .search-icon {
-    top: 10px;
-    right: 10px;
-  }
-
-  .dropdown-item {
-    padding: 8px;
-  }
-</style>

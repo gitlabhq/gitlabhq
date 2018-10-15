@@ -127,7 +127,9 @@ export default {
               :items="deployment.changes"
               :main-action-link="deployment.external_url"
             >
-              <template slot="mainAction" slot-scope="slotProps">
+              <template
+                slot="mainAction"
+                slot-scope="slotProps">
                 <a
                   :href="deployment.external_url"
                   target="_blank"
@@ -142,7 +144,9 @@ export default {
                 </a>
               </template>
 
-              <template slot="result" slot-scope="slotProps">
+              <template
+                slot="result"
+                slot-scope="slotProps">
                 <a
                   :href="slotProps.result.external_url"
                   target="_blank"
