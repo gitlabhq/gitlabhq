@@ -171,7 +171,7 @@ There are a few gotchas with it:
       class Base
         def execute
           return unless enabled?
-  
+
           # ...
           # ...
         end
@@ -185,12 +185,12 @@ There are a few gotchas with it:
       class Base
         def execute
           return unless enabled?
-  
+
           do_something
         end
-  
+
         private
-  
+
         def do_something
           # ...
           # ...
@@ -204,14 +204,14 @@ There are a few gotchas with it:
     ```ruby
       module EE::Base
         extend ::Gitlab::Utils::Override
-  
+
         override :do_something
         def do_something
           # Follow the above pattern to call super and extend it
         end
       end
     ```
-  
+
     This would require updating CE first, or make sure this is back ported to CE.
 
 When prepending, place them in the `ee/` specific sub-directory, and
@@ -331,6 +331,15 @@ full implementation details.
 
 [ce-mr-full-private]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12373
 [ee-mr-full-private]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2199
+
+### Code in `config/routes`
+
+When we add `draw :admin` in `config/routes.rb`, the application will also
+load the file located in `config/routes/admin.rb`, and also
+`ee/config/routes/admin.rb` if the file exists.
+
+So if we want to extend a particular route file, just add the same file
+located in `ee/config/routes`.
 
 ### Code in `app/controllers/`
 
