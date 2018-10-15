@@ -108,6 +108,13 @@ module Clusters
     end
     alias_method :project, :first_project
 
+    def first_group
+      return @first_group if defined?(@first_group)
+
+      @first_group = groups.first
+    end
+    alias_method :group, :first_group
+
     def kubeclient
       platform_kubernetes.kubeclient if kubernetes?
     end

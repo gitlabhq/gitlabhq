@@ -228,6 +228,23 @@ describe Clusters::Cluster do
     end
   end
 
+  describe '#first_group' do
+    subject { cluster.first_group }
+
+    context 'when cluster belongs to a group' do
+      let(:cluster) { create(:cluster, :group) }
+      let(:group) { cluster.groups.first }
+
+      it { is_expected.to eq(group) }
+    end
+
+    context 'when cluster does not belong to any group' do
+      let(:cluster) { create(:cluster) }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#applications' do
     set(:cluster) { create(:cluster) }
 

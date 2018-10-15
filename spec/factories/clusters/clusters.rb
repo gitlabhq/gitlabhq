@@ -9,6 +9,12 @@ FactoryBot.define do
       end
     end
 
+    trait :group do
+      before(:create) do |cluster, evalutor|
+        cluster.groups << create(:group)
+      end
+    end
+
     trait :provided_by_user do
       provider_type :user
       platform_type :kubernetes
