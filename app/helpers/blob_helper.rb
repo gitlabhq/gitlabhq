@@ -195,7 +195,7 @@ module BlobHelper
     {
       'relative-url-root' => Rails.application.config.relative_url_root,
       'assets-prefix' => Gitlab::Application.config.assets.prefix,
-      'blob-language' => @blob && @blob.language.try(:ace_mode),
+      'blob-filename' => @blob && @blob.path,
       'project-id' => project.id
     }
   end

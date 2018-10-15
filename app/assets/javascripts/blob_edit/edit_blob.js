@@ -5,6 +5,7 @@ import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import TemplateSelectorMediator from '../blob/file_template_mediator';
+import getModeByFileExtension from '~/lib/utils/ace_utils';
 
 export default class EditBlob {
   constructor(assetsPath, aceMode, currentAction, projectId) {
@@ -14,9 +15,10 @@ export default class EditBlob {
     this.initFileSelectors(currentAction, projectId);
   }
 
-  configureAceEditor(aceMode, assetsPath) {
+  configureAceEditor(filePath, assetsPath) {
     ace.config.set('modePath', `${assetsPath}/ace`);
     ace.config.loadModule('ace/ext/searchbox');
+    ace.config.loadModule('ace/ext/modelist');
 
     this.editor = ace.edit('editor');
 
@@ -25,8 +27,8 @@ export default class EditBlob {
 
     this.editor.focus();
 
-    if (aceMode) {
-      this.editor.getSession().setMode(`ace/mode/${aceMode}`);
+    if (filePath) {
+      this.editor.getSession().setMode(getModeByFileExtension(filePath));
     }
   }
 

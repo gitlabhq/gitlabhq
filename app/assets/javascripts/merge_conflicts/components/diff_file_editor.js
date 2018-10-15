@@ -5,6 +5,7 @@ import Vue from 'vue';
 import axios from '~/lib/utils/axios_utils';
 import flash from '~/flash';
 import { __ } from '~/locale';
+import getModeByFileExtension from '~/lib/utils/ace_utils';
 
 (global => {
   global.mergeConflicts = global.mergeConflicts || {};
@@ -72,7 +73,7 @@ import { __ } from '~/locale';
             this.fileLoaded = true;
             this.editor = ace.edit(content);
             this.editor.$blockScrolling = Infinity; // Turn off annoying warning
-            this.editor.getSession().setMode(`ace/mode/${data.blob_ace_mode}`);
+            this.editor.getSession().setMode(getModeByFileExtension(data.new_path));
             this.editor.on('change', () => {
               this.saveDiffResolution();
             });
