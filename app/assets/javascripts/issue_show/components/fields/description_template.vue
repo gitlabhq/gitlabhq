@@ -1,46 +1,46 @@
 <script>
-  import $ from 'jquery';
-  import IssuableTemplateSelectors from '../../../templates/issuable_template_selectors';
+import $ from 'jquery';
+import IssuableTemplateSelectors from '../../../templates/issuable_template_selectors';
 
-  export default {
-    props: {
-      formState: {
-        type: Object,
-        required: true,
-      },
-      issuableTemplates: {
-        type: Array,
-        required: false,
-        default: () => [],
-      },
-      projectPath: {
-        type: String,
-        required: true,
-      },
-      projectNamespace: {
-        type: String,
-        required: true,
-      },
+export default {
+  props: {
+    formState: {
+      type: Object,
+      required: true,
     },
-    computed: {
-      issuableTemplatesJson() {
-        return JSON.stringify(this.issuableTemplates);
-      },
+    issuableTemplates: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
-    mounted() {
-      // Create the editor for the template
-      const editor = document.querySelector('.detail-page-description .note-textarea') || {};
-      editor.setValue = (val) => {
-        this.formState.description = val;
-      };
-      editor.getValue = () => this.formState.description;
+    projectPath: {
+      type: String,
+      required: true,
+    },
+    projectNamespace: {
+      type: String,
+      required: true,
+    },
+  },
+  computed: {
+    issuableTemplatesJson() {
+      return JSON.stringify(this.issuableTemplates);
+    },
+  },
+  mounted() {
+    // Create the editor for the template
+    const editor = document.querySelector('.detail-page-description .note-textarea') || {};
+    editor.setValue = val => {
+      this.formState.description = val;
+    };
+    editor.getValue = () => this.formState.description;
 
-      this.issuableTemplate = new IssuableTemplateSelectors({
-        $dropdowns: $(this.$refs.toggle),
-        editor,
-      });
-    },
-  };
+    this.issuableTemplate = new IssuableTemplateSelectors({
+      $dropdowns: $(this.$refs.toggle),
+      editor,
+    });
+  },
+};
 </script>
 
 <template>

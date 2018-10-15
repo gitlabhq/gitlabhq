@@ -70,6 +70,18 @@ FactoryBot.define do
       status 'created'
     end
 
+    trait :scheduled do
+      schedulable
+      status 'scheduled'
+      scheduled_at  { 1.minute.since }
+    end
+
+    trait :expired_scheduled do
+      schedulable
+      status 'scheduled'
+      scheduled_at { 1.minute.ago }
+    end
+
     trait :manual do
       status 'manual'
       self.when 'manual'
@@ -96,6 +108,15 @@ FactoryBot.define do
 
     trait :retryable do
       success
+    end
+
+    trait :schedulable do
+      self.when 'delayed'
+      options start_in: '1 minute'
+    end
+
+    trait :actionable do
+      self.when 'manual'
     end
 
     trait :retried do

@@ -1,0 +1,5 @@
+---
+title: Remove legacy unencrypted webhook columns from the database
+merge_request: 22199
+author:
+type: changed

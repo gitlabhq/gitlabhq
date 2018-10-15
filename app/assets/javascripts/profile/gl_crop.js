@@ -1,4 +1,4 @@
-/* eslint-disable no-useless-escape, max-len, no-var, no-underscore-dangle, func-names, no-unused-vars, no-return-assign, object-shorthand, one-var, one-var-declaration-per-line, comma-dangle, consistent-return, class-methods-use-this, new-parens */
+/* eslint-disable no-useless-escape, no-var, no-underscore-dangle, func-names, no-unused-vars, no-return-assign, object-shorthand, one-var, consistent-return, class-methods-use-this */
 
 import $ from 'jquery';
 import 'cropper';

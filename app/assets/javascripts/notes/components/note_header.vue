@@ -14,7 +14,8 @@ export default {
     },
     createdAt: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     actionText: {
       type: String,
@@ -22,8 +23,9 @@ export default {
       default: '',
     },
     noteId: {
-      type: String,
-      required: true,
+      type: [String, Number],
+      required: false,
+      default: null,
     },
     includeToggle: {
       type: Boolean,
@@ -96,18 +98,22 @@ export default {
         <span class="system-note-message">
           <slot></slot>
         </span>
-        <span class="system-note-separator">
-          &middot;
-        </span>
-        <a
-          :href="noteTimestampLink"
-          class="note-timestamp system-note-separator"
-          @click="updateTargetNoteHash">
-          <time-ago-tooltip
-            :time="createdAt"
-            tooltip-placement="bottom"
-          />
-        </a>
+        <template
+          v-if="createdAt"
+        >
+          <span class="system-note-separator">
+            &middot;
+          </span>
+          <a
+            :href="noteTimestampLink"
+            class="note-timestamp system-note-separator"
+            @click="updateTargetNoteHash">
+            <time-ago-tooltip
+              :time="createdAt"
+              tooltip-placement="bottom"
+            />
+          </a>
+        </template>
         <i
           class="fa fa-spinner fa-spin editing-spinner"
           aria-label="Comment is being updated"

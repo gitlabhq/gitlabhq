@@ -35,6 +35,7 @@ module Ci
     has_many :retryable_builds, -> { latest.failed_or_canceled.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
     has_many :cancelable_statuses, -> { cancelable }, foreign_key: :commit_id, class_name: 'CommitStatus'
     has_many :manual_actions, -> { latest.manual_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
+    has_many :scheduled_actions, -> { latest.scheduled_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
     has_many :artifacts, -> { latest.with_artifacts_not_expired.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
 
     has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
@@ -80,7 +81,7 @@ module Ci
 
     state_machine :status, initial: :created do
       event :enqueue do
-        transition [:created, :skipped] => :pending
+        transition [:created, :skipped, :scheduled] => :pending
         transition [:success, :failed, :canceled] => :running
       end
 
@@ -106,6 +107,10 @@ module Ci
 
       event :block do
         transition any - [:manual] => :manual
+      end
+
+      event :delay do
+        transition any - [:scheduled] => :scheduled
       end
 
       # IMPORTANT
@@ -544,6 +549,7 @@ module Ci
         when 'canceled' then cancel
         when 'skipped' then skip
         when 'manual' then block
+        when 'scheduled' then delay
         else
           raise HasStatus::UnknownStatusError,
                 "Unknown status `#{latest_builds_status}`"
@@ -627,6 +633,18 @@ module Ci
       end
     end
 
+    def branch_updated?
+      strong_memoize(:branch_updated) do
+        push_details.branch_updated?
+      end
+    end
+
+    def modified_paths
+      strong_memoize(:modified_paths) do
+        push_details.modified_paths
+      end
+    end
+
     def default_branch?
       ref == project.default_branch
     end
@@ -652,6 +670,22 @@ module Ci
 
     def pipeline_data
       Gitlab::DataBuilder::Pipeline.build(self)
+    end
+
+    def push_details
+      strong_memoize(:push_details) do
+        Gitlab::Git::Push.new(project, before_sha, sha, push_ref)
+      end
+    end
+
+    def push_ref
+      if branch?
+        Gitlab::Git::BRANCH_REF_PREFIX + ref.to_s
+      elsif tag?
+        Gitlab::Git::TAG_REF_PREFIX + ref.to_s
+      else
+        raise ArgumentError, 'Invalid pipeline type!'
+      end
     end
 
     def latest_builds_status

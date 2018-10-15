@@ -482,6 +482,7 @@ export default {
         v-if="!model.isFolder"
         class="environment-name table-mobile-content">
         <a
+          class="qa-environment-link"
           :href="environmentPath"
         >
           {{ model.name }}

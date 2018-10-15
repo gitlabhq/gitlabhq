@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ContainerRegistry
   class Blob
     attr_reader :repository, :config

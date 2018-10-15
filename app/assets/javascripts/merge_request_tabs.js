@@ -18,7 +18,6 @@ import syntaxHighlight from './syntax_highlight';
 import Notes from './notes';
 import { polyfillSticky } from './lib/utils/sticky';
 
-/* eslint-disable max-len */
 // MergeRequestTabs
 //
 // Handles persisting and restoring the current tab selection and lazily-loading
@@ -62,7 +61,6 @@ import { polyfillSticky } from './lib/utils/sticky';
 //     </div>
 //   </div>
 //
-/* eslint-enable max-len */
 
 // Store the `location` object, allowing for easier stubbing in tests
 let { location } = window;

@@ -1,15 +1,15 @@
 /* global List */
 /* global ListIssue */
+
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import Sortable from 'sortablejs';
 import BoardList from '~/boards/components/board_list.vue';
 import eventHub from '~/boards/eventhub';
-import '~/boards/mixins/sortable_default_options';
 import '~/boards/models/issue';
 import '~/boards/models/list';
-import '~/boards/stores/boards_store';
+import boardsStore from '~/boards/stores/boards_store';
 import { listObj, boardsMockInterceptor, mockBoardService } from './mock_data';
 
 window.Sortable = Sortable;
@@ -25,8 +25,7 @@ describe('Board list component', () => {
     mock = new MockAdapter(axios);
     mock.onAny().reply(boardsMockInterceptor);
     gl.boardService = mockBoardService();
-    gl.issueBoards.BoardsStore.create();
-    gl.IssueBoardsApp = new Vue();
+    boardsStore.create();
 
     const BoardListComp = Vue.extend(BoardList);
     const list = new List(listObj);

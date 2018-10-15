@@ -217,7 +217,7 @@ class User < ActiveRecord::Base
 
   # User's Dashboard preference
   # Note: When adding an option, it MUST go on the end of the array.
-  enum dashboard: [:projects, :stars, :project_activity, :starred_project_activity, :groups, :todos, :issues, :merge_requests]
+  enum dashboard: [:projects, :stars, :project_activity, :starred_project_activity, :groups, :todos, :issues, :merge_requests, :operations]
 
   # User's Project preference
   # Note: When adding an option, it MUST go on the end of the array.
@@ -265,6 +265,7 @@ class User < ActiveRecord::Base
   scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'ASC')) }
   scope :confirmed, -> { where.not(confirmed_at: nil) }
   scope :by_username, -> (usernames) { iwhere(username: usernames) }
+  scope :for_todos, -> (todos) { where(id: todos.select(:user_id)) }
 
   # Limits the users to those that have TODOs, optionally in the given state.
   #
@@ -1364,6 +1365,10 @@ class User < ActiveRecord::Base
 
   def requires_usage_stats_consent?
     !consented_usage_stats? && 7.days.ago > self.created_at && !has_current_license? && User.single_user?
+  end
+
+  def todos_limited_to(ids)
+    todos.where(id: ids)
   end
 
   # @deprecated

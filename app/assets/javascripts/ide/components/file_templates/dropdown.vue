@@ -92,7 +92,7 @@ export default {
           v-model="search"
           :placeholder="__('Filter...')"
           type="search"
-          class="dropdown-input-field"
+          class="dropdown-input-field qa-dropdown-filter-input"
         />
         <i
           aria-hidden="true"

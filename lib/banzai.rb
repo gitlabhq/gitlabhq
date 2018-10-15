@@ -1,4 +1,13 @@
+# frozen_string_literal: true
+
 module Banzai
+  # if you need to render markdown, then you probably need to post_process as well,
+  # such as removing references that the current user doesn't have
+  # permission to make
+  def self.render_and_post_process(text, context = {})
+    post_process(render(text, context), context)
+  end
+
   def self.render(text, context = {})
     Renderer.render(text, context)
   end

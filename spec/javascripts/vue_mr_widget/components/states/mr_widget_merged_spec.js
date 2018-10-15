@@ -157,6 +157,16 @@ describe('MRWidgetMerged', () => {
     expect(selectors.copyMergeShaButton.getAttribute('data-clipboard-text')).toBe(vm.mr.mergeCommitSha);
   });
 
+  it('hides button to copy commit SHA if SHA does not exist', (done) => {
+    vm.mr.mergeCommitSha = null;
+
+    Vue.nextTick(() => {
+      expect(selectors.copyMergeShaButton).not.toExist();
+      expect(vm.$el.querySelector('.mr-info-list').innerText).not.toContain('with');
+      done();
+    });
+  });
+
   it('shows merge commit SHA link', () => {
     expect(selectors.mergeCommitShaLink).toExist();
     expect(selectors.mergeCommitShaLink.text).toContain(vm.mr.shortMergeCommitSha);

@@ -132,22 +132,11 @@ msgstr ""
 msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
 msgstr ""
 
-msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
-msgstr ""
-
-msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will not retry automatically. Reset storage information when the problem is resolved."
-msgstr ""
-
 msgid "%{openOrClose} %{noteable}"
 msgstr ""
 
 msgid "%{percent}%% complete"
 msgstr ""
-
-msgid "%{storage_name}: failed storage access attempt on host:"
-msgid_plural "%{storage_name}: %{failed_attempts} failed storage access attempts:"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "%{text} %{files}"
 msgid_plural "%{text} %{files} files"
@@ -314,9 +303,6 @@ msgstr ""
 msgid "Access expiration date"
 msgstr ""
 
-msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
-msgstr ""
-
 msgid "Account"
 msgstr ""
 
@@ -342,6 +328,9 @@ msgid "Add Kubernetes cluster"
 msgstr ""
 
 msgid "Add Readme"
+msgstr ""
+
+msgid "Add a table"
 msgstr ""
 
 msgid "Add license"
@@ -396,9 +385,6 @@ msgid "AdminArea|Stopping jobs failed"
 msgstr ""
 
 msgid "AdminArea|You’re about to stop all jobs.This will halt all current jobs that are running."
-msgstr ""
-
-msgid "AdminHealthPageLink|health page"
 msgstr ""
 
 msgid "AdminProjects| You’re about to permanently delete the project %{projectName}, its repository, and all related resources including issues, merge requests, etc..  Once you confirm and press %{strong_start}Delete project%{strong_end}, it cannot be undone or recovered."
@@ -1081,6 +1067,9 @@ msgstr ""
 msgid "CICD|Continuous deployment to production"
 msgstr ""
 
+msgid "CICD|Continuous deployment to production using timed incremental rollout"
+msgstr ""
+
 msgid "CICD|Default to Auto DevOps pipeline"
 msgstr ""
 
@@ -1156,9 +1145,6 @@ msgstr ""
 msgid "Chat"
 msgstr ""
 
-msgid "Check interval"
-msgstr ""
-
 msgid "Checking %{text} availability…"
 msgstr ""
 
@@ -1225,7 +1211,13 @@ msgstr ""
 msgid "CiStatusLabel|pending"
 msgstr ""
 
+msgid "CiStatusLabel|scheduled"
+msgstr ""
+
 msgid "CiStatusLabel|skipped"
+msgstr ""
+
+msgid "CiStatusLabel|waiting for delayed job"
 msgstr ""
 
 msgid "CiStatusLabel|waiting for manual action"
@@ -1250,6 +1242,9 @@ msgid "CiStatusText|passed"
 msgstr ""
 
 msgid "CiStatusText|pending"
+msgstr ""
+
+msgid "CiStatusText|scheduled"
 msgstr ""
 
 msgid "CiStatusText|skipped"
@@ -1283,9 +1278,6 @@ msgid "CiVariable|Toggle protected"
 msgstr ""
 
 msgid "CiVariable|Validation failed"
-msgstr ""
-
-msgid "CircuitBreakerApiLink|circuitbreaker api"
 msgstr ""
 
 msgid "Clear search"
@@ -1829,7 +1821,7 @@ msgstr ""
 msgid "Configure push mirrors."
 msgstr ""
 
-msgid "Configure storage path and circuit breaker settings."
+msgid "Configure storage path settings."
 msgstr ""
 
 msgid "Configure the way a user creates a new account."
@@ -2148,6 +2140,21 @@ msgid "Default: Map a FogBugz account ID to a full name"
 msgstr ""
 
 msgid "Define a custom pattern with cron syntax"
+msgstr ""
+
+msgid "DelayedJobs|Are you sure you want to run %{jobName} immediately? This job will run automatically after it's timer finishes."
+msgstr ""
+
+msgid "DelayedJobs|Are you sure you want to run %{job_name} immediately? This job will run automatically after it's timer finishes."
+msgstr ""
+
+msgid "DelayedJobs|Start now"
+msgstr ""
+
+msgid "DelayedJobs|Unschedule"
+msgstr ""
+
+msgid "DelayedJobs|scheduled"
 msgstr ""
 
 msgid "Delete"
@@ -2885,9 +2892,6 @@ msgid "Git repository URL"
 msgstr ""
 
 msgid "Git revision"
-msgstr ""
-
-msgid "Git storage health information has been reset"
 msgstr ""
 
 msgid "Git strategy for pipelines"
@@ -3682,6 +3686,9 @@ msgstr ""
 msgid "MarkdownToolbar|Add a numbered list"
 msgstr ""
 
+msgid "MarkdownToolbar|Add a table"
+msgstr ""
+
 msgid "MarkdownToolbar|Add a task list"
 msgstr ""
 
@@ -3701,9 +3708,6 @@ msgid "MarkdownToolbar|Insert code"
 msgstr ""
 
 msgid "Max access level"
-msgstr ""
-
-msgid "Maximum git storage failures"
 msgstr ""
 
 msgid "Maximum job timeout"
@@ -4173,9 +4177,6 @@ msgstr ""
 msgid "November"
 msgstr ""
 
-msgid "Number of access attempts"
-msgstr ""
-
 msgid "Oct"
 msgstr ""
 
@@ -4233,6 +4234,9 @@ msgid "Opens in a new window"
 msgstr ""
 
 msgid "Operations"
+msgstr ""
+
+msgid "Operations Dashboard"
 msgstr ""
 
 msgid "Optionally, you can %{link_to_customize} how FogBugz email addresses and usernames are imported into GitLab."
@@ -5122,9 +5126,6 @@ msgstr ""
 msgid "Require all users to accept Terms of Service and Privacy Policy when they access GitLab."
 msgstr ""
 
-msgid "Reset git storage health information"
-msgstr ""
-
 msgid "Reset health check access token"
 msgstr ""
 
@@ -5335,12 +5336,6 @@ msgid "SearchAutocomplete|in this group"
 msgstr ""
 
 msgid "SearchAutocomplete|in this project"
-msgstr ""
-
-msgid "Seconds before reseting failure information"
-msgstr ""
-
-msgid "Seconds to wait for a storage access attempt"
 msgstr ""
 
 msgid "Secret"
@@ -5947,12 +5942,6 @@ msgstr ""
 msgid "The maximum file size allowed is 200KB."
 msgstr ""
 
-msgid "The number of attempts GitLab will make to access a storage."
-msgstr ""
-
-msgid "The number of failures of after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
-msgstr ""
-
 msgid "The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>"
 msgstr ""
 
@@ -5998,15 +5987,6 @@ msgstr ""
 msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
 msgstr ""
 
-msgid "The time in seconds GitLab will keep failure information. When no failures occur during this time, information about the mount is reset."
-msgstr ""
-
-msgid "The time in seconds GitLab will try to access storage. After this time a timeout error will be raised."
-msgstr ""
-
-msgid "The time in seconds between storage checks. When a previous check did complete yet, GitLab will skip a check."
-msgstr ""
-
 msgid "The time taken by each data entry gathered by that stage."
 msgstr ""
 
@@ -6044,9 +6024,6 @@ msgid "There are no staged changes"
 msgstr ""
 
 msgid "There are no unstaged changes"
-msgstr ""
-
-msgid "There are problems accessing Git storage: "
 msgstr ""
 
 msgid "There was an error loading users activity calendar."
@@ -6101,6 +6078,9 @@ msgid "This group does not provide any group Runners yet."
 msgstr ""
 
 msgid "This is a confidential issue."
+msgstr ""
+
+msgid "This is a scheduled to run in "
 msgstr ""
 
 msgid "This is the author's first Merge Request to this project."
@@ -6161,6 +6141,9 @@ msgid "This job is the most recent deployment to %{link}."
 msgstr ""
 
 msgid "This job requires a manual action"
+msgstr ""
+
+msgid "This job will automatically run after it's timer finishes. Often they are used for incremental roll-out deploys to production environments. When unscheduled it converts into a manual action."
 msgstr ""
 
 msgid "This means you can not push code until you create an empty repository or import existing one."
@@ -6516,6 +6499,9 @@ msgid "Unlocked"
 msgstr ""
 
 msgid "Unresolve discussion"
+msgstr ""
+
+msgid "Unschedule job"
 msgstr ""
 
 msgid "Unstage"

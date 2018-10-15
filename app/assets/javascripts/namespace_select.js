@@ -1,4 +1,4 @@
-/* eslint-disable func-names, comma-dangle, object-shorthand, no-else-return, prefer-template, quotes, prefer-arrow-callback, max-len */
+/* eslint-disable func-names, object-shorthand, no-else-return, prefer-template, prefer-arrow-callback */
 
 import $ from 'jquery';
 import Api from './api';

@@ -1,72 +1,71 @@
 <script>
-  import { polyfillSticky } from '~/lib/utils/sticky';
-  import Icon from '~/vue_shared/components/icon.vue';
-  import tooltip from '~/vue_shared/directives/tooltip';
-  import { numberToHumanSize } from '~/lib/utils/number_utils';
-  import { sprintf } from '~/locale';
+import { polyfillSticky } from '~/lib/utils/sticky';
+import Icon from '~/vue_shared/components/icon.vue';
+import tooltip from '~/vue_shared/directives/tooltip';
+import { numberToHumanSize } from '~/lib/utils/number_utils';
+import { sprintf } from '~/locale';
 
-  export default {
-    components: {
-      Icon,
+export default {
+  components: {
+    Icon,
+  },
+  directives: {
+    tooltip,
+  },
+  props: {
+    erasePath: {
+      type: String,
+      required: false,
+      default: null,
     },
-    directives: {
-      tooltip,
+    size: {
+      type: Number,
+      required: true,
     },
-    props: {
-      erasePath: {
-        type: String,
-        required: false,
-        default: null,
-      },
-      size: {
-        type: Number,
-        required: true,
-      },
-      rawPath: {
-        type: String,
-        required: false,
-        default: null,
-      },
-      isScrollTopDisabled: {
-        type: Boolean,
-        required: true,
-      },
-      isScrollBottomDisabled: {
-        type: Boolean,
-        required: true,
-      },
-      isScrollingDown: {
-        type: Boolean,
-        required: true,
-      },
-      isTraceSizeVisible: {
-        type: Boolean,
-        required: true,
-      },
+    rawPath: {
+      type: String,
+      required: false,
+      default: null,
     },
-    computed: {
-      jobLogSize() {
-        return sprintf('Showing last %{size} of log -', {
-          size: numberToHumanSize(this.size),
-        });
-      },
+    isScrollTopDisabled: {
+      type: Boolean,
+      required: true,
     },
-    mounted() {
-      polyfillSticky(this.$el);
+    isScrollBottomDisabled: {
+      type: Boolean,
+      required: true,
     },
-    methods: {
-      handleScrollToTop() {
-        this.$emit('scrollJobLogTop');
-      },
-      handleScrollToBottom() {
-        this.$emit('scrollJobLogBottom');
-      },
+    isScrollingDown: {
+      type: Boolean,
+      required: true,
     },
-
-  };
+    isTraceSizeVisible: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  computed: {
+    jobLogSize() {
+      return sprintf('Showing last %{size} of log -', {
+        size: numberToHumanSize(this.size),
+      });
+    },
+  },
+  mounted() {
+    polyfillSticky(this.$el);
+  },
+  methods: {
+    handleScrollToTop() {
+      this.$emit('scrollJobLogTop');
+    },
+    handleScrollToBottom() {
+      this.$emit('scrollJobLogBottom');
+    },
+  },
+};
 </script>
 <template>
-  <div class="top-bar">
+  <div class="top-bar affix js-top-bar">
     <!-- truncate information -->
     <div class="js-truncated-info truncated-info d-none d-sm-block float-left">
       <template v-if="isTraceSizeVisible">

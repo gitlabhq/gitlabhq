@@ -1,4 +1,4 @@
-/* eslint-disable object-shorthand, func-names, guard-for-in, no-restricted-syntax, comma-dangle, */
+/* eslint-disable object-shorthand, func-names, guard-for-in, no-restricted-syntax, */
 
 const DiscussionMixins = {
   computed: {

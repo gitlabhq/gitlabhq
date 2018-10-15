@@ -70,24 +70,31 @@ describe ProjectAutoDevops do
     end
 
     context 'when deploy_strategy is manual' do
-      let(:domain) { 'example.com' }
-
-      before do
-        auto_devops.deploy_strategy = 'manual'
+      let(:auto_devops) { build_stubbed(:project_auto_devops, :manual_deployment, project: project) }
+      let(:expected_variables) do
+        [
+          { key: 'INCREMENTAL_ROLLOUT_MODE', value: 'manual' },
+          { key: 'STAGING_ENABLED', value: '1' },
+          { key: 'INCREMENTAL_ROLLOUT_ENABLED', value: '1' }
+        ]
       end
 
-      it do
-        expect(auto_devops.predefined_variables.map { |var| var[:key] })
-          .to include("STAGING_ENABLED", "INCREMENTAL_ROLLOUT_ENABLED")
-      end
+      it { expect(auto_devops.predefined_variables).to include(*expected_variables) }
     end
 
     context 'when deploy_strategy is continuous' do
-      let(:domain) { 'example.com' }
+      let(:auto_devops) { build_stubbed(:project_auto_devops, :continuous_deployment, project: project) }
 
-      before do
-        auto_devops.deploy_strategy = 'continuous'
+      it do
+        expect(auto_devops.predefined_variables.map { |var| var[:key] })
+          .not_to include("STAGING_ENABLED", "INCREMENTAL_ROLLOUT_ENABLED")
       end
+    end
+
+    context 'when deploy_strategy is timed_incremental' do
+      let(:auto_devops) { build_stubbed(:project_auto_devops, :timed_incremental_deployment, project: project) }
+
+      it { expect(auto_devops.predefined_variables).to include(key: 'INCREMENTAL_ROLLOUT_MODE', value: 'timed') }
 
       it do
         expect(auto_devops.predefined_variables.map { |var| var[:key] })

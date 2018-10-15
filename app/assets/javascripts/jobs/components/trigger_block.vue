@@ -1,27 +1,27 @@
 <script>
-  export default {
-    props: {
-      trigger: {
-        type: Object,
-        required: true,
-      },
+export default {
+  props: {
+    trigger: {
+      type: Object,
+      required: true,
     },
-    data() {
-      return {
-        areVariablesVisible: false,
-      };
+  },
+  data() {
+    return {
+      areVariablesVisible: false,
+    };
+  },
+  computed: {
+    hasVariables() {
+      return this.trigger.variables && this.trigger.variables.length > 0;
     },
-    computed: {
-      hasVariables() {
-        return this.trigger.variables && this.trigger.variables.length > 0;
-      },
+  },
+  methods: {
+    revealVariables() {
+      this.areVariablesVisible = true;
     },
-    methods: {
-      revealVariables() {
-        this.areVariablesVisible = true;
-      },
-    },
-  };
+  },
+};
 </script>
 
 <template>

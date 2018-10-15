@@ -8,18 +8,20 @@ const MAX_REQUESTS = 3;
 function backOffRequest(makeRequestCallback) {
   let requestCounter = 0;
   return backOff((next, stop) => {
-    makeRequestCallback().then((resp) => {
-      if (resp.status === statusCodes.NO_CONTENT) {
-        requestCounter += 1;
-        if (requestCounter < MAX_REQUESTS) {
-          next();
+    makeRequestCallback()
+      .then(resp => {
+        if (resp.status === statusCodes.NO_CONTENT) {
+          requestCounter += 1;
+          if (requestCounter < MAX_REQUESTS) {
+            next();
+          } else {
+            stop(new Error('Failed to connect to the prometheus server'));
+          }
         } else {
-          stop(new Error('Failed to connect to the prometheus server'));
+          stop(resp);
         }
-      } else {
-        stop(resp);
-      }
-    }).catch(stop);
+      })
+      .catch(stop);
   });
 }
 
@@ -33,7 +35,7 @@ export default class MonitoringService {
   getGraphsData() {
     return backOffRequest(() => axios.get(this.metricsEndpoint))
       .then(resp => resp.data)
-      .then((response) => {
+      .then(response => {
         if (!response || !response.data) {
           throw new Error(s__('Metrics|Unexpected metrics data response from prometheus endpoint'));
         }
@@ -47,22 +49,27 @@ export default class MonitoringService {
     }
     return backOffRequest(() => axios.get(this.deploymentEndpoint))
       .then(resp => resp.data)
-      .then((response) => {
+      .then(response => {
         if (!response || !response.deployments) {
-          throw new Error(s__('Metrics|Unexpected deployment data response from prometheus endpoint'));
+          throw new Error(
+            s__('Metrics|Unexpected deployment data response from prometheus endpoint'),
+          );
         }
         return response.deployments;
       });
   }
 
   getEnvironmentsData() {
-    return axios.get(this.environmentsEndpoint)
-    .then(resp => resp.data)
-    .then((response) => {
-      if (!response || !response.environments) {
-        throw new Error(s__('Metrics|There was an error fetching the environments data, please try again'));
-      }
-      return response.environments;
-    });
+    return axios
+      .get(this.environmentsEndpoint)
+      .then(resp => resp.data)
+      .then(response => {
+        if (!response || !response.environments) {
+          throw new Error(
+            s__('Metrics|There was an error fetching the environments data, please try again'),
+          );
+        }
+        return response.environments;
+      });
   }
 }

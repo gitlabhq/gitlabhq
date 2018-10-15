@@ -32,6 +32,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get 'labels'
           get 'milestones'
           get 'commands'
+          get 'snippets'
         end
       end
 
@@ -275,6 +276,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           member do
             get :status
             post :cancel
+            post :unschedule
             post :retry
             post :play
             post :erase

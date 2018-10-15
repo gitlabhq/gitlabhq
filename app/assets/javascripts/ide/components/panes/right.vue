@@ -43,34 +43,25 @@ export default {
         {
           show: this.currentMergeRequestId,
           title: __('Merge Request'),
-          views: [
-            rightSidebarViews.mergeRequestInfo,
-          ],
+          views: [rightSidebarViews.mergeRequestInfo],
           icon: 'text-description',
         },
         {
           show: true,
           title: __('Pipelines'),
-          views: [
-            rightSidebarViews.pipelines,
-            rightSidebarViews.jobsDetail,
-          ],
+          views: [rightSidebarViews.pipelines, rightSidebarViews.jobsDetail],
           icon: 'rocket',
         },
         {
           show: this.showLivePreview,
           title: __('Live preview'),
-          views: [
-            rightSidebarViews.clientSidePreview,
-          ],
+          views: [rightSidebarViews.clientSidePreview],
           icon: 'live-preview',
         },
       ];
     },
     tabs() {
-      return this.defaultTabs
-        .concat(this.extensionTabs)
-        .filter(tab => tab.show);
+      return this.defaultTabs.concat(this.extensionTabs).filter(tab => tab.show);
     },
     tabViews() {
       return _.flatten(this.tabs.map(tab => tab.views));

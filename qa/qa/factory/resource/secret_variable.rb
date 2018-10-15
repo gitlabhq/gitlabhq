@@ -12,7 +12,7 @@ module QA
         def fabricate!
           project.visit!
 
-          Page::Menu::Side.act { click_ci_cd_settings }
+          Page::Project::Menu.act { click_ci_cd_settings }
 
           Page::Project::Settings::CICD.perform do |setting|
             setting.expand_secret_variables do |page|

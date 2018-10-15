@@ -60,7 +60,7 @@ people.
 
 The current team labels are:
 
-- ~Configuration
+- ~Configure
 - ~"CI/CD"
 - ~Create
 - ~Distribution
@@ -108,12 +108,12 @@ Priority labels help us define the time a ~bug fix should be completed. Priority
 If there are multiple defects, the priority decides which defect has to be fixed immediately versus later.
 This label documents the planned timeline & urgency which is used to measure against our actual SLA on delivering ~bug fixes.
 
-| Label | Meaning         | Estimate time to fix                                             |
-|-------|-----------------|------------------------------------------------------------------|
-| ~P1   | Urgent Priority | The current release + potentially immediate hotfix to GitLab.com |
-| ~P2   | High Priority   | The next release                                                 |
-| ~P3   | Medium Priority | Within the next 3 releases (approx one quarter)                  |
-| ~P4   | Low Priority    | Anything outside the next 3 releases (approx beyond one quarter) |
+| Label | Meaning         | Defect SLA (applies only to ~bug and ~security defects)                                                    |
+|-------|-----------------|----------------------------------------------------------------------------|
+| ~P1   | Urgent Priority | The current release + potentially immediate hotfix to GitLab.com (30 days) |
+| ~P2   | High Priority   | The next release (60 days)                                                 |
+| ~P3   | Medium Priority | Within the next 3 releases (approx one quarter or 90 days)                 |
+| ~P4   | Low Priority    | Anything outside the next 3 releases (more than one quarter or 120 days)   |
 
 ## Severity labels
 

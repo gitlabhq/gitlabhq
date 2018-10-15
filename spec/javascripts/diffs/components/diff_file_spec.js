@@ -6,11 +6,10 @@ import diffFileMockData from '../mock_data/diff_file';
 
 describe('DiffFile', () => {
   let vm;
-  const getDiffFileMock = () => Object.assign({}, diffFileMockData);
 
   beforeEach(() => {
     vm = createComponentWithStore(Vue.extend(DiffFileComponent), store, {
-      file: getDiffFileMock(),
+      file: JSON.parse(JSON.stringify(diffFileMockData)),
       canCurrentUserFork: false,
     }).$mount();
   });
@@ -18,21 +17,21 @@ describe('DiffFile', () => {
   describe('template', () => {
     it('should render component with file header, file content components', () => {
       const el = vm.$el;
-      const { fileHash, filePath } = diffFileMockData;
+      const { fileHash, filePath } = vm.file;
 
       expect(el.id).toEqual(fileHash);
       expect(el.classList.contains('diff-file')).toEqual(true);
 
       expect(el.querySelectorAll('.diff-content.hidden').length).toEqual(0);
       expect(el.querySelector('.js-file-title')).toBeDefined();
-      expect(el.querySelector('.file-title-name').innerText.indexOf(filePath) > -1).toEqual(true);
+      expect(el.querySelector('.file-title-name').innerText.indexOf(filePath)).toBeGreaterThan(-1);
       expect(el.querySelector('.js-syntax-highlight')).toBeDefined();
 
       expect(vm.file.renderIt).toEqual(false);
       vm.file.renderIt = true;
 
       vm.$nextTick(() => {
-        expect(el.querySelectorAll('.line_content').length > 5).toEqual(true);
+        expect(el.querySelectorAll('.line_content').length).toBeGreaterThan(5);
       });
     });
 
@@ -99,9 +98,7 @@ describe('DiffFile', () => {
           'This source diff could not be displayed because it is too large',
         );
         expect(vm.$el.querySelector('.js-too-large-diff')).toBeDefined();
-        expect(vm.$el.querySelector('.js-too-large-diff a').href.indexOf(BLOB_LINK) > -1).toEqual(
-          true,
-        );
+        expect(vm.$el.querySelector('.js-too-large-diff a').href.indexOf(BLOB_LINK)).toBeGreaterThan(-1);
 
         done();
       });

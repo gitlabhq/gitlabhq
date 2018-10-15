@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module CommitRenderer
     ATTRIBUTES = [:description, :title].freeze

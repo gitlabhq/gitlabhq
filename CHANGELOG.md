@@ -279,6 +279,15 @@ entry.
 - Creates Vue component for artifacts block on job page.
 
 
+## 11.2.5 (2018-10-05)
+
+### Security (3 changes)
+
+- Filter user sensitive data from discussions JSON. !2538
+- Properly filter private references from system notes.
+- Markdown API no longer displays confidential title references unless authorized.
+
+
 ## 11.2.4 (2018-09-26)
 
 ### Security (6 changes)
@@ -556,6 +565,15 @@ entry.
 - Increases title column on modal for reports.
 - Disables toggle comments button if diff has no discussions.
 - Moves help_popover component to a common location.
+
+
+## 11.1.8 (2018-10-05)
+
+### Security (3 changes)
+
+- Filter user sensitive data from discussions JSON. !2539
+- Properly filter private references from system notes.
+- Markdown API no longer displays confidential title references unless authorized.
 
 
 ## 11.1.7 (2018-09-26)

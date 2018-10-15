@@ -559,6 +559,30 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
+    context 'Delayed job' do
+      let(:job) { create(:ci_build, :scheduled, pipeline: pipeline) }
+
+      before do
+        project.add_developer(user)
+        visit project_job_path(project, job)
+      end
+
+      it 'shows delayed job', :js do
+        expect(page).to have_content('This is a scheduled to run in')
+        expect(page).to have_content("This job will automatically run after it's timer finishes.")
+        expect(page).to have_link('Unschedule job')
+      end
+
+      it 'unschedules delayed job and shows manual action', :js do
+        click_link 'Unschedule job'
+
+        wait_for_requests
+        expect(page).to have_content('This job requires a manual action')
+        expect(page).to have_content('This job depends on a user to trigger its process. Often they are used to deploy code to production environments')
+        expect(page).to have_link('Trigger this manual action')
+      end
+    end
+
     context 'Non triggered job' do
       let(:job) { create(:ci_build, :created, pipeline: pipeline) }
 
@@ -637,6 +661,56 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         expect(job).not_to have_trace
         expect(page).to have_content('This job does not have a trace.')
+      end
+    end
+
+    context 'with erased job', :js do
+      let(:job) { create(:ci_build, :erased, pipeline: pipeline) }
+
+      it 'renders erased job warning' do
+        visit project_job_path(project, job)
+        wait_for_requests
+
+        page.within('.js-job-erased-block') do
+          expect(page).to have_content('Job has been erased')
+        end
+      end
+    end
+
+    context 'without erased job', :js do
+      let(:job) { create(:ci_build, pipeline: pipeline) }
+
+      it 'does not render erased job warning' do
+        visit project_job_path(project, job)
+        wait_for_requests
+
+        expect(page).not_to have_css('.js-job-erased-block')
+      end
+    end
+
+    context 'on mobile', :js do
+      let(:job) { create(:ci_build, pipeline: pipeline) }
+
+      it 'renders collpased sidebar' do
+        page.current_window.resize_to(600, 800)
+
+        visit project_job_path(project, job)
+        wait_for_requests
+
+        expect(page).to have_css('.js-build-sidebar.right-sidebar-collapsed', visible: false)
+        expect(page).not_to have_css('.js-build-sidebar.right-sidebar-expanded', visible: false)
+      end
+    end
+
+    context 'on desktop', :js do
+      let(:job) { create(:ci_build, pipeline: pipeline) }
+
+      it 'renders expanded sidebar' do
+        visit project_job_path(project, job)
+        wait_for_requests
+
+        expect(page).to have_css('.js-build-sidebar.right-sidebar-expanded')
+        expect(page).not_to have_css('.js-build-sidebar.right-sidebar-collpased')
       end
     end
   end

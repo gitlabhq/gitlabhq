@@ -14,10 +14,10 @@ module Projects
         @new_deploy_token = DeployTokens::CreateService.new(@project, current_user, deploy_token_params).execute
 
         if @new_deploy_token.persisted?
-          flash[:notice] = s_('DeployTokens|Your new project deploy token has been created.')
+          flash.now[:notice] = s_('DeployTokens|Your new project deploy token has been created.')
         end
 
-        redirect_to action: :show
+        render_show
       end
 
       private

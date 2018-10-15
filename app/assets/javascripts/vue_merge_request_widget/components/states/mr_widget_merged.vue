@@ -162,18 +162,20 @@
           <span class="label-branch">
             <a :href="mr.targetBranchPath">{{ mr.targetBranch }}</a>
           </span>
-          with
-          <a
-            :href="mr.mergeCommitPath"
-            class="commit-sha js-mr-merged-commit-sha"
-            v-text="mr.shortMergeCommitSha"
-          >
-          </a>
-          <clipboard-button
-            :title="__('Copy commit SHA to clipboard')"
-            :text="mr.mergeCommitSha"
-            css-class="btn-default btn-transparent btn-clipboard js-mr-merged-copy-sha"
-          />
+          <template v-if="mr.mergeCommitSha">
+            with
+            <a
+              :href="mr.mergeCommitPath"
+              class="commit-sha js-mr-merged-commit-sha"
+              v-text="mr.shortMergeCommitSha"
+            >
+            </a>
+            <clipboard-button
+              :title="__('Copy commit SHA to clipboard')"
+              :text="mr.mergeCommitSha"
+              css-class="btn-default btn-transparent btn-clipboard js-mr-merged-copy-sha"
+            />
+          </template>
         </p>
         <p v-if="mr.sourceBranchRemoved">
           {{ s__("mrWidget|The source branch has been removed") }}

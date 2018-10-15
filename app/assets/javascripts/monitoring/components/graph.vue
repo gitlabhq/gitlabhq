@@ -82,6 +82,7 @@ export default {
       showFlag: false,
       showFlagContent: false,
       timeSeries: [],
+      graphDrawData: {},
       realPixelRatio: 1,
       seriesUnderMouse: [],
     };
@@ -147,7 +148,7 @@ export default {
       point = point.matrixTransform(this.$refs.graphData.getScreenCTM().inverse());
       point.x += 7;
 
-      this.seriesUnderMouse = this.timeSeries.filter((series) => {
+      this.seriesUnderMouse = this.timeSeries.filter(series => {
         const mouseX = series.timeSeriesScaleX.invert(point.x);
         let minDistance = Infinity;
 
@@ -180,12 +181,12 @@ export default {
       });
     },
     renderAxesPaths() {
-      this.timeSeries = createTimeSeries(
+      ({ timeSeries: this.timeSeries, graphDrawData: this.graphDrawData } = createTimeSeries(
         this.graphData.queries,
         this.graphWidth,
         this.graphHeight,
         this.graphHeightOffset,
-      );
+      ));
 
       if (_.findWhere(this.timeSeries, { renderCanary: true })) {
         this.timeSeries = this.timeSeries.map(series => ({ ...series, renderCanary: true }));
@@ -220,21 +221,18 @@ export default {
         .scale(axisYScale)
         .ticks(measurements.yTicks);
 
-      d3
-        .select(this.$refs.baseSvg)
+      d3.select(this.$refs.baseSvg)
         .select('.x-axis')
         .call(xAxis);
 
       const width = this.graphWidth;
-      d3
-        .select(this.$refs.baseSvg)
+      d3.select(this.$refs.baseSvg)
         .select('.y-axis')
         .call(yAxis)
         .selectAll('.tick')
         .each(function createTickLines(d, i) {
           if (i > 0) {
-            d3
-              .select(this)
+            d3.select(this)
               .select('line')
               .attr('x2', width)
               .attr('class', 'axis-tick');
@@ -288,6 +286,10 @@ export default {
           :viewBox="innerViewBox"
           class="graph-data"
         >
+          <slot
+            name="additionalSvgContent"
+            :graphDrawData="graphDrawData"
+          />
           <graph-path
             v-for="(path, index) in timeSeries"
             :key="index"

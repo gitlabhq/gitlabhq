@@ -2,6 +2,13 @@ require 'spec_helper'
 
 describe PreferencesHelper do
   describe '#dashboard_choices' do
+    let(:user) { build(:user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive(:can?).and_return(false)
+    end
+
     it 'raises an exception when defined choices may be missing' do
       expect(User).to receive(:dashboards).and_return(foo: 'foo')
       expect { helper.dashboard_choices }.to raise_error(RuntimeError)

@@ -1,31 +1,31 @@
 <script>
-  export default {
-    name: 'SidebarDetailRow',
-    props: {
-      title: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      value: {
-        type: String,
-        required: true,
-      },
-      helpUrl: {
-        type: String,
-        required: false,
-        default: '',
-      },
+export default {
+  name: 'SidebarDetailRow',
+  props: {
+    title: {
+      type: String,
+      required: false,
+      default: '',
     },
-    computed: {
-      hasTitle() {
-        return this.title.length > 0;
-      },
-      hasHelpURL() {
-        return this.helpUrl.length > 0;
-      },
+    value: {
+      type: String,
+      required: true,
     },
-  };
+    helpUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+  computed: {
+    hasTitle() {
+      return this.title.length > 0;
+    },
+    hasHelpURL() {
+      return this.helpUrl.length > 0;
+    },
+  },
+};
 </script>
 <template>
   <p class="build-detail-row">

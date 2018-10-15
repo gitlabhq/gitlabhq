@@ -101,4 +101,25 @@ describe 'Group show page' do
       expect(page).to have_emoji('smile')
     end
   end
+
+  context 'where group has projects' do
+    let(:user) { create(:user) }
+
+    before do
+      group.add_owner(user)
+      sign_in(user)
+    end
+
+    it 'allows users to sorts projects by most stars', :js do
+      project1 = create(:project, namespace: group, star_count: 2)
+      project2 = create(:project, namespace: group, star_count: 3)
+      project3 = create(:project, namespace: group, star_count: 0)
+
+      visit group_path(group, sort: :stars_desc)
+
+      expect(find('.group-row:nth-child(1) .namespace-title > a')).to have_content(project2.title)
+      expect(find('.group-row:nth-child(2) .namespace-title > a')).to have_content(project1.title)
+      expect(find('.group-row:nth-child(3) .namespace-title > a')).to have_content(project3.title)
+    end
+  end
 end

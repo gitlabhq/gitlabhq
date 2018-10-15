@@ -106,6 +106,52 @@ describe API::Markdown do
                                         .and include("#1</a>")
           end
         end
+
+        context 'with a public project and confidential issue' do
+          let(:public_project)     { create(:project, :public) }
+          let(:confidential_issue) { create(:issue, :confidential, project: public_project, title: 'Confidential title') }
+
+          let(:text)   { ":tada: Hello world! :100: #{confidential_issue.to_reference}" }
+          let(:params) { { text: text, gfm: true, project: public_project.full_path } }
+
+          shared_examples 'user without proper access' do
+            it 'does not render the title or link' do
+              expect(response).to have_http_status(201)
+              expect(json_response["html"]).not_to include('Confidential title')
+              expect(json_response["html"]).not_to include('<a href=')
+              expect(json_response["html"]).to include('Hello world!')
+                                          .and include('data-name="tada"')
+                                          .and include('data-name="100"')
+                                          .and include('#1</p>')
+            end
+          end
+
+          context 'when not logged in' do
+            let(:user) { }
+
+            it_behaves_like 'user without proper access'
+          end
+
+          context 'when logged in as user without access' do
+            let(:user) { create(:user) }
+
+            it_behaves_like 'user without proper access'
+          end
+
+          context 'when logged in as author' do
+            let(:user) { confidential_issue.author }
+
+            it 'renders the title or link' do
+              expect(response).to have_http_status(201)
+              expect(json_response["html"]).to include('Confidential title')
+              expect(json_response["html"]).to include('Hello world!')
+                                          .and include('data-name="tada"')
+                                          .and include('data-name="100"')
+                                          .and include("<a href=\"#{IssuesHelper.url_for_issue(confidential_issue.iid, public_project)}\"")
+                                          .and include("#1</a>")
+            end
+          end
+        end
       end
     end
   end

@@ -20,12 +20,35 @@
         "name"
       ],
       "properties": {
-        "name": { "type": "string" }
+        "name": { "type": "string" },
+        "ref_path": { "type": "string" }
       },
       "additionalProperties": false
     },
     "sha": { "type": "string" },
-    "tag": { "type": "boolean" }
+    "tag": { "type": "boolean" },
+    "user": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "entities/user.json" }
+      ]
+    },
+    "commit": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "entities/commit.json" }
+      ]
+    },
+    "deployable": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "job/job.json" }
+      ]
+    },
+    "manual_actions": {
+      "type": "array",
+      "items": { "$ref": "job/job.json" }
+    }
   },
   "additionalProperties": false
 }

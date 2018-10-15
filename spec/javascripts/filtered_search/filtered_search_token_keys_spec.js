@@ -19,7 +19,7 @@ describe('Filtered Search Token Keys', () => {
   describe('get', () => {
 
     it('should return tokenKeys', () => {
-      expect(new FilteredSearchTokenKeys().get() !== null).toBe(true);
+      expect(new FilteredSearchTokenKeys().get()).not.toBeNull();
     });
 
     it('should return tokenKeys as an array', () => {
@@ -40,7 +40,7 @@ describe('Filtered Search Token Keys', () => {
 
   describe('getConditions', () => {
     it('should return conditions', () => {
-      expect(new FilteredSearchTokenKeys().getConditions() !== null).toBe(true);
+      expect(new FilteredSearchTokenKeys().getConditions()).not.toBeNull();
     });
 
     it('should return conditions as an array', () => {
@@ -51,7 +51,7 @@ describe('Filtered Search Token Keys', () => {
   describe('searchByKey', () => {
     it('should return null when key not found', () => {
       const tokenKey = new FilteredSearchTokenKeys(tokenKeys).searchByKey('notakey');
-      expect(tokenKey === null).toBe(true);
+      expect(tokenKey).toBeNull();
     });
 
     it('should return tokenKey when found by key', () => {
@@ -63,7 +63,7 @@ describe('Filtered Search Token Keys', () => {
   describe('searchBySymbol', () => {
     it('should return null when symbol not found', () => {
       const tokenKey = new FilteredSearchTokenKeys(tokenKeys).searchBySymbol('notasymbol');
-      expect(tokenKey === null).toBe(true);
+      expect(tokenKey).toBeNull();
     });
 
     it('should return tokenKey when found by symbol', () => {
@@ -75,7 +75,7 @@ describe('Filtered Search Token Keys', () => {
   describe('searchByKeyParam', () => {
     it('should return null when key param not found', () => {
       const tokenKey = new FilteredSearchTokenKeys(tokenKeys).searchByKeyParam('notakeyparam');
-      expect(tokenKey === null).toBe(true);
+      expect(tokenKey).toBeNull();
     });
 
     it('should return tokenKey when found by key param', () => {
@@ -92,7 +92,7 @@ describe('Filtered Search Token Keys', () => {
   describe('searchByConditionUrl', () => {
     it('should return null when condition url not found', () => {
       const condition = new FilteredSearchTokenKeys([], [], conditions).searchByConditionUrl(null);
-      expect(condition === null).toBe(true);
+      expect(condition).toBeNull();
     });
 
     it('should return condition when found by url', () => {
@@ -106,7 +106,7 @@ describe('Filtered Search Token Keys', () => {
     it('should return null when condition tokenKey and value not found', () => {
       const condition = new FilteredSearchTokenKeys([], [], conditions)
         .searchByConditionKeyValue(null, null);
-      expect(condition === null).toBe(true);
+      expect(condition).toBeNull();
     });
 
     it('should return condition when found by tokenKey and value', () => {

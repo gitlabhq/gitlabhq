@@ -23,12 +23,12 @@ export const receiveTemplateTypesError = ({ commit, dispatch }) => {
 export const receiveTemplateTypesSuccess = ({ commit }, templates) =>
   commit(types.RECEIVE_TEMPLATE_TYPES_SUCCESS, templates);
 
-export const fetchTemplateTypes = ({ dispatch, state }, page = 1) => {
+export const fetchTemplateTypes = ({ dispatch, state, rootState }, page = 1) => {
   if (!Object.keys(state.selectedTemplateType).length) return Promise.reject();
 
   dispatch('requestTemplateTypes');
 
-  return Api.templates(state.selectedTemplateType.key, { page })
+  return Api.projectTemplates(rootState.currentProjectId, state.selectedTemplateType.key, { page })
     .then(({ data, headers }) => {
       const nextPage = parseInt(normalizeHeaders(headers)['X-NEXT-PAGE'], 10);
 
@@ -74,12 +74,16 @@ export const receiveTemplateError = ({ dispatch }, template) => {
   );
 };
 
-export const fetchTemplate = ({ dispatch, state }, template) => {
+export const fetchTemplate = ({ dispatch, state, rootState }, template) => {
   if (template.content) {
     return dispatch('setFileTemplate', template);
   }
 
-  return Api.templates(`${state.selectedTemplateType.key}/${template.key || template.name}`)
+  return Api.projectTemplate(
+    rootState.currentProjectId,
+    state.selectedTemplateType.key,
+    template.key || template.name,
+  )
     .then(({ data }) => {
       dispatch('setFileTemplate', data);
     })

@@ -225,7 +225,6 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to match_schema('job/job_details')
           expect(json_response['deployment_status']["status"]).to eq 'creating'
-          expect(json_response['deployment_status']["icon"]).to eq 'passed'
           expect(json_response['deployment_status']["environment"]).not_to be_nil
         end
       end
@@ -352,6 +351,10 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           expect(response).to match_response_schema('job/job_details')
           expect(json_response['has_trace']).to be true
         end
+      end
+
+      it 'exposes the stage the job belongs to' do
+        expect(json_response['stage']).to eq('test')
       end
     end
 
@@ -600,35 +603,108 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     before do
       project.add_developer(user)
       sign_in(user)
-
-      post_cancel
     end
 
-    context 'when job is cancelable' do
+    context 'when continue url is present' do
       let(:job) { create(:ci_build, :cancelable, pipeline: pipeline) }
 
-      it 'redirects to the canceled job page' do
+      context 'when continue to is a safe url' do
+        let(:url) { '/test' }
+
+        before do
+          post_cancel(continue: { to: url })
+        end
+
+        it 'redirects to the continue url' do
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to(url)
+        end
+
+        it 'transits to canceled' do
+          expect(job.reload).to be_canceled
+        end
+      end
+
+      context 'when continue to is not a safe url' do
+        let(:url) { 'http://example.com' }
+
+        it 'raises an error' do
+          expect { cancel_with_redirect(url) }.to raise_error
+        end
+      end
+    end
+
+    context 'when continue url is not present' do
+      before do
+        post_cancel
+      end
+
+      context 'when job is cancelable' do
+        let(:job) { create(:ci_build, :cancelable, pipeline: pipeline) }
+
+        it 'redirects to the builds page' do
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to(builds_namespace_project_pipeline_path(id: pipeline.id))
+        end
+
+        it 'transits to canceled' do
+          expect(job.reload).to be_canceled
+        end
+      end
+
+      context 'when job is not cancelable' do
+        let(:job) { create(:ci_build, :canceled, pipeline: pipeline) }
+
+        it 'returns unprocessable_entity' do
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        end
+      end
+    end
+
+    def post_cancel(additional_params = {})
+      post :cancel, { namespace_id: project.namespace,
+                      project_id: project,
+                      id: job.id }.merge(additional_params)
+    end
+  end
+
+  describe 'POST unschedule' do
+    before do
+      project.add_developer(user)
+
+      create(:protected_branch, :developers_can_merge,
+             name: 'master', project: project)
+
+      sign_in(user)
+
+      post_unschedule
+    end
+
+    context 'when job is scheduled' do
+      let(:job) { create(:ci_build, :scheduled, pipeline: pipeline) }
+
+      it 'redirects to the unscheduled job page' do
         expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(namespace_project_job_path(id: job.id))
       end
 
-      it 'transits to canceled' do
-        expect(job.reload).to be_canceled
+      it 'transits to manual' do
+        expect(job.reload).to be_manual
       end
     end
 
-    context 'when job is not cancelable' do
-      let(:job) { create(:ci_build, :canceled, pipeline: pipeline) }
+    context 'when job is not scheduled' do
+      let(:job) { create(:ci_build, pipeline: pipeline) }
 
-      it 'returns unprocessable_entity' do
+      it 'renders unprocessable_entity' do
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
       end
     end
 
-    def post_cancel
-      post :cancel, namespace_id: project.namespace,
-                    project_id: project,
-                    id: job.id
+    def post_unschedule
+      post :unschedule, namespace_id: project.namespace,
+                        project_id: project,
+                        id: job.id
     end
   end
 

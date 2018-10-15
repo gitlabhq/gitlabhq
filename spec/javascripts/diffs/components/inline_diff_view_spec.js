@@ -27,7 +27,7 @@ describe('InlineDiffView', () => {
       expect(el.querySelectorAll('tr.line_holder').length).toEqual(6);
       expect(el.querySelectorAll('tr.line_holder.new').length).toEqual(2);
       expect(el.querySelectorAll('tr.line_holder.match').length).toEqual(1);
-      expect(el.textContent.indexOf('Bad dates') > -1).toEqual(true);
+      expect(el.textContent.indexOf('Bad dates')).toBeGreaterThan(-1);
     });
 
     it('should render discussions', done => {
@@ -37,7 +37,7 @@ describe('InlineDiffView', () => {
       Vue.nextTick(() => {
         expect(el.querySelectorAll('.notes_holder').length).toEqual(1);
         expect(el.querySelectorAll('.notes_holder .note-discussion li').length).toEqual(5);
-        expect(el.innerText.indexOf('comment 5') > -1).toEqual(true);
+        expect(el.innerText.indexOf('comment 5')).toBeGreaterThan(-1);
         component.$store.dispatch('setInitialNotes', []);
 
         done();

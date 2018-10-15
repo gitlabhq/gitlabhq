@@ -210,6 +210,7 @@ production: &base
   ## GitLab Pages
   pages:
     enabled: false
+    access_control: false
     # The location where pages are stored (default: shared/pages).
     # path: shared/pages
 

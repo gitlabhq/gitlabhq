@@ -51,19 +51,29 @@ module QA
             end
 
             project.visit!
-            Page::Menu::Side.act { click_ci_cd_settings }
+            Page::Project::Menu.act { click_ci_cd_settings }
             Page::Project::Settings::CICD.perform do |p|
               p.enable_auto_devops_with_domain("#{kubernetes_cluster.ingress_ip}.nip.io")
             end
 
             project.visit!
-            Page::Menu::Side.act { click_ci_cd_pipelines }
+            Page::Project::Menu.act { click_ci_cd_pipelines }
             Page::Project::Pipeline::Index.act { go_to_latest_pipeline }
 
             Page::Project::Pipeline::Show.perform do |pipeline|
               expect(pipeline).to have_build('build', status: :success, wait: 600)
               expect(pipeline).to have_build('test', status: :success, wait: 600)
               expect(pipeline).to have_build('production', status: :success, wait: 1200)
+            end
+
+            Page::Project::Menu.act { click_operations_environments }
+            Page::Project::Operations::Environments::Index.perform do |index|
+              index.go_to_environment('production')
+            end
+            Page::Project::Operations::Environments::Show.perform do |show|
+              show.view_deployment do
+                expect(page).to have_content('Hello World!')
+              end
             end
           end
         end

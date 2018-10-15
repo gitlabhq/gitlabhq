@@ -173,4 +173,129 @@ describe Todo do
       expect(subject).not_to be_self_assigned
     end
   end
+
+  describe '.for_action' do
+    it 'returns the todos for a given action' do
+      create(:todo, action: Todo::MENTIONED)
+
+      todo = create(:todo, action: Todo::ASSIGNED)
+
+      expect(described_class.for_action(Todo::ASSIGNED)).to eq([todo])
+    end
+  end
+
+  describe '.for_author' do
+    it 'returns the todos for a given author' do
+      user1 = create(:user)
+      user2 = create(:user)
+      todo = create(:todo, author: user1)
+
+      create(:todo, author: user2)
+
+      expect(described_class.for_author(user1)).to eq([todo])
+    end
+  end
+
+  describe '.for_project' do
+    it 'returns the todos for a given project' do
+      project1 = create(:project)
+      project2 = create(:project)
+      todo = create(:todo, project: project1)
+
+      create(:todo, project: project2)
+
+      expect(described_class.for_project(project1)).to eq([todo])
+    end
+  end
+
+  describe '.for_group' do
+    it 'returns the todos for a given group' do
+      group1 = create(:group)
+      group2 = create(:group)
+      todo = create(:todo, group: group1)
+
+      create(:todo, group: group2)
+
+      expect(described_class.for_group(group1)).to eq([todo])
+    end
+  end
+
+  describe '.for_type' do
+    it 'returns the todos for a given target type' do
+      todo = create(:todo, target: create(:issue))
+
+      create(:todo, target: create(:merge_request))
+
+      expect(described_class.for_type(Issue)).to eq([todo])
+    end
+  end
+
+  describe '.for_target' do
+    it 'returns the todos for a given target' do
+      todo = create(:todo, target: create(:issue))
+
+      create(:todo, target: create(:merge_request))
+
+      expect(described_class.for_target(todo.target)).to eq([todo])
+    end
+  end
+
+  describe '.for_commit' do
+    it 'returns the todos for a commit ID' do
+      todo = create(:todo, commit_id: '123')
+
+      create(:todo, commit_id: '456')
+
+      expect(described_class.for_commit('123')).to eq([todo])
+    end
+  end
+
+  describe '.for_group_and_descendants' do
+    it 'returns the todos for a group and its descendants' do
+      parent_group = create(:group)
+      child_group = create(:group, parent: parent_group)
+
+      todo1 = create(:todo, group: parent_group)
+      todo2 = create(:todo, group: child_group)
+      todos = described_class.for_group_and_descendants(parent_group)
+
+      expect(todos).to include(todo1)
+
+      # Nested groups only work on PostgreSQL, so on MySQL todo2 won't be
+      # present.
+      expect(todos).to include(todo2) if Gitlab::Database.postgresql?
+    end
+  end
+
+  describe '.any_for_target?' do
+    it 'returns true if there are todos for a given target' do
+      todo = create(:todo)
+
+      expect(described_class.any_for_target?(todo.target)).to eq(true)
+    end
+
+    it 'returns false if there are no todos for a given target' do
+      issue = create(:issue)
+
+      expect(described_class.any_for_target?(issue)).to eq(false)
+    end
+  end
+
+  describe '.update_state' do
+    it 'updates the state of todos' do
+      todo = create(:todo, :pending)
+      ids = described_class.update_state(:done)
+
+      todo.reload
+
+      expect(ids).to eq([todo.id])
+      expect(todo.state).to eq('done')
+    end
+
+    it 'does not update todos that already have the given state' do
+      create(:todo, :pending)
+
+      expect(described_class.update_state(:pending)).to be_empty
+    end
+  end
 end
