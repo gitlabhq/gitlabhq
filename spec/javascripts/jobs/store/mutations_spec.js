@@ -130,7 +130,7 @@ describe('Jobs Store Mutations', () => {
     });
 
     it('does not set selectedStage when the selectedStage is not More', () => {
-      stateCopy.selectedStage = 'notify'
+      stateCopy.selectedStage = 'notify';
       expect(stateCopy.selectedStage).toEqual('notify');
       mutations[types.RECEIVE_JOB_SUCCESS](stateCopy, { id: 1312321, stage: 'deploy' });
       expect(stateCopy.selectedStage).toEqual('notify');
@@ -219,7 +219,7 @@ describe('Jobs Store Mutations', () => {
     it('sets selectedStage', () => {
       mutations[types.REQUEST_JOBS_FOR_STAGE](stateCopy, { name: 'deploy' });
       expect(stateCopy.selectedStage).toEqual('deploy');
-    })
+    });
   });
 
   describe('RECEIVE_JOBS_FOR_STAGE_SUCCESS', () => {

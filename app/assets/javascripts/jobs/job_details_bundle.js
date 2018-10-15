@@ -9,8 +9,6 @@ import createStore from './store';
 export default () => {
   const { dataset } = document.getElementById('js-job-details-vue');
 
-
-
   const store = createStore();
   store.dispatch('setJobEndpoint', dataset.endpoint);
 
