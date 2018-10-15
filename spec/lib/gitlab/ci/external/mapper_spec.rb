@@ -26,7 +26,7 @@ describe Gitlab::Ci::External::Mapper do
           expect(subject).to be_an(Array)
         end
 
-        it 'returns File instances' do
+        it 'returns File::Local instances' do
           expect(subject.first).to be_an_instance_of(Gitlab::Ci::External::File::Local)
         end
       end
@@ -40,10 +40,6 @@ describe Gitlab::Ci::External::Mapper do
           }
         end
 
-        before do
-          WebMock.stub_request(:get, remote_url).to_return(body: file_content)
-        end
-
         it 'returns an array' do
           expect(subject).to be_an(Array)
         end
@@ -51,6 +47,87 @@ describe Gitlab::Ci::External::Mapper do
         it 'returns File instances' do
           expect(subject.first).to be_an_instance_of(Gitlab::Ci::External::File::Remote)
         end
+      end
+    end
+
+    context 'when include is a hash' do
+      context 'when ignore_if_missing is true' do
+        context 'when using a local file' do
+          let(:values) do
+            {
+              include: {
+                path: '/path1',
+                ignore_if_missing: true
+              }
+            }
+          end
+
+          it 'returns expected File::Local instances' do
+            expect(subject.first).to be_an_instance_of(Gitlab::Ci::External::File::Local)
+            expect(subject.first.ignore_if_missing).to eq(true)
+          end
+        end
+
+        context 'when using a remote file' do
+          let(:values) do
+            {
+              include: {
+                path: 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1235/.gitlab-ci-1.yml',
+                ignore_if_missing: true
+              }
+            }
+          end
+
+          it 'should raise IncludeError' do
+            expect { subject }
+              .to raise_error(
+                Gitlab::Ci::External::Mapper::IncludeError,
+                'ignore_if_missing must be false or not included for remote files'
+            )
+          end
+        end
+
+        context 'when using a local file' do
+          let(:values) do
+            {
+              include: '',
+            }
+          end
+        end
+      end
+    end
+
+    context 'when include is an array of hashes' do
+      let(:values) do
+        {
+          include: [
+            {
+              path: '/path1',
+              ignore_if_missing: true
+            },
+            {
+              path: '/path2',
+              ignore_if_missing: false
+            },
+            {
+              path: '/path3'
+            }
+          ]
+        }
+      end
+
+      it 'returns expected File::Local instances' do
+        expect(subject[0]).to be_an_instance_of(Gitlab::Ci::External::File::Local)
+        expect(subject[0].location).to eq('/path1')
+        expect(subject[0].ignore_if_missing).to eq(true)
+
+        expect(subject[1]).to be_an_instance_of(Gitlab::Ci::External::File::Local)
+        expect(subject[1].location).to eq('/path2')
+        expect(subject[1].ignore_if_missing).to eq(false)
+
+        expect(subject[2]).to be_an_instance_of(Gitlab::Ci::External::File::Local)
+        expect(subject[2].location).to eq('/path3')
+        expect(subject[2].ignore_if_missing).to eq(false)
       end
     end
 
@@ -65,10 +142,6 @@ describe Gitlab::Ci::External::Mapper do
           ],
           image: 'ruby:2.2'
         }
-      end
-
-      before do
-        WebMock.stub_request(:get, remote_url).to_return(body: file_content)
       end
 
       it 'returns an array' do

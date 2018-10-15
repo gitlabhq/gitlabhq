@@ -5,13 +5,14 @@ module Gitlab
     module External
       module File
         class Local < Base
-          attr_reader :location, :project, :sha
+          attr_reader :location, :project, :sha, :ignore_if_missing
 
           def initialize(location, opts = {})
             super
 
             @project = opts.fetch(:project)
             @sha = opts.fetch(:sha)
+            @ignore_if_missing = opts.fetch(:ignore_if_missing)
           end
 
           def content
@@ -25,7 +26,13 @@ module Gitlab
           private
 
           def fetch_local_content
-            project.repository.blob_data_at(sha, location)
+            content = project.repository.blob_data_at(sha, location)
+
+            if content.nil? && @ignore_if_missing
+              return '{}'
+            end
+
+            content
           end
         end
       end

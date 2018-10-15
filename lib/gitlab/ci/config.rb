@@ -17,6 +17,8 @@ module Gitlab
         raise Config::ConfigError, e.message
       rescue ::Gitlab::Ci::External::Processor::FileError => e
         raise ::Gitlab::Ci::YamlProcessor::ValidationError, e.message
+      rescue ::Gitlab::Ci::External::Mapper::IncludeError => e
+        raise ::Gitlab::Ci::YamlProcessor::ValidationError, e.message
       end
 
       def valid?

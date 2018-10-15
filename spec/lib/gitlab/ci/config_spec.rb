@@ -1,6 +1,4 @@
-require 'fast_spec_helper'
-
-require_dependency 'active_model'
+require 'spec_helper'
 
 describe Gitlab::Ci::Config do
   let(:config) do
@@ -190,6 +188,70 @@ describe Gitlab::Ci::Config do
         }
 
         expect(config.to_hash).to eq(composed_hash)
+      end
+    end
+
+    context 'when ignore_if_missing true' do
+      let(:gitlab_ci_yml) do
+        <<~HEREDOC
+        include:
+          path: #{local_location}
+          ignore_if_missing: true
+
+
+        image: ruby:2.2
+        HEREDOC
+      end
+
+      context 'when remote url' do
+        let(:gitlab_ci_yml) do
+          <<~HEREDOC
+          include:
+            path: #{remote_location}
+            ignore_if_missing: true
+
+
+          image: ruby:2.2
+          HEREDOC
+        end
+
+        it 'raises an error' do
+          expect { config }.to raise_error(
+            ::Gitlab::Ci::YamlProcessor::ValidationError,
+            "ignore_if_missing must be false for remote files"
+          )
+        end
+      end
+
+      context 'when missing' do
+        before do
+          allow(project.repository)
+            .to receive(:blob_data_at)
+            .and_return(nil)
+        end
+
+        it 'does nothing' do
+          expect(config.to_hash).to eq({
+            image: 'ruby:2.2'
+          })
+        end
+      end
+
+      context 'when present' do
+        it 'does is included' do
+          expect(config.to_hash).to eq({
+            image: 'ruby:2.2',
+            before_script: [
+              "apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs", "ruby -v",
+              "which ruby",
+              "gem install bundler --no-ri --no-rdoc",
+              "bundle install --jobs $(nproc)  \"${FLAGS[@]}\""
+            ],
+            rspec: {
+              script: [ 'bundle exec rspec' ]
+            }
+          })
+        end
       end
     end
 
