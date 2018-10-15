@@ -424,7 +424,7 @@ describe('Job State actions', () => {
       mockedState.job.pipeline = {
         path: `${TEST_HOST}/endpoint`,
       };
-      mockedState.selectedStage = 'deploy'
+      mockedState.selectedStage = 'deploy';
       mock = new MockAdapter(axios);
     });
 
