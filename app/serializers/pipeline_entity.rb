@@ -33,6 +33,7 @@ class PipelineEntity < Grape::Entity
     expose :detailed_status, as: :status, with: DetailedStatusEntity
     expose :duration
     expose :finished_at
+    expose :deployments_details, with: DeploymentStatusEntity
   end
 
   expose :ref do
@@ -81,5 +82,9 @@ class PipelineEntity < Grape::Entity
 
   def detailed_status
     pipeline.detailed_status(request.current_user)
+  end
+
+  def deployments_details
+    pipeline.detailed_deployments_status(request.current_user)
   end
 end

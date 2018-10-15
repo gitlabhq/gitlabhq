@@ -8,7 +8,7 @@ class EnvironmentEntity < Grape::Entity
   expose :state
   expose :external_url
   expose :environment_type
-  expose :last_deployment, using: DeploymentEntity
+  # expose :last_deployment, using: DeploymentEntity # TODO: Fix cycle reference
   expose :stop_action_available?, as: :has_stop_action
 
   expose :metrics_path, if: -> (environment, _) { environment.has_metrics? } do |environment|

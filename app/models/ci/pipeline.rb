@@ -614,6 +614,14 @@ module Ci
         .fabricate!
     end
 
+    def detailed_deployments_status(current_user)
+      builds.latest.with_environment.map do |deployable|
+        Gitlab::Ci::Status::Build::Factory
+          .new(deployable, current_user)
+          .fabricate!
+      end
+    end
+
     def latest_builds_with_artifacts
       # We purposely cast the builds to an Array here. Because we always use the
       # rows if there are more than 0 this prevents us from having to run two

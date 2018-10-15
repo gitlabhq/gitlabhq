@@ -116,6 +116,8 @@ module Ci
       where("EXISTS (?)", matcher)
     end
 
+    scope :with_environment, ->() { where("environment <> ''") }
+
     mount_uploader :legacy_artifacts_file, LegacyArtifactUploader, mount_on: :artifacts_file
     mount_uploader :legacy_artifacts_metadata, LegacyArtifactUploader, mount_on: :artifacts_metadata
 
@@ -325,6 +327,10 @@ module Ci
 
     def outdated_deployment?
       success? && !last_deployment.try(:last?)
+    end
+
+    def has_latest_deployment?
+      last_deployment.try(:last?)
     end
 
     def depends_on_builds

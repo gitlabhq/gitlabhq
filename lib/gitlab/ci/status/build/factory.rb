@@ -19,7 +19,13 @@ module Gitlab
               Status::Build::Play,
               Status::Build::Stop],
              [Status::Build::Action],
-             [Status::Build::Retried]]
+             [Status::Build::Retried],
+             [Status::Build::WillDeploy,
+              Status::Build::ManualDeploy,
+              Status::Build::Deploying,
+              Status::Build::DeployedLatest,
+              Status::Build::DeployedOutdated,
+              Status::Build::DeployedFailed]]
           end
 
           def self.common_helpers

@@ -66,6 +66,14 @@ module Gitlab
           raise NotImplementedError
         end
 
+        def has_deployments?
+          false
+        end
+
+        def environment
+          raise NotImplementedError
+        end
+
         # Hint that appears on all the pipeline graph tooltips and builds on the right sidebar in Job detail view
         def status_tooltip
           label
