@@ -1,0 +1,5 @@
+---
+title: Fix bug when resolving a discussion via a batch comment published right away
+merge_request:
+author:
+type: fixed

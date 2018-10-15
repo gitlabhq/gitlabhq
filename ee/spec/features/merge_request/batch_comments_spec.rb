@@ -130,6 +130,84 @@ describe 'Merge request > Batch comments', :js do
         expect(find('.review-bar-content .btn-success')).to have_content('2')
       end
     end
+
+    context 'discussion is unresolved' do
+      let!(:active_discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
+
+      before do
+        visit_diffs
+      end
+
+      it 'publishes comment right away and resolves the discussion' do
+        expect(active_discussion.resolved?).to eq(false)
+
+        write_reply_to_discussion(button_text: 'Add comment now', resolve: true)
+
+        page.within '.line-resolve-all-container' do
+          expect(page).to have_content('1/1 discussion resolved')
+          expect(page).to have_selector('.line-resolve-btn.is-active')
+        end
+      end
+
+      it 'publishes review and resolves the discussion' do
+        expect(active_discussion.resolved?).to eq(false)
+
+        write_reply_to_discussion(resolve: true)
+
+        page.within('.review-bar-content') do
+          click_button 'Submit review'
+        end
+
+        wait_for_requests
+
+        page.within '.line-resolve-all-container' do
+          expect(page).to have_content('1/1 discussion resolved')
+          expect(page).to have_selector('.line-resolve-btn.is-active')
+        end
+      end
+    end
+
+    context 'discussion is resolved' do
+      let!(:active_discussion) { create(:diff_note_on_merge_request, :resolved, noteable: merge_request, project: project).to_discussion }
+
+      before do
+        active_discussion.resolve!(@current_user)
+
+        visit_diffs
+
+        page.find('.js-diff-comment-avatar').click
+      end
+
+      it 'publishes comment right away and unresolves the discussion' do
+        expect(active_discussion.resolved?).to eq(true)
+
+        write_reply_to_discussion(button_text: 'Add comment now', unresolve: true)
+
+        page.within '.line-resolve-all-container' do
+          expect(page).to have_content('0/1 discussion resolved')
+          expect(page).to have_selector('.line-resolve-btn.is-disabled')
+        end
+      end
+
+      it 'publishes review and unresolves the discussion' do
+        expect(active_discussion.resolved?).to eq(true)
+
+        wait_for_requests
+
+        write_reply_to_discussion(button_text: 'Start a review', unresolve: true)
+
+        page.within('.review-bar-content') do
+          click_button 'Submit review'
+        end
+
+        wait_for_requests
+
+        page.within '.line-resolve-all-container' do
+          expect(page).to have_content('0/1 discussion resolved')
+          expect(page).to have_selector('.line-resolve-btn.is-disabled')
+        end
+      end
+    end
   end
 
   def visit_diffs
@@ -160,4 +238,24 @@ describe 'Merge request > Batch comments', :js do
 
     wait_for_requests
   end
+end
+
+def write_reply_to_discussion(button_text: 'Start a review', text: 'Line is wrong', resolve: false, unresolve: false)
+  page.within('.discussion-reply-holder') do
+    click_button('Reply...')
+
+    fill_in('note_note', with: text)
+
+    if resolve
+      page.check('Resolve discussion')
+    end
+
+    if unresolve
+      page.check('Unresolve discussion')
+    end
+
+    click_button(button_text)
+  end
+
+  wait_for_requests
 end
