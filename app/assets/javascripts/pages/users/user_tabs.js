@@ -182,18 +182,22 @@ export default class UserTabs {
 
     this.loadActivityCalendar('overview');
 
-    UserTabs.renderMostRecentBlocks('#js-overview .activities-block', 5);
-    UserTabs.renderMostRecentBlocks('#js-overview .projects-block', 10);
+    UserTabs.renderMostRecentBlocks('#js-overview .activities-block', {
+      requestParams: { limit: 5 },
+    });
+    UserTabs.renderMostRecentBlocks('#js-overview .projects-block', {
+      requestParams: { limit: 10, skip_pagination: true },
+    });
 
     this.loaded.overview = true;
   }
 
-  static renderMostRecentBlocks(container, limit) {
+  static renderMostRecentBlocks(container, options) {
     // eslint-disable-next-line no-new
     new UserOverviewBlock({
       container,
       url: $(`${container} .overview-content-list`).data('href'),
-      limit,
+      ...options,
     });
   }
 
@@ -216,7 +220,12 @@ export default class UserTabs {
         let calendarHint = '';
 
         if (action === 'activity') {
-          calendarHint = sprintf(__('Summary of issues, merge requests, push events, and comments (Timezone: %{utcFormatted})'), { utcFormatted });
+          calendarHint = sprintf(
+            __(
+              'Summary of issues, merge requests, push events, and comments (Timezone: %{utcFormatted})',
+            ),
+            { utcFormatted },
+          );
         } else if (action === 'overview') {
           calendarHint = __('Issues, merge requests, pushes and comments.');
         }
@@ -224,7 +233,15 @@ export default class UserTabs {
         $calendarWrap.find('.calendar-hint').text(calendarHint);
 
         // eslint-disable-next-line no-new
-        new ActivityCalendar('.tab-pane.active .js-contrib-calendar', '.tab-pane.active .user-calendar-activities', data, calendarActivitiesPath, utcOffset, 0, monthsAgo);
+        new ActivityCalendar(
+          '.tab-pane.active .js-contrib-calendar',
+          '.tab-pane.active .user-calendar-activities',
+          data,
+          calendarActivitiesPath,
+          utcOffset,
+          0,
+          monthsAgo,
+        );
       })
       .catch(() => flash(__('There was an error loading users activity calendar.')));
   }
