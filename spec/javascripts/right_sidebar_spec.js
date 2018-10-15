@@ -94,33 +94,5 @@ import Sidebar from '~/right_sidebar';
         });
       });
     });
-
-    describe('sidebarToggleClicked', () => {
-      const event = jasmine.createSpyObj('event', ['preventDefault']);
-
-      beforeEach(() => {
-        spyOn($.fn, 'hasClass').and.returnValue(false);
-      });
-
-      afterEach(() => {
-        gl.lazyLoader = undefined;
-      });
-
-      it('calls loadCheck if lazyLoader is set', () => {
-        gl.lazyLoader = jasmine.createSpyObj('lazyLoader', ['loadCheck']);
-
-        Sidebar.prototype.sidebarToggleClicked(event);
-
-        expect(gl.lazyLoader.loadCheck).toHaveBeenCalled();
-      });
-
-      it('does not throw if lazyLoader is not defined', () => {
-        gl.lazyLoader = undefined;
-
-        const toggle = Sidebar.prototype.sidebarToggleClicked.bind(null, event);
-
-        expect(toggle).not.toThrow();
-      });
-    });
   });
 }).call(window);
