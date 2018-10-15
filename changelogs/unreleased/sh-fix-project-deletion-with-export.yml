@@ -1,5 +1,0 @@
----
-title: Fix project deletion when there is a export available
-merge_request: 22276
-author:
-type: fixed
