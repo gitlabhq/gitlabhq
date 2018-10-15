@@ -331,15 +331,14 @@ GEM
       representable (~> 3.0)
       retriable (>= 2.0, < 4.0)
     google-protobuf (3.5.1)
-    googleapis-common-protos-types (1.0.1)
+    googleapis-common-protos-types (1.0.2)
       google-protobuf (~> 3.0)
-    googleauth (0.6.2)
+    googleauth (0.6.6)
       faraday (~> 0.12)
       jwt (>= 1.4, < 3.0)
-      logging (~> 2.0)
       memoist (~> 0.12)
       multi_json (~> 1.11)
-      os (~> 0.9)
+      os (>= 0.9, < 2.0)
       signet (~> 0.7)
     gpgme (2.0.13)
       mini_portile2 (~> 2.1)
@@ -363,10 +362,9 @@ GEM
       railties
       sprockets-rails
     graphql (1.8.1)
-    grpc (1.11.0)
+    grpc (1.15.0)
       google-protobuf (~> 3.1)
       googleapis-common-protos-types (~> 1.0.0)
-      googleauth (>= 0.5.1, < 0.7)
     haml (5.0.4)
       temple (>= 0.8.0)
       tilt
@@ -468,11 +466,7 @@ GEM
       xml-simple
     licensee (8.9.2)
       rugged (~> 0.24)
-    little-plugger (1.1.4)
     locale (2.1.2)
-    logging (2.2.2)
-      little-plugger (~> 1.1)
-      multi_json (~> 1.10)
     lograge (0.10.0)
       actionpack (>= 4)
       activesupport (>= 4)
@@ -579,7 +573,7 @@ GEM
     org-ruby (0.9.12)
       rubypants (~> 0.2)
     orm_adapter (0.5.0)
-    os (0.9.6)
+    os (1.0.0)
     parallel (1.12.1)
     parser (2.5.1.0)
       ast (~> 2.4.0)
@@ -851,7 +845,7 @@ GEM
     sidekiq-cron (0.6.0)
       rufus-scheduler (>= 3.3.0)
       sidekiq (>= 4.2.1)
-    signet (0.8.1)
+    signet (0.11.0)
       addressable (~> 2.3)
       faraday (~> 0.9)
       jwt (>= 1.5, < 3.0)
@@ -1055,7 +1049,7 @@ DEPENDENCIES
   grape_logging (~> 1.7)
   graphiql-rails (~> 1.4.10)
   graphql (~> 1.8.0)
-  grpc (~> 1.11.0)
+  grpc (~> 1.15.0)
   haml_lint (~> 0.26.0)
   hamlit (~> 2.8.8)
   hangouts-chat (~> 0.0.5)
@@ -1196,4 +1190,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.16.4
+   1.16.6
