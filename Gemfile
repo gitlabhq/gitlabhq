@@ -210,7 +210,7 @@ gem 'hipchat', '~> 1.5.0'
 gem 'jira-ruby', '~> 1.4'
 
 # Flowdock integration
-gem 'gitlab-flowdock-git-hook', '~> 1.0.1'
+gem 'flowdock', '~> 0.7'
 
 # Slack integration
 gem 'slack-notifier', '~> 1.5.1'

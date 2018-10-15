@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "flowdock-git-hook"
+require 'flowdock/git'
 
 # Flow dock depends on Grit to compute the number of commits between two given
 # commits. To make this depend on Gitaly, a monkey patch is applied
