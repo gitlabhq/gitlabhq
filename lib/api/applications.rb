@@ -25,24 +25,21 @@ module API
         end
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       desc 'Get applications' do
         success Entities::Application
       end
       get do
-        applications = Doorkeeper::Application.where("owner_id IS NULL")
+        applications = ApplicationsFinder.new.execute
         present applications, with: Entities::Application
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
-      # rubocop: disable CodeReuse/ActiveRecord
       desc 'Delete an application'
       delete ':id' do
-        Doorkeeper::Application.find_by(id: params[:id]).destroy
+        application = ApplicationsFinder.new(params).execute
+        application.destroy
 
         status 204
       end
-      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end
