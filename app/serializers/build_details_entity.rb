@@ -9,7 +9,19 @@ class BuildDetailsEntity < JobEntity
   expose :runner, using: RunnerEntity
   expose :pipeline, using: PipelineEntity
 
+<<<<<<< HEAD
   expose :deployment_status, with: DetailedStatusEntity
+
+  # expose :deployment_status, if: -> (*) { build.starts_environment? } do
+  #   expose :deployment_status, as: :status
+
+  #   expose :persisted_environment, as: :environment, with: EnvironmentEntity
+  # end
+=======
+  expose :deployment_status, with: DetailedStatusEntity do |build|
+    build.last_deployment.detailed_status
+  end
+>>>>>>> Use deployment status in job log page
 
   # expose :deployment_status, if: -> (*) { build.starts_environment? } do
   #   expose :deployment_status, as: :status
