@@ -2,34 +2,35 @@
 description: "Set and configure Git protocol v2"
 ---
 
-# Git Protocol configuration
+# Configuring Git Protocol v2
 
-> [Introduced][ce-46555] in GitLab 11.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/46555) in GitLab 11.4.
 
 ---
 
-Git protocol v2 improves the wire protocol v1 in several ways and is
-enabled by default in GitLab for HTTP requests. In order to enable SSH
-further configuration needs to be set by the administrator.
+Git protocol v2 improves the v1 wire protocol in several ways and is
+enabled by default in GitLab for HTTP requests. In order to enable SSH,
+further configuration is needed by the administrator.
 
 More details about the new features and improvements are available in
-the ([protocol documentation][protocol-doc]).
+the [Google Open Source Blog](https://opensource.googleblog.com/2018/05/introducing-git-protocol-version-2.html)
+and the [protocol documentation](https://github.com/git/git/blob/master/Documentation/technical/protocol-v2.txt).
 
 ## Requirements
 
-From the client side, `git` `v2.18.0` or recent needs to be installed.
+From the client side, `git` `v2.18.0` or newer must be installed.
 
-From the server side, if we want to configure SSH we need to set the SSHD
-server to accept the `GIT_PROTOCOL` environment.
+From the server side, if we want to configure SSH we need to set the `sshd`
+server to accept the `GIT_PROTOCOL` environment,
 
 ```
 # /etc/ssh/sshd_config
 AcceptEnv GIT_PROTOCOL
 ```
 
-then restart the SSHD daemon. In Ubuntu, this is done like:
+Once configured, restart the `SSH` daemon. In Ubuntu, run:
 
-```
+```sh
 sudo service ssh restart
 ```
 
@@ -38,7 +39,7 @@ sudo service ssh restart
 In order to use the new protocol, clients need to either pass the configuration
 `-c protocol.version=2` to the git command, or set it globally:
 
-```
+```sh
 git config --global protocol.version 2
 ```
 
@@ -46,7 +47,7 @@ git config --global protocol.version 2
 
 Verify Git v2 is used by the client:
 
-```
+```sh
 GIT_TRACE_CURL=1 git -c protocol.version=2 ls-remote https://your-gitlab-instance.com/group/repo.git 2>&1 | grep Git-Protocol
 ```
 
@@ -58,14 +59,14 @@ You should see that the `Git-Protocol` header is sent:
 
 Verify Git v2 is used by the server:
 
-```
+```sh
 GIT_TRACE_PACKET=1 git -c protocol.version=2 ls-remote https://your-gitlab-instance.com/group/repo.git 2>&1 | head
 ```
 
 Example response using Git protocol v2:
 
-```
-s$ GIT_TRACE_PACKET=1 git -c protocol.version=2 ls-remote https://your-gitlab-instance.com/group/repo.git 2>&1 | head
+```sh
+$ GIT_TRACE_PACKET=1 git -c protocol.version=2 ls-remote https://your-gitlab-instance.com/group/repo.git 2>&1 | head
 10:42:50.574485 pkt-line.c:80           packet:          git< # service=git-upload-pack
 10:42:50.574653 pkt-line.c:80           packet:          git< 0000
 10:42:50.574673 pkt-line.c:80           packet:          git< version 2
@@ -82,7 +83,7 @@ s$ GIT_TRACE_PACKET=1 git -c protocol.version=2 ls-remote https://your-gitlab-in
 
 Verify Git v2 is used by the client:
 
-```
+```sh
 GIT_SSH_COMMAND="ssh -v" git -c protocol.version=2 ls-remote ssh://your-gitlab-instance.com:group/repo.git 2>&1 |grep GIT_PROTOCOL
 ```
 
@@ -92,8 +93,5 @@ You should see that the `GIT_PROTOCOL` environment variable is sent:
 debug1: Sending env GIT_PROTOCOL = version=2
 ```
 
-For the server side, you can use the same examples from HTTP, changing the
+For the server side, you can use the [same examples from HTTP](#http-connections), changing the
 URL to use SSH.
-
-[ce-46555]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/46555 "Git protocol v2 merge request"
-[protocol-doc]: https://github.com/git/git/blob/master/Documentation/technical/protocol-v2.txt "Git protocol v2"
