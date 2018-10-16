@@ -315,6 +315,28 @@ for a release by the appropriate person.
 Make sure to mention the merge request that the ~"technical debt" issue or
 ~"UX debt" issue is associated with in the description of the issue.
 
+## Technical debt in follow-up issues
+
+It's common to discover technical debt during development of a new feature. In
+the spirit of "minimum viable change", resolution is often deferred to a
+follow-up issue. However, this has limited value unless a commitment to address
+the debt is made. As technical debt reduces development velocity, it's important
+to keep it under control.
+
+Before accepting resolution of technical debt in a follow-up issue, maintainers
+should check that that fix is not trivial, and that the contributor (or their
+team) can commit to scheduling the issue within the next 3 releases.
+
+Trivial fixes can - and should - be addressed within the same MR.
+
+If a commitment to address the issue in the foreseeable future cannot be found,
+the maintainer must make a value judgement on whether the problem deserves an
+issue at all. If the commitment is lacking because the issue is neither trivial
+nor valuable, then perhaps no issue needs to be made after all. If a commitment
+is lacking because technical debt is being unfairly neglected, then maintainers
+should generally insist on resolution of the issue upfront, to protect
+development velocity.
+
 ## Stewardship
 
 For issues related to the open source stewardship of GitLab,
