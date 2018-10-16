@@ -14,7 +14,8 @@ You are strongly encouraged to get your code **reviewed** by a
 there is any code to review, to get a second opinion on the chosen solution and
 implementation, and an extra pair of eyes looking for bugs, logic problems, or
 uncovered edge cases. The reviewer can be from a different team, but it is often
-useful to pick someone who knows the domain well.
+useful to pick someone who knows the domain well. You can read more about the 
+importance of involving reviewer(s) in the section on the responsibility of the author below.
 
 If you need some guidance (e.g. it's your first merge request), feel free to ask
 one of the [Merge request coaches][team].
@@ -38,49 +39,59 @@ or more [maintainers](https://about.gitlab.com/handbook/engineering/#maintainer)
 Getting your merge request **merged** also requires a maintainer. If it requires
 more than one approval, the last maintainer to review and approve it will also merge it.
 
-Keep in mind that maintainers are also going to perform a final code review.
-The ideal scenario is that the reviewer has already identified any concerns
-the maintainer would have found, and the maintainer only has to perform the
-merge, but be prepared for further review comments.
+As described in the section on the responsibility of the maintainer below, you 
+are recommended to get your merge request approved and merged by maintainer(s) 
+from other teams than your own.
 
-### The role of the maintainer
-
-Maintainers are responsible for the overall health, quality, and consistency of
-the GitLab codebase, across domains and product areas. Consequently, their reviews
-will focus primarily on things like overall architecture, code organization, 
-separation of concerns, tests, DRYness, consistency, readability, etc.
-
-Their job is explicitly _not_ to review the solution itself. By the time a merge 
-request makes it to a maintainer, they should be able to assume that it actually 
-solves the problem it was meant to solve, that it does so in the most appropriate
-way, that it satisfies all requirements, and that there are no remaining bugs, 
-logical problems, or uncovered edge cases. 
+### The responsibility of the merge request author
 
 The responsibility to find the best solution and implement it lies with the
-merge request author, and they should be confident of the chosen solution, 
-implementation, and everything else that makes up the merge request, before 
-they ask a maintainer for final review, approval, and merge.
+merge request author. 
 
-To reach this level of confidence, an author is expected to involve other people
-in the investigation and implementation processes as appropriate. They may want
-to reach out to domain experts to discuss different solutions or get an 
-implementation reviewed, to product managers and UX designers to clear up 
-confusion or verify that the end result matches what they had in mind, to 
-database specialists to get input on the data model or specific queries,
-or to any other developer to get a code review.
+Before assigning a merge request to maintainer for approval and merge, they 
+should be confident that it actually solves the problem it was meant to solve, 
+that it does so in the most appropriate way, that it satisfies all requirements, 
+and that there are no remaining bugs, logical problems, or uncovered edge cases. 
+The merge request should also have a completed task list in its description and 
+a passing CI pipeline to avoid unnecessary back and forth.
 
-Of course, a maintainer will also make note of any issues with the solution or
-implementation they may find, but in general will assume that the author is the
-expert on the issue at hand, and that they made their choices with good reason.
+To reach the required level of confidence in their solution, an author is expected
+to involve other people in the investigation and implementation processes as 
+appropriate:
 
-Since a maintainer's job does not depend on their domain-specific knowledge beyond
-knowledge of the overall GitLab codebase, they can review merge requests from any 
-team and in any product area.
+They are encouraged to reach out to domain experts to discuss different solutions 
+or get an implementation reviewed, to product managers and UX designers to clear 
+up confusion or verify that the end result matches what they had in mind, to 
+database specialists to get input on the data model or specific queries, or to
+any other developer to get an in-depth review of the solution.
 
-Authors are recommended to assign merge requests to maintainers from other teams
-than their own, to ensure that all code across GitLab is consistent and can be
-easily understood by all contributors, from both inside and outside the company,
-without requiring team-specific expertise.
+### The responsibility of the maintainer
+
+Maintainers are responsible for the overall health, quality, and consistency of
+the GitLab codebase, across domains and product areas. 
+
+Consequently, their reviews will focus primarily on things like overall 
+architecture, code organization, separation of concerns, tests, DRYness, 
+consistency, and readability.
+
+Since a maintainer's job only depends on their knowledge of the overall GitLab
+codebase, and not that of any specific domain, they can review, approve and merge
+merge requests from any team and in any product area.
+
+In fact, authors are recommended to get their merge requests merged by maintainers
+from other teams than their own, to ensure that all code across GitLab is consistent
+and can be easily understood by all contributors, from both inside and outside the 
+company, without requiring team-specific expertise.
+
+Maintainers will do their best to also review the specifics of the chosen solution
+before merging, but as they are not necessarily domain experts, they may be poorly
+placed to do so without an unreasonable investment of time. In those cases, they 
+will defer to the judgment of the author and earlier reviewers and involved domain
+experts, in favor of focusing on their primary responsibilities.
+
+If a developer who happens to also be a maintainer was involved in a merge request
+as a domain expert and/or reviewer, it is recommended that they are not also picked
+as the maintainer to ultimately approve and merge it.
 
 ## Best practices
 
