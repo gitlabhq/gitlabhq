@@ -1,7 +1,11 @@
 <script>
+  import Icon from '~/vue_shared/components/icon.vue';
   import iconCycleAnalyticsSplash from 'icons/_icon_cycle_analytics_splash.svg';
 
   export default {
+    components: {
+      Icon,
+    },
     props: {
       documentationLink: {
         type: String,
@@ -28,10 +32,9 @@
       type="button"
       @click="dismissOverviewDialog"
     >
-      <i
-        class="fa fa-times"
-        aria-hidden="true">
-      </i>
+      <icon
+        name="close"
+      />
     </button>
     <div
       class="svg-container"

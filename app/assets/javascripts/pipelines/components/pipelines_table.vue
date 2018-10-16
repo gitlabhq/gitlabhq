@@ -35,7 +35,7 @@ export default {
   },
   data() {
     return {
-      pipelineId: '',
+      pipelineId: 0,
       endpoint: '',
       cancelingPipeline: null,
     };

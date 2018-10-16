@@ -1221,6 +1221,7 @@ module API
     end
 
     class TemplatesList < Grape::Entity
+      expose :key
       expose :name
     end
 
@@ -1361,12 +1362,6 @@ module API
       expose :user_agent
       expose :ip_address
       expose :submitted, as: :akismet_submitted
-    end
-
-    class RepositoryStorageHealth < Grape::Entity
-      expose :storage_name
-      expose :failing_on_hosts
-      expose :total_failures
     end
 
     class CustomAttribute < Grape::Entity

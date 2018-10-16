@@ -1,5 +1,3 @@
-require 'thread'
-
 class RenameMoreReservedProjectNames < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
   include Gitlab::ShellAdapter

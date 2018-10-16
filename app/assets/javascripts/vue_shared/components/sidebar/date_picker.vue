@@ -1,96 +1,96 @@
 <script>
-  import datePicker from '../pikaday.vue';
-  import toggleSidebar from './toggle_sidebar.vue';
-  import collapsedCalendarIcon from './collapsed_calendar_icon.vue';
-  import { dateInWords } from '../../../lib/utils/datetime_utility';
+import datePicker from '../pikaday.vue';
+import toggleSidebar from './toggle_sidebar.vue';
+import collapsedCalendarIcon from './collapsed_calendar_icon.vue';
+import { dateInWords } from '../../../lib/utils/datetime_utility';
 
-  export default {
-    name: 'SidebarDatePicker',
-    components: {
-      datePicker,
-      toggleSidebar,
-      collapsedCalendarIcon,
+export default {
+  name: 'SidebarDatePicker',
+  components: {
+    datePicker,
+    toggleSidebar,
+    collapsedCalendarIcon,
+  },
+  props: {
+    blockClass: {
+      type: String,
+      required: false,
+      default: '',
     },
-    props: {
-      blockClass: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      collapsed: {
-        type: Boolean,
-        required: false,
-        default: true,
-      },
-      showToggleSidebar: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      isLoading: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      editable: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      label: {
-        type: String,
-        required: false,
-        default: 'Date picker',
-      },
-      selectedDate: {
-        type: Date,
-        required: false,
-        default: null,
-      },
-      minDate: {
-        type: Date,
-        required: false,
-        default: null,
-      },
-      maxDate: {
-        type: Date,
-        required: false,
-        default: null,
-      },
+    collapsed: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
-    data() {
-      return {
-        editing: false,
-      };
+    showToggleSidebar: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
-    computed: {
-      selectedAndEditable() {
-        return this.selectedDate && this.editable;
-      },
-      selectedDateWords() {
-        return dateInWords(this.selectedDate, true);
-      },
-      collapsedText() {
-        return this.selectedDateWords ? this.selectedDateWords : 'None';
-      },
+    isLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
-    methods: {
-      stopEditing() {
-        this.editing = false;
-      },
-      toggleDatePicker() {
-        this.editing = !this.editing;
-      },
-      newDateSelected(date = null) {
-        this.date = date;
-        this.editing = false;
-        this.$emit('saveDate', date);
-      },
-      toggleSidebar() {
-        this.$emit('toggleCollapse');
-      },
+    editable: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
-  };
+    label: {
+      type: String,
+      required: false,
+      default: 'Date picker',
+    },
+    selectedDate: {
+      type: Date,
+      required: false,
+      default: null,
+    },
+    minDate: {
+      type: Date,
+      required: false,
+      default: null,
+    },
+    maxDate: {
+      type: Date,
+      required: false,
+      default: null,
+    },
+  },
+  data() {
+    return {
+      editing: false,
+    };
+  },
+  computed: {
+    selectedAndEditable() {
+      return this.selectedDate && this.editable;
+    },
+    selectedDateWords() {
+      return dateInWords(this.selectedDate, true);
+    },
+    collapsedText() {
+      return this.selectedDateWords ? this.selectedDateWords : 'None';
+    },
+  },
+  methods: {
+    stopEditing() {
+      this.editing = false;
+    },
+    toggleDatePicker() {
+      this.editing = !this.editing;
+    },
+    newDateSelected(date = null) {
+      this.date = date;
+      this.editing = false;
+      this.$emit('saveDate', date);
+    },
+    toggleSidebar() {
+      this.$emit('toggleCollapse');
+    },
+  },
+};
 </script>
 
 <template>

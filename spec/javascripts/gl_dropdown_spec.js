@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, no-param-reassign */
+/* eslint-disable no-param-reassign */
 
 import $ from 'jquery';
 import GLDropdown from '~/gl_dropdown';
@@ -168,9 +168,9 @@ describe('glDropdown', function describeDropdown() {
     it('should show loading indicator while search results are being fetched by backend', () => {
       const dropdownMenu = document.querySelector('.dropdown-menu');
 
-      expect(dropdownMenu.className.indexOf('is-loading') !== -1).toEqual(true);
+      expect(dropdownMenu.className.indexOf('is-loading')).not.toBe(-1);
       remoteCallback();
-      expect(dropdownMenu.className.indexOf('is-loading') !== -1).toEqual(false);
+      expect(dropdownMenu.className.indexOf('is-loading')).toBe(-1);
     });
 
     it('should not focus search input while remote task is not complete', () => {

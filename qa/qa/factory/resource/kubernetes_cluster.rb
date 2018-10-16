@@ -16,7 +16,7 @@ module QA
         def fabricate!
           @project.visit!
 
-          Page::Menu::Side.act { click_operations_kubernetes }
+          Page::Project::Menu.act { click_operations_kubernetes }
 
           Page::Project::Operations::Kubernetes::Index.perform do |page|
             page.add_kubernetes_cluster
@@ -31,6 +31,7 @@ module QA
             page.set_api_url(@cluster.api_url)
             page.set_ca_certificate(@cluster.ca_certificate)
             page.set_token(@cluster.token)
+            page.check_rbac! if @cluster.rbac
             page.add_cluster!
           end
 

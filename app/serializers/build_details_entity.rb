@@ -1,23 +1,16 @@
 # frozen_string_literal: true
 
 class BuildDetailsEntity < JobEntity
-  include EnvironmentHelper
-  include RequestAwareEntity
-  include CiStatusHelper
-
   expose :coverage, :erased_at, :duration
   expose :tag_list, as: :tags
   expose :has_trace?, as: :has_trace
+  expose :stage
   expose :user, using: UserEntity
   expose :runner, using: RunnerEntity
   expose :pipeline, using: PipelineEntity
 
-  expose :deployment_status, if: -> (*) { build.has_environment? } do
+  expose :deployment_status, if: -> (*) { build.starts_environment? } do
     expose :deployment_status, as: :status
-
-    expose :icon do |build|
-      ci_label_for_status(build.status)
-    end
 
     expose :persisted_environment, as: :environment, with: EnvironmentEntity
   end

@@ -281,7 +281,7 @@ Additionally locked issues can not be reopened.
 [ce-14053]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14053
 [ce-14061]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14061
 [ce-14531]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14531
-[ce-31847]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/31847
+[ce-31847]: https://gitlab.com/gitlab-org/gitlab-ce/issues/31847
 [resolve-discussion-button]: img/resolve_discussion_button.png
 [resolve-comment-button]: img/resolve_comment_button.png
 [discussion-view]: img/discussion_view.png

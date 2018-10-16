@@ -330,7 +330,7 @@ msgstr "'%{classification_label}'へのアクセスは許可されていませ�
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
 msgstr "mount によって復旧できるように、失敗が発生しているストレージへのアクセスを一時的に抑止しました。再度アクセスするためには、問題を解決してからストレージ情報をリセットしてください。"
 
-msgid "Access your runner token, customize your pipeline configuration, and view your pipeline status and coverage report."
+msgid "Customize your pipeline configuration, view your pipeline status and coverage report."
 msgstr "Runner トークンにアクセスし、パイプラインの設定をカスタマイズ、そしてパイプラインの状態とカバレッジレポートを閲覧します。"
 
 msgid "Account"
@@ -4230,12 +4230,6 @@ msgstr "6月"
 msgid "June"
 msgstr "6月"
 
-msgid "Koding"
-msgstr "Koding"
-
-msgid "Koding Dashboard"
-msgstr ""
-
 msgid "Kubernetes"
 msgstr "Kubernetes"
 
@@ -5190,9 +5184,6 @@ msgstr ""
 
 msgid "One or more of your Google Code projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
 msgstr ""
-
-msgid "Online IDE integration settings."
-msgstr "オンライン IDE 統合設定。"
 
 msgid "Only admins"
 msgstr ""
@@ -6731,9 +6722,6 @@ msgstr ""
 
 msgid "Set up CI/CD"
 msgstr "CI/CD を設定"
-
-msgid "Set up Koding"
-msgstr "Koding を設定"
 
 msgid "Set up a %{type} Runner manually"
 msgstr ""

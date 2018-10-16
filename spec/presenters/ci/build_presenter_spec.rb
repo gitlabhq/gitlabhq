@@ -218,6 +218,42 @@ describe Ci::BuildPresenter do
     end
   end
 
+  describe '#execute_in' do
+    subject { presenter.execute_in }
+
+    context 'when build is scheduled' do
+      context 'when schedule is not expired' do
+        let(:build) { create(:ci_build, :scheduled) }
+
+        it 'returns execution time' do
+          Timecop.freeze do
+            is_expected.to be_like_time(60.0)
+          end
+        end
+      end
+
+      context 'when schedule is expired' do
+        let(:build) { create(:ci_build, :expired_scheduled) }
+
+        it 'returns execution time' do
+          Timecop.freeze do
+            is_expected.to eq(0)
+          end
+        end
+      end
+    end
+
+    context 'when build is not delayed' do
+      let(:build) { create(:ci_build) }
+
+      it 'does not return execution time' do
+        Timecop.freeze do
+          is_expected.to be_falsy
+        end
+      end
+    end
+  end
+
   describe '#callout_failure_message' do
     let(:build) { create(:ci_build, :failed, :api_failure) }
 

@@ -82,7 +82,7 @@
 
   - if can_collaborate
     = succeed " " do
-      = link_to ide_edit_path(@project, @ref, @path), class: 'btn btn-default' do
+      = link_to ide_edit_path(@project, @ref, @path), class: 'btn btn-default qa-web-ide-button' do
         = _('Web IDE')
 
   = render 'projects/buttons/download', project: @project, ref: @ref

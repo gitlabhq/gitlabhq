@@ -480,7 +480,7 @@ msgstr ""
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
 msgstr ""
 
-msgid "Access your runner token, customize your pipeline configuration, and view your pipeline status and coverage report."
+msgid "Customize your pipeline configuration, view your pipeline status and coverage report."
 msgstr ""
 
 msgid "Account"
@@ -4410,12 +4410,6 @@ msgstr ""
 msgid "June"
 msgstr ""
 
-msgid "Koding"
-msgstr ""
-
-msgid "Koding Dashboard"
-msgstr ""
-
 msgid "Kubernetes"
 msgstr ""
 
@@ -5389,9 +5383,6 @@ msgid "One or more of your Bitbucket projects cannot be imported into GitLab dir
 msgstr ""
 
 msgid "One or more of your Google Code projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
-msgstr ""
-
-msgid "Online IDE integration settings."
 msgstr ""
 
 msgid "Only admins"
@@ -6940,9 +6931,6 @@ msgid "Set requirements for a user to sign-in. Enable mandatory two-factor authe
 msgstr ""
 
 msgid "Set up CI/CD"
-msgstr ""
-
-msgid "Set up Koding"
 msgstr ""
 
 msgid "Set up a %{type} Runner manually"

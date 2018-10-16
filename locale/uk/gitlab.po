@@ -420,7 +420,7 @@ msgstr "Доступ до \"%{classification_label}\" заборонено"
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
 msgstr "Доступ до сховищ, що вийшли з ладу, тимчасово прибраний задля відновлення монтування. Після вирішення проблеми обнуліть інформацію сховища для відновлення доступу."
 
-msgid "Access your runner token, customize your pipeline configuration, and view your pipeline status and coverage report."
+msgid "Customize your pipeline configuration, view your pipeline status and coverage report."
 msgstr "Отримайте доступ до Gitlab Runner токену, налаштуйте конфігурацію конвеєра та перегляньте його статус, а також звіт про покриття."
 
 msgid "Account"
@@ -4338,12 +4338,6 @@ msgstr "чер."
 msgid "June"
 msgstr "червень"
 
-msgid "Koding"
-msgstr "Koding"
-
-msgid "Koding Dashboard"
-msgstr "Панель керування Koding"
-
 msgid "Kubernetes"
 msgstr "Kubernetes"
 
@@ -5310,9 +5304,6 @@ msgstr "Один або декілька ваших проектів Bitbucket �
 
 msgid "One or more of your Google Code projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
 msgstr "Один або декілька ваших проектів Google Code не можна імпортувати безпосередньо в GitLab, оскільки вони використовують Subversion або Mercurial для контролю версій замість Git."
-
-msgid "Online IDE integration settings."
-msgstr "Налаштування інтеграції із онлайн IDE."
 
 msgid "Only admins"
 msgstr "Тільки Адміни"
@@ -6857,9 +6848,6 @@ msgstr "Встановіть вимоги для входу користувач
 
 msgid "Set up CI/CD"
 msgstr "Налаштування CI/CD"
-
-msgid "Set up Koding"
-msgstr "Налаштування Koding"
 
 msgid "Set up a %{type} Runner manually"
 msgstr ""

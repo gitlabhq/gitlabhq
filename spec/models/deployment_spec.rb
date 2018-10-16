@@ -39,6 +39,29 @@ describe Deployment do
     end
   end
 
+  describe 'scopes' do
+    describe 'last_for_environment' do
+      let(:production) { create(:environment) }
+      let(:staging) { create(:environment) }
+      let(:testing) { create(:environment) }
+
+      let!(:deployments) do
+        [
+          create(:deployment, environment: production),
+          create(:deployment, environment: staging),
+          create(:deployment, environment: production)
+        ]
+      end
+
+      it 'retrieves last deployments for environments' do
+        last_deployments = described_class.last_for_environment([staging, production, testing])
+
+        expect(last_deployments.size).to eq(2)
+        expect(last_deployments).to eq(deployments.last(2))
+      end
+    end
+  end
+
   describe '#includes_commit?' do
     let(:project) { create(:project, :repository) }
     let(:environment) { create(:environment, project: project) }

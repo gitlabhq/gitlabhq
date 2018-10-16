@@ -43,7 +43,7 @@ module QA
           # to `allow_to_push` variable.
           return branch unless @protected
 
-          Page::Menu::Side.act do
+          Page::Project::Menu.act do
             click_repository_settings
           end
 

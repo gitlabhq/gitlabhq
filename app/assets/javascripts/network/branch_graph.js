@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, wrap-iife, quotes, comma-dangle, one-var, one-var-declaration-per-line, no-loop-func, no-floating-decimal, consistent-return, no-unused-vars, prefer-template, prefer-arrow-callback, camelcase, max-len */
+/* eslint-disable func-names, no-var, one-var, no-loop-func, consistent-return, no-unused-vars, prefer-template, prefer-arrow-callback, camelcase */
 
 import $ from 'jquery';
 import { __ } from '../locale';

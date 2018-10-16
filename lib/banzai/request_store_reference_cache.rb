@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module RequestStoreReferenceCache
     def cached_call(request_store_key, cache_key, path: [])

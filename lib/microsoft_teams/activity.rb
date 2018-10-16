@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MicrosoftTeams
   class Activity
     def initialize(title:, subtitle:, text:, image:)

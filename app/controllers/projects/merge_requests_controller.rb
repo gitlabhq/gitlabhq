@@ -44,12 +44,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         @noteable = @merge_request
         @commits_count = @merge_request.commits_count
 
-        # TODO cleanup- Fatih Simon Create an issue to remove these after the refactoring
-        # we no longer render notes here. I see it will require a small frontend refactoring,
-        # since we gather some data from this collection.
-        @discussions = @merge_request.discussions
-        @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes), @noteable)
-
         labels
 
         set_pipeline_variables
@@ -207,7 +201,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     environments =
       begin
         @merge_request.environments_for(current_user).map do |environment|
-          project = environment.project
+          project    = environment.project
           deployment = environment.first_deployment_for(@merge_request.diff_head_sha)
 
           stop_url =
@@ -217,7 +211,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
           metrics_url =
             if can?(current_user, :read_environment, environment) && environment.has_metrics?
-              metrics_project_environment_deployment_path(environment.project, environment, deployment)
+              metrics_project_environment_deployment_path(project, environment, deployment)
             end
 
           metrics_monitoring_url =

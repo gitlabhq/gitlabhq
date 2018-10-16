@@ -42,11 +42,11 @@
                 = custom_icon('scroll_down')
 
         = render 'shared/builds/build_output'
-    - else
-      = render "empty_states"
 
   #js-details-block-vue{ data: { terminal_path: can?(current_user, :create_build_terminal, @build) && @build.has_terminal? ? terminal_project_job_path(@project, @build) : nil } }
 
 .js-build-options{ data: javascript_build_options }
 
-#js-job-details-vue{ data: { endpoint: project_job_path(@project, @build, format: :json), runner_help_url: help_page_path('ci/runners/README.html', anchor: 'setting-maximum-job-timeout-for-a-runner') } }
+#js-job-details-vue{ data: { endpoint: project_job_path(@project, @build, format: :json),
+  runner_help_url: help_page_path('ci/runners/README.html', anchor: 'setting-maximum-job-timeout-for-a-runner'),
+  runner_settings_url: project_runners_path(@build.project, anchor: 'js-runners-settings') } }

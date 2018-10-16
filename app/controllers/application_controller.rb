@@ -12,7 +12,9 @@ class ApplicationController < ActionController::Base
   include WorkhorseHelper
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
-  include InvalidUTF8ErrorHandler
+  # this can be removed after switching to rails 5
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/51908
+  include InvalidUTF8ErrorHandler unless Gitlab.rails5?
 
   before_action :authenticate_sessionless_user!
   before_action :authenticate_user!
@@ -66,8 +68,7 @@ class ApplicationController < ActionController::Base
     head :forbidden, retry_after: Gitlab::Auth::UniqueIpsLimiter.config.unique_ips_limit_time_window
   end
 
-  rescue_from Gitlab::Git::Storage::Inaccessible, GRPC::Unavailable, Gitlab::Git::CommandError do |exception|
-    Raven.capture_exception(exception) if sentry_enabled?
+  rescue_from GRPC::Unavailable, Gitlab::Git::CommandError do |exception|
     log_exception(exception)
 
     headers['Retry-After'] = exception.retry_after if exception.respond_to?(:retry_after)

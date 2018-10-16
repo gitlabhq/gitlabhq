@@ -80,10 +80,10 @@ our AsciiDoc snippets, wikis and repos using delimited blocks:
 
     ```
     [plantuml, format="png", id="myDiagram", width="200px"]
-    --
+    ----
     Bob->Alice : hello
     Alice -> Bob : Go Away
-    --
+    ----
     ```
 
 - **reStructuredText**

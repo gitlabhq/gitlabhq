@@ -350,41 +350,6 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
           end
         end
       end
-
-      describe '"Set up Koding" button' do
-        it 'no "Set up Koding" button if Koding disabled' do
-          stub_application_setting(koding_enabled?: false)
-
-          visit project_path(project)
-
-          page.within('.project-stats') do
-            expect(page).not_to have_link('Set up Koding')
-          end
-        end
-
-        it 'no "Set up Koding" button if the project already has a .koding.yml' do
-          stub_application_setting(koding_enabled?: true)
-          allow(Gitlab::CurrentSettings.current_application_settings).to receive(:koding_url).and_return('http://koding.example.com')
-          expect(project.repository.changelog).not_to be_nil
-          allow_any_instance_of(Repository).to receive(:koding_yml).and_return(project.repository.changelog)
-
-          visit project_path(project)
-
-          page.within('.project-stats') do
-            expect(page).not_to have_link('Set up Koding')
-          end
-        end
-
-        it '"Set up Koding" button linked to new file populated for a .koding.yml' do
-          stub_application_setting(koding_enabled?: true)
-
-          visit project_path(project)
-
-          page.within('.project-stats') do
-            expect(page).to have_link('Set up Koding', href: presenter.add_koding_stack_path)
-          end
-        end
-      end
     end
   end
 end

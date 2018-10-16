@@ -40,7 +40,7 @@ module QA
           push.file_content = '# My Third Wiki Content'
           push.commit_message = 'Update Home.md'
         end
-        Page::Menu::Side.act { click_wiki }
+        Page::Project::Menu.act { click_wiki }
 
         expect(page).to have_content('My Third Wiki Content')
       end

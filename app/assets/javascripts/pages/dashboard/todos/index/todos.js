@@ -79,10 +79,13 @@ export default class Todos {
       .then(({ data }) => {
         this.updateRowState(target);
         this.updateBadges(data);
-      }).catch(() => flash(__('Error updating todo status.')));
+      }).catch(() => {
+        this.updateRowState(target, true);
+        return flash(__('Error updating todo status.'));
+      });
   }
 
-  updateRowState(target) {
+  updateRowState(target, isInactive = false) {
     const row = target.closest('li');
     const restoreBtn = row.querySelector('.js-undo-todo');
     const doneBtn = row.querySelector('.js-done-todo');
@@ -91,7 +94,10 @@ export default class Todos {
     target.removeAttribute('disabled');
     target.classList.remove('disabled');
 
-    if (target === doneBtn) {
+    if (isInactive === true) {
+      restoreBtn.classList.add('hidden');
+      doneBtn.classList.remove('hidden');
+    } else if (target === doneBtn) {
       row.classList.add('done-reversible');
       restoreBtn.classList.remove('hidden');
     } else if (target === restoreBtn) {

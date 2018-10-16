@@ -134,35 +134,10 @@ authorization is [experimental](#role-based-access-control-rbac).
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21401) in GitLab 11.4.
 
 CAUTION: **Warning:**
-The RBAC authorization is experimental. To enable it you need access to the
-server where GitLab is installed.
+The RBAC authorization is experimental.
 
-The support for RBAC-enabled clusters is hidden behind a feature flag. Once
-the feature flag is enabled, GitLab will create the necessary service accounts
+Once RBAC is enabled for a cluster, GitLab will create the necessary service accounts
 and privileges in order to install and run [GitLab managed applications](#installing-applications).
-
-To enable the feature flag:
-
-1. SSH into the server where GitLab is installed.
-1. Enter the Rails console:
-
-    **For Omnibus GitLab**
-
-    ```sh
-    sudo gitlab-rails console
-    ```
-
-    **For installations from source**
-
-    ```sh
-    sudo -u git -H bundle exec rails console
-    ```
-
-1. Enable the RBAC authorization:
-
-    ```ruby
-    Feature.enable('rbac_clusters')
-    ```
 
 If you are creating a [new GKE cluster via
 GitLab](#adding-and-creating-a-new-gke-cluster-via-gitlab), you will be
@@ -240,7 +215,7 @@ twice, which can lead to confusion during deployments.
 | [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) | 10.2+ | Ingress can provide load balancing, SSL termination, and name-based virtual hosting. It acts as a web proxy for your applications and is useful if you want to use [Auto DevOps] or deploy your own web apps. | [stable/nginx-ingress](https://github.com/helm/charts/tree/master/stable/nginx-ingress) |
 | [Prometheus](https://prometheus.io/docs/introduction/overview/) | 10.4+ | Prometheus is an open-source monitoring and alerting system useful to supervise your deployed applications. | [stable/prometheus](https://github.com/helm/charts/tree/master/stable/prometheus) |
 | [GitLab Runner](https://docs.gitlab.com/runner/) | 10.6+ | GitLab Runner is the open source project that is used to run your jobs and send the results back to GitLab. It is used in conjunction with [GitLab CI/CD](https://about.gitlab.com/features/gitlab-ci-cd/), the open-source continuous integration service included with GitLab that coordinates the jobs. When installing the GitLab Runner via the applications, it will run in **privileged mode** by default. Make sure you read the [security implications](#security-implications) before doing so. | [runner/gitlab-runner](https://gitlab.com/charts/gitlab-runner) |
-| [JupyterHub](http://jupyter.org/) | 11.0+ | [JupyterHub](https://jupyterhub.readthedocs.io/en/stable/) is a multi-user service for managing notebooks across a team. [Jupyter Notebooks](https://jupyter-notebook.readthedocs.io/en/latest/) provide a web-based interactive programming environment used for data analysis, visualization, and machine learning. We use [this](https://gitlab.com/gitlab-org/jupyterhub-user-image/blob/master/Dockerfile) custom Jupyter image that installs additional useful packages on top of the base Jupyter. **Note**: Authentication will be enabled for any user of the GitLab server via OAuth2. HTTPS will be supported in a future release. | [jupyter/jupyterhub](https://jupyterhub.github.io/helm-chart/) |
+| [JupyterHub](http://jupyter.org/) | 11.0+ | [JupyterHub](https://jupyterhub.readthedocs.io/en/stable/) is a multi-user service for managing notebooks across a team. [Jupyter Notebooks](https://jupyter-notebook.readthedocs.io/en/latest/) provide a web-based interactive programming environment used for data analysis, visualization, and machine learning. We use [this](https://gitlab.com/gitlab-org/jupyterhub-user-image/blob/master/Dockerfile) custom Jupyter image that installs additional useful packages on top of the base Jupyter. You will also see ready-to-use DevOps Runbooks built with [Rubix](https://github.com/amit1rrr/rubix). **Note**: Authentication will be enabled for any user of the GitLab server via OAuth2. HTTPS will be supported in a future release. | [jupyter/jupyterhub](https://jupyterhub.github.io/helm-chart/) |
 
 ## Getting the external IP address
 

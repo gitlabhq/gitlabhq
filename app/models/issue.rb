@@ -170,24 +170,6 @@ class Issue < ActiveRecord::Base
     "#{project.to_reference(from, full: full)}#{reference}"
   end
 
-  # All branches containing the current issue's ID, except for
-  # those with a merge request open referencing the current issue.
-  # rubocop: disable CodeReuse/ServiceClass
-  def related_branches(current_user)
-    branches_with_iid = project.repository.branch_names.select do |branch|
-      branch =~ /\A#{iid}-(?!\d+-stable)/i
-    end
-
-    branches_with_merge_request =
-      Issues::ReferencedMergeRequestsService
-        .new(project, current_user)
-        .referenced_merge_requests(self)
-        .map(&:source_branch)
-
-    branches_with_iid - branches_with_merge_request
-  end
-  # rubocop: enable CodeReuse/ServiceClass
-
   def suggested_branch_name
     return to_branch_name unless project.repository.branch_exists?(to_branch_name)
 

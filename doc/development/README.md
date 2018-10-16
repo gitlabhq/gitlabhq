@@ -8,7 +8,7 @@ description: 'Learn how to contribute to GitLab.'
 ## Get started!
 
 - Set up GitLab's development environment with [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/README.md)
-- [GitLab contributing guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md)
+- [GitLab contributing guide](contributing/index.md)
 - [Architecture](architecture.md) of GitLab
 - [Rake tasks](rake_tasks.md) for development
 
@@ -50,6 +50,7 @@ description: 'Learn how to contribute to GitLab.'
 - [Permissions](permissions.md)
 - [Prometheus metrics](prometheus_metrics.md)
 - [Guidelines for reusing abstractions](reusing_abstractions.md)
+- [DeclarativePolicy framework](policies.md)
 
 ## Performance guides
 

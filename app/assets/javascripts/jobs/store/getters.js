@@ -22,12 +22,22 @@ export const shouldRenderCalloutMessage = state =>
   !_.isEmpty(state.job.status) && !_.isEmpty(state.job.callout_message);
 
 /**
- * When job has not started the key will be `false`
+ * When job has not started the key will be null
  * When job started the key will be a string with a date.
  */
-export const jobHasStarted = state => !(state.job.started === false);
+export const shouldRenderTriggeredLabel = state => _.isString(state.job.started);
 
 export const hasEnvironment = state => !_.isEmpty(state.job.deployment_status);
+
+/**
+ * Checks if it the job has trace.
+ * Used to check if it should render the job log or the empty state
+ * @returns {Boolean}
+ */
+export const hasTrace = state => state.job.has_trace || state.job.status.group === 'running';
+
+export const emptyStateIllustration = state =>
+  (state.job && state.job.status && state.job.status.illustration) || {};
 
 /**
  * When the job is pending and there are no available runners
@@ -36,7 +46,8 @@ export const hasEnvironment = state => !_.isEmpty(state.job.deployment_status);
  * @returns {Boolean}
  */
 export const isJobStuck = state =>
-  state.job.status.group === 'pending' && state.job.runners && state.job.runners.available === false;
+  state.job.status.group === 'pending' &&
+  (!_.isEmpty(state.job.runners) && state.job.runners.available === false);
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

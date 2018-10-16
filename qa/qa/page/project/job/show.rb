@@ -5,12 +5,12 @@ module QA::Page
       PASSED_STATUS = 'passed'.freeze
 
       view 'app/views/shared/builds/_build_output.html.haml' do
-        element :build_output, '.js-build-output'
-        element :loading_animation, '.js-build-refresh'
+        element :build_output, '.js-build-output' # rubocop:disable QA/ElementWithPattern
+        element :loading_animation, '.js-build-refresh' # rubocop:disable QA/ElementWithPattern
       end
 
       view 'app/assets/javascripts/vue_shared/components/ci_badge_link.vue' do
-        element :status_badge, 'ci-status'
+        element :status_badge, 'ci-status' # rubocop:disable QA/ElementWithPattern
       end
 
       def completed?

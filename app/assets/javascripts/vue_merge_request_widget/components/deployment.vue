@@ -22,9 +22,7 @@ export default {
   directives: {
     tooltip,
   },
-  mixins: [
-    timeagoMixin,
-  ],
+  mixins: [timeagoMixin],
   props: {
     deployment: {
       type: Object,
@@ -50,7 +48,7 @@ export default {
       return !!(this.deployment.url && this.deployment.name);
     },
     hasMetrics() {
-      return !!(this.deployment.metrics_url);
+      return !!this.deployment.metrics_url;
     },
   },
   methods: {
@@ -63,7 +61,7 @@ export default {
 
         MRWidgetService.stopEnvironment(this.deployment.stop_url)
           .then(res => res.data)
-          .then((data) => {
+          .then(data => {
             if (data.redirect_url) {
               visitUrl(data.redirect_url);
             }

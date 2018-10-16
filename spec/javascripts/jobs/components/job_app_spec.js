@@ -37,10 +37,11 @@ describe('Job App ', () => {
       available: false,
     },
     tags: ['docker'],
+    has_trace: true,
   };
 
   const props = {
-    runnerHelpUrl: 'help/runners',
+    runnerSettingsUrl: 'settings/ci-cd/runners',
   };
 
   beforeEach(() => {
@@ -180,6 +181,143 @@ describe('Job App ', () => {
       });
 
       expect(vm.$el.querySelector('.js-job-stuck')).toBeNull();
+    });
+  });
+
+  describe('environments block', () => {
+    it('renders environment block when job has environment', () => {
+      store.dispatch(
+        'receiveJobSuccess',
+        Object.assign({}, job, {
+          deployment_status: {
+            environment: {
+              environment_path: '/path',
+              name: 'foo',
+            },
+          },
+        }),
+      );
+
+      vm = mountComponentWithStore(Component, {
+        props,
+        store,
+      });
+
+      expect(vm.$el.querySelector('.js-job-environment')).not.toBeNull();
+    });
+
+    it('does not render environment block when job has environment', () => {
+      store.dispatch('receiveJobSuccess', job);
+
+      vm = mountComponentWithStore(Component, {
+        props,
+        store,
+      });
+
+      expect(vm.$el.querySelector('.js-job-environment')).toBeNull();
+    });
+  });
+
+  describe('erased block', () => {
+    it('renders erased block when `erased` is true', () => {
+      store.dispatch(
+        'receiveJobSuccess',
+        Object.assign({}, job, {
+          erased_by: {
+            username: 'root',
+            web_url: 'gitlab.com/root',
+          },
+          erased_at: '2016-11-07T11:11:16.525Z',
+        }),
+      );
+
+      vm = mountComponentWithStore(Component, {
+        props,
+        store,
+      });
+
+      expect(vm.$el.querySelector('.js-job-erased-block')).not.toBeNull();
+    });
+
+    it('does not render erased block when `erased` is false', () => {
+      store.dispatch('receiveJobSuccess', Object.assign({}, job, { erased_at: null }));
+
+      vm = mountComponentWithStore(Component, {
+        props,
+        store,
+      });
+
+      expect(vm.$el.querySelector('.js-job-erased-block')).toBeNull();
+    });
+  });
+
+  describe('empty states block', () => {
+    it('renders empty state when job does not have trace and is not running', () => {
+      store.dispatch(
+        'receiveJobSuccess',
+        Object.assign({}, job, {
+          has_trace: false,
+          status: {
+            group: 'pending',
+            icon: 'status_pending',
+            label: 'pending',
+            text: 'pending',
+            details_path: 'path',
+            illustration: {
+              image: 'path',
+              size: '340',
+              title: 'Empty State',
+              content: 'This is an empty state',
+            },
+            action: {
+              button_title: 'Retry job',
+              method: 'post',
+              path: '/path',
+            },
+          },
+        }),
+      );
+
+      vm = mountComponentWithStore(Component, {
+        props,
+        store,
+      });
+
+      expect(vm.$el.querySelector('.js-job-empty-state')).not.toBeNull();
+    });
+
+    it('does not render empty state when job does not have trace but it is running', () => {
+      store.dispatch(
+        'receiveJobSuccess',
+        Object.assign({}, job, {
+          has_trace: false,
+          status: {
+            group: 'running',
+            icon: 'status_running',
+            label: 'running',
+            text: 'running',
+            details_path: 'path',
+          },
+        }),
+      );
+
+      vm = mountComponentWithStore(Component, {
+        props,
+        store,
+      });
+
+      expect(vm.$el.querySelector('.js-job-empty-state')).toBeNull();
+    });
+
+    it('does not render empty state when job has trace but it is not running', () => {
+      store.dispatch('receiveJobSuccess', Object.assign({}, job, { has_trace: true }));
+
+      vm = mountComponentWithStore(Component, {
+        props,
+        store,
+      });
+
+      expect(vm.$el.querySelector('.js-job-empty-state')).toBeNull();
     });
   });
 });

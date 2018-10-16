@@ -5,7 +5,7 @@ continuous deployment that's developed and used by Travis CI, but can also be
 used with GitLab CI.
 
 >**Note:**
-We recommend to use Dpl if you're deploying to any of these of these services:
+We recommend to use Dpl if you're deploying to any of these services:
 https://github.com/travis-ci/dpl#supported-providers.
 
 ## Requirements

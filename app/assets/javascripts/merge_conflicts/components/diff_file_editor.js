@@ -1,12 +1,13 @@
-/* eslint-disable comma-dangle, quote-props, no-useless-computed-key, object-shorthand, no-param-reassign, max-len */
+/* eslint-disable no-useless-computed-key, object-shorthand, no-param-reassign */
 /* global ace */
 
 import Vue from 'vue';
 import axios from '~/lib/utils/axios_utils';
 import flash from '~/flash';
 import { __ } from '~/locale';
+import getModeByFileExtension from '~/lib/utils/ace_utils';
 
-((global) => {
+(global => {
   global.mergeConflicts = global.mergeConflicts || {};
 
   global.mergeConflicts.diffFileEditor = Vue.extend({
@@ -35,10 +36,10 @@ import { __ } from '~/locale';
     computed: {
       classObject() {
         return {
-          'saved': this.saved,
-          'is-loading': this.loading
+          saved: this.saved,
+          'is-loading': this.loading,
         };
-      }
+      },
     },
     watch: {
       ['file.showEditor'](val) {
@@ -49,7 +50,7 @@ import { __ } from '~/locale';
         }
 
         this.loadEditor();
-      }
+      },
     },
     mounted() {
       if (this.file.loadEditor) {
@@ -60,7 +61,8 @@ import { __ } from '~/locale';
       loadEditor() {
         this.loading = true;
 
-        axios.get(this.file.content_path)
+        axios
+          .get(this.file.content_path)
           .then(({ data }) => {
             const content = this.$el.querySelector('pre');
             const fileContent = document.createTextNode(data.content);
@@ -71,7 +73,7 @@ import { __ } from '~/locale';
             this.fileLoaded = true;
             this.editor = ace.edit(content);
             this.editor.$blockScrolling = Infinity; // Turn off annoying warning
-            this.editor.getSession().setMode(`ace/mode/${data.blob_ace_mode}`);
+            this.editor.getSession().setMode(getModeByFileExtension(data.new_path));
             this.editor.on('change', () => {
               this.saveDiffResolution();
             });
@@ -101,7 +103,7 @@ import { __ } from '~/locale';
       },
       acceptDiscardConfirmation(file) {
         this.onAcceptDiscardConfirmation(file);
-      }
-    }
+      },
+    },
   });
 })(window.gl || (window.gl = {}));

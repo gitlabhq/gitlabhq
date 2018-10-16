@@ -1,4 +1,5 @@
 <script>
+  import Icon from '~/vue_shared/components/icon.vue';
   import bp from '../../../breakpoints';
   import ModalStore from '../../stores/modal_store';
   import IssueCardInner from '../issue_card_inner.vue';
@@ -6,6 +7,7 @@
   export default {
     components: {
       IssueCardInner,
+      Icon,
     },
     props: {
       issueLinkBase: {
@@ -147,13 +149,13 @@
             :issue="issue"
             :issue-link-base="issueLinkBase"
             :root-path="rootPath"/>
-          <span
+          <icon
             v-if="issue.selected"
             :aria-label="'Issue #' + issue.id + ' selected'"
+            name="mobile-issue-close"
             aria-checked="true"
-            class="issue-card-selected text-center">
-            <i class="fa fa-check"></i>
-          </span>
+            class="issue-card-selected text-center"
+          />
         </div>
       </div>
     </div>

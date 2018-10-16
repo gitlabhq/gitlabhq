@@ -1,0 +1,5 @@
+---
+title: Does not allow a SSH URI when importing new projects
+merge_request: 22309
+author:
+type: fixed

@@ -1,25 +1,20 @@
-/* eslint-disable comma-dangle */
-
 import Sortable from 'sortablejs';
 import Vue from 'vue';
 import { n__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import Tooltip from '~/vue_shared/directives/tooltip';
 import AccessorUtilities from '../../lib/utils/accessor';
-import boardList from './board_list.vue';
 import BoardBlankState from './board_blank_state.vue';
-import './board_delete';
+import BoardDelete from './board_delete';
+import BoardList from './board_list.vue';
+import boardsStore from '../stores/boards_store';
+import { getBoardSortableDefaultOptions, sortableEnd } from '../mixins/sortable_default_options';
 
-const Store = gl.issueBoards.BoardsStore;
-
-window.gl = window.gl || {};
-window.gl.issueBoards = window.gl.issueBoards || {};
-
-gl.issueBoards.Board = Vue.extend({
+export default Vue.extend({
   components: {
-    boardList,
-    'board-delete': gl.issueBoards.BoardDelete,
     BoardBlankState,
+    BoardDelete,
+    BoardList,
     Icon,
   },
   directives: {
@@ -49,8 +44,8 @@ gl.issueBoards.Board = Vue.extend({
   },
   data () {
     return {
-      detailIssue: Store.detail,
-      filter: Store.filter,
+      detailIssue: boardsStore.detail,
+      filter: boardsStore.filter,
     };
   },
   computed: {
@@ -72,20 +67,20 @@ gl.issueBoards.Board = Vue.extend({
     }
   },
   mounted () {
-    this.sortableOptions = gl.issueBoards.getBoardSortableDefaultOptions({
+    this.sortableOptions = getBoardSortableDefaultOptions({
       disabled: this.disabled,
       group: 'boards',
       draggable: '.is-draggable',
       handle: '.js-board-handle',
       onEnd: (e) => {
-        gl.issueBoards.onEnd();
+        sortableEnd();
 
         if (e.newIndex !== undefined && e.oldIndex !== e.newIndex) {
           const order = this.sortable.toArray();
-          const list = Store.findList('id', parseInt(e.item.dataset.id, 10));
+          const list = boardsStore.findList('id', parseInt(e.item.dataset.id, 10));
 
           this.$nextTick(() => {
-            Store.moveList(list, order);
+            boardsStore.moveList(list, order);
           });
         }
       }

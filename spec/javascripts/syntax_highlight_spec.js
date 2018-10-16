@@ -1,4 +1,4 @@
-/* eslint-disable no-var, no-return-assign, quotes */
+/* eslint-disable no-var, no-return-assign */
 
 import $ from 'jquery';
 import syntaxHighlight from '~/syntax_highlight';
@@ -25,6 +25,7 @@ describe('Syntax Highlighter', function() {
     beforeEach(function() {
       return setFixtures("<div class=\"parent\">\n  <div class=\"js-syntax-highlight\"></div>\n  <div class=\"foo\"></div>\n  <div class=\"js-syntax-highlight\"></div>\n</div>");
     });
+
     it('applies highlighting to all applicable children', function() {
       stubUserColorScheme('monokai');
       syntaxHighlight($('.parent'));

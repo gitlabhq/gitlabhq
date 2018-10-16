@@ -83,9 +83,6 @@ gem 'net-ldap'
 # Only used to compute wiki page slugs
 gem 'gitlab-gollum-lib', '~> 4.2', require: false
 
-# Language detection
-gem 'github-linguist', '~> 5.3.3', require: 'linguist'
-
 # API
 gem 'grape', '~> 1.1'
 gem 'grape-entity', '~> 0.7.1'
@@ -146,6 +143,7 @@ gem 'rouge', '~> 3.1'
 gem 'truncato', '~> 0.7.9'
 gem 'bootstrap_form', '~> 2.7.0'
 gem 'nokogiri', '~> 1.8.2'
+gem 'escape_utils', '~> 1.1'
 
 # Calendar rendering
 gem 'icalendar'
@@ -295,6 +293,7 @@ gem 'peek-mysql2', '~> 1.1.0', group: :mysql
 gem 'peek-pg', '~> 1.3.0', group: :postgres
 gem 'peek-rblineprof', '~> 0.2.0'
 gem 'peek-redis', '~> 1.2.0'
+gem 'gitlab-sidekiq-fetcher', require: 'sidekiq-reliable-fetch'
 
 # Metrics
 group :metrics do
@@ -420,7 +419,7 @@ end
 
 # Gitaly GRPC client
 gem 'gitaly-proto', '~> 0.118.1', require: 'gitaly'
-gem 'grpc', '~> 1.11.0'
+gem 'grpc', '~> 1.15.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed
 gem 'google-protobuf', '= 3.5.1'

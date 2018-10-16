@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'capybara/dsl'
 
 module QA
@@ -6,6 +8,8 @@ module QA
       include Capybara::DSL
       include Scenario::Actable
       extend SingleForwardable
+
+      ElementNotFound = Class.new(RuntimeError)
 
       def_delegators :evaluator, :view, :views
 
@@ -23,6 +27,21 @@ module QA
           sleep(time)
 
           refresh if reload
+        end
+
+        false
+      end
+
+      def with_retry(max_attempts: 3, reload: false)
+        attempts = 0
+
+        while attempts < max_attempts
+          result = yield
+          return result if result
+
+          refresh if reload
+
+          attempts += 1
         end
 
         false

@@ -20,7 +20,7 @@ build environment.
 
 Let's first specify the PHP image that will be used for the job process
 (you can read more about what an image means in the Runner's lingo reading
-about [Using Docker images](../docker/using_docker_images.md#what-is-image)).
+about [Using Docker images](../docker/using_docker_images.md#what-is-an-image)).
 
 Start by adding the image to your `.gitlab-ci.yml`:
 

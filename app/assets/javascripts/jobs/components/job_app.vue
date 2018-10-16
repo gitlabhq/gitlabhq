@@ -2,6 +2,7 @@
   import { mapGetters, mapState } from 'vuex';
   import CiHeader from '~/vue_shared/components/header_ci_component.vue';
   import Callout from '~/vue_shared/components/callout.vue';
+  import EmptyState from './empty_state.vue';
   import EnvironmentsBlock from './environments_block.vue';
   import ErasedBlock from './erased_block.vue';
   import StuckBlock from './stuck_block.vue';
@@ -11,12 +12,13 @@
     components: {
       CiHeader,
       Callout,
+      EmptyState,
       EnvironmentsBlock,
       ErasedBlock,
       StuckBlock,
     },
     props: {
-      runnerHelpUrl: {
+      runnerSettingsUrl: {
         type: String,
         required: false,
         default: null,
@@ -28,9 +30,11 @@
         'headerActions',
         'headerTime',
         'shouldRenderCalloutMessage',
-        'jobHasStarted',
+        'shouldRenderTriggeredLabel',
         'hasEnvironment',
         'isJobStuck',
+        'hasTrace',
+        'emptyStateIllustration',
       ]),
     },
   };
@@ -54,7 +58,7 @@
             :user="job.user"
             :actions="headerActions"
             :has-sidebar-button="true"
-            :should-render-triggered-label="jobHasStarted"
+            :should-render-triggered-label="shouldRenderTriggeredLabel"
             :item-name="__('Job')"
           />
         </div>
@@ -72,17 +76,19 @@
         class="js-job-stuck"
         :has-no-runners-for-project="job.runners.available"
         :tags="job.tags"
-        :runners-path="runnerHelpUrl"
+        :runners-path="runnerSettingsUrl"
       />
 
       <environments-block
         v-if="hasEnvironment"
+        class="js-job-environment"
         :deployment-status="job.deployment_status"
         :icon-status="job.status"
       />
 
       <erased-block
-        v-if="job.erased"
+        v-if="job.erased_at"
+        class="js-job-erased-block"
         :user="job.erased_by"
         :erased-at="job.erased_at"
       />
@@ -91,6 +97,15 @@
       <!-- EO job log -->
 
       <!--empty state -->
+      <empty-state
+        v-if="!hasTrace"
+        class="js-job-empty-state"
+        :illustration-path="emptyStateIllustration.image"
+        :illustration-size-class="emptyStateIllustration.size"
+        :title="emptyStateIllustration.title"
+        :content="emptyStateIllustration.content"
+        :action="job.status.action"
+      />
       <!-- EO empty state -->
 
       <!-- EO Body Section -->

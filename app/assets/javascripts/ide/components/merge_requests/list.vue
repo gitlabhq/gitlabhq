@@ -37,14 +37,10 @@ export default {
       return this.hasSearchFocus && !this.search && !this.currentSearchType;
     },
     type() {
-      return this.currentSearchType
-        ? this.currentSearchType.type
-        : '';
+      return this.currentSearchType ? this.currentSearchType.type : '';
     },
     searchTokens() {
-      return this.currentSearchType
-        ? [this.currentSearchType]
-        : [];
+      return this.currentSearchType ? [this.currentSearchType] : [];
     },
   },
   watch: {

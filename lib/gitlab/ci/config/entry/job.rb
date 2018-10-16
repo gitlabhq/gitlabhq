@@ -10,7 +10,7 @@ module Gitlab
           include Attributable
 
           ALLOWED_KEYS = %i[tags script only except type image services
-                            allow_failure type stage when artifacts cache
+                            allow_failure type stage when start_in artifacts cache
                             dependencies before_script after_script variables
                             environment coverage retry extends].freeze
 
@@ -28,13 +28,16 @@ module Gitlab
                                                 greater_than_or_equal_to: 0,
                                                 less_than_or_equal_to: 2 }
               validates :when,
-                inclusion: { in: %w[on_success on_failure always manual],
+                inclusion: { in: %w[on_success on_failure always manual delayed],
                              message: 'should be on_success, on_failure, ' \
-                                      'always or manual' }
+                                      'always, manual or delayed' }
 
               validates :dependencies, array_of_strings: true
               validates :extends, type: String
             end
+
+            validates :start_in, duration: { limit: '1 day' }, if: :delayed?
+            validates :start_in, absence: true, unless: :delayed?
           end
 
           entry :before_script, Entry::Script,
@@ -84,7 +87,7 @@ module Gitlab
                   :artifacts, :commands, :environment, :coverage, :retry
 
           attributes :script, :tags, :allow_failure, :when, :dependencies,
-                     :retry, :extends
+                     :retry, :extends, :start_in
 
           def compose!(deps = nil)
             super do
@@ -112,6 +115,10 @@ module Gitlab
 
           def manual_action?
             self.when == 'manual'
+          end
+
+          def delayed?
+            self.when == 'delayed'
           end
 
           def ignored?

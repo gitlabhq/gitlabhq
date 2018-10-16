@@ -4,30 +4,32 @@ import Dashboard from '~/monitoring/components/dashboard.vue';
 import axios from '~/lib/utils/axios_utils';
 import { metricsGroupsAPIResponse, mockApiEndpoint, environmentData } from './mock_data';
 
+const propsData = {
+  hasMetrics: false,
+  documentationPath: '/path/to/docs',
+  settingsPath: '/path/to/settings',
+  clustersPath: '/path/to/clusters',
+  tagsPath: '/path/to/tags',
+  projectPath: '/path/to/project',
+  metricsEndpoint: mockApiEndpoint,
+  deploymentEndpoint: null,
+  emptyGettingStartedSvgPath: '/path/to/getting-started.svg',
+  emptyLoadingSvgPath: '/path/to/loading.svg',
+  emptyNoDataSvgPath: '/path/to/no-data.svg',
+  emptyUnableToConnectSvgPath: '/path/to/unable-to-connect.svg',
+  environmentsEndpoint: '/root/hello-prometheus/environments/35',
+  currentEnvironmentName: 'production',
+};
+
+export default propsData;
+
 describe('Dashboard', () => {
   let DashboardComponent;
-
-  const propsData = {
-    hasMetrics: false,
-    documentationPath: '/path/to/docs',
-    settingsPath: '/path/to/settings',
-    clustersPath: '/path/to/clusters',
-    tagsPath: '/path/to/tags',
-    projectPath: '/path/to/project',
-    metricsEndpoint: mockApiEndpoint,
-    deploymentEndpoint: null,
-    emptyGettingStartedSvgPath: '/path/to/getting-started.svg',
-    emptyLoadingSvgPath: '/path/to/loading.svg',
-    emptyNoDataSvgPath: '/path/to/no-data.svg',
-    emptyUnableToConnectSvgPath: '/path/to/unable-to-connect.svg',
-    environmentsEndpoint: '/root/hello-prometheus/environments/35',
-    currentEnvironmentName: 'production',
-  };
 
   beforeEach(() => {
     setFixtures(`
       <div class="prometheus-graphs"></div>
-      <div class="nav-sidebar"></div> 
+      <div class="nav-sidebar"></div>
     `);
     DashboardComponent = Vue.extend(Dashboard);
   });

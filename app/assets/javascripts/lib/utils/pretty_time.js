@@ -27,10 +27,10 @@ export function parseSeconds(seconds, { daysPerWeek = 5, hoursPerDay = 8 } = {})
 
   let unorderedMinutes = Math.abs(seconds / MINUTES_PER_HOUR);
 
-  return _.mapObject(timePeriodConstraints, (minutesPerPeriod) => {
+  return _.mapObject(timePeriodConstraints, minutesPerPeriod => {
     const periodCount = Math.floor(unorderedMinutes / minutesPerPeriod);
 
-    unorderedMinutes -= (periodCount * minutesPerPeriod);
+    unorderedMinutes -= periodCount * minutesPerPeriod;
 
     return periodCount;
   });
@@ -42,10 +42,14 @@ export function parseSeconds(seconds, { daysPerWeek = 5, hoursPerDay = 8 } = {})
 */
 
 export function stringifyTime(timeObject) {
-  const reducedTime = _.reduce(timeObject, (memo, unitValue, unitName) => {
-    const isNonZero = !!unitValue;
-    return isNonZero ? `${memo} ${unitValue}${unitName.charAt(0)}` : memo;
-  }, '').trim();
+  const reducedTime = _.reduce(
+    timeObject,
+    (memo, unitValue, unitName) => {
+      const isNonZero = !!unitValue;
+      return isNonZero ? `${memo} ${unitValue}${unitName.charAt(0)}` : memo;
+    },
+    '',
+  ).trim();
   return reducedTime.length ? reducedTime : '0m';
 }
 
@@ -55,7 +59,5 @@ export function stringifyTime(timeObject) {
 */
 
 export function abbreviateTime(timeStr) {
-  return timeStr.split(' ')
-    .filter(unitStr => unitStr.charAt(0) !== '0')[0];
+  return timeStr.split(' ').filter(unitStr => unitStr.charAt(0) !== '0')[0];
 }
-

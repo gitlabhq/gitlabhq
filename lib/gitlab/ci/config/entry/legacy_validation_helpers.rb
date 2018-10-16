@@ -11,6 +11,15 @@ module Gitlab
             false
           end
 
+          def validate_duration_limit(value, limit)
+            return false unless value.is_a?(String)
+
+            ChronicDuration.parse(value).second.from_now <
+              ChronicDuration.parse(limit).second.from_now
+          rescue ChronicDuration::DurationParseError
+            false
+          end
+
           def validate_array_of_strings(values)
             values.is_a?(Array) && values.all? { |value| validate_string(value) }
           end

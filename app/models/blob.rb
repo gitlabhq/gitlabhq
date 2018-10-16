@@ -162,7 +162,7 @@ class Blob < SimpleDelegator
     if stored_externally?
       if rich_viewer
         rich_viewer.binary?
-      elsif Linguist::Language.find_by_extension(name).any?
+      elsif known_extension?
         false
       elsif _mime_type
         _mime_type.binary?

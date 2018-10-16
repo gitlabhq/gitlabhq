@@ -1,26 +1,26 @@
 <script>
-  import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
-  export default {
-    components: {
-      ClipboardButton,
+export default {
+  components: {
+    ClipboardButton,
+  },
+  props: {
+    commit: {
+      type: Object,
+      required: true,
     },
-    props: {
-      commit: {
-        type: Object,
-        required: true,
-      },
-      mergeRequest: {
-        type: Object,
-        required: false,
-        default: null,
-      },
-      isLastBlock: {
-        type: Boolean,
-        required: true,
-      },
+    mergeRequest: {
+      type: Object,
+      required: false,
+      default: null,
     },
-  };
+    isLastBlock: {
+      type: Boolean,
+      required: true,
+    },
+  },
+};
 </script>
 <template>
   <div
@@ -46,7 +46,7 @@
         v-if="mergeRequest"
         :href="mergeRequest.path"
         class="js-link-commit link-commit"
-      >{{ mergeRequest.iid }}</a>
+      >!{{ mergeRequest.iid }}</a>
     </p>
 
     <p class="build-light-text append-bottom-0">

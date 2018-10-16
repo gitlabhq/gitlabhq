@@ -9,6 +9,7 @@ Most issues will have labels for at least one of the following:
 - Type: ~"feature proposal", ~bug, ~customer, etc.
 - Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
 - Team: ~"CI/CD", ~Plan, ~Manage, ~Quality, etc.
+- Stage: ~"devops:plan", ~"devops:create", etc.
 - Release Scoping: ~Deliverable, ~Stretch, ~"Next Patch Release"
 - Priority: ~P1, ~P2, ~P3, ~P4
 - Severity: ~S1, ~S2, ~S3, ~S4
@@ -20,7 +21,6 @@ If you come across an issue that has none of these, and you're allowed to set
 labels, you can _always_ add the team and type, and often also the subject.
 
 [milestones-page]: https://gitlab.com/gitlab-org/gitlab-ce/milestones
-[labels-page]: https://gitlab.com/gitlab-org/gitlab-ce/labels
 
 ## Type labels
 
@@ -60,7 +60,7 @@ people.
 
 The current team labels are:
 
-- ~Configuration
+- ~Configure
 - ~"CI/CD"
 - ~Create
 - ~Distribution
@@ -83,6 +83,39 @@ indicate if an issue needs backend work, frontend work, or both.
 
 Team labels are always capitalized so that they show up as the first label for
 any issue.
+
+## Stage labels
+
+Stage labels specify which [DevOps stage][devops-stages] the issue belongs to.
+
+The current stage labels are:
+
+- ~"devops:manage"
+- ~"devops:plan"
+- ~"devops:create"
+- ~"devops:verify"
+- ~"devops:package"
+- ~"devops:release"
+- ~"devops:configure"
+- ~"devops:monitor"
+- ~"devops:secure"
+
+These labels should be mutually exclusive. If an issue belongs to multiple
+stages, the most relevant should be used.
+
+They differ from the [Team labels](#team-labels) because teams may work on
+issues outside their stage.
+
+Normally there is a 1:1 relationship between Stage labels and Team labels, but
+any issue can be picked up by any team, depending on current priorities.
+So, an issue labeled ~"devops:create" may be scheduled by the ~Plan team, for
+example. In such cases, it's usual to include both team labels so each team can
+be aware of the progress.
+
+The Stage labels are used to generate the [direction pages][direction-pages] automatically.
+
+[devops-stages]: https://about.gitlab.com/direction/#devops-stages
+[direction-pages]: https://about.gitlab.com/direction/
 
 ## Release Scoping labels
 
@@ -108,12 +141,12 @@ Priority labels help us define the time a ~bug fix should be completed. Priority
 If there are multiple defects, the priority decides which defect has to be fixed immediately versus later.
 This label documents the planned timeline & urgency which is used to measure against our actual SLA on delivering ~bug fixes.
 
-| Label | Meaning         | Estimate time to fix                                             |
-|-------|-----------------|------------------------------------------------------------------|
-| ~P1   | Urgent Priority | The current release + potentially immediate hotfix to GitLab.com |
-| ~P2   | High Priority   | The next release                                                 |
-| ~P3   | Medium Priority | Within the next 3 releases (approx one quarter)                  |
-| ~P4   | Low Priority    | Anything outside the next 3 releases (approx beyond one quarter) |
+| Label | Meaning         | Defect SLA (applies only to ~bug and ~security defects)                                                    |
+|-------|-----------------|----------------------------------------------------------------------------|
+| ~P1   | Urgent Priority | The current release + potentially immediate hotfix to GitLab.com (30 days) |
+| ~P2   | High Priority   | The next release (60 days)                                                 |
+| ~P3   | Medium Priority | Within the next 3 releases (approx one quarter or 90 days)                 |
+| ~P4   | Low Priority    | Anything outside the next 3 releases (more than one quarter or 120 days)   |
 
 ## Severity labels
 
@@ -208,6 +241,7 @@ project.
 [GitLab Triage]: https://gitlab.com/gitlab-org/gitlab-triage
 [scheduled pipeline]: https://gitlab.com/gitlab-org/quality/triage-ops/pipeline_schedules/10512/edit
 [quality/triage-ops]: https://gitlab.com/gitlab-org/quality/triage-ops
+[team]: https://about.gitlab.com/team/
 
 ## Feature proposals
 
@@ -234,6 +268,8 @@ need to ask one of the [core team] members to add the label, if you do not have 
 
 If you want to create something yourself, consider opening an issue first to
 discuss whether it is interesting to include this in GitLab.
+
+[fpl]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=feature+proposal
 
 ## Issue tracker guidelines
 
@@ -331,3 +367,7 @@ A recent example of this was the issue for
 ---
 
 [Return to Contributing documentation](index.md)
+
+[labels-page]: https://gitlab.com/gitlab-org/gitlab-ce/labels
+[ce-tracker]: https://gitlab.com/gitlab-org/gitlab-ce/issues
+[ee-tracker]: https://gitlab.com/gitlab-org/gitlab-ee/issues

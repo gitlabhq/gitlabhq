@@ -330,7 +330,7 @@ msgstr "不允许访问%{classification_label}"
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
 msgstr "为方便修复挂载问题，访问故障存储已被暂时禁用。在问题解决后请重置存储运行状况信息，以允许再次访问。"
 
-msgid "Access your runner token, customize your pipeline configuration, and view your pipeline status and coverage report."
+msgid "Customize your pipeline configuration, view your pipeline status and coverage report."
 msgstr "访问您的 runner 令牌，自定义流水线配置，以及查看流水线状态和覆盖率报告。"
 
 msgid "Account"
@@ -4230,12 +4230,6 @@ msgstr "六"
 msgid "June"
 msgstr "六月"
 
-msgid "Koding"
-msgstr "Koding"
-
-msgid "Koding Dashboard"
-msgstr "Koding仪表板"
-
 msgid "Kubernetes"
 msgstr "Kubernetes"
 
@@ -5190,9 +5184,6 @@ msgstr "您的一个或多个Bitbucket项目无法直接导入GitLab，因为它
 
 msgid "One or more of your Google Code projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
 msgstr "您的一个或多个Google Code项目无法直接导入GitLab，因为它们使用Subversion或Mercurial进行版本控制，而不是Git。"
-
-msgid "Online IDE integration settings."
-msgstr "在线IDE集成设置。"
 
 msgid "Only admins"
 msgstr "仅管理员"
@@ -6731,9 +6722,6 @@ msgstr "设定用户登录的条件。启用强制双重认证。"
 
 msgid "Set up CI/CD"
 msgstr "配置 CI/CD"
-
-msgid "Set up Koding"
-msgstr "设置 Koding"
 
 msgid "Set up a %{type} Runner manually"
 msgstr "手动设置%{type}Runner  "

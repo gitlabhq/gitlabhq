@@ -49,15 +49,16 @@
 
   .environments-container
     - if @deployments.blank?
-      .blank-state-row
-        .blank-state-center
-          %h2.blank-state-title
+      .empty-state
+        .text-content
+          %h4.state-title
             You don't have any deployments right now.
           %p.blank-state-text
             Define environments in the deploy stage(s) in
             %code .gitlab-ci.yml
             to track deployments here.
-          = link_to "Read more", help_page_path("ci/environments"), class: "btn btn-success"
+          .text-center
+            = link_to _("Read more"), help_page_path("ci/environments"), class: "btn btn-success"
     - else
       .table-holder
         .ci-table.environments{ role: 'grid' }

@@ -5,7 +5,7 @@ module QA
         module Kubernetes
           class Index < Page::Base
             view 'app/views/projects/clusters/_empty_state.html.haml' do
-              element :add_kubernetes_cluster_button, "link_to s_('ClusterIntegration|Add Kubernetes cluster')"
+              element :add_kubernetes_cluster_button, "link_to s_('ClusterIntegration|Add Kubernetes cluster')" # rubocop:disable QA/ElementWithPattern
             end
 
             def add_kubernetes_cluster

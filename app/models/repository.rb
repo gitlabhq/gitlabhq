@@ -36,7 +36,7 @@ class Repository
   # For example, for entry `:commit_count` there's a method called `commit_count` which
   # stores its data in the `commit_count` cache key.
   CACHED_METHODS = %i(size commit_count rendered_readme contribution_guide
-                      changelog license_blob license_key gitignore koding_yml
+                      changelog license_blob license_key gitignore
                       gitlab_ci_yml branch_names tag_names branch_count
                       tag_count avatar exists? root_ref has_visible_content?
                       issue_template_names merge_request_template_names xcode_project?).freeze
@@ -53,7 +53,6 @@ class Repository
     license: %i(license_blob license_key license),
     contributing: :contribution_guide,
     gitignore: :gitignore,
-    koding: :koding_yml,
     gitlab_ci: :gitlab_ci_yml,
     avatar: :avatar,
     issue_template: :issue_template_names,
@@ -619,11 +618,6 @@ class Repository
   end
   cache_method :gitignore
 
-  def koding_yml
-    file_on_head(:koding)
-  end
-  cache_method :koding_yml
-
   def gitlab_ci_yml
     file_on_head(:gitlab_ci)
   end
@@ -881,10 +875,12 @@ class Repository
 
   delegate :merged_branch_names, to: :raw_repository
 
-  def merge_base(first_commit_id, second_commit_id)
-    first_commit_id = commit(first_commit_id).try(:id) || first_commit_id
-    second_commit_id = commit(second_commit_id).try(:id) || second_commit_id
-    raw_repository.merge_base(first_commit_id, second_commit_id)
+  def merge_base(*commits_or_ids)
+    commit_ids = commits_or_ids.map do |commit_or_id|
+      commit_or_id.is_a?(::Commit) ? commit_or_id.id : commit_or_id
+    end
+
+    raw_repository.merge_base(*commit_ids)
   end
 
   def ancestor?(ancestor_id, descendant_id)

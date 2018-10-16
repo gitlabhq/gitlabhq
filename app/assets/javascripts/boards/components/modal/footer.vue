@@ -5,6 +5,7 @@ import ListsDropdown from './lists_dropdown.vue';
 import { pluralize } from '../../../lib/utils/text_utility';
 import ModalStore from '../../stores/modal_store';
 import modalMixin from '../../mixins/modal_mixins';
+import boardsStore from '../../stores/boards_store';
 
 export default {
   components: {
@@ -14,7 +15,7 @@ export default {
   data() {
     return {
       modal: ModalStore.store,
-      state: gl.issueBoards.BoardsStore.state,
+      state: boardsStore.state,
     };
   },
   computed: {

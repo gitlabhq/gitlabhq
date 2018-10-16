@@ -66,6 +66,10 @@ module Clusters
           end
         end
       end
+
+      def available?
+        installed? || updated?
+      end
     end
   end
 end

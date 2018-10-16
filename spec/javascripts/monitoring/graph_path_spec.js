@@ -13,7 +13,7 @@ const createComponent = (propsData) => {
 
 const convertedMetrics = convertDatesMultipleSeries(singleRowMetricsMultipleSeries);
 
-const timeSeries = createTimeSeries(convertedMetrics[0].queries, 428, 272, 120);
+const { timeSeries } = createTimeSeries(convertedMetrics[0].queries, 428, 272, 120);
 const firstTimeSeries = timeSeries[0];
 
 describe('Monitoring Paths', () => {

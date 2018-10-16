@@ -159,10 +159,6 @@ module BlobHelper
     end
   end
 
-  def licenses_for_select
-    @licenses_for_select ||= template_dropdown_names(TemplateFinder.build(:licenses).execute)
-  end
-
   def ref_project
     @ref_project ||= @target_project || @project
   end
@@ -173,29 +169,34 @@ module BlobHelper
 
     categories.each_with_object({}) do |category, hash|
       hash[category] = grouped[category].map do |item|
-        { name: item.name, id: item.id }
+        { name: item.name, id: item.key }
       end
     end
   end
   private :template_dropdown_names
 
-  def gitignore_names
-    @gitignore_names ||= template_dropdown_names(TemplateFinder.build(:gitignores).execute)
+  def licenses_for_select(project = @project)
+    @licenses_for_select ||= template_dropdown_names(TemplateFinder.build(:licenses, project).execute)
   end
 
-  def gitlab_ci_ymls
-    @gitlab_ci_ymls ||= template_dropdown_names(TemplateFinder.build(:gitlab_ci_ymls).execute)
+  def gitignore_names(project = @project)
+    @gitignore_names ||= template_dropdown_names(TemplateFinder.build(:gitignores, project).execute)
   end
 
-  def dockerfile_names
-    @dockerfile_names ||= template_dropdown_names(TemplateFinder.build(:dockerfiles).execute)
+  def gitlab_ci_ymls(project = @project)
+    @gitlab_ci_ymls ||= template_dropdown_names(TemplateFinder.build(:gitlab_ci_ymls, project).execute)
   end
 
-  def blob_editor_paths
+  def dockerfile_names(project = @project)
+    @dockerfile_names ||= template_dropdown_names(TemplateFinder.build(:dockerfiles, project).execute)
+  end
+
+  def blob_editor_paths(project = @project)
     {
       'relative-url-root' => Rails.application.config.relative_url_root,
       'assets-prefix' => Gitlab::Application.config.assets.prefix,
-      'blob-language' => @blob && @blob.language.try(:ace_mode)
+      'blob-filename' => @blob && @blob.path,
+      'project-id' => project.id
     }
   end
 

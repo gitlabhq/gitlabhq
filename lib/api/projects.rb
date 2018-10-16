@@ -287,6 +287,12 @@ module API
         present_projects forks
       end
 
+      desc 'Check pages access of this project'
+      get ':id/pages_access' do
+        authorize! :read_pages_content, user_project unless user_project.public_pages?
+        status 200
+      end
+
       desc 'Update an existing project' do
         success Entities::Project
       end

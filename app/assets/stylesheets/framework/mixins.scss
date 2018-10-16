@@ -12,6 +12,15 @@
   max-width: $max-width;
 }
 
+/**
+ * Mixin for fixed width container
+ */
+@mixin fixed-width-container {
+  max-width: $limited-layout-width - ($gl-padding * 2);
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /*
  * Mixin for markdown tables
  */
@@ -20,20 +29,24 @@
   display: inline-block;
   overflow-x: auto;
   border: 0;
-  border-color: $gray-100;
+  border-color: $gl-gray-100;
 
   @supports (width: fit-content) {
     display: block;
     width: fit-content;
   }
 
+  tbody {
+    background-color: $white-light;
+  }
+
   tr {
     th {
-      border-bottom: solid 2px $gray-100;
+      border-bottom: solid 2px $gl-gray-100;
     }
 
     td {
-      border-color: $gray-100;
+      border-color: $gl-gray-100;
     }
   }
 }
@@ -264,5 +277,61 @@
   svg {
     border: 1px solid $color;
     border-radius: 50%;
+  }
+}
+
+@mixin emoji-menu-toggle-button {
+  line-height: 1;
+  padding: 0;
+  min-width: 16px;
+  color: $gray-darkest;
+  fill: $gray-darkest;
+
+  .fa {
+    position: relative;
+    font-size: 16px;
+  }
+
+  svg {
+    @include btn-svg;
+    margin: 0;
+  }
+
+  .award-control-icon-positive,
+  .award-control-icon-super-positive {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+  }
+
+  &:hover,
+  &.is-active {
+    .danger-highlight {
+      color: $red-500;
+    }
+
+    .link-highlight {
+      color: $blue-600;
+      fill: $blue-600;
+    }
+
+    .award-control-icon-neutral {
+      opacity: 0;
+    }
+
+    .award-control-icon-positive {
+      opacity: 1;
+    }
+  }
+
+  &.is-active {
+    .award-control-icon-positive {
+      opacity: 0;
+    }
+
+    .award-control-icon-super-positive {
+      opacity: 1;
+    }
   }
 }

@@ -1,4 +1,3 @@
-/* eslint-disable comma-dangle */
 /* global List */
 /* global ListIssue */
 
@@ -10,7 +9,7 @@ import '~/vue_shared/models/assignee';
 import '~/boards/models/issue';
 import '~/boards/models/list';
 import '~/boards/services/board_service';
-import '~/boards/stores/boards_store';
+import boardsStore from '~/boards/stores/boards_store';
 import { listObj, listObjDuplicate, boardsMockInterceptor, mockBoardService } from './mock_data';
 
 describe('List model', () => {
@@ -23,7 +22,7 @@ describe('List model', () => {
     gl.boardService = mockBoardService({
       bulkUpdatePath: '/test/issue-boards/board/1/lists',
     });
-    gl.issueBoards.BoardsStore.create();
+    boardsStore.create();
 
     list = new List(listObj);
   });
@@ -59,13 +58,13 @@ describe('List model', () => {
   });
 
   it('destroys the list', (done) => {
-    gl.issueBoards.BoardsStore.addList(listObj);
-    list = gl.issueBoards.BoardsStore.findList('id', listObj.id);
-    expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(1);
+    boardsStore.addList(listObj);
+    list = boardsStore.findList('id', listObj.id);
+    expect(boardsStore.state.lists.length).toBe(1);
     list.destroy();
 
     setTimeout(() => {
-      expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(0);
+      expect(boardsStore.state.lists.length).toBe(0);
       done();
     }, 0);
   });

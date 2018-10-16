@@ -1,0 +1,5 @@
+---
+title: Fixed diff stats not showing when performance bar is enabled
+merge_request:
+author:
+type: fixed

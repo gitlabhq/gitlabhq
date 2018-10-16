@@ -6,6 +6,8 @@ import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 
+Vue.use(Vuex);
+
 const discussionFixture = 'merge_requests/diff_discussion.json';
 
 describe('diff_file_header', () => {
@@ -58,19 +60,19 @@ describe('diff_file_header', () => {
 
     describe('titleLink', () => {
       beforeEach(() => {
+        props.discussionPath = 'link://to/discussion';
         Object.assign(props.diffFile, {
-          fileHash: 'badc0ffee',
           submoduleLink: 'link://to/submodule',
           submoduleTreeUrl: 'some://tree/url',
         });
       });
 
-      it('returns the fileHash for files', () => {
+      it('returns the discussionPath for files', () => {
         props.diffFile.submodule = false;
 
         vm = mountComponentWithStore(Component, { props, store });
 
-        expect(vm.titleLink).toBe(`#${props.diffFile.fileHash}`);
+        expect(vm.titleLink).toBe(props.discussionPath);
       });
 
       it('returns the submoduleTreeUrl for submodules', () => {
@@ -90,6 +92,13 @@ describe('diff_file_header', () => {
         vm = mountComponentWithStore(Component, { props, store });
 
         expect(vm.titleLink).toBe(props.diffFile.submoduleLink);
+      });
+
+      it('sets the correct path to the discussion', () => {
+        props.discussionPath = 'link://to/discussion';
+        vm = mountComponentWithStore(Component, { props, store });
+        const href = vm.$el.querySelector('.js-title-wrapper').getAttribute('href');
+        expect(href).toBe(vm.discussionPath);
       });
     });
 

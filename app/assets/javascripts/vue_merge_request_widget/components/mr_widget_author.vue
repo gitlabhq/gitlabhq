@@ -1,36 +1,36 @@
 <script>
-  import tooltip from '../../vue_shared/directives/tooltip';
+import tooltip from '../../vue_shared/directives/tooltip';
 
-  export default {
-    name: 'MrWidgetAuthor',
-    directives: {
-      tooltip,
+export default {
+  name: 'MrWidgetAuthor',
+  directives: {
+    tooltip,
+  },
+  props: {
+    author: {
+      type: Object,
+      required: true,
     },
-    props: {
-      author: {
-        type: Object,
-        required: true,
-      },
-      showAuthorName: {
-        type: Boolean,
-        required: false,
-        default: true,
-      },
-      showAuthorTooltip: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
+    showAuthorName: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
-    computed: {
-      authorUrl() {
-        return this.author.webUrl || this.author.web_url;
-      },
-      avatarUrl() {
-        return this.author.avatarUrl || this.author.avatar_url;
-      },
+    showAuthorTooltip: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
-  };
+  },
+  computed: {
+    authorUrl() {
+      return this.author.webUrl || this.author.web_url;
+    },
+    avatarUrl() {
+      return this.author.avatarUrl || this.author.avatar_url;
+    },
+  },
+};
 </script>
 <template>
   <a

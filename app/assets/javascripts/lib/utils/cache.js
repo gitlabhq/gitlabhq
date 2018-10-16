@@ -1,6 +1,6 @@
 export default class Cache {
   constructor() {
-    this.internalStorage = { };
+    this.internalStorage = {};
   }
 
   get(key) {

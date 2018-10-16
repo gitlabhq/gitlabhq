@@ -1,4 +1,4 @@
-/* eslint-disable jasmine/no-global-setup, dot-notation, jasmine/no-expect-in-setup-teardown, max-len */
+/* eslint-disable jasmine/no-global-setup, dot-notation, jasmine/no-expect-in-setup-teardown */
 /* global CommentsStore */
 
 import '~/diff_notes/models/discussion';

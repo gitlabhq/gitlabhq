@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_dependency 'declarative_policy/cache'
 require_dependency 'declarative_policy/condition'
 require_dependency 'declarative_policy/delegate_dsl'
@@ -9,8 +11,6 @@ require_dependency 'declarative_policy/runner'
 require_dependency 'declarative_policy/step'
 
 require_dependency 'declarative_policy/base'
-
-require 'thread'
 
 module DeclarativePolicy
   CLASS_CACHE_MUTEX = Mutex.new

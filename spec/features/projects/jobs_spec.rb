@@ -423,6 +423,31 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
+    context 'when job stops environment', :js do
+      let(:environment) { create(:environment, name: 'production', project: project) }
+      let(:build) do
+        create(
+          :ci_build,
+          :success,
+          :trace_live,
+          environment: environment.name,
+          pipeline: pipeline,
+          options: { environment: { action: 'stop' } }
+        )
+      end
+
+      before do
+        visit project_job_path(project, build)
+        wait_for_requests
+      end
+
+      it 'does not show environment information banner' do
+        expect(page).not_to have_selector('.js-environment-container')
+        expect(page).not_to have_selector('.environment-information')
+        expect(page).not_to have_text(environment.name)
+      end
+    end
+
     describe 'environment info in job view', :js do
       before do
         visit project_job_path(project, job)
@@ -542,7 +567,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         visit project_job_path(project, job)
       end
 
-      it 'shows manual action empty state' do
+      it 'shows manual action empty state', :js do
         expect(page).to have_content(job.detailed_status(user).illustration[:title])
         expect(page).to have_content('This job requires a manual action')
         expect(page).to have_content('This job depends on a user to trigger its process. Often they are used to deploy code to production environments')
@@ -559,6 +584,30 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
+    context 'Delayed job' do
+      let(:job) { create(:ci_build, :scheduled, pipeline: pipeline) }
+
+      before do
+        project.add_developer(user)
+        visit project_job_path(project, job)
+      end
+
+      it 'shows delayed job', :js do
+        expect(page).to have_content('This is a scheduled to run in')
+        expect(page).to have_content("This job will automatically run after it's timer finishes.")
+        expect(page).to have_link('Unschedule job')
+      end
+
+      it 'unschedules delayed job and shows manual action', :js do
+        click_link 'Unschedule job'
+
+        wait_for_requests
+        expect(page).to have_content('This job requires a manual action')
+        expect(page).to have_content('This job depends on a user to trigger its process. Often they are used to deploy code to production environments')
+        expect(page).to have_link('Trigger this manual action')
+      end
+    end
+
     context 'Non triggered job' do
       let(:job) { create(:ci_build, :created, pipeline: pipeline) }
 
@@ -566,14 +615,14 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         visit project_job_path(project, job)
       end
 
-      it 'shows empty state' do
+      it 'shows empty state', :js do
         expect(page).to have_content(job.detailed_status(user).illustration[:title])
         expect(page).to have_content('This job has not been triggered yet')
         expect(page).to have_content('This job depends on upstream jobs that need to succeed in order for this job to be triggered')
       end
     end
 
-    context 'Pending job' do
+    context 'Pending job', :js do
       let(:job) { create(:ci_build, :pending, pipeline: pipeline) }
 
       before do
@@ -600,7 +649,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         end
       end
 
-      context 'without log' do
+      context 'without log', :js do
         let(:job) { create(:ci_build, :canceled, pipeline: pipeline) }
 
         before do
@@ -615,7 +664,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
-    context 'Skipped job' do
+    context 'Skipped job', :js do
       let(:job) { create(:ci_build, :skipped, pipeline: pipeline) }
 
       before do
@@ -629,7 +678,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
-    context 'when job is failed but has no trace' do
+    context 'when job is failed but has no trace', :js do
       let(:job) { create(:ci_build, :failed, pipeline: pipeline) }
 
       it 'renders empty state' do
@@ -637,6 +686,56 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         expect(job).not_to have_trace
         expect(page).to have_content('This job does not have a trace.')
+      end
+    end
+
+    context 'with erased job', :js do
+      let(:job) { create(:ci_build, :erased, pipeline: pipeline) }
+
+      it 'renders erased job warning' do
+        visit project_job_path(project, job)
+        wait_for_requests
+
+        page.within('.js-job-erased-block') do
+          expect(page).to have_content('Job has been erased')
+        end
+      end
+    end
+
+    context 'without erased job', :js do
+      let(:job) { create(:ci_build, pipeline: pipeline) }
+
+      it 'does not render erased job warning' do
+        visit project_job_path(project, job)
+        wait_for_requests
+
+        expect(page).not_to have_css('.js-job-erased-block')
+      end
+    end
+
+    context 'on mobile', :js do
+      let(:job) { create(:ci_build, pipeline: pipeline) }
+
+      it 'renders collpased sidebar' do
+        page.current_window.resize_to(600, 800)
+
+        visit project_job_path(project, job)
+        wait_for_requests
+
+        expect(page).to have_css('.js-build-sidebar.right-sidebar-collapsed', visible: false)
+        expect(page).not_to have_css('.js-build-sidebar.right-sidebar-expanded', visible: false)
+      end
+    end
+
+    context 'on desktop', :js do
+      let(:job) { create(:ci_build, pipeline: pipeline) }
+
+      it 'renders expanded sidebar' do
+        visit project_job_path(project, job)
+        wait_for_requests
+
+        expect(page).to have_css('.js-build-sidebar.right-sidebar-expanded')
+        expect(page).not_to have_css('.js-build-sidebar.right-sidebar-collpased')
       end
     end
   end

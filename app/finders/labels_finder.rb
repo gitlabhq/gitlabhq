@@ -17,6 +17,7 @@ class LabelsFinder < UnionFinder
     @skip_authorization = skip_authorization
     items = find_union(label_ids, Label) || Label.none
     items = with_title(items)
+    items = by_subscription(items)
     items = by_search(items)
     sort(items)
   end
@@ -84,6 +85,18 @@ class LabelsFinder < UnionFinder
     labels.search(params[:search])
   end
 
+  def by_subscription(labels)
+    labels.optionally_subscribed_by(subscriber_id)
+  end
+
+  def subscriber_id
+    current_user&.id if subscribed?
+  end
+
+  def subscribed?
+    params[:subscribed] == 'true'
+  end
+
   # Gets redacted array of group ids
   # which can include the ancestors and descendants of the requested group.
   def group_ids_for(group)
@@ -116,7 +129,7 @@ class LabelsFinder < UnionFinder
   end
 
   def project?
-    params[:project_id].present?
+    params[:project].present? || params[:project_id].present?
   end
 
   def projects?
@@ -139,7 +152,7 @@ class LabelsFinder < UnionFinder
     return @project if defined?(@project)
 
     if project?
-      @project = Project.find(params[:project_id])
+      @project = params[:project] || Project.find(params[:project_id])
       @project = nil unless authorized_to_read_labels?(@project)
     else
       @project = nil

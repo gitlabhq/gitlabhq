@@ -25,14 +25,12 @@ gitaly['prometheus_listen_addr'] = 'localhost:9236'
 ```
 
 To change a Gitaly setting in installations from source you can edit
-`/home/git/gitaly/config.toml`.
+`/home/git/gitaly/config.toml`. Changes will be applied when you run 
+`service gitlab restart`.
 
 ```toml
 prometheus_listen_addr = "localhost:9236"
 ```
-
-Changes to `/home/git/gitaly/config.toml` are applied when you run `service
-gitlab restart`.
 
 ## Client-side GRPC logs
 

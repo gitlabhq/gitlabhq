@@ -423,7 +423,7 @@ describe 'Merge request > User sees merge widget', :js do
         end
 
         it 'shows test reports summary which includes the new failure' do
-          within(".mr-section-container") do
+          within(".js-reports-container") do
             click_button 'Expand'
 
             expect(page).to have_content('Test summary contained 1 failed test result out of 2 total tests')
@@ -438,7 +438,7 @@ describe 'Merge request > User sees merge widget', :js do
 
         context 'when user clicks the new failure' do
           it 'shows the test report detail' do
-            within(".mr-section-container") do
+            within(".js-reports-container") do
               click_button 'Expand'
 
               within(".js-report-section-container") do
@@ -468,7 +468,7 @@ describe 'Merge request > User sees merge widget', :js do
         end
 
         it 'shows test reports summary which includes the existing failure' do
-          within(".mr-section-container") do
+          within(".js-reports-container") do
             click_button 'Expand'
 
             expect(page).to have_content('Test summary contained 1 failed test result out of 2 total tests')
@@ -483,7 +483,7 @@ describe 'Merge request > User sees merge widget', :js do
 
         context 'when user clicks the existing failure' do
           it 'shows test report detail of it' do
-            within(".mr-section-container") do
+            within(".js-reports-container") do
               click_button 'Expand'
 
               within(".js-report-section-container") do
@@ -519,7 +519,7 @@ describe 'Merge request > User sees merge widget', :js do
         end
 
         it 'shows test reports summary which includes the resolved failure' do
-          within(".mr-section-container") do
+          within(".js-reports-container") do
             click_button 'Expand'
 
             expect(page).to have_content('Test summary contained 1 fixed test result out of 2 total tests')
@@ -533,7 +533,7 @@ describe 'Merge request > User sees merge widget', :js do
 
         context 'when user clicks the resolved failure' do
           it 'shows test report detail of it' do
-            within(".mr-section-container") do
+            within(".js-reports-container") do
               click_button 'Expand'
 
               within(".js-report-section-container") do

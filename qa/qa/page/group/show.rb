@@ -15,7 +15,7 @@ module QA
         end
 
         view 'app/assets/javascripts/groups/constants.js' do
-          element :no_result_text, 'No groups or projects matched your search'
+          element :no_result_text, 'No groups or projects matched your search' # rubocop:disable QA/ElementWithPattern
         end
 
         def go_to_subgroup(name)

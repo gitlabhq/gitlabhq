@@ -84,10 +84,8 @@ describe 'Gcp Cluster', :js do
 
         it_behaves_like 'valid cluster gcp form'
 
-        context 'rbac_clusters feature flag is enabled' do
+        context 'RBAC is enabled for the cluster' do
           before do
-            stub_feature_flags(rbac_clusters: true)
-
             check 'cluster_provider_gcp_attributes_legacy_abac'
           end
 

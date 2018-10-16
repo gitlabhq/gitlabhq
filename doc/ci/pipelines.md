@@ -193,6 +193,18 @@ stage has a job with a manual action.
 
 ![Pipelines example](img/pipelines.png)
 
+### Delay a particular job in the pipeline graph
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21767) in GitLab 11.4.
+
+When you do not want to run a job immediately, you can [delay the job to run after a certain period](yaml/README.md#when-delayed).
+This is especially useful for timed incremental rollout that new code is rolled out gradually.
+For example, if you start rolling out new code and users do not experience trouble, GitLab automatically completes the deployment from 0% to 100%.
+Alternatively, if you start rolling out and you noticed that a few users experience trouble with the version,
+you can stop the timed incremental rollout by canceling the pipeline, and [rolling](environments.md#rolling-back-changes) it back to the stable version.
+
+![Pipelines example](img/pipeline_incremental_rollout.png)
+
 ### Ordering of jobs in pipeline graphs
 
 **Regular pipeline graph**
@@ -211,6 +223,7 @@ by name. The order of severity is:
 - pending
 - running
 - manual
+- scheduled
 - canceled
 - success
 - skipped

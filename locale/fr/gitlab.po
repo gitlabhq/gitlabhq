@@ -360,7 +360,7 @@ msgstr "Accès à « %{classification_label} » non autorisé"
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
 msgstr "L’accès aux stockages défaillants a été temporairement désactivé pour permettre la récupération du montage. Réinitialisez les informations de stockage quand le problème sera résolu pour permettre à nouveau l’accès."
 
-msgid "Access your runner token, customize your pipeline configuration, and view your pipeline status and coverage report."
+msgid "Customize your pipeline configuration, view your pipeline status and coverage report."
 msgstr "Accédez à votre jeton d’exécuteur, personnalisez la configuration de votre pipeline et affichez l’état de votre pipeline et le rapport de couverture."
 
 msgid "Account"
@@ -4266,12 +4266,6 @@ msgstr "juin"
 msgid "June"
 msgstr "juin"
 
-msgid "Koding"
-msgstr "Koding"
-
-msgid "Koding Dashboard"
-msgstr "Tableau de bord Koding"
-
 msgid "Kubernetes"
 msgstr "Kubernetes"
 
@@ -5230,9 +5224,6 @@ msgstr "Un ou plusieurs de vos projets Bitbucket ne peuvent être importés dire
 
 msgid "One or more of your Google Code projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
 msgstr "Un ou plusieurs de vos projets Google Code ne peuvent être importés directement dans GitLab parce qu’ils utilisent Subversion ou Mercurial comme gestionnaire de versions au lieu de Git."
-
-msgid "Online IDE integration settings."
-msgstr "Paramètres d’intégration de l’EDI en ligne."
 
 msgid "Only admins"
 msgstr "Seulement les administrateurs"
@@ -6773,9 +6764,6 @@ msgstr "Définissez les exigences pour la connexion d’un utilisateur. Activez 
 
 msgid "Set up CI/CD"
 msgstr "Configuration CI/CD"
-
-msgid "Set up Koding"
-msgstr "Configurer Koding"
 
 msgid "Set up a %{type} Runner manually"
 msgstr "Configurer manuellement un exécuteur %{type}"

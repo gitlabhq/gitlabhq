@@ -1,30 +1,28 @@
 <script>
-  import sanitize from 'sanitize-html';
-  import Prompt from '../prompt.vue';
+import sanitize from 'sanitize-html';
+import Prompt from '../prompt.vue';
 
-  export default {
-    components: {
-      prompt: Prompt,
+export default {
+  components: {
+    prompt: Prompt,
+  },
+  props: {
+    rawCode: {
+      type: String,
+      required: true,
     },
-    props: {
-      rawCode: {
-        type: String,
-        required: true,
-      },
+  },
+  computed: {
+    sanitizedOutput() {
+      return sanitize(this.rawCode, {
+        allowedTags: sanitize.defaults.allowedTags.concat(['img', 'svg']),
+        allowedAttributes: {
+          img: ['src'],
+        },
+      });
     },
-    computed: {
-      sanitizedOutput() {
-        return sanitize(this.rawCode, {
-          allowedTags: sanitize.defaults.allowedTags.concat([
-            'img', 'svg',
-          ]),
-          allowedAttributes: {
-            img: ['src'],
-          },
-        });
-      },
-    },
-  };
+  },
+};
 </script>
 
 <template>

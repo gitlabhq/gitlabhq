@@ -151,11 +151,24 @@ export const toggleIssueLocalState = ({ commit }, newState) => {
 
 export const saveNote = ({ commit, dispatch }, noteData) => {
   // For MR discussuions we need to post as `note[note]` and issue we use `note.note`.
-  const note = noteData.data['note[note]'] || noteData.data.note.note;
+  // For batch comments, we use draft_note
+  const note = noteData.data.draft_note || noteData.data['note[note]'] || noteData.data.note.note;
   let placeholderText = note;
   const hasQuickActions = utils.hasQuickActions(placeholderText);
   const replyId = noteData.data.in_reply_to_discussion_id;
-  const methodToDispatch = replyId ? 'replyToDiscussion' : 'createNewNote';
+  let methodToDispatch;
+  const postData = Object.assign({}, noteData);
+  if (postData.isDraft === true) {
+    methodToDispatch = replyId
+      ? 'batchComments/addDraftToDiscussion'
+      : 'batchComments/createNewDraft';
+    if (!postData.draft_note && noteData.note) {
+      postData.draft_note = postData.note;
+      delete postData.note;
+    }
+  } else {
+    methodToDispatch = replyId ? 'replyToDiscussion' : 'createNewNote';
+  }
 
   $('.notes-form .flash-container').hide(); // hide previous flash notification
   commit(types.REMOVE_PLACEHOLDER_NOTES); // remove previous placeholders
@@ -181,7 +194,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
     }
   }
 
-  return dispatch(methodToDispatch, noteData).then(res => {
+  return dispatch(methodToDispatch, postData, { root: true }).then(res => {
     const { errors } = res;
     const commandsChanges = res.commands_changes;
 

@@ -60,11 +60,29 @@ export default {
       let memoryUsageMsg = '';
 
       if (memoryTo > memoryFrom) {
-        memoryUsageMsg = sprintf(s__('mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage %{emphasisStart} increased %{emphasisEnd} from %{memoryFrom}MB to %{memoryTo}MB'), messageProps, false);
+        memoryUsageMsg = sprintf(
+          s__(
+            'mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage %{emphasisStart} increased %{emphasisEnd} from %{memoryFrom}MB to %{memoryTo}MB',
+          ),
+          messageProps,
+          false,
+        );
       } else if (memoryTo < memoryFrom) {
-        memoryUsageMsg = sprintf(s__('mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage %{emphasisStart} decreased %{emphasisEnd} from %{memoryFrom}MB to %{memoryTo}MB'), messageProps, false);
+        memoryUsageMsg = sprintf(
+          s__(
+            'mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage %{emphasisStart} decreased %{emphasisEnd} from %{memoryFrom}MB to %{memoryTo}MB',
+          ),
+          messageProps,
+          false,
+        );
       } else {
-        memoryUsageMsg = sprintf(s__('mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage is %{emphasisStart} unchanged %{emphasisEnd} at %{memoryFrom}MB'), messageProps, false);
+        memoryUsageMsg = sprintf(
+          s__(
+            'mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage is %{emphasisStart} unchanged %{emphasisEnd} at %{memoryFrom}MB',
+          ),
+          messageProps,
+          false,
+        );
       }
 
       return memoryUsageMsg;
@@ -77,7 +95,7 @@ export default {
   methods: {
     getMegabytes(bytesString) {
       const valueInBytes = Number(bytesString).toFixed(2);
-      return (bytesToMiB(valueInBytes)).toFixed(2);
+      return bytesToMiB(valueInBytes).toFixed(2);
     },
     computeGraphData(metrics, deploymentTime) {
       this.loadingMetrics = false;
@@ -103,7 +121,7 @@ export default {
     loadMetrics() {
       backOff((next, stop) => {
         MRWidgetService.fetchMetrics(this.metricsUrl)
-          .then((res) => {
+          .then(res => {
             if (res.status === statusCodes.NO_CONTENT) {
               this.backOffRequestCounter += 1;
               /* eslint-disable no-unused-expressions */
@@ -114,14 +132,14 @@ export default {
           })
           .catch(stop);
       })
-        .then((res) => {
+        .then(res => {
           if (res.status === statusCodes.NO_CONTENT) {
             return res;
           }
 
           return res.data;
         })
-        .then((data) => {
+        .then(data => {
           this.computeGraphData(data.metrics, data.deployment_time);
           return data;
         })

@@ -1,19 +1,19 @@
 <script>
-  import statusIcon from '../mr_widget_status_icon.vue';
+import statusIcon from '../mr_widget_status_icon.vue';
 
-  export default {
-    name: 'MRWidgetMerging',
-    components: {
-      statusIcon,
+export default {
+  name: 'MRWidgetMerging',
+  components: {
+    statusIcon,
+  },
+  props: {
+    mr: {
+      type: Object,
+      required: true,
+      default: () => ({}),
     },
-    props: {
-      mr: {
-        type: Object,
-        required: true,
-        default: () => ({}),
-      },
-    },
-  };
+  },
+};
 </script>
 <template>
   <div class="mr-widget-body mr-state-locked media">

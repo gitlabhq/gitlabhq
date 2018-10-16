@@ -47,7 +47,7 @@ export default {
       required: true,
     },
     cancelingPipeline: {
-      type: String,
+      type: Number,
       required: false,
       default: null,
     },
@@ -59,6 +59,16 @@ export default {
     };
   },
   computed: {
+    actions() {
+      if (!this.pipeline || !this.pipeline.details) {
+        return [];
+      }
+      const { details } = this.pipeline;
+      return [
+        ...(details.manual_actions || []),
+        ...(details.scheduled_actions || []),
+      ];
+    },
     /**
      * If provided, returns the commit tag.
      * Needed to render the commit component column.
@@ -321,8 +331,8 @@ export default {
     >
       <div class="btn-group table-action-buttons">
         <pipelines-actions-component
-          v-if="pipeline.details.manual_actions.length"
-          :actions="pipeline.details.manual_actions"
+          v-if="actions.length > 0"
+          :actions="actions"
         />
 
         <pipelines-artifacts-component

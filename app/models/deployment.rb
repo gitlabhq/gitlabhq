@@ -19,6 +19,17 @@ class Deployment < ActiveRecord::Base
   after_create :create_ref
   after_create :invalidate_cache
 
+  scope :for_environment, -> (environment) { where(environment_id: environment) }
+
+  def self.last_for_environment(environment)
+    ids = self
+      .for_environment(environment)
+      .select('MAX(id) AS id')
+      .group(:environment_id)
+      .map(&:id)
+    find(ids)
+  end
+
   def commit
     project.commit(sha)
   end

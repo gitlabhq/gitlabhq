@@ -20,7 +20,7 @@ export default {
       default: '',
     },
     noteId: {
-      type: String,
+      type: [String, Number],
       required: false,
       default: '',
     },
@@ -102,6 +102,18 @@ export default {
   },
   methods: {
     ...mapActions(['toggleResolveNote']),
+    shouldToggleResolved(shouldResolve, beforeSubmitDiscussionState) {
+      // shouldBeResolved() checks the actual resolution state,
+      // considering batchComments (EEP), if applicable/enabled.
+      const newResolvedStateAfterUpdate =
+        this.shouldBeResolved && this.shouldBeResolved(shouldResolve);
+
+      const shouldToggleState =
+        newResolvedStateAfterUpdate !== undefined &&
+        beforeSubmitDiscussionState !== newResolvedStateAfterUpdate;
+
+      return shouldResolve || shouldToggleState;
+    },
     handleUpdate(shouldResolve) {
       const beforeSubmitDiscussionState = this.discussionResolved;
       this.isSubmitting = true;
@@ -109,7 +121,7 @@ export default {
       this.$emit('handleFormUpdate', this.updatedNoteBody, this.$refs.editNoteForm, () => {
         this.isSubmitting = false;
 
-        if (shouldResolve) {
+        if (this.shouldToggleResolved(shouldResolve, beforeSubmitDiscussionState)) {
           this.resolveHandler(beforeSubmitDiscussionState);
         }
       });

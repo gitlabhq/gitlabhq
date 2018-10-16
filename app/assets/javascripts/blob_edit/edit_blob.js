@@ -5,18 +5,20 @@ import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import TemplateSelectorMediator from '../blob/file_template_mediator';
+import getModeByFileExtension from '~/lib/utils/ace_utils';
 
 export default class EditBlob {
-  constructor(assetsPath, aceMode, currentAction) {
+  constructor(assetsPath, aceMode, currentAction, projectId) {
     this.configureAceEditor(aceMode, assetsPath);
     this.initModePanesAndLinks();
     this.initSoftWrap();
-    this.initFileSelectors(currentAction);
+    this.initFileSelectors(currentAction, projectId);
   }
 
-  configureAceEditor(aceMode, assetsPath) {
+  configureAceEditor(filePath, assetsPath) {
     ace.config.set('modePath', `${assetsPath}/ace`);
     ace.config.loadModule('ace/ext/searchbox');
+    ace.config.loadModule('ace/ext/modelist');
 
     this.editor = ace.edit('editor');
 
@@ -25,15 +27,16 @@ export default class EditBlob {
 
     this.editor.focus();
 
-    if (aceMode) {
-      this.editor.getSession().setMode(`ace/mode/${aceMode}`);
+    if (filePath) {
+      this.editor.getSession().setMode(getModeByFileExtension(filePath));
     }
   }
 
-  initFileSelectors(currentAction) {
+  initFileSelectors(currentAction, projectId) {
     this.fileTemplateMediator = new TemplateSelectorMediator({
       currentAction,
       editor: this.editor,
+      projectId,
     });
   }
 
@@ -60,14 +63,15 @@ export default class EditBlob {
 
     if (paneId === '#preview') {
       this.$toggleButton.hide();
-      axios.post(currentLink.data('previewUrl'), {
-        content: this.editor.getValue(),
-      })
-      .then(({ data }) => {
-        currentPane.empty().append(data);
-        currentPane.renderGFM();
-      })
-      .catch(() => createFlash(__('An error occurred previewing the blob')));
+      axios
+        .post(currentLink.data('previewUrl'), {
+          content: this.editor.getValue(),
+        })
+        .then(({ data }) => {
+          currentPane.empty().append(data);
+          currentPane.renderGFM();
+        })
+        .catch(() => createFlash(__('An error occurred previewing the blob')));
     }
 
     this.$toggleButton.show();

@@ -216,7 +216,7 @@
                     = _('Metrics')
 
               = nav_link(controller: :environments, action: [:index, :folder, :show, :new, :edit, :create, :update, :stop, :terminal]) do
-                = link_to project_environments_path(@project), title: _('Environments'), class: 'shortcuts-environments' do
+                = link_to project_environments_path(@project), title: _('Environments'), class: 'shortcuts-environments qa-operations-environments-link' do
                   %span
                     = _('Environments')
 
@@ -309,7 +309,7 @@
                   %span
                     = _('General')
             = nav_link(controller: :project_members) do
-              = link_to project_project_members_path(@project), title: _('Members') do
+              = link_to project_project_members_path(@project), title: _('Members'), class: 'qa-link-members-settings' do
                 %span
                   = _('Members')
             - if can_edit

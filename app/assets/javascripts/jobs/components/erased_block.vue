@@ -1,28 +1,28 @@
 <script>
-  import _ from 'underscore';
-  import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import _ from 'underscore';
+import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
-  export default {
-    components: {
-      TimeagoTooltip,
+export default {
+  components: {
+    TimeagoTooltip,
+  },
+  props: {
+    user: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
-    props: {
-      user: {
-        type: Object,
-        required: false,
-        default: () => ({}),
-      },
-      erasedAt: {
-        type: String,
-        required: true,
-      },
+    erasedAt: {
+      type: String,
+      required: true,
     },
-    computed: {
-      isErasedByUser() {
-        return !_.isEmpty(this.user);
-      },
+  },
+  computed: {
+    isErasedByUser() {
+      return !_.isEmpty(this.user);
     },
-  };
+  },
+};
 </script>
 <template>
   <div class="prepend-top-default js-build-erased">

@@ -1,15 +1,13 @@
-/* eslint-disable comma-dangle, no-shadow */
+/* eslint-disable no-shadow */
 /* global List */
 
 import $ from 'jquery';
 import _ from 'underscore';
+import Vue from 'vue';
 import Cookies from 'js-cookie';
 import { getUrlParamsArray } from '~/lib/utils/common_utils';
 
-window.gl = window.gl || {};
-window.gl.issueBoards = window.gl.issueBoards || {};
-
-gl.issueBoards.BoardsStore = {
+const boardsStore = {
   disabled: false,
   filter: {
     path: '',
@@ -167,3 +165,16 @@ gl.issueBoards.BoardsStore = {
     window.history.pushState(null, null, `?${this.filter.path}`);
   }
 };
+
+// hacks added in order to allow milestone_select to function properly
+// TODO: remove these
+
+export function boardStoreIssueSet(...args) {
+  Vue.set(boardsStore.detail.issue, ...args);
+}
+
+export function boardStoreIssueDelete(...args) {
+  Vue.delete(boardsStore.detail.issue, ...args);
+}
+
+export default boardsStore;
