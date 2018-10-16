@@ -106,14 +106,14 @@ module QA
         end
 
         def go_to_labels
-          hover_issues { click_link 'Labels' }
+          hover_issues { click_element :labels_link }
         end
 
         private
 
         def hover_issues
           within_sidebar do
-            find('.shortcuts-issues').hover
+            find_element(:issues_item).hover
 
             yield
           end

@@ -23,7 +23,7 @@ module QA
         def fabricate!
           project.visit!
 
-          Page::Menu::Side.act { go_to_labels }
+          Page::Project::Menu.act { go_to_labels }
           Page::Label::Index.act { go_to_new_label }
 
           Page::Label::New.perform do |page|
