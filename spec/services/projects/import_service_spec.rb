@@ -235,7 +235,7 @@ describe Projects::ImportService do
         result = described_class.new(project, user).execute
 
         expect(result[:status]).to eq :error
-        expect(result[:message]).to include('Only allowed ports are 22, 80, 443')
+        expect(result[:message]).to include('Only allowed ports are 80, 443')
       end
     end
 

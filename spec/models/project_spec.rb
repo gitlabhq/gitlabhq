@@ -229,54 +229,75 @@ describe Project do
     end
 
     it 'does not allow an invalid URI as import_url' do
-      project2 = build(:project, import_url: 'invalid://')
+      project = build(:project, import_url: 'invalid://')
 
-      expect(project2).not_to be_valid
+      expect(project).not_to be_valid
+    end
+
+    it 'does allow a SSH URI as import_url for persisted projects' do
+      project = create(:project)
+      project.import_url = 'ssh://test@gitlab.com/project.git'
+
+      expect(project).to be_valid
+    end
+
+    it 'does not allow a SSH URI as import_url for new projects' do
+      project = build(:project, import_url: 'ssh://test@gitlab.com/project.git')
+
+      expect(project).not_to be_valid
     end
 
     it 'does allow a valid URI as import_url' do
-      project2 = build(:project, import_url: 'ssh://test@gitlab.com/project.git')
+      project = build(:project, import_url: 'http://gitlab.com/project.git')
 
-      expect(project2).to be_valid
+      expect(project).to be_valid
     end
 
     it 'allows an empty URI' do
-      project2 = build(:project, import_url: '')
+      project = build(:project, import_url: '')
 
-      expect(project2).to be_valid
+      expect(project).to be_valid
     end
 
     it 'does not produce import data on an empty URI' do
-      project2 = build(:project, import_url: '')
+      project = build(:project, import_url: '')
 
-      expect(project2.import_data).to be_nil
+      expect(project.import_data).to be_nil
     end
 
     it 'does not produce import data on an invalid URI' do
-      project2 = build(:project, import_url: 'test://')
+      project = build(:project, import_url: 'test://')
 
-      expect(project2.import_data).to be_nil
+      expect(project.import_data).to be_nil
     end
 
     it "does not allow import_url pointing to localhost" do
-      project2 = build(:project, import_url: 'http://localhost:9000/t.git')
+      project = build(:project, import_url: 'http://localhost:9000/t.git')
 
-      expect(project2).to be_invalid
-      expect(project2.errors[:import_url].first).to include('Requests to localhost are not allowed')
+      expect(project).to be_invalid
+      expect(project.errors[:import_url].first).to include('Requests to localhost are not allowed')
     end
 
-    it "does not allow import_url with invalid ports" do
-      project2 = build(:project, import_url: 'http://github.com:25/t.git')
+    it "does not allow import_url with invalid ports for new projects" do
+      project = build(:project, import_url: 'http://github.com:25/t.git')
 
-      expect(project2).to be_invalid
-      expect(project2.errors[:import_url].first).to include('Only allowed ports are 22, 80, 443')
+      expect(project).to be_invalid
+      expect(project.errors[:import_url].first).to include('Only allowed ports are 80, 443')
+    end
+
+    it "does not allow import_url with invalid ports for persisted projects" do
+      project = create(:project)
+      project.import_url = 'http://github.com:25/t.git'
+
+      expect(project).to be_invalid
+      expect(project.errors[:import_url].first).to include('Only allowed ports are 22, 80, 443')
     end
 
     it "does not allow import_url with invalid user" do
-      project2 = build(:project, import_url: 'http://$user:password@github.com/t.git')
+      project = build(:project, import_url: 'http://$user:password@github.com/t.git')
 
-      expect(project2).to be_invalid
-      expect(project2.errors[:import_url].first).to include('Username needs to start with an alphanumeric character')
+      expect(project).to be_invalid
+      expect(project.errors[:import_url].first).to include('Username needs to start with an alphanumeric character')
     end
 
     describe 'project pending deletion' do
