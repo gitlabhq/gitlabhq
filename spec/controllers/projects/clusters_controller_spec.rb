@@ -14,8 +14,8 @@ describe Projects::ClustersController do
   end
 
   describe 'GET index' do
-    subject do
-      get :index, namespace_id: project.namespace.to_param, project_id: project
+    def go(params = {})
+      get :index, params.reverse_merge(namespace_id: project.namespace.to_param, project_id: project)
     end
 
     describe 'functionality' do
@@ -24,7 +24,7 @@ describe Projects::ClustersController do
         let!(:enabled_cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
         let!(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, :production_environment, projects: [project]) }
         it 'lists available clusters' do
-          subject
+          go
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template(:index)
@@ -34,17 +34,13 @@ describe Projects::ClustersController do
         context 'when page is specified' do
           let(:last_page) { project.clusters.page.total_pages }
 
-          subject do
-            get :index, namespace_id: project.namespace, project_id: project, page: last_page
-          end
-
           before do
             allow(Clusters::Cluster).to receive(:paginates_per).and_return(1)
             create_list(:cluster, 2, :provided_by_gcp, :production_environment, projects: [project])
           end
 
           it 'redirects to the page' do
-            subject
+            go(page: last_page)
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(assigns(:clusters).current_page).to eq(last_page)
@@ -56,7 +52,7 @@ describe Projects::ClustersController do
         let(:project) { create(:project) }
 
         it 'returns an empty state page' do
-          subject
+          go
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template(:index, partial: :empty_state)
@@ -68,19 +64,19 @@ describe Projects::ClustersController do
     describe 'security' do
       let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
-      it { expect { subject }.to be_allowed_for(:admin) }
-      it { expect { subject }.to be_allowed_for(:owner).of(project) }
-      it { expect { subject }.to be_allowed_for(:maintainer).of(project) }
-      it { expect { subject }.to be_denied_for(:developer).of(project) }
-      it { expect { subject }.to be_denied_for(:reporter).of(project) }
-      it { expect { subject }.to be_denied_for(:guest).of(project) }
-      it { expect { subject }.to be_denied_for(:user) }
-      it { expect { subject }.to be_denied_for(:external) }
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
     end
   end
 
   describe 'GET new' do
-    subject do
+    def go
       get :new, namespace_id: project.namespace, project_id: project
     end
 
@@ -96,7 +92,7 @@ describe Projects::ClustersController do
         end
 
         it 'has authorize_url' do
-          subject
+          go
 
           expect(assigns(:authorize_url)).to include(key)
           expect(session[session_key_for_redirect_uri]).to eq(new_project_cluster_path(project))
@@ -109,7 +105,7 @@ describe Projects::ClustersController do
         end
 
         it 'does not have authorize_url' do
-          subject
+          go
 
           expect(assigns(:authorize_url)).to be_nil
         end
@@ -121,7 +117,7 @@ describe Projects::ClustersController do
         end
 
         it 'has new object' do
-          subject
+          go
 
           expect(assigns(:gcp_cluster)).to be_an_instance_of(Clusters::Cluster)
         end
@@ -142,21 +138,21 @@ describe Projects::ClustersController do
 
     describe 'functionality for existing cluster' do
       it 'has new object' do
-        subject
+        go
 
         expect(assigns(:user_cluster)).to be_an_instance_of(Clusters::Cluster)
       end
     end
 
     describe 'security' do
-      it { expect { subject }.to be_allowed_for(:admin) }
-      it { expect { subject }.to be_allowed_for(:owner).of(project) }
-      it { expect { subject }.to be_allowed_for(:maintainer).of(project) }
-      it { expect { subject }.to be_denied_for(:developer).of(project) }
-      it { expect { subject }.to be_denied_for(:reporter).of(project) }
-      it { expect { subject }.to be_denied_for(:guest).of(project) }
-      it { expect { subject }.to be_denied_for(:user) }
-      it { expect { subject }.to be_denied_for(:external) }
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
     end
   end
 
@@ -174,7 +170,7 @@ describe Projects::ClustersController do
       }
     end
 
-    subject do
+    def go
       post :create_gcp, params.merge(namespace_id: project.namespace, project_id: project)
     end
 
@@ -186,7 +182,7 @@ describe Projects::ClustersController do
 
         it 'creates a new cluster' do
           expect(ClusterProvisionWorker).to receive(:perform_async)
-          expect { subject }.to change { Clusters::Cluster.count }
+          expect { go }.to change { Clusters::Cluster.count }
             .and change { Clusters::Providers::Gcp.count }
           expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
           expect(project.clusters.first).to be_gcp
@@ -199,7 +195,7 @@ describe Projects::ClustersController do
 
           it 'creates a new cluster with legacy_abac_disabled' do
             expect(ClusterProvisionWorker).to receive(:perform_async)
-            expect { subject }.to change { Clusters::Cluster.count }
+            expect { go }.to change { Clusters::Cluster.count }
               .and change { Clusters::Providers::Gcp.count }
             expect(project.clusters.first.provider_gcp).not_to be_legacy_abac
           end
@@ -236,14 +232,14 @@ describe Projects::ClustersController do
         allow(WaitForClusterCreationWorker).to receive(:perform_in).and_return(nil)
       end
 
-      it { expect { subject }.to be_allowed_for(:admin) }
-      it { expect { subject }.to be_allowed_for(:owner).of(project) }
-      it { expect { subject }.to be_allowed_for(:maintainer).of(project) }
-      it { expect { subject }.to be_denied_for(:developer).of(project) }
-      it { expect { subject }.to be_denied_for(:reporter).of(project) }
-      it { expect { subject }.to be_denied_for(:guest).of(project) }
-      it { expect { subject }.to be_denied_for(:user) }
-      it { expect { subject }.to be_denied_for(:external) }
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
     end
   end
 
@@ -261,7 +257,7 @@ describe Projects::ClustersController do
       }
     end
 
-    subject do
+    def go
       post :create_user, params.merge(namespace_id: project.namespace, project_id: project)
     end
 
@@ -270,7 +266,7 @@ describe Projects::ClustersController do
         it 'creates a new cluster' do
           expect(ClusterProvisionWorker).to receive(:perform_async)
 
-          expect { subject }.to change { Clusters::Cluster.count }
+          expect { go }.to change { Clusters::Cluster.count }
             .and change { Clusters::Platforms::Kubernetes.count }
 
           expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
@@ -298,7 +294,7 @@ describe Projects::ClustersController do
         it 'creates a new cluster' do
           expect(ClusterProvisionWorker).to receive(:perform_async)
 
-          expect { subject }.to change { Clusters::Cluster.count }
+          expect { go }.to change { Clusters::Cluster.count }
             .and change { Clusters::Platforms::Kubernetes.count }
 
           expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
@@ -311,21 +307,21 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
-      it { expect { subject }.to be_allowed_for(:admin) }
-      it { expect { subject }.to be_allowed_for(:owner).of(project) }
-      it { expect { subject }.to be_allowed_for(:maintainer).of(project) }
-      it { expect { subject }.to be_denied_for(:developer).of(project) }
-      it { expect { subject }.to be_denied_for(:reporter).of(project) }
-      it { expect { subject }.to be_denied_for(:guest).of(project) }
-      it { expect { subject }.to be_denied_for(:user) }
-      it { expect { subject }.to be_denied_for(:external) }
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
     end
   end
 
   describe 'GET status' do
     let(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
 
-    subject do
+    def go
       get :status, namespace_id: project.namespace,
                    project_id: project,
                    id: cluster,
@@ -334,7 +330,7 @@ describe Projects::ClustersController do
 
     describe 'functionality' do
       it "responds with matching schema" do
-        subject
+        go
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('cluster_status')
@@ -343,26 +339,26 @@ describe Projects::ClustersController do
       it 'invokes schedule_status_update on each application' do
         expect_any_instance_of(Clusters::Applications::Ingress).to receive(:schedule_status_update)
 
-        subject
+        go
       end
     end
 
     describe 'security' do
-      it { expect { subject }.to be_allowed_for(:admin) }
-      it { expect { subject }.to be_allowed_for(:owner).of(project) }
-      it { expect { subject }.to be_allowed_for(:maintainer).of(project) }
-      it { expect { subject }.to be_denied_for(:developer).of(project) }
-      it { expect { subject }.to be_denied_for(:reporter).of(project) }
-      it { expect { subject }.to be_denied_for(:guest).of(project) }
-      it { expect { subject }.to be_denied_for(:user) }
-      it { expect { subject }.to be_denied_for(:external) }
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
     end
   end
 
   describe 'GET show' do
     let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
-    subject do
+    def go
       get :show, namespace_id: project.namespace,
                  project_id: project,
                  id: cluster
@@ -370,7 +366,7 @@ describe Projects::ClustersController do
 
     describe 'functionality' do
       it "renders view" do
-        subject
+        go
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(assigns(:cluster)).to eq(cluster)
@@ -378,14 +374,14 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
-      it { expect { subject }.to be_allowed_for(:admin) }
-      it { expect { subject }.to be_allowed_for(:owner).of(project) }
-      it { expect { subject }.to be_allowed_for(:maintainer).of(project) }
-      it { expect { subject }.to be_denied_for(:developer).of(project) }
-      it { expect { subject }.to be_denied_for(:reporter).of(project) }
-      it { expect { subject }.to be_denied_for(:guest).of(project) }
-      it { expect { subject }.to be_denied_for(:user) }
-      it { expect { subject }.to be_denied_for(:external) }
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
     end
   end
 
@@ -404,15 +400,17 @@ describe Projects::ClustersController do
       }
     end
 
-    subject do
+    def go(format: :html)
       put :update, params.merge(namespace_id: project.namespace,
                                 project_id: project,
-                                id: cluster)
+                                id: cluster,
+                                format: format
+                               )
     end
 
     context 'when cluster is provided by GCP' do
       it "updates and redirects back to show page" do
-        subject
+        go
 
         cluster.reload
         expect(response).to redirect_to(project_cluster_path(project, cluster))
@@ -421,7 +419,7 @@ describe Projects::ClustersController do
       end
 
       it "does not change cluster name" do
-        subject
+        go
 
         cluster.reload
         expect(cluster.name).to eq('test-cluster')
@@ -431,7 +429,7 @@ describe Projects::ClustersController do
         let(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
 
         it "rejects changes" do
-          subject
+          go
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template(:show)
@@ -455,14 +453,8 @@ describe Projects::ClustersController do
         }
       end
 
-      subject do
-        put :update, params.merge(namespace_id: project.namespace,
-                                  project_id: project,
-                                  id: cluster)
-      end
-
       it "updates and redirects back to show page" do
-        subject
+        go
 
         cluster.reload
         expect(response).to redirect_to(project_cluster_path(project, cluster))
@@ -473,13 +465,6 @@ describe Projects::ClustersController do
       end
 
       context 'when format is json' do
-        subject do
-          put :update, params.merge(namespace_id: project.namespace,
-                                    project_id: project,
-                                    id: cluster,
-                                    format: :json)
-        end
-
         context 'when changing parameters' do
           context 'when valid parameters are used' do
             let(:params) do
@@ -495,7 +480,7 @@ describe Projects::ClustersController do
             end
 
             it "updates and redirects back to show page" do
-              subject
+              go(format: :json)
 
               cluster.reload
               expect(response).to have_http_status(:no_content)
@@ -518,7 +503,7 @@ describe Projects::ClustersController do
             end
 
             it "rejects changes" do
-              subject
+              go(format: :json)
 
               expect(response).to have_http_status(:bad_request)
             end
@@ -530,21 +515,21 @@ describe Projects::ClustersController do
     describe 'security' do
       set(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
-      it { expect { subject }.to be_allowed_for(:admin) }
-      it { expect { subject }.to be_allowed_for(:owner).of(project) }
-      it { expect { subject }.to be_allowed_for(:maintainer).of(project) }
-      it { expect { subject }.to be_denied_for(:developer).of(project) }
-      it { expect { subject }.to be_denied_for(:reporter).of(project) }
-      it { expect { subject }.to be_denied_for(:guest).of(project) }
-      it { expect { subject }.to be_denied_for(:user) }
-      it { expect { subject }.to be_denied_for(:external) }
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
     end
   end
 
   describe 'DELETE destroy' do
     let!(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, projects: [project]) }
 
-    subject do
+    def go
       delete :destroy, namespace_id: project.namespace,
                        project_id: project,
                        id: cluster
@@ -554,7 +539,7 @@ describe Projects::ClustersController do
       context 'when cluster is provided by GCP' do
         context 'when cluster is created' do
           it "destroys and redirects back to clusters list" do
-            expect { subject }
+            expect { go }
               .to change { Clusters::Cluster.count }.by(-1)
               .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
               .and change { Clusters::Providers::Gcp.count }.by(-1)
@@ -568,7 +553,7 @@ describe Projects::ClustersController do
           let!(:cluster) { create(:cluster, :providing_by_gcp, :production_environment, projects: [project]) }
 
           it "destroys and redirects back to clusters list" do
-            expect { subject }
+            expect { go }
               .to change { Clusters::Cluster.count }.by(-1)
               .and change { Clusters::Providers::Gcp.count }.by(-1)
 
@@ -582,7 +567,7 @@ describe Projects::ClustersController do
         let!(:cluster) { create(:cluster, :provided_by_user, :production_environment, projects: [project]) }
 
         it "destroys and redirects back to clusters list" do
-          expect { subject }
+          expect { go }
             .to change { Clusters::Cluster.count }.by(-1)
             .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
             .and change { Clusters::Providers::Gcp.count }.by(0)
@@ -596,14 +581,14 @@ describe Projects::ClustersController do
     describe 'security' do
       set(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, projects: [project]) }
 
-      it { expect { subject }.to be_allowed_for(:admin) }
-      it { expect { subject }.to be_allowed_for(:owner).of(project) }
-      it { expect { subject }.to be_allowed_for(:maintainer).of(project) }
-      it { expect { subject }.to be_denied_for(:developer).of(project) }
-      it { expect { subject }.to be_denied_for(:reporter).of(project) }
-      it { expect { subject }.to be_denied_for(:guest).of(project) }
-      it { expect { subject }.to be_denied_for(:user) }
-      it { expect { subject }.to be_denied_for(:external) }
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
     end
   end
 end
