@@ -1,22 +1,13 @@
-env:
-  browser: true
-  es6: true
 extends:
-  - airbnb-base
-  - prettier
-  - plugin:vue/recommended
+  - '@gitlab'
 globals:
   __webpack_public_path__: true
   gl: false
   gon: false
   localStorage: false
-parserOptions:
-  parser: babel-eslint
 plugins:
-  - filenames
   - import
   - html
-  - promise
 settings:
   html/html-extensions:
     - '.html'
@@ -25,38 +16,12 @@ settings:
     webpack:
       config: './config/webpack.config.js'
 rules:
-  filenames/match-regex:
-    - error
-    - '^[a-z0-9_]+$'
   import/no-commonjs: error
-  promise/catch-or-return: error
-  no-param-reassign:
-    - error
-    - props: true
-      ignorePropertyModificationsFor:
-        - 'acc' # for reduce accumulators
-        - 'accumulator' # for reduce accumulators
-        - 'el' # for DOM elements
-        - 'element' # for DOM elements
-        - 'state' # for Vuex mutations
   no-underscore-dangle:
     - error
     - allow:
         - __
         - _links
-  no-mixed-operators: off
-  vue/html-self-closing:
-    - error
-    - html:
-        void: always
-        normal: never
-        component: always
-      svg: always
-      math: always
-  camelcase:
-    - error
-    - properties: never
-      ignoreDestructuring: true
   # Disabled for now, to make the airbnb-base 12.1.0 -> 13.1.0 update smoother
   no-else-return:
     - error
