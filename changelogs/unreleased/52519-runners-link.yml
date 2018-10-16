@@ -1,0 +1,5 @@
+---
+title: Fixes stuck block URL linking to documentation instead of settings page
+merge_request: 22286
+author:
+type: fixed

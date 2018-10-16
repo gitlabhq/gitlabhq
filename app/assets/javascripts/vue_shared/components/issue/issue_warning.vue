@@ -1,34 +1,34 @@
 <script>
-  import icon from '../../../vue_shared/components/icon.vue';
+import icon from '../../../vue_shared/components/icon.vue';
 
-  export default {
-    components: {
-      icon,
+export default {
+  components: {
+    icon,
+  },
+  props: {
+    isLocked: {
+      type: Boolean,
+      default: false,
+      required: false,
     },
-    props: {
-      isLocked: {
-        type: Boolean,
-        default: false,
-        required: false,
-      },
-      isConfidential: {
-        type: Boolean,
-        default: false,
-        required: false,
-      },
+    isConfidential: {
+      type: Boolean,
+      default: false,
+      required: false,
     },
-    computed: {
-      warningIcon() {
-        if (this.isConfidential) return 'eye-slash';
-        if (this.isLocked) return 'lock';
+  },
+  computed: {
+    warningIcon() {
+      if (this.isConfidential) return 'eye-slash';
+      if (this.isLocked) return 'lock';
 
-        return '';
-      },
-      isLockedAndConfidential() {
-        return this.isConfidential && this.isLocked;
-      },
+      return '';
     },
-  };
+    isLockedAndConfidential() {
+      return this.isConfidential && this.isLocked;
+    },
+  },
+};
 </script>
 <template>
   <div class="issuable-note-warning">
@@ -37,7 +37,6 @@
       :name="warningIcon"
       :size="16"
       class="icon inline"
-      aria-hidden="true"
     />
 
     <span v-if="isLockedAndConfidential">

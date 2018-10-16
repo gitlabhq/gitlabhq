@@ -13,11 +13,11 @@ export default () => {
   if (editBlobForm.length) {
     const urlRoot = editBlobForm.data('relativeUrlRoot');
     const assetsPath = editBlobForm.data('assetsPrefix');
-    const blobLanguage = editBlobForm.data('blobLanguage');
+    const filePath = editBlobForm.data('blobFilename')
     const currentAction = $('.js-file-title').data('currentAction');
     const projectId = editBlobForm.data('project-id');
 
-    new EditBlob(`${urlRoot}${assetsPath}`, blobLanguage, currentAction, projectId);
+    new EditBlob(`${urlRoot}${assetsPath}`, filePath, currentAction, projectId);
     new NewCommitForm(editBlobForm);
   }
 

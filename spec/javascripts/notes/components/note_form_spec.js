@@ -100,6 +100,7 @@ describe('issue_note_form component', () => {
 
           expect(vm.handleUpdate).toHaveBeenCalled();
         });
+
         it('should save note when ctrl+enter is pressed', () => {
           spyOn(vm, 'handleUpdate').and.callThrough();
           vm.$el.querySelector('textarea').value = 'Foo';

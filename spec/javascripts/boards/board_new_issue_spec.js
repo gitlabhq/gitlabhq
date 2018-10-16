@@ -4,6 +4,7 @@ import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import boardNewIssue from '~/boards/components/board_new_issue.vue';
+import boardsStore from '~/boards/stores/boards_store';
 
 import '~/boards/models/list';
 import { listObj, boardsMockInterceptor, mockBoardService } from './mock_data';
@@ -36,8 +37,7 @@ describe('Issue boards new issue form', () => {
     mock.onAny().reply(boardsMockInterceptor);
 
     gl.boardService = mockBoardService();
-    gl.issueBoards.BoardsStore.create();
-    gl.IssueBoardsApp = new Vue();
+    boardsStore.create();
 
     list = new List(listObj);
 
@@ -148,13 +148,13 @@ describe('Issue boards new issue form', () => {
     });
 
     it('sets detail issue after submit', (done) => {
-      expect(gl.issueBoards.BoardsStore.detail.issue.title).toBe(undefined);
+      expect(boardsStore.detail.issue.title).toBe(undefined);
       vm.title = 'submit issue';
 
       Vue.nextTick()
         .then(submitIssue)
         .then(() => {
-          expect(gl.issueBoards.BoardsStore.detail.issue.title).toBe('submit issue');
+          expect(boardsStore.detail.issue.title).toBe('submit issue');
         })
         .then(done)
         .catch(done.fail);
@@ -166,7 +166,7 @@ describe('Issue boards new issue form', () => {
       Vue.nextTick()
         .then(submitIssue)
         .then(() => {
-          expect(gl.issueBoards.BoardsStore.detail.list.id).toBe(list.id);
+          expect(boardsStore.detail.list.id).toBe(list.id);
         })
         .then(done)
         .catch(done.fail);

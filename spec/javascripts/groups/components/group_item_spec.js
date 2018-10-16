@@ -45,7 +45,7 @@ describe('GroupItemComponent', () => {
 
         expect(Object.keys(rowClass).length).toBe(classes.length);
         Object.keys(rowClass).forEach((className) => {
-          expect(classes.indexOf(className) > -1).toBeTruthy();
+          expect(classes.indexOf(className)).toBeGreaterThan(-1);
         });
       });
     });

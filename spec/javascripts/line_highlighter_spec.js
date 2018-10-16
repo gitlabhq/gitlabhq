@@ -23,17 +23,20 @@ import LineHighlighter from '~/line_highlighter';
         __setLocationHash__: spyOn(this["class"], '__setLocationHash__').and.callFake(function() {})
       };
     });
+
     describe('behavior', function() {
       it('highlights one line given in the URL hash', function() {
         new LineHighlighter({ hash: '#L13' });
         return expect($('#LC13')).toHaveClass(this.css);
       });
+
       it('highlights one line given in the URL hash with given CSS class name', function() {
         const hiliter = new LineHighlighter({ hash: '#L13', highlightLineClass: 'hilite' });
         expect(hiliter.highlightLineClass).toBe('hilite');
         expect($('#LC13')).toHaveClass('hilite');
         expect($('#LC13')).not.toHaveClass('hll');
       });
+
       it('highlights a range of lines given in the URL hash', function() {
         var line, results;
         new LineHighlighter({ hash: '#L5-25' });
@@ -44,18 +47,21 @@ import LineHighlighter from '~/line_highlighter';
         }
         return results;
       });
+
       it('scrolls to the first highlighted line on initial load', function() {
         var spy;
         spy = spyOn($, 'scrollTo');
         new LineHighlighter({ hash: '#L5-25' });
         return expect(spy).toHaveBeenCalledWith('#L5', jasmine.anything());
       });
+
       it('discards click events', function() {
         var spy;
         spy = spyOnEvent('a[data-line-number]', 'click');
         clickLine(13);
         return expect(spy).toHaveBeenPrevented();
       });
+
       it('handles garbage input from the hash', function() {
         var func;
         func = function() {
@@ -64,6 +70,7 @@ import LineHighlighter from '~/line_highlighter';
         return expect(func).not.toThrow();
       });
     });
+
     describe('clickHandler', function() {
       it('handles clicking on a child icon element', function() {
         var spy;
@@ -72,11 +79,13 @@ import LineHighlighter from '~/line_highlighter';
         expect(spy).toHaveBeenCalledWith(13);
         return expect($('#LC13')).toHaveClass(this.css);
       });
+
       describe('without shiftKey', function() {
         it('highlights one line when clicked', function() {
           clickLine(13);
           return expect($('#LC13')).toHaveClass(this.css);
         });
+
         it('unhighlights previously highlighted lines', function() {
           clickLine(13);
           clickLine(20);
@@ -101,6 +110,7 @@ import LineHighlighter from '~/line_highlighter';
           expect(spy).toHaveBeenCalledWith(13);
           return expect(spy).toHaveBeenCalledWith(13, 20);
         });
+
         describe('without existing highlight', function() {
           it('highlights the clicked line', function() {
             clickLine(13, {
@@ -118,6 +128,7 @@ import LineHighlighter from '~/line_highlighter';
             return expect(spy).toHaveBeenCalledWith(13);
           });
         });
+
         describe('with existing single-line highlight', function() {
           it('uses existing line as last line when target is lesser', function() {
             var line, results;
@@ -155,6 +166,7 @@ import LineHighlighter from '~/line_highlighter';
               shiftKey: true
             });
           });
+
           it('uses target as first line when it is less than existing first line', function() {
             var line, results;
             clickLine(5, {
@@ -182,13 +194,16 @@ import LineHighlighter from '~/line_highlighter';
         });
       });
     });
+
     describe('hashToRange', function() {
       beforeEach(function() {
         return this.subject = this["class"].hashToRange;
       });
+
       it('extracts a single line number from the hash', function() {
         return expect(this.subject('#L5')).toEqual([5, null]);
       });
+
       it('extracts a range of line numbers from the hash', function() {
         return expect(this.subject('#L5-15')).toEqual([5, 15]);
       });
@@ -196,10 +211,12 @@ import LineHighlighter from '~/line_highlighter';
         return expect(this.subject('#foo')).toEqual([null, null]);
       });
     });
+
     describe('highlightLine', function() {
       beforeEach(function() {
         return this.subject = this["class"].highlightLine;
       });
+
       it('highlights the specified line', function() {
         this.subject(13);
         return expect($('#LC13')).toHaveClass(this.css);
@@ -213,6 +230,7 @@ import LineHighlighter from '~/line_highlighter';
       beforeEach(function() {
         return this.subject = this["class"].setHash;
       });
+
       it('sets the location hash for a single line', function() {
         this.subject(5);
         return expect(this.spies.__setLocationHash__).toHaveBeenCalledWith('#L5');

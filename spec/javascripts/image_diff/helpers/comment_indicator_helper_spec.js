@@ -32,7 +32,7 @@ describe('commentIndicatorHelper', () => {
         expect(svgEl).toBeDefined();
 
         const svgLink = svgEl.querySelector('use').getAttribute('xlink:href');
-        expect(svgLink.indexOf('image-comment-dark') !== -1).toEqual(true);
+        expect(svgLink.indexOf('image-comment-dark')).not.toBe(-1);
       });
     });
   });

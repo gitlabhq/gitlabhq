@@ -1,11 +1,13 @@
 # Style guides and linting
+
 See the relevant style guides for our guidelines and for information on linting:
 
 ## JavaScript
+
 We defer to [Airbnb][airbnb-js-style-guide] on most style-related
 conventions and enforce them with eslint.
 
-See [our current .eslintrc][eslintrc] for specific rules and patterns.
+See [our current .eslintrc](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.eslintrc.yml) for specific rules and patterns.
 
 ### Common
 
@@ -21,10 +23,10 @@ refactor an existing one, you should abide by the eslint rules.
     ```javascript
       // bad
       /* eslint-disable */
- 
+
       // better
       /* eslint-disable some-rule, some-other-rule */
- 
+
       // best
       // nothing :)
     ```
@@ -34,14 +36,14 @@ refactor an existing one, you should abide by the eslint rules.
     ```javascript
       // bad
       /* eslint-disable no-new */
- 
+
       import Foo from 'foo';
- 
+
       new Foo();
- 
+
       // better
       import Foo from 'foo';
- 
+
       // eslint-disable-next-line no-new
       new Foo();
     ```
@@ -58,11 +60,11 @@ followed by any global declarations, then a blank newline prior to any imports o
       /* global Foo */
       /* eslint-disable no-new */
       import Bar from './bar';
- 
+
       // good
       /* eslint-disable no-new */
       /* global Foo */
- 
+
       import Bar from './bar';
     ```
 
@@ -73,7 +75,7 @@ followed by any global declarations, then a blank newline prior to any imports o
     ```javascript
       // bad
       /* globals Flash, Cookies, jQuery */
- 
+
       // good
       /* global Flash */
       /* global Cookies */
@@ -85,7 +87,7 @@ followed by any global declarations, then a blank newline prior to any imports o
     ```javascript
       // bad
       fn(p1, p2, p3, p4) {}
- 
+
       // good
       fn(options) {}
     ```
@@ -191,28 +193,28 @@ Do not use them anymore and feel free to remove them when refactoring legacy cod
     ```javascript
     // bad
     const values = {foo: 1};
- 
+
     function impureFunction(items) {
       const bar = 1;
- 
+
       items.foo = items.a * bar + 2;
- 
+
       return items.a;
     }
- 
+
     const c = impureFunction(values);
- 
+
     // good
     var values = {foo: 1};
- 
+
     function pureFunction (foo) {
       var bar = 1;
- 
+
       foo = foo * bar + 2;
- 
+
       return foo;
     }
- 
+
     var c = pureFunction(values.foo);
     ```
 
@@ -231,10 +233,10 @@ Do not use them anymore and feel free to remove them when refactoring legacy cod
         document.addEventListener('click', this.handleCallback)
       },
       handleCallback() {
-    
+
       }
     }
-    
+
     // Good
     export class Foo {
       constructor() {
@@ -253,12 +255,12 @@ Do not use them anymore and feel free to remove them when refactoring legacy cod
 
     ```javascript
       const users = [ { name: 'Foo' }, { name: 'Bar' } ];
-  
+
       // bad
       users.forEach((user, index) => {
         user.id = index;
       });
-  
+
       // good
       const usersWithId = users.map((user, index) => {
         return Object.assign({}, user, { id: index });
@@ -272,10 +274,10 @@ Do not use them anymore and feel free to remove them when refactoring legacy cod
     ```javascript
       // bad
       +'10' // 10
-  
+
       // good
       Number('10') // 10
-  
+
       // better
       parseInt('10', 10);
     ```
@@ -289,7 +291,7 @@ Do not use them anymore and feel free to remove them when refactoring legacy cod
       <button class="add-user">
         Add User
       </button>
-  
+
       // good
       <button class="js-add-user">
         Add User
@@ -299,10 +301,12 @@ Do not use them anymore and feel free to remove them when refactoring legacy cod
 ### Vue.js
 
 #### `eslint-vue-plugin`
+
 We default to [eslint-vue-plugin][eslint-plugin-vue], with the `plugin:vue/recommended`.
 Please check this [rules][eslint-plugin-vue-rules] for more documentation.
 
 #### Basic Rules
+
 1. The service has it's own file
 1. The store has it's own file
 1. Use a function in the bundle file to instantiate the Vue component:
@@ -314,7 +318,7 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
           new Component({})
         }
       }
-  
+
       // good
       document.addEventListener('DOMContentLoaded', () => new Vue({
         el: '#element',
@@ -336,7 +340,7 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
           }
         }
       }
-  
+
       // good
       class Store {
         constructor() {
@@ -354,14 +358,14 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
     ```javascript
       // bad
       import cardBoard from 'cardBoard.vue'
-  
+
       components: {
         cardBoard,
       };
-  
+
       // good
       import CardBoard from 'cardBoard.vue'
-  
+
       components: {
         CardBoard,
       };
@@ -373,13 +377,13 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
     ```javascript
       // bad
       <component class="btn">
-  
+
       // good
       <component css-class="btn">
-  
+
       // bad
       <component myProp="prop" />
-  
+
       // good
       <component my-prop="prop" />
     ```
@@ -387,6 +391,7 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
 [#34371]: https://gitlab.com/gitlab-org/gitlab-ce/issues/34371
 
 #### Alignment
+
 1. Follow these alignment styles for the template method:
 
    1. With more than one attribute, all attributes should be on a new line:
@@ -395,31 +400,31 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
           // bad
           <component v-if="bar"
               param="baz" />
-  
+
           <button class="btn">Click me</button>
-  
+
           // good
           <component
             v-if="bar"
             param="baz"
           />
-  
+
           <button class="btn">
             Click me
           </button>
         ```
-  
+
    1. The tag can be inline if there is only one attribute:
 
         ```javascript
           // good
             <component bar="bar" />
-  
+
           // good
             <component
               bar="bar"
               />
-  
+
           // bad
            <component
               bar="bar" />
@@ -434,7 +439,7 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
       template: `
         <button :class='style'>Button</button>
       `
-  
+
       // good
       template: `
         <button :class="style">Button</button>
@@ -447,7 +452,7 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
     ```javascript
       // bad
       props: ['foo']
-  
+
       // good
       props: {
         foo: {
@@ -467,7 +472,7 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
           type: String,
         }
       }
-  
+
       // good
       props: {
         foo: {
@@ -490,7 +495,7 @@ On those a default key should not be provided.
           required: false,
         }
       }
-  
+
       // good
       props: {
         foo: {
@@ -499,7 +504,7 @@ On those a default key should not be provided.
           default: 'bar'
         }
       }
-  
+
       // good
       props: {
         foo: {
@@ -534,7 +539,7 @@ On those a default key should not be provided.
     ```javascript
       // bad
       <component v-on:click="eventHandler"/>
-  
+
       // good
       <component @click="eventHandler"/>
     ```
@@ -544,7 +549,7 @@ On those a default key should not be provided.
     ```javascript
       // bad
       <component v-bind:class="btn"/>
-  
+
       // good
       <component :class="btsn"/>
     ```
@@ -556,7 +561,7 @@ On those a default key should not be provided.
     ```javascript
       // bad
       <component></component>
-  
+
       // good
       <component />
     ```
@@ -650,7 +655,7 @@ Useful links:
         title="Some tooltip text">
         Text
       </span>
-  
+
       // good
       <span
         v-tooltip
@@ -666,10 +671,10 @@ Useful links:
     ```javascript
       // bad
       <span data-original-title="tooltip text">Foo</span>
-  
+
       // good
       <span title="tooltip text">Foo</span>
-  
+
       $('span').tooltip('_fixTitle');
     ```
 

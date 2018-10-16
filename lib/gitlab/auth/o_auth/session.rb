@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # :nocov:
 module Gitlab
   module Auth

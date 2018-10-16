@@ -211,7 +211,7 @@ module SystemNoteService
   #   "closed via bc17db76"
   #
   # Returns the created Note object
-  def change_status(noteable, project, author, status, source)
+  def change_status(noteable, project, author, status, source = nil)
     body = status.dup
     body << " via #{source.gfm_reference(project)}" if source
 

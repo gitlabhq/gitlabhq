@@ -5,13 +5,13 @@ module QA
         module Kubernetes
           class Show < Page::Base
             view 'app/assets/javascripts/clusters/components/application_row.vue' do
-              element :application_row, 'js-cluster-application-row-${this.id}'
-              element :install_button, "s__('ClusterIntegration|Install')"
-              element :installed_button, "s__('ClusterIntegration|Installed')"
+              element :application_row, 'js-cluster-application-row-${this.id}' # rubocop:disable QA/ElementWithPattern
+              element :install_button, "s__('ClusterIntegration|Install')" # rubocop:disable QA/ElementWithPattern
+              element :installed_button, "s__('ClusterIntegration|Installed')" # rubocop:disable QA/ElementWithPattern
             end
 
             view 'app/assets/javascripts/clusters/components/applications.vue' do
-              element :ingress_ip_address, 'id="ingress-ip-address"'
+              element :ingress_ip_address, 'id="ingress-ip-address"' # rubocop:disable QA/ElementWithPattern
             end
 
             def install!(application_name)

@@ -132,22 +132,11 @@ msgstr ""
 msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
 msgstr ""
 
-msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
-msgstr ""
-
-msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will not retry automatically. Reset storage information when the problem is resolved."
-msgstr ""
-
 msgid "%{openOrClose} %{noteable}"
 msgstr ""
 
 msgid "%{percent}%% complete"
 msgstr ""
-
-msgid "%{storage_name}: failed storage access attempt on host:"
-msgid_plural "%{storage_name}: %{failed_attempts} failed storage access attempts:"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "%{text} %{files}"
 msgid_plural "%{text} %{files} files"
@@ -314,9 +303,6 @@ msgstr ""
 msgid "Access expiration date"
 msgstr ""
 
-msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
-msgstr ""
-
 msgid "Account"
 msgstr ""
 
@@ -401,9 +387,6 @@ msgstr ""
 msgid "AdminArea|You’re about to stop all jobs.This will halt all current jobs that are running."
 msgstr ""
 
-msgid "AdminHealthPageLink|health page"
-msgstr ""
-
 msgid "AdminProjects| You’re about to permanently delete the project %{projectName}, its repository, and all related resources including issues, merge requests, etc..  Once you confirm and press %{strong_start}Delete project%{strong_end}, it cannot be undone or recovered."
 msgstr ""
 
@@ -440,7 +423,7 @@ msgstr ""
 msgid "AdminUsers|To confirm, type %{username}"
 msgstr ""
 
-msgid "Advanced"
+msgid "Advanced permissions, Large File Storage and Two-Factor authentication settings."
 msgstr ""
 
 msgid "Advanced settings"
@@ -461,6 +444,9 @@ msgstr ""
 msgid "Allow commits from members who can merge to the target branch."
 msgstr ""
 
+msgid "Allow projects within this group to use Git LFS"
+msgstr ""
+
 msgid "Allow public access to pipelines and job details, including output logs and artifacts"
 msgstr ""
 
@@ -470,10 +456,19 @@ msgstr ""
 msgid "Allow requests to the local network from hooks and services."
 msgstr ""
 
+msgid "Allow users to request access"
+msgstr ""
+
+msgid "Allow users to request access if visibility is public or internal."
+msgstr ""
+
 msgid "Allows you to add and manage Kubernetes clusters."
 msgstr ""
 
 msgid "Alternatively, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
+msgstr ""
+
+msgid "Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication"
 msgstr ""
 
 msgid "An application called %{link_to_client} is requesting access to your GitLab account."
@@ -1162,7 +1157,7 @@ msgstr ""
 msgid "Chat"
 msgstr ""
 
-msgid "Check interval"
+msgid "Check the %{docs_link_start}documentation%{docs_link_end}."
 msgstr ""
 
 msgid "Checking %{text} availability…"
@@ -1298,9 +1293,6 @@ msgid "CiVariable|Toggle protected"
 msgstr ""
 
 msgid "CiVariable|Validation failed"
-msgstr ""
-
-msgid "CircuitBreakerApiLink|circuitbreaker api"
 msgstr ""
 
 msgid "Clear search"
@@ -1844,7 +1836,7 @@ msgstr ""
 msgid "Configure push mirrors."
 msgstr ""
 
-msgid "Configure storage path and circuit breaker settings."
+msgid "Configure storage path settings."
 msgstr ""
 
 msgid "Configure the way a user creates a new account."
@@ -2497,9 +2489,6 @@ msgstr ""
 msgid "Enable group Runners"
 msgstr ""
 
-msgid "Enable or disable certain group features and choose access levels."
-msgstr ""
-
 msgid "Enable or disable version check and usage ping."
 msgstr ""
 
@@ -2917,9 +2906,6 @@ msgstr ""
 msgid "Git revision"
 msgstr ""
 
-msgid "Git storage health information has been reset"
-msgstr ""
-
 msgid "Git strategy for pipelines"
 msgstr ""
 
@@ -3010,6 +2996,9 @@ msgstr ""
 msgid "Group avatar"
 msgstr ""
 
+msgid "Group description (optional)"
+msgstr ""
+
 msgid "Group details"
 msgstr ""
 
@@ -3017,6 +3006,9 @@ msgid "Group info:"
 msgstr ""
 
 msgid "Group maintainers can register group runners in the %{link}"
+msgstr ""
+
+msgid "Group name"
 msgstr ""
 
 msgid "Group: %{group_name}"
@@ -3032,9 +3024,6 @@ msgid "GroupSettings|Learn more about badges."
 msgstr ""
 
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
-msgstr ""
-
-msgid "GroupSettings|Share with group lock"
 msgstr ""
 
 msgid "GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup."
@@ -3450,12 +3439,6 @@ msgstr ""
 msgid "June"
 msgstr ""
 
-msgid "Koding"
-msgstr ""
-
-msgid "Koding Dashboard"
-msgstr ""
-
 msgid "Kubernetes"
 msgstr ""
 
@@ -3520,6 +3503,9 @@ msgid "Labels|Promote Label"
 msgstr ""
 
 msgid "Labels|Promoting %{labelTitle} will make it available for all projects inside %{groupName}. Existing project labels with the same title will be merged. This action cannot be reversed."
+msgstr ""
+
+msgid "Large File Storage"
 msgstr ""
 
 msgid "Last %d day"
@@ -3736,9 +3722,6 @@ msgstr ""
 msgid "Max access level"
 msgstr ""
 
-msgid "Maximum git storage failures"
-msgstr ""
-
 msgid "Maximum job timeout"
 msgstr ""
 
@@ -3932,6 +3915,9 @@ msgid "Name your individual key via a title"
 msgstr ""
 
 msgid "Name:"
+msgstr ""
+
+msgid "Naming, visibility"
 msgstr ""
 
 msgid "Nav|Help"
@@ -4206,9 +4192,6 @@ msgstr ""
 msgid "November"
 msgstr ""
 
-msgid "Number of access attempts"
-msgstr ""
-
 msgid "Oct"
 msgstr ""
 
@@ -4227,9 +4210,6 @@ msgid "One or more of your Bitbucket projects cannot be imported into GitLab dir
 msgstr ""
 
 msgid "One or more of your Google Code projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
-msgstr ""
-
-msgid "Online IDE integration settings."
 msgstr ""
 
 msgid "Only admins"
@@ -4266,6 +4246,9 @@ msgid "Opens in a new window"
 msgstr ""
 
 msgid "Operations"
+msgstr ""
+
+msgid "Operations Dashboard"
 msgstr ""
 
 msgid "Optionally, you can %{link_to_customize} how FogBugz email addresses and usernames are imported into GitLab."
@@ -4319,6 +4302,9 @@ msgstr ""
 msgid "Paste your public SSH key, which is usually contained in the file '~/.ssh/id_rsa.pub' and begins with 'ssh-rsa'. Don't use your private SSH key."
 msgstr ""
 
+msgid "Path, transfer, remove"
+msgstr ""
+
 msgid "Path:"
 msgstr ""
 
@@ -4344,6 +4330,9 @@ msgid "Performance optimization"
 msgstr ""
 
 msgid "Permissions"
+msgstr ""
+
+msgid "Permissions, LFS, 2FA"
 msgstr ""
 
 msgid "Personal Access Token"
@@ -5080,10 +5069,19 @@ msgstr ""
 msgid "Remove avatar"
 msgstr ""
 
+msgid "Remove group"
+msgstr ""
+
 msgid "Remove priority"
 msgstr ""
 
 msgid "Remove project"
+msgstr ""
+
+msgid "Removed group can not be restored!"
+msgstr ""
+
+msgid "Removing group will cause all child projects and resources to be removed."
 msgstr ""
 
 msgid "Rename"
@@ -5152,10 +5150,10 @@ msgstr ""
 msgid "Requests Profiles"
 msgstr ""
 
-msgid "Require all users to accept Terms of Service and Privacy Policy when they access GitLab."
+msgid "Require all users in this group to setup Two-factor authentication"
 msgstr ""
 
-msgid "Reset git storage health information"
+msgid "Require all users to accept Terms of Service and Privacy Policy when they access GitLab."
 msgstr ""
 
 msgid "Reset health check access token"
@@ -5370,12 +5368,6 @@ msgstr ""
 msgid "SearchAutocomplete|in this project"
 msgstr ""
 
-msgid "Seconds before reseting failure information"
-msgstr ""
-
-msgid "Seconds to wait for a storage access attempt"
-msgstr ""
-
 msgid "Secret"
 msgstr ""
 
@@ -5464,9 +5456,6 @@ msgid "Set requirements for a user to sign-in. Enable mandatory two-factor authe
 msgstr ""
 
 msgid "Set up CI/CD"
-msgstr ""
-
-msgid "Set up Koding"
 msgstr ""
 
 msgid "Set up a %{type} Runner manually"
@@ -5980,12 +5969,6 @@ msgstr ""
 msgid "The maximum file size allowed is 200KB."
 msgstr ""
 
-msgid "The number of attempts GitLab will make to access a storage."
-msgstr ""
-
-msgid "The number of failures of after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
-msgstr ""
-
 msgid "The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>"
 msgstr ""
 
@@ -6031,15 +6014,6 @@ msgstr ""
 msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
 msgstr ""
 
-msgid "The time in seconds GitLab will keep failure information. When no failures occur during this time, information about the mount is reset."
-msgstr ""
-
-msgid "The time in seconds GitLab will try to access storage. After this time a timeout error will be raised."
-msgstr ""
-
-msgid "The time in seconds between storage checks. When a previous check did complete yet, GitLab will skip a check."
-msgstr ""
-
 msgid "The time taken by each data entry gathered by that stage."
 msgstr ""
 
@@ -6077,9 +6051,6 @@ msgid "There are no staged changes"
 msgstr ""
 
 msgid "There are no unstaged changes"
-msgstr ""
-
-msgid "There are problems accessing Git storage: "
 msgstr ""
 
 msgid "There was an error loading users activity calendar."
@@ -6235,6 +6206,9 @@ msgstr ""
 msgid "This runner will only run on pipelines triggered on protected branches"
 msgstr ""
 
+msgid "This setting can be overridden in each project."
+msgstr ""
+
 msgid "This source diff could not be displayed because it is too large."
 msgstr ""
 
@@ -6251,6 +6225,9 @@ msgid "Time before an issue gets scheduled"
 msgstr ""
 
 msgid "Time before an issue starts implementation"
+msgstr ""
+
+msgid "Time before enforced"
 msgstr ""
 
 msgid "Time between merge request creation and merge/close"
@@ -6536,6 +6513,9 @@ msgstr ""
 msgid "Twitter"
 msgstr ""
 
+msgid "Two-factor authentication"
+msgstr ""
+
 msgid "Type"
 msgstr ""
 
@@ -6602,7 +6582,7 @@ msgstr ""
 msgid "Update now"
 msgstr ""
 
-msgid "Update your group name, description, avatar, and other general settings."
+msgid "Update your group name, description, avatar, and visibility."
 msgstr ""
 
 msgid "Updating"
@@ -6758,6 +6738,9 @@ msgstr ""
 msgid "Visibility and access controls"
 msgstr ""
 
+msgid "Visibility level"
+msgstr ""
+
 msgid "Visibility level:"
 msgstr ""
 
@@ -6798,6 +6781,9 @@ msgid "When a runner is locked, it cannot be assigned to other projects"
 msgstr ""
 
 msgid "When enabled, users cannot use GitLab until the terms have been accepted."
+msgstr ""
+
+msgid "Who can see this group?"
 msgstr ""
 
 msgid "Wiki"

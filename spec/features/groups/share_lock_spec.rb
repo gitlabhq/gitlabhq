@@ -60,14 +60,14 @@ describe 'Group share with group lock' do
   def enable_group_lock
     page.within('.gs-permissions') do
       check 'group_share_with_group_lock'
-      click_on 'Save group'
+      click_on 'Save changes'
     end
   end
 
   def disable_group_lock
     page.within('.gs-permissions') do
       uncheck 'group_share_with_group_lock'
-      click_on 'Save group'
+      click_on 'Save changes'
     end
   end
 end

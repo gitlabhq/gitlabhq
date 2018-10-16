@@ -37,7 +37,4 @@ rules:
       - 'fixtures/blob'
   # Temporarily disabled to facilitate an upgrade to eslint-plugin-jasmine
   jasmine/new-line-before-expect: off
-  jasmine/new-line-between-declarations: off
-  jasmine/no-promise-without-done-fail: off
-  jasmine/prefer-jasmine-matcher: off
   jasmine/prefer-toHaveBeenCalledWith: off

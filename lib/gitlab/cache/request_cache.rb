@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Cache
     # See https://docs.gitlab.com/ee/development/utilities.html#requestcache

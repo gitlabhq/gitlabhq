@@ -115,7 +115,7 @@ export default {
       <span>
         {{ selectedVersionName }}
       </span>
-      <Icon
+      <icon
         :size="12"
         name="angle-down"
         class="position-absolute"

@@ -118,7 +118,9 @@ export default {
         this.rectYAxisLabelDims.height != null ? this.rectYAxisLabelDims.height / 2 : 0;
       const yCoord = this.vbHeight / 2 + rectWidth - 5;
 
-      return `translate(${this.minX + this.yAxisTextTransformPadding}, ${yCoord}) rotate(-${this.yAxisTextRotation})`;
+      return `translate(${this.minX + this.yAxisTextTransformPadding}, ${yCoord}) rotate(-${
+        this.yAxisTextRotation
+      })`;
     },
   },
   mounted() {
@@ -207,8 +209,7 @@ export default {
 
       renderedYAxis.selectAll('.tick').each(function createTickLines(d, i) {
         if (i > 0) {
-          d3
-            .select(this)
+          d3.select(this)
             .select('line')
             .attr('x2', width)
             .attr('class', 'axis-tick');
@@ -217,8 +218,7 @@ export default {
 
       // Add the panning capabilities
       if (this.isPanAvailable) {
-        d3
-          .select(this.$refs.baseSvg)
+        d3.select(this.$refs.baseSvg)
           .call(this.zoom)
           .on('wheel.zoom', null); // This disables the pan of the graph with the scroll of the mouse wheel
       }

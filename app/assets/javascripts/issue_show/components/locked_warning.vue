@@ -1,11 +1,11 @@
 <script>
-  export default {
-    computed: {
-      currentPath() {
-        return window.location.pathname;
-      },
+export default {
+  computed: {
+    currentPath() {
+      return window.location.pathname;
     },
-  };
+  },
+};
 </script>
 
 <template>

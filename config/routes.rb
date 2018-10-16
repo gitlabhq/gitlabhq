@@ -56,7 +56,6 @@ Rails.application.routes.draw do
     # '/-/health' implemented by BasicHealthMiddleware
     get 'liveness' => 'health#liveness'
     get 'readiness' => 'health#readiness'
-    post 'storage_check' => 'health#storage_check'
     resources :metrics, only: [:index]
     mount Peek::Railtie => '/peek', as: 'peek_routes'
 
@@ -81,9 +80,6 @@ Rails.application.routes.draw do
 
     draw :instance_statistics
   end
-
-  # Koding route
-  get 'koding' => 'koding#index'
 
   draw :api
   draw :sidekiq

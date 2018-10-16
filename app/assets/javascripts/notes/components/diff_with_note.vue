@@ -94,6 +94,7 @@ export default {
     class="diff-file file-holder"
   >
     <diff-file-header
+      :discussion-path="discussion.discussionPath"
       :diff-file="diffFile"
       :can-current-user-fork="false"
       :discussions-expanded="isDiscussionsExpanded"

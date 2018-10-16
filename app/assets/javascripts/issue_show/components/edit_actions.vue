@@ -1,64 +1,64 @@
 <script>
-  import { __, sprintf } from '~/locale';
-  import updateMixin from '../mixins/update';
-  import eventHub from '../event_hub';
+import { __, sprintf } from '~/locale';
+import updateMixin from '../mixins/update';
+import eventHub from '../event_hub';
 
-  const issuableTypes = {
-    issue: __('Issue'),
-    epic: __('Epic'),
-  };
+const issuableTypes = {
+  issue: __('Issue'),
+  epic: __('Epic'),
+};
 
-  export default {
-    mixins: [updateMixin],
-    props: {
-      canDestroy: {
-        type: Boolean,
-        required: true,
-      },
-      formState: {
-        type: Object,
-        required: true,
-      },
-      showDeleteButton: {
-        type: Boolean,
-        required: false,
-        default: true,
-      },
-      issuableType: {
-        type: String,
-        required: true,
-      },
+export default {
+  mixins: [updateMixin],
+  props: {
+    canDestroy: {
+      type: Boolean,
+      required: true,
     },
-    data() {
-      return {
-        deleteLoading: false,
-      };
+    formState: {
+      type: Object,
+      required: true,
     },
-    computed: {
-      isSubmitEnabled() {
-        return this.formState.title.trim() !== '';
-      },
-      shouldShowDeleteButton() {
-        return this.canDestroy && this.showDeleteButton;
-      },
+    showDeleteButton: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
-    methods: {
-      closeForm() {
-        eventHub.$emit('close.form');
-      },
-      deleteIssuable() {
-        const confirmMessage = sprintf(__('%{issuableType} will be removed! Are you sure?'), {
-          issuableType: issuableTypes[this.issuableType],
-        });
-        // eslint-disable-next-line no-alert
-        if (window.confirm(confirmMessage)) {
-          this.deleteLoading = true;
+    issuableType: {
+      type: String,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      deleteLoading: false,
+    };
+  },
+  computed: {
+    isSubmitEnabled() {
+      return this.formState.title.trim() !== '';
+    },
+    shouldShowDeleteButton() {
+      return this.canDestroy && this.showDeleteButton;
+    },
+  },
+  methods: {
+    closeForm() {
+      eventHub.$emit('close.form');
+    },
+    deleteIssuable() {
+      const confirmMessage = sprintf(__('%{issuableType} will be removed! Are you sure?'), {
+        issuableType: issuableTypes[this.issuableType],
+      });
+      // eslint-disable-next-line no-alert
+      if (window.confirm(confirmMessage)) {
+        this.deleteLoading = true;
 
-          eventHub.$emit('delete.issuable');
-        }
-      },
+        eventHub.$emit('delete.issuable');
+      }
     },
-  };
+  },
+};
 </script>
 
 <template>

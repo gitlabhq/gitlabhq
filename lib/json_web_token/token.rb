@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JSONWebToken
   class Token
     attr_accessor :issuer, :subject, :audience, :id

@@ -1,36 +1,36 @@
 <script>
-  import _ from 'underscore';
-  import CiIcon from '~/vue_shared/components/ci_icon.vue';
-  import Icon from '~/vue_shared/components/icon.vue';
-  import tooltip from '~/vue_shared/directives/tooltip';
+import _ from 'underscore';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import Icon from '~/vue_shared/components/icon.vue';
+import tooltip from '~/vue_shared/directives/tooltip';
 
-  export default {
-    components: {
-      CiIcon,
-      Icon,
+export default {
+  components: {
+    CiIcon,
+    Icon,
+  },
+  directives: {
+    tooltip,
+  },
+  props: {
+    jobs: {
+      type: Array,
+      required: true,
     },
-    directives: {
-      tooltip,
+    jobId: {
+      type: Number,
+      required: true,
     },
-    props: {
-      jobs: {
-        type: Array,
-        required: true,
-      },
-      jobId: {
-        type: Number,
-        required: true,
-      },
+  },
+  methods: {
+    isJobActive(currentJobId) {
+      return this.jobId === currentJobId;
     },
-    methods: {
-      isJobActive(currentJobId) {
-        return this.jobId === currentJobId;
-      },
-      tooltipText(job) {
-        return `${_.escape(job.name)} - ${job.status.tooltip}`;
-      },
+    tooltipText(job) {
+      return `${_.escape(job.name)} - ${job.status.tooltip}`;
     },
-  };
+  },
+};
 </script>
 <template>
   <div class="js-jobs-container builds-container">

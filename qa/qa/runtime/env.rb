@@ -8,6 +8,10 @@ module QA
         enabled?(ENV['CHROME_HEADLESS'])
       end
 
+      def accept_insecure_certs?
+        enabled?(ENV['ACCEPT_INSECURE_CERTS'])
+      end
+
       def running_in_ci?
         ENV['CI'] || ENV['CI_SERVER']
       end

@@ -23,16 +23,6 @@
 
     = f.submit 'Change group path', class: 'btn btn-warning'
 
-.sub-section
-  %h4.danger-title Remove group
-  = form_tag(@group, method: :delete) do
-    %p
-      Removing group will cause all child projects and resources to be removed.
-      %br
-      %strong Removed group can not be restored!
-
-    = button_to 'Remove group', '#', class: 'btn btn-remove js-confirm-danger', data: { 'confirm-danger-message' => remove_group_message(@group) }
-
 - if supports_nested_groups?
   .sub-section
     %h4.warning-title Transfer group
@@ -47,3 +37,13 @@
         %li You will need to update your local repositories to point to the new location.
         %li If the parent group's visibility is lower than the group current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility.
       = f.submit 'Transfer group', class: 'btn btn-warning'
+
+.sub-section
+  %h4.danger-title= _('Remove group')
+  = form_tag(@group, method: :delete) do
+    %p
+      = _('Removing group will cause all child projects and resources to be removed.')
+      %br
+      %strong= _('Removed group can not be restored!')
+
+    = button_to _('Remove group'), '#', class: 'btn btn-remove js-confirm-danger', data: { 'confirm-danger-message' => remove_group_message(@group) }

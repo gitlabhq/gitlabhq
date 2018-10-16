@@ -1,30 +1,28 @@
 <script>
-  import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-  import timeagoMixin from '~/vue_shared/mixins/timeago';
+import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import timeagoMixin from '~/vue_shared/mixins/timeago';
 
-  export default {
-    components: {
-      TimeagoTooltip,
+export default {
+  components: {
+    TimeagoTooltip,
+  },
+  mixins: [timeagoMixin],
+  props: {
+    artifact: {
+      type: Object,
+      required: true,
     },
-    mixins: [
-      timeagoMixin,
-    ],
-    props: {
-      artifact: {
-        type: Object,
-        required: true,
-      },
+  },
+  computed: {
+    isExpired() {
+      return this.artifact.expired;
     },
-    computed: {
-      isExpired() {
-        return this.artifact.expired;
-      },
-      // Only when the key is `false` we can render this block
-      willExpire() {
-        return this.artifact.expired === false;
-      },
+    // Only when the key is `false` we can render this block
+    willExpire() {
+      return this.artifact.expired === false;
     },
-  };
+  },
+};
 </script>
 <template>
   <div class="block">

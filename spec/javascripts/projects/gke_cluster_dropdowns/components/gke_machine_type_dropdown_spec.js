@@ -96,8 +96,8 @@ describe('GkeMachineTypeDropdown', () => {
         return vm.$nextTick().then(() => {
           expect(vm.$el.querySelector('input').value).toBe(selectedMachineTypeMock);
           done();
-        });
-      });
+        }).catch(done.fail);
+      }).catch(done.fail);
     });
   });
 });

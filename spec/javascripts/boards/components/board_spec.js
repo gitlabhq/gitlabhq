@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import '~/boards/services/board_service';
-import '~/boards/components/board';
+import Board from '~/boards/components/board';
 import '~/boards/models/list';
 import { mockBoardService } from '../mock_data';
 
@@ -21,7 +21,7 @@ describe('Board component', () => {
       boardId: 1,
     });
 
-    vm = new gl.issueBoards.Board({
+    vm = new Board({
       propsData: {
         boardId: '1',
         disabled: false,
@@ -112,6 +112,6 @@ describe('Board component', () => {
         ).toBe(true);
 
         done();
-      });
+      }).catch(done.fail);
   });
 });

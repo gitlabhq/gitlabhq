@@ -1,3 +1,7 @@
+---
+table_display_block: true
+---
+
 # Application settings API
 
 These API calls allow you to read and modify GitLab instance
@@ -45,8 +49,6 @@ Example response:
    "sign_in_text" : null,
    "container_registry_token_expire_delay": 5,
    "repository_storages": ["default"],
-   "koding_enabled": false,
-   "koding_url": null,
    "plantuml_enabled": false,
    "plantuml_url": null,
    "terminal_max_session_time": 0,
@@ -103,8 +105,6 @@ Example response:
   "after_sign_out_path": "",
   "container_registry_token_expire_delay": 5,
   "repository_storages": ["default"],
-  "koding_enabled": false,
-  "koding_url": null,
   "plantuml_enabled": false,
   "plantuml_url": null,
   "terminal_max_session_time": 0,
@@ -138,11 +138,6 @@ are listed in the descriptions of the relevant settings.
 | `authorized_keys_enabled`                | boolean          | no                                   | By default, we write to the `authorized_keys` file to support Git over SSH without additional configuration. GitLab can be optimized to authenticate SSH keys via the database file. Only disable this if you have configured your OpenSSH server to use the AuthorizedKeysCommand. |
 | `auto_devops_domain`                     | string           | no                                   | Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages. |
 | `auto_devops_enabled`                    | boolean          | no                                   | Enable Auto DevOps for projects by default. It will automatically build, test, and deploy applications based on a predefined CI/CD configuration. |
-| `circuitbreaker_access_retries`          | integer          | no                                   | The number of attempts GitLab will make to access a storage. |
-| `circuitbreaker_check_interval`          | integer          | no                                   | Number of seconds in between storage checks. |
-| `circuitbreaker_failure_count_threshold` | integer          | no                                   | The number of failures after which GitLab will completely prevent access to the storage.  |
-| `circuitbreaker_failure_reset_time`      | integer          | no                                   | Time in seconds GitLab will keep storage failure information. When no failures occur during this time, the failure information is reset. |
-| `circuitbreaker_storage_timeout`         | integer          | no                                   | Seconds to wait for a storage access attempt. |
 | `clientside_sentry_dsn`                  | string           | required by: `clientside_sentry_enabled` | Clientside Sentry Data Source Name. |
 | `clientside_sentry_enabled`              | boolean          | no                                   | (**If enabled, requires:** `clientside_sentry_dsn`) Enable Sentry error reporting for the client side. |
 | `container_registry_token_expire_delay`  | integer          | no                                   | Container Registry token duration in minutes. |
@@ -180,8 +175,6 @@ are listed in the descriptions of the relevant settings.
 | `html_emails_enabled`                    | boolean          | no                                   | Enable HTML emails. |
 | `instance_statistics_visibility_private` | boolean          | no                                   | When set to `true` Instance statistics will only be available to admins. |
 | `import_sources`                         | array of strings | no                                   | Sources to allow project import from, possible values: `github`, `bitbucket`, `gitlab`, `google_code`, `fogbugz`, `git`, and `gitlab_project`. |
-| `koding_enabled`                         | boolean          | no                                   | (If enabled, requires: `koding_url`) Enable Koding integration. Default is `false`. |
-| `koding_url`                             | string           | required by: `koding_enabled`        | The Koding instance URL for integration. |
 | `max_artifacts_size`                     | integer          | no                                   | Maximum artifacts size in MB |
 | `max_attachment_size`                    | integer          | no                                   | Limit attachment size in MB |
 | `max_pages_size`                         | integer          | no                                   | Maximum size of pages repositories in MB |

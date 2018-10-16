@@ -9,4 +9,8 @@ GitLab community members and their privileges/responsibilities.
 | Developer |Has access to GitLab internal infrastructure & issues (e.g. HR-related) | GitLab employee or a Core Team member (with an NDA) |
 | Contributor | Can make contributions to all GitLab public projects | Have a GitLab.com account |
 
-[List of current reviewers/maintainers](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce) 
+[List of current reviewers/maintainers](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce).
+
+---
+
+[Return to Contributing documentation](index.md)

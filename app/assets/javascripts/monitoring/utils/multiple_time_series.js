@@ -66,7 +66,8 @@ function queryTimeSeries(query, graphDrawData, lineStyle) {
   // offset the same amount as the original data
   const [minX, maxX] = graphDrawData.xDom;
   const offset = d3.timeMinute(minX) - Number(minX);
-  const datesWithoutGaps = d3.timeSecond.every(60)
+  const datesWithoutGaps = d3.timeSecond
+    .every(60)
     .range(d3.timeMinute.offset(minX, -1), maxX)
     .map(d => d - offset);
 
@@ -208,9 +209,7 @@ export default function createTimeSeries(queries, graphWidth, graphHeight, graph
 
   const timeSeries = queries.reduce((series, query, index) => {
     const lineStyle = defaultStyleOrder[index % defaultStyleOrder.length];
-    return series.concat(
-      queryTimeSeries(query, graphDrawData, lineStyle),
-    );
+    return series.concat(queryTimeSeries(query, graphDrawData, lineStyle));
   }, []);
 
   return {

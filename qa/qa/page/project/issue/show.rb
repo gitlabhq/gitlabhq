@@ -8,17 +8,17 @@ module QA
           include Page::Component::Issuable::Common
 
           view 'app/views/projects/issues/show.html.haml' do
-            element :issue_details, '.issue-details'
-            element :title, '.title'
+            element :issue_details, '.issue-details' # rubocop:disable QA/ElementWithPattern
+            element :title, '.title' # rubocop:disable QA/ElementWithPattern
           end
 
           view 'app/views/shared/notes/_form.html.haml' do
-            element :new_note_form, 'new-note'
-            element :new_note_form, 'attr: :note'
+            element :new_note_form, 'new-note' # rubocop:disable QA/ElementWithPattern
+            element :new_note_form, 'attr: :note' # rubocop:disable QA/ElementWithPattern
           end
 
           view 'app/views/shared/notes/_comment_button.html.haml' do
-            element :comment_button, '%strong Comment'
+            element :comment_button, '%strong Comment' # rubocop:disable QA/ElementWithPattern
           end
 
           def issue_title

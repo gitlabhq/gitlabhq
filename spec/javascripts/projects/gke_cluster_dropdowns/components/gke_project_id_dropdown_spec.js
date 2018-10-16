@@ -57,13 +57,13 @@ describe('GkeProjectIdDropdown', () => {
 
         expect(vm.toggleText).toBe(LABELS.DEFAULT);
         done();
-      }));
+      }).catch(done.fail));
 
     it('returns project name if project selected', done =>
       vm.$nextTick().then(() => {
         expect(vm.toggleText).toBe(selectedProjectMock.name);
         done();
-      }));
+      }).catch(done.fail));
 
     it('returns empty toggle text', done =>
       vm.$nextTick().then(() => {
@@ -72,7 +72,7 @@ describe('GkeProjectIdDropdown', () => {
 
         expect(vm.toggleText).toBe(LABELS.EMPTY);
         done();
-      }));
+      }).catch(done.fail));
   });
 
   describe('selectItem', () => {
@@ -85,8 +85,8 @@ describe('GkeProjectIdDropdown', () => {
         return vm.$nextTick().then(() => {
           expect(vm.$el.querySelector('input').value).toBe(selectedProjectMock.projectId);
           done();
-        });
-      });
+        }).catch(done.fail);
+      }).catch(done.fail);
     });
   });
 });

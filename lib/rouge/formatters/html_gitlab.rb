@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Rouge
   module Formatters
     class HTMLGitlab < Rouge::Formatters::HTML

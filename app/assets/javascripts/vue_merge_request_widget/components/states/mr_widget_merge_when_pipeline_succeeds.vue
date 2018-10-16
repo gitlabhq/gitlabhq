@@ -1,82 +1,82 @@
 <script>
-  import Flash from '../../../flash';
-  import statusIcon from '../mr_widget_status_icon.vue';
-  import MrWidgetAuthor from '../../components/mr_widget_author.vue';
-  import eventHub from '../../event_hub';
+import Flash from '../../../flash';
+import statusIcon from '../mr_widget_status_icon.vue';
+import MrWidgetAuthor from '../../components/mr_widget_author.vue';
+import eventHub from '../../event_hub';
 
-  export default {
-    name: 'MRWidgetMergeWhenPipelineSucceeds',
-    components: {
-      MrWidgetAuthor,
-      statusIcon,
+export default {
+  name: 'MRWidgetMergeWhenPipelineSucceeds',
+  components: {
+    MrWidgetAuthor,
+    statusIcon,
+  },
+  props: {
+    mr: {
+      type: Object,
+      required: true,
+      default: () => ({}),
     },
-    props: {
-      mr: {
-        type: Object,
-        required: true,
-        default: () => ({}),
-      },
-      service: {
-        type: Object,
-        required: true,
-        default: () => ({}),
-      },
+    service: {
+      type: Object,
+      required: true,
+      default: () => ({}),
     },
-    data() {
-      return {
-        isCancellingAutoMerge: false,
-        isRemovingSourceBranch: false,
+  },
+  data() {
+    return {
+      isCancellingAutoMerge: false,
+      isRemovingSourceBranch: false,
+    };
+  },
+  computed: {
+    canRemoveSourceBranch() {
+      const {
+        shouldRemoveSourceBranch,
+        canRemoveSourceBranch,
+        mergeUserId,
+        currentUserId,
+      } = this.mr;
+
+      return !shouldRemoveSourceBranch && canRemoveSourceBranch && mergeUserId === currentUserId;
+    },
+  },
+  methods: {
+    cancelAutomaticMerge() {
+      this.isCancellingAutoMerge = true;
+      this.service
+        .cancelAutomaticMerge()
+        .then(res => res.data)
+        .then(data => {
+          eventHub.$emit('UpdateWidgetData', data);
+        })
+        .catch(() => {
+          this.isCancellingAutoMerge = false;
+          Flash('Something went wrong. Please try again.');
+        });
+    },
+    removeSourceBranch() {
+      const options = {
+        sha: this.mr.sha,
+        merge_when_pipeline_succeeds: true,
+        should_remove_source_branch: true,
       };
-    },
-    computed: {
-      canRemoveSourceBranch() {
-        const {
-          shouldRemoveSourceBranch,
-          canRemoveSourceBranch,
-          mergeUserId,
-          currentUserId,
-        } = this.mr;
 
-        return !shouldRemoveSourceBranch &&
-          canRemoveSourceBranch &&
-          mergeUserId === currentUserId;
-      },
+      this.isRemovingSourceBranch = true;
+      this.service
+        .merge(options)
+        .then(res => res.data)
+        .then(data => {
+          if (data.status === 'merge_when_pipeline_succeeds') {
+            eventHub.$emit('MRWidgetUpdateRequested');
+          }
+        })
+        .catch(() => {
+          this.isRemovingSourceBranch = false;
+          Flash('Something went wrong. Please try again.');
+        });
     },
-    methods: {
-      cancelAutomaticMerge() {
-        this.isCancellingAutoMerge = true;
-        this.service.cancelAutomaticMerge()
-          .then(res => res.data)
-          .then((data) => {
-            eventHub.$emit('UpdateWidgetData', data);
-          })
-          .catch(() => {
-            this.isCancellingAutoMerge = false;
-            Flash('Something went wrong. Please try again.');
-          });
-      },
-      removeSourceBranch() {
-        const options = {
-          sha: this.mr.sha,
-          merge_when_pipeline_succeeds: true,
-          should_remove_source_branch: true,
-        };
-
-        this.isRemovingSourceBranch = true;
-        this.service.merge(options)
-          .then(res => res.data)
-          .then((data) => {
-            if (data.status === 'merge_when_pipeline_succeeds') {
-              eventHub.$emit('MRWidgetUpdateRequested');
-            }
-          })
-          .catch(() => {
-            this.isRemovingSourceBranch = false;
-            Flash('Something went wrong. Please try again.');
-          });
-      },
-    },
-  };
+  },
+};
 </script>
 <template>
   <div class="mr-widget-body media">

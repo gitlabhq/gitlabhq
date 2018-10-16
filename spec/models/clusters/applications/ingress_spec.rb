@@ -4,7 +4,7 @@ describe Clusters::Applications::Ingress do
   let(:ingress) { create(:clusters_applications_ingress) }
 
   include_examples 'cluster application core specs', :clusters_applications_ingress
-  include_examples 'cluster application status specs', :cluster_application_ingress
+  include_examples 'cluster application status specs', :clusters_applications_ingress
 
   before do
     allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)

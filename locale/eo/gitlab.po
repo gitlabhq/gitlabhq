@@ -4266,12 +4266,6 @@ msgstr ""
 msgid "June"
 msgstr ""
 
-msgid "Koding"
-msgstr ""
-
-msgid "Koding Dashboard"
-msgstr ""
-
 msgid "Kubernetes"
 msgstr ""
 
@@ -5229,9 +5223,6 @@ msgid "One or more of your Bitbucket projects cannot be imported into GitLab dir
 msgstr ""
 
 msgid "One or more of your Google Code projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
-msgstr ""
-
-msgid "Online IDE integration settings."
 msgstr ""
 
 msgid "Only admins"
@@ -6773,9 +6764,6 @@ msgstr ""
 
 msgid "Set up CI/CD"
 msgstr ""
-
-msgid "Set up Koding"
-msgstr "Agordi „Koding“"
 
 msgid "Set up a %{type} Runner manually"
 msgstr ""

@@ -141,6 +141,20 @@ first time.
   branch. Do not squash until the branch is ready to merge. Reviewers should be
   able to read individual updates based on their earlier feedback.
 
+### Assigning a merge request for a review
+
+If you want to have your merge request reviewed you can assign it to any reviewer. The list of reviewers can be found on [Engineering projects](https://about.gitlab.com/handbook/engineering/projects/) page.
+
+You can also use `ready for review` label. That means that your merge request is ready to be reviewed and any reviewer can pick it. It is recommended to use that label only if there isn't time pressure and make sure the merge request is assigned to a reviewer.
+
+When your merge request was reviewed and can be passed to a maintainer you can either pick a specific maintainer or use a label `ready for merge`.
+
+It is responsibility of the author of a merge request that the merge request is reviewed. If it stays in `ready for review` state too long it is recommended to assign it to a specific reviewer.
+
+### List of merge requests ready for review
+
+Developers who have capacity can regularly check the list of [merge requests to review](https://gitlab.com/groups/gitlab-org/-/merge_requests?scope=all&utf8=%E2%9C%93&state=opened&label_name%5B%5D=ready%20for%20review) and assign any merge request they want to review.
+
 ### Reviewing code
 
 Understand why the change is necessary (fixes a bug, improves the user

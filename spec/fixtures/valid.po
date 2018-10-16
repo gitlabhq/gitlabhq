@@ -790,9 +790,6 @@ msgstr "Establezca una contrase√±a en su cuenta para actualizar o enviar a trav√
 msgid "Set up CI"
 msgstr "Configurar CI"
 
-msgid "Set up Koding"
-msgstr "Configurar Koding"
-
 msgid "Set up auto deploy"
 msgstr "Configurar auto despliegue"
 

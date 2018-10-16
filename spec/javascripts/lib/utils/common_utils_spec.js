@@ -1,4 +1,3 @@
-/* eslint-disable promise/catch-or-return */
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
 import MockAdapter from 'axios-mock-adapter';
@@ -9,6 +8,7 @@ describe('common_utils', () => {
     it('returns an anchor tag with url', () => {
       expect(commonUtils.parseUrl('/some/absolute/url').pathname).toContain('some/absolute/url');
     });
+
     it('url is escaped', () => {
       // IE11 will return a relative pathname while other browsers will return a full pathname.
       // parseUrl uses an anchor element for parsing an url. With relative urls, the anchor
@@ -42,7 +42,7 @@ describe('common_utils', () => {
 
     it('should remove the question mark from the search params', () => {
       const paramsArray = commonUtils.urlParamsToArray('?test=thing');
-      expect(paramsArray[0][0] !== '?').toBe(true);
+      expect(paramsArray[0][0]).not.toBe('?');
     });
   });
 
@@ -359,10 +359,10 @@ describe('common_utils', () => {
         }).then((resp) => {
           stop(resp);
         })
-      )).then((respBackoff) => {
+      ).catch(done.fail)).then((respBackoff) => {
         expect(respBackoff).toBe(expectedResponseValue);
         done();
-      });
+      }).catch(done.fail);
     });
 
     it('catches the rejected promise from the callback ', (done) => {
@@ -393,12 +393,12 @@ describe('common_utils', () => {
               stop(resp);
             }
           })
-      )).then((respBackoff) => {
+      ).catch(done.fail)).then((respBackoff) => {
         const timeouts = window.setTimeout.calls.allArgs().map(([, timeout]) => timeout);
         expect(timeouts).toEqual([2000, 4000]);
         expect(respBackoff).toBe(expectedResponseValue);
         done();
-      });
+      }).catch(done.fail);
     });
 
     it('rejects the backOff promise after timing out', (done) => {
@@ -459,7 +459,7 @@ describe('common_utils', () => {
       commonUtils.createOverlayIcon(faviconDataUrl, overlayDataUrl).then((url) => {
         expect(url).toEqual(faviconWithOverlayDataUrl);
         done();
-      });
+      }).catch(done.fail);
     });
   });
 
@@ -479,7 +479,7 @@ describe('common_utils', () => {
       commonUtils.setFaviconOverlay(overlayDataUrl).then(() => {
         expect(document.getElementById('favicon').getAttribute('href')).toEqual(faviconWithOverlayDataUrl);
         done();
-      });
+      }).catch(done.fail);
     });
   });
 

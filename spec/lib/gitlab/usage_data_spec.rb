@@ -127,6 +127,13 @@ describe Gitlab::UsageData do
       expect(count_data[:clusters_applications_prometheus]).to eq(1)
       expect(count_data[:clusters_applications_runner]).to eq(1)
     end
+
+    it 'works when queries time out' do
+      allow_any_instance_of(ActiveRecord::Relation)
+        .to receive(:count).and_raise(ActiveRecord::StatementInvalid.new(''))
+
+      expect { subject }.not_to raise_error
+    end
   end
 
   describe '#features_usage_data_ce' do
