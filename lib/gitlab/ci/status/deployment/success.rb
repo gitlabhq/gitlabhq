@@ -5,14 +5,14 @@ module Gitlab
         class Success < Status::Extended
           def environment_text
             if subject.last?
-              "This job is the most recent deployment to %{environmentLink}."
+              "This job is the most recent deployment to %{environment_path}."
             else
-              "This job is an out-of-date deployment to %{environmentLink}. View the most recent deployment %{deploymentLink}."
+              "This job is an out-of-date deployment to %{environment_path}. View the most recent deployment %{deployment_path}."
             end
           end
 
-          def deploymentLink
-            project_deployment_path(subject.project, subject.environment.last_successful_deployment)
+          def deployment_path
+            project_job_path(subject.project, subject.environment.last_successful_deployment.deployable)
           end
 
           def self.matches?(deployment, user)

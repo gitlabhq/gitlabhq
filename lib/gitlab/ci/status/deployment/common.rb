@@ -8,11 +8,15 @@ module Gitlab
           end
 
           def details_path
-            project_deployment_path(subject.project, subject)
+            project_job_path(subject.project, subject.deployable)
           end
 
           def environment_path
             project_environment_path(subject.project, subject.environment)
+          end
+
+          def deployment_path
+            project_job_path(subject.project, subject.deployable)
           end
 
           def has_deployment?

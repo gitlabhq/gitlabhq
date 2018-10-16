@@ -5,14 +5,14 @@ module Gitlab
         class Created < Status::Extended
           def environment_text
             if subject.environment.deployments.any?
-              "This job will deploy to %{environmentLink} and overwrite the %{deploymentLink}."
+              "This job will deploy to %{environment_path} and overwrite the %{deployment_path}."
             else
-              "This job will deploy to %{environmentLink}."
+              "This job will deploy to %{environment_path}."
             end
           end
 
-          def deployment_link
-            project_deployment_path(subject.project, subject.environment.last_successful_deployment)
+          def deployment_path
+            project_job_path(subject.project, subject.environment.last_successful_deployment.deployable)
           end
 
           def self.matches?(deployment, user)
