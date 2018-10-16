@@ -205,7 +205,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   $('.navbar-toggler').on('click', () => {
     $('.header-content').toggleClass('menu-expanded');
-    gl.lazyLoader.loadCheck();
   });
 
   // Show/hide comments on diff

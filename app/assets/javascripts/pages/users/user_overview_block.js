@@ -1,10 +1,15 @@
 import axios from '~/lib/utils/axios_utils';
 
+const DEFAULT_LIMIT = 20;
+
 export default class UserOverviewBlock {
   constructor(options = {}) {
     this.container = options.container;
     this.url = options.url;
-    this.limit = options.limit || 20;
+    this.requestParams = {
+      limit: DEFAULT_LIMIT,
+      ...options.requestParams,
+    };
     this.loadData();
   }
 
@@ -15,9 +20,7 @@ export default class UserOverviewBlock {
 
     axios
       .get(this.url, {
-        params: {
-          limit: this.limit,
-        },
+        params: this.requestParams,
       })
       .then(({ data }) => this.render(data))
       .catch(() => loadingEl.classList.add('hide'));
@@ -34,7 +37,9 @@ export default class UserOverviewBlock {
     if (count && count > 0) {
       document.querySelector(`${this.container} .js-view-all`).classList.remove('hide');
     } else {
-      document.querySelector(`${this.container} .nothing-here-block`).classList.add('text-left', 'p-0');
+      document
+        .querySelector(`${this.container} .nothing-here-block`)
+        .classList.add('text-left', 'p-0');
     }
 
     loadingEl.classList.add('hide');
