@@ -1,6 +1,4 @@
-require 'fast_spec_helper'
-
-require_dependency 'active_model'
+require 'spec_helper'
 
 describe Gitlab::Ci::Config do
   let(:config) do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::External::File::Remote do
+describe Gitlab::Ci::Config::External::File::Remote do
   let(:remote_file) { described_class.new(location) }
   let(:location) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
   let(:remote_file_content) do

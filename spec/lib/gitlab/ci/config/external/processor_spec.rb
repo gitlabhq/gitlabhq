@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::External::Processor do
+describe Gitlab::Ci::Config::External::Processor do
   let(:project) { create(:project, :repository) }
   let(:processor) { described_class.new(values, project, '12345') }
 
@@ -92,7 +92,8 @@ describe Gitlab::Ci::External::Processor do
       end
 
       before do
-        allow_any_instance_of(Gitlab::Ci::External::File::Local).to receive(:fetch_local_content).and_return(local_file_content)
+        allow_any_instance_of(Gitlab::Ci::Config::External::File::Local)
+          .to receive(:fetch_local_content).and_return(local_file_content)
       end
 
       it 'should append the file to the values' do
@@ -131,7 +132,10 @@ describe Gitlab::Ci::External::Processor do
 
       before do
         local_file_content = File.read(Rails.root.join('spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml'))
-        allow_any_instance_of(Gitlab::Ci::External::File::Local).to receive(:fetch_local_content).and_return(local_file_content)
+
+        allow_any_instance_of(Gitlab::Ci::Config::External::File::Local)
+          .to receive(:fetch_local_content).and_return(local_file_content)
+
         WebMock.stub_request(:get, remote_file).to_return(body: remote_file_content)
       end
 
@@ -150,7 +154,8 @@ describe Gitlab::Ci::External::Processor do
       let(:local_file_content) { 'invalid content file ////' }
 
       before do
-        allow_any_instance_of(Gitlab::Ci::External::File::Local).to receive(:fetch_local_content).and_return(local_file_content)
+        allow_any_instance_of(Gitlab::Ci::Config::External::File::Local)
+          .to receive(:fetch_local_content).and_return(local_file_content)
       end
 
       it 'should raise an error' do

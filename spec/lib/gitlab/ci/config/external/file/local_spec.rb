@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::External::File::Local do
+describe Gitlab::Ci::Config::External::File::Local do
   let(:project) { create(:project, :repository) }
   let(:local_file) { described_class.new(location, { project: project, sha: '12345' }) }
 
