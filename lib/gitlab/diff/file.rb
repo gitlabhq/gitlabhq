@@ -129,15 +129,59 @@ module Gitlab
 
       attr_writer :highlighted_diff_lines
 
+      def parse_diff_lines
+        Gitlab::Diff::Parser.new.parse(raw_diff.each_line, diff_file: self).to_a
+      end
+
       # Array of Gitlab::Diff::Line objects
       def diff_lines
-        @diff_lines ||=
-          Gitlab::Diff::Parser.new.parse(raw_diff.each_line, diff_file: self).to_a
+        @diff_lines ||= insert_blob_lines(parse_diff_lines)
+      end
+
+      def old_blob_lines
+        @old_blob_lines ||=
+            Gitlab::Diff::Parser.new.parse(old_blob.data.each_line, diff_file: self).to_a
+      end
+
+      def insert_blob_lines(diff_lines)
+        lines = old_blob_lines[(59 - 1)..(79 - 1)]
+        new_line_number = 80
+        old_line_number = 83
+        offset = new_line_number - old_line_number
+
+        # we should not use the positions given by the blob, because they're not correct
+        # when merging the content with the diff one.
+        # old_positions should be defined upon expansion
+        # Problems:
+        # 1. We need to fix the line code
+        lines.map! do |line|
+          Gitlab::Diff::Line.new(line.text, line.type, nil, line.old_pos - offset, line.new_pos,
+                                 parent_file: self)
+        end
+
+        lines_length = lines.length - 1
+        line = [59, lines_length].join(',')
+        match_line = "@@ -#{line}+#{line} @@"
+        old_pos = new_pos = 59
+
+        old_match_line = diff_lines[10]
+        new_match_line = Gitlab::Diff::Line.new(match_line, 'match', nil, old_pos, new_pos)
+
+        blob_lines = lines.unshift(new_match_line)
+
+        diff_lines = diff_lines - [old_match_line]
+
+        diff_lines.insert(10, *blob_lines)
+
+        # gambiarra: ideally we should try to use the parser with the whole content (diff+blobs)
+        diff_lines.each_with_index { |x, i| x.index = i }
+
+        diff_lines
       end
 
       def highlighted_diff_lines
-        @highlighted_diff_lines ||=
-          Gitlab::Diff::Highlight.new(self, repository: self.repository).highlight
+        # @highlighted_diff_lines ||=
+        Gitlab::Diff::Highlight.new(self, repository: self.repository).highlight
       end
 
       # Array[<Hash>] with right/left keys that contains Gitlab::Diff::Line objects which text is hightlighted

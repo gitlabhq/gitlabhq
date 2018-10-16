@@ -4,7 +4,7 @@ module Gitlab
       SERIALIZE_KEYS = %i(line_code rich_text text type index old_pos new_pos).freeze
 
       attr_reader :line_code, :type, :index, :old_pos, :new_pos
-      attr_writer :rich_text
+      attr_writer :rich_text, :index
       attr_accessor :text
 
       def initialize(text, type, index, old_pos, new_pos, parent_file: nil, line_code: nil, rich_text: nil)
