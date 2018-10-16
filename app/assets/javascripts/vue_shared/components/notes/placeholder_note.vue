@@ -1,41 +1,39 @@
 <script>
-  /**
-   * Common component to render a placeholder note and user information.
-   *
-   * This component needs to be used with a vuex store.
-   * That vuex store needs to have a `getUserData` getter that contains
-   * {
-   *   path: String,
-   *   avatar_url: String,
-   *   name: String,
-   *   username: String,
-   * }
-   *
-   * @example
-   * <placeholder-note
-   *   :note="{body: 'This is a note'}"
-   *   />
-   */
-  import { mapGetters } from 'vuex';
-  import userAvatarLink from '../user_avatar/user_avatar_link.vue';
+/**
+ * Common component to render a placeholder note and user information.
+ *
+ * This component needs to be used with a vuex store.
+ * That vuex store needs to have a `getUserData` getter that contains
+ * {
+ *   path: String,
+ *   avatar_url: String,
+ *   name: String,
+ *   username: String,
+ * }
+ *
+ * @example
+ * <placeholder-note
+ *   :note="{body: 'This is a note'}"
+ *   />
+ */
+import { mapGetters } from 'vuex';
+import userAvatarLink from '../user_avatar/user_avatar_link.vue';
 
-  export default {
-    name: 'PlaceholderNote',
-    components: {
-      userAvatarLink,
+export default {
+  name: 'PlaceholderNote',
+  components: {
+    userAvatarLink,
+  },
+  props: {
+    note: {
+      type: Object,
+      required: true,
     },
-    props: {
-      note: {
-        type: Object,
-        required: true,
-      },
-    },
-    computed: {
-      ...mapGetters([
-        'getUserData',
-      ]),
-    },
-  };
+  },
+  computed: {
+    ...mapGetters(['getUserData']),
+  },
+};
 </script>
 
 <template>

@@ -1,85 +1,87 @@
 <script>
-  import simplePoll from '../../../lib/utils/simple_poll';
-  import eventHub from '../../event_hub';
-  import statusIcon from '../mr_widget_status_icon.vue';
-  import Flash from '../../../flash';
+import simplePoll from '../../../lib/utils/simple_poll';
+import eventHub from '../../event_hub';
+import statusIcon from '../mr_widget_status_icon.vue';
+import Flash from '../../../flash';
 
-  export default {
-    name: 'MRWidgetRebase',
-    components: {
-      statusIcon,
+export default {
+  name: 'MRWidgetRebase',
+  components: {
+    statusIcon,
+  },
+  props: {
+    mr: {
+      type: Object,
+      required: true,
     },
-    props: {
-      mr: {
-        type: Object,
-        required: true,
-      },
-      service: {
-        type: Object,
-        required: true,
-      },
+    service: {
+      type: Object,
+      required: true,
     },
-    data() {
-      return {
-        isMakingRequest: false,
-        rebasingError: null,
-      };
+  },
+  data() {
+    return {
+      isMakingRequest: false,
+      rebasingError: null,
+    };
+  },
+  computed: {
+    status() {
+      if (this.mr.rebaseInProgress || this.isMakingRequest) {
+        return 'loading';
+      }
+      if (!this.mr.canPushToSourceBranch && !this.mr.rebaseInProgress) {
+        return 'warning';
+      }
+      return 'success';
     },
-    computed: {
-      status() {
-        if (this.mr.rebaseInProgress || this.isMakingRequest) {
-          return 'loading';
-        }
-        if (!this.mr.canPushToSourceBranch && !this.mr.rebaseInProgress) {
-          return 'warning';
-        }
-        return 'success';
-      },
-      showDisabledButton() {
-        return ['failed', 'loading'].includes(this.status);
-      },
+    showDisabledButton() {
+      return ['failed', 'loading'].includes(this.status);
     },
-    methods: {
-      rebase() {
-        this.isMakingRequest = true;
-        this.rebasingError = null;
+  },
+  methods: {
+    rebase() {
+      this.isMakingRequest = true;
+      this.rebasingError = null;
 
-        this.service.rebase()
-          .then(() => {
-            simplePoll(this.checkRebaseStatus);
-          })
-          .catch((error) => {
-            this.rebasingError = error.merge_error;
+      this.service
+        .rebase()
+        .then(() => {
+          simplePoll(this.checkRebaseStatus);
+        })
+        .catch(error => {
+          this.rebasingError = error.merge_error;
+          this.isMakingRequest = false;
+          Flash('Something went wrong. Please try again.');
+        });
+    },
+    checkRebaseStatus(continuePolling, stopPolling) {
+      this.service
+        .poll()
+        .then(res => res.data)
+        .then(res => {
+          if (res.rebase_in_progress) {
+            continuePolling();
+          } else {
             this.isMakingRequest = false;
-            Flash('Something went wrong. Please try again.');
-          });
-      },
-      checkRebaseStatus(continuePolling, stopPolling) {
-        this.service.poll()
-          .then(res => res.data)
-          .then((res) => {
-            if (res.rebase_in_progress) {
-              continuePolling();
-            } else {
-              this.isMakingRequest = false;
 
-              if (res.merge_error && res.merge_error.length) {
-                this.rebasingError = res.merge_error;
-                Flash('Something went wrong. Please try again.');
-              }
-
-              eventHub.$emit('MRWidgetUpdateRequested');
-              stopPolling();
+            if (res.merge_error && res.merge_error.length) {
+              this.rebasingError = res.merge_error;
+              Flash('Something went wrong. Please try again.');
             }
-          })
-          .catch(() => {
-            this.isMakingRequest = false;
-            Flash('Something went wrong. Please try again.');
+
+            eventHub.$emit('MRWidgetUpdateRequested');
             stopPolling();
-          });
-      },
+          }
+        })
+        .catch(() => {
+          this.isMakingRequest = false;
+          Flash('Something went wrong. Please try again.');
+          stopPolling();
+        });
     },
-  };
+  },
+};
 </script>
 <template>
   <div class="mr-widget-body media">

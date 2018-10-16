@@ -11,9 +11,7 @@ export default {
   directives: {
     tooltip,
   },
-  mixins: [
-    timeagoMixin,
-  ],
+  mixins: [timeagoMixin],
   props: {
     time: {
       type: String,

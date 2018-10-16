@@ -1,5 +1,4 @@
 <script>
-
 /* This is a re-usable vue component for rendering a user avatar wrapped in
   a clickable link (likely to the user's profile). The link, image, and
   tooltip can be configured by props passed to this component.
