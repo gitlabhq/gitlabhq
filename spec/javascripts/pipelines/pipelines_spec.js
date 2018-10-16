@@ -719,7 +719,7 @@ describe('Pipelines', () => {
                 expect(vm.poll.restart).toHaveBeenCalled();
                 done();
               }, 0);
-            });
+            }).catch(done.fail);
         }, 0);
       });
     });
