@@ -40,10 +40,11 @@ module QA
         factory = options.fetch(:factory) { new }
         parents = options.fetch(:parents) { [] }
 
-        do_fabricate!(factory: factory, prepare_block: prepare_block, parents: parents) do
-          raise NotImplementedError unless factory.api_support?
+        raise NotImplementedError unless factory.api_support?
 
-          factory.eager_load_api_client!
+        factory.eager_load_api_client!
+
+        do_fabricate!(factory: factory, prepare_block: prepare_block, parents: parents) do
           log_fabrication(:api, factory, parents, args) { factory.fabricate_via_api! }
         end
       end

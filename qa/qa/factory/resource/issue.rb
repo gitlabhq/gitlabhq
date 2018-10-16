@@ -9,6 +9,7 @@ module QA
           project.description = 'project for adding issues'
         end
 
+        product :project
         product :title do
           Page::Project::Issue::Show.act { issue_title }
         end

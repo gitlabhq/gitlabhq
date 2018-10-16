@@ -35,6 +35,27 @@ describe QA::Factory::ApiFabricator do
 
   subject { factory.tap { |f| f.include(described_class) }.new }
 
+  describe '#api_support?' do
+    let(:api_client) { spy('Runtime::API::Client') }
+    let(:api_client_instance) { double('API Client') }
+
+    context 'when factory does not support fabrication via the API' do
+      let(:factory) { factory_without_api_support }
+
+      it 'returns false' do
+        expect(subject).not_to be_api_support
+      end
+    end
+
+    context 'when factory supports fabrication via the API' do
+      let(:factory) { factory_with_api_support }
+
+      it 'returns false' do
+        expect(subject).to be_api_support
+      end
+    end
+  end
+
   describe '#fabricate_via_api!' do
     let(:api_client) { spy('Runtime::API::Client') }
     let(:api_client_instance) { double('API Client') }

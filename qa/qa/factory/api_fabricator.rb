@@ -19,20 +19,17 @@ module QA
 
       attr_reader :api_resource, :api_response
 
-      def api_get_path
-        raise NotImplementedError, "Factory #{self.class.name} does not support fabrication via the API!"
-      end
-
-      alias_method :api_post_path, :api_get_path
-      alias_method :api_post_body, :api_get_path
-
       def api_support?
-        api_get_path && api_post_path && api_post_body && true
-      rescue NotImplementedError
-        false
+        respond_to?(:api_get_path) &&
+          respond_to?(:api_post_path) &&
+          respond_to?(:api_post_body)
       end
 
       def fabricate_via_api!
+        unless api_support?
+          raise NotImplementedError, "Factory #{self.class.name} does not support fabrication via the API!"
+        end
+
         resource_web_url(api_post)
       end
 

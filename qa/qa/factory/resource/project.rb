@@ -9,6 +9,7 @@ module QA
 
         dependency Factory::Resource::Group, as: :group
 
+        product :group
         product :name
 
         product :repository_ssh_location do
