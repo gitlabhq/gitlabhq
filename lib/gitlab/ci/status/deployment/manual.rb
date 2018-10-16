@@ -4,7 +4,7 @@ module Gitlab
       module Deployment
         class Manual < Status::Extended
           def environment_text
-            "Please trigger the build to deploy to %{environmentLink}."
+            "Please trigger the build to deploy to %{environment_path}."
           end
 
           def self.matches?(deployment, user)

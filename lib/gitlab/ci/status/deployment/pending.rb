@@ -4,7 +4,7 @@ module Gitlab
       module Deployment
         class Pending < Status::Extended
           def environment_text
-            "This job deploys to %{environmentLink} soon."
+            "This job deploys to %{environment_path} soon."
           end
 
           def self.matches?(deployment, user)

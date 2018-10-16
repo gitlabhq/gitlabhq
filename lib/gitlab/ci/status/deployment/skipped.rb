@@ -4,7 +4,7 @@ module Gitlab
       module Deployment
         class Skipped < Status::Extended
           def environment_text
-            "This job was skipped and did not deploy to %{environmentLink}."
+            "This job was skipped and did not deploy to %{environment_path}."
           end
 
           def self.matches?(deployment, user)
