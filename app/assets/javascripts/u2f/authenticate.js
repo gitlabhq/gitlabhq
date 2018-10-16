@@ -49,7 +49,7 @@ export default class U2FAuthenticate {
 
   start() {
     return importU2FLibrary()
-      .then((utils) => {
+      .then(utils => {
         this.u2fUtils = utils;
         this.renderInProgress();
       })
@@ -57,14 +57,19 @@ export default class U2FAuthenticate {
   }
 
   authenticate() {
-    return this.u2fUtils.sign(this.appId, this.challenge, this.signRequests,
-      (response) => {
+    return this.u2fUtils.sign(
+      this.appId,
+      this.challenge,
+      this.signRequests,
+      response => {
         if (response.errorCode) {
           const error = new U2FError(response.errorCode, 'authenticate');
           return this.renderError(error);
         }
         return this.renderAuthenticated(JSON.stringify(response));
-      }, 10);
+      },
+      10,
+    );
   }
 
   renderTemplate(name, params) {
@@ -99,5 +104,4 @@ export default class U2FAuthenticate {
     this.container[0].classList.add('hidden');
     this.fallbackUI.classList.remove('hidden');
   }
-
 }
