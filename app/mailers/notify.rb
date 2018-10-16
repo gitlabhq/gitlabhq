@@ -118,6 +118,7 @@ class Notify < BaseMailer
     add_unsubscription_headers_and_links
 
     headers["X-GitLab-#{model.class.name}-ID"] = model.id
+    headers["X-GitLab-#{model.class.name}-IID"] = model.iid if model.respond_to?(:iid)
     headers['X-GitLab-Reply-Key'] = reply_key
 
     @reason = headers['X-GitLab-NotificationReason']
