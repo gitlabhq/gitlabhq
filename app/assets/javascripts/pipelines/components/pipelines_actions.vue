@@ -4,10 +4,12 @@ import { formatTime } from '~/lib/utils/datetime_utility';
 import eventHub from '../event_hub';
 import icon from '../../vue_shared/components/icon.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
+import glCountdown from '~/vue_shared/directives/gl_countdown';
 
 export default {
   directives: {
     tooltip,
+    glCountdown,
   },
   components: {
     icon,
@@ -100,7 +102,10 @@ export default {
             class="pull-right"
           >
             <icon name="clock" />
-            {{ remainingTime(action) }}
+            <time
+              v-gl-countdown="{ endDate: action.scheduled_at }"
+              :datetime="action.scheduled_at"
+            >00:00:00</time>
           </span>
         </button>
       </li>
