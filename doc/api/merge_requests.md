@@ -47,7 +47,7 @@ Parameters:
 | `source_branch`     | string   | no       | Return merge requests with the given source branch                                                                     |
 | `target_branch`     | string   | no       | Return merge requests with the given target branch                                                                     |
 | `search`            | string   | no       | Search merge requests against their `title` and `description`                                                          |
-| `wip`            | string   | no       | Filter merge requests against their `wip` status. `yes` to return *only* WIP merge requests, `no` to return *non* WIP merge requests                                                        |
+| `wip`               | string   | no       | Filter merge requests against their `wip` status. `yes` to return *only* WIP merge requests, `no` to return *non* WIP merge requests                                                        |
 
 ```json
 [
@@ -168,9 +168,10 @@ Parameters:
 | `author_id`         | integer        | no       | Returns merge requests created by the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                 |
 | `assignee_id`       | integer        | no       | Returns merge requests assigned to the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                |
 | `my_reaction_emoji` | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_         |
-| `source_branch`     | string   | no       | Return merge requests with the given source branch                                                                     |
-| `target_branch`     | string   | no       | Return merge requests with the given target branch                                                                     |
+| `source_branch`     | string         | no       | Return merge requests with the given source branch                                                                     |
+| `target_branch`     | string         | no       | Return merge requests with the given target branch                                                                     |
 | `search`            | string         | no       | Search merge requests against their `title` and `description`                                                                  |
+| `wip`               | string         | no       | Filter merge requests against their `wip` status. `yes` to return *only* WIP merge requests, `no` to return *non* WIP merge requests                 
 
 ```json
 [
@@ -281,8 +282,8 @@ Parameters:
 | `author_id`         | integer        | no       | Returns merge requests created by the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                 |
 | `assignee_id`       | integer        | no       | Returns merge requests assigned to the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                |
 | `my_reaction_emoji` | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_         |
-| `source_branch`     | string   | no       | Return merge requests with the given source branch                                                                     |
-| `target_branch`     | string   | no       | Return merge requests with the given target branch                                                                     |
+| `source_branch`     | string         | no       | Return merge requests with the given source branch                                                                     |
+| `target_branch`     | string         | no       | Return merge requests with the given target branch                                                                     |
 | `search`            | string         | no       | Search merge requests against their `title` and `description`                                                                  |
 
 ```json
