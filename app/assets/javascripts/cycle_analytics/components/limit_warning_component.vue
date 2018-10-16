@@ -1,17 +1,17 @@
 <script>
-  import tooltip from '../../vue_shared/directives/tooltip';
+import tooltip from '../../vue_shared/directives/tooltip';
 
-  export default {
-    directives: {
-      tooltip,
+export default {
+  directives: {
+    tooltip,
+  },
+  props: {
+    count: {
+      type: Number,
+      required: true,
     },
-    props: {
-      count: {
-        type: Number,
-        required: true,
-      },
-    },
-  };
+  },
+};
 </script>
 <template>
   <span

@@ -1,21 +1,21 @@
 <script>
-  export default {
-    name: 'EnvironmentsEmptyState',
-    props: {
-      newPath: {
-        type: String,
-        required: true,
-      },
-      canCreateEnvironment: {
-        type: Boolean,
-        required: true,
-      },
-      helpPath: {
-        type: String,
-        required: true,
-      },
+export default {
+  name: 'EnvironmentsEmptyState',
+  props: {
+    newPath: {
+      type: String,
+      required: true,
     },
-  };
+    canCreateEnvironment: {
+      type: Boolean,
+      required: true,
+    },
+    helpPath: {
+      type: String,
+      required: true,
+    },
+  },
+};
 </script>
 <template>
   <div class="blank-state-row">

@@ -13,17 +13,17 @@ window.ResolveCount = Vue.extend({
       required: true,
     },
   },
-  data: function () {
+  data: function() {
     return {
-      discussions: CommentsStore.state
+      discussions: CommentsStore.state,
     };
   },
   computed: {
-    allResolved: function () {
+    allResolved: function() {
       return this.resolvedDiscussionCount === this.discussionCount;
     },
     resolvedCountText() {
       return this.discussionCount === 1 ? 'discussion' : 'discussions';
-    }
-  }
+    },
+  },
 });
