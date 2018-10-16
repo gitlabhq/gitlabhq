@@ -9,6 +9,15 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
   it { is_expected.to be_kind_of(ReactiveCaching) }
   it { is_expected.to respond_to :ca_pem }
 
+  it { is_expected.to validate_exclusion_of(:namespace).in_array(%w(gitlab-managed-apps)) }
+  it { is_expected.to validate_presence_of(:api_url) }
+  it { is_expected.to validate_presence_of(:token) }
+
+  it { is_expected.to delegate_method(:project).to(:cluster) }
+  it { is_expected.to delegate_method(:enabled?).to(:cluster) }
+  it { is_expected.to delegate_method(:managed?).to(:cluster) }
+  it { is_expected.to delegate_method(:kubernetes_namespace).to(:cluster) }
+
   describe 'before_validation' do
     context 'when namespace includes upper case' do
       let(:kubernetes) { create(:cluster_platform_kubernetes, :configured, namespace: namespace) }
@@ -90,6 +99,28 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
         it { expect(kubernetes.save).to be_falsey }
       end
     end
+
+    describe 'when using reserved namespaces' do
+      subject { build(:cluster_platform_kubernetes, namespace: namespace) }
+
+      context 'when no namespace is manually assigned' do
+        let(:namespace) { nil }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'when no reserved namespace is assigned' do
+        let(:namespace) { 'my-namespace' }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'when reserved namespace is assigned' do
+        let(:namespace) { 'gitlab-managed-apps' }
+
+        it { is_expected.not_to be_valid }
+      end
+    end
   end
 
   describe '#kubeclient' do
@@ -117,41 +148,39 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
   end
 
   describe '#actual_namespace' do
-    subject { kubernetes.actual_namespace }
-
-    let!(:cluster) { create(:cluster, :project, platform_kubernetes: kubernetes) }
+    let(:cluster) { create(:cluster, :project) }
     let(:project) { cluster.project }
-    let(:kubernetes) { create(:cluster_platform_kubernetes, :configured, namespace: namespace) }
 
-    context 'when namespace is present' do
+    let(:platform) do
+      create(:cluster_platform_kubernetes,
+             cluster: cluster,
+             namespace: namespace)
+    end
+
+    subject { platform.actual_namespace }
+
+    context 'with a namespace assigned' do
       let(:namespace) { 'namespace-123' }
 
       it { is_expected.to eq(namespace) }
     end
 
-    context 'when namespace is not present' do
+    context 'with no namespace assigned' do
       let(:namespace) { nil }
 
-      it { is_expected.to eq("#{project.path}-#{project.id}") }
-    end
-  end
+      context 'when kubernetes namespace is present' do
+        let(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, cluster: cluster) }
 
-  describe '#default_namespace' do
-    subject { kubernetes.send(:default_namespace) }
+        before do
+          kubernetes_namespace
+        end
 
-    let(:kubernetes) { create(:cluster_platform_kubernetes, :configured) }
+        it { is_expected.to eq(kubernetes_namespace.namespace) }
+      end
 
-    context 'when cluster belongs to a project' do
-      let!(:cluster) { create(:cluster, :project, platform_kubernetes: kubernetes) }
-      let(:project) { cluster.project }
-
-      it { is_expected.to eq("#{project.path}-#{project.id}") }
-    end
-
-    context 'when cluster belongs to nothing' do
-      let!(:cluster) { create(:cluster, platform_kubernetes: kubernetes) }
-
-      it { is_expected.to be_nil }
+      context 'when kubernetes namespace is not present' do
+        it { is_expected.to eq("#{project.path}-#{project.id}") }
+      end
     end
   end
 

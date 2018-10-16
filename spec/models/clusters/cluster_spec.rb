@@ -11,6 +11,9 @@ describe Clusters::Cluster do
   it { is_expected.to have_one(:application_ingress) }
   it { is_expected.to have_one(:application_prometheus) }
   it { is_expected.to have_one(:application_runner) }
+  it { is_expected.to have_many(:kubernetes_namespaces) }
+  it { is_expected.to have_one(:kubernetes_namespace) }
+
   it { is_expected.to delegate_method(:status).to(:provider) }
   it { is_expected.to delegate_method(:status_reason).to(:provider) }
   it { is_expected.to delegate_method(:status_name).to(:provider) }
@@ -20,6 +23,7 @@ describe Clusters::Cluster do
   it { is_expected.to delegate_method(:available?).to(:application_helm).with_prefix }
   it { is_expected.to delegate_method(:available?).to(:application_ingress).with_prefix }
   it { is_expected.to delegate_method(:available?).to(:application_prometheus).with_prefix }
+
   it { is_expected.to respond_to :project }
 
   describe '.enabled' do
