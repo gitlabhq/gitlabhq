@@ -13,6 +13,7 @@ export default {
   },
   [types.SET_SELECTED_TEMPLATE_TYPE](state, type) {
     state.selectedTemplateType = type;
+    state.templates = [];
   },
   [types.SET_UPDATE_SUCCESS](state, success) {
     state.updateSuccess = success;
