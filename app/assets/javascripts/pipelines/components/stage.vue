@@ -21,6 +21,7 @@ import Icon from '../../vue_shared/components/icon.vue';
 import JobComponent from './graph/job_component.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
 import { PIPELINES_TABLE } from '../constants';
+import { addRemainingTime } from '../helpers';
 
 export default {
   components: {
@@ -102,6 +103,7 @@ export default {
         .get(this.stage.dropdown_path)
         .then(({ data }) => {
           this.dropdownContent = data.latest_statuses;
+          this.updateDelayedJobs();
           this.isLoading = false;
         })
         .catch(() => {
@@ -147,6 +149,15 @@ export default {
         // close the dropdown in mr widget
         $(this.$refs.dropdown).dropdown('toggle');
       }
+    },
+
+    updateDelayedJobs() {
+      if (!this.dropdownContent || this.dropdownContent.length === 0) {
+        return;
+      }
+
+      this.dropdownContent = this.dropdownContent.map(addRemainingTime);
+      window.setTimeout(() => this.updateDelayedJobs(), 1000);
     },
   },
 };

@@ -36,6 +36,14 @@
         'hasTrace',
         'emptyStateIllustration',
       ]),
+
+      jobTitle() {
+        if (this.job.scheduled_at) {
+
+        } else {
+          emptyStateIllustration.title
+        }
+      }
     },
   };
 </script>
@@ -102,7 +110,7 @@
         class="js-job-empty-state"
         :illustration-path="emptyStateIllustration.image"
         :illustration-size-class="emptyStateIllustration.size"
-        :title="emptyStateIllustration.title"
+        :title="jobTitle"
         :content="emptyStateIllustration.content"
         :action="job.status.action"
       />
