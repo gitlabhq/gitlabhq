@@ -9,11 +9,15 @@ class BuildDetailsEntity < JobEntity
   expose :runner, using: RunnerEntity
   expose :pipeline, using: PipelineEntity
 
-  expose :deployment_status, if: -> (*) { build.starts_environment? } do
-    expose :deployment_status, as: :status
-
-    expose :persisted_environment, as: :environment, with: EnvironmentEntity
+  expose :deployment_status, with: DetailedStatusEntity do |build|
+    build.last_deployment.detailed_status
   end
+
+  # expose :deployment_status, if: -> (*) { build.starts_environment? } do
+  #   expose :deployment_status, as: :status
+
+  #   expose :persisted_environment, as: :environment, with: EnvironmentEntity
+  # end
 
   expose :metadata, using: BuildMetadataEntity
 

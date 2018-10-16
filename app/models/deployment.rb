@@ -86,6 +86,12 @@ class Deployment < ActiveRecord::Base
     super
   end
 
+  def detailed_status(current_user)
+    Gitlab::Ci::Status::Deployment::Factory
+      .new(self, current_user)
+      .fabricate!
+  end
+
   def self.last_for_environment(environment)
     ids = self
       .for_environment(environment)
