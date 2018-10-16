@@ -3,7 +3,6 @@ export const PARALLEL_DIFF_VIEW_TYPE = 'parallel';
 export const MATCH_LINE_TYPE = 'match';
 export const OLD_NO_NEW_LINE_TYPE = 'old-nonewline';
 export const NEW_NO_NEW_LINE_TYPE = 'new-nonewline';
-export const CONTEXT_LINE_TYPE = 'context';
 export const EMPTY_CELL_TYPE = 'empty-cell';
 export const COMMENT_FORM_TYPE = 'commentForm';
 export const DIFF_NOTE_TYPE = 'DiffNote';
@@ -21,7 +20,6 @@ export const LINE_SIDE_RIGHT = 'right-side';
 export const DIFF_VIEW_COOKIE_NAME = 'diff_view';
 export const LINE_HOVER_CLASS_NAME = 'is-over';
 export const LINE_UNFOLD_CLASS_NAME = 'unfold js-unfold';
-export const CONTEXT_LINE_CLASS_NAME = 'diff-expanded';
 
 export const UNFOLD_COUNT = 20;
 export const COUNT_OF_AVATARS_IN_GUTTER = 3;

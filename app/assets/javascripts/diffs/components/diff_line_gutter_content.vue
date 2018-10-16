@@ -55,11 +55,6 @@ export default {
       required: false,
       default: false,
     },
-    isContextLine: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     isHover: {
       type: Boolean,
       required: false,
@@ -81,7 +76,6 @@ export default {
         this.showCommentButton &&
         this.isHover &&
         !this.isMatchLine &&
-        !this.isContextLine &&
         !this.isMetaLine &&
         !this.hasDiscussions
       );

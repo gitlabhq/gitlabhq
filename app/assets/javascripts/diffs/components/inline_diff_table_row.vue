@@ -4,8 +4,6 @@ import DiffTableCell from './diff_table_cell.vue';
 import {
   NEW_LINE_TYPE,
   OLD_LINE_TYPE,
-  CONTEXT_LINE_TYPE,
-  CONTEXT_LINE_CLASS_NAME,
   PARALLEL_DIFF_VIEW_TYPE,
   LINE_POSITION_LEFT,
   LINE_POSITION_RIGHT,
@@ -41,13 +39,9 @@ export default {
   },
   computed: {
     ...mapGetters('diffs', ['isInlineView']),
-    isContextLine() {
-      return this.line.type === CONTEXT_LINE_TYPE;
-    },
     classNameMap() {
       return {
         [this.line.type]: this.line.type,
-        [CONTEXT_LINE_CLASS_NAME]: this.isContextLine,
         [PARALLEL_DIFF_VIEW_TYPE]: this.isParallelView,
       };
     },

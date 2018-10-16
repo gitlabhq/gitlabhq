@@ -31,32 +31,11 @@ describe MergeRequests::ReloadDiffsService, :use_clean_rails_memory_store_cachin
     end
 
     context 'cache clearing' do
-      before do
-        allow_any_instance_of(Gitlab::Diff::File).to receive(:text?).and_return(true)
-        allow_any_instance_of(Gitlab::Diff::File).to receive(:diffable?).and_return(true)
-      end
-
-      it 'retrieves the diff files to cache the highlighted result' do
-        new_diff = merge_request.create_merge_request_diff
-        cache_key = new_diff.diffs_collection.cache_key
-
-        expect(merge_request).to receive(:create_merge_request_diff).and_return(new_diff)
-        expect(Rails.cache).to receive(:read).with(cache_key).and_call_original
-        expect(Rails.cache).to receive(:write).with(cache_key, anything, anything).and_call_original
-
-        subject.execute
-      end
-
       it 'clears the cache for older diffs on the merge request' do
         old_diff = merge_request.merge_request_diff
         old_cache_key = old_diff.diffs_collection.cache_key
-        new_diff = merge_request.create_merge_request_diff
-        new_cache_key = new_diff.diffs_collection.cache_key
 
-        expect(merge_request).to receive(:create_merge_request_diff).and_return(new_diff)
         expect(Rails.cache).to receive(:delete).with(old_cache_key).and_call_original
-        expect(Rails.cache).to receive(:read).with(new_cache_key).and_call_original
-        expect(Rails.cache).to receive(:write).with(new_cache_key, anything, anything).and_call_original
 
         subject.execute
       end
