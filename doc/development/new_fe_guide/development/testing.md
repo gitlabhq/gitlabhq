@@ -21,6 +21,7 @@ Unit tests are on the lowest abstraction level and typically test functionality 
 - exported functions
 - exported classes
 - Vuex actions
+- Vuex mutations
 
 ### When *not* to use unit tests
 
