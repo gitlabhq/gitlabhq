@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreateDeploymentService
+class UpdateDeploymentMetricsService
   attr_reader :job
 
   delegate :expanded_environment_name,
@@ -35,14 +35,7 @@ class CreateDeploymentService
   end
 
   def deploy
-    project.deployments.create(
-      environment: environment,
-      ref: job.ref,
-      tag: job.tag,
-      sha: job.sha,
-      user: job.user,
-      deployable: job,
-      on_stop: on_stop)
+    job.last_deployment
   end
 
   def environment
@@ -62,10 +55,6 @@ class CreateDeploymentService
 
   def environment_url
     environment_options[:url]
-  end
-
-  def on_stop
-    environment_options[:on_stop]
   end
 
   def action
