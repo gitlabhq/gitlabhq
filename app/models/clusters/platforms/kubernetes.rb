@@ -6,6 +6,9 @@ module Clusters
       include Gitlab::Kubernetes
       include ReactiveCaching
       include EnumWithNil
+      include AfterCommitQueue
+
+      RESERVED_NAMESPACES = %w(gitlab-managed-apps).freeze
 
       self.table_name = 'cluster_platforms_kubernetes'
       self.reactive_cache_key = ->(kubernetes) { [kubernetes.class.model_name.singular, kubernetes.id] }
@@ -32,6 +35,8 @@ module Clusters
           message: Gitlab::Regex.kubernetes_namespace_regex_message
         }
 
+      validates :namespace, exclusion: { in: RESERVED_NAMESPACES }
+
       # We expect to be `active?` only when enabled and cluster is created (the api_url is assigned)
       validates :api_url, url: true, presence: true
       validates :token, presence: true
@@ -45,6 +50,7 @@ module Clusters
       delegate :project, to: :cluster, allow_nil: true
       delegate :enabled?, to: :cluster, allow_nil: true
       delegate :managed?, to: :cluster, allow_nil: true
+      delegate :kubernetes_namespace, to: :cluster
 
       alias_method :active?, :enabled?
 
@@ -116,6 +122,11 @@ module Clusters
       end
 
       def default_namespace
+        kubernetes_namespace&.namespace.presence || fallback_default_namespace
+      end
+
+      # DEPRECATED
+      def fallback_default_namespace
         return unless project
 
         slug = "#{project.path}-#{project.id}".downcase
@@ -123,7 +134,7 @@ module Clusters
       end
 
       def build_kube_client!(api_groups: ['api'], api_version: 'v1')
-        raise "Incomplete settings" unless api_url && actual_namespace
+        raise "Incomplete settings" unless api_url
 
         unless (username && password) || token
           raise "Either username/password or token is required to access API"

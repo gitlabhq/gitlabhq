@@ -691,6 +691,19 @@ ActiveRecord::Schema.define(version: 20181013005024) do
   add_index "clusters_applications_runners", ["cluster_id"], name: "index_clusters_applications_runners_on_cluster_id", unique: true, using: :btree
   add_index "clusters_applications_runners", ["runner_id"], name: "index_clusters_applications_runners_on_runner_id", using: :btree
 
+  create_table "clusters_kubernetes_namespaces", force: :cascade do |t|
+    t.integer "cluster_project_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.text "encrypted_service_account_token"
+    t.string "encrypted_service_account_token_iv"
+    t.string "namespace", null: false
+    t.string "service_account_name"
+  end
+
+  add_index "clusters_kubernetes_namespaces", ["cluster_project_id", "namespace"], name: "kubernetes_namespaces_cluster_project_and_namespace", unique: true, using: :btree
+  add_index "clusters_kubernetes_namespaces", ["cluster_project_id"], name: "index_clusters_kubernetes_namespaces_on_cluster_project_id", using: :btree
+
   create_table "container_repositories", force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "name", null: false
@@ -2325,6 +2338,7 @@ ActiveRecord::Schema.define(version: 20181013005024) do
   add_foreign_key "clusters_applications_prometheus", "clusters", name: "fk_557e773639", on_delete: :cascade
   add_foreign_key "clusters_applications_runners", "ci_runners", column: "runner_id", name: "fk_02de2ded36", on_delete: :nullify
   add_foreign_key "clusters_applications_runners", "clusters", on_delete: :cascade
+  add_foreign_key "clusters_kubernetes_namespaces", "cluster_projects", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade

@@ -31,6 +31,11 @@ module Clusters
     has_one :application_runner, class_name: 'Clusters::Applications::Runner'
     has_one :application_jupyter, class_name: 'Clusters::Applications::Jupyter'
 
+    has_one :first_cluster_project, -> { order :created_at  }, class_name: 'Clusters::Project'
+    has_many :kubernetes_namespaces, through: :first_cluster_project
+
+    alias_method :cluster_project, :first_cluster_project
+
     accepts_nested_attributes_for :provider_gcp, update_only: true
     accepts_nested_attributes_for :platform_kubernetes, update_only: true
 
@@ -46,6 +51,8 @@ module Clusters
     delegate :available?, to: :application_helm, prefix: true, allow_nil: true
     delegate :available?, to: :application_ingress, prefix: true, allow_nil: true
     delegate :available?, to: :application_prometheus, prefix: true, allow_nil: true
+
+    delegate :kubernetes_namespace, to: :cluster_project, allow_nil: true
 
     enum platform_type: {
       kubernetes: 1
