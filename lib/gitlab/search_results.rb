@@ -16,6 +16,11 @@ module Gitlab
         @data = encode_utf8(opts.fetch(:data, nil))
         @per_page = opts.fetch(:per_page, 20)
         @project = opts.fetch(:project, nil)
+        # Some caller does not have project object (e.g. elastic search),
+        # yet they can trigger many calls in one go,
+        # causing duplicated queries.
+        # Allow those to just pass project_id instead.
+        @project_id = opts.fetch(:project_id, nil)
       end
 
       def path
@@ -23,7 +28,7 @@ module Gitlab
       end
 
       def project_id
-        @project&.id
+        @project_id || @project&.id
       end
 
       def present
