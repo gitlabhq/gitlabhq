@@ -11,8 +11,8 @@
         = image_tag 'illustrations/wiki_login_empty.svg'
     .col-12.col-md-9.text-center.text-md-left.pl-0.pt-4.pb-4
       %h4
-        This project does not have a wiki homepage yet
+        = _("This project does not have a wiki homepage yet")
       - if can_create_wiki
         %p
-          Add a homepage to your wiki that contains information about your project and GitLab will display it here instead of this message.
-        = link_to "Create your first page", project_wiki_path(@project, :home) + '?view=create', class: "btn btn-primary"
+          = _("Add a homepage to your wiki that contains information about your project and GitLab will display it here instead of this message.")
+        = link_to _("Create your first page"), project_wiki_path(@project, :home) + '?view=create', class: "btn btn-primary"
