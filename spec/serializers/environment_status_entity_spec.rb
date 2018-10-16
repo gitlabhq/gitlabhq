@@ -25,10 +25,19 @@ describe EnvironmentStatusEntity do
   it { is_expected.to include(:external_url_formatted) }
   it { is_expected.to include(:deployed_at) }
   it { is_expected.to include(:deployed_at_formatted) }
+  it { is_expected.to include(:changes) }
 
   it { is_expected.not_to include(:stop_url) }
   it { is_expected.not_to include(:metrics_url) }
   it { is_expected.not_to include(:metrics_monitoring_url) }
+
+  context 'when :ci_environments_status_changes feature flag is disabled' do
+    before do
+      stub_feature_flags(ci_environments_status_changes: false)
+    end
+
+    it { is_expected.not_to include(:changes) }
+  end
 
   context 'when the user is project maintainer' do
     before do
