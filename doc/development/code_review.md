@@ -109,7 +109,7 @@ It is responsibility of the author of a merge request that the merge request is 
 
 ### List of merge requests ready for review
 
-Developers who have capacity can regularly check the list of [merge requests to review](https://gitlab.com/groups/gitlab-org/-/merge_requests?scope=all&utf8=%E2%9C%93&state=opened&label_name%5B%5D=ready%20for%20review&assignee_id=0) and assign any merge request they want to review.
+Developers who have capacity can regularly check the list of [merge requests to review](https://gitlab.com/groups/gitlab-org/-/merge_requests?scope=all&utf8=%E2%9C%93&state=opened&label_name%5B%5D=ready%20for%20review) and assign any merge request they want to review.
 
 ### Reviewing code
 
