@@ -12,6 +12,12 @@ describe BackfillStoreProjectFullPathInRepo, :migration do
 
   subject(:migration) { described_class.new }
 
+  around do |example|
+    Sidekiq::Testing.inline! do
+      example.run
+    end
+  end
+
   describe '#up' do
     shared_examples_for 'writes the full path to git config' do
       it 'writes the git config' do
