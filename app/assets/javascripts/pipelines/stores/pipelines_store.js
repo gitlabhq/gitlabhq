@@ -1,5 +1,4 @@
 import { parseIntPagination, normalizeHeaders } from '../../lib/utils/common_utils';
-import { addRemainingTime } from '../helpers';
 
 export default class PipelinesStore {
   constructor() {
@@ -12,7 +11,6 @@ export default class PipelinesStore {
 
   storePipelines(pipelines = []) {
     this.state.pipelines = pipelines;
-    this.updateDelayedJobs();
   }
 
   storeCount(count = {}) {
@@ -30,24 +28,5 @@ export default class PipelinesStore {
     }
 
     this.state.pageInfo = paginationInfo;
-  }
-
-  updateDelayedJobs() {
-    this.state.pipelines = this.state.pipelines.map(pipeline => {
-      const { details } = pipeline;
-      if (!details || !details.scheduled_actions || details.scheduled_actions.length === 0) {
-        return pipeline;
-      }
-
-      return {
-        ...pipeline,
-        details: {
-          ...details,
-          scheduled_actions: details.scheduled_actions.map(addRemainingTime),
-        },
-      };
-    });
-
-    window.setTimeout(() => this.updateDelayedJobs(), 1000);
   }
 }

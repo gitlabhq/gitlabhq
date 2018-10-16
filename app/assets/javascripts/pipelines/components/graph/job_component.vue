@@ -2,7 +2,6 @@
 import ActionComponent from './action_component.vue';
 import JobNameComponent from './job_name_component.vue';
 import tooltip from '../../../vue_shared/directives/tooltip';
-import { s__, sprintf } from '~/locale';
 
 /**
  * Renders the badge for the pipeline graph and the job's dropdown.
@@ -65,20 +64,12 @@ export default {
         textBuilder.push(this.job.name);
       }
 
-      let { tooltip: statusTooltip } = this.status;
-      if (this.job.remainingTime) {
-        statusTooltip = sprintf(
-          s__('DelayedJobs|scheduled manual action (%{remainingTime})'),
-          this.job,
-        );
-      }
-
-      if (this.job.name && statusTooltip) {
+      if (this.job.name && this.status.tooltip) {
         textBuilder.push('-');
       }
 
-      if (statusTooltip) {
-        textBuilder.push(statusTooltip);
+      if (this.status.tooltip) {
+        textBuilder.push(this.job.status.tooltip);
       }
 
       return textBuilder.join(' ');

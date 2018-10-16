@@ -5,7 +5,6 @@ import Poll from '../../lib/utils/poll';
 import { setCiStatusFavicon } from '../../lib/utils/common_utils';
 import flash from '../../flash';
 import { __ } from '../../locale';
-import { addRemainingTime } from '~/pipelines/helpers';
 
 export const setJobEndpoint = ({ commit }, endpoint) => commit(types.SET_JOB_ENDPOINT, endpoint);
 export const setTraceEndpoint = ({ commit }, endpoint) =>
@@ -28,12 +27,7 @@ export const restartPolling = () => {
   if (eTagPoll) eTagPoll.restart();
 };
 
-let updateRemainingTimeIntervalId;
-
-export const requestJob = ({ commit }) => {
-  commit(types.REQUEST_JOB);
-  window.clearInterval(updateRemainingTimeIntervalId);
-};
+export const requestJob = ({ commit }) => commit(types.REQUEST_JOB);
 
 export const fetchJob = ({ state, dispatch }) => {
   dispatch('requestJob');
@@ -71,7 +65,6 @@ export const fetchJob = ({ state, dispatch }) => {
 export const receiveJobSuccess = ({ commit }, data) => {
   commit(types.RECEIVE_JOB_SUCCESS, data);
 };
-
 export const receiveJobError = ({ commit }) => {
   commit(types.RECEIVE_JOB_ERROR);
   flash(__('An error occurred while fetching the job.'));

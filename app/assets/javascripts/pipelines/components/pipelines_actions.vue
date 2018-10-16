@@ -1,5 +1,6 @@
 <script>
 import { s__, sprintf } from '~/locale';
+import { formatTime } from '~/lib/utils/datetime_utility';
 import eventHub from '../event_hub';
 import icon from '../../vue_shared/components/icon.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
@@ -49,7 +50,12 @@ export default {
       }
 
       return !action.playable;
-    }
+    },
+
+    remainingTime(action) {
+      const remainingMilliseconds = new Date(action.scheduled_at).getTime() - Date.now();
+      return formatTime(Math.max(0, remainingMilliseconds));
+    },
   },
 };
 </script>
@@ -90,11 +96,11 @@ export default {
         >
           {{ action.name }}
           <span
-            v-if="action.remainingTime"
+            v-if="action.scheduled_at"
             class="pull-right"
           >
             <icon name="clock" />
-            {{ action.remainingTime }}
+            {{ remainingTime(action) }}
           </span>
         </button>
       </li>
