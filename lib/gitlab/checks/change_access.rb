@@ -21,9 +21,14 @@ module Gitlab
       LOG_MESSAGES = {
         push_checks: "Checking push ability...",
         branch_checks: "Checking branch abilities...",
+        protected_branch_checks: "Checking protected branch abilities...",
+        protected_branch_push_checks: "Checking push abilities for protected branch...",
+        protected_branch_deletion_checks: "Checking deletion abilities for protected branch...",
         tag_checks: "Checking tag abilities...",
-        lfs_objects_exist_check: "Checking LFS object abilities...",
-        commits_check: "Checking commits abilities..."
+        protected_tag_checks: "Checking protected tag abilities...",
+        lfs_objects_exist_check: "Scanning for LFS objects...",
+        commits_check: "Validating commits...",
+        commits_check_file_paths_validation: "Validating commits' file paths..."
       }.freeze
 
       attr_accessor :check_log
@@ -45,23 +50,17 @@ module Gitlab
         @skip_lfs_integrity_check = skip_lfs_integrity_check
         @protocol = protocol
         @start_time = start_time
-        @check_log = ["Running checks for branch: #{@branch_name || @tag_name}"]
+        @check_log = ["Running checks for ref: #{@branch_name || @tag_name}"]
       end
 
       def exec(skip_commits_check: false)
         return true if skip_authorization
 
-        log_timed(:push_checks) { push_checks }
-        log_timed(:branch_checks) { branch_checks }
-        log_timed(:tag_checks) { tag_checks }
-
-        unless skip_lfs_integrity_check
-          log_timed(:lfs_objects_exist_check) { lfs_objects_exist_check }
-        end
-
-        unless skip_commits_check
-          log_timed(:commits_check) { commits_check }
-        end
+        push_checks
+        branch_checks
+        tag_checks
+        lfs_objects_exist_check unless skip_lfs_integrity_check
+        commits_check unless skip_commits_check
 
         true
       end
@@ -69,19 +68,23 @@ module Gitlab
       protected
 
       def push_checks
-        unless can_push?
-          raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:push_code]
+        log_timed(:push_checks) do
+          unless can_push?
+            raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:push_code]
+          end
         end
       end
 
       def branch_checks
         return unless branch_name
 
-        if deletion? && branch_name == project.default_branch
-          raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:delete_default_branch]
-        end
+        log_timed(:branch_checks) do
+          if deletion? && branch_name == project.default_branch
+            raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:delete_default_branch]
+          end
 
-        protected_branch_checks
+          log_timed(:protected_branch_checks) { protected_branch_checks }
+        end
       end
 
       def protected_branch_checks
@@ -92,9 +95,13 @@ module Gitlab
         end
 
         if deletion?
-          protected_branch_deletion_checks
+          log_timed(:protected_branch_deletion_checks) do
+            protected_branch_deletion_checks
+          end
         else
-          protected_branch_push_checks
+          log_timed(:protected_branch_push_checks) do
+            protected_branch_push_checks
+          end
         end
       end
 
@@ -123,11 +130,13 @@ module Gitlab
       def tag_checks
         return unless tag_name
 
-        if tag_exists? && user_access.cannot_do_action?(:admin_project)
-          raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:change_existing_tags]
-        end
+        log_timed(:tag_checks) do
+          if tag_exists? && user_access.cannot_do_action?(:admin_project)
+            raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:change_existing_tags]
+          end
 
-        protected_tag_checks
+          log_timed(:protected_tag_checks) { protected_tag_checks }
+        end
       end
 
       def protected_tag_checks
@@ -145,16 +154,24 @@ module Gitlab
         return if deletion? || newrev.nil?
         return unless should_run_commit_validations?
 
-        # n+1: https://gitlab.com/gitlab-org/gitlab-ee/issues/3593
-        ::Gitlab::GitalyClient.allow_n_plus_1_calls do
-          commits.each do |commit|
-            raise TimeoutError unless time_left > 0
+        start = Time.now
+        log_timed(:commits_check, start) do
+          # n+1: https://gitlab.com/gitlab-org/gitlab-ee/issues/3593
+          ::Gitlab::GitalyClient.allow_n_plus_1_calls do
+            commits.each do |commit|
+              unless time_left > 0
+                check_log << LOG_MESSAGES[:commits_check] + time_suffix_message(cancelled: true, start: start)
+                raise TimeoutError
+              end
 
-            commit_check.validate(commit, validations_for_commit(commit))
+              commit_check.validate(commit, validations_for_commit(commit))
+            end
+          end
+
+          log_timed(:commits_check_file_paths_validation) do
+            commit_check.validate_file_paths
           end
         end
-
-        commit_check.validate_file_paths
       end
 
       # Method overwritten in EE to inject custom validations
@@ -216,10 +233,12 @@ module Gitlab
       end
 
       def lfs_objects_exist_check
-        lfs_check = Checks::LfsIntegrity.new(project, newrev, time_left)
+        log_timed(:lfs_objects_exist_check) do
+          lfs_check = Checks::LfsIntegrity.new(project, newrev, time_left)
 
-        if lfs_check.objects_missing?
-          raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:lfs_objects_missing]
+          if lfs_check.objects_missing?
+            raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:lfs_objects_missing]
+          end
         end
       end
 
@@ -236,16 +255,38 @@ module Gitlab
           user_access.can_push_to_branch?(branch_name)
       end
 
+      def log_timed(method_name, start = Time.now)
+        unless time_left > 0
+          check_log << LOG_MESSAGES[method_name] + time_suffix_message(cancelled: true)
+          raise TimeoutError
+        end
+
+        yield
+
+        check_log << LOG_MESSAGES[method_name] + time_suffix_message(start: start)
+      rescue GRPC::DeadlineExceeded
+        check_log << LOG_MESSAGES[method_name] + time_suffix_message(cancelled: true, start: start)
+        raise TimeoutError
+      end
+
+      def time_suffix_message(cancelled: false, start: nil)
+        if cancelled
+          if start
+            " (cancelled after #{elapsed_time(start)}ms)"
+          else
+            " (cancelled)"
+          end
+        else
+          " (#{elapsed_time(start)}ms)"
+        end
+      end
+
       def time_left
         (start_time + Gitlab::GitAccess::INTERNAL_TIMEOUT.seconds) - Time.now
       end
 
-      def log_timed(method_name)
-        raise TimeoutError unless time_left > 0
-
-        start = Time.now
-        yield
-        check_log << LOG_MESSAGES[method_name] + "(#{to_ms(Time.now - start)}ms)"
+      def elapsed_time(start)
+        to_ms(Time.now - start)
       end
 
       def to_ms(elapsed)

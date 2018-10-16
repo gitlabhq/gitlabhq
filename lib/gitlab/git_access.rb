@@ -283,9 +283,11 @@ module Gitlab
       )
 
       change_access.exec
-      @trace += change_access.check_log
-    rescue Checks::ChangeAccess::TimeoutError, GRPC::DeadlineExceeded
-      @trace += change_access.check_log
+      @trace.concat(change_access.check_log)
+    rescue Checks::ChangeAccess::TimeoutError
+      @trace.concat(change_access.check_log)
+      @trace << "Push operation timed out"
+
       raise TimeoutError, @trace.join("\n")
     end
 

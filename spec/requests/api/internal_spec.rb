@@ -495,28 +495,14 @@ describe API::Internal do
     end
 
     context 'request times out' do
-      let(:personal_project) { create(:project, namespace: user.namespace) }
-
-      before do
-        allow_any_instance_of(Gitlab::GitAccess).to receive(:check).and_raise(Gitlab::GitAccess::TimeoutError, "Foo")
-      end
-
-      context 'git pull' do
-        it do
-          pull(key, personal_project)
-
-          expect(response).to have_gitlab_http_status(408)
-          expect(json_response['status']).to be_falsey
-          expect(json_response['message']).to eq("Foo")
-          expect(user.reload.last_activity_on).to be_nil
-        end
-      end
-
       context 'git push' do
-        it do
+        it 'responds with a gateway timeout' do
+          personal_project = create(:project, namespace: user.namespace)
+
+          allow_any_instance_of(Gitlab::GitAccess).to receive(:check).and_raise(Gitlab::GitAccess::TimeoutError, "Foo")
           push(key, personal_project)
 
-          expect(response).to have_gitlab_http_status(408)
+          expect(response).to have_gitlab_http_status(504)
           expect(json_response['status']).to be_falsey
           expect(json_response['message']).to eq("Foo")
           expect(user.reload.last_activity_on).to be_nil

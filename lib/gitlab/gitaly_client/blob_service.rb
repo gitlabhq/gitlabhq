@@ -85,12 +85,19 @@ module Gitlab
           request.not_in_refs += not_in
         end
 
+        timeout =
+          if dynamic_timeout
+            [dynamic_timeout, GitalyClient.medium_timeout].min
+          else
+            GitalyClient.medium_timeout
+          end
+
         response = GitalyClient.call(
           @gitaly_repo.storage_name,
           :blob_service,
           :get_new_lfs_pointers,
           request,
-          timeout: dynamic_timeout || GitalyClient.medium_timeout
+          timeout: timeout
         )
 
         map_lfs_pointers(response)

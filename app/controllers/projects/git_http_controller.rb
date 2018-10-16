@@ -8,7 +8,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   rescue_from Gitlab::GitAccess::UnauthorizedError, with: :render_403
   rescue_from Gitlab::GitAccess::NotFoundError, with: :render_404
   rescue_from Gitlab::GitAccess::ProjectCreationError, with: :render_422
-  rescue_from Gitlab::GitAccess::TimeoutError, with: :render_408
+  rescue_from Gitlab::GitAccess::TimeoutError, with: :render_504
 
   # GET /foo/bar.git/info/refs?service=git-upload-pack (git pull)
   # GET /foo/bar.git/info/refs?service=git-receive-pack (git push)
@@ -63,8 +63,8 @@ class Projects::GitHttpController < Projects::GitHttpClientController
     render plain: exception.message, status: :unprocessable_entity
   end
 
-  def render_408(exception)
-    render plain: exception.message, status: :request_timeout
+  def render_504(exception)
+    render plain: exception.message, status: :gateway_timeout
   end
 
   def access

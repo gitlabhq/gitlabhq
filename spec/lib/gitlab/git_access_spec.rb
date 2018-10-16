@@ -935,16 +935,10 @@ describe Gitlab::GitAccess do
         expect { access.check('git-receive-pack', changes) }.not_to exceed_query_limit(control_count).with_threshold(1)
       end
 
-      it 'raises TimeoutError when #check_single_change_access raises DeadlineExceeded error' do
-        allow_any_instance_of(Gitlab::Checks::ChangeAccess).to receive(:exec).and_raise(GRPC::DeadlineExceeded)
-
-        expect { access.check('git-receive-pack', changes) }.to raise_error(described_class::TimeoutError, "Running checks for branch: wow")
-      end
-
       it 'raises TimeoutError when #check_single_change_access raises a timeout error' do
         allow_any_instance_of(Gitlab::Checks::ChangeAccess).to receive(:exec).and_raise(Gitlab::Checks::ChangeAccess::TimeoutError)
 
-        expect { access.check('git-receive-pack', changes) }.to raise_error(described_class::TimeoutError, "Running checks for branch: wow")
+        expect { access.check('git-receive-pack', changes) }.to raise_error(described_class::TimeoutError, "Running checks for ref: wow\nPush operation timed out")
       end
     end
   end
