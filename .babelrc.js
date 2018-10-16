@@ -12,12 +12,14 @@ const presets = [
   ],
 ];
 
-// include stage 3 proposals
 const plugins = [
+  // stage 3 proposals
   '@babel/plugin-syntax-dynamic-import',
   '@babel/plugin-syntax-import-meta',
   '@babel/plugin-proposal-class-properties',
   '@babel/plugin-proposal-json-strings',
+
+  // stage 1 proposals
   '@babel/plugin-proposal-optional-chaining',
   '@babel/plugin-syntax-optional-chaining',
 ];
