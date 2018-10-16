@@ -330,6 +330,9 @@ msgstr ""
 msgid "Add Readme"
 msgstr ""
 
+msgid "Add a homepage to your wiki that contains information about your project and GitLab will display it here instead of this message."
+msgstr ""
+
 msgid "Add a table"
 msgstr ""
 
@@ -2029,6 +2032,9 @@ msgid "Create new..."
 msgstr ""
 
 msgid "Create project label"
+msgstr ""
+
+msgid "Create your first page"
 msgstr ""
 
 msgid "CreateTag|Tag"
@@ -6168,6 +6174,9 @@ msgid "This project"
 msgstr ""
 
 msgid "This project does not belong to a group and can therefore not make use of group Runners."
+msgstr ""
+
+msgid "This project does not have a wiki homepage yet"
 msgstr ""
 
 msgid "This project does not have billing enabled. To create a cluster, <a href=%{linkToBilling} target=\"_blank\" rel=\"noopener noreferrer\">enable billing <i class=\"fa fa-external-link\" aria-hidden=\"true\"></i></a> and try again."
