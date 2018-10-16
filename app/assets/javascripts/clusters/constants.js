@@ -6,6 +6,7 @@ export const APPLICATION_STATUS = {
   INSTALLING: 'installing',
   INSTALLED: 'installed',
   UPDATED: 'updated',
+  UPDATING: 'updating',
   ERROR: 'errored',
 };
 
