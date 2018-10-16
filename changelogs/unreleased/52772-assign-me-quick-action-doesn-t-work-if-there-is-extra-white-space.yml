@@ -1,0 +1,5 @@
+---
+title: Resolve assign-me quick action doesn't work if there is extra white space
+merge_request: 22402
+author:
+type: fixed

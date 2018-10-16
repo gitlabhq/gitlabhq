@@ -538,6 +538,26 @@ describe QuickActions::InterpretService do
       end
     end
 
+    context 'assign command with me alias and whitespace' do
+      let(:content) { "/assign  me " }
+
+      context 'Issue' do
+        it 'fetches assignee and populates assignee_ids if content contains /assign' do
+          _, updates = service.execute(content, issue)
+
+          expect(updates).to eq(assignee_ids: [developer.id])
+        end
+      end
+
+      context 'Merge Request' do
+        it 'fetches assignee and populates assignee_ids if content contains /assign' do
+          _, updates = service.execute(content, merge_request)
+
+          expect(updates).to eq(assignee_ids: [developer.id])
+        end
+      end
+    end
+
     it_behaves_like 'empty command' do
       let(:content) { '/assign @abcd1234' }
       let(:issuable) { issue }
