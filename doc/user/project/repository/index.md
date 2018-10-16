@@ -166,7 +166,11 @@ minutes.
 ![Repository Languages bar](img/repository_languages.png)
 
 Not all files are detected, among others; documentation, 
-vendored code, and most markup languages are excluded.
+vendored code, and most markup languages are excluded. This behaviour can be
+adjusted by overriding the default. For example, to enable `.proto` files to be
+detected, add the following to `.gitattributes` in the root of your repository.
+
+> *.proto linguist-detectable=true
 
 ## Compare
 
