@@ -9,10 +9,7 @@ module Banzai
   # so we can avoid N+1 queries problem
 
   class IssuableExtractor
-    QUERY = %q(
-      descendant-or-self::a[contains(concat(" ", @class, " "), " gfm ")]
-      [@data-reference-type="issue" or @data-reference-type="merge_request"]
-    ).freeze
+    prepend EE::Banzai::IssuableExtractor
 
     attr_reader :context
 
@@ -24,21 +21,41 @@ module Banzai
     # Returns Hash in the form { node => issuable_instance }
     def extract(documents)
       nodes = documents.flat_map do |document|
-        document.xpath(QUERY)
+        document.xpath(query)
       end
 
-      issue_parser = Banzai::ReferenceParser::IssueParser.new(context)
-
-      merge_request_parser =
-        Banzai::ReferenceParser::MergeRequestParser.new(context)
-
-      issuables_for_nodes = issue_parser.records_for_nodes(nodes).merge(
-        merge_request_parser.records_for_nodes(nodes)
-      )
-
-      # The project for the issue/MR might be pending for deletion!
+      # The project or group for the issuable might be pending for deletion!
       # Filter them out because we don't care about them.
-      issuables_for_nodes.select { |node, issuable| issuable.project }
+      issuables_for_nodes(nodes).select { |node, issuable| issuable.project || issuable.group }
+    end
+
+    private
+
+    def issuables_for_nodes(nodes)
+      result = {}
+      parsers.each do |parser|
+        result.merge!(parser.records_for_nodes(nodes))
+      end
+
+      result
+    end
+
+    def parsers
+      [
+        Banzai::ReferenceParser::IssueParser.new(context),
+        Banzai::ReferenceParser::MergeRequestParser.new(context)
+      ]
+    end
+
+    def query
+      %Q(
+        descendant-or-self::a[contains(concat(" ", @class, " "), " gfm ")]
+        [#{reference_types}]
+      )
+    end
+
+    def reference_types
+      '@data-reference-type="issue" or @data-reference-type="merge_request"'
     end
   end
 end
