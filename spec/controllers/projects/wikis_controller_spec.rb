@@ -73,6 +73,14 @@ describe Projects::WikisController do
           end
         end
       end
+
+      context 'when file is a pdf' do
+        let(:file_name) { 'git-cheat-sheet.pdf' }
+
+        it 'sets the content type to application/octet-stream' do
+          expect(response.headers['Content-Type']).to eq 'application/octet-stream'
+        end
+      end
     end
   end
 
