@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181013005024) do
+ActiveRecord::Schema.define(version: 20181016141739) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -253,6 +253,13 @@ ActiveRecord::Schema.define(version: 20181013005024) do
 
   add_index "chat_teams", ["namespace_id"], name: "index_chat_teams_on_namespace_id", unique: true, using: :btree
 
+  create_table "ci_build_schedules", id: :bigserial, force: :cascade do |t|
+    t.integer "build_id", null: false
+    t.datetime "execute_at", null: false
+  end
+
+  add_index "ci_build_schedules", ["build_id"], name: "index_ci_build_schedules_on_build_id", unique: true, using: :btree
+
   create_table "ci_build_trace_chunks", id: :bigserial, force: :cascade do |t|
     t.integer "build_id", null: false
     t.integer "chunk_index", null: false
@@ -340,7 +347,7 @@ ActiveRecord::Schema.define(version: 20181013005024) do
   add_index "ci_builds", ["project_id", "id"], name: "index_ci_builds_on_project_id_and_id", using: :btree
   add_index "ci_builds", ["protected"], name: "index_ci_builds_on_protected", using: :btree
   add_index "ci_builds", ["runner_id"], name: "index_ci_builds_on_runner_id", using: :btree
-  add_index "ci_builds", ["scheduled_at"], name: "partial_index_ci_builds_on_scheduled_at_with_scheduled_jobs", where: "((scheduled_at IS NOT NULL) AND ((type)::text = 'Ci::Build'::text) AND ((status)::text = 'scheduled'::text))", using: :btree
+  add_index "ci_builds", ["scheduled_at"], name: "partial_index_ci_builds_on_scheduled_at_with_scheduled_jobs", where: "((scheduled_at IS NOT NULL) AND (((type)::text = 'Ci::Build'::text) AND ((status)::text = 'scheduled'::text)))", using: :btree
   add_index "ci_builds", ["stage_id", "stage_idx"], name: "tmp_build_stage_position_index", where: "(stage_idx IS NOT NULL)", using: :btree
   add_index "ci_builds", ["stage_id"], name: "index_ci_builds_on_stage_id", using: :btree
   add_index "ci_builds", ["status", "type", "runner_id"], name: "index_ci_builds_on_status_and_type_and_runner_id", using: :btree
@@ -772,6 +779,7 @@ ActiveRecord::Schema.define(version: 20181013005024) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "on_stop"
+    t.integer "status", limit: 2
   end
 
   add_index "deployments", ["created_at"], name: "index_deployments_on_created_at", using: :btree
@@ -1788,6 +1796,7 @@ ActiveRecord::Schema.define(version: 20181013005024) do
   end
 
   add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
+  add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
   add_index "redirect_routes", ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
 
   create_table "releases", force: :cascade do |t|
@@ -2282,6 +2291,7 @@ ActiveRecord::Schema.define(version: 20181013005024) do
   add_foreign_key "boards", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
+  add_foreign_key "ci_build_schedules", "ci_builds", column: "build_id", on_delete: :cascade
   add_foreign_key "ci_build_trace_chunks", "ci_builds", column: "build_id", on_delete: :cascade
   add_foreign_key "ci_build_trace_section_names", "projects", on_delete: :cascade
   add_foreign_key "ci_build_trace_sections", "ci_build_trace_section_names", column: "section_name_id", name: "fk_264e112c66", on_delete: :cascade
