@@ -53,8 +53,7 @@ describe('Diffs tree list component', () => {
           fileHash: 'test',
           key: 'index.js',
           name: 'index.js',
-          path: 'index.js',
-          truncatedPath: '../index.js',
+          path: 'app/index.js',
           removedLines: 0,
           tempFile: true,
           type: 'blob',
@@ -105,7 +104,7 @@ describe('Diffs tree list component', () => {
 
       vm.$el.querySelector('.file-row').click();
 
-      expect(vm.$store.dispatch).toHaveBeenCalledWith('diffs/scrollToFile', 'index.js');
+      expect(vm.$store.dispatch).toHaveBeenCalledWith('diffs/scrollToFile', 'app/index.js');
     });
 
     it('renders as file list when renderTreeList is false', done => {
@@ -122,7 +121,7 @@ describe('Diffs tree list component', () => {
       vm.renderTreeList = false;
 
       vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.file-row').textContent).toContain('../index.js');
+        expect(vm.$el.querySelector('.file-row').textContent).toContain('app/index.js');
 
         done();
       });
@@ -144,8 +143,7 @@ describe('Diffs tree list component', () => {
       const blurEvent = new Event('blur');
       vm.focusSearch = true;
 
-      vm
-        .$nextTick()
+      vm.$nextTick()
         .then(() => {
           vm.$el.querySelector('.form-control').dispatchEvent(blurEvent);
         })
