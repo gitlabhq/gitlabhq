@@ -23,6 +23,10 @@ module QA
           element :squash_checkbox
         end
 
+        view 'app/views/shared/issuable/_sidebar.html.haml' do
+          element :labels_block
+        end
+
         def fast_forward_possible?
           !has_text?('Fast-forward merge is not possible')
         end
@@ -61,6 +65,13 @@ module QA
 
           wait(reload: false) do
             has_text?('Fast-forward merge without a merge commit')
+          end
+        end
+
+        def has_label?(label)
+          page.within(element_selector_css(:labels_block)) do
+            element = find('span', text: label)
+            !element.nil?
           end
         end
 

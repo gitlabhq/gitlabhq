@@ -50,7 +50,7 @@ describe('Environment', () => {
 
         expect(
           component.$el.querySelector('.js-blank-state-title').textContent,
-        ).toContain('You don\'t have any environments right now.');
+        ).toContain('You don\'t have any environments right now');
       });
     });
 
@@ -127,7 +127,7 @@ describe('Environment', () => {
     it('should render empty state', () => {
       expect(
         component.$el.querySelector('.js-blank-state-title').textContent,
-      ).toContain('You don\'t have any environments right now.');
+      ).toContain('You don\'t have any environments right now');
     });
   });
 

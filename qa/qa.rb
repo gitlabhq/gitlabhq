@@ -45,6 +45,7 @@ module QA
       autoload :Group, 'qa/factory/resource/group'
       autoload :Issue, 'qa/factory/resource/issue'
       autoload :Project, 'qa/factory/resource/project'
+      autoload :Label, 'qa/factory/resource/label'
       autoload :MergeRequest, 'qa/factory/resource/merge_request'
       autoload :ProjectImportedFromGithub, 'qa/factory/resource/project_imported_from_github'
       autoload :MergeRequestFromFork, 'qa/factory/resource/merge_request_from_fork'
@@ -238,6 +239,11 @@ module QA
 
     module Layout
       autoload :Banner, 'qa/page/layout/banner'
+    end
+
+    module Label
+      autoload :New, 'qa/page/label/new'
+      autoload :Index, 'qa/page/label/index'
     end
 
     module MergeRequest
