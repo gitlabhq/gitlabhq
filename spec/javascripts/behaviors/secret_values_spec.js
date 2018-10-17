@@ -130,6 +130,7 @@ describe('setupSecretValues', () => {
       values.forEach((value) => {
         expect(value.classList.contains('hide')).toEqual(true);
       });
+
       expect(placeholders.length).toEqual(3);
       placeholders.forEach((placeholder) => {
         expect(placeholder.classList.contains('hide')).toEqual(false);
@@ -148,6 +149,7 @@ describe('setupSecretValues', () => {
       values.forEach((value) => {
         expect(value.classList.contains('hide')).toEqual(false);
       });
+
       expect(placeholders.length).toEqual(3);
       placeholders.forEach((placeholder) => {
         expect(placeholder.classList.contains('hide')).toEqual(true);
@@ -159,6 +161,7 @@ describe('setupSecretValues', () => {
       values.forEach((value) => {
         expect(value.classList.contains('hide')).toEqual(true);
       });
+
       expect(placeholders.length).toEqual(3);
       placeholders.forEach((placeholder) => {
         expect(placeholder.classList.contains('hide')).toEqual(false);
@@ -184,6 +187,7 @@ describe('setupSecretValues', () => {
       values.forEach((value) => {
         expect(value.classList.contains('hide')).toEqual(false);
       });
+
       expect(placeholders.length).toEqual(4);
       placeholders.forEach((placeholder) => {
         expect(placeholder.classList.contains('hide')).toEqual(true);
@@ -195,6 +199,7 @@ describe('setupSecretValues', () => {
       values.forEach((value) => {
         expect(value.classList.contains('hide')).toEqual(true);
       });
+
       expect(placeholders.length).toEqual(4);
       placeholders.forEach((placeholder) => {
         expect(placeholder.classList.contains('hide')).toEqual(false);

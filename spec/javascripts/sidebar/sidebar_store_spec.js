@@ -56,11 +56,13 @@ describe('Sidebar store', function () {
 
   it('adds a new assignee', () => {
     this.store.addAssignee(ASSIGNEE);
+
     expect(this.store.assignees.length).toEqual(1);
   });
 
   it('removes an assignee', () => {
     this.store.removeAssignee(ASSIGNEE);
+
     expect(this.store.assignees.length).toEqual(0);
   });
 
@@ -69,14 +71,17 @@ describe('Sidebar store', function () {
 
     this.store.addAssignee(ASSIGNEE);
     foundAssignee = this.store.findAssignee(ASSIGNEE);
+
     expect(foundAssignee).toBeDefined();
     expect(foundAssignee).toEqual(ASSIGNEE);
     foundAssignee = this.store.findAssignee(ANOTHER_ASSINEE);
+
     expect(foundAssignee).toBeUndefined();
   });
 
   it('removes all assignees', () => {
     this.store.removeAllAssignees();
+
     expect(this.store.assignees.length).toEqual(0);
   });
 
@@ -108,6 +113,7 @@ describe('Sidebar store', function () {
     };
 
     this.store.setAssigneeData(users);
+
     expect(this.store.isFetching.assignees).toBe(false);
     expect(this.store.assignees.length).toEqual(3);
   });
@@ -128,6 +134,7 @@ describe('Sidebar store', function () {
 
   it('set time tracking data', () => {
     this.store.setTimeTrackingData(Mock.time);
+
     expect(this.store.timeEstimate).toEqual(Mock.time.time_estimate);
     expect(this.store.totalTimeSpent).toEqual(Mock.time.total_time_spent);
     expect(this.store.humanTimeEstimate).toEqual(Mock.time.human_time_estimate);

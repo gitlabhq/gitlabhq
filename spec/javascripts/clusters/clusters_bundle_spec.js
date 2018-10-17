@@ -86,6 +86,7 @@ describe('Clusters', () => {
       });
 
       const flashMessage = document.querySelector('.js-cluster-application-notice .flash-text');
+
       expect(flashMessage).toBeNull();
     });
 
@@ -99,6 +100,7 @@ describe('Clusters', () => {
       });
 
       const flashMessage = document.querySelector('.js-cluster-application-notice .flash-text');
+
       expect(flashMessage).not.toBeNull();
       expect(flashMessage.textContent.trim()).toEqual('Helm Tiller was successfully installed on your Kubernetes cluster');
     });
@@ -115,6 +117,7 @@ describe('Clusters', () => {
       });
 
       const flashMessage = document.querySelector('.js-cluster-application-notice .flash-text');
+
       expect(flashMessage).not.toBeNull();
       expect(flashMessage.textContent.trim()).toEqual('Helm Tiller, Ingress was successfully installed on your Kubernetes cluster');
     });
@@ -128,9 +131,11 @@ describe('Clusters', () => {
         expect(
           cluster.creatingContainer.classList.contains('hidden'),
         ).toBeFalsy();
+
         expect(
           cluster.successContainer.classList.contains('hidden'),
         ).toBeTruthy();
+
         expect(
           cluster.errorContainer.classList.contains('hidden'),
         ).toBeTruthy();
@@ -142,9 +147,11 @@ describe('Clusters', () => {
         expect(
           cluster.creatingContainer.classList.contains('hidden'),
         ).toBeFalsy();
+
         expect(
           cluster.successContainer.classList.contains('hidden'),
         ).toBeTruthy();
+
         expect(
           cluster.errorContainer.classList.contains('hidden'),
         ).toBeTruthy();
@@ -158,9 +165,11 @@ describe('Clusters', () => {
         expect(
           cluster.creatingContainer.classList.contains('hidden'),
         ).toBeTruthy();
+
         expect(
           cluster.successContainer.classList.contains('hidden'),
         ).toBeFalsy();
+
         expect(
           cluster.errorContainer.classList.contains('hidden'),
         ).toBeTruthy();
@@ -172,9 +181,11 @@ describe('Clusters', () => {
         expect(
           cluster.creatingContainer.classList.contains('hidden'),
         ).toBeTruthy();
+
         expect(
           cluster.successContainer.classList.contains('hidden'),
         ).toBeTruthy();
+
         expect(
           cluster.errorContainer.classList.contains('hidden'),
         ).toBeTruthy();
@@ -188,9 +199,11 @@ describe('Clusters', () => {
         expect(
           cluster.creatingContainer.classList.contains('hidden'),
         ).toBeTruthy();
+
         expect(
           cluster.successContainer.classList.contains('hidden'),
         ).toBeTruthy();
+
         expect(
           cluster.errorContainer.classList.contains('hidden'),
         ).toBeFalsy();
@@ -206,9 +219,11 @@ describe('Clusters', () => {
         expect(
           cluster.creatingContainer.classList.contains('hidden'),
         ).toBeTruthy();
+
         expect(
           cluster.successContainer.classList.contains('hidden'),
         ).toBeTruthy();
+
         expect(
           cluster.errorContainer.classList.contains('hidden'),
         ).toBeFalsy();
@@ -219,6 +234,7 @@ describe('Clusters', () => {
   describe('installApplication', () => {
     it('tries to install helm', (done) => {
       spyOn(cluster.service, 'installApplication').and.returnValue(Promise.resolve());
+
       expect(cluster.store.state.applications.helm.requestStatus).toEqual(null);
 
       cluster.installApplication({ id: 'helm' });
@@ -238,6 +254,7 @@ describe('Clusters', () => {
 
     it('tries to install ingress', (done) => {
       spyOn(cluster.service, 'installApplication').and.returnValue(Promise.resolve());
+
       expect(cluster.store.state.applications.ingress.requestStatus).toEqual(null);
 
       cluster.installApplication({ id: 'ingress' });
@@ -257,6 +274,7 @@ describe('Clusters', () => {
 
     it('tries to install runner', (done) => {
       spyOn(cluster.service, 'installApplication').and.returnValue(Promise.resolve());
+
       expect(cluster.store.state.applications.runner.requestStatus).toEqual(null);
 
       cluster.installApplication({ id: 'runner' });
@@ -276,6 +294,7 @@ describe('Clusters', () => {
 
     it('tries to install jupyter', (done) => {
       spyOn(cluster.service, 'installApplication').and.returnValue(Promise.resolve());
+
       expect(cluster.store.state.applications.jupyter.requestStatus).toEqual(null);
       cluster.installApplication({ id: 'jupyter', params: { hostname: cluster.store.state.applications.jupyter.hostname } });
 
@@ -294,6 +313,7 @@ describe('Clusters', () => {
 
     it('sets error request status when the request fails', (done) => {
       spyOn(cluster.service, 'installApplication').and.returnValue(Promise.reject(new Error('STUBBED ERROR')));
+
       expect(cluster.store.state.applications.helm.requestStatus).toEqual(null);
 
       cluster.installApplication({ id: 'helm' });

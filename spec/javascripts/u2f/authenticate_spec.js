@@ -51,10 +51,12 @@ describe('U2FAuthenticate', function () {
 
     it('allows authenticating via a U2F device', () => {
       const inProgressMessage = this.container.find('p');
+
       expect(inProgressMessage.text()).toContain('Trying to communicate with your device');
       this.u2fDevice.respondToAuthenticateRequest({
         deviceData: 'this is data from the device',
       });
+
       expect(this.component.renderAuthenticated).toHaveBeenCalledWith('{"deviceData":"this is data from the device"}');
     });
 
@@ -66,7 +68,8 @@ describe('U2FAuthenticate', function () {
           errorCode: 'error!',
         });
         const errorMessage = this.container.find('p');
-        return expect(errorMessage.text()).toContain('There was a problem communicating with your device');
+
+        expect(errorMessage.text()).toContain('There was a problem communicating with your device');
       });
       return it('allows retrying authentication after an error', () => {
         let setupButton = this.container.find('#js-login-u2f-device');
@@ -81,6 +84,7 @@ describe('U2FAuthenticate', function () {
         this.u2fDevice.respondToAuthenticateRequest({
           deviceData: 'this is data from the device',
         });
+
         expect(this.component.renderAuthenticated).toHaveBeenCalledWith('{"deviceData":"this is data from the device"}');
       });
     });

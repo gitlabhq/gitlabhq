@@ -74,6 +74,7 @@ describe('Sidebar details block', () => {
       expect(vm.$el.querySelector('.js-new-issue').getAttribute('href')).toEqual(
         job.new_issue_path,
       );
+
       expect(vm.$el.querySelector('.js-new-issue').textContent.trim()).toEqual('New issue');
     });
 

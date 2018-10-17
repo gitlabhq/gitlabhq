@@ -48,6 +48,7 @@ describe('GkeProjectIdDropdown', () => {
 
     it('returns project billing validation text', () => {
       vm.setIsValidatingProjectBilling(true);
+
       expect(vm.toggleText).toBe(LABELS.VALIDATING_PROJECT_BILLING);
     });
 

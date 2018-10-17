@@ -95,6 +95,7 @@ describe('init markdown', () => {
           select });
 
         const expectedText = text.replace(selected, `[${selected}](url)`);
+
         expect(textArea.value).toEqual(expectedText);
         expect(textArea.selectionStart).toEqual(expectedText.indexOf(select));
         expect(textArea.selectionEnd).toEqual(expectedText.indexOf(select) + select.length);
@@ -114,6 +115,7 @@ describe('init markdown', () => {
           select });
 
         const expectedText = initialValue.replace(selected, `[${selected}](url)`);
+
         expect(textArea.value).toEqual(expectedText);
         expect(textArea.selectionStart).toEqual(expectedText.lastIndexOf(select));
         expect(textArea.selectionEnd).toEqual(expectedText.lastIndexOf(select) + select.length);

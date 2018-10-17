@@ -39,6 +39,7 @@ describe('Flash', () => {
       expect(
         el.querySelector('.flash-text').classList.contains('container-fluid'),
       ).toBeTruthy();
+
       expect(
         el.querySelector('.flash-text').classList.contains('container-limited'),
       ).toBeTruthy();
@@ -59,6 +60,7 @@ describe('Flash', () => {
       expect(
         el.style['transition-property'],
       ).toBe('opacity');
+
       expect(
         el.style['transition-duration'],
       ).toBe('0.3s');
@@ -78,6 +80,7 @@ describe('Flash', () => {
       expect(
         el.style.opacity,
       ).toBe('');
+
       expect(
         el.style.transition,
       ).toBe('');
@@ -166,6 +169,7 @@ describe('Flash', () => {
         expect(
           flashEl,
         ).toBeNull();
+
         expect(
           document.querySelector('.flash-alert'),
         ).toBeNull();

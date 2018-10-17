@@ -134,6 +134,7 @@ describe('Filtered Search Manager', function () {
       };
 
       manager.searchState(e);
+
       expect(FilteredSearchManager.prototype.search).not.toHaveBeenCalled();
     });
 
@@ -149,6 +150,7 @@ describe('Filtered Search Manager', function () {
       };
 
       manager.searchState(e);
+
       expect(FilteredSearchManager.prototype.search).toHaveBeenCalledWith('opened');
     });
   });
@@ -304,6 +306,7 @@ describe('Filtered Search Manager', function () {
       );
 
       tokensContainer.querySelector('.js-visual-token .remove-token').click();
+
       expect(tokensContainer.querySelector('.js-visual-token')).toEqual(null);
     });
 
@@ -437,11 +440,13 @@ describe('Filtered Search Manager', function () {
 
     it('toggles on focus', () => {
       input.focus();
+
       expect(document.querySelector('.filtered-search-box').classList.contains('focus')).toEqual(true);
     });
 
     it('toggles on blur', () => {
       input.blur();
+
       expect(document.querySelector('.filtered-search-box').classList.contains('focus')).toEqual(false);
     });
   });

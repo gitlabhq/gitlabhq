@@ -33,6 +33,7 @@ describe('DropdownValueComponent', () => {
     describe('isEmpty', () => {
       it('returns true if `labels` prop is empty', () => {
         const vmEmptyLabels = createComponent([]);
+
         expect(vmEmptyLabels.isEmpty).toBe(true);
         vmEmptyLabels.$destroy();
       });
@@ -73,6 +74,7 @@ describe('DropdownValueComponent', () => {
 
     it('render slot content inside component when `labels` prop is empty', () => {
       const vmEmptyLabels = createComponent([]);
+
       expect(vmEmptyLabels.$el.querySelector('.text-secondary').innerText.trim()).toBe(mockConfig.emptyValueText);
       vmEmptyLabels.$destroy();
     });
@@ -83,6 +85,7 @@ describe('DropdownValueComponent', () => {
 
     it('renders label element with tooltip and styles based on label details', () => {
       const labelEl = vm.$el.querySelector('a span.badge.color-label');
+
       expect(labelEl).not.toBeNull();
       expect(labelEl.dataset.placement).toBe('bottom');
       expect(labelEl.dataset.container).toBe('body');

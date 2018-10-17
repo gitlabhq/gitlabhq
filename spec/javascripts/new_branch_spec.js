@@ -5,14 +5,14 @@ import NewBranchForm from '~/new_branch_form';
 
 (function() {
   describe('Branch', function() {
-    return describe('create a new branch', function() {
+    describe('create a new branch', function() {
       var expectToHaveError, fillNameWith;
       preloadFixtures('branches/new_branch.html.raw');
       fillNameWith = function(value) {
         return $('.js-branch-name').val(value).trigger('blur');
       };
       expectToHaveError = function(error) {
-        return expect($('.js-branch-name-error span').text()).toEqual(error);
+        expect($('.js-branch-name-error span').text()).toEqual(error);
       };
       beforeEach(function() {
         loadFixtures('branches/new_branch.html.raw');
@@ -164,28 +164,35 @@ import NewBranchForm from '~/new_branch_form';
 
       it("removes the error message when is a valid name", function() {
         fillNameWith('foo?bar');
+
         expect($('.js-branch-name-error span').length).toEqual(1);
         fillNameWith('foobar');
-        return expect($('.js-branch-name-error span').length).toEqual(0);
+
+        expect($('.js-branch-name-error span').length).toEqual(0);
       });
 
       it("can have dashes anywhere", function() {
         fillNameWith('-foo-bar-zoo-');
-        return expect($('.js-branch-name-error span').length).toEqual(0);
+
+        expect($('.js-branch-name-error span').length).toEqual(0);
       });
 
       it("can have underscores anywhere", function() {
         fillNameWith('_foo_bar_zoo_');
-        return expect($('.js-branch-name-error span').length).toEqual(0);
+
+        expect($('.js-branch-name-error span').length).toEqual(0);
       });
 
       it("can have numbers anywhere", function() {
         fillNameWith('1foo2bar3zoo4');
-        return expect($('.js-branch-name-error span').length).toEqual(0);
+
+        expect($('.js-branch-name-error span').length).toEqual(0);
       });
-      return it("can be only letters", function() {
+
+      it("can be only letters", function() {
         fillNameWith('foo');
-        return expect($('.js-branch-name-error span').length).toEqual(0);
+
+        expect($('.js-branch-name-error span').length).toEqual(0);
       });
     });
   });

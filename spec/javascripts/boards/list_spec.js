@@ -60,6 +60,7 @@ describe('List model', () => {
   it('destroys the list', (done) => {
     boardsStore.addList(listObj);
     list = boardsStore.findList('id', listObj.id);
+
     expect(boardsStore.state.lists.length).toBe(1);
     list.destroy();
 
@@ -72,6 +73,7 @@ describe('List model', () => {
   it('gets issue from list', (done) => {
     setTimeout(() => {
       const issue = list.findIssue(1);
+
       expect(issue).toBeDefined();
       done();
     }, 0);
@@ -80,8 +82,10 @@ describe('List model', () => {
   it('removes issue', (done) => {
     setTimeout(() => {
       const issue = list.findIssue(1);
+
       expect(list.issues.length).toBe(1);
       list.removeIssue(issue);
+
       expect(list.issues.length).toBe(0);
       done();
     }, 0);

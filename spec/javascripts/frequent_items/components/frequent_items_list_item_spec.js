@@ -30,9 +30,11 @@ describe('FrequentItemsListItemComponent', () => {
     describe('hasAvatar', () => {
       it('should return `true` or `false` if whether avatar is present or not', () => {
         vm.avatarUrl = 'path/to/avatar.png';
+
         expect(vm.hasAvatar).toBe(true);
 
         vm.avatarUrl = null;
+
         expect(vm.hasAvatar).toBe(false);
       });
     });
@@ -40,11 +42,13 @@ describe('FrequentItemsListItemComponent', () => {
     describe('highlightedItemName', () => {
       it('should enclose part of project name in <b> & </b> which matches with `matcher` prop', () => {
         vm.matcher = 'lab';
+
         expect(vm.highlightedItemName).toContain('<b>Lab</b>');
       });
 
       it('should return project name as it is if `matcher` is not available', () => {
         vm.matcher = null;
+
         expect(vm.highlightedItemName).toBe(mockProject.name);
       });
     });
@@ -52,11 +56,13 @@ describe('FrequentItemsListItemComponent', () => {
     describe('truncatedNamespace', () => {
       it('should truncate project name from namespace string', () => {
         vm.namespace = 'platform / nokia-3310';
+
         expect(vm.truncatedNamespace).toBe('platform');
       });
 
       it('should truncate namespace string from the middle if it includes more than two groups in path', () => {
         vm.namespace = 'platform / hardware / broadcom / Wifi Group / Mobile Chipset / nokia-3310';
+
         expect(vm.truncatedNamespace).toBe('platform / ... / Mobile Chipset');
       });
     });

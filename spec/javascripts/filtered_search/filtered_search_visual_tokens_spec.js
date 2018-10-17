@@ -131,6 +131,7 @@ describe('Filtered Search Visual Tokens', () => {
   describe('getEndpointWithQueryParams', () => {
     it('returns `endpoint` string as is when second param `endpointQueryParams` is undefined, null or empty string', () => {
       const endpoint = 'foo/bar/labels.json';
+
       expect(subject.getEndpointWithQueryParams(endpoint)).toBe(endpoint);
       expect(subject.getEndpointWithQueryParams(endpoint, null)).toBe(endpoint);
       expect(subject.getEndpointWithQueryParams(endpoint, '')).toBe(endpoint);
@@ -161,6 +162,7 @@ describe('Filtered Search Visual Tokens', () => {
       `);
 
       const selected = tokensContainer.querySelector('.js-visual-token .selected');
+
       expect(selected.classList.contains('selected')).toEqual(true);
 
       subject.unselectTokens();
@@ -675,6 +677,7 @@ describe('Filtered Search Visual Tokens', () => {
       subject.moveInputToTheRight();
 
       const token = tokensContainer.children[1];
+
       expect(token.querySelector('.value').innerText).toEqual('~bug');
     });
   });
@@ -712,6 +715,7 @@ describe('Filtered Search Visual Tokens', () => {
       expect(tokenValueElement.innerText).toBe(tokenValue);
       expect(updateUserTokenAppearanceSpy.calls.count()).toBe(1);
       const expectedArgs = [tokenValueContainer, tokenValueElement, tokenValue];
+
       expect(updateUserTokenAppearanceSpy.calls.argsFor(0)).toEqual(expectedArgs);
       expect(updateLabelTokenColorSpy.calls.count()).toBe(0);
     });
@@ -727,6 +731,7 @@ describe('Filtered Search Visual Tokens', () => {
       expect(tokenValueElement.innerText).toBe(tokenValue);
       expect(updateLabelTokenColorSpy.calls.count()).toBe(1);
       const expectedArgs = [tokenValueContainer, tokenValue];
+
       expect(updateLabelTokenColorSpy.calls.argsFor(0)).toEqual(expectedArgs);
       expect(updateUserTokenAppearanceSpy.calls.count()).toBe(0);
     });
@@ -814,6 +819,7 @@ describe('Filtered Search Visual Tokens', () => {
         expect(tokenValueContainer.dataset.originalValue).toBe(tokenValue);
         expect(tokenValueElement.innerText.trim()).toBe(dummyUser.name);
         const avatar = tokenValueElement.querySelector('img.avatar');
+
         expect(avatar.src).toBe(dummyUser.avatar_url);
         expect(avatar.alt).toBe('');
       })
@@ -837,6 +843,7 @@ describe('Filtered Search Visual Tokens', () => {
       .then(() => {
         expect(tokenValueElement.innerText.trim()).toBe(dummyUser.name);
         tokenValueElement.querySelector('.avatar').remove();
+
         expect(tokenValueElement.innerHTML.trim()).toBe(_.escape(dummyUser.name));
       })
       .then(done)
@@ -854,23 +861,27 @@ describe('Filtered Search Visual Tokens', () => {
     it('should set backgroundColor', () => {
       const originalBackgroundColor = bugLabelToken.style.backgroundColor;
       const token = subject.setTokenStyle(bugLabelToken, 'blue', 'white');
+
       expect(token.style.backgroundColor).toEqual('blue');
       expect(token.style.backgroundColor).not.toEqual(originalBackgroundColor);
     });
 
     it('should not set backgroundColor when it is a linear-gradient', () => {
       const token = subject.setTokenStyle(bugLabelToken, 'linear-gradient(135deg, red, blue)', 'white');
+
       expect(token.style.backgroundColor).toEqual(bugLabelToken.style.backgroundColor);
     });
 
     it('should set textColor', () => {
       const token = subject.setTokenStyle(bugLabelToken, 'white', 'black');
+
       expect(token.style.color).toEqual('black');
       expect(token.style.color).not.toEqual(originalTextColor);
     });
 
     it('should add inverted class when textColor is #FFFFFF', () => {
       const token = subject.setTokenStyle(bugLabelToken, 'black', '#FFFFFF');
+
       expect(token.style.color).toEqual('rgb(255, 255, 255)');
       expect(token.style.color).not.toEqual(originalTextColor);
       expect(token.querySelector('.remove-token').classList.contains('inverted')).toEqual(true);
@@ -894,14 +905,17 @@ describe('Filtered Search Visual Tokens', () => {
     describe('not preprocessed before', () => {
       it('returns preprocessed labels', () => {
         let labels = [];
+
         expect(labels.preprocessed).not.toEqual(true);
         labels = FilteredSearchVisualTokens.preprocessLabel(endpoint, labels);
+
         expect(labels.preprocessed).toEqual(true);
       });
 
       it('overrides AjaxCache with preprocessed results', () => {
         spyOn(AjaxCache, 'override').and.callFake(() => {});
         FilteredSearchVisualTokens.preprocessLabel(endpoint, []);
+
         expect(AjaxCache.override.calls.count()).toEqual(1);
       });
     });
@@ -982,6 +996,7 @@ describe('Filtered Search Visual Tokens', () => {
       const { tokenValueContainer, tokenValueElement } = findElements(missingLabelToken);
       const tokenValue = tokenValueElement.innerText;
       const matchingLabel = findLabel(tokenValue);
+
       expect(matchingLabel).toBe(undefined);
 
       subject.updateLabelTokenColor(tokenValueContainer, tokenValue)

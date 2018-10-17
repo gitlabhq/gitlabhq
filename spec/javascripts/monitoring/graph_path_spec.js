@@ -45,9 +45,11 @@ describe('Monitoring Paths', () => {
       });
 
       component.lineStyle = 'dashed';
+
       expect(component.strokeDashArray).toBe('3, 1');
 
       component.lineStyle = 'dotted';
+
       expect(component.strokeDashArray).toBe('1, 1');
     });
   });

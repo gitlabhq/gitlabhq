@@ -42,6 +42,7 @@ describe('Ajax Loading Spinner', () => {
       req.complete({});
 
       const icon = ajaxLoadingSpinner.querySelector('i');
+
       expect(icon).toHaveClass('fa-trash-o');
       expect(icon).not.toHaveClass('fa-spinner');
       expect(icon).not.toHaveClass('fa-spin');

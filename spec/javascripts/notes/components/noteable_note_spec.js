@@ -36,6 +36,7 @@ describe('issue_note', () => {
 
   it('should render note header content', () => {
     const el = vm.$el.querySelector('.note-header .note-header-author-name');
+
     expect(el.textContent.trim()).toEqual(note.author.name);
   });
 

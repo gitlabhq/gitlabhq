@@ -29,6 +29,7 @@ describe('table registry', () => {
 
   it('should render registry tag', () => {
     const textRendered = vm.$el.querySelector('.table tbody tr').textContent.trim().replace(/\s\s+/g, ' ');
+
     expect(textRendered).toContain(repoPropsData.list[0].tag);
     expect(textRendered).toContain(repoPropsData.list[0].shortRevision);
     expect(textRendered).toContain(repoPropsData.list[0].layers);

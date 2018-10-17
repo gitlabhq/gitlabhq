@@ -63,6 +63,7 @@ describe('CreateItemDropdown', () => {
       $('.js-dropdown-menu-toggle').click();
 
       const $itemEls = $wrapperEl.find('.js-dropdown-content a');
+
       expect($itemEls.length).toEqual(DROPDOWN_ITEM_DATA.length);
     });
   });
@@ -106,6 +107,7 @@ describe('CreateItemDropdown', () => {
       createItemAndClearInput(NEW_ITEM_TEXT);
 
       const $itemEls = $wrapperEl.find('.js-dropdown-content a');
+
       expect($itemEls.length).toEqual(1 + DROPDOWN_ITEM_DATA.length);
       expect($($itemEls.get(DROPDOWN_ITEM_DATA.length)).text()).toEqual(NEW_ITEM_TEXT);
     });
@@ -114,6 +116,7 @@ describe('CreateItemDropdown', () => {
       createItemAndClearInput(DROPDOWN_ITEM_DATA[0].text);
 
       const $itemEls = $wrapperEl.find('.js-dropdown-content a');
+
       expect($itemEls.length).toEqual(DROPDOWN_ITEM_DATA.length);
     });
   });
@@ -142,11 +145,13 @@ describe('CreateItemDropdown', () => {
         .trigger('input');
 
       const $itemElsAfterFilter = $wrapperEl.find('.js-dropdown-content a');
+
       expect($itemElsAfterFilter.length).toEqual(1);
 
       createItemDropdown.clearDropdown();
 
       const $itemElsAfterClear = $wrapperEl.find('.js-dropdown-content a');
+
       expect($itemElsAfterClear.length).toEqual(0);
       expect(filterInput.val()).toEqual('');
     });
@@ -176,6 +181,7 @@ describe('CreateItemDropdown', () => {
       createItemAndClearInput('new-item');
 
       const $itemEls = $wrapperEl.find('.js-dropdown-content a');
+
       expect($itemEls.length).toEqual(1 + DROPDOWN_ITEM_DATA.length);
       expect($($itemEls[3]).text()).toEqual('new-item-text');
       expect($wrapperEl.find('.dropdown-toggle-text').text()).toEqual('new-item-title');

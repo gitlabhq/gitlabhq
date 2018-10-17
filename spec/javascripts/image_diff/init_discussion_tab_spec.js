@@ -32,6 +32,7 @@ describe('initDiscussionTab', () => {
   it('should call initImageDiff for each diffFileEls', () => {
     spyOn(imageDiffHelper, 'initImageDiff').and.callFake(() => {});
     initDiscussionTab();
+
     expect(imageDiffHelper.initImageDiff.calls.count()).toEqual(2);
   });
 });

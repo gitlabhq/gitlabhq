@@ -50,9 +50,11 @@ describe('ideStatusBar', () => {
       expect(vm.commitAgeUpdate).not.toHaveBeenCalled();
 
       jasmine.clock().tick(1100);
+
       expect(vm.commitAgeUpdate.calls.count()).toEqual(1);
 
       jasmine.clock().tick(1000);
+
       expect(vm.commitAgeUpdate.calls.count()).toEqual(2);
     });
   });

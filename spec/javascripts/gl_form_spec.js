@@ -101,6 +101,7 @@ describe('GLForm', () => {
         spyOn($.prototype, 'outerHeight').and.returnValue(200);
         spyOn($.prototype, 'data').and.returnValue(200);
         spyOn(autosize, 'destroy');
+
         expect(this.glForm.destroyAutosize()).toBeUndefined();
         expect(autosize.destroy).not.toHaveBeenCalled();
       });

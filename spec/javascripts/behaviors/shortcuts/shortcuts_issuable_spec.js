@@ -57,9 +57,11 @@ describe('ShortcutsIssuable', function() {
 
       it('leaves existing input intact', () => {
         $(FORM_SELECTOR).val('This text was already here.');
+
         expect($(FORM_SELECTOR).val()).toBe('This text was already here.');
 
         ShortcutsIssuable.replyWithSelectedText(true);
+
         expect($(FORM_SELECTOR).val()).toBe('This text was already here.\n\n> Selected text.\n\n');
       });
 
@@ -70,6 +72,7 @@ describe('ShortcutsIssuable', function() {
         });
 
         ShortcutsIssuable.replyWithSelectedText(true);
+
         expect(triggered).toBe(true);
       });
 

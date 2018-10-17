@@ -30,9 +30,11 @@ describe('FrequentItemsListComponent', () => {
     describe('isListEmpty', () => {
       it('should return `true` or `false` representing whether if `items` is empty or not with projects', () => {
         vm.items = [];
+
         expect(vm.isListEmpty).toBe(true);
 
         vm.items = mockFrequentProjects;
+
         expect(vm.isListEmpty).toBe(false);
       });
     });
@@ -40,9 +42,11 @@ describe('FrequentItemsListComponent', () => {
     describe('fetched item messages', () => {
       it('should return appropriate empty list message based on value of `localStorageFailed` prop with projects', () => {
         vm.isFetchFailed = true;
+
         expect(vm.listEmptyMessage).toBe('This feature requires browser localStorage support');
 
         vm.isFetchFailed = false;
+
         expect(vm.listEmptyMessage).toBe('Projects you visit often will appear here');
       });
     });
@@ -51,9 +55,11 @@ describe('FrequentItemsListComponent', () => {
       it('should return appropriate empty list message based on value of `searchFailed` prop with projects', () => {
         vm.hasSearchQuery = true;
         vm.isFetchFailed = true;
+
         expect(vm.listEmptyMessage).toBe('Something went wrong on our end.');
 
         vm.isFetchFailed = false;
+
         expect(vm.listEmptyMessage).toBe('Sorry, no projects matched your search');
       });
     });

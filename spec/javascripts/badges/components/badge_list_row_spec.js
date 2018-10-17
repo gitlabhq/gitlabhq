@@ -34,6 +34,7 @@ describe('BadgeListRow component', () => {
 
   it('renders the badge', () => {
     const badgeElement = vm.$el.querySelector('.project-badge');
+
     expect(badgeElement).not.toBeNull();
     expect(badgeElement.getAttribute('src')).toBe(badge.renderedImageUrl);
   });
@@ -48,11 +49,14 @@ describe('BadgeListRow component', () => {
 
   it('shows edit and delete buttons', () => {
     const buttons = vm.$el.querySelectorAll('.table-button-footer button');
+
     expect(buttons).toHaveLength(2);
     const buttonEditElement = buttons[0];
+
     expect(buttonEditElement).toBeVisible();
     expect(buttonEditElement).toHaveSpriteIcon('pencil');
     const buttonDeleteElement = buttons[1];
+
     expect(buttonDeleteElement).toBeVisible();
     expect(buttonDeleteElement).toHaveSpriteIcon('remove');
   });
@@ -91,6 +95,7 @@ describe('BadgeListRow component', () => {
 
     it('hides edit and delete buttons', () => {
       const buttons = vm.$el.querySelectorAll('.table-button-footer button');
+
       expect(buttons).toHaveLength(0);
     });
   });

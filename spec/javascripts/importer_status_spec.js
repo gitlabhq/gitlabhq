@@ -63,6 +63,7 @@ describe('Importer Status', () => {
       })
       .then(() => {
         const flashMessage = document.querySelector('.flash-text');
+
         expect(flashMessage.textContent.trim()).toEqual('An error occurred while importing project: You forgot your lunch');
         done();
       })

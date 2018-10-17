@@ -375,6 +375,7 @@ describe('gl_emoji', () => {
         '',
         '1.0',
       );
+
       expect(isSupported).toBeTruthy();
     });
 
@@ -384,6 +385,7 @@ describe('gl_emoji', () => {
         '',
         '1.0',
       );
+
       expect(isSupported).toBeFalsy();
     });
 
@@ -397,6 +399,7 @@ describe('gl_emoji', () => {
         emojiFixtureMap[emojiKey].moji,
         emojiFixtureMap[emojiKey].unicodeVersion,
       );
+
       expect(isSupported).toBeTruthy();
     });
 
@@ -408,6 +411,7 @@ describe('gl_emoji', () => {
         emojiFixtureMap[emojiKey].moji,
         emojiFixtureMap[emojiKey].unicodeVersion,
       );
+
       expect(isSupported).toBeFalsy();
     });
 
@@ -421,6 +425,7 @@ describe('gl_emoji', () => {
         emojiFixtureMap[emojiKey].moji,
         emojiFixtureMap[emojiKey].unicodeVersion,
       );
+
       expect(isSupported).toBeFalsy();
     });
 
@@ -446,6 +451,7 @@ describe('gl_emoji', () => {
         emojiFixtureMap[emojiKey].moji,
         emojiFixtureMap[emojiKey].unicodeVersion,
       );
+
       expect(isSupported).toBeFalsy();
     });
 
@@ -463,6 +469,7 @@ describe('gl_emoji', () => {
         emojiFixtureMap[emojiKey].moji,
         emojiFixtureMap[emojiKey].unicodeVersion,
       );
+
       expect(isSupported).toBeTruthy();
     });
 
@@ -480,6 +487,7 @@ describe('gl_emoji', () => {
         emojiFixtureMap[emojiKey].moji,
         emojiFixtureMap[emojiKey].unicodeVersion,
       );
+
       expect(isSupported).toBeFalsy();
     });
   });

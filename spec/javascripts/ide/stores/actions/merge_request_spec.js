@@ -311,6 +311,7 @@ describe('IDE store merge request actions', () => {
               file: store.state.entries[change.new_path],
               mrChange: change,
             });
+
             expect(store.dispatch).toHaveBeenCalledWith('getFileData', {
               path: change.new_path,
               makeFileActive: i === 0,

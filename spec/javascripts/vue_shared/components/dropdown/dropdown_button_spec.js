@@ -55,6 +55,7 @@ describe('DropdownButtonComponent', () => {
 
     it('renders dropdown toggle text element', () => {
       const dropdownToggleTextEl = vm.$el.querySelector('.dropdown-toggle-text');
+
       expect(dropdownToggleTextEl).not.toBeNull();
       expect(dropdownToggleTextEl.innerText.trim()).toBe(defaultLabel);
     });

@@ -182,6 +182,7 @@ describe('Participants', function () {
       const participantsIconEl = vm.$el.querySelector('.sidebar-collapsed-icon');
 
       participantsIconEl.click();
+
       expect(vm.$emit).toHaveBeenCalledWith('toggleSidebar');
     });
   });

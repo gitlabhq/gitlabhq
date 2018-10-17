@@ -25,6 +25,7 @@ describe('ItemStatsComponent', () => {
         Object.keys(VISIBILITY_TYPE_ICON).forEach((visibility) => {
           const item = Object.assign({}, mockParentGroupItem, { visibility });
           const vm = createComponent(item);
+
           expect(vm.visibilityIcon).toBe(VISIBILITY_TYPE_ICON[visibility]);
           vm.$destroy();
         });
@@ -39,6 +40,7 @@ describe('ItemStatsComponent', () => {
             type: ITEM_TYPE.GROUP,
           });
           const vm = createComponent(item);
+
           expect(vm.visibilityTooltip).toBe(GROUP_VISIBILITY_TYPE[visibility]);
           vm.$destroy();
         });
@@ -51,6 +53,7 @@ describe('ItemStatsComponent', () => {
             type: ITEM_TYPE.PROJECT,
           });
           const vm = createComponent(item);
+
           expect(vm.visibilityTooltip).toBe(PROJECT_VISIBILITY_TYPE[visibility]);
           vm.$destroy();
         });
@@ -64,11 +67,13 @@ describe('ItemStatsComponent', () => {
 
         item = Object.assign({}, mockParentGroupItem, { type: ITEM_TYPE.PROJECT });
         vm = createComponent(item);
+
         expect(vm.isProject).toBeTruthy();
         vm.$destroy();
 
         item = Object.assign({}, mockParentGroupItem, { type: ITEM_TYPE.GROUP });
         vm = createComponent(item);
+
         expect(vm.isProject).toBeFalsy();
         vm.$destroy();
       });
@@ -81,11 +86,13 @@ describe('ItemStatsComponent', () => {
 
         item = Object.assign({}, mockParentGroupItem, { type: ITEM_TYPE.GROUP });
         vm = createComponent(item);
+
         expect(vm.isGroup).toBeTruthy();
         vm.$destroy();
 
         item = Object.assign({}, mockParentGroupItem, { type: ITEM_TYPE.PROJECT });
         vm = createComponent(item);
+
         expect(vm.isGroup).toBeFalsy();
         vm.$destroy();
       });
@@ -105,6 +112,7 @@ describe('ItemStatsComponent', () => {
       const vm = createComponent();
 
       const visibilityIconEl = vm.$el.querySelector('.item-visibility');
+
       expect(visibilityIconEl).not.toBe(null);
       expect(visibilityIconEl.dataset.originalTitle).toBe(vm.visibilityTooltip);
       expect(visibilityIconEl.querySelectorAll('svg').length).toBeGreaterThan(0);
@@ -120,6 +128,7 @@ describe('ItemStatsComponent', () => {
       const vm = createComponent(item);
 
       const projectStarIconEl = vm.$el.querySelector('.project-stars');
+
       expect(projectStarIconEl).not.toBeNull();
       expect(projectStarIconEl.querySelectorAll('svg').length).toBeGreaterThan(0);
       expect(projectStarIconEl.querySelectorAll('.stat-value').length).toBeGreaterThan(0);

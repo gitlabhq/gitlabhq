@@ -205,6 +205,7 @@ describe('Getters Notes Store', () => {
         '123',
         '456',
       ]);
+
       expect(getters.unresolvedDiscussionsIdsOrdered(state, localGetters)(undefined)).toEqual([
         '123',
         '456',

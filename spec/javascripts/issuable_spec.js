@@ -8,6 +8,7 @@ describe('Issuable', () => {
   describe('initBulkUpdate', () => {
     it('should not set bulkUpdateSidebar', () => {
       Issuable = new IssuableIndex('issue_');
+
       expect(Issuable.bulkUpdateSidebar).not.toBeDefined();
     });
 
@@ -17,6 +18,7 @@ describe('Issuable', () => {
       document.body.appendChild(element);
 
       Issuable = new IssuableIndex('issue_');
+
       expect(Issuable.bulkUpdateSidebar).toBeDefined();
     });
   });

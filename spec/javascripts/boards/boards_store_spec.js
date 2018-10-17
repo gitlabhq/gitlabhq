@@ -86,10 +86,12 @@ describe('Store', () => {
           description: 'testing;'
         }
       });
+
       expect(boardsStore.state.lists.length).toBe(1);
 
       setTimeout(() => {
         const list = boardsStore.findList('id', listObj.id);
+
         expect(list).toBeDefined();
         expect(list.id).toBe(listObj.id);
         expect(list.position).toBe(0);
@@ -103,6 +105,7 @@ describe('Store', () => {
 
     it('check for blank state not adding', () => {
       boardsStore.addList(listObj);
+
       expect(boardsStore.shouldAddBlankState()).toBe(false);
     });
 
@@ -118,6 +121,7 @@ describe('Store', () => {
       boardsStore.addBlankState();
 
       const list = boardsStore.findList('type', 'blank', 'blank');
+
       expect(list).toBeDefined();
     });
 

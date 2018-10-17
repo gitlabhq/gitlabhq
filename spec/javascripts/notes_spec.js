@@ -123,9 +123,11 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
 
       it('autosizes after comment submission', function() {
         $(textarea).text('This is an example comment note');
+
         expect(this.autoSizeSpy).not.toHaveBeenTriggered();
 
         $('.js-comment-button').click();
+
         expect(this.autoSizeSpy).toHaveBeenTriggered();
       });
 
@@ -136,6 +138,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
 
         deferred.reject();
         $('.js-comment-button').click();
+
         expect($(textarea).val()).toEqual('A comment with `markup`.');
       });
     });
@@ -538,6 +541,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         mockNotesPost();
 
         $('.js-comment-button').click();
+
         expect($notesContainer.find('.note.being-posted').length).toBeGreaterThan(0);
       });
 
@@ -556,6 +560,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
       describe('postComment', () => {
         it('disables the submit button', done => {
           const $submitButton = $form.find('.js-comment-submit-button');
+
           expect($submitButton).not.toBeDisabled();
           const dummyEvent = {
             preventDefault() {},
@@ -637,6 +642,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
           .then(timeoutPromise)
           .then(() => {
             const $updatedNoteEl = $notesContainer.find(`#note_${note.id}`);
+
             expect($updatedNoteEl.hasClass('.being-posted')).toEqual(false); // Remove being-posted visuals
             expect(
               $updatedNoteEl
@@ -644,6 +650,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
                 .text()
                 .trim(),
             ).toEqual(sampleComment); // See if comment reverted back to original
+
             expect($('.flash-container').is(':visible')).toEqual(true); // Flash error message shown
 
             done();
@@ -749,6 +756,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
           const $updatedNoteEl = $notesContainer
             .find(`#note_${note.id}`)
             .find('.js-task-list-container');
+
           expect(
             $updatedNoteEl
               .find('.note-text')
@@ -860,6 +868,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
 
       it('should return executing quick action description when note has single quick action', () => {
         const sampleComment = '/close';
+
         expect(this.notes.getQuickActionDescription(sampleComment, availableQuickActions)).toBe(
           'Applying command to close this issue',
         );
@@ -867,6 +876,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
 
       it('should return generic multiple quick action description when note has multiple quick actions', () => {
         const sampleComment = '/close\n/title [Duplicate] Issue foobar';
+
         expect(this.notes.getQuickActionDescription(sampleComment, availableQuickActions)).toBe(
           'Applying multiple commands',
         );
@@ -874,6 +884,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
 
       it('should return generic quick action description when available quick actions list is not populated', () => {
         const sampleComment = '/close\n/title [Duplicate] Issue foobar';
+
         expect(this.notes.getQuickActionDescription(sampleComment)).toBe('Applying command');
       });
     });
@@ -907,6 +918,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         $tempNote.find('.timeline-icon > a, .note-header-info > a').each(function() {
           expect($(this).attr('href')).toEqual(`/${currentUsername}`);
         });
+
         expect($tempNote.find('.timeline-icon .avatar').attr('src')).toEqual(currentUserAvatar);
         expect($tempNote.find('.timeline-content').hasClass('discussion')).toBeFalsy();
         expect(
@@ -915,12 +927,14 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
             .text()
             .trim(),
         ).toEqual(currentUserFullname);
+
         expect(
           $tempNoteHeader
             .find('.note-headline-light')
             .text()
             .trim(),
         ).toEqual(`@${currentUsername}`);
+
         expect(
           $tempNote
             .find('.note-body .note-text p')
@@ -953,6 +967,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
           currentUserAvatar,
         });
         const $tempNoteHeader = $tempNote.find('.note-header');
+
         expect(
           $tempNoteHeader
             .find('.d-none.d-sm-inline-block')

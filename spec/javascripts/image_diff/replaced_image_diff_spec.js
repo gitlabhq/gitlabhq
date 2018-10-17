@@ -58,6 +58,7 @@ describe('ReplacedImageDiff', () => {
 
   it('should extend ImageDiff', () => {
     replacedImageDiff = new ReplacedImageDiff(element);
+
     expect(replacedImageDiff instanceof ImageDiff).toEqual(true);
   });
 
@@ -72,6 +73,7 @@ describe('ReplacedImageDiff', () => {
 
     it('should set imageFrameEls', () => {
       const { imageFrameEls } = replacedImageDiff;
+
       expect(imageFrameEls).toBeDefined();
       expect(imageFrameEls[viewTypes.TWO_UP]).toEqual(element.querySelector('.two-up .js-image-frame'));
       expect(imageFrameEls[viewTypes.SWIPE]).toEqual(element.querySelector('.swipe .js-image-frame'));
@@ -80,6 +82,7 @@ describe('ReplacedImageDiff', () => {
 
     it('should set viewModesEls', () => {
       const { viewModesEls } = replacedImageDiff;
+
       expect(viewModesEls).toBeDefined();
       expect(viewModesEls[viewTypes.TWO_UP]).toEqual(element.querySelector('.view-modes-menu .two-up'));
       expect(viewModesEls[viewTypes.SWIPE]).toEqual(element.querySelector('.view-modes-menu .swipe'));
@@ -97,6 +100,7 @@ describe('ReplacedImageDiff', () => {
     describe('currentView', () => {
       it('should set currentView', () => {
         replacedImageDiff.init(viewTypes.ONION_SKIN);
+
         expect(replacedImageDiff.currentView).toEqual(viewTypes.ONION_SKIN);
       });
 
@@ -121,6 +125,7 @@ describe('ReplacedImageDiff', () => {
     it('should set imageEls', () => {
       replacedImageDiff.generateImageEls();
       const { imageEls } = replacedImageDiff;
+
       expect(imageEls).toBeDefined();
       expect(imageEls[viewTypes.TWO_UP]).toEqual(element.querySelector('.two-up img'));
       expect(imageEls[viewTypes.SWIPE]).toEqual(element.querySelector('.swipe img'));
@@ -138,6 +143,7 @@ describe('ReplacedImageDiff', () => {
 
     it('should call super.bindEvents', () => {
       replacedImageDiff.bindEvents();
+
       expect(ImageDiff.prototype.bindEvents).toHaveBeenCalled();
     });
 
@@ -184,6 +190,7 @@ describe('ReplacedImageDiff', () => {
         expect(replacedImageDiff.imageEl).toEqual(element.querySelector('.two-up img'));
 
         replacedImageDiff.currentView = viewTypes.SWIPE;
+
         expect(replacedImageDiff.imageEl).toEqual(element.querySelector('.swipe img'));
       });
     });
@@ -199,6 +206,7 @@ describe('ReplacedImageDiff', () => {
         expect(replacedImageDiff.imageFrameEl).toEqual(element.querySelector('.two-up .js-image-frame'));
 
         replacedImageDiff.currentView = viewTypes.ONION_SKIN;
+
         expect(replacedImageDiff.imageFrameEl).toEqual(element.querySelector('.onion-skin .js-image-frame'));
       });
     });
@@ -248,6 +256,7 @@ describe('ReplacedImageDiff', () => {
 
       it('should call renderNewView', () => {
         jasmine.clock().tick(251);
+
         expect(replacedImageDiff.renderNewView).toHaveBeenCalled();
       });
     });

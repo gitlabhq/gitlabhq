@@ -165,6 +165,7 @@ describe('Blob viewer', () => {
       expect(
         simpleBtn.classList.contains('active'),
       ).toBeTruthy();
+
       expect(simpleBtn.blur).toHaveBeenCalled();
     });
 

@@ -28,6 +28,7 @@ describe("ContributorsStatGraphUtil", function () {
           }
         ]
       };
+
       expect(ContributorsStatGraphUtil.parse_log(fake_log)).toEqual(correct_parsed_log);
     });
   });
@@ -40,18 +41,21 @@ describe("ContributorsStatGraphUtil", function () {
     it("calls #store_commits", function () {
       spyOn(ContributorsStatGraphUtil, 'store_commits');
       ContributorsStatGraphUtil.store_data(fake_entry, fake_total, fake_by_author);
+
       expect(ContributorsStatGraphUtil.store_commits).toHaveBeenCalled();
     });
 
     it("calls #store_additions", function () {
       spyOn(ContributorsStatGraphUtil, 'store_additions');
       ContributorsStatGraphUtil.store_data(fake_entry, fake_total, fake_by_author);
+
       expect(ContributorsStatGraphUtil.store_additions).toHaveBeenCalled();
     });
 
     it("calls #store_deletions", function () {
       spyOn(ContributorsStatGraphUtil, 'store_deletions');
       ContributorsStatGraphUtil.store_data(fake_entry, fake_total, fake_by_author);
+
       expect(ContributorsStatGraphUtil.store_deletions).toHaveBeenCalled();
     });
   });
@@ -72,12 +76,14 @@ describe("ContributorsStatGraphUtil", function () {
     it("adds 1 to current test_field in collection", function () {
       var fake_collection = { test_field: 10 };
       ContributorsStatGraphUtil.add(fake_collection, "test_field", 1);
+
       expect(fake_collection.test_field).toEqual(11);
     });
 
     it("inits and adds 1 if test_field in collection is not defined", function () {
       var fake_collection = {};
       ContributorsStatGraphUtil.add(fake_collection, "test_field", 1);
+
       expect(fake_collection.test_field).toEqual(1);
     });
   });
@@ -111,6 +117,7 @@ describe("ContributorsStatGraphUtil", function () {
       var fake_date = "2013-10-02";
       var fake_collection = {};
       ContributorsStatGraphUtil.add_date(fake_date, fake_collection);
+
       expect(fake_collection[fake_date].date).toEqual("2013-10-02");
     });
   });
@@ -121,6 +128,7 @@ describe("ContributorsStatGraphUtil", function () {
       var fake_author_collection = {};
       var fake_email_collection = {};
       ContributorsStatGraphUtil.add_author(fake_author, fake_author_collection, fake_email_collection);
+
       expect(fake_author_collection[fake_author.author_name].author_name).toEqual("Author");
       expect(fake_email_collection[fake_author.author_email].author_name).toEqual("Author");
     });
@@ -148,6 +156,7 @@ describe("ContributorsStatGraphUtil", function () {
         { date: "2013-05-08", commits: 3 },
         { date: "2013-05-09", commits: 1 }
       ];
+
       expect(ContributorsStatGraphUtil.get_total_data(fake_parsed_log, "commits")).toEqual(correct_total_data);
     });
   });
@@ -160,6 +169,7 @@ describe("ContributorsStatGraphUtil", function () {
       ];
       ContributorsStatGraphUtil.pick_field(fake_parsed_log_total, "commits");
       var correct_pick_field_data = [{ date: "2013-05-09", commits: 1 }, { date: "2013-05-08", commits: 3 }];
+
       expect(ContributorsStatGraphUtil.pick_field(fake_parsed_log_total, "commits")).toEqual(correct_pick_field_data);
     });
   });
@@ -186,6 +196,7 @@ describe("ContributorsStatGraphUtil", function () {
         { author_name: "Dmitriy Zaporozhets", author_email: "dzaporozhets@email.com", dates: { "2013-05-08": 3 }, deletions: 7, additions: 54, "commits": 3 },
         { author_name: "Karlo Soriano", author_email: "karlo@email.com", dates: { "2013-05-09": 1 }, deletions: 0, additions: 471, commits: 1 }
       ];
+
       expect(ContributorsStatGraphUtil.get_author_data(fake_parsed_log, "commits")).toEqual(correct_author_data);
     });
   });
@@ -196,6 +207,7 @@ describe("ContributorsStatGraphUtil", function () {
         "2013-05-09": { date: "2013-05-09", additions: 471, deletions: 0, commits: 1 }
       };
       var correct_parsed_log = { author_name: "Karlo Soriano", author_email: "karlo@email.com", dates: { "2013-05-09": 1 }, deletions: 0, additions: 471, commits: 1 };
+
       expect(ContributorsStatGraphUtil.parse_log_entry(fake_log_entry, 'commits', null)).toEqual(correct_parsed_log);
     });
   });
@@ -208,11 +220,13 @@ describe("ContributorsStatGraphUtil", function () {
 
     it("returns true if date is in range", function () {
       var date_range = [new Date("2013-01-01"), new Date("2013-12-12")];
+
       expect(ContributorsStatGraphUtil.in_range(date, date_range)).toEqual(true);
     });
 
     it("returns false if date is not in range", function () {
       var date_range = [new Date("1999-12-01"), new Date("2000-12-01")];
+
       expect(ContributorsStatGraphUtil.in_range(date, date_range)).toEqual(false);
     });
   });

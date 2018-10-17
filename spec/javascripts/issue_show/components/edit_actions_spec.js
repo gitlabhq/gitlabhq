@@ -146,6 +146,7 @@ describe('Edit Actions components', () => {
         expect(
           eventHub.$emit,
         ).not.toHaveBeenCalledWith('delete.issuable');
+
         expect(
           vm.$el.querySelector('.btn-danger .fa'),
         ).toBeNull();

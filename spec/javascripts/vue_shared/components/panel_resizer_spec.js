@@ -53,6 +53,7 @@ describe('Panel Resizer component', () => {
     triggerEvent('mousedown', vm.$el);
     triggerEvent('mousemove', document);
     triggerEvent('mouseup', document);
+
     expect(vm.$emit.calls.allArgs()).toEqual([['resize-start', 100], ['update:size', 100], ['resize-end', 100]]);
     expect(vm.size).toBe(100);
   });

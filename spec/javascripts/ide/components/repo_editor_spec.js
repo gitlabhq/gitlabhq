@@ -52,6 +52,7 @@ describe('RepoEditor', () => {
   it('renders only an edit tab', done => {
     Vue.nextTick(() => {
       const tabs = vm.$el.querySelectorAll('.ide-mode-tabs .nav-links li');
+
       expect(tabs.length).toBe(1);
       expect(tabs[0].textContent.trim()).toBe('Edit');
 
@@ -72,6 +73,7 @@ describe('RepoEditor', () => {
     it('renders an Edit and a Preview Tab', done => {
       Vue.nextTick(() => {
         const tabs = vm.$el.querySelectorAll('.ide-mode-tabs .nav-links li');
+
         expect(tabs.length).toBe(2);
         expect(tabs[0].textContent.trim()).toBe('Edit');
         expect(tabs[1].textContent.trim()).toBe('Preview Markdown');
@@ -109,6 +111,7 @@ describe('RepoEditor', () => {
     it('renders an Edit and a Preview Tab', done => {
       Vue.nextTick(() => {
         const tabs = vm.$el.querySelectorAll('.ide-mode-tabs .nav-links li');
+
         expect(tabs.length).toBe(2);
         expect(tabs[0].textContent.trim()).toBe('Review');
         expect(tabs[1].textContent.trim()).toBe('Preview Markdown');

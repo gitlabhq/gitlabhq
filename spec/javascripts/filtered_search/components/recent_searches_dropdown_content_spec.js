@@ -47,6 +47,7 @@ describe('RecentSearchesDropdownContent', () => {
       expect(el.querySelector('.dropdown-info-note')).toBeDefined();
 
       const items = el.querySelectorAll('.filtered-search-history-dropdown-item');
+
       expect(items.length).toEqual(propsDataWithoutItems.items.length);
     });
   });
@@ -65,11 +66,13 @@ describe('RecentSearchesDropdownContent', () => {
 
     it('should render recent search items', () => {
       const items = el.querySelectorAll('.filtered-search-history-dropdown-item');
+
       expect(items.length).toEqual(propsDataWithItems.items.length);
 
       expect(trimMarkupWhitespace(items[0].querySelector('.filtered-search-history-dropdown-search-token').textContent)).toEqual('foo');
 
       const item1Tokens = items[1].querySelectorAll('.filtered-search-history-dropdown-token');
+
       expect(item1Tokens.length).toEqual(2);
       expect(item1Tokens[0].querySelector('.name').textContent).toEqual('author:');
       expect(item1Tokens[0].querySelector('.value').textContent).toEqual('@root');
@@ -132,12 +135,14 @@ describe('RecentSearchesDropdownContent', () => {
       it('with items', () => {
         vm = createComponent(propsDataWithItems);
         const { hasItems } = vm;
+
         expect(hasItems).toEqual(true);
       });
 
       it('with no items', () => {
         vm = createComponent(propsDataWithoutItems);
         const { hasItems } = vm;
+
         expect(hasItems).toEqual(false);
       });
     });
@@ -161,6 +166,7 @@ describe('RecentSearchesDropdownContent', () => {
       it('emits event', () => {
         expect(onRecentSearchesItemSelectedSpy).not.toHaveBeenCalled();
         vm.onItemActivated('something');
+
         expect(onRecentSearchesItemSelectedSpy).toHaveBeenCalledWith('something');
       });
     });
@@ -182,6 +188,7 @@ describe('RecentSearchesDropdownContent', () => {
       it('emits event', () => {
         expect(onRequestClearRecentSearchesSpy).not.toHaveBeenCalled();
         vm.onRequestClearRecentSearches({ stopPropagation: () => {} });
+
         expect(onRequestClearRecentSearchesSpy).toHaveBeenCalled();
       });
     });

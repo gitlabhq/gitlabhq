@@ -92,6 +92,7 @@ describe('Dropdown User', () => {
 
     it('hides the current user from dropdown', () => {
       const currentUserElement = findCurrentUserElement();
+
       expect(currentUserElement).not.toBe(null);
 
       dropdown.hideCurrentUser();
@@ -102,6 +103,7 @@ describe('Dropdown User', () => {
     it('does nothing if no user is logged in', () => {
       const currentUserElement = findCurrentUserElement();
       currentUserElement.parentNode.removeChild(currentUserElement);
+
       expect(findCurrentUserElement()).toBe(null);
 
       dropdown.hideCurrentUser();

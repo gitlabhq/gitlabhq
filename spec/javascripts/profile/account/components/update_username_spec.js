@@ -113,6 +113,7 @@ describe('UpdateUsername component', () => {
     Vue.nextTick()
       .then(() => {
         confirmModalBtn.click();
+
         expect(axios.put).toHaveBeenCalledWith(actionUrl, { user: { username: newUsername } });
       })
       .then(done)

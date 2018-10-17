@@ -83,6 +83,7 @@ describe('CI Badge Link Component', () => {
   it('should render each status badge', () => {
     Object.keys(statuses).map((status) => {
       vm = mountComponent(CIBadge, { status: statuses[status] });
+
       expect(vm.$el.getAttribute('href')).toEqual(statuses[status].details_path);
       expect(vm.$el.textContent.trim()).toEqual(statuses[status].text);
       expect(vm.$el.getAttribute('class')).toEqual(`ci-status ci-${statuses[status].group}`);
@@ -93,6 +94,7 @@ describe('CI Badge Link Component', () => {
 
   it('should not render label', () => {
     vm = mountComponent(CIBadge, { status: statuses.canceled, showText: false });
+
     expect(vm.$el.textContent.trim()).toEqual('');
   });
 });

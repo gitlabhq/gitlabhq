@@ -55,6 +55,7 @@ describe('DiffViewer', () => {
       expect(vm.$el.querySelector('.deleted .file-info').textContent.trim()).toContain(
         'testold.abc',
       );
+
       expect(vm.$el.querySelector('.deleted .btn.btn-default').textContent.trim()).toContain(
         'Download',
       );

@@ -53,6 +53,7 @@ describe('Pipelines stage component', () => {
         expect(
           component.$el.querySelector('.js-builds-dropdown-container ul').textContent.trim(),
         ).toContain(stageReply.latest_statuses[0].name);
+
         expect(eventHub.$emit).toHaveBeenCalledWith('clickedDropdown');
         done();
       }, 0);

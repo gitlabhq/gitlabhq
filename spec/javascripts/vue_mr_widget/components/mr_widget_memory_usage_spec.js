@@ -186,9 +186,11 @@ describe('MemoryUsage', () => {
         expect(
           el.querySelector('.js-usage-info.usage-info-loading'),
         ).toBeDefined();
+
         expect(
           el.querySelector('.js-usage-info .usage-info-load-spinner'),
         ).toBeDefined();
+
         expect(el.querySelector('.js-usage-info').innerText).toContain(
           messages.loadingMetrics,
         );
@@ -219,6 +221,7 @@ describe('MemoryUsage', () => {
         expect(
           el.querySelector('.js-usage-info.usage-info-failed'),
         ).toBeDefined();
+
         expect(el.querySelector('.js-usage-info').innerText).toContain(
           messages.loadFailed,
         );
@@ -235,6 +238,7 @@ describe('MemoryUsage', () => {
         expect(
           el.querySelector('.js-usage-info.usage-info-unavailable'),
         ).toBeDefined();
+
         expect(el.querySelector('.js-usage-info').innerText).toContain(
           messages.metricsUnavailable,
         );

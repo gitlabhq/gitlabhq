@@ -92,6 +92,7 @@ describe('RecentSearchesService', () => {
       const items = ['foo', 'bar'];
       service.save(items);
       const newLocalStorageValue = window.localStorage.getItem(service.localStorageKey);
+
       expect(JSON.parse(newLocalStorageValue)).toEqual(items);
     });
   });
