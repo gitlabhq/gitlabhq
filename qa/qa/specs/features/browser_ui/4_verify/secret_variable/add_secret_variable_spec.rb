@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :verify do
+  context 'Verify' do
     describe 'Secret variable support' do
       it 'user adds a secret variable' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :manage do
+  context 'Manage' do
     describe 'Add project member' do
       it 'user adds project member' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

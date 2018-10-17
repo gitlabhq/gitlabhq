@@ -3,7 +3,7 @@
 require 'digest/sha1'
 
 module QA
-  context :release, :docker do
+  context 'Release', :docker do
     describe 'Git clone using a deploy key' do
       def login
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

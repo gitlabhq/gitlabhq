@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :create do
+  context 'Create' do
     describe 'Merge request rebasing' do
       it 'user rebases source branch of merge request'  do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

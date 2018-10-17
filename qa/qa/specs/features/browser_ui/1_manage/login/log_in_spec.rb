@@ -1,5 +1,5 @@
 module QA
-  context :manage, :smoke do
+  context 'Manage', :smoke do
     describe 'basic user login' do
       it 'user logs in using basic credentials' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

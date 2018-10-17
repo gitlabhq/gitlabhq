@@ -3,7 +3,7 @@
 require 'pathname'
 
 module QA
-  context :configure, :orchestrated, :kubernetes do
+  context 'Configure', :orchestrated, :kubernetes do
     describe 'Auto DevOps support' do
       after do
         @cluster&.remove!
