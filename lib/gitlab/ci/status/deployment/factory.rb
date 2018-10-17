@@ -7,11 +7,7 @@ module Gitlab
             [[Status::Deployment::Canceled,
               Status::Deployment::Created,
               Status::Deployment::Failed,
-              Status::Deployment::Manual,
-              Status::Deployment::Pending,
               Status::Deployment::Running,
-              Status::Deployment::Scheduled,
-              Status::Deployment::Skipped,
               Status::Deployment::Success]]
           end
 
