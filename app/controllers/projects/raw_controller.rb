@@ -12,6 +12,6 @@ class Projects::RawController < Projects::ApplicationController
   def show
     @blob = @repository.blob_at(@commit.id, @path)
 
-    send_blob(@blob, inline: (params[:inline] != 'false'))
+    send_blob(@repository, @blob, inline: (params[:inline] != 'false'))
   end
 end

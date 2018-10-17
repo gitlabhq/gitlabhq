@@ -22,20 +22,18 @@ describe Projects::WikisController do
 
     subject { get :show, namespace_id: project.namespace, project_id: project, id: wiki_title }
 
-    context 'when page content encoding is invalid' do
-      it 'limits the retrieved pages for the sidebar' do
-        expect(controller).to receive(:load_wiki).and_return(project_wiki)
+    it 'limits the retrieved pages for the sidebar' do
+      expect(controller).to receive(:load_wiki).and_return(project_wiki)
 
-        # empty? call
-        expect(project_wiki).to receive(:pages).with(limit: 1).and_call_original
-        # Sidebar entries
-        expect(project_wiki).to receive(:pages).with(limit: 15).and_call_original
+      # empty? call
+      expect(project_wiki).to receive(:pages).with(limit: 1).and_call_original
+      # Sidebar entries
+      expect(project_wiki).to receive(:pages).with(limit: 15).and_call_original
 
-        subject
+      subject
 
-        expect(response).to have_http_status(:ok)
-        expect(response.body).to include(wiki_title)
-      end
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(wiki_title)
     end
 
     context 'when page content encoding is invalid' do
@@ -46,6 +44,42 @@ describe Projects::WikisController do
 
         expect(response).to have_http_status(:ok)
         expect(flash[:notice]).to eq 'The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository.'
+      end
+    end
+
+    context 'when page is a file' do
+      include WikiHelpers
+
+      let(:path) { upload_file_to_wiki(project, user, file_name) }
+
+      before do
+        subject
+      end
+
+      subject { get :show, namespace_id: project.namespace, project_id: project, id: path }
+
+      context 'when file is an image' do
+        let(:file_name) { 'dk.png' }
+
+        it 'renders the content inline' do
+          expect(response.headers['Content-Disposition']).to match(/^inline/)
+        end
+
+        context 'when file is a svg' do
+          let(:file_name) { 'unsanitized.svg' }
+
+          it 'renders the content as an attachment' do
+            expect(response.headers['Content-Disposition']).to match(/^attachment/)
+          end
+        end
+      end
+
+      context 'when file is a pdf' do
+        let(:file_name) { 'git-cheat-sheet.pdf' }
+
+        it 'sets the content type to application/octet-stream' do
+          expect(response.headers['Content-Type']).to eq 'application/octet-stream'
+        end
       end
     end
   end
