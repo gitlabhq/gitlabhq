@@ -23,6 +23,32 @@ module QA
           element :squash_checkbox
         end
 
+        view 'app/views/projects/merge_requests/show.html.haml' do
+          element :notes_tab
+          element :diffs_tab
+        end
+
+        view 'app/assets/javascripts/diffs/components/diff_line_gutter_content.vue' do
+          element :diff_comment
+        end
+
+        view 'app/assets/javascripts/notes/components/comment_form.vue' do
+          element :note_dropdown
+          element :discussion_option
+        end
+
+        view 'app/assets/javascripts/notes/components/note_form.vue' do
+          element :reply_input
+        end
+
+        view 'app/assets/javascripts/notes/components/noteable_discussion.vue' do
+          element :discussion_reply
+        end
+
+        view 'app/assets/javascripts/diffs/components/parallel_diff_table_row.vue' do
+          element :new_diff_line
+        end
+
         view 'app/views/shared/issuable/_sidebar.html.haml' do
           element :labels_block
         end
