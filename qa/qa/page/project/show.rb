@@ -16,7 +16,7 @@ module QA
 
         view 'app/views/layouts/header/_new_dropdown.haml' do
           element :new_menu_toggle
-          element :new_issue_link, "link_to _('New issue'), new_project_issue_path(@project)"
+          element :new_issue_link, "link_to _('New issue'), new_project_issue_path(@project)" # rubocop:disable QA/ElementWithPattern
         end
 
         view 'app/views/shared/_ref_switcher.html.haml' do
@@ -25,12 +25,12 @@ module QA
         end
 
         view 'app/views/projects/buttons/_fork.html.haml' do
-          element :fork_label, "%span= s_('ProjectOverview|Fork')"
-          element :fork_link, "link_to new_project_fork_path(@project)"
+          element :fork_label, "%span= s_('ProjectOverview|Fork')" # rubocop:disable QA/ElementWithPattern
+          element :fork_link, "link_to new_project_fork_path(@project)" # rubocop:disable QA/ElementWithPattern
         end
 
         view 'app/views/projects/_files.html.haml' do
-          element :tree_holder, '.tree-holder'
+          element :tree_holder, '.tree-holder' # rubocop:disable QA/ElementWithPattern
         end
 
         view 'app/views/projects/buttons/_dropdown.html.haml' do

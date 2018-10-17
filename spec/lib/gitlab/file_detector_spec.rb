@@ -46,10 +46,6 @@ describe Gitlab::FileDetector do
       expect(described_class.type_of('.gitignore')).to eq(:gitignore)
     end
 
-    it 'returns the type of a Koding config file' do
-      expect(described_class.type_of('.koding.yml')).to eq(:koding)
-    end
-
     it 'returns the type of a GitLab CI config file' do
       expect(described_class.type_of('.gitlab-ci.yml')).to eq(:gitlab_ci)
     end

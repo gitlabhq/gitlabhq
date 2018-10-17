@@ -388,22 +388,6 @@ module ProjectsHelper
     end
   end
 
-  def koding_project_url(project = nil, branch = nil, sha = nil)
-    if project
-      import_path = "/Home/Stacks/import"
-
-      repo = project.full_path
-      branch ||= project.default_branch
-      sha ||= project.commit.short_id
-
-      path = "#{import_path}?repo=#{repo}&branch=#{branch}&sha=#{sha}"
-
-      return URI.join(Gitlab::CurrentSettings.koding_url, path).to_s
-    end
-
-    Gitlab::CurrentSettings.koding_url
-  end
-
   def project_wiki_path_with_version(proj, page, version, is_newest)
     url_params = is_newest ? {} : { version_id: version }
     project_wiki_path(proj, page, url_params)

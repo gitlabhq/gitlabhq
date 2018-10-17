@@ -4,15 +4,15 @@ module QA
       module Wiki
         class New < Page::Base
           view 'app/views/projects/wikis/_form.html.haml' do
-            element :wiki_title_textbox, 'text_field :title'
-            element :wiki_content_textarea, "render 'projects/zen', f: f, attr: :content"
-            element :wiki_message_textbox, 'text_field :message'
-            element :save_changes_button, 'submit _("Save changes")'
-            element :create_page_button, 'submit s_("Wiki|Create page")'
+            element :wiki_title_textbox, 'text_field :title' # rubocop:disable QA/ElementWithPattern
+            element :wiki_content_textarea, "render 'projects/zen', f: f, attr: :content" # rubocop:disable QA/ElementWithPattern
+            element :wiki_message_textbox, 'text_field :message' # rubocop:disable QA/ElementWithPattern
+            element :save_changes_button, 'submit _("Save changes")' # rubocop:disable QA/ElementWithPattern
+            element :create_page_button, 'submit s_("Wiki|Create page")' # rubocop:disable QA/ElementWithPattern
           end
 
           view 'app/views/shared/empty_states/_wikis.html.haml' do
-            element :create_link, 'Create your first page'
+            element :create_link, 'Create your first page' # rubocop:disable QA/ElementWithPattern
           end
 
           def go_to_create_first_page

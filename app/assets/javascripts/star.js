@@ -11,10 +11,14 @@ export default class Star {
       const $starSpan = $this.find('span');
       const $startIcon = $this.find('svg');
 
-      axios.post($this.data('endpoint'))
+      axios
+        .post($this.data('endpoint'))
         .then(({ data }) => {
           const isStarred = $starSpan.hasClass('starred');
-          $this.parent().find('.star-count').text(data.star_count);
+          $this
+            .parent()
+            .find('.star-count')
+            .text(data.star_count);
 
           if (isStarred) {
             $starSpan.removeClass('starred').text(s__('StarProject|Star'));

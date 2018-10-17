@@ -1,27 +1,27 @@
 <script>
-  import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
-  import limitWarning from './limit_warning_component.vue';
-  import totalTime from './total_time_component.vue';
-  import icon from '../../vue_shared/components/icon.vue';
+import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
+import limitWarning from './limit_warning_component.vue';
+import totalTime from './total_time_component.vue';
+import icon from '../../vue_shared/components/icon.vue';
 
-  export default {
-    components: {
-      userAvatarImage,
-      totalTime,
-      limitWarning,
-      icon,
+export default {
+  components: {
+    userAvatarImage,
+    totalTime,
+    limitWarning,
+    icon,
+  },
+  props: {
+    items: {
+      type: Array,
+      default: () => [],
     },
-    props: {
-      items: {
-        type: Array,
-        default: () => [],
-      },
-      stage: {
-        type: Object,
-        default: () => ({}),
-      },
+    stage: {
+      type: Object,
+      default: () => ({}),
     },
-  };
+  },
+};
 </script>
 <template>
   <div>

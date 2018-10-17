@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181008200441) do
+ActiveRecord::Schema.define(version: 20181013005024) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -104,8 +104,6 @@ ActiveRecord::Schema.define(version: 20181008200441) do
     t.boolean "domain_blacklist_enabled", default: false
     t.text "domain_blacklist"
     t.boolean "usage_ping_enabled", default: true, null: false
-    t.boolean "koding_enabled"
-    t.string "koding_url"
     t.text "sign_in_text_html"
     t.text "help_page_text_html"
     t.text "shared_runners_text_html"

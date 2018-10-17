@@ -5,7 +5,7 @@ describe Clusters::CreateService do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
-  subject { described_class.new(project, user, params).execute(access_token) }
+  subject { described_class.new(user, params).execute(project: project, access_token: access_token) }
 
   context 'when provider is gcp' do
     context 'when project has no clusters' do

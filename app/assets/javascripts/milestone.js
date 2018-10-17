@@ -15,7 +15,7 @@ export default class Milestone {
   }
 
   bindTabsSwitching() {
-    return $('a[data-toggle="tab"]').on('show.bs.tab', (e) => {
+    return $('a[data-toggle="tab"]').on('show.bs.tab', e => {
       const $target = $(e.target);
 
       window.location.hash = $target.attr('href');
@@ -36,7 +36,8 @@ export default class Milestone {
     const tabElId = $target.attr('href');
 
     if (endpoint && !$target.hasClass('is-loaded')) {
-      axios.get(endpoint)
+      axios
+        .get(endpoint)
         .then(({ data }) => {
           $(tabElId).html(data.html);
           $target.addClass('is-loaded');
@@ -46,23 +47,28 @@ export default class Milestone {
   }
 
   static initDeprecationMessage() {
-    const deprecationMesssageContainer = document.querySelector('.js-milestone-deprecation-message');
+    const deprecationMesssageContainer = document.querySelector(
+      '.js-milestone-deprecation-message',
+    );
 
     if (!deprecationMesssageContainer) return;
 
-    const deprecationMessage = deprecationMesssageContainer.querySelector('.js-milestone-deprecation-message-template').innerHTML;
+    const deprecationMessage = deprecationMesssageContainer.querySelector(
+      '.js-milestone-deprecation-message-template',
+    ).innerHTML;
     const $popover = $('.js-popover-link', deprecationMesssageContainer);
     const hideOnScroll = togglePopover.bind($popover, false);
 
-    $popover.popover({
-      content: deprecationMessage,
-      html: true,
-      placement: 'bottom',
-    })
-    .on('mouseenter', mouseenter)
-    .on('mouseleave', debouncedMouseleave())
-    .on('show.bs.popover', () => {
-      window.addEventListener('scroll', hideOnScroll, { once: true });
-    });
+    $popover
+      .popover({
+        content: deprecationMessage,
+        html: true,
+        placement: 'bottom',
+      })
+      .on('mouseenter', mouseenter)
+      .on('mouseleave', debouncedMouseleave())
+      .on('show.bs.popover', () => {
+        window.addEventListener('scroll', hideOnScroll, { once: true });
+      });
   }
 }

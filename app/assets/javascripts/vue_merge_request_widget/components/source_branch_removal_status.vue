@@ -1,16 +1,16 @@
 <script>
-  import tooltip from '../../vue_shared/directives/tooltip';
-  import { __ } from '../../locale';
+import tooltip from '../../vue_shared/directives/tooltip';
+import { __ } from '../../locale';
 
-  export default {
-    directives: {
-      tooltip,
-    },
-    created() {
-      this.removesBranchText = __('<strong>Removes</strong> source branch');
-      this.tooltipTitle = __('A user with write access to the source branch selected this option');
-    },
-  };
+export default {
+  directives: {
+    tooltip,
+  },
+  created() {
+    this.removesBranchText = __('<strong>Removes</strong> source branch');
+    this.tooltipTitle = __('A user with write access to the source branch selected this option');
+  },
+};
 </script>
 
 <template>

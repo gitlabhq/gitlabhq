@@ -1,36 +1,34 @@
 # frozen_string_literal: true
 
 module Clusters
-  class CreateService < BaseService
-    attr_reader :access_token
+  class CreateService
+    attr_reader :current_user, :params
 
-    def execute(access_token = nil)
-      @access_token = access_token
+    def initialize(user = nil, params = {})
+      @current_user, @params = user, params.dup
+    end
 
-      raise ArgumentError.new(_('Instance does not support multiple Kubernetes clusters')) unless can_create_cluster?
+    def execute(project:, access_token: nil)
+      raise ArgumentError.new(_('Instance does not support multiple Kubernetes clusters')) unless can_create_cluster?(project)
 
-      create_cluster.tap do |cluster|
+      cluster_params = params.merge(user: current_user, projects: [project])
+      cluster_params[:provider_gcp_attributes].try do |provider|
+        provider[:access_token] = access_token
+      end
+
+      create_cluster(cluster_params).tap do |cluster|
         ClusterProvisionWorker.perform_async(cluster.id) if cluster.persisted?
       end
     end
 
     private
 
-    def create_cluster
+    def create_cluster(cluster_params)
       Clusters::Cluster.create(cluster_params)
     end
 
-    def cluster_params
-      return @cluster_params if defined?(@cluster_params)
-
-      params[:provider_gcp_attributes].try do |provider|
-        provider[:access_token] = access_token
-      end
-
-      @cluster_params = params.merge(user: current_user, projects: [project])
-    end
-
-    def can_create_cluster?
+    # EE would override this method
+    def can_create_cluster?(project)
       project.clusters.empty?
     end
   end

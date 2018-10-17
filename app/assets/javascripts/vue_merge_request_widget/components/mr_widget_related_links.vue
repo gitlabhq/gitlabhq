@@ -1,32 +1,32 @@
 <script>
-  import { s__ } from '~/locale';
+import { s__ } from '~/locale';
 
-  export default {
-    name: 'MRWidgetRelatedLinks',
-    props: {
-      relatedLinks: {
-        type: Object,
-        required: true,
-        default: () => ({}),
-      },
-      state: {
-        type: String,
-        required: false,
-        default: '',
-      },
+export default {
+  name: 'MRWidgetRelatedLinks',
+  props: {
+    relatedLinks: {
+      type: Object,
+      required: true,
+      default: () => ({}),
     },
-    computed: {
-      closesText() {
-        if (this.state === 'merged') {
-          return s__('mrWidget|Closed');
-        }
-        if (this.state === 'closed') {
-          return s__('mrWidget|Did not close');
-        }
-        return s__('mrWidget|Closes');
-      },
+    state: {
+      type: String,
+      required: false,
+      default: '',
     },
-  };
+  },
+  computed: {
+    closesText() {
+      if (this.state === 'merged') {
+        return s__('mrWidget|Closed');
+      }
+      if (this.state === 'closed') {
+        return s__('mrWidget|Did not close');
+      }
+      return s__('mrWidget|Closes');
+    },
+  },
+};
 </script>
 <template>
   <section class="mr-info-list mr-links">

@@ -4,7 +4,7 @@ import Flash, { hideFlash } from './flash';
 import { convertPermissionToBoolean } from './lib/utils/common_utils';
 
 export default () => {
-  $('body').on('click', '.js-usage-consent-action', (e) => {
+  $('body').on('click', '.js-usage-consent-action', e => {
     e.preventDefault();
     e.stopImmediatePropagation(); // overwrite rails listener
 
@@ -18,7 +18,8 @@ export default () => {
 
     const hideConsentMessage = () => hideFlash(document.querySelector('.ping-consent-message'));
 
-    axios.put(url, data)
+    axios
+      .put(url, data)
       .then(() => {
         hideConsentMessage();
       })

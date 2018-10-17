@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Clusters::UpdateService do
   describe '#execute' do
-    subject { described_class.new(cluster.project, cluster.user, params).execute(cluster) }
+    subject { described_class.new(cluster.user, params).execute(cluster) }
 
     let(:cluster) { create(:cluster, :project, :provided_by_user) }
 

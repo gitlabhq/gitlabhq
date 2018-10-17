@@ -21,9 +21,11 @@ export default {
   },
   computed: {
     processedItems() {
-      return this.items.map((item) => {
-        const { tokens, searchToken }
-          = FilteredSearchTokenizer.processTokens(item, this.allowedKeys);
+      return this.items.map(item => {
+        const { tokens, searchToken } = FilteredSearchTokenizer.processTokens(
+          item,
+          this.allowedKeys,
+        );
 
         const resultantTokens = tokens.map(token => ({
           prefix: `${token.key}:`,

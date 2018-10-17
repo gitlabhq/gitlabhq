@@ -193,6 +193,23 @@ describe 'Project' do
     end
   end
 
+  describe 'when the project repository is disabled', :js do
+    let(:user)    { create(:user) }
+    let(:project) { create(:project, :repository_disabled, :repository, namespace: user.namespace) }
+
+    before do
+      sign_in(user)
+      project.add_maintainer(user)
+      visit project_path(project)
+    end
+
+    it 'does not show an error' do
+      wait_for_requests
+
+      expect(page).not_to have_selector('.flash-alert')
+    end
+  end
+
   describe 'removal', :js do
     let(:user)    { create(:user) }
     let(:project) { create(:project, namespace: user.namespace) }

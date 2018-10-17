@@ -6,12 +6,12 @@ module QA
         include Page::Component::DropdownFilter
 
         view 'app/views/projects/blob/_editor.html.haml' do
-          element :file_name, "text_field_tag 'file_name'"
-          element :editor, '#editor'
+          element :file_name, "text_field_tag 'file_name'" # rubocop:disable QA/ElementWithPattern
+          element :editor, '#editor' # rubocop:disable QA/ElementWithPattern
         end
 
         view 'app/views/projects/_commit_button.html.haml' do
-          element :commit_changes, "button_tag 'Commit changes'"
+          element :commit_changes, "button_tag 'Commit changes'" # rubocop:disable QA/ElementWithPattern
         end
 
         view 'app/views/projects/blob/_template_selectors.html.haml' do

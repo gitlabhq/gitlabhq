@@ -18,7 +18,6 @@ module Gitlab
 
       # Configuration files
       gitignore: '.gitignore',
-      koding: '.koding.yml',
       gitlab_ci: '.gitlab-ci.yml',
       route_map: '.gitlab/route-map.yml',
 

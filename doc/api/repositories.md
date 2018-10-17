@@ -216,7 +216,7 @@ GET /projects/:id/repository/merge_base
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
-| `refs` | array | yes | The refs to find the common ancestor of, for now only 2 refs are supported |
+| `refs` | array | yes | The refs to find the common ancestor of, multiple refs can be passed |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/merge_base?refs[]=304d257dcb821665ab5110318fc58a007bd104ed&refs[]=0031876facac3f2b2702a0e53a26e89939a42209"

@@ -4230,12 +4230,6 @@ msgstr "6월"
 msgid "June"
 msgstr "6월"
 
-msgid "Koding"
-msgstr "Koding"
-
-msgid "Koding Dashboard"
-msgstr ""
-
 msgid "Kubernetes"
 msgstr ""
 
@@ -5190,9 +5184,6 @@ msgstr ""
 
 msgid "One or more of your Google Code projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
 msgstr ""
-
-msgid "Online IDE integration settings."
-msgstr "온라인 IDE 통합 설정."
 
 msgid "Only admins"
 msgstr ""
@@ -6731,9 +6722,6 @@ msgstr ""
 
 msgid "Set up CI/CD"
 msgstr ""
-
-msgid "Set up Koding"
-msgstr "Koding 설정"
 
 msgid "Set up a %{type} Runner manually"
 msgstr ""

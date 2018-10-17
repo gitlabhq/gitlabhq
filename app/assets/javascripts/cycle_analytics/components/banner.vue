@@ -1,24 +1,28 @@
 <script>
-  import iconCycleAnalyticsSplash from 'icons/_icon_cycle_analytics_splash.svg';
+import Icon from '~/vue_shared/components/icon.vue';
+import iconCycleAnalyticsSplash from 'icons/_icon_cycle_analytics_splash.svg';
 
-  export default {
-    props: {
-      documentationLink: {
-        type: String,
-        required: true,
-      },
+export default {
+  components: {
+    Icon,
+  },
+  props: {
+    documentationLink: {
+      type: String,
+      required: true,
     },
-    computed: {
-      iconCycleAnalyticsSplash() {
-        return iconCycleAnalyticsSplash;
-      },
+  },
+  computed: {
+    iconCycleAnalyticsSplash() {
+      return iconCycleAnalyticsSplash;
     },
-    methods: {
-      dismissOverviewDialog() {
-        this.$emit('dismiss-overview-dialog');
-      },
+  },
+  methods: {
+    dismissOverviewDialog() {
+      this.$emit('dismiss-overview-dialog');
     },
-  };
+  },
+};
 </script>
 <template>
   <div class="landing content-block">
@@ -28,10 +32,9 @@
       type="button"
       @click="dismissOverviewDialog"
     >
-      <i
-        class="fa fa-times"
-        aria-hidden="true">
-      </i>
+      <icon
+        name="close"
+      />
     </button>
     <div
       class="svg-container"
