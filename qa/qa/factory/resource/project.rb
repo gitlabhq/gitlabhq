@@ -4,14 +4,13 @@ module QA
   module Factory
     module Resource
       class Project < Factory::Base
-        attr_writer :description
+        attr_accessor :description
         attr_reader :name
 
         dependency Factory::Resource::Group, as: :group
 
-        product :name do |factory|
-          factory.name
-        end
+        product :group
+        product :name
 
         product :repository_ssh_location do
           Page::Project::Show.act do
@@ -47,6 +46,32 @@ module QA
             page.set_visibility('Public')
             page.create_new_project
           end
+        end
+
+        def api_get_path
+          "/projects/#{name}"
+        end
+
+        def api_post_path
+          '/projects'
+        end
+
+        def api_post_body
+          {
+            namespace_id: group.id,
+            path: name,
+            name: name,
+            description: description,
+            visibility: 'public'
+          }
+        end
+
+        private
+
+        def transform_api_resource(resource)
+          resource[:repository_ssh_location] = Git::Location.new(resource[:ssh_url_to_repo])
+          resource[:repository_http_location] = Git::Location.new(resource[:http_url_to_repo])
+          resource
         end
       end
     end

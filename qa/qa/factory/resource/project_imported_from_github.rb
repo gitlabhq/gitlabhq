@@ -8,9 +8,7 @@ module QA
 
         dependency Factory::Resource::Group, as: :group
 
-        product :name do |factory|
-          factory.name
-        end
+        product :name
 
         def fabricate!
           group.visit!

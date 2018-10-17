@@ -7,13 +7,8 @@ module QA
           project.description = 'Project with repository'
         end
 
-        product :output do |factory|
-          factory.output
-        end
-
-        product :project do |factory|
-          factory.project
-        end
+        product :output
+        product :project
 
         def initialize
           @file_name = 'file.txt'

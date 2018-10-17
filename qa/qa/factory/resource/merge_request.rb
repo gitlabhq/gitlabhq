@@ -12,13 +12,8 @@ module QA
                       :milestone,
                       :labels
 
-        product :project do |factory|
-          factory.project
-        end
-
-        product :source_branch do |factory|
-          factory.source_branch
-        end
+        product :project
+        product :source_branch
 
         dependency Factory::Resource::Project, as: :project do |project|
           project.name = 'project-with-merge-request'

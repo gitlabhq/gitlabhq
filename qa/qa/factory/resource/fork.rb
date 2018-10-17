@@ -11,7 +11,7 @@ module QA
           end
         end
 
-        product(:user) { |factory| factory.user }
+        product :user
 
         def visit_project_with_retry
           # The user intermittently fails to stay signed in after visiting the

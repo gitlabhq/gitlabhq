@@ -2,16 +2,15 @@ module QA
   module Factory
     module Resource
       class Issue < Factory::Base
-        attr_writer :title, :description, :project
+        attr_accessor :title, :description, :project
 
         dependency Factory::Resource::Project, as: :project do |project|
           project.name = 'project-for-issues'
           project.description = 'project for adding issues'
         end
 
-        product :title do
-          Page::Project::Issue::Show.act { issue_title }
-        end
+        product :project
+        product :title
 
         def fabricate!
           project.visit!
