@@ -36,6 +36,7 @@ describe('Grouped Test Reports Modal', () => {
     expect(vm.$el.querySelector('.js-modal-link').getAttribute('href')).toEqual(
       modalDataStructure.class.value,
     );
+
     expect(trimText(vm.$el.querySelector('.js-modal-link').textContent)).toEqual(
       modalDataStructure.class.value,
     );

@@ -74,6 +74,7 @@ describe('Issuable output', () => {
         expect(vm.$el.querySelector('.js-task-list-field').value).toContain(
           'this is a description',
         );
+
         expect(formatText(editedText.innerText)).toMatch(/Edited[\s\S]+?by Some User/);
         expect(editedText.querySelector('.author-link').href).toMatch(/\/some_user$/);
         expect(editedText.querySelector('time')).toBeTruthy();
@@ -91,6 +92,7 @@ describe('Issuable output', () => {
         expect(formatText(vm.$el.querySelector('.edited-text').innerText)).toMatch(
           /Edited[\s\S]+?by Other User/,
         );
+
         expect(editedText.querySelector('.author-link').href).toMatch(/\/other_user$/);
         expect(editedText.querySelector('time')).toBeTruthy();
       })
@@ -294,8 +296,9 @@ describe('Issuable output', () => {
   it('opens recaptcha modal if update rejected as spam', done => {
     function mockScriptSrc() {
       const recaptchaChild = vm.$children.find(
+        // eslint-disable-next-line no-underscore-dangle
         child => child.$options._componentTag === 'recaptcha-modal',
-      ); // eslint-disable-line no-underscore-dangle
+      );
 
       recaptchaChild.scriptSrc = '//scriptsrc';
     }

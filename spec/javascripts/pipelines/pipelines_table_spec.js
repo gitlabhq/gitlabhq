@@ -41,12 +41,15 @@ describe('Pipelines Table', () => {
       expect(
         component.$el.querySelector('.table-section.js-pipeline-status').textContent.trim(),
       ).toEqual('Status');
+
       expect(
         component.$el.querySelector('.table-section.js-pipeline-info').textContent.trim(),
       ).toEqual('Pipeline');
+
       expect(
         component.$el.querySelector('.table-section.js-pipeline-commit').textContent.trim(),
       ).toEqual('Commit');
+
       expect(
         component.$el.querySelector('.table-section.js-pipeline-stages').textContent.trim(),
       ).toEqual('Stages');

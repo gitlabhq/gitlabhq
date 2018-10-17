@@ -152,6 +152,7 @@ describe('Deployment component', () => {
       expect(el.querySelector('.js-deploy-meta').getAttribute('href')).toEqual(
         deploymentMockData.url,
       );
+
       expect(el.querySelector('.js-deploy-meta').innerText).toContain(deploymentMockData.name);
     });
 
@@ -159,6 +160,7 @@ describe('Deployment component', () => {
       expect(el.querySelector('.js-deploy-url').getAttribute('href')).toEqual(
         deploymentMockData.external_url,
       );
+
       expect(el.querySelector('.js-deploy-url').innerText).toContain('View app');
     });
 

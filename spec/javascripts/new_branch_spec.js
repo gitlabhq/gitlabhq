@@ -1,41 +1,41 @@
-/* eslint-disable one-var, no-var, no-return-assign */
-
 import $ from 'jquery';
 import NewBranchForm from '~/new_branch_form';
 
 describe('Branch', function() {
   describe('create a new branch', function() {
-    var expectToHaveError, fillNameWith;
     preloadFixtures('branches/new_branch.html.raw');
-    fillNameWith = function(value) {
-      return $('.js-branch-name')
+
+    function fillNameWith(value) {
+      $('.js-branch-name')
         .val(value)
         .trigger('blur');
-    };
-    expectToHaveError = function(error) {
+    }
+
+    function expectToHaveError(error) {
       expect($('.js-branch-name-error span').text()).toEqual(error);
-    };
+    }
+
     beforeEach(function() {
       loadFixtures('branches/new_branch.html.raw');
       $('form').on('submit', function(e) {
         return e.preventDefault();
       });
-      return (this.form = new NewBranchForm($('.js-create-branch-form'), []));
+      this.form = new NewBranchForm($('.js-create-branch-form'), []);
     });
 
     it("can't start with a dot", function() {
       fillNameWith('.foo');
-      return expectToHaveError("can't start with '.'");
+      expectToHaveError("can't start with '.'");
     });
 
     it("can't start with a slash", function() {
       fillNameWith('/foo');
-      return expectToHaveError("can't start with '/'");
+      expectToHaveError("can't start with '/'");
     });
 
     it("can't have two consecutive dots", function() {
       fillNameWith('foo..bar');
-      return expectToHaveError("can't contain '..'");
+      expectToHaveError("can't contain '..'");
     });
 
     it("can't have spaces anywhere", function() {
@@ -44,7 +44,7 @@ describe('Branch', function() {
       fillNameWith('foo bar');
       expectToHaveError("can't contain spaces");
       fillNameWith('foo ');
-      return expectToHaveError("can't contain spaces");
+      expectToHaveError("can't contain spaces");
     });
 
     it("can't have ~ anywhere", function() {
@@ -53,7 +53,7 @@ describe('Branch', function() {
       fillNameWith('foo~bar');
       expectToHaveError("can't contain '~'");
       fillNameWith('foo~');
-      return expectToHaveError("can't contain '~'");
+      expectToHaveError("can't contain '~'");
     });
 
     it("can't have tilde anwhere", function() {
@@ -62,7 +62,7 @@ describe('Branch', function() {
       fillNameWith('foo~bar');
       expectToHaveError("can't contain '~'");
       fillNameWith('foo~');
-      return expectToHaveError("can't contain '~'");
+      expectToHaveError("can't contain '~'");
     });
 
     it("can't have caret anywhere", function() {
@@ -71,7 +71,7 @@ describe('Branch', function() {
       fillNameWith('foo^bar');
       expectToHaveError("can't contain '^'");
       fillNameWith('foo^');
-      return expectToHaveError("can't contain '^'");
+      expectToHaveError("can't contain '^'");
     });
 
     it("can't have : anywhere", function() {
@@ -80,7 +80,7 @@ describe('Branch', function() {
       fillNameWith('foo:bar');
       expectToHaveError("can't contain ':'");
       fillNameWith(':foo');
-      return expectToHaveError("can't contain ':'");
+      expectToHaveError("can't contain ':'");
     });
 
     it("can't have question mark anywhere", function() {
@@ -89,7 +89,7 @@ describe('Branch', function() {
       fillNameWith('foo?bar');
       expectToHaveError("can't contain '?'");
       fillNameWith('foo?');
-      return expectToHaveError("can't contain '?'");
+      expectToHaveError("can't contain '?'");
     });
 
     it("can't have asterisk anywhere", function() {
@@ -98,7 +98,7 @@ describe('Branch', function() {
       fillNameWith('foo*bar');
       expectToHaveError("can't contain '*'");
       fillNameWith('foo*');
-      return expectToHaveError("can't contain '*'");
+      expectToHaveError("can't contain '*'");
     });
 
     it("can't have open bracket anywhere", function() {
@@ -107,7 +107,7 @@ describe('Branch', function() {
       fillNameWith('foo[bar');
       expectToHaveError("can't contain '['");
       fillNameWith('foo[');
-      return expectToHaveError("can't contain '['");
+      expectToHaveError("can't contain '['");
     });
 
     it("can't have a backslash anywhere", function() {
@@ -116,7 +116,7 @@ describe('Branch', function() {
       fillNameWith('foo\\bar');
       expectToHaveError("can't contain '\\'");
       fillNameWith('foo\\');
-      return expectToHaveError("can't contain '\\'");
+      expectToHaveError("can't contain '\\'");
     });
 
     it("can't contain a sequence @{ anywhere", function() {
@@ -125,44 +125,42 @@ describe('Branch', function() {
       fillNameWith('foo@{bar');
       expectToHaveError("can't contain '@{'");
       fillNameWith('foo@{');
-      return expectToHaveError("can't contain '@{'");
+      expectToHaveError("can't contain '@{'");
     });
 
     it("can't have consecutive slashes", function() {
       fillNameWith('foo//bar');
-      return expectToHaveError("can't contain consecutive slashes");
+      expectToHaveError("can't contain consecutive slashes");
     });
 
     it("can't end with a slash", function() {
       fillNameWith('foo/');
-      return expectToHaveError("can't end in '/'");
+      expectToHaveError("can't end in '/'");
     });
 
     it("can't end with a dot", function() {
       fillNameWith('foo.');
-      return expectToHaveError("can't end in '.'");
+      expectToHaveError("can't end in '.'");
     });
 
     it("can't end with .lock", function() {
       fillNameWith('foo.lock');
-      return expectToHaveError("can't end in '.lock'");
+      expectToHaveError("can't end in '.lock'");
     });
 
     it("can't be the single character @", function() {
       fillNameWith('@');
-      return expectToHaveError("can't be '@'");
+      expectToHaveError("can't be '@'");
     });
 
     it('concatenates all error messages', function() {
       fillNameWith('/foo bar?~.');
-      return expectToHaveError(
-        "can't start with '/', can't contain spaces, '?', '~', can't end in '.'",
-      );
+      expectToHaveError("can't start with '/', can't contain spaces, '?', '~', can't end in '.'");
     });
 
     it("doesn't duplicate error messages", function() {
       fillNameWith('?foo?bar?zoo?');
-      return expectToHaveError("can't contain '?'");
+      expectToHaveError("can't contain '?'");
     });
 
     it('removes the error message when is a valid name', function() {

@@ -50,6 +50,7 @@ describe('Pipelines Empty State', () => {
     expect(component.$el.querySelector('.js-get-started-pipelines').getAttribute('href')).toEqual(
       'foo',
     );
+
     expect(component.$el.querySelector('.js-get-started-pipelines').textContent).toContain(
       'Get started with Pipelines',
     );

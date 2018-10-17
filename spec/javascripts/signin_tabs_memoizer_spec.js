@@ -63,6 +63,7 @@ describe('SigninTabsMemoizer', () => {
       ['ul.new-session-tabs a[href="#bogus"]'],
       ['ul.new-session-tabs a'],
     ]);
+
     expect(fakeTab.click).toHaveBeenCalled();
   });
 

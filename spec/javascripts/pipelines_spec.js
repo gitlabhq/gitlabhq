@@ -13,7 +13,7 @@ describe('Pipelines', () => {
 
   it('should create a `Pipelines` instance without options', () => {
     expect(() => {
-      new Pipelines();
-    }).not.toThrow(); //eslint-disable-line
+      new Pipelines(); // eslint-disable-line no-new
+    }).not.toThrow();
   });
 });

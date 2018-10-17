@@ -90,9 +90,11 @@ describe('ReplacedImageDiff', () => {
       expect(imageFrameEls[viewTypes.TWO_UP]).toEqual(
         element.querySelector('.two-up .js-image-frame'),
       );
+
       expect(imageFrameEls[viewTypes.SWIPE]).toEqual(
         element.querySelector('.swipe .js-image-frame'),
       );
+
       expect(imageFrameEls[viewTypes.ONION_SKIN]).toEqual(
         element.querySelector('.onion-skin .js-image-frame'),
       );
@@ -105,9 +107,11 @@ describe('ReplacedImageDiff', () => {
       expect(viewModesEls[viewTypes.TWO_UP]).toEqual(
         element.querySelector('.view-modes-menu .two-up'),
       );
+
       expect(viewModesEls[viewTypes.SWIPE]).toEqual(
         element.querySelector('.view-modes-menu .swipe'),
       );
+
       expect(viewModesEls[viewTypes.ONION_SKIN]).toEqual(
         element.querySelector('.view-modes-menu .onion-skin'),
       );

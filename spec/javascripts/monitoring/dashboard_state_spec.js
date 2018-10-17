@@ -59,9 +59,11 @@ describe('EmptyState', () => {
     expect(getTextFromNode(component, '.state-title')).toEqual(
       component.states.gettingStarted.title,
     );
+
     expect(getTextFromNode(component, '.state-description')).toEqual(
       component.states.gettingStarted.description,
     );
+
     expect(getTextFromNode(component, '.btn-success')).toEqual(
       component.states.gettingStarted.buttonText,
     );
@@ -77,6 +79,7 @@ describe('EmptyState', () => {
     expect(getTextFromNode(component, '.state-description')).toEqual(
       component.states.loading.description,
     );
+
     expect(getTextFromNode(component, '.btn-success')).toEqual(component.states.loading.buttonText);
   });
 
@@ -89,6 +92,7 @@ describe('EmptyState', () => {
     expect(getTextFromNode(component, '.state-title')).toEqual(
       component.states.unableToConnect.title,
     );
+
     expect(component.$el.querySelector('.state-description a')).toBeDefined();
     expect(getTextFromNode(component, '.btn-success')).toEqual(
       component.states.unableToConnect.buttonText,

@@ -74,6 +74,7 @@ describe('Panel Resizer component', () => {
       ['update:size', 100],
       ['resize-end', 100],
     ]);
+
     expect(vm.size).toBe(100);
   });
 });

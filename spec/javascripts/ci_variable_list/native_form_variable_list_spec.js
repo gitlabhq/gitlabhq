@@ -23,6 +23,7 @@ describe('NativeFormVariableList', () => {
       expect($row.find('.js-ci-variable-input-key').attr('name')).toBe(
         'schedule[variables_attributes][][key]',
       );
+
       expect($row.find('.js-ci-variable-input-value').attr('name')).toBe(
         'schedule[variables_attributes][][secret_value]',
       );

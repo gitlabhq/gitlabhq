@@ -304,9 +304,11 @@ describe('MRWidgetHeader', () => {
         expect(vm.$el.querySelector('.diverged-commits-count').textContent).toEqual(
           'The source branch is 12 commits behind the target branch',
         );
+
         expect(vm.$el.querySelector('.diverged-commits-count a').textContent).toEqual(
           '12 commits behind',
         );
+
         expect(vm.$el.querySelector('.diverged-commits-count a')).toHaveAttr(
           'href',
           vm.mr.targetBranchPath,
