@@ -351,7 +351,8 @@ The maintainer must always agree before an outstanding discussion is resolved in
 this manner, and will be the one to create the issue. The title and description
 should be of the same quality as those created
 [in the usual manner](#technical-and-ux-debt) - in particular, the issue title
-**must not** begin with "Follow-up ...".
+**must not** begin with `Follow-up`! The creating maintainer should also expect
+to be involved in some capacity when work begins on the follow-up issue.
 
 ## Stewardship
 
