@@ -14,6 +14,9 @@ class JiraService < IssueTrackerService
             format: { with: Gitlab::Regex.jira_transition_id_regex, message: "transition ids can have only numbers which can be split with , or ;" },
             allow_blank: true
 
+  # JIRA cloud version is deprecating authentication via username and password.
+  # We should use username/password for JIRA server and email/api_token for JIRA cloud,
+  # for more information check: https://gitlab.com/gitlab-org/gitlab-ce/issues/49936.
   prop_accessor :username, :password, :url, :api_url, :jira_issue_transition_id, :title, :description
 
   before_update :reset_password
@@ -95,8 +98,8 @@ class JiraService < IssueTrackerService
     [
       { type: 'text', name: 'url', title: 'Web URL', placeholder: 'https://jira.example.com', required: true },
       { type: 'text', name: 'api_url', title: 'JIRA API URL', placeholder: 'If different from Web URL' },
-      { type: 'text', name: 'username', placeholder: '', required: true },
-      { type: 'password', name: 'password', placeholder: '', required: true },
+      { type: 'text', name: 'username', title: 'Username or Email', placeholder: 'Use a username for server version and an email for cloud version', required: true },
+      { type: 'password', name: 'password', title: 'Password or API token', placeholder: 'Use a password for server version and an API token for cloud version', required: true },
       { type: 'text', name: 'jira_issue_transition_id', title: 'Transition ID(s)', placeholder: 'Use , or ; to separate multiple transition IDs' }
     ]
   end
