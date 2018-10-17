@@ -31,10 +31,10 @@ module QA
           defined?(@username) && defined?(@password)
         end
 
-        product(:name) { |factory| factory.name }
-        product(:username) { |factory| factory.username }
-        product(:email) { |factory| factory.email }
-        product(:password) { |factory| factory.password }
+        product :name
+        product :username
+        product :email
+        product :password
 
         def fabricate!
           # Don't try to log-out if we're not logged-in

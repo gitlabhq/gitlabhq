@@ -6,6 +6,10 @@ module QA
 
         dependency Factory::Resource::Sandbox, as: :sandbox
 
+        product :id do
+          true # We don't retrieve the Group ID when using the Browser UI
+        end
+
         def initialize
           @path = Runtime::Namespace.name
           @description = "QA test run at #{Runtime::Namespace.time}"
@@ -34,6 +38,29 @@ module QA
               end
             end
           end
+        end
+
+        def fabricate_via_api!
+          resource_web_url(api_get)
+        rescue ResourceNotFoundError
+          super
+        end
+
+        def api_get_path
+          "/groups/#{CGI.escape("#{sandbox.path}/#{path}")}"
+        end
+
+        def api_post_path
+          '/groups'
+        end
+
+        def api_post_body
+          {
+            parent_id: sandbox.id,
+            path: path,
+            name: path,
+            visibility: 'public'
+          }
         end
       end
     end
