@@ -12,6 +12,8 @@ module Gitlab
           end
 
           def deployment_path
+            return unless subject.environment.last_successful_deployment
+
             project_job_path(subject.project, subject.environment.last_successful_deployment.deployable)
           end
 
