@@ -150,6 +150,5 @@ FactoryBot.define do
         merge_request.update(labels: evaluator.labels)
       end
     end
-
   end
 end
