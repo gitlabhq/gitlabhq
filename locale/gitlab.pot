@@ -2783,6 +2783,9 @@ msgstr ""
 msgid "File templates"
 msgstr ""
 
+msgid "File view"
+msgstr ""
+
 msgid "Files"
 msgstr ""
 
@@ -5823,12 +5826,6 @@ msgstr ""
 msgid "Switch branch/tag"
 msgstr ""
 
-msgid "Switch to file list"
-msgstr ""
-
-msgid "Switch to tree list"
-msgstr ""
-
 msgid "System Hooks"
 msgstr ""
 
@@ -6508,6 +6505,9 @@ msgid "Total: %{total}"
 msgstr ""
 
 msgid "Track time with quick actions"
+msgstr ""
+
+msgid "Tree view"
 msgstr ""
 
 msgid "Trending"
