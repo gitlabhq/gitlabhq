@@ -319,23 +319,39 @@ Make sure to mention the merge request that the ~"technical debt" issue or
 
 It's common to discover technical debt during development of a new feature. In
 the spirit of "minimum viable change", resolution is often deferred to a
-follow-up issue. However, this has limited value unless a commitment to address
-the debt is made. As technical debt reduces development velocity, it's important
-to keep it under control.
+follow-up issue. However, this cannot be used as an excuse to merge poor-quality
+code that would otherwise not pass review, or to overlook trivial matters that
+don't deserve the be scheduled independently, and would be best resolved in the
+original merge request - or not tracked at all!
 
-Before accepting resolution of technical debt in a follow-up issue, maintainers
-should check that that fix is not trivial, and that the contributor (or their
-team) can commit to scheduling the issue within the next 3 releases.
+The overheads of scheduling, and rate of change in the GitLab codebase, mean
+that the cost of a trivial technical debt issue can quickly exceed the value of
+tracking it. This generally means we should resolve these in the original merge
+request - or simply not create a follow-up issue at all.
 
-Trivial fixes can - and should - be addressed within the same MR.
+For example, a typo in a comment that is being copied between files is worth
+fixing in the same MR, but not worth creating a follow-up issue for. Renaming a
+method that is used in many places to make its intent slightly clearer may be
+worth fixing, but it should not happen in the same MR, and is generally not
+worth the overhead of having an issue of its own. These issues would invariably
+be labelled `~P4 ~S4` if we were to create them.
 
-If a commitment to address the issue in the foreseeable future cannot be found,
-the maintainer must make a value judgement on whether the problem deserves an
-issue at all. If the commitment is lacking because the issue is neither trivial
-nor valuable, then perhaps no issue needs to be made after all. If a commitment
-is lacking because technical debt is being unfairly neglected, then maintainers
-should generally insist on resolution of the issue upfront, to protect
-development velocity.
+More severe technical debt can have implications for development velocity. If
+it isn't addressed in a timely manner, the codebase becomes needlessly difficult
+to change, new features become difficult to add, and regressions abound.
+
+Discoveries of this kind of technical debt should be treated seriously, and
+while resolution in a follow-up issue may be appropriate, maintainers should
+generally obtain a scheduling commitment from the author of the original MR, or
+the engineering or product manager for the relevant area. This may take the form
+of appropriate Priority / Severity labels on the issue, or an explicit milestone
+and assignee.
+
+The maintainer must always agree before an outstanding discussion is resolved in
+this manner, and will be the one to create the issue. The title and description
+should be of the same quality as those created
+[in the usual manner](#technical-and-ux-debt) - in particular, the issue title
+**must not** begin with "Follow-up ...".
 
 ## Stewardship
 
