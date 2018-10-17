@@ -6,7 +6,7 @@ class PipelineDetailsEntity < PipelineEntity
     expose :artifacts, using: BuildArtifactEntity
     expose :manual_actions, using: BuildActionEntity
     expose :scheduled_actions, using: BuildActionEntity
-    expose :deployments_statuses, using: DetailedStatusEntity
+    expose :deployments_statuses, using: DetailedDeploymentStatusEntity
   end
 
   private
