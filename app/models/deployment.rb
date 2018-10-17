@@ -79,6 +79,13 @@ class Deployment < ActiveRecord::Base
     end
   end
 
+  # To set legacy deployment status to :success
+  def success?
+    return true if status.nil?
+
+    super
+  end
+
   def self.last_for_environment(environment)
     ids = self
       .for_environment(environment)
