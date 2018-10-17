@@ -9,7 +9,7 @@ class Projects::BlobController < Projects::ApplicationController
   include ActionView::Helpers::SanitizeHelper
   prepend_before_action :authenticate_user!, only: [:edit]
 
-  before_action :set_request_format, only: [:edit, :show, :update]
+  before_action :set_request_format, only: [:edit, :show, :update, :destroy]
   before_action :require_non_empty_project, except: [:new, :create]
   before_action :authorize_download_code!
 
