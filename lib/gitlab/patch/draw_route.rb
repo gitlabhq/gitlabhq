@@ -5,16 +5,28 @@
 module Gitlab
   module Patch
     module DrawRoute
-      def draw(routes_name)
-        instance_eval(File.read(Rails.root.join("config/routes/#{routes_name}.rb")))
+      RoutesNotFound = Class.new(StandardError)
 
-        draw_ee(routes_name)
+      def draw(routes_name)
+        draw_ce(routes_name) | draw_ee(routes_name) ||
+          raise(RoutesNotFound.new("Cannot find #{routes_name}"))
+      end
+
+      def draw_ce(routes_name)
+        draw_route(Rails.root.join("config/routes/#{routes_name}.rb"))
       end
 
       def draw_ee(routes_name)
-        path = Rails.root.join("ee/config/routes/#{routes_name}.rb")
+        draw_route(Rails.root.join("ee/config/routes/#{routes_name}.rb"))
+      end
 
-        instance_eval(File.read(path)) if File.exist?(path)
+      def draw_route(path)
+        if File.exist?(path)
+          instance_eval(File.read(path))
+          true
+        else
+          false
+        end
       end
     end
   end

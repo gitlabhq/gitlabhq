@@ -334,12 +334,17 @@ full implementation details.
 
 ### Code in `config/routes`
 
-When we add `draw :admin` in `config/routes.rb`, the application will also
-load the file located in `config/routes/admin.rb`, and also
-`ee/config/routes/admin.rb` if the file exists.
+When we add `draw :admin` in `config/routes.rb`, the application will try to
+load the file located in `config/routes/admin.rb`, and also try to load the
+file located in `ee/config/routes/admin.rb`.
 
-So if we want to extend a particular route file, just add the same file
-located in `ee/config/routes`.
+It should at least load one file, at most two files. If it cannot find any
+files, an error will be raised.
+
+This means if we want to extend a particular CE route file, just add the same
+file located in `ee/config/routes`. If we want to add an EE only route, we
+could still use `draw :ee_only` and add `ee/config/routes/ee_only.rb` without
+adding `config/routes/ee_only.rb`.
 
 ### Code in `app/controllers/`
 
