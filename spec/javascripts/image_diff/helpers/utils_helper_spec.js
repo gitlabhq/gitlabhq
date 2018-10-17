@@ -5,13 +5,7 @@ import ImageBadge from '~/image_diff/image_badge';
 import * as mockData from '../mock_data';
 
 describe('utilsHelper', () => {
-  const {
-    noteId,
-    discussionId,
-    image,
-    imageProperties,
-    imageMeta,
-  } = mockData;
+  const { noteId, discussionId, image, imageProperties, imageMeta } = mockData;
 
   describe('resizeCoordinatesToImageElement', () => {
     let result;

@@ -29,7 +29,7 @@ describe('Ajax', () => {
 
       it('overrides AjaxCache', () => {
         spyOn(AjaxCache, 'override').and.callFake((endpoint, results) => {
-            expect(results).toEqual(processedArray);
+          expect(results).toEqual(processedArray);
         });
 
         Ajax.preprocessing(config, []);

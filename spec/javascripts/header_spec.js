@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import initTodoToggle from '~/header';
 
-describe('Header', function () {
+describe('Header', function() {
   const todosPendingCount = '.todos-count';
   const fixtureTemplate = 'issues/open-issue.html.raw';
 

@@ -44,8 +44,7 @@ describe('diffs/components/app', () => {
   it('shows comments message, with commit', done => {
     vm.$store.state.diffs.commit = getDiffWithCommit().commit;
 
-    vm
-      .$nextTick()
+    vm.$nextTick()
       .then(() => {
         expect(vm.$el).toContainText('Only comments from the following commit are shown below');
         expect(vm.$el).toContainElement('.blob-commit-info');
@@ -58,8 +57,7 @@ describe('diffs/components/app', () => {
     vm.$store.state.diffs.mergeRequestDiff = { latest: false };
     vm.$store.state.diffs.targetBranch = 'master';
 
-    vm
-      .$nextTick()
+    vm.$nextTick()
       .then(() => {
         expect(vm.$el).toContainText(
           "Not all comments are displayed because you're viewing an old version of the diff.",
@@ -72,8 +70,7 @@ describe('diffs/components/app', () => {
   it('shows comments message, with startVersion', done => {
     vm.$store.state.diffs.startVersion = 'test';
 
-    vm
-      .$nextTick()
+    vm.$nextTick()
       .then(() => {
         expect(vm.$el).toContainText(
           "Not all comments are displayed because you're comparing two versions of the diff.",

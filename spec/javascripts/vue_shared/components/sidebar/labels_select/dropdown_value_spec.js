@@ -47,9 +47,11 @@ describe('DropdownValueComponent', () => {
   describe('methods', () => {
     describe('labelFilterUrl', () => {
       it('returns URL string starting with labelFilterBasePath and encoded label.title', () => {
-        expect(vm.labelFilterUrl({
-          title: 'Foo bar',
-        })).toBe('/gitlab-org/my-project/issues?label_name[]=Foo%20bar');
+        expect(
+          vm.labelFilterUrl({
+            title: 'Foo bar',
+          }),
+        ).toBe('/gitlab-org/my-project/issues?label_name[]=Foo%20bar');
       });
     });
 
@@ -69,18 +71,24 @@ describe('DropdownValueComponent', () => {
 
   describe('template', () => {
     it('renders component container element with classes `hide-collapsed value issuable-show-labels`', () => {
-      expect(vm.$el.classList.contains('hide-collapsed', 'value', 'issuable-show-labels')).toBe(true);
+      expect(vm.$el.classList.contains('hide-collapsed', 'value', 'issuable-show-labels')).toBe(
+        true,
+      );
     });
 
     it('render slot content inside component when `labels` prop is empty', () => {
       const vmEmptyLabels = createComponent([]);
 
-      expect(vmEmptyLabels.$el.querySelector('.text-secondary').innerText.trim()).toBe(mockConfig.emptyValueText);
+      expect(vmEmptyLabels.$el.querySelector('.text-secondary').innerText.trim()).toBe(
+        mockConfig.emptyValueText,
+      );
       vmEmptyLabels.$destroy();
     });
 
     it('renders label element with filter URL', () => {
-      expect(vm.$el.querySelector('a').getAttribute('href')).toBe('/gitlab-org/my-project/issues?label_name[]=Foo%20Label');
+      expect(vm.$el.querySelector('a').getAttribute('href')).toBe(
+        '/gitlab-org/my-project/issues?label_name[]=Foo%20Label',
+      );
     });
 
     it('renders label element with tooltip and styles based on label details', () => {

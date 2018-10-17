@@ -17,7 +17,7 @@ const createComponent = (group = mockParentGroupItem, parentGroup = mockChildren
 describe('GroupItemComponent', () => {
   let vm;
 
-  beforeEach((done) => {
+  beforeEach(done => {
     Vue.component('group-folder', groupFolderComponent);
 
     vm = createComponent();
@@ -44,7 +44,7 @@ describe('GroupItemComponent', () => {
         const { rowClass } = vm;
 
         expect(Object.keys(rowClass).length).toBe(classes.length);
-        Object.keys(rowClass).forEach((className) => {
+        Object.keys(rowClass).forEach(className => {
           expect(classes.indexOf(className)).toBeGreaterThan(-1);
         });
       });
@@ -137,7 +137,7 @@ describe('GroupItemComponent', () => {
         expect(eventHub.$emit).toHaveBeenCalledWith('toggleChildren', vm.group);
       });
 
-      it('should navigate page to group homepage if group does not have any children present', (done) => {
+      it('should navigate page to group homepage if group does not have any children present', done => {
         const group = Object.assign({}, mockParentGroupItem);
         group.childrenCount = 0;
         const newVm = createComponent(group);

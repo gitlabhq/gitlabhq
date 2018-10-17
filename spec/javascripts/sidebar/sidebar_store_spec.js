@@ -25,20 +25,17 @@ const PARTICIPANT = {
   avatar_url: 'gravatar.com/avatar/xxx',
 };
 
-const PARTICIPANT_LIST = [
-  PARTICIPANT,
-  { ...PARTICIPANT, id: 2 },
-  { ...PARTICIPANT, id: 3 },
-];
+const PARTICIPANT_LIST = [PARTICIPANT, { ...PARTICIPANT, id: 2 }, { ...PARTICIPANT, id: 3 }];
 
-describe('Sidebar store', function () {
+describe('Sidebar store', function() {
   beforeEach(() => {
     this.store = new SidebarStore({
       currentUser: {
         id: 1,
         name: 'Administrator',
         username: 'root',
-        avatar_url: 'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+        avatar_url:
+          'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
       },
       editable: true,
       rootPath: '/',

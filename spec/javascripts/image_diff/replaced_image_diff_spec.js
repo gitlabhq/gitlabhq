@@ -37,16 +37,28 @@ describe('ReplacedImageDiff', () => {
 
   function setupImageFrameEls() {
     replacedImageDiff.imageFrameEls = [];
-    replacedImageDiff.imageFrameEls[viewTypes.TWO_UP] = element.querySelector('.two-up .js-image-frame');
-    replacedImageDiff.imageFrameEls[viewTypes.SWIPE] = element.querySelector('.swipe .js-image-frame');
-    replacedImageDiff.imageFrameEls[viewTypes.ONION_SKIN] = element.querySelector('.onion-skin .js-image-frame');
+    replacedImageDiff.imageFrameEls[viewTypes.TWO_UP] = element.querySelector(
+      '.two-up .js-image-frame',
+    );
+    replacedImageDiff.imageFrameEls[viewTypes.SWIPE] = element.querySelector(
+      '.swipe .js-image-frame',
+    );
+    replacedImageDiff.imageFrameEls[viewTypes.ONION_SKIN] = element.querySelector(
+      '.onion-skin .js-image-frame',
+    );
   }
 
   function setupViewModesEls() {
     replacedImageDiff.viewModesEls = [];
-    replacedImageDiff.viewModesEls[viewTypes.TWO_UP] = element.querySelector('.view-modes-menu .two-up');
-    replacedImageDiff.viewModesEls[viewTypes.SWIPE] = element.querySelector('.view-modes-menu .swipe');
-    replacedImageDiff.viewModesEls[viewTypes.ONION_SKIN] = element.querySelector('.view-modes-menu .onion-skin');
+    replacedImageDiff.viewModesEls[viewTypes.TWO_UP] = element.querySelector(
+      '.view-modes-menu .two-up',
+    );
+    replacedImageDiff.viewModesEls[viewTypes.SWIPE] = element.querySelector(
+      '.view-modes-menu .swipe',
+    );
+    replacedImageDiff.viewModesEls[viewTypes.ONION_SKIN] = element.querySelector(
+      '.view-modes-menu .onion-skin',
+    );
   }
 
   function setupImageEls() {
@@ -75,18 +87,34 @@ describe('ReplacedImageDiff', () => {
       const { imageFrameEls } = replacedImageDiff;
 
       expect(imageFrameEls).toBeDefined();
-      expect(imageFrameEls[viewTypes.TWO_UP]).toEqual(element.querySelector('.two-up .js-image-frame'));
-      expect(imageFrameEls[viewTypes.SWIPE]).toEqual(element.querySelector('.swipe .js-image-frame'));
-      expect(imageFrameEls[viewTypes.ONION_SKIN]).toEqual(element.querySelector('.onion-skin .js-image-frame'));
+      expect(imageFrameEls[viewTypes.TWO_UP]).toEqual(
+        element.querySelector('.two-up .js-image-frame'),
+      );
+
+      expect(imageFrameEls[viewTypes.SWIPE]).toEqual(
+        element.querySelector('.swipe .js-image-frame'),
+      );
+
+      expect(imageFrameEls[viewTypes.ONION_SKIN]).toEqual(
+        element.querySelector('.onion-skin .js-image-frame'),
+      );
     });
 
     it('should set viewModesEls', () => {
       const { viewModesEls } = replacedImageDiff;
 
       expect(viewModesEls).toBeDefined();
-      expect(viewModesEls[viewTypes.TWO_UP]).toEqual(element.querySelector('.view-modes-menu .two-up'));
-      expect(viewModesEls[viewTypes.SWIPE]).toEqual(element.querySelector('.view-modes-menu .swipe'));
-      expect(viewModesEls[viewTypes.ONION_SKIN]).toEqual(element.querySelector('.view-modes-menu .onion-skin'));
+      expect(viewModesEls[viewTypes.TWO_UP]).toEqual(
+        element.querySelector('.view-modes-menu .two-up'),
+      );
+
+      expect(viewModesEls[viewTypes.SWIPE]).toEqual(
+        element.querySelector('.view-modes-menu .swipe'),
+      );
+
+      expect(viewModesEls[viewTypes.ONION_SKIN]).toEqual(
+        element.querySelector('.view-modes-menu .onion-skin'),
+      );
     });
 
     it('should generateImageEls', () => {
@@ -147,8 +175,8 @@ describe('ReplacedImageDiff', () => {
       expect(ImageDiff.prototype.bindEvents).toHaveBeenCalled();
     });
 
-    it('should register click eventlistener to 2-up view mode', (done) => {
-      spyOn(ReplacedImageDiff.prototype, 'changeView').and.callFake((viewMode) => {
+    it('should register click eventlistener to 2-up view mode', done => {
+      spyOn(ReplacedImageDiff.prototype, 'changeView').and.callFake(viewMode => {
         expect(viewMode).toEqual(viewTypes.TWO_UP);
         done();
       });
@@ -157,8 +185,8 @@ describe('ReplacedImageDiff', () => {
       replacedImageDiff.viewModesEls[viewTypes.TWO_UP].click();
     });
 
-    it('should register click eventlistener to swipe view mode', (done) => {
-      spyOn(ReplacedImageDiff.prototype, 'changeView').and.callFake((viewMode) => {
+    it('should register click eventlistener to swipe view mode', done => {
+      spyOn(ReplacedImageDiff.prototype, 'changeView').and.callFake(viewMode => {
         expect(viewMode).toEqual(viewTypes.SWIPE);
         done();
       });
@@ -167,8 +195,8 @@ describe('ReplacedImageDiff', () => {
       replacedImageDiff.viewModesEls[viewTypes.SWIPE].click();
     });
 
-    it('should register click eventlistener to onion skin view mode', (done) => {
-      spyOn(ReplacedImageDiff.prototype, 'changeView').and.callFake((viewMode) => {
+    it('should register click eventlistener to onion skin view mode', done => {
+      spyOn(ReplacedImageDiff.prototype, 'changeView').and.callFake(viewMode => {
         expect(viewMode).toEqual(viewTypes.SWIPE);
         done();
       });
@@ -203,11 +231,15 @@ describe('ReplacedImageDiff', () => {
       });
 
       it('should return imageFrameEl based on currentView', () => {
-        expect(replacedImageDiff.imageFrameEl).toEqual(element.querySelector('.two-up .js-image-frame'));
+        expect(replacedImageDiff.imageFrameEl).toEqual(
+          element.querySelector('.two-up .js-image-frame'),
+        );
 
         replacedImageDiff.currentView = viewTypes.ONION_SKIN;
 
-        expect(replacedImageDiff.imageFrameEl).toEqual(element.querySelector('.onion-skin .js-image-frame'));
+        expect(replacedImageDiff.imageFrameEl).toEqual(
+          element.querySelector('.onion-skin .js-image-frame'),
+        );
       });
     });
   });
@@ -293,7 +325,7 @@ describe('ReplacedImageDiff', () => {
         setupImageFrameEls();
       });
 
-      it('should pass showCommentIndicator normalized indicator values', (done) => {
+      it('should pass showCommentIndicator normalized indicator values', done => {
         spyOn(imageDiffHelper, 'showCommentIndicator').and.callFake(() => {});
         spyOn(imageDiffHelper, 'resizeCoordinatesToImageElement').and.callFake((imageEl, meta) => {
           expect(meta.x).toEqual(indicator.x);
@@ -305,15 +337,17 @@ describe('ReplacedImageDiff', () => {
         replacedImageDiff.renderNewView(indicator);
       });
 
-      it('should call showCommentIndicator', (done) => {
+      it('should call showCommentIndicator', done => {
         const normalized = {
           normalized: true,
         };
         spyOn(imageDiffHelper, 'resizeCoordinatesToImageElement').and.returnValue(normalized);
-        spyOn(imageDiffHelper, 'showCommentIndicator').and.callFake((imageFrameEl, normalizedIndicator) => {
-          expect(normalizedIndicator).toEqual(normalized);
-          done();
-        });
+        spyOn(imageDiffHelper, 'showCommentIndicator').and.callFake(
+          (imageFrameEl, normalizedIndicator) => {
+            expect(normalizedIndicator).toEqual(normalized);
+            done();
+          },
+        );
         replacedImageDiff.renderNewView(indicator);
       });
     });

@@ -21,18 +21,22 @@ describe('Issue model', () => {
       id: 1,
       iid: 1,
       confidential: false,
-      labels: [{
-        id: 1,
-        title: 'test',
-        color: 'red',
-        description: 'testing'
-      }],
-      assignees: [{
-        id: 1,
-        name: 'name',
-        username: 'username',
-        avatar_url: 'http://avatar_url',
-      }],
+      labels: [
+        {
+          id: 1,
+          title: 'test',
+          color: 'red',
+          description: 'testing',
+        },
+      ],
+      assignees: [
+        {
+          id: 1,
+          name: 'name',
+          username: 'username',
+          avatar_url: 'http://avatar_url',
+        },
+      ],
     });
   });
 
@@ -45,7 +49,7 @@ describe('Issue model', () => {
       id: 2,
       title: 'bug',
       color: 'blue',
-      description: 'bugs!'
+      description: 'bugs!',
     });
 
     expect(issue.labels.length).toBe(2);
@@ -56,7 +60,7 @@ describe('Issue model', () => {
       id: 2,
       title: 'test',
       color: 'blue',
-      description: 'bugs!'
+      description: 'bugs!',
     });
 
     expect(issue.labels.length).toBe(1);
@@ -80,7 +84,7 @@ describe('Issue model', () => {
       id: 2,
       title: 'bug',
       color: 'blue',
-      description: 'bugs!'
+      description: 'bugs!',
     });
 
     expect(issue.labels.length).toBe(2);
@@ -158,7 +162,7 @@ describe('Issue model', () => {
   });
 
   describe('update', () => {
-    it('passes assignee ids when there are assignees', (done) => {
+    it('passes assignee ids when there are assignees', done => {
       spyOn(Vue.http, 'patch').and.callFake((url, data) => {
         expect(data.issue.assignee_ids).toEqual([1]);
         done();
@@ -167,7 +171,7 @@ describe('Issue model', () => {
       issue.update('url');
     });
 
-    it('passes assignee ids of [0] when there are no assignees', (done) => {
+    it('passes assignee ids of [0] when there are no assignees', done => {
       spyOn(Vue.http, 'patch').and.callFake((url, data) => {
         expect(data.issue.assignee_ids).toEqual([0]);
         done();

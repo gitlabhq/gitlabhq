@@ -47,7 +47,7 @@ describe('DeprecatedModal', () => {
       });
     });
 
-    it('works with data-toggle="modal"', (done) => {
+    it('works with data-toggle="modal"', done => {
       setFixtures(`
         <button id="modal-button" data-toggle="modal" data-target="#my-modal"></button>
         <div id="modal-container"></div>
@@ -55,9 +55,13 @@ describe('DeprecatedModal', () => {
 
       const modalContainer = document.getElementById('modal-container');
       const modalButton = document.getElementById('modal-button');
-      vm = mountComponent(modalComponent, {
-        id: 'my-modal',
-      }, modalContainer);
+      vm = mountComponent(
+        modalComponent,
+        {
+          id: 'my-modal',
+        },
+        modalContainer,
+      );
       const modalElement = vm.$el.querySelector('#my-modal');
       $(modalElement).on('shown.bs.modal', () => done());
 

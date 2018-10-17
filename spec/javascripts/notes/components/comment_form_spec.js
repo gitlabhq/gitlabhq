@@ -79,12 +79,12 @@ describe('issue_comment_form component', () => {
 
         Vue.nextTick()
           .then(() => {
-              expect(actionButton.disabled).toBeTruthy();
+            expect(actionButton.disabled).toBeTruthy();
           })
           .then(saveNotePromise)
           .then(Vue.nextTick)
           .then(() => {
-              expect(actionButton.disabled).toBeFalsy();
+            expect(actionButton.disabled).toBeFalsy();
           })
           .then(done)
           .catch(done.fail);

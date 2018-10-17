@@ -60,7 +60,6 @@ describe('IDE branches actions', () => {
 
   describe('receiveBranchesError', () => {
     it('should should commit error', done => {
-
       testAction(
         receiveBranchesError,
         { search: TEST_SEARCH },

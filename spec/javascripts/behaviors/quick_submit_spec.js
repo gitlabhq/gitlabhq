@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import '~/behaviors/quick_submit';
 
-describe('Quick Submit behavior', function () {
+describe('Quick Submit behavior', function() {
   const keydownEvent = (options = { keyCode: 13, metaKey: true }) => $.Event('keydown', options);
 
   preloadFixtures('snippets/show.html.raw');

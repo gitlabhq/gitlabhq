@@ -5,8 +5,8 @@ import '~/lib/utils/text_utility';
 import '~/lib/utils/common_utils';
 
 describe('GLForm', () => {
-  describe('when instantiated', function () {
-    beforeEach((done) => {
+  describe('when instantiated', function() {
+    beforeEach(done => {
       this.form = $('<form class="gfm-form"><textarea class="js-gfm-input"></form>');
       this.textarea = this.form.find('textarea');
       spyOn($.prototype, 'off').and.returnValue(this.textarea);
@@ -23,7 +23,7 @@ describe('GLForm', () => {
     });
 
     describe('setupAutosize', () => {
-      beforeEach((done) => {
+      beforeEach(done => {
         this.glForm.setupAutosize();
         setTimeout(() => {
           done();

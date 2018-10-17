@@ -1,7 +1,7 @@
 import MonitoringStore from '~/monitoring/stores/monitoring_store';
 import MonitoringMock, { deploymentData, environmentData } from './mock_data';
 
-describe('MonitoringStore', function () {
+describe('MonitoringStore', function() {
   this.store = new MonitoringStore();
   this.store.storeMetrics(MonitoringMock.data);
 

@@ -42,7 +42,9 @@ describe('SidebarTodo', () => {
         vm.collapsed = true;
         Vue.nextTick()
           .then(() => {
-            expect(vm.buttonClasses).toBe('btn-blank btn-todo sidebar-collapsed-icon dont-change-state');
+            expect(vm.buttonClasses).toBe(
+              'btn-blank btn-todo sidebar-collapsed-icon dont-change-state',
+            );
           })
           .then(done)
           .catch(done.fail);
@@ -123,7 +125,7 @@ describe('SidebarTodo', () => {
       expect(vm.$el.nodeName).toBe('BUTTON');
 
       const elDataAttrs = vm.$el.dataset;
-      Object.keys(elDataAttrs).forEach((attr) => {
+      Object.keys(elDataAttrs).forEach(attr => {
         expect(elDataAttrs[attr]).toBe(dataAttributes[attr]);
       });
     });
@@ -142,7 +144,9 @@ describe('SidebarTodo', () => {
           const buttonIconEl = vm.$el.querySelector('svg');
 
           expect(buttonIconEl).not.toBeNull();
-          expect(buttonIconEl.querySelector('use').getAttribute('xlink:href')).toContain('todo-done');
+          expect(buttonIconEl.querySelector('use').getAttribute('xlink:href')).toContain(
+            'todo-done',
+          );
         })
         .then(done)
         .catch(done.fail);

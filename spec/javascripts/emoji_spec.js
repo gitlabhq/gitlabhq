@@ -235,11 +235,11 @@ describe('gl_emoji', () => {
       expect(isRainbowFlagEmoji('🏳🌈')).toBeTruthy();
     });
 
-    it('should not detect flag_white on its\' own', () => {
+    it("should not detect flag_white on its' own", () => {
       expect(isRainbowFlagEmoji('🏳')).toBeFalsy();
     });
 
-    it('should not detect rainbow on its\' own', () => {
+    it("should not detect rainbow on its' own", () => {
       expect(isRainbowFlagEmoji('🌈')).toBeFalsy();
     });
 
@@ -370,21 +370,13 @@ describe('gl_emoji', () => {
 
   describe('isEmojiUnicodeSupported', () => {
     it('should gracefully handle empty string with unicode support', () => {
-      const isSupported = isEmojiUnicodeSupported(
-        { '1.0': true },
-        '',
-        '1.0',
-      );
+      const isSupported = isEmojiUnicodeSupported({ '1.0': true }, '', '1.0');
 
       expect(isSupported).toBeTruthy();
     });
 
     it('should gracefully handle empty string without unicode support', () => {
-      const isSupported = isEmojiUnicodeSupported(
-        {},
-        '',
-        '1.0',
-      );
+      const isSupported = isEmojiUnicodeSupported({}, '', '1.0');
 
       expect(isSupported).toBeFalsy();
     });

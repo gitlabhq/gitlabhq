@@ -1,6 +1,8 @@
 import $ from 'jquery';
-import initUserInternalRegexPlaceholder, { PLACEHOLDER_USER_EXTERNAL_DEFAULT_FALSE,
-  PLACEHOLDER_USER_EXTERNAL_DEFAULT_TRUE } from '~/pages/admin/application_settings/account_and_limits';
+import initUserInternalRegexPlaceholder, {
+  PLACEHOLDER_USER_EXTERNAL_DEFAULT_FALSE,
+  PLACEHOLDER_USER_EXTERNAL_DEFAULT_TRUE,
+} from '~/pages/admin/application_settings/account_and_limits';
 
 describe('AccountAndLimits', () => {
   const FIXTURE = 'application_settings/accounts_and_limit.html.raw';
@@ -22,7 +24,7 @@ describe('AccountAndLimits', () => {
       expect($userInternalRegex.readOnly).toBeTruthy();
     });
 
-    it('is checked', (done) => {
+    it('is checked', done => {
       if (!$userDefaultExternal.prop('checked')) $userDefaultExternal.click();
 
       expect($userDefaultExternal.prop('checked')).toBeTruthy();

@@ -29,7 +29,7 @@ describe('GL Style Field Errors', function() {
 
     expect(customErrorElem.length).toBe(1);
 
-    const customErrors = this.fieldErrors.state.inputs.filter((input) => {
+    const customErrors = this.fieldErrors.state.inputs.filter(input => {
       return input.inputElement.hasClass(customErrorFlag);
     });
 
@@ -37,9 +37,18 @@ describe('GL Style Field Errors', function() {
   });
 
   it('should not show any errors before submit attempt', function() {
-    this.$form.find('.email').val('not-a-valid-email').keyup();
-    this.$form.find('.text-required').val('').keyup();
-    this.$form.find('.alphanumberic').val('?---*').keyup();
+    this.$form
+      .find('.email')
+      .val('not-a-valid-email')
+      .keyup();
+    this.$form
+      .find('.text-required')
+      .val('')
+      .keyup();
+    this.$form
+      .find('.alphanumberic')
+      .val('?---*')
+      .keyup();
 
     const errorsShown = this.$form.find('.gl-field-error-outline');
 
@@ -47,9 +56,18 @@ describe('GL Style Field Errors', function() {
   });
 
   it('should show errors when input valid is submitted', function() {
-    this.$form.find('.email').val('not-a-valid-email').keyup();
-    this.$form.find('.text-required').val('').keyup();
-    this.$form.find('.alphanumberic').val('?---*').keyup();
+    this.$form
+      .find('.email')
+      .val('not-a-valid-email')
+      .keyup();
+    this.$form
+      .find('.text-required')
+      .val('')
+      .keyup();
+    this.$form
+      .find('.alphanumberic')
+      .val('?---*')
+      .keyup();
 
     this.$form.submit();
 

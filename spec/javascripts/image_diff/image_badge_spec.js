@@ -10,9 +10,11 @@ describe('ImageBadge', () => {
   };
 
   it('should save actual property', () => {
-    const imageBadge = new ImageBadge(Object.assign({}, options, {
-      actual: imageMeta,
-    }));
+    const imageBadge = new ImageBadge(
+      Object.assign({}, options, {
+        actual: imageMeta,
+      }),
+    );
 
     const { actual } = imageBadge;
 
@@ -23,9 +25,11 @@ describe('ImageBadge', () => {
   });
 
   it('should save browser property', () => {
-    const imageBadge = new ImageBadge(Object.assign({}, options, {
-      browser: imageMeta,
-    }));
+    const imageBadge = new ImageBadge(
+      Object.assign({}, options, {
+        browser: imageMeta,
+      }),
+    );
 
     const { browser } = imageBadge;
 
@@ -79,9 +83,11 @@ describe('ImageBadge', () => {
     });
 
     it('should generate browser property', () => {
-      const imageBadge = new ImageBadge(Object.assign({}, options, {
-        imageEl: document.createElement('img'),
-      }));
+      const imageBadge = new ImageBadge(
+        Object.assign({}, options, {
+          imageEl: document.createElement('img'),
+        }),
+      );
 
       expect(imageDiffHelper.resizeCoordinatesToImageElement).toHaveBeenCalled();
       expect(imageBadge.browser).toEqual(true);

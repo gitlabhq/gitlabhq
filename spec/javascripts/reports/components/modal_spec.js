@@ -27,12 +27,19 @@ describe('Grouped Test Reports Modal', () => {
   });
 
   it('renders code block', () => {
-    expect(vm.$el.querySelector('code').textContent).toEqual(modalDataStructure.system_output.value);
+    expect(vm.$el.querySelector('code').textContent).toEqual(
+      modalDataStructure.system_output.value,
+    );
   });
 
   it('renders link', () => {
-    expect(vm.$el.querySelector('.js-modal-link').getAttribute('href')).toEqual(modalDataStructure.class.value);
-    expect(trimText(vm.$el.querySelector('.js-modal-link').textContent)).toEqual(modalDataStructure.class.value);
+    expect(vm.$el.querySelector('.js-modal-link').getAttribute('href')).toEqual(
+      modalDataStructure.class.value,
+    );
+
+    expect(trimText(vm.$el.querySelector('.js-modal-link').textContent)).toEqual(
+      modalDataStructure.class.value,
+    );
   });
 
   it('renders miliseconds', () => {
@@ -40,6 +47,8 @@ describe('Grouped Test Reports Modal', () => {
   });
 
   it('render title', () => {
-    expect(trimText(vm.$el.querySelector('.modal-title').textContent)).toEqual('Test#sum when a is 1 and b is 2 returns summary');
+    expect(trimText(vm.$el.querySelector('.modal-title').textContent)).toEqual(
+      'Test#sum when a is 1 and b is 2 returns summary',
+    );
   });
 });

@@ -4,16 +4,20 @@ import stackedProgressBarComponent from '~/vue_shared/components/stacked_progres
 
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
-const createComponent = (config) => {
+const createComponent = config => {
   const Component = Vue.extend(stackedProgressBarComponent);
-  const defaultConfig = Object.assign({}, {
-    successLabel: 'Synced',
-    failureLabel: 'Failed',
-    neutralLabel: 'Out of sync',
-    successCount: 25,
-    failureCount: 10,
-    totalCount: 5000,
-  }, config);
+  const defaultConfig = Object.assign(
+    {},
+    {
+      successLabel: 'Synced',
+      failureLabel: 'Failed',
+      neutralLabel: 'Out of sync',
+      successCount: 25,
+      failureCount: 10,
+      totalCount: 5000,
+    },
+    config,
+  );
 
   return mountComponent(Component, defaultConfig);
 };

@@ -19,8 +19,8 @@ describe('MRWidgetPipelineBlocked', () => {
   });
 
   it('renders information text', () => {
-    expect(
-      removeBreakLine(vm.$el.textContent).trim(),
-    ).toContain('Pipeline blocked. The pipeline for this merge request requires a manual action to proceed');
+    expect(removeBreakLine(vm.$el.textContent).trim()).toContain(
+      'Pipeline blocked. The pipeline for this merge request requires a manual action to proceed',
+    );
   });
 });

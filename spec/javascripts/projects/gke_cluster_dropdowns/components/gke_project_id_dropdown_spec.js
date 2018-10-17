@@ -53,41 +53,56 @@ describe('GkeProjectIdDropdown', () => {
     });
 
     it('returns default toggle text', done =>
-      vm.$nextTick().then(() => {
-        vm.setItem(emptyProjectMock);
+      vm
+        .$nextTick()
+        .then(() => {
+          vm.setItem(emptyProjectMock);
 
-        expect(vm.toggleText).toBe(LABELS.DEFAULT);
-        done();
-      }).catch(done.fail));
+          expect(vm.toggleText).toBe(LABELS.DEFAULT);
+          done();
+        })
+        .catch(done.fail));
 
     it('returns project name if project selected', done =>
-      vm.$nextTick().then(() => {
-        expect(vm.toggleText).toBe(selectedProjectMock.name);
-        done();
-      }).catch(done.fail));
+      vm
+        .$nextTick()
+        .then(() => {
+          expect(vm.toggleText).toBe(selectedProjectMock.name);
+          done();
+        })
+        .catch(done.fail));
 
     it('returns empty toggle text', done =>
-      vm.$nextTick().then(() => {
-        vm.$store.commit(SET_PROJECTS, null);
-        vm.setItem(emptyProjectMock);
+      vm
+        .$nextTick()
+        .then(() => {
+          vm.$store.commit(SET_PROJECTS, null);
+          vm.setItem(emptyProjectMock);
 
-        expect(vm.toggleText).toBe(LABELS.EMPTY);
-        done();
-      }).catch(done.fail));
+          expect(vm.toggleText).toBe(LABELS.EMPTY);
+          done();
+        })
+        .catch(done.fail));
   });
 
   describe('selectItem', () => {
     it('reflects new value when dropdown item is clicked', done => {
       expect(vm.$el.querySelector('input').value).toBe('');
 
-      return vm.$nextTick().then(() => {
-        vm.$el.querySelector('.dropdown-content button').click();
+      return vm
+        .$nextTick()
+        .then(() => {
+          vm.$el.querySelector('.dropdown-content button').click();
 
-        return vm.$nextTick().then(() => {
-          expect(vm.$el.querySelector('input').value).toBe(selectedProjectMock.projectId);
-          done();
-        }).catch(done.fail);
-      }).catch(done.fail);
+          return vm
+            .$nextTick()
+            .then(() => {
+              expect(vm.$el.querySelector('input').value).toBe(selectedProjectMock.projectId);
+              done();
+            })
+            .catch(done.fail);
+        })
+        .catch(done.fail);
     });
   });
 });

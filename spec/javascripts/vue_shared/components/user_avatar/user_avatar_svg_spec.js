@@ -4,9 +4,9 @@ import avatarSvg from 'icons/_icon_random.svg';
 
 const UserAvatarSvgComponent = Vue.extend(UserAvatarSvg);
 
-describe('User Avatar Svg Component', function () {
-  describe('Initialization', function () {
-    beforeEach(function () {
+describe('User Avatar Svg Component', function() {
+  describe('Initialization', function() {
+    beforeEach(function() {
       this.propsData = {
         size: 99,
         svg: avatarSvg,
@@ -17,11 +17,11 @@ describe('User Avatar Svg Component', function () {
       }).$mount();
     });
 
-    it('should return a defined Vue component', function () {
+    it('should return a defined Vue component', function() {
       expect(this.userAvatarSvg).toBeDefined();
     });
 
-    it('should have <svg> as a child element', function () {
+    it('should have <svg> as a child element', function() {
       expect(this.userAvatarSvg.$el.tagName).toEqual('svg');
       expect(this.userAvatarSvg.$el.innerHTML).toContain('<path');
     });

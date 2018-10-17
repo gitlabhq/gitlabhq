@@ -6,7 +6,7 @@ import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 import { mockSuggestedColors } from './mock_data';
 
-const createComponent = (headerTitle) => {
+const createComponent = headerTitle => {
   const Component = Vue.extend(dropdownCreateLabelComponent);
 
   return mountComponent(Component, {
@@ -38,7 +38,9 @@ describe('DropdownCreateLabelComponent', () => {
     });
 
     it('renders `Go back` button on component header', () => {
-      const backButtonEl = vm.$el.querySelector('.dropdown-title button.dropdown-title-button.dropdown-menu-back');
+      const backButtonEl = vm.$el.querySelector(
+        '.dropdown-title button.dropdown-title-button.dropdown-menu-back',
+      );
 
       expect(backButtonEl).not.toBe(null);
       expect(backButtonEl.querySelector('.fa-arrow-left')).not.toBe(null);
@@ -60,7 +62,9 @@ describe('DropdownCreateLabelComponent', () => {
     });
 
     it('renders `Close` button on component header', () => {
-      const closeButtonEl = vm.$el.querySelector('.dropdown-title button.dropdown-title-button.dropdown-menu-close');
+      const closeButtonEl = vm.$el.querySelector(
+        '.dropdown-title button.dropdown-title-button.dropdown-menu-close',
+      );
 
       expect(closeButtonEl).not.toBe(null);
       expect(closeButtonEl.querySelector('.fa-times.dropdown-menu-close-icon')).not.toBe(null);
@@ -85,7 +89,10 @@ describe('DropdownCreateLabelComponent', () => {
 
     it('renders color input element', () => {
       expect(vm.$el.querySelector('.dropdown-label-color-input')).not.toBe(null);
-      expect(vm.$el.querySelector('.dropdown-label-color-preview.js-dropdown-label-color-preview')).not.toBe(null);
+      expect(
+        vm.$el.querySelector('.dropdown-label-color-preview.js-dropdown-label-color-preview'),
+      ).not.toBe(null);
+
       expect(vm.$el.querySelector('input#new_label_color.default-dropdown-input')).not.toBe(null);
     });
 

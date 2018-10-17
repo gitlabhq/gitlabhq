@@ -250,6 +250,7 @@ describe('Application Row', () => {
       expect(generalErrorMessage.textContent.trim()).toEqual(
         `Something went wrong while installing ${DEFAULT_APPLICATION_STATE.title}`,
       );
+
       expect(statusErrorMessage.textContent.trim()).toEqual(statusReason);
     });
 
@@ -271,6 +272,7 @@ describe('Application Row', () => {
       expect(generalErrorMessage.textContent.trim()).toEqual(
         `Something went wrong while installing ${DEFAULT_APPLICATION_STATE.title}`,
       );
+
       expect(requestErrorMessage.textContent.trim()).toEqual(requestReason);
     });
   });

@@ -36,8 +36,7 @@ describe('IDE commit message field', () => {
   it('removed is-focused class on blur', done => {
     vm.$el.querySelector('textarea').focus();
 
-    vm
-      .$nextTick()
+    vm.$nextTick()
       .then(() => {
         expect(vm.$el.querySelector('.is-focused')).not.toBeNull();
 
@@ -70,8 +69,7 @@ describe('IDE commit message field', () => {
       it('does not highlight less than 50 characters', done => {
         vm.text = 'text less than 50 chars';
 
-        vm
-          .$nextTick()
+        vm.$nextTick()
           .then(() => {
             expect(vm.$el.querySelector('.highlights span').textContent).toContain(
               'text less than 50 chars',
@@ -87,8 +85,7 @@ describe('IDE commit message field', () => {
         vm.text =
           'text less than 50 chars that should not highlighted. text more than 50 should be highlighted';
 
-        vm
-          .$nextTick()
+        vm.$nextTick()
           .then(() => {
             expect(vm.$el.querySelector('.highlights span').textContent).toContain(
               'text less than 50 chars that should not highlighte',
@@ -108,8 +105,7 @@ describe('IDE commit message field', () => {
       it('does not highlight body text less tan 72 characters', done => {
         vm.text = 'subject line\nbody content';
 
-        vm
-          .$nextTick()
+        vm.$nextTick()
           .then(() => {
             expect(vm.$el.querySelectorAll('.highlights span').length).toBe(2);
             expect(vm.$el.querySelectorAll('mark')[1].style.display).toBe('none');
@@ -122,8 +118,7 @@ describe('IDE commit message field', () => {
         vm.text =
           'subject line\nbody content that will be highlighted when it is more than 72 characters in length';
 
-        vm
-          .$nextTick()
+        vm.$nextTick()
           .then(() => {
             expect(vm.$el.querySelectorAll('.highlights span').length).toBe(2);
             expect(vm.$el.querySelectorAll('mark')[1].style.display).not.toBe('none');
@@ -137,8 +132,7 @@ describe('IDE commit message field', () => {
         vm.text =
           'text less than 50 chars that should not highlighted\nbody content that will be highlighted when it is more than 72 characters in length';
 
-        vm
-          .$nextTick()
+        vm.$nextTick()
           .then(() => {
             expect(vm.$el.querySelectorAll('.highlights span').length).toBe(2);
             expect(vm.$el.querySelectorAll('mark').length).toBe(2);
@@ -156,8 +150,7 @@ describe('IDE commit message field', () => {
     it('updates transform of highlights', done => {
       vm.text = 'subject line\n\n\n\n\n\n\n\n\n\n\nbody content';
 
-      vm
-        .$nextTick()
+      vm.$nextTick()
         .then(() => {
           vm.$el.querySelector('textarea').scrollTo(0, 50);
 
