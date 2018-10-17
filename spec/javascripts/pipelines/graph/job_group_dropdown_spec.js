@@ -1,12 +1,12 @@
 import Vue from 'vue';
-import component from '~/pipelines/components/graph/dropdown_job_component.vue';
+import JobGroupDropdown from '~/pipelines/components/graph/job_group_dropdown.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
-describe('dropdown job component', () => {
-  const Component = Vue.extend(component);
+describe('job group dropdown component', () => {
+  const Component = Vue.extend(JobGroupDropdown);
   let vm;
 
-  const mock = {
+  const group = {
     jobs: [
       {
         id: 4256,
@@ -71,15 +71,15 @@ describe('dropdown job component', () => {
   });
 
   beforeEach(() => {
-    vm = mountComponent(Component, { job: mock });
+    vm = mountComponent(Component, { group });
   });
 
-  it('renders button with job name and size', () => {
-    expect(vm.$el.querySelector('button').textContent).toContain(mock.name);
-    expect(vm.$el.querySelector('button').textContent).toContain(mock.size);
+  it('renders button with group name and size', () => {
+    expect(vm.$el.querySelector('button').textContent).toContain(group.name);
+    expect(vm.$el.querySelector('button').textContent).toContain(group.size);
   });
 
   it('renders dropdown with jobs', () => {
-    expect(vm.$el.querySelectorAll('.scrollable-menu>ul>li').length).toEqual(mock.jobs.length);
+    expect(vm.$el.querySelectorAll('.scrollable-menu>ul>li').length).toEqual(group.jobs.length);
   });
 });

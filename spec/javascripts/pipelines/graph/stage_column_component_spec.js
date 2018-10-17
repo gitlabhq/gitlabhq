@@ -25,17 +25,16 @@ describe('stage column component', () => {
   };
 
   beforeEach(() => {
-
-    const mockJobs = [];
+    const mockGroups = [];
     for (let i = 0; i < 3; i += 1) {
       const mockedJob = Object.assign({}, mockJob);
       mockedJob.id += i;
-      mockJobs.push(mockedJob);
+      mockGroups.push(mockedJob);
     }
 
     component = mountComponent(StageColumnComponent, {
       title: 'foo',
-      jobs: mockJobs,
+      groups: mockGroups,
     });
   });
 
@@ -43,14 +42,14 @@ describe('stage column component', () => {
     expect(component.$el.querySelector('.stage-name').textContent.trim()).toEqual('foo');
   });
 
-  it('should render the provided jobs', () => {
+  it('should render the provided groups', () => {
     expect(component.$el.querySelectorAll('.builds-container > ul > li').length).toEqual(3);
   });
 
   describe('jobId', () => {
     it('escapes job name', () => {
       component = mountComponent(StageColumnComponent, {
-        jobs: [
+        groups: [
           {
             id: 4259,
             name: '<img src=x onerror=alert(document.domain)>',
@@ -64,9 +63,9 @@ describe('stage column component', () => {
         title: 'test',
       });
 
-      expect(
-        component.$el.querySelector('.builds-container li').getAttribute('id'),
-      ).toEqual('ci-badge-&lt;img src=x onerror=alert(document.domain)&gt;');
+      expect(component.$el.querySelector('.builds-container li').getAttribute('id')).toEqual(
+        'ci-badge-&lt;img src=x onerror=alert(document.domain)&gt;',
+      );
     });
   });
 });

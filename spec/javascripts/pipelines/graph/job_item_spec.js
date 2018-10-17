@@ -1,9 +1,9 @@
 import Vue from 'vue';
-import jobComponent from '~/pipelines/components/graph/job_component.vue';
+import JobItem from '~/pipelines/components/graph/job_item.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
-describe('pipeline graph job component', () => {
-  const JobComponent = Vue.extend(jobComponent);
+describe('pipeline graph job item', () => {
+  const JobComponent = Vue.extend(JobItem);
   let component;
 
   const mockJob = {
