@@ -23,63 +23,49 @@ class Deployment < ActiveRecord::Base
 
   scope :for_environment, -> (environment) { where(environment_id: environment) }
 
-  enum status: HasStatus::STATUSES_ENUM
+  enum status: { 
+    created: 0,
+    running: 1,
+    success: 2,
+    failed: 3,
+    canceled: 4
+  }
+
+  # Override enum's method to support legacy deployment records that do not have `status` value
+  scope :success, -> () { where('status = (?) OR status IS NULL', statuses[:success]) }
 
   state_machine :status, initial: :created do
-    event :enqueue do
-      transition created: :pending
-      transition [:success, :failed, :canceled, :skipped] => :running
-    end
-
     event :run do
       transition any - [:running] => :running
-    end
-
-    event :skip do
-      transition any - [:skipped] => :skipped
-    end
-
-    event :drop do
-      transition any - [:failed] => :failed
     end
 
     event :succeed do
       transition any - [:success] => :success
     end
 
+    event :drop do
+      transition any - [:failed] => :failed
+    end
+
     event :cancel do
       transition any - [:canceled] => :canceled
-    end
-
-    event :block do
-      transition any - [:manual] => :manual
-    end
-
-    event :delay do
-      transition any - [:scheduled] => :scheduled
     end
   end
 
   def update_status
     retry_optimistic_lock(self) do
       case deployable.try(:status)
-      when 'created' then nil
-      when 'pending' then enqueue
       when 'running' then run
       when 'success' then succeed
       when 'failed' then drop
-      when 'canceled' then cancel
-      when 'manual' then block
-      when 'scheduled' then delay
-      when 'skipped', nil then skip
+      when 'skipped', 'canceled' then cancel
       else
-        raise HasStatus::UnknownStatusError,
-              "Unknown status `#{statuses.latest.status}`"
+        # no-op
       end
     end
   end
 
-  # To set legacy deployment status to :success
+  # Override enum's method to support legacy deployment records that do not have `status` value
   def success?
     return true if status.nil?
 
