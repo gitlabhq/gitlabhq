@@ -8,7 +8,7 @@ class BuildDetailsEntity < JobEntity
   expose :user, using: UserEntity
   expose :runner, using: RunnerEntity
   expose :pipeline, using: PipelineEntity
-  expose :deployment_status, with: DetailedStatusEntity
+  expose :deployment_status, with: DetailedDeploymentStatusEntity
 
   expose :metadata, using: BuildMetadataEntity
 
