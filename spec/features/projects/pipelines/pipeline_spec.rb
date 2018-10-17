@@ -72,7 +72,6 @@ describe 'Pipeline', :js do
       expect(page).to have_link(pipeline.ref)
     end
 
-
     it_behaves_like 'showing user status' do
       let(:user_with_status) { pipeline.user }
 
@@ -252,7 +251,6 @@ describe 'Pipeline', :js do
         expect(page).to have_content(pipeline.ref)
       end
     end
-
   end
 
   context 'when user does not have access to read jobs' do
