@@ -91,7 +91,6 @@ export default {
           this.isLoggedIn &&
           this.isHover &&
           !this.isMatchLine &&
-          !this.isContextLine &&
           !this.isMetaLine,
       };
     },

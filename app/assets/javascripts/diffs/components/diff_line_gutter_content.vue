@@ -81,7 +81,6 @@ export default {
         this.showCommentButton &&
         this.isHover &&
         !this.isMatchLine &&
-        !this.isContextLine &&
         !this.isMetaLine &&
         !this.hasDiscussions
       );
