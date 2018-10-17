@@ -294,7 +294,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
-    describe 'Raw trace' do
+    describe 'Raw trace', :js do
       before do
         job.run!
 
@@ -302,7 +302,8 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       it do
-        expect(page).to have_css('.js-raw-link')
+        wait_for_all_requests
+        expect(page).to have_css('.js-raw-link-controller')
       end
     end
 
@@ -636,7 +637,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
-    context 'Canceled job' do
+    context 'Canceled job', :js do
       context 'with log' do
         let(:job) { create(:ci_build, :canceled, :trace_artifact, pipeline: pipeline) }
 
@@ -645,7 +646,8 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         end
 
         it 'renders job log' do
-          expect(page).to have_selector('.js-build-output')
+          wait_for_all_requests
+          expect(page).to have_selector('.js-build-trace')
         end
       end
 
@@ -658,7 +660,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         it 'renders empty state' do
           expect(page).to have_content(job.detailed_status(user).illustration[:title])
-          expect(page).not_to have_selector('.js-build-output')
+          expect(page).not_to have_selector('.js-build-trace')
           expect(page).to have_content('This job has been canceled')
         end
       end
@@ -673,7 +675,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
       it 'renders empty state' do
         expect(page).to have_content(job.detailed_status(user).illustration[:title])
-        expect(page).not_to have_selector('.js-build-output')
+        expect(page).not_to have_selector('.js-build-trace')
         expect(page).to have_content('This job has been skipped')
       end
     end
@@ -722,8 +724,8 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         visit project_job_path(project, job)
         wait_for_requests
 
-        expect(page).to have_css('.js-build-sidebar.right-sidebar-collapsed', visible: false)
-        expect(page).not_to have_css('.js-build-sidebar.right-sidebar-expanded', visible: false)
+        expect(page).to have_css('.js-job-sidebar.right-sidebar-collapsed', visible: false)
+        expect(page).not_to have_css('.js-job-sidebar.right-sidebar-expanded', visible: false)
       end
     end
 
@@ -734,8 +736,8 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         visit project_job_path(project, job)
         wait_for_requests
 
-        expect(page).to have_css('.js-build-sidebar.right-sidebar-expanded')
-        expect(page).not_to have_css('.js-build-sidebar.right-sidebar-collpased')
+        expect(page).to have_css('.js-job-sidebar.right-sidebar-expanded')
+        expect(page).not_to have_css('.js-job-sidebar.right-sidebar-collpased')
       end
     end
   end

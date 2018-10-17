@@ -94,7 +94,7 @@ describe('Header CI Component', () => {
     });
 
     it('should render sidebar toggle button', () => {
-      expect(vm.$el.querySelector('.js-sidebar-build-toggle')).toBeDefined();
+      expect(vm.$el.querySelector('.js-sidebar-build-toggle')).not.toBeNull();
     });
   });
 
