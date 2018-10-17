@@ -423,6 +423,31 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
+    context 'when job stops environment', :js do
+      let(:environment) { create(:environment, name: 'production', project: project) }
+      let(:build) do
+        create(
+          :ci_build,
+          :success,
+          :trace_live,
+          environment: environment.name,
+          pipeline: pipeline,
+          options: { environment: { action: 'stop' } }
+        )
+      end
+
+      before do
+        visit project_job_path(project, build)
+        wait_for_requests
+      end
+
+      it 'does not show environment information banner' do
+        expect(page).not_to have_selector('.js-environment-container')
+        expect(page).not_to have_selector('.environment-information')
+        expect(page).not_to have_text(environment.name)
+      end
+    end
+
     describe 'environment info in job view', :js do
       before do
         visit project_job_path(project, job)

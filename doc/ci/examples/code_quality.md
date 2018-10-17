@@ -1,7 +1,7 @@
 # Analyze your project's Code Quality
 
 CAUTION: **Caution:**
-The job definition shown below is supported on GitLab 11.4 and later versions.
+The job definition shown below is supported on GitLab 10.4 and later versions.
 For earlier versions, use the [old job definition](#old-job-definition).
 
 CAUTION: **Caution:**
@@ -16,7 +16,7 @@ and Docker.
 
 First, you need GitLab Runner with [docker-in-docker executor][dind].
 
-Once you set up the Runner, add a new job to `.gitlab-ci.yml`.
+Once you set up the Runner, add a new job to `.gitlab-ci.yml`, called `code_quality`.
 
 ```yaml
 code_quality:
@@ -34,8 +34,7 @@ code_quality:
         --volume /var/run/docker.sock:/var/run/docker.sock
         "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
   artifacts:
-    reports:
-      codequality: [gl-code-quality-report.json]
+    paths: [gl-code-quality-report.json]
 ```
 
 The above example will create a `code_quality` job in your CI/CD pipeline which
@@ -43,40 +42,13 @@ will scan your source code for code quality issues. The report will be saved
 as an artifact that you can later download and analyze.
 
 TIP: **Tip:**
-Starting with [GitLab Starter][ee] 11.4, this information will be automatically
-extracted and shown right in the merge request widget. To do so, the CI/CD job
-must have a codequality report artifact. Due to implementation limitations we
-always take the latest codequality artifact available.
-[Learn more on Code Quality in merge requests](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html).
-
-TIP: **Tip:**
 Starting with [GitLab Starter][ee] 9.3, this information will
 be automatically extracted and shown right in the merge request widget. To do
 so, the CI/CD job must be named `code_quality` and the artifact path must be
 `gl-code-quality-report.json`.
+[Learn more on Code Quality in merge requests](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html).
 
 ## Old job definition
-
-For GitLab 11.3 and earlier, the job should look like:
-
-```yaml
-code_quality:
-  image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
-  allow_failure: true
-  services:
-    - docker:stable-dind
-  script:
-    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
-    - docker run
-        --env SOURCE_CODE="$PWD"
-        --volume "$PWD":/code
-        --volume /var/run/docker.sock:/var/run/docker.sock
-        "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
-  artifacts:
-      paths: [gl-code-quality-report.json]
-```
 
 For GitLab 10.3 and earlier, the job should look like:
 

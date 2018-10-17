@@ -33,6 +33,7 @@ With GitLab merge requests, you can:
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
 
+- Prepare a full review and submit it once it's ready with [Merge Request Reviews](../../discussions/index.md#merge-request-reviews) **[PREMIUM]**
 - View the deployment process across projects with [Multi-Project Pipelines](../../../ci/multi_project_pipelines.md#multi-project-pipeline-graphs) **[PREMIUM]**
 - Request [approvals](merge_request_approvals.md) from your managers **[STARTER]**
 - Analyze the impact of your changes with [Code Quality reports](code_quality.md) **[STARTER]**
@@ -148,6 +149,14 @@ Resolving comments prevents you from forgetting to address feedback and lets
 you hide discussions that are no longer relevant.
 
 [Read more about resolving discussion comments in merge requests reviews.](../../discussions/index.md)
+
+## Perform a Review **[PREMIUM]**
+
+Start a review in order to create multiple comments on a diff and publish them once you're ready.
+Starting a review allows you to get all your thoughts in order and ensure you haven't missed anything
+before submitting all your comments.
+
+[Learn more about Merge Request Reviews](../../discussions/index.md#merge-request-reviews)
 
 ## Squash and merge
 

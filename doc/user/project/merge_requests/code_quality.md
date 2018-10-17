@@ -27,19 +27,19 @@ For instance, consider the following workflow:
 
 ## How it works
 
-In order for the report to show in the merge request, you need to specify a job
-that will analyze the code and upload the resulting output JSON as a codequality
-report artifact. GitLab will then check this file and show the information
-inside the merge request.
+In order for the report to show in the merge request, you need to specify a
+`code_quality` job (exact name) that will analyze the code and upload the resulting
+`gl-code-quality-report.json` as an artifact. GitLab will then check this file and show
+the information inside the merge request.
 
 >**Note:**
 If the Code Climate report doesn't have anything to compare to, no information
 will be displayed in the merge request area. That is the case when you add the
-code quality job in your `.gitlab-ci.yml` for the very first time.
+`code_quality` job in your `.gitlab-ci.yml` for the very first time.
 Consecutive merge requests will have something to compare to and the code quality
 report will be shown properly.
 
-For more information on how the code quality job should look like, check the
+For more information on how the `code_quality` job should look like, check the
 example on [analyzing a project's code quality with Code Climate CLI][cc-docs].
 
 CAUTION: **Caution:**

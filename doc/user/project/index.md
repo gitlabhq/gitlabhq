@@ -86,10 +86,11 @@ website with GitLab Pages
 - [Cycle Analytics](cycle_analytics.md): Review your development lifecycle
 - [Security Dashboard](security_dashboard.md): Security Dashboard
 - [Syntax highlighting](highlighting.md): An alternative to customize
-your code blocks, overriding GitLab's default choice of language
+  your code blocks, overriding GitLab's default choice of language
 - [Badges](badges.md): Badges for the project overview
 - [Maven packages](packages/maven_repository.md): Your private Maven repository in GitLab **[PREMIUM]**
 - [Code owners](code_owners.md): Specify code owners for certain files **[STARTER]**
+- [License Management](merge_requests/license_management.md): Approve and blacklist licenses for projects **[ULTIMATE]**
 
 ### Project's integrations
 
