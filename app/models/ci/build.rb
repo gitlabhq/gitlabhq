@@ -701,21 +701,17 @@ module Ci
     end
 
     # Virtual deployment status depending on the environment status.
-    # def deployment_status
-    #   last_deployment.detailed_status
-    # end
+    def deployment_status
+      return nil unless starts_environment?
 
-    # def deployment_status
-    #   return nil unless starts_environment?
+      if success?
+        return successful_deployment_status
+      elsif complete? && !success?
+        return :failed
+      end
 
-    #   if success?
-    #     return successful_deployment_status
-    #   elsif complete? && !success?
-    #     return :failed
-    #   end
-
-    #   :creating
-    # end
+      :creating
+    end
 
     private
 
