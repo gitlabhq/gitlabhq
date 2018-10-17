@@ -5,6 +5,8 @@ import Icon from '~/vue_shared/components/icon.vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import FileRowStats from './file_row_stats.vue';
 
+const treeListStorageKey = 'mr_diff_tree_list';
+
 export default {
   directives: {
     Tooltip,
@@ -14,9 +16,11 @@ export default {
     FileRow,
   },
   data() {
+    const treeListStored = localStorage.getItem(treeListStorageKey);
+
     return {
       search: '',
-      renderTreeList: true,
+      renderTreeList: treeListStored !== null ? treeListStored === 'true' : true,
       focusSearch: false,
     };
   },
@@ -42,12 +46,19 @@ export default {
     ...mapActions('diffs', ['toggleTreeOpen', 'scrollToFile']),
     clearSearch() {
       this.search = '';
+      this.toggleFocusSearch(false)
     },
     toggleRenderTreeList(toggle) {
       this.renderTreeList = toggle;
+      localStorage.setItem(treeListStorageKey, this.renderTreeList);
     },
     toggleFocusSearch(toggle) {
       this.focusSearch = toggle;
+    },
+    blurSearch() {
+      if (this.search.trim() === '') {
+        this.toggleFocusSearch(false);
+      }
     },
   },
   FileRowStats,
@@ -68,13 +79,13 @@ export default {
           type="search"
           class="form-control"
           @focus="toggleFocusSearch(true)"
-          @blur="toggleFocusSearch(false)"
+          @blur="blurSearch"
         />
         <button
           v-show="search"
           :aria-label="__('Clear search')"
           type="button"
-          class="position-absolute tree-list-icon tree-list-clear-icon border-0 p-0"
+          class="position-absolute bg-transparent tree-list-icon tree-list-clear-icon border-0 p-0"
           @click="clearSearch"
         >
           <icon
@@ -88,8 +99,8 @@ export default {
       >
         <button
           v-tooltip.hover
-          :aria-label="__('Switch to file list')"
-          :title="__('Switch to file list')"
+          :aria-label="__('File view')"
+          :title="__('File view')"
           :class="{
             active: !renderTreeList
           }"
@@ -103,8 +114,8 @@ export default {
         </button>
         <button
           v-tooltip.hover
-          :aria-label="__('Switch to tree list')"
-          :title="__('Switch to tree list')"
+          :aria-label="__('Tree view')"
+          :title="__('Tree view')"
           :class="{
             active: renderTreeList
           }"
