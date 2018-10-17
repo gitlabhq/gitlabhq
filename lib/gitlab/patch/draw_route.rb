@@ -13,11 +13,15 @@ module Gitlab
       end
 
       def draw_ce(routes_name)
-        draw_route(Rails.root.join("config/routes/#{routes_name}.rb"))
+        draw_route(route_path("config/routes/#{routes_name}.rb"))
       end
 
       def draw_ee(routes_name)
-        draw_route(Rails.root.join("ee/config/routes/#{routes_name}.rb"))
+        draw_route(route_path("ee/config/routes/#{routes_name}.rb"))
+      end
+
+      def route_path(routes_name)
+        Rails.root.join(routes_name)
       end
 
       def draw_route(path)
