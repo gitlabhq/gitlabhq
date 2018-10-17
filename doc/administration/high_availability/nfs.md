@@ -37,6 +37,30 @@ options:
   circumstances it could lead to data loss if a failure occurs before data has
   synced.
 
+### Known issues
+
+On some customer systems, we have seen NFS clients slow precipitously due to
+[excessive network traffic from numerous `TEST_STATEID` NFS
+messages](https://gitlab.com/gitlab-org/gitlab-ce/issues/52017). This is
+likely due to a [Linux kernel
+bug](https://bugzilla.redhat.com/show_bug.cgi?id=1552203) that may be fixed in
+[more recent kernels with this
+commit](https://github.com/torvalds/linux/commit/95da1b3a5aded124dd1bda1e3cdb876184813140).
+
+Users encountering a similar issue may be advised to disable the NFS server
+delegation feature, which is an optimization to reduce the number of network
+round-trips needed to read or write files. To disable NFS server delegations
+on an Linux NFS server, do the following:
+
+1. On the NFS server, run:
+
+    ```sh
+    echo 0 > /proc/sys/fs/leases-enable
+    sysctl -w fs.leases-enable=0
+    ```
+
+2. Restart the NFS server process. For example, on CentOS run `service nfs restart`.
+
 ## AWS Elastic File System
 
 GitLab strongly recommends against using AWS Elastic File System (EFS).
@@ -63,10 +87,11 @@ GitLab.com:
 10.1.1.1:/var/opt/gitlab/git-data /var/opt/gitlab/git-data nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
 ```
 
-Notice several options that you should consider using:
+Note there are several options that you should consider using:
 
 | Setting | Description |
 | ------- | ----------- |
+| `vers=4.1` |NFS v4.1 should be used instead of v4.0 because there is a Linux [NFS client bug in v4.0](https://gitlab.com/gitlab-org/gitaly/issues/1339) that can cause significant problems due to stale data.
 | `nofail` | Don't halt boot process waiting for this mount to become available
 | `lookupcache=positive` | Tells the NFS client to honor `positive` cache results but invalidates any `negative` cache results. Negative cache results cause problems with Git. Specifically, a `git push` can fail to register uniformly across all NFS clients. The negative cache causes the clients to 'remember' that the files did not exist previously.
 
