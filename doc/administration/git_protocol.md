@@ -28,7 +28,7 @@ server to accept the `GIT_PROTOCOL` environment,
 AcceptEnv GIT_PROTOCOL
 ```
 
-Once configured, restart the `SSH` daemon. In Ubuntu, run:
+Once configured, restart the SSH daemon. In Ubuntu, run:
 
 ```sh
 sudo service ssh restart
