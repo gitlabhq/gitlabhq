@@ -93,7 +93,7 @@ describe('MemoryGraph', () => {
       expect(el.querySelector('svg')).toBeDefined();
     });
 
-    it('should render graph when renderGraph is called internally', (done) => {
+    it('should render graph when renderGraph is called internally', done => {
       const { pathD, pathViewBox, dotX, dotY } = vm.getGraphPlotValues(mockMedian, mockMetrics);
       vm.height = defaultHeight;
       vm.width = defaultWidth;
@@ -113,7 +113,9 @@ describe('MemoryGraph', () => {
 
         expect(pathEl).toBeDefined();
         expect(pathEl.getAttribute('d')).toBe(`M ${pathD}`);
-        expect(pathEl.getAttribute('viewBox')).toBe(`0 0 ${pathViewBox.lineWidth} ${pathViewBox.diff}`);
+        expect(pathEl.getAttribute('viewBox')).toBe(
+          `0 0 ${pathViewBox.lineWidth} ${pathViewBox.diff}`,
+        );
 
         const circleEl = el.querySelector('circle');
 

@@ -1,9 +1,7 @@
-import bp, {
-  breakpoints,
-} from '~/breakpoints';
+import bp, { breakpoints } from '~/breakpoints';
 
 describe('breakpoints', () => {
-  Object.keys(breakpoints).forEach((key) => {
+  Object.keys(breakpoints).forEach(key => {
     const size = breakpoints[key];
 
     it(`returns ${key} when larger than ${size}`, () => {

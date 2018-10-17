@@ -84,8 +84,7 @@ describe('ide component', () => {
     it('calls toggleFileFinder on `t` key press', done => {
       Mousetrap.trigger('t');
 
-      vm
-        .$nextTick()
+      vm.$nextTick()
         .then(() => {
           expect(vm.toggleFileFinder).toHaveBeenCalled();
         })
@@ -96,8 +95,7 @@ describe('ide component', () => {
     it('calls toggleFileFinder on `command+p` key press', done => {
       Mousetrap.trigger('command+p');
 
-      vm
-        .$nextTick()
+      vm.$nextTick()
         .then(() => {
           expect(vm.toggleFileFinder).toHaveBeenCalled();
         })
@@ -108,8 +106,7 @@ describe('ide component', () => {
     it('calls toggleFileFinder on `ctrl+p` key press', done => {
       Mousetrap.trigger('ctrl+p');
 
-      vm
-        .$nextTick()
+      vm.$nextTick()
         .then(() => {
           expect(vm.toggleFileFinder).toHaveBeenCalled();
         })

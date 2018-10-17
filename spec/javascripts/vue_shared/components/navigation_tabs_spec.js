@@ -46,7 +46,9 @@ describe('navigation tabs component', () => {
 
   it('should render badge', () => {
     expect(vm.$el.querySelector('.js-pipelines-tab-all .badge').textContent.trim()).toEqual('1');
-    expect(vm.$el.querySelector('.js-pipelines-tab-pending .badge').textContent.trim()).toEqual('0');
+    expect(vm.$el.querySelector('.js-pipelines-tab-pending .badge').textContent.trim()).toEqual(
+      '0',
+    );
   });
 
   it('should not render badge', () => {

@@ -11,7 +11,7 @@ describe('Pagination component', () => {
     spy = jasmine.createSpy('spy');
     PaginationComponent = Vue.extend(paginationComp);
 
-    mountComponent = function (props) {
+    mountComponent = function(props) {
       return new PaginationComponent({
         propsData: props,
       }).$mount();
@@ -139,9 +139,7 @@ describe('Pagination component', () => {
           change: spy,
         });
 
-        expect(
-          component.$el.querySelector('.js-next-button').textContent.trim(),
-        ).toEqual('Next');
+        expect(component.$el.querySelector('.js-next-button').textContent.trim()).toEqual('Next');
 
         component.$el.querySelector('.js-next-button a').click();
 

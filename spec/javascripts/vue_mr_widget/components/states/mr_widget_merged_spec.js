@@ -30,7 +30,8 @@ describe('MRWidgetMerged', () => {
           name: 'Administrator',
           username: 'root',
           webUrl: 'http://localhost:3000/root',
-          avatarUrl: 'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+          avatarUrl:
+            'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
         },
         mergedAt: 'Jan 24, 2018 1:02pm GMT+0000',
         readableMergedAt: '',
@@ -41,7 +42,8 @@ describe('MRWidgetMerged', () => {
       updatedAt: 'mergedUpdatedAt',
       shortMergeCommitSha: '958c0475',
       mergeCommitSha: '958c047516e182dfc52317f721f696e8a1ee85ed',
-      mergeCommitPath: 'http://localhost:3000/root/nautilus/commit/f7ce827c314c9340b075657fd61c789fb01cf74d',
+      mergeCommitPath:
+        'http://localhost:3000/root/nautilus/commit/f7ce827c314c9340b075657fd61c789fb01cf74d',
       sourceBranch: 'bar',
       targetBranch,
     };
@@ -121,14 +123,16 @@ describe('MRWidgetMerged', () => {
 
   describe('methods', () => {
     describe('removeSourceBranch', () => {
-      it('should set flag and call service then request main component to update the widget', (done) => {
-        spyOn(vm.service, 'removeSourceBranch').and.returnValue(new Promise((resolve) => {
-          resolve({
-            data: {
-              message: 'Branch was removed',
-            },
-          });
-        }));
+      it('should set flag and call service then request main component to update the widget', done => {
+        spyOn(vm.service, 'removeSourceBranch').and.returnValue(
+          new Promise(resolve => {
+            resolve({
+              data: {
+                message: 'Branch was removed',
+              },
+            });
+          }),
+        );
 
         vm.removeSourceBranch();
         setTimeout(() => {
@@ -164,10 +168,12 @@ describe('MRWidgetMerged', () => {
 
   it('shows button to copy commit SHA to clipboard', () => {
     expect(selectors.copyMergeShaButton).toExist();
-    expect(selectors.copyMergeShaButton.getAttribute('data-clipboard-text')).toBe(vm.mr.mergeCommitSha);
+    expect(selectors.copyMergeShaButton.getAttribute('data-clipboard-text')).toBe(
+      vm.mr.mergeCommitSha,
+    );
   });
 
-  it('hides button to copy commit SHA if SHA does not exist', (done) => {
+  it('hides button to copy commit SHA if SHA does not exist', done => {
     vm.mr.mergeCommitSha = null;
 
     Vue.nextTick(() => {
@@ -183,7 +189,7 @@ describe('MRWidgetMerged', () => {
     expect(selectors.mergeCommitShaLink.href).toBe(vm.mr.mergeCommitPath);
   });
 
-  it('should not show source branch removed text', (done) => {
+  it('should not show source branch removed text', done => {
     vm.mr.sourceBranchRemoved = false;
 
     Vue.nextTick(() => {
@@ -193,7 +199,7 @@ describe('MRWidgetMerged', () => {
     });
   });
 
-  it('should show source branch removing text', (done) => {
+  it('should show source branch removing text', done => {
     vm.mr.isRemovingSourceBranch = true;
     vm.mr.sourceBranchRemoved = false;
 
@@ -206,8 +212,8 @@ describe('MRWidgetMerged', () => {
   });
 
   it('should use mergedEvent mergedAt as tooltip title', () => {
-    expect(
-      vm.$el.querySelector('time').getAttribute('data-original-title'),
-    ).toBe('Jan 24, 2018 1:02pm GMT+0000');
+    expect(vm.$el.querySelector('time').getAttribute('data-original-title')).toBe(
+      'Jan 24, 2018 1:02pm GMT+0000',
+    );
   });
 });

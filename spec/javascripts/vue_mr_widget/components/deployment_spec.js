@@ -102,19 +102,20 @@ describe('Deployment component', () => {
   describe('methods', () => {
     describe('stopEnvironment', () => {
       const url = '/foo/bar';
-      const returnPromise = () => new Promise((resolve) => {
-        resolve({
-          data: {
-            redirect_url: url,
-          },
+      const returnPromise = () =>
+        new Promise(resolve => {
+          resolve({
+            data: {
+              redirect_url: url,
+            },
+          });
         });
-      });
       const mockStopEnvironment = () => {
         vm.stopEnvironment(deploymentMockData);
         return vm;
       };
 
-      it('should show a confirm dialog and call service.stopEnvironment when confirmed', (done) => {
+      it('should show a confirm dialog and call service.stopEnvironment when confirmed', done => {
         spyOn(window, 'confirm').and.returnValue(true);
         spyOn(MRWidgetService, 'stopEnvironment').and.returnValue(returnPromise(true));
         const visitUrl = spyOnDependency(deploymentComponent, 'visitUrl').and.returnValue(true);
@@ -148,12 +149,16 @@ describe('Deployment component', () => {
     });
 
     it('renders deployment name', () => {
-      expect(el.querySelector('.js-deploy-meta').getAttribute('href')).toEqual(deploymentMockData.url);
+      expect(el.querySelector('.js-deploy-meta').getAttribute('href')).toEqual(
+        deploymentMockData.url,
+      );
       expect(el.querySelector('.js-deploy-meta').innerText).toContain(deploymentMockData.name);
     });
 
     it('renders external URL', () => {
-      expect(el.querySelector('.js-deploy-url').getAttribute('href')).toEqual(deploymentMockData.external_url);
+      expect(el.querySelector('.js-deploy-url').getAttribute('href')).toEqual(
+        deploymentMockData.external_url,
+      );
       expect(el.querySelector('.js-deploy-url').innerText).toContain('View app');
     });
 

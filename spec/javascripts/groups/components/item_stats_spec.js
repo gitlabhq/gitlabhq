@@ -22,7 +22,7 @@ describe('ItemStatsComponent', () => {
   describe('computed', () => {
     describe('visibilityIcon', () => {
       it('should return icon class based on `item.visibility` value', () => {
-        Object.keys(VISIBILITY_TYPE_ICON).forEach((visibility) => {
+        Object.keys(VISIBILITY_TYPE_ICON).forEach(visibility => {
           const item = Object.assign({}, mockParentGroupItem, { visibility });
           const vm = createComponent(item);
 
@@ -34,7 +34,7 @@ describe('ItemStatsComponent', () => {
 
     describe('visibilityTooltip', () => {
       it('should return tooltip string for Group based on `item.visibility` value', () => {
-        Object.keys(GROUP_VISIBILITY_TYPE).forEach((visibility) => {
+        Object.keys(GROUP_VISIBILITY_TYPE).forEach(visibility => {
           const item = Object.assign({}, mockParentGroupItem, {
             visibility,
             type: ITEM_TYPE.GROUP,
@@ -47,7 +47,7 @@ describe('ItemStatsComponent', () => {
       });
 
       it('should return tooltip string for Project based on `item.visibility` value', () => {
-        Object.keys(PROJECT_VISIBILITY_TYPE).forEach((visibility) => {
+        Object.keys(PROJECT_VISIBILITY_TYPE).forEach(visibility => {
           const item = Object.assign({}, mockParentGroupItem, {
             visibility,
             type: ITEM_TYPE.PROJECT,

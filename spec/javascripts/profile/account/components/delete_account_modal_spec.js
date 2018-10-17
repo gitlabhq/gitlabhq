@@ -28,7 +28,7 @@ describe('DeleteAccountModal component', () => {
   };
 
   describe('with password confirmation', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       vm = mountComponent(Component, {
         actionUrl,
         confirmWithPassword: true,
@@ -42,7 +42,7 @@ describe('DeleteAccountModal component', () => {
         .catch(done.fail);
     });
 
-    it('does not accept empty password', (done) => {
+    it('does not accept empty password', done => {
       const { form, input, submitButton } = findElements();
       spyOn(form, 'submit');
       input.value = '';
@@ -60,7 +60,7 @@ describe('DeleteAccountModal component', () => {
         .catch(done.fail);
     });
 
-    it('submits form with password', (done) => {
+    it('submits form with password', done => {
       const { form, input, submitButton } = findElements();
       spyOn(form, 'submit');
       input.value = 'anything';
@@ -80,7 +80,7 @@ describe('DeleteAccountModal component', () => {
   });
 
   describe('with username confirmation', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       vm = mountComponent(Component, {
         actionUrl,
         confirmWithPassword: false,
@@ -94,7 +94,7 @@ describe('DeleteAccountModal component', () => {
         .catch(done.fail);
     });
 
-    it('does not accept wrong username', (done) => {
+    it('does not accept wrong username', done => {
       const { form, input, submitButton } = findElements();
       spyOn(form, 'submit');
       input.value = 'this is wrong';
@@ -112,7 +112,7 @@ describe('DeleteAccountModal component', () => {
         .catch(done.fail);
     });
 
-    it('submits form with correct username', (done) => {
+    it('submits form with correct username', done => {
       const { form, input, submitButton } = findElements();
       spyOn(form, 'submit');
       input.value = username;

@@ -56,7 +56,7 @@ describe('CopyAsGFM', () => {
           const fragment = document.createDocumentFragment();
           const node = document.createElement('div');
           node.innerHTML = html;
-          Array.from(node.childNodes).forEach((item) => fragment.appendChild(item));
+          Array.from(node.childNodes).forEach(item => fragment.appendChild(item));
           return fragment;
         },
       }),

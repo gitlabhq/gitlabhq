@@ -79,7 +79,7 @@ describe('Issue', function() {
     expect($btn).toHaveText(isIssueInitiallyOpen ? 'Close issue' : 'Reopen issue');
   }
 
-  [true, false].forEach((isIssueInitiallyOpen) => {
+  [true, false].forEach(isIssueInitiallyOpen => {
     describe(`with ${isIssueInitiallyOpen ? 'open' : 'closed'} issue`, function() {
       const action = isIssueInitiallyOpen ? 'close' : 'reopen';
       let mock;
@@ -134,7 +134,7 @@ describe('Issue', function() {
 
       it(`${action}s the issue`, function(done) {
         mockCloseButtonResponseSuccess(this.$triggeredButton.attr('href'), {
-          id: 34
+          id: 34,
         });
         mockCanCreateBranch(!isIssueInitiallyOpen);
 
@@ -153,7 +153,7 @@ describe('Issue', function() {
 
       it(`fails to ${action} the issue if saved:false`, function(done) {
         mockCloseButtonResponseSuccess(this.$triggeredButton.attr('href'), {
-          saved: false
+          saved: false,
         });
         mockCanCreateBranch(isIssueInitiallyOpen);
 

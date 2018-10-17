@@ -24,26 +24,32 @@ describe('collapsible registry container', () => {
   describe('toggle', () => {
     it('should be closed by default', () => {
       expect(vm.$el.querySelector('.container-image-tags')).toBe(null);
-      expect(vm.$el.querySelector('.container-image-head i').className).toEqual('fa fa-chevron-right');
+      expect(vm.$el.querySelector('.container-image-head i').className).toEqual(
+        'fa fa-chevron-right',
+      );
     });
 
-    it('should be open when user clicks on closed repo', (done) => {
+    it('should be open when user clicks on closed repo', done => {
       vm.$el.querySelector('.js-toggle-repo').click();
       Vue.nextTick(() => {
         expect(vm.$el.querySelector('.container-image-tags')).toBeDefined();
-        expect(vm.$el.querySelector('.container-image-head i').className).toEqual('fa fa-chevron-up');
+        expect(vm.$el.querySelector('.container-image-head i').className).toEqual(
+          'fa fa-chevron-up',
+        );
         done();
       });
     });
 
-    it('should be closed when the user clicks on an opened repo', (done) => {
+    it('should be closed when the user clicks on an opened repo', done => {
       vm.$el.querySelector('.js-toggle-repo').click();
 
       Vue.nextTick(() => {
         vm.$el.querySelector('.js-toggle-repo').click();
         Vue.nextTick(() => {
           expect(vm.$el.querySelector('.container-image-tags')).toBe(null);
-          expect(vm.$el.querySelector('.container-image-head i').className).toEqual('fa fa-chevron-right');
+          expect(vm.$el.querySelector('.container-image-head i').className).toEqual(
+            'fa fa-chevron-right',
+          );
           done();
         });
       });

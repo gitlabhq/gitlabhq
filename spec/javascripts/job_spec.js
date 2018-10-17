@@ -43,7 +43,7 @@ describe('Job', () => {
     });
 
     describe('setup', () => {
-      beforeEach(function (done) {
+      beforeEach(function(done) {
         job = new Job();
 
         waitForPromises()
@@ -51,7 +51,7 @@ describe('Job', () => {
           .catch(done.fail);
       });
 
-      it('copies build options', function () {
+      it('copies build options', function() {
         expect(job.pagePath).toBe(JOB_URL);
         expect(job.buildStatus).toBe('success');
         expect(job.buildStage).toBe('test');
@@ -60,7 +60,7 @@ describe('Job', () => {
     });
 
     describe('running build', () => {
-      it('updates the build trace on an interval', function (done) {
+      it('updates the build trace on an interval', function(done) {
         response = {
           html: '<span>Update<span>',
           status: 'running',
@@ -94,7 +94,7 @@ describe('Job', () => {
           .catch(done.fail);
       });
 
-      it('replaces the entire build trace', (done) => {
+      it('replaces the entire build trace', done => {
         response = {
           html: '<span>Update<span>',
           status: 'running',
@@ -127,7 +127,7 @@ describe('Job', () => {
 
     describe('truncated information', () => {
       describe('when size is less than total', () => {
-        it('shows information about truncated log', (done) => {
+        it('shows information about truncated log', done => {
           response = {
             html: '<span>Update</span>',
             status: 'success',
@@ -140,13 +140,15 @@ describe('Job', () => {
 
           waitForPromises()
             .then(() => {
-              expect(document.querySelector('.js-truncated-info').classList).not.toContain('hidden');
+              expect(document.querySelector('.js-truncated-info').classList).not.toContain(
+                'hidden',
+              );
             })
             .then(done)
             .catch(done.fail);
         });
 
-        it('shows the size in KiB', (done) => {
+        it('shows the size in KiB', done => {
           const size = 50;
 
           response = {
@@ -161,15 +163,15 @@ describe('Job', () => {
 
           waitForPromises()
             .then(() => {
-              expect(
-                document.querySelector('.js-truncated-info-size').textContent.trim(),
-              ).toEqual(`${numberToHumanSize(size)}`);
+              expect(document.querySelector('.js-truncated-info-size').textContent.trim()).toEqual(
+                `${numberToHumanSize(size)}`,
+              );
             })
             .then(done)
             .catch(done.fail);
         });
 
-        it('shows incremented size', (done) => {
+        it('shows incremented size', done => {
           response = {
             html: '<span>Update</span>',
             status: 'success',
@@ -183,9 +185,9 @@ describe('Job', () => {
 
           waitForPromises()
             .then(() => {
-              expect(
-                document.querySelector('.js-truncated-info-size').textContent.trim(),
-              ).toEqual(`${numberToHumanSize(50)}`);
+              expect(document.querySelector('.js-truncated-info-size').textContent.trim()).toEqual(
+                `${numberToHumanSize(50)}`,
+              );
 
               response = {
                 html: '<span>Update</span>',
@@ -199,9 +201,9 @@ describe('Job', () => {
             .then(() => jasmine.clock().tick(4001))
             .then(waitForPromises)
             .then(() => {
-              expect(
-                document.querySelector('.js-truncated-info-size').textContent.trim(),
-              ).toEqual(`${numberToHumanSize(60)}`);
+              expect(document.querySelector('.js-truncated-info-size').textContent.trim()).toEqual(
+                `${numberToHumanSize(60)}`,
+              );
             })
             .then(done)
             .catch(done.fail);
@@ -218,14 +220,14 @@ describe('Job', () => {
 
           job = new Job();
 
-          expect(
-            document.querySelector('.js-raw-link').textContent.trim(),
-          ).toContain('Complete Raw');
+          expect(document.querySelector('.js-raw-link').textContent.trim()).toContain(
+            'Complete Raw',
+          );
         });
       });
 
       describe('when size is equal than total', () => {
-        it('does not show the trunctated information', (done) => {
+        it('does not show the trunctated information', done => {
           response = {
             html: '<span>Update</span>',
             status: 'success',
@@ -247,7 +249,7 @@ describe('Job', () => {
     });
 
     describe('output trace', () => {
-      beforeEach((done) => {
+      beforeEach(done => {
         response = {
           html: '<span>Update</span>',
           status: 'success',
@@ -272,22 +274,18 @@ describe('Job', () => {
       });
 
       it('should render received output', () => {
-        expect(
-          document.querySelector('.js-build-output').innerHTML,
-        ).toEqual('<span>Update</span>');
+        expect(document.querySelector('.js-build-output').innerHTML).toEqual('<span>Update</span>');
       });
     });
   });
 
   describe('getBuildTrace', () => {
-    it('should request build trace with state parameter', (done) => {
+    it('should request build trace with state parameter', done => {
       spyOn(axios, 'get').and.callThrough();
       job = new Job();
 
       setTimeout(() => {
-        expect(axios.get).toHaveBeenCalledWith(
-          `${JOB_URL}/trace.json`, { params: { state: '' } },
-        );
+        expect(axios.get).toHaveBeenCalledWith(`${JOB_URL}/trace.json`, { params: { state: '' } });
         done();
       }, 0);
     });

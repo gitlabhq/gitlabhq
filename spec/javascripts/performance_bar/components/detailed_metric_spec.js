@@ -54,11 +54,9 @@ describe('detailedMetric', () => {
     });
 
     it('adds a modal with a table of the details', () => {
-      vm.$el
-        .querySelectorAll('.performance-bar-modal td strong')
-        .forEach((duration, index) => {
-          expect(duration.innerText).toContain(requestDetails[index].duration);
-        });
+      vm.$el.querySelectorAll('.performance-bar-modal td strong').forEach((duration, index) => {
+        expect(duration.innerText).toContain(requestDetails[index].duration);
+      });
 
       vm.$el
         .querySelectorAll('.performance-bar-modal td:nth-child(2)')

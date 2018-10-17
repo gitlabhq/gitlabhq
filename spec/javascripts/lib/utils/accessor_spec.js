@@ -13,7 +13,11 @@ describe('AccessorUtilities', () => {
     });
 
     it('should return `false` if access throws an error', () => {
-      base = { get testProp() { throw testError; } };
+      base = {
+        get testProp() {
+          throw testError;
+        },
+      };
 
       expect(AccessorUtilities.isPropertyAccessSafe(base, 'testProp')).toBe(false);
     });
@@ -35,7 +39,9 @@ describe('AccessorUtilities', () => {
     });
 
     it('should return `false` if calling throws an error', () => {
-      base.func = () => { throw new Error('test error'); };
+      base.func = () => {
+        throw new Error('test error');
+      };
 
       expect(AccessorUtilities.isFunctionCallSafe(base, 'func')).toBe(false);
     });
@@ -58,7 +64,9 @@ describe('AccessorUtilities', () => {
     });
 
     it('should return `false` if access to .setItem isnt safe', () => {
-      window.localStorage.setItem.and.callFake(() => { throw testError; });
+      window.localStorage.setItem.and.callFake(() => {
+        throw testError;
+      });
 
       expect(AccessorUtilities.isLocalStorageAccessSafe()).toBe(false);
     });

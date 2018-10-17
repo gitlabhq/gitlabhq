@@ -1,11 +1,7 @@
 import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import {
-  getSelector,
-  dismiss,
-  inserted,
-} from '~/feature_highlight/feature_highlight_helper';
+import { getSelector, dismiss, inserted } from '~/feature_highlight/feature_highlight_helper';
 import { togglePopover } from '~/shared/popover';
 
 import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
@@ -15,7 +11,9 @@ describe('feature highlight helper', () => {
     it('returns js-feature-highlight selector', () => {
       const highlightId = 'highlightId';
 
-      expect(getSelector(highlightId)).toEqual(`.js-feature-highlight[data-highlight=${highlightId}]`);
+      expect(getSelector(highlightId)).toEqual(
+        `.js-feature-highlight[data-highlight=${highlightId}]`,
+      );
     });
   });
 
@@ -38,7 +36,7 @@ describe('feature highlight helper', () => {
       mock.restore();
     });
 
-    it('calls persistent dismissal endpoint', (done) => {
+    it('calls persistent dismissal endpoint', done => {
       const spy = jasmine.createSpy('dismiss-endpoint-hit');
       mock.onPost('/-/callouts/dismiss').reply(spy);
 
@@ -60,7 +58,7 @@ describe('feature highlight helper', () => {
   });
 
   describe('inserted', () => {
-    it('registers click event callback', (done) => {
+    it('registers click event callback', done => {
       const context = {
         getAttribute: () => 'popoverId',
         dataset: {
@@ -68,7 +66,7 @@ describe('feature highlight helper', () => {
         },
       };
 
-      spyOn($.fn, 'on').and.callFake((event) => {
+      spyOn($.fn, 'on').and.callFake(event => {
         expect(event).toEqual('click');
         done();
       });

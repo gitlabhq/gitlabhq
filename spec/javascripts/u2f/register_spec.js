@@ -3,15 +3,18 @@ import U2FRegister from '~/u2f/register';
 import 'vendor/u2f';
 import MockU2FDevice from './mock_u2f_device';
 
-describe('U2FRegister', function () {
+describe('U2FRegister', function() {
   preloadFixtures('u2f/register.html.raw');
 
-  beforeEach((done) => {
+  beforeEach(done => {
     loadFixtures('u2f/register.html.raw');
     this.u2fDevice = new MockU2FDevice();
     this.container = $('#js-register-u2f');
     this.component = new U2FRegister(this.container, $('#js-register-u2f-templates'), {}, 'token');
-    this.component.start().then(done).catch(done.fail);
+    this.component
+      .start()
+      .then(done)
+      .catch(done.fail);
   });
 
   it('allows registering a U2F device', () => {
@@ -33,7 +36,7 @@ describe('U2FRegister', function () {
   });
 
   describe('errors', () => {
-    it('doesn\'t allow the same device to be registered twice (for the same user', () => {
+    it("doesn't allow the same device to be registered twice (for the same user", () => {
       const setupButton = this.container.find('#js-setup-u2f-device');
       setupButton.trigger('click');
       this.u2fDevice.respondToRegisterRequest({

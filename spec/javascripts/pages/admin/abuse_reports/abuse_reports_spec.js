@@ -9,15 +9,14 @@ describe('Abuse Reports', () => {
   let $messages;
 
   const assertMaxLength = $message => {
-      expect($message.text().length).toEqual(MAX_MESSAGE_LENGTH);
+    expect($message.text().length).toEqual(MAX_MESSAGE_LENGTH);
   };
-  const findMessage = searchText => $messages.filter(
-    (index, element) => element.innerText.indexOf(searchText) > -1,
-  ).first();
+  const findMessage = searchText =>
+    $messages.filter((index, element) => element.innerText.indexOf(searchText) > -1).first();
 
   preloadFixtures(FIXTURE);
 
-  beforeEach(function () {
+  beforeEach(function() {
     loadFixtures(FIXTURE);
     this.abuseReports = new AbuseReports();
     $messages = $('.abuse-reports .message');

@@ -10,7 +10,7 @@ describe('CloseReopenReportToggle', () => {
     const button = {};
     let commentTypeToggle;
 
-    beforeEach(function () {
+    beforeEach(function() {
       commentTypeToggle = new CloseReopenReportToggle({
         dropdownTrigger,
         dropdownList,
@@ -18,15 +18,15 @@ describe('CloseReopenReportToggle', () => {
       });
     });
 
-    it('sets .dropdownTrigger', function () {
+    it('sets .dropdownTrigger', function() {
       expect(commentTypeToggle.dropdownTrigger).toBe(dropdownTrigger);
     });
 
-    it('sets .dropdownList', function () {
+    it('sets .dropdownList', function() {
       expect(commentTypeToggle.dropdownList).toBe(dropdownList);
     });
 
-    it('sets .button', function () {
+    it('sets .button', function() {
       expect(commentTypeToggle.button).toBe(button);
     });
   });

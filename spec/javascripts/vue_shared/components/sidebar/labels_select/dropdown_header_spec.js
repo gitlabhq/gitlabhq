@@ -29,7 +29,9 @@ describe('DropdownHeaderComponent', () => {
     });
 
     it('renders `Close` button element', () => {
-      const closeBtnEl = vm.$el.querySelector('.dropdown-title button.dropdown-title-button.dropdown-menu-close');
+      const closeBtnEl = vm.$el.querySelector(
+        '.dropdown-title button.dropdown-title-button.dropdown-menu-close',
+      );
 
       expect(closeBtnEl).not.toBeNull();
       expect(closeBtnEl.querySelector('.fa-times.dropdown-menu-close-icon')).not.toBeNull();

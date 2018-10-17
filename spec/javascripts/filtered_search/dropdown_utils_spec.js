@@ -19,7 +19,7 @@ describe('Dropdown Utils', () => {
 
       expect(escaped).toBe('"text with space"');
 
-      escaped = DropdownUtils.getEscapedText('won\'t fix');
+      escaped = DropdownUtils.getEscapedText("won't fix");
 
       expect(escaped).toBe('"won\'t fix"');
     });
@@ -27,13 +27,13 @@ describe('Dropdown Utils', () => {
     it('should escape with single quotes', () => {
       const escaped = DropdownUtils.getEscapedText('won"t fix');
 
-      expect(escaped).toBe('\'won"t fix\'');
+      expect(escaped).toBe("'won\"t fix'");
     });
 
     it('should escape with single quotes by default', () => {
       const escaped = DropdownUtils.getEscapedText('won"t\' fix');
 
-      expect(escaped).toBe('\'won"t\' fix\'');
+      expect(escaped).toBe("'won\"t' fix'");
     });
   });
 
@@ -105,7 +105,7 @@ describe('Dropdown Utils', () => {
       });
 
       it('should filter with single quote', () => {
-        input.value = '\'';
+        input.value = "'";
 
         const updatedItem = DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
 
@@ -113,7 +113,7 @@ describe('Dropdown Utils', () => {
       });
 
       it('should filter with single quote and symbol', () => {
-        input.value = '~\'';
+        input.value = "~'";
 
         const updatedItem = DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
 
@@ -121,7 +121,7 @@ describe('Dropdown Utils', () => {
       });
 
       it('should filter with single quote and multiple words', () => {
-        input.value = '\'community con';
+        input.value = "'community con";
 
         const updatedItem = DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
 
@@ -129,7 +129,7 @@ describe('Dropdown Utils', () => {
       });
 
       it('should filter with single quote, symbol and multiple words', () => {
-        input.value = '~\'community con';
+        input.value = "~'community con";
 
         const updatedItem = DropdownUtils.filterWithSymbol('~', input, multipleWordItem);
 
@@ -246,23 +246,40 @@ describe('Dropdown Utils', () => {
     it('should linear-gradient 2 colors', () => {
       const gradient = DropdownUtils.duplicateLabelColor(['#FFFFFF', '#000000']);
 
-      expect(gradient).toEqual('linear-gradient(#FFFFFF 0%, #FFFFFF 50%, #000000 50%, #000000 100%)');
+      expect(gradient).toEqual(
+        'linear-gradient(#FFFFFF 0%, #FFFFFF 50%, #000000 50%, #000000 100%)',
+      );
     });
 
     it('should linear-gradient 3 colors', () => {
       const gradient = DropdownUtils.duplicateLabelColor(['#FFFFFF', '#000000', '#333333']);
 
-      expect(gradient).toEqual('linear-gradient(#FFFFFF 0%, #FFFFFF 33%, #000000 33%, #000000 66%, #333333 66%, #333333 100%)');
+      expect(gradient).toEqual(
+        'linear-gradient(#FFFFFF 0%, #FFFFFF 33%, #000000 33%, #000000 66%, #333333 66%, #333333 100%)',
+      );
     });
 
     it('should linear-gradient 4 colors', () => {
-      const gradient = DropdownUtils.duplicateLabelColor(['#FFFFFF', '#000000', '#333333', '#DDDDDD']);
+      const gradient = DropdownUtils.duplicateLabelColor([
+        '#FFFFFF',
+        '#000000',
+        '#333333',
+        '#DDDDDD',
+      ]);
 
-      expect(gradient).toEqual('linear-gradient(#FFFFFF 0%, #FFFFFF 25%, #000000 25%, #000000 50%, #333333 50%, #333333 75%, #DDDDDD 75%, #DDDDDD 100%)');
+      expect(gradient).toEqual(
+        'linear-gradient(#FFFFFF 0%, #FFFFFF 25%, #000000 25%, #000000 50%, #333333 50%, #333333 75%, #DDDDDD 75%, #DDDDDD 100%)',
+      );
     });
 
     it('should not linear-gradient more than 4 colors', () => {
-      const gradient = DropdownUtils.duplicateLabelColor(['#FFFFFF', '#000000', '#333333', '#DDDDDD', '#EEEEEE']);
+      const gradient = DropdownUtils.duplicateLabelColor([
+        '#FFFFFF',
+        '#000000',
+        '#333333',
+        '#DDDDDD',
+        '#EEEEEE',
+      ]);
 
       expect(gradient.indexOf('#EEEEEE')).toBe(-1);
     });
@@ -276,13 +293,16 @@ describe('Dropdown Utils', () => {
     });
 
     it('should not mutate existing data if there are no duplicates', () => {
-      const data = [{
-        title: 'label1',
-        color: '#FFFFFF',
-      }, {
-        title: 'label2',
-        color: '#000000',
-      }];
+      const data = [
+        {
+          title: 'label1',
+          color: '#FFFFFF',
+        },
+        {
+          title: 'label2',
+          color: '#000000',
+        },
+      ];
       const results = DropdownUtils.duplicateLabelPreprocessing(data);
 
       expect(results.length).toEqual(2);
@@ -291,13 +311,16 @@ describe('Dropdown Utils', () => {
     });
 
     describe('duplicate labels', () => {
-      const data = [{
-        title: 'label',
-        color: '#FFFFFF',
-      }, {
-        title: 'label',
-        color: '#000000',
-      }];
+      const data = [
+        {
+          title: 'label',
+          color: '#FFFFFF',
+        },
+        {
+          title: 'label',
+          color: '#000000',
+        },
+      ];
       const results = DropdownUtils.duplicateLabelPreprocessing(data);
 
       it('should merge duplicate labels', () => {

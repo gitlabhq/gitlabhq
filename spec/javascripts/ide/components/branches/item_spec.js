@@ -36,7 +36,8 @@ describe('IDE branch item', () => {
   });
 
   it('renders link to branch', () => {
-    const expectedHref = router.resolve(`/project/${TEST_PROJECT_ID}/edit/${TEST_BRANCH.name}`).href;
+    const expectedHref = router.resolve(`/project/${TEST_PROJECT_ID}/edit/${TEST_BRANCH.name}`)
+      .href;
 
     expect(vm.$el).toMatch('a');
     expect(vm.$el).toHaveAttr('href', expectedHref);

@@ -44,8 +44,7 @@ describe('IDE shared/TokenedInput', () => {
   });
 
   it('renders tokens', () => {
-    const renderedTokens = getTokenElements(vm)
-      .map(x => x.textContent.trim());
+    const renderedTokens = getTokenElements(vm).map(x => x.textContent.trim());
 
     expect(renderedTokens).toEqual(TEST_TOKENS.map(x => x.label));
   });

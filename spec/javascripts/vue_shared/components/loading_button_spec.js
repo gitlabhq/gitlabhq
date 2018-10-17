@@ -4,7 +4,7 @@ import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 const LABEL = 'Hello';
 
-describe('LoadingButton', function () {
+describe('LoadingButton', function() {
   let vm;
   let LoadingButton;
 

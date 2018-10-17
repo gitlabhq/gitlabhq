@@ -36,12 +36,7 @@ function setupSecretFixture(
   placeholderClass = 'js-secret-value-placeholder',
 ) {
   const wrapper = document.createElement('div');
-  wrapper.innerHTML = generateFixtureMarkup(
-    secrets,
-    isRevealed,
-    valueClass,
-    placeholderClass,
-  );
+  wrapper.innerHTML = generateFixtureMarkup(secrets, isRevealed, valueClass, placeholderClass);
 
   const secretValues = new SecretValues({
     container: wrapper.querySelector('.js-secret-container'),
@@ -127,12 +122,12 @@ describe('setupSecretValues', () => {
       const placeholders = wrapper.querySelectorAll('.js-secret-value-placeholder');
 
       expect(values.length).toEqual(3);
-      values.forEach((value) => {
+      values.forEach(value => {
         expect(value.classList.contains('hide')).toEqual(true);
       });
 
       expect(placeholders.length).toEqual(3);
-      placeholders.forEach((placeholder) => {
+      placeholders.forEach(placeholder => {
         expect(placeholder.classList.contains('hide')).toEqual(false);
       });
     });
@@ -146,24 +141,24 @@ describe('setupSecretValues', () => {
       revealButton.click();
 
       expect(values.length).toEqual(3);
-      values.forEach((value) => {
+      values.forEach(value => {
         expect(value.classList.contains('hide')).toEqual(false);
       });
 
       expect(placeholders.length).toEqual(3);
-      placeholders.forEach((placeholder) => {
+      placeholders.forEach(placeholder => {
         expect(placeholder.classList.contains('hide')).toEqual(true);
       });
 
       revealButton.click();
 
       expect(values.length).toEqual(3);
-      values.forEach((value) => {
+      values.forEach(value => {
         expect(value.classList.contains('hide')).toEqual(true);
       });
 
       expect(placeholders.length).toEqual(3);
-      placeholders.forEach((placeholder) => {
+      placeholders.forEach(placeholder => {
         expect(placeholder.classList.contains('hide')).toEqual(false);
       });
     });
@@ -175,7 +170,9 @@ describe('setupSecretValues', () => {
     it('should toggle values and placeholders', () => {
       const wrapper = setupSecretFixture(secrets, false);
       // Insert the new dynamic row
-      wrapper.querySelector('.js-secret-container').insertAdjacentHTML('afterbegin', generateValueMarkup('foobarbazdynamic'));
+      wrapper
+        .querySelector('.js-secret-container')
+        .insertAdjacentHTML('afterbegin', generateValueMarkup('foobarbazdynamic'));
 
       const revealButton = wrapper.querySelector('.js-secret-value-reveal-button');
       const values = wrapper.querySelectorAll('.js-secret-value');
@@ -184,24 +181,24 @@ describe('setupSecretValues', () => {
       revealButton.click();
 
       expect(values.length).toEqual(4);
-      values.forEach((value) => {
+      values.forEach(value => {
         expect(value.classList.contains('hide')).toEqual(false);
       });
 
       expect(placeholders.length).toEqual(4);
-      placeholders.forEach((placeholder) => {
+      placeholders.forEach(placeholder => {
         expect(placeholder.classList.contains('hide')).toEqual(true);
       });
 
       revealButton.click();
 
       expect(values.length).toEqual(4);
-      values.forEach((value) => {
+      values.forEach(value => {
         expect(value.classList.contains('hide')).toEqual(true);
       });
 
       expect(placeholders.length).toEqual(4);
-      placeholders.forEach((placeholder) => {
+      placeholders.forEach(placeholder => {
         expect(placeholder.classList.contains('hide')).toEqual(false);
       });
     });

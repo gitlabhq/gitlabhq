@@ -33,7 +33,8 @@ describe('VariableList', () => {
 
       it('should add another row when editing the last rows key input', () => {
         const $row = $wrapper.find('.js-row');
-        $row.find('.js-ci-variable-input-key')
+        $row
+          .find('.js-ci-variable-input-key')
           .val('foo')
           .trigger('input');
 
@@ -47,7 +48,8 @@ describe('VariableList', () => {
 
       it('should add another row when editing the last rows value textarea', () => {
         const $row = $wrapper.find('.js-row');
-        $row.find('.js-ci-variable-input-value')
+        $row
+          .find('.js-ci-variable-input-value')
           .val('foo')
           .trigger('input');
 
@@ -61,13 +63,15 @@ describe('VariableList', () => {
 
       it('should remove empty row after blurring', () => {
         const $row = $wrapper.find('.js-row');
-        $row.find('.js-ci-variable-input-key')
+        $row
+          .find('.js-ci-variable-input-key')
           .val('foo')
           .trigger('input');
 
         expect($wrapper.find('.js-row').length).toBe(2);
 
-        $row.find('.js-ci-variable-input-key')
+        $row
+          .find('.js-ci-variable-input-key')
           .val('')
           .trigger('input')
           .trigger('blur');
@@ -121,7 +125,7 @@ describe('VariableList', () => {
       variableList.init();
     });
 
-    it('should add another row when editing the last rows protected checkbox', (done) => {
+    it('should add another row when editing the last rows protected checkbox', done => {
       const $row = $wrapper.find('.js-row:last-child');
       $row.find('.ci-variable-protected-item .js-project-feature-toggle').click();
 
@@ -130,7 +134,9 @@ describe('VariableList', () => {
           expect($wrapper.find('.js-row').length).toBe(2);
 
           // Check for the correct default in the new row
-          const $protectedInput = $wrapper.find('.js-row:last-child').find('.js-ci-variable-input-protected');
+          const $protectedInput = $wrapper
+            .find('.js-row:last-child')
+            .find('.js-ci-variable-input-protected');
 
           expect($protectedInput.val()).toBe('false');
         })
@@ -205,7 +211,8 @@ describe('VariableList', () => {
       const $inputValue = $row.find('.js-ci-variable-input-value');
       const $placeholder = $row.find('.js-secret-value-placeholder');
 
-      $row.find('.js-ci-variable-input-value')
+      $row
+        .find('.js-ci-variable-input-value')
         .val('foo')
         .trigger('input');
 

@@ -125,8 +125,7 @@ describe('RepoEditor', () => {
       vm.file.path = `${vm.file.path}.md`;
       vm.$store.state.entries[vm.file.path] = vm.file;
 
-      vm
-        .$nextTick()
+      vm.$nextTick()
         .then(() => {
           vm.$el.querySelectorAll('.ide-mode-tabs .nav-links a')[1].click();
         })
@@ -297,8 +296,7 @@ describe('RepoEditor', () => {
     it('calls updateDimensions when panelResizing is false', done => {
       vm.$store.state.panelResizing = true;
 
-      vm
-        .$nextTick()
+      vm.$nextTick()
         .then(() => {
           vm.$store.state.panelResizing = false;
         })
@@ -366,8 +364,7 @@ describe('RepoEditor', () => {
 
     vm.file.pending = true;
 
-    vm
-      .$nextTick()
+    vm.$nextTick()
       .then(() => {
         vm.file = file('testing');
 

@@ -14,8 +14,10 @@ describe('Filtered Search Tokenizer', () => {
     });
 
     it('returns for input containing only tokens', () => {
-      const results = FilteredSearchTokenizer
-        .processTokens('author:@root label:~"Very Important" milestone:%v1.0 assignee:none', allowedKeys);
+      const results = FilteredSearchTokenizer.processTokens(
+        'author:@root label:~"Very Important" milestone:%v1.0 assignee:none',
+        allowedKeys,
+      );
 
       expect(results.searchToken).toBe('');
       expect(results.tokens.length).toBe(4);
@@ -39,8 +41,10 @@ describe('Filtered Search Tokenizer', () => {
     });
 
     it('returns for input starting with search value and ending with tokens', () => {
-      const results = FilteredSearchTokenizer
-        .processTokens('searchTerm anotherSearchTerm milestone:none', allowedKeys);
+      const results = FilteredSearchTokenizer.processTokens(
+        'searchTerm anotherSearchTerm milestone:none',
+        allowedKeys,
+      );
 
       expect(results.searchToken).toBe('searchTerm anotherSearchTerm');
       expect(results.tokens.length).toBe(1);
@@ -51,8 +55,10 @@ describe('Filtered Search Tokenizer', () => {
     });
 
     it('returns for input starting with tokens and ending with search value', () => {
-      const results = FilteredSearchTokenizer
-        .processTokens('assignee:@user searchTerm', allowedKeys);
+      const results = FilteredSearchTokenizer.processTokens(
+        'assignee:@user searchTerm',
+        allowedKeys,
+      );
 
       expect(results.searchToken).toBe('searchTerm');
       expect(results.tokens.length).toBe(1);
@@ -63,8 +69,10 @@ describe('Filtered Search Tokenizer', () => {
     });
 
     it('returns for input containing search value wrapped between tokens', () => {
-      const results = FilteredSearchTokenizer
-        .processTokens('author:@root label:~"Won\'t fix" searchTerm anotherSearchTerm milestone:none', allowedKeys);
+      const results = FilteredSearchTokenizer.processTokens(
+        'author:@root label:~"Won\'t fix" searchTerm anotherSearchTerm milestone:none',
+        allowedKeys,
+      );
 
       expect(results.searchToken).toBe('searchTerm anotherSearchTerm');
       expect(results.tokens.length).toBe(3);
@@ -84,8 +92,10 @@ describe('Filtered Search Tokenizer', () => {
     });
 
     it('returns for input containing search value in between tokens', () => {
-      const results = FilteredSearchTokenizer
-        .processTokens('author:@root searchTerm assignee:none anotherSearchTerm label:~Doing', allowedKeys);
+      const results = FilteredSearchTokenizer.processTokens(
+        'author:@root searchTerm assignee:none anotherSearchTerm label:~Doing',
+        allowedKeys,
+      );
 
       expect(results.searchToken).toBe('searchTerm anotherSearchTerm');
       expect(results.tokens.length).toBe(3);

@@ -34,7 +34,9 @@ describe('DropdownSearchInputComponent', () => {
     });
 
     it('renders clear search icon element', () => {
-      expect(vm.$el.querySelector('.fa-times.dropdown-input-clear.js-dropdown-input-clear')).not.toBeNull();
+      expect(
+        vm.$el.querySelector('.fa-times.dropdown-input-clear.js-dropdown-input-clear'),
+      ).not.toBeNull();
     });
   });
 });
