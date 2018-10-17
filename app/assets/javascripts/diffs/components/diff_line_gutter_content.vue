@@ -167,7 +167,7 @@ export default {
       <button
         v-if="shouldShowCommentButton"
         type="button"
-        class="add-diff-note js-add-diff-note-button"
+        class="add-diff-note js-add-diff-note-button qa-diff-comment"
         title="Add a comment to this line"
         @click="handleCommentButton"
       >
