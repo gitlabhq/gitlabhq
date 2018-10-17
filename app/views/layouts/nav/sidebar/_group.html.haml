@@ -12,7 +12,7 @@
           = @group.name
     %ul.sidebar-top-level-items.qa-group-sidebar
       - if group_sidebar_link?(:overview)
-        = nav_link(path: ['groups#show', 'groups#activity', 'groups#subgroups', 'analytics#show'], html_options: { class: 'home' }) do
+        = nav_link(path: group_overview_nav_link_paths, html_options: { class: 'home' }) do
           = link_to group_path(@group) do
             .nav-icon-container
               = sprite_icon('home')
@@ -35,6 +35,16 @@
                 = link_to activity_group_path(@group), title: _('Activity') do
                   %span
                     = _('Activity')
+
+            = render_if_exists 'groups/sidebar/security_dashboard'
+
+            - if group_sidebar_link?(:contribution_analytics)
+              = nav_link(path: 'analytics#show') do
+                = link_to group_analytics_path(@group), title: 'Contribution Analytics', data: {placement: 'right'} do
+                  %span
+                    Contribution Analytics
+
+      = render_if_exists "layouts/nav/ee/epic_link", group: @group
 
       - if group_sidebar_link?(:issues)
         = nav_link(path: issues_sub_menu_items) do
@@ -131,5 +141,7 @@
               = link_to group_settings_ci_cd_path(@group), title: _('CI / CD') do
                 %span
                   = _('CI / CD')
+
+            = render_if_exists "groups/ee/settings_nav"
 
     = render 'shared/sidebar_toggle_button'
