@@ -27,7 +27,9 @@ import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
     it('does nothing if no tab was previously selected', () => {
       createMemoizer();
 
-      expect(document.querySelector(`${tabSelector} > li.active a`).getAttribute('href')).toEqual('#ldap');
+      expect(document.querySelector(`${tabSelector} > li.active a`).getAttribute('href')).toEqual(
+        '#ldap',
+      );
     });
 
     it('shows last selected tab on boot', () => {
@@ -50,13 +52,18 @@ import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
       const fakeTab = {
         click: () => {},
       };
-      spyOn(document, 'querySelector').and.callFake(selector => (selector === `${tabSelector} a[href="#bogus"]` ? null : fakeTab));
+      spyOn(document, 'querySelector').and.callFake(
+        selector => (selector === `${tabSelector} a[href="#bogus"]` ? null : fakeTab),
+      );
       spyOn(fakeTab, 'click');
 
       memo.bootstrap();
 
       // verify that triggers click on stored selector and fallback
-      expect(document.querySelector.calls.allArgs()).toEqual([['ul.new-session-tabs a[href="#bogus"]'], ['ul.new-session-tabs a']]);
+      expect(document.querySelector.calls.allArgs()).toEqual([
+        ['ul.new-session-tabs a[href="#bogus"]'],
+        ['ul.new-session-tabs a'],
+      ]);
       expect(fakeTab.click).toHaveBeenCalled();
     });
 
@@ -96,7 +103,7 @@ import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
       });
 
       describe('if .isLocalStorageAvailable is `false`', () => {
-        beforeEach(function () {
+        beforeEach(function() {
           memo.isLocalStorageAvailable = false;
 
           SigninTabsMemoizer.prototype.saveData.call(memo);
@@ -110,7 +117,7 @@ import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
       describe('if .isLocalStorageAvailable is `true`', () => {
         const value = 'value';
 
-        beforeEach(function () {
+        beforeEach(function() {
           memo.isLocalStorageAvailable = true;
 
           SigninTabsMemoizer.prototype.saveData.call(memo, value);
@@ -135,7 +142,7 @@ import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
       });
 
       describe('if .isLocalStorageAvailable is `false`', () => {
-        beforeEach(function () {
+        beforeEach(function() {
           memo.isLocalStorageAvailable = false;
 
           readData = SigninTabsMemoizer.prototype.readData.call(memo);
@@ -148,7 +155,7 @@ import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
       });
 
       describe('if .isLocalStorageAvailable is `true`', () => {
-        beforeEach(function () {
+        beforeEach(function() {
           memo.isLocalStorageAvailable = true;
 
           readData = SigninTabsMemoizer.prototype.readData.call(memo);

@@ -3,7 +3,7 @@ import GraphPath from '~/monitoring/components/graph/path.vue';
 import createTimeSeries from '~/monitoring/utils/multiple_time_series';
 import { singleRowMetricsMultipleSeries, convertDatesMultipleSeries } from './mock_data';
 
-const createComponent = (propsData) => {
+const createComponent = propsData => {
   const Component = Vue.extend(GraphPath);
 
   return new Component({

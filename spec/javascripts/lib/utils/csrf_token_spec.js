@@ -1,9 +1,10 @@
 import csrf from '~/lib/utils/csrf';
 
-describe('csrf', function () {
+describe('csrf', function() {
   beforeEach(() => {
     this.tokenKey = 'X-CSRF-Token';
-    this.token = 'pH1cvjnP9grx2oKlhWEDvUZnJ8x2eXsIs1qzyHkF3DugSG5yTxR76CWeEZRhML2D1IeVB7NEW0t5l/axE4iJpQ==';
+    this.token =
+      'pH1cvjnP9grx2oKlhWEDvUZnJ8x2eXsIs1qzyHkF3DugSG5yTxR76CWeEZRhML2D1IeVB7NEW0t5l/axE4iJpQ==';
   });
 
   it('returns the correct headerKey', () => {

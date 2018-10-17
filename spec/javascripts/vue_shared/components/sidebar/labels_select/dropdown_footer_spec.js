@@ -43,7 +43,9 @@ describe('DropdownFooterComponent', () => {
 
     it('renders link element with value of `createLabelTitle` prop', () => {
       const vmWithCreateLabelTitle = createComponent(mockConfig.labelsWebUrl, createLabelTitle);
-      const createLabelEl = vmWithCreateLabelTitle.$el.querySelector('.dropdown-footer-list .dropdown-toggle-page');
+      const createLabelEl = vmWithCreateLabelTitle.$el.querySelector(
+        '.dropdown-footer-list .dropdown-toggle-page',
+      );
 
       expect(createLabelEl.innerText.trim()).toBe(createLabelTitle);
       vmWithCreateLabelTitle.$destroy();
@@ -63,7 +65,9 @@ describe('DropdownFooterComponent', () => {
         createLabelTitle,
         manageLabelsTitle,
       );
-      const manageLabelsEl = vmWithManageLabelsTitle.$el.querySelector('.dropdown-footer-list .dropdown-external-link');
+      const manageLabelsEl = vmWithManageLabelsTitle.$el.querySelector(
+        '.dropdown-footer-list .dropdown-external-link',
+      );
 
       expect(manageLabelsEl.innerText.trim()).toBe(manageLabelsTitle);
       vmWithManageLabelsTitle.$destroy();

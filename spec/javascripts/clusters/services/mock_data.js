@@ -6,67 +6,77 @@ const CLUSTERS_MOCK_DATA = {
       data: {
         status: 'errored',
         status_reason: 'Failed to request to CloudPlatform.',
-        applications: [{
-          name: 'helm',
-          status: APPLICATION_STATUS.INSTALLABLE,
-          status_reason: null,
-        }, {
-          name: 'ingress',
-          status: APPLICATION_STATUS.ERROR,
-          status_reason: 'Cannot connect',
-          external_ip: null,
-        }, {
-          name: 'runner',
-          status: APPLICATION_STATUS.INSTALLING,
-          status_reason: null,
-        },
-        {
-          name: 'prometheus',
-          status: APPLICATION_STATUS.ERROR,
-          status_reason: 'Cannot connect',
-        }, {
-          name: 'jupyter',
-          status: APPLICATION_STATUS.INSTALLING,
-          status_reason: 'Cannot connect',
-        }],
+        applications: [
+          {
+            name: 'helm',
+            status: APPLICATION_STATUS.INSTALLABLE,
+            status_reason: null,
+          },
+          {
+            name: 'ingress',
+            status: APPLICATION_STATUS.ERROR,
+            status_reason: 'Cannot connect',
+            external_ip: null,
+          },
+          {
+            name: 'runner',
+            status: APPLICATION_STATUS.INSTALLING,
+            status_reason: null,
+          },
+          {
+            name: 'prometheus',
+            status: APPLICATION_STATUS.ERROR,
+            status_reason: 'Cannot connect',
+          },
+          {
+            name: 'jupyter',
+            status: APPLICATION_STATUS.INSTALLING,
+            status_reason: 'Cannot connect',
+          },
+        ],
       },
     },
     '/gitlab-org/gitlab-shell/clusters/2/status.json': {
       data: {
         status: 'errored',
         status_reason: 'Failed to request to CloudPlatform.',
-        applications: [{
-          name: 'helm',
-          status: APPLICATION_STATUS.INSTALLED,
-          status_reason: null,
-        }, {
-          name: 'ingress',
-          status: APPLICATION_STATUS.INSTALLED,
-          status_reason: 'Cannot connect',
-          external_ip: '1.1.1.1',
-        }, {
-          name: 'runner',
-          status: APPLICATION_STATUS.INSTALLING,
-          status_reason: null,
-        },
-        {
-          name: 'prometheus',
-          status: APPLICATION_STATUS.ERROR,
-          status_reason: 'Cannot connect',
-        }, {
-          name: 'jupyter',
-          status: APPLICATION_STATUS.INSTALLABLE,
-          status_reason: 'Cannot connect',
-        }],
+        applications: [
+          {
+            name: 'helm',
+            status: APPLICATION_STATUS.INSTALLED,
+            status_reason: null,
+          },
+          {
+            name: 'ingress',
+            status: APPLICATION_STATUS.INSTALLED,
+            status_reason: 'Cannot connect',
+            external_ip: '1.1.1.1',
+          },
+          {
+            name: 'runner',
+            status: APPLICATION_STATUS.INSTALLING,
+            status_reason: null,
+          },
+          {
+            name: 'prometheus',
+            status: APPLICATION_STATUS.ERROR,
+            status_reason: 'Cannot connect',
+          },
+          {
+            name: 'jupyter',
+            status: APPLICATION_STATUS.INSTALLABLE,
+            status_reason: 'Cannot connect',
+          },
+        ],
       },
     },
   },
   POST: {
-    '/gitlab-org/gitlab-shell/clusters/1/applications/helm': { },
-    '/gitlab-org/gitlab-shell/clusters/1/applications/ingress': { },
-    '/gitlab-org/gitlab-shell/clusters/1/applications/runner': { },
-    '/gitlab-org/gitlab-shell/clusters/1/applications/prometheus': { },
-    '/gitlab-org/gitlab-shell/clusters/1/applications/jupyter': { },
+    '/gitlab-org/gitlab-shell/clusters/1/applications/helm': {},
+    '/gitlab-org/gitlab-shell/clusters/1/applications/ingress': {},
+    '/gitlab-org/gitlab-shell/clusters/1/applications/runner': {},
+    '/gitlab-org/gitlab-shell/clusters/1/applications/prometheus': {},
+    '/gitlab-org/gitlab-shell/clusters/1/applications/jupyter': {},
   },
 };
 
@@ -81,7 +91,4 @@ const DEFAULT_APPLICATION_STATE = {
   requestReason: null,
 };
 
-export {
-  CLUSTERS_MOCK_DATA,
-  DEFAULT_APPLICATION_STATE,
-};
+export { CLUSTERS_MOCK_DATA, DEFAULT_APPLICATION_STATE };

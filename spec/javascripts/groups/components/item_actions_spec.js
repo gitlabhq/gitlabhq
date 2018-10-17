@@ -31,7 +31,11 @@ describe('ItemActionsComponent', () => {
         spyOn(eventHub, '$emit');
         vm.onLeaveGroup();
 
-        expect(eventHub.$emit).toHaveBeenCalledWith('showLeaveGroupModal', vm.group, vm.parentGroup);
+        expect(eventHub.$emit).toHaveBeenCalledWith(
+          'showLeaveGroupModal',
+          vm.group,
+          vm.parentGroup,
+        );
       });
     });
   });

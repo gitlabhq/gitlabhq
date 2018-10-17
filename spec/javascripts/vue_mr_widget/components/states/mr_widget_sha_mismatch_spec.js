@@ -18,8 +18,8 @@ describe('ShaMismatch', () => {
   it('should render information message', () => {
     expect(vm.$el.querySelector('button').disabled).toEqual(true);
 
-    expect(
-      removeBreakLine(vm.$el.textContent).trim(),
-    ).toContain('The source branch HEAD has recently changed. Please reload the page and review the changes before merging');
+    expect(removeBreakLine(vm.$el.textContent).trim()).toContain(
+      'The source branch HEAD has recently changed. Please reload the page and review the changes before merging',
+    );
   });
 });

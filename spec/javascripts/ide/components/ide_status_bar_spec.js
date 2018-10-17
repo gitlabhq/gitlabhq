@@ -78,8 +78,7 @@ describe('ideStatusBar', () => {
         },
       });
 
-      vm
-        .$nextTick()
+      vm.$nextTick()
         .then(() => {
           vm.$el.querySelector('.ide-status-pipeline button').click();
 

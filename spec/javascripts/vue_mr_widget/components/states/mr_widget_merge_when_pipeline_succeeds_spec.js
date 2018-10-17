@@ -70,15 +70,17 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
 
   describe('methods', () => {
     describe('cancelAutomaticMerge', () => {
-      it('should set flag and call service then tell main component to update the widget with data', (done) => {
+      it('should set flag and call service then tell main component to update the widget with data', done => {
         const mrObj = {
           is_new_mr_data: true,
         };
-        spyOn(vm.service, 'cancelAutomaticMerge').and.returnValue(new Promise((resolve) => {
-          resolve({
-            data: mrObj,
-          });
-        }));
+        spyOn(vm.service, 'cancelAutomaticMerge').and.returnValue(
+          new Promise(resolve => {
+            resolve({
+              data: mrObj,
+            });
+          }),
+        );
 
         vm.cancelAutomaticMerge();
         setTimeout(() => {
@@ -90,12 +92,14 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
     });
 
     describe('removeSourceBranch', () => {
-      it('should set flag and call service then request main component to update the widget', (done) => {
-        spyOn(vm.service, 'merge').and.returnValue(Promise.resolve({
-          data: {
-            status: 'merge_when_pipeline_succeeds',
-          },
-        }));
+      it('should set flag and call service then request main component to update the widget', done => {
+        spyOn(vm.service, 'merge').and.returnValue(
+          Promise.resolve({
+            data: {
+              status: 'merge_when_pipeline_succeeds',
+            },
+          }),
+        );
 
         vm.removeSourceBranch();
         setTimeout(() => {
@@ -118,13 +122,17 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
       expect(vm.$el.innerText).toContain('The changes will be merged into');
       expect(vm.$el.innerText).toContain(targetBranch);
       expect(vm.$el.innerText).toContain('The source branch will not be removed');
-      expect(vm.$el.querySelector('.js-cancel-auto-merge').innerText).toContain('Cancel automatic merge');
+      expect(vm.$el.querySelector('.js-cancel-auto-merge').innerText).toContain(
+        'Cancel automatic merge',
+      );
       expect(vm.$el.querySelector('.js-cancel-auto-merge').getAttribute('disabled')).toBeFalsy();
-      expect(vm.$el.querySelector('.js-remove-source-branch').innerText).toContain('Remove source branch');
+      expect(vm.$el.querySelector('.js-remove-source-branch').innerText).toContain(
+        'Remove source branch',
+      );
       expect(vm.$el.querySelector('.js-remove-source-branch').getAttribute('disabled')).toBeFalsy();
     });
 
-    it('should disable cancel auto merge button when the action is in progress', (done) => {
+    it('should disable cancel auto merge button when the action is in progress', done => {
       vm.isCancellingAutoMerge = true;
 
       Vue.nextTick(() => {
@@ -133,7 +141,7 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
       });
     });
 
-    it('should show source branch will be removed text when it source branch set to remove', (done) => {
+    it('should show source branch will be removed text when it source branch set to remove', done => {
       vm.mr.shouldRemoveSourceBranch = true;
 
       Vue.nextTick(() => {
@@ -145,7 +153,7 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
       });
     });
 
-    it('should not show remove source branch button when user not able to remove source branch', (done) => {
+    it('should not show remove source branch button when user not able to remove source branch', done => {
       vm.mr.currentUserId = 4;
 
       Vue.nextTick(() => {
@@ -154,11 +162,13 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
       });
     });
 
-    it('should disable remove source branch button when the action is in progress', (done) => {
+    it('should disable remove source branch button when the action is in progress', done => {
       vm.isRemovingSourceBranch = true;
 
       Vue.nextTick(() => {
-        expect(vm.$el.querySelector('.js-remove-source-branch').getAttribute('disabled')).toBeTruthy();
+        expect(
+          vm.$el.querySelector('.js-remove-source-branch').getAttribute('disabled'),
+        ).toBeTruthy();
         done();
       });
     });

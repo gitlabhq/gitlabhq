@@ -5,7 +5,7 @@ import mountComponent from 'spec/helpers/vue_mount_component_helper';
 describe('MRWidgetRelatedLinks', () => {
   let vm;
 
-  const createComponent = (data) => {
+  const createComponent = data => {
     const Component = Vue.extend(relatedLinksComponent);
 
     return mountComponent(Component, data);

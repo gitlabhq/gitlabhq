@@ -204,7 +204,8 @@ describe('Pipelines Table Row', () => {
 
     it('renders a loading icon when `cancelingPipeline` matches pipeline id', done => {
       component.cancelingPipeline = pipeline.id;
-      component.$nextTick()
+      component
+        .$nextTick()
         .then(() => {
           expect(component.isCancelling).toEqual(true);
         })

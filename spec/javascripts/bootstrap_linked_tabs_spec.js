@@ -10,11 +10,12 @@ import LinkedTabs from '~/lib/utils/bootstrap_linked_tabs';
 
     describe('when is initialized', () => {
       beforeEach(() => {
-        spyOn(window.history, 'replaceState').and.callFake(function () {});
+        spyOn(window.history, 'replaceState').and.callFake(function() {});
       });
 
       it('should activate the tab correspondent to the given action', () => {
-        const linkedTabs = new LinkedTabs({ // eslint-disable-line
+        const linkedTabs = new LinkedTabs({
+          // eslint-disable-line
           action: 'tab1',
           defaultAction: 'tab1',
           parentEl: '.linked-tabs',
@@ -24,7 +25,8 @@ import LinkedTabs from '~/lib/utils/bootstrap_linked_tabs';
       });
 
       it('should active the default tab action when the action is show', () => {
-        const linkedTabs = new LinkedTabs({ // eslint-disable-line
+        const linkedTabs = new LinkedTabs({
+          // eslint-disable-line
           action: 'show',
           defaultAction: 'tab1',
           parentEl: '.linked-tabs',
@@ -45,14 +47,21 @@ import LinkedTabs from '~/lib/utils/bootstrap_linked_tabs';
         });
 
         const secondTab = document.querySelector('.linked-tabs li:nth-child(2) a');
-        const newState = secondTab.getAttribute('href') + linkedTabs.currentLocation.search + linkedTabs.currentLocation.hash;
+        const newState =
+          secondTab.getAttribute('href') +
+          linkedTabs.currentLocation.search +
+          linkedTabs.currentLocation.hash;
 
         secondTab.click();
 
         if (historySpy) {
-          expect(historySpy).toHaveBeenCalledWith({
-            url: newState,
-          }, document.title, newState);
+          expect(historySpy).toHaveBeenCalledWith(
+            {
+              url: newState,
+            },
+            document.title,
+            newState,
+          );
         }
       });
     });

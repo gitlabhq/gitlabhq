@@ -1,7 +1,9 @@
 import GroupsStore from '~/groups/store/groups_store';
 import {
-  mockGroups, mockSearchedGroups,
-  mockParentGroupItem, mockRawChildren,
+  mockGroups,
+  mockSearchedGroups,
+  mockParentGroupItem,
+  mockRawChildren,
   mockRawPageInfo,
 } from '../mock_data';
 
@@ -46,7 +48,9 @@ describe('ProjectsStore', () => {
       expect(store.state.groups.length).toBe(mockSearchedGroups.length);
       expect(store.formatGroupItem).toHaveBeenCalledWith(jasmine.any(Object));
       expect(Object.keys(store.state.groups[0]).indexOf('fullName')).toBeGreaterThan(-1);
-      expect(Object.keys(store.state.groups[0].children[0]).indexOf('fullName')).toBeGreaterThan(-1);
+      expect(Object.keys(store.state.groups[0].children[0]).indexOf('fullName')).toBeGreaterThan(
+        -1,
+      );
     });
   });
 

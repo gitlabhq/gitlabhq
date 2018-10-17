@@ -318,15 +318,16 @@ describe('ReadyToMerge', () => {
     });
 
     describe('handleMergeButtonClick', () => {
-      const returnPromise = status => new Promise((resolve) => {
-        resolve({
-          data: {
-            status,
-          },
+      const returnPromise = status =>
+        new Promise(resolve => {
+          resolve({
+            data: {
+              status,
+            },
+          });
         });
-      });
 
-      it('should handle merge when pipeline succeeds', (done) => {
+      it('should handle merge when pipeline succeeds', done => {
         spyOn(eventHub, '$emit');
         spyOn(vm.service, 'merge').and.returnValue(returnPromise('merge_when_pipeline_succeeds'));
         vm.removeSourceBranch = false;
@@ -347,7 +348,7 @@ describe('ReadyToMerge', () => {
         }, 333);
       });
 
-      it('should handle merge failed', (done) => {
+      it('should handle merge failed', done => {
         spyOn(eventHub, '$emit');
         spyOn(vm.service, 'merge').and.returnValue(returnPromise('failed'));
         vm.handleMergeButtonClick(false, true);
@@ -365,7 +366,7 @@ describe('ReadyToMerge', () => {
         }, 333);
       });
 
-      it('should handle merge action accepted case', (done) => {
+      it('should handle merge action accepted case', done => {
         spyOn(vm.service, 'merge').and.returnValue(returnPromise('success'));
         spyOn(vm, 'initiateMergePolling');
         vm.handleMergeButtonClick();
@@ -394,20 +395,21 @@ describe('ReadyToMerge', () => {
     });
 
     describe('handleMergePolling', () => {
-      const returnPromise = state => new Promise((resolve) => {
-        resolve({
-          data: {
-            state,
-            source_branch_exists: true,
-          },
+      const returnPromise = state =>
+        new Promise(resolve => {
+          resolve({
+            data: {
+              state,
+              source_branch_exists: true,
+            },
+          });
         });
-      });
 
       beforeEach(() => {
         loadFixtures('merge_requests/merge_request_of_current_user.html.raw');
       });
 
-      it('should call start and stop polling when MR merged', (done) => {
+      it('should call start and stop polling when MR merged', done => {
         spyOn(eventHub, '$emit');
         spyOn(vm.service, 'poll').and.returnValue(returnPromise('merged'));
         spyOn(vm, 'initiateRemoveSourceBranchPolling');
@@ -415,7 +417,14 @@ describe('ReadyToMerge', () => {
         let cpc = false; // continuePollingCalled
         let spc = false; // stopPollingCalled
 
-        vm.handleMergePolling(() => { cpc = true; }, () => { spc = true; });
+        vm.handleMergePolling(
+          () => {
+            cpc = true;
+          },
+          () => {
+            spc = true;
+          },
+        );
         setTimeout(() => {
           expect(vm.service.poll).toHaveBeenCalled();
           expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
@@ -428,7 +437,7 @@ describe('ReadyToMerge', () => {
         }, 333);
       });
 
-      it('updates status box', (done) => {
+      it('updates status box', done => {
         spyOn(vm.service, 'poll').and.returnValue(returnPromise('merged'));
         spyOn(vm, 'initiateRemoveSourceBranchPolling');
 
@@ -444,7 +453,7 @@ describe('ReadyToMerge', () => {
         });
       });
 
-      it('hides close button', (done) => {
+      it('hides close button', done => {
         spyOn(vm.service, 'poll').and.returnValue(returnPromise('merged'));
         spyOn(vm, 'initiateRemoveSourceBranchPolling');
 
@@ -457,7 +466,7 @@ describe('ReadyToMerge', () => {
         });
       });
 
-      it('updates merge request count badge', (done) => {
+      it('updates merge request count badge', done => {
         spyOn(vm.service, 'poll').and.returnValue(returnPromise('merged'));
         spyOn(vm, 'initiateRemoveSourceBranchPolling');
 
@@ -470,14 +479,21 @@ describe('ReadyToMerge', () => {
         });
       });
 
-      it('should continue polling until MR is merged', (done) => {
+      it('should continue polling until MR is merged', done => {
         spyOn(vm.service, 'poll').and.returnValue(returnPromise('some_other_state'));
         spyOn(vm, 'initiateRemoveSourceBranchPolling');
 
         let cpc = false; // continuePollingCalled
         let spc = false; // stopPollingCalled
 
-        vm.handleMergePolling(() => { cpc = true; }, () => { spc = true; });
+        vm.handleMergePolling(
+          () => {
+            cpc = true;
+          },
+          () => {
+            spc = true;
+          },
+        );
         setTimeout(() => {
           expect(cpc).toBeTruthy();
           expect(spc).toBeFalsy();
@@ -500,22 +516,30 @@ describe('ReadyToMerge', () => {
     });
 
     describe('handleRemoveBranchPolling', () => {
-      const returnPromise = state => new Promise((resolve) => {
-        resolve({
-          data: {
-            source_branch_exists: state,
-          },
+      const returnPromise = state =>
+        new Promise(resolve => {
+          resolve({
+            data: {
+              source_branch_exists: state,
+            },
+          });
         });
-      });
 
-      it('should call start and stop polling when MR merged', (done) => {
+      it('should call start and stop polling when MR merged', done => {
         spyOn(eventHub, '$emit');
         spyOn(vm.service, 'poll').and.returnValue(returnPromise(false));
 
         let cpc = false; // continuePollingCalled
         let spc = false; // stopPollingCalled
 
-        vm.handleRemoveBranchPolling(() => { cpc = true; }, () => { spc = true; });
+        vm.handleRemoveBranchPolling(
+          () => {
+            cpc = true;
+          },
+          () => {
+            spc = true;
+          },
+        );
         setTimeout(() => {
           expect(vm.service.poll).toHaveBeenCalled();
 
@@ -534,13 +558,20 @@ describe('ReadyToMerge', () => {
         }, 333);
       });
 
-      it('should continue polling until MR is merged', (done) => {
+      it('should continue polling until MR is merged', done => {
         spyOn(vm.service, 'poll').and.returnValue(returnPromise(true));
 
         let cpc = false; // continuePollingCalled
         let spc = false; // stopPollingCalled
 
-        vm.handleRemoveBranchPolling(() => { cpc = true; }, () => { spc = true; });
+        vm.handleRemoveBranchPolling(
+          () => {
+            cpc = true;
+          },
+          () => {
+            spc = true;
+          },
+        );
         setTimeout(() => {
           expect(cpc).toBeTruthy();
           expect(spc).toBeFalsy();

@@ -52,7 +52,7 @@ describe('Pipelines', () => {
 
   describe('With permission', () => {
     describe('With pipelines in main tab', () => {
-      beforeEach((done) => {
+      beforeEach(done => {
         mock.onGet('twitter/flight/pipelines.json').reply(200, pipelines);
 
         vm = mountComponent(PipelinesComponent, {
@@ -72,7 +72,9 @@ describe('Pipelines', () => {
       });
 
       it('renders Run Pipeline link', () => {
-        expect(vm.$el.querySelector('.js-run-pipeline').getAttribute('href')).toEqual(paths.newPipelinePath);
+        expect(vm.$el.querySelector('.js-run-pipeline').getAttribute('href')).toEqual(
+          paths.newPipelinePath,
+        );
       });
 
       it('renders CI Lint link', () => {
@@ -80,18 +82,20 @@ describe('Pipelines', () => {
       });
 
       it('renders Clear Runner Cache button', () => {
-        expect(vm.$el.querySelector('.js-clear-cache').textContent.trim()).toEqual('Clear Runner Caches');
+        expect(vm.$el.querySelector('.js-clear-cache').textContent.trim()).toEqual(
+          'Clear Runner Caches',
+        );
       });
 
       it('renders pipelines table', () => {
-        expect(
-          vm.$el.querySelectorAll('.gl-responsive-table-row').length,
-        ).toEqual(pipelines.pipelines.length + 1);
+        expect(vm.$el.querySelectorAll('.gl-responsive-table-row').length).toEqual(
+          pipelines.pipelines.length + 1,
+        );
       });
     });
 
     describe('Without pipelines on main tab with CI', () => {
-      beforeEach((done) => {
+      beforeEach(done => {
         mock.onGet('twitter/flight/pipelines.json').reply(200, {
           pipelines: [],
           count: {
@@ -118,7 +122,9 @@ describe('Pipelines', () => {
       });
 
       it('renders Run Pipeline link', () => {
-        expect(vm.$el.querySelector('.js-run-pipeline').getAttribute('href')).toEqual(paths.newPipelinePath);
+        expect(vm.$el.querySelector('.js-run-pipeline').getAttribute('href')).toEqual(
+          paths.newPipelinePath,
+        );
       });
 
       it('renders CI Lint link', () => {
@@ -126,16 +132,20 @@ describe('Pipelines', () => {
       });
 
       it('renders Clear Runner Cache button', () => {
-        expect(vm.$el.querySelector('.js-clear-cache').textContent.trim()).toEqual('Clear Runner Caches');
+        expect(vm.$el.querySelector('.js-clear-cache').textContent.trim()).toEqual(
+          'Clear Runner Caches',
+        );
       });
 
       it('renders tab empty state', () => {
-        expect(vm.$el.querySelector('.empty-state h4').textContent.trim()).toEqual('There are currently no pipelines.');
+        expect(vm.$el.querySelector('.empty-state h4').textContent.trim()).toEqual(
+          'There are currently no pipelines.',
+        );
       });
     });
 
     describe('Without pipelines nor CI', () => {
-      beforeEach((done) => {
+      beforeEach(done => {
         mock.onGet('twitter/flight/pipelines.json').reply(200, {
           pipelines: [],
           count: {
@@ -158,8 +168,12 @@ describe('Pipelines', () => {
       });
 
       it('renders empty state', () => {
-        expect(vm.$el.querySelector('.js-empty-state h4').textContent.trim()).toEqual('Build with confidence');
-        expect(vm.$el.querySelector('.js-get-started-pipelines').getAttribute('href')).toEqual(paths.helpPagePath);
+        expect(vm.$el.querySelector('.js-empty-state h4').textContent.trim()).toEqual(
+          'Build with confidence',
+        );
+        expect(vm.$el.querySelector('.js-get-started-pipelines').getAttribute('href')).toEqual(
+          paths.helpPagePath,
+        );
       });
 
       it('does not render tabs nor buttons', () => {
@@ -171,7 +185,7 @@ describe('Pipelines', () => {
     });
 
     describe('When API returns error', () => {
-      beforeEach((done) => {
+      beforeEach(done => {
         mock.onGet('twitter/flight/pipelines.json').reply(500, {});
         vm = mountComponent(PipelinesComponent, {
           store: new Store(),
@@ -190,20 +204,26 @@ describe('Pipelines', () => {
       });
 
       it('renders buttons', () => {
-        expect(vm.$el.querySelector('.js-run-pipeline').getAttribute('href')).toEqual(paths.newPipelinePath);
+        expect(vm.$el.querySelector('.js-run-pipeline').getAttribute('href')).toEqual(
+          paths.newPipelinePath,
+        );
         expect(vm.$el.querySelector('.js-ci-lint').getAttribute('href')).toEqual(paths.ciLintPath);
-        expect(vm.$el.querySelector('.js-clear-cache').textContent.trim()).toEqual('Clear Runner Caches');
+        expect(vm.$el.querySelector('.js-clear-cache').textContent.trim()).toEqual(
+          'Clear Runner Caches',
+        );
       });
 
       it('renders error state', () => {
-        expect(vm.$el.querySelector('.empty-state').textContent.trim()).toContain('There was an error fetching the pipelines.');
+        expect(vm.$el.querySelector('.empty-state').textContent.trim()).toContain(
+          'There was an error fetching the pipelines.',
+        );
       });
     });
   });
 
   describe('Without permission', () => {
     describe('With pipelines in main tab', () => {
-      beforeEach((done) => {
+      beforeEach(done => {
         mock.onGet('twitter/flight/pipelines.json').reply(200, pipelines);
 
         vm = mountComponent(PipelinesComponent, {
@@ -229,14 +249,14 @@ describe('Pipelines', () => {
       });
 
       it('renders pipelines table', () => {
-        expect(
-          vm.$el.querySelectorAll('.gl-responsive-table-row').length,
-        ).toEqual(pipelines.pipelines.length + 1);
+        expect(vm.$el.querySelectorAll('.gl-responsive-table-row').length).toEqual(
+          pipelines.pipelines.length + 1,
+        );
       });
     });
 
     describe('Without pipelines on main tab with CI', () => {
-      beforeEach((done) => {
+      beforeEach(done => {
         mock.onGet('twitter/flight/pipelines.json').reply(200, {
           pipelines: [],
           count: {
@@ -270,12 +290,14 @@ describe('Pipelines', () => {
       });
 
       it('renders tab empty state', () => {
-        expect(vm.$el.querySelector('.empty-state h4').textContent.trim()).toEqual('There are currently no pipelines.');
+        expect(vm.$el.querySelector('.empty-state h4').textContent.trim()).toEqual(
+          'There are currently no pipelines.',
+        );
       });
     });
 
     describe('Without pipelines nor CI', () => {
-      beforeEach((done) => {
+      beforeEach(done => {
         mock.onGet('twitter/flight/pipelines.json').reply(200, {
           pipelines: [],
           count: {
@@ -299,7 +321,9 @@ describe('Pipelines', () => {
       });
 
       it('renders empty state without button to set CI', () => {
-        expect(vm.$el.querySelector('.js-empty-state').textContent.trim()).toEqual('This project is not currently set up to run pipelines.');
+        expect(vm.$el.querySelector('.js-empty-state').textContent.trim()).toEqual(
+          'This project is not currently set up to run pipelines.',
+        );
         expect(vm.$el.querySelector('.js-get-started-pipelines')).toBeNull();
       });
 
@@ -312,7 +336,7 @@ describe('Pipelines', () => {
     });
 
     describe('When API returns error', () => {
-      beforeEach((done) => {
+      beforeEach(done => {
         mock.onGet('twitter/flight/pipelines.json').reply(500, {});
 
         vm = mountComponent(PipelinesComponent, {
@@ -338,7 +362,9 @@ describe('Pipelines', () => {
       });
 
       it('renders error state', () => {
-        expect(vm.$el.querySelector('.empty-state').textContent.trim()).toContain('There was an error fetching the pipelines.');
+        expect(vm.$el.querySelector('.empty-state').textContent.trim()).toContain(
+          'There was an error fetching the pipelines.',
+        );
       });
     });
   });
@@ -356,46 +382,44 @@ describe('Pipelines', () => {
         });
       });
 
-      it('should render table', (done) => {
+      it('should render table', done => {
         setTimeout(() => {
           expect(vm.$el.querySelector('.table-holder')).toBeDefined();
-          expect(
-            vm.$el.querySelectorAll('.gl-responsive-table-row').length,
-          ).toEqual(pipelines.pipelines.length + 1);
+          expect(vm.$el.querySelectorAll('.gl-responsive-table-row').length).toEqual(
+            pipelines.pipelines.length + 1,
+          );
           done();
         });
       });
 
-      it('should render navigation tabs', (done) => {
+      it('should render navigation tabs', done => {
         setTimeout(() => {
-          expect(
-            vm.$el.querySelector('.js-pipelines-tab-pending').textContent.trim(),
-          ).toContain('Pending');
+          expect(vm.$el.querySelector('.js-pipelines-tab-pending').textContent.trim()).toContain(
+            'Pending',
+          );
 
-          expect(
-            vm.$el.querySelector('.js-pipelines-tab-all').textContent.trim(),
-          ).toContain('All');
+          expect(vm.$el.querySelector('.js-pipelines-tab-all').textContent.trim()).toContain('All');
 
-          expect(
-            vm.$el.querySelector('.js-pipelines-tab-running').textContent.trim(),
-          ).toContain('Running');
+          expect(vm.$el.querySelector('.js-pipelines-tab-running').textContent.trim()).toContain(
+            'Running',
+          );
 
-          expect(
-            vm.$el.querySelector('.js-pipelines-tab-finished').textContent.trim(),
-          ).toContain('Finished');
+          expect(vm.$el.querySelector('.js-pipelines-tab-finished').textContent.trim()).toContain(
+            'Finished',
+          );
 
-          expect(
-            vm.$el.querySelector('.js-pipelines-tab-branches').textContent.trim(),
-          ).toContain('Branches');
+          expect(vm.$el.querySelector('.js-pipelines-tab-branches').textContent.trim()).toContain(
+            'Branches',
+          );
 
-          expect(
-            vm.$el.querySelector('.js-pipelines-tab-tags').textContent.trim(),
-          ).toContain('Tags');
+          expect(vm.$el.querySelector('.js-pipelines-tab-tags').textContent.trim()).toContain(
+            'Tags',
+          );
           done();
         });
       });
 
-      it('should make an API request when using tabs', (done) => {
+      it('should make an API request when using tabs', done => {
         setTimeout(() => {
           spyOn(vm, 'updateContent');
           vm.$el.querySelector('.js-pipelines-tab-finished').click();
@@ -406,7 +430,7 @@ describe('Pipelines', () => {
       });
 
       describe('with pagination', () => {
-        it('should make an API request when using pagination', (done) => {
+        it('should make an API request when using pagination', done => {
           setTimeout(() => {
             spyOn(vm, 'updateContent');
             // Mock pagination
@@ -510,7 +534,7 @@ describe('Pipelines', () => {
     });
 
     describe('emptyTabMessage', () => {
-      it('returns message with scope', (done) => {
+      it('returns message with scope', done => {
         vm.scope = 'pending';
 
         vm.$nextTick(() => {
@@ -529,7 +553,7 @@ describe('Pipelines', () => {
         expect(vm.stateToRender).toEqual('loading');
       });
 
-      it('returns error state when app has error', (done) => {
+      it('returns error state when app has error', done => {
         vm.hasError = true;
         vm.isLoading = false;
 
@@ -539,7 +563,7 @@ describe('Pipelines', () => {
         });
       });
 
-      it('returns table list when app has pipelines', (done) => {
+      it('returns table list when app has pipelines', done => {
         vm.isLoading = false;
         vm.hasError = false;
         vm.state.pipelines = pipelines.pipelines;
@@ -551,7 +575,7 @@ describe('Pipelines', () => {
         });
       });
 
-      it('returns empty tab when app does not have pipelines but project has pipelines', (done) => {
+      it('returns empty tab when app does not have pipelines but project has pipelines', done => {
         vm.state.count.all = 10;
         vm.isLoading = false;
 
@@ -562,7 +586,7 @@ describe('Pipelines', () => {
         });
       });
 
-      it('returns empty tab when project has CI', (done) => {
+      it('returns empty tab when project has CI', done => {
         vm.isLoading = false;
         vm.$nextTick(() => {
           expect(vm.stateToRender).toEqual('emptyTab');
@@ -571,7 +595,7 @@ describe('Pipelines', () => {
         });
       });
 
-      it('returns empty state when project does not have pipelines nor CI', (done) => {
+      it('returns empty state when project does not have pipelines nor CI', done => {
         vm.isLoading = false;
         vm.hasGitlabCi = false;
         vm.$nextTick(() => {
@@ -583,7 +607,7 @@ describe('Pipelines', () => {
     });
 
     describe('shouldRenderTabs', () => {
-      it('returns true when state is loading & has already made the first request', (done) => {
+      it('returns true when state is loading & has already made the first request', done => {
         vm.isLoading = true;
         vm.hasMadeRequest = true;
 
@@ -594,7 +618,7 @@ describe('Pipelines', () => {
         });
       });
 
-      it('returns true when state is tableList & has already made the first request', (done) => {
+      it('returns true when state is tableList & has already made the first request', done => {
         vm.isLoading = false;
         vm.state.pipelines = pipelines.pipelines;
         vm.hasMadeRequest = true;
@@ -606,7 +630,7 @@ describe('Pipelines', () => {
         });
       });
 
-      it('returns true when state is error & has already made the first request', (done) => {
+      it('returns true when state is error & has already made the first request', done => {
         vm.isLoading = false;
         vm.hasError = true;
         vm.hasMadeRequest = true;
@@ -618,7 +642,7 @@ describe('Pipelines', () => {
         });
       });
 
-      it('returns true when state is empty tab & has already made the first request', (done) => {
+      it('returns true when state is empty tab & has already made the first request', done => {
         vm.isLoading = false;
         vm.state.count.all = 10;
         vm.hasMadeRequest = true;
@@ -630,7 +654,7 @@ describe('Pipelines', () => {
         });
       });
 
-      it('returns false when has not made first request', (done) => {
+      it('returns false when has not made first request', done => {
         vm.hasMadeRequest = false;
 
         vm.$nextTick(() => {
@@ -640,7 +664,7 @@ describe('Pipelines', () => {
         });
       });
 
-      it('returns false when state is emtpy state', (done) => {
+      it('returns false when state is emtpy state', done => {
         vm.isLoading = false;
         vm.hasMadeRequest = true;
         vm.hasGitlabCi = false;
@@ -654,7 +678,7 @@ describe('Pipelines', () => {
     });
 
     describe('shouldRenderButtons', () => {
-      it('returns true when it has paths & has made the first request', (done) => {
+      it('returns true when it has paths & has made the first request', done => {
         vm.hasMadeRequest = true;
 
         vm.$nextTick(() => {
@@ -664,7 +688,7 @@ describe('Pipelines', () => {
         });
       });
 
-      it('returns false when it has not made the first request', (done) => {
+      it('returns false when it has not made the first request', done => {
         vm.hasMadeRequest = false;
 
         vm.$nextTick(() => {
@@ -681,19 +705,24 @@ describe('Pipelines', () => {
       const copyPipeline = Object.assign({}, pipelineWithStages);
       copyPipeline.id += 1;
       mock
-        .onGet('twitter/flight/pipelines.json').reply(200, {
-          pipelines: [pipelineWithStages],
-          count: {
-            all: 1,
-            finished: 1,
-            pending: 0,
-            running: 0,
+        .onGet('twitter/flight/pipelines.json')
+        .reply(
+          200,
+          {
+            pipelines: [pipelineWithStages],
+            count: {
+              all: 1,
+              finished: 1,
+              pending: 0,
+              running: 0,
+            },
           },
-        }, {
-          'POLL-INTERVAL': 100,
-        })
+          {
+            'POLL-INTERVAL': 100,
+          },
+        )
         .onGet(pipelineWithStages.details.stages[0].dropdown_path)
-          .reply(200, stageReply);
+        .reply(200, stageReply);
 
       vm = mountComponent(PipelinesComponent, {
         store: new Store(),
@@ -704,7 +733,7 @@ describe('Pipelines', () => {
     });
 
     describe('when a request is being made', () => {
-      it('stops polling, cancels the request, fetches pipelines & restarts polling', (done) => {
+      it('stops polling, cancels the request, fetches pipelines & restarts polling', done => {
         spyOn(vm.poll, 'stop');
         spyOn(vm.poll, 'restart');
         spyOn(vm, 'getPipelines').and.returnValue(Promise.resolve());
@@ -712,7 +741,8 @@ describe('Pipelines', () => {
 
         setTimeout(() => {
           vm.isMakingRequest = true;
-          return vm.$nextTick()
+          return vm
+            .$nextTick()
             .then(() => {
               vm.$el.querySelector('.js-builds-dropdown-button').click();
             })
@@ -725,13 +755,14 @@ describe('Pipelines', () => {
                 expect(vm.poll.restart).toHaveBeenCalled();
                 done();
               }, 0);
-            }).catch(done.fail);
+            })
+            .catch(done.fail);
         }, 0);
       });
     });
 
     describe('when no request is being made', () => {
-      it('stops polling, fetches pipelines & restarts polling', (done) => {
+      it('stops polling, fetches pipelines & restarts polling', done => {
         spyOn(vm.poll, 'stop');
         spyOn(vm.poll, 'restart');
         spyOn(vm, 'getPipelines').and.returnValue(Promise.resolve());

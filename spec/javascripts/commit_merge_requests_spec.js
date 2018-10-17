@@ -3,7 +3,10 @@ import * as CommitMergeRequests from '~/commit_merge_requests';
 describe('CommitMergeRequests', () => {
   describe('createContent', () => {
     it('should return created content', () => {
-      const content1 = CommitMergeRequests.createContent([{ iid: 1, path: '/path1', title: 'foo' }, { iid: 2, path: '/path2', title: 'baz' }])[0];
+      const content1 = CommitMergeRequests.createContent([
+        { iid: 1, path: '/path1', title: 'foo' },
+        { iid: 2, path: '/path2', title: 'baz' },
+      ])[0];
 
       expect(content1.tagName).toEqual('SPAN');
       expect(content1.childElementCount).toEqual(4);

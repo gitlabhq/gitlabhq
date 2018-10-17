@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 
-export const setLanguage = (languageCode) => {
+export const setLanguage = languageCode => {
   const htmlElement = document.querySelector('html');
 
   if (languageCode) {

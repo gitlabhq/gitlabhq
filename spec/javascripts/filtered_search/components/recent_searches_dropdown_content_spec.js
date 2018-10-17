@@ -3,7 +3,7 @@ import eventHub from '~/filtered_search/event_hub';
 import RecentSearchesDropdownContent from '~/filtered_search/components/recent_searches_dropdown_content.vue';
 import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
 
-const createComponent = (propsData) => {
+const createComponent = propsData => {
   const Component = Vue.extend(RecentSearchesDropdownContent);
 
   return new Component({
@@ -21,10 +21,7 @@ describe('RecentSearchesDropdownContent', () => {
     allowedKeys: IssuableFilteredSearchTokenKeys.getKeys(),
   };
   const propsDataWithItems = {
-    items: [
-      'foo',
-      'author:@root label:~foo bar',
-    ],
+    items: ['foo', 'author:@root label:~foo bar'],
     allowedKeys: IssuableFilteredSearchTokenKeys.getKeys(),
   };
 
@@ -69,7 +66,11 @@ describe('RecentSearchesDropdownContent', () => {
 
       expect(items.length).toEqual(propsDataWithItems.items.length);
 
-      expect(trimMarkupWhitespace(items[0].querySelector('.filtered-search-history-dropdown-search-token').textContent)).toEqual('foo');
+      expect(
+        trimMarkupWhitespace(
+          items[0].querySelector('.filtered-search-history-dropdown-search-token').textContent,
+        ),
+      ).toEqual('foo');
 
       const item1Tokens = items[1].querySelectorAll('.filtered-search-history-dropdown-token');
 
@@ -78,7 +79,11 @@ describe('RecentSearchesDropdownContent', () => {
       expect(item1Tokens[0].querySelector('.value').textContent).toEqual('@root');
       expect(item1Tokens[1].querySelector('.name').textContent).toEqual('label:');
       expect(item1Tokens[1].querySelector('.value').textContent).toEqual('~foo');
-      expect(trimMarkupWhitespace(items[1].querySelector('.filtered-search-history-dropdown-search-token').textContent)).toEqual('bar');
+      expect(
+        trimMarkupWhitespace(
+          items[1].querySelector('.filtered-search-history-dropdown-search-token').textContent,
+        ),
+      ).toEqual('bar');
     });
   });
 

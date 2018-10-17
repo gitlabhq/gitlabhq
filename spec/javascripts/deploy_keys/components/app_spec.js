@@ -10,7 +10,7 @@ describe('Deploy keys app component', () => {
   let vm;
   let mock;
 
-  beforeEach((done) => {
+  beforeEach(done => {
     // set up axios mock before component
     mock = new MockAdapter(axios);
     mock.onGet(`${TEST_HOST}/dummy/`).replyOnce(200, data);

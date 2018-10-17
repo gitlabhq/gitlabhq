@@ -28,21 +28,25 @@ import '~/users_select';
       new LabelsSelect();
 
       mock.onGet('/root/test/labels.json').reply(() => {
-        const labels = Array(10).fill().map((_, i) => ({
-          id: i,
-          title: `test ${i}`,
-          color: '#5CB85C',
-        }));
+        const labels = Array(10)
+          .fill()
+          .map((_, i) => ({
+            id: i,
+            title: `test ${i}`,
+            color: '#5CB85C',
+          }));
 
         return [200, labels];
       });
 
       mock.onPut('/root/test/issues/2.json').reply(() => {
-        const labels = Array(saveLabelCount).fill().map((_, i) => ({
-          id: i,
-          title: `test ${i}`,
-          color: '#5CB85C',
-        }));
+        const labels = Array(saveLabelCount)
+          .fill()
+          .map((_, i) => ({
+            id: i,
+            title: `test ${i}`,
+            color: '#5CB85C',
+          }));
 
         return [200, { labels }];
       });
@@ -52,45 +56,61 @@ import '~/users_select';
       mock.restore();
     });
 
-    it('changes collapsed tooltip when changing labels when less than 5', (done) => {
+    it('changes collapsed tooltip when changing labels when less than 5', done => {
       saveLabelCount = 5;
-      $('.edit-link').get(0).click();
+      $('.edit-link')
+        .get(0)
+        .click();
 
       setTimeout(() => {
         expect($('.dropdown-content a').length).toBe(10);
 
-        $('.dropdown-content a').each(function (i) {
+        $('.dropdown-content a').each(function(i) {
           if (i < saveLabelCount) {
-            $(this).get(0).click();
+            $(this)
+              .get(0)
+              .click();
           }
         });
 
-        $('.edit-link').get(0).click();
+        $('.edit-link')
+          .get(0)
+          .click();
 
         setTimeout(() => {
-          expect($('.sidebar-collapsed-icon').attr('data-original-title')).toBe('test 0, test 1, test 2, test 3, test 4');
+          expect($('.sidebar-collapsed-icon').attr('data-original-title')).toBe(
+            'test 0, test 1, test 2, test 3, test 4',
+          );
           done();
         }, 0);
       }, 0);
     });
 
-    it('changes collapsed tooltip when changing labels when more than 5', (done) => {
+    it('changes collapsed tooltip when changing labels when more than 5', done => {
       saveLabelCount = 6;
-      $('.edit-link').get(0).click();
+      $('.edit-link')
+        .get(0)
+        .click();
 
       setTimeout(() => {
         expect($('.dropdown-content a').length).toBe(10);
 
-        $('.dropdown-content a').each(function (i) {
+        $('.dropdown-content a').each(function(i) {
           if (i < saveLabelCount) {
-            $(this).get(0).click();
+            $(this)
+              .get(0)
+              .click();
           }
         });
 
-        $('.edit-link').get(0).click();
+        $('.edit-link')
+          .get(0)
+          .click();
 
         setTimeout(() => {
-          expect($('.sidebar-collapsed-icon').attr('data-original-title')).toBe('test 0, test 1, test 2, test 3, test 4, and 1 more');
+          expect($('.sidebar-collapsed-icon').attr('data-original-title')).toBe(
+            'test 0, test 1, test 2, test 3, test 4, and 1 more',
+          );
           done();
         }, 0);
       }, 0);

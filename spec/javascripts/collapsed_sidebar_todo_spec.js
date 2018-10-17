@@ -18,10 +18,8 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
     new Sidebar();
     loadFixtures(fixtureName);
 
-    document.querySelector('.js-right-sidebar')
-      .classList.toggle('right-sidebar-expanded');
-    document.querySelector('.js-right-sidebar')
-      .classList.toggle('right-sidebar-collapsed');
+    document.querySelector('.js-right-sidebar').classList.toggle('right-sidebar-expanded');
+    document.querySelector('.js-right-sidebar').classList.toggle('right-sidebar-collapsed');
 
     mock = new MockAdapter(axios);
 
@@ -44,9 +42,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
   });
 
   it('shows add todo button', () => {
-    expect(
-      document.querySelector('.js-issuable-todo.sidebar-collapsed-icon'),
-    ).not.toBeNull();
+    expect(document.querySelector('.js-issuable-todo.sidebar-collapsed-icon')).not.toBeNull();
 
     expect(
       document.querySelector('.js-issuable-todo.sidebar-collapsed-icon .fa-plus-square'),
@@ -63,7 +59,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
     ).toBe('Add todo');
   });
 
-  it('toggle todo state', (done) => {
+  it('toggle todo state', done => {
     document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
 
     setTimeout(() => {
@@ -79,7 +75,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
     });
   });
 
-  it('toggle todo state of expanded todo toggle', (done) => {
+  it('toggle todo state of expanded todo toggle', done => {
     document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
 
     setTimeout(() => {
@@ -91,19 +87,21 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
     });
   });
 
-  it('toggles todo button tooltip', (done) => {
+  it('toggles todo button tooltip', done => {
     document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
 
     setTimeout(() => {
       expect(
-        document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').getAttribute('data-original-title'),
+        document
+          .querySelector('.js-issuable-todo.sidebar-collapsed-icon')
+          .getAttribute('data-original-title'),
       ).toBe('Mark todo as done');
 
       done();
     });
   });
 
-  it('marks todo as done', (done) => {
+  it('marks todo as done', done => {
     document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
 
     timeoutPromise()
@@ -128,25 +126,29 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
       .catch(done.fail);
   });
 
-  it('updates aria-label to mark todo as done', (done) => {
+  it('updates aria-label to mark todo as done', done => {
     document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
 
     setTimeout(() => {
       expect(
-        document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').getAttribute('aria-label'),
+        document
+          .querySelector('.js-issuable-todo.sidebar-collapsed-icon')
+          .getAttribute('aria-label'),
       ).toBe('Mark todo as done');
 
       done();
     });
   });
 
-  it('updates aria-label to add todo', (done) => {
+  it('updates aria-label to add todo', done => {
     document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
 
     timeoutPromise()
       .then(() => {
         expect(
-          document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').getAttribute('aria-label'),
+          document
+            .querySelector('.js-issuable-todo.sidebar-collapsed-icon')
+            .getAttribute('aria-label'),
         ).toBe('Mark todo as done');
 
         document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
@@ -154,7 +156,9 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
       .then(timeoutPromise)
       .then(() => {
         expect(
-          document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').getAttribute('aria-label'),
+          document
+            .querySelector('.js-issuable-todo.sidebar-collapsed-icon')
+            .getAttribute('aria-label'),
         ).toBe('Add todo');
       })
       .then(done)

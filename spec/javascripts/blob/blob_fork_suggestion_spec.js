@@ -16,8 +16,7 @@ describe('BlobForkSuggestion', () => {
       cancelButtons: cancelButton,
       suggestionSections: suggestionSection,
       actionTextPieces: actionTextPiece,
-    })
-      .init();
+    }).init();
   });
 
   afterEach(() => {

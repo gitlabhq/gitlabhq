@@ -1,4 +1,3 @@
-
 import DirtySubmitForm from '~/dirty_submit/dirty_submit_form';
 import { setInput, createForm } from './helper';
 

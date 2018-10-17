@@ -63,10 +63,7 @@ describe('performance bar wrapper', () => {
     it('adds the request immediately', () => {
       vm.loadRequestDetails('123', 'https://gitlab.com/');
 
-      expect(vm.store.addRequest).toHaveBeenCalledWith(
-        '123',
-        'https://gitlab.com/',
-      );
+      expect(vm.store.addRequest).toHaveBeenCalledWith('123', 'https://gitlab.com/');
     });
 
     it('makes an HTTP request for the request details', () => {

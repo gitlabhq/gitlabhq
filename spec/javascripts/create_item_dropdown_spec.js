@@ -1,19 +1,23 @@
 import $ from 'jquery';
 import CreateItemDropdown from '~/create_item_dropdown';
 
-const DROPDOWN_ITEM_DATA = [{
-  title: 'one',
-  id: 'one',
-  text: 'one',
-}, {
-  title: 'two',
-  id: 'two',
-  text: 'two',
-}, {
-  title: 'three',
-  id: 'three',
-  text: 'three',
-}];
+const DROPDOWN_ITEM_DATA = [
+  {
+    title: 'one',
+    id: 'one',
+    text: 'one',
+  },
+  {
+    title: 'two',
+    id: 'two',
+    text: 'two',
+  },
+  {
+    title: 'three',
+    id: 'three',
+    text: 'three',
+  },
+];
 
 describe('CreateItemDropdown', () => {
   preloadFixtures('static/create_item_dropdown.html.raw');
@@ -23,7 +27,8 @@ describe('CreateItemDropdown', () => {
 
   function createItemAndClearInput(text) {
     // Filter for the new item
-    $wrapperEl.find('.dropdown-input-field')
+    $wrapperEl
+      .find('.dropdown-input-field')
       .val(text)
       .trigger('input');
 
@@ -32,7 +37,8 @@ describe('CreateItemDropdown', () => {
     $createButton.click();
 
     // Clear out the filter
-    $wrapperEl.find('.dropdown-input-field')
+    $wrapperEl
+      .find('.dropdown-input-field')
       .val('')
       .trigger('input');
   }
@@ -85,7 +91,8 @@ describe('CreateItemDropdown', () => {
       $('.js-dropdown-menu-toggle').click();
 
       // Filter for the new item
-      $wrapperEl.find('.dropdown-input-field')
+      $wrapperEl
+        .find('.dropdown-input-field')
         .val(NEW_ITEM_TEXT)
         .trigger('input');
     });
@@ -140,9 +147,7 @@ describe('CreateItemDropdown', () => {
       $('.js-dropdown-menu-toggle').click();
 
       // Filter for an item
-      filterInput
-        .val('one')
-        .trigger('input');
+      filterInput.val('one').trigger('input');
 
       const $itemElsAfterFilter = $wrapperEl.find('.js-dropdown-content a');
 

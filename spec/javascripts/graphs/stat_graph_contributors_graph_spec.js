@@ -2,47 +2,50 @@
 
 import { scaleLinear, scaleTime } from 'd3-scale';
 import { timeParse } from 'd3-time-format';
-import { ContributorsGraph, ContributorsMasterGraph } from '~/pages/projects/graphs/show/stat_graph_contributors_graph';
+import {
+  ContributorsGraph,
+  ContributorsMasterGraph,
+} from '~/pages/projects/graphs/show/stat_graph_contributors_graph';
 
 const d3 = { scaleLinear, scaleTime, timeParse };
 
-describe("ContributorsGraph", function () {
-  describe("#set_x_domain", function () {
-    it("set the x_domain", function () {
+describe('ContributorsGraph', function() {
+  describe('#set_x_domain', function() {
+    it('set the x_domain', function() {
       ContributorsGraph.set_x_domain(20);
 
       expect(ContributorsGraph.prototype.x_domain).toEqual(20);
     });
   });
 
-  describe("#set_y_domain", function () {
-    it("sets the y_domain", function () {
+  describe('#set_y_domain', function() {
+    it('sets the y_domain', function() {
       ContributorsGraph.set_y_domain([{ commits: 30 }]);
 
       expect(ContributorsGraph.prototype.y_domain).toEqual([0, 30]);
     });
   });
 
-  describe("#init_x_domain", function () {
-    it("sets the initial x_domain", function () {
-      ContributorsGraph.init_x_domain([{ date: "2013-01-31" }, { date: "2012-01-31" }]);
+  describe('#init_x_domain', function() {
+    it('sets the initial x_domain', function() {
+      ContributorsGraph.init_x_domain([{ date: '2013-01-31' }, { date: '2012-01-31' }]);
 
-      expect(ContributorsGraph.prototype.x_domain).toEqual(["2012-01-31", "2013-01-31"]);
+      expect(ContributorsGraph.prototype.x_domain).toEqual(['2012-01-31', '2013-01-31']);
     });
   });
 
-  describe("#init_y_domain", function () {
-    it("sets the initial y_domain", function () {
+  describe('#init_y_domain', function() {
+    it('sets the initial y_domain', function() {
       ContributorsGraph.init_y_domain([{ commits: 30 }]);
 
       expect(ContributorsGraph.prototype.y_domain).toEqual([0, 30]);
     });
   });
 
-  describe("#init_domain", function () {
-    it("calls init_x_domain and init_y_domain", function () {
-      spyOn(ContributorsGraph, "init_x_domain");
-      spyOn(ContributorsGraph, "init_y_domain");
+  describe('#init_domain', function() {
+    it('calls init_x_domain and init_y_domain', function() {
+      spyOn(ContributorsGraph, 'init_x_domain');
+      spyOn(ContributorsGraph, 'init_y_domain');
       ContributorsGraph.init_domain();
 
       expect(ContributorsGraph.init_x_domain).toHaveBeenCalled();
@@ -50,19 +53,22 @@ describe("ContributorsGraph", function () {
     });
   });
 
-  describe("#set_dates", function () {
-    it("sets the dates", function () {
-      ContributorsGraph.set_dates("2013-12-01");
+  describe('#set_dates', function() {
+    it('sets the dates', function() {
+      ContributorsGraph.set_dates('2013-12-01');
 
-      expect(ContributorsGraph.prototype.dates).toEqual("2013-12-01");
+      expect(ContributorsGraph.prototype.dates).toEqual('2013-12-01');
     });
   });
 
-  describe("#set_x_domain", function () {
-    it("sets the instance's x domain using the prototype's x_domain", function () {
+  describe('#set_x_domain', function() {
+    it("sets the instance's x domain using the prototype's x_domain", function() {
       ContributorsGraph.prototype.x_domain = 20;
       var instance = new ContributorsGraph();
-      instance.x = d3.scaleTime().range([0, 100]).clamp(true);
+      instance.x = d3
+        .scaleTime()
+        .range([0, 100])
+        .clamp(true);
       spyOn(instance.x, 'domain');
       instance.set_x_domain();
 
@@ -70,11 +76,14 @@ describe("ContributorsGraph", function () {
     });
   });
 
-  describe("#set_y_domain", function () {
-    it("sets the instance's y domain using the prototype's y_domain", function () {
+  describe('#set_y_domain', function() {
+    it("sets the instance's y domain using the prototype's y_domain", function() {
       ContributorsGraph.prototype.y_domain = 30;
       var instance = new ContributorsGraph();
-      instance.y = d3.scaleLinear().range([100, 0]).nice();
+      instance.y = d3
+        .scaleLinear()
+        .range([100, 0])
+        .nice();
       spyOn(instance.y, 'domain');
       instance.set_y_domain();
 
@@ -82,8 +91,8 @@ describe("ContributorsGraph", function () {
     });
   });
 
-  describe("#set_domain", function () {
-    it("calls set_x_domain and set_y_domain", function () {
+  describe('#set_domain', function() {
+    it('calls set_x_domain and set_y_domain', function() {
       var instance = new ContributorsGraph();
       spyOn(instance, 'set_x_domain');
       spyOn(instance, 'set_y_domain');
@@ -94,17 +103,17 @@ describe("ContributorsGraph", function () {
     });
   });
 
-  describe("#set_data", function () {
-    it("sets the data", function () {
+  describe('#set_data', function() {
+    it('sets the data', function() {
       var instance = new ContributorsGraph();
-      instance.set_data("20");
+      instance.set_data('20');
 
-      expect(instance.data).toEqual("20");
+      expect(instance.data).toEqual('20');
     });
   });
 });
 
-describe("ContributorsMasterGraph", function () {
+describe('ContributorsMasterGraph', function() {
   // TODO: fix or remove
   // describe("#process_dates", function () {
   //   it("gets and parses dates", function () {
@@ -120,20 +129,20 @@ describe("ContributorsMasterGraph", function () {
   //   });
   // });
 
-  describe("#get_dates", function () {
-    it("plucks the date field from data collection", function () {
+  describe('#get_dates', function() {
+    it('plucks the date field from data collection', function() {
       var graph = new ContributorsMasterGraph();
-      var data = [{ date: "2013-01-01" }, { date: "2012-12-15" }];
+      var data = [{ date: '2013-01-01' }, { date: '2012-12-15' }];
 
-      expect(graph.get_dates(data)).toEqual(["2013-01-01", "2012-12-15"]);
+      expect(graph.get_dates(data)).toEqual(['2013-01-01', '2012-12-15']);
     });
   });
 
-  describe("#parse_dates", function () {
-    it("parses the dates", function () {
+  describe('#parse_dates', function() {
+    it('parses the dates', function() {
       var graph = new ContributorsMasterGraph();
-      var parseDate = d3.timeParse("%Y-%m-%d");
-      var data = [{ date: "2013-01-01" }, { date: "2012-12-15" }];
+      var parseDate = d3.timeParse('%Y-%m-%d');
+      var data = [{ date: '2013-01-01' }, { date: '2012-12-15' }];
       var correct = [{ date: parseDate(data[0].date) }, { date: parseDate(data[1].date) }];
       graph.parse_dates(data);
 

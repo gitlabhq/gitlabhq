@@ -1,9 +1,5 @@
 import $ from 'jquery';
-import {
-  togglePopover,
-  mouseleave,
-  mouseenter,
-} from '~/shared/popover';
+import { togglePopover, mouseleave, mouseenter } from '~/shared/popover';
 
 describe('popover', () => {
   describe('togglePopover', () => {
@@ -26,14 +22,14 @@ describe('popover', () => {
         expect(togglePopover.call(context, true)).toEqual(false);
       });
 
-      it('shows popover', (done) => {
+      it('shows popover', done => {
         const context = {
           hasClass: () => false,
           popover: () => {},
           toggleClass: () => {},
         };
 
-        spyOn(context, 'popover').and.callFake((method) => {
+        spyOn(context, 'popover').and.callFake(method => {
           expect(method).toEqual('show');
           done();
         });
@@ -41,7 +37,7 @@ describe('popover', () => {
         togglePopover.call(context, true);
       });
 
-      it('adds disable-animation and js-popover-show class', (done) => {
+      it('adds disable-animation and js-popover-show class', done => {
         const context = {
           hasClass: () => false,
           popover: () => {},
@@ -77,14 +73,14 @@ describe('popover', () => {
         expect(togglePopover.call(context, false)).toEqual(false);
       });
 
-      it('hides popover', (done) => {
+      it('hides popover', done => {
         const context = {
           hasClass: () => true,
           popover: () => {},
           toggleClass: () => {},
         };
 
-        spyOn(context, 'popover').and.callFake((method) => {
+        spyOn(context, 'popover').and.callFake(method => {
           expect(method).toEqual('hide');
           done();
         });
@@ -92,7 +88,7 @@ describe('popover', () => {
         togglePopover.call(context, false);
       });
 
-      it('removes disable-animation and js-popover-show class', (done) => {
+      it('removes disable-animation and js-popover-show class', done => {
         const context = {
           hasClass: () => true,
           popover: () => {},
@@ -116,7 +112,9 @@ describe('popover', () => {
         length: 0,
       };
 
-      spyOn($.fn, 'init').and.callFake(selector => (selector === '.popover:hover' ? fakeJquery : $.fn));
+      spyOn($.fn, 'init').and.callFake(
+        selector => (selector === '.popover:hover' ? fakeJquery : $.fn),
+      );
       spyOn(togglePopover, 'call');
       mouseleave();
 
@@ -128,7 +126,9 @@ describe('popover', () => {
         length: 1,
       };
 
-      spyOn($.fn, 'init').and.callFake(selector => (selector === '.popover:hover' ? fakeJquery : $.fn));
+      spyOn($.fn, 'init').and.callFake(
+        selector => (selector === '.popover:hover' ? fakeJquery : $.fn),
+      );
       spyOn(togglePopover, 'call');
       mouseleave();
 
@@ -146,9 +146,9 @@ describe('popover', () => {
       expect(togglePopover.call).toHaveBeenCalledWith(jasmine.any(Object), true);
     });
 
-    it('registers mouseleave event if popover is showed', (done) => {
+    it('registers mouseleave event if popover is showed', done => {
       spyOn(togglePopover, 'call').and.returnValue(true);
-      spyOn($.fn, 'on').and.callFake((eventName) => {
+      spyOn($.fn, 'on').and.callFake(eventName => {
         expect(eventName).toEqual('mouseleave');
         done();
       });

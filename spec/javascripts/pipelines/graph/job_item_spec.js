@@ -31,7 +31,7 @@ describe('pipeline graph job item', () => {
   });
 
   describe('name with link', () => {
-    it('should render the job name and status with a link', (done) => {
+    it('should render the job name and status with a link', done => {
       component = mountComponent(JobComponent, { job: mockJob });
 
       Vue.nextTick(() => {
@@ -39,15 +39,15 @@ describe('pipeline graph job item', () => {
 
         expect(link.getAttribute('href')).toEqual(mockJob.status.details_path);
 
-        expect(
-          link.getAttribute('data-original-title'),
-        ).toEqual(`${mockJob.name} - ${mockJob.status.label}`);
+        expect(link.getAttribute('data-original-title')).toEqual(
+          `${mockJob.name} - ${mockJob.status.label}`,
+        );
 
         expect(component.$el.querySelector('.js-status-icon-success')).toBeDefined();
 
-        expect(
-          component.$el.querySelector('.ci-status-text').textContent.trim(),
-        ).toEqual(mockJob.name);
+        expect(component.$el.querySelector('.ci-status-text').textContent.trim()).toEqual(
+          mockJob.name,
+        );
 
         done();
       });
@@ -74,9 +74,9 @@ describe('pipeline graph job item', () => {
       expect(component.$el.querySelector('.js-status-icon-success')).toBeDefined();
       expect(component.$el.querySelector('a')).toBeNull();
 
-      expect(
-        component.$el.querySelector('.ci-status-text').textContent.trim(),
-      ).toEqual(mockJob.name);
+      expect(component.$el.querySelector('.ci-status-text').textContent.trim()).toEqual(
+        mockJob.name,
+      );
     });
   });
 
@@ -95,9 +95,7 @@ describe('pipeline graph job item', () => {
       cssClassJobName: 'css-class-job-name',
     });
 
-    expect(
-      component.$el.querySelector('a').classList.contains('css-class-job-name'),
-    ).toBe(true);
+    expect(component.$el.querySelector('a').classList.contains('css-class-job-name')).toBe(true);
   });
 
   describe('status label', () => {
@@ -112,7 +110,11 @@ describe('pipeline graph job item', () => {
         },
       });
 
-      expect(component.$el.querySelector('.js-job-component-tooltip').getAttribute('data-original-title')).toEqual('test');
+      expect(
+        component.$el
+          .querySelector('.js-job-component-tooltip')
+          .getAttribute('data-original-title'),
+      ).toEqual('test');
     });
 
     it('should not render status label when it is  provided', () => {
@@ -128,7 +130,11 @@ describe('pipeline graph job item', () => {
         },
       });
 
-      expect(component.$el.querySelector('.js-job-component-tooltip').getAttribute('data-original-title')).toEqual('test - success');
+      expect(
+        component.$el
+          .querySelector('.js-job-component-tooltip')
+          .getAttribute('data-original-title'),
+      ).toEqual('test - success');
     });
   });
 
