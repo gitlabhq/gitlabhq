@@ -20,27 +20,19 @@ describe('Jobs Store Mutations', () => {
     });
   });
 
-  describe('REQUEST_STATUS_FAVICON', () => {
-    it('should set fetchingStatusFavicon to true', () => {
-      mutations[types.REQUEST_STATUS_FAVICON](stateCopy);
+  describe('HIDE_SIDEBAR', () => {
+    it('should set isSidebarOpen to false', () => {
+      mutations[types.HIDE_SIDEBAR](stateCopy);
 
-      expect(stateCopy.fetchingStatusFavicon).toEqual(true);
+      expect(stateCopy.isSidebarOpen).toEqual(false);
     });
   });
 
-  describe('RECEIVE_STATUS_FAVICON_SUCCESS', () => {
-    it('should set fetchingStatusFavicon to false', () => {
-      mutations[types.RECEIVE_STATUS_FAVICON_SUCCESS](stateCopy);
+  describe('SHOW_SIDEBAR', () => {
+    it('should set isSidebarOpen to true', () => {
+      mutations[types.SHOW_SIDEBAR](stateCopy);
 
-      expect(stateCopy.fetchingStatusFavicon).toEqual(false);
-    });
-  });
-
-  describe('RECEIVE_STATUS_FAVICON_ERROR', () => {
-    it('should set fetchingStatusFavicon to false', () => {
-      mutations[types.RECEIVE_STATUS_FAVICON_ERROR](stateCopy);
-
-      expect(stateCopy.fetchingStatusFavicon).toEqual(false);
+      expect(stateCopy.isSidebarOpen).toEqual(true);
     });
   });
 
@@ -101,9 +93,7 @@ describe('Jobs Store Mutations', () => {
     it('resets trace state and sets error to true', () => {
       mutations[types.RECEIVE_TRACE_ERROR](stateCopy);
 
-      expect(stateCopy.isLoadingTrace).toEqual(false);
       expect(stateCopy.isTraceComplete).toEqual(true);
-      expect(stateCopy.hasTraceError).toEqual(true);
     });
   });
 
@@ -156,36 +146,7 @@ describe('Jobs Store Mutations', () => {
       mutations[types.RECEIVE_JOB_ERROR](stateCopy);
 
       expect(stateCopy.isLoading).toEqual(false);
-      expect(stateCopy.hasError).toEqual(true);
       expect(stateCopy.job).toEqual({});
-    });
-  });
-
-  describe('SCROLL_TO_TOP', () => {
-    beforeEach(() => {
-      mutations[types.SCROLL_TO_TOP](stateCopy);
-    });
-
-    it('sets isTraceScrolledToBottom to false', () => {
-      expect(stateCopy.isTraceScrolledToBottom).toEqual(false);
-    });
-
-    it('sets hasBeenScrolled to true', () => {
-      expect(stateCopy.hasBeenScrolled).toEqual(true);
-    });
-  });
-
-  describe('SCROLL_TO_BOTTOM', () => {
-    beforeEach(() => {
-      mutations[types.SCROLL_TO_BOTTOM](stateCopy);
-    });
-
-    it('sets isTraceScrolledToBottom to true', () => {
-      expect(stateCopy.isTraceScrolledToBottom).toEqual(true);
-    });
-
-    it('sets hasBeenScrolled to true', () => {
-      expect(stateCopy.hasBeenScrolled).toEqual(true);
     });
   });
 

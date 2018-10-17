@@ -31,6 +31,7 @@ export default {
   },
   coverage: 20,
   erased_at: threeWeeksAgo.toISOString(),
+  erased: false,
   duration: 6.785563,
   tags: ['tag'],
   user: {
@@ -131,6 +132,7 @@ export default {
     path: '/root/ci-mock/merge_requests/2',
   },
   raw_path: '/root/ci-mock/builds/4757/raw',
+  has_trace: true,
 };
 
 export const stages = [

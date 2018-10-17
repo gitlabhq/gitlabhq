@@ -69,6 +69,9 @@ export default {
     onClickAction(action) {
       this.$emit('actionClicked', action);
     },
+    onClickSidebarButton() {
+      this.$emit('clickedSidebarButton');
+    },
   },
 };
 </script>
@@ -161,21 +164,21 @@ export default {
           </i>
         </button>
       </template>
-      <button
-        v-if="hasSidebarButton"
-        id="toggleSidebar"
-        type="button"
-        class="btn btn-default d-block d-sm-none d-md-none
-sidebar-toggle-btn js-sidebar-build-toggle js-sidebar-build-toggle-header"
-        aria-label="Toggle Sidebar"
-      >
-        <i
-          class="fa fa-angle-double-left"
-          aria-hidden="true"
-          aria-labelledby="toggleSidebar"
-        >
-        </i>
-      </button>
     </section>
+    <button
+      v-if="hasSidebarButton"
+      id="toggleSidebar"
+      type="button"
+      class="btn btn-default d-block d-sm-none
+sidebar-toggle-btn js-sidebar-build-toggle js-sidebar-build-toggle-header"
+      @click="onClickSidebarButton"
+    >
+      <i
+        class="fa fa-angle-double-left"
+        aria-hidden="true"
+        aria-labelledby="toggleSidebar"
+      >
+      </i>
+    </button>
   </header>
 </template>

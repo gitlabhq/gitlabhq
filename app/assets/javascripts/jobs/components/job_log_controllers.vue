@@ -4,6 +4,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { sprintf } from '~/locale';
+import scrollDown from '../svg/scroll_down.svg';
 
 export default {
   components: {
@@ -12,6 +13,7 @@ export default {
   directives: {
     tooltip,
   },
+  scrollDown,
   props: {
     erasePath: {
       type: String,
@@ -65,7 +67,7 @@ export default {
 };
 </script>
 <template>
-  <div class="top-bar affix js-top-bar">
+  <div class="top-bar affix">
     <!-- truncate information -->
     <div class="js-truncated-info truncated-info d-none d-sm-block float-left">
       <template v-if="isTraceSizeVisible">
@@ -100,7 +102,7 @@ export default {
         v-tooltip
         :title="s__('Job|Erase job log')"
         :href="erasePath"
-        data-confirm="__('Are you sure you want to erase this build?')"
+        :data-confirm="__('Are you sure you want to erase this build?')"
         class="js-erase-link controllers-buttons"
         data-container="body"
         data-method="post"
@@ -138,8 +140,8 @@ export default {
           class="js-scroll-bottom btn-scroll btn-transparent btn-blank"
           :class="{ animate: isScrollingDown }"
           @click="handleScrollToBottom"
+          v-html="$options.scrollDown"
         >
-          <icon name="scroll_down"/>
         </button>
       </div>
       <!-- eo scroll buttons -->
