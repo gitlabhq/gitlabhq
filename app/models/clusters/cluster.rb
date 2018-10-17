@@ -40,6 +40,9 @@ module Clusters
     validates :name, cluster_name: true
     validate :restrict_modification, on: :update
 
+    validate :no_groups, unless: :group_type?
+    validate :no_projects, unless: :project_type?
+
     delegate :status, to: :provider, allow_nil: true
     delegate :status_reason, to: :provider, allow_nil: true
     delegate :on_creation?, to: :provider, allow_nil: true
@@ -49,6 +52,12 @@ module Clusters
     delegate :available?, to: :application_helm, prefix: true, allow_nil: true
     delegate :available?, to: :application_ingress, prefix: true, allow_nil: true
     delegate :available?, to: :application_prometheus, prefix: true, allow_nil: true
+
+    enum cluster_type: {
+      instance_type: 1,
+      group_type: 2,
+      project_type: 3
+    }
 
     enum platform_type: {
       kubernetes: 1
@@ -128,6 +137,18 @@ module Clusters
       end
 
       true
+    end
+
+    def no_groups
+      if groups.any?
+        errors.add(:cluster, 'cannot have groups assigned')
+      end
+    end
+
+    def no_projects
+      if projects.any?
+        errors.add(:cluster, 'cannot have projects assigned')
+      end
     end
   end
 end

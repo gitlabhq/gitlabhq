@@ -2,14 +2,23 @@ FactoryBot.define do
   factory :cluster, class: Clusters::Cluster do
     user
     name 'test-cluster'
+    cluster_type :project_type
+
+    trait :instance do
+      cluster_type :instance_type
+    end
 
     trait :project do
+      cluster_type :project_type
+
       before(:create) do |cluster, evaluator|
         cluster.projects << create(:project, :repository)
       end
     end
 
     trait :group do
+      cluster_type :group_type
+
       before(:create) do |cluster, evalutor|
         cluster.groups << create(:group)
       end

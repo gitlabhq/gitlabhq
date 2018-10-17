@@ -16,9 +16,9 @@ module Clusters
       end
 
       if project
-        cluster_params = params.merge(user: current_user, projects: [project])
+        cluster_params = params.merge(user: current_user, cluster_type: :project_type, projects: [project])
       elsif group
-        cluster_params = params.merge(user: current_user, groups: [group])
+        cluster_params = params.merge(user: current_user, cluster_type: :group_type, groups: [group])
       end
 
       cluster_params[:provider_gcp_attributes].try do |provider|
