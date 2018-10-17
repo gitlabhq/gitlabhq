@@ -34,6 +34,10 @@ describe QA::Runtime::Env do
     end
   end
 
+  describe '.verbose?' do
+    it_behaves_like 'boolean method', :verbose?, 'VERBOSE', false
+  end
+
   describe '.signup_disabled?' do
     it_behaves_like 'boolean method', :signup_disabled?, 'SIGNUP_DISABLED', false
   end
@@ -64,7 +68,54 @@ describe QA::Runtime::Env do
     end
   end
 
+  describe '.personal_access_token' do
+    around do |example|
+      described_class.instance_variable_set(:@personal_access_token, nil)
+      example.run
+      described_class.instance_variable_set(:@personal_access_token, nil)
+    end
+
+    context 'when PERSONAL_ACCESS_TOKEN is set' do
+      before do
+        stub_env('PERSONAL_ACCESS_TOKEN', 'a_token')
+      end
+
+      it 'returns specified token from env' do
+        expect(described_class.personal_access_token).to eq 'a_token'
+      end
+    end
+
+    context 'when @personal_access_token is set' do
+      before do
+        described_class.personal_access_token = 'another_token'
+      end
+
+      it 'returns the instance variable value' do
+        expect(described_class.personal_access_token).to eq 'another_token'
+      end
+    end
+  end
+
+  describe '.personal_access_token=' do
+    around do |example|
+      described_class.instance_variable_set(:@personal_access_token, nil)
+      example.run
+      described_class.instance_variable_set(:@personal_access_token, nil)
+    end
+
+    it 'saves the token' do
+      described_class.personal_access_token = 'a_token'
+
+      expect(described_class.personal_access_token).to eq 'a_token'
+    end
+  end
+
   describe '.forker?' do
+    before do
+      stub_env('GITLAB_FORKER_USERNAME', nil)
+      stub_env('GITLAB_FORKER_PASSWORD', nil)
+    end
+
     it 'returns false if no forker credentials are defined' do
       expect(described_class).not_to be_forker
     end

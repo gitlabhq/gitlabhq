@@ -461,6 +461,24 @@ describe Repository do
 
       it { is_expected.to be_nil }
     end
+
+    context 'regular blob' do
+      subject { repository.blob_at(repository.head_commit.sha, '.gitignore') }
+
+      it { is_expected.to be_an_instance_of(::Blob) }
+    end
+
+    context 'readme blob on HEAD' do
+      subject { repository.blob_at(repository.head_commit.sha, 'README.md') }
+
+      it { is_expected.to be_an_instance_of(::ReadmeBlob) }
+    end
+
+    context 'readme blob not on HEAD' do
+      subject { repository.blob_at(repository.find_branch('feature').target, 'README.md') }
+
+      it { is_expected.to be_an_instance_of(::Blob) }
+    end
   end
 
   describe '#merged_to_root_ref?' do
@@ -1922,23 +1940,25 @@ describe Repository do
 
   describe '#readme', :use_clean_rails_memory_store_caching do
     context 'with a non-existing repository' do
-      it 'returns nil' do
-        allow(repository).to receive(:tree).with(:head).and_return(nil)
+      let(:project) { create(:project) }
 
+      it 'returns nil' do
         expect(repository.readme).to be_nil
       end
     end
 
     context 'with an existing repository' do
       context 'when no README exists' do
-        it 'returns nil' do
-          allow_any_instance_of(Tree).to receive(:readme).and_return(nil)
+        let(:project) { create(:project, :empty_repo) }
 
+        it 'returns nil' do
           expect(repository.readme).to be_nil
         end
       end
 
       context 'when a README exists' do
+        let(:project) { create(:project, :repository) }
+
         it 'returns the README' do
           expect(repository.readme).to be_an_instance_of(ReadmeBlob)
         end

@@ -160,7 +160,9 @@ class WikiPage
   # Returns boolean True or False if this instance
   # is an old version of the page.
   def historical?
-    @page.historical? && last_version.sha != version.sha
+    return false unless last_commit_sha && version
+
+    @page.historical? && last_commit_sha != version.sha
   end
 
   # Returns boolean True or False if this instance

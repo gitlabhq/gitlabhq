@@ -8,7 +8,7 @@ module SendsBlob
     include SendFileUpload
   end
 
-  def send_blob(blob, params = {})
+  def send_blob(repository, blob, params = {})
     if blob
       headers['X-Content-Type-Options'] = 'nosniff'
 

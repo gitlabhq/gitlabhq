@@ -1,0 +1,5 @@
+---
+title: Fix a bug displaying certain wiki pages
+merge_request: 22377
+author:
+type: fixed

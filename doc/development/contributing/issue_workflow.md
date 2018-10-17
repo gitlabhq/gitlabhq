@@ -148,6 +148,9 @@ This label documents the planned timeline & urgency which is used to measure aga
 | ~P3   | Medium Priority | Within the next 3 releases (approx one quarter or 90 days)                 |
 | ~P4   | Low Priority    | Anything outside the next 3 releases (more than one quarter or 120 days)   |
 
+If an issue seems to fall between two priority labels, assign it to the higher-
+priority label.
+
 ## Severity labels
 
 Severity labels help us clearly communicate the impact of a ~bug on users.
@@ -158,6 +161,10 @@ Severity labels help us clearly communicate the impact of a ~bug on users.
 | ~S2   | Critical Severity | Broken Feature, workaround too complex & unacceptable | Can push commits, but only via the command line. |
 | ~S3   | Major Severity    | Broken Feature, workaround acceptable                 | Can create merge requests only from the Merge Requests page, not through the Issue. |
 | ~S4   | Low Severity      | Functionality inconvenience or cosmetic issue         | Label colors are incorrect / not being displayed. |
+
+If an issue seems to fall between two severity labels, even taking the
+[severity impact guidance](#severity-impact-guidance) into account, assign
+it to the higher-severity label.
 
 ### Severity impact guidance
 

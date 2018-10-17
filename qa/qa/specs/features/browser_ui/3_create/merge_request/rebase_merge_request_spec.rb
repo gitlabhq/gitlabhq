@@ -10,6 +10,7 @@ module QA
         project = Factory::Resource::Project.fabricate! do |project|
           project.name = "only-fast-forward"
         end
+        project.visit!
 
         Page::Project::Menu.act { go_to_settings }
         Page::Project::Settings::MergeRequest.act { enable_ff_only }

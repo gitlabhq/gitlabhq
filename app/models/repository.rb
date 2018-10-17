@@ -487,7 +487,20 @@ class Repository
   end
 
   def blob_at(sha, path)
-    Blob.decorate(raw_repository.blob_at(sha, path), project)
+    blob = Blob.decorate(raw_repository.blob_at(sha, path), project)
+
+    # Don't attempt to return a special result if there is no blob at all
+    return unless blob
+
+    # Don't attempt to return a special result unless we're looking at HEAD
+    return blob unless head_commit&.sha == sha
+
+    case path
+    when head_tree&.readme_path
+      ReadmeBlob.new(blob, self)
+    else
+      blob
+    end
   rescue Gitlab::Git::Repository::NoRepository
     nil
   end
@@ -569,9 +582,7 @@ class Repository
   cache_method :merge_request_template_names, fallback: []
 
   def readme
-    if readme = tree(:head)&.readme
-      ReadmeBlob.new(readme, self)
-    end
+    head_tree&.readme
   end
 
   def rendered_readme

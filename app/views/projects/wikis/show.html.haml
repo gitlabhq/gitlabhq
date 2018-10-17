@@ -11,8 +11,9 @@
   .nav-text
     %h2.wiki-page-title= @page.title.capitalize
     %span.wiki-last-edit-by
-      = (_("Last edited by %{name}") % { name: "<strong>#{@page.last_version.author_name}</strong>" }).html_safe
-      #{time_ago_with_tooltip(@page.last_version.authored_date)}
+      - if @page.last_version
+        = (_("Last edited by %{name}") % { name: "<strong>#{@page.last_version.author_name}</strong>" }).html_safe
+        #{time_ago_with_tooltip(@page.last_version.authored_date)}
 
   .nav-controls
     = render 'main_links'

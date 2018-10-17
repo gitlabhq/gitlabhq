@@ -7,7 +7,7 @@ module QA
 
         dependency Factory::Resource::Project, as: :project
 
-        product(:title) { |factory| factory.title }
+        product :title
 
         def title=(title)
           @title = "#{title}-#{SecureRandom.hex(4)}"

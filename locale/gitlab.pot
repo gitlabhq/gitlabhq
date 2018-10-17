@@ -4908,9 +4908,6 @@ msgstr ""
 msgid "PrometheusService|Automatically deploy and configure Prometheus on your clusters to monitor your project’s environments"
 msgstr ""
 
-msgid "PrometheusService|By default, Prometheus listens on ‘http://localhost:9090’. It’s not recommended to change the default address and port as this might affect or conflict with other services running on the GitLab server."
-msgstr ""
-
 msgid "PrometheusService|Common metrics"
 msgstr ""
 
