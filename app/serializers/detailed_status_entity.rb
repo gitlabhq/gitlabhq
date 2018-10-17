@@ -32,10 +32,4 @@ class DetailedStatusEntity < Grape::Entity
     expose :action_method, as: :method
     expose :action_button_title, as: :button_title
   end
-
-  expose :deployment, if: -> (status, _) { status.has_deployment? } do
-    expose :environment_text
-    expose :environment_path
-    expose :deployment_path
-  end
 end
