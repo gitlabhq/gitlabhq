@@ -22,6 +22,10 @@ module QA
           element :issuable_dropdown_menu_milestone
         end
 
+        view 'app/views/shared/issuable/_label_dropdown.html.haml' do
+          element :issuable_label
+        end
+
         def create_merge_request
           click_element :issuable_create_button
         end
@@ -39,6 +43,12 @@ module QA
           within_element(:issuable_dropdown_menu_milestone) do
             click_on milestone.title
           end
+        end
+
+        def select_label(label)
+          click_element :issuable_label
+
+          click_link label.title
         end
       end
     end

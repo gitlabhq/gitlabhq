@@ -86,7 +86,7 @@
 
       - if project_nav_tab? :issues
         = nav_link(controller: @project.issues_enabled? ? [:issues, :labels, :milestones, :boards] : :issues) do
-          = link_to project_issues_path(@project), class: 'shortcuts-issues' do
+          = link_to project_issues_path(@project), class: 'shortcuts-issues qa-issues-item' do
             .nav-icon-container
               = sprite_icon('issues')
             %span.nav-item-name
@@ -115,7 +115,7 @@
                   = boards_link_text
 
             = nav_link(controller: :labels) do
-              = link_to project_labels_path(@project), title: _('Labels') do
+              = link_to project_labels_path(@project), title: _('Labels'), class: 'qa-labels-link' do
                 %span
                   = _('Labels')
 
