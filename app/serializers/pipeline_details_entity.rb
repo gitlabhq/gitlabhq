@@ -6,12 +6,12 @@ class PipelineDetailsEntity < PipelineEntity
     expose :artifacts, using: BuildArtifactEntity
     expose :manual_actions, using: BuildActionEntity
     expose :scheduled_actions, using: BuildActionEntity
-    expose :detailed_deployments_status, using: DetailedStatusEntity
+    expose :deployments_statuses, using: DetailedStatusEntity
   end
 
   private
 
-  def detailed_deployments_status
+  def deployments_statuses
     pipeline.detailed_deployments_status(request.current_user)
   end
 end
