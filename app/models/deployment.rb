@@ -50,6 +50,10 @@ class Deployment < ActiveRecord::Base
     event :cancel do
       transition any - [:canceled] => :canceled
     end
+
+    before_transition any => [:success, :failed, :canceled] do |deployment|
+      deployment.finished_at = Time.now
+    end
   end
 
   def update_status
@@ -122,15 +126,15 @@ class Deployment < ActiveRecord::Base
   end
 
   def update_merge_request_metrics!
-    return unless environment.update_merge_request_metrics?
+    return unless environment.update_merge_request_metrics? && success?
 
     merge_requests = project.merge_requests
                      .joins(:metrics)
                      .where(target_branch: self.ref, merge_request_metrics: { first_deployed_to_production_at: nil })
-                     .where("merge_request_metrics.merged_at <= ?", self.created_at)
+                     .where("merge_request_metrics.merged_at <= ?", finished_at)
 
     if previous_deployment
-      merge_requests = merge_requests.where("merge_request_metrics.merged_at >= ?", previous_deployment.created_at)
+      merge_requests = merge_requests.where("merge_request_metrics.merged_at >= ?", previous_deployment.finished_at)
     end
 
     # Need to use `map` instead of `select` because MySQL doesn't allow `SELECT`ing from the same table
@@ -144,7 +148,7 @@ class Deployment < ActiveRecord::Base
 
     MergeRequest::Metrics
       .where(merge_request_id: merge_request_ids, first_deployed_to_production_at: nil)
-      .update_all(first_deployed_to_production_at: self.created_at)
+      .update_all(first_deployed_to_production_at: finished_at)
   end
 
   def previous_deployment
@@ -162,8 +166,16 @@ class Deployment < ActiveRecord::Base
     @stop_action ||= manual_actions.find_by(name: on_stop)
   end
 
+  def finished_at
+    return self.created_at if status.nil?
+
+    self.finished_at
+  end
+
   def formatted_deployment_time
-    created_at.to_time.in_time_zone.to_s(:medium)
+    return unless success?
+
+    finished_at.to_time.in_time_zone.to_s(:medium)
   end
 
   def has_metrics?
@@ -171,17 +183,17 @@ class Deployment < ActiveRecord::Base
   end
 
   def metrics
-    return {} unless has_metrics?
+    return {} unless has_metrics? && success?
 
     metrics = prometheus_adapter.query(:deployment, self)
-    metrics&.merge(deployment_time: created_at.to_i) || {}
+    metrics&.merge(deployment_time: finished_at.to_i) || {}
   end
 
   def additional_metrics
-    return {} unless has_metrics?
+    return {} unless has_metrics? && success?
 
     metrics = prometheus_adapter.query(:additional_metrics_deployment, self)
-    metrics&.merge(deployment_time: created_at.to_i) || {}
+    metrics&.merge(deployment_time: finished_at.to_i) || {}
   end
 
   private
