@@ -13,11 +13,11 @@ module Gitlab
     class KubeClient
       include Gitlab::Utils::StrongMemoize
 
-      SUPPORTED_API_GROUPS = [
-        'api',
-        'apis/rbac.authorization.k8s.io',
-        'apis/extensions'
-      ].freeze
+      SUPPORTED_API_GROUPS = {
+        core: 'api',
+        rbac: 'apis/rbac.authorization.k8s.io',
+        extensions: 'apis/extensions'
+      }.freeze
 
       LATEST_EXTENSIONS_VERSION = 'v1beta1'
 
@@ -79,32 +79,16 @@ module Gitlab
 
       private
 
-      def core_clients
-        strong_memoize(:core_clients) do
+      def build_client(cache_name, api_group)
+        strong_memoize(cache_name) do
           Hash.new do |hash, api_version|
-            hash[api_version] = build_kubeclient('api', api_version)
-          end
-        end
-      end
-
-      def rbac_clients
-        strong_memoize(:rbac_clients) do
-          Hash.new do |hash, api_version|
-            hash[api_version] = build_kubeclient('apis/rbac.authorization.k8s.io', api_version)
-          end
-        end
-      end
-
-      def extensions_clients
-        strong_memoize(:extensions_clients) do
-          Hash.new do |hash, api_version|
-            hash[api_version] = build_kubeclient('apis/extensions', api_version)
+            hash[api_version] = build_kubeclient(api_group, api_version)
           end
         end
       end
 
       def build_kubeclient(api_group, api_version)
-        raise ArgumentError, "Unknown api group #{api_group}" unless SUPPORTED_API_GROUPS.include?(api_group)
+        raise ArgumentError, "Unknown api group #{api_group}" unless SUPPORTED_API_GROUPS.values.include?(api_group)
 
         ::Kubeclient::Client.new(
           join_api_url(api_prefix, api_group),
@@ -120,6 +104,18 @@ module Gitlab
         url.path = [prefix, api_path].join("/")
 
         url.to_s
+      end
+
+      SUPPORTED_API_GROUPS.each do |name, api_group|
+        clients_method_name = "#{name}_clients".to_sym
+
+        define_method(clients_method_name) do
+          strong_memoize(clients_method_name.to_sym) do
+            Hash.new do |hash, api_version|
+              hash[api_version] = build_kubeclient(api_group, api_version)
+            end
+          end
+        end
       end
     end
   end
