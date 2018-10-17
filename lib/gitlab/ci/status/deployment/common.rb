@@ -25,7 +25,11 @@ module Gitlab
           end
 
           def external_url
-            subject.environment.external_url
+            environment.external_url
+          end
+
+          def external_url_formatted
+            environment.formatted_external_url
           end
 
           def stop_url
@@ -63,6 +67,10 @@ module Gitlab
 
           def deployable
             subject.deployable
+          end
+
+          def has_deployment?
+            true
           end
         end
       end
