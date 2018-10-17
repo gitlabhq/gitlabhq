@@ -1,31 +1,14 @@
 <script>
 import $ from 'jquery';
-import JobNameComponent from './job_name_component.vue';
-import JobComponent from './job_component.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import JobItem from './job_item.vue';
 import tooltip from '../../../vue_shared/directives/tooltip';
 
 /**
  * Renders the dropdown for the pipeline graph.
  *
- * The following object should be provided as `job`:
+ * The object provided as `group` corresponds to app/serializers/job_group_entity.rb.
  *
- * {
- *   "id": 4256,
- *   "name": "test",
- *   "status": {
- *     "icon": "status_success",
- *     "text": "passed",
- *     "label": "passed",
- *     "group": "success",
- *     "details_path": "/root/ci-mock/builds/4256",
- *     "action": {
- *       "icon": "retry",
- *       "title": "Retry",
- *       "path": "/root/ci-mock/builds/4256/retry",
- *       "method": "post"
- *     }
- *   }
- * }
  */
 export default {
   directives: {
@@ -33,12 +16,12 @@ export default {
   },
 
   components: {
-    JobComponent,
-    JobNameComponent,
+    JobItem,
+    CiIcon,
   },
 
   props: {
-    job: {
+    group: {
       type: Object,
       required: true,
     },
@@ -46,7 +29,8 @@ export default {
 
   computed: {
     tooltipText() {
-      return `${this.job.name} - ${this.job.status.label}`;
+      const { name, status } = this.group;
+      return `${name} - ${status.label}`;
     },
   },
 
@@ -56,7 +40,7 @@ export default {
 
   methods: {
     /**
-     * When the user right clicks or cmd/ctrl + click in the job name or the action icon
+     * When the user right clicks or cmd/ctrl + click in the group name or the action icon
      * the dropdown should not be closed so we stop propagation
      * of the click event inside the dropdown.
      *
@@ -90,14 +74,14 @@ export default {
       data-display="static"
       class="dropdown-menu-toggle build-content"
     >
+      <ci-icon :status="group.status" />
 
-      <job-name-component
-        :name="job.name"
-        :status="job.status"
-      />
+      <span class="ci-status-text">
+        {{ group.name }}
+      </span>
 
       <span class="dropdown-counter-badge">
-        {{ job.size }}
+        {{ group.size }}
       </span>
     </button>
 
@@ -105,12 +89,12 @@ export default {
       <li class="scrollable-menu">
         <ul>
           <li
-            v-for="(item, i) in job.jobs"
-            :key="i"
+            v-for="job in group.jobs"
+            :key="job.id"
           >
-            <job-component
-              :dropdown-length="job.size"
-              :job="item"
+            <job-item
+              :dropdown-length="group.size"
+              :job="job"
               css-class-job-name="mini-pipeline-graph-dropdown-item"
               @pipelineActionRequestComplete="pipelineActionRequestComplete"
             />
