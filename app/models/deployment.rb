@@ -79,6 +79,13 @@ class Deployment < ActiveRecord::Base
     end
   end
 
+  # To set legacy deployment status to :success
+  def success?
+    return true if status.nil?
+
+    super
+  end
+
   def detailed_status(current_user)
     Gitlab::Ci::Status::Deployment::Factory
       .new(self, current_user)
