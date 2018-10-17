@@ -4,12 +4,12 @@ module Gitlab
       module Deployment
         module Common
           def has_details?
-            can?(current_user, :read_environment, environment) &&
+            can?(user, :read_environment, environment) &&
               can?(user, :read_deployment, subject)
           end
 
           def details_path
-            project_job_path(subject.project, subject.deployable)
+            project_job_path(project, deployable)
           end
 
           def environment_name
@@ -17,11 +17,11 @@ module Gitlab
           end
 
           def environment_path
-            project_environment_path(subject.project, subject.environment)
+            project_environment_path(project, environment)
           end
 
           def deployment_path
-            project_job_path(subject.project, subject.deployable)
+            project_job_path(project, deployable)
           end
 
           def external_url
@@ -29,7 +29,7 @@ module Gitlab
           end
 
           def stop_url
-            if can?(current_user, :stop_environment, environment)
+            if can?(user, :stop_environment, environment)
               stop_project_environment_path(project, environment)
             end
           end
@@ -41,7 +41,8 @@ module Gitlab
           end
 
           def metrics_monitoring_url
-            environment_metrics_path(environment)
+            # environment_metrics_path(environment)
+            metrics_project_environment_path(project, environment)
           end
 
           def deployed_at
@@ -49,11 +50,19 @@ module Gitlab
           end
 
           def deployed_at_formatted
-            subject.deployed_at_formatted
+            subject.formatted_deployment_time
           end
 
           def environment
             subject.environment
+          end
+
+          def project
+            subject.project
+          end
+
+          def deployable
+            subject.deployable
           end
         end
       end
