@@ -169,13 +169,17 @@ class Deployment < ActiveRecord::Base
   def finished_at
     return self.created_at if status.nil?
 
-    self.finished_at
+    read_attribute(:finished_at)
+  end
+
+  def deployed_at
+    return unless success?
+
+    finished_at
   end
 
   def formatted_deployment_time
-    return unless success?
-
-    finished_at.to_time.in_time_zone.to_s(:medium)
+    deployed_at&.to_time&.in_time_zone&.to_s(:medium)
   end
 
   def has_metrics?
