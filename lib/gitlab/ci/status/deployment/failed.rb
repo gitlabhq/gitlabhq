@@ -3,7 +3,11 @@ module Gitlab
     module Status
       module Deployment
         class Failed < Status::Extended
-          def environment_text
+          def environment_text_for_pipeline
+            "Failed to deploy to %{environment_path}."
+          end
+
+          def environment_text_for_job
             "The deployment of this job to %{environment_path} did not succeed."
           end
 

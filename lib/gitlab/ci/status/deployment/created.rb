@@ -3,7 +3,15 @@ module Gitlab
     module Status
       module Deployment
         class Created < Status::Extended
-          def environment_text
+          def environment_text_for_pipeline
+            if subject.environment.deployments.any?
+              "Will deploy to %{environment_path} and overwrite the %{deployment_path}."
+            else
+              "Will deploy to %{environment_path}."
+            end
+          end
+
+          def environment_text_for_job
             if subject.environment.deployments.any?
               "This job will deploy to %{environment_path} and overwrite the %{deployment_path}."
             else
