@@ -64,10 +64,7 @@ export default {
         return [];
       }
       const { details } = this.pipeline;
-      return [
-        ...(details.manual_actions || []),
-        ...(details.scheduled_actions || []),
-      ];
+      return [...(details.manual_actions || []), ...(details.scheduled_actions || [])];
     },
     /**
      * If provided, returns the commit tag.

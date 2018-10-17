@@ -685,22 +685,34 @@ describe ApplicationController do
     end
 
     context 'html' do
-      it 'renders 412' do
-        get :index, text: "hi \255"
+      subject { get :index, text: "hi \255" }
 
-        expect(response).to have_gitlab_http_status(412)
-        expect(response).to render_template :precondition_failed
+      it 'renders 412' do
+        if Gitlab.rails5?
+          expect { subject }.to raise_error(ActionController::BadRequest)
+        else
+          subject
+
+          expect(response).to have_gitlab_http_status(412)
+          expect(response).to render_template :precondition_failed
+        end
       end
     end
 
     context 'js' do
+      subject { get :index, text: "hi \255", format: :js }
+
       it 'renders 412' do
-        get :index, text: "hi \255", format: :js
+        if Gitlab.rails5?
+          expect { subject }.to raise_error(ActionController::BadRequest)
+        else
+          subject
 
-        json_response = JSON.parse(response.body)
+          json_response = JSON.parse(response.body)
 
-        expect(response).to have_gitlab_http_status(412)
-        expect(json_response['error']).to eq('Invalid UTF-8')
+          expect(response).to have_gitlab_http_status(412)
+          expect(json_response['error']).to eq('Invalid UTF-8')
+        end
       end
     end
   end

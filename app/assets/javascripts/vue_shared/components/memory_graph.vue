@@ -41,7 +41,8 @@ export default {
       // Find metric timestamp which is closest to deploymentTime
       timestampDiff = Math.abs(metricTimestamps[0] - median);
       metricTimestamps.forEach((timestamp, index) => {
-        if (index === 0) { // Skip first element
+        if (index === 0) {
+          // Skip first element
           return;
         }
 

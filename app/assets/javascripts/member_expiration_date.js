@@ -9,7 +9,9 @@ import { parsePikadayDate, pikadayToString } from './lib/utils/datefix';
 //
 export default function memberExpirationDate(selector = '.js-access-expiration-date') {
   function toggleClearInput() {
-    $(this).closest('.clearable-input').toggleClass('has-value', $(this).val() !== '');
+    $(this)
+      .closest('.clearable-input')
+      .toggleClass('has-value', $(this).val() !== '');
   }
   const inputs = $(selector);
 
@@ -40,7 +42,9 @@ export default function memberExpirationDate(selector = '.js-access-expiration-d
   inputs.next('.js-clear-input').on('click', function clicked(event) {
     event.preventDefault();
 
-    const input = $(this).closest('.clearable-input').find(selector);
+    const input = $(this)
+      .closest('.clearable-input')
+      .find(selector);
     const calendar = input.data('pikaday');
 
     calendar.setDate(null);

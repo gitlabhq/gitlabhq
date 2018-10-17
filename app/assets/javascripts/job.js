@@ -42,16 +42,14 @@ export default class Job extends LogOutputBehaviours {
 
     this.scrollThrottled = _.throttle(this.toggleScroll.bind(this), 100);
 
-    this.$window
-      .off('scroll')
-      .on('scroll', () => {
-        if (!isScrolledToBottom()) {
-          this.toggleScrollAnimation(false);
-        } else if (isScrolledToBottom() && !this.isLogComplete) {
-          this.toggleScrollAnimation(true);
-        }
-        this.scrollThrottled();
-      });
+    this.$window.off('scroll').on('scroll', () => {
+      if (!isScrolledToBottom()) {
+        this.toggleScrollAnimation(false);
+      } else if (isScrolledToBottom() && !this.isLogComplete) {
+        this.toggleScrollAnimation(true);
+      }
+      this.scrollThrottled();
+    });
 
     this.$window
       .off('resize.build')
@@ -87,10 +85,11 @@ export default class Job extends LogOutputBehaviours {
   }
 
   getBuildTrace() {
-    return axios.get(`${this.pagePath}/trace.json`, {
-      params: { state: this.state },
-    })
-      .then((res) => {
+    return axios
+      .get(`${this.pagePath}/trace.json`, {
+        params: { state: this.state },
+      })
+      .then(res => {
         const log = res.data;
 
         if (!this.fetchingStatusFavicon) {
@@ -186,5 +185,4 @@ export default class Job extends LogOutputBehaviours {
   sidebarOnClick() {
     if (this.shouldHideSidebarForViewport()) this.toggleSidebar();
   }
-
 }

@@ -24,22 +24,25 @@ export default {
 
   getOld() {
     this.loading.show();
-    axios.get(this.url, {
-      params: {
-        limit: this.limit,
-        offset: this.offset,
-      },
-    }).then(({ data }) => {
-      this.append(data.count, this.prepareData(data.html));
-      this.callback();
+    axios
+      .get(this.url, {
+        params: {
+          limit: this.limit,
+          offset: this.offset,
+        },
+      })
+      .then(({ data }) => {
+        this.append(data.count, this.prepareData(data.html));
+        this.callback();
 
-      // keep loading until we've filled the viewport height
-      if (!this.disable && !this.isScrollable()) {
-        this.getOld();
-      } else {
-        this.loading.hide();
-      }
-    }).catch(() => this.loading.hide());
+        // keep loading until we've filled the viewport height
+        if (!this.disable && !this.isScrollable()) {
+          this.getOld();
+        } else {
+          this.loading.hide();
+        }
+      })
+      .catch(() => this.loading.hide());
   },
 
   append(count, html) {

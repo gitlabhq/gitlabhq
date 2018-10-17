@@ -28,7 +28,7 @@ function keyCodeIs(e, keyCode) {
   return e.keyCode === keyCode;
 }
 
-$(document).on('keydown.quick_submit', '.js-quick-submit', (e) => {
+$(document).on('keydown.quick_submit', '.js-quick-submit', e => {
   // Enter
   if (!keyCodeIs(e, 13)) {
     return;
@@ -55,23 +55,25 @@ $(document).on('keydown.quick_submit', '.js-quick-submit', (e) => {
 
 // If the user tabs to a submit button on a `js-quick-submit` form, display a
 // tooltip to let them know they could've used the hotkey
-$(document).on('keyup.quick_submit', '.js-quick-submit input[type=submit], .js-quick-submit button[type=submit]', function displayTooltip(e) {
-  // Tab
-  if (!keyCodeIs(e, 9)) {
-    return;
-  }
+$(document).on(
+  'keyup.quick_submit',
+  '.js-quick-submit input[type=submit], .js-quick-submit button[type=submit]',
+  function displayTooltip(e) {
+    // Tab
+    if (!keyCodeIs(e, 9)) {
+      return;
+    }
 
-  const $this = $(this);
-  const title = isMac() ?
-    'You can also press &#8984;-Enter' :
-    'You can also press Ctrl-Enter';
+    const $this = $(this);
+    const title = isMac() ? 'You can also press &#8984;-Enter' : 'You can also press Ctrl-Enter';
 
-  $this.tooltip({
-    container: 'body',
-    html: 'true',
-    placement: 'top',
-    title,
-    trigger: 'manual',
-  });
-  $this.tooltip('show').one('blur click', () => $this.tooltip('hide'));
-});
+    $this.tooltip({
+      container: 'body',
+      html: 'true',
+      placement: 'top',
+      title,
+      trigger: 'manual',
+    });
+    $this.tooltip('show').one('blur click', () => $this.tooltip('hide'));
+  },
+);

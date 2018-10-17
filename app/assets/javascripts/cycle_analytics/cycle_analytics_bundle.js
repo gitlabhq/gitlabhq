@@ -18,7 +18,8 @@ Vue.use(Translate);
 export default () => {
   const OVERVIEW_DIALOG_COOKIE = 'cycle_analytics_help_dismissed';
 
-  new Vue({ // eslint-disable-line no-new
+  // eslint-disable-next-line no-new
+  new Vue({
     el: '#cycle-analytics',
     name: 'CycleAnalytics',
     components: {
@@ -66,14 +67,17 @@ export default () => {
         const $dropdown = $('.js-ca-dropdown');
         const $label = $dropdown.find('.dropdown-label');
 
-        $dropdown.find('li a').off('click').on('click', (e) => {
-          e.preventDefault();
-          const $target = $(e.currentTarget);
-          this.startDate = $target.data('value');
+        $dropdown
+          .find('li a')
+          .off('click')
+          .on('click', e => {
+            e.preventDefault();
+            const $target = $(e.currentTarget);
+            this.startDate = $target.data('value');
 
-          $label.text($target.text().trim());
-          this.fetchCycleAnalyticsData({ startDate: this.startDate });
-        });
+            $label.text($target.text().trim());
+            this.fetchCycleAnalyticsData({ startDate: this.startDate });
+          });
       },
       fetchCycleAnalyticsData(options) {
         const fetchOptions = options || { startDate: this.startDate };
@@ -82,7 +86,7 @@ export default () => {
 
         this.service
           .fetchCycleAnalyticsData(fetchOptions)
-          .then((response) => {
+          .then(response => {
             this.store.setCycleAnalyticsData(response);
             this.selectDefaultStage();
             this.initDropdown();
@@ -115,7 +119,7 @@ export default () => {
             stage,
             startDate: this.startDate,
           })
-          .then((response) => {
+          .then(response => {
             this.isEmptyStage = !response.events.length;
             this.store.setStageEvents(response.events, stage);
             this.isLoadingStage = false;

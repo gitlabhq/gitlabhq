@@ -18,9 +18,7 @@ $(() => {
       .toggleClass('fa-chevron-up', toggleState)
       .toggleClass('fa-chevron-down', toggleState !== undefined ? !toggleState : undefined);
 
-    $container
-      .find('.js-toggle-content')
-      .toggle(toggleState);
+    $container.find('.js-toggle-content').toggle(toggleState);
   }
 
   $('body').on('click', '.js-toggle-button', function toggleButton(e) {

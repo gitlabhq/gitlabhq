@@ -8,8 +8,8 @@
 
 = render partial: 'flash_messages', locals: { project: @project }
 
-- if @project.repository_exists? && !@project.empty_repo?
-  - signatures_path = namespace_project_signatures_path(namespace_id: @project.namespace.full_path, project_id: @project.path, id: @project.default_branch)
+- if !@project.empty_repo? && can?(current_user, :download_code, @project)
+  - signatures_path = project_signatures_path(@project, @project.default_branch)
   .js-signature-container{ data: { 'signatures-path': signatures_path } }
 
 %div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }

@@ -7,7 +7,7 @@
 - else
   .container-fluid
     .row
-      - if service.prometheus_installed?
+      - if service.prometheus_available?
         .col-sm-2
           .svg-container
             = image_tag 'illustrations/monitoring/getting_started.svg'

@@ -24,7 +24,7 @@
         %p.gl-field-hint.text-secondary Minimum length is #{@minimum_password_length} characters
       - if Gitlab::CurrentSettings.current_application_settings.enforce_terms?
         .form-group
-          = check_box_tag :terms_opt_in, '1', false, required: true
+          = check_box_tag :terms_opt_in, '1', false, required: true, class: 'qa-new-user-accept-terms'
           = label_tag :terms_opt_in do
             - terms_link = link_to s_("I accept the|Terms of Service and Privacy Policy"), terms_path, target: "_blank"
             - accept_terms_label = _("I accept the %{terms_link}") % { terms_link: terms_link }
