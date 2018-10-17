@@ -3,7 +3,11 @@ module Gitlab
     module Status
       module Deployment
         class Running < Status::Extended
-          def environment_text
+          def environment_text_for_pipeline
+            "Deploying to %{environment_path}."
+          end
+
+          def environment_text_for_job
             "This job is deploying to %{environment_path}."
           end
 
