@@ -79,10 +79,6 @@ gem 'gpgme'
 gem 'gitlab_omniauth-ldap', '~> 2.0.4', require: 'omniauth-ldap'
 gem 'net-ldap'
 
-# Git Wiki
-# Only used to compute wiki page slugs
-gem 'gitlab-gollum-lib', '~> 4.2', require: false
-
 # API
 gem 'grape', '~> 1.1'
 gem 'grape-entity', '~> 0.7.1'
@@ -210,7 +206,7 @@ gem 'hipchat', '~> 1.5.0'
 gem 'jira-ruby', '~> 1.4'
 
 # Flowdock integration
-gem 'gitlab-flowdock-git-hook', '~> 1.0.1'
+gem 'flowdock', '~> 0.7'
 
 # Slack integration
 gem 'slack-notifier', '~> 1.5.1'
