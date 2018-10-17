@@ -59,6 +59,11 @@ module TokenAuthenticatable
         write_new_token(token_field, unique: unique)
         save! if Gitlab::Database.read_write?
       end
+
+      define_method("#{token_field}_matches?") do |other_token|
+        token = read_attribute(token_field)
+        token.present? && ActiveSupport::SecurityUtils.variable_size_secure_compare(other_token, token)
+      end
     end
   end
 end
