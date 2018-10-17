@@ -13,8 +13,8 @@ You are strongly encouraged to get your code **reviewed** by a
 [reviewer](https://about.gitlab.com/handbook/engineering/#reviewer) as soon as
 there is any code to review, to get a second opinion on the chosen solution and
 implementation, and an extra pair of eyes looking for bugs, logic problems, or
-uncovered edge cases. The reviewer can be from a different team, but it is often
-useful to pick someone who knows the domain well. You can read more about the 
+uncovered edge cases. The reviewer can be from a different team, but it is 
+recommended to pick someone who knows the domain well. You can read more about the
 importance of involving reviewer(s) in the section on the responsibility of the author below.
 
 If you need some guidance (e.g. it's your first merge request), feel free to ask
@@ -48,7 +48,7 @@ from other teams than your own.
 The responsibility to find the best solution and implement it lies with the
 merge request author. 
 
-Before assigning a merge request to maintainer for approval and merge, they 
+Before assigning a merge request to a maintainer for approval and merge, they 
 should be confident that it actually solves the problem it was meant to solve, 
 that it does so in the most appropriate way, that it satisfies all requirements, 
 and that there are no remaining bugs, logical problems, or uncovered edge cases. 
@@ -57,13 +57,17 @@ a passing CI pipeline to avoid unnecessary back and forth.
 
 To reach the required level of confidence in their solution, an author is expected
 to involve other people in the investigation and implementation processes as 
-appropriate:
+appropriate.
 
 They are encouraged to reach out to domain experts to discuss different solutions 
 or get an implementation reviewed, to product managers and UX designers to clear 
 up confusion or verify that the end result matches what they had in mind, to 
 database specialists to get input on the data model or specific queries, or to
 any other developer to get an in-depth review of the solution.
+
+If an author is unsure if a merge request needs a domain expert's opinion, that's
+usually a pretty good sign that it does, since without it the required level of 
+confidence in their solution will not have been reached.
 
 ### The responsibility of the maintainer
 
