@@ -57,7 +57,7 @@ describe Deployment do
         last_deployments = described_class.last_for_environment([staging, production, testing])
 
         expect(last_deployments.size).to eq(2)
-        expect(last_deployments).to eq(deployments.last(2))
+        expect(last_deployments).to match_array(deployments.last(2))
       end
     end
   end
