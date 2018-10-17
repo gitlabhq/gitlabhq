@@ -11,7 +11,6 @@ class Environment < ActiveRecord::Base
   has_many :deployments, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   has_one :last_deployment, -> { success.order('deployments.id DESC') }, class_name: 'Deployment'
-  has_one :last_successful_deployment, -> { success.order('deployments.id DESC') }, class_name: 'Deployment'
 
   before_validation :nullify_external_url
   before_validation :generate_slug, if: ->(env) { env.slug.blank? }
