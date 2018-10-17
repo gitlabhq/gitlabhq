@@ -25,14 +25,14 @@ export default {
     },
   },
   methods: {
-    createFile(target, file, isText) {
+    createFile(target, file) {
       const { name } = file;
       let { result } = target;
+      let encodedContent = result.split('base64,')[1];
+      let rawContent = atob(encodedContent);
+      let isText = rawContent.match(/[^\u0000-\u007f]/) ? false : true; // u0000-u007f is the non-ascii character range
 
-      if (!isText) {
-        // eslint-disable-next-line prefer-destructuring
-        result = result.split('base64,')[1];
-      }
+      result = isText ? rawContent : encodedContent;
 
       this.$emit('create', {
         name: `${this.path ? `${this.path}/` : ''}${name}`,
@@ -43,15 +43,9 @@ export default {
     },
     readFile(file) {
       const reader = new FileReader();
-      const isText = file.type.match(/text.*/) !== null;
 
-      reader.addEventListener('load', e => this.createFile(e.target, file, isText), { once: true });
-
-      if (isText) {
-        reader.readAsText(file);
-      } else {
-        reader.readAsDataURL(file);
-      }
+      reader.addEventListener('load', e => this.createFile(e.target, file), { once: true });
+      reader.readAsDataURL(file);
     },
     openFile() {
       Array.from(this.$refs.fileUpload.files).forEach(file => this.readFile(file));
