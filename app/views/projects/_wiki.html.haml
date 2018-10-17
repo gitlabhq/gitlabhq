@@ -5,11 +5,11 @@
         = render_wiki_content(@wiki_home, legacy_render_context(params))
 - else
   - can_create_wiki = can?(current_user, :create_wiki, @project)
-  .landing{ class: [('row-content-block row p-0' if can_create_wiki), ('content-block' unless can_create_wiki)] }
+  .landing{ class: [('row-content-block row p-0 align-items-center' if can_create_wiki), ('content-block' unless can_create_wiki)] }
     .col-12.col-md-3.p-0
       .svg-content
         = image_tag 'illustrations/wiki_login_empty.svg'
-    .col-12.col-md-9.text-center.text-md-left.pl-0.pt-4.pb-4
+    .col-12.col-md-9.text-center.text-md-left.pl-0.mb-4
       %h4
         = _("This project does not have a wiki homepage yet")
       - if can_create_wiki
