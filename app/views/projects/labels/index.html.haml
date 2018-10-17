@@ -8,7 +8,7 @@
 - if can_admin_label
   - content_for(:header_content) do
     .nav-controls
-      = link_to _('New label'), new_project_label_path(@project), class: "btn btn-success"
+      = link_to _('New label'), new_project_label_path(@project), class: "btn btn-success qa-label-create-new"
 
 - if labels_or_filters
   #promote-label-modal
