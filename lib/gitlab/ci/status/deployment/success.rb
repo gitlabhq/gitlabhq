@@ -12,9 +12,9 @@ module Gitlab
           end
 
           def deployment_path
-            return unless subject.environment.last_successful_deployment
+            return unless subject.environment.last_deployment
 
-            project_job_path(subject.project, subject.environment.last_successful_deployment.deployable)
+            project_job_path(subject.project, subject.environment.last_deployment.deployable)
           end
 
           def self.matches?(deployment, user)
