@@ -43,6 +43,7 @@ describe('Actions Component', () => {
     expect(
       component.$el.querySelector('.dropdown-new').getAttribute('data-original-title'),
     ).toEqual('Deploy to...');
+
     expect(component.$el.querySelector('.dropdown-new').getAttribute('aria-label')).toEqual(
       'Deploy to...',
     );

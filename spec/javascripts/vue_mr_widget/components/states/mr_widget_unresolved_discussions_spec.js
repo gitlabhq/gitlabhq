@@ -23,6 +23,7 @@ describe('UnresolvedDiscussions', () => {
       expect(vm.$el.innerText).toContain(
         'There are unresolved discussions. Please resolve these discussions',
       );
+
       expect(vm.$el.innerText).toContain('Create an issue to resolve them later');
       expect(vm.$el.querySelector('.js-create-issue').getAttribute('href')).toEqual(gl.TEST_HOST);
     });
@@ -37,6 +38,7 @@ describe('UnresolvedDiscussions', () => {
       expect(vm.$el.innerText).toContain(
         'There are unresolved discussions. Please resolve these discussions',
       );
+
       expect(vm.$el.querySelector('.js-create-issue')).toEqual(null);
     });
   });

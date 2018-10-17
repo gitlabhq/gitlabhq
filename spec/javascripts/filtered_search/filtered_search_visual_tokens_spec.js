@@ -138,6 +138,7 @@ describe('Filtered Search Visual Tokens', () => {
       expect(subject.getEndpointWithQueryParams(endpoint, singleQueryParams)).toBe(
         `${endpoint}?foo=true`,
       );
+
       expect(subject.getEndpointWithQueryParams(endpoint, multipleQueryParams)).toBe(
         `${endpoint}?foo=true&bar=true`,
       );

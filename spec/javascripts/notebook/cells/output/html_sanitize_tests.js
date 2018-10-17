@@ -50,7 +50,7 @@ export default {
     output: '<a>foo</a>',
   },
   'protocol-based JS injection: invalid URL char': {
-    input: '<img src=javascript:alert("XSS")>', // eslint-disable-line no-useless-escape
+    input: '<img src=javascript:alert("XSS")>',
     output: '<img>',
   },
   'protocol-based JS injection: Unicode': {

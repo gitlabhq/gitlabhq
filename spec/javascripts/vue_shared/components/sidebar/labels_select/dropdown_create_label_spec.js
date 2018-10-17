@@ -92,6 +92,7 @@ describe('DropdownCreateLabelComponent', () => {
       expect(
         vm.$el.querySelector('.dropdown-label-color-preview.js-dropdown-label-color-preview'),
       ).not.toBe(null);
+
       expect(vm.$el.querySelector('input#new_label_color.default-dropdown-input')).not.toBe(null);
     });
 

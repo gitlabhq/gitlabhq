@@ -27,6 +27,7 @@ describe('ToggleButtons', () => {
       expect(
         wrapper.querySelector('.js-project-feature-toggle').classList.contains('is-checked'),
       ).toEqual(true);
+
       expect(wrapper.querySelector('.js-project-feature-toggle-input').value).toEqual('true');
     });
 
@@ -53,6 +54,7 @@ describe('ToggleButtons', () => {
       expect(
         wrapper.querySelector('.js-project-feature-toggle').classList.contains('is-checked'),
       ).toEqual(false);
+
       expect(wrapper.querySelector('.js-project-feature-toggle-input').value).toEqual('false');
     });
 

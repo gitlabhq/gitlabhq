@@ -164,6 +164,7 @@ describe('IntegrationSettingsForm', () => {
               .text()
               .trim(),
           ).toEqual('Test failed. some error');
+
           expect($flashContainer.find('.flash-action')).toBeDefined();
           expect(
             $flashContainer
@@ -197,6 +198,7 @@ describe('IntegrationSettingsForm', () => {
               .text()
               .trim(),
           ).toEqual('Validations failed. some error');
+
           expect($flashContainer.find('.flash-action')).toBeDefined();
           expect(
             $flashContainer

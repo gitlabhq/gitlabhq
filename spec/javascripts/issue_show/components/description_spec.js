@@ -54,8 +54,9 @@ describe('Description component', () => {
   it('opens recaptcha dialog if update rejected as spam', done => {
     let modal;
     const recaptchaChild = vm.$children.find(
+      // eslint-disable-next-line no-underscore-dangle
       child => child.$options._componentTag === 'recaptcha-modal',
-    ); // eslint-disable-line no-underscore-dangle
+    );
 
     recaptchaChild.scriptSrc = '//scriptsrc';
 

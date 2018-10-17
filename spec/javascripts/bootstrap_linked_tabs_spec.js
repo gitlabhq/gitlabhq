@@ -13,8 +13,8 @@ describe('Linked Tabs', () => {
     });
 
     it('should activate the tab correspondent to the given action', () => {
-      const linkedTabs = new LinkedTabs({
-        // eslint-disable-line
+      // eslint-disable-next-line no-new
+      new LinkedTabs({
         action: 'tab1',
         defaultAction: 'tab1',
         parentEl: '.linked-tabs',
@@ -24,8 +24,8 @@ describe('Linked Tabs', () => {
     });
 
     it('should active the default tab action when the action is show', () => {
-      const linkedTabs = new LinkedTabs({
-        // eslint-disable-line
+      // eslint-disable-next-line no-new
+      new LinkedTabs({
         action: 'show',
         defaultAction: 'tab1',
         parentEl: '.linked-tabs',

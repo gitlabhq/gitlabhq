@@ -88,6 +88,7 @@ describe('PrometheusMetrics', () => {
       expect(prometheusMetrics.$monitoredMetricsCount.text()).toEqual(
         '3 exporters with 12 metrics were found',
       );
+
       expect($metricsListLi.length).toEqual(metrics.length);
       expect(
         $metricsListLi

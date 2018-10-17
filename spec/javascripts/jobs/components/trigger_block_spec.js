@@ -51,10 +51,12 @@ describe('Trigger block', () => {
             expect(vm.$el.querySelector('.js-build-variables').textContent).toContain(
               'UPLOAD_TO_GCS',
             );
+
             expect(vm.$el.querySelector('.js-build-variables').textContent).toContain('false');
             expect(vm.$el.querySelector('.js-build-variables').textContent).toContain(
               'UPLOAD_TO_S3',
             );
+
             expect(vm.$el.querySelector('.js-build-variables').textContent).toContain('true');
           })
           .then(done)

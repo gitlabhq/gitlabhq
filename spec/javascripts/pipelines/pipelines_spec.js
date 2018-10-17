@@ -171,6 +171,7 @@ describe('Pipelines', () => {
         expect(vm.$el.querySelector('.js-empty-state h4').textContent.trim()).toEqual(
           'Build with confidence',
         );
+
         expect(vm.$el.querySelector('.js-get-started-pipelines').getAttribute('href')).toEqual(
           paths.helpPagePath,
         );
@@ -207,6 +208,7 @@ describe('Pipelines', () => {
         expect(vm.$el.querySelector('.js-run-pipeline').getAttribute('href')).toEqual(
           paths.newPipelinePath,
         );
+
         expect(vm.$el.querySelector('.js-ci-lint').getAttribute('href')).toEqual(paths.ciLintPath);
         expect(vm.$el.querySelector('.js-clear-cache').textContent.trim()).toEqual(
           'Clear Runner Caches',
@@ -324,6 +326,7 @@ describe('Pipelines', () => {
         expect(vm.$el.querySelector('.js-empty-state').textContent.trim()).toEqual(
           'This project is not currently set up to run pipelines.',
         );
+
         expect(vm.$el.querySelector('.js-get-started-pipelines')).toBeNull();
       });
 

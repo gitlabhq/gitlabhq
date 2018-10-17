@@ -36,6 +36,7 @@ describe('MRWidgetMergeHelp', () => {
       expect(vm.$el.querySelector('.js-open-modal-help').getAttribute('data-target')).toEqual(
         '#modal_merge_info',
       );
+
       expect(vm.$el.querySelector('.js-open-modal-help').getAttribute('data-toggle')).toEqual(
         'modal',
       );
@@ -60,6 +61,7 @@ describe('MRWidgetMergeHelp', () => {
       expect(vm.$el.querySelector('.js-open-modal-help').getAttribute('data-target')).toEqual(
         '#modal_merge_info',
       );
+
       expect(vm.$el.querySelector('.js-open-modal-help').getAttribute('data-toggle')).toEqual(
         'modal',
       );

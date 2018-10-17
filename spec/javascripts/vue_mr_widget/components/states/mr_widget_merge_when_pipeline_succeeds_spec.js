@@ -125,10 +125,12 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
       expect(vm.$el.querySelector('.js-cancel-auto-merge').innerText).toContain(
         'Cancel automatic merge',
       );
+
       expect(vm.$el.querySelector('.js-cancel-auto-merge').getAttribute('disabled')).toBeFalsy();
       expect(vm.$el.querySelector('.js-remove-source-branch').innerText).toContain(
         'Remove source branch',
       );
+
       expect(vm.$el.querySelector('.js-remove-source-branch').getAttribute('disabled')).toBeFalsy();
     });
 

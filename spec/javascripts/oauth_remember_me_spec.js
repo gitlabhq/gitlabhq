@@ -16,6 +16,7 @@ describe('OAuthRememberMe', () => {
     expect($('#oauth-container .oauth-login.twitter').attr('href')).toBe(
       'http://example.com/?remember_me=1',
     );
+
     expect($('#oauth-container .oauth-login.github').attr('href')).toBe(
       'http://example.com/?remember_me=1',
     );
