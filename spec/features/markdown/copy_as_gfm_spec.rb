@@ -39,8 +39,11 @@ describe 'Copy as GFM', :js do
           # GitLab
 
           [![Build status](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/build.svg)](https://gitlab.com/gitlab-org/gitlab-ce/commits/master)
+
           [![CE coverage report](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=coverage)](https://gitlab-org.gitlab.io/gitlab-ce/coverage-ruby)
+
           [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.svg)](https://codeclimate.com/github/gitlabhq/gitlabhq)
+
           [![Core Infrastructure Initiative Best Practices](https://bestpractices.coreinfrastructure.org/projects/42/badge)](https://bestpractices.coreinfrastructure.org/projects/42)
 
           ## Canonical source
@@ -51,17 +54,17 @@ describe 'Copy as GFM', :js do
 
           To see how GitLab looks please see the [features page on our website](https://about.gitlab.com/features/).
 
-          - Manage Git repositories with fine grained access controls that keep your code secure
+          * Manage Git repositories with fine grained access controls that keep your code secure
 
-          - Perform code reviews and enhance collaboration with merge requests
+          * Perform code reviews and enhance collaboration with merge requests
 
-          - Complete continuous integration (CI) and CD pipelines to builds, test, and deploy your applications
+          * Complete continuous integration (CI) and CD pipelines to builds, test, and deploy your applications
 
-          - Each project can also have an issue tracker, issue board, and a wiki
+          * Each project can also have an issue tracker, issue board, and a wiki
 
-          - Used by more than 100,000 organizations, GitLab is the most popular solution to manage Git repositories on-premises
+          * Used by more than 100,000 organizations, GitLab is the most popular solution to manage Git repositories on-premises
 
-          - Completely free and open source (MIT Expat license)
+          * Completely free and open source (MIT Expat license)
         GFM
       )
 
@@ -371,8 +374,7 @@ describe 'Copy as GFM', :js do
               </g>
             </g>
             <text class="source" display="none">graph TD;
-            A--&gt;B;
-            </text>
+            A--&gt;B;</text>
           </svg>
         HTML
 
@@ -399,17 +401,14 @@ describe 'Copy as GFM', :js do
 
         <var>var</var>
 
-        <ruby>ruby</ruby>
-
-        <rt>rt</rt>
-
-        <rp>rp</rp>
-
         <abbr>abbr</abbr>
 
-        <summary>summary</summary>
+        <details>
+        <summary>summary></summary>
 
-        <details>details</details>
+        details
+
+        </details>
         GFM
       )
 
@@ -433,8 +432,6 @@ describe 'Copy as GFM', :js do
         <<-GFM.strip_heredoc
           Foo
 
-              This is an example of GFM
-
               ```js
               Code goes here
               ```
@@ -453,8 +450,7 @@ describe 'Copy as GFM', :js do
 
         # multiline quote
         <<-GFM.strip_heredoc,
-          > Multiline
-          > Quote
+          > Multiline Quote
           >
           > With multiple paragraphs
         GFM
@@ -465,26 +461,27 @@ describe 'Copy as GFM', :js do
 
         '[Link](https://example.com)',
 
-        '- List item',
+        '* List item',
 
         # multiline list item
         <<-GFM.strip_heredoc,
-          - Multiline
-              List item
+          * Multiline
+
+            List item
         GFM
 
         # nested lists
         <<-GFM.strip_heredoc,
-          - Nested
+          * Nested
 
-              - Lists
+            * Lists
         GFM
 
         # list with blockquote
         <<-GFM.strip_heredoc,
-          - List
+          * List
 
-              > Blockquote
+            > Blockquote
         GFM
 
         '1. Numbered list item',
@@ -492,21 +489,22 @@ describe 'Copy as GFM', :js do
         # multiline numbered list item
         <<-GFM.strip_heredoc,
           1. Multiline
-              Numbered list item
+
+             Numbered list item
         GFM
 
         # nested numbered list
         <<-GFM.strip_heredoc,
           1. Nested
 
-              1. Numbered lists
+             1. Numbered lists
         GFM
 
         # list item followed by an HR
         <<-GFM.strip_heredoc,
-          - list item
+          * list item
 
-          -----
+          ---
         GFM
 
         '# Heading',
@@ -518,11 +516,11 @@ describe 'Copy as GFM', :js do
 
         '**Bold**',
 
-        '_Italics_',
+        '*Italics*',
 
         '~~Strikethrough~~',
 
-        '-----',
+        '---',
 
         # table
         <<-GFM.strip_heredoc,

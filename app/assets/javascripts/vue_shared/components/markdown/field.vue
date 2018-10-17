@@ -1,20 +1,6 @@
 <script>
   import $ from 'jquery';
   import { Editor } from 'tiptap'
-  import {
-    HistoryExtension,
-    PlaceholderExtension,
-
-    BoldMark,
-    ItalicMark,
-    LinkMark,
-
-    BulletListNode,
-    HardBreakNode,
-    HeadingNode,
-    ListItemNode,
-    OrderedListNode,
-  } from 'tiptap-extensions'
   import { s__ } from '~/locale';
   import Flash from '../../../flash';
   import GLForm from '../../../gl_form';
@@ -23,20 +9,7 @@
   import markdownToolbar from './toolbar.vue';
   import icon from '../icon.vue';
   import { updateMarkdownText } from '../../../lib/utils/text_markdown';
-  import InlineDiffMark from './marks/inline_diff';
-  import InlineHTMLMark from './marks/inline_html';
-  import StrikeMark from './marks/strike';
-  import CodeMark from './marks/code';
-  import MathMark from './marks/math';
-  import EmojiNode from './nodes/emoji';
-  import HorizontalRuleNode from './nodes/horizontal_rule.js';
-  import ReferenceNode from './nodes/reference';
-  import BlockquoteNode from './nodes/blockquote';
-  import CodeBlockNode from './nodes/code_block';
-  import ImageNode from './nodes/image';
-  import VideoNode from './nodes/video';
-  import DetailsNode from './nodes/details';
-  import SummaryNode from './nodes/summary';
+  import editorExtensions from './editor_extensions';
   import markdownSerializer from './markdown_serializer';
 
   export default {
@@ -89,46 +62,7 @@
         referencedUsers: '',
         renderedLoading: false,
         mode: 'markdown',
-        editorExtensions: [
-          new HistoryExtension,
-          new PlaceholderExtension,
-
-          // new TableOfContentsNode,
-          new EmojiNode,
-          new VideoNode,
-          new DetailsNode,
-          new SummaryNode,
-          new ReferenceNode,
-          new HorizontalRuleNode,
-          // new TableNode,
-          // new TableHeadNode,
-          // new TableRowNode,
-          // new TableCellNode,
-          // new TodoItemNode,
-          // new TodoListNode,
-
-          new BlockquoteNode,
-          new BulletListNode,
-          new CodeBlockNode,
-          new HeadingNode({ maxLevel: 6 }),
-          new HardBreakNode,
-          new ImageNode,
-          new ListItemNode,
-          new OrderedListNode,
-
-          new BoldMark,
-          new LinkMark,
-          new ItalicMark,
-          new StrikeMark,
-
-          new InlineDiffMark,
-          new InlineHTMLMark,
-          new MathMark,
-          new CodeMark,
-
-          // new SuggestionsPlugin,
-          // new MentionNode,
-        ]
+        editorExtensions: editorExtensions
       };
     },
     watch: {

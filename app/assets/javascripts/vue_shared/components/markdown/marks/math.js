@@ -8,7 +8,6 @@ export default class MathMark extends Mark {
 
   get schema() {
     return {
-      excludes: '_',
       parseDOM: [
         {
           tag: 'code.code.math[data-math-style=inline]',
