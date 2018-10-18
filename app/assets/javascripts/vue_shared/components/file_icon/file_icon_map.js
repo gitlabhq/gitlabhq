@@ -549,6 +549,7 @@ const fileNameIcons = {
   jenkinsfile: 'jenkins',
   'firebase.json': 'firebase',
   '.firebaserc': 'firebase',
+  Rakefile: 'ruby',
   'rollup.config.js': 'rollup',
   'rollup.config.ts': 'rollup',
   'rollup-config.js': 'rollup',
