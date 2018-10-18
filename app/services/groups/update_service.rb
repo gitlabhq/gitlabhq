@@ -14,9 +14,11 @@ module Groups
       group.assign_attributes(params)
 
       begin
-        after_update if group.save
+        success = group.save
 
-        true
+        after_update if success
+
+        success
       rescue Gitlab::UpdatePathError => e
         group.errors.add(:base, e.message)
 
