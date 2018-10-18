@@ -128,16 +128,6 @@ describe('ImageDiff', () => {
       });
     });
 
-    describe('image loaded', () => {
-      beforeEach(() => {
-        spyOn(imageUtility, 'isImageLoaded').and.returnValue(true);
-        imageDiff = new ImageDiff(element);
-        imageDiff.imageEl = imageEl;
-      });
-
-      it('should renderBadges', () => {});
-    });
-
     describe('image not loaded', () => {
       beforeEach(() => {
         spyOn(imageUtility, 'isImageLoaded').and.returnValue(false);

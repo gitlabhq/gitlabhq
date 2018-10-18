@@ -18,8 +18,6 @@ describe('BalsamiqViewer', () => {
     });
   });
 
-  describe('fileLoaded', () => {});
-
   describe('loadFile', () => {
     let xhr;
     let loadFile;
