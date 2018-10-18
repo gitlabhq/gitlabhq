@@ -78,7 +78,7 @@ describe Gitlab::Ci::Config::Entry::Retry do
 
         it 'returns error about invalid type' do
           expect(entry).not_to be_valid
-          expect(entry.errors).to include 'job retry should be a hash or an integer'
+          expect(entry.errors).to include 'retry config has to be either an integer or a hash'
         end
       end
 
@@ -98,7 +98,7 @@ describe Gitlab::Ci::Config::Entry::Retry do
 
           it 'returns error about wrong value' do
             expect(entry).not_to be_valid
-            expect(entry.errors).to include 'job retry should be a hash or an integer'
+            expect(entry.errors).to include 'retry config has to be either an integer or a hash'
           end
         end
 

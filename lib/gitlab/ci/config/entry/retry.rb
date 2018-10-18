@@ -17,6 +17,10 @@ module Gitlab
                                                  greater_than_or_equal_to: 0,
                                                  less_than_or_equal_to: 2 }
             end
+
+            def location
+              'retry'
+            end
           end
 
           class FullRetry < Entry::Node
@@ -47,11 +51,19 @@ module Gitlab
             def self.possible_retry_when_values
               @possible_retry_when_values ||= Gitlab::Ci::Status::Build::Failed.reasons.keys.map(&:to_s) + ['always']
             end
+
+            def location
+              'retry'
+            end
           end
 
           class UnknownStrategy < Entry::Node
             def errors
               ["#{location} has to be either an integer or a hash"]
+            end
+
+            def location
+              'retry config'
             end
           end
 
