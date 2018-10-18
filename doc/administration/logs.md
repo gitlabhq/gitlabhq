@@ -144,6 +144,20 @@ December 03, 2014 13:20 -> ERROR -> Command failed [1]: /usr/bin/git --git-dir=/
 error: failed to push some refs to '/Users/vsizov/gitlab-development-kit/repositories/gitlabhq/gitlab_git.git'
 ```
 
+## `audit_json.log`
+
+This file lives in `/var/log/gitlab/gitlab-rails/audit_json.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/audit_json.log` for
+installations from source.
+
+Changes to group or project settings are logged to this file. For example:
+
+```json
+{"severity":"INFO","time":"2018-10-17T17:38:22.523Z","author_id":3,"entity_id":2,"entity_type":"Project","change":"visibility","from":"Private","to":"Public","author_name":"John Doe4","target_id":2,"target_type":"Project","target_details":"namespace2/project2"}
+{"severity":"INFO","time":"2018-10-17T17:38:22.830Z","author_id":5,"entity_id":3,"entity_type":"Project","change":"name","from":"John Doe7 / project3","to":"John Doe7 / new name","author_name":"John Doe6","target_id":3,"target_type":"Project","target_details":"namespace3/project3"}
+{"severity":"INFO","time":"2018-10-17T17:38:23.175Z","author_id":7,"entity_id":4,"entity_type":"Project","change":"path","from":"","to":"namespace4/newpath","author_name":"John Doe8","target_id":4,"target_type":"Project","target_details":"namespace4/newpath"}
+```
+
 ## `sidekiq.log`
 
 This file lives in `/var/log/gitlab/gitlab-rails/sidekiq.log` for
