@@ -5,7 +5,8 @@ module Gitlab
     class Config
       module External
         class Processor
-          FileError = Class.new(StandardError)
+          IncludeError = Class.new(StandardError)
+          FileError = Class.new(IncludeError)
 
           def initialize(values, project, sha)
             @values = values

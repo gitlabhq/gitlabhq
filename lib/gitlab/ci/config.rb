@@ -13,10 +13,10 @@ module Gitlab
 
         @global = Entry::Global.new(@config)
         @global.compose!
-      rescue Loader::FormatError, Extendable::ExtensionError => e
+      rescue Loader::FormatError,
+             Extendable::ExtensionError,
+             External::Processor::IncludeError => e
         raise Config::ConfigError, e.message
-      rescue External::Processor::FileError => e
-        raise ::Gitlab::Ci::YamlProcessor::ValidationError, e.message
       end
 
       def valid?

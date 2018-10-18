@@ -200,7 +200,7 @@ describe Gitlab::Ci::Config do
 
       it 'raises error YamlProcessor validationError' do
         expect { config }.to raise_error(
-          ::Gitlab::Ci::YamlProcessor::ValidationError,
+          described_class::ConfigError,
           "Local file 'invalid' is not valid."
         )
       end
