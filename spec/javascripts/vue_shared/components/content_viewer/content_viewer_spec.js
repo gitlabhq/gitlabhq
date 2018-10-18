@@ -47,7 +47,7 @@ describe('ContentViewer', () => {
     });
 
     setTimeout(() => {
-      expect(vm.$el.querySelector('.image_file img').getAttribute('src')).toBe(GREEN_BOX_IMAGE_URL);
+      expect(vm.$el.querySelector('img').getAttribute('src')).toBe(GREEN_BOX_IMAGE_URL);
 
       done();
     });

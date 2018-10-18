@@ -223,7 +223,10 @@ export default {
         :commit="commit"
       />
 
-      <div class="files d-flex prepend-top-default">
+      <div
+        :data-can-create-note="getNoteableData.current_user.can_create_note"
+        class="files d-flex prepend-top-default"
+      >
         <div
           v-show="showTreeList"
           class="diff-tree-list"

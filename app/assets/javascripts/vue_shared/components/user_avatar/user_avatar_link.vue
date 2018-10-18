@@ -100,5 +100,6 @@ export default {
       :title="tooltipText"
       :tooltip-placement="tooltipPlacement"
     >{{ username }}</span>
+    <slot name="avatar-badge"></slot>
   </gl-link>
 </template>
