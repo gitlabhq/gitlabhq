@@ -119,7 +119,7 @@
         = _("<strong>%{group_name}</strong> group members").html_safe % { group_name: @group.name }
         %span.badge.badge-pill= @group.members.size
         .float-right
-          = link_to icon('pencil-square-o', text: _('Manage access')), polymorphic_url([@group, :members]), class: "btn btn-sm"
+          = link_to icon('pencil-square-o', text: _('Manage access')), group_group_members_path(@group), class: "btn btn-sm"
       %ul.content-list.group-users-list.content-list.members-list
         = render partial: 'shared/members/member', collection: @members, as: :member, locals: { show_controls: false }
       .card-footer
