@@ -48,7 +48,7 @@ class Admin::ApplicationsController < Admin::ApplicationController
   private
 
   def set_application
-    @application = ApplicationsFinder.new({ id: params[:id] }).execute
+    @application = ApplicationsFinder.new(id: params[:id]).execute
   end
 
   # Only allow a trusted parameter "white list" through.
