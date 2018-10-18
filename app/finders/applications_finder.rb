@@ -9,7 +9,7 @@ class ApplicationsFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def execute
-    applications = Doorkeeper::Application.where("owner_id IS NULL")
+    applications = Doorkeeper::Application.where(owner_id: nil)
     by_id(applications)
   end
   # rubocop: enable CodeReuse/ActiveRecord
