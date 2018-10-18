@@ -8,7 +8,7 @@ We want to create a welcoming environment for everyone who is interested in cont
 For a first-time step-by-step guide to the contribution process, please see
 ["Contributing to GitLab"](https://about.gitlab.com/contributing/).
 
-Looking for something to work on? Look for issues in the [Backlog (Accepting merge requests) milestone](#i-want-to-contribute).
+Looking for something to work on? Look for issues with the label [`Accepting merge requests`](#i-want-to-contribute).
 
 GitLab comes in two flavors, GitLab Community Edition (CE) our free and open
 source edition, and GitLab Enterprise Edition (EE) which is our commercial
@@ -29,6 +29,11 @@ Please report suspected security vulnerabilities in private to
 [disclosure section on the GitLab.com website](https://about.gitlab.com/disclosure/).
 Please do **NOT** create publicly viewable issues for suspected security
 vulnerabilities.
+
+## Code of conduct
+
+Our code of conduct can be found on the
+["Contributing to GitLab"](https://about.gitlab.com/contributing/) page.
 
 ## Closing policy for issues and merge requests
 
@@ -61,10 +66,10 @@ the remaining issues on the GitHub issue tracker.
 
 ## I want to contribute!
 
-If you want to contribute to GitLab, [issues in the `Backlog (Accepting merge requests)` milestone][accepting-mrs-weight]
-are a great place to start. Issues with a lower weight (1 or 2) are deemed
-suitable for beginners. These issues will be of reasonable size and challenge,
-for anyone to start contributing to GitLab. If you have any questions or need help visit [Getting Help](https://about.gitlab.com/getting-help/#discussion) to
+If you want to contribute to GitLab,
+[issues with the `Accepting merge requests` label](issue_workflow.md#label-for-community-contributors)
+are a great place to start.
+If you have any questions or need help visit [Getting Help](https://about.gitlab.com/getting-help/#discussion) to
 learn how to communicate with GitLab. If you're looking for a Gitter or Slack channel
 please consider we favor
 [asynchronous communication](https://about.gitlab.com/handbook/communication/#internal-communication) over real time communication. Thanks for your contribution!
@@ -126,4 +131,3 @@ This [documentation](style_guides.md) outlines the current style guidelines.
 [team]: https://about.gitlab.com/team/
 [getting-help]: https://about.gitlab.com/getting-help/
 [codetriage]: http://www.codetriage.com/gitlabhq/gitlabhq
-[accepting-mrs-weight]: https://gitlab.com/gitlab-org/gitlab-ce/issues?scope=all&utf8=✓&state=opened&assignee_id=0&milestone_title=Backlog%20&#40;Accepting%20merge%20requests&#41;
