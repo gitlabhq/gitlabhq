@@ -102,7 +102,7 @@ module Gitlab
             if username.start_with?("@")
               username = username[1..-1]
 
-              if user = User.find_by(username: username)
+              if user = UserFinder.new(username).find_by_username
                 assignee_id = user.id
               end
             end

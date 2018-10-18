@@ -86,7 +86,7 @@ module Gitlab
         # Example:
         #
         #     Gitlab::Metrics.measure(:find_by_username_duration) do
-        #       User.find_by_username(some_username)
+        #       UserFinder.new(some_username).find_by_username
         #     end
         #
         # name - The name of the field to store the execution time in.

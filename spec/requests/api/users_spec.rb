@@ -51,6 +51,15 @@ describe API::Users do
         expect(json_response[0]['username']).to eq(user.username)
       end
 
+      it "returns the user when a valid `username` parameter is passed (case insensitive)" do
+        get api("/users"), username: user.username.upcase
+
+        expect(response).to match_response_schema('public_api/v4/user/basics')
+        expect(json_response.size).to eq(1)
+        expect(json_response[0]['id']).to eq(user.id)
+        expect(json_response[0]['username']).to eq(user.username)
+      end
+
       it "returns an empty response when an invalid `username` parameter is passed" do
         get api("/users"), username: 'invalid'
 
@@ -126,6 +135,14 @@ describe API::Users do
 
       it "returns one user" do
         get api("/users?username=#{omniauth_user.username}", user)
+
+        expect(response).to match_response_schema('public_api/v4/user/basics')
+        expect(response).to include_pagination_headers
+        expect(json_response.first['username']).to eq(omniauth_user.username)
+      end
+
+      it "returns one user (case insensitive)" do
+        get api("/users?username=#{omniauth_user.username.upcase}", user)
 
         expect(response).to match_response_schema('public_api/v4/user/basics')
         expect(response).to include_pagination_headers
@@ -343,6 +360,12 @@ describe API::Users do
         let(:path) { "/users/#{user.username}/status" }
       end
     end
+
+    context 'when finding the user by username (case insensitive)' do
+      it_behaves_like 'rendering user status' do
+        let(:path) { "/users/#{user.username.upcase}/status" }
+      end
+    end
   end
 
   describe "POST /users" do
@@ -523,6 +546,18 @@ describe API::Users do
                email: 'foo@example.com',
                password: 'password',
                username: 'test'
+        end.to change { User.count }.by(0)
+        expect(response).to have_gitlab_http_status(409)
+        expect(json_response['message']).to eq('Username has already been taken')
+      end
+
+      it 'returns 409 conflict error if same username exists (case insensitive)' do
+        expect do
+          post api('/users', admin),
+               name: 'foo',
+               email: 'foo@example.com',
+               password: 'password',
+               username: 'TEST'
         end.to change { User.count }.by(0)
         expect(response).to have_gitlab_http_status(409)
         expect(json_response['message']).to eq('Username has already been taken')
@@ -745,6 +780,14 @@ describe API::Users do
       it 'returns 409 conflict error if username taken' do
         @user_id = User.all.last.id
         put api("/users/#{@user.id}", admin), username: 'test'
+
+        expect(response).to have_gitlab_http_status(409)
+        expect(@user.reload.username).to eq(@user.username)
+      end
+
+      it 'returns 409 conflict error if username taken (case insensitive)' do
+        @user_id = User.all.last.id
+        put api("/users/#{@user.id}", admin), username: 'TEST'
 
         expect(response).to have_gitlab_http_status(409)
         expect(@user.reload.username).to eq(@user.username)

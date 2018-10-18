@@ -96,15 +96,9 @@ module API
       LabelsFinder.new(current_user, search_params).execute
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def find_user(id)
-      if id =~ /^\d+$/
-        User.find_by(id: id)
-      else
-        User.find_by(username: id)
-      end
+      UserFinder.new(id).find_by_id_or_username
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
     def find_project(id)
