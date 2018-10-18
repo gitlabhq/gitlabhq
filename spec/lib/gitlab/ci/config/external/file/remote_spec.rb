@@ -108,7 +108,7 @@ describe Gitlab::Ci::Config::External::File::Remote do
     let(:location) { 'not-valid://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
 
     it 'should return an error message' do
-      expect(remote_file.error_message).to eq("Remote file '#{location}' is not valid.")
+      expect(remote_file.error_message).to eq("Remote file `#{location}` does not have a valid address!")
     end
   end
 end

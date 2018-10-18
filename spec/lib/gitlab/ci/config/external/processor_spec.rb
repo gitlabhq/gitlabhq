@@ -21,7 +21,7 @@ describe Gitlab::Ci::Config::External::Processor do
       it 'should raise an error' do
         expect { processor.perform }.to raise_error(
           described_class::IncludeError,
-          "Local file '/lib/gitlab/ci/templates/non-existent-file.yml' is not valid."
+          "Local file `/lib/gitlab/ci/templates/non-existent-file.yml` does not exist!"
         )
       end
     end
@@ -37,7 +37,7 @@ describe Gitlab::Ci::Config::External::Processor do
       it 'should raise an error' do
         expect { processor.perform }.to raise_error(
           described_class::IncludeError,
-          "Remote file '#{remote_file}' is not valid."
+          "Remote file `#{remote_file}` could not be fetched because of a socket error!"
         )
       end
     end
@@ -159,7 +159,10 @@ describe Gitlab::Ci::Config::External::Processor do
       end
 
       it 'should raise an error' do
-        expect { processor.perform }.to raise_error(Gitlab::Ci::Config::Loader::FormatError)
+        expect { processor.perform }.to raise_error(
+          described_class::IncludeError,
+          "Included file `/lib/gitlab/ci/templates/template.yml` does not have valid YAML syntax!"
+        )
       end
     end
 

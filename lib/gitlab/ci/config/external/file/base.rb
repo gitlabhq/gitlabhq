@@ -6,22 +6,62 @@ module Gitlab
       module External
         module File
           class Base
+            include Gitlab::Utils::StrongMemoize
+
+            attr_reader :location, :opts, :errors
+
             YAML_WHITELIST_EXTENSION = /(yml|yaml)$/i.freeze
 
             def initialize(location, opts = {})
               @location = location
+              @opts = opts
+              @errors = []
+
+              validate_location!
+              validate_content!
+              validate_hash!
+            end
+
+            def invalid_extension?
+              !location.match(YAML_WHITELIST_EXTENSION)
             end
 
             def valid?
-              location.match(YAML_WHITELIST_EXTENSION) && content
-            end
-
-            def content
-              raise NotImplementedError, 'content must be implemented and return a string or nil'
+              errors.none?
             end
 
             def error_message
-              raise NotImplementedError, 'error_message must be implemented and return a string'
+              errors.first
+            end
+
+            def content
+              raise NotImplementedError, 'subclass must implement fetching raw content'
+            end
+
+            def to_hash
+              @hash ||= Ci::Config::Loader.new(content).load!
+            rescue Ci::Config::Loader::FormatError
+              nil
+            end
+
+            protected
+
+            def validate_location!
+              if invalid_extension?
+                errors.push("Included file `#{location}` does not have YAML extension!")
+              end
+            end
+
+            def validate_content!
+              if errors.none? && content.blank?
+                errors.push("Included file `#{location}` is empty or does not exist!")
+              end
+            end
+
+            def validate_hash!
+              if errors.none? && to_hash.blank?
+                errors.push("Included file `#{location}` does not have valid YAML syntax!")
+              end
             end
           end
         end

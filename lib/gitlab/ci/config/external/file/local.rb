@@ -6,24 +6,32 @@ module Gitlab
       module External
         module File
           class Local < Base
-            attr_reader :location, :project, :sha
+            include Gitlab::Utils::StrongMemoize
+
+            attr_reader :project, :sha
 
             def initialize(location, opts = {})
-              super
-
               @project = opts.fetch(:project)
               @sha = opts.fetch(:sha)
+
+              super
             end
 
             def content
-              @content ||= fetch_local_content
-            end
-
-            def error_message
-              "Local file '#{location}' is not valid."
+              strong_memoize(:content) { fetch_local_content }
             end
 
             private
+
+            def validate_content!
+              return if errors.any?
+
+              if content.nil?
+                errors.push("Local file `#{location}` does not exist!")
+              elsif content.blank?
+                errors.push("Local file `#{location}` is empty!")
+              end
+            end
 
             def fetch_local_content
               project.repository.blob_data_at(sha, location)

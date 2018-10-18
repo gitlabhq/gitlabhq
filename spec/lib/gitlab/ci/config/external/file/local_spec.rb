@@ -72,7 +72,7 @@ describe Gitlab::Ci::Config::External::File::Local do
     let(:location) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
 
     it 'should return an error message' do
-      expect(local_file.error_message).to eq("Local file '#{location}' is not valid.")
+      expect(local_file.error_message).to eq("Local file `#{location}` does not exist!")
     end
   end
 end

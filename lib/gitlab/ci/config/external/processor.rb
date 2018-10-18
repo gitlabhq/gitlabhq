@@ -14,38 +14,34 @@ module Gitlab
           end
 
           def perform
-            return values if external_files.empty?
+            return @values if @external_files.empty?
 
-            external_files.each do |external_file|
-              validate_external_file(external_file)
-              @content.deep_merge!(content_of(external_file))
-            end
-
-            append_inline_content
-            remove_include_keyword
+            validate_external_files!
+            merge_external_files!
+            append_inline_content!
+            remove_include_keyword!
           end
 
           private
 
-          attr_reader :values, :external_files, :content
-
-          def validate_external_file(external_file)
-            unless external_file.valid?
-              raise IncludeError, external_file.error_message
+          def validate_external_files!
+            @external_files.each do |file|
+              raise IncludeError, file.error_message unless file.valid?
             end
           end
 
-          def content_of(external_file)
-            Config::Loader.new(external_file.content).load!
+          def merge_external_files!
+            @external_files.each do |file|
+              @content.deep_merge!(file.to_hash)
+            end
           end
 
-          def append_inline_content
+          def append_inline_content!
             @content.deep_merge!(@values)
           end
 
-          def remove_include_keyword
-            content.delete(:include)
-            content
+          def remove_include_keyword!
+            @content.tap { @content.delete(:include) }
           end
         end
       end
