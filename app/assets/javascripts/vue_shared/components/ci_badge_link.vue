@@ -43,7 +43,7 @@ export default {
   computed: {
     cssClass() {
       const className = this.status.group;
-      return className ? `ci-status ci-${className}` : 'ci-status';
+      return className ? `ci-status ci-${className} qa-status-badge` : 'ci-status qa-status-badge';
     },
   },
 };

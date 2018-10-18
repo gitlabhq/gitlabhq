@@ -42,7 +42,7 @@
   };
 </script>
 <template>
-  <pre class="js-build-trace build-trace">
+  <pre class="js-build-trace build-trace qa-build-trace">
     <code
       class="bash"
       v-html="trace"
