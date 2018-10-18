@@ -254,8 +254,7 @@ module QA
           project.name = 'project-to-create-a-shirt'
         end
 
-        # Attribute inherited from the Shirt factory if present,
-        # or from the Browser UI otherwise (using the block)
+        # Attribute from the Browser UI (using the block)
         product :brand do
           Page::Shirt::Show.perform do |shirt_show|
             shirt_show.fetch_brand_from_page
@@ -347,8 +346,7 @@ module QA
           project.name = 'project-to-create-a-shirt'
         end
 
-        # Attribute fetched from the API response if present if present,
-        # or from the Shirt factory if present,
+        # Attribute fetched from the API response if present,
         # or from the Browser UI otherwise (using the block)
         product :brand do
           Page::Shirt::Show.perform do |shirt_show|
@@ -356,7 +354,7 @@ module QA
           end
         end
 
-        # Attribute fetched from the API response if present if present,
+        # Attribute fetched from the API response if present,
         # or from the Shirt factory if present,
         # or a QA::Factory::Product::NoValueError is raised otherwise
         product :name
@@ -414,9 +412,9 @@ end
 **Notes on attributes precedence:**
 
 - attributes from the API response take precedence over attributes from the
+  Browser UI
+- attributes from the Browser UI take precedence over attributes from the
   factory (i.e inherited)
-- attributes from the factory (i.e inherited) take precedence over attributes
-  from the Browser UI
 - attributes without a value will raise a `QA::Factory::Product::NoValueError` error
 
 ## Creating resources in your tests
