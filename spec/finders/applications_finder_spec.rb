@@ -10,7 +10,7 @@ describe ApplicationsFinder do
     it 'returns an array of applications' do
       found = described_class.new.execute
 
-      expect(found).to match_array([application1,application2])
+      expect(found).to match_array([application1, application2])
     end
     it 'returns the application by id' do
       params = { id: application1.id }
