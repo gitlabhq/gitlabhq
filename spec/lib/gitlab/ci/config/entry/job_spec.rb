@@ -10,7 +10,7 @@ describe Gitlab::Ci::Config::Entry::Job do
       let(:result) do
         %i[before_script script stage type after_script cache
            image services only except variables artifacts
-           environment coverage]
+           environment coverage retry]
       end
 
       it { is_expected.to match_array result }
@@ -98,6 +98,7 @@ describe Gitlab::Ci::Config::Entry::Job do
         end
       end
 
+<<<<<<< HEAD
       context 'when retry value is correct' do
         context 'when it is a numeric' do
           let(:config) { { script: 'rspec', retry: 2 } }
@@ -304,6 +305,185 @@ describe Gitlab::Ci::Config::Entry::Job do
         end
       end
 
+||||||| merged common ancestors
+      context 'when retry value is correct' do
+        context 'when it is a numeric' do
+          let(:config) { { script: 'rspec', retry: 2 } }
+
+          it 'is valid' do
+            expect(entry).to be_valid
+          end
+        end
+
+        context 'when it is a hash without when' do
+          let(:config) { { script: 'rspec', retry: { max: 2 } } }
+
+          it 'is valid' do
+            expect(entry).to be_valid
+          end
+        end
+
+        context 'when it is a hash with string when' do
+          let(:config) { { script: 'rspec', retry: { max: 2, when: 'unknown_failure' } } }
+
+          it 'is valid' do
+            expect(entry).to be_valid
+          end
+        end
+
+        context 'when it is a hash with string when always' do
+          let(:config) { { script: 'rspec', retry: { max: 2, when: 'always' } } }
+
+          it 'is valid' do
+            expect(entry).to be_valid
+          end
+        end
+
+        context 'when it is a hash with array when' do
+          let(:config) { { script: 'rspec', retry: { max: 2, when: %w[unknown_failure runner_system_failure] } } }
+
+          it 'is valid' do
+            expect(entry).to be_valid
+          end
+        end
+
+        # Those values are documented at `doc/ci/yaml/README.md`. If any of
+        # those values gets invalid, documentation must be updated. To make
+        # sure this is catched, check explicitly that all of the documented
+        # values are valid. If they are not it means the documentation and this
+        # array must be updated.
+        RETRY_WHEN_IN_DOCUMENTATION = %w[
+          always
+          unknown_failure
+          script_failure
+          api_failure
+          stuck_or_timeout_failure
+          runner_system_failure
+          missing_dependency_failure
+          runner_unsupported
+        ].freeze
+
+        RETRY_WHEN_IN_DOCUMENTATION.each do |reason|
+          context "when it is a hash with value from documentation `#{reason}`" do
+            let(:config) { { script: 'rspec', retry: { max: 2, when: reason } } }
+
+            it 'is valid' do
+              expect(entry).to be_valid
+            end
+          end
+        end
+      end
+
+      context 'when retry value is not correct' do
+        context 'when it is not a numeric nor an array' do
+          let(:config) { { retry: true } }
+
+          it 'returns error about invalid type' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include 'job retry should be a hash or an integer'
+          end
+        end
+
+        context 'not defined as a hash' do
+          context 'when it is lower than zero' do
+            let(:config) { { retry: -1 } }
+
+            it 'returns error about value too low' do
+              expect(entry).not_to be_valid
+              expect(entry.errors)
+                .to include 'job retry max must be greater than or equal to 0'
+            end
+          end
+
+          context 'when it is not an integer' do
+            let(:config) { { retry: 1.5 } }
+
+            it 'returns error about wrong value' do
+              expect(entry).not_to be_valid
+              expect(entry.errors).to include 'job retry should be a hash or an integer'
+            end
+          end
+
+          context 'when the value is too high' do
+            let(:config) { { retry: 10 } }
+
+            it 'returns error about value too high' do
+              expect(entry).not_to be_valid
+              expect(entry.errors).to include 'job retry max must be less than or equal to 2'
+            end
+          end
+        end
+
+        context 'defined as a hash' do
+          context 'with unknown keys' do
+            let(:config) { { retry: { max: 2, unknown_key: :something, one_more: :key } } }
+
+            it 'returns error about the unknown key' do
+              expect(entry).not_to be_valid
+              expect(entry.errors)
+                .to include 'job retry contains unknown keys: unknown_key, one_more'
+            end
+          end
+
+          context 'when max is lower than zero' do
+            let(:config) { { retry: { max: -1 } } }
+
+            it 'returns error about value too low' do
+              expect(entry).not_to be_valid
+              expect(entry.errors)
+                .to include 'job retry max must be greater than or equal to 0'
+            end
+          end
+
+          context 'when max is not an integer' do
+            let(:config) { { retry: { max: 1.5 } } }
+
+            it 'returns error about wrong value' do
+              expect(entry).not_to be_valid
+              expect(entry.errors).to include 'job retry max must be an integer'
+            end
+          end
+
+          context 'when max is too high' do
+            let(:config) { { retry: { max: 10 } } }
+
+            it 'returns error about value too high' do
+              expect(entry).not_to be_valid
+              expect(entry.errors).to include 'job retry max must be less than or equal to 2'
+            end
+          end
+
+          context 'when when has the wrong format' do
+            let(:config) { { retry: { when: true } } }
+
+            it 'returns error about the wrong format' do
+              expect(entry).not_to be_valid
+              expect(entry.errors).to include 'job retry max must be an integer'
+            end
+          end
+
+          context 'when when is a string and unknown' do
+            let(:config) { { retry: { when: 'unknown_reason' } } }
+
+            it 'returns error about the wrong format' do
+              expect(entry).not_to be_valid
+              expect(entry.errors).to include 'job retry when is unknown'
+            end
+          end
+
+          context 'when when is an array and includes unknown failures' do
+            let(:config) { { retry: { when: %w[unknown_reason runner_system_failure] } } }
+
+            it 'returns error about the wrong format' do
+              expect(entry).not_to be_valid
+              expect(entry.errors).to include 'job retry when contains unknown values: unknown_reason'
+            end
+          end
+        end
+      end
+
+=======
+>>>>>>> refactor validations to a Entry::Retry class
       context 'when delayed job' do
         context 'when start_in is specified' do
           let(:config) { { script: 'echo', when: 'delayed', start_in: '1 day' } }

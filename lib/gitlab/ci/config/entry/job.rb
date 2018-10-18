@@ -16,8 +16,6 @@ module Gitlab
                             dependencies before_script after_script variables
                             environment coverage retry parallel extends].freeze
 
-          ALLOWED_KEYS_RETRY = %i[max when].freeze
-
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
             validates :config, presence: true
@@ -25,14 +23,12 @@ module Gitlab
             validates :name, presence: true
             validates :name, type: Symbol
 
-            validates :retry, hash_or_integer: true, allowed_keys: ALLOWED_KEYS_RETRY, allow_nil: true
-            validate :validate_retry, if: :validate_retry?
-
             with_options allow_nil: true do
               validates :tags, array_of_strings: true
               validates :allow_failure, boolean: true
               validates :parallel, numericality: { only_integer: true,
                                                    greater_than_or_equal_to: 2 }
+              validates :retry, hash_or_integer: true
 
               validates :when,
                 inclusion: { in: %w[on_success on_failure always manual delayed],
@@ -41,65 +37,6 @@ module Gitlab
 
               validates :dependencies, array_of_strings: true
               validates :extends, type: String
-            end
-
-            def validate_retry?
-              config&.is_a?(Hash) &&
-                config[:retry].present? &&
-                (config[:retry].is_a?(Integer) || config[:retry].is_a?(Hash))
-            end
-
-            def validate_retry
-              if config[:retry].is_a?(Integer)
-                validate_retry_max(config[:retry])
-              else
-                validate_retry_max(config[:retry][:max])
-                validate_retry_when(config[:retry][:when])
-              end
-            end
-
-            def validate_retry_max(retry_max)
-              case retry_max
-              when Integer
-                validate_retry_max_integer(retry_max)
-              else
-                errors[:base] << "retry max #{::I18n.t('errors.messages.not_an_integer')}"
-              end
-            end
-
-            def validate_retry_max_integer(retry_max)
-              errors[:base] << "retry max #{::I18n.t('errors.messages.less_than_or_equal_to', count: 2)}" if retry_max > 2
-              errors[:base] << "retry max #{::I18n.t('errors.messages.greater_than_or_equal_to', count: 0)}" if retry_max < 0
-            end
-
-            def validate_retry_when(retry_when)
-              return if retry_when.blank?
-
-              case retry_when
-              when String
-                validate_retry_when_string(retry_when)
-              when Array
-                validate_retry_when_array(retry_when)
-              else
-                errors[:base] << 'retry when should be an array of strings or a string'
-              end
-            end
-
-            def possible_retry_when_values
-              @possible_retry_when_values ||= Gitlab::Ci::Status::Build::Failed.reasons.keys.map(&:to_s) + ['always']
-            end
-
-            def validate_retry_when_string(retry_when)
-              unless possible_retry_when_values.include?(retry_when)
-                errors[:base] << 'retry when is unknown'
-              end
-            end
-
-            def validate_retry_when_array(retry_when)
-              unknown_whens = retry_when - possible_retry_when_values
-              unless unknown_whens.empty?
-                errors[:base] << "retry when contains unknown values: #{unknown_whens.join(', ')}"
-              end
             end
 
             validates :start_in, duration: { limit: '1 day' }, if: :delayed?
@@ -147,6 +84,9 @@ module Gitlab
 
           entry :coverage, Entry::Coverage,
             description: 'Coverage configuration for this job.'
+
+          entry :retry, Entry::Retry,
+               description: 'Retry configuration for this job.'
 
           helpers :before_script, :script, :stage, :type, :after_script,
                   :cache, :image, :services, :only, :except, :variables,
