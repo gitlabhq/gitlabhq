@@ -1,0 +1,5 @@
+---
+title: Improve validation errors for external CI/CD configuration
+merge_request: 22394
+author:
+type: added
