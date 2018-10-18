@@ -7,20 +7,16 @@ class ApplicationsFinder
     @params = params
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def execute
-    applications = Doorkeeper::Application.where(owner_id: nil)
+    applications = Doorkeeper::Application.where(owner_id: nil) # rubocop: disable CodeReuse/ActiveRecord
     by_id(applications)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def by_id(applications)
     return applications unless params[:id]
 
-    Doorkeeper::Application.find_by(id: params[:id])
+    Doorkeeper::Application.find_by(id: params[:id]) # rubocop: disable CodeReuse/ActiveRecord
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 end
