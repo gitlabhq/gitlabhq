@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'projects/tree/_blob_item' do
+describe 'projects/tree/_tree_row' do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:blob_item) { Gitlab::Git::Tree.where(repository, SeedRepo::Commit::ID, 'files/ruby').first }
@@ -31,10 +31,7 @@ describe 'projects/tree/_blob_item' do
     end
   end
 
-  def render_partial(blob_item)
-    render partial: 'projects/tree/blob_item', locals: {
-      blob_item: blob_item,
-      type: 'blob'
-    }
+  def render_partial(items)
+    render partial: 'projects/tree/tree_row', collection: [items].flatten
   end
 end
