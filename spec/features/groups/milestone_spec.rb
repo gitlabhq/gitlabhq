@@ -95,9 +95,9 @@ describe 'Group milestones' do
       end
 
       it 'counts milestones correctly' do
-        expect(find('.top-area .active .badge').text).to eq("2")
-        expect(find('.top-area .closed .badge').text).to eq("2")
-        expect(find('.top-area .all .badge').text).to eq("4")
+        expect(find('.top-area .active .badge').text).to eq("3")
+        expect(find('.top-area .closed .badge').text).to eq("3")
+        expect(find('.top-area .all .badge').text).to eq("6")
       end
 
       it 'lists legacy group milestones and group milestones' do
