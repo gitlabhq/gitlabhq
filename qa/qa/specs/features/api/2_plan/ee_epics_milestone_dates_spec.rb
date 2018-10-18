@@ -26,12 +26,21 @@ module QA
         Runtime::API::Request.new(@api_client, api_endpoint)
       end
 
-      def create_group
-        group_name = "group_#{SecureRandom.hex(8)}"
+      def create_group(is_sandbox_group = false)
+        group_name = is_sandbox_group ? Runtime::Namespace.sandbox_name : "group_#{SecureRandom.hex(8)}"
+        parent_id = is_sandbox_group ? nil : sandbox_group_id
         create_group_request = create_request("/groups")
-        post create_group_request.url, name: group_name, path: group_name
+        post create_group_request.url, name: group_name, path: group_name, parent_id: parent_id
         expect_status(201)
         json_body[:id]
+      end
+
+      def sandbox_group_id
+        @_sandbox_group_id ||= begin
+          request = create_request("/groups/#{Runtime::Namespace.sandbox_name}")
+          get request.url
+          json_body[:id] ? json_body[:id] : create_group(true)
+        end
       end
 
       def create_project

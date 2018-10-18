@@ -1,0 +1,5 @@
+---
+title: Fix broken tokenization for filtered search bar in Epics
+merge_request: 7972
+author:
+type: fixed
