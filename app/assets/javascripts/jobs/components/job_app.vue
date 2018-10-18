@@ -165,7 +165,7 @@
     <gl-loading-icon
       v-if="isLoading"
       :size="2"
-      class="js-job-loading prepend-top-20"
+      class="js-job-loading qa-loading-animation prepend-top-20"
     />
 
     <template v-else-if="shouldRenderContent">
@@ -217,8 +217,8 @@
         />
 
         <!--job log -->
-        <div 
-          v-if="hasTrace" 
+        <div
+          v-if="hasTrace"
           class="build-trace-container prepend-top-default">
           <log-top-bar
             :class="{
