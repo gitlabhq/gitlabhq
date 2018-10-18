@@ -86,7 +86,7 @@ describe('CI Badge Link Component', () => {
 
       expect(vm.$el.getAttribute('href')).toEqual(statuses[status].details_path);
       expect(vm.$el.textContent.trim()).toEqual(statuses[status].text);
-      expect(vm.$el.getAttribute('class')).toEqual(`ci-status ci-${statuses[status].group}`);
+      expect(vm.$el.getAttribute('class')).toContain(`ci-status ci-${statuses[status].group}`);
       expect(vm.$el.querySelector('svg')).toBeDefined();
       return vm;
     });
