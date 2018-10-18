@@ -233,7 +233,10 @@ provided you are authenticated as an administrator with an OAuth or Personal Acc
 
 You need to pass the `sudo` parameter either via query string or a header with an ID/username of
 the user you want to perform the operation as. If passed as a header, the
-header name must be `Sudo`.
+header name must be `Sudo`. 
+
+NOTE: **Note:**
+Usernames are case insensitive.
 
 If a non administrative access token is provided, an error message will
 be returned with status code `403`:

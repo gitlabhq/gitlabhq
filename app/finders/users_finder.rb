@@ -43,13 +43,11 @@ class UsersFinder
 
   private
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def by_username(users)
     return users unless params[:username]
 
-    users.where(username: params[:username])
+    users.by_username(params[:username])
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def by_search(users)
     return users unless params[:search].present?

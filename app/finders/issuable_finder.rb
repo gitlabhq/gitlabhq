@@ -256,7 +256,7 @@ class IssuableFinder
       if assignee_id?
         User.find_by(id: params[:assignee_id])
       elsif assignee_username?
-        User.find_by(username: params[:assignee_username])
+        User.find_by_username(params[:assignee_username])
       else
         nil
       end
@@ -284,7 +284,7 @@ class IssuableFinder
       if author_id?
         User.find_by(id: params[:author_id])
       elsif author_username?
-        User.find_by(username: params[:author_username])
+        User.find_by_username(params[:author_username])
       else
         nil
       end

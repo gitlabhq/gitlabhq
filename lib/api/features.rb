@@ -20,7 +20,7 @@ module API
       def gate_targets(params)
         targets = []
         targets << Feature.group(params[:feature_group]) if params[:feature_group]
-        targets << User.find_by_username(params[:user]) if params[:user]
+        targets << UserFinder.new(params[:user]).find_by_username if params[:user]
 
         targets
       end
