@@ -530,8 +530,6 @@
 
 .header-user {
   &.show .dropdown-menu {
-    width: auto;
-    min-width: unset;
     max-height: 323px;
     margin-top: 4px;
     color: $gl-text-color;
@@ -548,7 +546,7 @@
         margin-right: 0;
         display: block;
         vertical-align: text-top;
-        max-width: 148px;
+        max-width: 240px;
         font-size: 12px;
 
         gl-emoji {
