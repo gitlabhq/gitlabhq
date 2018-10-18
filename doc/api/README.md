@@ -69,6 +69,7 @@ following locations:
 - [System Hooks](system_hooks.md)
 - [Tags](tags.md)
 - [Todos](todos.md)
+- [Triggering Pipelines](../ci/triggers/README.md)
 - [Users](users.md)
 - [Validate CI configuration](lint.md)
 - [V3 to V4](v3_to_v4.md)
