@@ -20,7 +20,7 @@ describe Gitlab::Ci::Config::External::Processor do
 
       it 'should raise an error' do
         expect { processor.perform }.to raise_error(
-          described_class::FileError,
+          described_class::IncludeError,
           "Local file '/lib/gitlab/ci/templates/non-existent-file.yml' is not valid."
         )
       end
@@ -36,7 +36,7 @@ describe Gitlab::Ci::Config::External::Processor do
 
       it 'should raise an error' do
         expect { processor.perform }.to raise_error(
-          described_class::FileError,
+          described_class::IncludeError,
           "Remote file '#{remote_file}' is not valid."
         )
       end

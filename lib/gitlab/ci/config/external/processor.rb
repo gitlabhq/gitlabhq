@@ -6,7 +6,6 @@ module Gitlab
       module External
         class Processor
           IncludeError = Class.new(StandardError)
-          FileError = Class.new(IncludeError)
 
           def initialize(values, project, sha)
             @values = values
@@ -32,7 +31,7 @@ module Gitlab
 
           def validate_external_file(external_file)
             unless external_file.valid?
-              raise FileError, external_file.error_message
+              raise IncludeError, external_file.error_message
             end
           end
 
