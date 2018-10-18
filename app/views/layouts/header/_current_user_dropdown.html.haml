@@ -19,12 +19,7 @@
   - if current_user_menu?(:settings)
     %li
       = link_to s_("CurrentUser|Settings"), profile_path
-  - if current_user_menu?(:help)
-    %li
-      = link_to _("Help"), help_path
-  - if current_user_menu?(:help) || current_user_menu?(:settings) || current_user_menu?(:profile)
-    %li.divider
-  = render 'shared/user_dropdown_contributing_link'
   - if current_user_menu?(:sign_out)
+    %li.divider
     %li
       = link_to _("Sign out"), destroy_user_session_path, class: "sign-out-link"
