@@ -9,6 +9,10 @@ class Clusters::BaseController < ApplicationController
   before_action :repository, if: :project_type?
   before_action :authorize_read_cluster!
 
+  layout :determine_layout
+
+  helper_method :clusters_page_path, :cluster_page_path, :new_cluster_page_path
+
   private
 
   # We can extend to `#group_type?` in the future
@@ -32,8 +36,34 @@ class Clusters::BaseController < ApplicationController
     access_denied! unless can?(current_user, :create_cluster, clusterable)
   end
 
+  def determine_layout
+    if project_type?
+      'project'
+    end
+  end
+
   def clusterable
-    project if project_type?
+    if project_type?
+      project
+    end
+  end
+
+  def cluster_page_path(cluster)
+    if project_type?
+      project_cluster_path(project, cluster)
+    end
+  end
+
+  def clusters_page_path
+    if project_type?
+      project_clusters_path(project)
+    end
+  end
+
+  def new_cluster_page_path
+    if project_type?
+      new_project_cluster_path(project)
+    end
   end
 
   def project_type?

@@ -19,7 +19,7 @@ class Clusters::ApplicationsController < Clusters::BaseController
   private
 
   def cluster
-    @cluster ||= project.clusters.find(params[:id]) || render_404
+    @cluster ||= clusterable.clusters.find(params[:id]) || render_404
   end
 
   def create_cluster_application_params

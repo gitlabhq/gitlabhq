@@ -325,8 +325,8 @@ describe ClustersController do
 
     def go
       get :status,
-        namespace_id: project.namespace,
-        project_id: project,
+        namespace_id: project.namespace.to_param,
+        project_id: project.to_param,
         id: cluster,
         format: :json
     end
@@ -405,8 +405,8 @@ describe ClustersController do
     end
 
     def go(format: :html)
-      put :update, params.merge(namespace_id: project.namespace,
-                                project_id: project,
+      put :update, params.merge(namespace_id: project.namespace.to_param,
+                                project_id: project.to_param,
                                 id: cluster,
                                 format: format
                                )

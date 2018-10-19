@@ -11,14 +11,12 @@ class ClustersController < Clusters::BaseController
   before_action :authorize_admin_cluster!, only: [:destroy]
   before_action :update_applications_status, only: [:status]
 
-  layout :determine_layout
-
   helper_method :token_in_session
 
   STATUS_POLLING_INTERVAL = 10_000
 
   def index
-    clusters = ClustersFinder.new(project, current_user, :all).execute
+    clusters = ClustersFinder.new(clusterable, current_user, :all).execute
     @clusters = clusters.page(params[:page]).per(20)
   end
 
@@ -31,7 +29,7 @@ class ClustersController < Clusters::BaseController
         Gitlab::PollingInterval.set_header(response, interval: STATUS_POLLING_INTERVAL)
 
         render json: ClusterSerializer
-          .new(project: project, current_user: @current_user)
+          .new(current_user: @current_user)
           .represent_status(@cluster)
       end
     end
@@ -52,7 +50,7 @@ class ClustersController < Clusters::BaseController
         end
         format.html do
           flash[:notice] = _('Kubernetes cluster was successfully updated.')
-          redirect_to project_cluster_path(project, cluster)
+          redirect_to cluster_page_path(cluster)
         end
       end
     else
@@ -66,7 +64,7 @@ class ClustersController < Clusters::BaseController
   def destroy
     if cluster.destroy
       flash[:notice] = _('Kubernetes cluster integration was successfully removed.')
-      redirect_to project_clusters_path(project), status: :found
+      redirect_to clusters_page_path, status: :found
     else
       flash[:notice] = _('Kubernetes cluster integration was not removed.')
       render :show
@@ -76,10 +74,10 @@ class ClustersController < Clusters::BaseController
   def create_gcp
     @gcp_cluster = ::Clusters::CreateService
       .new(current_user, create_gcp_cluster_params)
-      .execute(project: project, access_token: token_in_session)
+      .execute(access_token: token_in_session)
 
     if @gcp_cluster.persisted?
-      redirect_to project_cluster_path(project, @gcp_cluster)
+      redirect_to cluster_page_path(@gcp_cluster)
     else
       generate_gcp_authorize_url
       validate_gcp_token
@@ -92,10 +90,10 @@ class ClustersController < Clusters::BaseController
   def create_user
     @user_cluster = ::Clusters::CreateService
       .new(current_user, create_user_cluster_params)
-      .execute(project: project, access_token: token_in_session)
+      .execute(access_token: token_in_session)
 
     if @user_cluster.persisted?
-      redirect_to project_cluster_path(project, @user_cluster)
+      redirect_to cluster_page_path(@user_cluster)
     else
       generate_gcp_authorize_url
       validate_gcp_token
@@ -107,14 +105,8 @@ class ClustersController < Clusters::BaseController
 
   private
 
-  def determine_layout
-    if project_type?
-      'project'
-    end
-  end
-
   def cluster
-    @cluster ||= project.clusters.find(params[:id])
+    @cluster ||= clusterable.clusters.find(params[:id])
                                  .present(current_user: current_user)
   end
 
@@ -155,7 +147,8 @@ class ClustersController < Clusters::BaseController
         :legacy_abac
       ]).merge(
         provider_type: :gcp,
-        platform_type: :kubernetes
+        platform_type: :kubernetes,
+        clusterable: clusterable
       )
   end
 
@@ -172,12 +165,13 @@ class ClustersController < Clusters::BaseController
         :authorization_type
       ]).merge(
         provider_type: :user,
-        platform_type: :kubernetes
+        platform_type: :kubernetes,
+        clusterable: clusterable
       )
   end
 
   def generate_gcp_authorize_url
-    state = generate_session_key_redirect(new_project_cluster_path(project).to_s)
+    state = generate_session_key_redirect(new_cluster_page_path.to_s)
 
     @authorize_url = GoogleApi::CloudPlatform::Client.new(
       nil, callback_google_api_auth_url,

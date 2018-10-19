@@ -1,24 +1,25 @@
 - @content_class = "limit-container-width" unless fluid_layout
-- add_to_breadcrumbs "Kubernetes Clusters", project_clusters_path(@project)
+- add_to_breadcrumbs "Kubernetes Clusters", clusters_page_path
 - breadcrumb_title @cluster.name
 - page_title _("Kubernetes Cluster")
+- manage_prometheus_path = edit_project_service_path(@cluster.project, 'prometheus') if @project
 
 - expanded = Rails.env.test?
 
-- status_path = status_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster.id, format: :json) if can?(current_user, :admin_cluster, @cluster)
+- status_path = status_cluster_path(@cluster.id, clusterable_params.merge(format: :json)) if can?(current_user, :admin_cluster, @cluster)
 .edit-cluster-form.js-edit-cluster-form{ data: { status_path: status_path,
-  install_helm_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :helm),
-  install_ingress_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :ingress),
-  install_prometheus_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :prometheus),
-  install_runner_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :runner),
-  install_jupyter_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :jupyter),
+  install_helm_path: install_applications_cluster_path(@cluster, :helm, clusterable_params),
+  install_ingress_path: install_applications_cluster_path(@cluster, :ingress, clusterable_params),
+  install_prometheus_path: install_applications_cluster_path(@cluster, :prometheus, clusterable_params),
+  install_runner_path: install_applications_cluster_path(@cluster, :runner, clusterable_params),
+  install_jupyter_path: install_applications_cluster_path(@cluster, :jupyter, clusterable_params),
   toggle_status: @cluster.enabled? ? 'true': 'false',
   cluster_status: @cluster.status_name,
   cluster_status_reason: @cluster.status_reason,
   help_path: help_page_path('user/project/clusters/index.md', anchor: 'installing-applications'),
   ingress_help_path: help_page_path('user/project/clusters/index.md', anchor: 'getting-the-external-ip-address'),
   ingress_dns_help_path: help_page_path('topics/autodevops/quick_start_guide.md', anchor: 'point-dns-at-cluster-ip'),
-  manage_prometheus_path: edit_project_service_path(@cluster.project, 'prometheus') } }
+  manage_prometheus_path: manage_prometheus_path } }
 
   .js-cluster-application-notice
     .flash-container
