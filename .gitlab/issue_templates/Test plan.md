@@ -38,22 +38,22 @@ test plan](https://testing.googleblog.com/2011/09/10-minute-test-plan.html) and
 [this wiki page from an open-source tool that implements the ACC
 model](https://code.google.com/archive/p/test-analytics/wikis/AccExplained.wiki). -->
 
-|            | Simple | Secure | Responsive | Obvious | Stable |
-|------------|:------:|:------:|:----------:|:-------:|:------:|
-| Admin      |        |        |            |         |        |
-| Groups     |        |        |            |         |        |
-| Project    |        |        |            |         |        |
-| Repository |        |        |            |         |        |
-| Issues     |        |        |            |         |        |
-| MRs        |        |        |            |         |        |
-| CI/CD      |        |        |            |         |        |
-| Ops        |        |        |            |         |        |
-| Registry   |        |        |            |         |        |
-| Wiki       |        |        |            |         |        |
-| Snippets   |        |        |            |         |        |
-| Settings   |        |        |            |         |        |
-| Tracking   |        |        |            |         |        |
-| API        |        |        |            |         |        |
+|            | Secure | Responsive | Intuitive | Reliable |
+|------------|:------:|:----------:|:---------:|:--------:|
+| Admin      |        |            |           |          |
+| Groups     |        |            |           |          |
+| Project    |        |            |           |          |
+| Repository |        |            |           |          |
+| Issues     |        |            |           |          |
+| MRs        |        |            |           |          |
+| CI/CD      |        |            |           |          |
+| Ops        |        |            |           |          |
+| Registry   |        |            |           |          |
+| Wiki       |        |            |           |          |
+| Snippets   |        |            |           |          |
+| Settings   |        |            |           |          |
+| Tracking   |        |            |           |          |
+| API        |        |            |           |          |
 
 ## Capabilities
 
@@ -65,7 +65,7 @@ more complex features could involve multiple or even all.
 
 Example (from https://gitlab.com/gitlab-org/gitlab-ce/issues/50353):
 * Respository is
-  * Simple
+  * Intuitive
     * It's easy to select the desired file template
     * It doesn't require unnecessary actions to save the change
     * It's easy to undo the change after selecting a template
@@ -93,4 +93,4 @@ When adding new automated tests, please keep [testing levels](https://docs.gitla
 in mind.
 -->
 
-/label ~Quality
+/label ~Quality ~"test plan"
