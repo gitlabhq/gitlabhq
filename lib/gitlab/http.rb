@@ -5,9 +5,16 @@
 module Gitlab
   class HTTP
     BlockedUrlError = Class.new(StandardError)
+    RedirectionTooDeep = Class.new(StandardError)
 
     include HTTParty # rubocop:disable Gitlab/HTTParty
 
     connection_adapter ProxyHTTPConnectionAdapter
+
+    def self.perform_request(http_method, path, options, &block)
+      super
+    rescue HTTParty::RedirectionTooDeep
+      raise RedirectionTooDeep
+    end
   end
 end
