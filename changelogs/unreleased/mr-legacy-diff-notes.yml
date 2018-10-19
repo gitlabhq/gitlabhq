@@ -1,5 +1,0 @@
----
-title: Correctly show legacy diff notes in the merge request changes tab
-merge_request: 21652
-author:
-type: fixed

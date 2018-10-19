@@ -1,5 +1,0 @@
----
-title: pipeline webhook event now contain pipeline variables
-merge_request: 18171
-author: Pierre Tardy
-type: added

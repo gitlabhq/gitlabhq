@@ -1,5 +1,0 @@
----
-title: Delete container repository tags outside of transaction
-merge_request: 21679
-author:
-type: fixed

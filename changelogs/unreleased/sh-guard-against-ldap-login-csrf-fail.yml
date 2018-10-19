@@ -1,5 +1,0 @@
----
-title: Guard against a login attempt with invalid CSRF token
-merge_request: 21934
-author:
-type: fixed

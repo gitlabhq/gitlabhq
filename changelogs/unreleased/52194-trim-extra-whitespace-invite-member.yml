@@ -1,5 +1,0 @@
----
-title: Trim whitespace when inviting a new user by email
-merge_request: 22119
-author: Jacopo Beschi @jacopo-beschi
-type: fixed
