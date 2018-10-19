@@ -432,6 +432,20 @@ describe SystemNoteService do
     end
   end
 
+  describe '.new_merge_request' do
+    subject { described_class.new_merge_request(noteable, project, author, merge_request) }
+
+    let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'merge' }
+    end
+
+    it 'sets the new merge request note text' do
+      expect(subject.note).to eq("created merge request #{merge_request.to_reference} to address this issue")
+    end
+  end
+
   describe '.cross_reference' do
     subject { described_class.cross_reference(noteable, mentioner, author) }
 

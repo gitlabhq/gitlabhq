@@ -635,6 +635,22 @@ module QuickActions
       @updates[:tag_message] = message
     end
 
+    desc 'Create a merge request.'
+    explanation do |branch_name = nil|
+      branch_text = branch_name ? "branch '#{branch_name}'" : 'a branch'
+      "Creates #{branch_text} and a merge request to resolve this issue"
+    end
+    params "<branch name>"
+    condition do
+      issuable.is_a?(Issue) && current_user.can?(:create_merge_request_in, project) && current_user.can?(:push_code, project)
+    end
+    command :create_merge_request do |branch_name = nil|
+      @updates[:create_merge_request] = {
+        branch_name: branch_name,
+        issue_iid: issuable.iid
+      }
+    end
+
     # rubocop: disable CodeReuse/ActiveRecord
     def extract_users(params)
       return [] if params.nil?

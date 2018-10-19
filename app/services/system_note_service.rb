@@ -407,9 +407,15 @@ module SystemNoteService
   def new_issue_branch(issue, project, author, branch)
     link = url_helpers.project_compare_url(project, from: project.default_branch, to: branch)
 
-    body = "created branch [`#{branch}`](#{link})"
+    body = "created branch [`#{branch}`](#{link}) to address this issue"
 
     create_note(NoteSummary.new(issue, project, author, body, action: 'branch'))
+  end
+
+  def new_merge_request(issue, project, author, merge_request)
+    body = "created merge request #{merge_request.to_reference} to address this issue"
+
+    create_note(NoteSummary.new(issue, project, author, body, action: 'merge'))
   end
 
   # Called when a Mentionable references a Noteable

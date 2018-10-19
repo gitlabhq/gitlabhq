@@ -1222,6 +1222,37 @@ describe QuickActions::InterpretService do
       expect(commands).to be_empty
       expect(text).to eq("#{described_class::SHRUG}\n/close")
     end
+
+    context '/create_merge_request command' do
+      let(:branch_name) { '1-feature' }
+      let(:content) { "/create_merge_request #{branch_name}" }
+      let(:issuable) { issue }
+
+      context 'if issuable is not an Issue' do
+        let(:issuable) { merge_request }
+
+        it_behaves_like 'empty command'
+      end
+
+      context "when logged user cannot create_merge_requests in the project" do
+        let(:project) { create(:project, :archived) }
+
+        it_behaves_like 'empty command'
+      end
+
+      context 'when logged user cannot push code to the project' do
+        let(:project) { create(:project, :private) }
+        let(:service) { described_class.new(project, create(:user)) }
+
+        it_behaves_like 'empty command'
+      end
+
+      it 'populates create_merge_request with branch_name and issue iid' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(create_merge_request: { branch_name: branch_name, issue_iid: issuable.iid })
+      end
+    end
   end
 
   describe '#explain' do
@@ -1470,6 +1501,28 @@ describe QuickActions::InterpretService do
           _, explanations = service.explain(content, commit)
 
           expect(explanations).to eq(["Tags this commit to v1.2.3 with \"Stable release\"."])
+        end
+      end
+    end
+
+    describe 'create a merge request' do
+      context 'with no branch name' do
+        let(:content) { '/create_merge_request' }
+
+        it 'uses the default branch name' do
+          _, explanations = service.explain(content, issue)
+
+          expect(explanations).to eq(['Creates a branch and a merge request to resolve this issue'])
+        end
+      end
+
+      context 'with a branch name' do
+        let(:content) { '/create_merge_request foo' }
+
+        it 'uses the given branch name' do
+          _, explanations = service.explain(content, issue)
+
+          expect(explanations).to eq(["Creates branch 'foo' and a merge request to resolve this issue"])
         end
       end
     end
