@@ -1,16 +1,16 @@
 <script>
 import $ from 'jquery';
-import tooltip from '../../directives/tooltip';
-import toolbarButton from './toolbar_button.vue';
-import icon from '../icon.vue';
+import Tooltip from '../../directives/tooltip';
+import ToolbarButton from './toolbar_button.vue';
+import Icon from '../icon.vue';
 
 export default {
   directives: {
-    tooltip,
+    Tooltip,
   },
   components: {
-    toolbarButton,
-    icon,
+    ToolbarButton,
+    Icon,
   },
   props: {
     previewMarkdown: {
@@ -68,27 +68,27 @@ export default {
         :class="{ active: !previewMarkdown }"
         class="md-header-tab"
       >
-        <a
+        <button
           class="js-write-link"
-          href="#md-write-holder"
           tabindex="-1"
-          @click.prevent="writeMarkdownTab($event)"
+          type="button"
+          @click="writeMarkdownTab($event)"
         >
           Write
-        </a>
+        </button>
       </li>
       <li
         :class="{ active: previewMarkdown }"
         class="md-header-tab"
       >
-        <a
+        <button
           class="js-preview-link js-md-preview-button"
-          href="#md-preview-holder"
           tabindex="-1"
-          @click.prevent="previewMarkdownTab($event)"
+          type="button"
+          @click="previewMarkdownTab($event)"
         >
           Preview
-        </a>
+        </button>
       </li>
       <li
         :class="{ active: !previewMarkdown }"

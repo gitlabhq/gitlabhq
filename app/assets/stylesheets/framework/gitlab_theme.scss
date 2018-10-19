@@ -161,6 +161,7 @@
 
   .nav-links li {
     &.active a,
+    &.md-header-tab.active button,
     a.active {
       border-bottom: 2px solid $active-tab-border;
 

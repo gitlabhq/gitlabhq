@@ -17,9 +17,9 @@ describe "User edits issue", :js do
 
     page.within(form) do
       fill_in("Description", with: "Bug fixed :smile:")
-      click_link("Preview")
+      click_button("Preview")
     end
 
-    expect(form).to have_link("Write")
+    expect(form).to have_button("Write")
   end
 end

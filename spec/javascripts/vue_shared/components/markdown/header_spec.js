@@ -76,7 +76,7 @@ describe('Markdown field header component', () => {
   });
 
   it('blurs preview link after click', done => {
-    const link = vm.$el.querySelector('li:nth-child(2) a');
+    const link = vm.$el.querySelector('li:nth-child(2) button');
     spyOn(HTMLElement.prototype, 'blur');
 
     link.click();
