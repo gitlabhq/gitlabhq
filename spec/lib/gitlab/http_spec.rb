@@ -46,4 +46,30 @@ describe Gitlab::HTTP do
       end
     end
   end
+
+  describe 'handle redirect loops' do
+    before do
+      WebMock.stub_request(:any, "http://example.org").to_raise(HTTParty::RedirectionTooDeep.new("Redirection Too Deep"))
+    end
+
+    it 'handles GET requests' do
+      expect { described_class.get('http://example.org') }.to raise_error(Gitlab::HTTP::RedirectionTooDeep)
+    end
+
+    it 'handles POST requests' do
+      expect { described_class.post('http://example.org') }.to raise_error(Gitlab::HTTP::RedirectionTooDeep)
+    end
+
+    it 'handles PUT requests' do
+      expect { described_class.put('http://example.org') }.to raise_error(Gitlab::HTTP::RedirectionTooDeep)
+    end
+
+    it 'handles DELETE requests' do
+      expect { described_class.delete('http://example.org') }.to raise_error(Gitlab::HTTP::RedirectionTooDeep)
+    end
+
+    it 'handles HEAD requests' do
+      expect { described_class.head('http://example.org') }.to raise_error(Gitlab::HTTP::RedirectionTooDeep)
+    end
+  end
 end
