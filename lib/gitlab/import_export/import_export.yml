@@ -92,6 +92,7 @@ excluded_attributes:
     - :path
     - :namespace_id
     - :creator_id
+    - :pool_repository_id
     - :import_url
     - :import_status
     - :avatar
