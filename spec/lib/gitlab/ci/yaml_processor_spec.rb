@@ -53,11 +53,11 @@ module Gitlab
         describe 'retry entry' do
           context 'when retry count is specified' do
             let(:config) do
-              YAML.dump(rspec: { script: 'rspec', retry: 1 })
+              YAML.dump(rspec: { script: 'rspec', retry: { max: 1 } })
             end
 
             it 'includes retry count in build options attribute' do
-              expect(subject[:options]).to include(retry: 1)
+              expect(subject[:options]).to include(retry: { max: 1 })
             end
           end
 
