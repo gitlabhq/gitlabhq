@@ -1931,6 +1931,12 @@ ActiveRecord::Schema.define(version: 20181101144347) do
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
   add_index "services", ["template"], name: "index_services_on_template", using: :btree
 
+  create_table "shards", force: :cascade do |t|
+    t.string "name", null: false
+  end
+
+  add_index "shards", ["name"], name: "index_shards_on_name", unique: true, using: :btree
+
   create_table "site_statistics", force: :cascade do |t|
     t.integer "repositories_count", default: 0, null: false
   end
