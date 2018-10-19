@@ -17,9 +17,7 @@ module Gitlab
               @opts = opts
               @errors = []
 
-              validate_location!
-              validate_content!
-              validate_hash!
+              validate!
             end
 
             def invalid_extension?
@@ -46,6 +44,12 @@ module Gitlab
 
             protected
 
+            def validate!
+              validate_location!
+              validate_content! if errors.none?
+              validate_hash! if errors.none?
+            end
+
             def validate_location!
               if invalid_extension?
                 errors.push("Included file `#{location}` does not have YAML extension!")
@@ -53,13 +57,13 @@ module Gitlab
             end
 
             def validate_content!
-              if errors.none? && content.blank?
+              if content.blank?
                 errors.push("Included file `#{location}` is empty or does not exist!")
               end
             end
 
             def validate_hash!
-              if errors.none? && to_hash.blank?
+              if to_hash.blank?
                 errors.push("Included file `#{location}` does not have valid YAML syntax!")
               end
             end

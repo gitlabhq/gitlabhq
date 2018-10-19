@@ -24,8 +24,6 @@ module Gitlab
             private
 
             def validate_content!
-              return if errors.any?
-
               if content.nil?
                 errors.push("Local file `#{location}` does not exist!")
               elsif content.blank?

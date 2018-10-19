@@ -23,19 +23,25 @@ module Gitlab
             end
 
             def fetch_remote_content
-              Gitlab::HTTP.get(location)
-            rescue SocketError
-              errors.push("Remote file `#{location}` could not be fetched because of a socket error!")
-              nil
-            rescue Timeout::Error
-              errors.push("Remote file `#{location}` could not be fetched because of a timeout error!")
-              nil
-            rescue Gitlab::HTTP::Error
-              errors.push("Remote file `#{location}` could not be fetched because of a HTTP error!")
-              nil
-            rescue Gitlab::HTTP::BlockedUrlError
-              errors.push("Remote file `#{location}` could not be fetched because the URL is blocked!")
-              nil
+              begin
+                response = Gitlab::HTTP.get(location)
+              rescue SocketError
+                errors.push("Remote file `#{location}` could not be fetched because of a socket error!")
+              rescue Timeout::Error
+                errors.push("Remote file `#{location}` could not be fetched because of a timeout error!")
+              rescue Gitlab::HTTP::Error
+                errors.push("Remote file `#{location}` could not be fetched because of HTTP error!")
+              rescue Gitlab::HTTP::BlockedUrlError
+                errors.push("Remote file `#{location}` could not be fetched because the URL is blocked!")
+              end
+
+              if response&.code.to_i >= 400
+                errors.push <<~ERROR
+                  Remote file `#{location}` could not be fetched because of HTTP code `#{response.code}` error!
+                ERROR
+              end
+
+              response.to_s if errors.none?
             end
           end
         end
