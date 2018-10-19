@@ -222,7 +222,7 @@ describe('DiffsStoreMutations', () => {
       };
 
       mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
-        fileHash: 'ABC',
+        diffFile: state.diffFiles[0],
         discussions,
         diffPositionByLineCode,
       });
@@ -292,7 +292,7 @@ describe('DiffsStoreMutations', () => {
       };
 
       mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
-        fileHash: 'ABC',
+        diffFile: state.diffFiles[0],
         discussions,
         diffPositionByLineCode,
       });

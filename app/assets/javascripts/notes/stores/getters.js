@@ -1,6 +1,5 @@
 import _ from 'underscore';
 import * as constants from '../constants';
-import { reduceDiscussionsToLineCodes } from './utils';
 import { collapseSystemNotes } from './collapse_utils';
 
 export const discussions = state => collapseSystemNotes(state.discussions);
@@ -30,9 +29,6 @@ export const notesById = state =>
     note.notes.every(n => Object.assign(acc, { [n.id]: n }));
     return acc;
   }, {});
-
-export const discussionsStructuredByLineCode = state =>
-  reduceDiscussionsToLineCodes(state.discussions);
 
 export const noteableType = state => {
   const { ISSUE_NOTEABLE_TYPE, MERGE_REQUEST_NOTEABLE_TYPE, EPIC_NOTEABLE_TYPE } = constants;

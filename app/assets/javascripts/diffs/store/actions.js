@@ -5,7 +5,6 @@ import createFlash from '~/flash';
 import { s__ } from '~/locale';
 import { handleLocationHash, historyPushState } from '~/lib/utils/common_utils';
 import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
-import { reduceDiscussionsToLineCodes } from '../../notes/stores/utils';
 import { getDiffPositionByLineCode, getNoteFormData } from './utils';
 import * as types from './mutation_types';
 import {
@@ -36,18 +35,33 @@ export const fetchDiffFiles = ({ state, commit }) => {
 
 // This is adding line discussions to the actual lines in the diff tree
 // once for parallel and once for inline mode
-export const assignDiscussionsToDiff = ({ state, commit }, allLineDiscussions) => {
+export const assignDiscussionsToDiff = (
+  { commit, state, rootState },
+  discussionsToAssign = rootState.notes.discussions,
+) => {
   const diffPositionByLineCode = getDiffPositionByLineCode(state.diffFiles);
+  const discussionsByDiffFile = discussionsToAssign
+    .filter(discussion => discussion.diff_discussion)
+    .reduce((acc, discussion) => {
+      const discussions = (
+        acc[discussion.diff_file.file_hash] || { discussions: [] }
+      ).discussions.concat(discussion);
 
-  Object.values(allLineDiscussions).forEach(discussions => {
-    if (discussions.length > 0) {
-      const { fileHash } = discussions[0];
-      commit(types.SET_LINE_DISCUSSIONS_FOR_FILE, {
-        fileHash,
-        discussions,
-        diffPositionByLineCode,
-      });
-    }
+      return {
+        ...acc,
+        [discussion.diff_file.file_hash]: {
+          diffFile: state.diffFiles.find(file => file.fileHash === discussion.diff_file.file_hash),
+          discussions,
+        },
+      };
+    }, {});
+
+  Object.values(discussionsByDiffFile).forEach(({ discussions, diffFile }) => {
+    commit(types.SET_LINE_DISCUSSIONS_FOR_FILE, {
+      diffFile,
+      discussions,
+      diffPositionByLineCode,
+    });
   });
 };
 
@@ -190,9 +204,7 @@ export const saveDiffDiscussion = ({ dispatch }, { note, formData }) => {
 
   return dispatch('saveNote', postData, { root: true })
     .then(result => dispatch('updateDiscussion', result.discussion, { root: true }))
-    .then(discussion =>
-      dispatch('assignDiscussionsToDiff', reduceDiscussionsToLineCodes([discussion])),
-    )
+    .then(discussion => dispatch('assignDiscussionsToDiff', [discussion]))
     .catch(() => createFlash(s__('MergeRequests|Saving the comment failed')));
 };
 
