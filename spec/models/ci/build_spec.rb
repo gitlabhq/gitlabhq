@@ -1472,15 +1472,7 @@ describe Ci::Build do
     end
 
     describe '#retries_max' do
-      context 'when max retries value is defined as an integer' do
-        subject { create(:ci_build, options: { retry: 1 }) }
-
-        it 'returns the number of configured max retries' do
-          expect(subject.retries_max).to eq 1
-        end
-      end
-
-      context 'when retries value is defined as a hash' do
+      context 'with retries max config option' do
         subject { create(:ci_build, options: { retry: { max: 1 } }) }
 
         it 'returns the number of configured max retries' do
@@ -1488,15 +1480,7 @@ describe Ci::Build do
         end
       end
 
-      context 'when retries value is defined as a hash without max key' do
-        subject { create(:ci_build, options: { retry: { something: :else } }) }
-
-        it 'returns zero' do
-          expect(subject.retries_max).to eq 0
-        end
-      end
-
-      context 'when max retries value is not defined' do
+      context 'without retries max config option' do
         subject { create(:ci_build) }
 
         it 'returns zero' do
@@ -1514,34 +1498,18 @@ describe Ci::Build do
     end
 
     describe '#retry_when' do
-      context 'when value is defined without an array' do
-        subject { create(:ci_build, options: { retry: { when: 'something' } }) }
+      context 'with retries when config option' do
+        subject { create(:ci_build, options: { retry: { when: ['some_reason'] } }) }
 
-        it 'returns the configured value inside an array' do
-          expect(subject.retry_when).to eq ['something']
+        it 'returns the configured when' do
+          expect(subject.retry_when).to eq ['some_reason']
         end
       end
 
-      context 'when value is defined as an array' do
-        subject { create(:ci_build, options: { retry: { when: %w[something more] } }) }
-
-        it 'returns the configured value' do
-          expect(subject.retry_when).to eq %w[something more]
-        end
-      end
-
-      context 'when value is not defined' do
+      context 'without retries when config option' do
         subject { create(:ci_build) }
 
-        it 'returns `always`' do
-          expect(subject.retry_when).to eq ['always']
-        end
-      end
-
-      context 'when retry is only defined as an integer' do
-        subject { create(:ci_build, options: { retry: 1 }) }
-
-        it 'returns `always`' do
+        it 'returns always array' do
           expect(subject.retry_when).to eq ['always']
         end
       end
@@ -3001,7 +2969,7 @@ describe Ci::Build do
     end
 
     context 'when build is configured to be retried' do
-      subject { create(:ci_build, :running, options: { retry: 3 }, project: project, user: user) }
+      subject { create(:ci_build, :running, options: { retry: { max: 3 } }, project: project, user: user) }
 
       it 'retries build and assigns the same user to it' do
         expect(described_class).to receive(:retry)

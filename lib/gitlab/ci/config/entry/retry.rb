@@ -18,6 +18,12 @@ module Gitlab
                                                  less_than_or_equal_to: 2 }
             end
 
+            def value
+              {
+                max: config
+              }
+            end
+
             def location
               'retry'
             end
@@ -49,7 +55,15 @@ module Gitlab
             end
 
             def self.possible_retry_when_values
-              @possible_retry_when_values ||= Gitlab::Ci::Status::Build::Failed.reasons.keys.map(&:to_s) + ['always']
+              @possible_retry_when_values ||= CommitStatus.failure_reasons.keys.map(&:to_s) + ['always']
+            end
+
+            def value
+              super.tap do |config|
+                # make sure that `when` is an array, because we allow it to
+                # be passed as a String in config for simplicity
+                config[:when] = Array.wrap(config[:when]) if config[:when]
+              end
             end
 
             def location

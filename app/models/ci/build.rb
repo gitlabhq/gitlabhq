@@ -318,15 +318,11 @@ module Ci
     end
 
     def retries_max
-      retries = self.options[:retry]
-      retries.is_a?(Hash) && retries.fetch(:max, 0) || retries || 0
+      options&.dig(:retry, :max) || 0
     end
 
     def retry_when
-      retries = self.options[:retry]
-      Array.wrap(
-        retries.is_a?(Hash) && retries.fetch(:when, 'always') || 'always'
-      )
+      options&.dig(:retry, :when) || ['always']
     end
 
     def retry_failure?
