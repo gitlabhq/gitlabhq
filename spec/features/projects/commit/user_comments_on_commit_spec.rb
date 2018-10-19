@@ -25,19 +25,19 @@ describe "User comments on commit", :js do
         fill_in("note[note]", with: "#{comment_text} #{emoji_code}")
 
         # Check on `Preview` tab
-        click_link("Preview")
+        click_button("Preview")
 
         expect(find(".js-md-preview")).to have_content(comment_text).and have_css("gl-emoji")
         expect(page).not_to have_css(".js-note-text")
 
         # Check on `Write` tab
-        click_link("Write")
+        click_button("Write")
 
         expect(page).to have_field("note[note]", with: "#{comment_text} #{emoji_code}")
 
         # Submit comment from the `Preview` tab to get rid of a separate `it` block
         # which would specially tests if everything gets cleared from the note form.
-        click_link("Preview")
+        click_button("Preview")
         click_button("Comment")
       end
 
