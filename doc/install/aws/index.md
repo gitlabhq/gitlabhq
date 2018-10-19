@@ -29,7 +29,7 @@ A basic familiarity with AWS and EC2 is assumed. In particular, you will need:
 
 Below is the diagram of the architecture.
 
-![AWS architecture](img/aws_diagram.png)
+<img src="img/aws_diagram.png" alt="AWS architecture diagram" class="image-noshadow">
 
 ## Costs
 
@@ -177,7 +177,7 @@ The security group is basically the firewall:
      ![Create security group](img/create_security_group.png)
 
      TIP: **Tip:**
-     Based on best practices, you should only allow SSH traffic from only a known
+     Based on best practices, you should allow SSH traffic from only a known
      host or CIDR block. In that case, change the SSH source to be custom and give
      it the IP you want to SSH from.
 
@@ -233,9 +233,30 @@ Now, it's time to create the database:
     auto updates to minor versions. You may want to turn it off.
 1. When done, click **Create database**.
 
+### Installing the `pg_trgm` extension for PostgreSQL
+
+Once the database is created, connect to your new RDS instance to verify access
+and to install a required extension.
+
+You can find the host or endpoint by selecting the instance you just created and
+after the details drop down you'll find it labeled as 'Endpoint'. Do not to
+include the colon and port number:
+
+```sh
+sudo /opt/gitlab/embedded/bin/psql -U gitlab -h <rds-endpoint> -d gitlabhq_production
+```
+
+At the psql prompt create the extension and then quit the session:
+
+```sh
+psql (9.4.7)
+Type "help" for help.
+
+gitlab=# CREATE EXTENSION pg_trgm;
+gitlab=# \q
+```
+
 ---
-
-
 
 Now that the database is created, let's move on setting up Redis with ElasticCache.
 
@@ -275,15 +296,58 @@ To set up Redis:
 1. Leave the rest of the settings to their default values or edit to your liking.
 1. When done, click **Create**.
 
-## Deploying GitLab
+## RDS and Redis Security Group
+
+Let's navigate to our EC2 security groups and add a small change for our EC2
+instances to be able to connect to RDS. First, copy the security group name we
+defined, namely `gitlab-security-group`, select the RDS security group and edit the
+inbound rules. Choose the rule type to be PostgreSQL and paste the name under
+source.
+
+Similar to the above, jump to the `gitlab-security-group` group
+and add a custom TCP rule for port `6379` accessible within itself.
+
+## Load Balancer
+
+On the EC2 dashboard, look for Load Balancer on the left column:
+
+1. Click the **Create Load Balancer** button.
+  1. Choose the Application Load Balancer.
+  1. Give it a name (`gitlab-loadbalancer`) and set the scheme to "internet-facing".
+  1. In the "Listeners" section, make sure it has HTTP and HTTPS.
+  1. In the "Availability Zones" section, select the `gitlab-vpc` we have created
+     and associate the **public subnets**.
+1. Click on the **Configure Security Settings** to go to the next section to
+   select the TLS certificate. When done, go to the next step.
+1. In the "Security Groups" section, create a new one by giving it a name
+   (`gitlab-loadbalancer-sec-group`) and allow both HTTP ad HTTPS traffic
+   from anywhere (`0.0.0.0/0, ::/0`).
+1. In the next step, configure the routing and select an existing target group
+   (`gitlab-public`). The Load Balancer Health will allow us to indicate where to
+   ping and what makes up a healthy or unhealthy instance.
+1. Leave the "Register Targets" section as is, and finally review the settings
+   and create the ELB.
+
+After the Load Balancer is up and running, you can re-visit your Security
+Groups to improve access only through the ELB and any other requirement
+you might have.
+
+## Deploying GitLab inside an auto scaling group
 
 We'll use AWS's wizard to deploy GitLab and then SSH into the instance to
 configure the PostgreSQL and Redis connections.
 
+The Auto Scaling Group option is available through the EC2 dashboard on the left
+sidebar.
+
+1. Click on the **Create Auto Scaling group** button.
+1. Create a new launch configuration.
+
 ### Choose the AMI
 
-1. On the EC2 dashboard click **Launch Instance**.
-1. Choose the AMI by going to the Community AMIs and search for `GitLab EE <version>`
+Choose the AMI:
+
+1. Go to the Community AMIs and search for `GitLab EE <version>`
    where `<version>` the latest version as seen  in the
    [releases page](https://about.gitlab.com/releases/).
 
@@ -295,145 +359,68 @@ Based on [GitLab's requirements](../requirements.md#hardware-requirements), the
 instance type should be at least `c4.xlarge`. This is enough to accommodate 100 users:
 
 1. Choose the `c4.xlarge` instance.
-
-    ![Choose instance type](img/choose_instance_type.png)
-
 1. Click **Next: Configure Instance Details**
 
-### Configure instance
+### Configure details
 
-1. Configure the instance. At "Network" choose `gitlab-vpc` and one of the public
-   [subnets](#subnets) we created for that VPC. Select "Enable" for the
-   "Auto-assign Public IP", and choose the `GitLabAdmin` IAM role.
+In this step we'll configure some details:
 
-    ![Configure instance](img/configure_instance.png)
-
+1. Give it a name (`gitlab-autoscaling`).
+1. Select the IAM role we created.
+1. Optionally, enable CloudWatch and the EBS-optimized instance settings.
+1. In the "Advanced Details" section, set the IP address type to
+   "Do not assign a public IP address to any instances."
 1. Click **Next: Add Storage**.
 
 ### Add storage
 
-Edit the root volume to 20GB, and add a new EBS volume that will host the Git data.
-Its size depends on your needs and you can always migrate to a bigger volume later.
-
-![Add storage](img/add_storage.png)
-
-### Add tags
-
-To help you manage your instances, you can optionally assign your own metadata
-to each resource in the [form of tags](https://docs.aws.amazon.com/console/ec2/tags).
-
-Let's add one with its key set to `Name` and value to `GitLab`.
-
-![Add tags](img/add_tags.png)
+The root volume is 8GB by default and should be enough given that we won't store
+any data there. Let's add a new EBS volume that will host the Git data. Its
+size depends on your needs and you can always migrate to a bigger volume.
+You will be able to [set up that volume later](#setting-up-the-ebs-volume).
 
 ### Configure security group
 
-1. Select the existing security group we [have created](#creating-a-security-group).
+As a last step, configure the security group:
 
-    ![Add security group](img/configure_security_group.png)
-
-1. Select **Review and Launch**.
+1. Select the existing load balancer security group we [have created](#load-balancer).
+1. Select **Review**.
 
 ### Review and launch
 
-Now is a good time to review all the previous settings. Click **Launch** and
-select the SSH key pair you have created previously.
+Now is a good time to review all the previous settings. When ready, click
+**Create launch configuration** and select the SSH key pair you have created previously.
 
-![Select SSH key](img/select_ssh_key.png)
+### Create Auto Scaling Group
 
-Finally, click on **Launch instances**.
+We are now able to start creating our Auto Scaling Group:
 
-### RDS and Redis Security Group
-
-After the instance is being created we will navigate to our EC2 security
-groups and add a small change for our EC2 instances to be able to
-connect to RDS. First copy the security group name we just defined,
-namely `gitlab-ec2-security-group`, and edit select the RDS security
-group and edit the inbound rules. Choose the rule type to be PostgreSQL
-and paste the name under source.
-
-
-Similar to the above we'll jump to the `gitlab-ec2-security-group` group
-and add a custom TCP rule for port 6379 accessible within itself.
-
-## Load Balancer
-
-On the same dashboard look for Load Balancer on the left column and press
-the Create button. Choose a classic Load Balancer, our gitlab VPC, not
-internal and make sure its listening for HTTP and HTTPS on port 80.
-
-Here is a tricky part though, when adding subnets we need to associate
-public subnets instead of the private ones where our instances will
-actually live.
-
-On the security group section let's create a new one named
-`gitlab-loadbalancer-sec-group` and allow both HTTP ad HTTPS traffic
-from anywhere.
-
-The Load Balancer Health will allow us to indicate where to ping and what
-makes up a healthy or unhealthy instance.
-
-We won't add the instance on the next session because we'll destroy it
-momentarily as we'll be using the image we where creating. We will keep
-the Enable Cross-Zone and Enable Connection Draining active.
-
-After we finish creating the Load Balancer we can re visit our Security
-Groups to improve access only through the ELB and any other requirement
-you might have.
-
-## Auto Scaling Group
-
-Our AMI should be done by now so we can start working on our Auto
-Scaling Group.
-
-This option is also available through the EC2 dashboard on the left
-sidebar. Press on the create button. Select the new image on My AMIs and
-give it a `t2.medium` size. To be able to use Elastic File System we need
-to add a script to mount EFS automatically at launch. We'll do this at
-the Advanced Details section where we have a [User Data](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html)
-text area that allows us to add a lot of custom configurations which
-allows you to add a custom script for when launching an instance. Let's
-add the following script to the User Data section:
-
-
-    #cloud-config
-    package_upgrade: true
-    packages:
-    - nfs-common
-    runcmd:
-    - mkdir -p /gitlab-data
-    - chown ec2-user:ec2-user /gitlab-data
-    - echo "$(curl --silent http://169.254.169.254/latest/meta-data/placement/availability-zone).file-system-id.aws-region.amazonaws.com:/ /gitlab-data nfs defaults,vers=4.1 0 0" >> /etc/fstab
-    - mount -a -t nfs
-    - sudo gitlab-ctl reconfigure
-
-On the security group section we can choose our existing
-`gitlab-ec2-security-group` group which has already been tested.
-
-After this is launched we are able to start creating our Auto Scaling
-Group. Start by giving it a name and assigning it our VPC and private
-subnets. We also want to always start with two instances and if you
-scroll down to Advanced Details we can choose to receive traffic from ELBs.
-Lets enable that option and select our ELB. We also want to use the ELB's
-health check.
-
-
-### Policies
+1. Give it a group name.
+1. Set the group size to 2 as we want to always start with two instances.
+1. Assign it our network VPC and add the **private subnets**.
+1. In the "Advanced Details" section, choose to receive traffic from ELBs
+   and select our ELB.
+1. Choose the ELB health check.
+1. Click **Next: Configure scaling policies**.
 
 This is the really great part of Auto Scaling, we get to choose when AWS
 launches new instances and when it removes them. For this group we'll
 scale between 2 and 4 instances where one instance will be added if CPU
 utilization is greater than 60% and one instance is removed if it falls
-to less than 45%. Here are the complete policies:
+to less than 45%.
 
+![Auto scaling group policies](img/policies.png)
 
-You'll notice that after we save this AWS starts launching our two
+Finally, configure notifications and tags as you see fit, and create the
+auto scaling group.
+
+You'll notice that after we save the configuration, AWS starts launching our two
 instances in different AZs and without a public IP which is exactly what
 we where aiming for.
 
 ## After deployment
 
-After a few minutes, the instance should be up and accessible via the internet.
+After a few minutes, the instances should be up and accessible via the internet.
 Let's connect to it and configure some things before logging in.
 
 ### Configuring GitLab to connect with postgres and Redis
@@ -498,59 +485,17 @@ test the instance manually.
 
 ### Setting up the EBS volume
 
-The EBS volume will host the Git data. We need to first format the `/dev/xvdb`
-volume and then mount it:
+The EBS volume will host the Git repositories data:
 
-1. First, create the directory that the volume will be mounted to:
-
-    ```sh
-    sudo mkdir /gitlab-data
-    ```
-
-1. Create a partition with a GUID Partition Table (GPT), mark it as
-   primary, choose the `ext4` file system, and use all its size:
-
-    ```sh
-    sudo parted --script /dev/xvdb mklabel gpt mkpart primary ext4 0% 100%
-    ```
-
-1. Format to `ext4`:
-
-    ```sh
-    sudo mkfs.ext4 -L Data /dev/xvdb1
-    ```
-
-1. Find its PARTUUID:
-
-    ```sh
-    blkid /dev/xvdb1
-    ```
-
-    You need to copy the PARTUUID number (without the quotes) and use this to
-    mount the newly created partition.
-
-1. Open `/etc/fstab` with your editor, comment out the entry about `/dev/xvdb`,
-   and add the new partition:
-
-    ```
-    PARTUUID=d4129b25-a3c9-4d2c-a090-2c234fee4d46   /gitlab-data   ext4    defaults,nofail,x-systemd.requires=cloud-init.service,comment=cloudconfig       0       2
-    ```
-
-1. Mount the partition:
-
-    ```sh
-    sudo mount -a
-    ```
-
----
-
-Now that the partition is created and mounted, it's time to tell GitLab to store
-its data to the new `/gitlab-data` directory:
-
-1. Edit `/etc/gitlab/gitlab.rb` with your editor and add the following:
+1. First, format the `/dev/xvdb` volume and then mount it under the directory
+   that the data will live, for example `/mnt/gitlab-data/`.
+1. Tell GitLab to store its data to the new directory by editing
+   `/etc/gitlab/gitlab.rb` with your editor:
 
     ```ruby
-    git_data_dirs({ "default" => { "path" => "/gitlab-data" } })
+    git_data_dirs({
+      "default" => { "path" => "/mnt/gitlab-data" }
+    })
     ```
 
 1. Save the file and reconfigure GitLab:
@@ -559,9 +504,11 @@ its data to the new `/gitlab-data` directory:
     sudo gitlab-ctl reconfigure
     ```
 
-Read more on [storing Git data in an alternative directory](https://docs.gitlab.com/omnibus/settings/configuration.html#storing-git-data-in-an-alternative-directory).
+To add more than one data volumes, follow the same steps.
 
-### Using S3 for the LFS objects, artifacts and Registry images
+Read more on [storing Git data in an alternative directory](../../administration/repository_storage_paths.md).
+
+### Using Amazon S3 object storage
 
 The S3 object storage can be used for various GitLab objects:
 
@@ -597,18 +544,28 @@ for the `root` user which has admin privileges on the GitLab instance.
 
 After you set it up, login with username `root` and the newly created password.
 
+## Health check and monitoring with Prometheus
+
+Apart from Amazon's Cloudwatch which you can enable on various services,
+GitLab provides its own integrated monitoring solution based on Prometheus.
+For more information on how to set it up, visit the
+[GitLab Prometheus documentation](../../administration/monitoring/prometheus/index.md)
+
+GitLab also has various [health check endpoints](../..//user/admin_area/monitoring/health_check.md)
+that you can ping and get reports.
+
 ## Backup and restore
 
 GitLab provides [a tool to backup](../../raketasks/backup_restore.md#creating-a-backup-of-the-gitlab-system)
 and restore its Git data, database, attachments, LFS objects, etc.
 
-Some things to know:
+Some important things to know:
 
+- The backup/restore tool does not store some configuration files, like secrets, you'll
+  need to [do it yourself](../../raketasks/backup_restore.md#storing-configuration-files).
 - By default, the backup files are stored locally, but you can
   [backup GitLab using S3](../../raketasks/backup_restore.md#using-amazon-s3).
 - You can exclude [specific directories form the backup](../../raketasks/backup_restore.md#excluding-specific-directories-from-the-backup).
-- The backup/restore tool does not store some configuration files, like secrets, you'll
-  need to [do it yourself](../../raketasks/backup_restore.md#storing-configuration-files).
 
 ### Backing up GitLab
 
@@ -648,9 +605,19 @@ released, you can update your GitLab instance:
 
 After a few minutes, the new version should be up and running.
 
-## Resources
+## Conclusion
 
+High Availability is a very big area, we went mostly through scaling and some
+redundancy options but it might also imply Geographic replication. There is a
+lot of ground yet to cover so have a read through these other resources and feel
+free to open an issue to request additional material:
+
+- [GitLab High Availability](https://docs.gitlab.com/ee/administration/high_availability/):
+  GitLab supports several different types of clustering and high-availability.
+- [Geo replication](https://docs.gitlab.com/ee/administration/geo/replication/):
+  Geo is the solution for widely distributed development teams.
 - [Omnibus GitLab](https://docs.gitlab.com/omnibus/) - Everything you need to know
   about administering your GitLab instance.
-- [Upload a license](https://docs.gitlab.com/ee/user/admin_area/license.html) - Activate all GitLab
-  Enterprise Edition functionality with a license.
+- [Upload a license](https://docs.gitlab.com/ee/user/admin_area/license.html):
+  Activate all GitLab Enterprise Edition functionality with a license.
+- [Pricing](https://about.gitlab.com/pricing): Pricing for the different tiers.
