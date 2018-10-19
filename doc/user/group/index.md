@@ -252,6 +252,13 @@ level of members in group.
 
 Learn more about [Member Lock](https://docs.gitlab.com/ee/user/group/index.html#member-lock).
 
+#### Group-level file templates **[PREMIUM]**
+
+Group-level file templates allow you to share a set of templates for common file
+types with every project in a group.
+
+Learn more about [Group-level file templates](https://docs.gitlab.com/ee/user/group/index.html#group-level-file-templates-premium).
+
 ### Advanced settings
 
 - **Projects**: view all projects within that group, add members to each project,

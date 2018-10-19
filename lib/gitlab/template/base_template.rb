@@ -1,7 +1,7 @@
 module Gitlab
   module Template
     class BaseTemplate
-      attr_reader :category
+      attr_accessor :category
 
       def initialize(path, project = nil, category: nil)
         @path = path

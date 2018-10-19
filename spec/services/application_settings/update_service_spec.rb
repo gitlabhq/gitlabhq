@@ -10,6 +10,9 @@ describe ApplicationSettings::UpdateService do
   before do
     # So the caching behaves like it would in production
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+
+    # Creating these settings first ensures they're used by other factories
+    application_settings
   end
 
   describe 'updating terms' do
