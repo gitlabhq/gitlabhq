@@ -119,12 +119,17 @@ and [Using the GitLab Container Registry documentation](../../ci/docker/using_do
 > Project Deploy Tokens were [introduced][ce-17894] in GitLab 10.7
 
 If a project is private, credentials will need to be provided for authorization.
-The preferred way to do this, is either by using a [personal access tokens][pat] or a [project deploy token][pdt].
+There are two ways to do this:
+
+- By using a [personal access token](../profile/personal_access_tokens.md).
+- By using a [deploy token](../project/deploy_tokens/index.md).
+
 The minimal scope needed for both of them is `read_registry`.
 
-Example of using a personal access token:
-```
-docker login registry.example.com -u <your_username> -p <your_access_token>
+Example of using a token:
+
+```sh
+docker login registry.example.com -u <username> -p <token>
 ```
 
 ## Troubleshooting the GitLab Container Registry
