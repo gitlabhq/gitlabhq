@@ -1,5 +1,0 @@
----
-title: Mitigate N+1 queries when parsing commit references in comments.
-merge_request:
-author:
-type: performance

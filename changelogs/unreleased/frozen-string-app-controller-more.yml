@@ -1,5 +1,0 @@
----
-title: Enable more frozen string in app/controllers/
-merge_request:
-author: gfyoung
-type: performance
