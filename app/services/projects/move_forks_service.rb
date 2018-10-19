@@ -6,7 +6,6 @@ module Projects
       return unless super && source_project.fork_network
 
       Project.transaction(requires_new: true) do
-        move_forked_project_links
         move_fork_network_members
         update_root_project
         refresh_forks_count
@@ -16,18 +15,6 @@ module Projects
     end
 
     private
-
-    # rubocop: disable CodeReuse/ActiveRecord
-    def move_forked_project_links
-      # Update ancestor
-      ForkedProjectLink.where(forked_to_project: source_project)
-                       .update_all(forked_to_project_id: @project.id)
-
-      # Update the descendants
-      ForkedProjectLink.where(forked_from_project: source_project)
-                       .update_all(forked_from_project_id: @project.id)
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
     def move_fork_network_members

@@ -1196,7 +1196,7 @@ describe API::Projects do
 
           expect(response).to have_gitlab_http_status(201)
           expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
-          expect(project_fork_target.forked_project_link).to be_present
+          expect(project_fork_target.fork_network_member).to be_present
           expect(project_fork_target).to be_forked
         end
 

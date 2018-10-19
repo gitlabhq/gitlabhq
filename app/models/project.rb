@@ -167,20 +167,15 @@ class Project < ActiveRecord::Base
   has_one :packagist_service
   has_one :hangouts_chat_service
 
-  # TODO: replace these relations with the fork network versions
-  has_one  :forked_project_link,  foreign_key: "forked_to_project_id"
-  has_one  :forked_from_project,  through:   :forked_project_link
-
-  has_many :forked_project_links, foreign_key: "forked_from_project_id"
-  has_many :forks,                through:     :forked_project_links, source: :forked_to_project
-  # TODO: replace these relations with the fork network versions
-
   has_one :root_of_fork_network,
           foreign_key: 'root_project_id',
           inverse_of: :root_project,
           class_name: 'ForkNetwork'
   has_one :fork_network_member
   has_one :fork_network, through: :fork_network_member
+  has_one :forked_from_project, through: :fork_network_member
+  has_many :forked_to_members, class_name: 'ForkNetworkMember', foreign_key: 'forked_from_project_id'
+  has_many :forks, through: :forked_to_members, source: :project, inverse_of: :forked_from_project
 
   has_one :import_state, autosave: true, class_name: 'ProjectImportState', inverse_of: :project
   has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -1250,12 +1245,7 @@ class Project < ActiveRecord::Base
   end
 
   def forked?
-    return true if fork_network && fork_network.root_project != self
-
-    # TODO: Use only the above conditional using the `fork_network`
-    # This is the old conditional that looks at the `forked_project_link`, we
-    # fall back to this while we're migrating the new models
-    !(forked_project_link.nil? || forked_project_link.forked_from_project.nil?)
+    fork_network && fork_network.root_project != self
   end
 
   def fork_source
@@ -1546,9 +1536,7 @@ class Project < ActiveRecord::Base
   def visibility_level_allowed_as_fork?(level = self.visibility_level)
     return true unless forked?
 
-    # self.forked_from_project will be nil before the project is saved, so
-    # we need to go through the relation
-    original_project = forked_project_link&.forked_from_project
+    original_project = fork_source
     return true unless original_project
 
     level <= original_project.visibility_level

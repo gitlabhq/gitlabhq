@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe MergeRequestWidgetEntity do
+  include ProjectForksHelper
+
   let(:project)  { create :project, :repository }
   let(:resource) { create(:merge_request, source_project: project, target_project: project) }
   let(:user)     { create(:user) }
@@ -206,12 +208,12 @@ describe MergeRequestWidgetEntity do
 
   describe 'when source project is deleted' do
     let(:project) { create(:project, :repository) }
-    let(:fork_project) { create(:project, :repository, forked_from_project: project) }
-    let(:merge_request) { create(:merge_request, source_project: fork_project, target_project: project) }
+    let(:forked_project) { fork_project(project) }
+    let(:merge_request) { create(:merge_request, source_project: forked_project, target_project: project) }
 
     it 'returns a blank rebase_path' do
       allow(merge_request).to receive(:should_be_rebased?).and_return(true)
-      fork_project.destroy
+      forked_project.destroy
       merge_request.reload
 
       entity = described_class.new(merge_request, request: request).as_json

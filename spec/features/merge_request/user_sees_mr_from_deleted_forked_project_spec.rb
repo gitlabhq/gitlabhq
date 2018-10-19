@@ -1,18 +1,20 @@
 require 'rails_helper'
 
 describe 'Merge request > User sees MR from deleted forked project', :js do
+  include ProjectForksHelper
+
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
-  let(:fork_project) { create(:project, :public, :repository, forked_from_project: project) }
+  let(:forked_project) { fork_project(project, nil, repository: true) }
   let!(:merge_request) do
-    create(:merge_request_with_diffs, source_project: fork_project,
+    create(:merge_request_with_diffs, source_project: forked_project,
                                       target_project: project,
                                       description: 'Test merge request')
   end
 
   before do
     MergeRequests::MergeService.new(project, user).execute(merge_request)
-    fork_project.destroy!
+    forked_project.destroy!
     sign_in(user)
     visit project_merge_request_path(project, merge_request)
   end
