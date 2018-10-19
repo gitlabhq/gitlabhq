@@ -1,0 +1,5 @@
+---
+title: Fixed merge request fill tree toggling not respecting fluid width preference
+merge_request:
+author:
+type: fixed
