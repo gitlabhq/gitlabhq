@@ -1,0 +1,5 @@
+---
+title: Escape entity title while autocomplete template rendering to prevent XSS
+merge_request: 2556
+author:
+type: security
