@@ -554,6 +554,14 @@ For more information on how to set it up, visit the
 GitLab also has various [health check endpoints](../..//user/admin_area/monitoring/health_check.md)
 that you can ping and get reports.
 
+## GitLab Runners
+
+If you want to take advantage of GitLab CI/CD, you have to set up at least one
+GitLab Runner.
+
+Read more on configuring an
+[autoscaling GitLab Runner on AWS](https://docs.gitlab.com/runner/configuration/runner_autoscale_aws/).
+
 ## Backup and restore
 
 GitLab provides [a tool to backup](../../raketasks/backup_restore.md#creating-a-backup-of-the-gitlab-system)
