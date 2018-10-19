@@ -339,6 +339,24 @@ args: {
 }
 ```
 
+### `uid_attribute`
+
+>**Note:**
+This setting is only available on GitLab 10.7 and above.
+
+By default, the `uid` is set as the `name_id` in the SAML response. If you'd like to designate a unique attribute for the `uid`, you can set the `uid_attribute`. In the below example, there is an attribute named `uid` in the SAML response that the user would like to set as the `uid`.
+
+```yaml
+args: {
+        assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
+        idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+        idp_sso_target_url: 'https://login.example.com/idp',
+        issuer: 'https://gitlab.example.com',
+        name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+        uid_attribute: 'uid'
+}
+```
+
 ## Troubleshooting
 
 ### 500 error after login
