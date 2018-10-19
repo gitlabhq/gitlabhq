@@ -10,7 +10,7 @@ module Gitlab
 
             attr_reader :location, :opts, :errors
 
-            YAML_WHITELIST_EXTENSION = /(yml|yaml)$/i.freeze
+            YAML_WHITELIST_EXTENSION = /.+\.(yml|yaml)$/i.freeze
 
             def initialize(location, opts = {})
               @location = location
@@ -21,7 +21,7 @@ module Gitlab
             end
 
             def invalid_extension?
-              !location.match(YAML_WHITELIST_EXTENSION)
+              !::File.basename(location).match(YAML_WHITELIST_EXTENSION)
             end
 
             def valid?
