@@ -6,11 +6,11 @@ describe Gitlab::Ci::Status::Scheduled do
   end
 
   describe '#text' do
-    it { expect(subject.text).to eq 'scheduled' }
+    it { expect(subject.text).to eq 'delayed' }
   end
 
   describe '#label' do
-    it { expect(subject.label).to eq 'scheduled' }
+    it { expect(subject.label).to eq 'delayed' }
   end
 
   describe '#icon' do

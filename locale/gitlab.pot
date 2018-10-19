@@ -1217,6 +1217,9 @@ msgstr ""
 msgid "CiStatusLabel|created"
 msgstr ""
 
+msgid "CiStatusLabel|delayed"
+msgstr ""
+
 msgid "CiStatusLabel|failed"
 msgstr ""
 
@@ -1230,9 +1233,6 @@ msgid "CiStatusLabel|passed with warnings"
 msgstr ""
 
 msgid "CiStatusLabel|pending"
-msgstr ""
-
-msgid "CiStatusLabel|scheduled"
 msgstr ""
 
 msgid "CiStatusLabel|skipped"
@@ -1253,6 +1253,9 @@ msgstr ""
 msgid "CiStatusText|created"
 msgstr ""
 
+msgid "CiStatusText|delayed"
+msgstr ""
+
 msgid "CiStatusText|failed"
 msgstr ""
 
@@ -1263,9 +1266,6 @@ msgid "CiStatusText|passed"
 msgstr ""
 
 msgid "CiStatusText|pending"
-msgstr ""
-
-msgid "CiStatusText|scheduled"
 msgstr ""
 
 msgid "CiStatusText|skipped"
@@ -2178,7 +2178,7 @@ msgstr ""
 msgid "DelayedJobs|Unschedule"
 msgstr ""
 
-msgid "DelayedJobs|scheduled"
+msgid "DelayedJobs|delayed"
 msgstr ""
 
 msgid "Delete"
@@ -6113,7 +6113,7 @@ msgstr ""
 msgid "This is a confidential issue."
 msgstr ""
 
-msgid "This is a scheduled to run in "
+msgid "This is a delayed to run in "
 msgstr ""
 
 msgid "This is the author's first Merge Request to this project."

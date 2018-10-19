@@ -2,9 +2,9 @@ module Gitlab
   module Ci
     module Status
       module Pipeline
-        class Scheduled < Status::Extended
+        class Delayed < Status::Extended
           def text
-            s_('CiStatusText|scheduled')
+            s_('CiStatusText|delayed')
           end
 
           def label

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Status::Pipeline::Scheduled do
+describe Gitlab::Ci::Status::Pipeline::Delayed do
   let(:pipeline) { double('pipeline') }
 
   subject do
@@ -9,7 +9,7 @@ describe Gitlab::Ci::Status::Pipeline::Scheduled do
 
   describe '#text' do
     it 'overrides status text' do
-      expect(subject.text).to eq 'scheduled'
+      expect(subject.text).to eq 'delayed'
     end
   end
 
