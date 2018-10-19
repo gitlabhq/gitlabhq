@@ -352,3 +352,21 @@ describe('prettyTime methods', () => {
     });
   });
 });
+
+describe('calculateRemainingMilliseconds', () => {
+  beforeEach(() => {
+    spyOn(Date, 'now').and.callFake(() => new Date('2063-04-04T00:42:00Z').getTime());
+  });
+
+  it('calculates the remaining time for a given end date', () => {
+    const milliseconds = datetimeUtility.calculateRemainingMilliseconds('2063-04-04T01:44:03Z');
+
+    expect(milliseconds).toBe(3723000);
+  });
+
+  it('returns 0 if the end date has passed', () => {
+    const milliseconds = datetimeUtility.calculateRemainingMilliseconds('2063-04-03T00:00:00Z');
+
+    expect(milliseconds).toBe(0);
+  });
+});

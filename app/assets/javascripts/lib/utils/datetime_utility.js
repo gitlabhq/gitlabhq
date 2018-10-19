@@ -473,3 +473,15 @@ export const stringifyTime = timeObject => {
  */
 export const abbreviateTime = timeStr =>
   timeStr.split(' ').filter(unitStr => unitStr.charAt(0) !== '0')[0];
+
+/**
+ * Calculates the milliseconds between now and a given date string.
+ * The result cannot become negative.
+ *
+ * @param endDate date string that the time difference is calculated for
+ * @return {number} number of milliseconds remaining until the given date
+ */
+export const calculateRemainingMilliseconds = endDate => {
+  const remainingMilliseconds = new Date(endDate).getTime() - Date.now();
+  return Math.max(remainingMilliseconds, 0);
+};
