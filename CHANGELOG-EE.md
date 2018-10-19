@@ -1,5 +1,94 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 11.4.0 (2018-10-22)
+
+### Security (3 changes)
+
+- Properly filter private references from system notes.
+- Project groups approvers no longer leak private groups info.
+- Protect against CSRF attacks when adding Slack app.
+
+### Removed (1 change)
+
+- remove unnecessary help text from container scanning results. !7304
+
+### Fixed (18 changes, 1 of them is from the community)
+
+- Prune all the Geo event log tables correctly. !6175
+- Synchronize the default branch when updating a pull mirror. !7242
+- Pushing to a merge request clears the approvals list even if the respective project setting is enabled and there is no fixed required number of approvals configured. !7328
+- Align epics and roadmap empty state buttons to the center. !7358 (George Tsiolis)
+- Add link to issue on epic. !7407
+- Check for force env var when rebuilding auth_keys. !7419
+- Update popover URL to point to help page of same domain. !7446
+- Geo - Does not raise error 500 on Geo projects list page for orphaned entries. !7565
+- Show promotion for epics on issues. !7602
+- Fix Epic subscription toggle behaviour. !7723
+- Geo - Send a cache invalidation event via the log cursor whenever features are changed on the primary. !7738
+- Fix epic milestone dates incorrect after issue is linked to another epic. !7809
+- Fixes warning for used minutes in runner showing when user still has minutes. !7843
+- Fix disappearing weight input in Firefox. !7869
+- Don't synchronize default branch when updating a SSH mirror. !7891
+- Fix broken tokenization for filtered search bar in Epics. !7972
+- Fix bug when resolving a discussion via a batch comment published right away.
+- Fix wrong color in resolve/unresolve checkbox when using MR reviews.
+
+### Changed (14 changes)
+
+- Geo: Decrease frequency of project shard schedulers when few projects to schedule. !7287
+- Added placeholder to weight input for issue sidebar. !7346
+- updated icons used in filtered search dropdowns. !7356
+- Geo: Display helpful feedback when proxying an SSH git push to secondary request. !7357
+- Geo - Include keep-around and other Gitlab-specific references in the checksum calculation. !7367
+- Polish security report externalizations. !7373
+- Listen for resolved Prometheus alerts. !7382
+- Rename date related labels for Epics. !7447
+- Add reports CI syntax for Code Quality reports. !7465
+- Support short reference to epics from project entities. !7475
+- Geo: Downgrade Exclusive Lease warnings from Log Cursor to debug. !7476
+- Geo: Allow nodes to be editable in more scenarios. !7832
+- Account for issues created in the middle of a milestone in burndown chart.
+- [Geo] Add CI job artifact numbers to rake geo:status.
+
+### Performance (1 change)
+
+- Update DB model for security reports.
+
+### Added (20 changes, 1 of them is from the community)
+
+- Batch comments on merge requests. !4213
+- Use Geo log to remove files when migrated to object storage. !5966
+- Add support for closing epics. !7302
+- Add `auditor_groups` configuration so Audit users can be specified using SAML groups. !7340 (St. John Johnson)
+- Geo - Add an event to reset checksums on Geo secondary nodes. !7394
+- Starts adding the dashboard page view. !7400
+- Add `Manage licenses` button to MR widget and pipelines view. !7411
+- Add Open/Closed epics tabs in list view. !7424
+- Add Feature Flags MVC. !7433
+- Suggest approvers based on code owners. !7437
+- Geo: Add a backoff time to few Geo workers to save resources. !7470
+- Persist Prometheus alert events. !7493
+- Geo: Added a button to Admin UI > Geo Nodes to open Geo Projects screen of any secondary node. !7512
+- Show Alert Thresholds on monitoring dashboards. !7538
+- Support autocomplete for commands in epics. !7588
+- Add form to enter licenses manually. !7603
+- Geo: Added `All` tab in Geo Nodes > Projects. !7745
+- Geo: Add a Geo Status Widget to Admin > Projects. !7789
+- Add data model and migration for vulnerabilities.
+- Adds Batch Comments to Merge Requests [EEP].
+
+### Other (8 changes, 1 of them is from the community)
+
+- Add runner quota information to job API. !7233
+- Resolve "ee:geo QA specs are failing as of !7210". !7315
+- remove readme checkbox from "create project" page. !7332
+- Create a generic JS function that we can apply to being able to track arbitrary events. !7403
+- Rename Admin Area Geo Nodes nav item to Geo. !7466
+- Group weight icon and text on issue list and issue boards. !7484 (George Tsiolis)
+- Adds expandable/collapsable section for Snowplow. !7798
+- API: Allow issue weight parameter to be greater than or equal to zero.
+
+
 ## 11.3.4 (2018-10-05)
 
 ### Security (1 change)

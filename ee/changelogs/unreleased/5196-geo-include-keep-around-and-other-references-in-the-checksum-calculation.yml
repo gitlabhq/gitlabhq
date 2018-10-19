@@ -1,6 +1,0 @@
----
-title: Geo - Include keep-around and other Gitlab-specific references in the checksum
-  calculation
-merge_request: 7367
-author:
-type: changed

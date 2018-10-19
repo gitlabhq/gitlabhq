@@ -1,5 +1,0 @@
----
-title: Add `auditor_groups` configuration so Audit users can be specified using SAML groups
-merge_request: 7340
-author: St. John Johnson
-type: added

@@ -1,5 +1,0 @@
----
-title: Prune all the Geo event log tables correctly
-merge_request: 6175
-author:
-type: fixed

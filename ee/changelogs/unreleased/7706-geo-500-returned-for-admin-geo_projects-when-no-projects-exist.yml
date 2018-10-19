@@ -1,5 +1,0 @@
----
-title: Geo - Does not raise error 500 on Geo projects list page for orphaned entries
-merge_request: 7565
-author:
-type: fixed
