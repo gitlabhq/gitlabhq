@@ -1,5 +1,0 @@
----
-title: Sanitize JSON data properly to fix XSS on Issue details page
-merge_request:
-author:
-type: security

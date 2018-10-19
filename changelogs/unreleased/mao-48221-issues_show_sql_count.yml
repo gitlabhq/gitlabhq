@@ -1,5 +1,0 @@
----
-title: Banzai label ref finder - minimize SQL calls by sharing context more aggresively
-merge_request: 22070
-author:
-type: performance

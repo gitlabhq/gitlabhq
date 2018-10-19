@@ -1,5 +1,0 @@
----
-title: Fixes close/reopen quick actions preview for issues and merge_requests
-merge_request: 22343
-author: Jacopo Beschi @jacopo-beschi
-type: fixed
