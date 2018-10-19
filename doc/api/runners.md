@@ -340,8 +340,7 @@ Example response:
 ## List project's runners
 
 List all runners (specific and shared) available in the project. Shared runners
-are listed if at least one shared runner is defined **and** shared runners
-usage is enabled in the project's settings.
+are listed if at least one shared runner is defined.
 
 ```
 GET /projects/:id/runners
