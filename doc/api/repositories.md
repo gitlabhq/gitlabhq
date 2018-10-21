@@ -14,7 +14,7 @@ GET /projects/:id/repository/tree
 Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
-- `path` (optional) - The path inside repository. Used to get contend of subdirectories
+- `path` (optional) - The path inside repository. Used to get content of subdirectories
 - `ref` (optional) - The name of a repository branch or tag or if not given the default branch
 - `recursive` (optional) - Boolean value used to get a recursive tree (false by default)
 
