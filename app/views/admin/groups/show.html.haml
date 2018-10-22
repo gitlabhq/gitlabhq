@@ -63,10 +63,9 @@
 
     .card
       .card-header
-        %h3.card-title
-          = _('Projects')
-          %span.badge.badge-pill
-            #{@group.projects.count}
+        = _('Projects')
+        %span.badge.badge-pill
+          #{@group.projects.count}
       %ul.content-list
         - @projects.each do |project|
           %li
