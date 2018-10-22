@@ -1486,7 +1486,7 @@ Possible values for `when` are:
 
 <!--
   Please make sure to update `RETRY_WHEN_IN_DOCUMENTATION` array in
-  `spec/lib/gitlab/ci/config/entry/job_spec.rb` if you change any of
+  `spec/lib/gitlab/ci/config/entry/retry_spec.rb` if you change any of
   the documented values below. The test there makes sure that all documented
   values are really valid as a config option and therefore should always
   stay in sync with this documentation.
