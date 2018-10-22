@@ -55,7 +55,7 @@ module Gitlab
             end
 
             def self.possible_retry_when_values
-              @possible_retry_when_values ||= CommitStatus.failure_reasons.keys.map(&:to_s) + ['always']
+              @possible_retry_when_values ||= ::Ci::Build.failure_reasons.keys.map(&:to_s) + ['always']
             end
 
             def value
