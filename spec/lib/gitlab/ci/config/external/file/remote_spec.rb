@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::External::File::Remote do
+describe Gitlab::Ci::Config::External::File::Remote do
   let(:remote_file) { described_class.new(location) }
   let(:location) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
   let(:remote_file_content) do
@@ -105,10 +105,53 @@ describe Gitlab::Ci::External::File::Remote do
   end
 
   describe "#error_message" do
-    let(:location) { 'not-valid://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
+    subject { remote_file.error_message }
 
-    it 'should return an error message' do
-      expect(remote_file.error_message).to eq("Remote file '#{location}' is not valid.")
+    context 'when remote file location is not valid' do
+      let(:location) { 'not-valid://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
+
+      it 'returns an error message describing invalid address' do
+        expect(subject).to match /does not have a valid address!/
+      end
+    end
+
+    context 'when timeout error has been raised' do
+      before do
+        WebMock.stub_request(:get, location).to_timeout
+      end
+
+      it 'should returns error message about a timeout' do
+        expect(subject).to match /could not be fetched because of a timeout error!/
+      end
+    end
+
+    context 'when HTTP error has been raised' do
+      before do
+        WebMock.stub_request(:get, location).to_raise(Gitlab::HTTP::Error)
+      end
+
+      it 'should returns error message about a HTTP error' do
+        expect(subject).to match /could not be fetched because of HTTP error!/
+      end
+    end
+
+    context 'when response has 404 status' do
+      before do
+        WebMock.stub_request(:get, location).to_return(body: remote_file_content, status: 404)
+      end
+
+      it 'should returns error message about a timeout' do
+        expect(subject).to match /could not be fetched because of HTTP code `404` error!/
+      end
+    end
+
+    context 'when the URL is blocked' do
+      let(:location) { 'http://127.0.0.1/some/path/to/config.yaml' }
+
+      it 'should include details about blocked URL' do
+        expect(subject).to eq "Remote file could not be fetched because URL '#{location}' " \
+                              'is blocked: Requests to localhost are not allowed!'
+      end
     end
   end
 end

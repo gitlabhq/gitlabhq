@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Ci::External::Mapper do
+describe Gitlab::Ci::Config::External::Mapper do
   let(:project) { create(:project, :repository) }
   let(:file_content) do
     <<~HEREDOC
@@ -27,7 +27,8 @@ describe Gitlab::Ci::External::Mapper do
         end
 
         it 'returns File instances' do
-          expect(subject.first).to be_an_instance_of(Gitlab::Ci::External::File::Local)
+          expect(subject.first)
+            .to be_an_instance_of(Gitlab::Ci::Config::External::File::Local)
         end
       end
 
@@ -49,7 +50,8 @@ describe Gitlab::Ci::External::Mapper do
         end
 
         it 'returns File instances' do
-          expect(subject.first).to be_an_instance_of(Gitlab::Ci::External::File::Remote)
+          expect(subject.first)
+            .to be_an_instance_of(Gitlab::Ci::Config::External::File::Remote)
         end
       end
     end
