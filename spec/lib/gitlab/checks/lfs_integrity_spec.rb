@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Gitlab::Checks::LfsIntegrity do
   include ProjectForksHelper
 
+  let!(:time_left) { 50 }
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:newrev) do
@@ -15,7 +16,7 @@ describe Gitlab::Checks::LfsIntegrity do
     operations.commit_tree('8856a329dd38ca86dfb9ce5aa58a16d88cc119bd', "New LFS objects")
   end
 
-  subject { described_class.new(project, newrev) }
+  subject { described_class.new(project, newrev, time_left) }
 
   describe '#objects_missing?' do
     let(:blob_object) { repository.blob_at_branch('lfs', 'files/lfs/lfs_object.iso') }
