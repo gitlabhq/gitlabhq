@@ -472,6 +472,37 @@ GitLab uses [factory_bot] as a test fixture replacement.
 
 All fixtures should be be placed under `spec/fixtures/`.
 
+### Repositories
+
+Testing some functionality, e.g., merging a merge request, requires a git
+repository with a certain state to be present in the test environment. GitLab
+maintains the [gitlab-test](https://gitlab.com/gitlab-org/gitlab-test)
+repository for certain common cases - you can ensure a copy of the repository is
+used with the `:repository` trait for project factories:
+
+```ruby
+let(:project) { create(:project, :repository) }
+```
+
+Where you can, consider using the `:custom_repo` trait instead of `:repository`.
+This allows you to specify exactly what files will appear in the `master` branch
+of the project's repository. For example:
+
+```ruby
+let(:project) do
+  create(
+    :project, :custom_repo,
+    files: {
+      'README.md'       => 'Content here',
+      'foo/bar/baz.txt' => 'More content here'
+    }
+  )
+end
+```
+
+This will create a repository containing two files, with default permissions and
+the specified content.
+
 ### Config
 
 RSpec config files are files that change the RSpec config (i.e.
