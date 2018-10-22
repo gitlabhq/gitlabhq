@@ -419,7 +419,7 @@ export default class MergeRequestTabs {
     if (this.diffViewType() === 'parallel' || removeLimited) {
       $wrapper.removeClass('container-limited');
     } else {
-      $wrapper.addClass('container-limited');
+      $wrapper.toggleClass('container-limited', this.fixedLayoutPref);
     }
   }
 

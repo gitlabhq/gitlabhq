@@ -38,7 +38,9 @@ export default {
 
   computed: {
     title() {
-      return this.isLastDeployment ? s__('Environments|Re-deploy to environment') : s__('Environments|Rollback environment');
+      return this.isLastDeployment
+        ? s__('Environments|Re-deploy to environment')
+        : s__('Environments|Rollback environment');
     },
   },
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class TcpChecker
     attr_reader :remote_host, :remote_port, :local_host, :local_port, :error

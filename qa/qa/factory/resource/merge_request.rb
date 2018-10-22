@@ -12,13 +12,8 @@ module QA
                       :milestone,
                       :labels
 
-        product :project do |factory|
-          factory.project
-        end
-
-        product :source_branch do |factory|
-          factory.source_branch
-        end
+        product :project
+        product :source_branch
 
         dependency Factory::Resource::Project, as: :project do |project|
           project.name = 'project-with-merge-request'
@@ -35,6 +30,7 @@ module QA
           push.project = factory.project
           push.branch_name = factory.target_branch
           push.remote_branch = factory.source_branch
+          push.new_branch = false
           push.file_name = "added_file.txt"
           push.file_content = "File Added"
         end
@@ -56,6 +52,10 @@ module QA
             page.fill_title(@title)
             page.fill_description(@description)
             page.choose_milestone(@milestone) if @milestone
+            labels.each do |label|
+              page.select_label(label)
+            end
+
             page.create_merge_request
           end
         end

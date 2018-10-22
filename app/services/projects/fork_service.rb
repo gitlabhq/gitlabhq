@@ -12,31 +12,42 @@ module Projects
 
     private
 
+    def allowed_fork?
+      current_user.can?(:fork_project, @project)
+    end
+
     def link_existing_project(fork_to_project)
       return if fork_to_project.forked?
 
-      link_fork_network(fork_to_project)
+      build_fork_network_member(fork_to_project)
 
-      # A forked project stores its LFS objects in the `forked_from_project`.
-      # So the LFS objects become inaccessible, and therefore delete them from
-      # the database so they'll get cleaned up.
-      #
-      # TODO: refactor this to get the correct lfs objects when implementing
-      #       https://gitlab.com/gitlab-org/gitlab-ce/issues/39769
-      fork_to_project.lfs_objects_projects.delete_all
+      if link_fork_network(fork_to_project)
+        # A forked project stores its LFS objects in the `forked_from_project`.
+        # So the LFS objects become inaccessible, and therefore delete them from
+        # the database so they'll get cleaned up.
+        #
+        # TODO: refactor this to get the correct lfs objects when implementing
+        #       https://gitlab.com/gitlab-org/gitlab-ce/issues/39769
+        fork_to_project.lfs_objects_projects.delete_all
 
-      fork_to_project
+        fork_to_project
+      end
     end
 
     def fork_new_project
       new_params = {
-        forked_from_project_id: @project.id,
         visibility_level:       allowed_visibility_level,
         description:            @project.description,
         name:                   @project.name,
         path:                   @project.path,
         shared_runners_enabled: @project.shared_runners_enabled,
-        namespace_id:           target_namespace.id
+        namespace_id:           target_namespace.id,
+        fork_network:           fork_network,
+        # We need to assign the fork network membership after the project has
+        # been instantiated to avoid ActiveRecord trying to create it when
+        # initializing the project, as that would cause a foreign key constraint
+        # exception.
+        relations_block:        -> (project) { build_fork_network_member(project) }
       }
 
       if @project.avatar.present? && @project.avatar.image?
@@ -46,38 +57,35 @@ module Projects
       new_project = CreateService.new(current_user, new_params).execute
       return new_project unless new_project.persisted?
 
+      # Set the forked_from_project relation after saving to avoid having to
+      # reload the project to reset the association information and cause an
+      # extra query.
+      new_project.forked_from_project = @project
+
       builds_access_level = @project.project_feature.builds_access_level
       new_project.project_feature.update(builds_access_level: builds_access_level)
-
-      link_fork_network(new_project)
 
       new_project
     end
 
     def fork_network
-      if @project.fork_network
-        @project.fork_network
-      elsif forked_from_project = @project.forked_from_project
-        # TODO: remove this case when all background migrations have completed
-        # this only happens when a project had a `forked_project_link` that was
-        # not migrated to the `fork_network` relation
-        forked_from_project.fork_network || forked_from_project.create_root_of_fork_network
+      @fork_network ||= @project.fork_network || @project.build_root_of_fork_network
+    end
+
+    def build_fork_network_member(fork_to_project)
+      if allowed_fork?
+        fork_to_project.build_fork_network_member(forked_from_project: @project,
+                                                  fork_network: fork_network)
       else
-        @project.create_root_of_fork_network
+        fork_to_project.errors.add(:forked_from_project_id, 'is forbidden')
       end
     end
 
     def link_fork_network(fork_to_project)
-      fork_network.fork_network_members.create(project: fork_to_project,
-                                               forked_from_project: @project)
+      return if fork_to_project.errors.any?
 
-      # TODO: remove this when ForkedProjectLink model is removed
-      unless fork_to_project.forked_project_link
-        fork_to_project.create_forked_project_link(forked_to_project: fork_to_project,
-                                                   forked_from_project: @project)
-      end
-
-      refresh_forks_count
+      fork_to_project.fork_network_member.save &&
+        refresh_forks_count
     end
 
     def refresh_forks_count

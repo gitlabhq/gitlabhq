@@ -1,0 +1,5 @@
+---
+title: Use literal instead of constructor for creating regex
+merge_request: 22367
+author:
+type: other

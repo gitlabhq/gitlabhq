@@ -118,8 +118,9 @@ describe('IDE merge requests list', () => {
       vm.$nextTick()
         .then(() => {
           const expectedSearchTypes = vm.$options.searchTypes.map(x => x.label);
-          const renderedSearchTypes = Array.from(vm.$el.querySelectorAll('li'))
-            .map(x => x.textContent.trim());
+          const renderedSearchTypes = Array.from(vm.$el.querySelectorAll('li')).map(x =>
+            x.textContent.trim(),
+          );
 
           expect(renderedSearchTypes).toEqual(expectedSearchTypes);
         })

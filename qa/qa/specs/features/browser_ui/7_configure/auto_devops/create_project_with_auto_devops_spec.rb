@@ -3,7 +3,7 @@
 require 'pathname'
 
 module QA
-  context :configure, :orchestrated, :kubernetes do
+  context 'Configure', :orchestrated, :kubernetes do
     describe 'Auto DevOps support' do
       after do
         @cluster&.remove!
@@ -66,7 +66,7 @@ module QA
               expect(pipeline).to have_build('production', status: :success, wait: 1200)
             end
 
-            Page::Menu::Side.act { click_operations_environments }
+            Page::Project::Menu.act { click_operations_environments }
             Page::Project::Operations::Environments::Index.perform do |index|
               index.go_to_environment('production')
             end

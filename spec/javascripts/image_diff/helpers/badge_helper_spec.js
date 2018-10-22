@@ -90,6 +90,7 @@ describe('badge helper', () => {
 
     it('should create icon comment button', () => {
       const iconEl = buttonEl.querySelector('svg');
+
       expect(iconEl).toBeDefined();
     });
   });

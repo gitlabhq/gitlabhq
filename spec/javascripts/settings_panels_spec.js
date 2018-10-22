@@ -1,10 +1,11 @@
+import $ from 'jquery';
 import initSettingsPanels from '~/settings_panels';
 
 describe('Settings Panels', () => {
-  preloadFixtures('projects/ci_cd_settings.html.raw');
+  preloadFixtures('groups/edit.html.raw');
 
   beforeEach(() => {
-    loadFixtures('projects/ci_cd_settings.html.raw');
+    loadFixtures('groups/edit.html.raw');
   });
 
   describe('initSettingsPane', () => {
@@ -13,17 +14,32 @@ describe('Settings Panels', () => {
     });
 
     it('should expand linked hash fragment panel', () => {
-      window.location.hash = '#autodevops-settings';
+      window.location.hash = '#js-general-settings';
 
-      const pipelineSettingsPanel = document.querySelector('#autodevops-settings');
+      const panel = document.querySelector('#js-general-settings');
       // Our test environment automatically expands everything so we need to clear that out first
-      pipelineSettingsPanel.classList.remove('expanded');
+      panel.classList.remove('expanded');
 
-      expect(pipelineSettingsPanel.classList.contains('expanded')).toBe(false);
+      expect(panel.classList.contains('expanded')).toBe(false);
 
       initSettingsPanels();
 
-      expect(pipelineSettingsPanel.classList.contains('expanded')).toBe(true);
+      expect(panel.classList.contains('expanded')).toBe(true);
     });
+  });
+
+  it('does not change the text content of triggers', () => {
+    const panel = document.querySelector('#js-general-settings');
+    const trigger = panel.querySelector('.js-settings-toggle-trigger-only');
+    const originalText = trigger.textContent;
+
+    initSettingsPanels();
+
+    expect(panel.classList.contains('expanded')).toBe(true);
+
+    $(trigger).click();
+
+    expect(panel.classList.contains('expanded')).toBe(false);
+    expect(trigger.textContent).toEqual(originalText);
   });
 });

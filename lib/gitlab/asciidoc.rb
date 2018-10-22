@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'asciidoctor'
 require 'asciidoctor/converter/html5'
 require "asciidoctor-plantuml"

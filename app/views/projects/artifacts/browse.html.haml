@@ -1,7 +1,7 @@
 - breadcrumb_title _('Artifacts')
 - page_title @path.presence, 'Artifacts', "#{@build.name} (##{@build.id})", 'Jobs'
 
-= render "projects/jobs/header", show_controls: false
+= render "projects/jobs/header"
 
 - add_to_breadcrumbs(s_('CICD|Jobs'), project_jobs_path(@project))
 - add_to_breadcrumbs("##{@build.id}", project_jobs_path(@project))

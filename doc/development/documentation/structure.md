@@ -142,9 +142,49 @@ fancy words. The docs should be clear and easy to understand.
 <!-- ## Troubleshooting
 
 Add a troubleshooting guide when possible/applicable. -->
-```
+
+---
 
 Notes:
 
-- (1): Apply the [tier badges](styleguide.md#product-badges) accordingly
-- (2): Apply the correct format for the [GitLab version introducing the feature](styleguide.md#gitlab-versions-and-tiers)
+- (1): Apply the [tier badges](https://docs.gitlab.com/ee/development/documentation/styleguide.html#product-badges) accordingly
+- (2): Apply the correct format for the [GitLab version introducing the feature](https://docs.gitlab.com/ee/development/documentation/styleguide.html#gitlab-versions-and-tiers)
+```
+
+## Help and feedback section
+
+The "help and feedback" section (introduced by [!319](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/319)) displayed at the end of each document
+can be omitted from the doc by adding a key into the its frontmatter:
+
+```yaml
+---
+feedback: false
+---
+```
+
+The default is to leave it there. If you want to omit it from a document,
+you must check with a technical writer before doing so.
+
+### Disqus
+
+We also have integrated the docs site with Disqus (introduced by
+[!151](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/151)),
+allowing our users to post comments.
+
+To omit only the comments from the feedback section, use the following
+key on the frontmatter:
+
+```yaml
+---
+comments: false
+---
+```
+
+We are only hiding comments in main index pages, such as [the main documentation index](../../README.md), since its content is too broad to comment on. Before omitting Disqus,
+you must check with a technical writer.
+
+Note that once `feedback: false` is added to the frontmatter, it will automatically omit
+Disqus, therefore, don't add both keys to the same document.
+
+The click events in the feedback section are tracked with Google Tag Manager. The
+conversions can be viewed on Google Analytics by navigating to **Behavior > Events > Top events > docs**.

@@ -22,6 +22,7 @@ describe('Assignee component', () => {
       }).$mount();
 
       const collapsed = component.$el.querySelector('.sidebar-collapsed-icon');
+
       expect(collapsed.childElementCount).toEqual(1);
       expect(collapsed.children[0].getAttribute('aria-label')).toEqual('No Assignee');
       expect(collapsed.children[0].classList.contains('fa')).toEqual(true);
@@ -67,6 +68,7 @@ describe('Assignee component', () => {
 
       spyOn(component, '$emit');
       component.$el.querySelector('.assign-yourself .btn-link').click();
+
       expect(component.$emit).toHaveBeenCalledWith('assign-self');
     });
   });
@@ -85,6 +87,7 @@ describe('Assignee component', () => {
 
       const collapsed = component.$el.querySelector('.sidebar-collapsed-icon');
       const assignee = collapsed.children[0];
+
       expect(collapsed.childElementCount).toEqual(1);
       expect(assignee.querySelector('.avatar').getAttribute('src')).toEqual(UsersMock.user.avatar);
       expect(assignee.querySelector('.avatar').getAttribute('alt')).toEqual(`${UsersMock.user.name}'s avatar`);
@@ -138,14 +141,17 @@ describe('Assignee component', () => {
       }).$mount();
 
       const collapsed = component.$el.querySelector('.sidebar-collapsed-icon');
+
       expect(collapsed.childElementCount).toEqual(2);
 
       const first = collapsed.children[0];
+
       expect(first.querySelector('.avatar').getAttribute('src')).toEqual(users[0].avatar);
       expect(first.querySelector('.avatar').getAttribute('alt')).toEqual(`${users[0].name}'s avatar`);
       expect(first.querySelector('.author').innerText.trim()).toEqual(users[0].name);
 
       const second = collapsed.children[1];
+
       expect(second.querySelector('.avatar').getAttribute('src')).toEqual(users[1].avatar);
       expect(second.querySelector('.avatar').getAttribute('alt')).toEqual(`${users[1].name}'s avatar`);
       expect(second.querySelector('.author').innerText.trim()).toEqual(users[1].name);
@@ -162,14 +168,17 @@ describe('Assignee component', () => {
       }).$mount();
 
       const collapsed = component.$el.querySelector('.sidebar-collapsed-icon');
+
       expect(collapsed.childElementCount).toEqual(2);
 
       const first = collapsed.children[0];
+
       expect(first.querySelector('.avatar').getAttribute('src')).toEqual(users[0].avatar);
       expect(first.querySelector('.avatar').getAttribute('alt')).toEqual(`${users[0].name}'s avatar`);
       expect(first.querySelector('.author').innerText.trim()).toEqual(users[0].name);
 
       const second = collapsed.children[1];
+
       expect(second.querySelector('.avatar-counter').innerText.trim()).toEqual('+2');
     });
 
@@ -200,6 +209,7 @@ describe('Assignee component', () => {
       expect(component.$el.querySelectorAll('.user-item').length).toEqual(component.defaultRenderCount);
       expect(component.$el.querySelector('.user-list-more')).not.toBe(null);
       const usersLabelExpectation = users.length - component.defaultRenderCount;
+
       expect(component.$el.querySelector('.user-list-more .btn-link').innerText.trim())
         .not.toBe(`+${usersLabelExpectation} more`);
       component.toggleShowLess();

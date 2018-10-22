@@ -1,32 +1,32 @@
 <script>
-  import { Link } from '@gitlab-org/gitlab-ui';
+import { Link } from '@gitlab-org/gitlab-ui';
 
-  export default {
-    components: {
-      'gl-link': Link,
+export default {
+  components: {
+    'gl-link': Link,
+  },
+  props: {
+    markdownDocsPath: {
+      type: String,
+      required: true,
     },
-    props: {
-      markdownDocsPath: {
-        type: String,
-        required: true,
-      },
-      quickActionsDocsPath: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      canAttachFile: {
-        type: Boolean,
-        required: false,
-        default: true,
-      },
+    quickActionsDocsPath: {
+      type: String,
+      required: false,
+      default: '',
     },
-    computed: {
-      hasQuickActionsDocsPath() {
-        return this.quickActionsDocsPath !== '';
-      },
+    canAttachFile: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
-  };
+  },
+  computed: {
+    hasQuickActionsDocsPath() {
+      return this.quickActionsDocsPath !== '';
+    },
+  },
+};
 </script>
 
 <template>

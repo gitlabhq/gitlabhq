@@ -90,14 +90,20 @@ describe('GkeMachineTypeDropdown', () => {
       expect(vm.$el.querySelector('input').value).toBe('');
       vm.$store.commit(SET_MACHINE_TYPES, gapiMachineTypesResponseMock.items);
 
-      return vm.$nextTick().then(() => {
-        vm.$el.querySelector('.dropdown-content button').click();
+      return vm
+        .$nextTick()
+        .then(() => {
+          vm.$el.querySelector('.dropdown-content button').click();
 
-        return vm.$nextTick().then(() => {
-          expect(vm.$el.querySelector('input').value).toBe(selectedMachineTypeMock);
-          done();
-        });
-      });
+          return vm
+            .$nextTick()
+            .then(() => {
+              expect(vm.$el.querySelector('input').value).toBe(selectedMachineTypeMock);
+              done();
+            })
+            .catch(done.fail);
+        })
+        .catch(done.fail);
     });
   });
 });

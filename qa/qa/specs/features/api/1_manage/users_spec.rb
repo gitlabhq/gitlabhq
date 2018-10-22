@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :manage do
+  context 'Manage' do
     describe 'Users API' do
       before(:context) do
         @api_client = Runtime::API::Client.new(:gitlab)

@@ -4,11 +4,12 @@ class BuildDetailsEntity < JobEntity
   expose :coverage, :erased_at, :duration
   expose :tag_list, as: :tags
   expose :has_trace?, as: :has_trace
+  expose :stage
   expose :user, using: UserEntity
   expose :runner, using: RunnerEntity
   expose :pipeline, using: PipelineEntity
 
-  expose :deployment_status, if: -> (*) { build.has_environment? } do
+  expose :deployment_status, if: -> (*) { build.starts_environment? } do
     expose :deployment_status, as: :status
 
     expose :persisted_environment, as: :environment, with: EnvironmentEntity

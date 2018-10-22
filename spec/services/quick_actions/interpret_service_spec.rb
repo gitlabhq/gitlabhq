@@ -380,6 +380,14 @@ describe QuickActions::InterpretService do
       end
     end
 
+    shared_examples 'assign command' do
+      it 'assigns to a single user' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(assignee_ids: [developer.id])
+      end
+    end
+
     it_behaves_like 'reopen command' do
       let(:content) { '/reopen' }
       let(:issuable) { issue }
@@ -474,67 +482,56 @@ describe QuickActions::InterpretService do
       let(:issuable) { issue }
     end
 
-    context 'assign command' do
-      let(:content) { "/assign @#{developer.username}" }
-
-      context 'Issue' do
-        it 'fetches assignee and populates assignee_ids if content contains /assign' do
-          _, updates = service.execute(content, issue)
-
-          expect(updates[:assignee_ids]).to match_array([developer.id])
-        end
+    context 'assign command with one user' do
+      it_behaves_like 'assign command' do
+        let(:content) { "/assign @#{developer.username}" }
+        let(:issuable) { issue }
       end
 
-      context 'Merge Request' do
-        it 'fetches assignee and populates assignee_ids if content contains /assign' do
-          _, updates = service.execute(content, merge_request)
-
-          expect(updates).to eq(assignee_ids: [developer.id])
-        end
+      it_behaves_like 'assign command' do
+        let(:content) { "/assign @#{developer.username}" }
+        let(:issuable) { merge_request }
       end
     end
 
+    # CE does not have multiple assignees
     context 'assign command with multiple assignees' do
-      let(:content) { "/assign @#{developer.username} @#{developer2.username}" }
-
       before do
         project.add_developer(developer2)
       end
 
-      context 'Issue' do
-        it 'fetches assignee and populates assignee_ids if content contains /assign' do
-          _, updates = service.execute(content, issue)
-
-          expect(updates[:assignee_ids]).to match_array([developer.id])
-        end
+      it_behaves_like 'assign command' do
+        let(:content) { "/assign @#{developer.username} @#{developer2.username}" }
+        let(:issuable) { issue }
       end
 
-      context 'Merge Request' do
-        it 'fetches assignee and populates assignee_ids if content contains /assign' do
-          _, updates = service.execute(content, merge_request)
-
-          expect(updates).to eq(assignee_ids: [developer.id])
-        end
+      it_behaves_like 'assign command' do
+        let(:content) { "/assign @#{developer.username} @#{developer2.username}" }
+        let(:issuable) { merge_request }
       end
     end
 
     context 'assign command with me alias' do
-      let(:content) { "/assign me" }
-
-      context 'Issue' do
-        it 'fetches assignee and populates assignee_ids if content contains /assign' do
-          _, updates = service.execute(content, issue)
-
-          expect(updates).to eq(assignee_ids: [developer.id])
-        end
+      it_behaves_like 'assign command' do
+        let(:content) { '/assign me' }
+        let(:issuable) { issue }
       end
 
-      context 'Merge Request' do
-        it 'fetches assignee and populates assignee_ids if content contains /assign' do
-          _, updates = service.execute(content, merge_request)
+      it_behaves_like 'assign command' do
+        let(:content) { '/assign me' }
+        let(:issuable) { merge_request }
+      end
+    end
 
-          expect(updates).to eq(assignee_ids: [developer.id])
-        end
+    context 'assign command with me alias and whitespace' do
+      it_behaves_like 'assign command' do
+        let(:content) { '/assign  me ' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'assign command' do
+        let(:content) { '/assign  me ' }
+        let(:issuable) { merge_request }
       end
     end
 

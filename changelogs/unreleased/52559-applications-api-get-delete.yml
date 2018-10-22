@@ -1,0 +1,5 @@
+---
+title: Add Applications API endpoints for listing and deleting entries.
+merge_request: 22296
+author: Jean-Baptiste Vasseur
+type: added

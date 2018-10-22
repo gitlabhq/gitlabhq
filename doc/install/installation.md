@@ -103,7 +103,7 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # When editing config/gitlab.yml (Step 5), change the git -> bin_path to /usr/local/bin/git
 
-**Note:** In order to receive mail notifications, make sure to install a mail server. By default, Debian is shipped with exim4 but this [has problems](https://github.com/gitlabhq/gitlabhq/issues/4866#issuecomment-32726573) while Ubuntu does not ship with one. The recommended mail server is postfix and you can install it with:
+**Note:** In order to receive mail notifications, make sure to install a mail server. By default, Debian is shipped with exim4 but this [has problems](https://gitlab.com/gitlab-org/gitlab-ce/issues/12754) while Ubuntu does not ship with one. The recommended mail server is postfix and you can install it with:
 
     sudo apt-get install -y postfix
 
@@ -460,11 +460,11 @@ GitLab-Pages uses [GNU Make](https://www.gnu.org/software/make/). This step is o
 ### Install Gitaly
 
     # Fetch Gitaly source with Git and compile with Go
-    sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_ENV=production
+    sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,/home/git/repositories]" RAILS_ENV=production
 
 You can specify a different Git repository by providing it as an extra parameter:
 
-    sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,https://example.com/gitaly.git]" RAILS_ENV=production
+    sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,/home/git/repositories,https://example.com/gitaly.git]" RAILS_ENV=production
 
 Next, make sure gitaly configured:
 

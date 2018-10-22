@@ -27,11 +27,15 @@ module Ci
       metadata: :gzip,
       trace: :raw,
       junit: :gzip,
-      codequality: :gzip,
-      sast: :gzip,
-      dependency_scanning: :gzip,
-      container_scanning: :gzip,
-      dast: :gzip
+
+      # All these file formats use `raw` as we need to store them uncompressed
+      # for Frontend to fetch the files and do analysis
+      # When they will be only used by backend, they can be `gzipped`.
+      codequality: :raw,
+      sast: :raw,
+      dependency_scanning: :raw,
+      container_scanning: :raw,
+      dast: :raw
     }.freeze
 
     belongs_to :project
@@ -100,7 +104,8 @@ module Ci
     }
 
     FILE_FORMAT_ADAPTERS = {
-      gzip: Gitlab::Ci::Build::Artifacts::GzipFileAdapter
+      gzip: Gitlab::Ci::Build::Artifacts::Adapters::GzipStream,
+      raw: Gitlab::Ci::Build::Artifacts::Adapters::RawStream
     }.freeze
 
     def valid_file_format?

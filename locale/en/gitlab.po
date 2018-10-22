@@ -882,9 +882,6 @@ msgstr ""
 msgid "Set up CI"
 msgstr ""
 
-msgid "Set up Koding"
-msgstr ""
-
 msgid "Set up auto deploy"
 msgstr ""
 

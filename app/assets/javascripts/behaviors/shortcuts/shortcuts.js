@@ -88,22 +88,24 @@ export default class Shortcuts {
       return null;
     }
 
-    return axios.get(gon.shortcuts_path, {
-      responseType: 'text',
-    }).then(({ data }) => {
-      $.globalEval(data);
+    return axios
+      .get(gon.shortcuts_path, {
+        responseType: 'text',
+      })
+      .then(({ data }) => {
+        $.globalEval(data);
 
-      if (location && location.length > 0) {
-        const results = [];
-        for (let i = 0, len = location.length; i < len; i += 1) {
-          results.push($(location[i]).show());
+        if (location && location.length > 0) {
+          const results = [];
+          for (let i = 0, len = location.length; i < len; i += 1) {
+            results.push($(location[i]).show());
+          }
+          return results;
         }
-        return results;
-      }
 
-      $('.hidden-shortcut').show();
-      return $('.js-more-help-button').remove();
-    });
+        $('.hidden-shortcut').show();
+        return $('.js-more-help-button').remove();
+      });
   }
 
   focusFilter(e) {

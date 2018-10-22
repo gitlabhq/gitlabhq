@@ -30,7 +30,7 @@ describe Repository do
 
   def expect_to_raise_storage_error
     expect { yield }.to raise_error do |exception|
-      storage_exceptions = [Gitlab::Git::Storage::Inaccessible, Gitlab::Git::CommandError, GRPC::Unavailable]
+      storage_exceptions = [Gitlab::Git::CommandError, GRPC::Unavailable]
       known_exception = storage_exceptions.select { |e| exception.is_a?(e) }
 
       expect(known_exception).not_to be_nil
@@ -460,6 +460,24 @@ describe Repository do
       subject { repository.blob_at(Gitlab::Git::BLANK_SHA, '.gitignore') }
 
       it { is_expected.to be_nil }
+    end
+
+    context 'regular blob' do
+      subject { repository.blob_at(repository.head_commit.sha, '.gitignore') }
+
+      it { is_expected.to be_an_instance_of(::Blob) }
+    end
+
+    context 'readme blob on HEAD' do
+      subject { repository.blob_at(repository.head_commit.sha, 'README.md') }
+
+      it { is_expected.to be_an_instance_of(::ReadmeBlob) }
+    end
+
+    context 'readme blob not on HEAD' do
+      subject { repository.blob_at(repository.find_branch('feature').target, 'README.md') }
+
+      it { is_expected.to be_an_instance_of(::Blob) }
     end
   end
 
@@ -1567,7 +1585,6 @@ describe Repository do
         :license_blob,
         :license_key,
         :gitignore,
-        :koding_yml,
         :gitlab_ci_yml,
         :branch_names,
         :tag_names,
@@ -1921,38 +1938,27 @@ describe Repository do
     end
   end
 
-  describe '#koding_yml', :use_clean_rails_memory_store_caching do
-    it 'returns and caches the output' do
-      expect(repository).to receive(:file_on_head)
-        .with(:koding)
-        .and_return(Gitlab::Git::Tree.new(path: '.koding.yml'))
-        .once
-
-      2.times do
-        expect(repository.koding_yml).to be_an_instance_of(Gitlab::Git::Tree)
-      end
-    end
-  end
-
   describe '#readme', :use_clean_rails_memory_store_caching do
     context 'with a non-existing repository' do
-      it 'returns nil' do
-        allow(repository).to receive(:tree).with(:head).and_return(nil)
+      let(:project) { create(:project) }
 
+      it 'returns nil' do
         expect(repository.readme).to be_nil
       end
     end
 
     context 'with an existing repository' do
       context 'when no README exists' do
-        it 'returns nil' do
-          allow_any_instance_of(Tree).to receive(:readme).and_return(nil)
+        let(:project) { create(:project, :empty_repo) }
 
+        it 'returns nil' do
           expect(repository.readme).to be_nil
         end
       end
 
       context 'when a README exists' do
+        let(:project) { create(:project, :repository) }
+
         it 'returns the README' do
           expect(repository.readme).to be_an_instance_of(ReadmeBlob)
         end
@@ -2384,6 +2390,17 @@ describe Repository do
       it 'returns the contributors unsorted' do
         expect_contributors(author_a, author_b, author_c)
       end
+    end
+  end
+
+  describe '#merge_base' do
+    set(:project) { create(:project, :repository) }
+    subject(:repository) { project.repository }
+
+    it 'only makes one gitaly call' do
+      expect(Gitlab::GitalyClient).to receive(:call).once.and_call_original
+
+      repository.merge_base('master', 'fix')
     end
   end
 end

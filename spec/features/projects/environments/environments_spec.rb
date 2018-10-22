@@ -95,7 +95,7 @@ describe 'Environments page', :js do
     end
 
     it 'does not show environments and counters are set to zero' do
-      expect(page).to have_content('You don\'t have any environments right now.')
+      expect(page).to have_content('You don\'t have any environments right now')
 
       expect(page.find('.js-environments-tab-available .badge').text).to eq('0')
       expect(page.find('.js-environments-tab-stopped .badge').text).to eq('0')

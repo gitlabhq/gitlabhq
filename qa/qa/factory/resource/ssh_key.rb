@@ -10,17 +10,9 @@ module QA
         attr_reader :private_key, :public_key, :fingerprint
         def_delegators :key, :private_key, :public_key, :fingerprint
 
-        product :private_key do |factory|
-          factory.private_key
-        end
-
-        product :title do |factory|
-          factory.title
-        end
-
-        product :fingerprint do |factory|
-          factory.fingerprint
-        end
+        product :private_key
+        product :title
+        product :fingerprint
 
         def key
           @key ||= Runtime::Key::RSA.new

@@ -415,7 +415,7 @@ Four keys are now available: `refs`, `kubernetes` and `variables` and `changes`.
 Refs strategy equals to simplified only/except configuration, whereas
 kubernetes strategy accepts only `active` keyword.
 
-### `variables`
+### `only:variables`
 
 `variables` keyword is used to define variables expressions. In other words
 you can use predefined variables / project / group or
@@ -460,7 +460,7 @@ end-to-end:
 
 Learn more about variables expressions on [a separate page][variables-expressions].
 
-### `changes`
+### `only:changes`
 
 Using `changes` keyword with `only` or `except` makes it possible to define if
 a job should be created based on files modified by a git push event.
@@ -672,6 +672,42 @@ Manual actions are considered to be write actions, so permissions for
 user wants to trigger an action. In other words, in order to trigger a manual
 action assigned to a branch that the pipeline is running for, user needs to
 have ability to merge to this branch.
+
+### `when:delayed`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21767) in GitLab 11.4.
+
+Delayed job are for executing scripts after a certain period.
+This is useful if you want to avoid jobs entering `pending` state immediately.
+
+You can set the period with `start_in` key. The value of `start_in` key is an elapsed time in seconds, unless a unit is
+provided. `start_in` key must be less than or equal to one hour. Examples of valid values include:
+
+- `10 seconds`
+- `30 minutes`
+- `1 hour`
+
+When there is a delayed job in a stage, the pipeline will not progress until the delayed job has finished.
+This means this keyword can also be used for inserting delays between different stages.
+
+The timer of a delayed job starts immediately after the previous stage has completed.
+Similar to other types of jobs, a delayed job's timer will not start unless the previous stage passed.
+
+The following example creates a job named `timed rollout 10%` that is executed 30 minutes after the previous stage has completed:
+
+```yaml
+timed rollout 10%:
+  stage: deploy
+  script: echo 'Rolling out 10% ...'
+  when: delayed
+  start_in: 30 minutes
+```
+
+You can stop the active timer of a delayed job by clicking the **Unschedule** button.
+This job will never be executed in the future unless you execute the job manually.
+
+You can start a delayed job immediately by clicking the **Play** button.
+GitLab runner will pick your job soon and start the job.
 
 ## `environment`
 

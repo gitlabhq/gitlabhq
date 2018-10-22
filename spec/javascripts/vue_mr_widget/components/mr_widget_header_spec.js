@@ -41,6 +41,7 @@ describe('MRWidgetHeader', () => {
             statusPath: 'abc',
           },
         });
+
         expect(vm.shouldShowCommitsBehindText).toEqual(false);
       });
     });
@@ -58,7 +59,9 @@ describe('MRWidgetHeader', () => {
           },
         });
 
-        expect(vm.commitsBehindText).toEqual('The source branch is <a href="/foo/bar/master">1 commit behind</a> the target branch');
+        expect(vm.commitsBehindText).toEqual(
+          'The source branch is <a href="/foo/bar/master">1 commit behind</a> the target branch',
+        );
       });
 
       it('returns plural when there is more than one commit', () => {
@@ -73,7 +76,9 @@ describe('MRWidgetHeader', () => {
           },
         });
 
-        expect(vm.commitsBehindText).toEqual('The source branch is <a href="/foo/bar/master">2 commits behind</a> the target branch');
+        expect(vm.commitsBehindText).toEqual(
+          'The source branch is <a href="/foo/bar/master">2 commits behind</a> the target branch',
+        );
       });
     });
   });
@@ -165,6 +170,7 @@ describe('MRWidgetHeader', () => {
         vm = mountComponent(Component, { mr });
 
         const link = vm.$el.querySelector('.js-web-ide');
+
         expect(link.classList.contains('disabled')).toBe(true);
         expect(link.getAttribute('href')).toBeNull();
       });
@@ -295,9 +301,18 @@ describe('MRWidgetHeader', () => {
       });
 
       it('renders diverged commits info', () => {
-        expect(vm.$el.querySelector('.diverged-commits-count').textContent).toEqual('The source branch is 12 commits behind the target branch');
-        expect(vm.$el.querySelector('.diverged-commits-count a').textContent).toEqual('12 commits behind');
-        expect(vm.$el.querySelector('.diverged-commits-count a')).toHaveAttr('href', vm.mr.targetBranchPath);
+        expect(vm.$el.querySelector('.diverged-commits-count').textContent).toEqual(
+          'The source branch is 12 commits behind the target branch',
+        );
+
+        expect(vm.$el.querySelector('.diverged-commits-count a').textContent).toEqual(
+          '12 commits behind',
+        );
+
+        expect(vm.$el.querySelector('.diverged-commits-count a')).toHaveAttr(
+          'href',
+          vm.mr.targetBranchPath,
+        );
       });
     });
   });

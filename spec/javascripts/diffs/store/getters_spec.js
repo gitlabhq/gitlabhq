@@ -52,11 +52,13 @@ describe('Diffs Module Getters', () => {
   describe('areAllFilesCollapsed', () => {
     it('returns true when all files are collapsed', () => {
       localState.diffFiles = [{ collapsed: true }, { collapsed: true }];
+
       expect(getters.areAllFilesCollapsed(localState)).toEqual(true);
     });
 
     it('returns false when at least one file is not collapsed', () => {
       localState.diffFiles = [{ collapsed: false }, { collapsed: true }];
+
       expect(getters.areAllFilesCollapsed(localState)).toEqual(false);
     });
   });
@@ -244,6 +246,7 @@ describe('Diffs Module Getters', () => {
 
     it('returns false when no line discussions were found', () => {
       line.discussions = [];
+
       expect(getters.shouldRenderInlineCommentRow(localState)(line)).toEqual(false);
     });
 
@@ -288,6 +291,7 @@ describe('Diffs Module Getters', () => {
 
     it('returns null if no matching file is found', () => {
       localState.diffFiles = [];
+
       expect(getters.getDiffFileByHash(localState)('123')).toBeUndefined();
     });
   });

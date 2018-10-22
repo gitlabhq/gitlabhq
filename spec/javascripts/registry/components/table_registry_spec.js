@@ -22,13 +22,15 @@ describe('table registry', () => {
   });
 
   it('should render a table with the registry list', () => {
-    expect(
-      vm.$el.querySelectorAll('table tbody tr').length,
-    ).toEqual(repoPropsData.list.length);
+    expect(vm.$el.querySelectorAll('table tbody tr').length).toEqual(repoPropsData.list.length);
   });
 
   it('should render registry tag', () => {
-    const textRendered = vm.$el.querySelector('.table tbody tr').textContent.trim().replace(/\s\s+/g, ' ');
+    const textRendered = vm.$el
+      .querySelector('.table tbody tr')
+      .textContent.trim()
+      .replace(/\s\s+/g, ' ');
+
     expect(textRendered).toContain(repoPropsData.list[0].tag);
     expect(textRendered).toContain(repoPropsData.list[0].shortRevision);
     expect(textRendered).toContain(repoPropsData.list[0].layers);
@@ -36,9 +38,7 @@ describe('table registry', () => {
   });
 
   it('should be possible to delete a registry', () => {
-    expect(
-      vm.$el.querySelector('.table tbody tr .js-delete-registry'),
-    ).toBeDefined();
+    expect(vm.$el.querySelector('.table tbody tr .js-delete-registry')).toBeDefined();
   });
 
   describe('pagination', () => {

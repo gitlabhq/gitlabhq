@@ -1,37 +1,26 @@
 module QA
   module Factory
     class Dependency
-      Signature = Struct.new(:factory, :block)
+      Signature = Struct.new(:name, :factory, :block)
 
-      def initialize(name, factory, signature)
-        @name = name
-        @factory = factory
-        @signature = signature
+      def initialize(caller_factory, dependency_signature)
+        @caller_factory = caller_factory
+        @dependency_signature = dependency_signature
       end
 
       def overridden?
-        !!@factory.public_send(@name)
+        !!@caller_factory.public_send(@dependency_signature.name)
       end
 
-      def build!
+      def build!(parents: [])
         return if overridden?
 
-        Builder.new(@signature, @factory).fabricate!.tap do |product|
-          @factory.public_send("#{@name}=", product)
-        end
-      end
-
-      class Builder
-        def initialize(signature, caller_factory)
-          @factory = signature.factory
-          @block = signature.block
-          @caller_factory = caller_factory
+        dependency = @dependency_signature.factory.fabricate!(parents: parents) do |factory|
+          @dependency_signature.block&.call(factory, @caller_factory)
         end
 
-        def fabricate!
-          @factory.fabricate! do |factory|
-            @block&.call(factory, @caller_factory)
-          end
+        dependency.tap do |dependency|
+          @caller_factory.public_send("#{@dependency_signature.name}=", dependency)
         end
       end
     end

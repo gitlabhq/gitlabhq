@@ -1,39 +1,33 @@
-= form_for @group, html: { multipart: true, class: 'gl-show-field-errors' }, authenticity_token: true do |f|
+= form_for @group, html: { multipart: true, class: 'gl-show-field-errors js-general-settings-form' }, authenticity_token: true do |f|
   %input{ type: 'hidden', name: 'update_section', value: 'js-general-settings' }
   = form_errors(@group)
 
   %fieldset
     .row
-      .form-group.col-md-9
-        = f.label :name, class: 'label-bold' do
-          Group name
+      .form-group.col-md-5
+        = f.label :name, _('Group name'), class: 'label-bold'
         = f.text_field :name, class: 'form-control'
 
-      .form-group.col-md-3
-        = f.label :id, class: 'label-bold' do
-          Group ID
-        = f.text_field :id, class: 'form-control', readonly: true
+      .form-group.col-md-7
+        = f.label :id, _('Group ID'), class: 'label-bold'
+        = f.text_field :id, class: 'form-control w-auto', readonly: true
 
-    .form-group
-      = f.label :description, class: 'label-bold' do
-        Group description
-        %span.light (optional)
-      = f.text_area :description, class: 'form-control', rows: 3, maxlength: 250
+    .row.prepend-top-8
+      .form-group.col-md-9.append-bottom-0
+        = f.label :description, _('Group description (optional)'), class: 'label-bold'
+        = f.text_area :description, class: 'form-control', rows: 3, maxlength: 250
 
     = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :group
 
-    .form-group.row
-      .col-sm-12
-        .avatar-container.s160
-          = group_icon(@group, alt: '', class: 'avatar group-avatar s160')
-        %p.light
-          - if @group.avatar?
-            You can change the group avatar here
-          - else
-            You can upload a group avatar here
-        = render 'shared/choose_group_avatar_button', f: f
-        - if @group.avatar?
-          %hr
-          = link_to _('Remove avatar'), group_avatar_path(@group.to_param), data: { confirm: _('Avatar will be removed. Are you sure?')}, method: :delete, class: 'btn btn-danger btn-inverted'
+    .form-group.prepend-top-default.append-bottom-20
+      .avatar-container.s90
+        = group_icon(@group, alt: '', class: 'avatar group-avatar s90')
+      = f.label :avatar, _('Group avatar'), class: 'label-bold d-block'
+      = render 'shared/choose_group_avatar_button', f: f
+      - if @group.avatar?
+        %hr
+        = link_to _('Remove avatar'), group_avatar_path(@group.to_param), data: { confirm: _('Avatar will be removed. Are you sure?')}, method: :delete, class: 'btn btn-danger btn-inverted'
 
-  = f.submit 'Save group', class: 'btn btn-success'
+    = render 'shared/visibility_level', f: f, visibility_level: @group.visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group
+
+  = f.submit _('Save changes'), class: 'btn btn-success mt-4 js-dirty-submit'

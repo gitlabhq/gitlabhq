@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :plan, :smoke do
+  context 'Plan', :smoke do
     describe 'Issue creation' do
       let(:issue_title) { 'issue title' }
 

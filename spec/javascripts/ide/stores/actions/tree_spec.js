@@ -71,6 +71,7 @@ describe('Multi-file store tree actions', () => {
           .dispatch('getFiles', basicCallParameters)
           .then(() => {
             projectTree = store.state.trees['abcproject/master'];
+
             expect(projectTree.tree.length).toBe(2);
             expect(projectTree.tree[0].type).toBe('tree');
             expect(projectTree.tree[0].tree[1].name).toBe('fileinfolder.js');

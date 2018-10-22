@@ -66,8 +66,10 @@ describe('BadgeForm component', () => {
     };
     const expectInvalidInput = inputElementSelector => {
       const inputElement = vm.$el.querySelector(inputElementSelector);
+
       expect(inputElement).toBeMatchedBy(':invalid');
       const feedbackElement = vm.$el.querySelector(`${inputElementSelector} + .invalid-feedback`);
+
       expect(feedbackElement).toBeVisible();
     };
 
@@ -90,6 +92,7 @@ describe('BadgeForm component', () => {
       submitForm();
 
       expectInvalidInput(imageUrlSelector);
+
       expect(vm[submitAction]).not.toHaveBeenCalled();
     });
 
@@ -99,6 +102,7 @@ describe('BadgeForm component', () => {
       submitForm();
 
       expectInvalidInput(imageUrlSelector);
+
       expect(vm[submitAction]).not.toHaveBeenCalled();
     });
 
@@ -108,6 +112,7 @@ describe('BadgeForm component', () => {
       submitForm();
 
       expectInvalidInput(linkUrlSelector);
+
       expect(vm[submitAction]).not.toHaveBeenCalled();
     });
 
@@ -117,6 +122,7 @@ describe('BadgeForm component', () => {
       submitForm();
 
       expectInvalidInput(linkUrlSelector);
+
       expect(vm[submitAction]).not.toHaveBeenCalled();
     });
 
@@ -143,8 +149,10 @@ describe('BadgeForm component', () => {
     it('renders one button', () => {
       expect(vm.$el.querySelector('.row-content-block')).toBeNull();
       const buttons = vm.$el.querySelectorAll('.form-group:last-of-type button');
+
       expect(buttons.length).toBe(1);
       const buttonAddElement = buttons[0];
+
       expect(buttonAddElement).toBeVisible();
       expect(buttonAddElement).toHaveText('Add badge');
     });
@@ -165,11 +173,14 @@ describe('BadgeForm component', () => {
 
     it('renders two buttons', () => {
       const buttons = vm.$el.querySelectorAll('.row-content-block button');
+
       expect(buttons.length).toBe(2);
       const buttonSaveElement = buttons[0];
+
       expect(buttonSaveElement).toBeVisible();
       expect(buttonSaveElement).toHaveText('Save changes');
       const buttonCancelElement = buttons[1];
+
       expect(buttonCancelElement).toBeVisible();
       expect(buttonCancelElement).toHaveText('Cancel');
     });

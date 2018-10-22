@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Check a user's access to perform a git action. All public methods in this
 # class return an instance of `GitlabAccessStatus`
 module Gitlab

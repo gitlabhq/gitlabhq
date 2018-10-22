@@ -74,6 +74,8 @@ are very appreciative of the work done by translators and proofreaders!
     have previously translated.
 
 1. Your request to become a proofreader will be considered on the merits of
-   your previous translations.
+   your previous translations by [GitLab team members](https://about.gitlab.com/team/)
+   or [Core team members](https://about.gitlab.com/core-team/) who are fluent in
+   the language or current proofreaders.
 
 [proofreader-src]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/development/i18n/proofreader.md

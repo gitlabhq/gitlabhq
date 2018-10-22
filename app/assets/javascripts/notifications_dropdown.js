@@ -18,7 +18,9 @@ export default function notificationsDropdown() {
 
   $(document).on('ajax:success', '.notification-form', (e, data) => {
     if (data.saved) {
-      $(e.currentTarget).closest('.js-notification-dropdown').replaceWith(data.html);
+      $(e.currentTarget)
+        .closest('.js-notification-dropdown')
+        .replaceWith(data.html);
     } else {
       Flash('Failed to save new settings', 'alert');
     }

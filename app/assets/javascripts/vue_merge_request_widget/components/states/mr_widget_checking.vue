@@ -1,12 +1,12 @@
 <script>
-  import statusIcon from '../mr_widget_status_icon.vue';
+import statusIcon from '../mr_widget_status_icon.vue';
 
-  export default {
-    name: 'MRWidgetChecking',
-    components: {
-      statusIcon,
-    },
-  };
+export default {
+  name: 'MRWidgetChecking',
+  components: {
+    statusIcon,
+  },
+};
 </script>
 <template>
   <div class="mr-widget-body media">

@@ -194,6 +194,7 @@ $well-light-text-color: #5b6169;
  * Text
  */
 $gl-font-size: 14px;
+$gl-font-size-small: 12px;
 $gl-font-weight-normal: 400;
 $gl-font-weight-bold: 600;
 $gl-text-color: #2e2e2e;
@@ -605,6 +606,7 @@ $perf-bar-development: #4c1210;
 $perf-bar-bucket-bg: #111;
 $perf-bar-bucket-box-shadow-from: rgba($white-light, 0.2);
 $perf-bar-bucket-box-shadow-to: rgba($black, 0.25);
+$perf-bar-canary-text: $orange-400;
 
 /*
 Issuable warning

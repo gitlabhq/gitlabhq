@@ -1,5 +1,0 @@
----
-title: Update all gitlab CI templates from gitlab-org/gitlab-ci-yml
-merge_request: 21929
-author:
-type: added

@@ -58,11 +58,14 @@ describe Gitlab::HookData::MergeRequestBuilder do
     end
 
     context 'when the MR has an image in the description' do
-      let(:mr_with_description) { create(:merge_request, description: 'test![Issue_Image](/uploads/abc/Issue_Image.png)') }
+      let(:mr_with_description) { create(:merge_request, description: 'test![MR_Image](/uploads/abc/MR_Image.png)') }
       let(:builder) { described_class.new(mr_with_description) }
 
       it 'sets the image to use an absolute URL' do
-        expect(data[:description]).to eq("test![Issue_Image](#{Settings.gitlab.url}/uploads/abc/Issue_Image.png)")
+        expected_path = "#{mr_with_description.project.path_with_namespace}/uploads/abc/MR_Image.png"
+
+        expect(data[:description])
+          .to eq("test![MR_Image](#{Settings.gitlab.url}/#{expected_path})")
       end
     end
   end

@@ -22,7 +22,8 @@ export default class NotificationsForm {
 
   // eslint-disable-next-line class-methods-use-this
   showCheckboxLoadingSpinner($parent) {
-    $parent.addClass('is-loading')
+    $parent
+      .addClass('is-loading')
       .find('.custom-notification-event-loading')
       .removeClass('fa-check')
       .addClass('fa-spin fa-spinner')
@@ -38,9 +39,12 @@ export default class NotificationsForm {
       .then(({ data }) => {
         $checkbox.enable();
         if (data.saved) {
-          $parent.find('.custom-notification-event-loading').toggleClass('fa-spin fa-spinner fa-check is-done');
+          $parent
+            .find('.custom-notification-event-loading')
+            .toggleClass('fa-spin fa-spinner fa-check is-done');
           setTimeout(() => {
-            $parent.removeClass('is-loading')
+            $parent
+              .removeClass('is-loading')
               .find('.custom-notification-event-loading')
               .toggleClass('fa-spin fa-spinner fa-check is-done');
           }, 2000);

@@ -5,14 +5,14 @@ module QA
     module Main
       class Menu < Page::Base
         view 'app/views/layouts/header/_current_user_dropdown.html.haml' do
-          element :user_sign_out_link, 'link_to _("Sign out")'
-          element :settings_link, 'link_to s_("CurrentUser|Settings")'
+          element :user_sign_out_link, 'link_to _("Sign out")' # rubocop:disable QA/ElementWithPattern
+          element :settings_link, 'link_to s_("CurrentUser|Settings")' # rubocop:disable QA/ElementWithPattern
         end
 
         view 'app/views/layouts/header/_default.html.haml' do
           element :navbar
           element :user_avatar
-          element :user_menu, '.dropdown-menu'
+          element :user_menu, '.dropdown-menu' # rubocop:disable QA/ElementWithPattern
         end
 
         view 'app/views/layouts/nav/_dashboard.html.haml' do
@@ -66,10 +66,6 @@ module QA
           using_wait_time(wait) do
             page.has_selector?(element_selector_css(:user_avatar))
           end
-        end
-
-        def assert_has_personal_area
-          raise "Failed to sign in" unless has_personal_area?
         end
 
         private

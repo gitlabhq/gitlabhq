@@ -21,5 +21,4 @@ export default class FileTemplateTypeSelector extends FileTemplateSelector {
       text: item => item.name,
     });
   }
-
 }

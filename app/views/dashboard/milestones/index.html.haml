@@ -2,11 +2,17 @@
 - page_title 'Milestones'
 - header_title 'Milestones', dashboard_milestones_path
 
+.page-title-holder
+  %h1.page-title= _('Milestones')
+
+  - if current_user
+    .page-title-controls
+      = render 'shared/new_project_item_select',
+        path: 'milestones/new', label: 'New milestone',
+        include_groups: true, type: :milestones
+
 .top-area
   = render 'shared/milestones_filter', counts: @milestone_states
-
-  .nav-controls
-    = render 'shared/new_project_item_select', path: 'milestones/new', label: 'New milestone', include_groups: true, type: :milestones
 
 .milestones
   %ul.content-list

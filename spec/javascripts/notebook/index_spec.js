@@ -14,7 +14,7 @@ describe('Notebook component', () => {
   });
 
   describe('without JSON', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       vm = new Component({
         propsData: {
           notebook: {},
@@ -33,7 +33,7 @@ describe('Notebook component', () => {
   });
 
   describe('with JSON', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       vm = new Component({
         propsData: {
           notebook: json,
@@ -65,7 +65,7 @@ describe('Notebook component', () => {
   });
 
   describe('with worksheets', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       vm = new Component({
         propsData: {
           notebook: jsonWithWorksheet,
@@ -80,7 +80,9 @@ describe('Notebook component', () => {
     });
 
     it('renders cells', () => {
-      expect(vm.$el.querySelectorAll('.cell').length).toBe(jsonWithWorksheet.worksheets[0].cells.length);
+      expect(vm.$el.querySelectorAll('.cell').length).toBe(
+        jsonWithWorksheet.worksheets[0].cells.length,
+      );
     });
 
     it('renders markdown cell', () => {

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181008145359) do
+ActiveRecord::Schema.define(version: 20181013005024) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -104,8 +104,6 @@ ActiveRecord::Schema.define(version: 20181008145359) do
     t.boolean "domain_blacklist_enabled", default: false
     t.text "domain_blacklist"
     t.boolean "usage_ping_enabled", default: true, null: false
-    t.boolean "koding_enabled"
-    t.string "koding_url"
     t.text "sign_in_text_html"
     t.text "help_page_text_html"
     t.text "shared_runners_text_html"
@@ -139,10 +137,6 @@ ActiveRecord::Schema.define(version: 20181008145359) do
     t.boolean "hashed_storage_enabled", default: false, null: false
     t.boolean "project_export_enabled", default: true, null: false
     t.boolean "auto_devops_enabled", default: true, null: false
-    t.integer "circuitbreaker_failure_count_threshold", default: 3
-    t.integer "circuitbreaker_failure_reset_time", default: 1800
-    t.integer "circuitbreaker_storage_timeout", default: 15
-    t.integer "circuitbreaker_access_retries", default: 3
     t.boolean "throttle_unauthenticated_enabled", default: false, null: false
     t.integer "throttle_unauthenticated_requests_per_period", default: 3600, null: false
     t.integer "throttle_unauthenticated_period_in_seconds", default: 3600, null: false
@@ -152,7 +146,6 @@ ActiveRecord::Schema.define(version: 20181008145359) do
     t.boolean "throttle_authenticated_web_enabled", default: false, null: false
     t.integer "throttle_authenticated_web_requests_per_period", default: 7200, null: false
     t.integer "throttle_authenticated_web_period_in_seconds", default: 3600, null: false
-    t.integer "circuitbreaker_check_interval", default: 1, null: false
     t.boolean "password_authentication_enabled_for_web"
     t.boolean "password_authentication_enabled_for_git", default: true
     t.integer "gitaly_timeout_default", default: 55, null: false

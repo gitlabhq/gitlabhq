@@ -119,11 +119,11 @@ FactoryBot.define do
 
     trait :codequality do
       file_type :codequality
-      file_format :gzip
+      file_format :raw
 
       after(:build) do |artifact, evaluator|
         artifact.file = fixture_file_upload(
-          Rails.root.join('spec/fixtures/codequality/codequality.json.gz'), 'application/x-gzip')
+          Rails.root.join('spec/fixtures/codequality/codequality.json'), 'application/json')
       end
     end
 

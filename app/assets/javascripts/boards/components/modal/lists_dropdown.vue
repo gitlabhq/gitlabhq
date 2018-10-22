@@ -1,15 +1,18 @@
 <script>
 import { Link } from '@gitlab-org/gitlab-ui';
+import Icon from '~/vue_shared/components/icon.vue';
 import ModalStore from '../../stores/modal_store';
+import boardsStore from '../../stores/boards_store';
 
 export default {
   components: {
     'gl-link': Link,
+    Icon,
   },
   data() {
     return {
       modal: ModalStore.store,
-      state: gl.issueBoards.BoardsStore.state,
+      state: boardsStore.state,
     };
   },
   computed: {
@@ -34,7 +37,9 @@ export default {
         class="dropdown-label-box">
       </span>
       {{ selected.title }}
-      <i class="fa fa-chevron-down"></i>
+      <icon
+        name="chevron-down"
+      />
     </button>
     <div class="dropdown-menu dropdown-menu-selectable dropdown-menu-drop-up">
       <ul>

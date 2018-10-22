@@ -102,7 +102,6 @@ export default {
     >
       <icon
         :name="lockIcon"
-        aria-hidden="true"
         class="sidebar-item-icon is-active"
       />
     </div>
@@ -134,7 +133,6 @@ export default {
         <icon
           :size="16"
           name="lock"
-          aria-hidden="true"
           class="sidebar-item-icon inline is-active"
         />
         {{ __('Locked') }}
@@ -147,7 +145,6 @@ export default {
         <icon
           :size="16"
           name="lock-open"
-          aria-hidden="true"
           class="sidebar-item-icon inline"
         />
         {{ __('Unlocked') }}

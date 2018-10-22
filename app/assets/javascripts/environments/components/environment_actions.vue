@@ -81,11 +81,9 @@ export default {
     >
       <span>
         <icon name="play" />
-        <i
-          class="fa fa-caret-down"
-          aria-hidden="true"
-        >
-        </i>
+        <icon
+          name="chevron-down"
+        />
         <gl-loading-icon v-if="isLoading" />
       </span>
     </button>

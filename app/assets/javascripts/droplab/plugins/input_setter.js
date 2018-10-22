@@ -36,8 +36,8 @@ const InputSetter = {
     const inputAttribute = config.inputAttribute;
 
     if (input.hasAttribute(inputAttribute)) return input.setAttribute(inputAttribute, newValue);
-    if (input.tagName === 'INPUT') return input.value = newValue;
-    return input.textContent = newValue;
+    if (input.tagName === 'INPUT') return (input.value = newValue);
+    return (input.textContent = newValue);
   },
 
   destroy() {

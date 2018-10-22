@@ -42,17 +42,7 @@ class ProjectsFinder < UnionFinder
         init_collection
       end
 
-    collection = by_ids(collection)
-    collection = by_personal(collection)
-    collection = by_starred(collection)
-    collection = by_trending(collection)
-    collection = by_visibilty_level(collection)
-    collection = by_tags(collection)
-    collection = by_search(collection)
-    collection = by_archived(collection)
-    collection = by_custom_attributes(collection)
-    collection = by_deleted_status(collection)
-
+    collection = filter_projects(collection)
     sort(collection)
   end
 
@@ -64,6 +54,21 @@ class ProjectsFinder < UnionFinder
     else
       collection_without_user
     end
+  end
+
+  # EE would override this to add more filters
+  def filter_projects(collection)
+    collection = by_ids(collection)
+    collection = by_personal(collection)
+    collection = by_starred(collection)
+    collection = by_trending(collection)
+    collection = by_visibilty_level(collection)
+    collection = by_tags(collection)
+    collection = by_search(collection)
+    collection = by_archived(collection)
+    collection = by_custom_attributes(collection)
+    collection = by_deleted_status(collection)
+    collection
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

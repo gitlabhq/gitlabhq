@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # These calls help to authenticate to LDAP by providing username and password
 #
 # Since multiple LDAP servers are supported, it will loop through all of them

@@ -838,12 +838,14 @@ describe Projects::MergeRequestsController do
     end
 
     context 'with a forked project' do
-      let(:fork_project) { create(:project, :repository, forked_from_project: project) }
-      let(:fork_owner) { fork_project.owner }
+      let(:forked_project) { fork_project(project, fork_owner, repository: true) }
+      let(:fork_owner) { create(:user) }
 
       before do
-        merge_request.update!(source_project: fork_project)
-        fork_project.add_reporter(user)
+        project.add_developer(fork_owner)
+
+        merge_request.update!(source_project: forked_project)
+        forked_project.add_reporter(user)
       end
 
       context 'user cannot push to source branch' do

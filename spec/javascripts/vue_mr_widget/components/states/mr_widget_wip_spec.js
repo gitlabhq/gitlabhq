@@ -33,6 +33,7 @@ describe('Wip', () => {
   describe('data', () => {
     it('should have default data', () => {
       const vm = createComponent();
+
       expect(vm.isMakingRequest).toBeFalsy();
     });
   });
@@ -43,22 +44,27 @@ describe('Wip', () => {
     };
 
     describe('removeWIP', () => {
-      it('should make a request to service and handle response', (done) => {
+      it('should make a request to service and handle response', done => {
         const vm = createComponent();
 
         spyOn(window, 'Flash').and.returnValue(true);
         spyOn(eventHub, '$emit');
-        spyOn(vm.service, 'removeWIP').and.returnValue(new Promise((resolve) => {
-          resolve({
-            data: mrObj,
-          });
-        }));
+        spyOn(vm.service, 'removeWIP').and.returnValue(
+          new Promise(resolve => {
+            resolve({
+              data: mrObj,
+            });
+          }),
+        );
 
         vm.removeWIP();
         setTimeout(() => {
           expect(vm.isMakingRequest).toBeTruthy();
           expect(eventHub.$emit).toHaveBeenCalledWith('UpdateWidgetData', mrObj);
-          expect(window.Flash).toHaveBeenCalledWith('The merge request can now be merged.', 'notice');
+          expect(window.Flash).toHaveBeenCalledWith(
+            'The merge request can now be merged.',
+            'notice',
+          );
           done();
         }, 333);
       });
@@ -82,7 +88,7 @@ describe('Wip', () => {
       expect(el.querySelector('.js-remove-wip').innerText).toContain('Resolve WIP status');
     });
 
-    it('should not show removeWIP button is user cannot update MR', (done) => {
+    it('should not show removeWIP button is user cannot update MR', done => {
       vm.mr.removeWIPPath = '';
 
       Vue.nextTick(() => {

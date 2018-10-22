@@ -18,14 +18,14 @@ import Flash from '../../flash';
 import axios from '../../lib/utils/axios_utils';
 import eventHub from '../event_hub';
 import Icon from '../../vue_shared/components/icon.vue';
-import JobComponent from './graph/job_component.vue';
+import JobItem from './graph/job_item.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
 import { PIPELINES_TABLE } from '../constants';
 
 export default {
   components: {
     Icon,
-    JobComponent,
+    JobItem,
   },
 
   directives: {
@@ -198,7 +198,7 @@ export default {
           v-for="job in dropdownContent"
           :key="job.id"
         >
-          <job-component
+          <job-item
             :dropdown-length="dropdownContent.length"
             :job="job"
             css-class-job-name="mini-pipeline-graph-dropdown-item"

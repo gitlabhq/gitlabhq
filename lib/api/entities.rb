@@ -260,7 +260,7 @@ module API
         super(projects_relation).preload(:group)
                                 .preload(project_group_links: :group,
                                          fork_network: :root_project,
-                                         forked_project_link: :forked_from_project,
+                                         fork_network_member: :forked_from_project,
                                          forked_from_project: [:route, :forks, :tags, namespace: :route])
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -1364,12 +1364,6 @@ module API
       expose :submitted, as: :akismet_submitted
     end
 
-    class RepositoryStorageHealth < Grape::Entity
-      expose :storage_name
-      expose :failing_on_hosts
-      expose :total_failures
-    end
-
     class CustomAttribute < Grape::Entity
       expose :key
       expose :value
@@ -1418,7 +1412,9 @@ module API
     end
 
     class Application < Grape::Entity
+      expose :id
       expose :uid, as: :application_id
+      expose :name, as: :application_name
       expose :redirect_uri, as: :callback_url
     end
 

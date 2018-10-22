@@ -25,6 +25,7 @@ describe('Job log controllers', () => {
       beforeEach(() => {
         vm = mountComponent(Component, props);
       });
+
       it('renders size information', () => {
         expect(vm.$el.querySelector('.js-truncated-info').textContent).toContain('499.95 KiB');
       });
@@ -198,6 +199,7 @@ describe('Job log controllers', () => {
             isScrollingDown: false,
             isTraceSizeVisible: true,
           });
+
           expect(vm.$el.querySelector('.js-scroll-bottom').className).not.toContain('animate');
         });
       });

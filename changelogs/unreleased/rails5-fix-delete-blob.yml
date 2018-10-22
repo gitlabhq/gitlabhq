@@ -1,0 +1,5 @@
+---
+title: 'Rails5: fix delete blob'
+merge_request: 22456
+author: Jasper Maes
+type: other

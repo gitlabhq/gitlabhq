@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   # Module containing GitLab's syntax color scheme definitions and helper
   # methods for accessing them.

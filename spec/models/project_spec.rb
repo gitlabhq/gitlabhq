@@ -23,7 +23,6 @@ describe Project do
     it { is_expected.to have_many(:deploy_keys) }
     it { is_expected.to have_many(:hooks) }
     it { is_expected.to have_many(:protected_branches) }
-    it { is_expected.to have_one(:forked_project_link) }
     it { is_expected.to have_one(:slack_service) }
     it { is_expected.to have_one(:microsoft_teams_service) }
     it { is_expected.to have_one(:mattermost_service) }
@@ -56,7 +55,7 @@ describe Project do
     it { is_expected.to have_one(:statistics).class_name('ProjectStatistics') }
     it { is_expected.to have_one(:import_data).class_name('ProjectImportData') }
     it { is_expected.to have_one(:last_event).class_name('Event') }
-    it { is_expected.to have_one(:forked_from_project).through(:forked_project_link) }
+    it { is_expected.to have_one(:forked_from_project).through(:fork_network_member) }
     it { is_expected.to have_one(:auto_devops).class_name('ProjectAutoDevops') }
     it { is_expected.to have_many(:commit_statuses) }
     it { is_expected.to have_many(:pipelines) }
@@ -77,7 +76,8 @@ describe Project do
     it { is_expected.to have_many(:lfs_objects_projects) }
     it { is_expected.to have_many(:project_group_links) }
     it { is_expected.to have_many(:notification_settings).dependent(:delete_all) }
-    it { is_expected.to have_many(:forks).through(:forked_project_links) }
+    it { is_expected.to have_many(:forked_to_members).class_name('ForkNetworkMember') }
+    it { is_expected.to have_many(:forks).through(:forked_to_members) }
     it { is_expected.to have_many(:uploads) }
     it { is_expected.to have_many(:pipeline_schedules) }
     it { is_expected.to have_many(:members_and_requesters) }
@@ -229,54 +229,75 @@ describe Project do
     end
 
     it 'does not allow an invalid URI as import_url' do
-      project2 = build(:project, import_url: 'invalid://')
+      project = build(:project, import_url: 'invalid://')
 
-      expect(project2).not_to be_valid
+      expect(project).not_to be_valid
+    end
+
+    it 'does allow a SSH URI as import_url for persisted projects' do
+      project = create(:project)
+      project.import_url = 'ssh://test@gitlab.com/project.git'
+
+      expect(project).to be_valid
+    end
+
+    it 'does not allow a SSH URI as import_url for new projects' do
+      project = build(:project, import_url: 'ssh://test@gitlab.com/project.git')
+
+      expect(project).not_to be_valid
     end
 
     it 'does allow a valid URI as import_url' do
-      project2 = build(:project, import_url: 'ssh://test@gitlab.com/project.git')
+      project = build(:project, import_url: 'http://gitlab.com/project.git')
 
-      expect(project2).to be_valid
+      expect(project).to be_valid
     end
 
     it 'allows an empty URI' do
-      project2 = build(:project, import_url: '')
+      project = build(:project, import_url: '')
 
-      expect(project2).to be_valid
+      expect(project).to be_valid
     end
 
     it 'does not produce import data on an empty URI' do
-      project2 = build(:project, import_url: '')
+      project = build(:project, import_url: '')
 
-      expect(project2.import_data).to be_nil
+      expect(project.import_data).to be_nil
     end
 
     it 'does not produce import data on an invalid URI' do
-      project2 = build(:project, import_url: 'test://')
+      project = build(:project, import_url: 'test://')
 
-      expect(project2.import_data).to be_nil
+      expect(project.import_data).to be_nil
     end
 
     it "does not allow import_url pointing to localhost" do
-      project2 = build(:project, import_url: 'http://localhost:9000/t.git')
+      project = build(:project, import_url: 'http://localhost:9000/t.git')
 
-      expect(project2).to be_invalid
-      expect(project2.errors[:import_url].first).to include('Requests to localhost are not allowed')
+      expect(project).to be_invalid
+      expect(project.errors[:import_url].first).to include('Requests to localhost are not allowed')
     end
 
-    it "does not allow import_url with invalid ports" do
-      project2 = build(:project, import_url: 'http://github.com:25/t.git')
+    it "does not allow import_url with invalid ports for new projects" do
+      project = build(:project, import_url: 'http://github.com:25/t.git')
 
-      expect(project2).to be_invalid
-      expect(project2.errors[:import_url].first).to include('Only allowed ports are 22, 80, 443')
+      expect(project).to be_invalid
+      expect(project.errors[:import_url].first).to include('Only allowed ports are 80, 443')
+    end
+
+    it "does not allow import_url with invalid ports for persisted projects" do
+      project = create(:project)
+      project.import_url = 'http://github.com:25/t.git'
+
+      expect(project).to be_invalid
+      expect(project.errors[:import_url].first).to include('Only allowed ports are 22, 80, 443')
     end
 
     it "does not allow import_url with invalid user" do
-      project2 = build(:project, import_url: 'http://$user:password@github.com/t.git')
+      project = build(:project, import_url: 'http://$user:password@github.com/t.git')
 
-      expect(project2).to be_invalid
-      expect(project2.errors[:import_url].first).to include('Username needs to start with an alphanumeric character')
+      expect(project).to be_invalid
+      expect(project.errors[:import_url].first).to include('Username needs to start with an alphanumeric character')
     end
 
     describe 'project pending deletion' do
@@ -506,28 +527,28 @@ describe Project do
   end
 
   describe "#readme_url" do
-    let(:project) { create(:project, :repository, path: "somewhere") }
-
     context 'with a non-existing repository' do
-      it 'returns nil' do
-        allow(project.repository).to receive(:tree).with(:head).and_return(nil)
+      let(:project) { create(:project) }
 
+      it 'returns nil' do
         expect(project.readme_url).to be_nil
       end
     end
 
     context 'with an existing repository' do
       context 'when no README exists' do
-        it 'returns nil' do
-          allow_any_instance_of(Tree).to receive(:readme).and_return(nil)
+        let(:project) { create(:project, :empty_repo) }
 
+        it 'returns nil' do
           expect(project.readme_url).to be_nil
         end
       end
 
       context 'when a README exists' do
+        let(:project) { create(:project, :repository) }
+
         it 'returns the README' do
-          expect(project.readme_url).to eql("#{Gitlab.config.gitlab.url}/#{project.namespace.full_path}/somewhere/blob/master/README.md")
+          expect(project.readme_url).to eq("#{project.web_url}/blob/master/README.md")
         end
       end
     end
@@ -1359,7 +1380,7 @@ describe Project do
 
     context 'when checking on forked project' do
       let(:project)        { create(:project, :internal) }
-      let(:forked_project) { create(:project, forked_from_project: project) }
+      let(:forked_project) { fork_project(project) }
 
       it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be_truthy }
       it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be_truthy }
@@ -1971,9 +1992,12 @@ describe Project do
     let(:import_jid) { '123' }
 
     context 'forked' do
-      let(:forked_project_link) { create(:forked_project_link, :forked_to_empty_project) }
-      let(:forked_from_project) { forked_project_link.forked_from_project }
-      let(:project) { forked_project_link.forked_to_project }
+      let(:forked_from_project) { create(:project, :repository) }
+      let(:project) { create(:project) }
+
+      before do
+        fork_project(forked_from_project, nil, target_project: project)
+      end
 
       it 'schedules a RepositoryForkWorker job' do
         expect(RepositoryForkWorker).to receive(:perform_async).with(project.id).and_return(import_jid)
@@ -2257,6 +2281,12 @@ describe Project do
 
       it 'returns nil if it is the root of the fork network' do
         expect(project.fork_source).to be_nil
+      end
+    end
+
+    describe '#forks' do
+      it 'includes direct forks of the project' do
+        expect(project.forks).to contain_exactly(forked_project)
       end
     end
 

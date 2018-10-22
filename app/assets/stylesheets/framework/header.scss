@@ -530,9 +530,6 @@
 
 .header-user {
   &.show .dropdown-menu {
-    width: auto;
-    min-width: unset;
-    max-height: 323px;
     margin-top: 4px;
     color: $gl-text-color;
     left: auto;
@@ -544,15 +541,19 @@
         display: block;
       }
 
-      .user-status-emoji {
+      .user-status {
         margin-right: 0;
-        display: block;
-        vertical-align: text-top;
-        max-width: 148px;
-        font-size: 12px;
+        max-width: 240px;
+        font-size: $gl-font-size-small;
 
         gl-emoji {
-          font-size: $gl-font-size;
+          font-size: $gl-font-size-small;
+        }
+
+        .user-status-emoji {
+          gl-emoji {
+            font-size: $gl-font-size;
+          }
         }
       }
     }

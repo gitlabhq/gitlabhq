@@ -6,7 +6,7 @@ def get_prettier_files(files)
   end
 end
 
-prettier_candidates = get_prettier_files(git.added_files + git.modified_files)
+prettier_candidates = get_prettier_files(helper.all_changed_files)
 
 return if prettier_candidates.empty?
 

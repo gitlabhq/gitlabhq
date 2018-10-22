@@ -410,36 +410,5 @@ describe ProjectPresenter do
         end
       end
     end
-
-    describe '#koding_anchor_data' do
-      it 'returns link to set up Koding if user can push and no koding YML exists' do
-        project.add_developer(user)
-        allow(project.repository).to receive(:koding_yml).and_return(nil)
-        allow(Gitlab::CurrentSettings).to receive(:koding_enabled?).and_return(true)
-
-        expect(presenter.koding_anchor_data).to have_attributes(enabled: false,
-                                                                label: 'Set up Koding',
-                                                                link: presenter.add_koding_stack_path)
-      end
-
-      it 'returns nil if user cannot push' do
-        expect(presenter.koding_anchor_data).to be_nil
-      end
-
-      it 'returns nil if koding is not enabled' do
-        project.add_developer(user)
-        allow(Gitlab::CurrentSettings).to receive(:koding_enabled?).and_return(false)
-
-        expect(presenter.koding_anchor_data).to be_nil
-      end
-
-      it 'returns nil if koding YML already exists' do
-        project.add_developer(user)
-        allow(project.repository).to receive(:koding_yml).and_return(double)
-        allow(Gitlab::CurrentSettings).to receive(:koding_enabled?).and_return(true)
-
-        expect(presenter.koding_anchor_data).to be_nil
-      end
-    end
   end
 end

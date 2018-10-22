@@ -24,6 +24,7 @@ discussions, and descriptions:
 | `/reopen`                  | Reopen                         | ✓     | ✓             |
 | `/title <New title>`       | Change title                   | ✓     |  ✓            |
 | `/award :emoji:`           | Toggle emoji award             | ✓     | ✓             |
+| `/assign me`               | Assign yourself                | ✓     | ✓             |
 | `/assign @user`            | Assign one user                | ✓     | ✓             |
 | `/assign @user1 @user2`    | Assign multiple users **[STARTER]** | ✓ |              |
 | `/unassign`                | Remove assignee(s)             | ✓     | ✓             |

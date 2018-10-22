@@ -19,27 +19,13 @@ describe('IDE pane module actions', () => {
     });
 
     it('dispatches close if opened', done => {
-      testAction(
-        actions.toggleOpen,
-        TEST_VIEW,
-        { isOpen: true },
-        [],
-        [{ type: 'close' }],
-        done,
-      );
+      testAction(actions.toggleOpen, TEST_VIEW, { isOpen: true }, [], [{ type: 'close' }], done);
     });
   });
 
   describe('open', () => {
     it('commits SET_OPEN', done => {
-      testAction(
-        actions.open,
-        null,
-        {},
-        [{ type: types.SET_OPEN, payload: true }],
-        [],
-        done,
-      );
+      testAction(actions.open, null, {}, [{ type: types.SET_OPEN, payload: true }], [], done);
     });
 
     it('commits SET_CURRENT_VIEW if view is given', done => {
@@ -74,14 +60,7 @@ describe('IDE pane module actions', () => {
 
   describe('close', () => {
     it('commits SET_OPEN', done => {
-      testAction(
-        actions.close,
-        null,
-        {},
-        [{ type: types.SET_OPEN, payload: false }],
-        [],
-        done,
-      );
+      testAction(actions.close, null, {}, [{ type: types.SET_OPEN, payload: false }], [], done);
     });
   });
 });

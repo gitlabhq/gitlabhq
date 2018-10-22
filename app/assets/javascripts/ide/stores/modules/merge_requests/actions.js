@@ -3,8 +3,7 @@ import Api from '../../../../api';
 import { scopes } from './constants';
 import * as types from './mutation_types';
 
-export const requestMergeRequests = ({ commit }) =>
-  commit(types.REQUEST_MERGE_REQUESTS);
+export const requestMergeRequests = ({ commit }) => commit(types.REQUEST_MERGE_REQUESTS);
 export const receiveMergeRequestsError = ({ commit, dispatch }, { type, search }) => {
   dispatch(
     'setErrorMessage',

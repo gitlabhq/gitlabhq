@@ -68,6 +68,10 @@
     }
   }
 
+  .current-host.canary {
+    color: $perf-bar-canary-text;
+  }
+
   strong {
     color: $white-light;
   }

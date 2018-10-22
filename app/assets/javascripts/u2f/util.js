@@ -19,11 +19,10 @@ function getChromeVersion(userAgent) {
 export function canInjectU2fApi(userAgent) {
   const isSupportedChrome = isChrome(userAgent) && getChromeVersion(userAgent) >= 41;
   const isSupportedOpera = isOpera(userAgent) && getOperaVersion(userAgent) >= 40;
-  const isMobile = (
+  const isMobile =
     userAgent.indexOf('droid') >= 0 ||
     userAgent.indexOf('CriOS') >= 0 ||
-    /\b(iPad|iPhone|iPod)(?=;)/.test(userAgent)
-  );
+    /\b(iPad|iPhone|iPod)(?=;)/.test(userAgent);
   return (isSupportedChrome || isSupportedOpera) && !isMobile;
 }
 

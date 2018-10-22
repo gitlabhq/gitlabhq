@@ -38,6 +38,7 @@ describe('EnvironmentActions Component', () => {
       expect(vm.$el.querySelector('.dropdown-new').getAttribute('data-original-title')).toEqual(
         'Deploy to...',
       );
+
       expect(vm.$el.querySelector('.dropdown-new').getAttribute('aria-label')).toEqual(
         'Deploy to...',
       );

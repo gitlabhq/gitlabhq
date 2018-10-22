@@ -12,6 +12,7 @@
       - unless @hide_breadcrumbs
         = render "layouts/nav/breadcrumbs"
       = render "layouts/flash"
+      .d-flex
     %div{ class: "#{(container_class unless @no_container)} #{@content_class}" }
       .content{ id: "content-body" }
         = yield

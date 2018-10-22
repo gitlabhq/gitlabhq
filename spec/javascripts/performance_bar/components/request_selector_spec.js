@@ -11,8 +11,7 @@ describe('request selector', () => {
     },
     {
       id: '789',
-      url:
-        'https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/1.json?serializer=widget',
+      url: 'https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/1.json?serializer=widget',
     },
   ];
 

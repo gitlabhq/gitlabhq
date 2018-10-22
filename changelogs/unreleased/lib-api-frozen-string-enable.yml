@@ -1,5 +1,0 @@
----
-title: Enable frozen string in lib/api and lib/backup
-merge_request:
-author: gfyoung
-type: performance

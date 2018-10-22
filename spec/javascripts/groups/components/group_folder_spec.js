@@ -18,7 +18,7 @@ const createComponent = (groups = mockGroups, parentGroup = mockParentGroupItem)
 describe('GroupFolderComponent', () => {
   let vm;
 
-  beforeEach((done) => {
+  beforeEach(done => {
     Vue.component('group-item', groupItemComponent);
 
     vm = createComponent();
@@ -59,6 +59,7 @@ describe('GroupFolderComponent', () => {
 
       const newVm = createComponent(mockGroups, parentGroup);
       newVm.$mount();
+
       expect(newVm.$el.querySelector('li.group-row a.has-more-items')).toBeDefined();
       newVm.$destroy();
     });

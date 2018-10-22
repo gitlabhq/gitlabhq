@@ -22,9 +22,10 @@ describe('Time ago with tooltip component', () => {
     }).$mount();
 
     expect(vm.$el.tagName).toEqual('TIME');
-    expect(
-      vm.$el.getAttribute('data-original-title'),
-    ).toEqual(formatDate('2017-05-08T14:57:39.781Z'));
+    expect(vm.$el.getAttribute('data-original-title')).toEqual(
+      formatDate('2017-05-08T14:57:39.781Z'),
+    );
+
     expect(vm.$el.getAttribute('data-placement')).toEqual('top');
 
     const timeago = getTimeago();

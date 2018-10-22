@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'set'
 
 module Gitlab
@@ -18,7 +20,6 @@ module Gitlab
 
       # Configuration files
       gitignore: '.gitignore',
-      koding: '.koding.yml',
       gitlab_ci: '.gitlab-ci.yml',
       route_map: '.gitlab/route-map.yml',
 

@@ -1,15 +1,15 @@
 <script>
-  import updateMixin from '../../mixins/update';
+import updateMixin from '../../mixins/update';
 
-  export default {
-    mixins: [updateMixin],
-    props: {
-      formState: {
-        type: Object,
-        required: true,
-      },
+export default {
+  mixins: [updateMixin],
+  props: {
+    formState: {
+      type: Object,
+      required: true,
     },
-  };
+  },
+};
 </script>
 
 <template>

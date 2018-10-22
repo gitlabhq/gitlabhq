@@ -3,11 +3,7 @@ import RecentSearchesDropdownContent from './components/recent_searches_dropdown
 import eventHub from './event_hub';
 
 class RecentSearchesRoot {
-  constructor(
-    recentSearchesStore,
-    recentSearchesService,
-    wrapperElement,
-  ) {
+  constructor(recentSearchesStore, recentSearchesService, wrapperElement) {
     this.store = recentSearchesStore;
     this.service = recentSearchesService;
     this.wrapperElement = wrapperElement;
@@ -35,7 +31,9 @@ class RecentSearchesRoot {
       components: {
         RecentSearchesDropdownContent,
       },
-      data() { return state; },
+      data() {
+        return state;
+      },
       template: `
         <recent-searches-dropdown-content
           :items="recentSearches"
@@ -57,7 +55,6 @@ class RecentSearchesRoot {
       this.vm.$destroy();
     }
   }
-
 }
 
 export default RecentSearchesRoot;

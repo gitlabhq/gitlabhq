@@ -321,7 +321,7 @@ The following sample `markdownlint` configuration modifies the available default
 }
 ```
 
-For [`markdownlint`](https://gitahub.com/DavidAnson/markdownlint/), this configuration must be
+For [`markdownlint`](https://github.com/DavidAnson/markdownlint/), this configuration must be
  placed in a [valid location](https://github.com/igorshubovych/markdownlint-cli#configuration). For
  example, `~/.markdownlintrc`.
 
@@ -414,7 +414,7 @@ to EE only.
 
 NOTE: **Note:**
 To preview your changes to documentation locally, follow this
-[development guide](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/README.md#development).
+[development guide](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/README.md#development-when-contributing-to-gitlab-documentation) or [these instructions for GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/gitlab_docs.md).
 
 The live preview is currently enabled for the following projects:
 
@@ -451,16 +451,6 @@ preview the changes. The docs URL can be found in two places:
 - In the output of the `review-docs-deploy*` job, which also includes the
   triggered pipeline so that you can investigate whether something went wrong
 
-In case the Review App URL returns 404, follow these steps to debug:
-
-1. **Did you follow the URL from the merge request widget?** If yes, then check if
-   the link is the same as the one in the job output.
-1. **Did you follow the URL from the job output?** If yes, then it means that
-   either the site is not yet deployed or something went wrong with the remote
-   pipeline. Give it a few minutes and it should appear online, otherwise you
-   can check the status of the remote pipeline from the link in the job output.
-   If the pipeline failed or got stuck, drop a line in the `#docs` chat channel.
-
 TIP: **Tip:**
 Someone that has no merge rights to the CE/EE projects (think of forks from
 contributors) will not be able to run the manual job. In that case, you can
@@ -471,6 +461,18 @@ Make sure that you always delete the branch of the merge request you were
 working on. If you don't, the remote docs branch won't be removed either,
 and the server where the Review Apps are hosted will eventually be out of
 disk space.
+
+### Troubleshooting review apps
+
+In case the review app URL returns 404, follow these steps to debug:
+
+1. **Did you follow the URL from the merge request widget?** If yes, then check if
+   the link is the same as the one in the job output.
+1. **Did you follow the URL from the job output?** If yes, then it means that
+   either the site is not yet deployed or something went wrong with the remote
+   pipeline. Give it a few minutes and it should appear online, otherwise you
+   can check the status of the remote pipeline from the link in the job output.
+   If the pipeline failed or got stuck, drop a line in the `#docs` chat channel.
 
 ### Technical aspects
 

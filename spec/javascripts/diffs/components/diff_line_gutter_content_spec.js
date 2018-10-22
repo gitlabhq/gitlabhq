@@ -31,12 +31,14 @@ describe('DiffLineGutterContent', () => {
       it('should prepend # to lineCode', () => {
         const lineCode = 'LC_42';
         const component = createComponent();
+
         expect(component.lineHref).toEqual(`#${lineCode}`);
       });
 
       it('should return # if there is no lineCode', () => {
         const component = createComponent();
         component.line.lineCode = '';
+
         expect(component.lineHref).toEqual('#');
       });
     });
@@ -44,6 +46,7 @@ describe('DiffLineGutterContent', () => {
     describe('discussions, hasDiscussions, shouldShowAvatarsOnGutter', () => {
       it('should return empty array when there is no discussion', () => {
         const component = createComponent();
+
         expect(component.hasDiscussions).toEqual(false);
         expect(component.shouldShowAvatarsOnGutter).toEqual(false);
       });
@@ -94,7 +97,7 @@ describe('DiffLineGutterContent', () => {
       const component = createComponent({ lineNumber, lineCode });
       const link = component.$el.querySelector('a');
 
-      expect(link.href.indexOf(`#${lineCode}`) > -1).toEqual(true);
+      expect(link.href.indexOf(`#${lineCode}`)).toBeGreaterThan(-1);
       expect(link.dataset.linenumber).toEqual(lineNumber.toString());
     });
 

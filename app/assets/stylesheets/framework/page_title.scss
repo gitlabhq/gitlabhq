@@ -1,0 +1,18 @@
+.page-title-holder {
+  @extend .d-flex;
+  @extend .align-items-center;
+
+  padding-top: $gl-padding-top;
+  border-bottom: 1px solid $border-color;
+
+  .page-title {
+    margin: $gl-padding 0;
+    font-size: 1.75em;
+    font-weight: $gl-font-weight-bold;
+    color: $gl-text-color;
+  }
+
+  .page-title-controls {
+    margin-left: auto;
+  }
+}

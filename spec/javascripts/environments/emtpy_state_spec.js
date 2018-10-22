@@ -27,7 +27,7 @@ describe('environments empty state', () => {
     it('renders empty state and new environment button', () => {
       expect(
         vm.$el.querySelector('.js-blank-state-title').textContent.trim(),
-      ).toEqual('You don\'t have any environments right now.');
+      ).toEqual('You don\'t have any environments right now');
 
       expect(
         vm.$el.querySelector('.js-new-environment-button').getAttribute('href'),
@@ -47,7 +47,7 @@ describe('environments empty state', () => {
     it('renders empty state without new button', () => {
       expect(
         vm.$el.querySelector('.js-blank-state-title').textContent.trim(),
-      ).toEqual('You don\'t have any environments right now.');
+      ).toEqual('You don\'t have any environments right now');
 
       expect(
         vm.$el.querySelector('.js-new-environment-button'),

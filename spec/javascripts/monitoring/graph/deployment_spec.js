@@ -2,7 +2,7 @@ import Vue from 'vue';
 import GraphDeployment from '~/monitoring/components/graph/deployment.vue';
 import { deploymentData } from '../mock_data';
 
-const createComponent = (propsData) => {
+const createComponent = propsData => {
   const Component = Vue.extend(GraphDeployment);
 
   return new Component({
@@ -33,9 +33,7 @@ describe('MonitoringDeployment', () => {
         graphHeightOffset: 120,
       });
 
-      expect(
-        component.transformDeploymentGroup({ xPos: 16 }),
-      ).toContain('translate(11, 20)');
+      expect(component.transformDeploymentGroup({ xPos: 16 })).toContain('translate(11, 20)');
     });
 
     describe('Computed props', () => {

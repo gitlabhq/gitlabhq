@@ -111,6 +111,7 @@ describe('Search autocomplete dropdown', () => {
     if (issuesPath) {
       const issuesAssignedToMeLink = `a[href="${issuesPath}/?assignee_id=${userId}"]`;
       const issuesIHaveCreatedLink = `a[href="${issuesPath}/?author_id=${userId}"]`;
+
       expect(list.find(issuesAssignedToMeLink).length).toBe(1);
       expect(list.find(issuesAssignedToMeLink).text()).toBe('Issues assigned to me');
       expect(list.find(issuesIHaveCreatedLink).length).toBe(1);
@@ -118,6 +119,7 @@ describe('Search autocomplete dropdown', () => {
     }
     const mrsAssignedToMeLink = `a[href="${mrsPath}/?assignee_id=${userId}"]`;
     const mrsIHaveCreatedLink = `a[href="${mrsPath}/?author_id=${userId}"]`;
+
     expect(list.find(mrsAssignedToMeLink).length).toBe(1);
     expect(list.find(mrsAssignedToMeLink).text()).toBe('Merge requests assigned to me');
     expect(list.find(mrsIHaveCreatedLink).length).toBe(1);
@@ -140,6 +142,7 @@ describe('Search autocomplete dropdown', () => {
     removeBodyAttributes();
     window.gon = {};
   });
+
   it('should show Dashboard specific dropdown menu', function() {
     var list;
     addBodyAttributes();
@@ -148,6 +151,7 @@ describe('Search autocomplete dropdown', () => {
     list = widget.wrap.find('.dropdown-menu').find('ul');
     return assertLinks(list, dashboardIssuesPath, dashboardMRsPath);
   });
+
   it('should show Group specific dropdown menu', function() {
     var list;
     addBodyAttributes('group');
@@ -156,6 +160,7 @@ describe('Search autocomplete dropdown', () => {
     list = widget.wrap.find('.dropdown-menu').find('ul');
     return assertLinks(list, groupIssuesPath, groupMRsPath);
   });
+
   it('should show Project specific dropdown menu', function() {
     var list;
     addBodyAttributes('project');
@@ -164,6 +169,7 @@ describe('Search autocomplete dropdown', () => {
     list = widget.wrap.find('.dropdown-menu').find('ul');
     return assertLinks(list, projectIssuesPath, projectMRsPath);
   });
+
   it('should show only Project mergeRequest dropdown menu items when project issues are disabled', function() {
     addBodyAttributes('project');
     disableProjectIssues();
@@ -172,6 +178,7 @@ describe('Search autocomplete dropdown', () => {
     const list = widget.wrap.find('.dropdown-menu').find('ul');
     assertLinks(list, null, projectMRsPath);
   });
+
   it('should not show category related menu if there is text in the input', function() {
     var link, list;
     addBodyAttributes('project');
@@ -180,8 +187,10 @@ describe('Search autocomplete dropdown', () => {
     widget.searchInput.triggerHandler('focus');
     list = widget.wrap.find('.dropdown-menu').find('ul');
     link = "a[href='" + projectIssuesPath + '/?assignee_id=' + userId + "']";
-    return expect(list.find(link).length).toBe(0);
+
+    expect(list.find(link).length).toBe(0);
   });
+
   it('should not submit the search form when selecting an autocomplete row with the keyboard', function() {
     var ENTER = 13;
     var DOWN = 40;

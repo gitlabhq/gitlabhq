@@ -66,10 +66,6 @@ module API
       optional :html_emails_enabled, type: Boolean, desc: 'By default GitLab sends emails in HTML and plain text formats so mail clients can choose what format to use. Disable this option if you only want to send emails in plain text format.'
       optional :import_sources, type: Array[String], values: %w[github bitbucket gitlab google_code fogbugz git gitlab_project manifest],
                                 desc: 'Enabled sources for code import during project creation. OmniAuth must be configured for GitHub, Bitbucket, and GitLab.com'
-      optional :koding_enabled, type: Boolean, desc: 'Enable Koding'
-      given koding_enabled: ->(val) { val } do
-        requires :koding_url, type: String, desc: 'The Koding team URL'
-      end
       optional :max_artifacts_size, type: Integer, desc: "Set the maximum file size for each job's artifacts"
       optional :max_attachment_size, type: Integer, desc: 'Maximum attachment size in MB'
       optional :max_pages_size, type: Integer, desc: 'Maximum size of pages in MB'

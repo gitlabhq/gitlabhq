@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module PathRegex
     extend self
@@ -39,7 +41,6 @@ module Gitlab
       import
       invites
       jwt
-      koding
       login
       notification_settings
       oauth

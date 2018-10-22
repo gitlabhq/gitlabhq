@@ -4,7 +4,7 @@ import Cache from './cache';
 class AjaxCache extends Cache {
   constructor() {
     super();
-    this.pendingRequests = { };
+    this.pendingRequests = {};
   }
 
   override(endpoint, data) {
@@ -19,12 +19,13 @@ class AjaxCache extends Cache {
     let pendingRequest = this.pendingRequests[endpoint];
 
     if (!pendingRequest) {
-      pendingRequest = axios.get(endpoint)
+      pendingRequest = axios
+        .get(endpoint)
         .then(({ data }) => {
           this.internalStorage[endpoint] = data;
           delete this.pendingRequests[endpoint];
         })
-        .catch((e) => {
+        .catch(e => {
           const error = new Error(`${endpoint}: ${e.message}`);
           error.textStatus = e.message;
 

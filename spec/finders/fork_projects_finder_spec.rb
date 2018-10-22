@@ -1,20 +1,21 @@
 require 'spec_helper'
 
 describe ForkProjectsFinder do
-  let(:source_project) { create(:project, :empty_repo) }
-  let(:private_fork) { create(:project, :private, :empty_repo, name: 'A') }
-  let(:internal_fork) { create(:project, :internal, :empty_repo, name: 'B') }
-  let(:public_fork) { create(:project, :public, :empty_repo, name: 'C') }
+  include ProjectForksHelper
+
+  let(:source_project) { create(:project, :public, :empty_repo) }
+  let(:private_fork) { fork_project(source_project, nil, name: 'A') }
+  let(:internal_fork) { fork_project(source_project, nil, name: 'B') }
+  let(:public_fork) { fork_project(source_project, nil, name: 'C') }
 
   let(:non_member) { create(:user) }
   let(:private_fork_member) { create(:user) }
 
   before do
+    private_fork.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
     private_fork.add_developer(private_fork_member)
 
-    source_project.forks << private_fork
-    source_project.forks << internal_fork
-    source_project.forks << public_fork
+    internal_fork.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
   end
 
   describe '#execute' do

@@ -43,7 +43,9 @@ export default {
       return (this.commit.author && this.commit.author.name) || this.commit.authorName;
     },
     authorUrl() {
-      return (this.commit.author && this.commit.author.webUrl) || `mailto:${this.commit.authorEmail}`;
+      return (
+        (this.commit.author && this.commit.author.webUrl) || `mailto:${this.commit.authorEmail}`
+      );
     },
     authorAvatar() {
       return (this.commit.author && this.commit.author.avatarUrl) || this.commit.authorGravatarUrl;

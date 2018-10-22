@@ -229,9 +229,8 @@ project:
 - mock_ci_service
 - mock_deployment_service
 - mock_monitoring_service
-- forked_project_link
+- forked_to_members
 - forked_from_project
-- forked_project_links
 - forks
 - merge_requests
 - fork_merge_requests

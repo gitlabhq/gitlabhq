@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :verify, :docker do
+  context 'Verify', :docker do
     describe 'Runner registration' do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
 

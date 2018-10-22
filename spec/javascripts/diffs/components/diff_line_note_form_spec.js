@@ -36,6 +36,7 @@ describe('DiffLineNoteForm', () => {
         spyOn(window, 'confirm').and.returnValue(false);
 
         component.handleCancelCommentForm(true, true);
+
         expect(window.confirm).toHaveBeenCalled();
       });
 
@@ -43,9 +44,11 @@ describe('DiffLineNoteForm', () => {
         spyOn(window, 'confirm').and.returnValue(false);
 
         component.handleCancelCommentForm(true, false);
+
         expect(window.confirm).not.toHaveBeenCalled();
 
         component.handleCancelCommentForm(false, true);
+
         expect(window.confirm).not.toHaveBeenCalled();
       });
 
@@ -60,6 +63,7 @@ describe('DiffLineNoteForm', () => {
           expect(component.cancelCommentForm).toHaveBeenCalledWith({
             lineCode: diffLines[0].lineCode,
           });
+
           expect(component.resetAutoSave).toHaveBeenCalled();
 
           done();

@@ -3,7 +3,7 @@ import GraphPath from '~/monitoring/components/graph/path.vue';
 import createTimeSeries from '~/monitoring/utils/multiple_time_series';
 import { singleRowMetricsMultipleSeries, convertDatesMultipleSeries } from './mock_data';
 
-const createComponent = (propsData) => {
+const createComponent = propsData => {
   const Component = Vue.extend(GraphPath);
 
   return new Component({
@@ -45,9 +45,11 @@ describe('Monitoring Paths', () => {
       });
 
       component.lineStyle = 'dashed';
+
       expect(component.strokeDashArray).toBe('3, 1');
 
       component.lineStyle = 'dotted';
+
       expect(component.strokeDashArray).toBe('1, 1');
     });
   });

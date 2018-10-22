@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A module to check CSRF tokens in requests.
 # It's used in API helpers and OmniAuth.
 # Usage: GitLab::RequestForgeryProtection.call(env)

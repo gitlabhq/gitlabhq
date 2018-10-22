@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   # Retrieving of parent or child groups based on a base ActiveRecord relation.
   #

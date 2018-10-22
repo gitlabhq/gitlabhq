@@ -9,12 +9,12 @@ describe QA::Page::Base do
     subject do
       Class.new(described_class) do
         view 'path/to/some/view.html.haml' do
-          element :something, 'string pattern'
-          element :something_else, /regexp pattern/
+          element :something, 'string pattern' # rubocop:disable QA/ElementWithPattern
+          element :something_else, /regexp pattern/ # rubocop:disable QA/ElementWithPattern
         end
 
         view 'path/to/some/_partial.html.haml' do
-          element :another_element, 'string pattern'
+          element :another_element, 'string pattern' # rubocop:disable QA/ElementWithPattern
         end
       end
     end

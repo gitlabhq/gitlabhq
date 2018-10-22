@@ -59,6 +59,9 @@ GET /users?active=true
 GET /users?blocked=true
 ```
 
+NOTE: **Note:**
+Username search is case insensitive.
+
 ### For admins
 
 ```

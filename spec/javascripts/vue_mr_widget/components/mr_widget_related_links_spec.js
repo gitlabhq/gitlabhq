@@ -5,7 +5,7 @@ import mountComponent from 'spec/helpers/vue_mount_component_helper';
 describe('MRWidgetRelatedLinks', () => {
   let vm;
 
-  const createComponent = (data) => {
+  const createComponent = data => {
     const Component = Vue.extend(relatedLinksComponent);
 
     return mountComponent(Component, data);
@@ -19,16 +19,19 @@ describe('MRWidgetRelatedLinks', () => {
     describe('closesText', () => {
       it('returns Closes text for open merge request', () => {
         vm = createComponent({ state: 'open', relatedLinks: {} });
+
         expect(vm.closesText).toEqual('Closes');
       });
 
       it('returns correct text for closed merge request', () => {
         vm = createComponent({ state: 'closed', relatedLinks: {} });
+
         expect(vm.closesText).toEqual('Did not close');
       });
 
       it('returns correct tense for merged request', () => {
         vm = createComponent({ state: 'merged', relatedLinks: {} });
+
         expect(vm.closesText).toEqual('Closed');
       });
     });

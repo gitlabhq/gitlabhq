@@ -2,7 +2,7 @@ import Vue from 'vue';
 import component from '~/jobs/components/stages_dropdown.vue';
 import mountComponent from '../../helpers/vue_mount_component_helper';
 
-describe('Artifacts block', () => {
+describe('Stages Dropdown', () => {
   const Component = Vue.extend(component);
   let vm;
 
@@ -23,10 +23,6 @@ describe('Artifacts block', () => {
         },
         path: 'pipeline/28029444',
       },
-      ref: {
-        path: 'commits/50101-truncated-job-information',
-        name: '50101-truncated-job-information',
-      },
       stages: [
         {
           name: 'build',
@@ -35,6 +31,7 @@ describe('Artifacts block', () => {
           name: 'test',
         },
       ],
+      selectedStage: 'deploy',
     });
   });
 
@@ -53,17 +50,10 @@ describe('Artifacts block', () => {
   });
 
   it('renders dropdown with stages', () => {
-    expect(vm.$el.querySelector('.dropdown button').textContent).toContain('build');
+    expect(vm.$el.querySelector('.dropdown .js-stage-item').textContent).toContain('build');
   });
 
-  it('updates selected stage on click', done => {
-    vm.$el.querySelectorAll('.stage-item')[1].click();
-    vm
-      .$nextTick()
-      .then(() => {
-        expect(vm.$el.querySelector('.dropdown button').textContent).toContain('test');
-      })
-      .then(done)
-      .catch(done.fail);
+  it('rendes selected stage', () => {
+    expect(vm.$el.querySelector('.dropdown .js-selected-stage').textContent).toContain('deploy');
   });
 });

@@ -16,6 +16,9 @@ module QA
     autoload :Browser, 'qa/runtime/browser'
     autoload :Env, 'qa/runtime/env'
     autoload :Address, 'qa/runtime/address'
+    autoload :Path, 'qa/runtime/path'
+    autoload :Fixtures, 'qa/runtime/fixtures'
+    autoload :Logger, 'qa/runtime/logger'
 
     module API
       autoload :Client, 'qa/runtime/api/client'
@@ -34,6 +37,7 @@ module QA
   # GitLab QA fabrication mechanisms
   #
   module Factory
+    autoload :ApiFabricator, 'qa/factory/api_fabricator'
     autoload :Base, 'qa/factory/base'
     autoload :Dependency, 'qa/factory/dependency'
     autoload :Product, 'qa/factory/product'
@@ -43,10 +47,12 @@ module QA
       autoload :Group, 'qa/factory/resource/group'
       autoload :Issue, 'qa/factory/resource/issue'
       autoload :Project, 'qa/factory/resource/project'
+      autoload :Label, 'qa/factory/resource/label'
       autoload :MergeRequest, 'qa/factory/resource/merge_request'
       autoload :ProjectImportedFromGithub, 'qa/factory/resource/project_imported_from_github'
       autoload :MergeRequestFromFork, 'qa/factory/resource/merge_request_from_fork'
       autoload :DeployKey, 'qa/factory/resource/deploy_key'
+      autoload :DeployToken, 'qa/factory/resource/deploy_token'
       autoload :Branch, 'qa/factory/resource/branch'
       autoload :SecretVariable, 'qa/factory/resource/secret_variable'
       autoload :Runner, 'qa/factory/resource/runner'
@@ -95,6 +101,7 @@ module QA
       module Integration
         autoload :Github, 'qa/scenario/test/integration/github'
         autoload :LDAP, 'qa/scenario/test/integration/ldap'
+        autoload :InstanceSAML, 'qa/scenario/test/integration/instance_saml'
         autoload :Kubernetes, 'qa/scenario/test/integration/kubernetes'
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
         autoload :ObjectStorage, 'qa/scenario/test/integration/object_storage'
@@ -174,10 +181,12 @@ module QA
         autoload :Repository, 'qa/page/project/settings/repository'
         autoload :CICD, 'qa/page/project/settings/ci_cd'
         autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
+        autoload :DeployTokens, 'qa/page/project/settings/deploy_tokens'
         autoload :ProtectedBranches, 'qa/page/project/settings/protected_branches'
         autoload :SecretVariables, 'qa/page/project/settings/secret_variables'
         autoload :Runners, 'qa/page/project/settings/runners'
         autoload :MergeRequest, 'qa/page/project/settings/merge_request'
+        autoload :Members, 'qa/page/project/settings/members'
       end
 
       module Issue
@@ -214,6 +223,10 @@ module QA
         autoload :New, 'qa/page/project/wiki/new'
         autoload :Show, 'qa/page/project/wiki/show'
       end
+
+      module WebIDE
+        autoload :Edit, 'qa/page/project/web_ide/edit'
+      end
     end
 
     module Profile
@@ -228,6 +241,11 @@ module QA
 
     module Layout
       autoload :Banner, 'qa/page/layout/banner'
+    end
+
+    module Label
+      autoload :New, 'qa/page/label/new'
+      autoload :Index, 'qa/page/label/index'
     end
 
     module MergeRequest
@@ -260,6 +278,9 @@ module QA
       autoload :Dropzone, 'qa/page/component/dropzone'
       autoload :GroupsFilter, 'qa/page/component/groups_filter'
       autoload :Select2, 'qa/page/component/select2'
+      autoload :DropdownFilter, 'qa/page/component/dropdown_filter'
+      autoload :UsersSelect, 'qa/page/component/users_select'
+
       module Issuable
         autoload :Common, 'qa/page/component/issuable/common'
       end
@@ -291,6 +312,26 @@ module QA
   module Specs
     autoload :Config, 'qa/specs/config'
     autoload :Runner, 'qa/specs/runner'
+  end
+
+  ##
+  # Classes that describe the structure of vendor/third party application pages
+  #
+  module Vendor
+    module SAMLIdp
+      module Page
+        autoload :Base, 'qa/vendor/saml_idp/page/base'
+        autoload :Login, 'qa/vendor/saml_idp/page/login'
+      end
+    end
+  end
+
+  # Classes that provide support to other parts of the framework.
+  #
+  module Support
+    module Page
+      autoload :Logging, 'qa/support/page/logging'
+    end
   end
 end
 

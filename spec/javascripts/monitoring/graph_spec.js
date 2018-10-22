@@ -49,6 +49,7 @@ describe('Graph', () => {
       });
 
       const transformedHeight = `${component.graphHeight - 100}`;
+
       expect(component.axisTransform.indexOf(transformedHeight)).not.toEqual(-1);
     });
 
@@ -62,6 +63,7 @@ describe('Graph', () => {
       });
 
       const viewBoxArray = component.outerViewBox.split(' ');
+
       expect(typeof component.outerViewBox).toEqual('string');
       expect(viewBoxArray[2]).toEqual(component.graphWidth.toString());
       expect(viewBoxArray[3]).toEqual((component.graphHeight - 50).toString());
@@ -99,6 +101,7 @@ describe('Graph', () => {
     component.seriesUnderMouse = component.timeSeries;
 
     component.positionFlag();
+
     expect(component.currentData).toBe(component.timeSeries[0].values[10]);
   });
 });

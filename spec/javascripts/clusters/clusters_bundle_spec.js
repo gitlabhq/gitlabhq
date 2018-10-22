@@ -21,21 +21,21 @@ describe('Clusters', () => {
   });
 
   describe('toggle', () => {
-    it('should update the button and the input field on click', (done) => {
-      const toggleButton = document.querySelector('.js-cluster-enable-toggle-area .js-project-feature-toggle');
-      const toggleInput = document.querySelector('.js-cluster-enable-toggle-area .js-project-feature-toggle-input');
+    it('should update the button and the input field on click', done => {
+      const toggleButton = document.querySelector(
+        '.js-cluster-enable-toggle-area .js-project-feature-toggle',
+      );
+      const toggleInput = document.querySelector(
+        '.js-cluster-enable-toggle-area .js-project-feature-toggle-input',
+      );
 
       toggleButton.click();
 
       getSetTimeoutPromise()
         .then(() => {
-          expect(
-            toggleButton.classList,
-          ).not.toContain('is-checked');
+          expect(toggleButton.classList).not.toContain('is-checked');
 
-          expect(
-            toggleInput.getAttribute('value'),
-          ).toEqual('false');
+          expect(toggleInput.getAttribute('value')).toEqual('false');
         })
         .then(done)
         .catch(done.fail);
@@ -46,29 +46,21 @@ describe('Clusters', () => {
     it('should update token field type', () => {
       cluster.showTokenButton.click();
 
-      expect(
-        cluster.tokenField.getAttribute('type'),
-      ).toEqual('text');
+      expect(cluster.tokenField.getAttribute('type')).toEqual('text');
 
       cluster.showTokenButton.click();
 
-      expect(
-        cluster.tokenField.getAttribute('type'),
-      ).toEqual('password');
+      expect(cluster.tokenField.getAttribute('type')).toEqual('password');
     });
 
     it('should update show token button text', () => {
       cluster.showTokenButton.click();
 
-      expect(
-        cluster.showTokenButton.textContent,
-      ).toEqual('Hide');
+      expect(cluster.showTokenButton.textContent).toEqual('Hide');
 
       cluster.showTokenButton.click();
 
-      expect(
-        cluster.showTokenButton.textContent,
-      ).toEqual('Show');
+      expect(cluster.showTokenButton.textContent).toEqual('Show');
     });
   });
 
@@ -86,37 +78,50 @@ describe('Clusters', () => {
       });
 
       const flashMessage = document.querySelector('.js-cluster-application-notice .flash-text');
+
       expect(flashMessage).toBeNull();
     });
 
     it('shows an alert when something gets newly installed', () => {
-      cluster.checkForNewInstalls({
-        ...INITIAL_APP_MAP,
-        helm: { status: APPLICATION_STATUS.INSTALLING, title: 'Helm Tiller' },
-      }, {
-        ...INITIAL_APP_MAP,
-        helm: { status: APPLICATION_STATUS.INSTALLED, title: 'Helm Tiller' },
-      });
+      cluster.checkForNewInstalls(
+        {
+          ...INITIAL_APP_MAP,
+          helm: { status: APPLICATION_STATUS.INSTALLING, title: 'Helm Tiller' },
+        },
+        {
+          ...INITIAL_APP_MAP,
+          helm: { status: APPLICATION_STATUS.INSTALLED, title: 'Helm Tiller' },
+        },
+      );
 
       const flashMessage = document.querySelector('.js-cluster-application-notice .flash-text');
+
       expect(flashMessage).not.toBeNull();
-      expect(flashMessage.textContent.trim()).toEqual('Helm Tiller was successfully installed on your Kubernetes cluster');
+      expect(flashMessage.textContent.trim()).toEqual(
+        'Helm Tiller was successfully installed on your Kubernetes cluster',
+      );
     });
 
     it('shows an alert when multiple things gets newly installed', () => {
-      cluster.checkForNewInstalls({
-        ...INITIAL_APP_MAP,
-        helm: { status: APPLICATION_STATUS.INSTALLING, title: 'Helm Tiller' },
-        ingress: { status: APPLICATION_STATUS.INSTALLABLE, title: 'Ingress' },
-      }, {
-        ...INITIAL_APP_MAP,
-        helm: { status: APPLICATION_STATUS.INSTALLED, title: 'Helm Tiller' },
-        ingress: { status: APPLICATION_STATUS.INSTALLED, title: 'Ingress' },
-      });
+      cluster.checkForNewInstalls(
+        {
+          ...INITIAL_APP_MAP,
+          helm: { status: APPLICATION_STATUS.INSTALLING, title: 'Helm Tiller' },
+          ingress: { status: APPLICATION_STATUS.INSTALLABLE, title: 'Ingress' },
+        },
+        {
+          ...INITIAL_APP_MAP,
+          helm: { status: APPLICATION_STATUS.INSTALLED, title: 'Helm Tiller' },
+          ingress: { status: APPLICATION_STATUS.INSTALLED, title: 'Ingress' },
+        },
+      );
 
       const flashMessage = document.querySelector('.js-cluster-application-notice .flash-text');
+
       expect(flashMessage).not.toBeNull();
-      expect(flashMessage.textContent.trim()).toEqual('Helm Tiller, Ingress was successfully installed on your Kubernetes cluster');
+      expect(flashMessage.textContent.trim()).toEqual(
+        'Helm Tiller, Ingress was successfully installed on your Kubernetes cluster',
+      );
     });
   });
 
@@ -125,29 +130,21 @@ describe('Clusters', () => {
       it('should show the creating container', () => {
         cluster.updateContainer(null, 'creating');
 
-        expect(
-          cluster.creatingContainer.classList.contains('hidden'),
-        ).toBeFalsy();
-        expect(
-          cluster.successContainer.classList.contains('hidden'),
-        ).toBeTruthy();
-        expect(
-          cluster.errorContainer.classList.contains('hidden'),
-        ).toBeTruthy();
+        expect(cluster.creatingContainer.classList.contains('hidden')).toBeFalsy();
+
+        expect(cluster.successContainer.classList.contains('hidden')).toBeTruthy();
+
+        expect(cluster.errorContainer.classList.contains('hidden')).toBeTruthy();
       });
 
       it('should continue to show `creating` banner with subsequent updates of the same status', () => {
         cluster.updateContainer('creating', 'creating');
 
-        expect(
-          cluster.creatingContainer.classList.contains('hidden'),
-        ).toBeFalsy();
-        expect(
-          cluster.successContainer.classList.contains('hidden'),
-        ).toBeTruthy();
-        expect(
-          cluster.errorContainer.classList.contains('hidden'),
-        ).toBeTruthy();
+        expect(cluster.creatingContainer.classList.contains('hidden')).toBeFalsy();
+
+        expect(cluster.successContainer.classList.contains('hidden')).toBeTruthy();
+
+        expect(cluster.errorContainer.classList.contains('hidden')).toBeTruthy();
       });
     });
 
@@ -155,29 +152,21 @@ describe('Clusters', () => {
       it('should show the success container and fresh the page', () => {
         cluster.updateContainer(null, 'created');
 
-        expect(
-          cluster.creatingContainer.classList.contains('hidden'),
-        ).toBeTruthy();
-        expect(
-          cluster.successContainer.classList.contains('hidden'),
-        ).toBeFalsy();
-        expect(
-          cluster.errorContainer.classList.contains('hidden'),
-        ).toBeTruthy();
+        expect(cluster.creatingContainer.classList.contains('hidden')).toBeTruthy();
+
+        expect(cluster.successContainer.classList.contains('hidden')).toBeFalsy();
+
+        expect(cluster.errorContainer.classList.contains('hidden')).toBeTruthy();
       });
 
       it('should not show a banner when status is already `created`', () => {
         cluster.updateContainer('created', 'created');
 
-        expect(
-          cluster.creatingContainer.classList.contains('hidden'),
-        ).toBeTruthy();
-        expect(
-          cluster.successContainer.classList.contains('hidden'),
-        ).toBeTruthy();
-        expect(
-          cluster.errorContainer.classList.contains('hidden'),
-        ).toBeTruthy();
+        expect(cluster.creatingContainer.classList.contains('hidden')).toBeTruthy();
+
+        expect(cluster.successContainer.classList.contains('hidden')).toBeTruthy();
+
+        expect(cluster.errorContainer.classList.contains('hidden')).toBeTruthy();
       });
     });
 
@@ -185,40 +174,31 @@ describe('Clusters', () => {
       it('should show the error container', () => {
         cluster.updateContainer(null, 'errored', 'this is an error');
 
-        expect(
-          cluster.creatingContainer.classList.contains('hidden'),
-        ).toBeTruthy();
-        expect(
-          cluster.successContainer.classList.contains('hidden'),
-        ).toBeTruthy();
-        expect(
-          cluster.errorContainer.classList.contains('hidden'),
-        ).toBeFalsy();
+        expect(cluster.creatingContainer.classList.contains('hidden')).toBeTruthy();
 
-        expect(
-          cluster.errorReasonContainer.textContent,
-        ).toContain('this is an error');
+        expect(cluster.successContainer.classList.contains('hidden')).toBeTruthy();
+
+        expect(cluster.errorContainer.classList.contains('hidden')).toBeFalsy();
+
+        expect(cluster.errorReasonContainer.textContent).toContain('this is an error');
       });
 
       it('should show `error` banner when previously `creating`', () => {
         cluster.updateContainer('creating', 'errored');
 
-        expect(
-          cluster.creatingContainer.classList.contains('hidden'),
-        ).toBeTruthy();
-        expect(
-          cluster.successContainer.classList.contains('hidden'),
-        ).toBeTruthy();
-        expect(
-          cluster.errorContainer.classList.contains('hidden'),
-        ).toBeFalsy();
+        expect(cluster.creatingContainer.classList.contains('hidden')).toBeTruthy();
+
+        expect(cluster.successContainer.classList.contains('hidden')).toBeTruthy();
+
+        expect(cluster.errorContainer.classList.contains('hidden')).toBeFalsy();
       });
     });
   });
 
   describe('installApplication', () => {
-    it('tries to install helm', (done) => {
+    it('tries to install helm', done => {
       spyOn(cluster.service, 'installApplication').and.returnValue(Promise.resolve());
+
       expect(cluster.store.state.applications.helm.requestStatus).toEqual(null);
 
       cluster.installApplication({ id: 'helm' });
@@ -236,8 +216,9 @@ describe('Clusters', () => {
         .catch(done.fail);
     });
 
-    it('tries to install ingress', (done) => {
+    it('tries to install ingress', done => {
       spyOn(cluster.service, 'installApplication').and.returnValue(Promise.resolve());
+
       expect(cluster.store.state.applications.ingress.requestStatus).toEqual(null);
 
       cluster.installApplication({ id: 'ingress' });
@@ -255,8 +236,9 @@ describe('Clusters', () => {
         .catch(done.fail);
     });
 
-    it('tries to install runner', (done) => {
+    it('tries to install runner', done => {
       spyOn(cluster.service, 'installApplication').and.returnValue(Promise.resolve());
+
       expect(cluster.store.state.applications.runner.requestStatus).toEqual(null);
 
       cluster.installApplication({ id: 'runner' });
@@ -274,26 +256,35 @@ describe('Clusters', () => {
         .catch(done.fail);
     });
 
-    it('tries to install jupyter', (done) => {
+    it('tries to install jupyter', done => {
       spyOn(cluster.service, 'installApplication').and.returnValue(Promise.resolve());
+
       expect(cluster.store.state.applications.jupyter.requestStatus).toEqual(null);
-      cluster.installApplication({ id: 'jupyter', params: { hostname: cluster.store.state.applications.jupyter.hostname } });
+      cluster.installApplication({
+        id: 'jupyter',
+        params: { hostname: cluster.store.state.applications.jupyter.hostname },
+      });
 
       expect(cluster.store.state.applications.jupyter.requestStatus).toEqual(REQUEST_LOADING);
       expect(cluster.store.state.applications.jupyter.requestReason).toEqual(null);
-      expect(cluster.service.installApplication).toHaveBeenCalledWith('jupyter', { hostname: cluster.store.state.applications.jupyter.hostname });
+      expect(cluster.service.installApplication).toHaveBeenCalledWith('jupyter', {
+        hostname: cluster.store.state.applications.jupyter.hostname,
+      });
 
       getSetTimeoutPromise()
-      .then(() => {
-        expect(cluster.store.state.applications.jupyter.requestStatus).toEqual(REQUEST_SUCCESS);
-        expect(cluster.store.state.applications.jupyter.requestReason).toEqual(null);
-      })
-      .then(done)
-      .catch(done.fail);
+        .then(() => {
+          expect(cluster.store.state.applications.jupyter.requestStatus).toEqual(REQUEST_SUCCESS);
+          expect(cluster.store.state.applications.jupyter.requestReason).toEqual(null);
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
-    it('sets error request status when the request fails', (done) => {
-      spyOn(cluster.service, 'installApplication').and.returnValue(Promise.reject(new Error('STUBBED ERROR')));
+    it('sets error request status when the request fails', done => {
+      spyOn(cluster.service, 'installApplication').and.returnValue(
+        Promise.reject(new Error('STUBBED ERROR')),
+      );
+
       expect(cluster.store.state.applications.helm.requestStatus).toEqual(null);
 
       cluster.installApplication({ id: 'helm' });

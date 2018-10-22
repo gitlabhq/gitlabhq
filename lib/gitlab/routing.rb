@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Routing
     extend ActiveSupport::Concern
@@ -47,7 +49,7 @@ module Gitlab
         #
         # `request.fullpath` includes the querystring
         new_path = request.path.sub(%r{/#{path}(/*)(?!.*#{path})}, "/-/#{path}\\1")
-        new_path << "?#{request.query_string}" if request.query_string.present?
+        new_path = "#{new_path}?#{request.query_string}" if request.query_string.present?
 
         new_path
       end

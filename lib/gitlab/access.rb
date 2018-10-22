@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Gitlab::Access module
 #
 # Define allowed roles that can be used

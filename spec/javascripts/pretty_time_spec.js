@@ -122,11 +122,13 @@ describe('prettyTime methods', () => {
   describe('abbreviateTime', () => {
     it('should abbreviate stringified times for weeks', () => {
       const fullTimeString = '1w 3d 4h 5m';
+
       expect(abbreviateTime(fullTimeString)).toBe('1w');
     });
 
     it('should abbreviate stringified times for non-weeks', () => {
       const fullTimeString = '0w 3d 4h 5m';
+
       expect(abbreviateTime(fullTimeString)).toBe('3d');
     });
   });

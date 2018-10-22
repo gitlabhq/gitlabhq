@@ -29,7 +29,10 @@ describe('IDE merge request item', () => {
   });
 
   it('renders link with href', () => {
-    const expectedHref = router.resolve(`/project/${vm.item.projectPathWithNamespace}/merge_requests/${vm.item.iid}`).href;
+    const expectedHref = router.resolve(
+      `/project/${vm.item.projectPathWithNamespace}/merge_requests/${vm.item.iid}`,
+    ).href;
+
     expect(vm.$el).toMatch('a');
     expect(vm.$el).toHaveAttr('href', expectedHref);
   });

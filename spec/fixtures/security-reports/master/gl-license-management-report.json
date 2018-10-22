@@ -1,0 +1,150 @@
+{
+    "licenses": [
+        {
+            "count": 10,
+            "name": "MIT"
+        }
+    ],
+    "dependencies": [
+        {
+            "license": {
+                "name": "MIT",
+                "url": "http://opensource.org/licenses/mit-license"
+            },
+            "dependency": {
+                "name": "mini_portile2",
+                "url": "http://github.com/flavorjones/mini_portile",
+                "description": "Simplistic port-like solution for developers",
+                "pathes": [
+                    "."
+                ]
+            }
+        },
+        {
+            "license": {
+                "name": "MIT",
+                "url": "http://opensource.org/licenses/mit-license"
+            },
+            "dependency": {
+                "name": "mustermann",
+                "url": "https://github.com/sinatra/mustermann",
+                "description": "Your personal string matching expert.",
+                "pathes": [
+                    "."
+                ]
+            }
+        },
+        {
+            "license": {
+                "name": "MIT",
+                "url": "http://opensource.org/licenses/mit-license"
+            },
+            "dependency": {
+                "name": "nokogiri",
+                "url": "http://nokogiri.org",
+                "description": "Nokogiri (鋸) is an HTML, XML, SAX, and Reader parser",
+                "pathes": [
+                    "."
+                ]
+            }
+        },
+        {
+            "license": {
+                "name": "MIT",
+                "url": "http://opensource.org/licenses/mit-license"
+            },
+            "dependency": {
+                "name": "rack",
+                "url": "https://rack.github.io/",
+                "description": "a modular Ruby webserver interface",
+                "pathes": [
+                    "."
+                ]
+            }
+        },
+        {
+            "license": {
+                "name": "MIT",
+                "url": "http://opensource.org/licenses/mit-license"
+            },
+            "dependency": {
+                "name": "rack-protection",
+                "url": "http://github.com/sinatra/sinatra/tree/master/rack-protection",
+                "description": "Protect against typical web attacks, works with all Rack apps, including Rails.",
+                "pathes": [
+                    "."
+                ]
+            }
+        },
+        {
+            "license": {
+                "name": "MIT",
+                "url": "http://opensource.org/licenses/mit-license"
+            },
+            "dependency": {
+                "name": "redis",
+                "url": "https://github.com/redis/redis-rb",
+                "description": "A Ruby client library for Redis",
+                "pathes": [
+                    "."
+                ]
+            }
+        },
+        {
+            "license": {
+                "name": "MIT",
+                "url": "http://opensource.org/licenses/mit-license"
+            },
+            "dependency": {
+                "name": "sinatra",
+                "url": "http://www.sinatrarb.com/",
+                "description": "Classy web-development dressed in a DSL",
+                "pathes": [
+                    "."
+                ]
+            }
+        },
+        {
+            "license": {
+                "name": "MIT",
+                "url": "http://opensource.org/licenses/mit-license"
+            },
+            "dependency": {
+                "name": "slim",
+                "url": "http://slim-lang.com/",
+                "description": "Slim is a template language.",
+                "pathes": [
+                    "."
+                ]
+            }
+        },
+        {
+            "license": {
+                "name": "MIT",
+                "url": "http://opensource.org/licenses/mit-license"
+            },
+            "dependency": {
+                "name": "temple",
+                "url": "https://github.com/judofyr/temple",
+                "description": "Template compilation framework in Ruby",
+                "pathes": [
+                    "."
+                ]
+            }
+        },
+        {
+            "license": {
+                "name": "MIT",
+                "url": "http://opensource.org/licenses/mit-license"
+            },
+            "dependency": {
+                "name": "tilt",
+                "url": "http://github.com/rtomayko/tilt/",
+                "description": "Generic interface to multiple Ruby template engines",
+                "pathes": [
+                    "."
+                ]
+            }
+        }
+    ]
+}

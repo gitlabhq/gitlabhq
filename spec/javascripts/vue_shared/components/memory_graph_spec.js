@@ -52,8 +52,9 @@ describe('MemoryGraph', () => {
       it('should show human readable median value based on provided median timestamp', () => {
         vm.deploymentTime = mockMedian;
         const formattedMedian = vm.getFormattedMedian;
-        expect(formattedMedian.indexOf('Deployed') > -1).toBeTruthy();
-        expect(formattedMedian.indexOf('ago') > -1).toBeTruthy();
+
+        expect(formattedMedian.indexOf('Deployed')).toBeGreaterThan(-1);
+        expect(formattedMedian.indexOf('ago')).toBeGreaterThan(-1);
       });
     });
   });
@@ -62,6 +63,7 @@ describe('MemoryGraph', () => {
     describe('getMedianMetricIndex', () => {
       it('should return index of closest metric timestamp to that of median', () => {
         const matchingIndex = vm.getMedianMetricIndex(mockMedian, mockMetrics);
+
         expect(matchingIndex).toBe(mockMedianIndex);
       });
     });
@@ -69,6 +71,7 @@ describe('MemoryGraph', () => {
     describe('getGraphPlotValues', () => {
       it('should return Object containing values to plot graph', () => {
         const plotValues = vm.getGraphPlotValues(mockMedian, mockMetrics);
+
         expect(plotValues.pathD).toBeDefined();
         expect(Array.isArray(plotValues.pathD)).toBeTruthy();
 
@@ -90,7 +93,7 @@ describe('MemoryGraph', () => {
       expect(el.querySelector('svg')).toBeDefined();
     });
 
-    it('should render graph when renderGraph is called internally', (done) => {
+    it('should render graph when renderGraph is called internally', done => {
       const { pathD, pathViewBox, dotX, dotY } = vm.getGraphPlotValues(mockMedian, mockMetrics);
       vm.height = defaultHeight;
       vm.width = defaultWidth;
@@ -101,16 +104,21 @@ describe('MemoryGraph', () => {
 
       Vue.nextTick(() => {
         const svgEl = el.querySelector('svg');
+
         expect(svgEl).toBeDefined();
         expect(svgEl.getAttribute('height')).toBe(defaultHeight);
         expect(svgEl.getAttribute('width')).toBe(defaultWidth);
 
         const pathEl = el.querySelector('path');
+
         expect(pathEl).toBeDefined();
         expect(pathEl.getAttribute('d')).toBe(`M ${pathD}`);
-        expect(pathEl.getAttribute('viewBox')).toBe(`0 0 ${pathViewBox.lineWidth} ${pathViewBox.diff}`);
+        expect(pathEl.getAttribute('viewBox')).toBe(
+          `0 0 ${pathViewBox.lineWidth} ${pathViewBox.diff}`,
+        );
 
         const circleEl = el.querySelector('circle');
+
         expect(circleEl).toBeDefined();
         expect(circleEl.getAttribute('r')).toBe('1.5');
         expect(circleEl.getAttribute('transform')).toBe('translate(0 -1)');

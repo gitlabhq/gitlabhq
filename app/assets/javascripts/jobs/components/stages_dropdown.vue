@@ -1,50 +1,39 @@
 <script>
-  import _ from 'underscore';
-  import CiIcon from '~/vue_shared/components/ci_icon.vue';
-  import Icon from '~/vue_shared/components/icon.vue';
-  import { __ } from '~/locale';
+import _ from 'underscore';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 
-  export default {
-    components: {
-      CiIcon,
-      Icon,
+export default {
+  components: {
+    CiIcon,
+    Icon,
+  },
+  props: {
+    pipeline: {
+      type: Object,
+      required: true,
     },
-    props: {
-      pipeline: {
-        type: Object,
-        required: true,
-      },
-      stages: {
-        type: Array,
-        required: true,
-      },
+    stages: {
+      type: Array,
+      required: true,
     },
-    data() {
-      return {
-        selectedStage: this.stages.length > 0 ? this.stages[0].name : __('More'),
-      };
+    selectedStage: {
+      type: String,
+      required: true,
     },
-    computed: {
-      hasRef() {
-        return !_.isEmpty(this.pipeline.ref);
-      },
+  },
+
+  computed: {
+    hasRef() {
+      return !_.isEmpty(this.pipeline.ref);
     },
-    watch: {
-      // When the component is initially mounted it may start with an empty stages array.
-      // Once the prop is updated, we set the first stage as the selected one
-      stages(newVal) {
-        if (newVal.length) {
-          this.selectedStage = newVal[0].name;
-        }
-      },
+  },
+  methods: {
+    onStageClick(stage) {
+      this.$emit('requestSidebarStageDropdown', stage);
     },
-    methods: {
-      onStageClick(stage) {
-        this.$emit('requestSidebarStageDropdown', stage);
-        this.selectedStage = stage.name;
-      },
-    },
-  };
+  },
+};
 </script>
 <template>
   <div class="block-last dropdown">
