@@ -1,0 +1,5 @@
+---
+title: Drop `allow_overflow` option in `TimeHelper.duration_in_numbers`
+merge_request: 52284
+author:
+type: changed

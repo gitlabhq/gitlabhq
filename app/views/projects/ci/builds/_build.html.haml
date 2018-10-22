@@ -108,7 +108,7 @@
             .btn.btn-default.has-tooltip{ disabled: true,
               title: job.scheduled_at }
               = sprite_icon('planning')
-              = duration_in_numbers(job.execute_in, true)
+              = duration_in_numbers(job.execute_in)
             - confirmation_message = s_("DelayedJobs|Are you sure you want to run %{job_name} immediately? This job will run automatically after it's timer finishes.") % { job_name: job.name }
             = link_to play_project_job_path(job.project, job, return_to: request.original_url),
               method: :post,

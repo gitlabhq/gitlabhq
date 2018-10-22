@@ -26,9 +26,9 @@ describe Gitlab::Ci::Status::Build::Scheduled do
     context 'when scheduled_at is expired' do
       let(:build) { create(:ci_build, :expired_scheduled, project: project) }
 
-      it 'shows 00:00:00' do
+      it 'shows 00:00' do
         Timecop.freeze do
-          expect(subject.status_tooltip).to include('00:00:00')
+          expect(subject.status_tooltip).to include('00:00')
         end
       end
     end
