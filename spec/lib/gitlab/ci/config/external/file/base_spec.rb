@@ -11,25 +11,25 @@ describe Gitlab::Ci::Config::External::File::Base do
   end
 
   describe '#valid?' do
-    context 'when location is not a YAML file by extension' do
+    context 'when location is not a YAML file' do
       let(:location) { 'some/file.txt' }
 
       it { is_expected.not_to be_valid }
     end
 
-    context 'when location is not an invalid YAML extension' do
+    context 'when location has not a valid naming scheme' do
       let(:location) { 'some/file/.yml' }
 
       it { is_expected.not_to be_valid }
     end
 
-    context 'when location is not an valid YAML extension' do
+    context 'when location is a valid .yml extension' do
       let(:location) { 'some/file/config.yml' }
 
       it { is_expected.to be_valid }
     end
 
-    context 'when location is not an valid YAML extension' do
+    context 'when location is a valid .yaml extension' do
       let(:location) { 'some/file/config.yaml' }
 
       it { is_expected.to be_valid }
