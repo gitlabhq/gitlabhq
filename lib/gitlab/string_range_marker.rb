@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class StringRangeMarker
     attr_accessor :raw_line, :rich_line, :html_escaped

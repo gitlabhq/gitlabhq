@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This class is part of the Gitlab::HTTP wrapper. Depending on the value
 # of the global setting allow_local_requests_from_hooks_and_services this adapter
 # will allow/block connection to internal IPs and/or urls.

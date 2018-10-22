@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class Highlight
     TIMEOUT_BACKGROUND = 30.seconds

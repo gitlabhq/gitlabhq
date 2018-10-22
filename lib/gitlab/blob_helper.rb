@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This has been extracted from https://github.com/github/linguist/blob/master/lib/linguist/blob_helper.rb
 module Gitlab
   module BlobHelper

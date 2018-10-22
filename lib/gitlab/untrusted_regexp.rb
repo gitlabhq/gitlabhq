@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   # An untrusted regular expression is any regexp containing patterns sourced
   # from user input.

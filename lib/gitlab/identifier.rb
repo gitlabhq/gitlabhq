@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Detect user based on identifier like
 # key-13 or user-36 or last commit
 module Gitlab

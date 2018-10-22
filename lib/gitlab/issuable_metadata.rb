@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module IssuableMetadata
     def issuable_meta_data(issuable_collection, collection_type)

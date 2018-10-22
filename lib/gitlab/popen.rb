@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'fileutils'
 require 'open3'
 
@@ -11,7 +13,7 @@ module Gitlab
     def popen(cmd, path = nil, vars = {}, &block)
       result = popen_with_detail(cmd, path, vars, &block)
 
-      [result.stdout << result.stderr, result.status&.exitstatus]
+      ["#{result.stdout}#{result.stderr}", result.status&.exitstatus]
     end
 
     # Returns Result

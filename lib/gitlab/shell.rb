@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Gitaly note: SSH key operations are not part of Gitaly so will never be migrated.
 
 require 'securerandom'

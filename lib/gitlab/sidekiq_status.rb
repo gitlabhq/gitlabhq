@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   # The SidekiqStatus module and its child classes can be used for checking if a
   # Sidekiq job has been processed or not.
