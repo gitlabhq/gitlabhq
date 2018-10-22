@@ -67,7 +67,7 @@ module Projects
       end
 
       if project.previous_changes.include?('path')
-        project.rename_repo
+        AfterRenameService.new(project).execute
       else
         system_hook_service.execute_hooks_for(project, :update)
       end
