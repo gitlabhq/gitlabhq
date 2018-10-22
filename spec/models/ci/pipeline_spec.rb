@@ -779,6 +779,29 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe 'ref_exists?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:project) { create(:project, :repository) }
+
+    where(:tag, :ref, :result) do
+      false | 'master'              | true
+      false | 'non-existent-branch' | false
+      true  | 'v1.1.0'              | true
+      true  | 'non-existent-tag'    | false
+    end
+
+    with_them do
+      let(:pipeline) do
+        create(:ci_empty_pipeline, project: project, tag: tag, ref: ref)
+      end
+
+      it "correctly detects ref" do
+        expect(pipeline.ref_exists?).to be result
+      end
+    end
+  end
+
   context 'with non-empty project' do
     let(:project) { create(:project, :repository) }
 

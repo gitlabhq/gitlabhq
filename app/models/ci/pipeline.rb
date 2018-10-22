@@ -269,7 +269,7 @@ module Ci
     end
 
     def ref_exists?
-      project.repository.ref_exists?(self.ref)
+      project.repository.ref_exists?(git_ref)
     end
 
     ##
@@ -678,11 +678,11 @@ module Ci
 
     def push_details
       strong_memoize(:push_details) do
-        Gitlab::Git::Push.new(project, before_sha, sha, push_ref)
+        Gitlab::Git::Push.new(project, before_sha, sha, git_ref)
       end
     end
 
-    def push_ref
+    def git_ref
       if branch?
         Gitlab::Git::BRANCH_REF_PREFIX + ref.to_s
       elsif tag?
