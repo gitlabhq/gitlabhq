@@ -63,7 +63,7 @@ module QA
       private_class_method :do_fabricate!
 
       def self.log_fabrication(method, factory, parents, args)
-        return yield unless Runtime::Env.verbose?
+        return yield unless Runtime::Env.debug?
 
         start = Time.now
         prefix = "==#{'=' * parents.size}>"

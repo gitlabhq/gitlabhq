@@ -35,8 +35,8 @@ describe QA::Factory::Base do
       end
     end
 
-    it 'does not log the factory and build method when VERBOSE=false' do
-      stub_env('VERBOSE', 'false')
+    it 'does not log the factory and build method when QA_DEBUG=false' do
+      stub_env('QA_DEBUG', 'false')
       expect(factory).to receive(fabrication_method_used).and_return(product_location)
 
       expect { subject.public_send(fabrication_method_called, 'something', factory: factory) }
@@ -79,8 +79,8 @@ describe QA::Factory::Base do
       expect(result).to eq(product)
     end
 
-    it 'logs the factory and build method when VERBOSE=true' do
-      stub_env('VERBOSE', 'true')
+    it 'logs the factory and build method when QA_DEBUG=true' do
+      stub_env('QA_DEBUG', 'true')
       expect(factory).to receive(:fabricate_via_api!).and_return(product_location)
 
       expect { subject.fabricate_via_api!(factory: factory, parents: []) }
@@ -106,8 +106,8 @@ describe QA::Factory::Base do
       expect(result).to eq(product)
     end
 
-    it 'logs the factory and build method when VERBOSE=true' do
-      stub_env('VERBOSE', 'true')
+    it 'logs the factory and build method when QA_DEBUG=true' do
+      stub_env('QA_DEBUG', 'true')
 
       expect { subject.fabricate_via_browser_ui!('something', factory: factory, parents: []) }
         .to output(/==> Built a MyFactory via browser_ui with args \["something"\] in [\d\w\.\-]+/)

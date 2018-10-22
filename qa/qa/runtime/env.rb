@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QA
   module Runtime
     module Env
@@ -5,8 +7,12 @@ module QA
 
       attr_writer :personal_access_token
 
-      def verbose?
-        enabled?(ENV['VERBOSE'], default: false)
+      def debug?
+        enabled?(ENV['QA_DEBUG'], default: false)
+      end
+
+      def log_destination
+        ENV['QA_LOG_PATH'] || $stdout
       end
 
       # set to 'false' to have Chrome run visibly instead of headless
