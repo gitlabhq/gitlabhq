@@ -194,6 +194,14 @@ describe Ci::JobArtifact do
       end
     end
 
+    context 'when file format is raw' do
+      let(:artifact) { build(:ci_job_artifact, :codequality, file_format: :raw) }
+
+      it 'iterates blob once' do
+        expect { |b| artifact.each_blob(&b) }.to yield_control.once
+      end
+    end
+
     context 'when there are no adapters for the file format' do
       let(:artifact) { build(:ci_job_artifact, :junit, file_format: :zip) }
 

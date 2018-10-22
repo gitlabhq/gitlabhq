@@ -1,0 +1,46 @@
+[
+  {
+    "priority": "Unknown",
+    "file": "pom.xml",
+    "cve": "CVE-2012-4387",
+    "url": "http://struts.apache.org/docs/s2-011.html",
+    "message": "Long parameter name DoS for org.apache.struts/struts2-core",
+    "tools": [
+      "gemnasium"
+    ],
+    "tool": "gemnasium"
+  },
+  {
+    "priority": "Unknown",
+    "file": "pom.xml",
+    "cve": "CVE-2013-1966",
+    "url": "http://struts.apache.org/docs/s2-014.html",
+    "message": "Remote command execution due to flaw in the includeParams attribute of URL and Anchor tags for org.apache.struts/struts2-core",
+    "tools": [
+      "gemnasium"
+    ],
+    "tool": "gemnasium"
+  },
+  {
+    "priority": "Unknown",
+    "file": "pom.xml",
+    "cve": "CVE-2013-2115",
+    "url": "http://struts.apache.org/docs/s2-014.html",
+    "message": "Remote command execution due to flaw in the includeParams attribute of URL and Anchor tags for org.apache.struts/struts2-core",
+    "tools": [
+      "gemnasium"
+    ],
+    "tool": "gemnasium"
+  },
+  {
+    "priority": "Unknown",
+    "file": "pom.xml",
+    "cve": "CVE-2013-2134",
+    "url": "http://struts.apache.org/docs/s2-015.html",
+    "message": "Arbitrary OGNL code execution via unsanitized wildcard matching for org.apache.struts/struts2-core",
+    "tools": [
+      "gemnasium"
+    ],
+    "tool": "gemnasium"
+  }
+]
