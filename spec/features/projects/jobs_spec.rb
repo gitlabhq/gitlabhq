@@ -373,16 +373,14 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
     context 'when job starts environment', :js do
       let(:environment) { create(:environment, name: 'production', project: project) }
 
+      before do
+        visit project_job_path(project, build)
+        wait_for_requests
+      end
+
       context 'job is successful and has deployment' do
         let(:build) { create(:ci_build, :success, :trace_live, environment: environment.name, pipeline: pipeline) }
         let!(:deployment) { create(:deployment, environment: environment, project: environment.project, deployable: build) }
-
-        before do
-          visit project_job_path(project, build)
-          wait_for_requests
-          # scroll to the top of the page first
-          execute_script "window.scrollTo(0,0)"
-        end
 
         it 'shows a link for the job' do
           expect(page).to have_link environment.name
@@ -398,11 +396,6 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         let(:build) { create(:ci_build, :failed, :trace_artifact, environment: environment.name, pipeline: pipeline) }
 
         it 'shows a link for the job' do
-          visit project_job_path(project, build)
-          wait_for_requests
-          # scroll to the top of the page first
-          execute_script "window.scrollTo(0,0)"
-
           expect(page).to have_link environment.name
           expect(find('.js-environment-link')['href']).to match("environments/#{environment.id}")
         end
@@ -412,11 +405,6 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         let(:build) { create(:ci_build, :success, environment: environment.name, pipeline: pipeline) }
 
         it 'shows a link to latest deployment' do
-          visit project_job_path(project, build)
-          wait_for_all_requests
-          # scroll to the top of the page first
-          execute_script "window.scrollTo(0,0)"
-
           expect(page).to have_link environment.name
           expect(page).to have_content 'This job is creating a deployment'
           expect(find('.js-environment-link')['href']).to match("environments/#{environment.id}")
@@ -453,8 +441,6 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       before do
         visit project_job_path(project, job)
         wait_for_requests
-        # scroll to the top of the page first
-        execute_script "window.scrollTo(0,0)"
       end
 
       context 'job with outdated deployment' do
@@ -484,8 +470,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         it 'shows deployment message' do
           expected_text = 'The deployment of this job to staging did not succeed.'
 
-          expect(page).to have_css(
-            '.environment-information', text: expected_text)
+          expect(page).to have_css('.environment-information', text: expected_text)
         end
       end
 
@@ -498,8 +483,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
           it 'shows deployment message' do
             expected_text = 'This job is creating a deployment to staging'
 
-            expect(page).to have_css(
-              '.environment-information', text: expected_text)
+            expect(page).to have_css('.environment-information', text: expected_text)
             expect(find('.js-environment-link')['href']).to match("environments/#{environment.id}")
           end
 
@@ -509,10 +493,8 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
             it 'shows that deployment will be overwritten' do
               expected_text = 'This job is creating a deployment to staging'
 
-              expect(page).to have_css(
-                '.environment-information', text: expected_text)
-              expect(page).to have_css(
-                '.environment-information', text: 'latest deployment')
+              expect(page).to have_css('.environment-information', text: expected_text)
+              expect(page).to have_css('.environment-information', text: 'latest deployment')
               expect(find('.js-environment-link')['href']).to match("environments/#{environment.id}")
             end
           end
