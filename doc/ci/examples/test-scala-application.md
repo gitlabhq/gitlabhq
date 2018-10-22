@@ -25,7 +25,7 @@ before_script:
   - apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 642AC823
   - apt-get update -y
   - apt-get install sbt -y
-  - sbt sbt-version
+  - sbt sbtVersion
 
 test:
   stage: test
