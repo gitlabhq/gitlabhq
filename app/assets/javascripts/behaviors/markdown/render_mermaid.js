@@ -17,7 +17,7 @@ import flash from '~/flash';
 export default function renderMermaid($els) {
   if (!$els.length) return;
 
-  import(/* webpackChunkName: 'mermaid' */ 'blackst0ne-mermaid')
+  import(/* webpackChunkName: 'mermaid' */ 'mermaid')
     .then(mermaid => {
       mermaid.initialize({
         // mermaid core options
