@@ -181,10 +181,10 @@ Severity levels can be applied further depending on the facet of the impact; e.g
 
 Issues that are beneficial to our users, 'nice to haves', that we currently do
 not have the capacity for or want to give the priority to, are labeled as
-~"Accepting Merge Requests", so the community can make a contribution.
+~"Accepting merge requests", so the community can make a contribution.
 
 Community contributors can submit merge requests for any issue they want, but
-the ~"Accepting Merge Requests" label has a special meaning. It points to
+the ~"Accepting merge requests" label has a special meaning. It points to
 changes that:
 
 1. We already agreed on,
@@ -192,26 +192,26 @@ changes that:
 1. Are likely to get accepted by a maintainer.
 
 We want to avoid a situation when a contributor picks an
-~"Accepting Merge Requests" issue and then their merge request gets closed,
+~"Accepting merge requests" issue and then their merge request gets closed,
 because we realize that it does not fit our vision, or we want to solve it in a
 different way.
 
-We add the ~"Accepting Merge Requests" label to:
+We add the ~"Accepting merge requests" label to:
 
 - Low priority ~bug issues (i.e. we do not add it to the bugs that we want to
 solve in the ~"Next Patch Release")
 - Small ~"feature proposal"
 - Small ~"technical debt" issues
 
-After adding the ~"Accepting Merge Requests" label, we try to estimate the
+After adding the ~"Accepting merge requests" label, we try to estimate the
 [weight](#issue-weight) of the issue. We use issue weight to let contributors
 know how difficult the issue is. Additionally:
 
-- We advertise ["Accepting Merge Requests" issues with weight < 5][up-for-grabs]
+- We advertise [`Accepting merge requests` issues with weight < 5][up-for-grabs]
   as suitable for people that have never contributed to GitLab before on the
   [Up For Grabs campaign](http://up-for-grabs.net)
 - We encourage people that have never contributed to any open source project to
-  look for ["Accepting Merge Requests" issues with a weight of 1][firt-timers]
+  look for [`Accepting merge requests` issues with a weight of 1][firt-timers]
 
 If you've decided that you would like to work on an issue, please @-mention
 the [appropriate product manager](https://about.gitlab.com/handbook/product/#who-to-talk-to-for-what)
@@ -220,12 +220,12 @@ members to further discuss scope, design, and technical considerations. This wil
 ensure that your contribution is aligned with the GitLab product and minimize
 any rework and delay in getting it merged into master.
 
-GitLab team members who apply the ~"Accepting Merge Requests" label to an issue
+GitLab team members who apply the ~"Accepting merge requests" label to an issue
 should update the issue description with a responsible product manager, inviting
 any potential community contributor to @-mention per above.
 
-[up-for-grabs]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=Accepting+Merge+Requests&scope=all&sort=weight_asc&state=opened
-[firt-timers]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name%5B%5D=Accepting+Merge+Requests&scope=all&sort=upvotes_desc&state=opened&weight=1
+[up-for-grabs]: https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=0&sort=weight
+[firt-timers]: https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=0&sort=weight&weight=1
 
 ## Issue triaging
 
