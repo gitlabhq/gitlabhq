@@ -353,21 +353,26 @@ describe Milestone do
     context 'when the projects have milestones' do
       let(:project_1) { create(:project) }
       let(:project_2) { create(:project) }
-      let(:project_3) { create(:project) }
+      let(:group_1) { create(:group) }
+      let(:group_2) { create(:group) }
 
       before do
-        create(:closed_milestone, title: 'Active Group Milestone', project: project_3)
         create(:active_milestone, title: 'Active Group Milestone', project: project_1)
-        create(:active_milestone, title: 'Active Group Milestone', project: project_2)
         create(:closed_milestone, title: 'Closed Group Milestone', project: project_1)
+        create(:active_milestone, title: 'Active Group Milestone', project: project_2)
         create(:closed_milestone, title: 'Closed Group Milestone', project: project_2)
-        create(:closed_milestone, title: 'Closed Group Milestone', project: project_3)
+        create(:closed_milestone, title: 'Active Group Milestone', group: group_1)
+        create(:closed_milestone, title: 'Closed Group Milestone', group: group_1)
+        create(:closed_milestone, title: 'Active Group Milestone', group: group_2)
+        create(:closed_milestone, title: 'Closed Group Milestone', group: group_2)
       end
 
       it 'returns the quantity of milestones in each possible state' do
-        expected_count = { opened: 5, closed: 4, all: 9 }
+        expected_count = { opened: 5, closed: 6, all: 11 }
 
-        count = described_class.states_count(Project.all)
+        count = described_class.states_count(Project.all, Group.all)
+
+        p Project.all, Group.all
 
         expect(count).to eq(expected_count)
       end
