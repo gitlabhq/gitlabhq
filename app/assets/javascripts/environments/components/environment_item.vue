@@ -141,7 +141,7 @@ export default {
     },
 
     actions() {
-      if (!this.model || !this.model.last_deployment) {
+      if (!this.model || !this.model.last_deployment || !this.canCreateDeployment) {
         return [];
       }
 
@@ -149,11 +149,7 @@ export default {
         this.model.last_deployment,
         { deep: true },
       );
-      let combinedActions = [];
-      if (this.canCreateDeployment) {
-        combinedActions = combinedActions.concat(manualActions || []);
-      }
-      combinedActions = combinedActions.concat(scheduledActions || []);
+      const combinedActions = (manualActions || []).concat(scheduledActions || []);
       return combinedActions.map(action => ({
         ...action,
         name: humanize(action.name),
