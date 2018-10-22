@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :create do
+  context 'Create' do
     describe 'Git clone over HTTP', :ldap do
       let(:location) do
         Page::Project::Show.act do

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :create do
+  context 'Create' do
     describe 'Git push over HTTP', :ldap do
       it 'user pushes code to the repository'  do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

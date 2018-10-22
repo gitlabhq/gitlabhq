@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :manage, :orchestrated, :mattermost do
+  context 'Manage', :orchestrated, :mattermost do
     describe 'Mattermost login' do
       it 'user logs into Mattermost using GitLab OAuth' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login) do

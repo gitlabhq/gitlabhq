@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :create do
+  context 'Create' do
     describe 'Merge request creation' do
       it 'user creates a new merge request'  do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

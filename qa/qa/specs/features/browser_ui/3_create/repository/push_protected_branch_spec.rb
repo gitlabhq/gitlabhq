@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :create do
+  context 'Create' do
     describe 'Protected branch support', :ldap do
       let(:branch_name) { 'protected-branch' }
       let(:commit_message) { 'Protected push commit message' }

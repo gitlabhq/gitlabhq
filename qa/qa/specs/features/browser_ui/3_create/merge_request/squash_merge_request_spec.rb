@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :create do
+  context 'Create' do
     describe 'Merge request squashing' do
       it 'user squashes commits while merging'  do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
