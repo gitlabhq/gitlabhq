@@ -341,10 +341,9 @@ args: {
 
 ### `uid_attribute`
 
->**Note:**
-This setting is only available on GitLab 10.7 and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/43806) in GitLab 10.7.
 
-By default, the `uid` is set as the `name_id` in the SAML response. If you'd like to designate a unique attribute for the `uid`, you can set the `uid_attribute`. In the below example, there is an attribute named `uid` in the SAML response that the user would like to set as the `uid`.
+By default, the `uid` is set as the `name_id` in the SAML response. If you'd like to designate a unique attribute for the `uid`, you can set the `uid_attribute`. In the example below, the value of `uid` attribute in the SAML response is set as the `uid_attribute`.
 
 ```yaml
 args: {
