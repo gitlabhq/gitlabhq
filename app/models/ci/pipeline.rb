@@ -270,6 +270,8 @@ module Ci
 
     def ref_exists?
       project.repository.ref_exists?(git_ref)
+    rescue Gitlab::Git::Repository::NoRepository
+      false
     end
 
     ##

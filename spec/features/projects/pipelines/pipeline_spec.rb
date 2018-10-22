@@ -241,9 +241,12 @@ describe 'Pipeline', :js do
       end
     end
 
-    context 'with deleted branch' do
-      before do
-        allow(pipeline).to receive(:ref_exists?).and_return(false)
+    context 'when pipeline ref does not exist in repository anymore' do
+      let(:pipeline) do
+        create(:ci_empty_pipeline, project: project,
+                                   ref: 'non-existent',
+                                   sha: project.commit.id,
+                                   user: user)
       end
 
       it 'does not render link to the pipeline ref' do
