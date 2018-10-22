@@ -112,7 +112,8 @@ export default {
     eventHub.$on('mr.discussion.updated', this.checkStatus);
   },
   mounted() {
-    this.handleMounted();
+    this.setFaviconHelper();
+    this.initDeploymentsPolling();
   },
   beforeDestroy() {
     eventHub.$off('mr.discussion.updated', this.checkStatus);
@@ -249,10 +250,6 @@ export default {
       eventHub.$on('DisablePolling', () => {
         this.stopPolling();
       });
-    },
-    handleMounted() {
-      this.setFaviconHelper();
-      this.initDeploymentsPolling();
     },
   },
 };

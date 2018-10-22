@@ -7,11 +7,12 @@ import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import mockData from './mock_data';
 import { faviconDataUrl, overlayDataUrl, faviconWithOverlayDataUrl } from '../lib/utils/mock_data';
 
-const returnPromise = data => new Promise((resolve) => {
-  resolve({
-    data,
+const returnPromise = data =>
+  new Promise(resolve => {
+    resolve({
+      data,
+    });
   });
-});
 
 describe('mrWidgetOptions', () => {
   let vm;
@@ -135,7 +136,7 @@ describe('mrWidgetOptions', () => {
 
   describe('methods', () => {
     describe('checkStatus', () => {
-      it('should tell service to check status', (done) => {
+      it('should tell service to check status', done => {
         spyOn(vm.service, 'checkStatus').and.returnValue(returnPromise(mockData));
         spyOn(vm.mr, 'setData');
         spyOn(vm, 'handleNotification');
@@ -185,7 +186,7 @@ describe('mrWidgetOptions', () => {
     });
 
     describe('fetchDeployments', () => {
-      it('should fetch deployments', (done) => {
+      it('should fetch deployments', done => {
         spyOn(vm.service, 'fetchDeployments').and.returnValue(returnPromise([{ id: 1 }]));
 
         vm.fetchDeployments();
@@ -200,7 +201,7 @@ describe('mrWidgetOptions', () => {
     });
 
     describe('fetchActionsContent', () => {
-      it('should fetch content of Cherry Pick and Revert modals', (done) => {
+      it('should fetch content of Cherry Pick and Revert modals', done => {
         spyOn(vm.service, 'fetchMergeActionsContent').and.returnValue(returnPromise('hello world'));
 
         vm.fetchActionsContent();
@@ -251,7 +252,7 @@ describe('mrWidgetOptions', () => {
         };
 
         const allArgs = eventHub.$on.calls.allArgs();
-        allArgs.forEach((params) => {
+        allArgs.forEach(params => {
           const eventName = params[0];
           const callback = params[1];
 
@@ -267,18 +268,6 @@ describe('mrWidgetOptions', () => {
         listenersWithServiceRequest.FetchActionsContent();
 
         expect(vm.fetchActionsContent).toHaveBeenCalled();
-      });
-    });
-
-    describe('handleMounted', () => {
-      it('should call required methods to do the initial kick-off', () => {
-        spyOn(vm, 'initDeploymentsPolling');
-        spyOn(vm, 'setFaviconHelper');
-
-        vm.handleMounted();
-
-        expect(vm.setFaviconHelper).toHaveBeenCalled();
-        expect(vm.initDeploymentsPolling).toHaveBeenCalled();
       });
     });
 
@@ -298,13 +287,14 @@ describe('mrWidgetOptions', () => {
         document.body.removeChild(document.getElementById('favicon'));
       });
 
-      it('should call setFavicon method', (done) => {
+      it('should call setFavicon method', done => {
         vm.mr.ciStatusFaviconPath = overlayDataUrl;
-        vm.setFaviconHelper().then(() => {
-          expect(faviconElement.getAttribute('href')).toEqual(faviconWithOverlayDataUrl);
-          done();
-        })
-        .catch(done.fail);
+        vm.setFaviconHelper()
+          .then(() => {
+            expect(faviconElement.getAttribute('href')).toEqual(faviconWithOverlayDataUrl);
+            done();
+          })
+          .catch(done.fail);
       });
 
       it('should not call setFavicon when there is no ciStatusFaviconPath', () => {
@@ -379,7 +369,7 @@ describe('mrWidgetOptions', () => {
   });
 
   describe('rendering relatedLinks', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       vm.mr.relatedLinks = {
         assignToMe: null,
         closing: `
@@ -396,7 +386,7 @@ describe('mrWidgetOptions', () => {
       expect(vm.$el.querySelector('.close-related-link')).toBeDefined();
     });
 
-    it('does not render if state is nothingToMerge', (done) => {
+    it('does not render if state is nothingToMerge', done => {
       vm.mr.state = stateKey.nothingToMerge;
       Vue.nextTick(() => {
         expect(vm.$el.querySelector('.close-related-link')).toBeNull();
@@ -406,7 +396,7 @@ describe('mrWidgetOptions', () => {
   });
 
   describe('rendering source branch removal status', () => {
-    it('renders when user cannot remove branch and branch should be removed', (done) => {
+    it('renders when user cannot remove branch and branch should be removed', done => {
       vm.mr.canRemoveSourceBranch = false;
       vm.mr.shouldRemoveSourceBranch = true;
       vm.mr.state = 'readyToMerge';
@@ -423,7 +413,7 @@ describe('mrWidgetOptions', () => {
       });
     });
 
-    it('does not render in merged state', (done) => {
+    it('does not render in merged state', done => {
       vm.mr.canRemoveSourceBranch = false;
       vm.mr.shouldRemoveSourceBranch = true;
       vm.mr.state = 'merged';
@@ -438,6 +428,20 @@ describe('mrWidgetOptions', () => {
   });
 
   describe('rendering deployments', () => {
+    const changes = [
+      {
+        path: 'index.html',
+        external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/index.html',
+      },
+      {
+        path: 'imgs/gallery.html',
+        external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/imgs/gallery.html',
+      },
+      {
+        path: 'about/',
+        external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/about/',
+      },
+    ];
     const deploymentMockData = {
       id: 15,
       name: 'review/diplo',
@@ -449,21 +453,37 @@ describe('mrWidgetOptions', () => {
       external_url_formatted: 'diplo.',
       deployed_at: '2017-03-22T22:44:42.258Z',
       deployed_at_formatted: 'Mar 22, 2017 10:44pm',
+      changes,
     };
 
-    beforeEach((done) => {
-      vm.mr.deployments.push({
-        ...deploymentMockData,
-      }, {
-        ...deploymentMockData,
-        id: deploymentMockData.id + 1,
-      });
+    beforeEach(done => {
+      window.gon = window.gon || {};
+      window.gon.features = window.gon.features || {};
+      window.gon.features.ciEnvironmentsStatusChanges = true;
+
+      vm.mr.deployments.push(
+        {
+          ...deploymentMockData,
+        },
+        {
+          ...deploymentMockData,
+          id: deploymentMockData.id + 1,
+        },
+      );
 
       vm.$nextTick(done);
     });
 
     it('renders multiple deployments', () => {
       expect(vm.$el.querySelectorAll('.deploy-heading').length).toBe(2);
+    });
+
+    it('renders dropdpown with multiple file changes', () => {
+      expect(
+        vm.$el
+          .querySelector('.js-mr-wigdet-deployment-dropdown')
+          .querySelectorAll('.js-filtered-dropdown-result').length,
+      ).toEqual(changes.length);
     });
   });
 });
