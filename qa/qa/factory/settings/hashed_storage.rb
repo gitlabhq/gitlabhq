@@ -9,7 +9,7 @@ module QA
           Page::Main::Menu.act { go_to_admin_area }
           Page::Admin::Menu.act { go_to_repository_settings }
 
-          Page::Admin::Settings::Main.perform do |setting|
+          Page::Admin::Settings::Repository.perform do |setting|
             setting.expand_repository_storage do |page|
               page.enable_hashed_storage
               page.save_settings

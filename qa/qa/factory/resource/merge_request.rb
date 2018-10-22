@@ -30,6 +30,7 @@ module QA
           push.project = factory.project
           push.branch_name = factory.target_branch
           push.remote_branch = factory.source_branch
+          push.new_branch = false
           push.file_name = "added_file.txt"
           push.file_content = "File Added"
         end
