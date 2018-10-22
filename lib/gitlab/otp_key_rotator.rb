@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   # The +otp_key_base+ param is used to encrypt the User#otp_secret attribute.
   #

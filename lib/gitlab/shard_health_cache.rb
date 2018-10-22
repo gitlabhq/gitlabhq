@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class ShardHealthCache
     HEALTHY_SHARDS_KEY = 'gitlab-healthy-shards'.freeze

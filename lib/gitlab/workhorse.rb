@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'base64'
 require 'json'
 require 'securerandom'
@@ -63,7 +65,7 @@ module Gitlab
 
       def send_git_archive(repository, ref:, format:, append_sha:)
         format ||= 'tar.gz'
-        format.downcase!
+        format = format.downcase
         params = repository.archive_metadata(ref, Gitlab.config.gitlab.repository_downloads_path, format, append_sha: append_sha)
         raise "Repository or ref not found" if params.empty?
 

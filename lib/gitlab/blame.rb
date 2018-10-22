@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class Blame
     attr_accessor :blob, :commit

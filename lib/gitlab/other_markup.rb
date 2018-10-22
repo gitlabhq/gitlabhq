@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   # Parser/renderer for markups without other special support code.
   module OtherMarkup

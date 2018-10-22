@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This class finds files in a repository by name and content
 # the result is joined and sorted by file name
 module Gitlab

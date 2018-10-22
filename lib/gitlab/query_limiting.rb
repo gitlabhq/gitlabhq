@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module QueryLimiting
     # Returns true if we should enable tracking of query counts.

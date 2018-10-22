@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Recaptcha
     def self.load_configurations!

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   # JobWaiter can be used to wait for a number of Sidekiq jobs to complete.
   #

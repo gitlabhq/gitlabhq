@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This class is used as a proxy for all outbounding http connection
 # coming from callbacks, services and hooks. The direct use of the HTTParty
 # is discouraged because it can lead to several security problems, like SSRF

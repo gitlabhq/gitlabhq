@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module TemporarilyAllow
     TEMPORARILY_ALLOW_MUTEX = Mutex.new
