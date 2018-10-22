@@ -6717,6 +6717,9 @@ msgstr ""
 msgid "Version"
 msgstr ""
 
+msgid "View app"
+msgstr ""
+
 msgid "View file @ "
 msgstr ""
 

@@ -14,6 +14,20 @@ const deploymentMockData = {
   external_url_formatted: 'diplo.',
   deployed_at: '2017-03-22T22:44:42.258Z',
   deployed_at_formatted: 'Mar 22, 2017 10:44pm',
+  changes: [
+    {
+      path: 'index.html',
+      external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/index.html',
+    },
+    {
+      path: 'imgs/gallery.html',
+      external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/imgs/gallery.html',
+    },
+    {
+      path: 'about/',
+      external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/about/',
+    },
+  ],
 };
 const createComponent = () => {
   const Component = Vue.extend(deploymentComponent);
@@ -174,6 +188,44 @@ describe('Deployment component', () => {
 
     it('renders metrics component', () => {
       expect(el.querySelector('.js-mr-memory-usage')).not.toBeNull();
+    });
+  });
+
+  describe('with `features.ciEnvironmentsStatusChanges` enabled', () => {
+    beforeEach(() => {
+      window.gon = window.gon || {};
+      window.gon.features = window.gon.features || {};
+      window.gon.features.ciEnvironmentsStatusChanges = true;
+
+      vm = createComponent(deploymentMockData);
+    });
+
+    afterEach(() => {
+      window.gon.features = {};
+    });
+
+    it('renders dropdown with changes', () => {
+      expect(vm.$el.querySelector('.js-mr-wigdet-deployment-dropdown')).not.toBeNull();
+      expect(vm.$el.querySelector('.js-deploy-url-feature-flag')).toBeNull();
+    });
+  });
+
+  describe('with `features.ciEnvironmentsStatusChanges` disabled', () => {
+    beforeEach(() => {
+      window.gon = window.gon || {};
+      window.gon.features = window.gon.features || {};
+      window.gon.features.ciEnvironmentsStatusChanges = false;
+
+      vm = createComponent(deploymentMockData);
+    });
+
+    afterEach(() => {
+      delete window.gon.features.ciEnvironmentsStatusChanges;
+    });
+
+    it('renders the old link to the review app', () => {
+      expect(vm.$el.querySelector('.js-mr-wigdet-deployment-dropdown')).toBeNull();
+      expect(vm.$el.querySelector('.js-deploy-url-feature-flag')).not.toBeNull();
     });
   });
 });
