@@ -102,7 +102,10 @@ export default {
           <span class="flex-fill">
             {{ action.name }}
           </span>
-          <span v-if="action.scheduledAt">
+          <span
+            v-if="action.scheduledAt"
+            class="text-secondary"
+          >
             <icon name="clock" />
             {{ remainingTime(action) }}
           </span>
