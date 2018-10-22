@@ -144,5 +144,14 @@ describe Gitlab::Ci::Config::External::File::Remote do
         expect(subject).to match /could not be fetched because of HTTP code `404` error!/
       end
     end
+
+    context 'when the URL is blocked' do
+      let(:location) { 'http://127.0.0.1/some/path/to/config.yaml' }
+
+      it 'should include details about blocked URL' do
+        expect(subject).to eq "Remote file could not be fetched because URL '#{location}' " \
+                              'is blocked: Requests to localhost are not allowed!'
+      end
+    end
   end
 end
