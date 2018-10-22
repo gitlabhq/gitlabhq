@@ -1,0 +1,5 @@
+---
+title: Remove base64 encoding from files that contain plain text
+merge_request: 22425
+author:
+type: fixed
