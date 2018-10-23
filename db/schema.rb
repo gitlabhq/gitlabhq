@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180906101639) do
+ActiveRecord::Schema.define(version: 20180913142237) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1501,7 +1501,7 @@ ActiveRecord::Schema.define(version: 20180906101639) do
 
   create_table "personal_access_tokens", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.string "token", null: false
+    t.string "token"
     t.string "name", null: false
     t.boolean "revoked", default: false
     t.date "expires_at"
@@ -1509,9 +1509,11 @@ ActiveRecord::Schema.define(version: 20180906101639) do
     t.datetime "updated_at", null: false
     t.string "scopes", default: "--- []\n", null: false
     t.boolean "impersonation", default: false, null: false
+    t.string "token_digest"
   end
 
   add_index "personal_access_tokens", ["token"], name: "index_personal_access_tokens_on_token", unique: true, using: :btree
+  add_index "personal_access_tokens", ["token_digest"], name: "index_personal_access_tokens_on_token_digest", unique: true, using: :btree
   add_index "personal_access_tokens", ["user_id"], name: "index_personal_access_tokens_on_user_id", using: :btree
 
   create_table "programming_languages", force: :cascade do |t|
