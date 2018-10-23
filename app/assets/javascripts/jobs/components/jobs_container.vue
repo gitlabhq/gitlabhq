@@ -1,5 +1,4 @@
 <script>
-  import _ from 'underscore';
   import CiIcon from '~/vue_shared/components/ci_icon.vue';
   import Icon from '~/vue_shared/components/icon.vue';
   import tooltip from '~/vue_shared/directives/tooltip';
@@ -27,7 +26,7 @@
         return this.jobId === currentJobId;
       },
       tooltipText(job) {
-        return `${_.escape(job.name)} - ${job.status.tooltip}`;
+        return `${job.name} - ${job.status.tooltip}`;
       },
     },
   };
