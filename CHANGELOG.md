@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.4.1 (2018-10-23)
+
+### Security (2 changes)
+
+- Fix XSS in merge request source branch name.
+- Prevent SSRF attacks in HipChat integration.
+
+
 ## 11.4.0 (2018-10-22)
 
 ### Security (9 changes)
