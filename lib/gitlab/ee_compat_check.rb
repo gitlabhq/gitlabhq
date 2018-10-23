@@ -286,7 +286,7 @@ module Gitlab
     end
 
     def patch_name_from_branch(branch_name)
-      branch_name.parameterize << '.patch'
+      "#{branch_name.parameterize}.patch"
     end
 
     def patch_url
@@ -434,9 +434,11 @@ module Gitlab
     end
 
     def conflicting_files_msg
-      failed_files.reduce("The conflicts detected were as follows:\n") do |memo, file|
-        memo << "\n        - #{file}"
-      end
+      header = "The conflicts detected were as follows:\n"
+      separator = "\n        - "
+      failed_items = failed_files.join(separator)
+
+      "#{header}#{separator}#{failed_items}"
     end
   end
 end
