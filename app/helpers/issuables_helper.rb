@@ -386,8 +386,8 @@ module IssuablesHelper
     {
       todo_text: "Add todo",
       mark_text: "Mark todo as done",
-      todo_icon: (is_collapsed ? icon('plus-square') : nil),
-      mark_icon: (is_collapsed ? icon('check-square', class: 'todo-undone') : nil),
+      todo_icon: (is_collapsed ? sprite_icon('todo-add') : nil),
+      mark_icon: (is_collapsed ? sprite_icon('todo-done', css_class: 'todo-undone') : nil),
       issuable_id: issuable.id,
       issuable_type: issuable.class.name.underscore,
       url: project_todos_path(@project),
