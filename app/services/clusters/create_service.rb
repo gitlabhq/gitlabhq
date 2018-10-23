@@ -36,6 +36,8 @@ module Clusters
       case clusterable
       when ::Project
         { cluster_type: :project_type, projects: [clusterable] }
+      when ::Group
+        { cluster_type: :group_type, groups: [clusterable] }
       end
     end
 

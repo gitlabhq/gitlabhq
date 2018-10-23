@@ -6,6 +6,14 @@ module ClustersHelper
     false
   end
 
+  def clusterable
+    @project || @group
+  end
+
+  def can_create_cluster?
+    can?(current_user, :create_cluster, clusterable)
+  end
+
   def render_gcp_signup_offer
     return if Gitlab::CurrentSettings.current_application_settings.hide_third_party_offers?
     return unless show_gcp_signup_offer?

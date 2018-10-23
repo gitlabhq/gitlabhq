@@ -15,6 +15,8 @@ module Clusters
     def show_path
       if cluster.project_type?
         project_cluster_path(project, cluster)
+      elsif cluster.group_type?
+        group_cluster_path(group, cluster)
       else
         raise NotImplementedError
       end
