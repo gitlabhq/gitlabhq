@@ -78,7 +78,7 @@ export default {
           />
         </div>
         <div class="media-body">
-          Could not connect to the CI server. Please check your settings and try again
+          Could not retrieve the pipeline status. For potential solutions please read the <a href="#">documentation</a>.
         </div>
       </template>
       <template v-else-if="hasPipeline">

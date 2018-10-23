@@ -69,7 +69,7 @@ describe('MRWidgetPipeline', () => {
 
       expect(
         vm.$el.querySelector('.media-body').textContent.trim(),
-      ).toEqual('Could not connect to the CI server. Please check your settings and try again');
+      ).toEqual('Could not retrieve the pipeline status. For potential solutions please read the documentation.');
     });
 
     describe('with a pipeline', () => {
