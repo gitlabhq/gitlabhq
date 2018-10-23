@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class MergeRequestUserEntity < UserEntity
+class MergeRequestUserEntity < CurrentUserEntity
   include RequestAwareEntity
   include BlobHelper
   include TreeHelper
