@@ -723,7 +723,7 @@ gitlab:assets:compile:
       - public/assets/
 
 karma:
-  <<: *dedicated-no-docs-and-no-qa-pull-cache-job
+  <<: *dedicated-no-docs-pull-cache-job
   <<: *use-pg
   dependencies:
     - compile-assets
