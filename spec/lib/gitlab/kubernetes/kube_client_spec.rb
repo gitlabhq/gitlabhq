@@ -6,10 +6,9 @@ describe Gitlab::Kubernetes::KubeClient do
   include KubernetesHelpers
 
   let(:api_url) { 'https://kubernetes.example.com/prefix' }
-  let(:api_version) { 'v1' }
   let(:kubeclient_options) { { auth_options: { bearer_token: 'xyz' } } }
 
-  let(:client) { described_class.new(api_url, api_version, kubeclient_options) }
+  let(:client) { described_class.new(api_url, kubeclient_options) }
 
   before do
     stub_kubeclient_discover(api_url)
@@ -37,14 +36,6 @@ describe Gitlab::Kubernetes::KubeClient do
     it 'has the api_version' do
       expect(subject.instance_variable_get(:@api_version)).to eq('v1')
     end
-
-    context 'different api version' do
-      subject { client.core_client(api_version: 'v2') }
-
-      it 'has the api_version' do
-        expect(subject.instance_variable_get(:@api_version)).to eq('v2')
-      end
-    end
   end
 
   describe '#rbac_client' do
@@ -59,14 +50,6 @@ describe Gitlab::Kubernetes::KubeClient do
     it 'has the api_version' do
       expect(subject.instance_variable_get(:@api_version)).to eq('v1')
     end
-
-    context 'different api version' do
-      subject { client.rbac_client(api_version: 'v2') }
-
-      it 'has the api_version' do
-        expect(subject.instance_variable_get(:@api_version)).to eq('v2')
-      end
-    end
   end
 
   describe '#extensions_client' do
@@ -80,14 +63,6 @@ describe Gitlab::Kubernetes::KubeClient do
 
     it 'has the api_version' do
       expect(subject.instance_variable_get(:@api_version)).to eq('v1beta1')
-    end
-
-    context 'different api version' do
-      subject { client.extensions_client(api_version: 'v2') }
-
-      it 'has the api_version' do
-        expect(subject.instance_variable_get(:@api_version)).to eq('v2')
-      end
     end
   end
 
@@ -146,7 +121,6 @@ describe Gitlab::Kubernetes::KubeClient do
 
   describe 'extensions API group' do
     let(:api_groups) { ['apis/extensions'] }
-    let(:api_version) { 'v1beta1' }
     let(:extensions_client) { client.extensions_client }
 
     describe '#get_deployments' do

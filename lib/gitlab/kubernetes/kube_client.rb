@@ -14,12 +14,20 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
 
       SUPPORTED_API_GROUPS = {
-        core: 'api',
-        rbac: 'apis/rbac.authorization.k8s.io',
-        extensions: 'apis/extensions'
+        core: { group: 'api', version: 'v1' },
+        rbac: { group: 'apis/rbac.authorization.k8s.io', version: 'v1' },
+        extensions: { group: 'apis/extensions', version: 'v1beta1' }
       }.freeze
 
-      LATEST_EXTENSIONS_VERSION = 'v1beta1'
+      SUPPORTED_API_GROUPS.each do |name, params|
+        client_method_name = "#{name}_client".to_sym
+
+        define_method(client_method_name) do
+          strong_memoize(client_method_name) do
+            build_kubeclient(params[:group], params[:version])
+          end
+        end
+      end
 
       # Core API methods delegates to the core api group client
       delegate :get_pods,
@@ -57,39 +65,16 @@ module Gitlab
         :watch_pod_log,
         to: :core_client
 
-      attr_reader :api_prefix, :kubeclient_options, :default_api_version
+      attr_reader :api_prefix, :kubeclient_options
 
-      def initialize(api_prefix, default_api_version = 'v1', **kubeclient_options)
+      def initialize(api_prefix, **kubeclient_options)
         @api_prefix = api_prefix
         @kubeclient_options = kubeclient_options
-        @default_api_version = default_api_version
-      end
-
-      def core_client(api_version: default_api_version)
-        core_clients[api_version]
-      end
-
-      def rbac_client(api_version: default_api_version)
-        rbac_clients[api_version]
-      end
-
-      def extensions_client(api_version: LATEST_EXTENSIONS_VERSION)
-        extensions_clients[api_version]
       end
 
       private
 
-      def build_client(cache_name, api_group)
-        strong_memoize(cache_name) do
-          Hash.new do |hash, api_version|
-            hash[api_version] = build_kubeclient(api_group, api_version)
-          end
-        end
-      end
-
       def build_kubeclient(api_group, api_version)
-        raise ArgumentError, "Unknown api group #{api_group}" unless SUPPORTED_API_GROUPS.values.include?(api_group)
-
         ::Kubeclient::Client.new(
           join_api_url(api_prefix, api_group),
           api_version,
@@ -104,18 +89,6 @@ module Gitlab
         url.path = [prefix, api_path].join("/")
 
         url.to_s
-      end
-
-      SUPPORTED_API_GROUPS.each do |name, api_group|
-        clients_method_name = "#{name}_clients".to_sym
-
-        define_method(clients_method_name) do
-          strong_memoize(clients_method_name.to_sym) do
-            Hash.new do |hash, api_version|
-              hash[api_version] = build_kubeclient(api_group, api_version)
-            end
-          end
-        end
       end
     end
   end
