@@ -1583,7 +1583,7 @@ msgstr ""
 msgid "ClusterIntegration|Prometheus is an open-source monitoring system with %{gitlabIntegrationLink} to monitor deployed applications."
 msgstr ""
 
-msgid "ClusterIntegration|RBAC-enabled cluster (experimental)"
+msgid "ClusterIntegration|RBAC-enabled cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Read our %{link_to_help_page} on Kubernetes cluster integration."
@@ -1653,9 +1653,6 @@ msgid "ClusterIntegration|Something went wrong while installing %{title}"
 msgstr ""
 
 msgid "ClusterIntegration|The IP address is in the process of being assigned. Please check your Kubernetes cluster or Quotas on Google Kubernetes Engine if it takes a long time."
-msgstr ""
-
-msgid "ClusterIntegration|The default cluster configuration grants access to many functionalities needed to successfully build and deploy a containerised application."
 msgstr ""
 
 msgid "ClusterIntegration|This account must have permissions to create a Kubernetes cluster in the %{link_to_container_project} specified below"
