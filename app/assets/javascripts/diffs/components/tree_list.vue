@@ -99,8 +99,8 @@ export default {
       >
         <button
           v-tooltip.hover
-          :aria-label="__('File view')"
-          :title="__('File view')"
+          :aria-label="__('List view')"
+          :title="__('List view')"
           :class="{
             active: !renderTreeList
           }"

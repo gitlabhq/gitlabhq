@@ -2783,9 +2783,6 @@ msgstr ""
 msgid "File templates"
 msgstr ""
 
-msgid "File view"
-msgstr ""
-
 msgid "Files"
 msgstr ""
 
@@ -3600,6 +3597,9 @@ msgid "List Your Gitea Repositories"
 msgstr ""
 
 msgid "List available repositories"
+msgstr ""
+
+msgid "List view"
 msgstr ""
 
 msgid "List your Bitbucket Server repositories"
