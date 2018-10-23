@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 11.4.1 (2018-10-23)
+
+- No changes.
+
 ## 11.4.0 (2018-10-22)
 
 ### Security (3 changes)
