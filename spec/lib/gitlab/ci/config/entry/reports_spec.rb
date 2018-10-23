@@ -38,6 +38,8 @@ describe Gitlab::Ci::Config::Entry::Reports do
         :dependency_scanning | 'gl-dependency-scanning-report.json'
         :container_scanning | 'gl-container-scanning-report.json'
         :dast | 'gl-dast-report.json'
+        :license_management | 'gl-license-management-report.json'
+        :performance | 'performance.json'
       end
 
       with_them do
