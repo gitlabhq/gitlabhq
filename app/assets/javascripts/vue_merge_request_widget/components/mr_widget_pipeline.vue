@@ -78,7 +78,7 @@ export default {
           />
         </div>
         <div class="media-body">
-          Could not retrieve the pipeline status. For potential solutions please read the <a href="#">documentation</a>.
+          Could not retrieve the pipeline status. For potential solutions please read the <a :href="mr.troubleshootingDocsLink">documentation</a>.
         </div>
       </template>
       <template v-else-if="hasPipeline">

@@ -110,6 +110,8 @@ export default class MergeRequestStore {
 
     this.testResultsPath = data.test_reports_path;
 
+    this.troubleshootingDocsLink = data.troubleshooting_docs_link
+
     this.setState(data);
   }
 
