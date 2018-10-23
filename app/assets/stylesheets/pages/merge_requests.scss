@@ -818,8 +818,16 @@
   display: flex;
   justify-content: space-between;
 
-  @include media-breakpoint-down(xs) {
+  @include media-breakpoint-down(md) {
     flex-direction: column-reverse;
+  }
+
+  .discussion-filter-container {
+    margin-top: $gl-padding-8;
+
+    &:not(:only-child) {
+      padding-right: $gl-padding-8;
+    }
   }
 }
 

@@ -618,7 +618,6 @@ ul.notes {
 .line-resolve-all-container {
   @include notes-media('min', map-get($grid-breakpoints, sm)) {
     margin-right: 0;
-    padding-left: $gl-padding;
   }
 
   > div {
@@ -754,5 +753,25 @@ ul.notes {
 
   .add-diff-note svg {
     margin-top: 4px;
+  }
+}
+
+.discussion-filter-container {
+
+  .btn > svg {
+    width: $gl-col-padding;
+    height: $gl-col-padding;
+  }
+
+  .dropdown-menu {
+    margin-bottom: $gl-padding-4;
+
+    @include media-breakpoint-down(md) {
+      margin-left: $btn-side-margin + $contextual-sidebar-collapsed-width;
+    }
+
+    @include media-breakpoint-down(xs) {
+      margin-left: $btn-side-margin;
+    }
   }
 }
