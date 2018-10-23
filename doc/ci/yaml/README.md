@@ -1433,12 +1433,13 @@ job1:
 ## `retry`
 
 > [Introduced][ce-12909] in GitLab 9.5.
-> [Behaviour expanded][ce-21758] in GitLab 11.5 to control on which failures to retry.
+> [Behaviour expanded](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21758)
+> in GitLab 11.5 to control on which failures to retry.
 
 `retry` allows you to configure how many times a job is going to be retried in
 case of a failure.
 
-When a job fails and has `retry` configured it is going to be processed again
+When a job fails and has `retry` configured, it is going to be processed again
 up to the amount of times specified by the `retry` keyword.
 
 If `retry` is set to 2, and a job succeeds in a second run (first retry), it won't be retried
@@ -1453,9 +1454,11 @@ test:
   retry: 2
 ```
 
-By default a job will be retried on all failure cases. To have a better control
-on which failures to retry, `retry` can be a hash with `when` and `max` keys. `max`
-specifies how many times to retry, `when` the failure cases to retry.
+By default, a job will be retried on all failure cases. To have a better control
+on which failures to retry, `retry` can be a hash with with the following keys:
+
+- `max`: The maximum number of retries.
+- `when`: The failure cases to retry.
 
 To retry only runner system failures at maximum two times:
 
@@ -1467,10 +1470,10 @@ test:
     when: runner_system_failure
 ```
 
-If there is another failure than a runner system failure, the job will not be
-retried.
+If there is another failure, other than a runner system failure, the job will
+not be retried.
 
-To retry on multiple failure cases `when` can also be an array of failures:
+To retry on multiple failure cases, `when` can also be an array of failures:
 
 ```yaml
 test:
@@ -1492,14 +1495,14 @@ Possible values for `when` are:
   stay in sync with this documentation.
  -->
 
-- `always`: retry on any failure (default)
-- `unknown_failure`: retry when the failure reason is unknown
-- `script_failure`: retry when the script failed
-- `api_failure`: retry on api failure
-- `stuck_or_timeout_failure`: retry when the job got stuck or timed out
-- `runner_system_failure`: retry if there was a runner system failure (e.g. setting up the job failed)
-- `missing_dependency_failure`: retry if a dependency was missing
-- `runner_unsupported`: retry if the runner was unsupported
+- `always`: Retry on any failure (default).
+- `unknown_failure`: Retry when the failure reason is unknown.
+- `script_failure`: Retry when the script failed.
+- `api_failure`: Retry on api failure.
+- `stuck_or_timeout_failure`: Retry when the job got stuck or timed out.
+- `runner_system_failure`: Retry if there was a runner system failure (e.g. setting up the job failed).
+- `missing_dependency_failure`: Retry if a dependency was missing.
+- `runner_unsupported`: Retry if the runner was unsupported.
 
 
 ## `parallel`
@@ -2102,7 +2105,6 @@ CI with various languages.
 [ce-7983]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7983
 [ce-7447]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7447
 [ce-12909]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12909
-[ce-21758]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21758
 [schedules]: ../../user/project/pipelines/schedules.md
 [variables-expressions]: ../variables/README.md#variables-expressions
 [ee]: https://about.gitlab.com/gitlab-ee/
