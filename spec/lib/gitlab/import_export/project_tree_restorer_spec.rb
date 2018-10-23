@@ -335,7 +335,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
         restored_project_json
 
-        expect(project.lfs_enabled).to be_nil
+        expect(project.lfs_enabled).to be_falsey
       end
     end
 
