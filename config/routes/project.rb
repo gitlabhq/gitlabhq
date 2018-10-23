@@ -150,8 +150,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         post '', action: :create, as: nil
 
         scope path: 'new', as: :new_merge_request do
-          get '', action: :new
-
           scope constraints: { format: nil }, action: :new do
             get :diffs, defaults: { tab: 'diffs' }
             get :pipelines, defaults: { tab: 'pipelines' }
@@ -165,6 +163,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :diff_for_path
           get :branch_from
           get :branch_to
+          get '(:merge_request_source_branch)', action: :new
         end
       end
 
