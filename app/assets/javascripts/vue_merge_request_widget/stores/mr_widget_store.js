@@ -18,6 +18,7 @@ export default class MergeRequestStore {
     this.squash = data.squash;
     this.squashBeforeMergeHelpPath =
       this.squashBeforeMergeHelpPath || data.squash_before_merge_help_path;
+    this.troubleshootingDocsPath = data.troubleshooting_docs_path
     this.enableSquashBeforeMerge = this.enableSquashBeforeMerge || true;
 
     this.iid = data.iid;
@@ -109,8 +110,6 @@ export default class MergeRequestStore {
     this.ciStatusFaviconPath = pipelineStatus ? pipelineStatus.favicon : null;
 
     this.testResultsPath = data.test_reports_path;
-
-    this.troubleshootingDocsLink = data.troubleshooting_docs_link
 
     this.setState(data);
   }
