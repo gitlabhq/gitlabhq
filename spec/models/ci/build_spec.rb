@@ -1314,6 +1314,14 @@ describe Ci::Build do
 
           it { is_expected.not_to be_retryable }
         end
+
+        context 'when build is degenerated' do
+          before do
+            build.degenerate!
+          end
+
+          it { is_expected.not_to be_retryable }
+        end
       end
     end
 
@@ -1391,6 +1399,14 @@ describe Ci::Build do
 
       context 'when max retries value is not defined' do
         subject { create(:ci_build) }
+
+        it 'returns zero' do
+          expect(subject.retries_max).to eq 0
+        end
+      end
+
+      context 'when build is degenerated' do
+        subject { create(:ci_build, :degenerated) }
 
         it 'returns zero' do
           expect(subject.retries_max).to eq 0
@@ -1658,6 +1674,12 @@ describe Ci::Build do
         subject { build_stubbed(:ci_build, :manual, status: :manual) }
 
         it { is_expected.to be_playable }
+      end
+
+      context 'when build is a manual and degenerated' do
+        subject { build_stubbed(:ci_build, :manual, :degenerated, status: :manual) }
+
+        it { is_expected.not_to be_playable }
       end
     end
 
@@ -3225,6 +3247,56 @@ describe Ci::Build do
       let(:environment) { create(:environment, name: 'production', project: build.project) }
 
       it { expect(build.deployment_status).to eq(:creating) }
+    end
+  end
+
+  describe '#degenerated?' do
+    context 'when build is degenerated' do
+      subject { create(:ci_build, :degenerated) }
+
+      it { is_expected.to be_degenerated }
+    end
+
+    context 'when build is valid' do
+      subject { create(:ci_build) }
+
+      it { is_expected.not_to be_degenerated }
+
+      context 'and becomes degenerated' do
+        before do
+          subject.degenerate!
+        end
+
+        it { is_expected.to be_degenerated }
+      end
+    end
+  end
+
+  describe '#archived?' do
+    context 'when build is degenerated' do
+      subject { create(:ci_build, :degenerated) }
+
+      it { is_expected.to be_archived }
+    end
+
+    context 'for old build' do
+      subject { create(:ci_build, created_at: 1.day.ago) }
+
+      context 'when archive_builds_in is set' do
+        before do
+          stub_application_setting(archive_builds_in_seconds: 3600)
+        end
+
+        it { is_expected.to be_archived }
+      end
+
+      context 'when archive_builds_in is not set' do
+        before do
+          stub_application_setting(archive_builds_in_seconds: nil)
+        end
+
+        it { is_expected.not_to be_archived }
+      end
     end
   end
 end

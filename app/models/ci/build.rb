@@ -258,8 +258,24 @@ module Ci
         self.name == 'pages'
     end
 
+    # degenerated build is one that cannot be run by Runner
+    def degenerated?
+      self.options.nil?
+    end
+
+    def degenerate!
+      self.update!(options: nil, yaml_variables: nil, commands: nil)
+    end
+
+    def archived?
+      return true if degenerated?
+
+      archive_builds_older_than = Gitlab::CurrentSettings.current_application_settings.archive_builds_older_than
+      archive_builds_older_than.present? && created_at < archive_builds_older_than
+    end
+
     def playable?
-      action? && (manual? || scheduled? || retryable?)
+      action? && !archived? && (manual? || scheduled? || retryable?)
     end
 
     def schedulable?
@@ -287,7 +303,7 @@ module Ci
     end
 
     def retryable?
-      success? || failed? || canceled?
+      !archived? && (success? || failed? || canceled?)
     end
 
     def retries_count
@@ -295,7 +311,7 @@ module Ci
     end
 
     def retries_max
-      self.options.fetch(:retry, 0).to_i
+      self.options.to_h.fetch(:retry, 0).to_i
     end
 
     def latest?

@@ -165,6 +165,7 @@ ActiveRecord::Schema.define(version: 20181101144347) do
     t.integer "usage_stats_set_by_user_id"
     t.integer "receive_max_input_size"
     t.integer "diff_max_patch_bytes", default: 102400, null: false
+    t.integer "archive_builds_in_seconds"
   end
 
   create_table "audit_events", force: :cascade do |t|
