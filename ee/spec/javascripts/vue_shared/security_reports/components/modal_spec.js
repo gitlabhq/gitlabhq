@@ -3,6 +3,8 @@ import component from 'ee/vue_shared/security_reports/components/modal.vue';
 import state from 'ee/vue_shared/security_reports/store/state';
 import createStore from 'ee/vue_shared/security_reports/store';
 import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { TEST_HOST } from 'spec/test_constants';
+import { trimText } from 'spec/helpers/vue_component_helper';
 
 describe('Security Reports modal', () => {
   const Component = Vue.extend(component);
@@ -38,7 +40,7 @@ describe('Security Reports modal', () => {
             solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
             title: 'Arbitrary file existence disclosure in Action Pack',
             path: 'Gemfile.lock',
-            urlPath: 'path/Gemfile.lock',
+            urlPath: `${TEST_HOST}/path/Gemfile.lock`,
             isDismissed: true,
             dismissalFeedback: {
               id: 1,
@@ -97,7 +99,7 @@ describe('Security Reports modal', () => {
             solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
             title: 'Arbitrary file existence disclosure in Action Pack',
             path: 'Gemfile.lock',
-            urlPath: 'path/Gemfile.lock',
+            urlPath: `${TEST_HOST}/path/Gemfile.lock`,
           },
           status: 'failed',
         });
@@ -179,7 +181,7 @@ describe('Security Reports modal', () => {
             solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
             title: 'Arbitrary file existence disclosure in Action Pack',
             path: 'Gemfile.lock',
-            urlPath: 'path/Gemfile.lock',
+            urlPath: `${TEST_HOST}/path/Gemfile.lock`,
             location: {
               file: 'Gemfile.lock',
             },
@@ -203,7 +205,7 @@ describe('Security Reports modal', () => {
       });
 
       it('renders link fields with link', () => {
-        expect(vm.$el.querySelector('.js-link-file').getAttribute('href')).toEqual('path/Gemfile.lock');
+        expect(vm.$el.querySelector('.js-link-file').getAttribute('href')).toEqual(`${TEST_HOST}/path/Gemfile.lock`);
       });
 
       it('renders help link', () => {
@@ -224,7 +226,7 @@ describe('Security Reports modal', () => {
           solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
           title: 'Arbitrary file existence disclosure in Action Pack',
           path: 'Gemfile.lock',
-          urlPath: 'path/Gemfile.lock',
+          urlPath: `${TEST_HOST}/path/Gemfile.lock`,
           isDismissed: true,
           dismissalFeedback: {
             id: 1,
@@ -273,7 +275,7 @@ describe('Security Reports modal', () => {
           solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
           title: 'Arbitrary file existence disclosure in Action Pack',
           path: 'Gemfile.lock',
-          urlPath: 'path/Gemfile.lock',
+          urlPath: `${TEST_HOST}/path/Gemfile.lock`,
           isDismissed: true,
           dismissalFeedback: {
             id: 1,
@@ -325,7 +327,7 @@ describe('Security Reports modal', () => {
           solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
           title: 'Arbitrary file existence disclosure in Action Pack',
           path: 'Gemfile.lock',
-          urlPath: 'path/Gemfile.lock',
+          urlPath: `${TEST_HOST}/path/Gemfile.lock`,
           isDismissed: true,
           dismissalFeedback: {
             id: 1,
@@ -376,7 +378,7 @@ describe('Security Reports modal', () => {
           solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
           title: 'Arbitrary file existence disclosure in Action Pack',
           path: 'Gemfile.lock',
-          urlPath: 'path/Gemfile.lock',
+          urlPath: `${TEST_HOST}/path/Gemfile.lock`,
         },
         status: 'success',
       });
@@ -388,6 +390,64 @@ describe('Security Reports modal', () => {
 
     it('does not display the footer', () => {
       expect(vm.$el.classList.contains('modal-hide-footer')).toBeTruthy();
+    });
+  });
+
+  describe('does not render XSS links', () => {
+    // eslint-disable-next-line no-script-url
+    const badUrl = 'javascript:alert("")';
+
+    beforeEach(() => {
+      store.dispatch('setModalData', {
+        issue: {
+          urlPath: badUrl,
+          location: {
+            file: 'badFile.lock',
+          },
+          links: [{
+            url: badUrl,
+          }],
+          identifiers: [{
+            type: 'CVE',
+            name: 'BAD_URL',
+            url: badUrl,
+          }],
+          instances: [{
+            param: 'X-Content-Type-Options',
+            method: 'GET',
+            uri: badUrl,
+          }],
+        },
+        status: 'success',
+      });
+
+      vm = mountComponentWithStore(Component, {
+        store,
+      });
+    });
+
+    it('for the link field', () => {
+      const linkEl = vm.$el.querySelector('.js-link-links');
+      expect(linkEl.tagName).not.toBe('A');
+      expect(trimText(linkEl.textContent)).toBe(badUrl);
+    });
+
+    it('for the identifiers field', () => {
+      const linkEl = vm.$el.querySelector('.js-link-identifiers');
+      expect(linkEl.tagName).not.toBe('A');
+      expect(trimText(linkEl.textContent)).toBe('BAD_URL');
+    });
+
+    it('for the file field', () => {
+      const linkEl = vm.$el.querySelector('.js-link-file');
+      expect(linkEl.tagName).not.toBe('A');
+      expect(trimText(linkEl.textContent)).toBe('badFile.lock');
+    });
+
+    it('for the instances field', () => {
+      const linkEl = vm.$el.querySelector('.report-block-list-issue-description-link .break-link');
+      expect(linkEl.tagName).not.toBe('A');
+      expect(trimText(linkEl.textContent)).toBe(badUrl);
     });
   });
 });

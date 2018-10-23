@@ -5,9 +5,11 @@
   import LoadingButton from '~/vue_shared/components/loading_button.vue';
   import Icon from '~/vue_shared/components/icon.vue';
   import ExpandButton from '~/vue_shared/components/expand_button.vue';
+  import SafeLink from 'ee/vue_shared/components/safe_link.vue';
 
   export default {
     components: {
+      SafeLink,
       Modal,
       LoadingButton,
       ExpandButton,
@@ -108,14 +110,14 @@
                     {{ instance.method }}
                   </div>
                   <div class="report-block-list-issue-description-link">
-                    <a
+                    <safe-link
                       :href="instance.uri"
                       target="_blank"
                       rel="noopener noreferrer nofollow"
                       class="break-link"
                     >
                       {{ instance.uri }}
-                    </a>
+                    </safe-link>
                   </div>
                   <expand-button v-if="instance.evidence">
                     <pre
@@ -132,7 +134,7 @@
               v-for="(identifier, i) in field.value"
               :key="i"
             >
-              <a
+              <safe-link
                 v-if="identifier.url"
                 :class="`js-link-${key}`"
                 :href="identifier.url"
@@ -140,7 +142,7 @@
                 rel="noopener noreferrer"
               >
                 {{ identifier.name }}
-              </a>
+              </safe-link>
               <span v-else>
                 {{ identifier.name }}
               </span>
@@ -152,26 +154,26 @@
               v-for="(link, i) in field.value"
               :key="i"
             >
-              <a
+              <safe-link
                 :class="`js-link-${key}`"
                 :href="link.url"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 {{ link.value || link.url }}
-              </a>
+              </safe-link>
               <span v-if="isLastValue(i, field.value)">,&nbsp;</span>
             </span>
           </template>
           <template v-else>
-            <a
+            <safe-link
               v-if="field.isLink"
               :class="`js-link-${key}`"
               :href="field.url"
               target="_blank"
             >
               {{ field.value }}
-            </a>
+            </safe-link>
             <span v-else>
               {{ field.value }}
             </span>

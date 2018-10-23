@@ -279,4 +279,28 @@ describe('SetApprovalModal', () => {
       });
     });
   });
+
+  it('does not render a XSS link', (done) => {
+    // eslint-disable-next-line no-script-url
+    const badURL = 'javascript:alert("")';
+
+    store.replaceState({
+      currentLicenseInModal: {
+        ...licenseReport[0],
+        url: badURL,
+        approvalStatus: LICENSE_APPROVAL_STATUS.APPROVED,
+      },
+    });
+    Vue.nextTick()
+      .then(() => {
+        const licenseName = vm.$el.querySelector('.js-license-url');
+        expect(licenseName).not.toBeNull();
+        expect(trimText(licenseName.innerText)).toBe(`URL: ${badURL}`);
+
+        expect(licenseName.querySelector('a')).toBeNull();
+        expect(licenseName.querySelector('span')).not.toBeNull();
+        expect(licenseName.querySelector('span').innerText).toBe(badURL);
+      }).then(done).catch(done.fail);
+
+  });
 });
