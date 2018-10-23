@@ -46,7 +46,7 @@ export default {
     ...mapActions('diffs', ['toggleTreeOpen', 'scrollToFile']),
     clearSearch() {
       this.search = '';
-      this.toggleFocusSearch(false)
+      this.toggleFocusSearch(false);
     },
     toggleRenderTreeList(toggle) {
       this.renderTreeList = toggle;
@@ -124,7 +124,7 @@ export default {
           @click="toggleRenderTreeList(true)"
         >
           <icon
-            name="hamburger"
+            name="file-tree"
           />
         </button>
       </div>
