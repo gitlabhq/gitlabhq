@@ -3,57 +3,50 @@ module TokenAuthenticatable
 
   private
 
-  def write_new_token(token_field)
-    new_token = generate_available_token(token_field)
-    write_attribute(token_field, new_token)
-  end
-
-  def generate_available_token(token_field)
-    loop do
-      token = generate_token(token_field)
-      break token unless self.class.unscoped.find_by(token_field => token)
-    end
-  end
-
-  def generate_token(token_field)
-    Devise.friendly_token
-  end
-
   class_methods do
-    def authentication_token_fields
-      @token_fields || []
-    end
-
     private # rubocop:disable Lint/UselessAccessModifier
 
-    def add_authentication_token_field(token_field)
+    def add_authentication_token_field(token_field, options = {})
       @token_fields = [] unless @token_fields
-      @token_fields << token_field
 
-      define_singleton_method("find_by_#{token_field}") do |token|
-        find_by(token_field => token) if token
+      if @token_fields.include?(token_field)
+        raise ArgumentError.new("#{token_field} already configured via add_authentication_token_field")
       end
 
-      define_method("ensure_#{token_field}") do
-        current_token = read_attribute(token_field)
-        current_token.blank? ? write_new_token(token_field) : current_token
+      @token_fields << token_field
+
+      attr_accessor :cleartext_tokens
+
+      strategy = if options[:digest]
+                   TokenAuthenticatableStrategies::Digest.new(self, token_field, options)
+                 else
+                   TokenAuthenticatableStrategies::Insecure.new(self, token_field, options)
+                 end
+
+      define_singleton_method("find_by_#{token_field}") do |token|
+        strategy.find_token_authenticatable(token)
+      end
+
+      define_method(token_field) do
+        strategy.get_token(self)
       end
 
       define_method("set_#{token_field}") do |token|
-        write_attribute(token_field, token) if token
+        strategy.set_token(self, token)
+      end
+
+      define_method("ensure_#{token_field}") do
+        strategy.ensure_token(self)
       end
 
       # Returns a token, but only saves when the database is in read & write mode
       define_method("ensure_#{token_field}!") do
-        send("reset_#{token_field}!") if read_attribute(token_field).blank? # rubocop:disable GitlabSecurity/PublicSend
-
-        read_attribute(token_field)
+        strategy.ensure_token!(self)
       end
 
       # Resets the token, but only saves when the database is in read & write mode
       define_method("reset_#{token_field}!") do
-        write_new_token(token_field)
-        save! if Gitlab::Database.read_write?
+        strategy.reset_token!(self)
       end
     end
   end
