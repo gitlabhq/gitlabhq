@@ -151,9 +151,8 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       it 'renders escaped tooltip name' do
-        page.within('aside.right-sidebar') do
-          expect(find('.active.build-job a')['data-original-title']).to eq('&lt;img src=x onerror=alert(document.domain)&gt; - passed')
-        end
+        page.find('.active.build-job a').hover
+        expect(page).to have_content('<img src=x onerror=alert(document.domain)> - passed')
       end
     end
 
